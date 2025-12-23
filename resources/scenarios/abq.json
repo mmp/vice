@@ -869,20 +869,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ABQ_N_APP": ["ABQ_S_APP"],
           "ABQ_S_APP": ["ABQ_F_APP"]
-        },
-        "inbound_assignments": {
-          "BRRTO1": "ABQ_S_APP",
-          "COLTR4": "ABQ_S_APP",
-          "LOWBO3": "ABQ_N_APP",
-          "LZZRD4": "ABQ_S_APP",
-          "SNDIA4": "ABQ_N_APP"
-        },
-        "departure_assignments": {
-          "KABQ": "ABQ_N_APP"
         }
       },
       "controllers": ["ABQ_TWR", "ABQ_N_APP", "ABQ_F_APP", "ABQ_S_APP", "ABQ_16_CTR"],
@@ -923,20 +913,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ABQ_N_APP": ["ABQ_S_APP"],
           "ABQ_S_APP": ["ABQ_F_APP"]
-        },
-        "inbound_assignments": {
-          "BRRTO1": "ABQ_S_APP",
-          "COLTR4": "ABQ_S_APP",
-          "LOWBO3": "ABQ_N_APP",
-          "LZZRD4": "ABQ_S_APP",
-          "SNDIA4": "ABQ_N_APP"
-        },
-        "departure_assignments": {
-          "KABQ": "ABQ_N_APP"
         }
       },
       "controllers": ["ABQ_TWR", "ABQ_N_APP", "ABQ_S_APP", "ABQ_16_CTR"],
@@ -982,20 +962,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ABQ_N_APP": ["ABQ_S_APP"],
           "ABQ_S_APP": ["ABQ_F_APP"]
-        },
-        "inbound_assignments": {
-          "BRRTO1": "ABQ_S_APP",
-          "COLTR4": "ABQ_S_APP",
-          "LOWBO3": "ABQ_N_APP",
-          "LZZRD4": "ABQ_S_APP",
-          "SNDIA4": "ABQ_N_APP"
-        },
-        "departure_assignments": {
-          "KABQ": "ABQ_N_APP"
         }
       },
       "controllers": ["ABQ_TWR", "ABQ_N_APP", "ABQ_S_APP", "ABQ_16_CTR"],
@@ -1036,20 +1006,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ABQ_N_APP": ["ABQ_S_APP"],
           "ABQ_S_APP": ["ABQ_F_APP"]
-        },
-        "inbound_assignments": {
-          "BRRTO1": "ABQ_S_APP",
-          "COLTR4": "ABQ_S_APP",
-          "LOWBO3": "ABQ_N_APP",
-          "LZZRD4": "ABQ_S_APP",
-          "SNDIA4": "ABQ_N_APP"
-        },
-        "departure_assignments": {
-          "KABQ": "ABQ_N_APP"
         }
       },
       "controllers": ["ABQ_TWR", "ABQ_N_APP", "ABQ_S_APP", "ABQ_16_CTR"],
@@ -1067,6 +1027,21 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "BRRTO1": "ABQ_S_APP",
+          "COLTR4": "ABQ_S_APP",
+          "LOWBO3": "ABQ_N_APP",
+          "LZZRD4": "ABQ_S_APP",
+          "SNDIA4": "ABQ_N_APP"
+        },
+        "departure_assignments": {
+          "KABQ": "ABQ_N_APP"
+        }
+      }
+    },
+
     "center": "KABQ",
     "controller_configs": {
       "1N": {

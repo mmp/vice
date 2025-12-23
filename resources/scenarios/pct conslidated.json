@@ -7433,139 +7433,27 @@
         }
       },
       "configuration": {
-  "id": "STD",
-  "positions": {
-    "BWI_B_APP": [
-      "BWI_W_APP"
-    ],
-    "BWI_G_APP": [
-      "BWI_P_APP"
-    ],
-    "BWI_S_APP": [
-      "BWI_B_APP",
-      "BWI_G_APP",
-      "BWI_N_APP"
-    ],
-    "BWI_W_APP": [
-      "BWI_H_APP"
-    ],
-    "CHO_E_APP": [
-      "CHO_W_APP"
-    ],
-    "DCA_J_APP": [
-      "BWI_S_APP",
-      "DCA_E_APP",
-      "DCA_K_DEP",
-      "DCA_R_APP",
-      "DCA_V_APP",
-      "IAD_M_APP",
-      "RIC_L_APP"
-    ],
-    "DCA_K_DEP": [
-      "DCA_A_APP",
-      "DCA_D_APP",
-      "DCA_Y_DEP"
-    ],
-    "DCA_L_APP": [
-      "DCA_F_DEP"
-    ],
-    "DCA_Y_DEP": [
-      "DCA_L_APP"
-    ],
-    "IAD_A_DEP": [
-      "IAD_T_DEP"
-    ],
-    "IAD_B_APP": [
-      "IAD_O_APP"
-    ],
-    "IAD_M_APP": [
-      "IAD_A_DEP",
-      "IAD_B_APP",
-      "IAD_E_APP",
-      "IAD_G_APP",
-      "IAD_N_APP",
-      "IAD_V_APP"
-    ],
-    "IAD_N_APP": [
-      "IAD_X_APP"
-    ],
-    "IAD_U_APP": [
-      "IAD_S_APP"
-    ],
-    "IAD_X_APP": [
-      "IAD_U_APP"
-    ],
-    "RIC_L_APP": [
-      "CHO_E_APP",
-      "RIC_F_APP",
-      "RIC_P_APP"
-    ],
-    "RIC_P_APP": [
-      "RIC_W_APP"
-    ],
-    "RIC_W_APP": [
-      "RIC_E_APP"
-    ]
-  },
-  "inbound_assignments": {
-    "ANTHM5": "BWI_H_APP",
-    "ARLFT2": "BWI_H_APP",
-    "CAPSS3": "DCA_J_APP",
-    "CAVLR6": "IAD_B_APP",
-    "CHO NORTH ARR N": "DCA_L_APP",
-    "CLIPR3": "BWI_B_APP",
-    "DEALE3/MIIDY3": "BWI_P_APP",
-    "DUCXS5.KELCE": "RIC_L_APP",
-    "DUCXS5.NEAVL": "RIC_L_APP",
-    "FRDMM6": "DCA_L_APP",
-    "GIBBZ5.BURTT": "IAD_N_APP",
-    "GIBBZ5.MGW": "IAD_N_APP",
-    "HYPER9": "IAD_V_APP",
-    "JAMIE RIC": "RIC_P_APP",
-    "POWTN5": "RIC_L_APP",
-    "PRTZL1": "IAD_V_APP",
-    "RAVNN8": "DCA_D_APP",
-    "SKILS5": "BWI_B_APP",
-    "SPIDR5": "RIC_L_APP",
-    "TIKEE4": "IAD_N_APP",
-    "TRISH4.DRRES": "BWI_B_APP",
-    "TRISH4.NUGGY": "BWI_B_APP",
-    "TRSTN4": "IAD_O_APP",
-    "TRUPS5": "DCA_L_APP",
-    "WAYNZ1.N": "IAD_V_APP"
-  },
-  "departure_assignments": {
-    "KBWI/CONLE5": "BWI_G_APP",
-    "KBWI/DUKPN1": "BWI_G_APP",
-    "KBWI/FOXHL1": "BWI_W_APP",
-    "KBWI/LINSE2": "BWI_W_APP",
-    "KBWI/TERPZ8": "BWI_W_APP",
-    "KCHO": "CHO_W_APP",
-    "KDCA/AMEEE1": "DCA_K_DEP",
-    "KDCA/CLTCH3": "DCA_Y_DEP",
-    "KDCA/DOCTR5": "DCA_K_DEP",
-    "KDCA/HORTO4": "DCA_Y_DEP",
-    "KDCA/JDUBB4": "DCA_Y_DEP",
-    "KDCA/REBLL5": "DCA_Y_DEP",
-    "KDCA/SCRAM6": "DCA_Y_DEP",
-    "KDCA/SOOKI5": "DCA_K_DEP",
-    "KDCA/WYNGS5": "DCA_Y_DEP",
-    "KHEF": "IAD_O_APP",
-    "KIAD/BUNZZ3": "IAD_T_DEP",
-    "KIAD/CLTCH3": "IAD_T_DEP",
-    "KIAD/JCOBY4": "IAD_A_DEP",
-    "KIAD/JDUBB4": "IAD_T_DEP",
-    "KIAD/JERES2": "IAD_A_DEP",
-    "KIAD/MCRAY2": "IAD_A_DEP",
-    "KIAD/RNLDI4": "IAD_T_DEP",
-    "KIAD/SCRAM6": "IAD_T_DEP",
-    "KIAD/WOOLY2": "IAD_A_DEP",
-    "KRIC/COLIN8": "RIC_P_APP",
-    "KRIC/KALLI7": "RIC_L_APP",
-    "KRIC/LUCYL6": "RIC_P_APP",
-    "KRIC/RVN": "RIC_L_APP",
-    "KRIC/RVS": "RIC_P_APP"
-  }
+        "config_id": "STD",
+        "default_consolidation": {
+          "BWI_B_APP": ["BWI_W_APP"],
+          "BWI_G_APP": ["BWI_P_APP"],
+          "BWI_S_APP": ["BWI_B_APP", "BWI_G_APP", "BWI_N_APP"],
+          "BWI_W_APP": ["BWI_H_APP"],
+          "CHO_E_APP": ["CHO_W_APP"],
+          "DCA_J_APP": ["BWI_S_APP", "DCA_E_APP", "DCA_K_DEP", "DCA_R_APP", "DCA_V_APP", "IAD_M_APP", "RIC_L_APP"],
+          "DCA_K_DEP": ["DCA_A_APP", "DCA_D_APP", "DCA_Y_DEP"],
+          "DCA_L_APP": ["DCA_F_DEP"],
+          "DCA_Y_DEP": ["DCA_L_APP"],
+          "IAD_A_DEP": ["IAD_T_DEP"],
+          "IAD_B_APP": ["IAD_O_APP"],
+          "IAD_M_APP": ["IAD_A_DEP", "IAD_B_APP", "IAD_E_APP", "IAD_G_APP", "IAD_N_APP", "IAD_V_APP"],
+          "IAD_N_APP": ["IAD_X_APP"],
+          "IAD_U_APP": ["IAD_S_APP"],
+          "IAD_X_APP": ["IAD_U_APP"],
+          "RIC_L_APP": ["CHO_E_APP", "RIC_F_APP", "RIC_P_APP"],
+          "RIC_P_APP": ["RIC_W_APP"],
+          "RIC_W_APP": ["RIC_E_APP"]
+        }
       },
       "controllers": [
         "DCA_TWR",
@@ -7824,140 +7712,28 @@
         }
       },
       "configuration": {
-  "id": "STD",
-  "positions": {
-    "BWI_B_APP": [
-      "BWI_W_APP"
-    ],
-    "BWI_G_APP": [
-      "BWI_P_APP"
-    ],
-    "BWI_S_APP": [
-      "BWI_B_APP",
-      "BWI_G_APP",
-      "BWI_N_APP"
-    ],
-    "BWI_W_APP": [
-      "BWI_H_APP"
-    ],
-    "CHO_E_APP": [
-      "CHO_W_APP"
-    ],
-    "DCA_J_APP": [
-      "BWI_S_APP",
-      "DCA_E_APP",
-      "DCA_K_DEP",
-      "DCA_R_APP",
-      "DCA_V_APP",
-      "IAD_M_APP",
-      "RIC_L_APP"
-    ],
-    "DCA_K_DEP": [
-      "DCA_A_APP",
-      "DCA_D_APP",
-      "DCA_Y_DEP"
-    ],
-    "DCA_L_APP": [
-      "DCA_F_DEP"
-    ],
-    "DCA_Y_DEP": [
-      "DCA_L_APP"
-    ],
-    "IAD_A_DEP": [
-      "IAD_T_DEP"
-    ],
-    "IAD_B_APP": [
-      "IAD_O_APP"
-    ],
-    "IAD_M_APP": [
-      "IAD_A_DEP",
-      "IAD_B_APP",
-      "IAD_E_APP",
-      "IAD_G_APP",
-      "IAD_N_APP",
-      "IAD_V_APP"
-    ],
-    "IAD_N_APP": [
-      "IAD_X_APP"
-    ],
-    "IAD_U_APP": [
-      "IAD_S_APP"
-    ],
-    "IAD_X_APP": [
-      "IAD_U_APP"
-    ],
-    "RIC_L_APP": [
-      "CHO_E_APP",
-      "RIC_F_APP",
-      "RIC_P_APP"
-    ],
-    "RIC_P_APP": [
-      "RIC_W_APP"
-    ],
-    "RIC_W_APP": [
-      "RIC_E_APP"
-    ]
-  },
-  "inbound_assignments": {
-    "ANTHM5": "BWI_H_APP",
-    "ARLFT2": "BWI_H_APP",
-    "CAPSS3": "DCA_J_APP",
-    "CAVLR6": "IAD_B_APP",
-    "CHO NORTH ARR S": "DCA_L_APP",
-    "CLIPR3": "BWI_B_APP",
-    "DEALE3/MIIDY3": "BWI_P_APP",
-    "DUCXS5.KELCE": "RIC_L_APP",
-    "DUCXS5.NEAVL": "RIC_L_APP",
-    "FRDMM6": "DCA_L_APP",
-    "GIBBZ5.BURTT": "IAD_N_APP",
-    "GIBBZ5.MGW": "IAD_N_APP",
-    "HYPER9": "IAD_V_APP",
-    "JAMIE RIC": "RIC_P_APP",
-    "POWTN5": "RIC_L_APP",
-    "PRTZL1": "IAD_V_APP",
-    "RAVNN8": "DCA_D_APP",
-    "SKILS5": "BWI_B_APP",
-    "SPIDR5": "RIC_L_APP",
-    "TIKEE4": "IAD_N_APP",
-    "TRISH4.DRRES": "BWI_B_APP",
-    "TRISH4.NUGGY": "BWI_B_APP",
-    "TRSTN4": "IAD_O_APP",
-    "TRUPS5": "DCA_L_APP",
-    "WAYNZ1.S": "IAD_V_APP"
-  },
-  "departure_assignments": {
-    "KBWI/CONLE5": "BWI_G_APP",
-    "KBWI/DUKPN1": "BWI_G_APP",
-    "KBWI/FOXHL1": "BWI_W_APP",
-    "KBWI/LINSE2": "BWI_W_APP",
-    "KBWI/TERPZ8": "BWI_W_APP",
-    "KCHO": "CHO_W_APP",
-    "KDCA/AMEEE1": "DCA_K_DEP",
-    "KDCA/CLTCH3": "DCA_Y_DEP",
-    "KDCA/DOCTR5": "DCA_K_DEP",
-    "KDCA/HORTO4": "DCA_Y_DEP",
-    "KDCA/JDUBB4": "DCA_Y_DEP",
-    "KDCA/REBLL5": "DCA_Y_DEP",
-    "KDCA/SCRAM6": "DCA_Y_DEP",
-    "KDCA/SOOKI5": "DCA_K_DEP",
-    "KDCA/WYNGS5": "DCA_Y_DEP",
-    "KHEF": "IAD_O_APP",
-    "KIAD/BUNZZ3": "IAD_T_DEP",
-    "KIAD/CLTCH3": "IAD_T_DEP",
-    "KIAD/JCOBY4": "IAD_A_DEP",
-    "KIAD/JDUBB4": "IAD_T_DEP",
-    "KIAD/JERES2": "IAD_A_DEP",
-    "KIAD/MCRAY2": "IAD_A_DEP",
-    "KIAD/RNLDI4": "IAD_T_DEP",
-    "KIAD/SCRAM6": "IAD_T_DEP",
-    "KIAD/WOOLY2": "IAD_A_DEP",
-    "KRIC/COLIN8": "RIC_P_APP",
-    "KRIC/KALLI7": "RIC_L_APP",
-    "KRIC/LUCYL6": "RIC_P_APP",
-    "KRIC/RVN": "RIC_L_APP",
-    "KRIC/RVS": "RIC_P_APP"
-  }
-},
+        "config_id": "STD",
+        "default_consolidation": {
+          "BWI_B_APP": ["BWI_W_APP"],
+          "BWI_G_APP": ["BWI_P_APP"],
+          "BWI_S_APP": ["BWI_B_APP", "BWI_G_APP", "BWI_N_APP"],
+          "BWI_W_APP": ["BWI_H_APP"],
+          "CHO_E_APP": ["CHO_W_APP"],
+          "DCA_J_APP": ["BWI_S_APP", "DCA_E_APP", "DCA_K_DEP", "DCA_R_APP", "DCA_V_APP", "IAD_M_APP", "RIC_L_APP"],
+          "DCA_K_DEP": ["DCA_A_APP", "DCA_D_APP", "DCA_Y_DEP"],
+          "DCA_L_APP": ["DCA_F_DEP"],
+          "DCA_Y_DEP": ["DCA_L_APP"],
+          "IAD_A_DEP": ["IAD_T_DEP"],
+          "IAD_B_APP": ["IAD_O_APP"],
+          "IAD_M_APP": ["IAD_A_DEP", "IAD_B_APP", "IAD_E_APP", "IAD_G_APP", "IAD_N_APP", "IAD_V_APP"],
+          "IAD_N_APP": ["IAD_X_APP"],
+          "IAD_U_APP": ["IAD_S_APP"],
+          "IAD_X_APP": ["IAD_U_APP"],
+          "RIC_L_APP": ["CHO_E_APP", "RIC_F_APP", "RIC_P_APP"],
+          "RIC_P_APP": ["RIC_W_APP"],
+          "RIC_W_APP": ["RIC_E_APP"]
+        }
+      },
       "controllers": [
         "DCA_TWR",
         "IAD_W_TWR",
@@ -8067,6 +7843,72 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "ANTHM5": "BWI_H_APP",
+          "ARLFT2": "BWI_H_APP",
+          "CAPSS3": "DCA_J_APP",
+          "CAVLR6": "IAD_B_APP",
+          "CHO NORTH ARR N": "DCA_L_APP",
+          "CHO NORTH ARR S": "DCA_L_APP",
+          "CLIPR3": "BWI_B_APP",
+          "DEALE3/MIIDY3": "BWI_P_APP",
+          "DUCXS5.KELCE": "RIC_L_APP",
+          "DUCXS5.NEAVL": "RIC_L_APP",
+          "FRDMM6": "DCA_L_APP",
+          "GIBBZ5.BURTT": "IAD_N_APP",
+          "GIBBZ5.MGW": "IAD_N_APP",
+          "HYPER9": "IAD_V_APP",
+          "JAMIE RIC": "RIC_P_APP",
+          "POWTN5": "RIC_L_APP",
+          "PRTZL1": "IAD_V_APP",
+          "RAVNN8": "DCA_D_APP",
+          "SKILS5": "BWI_B_APP",
+          "SPIDR5": "RIC_L_APP",
+          "TIKEE4": "IAD_N_APP",
+          "TRISH4.DRRES": "BWI_B_APP",
+          "TRISH4.NUGGY": "BWI_B_APP",
+          "TRSTN4": "IAD_O_APP",
+          "TRUPS5": "DCA_L_APP",
+          "WAYNZ1.N": "IAD_V_APP",
+          "WAYNZ1.S": "IAD_V_APP"
+        },
+        "departure_assignments": {
+          "KBWI/CONLE5": "BWI_G_APP",
+          "KBWI/DUKPN1": "BWI_G_APP",
+          "KBWI/FOXHL1": "BWI_W_APP",
+          "KBWI/LINSE2": "BWI_W_APP",
+          "KBWI/TERPZ8": "BWI_W_APP",
+          "KCHO": "CHO_W_APP",
+          "KDCA/AMEEE1": "DCA_K_DEP",
+          "KDCA/CLTCH3": "DCA_Y_DEP",
+          "KDCA/DOCTR5": "DCA_K_DEP",
+          "KDCA/HORTO4": "DCA_Y_DEP",
+          "KDCA/JDUBB4": "DCA_Y_DEP",
+          "KDCA/REBLL5": "DCA_Y_DEP",
+          "KDCA/SCRAM6": "DCA_Y_DEP",
+          "KDCA/SOOKI5": "DCA_K_DEP",
+          "KDCA/WYNGS5": "DCA_Y_DEP",
+          "KHEF": "IAD_O_APP",
+          "KIAD/BUNZZ3": "IAD_T_DEP",
+          "KIAD/CLTCH3": "IAD_T_DEP",
+          "KIAD/JCOBY4": "IAD_A_DEP",
+          "KIAD/JDUBB4": "IAD_T_DEP",
+          "KIAD/JERES2": "IAD_A_DEP",
+          "KIAD/MCRAY2": "IAD_A_DEP",
+          "KIAD/RNLDI4": "IAD_T_DEP",
+          "KIAD/SCRAM6": "IAD_T_DEP",
+          "KIAD/WOOLY2": "IAD_A_DEP",
+          "KRIC/COLIN8": "RIC_P_APP",
+          "KRIC/KALLI7": "RIC_L_APP",
+          "KRIC/LUCYL6": "RIC_P_APP",
+          "KRIC/RVN": "RIC_L_APP",
+          "KRIC/RVS": "RIC_P_APP"
+        }
+      }
+    },
+
     "center": "COINZ",
     "range": 100,
     "pdb": {

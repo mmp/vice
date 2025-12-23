@@ -2051,39 +2051,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "SYR_S_APP": ["SYR_R_APP"]
-        },
-        "departure_assignments": {
-          "KRME": "SYR_R_APP",
-          "KSYR": "SYR_S_APP"
-        },
-        "inbound_assignments": {
-          "ROC": "SYR_S_APP",
-          "BUF": "SYR_S_APP",
-          "DKK": "SYR_S_APP",
-          "ELZ": "SYR_S_APP",
-          "CFBHIGH": "SYR_S_APP",
-          "DNYLOW": "SYR_S_APP",
-          "CFBLOW": "SYR_S_APP",
-          "ULWLOW": "SYR_S_APP",
-          "GEELOW": "SYR_S_APP",
-          "ARTLOW": "SYR_S_APP",
-          "PSB": "SYR_R_APP",
-          "HNK": "SYR_R_APP",
-          "CTR": "SYR_R_APP",
-          "CON": "SYR_R_APP",
-          "BTV": "SYR_R_APP",
-          "CODDI": "SYR_R_APP",
-          "GALWA": "SYR_R_APP",
-          "MARIA": "SYR_R_APP",
-          "ALBHIGH": "SYR_R_APP",
-          "ALBLOW": "SYR_R_APP",
-          "SLKHIGH": "SYR_R_APP",
-          "SLKLOW": "SYR_R_APP",
-          "CAMHIGH": "SYR_R_APP",
-          "CAMLOW": "SYR_R_APP"
         }
       },
       "controllers": [
@@ -2220,39 +2190,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "SYR_S_APP": ["SYR_R_APP"]
-        },
-        "departure_assignments": {
-          "KRME": "SYR_R_APP",
-          "KSYR": "SYR_S_APP"
-        },
-        "inbound_assignments": {
-          "ROC": "SYR_S_APP",
-          "BUF": "SYR_S_APP",
-          "DKK": "SYR_S_APP",
-          "ELZ": "SYR_S_APP",
-          "CFBHIGH": "SYR_S_APP",
-          "DNYLOW": "SYR_S_APP",
-          "CFBLOW": "SYR_S_APP",
-          "ULWLOW": "SYR_S_APP",
-          "GEELOW": "SYR_S_APP",
-          "ARTLOW": "SYR_S_APP",
-          "PSB": "SYR_R_APP",
-          "HNK": "SYR_R_APP",
-          "CTR": "SYR_R_APP",
-          "CON": "SYR_R_APP",
-          "BTV": "SYR_R_APP",
-          "CODDI": "SYR_R_APP",
-          "GALWA": "SYR_R_APP",
-          "MARIA": "SYR_R_APP",
-          "ALBHIGH": "SYR_R_APP",
-          "ALBLOW": "SYR_R_APP",
-          "SLKHIGH": "SYR_R_APP",
-          "SLKLOW": "SYR_R_APP",
-          "CAMHIGH": "SYR_R_APP",
-          "CAMLOW": "SYR_R_APP"
         }
       },
       "controllers": [
@@ -2294,6 +2234,41 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "ALBHIGH": "SYR_R_APP",
+          "ALBLOW": "SYR_R_APP",
+          "ARTLOW": "SYR_S_APP",
+          "BTV": "SYR_R_APP",
+          "BUF": "SYR_S_APP",
+          "CAMHIGH": "SYR_R_APP",
+          "CAMLOW": "SYR_R_APP",
+          "CFBHIGH": "SYR_S_APP",
+          "CFBLOW": "SYR_S_APP",
+          "CODDI": "SYR_R_APP",
+          "CON": "SYR_R_APP",
+          "CTR": "SYR_R_APP",
+          "DKK": "SYR_S_APP",
+          "DNYLOW": "SYR_S_APP",
+          "ELZ": "SYR_S_APP",
+          "GALWA": "SYR_R_APP",
+          "GEELOW": "SYR_S_APP",
+          "HNK": "SYR_R_APP",
+          "MARIA": "SYR_R_APP",
+          "PSB": "SYR_R_APP",
+          "ROC": "SYR_S_APP",
+          "SLKHIGH": "SYR_R_APP",
+          "SLKLOW": "SYR_R_APP",
+          "ULWLOW": "SYR_S_APP"
+        },
+        "departure_assignments": {
+          "KRME": "SYR_R_APP",
+          "KSYR": "SYR_S_APP"
+        }
+      }
+    },
+
     "center": "N043.06.43.349,W076.06.22.928",
     "coordination_lists": [
       {

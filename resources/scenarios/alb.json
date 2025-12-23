@@ -1120,18 +1120,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "EAS",
+        "default_consolidation": {
           "ALB_E_APP": ["ALB_F_APP", "ALB_W_APP"]
-        },
-        "inbound_assignments": {
-          "CANAN": "ALB_E_APP",
-          "HANAA": "ALB_E_APP",
-          "SYR": "ALB_W_APP"
-        },
-        "departure_assignments": {
-          "KALB": "ALB_W_APP",
-          "KSCH": "ALB_W_APP"
         }
       },
       "controllers": ["ALB_E_APP", "ALB_W_APP", "ALB_F_APP", "ALB_TWR", "SCH_TWR", "BOS_22_CTR"],
@@ -1175,18 +1166,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "EAS",
+        "default_consolidation": {
           "ALB_E_APP": ["ALB_F_APP", "ALB_W_APP"]
-        },
-        "inbound_assignments": {
-          "CANAN": "ALB_E_APP",
-          "HANAA": "ALB_E_APP",
-          "SYR": "ALB_W_APP"
-        },
-        "departure_assignments": {
-          "KALB": "ALB_W_APP",
-          "KSCH": "ALB_W_APP"
         }
       },
       "controllers": ["ALB_E_APP", "ALB_W_APP", "ALB_F_APP", "ALB_TWR", "SCH_TWR", "BOS_22_CTR"],
@@ -1230,18 +1212,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "EAS",
+        "default_consolidation": {
           "ALB_E_APP": ["ALB_F_APP", "ALB_W_APP"]
-        },
-        "inbound_assignments": {
-          "CANAN": "ALB_E_APP",
-          "HANAA": "ALB_E_APP",
-          "SYR": "ALB_W_APP"
-        },
-        "departure_assignments": {
-          "KALB": "ALB_W_APP",
-          "KSCH": "ALB_W_APP"
         }
       },
       "controllers": ["ALB_E_APP", "ALB_W_APP", "ALB_F_APP", "ALB_TWR", "SCH_TWR", "BOS_22_CTR"],
@@ -1285,18 +1258,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "EAS",
+        "default_consolidation": {
           "ALB_E_APP": ["ALB_F_APP", "ALB_W_APP"]
-        },
-        "inbound_assignments": {
-          "CANAN": "ALB_E_APP",
-          "HANAA": "ALB_E_APP",
-          "SYR": "ALB_W_APP"
-        },
-        "departure_assignments": {
-          "KALB": "ALB_W_APP",
-          "KSCH": "ALB_W_APP"
         }
       },
       "controllers": ["ALB_E_APP", "ALB_W_APP", "ALB_F_APP", "ALB_TWR", "SCH_TWR", "BOS_22_CTR"],
@@ -1333,13 +1297,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "NOR",
+        "default_consolidation": {
           "ALB_F_APP": []
-        },
-        "inbound_assignments": {
-          "CANAN_FINAL_NORTH": "ALB_F_APP",
-          "SYR_NORTH_FINALS": "ALB_F_APP"
         }
       },
       "controllers": ["ALB_E_APP", "ALB_W_APP", "ALB_F_APP", "ALB_TWR", "BOS_22_CTR"],
@@ -1364,13 +1324,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "SOU",
+        "default_consolidation": {
           "ALB_F_APP": []
-        },
-        "inbound_assignments": {
-          "CANAN_FINAL_SOUTH": "ALB_F_APP",
-          "SYR_FINAL_SOUTH": "ALB_F_APP"
         }
       },
       "controllers": ["ALB_E_APP", "ALB_W_APP", "ALB_F_APP", "ALB_TWR", "BOS_22_CTR"],
@@ -1395,13 +1351,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "EA1",
+        "default_consolidation": {
           "ALB_F_APP": []
-        },
-        "inbound_assignments": {
-          "CANAN_FINAL_EAST": "ALB_F_APP",
-          "SYR_FINAL_EAST": "ALB_F_APP"
         }
       },
       "controllers": ["ALB_E_APP", "ALB_W_APP", "ALB_F_APP", "ALB_TWR", "BOS_22_CTR"],
@@ -1426,13 +1378,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "WES",
+        "default_consolidation": {
           "ALB_F_APP": []
-        },
-        "inbound_assignments": {
-          "CANAN_FINAL_WEST": "ALB_F_APP",
-          "SYR_FINAL_WEST": "ALB_F_APP"
         }
       },
       "controllers": ["ALB_E_APP", "ALB_W_APP", "ALB_F_APP", "ALB_TWR", "BOS_22_CTR"],
@@ -1443,6 +1391,44 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "EAS": {
+        "inbound_assignments": {
+          "CANAN": "ALB_E_APP",
+          "HANAA": "ALB_E_APP",
+          "SYR": "ALB_W_APP"
+        },
+        "departure_assignments": {
+          "KALB": "ALB_W_APP",
+          "KSCH": "ALB_W_APP"
+        }
+      },
+      "EA1": {
+        "inbound_assignments": {
+          "CANAN_FINAL_EAST": "ALB_F_APP",
+          "SYR_FINAL_EAST": "ALB_F_APP"
+        }
+      },
+      "NOR": {
+        "inbound_assignments": {
+          "CANAN_FINAL_NORTH": "ALB_F_APP",
+          "SYR_NORTH_FINALS": "ALB_F_APP"
+        }
+      },
+      "SOU": {
+        "inbound_assignments": {
+          "CANAN_FINAL_SOUTH": "ALB_F_APP",
+          "SYR_FINAL_SOUTH": "ALB_F_APP"
+        }
+      },
+      "WES": {
+        "inbound_assignments": {
+          "CANAN_FINAL_WEST": "ALB_F_APP",
+          "SYR_FINAL_WEST": "ALB_F_APP"
+        }
+      }
+    },
+
     "center": "KALB",
     "scratchpads": {},
     "stars_maps": [

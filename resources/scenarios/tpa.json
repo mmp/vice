@@ -2717,24 +2717,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "NOP",
+        "default_consolidation": {
           "TPA_D_DEP": ["TPA_G_DEP"],
           "TPA_E_APP": ["TPA_D_DEP", "TPA_F_APP", "TPA_P_APP", "TPA_W_APP"],
           "TPA_P_APP": ["TPA_S_APP"]
-        },
-        "inbound_assignments": {
-          "BANGZ1": "TPA_W_APP",
-          "BLFRG2": "TPA_G_DEP",
-          "DADES1": "TPA_E_APP",
-          "LUBBR3": "TPA_E_APP",
-          "MAATY4": "TPA_W_APP",
-          "RAYZZ2": "TPA_W_APP"
-        },
-        "departure_assignments": {
-          "KPIE": "TPA_P_APP",
-          "KSRQ": "TPA_S_APP",
-          "KTPA": "TPA_D_DEP"
         }
       },
       "controllers": [
@@ -2815,14 +2802,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "FIN",
+        "default_consolidation": {
           "TPA_F_APP": []
-        },
-        "inbound_assignments": {
-          "BLFRG2.NO.Finals": "TPA_F_APP",
-          "DADES1.NO.Finals": "TPA_F_APP",
-          "MAATY4.NO.Finals": "TPA_F_APP"
         }
       },
       "controllers": [
@@ -2901,24 +2883,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "SOP",
+        "default_consolidation": {
           "TPA_D_DEP": ["TPA_G_DEP"],
           "TPA_E_APP": ["TPA_D_DEP", "TPA_F_APP", "TPA_P_APP", "TPA_W_APP"],
           "TPA_P_APP": ["TPA_S_APP"]
-        },
-        "inbound_assignments": {
-          "BANGZ1": "TPA_W_APP",
-          "BLFRG2": "TPA_G_DEP",
-          "DADES1": "TPA_E_APP",
-          "LUBBR3": "TPA_E_APP",
-          "MAATY4": "TPA_W_APP",
-          "RAYZZ2": "TPA_W_APP"
-        },
-        "departure_assignments": {
-          "KPIE": "TPA_P_APP",
-          "KSRQ": "TPA_S_APP",
-          "KTPA": "TPA_G_DEP"
         }
       },
       "controllers": [
@@ -2999,14 +2968,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "FIN",
+        "default_consolidation": {
           "TPA_F_APP": []
-        },
-        "inbound_assignments": {
-          "BLFRG2.SO.Finals": "TPA_F_APP",
-          "DADES1.SO.Finals": "TPA_F_APP",
-          "MAATY4.SO.Finals": "TPA_F_APP"
         }
       },
       "controllers": [
@@ -3027,6 +2991,49 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "FIN": {
+        "inbound_assignments": {
+          "BLFRG2.NO.Finals": "TPA_F_APP",
+          "DADES1.NO.Finals": "TPA_F_APP",
+          "MAATY4.NO.Finals": "TPA_F_APP"
+          "BLFRG2.SO.Finals": "TPA_F_APP",
+          "DADES1.SO.Finals": "TPA_F_APP",
+          "MAATY4.SO.Finals": "TPA_F_APP"
+        }
+      },
+      "NOP": {
+        "inbound_assignments": {
+          "BANGZ1": "TPA_W_APP",
+          "BLFRG2": "TPA_G_DEP",
+          "DADES1": "TPA_E_APP",
+          "LUBBR3": "TPA_E_APP",
+          "MAATY4": "TPA_W_APP",
+          "RAYZZ2": "TPA_W_APP"
+        },
+        "departure_assignments": {
+          "KPIE": "TPA_P_APP",
+          "KSRQ": "TPA_S_APP",
+          "KTPA": "TPA_D_DEP"
+        }
+      },
+      "SOP": {
+        "inbound_assignments": {
+          "BANGZ1": "TPA_W_APP",
+          "BLFRG2": "TPA_G_DEP",
+          "DADES1": "TPA_E_APP",
+          "LUBBR3": "TPA_E_APP",
+          "MAATY4": "TPA_W_APP",
+          "RAYZZ2": "TPA_W_APP"
+        },
+        "departure_assignments": {
+          "KPIE": "TPA_P_APP",
+          "KSRQ": "TPA_S_APP",
+          "KTPA": "TPA_G_DEP"
+        }
+      }
+    },
+
     "center": "KTPA",
     "coordination_fixes": {
       "DSIDE": [

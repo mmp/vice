@@ -480,18 +480,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "GSP_W_APP": ["GSP_E_APP", "GSP_S_APP"]
-        },
-        "inbound_assignments": {
-          "JUNNR3": "GSP_E_APP",
-          "MCHLN2": "GSP_S_APP",
-          "RCTOR2": "GSP_W_APP",
-          "WORXS2": "GSP_W_APP"
-        },
-        "departure_assignments": {
-          "KGSP": "GSP_W_APP"
         }
       },
       "controllers": ["GSP_TWR", "ATL_CTR"],
@@ -534,18 +525,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "GSP_W_APP": ["GSP_E_APP", "GSP_S_APP"]
-        },
-        "inbound_assignments": {
-          "JUNNR3": "GSP_E_APP",
-          "MCHLN2": "GSP_S_APP",
-          "RCTOR2": "GSP_W_APP",
-          "WORXS2": "GSP_W_APP"
-        },
-        "departure_assignments": {
-          "KGSP": "GSP_W_APP"
         }
       },
       "controllers": ["GSP_TWR", "ATL_CTR"],
@@ -563,6 +545,20 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "JUNNR3": "GSP_E_APP",
+          "MCHLN2": "GSP_S_APP",
+          "RCTOR2": "GSP_W_APP",
+          "WORXS2": "GSP_W_APP"
+        },
+        "departure_assignments": {
+          "KGSP": "GSP_W_APP"
+        }
+      }
+    },
+
     "center": "KGSP",
     "coordination_fixes": {
       "ANGRI": [

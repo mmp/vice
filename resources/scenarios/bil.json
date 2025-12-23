@@ -277,18 +277,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "BIL_APP": []
-        },
-        "inbound_assignments": {
-          "BGHRN3": "BIL_APP",
-          "CRAZI4": "BIL_APP",
-          "KUSTR3": "BIL_APP",
-          "YLSTN3": "BIL_APP"
-        },
-        "departure_assignments": {
-          "KBIL": "BIL_APP"
         }
       },
       "controllers": ["BIL_TWR", "BIL_APP", "SLC_17_CTR"],
@@ -326,18 +317,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "BIL_APP": []
-        },
-        "inbound_assignments": {
-          "BGHRN3": "BIL_APP",
-          "CRAZI4": "BIL_APP",
-          "KUSTR3": "BIL_APP",
-          "YLSTN3": "BIL_APP"
-        },
-        "departure_assignments": {
-          "KBIL": "BIL_APP"
         }
       },
       "controllers": ["BIL_TWR", "BIL_APP", "SLC_17_CTR"],
@@ -355,6 +337,20 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "BGHRN3": "BIL_APP",
+          "CRAZI4": "BIL_APP",
+          "KUSTR3": "BIL_APP",
+          "YLSTN3": "BIL_APP"
+        },
+        "departure_assignments": {
+          "KBIL": "BIL_APP"
+        }
+      }
+    },
+
     "coordination_fixes": {
       "CRAZI": [
         {

@@ -4916,27 +4916,11 @@
       },
       "vfr_rate_scale": 0.6,
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "01X",
+        "default_consolidation": {
           "SFO_B_APP": ["SFO_G_APP", "SFO_W_APP", "SFO_Z_APP"],
           "SFO_W_APP": ["SFO_F_APP"],
           "SFO_Z_APP": ["SFO_N_APP"]
-        },
-        "departure_assignments": {
-          "KSQL": "SFO_W_APP"
-        },
-        "inbound_assignments": {
-          "BDEGA4": "SFO_B_APP",
-          "PYE3": "SFO_B_APP",
-          "PIRAT3": "SFO_B_APP",
-          "BRIXX4": "SFO_B_APP",
-          "SJC OCEANIC": "SFO_B_APP",
-          "RISTI1.TIPRE": "SFO_Z_APP",
-          "RISTI1.ORRCA": "SFO_Z_APP",
-          "DYAMD5": "SFO_Z_APP",
-          "YOSEM3": "SFO_Z_APP",
-          "VNYRD1": "SFO_Z_APP",
-          "SERFR4": "SFO_G_APP"
         }
       },
       "controllers": [
@@ -5062,27 +5046,11 @@
       },
       "vfr_rate_scale": 0.6,
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "01X",
+        "default_consolidation": {
           "SFO_B_APP": ["SFO_G_APP", "SFO_W_APP", "SFO_Z_APP"],
           "SFO_W_APP": ["SFO_F_APP"],
           "SFO_Z_APP": ["SFO_N_APP"]
-        },
-        "departure_assignments": {
-          "KSQL": "SFO_W_APP"
-        },
-        "inbound_assignments": {
-          "BDEGA4": "SFO_B_APP",
-          "PYE3": "SFO_B_APP",
-          "PIRAT3": "SFO_B_APP",
-          "BRIXX4": "SFO_B_APP",
-          "SJC OCEANIC": "SFO_B_APP",
-          "RISTI1.TIPRE": "SFO_Z_APP",
-          "RISTI1.ORRCA": "SFO_Z_APP",
-          "DYAMD5": "SFO_Z_APP",
-          "YOSEM3": "SFO_Z_APP",
-          "VNYRD1": "SFO_Z_APP",
-          "SERFR4": "SFO_G_APP"
         }
       },
       "controllers": [
@@ -5195,24 +5163,11 @@
       },
       "vfr_rate_scale": 0.6,
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "ARE",
+        "default_consolidation": {
           "SFO_B_APP": ["SFO_G_APP", "SFO_W_APP", "SFO_Z_APP"],
           "SFO_W_APP": ["SFO_F_APP"],
           "SFO_Z_APP": ["SFO_N_APP"]
-        },
-        "departure_assignments": {
-          "KSQL": "SFO_W_APP"
-        },
-        "inbound_assignments": {
-          "BDEGA4": "SFO_B_APP",
-          "PIRAT3": "SFO_B_APP",
-          "RISTI1.TIPRE": "SFO_Z_APP",
-          "RISTI1.ORRCA": "SFO_Z_APP",
-          "ALWYS3": "SFO_Z_APP",
-          "REBAS1": "SFO_Z_APP",
-          "PYE3.SFOE": "SFO_F_APP",
-          "SERFR4": "SFO_G_APP"
         }
       },
       "controllers": [
@@ -5312,23 +5267,11 @@
       },
       "vfr_rate_scale": 0.6,
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "11X",
+        "default_consolidation": {
           "SFO_B_APP": ["SFO_G_APP", "SFO_W_APP", "SFO_Z_APP"],
           "SFO_W_APP": ["SFO_F_APP"],
           "SFO_Z_APP": ["SFO_N_APP"]
-        },
-        "departure_assignments": {
-          "KSQL": "SFO_W_APP"
-        },
-        "inbound_assignments": {
-          "STLER4": "SFO_B_APP",
-          "PIRAT3": "SFO_B_APP",
-          "RISTI1.TIPRE": "SFO_Z_APP",
-          "RISTI1.ORRCA": "SFO_Z_APP",
-          "ALWYS3": "SFO_Z_APP",
-          "REBAS1": "SFO_Z_APP",
-          "WWAVS2": "SFO_G_APP"
         }
       },
       "controllers": [
@@ -5386,6 +5329,56 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "ARE": {
+        "inbound_assignments": {
+          "ALWYS3": "SFO_Z_APP",
+          "BDEGA4": "SFO_B_APP",
+          "PIRAT3": "SFO_B_APP",
+          "PYE3.SFOE": "SFO_F_APP",
+          "REBAS1": "SFO_Z_APP",
+          "RISTI1.ORRCA": "SFO_Z_APP",
+          "RISTI1.TIPRE": "SFO_Z_APP",
+          "SERFR4": "SFO_G_APP"
+        },
+        "departure_assignments": {
+          "KSQL": "SFO_W_APP"
+        }
+      },
+      "11X": {
+        "inbound_assignments": {
+          "ALWYS3": "SFO_Z_APP",
+          "PIRAT3": "SFO_B_APP",
+          "REBAS1": "SFO_Z_APP",
+          "RISTI1.ORRCA": "SFO_Z_APP",
+          "RISTI1.TIPRE": "SFO_Z_APP",
+          "STLER4": "SFO_B_APP",
+          "WWAVS2": "SFO_G_APP"
+        },
+        "departure_assignments": {
+          "KSQL": "SFO_W_APP"
+        }
+      },
+      "01X": {
+        "inbound_assignments": {
+          "BDEGA4": "SFO_B_APP",
+          "BRIXX4": "SFO_B_APP",
+          "DYAMD5": "SFO_Z_APP",
+          "PIRAT3": "SFO_B_APP",
+          "PYE3": "SFO_B_APP",
+          "RISTI1.ORRCA": "SFO_Z_APP",
+          "RISTI1.TIPRE": "SFO_Z_APP",
+          "SERFR4": "SFO_G_APP",
+          "SJC OCEANIC": "SFO_B_APP",
+          "VNYRD1": "SFO_Z_APP",
+          "YOSEM3": "SFO_Z_APP"
+        },
+        "departure_assignments": {
+          "KSQL": "SFO_W_APP"
+        }
+      }
+    },
+
     "center": "KSFO",
     "coordination_fixes": {
       "OSI": [

@@ -705,21 +705,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "BDL_B_APP": ["BDL_E_APP", "BDL_F_APP", "BDL_H_APP", "BDL_W_APP"]
-        },
-        "inbound_assignments": {
-          "DPK3": "BDL_B_APP",
-          "STELA1.Ga": "BDL_W_APP",
-          "STELA1.Jets": "BDL_W_APP"
-        },
-        "departure_assignments": {
-          "KBAF": "BDL_W_APP",
-          "KBDL": "BDL_B_APP",
-          "KCEF": "BDL_W_APP",
-          "KHFD": "BDL_H_APP",
-          "KORH": "BDL_E_APP"
         }
       },
       "controllers": [
@@ -814,21 +802,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "CNW",
+        "default_consolidation": {
           "BDL_B_APP": ["BDL_E_APP", "BDL_F_APP", "BDL_H_APP", "BDL_W_APP"]
-        },
-        "inbound_assignments": {
-          "DPK3": "BDL_H_APP",
-          "STELA1.Ga": "BDL_W_APP",
-          "STELA1.Jets": "BDL_W_APP"
-        },
-        "departure_assignments": {
-          "KBAF": "BDL_W_APP",
-          "KBDL": "BDL_B_APP",
-          "KCEF": "BDL_W_APP",
-          "KHFD": "BDL_H_APP",
-          "KORH": "BDL_E_APP"
         }
       },
       "controllers": [
@@ -884,6 +860,37 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "CNW": {
+        "inbound_assignments": {
+          "DPK3": "BDL_H_APP",
+          "STELA1.Ga": "BDL_W_APP",
+          "STELA1.Jets": "BDL_W_APP"
+        },
+        "departure_assignments": {
+          "KBAF": "BDL_W_APP",
+          "KBDL": "BDL_B_APP",
+          "KCEF": "BDL_W_APP",
+          "KHFD": "BDL_H_APP",
+          "KORH": "BDL_E_APP"
+        }
+      },
+      "STD": {
+        "inbound_assignments": {
+          "DPK3": "BDL_B_APP",
+          "STELA1.Ga": "BDL_W_APP",
+          "STELA1.Jets": "BDL_W_APP"
+        },
+        "departure_assignments": {
+          "KBAF": "BDL_W_APP",
+          "KBDL": "BDL_B_APP",
+          "KCEF": "BDL_W_APP",
+          "KHFD": "BDL_H_APP",
+          "KORH": "BDL_E_APP"
+        }
+      }
+    },
+
     "center": "41.935711707565986, -72.6940381965002",
     "coordination_fixes": {
       "MAD": [

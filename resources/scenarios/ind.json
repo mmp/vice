@@ -929,22 +929,12 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KI1",
+        "default_consolidation": {
           "IND_B_APP": ["IND_D_APP"],
           "IND_E_APP": ["IND_B_APP", "IND_F_APP", "IND_S_APP", "IND_W_APP"],
           "IND_F_APP": ["IND_I_APP"],
           "IND_S_APP": ["IND_N_APP"]
-        },
-        "inbound_assignments": {
-          "GIIBS3": "IND_D_APP",
-          "JAKKS2": "IND_B_APP",
-          "KOLTS2": "IND_B_APP",
-          "SMUKE2": "IND_B_APP",
-          "SNKPT2": "IND_D_APP"
-        },
-        "departure_assignments": {
-          "KIND": "IND_E_APP"
         }
       },
       "controllers": [
@@ -1004,22 +994,12 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KIN",
+        "default_consolidation": {
           "IND_B_APP": ["IND_D_APP"],
           "IND_E_APP": ["IND_B_APP", "IND_F_APP", "IND_S_APP", "IND_W_APP"],
           "IND_F_APP": ["IND_I_APP"],
           "IND_S_APP": ["IND_N_APP"]
-        },
-        "inbound_assignments": {
-          "GIIBS3": "IND_D_APP",
-          "JAKKS2": "IND_B_APP",
-          "KOLTS2": "IND_B_APP",
-          "SMUKE2": "IND_B_APP",
-          "SNKPT2": "IND_D_APP"
-        },
-        "departure_assignments": {
-          "KIND": "IND_W_APP"
         }
       },
       "controllers": [
@@ -1075,22 +1055,12 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KI1",
+        "default_consolidation": {
           "IND_B_APP": ["IND_D_APP"],
           "IND_E_APP": ["IND_B_APP", "IND_F_APP", "IND_S_APP", "IND_W_APP"],
           "IND_F_APP": ["IND_I_APP"],
           "IND_S_APP": ["IND_N_APP"]
-        },
-        "inbound_assignments": {
-          "GIIBS3": "IND_D_APP",
-          "JAKKS2": "IND_B_APP",
-          "KOLTS2": "IND_B_APP",
-          "SMUKE2": "IND_B_APP",
-          "SNKPT2": "IND_D_APP"
-        },
-        "departure_assignments": {
-          "KIND": "IND_E_APP"
         }
       },
       "controllers": [
@@ -1141,22 +1111,12 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KI1",
+        "default_consolidation": {
           "IND_B_APP": ["IND_D_APP"],
           "IND_E_APP": ["IND_B_APP", "IND_F_APP", "IND_S_APP", "IND_W_APP"],
           "IND_F_APP": ["IND_I_APP"],
           "IND_S_APP": ["IND_N_APP"]
-        },
-        "inbound_assignments": {
-          "GIIBS3": "IND_D_APP",
-          "JAKKS2": "IND_B_APP",
-          "KOLTS2": "IND_B_APP",
-          "SMUKE2": "IND_B_APP",
-          "SNKPT2": "IND_D_APP"
-        },
-        "departure_assignments": {
-          "KIND": "IND_E_APP"
         }
       },
       "controllers": [
@@ -1184,6 +1144,33 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "KIN": {
+        "inbound_assignments": {
+          "GIIBS3": "IND_D_APP",
+          "JAKKS2": "IND_B_APP",
+          "KOLTS2": "IND_B_APP",
+          "SMUKE2": "IND_B_APP",
+          "SNKPT2": "IND_D_APP"
+        },
+        "departure_assignments": {
+          "KIND": "IND_W_APP"
+        }
+      },
+      "KI1": {
+        "inbound_assignments": {
+          "GIIBS3": "IND_D_APP",
+          "JAKKS2": "IND_B_APP",
+          "KOLTS2": "IND_B_APP",
+          "SMUKE2": "IND_B_APP",
+          "SNKPT2": "IND_D_APP"
+        },
+        "departure_assignments": {
+          "KIND": "IND_E_APP"
+        }
+      }
+    },
+
     "center": "KIND",
     "allow_long_scratchpad": true,
     "coordination_fixes": {

@@ -5097,14 +5097,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "21X",
+        "default_consolidation": {
           "1F": []
-        },
-        "inbound_assignments": {
-          "FINAL17_NORTH": "1F",
-          "FINAL27_NORTH": "1F",
-          "FINAL27_SOUTH": "1F"
         }
       },
       "center": "N039.55.00.306,W074.59.15.972",
@@ -5169,24 +5164,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "27L",
+        "default_consolidation": {
           "1N": ["1E", "1F", "1S"]
-        },
-        "departure_assignments": {
-          "KPHL": "1E"
-        },
-        "inbound_assignments": {
-          "BOJID4/HAR5": "1N",
-          "SPUDS7": "1N",
-          "ABE-ACY": "1N",
-          "RDG-WRI": "1N",
-          "JIIMS4": "1S",
-          "PAATS4": "1S",
-          "V29.Low": "1S",
-          "PHLBO4/JAKIE4": "1E",
-          "BRAND1": "1E",
-          "V29.High": "1E"
         }
       },
       "controllers": ["1Q", "W32", "14P", "51Y", "71X", "41A", "11V", "N26"],
@@ -5256,24 +5236,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "27L",
+        "default_consolidation": {
           "1N": ["1E", "1F", "1S"]
-        },
-        "departure_assignments": {
-          "KPHL": "1E"
-        },
-        "inbound_assignments": {
-          "BOJID4/HAR5": "1N",
-          "SPUDS7": "1N",
-          "ABE-ACY": "1N",
-          "RDG-WRI": "1N",
-          "JIIMS4": "1S",
-          "PAATS4": "1S",
-          "V29.Low": "1S",
-          "PHLBO4/JAKIE4": "1E",
-          "BRAND1": "1E",
-          "V29.High": "1E"
         }
       },
       "controllers": ["1Q", "W32", "14P", "51Y", "71X", "41A", "11V", "N26"],
@@ -5291,6 +5256,33 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "21X": {
+        "inbound_assignments": {
+          "FINAL17_NORTH": "1F",
+          "FINAL27_NORTH": "1F",
+          "FINAL27_SOUTH": "1F"
+        }
+      },
+      "27L": {
+        "inbound_assignments": {
+          "ABE-ACY": "1N",
+          "BOJID4/HAR5": "1N",
+          "BRAND1": "1E",
+          "JIIMS4": "1S",
+          "PAATS4": "1S",
+          "PHLBO4/JAKIE4": "1E",
+          "RDG-WRI": "1N",
+          "SPUDS7": "1N",
+          "V29.High": "1E",
+          "V29.Low": "1S"
+        },
+        "departure_assignments": {
+          "KPHL": "1E"
+        }
+      }
+    },
+
     "center": "KPHL",
     "controller_configs": {
       "1N": {

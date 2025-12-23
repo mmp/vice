@@ -1721,13 +1721,9 @@
   "scenarios": {
     "ZLA Sector 18 (West Flow)": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ZLA Sector 18": []
-        },
-        "inbound_assignments": {
-          "SIZLR4": "ZLA Sector 18",
-          "ZIGGY8": "ZLA Sector 18"
         }
       },
       "controllers": [
@@ -1798,6 +1794,15 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "SIZLR4": "ZLA Sector 18",
+          "ZIGGY8": "ZLA Sector 18"
+        }
+      }
+    },
+
     "center": "SNSHN",
     "range": 35,
     "stars_maps": [

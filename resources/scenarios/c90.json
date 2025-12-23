@@ -6424,8 +6424,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KOA",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -6434,22 +6434,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "PLANO (X)",
-          "FYTTE7": "FARMM (Y)",
-          "MADII7": "FARMM (Y)",
-          "TRTLL6": "PLANO (X)",
-          "VEECK5": "OKK (E)",
-          "WATSN4": "Z",
-          "WYNDE2": "KUBBS (J)"
-        },
-        "departure_assignments": {
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KORD": "Z"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "O'Hare South Tower", "Midway Tower"],
@@ -6564,8 +6548,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "22L",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -6574,25 +6558,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "PLANO (X)",
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-          "FYTTE7": "FARMM (Y)",
-          "MADII7": "FARMM (Y)",
-          "TRTLL6": "PLANO (X)",
-          "VEECK5": "OKK (E)",
-          "WATSN4": "Z",
-          "WYNDE2": "KUBBS (J)"
-        },
-        "departure_assignments": {
-          "KMDW": "SSAT Sector 1 (S)",
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KORD": "Z"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "O'Hare South Tower", "Midway Tower"],
@@ -6725,8 +6690,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KOD",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -6735,29 +6700,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "PLANO (X)",
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-          "FIYER": "North Satellite (A)",
-          "FYTTE7": "FARMM (Y)",
-          "KRENA": "North Satellite (A)",
-          "MADII7": "FARMM (Y)",
-          "PLANO": "SSAT Sector 3 (L)",
-          "TRTLL6": "PLANO (X)",
-          "VEECK5": "OKK (E)",
-          "WATSN4": "Z",
-          "WYNDE2": "KUBBS (J)"
-        },
-        "departure_assignments": {
-          "KMDW": "SSAT Sector 1 (S)",
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KPWK": "North Departure (D)",
-          "KORD": "Z"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "O'Hare South Tower", "Midway Tower", "Executive Tower"],
@@ -6947,8 +6889,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "31R",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -6957,36 +6899,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "PLANO (X)",
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-          "FIYER": "North Satellite (A)",
-          "FYTTE7": "FARMM (Y)",
-          "GSH9": "SSAT Sector 4 (U)",
-          "KRENA": "North Satellite (A)",
-          "LUCIT2": "SSAT Sector 4 (U)",
-          "MADII7": "FARMM (Y)",
-          "MOTIF": "SSAT Sector 2 (P)",
-          "PLANO": "SSAT Sector 3 (L)",
-          "TRTLL6": "PLANO (X)",
-          "VEECK5": "OKK (E)",
-          "WATSN4": "Z",
-          "WYNDE2": "KUBBS (J)"
-        },
-        "departure_assignments": {
-          "KARR": "SSAT Sector 3 (L)",
-          "KDPA": "SSAT Sector 3 (L)",
-          "KGYY": "SSAT Sector 4 (U)",
-          "KLOT": "SSAT Sector 2 (P)",
-          "KMDW": "SSAT Sector 1 (S)",
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KPWK": "North Departure (D)",
-          "KORD": "Z"
         }
       },
       "controllers": [
@@ -7240,8 +7152,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "31R",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -7250,36 +7162,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "PLANO (X)",
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-          "FIYER": "North Satellite (A)",
-          "FYTTE7": "FARMM (Y)",
-          "GSH9": "SSAT Sector 4 (U)",
-          "KRENA": "North Satellite (A)",
-          "LUCIT2": "SSAT Sector 4 (U)",
-          "MADII7": "FARMM (Y)",
-          "MOTIF": "SSAT Sector 2 (P)",
-          "PLANO": "SSAT Sector 3 (L)",
-          "TRTLL6": "PLANO (X)",
-          "VEECK5": "OKK (E)",
-          "WATSN4": "Z",
-          "WYNDE2": "KUBBS (J)"
-        },
-        "departure_assignments": {
-          "KARR": "SSAT Sector 3 (L)",
-          "KDPA": "SSAT Sector 3 (L)",
-          "KGYY": "SSAT Sector 4 (U)",
-          "KLOT": "SSAT Sector 2 (P)",
-          "KMDW": "SSAT Sector 1 (S)",
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KPWK": "North Departure (D)",
-          "KORD": "Z"
         }
       },
       "controllers": [
@@ -7494,8 +7376,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KOE",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -7504,26 +7386,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "PLANO (X)",
-          "FIYER": "North Satellite (A)",
-          "FYTTE7": "FARMM (Y)",
-          "KRENA": "North Satellite (A)",
-          "MADII7": "FARMM (Y)",
-          "PLANO": "SSAT Sector 3 (L)",
-          "TRTLL6": "PLANO (X)",
-          "VEECK5": "OKK (E)",
-          "WATSN4": "Z",
-          "WYNDE2": "KUBBS (J)"
-        },
-        "departure_assignments": {
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KPWK": "North Departure (D)",
-          "KORD": "Z"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "O'Hare South Tower", "Midway Tower", "Executive Tower"],
@@ -7662,8 +7524,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "22L",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -7672,25 +7534,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "PLANO (X)",
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-          "FYTTE7": "FARMM (Y)",
-          "MADII7": "FARMM (Y)",
-          "TRTLL6": "PLANO (X)",
-          "VEECK5": "OKK (E)",
-          "WATSN4": "Z",
-          "WYNDE2": "KUBBS (J)"
-        },
-        "departure_assignments": {
-          "KMDW": "SSAT Sector 1 (S)",
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KORD": "Z"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "O'Hare South Tower", "Midway Tower"],
@@ -7790,8 +7633,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "4XX",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -7800,21 +7643,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "Z",
-          "FYTTE7": "FARMM (Y)",
-          "MADII7": "FARMM (Y)",
-          "TRTLL6": "Z",
-          "VEECK5": "OKK (E)",
-          "WYNDE2": "KUBBS (J)"
-        },
-        "departure_assignments": {
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KORD": "Z"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "O'Hare South Tower", "Midway Tower"],
@@ -7906,8 +7734,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KO3",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -7916,24 +7744,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "Z",
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-          "FYTTE7": "FARMM (Y)",
-          "MADII7": "FARMM (Y)",
-          "TRTLL6": "Z",
-          "VEECK5": "OKK (E)",
-          "WYNDE2": "KUBBS (J)"
-        },
-        "departure_assignments": {
-          "KMDW": "SSAT Sector 1 (S)",
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KORD": "Z"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "O'Hare South Tower", "Midway Tower"],
@@ -8043,8 +7853,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KO5",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -8053,28 +7863,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "Z",
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-          "FIYER": "North Satellite (A)",
-          "FYTTE7": "FARMM (Y)",
-          "KRENA": "North Satellite (A)",
-          "MADII7": "FARMM (Y)",
-          "PLANO": "SSAT Sector 3 (L)",
-          "TRTLL6": "Z",
-          "VEECK5": "OKK (E)",
-          "WYNDE2": "KUBBS (J)"
-        },
-        "departure_assignments": {
-          "KMDW": "SSAT Sector 1 (S)",
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KPWK": "North Satellite (A)",
-          "KORD": "Z"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "O'Hare South Tower", "Midway Tower"],
@@ -8222,8 +8010,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KO4",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -8232,35 +8020,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "Z",
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-          "FIYER": "North Satellite (A)",
-          "FYTTE7": "FARMM (Y)",
-          "GSH9": "SSAT Sector 4 (U)",
-          "KRENA": "North Satellite (A)",
-          "LUCIT2": "SSAT Sector 4 (U)",
-          "MADII7": "FARMM (Y)",
-          "MOTIF": "SSAT Sector 2 (P)",
-          "PLANO": "SSAT Sector 3 (L)",
-          "TRTLL6": "Z",
-          "VEECK5": "OKK (E)",
-          "WYNDE2": "KUBBS (J)"
-        },
-        "departure_assignments": {
-          "KARR": "SSAT Sector 3 (L)",
-          "KDPA": "SSAT Sector 3 (L)",
-          "KGYY": "SSAT Sector 4 (U)",
-          "KLOT": "SSAT Sector 2 (P)",
-          "KMDW": "SSAT Sector 1 (S)",
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KPWK": "North Satellite (A)",
-          "KORD": "Z"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "O'Hare South Tower", "Midway Tower"],
@@ -8405,8 +8164,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "22X",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -8415,21 +8174,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "PLANO (X)",
-          "FYTTE7": "FARMM (Y)",
-          "MADII7": "FARMM (Y)",
-          "TRTLL6": "PLANO (X)",
-          "VEECK5": "OKK (E)",
-          "WYNDE2": "Z"
-        },
-        "departure_assignments": {
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KORD": "Z"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "O'Hare South Tower", "Midway Tower"],
@@ -8525,8 +8269,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KOR",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -8535,24 +8279,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "PLANO (X)",
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-          "FYTTE7": "FARMM (Y)",
-          "MADII7": "FARMM (Y)",
-          "TRTLL6": "PLANO (X)",
-          "VEECK5": "OKK (E)",
-          "WYNDE2": "Z"
-        },
-        "departure_assignments": {
-          "KMDW": "SSAT Sector 1 (S)",
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KORD": "Z"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "O'Hare South Tower", "Midway Tower"],
@@ -8666,8 +8392,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KO2",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -8676,28 +8402,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "PLANO (X)",
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-          "FIYER": "North Satellite (A)",
-          "FYTTE7": "FARMM (Y)",
-          "KRENA": "North Satellite (A)",
-          "MADII7": "FARMM (Y)",
-          "PLANO": "SSAT Sector 3 (L)",
-          "TRTLL6": "PLANO (X)",
-          "VEECK5": "OKK (E)",
-          "WYNDE2": "Z"
-        },
-        "departure_assignments": {
-          "KMDW": "SSAT Sector 1 (S)",
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KPWK": "North Departure (D)",
-          "KORD": "Z"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "O'Hare South Tower", "Midway Tower"],
@@ -8876,8 +8580,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KO1",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -8886,35 +8590,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "PLANO (X)",
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-          "FIYER": "North Satellite (A)",
-          "FYTTE7": "FARMM (Y)",
-          "GSH9": "SSAT Sector 4 (U)",
-          "KRENA": "North Satellite (A)",
-          "LUCIT2": "SSAT Sector 4 (U)",
-          "MADII7": "FARMM (Y)",
-          "MOTIF": "SSAT Sector 2 (P)",
-          "PLANO": "SSAT Sector 3 (L)",
-          "TRTLL6": "PLANO (X)",
-          "VEECK5": "OKK (E)",
-          "WYNDE2": "Z"
-        },
-        "departure_assignments": {
-          "KARR": "SSAT Sector 3 (L)",
-          "KDPA": "SSAT Sector 3 (L)",
-          "KGYY": "SSAT Sector 4 (U)",
-          "KLOT": "SSAT Sector 2 (P)",
-          "KMDW": "SSAT Sector 1 (S)",
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KPWK": "North Departure (D)",
-          "KORD": "Z"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "O'Hare South Tower", "Midway Tower"],
@@ -9097,8 +8772,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KO6",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -9107,22 +8782,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "PLANO (X)",
-          "ERNNY8": "KUBBS (J)",
-          "FYTTE7": "FARMM (Y)",
-          "SHAIN2": "Z",
-          "TRTLL6": "PLANO (X)",
-          "VEECK5": "OKK (E)",
-          "WYNDE2": "KUBBS (J)"
-        },
-        "departure_assignments": {
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KORD": "Z"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "O'Hare South Tower", "Midway Tower"],
@@ -9237,8 +8896,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "4RX",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -9247,25 +8906,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "PLANO (X)",
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "ERNNY8": "KUBBS (J)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-          "FYTTE7": "FARMM (Y)",
-          "SHAIN2": "Z",
-          "TRTLL6": "PLANO (X)",
-          "VEECK5": "OKK (E)",
-          "WYNDE2": "KUBBS (J)"
-        },
-        "departure_assignments": {
-          "KMDW": "SSAT Sector 1 (S)",
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KORD": "Z"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "O'Hare South Tower", "Midway Tower"],
@@ -9385,8 +9025,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "4RX",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -9395,25 +9035,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "PLANO (X)",
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "ERNNY8": "KUBBS (J)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-          "FYTTE7": "FARMM (Y)",
-          "SHAIN2": "Z",
-          "TRTLL6": "PLANO (X)",
-          "VEECK5": "OKK (E)",
-          "WYNDE2": "KUBBS (J)"
-        },
-        "departure_assignments": {
-          "KMDW": "SSAT Sector 1 (S)",
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KORD": "Z"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "O'Hare South Tower", "Midway Tower"],
@@ -9579,8 +9200,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KO8",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -9589,36 +9210,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "PLANO (X)",
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "ERNNY8": "FARMM (Y)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-          "FIYER": "North Satellite (A)",
-          "FYTTE7": "FARMM (Y)",
-          "GSH9": "SSAT Sector 4 (U)",
-          "KRENA": "North Satellite (A)",
-          "LUCIT2": "SSAT Sector 4 (U)",
-          "MOTIF": "SSAT Sector 2 (P)",
-          "PLANO": "SSAT Sector 3 (L)",
-          "SHAIN2": "Z",
-          "TRTLL6": "PLANO (X)",
-          "VEECK5": "OKK (E)",
-          "WYNDE2": "KUBBS (J)"
-        },
-        "departure_assignments": {
-          "KARR": "SSAT Sector 3 (L)",
-          "KDPA": "SSAT Sector 3 (L)",
-          "KGYY": "SSAT Sector 4 (U)",
-          "KLOT": "SSAT Sector 2 (P)",
-          "KMDW": "SSAT Sector 1 (S)",
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KPWK": "North Departure (D)",
-          "KORD": "Z"
         }
       },
       "controllers": [
@@ -9864,8 +9455,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KO7",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -9874,36 +9465,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "PLANO (X)",
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "ERNNY8": "KUBBS (J)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-          "FIYER": "North Satellite (A)",
-          "FYTTE7": "FARMM (Y)",
-          "GSH9": "SSAT Sector 4 (U)",
-          "KRENA": "North Satellite (A)",
-          "LUCIT2": "SSAT Sector 4 (U)",
-          "MOTIF": "SSAT Sector 2 (P)",
-          "PLANO": "SSAT Sector 3 (L)",
-          "TRTLL6": "PLANO (X)",
-          "VEECK5": "OKK (E)",
-          "WATSN4": "Z",
-          "WYNDE2": "KUBBS (J)"
-        },
-        "departure_assignments": {
-          "KARR": "SSAT Sector 3 (L)",
-          "KDPA": "SSAT Sector 3 (L)",
-          "KGYY": "SSAT Sector 4 (U)",
-          "KLOT": "SSAT Sector 2 (P)",
-          "KMDW": "SSAT Sector 1 (S)",
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KPWK": "North Departure (D)",
-          "KORD": "Z"
         }
       },
       "controllers": [
@@ -10106,8 +9667,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "16X",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -10116,26 +9677,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "BENKY6": "PLANO (X)",
-          "ERNNY8": "KUBBS (J)",
-          "FIYER": "North Satellite (A)",
-          "FYTTE7": "FARMM (Y)",
-          "KRENA": "North Satellite (A)",
-          "PLANO": "SSAT Sector 3 (L)",
-          "SHAIN2": "Z",
-          "TRTLL6": "PLANO (X)",
-          "VEECK5": "OKK (E)",
-          "WYNDE2": "KUBBS (J)"
-        },
-        "departure_assignments": {
-          "KORD/ORD8.E": "East Departure (B)",
-          "KORD/ORD8.N": "North Departure (D)",
-          "KORD/ORD8.S": "South Departure (M)",
-          "KORD/ORD8.W": "West Departure (G)",
-          "KPWK": "North Departure (D)",
-          "KORD": "Z"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "O'Hare South Tower", "Midway Tower", "Executive Tower"],
@@ -10229,17 +9770,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "13L",
+        "default_consolidation": {
           "SSAT Sector 1 (S)": ["SSAT Sector 2 (P)", "SSAT Sector 4 (U)"],
           "SSAT Sector 2 (P)": ["SSAT Sector 3 (L)"]
-        },
-        "inbound_assignments": {
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)"
-        },
-        "departure_assignments": {
-          "KMDW": "SSAT Sector 4 (U)"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "Z", "O'Hare South Tower", "Midway Tower"],
@@ -10277,17 +9811,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "13L",
+        "default_consolidation": {
           "SSAT Sector 1 (S)": ["SSAT Sector 2 (P)", "SSAT Sector 4 (U)"],
           "SSAT Sector 2 (P)": ["SSAT Sector 3 (L)"]
-        },
-        "inbound_assignments": {
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)"
-        },
-        "departure_assignments": {
-          "KMDW": "SSAT Sector 4 (U)"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "Z", "O'Hare South Tower", "Midway Tower"],
@@ -10325,17 +9852,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "13L",
+        "default_consolidation": {
           "SSAT Sector 1 (S)": ["SSAT Sector 2 (P)", "SSAT Sector 4 (U)"],
           "SSAT Sector 2 (P)": ["SSAT Sector 3 (L)"]
-        },
-        "inbound_assignments": {
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)"
-        },
-        "departure_assignments": {
-          "KMDW": "SSAT Sector 4 (U)"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "Z", "O'Hare South Tower", "Midway Tower"],
@@ -10373,17 +9893,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "13L",
+        "default_consolidation": {
           "SSAT Sector 1 (S)": ["SSAT Sector 2 (P)", "SSAT Sector 4 (U)"],
           "SSAT Sector 2 (P)": ["SSAT Sector 3 (L)"]
-        },
-        "inbound_assignments": {
-          "ENDEE6": "SSAT Sector 2 (P)",
-          "FISSK6/PANGG5": "SSAT Sector 4 (U)"
-        },
-        "departure_assignments": {
-          "KMDW": "SSAT Sector 4 (U)"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "Z", "O'Hare South Tower", "Midway Tower"],
@@ -10415,12 +9928,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KOF",
+        "default_consolidation": {
           "F": []
-        },
-        "inbound_assignments": {
-          "FYTTE7_FINALNW": "F"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "FARMM (Y)", "O'Hare South Tower"],
@@ -10445,12 +9955,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KO9",
+        "default_consolidation": {
           "F": []
-        },
-        "inbound_assignments": {
-          "FYTTE7_FINALNE": "F"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "FARMM (Y)", "O'Hare South Tower"],
@@ -10478,13 +9985,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KOB",
+        "default_consolidation": {
           "Z": []
-        },
-        "inbound_assignments": {
-          "FINALW_WN": "Z",
-          "WATSN4": "Z"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "KUBBS (J)", "O'Hare South Tower"],
@@ -10529,16 +10032,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KOC",
+        "default_consolidation": {
           "Z": []
-        },
-        "inbound_assignments": {
-          "BENKY6_FINALWW": "Z",
-          "FINALW_WN": "Z",
-          "FYTTE7_FINALNW": "Z",
-          "VEECK5_FINALWW": "Z",
-          "WATSN4": "Z"
         }
       },
       "controllers": [
@@ -10573,13 +10069,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KOG",
+        "default_consolidation": {
           "W": []
-        },
-        "inbound_assignments": {
-          "BENKY6_FINALWW": "W",
-          "VEECK5_FINALWW": "W"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "PLANO (X)", "O'Hare South Tower", "OKK (E)"],
@@ -10653,8 +10145,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "SAT",
+        "default_consolidation": {
           "East Departure (B)": ["North Departure (D)", "SSAT Sector 1 (S)", "South Departure (M)"],
           "FARMM (Y)": ["KUBBS (J)"],
           "PLANO (X)": ["FARMM (Y)", "OKK (E)"],
@@ -10663,19 +10155,6 @@
           "South Departure (M)": ["West Departure (G)"],
           "W": ["H"],
           "Z": ["East Departure (B)", "F", "PLANO (X)", "W"]
-        },
-        "inbound_assignments": {
-          "FIYER": "North Satellite (A)",
-          "KRENA": "North Satellite (A)",
-          "MOTIF": "SSAT Sector 2 (P)",
-          "PLANO": "SSAT Sector 3 (L)"
-        },
-        "departure_assignments": {
-          "KARR": "SSAT Sector 3 (L)",
-          "KDPA": "SSAT Sector 3 (L)",
-          "KGYY": "SSAT Sector 4 (U)",
-          "KLOT": "SSAT Sector 2 (P)",
-          "KPWK": "North Departure (D)"
         }
       },
       "controllers": ["Chicago Center (Sector 81)", "Executive Tower", "DuPage Tower", "Lewis Tower", "Aurora Tower"],
@@ -10760,6 +10239,491 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "13L": {
+        "inbound_assignments": {
+          "ENDEE6": "SSAT Sector 2 (P)",
+          "FISSK6/PANGG5": "SSAT Sector 4 (U)"
+        },
+        "departure_assignments": {
+          "KMDW": "SSAT Sector 4 (U)"
+        }
+      },
+      "22X": {
+        "inbound_assignments": {
+          "BENKY6": "PLANO (X)",
+          "FYTTE7": "FARMM (Y)",
+          "MADII7": "FARMM (Y)",
+          "TRTLL6": "PLANO (X)",
+          "VEECK5": "OKK (E)",
+          "WYNDE2": "Z"
+        },
+        "departure_assignments": {
+          "KORD": "Z",
+          "KORD/ORD8.E": "East Departure (B)",
+          "KORD/ORD8.N": "North Departure (D)",
+          "KORD/ORD8.S": "South Departure (M)",
+          "KORD/ORD8.W": "West Departure (G)"
+        }
+      },
+      "KOR": {
+        "inbound_assignments": {
+          "BENKY6": "PLANO (X)",
+          "ENDEE6": "SSAT Sector 2 (P)",
+          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
+          "FYTTE7": "FARMM (Y)",
+          "MADII7": "FARMM (Y)",
+          "TRTLL6": "PLANO (X)",
+          "VEECK5": "OKK (E)",
+          "WYNDE2": "Z"
+        },
+        "departure_assignments": {
+          "KMDW": "SSAT Sector 1 (S)",
+          "KORD": "Z",
+          "KORD/ORD8.E": "East Departure (B)",
+          "KORD/ORD8.N": "North Departure (D)",
+          "KORD/ORD8.S": "South Departure (M)",
+          "KORD/ORD8.W": "West Departure (G)"
+        }
+      },
+      "KO1": {
+        "inbound_assignments": {
+          "BENKY6": "PLANO (X)",
+          "ENDEE6": "SSAT Sector 2 (P)",
+          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
+          "FIYER": "North Satellite (A)",
+          "FYTTE7": "FARMM (Y)",
+          "GSH9": "SSAT Sector 4 (U)",
+          "KRENA": "North Satellite (A)",
+          "LUCIT2": "SSAT Sector 4 (U)",
+          "MADII7": "FARMM (Y)",
+          "MOTIF": "SSAT Sector 2 (P)",
+          "PLANO": "SSAT Sector 3 (L)",
+          "TRTLL6": "PLANO (X)",
+          "VEECK5": "OKK (E)",
+          "WYNDE2": "Z"
+        },
+        "departure_assignments": {
+          "KARR": "SSAT Sector 3 (L)",
+          "KDPA": "SSAT Sector 3 (L)",
+          "KGYY": "SSAT Sector 4 (U)",
+          "KLOT": "SSAT Sector 2 (P)",
+          "KMDW": "SSAT Sector 1 (S)",
+          "KORD": "Z",
+          "KORD/ORD8.E": "East Departure (B)",
+          "KORD/ORD8.N": "North Departure (D)",
+          "KORD/ORD8.S": "South Departure (M)",
+          "KORD/ORD8.W": "West Departure (G)",
+          "KPWK": "North Departure (D)"
+        }
+      },
+      "KO2": {
+        "inbound_assignments": {
+          "BENKY6": "PLANO (X)",
+          "ENDEE6": "SSAT Sector 2 (P)",
+          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
+          "FIYER": "North Satellite (A)",
+          "FYTTE7": "FARMM (Y)",
+          "KRENA": "North Satellite (A)",
+          "MADII7": "FARMM (Y)",
+          "PLANO": "SSAT Sector 3 (L)",
+          "TRTLL6": "PLANO (X)",
+          "VEECK5": "OKK (E)",
+          "WYNDE2": "Z"
+        },
+        "departure_assignments": {
+          "KMDW": "SSAT Sector 1 (S)",
+          "KORD": "Z",
+          "KORD/ORD8.E": "East Departure (B)",
+          "KORD/ORD8.N": "North Departure (D)",
+          "KORD/ORD8.S": "South Departure (M)",
+          "KORD/ORD8.W": "West Departure (G)",
+          "KPWK": "North Departure (D)"
+        }
+      },
+      "4XX": {
+        "inbound_assignments": {
+          "BENKY6": "Z",
+          "FYTTE7": "FARMM (Y)",
+          "MADII7": "FARMM (Y)",
+          "TRTLL6": "Z",
+          "VEECK5": "OKK (E)",
+          "WYNDE2": "KUBBS (J)"
+        },
+        "departure_assignments": {
+          "KORD": "Z",
+          "KORD/ORD8.E": "East Departure (B)",
+          "KORD/ORD8.N": "North Departure (D)",
+          "KORD/ORD8.S": "South Departure (M)",
+          "KORD/ORD8.W": "West Departure (G)"
+        }
+      },
+      "KO3": {
+        "inbound_assignments": {
+          "BENKY6": "Z",
+          "ENDEE6": "SSAT Sector 2 (P)",
+          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
+          "FYTTE7": "FARMM (Y)",
+          "MADII7": "FARMM (Y)",
+          "TRTLL6": "Z",
+          "VEECK5": "OKK (E)",
+          "WYNDE2": "KUBBS (J)"
+        },
+        "departure_assignments": {
+          "KMDW": "SSAT Sector 1 (S)",
+          "KORD": "Z",
+          "KORD/ORD8.E": "East Departure (B)",
+          "KORD/ORD8.N": "North Departure (D)",
+          "KORD/ORD8.S": "South Departure (M)",
+          "KORD/ORD8.W": "West Departure (G)"
+        }
+      },
+      "KO4": {
+        "inbound_assignments": {
+          "BENKY6": "Z",
+          "ENDEE6": "SSAT Sector 2 (P)",
+          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
+          "FIYER": "North Satellite (A)",
+          "FYTTE7": "FARMM (Y)",
+          "GSH9": "SSAT Sector 4 (U)",
+          "KRENA": "North Satellite (A)",
+          "LUCIT2": "SSAT Sector 4 (U)",
+          "MADII7": "FARMM (Y)",
+          "MOTIF": "SSAT Sector 2 (P)",
+          "PLANO": "SSAT Sector 3 (L)",
+          "TRTLL6": "Z",
+          "VEECK5": "OKK (E)",
+          "WYNDE2": "KUBBS (J)"
+        },
+        "departure_assignments": {
+          "KARR": "SSAT Sector 3 (L)",
+          "KDPA": "SSAT Sector 3 (L)",
+          "KGYY": "SSAT Sector 4 (U)",
+          "KLOT": "SSAT Sector 2 (P)",
+          "KMDW": "SSAT Sector 1 (S)",
+          "KORD": "Z",
+          "KORD/ORD8.E": "East Departure (B)",
+          "KORD/ORD8.N": "North Departure (D)",
+          "KORD/ORD8.S": "South Departure (M)",
+          "KORD/ORD8.W": "West Departure (G)",
+          "KPWK": "North Satellite (A)"
+        }
+      },
+      "KO5": {
+        "inbound_assignments": {
+          "BENKY6": "Z",
+          "ENDEE6": "SSAT Sector 2 (P)",
+          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
+          "FIYER": "North Satellite (A)",
+          "FYTTE7": "FARMM (Y)",
+          "KRENA": "North Satellite (A)",
+          "MADII7": "FARMM (Y)",
+          "PLANO": "SSAT Sector 3 (L)",
+          "TRTLL6": "Z",
+          "VEECK5": "OKK (E)",
+          "WYNDE2": "KUBBS (J)"
+        },
+        "departure_assignments": {
+          "KMDW": "SSAT Sector 1 (S)",
+          "KORD": "Z",
+          "KORD/ORD8.E": "East Departure (B)",
+          "KORD/ORD8.N": "North Departure (D)",
+          "KORD/ORD8.S": "South Departure (M)",
+          "KORD/ORD8.W": "West Departure (G)",
+          "KPWK": "North Satellite (A)"
+        }
+      },
+      "KO6": {
+        "inbound_assignments": {
+          "BENKY6": "PLANO (X)",
+          "ERNNY8": "KUBBS (J)",
+          "FYTTE7": "FARMM (Y)",
+          "SHAIN2": "Z",
+          "TRTLL6": "PLANO (X)",
+          "VEECK5": "OKK (E)",
+          "WYNDE2": "KUBBS (J)"
+        },
+        "departure_assignments": {
+          "KORD": "Z",
+          "KORD/ORD8.E": "East Departure (B)",
+          "KORD/ORD8.N": "North Departure (D)",
+          "KORD/ORD8.S": "South Departure (M)",
+          "KORD/ORD8.W": "West Departure (G)"
+        }
+      },
+      "4RX": {
+        "inbound_assignments": {
+          "BENKY6": "PLANO (X)",
+          "ENDEE6": "SSAT Sector 2 (P)",
+          "ERNNY8": "KUBBS (J)",
+          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
+          "FYTTE7": "FARMM (Y)",
+          "SHAIN2": "Z",
+          "TRTLL6": "PLANO (X)",
+          "VEECK5": "OKK (E)",
+          "WYNDE2": "KUBBS (J)"
+        },
+        "departure_assignments": {
+          "KMDW": "SSAT Sector 1 (S)",
+          "KORD": "Z",
+          "KORD/ORD8.E": "East Departure (B)",
+          "KORD/ORD8.N": "North Departure (D)",
+          "KORD/ORD8.S": "South Departure (M)",
+          "KORD/ORD8.W": "West Departure (G)"
+        }
+      },
+      "KO7": {
+        "inbound_assignments": {
+          "BENKY6": "PLANO (X)",
+          "ENDEE6": "SSAT Sector 2 (P)",
+          "ERNNY8": "KUBBS (J)",
+          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
+          "FIYER": "North Satellite (A)",
+          "FYTTE7": "FARMM (Y)",
+          "GSH9": "SSAT Sector 4 (U)",
+          "KRENA": "North Satellite (A)",
+          "LUCIT2": "SSAT Sector 4 (U)",
+          "MOTIF": "SSAT Sector 2 (P)",
+          "PLANO": "SSAT Sector 3 (L)",
+          "TRTLL6": "PLANO (X)",
+          "VEECK5": "OKK (E)",
+          "WATSN4": "Z",
+          "WYNDE2": "KUBBS (J)"
+        },
+        "departure_assignments": {
+          "KARR": "SSAT Sector 3 (L)",
+          "KDPA": "SSAT Sector 3 (L)",
+          "KGYY": "SSAT Sector 4 (U)",
+          "KLOT": "SSAT Sector 2 (P)",
+          "KMDW": "SSAT Sector 1 (S)",
+          "KORD": "Z",
+          "KORD/ORD8.E": "East Departure (B)",
+          "KORD/ORD8.N": "North Departure (D)",
+          "KORD/ORD8.S": "South Departure (M)",
+          "KORD/ORD8.W": "West Departure (G)",
+          "KPWK": "North Departure (D)"
+        }
+      },
+      "KO8": {
+        "inbound_assignments": {
+          "BENKY6": "PLANO (X)",
+          "ENDEE6": "SSAT Sector 2 (P)",
+          "ERNNY8": "FARMM (Y)",
+          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
+          "FIYER": "North Satellite (A)",
+          "FYTTE7": "FARMM (Y)",
+          "GSH9": "SSAT Sector 4 (U)",
+          "KRENA": "North Satellite (A)",
+          "LUCIT2": "SSAT Sector 4 (U)",
+          "MOTIF": "SSAT Sector 2 (P)",
+          "PLANO": "SSAT Sector 3 (L)",
+          "SHAIN2": "Z",
+          "TRTLL6": "PLANO (X)",
+          "VEECK5": "OKK (E)",
+          "WYNDE2": "KUBBS (J)"
+        },
+        "departure_assignments": {
+          "KARR": "SSAT Sector 3 (L)",
+          "KDPA": "SSAT Sector 3 (L)",
+          "KGYY": "SSAT Sector 4 (U)",
+          "KLOT": "SSAT Sector 2 (P)",
+          "KMDW": "SSAT Sector 1 (S)",
+          "KORD": "Z",
+          "KORD/ORD8.E": "East Departure (B)",
+          "KORD/ORD8.N": "North Departure (D)",
+          "KORD/ORD8.S": "South Departure (M)",
+          "KORD/ORD8.W": "West Departure (G)",
+          "KPWK": "North Departure (D)"
+        }
+      },
+      "16X": {
+        "inbound_assignments": {
+          "BENKY6": "PLANO (X)",
+          "ERNNY8": "KUBBS (J)",
+          "FIYER": "North Satellite (A)",
+          "FYTTE7": "FARMM (Y)",
+          "KRENA": "North Satellite (A)",
+          "PLANO": "SSAT Sector 3 (L)",
+          "SHAIN2": "Z",
+          "TRTLL6": "PLANO (X)",
+          "VEECK5": "OKK (E)",
+          "WYNDE2": "KUBBS (J)"
+        },
+        "departure_assignments": {
+          "KORD": "Z",
+          "KORD/ORD8.E": "East Departure (B)",
+          "KORD/ORD8.N": "North Departure (D)",
+          "KORD/ORD8.S": "South Departure (M)",
+          "KORD/ORD8.W": "West Departure (G)",
+          "KPWK": "North Departure (D)"
+        }
+      },
+      "KO9": {
+        "inbound_assignments": {
+          "FYTTE7_FINALNE": "F"
+        }
+      },
+      "KOA": {
+        "inbound_assignments": {
+          "BENKY6": "PLANO (X)",
+          "FYTTE7": "FARMM (Y)",
+          "MADII7": "FARMM (Y)",
+          "TRTLL6": "PLANO (X)",
+          "VEECK5": "OKK (E)",
+          "WATSN4": "Z",
+          "WYNDE2": "KUBBS (J)"
+        },
+        "departure_assignments": {
+          "KORD": "Z",
+          "KORD/ORD8.E": "East Departure (B)",
+          "KORD/ORD8.N": "North Departure (D)",
+          "KORD/ORD8.S": "South Departure (M)",
+          "KORD/ORD8.W": "West Departure (G)"
+        }
+      },
+      "KOB": {
+        "inbound_assignments": {
+          "FINALW_WN": "Z",
+          "WATSN4": "Z"
+        }
+      },
+      "KOC": {
+        "inbound_assignments": {
+          "BENKY6_FINALWW": "Z",
+          "FINALW_WN": "Z",
+          "FYTTE7_FINALNW": "Z",
+          "VEECK5_FINALWW": "Z",
+          "WATSN4": "Z"
+        }
+      },
+      "22L": {
+        "inbound_assignments": {
+          "BENKY6": "PLANO (X)",
+          "ENDEE6": "SSAT Sector 2 (P)",
+          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
+          "FYTTE7": "FARMM (Y)",
+          "MADII7": "FARMM (Y)",
+          "TRTLL6": "PLANO (X)",
+          "VEECK5": "OKK (E)",
+          "WATSN4": "Z",
+          "WYNDE2": "KUBBS (J)"
+        },
+        "departure_assignments": {
+          "KMDW": "SSAT Sector 1 (S)",
+          "KORD": "Z",
+          "KORD/ORD8.E": "East Departure (B)",
+          "KORD/ORD8.N": "North Departure (D)",
+          "KORD/ORD8.S": "South Departure (M)",
+          "KORD/ORD8.W": "West Departure (G)"
+        }
+      },
+      "31R": {
+        "inbound_assignments": {
+          "BENKY6": "PLANO (X)",
+          "ENDEE6": "SSAT Sector 2 (P)",
+          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
+          "FIYER": "North Satellite (A)",
+          "FYTTE7": "FARMM (Y)",
+          "GSH9": "SSAT Sector 4 (U)",
+          "KRENA": "North Satellite (A)",
+          "LUCIT2": "SSAT Sector 4 (U)",
+          "MADII7": "FARMM (Y)",
+          "MOTIF": "SSAT Sector 2 (P)",
+          "PLANO": "SSAT Sector 3 (L)",
+          "TRTLL6": "PLANO (X)",
+          "VEECK5": "OKK (E)",
+          "WATSN4": "Z",
+          "WYNDE2": "KUBBS (J)"
+        },
+        "departure_assignments": {
+          "KARR": "SSAT Sector 3 (L)",
+          "KDPA": "SSAT Sector 3 (L)",
+          "KGYY": "SSAT Sector 4 (U)",
+          "KLOT": "SSAT Sector 2 (P)",
+          "KMDW": "SSAT Sector 1 (S)",
+          "KORD": "Z",
+          "KORD/ORD8.E": "East Departure (B)",
+          "KORD/ORD8.N": "North Departure (D)",
+          "KORD/ORD8.S": "South Departure (M)",
+          "KORD/ORD8.W": "West Departure (G)",
+          "KPWK": "North Departure (D)"
+        }
+      },
+      "KOD": {
+        "inbound_assignments": {
+          "BENKY6": "PLANO (X)",
+          "ENDEE6": "SSAT Sector 2 (P)",
+          "FISSK6/PANGG5": "SSAT Sector 4 (U)",
+          "FIYER": "North Satellite (A)",
+          "FYTTE7": "FARMM (Y)",
+          "KRENA": "North Satellite (A)",
+          "MADII7": "FARMM (Y)",
+          "PLANO": "SSAT Sector 3 (L)",
+          "TRTLL6": "PLANO (X)",
+          "VEECK5": "OKK (E)",
+          "WATSN4": "Z",
+          "WYNDE2": "KUBBS (J)"
+        },
+        "departure_assignments": {
+          "KMDW": "SSAT Sector 1 (S)",
+          "KORD": "Z",
+          "KORD/ORD8.E": "East Departure (B)",
+          "KORD/ORD8.N": "North Departure (D)",
+          "KORD/ORD8.S": "South Departure (M)",
+          "KORD/ORD8.W": "West Departure (G)",
+          "KPWK": "North Departure (D)"
+        }
+      },
+      "KOE": {
+        "inbound_assignments": {
+          "BENKY6": "PLANO (X)",
+          "FIYER": "North Satellite (A)",
+          "FYTTE7": "FARMM (Y)",
+          "KRENA": "North Satellite (A)",
+          "MADII7": "FARMM (Y)",
+          "PLANO": "SSAT Sector 3 (L)",
+          "TRTLL6": "PLANO (X)",
+          "VEECK5": "OKK (E)",
+          "WATSN4": "Z",
+          "WYNDE2": "KUBBS (J)"
+        },
+        "departure_assignments": {
+          "KORD": "Z",
+          "KORD/ORD8.E": "East Departure (B)",
+          "KORD/ORD8.N": "North Departure (D)",
+          "KORD/ORD8.S": "South Departure (M)",
+          "KORD/ORD8.W": "West Departure (G)",
+          "KPWK": "North Departure (D)"
+        }
+      },
+      "KOF": {
+        "inbound_assignments": {
+          "FYTTE7_FINALNW": "F"
+        }
+      },
+      "KOG": {
+        "inbound_assignments": {
+          "BENKY6_FINALWW": "W",
+          "VEECK5_FINALWW": "W"
+        }
+      },
+      "SAT": {
+        "inbound_assignments": {
+          "FIYER": "North Satellite (A)",
+          "KRENA": "North Satellite (A)",
+          "MOTIF": "SSAT Sector 2 (P)",
+          "PLANO": "SSAT Sector 3 (L)"
+        },
+        "departure_assignments": {
+          "KARR": "SSAT Sector 3 (L)",
+          "KDPA": "SSAT Sector 3 (L)",
+          "KGYY": "SSAT Sector 4 (U)",
+          "KLOT": "SSAT Sector 2 (P)",
+          "KPWK": "North Departure (D)"
+        }
+      }
+    },
+
     "center": "N41.58.34.897,W87.54.27.062",
     "coordination_fixes": {
       "NEWRK": [

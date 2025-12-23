@@ -386,17 +386,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ASE_APP": []
-        },
-        "inbound_assignments": {
-          "HAREI": "ASE_APP",
-          "LAWSN": "ASE_APP",
-          "LOYYD": "ASE_APP"
-        },
-        "departure_assignments": {
-          "KASE": "ASE_APP"
         }
       },
       "controllers": ["ASE_TWR", "ASE_APP", "DEN_11_CTR"],
@@ -414,6 +406,19 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "HAREI": "ASE_APP",
+          "LAWSN": "ASE_APP",
+          "LOYYD": "ASE_APP"
+        },
+        "departure_assignments": {
+          "KASE": "ASE_APP"
+        }
+      }
+    },
+
     "center": "N039.19.41.442,W106.53.21.361",
     "range": 25,
     "filters": {

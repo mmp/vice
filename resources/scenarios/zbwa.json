@@ -239,12 +239,9 @@
   "scenarios": {
     "ZBW Gardner 36": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ZBW Gardner 36": []
-        },
-        "inbound_assignments": {
-          "JFUND2-PONCT": "ZBW Gardner 36"
         }
       },
       "controllers": [
@@ -289,6 +286,14 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "JFUND2-PONCT": "ZBW Gardner 36"
+        }
+      }
+    },
+
     "center": "GDM",
     "range": 70,
     "stars_maps": ["TRACON"],

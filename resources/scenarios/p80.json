@@ -5772,26 +5772,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KP3",
+        "default_consolidation": {
           "Hood (1D)": ["Newburg (1V)", "North (1N)"],
           "North (1N)": ["Final (1F)"]
-        },
-        "inbound_assignments": {
-          "HELNS": "North (1N)",
-          "HHOOD5West": "North (1N)",
-          "Hawaii": "Hood (1D)",
-          "KRATR2West": "North (1N)",
-          "OCITY3West": "Hood (1D)",
-          "TMBERS3West": "Hood (1D)",
-          "TOU": "North (1N)",
-          "V112.W": "North (1N)",
-          "V165.S": "North (1N)"
-        },
-        "departure_assignments": {
-          "KHIO": "Newburg (1V)",
-          "KPDX": "North (1N)",
-          "KSLE": "Hood (1D)"
         }
       },
       "controllers": [
@@ -5885,26 +5869,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KPD",
+        "default_consolidation": {
           "Hood (1D)": ["Newburg (1V)", "North (1N)"],
           "North (1N)": ["Final (1F)"]
-        },
-        "inbound_assignments": {
-          "HELNS": "North (1N)",
-          "HHOOD5East": "North (1N)",
-          "Hawaii": "Hood (1D)",
-          "KRATR2East": "North (1N)",
-          "OCITY3East": "Hood (1D)",
-          "TMBERS3East": "Hood (1D)",
-          "TOU": "North (1N)",
-          "V112.W": "North (1N)",
-          "V165.S": "North (1N)"
-        },
-        "departure_assignments": {
-          "KHIO": "Newburg (1V)",
-          "KPDX": "North (1N)",
-          "KSLE": "Hood (1D)"
         }
       },
       "controllers": [
@@ -5971,14 +5939,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KP2",
+        "default_consolidation": {
           "Final (1F)": []
-        },
-        "inbound_assignments": {
-          "HHOOD5West_Final": "Final (1F)",
-          "KRATR2West_Final": "Final (1F)",
-          "TMBERS3West_Final": "Final (1F)"
         }
       },
       "controllers": [
@@ -6022,14 +5985,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KP1",
+        "default_consolidation": {
           "Final (1F)": []
-        },
-        "inbound_assignments": {
-          "HHOOD5East_Final": "Final (1F)",
-          "KRATR2East_Final": "Final (1F)",
-          "TMBERS3East_Final": "Final (1F)"
         }
       },
       "controllers": [
@@ -6049,6 +6007,59 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "KPD": {
+        "inbound_assignments": {
+          "HELNS": "North (1N)",
+          "HHOOD5East": "North (1N)",
+          "Hawaii": "Hood (1D)",
+          "KRATR2East": "North (1N)",
+          "OCITY3East": "Hood (1D)",
+          "TMBERS3East": "Hood (1D)",
+          "TOU": "North (1N)",
+          "V112.W": "North (1N)",
+          "V165.S": "North (1N)"
+        },
+        "departure_assignments": {
+          "KHIO": "Newburg (1V)",
+          "KPDX": "North (1N)",
+          "KSLE": "Hood (1D)"
+        }
+      },
+      "KP1": {
+        "inbound_assignments": {
+          "HHOOD5East_Final": "Final (1F)",
+          "KRATR2East_Final": "Final (1F)",
+          "TMBERS3East_Final": "Final (1F)"
+        }
+      },
+      "KP2": {
+        "inbound_assignments": {
+          "HHOOD5West_Final": "Final (1F)",
+          "KRATR2West_Final": "Final (1F)",
+          "TMBERS3West_Final": "Final (1F)"
+        }
+      },
+      "KP3": {
+        "inbound_assignments": {
+          "HELNS": "North (1N)",
+          "HHOOD5West": "North (1N)",
+          "Hawaii": "Hood (1D)",
+          "KRATR2West": "North (1N)",
+          "OCITY3West": "Hood (1D)",
+          "TMBERS3West": "Hood (1D)",
+          "TOU": "North (1N)",
+          "V112.W": "North (1N)",
+          "V165.S": "North (1N)"
+        },
+        "departure_assignments": {
+          "KHIO": "Newburg (1V)",
+          "KPDX": "North (1N)",
+          "KSLE": "Hood (1D)"
+        }
+      }
+    },
+
     "altimeters": ["KPDX", "KHIO", "KUAO"],
     "center": "KPDX",
     "airspace_awareness": [

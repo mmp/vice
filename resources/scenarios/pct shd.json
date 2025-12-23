@@ -6910,28 +6910,14 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "30X",
+        "default_consolidation": {
           "IAD_A_DEP": ["IAD_T_DEP"],
           "IAD_B_APP": ["IAD_O_APP"],
           "IAD_M_APP": ["IAD_A_DEP", "IAD_B_APP", "IAD_E_APP", "IAD_G_APP", "IAD_N_APP", "IAD_V_APP"],
           "IAD_N_APP": ["IAD_X_APP"],
           "IAD_U_APP": ["IAD_S_APP"],
           "IAD_X_APP": ["IAD_U_APP"]
-        },
-        "departure_assignments": {
-          "KHEF": "IAD_O_APP",
-          "KIAD": "IAD_A_DEP"
-        },
-        "inbound_assignments": {
-          "CAVLR6": "IAD_B_APP",
-          "TRSTN4": "IAD_O_APP",
-          "GIBBZ5.MGW": "IAD_N_APP",
-          "GIBBZ5.BURTT": "IAD_N_APP",
-          "TIKEE4": "IAD_N_APP",
-          "HYPER9": "IAD_V_APP",
-          "PRTZL1": "IAD_V_APP",
-          "WAYNZ1.N": "IAD_V_APP"
         }
       },
       "controllers": [
@@ -7055,28 +7041,14 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "SH1",
+        "default_consolidation": {
           "IAD_A_DEP": ["IAD_T_DEP"],
           "IAD_B_APP": ["IAD_O_APP"],
           "IAD_M_APP": ["IAD_A_DEP", "IAD_B_APP", "IAD_E_APP", "IAD_G_APP", "IAD_N_APP", "IAD_V_APP"],
           "IAD_N_APP": ["IAD_X_APP"],
           "IAD_U_APP": ["IAD_S_APP"],
           "IAD_X_APP": ["IAD_U_APP"]
-        },
-        "departure_assignments": {
-          "KHEF": "IAD_O_APP",
-          "KIAD": "IAD_T_DEP"
-        },
-        "inbound_assignments": {
-          "CAVLR6": "IAD_B_APP",
-          "TRSTN4": "IAD_O_APP",
-          "GIBBZ5.MGW": "IAD_N_APP",
-          "GIBBZ5.BURTT": "IAD_N_APP",
-          "TIKEE4": "IAD_N_APP",
-          "HYPER9": "IAD_V_APP",
-          "PRTZL1": "IAD_V_APP",
-          "WAYNZ1.N": "IAD_V_APP"
         }
       },
       "controllers": [
@@ -7188,28 +7160,14 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "SH4",
+        "default_consolidation": {
           "IAD_A_DEP": ["IAD_T_DEP"],
           "IAD_B_APP": ["IAD_O_APP"],
           "IAD_M_APP": ["IAD_A_DEP", "IAD_B_APP", "IAD_E_APP", "IAD_G_APP", "IAD_N_APP", "IAD_V_APP"],
           "IAD_N_APP": ["IAD_X_APP"],
           "IAD_U_APP": ["IAD_S_APP"],
           "IAD_X_APP": ["IAD_U_APP"]
-        },
-        "departure_assignments": {
-          "KHEF": "IAD_O_APP",
-          "KIAD": "IAD_A_DEP"
-        },
-        "inbound_assignments": {
-          "CAVLR6": "IAD_B_APP",
-          "TRSTN4": "IAD_O_APP",
-          "GIBBZ5.MGW": "IAD_N_APP",
-          "GIBBZ5.BURTT": "IAD_N_APP",
-          "TIKEE4": "IAD_N_APP",
-          "HYPER9": "IAD_V_APP",
-          "PRTZL1": "IAD_V_APP",
-          "WAYNZ1.S": "IAD_V_APP"
         }
       },
       "controllers": [
@@ -7320,28 +7278,14 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "SH4",
+        "default_consolidation": {
           "IAD_A_DEP": ["IAD_T_DEP"],
           "IAD_B_APP": ["IAD_O_APP"],
           "IAD_M_APP": ["IAD_A_DEP", "IAD_B_APP", "IAD_E_APP", "IAD_G_APP", "IAD_N_APP", "IAD_V_APP"],
           "IAD_N_APP": ["IAD_X_APP"],
           "IAD_U_APP": ["IAD_S_APP"],
           "IAD_X_APP": ["IAD_U_APP"]
-        },
-        "departure_assignments": {
-          "KHEF": "IAD_O_APP",
-          "KIAD": "IAD_A_DEP"
-        },
-        "inbound_assignments": {
-          "CAVLR6": "IAD_B_APP",
-          "TRSTN4": "IAD_O_APP",
-          "GIBBZ5.MGW": "IAD_N_APP",
-          "GIBBZ5.BURTT": "IAD_N_APP",
-          "TIKEE4": "IAD_N_APP",
-          "HYPER9": "IAD_V_APP",
-          "PRTZL1": "IAD_V_APP",
-          "WAYNZ1.S": "IAD_V_APP"
         }
       },
       "controllers": [
@@ -7453,28 +7397,14 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "12X",
+        "default_consolidation": {
           "IAD_A_DEP": ["IAD_T_DEP"],
           "IAD_B_APP": ["IAD_O_APP"],
           "IAD_M_APP": ["IAD_A_DEP", "IAD_B_APP", "IAD_E_APP", "IAD_G_APP", "IAD_N_APP", "IAD_V_APP"],
           "IAD_N_APP": ["IAD_X_APP"],
           "IAD_U_APP": ["IAD_S_APP"],
           "IAD_X_APP": ["IAD_U_APP"]
-        },
-        "departure_assignments": {
-          "KHEF": "IAD_O_APP",
-          "KIAD": "IAD_T_DEP"
-        },
-        "inbound_assignments": {
-          "CAVLR6": "IAD_B_APP",
-          "TRSTN4": "IAD_O_APP",
-          "GIBBZ5.MGW": "IAD_N_APP",
-          "GIBBZ5.BURTT": "IAD_N_APP",
-          "TIKEE4": "IAD_N_APP",
-          "HYPER9": "IAD_V_APP",
-          "PRTZL1": "IAD_V_APP",
-          "WAYNZ1.S": "IAD_V_APP"
         }
       },
       "controllers": [
@@ -7578,28 +7508,14 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "30X",
+        "default_consolidation": {
           "IAD_A_DEP": ["IAD_T_DEP"],
           "IAD_B_APP": ["IAD_O_APP"],
           "IAD_M_APP": ["IAD_A_DEP", "IAD_B_APP", "IAD_E_APP", "IAD_G_APP", "IAD_N_APP", "IAD_V_APP"],
           "IAD_N_APP": ["IAD_X_APP"],
           "IAD_U_APP": ["IAD_S_APP"],
           "IAD_X_APP": ["IAD_U_APP"]
-        },
-        "departure_assignments": {
-          "KHEF": "IAD_O_APP",
-          "KIAD": "IAD_A_DEP"
-        },
-        "inbound_assignments": {
-          "CAVLR6": "IAD_B_APP",
-          "TRSTN4": "IAD_O_APP",
-          "GIBBZ5.MGW": "IAD_N_APP",
-          "GIBBZ5.BURTT": "IAD_N_APP",
-          "TIKEE4": "IAD_N_APP",
-          "HYPER9": "IAD_V_APP",
-          "PRTZL1": "IAD_V_APP",
-          "WAYNZ1.N": "IAD_V_APP"
         }
       },
       "controllers": [
@@ -7678,15 +7594,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "SH3",
+        "default_consolidation": {
           "IAD_U_APP": ["IAD_S_APP"],
           "IAD_X_APP": ["IAD_U_APP"]
-        },
-        "inbound_assignments": {
-          "IADFE.N TRIPS": "IAD_X_APP",
-          "IADFW.N TRIPS": "IAD_U_APP",
-          "IADFC.N TRIPS": "IAD_S_APP"
         }
       },
       "controllers": [
@@ -7749,15 +7660,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "SH2",
+        "default_consolidation": {
           "IAD_U_APP": ["IAD_S_APP"],
           "IAD_X_APP": ["IAD_U_APP"]
-        },
-        "inbound_assignments": {
-          "IADFE.N DUALS": "IAD_X_APP",
-          "IADFW.N DUALS": "IAD_U_APP",
-          "IADFC.N DUALS": "IAD_S_APP"
         }
       },
       "controllers": [
@@ -7824,15 +7730,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "SHD",
+        "default_consolidation": {
           "IAD_U_APP": ["IAD_S_APP"],
           "IAD_X_APP": ["IAD_U_APP"]
-        },
-        "inbound_assignments": {
-          "IADFE.S TRIPS": "IAD_X_APP",
-          "IADFW.S TRIPS": "IAD_U_APP",
-          "IADFC.S TRIPS": "IAD_S_APP"
         }
       },
       "controllers": [
@@ -7899,15 +7800,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "13X",
+        "default_consolidation": {
           "IAD_U_APP": ["IAD_S_APP"],
           "IAD_X_APP": ["IAD_U_APP"]
-        },
-        "inbound_assignments": {
-          "IADFE.S DUALS": "IAD_X_APP",
-          "IADFW.S DUALS": "IAD_U_APP",
-          "IADFC.S DUALS": "IAD_S_APP"
         }
       },
       "controllers": [
@@ -7940,6 +7836,101 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "13X": {
+        "inbound_assignments": {
+          "IADFC.S DUALS": "IAD_S_APP",
+          "IADFE.S DUALS": "IAD_X_APP",
+          "IADFW.S DUALS": "IAD_U_APP"
+        }
+      },
+      "SHD": {
+        "inbound_assignments": {
+          "IADFC.S TRIPS": "IAD_S_APP",
+          "IADFE.S TRIPS": "IAD_X_APP",
+          "IADFW.S TRIPS": "IAD_U_APP"
+        }
+      },
+      "SH1": {
+        "inbound_assignments": {
+          "CAVLR6": "IAD_B_APP",
+          "GIBBZ5.BURTT": "IAD_N_APP",
+          "GIBBZ5.MGW": "IAD_N_APP",
+          "HYPER9": "IAD_V_APP",
+          "PRTZL1": "IAD_V_APP",
+          "TIKEE4": "IAD_N_APP",
+          "TRSTN4": "IAD_O_APP",
+          "WAYNZ1.N": "IAD_V_APP"
+        },
+        "departure_assignments": {
+          "KHEF": "IAD_O_APP",
+          "KIAD": "IAD_T_DEP"
+        }
+      },
+      "SH2": {
+        "inbound_assignments": {
+          "IADFC.N DUALS": "IAD_S_APP",
+          "IADFE.N DUALS": "IAD_X_APP",
+          "IADFW.N DUALS": "IAD_U_APP"
+        }
+      },
+      "SH3": {
+        "inbound_assignments": {
+          "IADFC.N TRIPS": "IAD_S_APP",
+          "IADFE.N TRIPS": "IAD_X_APP",
+          "IADFW.N TRIPS": "IAD_U_APP"
+        }
+      },
+      "30X": {
+        "inbound_assignments": {
+          "CAVLR6": "IAD_B_APP",
+          "GIBBZ5.BURTT": "IAD_N_APP",
+          "GIBBZ5.MGW": "IAD_N_APP",
+          "HYPER9": "IAD_V_APP",
+          "PRTZL1": "IAD_V_APP",
+          "TIKEE4": "IAD_N_APP",
+          "TRSTN4": "IAD_O_APP",
+          "WAYNZ1.N": "IAD_V_APP"
+        },
+        "departure_assignments": {
+          "KHEF": "IAD_O_APP",
+          "KIAD": "IAD_A_DEP"
+        }
+      },
+      "SH4": {
+        "inbound_assignments": {
+          "CAVLR6": "IAD_B_APP",
+          "GIBBZ5.BURTT": "IAD_N_APP",
+          "GIBBZ5.MGW": "IAD_N_APP",
+          "HYPER9": "IAD_V_APP",
+          "PRTZL1": "IAD_V_APP",
+          "TIKEE4": "IAD_N_APP",
+          "TRSTN4": "IAD_O_APP",
+          "WAYNZ1.S": "IAD_V_APP"
+        },
+        "departure_assignments": {
+          "KHEF": "IAD_O_APP",
+          "KIAD": "IAD_A_DEP"
+        }
+      },
+      "12X": {
+        "inbound_assignments": {
+          "CAVLR6": "IAD_B_APP",
+          "GIBBZ5.BURTT": "IAD_N_APP",
+          "GIBBZ5.MGW": "IAD_N_APP",
+          "HYPER9": "IAD_V_APP",
+          "PRTZL1": "IAD_V_APP",
+          "TIKEE4": "IAD_N_APP",
+          "TRSTN4": "IAD_O_APP",
+          "WAYNZ1.S": "IAD_V_APP"
+        },
+        "departure_assignments": {
+          "KHEF": "IAD_O_APP",
+          "KIAD": "IAD_T_DEP"
+        }
+      }
+    },
+
     "center": "KIAD",
     "controller_configs": {
       "3M": {

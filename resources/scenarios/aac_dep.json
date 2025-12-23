@@ -4683,15 +4683,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "AAC_D_APP": []
-        },
-        "departure_assignments": {
-          "KAAC": "AAC_D_APP"
-        },
-        "inbound_assignments": {
-          "OVERFLIGHTS": "AAC_D_APP"
         }
       },
       "controllers": [
@@ -4764,6 +4758,17 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "OVERFLIGHTS": "AAC_D_APP"
+        },
+        "departure_assignments": {
+          "KAAC": "AAC_D_APP"
+        }
+      }
+    },
+
     "force_ql_self": true,
     "center": "KAAC",
     "display_handoff_facility_only": true,

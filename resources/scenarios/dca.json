@@ -4603,24 +4603,12 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MT1",
+        "default_consolidation": {
           "DCA_J_APP": ["DCA_E_APP", "DCA_K_DEP", "DCA_R_APP", "DCA_V_APP"],
           "DCA_K_DEP": ["DCA_A_APP", "DCA_D_APP", "DCA_Y_DEP"],
           "DCA_L_APP": ["DCA_F_APP"],
           "DCA_Y_DEP": ["DCA_L_APP"]
-        },
-        "departure_assignments": {
-          "KDCA": "DCA_K_DEP"
-        },
-        "inbound_assignments": {
-          "CAPSS3": "DCA_J_APP",
-          "CLIPR3/SKILS5": "DCA_E_APP",
-          "DEALE3.N": "DCA_E_APP",
-          "FRDMM6": "DCA_L_APP",
-          "TRUPS5": "DCA_L_APP",
-          "BUNZZ3/RNLDI4": "DCA_L_APP",
-          "RAVNN8": "DCA_D_APP"
         }
       },
       "controllers": [
@@ -4695,23 +4683,12 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MT3",
+        "default_consolidation": {
           "DCA_J_APP": ["DCA_E_APP", "DCA_K_DEP", "DCA_R_APP", "DCA_V_APP"],
           "DCA_K_DEP": ["DCA_A_APP", "DCA_D_APP", "DCA_Y_DEP"],
           "DCA_L_APP": ["DCA_F_APP"],
           "DCA_Y_DEP": ["DCA_L_APP"]
-        },
-        "inbound_assignments": {
-          "CAPSS3": "DCA_J_APP",
-          "CLIPR3/SKILS5": "DCA_E_APP",
-          "DEALE3.S": "DCA_E_APP",
-          "FRDMM6": "DCA_L_APP",
-          "RAVNN8": "DCA_D_APP",
-          "TRUPS5": "DCA_L_APP"
-        },
-        "departure_assignments": {
-          "KDCA": "DCA_K_DEP"
         }
       },
       "controllers": [
@@ -4771,15 +4748,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MT8",
+        "default_consolidation": {
           "DCA_L_APP": []
-        },
-        "inbound_assignments": {
-          "BUNZZ3/RNLDI4": "DCA_L_APP",
-          "FRDMM6.LS": "DCA_L_APP",
-          "LURAY DEPARTURES.DCAS": "DCA_L_APP",
-          "TRUPS5.LS": "DCA_L_APP"
         }
       },
       "controllers": [
@@ -4835,15 +4806,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MT8",
+        "default_consolidation": {
           "DCA_L_APP": []
-        },
-        "inbound_assignments": {
-          "BUNZZ3/RNLDI4": "DCA_L_APP",
-          "FRDMM6.LN": "DCA_L_APP",
-          "LURAY DEPARTURES.DCAN": "DCA_L_APP",
-          "TRUPS5.LN": "DCA_L_APP"
         }
       },
       "controllers": [
@@ -4886,14 +4851,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MT4",
+        "default_consolidation": {
           "DCA_F_APP": []
-        },
-        "inbound_assignments": {
-          "CLTCH3/JDUBB4/SCRAM6.IAD": "DCA_F_APP",
-          "FLUKY DEPARTURES.DCAS": "DCA_F_APP",
-          "FOXHL1/TERPZ8": "DCA_F_APP"
         }
       },
       "controllers": [
@@ -4933,14 +4893,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MT4",
+        "default_consolidation": {
           "DCA_F_APP": []
-        },
-        "inbound_assignments": {
-          "CLTCH3/JDUBB4/SCRAM6.IAD": "DCA_F_APP",
-          "FLUKY DEPARTURES.DCAN": "DCA_F_APP",
-          "FOXHL1/TERPZ8": "DCA_F_APP"
         }
       },
       "controllers": [
@@ -4987,16 +4942,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MT6",
+        "default_consolidation": {
           "DCA_K_DEP": ["DCA_Y_DEP"]
-        },
-        "departure_assignments": {
-          "KDCA": "DCA_K_DEP"
-        },
-        "inbound_assignments": {
-          "JCOBY4": "DCA_K_DEP",
-          "CONLE5.S": "DCA_K_DEP"
         }
       },
       "controllers": [
@@ -5058,16 +5006,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MT6",
+        "default_consolidation": {
           "DCA_K_DEP": ["DCA_Y_DEP"]
-        },
-        "departure_assignments": {
-          "KDCA": "DCA_K_DEP"
-        },
-        "inbound_assignments": {
-          "JCOBY4": "DCA_K_DEP",
-          "CONLE5.N": "DCA_K_DEP"
         }
       },
       "controllers": [
@@ -5128,14 +5069,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MTV",
+        "default_consolidation": {
           "DCA_V_APP": []
-        },
-        "inbound_assignments": {
-          "FINAL_ND": "DCA_V_APP",
-          "FINAL_NNW": "DCA_V_APP",
-          "FINAL_NS": "DCA_V_APP"
         }
       },
       "controllers": [
@@ -5177,14 +5113,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MT2",
+        "default_consolidation": {
           "DCA_V_APP": []
-        },
-        "inbound_assignments": {
-          "FINAL_SE": "DCA_V_APP",
-          "FINAL_SNW": "DCA_V_APP",
-          "FINAL_SS": "DCA_V_APP"
         }
       },
       "controllers": [
@@ -5209,6 +5140,79 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "MTV": {
+        "inbound_assignments": {
+          "FINAL_ND": "DCA_V_APP",
+          "FINAL_NNW": "DCA_V_APP",
+          "FINAL_NS": "DCA_V_APP"
+        }
+      },
+      "MT1": {
+        "inbound_assignments": {
+          "BUNZZ3/RNLDI4": "DCA_L_APP",
+          "CAPSS3": "DCA_J_APP",
+          "CLIPR3/SKILS5": "DCA_E_APP",
+          "DEALE3.N": "DCA_E_APP",
+          "FRDMM6": "DCA_L_APP",
+          "RAVNN8": "DCA_D_APP",
+          "TRUPS5": "DCA_L_APP"
+        },
+        "departure_assignments": {
+          "KDCA": "DCA_K_DEP"
+        }
+      },
+      "MT2": {
+        "inbound_assignments": {
+          "FINAL_SE": "DCA_V_APP",
+          "FINAL_SNW": "DCA_V_APP",
+          "FINAL_SS": "DCA_V_APP"
+        }
+      },
+      "MT3": {
+        "inbound_assignments": {
+          "CAPSS3": "DCA_J_APP",
+          "CLIPR3/SKILS5": "DCA_E_APP",
+          "DEALE3.S": "DCA_E_APP",
+          "FRDMM6": "DCA_L_APP",
+          "RAVNN8": "DCA_D_APP",
+          "TRUPS5": "DCA_L_APP"
+        },
+        "departure_assignments": {
+          "KDCA": "DCA_K_DEP"
+        }
+      },
+      "MT4": {
+        "inbound_assignments": {
+          "CLTCH3/JDUBB4/SCRAM6.IAD": "DCA_F_APP",
+          "FLUKY DEPARTURES.DCAN": "DCA_F_APP",
+          "FLUKY DEPARTURES.DCAS": "DCA_F_APP",
+          "FOXHL1/TERPZ8": "DCA_F_APP"
+        }
+      },
+      "MT6": {
+        "inbound_assignments": {
+          "CONLE5.N": "DCA_K_DEP",
+          "CONLE5.S": "DCA_K_DEP",
+          "JCOBY4": "DCA_K_DEP"
+        },
+        "departure_assignments": {
+          "KDCA": "DCA_K_DEP"
+        }
+      },
+      "MT8": {
+        "inbound_assignments": {
+          "BUNZZ3/RNLDI4": "DCA_L_APP",
+          "FRDMM6.LN": "DCA_L_APP",
+          "FRDMM6.LS": "DCA_L_APP",
+          "LURAY DEPARTURES.DCAN": "DCA_L_APP",
+          "LURAY DEPARTURES.DCAS": "DCA_L_APP",
+          "TRUPS5.LN": "DCA_L_APP",
+          "TRUPS5.LS": "DCA_L_APP"
+        }
+      }
+    },
+
     "center": "KDCA",
     "pdb": {
       "hide_gs": true,

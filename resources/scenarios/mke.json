@@ -2010,25 +2010,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MI1",
+        "default_consolidation": {
           "MKE_E_APP": ["MKE_F_APP", "MKE_H_APP", "MKE_L_APP", "MKE_M_DEP", "MKE_W_APP"],
           "MKE_M_DEP": ["MKE_B_DEP"]
-        },
-        "inbound_assignments": {
-          "BAE": "MKE_W_APP",
-          "BRAVE": "MKE_E_APP",
-          "GOPAC3": "MKE_W_APP",
-          "MADII7": "MKE_M_DEP",
-          "RAYNR": "MKE_F_APP",
-          "SUDDS": "MKE_E_APP"
-        },
-        "departure_assignments": {
-          "KENW": "MKE_B_DEP",
-          "KMKE": "MKE_B_DEP",
-          "KMWC": "MKE_B_DEP",
-          "KOSH": "MKE_L_APP",
-          "KUES": "MKE_B_DEP"
         }
       },
       "controllers": [
@@ -2138,25 +2123,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MIL",
+        "default_consolidation": {
           "MKE_E_APP": ["MKE_F_APP", "MKE_H_APP", "MKE_L_APP", "MKE_M_DEP", "MKE_W_APP"],
           "MKE_M_DEP": ["MKE_B_DEP"]
-        },
-        "inbound_assignments": {
-          "BAE": "MKE_W_APP",
-          "BRAVE": "MKE_E_APP",
-          "ERNNY8": "MKE_M_DEP",
-          "GOPAC3": "MKE_W_APP",
-          "RAYNR": "MKE_F_APP",
-          "SUDDS": "MKE_E_APP"
-        },
-        "departure_assignments": {
-          "KENW": "MKE_M_DEP",
-          "KMKE": "MKE_M_DEP",
-          "KMWC": "MKE_M_DEP",
-          "KOSH": "MKE_L_APP",
-          "KUES": "MKE_M_DEP"
         }
       },
       "controllers": [
@@ -2266,25 +2236,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MI2",
+        "default_consolidation": {
           "MKE_E_APP": ["MKE_F_APP", "MKE_H_APP", "MKE_L_APP", "MKE_M_DEP", "MKE_W_APP"],
           "MKE_M_DEP": ["MKE_B_DEP"]
-        },
-        "inbound_assignments": {
-          "BAE": "MKE_W_APP",
-          "BRAVE": "MKE_E_APP",
-          "GOPAC3": "MKE_W_APP",
-          "MADII7": "MKE_M_DEP",
-          "RAYNR": "MKE_F_APP",
-          "SUDDS": "MKE_E_APP"
-        },
-        "departure_assignments": {
-          "KENW": "MKE_M_DEP",
-          "KMKE": "MKE_M_DEP",
-          "KMWC": "MKE_M_DEP",
-          "KOSH": "MKE_L_APP",
-          "KUES": "MKE_M_DEP"
         }
       },
       "controllers": [
@@ -2394,25 +2349,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MIL",
+        "default_consolidation": {
           "MKE_E_APP": ["MKE_F_APP", "MKE_H_APP", "MKE_L_APP", "MKE_M_DEP", "MKE_W_APP"],
           "MKE_M_DEP": ["MKE_B_DEP"]
-        },
-        "inbound_assignments": {
-          "BAE": "MKE_W_APP",
-          "BRAVE": "MKE_E_APP",
-          "ERNNY8": "MKE_M_DEP",
-          "GOPAC3": "MKE_W_APP",
-          "RAYNR": "MKE_F_APP",
-          "SUDDS": "MKE_E_APP"
-        },
-        "departure_assignments": {
-          "KENW": "MKE_M_DEP",
-          "KMKE": "MKE_M_DEP",
-          "KMWC": "MKE_M_DEP",
-          "KOSH": "MKE_L_APP",
-          "KUES": "MKE_M_DEP"
         }
       },
       "controllers": [
@@ -2480,15 +2420,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "19R",
+        "default_consolidation": {
           "MKE_F_APP": []
-        },
-        "inbound_assignments": {
-          "19R_Final_East": "MKE_F_APP",
-          "19R_Final_SouthEast": "MKE_F_APP",
-          "19R_Final_SouthWest": "MKE_F_APP",
-          "19R_Final_West": "MKE_F_APP"
         }
       },
       "controllers": ["CHI_81_CTR", "CHI_Z_APP", "MKE_TWR", "RFD_E_APP"],
@@ -2522,16 +2456,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "1LX",
+        "default_consolidation": {
           "MKE_F_APP": []
-        },
-        "inbound_assignments": {
-          "1L_Final_East": "MKE_F_APP",
-          "1L_Final_NorthEast": "MKE_F_APP",
-          "1L_Final_NorthWest": "MKE_F_APP",
-          "1L_Final_South": "MKE_F_APP",
-          "1L_Final_West": "MKE_F_APP"
         }
       },
       "controllers": ["CHI_81_CTR", "CHI_Z_APP", "MKE_TWR", "RFD_E_APP"],
@@ -2542,6 +2469,77 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "19R": {
+        "inbound_assignments": {
+          "19R_Final_East": "MKE_F_APP",
+          "19R_Final_SouthEast": "MKE_F_APP",
+          "19R_Final_SouthWest": "MKE_F_APP",
+          "19R_Final_West": "MKE_F_APP"
+        }
+      },
+      "1LX": {
+        "inbound_assignments": {
+          "1L_Final_East": "MKE_F_APP",
+          "1L_Final_NorthEast": "MKE_F_APP",
+          "1L_Final_NorthWest": "MKE_F_APP",
+          "1L_Final_South": "MKE_F_APP",
+          "1L_Final_West": "MKE_F_APP"
+        }
+      },
+      "MIL": {
+        "inbound_assignments": {
+          "BAE": "MKE_W_APP",
+          "BRAVE": "MKE_E_APP",
+          "ERNNY8": "MKE_M_DEP",
+          "GOPAC3": "MKE_W_APP",
+          "RAYNR": "MKE_F_APP",
+          "SUDDS": "MKE_E_APP"
+        },
+        "departure_assignments": {
+          "KENW": "MKE_M_DEP",
+          "KMKE": "MKE_M_DEP",
+          "KMWC": "MKE_M_DEP",
+          "KOSH": "MKE_L_APP",
+          "KUES": "MKE_M_DEP"
+        }
+      },
+      "MI1": {
+        "inbound_assignments": {
+          "BAE": "MKE_W_APP",
+          "BRAVE": "MKE_E_APP",
+          "GOPAC3": "MKE_W_APP",
+          "MADII7": "MKE_M_DEP",
+          "RAYNR": "MKE_F_APP",
+          "SUDDS": "MKE_E_APP"
+        },
+        "departure_assignments": {
+          "KENW": "MKE_B_DEP",
+          "KMKE": "MKE_B_DEP",
+          "KMWC": "MKE_B_DEP",
+          "KOSH": "MKE_L_APP",
+          "KUES": "MKE_B_DEP"
+        }
+      },
+      "MI2": {
+        "inbound_assignments": {
+          "BAE": "MKE_W_APP",
+          "BRAVE": "MKE_E_APP",
+          "GOPAC3": "MKE_W_APP",
+          "MADII7": "MKE_M_DEP",
+          "RAYNR": "MKE_F_APP",
+          "SUDDS": "MKE_E_APP"
+        },
+        "departure_assignments": {
+          "KENW": "MKE_M_DEP",
+          "KMKE": "MKE_M_DEP",
+          "KMWC": "MKE_M_DEP",
+          "KOSH": "MKE_L_APP",
+          "KUES": "MKE_M_DEP"
+        }
+      }
+    },
+
     "center": "KMKE",
     "coordination_fixes": {
       "LEEDR": [

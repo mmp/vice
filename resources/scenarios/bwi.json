@@ -2683,31 +2683,12 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "BWI_B_APP": ["BWI_W_APP"],
           "BWI_G_APP": ["BWI_P_APP"],
           "BWI_S_APP": ["BWI_B_APP", "BWI_G_APP", "BWI_N_APP"],
           "BWI_W_APP": ["BWI_H_APP"]
-        },
-        "departure_assignments": {
-          "KBWI/CONLE5": "BWI_G_APP",
-          "KBWI/DUKPN1": "BWI_G_APP",
-          "KBWI/FOXHL1": "BWI_W_APP",
-          "KBWI/LINSE2": "BWI_W_APP",
-          "KBWI/TERPZ8": "BWI_W_APP",
-          "KBWI": "BWI_S_APP"
-        },
-        "inbound_assignments": {
-          "RAVNN8.28": "BWI_S_APP",
-          "TRISH4.NUGGY": "BWI_B_APP",
-          "TRISH4.DRRES": "BWI_B_APP",
-          "CLIPR3": "BWI_B_APP",
-          "SKILS5": "BWI_B_APP",
-          "ANTHM5": "BWI_H_APP",
-          "JERES2/MCRAY2": "BWI_H_APP",
-          "ARLFT2": "BWI_H_APP",
-          "DEALE3/MIIDY3": "BWI_P_APP"
         }
       },
       "controllers": [
@@ -2799,31 +2780,12 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "BWI_B_APP": ["BWI_W_APP"],
           "BWI_G_APP": ["BWI_P_APP"],
           "BWI_S_APP": ["BWI_B_APP", "BWI_G_APP", "BWI_N_APP"],
           "BWI_W_APP": ["BWI_H_APP"]
-        },
-        "departure_assignments": {
-          "KBWI/CONLE5": "BWI_G_APP",
-          "KBWI/DUKPN1": "BWI_G_APP",
-          "KBWI/FOXHL1": "BWI_W_APP",
-          "KBWI/LINSE2": "BWI_W_APP",
-          "KBWI/TERPZ8": "BWI_W_APP",
-          "KBWI": "BWI_S_APP"
-        },
-        "inbound_assignments": {
-          "RAVNN8.33L": "BWI_S_APP",
-          "TRISH4.NUGGY": "BWI_B_APP",
-          "TRISH4.DRRES": "BWI_B_APP",
-          "CLIPR3": "BWI_B_APP",
-          "SKILS5": "BWI_B_APP",
-          "ANTHM5": "BWI_H_APP",
-          "JERES2/MCRAY2": "BWI_H_APP",
-          "ARLFT2": "BWI_H_APP",
-          "DEALE3/MIIDY3": "BWI_P_APP"
         }
       },
       "controllers": [
@@ -2915,31 +2877,12 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "BWI_B_APP": ["BWI_W_APP"],
           "BWI_G_APP": ["BWI_P_APP"],
           "BWI_S_APP": ["BWI_B_APP", "BWI_G_APP", "BWI_N_APP"],
           "BWI_W_APP": ["BWI_H_APP"]
-        },
-        "departure_assignments": {
-          "KBWI/CONLE5": "BWI_G_APP",
-          "KBWI/DUKPN1": "BWI_G_APP",
-          "KBWI/FOXHL1": "BWI_W_APP",
-          "KBWI/LINSE2": "BWI_W_APP",
-          "KBWI/TERPZ8": "BWI_W_APP",
-          "KBWI": "BWI_S_APP"
-        },
-        "inbound_assignments": {
-          "RAVNN8.10": "BWI_S_APP",
-          "TRISH4.NUGGY": "BWI_B_APP",
-          "TRISH4.DRRES": "BWI_B_APP",
-          "CLIPR3": "BWI_B_APP",
-          "SKILS5": "BWI_B_APP",
-          "ANTHM5": "BWI_H_APP",
-          "JERES2/MCRAY2": "BWI_H_APP",
-          "ARLFT2": "BWI_H_APP",
-          "DEALE3/MIIDY3": "BWI_P_APP"
         }
       },
       "controllers": [
@@ -3027,31 +2970,12 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "BWI_B_APP": ["BWI_W_APP"],
           "BWI_G_APP": ["BWI_P_APP"],
           "BWI_S_APP": ["BWI_B_APP", "BWI_G_APP", "BWI_N_APP"],
           "BWI_W_APP": ["BWI_H_APP"]
-        },
-        "departure_assignments": {
-          "KBWI/CONLE5": "BWI_G_APP",
-          "KBWI/DUKPN1": "BWI_G_APP",
-          "KBWI/FOXHL1": "BWI_W_APP",
-          "KBWI/LINSE2": "BWI_W_APP",
-          "KBWI/TERPZ8": "BWI_W_APP",
-          "KBWI": "BWI_S_APP"
-        },
-        "inbound_assignments": {
-          "RAVNN8.10": "BWI_S_APP",
-          "TRISH4.NUGGY": "BWI_B_APP",
-          "TRISH4.DRRES": "BWI_B_APP",
-          "CLIPR3": "BWI_B_APP",
-          "SKILS5": "BWI_B_APP",
-          "ANTHM5": "BWI_H_APP",
-          "JERES2/MCRAY2": "BWI_H_APP",
-          "ARLFT2": "BWI_H_APP",
-          "DEALE3/MIIDY3": "BWI_P_APP"
         }
       },
       "controllers": [
@@ -3099,6 +3023,32 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "ANTHM5": "BWI_H_APP",
+          "ARLFT2": "BWI_H_APP",
+          "CLIPR3": "BWI_B_APP",
+          "DEALE3/MIIDY3": "BWI_P_APP",
+          "JERES2/MCRAY2": "BWI_H_APP",
+          "RAVNN8.10": "BWI_S_APP",
+          "RAVNN8.28": "BWI_S_APP",
+          "RAVNN8.33L": "BWI_S_APP",
+          "SKILS5": "BWI_B_APP",
+          "TRISH4.DRRES": "BWI_B_APP",
+          "TRISH4.NUGGY": "BWI_B_APP"
+        },
+        "departure_assignments": {
+          "KBWI": "BWI_S_APP",
+          "KBWI/CONLE5": "BWI_G_APP",
+          "KBWI/DUKPN1": "BWI_G_APP",
+          "KBWI/FOXHL1": "BWI_W_APP",
+          "KBWI/LINSE2": "BWI_W_APP",
+          "KBWI/TERPZ8": "BWI_W_APP"
+        }
+      }
+    },
+
     "center": "KBWI",
     "controller_configs": {
       "1S": {

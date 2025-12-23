@@ -1813,15 +1813,9 @@
   "scenarios": {
     "ZLA Sector 14 (West Flow)": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ZLA Sector 14": []
-        },
-        "inbound_assignments": {
-          "HUULL2": "ZLA Sector 14",
-          "RUKKI1/BAUBB3": "ZLA Sector 14",
-          "RYDRR2.ELKEY": "ZLA Sector 14",
-          "RYDRR2.SNAXX": "ZLA Sector 14"
         }
       },
       "controllers": [
@@ -1901,6 +1895,17 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "HUULL2": "ZLA Sector 14",
+          "RUKKI1/BAUBB3": "ZLA Sector 14",
+          "RYDRR2.ELKEY": "ZLA Sector 14",
+          "RYDRR2.SNAXX": "ZLA Sector 14"
+        }
+      }
+    },
+
     "center": "KWANG",
     "range": 60,
     "stars_maps": [

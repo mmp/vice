@@ -313,7 +313,18 @@ func PrintVideoMaps(path string, e *util.ErrorLogger) {
 	}
 }
 
+// ControllerAssignments defines which controller handles each inbound/departure flow.
+// This is separate from the consolidation hierarchy (PositionConsolidation).
+type ControllerAssignments struct {
+	InboundAssignments   map[string]TCP `json:"inbound_assignments"`
+	DepartureAssignments map[string]TCP `json:"departure_assignments"`
+}
+
 type FacilityAdaptation struct {
+	// Configurations maps config IDs (max 3 chars) to controller assignments.
+	// These define which TCP handles each inbound flow and departure airport/runway/SID.
+	Configurations map[string]*ControllerAssignments `json:"configurations"`
+
 	AirspaceAwareness   []AirspaceAwareness                        `json:"airspace_awareness" scope:"stars"`
 	ForceQLToSelf       bool                                       `json:"force_ql_self" scope:"stars"`
 	AllowLongScratchpad bool                                       `json:"allow_long_scratchpad" scope:"stars"`

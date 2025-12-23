@@ -959,13 +959,9 @@
   "scenarios": {
     "ZNY Sector 36": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ZNY 36 Sparta": []
-        },
-        "inbound_assignments": {
-          "PUCKY1-JENNO": "ZNY 36 Sparta",
-          "PUCKY1-YODAA": "ZNY 36 Sparta"
         }
       },
       "controllers": [
@@ -1010,6 +1006,15 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "PUCKY1-JENNO": "ZNY 36 Sparta",
+          "PUCKY1-YODAA": "ZNY 36 Sparta"
+        }
+      }
+    },
+
     "center": "N041.02.01.961,W074.10.44.018",
     "range": 70,
     "stars_maps": [

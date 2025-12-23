@@ -957,19 +957,9 @@
   "scenarios": {
     "49 Moultrie + 50 Alma + 29 Waycross": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ZJX 50 Alma": []
-        },
-        "inbound_assignments": {
-          "BAGGY3": "ZJX 50 Alma",
-          "CAMJO": "ZJX 50 Alma",
-          "DADES2": "ZJX 50 Alma",
-          "GRNCH5": "ZJX 50 Alma",
-          "LUBBR3": "ZJX 50 Alma",
-          "OHDEA2": "ZJX 50 Alma",
-          "SHRKS": "ZJX 50 Alma",
-          "TTHOR3": "ZJX 50 Alma"
         }
       },
       "controllers": [
@@ -1065,6 +1055,21 @@
   },
   "magnetic_adjustment": -6.6,
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "BAGGY3": "ZJX 50 Alma",
+          "CAMJO": "ZJX 50 Alma",
+          "DADES2": "ZJX 50 Alma",
+          "GRNCH5": "ZJX 50 Alma",
+          "LUBBR3": "ZJX 50 Alma",
+          "OHDEA2": "ZJX 50 Alma",
+          "SHRKS": "ZJX 50 Alma",
+          "TTHOR3": "ZJX 50 Alma"
+        }
+      }
+    },
+
     "center": "N031.30.29.772,W082.17.03.623",
     "range": 80,
     "stars_maps": [

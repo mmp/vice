@@ -1176,22 +1176,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "13R",
+        "default_consolidation": {
           "SAT_N_APP": ["SAT_Q_APP", "SAT_S_APP", "SAT_W_APP"],
           "SAT_S_APP": ["SAT_K_APP", "SAT_R_APP"]
-        },
-        "inbound_assignments": {
-          "CRVZA1": "SAT_S_APP",
-          "DNKIN1": "SAT_W_APP",
-          "POPPO1": "SAT_W_APP",
-          "QERVO2": "SAT_N_APP"
-        },
-        "departure_assignments": {
-          "KBAZ": "SAT_Q_APP",
-          "KSAT": "SAT_N_APP",
-          "KSKF": "SAT_K_APP",
-          "KSSF": "SAT_S_APP"
         }
       },
       "controllers": ["HOU_50_CTR", "SAT_N_APP", "SAT_TWR", "BAZ_TWR", "SKF_TWR"],
@@ -1302,22 +1290,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "31L",
+        "default_consolidation": {
           "SAT_N_APP": ["SAT_S_APP", "SAT_W_APP"],
           "SAT_S_APP": ["SAT_K_APP", "SAT_L_APP", "SAT_R_APP"]
-        },
-        "inbound_assignments": {
-          "CRVZA1": "SAT_S_APP",
-          "DNKIN1": "SAT_S_APP",
-          "POPPO1": "SAT_W_APP",
-          "QERVO2": "SAT_N_APP"
-        },
-        "departure_assignments": {
-          "KBAZ": "SAT_N_APP",
-          "KSAT": "SAT_N_APP",
-          "KSKF": "SAT_S_APP",
-          "KSSF": "SAT_S_APP"
         }
       },
       "controllers": ["HOU_50_CTR", "SAT_N_APP", "SAT_TWR", "BAZ_TWR", "SKF_TWR"],
@@ -1420,22 +1396,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "13R",
+        "default_consolidation": {
           "SAT_N_APP": ["SAT_Q_APP", "SAT_S_APP", "SAT_W_APP"],
           "SAT_S_APP": ["SAT_K_APP", "SAT_R_APP"]
-        },
-        "inbound_assignments": {
-          "CRVZA1": "SAT_S_APP",
-          "DNKIN1": "SAT_W_APP",
-          "POPPO1": "SAT_W_APP",
-          "QERVO2": "SAT_N_APP"
-        },
-        "departure_assignments": {
-          "KBAZ": "SAT_Q_APP",
-          "KSAT": "SAT_N_APP",
-          "KSKF": "SAT_K_APP",
-          "KSSF": "SAT_S_APP"
         }
       },
       "controllers": ["HOU_50_CTR", "SAT_N_APP", "SAT_TWR", "BAZ_TWR", "SKF_TWR"],
@@ -1542,22 +1506,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "31L",
+        "default_consolidation": {
           "SAT_N_APP": ["SAT_S_APP", "SAT_W_APP"],
           "SAT_S_APP": ["SAT_K_APP", "SAT_L_APP", "SAT_R_APP"]
-        },
-        "inbound_assignments": {
-          "CRVZA1": "SAT_S_APP",
-          "DNKIN1": "SAT_S_APP",
-          "POPPO1": "SAT_W_APP",
-          "QERVO2": "SAT_N_APP"
-        },
-        "departure_assignments": {
-          "KBAZ": "SAT_N_APP",
-          "KSAT": "SAT_N_APP",
-          "KSKF": "SAT_S_APP",
-          "KSSF": "SAT_S_APP"
         }
       },
       "controllers": ["HOU_50_CTR", "SAT_N_APP", "SAT_TWR", "BAZ_TWR", "SKF_TWR"],
@@ -1604,6 +1556,37 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "13R": {
+        "inbound_assignments": {
+          "CRVZA1": "SAT_S_APP",
+          "DNKIN1": "SAT_W_APP",
+          "POPPO1": "SAT_W_APP",
+          "QERVO2": "SAT_N_APP"
+        },
+        "departure_assignments": {
+          "KBAZ": "SAT_Q_APP",
+          "KSAT": "SAT_N_APP",
+          "KSKF": "SAT_K_APP",
+          "KSSF": "SAT_S_APP"
+        }
+      },
+      "31L": {
+        "inbound_assignments": {
+          "CRVZA1": "SAT_S_APP",
+          "DNKIN1": "SAT_S_APP",
+          "POPPO1": "SAT_W_APP",
+          "QERVO2": "SAT_N_APP"
+        },
+        "departure_assignments": {
+          "KBAZ": "SAT_N_APP",
+          "KSAT": "SAT_N_APP",
+          "KSKF": "SAT_S_APP",
+          "KSSF": "SAT_S_APP"
+        }
+      }
+    },
+
     "center": "KSAT",
     "radar_sites": {
       "SAT": {

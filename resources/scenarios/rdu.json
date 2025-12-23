@@ -1780,20 +1780,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "RDU_E_APP": ["RDU_U_APP", "RDU_W_APP"],
           "RDU_N_DEP": ["RDU_S_DEP"],
           "RDU_W_APP": ["RDU_N_DEP", "RDU_Y_APP"]
-        },
-        "inbound_assignments": {
-          "ALDAN4": "RDU_W_APP",
-          "BLOGS3": "RDU_E_APP",
-          "DMSTR2": "RDU_W_APP",
-          "TAQLE2": "RDU_E_APP"
-        },
-        "departure_assignments": {
-          "KRDU": "RDU_N_DEP"
         }
       },
       "controllers": ["RDU_E_TWR", "RDU_W_TWR", "DC_9_CTR", "DC_20_CTR", "DC_32_CTR"],
@@ -1842,20 +1833,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "RDU_E_APP": ["RDU_U_APP", "RDU_W_APP"],
           "RDU_N_DEP": ["RDU_S_DEP"],
           "RDU_W_APP": ["RDU_N_DEP", "RDU_Y_APP"]
-        },
-        "inbound_assignments": {
-          "ALDAN4": "RDU_W_APP",
-          "BLOGS3": "RDU_E_APP",
-          "DMSTR2": "RDU_W_APP",
-          "TAQLE2": "RDU_E_APP"
-        },
-        "departure_assignments": {
-          "KRDU": "RDU_N_DEP"
         }
       },
       "controllers": ["RDU_E_TWR", "RDU_W_TWR", "DC_9_CTR", "DC_20_CTR", "DC_32_CTR"],
@@ -1880,6 +1862,20 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "ALDAN4": "RDU_W_APP",
+          "BLOGS3": "RDU_E_APP",
+          "DMSTR2": "RDU_W_APP",
+          "TAQLE2": "RDU_E_APP"
+        },
+        "departure_assignments": {
+          "KRDU": "RDU_N_DEP"
+        }
+      }
+    },
+
     "center": "KRDU",
     "coordination_fixes": {
       "FAVKO": [

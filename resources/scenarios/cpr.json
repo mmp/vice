@@ -338,20 +338,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "CPR_APP": []
-        },
-        "inbound_assignments": {
-          "DEN": "CPR_APP",
-          "JAC": "CPR_APP",
-          "MEM": "CPR_APP",
-          "NE-GA": "CPR_APP",
-          "SE-GA": "CPR_APP",
-          "SLC": "CPR_APP"
-        },
-        "departure_assignments": {
-          "KCPR": "CPR_APP"
         }
       },
       "controllers": ["CPR_TWR", "DEN_17_CTR"],
@@ -406,20 +395,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "CPR_APP": []
-        },
-        "inbound_assignments": {
-          "DEN": "CPR_APP",
-          "JAC": "CPR_APP",
-          "MEM": "CPR_APP",
-          "NE-GA": "CPR_APP",
-          "SE-GA": "CPR_APP",
-          "SLC": "CPR_APP"
-        },
-        "departure_assignments": {
-          "KCPR": "CPR_APP"
         }
       },
       "controllers": ["CPR_TWR", "DEN_17_CTR"],
@@ -444,6 +422,22 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "DEN": "CPR_APP",
+          "JAC": "CPR_APP",
+          "MEM": "CPR_APP",
+          "NE-GA": "CPR_APP",
+          "SE-GA": "CPR_APP",
+          "SLC": "CPR_APP"
+        },
+        "departure_assignments": {
+          "KCPR": "CPR_APP"
+        }
+      }
+    },
+
     "center": "42.9058611,-106.4636389",
     "range": 40,
     "scratchpads": {

@@ -8923,27 +8923,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "4LX",
+        "default_consolidation": {
           "4P": ["4A", "4M", "4N", "4U"],
           "4U": ["4H", "4S"]
-        },
-        "inbound_assignments": {
-          "COATE": "4S",
-          "FLOSI4": "4A",
-          "FQM3": "4P",
-          "JAIKE4": "4H",
-          "LVZ4": "4S",
-          "MAZIE": "4H",
-          "PHL": "4P",
-          "PHLBO4": "4P",
-          "WRI": "4P"
-        },
-        "departure_assignments": {
-          "KCDW": "4N",
-          "KEWR": "4N",
-          "KMMU": "4N",
-          "KTEB": "4N"
         }
       },
       "controllers": [
@@ -9047,15 +9030,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KE3",
+        "default_consolidation": {
           "4N": []
-        },
-        "departure_assignments": {
-          "KCDW": "4N",
-          "KEWR": "4N",
-          "KMMU": "4N",
-          "KTEB": "4N"
         }
       },
       "controllers": [
@@ -9131,15 +9108,9 @@
     },
     "KEWR 4L Departure": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KE3",
+        "default_consolidation": {
           "4N": []
-        },
-        "departure_assignments": {
-          "KCDW": "4N",
-          "KEWR": "4N",
-          "KMMU": "4N",
-          "KTEB": "4N"
         }
       },
       "arrival_runways": [
@@ -9304,27 +9275,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "4LX",
+        "default_consolidation": {
           "4P": ["4A", "4M", "4N", "4U"],
           "4U": ["4H", "4S"]
-        },
-        "inbound_assignments": {
-          "COATE": "4S",
-          "FLOSI4": "4A",
-          "FQM3": "4P",
-          "JAIKE4": "4H",
-          "LVZ4": "4S",
-          "MAZIE": "4H",
-          "PHL": "4P",
-          "PHLBO4": "4P",
-          "WRI": "4P"
-        },
-        "departure_assignments": {
-          "KCDW": "4N",
-          "KEWR": "4N",
-          "KMMU": "4N",
-          "KTEB": "4N"
         }
       },
       "controllers": [
@@ -9454,19 +9408,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KE7",
+        "default_consolidation": {
           "4U": []
-        },
-        "inbound_assignments": {
-          "COATE": "4U",
-          "JAIKE4 MUGZY NE": "4U",
-          "LVZ4": "4U",
-          "MAZIE MUGZY NE": "4U"
-        },
-        "departure_assignments": {
-          "KEWR": "4U",
-          "KTEB": "4U"
         }
       },
       "controllers": [
@@ -9564,19 +9508,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KE7",
+        "default_consolidation": {
           "4U": []
-        },
-        "inbound_assignments": {
-          "COATE": "4U",
-          "JAIKE4 MUGZY SW": "4U",
-          "LVZ4": "4U",
-          "MAZIE MUGZY SW": "4U"
-        },
-        "departure_assignments": {
-          "KEWR": "4U",
-          "KTEB": "4U"
         }
       },
       "controllers": [
@@ -9657,15 +9591,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KEW",
+        "default_consolidation": {
           "4P": []
-        },
-        "inbound_assignments": {
-          "FQM3": "4P",
-          "PHL": "4P",
-          "PHLBO4": "4P",
-          "WRI": "4P"
         }
       },
       "controllers": [
@@ -9755,21 +9683,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KEW",
+        "default_consolidation": {
           "4P": []
-        },
-        "inbound_assignments": {
-          "FQM3": "4P",
-          "JAIKE4": "4P",
-          "MAZIE": "4P",
-          "PHL": "4P",
-          "PHLBO4": "4P",
-          "WRI": "4P"
-        },
-        "departure_assignments": {
-          "KEWR": "4P",
-          "KTEB": "4P"
         }
       },
       "controllers": [
@@ -9886,23 +9802,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KE3",
+        "default_consolidation": {
           "4N": []
-        },
-        "inbound_assignments": {
-          "FQM3": "4N",
-          "JAIKE4": "4N",
-          "MAZIE": "4N",
-          "PHL": "4N",
-          "PHLBO4": "4N",
-          "WRI": "4N"
-        },
-        "departure_assignments": {
-          "KCDW": "4N",
-          "KEWR": "4N",
-          "KMMU": "4N",
-          "KTEB": "4N"
         }
       },
       "controllers": [
@@ -10012,17 +9914,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KE2",
+        "default_consolidation": {
           "4A": []
-        },
-        "inbound_assignments": {
-          "FLOSI4": "4A",
-          "South": "4A"
-        },
-        "departure_assignments": {
-          "KEWR": "4A",
-          "KTEB": "4A"
         }
       },
       "controllers": [
@@ -10145,21 +10039,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KE2",
+        "default_consolidation": {
           "4A": []
-        },
-        "inbound_assignments": {
-          "COATE": "4A",
-          "FLOSI4": "4A",
-          "JAIKE4 MUGZY SW": "4A",
-          "LVZ4": "4A",
-          "MAZIE MUGZY SW": "4A",
-          "South": "4A"
-        },
-        "departure_assignments": {
-          "KEWR": "4A",
-          "KTEB": "4A"
         }
       },
       "controllers": [
@@ -10239,13 +10121,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KE2",
+        "default_consolidation": {
           "4A": []
-        },
-        "inbound_assignments": {
-          "FLOSI4": "4A",
-          "South29": "4A"
         }
       },
       "controllers": [
@@ -10329,20 +10207,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KEW",
+        "default_consolidation": {
           "4P": []
-        },
-        "inbound_assignments": {
-          "North": "4P",
-          "PHL": "4P",
-          "PHL Prop": "4P",
-          "PHLBO4": "4P",
-          "WRI": "4P"
-        },
-        "departure_assignments": {
-          "KEWR": "4P",
-          "KTEB": "4P"
         }
       },
       "controllers": [
@@ -10443,21 +10310,9 @@
         "4P": ["NOA_NE", "YARDLEY_NE", "FINAL_VECTORS_4", "METRO_NE"]
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KEW",
+        "default_consolidation": {
           "4P": []
-        },
-        "inbound_assignments": {
-          "JAIKE4": "4P",
-          "North": "4P",
-          "PHL": "4P",
-          "PHL Prop": "4P",
-          "PHLBO4": "4P",
-          "WRI": "4P"
-        },
-        "departure_assignments": {
-          "KEWR": "4P",
-          "KTEB": "4P"
         }
       },
       "controllers": [
@@ -10532,13 +10387,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KE2",
+        "default_consolidation": {
           "4A": []
-        },
-        "inbound_assignments": {
-          "FLOSI4": "4A",
-          "FQM3": "4A"
         }
       },
       "controllers": [
@@ -10644,23 +10495,9 @@
         "4N": ["NOA_NE", "FINAL_VECTORS_4"]
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KE3",
+        "default_consolidation": {
           "4N": []
-        },
-        "inbound_assignments": {
-          "COATE": "4N",
-          "FLOSI4": "4N",
-          "FQM3": "4N",
-          "JAIKE4 MUGZY NE": "4N",
-          "LVZ4": "4N",
-          "MAZIE MUGZY NE": "4N"
-        },
-        "departure_assignments": {
-          "KCDW": "4N",
-          "KEWR": "4N",
-          "KMMU": "4N",
-          "KTEB": "4N"
         }
       },
       "controllers": [
@@ -10733,6 +10570,95 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "4LX": {
+        "inbound_assignments": {
+          "COATE": "4S",
+          "FLOSI4": "4A",
+          "FQM3": "4P",
+          "JAIKE4": "4H",
+          "LVZ4": "4S",
+          "MAZIE": "4H",
+          "PHL": "4P",
+          "PHLBO4": "4P",
+          "WRI": "4P"
+        },
+        "departure_assignments": {
+          "KCDW": "4N",
+          "KEWR": "4N",
+          "KMMU": "4N",
+          "KTEB": "4N"
+        }
+      },
+      "KEW": {
+        "inbound_assignments": {
+          "FQM3": "4P",
+          "JAIKE4": "4P",
+          "MAZIE": "4P",
+          "North": "4P",
+          "PHL": "4P",
+          "PHL Prop": "4P",
+          "PHLBO4": "4P",
+          "WRI": "4P"
+        },
+        "departure_assignments": {
+          "KEWR": "4P",
+          "KTEB": "4P"
+        }
+      },
+      "KE2": {
+        "inbound_assignments": {
+          "COATE": "4A",
+          "FLOSI4": "4A",
+          "FQM3": "4A",
+          "JAIKE4 MUGZY SW": "4A",
+          "LVZ4": "4A",
+          "MAZIE MUGZY SW": "4A",
+          "South": "4A",
+          "South29": "4A"
+        },
+        "departure_assignments": {
+          "KEWR": "4A",
+          "KTEB": "4A"
+        }
+      },
+      "KE3": {
+        "inbound_assignments": {
+          "COATE": "4N",
+          "FLOSI4": "4N",
+          "FQM3": "4N",
+          "JAIKE4": "4N",
+          "JAIKE4 MUGZY NE": "4N",
+          "LVZ4": "4N",
+          "MAZIE": "4N",
+          "MAZIE MUGZY NE": "4N",
+          "PHL": "4N",
+          "PHLBO4": "4N",
+          "WRI": "4N"
+        },
+        "departure_assignments": {
+          "KCDW": "4N",
+          "KEWR": "4N",
+          "KMMU": "4N",
+          "KTEB": "4N"
+        }
+      },
+      "KE7": {
+        "inbound_assignments": {
+          "COATE": "4U",
+          "JAIKE4 MUGZY NE": "4U",
+          "JAIKE4 MUGZY SW": "4U",
+          "LVZ4": "4U",
+          "MAZIE MUGZY NE": "4U",
+          "MAZIE MUGZY SW": "4U"
+        },
+        "departure_assignments": {
+          "KEWR": "4U",
+          "KTEB": "4U"
+        }
+      }
+    },
+
     "filters": {
       "inhibit_ca": [
         {

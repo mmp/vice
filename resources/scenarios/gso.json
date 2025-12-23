@@ -874,21 +874,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "GSO_S_APP": ["GSO_E_APP"],
           "GSO_W_APP": ["GSO_S_APP"]
-        },
-        "inbound_assignments": {
-          "BLOCC2": "GSO_S_APP",
-          "BROOK4": "GSO_W_APP",
-          "GANTS": "GSO_S_APP",
-          "HENBY3": "GSO_E_APP",
-          "TRAKS3N": "GSO_W_APP"
-        },
-        "departure_assignments": {
-          "KGSO": "GSO_E_APP",
-          "KINT": "GSO_W_APP"
         }
       },
       "controllers": ["GSO_TWR", "ATL_CTR", "DC_CTR", "CLT_APP", "INT_TWR"],
@@ -951,21 +940,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "GSO_S_APP": ["GSO_E_APP"],
           "GSO_W_APP": ["GSO_S_APP"]
-        },
-        "inbound_assignments": {
-          "BLOCC2": "GSO_S_APP",
-          "BROOK4": "GSO_W_APP",
-          "GANTS": "GSO_S_APP",
-          "HENBY3": "GSO_E_APP",
-          "TRAKS3S": "GSO_W_APP"
-        },
-        "departure_assignments": {
-          "KGSO": "GSO_E_APP",
-          "KINT": "GSO_W_APP"
         }
       },
       "controllers": ["GSO_TWR", "ATL_CTR", "DC_CTR", "CLT_APP", "INT_TWR"],
@@ -988,6 +966,23 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "BLOCC2": "GSO_S_APP",
+          "BROOK4": "GSO_W_APP",
+          "GANTS": "GSO_S_APP",
+          "HENBY3": "GSO_E_APP",
+          "TRAKS3N": "GSO_W_APP",
+          "TRAKS3S": "GSO_W_APP"
+        },
+        "departure_assignments": {
+          "KGSO": "GSO_E_APP",
+          "KINT": "GSO_W_APP"
+        }
+      }
+    },
+
     "coordination_fixes": {
       "RENZI": [
         {

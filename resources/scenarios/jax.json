@@ -4202,37 +4202,14 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KJA",
+        "default_consolidation": {
           "Radar Arrival": ["Radar West"],
           "Radar Gainsville": ["Radar Palatka"],
           "Radar North": ["Radar Arrival", "Radar Final"],
           "Radar Satellite": ["Radar North", "Radar Vitts"],
           "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"],
           "Radar West": ["Radar East"]
-        },
-        "inbound_assignments": {
-          "ALLMA": "Radar Arrival",
-          "ESENT": "Radar North",
-          "LUNNI2_E": "Radar North",
-          "MARQO3": "Radar Arrival",
-          "OHDEA2": "Radar Arrival",
-          "OMN": "Radar East",
-          "ORLNOV": "Radar West",
-          "QUBEN2": "Radar East",
-          "TEBOW2": "Radar West",
-          "V159_S": "Radar North",
-          "V51": "Radar East"
-        },
-        "departure_assignments": {
-          "KCRG": "Radar Satellite",
-          "KFHB": "Radar North",
-          "KHEG": "Radar West",
-          "KJAX": "Radar North",
-          "KNIP": "Radar West",
-          "KNRB": "Radar North",
-          "KSGJ": "Radar Satellite",
-          "KVQQ": "Radar West"
         }
       },
       "controllers": [
@@ -4391,36 +4368,13 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KJ1",
+        "default_consolidation": {
           "Radar Arrival": ["Radar Final"],
           "Radar Gainsville": ["Radar Palatka"],
           "Radar North": ["Radar Arrival"],
           "Radar Satellite": ["Radar East", "Radar North", "Radar Vitts", "Radar West"],
           "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"]
-        },
-        "inbound_assignments": {
-          "ALLMA": "Radar Arrival",
-          "ESENT": "Radar North",
-          "LUNNI2_E": "Radar North",
-          "MARQO3": "Radar Arrival",
-          "OHDEA2": "Radar Arrival",
-          "OMN": "Radar East",
-          "ORLNOV": "Radar West",
-          "QUBEN2": "Radar East",
-          "TEBOW2": "Radar West",
-          "V159_S": "Radar North",
-          "V51": "Radar East"
-        },
-        "departure_assignments": {
-          "KCRG": "Radar Satellite",
-          "KFHB": "Radar North",
-          "KHEG": "Radar West",
-          "KJAX": "Radar Satellite",
-          "KNIP": "Radar West",
-          "KNRB": "Radar North",
-          "KSGJ": "Radar Satellite",
-          "KVQQ": "Radar West"
         }
       },
       "controllers": [
@@ -4579,37 +4533,14 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KJ3",
+        "default_consolidation": {
           "Radar Arrival": ["Radar West"],
           "Radar Gainsville": ["Radar Palatka"],
           "Radar North": ["Radar Arrival", "Radar Final"],
           "Radar Satellite": ["Radar North", "Radar Vitts"],
           "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"],
           "Radar West": ["Radar East"]
-        },
-        "inbound_assignments": {
-          "ALLMA": "Radar Arrival",
-          "ESENT": "Radar North",
-          "LUNNI2_W": "Radar North",
-          "MARQO3": "Radar Arrival",
-          "OHDEA2": "Radar Arrival",
-          "OMN": "Radar East",
-          "ORLNOV": "Radar West",
-          "QUBEN2": "Radar East",
-          "TEBOW2": "Radar West",
-          "V159_S": "Radar Arrival",
-          "V51": "Radar East"
-        },
-        "departure_assignments": {
-          "KCRG": "Radar Satellite",
-          "KFHB": "Radar North",
-          "KHEG": "Radar West",
-          "KJAX": "Radar West",
-          "KNIP": "Radar West",
-          "KNRB": "Radar North",
-          "KSGJ": "Radar Satellite",
-          "KVQQ": "Radar West"
         }
       },
       "controllers": [
@@ -4768,36 +4699,13 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KJ4",
+        "default_consolidation": {
           "Radar Arrival": ["Radar Final"],
           "Radar Gainsville": ["Radar Palatka"],
           "Radar North": ["Radar Arrival"],
           "Radar Satellite": ["Radar East", "Radar North", "Radar Vitts", "Radar West"],
           "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"]
-        },
-        "inbound_assignments": {
-          "ALLMA": "Radar Arrival",
-          "ESENT": "Radar North",
-          "LUNNI2_W": "Radar North",
-          "MARQO3": "Radar Arrival",
-          "OHDEA2": "Radar Arrival",
-          "OMN": "Radar East",
-          "ORLNOV": "Radar West",
-          "QUBEN2": "Radar East",
-          "TEBOW2": "Radar West",
-          "V159_S": "Radar Arrival",
-          "V51": "Radar East"
-        },
-        "departure_assignments": {
-          "KCRG": "Radar Satellite",
-          "KFHB": "Radar North",
-          "KHEG": "Radar West",
-          "KJAX": "Radar North",
-          "KNIP": "Radar West",
-          "KNRB": "Radar North",
-          "KSGJ": "Radar Satellite",
-          "KVQQ": "Radar West"
         }
       },
       "controllers": [
@@ -4986,43 +4894,14 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KJ5",
+        "default_consolidation": {
           "Radar Arrival": ["Radar West"],
           "Radar Gainsville": ["Radar Palatka"],
           "Radar North": ["Radar Arrival", "Radar Final"],
           "Radar Satellite": ["Radar North", "Radar Vitts"],
           "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"],
           "Radar West": ["Radar East"]
-        },
-        "inbound_assignments": {
-          "ALLMA": "Radar Arrival",
-          "ESENT": "Radar North",
-          "LUNNI2_W": "Radar North",
-          "MARQO3": "Radar Arrival",
-          "OHDEA2": "Radar Arrival",
-          "OMN": "Radar East",
-          "ORL": "Radar Dunnellon",
-          "QUBEN2": "Radar East",
-          "SHREK2": "Radar Dunnellon",
-          "TEBOW2": "Radar West",
-          "V159": "Radar Dunnellon",
-          "V159_S": "Radar Arrival",
-          "V441 North": "Radar Dunnellon",
-          "V441 South": "Radar Palatka",
-          "V51": "Radar East",
-          "V537 East": "Radar Palatka",
-          "V537 West": "Radar Palatka"
-        },
-        "departure_assignments": {
-          "KCRG": "Radar Satellite",
-          "KFHB": "Radar North",
-          "KHEG": "Radar West",
-          "KJAX": "Radar North",
-          "KNIP": "Radar West",
-          "KNRB": "Radar North",
-          "KSGJ": "Radar Satellite",
-          "KVQQ": "Radar West"
         }
       },
       "controllers": [
@@ -5211,42 +5090,13 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KJ6",
+        "default_consolidation": {
           "Radar Arrival": ["Radar Final"],
           "Radar Gainsville": ["Radar Palatka"],
           "Radar North": ["Radar Arrival"],
           "Radar Satellite": ["Radar East", "Radar North", "Radar Vitts", "Radar West"],
           "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"]
-        },
-        "inbound_assignments": {
-          "ALLMA": "Radar Arrival",
-          "ESENT": "Radar North",
-          "LUNNI2_W": "Radar North",
-          "MARQO3": "Radar Arrival",
-          "OHDEA2": "Radar Arrival",
-          "OMN": "Radar East",
-          "ORL": "Radar Dunnellon",
-          "QUBEN2": "Radar East",
-          "SHREK2": "Radar Dunnellon",
-          "TEBOW2": "Radar West",
-          "V159": "Radar Dunnellon",
-          "V159_S": "Radar Arrival",
-          "V441 North": "Radar Dunnellon",
-          "V441 South": "Radar Palatka",
-          "V51": "Radar East",
-          "V537 East": "Radar Palatka",
-          "V537 West": "Radar Palatka"
-        },
-        "departure_assignments": {
-          "KCRG": "Radar Satellite",
-          "KFHB": "Radar North",
-          "KHEG": "Radar West",
-          "KJAX": "Radar West",
-          "KNIP": "Radar West",
-          "KNRB": "Radar North",
-          "KSGJ": "Radar Satellite",
-          "KVQQ": "Radar West"
         }
       },
       "controllers": [
@@ -5435,43 +5285,14 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KJ2",
+        "default_consolidation": {
           "Radar Arrival": ["Radar West"],
           "Radar Gainsville": ["Radar Palatka"],
           "Radar North": ["Radar Arrival", "Radar Final"],
           "Radar Satellite": ["Radar North", "Radar Vitts"],
           "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"],
           "Radar West": ["Radar East"]
-        },
-        "inbound_assignments": {
-          "ALLMA": "Radar Arrival",
-          "ESENT": "Radar North",
-          "LUNNI2_E": "Radar North",
-          "MARQO3": "Radar Arrival",
-          "OHDEA2": "Radar Arrival",
-          "OMN": "Radar East",
-          "ORL": "Radar Dunnellon",
-          "QUBEN2": "Radar East",
-          "SHREK2": "Radar Dunnellon",
-          "TEBOW2": "Radar West",
-          "V159": "Radar Dunnellon",
-          "V159_S": "Radar North",
-          "V441 North": "Radar Dunnellon",
-          "V441 South": "Radar Palatka",
-          "V51": "Radar East",
-          "V537 East": "Radar Palatka",
-          "V537 West": "Radar Palatka"
-        },
-        "departure_assignments": {
-          "KCRG": "Radar Satellite",
-          "KFHB": "Radar North",
-          "KHEG": "Radar West",
-          "KJAX": "Radar Satellite",
-          "KNIP": "Radar West",
-          "KNRB": "Radar North",
-          "KSGJ": "Radar Satellite",
-          "KVQQ": "Radar West"
         }
       },
       "controllers": [
@@ -5660,42 +5481,13 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KJ2",
+        "default_consolidation": {
           "Radar Arrival": ["Radar Final"],
           "Radar Gainsville": ["Radar Palatka"],
           "Radar North": ["Radar Arrival"],
           "Radar Satellite": ["Radar East", "Radar North", "Radar Vitts", "Radar West"],
           "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"]
-        },
-        "inbound_assignments": {
-          "ALLMA": "Radar Arrival",
-          "ESENT": "Radar North",
-          "LUNNI2_E": "Radar North",
-          "MARQO3": "Radar Arrival",
-          "OHDEA2": "Radar Arrival",
-          "OMN": "Radar East",
-          "ORL": "Radar Dunnellon",
-          "QUBEN2": "Radar East",
-          "SHREK2": "Radar Dunnellon",
-          "TEBOW2": "Radar West",
-          "V159": "Radar Dunnellon",
-          "V159_S": "Radar North",
-          "V441 North": "Radar Dunnellon",
-          "V441 South": "Radar Palatka",
-          "V51": "Radar East",
-          "V537 East": "Radar Palatka",
-          "V537 West": "Radar Palatka"
-        },
-        "departure_assignments": {
-          "KCRG": "Radar Satellite",
-          "KFHB": "Radar North",
-          "KHEG": "Radar West",
-          "KJAX": "Radar Satellite",
-          "KNIP": "Radar West",
-          "KNRB": "Radar North",
-          "KSGJ": "Radar Satellite",
-          "KVQQ": "Radar West"
         }
       },
       "controllers": [
@@ -5761,6 +5553,202 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "KJA": {
+        "inbound_assignments": {
+          "ALLMA": "Radar Arrival",
+          "ESENT": "Radar North",
+          "LUNNI2_E": "Radar North",
+          "MARQO3": "Radar Arrival",
+          "OHDEA2": "Radar Arrival",
+          "OMN": "Radar East",
+          "ORLNOV": "Radar West",
+          "QUBEN2": "Radar East",
+          "TEBOW2": "Radar West",
+          "V159_S": "Radar North",
+          "V51": "Radar East"
+        },
+        "departure_assignments": {
+          "KCRG": "Radar Satellite",
+          "KFHB": "Radar North",
+          "KHEG": "Radar West",
+          "KJAX": "Radar North",
+          "KNIP": "Radar West",
+          "KNRB": "Radar North",
+          "KSGJ": "Radar Satellite",
+          "KVQQ": "Radar West"
+        }
+      },
+      "KJ1": {
+        "inbound_assignments": {
+          "ALLMA": "Radar Arrival",
+          "ESENT": "Radar North",
+          "LUNNI2_E": "Radar North",
+          "MARQO3": "Radar Arrival",
+          "OHDEA2": "Radar Arrival",
+          "OMN": "Radar East",
+          "ORLNOV": "Radar West",
+          "QUBEN2": "Radar East",
+          "TEBOW2": "Radar West",
+          "V159_S": "Radar North",
+          "V51": "Radar East"
+        },
+        "departure_assignments": {
+          "KCRG": "Radar Satellite",
+          "KFHB": "Radar North",
+          "KHEG": "Radar West",
+          "KJAX": "Radar Satellite",
+          "KNIP": "Radar West",
+          "KNRB": "Radar North",
+          "KSGJ": "Radar Satellite",
+          "KVQQ": "Radar West"
+        }
+      },
+      "KJ2": {
+        "inbound_assignments": {
+          "ALLMA": "Radar Arrival",
+          "ESENT": "Radar North",
+          "LUNNI2_E": "Radar North",
+          "MARQO3": "Radar Arrival",
+          "OHDEA2": "Radar Arrival",
+          "OMN": "Radar East",
+          "ORL": "Radar Dunnellon",
+          "QUBEN2": "Radar East",
+          "SHREK2": "Radar Dunnellon",
+          "TEBOW2": "Radar West",
+          "V159": "Radar Dunnellon",
+          "V159_S": "Radar North",
+          "V441 North": "Radar Dunnellon",
+          "V441 South": "Radar Palatka",
+          "V51": "Radar East",
+          "V537 East": "Radar Palatka",
+          "V537 West": "Radar Palatka"
+        },
+        "departure_assignments": {
+          "KCRG": "Radar Satellite",
+          "KFHB": "Radar North",
+          "KHEG": "Radar West",
+          "KJAX": "Radar Satellite",
+          "KNIP": "Radar West",
+          "KNRB": "Radar North",
+          "KSGJ": "Radar Satellite",
+          "KVQQ": "Radar West"
+        }
+      },
+      "KJ3": {
+        "inbound_assignments": {
+          "ALLMA": "Radar Arrival",
+          "ESENT": "Radar North",
+          "LUNNI2_W": "Radar North",
+          "MARQO3": "Radar Arrival",
+          "OHDEA2": "Radar Arrival",
+          "OMN": "Radar East",
+          "ORLNOV": "Radar West",
+          "QUBEN2": "Radar East",
+          "TEBOW2": "Radar West",
+          "V159_S": "Radar Arrival",
+          "V51": "Radar East"
+        },
+        "departure_assignments": {
+          "KCRG": "Radar Satellite",
+          "KFHB": "Radar North",
+          "KHEG": "Radar West",
+          "KJAX": "Radar West",
+          "KNIP": "Radar West",
+          "KNRB": "Radar North",
+          "KSGJ": "Radar Satellite",
+          "KVQQ": "Radar West"
+        }
+      },
+      "KJ4": {
+        "inbound_assignments": {
+          "ALLMA": "Radar Arrival",
+          "ESENT": "Radar North",
+          "LUNNI2_W": "Radar North",
+          "MARQO3": "Radar Arrival",
+          "OHDEA2": "Radar Arrival",
+          "OMN": "Radar East",
+          "ORLNOV": "Radar West",
+          "QUBEN2": "Radar East",
+          "TEBOW2": "Radar West",
+          "V159_S": "Radar Arrival",
+          "V51": "Radar East"
+        },
+        "departure_assignments": {
+          "KCRG": "Radar Satellite",
+          "KFHB": "Radar North",
+          "KHEG": "Radar West",
+          "KJAX": "Radar North",
+          "KNIP": "Radar West",
+          "KNRB": "Radar North",
+          "KSGJ": "Radar Satellite",
+          "KVQQ": "Radar West"
+        }
+      },
+      "KJ5": {
+        "inbound_assignments": {
+          "ALLMA": "Radar Arrival",
+          "ESENT": "Radar North",
+          "LUNNI2_W": "Radar North",
+          "MARQO3": "Radar Arrival",
+          "OHDEA2": "Radar Arrival",
+          "OMN": "Radar East",
+          "ORL": "Radar Dunnellon",
+          "QUBEN2": "Radar East",
+          "SHREK2": "Radar Dunnellon",
+          "TEBOW2": "Radar West",
+          "V159": "Radar Dunnellon",
+          "V159_S": "Radar Arrival",
+          "V441 North": "Radar Dunnellon",
+          "V441 South": "Radar Palatka",
+          "V51": "Radar East",
+          "V537 East": "Radar Palatka",
+          "V537 West": "Radar Palatka"
+        },
+        "departure_assignments": {
+          "KCRG": "Radar Satellite",
+          "KFHB": "Radar North",
+          "KHEG": "Radar West",
+          "KJAX": "Radar North",
+          "KNIP": "Radar West",
+          "KNRB": "Radar North",
+          "KSGJ": "Radar Satellite",
+          "KVQQ": "Radar West"
+        }
+      },
+      "KJ6": {
+        "inbound_assignments": {
+          "ALLMA": "Radar Arrival",
+          "ESENT": "Radar North",
+          "LUNNI2_W": "Radar North",
+          "MARQO3": "Radar Arrival",
+          "OHDEA2": "Radar Arrival",
+          "OMN": "Radar East",
+          "ORL": "Radar Dunnellon",
+          "QUBEN2": "Radar East",
+          "SHREK2": "Radar Dunnellon",
+          "TEBOW2": "Radar West",
+          "V159": "Radar Dunnellon",
+          "V159_S": "Radar Arrival",
+          "V441 North": "Radar Dunnellon",
+          "V441 South": "Radar Palatka",
+          "V51": "Radar East",
+          "V537 East": "Radar Palatka",
+          "V537 West": "Radar Palatka"
+        },
+        "departure_assignments": {
+          "KCRG": "Radar Satellite",
+          "KFHB": "Radar North",
+          "KHEG": "Radar West",
+          "KJAX": "Radar West",
+          "KNIP": "Radar West",
+          "KNRB": "Radar North",
+          "KSGJ": "Radar Satellite",
+          "KVQQ": "Radar West"
+        }
+      }
+    },
+
     "center": "KJAX",
     "force_ql_self": true,
     "coordination_fixes": {

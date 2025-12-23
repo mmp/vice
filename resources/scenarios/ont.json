@@ -3057,30 +3057,12 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "EM4",
+        "default_consolidation": {
           "ONT_N_APP": ["ONT_V_APP"],
           "ONT_P_APP": ["ONT_I_APP", "ONT_N_APP"],
           "ONT_V_APP": ["PSP_S_APP"],
           "PSP_S_APP": ["PSP_D_APP"]
-        },
-        "departure_assignments": {
-          "KONT": "ONT_I_APP",
-          "KPSP": "PSP_D_APP",
-          "KSBD": "ONT_N_APP"
-        },
-        "inbound_assignments": {
-          "ZIGGY8": "ONT_N_APP",
-          "JCKIE2": "ONT_N_APP",
-          "SIZLR4": "ONT_V_APP",
-          "SCBBY2/THRNE4.SNSTT": "ONT_V_APP",
-          "SCBBY2.DEWWW": "ONT_V_APP",
-          "THRNE4": "ONT_V_APP",
-          "DSNEE6.LRSON": "ONT_V_APP",
-          "DSNEE6.DRTHI": "ONT_V_APP",
-          "KARLB3": "ONT_I_APP",
-          "SBD OCEANIC": "ONT_I_APP",
-          "RDBUL1": "PSP_S_APP"
         }
       },
       "controllers": [
@@ -3211,29 +3193,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "EM3",
+        "default_consolidation": {
           "ONT_N_APP": ["ONT_I_APP", "ONT_V_APP", "PSP_S_APP"],
           "ONT_P_APP": ["ONT_N_APP"],
           "PSP_S_APP": ["PSP_D_APP"]
-        },
-        "departure_assignments": {
-          "KONT": "ONT_P_APP",
-          "KPSP": "PSP_D_APP",
-          "KSBD": "ONT_N_APP"
-        },
-        "inbound_assignments": {
-          "ZIGGY8": "ONT_N_APP",
-          "JCKIE2": "ONT_N_APP",
-          "SIZLR4": "ONT_V_APP",
-          "SCBBY2/THRNE4.SNSTT": "ONT_V_APP",
-          "SCBBY2.DEWWW": "ONT_V_APP",
-          "THRNE4": "ONT_V_APP",
-          "ROOBY3.LRSON": "ONT_V_APP",
-          "ROOBY3.DRTHI": "ONT_V_APP",
-          "KARLB3": "ONT_I_APP",
-          "SBD OCEANIC": "ONT_I_APP",
-          "RDBUL1": "PSP_S_APP"
         }
       },
       "controllers": [
@@ -3306,16 +3270,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "13R",
+        "default_consolidation": {
           "PSP_S_APP": ["PSP_D_APP"]
-        },
-        "departure_assignments": {
-          "KPSP": "PSP_D_APP"
-        },
-        "inbound_assignments": {
-          "RDBUL1": "PSP_S_APP",
-          "SIZLR4.SPRINGS": "PSP_S_APP"
         }
       },
       "controllers": ["PSP_TWR", "ONT_V_APP", "PSP_D_APP", "LAX_09_CTR", "LAX_10_CTR", "LAX_19_CTR"],
@@ -3354,16 +3311,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "13R",
+        "default_consolidation": {
           "PSP_S_APP": ["PSP_D_APP"]
-        },
-        "departure_assignments": {
-          "KPSP": "PSP_D_APP"
-        },
-        "inbound_assignments": {
-          "RDBUL1": "PSP_S_APP",
-          "SIZLR4.SPRINGS": "PSP_S_APP"
         }
       },
       "controllers": ["PSP_TWR", "ONT_V_APP", "PSP_D_APP", "LAX_09_CTR", "LAX_10_CTR", "LAX_19_CTR"],
@@ -3451,30 +3401,12 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "EMP",
+        "default_consolidation": {
           "ONT_N_APP": ["ONT_V_APP"],
           "ONT_P_APP": ["ONT_I_APP", "ONT_N_APP"],
           "ONT_V_APP": ["PSP_S_APP"],
           "PSP_S_APP": ["PSP_D_APP"]
-        },
-        "departure_assignments": {
-          "KONT": "ONT_I_APP",
-          "KPSP": "PSP_D_APP",
-          "KSBD": "ONT_N_APP"
-        },
-        "inbound_assignments": {
-          "ZIGGY8": "ONT_N_APP",
-          "JCKIE2.E": "ONT_N_APP",
-          "SIZLR4": "ONT_V_APP",
-          "SCBBY2/THRNE4.SNSTT.E": "ONT_V_APP",
-          "SCBBY2.DEWWW.E": "ONT_V_APP",
-          "THRNE4": "ONT_V_APP",
-          "ROOBY3.LRSON": "ONT_V_APP",
-          "ROOBY3.DRTHI": "ONT_V_APP",
-          "KARLB3": "ONT_I_APP",
-          "SBD OCEANIC": "ONT_I_APP",
-          "RDBUL1": "PSP_S_APP"
         }
       },
       "controllers": [
@@ -3601,28 +3533,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "EM1",
+        "default_consolidation": {
           "ONT_N_APP": ["ONT_I_APP", "ONT_P_APP", "ONT_V_APP", "PSP_S_APP"],
           "PSP_S_APP": ["PSP_D_APP"]
-        },
-        "departure_assignments": {
-          "KONT": "ONT_I_APP",
-          "KPSP": "PSP_D_APP",
-          "KSBD": "ONT_N_APP"
-        },
-        "inbound_assignments": {
-          "ZIGGY8": "ONT_N_APP",
-          "JCKIE2.E": "ONT_N_APP",
-          "SIZLR4": "ONT_V_APP",
-          "SCBBY2/THRNE4.SNSTT.E": "ONT_V_APP",
-          "SCBBY2.DEWWW.E": "ONT_V_APP",
-          "THRNE4": "ONT_V_APP",
-          "DSNEE6.LRSON": "ONT_V_APP",
-          "DSNEE6.DRTHI": "ONT_V_APP",
-          "KARLB3": "ONT_I_APP",
-          "SBD OCEANIC": "ONT_I_APP",
-          "RDBUL1": "PSP_S_APP"
         }
       },
       "controllers": [
@@ -3715,21 +3629,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "EM2",
+        "default_consolidation": {
           "ONT_N_APP": ["ONT_I_APP", "ONT_P_APP", "ONT_V_APP"]
-        },
-        "departure_assignments": {
-          "KONT": "ONT_I_APP",
-          "KSBD": "ONT_N_APP"
-        },
-        "inbound_assignments": {
-          "ZIGGY8": "ONT_N_APP",
-          "JCKIE2": "ONT_N_APP",
-          "SCBBY2/THRNE4.SNSTT": "ONT_V_APP",
-          "SCBBY2.DEWWW": "ONT_V_APP",
-          "KARLB3": "ONT_I_APP",
-          "SBD OCEANIC": "ONT_I_APP"
         }
       },
       "controllers": [
@@ -3774,6 +3676,112 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "EMP": {
+        "inbound_assignments": {
+          "JCKIE2.E": "ONT_N_APP",
+          "KARLB3": "ONT_I_APP",
+          "RDBUL1": "PSP_S_APP",
+          "ROOBY3.DRTHI": "ONT_V_APP",
+          "ROOBY3.LRSON": "ONT_V_APP",
+          "SBD OCEANIC": "ONT_I_APP",
+          "SCBBY2.DEWWW.E": "ONT_V_APP",
+          "SCBBY2/THRNE4.SNSTT.E": "ONT_V_APP",
+          "SIZLR4": "ONT_V_APP",
+          "THRNE4": "ONT_V_APP",
+          "ZIGGY8": "ONT_N_APP"
+        },
+        "departure_assignments": {
+          "KONT": "ONT_I_APP",
+          "KPSP": "PSP_D_APP",
+          "KSBD": "ONT_N_APP"
+        }
+      },
+      "EM1": {
+        "inbound_assignments": {
+          "DSNEE6.DRTHI": "ONT_V_APP",
+          "DSNEE6.LRSON": "ONT_V_APP",
+          "JCKIE2.E": "ONT_N_APP",
+          "KARLB3": "ONT_I_APP",
+          "RDBUL1": "PSP_S_APP",
+          "SBD OCEANIC": "ONT_I_APP",
+          "SCBBY2.DEWWW.E": "ONT_V_APP",
+          "SCBBY2/THRNE4.SNSTT.E": "ONT_V_APP",
+          "SIZLR4": "ONT_V_APP",
+          "THRNE4": "ONT_V_APP",
+          "ZIGGY8": "ONT_N_APP"
+        },
+        "departure_assignments": {
+          "KONT": "ONT_I_APP",
+          "KPSP": "PSP_D_APP",
+          "KSBD": "ONT_N_APP"
+        }
+      },
+      "EM2": {
+        "inbound_assignments": {
+          "JCKIE2": "ONT_N_APP",
+          "KARLB3": "ONT_I_APP",
+          "SBD OCEANIC": "ONT_I_APP",
+          "SCBBY2.DEWWW": "ONT_V_APP",
+          "SCBBY2/THRNE4.SNSTT": "ONT_V_APP",
+          "ZIGGY8": "ONT_N_APP"
+        },
+        "departure_assignments": {
+          "KONT": "ONT_I_APP",
+          "KSBD": "ONT_N_APP"
+        }
+      },
+      "EM3": {
+        "inbound_assignments": {
+          "JCKIE2": "ONT_N_APP",
+          "KARLB3": "ONT_I_APP",
+          "RDBUL1": "PSP_S_APP",
+          "ROOBY3.DRTHI": "ONT_V_APP",
+          "ROOBY3.LRSON": "ONT_V_APP",
+          "SBD OCEANIC": "ONT_I_APP",
+          "SCBBY2.DEWWW": "ONT_V_APP",
+          "SCBBY2/THRNE4.SNSTT": "ONT_V_APP",
+          "SIZLR4": "ONT_V_APP",
+          "THRNE4": "ONT_V_APP",
+          "ZIGGY8": "ONT_N_APP"
+        },
+        "departure_assignments": {
+          "KONT": "ONT_P_APP",
+          "KPSP": "PSP_D_APP",
+          "KSBD": "ONT_N_APP"
+        }
+      },
+      "EM4": {
+        "inbound_assignments": {
+          "DSNEE6.DRTHI": "ONT_V_APP",
+          "DSNEE6.LRSON": "ONT_V_APP",
+          "JCKIE2": "ONT_N_APP",
+          "KARLB3": "ONT_I_APP",
+          "RDBUL1": "PSP_S_APP",
+          "SBD OCEANIC": "ONT_I_APP",
+          "SCBBY2.DEWWW": "ONT_V_APP",
+          "SCBBY2/THRNE4.SNSTT": "ONT_V_APP",
+          "SIZLR4": "ONT_V_APP",
+          "THRNE4": "ONT_V_APP",
+          "ZIGGY8": "ONT_N_APP"
+        },
+        "departure_assignments": {
+          "KONT": "ONT_I_APP",
+          "KPSP": "PSP_D_APP",
+          "KSBD": "ONT_N_APP"
+        }
+      },
+      "13R": {
+        "inbound_assignments": {
+          "RDBUL1": "PSP_S_APP",
+          "SIZLR4.SPRINGS": "PSP_S_APP"
+        },
+        "departure_assignments": {
+          "KPSP": "PSP_D_APP"
+        }
+      }
+    },
+
     "controller_configs": {
       "3P": {
         "flight_following_airspace": [

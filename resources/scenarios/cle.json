@@ -3878,28 +3878,12 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KC4",
+        "default_consolidation": {
           "CAK_E_APP": ["CAK_S_APP", "MFD_W_APP"],
           "CLE_A_APP": ["CLE_D_DEP", "CLE_F_APP"],
           "CLE_D_DEP": ["CLE_N_APP", "CLE_R_DEP"],
           "CLE_N_APP": ["CAK_E_APP"]
-        },
-        "inbound_assignments": {
-          "BRWNZ4": "CLE_A_APP",
-          "GOSIC-FIVUM": "MFD_W_APP",
-          "HUUVR1": "CAK_S_APP",
-          "ROKNN3": "CLE_A_APP",
-          "ROLLN2": "CLE_A_APP",
-          "TRYBE4": "CLE_A_APP",
-          "ZZIPS1": "CAK_E_APP"
-        },
-        "departure_assignments": {
-          "KBKL": "CLE_N_APP",
-          "KCAK": "CAK_E_APP",
-          "KCGF": "CLE_N_APP",
-          "KCLE": "CLE_R_DEP",
-          "KMFD": "MFD_W_APP"
         }
       },
       "controllers": ["CLE_66_CTR", "CLE_TWR", "DTW_F_APP", "BKL_TWR", "CGF_TWR", "MFD_TWR", "CAK_TWR"],
@@ -3960,15 +3944,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KC3",
+        "default_consolidation": {
           "CLE_F_APP": []
-        },
-        "inbound_assignments": {
-          "BRWNZ4_FINALS": "CLE_F_APP",
-          "ROKNN3_FINALS": "CLE_F_APP",
-          "ROLLN2_FINALS": "CLE_F_APP",
-          "TRYBE4_FINALS": "CLE_F_APP"
         }
       },
       "controllers": ["CLE_A_APP", "CLE_TWR", "DTW_F_APP", "CLE_66_CTR"],
@@ -4002,15 +3980,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KC1",
+        "default_consolidation": {
           "CLE_A_APP": []
-        },
-        "inbound_assignments": {
-          "BRWNZ4_FEEDERS": "CLE_A_APP",
-          "ROKNN3_FEEDERS": "CLE_A_APP",
-          "ROLLN2_FEEDERS": "CLE_A_APP",
-          "TRYBE4_FEEDERS": "CLE_A_APP"
         }
       },
       "controllers": ["CLE_F_APP", "CLE_TWR", "DTW_F_APP", "CLE_66_CTR"],
@@ -4044,15 +4016,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KCL",
+        "default_consolidation": {
           "CLE_A_APP": []
-        },
-        "inbound_assignments": {
-          "BRWNZ4_FEEDERN": "CLE_A_APP",
-          "ROKNN3_FEEDERN": "CLE_A_APP",
-          "ROLLN2_FEEDERN": "CLE_A_APP",
-          "TRYBE4_FEEDERN": "CLE_A_APP"
         }
       },
       "controllers": ["CLE_TWR", "DTW_F_APP", "CLE_66_CTR", "CLE_F_APP"],
@@ -4086,15 +4052,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KC2",
+        "default_consolidation": {
           "CLE_F_APP": []
-        },
-        "inbound_assignments": {
-          "BRWNZ4_FINALN": "CLE_F_APP",
-          "ROKNN3_FINALN": "CLE_F_APP",
-          "ROLLN2_FINALN": "CLE_F_APP",
-          "TRYBE4_FINALN": "CLE_F_APP"
         }
       },
       "controllers": ["CLE_A_APP", "CLE_TWR", "DTW_F_APP", "CLE_66_CTR"],
@@ -4169,28 +4129,12 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KC5",
+        "default_consolidation": {
           "CAK_E_APP": ["CAK_S_APP", "MFD_W_APP"],
           "CLE_A_APP": ["CLE_D_DEP", "CLE_F_APP"],
           "CLE_D_DEP": ["CLE_N_APP", "CLE_R_DEP"],
           "CLE_N_APP": ["CAK_E_APP"]
-        },
-        "inbound_assignments": {
-          "BRWNZ4": "CLE_A_APP",
-          "GOSIC-FIVUM": "MFD_W_APP",
-          "HUUVR1": "CAK_S_APP",
-          "ROKNN3": "CLE_A_APP",
-          "ROLLN2": "CLE_A_APP",
-          "TRYBE4": "CLE_A_APP",
-          "ZZIPS1": "CAK_E_APP"
-        },
-        "departure_assignments": {
-          "KBKL": "CLE_N_APP",
-          "KCAK": "CAK_E_APP",
-          "KCGF": "CLE_N_APP",
-          "KCLE": "CLE_D_DEP",
-          "KMFD": "MFD_W_APP"
         }
       },
       "controllers": ["CLE_66_CTR", "CLE_TWR", "DTW_F_APP", "BKL_TWR", "CGF_TWR", "MFD_TWR", "CAK_TWR"],
@@ -4228,6 +4172,77 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "KCL": {
+        "inbound_assignments": {
+          "BRWNZ4_FEEDERN": "CLE_A_APP",
+          "ROKNN3_FEEDERN": "CLE_A_APP",
+          "ROLLN2_FEEDERN": "CLE_A_APP",
+          "TRYBE4_FEEDERN": "CLE_A_APP"
+        }
+      },
+      "KC1": {
+        "inbound_assignments": {
+          "BRWNZ4_FEEDERS": "CLE_A_APP",
+          "ROKNN3_FEEDERS": "CLE_A_APP",
+          "ROLLN2_FEEDERS": "CLE_A_APP",
+          "TRYBE4_FEEDERS": "CLE_A_APP"
+        }
+      },
+      "KC2": {
+        "inbound_assignments": {
+          "BRWNZ4_FINALN": "CLE_F_APP",
+          "ROKNN3_FINALN": "CLE_F_APP",
+          "ROLLN2_FINALN": "CLE_F_APP",
+          "TRYBE4_FINALN": "CLE_F_APP"
+        }
+      },
+      "KC3": {
+        "inbound_assignments": {
+          "BRWNZ4_FINALS": "CLE_F_APP",
+          "ROKNN3_FINALS": "CLE_F_APP",
+          "ROLLN2_FINALS": "CLE_F_APP",
+          "TRYBE4_FINALS": "CLE_F_APP"
+        }
+      },
+      "KC4": {
+        "inbound_assignments": {
+          "BRWNZ4": "CLE_A_APP",
+          "GOSIC-FIVUM": "MFD_W_APP",
+          "HUUVR1": "CAK_S_APP",
+          "ROKNN3": "CLE_A_APP",
+          "ROLLN2": "CLE_A_APP",
+          "TRYBE4": "CLE_A_APP",
+          "ZZIPS1": "CAK_E_APP"
+        },
+        "departure_assignments": {
+          "KBKL": "CLE_N_APP",
+          "KCAK": "CAK_E_APP",
+          "KCGF": "CLE_N_APP",
+          "KCLE": "CLE_R_DEP",
+          "KMFD": "MFD_W_APP"
+        }
+      },
+      "KC5": {
+        "inbound_assignments": {
+          "BRWNZ4": "CLE_A_APP",
+          "GOSIC-FIVUM": "MFD_W_APP",
+          "HUUVR1": "CAK_S_APP",
+          "ROKNN3": "CLE_A_APP",
+          "ROLLN2": "CLE_A_APP",
+          "TRYBE4": "CLE_A_APP",
+          "ZZIPS1": "CAK_E_APP"
+        },
+        "departure_assignments": {
+          "KBKL": "CLE_N_APP",
+          "KCAK": "CAK_E_APP",
+          "KCGF": "CLE_N_APP",
+          "KCLE": "CLE_D_DEP",
+          "KMFD": "MFD_W_APP"
+        }
+      }
+    },
+
     "force_ql_self": true,
     "coordination_fixes": {
       "BRWNZ": [

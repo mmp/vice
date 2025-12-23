@@ -2580,24 +2580,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KM1",
+        "default_consolidation": {
           "MCI_A_APP": ["MCI_B_APP", "MCI_F_APP"],
           "MCI_E_APP": ["MCI_A_APP", "MCI_N_APP", "MCI_S_APP", "MCI_W_APP"],
           "MCI_F_APP": ["MCI_P_APP"]
-        },
-        "inbound_assignments": {
-          "JSONN4": "MCI_B_APP",
-          "MHOMS3": "MCI_A_APP",
-          "RUDDH3": "MCI_A_APP",
-          "WUTNG3": "MCI_B_APP"
-        },
-        "departure_assignments": {
-          "KIXD": "MCI_S_APP",
-          "KMCI": "MCI_E_APP",
-          "KMKC": "MCI_S_APP",
-          "KOJC": "MCI_S_APP",
-          "KSTJ": "MCI_N_APP"
         }
       },
       "controllers": ["KC_40_CTR", "KC_42_CTR", "KC_44_CTR", "KC_46_CTR", "KC_48_CTR", "MCI_TWR"],
@@ -2680,24 +2667,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KM1",
+        "default_consolidation": {
           "MCI_A_APP": ["MCI_B_APP", "MCI_F_APP"],
           "MCI_E_APP": ["MCI_A_APP", "MCI_N_APP", "MCI_S_APP", "MCI_W_APP"],
           "MCI_F_APP": ["MCI_P_APP"]
-        },
-        "inbound_assignments": {
-          "JSONN4": "MCI_B_APP",
-          "MHOMS3": "MCI_A_APP",
-          "RUDDH3": "MCI_A_APP",
-          "WUTNG3": "MCI_B_APP"
-        },
-        "departure_assignments": {
-          "KIXD": "MCI_S_APP",
-          "KMCI": "MCI_E_APP",
-          "KMKC": "MCI_S_APP",
-          "KOJC": "MCI_S_APP",
-          "KSTJ": "MCI_N_APP"
         }
       },
       "controllers": ["KC_40_CTR", "KC_42_CTR", "KC_44_CTR", "KC_46_CTR", "KC_48_CTR", "MCI_TWR"],
@@ -2776,24 +2750,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KMC",
+        "default_consolidation": {
           "MCI_A_APP": ["MCI_B_APP", "MCI_F_APP"],
           "MCI_E_APP": ["MCI_A_APP", "MCI_N_APP", "MCI_S_APP", "MCI_W_APP"],
           "MCI_F_APP": ["MCI_P_APP"]
-        },
-        "inbound_assignments": {
-          "JSONN4": "MCI_B_APP",
-          "MHOMS3": "MCI_A_APP",
-          "RUDDH3": "MCI_A_APP",
-          "WUTNG3": "MCI_B_APP"
-        },
-        "departure_assignments": {
-          "KIXD": "MCI_S_APP",
-          "KMCI": "MCI_W_APP",
-          "KMKC": "MCI_S_APP",
-          "KOJC": "MCI_S_APP",
-          "KSTJ": "MCI_N_APP"
         }
       },
       "controllers": ["KC_40_CTR", "KC_42_CTR", "KC_44_CTR", "KC_46_CTR", "KC_48_CTR", "MCI_TWR"],
@@ -2867,24 +2828,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KM1",
+        "default_consolidation": {
           "MCI_A_APP": ["MCI_B_APP", "MCI_F_APP"],
           "MCI_E_APP": ["MCI_A_APP", "MCI_N_APP", "MCI_S_APP", "MCI_W_APP"],
           "MCI_F_APP": ["MCI_P_APP"]
-        },
-        "inbound_assignments": {
-          "JSONN4": "MCI_B_APP",
-          "MHOMS3": "MCI_A_APP",
-          "RUDDH3": "MCI_A_APP",
-          "WUTNG3": "MCI_B_APP"
-        },
-        "departure_assignments": {
-          "KIXD": "MCI_S_APP",
-          "KMCI": "MCI_E_APP",
-          "KMKC": "MCI_S_APP",
-          "KOJC": "MCI_S_APP",
-          "KSTJ": "MCI_N_APP"
         }
       },
       "controllers": ["KC_40_CTR", "KC_42_CTR", "KC_44_CTR", "KC_46_CTR", "KC_48_CTR", "MCI_TWR"],
@@ -2922,6 +2870,39 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "KMC": {
+        "inbound_assignments": {
+          "JSONN4": "MCI_B_APP",
+          "MHOMS3": "MCI_A_APP",
+          "RUDDH3": "MCI_A_APP",
+          "WUTNG3": "MCI_B_APP"
+        },
+        "departure_assignments": {
+          "KIXD": "MCI_S_APP",
+          "KMCI": "MCI_W_APP",
+          "KMKC": "MCI_S_APP",
+          "KOJC": "MCI_S_APP",
+          "KSTJ": "MCI_N_APP"
+        }
+      },
+      "KM1": {
+        "inbound_assignments": {
+          "JSONN4": "MCI_B_APP",
+          "MHOMS3": "MCI_A_APP",
+          "RUDDH3": "MCI_A_APP",
+          "WUTNG3": "MCI_B_APP"
+        },
+        "departure_assignments": {
+          "KIXD": "MCI_S_APP",
+          "KMCI": "MCI_E_APP",
+          "KMKC": "MCI_S_APP",
+          "KOJC": "MCI_S_APP",
+          "KSTJ": "MCI_N_APP"
+        }
+      }
+    },
+
     "center": "KMCI",
     "airspace_awareness": [
       {

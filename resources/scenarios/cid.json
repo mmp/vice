@@ -610,20 +610,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "27X",
+        "default_consolidation": {
           "CID_S_APP": ["CID_N_APP"]
-        },
-        "inbound_assignments": {
-          "EAST CID ARR": "CID_N_APP",
-          "NORTH CID ARR": "CID_N_APP",
-          "SOUTHEAST CID ARR": "CID_S_APP",
-          "WEST CID ARR": "CID_S_APP",
-          "WEST IOW ARR": "CID_S_APP"
-        },
-        "departure_assignments": {
-          "KCID": "CID_N_APP",
-          "KIOW": "CID_S_APP"
         }
       },
       "controllers": ["CID_TWR", "IOW_TWR", "CID_S_APP", "CID_N_APP", "CHI_56_CTR"],
@@ -673,20 +662,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "9XX",
+        "default_consolidation": {
           "CID_S_APP": ["CID_N_APP"]
-        },
-        "inbound_assignments": {
-          "EAST CID ARR": "CID_N_APP",
-          "NORTH CID ARR": "CID_N_APP",
-          "SOUTHEAST CID ARR": "CID_S_APP",
-          "WEST CID ARR": "CID_S_APP",
-          "WEST IOW ARR": "CID_S_APP"
-        },
-        "departure_assignments": {
-          "KCID": "CID_S_APP",
-          "KIOW": "CID_S_APP"
         }
       },
       "controllers": ["CID_TWR", "IOW_TWR", "CID_S_APP", "CID_N_APP", "CHI_56_CTR"],
@@ -709,6 +687,35 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "27X": {
+        "inbound_assignments": {
+          "EAST CID ARR": "CID_N_APP",
+          "NORTH CID ARR": "CID_N_APP",
+          "SOUTHEAST CID ARR": "CID_S_APP",
+          "WEST CID ARR": "CID_S_APP",
+          "WEST IOW ARR": "CID_S_APP"
+        },
+        "departure_assignments": {
+          "KCID": "CID_N_APP",
+          "KIOW": "CID_S_APP"
+        }
+      },
+      "9XX": {
+        "inbound_assignments": {
+          "EAST CID ARR": "CID_N_APP",
+          "NORTH CID ARR": "CID_N_APP",
+          "SOUTHEAST CID ARR": "CID_S_APP",
+          "WEST CID ARR": "CID_S_APP",
+          "WEST IOW ARR": "CID_S_APP"
+        },
+        "departure_assignments": {
+          "KCID": "CID_S_APP",
+          "KIOW": "CID_S_APP"
+        }
+      }
+    },
+
     "center": "N041.53.04.016,W091.42.23.115",
     "radar_sites": {
       "CID": {

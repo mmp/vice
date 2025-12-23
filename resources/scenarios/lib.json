@@ -2945,6 +2945,15 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "LIB": {
+        "inbound_assignments": {
+          "WRI DIXIE": "5S"
+        }
+      },
+      "LI1": {}
+    },
+
     "center": "N040.45.26.477,W074.24.28.789",
     "range": 60,
     "pdb": {
@@ -3444,13 +3453,10 @@
   "scenarios": {
     "Liberty Combined - JFK Owns Coney": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "LIB",
+        "default_consolidation": {
           "5E": ["5T", "5W"],
           "5W": ["5S"]
-        },
-        "inbound_assignments": {
-          "WRI DIXIE": "5S"
         }
       },
       "controllers": ["5E", "4N", "1L", "2J", "C35", "C36", "C39", "C51", "C55", "C56", "C68", "B06", "B19"],
@@ -3544,13 +3550,10 @@
     },
     "Liberty Combined - LGA Owns Coney": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "LIB",
+        "default_consolidation": {
           "5E": ["5T", "5W"],
           "5W": ["5S"]
-        },
-        "inbound_assignments": {
-          "WRI DIXIE": "5S"
         }
       },
       "controllers": ["5E", "4N", "1L", "2J", "C35", "C36", "C39", "C51", "C55", "C56", "C68", "B06", "B19"],
@@ -3639,8 +3642,8 @@
     },
     "Liberty East": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "LI1",
+        "default_consolidation": {
           "5E": []
         }
       },
@@ -3765,8 +3768,8 @@
     },
     "Liberty North": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "LI1",
+        "default_consolidation": {
           "5T": []
         }
       },
@@ -3871,12 +3874,9 @@
     },
     "Liberty South JFK Owns Coney": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "LIB",
+        "default_consolidation": {
           "5S": []
-        },
-        "inbound_assignments": {
-          "WRI DIXIE": "5S"
         }
       },
       "controllers": ["5E", "5W", "5S", "5T", "4N", "1L", "2J", "C56", "C68", "C55", "C35", "C51", "C39", "B06", "B19"],
@@ -3960,12 +3960,9 @@
     },
     "Liberty South LGA Owns Coney": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "LIB",
+        "default_consolidation": {
           "5S": []
-        },
-        "inbound_assignments": {
-          "WRI DIXIE": "5S"
         }
       },
       "controllers": ["5E", "5W", "5S", "5T", "4N", "1L", "2J", "C56", "C68", "C55", "C35", "C51", "C39", "B06", "B19"],
@@ -4043,8 +4040,8 @@
     },
     "Liberty West": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "LI1",
+        "default_consolidation": {
           "5W": []
         }
       },

@@ -1258,19 +1258,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "SLC_K_APP": []
-        },
-        "inbound_assignments": {
-          "CARTR1.N": "SLC_K_APP",
-          "JAZZZ1": "SLC_K_APP",
-          "QWENN6.BCE": "SLC_K_APP",
-          "QWENN6.MLF": "SLC_K_APP",
-          "YUTES1.N": "SLC_K_APP"
-        },
-        "departure_assignments": {
-          "KSLC": "SLC_K_APP"
         }
       },
       "controllers": [
@@ -1330,18 +1320,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "SLC_K_APP": []
-        },
-        "inbound_assignments": {
-          "CARTR1.S": "SLC_K_APP",
-          "PITTT1.E": "SLC_K_APP",
-          "PITTT1.S": "SLC_K_APP",
-          "YUTES1.S": "SLC_K_APP"
-        },
-        "departure_assignments": {
-          "KSLC": "SLC_K_APP"
         }
       },
       "controllers": [
@@ -1373,6 +1354,25 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "CARTR1.N": "SLC_K_APP",
+          "CARTR1.S": "SLC_K_APP",
+          "JAZZZ1": "SLC_K_APP",
+          "PITTT1.E": "SLC_K_APP",
+          "PITTT1.S": "SLC_K_APP",
+          "QWENN6.BCE": "SLC_K_APP",
+          "QWENN6.MLF": "SLC_K_APP",
+          "YUTES1.N": "SLC_K_APP",
+          "YUTES1.S": "SLC_K_APP"
+        },
+        "departure_assignments": {
+          "KSLC": "SLC_K_APP"
+        }
+      }
+    },
+
     "center": "KSLC",
     "coordination_fixes": {
       "CARTR": [

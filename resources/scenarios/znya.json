@@ -1715,8 +1715,8 @@
   "scenarios": {
     "ZNY Sector 25": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ZNY 25 Modena": []
         }
       },
@@ -1744,6 +1744,10 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {}
+    },
+
     "center": "N039.47.39.800,W076.10.50.300",
     "range": 150,
     "stars_maps": [

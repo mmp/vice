@@ -792,19 +792,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "COS_APP": []
-        },
-        "inbound_assignments": {
-          "DEBERRY5": "COS_APP",
-          "DEN": "COS_APP",
-          "DEN.NW": "COS_APP",
-          "OZZZY5": "COS_APP"
-        },
-        "departure_assignments": {
-          "KCOS": "COS_APP",
-          "KFLY": "COS_APP"
         }
       },
       "controllers": ["COS_W_TWR", "COS_E_TWR", "COS_APP", "DEN_A_APP", "DEN_29_CTR", "PUB_APP"],
@@ -861,19 +851,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "COS_APP": []
-        },
-        "inbound_assignments": {
-          "DEBERRY5": "COS_APP",
-          "DEN": "COS_APP",
-          "DEN.NW": "COS_APP",
-          "OZZZY5": "COS_APP"
-        },
-        "departure_assignments": {
-          "KCOS": "COS_APP",
-          "KFLY": "COS_APP"
         }
       },
       "controllers": ["COS_W_TWR", "COS_E_TWR", "COS_APP", "DEN_A_APP", "DEN_29_CTR", "PUB_APP"],
@@ -901,6 +881,21 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "DEBERRY5": "COS_APP",
+          "DEN": "COS_APP",
+          "DEN.NW": "COS_APP",
+          "OZZZY5": "COS_APP"
+        },
+        "departure_assignments": {
+          "KCOS": "COS_APP",
+          "KFLY": "COS_APP"
+        }
+      }
+    },
+
     "center": "N038.47.36.733,W104.35.10.501",
     "coordination_lists": [
       {

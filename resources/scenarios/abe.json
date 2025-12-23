@@ -801,19 +801,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ABE_APP": ["ABE_DEP"]
-        },
-        "departure_assignments": {
-          "KABE": "ABE_DEP"
-        },
-        "inbound_assignments": {
-          "EWR": "ABE_DEP",
-          "PHL": "ABE_DEP",
-          "MDT/RDG": "ABE_DEP",
-          "ZNY Northwest": "ABE_DEP",
-          "ZNY Southwest": "ABE_DEP"
         }
       },
       "controllers": ["ABE_TWR", "ABE_APP", "PHL_NA_APP", "EWR_APP", "AVP_S_APP", "MDT_SE_APP", "NY_D_CTR"],
@@ -854,19 +844,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ABE_APP": ["ABE_DEP"]
-        },
-        "departure_assignments": {
-          "KABE": "ABE_DEP"
-        },
-        "inbound_assignments": {
-          "EWR": "ABE_DEP",
-          "PHL": "ABE_DEP",
-          "MDT/RDG": "ABE_DEP",
-          "ZNY Northwest": "ABE_DEP",
-          "ZNY Southwest": "ABE_DEP"
         }
       },
       "controllers": ["ABE_TWR", "ABE_APP", "PHL_NA_APP", "EWR_APP", "AVP_S_APP", "MDT_SE_APP", "NY_D_CTR"],
@@ -884,6 +864,21 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "EWR": "ABE_DEP",
+          "MDT/RDG": "ABE_DEP",
+          "PHL": "ABE_DEP",
+          "ZNY Northwest": "ABE_DEP",
+          "ZNY Southwest": "ABE_DEP"
+        },
+        "departure_assignments": {
+          "KABE": "ABE_DEP"
+        }
+      }
+    },
+
     "filters": {
       "inhibit_ca": [
         {

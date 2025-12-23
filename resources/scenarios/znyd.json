@@ -872,18 +872,9 @@
   "scenarios": {
     "ZNY Area D Combined": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ZNY Selinsgrove 72": []
-        },
-        "inbound_assignments": {
-          "FQM3": "ZNY Selinsgrove 72",
-          "MIP4-ETG": "ZNY Selinsgrove 72",
-          "MIP4-PSB": "ZNY Selinsgrove 72",
-          "MIP4-SFK": "ZNY Selinsgrove 72",
-          "NABOR": "ZNY Selinsgrove 72",
-          "TRISH4": "ZNY Selinsgrove 72",
-          "WLKES": "ZNY Selinsgrove 72"
         }
       },
       "controllers": [
@@ -970,6 +961,20 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "FQM3": "ZNY Selinsgrove 72",
+          "MIP4-ETG": "ZNY Selinsgrove 72",
+          "MIP4-PSB": "ZNY Selinsgrove 72",
+          "MIP4-SFK": "ZNY Selinsgrove 72",
+          "NABOR": "ZNY Selinsgrove 72",
+          "TRISH4": "ZNY Selinsgrove 72",
+          "WLKES": "ZNY Selinsgrove 72"
+        }
+      }
+    },
+
     "center": "FQM",
     "range": 1000,
     "stars_maps": [

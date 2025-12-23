@@ -1496,21 +1496,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "10X",
+        "default_consolidation": {
           "SAV_N_APP": ["SAV_W_APP"],
           "SAV_W_APP": ["SAV_S_APP"]
-        },
-        "inbound_assignments": {
-          "LOTTS": "SAV_W_APP",
-          "PLZZZ": "SAV_N_APP",
-          "SOOOP": "SAV_N_APP",
-          "VIYAP": "SAV_S_APP"
-        },
-        "departure_assignments": {
-          "KSAV": "SAV_N_APP",
-          "KHXD": "SAV_N_APP",
-          "KTBR": "SAV_W_APP"
         }
       },
       "controllers": [
@@ -1593,21 +1582,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "28X",
+        "default_consolidation": {
           "SAV_N_APP": ["SAV_W_APP"],
           "SAV_W_APP": ["SAV_S_APP"]
-        },
-        "inbound_assignments": {
-          "LOTTS": "SAV_W_APP",
-          "PLZZZ": "SAV_N_APP",
-          "SOOOP": "SAV_N_APP",
-          "VIYAP": "SAV_S_APP"
-        },
-        "departure_assignments": {
-          "KHXD": "SAV_N_APP",
-          "KSAV": "SAV_W_APP",
-          "KTBR": "SAV_W_APP"
         }
       },
       "controllers": [
@@ -1690,21 +1668,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "10X",
+        "default_consolidation": {
           "SAV_N_APP": ["SAV_W_APP"],
           "SAV_W_APP": ["SAV_S_APP"]
-        },
-        "inbound_assignments": {
-          "LOTTS": "SAV_W_APP",
-          "PLZZZ": "SAV_N_APP",
-          "SOOOP": "SAV_N_APP",
-          "VIYAP": "SAV_S_APP"
-        },
-        "departure_assignments": {
-          "KHXD": "SAV_N_APP",
-          "KSAV": "SAV_N_APP",
-          "KTBR": "SAV_W_APP"
         }
       },
       "controllers": [
@@ -1786,21 +1753,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "10X",
+        "default_consolidation": {
           "SAV_N_APP": ["SAV_W_APP"],
           "SAV_W_APP": ["SAV_S_APP"]
-        },
-        "inbound_assignments": {
-          "LOTTS": "SAV_W_APP",
-          "PLZZZ": "SAV_N_APP",
-          "SOOOP": "SAV_N_APP",
-          "VIYAP": "SAV_S_APP"
-        },
-        "departure_assignments": {
-          "KHXD": "SAV_N_APP",
-          "KSAV": "SAV_N_APP",
-          "KTBR": "SAV_W_APP"
         }
       },
       "controllers": ["SAV_N_APP", "JAX_35_CTR", "SAV_TWR"],
@@ -1828,6 +1784,35 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "10X": {
+        "inbound_assignments": {
+          "LOTTS": "SAV_W_APP",
+          "PLZZZ": "SAV_N_APP",
+          "SOOOP": "SAV_N_APP",
+          "VIYAP": "SAV_S_APP"
+        },
+        "departure_assignments": {
+          "KHXD": "SAV_N_APP",
+          "KSAV": "SAV_N_APP",
+          "KTBR": "SAV_W_APP"
+        }
+      },
+      "28X": {
+        "inbound_assignments": {
+          "LOTTS": "SAV_W_APP",
+          "PLZZZ": "SAV_N_APP",
+          "SOOOP": "SAV_N_APP",
+          "VIYAP": "SAV_S_APP"
+        },
+        "departure_assignments": {
+          "KHXD": "SAV_N_APP",
+          "KSAV": "SAV_W_APP",
+          "KTBR": "SAV_W_APP"
+        }
+      }
+    },
+
     "center": "KSAV",
     "coordination_fixes": {
       "VIYAP": [

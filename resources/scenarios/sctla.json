@@ -3345,17 +3345,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "LA1",
+        "default_consolidation": {
           "LAX_D_APP": ["LAX_F_APP"],
           "LAX_F_APP": ["LAX_Z_APP"],
           "LAX_Z_APP": ["LAX_U_APP"]
-        },
-        "inbound_assignments": {
-          "BIGBR3": "LAX_F_APP",
-          "BRUEN2": "LAX_F_APP",
-          "EMMLN1": "LAX_F_APP",
-          "ZUUMA4": "LAX_Z_APP"
         }
       },
       "controllers": [
@@ -3423,18 +3417,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "LA5",
+        "default_consolidation": {
           "LAX_D_APP": ["LAX_F_APP"],
           "LAX_F_APP": ["LAX_Z_APP"],
           "LAX_Z_APP": ["LAX_U_APP"]
-        },
-        "inbound_assignments": {
-          "ANJLL4": "LAX_F_APP",
-          "GOATZ2/OLAAA2": "LAX_D_APP",
-          "HLYWD1": "LAX_F_APP",
-          "IRNMN2": "LAX_Z_APP",
-          "RYDRR2": "LAX_Z_APP"
         }
       },
       "controllers": [
@@ -3501,16 +3488,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "LA3",
+        "default_consolidation": {
           "LAX_F_APP": ["LAX_U_APP"]
-        },
-        "inbound_assignments": {
-          "EMMLN1": "LAX_F_APP",
-          "MDNYT2.ANJLL": "LAX_F_APP",
-          "MDNYT2.HLYWD": "LAX_F_APP",
-          "MDNYT2.SNSTT": "LAX_F_APP",
-          "ZUUMA4": "LAX_U_APP"
         }
       },
       "controllers": [
@@ -3561,13 +3541,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "LA2",
+        "default_consolidation": {
           "LAX_U_APP": []
-        },
-        "inbound_assignments": {
-          "MDNYT2_FINAL": "LAX_U_APP",
-          "ZUUMA4_FINAL": "LAX_U_APP"
         }
       },
       "controllers": [
@@ -3625,14 +3601,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "LA4",
+        "default_consolidation": {
           "LAX_D_APP": ["LAX_U_APP"]
-        },
-        "inbound_assignments": {
-          "ANJLL4/HLYWD1.FINAL": "LAX_D_APP",
-          "GOATZ2/OLAAA2_FINAL": "LAX_D_APP",
-          "IRNMN2/RYDRR2_FINAL": "LAX_U_APP"
         }
       },
       "controllers": [
@@ -3693,14 +3664,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "LAX",
+        "default_consolidation": {
           "LAX_D_APP": ["LAX_U_APP"]
-        },
-        "inbound_assignments": {
-          "BIGBR3_FINAL": "LAX_D_APP",
-          "BRUEN2_FINAL": "LAX_D_APP",
-          "ZUUMA4_FINAL": "LAX_U_APP"
         }
       },
       "controllers": [
@@ -3736,6 +3702,55 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "LAX": {
+        "inbound_assignments": {
+          "BIGBR3_FINAL": "LAX_D_APP",
+          "BRUEN2_FINAL": "LAX_D_APP",
+          "ZUUMA4_FINAL": "LAX_U_APP"
+        }
+      },
+      "LA1": {
+        "inbound_assignments": {
+          "BIGBR3": "LAX_F_APP",
+          "BRUEN2": "LAX_F_APP",
+          "EMMLN1": "LAX_F_APP",
+          "ZUUMA4": "LAX_Z_APP"
+        }
+      },
+      "LA2": {
+        "inbound_assignments": {
+          "MDNYT2_FINAL": "LAX_U_APP",
+          "ZUUMA4_FINAL": "LAX_U_APP"
+        }
+      },
+      "LA3": {
+        "inbound_assignments": {
+          "EMMLN1": "LAX_F_APP",
+          "MDNYT2.ANJLL": "LAX_F_APP",
+          "MDNYT2.HLYWD": "LAX_F_APP",
+          "MDNYT2.SNSTT": "LAX_F_APP",
+          "ZUUMA4": "LAX_U_APP"
+        }
+      },
+      "LA4": {
+        "inbound_assignments": {
+          "ANJLL4/HLYWD1.FINAL": "LAX_D_APP",
+          "GOATZ2/OLAAA2_FINAL": "LAX_D_APP",
+          "IRNMN2/RYDRR2_FINAL": "LAX_U_APP"
+        }
+      },
+      "LA5": {
+        "inbound_assignments": {
+          "ANJLL4": "LAX_F_APP",
+          "GOATZ2/OLAAA2": "LAX_D_APP",
+          "HLYWD1": "LAX_F_APP",
+          "IRNMN2": "LAX_Z_APP",
+          "RYDRR2": "LAX_Z_APP"
+        }
+      }
+    },
+
     "center": "N034.01.46.059,W117.57.17.869",
     "altimeters": ["KLAX", "KSMO", "KHHR"],
     "coordination_fixes": {

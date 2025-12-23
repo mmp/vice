@@ -685,19 +685,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "SDF_B_DEP": ["SDF_D_DEP"],
           "SDF_I_APP": ["SDF_A_APP", "SDF_B_DEP", "SDF_W_APP"],
           "SDF_W_APP": ["SDF_E_APP"]
-        },
-        "inbound_assignments": {
-          "DLAMP8": "SDF_A_APP",
-          "LEDDL1": "SDF_A_APP",
-          "MBELL5": "SDF_I_APP"
-        },
-        "departure_assignments": {
-          "KSDF": "SDF_B_DEP"
         }
       },
       "controllers": ["IND_CTR", "CVG_APP", "SDF_E_TWR", "SDF_W_TWR"],
@@ -744,19 +736,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "SDF_B_DEP": ["SDF_D_DEP"],
           "SDF_I_APP": ["SDF_A_APP", "SDF_B_DEP", "SDF_W_APP"],
           "SDF_W_APP": ["SDF_E_APP"]
-        },
-        "inbound_assignments": {
-          "DLAMP8": "SDF_A_APP",
-          "LEDDL1": "SDF_A_APP",
-          "MBELL5": "SDF_I_APP"
-        },
-        "departure_assignments": {
-          "KSDF": "SDF_B_DEP"
         }
       },
       "controllers": ["IND_CTR", "CVG_APP", "SDF_E_TWR", "SDF_W_TWR"],
@@ -774,6 +758,19 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "DLAMP8": "SDF_A_APP",
+          "LEDDL1": "SDF_A_APP",
+          "MBELL5": "SDF_I_APP"
+        },
+        "departure_assignments": {
+          "KSDF": "SDF_B_DEP"
+        }
+      }
+    },
+
     "center": "KSDF",
     "coordination_fixes": {
       "CHERI": [

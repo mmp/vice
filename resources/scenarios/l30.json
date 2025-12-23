@@ -5280,34 +5280,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "1XX",
+        "default_consolidation": {
           "LAS_D_DEP": ["LAS_M_DEP", "LAS_Y_APP"],
           "LAS_F_APP": ["LAS_D_DEP", "LAS_G_APP", "LAS_L_APP", "LAS_T_APP"],
           "LAS_L_APP": ["LAS_K_APP"]
-        },
-        "inbound_assignments": {
-          "BOEGY2": "LAS_L_APP",
-          "CHOWW4": "LAS_L_APP",
-          "COKTL4": "LAS_G_APP",
-          "FLCHR1": "LAS_G_APP",
-          "GAMES2": "LAS_G_APP",
-          "JAYSN3.19": "LAS_T_APP",
-          "NTNDO1": "LAS_Y_APP",
-          "RKSTR4": "LAS_L_APP",
-          "RNDRZ4": "LAS_G_APP",
-          "WYLND1": "LAS_L_APP"
-        },
-        "departure_assignments": {
-          "KHND": "LAS_Y_APP",
-          "KLAS/GIDGT3": "LAS_M_DEP",
-          "KLAS/JOHKR5": "LAS_D_DEP",
-          "KLAS/LOHLA3": "LAS_M_DEP",
-          "KLAS/NIITZ4": "LAS_D_DEP",
-          "KLAS/RADYR2": "LAS_D_DEP",
-          "KLAS/RASLR3": "LAS_D_DEP",
-          "KLAS/RATPK3": "LAS_M_DEP",
-          "KVGT": "LAS_M_DEP"
         }
       },
       "controllers": ["LAS_TWR", "LSV_A_APP", "LSV_L_APP", "LAX_06_CTR", "LAX_16_CTR", "LAX_07_CTR", "LAX_08_CTR"],
@@ -5426,35 +5403,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "2XX",
+        "default_consolidation": {
           "LAS_D_DEP": ["LAS_M_DEP", "LAS_Y_APP"],
           "LAS_F_APP": ["LAS_D_DEP", "LAS_G_APP", "LAS_L_APP", "LAS_T_APP"],
           "LAS_L_APP": ["LAS_K_APP"]
-        },
-        "inbound_assignments": {
-          "BOEGY2": "LAS_M_DEP",
-          "CHOWW4": "LAS_L_APP",
-          "COKTL4": "LAS_G_APP",
-          "FLCHR1": "LAS_G_APP",
-          "GAMES2": "LAS_G_APP",
-          "JAYSN3.1": "LAS_G_APP",
-          "NTNDO1": "LAS_Y_APP",
-          "RKSTR4": "LAS_L_APP",
-          "RNDRZ4": "LAS_G_APP",
-          "WYLND1": "LAS_M_DEP"
-        },
-        "departure_assignments": {
-          "KHND": "LAS_Y_APP",
-          "KLAS/FRNCK1": "LAS_M_DEP",
-          "KLAS/GIDGT3": "LAS_M_DEP",
-          "KLAS/JOHKR5": "LAS_D_DEP",
-          "KLAS/LOHLA3": "LAS_D_DEP",
-          "KLAS/NIITZ4": "LAS_M_DEP",
-          "KLAS/RADYR2": "LAS_D_DEP",
-          "KLAS/RASLR3": "LAS_M_DEP",
-          "KLAS/RATPK3": "LAS_M_DEP",
-          "KVGT": "LAS_M_DEP"
         }
       },
       "controllers": ["LAS_TWR", "LSV_A_APP", "LSV_L_APP", "LAX_06_CTR", "LAX_16_CTR", "LAX_07_CTR", "LAX_08_CTR"],
@@ -5558,27 +5511,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "3XX",
+        "default_consolidation": {
           "LAS_D_DEP": ["LAS_M_DEP"],
           "LAS_F_APP": ["LAS_D_DEP", "LAS_G_APP", "LAS_K_APP", "LAS_L_APP", "LAS_T_APP", "LAS_Y_APP"]
-        },
-        "inbound_assignments": {
-          "BOEGY2": "LAS_L_APP",
-          "CHOWW4": "LAS_K_APP",
-          "COKTL4": "LAS_G_APP",
-          "FLCHR1": "LAS_G_APP",
-          "GAMES2": "LAS_G_APP",
-          "JAYSN3.1": "LAS_G_APP",
-          "NTNDO1": "LAS_Y_APP",
-          "RKSTR4": "LAS_L_APP",
-          "RNDRZ4": "LAS_G_APP",
-          "WYLND1": "LAS_L_APP"
-        },
-        "departure_assignments": {
-          "KHND": "LAS_Y_APP",
-          "KLAS": "LAS_D_DEP",
-          "KVGT": "LAS_D_DEP"
         }
       },
       "controllers": ["LAS_TWR", "LSV_A_APP", "LSV_L_APP", "LAX_06_CTR", "LAX_16_CTR", "LAX_07_CTR", "LAX_08_CTR"],
@@ -5691,27 +5627,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "4XX",
+        "default_consolidation": {
           "LAS_D_DEP": ["LAS_M_DEP"],
           "LAS_F_APP": ["LAS_D_DEP", "LAS_G_APP", "LAS_K_APP", "LAS_L_APP", "LAS_T_APP", "LAS_Y_APP"]
-        },
-        "inbound_assignments": {
-          "BOEGY2": "LAS_L_APP",
-          "CHOWW4": "LAS_L_APP",
-          "COKTL4": "LAS_G_APP",
-          "FLCHR1": "LAS_G_APP",
-          "GAMES2": "LAS_G_APP",
-          "JAYSN3.19": "LAS_T_APP",
-          "NTNDO1": "LAS_Y_APP",
-          "RKSTR4": "LAS_L_APP",
-          "RNDRZ4": "LAS_G_APP",
-          "WYLND1": "LAS_L_APP"
-        },
-        "departure_assignments": {
-          "KHND": "LAS_Y_APP",
-          "KLAS": "LAS_D_DEP",
-          "KVGT": "LAS_D_DEP"
         }
       },
       "controllers": ["LAS_TWR", "LSV_A_APP", "LSV_L_APP", "LAX_06_CTR", "LAX_16_CTR", "LAX_07_CTR", "LAX_08_CTR"],
@@ -5750,6 +5669,98 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "1XX": {
+        "inbound_assignments": {
+          "BOEGY2": "LAS_L_APP",
+          "CHOWW4": "LAS_L_APP",
+          "COKTL4": "LAS_G_APP",
+          "FLCHR1": "LAS_G_APP",
+          "GAMES2": "LAS_G_APP",
+          "JAYSN3.19": "LAS_T_APP",
+          "NTNDO1": "LAS_Y_APP",
+          "RKSTR4": "LAS_L_APP",
+          "RNDRZ4": "LAS_G_APP",
+          "WYLND1": "LAS_L_APP"
+        },
+        "departure_assignments": {
+          "KHND": "LAS_Y_APP",
+          "KLAS/GIDGT3": "LAS_M_DEP",
+          "KLAS/JOHKR5": "LAS_D_DEP",
+          "KLAS/LOHLA3": "LAS_M_DEP",
+          "KLAS/NIITZ4": "LAS_D_DEP",
+          "KLAS/RADYR2": "LAS_D_DEP",
+          "KLAS/RASLR3": "LAS_D_DEP",
+          "KLAS/RATPK3": "LAS_M_DEP",
+          "KVGT": "LAS_M_DEP"
+        }
+      },
+      "2XX": {
+        "inbound_assignments": {
+          "BOEGY2": "LAS_M_DEP",
+          "CHOWW4": "LAS_L_APP",
+          "COKTL4": "LAS_G_APP",
+          "FLCHR1": "LAS_G_APP",
+          "GAMES2": "LAS_G_APP",
+          "JAYSN3.1": "LAS_G_APP",
+          "NTNDO1": "LAS_Y_APP",
+          "RKSTR4": "LAS_L_APP",
+          "RNDRZ4": "LAS_G_APP",
+          "WYLND1": "LAS_M_DEP"
+        },
+        "departure_assignments": {
+          "KHND": "LAS_Y_APP",
+          "KLAS/FRNCK1": "LAS_M_DEP",
+          "KLAS/GIDGT3": "LAS_M_DEP",
+          "KLAS/JOHKR5": "LAS_D_DEP",
+          "KLAS/LOHLA3": "LAS_D_DEP",
+          "KLAS/NIITZ4": "LAS_M_DEP",
+          "KLAS/RADYR2": "LAS_D_DEP",
+          "KLAS/RASLR3": "LAS_M_DEP",
+          "KLAS/RATPK3": "LAS_M_DEP",
+          "KVGT": "LAS_M_DEP"
+        }
+      },
+      "3XX": {
+        "inbound_assignments": {
+          "BOEGY2": "LAS_L_APP",
+          "CHOWW4": "LAS_K_APP",
+          "COKTL4": "LAS_G_APP",
+          "FLCHR1": "LAS_G_APP",
+          "GAMES2": "LAS_G_APP",
+          "JAYSN3.1": "LAS_G_APP",
+          "NTNDO1": "LAS_Y_APP",
+          "RKSTR4": "LAS_L_APP",
+          "RNDRZ4": "LAS_G_APP",
+          "WYLND1": "LAS_L_APP"
+        },
+        "departure_assignments": {
+          "KHND": "LAS_Y_APP",
+          "KLAS": "LAS_D_DEP",
+          "KVGT": "LAS_D_DEP"
+        }
+      },
+      "4XX": {
+        "inbound_assignments": {
+          "BOEGY2": "LAS_L_APP",
+          "CHOWW4": "LAS_L_APP",
+          "COKTL4": "LAS_G_APP",
+          "FLCHR1": "LAS_G_APP",
+          "GAMES2": "LAS_G_APP",
+          "JAYSN3.19": "LAS_T_APP",
+          "NTNDO1": "LAS_Y_APP",
+          "RKSTR4": "LAS_L_APP",
+          "RNDRZ4": "LAS_G_APP",
+          "WYLND1": "LAS_L_APP"
+        },
+        "departure_assignments": {
+          "KHND": "LAS_Y_APP",
+          "KLAS": "LAS_D_DEP",
+          "KVGT": "LAS_D_DEP"
+        }
+      }
+    },
+
     "center": "N36.4.59.17,W115.8.53.52",
     "controller_configs": {
       "1F": {

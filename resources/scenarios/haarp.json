@@ -538,18 +538,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "LGA_V_APP": ["LGA_X_APP", "LGA_Y_APP"]
-        },
-        "inbound_assignments": {
-          "BOUNO5": "LGA_X_APP",
-          "HAARP4": "LGA_V_APP",
-          "RICED4": "LGA_X_APP",
-          "VALRE5": "LGA_X_APP"
-        },
-        "departure_assignments": {
-          "KHPN": "LGA_Y_APP"
         }
       },
       "controllers": [
@@ -614,18 +605,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "LGA_V_APP": ["LGA_X_APP", "LGA_Y_APP"]
-        },
-        "inbound_assignments": {
-          "BOUNO5": "LGA_X_APP",
-          "HAARP4": "LGA_V_APP",
-          "RICED4": "LGA_X_APP",
-          "VALRE5": "LGA_X_APP"
-        },
-        "departure_assignments": {
-          "KHPN": "LGA_Y_APP"
         }
       },
       "controllers": [
@@ -658,6 +640,20 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "BOUNO5": "LGA_X_APP",
+          "HAARP4": "LGA_V_APP",
+          "RICED4": "LGA_X_APP",
+          "VALRE5": "LGA_X_APP"
+        },
+        "departure_assignments": {
+          "KHPN": "LGA_Y_APP"
+        }
+      }
+    },
+
     "center": "41.0669531,-73.7075661",
     "range": 60,
     "scratchpads": {

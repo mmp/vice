@@ -1165,22 +1165,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ANC_N_APP": ["ANC_S_APP"],
           "ANC_S_APP": ["ANC_F_APP"]
-        },
-        "inbound_assignments": {
-          "KROTO5.ROHHN": "ANC_N_APP",
-          "KROTO5.TKA": "ANC_N_APP",
-          "NEELL7": "ANC_S_APP",
-          "WITTI5": "ANC_S_APP"
-        },
-        "departure_assignments": {
-          "PANC/ANCH1": "ANC_N_APP",
-          "PANC/FFITZ4": "ANC_S_APP",
-          "PANC/NOEND4": "ANC_N_APP",
-          "PANC": "ANC_N_APP"
         }
       },
       "controllers": ["ANC_TWR", "ANC_N_APP", "ANC_S_APP", "ANC_F_APP", "ANC_5_CTR", "ANC_6_CTR", "ANC_7_CTR"],
@@ -1225,22 +1213,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ANC_N_APP": ["ANC_S_APP"],
           "ANC_S_APP": ["ANC_F_APP"]
-        },
-        "inbound_assignments": {
-          "KROTO5.ROHHN": "ANC_N_APP",
-          "KROTO5.TKA": "ANC_N_APP",
-          "NEELL7": "ANC_S_APP",
-          "PTERS3": "ANC_N_APP",
-          "WITTI5": "ANC_S_APP"
-        },
-        "departure_assignments": {
-          "PANC/ANCH1": "ANC_N_APP",
-          "PANC/POTTR3": "ANC_S_APP",
-          "PANC": "ANC_N_APP"
         }
       },
       "controllers": ["ANC_TWR", "ANC_N_APP", "ANC_S_APP", "ANC_F_APP", "ANC_5_CTR", "ANC_6_CTR", "ANC_7_CTR"],
@@ -1283,21 +1259,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ANC_N_APP": ["ANC_S_APP"],
           "ANC_S_APP": ["ANC_F_APP"]
-        },
-        "inbound_assignments": {
-          "KROTO5.ROHHN": "ANC_N_APP",
-          "KROTO5.TKA": "ANC_N_APP",
-          "NEELL7": "ANC_S_APP",
-          "PTERS3": "ANC_N_APP"
-        },
-        "departure_assignments": {
-          "PANC/ANCH1": "ANC_N_APP",
-          "PANC/FFITZ4": "ANC_S_APP",
-          "PANC": "ANC_N_APP"
         }
       },
       "controllers": ["ANC_TWR", "ANC_N_APP", "ANC_S_APP", "ANC_F_APP", "ANC_5_CTR", "ANC_6_CTR", "ANC_7_CTR"],
@@ -1338,23 +1303,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ANC_N_APP": ["ANC_S_APP"],
           "ANC_S_APP": ["ANC_F_APP"]
-        },
-        "inbound_assignments": {
-          "KROTO5.ROHHN": "ANC_N_APP",
-          "KROTO5.TKA": "ANC_N_APP",
-          "NEELL7": "ANC_S_APP",
-          "PTERS3": "ANC_N_APP",
-          "WITTI5": "ANC_S_APP"
-        },
-        "departure_assignments": {
-          "PANC/ANCH1": "ANC_N_APP",
-          "PANC/FFITZ4": "ANC_S_APP",
-          "PANC/NOEND4": "ANC_N_APP",
-          "PANC": "ANC_N_APP"
         }
       },
       "controllers": ["ANC_TWR", "ANC_N_APP", "ANC_S_APP", "ANC_F_APP", "ANC_5_CTR", "ANC_6_CTR", "ANC_7_CTR"],
@@ -1372,6 +1324,25 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "KROTO5.ROHHN": "ANC_N_APP",
+          "KROTO5.TKA": "ANC_N_APP",
+          "NEELL7": "ANC_S_APP",
+          "PTERS3": "ANC_N_APP",
+          "WITTI5": "ANC_S_APP"
+        },
+        "departure_assignments": {
+          "PANC": "ANC_N_APP",
+          "PANC/ANCH1": "ANC_N_APP",
+          "PANC/FFITZ4": "ANC_S_APP",
+          "PANC/NOEND4": "ANC_N_APP",
+          "PANC/POTTR3": "ANC_S_APP"
+        }
+      }
+    },
+
     "center": "PANC",
     "radar_sites": {
       "ANC": {

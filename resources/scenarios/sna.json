@@ -3137,25 +3137,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "CO4",
+        "default_consolidation": {
           "SNA_R_APP": ["SNA_B_APP", "SNA_T_APP"],
           "SNA_S_APP": ["SNA_A_APP"],
           "SNA_Y_APP": ["SNA_R_APP", "SNA_S_APP"]
-        },
-        "departure_assignments": {
-          "KLGB": "SNA_R_APP",
-          "KSNA": "SNA_Y_APP"
-        },
-        "inbound_assignments": {
-          "DSNEE6": "SNA_A_APP",
-          "BAUBB3/RUKKI1/PCIFC3/OHSEA3": "SNA_R_APP",
-          "LGB OCEANIC ARR": "SNA_B_APP",
-          "OLAAA2": "SNA_Y_APP",
-          "GOATZ2/KALRB3": "SNA_Y_APP",
-          "LAXX1.MZB": "SNA_Y_APP",
-          "SANP4R": "SNA_Y_APP",
-          "LEGOZ4": "SNA_Y_APP"
         }
       },
       "controllers": [
@@ -3257,24 +3243,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "CO3",
+        "default_consolidation": {
           "SNA_R_APP": ["SNA_B_APP", "SNA_T_APP"],
           "SNA_S_APP": ["SNA_A_APP"],
           "SNA_Y_APP": ["SNA_R_APP", "SNA_S_APP"]
-        },
-        "departure_assignments": {
-          "KLGB": "SNA_R_APP",
-          "KSNA": "SNA_Y_APP"
-        },
-        "inbound_assignments": {
-          "DSNEE6": "SNA_A_APP",
-          "BAUBB3/RUKKI1/PCIFC3/OHSEA3": "SNA_R_APP",
-          "LGB OCEANIC ARR": "SNA_B_APP",
-          "SANP4R": "SNA_S_APP",
-          "OLAAA2.E": "SNA_Y_APP",
-          "GOATZ2/KALRB3": "SNA_Y_APP",
-          "LEGOZ4": "SNA_Y_APP"
         }
       },
       "controllers": [
@@ -3397,25 +3370,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "CO1",
+        "default_consolidation": {
           "SNA_R_APP": ["SNA_B_APP", "SNA_T_APP"],
           "SNA_S_APP": ["SNA_A_APP"],
           "SNA_Y_APP": ["SNA_R_APP", "SNA_S_APP"]
-        },
-        "departure_assignments": {
-          "KLGB": "SNA_R_APP",
-          "KSNA": "SNA_A_APP"
-        },
-        "inbound_assignments": {
-          "BAUBB3/RUKKI1/PCIFC3/OHSEA3 East": "SNA_R_APP",
-          "LGB OCEANIC ARR": "SNA_B_APP",
-          "ROOBY3": "SNA_S_APP",
-          "OLAAA2": "SNA_Y_APP",
-          "GOATZ2/KALRB3": "SNA_Y_APP",
-          "LAXX1.MZB": "SNA_Y_APP",
-          "SANP4R": "SNA_Y_APP",
-          "LEGOZ4": "SNA_Y_APP"
         }
       },
       "controllers": [
@@ -3517,24 +3476,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "COA",
+        "default_consolidation": {
           "SNA_R_APP": ["SNA_B_APP", "SNA_T_APP"],
           "SNA_S_APP": ["SNA_A_APP"],
           "SNA_Y_APP": ["SNA_R_APP", "SNA_S_APP"]
-        },
-        "departure_assignments": {
-          "KLGB": "SNA_R_APP",
-          "KSNA": "SNA_A_APP"
-        },
-        "inbound_assignments": {
-          "BAUBB3/RUKKI1/PCIFC3/OHSEA3 East": "SNA_R_APP",
-          "LGB OCEANIC ARR": "SNA_B_APP",
-          "ROOBY3": "SNA_S_APP",
-          "OLAAA2.E": "SNA_Y_APP",
-          "GOATZ2/KALRB3": "SNA_Y_APP",
-          "SANP4R": "SNA_Y_APP",
-          "LEGOZ4": "SNA_Y_APP"
         }
       },
       "controllers": [
@@ -3600,13 +3546,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "CO2",
+        "default_consolidation": {
           "SNA_T_APP": []
-        },
-        "inbound_assignments": {
-          "DSNEE6": "SNA_T_APP",
-          "OHSEA3.FINAL": "SNA_T_APP"
         }
       },
       "controllers": [
@@ -3647,6 +3589,77 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "COA": {
+        "inbound_assignments": {
+          "BAUBB3/RUKKI1/PCIFC3/OHSEA3 East": "SNA_R_APP",
+          "GOATZ2/KALRB3": "SNA_Y_APP",
+          "LEGOZ4": "SNA_Y_APP",
+          "LGB OCEANIC ARR": "SNA_B_APP",
+          "OLAAA2.E": "SNA_Y_APP",
+          "ROOBY3": "SNA_S_APP",
+          "SANP4R": "SNA_Y_APP"
+        },
+        "departure_assignments": {
+          "KLGB": "SNA_R_APP",
+          "KSNA": "SNA_A_APP"
+        }
+      },
+      "CO1": {
+        "inbound_assignments": {
+          "BAUBB3/RUKKI1/PCIFC3/OHSEA3 East": "SNA_R_APP",
+          "GOATZ2/KALRB3": "SNA_Y_APP",
+          "LAXX1.MZB": "SNA_Y_APP",
+          "LEGOZ4": "SNA_Y_APP",
+          "LGB OCEANIC ARR": "SNA_B_APP",
+          "OLAAA2": "SNA_Y_APP",
+          "ROOBY3": "SNA_S_APP",
+          "SANP4R": "SNA_Y_APP"
+        },
+        "departure_assignments": {
+          "KLGB": "SNA_R_APP",
+          "KSNA": "SNA_A_APP"
+        }
+      },
+      "CO2": {
+        "inbound_assignments": {
+          "DSNEE6": "SNA_T_APP",
+          "OHSEA3.FINAL": "SNA_T_APP"
+        }
+      },
+      "CO3": {
+        "inbound_assignments": {
+          "BAUBB3/RUKKI1/PCIFC3/OHSEA3": "SNA_R_APP",
+          "DSNEE6": "SNA_A_APP",
+          "GOATZ2/KALRB3": "SNA_Y_APP",
+          "LEGOZ4": "SNA_Y_APP",
+          "LGB OCEANIC ARR": "SNA_B_APP",
+          "OLAAA2.E": "SNA_Y_APP",
+          "SANP4R": "SNA_S_APP"
+        },
+        "departure_assignments": {
+          "KLGB": "SNA_R_APP",
+          "KSNA": "SNA_Y_APP"
+        }
+      },
+      "CO4": {
+        "inbound_assignments": {
+          "BAUBB3/RUKKI1/PCIFC3/OHSEA3": "SNA_R_APP",
+          "DSNEE6": "SNA_A_APP",
+          "GOATZ2/KALRB3": "SNA_Y_APP",
+          "LAXX1.MZB": "SNA_Y_APP",
+          "LEGOZ4": "SNA_Y_APP",
+          "LGB OCEANIC ARR": "SNA_B_APP",
+          "OLAAA2": "SNA_Y_APP",
+          "SANP4R": "SNA_Y_APP"
+        },
+        "departure_assignments": {
+          "KLGB": "SNA_R_APP",
+          "KSNA": "SNA_Y_APP"
+        }
+      }
+    },
+
     "altimeters": ["KSNA", "KLGB", "KTOA", "KFUL", "KLAX"],
     "controller_configs": {
       "4Y": {

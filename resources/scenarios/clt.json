@@ -7096,8 +7096,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KCL",
+        "default_consolidation": {
           "CLT_A_APP": ["CLT_M_APP"],
           "CLT_E_DEP": ["CLT_S_APP"],
           "CLT_H_APP": ["CLT_A_APP", "CLT_U_APP"],
@@ -7106,17 +7106,6 @@
           "CLT_S_APP": ["CLT_N_APP"],
           "CLT_U_APP": ["CLT_D_APP"],
           "CLT_W_DEP": ["CLT_E_DEP", "CLT_H_APP"]
-        },
-        "inbound_assignments": {
-          "BANKR5": "CLT_D_APP",
-          "CHSLY6": "CLT_H_APP",
-          "FLIPZ4": "CLT_U_APP",
-          "JONZE5": "CLT_D_APP",
-          "PARQR4": "CLT_U_APP",
-          "STOCR4": "CLT_H_APP"
-        },
-        "departure_assignments": {
-          "KCLT": "CLT_W_DEP"
         }
       },
       "controllers": ["ATL_CTR", "DC_CTR", "JAX_30_CTR", "CLT_TWR", "GSO_APP"],
@@ -7193,8 +7182,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KCL",
+        "default_consolidation": {
           "CLT_A_APP": ["CLT_M_APP"],
           "CLT_E_DEP": ["CLT_S_APP"],
           "CLT_H_APP": ["CLT_A_APP", "CLT_U_APP"],
@@ -7203,17 +7192,6 @@
           "CLT_S_APP": ["CLT_N_APP"],
           "CLT_U_APP": ["CLT_D_APP"],
           "CLT_W_DEP": ["CLT_E_DEP", "CLT_H_APP"]
-        },
-        "inbound_assignments": {
-          "BANKR5": "CLT_D_APP",
-          "CHSLY6": "CLT_H_APP",
-          "FLIPZ4": "CLT_U_APP",
-          "JONZE5": "CLT_D_APP",
-          "PARQR4": "CLT_U_APP",
-          "STOCR4": "CLT_H_APP"
-        },
-        "departure_assignments": {
-          "KCLT": "CLT_W_DEP"
         }
       },
       "controllers": ["ATL_CTR", "DC_CTR", "JAX_30_CTR", "CLT_TWR", "GSO_APP"],
@@ -7278,17 +7256,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KC1",
+        "default_consolidation": {
           "CLT_F_APP": []
-        },
-        "inbound_assignments": {
-          "BANKR5_NORTHWEST_36LFINAL": "CLT_F_APP",
-          "JONZE5_NORTHWEST_36LFINAL": "CLT_F_APP",
-          "NORTHWEST_36LFINAL": "CLT_F_APP"
-        },
-        "departure_assignments": {
-          "KCLT": "CLT_F_APP"
         }
       },
       "controllers": ["ATL_CTR", "CLT_U_APP", "JAX_30_CTR", "CLT_TWR", "CLT_D_APP"],
@@ -7336,16 +7306,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "36R",
+        "default_consolidation": {
           "CLT_A_APP": []
-        },
-        "inbound_assignments": {
-          "CHSLY6_NORTHEAST_36RFINAL": "CLT_A_APP",
-          "STOCR4_NORTHEAST_36RFINAL": "CLT_A_APP"
-        },
-        "departure_assignments": {
-          "KCLT": "CLT_A_APP"
         }
       },
       "controllers": ["CLT_A_APP", "ATL_CTR", "JAX_30_CTR", "CLT_TWR", "CLT_H_APP"],
@@ -7402,19 +7365,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KC1",
+        "default_consolidation": {
           "CLT_F_APP": []
-        },
-        "inbound_assignments": {
-          "BANKR5_NORTHWEST_36LFINAL": "CLT_F_APP",
-          "CHSLY6_NORTHEAST_36RFINAL": "CLT_F_APP",
-          "JONZE5_NORTHWEST_36LFINAL": "CLT_F_APP",
-          "NORTHWEST_36LFINAL": "CLT_F_APP",
-          "STOCR4_NORTHEAST_36RFINAL": "CLT_F_APP"
-        },
-        "departure_assignments": {
-          "KCLT": "CLT_F_APP"
         }
       },
       "controllers": ["ATL_CTR", "CLT_U_APP", "CLT_H_APP", "CLT_D_APP", "JAX_30_CTR", "CLT_TWR"],
@@ -7450,14 +7403,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KC2",
+        "default_consolidation": {
           "CLT_F_APP": []
-        },
-        "inbound_assignments": {
-          "FLIPZ4_18RFINAL": "CLT_F_APP",
-          "PARQR4_18RFINAL": "CLT_F_APP",
-          "SOUTHWEST_18RFINAL": "CLT_F_APP"
         }
       },
       "controllers": ["ATL_CTR", "CLT_U_APP", "CLT_H_APP", "CLT_D_APP", "JAX_30_CTR", "CLT_TWR"],
@@ -7496,13 +7444,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "18L",
+        "default_consolidation": {
           "CLT_A_APP": []
-        },
-        "inbound_assignments": {
-          "CHSLY6_18LFINAL": "CLT_A_APP",
-          "STOCR4_18LFINAL": "CLT_A_APP"
         }
       },
       "controllers": ["ATL_CTR", "CLT_U_APP", "CLT_H_APP", "CLT_D_APP", "JAX_30_CTR", "CLT_TWR"],
@@ -7550,16 +7494,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "KC2",
+        "default_consolidation": {
           "CLT_F_APP": []
-        },
-        "inbound_assignments": {
-          "CHSLY6_18LFINAL": "CLT_F_APP",
-          "FLIPZ4_18RFINAL": "CLT_F_APP",
-          "PARQR4_18RFINAL": "CLT_F_APP",
-          "SOUTHWEST_18RFINAL": "CLT_F_APP",
-          "STOCR4_18LFINAL": "CLT_F_APP"
         }
       },
       "controllers": ["ATL_CTR", "CLT_U_APP", "CLT_H_APP", "CLT_D_APP", "JAX_30_CTR", "CLT_TWR"],
@@ -7576,6 +7513,58 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "18L": {
+        "inbound_assignments": {
+          "CHSLY6_18LFINAL": "CLT_A_APP",
+          "STOCR4_18LFINAL": "CLT_A_APP"
+        }
+      },
+      "36R": {
+        "inbound_assignments": {
+          "CHSLY6_NORTHEAST_36RFINAL": "CLT_A_APP",
+          "STOCR4_NORTHEAST_36RFINAL": "CLT_A_APP"
+        },
+        "departure_assignments": {
+          "KCLT": "CLT_A_APP"
+        }
+      },
+      "KCL": {
+        "inbound_assignments": {
+          "BANKR5": "CLT_D_APP",
+          "CHSLY6": "CLT_H_APP",
+          "FLIPZ4": "CLT_U_APP",
+          "JONZE5": "CLT_D_APP",
+          "PARQR4": "CLT_U_APP",
+          "STOCR4": "CLT_H_APP"
+        },
+        "departure_assignments": {
+          "KCLT": "CLT_W_DEP"
+        }
+      },
+      "KC1": {
+        "inbound_assignments": {
+          "BANKR5_NORTHWEST_36LFINAL": "CLT_F_APP",
+          "CHSLY6_NORTHEAST_36RFINAL": "CLT_F_APP",
+          "JONZE5_NORTHWEST_36LFINAL": "CLT_F_APP",
+          "NORTHWEST_36LFINAL": "CLT_F_APP",
+          "STOCR4_NORTHEAST_36RFINAL": "CLT_F_APP"
+        },
+        "departure_assignments": {
+          "KCLT": "CLT_F_APP"
+        }
+      },
+      "KC2": {
+        "inbound_assignments": {
+          "CHSLY6_18LFINAL": "CLT_F_APP",
+          "FLIPZ4_18RFINAL": "CLT_F_APP",
+          "PARQR4_18RFINAL": "CLT_F_APP",
+          "SOUTHWEST_18RFINAL": "CLT_F_APP",
+          "STOCR4_18LFINAL": "CLT_F_APP"
+        }
+      }
+    },
+
     "airspace_awareness": [
       {
         "fixes": ["RDU", "TYI", "BARMY", "NUTZE", "AUDII", "KILNS", "LILLS"],

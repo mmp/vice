@@ -276,18 +276,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "BOI_APP": []
-        },
-        "inbound_assignments": {
-          "KOURT4": "BOI_APP",
-          "KYAAN4": "BOI_APP",
-          "SADYL4": "BOI_APP",
-          "SPUUD4": "BOI_APP"
-        },
-        "departure_assignments": {
-          "KBOI": "BOI_APP"
         }
       },
       "controllers": ["BOI_TWR", "BOI_APP", "SLC_17_CTR"],
@@ -325,18 +316,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "BOI_APP": []
-        },
-        "inbound_assignments": {
-          "KOURT4": "BOI_APP",
-          "KYAAN4": "BOI_APP",
-          "SADYL4": "BOI_APP",
-          "SPUUD4": "BOI_APP"
-        },
-        "departure_assignments": {
-          "KBOI": "BOI_APP"
         }
       },
       "controllers": ["BOI_TWR", "BOI_APP", "SLC_17_CTR"],
@@ -354,6 +336,20 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "KOURT4": "BOI_APP",
+          "KYAAN4": "BOI_APP",
+          "SADYL4": "BOI_APP",
+          "SPUUD4": "BOI_APP"
+        },
+        "departure_assignments": {
+          "KBOI": "BOI_APP"
+        }
+      }
+    },
+
     "center": "KBOI",
     "scratchpads": {},
     "stars_maps": [

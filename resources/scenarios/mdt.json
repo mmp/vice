@@ -3024,19 +3024,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "MDT_W_APP": ["MDT_E_APP", "MDT_N_APP"]
-        },
-        "inbound_assignments": {
-          "East": "MDT_E_APP",
-          "North/NE": "MDT_N_APP",
-          "West/South": "MDT_W_APP"
-        },
-        "departure_assignments": {
-          "KCXY": "MDT_W_APP",
-          "KLNS": "MDT_E_APP",
-          "KMDT": "MDT_W_APP"
         }
       },
       "controllers": [
@@ -3134,19 +3124,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "MDT_W_APP": ["MDT_E_APP", "MDT_N_APP"]
-        },
-        "inbound_assignments": {
-          "East": "MDT_E_APP",
-          "North/NE": "MDT_N_APP",
-          "West/South": "MDT_W_APP"
-        },
-        "departure_assignments": {
-          "KCXY": "MDT_W_APP",
-          "KLNS": "MDT_E_APP",
-          "KMDT": "MDT_W_APP"
         }
       },
       "controllers": [
@@ -3204,6 +3184,21 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "East": "MDT_E_APP",
+          "North/NE": "MDT_N_APP",
+          "West/South": "MDT_W_APP"
+        },
+        "departure_assignments": {
+          "KCXY": "MDT_W_APP",
+          "KLNS": "MDT_E_APP",
+          "KMDT": "MDT_W_APP"
+        }
+      }
+    },
+
     "center": "KMDT",
     "coordination_fixes": {
       "HAR": [

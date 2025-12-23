@@ -1644,18 +1644,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "CHS_W_APP": ["CHS_E_APP"]
-        },
-        "inbound_assignments": {
-          "AMYLU3": "CHS_E_APP",
-          "BAGGY3": "CHS_W_APP",
-          "OSPRI7": "CHS_W_APP"
-        },
-        "departure_assignments": {
-          "KCHS": "CHS_W_APP",
-          "KJZI": "CHS_W_APP"
         }
       },
       "controllers": ["JAX_72_CTR", "JAX_73_CTR", "JAX_74_CTR", "CHS_TWR", "JZI_TWR"],
@@ -1706,18 +1697,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "CHS_W_APP": ["CHS_E_APP"]
-        },
-        "inbound_assignments": {
-          "AMYLU3": "CHS_E_APP",
-          "BAGGY3": "CHS_W_APP",
-          "OSPRI7": "CHS_W_APP"
-        },
-        "departure_assignments": {
-          "KCHS": "CHS_W_APP",
-          "KJZI": "CHS_W_APP"
         }
       },
       "controllers": ["JAX_72_CTR", "JAX_73_CTR", "JAX_74_CTR", "CHS_TWR", "JZI_TWR"],
@@ -1740,6 +1722,20 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "AMYLU3": "CHS_E_APP",
+          "BAGGY3": "CHS_W_APP",
+          "OSPRI7": "CHS_W_APP"
+        },
+        "departure_assignments": {
+          "KCHS": "CHS_W_APP",
+          "KJZI": "CHS_W_APP"
+        }
+      }
+    },
+
     "center": "KCHS",
     "coordination_fixes": {
       "NINJA": [

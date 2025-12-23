@@ -6420,29 +6420,11 @@
       },
       "vfr_rate_scale": 0.4,
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "AR1",
+        "default_consolidation": {
           "SJC_L_APP": ["SJC_K_APP", "SJC_T_APP"],
           "SJC_M_APP": ["SJC_L_APP", "SJC_Q_APP", "SJC_S_APP"],
           "SJC_S_APP": ["SJC_F_APP"]
-        },
-        "inbound_assignments": {
-          "BRINY2": "SJC_K_APP",
-          "BRIXX4": "SJC_K_APP",
-          "EMZOH4.W": "SJC_M_APP",
-          "PYE3": "SJC_K_APP",
-          "RAZRR5.W": "SJC_Q_APP",
-          "RISTI1.ORRCA": "SJC_L_APP",
-          "RISTI1.TIPRE": "SJC_L_APP",
-          "SAT.EAST": "SJC_M_APP",
-          "SAT.SOUTH": "SJC_M_APP",
-          "SILCN6.N": "SJC_M_APP"
-        },
-        "departure_assignments": {
-          "KMRY": "SJC_S_APP",
-          "KPAO": "SJC_T_APP",
-          "KSJC": "SJC_T_APP",
-          "KSNS": "SJC_M_APP"
         }
       },
       "controllers": [
@@ -6593,28 +6575,10 @@
       },
       "vfr_rate_scale": 0.4,
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "ARE",
+        "default_consolidation": {
           "SJC_L_APP": ["SJC_T_APP"],
           "SJC_M_APP": ["SJC_L_APP", "SJC_S_APP"]
-        },
-        "inbound_assignments": {
-          "BRINY2": "SJC_M_APP",
-          "EMZOH4.E": "SJC_M_APP",
-          "FRLON2": "SJC_M_APP",
-          "PYE3": "SJC_L_APP",
-          "RAZRR5.E": "SJC_M_APP",
-          "RISTI1.ORRCA": "SJC_M_APP",
-          "RISTI1.TIPRE": "SJC_M_APP",
-          "SAT.EAST": "SJC_M_APP",
-          "SAT.SOUTH": "SJC_M_APP",
-          "SILCN6.S": "SJC_M_APP"
-        },
-        "departure_assignments": {
-          "KMRY": "SJC_S_APP",
-          "KPAO": "SJC_L_APP",
-          "KSJC": "SJC_T_APP",
-          "KSNS": "SJC_M_APP"
         }
       },
       "controllers": [
@@ -6760,28 +6724,10 @@
       },
       "vfr_rate_scale": 0.4,
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "ARE",
+        "default_consolidation": {
           "SJC_L_APP": ["SJC_T_APP"],
           "SJC_M_APP": ["SJC_L_APP", "SJC_S_APP"]
-        },
-        "inbound_assignments": {
-          "BRINY2": "SJC_M_APP",
-          "EMZOH4.E": "SJC_M_APP",
-          "FRLON2": "SJC_M_APP",
-          "PYE3": "SJC_L_APP",
-          "RAZRR5.E": "SJC_M_APP",
-          "RISTI1.ORRCA": "SJC_M_APP",
-          "RISTI1.TIPRE": "SJC_M_APP",
-          "SAT.EAST": "SJC_M_APP",
-          "SAT.SOUTH": "SJC_M_APP",
-          "SILCN6.S": "SJC_M_APP"
-        },
-        "departure_assignments": {
-          "KMRY": "SJC_S_APP",
-          "KPAO": "SJC_L_APP",
-          "KSJC": "SJC_T_APP",
-          "KSNS": "SJC_M_APP"
         }
       },
       "controllers": [
@@ -6917,28 +6863,10 @@
       },
       "vfr_rate_scale": 0.4,
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "AR2",
+        "default_consolidation": {
           "SJC_L_APP": ["SJC_T_APP"],
           "SJC_M_APP": ["SJC_L_APP", "SJC_S_APP"]
-        },
-        "inbound_assignments": {
-          "BRINY2": "SJC_M_APP",
-          "BRIXX4": "SJC_M_APP",
-          "EMZOH4.E": "SJC_M_APP",
-          "PYE3": "SJC_L_APP",
-          "RAZRR5.E": "SJC_M_APP",
-          "RISTI1.ORRCA": "SJC_M_APP",
-          "RISTI1.TIPRE": "SJC_M_APP",
-          "SAT.EAST": "SJC_M_APP",
-          "SAT.SOUTH": "SJC_M_APP",
-          "SILCN6.N": "SJC_M_APP"
-        },
-        "departure_assignments": {
-          "KMRY": "SJC_S_APP",
-          "KPAO": "SJC_L_APP",
-          "KSJC": "SJC_T_APP",
-          "KSNS": "SJC_M_APP"
         }
       },
       "controllers": [
@@ -7074,28 +7002,10 @@
       },
       "vfr_rate_scale": 0.4,
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "ARE",
+        "default_consolidation": {
           "SJC_L_APP": ["SJC_T_APP"],
           "SJC_M_APP": ["SJC_L_APP", "SJC_S_APP"]
-        },
-        "inbound_assignments": {
-          "BRINY2": "SJC_M_APP",
-          "EMZOH4.E": "SJC_M_APP",
-          "FRLON2": "SJC_M_APP",
-          "PYE3": "SJC_L_APP",
-          "RAZRR5.E": "SJC_M_APP",
-          "RISTI1.ORRCA": "SJC_M_APP",
-          "RISTI1.TIPRE": "SJC_M_APP",
-          "SAT.EAST": "SJC_M_APP",
-          "SAT.SOUTH": "SJC_M_APP",
-          "SILCN6.S": "SJC_M_APP"
-        },
-        "departure_assignments": {
-          "KMRY": "SJC_S_APP",
-          "KPAO": "SJC_L_APP",
-          "KSJC": "SJC_T_APP",
-          "KSNS": "SJC_M_APP"
         }
       },
       "controllers": [
@@ -7165,6 +7075,69 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "ARE": {
+        "inbound_assignments": {
+          "BRINY2": "SJC_M_APP",
+          "EMZOH4.E": "SJC_M_APP",
+          "FRLON2": "SJC_M_APP",
+          "PYE3": "SJC_L_APP",
+          "RAZRR5.E": "SJC_M_APP",
+          "RISTI1.ORRCA": "SJC_M_APP",
+          "RISTI1.TIPRE": "SJC_M_APP",
+          "SAT.EAST": "SJC_M_APP",
+          "SAT.SOUTH": "SJC_M_APP",
+          "SILCN6.S": "SJC_M_APP"
+        },
+        "departure_assignments": {
+          "KMRY": "SJC_S_APP",
+          "KPAO": "SJC_L_APP",
+          "KSJC": "SJC_T_APP",
+          "KSNS": "SJC_M_APP"
+        }
+      },
+      "AR1": {
+        "inbound_assignments": {
+          "BRINY2": "SJC_K_APP",
+          "BRIXX4": "SJC_K_APP",
+          "EMZOH4.W": "SJC_M_APP",
+          "PYE3": "SJC_K_APP",
+          "RAZRR5.W": "SJC_Q_APP",
+          "RISTI1.ORRCA": "SJC_L_APP",
+          "RISTI1.TIPRE": "SJC_L_APP",
+          "SAT.EAST": "SJC_M_APP",
+          "SAT.SOUTH": "SJC_M_APP",
+          "SILCN6.N": "SJC_M_APP"
+        },
+        "departure_assignments": {
+          "KMRY": "SJC_S_APP",
+          "KPAO": "SJC_T_APP",
+          "KSJC": "SJC_T_APP",
+          "KSNS": "SJC_M_APP"
+        }
+      },
+      "AR2": {
+        "inbound_assignments": {
+          "BRINY2": "SJC_M_APP",
+          "BRIXX4": "SJC_M_APP",
+          "EMZOH4.E": "SJC_M_APP",
+          "PYE3": "SJC_L_APP",
+          "RAZRR5.E": "SJC_M_APP",
+          "RISTI1.ORRCA": "SJC_M_APP",
+          "RISTI1.TIPRE": "SJC_M_APP",
+          "SAT.EAST": "SJC_M_APP",
+          "SAT.SOUTH": "SJC_M_APP",
+          "SILCN6.N": "SJC_M_APP"
+        },
+        "departure_assignments": {
+          "KMRY": "SJC_S_APP",
+          "KPAO": "SJC_L_APP",
+          "KSJC": "SJC_T_APP",
+          "KSNS": "SJC_M_APP"
+        }
+      }
+    },
+
     "center": "KSJC",
     "altimeters": ["KSJC", "KMRY", "KSNS", "KPAO"],
     "controller_configs": {

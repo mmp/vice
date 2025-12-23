@@ -1036,15 +1036,9 @@
   "scenarios": {
     "75": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ZJX 75 Greencove": []
-        },
-        "inbound_assignments": {
-          "Northbound Overflights": "ZJX 75 Greencove",
-          "QUBEN2": "ZJX 75 Greencove",
-          "Southbound Overflights": "ZJX 75 Greencove",
-          "TTHOR3": "ZJX 75 Greencove"
         }
       },
       "controllers": [
@@ -1130,15 +1124,9 @@
     },
     "75 (UH Online)": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ZJX 75 Greencove": []
-        },
-        "inbound_assignments": {
-          "Northbound Overflights (UH)": "ZJX 75 Greencove",
-          "QUBEN2": "ZJX 75 Greencove",
-          "Southbound Overflights": "ZJX 75 Greencove",
-          "TTHOR3": "ZJX 75 Greencove"
         }
       },
       "controllers": [
@@ -1224,6 +1212,17 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "Northbound Overflights": "ZJX 75 Greencove",
+          "Northbound Overflights (UH)": "ZJX 75 Greencove",
+          "QUBEN2": "ZJX 75 Greencove",
+          "Southbound Overflights": "ZJX 75 Greencove",
+          "TTHOR3": "ZJX 75 Greencove"
+        }
+    },
+
     "center": "28J",
     "range": 50000,
     "stars_maps": [

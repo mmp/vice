@@ -2119,21 +2119,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "23X",
+        "default_consolidation": {
           "1D": ["1A"]
-        },
-        "inbound_assignments": {
-          "GON": "1D",
-          "JORDN": "1D",
-          "JUMPR": "1D",
-          "PEAKE": "1D",
-          "WIPOR": "1D"
-        },
-        "departure_assignments": {
-          "KEWB": "1A",
-          "KOQU": "1A",
-          "KPVD": "1A"
         }
       },
       "controllers": ["1A", "C18", "C32", "C34", "C42"],
@@ -2192,21 +2180,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "23X",
+        "default_consolidation": {
           "1D": ["1A"]
-        },
-        "inbound_assignments": {
-          "GON": "1D",
-          "JORDN": "1D",
-          "JUMPR": "1D",
-          "PEAKE": "1D",
-          "WIPOR": "1D"
-        },
-        "departure_assignments": {
-          "KEWB": "1A",
-          "KOQU": "1A",
-          "KPVD": "1A"
         }
       },
       "controllers": ["1A", "C18", "C32", "C34", "C42"],
@@ -2262,17 +2238,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "05X",
+        "default_consolidation": {
           "1A": []
-        },
-        "inbound_assignments": {
-          "GON": "1A",
-          "JORDN": "1A",
-          "WIPOR": "1A"
-        },
-        "departure_assignments": {
-          "KPVD": "1A"
         }
       },
       "controllers": ["1A", "C32", "C42"],
@@ -2308,17 +2276,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "21X",
+        "default_consolidation": {
           "1D": []
-        },
-        "inbound_assignments": {
-          "PQ_OQU_2316_COMBINED": "1D",
-          "PQ_PVD_2316_COMBINED": "1D"
-        },
-        "departure_assignments": {
-          "KOQU": "1D",
-          "KPVD": "1D"
         }
       },
       "controllers": ["1H", "1J", "1N", "C18", "C32", "C34", "C42", "BDL_1W", "BDL_1B"],
@@ -2359,17 +2319,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "PVD",
+        "default_consolidation": {
           "1D": ["1A"]
-        },
-        "inbound_assignments": {
-          "PQ_OQU_2316": "1D",
-          "PQ_PVD_2316": "1A"
-        },
-        "departure_assignments": {
-          "KOQU": "1D",
-          "KPVD": "1D"
         }
       },
       "controllers": ["1A", "C18", "C32", "C34", "C42", "BDL_1W", "BDL_1B"],
@@ -2410,17 +2362,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "51X",
+        "default_consolidation": {
           "1A": ["1D"]
-        },
-        "inbound_assignments": {
-          "PQ_OQU_0516": "1D",
-          "PQ_PVD_0516": "1D"
-        },
-        "departure_assignments": {
-          "KOQU": "1A",
-          "KPVD": "1D"
         }
       },
       "controllers": ["1D", "1N", "C18", "C32", "C34", "C42", "BDL_1W", "BDL_1B"],
@@ -2461,17 +2405,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "53X",
+        "default_consolidation": {
           "1A": ["1D"]
-        },
-        "inbound_assignments": {
-          "PQ_OQU_0534": "1A",
-          "PQ_PVD_0534": "1A"
-        },
-        "departure_assignments": {
-          "KOQU": "1A",
-          "KPVD": "1D"
         }
       },
       "controllers": ["1D", "1N", "C18", "C32", "C34", "C42", "BDL_1W", "BDL_1B", "BOS_1M", "BOS_1N", "BOS_1S"],
@@ -2494,6 +2430,73 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "05X": {
+        "inbound_assignments": {
+          "GON": "1A",
+          "JORDN": "1A",
+          "WIPOR": "1A"
+        },
+        "departure_assignments": {
+          "KPVD": "1A"
+        }
+      },
+      "23X": {
+        "inbound_assignments": {
+          "GON": "1D",
+          "JORDN": "1D",
+          "JUMPR": "1D",
+          "PEAKE": "1D",
+          "WIPOR": "1D"
+        },
+        "departure_assignments": {
+          "KEWB": "1A",
+          "KOQU": "1A",
+          "KPVD": "1A"
+        }
+      },
+      "21X": {
+        "inbound_assignments": {
+          "PQ_OQU_2316_COMBINED": "1D",
+          "PQ_PVD_2316_COMBINED": "1D"
+        },
+        "departure_assignments": {
+          "KOQU": "1D",
+          "KPVD": "1D"
+        }
+      },
+      "PVD": {
+        "inbound_assignments": {
+          "PQ_OQU_2316": "1D",
+          "PQ_PVD_2316": "1A"
+        },
+        "departure_assignments": {
+          "KOQU": "1D",
+          "KPVD": "1D"
+        }
+      },
+      "51X": {
+        "inbound_assignments": {
+          "PQ_OQU_0516": "1D",
+          "PQ_PVD_0516": "1D"
+        },
+        "departure_assignments": {
+          "KOQU": "1A",
+          "KPVD": "1D"
+        }
+      },
+      "53X": {
+        "inbound_assignments": {
+          "PQ_OQU_0534": "1A",
+          "PQ_PVD_0534": "1A"
+        },
+        "departure_assignments": {
+          "KOQU": "1A",
+          "KPVD": "1D"
+        }
+      }
+    },
+
     "altimeters": ["KPVD"],
     "center": "N041.43.29.033,W071.25.35.559",
     "radar_sites": {

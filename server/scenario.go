@@ -98,6 +98,18 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		e.ErrorString("\"configuration\" is required")
 		return
 	}
+
+	// Resolve config_id to get assignments from stars_config.configurations
+	if s.ControllerConfiguration.ConfigId == "" {
+		e.ErrorString("\"config_id\" must be specified in \"configuration\"")
+	} else if config, ok := sg.FacilityAdaptation.Configurations[s.ControllerConfiguration.ConfigId]; !ok {
+		e.ErrorString("\"config_id\" %q not found in \"stars_config\" \"configurations\"", s.ControllerConfiguration.ConfigId)
+	} else {
+		// Copy assignments from the referenced configuration
+		s.ControllerConfiguration.InboundAssignments = maps.Clone(config.InboundAssignments)
+		s.ControllerConfiguration.DepartureAssignments = maps.Clone(config.DepartureAssignments)
+	}
+
 	s.ControllerConfiguration.Validate(sg.ControlPositions, e)
 
 	// Temporary backwards-compatibility for inbound flows
@@ -127,14 +139,8 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			return false
 		}
 
-		for flowName := range s.ControllerConfiguration.InboundAssignments {
-			if _, ok := s.InboundFlowDefaultRates[flowName]; !ok {
-				e.ErrorString("inbound_assignments: flow %q is not in \"inbound_rates\"", flowName)
-			} else if flow, ok := sg.InboundFlows[flowName]; ok && !flowNeedsHumanAssignment(flow) {
-				e.ErrorString("inbound_assignments: flow %q has no human handoff and no human initial_controller but is in \"inbound_assignments\"", flowName)
-			}
-		}
-		// Check reverse: every flow with human handoffs or human initial_controller must have an assignment
+		// Check that every flow with human handoffs or human initial_controller has an assignment.
+		// Note: It is NOT an error if the configuration has excess assignments that the scenario doesn't use.
 		for flowName := range s.InboundFlowDefaultRates {
 			if flow, ok := sg.InboundFlows[flowName]; ok && flowNeedsHumanAssignment(flow) {
 				if _, ok := s.ControllerConfiguration.InboundAssignments[flowName]; !ok {
@@ -313,31 +319,30 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	// Note: Unlike arrivals/overflights, departures are handed to humans by default.
 	// They only stay with virtual controllers if departure_controller is explicitly set.
 	// activeAirportSIDs already filters out airports with departure_controller set.
+	// Note: It is NOT an error if the configuration has excess assignments that the scenario doesn't use.
 	if s.ControllerConfiguration != nil {
 		// Track per-airport: assigned SIDs, assigned runways, and whether there's a fallback
+		// Only track assignments that are relevant to THIS scenario's active airports/SIDs/runways
 		assignedSIDs := make(map[string]map[string]interface{})    // airport -> set of SIDs
 		assignedRunways := make(map[string]map[string]interface{}) // airport -> set of runways
 		hasAirportFallback := make(map[string]bool)                // airport -> has plain airport assignment
 
 		for spec := range s.ControllerConfiguration.DepartureAssignments {
 			ap, sidRunway, haveSIDRunway := strings.Cut(spec, "/")
-			if sids, ok := activeAirportSIDs[ap]; !ok {
-				// Airport not in activeAirportSIDs means either:
-				// 1. It has a virtual DepartureController assigned, or
-				// 2. It's not a valid departure airport
-				if _, ok := activeDepartureAirports[ap]; !ok {
-					e.ErrorString("departure_assignments: airport %q is not departing aircraft in this scenario", ap)
-				}
-				// If it has a virtual controller, we skip it (human assignments don't apply)
-			} else if haveSIDRunway {
-				// If there's something after a slash, make sure it's either a valid SID or runway.
+
+			// Only process assignments for airports that are active in this scenario
+			// and need human controller assignments (i.e., are in activeAirportSIDs)
+			sids, isActiveHumanAirport := activeAirportSIDs[ap]
+			if !isActiveHumanAirport {
+				// Skip - either not an active departure airport, or has virtual controller
+				continue
+			}
+
+			if haveSIDRunway {
+				// Track assigned SIDs and runways per airport (only if active in this scenario)
 				_, okSID := sids[sidRunway]
 				_, okRunway := activeAirportRunways[ap][sidRunway]
-				if !okSID && !okRunway {
-					e.ErrorString("departure_assignments: %q at airport %q is neither an active runway nor SID in this scenario", sidRunway, ap)
-				}
 
-				// Track assigned SIDs and runways per airport
 				if okSID {
 					if assignedSIDs[ap] == nil {
 						assignedSIDs[ap] = make(map[string]interface{})
@@ -350,6 +355,8 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 					}
 					assignedRunways[ap][sidRunway] = nil
 				}
+				// Note: If neither okSID nor okRunway, this assignment is for a SID/runway
+				// not active in this scenario, which is fine (excess assignments are OK)
 
 				// Check for mixing SIDs and runways for this airport
 				if len(assignedSIDs[ap]) > 0 && len(assignedRunways[ap]) > 0 {
@@ -876,10 +883,10 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 			}
 		}
 
-		// Rewrite Configuration positions
+		// Rewrite Configuration default_consolidation
 		if s.ControllerConfiguration != nil {
 			newPositions := make(map[sim.TCP][]sim.TCP)
-			for parent, children := range s.ControllerConfiguration.Positions {
+			for parent, children := range s.ControllerConfiguration.DefaultConsolidation {
 				rewriteControlPosition(&parent)
 				newChildren := make([]sim.TCP, len(children))
 				for i, child := range children {
@@ -889,7 +896,7 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 				}
 				newPositions[parent] = newChildren
 			}
-			s.ControllerConfiguration.Positions = newPositions
+			s.ControllerConfiguration.DefaultConsolidation = newPositions
 
 			for flow, tcp := range s.ControllerConfiguration.InboundAssignments {
 				rewriteControlPosition(&tcp)
@@ -937,6 +944,17 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 		rewriteString(&p)
 		fa.ControllerConfigs[sim.ControlPosition(p)] = config
 	}
+	// Rewrite TCP references in configurations (controller assignments)
+	for _, config := range fa.Configurations {
+		for flow, tcp := range config.InboundAssignments {
+			rewriteControlPosition(&tcp)
+			config.InboundAssignments[flow] = tcp
+		}
+		for spec, tcp := range config.DepartureAssignments {
+			rewriteControlPosition(&tcp)
+			config.DepartureAssignments[spec] = tcp
+		}
+	}
 
 	for _, flow := range sg.InboundFlows {
 		for i := range flow.Arrivals {
@@ -962,6 +980,33 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 	defer e.CheckDepth(e.CurrentDepth())
 
 	e.Push("stars_config")
+
+	// Validate configurations (controller assignments)
+	if s.Configurations == nil {
+		e.ErrorString("must provide \"configurations\"")
+	}
+	for configId, config := range s.Configurations {
+		e.Push("configurations: " + configId)
+
+		// Config IDs must be max 3 characters
+		if len(configId) > 3 {
+			e.ErrorString("configuration id %q must be at most 3 characters", configId)
+		}
+
+		// Validate that all TCPs in assignments exist in control_positions
+		for flow, tcp := range config.InboundAssignments {
+			if _, ok := sg.ControlPositions[tcp]; !ok {
+				e.ErrorString("inbound_assignments: flow %q assigns to %q which is not in \"control_positions\"", flow, tcp)
+			}
+		}
+		for spec, tcp := range config.DepartureAssignments {
+			if _, ok := sg.ControlPositions[tcp]; !ok {
+				e.ErrorString("departure_assignments: %q assigns to %q which is not in \"control_positions\"", spec, tcp)
+			}
+		}
+
+		e.Pop()
+	}
 
 	// Video maps
 	for m := range s.VideoMapLabels {

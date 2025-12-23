@@ -290,15 +290,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "PWM_S_APP": []
-        },
-        "inbound_assignments": {
-          "West": "PWM_S_APP"
-        },
-        "departure_assignments": {
-          "KPWM": "PWM_S_APP"
         }
       },
       "controllers": ["PWM_S_APP", "PWM_L_APP", "PWM_TWR", "BOS_17_CTR"],
@@ -327,15 +321,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "PWM_S_APP": []
-        },
-        "inbound_assignments": {
-          "East": "PWM_S_APP"
-        },
-        "departure_assignments": {
-          "KPWM": "PWM_S_APP"
         }
       },
       "controllers": ["PWM_S_APP", "PWM_L_APP", "PWM_TWR", "BOS_17_CTR"],
@@ -353,6 +341,18 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "East": "PWM_S_APP",
+          "West": "PWM_S_APP"
+        },
+        "departure_assignments": {
+          "KPWM": "PWM_S_APP"
+        }
+      }
+    },
+
     "center": "KPWM",
     "scratchpads": {},
     "stars_maps": [

@@ -1061,26 +1061,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "SBA_H_APP": ["SBA_E_APP", "SBA_R_APP"],
           "SBA_R_APP": ["SBA_I_APP"]
-        },
-        "inbound_assignments": {
-          "EAST SBP ARR": "SBA_I_APP",
-          "EAST SMX ARR": "SBA_H_APP",
-          "NORTH SBA ARR": "SBA_E_APP",
-          "NORTH SBP ARR": "SBA_I_APP",
-          "NORTH SMX ARR": "SBA_I_APP",
-          "NORTHWEST SBA ARR": "SBA_E_APP",
-          "NORTHWEST SBP ARR": "SBA_I_APP",
-          "PITBL2": "SBA_H_APP",
-          "SOUTH SBP ARR": "SBA_R_APP"
-        },
-        "departure_assignments": {
-          "KSBA": "SBA_H_APP",
-          "KSBP": "SBA_I_APP",
-          "KSMX": "SBA_R_APP"
         }
       },
       "controllers": [
@@ -1167,26 +1151,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "SBA_H_APP": ["SBA_E_APP", "SBA_R_APP"],
           "SBA_R_APP": ["SBA_I_APP"]
-        },
-        "inbound_assignments": {
-          "EAST SBP ARR": "SBA_I_APP",
-          "EAST SMX ARR": "SBA_H_APP",
-          "NORTH SBA ARR": "SBA_E_APP",
-          "NORTH SBP ARR": "SBA_I_APP",
-          "NORTH SMX ARR": "SBA_I_APP",
-          "NORTHWEST SBA ARR": "SBA_E_APP",
-          "NORTHWEST SBP ARR": "SBA_I_APP",
-          "PITBL2": "SBA_H_APP",
-          "SOUTH SBP ARR": "SBA_R_APP"
-        },
-        "departure_assignments": {
-          "KSBA": "SBA_H_APP",
-          "KSBP": "SBA_I_APP",
-          "KSMX": "SBA_R_APP"
         }
       },
       "controllers": [
@@ -1224,6 +1192,27 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "EAST SBP ARR": "SBA_I_APP",
+          "EAST SMX ARR": "SBA_H_APP",
+          "NORTH SBA ARR": "SBA_E_APP",
+          "NORTH SBP ARR": "SBA_I_APP",
+          "NORTH SMX ARR": "SBA_I_APP",
+          "NORTHWEST SBA ARR": "SBA_E_APP",
+          "NORTHWEST SBP ARR": "SBA_I_APP",
+          "PITBL2": "SBA_H_APP",
+          "SOUTH SBP ARR": "SBA_R_APP"
+        },
+        "departure_assignments": {
+          "KSBA": "SBA_H_APP",
+          "KSBP": "SBA_I_APP",
+          "KSMX": "SBA_R_APP"
+        }
+      }
+    },
+
     "center": "N034.54.00.609,W120.25.43.579",
     "coordination_fixes": {
       "KWANG": [

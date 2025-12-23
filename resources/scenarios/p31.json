@@ -897,17 +897,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "PNS_E_APP": ["PNS_A_APP", "PNS_F_APP", "PNS_K_APP", "PNS_P_APP", "PNS_S_APP", "PNS_W_APP", "PNS_Z_APP"]
-        },
-        "inbound_assignments": {
-          "CEW": "PNS_E_APP",
-          "LOXLY": "PNS_W_APP",
-          "SJI": "PNS_W_APP"
-        },
-        "departure_assignments": {
-          "KPNS": "PNS_E_APP"
         }
       },
       "controllers": [
@@ -953,17 +945,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "PNS_E_APP": ["PNS_A_APP", "PNS_F_APP", "PNS_K_APP", "PNS_P_APP", "PNS_S_APP", "PNS_W_APP", "PNS_Z_APP"]
-        },
-        "inbound_assignments": {
-          "CEW": "PNS_E_APP",
-          "LOXLY": "PNS_W_APP",
-          "SJI": "PNS_W_APP"
-        },
-        "departure_assignments": {
-          "KPNS": "PNS_E_APP"
         }
       },
       "controllers": [
@@ -992,6 +976,19 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "CEW": "PNS_E_APP",
+          "LOXLY": "PNS_W_APP",
+          "SJI": "PNS_W_APP"
+        },
+        "departure_assignments": {
+          "KPNS": "PNS_E_APP"
+        }
+      }
+    },
+
     "center": "KPNS",
     "airspace_awareness": [
       {

@@ -599,20 +599,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "GJT_APP": []
-        },
-        "inbound_assignments": {
-          "NORTH": "GJT_APP",
-          "NORTHEAST": "GJT_APP",
-          "NORTHWEST": "GJT_APP",
-          "SOUTHEAST": "GJT_APP",
-          "SOUTHWEST": "GJT_APP",
-          "WEST": "GJT_APP"
-        },
-        "departure_assignments": {
-          "KGJT": "GJT_APP"
         }
       },
       "controllers": ["DEN_11_CTR", "DEN_12_CTR", "GJT_TWR"],
@@ -656,20 +645,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "GJT_APP": []
-        },
-        "inbound_assignments": {
-          "NORTH": "GJT_APP",
-          "NORTHEAST": "GJT_APP",
-          "NORTHWEST": "GJT_APP",
-          "SOUTHEAST": "GJT_APP",
-          "SOUTHWEST": "GJT_APP",
-          "WEST": "GJT_APP"
-        },
-        "departure_assignments": {
-          "KGJT": "GJT_APP"
         }
       },
       "controllers": ["DEN_11_CTR", "DEN_12_CTR", "GJT_TWR"],
@@ -687,6 +665,22 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "NORTH": "GJT_APP",
+          "NORTHEAST": "GJT_APP",
+          "NORTHWEST": "GJT_APP",
+          "SOUTHEAST": "GJT_APP",
+          "SOUTHWEST": "GJT_APP",
+          "WEST": "GJT_APP"
+        },
+        "departure_assignments": {
+          "KGJT": "GJT_APP"
+        }
+      }
+    },
+
     "center": "KGJT",
     "coordination_lists": [
       {

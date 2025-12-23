@@ -4194,23 +4194,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "DE1",
+        "default_consolidation": {
           "LAX_S_DEP": ["LAX_N_DEP", "LAX_X_DEP"],
           "LAX_X_DEP": ["LAX_K_DEP"]
-        },
-        "departure_assignments": {
-          "KHHR": "LAX_S_DEP",
-          "KLAX": "LAX_S_DEP"
-        },
-        "inbound_assignments": {
-          "TOPMM5": "LAX_X_DEP",
-          "ZOOMM3/FRITR3.N": "LAX_X_DEP",
-          "RUKKI1/BAUBB3.12": "LAX_K_DEP",
-          "OHSEA3/PCIFC3.12": "LAX_K_DEP",
-          "KARLB3/GOATZ2.E": "LAX_K_DEP",
-          "OLAAA2.E": "LAX_K_DEP",
-          "LEGOZ4": "LAX_K_DEP"
         }
       },
       "controllers": [
@@ -4312,23 +4299,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "DEL",
+        "default_consolidation": {
           "LAX_S_DEP": ["LAX_N_DEP", "LAX_X_DEP"],
           "LAX_X_DEP": ["LAX_K_DEP"]
-        },
-        "departure_assignments": {
-          "KHHR": "LAX_S_DEP",
-          "KLAX": "LAX_S_DEP"
-        },
-        "inbound_assignments": {
-          "TOPMM5": "LAX_X_DEP",
-          "ZOOMM3/FRITR3.N": "LAX_X_DEP",
-          "RUKKI1/BAUBB3.N": "LAX_K_DEP",
-          "OHSEA3/PCIFC3.N": "LAX_K_DEP",
-          "KARLB3/GOATZ2.E": "LAX_K_DEP",
-          "OLAAA2.E": "LAX_K_DEP",
-          "LEGOZ4": "LAX_K_DEP"
         }
       },
       "controllers": [
@@ -4420,23 +4394,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "DE3",
+        "default_consolidation": {
           "LAX_S_DEP": ["LAX_L_DEP", "LAX_N_DEP", "LAX_X_DEP"],
           "LAX_X_DEP": ["LAX_K_DEP"]
-        },
-        "departure_assignments": {
-          "KHHR": "LAX_L_DEP",
-          "KLAX": "LAX_S_DEP",
-          "KLGB": "LAX_S_DEP",
-          "KSMO": "LAX_N_DEP"
-        },
-        "inbound_assignments": {
-          "ZOOMM3/FRITR3": "LAX_X_DEP",
-          "OHSEA3/PCIFC3": "LAX_K_DEP",
-          "KARLB3/GOATZ2": "LAX_K_DEP",
-          "RUKKI1/BAUBB3": "LAX_K_DEP",
-          "LEGOZ4": "LAX_K_DEP"
         }
       },
       "controllers": [
@@ -4538,32 +4499,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "DE2",
+        "default_consolidation": {
           "LAX_S_DEP": ["LAX_L_DEP", "LAX_N_DEP", "LAX_X_DEP"],
           "LAX_X_DEP": ["LAX_K_DEP"]
-        },
-        "inbound_assignments": {
-          "KARLB3/GOATZ2": "LAX_K_DEP",
-          "LEGOZ4": "LAX_K_DEP",
-          "OHSEA3/PCIFC3.N": "LAX_K_DEP",
-          "RUKKI1/BAUBB3.N": "LAX_K_DEP",
-          "TOPMM5": "LAX_L_DEP",
-          "ZOOMM3/FRITR3.N": "LAX_X_DEP"
-        },
-        "departure_assignments": {
-          "KHHR": "LAX_L_DEP",
-          "KLAX/DOTSS2": "LAX_S_DEP",
-          "KLAX/GMN7": "LAX_N_DEP",
-          "KLAX/LADYJ4": "LAX_N_DEP",
-          "KLAX/LAXX1": "LAX_S_DEP",
-          "KLAX/MOOOS2": "LAX_N_DEP",
-          "KLAX/MUELR4": "LAX_N_DEP",
-          "KLAX/ORCKA5": "LAX_S_DEP",
-          "KLAX/OSHNN1": "LAX_S_DEP",
-          "KLAX/PNDAH2": "LAX_S_DEP",
-          "KLAX/SUMMR2": "LAX_N_DEP",
-          "KSMO": "LAX_N_DEP"
         }
       },
       "controllers": [
@@ -4636,12 +4575,9 @@
       },
       "vfr_rate_scale": 0.3,
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "DE4",
+        "default_consolidation": {
           "LAX_S_DEP": ["LAX_X_DEP"]
-        },
-        "departure_assignments": {
-          "KLAX": "LAX_S_DEP"
         }
       },
       "controllers": [
@@ -4681,6 +4617,83 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "DEL": {
+        "inbound_assignments": {
+          "KARLB3/GOATZ2.E": "LAX_K_DEP",
+          "LEGOZ4": "LAX_K_DEP",
+          "OHSEA3/PCIFC3.N": "LAX_K_DEP",
+          "OLAAA2.E": "LAX_K_DEP",
+          "RUKKI1/BAUBB3.N": "LAX_K_DEP",
+          "TOPMM5": "LAX_X_DEP",
+          "ZOOMM3/FRITR3.N": "LAX_X_DEP"
+        },
+        "departure_assignments": {
+          "KHHR": "LAX_S_DEP",
+          "KLAX": "LAX_S_DEP"
+        }
+      },
+      "DE1": {
+        "inbound_assignments": {
+          "KARLB3/GOATZ2.E": "LAX_K_DEP",
+          "LEGOZ4": "LAX_K_DEP",
+          "OHSEA3/PCIFC3.12": "LAX_K_DEP",
+          "OLAAA2.E": "LAX_K_DEP",
+          "RUKKI1/BAUBB3.12": "LAX_K_DEP",
+          "TOPMM5": "LAX_X_DEP",
+          "ZOOMM3/FRITR3.N": "LAX_X_DEP"
+        },
+        "departure_assignments": {
+          "KHHR": "LAX_S_DEP",
+          "KLAX": "LAX_S_DEP"
+        }
+      },
+      "DE2": {
+        "inbound_assignments": {
+          "KARLB3/GOATZ2": "LAX_K_DEP",
+          "LEGOZ4": "LAX_K_DEP",
+          "OHSEA3/PCIFC3.N": "LAX_K_DEP",
+          "RUKKI1/BAUBB3.N": "LAX_K_DEP",
+          "TOPMM5": "LAX_L_DEP",
+          "ZOOMM3/FRITR3.N": "LAX_X_DEP"
+        },
+        "departure_assignments": {
+          "KHHR": "LAX_L_DEP",
+          "KLAX/DOTSS2": "LAX_S_DEP",
+          "KLAX/GMN7": "LAX_N_DEP",
+          "KLAX/LADYJ4": "LAX_N_DEP",
+          "KLAX/LAXX1": "LAX_S_DEP",
+          "KLAX/MOOOS2": "LAX_N_DEP",
+          "KLAX/MUELR4": "LAX_N_DEP",
+          "KLAX/ORCKA5": "LAX_S_DEP",
+          "KLAX/OSHNN1": "LAX_S_DEP",
+          "KLAX/PNDAH2": "LAX_S_DEP",
+          "KLAX/SUMMR2": "LAX_N_DEP",
+          "KSMO": "LAX_N_DEP"
+        }
+      },
+      "DE3": {
+        "inbound_assignments": {
+          "KARLB3/GOATZ2": "LAX_K_DEP",
+          "LEGOZ4": "LAX_K_DEP",
+          "OHSEA3/PCIFC3": "LAX_K_DEP",
+          "RUKKI1/BAUBB3": "LAX_K_DEP",
+          "ZOOMM3/FRITR3": "LAX_X_DEP"
+        },
+        "departure_assignments": {
+          "KHHR": "LAX_L_DEP",
+          "KLAX": "LAX_S_DEP",
+          "KLGB": "LAX_S_DEP",
+          "KSMO": "LAX_N_DEP"
+        }
+      },
+      "DE4": {
+        "departure_assignments": {
+          "KLAX": "LAX_S_DEP"
+        }
+      }
+    },
+
     "center": "N033.41.38.744,W118.21.53.717",
     "altimeters": ["KLAX", "KSMO", "KHHR", "KLGB"],
     "controller_configs": {

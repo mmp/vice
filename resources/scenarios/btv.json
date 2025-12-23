@@ -312,19 +312,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "15X",
+        "default_consolidation": {
           "BTV_W_APP": []
-        },
-        "inbound_assignments": {
-          "LBNON Arrival Land 15": "BTV_W_APP",
-          "LBNON Arrival Land 33": "BTV_W_APP",
-          "RUT Arrival Land 15": "BTV_W_APP",
-          "RUT Arrival Land 33": "BTV_W_APP"
-        },
-        "departure_assignments": {
-          "KBTV": "BTV_W_APP",
-          "KPBG": "BTV_W_APP"
         }
       },
       "controllers": ["BTV_W_APP", "BTV_E_APP", "BTV_TWR", "BTV_F_APP", "BOS_37_CTR"],
@@ -371,19 +361,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "33X",
+        "default_consolidation": {
           "BTV_E_APP": ["BTV_F_APP", "BTV_W_APP"]
-        },
-        "inbound_assignments": {
-          "LBNON Arrival Land 15": "BTV_E_APP",
-          "LBNON Arrival Land 33": "BTV_E_APP",
-          "RUT Arrival Land 15": "BTV_W_APP",
-          "RUT Arrival Land 33": "BTV_W_APP"
-        },
-        "departure_assignments": {
-          "KBTV": "BTV_E_APP",
-          "KPBG": "BTV_W_APP"
         }
       },
       "controllers": ["BTV_W_APP", "BTV_E_APP", "BTV_F_APP", "BTV_TWR", "BOS_37_CTR"],
@@ -406,6 +386,33 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "15X": {
+        "inbound_assignments": {
+          "LBNON Arrival Land 15": "BTV_W_APP",
+          "LBNON Arrival Land 33": "BTV_W_APP",
+          "RUT Arrival Land 15": "BTV_W_APP",
+          "RUT Arrival Land 33": "BTV_W_APP"
+        },
+        "departure_assignments": {
+          "KBTV": "BTV_W_APP",
+          "KPBG": "BTV_W_APP"
+        }
+      },
+      "33X": {
+        "inbound_assignments": {
+          "LBNON Arrival Land 15": "BTV_E_APP",
+          "LBNON Arrival Land 33": "BTV_E_APP",
+          "RUT Arrival Land 15": "BTV_W_APP",
+          "RUT Arrival Land 33": "BTV_W_APP"
+        },
+        "departure_assignments": {
+          "KBTV": "BTV_E_APP",
+          "KPBG": "BTV_W_APP"
+        }
+      }
+    },
+
     "center": "KBTV",
     "scratchpads": {},
     "stars_maps": ["BTV RVM", "BTV MAIN", "BTV MVA", "BTV VFR", "BTV SATS"],

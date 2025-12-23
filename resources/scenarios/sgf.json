@@ -666,20 +666,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "SGF_E_APP": ["SGF_W_APP"]
-        },
-        "inbound_assignments": {
-          "DEN": "SGF_W_APP",
-          "NE": "SGF_E_APP",
-          "ORD": "SGF_E_APP",
-          "SE": "SGF_E_APP",
-          "SW": "SGF_W_APP"
-        },
-        "departure_assignments": {
-          "KLBO": "SGF_E_APP",
-          "KSGF": "SGF_E_APP"
         }
       },
       "controllers": ["SGF_TWR", "SGF_W_APP", "SGF_E_APP", "KC_77_CTR", "MZU_APP", "LBO_TWR"],
@@ -747,20 +736,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "SGF_E_APP": ["SGF_W_APP"]
-        },
-        "inbound_assignments": {
-          "DEN": "SGF_W_APP",
-          "NE": "SGF_E_APP",
-          "ORD": "SGF_E_APP",
-          "SE": "SGF_E_APP",
-          "SW": "SGF_W_APP"
-        },
-        "departure_assignments": {
-          "KLBO": "SGF_E_APP",
-          "KSGF": "SGF_E_APP"
         }
       },
       "controllers": ["SGF_TWR", "SGF_W_APP", "SGF_E_APP", "KC_77_CTR", "MZU_APP", "LBO_TWR"],
@@ -797,6 +775,22 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "DEN": "SGF_W_APP",
+          "NE": "SGF_E_APP",
+          "ORD": "SGF_E_APP",
+          "SE": "SGF_E_APP",
+          "SW": "SGF_W_APP"
+        },
+        "departure_assignments": {
+          "KLBO": "SGF_E_APP",
+          "KSGF": "SGF_E_APP"
+        }
+      }
+    },
+
     "center": "37.2456614,-93.3886269",
     "range": 40,
     "scratchpads": {

@@ -2079,30 +2079,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "BUR",
+        "default_consolidation": {
           "BUR_M_APP": ["BUR_F_APP", "BUR_V_APP"],
           "BUR_V_APP": ["BUR_W_APP", "BUR_X_APP"],
           "BUR_X_APP": ["BUR_J_APP"]
-        },
-        "departure_assignments": {
-          "KBUR": "BUR_V_APP",
-          "KVNY/CANOG3": "BUR_W_APP",
-          "KVNY/HARYS5": "BUR_V_APP",
-          "KVNY/RSCO4": "BUR_V_APP",
-          "KVNY/WLKKR5": "BUR_W_APP",
-          "KWHP": "BUR_F_APP",
-          "KVNY": "BUR_M_APP"
-        },
-        "inbound_assignments": {
-          "JANNY5/GUERA2": "BUR_F_APP",
-          "EDWP4": "BUR_F_APP",
-          "WEESL1": "BUR_F_APP",
-          "FERN7": "BUR_M_APP",
-          "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
-          "LADYJ4": "BUR_M_APP",
-          "SBAP2": "BUR_W_APP",
-          "THRNE4": "BUR_X_APP"
         }
       },
       "controllers": [
@@ -2210,30 +2191,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "01X",
+        "default_consolidation": {
           "BUR_M_APP": ["BUR_F_APP", "BUR_V_APP"],
           "BUR_V_APP": ["BUR_W_APP", "BUR_X_APP"],
           "BUR_X_APP": ["BUR_J_APP"]
-        },
-        "departure_assignments": {
-          "KBUR": "BUR_V_APP",
-          "KSMO": "BUR_X_APP",
-          "KVNY/CANOG3": "BUR_W_APP",
-          "KVNY/HARYS5": "BUR_V_APP",
-          "KVNY/RSCO4": "BUR_V_APP",
-          "KVNY/WLKKR5": "BUR_W_APP",
-          "KWHP": "BUR_F_APP",
-          "KVNY": "BUR_M_APP"
-        },
-        "inbound_assignments": {
-          "JANNY5/GUERA2": "BUR_F_APP",
-          "EDWP4": "BUR_F_APP",
-          "WEESL1": "BUR_F_APP",
-          "FERN7": "BUR_M_APP",
-          "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
-          "THRNE4": "BUR_J_APP",
-          "SBAP2": "BUR_W_APP"
         }
       },
       "controllers": [
@@ -2356,26 +2318,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "BU1",
+        "default_consolidation": {
           "BUR_M_APP": ["BUR_F_APP", "BUR_V_APP"],
           "BUR_V_APP": ["BUR_W_APP", "BUR_X_APP"],
           "BUR_X_APP": ["BUR_J_APP"]
-        },
-        "departure_assignments": {
-          "KBUR": "BUR_F_APP",
-          "KVNY": "BUR_F_APP",
-          "KWHP": "BUR_F_APP"
-        },
-        "inbound_assignments": {
-          "JANNY5/GUERA2": "BUR_F_APP",
-          "EDWP4": "BUR_F_APP",
-          "WEESL1": "BUR_F_APP",
-          "FERN7": "BUR_M_APP",
-          "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
-          "LADYJ4": "BUR_M_APP",
-          "SBAP2": "BUR_W_APP",
-          "THRNE4": "BUR_X_APP"
         }
       },
       "controllers": [
@@ -2480,26 +2427,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "23X",
+        "default_consolidation": {
           "BUR_M_APP": ["BUR_F_APP", "BUR_V_APP"],
           "BUR_V_APP": ["BUR_W_APP", "BUR_X_APP"],
           "BUR_X_APP": ["BUR_J_APP"]
-        },
-        "departure_assignments": {
-          "KBUR": "BUR_F_APP",
-          "KSMO": "BUR_X_APP",
-          "KVNY": "BUR_F_APP",
-          "KWHP": "BUR_F_APP"
-        },
-        "inbound_assignments": {
-          "JANNY5/GUERA2": "BUR_F_APP",
-          "EDWP4": "BUR_F_APP",
-          "WEESL1": "BUR_F_APP",
-          "FERN7": "BUR_M_APP",
-          "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
-          "THRNE4": "BUR_J_APP",
-          "SBAP2": "BUR_W_APP"
         }
       },
       "controllers": [
@@ -2567,6 +2499,85 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "01X": {
+        "inbound_assignments": {
+          "EDWP4": "BUR_F_APP",
+          "FERN7": "BUR_M_APP",
+          "JANNY5/GUERA2": "BUR_F_APP",
+          "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+          "SBAP2": "BUR_W_APP",
+          "THRNE4": "BUR_J_APP",
+          "WEESL1": "BUR_F_APP"
+        },
+        "departure_assignments": {
+          "KBUR": "BUR_V_APP",
+          "KSMO": "BUR_X_APP",
+          "KVNY": "BUR_M_APP",
+          "KVNY/CANOG3": "BUR_W_APP",
+          "KVNY/HARYS5": "BUR_V_APP",
+          "KVNY/RSCO4": "BUR_V_APP",
+          "KVNY/WLKKR5": "BUR_W_APP",
+          "KWHP": "BUR_F_APP"
+        }
+      },
+      "BUR": {
+        "inbound_assignments": {
+          "EDWP4": "BUR_F_APP",
+          "FERN7": "BUR_M_APP",
+          "JANNY5/GUERA2": "BUR_F_APP",
+          "LADYJ4": "BUR_M_APP",
+          "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+          "SBAP2": "BUR_W_APP",
+          "THRNE4": "BUR_X_APP",
+          "WEESL1": "BUR_F_APP"
+        },
+        "departure_assignments": {
+          "KBUR": "BUR_V_APP",
+          "KVNY": "BUR_M_APP",
+          "KVNY/CANOG3": "BUR_W_APP",
+          "KVNY/HARYS5": "BUR_V_APP",
+          "KVNY/RSCO4": "BUR_V_APP",
+          "KVNY/WLKKR5": "BUR_W_APP",
+          "KWHP": "BUR_F_APP"
+        }
+      },
+      "23X": {
+        "inbound_assignments": {
+          "EDWP4": "BUR_F_APP",
+          "FERN7": "BUR_M_APP",
+          "JANNY5/GUERA2": "BUR_F_APP",
+          "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+          "SBAP2": "BUR_W_APP",
+          "THRNE4": "BUR_J_APP",
+          "WEESL1": "BUR_F_APP"
+        },
+        "departure_assignments": {
+          "KBUR": "BUR_F_APP",
+          "KSMO": "BUR_X_APP",
+          "KVNY": "BUR_F_APP",
+          "KWHP": "BUR_F_APP"
+        }
+      },
+      "BU1": {
+        "inbound_assignments": {
+          "EDWP4": "BUR_F_APP",
+          "FERN7": "BUR_M_APP",
+          "JANNY5/GUERA2": "BUR_F_APP",
+          "LADYJ4": "BUR_M_APP",
+          "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+          "SBAP2": "BUR_W_APP",
+          "THRNE4": "BUR_X_APP",
+          "WEESL1": "BUR_F_APP"
+        },
+        "departure_assignments": {
+          "KBUR": "BUR_F_APP",
+          "KVNY": "BUR_F_APP",
+          "KWHP": "BUR_F_APP"
+        }
+      }
+    },
+
     "center": "JAZEE",
     "altimeters": ["KBUR", "KVNY", "KWHP", "KSMO"],
     "controller_configs": {

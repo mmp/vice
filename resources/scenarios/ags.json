@@ -465,20 +465,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "AGS_E_APP": ["AGS_W_APP"]
-        },
-        "inbound_assignments": {
-          "East": "AGS_E_APP",
-          "North": "AGS_W_APP",
-          "STUGE3": "AGS_E_APP",
-          "STWRT3": "AGS_E_APP",
-          "South": "AGS_W_APP",
-          "West": "AGS_W_APP"
-        },
-        "departure_assignments": {
-          "KAGS": "AGS_W_APP"
         }
       },
       "controllers": ["AGS_TWR", "ATL_CTR", "JAX_CTR", "CAE_APP"],
@@ -530,20 +519,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "AGS_E_APP": ["AGS_W_APP"]
-        },
-        "inbound_assignments": {
-          "East": "AGS_E_APP",
-          "North": "AGS_W_APP",
-          "STUGE3": "AGS_E_APP",
-          "STWRT3": "AGS_E_APP",
-          "South": "AGS_W_APP",
-          "West": "AGS_W_APP"
-        },
-        "departure_assignments": {
-          "KAGS": "AGS_W_APP"
         }
       },
       "controllers": ["AGS_TWR", "ATL_CTR", "JAX_CTR", "CAE_APP"],
@@ -561,6 +539,22 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "East": "AGS_E_APP",
+          "North": "AGS_W_APP",
+          "STUGE3": "AGS_E_APP",
+          "STWRT3": "AGS_E_APP",
+          "South": "AGS_W_APP",
+          "West": "AGS_W_APP"
+        },
+        "departure_assignments": {
+          "KAGS": "AGS_W_APP"
+        }
+      }
+    },
+
     "center": "KAGS",
     "coordination_fixes": {
       "PYRES": [

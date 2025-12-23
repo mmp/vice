@@ -171,15 +171,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "GTF_APP": []
-        },
-        "inbound_assignments": {
-          "North": "GTF_APP"
-        },
-        "departure_assignments": {
-          "KGTF": "GTF_APP"
         }
       },
       "controllers": ["GTF_APP", "GTF_TWR", "SLC_03_CTR"],
@@ -197,6 +191,17 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "North": "GTF_APP"
+        },
+        "departure_assignments": {
+          "KGTF": "GTF_APP"
+        }
+      }
+    },
+
     "center": "KGTF",
     "scratchpads": {},
     "stars_maps": ["STARS-GTF_N-RVM__North RVM", "STARS-GTF_MVA__MVA"],

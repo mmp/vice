@@ -12729,25 +12729,9 @@
   "scenarios": {
     "(SR) Seminole (MCO S)": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "SR-Seminole": []
-        },
-        "inbound_assignments": {
-          "ALYNA4.LEEE": "SR-Seminole",
-          "ALYNA4.SFBE": "SR-Seminole",
-          "GOOFY7": "SR-Seminole",
-          "PRICY3.SFBE": "SR-Seminole",
-          "RIDES2.SFBE": "SR-Seminole",
-          "SHREK2E.SFB": "SR-Seminole",
-          "TTHOR3.SFBE": "SR-Seminole",
-          "West_coast/T210N": "SR-Seminole",
-          "West_coast/T210S": "SR-Seminole"
-        },
-        "departure_assignments": {
-          "KLEE": "SR-Seminole",
-          "X04": "SR-Seminole",
-          "X23": "SR-Seminole"
         }
       },
       "arrival_runways": [
@@ -12917,6 +12901,27 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "ALYNA4.LEEE": "SR-Seminole",
+          "ALYNA4.SFBE": "SR-Seminole",
+          "GOOFY7": "SR-Seminole",
+          "PRICY3.SFBE": "SR-Seminole",
+          "RIDES2.SFBE": "SR-Seminole",
+          "SHREK2E.SFB": "SR-Seminole",
+          "TTHOR3.SFBE": "SR-Seminole",
+          "West_coast/T210N": "SR-Seminole",
+          "West_coast/T210S": "SR-Seminole"
+        },
+        "departure_assignments": {
+          "KLEE": "SR-Seminole",
+          "X04": "SR-Seminole",
+          "X23": "SR-Seminole"
+        }
+      }
+    },
+
     "range": 30,
     "center": "N028.48.32.963,W081.29.30.803",
     "force_ql_self": true,

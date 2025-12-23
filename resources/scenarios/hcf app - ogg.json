@@ -2090,18 +2090,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "OGG",
+        "default_consolidation": {
           "HCF_S_APP": ["HCF_N_APP"]
-        },
-        "inbound_assignments": {
-          "CAMPS4.LNY.N": "HCF_S_APP",
-          "LNDHY1": "HCF_N_APP",
-          "V1.CAMPS4.N": "HCF_S_APP",
-          "V2.CAMPS4.N": "HCF_S_APP"
-        },
-        "departure_assignments": {
-          "PHOG": "HCF_N_APP"
         }
       },
       "controllers": ["OGG_TWR", "HCF_05_CTR", "HCF_03_CTR", "HCF_04_CTR"],
@@ -2151,18 +2142,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "OG1",
+        "default_consolidation": {
           "HCF_S_APP": ["HCF_N_APP"]
-        },
-        "inbound_assignments": {
-          "CAMPS4.LNY.S": "HCF_S_APP",
-          "OCEANIC SOUTH FLOW": "HCF_N_APP",
-          "V1.CAMPS4.S": "HCF_S_APP",
-          "V2.CAMPS4.S": "HCF_S_APP"
-        },
-        "departure_assignments": {
-          "PHOG": "HCF_S_APP"
         }
       },
       "controllers": ["OGG_TWR", "HCF_05_CTR", "HCF_03_CTR", "HCF_04_CTR"],
@@ -2181,6 +2163,31 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "OGG": {
+        "inbound_assignments": {
+          "CAMPS4.LNY.N": "HCF_S_APP",
+          "LNDHY1": "HCF_N_APP",
+          "V1.CAMPS4.N": "HCF_S_APP",
+          "V2.CAMPS4.N": "HCF_S_APP"
+        },
+        "departure_assignments": {
+          "PHOG": "HCF_N_APP"
+        }
+      },
+      "OG1": {
+        "inbound_assignments": {
+          "CAMPS4.LNY.S": "HCF_S_APP",
+          "OCEANIC SOUTH FLOW": "HCF_N_APP",
+          "V1.CAMPS4.S": "HCF_S_APP",
+          "V2.CAMPS4.S": "HCF_S_APP"
+        },
+        "departure_assignments": {
+          "PHOG": "HCF_S_APP"
+        }
+      }
+    },
+
     "center": "OGG",
     "coordination_fixes": {
       "BARBY": [

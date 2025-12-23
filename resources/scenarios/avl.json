@@ -677,20 +677,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "AVL_W_APP": ["AVL_E_APP"]
-        },
-        "inbound_assignments": {
-          "BARRD": "AVL_W_APP",
-          "JONEB": "AVL_E_APP",
-          "LEAVI": "AVL_E_APP",
-          "OBURY": "AVL_E_APP",
-          "PUPDG": "AVL_W_APP",
-          "TUSRE": "AVL_E_APP"
-        },
-        "departure_assignments": {
-          "KAVL": "AVL_W_APP"
         }
       },
       "controllers": ["AVL_TWR", "ATL_CTR", "TYS_APP", "GSP_APP", "TRI_APP"],
@@ -738,20 +727,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "AVL_W_APP": ["AVL_E_APP"]
-        },
-        "inbound_assignments": {
-          "BARRD": "AVL_W_APP",
-          "JONEB": "AVL_E_APP",
-          "LEAVI": "AVL_E_APP",
-          "OBURY": "AVL_E_APP",
-          "PUPDG": "AVL_W_APP",
-          "TUSRE": "AVL_E_APP"
-        },
-        "departure_assignments": {
-          "KAVL": "AVL_W_APP"
         }
       },
       "controllers": ["AVL_TWR", "ATL_CTR", "TYS_APP", "GSP_APP", "TRI_APP"],
@@ -769,6 +747,22 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "BARRD": "AVL_W_APP",
+          "JONEB": "AVL_E_APP",
+          "LEAVI": "AVL_E_APP",
+          "OBURY": "AVL_E_APP",
+          "PUPDG": "AVL_W_APP",
+          "TUSRE": "AVL_E_APP"
+        },
+        "departure_assignments": {
+          "KAVL": "AVL_W_APP"
+        }
+      }
+    },
+
     "center": "KAVL",
     "coordination_fixes": {
       "LEAVI": [

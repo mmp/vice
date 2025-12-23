@@ -73,28 +73,31 @@ func (tc *TCPConsolidation) OwnedPositions() []ControlPosition {
 
 // ControllerConfiguration defines the consolidation hierarchy for a scenario.
 type ControllerConfiguration struct {
-	// Id is a short identifier (max 3 characters) for this configuration
-	Id string `json:"id"`
+	// ConfigId references a configuration in stars_config.configurations that defines
+	// the inbound and departure assignments for this scenario.
+	ConfigId string `json:"config_id"`
 
-	// Positions defines the consolidation tree. Each key is a parent TCP, and its value is the list
+	// DefaultConsolidation defines the consolidation tree. Each key is a parent TCP, and its value is the list
 	// of TCPs consolidated into it.  Example: {"1A": ["1B", "1C"], "1C": ["1D"]} means 1B and 1C
 	// consolidated into 1A, and 1D consolidated into 1C (and transitively into 1A).
-	Positions PositionConsolidation `json:"positions"`
+	DefaultConsolidation PositionConsolidation `json:"default_consolidation"`
 
 	// InboundAssignments maps inbound flow names to the TCP that handles them.
-	InboundAssignments map[string]TCP `json:"inbound_assignments"`
+	// This is populated from the referenced configuration during post-deserialization.
+	InboundAssignments map[string]TCP `json:"-"`
 
 	// DepartureAssignments maps departure specifiers to the TCP that handles them.  Keys can be:
 	// airport only ("KJFK"), airport/runway ("KJFK/22R"), or airport/SID ("KJFK/SKORR5"). It is not
 	// allowed to mix different specifier types for the same airport within a configuration.
-	DepartureAssignments map[string]TCP `json:"departure_assignments"`
+	// This is populated from the referenced configuration during post-deserialization.
+	DepartureAssignments map[string]TCP `json:"-"`
 }
 
 type PositionConsolidation map[TCP][]TCP
 
 // RootPosition returns the root TCP of the consolidation tree, or empty string if not found.
 func (cc *ControllerConfiguration) RootPosition() (TCP, error) {
-	return cc.Positions.RootPosition()
+	return cc.DefaultConsolidation.RootPosition()
 }
 
 // GetRootPosition returns the root TCP of the consolidation tree (the one
@@ -131,7 +134,7 @@ func (pc PositionConsolidation) RootPosition() (TCP, error) {
 
 // AllPositions returns all TCPs defined in this configuration
 func (cc *ControllerConfiguration) AllPositions() []TCP {
-	return cc.Positions.AllPositions()
+	return cc.DefaultConsolidation.AllPositions()
 }
 
 func (pc PositionConsolidation) AllPositions() []TCP {
@@ -150,11 +153,6 @@ func (cc *ControllerConfiguration) Validate(controlPositions map[TCP]*av.Control
 	e.Push("\"configuration\"")
 	defer e.Pop()
 
-	// Check id length
-	if len(cc.Id) > 3 {
-		e.ErrorString("\"id\" must be at most 3 characters, got %q", cc.Id)
-	}
-
 	// Check that all positions are valid control positions
 	for _, tcp := range cc.AllPositions() {
 		if _, ok := controlPositions[tcp]; !ok {
@@ -167,16 +165,16 @@ func (cc *ControllerConfiguration) Validate(controlPositions map[TCP]*av.Control
 	if err != nil {
 		e.Error(err)
 	} else {
-		// Check that root is in positions map (as a key with possibly empty children)
-		if _, ok := cc.Positions[root]; !ok {
-			e.ErrorString("root position %q must be a key in \"positions\"", root)
+		// Check that root is in default_consolidation map (as a key with possibly empty children)
+		if _, ok := cc.DefaultConsolidation[root]; !ok {
+			e.ErrorString("root position %q must be a key in \"default_consolidation\"", root)
 		}
 	}
 
 	// Check for cycles (a position can't be its own ancestor)
 	// Inline the GetConsolidatedInto logic here
 	getConsolidatedInto := func(tcp TCP) TCP {
-		for parent, children := range cc.Positions {
+		for parent, children := range cc.DefaultConsolidation {
 			if slices.Contains(children, tcp) {
 				return parent
 			}
@@ -184,7 +182,7 @@ func (cc *ControllerConfiguration) Validate(controlPositions map[TCP]*av.Control
 		return ""
 	}
 
-	for tcp := range cc.Positions {
+	for tcp := range cc.DefaultConsolidation {
 		visited := make(map[TCP]bool)
 		current := tcp
 		for current != "" {

@@ -730,21 +730,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "MSP_H_APP": ["MSP_E_APP", "MSP_I_APP", "MSP_R_DEP", "MSP_S_APP"],
           "MSP_I_APP": ["MSP_N_APP"]
-        },
-        "inbound_assignments": {
-          "BAINY3": "MSP_I_APP",
-          "BLUEM4": "MSP_H_APP",
-          "KKILR3": "MSP_I_APP",
-          "MUSCL3": "MSP_I_APP",
-          "NITZR3": "MSP_H_APP",
-          "TORGY3": "MSP_H_APP"
-        },
-        "departure_assignments": {
-          "KMSP": "MSP_R_DEP"
         }
       },
       "controllers": ["MSP_05_CTR", "MSP_09_CTR", "MSP_10_CTR", "MSP_N_TWR", "MSP_S_TWR"],
@@ -847,21 +836,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "MSP_H_APP": ["MSP_E_APP", "MSP_I_APP", "MSP_R_DEP", "MSP_S_APP"],
           "MSP_I_APP": ["MSP_N_APP"]
-        },
-        "inbound_assignments": {
-          "BAINY3": "MSP_I_APP",
-          "BLUEM4": "MSP_H_APP",
-          "KKILR3": "MSP_I_APP",
-          "MUSCL3": "MSP_I_APP",
-          "NITZR3": "MSP_H_APP",
-          "TORGY3": "MSP_H_APP"
-        },
-        "departure_assignments": {
-          "KMSP": "MSP_R_DEP"
         }
       },
       "controllers": ["MSP_05_CTR", "MSP_09_CTR", "MSP_10_CTR", "MSP_N_TWR", "MSP_S_TWR", "MSP_W_TWR"],
@@ -964,21 +942,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "MSP_H_APP": ["MSP_E_APP", "MSP_I_APP", "MSP_R_DEP", "MSP_S_APP"],
           "MSP_I_APP": ["MSP_N_APP"]
-        },
-        "inbound_assignments": {
-          "BAINY3": "MSP_I_APP",
-          "BLUEM4": "MSP_H_APP",
-          "KKILR3": "MSP_I_APP",
-          "MUSCL3": "MSP_I_APP",
-          "NITZR3": "MSP_H_APP",
-          "TORGY3": "MSP_H_APP"
-        },
-        "departure_assignments": {
-          "KMSP": "MSP_R_DEP"
         }
       },
       "controllers": ["MSP_05_CTR", "MSP_09_CTR", "MSP_10_CTR", "MSP_N_TWR", "MSP_S_TWR"],
@@ -1085,21 +1052,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "MSP_H_APP": ["MSP_E_APP", "MSP_I_APP", "MSP_R_DEP", "MSP_S_APP"],
           "MSP_I_APP": ["MSP_N_APP"]
-        },
-        "inbound_assignments": {
-          "BAINY3": "MSP_I_APP",
-          "BLUEM4": "MSP_H_APP",
-          "KKILR3": "MSP_I_APP",
-          "MUSCL3": "MSP_I_APP",
-          "NITZR3": "MSP_H_APP",
-          "TORGY3": "MSP_H_APP"
-        },
-        "departure_assignments": {
-          "KMSP": "MSP_R_DEP"
         }
       },
       "controllers": ["MSP_05_CTR", "MSP_09_CTR", "MSP_10_CTR", "MSP_N_TWR", "MSP_S_TWR", "MSP_W_TWR"],
@@ -1202,21 +1158,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "MSP_H_APP": ["MSP_E_APP", "MSP_I_APP", "MSP_R_DEP", "MSP_S_APP"],
           "MSP_I_APP": ["MSP_N_APP"]
-        },
-        "inbound_assignments": {
-          "BAINY3": "MSP_I_APP",
-          "BLUEM4": "MSP_H_APP",
-          "KKILR3": "MSP_I_APP",
-          "MUSCL3": "MSP_I_APP",
-          "NITZR3": "MSP_H_APP",
-          "TORGY3": "MSP_H_APP"
-        },
-        "departure_assignments": {
-          "KMSP": "MSP_R_DEP"
         }
       },
       "controllers": ["MSP_05_CTR", "MSP_09_CTR", "MSP_10_CTR", "MSP_N_TWR", "MSP_S_TWR", "MSP_W_TWR"],
@@ -1289,6 +1234,22 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "BAINY3": "MSP_I_APP",
+          "BLUEM4": "MSP_H_APP",
+          "KKILR3": "MSP_I_APP",
+          "MUSCL3": "MSP_I_APP",
+          "NITZR3": "MSP_H_APP",
+          "TORGY3": "MSP_H_APP"
+        },
+        "departure_assignments": {
+          "KMSP": "MSP_R_DEP"
+        }
+      }
+    },
+
     "center": "KMSP",
     "airspace_awareness": [
       {

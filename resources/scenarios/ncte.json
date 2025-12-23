@@ -3085,24 +3085,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "ARE",
+        "default_consolidation": {
           "SMF_E_APP": ["SMF_B_APP"],
           "SMF_P_APP": ["SMF_E_APP", "SMF_X_APP"],
           "SMF_X_APP": ["SMF_D_APP"]
-        },
-        "inbound_assignments": {
-          "AMRVR2": "SMF_P_APP",
-          "CCR2.N": "SMF_D_APP",
-          "SAT.SOUTH": "SMF_P_APP",
-          "SLMMR5": "SMF_B_APP",
-          "SUUTR4": "SMF_P_APP",
-          "TUDOR2": "SMF_B_APP"
-        },
-        "departure_assignments": {
-          "KMHR": "SMF_X_APP",
-          "KSAC": "SMF_X_APP",
-          "KSMF": "SMF_E_APP"
         }
       },
       "controllers": [
@@ -3203,24 +3190,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "AR1",
+        "default_consolidation": {
           "SMF_E_APP": ["SMF_B_APP"],
           "SMF_P_APP": ["SMF_E_APP", "SMF_X_APP"],
           "SMF_X_APP": ["SMF_D_APP"]
-        },
-        "inbound_assignments": {
-          "AMRVR2": "SMF_P_APP",
-          "CCR2.S": "SMF_D_APP",
-          "SAT.SOUTH": "SMF_P_APP",
-          "SLMMR5": "SMF_B_APP",
-          "SUUTR4": "SMF_P_APP",
-          "TUDOR2": "SMF_B_APP"
-        },
-        "departure_assignments": {
-          "KMHR": "SMF_X_APP",
-          "KSAC": "SMF_X_APP",
-          "KSMF": "SMF_X_APP"
         }
       },
       "controllers": [
@@ -3309,20 +3283,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "AR3",
+        "default_consolidation": {
           "RNO_S_APP": ["RNO_N_APP"]
-        },
-        "inbound_assignments": {
-          "ANAHO2": "RNO_N_APP",
-          "KLUBS1": "RNO_N_APP",
-          "ORRCA1": "RNO_S_APP",
-          "RYANN2": "RNO_S_APP",
-          "SCOLA1": "RNO_S_APP",
-          "WINRZ1": "RNO_N_APP"
-        },
-        "departure_assignments": {
-          "KRNO": "RNO_S_APP"
         }
       },
       "controllers": ["RNO_TWR", "RNO_N_APP", "NFL_APP", "OAK_45_CTR", "OAK_46_CTR", "OAK_44_CTR"],
@@ -3377,20 +3340,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "AR2",
+        "default_consolidation": {
           "RNO_S_APP": ["RNO_N_APP"]
-        },
-        "inbound_assignments": {
-          "EELZA4": "RNO_N_APP",
-          "KENNO.TARVR1": "RNO_S_APP",
-          "MVA.TARVR1": "RNO_S_APP",
-          "ORRCA.TARVR1": "RNO_S_APP",
-          "SLEAT.TARVR1": "RNO_S_APP",
-          "WADOL4": "RNO_N_APP"
-        },
-        "departure_assignments": {
-          "KRNO": "RNO_N_APP"
         }
       },
       "controllers": ["RNO_TWR", "RNO_S_APP", "NFL_APP", "OAK_45_CTR", "OAK_46_CTR", "OAK_44_CTR"],
@@ -3414,6 +3366,65 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "ARE": {
+        "inbound_assignments": {
+          "AMRVR2": "SMF_P_APP",
+          "CCR2.N": "SMF_D_APP",
+          "SAT.SOUTH": "SMF_P_APP",
+          "SLMMR5": "SMF_B_APP",
+          "SUUTR4": "SMF_P_APP",
+          "TUDOR2": "SMF_B_APP"
+        },
+        "departure_assignments": {
+          "KMHR": "SMF_X_APP",
+          "KSAC": "SMF_X_APP",
+          "KSMF": "SMF_E_APP"
+        }
+      },
+      "AR1": {
+        "inbound_assignments": {
+          "AMRVR2": "SMF_P_APP",
+          "CCR2.S": "SMF_D_APP",
+          "SAT.SOUTH": "SMF_P_APP",
+          "SLMMR5": "SMF_B_APP",
+          "SUUTR4": "SMF_P_APP",
+          "TUDOR2": "SMF_B_APP"
+        },
+        "departure_assignments": {
+          "KMHR": "SMF_X_APP",
+          "KSAC": "SMF_X_APP",
+          "KSMF": "SMF_X_APP"
+        }
+      },
+      "AR2": {
+        "inbound_assignments": {
+          "EELZA4": "RNO_N_APP",
+          "KENNO.TARVR1": "RNO_S_APP",
+          "MVA.TARVR1": "RNO_S_APP",
+          "ORRCA.TARVR1": "RNO_S_APP",
+          "SLEAT.TARVR1": "RNO_S_APP",
+          "WADOL4": "RNO_N_APP"
+        },
+        "departure_assignments": {
+          "KRNO": "RNO_N_APP"
+        }
+      },
+      "AR3": {
+        "inbound_assignments": {
+          "ANAHO2": "RNO_N_APP",
+          "KLUBS1": "RNO_N_APP",
+          "ORRCA1": "RNO_S_APP",
+          "RYANN2": "RNO_S_APP",
+          "SCOLA1": "RNO_S_APP",
+          "WINRZ1": "RNO_N_APP"
+        },
+        "departure_assignments": {
+          "KRNO": "RNO_S_APP"
+        }
+      }
+    },
+
     "center": "KMHR",
     "altimeters": ["KSMF", "KSAC", "KMHR", "KBAB", "KRNO"],
     "controller_configs": {

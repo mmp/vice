@@ -413,18 +413,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "CYS_APP": []
-        },
-        "inbound_assignments": {
-          "BZN": "CYS_APP",
-          "DEN": "CYS_APP",
-          "OMA": "CYS_APP",
-          "SEA": "CYS_APP"
-        },
-        "departure_assignments": {
-          "KCYS": "CYS_APP"
         }
       },
       "controllers": ["CYS_TWR", "CYS_APP", "DEN_D_APP", "DEN_21_CTR"],
@@ -474,18 +465,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "CYS_APP": []
-        },
-        "inbound_assignments": {
-          "BZN": "CYS_APP",
-          "DEN": "CYS_APP",
-          "OMA": "CYS_APP",
-          "SEA": "CYS_APP"
-        },
-        "departure_assignments": {
-          "KCYS": "CYS_APP"
         }
       },
       "controllers": ["CYS_TWR", "CYS_APP", "DEN_D_APP", "DEN_21_CTR"],
@@ -508,6 +490,20 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "BZN": "CYS_APP",
+          "DEN": "CYS_APP",
+          "OMA": "CYS_APP",
+          "SEA": "CYS_APP"
+        },
+        "departure_assignments": {
+          "KCYS": "CYS_APP"
+        }
+      }
+    },
+
     "center": "KCYS",
     "coordination_fixes": {
       "CYS": [

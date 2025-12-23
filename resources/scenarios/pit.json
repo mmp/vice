@@ -1176,23 +1176,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "PIT_D_APP": ["PIT_B_APP", "PIT_S_DEP"],
           "PIT_S_DEP": ["PIT_N_DEP"]
-        },
-        "inbound_assignments": {
-          "DEMME5": "PIT_D_APP",
-          "FEWGA7": "PIT_D_APP",
-          "HAYNZ7": "PIT_B_APP",
-          "HOMEE": "PIT_B_APP",
-          "JESEY4": "PIT_B_APP",
-          "NESTO": "PIT_D_APP",
-          "WISKE": "PIT_D_APP"
-        },
-        "departure_assignments": {
-          "KAGC": "PIT_S_DEP",
-          "KPIT": "PIT_S_DEP"
         }
       },
       "controllers": ["PIT_TWR", "AGC_TWR", "CLE_55_CTR"],
@@ -1267,23 +1254,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "PIT_D_APP": ["PIT_B_APP", "PIT_S_DEP"],
           "PIT_S_DEP": ["PIT_N_DEP"]
-        },
-        "inbound_assignments": {
-          "DEMME5": "PIT_D_APP",
-          "FEWGA7": "PIT_D_APP",
-          "HAYNZ7": "PIT_B_APP",
-          "HOMEE": "PIT_B_APP",
-          "JESEY4": "PIT_B_APP",
-          "NESTO": "PIT_D_APP",
-          "WISKE": "PIT_D_APP"
-        },
-        "departure_assignments": {
-          "KAGC": "PIT_S_DEP",
-          "KPIT": "PIT_S_DEP"
         }
       },
       "controllers": ["PIT_TWR", "AGC_TWR", "CLE_55_CTR"],
@@ -1345,20 +1319,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "PIT_D_APP": ["PIT_B_APP", "PIT_S_DEP"],
           "PIT_S_DEP": ["PIT_N_DEP"]
-        },
-        "inbound_assignments": {
-          "DEMME5": "PIT_D_APP",
-          "FEWGA7": "PIT_D_APP",
-          "HAYNZ7": "PIT_B_APP",
-          "JESEY4": "PIT_B_APP"
-        },
-        "departure_assignments": {
-          "KAGC": "PIT_S_DEP",
-          "KPIT": "PIT_S_DEP"
         }
       },
       "controllers": ["PIT_TWR", "AGC_TWR", "CLE_55_CTR"],
@@ -1386,6 +1350,24 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "DEMME5": "PIT_D_APP",
+          "FEWGA7": "PIT_D_APP",
+          "HAYNZ7": "PIT_B_APP",
+          "HOMEE": "PIT_B_APP",
+          "JESEY4": "PIT_B_APP",
+          "NESTO": "PIT_D_APP",
+          "WISKE": "PIT_D_APP"
+        },
+        "departure_assignments": {
+          "KAGC": "PIT_S_DEP",
+          "KPIT": "PIT_S_DEP"
+        }
+      }
+    },
+
     "force_ql_self": true,
     "allow_long_scratchpad": true,
     "coordination_fixes": {

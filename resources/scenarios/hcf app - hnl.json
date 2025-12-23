@@ -3001,24 +3001,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "HCF_H_APP": ["HCF_L_APP"],
           "HCF_L_APP": ["HCF_V_APP"]
-        },
-        "inbound_assignments": {
-          "BOOKE8.E": "HCF_H_APP",
-          "INOYI1": "HCF_H_APP",
-          "JULLE5": "HCF_H_APP",
-          "KAENA3": "HCF_H_APP",
-          "KLANI4": "HCF_H_APP",
-          "MAGGI3.E": "HCF_H_APP",
-          "OPACA4.E": "HCF_H_APP",
-          "V12 ARR": "HCF_H_APP",
-          "V15 ARR": "HCF_H_APP"
-        },
-        "departure_assignments": {
-          "PHNL": "HCF_L_APP"
         }
       },
       "controllers": [
@@ -3094,24 +3080,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "HCF_H_APP": ["HCF_L_APP"],
           "HCF_L_APP": ["HCF_V_APP"]
-        },
-        "inbound_assignments": {
-          "BOOKE8.W": "HCF_H_APP",
-          "KAENA3": "HCF_H_APP",
-          "KLANI4": "HCF_H_APP",
-          "MAGGI3.W": "HCF_H_APP",
-          "OPACA4.W": "HCF_H_APP",
-          "SAKKI5": "HCF_H_APP",
-          "SYMIN1": "HCF_H_APP",
-          "V12 ARR": "HCF_H_APP",
-          "V15 ARR": "HCF_H_APP"
-        },
-        "departure_assignments": {
-          "PHNL": "HCF_L_APP"
         }
       },
       "controllers": [
@@ -3141,6 +3113,30 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "BOOKE8.E": "HCF_H_APP",
+          "BOOKE8.W": "HCF_H_APP",
+          "INOYI1": "HCF_H_APP",
+          "JULLE5": "HCF_H_APP",
+          "KAENA3": "HCF_H_APP",
+          "KLANI4": "HCF_H_APP",
+          "MAGGI3.E": "HCF_H_APP",
+          "MAGGI3.W": "HCF_H_APP",
+          "OPACA4.E": "HCF_H_APP",
+          "OPACA4.W": "HCF_H_APP",
+          "SAKKI5": "HCF_H_APP",
+          "SYMIN1": "HCF_H_APP",
+          "V12 ARR": "HCF_H_APP",
+          "V15 ARR": "HCF_H_APP"
+        },
+        "departure_assignments": {
+          "PHNL": "HCF_L_APP"
+        }
+      }
+    },
+
     "center": "PHNL",
     "coordination_fixes": {
       "BAMBO": [

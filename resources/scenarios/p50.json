@@ -3534,26 +3534,13 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "P51",
+        "default_consolidation": {
           "PHX_A_APP": ["PHX_F_APP", "PHX_N_DEP", "PHX_Q_APP"],
           "PHX_B_APP": ["PHX_P_APP"],
           "PHX_F_APP": ["PHX_V_APP"],
           "PHX_N_DEP": ["PHX_B_APP", "PHX_S_DEP"],
           "PHX_P_APP": ["PHX_W_APP"]
-        },
-        "inbound_assignments": {
-          "BRUSR1.W": "PHX_A_APP",
-          "DSERT2": "PHX_B_APP",
-          "EAGUL6.W": "PHX_A_APP",
-          "HUUTY1": "PHX_W_APP",
-          "HYDRR1.W": "PHX_Q_APP",
-          "PINNG1.W": "PHX_Q_APP"
-        },
-        "departure_assignments": {
-          "KIWA": "PHX_W_APP",
-          "KPHX": "PHX_S_DEP",
-          "KSDL": "PHX_B_APP"
         }
       },
       "controllers": [
@@ -3647,26 +3634,13 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "50X",
+        "default_consolidation": {
           "PHX_A_APP": ["PHX_F_APP", "PHX_N_DEP", "PHX_Q_APP"],
           "PHX_B_APP": ["PHX_P_APP"],
           "PHX_F_APP": ["PHX_V_APP"],
           "PHX_N_DEP": ["PHX_B_APP", "PHX_S_DEP"],
           "PHX_P_APP": ["PHX_W_APP"]
-        },
-        "inbound_assignments": {
-          "BRUSR1.E": "PHX_A_APP",
-          "DSERT2": "PHX_B_APP",
-          "EAGUL6.E": "PHX_A_APP",
-          "HUUTY1": "PHX_W_APP",
-          "HYDRR1.E": "PHX_Q_APP",
-          "PINNG1.E": "PHX_Q_APP"
-        },
-        "departure_assignments": {
-          "KIWA": "PHX_W_APP",
-          "KPHX": "PHX_S_DEP",
-          "KSDL": "PHX_B_APP"
         }
       },
       "controllers": [
@@ -3744,20 +3718,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "P50",
+        "default_consolidation": {
           "PHX_J_APP": ["PHX_K_APP"],
           "PHX_K_APP": ["PHX_R_APP"]
-        },
-        "inbound_assignments": {
-          "NAA EAST ARR": "PHX_K_APP",
-          "NAA SOUTH ARR": "PHX_K_APP",
-          "NAA WEST ARR": "PHX_J_APP"
-        },
-        "departure_assignments": {
-          "KFLG": "PHX_K_APP",
-          "KPRC": "PHX_J_APP",
-          "KSEZ": "PHX_K_APP"
         }
       },
       "controllers": [
@@ -3835,20 +3799,10 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "P50",
+        "default_consolidation": {
           "PHX_J_APP": ["PHX_K_APP"],
           "PHX_K_APP": ["PHX_R_APP"]
-        },
-        "inbound_assignments": {
-          "NAA EAST ARR": "PHX_K_APP",
-          "NAA SOUTH ARR": "PHX_K_APP",
-          "NAA WEST ARR": "PHX_J_APP"
-        },
-        "departure_assignments": {
-          "KFLG": "PHX_K_APP",
-          "KPRC": "PHX_J_APP",
-          "KSEZ": "PHX_K_APP"
         }
       },
       "controllers": [
@@ -3922,15 +3876,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "PHX",
+        "default_consolidation": {
           "PHX_F_APP": ["PHX_V_APP"]
-        },
-        "inbound_assignments": {
-          "BRUSR1_FE": "PHX_V_APP",
-          "EAGUL6_FE": "PHX_V_APP",
-          "HYDRR1_FE": "PHX_F_APP",
-          "PINNG1_FE": "PHX_F_APP"
         }
       },
       "controllers": [
@@ -3987,15 +3935,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "PH1",
+        "default_consolidation": {
           "PHX_F_APP": ["PHX_V_APP"]
-        },
-        "inbound_assignments": {
-          "BRUSR1_FW": "PHX_V_APP",
-          "EAGUL6_FW": "PHX_V_APP",
-          "HYDRR1_FW": "PHX_F_APP",
-          "PINNG1_FW": "PHX_F_APP"
         }
       },
       "controllers": [
@@ -4028,6 +3970,67 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "50X": {
+        "inbound_assignments": {
+          "BRUSR1.E": "PHX_A_APP",
+          "DSERT2": "PHX_B_APP",
+          "EAGUL6.E": "PHX_A_APP",
+          "HUUTY1": "PHX_W_APP",
+          "HYDRR1.E": "PHX_Q_APP",
+          "PINNG1.E": "PHX_Q_APP"
+        },
+        "departure_assignments": {
+          "KIWA": "PHX_W_APP",
+          "KPHX": "PHX_S_DEP",
+          "KSDL": "PHX_B_APP"
+        }
+      },
+      "P50": {
+        "inbound_assignments": {
+          "NAA EAST ARR": "PHX_K_APP",
+          "NAA SOUTH ARR": "PHX_K_APP",
+          "NAA WEST ARR": "PHX_J_APP"
+        },
+        "departure_assignments": {
+          "KFLG": "PHX_K_APP",
+          "KPRC": "PHX_J_APP",
+          "KSEZ": "PHX_K_APP"
+        }
+      },
+      "P51": {
+        "inbound_assignments": {
+          "BRUSR1.W": "PHX_A_APP",
+          "DSERT2": "PHX_B_APP",
+          "EAGUL6.W": "PHX_A_APP",
+          "HUUTY1": "PHX_W_APP",
+          "HYDRR1.W": "PHX_Q_APP",
+          "PINNG1.W": "PHX_Q_APP"
+        },
+        "departure_assignments": {
+          "KIWA": "PHX_W_APP",
+          "KPHX": "PHX_S_DEP",
+          "KSDL": "PHX_B_APP"
+        }
+      },
+      "PHX": {
+        "inbound_assignments": {
+          "BRUSR1_FE": "PHX_V_APP",
+          "EAGUL6_FE": "PHX_V_APP",
+          "HYDRR1_FE": "PHX_F_APP",
+          "PINNG1_FE": "PHX_F_APP"
+        }
+      },
+      "PH1": {
+        "inbound_assignments": {
+          "BRUSR1_FW": "PHX_V_APP",
+          "EAGUL6_FW": "PHX_V_APP",
+          "HYDRR1_FW": "PHX_F_APP",
+          "PINNG1_FW": "PHX_F_APP"
+        }
+      }
+    },
+
     "center": "CACTY",
     "controller_configs": {
       "1K": {

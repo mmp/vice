@@ -597,21 +597,13 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ACK_DEP": ["ACK_O_APP"],
           "ACK_N_APP": ["ACK_DEP"],
           "ACK_O_APP": ["ACK_Y_APP"],
           "ACK_S_APP": ["ACK_A_APP"],
           "ACK_Y_APP": ["ACK_S_APP"]
-        },
-        "inbound_assignments": {
-          "DEEPO2": "ACK_N_APP",
-          "NEWBE3": "ACK_N_APP"
-        },
-        "departure_assignments": {
-          "KACK": "ACK_DEP",
-          "KMVY": "ACK_DEP"
         }
       },
       "controllers": ["BOS_37_CTR"],
@@ -652,21 +644,13 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ACK_DEP": ["ACK_O_APP"],
           "ACK_N_APP": ["ACK_DEP"],
           "ACK_O_APP": ["ACK_Y_APP"],
           "ACK_S_APP": ["ACK_A_APP"],
           "ACK_Y_APP": ["ACK_S_APP"]
-        },
-        "inbound_assignments": {
-          "DEEPO2": "ACK_N_APP",
-          "NEWBE3": "ACK_N_APP"
-        },
-        "departure_assignments": {
-          "KACK": "ACK_DEP",
-          "KMVY": "ACK_DEP"
         }
       },
       "controllers": ["BOS_37_CTR"],
@@ -689,6 +673,19 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "DEEPO2": "ACK_N_APP",
+          "NEWBE3": "ACK_N_APP"
+        },
+        "departure_assignments": {
+          "KACK": "ACK_DEP",
+          "KMVY": "ACK_DEP"
+        }
+      }
+    },
+
     "center": "KACK",
     "coordination_fixes": {
       "ROZZE": [

@@ -828,22 +828,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "BHM_S_APP": ["BHM_F_APP", "BHM_N_APP"]
-        },
-        "inbound_assignments": {
-          "DIODE24": "BHM_N_APP",
-          "HERKO24": "BHM_S_APP",
-          "KIOSK24": "BHM_S_APP",
-          "LYMPH24": "BHM_N_APP",
-          "NESTS24": "BHM_N_APP",
-          "NULLS24": "BHM_N_APP",
-          "SHIMS": "BHM_N_APP",
-          "WANDS": "BHM_S_APP"
-        },
-        "departure_assignments": {
-          "KBHM": "BHM_S_APP"
         }
       },
       "controllers": ["BHM_TWR", "ATL_CTR", "MEM_CTR"],
@@ -898,22 +885,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "BHM_S_APP": ["BHM_F_APP", "BHM_N_APP"]
-        },
-        "inbound_assignments": {
-          "DIODE6": "BHM_N_APP",
-          "HERKO6": "BHM_S_APP",
-          "KIOSK6": "BHM_S_APP",
-          "LYMPH6": "BHM_N_APP",
-          "NESTS6": "BHM_N_APP",
-          "NULLS6": "BHM_N_APP",
-          "SHIMS": "BHM_N_APP",
-          "WANDS": "BHM_S_APP"
-        },
-        "departure_assignments": {
-          "KBHM": "BHM_S_APP"
         }
       },
       "controllers": ["BHM_TWR", "ATL_CTR", "MEM_CTR"],
@@ -931,6 +905,30 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "DIODE24": "BHM_N_APP",
+          "DIODE6": "BHM_N_APP",
+          "HERKO24": "BHM_S_APP",
+          "HERKO6": "BHM_S_APP",
+          "KIOSK24": "BHM_S_APP",
+          "KIOSK6": "BHM_S_APP",
+          "LYMPH24": "BHM_N_APP",
+          "LYMPH6": "BHM_N_APP",
+          "NESTS24": "BHM_N_APP",
+          "NESTS6": "BHM_N_APP",
+          "NULLS24": "BHM_N_APP",
+          "NULLS6": "BHM_N_APP",
+          "SHIMS": "BHM_N_APP",
+          "WANDS": "BHM_S_APP"
+        },
+        "departure_assignments": {
+          "KBHM": "BHM_S_APP"
+        }
+      }
+    },
+
     "coordination_fixes": {
       "EXIST": [
         {

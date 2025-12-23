@@ -14048,8 +14048,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MC7",
+        "default_consolidation": {
           "MCO_A_APP": ["MCO_K_APP"],
           "MCO_B_APP": ["MCO_L_APP"],
           "MCO_D_APP": ["MCO_A_APP", "MCO_N_APP"],
@@ -14057,44 +14057,6 @@
           "MCO_M_APP": ["MCO_G_APP"],
           "MCO_N_APP": ["MCO_V_APP"],
           "MCO_W_DEP": ["MCO_M_APP"]
-        },
-        "inbound_assignments": {
-          "T208": "MCO_E_DEP",
-          "T336 OCF": "MCO_E_DEP",
-          "V3": "MCO_E_DEP",
-          "ALYNA4": "MCO_R_APP",
-          "DADES1": "MCO_R_APP",
-          "GOOFY7": "MCO_D_APP",
-          "JOKRS3": "MCO_D_APP",
-          "West_coast/T210N": "MCO_D_APP",
-          "T336 MLB": "MCO_D_APP",
-          "GTOUT1": "MCO_B_APP",
-          "RIDES2": "MCO_B_APP",
-          "BITHO7": "MCO_B_APP",
-          "SNFLD3": "MCO_B_APP",
-          "SLOAO1.MCOS": "MCO_B_APP",
-          "PRICY4": "MCO_L_APP",
-          "GRNCH5": "MCO_L_APP",
-          "SHREK2W": "MCO_L_APP",
-          "SHREK2.MCO": "MCO_L_APP",
-          "JOKRS3.MCO": "MCO_L_APP",
-          "MINEE6": "MCO_L_APP",
-          "East_coast/T208 ": "MCO_A_APP",
-          "West_coast/T210S": "MCO_N_APP",
-          "TTHOR3": "MCO_V_APP"
-        },
-        "departure_assignments": {
-          "KCOF": "MCO_K_APP",
-          "KCOI": "MCO_A_APP",
-          "KISM": "MCO_D_APP",
-          "KLEE": "MCO_N_APP",
-          "KMCO": "MCO_D_APP",
-          "KMLB": "MCO_A_APP",
-          "KORL": "MCO_D_APP",
-          "KSFB": "MCO_N_APP",
-          "KTIX": "MCO_K_APP",
-          "X04": "MCO_N_APP",
-          "X23": "MCO_N_APP"
         }
       },
       "controllers": [
@@ -14413,8 +14375,8 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MC4",
+        "default_consolidation": {
           "MCO_A_APP": ["MCO_K_APP"],
           "MCO_B_APP": ["MCO_L_APP"],
           "MCO_D_APP": ["MCO_A_APP", "MCO_N_APP"],
@@ -14422,43 +14384,6 @@
           "MCO_M_APP": ["MCO_G_APP"],
           "MCO_N_APP": ["MCO_V_APP"],
           "MCO_W_DEP": ["MCO_M_APP"]
-        },
-        "inbound_assignments": {
-          "T208": "MCO_E_DEP",
-          "T336 OCF": "MCO_E_DEP",
-          "V3": "MCO_E_DEP",
-          "ALYNA4": "MCO_R_APP",
-          "DADES1": "MCO_R_APP",
-          "GOOFY7": "MCO_D_APP",
-          "JOKRS3": "MCO_D_APP",
-          "West_coast/T210N": "MCO_D_APP",
-          "T336 MLB": "MCO_D_APP",
-          "SNFLD3": "MCO_B_APP",
-          "RIDES2": "MCO_B_APP",
-          "BITHO7": "MCO_B_APP",
-          "SLOAO1.MCON": "MCO_B_APP",
-          "PRICY4": "MCO_L_APP",
-          "GRNCH5": "MCO_L_APP",
-          "SHREK2E": "MCO_L_APP",
-          "SHREK2.MCO": "MCO_L_APP",
-          "JOKRS3.MCO": "MCO_L_APP",
-          "MINEE6.N": "MCO_L_APP",
-          "East_coast/T208 ": "MCO_A_APP",
-          "West_coast/T210S": "MCO_N_APP",
-          "TTHOR3": "MCO_V_APP"
-        },
-        "departure_assignments": {
-          "KCOF": "MCO_K_APP",
-          "KCOI": "MCO_A_APP",
-          "KISM": "MCO_D_APP",
-          "KLEE": "MCO_N_APP",
-          "KMCO": "MCO_E_DEP",
-          "KMLB": "MCO_A_APP",
-          "KORL": "MCO_V_APP",
-          "KSFB": "MCO_V_APP",
-          "KTIX": "MCO_K_APP",
-          "X04": "MCO_N_APP",
-          "X23": "MCO_N_APP"
         }
       },
       "controllers": [
@@ -14601,15 +14526,9 @@
         "MCO_W_DEP": ["MCOAPP"]
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MC5",
+        "default_consolidation": {
           "MCO_W_DEP": []
-        },
-        "departure_assignments": {
-          "KISM": "MCO_W_DEP",
-          "KMCO": "MCO_W_DEP",
-          "KORL": "MCO_W_DEP",
-          "KSFB": "MCO_W_DEP"
         }
       },
       "controllers": [
@@ -14725,16 +14644,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MC9",
+        "default_consolidation": {
           "MCO_M_APP": []
-        },
-        "inbound_assignments": {
-          "ALYNA4_SFINAL": "MCO_M_APP",
-          "FINAL_S_GRNCH5": "MCO_M_APP",
-          "GTOUT1_SFINAL": "MCO_M_APP",
-          "PRICY4_SFINAL": "MCO_M_APP",
-          "RIDES2_SFINAL": "MCO_M_APP"
         }
       },
       "controllers": [
@@ -14780,13 +14692,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MCB",
+        "default_consolidation": {
           "MCO_L_APP": []
-        },
-        "inbound_assignments": {
-          "GRNCH5_LSU": "MCO_L_APP",
-          "PRICY4_LSU": "MCO_L_APP"
         }
       },
       "controllers": [
@@ -14845,16 +14753,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MC1",
+        "default_consolidation": {
           "MCO_B_APP": []
-        },
-        "inbound_assignments": {
-          "ALYNA4_BSU": "MCO_B_APP",
-          "GRNCH5_LSU": "MCO_B_APP",
-          "GTOUT1_BSU": "MCO_B_APP",
-          "PRICY4_LSU": "MCO_B_APP",
-          "RIDES2_BSU": "MCO_B_APP"
         }
       },
       "controllers": [
@@ -14903,14 +14804,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MC3",
+        "default_consolidation": {
           "MCO_B_APP": []
-        },
-        "inbound_assignments": {
-          "ALYNA4_BSU": "MCO_B_APP",
-          "GTOUT1_BSU": "MCO_B_APP",
-          "RIDES2_BSU": "MCO_B_APP"
         }
       },
       "controllers": [
@@ -14956,13 +14852,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MCA",
+        "default_consolidation": {
           "MCO_L_APP": []
-        },
-        "inbound_assignments": {
-          "GRNCH5_LNU": "MCO_L_APP",
-          "PRICY4_LNU": "MCO_L_APP"
         }
       },
       "controllers": [
@@ -15021,16 +14913,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MCO",
+        "default_consolidation": {
           "MCO_L_APP": []
-        },
-        "inbound_assignments": {
-          "ALYNA4_BNU": "MCO_L_APP",
-          "GRNCH5_LNU": "MCO_L_APP",
-          "PRICY4_LNU": "MCO_L_APP",
-          "RIDES2_BNU": "MCO_L_APP",
-          "SNFLD3_BNU": "MCO_L_APP"
         }
       },
       "controllers": [
@@ -15079,14 +14964,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MC2",
+        "default_consolidation": {
           "MCO_B_APP": []
-        },
-        "inbound_assignments": {
-          "ALYNA4_BNU": "MCO_B_APP",
-          "RIDES2_BNU": "MCO_B_APP",
-          "SNFLD3_BNU": "MCO_B_APP"
         }
       },
       "controllers": [
@@ -15142,15 +15022,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MC6",
+        "default_consolidation": {
           "MCO_M_APP": []
-        },
-        "inbound_assignments": {
-          "GRNCH_NFINAL": "MCO_M_APP",
-          "PRICY4_NFINAL": "MCO_M_APP",
-          "RIDES2_NFINAL": "MCO_M_APP",
-          "SNFLD3_NFINAL": "MCO_M_APP"
         }
       },
       "controllers": [
@@ -15182,14 +15056,9 @@
         "MCO_W_DEP": ["MCO_E_APP", "MCO_E1_APP", "MCO_E2_APP"]
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "MC8",
+        "default_consolidation": {
           "MCO_W_DEP": []
-        },
-        "departure_assignments": {
-          "KMCO": "MCO_W_DEP",
-          "KORL": "MCO_W_DEP",
-          "KSFB": "MCO_W_DEP"
         }
       },
       "controllers": [
@@ -15270,6 +15139,164 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "MCO": {
+        "inbound_assignments": {
+          "ALYNA4_BNU": "MCO_L_APP",
+          "GRNCH5_LNU": "MCO_L_APP",
+          "PRICY4_LNU": "MCO_L_APP",
+          "RIDES2_BNU": "MCO_L_APP",
+          "SNFLD3_BNU": "MCO_L_APP"
+        }
+      },
+      "MC1": {
+        "inbound_assignments": {
+          "ALYNA4_BSU": "MCO_B_APP",
+          "GRNCH5_LSU": "MCO_B_APP",
+          "GTOUT1_BSU": "MCO_B_APP",
+          "PRICY4_LSU": "MCO_B_APP",
+          "RIDES2_BSU": "MCO_B_APP"
+        }
+      },
+      "MC2": {
+        "inbound_assignments": {
+          "ALYNA4_BNU": "MCO_B_APP",
+          "RIDES2_BNU": "MCO_B_APP",
+          "SNFLD3_BNU": "MCO_B_APP"
+        }
+      },
+      "MC3": {
+        "inbound_assignments": {
+          "ALYNA4_BSU": "MCO_B_APP",
+          "GTOUT1_BSU": "MCO_B_APP",
+          "RIDES2_BSU": "MCO_B_APP"
+        }
+      },
+      "MC4": {
+        "inbound_assignments": {
+          "ALYNA4": "MCO_R_APP",
+          "BITHO7": "MCO_B_APP",
+          "DADES1": "MCO_R_APP",
+          "East_coast/T208 ": "MCO_A_APP",
+          "GOOFY7": "MCO_D_APP",
+          "GRNCH5": "MCO_L_APP",
+          "JOKRS3": "MCO_D_APP",
+          "JOKRS3.MCO": "MCO_L_APP",
+          "MINEE6.N": "MCO_L_APP",
+          "PRICY4": "MCO_L_APP",
+          "RIDES2": "MCO_B_APP",
+          "SHREK2.MCO": "MCO_L_APP",
+          "SHREK2E": "MCO_L_APP",
+          "SLOAO1.MCON": "MCO_B_APP",
+          "SNFLD3": "MCO_B_APP",
+          "T208": "MCO_E_DEP",
+          "T336 MLB": "MCO_D_APP",
+          "T336 OCF": "MCO_E_DEP",
+          "TTHOR3": "MCO_V_APP",
+          "V3": "MCO_E_DEP",
+          "West_coast/T210N": "MCO_D_APP",
+          "West_coast/T210S": "MCO_N_APP"
+        },
+        "departure_assignments": {
+          "KCOF": "MCO_K_APP",
+          "KCOI": "MCO_A_APP",
+          "KISM": "MCO_D_APP",
+          "KLEE": "MCO_N_APP",
+          "KMCO": "MCO_E_DEP",
+          "KMLB": "MCO_A_APP",
+          "KORL": "MCO_V_APP",
+          "KSFB": "MCO_V_APP",
+          "KTIX": "MCO_K_APP",
+          "X04": "MCO_N_APP",
+          "X23": "MCO_N_APP"
+        }
+      },
+      "MC5": {
+        "departure_assignments": {
+          "KISM": "MCO_W_DEP",
+          "KMCO": "MCO_W_DEP",
+          "KORL": "MCO_W_DEP",
+          "KSFB": "MCO_W_DEP"
+        }
+      },
+      "MC6": {
+        "inbound_assignments": {
+          "GRNCH_NFINAL": "MCO_M_APP",
+          "PRICY4_NFINAL": "MCO_M_APP",
+          "RIDES2_NFINAL": "MCO_M_APP",
+          "SNFLD3_NFINAL": "MCO_M_APP"
+        }
+      },
+      "MC7": {
+        "inbound_assignments": {
+          "ALYNA4": "MCO_R_APP",
+          "BITHO7": "MCO_B_APP",
+          "DADES1": "MCO_R_APP",
+          "East_coast/T208 ": "MCO_A_APP",
+          "GOOFY7": "MCO_D_APP",
+          "GRNCH5": "MCO_L_APP",
+          "GTOUT1": "MCO_B_APP",
+          "JOKRS3": "MCO_D_APP",
+          "JOKRS3.MCO": "MCO_L_APP",
+          "MINEE6": "MCO_L_APP",
+          "PRICY4": "MCO_L_APP",
+          "RIDES2": "MCO_B_APP",
+          "SHREK2.MCO": "MCO_L_APP",
+          "SHREK2W": "MCO_L_APP",
+          "SLOAO1.MCOS": "MCO_B_APP",
+          "SNFLD3": "MCO_B_APP",
+          "T208": "MCO_E_DEP",
+          "T336 MLB": "MCO_D_APP",
+          "T336 OCF": "MCO_E_DEP",
+          "TTHOR3": "MCO_V_APP",
+          "V3": "MCO_E_DEP",
+          "West_coast/T210N": "MCO_D_APP",
+          "West_coast/T210S": "MCO_N_APP"
+        },
+        "departure_assignments": {
+          "KCOF": "MCO_K_APP",
+          "KCOI": "MCO_A_APP",
+          "KISM": "MCO_D_APP",
+          "KLEE": "MCO_N_APP",
+          "KMCO": "MCO_D_APP",
+          "KMLB": "MCO_A_APP",
+          "KORL": "MCO_D_APP",
+          "KSFB": "MCO_N_APP",
+          "KTIX": "MCO_K_APP",
+          "X04": "MCO_N_APP",
+          "X23": "MCO_N_APP"
+        }
+      },
+      "MC8": {
+        "departure_assignments": {
+          "KMCO": "MCO_W_DEP",
+          "KORL": "MCO_W_DEP",
+          "KSFB": "MCO_W_DEP"
+        }
+      },
+      "MC9": {
+        "inbound_assignments": {
+          "ALYNA4_SFINAL": "MCO_M_APP",
+          "FINAL_S_GRNCH5": "MCO_M_APP",
+          "GTOUT1_SFINAL": "MCO_M_APP",
+          "PRICY4_SFINAL": "MCO_M_APP",
+          "RIDES2_SFINAL": "MCO_M_APP"
+        }
+      },
+      "MCA": {
+        "inbound_assignments": {
+          "GRNCH5_LNU": "MCO_L_APP",
+          "PRICY4_LNU": "MCO_L_APP"
+        }
+      },
+      "MCB": {
+        "inbound_assignments": {
+          "GRNCH5_LSU": "MCO_L_APP",
+          "PRICY4_LSU": "MCO_L_APP"
+        }
+      }
+    },
+
     "center": "N028.25.45.781,W081.18.32.260",
     "force_ql_self": true,
     "pdb": {

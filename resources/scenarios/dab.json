@@ -2811,40 +2811,13 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "DAY",
+        "default_consolidation": {
           "DAB_H_APP": ["DAB_M_APP"],
           "DAB_L_APP": ["DAB_N_APP"],
           "DAB_M_APP": ["DAB_L_APP"],
           "DAB_N_APP": ["DAB_S_APP"],
           "DAB_S_APP": ["DAB_E_APP", "DAB_W_APP"]
-        },
-        "inbound_assignments": {
-          "DOMES": "DAB_L_APP",
-          "FOLUT": "DAB_M_APP",
-          "FONEX": "DAB_M_APP",
-          "KIZER": "DAB_S_APP",
-          "TTHOR3": "DAB_H_APP",
-          "V267NH": "DAB_H_APP",
-          "V267NL": "DAB_M_APP",
-          "V267NM": "DAB_M_APP",
-          "V267SH": "DAB_H_APP",
-          "V267SL": "DAB_M_APP",
-          "V267SM": "DAB_M_APP",
-          "V3NH": "DAB_H_APP",
-          "V3NL": "DAB_L_APP",
-          "V3NM": "DAB_L_APP",
-          "V3SH": "DAB_H_APP",
-          "V3SL": "DAB_M_APP",
-          "V3SM": "DAB_M_APP",
-          "WORMSE": "DAB_H_APP"
-        },
-        "departure_assignments": {
-          "KDAB": "DAB_E_APP",
-          "KDED": "DAB_W_APP",
-          "KEVB": "DAB_S_APP",
-          "KFIN": "DAB_N_APP",
-          "KOMN": "DAB_N_APP"
         }
       },
       "controllers": ["DAB_H_APP", "DAB_N_TWR", "DAB_S_TWR", "JAX_57_CTR", "JAX_58_CTR", "MCO_B_APP", "JAX_N_APP"],
@@ -3012,40 +2985,13 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "DA1",
+        "default_consolidation": {
           "DAB_H_APP": ["DAB_M_APP"],
           "DAB_L_APP": ["DAB_N_APP"],
           "DAB_M_APP": ["DAB_L_APP"],
           "DAB_N_APP": ["DAB_S_APP"],
           "DAB_S_APP": ["DAB_E_APP", "DAB_W_APP"]
-        },
-        "inbound_assignments": {
-          "DOMES": "DAB_L_APP",
-          "FOLUT": "DAB_M_APP",
-          "FONEX": "DAB_M_APP",
-          "KIZER": "DAB_W_APP",
-          "TTHOR3": "DAB_H_APP",
-          "V267NH": "DAB_H_APP",
-          "V267NL": "DAB_M_APP",
-          "V267NM": "DAB_M_APP",
-          "V267SH": "DAB_H_APP",
-          "V267SL": "DAB_M_APP",
-          "V267SM": "DAB_M_APP",
-          "V3NH": "DAB_H_APP",
-          "V3NL": "DAB_L_APP",
-          "V3NM": "DAB_L_APP",
-          "V3SH": "DAB_H_APP",
-          "V3SL": "DAB_M_APP",
-          "V3SM": "DAB_M_APP",
-          "WORMSW": "DAB_H_APP"
-        },
-        "departure_assignments": {
-          "KDAB": "DAB_E_APP",
-          "KDED": "DAB_W_APP",
-          "KEVB": "DAB_S_APP",
-          "KFIN": "DAB_N_APP",
-          "KOMN": "DAB_N_APP"
         }
       },
       "controllers": ["DAB_H_APP", "DAB_N_TWR", "DAB_S_TWR", "JAX_57_CTR", "JAX_58_CTR", "MCO_B_APP", "JAX_N_APP"],
@@ -3084,6 +3030,67 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "DAY": {
+        "inbound_assignments": {
+          "DOMES": "DAB_L_APP",
+          "FOLUT": "DAB_M_APP",
+          "FONEX": "DAB_M_APP",
+          "KIZER": "DAB_S_APP",
+          "TTHOR3": "DAB_H_APP",
+          "V267NH": "DAB_H_APP",
+          "V267NL": "DAB_M_APP",
+          "V267NM": "DAB_M_APP",
+          "V267SH": "DAB_H_APP",
+          "V267SL": "DAB_M_APP",
+          "V267SM": "DAB_M_APP",
+          "V3NH": "DAB_H_APP",
+          "V3NL": "DAB_L_APP",
+          "V3NM": "DAB_L_APP",
+          "V3SH": "DAB_H_APP",
+          "V3SL": "DAB_M_APP",
+          "V3SM": "DAB_M_APP",
+          "WORMSE": "DAB_H_APP"
+        },
+        "departure_assignments": {
+          "KDAB": "DAB_E_APP",
+          "KDED": "DAB_W_APP",
+          "KEVB": "DAB_S_APP",
+          "KFIN": "DAB_N_APP",
+          "KOMN": "DAB_N_APP"
+        }
+      },
+      "DA1": {
+        "inbound_assignments": {
+          "DOMES": "DAB_L_APP",
+          "FOLUT": "DAB_M_APP",
+          "FONEX": "DAB_M_APP",
+          "KIZER": "DAB_W_APP",
+          "TTHOR3": "DAB_H_APP",
+          "V267NH": "DAB_H_APP",
+          "V267NL": "DAB_M_APP",
+          "V267NM": "DAB_M_APP",
+          "V267SH": "DAB_H_APP",
+          "V267SL": "DAB_M_APP",
+          "V267SM": "DAB_M_APP",
+          "V3NH": "DAB_H_APP",
+          "V3NL": "DAB_L_APP",
+          "V3NM": "DAB_L_APP",
+          "V3SH": "DAB_H_APP",
+          "V3SL": "DAB_M_APP",
+          "V3SM": "DAB_M_APP",
+          "WORMSW": "DAB_H_APP"
+        },
+        "departure_assignments": {
+          "KDAB": "DAB_E_APP",
+          "KDED": "DAB_W_APP",
+          "KEVB": "DAB_S_APP",
+          "KFIN": "DAB_N_APP",
+          "KOMN": "DAB_N_APP"
+        }
+      }
+    },
+
     "center": "KDAB",
     "coordination_fixes": {
       "WEEEK": [

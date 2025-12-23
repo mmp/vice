@@ -6594,20 +6594,10 @@
       },
       "vfr_rate_scale": 0.7,
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "22X",
+        "default_consolidation": {
           "SFO_R_DEP": ["SFO_D_DEP", "SFO_F_DEP"],
           "SFO_U_DEP": ["SFO_Q_DEP", "SFO_R_DEP"]
-        },
-        "departure_assignments": {
-          "KOAK": "SFO_R_DEP",
-          "KSFO": "SFO_R_DEP"
-        },
-        "inbound_assignments": {
-          "WNDSR2.AD": "SFO_R_DEP",
-          "VNYRD1.RGOOD": "SFO_Q_DEP",
-          "VNYRD1.SNORA": "SFO_Q_DEP",
-          "LOUPE1.AD": "SFO_Q_DEP"
         }
       },
       "controllers": [
@@ -6697,19 +6687,10 @@
       },
       "vfr_rate_scale": 0.5,
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "ARE",
+        "default_consolidation": {
           "SFO_R_DEP": ["SFO_D_DEP", "SFO_F_DEP"],
           "SFO_U_DEP": ["SFO_R_DEP"]
-        },
-        "departure_assignments": {
-          "KOAK": "SFO_U_DEP",
-          "KSFO": "SFO_U_DEP"
-        },
-        "inbound_assignments": {
-          "REBAS1.RGOOD": "SFO_R_DEP",
-          "REBAS1.SNORA": "SFO_R_DEP",
-          "ALMDN4/OCEANIC.AD": "SFO_R_DEP"
         }
       },
       "controllers": [
@@ -6802,20 +6783,10 @@
       },
       "vfr_rate_scale": 0.6,
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "28X",
+        "default_consolidation": {
           "SFO_R_DEP": ["SFO_D_DEP", "SFO_F_DEP"],
           "SFO_U_DEP": ["SFO_Q_DEP", "SFO_R_DEP"]
-        },
-        "departure_assignments": {
-          "KOAK": "SFO_U_DEP",
-          "KSFO": "SFO_U_DEP"
-        },
-        "inbound_assignments": {
-          "WNDSR2.AD": "SFO_R_DEP",
-          "VNYRD1.RGOOD": "SFO_Q_DEP",
-          "VNYRD1.SNORA": "SFO_Q_DEP",
-          "LOUPE1.AD": "SFO_Q_DEP"
         }
       },
       "controllers": [
@@ -6912,19 +6883,10 @@
       },
       "vfr_rate_scale": 0.5,
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "AR1",
+        "default_consolidation": {
           "SFO_R_DEP": ["SFO_D_DEP", "SFO_F_DEP"],
           "SFO_U_DEP": ["SFO_Q_DEP", "SFO_R_DEP"]
-        },
-        "departure_assignments": {
-          "KOAK": "SFO_U_DEP",
-          "KSFO": "SFO_R_DEP"
-        },
-        "inbound_assignments": {
-          "VNYRD1.RGOOD": "SFO_Q_DEP",
-          "VNYRD1.SNORA": "SFO_Q_DEP",
-          "BMRNG4.AD": "SFO_Q_DEP"
         }
       },
       "controllers": [
@@ -6978,6 +6940,55 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "ARE": {
+        "inbound_assignments": {
+          "ALMDN4/OCEANIC.AD": "SFO_R_DEP",
+          "REBAS1.RGOOD": "SFO_R_DEP",
+          "REBAS1.SNORA": "SFO_R_DEP"
+        },
+        "departure_assignments": {
+          "KOAK": "SFO_U_DEP",
+          "KSFO": "SFO_U_DEP"
+        }
+      },
+      "22X": {
+        "inbound_assignments": {
+          "LOUPE1.AD": "SFO_Q_DEP",
+          "VNYRD1.RGOOD": "SFO_Q_DEP",
+          "VNYRD1.SNORA": "SFO_Q_DEP",
+          "WNDSR2.AD": "SFO_R_DEP"
+        },
+        "departure_assignments": {
+          "KOAK": "SFO_R_DEP",
+          "KSFO": "SFO_R_DEP"
+        }
+      },
+      "AR1": {
+        "inbound_assignments": {
+          "BMRNG4.AD": "SFO_Q_DEP",
+          "VNYRD1.RGOOD": "SFO_Q_DEP",
+          "VNYRD1.SNORA": "SFO_Q_DEP"
+        },
+        "departure_assignments": {
+          "KOAK": "SFO_U_DEP",
+          "KSFO": "SFO_R_DEP"
+        }
+      },
+      "28X": {
+        "inbound_assignments": {
+          "LOUPE1.AD": "SFO_Q_DEP",
+          "VNYRD1.RGOOD": "SFO_Q_DEP",
+          "VNYRD1.SNORA": "SFO_Q_DEP",
+          "WNDSR2.AD": "SFO_R_DEP"
+        },
+        "departure_assignments": {
+          "KOAK": "SFO_U_DEP",
+          "KSFO": "SFO_U_DEP"
+        }
+      }
+    },
+
     "center": "KSJC",
     "coordination_fixes": {
       "OSI": [

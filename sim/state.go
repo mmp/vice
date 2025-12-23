@@ -68,7 +68,7 @@ type State struct {
 	Fixes             map[string]math.Point2LL
 	VFRRunways        map[string]av.Runway // assume just one runway per airport
 
-	ConfigurationId              string // Short identifier for the configuration (from ControllerConfiguration.Id)
+	ConfigurationId              string // Short identifier for the configuration (from ControllerConfiguration.ConfigId)
 	UserTCW                      TCW
 	ScenarioDefaultConsolidation PositionConsolidation // Scenario's original hierarchy. Immutable after initialization.
 
@@ -147,9 +147,9 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 		Fixes:      config.Fixes,
 		VFRRunways: make(map[string]av.Runway),
 
-		ConfigurationId:              config.ControllerConfiguration.Id,
+		ConfigurationId:              config.ControllerConfiguration.ConfigId,
 		UserTCW:                      serverCallsign,
-		ScenarioDefaultConsolidation: config.ControllerConfiguration.Positions,
+		ScenarioDefaultConsolidation: config.ControllerConfiguration.DefaultConsolidation,
 
 		DepartureRunways: config.DepartureRunways,
 		ArrivalRunways:   config.ArrivalRunways,

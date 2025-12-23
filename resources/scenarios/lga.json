@@ -1720,17 +1720,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "LGA_V_APP": ["LGA_DEP", "LGA_D_APP", "LGA_F_APP"]
-        },
-        "inbound_assignments": {
-          "HAARP3": "LGA_V_APP",
-          "KORRY4": "LGA_D_APP",
-          "MIP4": "LGA_D_APP"
-        },
-        "departure_assignments": {
-          "KLGA": "LGA_DEP"
         }
       },
       "controllers": [
@@ -1817,17 +1809,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "LGA_V_APP": ["LGA_DEP", "LGA_D_APP", "LGA_F_APP"]
-        },
-        "inbound_assignments": {
-          "HAARP3": "LGA_V_APP",
-          "KORRY4": "LGA_D_APP",
-          "MIP4": "LGA_D_APP"
-        },
-        "departure_assignments": {
-          "KLGA": "LGA_DEP"
         }
       },
       "controllers": [
@@ -1914,17 +1898,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "LGA_V_APP": ["LGA_DEP", "LGA_D_APP", "LGA_F_APP"]
-        },
-        "inbound_assignments": {
-          "HAARP3": "LGA_V_APP",
-          "KORRY4": "LGA_D_APP",
-          "MIP4": "LGA_D_APP"
-        },
-        "departure_assignments": {
-          "KLGA": "LGA_DEP"
         }
       },
       "controllers": [
@@ -2011,17 +1987,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "LGA_V_APP": ["LGA_DEP", "LGA_D_APP", "LGA_F_APP"]
-        },
-        "inbound_assignments": {
-          "HAARP3": "LGA_V_APP",
-          "KORRY4": "LGA_D_APP",
-          "MIP4": "LGA_D_APP"
-        },
-        "departure_assignments": {
-          "KLGA": "LGA_DEP"
         }
       },
       "controllers": [
@@ -2108,17 +2076,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "LGA_V_APP": ["LGA_DEP", "LGA_D_APP", "LGA_F_APP"]
-        },
-        "inbound_assignments": {
-          "HAARP3": "LGA_V_APP",
-          "KORRY4": "LGA_D_APP",
-          "MIP4": "LGA_D_APP"
-        },
-        "departure_assignments": {
-          "KLGA": "LGA_DEP"
         }
       },
       "controllers": [
@@ -2203,13 +2163,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "FIN",
+        "default_consolidation": {
           "LGA_F_APP": []
-        },
-        "inbound_assignments": {
-          "Finals-EMPYR-ILS4": "LGA_F_APP",
-          "Finals-HAARP-L4/D13": "LGA_F_APP"
         }
       },
       "controllers": [
@@ -2250,13 +2206,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "FIN",
+        "default_consolidation": {
           "LGA_F_APP": []
-        },
-        "inbound_assignments": {
-          "Finals-EMPYR-ILS4": "LGA_F_APP",
-          "Finals-HAARP-L4/D31": "LGA_F_APP"
         }
       },
       "controllers": [
@@ -2297,13 +2249,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "FIN",
+        "default_consolidation": {
           "LGA_F_APP": []
-        },
-        "inbound_assignments": {
-          "Finals-EMPYR-ILS13": "LGA_F_APP",
-          "Finals-HAARP-ILS13": "LGA_F_APP"
         }
       },
       "controllers": [
@@ -2343,13 +2291,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "FIN",
+        "default_consolidation": {
           "LGA_F_APP": []
-        },
-        "inbound_assignments": {
-          "Finals-EMPYR-ILS22/D13": "LGA_F_APP",
-          "Finals-HAARP-ILS22": "LGA_F_APP"
         }
       },
       "controllers": [
@@ -2389,13 +2333,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "FIN",
+        "default_consolidation": {
           "LGA_F_APP": []
-        },
-        "inbound_assignments": {
-          "Finals-EMPYR-ILS22/D31": "LGA_F_APP",
-          "Finals-HAARP-ILS22": "LGA_F_APP"
         }
       },
       "controllers": [
@@ -2435,13 +2375,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "FIN",
+        "default_consolidation": {
           "LGA_F_APP": []
-        },
-        "inbound_assignments": {
-          "Finals-EMPYR-RX31": "LGA_F_APP",
-          "Finals-HAARP-RX31": "LGA_F_APP"
         }
       },
       "controllers": [
@@ -2481,13 +2417,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "FIN",
+        "default_consolidation": {
           "LGA_F_APP": []
-        },
-        "inbound_assignments": {
-          "Finals-EMPYR-LOC31": "LGA_F_APP",
-          "Finals-HAARP-LOC31": "LGA_F_APP"
         }
       },
       "controllers": [
@@ -2513,6 +2445,34 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "HAARP3": "LGA_V_APP",
+          "KORRY4": "LGA_D_APP",
+          "MIP4": "LGA_D_APP"
+        },
+        "departure_assignments": {
+          "KLGA": "LGA_DEP"
+        }
+      },
+      "FIN": {
+        "inbound_assignments": {
+          "Finals-EMPYR-ILS13": "LGA_F_APP",
+          "Finals-HAARP-ILS13": "LGA_F_APP",
+          "Finals-EMPYR-ILS22/D13": "LGA_F_APP",
+          "Finals-HAARP-ILS22": "LGA_F_APP",
+          "Finals-EMPYR-ILS22/D31": "LGA_F_APP",
+          "Finals-EMPYR-ILS4": "LGA_F_APP",
+          "Finals-HAARP-L4/D13": "LGA_F_APP",
+          "Finals-HAARP-L4/D31": "LGA_F_APP",
+          "Finals-EMPYR-LOC31": "LGA_F_APP",
+          "Finals-HAARP-LOC31": "LGA_F_APP",
+          "Finals-EMPYR-RX31": "LGA_F_APP",
+          "Finals-HAARP-RX31": "LGA_F_APP"
+        }
+      }
+    },
     "filters": {
       "inhibit_ca": [
         {

@@ -2359,34 +2359,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ISP_B_APP": ["ISP_I_APP"],
           "ISP_H_APP": ["ISP_B_APP", "ISP_N_APP", "ISP_Z_APP"],
           "ISP_Z_APP": ["ISP_O_APP", "ISP_R_APP"]
-        },
-        "inbound_assignments": {
-          "BOUNO5": "ISP_O_APP",
-          "DENNA3": "ISP_R_APP",
-          "Intra-TRACON Via BDR": "ISP_O_APP",
-          "Intra-TRACON Via CCC": "ISP_B_APP",
-          "Intra-TRACON Via CREAM": "ISP_B_APP",
-          "Intra-TRACON Via DENNA": "ISP_Z_APP",
-          "Intra-TRACON Via HFD": "ISP_O_APP",
-          "Intra-TRACON Via HTO": "ISP_B_APP",
-          "Intra-TRACON Via JFK": "ISP_H_APP",
-          "Intra-TRACON Via LOVES": "ISP_R_APP",
-          "Intra-TRACON Via MAD": "ISP_O_APP",
-          "Intra-TRACON Via SARDI": "ISP_H_APP",
-          "LOVES1": "ISP_R_APP",
-          "NELIE4": "ISP_B_APP"
-        },
-        "departure_assignments": {
-          "KBDR": "ISP_Z_APP",
-          "KFOK": "ISP_I_APP",
-          "KHVN": "ISP_Z_APP",
-          "KISP": "ISP_H_APP",
-          "KOXC": "ISP_Z_APP"
         }
       },
       "controllers": [
@@ -2522,33 +2499,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ISP_B_APP": ["ISP_I_APP"],
           "ISP_H_APP": ["ISP_B_APP", "ISP_N_APP", "ISP_Z_APP"],
           "ISP_Z_APP": ["ISP_O_APP", "ISP_R_APP"]
-        },
-        "inbound_assignments": {
-          "BOUNO5": "ISP_O_APP",
-          "Intra-TRACON Via BDR": "ISP_O_APP",
-          "Intra-TRACON Via CCC": "ISP_B_APP",
-          "Intra-TRACON Via CREAM": "ISP_B_APP",
-          "Intra-TRACON Via DENNA": "ISP_Z_APP",
-          "Intra-TRACON Via HFD": "ISP_O_APP",
-          "Intra-TRACON Via HTO": "ISP_B_APP",
-          "Intra-TRACON Via JFK": "ISP_H_APP",
-          "Intra-TRACON Via LOVES": "ISP_R_APP",
-          "Intra-TRACON Via MAD": "ISP_O_APP",
-          "Intra-TRACON Via SARDI": "ISP_H_APP",
-          "LOVES1": "ISP_R_APP",
-          "NELIE4": "ISP_B_APP"
-        },
-        "departure_assignments": {
-          "KBDR": "ISP_Z_APP",
-          "KFOK": "ISP_I_APP",
-          "KHVN": "ISP_Z_APP",
-          "KISP": "ISP_H_APP",
-          "KOXC": "ISP_Z_APP"
         }
       },
       "controllers": [
@@ -2684,33 +2639,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ISP_B_APP": ["ISP_I_APP"],
           "ISP_H_APP": ["ISP_B_APP", "ISP_N_APP", "ISP_Z_APP"],
           "ISP_Z_APP": ["ISP_O_APP", "ISP_R_APP"]
-        },
-        "inbound_assignments": {
-          "BOUNO5": "ISP_O_APP",
-          "Intra-TRACON Via BDR": "ISP_O_APP",
-          "Intra-TRACON Via CCC": "ISP_B_APP",
-          "Intra-TRACON Via CREAM": "ISP_B_APP",
-          "Intra-TRACON Via DENNA": "ISP_Z_APP",
-          "Intra-TRACON Via HFD": "ISP_O_APP",
-          "Intra-TRACON Via HTO": "ISP_B_APP",
-          "Intra-TRACON Via JFK": "ISP_H_APP",
-          "Intra-TRACON Via LOVES": "ISP_R_APP",
-          "Intra-TRACON Via MAD": "ISP_O_APP",
-          "Intra-TRACON Via SARDI": "ISP_H_APP",
-          "LOVES1": "ISP_R_APP",
-          "NELIE4": "ISP_B_APP"
-        },
-        "departure_assignments": {
-          "KBDR": "ISP_Z_APP",
-          "KFOK": "ISP_I_APP",
-          "KHVN": "ISP_Z_APP",
-          "KISP": "ISP_H_APP",
-          "KOXC": "ISP_Z_APP"
         }
       },
       "controllers": [
@@ -2846,33 +2779,11 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ISP_B_APP": ["ISP_I_APP"],
           "ISP_H_APP": ["ISP_B_APP", "ISP_N_APP", "ISP_Z_APP"],
           "ISP_Z_APP": ["ISP_O_APP", "ISP_R_APP"]
-        },
-        "inbound_assignments": {
-          "BOUNO5": "ISP_O_APP",
-          "Intra-TRACON Via BDR": "ISP_O_APP",
-          "Intra-TRACON Via CCC": "ISP_B_APP",
-          "Intra-TRACON Via CREAM": "ISP_B_APP",
-          "Intra-TRACON Via DENNA": "ISP_Z_APP",
-          "Intra-TRACON Via HFD": "ISP_O_APP",
-          "Intra-TRACON Via HTO": "ISP_B_APP",
-          "Intra-TRACON Via JFK": "ISP_H_APP",
-          "Intra-TRACON Via LOVES": "ISP_R_APP",
-          "Intra-TRACON Via MAD": "ISP_O_APP",
-          "Intra-TRACON Via SARDI": "ISP_H_APP",
-          "LOVES1": "ISP_R_APP",
-          "NELIE4": "ISP_B_APP"
-        },
-        "departure_assignments": {
-          "KBDR": "ISP_Z_APP",
-          "KFOK": "ISP_I_APP",
-          "KHVN": "ISP_Z_APP",
-          "KISP": "ISP_H_APP",
-          "KOXC": "ISP_Z_APP"
         }
       },
       "controllers": [
@@ -2920,6 +2831,34 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "BOUNO5": "ISP_O_APP",
+          "DENNA3": "ISP_R_APP",
+          "Intra-TRACON Via BDR": "ISP_O_APP",
+          "Intra-TRACON Via CCC": "ISP_B_APP",
+          "Intra-TRACON Via CREAM": "ISP_B_APP",
+          "Intra-TRACON Via DENNA": "ISP_Z_APP",
+          "Intra-TRACON Via HFD": "ISP_O_APP",
+          "Intra-TRACON Via HTO": "ISP_B_APP",
+          "Intra-TRACON Via JFK": "ISP_H_APP",
+          "Intra-TRACON Via LOVES": "ISP_R_APP",
+          "Intra-TRACON Via MAD": "ISP_O_APP",
+          "Intra-TRACON Via SARDI": "ISP_H_APP",
+          "LOVES1": "ISP_R_APP",
+          "NELIE4": "ISP_B_APP"
+        },
+        "departure_assignments": {
+          "KBDR": "ISP_Z_APP",
+          "KFOK": "ISP_I_APP",
+          "KHVN": "ISP_Z_APP",
+          "KISP": "ISP_H_APP",
+          "KOXC": "ISP_Z_APP"
+        }
+      }
+    },
+
     "filters": {
       "auto_acquisition": [
         {

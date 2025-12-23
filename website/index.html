@@ -7953,25 +7953,22 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"configuration"</td>
                 <td>Object</td>
-                <td>Defines the controller consolidation hierarchy for this scenario.
+                <td>Defines the controller consolidation hierarchy for this scenario and references a
+                  controller assignment configuration.
                   The following members are available:
                   <ul>
-                    <li>"id": A short identifier (maximum 3 characters) for this configuration.</li>
-                    <li>"positions": An object that defines the consolidation hierarchy. Each key is a parent TCP,
+                    <li>"config_id": A short identifier (maximum 3 characters) that references a configuration
+                      defined in <a href="#fe-stars-videomaps">"configurations"</a> under "stars_config".
+                      The referenced configuration provides the inbound and departure assignments for this scenario.
+                      The selected configuration must assignments for all of the scenario's active
+                      arrivals and departures.</li>
+                    <li>"default_consolidation": An object that defines the consolidation hierarchy. Each key is a parent TCP,
                     and its value is an array of TCPs that are consolidated into it.
                     For example: <code>{"1A": ["1B", "1C"], "1C": ["1D"]}</code> means 1B and 1C are consolidated
                       into 1A, and 1D is consolidated into 1C (and transitively into 1A).
                       All positions that are covered by humans must be present exactly once in the consolidation hierarchy.
-                      All positions must eventually consolidate into a single <i>root</i> position; this 
+                      All positions must eventually consolidate into a single <i>root</i> position; this
                       is the primary controller for the scenario.</li>
-                    <li>"inbound_assignments": An object that maps inbound flow names to the TCP
-                    that handles them. This determines where handoffs of inbound aircraft go.</li>
-                    <li>"departure_assignments": An object that maps from strings denoting departures
-                      to the TCP responsible for them. Each string can be an airport name
-                      ("KJFK"), a slash-separated airport name and runway
-                      ("KJFK/22R"), or a slash-separated airport name and
-                      SID ("KJFK/SKORR5"). It is not allowed to mix different
-                      ways of specifying departures at a given airport.</li>
                   </ul>
                 </td>
               </tr>
@@ -8264,6 +8261,31 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                     <li>"video_maps": an array of strings specifying which video maps should be displayed
                       in the DCB for the controller.  See "stars_maps" below for further details.</li>
                   </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>"configurations"</td>
+                <td>Object</td>
+                <td>Defines controller assignment configurations that can be referenced by scenarios.
+                  Each key is a short identifier (maximum 3 characters) for the configuration,
+                  and the value is an object with the following members:
+                  <ul>
+                    <li>"inbound_assignments": An object that maps inbound flow names to the TCP
+                    that handles them. This determines where handoffs of inbound aircraft go.</li>
+                    <li>"departure_assignments": An object that maps from strings denoting departures
+                      to the TCP responsible for them. Each string can be an airport name
+                      ("KJFK"), a slash-separated airport name and runway
+                      ("KJFK/22R"), or a slash-separated airport name and
+                      SID ("KJFK/SKORR5"). It is not allowed to specify runway and SID departure selections
+                      at an airport, however the airport name alone may be given as a catch-all
+                      for any unspecified runways/SIDs if that method is used.</li>
+                  </ul>
+                  These configurations allow multiple scenarios to share the same assignment definitions,
+                  reducing duplication when only the consolidation hierarchy differs between scenarios.
+                  The TCPs referenced in assignments must exist in "control_positions".
+                  It is acceptable for a configuration to include assignments for flows or departures
+                  that a particular scenario doesn't use; only the assignments needed by the scenario's
+                  active arrivals and departures are required.
                 </td>
               </tr>
               <tr>

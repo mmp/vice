@@ -305,12 +305,9 @@
   "scenarios": {
     "ZBW Danbury 19": {
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "ZBW Danbury 19": []
-        },
-        "inbound_assignments": {
-          "PARCH4-SEY": "ZBW Danbury 19"
         }
       },
       "controllers": [
@@ -362,6 +359,14 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "PARCH4-SEY": "ZBW Danbury 19"
+        }
+      }
+    },
+
     "center": "PVD",
     "range": 70,
     "stars_maps": ["TRACON"],

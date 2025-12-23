@@ -935,25 +935,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "MYR_E_APP": ["MYR_W_APP"]
-        },
-        "inbound_assignments": {
-          "CAE.fast": "MYR_W_APP",
-          "CAE.slow": "MYR_W_APP",
-          "CHS.fast": "MYR_W_APP",
-          "CHS.slow": "MYR_W_APP",
-          "FAY": "MYR_E_APP",
-          "FLO.fast": "MYR_W_APP",
-          "FLO.slow": "MYR_W_APP",
-          "ILM.fast": "MYR_E_APP",
-          "ILM.slow": "MYR_E_APP",
-          "UNJAM": "MYR_W_APP"
-        },
-        "departure_assignments": {
-          "KCRE": "MYR_E_APP",
-          "KMYR": "MYR_E_APP"
         }
       },
       "controllers": [
@@ -1036,25 +1020,9 @@
         }
       },
       "configuration": {
-        "id": "STD",
-        "positions": {
+        "config_id": "STD",
+        "default_consolidation": {
           "MYR_E_APP": ["MYR_W_APP"]
-        },
-        "inbound_assignments": {
-          "CAE.fast": "MYR_W_APP",
-          "CAE.slow": "MYR_W_APP",
-          "CHS.fast": "MYR_W_APP",
-          "CHS.slow": "MYR_W_APP",
-          "FAY": "MYR_E_APP",
-          "FLO.fast": "MYR_W_APP",
-          "FLO.slow": "MYR_W_APP",
-          "ILM.fast": "MYR_E_APP",
-          "ILM.slow": "MYR_E_APP",
-          "UNJAM": "MYR_W_APP"
-        },
-        "departure_assignments": {
-          "KCRE": "MYR_E_APP",
-          "KMYR": "MYR_E_APP"
         }
       },
       "controllers": [
@@ -1086,6 +1054,27 @@
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "CAE.fast": "MYR_W_APP",
+          "CAE.slow": "MYR_W_APP",
+          "CHS.fast": "MYR_W_APP",
+          "CHS.slow": "MYR_W_APP",
+          "FAY": "MYR_E_APP",
+          "FLO.fast": "MYR_W_APP",
+          "FLO.slow": "MYR_W_APP",
+          "ILM.fast": "MYR_E_APP",
+          "ILM.slow": "MYR_E_APP",
+          "UNJAM": "MYR_W_APP"
+        },
+        "departure_assignments": {
+          "KCRE": "MYR_E_APP",
+          "KMYR": "MYR_E_APP"
+        }
+      }
+    },
+
     "center": "KMYR",
     "coordination_fixes": {
       "FLO": [
