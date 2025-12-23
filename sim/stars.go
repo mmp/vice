@@ -44,8 +44,8 @@ func (rd *RedirectedHandoff) GetLastRedirector() ControlPosition {
 func (rd *RedirectedHandoff) ShowRDIndicator(pos ControlPosition, RDIndicatorEnd time.Time) bool {
 	// Show "RD" to the redirect target, last redirector until the RD is accepted.
 	// Show "RD" to the original owner up to 30 seconds after the RD is accepted.
-	return rd.RedirectedTo == pos || rd.GetLastRedirector() == pos ||
-		rd.OriginalOwner == pos || time.Until(RDIndicatorEnd) > 0
+	return pos != "" && (rd.RedirectedTo == pos || rd.GetLastRedirector() == pos ||
+		rd.OriginalOwner == pos || time.Until(RDIndicatorEnd) > 0)
 }
 
 func (rd *RedirectedHandoff) ShouldFallbackToHandoff(ctrl, octrl ControlPosition) bool {
