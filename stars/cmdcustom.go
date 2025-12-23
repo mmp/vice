@@ -145,9 +145,9 @@ func init() {
 
 // targetGenAircraftCommand handles aircraft commands in target gen mode.
 // Parses the input to extract callsign suffix and commands, then runs them.
-func targetGenAircraftCommand(sp *STARSPane, ctx *panes.Context, input string) error {
+func targetGenAircraftCommand(sp *STARSPane, ctx *panes.Context, input string) (CommandStatus, error) {
 	if input == "" {
-		return ErrSTARSCommandFormat
+		return CommandStatus{}, ErrSTARSCommandFormat
 	}
 
 	// Parse callsign suffix and commands
@@ -160,7 +160,7 @@ func targetGenAircraftCommand(sp *STARSPane, ctx *panes.Context, input string) e
 	if ctx.Client.RadioIsActive() && !ctx.TCWIsPrivileged(ctx.UserTCW) && cmds != "X" {
 		// Don't allow issuing commands during pilot transmissions unless
 		// it's an instructor/RPO or the command is "X" to delete an aircraft.
-		return nil
+		return CommandStatus{Clear: ClearNone}, nil
 	}
 
 	matching := ctx.TracksFromACIDSuffix(suffix)
@@ -179,9 +179,9 @@ func targetGenAircraftCommand(sp *STARSPane, ctx *panes.Context, input string) e
 	if trk != nil {
 		sp.runAircraftCommands(ctx, trk.ADSBCallsign, cmds, multiple, false)
 	} else {
-		return ErrSTARSIllegalACID
+		return CommandStatus{}, ErrSTARSIllegalACID
 	}
-	return nil
+	return CommandStatus{}, nil
 }
 
 // targetGenClickCommand runs commands on clicked aircraft in target gen mode.
