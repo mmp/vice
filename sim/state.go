@@ -28,44 +28,61 @@ const serverCallsign = "__SERVER__"
 // a second.  Clients can then use the State as a read-only reference for
 // assorted information they may need (the state of aircraft in the sim,
 // etc.)
+
+// UpdatedState is the subset of State that is sent to the user once a second as the Sim
+// executes. In this way, we limit network traffic to what is actually changing and only send the
+// static information in State once, when the Sim starts.
+type UpdatedState struct {
+	GenerationIndex         int
+	Tracks                  map[av.ADSBCallsign]*Track
+	UnassociatedFlightPlans []*NASFlightPlan // Unassociated ones, including unsupported DBs
+	ReleaseDepartures       []ReleaseDeparture
+
+	Controllers          map[ControlPosition]*av.Controller
+	CurrentConsolidation map[TCW]*TCPConsolidation
+
+	SimTime time.Time // this is our fake time--accounting for pauses & simRate..
+
+	METAR map[string]wx.METAR
+
+	LaunchConfig LaunchConfig
+
+	UserRestrictionAreas []av.RestrictionArea
+
+	Paused             bool
+	SimRate            float32
+	TotalIFR, TotalVFR int
+
+	QuickFlightPlanIndex int // for auto ACIDs for quick ACID flight plan 5-145
+
+	ATPAEnabled     bool                                   // True if ATPA is enabled system-wide
+	ATPAVolumeState map[string]map[string]*ATPAVolumeState // airport -> volumeId -> state
+}
+
 type State struct {
-	Tracks map[av.ADSBCallsign]*Track
-
-	// Unassociated ones, including unsupported DBs
-	UnassociatedFlightPlans []*NASFlightPlan
-
-	ACFlightPlans map[av.ADSBCallsign]av.FlightPlan // needed for flight strips...
+	UpdatedState
 
 	Airports          map[string]*av.Airport
 	DepartureAirports map[string]interface{}
 	ArrivalAirports   map[string]interface{}
 	Fixes             map[string]math.Point2LL
 	VFRRunways        map[string]av.Runway // assume just one runway per airport
-	ReleaseDepartures []ReleaseDeparture
-
-	// All controller positions for this scenario (both human-designated and virtual)
-	Controllers map[ControlPosition]*av.Controller
 
 	ConfigurationId              string // Short identifier for the configuration (from ControllerConfiguration.Id)
 	UserTCW                      TCW
-	CurrentConsolidation         map[TCW]*TCPConsolidation // Current position consolidation
-	ScenarioDefaultConsolidation PositionConsolidation     // Scenario's original hierarchy. Immutable after initialization.
+	ScenarioDefaultConsolidation PositionConsolidation // Scenario's original hierarchy. Immutable after initialization.
 
 	Airspace map[ControlPosition]map[string][]av.ControllerAirspaceVolume // position -> vol name -> definition
-
-	GenerationIndex int
 
 	DepartureRunways []DepartureRunway
 	ArrivalRunways   []ArrivalRunway
 	InboundFlows     map[string]*av.InboundFlow
-	LaunchConfig     LaunchConfig
 	Emergencies      []Emergency
 
 	Center                    math.Point2LL
 	Range                     float32
 	ScenarioDefaultVideoMaps  []string
 	ScenarioDefaultVideoGroup string
-	UserRestrictionAreas      []av.RestrictionArea
 
 	FacilityAdaptation FacilityAdaptation
 
@@ -74,16 +91,7 @@ type State struct {
 	NmPerLongitude    float32
 	PrimaryAirport    string
 
-	METAR map[string]wx.METAR
-
-	TotalIFR, TotalVFR int
-
-	Paused         bool
-	SimRate        float32
 	SimDescription string
-	SimTime        time.Time // this is our fake time--accounting for pauses & simRate..
-
-	QuickFlightPlanIndex int // for auto ACIDs for quick ACID flight plan 5-145
 
 	PrivilegedTCWs map[TCW]bool // TCWs with elevated privileges (can control any aircraft)
 	Observers      map[TCW]bool // TCWs connected as observers (no position)
@@ -96,9 +104,6 @@ type State struct {
 	ControllerMonitoredBeaconCodeBlocks []av.Squawk
 
 	RadioTransmissions [][]byte
-
-	ATPAEnabled     bool                                   // True if ATPA is enabled system-wide
-	ATPAVolumeState map[string]map[string]*ATPAVolumeState // airport -> volumeId -> state
 }
 
 type ReleaseDeparture struct {
@@ -123,20 +128,32 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 	startTime = startTime.Add(-initialSimSeconds * time.Second)
 
 	ss := &State{
+		UpdatedState: UpdatedState{
+			Controllers:          maps.Clone(config.ControlPositions),
+			CurrentConsolidation: make(map[TCW]*TCPConsolidation),
+
+			METAR: make(map[string]wx.METAR),
+
+			LaunchConfig: config.LaunchConfig,
+
+			SimRate: 1,
+			SimTime: startTime,
+
+			ATPAEnabled:     true,
+			ATPAVolumeState: initATPAVolumeState(config.Airports),
+		},
+
 		Airports:   config.Airports,
 		Fixes:      config.Fixes,
 		VFRRunways: make(map[string]av.Runway),
 
-		Controllers:                  maps.Clone(config.ControlPositions),
 		ConfigurationId:              config.ControllerConfiguration.Id,
 		UserTCW:                      serverCallsign,
-		CurrentConsolidation:         make(map[TCW]*TCPConsolidation),
 		ScenarioDefaultConsolidation: config.ControllerConfiguration.Positions,
 
 		DepartureRunways: config.DepartureRunways,
 		ArrivalRunways:   config.ArrivalRunways,
 		InboundFlows:     config.InboundFlows,
-		LaunchConfig:     config.LaunchConfig,
 		Emergencies:      config.Emergencies,
 
 		Center:                    config.Center,
@@ -150,14 +167,7 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 		MagneticVariation: config.MagneticVariation,
 		NmPerLongitude:    config.NmPerLongitude,
 		PrimaryAirport:    config.PrimaryAirport,
-		METAR:             make(map[string]wx.METAR),
-
-		SimRate:        1,
-		SimDescription: config.Description,
-		SimTime:        startTime,
-
-		ATPAEnabled:     true,
-		ATPAVolumeState: initATPAVolumeState(config.Airports),
+		SimDescription:    config.Description,
 
 		PrivilegedTCWs: make(map[TCW]bool),
 		Observers:      make(map[TCW]bool),

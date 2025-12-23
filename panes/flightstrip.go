@@ -348,8 +348,11 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 		if sfp == nil {
 			continue
 		}
-		fp := ctx.Client.State.ACFlightPlans[av.ADSBCallsign(fsp.strips[i])] // HAX: conflates callsign/ACID
 		acid := fsp.strips[i]
+		track := ctx.Client.State.Tracks[av.ADSBCallsign(acid)] // HAX: conflates callsign/ACID
+		if track == nil {
+			continue
+		}
 		annots := fsp.Annotations[acid]
 
 		x := float32(0)
@@ -436,11 +439,11 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 			// Third column: departure airport, (empty), (empty)
 			x += width1
 			// Departures
-			drawColumn(fp.DepartureAirport, "", "", width2, false)
+			drawColumn(track.DepartureAirport, "", "", width2, false)
 
 			x += width2
 			// Fourth column: route and destination airport
-			route := formatRoute(fp.Route+" "+fp.ArrivalAirport, widthCenter, 3)
+			route := formatRoute(track.FiledRoute+" "+track.ArrivalAirport, widthCenter, 3)
 			drawColumn(route[0], route[1], route[2], widthCenter, false)
 		} else if sfp.TypeOfFlight == av.FlightTypeArrival {
 			// Second column; 3 entries: squawk, previous fix, coordination fix
@@ -453,7 +456,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 
 			// Fourth column: flight rules, destination airport
 			x += width2
-			drawColumn(util.Select(fp.Rules == av.FlightRulesIFR, "IFR", "VFR"), "", fp.ArrivalAirport, widthCenter, false)
+			drawColumn(util.Select(sfp.Rules == av.FlightRulesIFR, "IFR", "VFR"), "", track.ArrivalAirport, widthCenter, false)
 		} else {
 			// Overflight
 			// Second column; 3 entries: squawk, entry fix, exit fix
@@ -467,8 +470,8 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 			// Fourth column: altitude, route
 			x += width2
 			// TODO: e.g. "VFR/65" for altitude if it's VFR
-			route := formatRoute(fp.DepartureAirport+" "+fp.Route+" "+fp.ArrivalAirport, widthCenter, 2)
-			drawColumn(strconv.Itoa(fp.Altitude/100), route[0], route[1], widthCenter, false)
+			route := formatRoute(track.DepartureAirport+" "+track.FiledRoute+" "+track.ArrivalAirport, widthCenter, 2)
+			drawColumn(strconv.Itoa(track.FiledAltitude/100), route[0], route[1], widthCenter, false)
 		}
 
 		// Annotations

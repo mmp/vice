@@ -138,6 +138,8 @@ type Track struct {
 	ArrivalAirport            string
 	ArrivalAirportElevation   float32
 	ArrivalAirportLocation    math.Point2LL
+	FiledRoute                string
+	FiledAltitude             int
 	OnExtendedCenterline      bool
 	OnApproach                bool
 	ATPAVolume                *av.ATPAVolume
@@ -737,34 +739,6 @@ type GlobalMessage struct {
 	FromController ControlPosition
 }
 
-type StateUpdate struct {
-	GenerationIndex         int
-	Tracks                  map[av.ADSBCallsign]*Track
-	UnassociatedFlightPlans []*NASFlightPlan
-	ACFlightPlans           map[av.ADSBCallsign]av.FlightPlan
-	ReleaseDepartures       []ReleaseDeparture
-
-	Controllers          map[ControlPosition]*av.Controller
-	CurrentConsolidation map[TCW]*TCPConsolidation
-
-	Time time.Time
-
-	METAR map[string]wx.METAR
-
-	LaunchConfig LaunchConfig
-
-	UserRestrictionAreas []av.RestrictionArea
-
-	SimIsPaused          bool
-	SimRate              float32
-	TotalIFR, TotalVFR   int
-	Events               []Event
-	QuickFlightPlanIndex int
-
-	ATPAEnabled     bool
-	ATPAVolumeState map[string]map[string]*ATPAVolumeState
-}
-
 // consolidateRadioEventsForTCW consolidates consecutive radio transmissions from the same
 // aircraft and adds callsign/controller prefixes to contact transmissions.
 // This is called for both main event subscriptions and TTS event subscriptions.
@@ -861,6 +835,11 @@ func (s *Sim) ConsolidateRadioEventsForTCW(tcw TCW, events []Event) []Event {
 	return s.consolidateRadioEventsForTCW(tcw, events)
 }
 
+type StateUpdate struct {
+	UpdatedState
+	Events []Event
+}
+
 // GetStateUpdate populates update with the current simulation state.
 // If eventSub is provided, it retrieves events from that subscription.
 // The tcw parameter is used to filter and format radio transmission events.
@@ -868,118 +847,12 @@ func (s *Sim) GetStateUpdate(tcw TCW, eventSub *EventsSubscription, update *Stat
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	var events []Event
+	update.UpdatedState = s.State.UpdatedState
+
+	s.State.GenerationIndex++
+
 	if eventSub != nil {
-		events = s.consolidateRadioEventsForTCW(tcw, eventSub.Get())
-	}
-
-	*update = StateUpdate{
-		UnassociatedFlightPlans: s.STARSComputer.FlightPlans,
-
-		Controllers:          s.State.Controllers,
-		CurrentConsolidation: s.State.CurrentConsolidation,
-
-		Time: s.State.SimTime,
-
-		METAR: make(map[string]wx.METAR),
-
-		LaunchConfig: s.State.LaunchConfig,
-
-		UserRestrictionAreas: s.State.UserRestrictionAreas,
-		SimIsPaused:          s.State.Paused,
-		SimRate:              s.State.SimRate,
-		TotalIFR:             s.State.TotalIFR,
-		TotalVFR:             s.State.TotalVFR,
-		Events:               events,
-		QuickFlightPlanIndex: s.State.QuickFlightPlanIndex,
-
-		ATPAEnabled:     s.State.ATPAEnabled,
-		ATPAVolumeState: s.State.ATPAVolumeState,
-	}
-
-	s.GenerationIndex++
-	update.GenerationIndex = s.GenerationIndex
-
-	update.ACFlightPlans = make(map[av.ADSBCallsign]av.FlightPlan)
-	for cs, ac := range s.Aircraft {
-		update.ACFlightPlans[cs] = ac.FlightPlan
-	}
-
-	for _, ac := range s.STARSComputer.HoldForRelease {
-		fp, _, _ := s.GetFlightPlanForACID(ACID(ac.ADSBCallsign))
-		if fp == nil {
-			s.lg.Warnf("%s: no flight plan for hold for release aircraft", string(ac.ADSBCallsign))
-			continue
-		}
-		update.ReleaseDepartures = append(update.ReleaseDepartures,
-			ReleaseDeparture{
-				ADSBCallsign:        ac.ADSBCallsign,
-				DepartureAirport:    "K" + fp.EntryFix,
-				DepartureController: fp.InboundHandoffController,
-				Released:            ac.Released,
-				Squawk:              ac.Squawk,
-				ListIndex:           fp.ListIndex,
-				AircraftType:        fp.AircraftType,
-				Exit:                fp.ExitFix,
-			})
-	}
-
-	update.Tracks = make(map[av.ADSBCallsign]*Track)
-	for callsign, ac := range util.SortedMap(s.Aircraft) {
-		if !s.isRadarVisible(ac) {
-			continue
-		}
-
-		rt := Track{
-			RadarTrack:                ac.GetRadarTrack(s.State.SimTime),
-			FlightPlan:                ac.NASFlightPlan,
-			DepartureAirport:          ac.FlightPlan.DepartureAirport,
-			DepartureAirportElevation: ac.DepartureAirportElevation(),
-			DepartureAirportLocation:  ac.DepartureAirportLocation(),
-			ArrivalAirport:            ac.FlightPlan.ArrivalAirport,
-			ArrivalAirportElevation:   ac.ArrivalAirportElevation(),
-			ArrivalAirportLocation:    ac.ArrivalAirportLocation(),
-			OnExtendedCenterline:      ac.OnExtendedCenterline(0.2),
-			OnApproach:                ac.OnApproach(false), /* don't check altitude */
-			MVAsApply:                 ac.MVAsApply(),
-			HoldForRelease:            ac.HoldForRelease,
-			MissingFlightPlan:         ac.MissingFlightPlan,
-			ATPAVolume:                ac.ATPAVolume(),
-			IsTentative:               s.State.SimTime.Sub(ac.FirstSeen) < 5*time.Second,
-		}
-
-		for _, wp := range ac.Nav.Waypoints {
-			rt.Route = append(rt.Route, wp.Location)
-		}
-
-		update.Tracks[callsign] = &rt
-	}
-
-	// Make up fake tracks for unsupported datablocks
-	for i, fp := range update.UnassociatedFlightPlans {
-		if fp.Location.IsZero() {
-			continue
-		}
-		callsign := av.ADSBCallsign("__" + string(fp.ACID))
-		update.Tracks[callsign] = &Track{
-			RadarTrack: av.RadarTrack{
-				ADSBCallsign: callsign,
-				Location:     fp.Location,
-			},
-			FlightPlan: update.UnassociatedFlightPlans[i],
-		}
-	}
-
-	// Get latest METAR
-	for ap, metar := range s.METAR {
-		// Drop the current METAR and move to the next one if the current time is after the next one's report time.
-		for len(metar) > 1 && s.State.SimTime.After(metar[1].Time) {
-			metar = metar[1:]
-		}
-		s.METAR[ap] = metar
-		if len(metar) > 0 { // this should be true, but...
-			update.METAR[ap] = metar[0]
-		}
+		update.Events = s.consolidateRadioEventsForTCW(tcw, eventSub.Get())
 	}
 
 	if util.SizeOf(*update, os.Stderr, false, 256*1024) > 256*1024*1024 {
@@ -1005,30 +878,7 @@ func (su *StateUpdate) Apply(state *State, eventStream *EventStream) {
 	// Make sure the generation index is above the current index so that if
 	// updates are returned out of order we ignore stale ones.
 	if state.GenerationIndex < su.GenerationIndex {
-		state.Tracks = su.Tracks
-		if su.Controllers != nil {
-			state.Controllers = su.Controllers
-		}
-		state.CurrentConsolidation = su.CurrentConsolidation
-		state.ACFlightPlans = su.ACFlightPlans
-		state.UnassociatedFlightPlans = su.UnassociatedFlightPlans
-		state.ReleaseDepartures = su.ReleaseDepartures
-		state.LaunchConfig = su.LaunchConfig
-		state.METAR = su.METAR
-
-		state.UserRestrictionAreas = su.UserRestrictionAreas
-
-		state.SimTime = su.Time
-		state.Paused = su.SimIsPaused
-		state.SimRate = su.SimRate
-		state.TotalIFR = su.TotalIFR
-		state.TotalVFR = su.TotalVFR
-		state.QuickFlightPlanIndex = su.QuickFlightPlanIndex
-
-		state.ATPAEnabled = su.ATPAEnabled
-		state.ATPAVolumeState = su.ATPAVolumeState
-
-		state.GenerationIndex = su.GenerationIndex
+		state.UpdatedState = su.UpdatedState
 	}
 
 	// Important: do this after updating aircraft, controllers, etc.,
@@ -1389,6 +1239,98 @@ func (s *Sim) updateState() {
 
 		s.ERAMComputer.Update(s)
 		s.STARSComputer.Update(s)
+
+		s.computeDerivedState()
+	}
+}
+
+// computeDerivedState updates the fields in UpdatedState that are derived
+// from the core simulation state (Aircraft, STARSComputer, etc.). This is
+// called once per simulation second so that GetStateUpdate can simply copy
+// the pre-computed values rather than recomputing them for each client.
+func (s *Sim) computeDerivedState() {
+	// Advance METAR: drop old entries when sim time passes the next one's report time
+	for ap, metar := range s.METAR {
+		for len(metar) > 1 && s.State.SimTime.After(metar[1].Time) {
+			metar = metar[1:]
+		}
+		s.METAR[ap] = metar
+		if len(metar) > 0 {
+			if s.State.METAR == nil {
+				s.State.METAR = make(map[string]wx.METAR)
+			}
+			s.State.METAR[ap] = metar[0]
+		}
+	}
+
+	// Build ReleaseDepartures from STARSComputer.HoldForRelease
+	s.State.ReleaseDepartures = nil
+	for _, ac := range s.STARSComputer.HoldForRelease {
+		fp, _, _ := s.GetFlightPlanForACID(ACID(ac.ADSBCallsign))
+		if fp == nil {
+			s.lg.Warnf("%s: no flight plan for hold for release aircraft", string(ac.ADSBCallsign))
+			continue
+		}
+		s.State.ReleaseDepartures = append(s.State.ReleaseDepartures,
+			ReleaseDeparture{
+				ADSBCallsign:        ac.ADSBCallsign,
+				DepartureAirport:    "K" + fp.EntryFix,
+				DepartureController: fp.InboundHandoffController,
+				Released:            ac.Released,
+				Squawk:              ac.Squawk,
+				ListIndex:           fp.ListIndex,
+				AircraftType:        fp.AircraftType,
+				Exit:                fp.ExitFix,
+			})
+	}
+
+	// Build Tracks from Aircraft
+	s.State.Tracks = make(map[av.ADSBCallsign]*Track)
+	for callsign, ac := range util.SortedMap(s.Aircraft) {
+		if !s.isRadarVisible(ac) {
+			continue
+		}
+
+		rt := Track{
+			RadarTrack:                ac.GetRadarTrack(s.State.SimTime),
+			FlightPlan:                ac.NASFlightPlan,
+			DepartureAirport:          ac.FlightPlan.DepartureAirport,
+			DepartureAirportElevation: ac.DepartureAirportElevation(),
+			DepartureAirportLocation:  ac.DepartureAirportLocation(),
+			ArrivalAirport:            ac.FlightPlan.ArrivalAirport,
+			ArrivalAirportElevation:   ac.ArrivalAirportElevation(),
+			ArrivalAirportLocation:    ac.ArrivalAirportLocation(),
+			FiledRoute:                ac.FlightPlan.Route,
+			FiledAltitude:             ac.FlightPlan.Altitude,
+			OnExtendedCenterline:      ac.OnExtendedCenterline(0.2),
+			OnApproach:                ac.OnApproach(false), /* don't check altitude */
+			MVAsApply:                 ac.MVAsApply(),
+			HoldForRelease:            ac.HoldForRelease,
+			MissingFlightPlan:         ac.MissingFlightPlan,
+			ATPAVolume:                ac.ATPAVolume(),
+			IsTentative:               s.State.SimTime.Sub(ac.FirstSeen) < 5*time.Second,
+		}
+
+		for _, wp := range ac.Nav.Waypoints {
+			rt.Route = append(rt.Route, wp.Location)
+		}
+
+		s.State.Tracks[callsign] = &rt
+	}
+
+	// Make up fake tracks for unsupported datablocks
+	for i, fp := range s.STARSComputer.FlightPlans {
+		if fp.Location.IsZero() {
+			continue
+		}
+		callsign := av.ADSBCallsign("__" + string(fp.ACID))
+		s.State.Tracks[callsign] = &Track{
+			RadarTrack: av.RadarTrack{
+				ADSBCallsign: callsign,
+				Location:     fp.Location,
+			},
+			FlightPlan: s.STARSComputer.FlightPlans[i],
+		}
 	}
 }
 
