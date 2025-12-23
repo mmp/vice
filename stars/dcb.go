@@ -572,40 +572,45 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 
 		// 4-44 / 2-71
 
-		// All buttons are shown as active when "ALL" is selected; for now, clicking on them has no
-		// effect.
-		ab := func(b *bool) *bool {
+		// Helper for the buttons besides "ALL": when ALL is selected, all buttons are shown as
+		// active; if one is clicked, then all is disabled and that button toggles. Otherwise
+		// they act as regular DCB buttons.
+		ssaButton := func(text string, v *bool) {
 			if ps.SSAList.Filter.All {
 				t := true
-				return &t
+				if toggleButton(ctx, text, &t, buttonHalfVertical, buttonScale) {
+					ps.SSAList.Filter.All = false
+					*v = false
+				}
+			} else {
+				toggleButton(ctx, text, v, buttonHalfVertical, buttonScale)
 			}
-			return b
 		}
 		toggleButton(ctx, "ALL", &ps.SSAList.Filter.All, buttonHalfVertical, buttonScale)
-		toggleButton(ctx, "WX", ab(&ps.SSAList.Filter.Wx), buttonHalfVertical, buttonScale)
-		toggleButton(ctx, "TIME", ab(&ps.SSAList.Filter.Time), buttonHalfVertical, buttonScale)
-		toggleButton(ctx, "ALTSTG", ab(&ps.SSAList.Filter.Altimeter), buttonHalfVertical, buttonScale)
-		toggleButton(ctx, "STATUS", ab(&ps.SSAList.Filter.Status), buttonHalfVertical, buttonScale)
-		toggleButton(ctx, "PLAN", ab(&ps.SSAList.Filter.ConfigPlan), buttonHalfVertical, buttonScale)
-		toggleButton(ctx, "RADAR", ab(&ps.SSAList.Filter.Radar), buttonHalfVertical, buttonScale)
-		toggleButton(ctx, "CODES", ab(&ps.SSAList.Filter.Codes), buttonHalfVertical, buttonScale)
-		toggleButton(ctx, "SPC", ab(&ps.SSAList.Filter.SpecialPurposeCodes), buttonHalfVertical, buttonScale)
-		toggleButton(ctx, "SYS OFF", ab(&ps.SSAList.Filter.SysOff), buttonHalfVertical, buttonScale)
-		toggleButton(ctx, "RANGE", ab(&ps.SSAList.Filter.Range), buttonHalfVertical, buttonScale)
-		toggleButton(ctx, "PTL", ab(&ps.SSAList.Filter.PredictedTrackLines), buttonHalfVertical, buttonScale)
-		toggleButton(ctx, "ALT FIL", ab(&ps.SSAList.Filter.AltitudeFilters), buttonHalfVertical, buttonScale)
+		ssaButton("WX", &ps.SSAList.Filter.Wx)
+		ssaButton("TIME", &ps.SSAList.Filter.Time)
+		ssaButton("ALTSTG", &ps.SSAList.Filter.Altimeter)
+		ssaButton("STATUS", &ps.SSAList.Filter.Status)
+		ssaButton("PLAN", &ps.SSAList.Filter.ConfigPlan)
+		ssaButton("RADAR", &ps.SSAList.Filter.Radar)
+		ssaButton("CODES", &ps.SSAList.Filter.Codes)
+		ssaButton("SPC", &ps.SSAList.Filter.SpecialPurposeCodes)
+		ssaButton("SYS OFF", &ps.SSAList.Filter.SysOff)
+		ssaButton("RANGE", &ps.SSAList.Filter.Range)
+		ssaButton("PTL", &ps.SSAList.Filter.PredictedTrackLines)
+		ssaButton("ALT FIL", &ps.SSAList.Filter.AltitudeFilters)
 		unsupportedButton(ctx, "NAS I/F", buttonHalfVertical, buttonScale) // ?? TODO
-		toggleButton(ctx, "INTRAIL", ab(&ps.SSAList.Filter.Intrail), buttonHalfVertical, buttonScale)
-		toggleButton(ctx, "2.5", ab(&ps.SSAList.Filter.Intrail25), buttonHalfVertical, buttonScale)
-		toggleButton(ctx, "AIRPORT", ab(&ps.SSAList.Filter.AirportWeather), buttonHalfVertical, buttonScale)
+		ssaButton("INTRAIL", &ps.SSAList.Filter.Intrail)
+		ssaButton("2.5", &ps.SSAList.Filter.Intrail25)
+		ssaButton("AIRPORT", &ps.SSAList.Filter.AirportWeather)
 		unsupportedButton(ctx, "OP MODE", buttonHalfVertical, buttonScale) // ?? TODO
 		unsupportedButton(ctx, "TT", buttonHalfVertical, buttonScale)      // ?? TODO
-		toggleButton(ctx, "WX HIST", ab(&ps.SSAList.Filter.WxHistory), buttonHalfVertical, buttonScale)
-		toggleButton(ctx, "QL", ab(&ps.SSAList.Filter.QuickLookPositions), buttonHalfVertical, buttonScale)
-		toggleButton(ctx, "TW OFF", ab(&ps.SSAList.Filter.DisabledTerminal), buttonHalfVertical, buttonScale)
-		toggleButton(ctx, "CON/CPL", ab(&ps.SSAList.Filter.Consolidation), buttonHalfVertical, buttonScale)
+		ssaButton("WX HIST", &ps.SSAList.Filter.WxHistory)
+		ssaButton("QL", &ps.SSAList.Filter.QuickLookPositions)
+		ssaButton("TW OFF", &ps.SSAList.Filter.DisabledTerminal)
+		ssaButton("CON/CPL", &ps.SSAList.Filter.Consolidation)
 		unsupportedButton(ctx, "OFF IND", buttonHalfVertical, buttonScale) // ?? TODO
-		toggleButton(ctx, "CRDA", ab(&ps.SSAList.Filter.ActiveCRDAPairs), buttonHalfVertical, buttonScale)
+		ssaButton("CRDA", &ps.SSAList.Filter.ActiveCRDAPairs)
 		unsupportedButton(ctx, "FLOW", buttonHalfVertical, buttonScale) // TODO
 		unsupportedButton(ctx, "AMZ", buttonHalfVertical, buttonScale)  // TODO
 		unsupportedButton(ctx, "TBFM", buttonHalfVertical, buttonScale) // TODO
