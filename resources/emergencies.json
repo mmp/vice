@@ -196,7 +196,7 @@
       "applicable_to": "arrival,departure",
       "stages": [
         {
-          "transmission": "engine shutdown, single engine operation",
+          "transmission": "[engine shutdown, single engine operation|we've got a number two engine failure]",
           "declare_emergency": true,
           "request_return": true
         }

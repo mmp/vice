@@ -5,7 +5,6 @@
 package sim
 
 import (
-	"fmt"
 	"maps"
 	"slices"
 	"strings"
@@ -383,27 +382,36 @@ func (s *Sim) runEmergencyStage(ac *Aircraft) {
 	// Sometimes (50% chance) proactively include souls on board and fuel remaining
 	if stage.DeclareEmergency && s.Rand.Float32() < 0.5 {
 		souls := getSoulsOnBoard(ac, s.Rand)
+		transmit("[we have|] {num} souls [on board|] ", souls)
+
 		fuel := getFuelRemaining(ac, s.Rand)
 
-		// Sometimes report in tons instead of pounds (50% chance)
-		if s.Rand.Bool() {
-			// Convert to tons (1 ton = 2000 lbs)
-			tons := float64(fuel) / 2000
+		// Sometimes report in tons instead of pounds
+		if fuel > 10000 && s.Rand.Bool() {
+			tons := float32(fuel) / 2000
 			if tons < 10 {
 				// Use one decimal place for < 10 tons
-				tons = float64(int(tons*10+0.5)) / 10 // round to 1 decimal
-				transmit("[we have|] {num} souls on board and "+fmt.Sprintf("%.1f", tons)+" tons of fuel [remaining|]", souls)
+				decatons := int(tons*10 + 0.5)
+				if decatons%10 == 0 {
+					transmit("[and|] {num} tons of fuel [remaining|]", decatons/10)
+				} else {
+					transmit("[and|] {num} point {num} tons of fuel [remaining|]", decatons/10, decatons%10)
+				}
 			} else {
 				// Use whole number for >= 10 tons
-				transmit("[we have|] {num} souls on board and {num} tons of fuel [remaining|]", souls, int(tons+0.5))
+				transmit("[and|] {num} tons of fuel [remaining|]", int(tons+0.5))
 			}
+		} else if fuel < 100 {
+			fuel = (fuel + 5) / 10 * 10 // round to 10s of pounds
+			transmit("[and|] {num} pounds of [fuel|gas] [remaining|]", fuel)
 		} else {
-			if fuel < 1000 {
-				fuel = (fuel + 50) / 100 * 100 // round to 100s of pounds
+			fuel = (fuel + 50) / 100 * 100 // round to 100s of pounds
+			thou, hund := fuel/1000, (fuel%1000)/100
+			if hund == 0 {
+				transmit("[and|] {num} thousand pounds of [fuel|gas] [remaining|]", thou)
 			} else {
-				fuel = (fuel + 500) / 1000 * 1000 // round to thousands of pounds
+				transmit("[and|] {num} thousand {num} hundred pounds of [fuel|gas] [remaining|]", thou, hund)
 			}
-			transmit("[we have|] {num} souls on board and {num} pounds of fuel [remaining|]", souls, fuel)
 		}
 	}
 
