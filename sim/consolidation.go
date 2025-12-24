@@ -195,6 +195,19 @@ func (cc *ControllerConfiguration) Validate(controlPositions map[TCP]*av.Control
 		}
 	}
 
+	// Check that no position appears as a child of multiple parents
+	childParent := make(map[TCP]TCP)
+	for parent, children := range cc.DefaultConsolidation {
+		for _, child := range children {
+			if existingParent, ok := childParent[child]; ok {
+				e.ErrorString("position %q appears as a child of both %q and %q in \"default_consolidation\"",
+					child, existingParent, parent)
+			} else {
+				childParent[child] = parent
+			}
+		}
+	}
+
 	// Check inbound assignments refer to valid positions
 	for flow, tcp := range cc.InboundAssignments {
 		if !slices.Contains(cc.AllPositions(), tcp) {
