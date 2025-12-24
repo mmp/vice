@@ -10749,6 +10749,11 @@
       "radio_name": "New York approach",
       "sector_id": "2A"
     },
+    "JFK_E_APP": {
+      "frequency": 136500,
+      "radio_name": "New York approach",
+      "sector_id": "2E"
+    },
     "JFK_G_APP": {
       "frequency": 128125,
       "radio_name": "New York approach",
@@ -10950,7 +10955,8 @@
       ],
       "airspace": {
         "JFK_G_APP": ["CAMRN_13RL"],
-        "JFK_K_APP": ["ROBER_4RL", "LENDY_13RL"],
+        "JFK_K_APP": ["ROBER_4RL"],
+        "JFK_E_APP": ["LENDY_13RL"],
         "JFK_A_APP": ["JFK_FINAL_13RL"],
         "JFK_M_APP": ["JFK_SATELITE_13RL"],
         "JFK_DEP": ["JFK_DEP_13RL"]
@@ -10993,10 +10999,10 @@
         }
       },
       "configuration": {
-        "config_id": "PRB",
+        "config_id": "STD",
         "default_consolidation": {
           "JFK_G_APP": ["ISP_APP", "JFK_A_APP", "JFK_DEP", "JFK_K_APP"],
-          "JFK_K_APP": ["JFK_M_APP"]
+          "JFK_K_APP": ["JFK_M_APP", "JFK_E_APP"]
         }
       },
       "controllers": [
@@ -11073,7 +11079,8 @@
       ],
       "airspace": {
         "JFK_G_APP": ["CAMRN_13RL"],
-        "JFK_K_APP": ["ROBER_4RL", "LENDY_13RL"],
+        "JFK_K_APP": ["ROBER_4RL"],
+        "JFK_E_APP": ["LENDY_13RL"],
         "JFK_A_APP": ["JFK_FINAL_13RL"],
         "JFK_M_APP": ["JFK_SATELITE_13RL"],
         "JFK_DEP": ["JFK_DEP_13RL"]
@@ -11116,10 +11123,10 @@
         }
       },
       "configuration": {
-        "config_id": "PCM",
+        "config_id": "STD",
         "default_consolidation": {
           "JFK_G_APP": ["ISP_APP", "JFK_A_APP", "JFK_DEP", "JFK_K_APP"],
-          "JFK_K_APP": ["JFK_M_APP"]
+          "JFK_K_APP": ["JFK_M_APP", "JFK_E_APP"]
         }
       },
       "controllers": [
@@ -11191,7 +11198,8 @@
         }
       ],
       "airspace": {
-        "JFK_G_APP": ["CAMRN_22RL", "LENDY_22RL"],
+        "JFK_G_APP": ["CAMRN_22RL"],
+        "JFK_E_APP": ["LENDY_22RL"],
         "JFK_K_APP": ["ROBER_22RL"],
         "JFK_A_APP": ["JFK_FINAL_22RL"],
         "JFK_M_APP": ["JFK_SATELITE_22RL"],
@@ -11235,9 +11243,9 @@
         }
       },
       "configuration": {
-        "config_id": "PCM",
+        "config_id": "STD",
         "default_consolidation": {
-          "JFK_G_APP": ["ISP_APP", "JFK_DEP", "JFK_K_APP"],
+          "JFK_G_APP": ["ISP_APP", "JFK_DEP", "JFK_K_APP", "JFK_E_APP"],
           "JFK_K_APP": ["JFK_A_APP", "JFK_M_APP"]
         }
       },
@@ -11329,7 +11337,8 @@
         }
       ],
       "airspace": {
-        "JFK_G_APP": ["CAMRN_31RL", "LENDY_31RL"],
+        "JFK_G_APP": ["CAMRN_31RL"],
+        "JFK_E_APP": ["LENDY_31RL"],
         "JFK_K_APP": ["ROBER_31RL"],
         "JFK_A_APP": ["JFK_FINAL_31RL"],
         "JFK_M_APP": ["JFK_SATELITE_31RL"],
@@ -11373,9 +11382,9 @@
         }
       },
       "configuration": {
-        "config_id": "PCM",
+        "config_id": "STD",
         "default_consolidation": {
-          "JFK_G_APP": ["ISP_APP", "JFK_A_APP", "JFK_DEP", "JFK_K_APP"],
+          "JFK_G_APP": ["ISP_APP", "JFK_A_APP", "JFK_DEP", "JFK_K_APP", "JFK_E_APP"],
           "JFK_K_APP": ["JFK_M_APP"]
         }
       },
@@ -11448,7 +11457,8 @@
       ],
       "airspace": {
         "JFK_G_APP": ["CAMRN_4RL"],
-        "JFK_K_APP": ["ROBER_4RL", "LENDY_4RL"],
+        "JFK_K_APP": ["ROBER_4RL"],
+        "JFK_E_APP": ["LENDY_4RL"],
         "JFK_A_APP": ["JFK_FINAL_4RL"],
         "JFK_M_APP": ["JFK_SATELITE_4RL"],
         "JFK_DEP": ["JFK_DEP_4RL"]
@@ -11491,10 +11501,10 @@
         }
       },
       "configuration": {
-        "config_id": "PRB",
+        "config_id": "STD",
         "default_consolidation": {
           "JFK_G_APP": ["ISP_APP", "JFK_A_APP", "JFK_K_APP"],
-          "JFK_K_APP": ["JFK_DEP", "JFK_M_APP"]
+          "JFK_K_APP": ["JFK_DEP", "JFK_M_APP", "JFK_E_APP"]
         }
       },
       "controllers": [
@@ -11686,7 +11696,7 @@
   },
   "stars_config": {
     "configurations": {
-      "PRB": {
+      "STD": {
         "inbound_assignments": {
           "CAMRN5": "JFK_G_APP",
           "DENNA3": "ISP_APP",
@@ -11697,27 +11707,7 @@
           "NELIE4": "ISP_APP",
           "OWENZ": "JFK_G_APP",
           "PARCH4": "JFK_K_APP",
-          "PUCKY1": "JFK_K_APP"
-        },
-        "departure_assignments": {
-          "KFRG": "JFK_K_APP",
-          "KHVN": "ISP_APP",
-          "KISP": "ISP_APP",
-          "KJFK": "JFK_DEP"
-        }
-      },
-      "PCM": {
-        "inbound_assignments": {
-          "CAMRN5": "JFK_G_APP",
-          "DENNA3": "ISP_APP",
-          "Intra-TRACON (ISP/HVN)": "ISP_APP",
-          "Intra-TRACON (JFK/FRG East)": "JFK_K_APP",
-          "Intra-TRACON (JFK/FRG West)": "JFK_G_APP",
-          "LOVES1": "ISP_APP",
-          "NELIE4": "ISP_APP",
-          "OWENZ": "JFK_G_APP",
-          "PARCH4": "JFK_K_APP",
-          "PUCKY1": "JFK_G_APP"
+          "PUCKY1": "JFK_E_APP"
         },
         "departure_assignments": {
           "KFRG": "JFK_K_APP",
