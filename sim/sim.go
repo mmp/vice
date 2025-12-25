@@ -840,9 +840,11 @@ func (s *Sim) GetStateUpdate(tcw TCW, eventSub *EventsSubscription, update *Stat
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	update.UpdatedState = s.State.UpdatedState
+	s.computeDerivedState()
 
 	s.State.GenerationIndex++
+
+	update.UpdatedState = s.State.UpdatedState
 
 	if eventSub != nil {
 		update.Events = s.consolidateRadioEventsForTCW(tcw, eventSub.Get())
@@ -1232,15 +1234,12 @@ func (s *Sim) updateState() {
 
 		s.ERAMComputer.Update(s)
 		s.STARSComputer.Update(s)
-
-		s.computeDerivedState()
 	}
 }
 
 // computeDerivedState updates the fields in UpdatedState that are derived
-// from the core simulation state (Aircraft, STARSComputer, etc.). This is
-// called once per simulation second so that GetStateUpdate can simply copy
-// the pre-computed values rather than recomputing them for each client.
+// from the core simulation state (Aircraft, STARSComputer, etc.). It is
+// called from GetStateUpdate to ensure clients always receive fresh data.
 func (s *Sim) computeDerivedState() {
 	// Advance METAR: drop old entries when sim time passes the next one's report time
 	for ap, metar := range s.METAR {
@@ -1255,6 +1254,9 @@ func (s *Sim) computeDerivedState() {
 			s.State.METAR[ap] = metar[0]
 		}
 	}
+
+	// Unassociated flight plans (including unsupported DBs) come from STARSComputer
+	s.State.UnassociatedFlightPlans = s.STARSComputer.FlightPlans
 
 	// Build ReleaseDepartures from STARSComputer.HoldForRelease
 	s.State.ReleaseDepartures = nil
