@@ -39,10 +39,10 @@ func (c *ControlClient) LaunchArrivalOverflight(ac sim.Aircraft) {
 	}, nil, nil), nil))
 }
 
-func (c *ControlClient) SendGlobalMessage(global sim.GlobalMessage) {
+func (c *ControlClient) SendGlobalMessage(message string) {
 	c.addCall(makeRPCCall(c.client.Go(server.GlobalMessageRPC, &server.GlobalMessageArgs{
 		ControllerToken: c.controllerToken,
-		Message:         global.Message,
+		Message:         message,
 	}, nil, nil), nil))
 }
 

@@ -518,7 +518,7 @@ func (s *Sim) SetSimRate(tcw TCW, rate float32) error {
 	return nil
 }
 
-func (s *Sim) GlobalMessage(tcw TCW, message string) error {
+func (s *Sim) GlobalMessage(tcw TCW, message string) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -527,8 +527,6 @@ func (s *Sim) GlobalMessage(tcw TCW, message string) error {
 		WrittenText:    message,
 		FromController: s.State.PrimaryPositionForTCW(tcw),
 	})
-
-	return nil
 }
 
 func (s *Sim) CreateRestrictionArea(ra av.RestrictionArea) (int, error) {
@@ -732,11 +730,6 @@ func (s *Sim) GetTrafficCounts() (ifr, vfr int) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 	return s.State.TotalIFR, s.State.TotalVFR
-}
-
-type GlobalMessage struct {
-	Message        string
-	FromController ControlPosition
 }
 
 // consolidateRadioEventsForTCW consolidates consecutive radio transmissions from the same

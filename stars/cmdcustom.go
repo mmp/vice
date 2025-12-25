@@ -131,6 +131,12 @@ func init() {
 	registerCommand(CommandModeTargetGenLock, "[ALL_TEXT]", targetGenAircraftCommand)
 	registerCommand(CommandModeTargetGenLock, "[ALL_TEXT][SLEW]", targetGenClickCommand)
 
+	targetGenSendMessage := func(ctx *panes.Context, text string) {
+		ctx.Client.SendGlobalMessage(text)
+	}
+	registerCommand(CommandModeTargetGen, "/[ALL_TEXT]", targetGenSendMessage)
+	registerCommand(CommandModeTargetGenLock, "/[ALL_TEXT]", targetGenSendMessage)
+
 	// .DRAWROUTE
 	registerCommand(CommandModeDrawRoute, "[POS]", func(sp *STARSPane, ctx *panes.Context, pos math.Point2LL) CommandStatus {
 		sp.drawRoutePoints = append(sp.drawRoutePoints, pos)

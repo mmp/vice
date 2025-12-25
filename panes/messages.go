@@ -216,11 +216,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			mp.messages = append(mp.messages, msg)
 
 		case sim.GlobalMessageEvent:
-			if !ctx.UserControlsPosition(event.FromController) {
-				for _, line := range strings.Split(event.WrittenText, "\n") {
-					mp.messages = append(mp.messages, Message{contents: line, global: true})
-				}
-			}
+			mp.messages = append(mp.messages, Message{contents: event.WrittenText, global: true})
 
 		case sim.StatusMessageEvent:
 			// Don't spam the same message repeatedly; look in the most recent 5.

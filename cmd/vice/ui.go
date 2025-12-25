@@ -395,6 +395,7 @@ var secondaryAcCommands = [][3]string{
 	[3]string{"*RST*", `"Radar services terminated, squawk VFR, frequency change approved" (VFR)`, "*RST*"},
 	[3]string{"*GA*", `"Go ahead" (VFR) - respond to abbreviated VFR request`, "*GA*"},
 	[3]string{"*P*", `Pauses/unpauses the sim`, "*P*"},
+	[3]string{"*/_message*", `Displays a message to all controllers`, "*/DINNER TIME 2A CLOSED*"},
 }
 
 var starsCommands = [][2]string{

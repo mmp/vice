@@ -92,9 +92,11 @@ func (sd *dispatcher) TogglePause(token string, _ *struct{}) error {
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
+
 	c.sim.TogglePause()
 	action := util.Select(c.sim.State.Paused, "paused", "unpaused")
-	return c.sim.GlobalMessage(c.tcw, fmt.Sprintf("%s (%s) has %s the sim", c.tcw, c.initials, action))
+	c.sim.GlobalMessage(c.tcw, fmt.Sprintf("%s (%s) has %s the sim", c.tcw, c.initials, action))
+	return nil
 }
 
 const RequestFlightFollowingRPC = "Sim.RequestFlightFollowing"
@@ -413,7 +415,8 @@ func (sd *dispatcher) GlobalMessage(gm *GlobalMessageArgs, _ *struct{}) error {
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	return c.sim.GlobalMessage(c.tcw, gm.Message)
+	c.sim.GlobalMessage(c.tcw, fmt.Sprintf("%s(%s): %s", c.initials, c.tcw, gm.Message))
+	return nil
 }
 
 const PointOutRPC = "Sim.PointOut"
