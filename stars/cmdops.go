@@ -638,12 +638,14 @@ func init() {
 	}
 	registerCommand(CommandModeNone, "[FP_ACID][SLEW]", createFPAndAssociate)
 	registerCommand(CommandModeNone, "[FP_ACID] [*FP_BEACON|FP_TRI_SP1|FP_PLUS_SP2|FP_ALT_A|FP_NUM_ACTYPE][SLEW]", createFPAndAssociate)
-	registerCommand(CommandModeNone, "[FP_ACID] [*FP_BEACON|FP_TRI_SP1|FP_PLUS_SP2|FP_ALT_A|FP_NUM_ACTYPE][POS]",
-		func(sp *STARSPane, ctx *panes.Context, spec sim.FlightPlanSpecifier, p math.Point2LL) {
-			spec.TypeOfFlight.Set(av.FlightTypeArrival)
-			spec.Location.Set(p)
-			createFlightPlan(sp, ctx, spec)
-		})
+
+	createUnsupportedDB := func(sp *STARSPane, ctx *panes.Context, spec sim.FlightPlanSpecifier, p math.Point2LL) {
+		spec.TypeOfFlight.Set(av.FlightTypeArrival)
+		spec.Location.Set(p)
+		createFlightPlan(sp, ctx, spec)
+	}
+	registerCommand(CommandModeNone, "[FP_ACID][POS]", createUnsupportedDB)
+	registerCommand(CommandModeNone, "[FP_ACID] [*FP_BEACON|FP_TRI_SP1|FP_PLUS_SP2|FP_ALT_A|FP_NUM_ACTYPE][POS]", createUnsupportedDB)
 
 	// 5.5.4 Create FP and associate to LDB with blinking ACID or frozen SPC (implied)
 	// {C: "[*FP_ACID|FP_TRI_SP1|FP_PLUS_SP2|FP_ALT_A|FP_NUM_ACTYPE][SLEW]" }

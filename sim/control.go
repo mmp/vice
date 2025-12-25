@@ -324,6 +324,8 @@ func (s *Sim) CreateFlightPlan(tcw TCW, spec FlightPlanSpecifier) error {
 		return err
 	}
 
+	fp.OwningTCW = tcw
+
 	if util.SeqContainsFunc(maps.Values(s.Aircraft),
 		func(ac *Aircraft) bool { return ac.IsAssociated() && ac.NASFlightPlan.ACID == fp.ACID }) {
 		return ErrDuplicateACID
@@ -626,6 +628,7 @@ func (s *Sim) RepositionTrack(tcw TCW, acid ACID, callsign av.ADSBCallsign, p ma
 		}
 	} else { // Creating / moving an unsupported DB.
 		fp.Location = p
+		fp.OwningTCW = tcw
 		s.STARSComputer.FlightPlans = append(s.STARSComputer.FlightPlans, fp)
 	}
 	return nil
