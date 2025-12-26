@@ -452,6 +452,8 @@ func (s *Sim) Subscribe() *EventsSubscription {
 }
 
 func (s *Sim) GetSerializeSim() Sim {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
 	return *s
 }
 
@@ -504,6 +506,7 @@ func (s *Sim) FastForward() {
 func (s *Sim) IdleTime() time.Duration {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
+
 	return time.Since(s.lastUpdateTime)
 }
 
@@ -530,6 +533,9 @@ func (s *Sim) GlobalMessage(tcw TCW, message string) {
 }
 
 func (s *Sim) CreateRestrictionArea(ra av.RestrictionArea) (int, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
 	ra.UpdateTriangles()
 
 	// Look for a free slot from one that was deleted
@@ -549,6 +555,9 @@ func (s *Sim) CreateRestrictionArea(ra av.RestrictionArea) (int, error) {
 }
 
 func (s *Sim) UpdateRestrictionArea(idx int, ra av.RestrictionArea) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
 	// Adjust for one-based indexing in the API call
 	idx--
 
@@ -567,6 +576,9 @@ func (s *Sim) UpdateRestrictionArea(idx int, ra av.RestrictionArea) error {
 }
 
 func (s *Sim) DeleteRestrictionArea(idx int) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
 	// Adjust for one-based indexing in the API call
 	idx--
 
@@ -973,7 +985,7 @@ func (s *Sim) updateState() {
 			continue
 		}
 
-		if fp, _, _ := s.GetFlightPlanForACID(acid); fp != nil {
+		if fp, _, _ := s.getFlightPlanForACID(acid); fp != nil {
 			if fp.HandoffController != "" && s.isVirtualController(fp.HandoffController) {
 				// Automated accept
 				s.eventStream.Post(Event{
@@ -1002,7 +1014,7 @@ func (s *Sim) updateState() {
 			continue
 		}
 
-		if fp, _, _ := s.GetFlightPlanForACID(acid); fp != nil && s.isVirtualController(po.ToController) {
+		if fp, _, _ := s.getFlightPlanForACID(acid); fp != nil && s.isVirtualController(po.ToController) {
 			// Note that "to" and "from" are swapped in the event,
 			// since the ack is coming from the "to" controller of the
 			// original point out.
@@ -1261,7 +1273,7 @@ func (s *Sim) computeDerivedState() {
 	// Build ReleaseDepartures from STARSComputer.HoldForRelease
 	s.State.ReleaseDepartures = nil
 	for _, ac := range s.STARSComputer.HoldForRelease {
-		fp, _, _ := s.GetFlightPlanForACID(ACID(ac.ADSBCallsign))
+		fp, _, _ := s.getFlightPlanForACID(ACID(ac.ADSBCallsign))
 		if fp == nil {
 			s.lg.Warnf("%s: no flight plan for hold for release aircraft", string(ac.ADSBCallsign))
 			continue
@@ -1593,6 +1605,9 @@ func (s *Sim) callsignForACID(acid ACID) (av.ADSBCallsign, bool) {
 }
 
 func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplayState, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
 	if ac, ok := s.Aircraft[callsign]; !ok {
 		return AircraftDisplayState{}, ErrNoMatchingFlight
 	} else {
@@ -1605,6 +1620,13 @@ func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplay
 
 // *Aircraft may be nil. bool indicates whether the flight plan is active.
 func (s *Sim) GetFlightPlanForACID(acid ACID) (*NASFlightPlan, *Aircraft, bool) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.getFlightPlanForACID(acid)
+}
+
+func (s *Sim) getFlightPlanForACID(acid ACID) (*NASFlightPlan, *Aircraft, bool) {
 	for _, ac := range s.Aircraft {
 		if ac.IsAssociated() && ac.NASFlightPlan.ACID == acid {
 			return ac.NASFlightPlan, ac, true
