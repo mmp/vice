@@ -84,6 +84,11 @@ var flightRecorder *trace.FlightRecorder
 // InitFlightRecorder initializes the flight recorder to continuously record
 // the last 10 seconds of execution traces.
 func InitFlightRecorder(lg *log.Logger) {
+	if log.RaceEnabled {
+		lg.Warnf("Ignoring request to initialize flight recorder since -race is being used")
+		return
+	}
+
 	cfg := trace.FlightRecorderConfig{
 		MinAge: 10 * time.Second,
 	}
@@ -121,6 +126,11 @@ func dumpFlightRecorder(lg *log.Logger) {
 }
 
 func MonitorCPUUsage(limit int, panicIfWedged bool, lg *log.Logger) {
+	if log.RaceEnabled {
+		lg.Warnf("Ignoring request to monitor CPU usage since -race is being used")
+		return
+	}
+
 	const nhist = 10
 	var history []float64
 
@@ -171,6 +181,11 @@ func MonitorCPUUsage(limit int, panicIfWedged bool, lg *log.Logger) {
 // MonitorMemoryUsage launches a goroutine that periodically checks how much memory is in use; if it's above
 // the threshold, it writes out a memory profile file and then bumps the threshold by the given increment.
 func MonitorMemoryUsage(triggerMB int, incMB int, lg *log.Logger) {
+	if log.RaceEnabled {
+		lg.Warnf("Ignoring request to monitor memory usage since -race is being used")
+		return
+	}
+
 	go func() {
 		threshold := uint64(triggerMB) * 1024 * 1024
 		delta := uint64(incMB) * 1024 * 1024
