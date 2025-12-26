@@ -48,12 +48,10 @@ func (c *mpServerCodec) ReadRequestBody(body any) error {
 
 func (c *mpServerCodec) WriteResponse(r *rpc.Response, body any) (err error) {
 	if err = c.enc.Encode(r); err != nil {
-		c.Close()
 		return
 	}
 	if err = c.enc.Encode(body); err != nil {
 		c.lg.Errorf("rpc: error encoding body: %v", err)
-		c.Close()
 		return
 	}
 	return c.encBuf.Flush()
