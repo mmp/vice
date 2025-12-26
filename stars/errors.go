@@ -71,6 +71,7 @@ var (
 )
 
 var starsErrorRemap = map[error]*STARSError{
+	av.ErrBadPoolSpecifier:           ErrSTARSIllegalCode,
 	av.ErrInvalidAltitude:            ErrSTARSIllegalValue,
 	av.ErrInvalidController:          ErrSTARSIllegalPosition,
 	av.ErrInvalidFacility:            ErrSTARSIllegalTrack,

@@ -29,6 +29,7 @@ var (
 )
 
 var errorStringToError = map[string]error{
+	av.ErrBadPoolSpecifier.Error():           av.ErrBadPoolSpecifier,
 	av.ErrInvalidAltitude.Error():            av.ErrInvalidAltitude,
 	av.ErrInvalidController.Error():          av.ErrInvalidController,
 	av.ErrInvalidFacility.Error():            av.ErrInvalidFacility,

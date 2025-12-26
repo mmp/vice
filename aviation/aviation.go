@@ -5,7 +5,6 @@
 package aviation
 
 import (
-	"errors"
 	"fmt"
 	"maps"
 	"slices"
@@ -1384,8 +1383,7 @@ func (p *LocalSquawkCodePool) Get(spec string, rules FlightRules, r *rand.Rand) 
 	}
 
 	if pool, ok := p.Pools[spec]; !ok {
-		fmt.Printf("%s: no pool available!\n", spec)
-		return Squawk(0), FlightRulesUnknown, errors.New("bad pool specifier")
+		return Squawk(0), FlightRulesUnknown, ErrBadPoolSpecifier
 	} else {
 		backups := pool.Backups
 		rules := pool.FlightRules // initial pool's rules are sticky even if we go to a backup
@@ -1393,7 +1391,7 @@ func (p *LocalSquawkCodePool) Get(spec string, rules FlightRules, r *rand.Rand) 
 			if sq, err := pool.Available.GetRandom(r); err == nil {
 				return Squawk(sq), rules, nil
 			} else if len(backups) == 0 {
-				return Squawk(sq), rules, err
+				return Squawk(0), rules, ErrNoMoreAvailableSquawkCodes
 			} else {
 				pool = p.Pools[string(backups[0])]
 				backups = backups[1:]
