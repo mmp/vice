@@ -1441,7 +1441,7 @@ func (sp *STARSPane) getLeaderLineDirection(ctx *panes.Context, trk sim.Track) m
 		if sfp.Suspended {
 			// Suspended are always north, evidently.
 			return math.North
-		} else if state.UseGlobalLeaderLine {
+		} else if state.UseGlobalLeaderLine && sfp.GlobalLeaderLineDirection != nil {
 			return *sfp.GlobalLeaderLineDirection
 		} else if state.LeaderLineDirection != nil {
 			// The direction was specified for the aircraft specifically
