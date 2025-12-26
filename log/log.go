@@ -202,6 +202,12 @@ func (l *Logger) With(args ...any) *Logger {
 }
 
 func (l *Logger) CatchAndReportCrash() any {
+	// Skip recovery when race detector is active - let panics propagate
+	// so race conditions are clearly visible with full stack traces.
+	if RaceEnabled {
+		return nil
+	}
+
 	// Janky way to check if we're running under the debugger.
 	if dlv, ok := os.LookupEnv("_"); ok && strings.HasSuffix(dlv, "/dlv") {
 		return nil
