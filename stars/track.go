@@ -243,13 +243,9 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 
 	// See if any aircraft we have state for have been removed
 	for callsign := range sp.TrackState {
-		if strings.HasPrefix(string(callsign), "__") { // unsupported fp
-			acid := sim.ACID(strings.TrimPrefix(string(callsign), "__"))
-			if !slices.ContainsFunc(ctx.Client.State.UnassociatedFlightPlans,
-				func(fp *sim.NASFlightPlan) bool { return fp.ACID == acid }) {
-				delete(sp.TrackState, callsign)
-			}
-		} else if _, ok := ctx.GetTrackByCallsign(callsign); !ok {
+		// For all tracks (including "__" prefixed fake tracks for unsupported DBs),
+		// delete TrackState if the track no longer exists in State.Tracks
+		if _, ok := ctx.GetTrackByCallsign(callsign); !ok {
 			delete(sp.TrackState, callsign)
 		}
 	}
