@@ -504,6 +504,16 @@ func (s *Sim) ActivateFlightPlan(tcw TCW, callsign av.ADSBCallsign, acid ACID, s
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
+	// Validate the target aircraft BEFORE taking the flight plan
+	// to avoid orphaning it if the target is invalid.
+	ac, ok := s.Aircraft[callsign]
+	if !ok {
+		return av.ErrNoAircraftForCallsign
+	}
+	if ac.IsAssociated() {
+		return ErrTrackIsActive
+	}
+
 	fp := s.STARSComputer.takeFlightPlanByACID(acid)
 	if fp == nil {
 		return ErrNoMatchingFlightPlan
@@ -512,23 +522,16 @@ func (s *Sim) ActivateFlightPlan(tcw TCW, callsign av.ADSBCallsign, acid ACID, s
 		fp.Update(*spec, s.LocalCodePool, s.ERAMComputer.SquawkCodePool)
 	}
 
-	return s.dispatchAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) error {
-			if ac.IsAssociated() {
-				return ErrTrackIsActive
-			}
-			return nil
-		},
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			ac.AssociateFlightPlan(fp)
+	s.lastControlCommandTime = time.Now()
 
-			s.eventStream.Post(Event{
-				Type: FlightPlanAssociatedEvent,
-				ACID: fp.ACID,
-			})
+	ac.AssociateFlightPlan(fp)
 
-			return nil
-		})
+	s.eventStream.Post(Event{
+		Type: FlightPlanAssociatedEvent,
+		ACID: fp.ACID,
+	})
+
+	return nil
 }
 
 func (s *Sim) DeleteFlightPlan(tcw TCW, acid ACID) error {
@@ -568,6 +571,21 @@ func (s *Sim) RepositionTrack(tcw TCW, acid ACID, callsign av.ADSBCallsign, p ma
 	defer s.mu.Unlock(s.lg)
 
 	s.lastControlCommandTime = time.Now()
+
+	// If associating with an active track, validate the target aircraft
+	// BEFORE taking the flight plan from its source. This prevents orphaning
+	// the flight plan if the target is invalid.
+	var targetAC *Aircraft
+	if callsign != "" {
+		ac, ok := s.Aircraft[callsign]
+		if !ok {
+			return ErrNoMatchingFlight
+		}
+		if ac.IsAssociated() {
+			return ErrTrackIsActive
+		}
+		targetAC = ac
+	}
 
 	// Find the corresponding flight plan.
 	var fp *NASFlightPlan
@@ -612,23 +630,16 @@ func (s *Sim) RepositionTrack(tcw TCW, acid ACID, callsign av.ADSBCallsign, p ma
 		// TODO: clear CA inhibit pair
 	}
 
-	if callsign != "" { // Associating it with an active track
-		if ac, ok := s.Aircraft[callsign]; !ok {
-			return ErrNoMatchingFlight
-		} else if ac.IsAssociated() {
-			return ErrTrackIsActive
-		} else {
-			ac.AssociateFlightPlan(fp)
-			if s.State.IsLocalController(fp.TrackingController) {
-				fp.LastLocalController = fp.TrackingController
-			}
-
-			s.eventStream.Post(Event{
-				Type: FlightPlanAssociatedEvent,
-				ACID: fp.ACID,
-			})
-			return nil
+	if targetAC != nil { // Associating it with an active track
+		targetAC.AssociateFlightPlan(fp)
+		if s.State.IsLocalController(fp.TrackingController) {
+			fp.LastLocalController = fp.TrackingController
 		}
+
+		s.eventStream.Post(Event{
+			Type: FlightPlanAssociatedEvent,
+			ACID: fp.ACID,
+		})
 	} else { // Creating / moving an unsupported DB.
 		fp.Location = p
 		fp.OwningTCW = tcw
