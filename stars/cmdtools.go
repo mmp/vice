@@ -96,6 +96,9 @@ func init() {
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, idx int) error {
 			// Use default airport
 			ctrl := ctx.UserController()
+			if len(ctrl.DefaultAirport) == 0 {
+				return ErrSTARSIllegalFunction
+			}
 			ap := ctrl.DefaultAirport[1:]
 			if _, ok := av.DB.LookupAirport(ap); !ok {
 				panic(ctrl.DefaultAirport)
