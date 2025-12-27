@@ -86,7 +86,7 @@ func (sc *STARSComputer) AddHeldDeparture(ac *Aircraft) {
 
 func (sc *STARSComputer) Update(s *Sim) {
 	// Delete any dropped flight plans after the few minute delay has passed.
-	sc.FlightPlans = util.FilterSliceInPlace(sc.FlightPlans, func(fp *NASFlightPlan) bool {
+	sc.FlightPlans = util.FilterSlice(sc.FlightPlans, func(fp *NASFlightPlan) bool {
 		if !fp.DeleteTime.IsZero() && s.State.SimTime.After(fp.DeleteTime) {
 			// Return beacon code, list index
 			s.deleteFlightPlan(fp)
