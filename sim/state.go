@@ -520,7 +520,7 @@ func (ss *State) TCWForPosition(pos ControlPosition) TCW {
 // PrimaryPositionForTCW returns the primary position for the given TCW.
 // Returns the TCW as position if no consolidation state exists or if Primary is empty.
 func (ss *State) PrimaryPositionForTCW(tcw TCW) ControlPosition {
-	if cons, ok := ss.CurrentConsolidation[tcw]; ok {
+	if cons, ok := ss.CurrentConsolidation[tcw]; ok && cons.PrimaryTCP != "" {
 		return cons.PrimaryTCP
 	}
 	return ControlPosition(tcw)
