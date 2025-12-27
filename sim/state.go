@@ -13,7 +13,6 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
 	"github.com/brunoga/deep"
@@ -284,149 +283,6 @@ func (ss *State) Locate(s string) (math.Point2LL, bool) {
 	return math.Point2LL{}, false
 }
 
-func (ss *State) GetAllReleaseDepartures() []ReleaseDeparture {
-	return util.FilterSlice(ss.ReleaseDepartures,
-		func(dep ReleaseDeparture) bool {
-			// When ControlClient DeleteAllAircraft() is called, we do our usual trick of
-			// making the update locally pending the next update from the server. However, it
-			// doesn't clear out the ones in the STARSComputer; that happens server side only.
-			// So, here is a band-aid to not return aircraft that no longer exist.
-			//if _, ok := ss.Aircraft[ac.ADSBCallsign]; !ok {
-			//return false
-			//}
-			return ss.UserControlsPosition(dep.DepartureController)
-		})
-}
-
-func (ss *State) GetRegularReleaseDepartures() []ReleaseDeparture {
-	return util.FilterSlice(ss.ReleaseDepartures,
-		func(dep ReleaseDeparture) bool {
-			if dep.Released {
-				return false
-			}
-
-			for _, cl := range ss.FacilityAdaptation.CoordinationLists {
-				if slices.Contains(cl.Airports, dep.DepartureAirport) {
-					// It'll be in a STARS coordination list
-					return false
-				}
-			}
-			return true
-		})
-}
-
-func (ss *State) GetSTARSReleaseDepartures() []ReleaseDeparture {
-	return util.FilterSlice(ss.ReleaseDepartures,
-		func(dep ReleaseDeparture) bool {
-			for _, cl := range ss.FacilityAdaptation.CoordinationLists {
-				if slices.Contains(cl.Airports, dep.DepartureAirport) {
-					return true
-				}
-			}
-			return false
-		})
-}
-
-func (ss *State) GetInitialRange() float32 {
-	if config, ok := ss.FacilityAdaptation.ControllerConfigs[ss.PrimaryPositionForTCW(ss.UserTCW)]; ok && config.Range != 0 {
-		return config.Range
-	}
-	return ss.Range
-}
-
-func (ss *State) GetInitialCenter() math.Point2LL {
-	if config, ok := ss.FacilityAdaptation.ControllerConfigs[ss.PrimaryPositionForTCW(ss.UserTCW)]; ok && !config.Center.IsZero() {
-		return config.Center
-	}
-	return ss.Center
-}
-
-func (ss *State) BeaconCodeInUse(sq av.Squawk) bool {
-	if util.SeqContainsFunc(maps.Values(ss.Tracks),
-		func(tr *Track) bool {
-			return tr.IsAssociated() && tr.Squawk == sq
-		}) {
-		return true
-	}
-
-	if slices.ContainsFunc(ss.UnassociatedFlightPlans,
-		func(fp *NASFlightPlan) bool { return fp.AssignedSquawk == sq }) {
-		return true
-	}
-
-	return false
-}
-
-func (ss *State) GetTrackByCallsign(callsign av.ADSBCallsign) (*Track, bool) {
-	for i, trk := range ss.Tracks {
-		if trk.ADSBCallsign == callsign {
-			return ss.Tracks[i], true
-		}
-	}
-	return nil, false
-}
-
-func (ss *State) GetOurTrackByCallsign(callsign av.ADSBCallsign) (*Track, bool) {
-	for i, trk := range ss.Tracks {
-		if trk.ADSBCallsign == callsign && trk.IsAssociated() && ss.UserControlsTrack(ss.Tracks[i]) {
-			return ss.Tracks[i], true
-		}
-	}
-	return nil, false
-}
-
-func (ss *State) GetTrackByACID(acid ACID) (*Track, bool) {
-	for i, trk := range ss.Tracks {
-		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
-			return ss.Tracks[i], true
-		}
-	}
-	return nil, false
-}
-
-func (ss *State) GetTrackByFLID(flid string) (*Track, bool) {
-	for i, trk := range ss.Tracks {
-		if !trk.IsAssociated() {
-			continue
-		}
-		if trk.FlightPlan.CID == flid {
-			return ss.Tracks[i], true
-		}
-		if trk.ADSBCallsign == av.ADSBCallsign(flid) {
-			return ss.Tracks[i], true
-		}
-		if sq, err := av.ParseSquawk(flid); err != nil && trk.FlightPlan.AssignedSquawk == sq {
-			return ss.Tracks[i], true
-		}
-	}
-	return nil, false
-}
-
-func (ss *State) GetOurTrackByACID(acid ACID) (*Track, bool) {
-	for i, trk := range ss.Tracks {
-		if trk.IsAssociated() && trk.FlightPlan.ACID == acid && ss.UserControlsTrack(ss.Tracks[i]) {
-			return ss.Tracks[i], true
-		}
-	}
-	return nil, false
-}
-
-// FOOTGUN: this should not be called from server-side code, since Tracks isn't initialized there.
-// FIXME FIXME FIXME
-func (ss *State) GetFlightPlanForACID(acid ACID) *NASFlightPlan {
-	for _, trk := range ss.Tracks {
-		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
-			return trk.FlightPlan
-		}
-	}
-	for i, fp := range ss.UnassociatedFlightPlans {
-		if fp.ACID == acid {
-			return ss.UnassociatedFlightPlans[i]
-		}
-	}
-	return nil
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // State methods for controller/consolidation management
 
@@ -524,22 +380,6 @@ func (ss *State) PrimaryPositionForTCW(tcw TCW) ControlPosition {
 		return cons.PrimaryTCP
 	}
 	return ControlPosition(tcw)
-}
-
-// GetUserConsolidation returns the consolidation state for the current user's TCW.
-// Returns nil if no consolidation state exists.
-func (ss *State) GetUserConsolidation() *TCPConsolidation {
-	return ss.CurrentConsolidation[ss.UserTCW]
-}
-
-// UserControlsTrack returns true if the current user controls the given track.
-func (ss *State) UserControlsTrack(track *Track) bool {
-	return ss.TCWControlsTrack(ss.UserTCW, track)
-}
-
-// UserControlsPosition returns true if the current user controls the given position.
-func (ss *State) UserControlsPosition(pos ControlPosition) bool {
-	return ss.TCWControlsPosition(ss.UserTCW, pos)
 }
 
 ///////////////////////////////////////////////////////////////////////////
