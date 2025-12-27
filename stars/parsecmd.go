@@ -20,7 +20,7 @@ import (
 )
 
 func parserLog(format string, args ...any) {
-	fmt.Printf(format, args...)
+	// fmt.Printf(format, args...)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -392,6 +392,10 @@ type matcher interface {
 
 	// consumesClick returns whether this matcher consumes mouse clicks.
 	consumesClick() bool
+
+	// Generator returns a matchGenerator that produces random valid input for this matcher.
+	// Used by the fuzz testing system.
+	Generator() matchGenerator
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -557,6 +561,9 @@ func (lm literalMatcher) match(sp *STARSPane, ctx *panes.Context, input *Command
 func (literalMatcher) validate() error      { return nil }
 func (literalMatcher) goType() reflect.Type { return nil }
 func (literalMatcher) consumesClick() bool  { return false }
+func (lm literalMatcher) Generator() matchGenerator {
+	return &literalMatchGenerator{Text: lm.text}
+}
 
 ////////////////////////////////////////////////////////////
 
@@ -636,6 +643,155 @@ func (sm singleTypedMatcher) goType() reflect.Type {
 
 func (sm singleTypedMatcher) consumesClick() bool {
 	return getTypeParser(sm.typeName).ConsumesClick()
+}
+
+func (sm singleTypedMatcher) Generator() matchGenerator {
+	gen := typeNameToGenerator(sm.typeName)
+	if sm.optional {
+		return &optionalMatchGenerator{Inner: gen}
+	}
+	return gen
+}
+
+// typeNameToGenerator returns the appropriate generator for a type parser name.
+func typeNameToGenerator(typeName string) matchGenerator {
+	switch typeName {
+	// Track identifiers
+	case "TRK_ACID":
+		return &trackMatchGenerator{Style: "TRK_ACID"}
+	case "TRK_BCN":
+		return &trackMatchGenerator{Style: "TRK_BCN"}
+	case "TRK_INDEX":
+		return &trackMatchGenerator{Style: "TRK_INDEX"}
+	case "TRK_INDEX_SUSPENDED":
+		return &trackMatchGenerator{Style: "TRK_INDEX_SUSPENDED"}
+
+	// Click consumers
+	case "SLEW":
+		return &slewMatchGenerator{}
+	case "GHOST_SLEW":
+		return &ghostSlewMatchGenerator{}
+	case "POS", "POS_NORM", "POS_RAW":
+		return &posMatchGenerator{}
+
+	// Controller positions
+	case "TCP1":
+		return &tcpMatchGenerator{Style: "TCP1"}
+	case "TCP2":
+		return &tcpMatchGenerator{Style: "TCP2"}
+	case "TCW":
+		return &tcpMatchGenerator{Style: "TCW"}
+	case "TCP_TRI":
+		return &tcpMatchGenerator{Style: "TCP_TRI"}
+	case "ARTCC":
+		return &tcpMatchGenerator{Style: "ARTCC"}
+
+	// Numbers
+	case "#":
+		return &numMatchGenerator{MinDigits: 1, MaxDigits: 1}
+	case "##":
+		return &numMatchGenerator{MinDigits: 2, MaxDigits: 2}
+	case "NUM":
+		return &numMatchGenerator{MinDigits: 1, MaxDigits: 5}
+	case "FLOAT":
+		return &floatMatchGenerator{Max: 100}
+	case "TPA_FLOAT":
+		return &floatMatchGenerator{Max: 9.9}
+
+	// Identifiers
+	case "SPC":
+		return &spcMatchGenerator{}
+	case "ACID":
+		return &acidMatchGenerator{}
+	case "BCN":
+		return &beaconMatchGenerator{}
+	case "BCN_BLOCK":
+		return &beaconMatchGenerator{BlockOnly: true}
+	case "AIRPORT_ID":
+		return &airportMatchGenerator{}
+	case "FIX":
+		return &fixMatchGenerator{}
+	case "TIME":
+		return &timeMatchGenerator{}
+	case "ALT_FILTER_6":
+		return &altFilter6MatchGenerator{}
+	case "CRDA_RUNWAY_ID":
+		return &crdaRunwayMatchGenerator{}
+	case "UNASSOC_FP":
+		return &unassocFPMatchGenerator{}
+
+	// Restriction areas
+	case "QL_REGION":
+		return &qlRegionMatchGenerator{}
+	case "RA_INDEX":
+		return &raIndexMatchGenerator{UserOnly: false}
+	case "USER_RA_INDEX":
+		return &raIndexMatchGenerator{UserOnly: true}
+	case "RA_TEXT":
+		return &raTextMatchGenerator{WithLocation: false}
+	case "RA_TEXT_AND_LOCATION":
+		return &raTextMatchGenerator{WithLocation: true}
+	case "RA_LOCATION":
+		return &raLocationMatchGenerator{}
+	case "QL_POSITIONS":
+		return &qlPositionsMatchGenerator{}
+
+	// Text handlers
+	case "FIELD":
+		return &fieldMatchGenerator{MinLen: 1, MaxLen: 8}
+	case "ALL_TEXT":
+		return &allTextMatchGenerator{}
+
+	// Flight plan specifiers
+	case "FP_ACID":
+		return &fpSpecMatchGenerator{Style: "FP_ACID"}
+	case "FP_BEACON":
+		return &fpSpecMatchGenerator{Style: "FP_BEACON"}
+	case "FP_SP1":
+		return &fpSpecMatchGenerator{Style: "FP_SP1"}
+	case "FP_TRI_SP1":
+		return &fpSpecMatchGenerator{Style: "FP_TRI_SP1"}
+	case "FP_PLUS_SP2":
+		return &fpSpecMatchGenerator{Style: "FP_PLUS_SP2"}
+	case "FP_ALT_A":
+		return &fpSpecMatchGenerator{Style: "FP_ALT_A"}
+	case "FP_ALT_P":
+		return &fpSpecMatchGenerator{Style: "FP_ALT_P"}
+	case "FP_ALT_R":
+		return &fpSpecMatchGenerator{Style: "FP_ALT_R"}
+	case "FP_TRI_ALT_A":
+		return &fpSpecMatchGenerator{Style: "FP_TRI_ALT_A"}
+	case "FP_PLUS_ALT_A":
+		return &fpSpecMatchGenerator{Style: "FP_PLUS_ALT_A"}
+	case "FP_PLUS2_ALT_R":
+		return &fpSpecMatchGenerator{Style: "FP_PLUS2_ALT_R"}
+	case "FP_TCP":
+		return &fpSpecMatchGenerator{Style: "FP_TCP"}
+	case "FP_NUM_ACTYPE":
+		return &fpSpecMatchGenerator{Style: "FP_NUM_ACTYPE"}
+	case "FP_NUM_ACTYPE4":
+		return &fpSpecMatchGenerator{Style: "FP_NUM_ACTYPE4"}
+	case "FP_ACTYPE":
+		return &fpSpecMatchGenerator{Style: "FP_ACTYPE"}
+	case "FP_COORD_TIME":
+		return &fpSpecMatchGenerator{Style: "FP_COORD_TIME"}
+	case "FP_FIX_PAIR":
+		return &fpSpecMatchGenerator{Style: "FP_FIX_PAIR"}
+	case "FP_EXIT_FIX":
+		return &fpSpecMatchGenerator{Style: "FP_EXIT_FIX"}
+	case "FP_FLT_TYPE":
+		return &fpSpecMatchGenerator{Style: "FP_FLT_TYPE"}
+	case "FP_RULES":
+		return &fpSpecMatchGenerator{Style: "FP_RULES"}
+	case "FP_RNAV":
+		return &fpSpecMatchGenerator{Style: "FP_RNAV"}
+	case "FP_VFR_FIXES":
+		return &fpSpecMatchGenerator{Style: "FP_VFR_FIXES"}
+
+	default:
+		// Fallback to generic field generator
+		return &fieldMatchGenerator{MinLen: 1, MaxLen: 8}
+	}
 }
 
 func checkReturnedType(handler typeParser, value any) error {
@@ -729,6 +885,18 @@ func (am alternativeMatcher) consumesClick() bool {
 	return am.inner[0].consumesClick()
 }
 
+func (am alternativeMatcher) Generator() matchGenerator {
+	var alts []matchGenerator
+	for _, m := range am.inner {
+		alts = append(alts, m.Generator())
+	}
+	gen := &altMatchGenerator{Alternatives: alts}
+	if am.optional {
+		return &optionalMatchGenerator{Inner: gen}
+	}
+	return gen
+}
+
 ////////////////////////////////////////////////////////////
 
 // greedyMatcher wraps another matcher to consume 0+ matches of space-delimited types.
@@ -786,6 +954,9 @@ func (gm greedyMatcher) validate() error {
 
 func (gm greedyMatcher) goType() reflect.Type { return gm.inner.goType() }
 func (gm greedyMatcher) consumesClick() bool  { return gm.inner.consumesClick() }
+func (gm greedyMatcher) Generator() matchGenerator {
+	return &greedyMatchGenerator{Inner: gm.inner.Generator()}
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // Function Signature Validation and Argument Binding

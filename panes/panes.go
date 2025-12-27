@@ -108,6 +108,30 @@ func (ctx *Context) InitializeMouse(p platform.Platform) {
 	ctx.Mouse.DragDelta[1] *= -1
 }
 
+// NewFuzzContext creates a Context suitable for fuzz testing.
+// This is used by the -starsrandoms mode to inject random commands.
+func NewFuzzContext(p platform.Platform, r renderer.Renderer, c *client.ControlClient, lg *log.Logger) *Context {
+	displaySize := p.DisplaySize()
+	return &Context{
+		PaneExtent:         math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1]}},
+		ParentPaneExtent:   math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1]}},
+		Platform:           p,
+		DrawPixelScale:     1,
+		PixelsPerInch:      72,
+		DPIScale:           p.DPIScale(),
+		Renderer:           r,
+		HaveFocus:          true,
+		Now:                time.Now(),
+		Lg:                 lg,
+		Client:             c,
+		UserTCW:            c.State.UserTCW,
+		NmPerLongitude:     c.State.NmPerLongitude,
+		MagneticVariation:  c.State.MagneticVariation,
+		FacilityAdaptation: &c.State.FacilityAdaptation,
+		displaySize:        displaySize,
+	}
+}
+
 func (ctx *Context) SetMousePosition(p [2]float32) {
 	ctx.Mouse.Pos = p
 	ctx.Platform.SetMousePosition(ctx.PaneToWindow(p))

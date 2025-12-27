@@ -30,6 +30,7 @@ import (
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/stars"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -61,6 +62,7 @@ var (
 	replayMode        = flag.Bool("replay", false, "replay scenario from saved config")
 	replayDuration    = flag.String("replay-duration", "3600", "replay duration in seconds or 'until:CALLSIGN'")
 	waypointCommands  = flag.String("waypoint-commands", "", "waypoint commands in format 'FIX:CMD CMD CMD, FIX:CMD ...,'")
+	starsRandoms      = flag.Bool("starsrandoms", false, "run STARS command fuzz testing with full UI (randomly picks a scenario)")
 )
 
 func setupSignalHandler(profiler *util.Profiler) {
@@ -322,6 +324,7 @@ func main() {
 		var stats Stats
 		var render renderer.Renderer
 		var plat platform.Platform
+		var fuzzController *stars.FuzzController // For -starsrandoms mode
 
 		defer lg.CatchAndReportCrash()
 
@@ -436,7 +439,7 @@ func main() {
 		}
 
 		// After config.Activate(), if we have a loaded sim, get configured for it.
-		if config.Sim != nil && !*resetSim {
+		if config.Sim != nil && !*resetSim && !*starsRandoms {
 			if client, err := mgr.LoadLocalSim(config.Sim, config.ControllerInitials, lg); err != nil {
 				lg.Errorf("Error loading local sim: %v", err)
 			} else {
@@ -450,7 +453,49 @@ func main() {
 			}
 		}
 
-		if !mgr.Connected() {
+		// Handle -starsrandoms: randomly pick a scenario and start fuzz testing
+		if *starsRandoms {
+			// Determine which server to use (local or remote)
+			var srv *client.Server
+			defaultAddr := net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort))
+			useRemote := *serverAddress != defaultAddr && *serverAddress != ""
+
+			if useRemote {
+				fmt.Printf("Waiting for remote server at %s...\n", *serverAddress)
+				timeout := time.After(30 * time.Second)
+				for mgr.RemoteServer == nil {
+					mgr.Update(eventStream, plat, lg)
+					select {
+					case <-timeout:
+						lg.Errorf("Timeout waiting for remote server connection")
+						os.Exit(1)
+					case <-time.After(100 * time.Millisecond):
+					}
+				}
+				srv = mgr.RemoteServer
+				fmt.Printf("Connected to remote server\n")
+			} else {
+				srv = mgr.LocalServer
+			}
+
+			// Select a random scenario and create the sim
+			req, err := stars.SelectRandomScenario(srv)
+			if err != nil {
+				lg.Errorf("%v", err)
+				os.Exit(1)
+			}
+			req.Privileged = true // Fuzz testing needs privileged access to control all aircraft
+			if err := mgr.CreateNewSim(req, "FUZZ", srv, lg); err != nil {
+				lg.Errorf("Failed to create sim: %v", err)
+				os.Exit(1)
+			}
+			// controlClient is now set via the onNewClient callback
+
+			// Create fuzz controller with the STARSPane
+			fuzzController = stars.NewFuzzController(config.STARSPane, stars.FuzzConfig{}, lg)
+		}
+
+		if !mgr.Connected() && !*starsRandoms {
 			uiShowConnectDialog(mgr, false, config, plat, lg)
 		}
 
@@ -459,6 +504,7 @@ func main() {
 		lg.Info("Starting main loop")
 
 		stats.startTime = time.Now()
+
 		for {
 			plat.SetWindowTitle("vice: " + controlClient.Status())
 
@@ -490,6 +536,12 @@ func main() {
 			stats.drawPanes = panes.DrawPanes(config.DisplayRoot, plat, render, controlClient,
 				ui.menuBarHeight, lg)
 
+			// Execute fuzz commands if in fuzz testing mode
+			if fuzzController != nil && controlClient != nil {
+				ctx := panes.NewFuzzContext(plat, render, controlClient, lg)
+				fuzzController.ExecuteFrame(ctx, controlClient)
+			}
+
 			// Draw the user interface
 			stats.drawUI = uiDraw(mgr, config, plat, render, controlClient, eventStream, lg)
 
@@ -501,9 +553,23 @@ func main() {
 				lg.Info("performance", "stats", stats)
 			}
 
+			// Check for fuzz test completion
+			if fuzzController != nil && !fuzzController.ShouldContinue() {
+				elapsed := time.Since(stats.startTime)
+				fuzzController.PrintStatistics()
+				frameCount := fuzzController.FrameCount()
+				fmt.Printf("Fuzz testing completed: %d frames in %.2fs (%.0f fps)\n",
+					frameCount, elapsed.Seconds(), float64(frameCount)/elapsed.Seconds())
+				mgr.Disconnect()
+				break
+			}
+
 			if plat.ShouldStop() && !hasActiveModalDialogs() {
 				// Do this while we're still running the event loop.
-				saveSim := mgr.ClientIsLocal()
+				if fuzzController != nil {
+					fuzzController.PrintStatistics()
+				}
+				saveSim := mgr.ClientIsLocal() && fuzzController == nil // Don't save fuzz sims
 				config.SaveIfChanged(render, plat, controlClient, saveSim, lg)
 				mgr.Disconnect()
 				break
