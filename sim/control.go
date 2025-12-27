@@ -330,7 +330,7 @@ func (s *Sim) CreateFlightPlan(tcw TCW, spec FlightPlanSpecifier) error {
 		func(ac *Aircraft) bool { return ac.IsAssociated() && ac.NASFlightPlan.ACID == fp.ACID }) {
 		return ErrDuplicateACID
 	}
-	if slices.ContainsFunc(s.State.UnassociatedFlightPlans,
+	if slices.ContainsFunc(s.STARSComputer.FlightPlans,
 		func(fp2 *NASFlightPlan) bool { return fp.ACID == fp2.ACID }) {
 		return ErrDuplicateACID
 	}
