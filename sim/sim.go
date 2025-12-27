@@ -862,7 +862,7 @@ func (s *Sim) GetStateUpdate(tcw TCW, eventSub *EventsSubscription, update *Stat
 		update.Events = s.consolidateRadioEventsForTCW(tcw, eventSub.Get())
 	}
 
-	if util.SizeOf(*update, os.Stderr, false, 256*1024) > 256*1024*1024 {
+	if util.SizeOf(*update, os.Stderr, false, 1024*1024) > 256*1024*1024 {
 		fn := fmt.Sprintf("update_dump%d.txt", time.Now().Unix())
 		f, err := os.Create(fn)
 		if err != nil {
@@ -1681,18 +1681,37 @@ func (s *Sim) CheckLeaks() {
 		}
 	}
 
+	nAircraftFPs := 0
 	for _, ac := range s.Aircraft {
 		if ac.IsAssociated() {
 			check(ac.NASFlightPlan)
+			nAircraftFPs++
 		}
 	}
+	nUnassociatedFPs := 0
 	for _, fp := range s.STARSComputer.FlightPlans {
 		check(fp)
+		nUnassociatedFPs++
 	}
 
 	if len(s.STARSComputer.AvailableIndices) != 99-nUsedIndices {
-		s.lg.Errorf("%d available list indices but %d used so should be %d", len(s.STARSComputer.AvailableIndices),
-			nUsedIndices, 99-nUsedIndices)
+		// Build the set of available indices for comparison
+		availableSet := make(map[int]bool)
+		for _, idx := range s.STARSComputer.AvailableIndices {
+			availableSet[idx] = true
+		}
+
+		// Find leaked indices (not used and not available)
+		var leaked []int
+		for i := 1; i <= 99; i++ {
+			if !usedIndices[i] && !availableSet[i] {
+				leaked = append(leaked, i)
+			}
+		}
+
+		s.lg.Errorf("%d available list indices but %d used so should be %d (aircraft FPs: %d, unassociated FPs: %d, leaked indices: %v)",
+			len(s.STARSComputer.AvailableIndices), nUsedIndices, 99-nUsedIndices,
+			nAircraftFPs, nUnassociatedFPs, leaked)
 	}
 }
 
