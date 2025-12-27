@@ -244,7 +244,7 @@ func (s *Sim) SignOn(tcw TCW, tcps []TCP) (*State, *EventsSubscription, error) {
 		}
 	}
 
-	state := s.State.GetStateForController(tcw)
+	state := s.GetStateForController(tcw)
 
 	eventSub := s.Subscribe()
 	var update StateUpdate
@@ -287,7 +287,7 @@ func (s *Sim) classifyConsolidation(sendingTCP TCP, receivingTCW TCW) *consolida
 		}
 	}
 
-	s.lg.Errorf("Attempted invalid consolidation of TCP %s to TCW %s", sendingTCP, receivingTCW)
+	s.lg.Infof("Attempted invalid consolidation of TCP %s to TCW %s", sendingTCP, receivingTCW)
 	return nil
 }
 
