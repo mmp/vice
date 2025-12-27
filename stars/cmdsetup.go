@@ -55,7 +55,7 @@ func init() {
 
 	// 4.1.10 Reconfigure TCW/TDW to default display characteristics (p. 4-21)
 	registerCommand(CommandModeMultiFunc, "K", func(sp *STARSPane, ctx *panes.Context) {
-		sp.prefSet.ResetDefault(ctx.Client.State.State, ctx.Platform, sp)
+		sp.prefSet.ResetDefault(ctx.Client.State, ctx.Platform, sp)
 	})
 
 	// 4.2.1 Enable Single sensor or Multi-sensor or Fused mode

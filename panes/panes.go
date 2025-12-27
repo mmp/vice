@@ -30,10 +30,10 @@ type Pane interface {
 	Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger)
 
 	// LoadedSim is called when vice is restarted and a Sim is loaded from disk.
-	LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger)
+	LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger)
 
 	// ResetSim is called when a brand new Sim is launched
-	ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger)
+	ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger)
 
 	CanTakeKeyboardFocus() bool
 	Hide() bool
@@ -323,9 +323,9 @@ func init() {
 }
 
 func (ep *EmptyPane) Activate(renderer.Renderer, platform.Platform, *sim.EventStream, *log.Logger) {}
-func (ep *EmptyPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (ep *EmptyPane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 }
-func (ep *EmptyPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (ep *EmptyPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 }
 func (ep *EmptyPane) CanTakeKeyboardFocus() bool { return false }
 func (ep *EmptyPane) Hide() bool                 { return false }

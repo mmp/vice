@@ -81,8 +81,8 @@ type SplitLine struct {
 
 func (s *SplitLine) Activate(renderer.Renderer, platform.Platform, *sim.EventStream, *log.Logger) {}
 func (s *SplitLine) Deactivate()                                                                  {}
-func (s *SplitLine) LoadedSim(*client.ControlClient, sim.State, platform.Platform, *log.Logger)   {}
-func (s *SplitLine) ResetSim(*client.ControlClient, sim.State, platform.Platform, *log.Logger)    {}
+func (s *SplitLine) LoadedSim(*client.ControlClient, platform.Platform, *log.Logger)              {}
+func (s *SplitLine) ResetSim(*client.ControlClient, platform.Platform, *log.Logger)               {}
 func (s *SplitLine) CanTakeKeyboardFocus() bool                                                   { return false }
 func (s *SplitLine) Hide() bool                                                                   { return false }
 
@@ -597,14 +597,14 @@ func Activate(root *DisplayNode, r renderer.Renderer, p platform.Platform, event
 	})
 }
 
-func LoadedSim(root *DisplayNode, client *client.ControlClient, state sim.State, pl platform.Platform, lg *log.Logger) {
+func LoadedSim(root *DisplayNode, client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	root.VisitPanes(func(p Pane) {
-		p.LoadedSim(client, state, pl, lg)
+		p.LoadedSim(client, pl, lg)
 	})
 }
 
-func ResetSim(root *DisplayNode, client *client.ControlClient, state sim.State, pl platform.Platform, lg *log.Logger) {
+func ResetSim(root *DisplayNode, client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	root.VisitPanes(func(p Pane) {
-		p.ResetSim(client, state, pl, lg)
+		p.ResetSim(client, pl, lg)
 	})
 }

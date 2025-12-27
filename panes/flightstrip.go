@@ -149,10 +149,10 @@ func (fsp *FlightStripPane) possiblyAdd(fp *sim.NASFlightPlan, ctx *Context) {
 	}
 }
 
-func (fsp *FlightStripPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (fsp *FlightStripPane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 }
 
-func (fsp *FlightStripPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (fsp *FlightStripPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	fsp.strips = nil
 	fsp.addedPlans = make(map[sim.ACID]interface{})
 	fsp.CIDs = make(map[sim.ACID]int)

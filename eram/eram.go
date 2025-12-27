@@ -14,6 +14,7 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
@@ -261,15 +262,15 @@ func (ep *ERAMPane) Hide() bool {
 	return false
 }
 
-func (ep *ERAMPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
-	ep.ensurePrefSetForSim(ss)
-	ep.makeMaps(client, ss, lg)
+func (ep *ERAMPane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
+	ep.ensurePrefSetForSim(client.State)
+	ep.makeMaps(client, lg)
 	ep.lastTrackUpdate = time.Time{}
 }
 
-func (ep *ERAMPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
-	ep.ensurePrefSetForSim(ss)
-	ep.makeMaps(client, ss, lg)
+func (ep *ERAMPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
+	ep.ensurePrefSetForSim(client.State)
+	ep.makeMaps(client, lg)
 	ep.lastTrackUpdate = time.Time{}
 
 	ep.scopeDraw.arrivals = nil
@@ -286,7 +287,7 @@ func (ep *ERAMPane) ResetSim(client *client.ControlClient, ss sim.State, pl plat
 // ensurePrefSetForSim initializes the ERAM preference set if needed and
 // resets transient fields for a newly-loaded or reset Sim. Called from
 // both LoadedSim and ResetSim so that preferences are ready before use.
-func (ep *ERAMPane) ensurePrefSetForSim(ss sim.State) {
+func (ep *ERAMPane) ensurePrefSetForSim(ss server.SimState) {
 	// Ensure map of saved preference sets exists
 	if ep.ERAMPreferenceSets == nil {
 		ep.ERAMPreferenceSets = make(map[string]*PrefrenceSet)
@@ -612,7 +613,8 @@ func (ep *ERAMPane) drawVideoMaps(ctx *panes.Context, transforms radar.ScopeTran
 	}
 }
 
-func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log.Logger) {
+func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
+	ss := client.State
 	ps := ep.currentPrefs()
 	vmf, err := ep.getVideoMapLibrary(ss, client)
 	// fmt.Println(vmf.ERAMMapGroups, "VMFOKAY")
@@ -639,7 +641,7 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log
 	ep.videoMapLabel = combine(maps.LabelLine1, maps.LabelLine2)
 	ep.videoMapLabel = strings.Replace(ep.videoMapLabel, " ", "\n", 1)
 
-	for _, name := range ss.ControllerDefaultVideoMaps {
+	for _, name := range client.State.ControllerDefaultVideoMaps {
 		if idx := slices.IndexFunc(ep.allVideoMaps, func(v radar.ERAMVideoMap) bool { return combine(v.LabelLine1, v.LabelLine2) == name }); idx != -1 {
 
 			ps.VideoMapVisible[combine(ep.allVideoMaps[idx].LabelLine1, ep.allVideoMaps[idx].LabelLine2)] = nil
@@ -647,7 +649,7 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log
 	}
 }
 
-func (ep *ERAMPane) getVideoMapLibrary(ss sim.State, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
+func (ep *ERAMPane) getVideoMapLibrary(ss server.SimState, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
 	filename := ss.FacilityAdaptation.VideoMapFile
 	if ml, err := sim.HashCheckLoadVideoMap(filename, ss.VideoMapLibraryHash); err == nil {
 		return ml, nil

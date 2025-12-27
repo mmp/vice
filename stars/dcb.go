@@ -512,7 +512,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		}
 
 		if selectButton(ctx, "DEFAULT", buttonHalfVertical, buttonScale) {
-			sp.prefSet.ResetDefault(ctx.Client.State.State, ctx.Platform, sp)
+			sp.prefSet.ResetDefault(ctx.Client.State, ctx.Platform, sp)
 		}
 		unsupportedButton(ctx, "FSSTARS", buttonHalfVertical, buttonScale)
 		if sp.RestorePreferences == nil {

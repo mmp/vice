@@ -26,6 +26,7 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
+	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
@@ -455,18 +456,18 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 	sp.capture.enabled = os.Getenv("VICE_CAPTURE") != ""
 }
 
-func (sp *STARSPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (sp *STARSPane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	sp.DisplayRequestedAltitude = client.State.FacilityAdaptation.FDB.DisplayRequestedAltitude
 
-	sp.initPrefsForLoadedSim(ss, pl)
+	sp.initPrefsForLoadedSim(client.State, pl)
 
-	sp.makeMaps(client, ss, lg)
-	sp.makeSignificantPoints(ss)
+	sp.makeMaps(client, lg)
+	sp.makeSignificantPoints(client.State)
 }
 
-func (sp *STARSPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	sp.ConvergingRunways = nil
-	for name, ap := range util.SortedMap(ss.Airports) {
+	for name, ap := range util.SortedMap(client.State.Airports) {
 		for idx, pair := range ap.ConvergingRunways {
 			sp.ConvergingRunways = append(sp.ConvergingRunways, STARSConvergingRunways{
 				ConvergingRunways: pair,
@@ -482,10 +483,10 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, ss sim.State, pl pla
 	// Update maps before resetting the prefs since we may rewrite some map
 	// ids and we want to use the right ones when we're enabling the
 	// default maps.
-	sp.makeMaps(client, ss, lg)
-	sp.makeSignificantPoints(ss)
+	sp.makeMaps(client, lg)
+	sp.makeSignificantPoints(client.State)
 
-	sp.resetPrefsForNewSim(ss, pl)
+	sp.resetPrefsForNewSim(client.State, pl)
 
 	sp.lastTrackUpdate = time.Time{} // force update
 	sp.lastHistoryTrackUpdate = time.Time{}
@@ -502,7 +503,7 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, ss sim.State, pl pla
 	sp.scopeDraw.holds = nil
 }
 
-func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *log.Logger) {
+func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	usedIds := make(map[int]interface{})
 
 	// Helper to add a ClientVideoMap directly (for airspace volumes)
@@ -521,6 +522,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 		// Unable to find a free slot!
 	}
 
+	ss := client.State
 	vmf, err := sp.getVideoMapLibrary(ss, client)
 	if err != nil {
 		lg.Errorf("%v", err)
@@ -528,7 +530,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 
 	// First grab the video maps needed for the DCB
 	dcbMaps := util.FilterSlice(vmf.Maps, func(vm sim.VideoMap) bool {
-		return slices.Contains(ss.ControllerVideoMaps, vm.Name)
+		return slices.Contains(client.State.ControllerVideoMaps, vm.Name)
 	})
 
 	// Convert to ClientVideoMaps for rendering
@@ -728,7 +730,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 
 	// Start with the video maps associated with the Sim.
 	sp.dcbVideoMaps = nil
-	for _, name := range ss.ControllerVideoMaps {
+	for _, name := range client.State.ControllerVideoMaps {
 		if idx := slices.IndexFunc(sp.allVideoMaps, func(v radar.ClientVideoMap) bool { return v.Name == name }); idx != -1 && name != "" {
 			sp.dcbVideoMaps = append(sp.dcbVideoMaps, &sp.allVideoMaps[idx])
 		} else {
@@ -737,7 +739,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, ss sim.State, lg *lo
 	}
 }
 
-func (sp *STARSPane) getVideoMapLibrary(ss sim.State, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
+func (sp *STARSPane) getVideoMapLibrary(ss server.SimState, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
 	filename := ss.FacilityAdaptation.VideoMapFile
 	if ml, err := sim.HashCheckLoadVideoMap(filename, ss.VideoMapLibraryHash); err == nil {
 		return ml, nil
@@ -1340,7 +1342,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool, tran
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) makeSignificantPoints(ss sim.State) {
+func (sp *STARSPane) makeSignificantPoints(ss server.SimState) {
 	sp.significantPoints = maps.Clone(ss.FacilityAdaptation.SignificantPoints)
 	sp.significantPointsSlice = nil
 	for _, pt := range sp.significantPoints {

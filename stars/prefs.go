@@ -11,7 +11,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
-	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/util"
 
 	"github.com/brunoga/deep"
@@ -52,13 +52,13 @@ func (p *PreferenceSet) SetCurrent(cur Preferences, pl platform.Platform, sp *ST
 // Reset ends up being called when a new Sim is started. It is responsible
 // for resetting all of the preference values in the PreferenceSet that we
 // don't expect to persist on a restart (e.g. quick look positions.)
-func (p *PreferenceSet) Reset(ss sim.State, sp *STARSPane) {
+func (p *PreferenceSet) Reset(ss server.SimState, sp *STARSPane) {
 	// Only reset Current; leave everything as is in the saved prefs.
 	p.Current.Reset(ss, sp)
 }
 
 // ResetDefault resets the current preferences to the system defaults.
-func (p *PreferenceSet) ResetDefault(ss sim.State, pl platform.Platform, sp *STARSPane) {
+func (p *PreferenceSet) ResetDefault(ss server.SimState, pl platform.Platform, sp *STARSPane) {
 	// Start with the full-on STARS defaults and then update for the current Sim.
 	p.Current = *makeDefaultPreferences()
 	p.Reset(ss, sp)
@@ -280,7 +280,7 @@ type RestrictionAreaSettings struct {
 	ForceBlinkingText bool
 }
 
-func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
+func (p *Preferences) Reset(ss server.SimState, sp *STARSPane) {
 	// Get the scope centered and set the range according to the Sim's initial values.
 	p.DefaultCenter = ss.GetInitialCenter()
 	p.UserCenter = p.DefaultCenter
@@ -581,7 +581,7 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 }
 
-func (sp *STARSPane) initPrefsForLoadedSim(ss sim.State, pl platform.Platform) {
+func (sp *STARSPane) initPrefsForLoadedSim(ss server.SimState, pl platform.Platform) {
 	prefSet, ok := sp.TRACONPreferenceSets[ss.Facility]
 	if !ok {
 		// First time we've seen this TRACON. Start out with system defaults.
@@ -624,7 +624,7 @@ func (sp *STARSPane) initPrefsForLoadedSim(ss sim.State, pl platform.Platform) {
 }
 
 // This is called when a new Sim is started from scratch.
-func (sp *STARSPane) resetPrefsForNewSim(ss sim.State, pl platform.Platform) {
+func (sp *STARSPane) resetPrefsForNewSim(ss server.SimState, pl platform.Platform) {
 	sp.initPrefsForLoadedSim(ss, pl)
 
 	// Clear out the preference-related state (e.g. quicklooks) that we

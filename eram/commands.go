@@ -174,7 +174,7 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 			status.err = ErrERAMMessageTooLong
 			return
 		}
-		vmf, err := ep.getVideoMapLibrary(ctx.Client.State.State, ctx.Client)
+		vmf, err := ep.getVideoMapLibrary(ctx.Client.State, ctx.Client)
 		if err != nil {
 			status.err = err
 			return

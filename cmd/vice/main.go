@@ -392,7 +392,7 @@ func main() {
 					// Reactivate the display hierarchy
 					panes.Activate(config.DisplayRoot, render, plat, eventStream, lg)
 
-					panes.ResetSim(config.DisplayRoot, c, c.State.State, plat, lg)
+					panes.ResetSim(config.DisplayRoot, c, plat, lg)
 
 					// Apply waypoint commands if specified via command line (only for new clients)
 					if *waypointCommands != "" {
@@ -443,7 +443,7 @@ func main() {
 			if client, err := mgr.LoadLocalSim(config.Sim, config.ControllerInitials, lg); err != nil {
 				lg.Errorf("Error loading local sim: %v", err)
 			} else {
-				panes.LoadedSim(config.DisplayRoot, client, client.State.State, plat, lg)
+				panes.LoadedSim(config.DisplayRoot, client, plat, lg)
 				uiResetControlClient(client, plat, lg)
 				controlClient = client
 				// Apply waypoint commands if specified via command line
