@@ -54,13 +54,16 @@ type Font struct {
 	Ifont imgui.Font
 	Id    FontIdentifier
 	TexId uint32 // texture that holds the glyph texture atlas
+	// isBitmapFont is true for fonts without imgui backing (e.g., STARS fonts)
+	isBitmapFont bool
 }
 
 func MakeFont(size int, id FontIdentifier, ifont *imgui.Font) *Font {
 	f := &Font{
-		glyphs: make(map[rune]*Glyph),
-		Size:   size,
-		Id:     id,
+		glyphs:       make(map[rune]*Glyph),
+		Size:         size,
+		Id:           id,
+		isBitmapFont: ifont == nil,
 	}
 	if ifont != nil {
 		f.Ifont = *ifont
@@ -99,6 +102,15 @@ type FontIdentifier struct {
 // Internal: lookup the glyph for a rune in imgui's font atlas and then
 // copy over the necessary information into our Glyph structure.
 func (f *Font) createGlyph(ch rune) *Glyph {
+	if f.isBitmapFont {
+		// Bitmap fonts can't create new glyphs dynamically. Fall back to '?'.
+		if g := f.lowGlyphs['?']; g != nil {
+			return g
+		}
+		// Last resort: return a zero-width invisible glyph
+		return &Glyph{}
+	}
+
 	ig := f.Ifont.FindGlyph(imgui.Wchar(ch))
 	g := &Glyph{X0: ig.X0(), Y0: ig.Y0(), X1: ig.X1(), Y1: ig.Y1(),
 		U0: ig.U0(), V0: ig.V0(), U1: ig.U1(), V1: ig.V1(),
