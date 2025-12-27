@@ -1125,16 +1125,15 @@ func (s *Sim) FlightPlanDirect(tcp TCP, fix string, acid ACID) error {
 	}
 	rte := fp.Route[idx:]
 	fp.Route = rte
-	// Update sim Track as well
-	trk := s.State.Tracks[ac.ADSBCallsign]
+	// Update the aircraft's waypoints (Track.Route is derived from these)
 	pos, ok := av.DB.LookupWaypoint(fix)
 	if !ok {
 		return av.ErrNoMatchingFix // Check this pls
 	}
-	for i, wpPos := range trk.Route {
-		if wpPos == pos {
+	for i, wp := range ac.Nav.Waypoints {
+		if wp.Location == pos {
 			// Remove all waypoints before the fix
-			trk.Route = trk.Route[i:]
+			ac.Nav.Waypoints = ac.Nav.Waypoints[i:]
 			break
 		}
 	}
@@ -1628,9 +1627,9 @@ func (s *Sim) processEnqueued() {
 					s.lg.Info("departing on course", slog.String("adsb_callsign", string(ac.ADSBCallsign)),
 						slog.Int("final_altitude", ac.FlightPlan.Altitude))
 					// Clear temporary altitude
-					if trk, ok := s.State.Tracks[ac.ADSBCallsign]; ok && trk.FlightPlan != nil {
-						trk.FlightPlan.InterimAlt = 0
-						trk.FlightPlan.InterimType = 0
+					if ac.NASFlightPlan != nil {
+						ac.NASFlightPlan.InterimAlt = 0
+						ac.NASFlightPlan.InterimType = 0
 					}
 					ac.DepartOnCourse(s.lg)
 				}
