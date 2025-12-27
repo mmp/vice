@@ -183,24 +183,16 @@ type NewSimResult struct {
 	SpeechWSPort    int
 }
 
-// SimState wraps sim.State and adds server-specific fields.
-// The server derives ActiveTCWs from connectionsByToken on each request;
-// it is not stored in simSession.
+// SimState wraps sim.UserState and adds server-specific fields.
 type SimState struct {
-	sim.State
+	sim.UserState
 
-	// This is server-layer information - the sim layer doesn't track this.
-	ActiveTCWs []sim.TCW
-}
-
-// pruneForClient tidies the NewSimResult, removing fields that are not used by client code
-// in order to reduce the amount of bandwidth used to send the NewSimResult to the client.
-func (r *NewSimResult) pruneForClient() {
-	r.SimState = deep.MustCopy(r.SimState)
-
-	for _, ap := range r.SimState.Airports {
-		ap.Departures = nil
-	}
+	// User-related items not managed by the Sim.
+	UserTCW                             sim.TCW
+	ActiveTCWs                          []sim.TCW
+	ControllerVideoMaps                 []string
+	ControllerDefaultVideoMaps          []string
+	ControllerMonitoredBeaconCodeBlocks []av.Squawk
 }
 
 const NewSimRPC = "SimManager.NewSim"
@@ -330,7 +322,7 @@ func (sm *SimManager) ConnectToSim(req *JoinSimRequest, result *NewSimResult) er
 	session.AddHumanController(token, tcw, req.Initials, req.DisableTextToSpeech, eventSub)
 	sm.sessionsByToken[token] = session
 
-	*result = *sm.buildNewSimResult(session, tcw, eventSub, token)
+	*result = *sm.buildNewSimResult(session, tcw, token)
 
 	return nil
 }
@@ -360,22 +352,21 @@ func (sm *SimManager) checkTCWAvailable(ss *simSession, tcw sim.TCW) error {
 	return nil
 }
 
-// buildNewSimResult prepares the controller state and constructs a NewSimResult.
-func (sm *SimManager) buildNewSimResult(session *simSession, tcw sim.TCW,
-	eventSub *sim.EventsSubscription, token string) *NewSimResult {
+func (sm *SimManager) buildNewSimResult(session *simSession, tcw sim.TCW, token string) *NewSimResult {
+	videoMaps, defaultMaps, beaconCodes := session.sim.GetControllerVideoMaps(tcw)
 
-	state := session.sim.GetStateForController(tcw)
-	var initialUpdate sim.StateUpdate
-	session.sim.GetStateUpdate(tcw, eventSub, &initialUpdate)
-	initialUpdate.Apply(state, nil)
-
-	result := &NewSimResult{
-		SimState:        &SimState{State: *state, ActiveTCWs: session.GetActiveTCWs()},
+	return &NewSimResult{
+		SimState: &SimState{
+			UserState:                           *session.sim.GetUserState(),
+			UserTCW:                             tcw,
+			ActiveTCWs:                          session.GetActiveTCWs(),
+			ControllerVideoMaps:                 videoMaps,
+			ControllerDefaultVideoMaps:          defaultMaps,
+			ControllerMonitoredBeaconCodeBlocks: beaconCodes,
+		},
 		ControllerToken: token,
 		SpeechWSPort:    util.Select(sm.tts != nil, sm.httpPort, 0),
 	}
-	result.pruneForClient()
-	return result
 }
 
 const AddLocalRPC = "SimManager.AddLocal"
@@ -429,7 +420,7 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 	go sm.runSimUpdateLoop(session)
 
 	// Get the state after prespawn (if any) has completed.
-	*result = *sm.buildNewSimResult(session, tcw, eventSub, token)
+	*result = *sm.buildNewSimResult(session, tcw, token)
 
 	return nil
 }
@@ -612,7 +603,7 @@ func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RunningSim) erro
 			GroupName:                    ss.scenarioGroup,
 			ScenarioName:                 ss.scenario,
 			RequirePassword:              ss.password != "",
-			ScenarioDefaultConsolidation: ss.sim.State.ScenarioDefaultConsolidation,
+			ScenarioDefaultConsolidation: ss.sim.ScenarioDefaultConsolidation,
 			CurrentConsolidation:         ss.GetCurrentConsolidation(),
 		}
 	}
@@ -645,37 +636,53 @@ func (sm *SimManager) lookupController(token string) *controllerContext {
 	return nil
 }
 
-func (sm *SimManager) GetStateUpdate(token string, update *SimStateUpdate) error {
+func (sm *SimManager) GetStateUpdate(token string) (*SimStateUpdate, error) {
 	sm.mu.Lock(sm.lg)
 	session, ok := sm.sessionsByToken[token]
 	if !ok {
 		sm.mu.Unlock(sm.lg)
-		return ErrNoSimForControllerToken
+		return nil, ErrNoSimForControllerToken
 	}
 	sm.mu.Unlock(sm.lg)
 
-	session.GetStateUpdate(token, update, sm.tts)
-	return nil
+	return session.GetStateUpdate(token, sm.tts), nil
 }
 
 // SimStateUpdate wraps sim.StateUpdate and adds server-specific fields.
 type SimStateUpdate struct {
 	sim.StateUpdate
 
-	// ActiveTCWs tracks which workstations have humans signed in.
 	ActiveTCWs []sim.TCW
+	Events     []sim.Event
 }
 
 // Apply applies the update to the state, including server-specific fields.
+// If eventStream is provided, events from the update are posted to it.
 func (su *SimStateUpdate) Apply(state *SimState, eventStream *sim.EventStream) {
-	su.StateUpdate.Apply(&state.State, eventStream)
+	// Make sure the generation index is above the current index so that if
+	// updates are returned out of order we ignore stale ones.
+	if state.GenerationIndex < su.GenerationIndex {
+		state.DynamicState = su.DynamicState
+		state.DerivedState = su.DerivedState
+	}
+
 	state.ActiveTCWs = su.ActiveTCWs
+
+	// Post events after updating state so they reflect current state.
+	if eventStream != nil {
+		for _, e := range su.Events {
+			eventStream.Post(e)
+		}
+	}
 }
 
 // GetStateUpdate fills in a server.SimStateUpdate with both sim state and human controllers.
-func (c *controllerContext) GetStateUpdate(update *SimStateUpdate) {
-	c.sim.GetStateUpdate(c.tcw, c.eventSub, &update.StateUpdate)
-	update.ActiveTCWs = c.session.GetActiveTCWs()
+func (c *controllerContext) GetStateUpdate() SimStateUpdate {
+	return SimStateUpdate{
+		StateUpdate: c.sim.GetStateUpdate(),
+		ActiveTCWs:  c.session.GetActiveTCWs(),
+		Events:      c.sim.ConsolidateRadioEventsForTCW(c.tcw, c.eventSub.Get()),
+	}
 }
 
 const GetSerializeSimRPC = "SimManager.GetSerializeSim"

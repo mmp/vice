@@ -27,7 +27,7 @@ import (
 )
 
 type Sim struct {
-	State *State
+	State *CommonState
 
 	mu util.LoggingMutex
 
@@ -44,7 +44,9 @@ type Sim struct {
 	LocalCodePool *av.LocalSquawkCodePool
 	CIDAllocator  *CIDAllocator
 
-	GenerationIndex int // for sequencing StateUpdates
+	TotalIFR, TotalVFR           int
+	QuickFlightPlanIndex         int
+	ScenarioDefaultConsolidation PositionConsolidation
 
 	VFRReportingPoints []av.VFRReportingPoint
 
@@ -330,7 +332,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 	s.ERAMComputer = makeERAMComputer(av.DB.TRACONs[config.Facility].ARTCC, s.LocalCodePool)
 
-	s.State = newState(config, config.StartTime.UTC(), manifest, s.wxModel, s.METAR, lg)
+	s.State = newCommonState(config, config.StartTime.UTC(), manifest, s.wxModel, s.METAR, lg)
+	s.ScenarioDefaultConsolidation = config.ControllerConfiguration.DefaultConsolidation
 
 	return s
 }
@@ -696,12 +699,39 @@ func (s *Sim) PostEvent(e Event) {
 	s.eventStream.Post(e)
 }
 
-// GetStateForController returns a deep copy of the State for the given controller.
-func (s *Sim) GetStateForController(tcw TCW) *State {
+// GetUserState returns a deep copy of the simulation state for a client.
+// Server-only fields (like Airport.Departures) are pruned to reduce bandwidth.
+func (s *Sim) GetUserState() *UserState {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.State.GetStateForController(tcw)
+	state := UserState{
+		CommonState:  *s.State,
+		DerivedState: makeDerivedState(s),
+	}
+
+	// Make a deep copy so that any state changes after the lock is released aren't included.
+	state = deep.MustCopy(state)
+
+	// Prune server-only fields not needed by clients.
+	for _, ap := range state.Airports {
+		ap.Departures = nil
+	}
+
+	return &state
+}
+
+// GetControllerVideoMaps returns the video map configuration for the given TCW.
+// Returns controller-specific config if available, otherwise facility defaults.
+func (s *Sim) GetControllerVideoMaps(tcw TCW) (videoMaps, defaultMaps []string, beaconCodes []av.Squawk) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	tcp := s.State.PrimaryPositionForTCW(tcw)
+	if config, ok := s.State.FacilityAdaptation.ControllerConfigs[tcp]; ok && len(config.VideoMapNames) > 0 {
+		return config.VideoMapNames, config.DefaultMaps, config.MonitoredBeaconCodeBlocks
+	}
+	return s.State.FacilityAdaptation.VideoMapNames, s.State.ScenarioDefaultVideoMaps, s.State.FacilityAdaptation.MonitoredBeaconCodeBlocks
 }
 
 // GetDepartureController returns the TCP responsible for a departure given the
@@ -725,7 +755,14 @@ func (s *Sim) GetDepartureController(airport, runway, sid string) TCP {
 
 // ScenarioRootPosition returns the root position from the scenario's default consolidation.
 func (s *Sim) ScenarioRootPosition() TCP {
-	if root, err := s.State.ScenarioDefaultConsolidation.RootPosition(); err != nil {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.scenarioRootPosition()
+}
+
+func (s *Sim) scenarioRootPosition() TCP {
+	if root, err := s.ScenarioDefaultConsolidation.RootPosition(); err != nil {
 		return ""
 	} else {
 		return root
@@ -734,14 +771,18 @@ func (s *Sim) ScenarioRootPosition() TCP {
 
 // AllScenarioPositions returns all positions defined in the scenario's default consolidation.
 func (s *Sim) AllScenarioPositions() []TCP {
-	return s.State.ScenarioDefaultConsolidation.AllPositions()
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.ScenarioDefaultConsolidation.AllPositions()
 }
 
 // GetTrafficCounts returns the current IFR and VFR traffic counts.
 func (s *Sim) GetTrafficCounts() (ifr, vfr int) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
-	return s.State.TotalIFR, s.State.TotalVFR
+
+	return s.TotalIFR, s.TotalVFR
 }
 
 // consolidateRadioEventsForTCW consolidates consecutive radio transmissions from the same
@@ -837,64 +878,38 @@ func (s *Sim) consolidateRadioEventsForTCW(tcw TCW, events []Event) []Event {
 func (s *Sim) ConsolidateRadioEventsForTCW(tcw TCW, events []Event) []Event {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
+
 	return s.consolidateRadioEventsForTCW(tcw, events)
 }
 
-type StateUpdate struct {
-	UpdatedState
-	Events []Event
-}
-
-// GetStateUpdate populates update with the current simulation state.
-// If eventSub is provided, it retrieves events from that subscription.
-// The tcw parameter is used to filter and format radio transmission events.
-func (s *Sim) GetStateUpdate(tcw TCW, eventSub *EventsSubscription, update *StateUpdate) {
+func (s *Sim) GetStateUpdate() StateUpdate {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	s.computeDerivedState()
-
 	s.State.GenerationIndex++
 
-	update.UpdatedState = s.State.UpdatedState
-
-	if eventSub != nil {
-		update.Events = s.consolidateRadioEventsForTCW(tcw, eventSub.Get())
+	update := StateUpdate{
+		DynamicState: s.State.DynamicState,
+		DerivedState: makeDerivedState(s),
 	}
 
-	if util.SizeOf(*update, os.Stderr, false, 1024*1024) > 256*1024*1024 {
+	if util.SizeOf(update, os.Stderr, false, 1024*1024) > 256*1024*1024 {
 		fn := fmt.Sprintf("update_dump%d.txt", time.Now().Unix())
 		f, err := os.Create(fn)
 		if err != nil {
 			s.lg.Errorf("%s: unable to create: %v", fn, err)
 		} else {
-			util.SizeOf(*update, f, true, 1024)
-			godump.Fdump(f, *update)
+			util.SizeOf(update, f, true, 1024)
+			godump.Fdump(f, update)
 		}
 		panic("too big")
 	}
 
 	// While it seemed that this could be skipped, it's actually necessary
-	// to avoid races: while another copy is made as it's marshaled to be
+	// to avoid races: although another copy is made as it's marshaled to be
 	// returned from RPC call, there may be other updates to the sim state
 	// between this function returning and that happening.
-	*update = deep.MustCopy(*update)
-}
-
-func (su *StateUpdate) Apply(state *State, eventStream *EventStream) {
-	// Make sure the generation index is above the current index so that if
-	// updates are returned out of order we ignore stale ones.
-	if state.GenerationIndex < su.GenerationIndex {
-		state.UpdatedState = su.UpdatedState
-	}
-
-	// Important: do this after updating aircraft, controllers, etc.,
-	// so that they reflect any changes the events are flagging.
-	if eventStream != nil {
-		for _, e := range su.Events {
-			eventStream.Post(e)
-		}
-	}
+	return deep.MustCopy(update)
 }
 
 // isVirtualController returns true if the given position is virtual
@@ -1246,97 +1261,19 @@ func (s *Sim) updateState() {
 
 		s.ERAMComputer.Update(s)
 		s.STARSComputer.Update(s)
-	}
-}
 
-// computeDerivedState updates the fields in UpdatedState that are derived
-// from the core simulation state (Aircraft, STARSComputer, etc.). It is
-// called from GetStateUpdate to ensure clients always receive fresh data.
-func (s *Sim) computeDerivedState() {
-	// Advance METAR: drop old entries when sim time passes the next one's report time
-	for ap, metar := range s.METAR {
-		for len(metar) > 1 && s.State.SimTime.After(metar[1].Time) {
-			metar = metar[1:]
-		}
-		s.METAR[ap] = metar
-		if len(metar) > 0 {
-			if s.State.METAR == nil {
-				s.State.METAR = make(map[string]wx.METAR)
+		// Advance METAR: drop old entries when sim time passes the next one's report time
+		for ap, metar := range s.METAR {
+			for len(metar) > 1 && s.State.SimTime.After(metar[1].Time) {
+				metar = metar[1:]
 			}
-			s.State.METAR[ap] = metar[0]
-		}
-	}
-
-	// Unassociated flight plans (including unsupported DBs) come from STARSComputer
-	s.State.UnassociatedFlightPlans = s.STARSComputer.FlightPlans
-
-	// Build ReleaseDepartures from STARSComputer.HoldForRelease
-	s.State.ReleaseDepartures = nil
-	for _, ac := range s.STARSComputer.HoldForRelease {
-		fp, _, _ := s.getFlightPlanForACID(ACID(ac.ADSBCallsign))
-		if fp == nil {
-			s.lg.Warnf("%s: no flight plan for hold for release aircraft", string(ac.ADSBCallsign))
-			continue
-		}
-		s.State.ReleaseDepartures = append(s.State.ReleaseDepartures,
-			ReleaseDeparture{
-				ADSBCallsign:        ac.ADSBCallsign,
-				DepartureAirport:    "K" + fp.EntryFix,
-				DepartureController: fp.InboundHandoffController,
-				Released:            ac.Released,
-				Squawk:              ac.Squawk,
-				ListIndex:           fp.ListIndex,
-				AircraftType:        fp.AircraftType,
-				Exit:                fp.ExitFix,
-			})
-	}
-
-	// Build Tracks from Aircraft
-	s.State.Tracks = make(map[av.ADSBCallsign]*Track)
-	for callsign, ac := range util.SortedMap(s.Aircraft) {
-		if !s.isRadarVisible(ac) {
-			continue
-		}
-
-		rt := Track{
-			RadarTrack:                ac.GetRadarTrack(s.State.SimTime),
-			FlightPlan:                ac.NASFlightPlan,
-			DepartureAirport:          ac.FlightPlan.DepartureAirport,
-			DepartureAirportElevation: ac.DepartureAirportElevation(),
-			DepartureAirportLocation:  ac.DepartureAirportLocation(),
-			ArrivalAirport:            ac.FlightPlan.ArrivalAirport,
-			ArrivalAirportElevation:   ac.ArrivalAirportElevation(),
-			ArrivalAirportLocation:    ac.ArrivalAirportLocation(),
-			FiledRoute:                ac.FlightPlan.Route,
-			FiledAltitude:             ac.FlightPlan.Altitude,
-			OnExtendedCenterline:      ac.OnExtendedCenterline(0.2),
-			OnApproach:                ac.OnApproach(false), /* don't check altitude */
-			MVAsApply:                 ac.MVAsApply(),
-			HoldForRelease:            ac.HoldForRelease,
-			MissingFlightPlan:         ac.MissingFlightPlan,
-			ATPAVolume:                ac.ATPAVolume(),
-			IsTentative:               s.State.SimTime.Sub(ac.FirstSeen) < 5*time.Second,
-		}
-
-		for _, wp := range ac.Nav.Waypoints {
-			rt.Route = append(rt.Route, wp.Location)
-		}
-
-		s.State.Tracks[callsign] = &rt
-	}
-
-	// Make up fake tracks for unsupported datablocks
-	for i, fp := range s.STARSComputer.FlightPlans {
-		if fp.Location.IsZero() {
-			continue
-		}
-		callsign := av.ADSBCallsign("__" + string(fp.ACID))
-		s.State.Tracks[callsign] = &Track{
-			RadarTrack: av.RadarTrack{
-				ADSBCallsign: callsign,
-				Location:     fp.Location,
-			},
-			FlightPlan: s.STARSComputer.FlightPlans[i],
+			s.METAR[ap] = metar
+			if len(metar) > 0 {
+				if s.State.METAR == nil {
+					s.State.METAR = make(map[string]wx.METAR)
+				}
+				s.State.METAR[ap] = metar[0]
+			}
 		}
 	}
 }

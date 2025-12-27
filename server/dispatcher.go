@@ -26,7 +26,15 @@ func (sd *dispatcher) GetStateUpdate(token string, update *SimStateUpdate) error
 	// like this...
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	return sd.sm.GetStateUpdate(token, update)
+	// GetStateUpdate may return nil if user signs off concurrently.
+	if u, err := sd.sm.GetStateUpdate(token); err != nil {
+		return err
+	} else if u == nil {
+		return ErrNoSimForControllerToken
+	} else {
+		*update = *u
+		return nil
+	}
 }
 
 const SignOffRPC = "Sim.SignOff"
@@ -140,7 +148,7 @@ func (sd *dispatcher) FastForward(token string, update *SimStateUpdate) error {
 	}
 	c.sim.FastForward()
 	c.sim.GlobalMessage(c.tcw, fmt.Sprintf("%s (%s) has fast-forwarded the sim", c.tcw, c.initials))
-	c.GetStateUpdate(update)
+	*update = c.GetStateUpdate()
 	return nil
 }
 
@@ -161,7 +169,7 @@ func (sd *dispatcher) AssociateFlightPlan(it *AssociateFlightPlanArgs, update *S
 	}
 	err := c.sim.AssociateFlightPlan(c.tcw, it.Callsign, it.FlightPlanSpecifier)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -184,7 +192,7 @@ func (sd *dispatcher) ActivateFlightPlan(af *ActivateFlightPlanArgs, update *Sim
 	}
 	err := c.sim.ActivateFlightPlan(c.tcw, af.TrackCallsign, af.FpACID, af.FlightPlanSpecifier)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -205,7 +213,7 @@ func (sd *dispatcher) CreateFlightPlan(cfp *CreateFlightPlanArgs, update *SimSta
 	}
 	err := c.sim.CreateFlightPlan(c.tcw, cfp.FlightPlanSpecifier)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -227,7 +235,7 @@ func (sd *dispatcher) ModifyFlightPlan(mfp *ModifyFlightPlanArgs, update *SimSta
 	}
 	err := c.sim.ModifyFlightPlan(c.tcw, mfp.ACID, mfp.FlightPlanSpecifier)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -255,7 +263,7 @@ func (sd *dispatcher) DeleteFlightPlan(dt *DeleteFlightPlanArgs, update *SimStat
 	}
 	err := c.sim.DeleteFlightPlan(c.tcw, dt.ACID)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -278,7 +286,7 @@ func (sd *dispatcher) RepositionTrack(rt *RepositionTrackArgs, update *SimStateU
 	}
 	err := c.sim.RepositionTrack(c.tcw, rt.ACID, rt.Callsign, rt.Position)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -300,7 +308,7 @@ func (sd *dispatcher) HandoffTrack(h *HandoffArgs, update *SimStateUpdate) error
 	}
 	err := c.sim.HandoffTrack(c.tcw, h.ACID, h.ToPosition)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -316,7 +324,7 @@ func (sd *dispatcher) RedirectHandoff(h *HandoffArgs, update *SimStateUpdate) er
 	}
 	err := c.sim.RedirectHandoff(c.tcw, h.ACID, h.ToPosition)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -332,7 +340,7 @@ func (sd *dispatcher) AcceptRedirectedHandoff(po *AcceptHandoffArgs, update *Sim
 	}
 	err := c.sim.AcceptRedirectedHandoff(c.tcw, po.ACID)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -350,7 +358,7 @@ func (sd *dispatcher) AcceptHandoff(ah *AcceptHandoffArgs, update *SimStateUpdat
 	}
 	err := c.sim.AcceptHandoff(c.tcw, ah.ACID)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -368,7 +376,7 @@ func (sd *dispatcher) CancelHandoff(ch *CancelHandoffArgs, update *SimStateUpdat
 	}
 	err := c.sim.CancelHandoff(c.tcw, ch.ACID)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -396,7 +404,7 @@ func (sd *dispatcher) ForceQL(ql *ForceQLArgs, update *SimStateUpdate) error {
 	}
 	err := c.sim.ForceQL(c.tcw, ql.ACID, ql.ToPosition)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -430,7 +438,7 @@ func (sd *dispatcher) PointOut(po *PointOutArgs, update *SimStateUpdate) error {
 	}
 	err := c.sim.PointOut(c.tcw, po.ACID, po.ToPosition)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -446,7 +454,7 @@ func (sd *dispatcher) AcknowledgePointOut(po *PointOutArgs, update *SimStateUpda
 	}
 	err := c.sim.AcknowledgePointOut(c.tcw, po.ACID)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -462,7 +470,7 @@ func (sd *dispatcher) RecallPointOut(po *PointOutArgs, update *SimStateUpdate) e
 	}
 	err := c.sim.RecallPointOut(c.tcw, po.ACID)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -478,7 +486,7 @@ func (sd *dispatcher) RejectPointOut(po *PointOutArgs, update *SimStateUpdate) e
 	}
 	err := c.sim.RejectPointOut(c.tcw, po.ACID)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -496,7 +504,7 @@ func (sd *dispatcher) ReleaseDeparture(hd *HeldDepartureArgs, update *SimStateUp
 	}
 	err := c.sim.ReleaseDeparture(c.tcw, hd.Callsign)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -514,7 +522,7 @@ func (sd *dispatcher) DeleteAllAircraft(da *DeleteAircraftArgs, update *SimState
 	}
 	err := c.sim.DeleteAllAircraft(c.tcw)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -534,7 +542,7 @@ func (sd *dispatcher) DeleteAircraft(da *DeleteAircraftListArgs, update *SimStat
 		return ErrNoSimForControllerToken
 	}
 	err := c.sim.DeleteAircraftSlice(c.tcw, da.Aircraft)
-	c.GetStateUpdate(update)
+	*update = c.GetStateUpdate()
 	return err
 }
 
@@ -553,7 +561,7 @@ func (sd *dispatcher) SendRouteCoordinates(rca *SendRouteCoordinatesArgs, update
 		return ErrNoSimForControllerToken
 	}
 	err := c.sim.SendRouteCoordinates(c.tcw, rca.ACID)
-	c.GetStateUpdate(update)
+	*update = c.GetStateUpdate()
 	return err
 }
 
@@ -574,7 +582,7 @@ func (sd *dispatcher) FlightPlanDirect(da *FlightPlanDirectArgs, update *SimStat
 	}
 	tcp := c.sim.State.PrimaryPositionForTCW(c.tcw)
 	err := c.sim.FlightPlanDirect(tcp, da.Fix, da.ACID)
-	c.GetStateUpdate(update)
+	*update = c.GetStateUpdate()
 	return err
 }
 
@@ -768,7 +776,7 @@ func (sd *dispatcher) CreateRestrictionArea(ra *RestrictionAreaArgs, result *Cre
 		return err
 	}
 	result.Index = i
-	c.GetStateUpdate(&result.StateUpdate)
+	result.StateUpdate = c.GetStateUpdate()
 	return nil
 }
 
@@ -783,7 +791,7 @@ func (sd *dispatcher) UpdateRestrictionArea(ra *RestrictionAreaArgs, update *Sim
 	}
 	err := c.sim.UpdateRestrictionArea(ra.Index, ra.RestrictionArea)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -799,7 +807,7 @@ func (sd *dispatcher) DeleteRestrictionArea(ra *RestrictionAreaArgs, update *Sim
 	}
 	err := c.sim.DeleteRestrictionArea(ra.Index)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -853,7 +861,7 @@ func (sd *dispatcher) ConsolidateTCP(args *ConsolidateTCPArgs, update *SimStateU
 	}
 	err := c.sim.ConsolidateTCP(args.ReceivingTCW, args.SendingTCP, args.Type)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -874,7 +882,7 @@ func (sd *dispatcher) DeconsolidateTCP(args *DeconsolidateTCPArgs, update *SimSt
 	}
 	err := c.sim.DeconsolidateTCP(c.tcw, args.TCP)
 	if err == nil {
-		c.GetStateUpdate(update)
+		*update = c.GetStateUpdate()
 	}
 	return err
 }
@@ -903,7 +911,7 @@ func (sd *dispatcher) ConfigureATPA(args *ATPAConfigArgs, result *ATPAConfigResu
 	var err error
 	result.Output, err = c.sim.ConfigureATPA(args.Op, args.VolumeId)
 	if err == nil {
-		c.GetStateUpdate(&result.SimStateUpdate)
+		result.SimStateUpdate = c.GetStateUpdate()
 	}
 	return err
 }

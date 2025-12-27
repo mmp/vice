@@ -228,7 +228,7 @@ func (cc *ControllerConfiguration) Validate(controlPositions map[TCP]*av.Control
 
 // SignOn returns state and event subscription for a controller at the given TCW
 // and consolidates the provided TCPs.
-func (s *Sim) SignOn(tcw TCW, tcps []TCP) (*State, *EventsSubscription, error) {
+func (s *Sim) SignOn(tcw TCW, tcps []TCP) (*UserState, *EventsSubscription, error) {
 	s.mu.Lock(s.lg)
 
 	if _, ok := s.State.CurrentConsolidation[tcw]; !ok {
@@ -244,14 +244,7 @@ func (s *Sim) SignOn(tcw TCW, tcps []TCP) (*State, *EventsSubscription, error) {
 		}
 	}
 
-	state := s.GetStateForController(tcw)
-
-	eventSub := s.Subscribe()
-	var update StateUpdate
-	s.GetStateUpdate(tcw, eventSub, &update)
-	update.Apply(state, s.eventStream)
-
-	return state, eventSub, nil
+	return s.GetUserState(), s.Subscribe(), nil
 }
 
 // consolidationContext describes where a TCP currently lives in the consolidation structure.

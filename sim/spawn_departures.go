@@ -535,7 +535,7 @@ func (s *Sim) assignDepartureController(ac *Aircraft, nasFp *NASFlightPlan,
 	}
 
 	// Human controller will be first
-	pos := s.ScenarioRootPosition()
+	pos := s.scenarioRootPosition()
 	if tcp := s.GetDepartureController(departureAirport, runway, exitRoute.SID); tcp != "" {
 		pos = tcp
 	}

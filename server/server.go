@@ -57,7 +57,8 @@ import (
 // 47: pass PrimaryAirport to GetAtmosGrid RPC
 // 48: release bump
 // 49: STARS consolidation
-const ViceSerializeVersion = 49
+// 50: rework State/StateUpdate management
+const ViceSerializeVersion = 50
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 + ViceRPCVersion

@@ -1,5 +1,5 @@
 // sim/state.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package sim
@@ -13,31 +13,18 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
 	"github.com/brunoga/deep"
 )
 
-const serverCallsign = "__SERVER__"
-
-// State serves two purposes: first, the Sim object holds one to organize
-// assorted information about the world state that it updates as part of
-// the simulation. Second, an instance of it is given to clients when they
-// join a sim.  As the sim runs, the client's State is updated roughly once
-// a second.  Clients can then use the State as a read-only reference for
-// assorted information they may need (the state of aircraft in the sim,
-// etc.)
-
-// UpdatedState is the subset of State that is sent to the user once a second as the Sim
+// DynamicState is the subset of CommonState that is sent to the user once a second as the Sim
 // executes. In this way, we limit network traffic to what is actually changing and only send the
-// static information in State once, when the Sim starts.
-type UpdatedState struct {
-	GenerationIndex         int
-	Tracks                  map[av.ADSBCallsign]*Track
-	UnassociatedFlightPlans []*NASFlightPlan // Unassociated ones, including unsupported DBs
-	ReleaseDepartures       []ReleaseDeparture
+// static information in CommonState once, when the Sim starts.
+type DynamicState struct {
+	GenerationIndex int
 
-	Controllers          map[ControlPosition]*av.Controller
 	CurrentConsolidation map[TCW]*TCPConsolidation
 
 	SimTime time.Time // this is our fake time--accounting for pauses & simRate..
@@ -48,28 +35,30 @@ type UpdatedState struct {
 
 	UserRestrictionAreas []av.RestrictionArea
 
-	Paused             bool
-	SimRate            float32
-	TotalIFR, TotalVFR int
-
-	QuickFlightPlanIndex int // for auto ACIDs for quick ACID flight plan 5-145
+	Paused  bool
+	SimRate float32
 
 	ATPAEnabled     bool                                   // True if ATPA is enabled system-wide
 	ATPAVolumeState map[string]map[string]*ATPAVolumeState // airport -> volumeId -> state
 }
 
-type State struct {
-	UpdatedState
+type ATPAVolumeState struct {
+	Disabled          bool
+	Reduced25Disabled bool
+}
+
+// CommonState represents the sim state that is both used server side and client-side.
+type CommonState struct {
+	DynamicState
 
 	Airports          map[string]*av.Airport
+	Controllers       map[ControlPosition]*av.Controller
 	DepartureAirports map[string]interface{}
 	ArrivalAirports   map[string]interface{}
 	Fixes             map[string]math.Point2LL
 	VFRRunways        map[string]av.Runway // assume just one runway per airport
 
-	ConfigurationId              string // Short identifier for the configuration (from ControllerConfiguration.ConfigId)
-	UserTCW                      TCW
-	ScenarioDefaultConsolidation PositionConsolidation // Scenario's original hierarchy. Immutable after initialization.
+	ConfigurationId string // Short identifier for the configuration (from ControllerConfiguration.ConfigId)
 
 	Airspace map[ControlPosition]map[string][]av.ControllerAirspaceVolume // position -> vol name -> definition
 
@@ -96,13 +85,14 @@ type State struct {
 	Observers      map[TCW]bool // TCWs connected as observers (no position)
 
 	VideoMapLibraryHash []byte
+}
 
-	// Set in State returned by GetStateForController
-	ControllerVideoMaps                 []string
-	ControllerDefaultVideoMaps          []string
-	ControllerMonitoredBeaconCodeBlocks []av.Squawk
-
-	RadioTransmissions [][]byte
+// DerivedState collects state used on the client-side that is derived from Sim state that is not
+// shared with the client.
+type DerivedState struct {
+	Tracks                  map[av.ADSBCallsign]*Track
+	UnassociatedFlightPlans []*NASFlightPlan // Unassociated ones, including unsupported DBs
+	ReleaseDepartures       []ReleaseDeparture
 }
 
 type ReleaseDeparture struct {
@@ -116,19 +106,107 @@ type ReleaseDeparture struct {
 	Exit                string
 }
 
-type ATPAVolumeState struct {
-	Disabled          bool
-	Reduced25Disabled bool
+// UserState is the simulation-related state provided to a user on the client-side.
+type UserState struct {
+	CommonState
+	DerivedState
 }
 
-func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMapManifest, model *wx.Model, metar map[string][]wx.METAR,
-	lg *log.Logger) *State {
+// StateUpdate encapsulates the simulation state data sent from server to client each tick.
+type StateUpdate struct {
+	DynamicState
+	DerivedState
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+// makeDerivedState creates a DerivedState from the current simulation state.  It builds Tracks from
+// Aircraft and gathers flight plan information from STARSComputer. This is called when preparing
+// state updates for clients.
+func makeDerivedState(s *Sim) DerivedState {
+	ds := DerivedState{
+		UnassociatedFlightPlans: s.STARSComputer.FlightPlans,
+	}
+
+	// Build ReleaseDepartures from STARSComputer.HoldForRelease
+	for _, ac := range s.STARSComputer.HoldForRelease {
+		fp, _, _ := s.getFlightPlanForACID(ACID(ac.ADSBCallsign))
+		if fp == nil {
+			s.lg.Warnf("%s: no flight plan for hold for release aircraft", string(ac.ADSBCallsign))
+			continue
+		}
+		ds.ReleaseDepartures = append(ds.ReleaseDepartures,
+			ReleaseDeparture{
+				ADSBCallsign:        ac.ADSBCallsign,
+				DepartureAirport:    "K" + fp.EntryFix,
+				DepartureController: fp.InboundHandoffController,
+				Released:            ac.Released,
+				Squawk:              ac.Squawk,
+				ListIndex:           fp.ListIndex,
+				AircraftType:        fp.AircraftType,
+				Exit:                fp.ExitFix,
+			})
+	}
+
+	// Build Tracks from Aircraft
+	ds.Tracks = make(map[av.ADSBCallsign]*Track)
+	for callsign, ac := range util.SortedMap(s.Aircraft) {
+		if !s.isRadarVisible(ac) {
+			continue
+		}
+
+		rt := Track{
+			RadarTrack:                ac.GetRadarTrack(s.State.SimTime),
+			FlightPlan:                ac.NASFlightPlan,
+			DepartureAirport:          ac.FlightPlan.DepartureAirport,
+			DepartureAirportElevation: ac.DepartureAirportElevation(),
+			DepartureAirportLocation:  ac.DepartureAirportLocation(),
+			ArrivalAirport:            ac.FlightPlan.ArrivalAirport,
+			ArrivalAirportElevation:   ac.ArrivalAirportElevation(),
+			ArrivalAirportLocation:    ac.ArrivalAirportLocation(),
+			FiledRoute:                ac.FlightPlan.Route,
+			FiledAltitude:             ac.FlightPlan.Altitude,
+			OnExtendedCenterline:      ac.OnExtendedCenterline(0.2),
+			OnApproach:                ac.OnApproach(false), /* don't check altitude */
+			MVAsApply:                 ac.MVAsApply(),
+			HoldForRelease:            ac.HoldForRelease,
+			MissingFlightPlan:         ac.MissingFlightPlan,
+			ATPAVolume:                ac.ATPAVolume(),
+			IsTentative:               s.State.SimTime.Sub(ac.FirstSeen) < 5*time.Second,
+		}
+
+		for _, wp := range ac.Nav.Waypoints {
+			rt.Route = append(rt.Route, wp.Location)
+		}
+
+		ds.Tracks[callsign] = &rt
+	}
+
+	// Make up fake tracks for unsupported datablocks
+	for i, fp := range s.STARSComputer.FlightPlans {
+		if fp.Location.IsZero() {
+			continue
+		}
+		callsign := av.ADSBCallsign("__" + string(fp.ACID))
+		ds.Tracks[callsign] = &Track{
+			RadarTrack: av.RadarTrack{
+				ADSBCallsign: callsign,
+				Location:     fp.Location,
+			},
+			FlightPlan: s.STARSComputer.FlightPlans[i],
+		}
+	}
+
+	return ds
+}
+
+func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *VideoMapManifest, model *wx.Model,
+	metar map[string][]wx.METAR, lg *log.Logger) *CommonState {
 	// Roll back the start time to account for prespawn
 	startTime = startTime.Add(-initialSimSeconds * time.Second)
 
-	ss := &State{
-		UpdatedState: UpdatedState{
-			Controllers:          maps.Clone(config.ControlPositions),
+	ss := &CommonState{
+		DynamicState: DynamicState{
 			CurrentConsolidation: make(map[TCW]*TCPConsolidation),
 
 			METAR: make(map[string]wx.METAR),
@@ -142,13 +220,12 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 			ATPAVolumeState: initATPAVolumeState(config.Airports),
 		},
 
-		Airports:   config.Airports,
-		Fixes:      config.Fixes,
-		VFRRunways: make(map[string]av.Runway),
+		Airports:    config.Airports,
+		Controllers: maps.Clone(config.ControlPositions),
+		Fixes:       config.Fixes,
+		VFRRunways:  make(map[string]av.Runway),
 
-		ConfigurationId:              config.ControllerConfiguration.ConfigId,
-		UserTCW:                      serverCallsign,
-		ScenarioDefaultConsolidation: config.ControllerConfiguration.DefaultConsolidation,
+		ConfigurationId: config.ControllerConfiguration.ConfigId,
 
 		DepartureRunways: config.DepartureRunways,
 		ArrivalRunways:   config.ArrivalRunways,
@@ -204,10 +281,11 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 	}
 
 	// Consolidate all positions to the root TCW
-	rootTCP, _ := ss.ScenarioDefaultConsolidation.RootPosition()
+	defaultConsolidation := config.ControllerConfiguration.DefaultConsolidation
+	rootTCP, _ := defaultConsolidation.RootPosition()
 	rootCons := &TCPConsolidation{PrimaryTCP: rootTCP}
 	ss.CurrentConsolidation[TCW(rootTCP)] = rootCons
-	for _, tcp := range ss.ScenarioDefaultConsolidation.AllPositions() {
+	for _, tcp := range defaultConsolidation.AllPositions() {
 		if tcp != rootTCP {
 			rootCons.SecondaryTCPs = append(rootCons.SecondaryTCPs,
 				SecondaryTCP{TCP: tcp, Type: ConsolidationFull})
@@ -258,7 +336,7 @@ func initATPAVolumeState(airports map[string]*av.Airport) map[string]map[string]
 	return result
 }
 
-func (ss *State) Locate(s string) (math.Point2LL, bool) {
+func (ss *CommonState) Locate(s string) (math.Point2LL, bool) {
 	s = strings.ToUpper(s)
 	// ScenarioGroup's definitions take precedence...
 	if ap, ok := ss.Airports[s]; ok {
@@ -284,55 +362,31 @@ func (ss *State) Locate(s string) (math.Point2LL, bool) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// State methods for controller/consolidation management
+// CommonState methods for controller/consolidation management
 
-func (ss *State) GetStateForController(tcw TCW) *State {
-	// Make a deep copy so that if the server is running on the same
-	// system, that the client doesn't see updates until they're explicitly
-	// sent. (And similarly, that any speculative client changes to the
-	// World state to improve responsiveness don't actually affect the
-	// server.)
-	state := deep.MustCopy(*ss)
-
-	state.UserTCW = tcw
-
-	// Now copy the appropriate video maps into ControllerVideoMaps and ControllerDefaultVideoMaps
-	if config, ok := ss.FacilityAdaptation.ControllerConfigs[ss.PrimaryPositionForTCW(tcw)]; ok && len(config.VideoMapNames) > 0 {
-		state.ControllerVideoMaps = config.VideoMapNames
-		state.ControllerDefaultVideoMaps = config.DefaultMaps
-		state.ControllerMonitoredBeaconCodeBlocks = config.MonitoredBeaconCodeBlocks
-	} else {
-		state.ControllerVideoMaps = ss.FacilityAdaptation.VideoMapNames
-		state.ControllerDefaultVideoMaps = ss.ScenarioDefaultVideoMaps
-		state.ControllerMonitoredBeaconCodeBlocks = ss.FacilityAdaptation.MonitoredBeaconCodeBlocks
-	}
-
-	return &state
-}
-
-func (ss *State) IsExternalController(pos ControlPosition) bool {
+func (ss *CommonState) IsExternalController(pos ControlPosition) bool {
 	// Resolve consolidated positions to whoever currently controls them
 	resolved := ss.ResolveController(pos)
 	ctrl, ok := ss.Controllers[resolved]
 	return ok && ctrl.FacilityIdentifier != ""
 }
 
-func (ss *State) IsLocalController(pos ControlPosition) bool {
+func (ss *CommonState) IsLocalController(pos ControlPosition) bool {
 	// Resolve consolidated positions to whoever currently controls them
 	resolved := ss.ResolveController(pos)
 	ctrl, ok := ss.Controllers[resolved]
 	return ok && ctrl.FacilityIdentifier == ""
 }
 
-func (ss *State) TCWIsPrivileged(tcw TCW) bool {
+func (ss *CommonState) TCWIsPrivileged(tcw TCW) bool {
 	return ss.PrivilegedTCWs[tcw]
 }
 
-func (ss *State) TCWIsObserver(tcw TCW) bool {
+func (ss *CommonState) TCWIsObserver(tcw TCW) bool {
 	return ss.Observers[tcw]
 }
 
-func (ss *State) ResolveController(pos ControlPosition) ControlPosition {
+func (ss *CommonState) ResolveController(pos ControlPosition) ControlPosition {
 	// Check who actually controls this position via consolidation.
 	for _, cons := range ss.CurrentConsolidation {
 		if cons.ControlsPosition(pos) {
@@ -343,7 +397,7 @@ func (ss *State) ResolveController(pos ControlPosition) ControlPosition {
 	return pos
 }
 
-func (ss *State) GetPositionsForTCW(tcw TCW) []ControlPosition {
+func (ss *CommonState) GetPositionsForTCW(tcw TCW) []ControlPosition {
 	if cons, ok := ss.CurrentConsolidation[tcw]; ok {
 		return cons.OwnedPositions()
 	}
@@ -353,18 +407,18 @@ func (ss *State) GetPositionsForTCW(tcw TCW) []ControlPosition {
 // TCWControlsTrack returns true if the given TCW owns the track.
 // Track ownership is determined by the OwningTCW field, which is set when
 // the track is accepted/spawned and updated during full consolidation.
-func (ss *State) TCWControlsTrack(tcw TCW, track *Track) bool {
+func (ss *CommonState) TCWControlsTrack(tcw TCW, track *Track) bool {
 	return track != nil && track.IsAssociated() && track.FlightPlan.OwningTCW == tcw
 }
 
 // TCWControlsPosition returns true if the given TCW controls the specified position
 // (either as primary or as a secondary position).
-func (ss *State) TCWControlsPosition(tcw TCW, pos ControlPosition) bool {
+func (ss *CommonState) TCWControlsPosition(tcw TCW, pos ControlPosition) bool {
 	cons, ok := ss.CurrentConsolidation[tcw]
 	return ok && cons.ControlsPosition(pos)
 }
 
-func (ss *State) TCWForPosition(pos ControlPosition) TCW {
+func (ss *CommonState) TCWForPosition(pos ControlPosition) TCW {
 	for tcw, cons := range ss.CurrentConsolidation {
 		if cons.ControlsPosition(pos) {
 			return tcw
@@ -375,7 +429,7 @@ func (ss *State) TCWForPosition(pos ControlPosition) TCW {
 
 // PrimaryPositionForTCW returns the primary position for the given TCW.
 // Returns the TCW as position if no consolidation state exists or if Primary is empty.
-func (ss *State) PrimaryPositionForTCW(tcw TCW) ControlPosition {
+func (ss *CommonState) PrimaryPositionForTCW(tcw TCW) ControlPosition {
 	if cons, ok := ss.CurrentConsolidation[tcw]; ok && cons.PrimaryTCP != "" {
 		return cons.PrimaryTCP
 	}
@@ -383,10 +437,10 @@ func (ss *State) PrimaryPositionForTCW(tcw TCW) ControlPosition {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// State methods for ATPA configuration
+// CommonState methods for ATPA configuration
 
 // FindAirportForATPAVolume returns the airport ICAO code that contains the given volume ID
-func (ss *State) FindAirportForATPAVolume(volumeId string) string {
+func (ss *CommonState) FindAirportForATPAVolume(volumeId string) string {
 	for icao, ap := range ss.Airports {
 		if _, ok := ap.ATPAVolumes[volumeId]; ok {
 			return icao
@@ -396,7 +450,7 @@ func (ss *State) FindAirportForATPAVolume(volumeId string) string {
 }
 
 // IsATPAVolumeDisabled checks if the given ATPA volume is disabled
-func (ss *State) IsATPAVolumeDisabled(volumeId string) bool {
+func (ss *CommonState) IsATPAVolumeDisabled(volumeId string) bool {
 	airport := ss.FindAirportForATPAVolume(volumeId)
 	if airport == "" {
 		return true // Volume not found, treat as disabled
@@ -410,7 +464,7 @@ func (ss *State) IsATPAVolumeDisabled(volumeId string) bool {
 }
 
 // IsATPAVolume25nmEnabled checks if 2.5nm reduced separation is enabled for the volume
-func (ss *State) IsATPAVolume25nmEnabled(volumeId string) bool {
+func (ss *CommonState) IsATPAVolume25nmEnabled(volumeId string) bool {
 	airport := ss.FindAirportForATPAVolume(volumeId)
 	if airport == "" {
 		return false

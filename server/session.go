@@ -191,13 +191,13 @@ func (ss *simSession) updateSimPauseState() {
 
 // GetStateUpdate populates the update with session state and processes TTS.
 // This is the main entry point for periodic state updates from a controller.
-func (ss *simSession) GetStateUpdate(token string, update *SimStateUpdate, tts sim.TTSProvider) {
+func (ss *simSession) GetStateUpdate(token string, tts sim.TTSProvider) *SimStateUpdate {
 	ss.mu.Lock(ss.lg)
 	conn, ok := ss.connectionsByToken[token]
 	if !ok {
 		ss.mu.Unlock(ss.lg)
 		ss.lg.Errorf("%s: unknown token for sim", token)
-		return
+		return nil
 	}
 
 	// Update last call time and handle reconnection
@@ -213,7 +213,6 @@ func (ss *simSession) GetStateUpdate(token string, update *SimStateUpdate, tts s
 
 	tcw := conn.tcw
 	eventSub := conn.stateUpdateEventSub
-	update.ActiveTCWs = ss.getActiveTCWs()
 
 	var ttsEvents []sim.Event
 	if conn.ttsEventSub != nil {
@@ -221,9 +220,13 @@ func (ss *simSession) GetStateUpdate(token string, update *SimStateUpdate, tts s
 	}
 	ss.mu.Unlock(ss.lg)
 
-	ss.sim.GetStateUpdate(tcw, eventSub, &update.StateUpdate)
-
 	ss.ProcessTTS(token, ttsEvents, tts)
+
+	return &SimStateUpdate{
+		StateUpdate: ss.sim.GetStateUpdate(),
+		ActiveTCWs:  ss.GetActiveTCWs(),
+		Events:      ss.sim.ConsolidateRadioEventsForTCW(tcw, eventSub.Get()),
+	}
 }
 
 // MakeControllerContext returns a ControllerContext for the given token, or nil if not found.

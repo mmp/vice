@@ -447,9 +447,9 @@ func (s *Sim) AssociateFlightPlan(tcw TCW, callsign av.ADSBCallsign, spec Flight
 
 	if spec.QuickFlightPlan.IsSet && spec.QuickFlightPlan.Get() {
 		base := s.State.FacilityAdaptation.FlightPlan.QuickACID
-		acid := base + fmt.Sprintf("%02d", s.State.QuickFlightPlanIndex%100)
+		acid := base + fmt.Sprintf("%02d", s.QuickFlightPlanIndex%100)
 		spec.ACID.Set(ACID(acid))
-		s.State.QuickFlightPlanIndex++
+		s.QuickFlightPlanIndex++
 	}
 	if !spec.ACID.IsSet {
 		spec.ACID.Set(ACID(callsign))
