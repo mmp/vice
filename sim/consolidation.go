@@ -403,7 +403,7 @@ func (s *Sim) ConsolidateTCP(receivingTCW TCW, sendingTCP TCP, consType Consolid
 		for _, ac := range s.Aircraft {
 			if ac.NASFlightPlan != nil && slices.Contains(transferredTCPs, ac.NASFlightPlan.TrackingController) {
 				ac.NASFlightPlan.OwningTCW = receivingTCW
-				if ac.NASFlightPlan.HandoffController != "" && s.State.UserControlsPosition(ac.NASFlightPlan.HandoffController) {
+				if ac.NASFlightPlan.HandoffController != "" && s.State.TCWControlsPosition(receivingTCW, ac.NASFlightPlan.HandoffController) {
 					// It's being flashed to us but was then consolidated; the handoff is now irrelevant...
 					ac.NASFlightPlan.HandoffController = ""
 				}
