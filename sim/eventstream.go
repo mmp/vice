@@ -140,7 +140,11 @@ func (e *EventsSubscription) Unsubscribe() {
 		e.stream.lg.Errorf("Attempted to unsubscribe invalid subscription: %+v", e)
 	}
 	delete(e.stream.subscriptions, e)
-	e.stream = nil
+	// Note: we intentionally do not set e.stream = nil here. SignOff may race
+	// with outstanding RPCs that hold a controllerContext with a pointer to this
+	// subscription. If we nil out stream, those RPCs would crash when calling Get().
+	// Instead, Get() checks if the subscription is still registered and returns
+	// nil if not.
 }
 
 // Post adds an event to the event stream. The type used to encode the
