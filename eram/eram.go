@@ -14,7 +14,6 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
-	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
@@ -287,7 +286,7 @@ func (ep *ERAMPane) ResetSim(client *client.ControlClient, pl platform.Platform,
 // ensurePrefSetForSim initializes the ERAM preference set if needed and
 // resets transient fields for a newly-loaded or reset Sim. Called from
 // both LoadedSim and ResetSim so that preferences are ready before use.
-func (ep *ERAMPane) ensurePrefSetForSim(ss server.SimState) {
+func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
 	// Ensure map of saved preference sets exists
 	if ep.ERAMPreferenceSets == nil {
 		ep.ERAMPreferenceSets = make(map[string]*PrefrenceSet)
@@ -649,7 +648,7 @@ func (ep *ERAMPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	}
 }
 
-func (ep *ERAMPane) getVideoMapLibrary(ss server.SimState, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
+func (ep *ERAMPane) getVideoMapLibrary(ss client.SimState, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
 	filename := ss.FacilityAdaptation.VideoMapFile
 	if ml, err := sim.HashCheckLoadVideoMap(filename, ss.VideoMapLibraryHash); err == nil {
 		return ml, nil

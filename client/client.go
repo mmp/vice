@@ -55,7 +55,7 @@ type ControlClient struct {
 
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
-	State server.SimState
+	State SimState
 }
 
 // This is the client-side representation of a server (perhaps could be better-named...)
@@ -82,7 +82,7 @@ type SessionStats struct {
 	seenCallsigns map[av.ADSBCallsign]interface{}
 }
 
-func (s *SessionStats) Update(ss *server.SimState) {
+func (s *SessionStats) Update(ss *SimState) {
 	for i, trk := range ss.Tracks {
 		if fp := trk.FlightPlan; fp != nil {
 			// Use track ownership check (via OwningTCW).
@@ -134,14 +134,14 @@ func (c *RPCClient) callWithTimeout(serviceMethod string, args any, reply any) e
 type pendingCall struct {
 	Call      *rpc.Call
 	IssueTime time.Time
-	Callback  func(*sim.EventStream, *server.SimState, error)
+	Callback  func(*sim.EventStream, *SimState, error)
 }
 
 func makeRPCCall(call *rpc.Call, callback func(error)) *pendingCall {
 	return &pendingCall{
 		Call:      call,
 		IssueTime: time.Now(),
-		Callback: func(es *sim.EventStream, state *server.SimState, err error) {
+		Callback: func(es *sim.EventStream, state *SimState, err error) {
 			if callback != nil {
 				callback(err)
 			}
@@ -153,9 +153,9 @@ func makeStateUpdateRPCCall(call *rpc.Call, update *server.SimStateUpdate, callb
 	return &pendingCall{
 		Call:      call,
 		IssueTime: time.Now(),
-		Callback: func(es *sim.EventStream, state *server.SimState, err error) {
+		Callback: func(es *sim.EventStream, state *SimState, err error) {
 			if err == nil {
-				update.Apply(state, es)
+				update.Apply(&state.SimState, es)
 			}
 			if callback != nil {
 				callback(err)
@@ -164,7 +164,7 @@ func makeStateUpdateRPCCall(call *rpc.Call, update *server.SimStateUpdate, callb
 	}
 }
 
-func (p *pendingCall) CheckFinished(es *sim.EventStream, state *server.SimState) bool {
+func (p *pendingCall) CheckFinished(es *sim.EventStream, state *SimState) bool {
 	select {
 	case c := <-p.Call.Done:
 		if p.Callback != nil {
@@ -183,7 +183,7 @@ func NewControlClient(ss server.SimState, controllerToken string, wsURL string, 
 		client:            client,
 		lg:                lg,
 		lastUpdateRequest: time.Now(),
-		State:             ss,
+		State:             SimState{ss},
 	}
 
 	if wsURL != "" {

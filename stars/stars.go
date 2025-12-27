@@ -26,7 +26,6 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
-	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
@@ -739,7 +738,7 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	}
 }
 
-func (sp *STARSPane) getVideoMapLibrary(ss server.SimState, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
+func (sp *STARSPane) getVideoMapLibrary(ss client.SimState, client *client.ControlClient) (*sim.VideoMapLibrary, error) {
 	filename := ss.FacilityAdaptation.VideoMapFile
 	if ml, err := sim.HashCheckLoadVideoMap(filename, ss.VideoMapLibraryHash); err == nil {
 		return ml, nil
@@ -1342,7 +1341,7 @@ func (sp *STARSPane) drawMouseCursor(ctx *panes.Context, mouseOverDCB bool, tran
 	td.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) makeSignificantPoints(ss server.SimState) {
+func (sp *STARSPane) makeSignificantPoints(ss client.SimState) {
 	sp.significantPoints = maps.Clone(ss.FacilityAdaptation.SignificantPoints)
 	sp.significantPointsSlice = nil
 	for _, pt := range sp.significantPoints {

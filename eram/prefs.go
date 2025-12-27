@@ -1,9 +1,9 @@
 package eram
 
 import (
+	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/radar"
-	"github.com/mmp/vice/server"
 )
 
 type Preferences struct {
@@ -197,7 +197,7 @@ func makeDefaultPreferences() *Preferences {
 	return &prefs
 }
 
-func (ep *ERAMPane) initPrefsForLoadedSim(ss server.SimState) *Preferences {
+func (ep *ERAMPane) initPrefsForLoadedSim(ss client.SimState) *Preferences {
 	// TODO: Add saving prefs with different ARTCCS/ sectors
 
 	p := makeDefaultPreferences()
