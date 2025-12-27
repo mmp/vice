@@ -11,11 +11,12 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/wx"
+
+	"github.com/goforj/godump"
 )
 
 func init() {
@@ -63,7 +64,7 @@ func init() {
 				slog.Any("err", err))
 		} else {
 			state := sp.TrackState[trk.ADSBCallsign]
-			fmt.Println(ads.Spew + "\n\n\n" + spew.Sdump(state))
+			fmt.Println(ads.Spew + "\n\n\n" + godump.DumpStr(state))
 		}
 	})
 

@@ -14,7 +14,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/brunoga/deep"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
@@ -23,7 +22,8 @@ import (
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
-	"github.com/davecgh/go-spew/spew"
+	"github.com/brunoga/deep"
+	"github.com/goforj/godump"
 )
 
 type Sim struct {
@@ -869,7 +869,7 @@ func (s *Sim) GetStateUpdate(tcw TCW, eventSub *EventsSubscription, update *Stat
 			s.lg.Errorf("%s: unable to create: %v", fn, err)
 		} else {
 			util.SizeOf(*update, f, true, 1024)
-			spew.Fdump(f, *update)
+			godump.Fdump(f, *update)
 		}
 		panic("too big")
 	}
@@ -1612,7 +1612,7 @@ func (s *Sim) GetAircraftDisplayState(callsign av.ADSBCallsign) (AircraftDisplay
 		return AircraftDisplayState{}, ErrNoMatchingFlight
 	} else {
 		return AircraftDisplayState{
-			Spew:        spew.Sdump(ac),
+			Spew:        godump.DumpStr(ac),
 			FlightState: ac.NavSummary(s.wxModel, s.State.SimTime, s.lg),
 		}, nil
 	}
