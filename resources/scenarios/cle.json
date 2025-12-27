@@ -3845,7 +3845,7 @@
           "runway": "14"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRWNZ4": {
           "KCLE": 8,
           "KBKL": 1,
@@ -3929,7 +3929,7 @@
           "runway": "24R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRWNZ4_FINALS": {
           "KCLE": 10
         },
@@ -3965,7 +3965,7 @@
           "runway": "24R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRWNZ4_FEEDERS": {
           "KCLE": 10
         },
@@ -4001,7 +4001,7 @@
           "runway": "6L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRWNZ4_FEEDERN": {
           "KCLE": 10
         },
@@ -4037,7 +4037,7 @@
           "runway": "6L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRWNZ4_FINALN": {
           "KCLE": 10
         },
@@ -4096,7 +4096,7 @@
           "runway": "32"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRWNZ4": {
           "KCLE": 8,
           "KBKL": 1,

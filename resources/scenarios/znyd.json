@@ -930,7 +930,7 @@
           "runway": "28"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "MIP4-ETG": {
           "KLGA": 15
         },

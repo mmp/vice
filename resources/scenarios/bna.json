@@ -2153,7 +2153,7 @@
           "runway": "20R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CHSNE3": {
           "KBNA": 10
         },
@@ -2206,7 +2206,7 @@
           "runway": "2R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CHSNE3": {
           "KBNA": 10
         },

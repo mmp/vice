@@ -2303,7 +2303,7 @@
         "ISP_I_APP": ["BEADS_LOW"],
         "ISP_B_APP": ["BEADS_HIGH"]
       },
-      "arrivals": {
+      "inbound_rates": {
         "LOVES1": {
           "KISP": 12
         },
@@ -2446,7 +2446,7 @@
         "ISP_I_APP": ["BEADS_LOW"],
         "ISP_B_APP": ["BEADS_HIGH"]
       },
-      "arrivals": {
+      "inbound_rates": {
         "LOVES1": {
           "KISP": 12
         },
@@ -2586,7 +2586,7 @@
         "ISP_I_APP": ["BEADS_LOW"],
         "ISP_B_APP": ["BEADS_HIGH"]
       },
-      "arrivals": {
+      "inbound_rates": {
         "LOVES1": {
           "KISP": 12
         },
@@ -2726,7 +2726,7 @@
         "ISP_I_APP": ["BEADS_LOW"],
         "ISP_B_APP": ["BEADS_HIGH"]
       },
-      "arrivals": {
+      "inbound_rates": {
         "LOVES1": {
           "KISP": 12
         },

@@ -2728,7 +2728,7 @@
           "runway": "5"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "TTHOR3": {
           "KDAB": 8,
           "overflights": 7
@@ -2902,7 +2902,7 @@
           "runway": "23"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "TTHOR3": {
           "KDAB": 8,
           "overflights": 7

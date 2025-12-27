@@ -4662,7 +4662,7 @@
           "runway": "15R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CAPSS3": {
           "KDCA": 15
         },
@@ -5057,7 +5057,7 @@
           "runway": "1"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "FINAL_NNW": {
           "KDCA": 15
         },
@@ -5101,7 +5101,7 @@
           "runway": "19"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "FINAL_SNW": {
           "KDCA": 15
         },

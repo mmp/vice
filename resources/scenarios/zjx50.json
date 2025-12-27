@@ -985,7 +985,7 @@
         "ZJX 76 Keystone"
       ],
       "default_maps": ["ZJX HI"],
-      "arrivals": {
+      "inbound_rates": {
         "OHDEA2": {
           "KJAX": 10
         },

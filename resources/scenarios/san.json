@@ -3608,7 +3608,7 @@
           "runway": "29"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "LUCKI1.MOMAR": {
           "KSAN": 7
         },
@@ -3718,7 +3718,7 @@
           "runway": "36"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "PLYYA2": {
           "KSAN": 12
         },
@@ -3815,7 +3815,7 @@
           "runway": "29"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "PLYYA2": {
           "KSAN": 12
         },

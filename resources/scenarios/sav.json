@@ -1473,7 +1473,7 @@
           "runway": "32"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "VIYAP": {
           "KSAV": 5,
           "KHXD": 3,
@@ -1559,7 +1559,7 @@
           "runway": "14"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "VIYAP": {
           "KSAV": 10,
           "KHXD": 3,
@@ -1645,7 +1645,7 @@
           "runway": "32"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "VIYAP": {
           "KSAV": 5,
           "KHXD": 3,
@@ -1730,7 +1730,7 @@
           "runway": "14"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "VIYAP": {
           "KSAV": 8,
           "KHXD": 3,

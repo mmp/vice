@@ -783,7 +783,7 @@
           "runway": "24"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "EWR": {
           "KABE": 3
         },
@@ -826,7 +826,7 @@
           "runway": "6"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "EWR": {
           "KABE": 3
         },

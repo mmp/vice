@@ -1240,7 +1240,7 @@
           "runway": "35"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JAZZZ1": {
           "KSLC": 10
         },
@@ -1305,7 +1305,7 @@
           "runway": "17"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "PITTT1.E": {
           "KSLC": 10
         },

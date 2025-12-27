@@ -297,7 +297,7 @@
           "runway": "15"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "LBNON Arrival Land 15": {
           "KBTV": 10
         },
@@ -346,7 +346,7 @@
           "runway": "35"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "LBNON Arrival Land 15": {
           "KBTV": 0
         },

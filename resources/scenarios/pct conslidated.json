@@ -7630,7 +7630,7 @@
           "runway": "10"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CAPSS3": {
           "KDCA": 15
         },

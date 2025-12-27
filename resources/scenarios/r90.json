@@ -2640,7 +2640,7 @@
           "runway": "36"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "AANDY2": {
           "KOMA": 2
         },
@@ -2861,7 +2861,7 @@
           "runway": "18"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "AANDY2": {
           "KOMA": 2
         },
@@ -3074,7 +3074,7 @@
           "runway": "36"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "LNK.KDEN": {
           "KLNK": 2
         },
@@ -3195,7 +3195,7 @@
           "runway": "18"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "LNK.KDEN": {
           "KLNK": 2
         },
@@ -3332,7 +3332,7 @@
           "runway": "31"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "LNK.KDEN": {
           "KLNK": 2
         },
@@ -3750,7 +3750,7 @@
           "runway": "13"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "LNK.KDEN": {
           "KLNK": 2
         },
@@ -4152,7 +4152,7 @@
           "runway": "31"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "OFF.LMN": {
           "KOFF": 1
         },
@@ -4282,7 +4282,7 @@
           "runway": "13"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "OFF.LMN": {
           "KOFF": 1
         },

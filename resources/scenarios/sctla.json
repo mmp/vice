@@ -3330,7 +3330,7 @@
           "runway": "7"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BIGBR3": {
           "KLAX": 10
         },
@@ -3398,7 +3398,7 @@
           "runway": "25"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ANJLL4": {
           "KLAX": 25
         },
@@ -3470,7 +3470,7 @@
           "runway": "7"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "MDNYT2.HLYWD": {
           "KLAX": 5
         },
@@ -3532,7 +3532,7 @@
           "runway": "6L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "MDNYT2_FINAL": {
           "KLAX": 10
         },
@@ -3588,7 +3588,7 @@
           "runway": "25"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ANJLL4/HLYWD1.FINAL": {
           "KLAX": 35
         },
@@ -3652,7 +3652,7 @@
           "runway": "7"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BIGBR3_FINAL": {
           "KLAX": 10
         },

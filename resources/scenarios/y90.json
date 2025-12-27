@@ -692,7 +692,7 @@
           "runway": "15"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "STELA1.Jets": {
           "KBDL": 15
         },
@@ -789,7 +789,7 @@
           "runway": "33"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "STELA1.Jets": {
           "KBDL": 15
         },

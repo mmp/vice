@@ -57838,7 +57838,7 @@
           "runway": "5"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2.4R": {
           "KBOS": 0
         },
@@ -58043,7 +58043,7 @@
           "runway": "5"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2.4R": {
           "KBOS": 0
         },
@@ -58266,7 +58266,7 @@
           "runway": "5"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2.4R": {
           "KBOS": 0
         },
@@ -58467,7 +58467,7 @@
           "runway": "5"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2.15R": {
           "KBOS": 0
         },
@@ -58652,7 +58652,7 @@
           "runway": "5"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2.27": {
           "KBOS": 0
         },
@@ -58832,7 +58832,7 @@
           "runway": "5"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2.33L": {
           "KBOS": 0
         },
@@ -59024,7 +59024,7 @@
           "runway": "5"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2.22L": {
           "KBOS": 0
         },
@@ -59204,7 +59204,7 @@
           "runway": "5"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2.22L": {
           "KBOS": 0
         },
@@ -59384,7 +59384,7 @@
           "runway": "5"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2.27": {
           "KBOS": 0
         },
@@ -59564,7 +59564,7 @@
           "runway": "5"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2.27": {
           "KBOS": 0
         },
@@ -59754,7 +59754,7 @@
           "runway": "5"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2.33L": {
           "KBOS": 0
         },
@@ -59904,7 +59904,7 @@
           "runway": "4L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "FV.JFUND.4R": {
           "KBOS": 16
         },

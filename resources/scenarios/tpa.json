@@ -2689,7 +2689,7 @@
           "runway": "10"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BLFRG2": {
           "KTPA": 5,
           "KPIE": 2
@@ -2790,7 +2790,7 @@
           "runway": "1R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BLFRG2.NO.Finals": {
           "KTPA": 6
         },
@@ -2855,7 +2855,7 @@
           "runway": "28"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BLFRG2": {
           "KTPA": 5,
           "KPIE": 2
@@ -2956,7 +2956,7 @@
           "runway": "19L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BLFRG2.SO.Finals": {
           "KTPA": 6
         },

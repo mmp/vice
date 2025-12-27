@@ -1969,7 +1969,7 @@
           "runway": "33"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BTV": {
           "KRME": 1
         },
@@ -2108,7 +2108,7 @@
           "runway": "15"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BTV": {
           "KRME": 1
         },

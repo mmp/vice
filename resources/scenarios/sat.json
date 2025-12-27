@@ -1155,7 +1155,7 @@
           "runway": "32"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CRVZA1": {
           "KSAT": 5,
           "KSSF": 3
@@ -1269,7 +1269,7 @@
           "runway": "32"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CRVZA1": {
           "KSAT": 5,
           "KSSF": 3
@@ -1375,7 +1375,7 @@
           "runway": "32"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CRVZA1": {
           "KSAT": 5,
           "KSSF": 3
@@ -1485,7 +1485,7 @@
           "runway": "32"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CRVZA1": {
           "KSAT": 5,
           "KSSF": 3

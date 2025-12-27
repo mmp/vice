@@ -4876,7 +4876,7 @@
           "runway": "30"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "RISTI1.TIPRE": {
           "KSFO": 1
         },
@@ -5006,7 +5006,7 @@
           "runway": "30"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "RISTI1.TIPRE": {
           "KSFO": 1
         },
@@ -5132,7 +5132,7 @@
           "runway": "12"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "RISTI1.TIPRE": {
           "KSFO": 5
         },
@@ -5239,7 +5239,7 @@
           "runway": "12"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "RISTI1.TIPRE": {
           "KSFO": 5
         },

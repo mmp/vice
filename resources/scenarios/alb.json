@@ -1108,7 +1108,7 @@
           "runway": "22"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CANAN": {
           "KALB": 10
         },
@@ -1154,7 +1154,7 @@
           "runway": "4"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CANAN": {
           "KALB": 10
         },
@@ -1200,7 +1200,7 @@
           "runway": "22"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CANAN": {
           "KALB": 10
         },
@@ -1246,7 +1246,7 @@
           "runway": "4"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CANAN": {
           "KALB": 10
         },
@@ -1288,7 +1288,7 @@
           "runway": "1"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CANAN_FINAL_NORTH": {
           "KALB": 10
         },
@@ -1315,7 +1315,7 @@
           "runway": "19"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CANAN_FINAL_SOUTH": {
           "KALB": 10
         },
@@ -1342,7 +1342,7 @@
           "runway": "10"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CANAN_FINAL_EAST": {
           "KALB": 10
         },
@@ -1369,7 +1369,7 @@
           "runway": "28"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CANAN_FINAL_WEST": {
           "KALB": 10
         },

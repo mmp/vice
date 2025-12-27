@@ -7075,7 +7075,7 @@
           "runway": "18R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BANKR5": {
           "KCLT": 7
         },
@@ -7161,7 +7161,7 @@
           "runway": "36R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BANKR5": {
           "KCLT": 7
         },
@@ -7244,7 +7244,7 @@
           "runway": "36R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "NORTHWEST_36LFINAL": {
           "KCLT": 14
         },
@@ -7297,7 +7297,7 @@
           "runway": "36R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CHSLY6_NORTHEAST_36RFINAL": {
           "KCLT": 16
         },
@@ -7347,7 +7347,7 @@
           "runway": "36R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "NORTHWEST_36LFINAL": {
           "KCLT": 20
         },
@@ -7391,7 +7391,7 @@
           "runway": "18R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "SOUTHWEST_18RFINAL": {
           "KCLT": 16
         },
@@ -7435,7 +7435,7 @@
           "runway": "18R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CHSLY6_18LFINAL": {
           "KCLT": 15
         },
@@ -7476,7 +7476,7 @@
           "runway": "18R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "SOUTHWEST_18RFINAL": {
           "KCLT": 16
         },

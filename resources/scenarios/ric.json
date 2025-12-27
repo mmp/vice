@@ -1327,7 +1327,7 @@
           "runway": "3"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "DUCXS5.NEAVL": {
           "KRIC": 5
         },
@@ -1428,7 +1428,7 @@
           "runway": "21"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "DUCXS5.NEAVL": {
           "KRIC": 5
         },

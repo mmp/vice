@@ -343,7 +343,7 @@
           "runway": "22L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "PARCH4-ENE": {
           "KJFK": 20
         },

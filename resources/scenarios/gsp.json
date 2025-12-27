@@ -465,7 +465,7 @@
           "runway": "22"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JUNNR3": {
           "KGSP": 6
         },
@@ -510,7 +510,7 @@
           "runway": "4"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JUNNR3": {
           "KGSP": 6
         },

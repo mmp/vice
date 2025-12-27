@@ -885,7 +885,7 @@
           "runway": "17"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "SJI": {
           "KPNS": 10
         },
@@ -933,7 +933,7 @@
           "runway": "35"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "SJI": {
           "KPNS": 10
         },

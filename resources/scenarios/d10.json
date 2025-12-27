@@ -15013,7 +15013,7 @@
           "runway": "16R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BACHR4": {
           "KDAL": 5
         },
@@ -15161,7 +15161,7 @@
           "runway": "34R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRDJE5": {
           "KDFW": 5
         },
@@ -15298,7 +15298,7 @@
           "runway": "17C"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BEREE3.SOUTHFINAL_17C": {
           "KDFW": 20
         },
@@ -15367,7 +15367,7 @@
           "runway": "35R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRDJE5.NORTHFINALS_35C": {
           "KDFW": 30
         },
@@ -15428,7 +15428,7 @@
           "runway": "35C"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRDJE5.NORTHFINALS_35C": {
           "KDFW": 30
         },
@@ -15489,7 +15489,7 @@
           "runway": "17C"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BEREE3.SOUTHFINAL_17C": {
           "KDFW": 20
         },
@@ -15550,7 +15550,7 @@
           "runway": "35L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRDJE5.NORTHFINALS_35R": {
           "KDFW": 30
         },
@@ -15611,7 +15611,7 @@
           "runway": "17L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BEREE3.SOUTHFINAL_17L": {
           "KDFW": 20
         },
@@ -15680,7 +15680,7 @@
           "runway": "31R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRDJE5.NORTHWEST_FINALS_31R": {
           "KDFW": 13
         },
@@ -15764,7 +15764,7 @@
           "runway": "16R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BEREE3.AUTO": {
           "KDFW": 15
         },
@@ -15924,7 +15924,7 @@
           "runway": "34R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRDJE5.AUTO": {
           "KDFW": 15
         },
@@ -16104,7 +16104,7 @@
           "runway": "34"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "HERBZ1": {
           "KDAL": 5,
           "KDTO": 2
@@ -16262,7 +16262,7 @@
           "runway": "16"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFRYE5": {
           "KDAL": 5
         },
@@ -16433,7 +16433,7 @@
           "runway": "34"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JOVEM6.AUTO": {
           "KDFW": 15
         },
@@ -16616,7 +16616,7 @@
           "runway": "31"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "HERBZ1": {
           "KDAL": 5,
           "KDTO": 2
@@ -16798,7 +16798,7 @@
           "runway": "18R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFRYE5": {
           "KDAL": 5
         },
@@ -16953,7 +16953,7 @@
           "runway": "18L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BEREE3.AUTO": {
           "KDFW": 15
         },
@@ -17180,7 +17180,7 @@
           "runway": "34R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRDJE5.AUTO": {
           "KDFW": 15
         },
@@ -17423,7 +17423,7 @@
           "runway": "34R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRDJE5.AUTO": {
           "KDFW": 15
         },
@@ -17563,7 +17563,7 @@
           "runway": "36"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRDJE5.AUTO": {
           "KDFW": 15
         },
@@ -17736,7 +17736,7 @@
           "runway": "18"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BEREE3.AUTO": {
           "KDFW": 15
         },

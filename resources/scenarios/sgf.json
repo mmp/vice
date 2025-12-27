@@ -648,7 +648,7 @@
           "runway": "18"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "SE": {
           "KSGF": 2
         },
@@ -718,7 +718,7 @@
           "runway": "36"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "SE": {
           "KSGF": 2
         },

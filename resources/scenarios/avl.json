@@ -656,7 +656,7 @@
           "runway": "17"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "OBURY": {
           "KAVL": 5
         },
@@ -706,7 +706,7 @@
           "runway": "35"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "OBURY": {
           "KAVL": 5
         },

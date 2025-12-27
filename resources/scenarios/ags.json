@@ -444,7 +444,7 @@
           "runway": "8"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "West": {
           "KAGS": 5
         },
@@ -498,7 +498,7 @@
           "runway": "26"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "West": {
           "KAGS": 5
         },

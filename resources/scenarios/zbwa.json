@@ -273,7 +273,7 @@
           "runway": "29"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2-PONCT": {
           "KBOS": 20
         }

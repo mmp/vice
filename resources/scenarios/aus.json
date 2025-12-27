@@ -1465,7 +1465,7 @@
           "runway": "11"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "DXEEE3S": {
           "KAUS": 6
         },
@@ -1586,7 +1586,7 @@
           "runway": "29"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "DXEEE3N": {
           "KAUS": 6
         },

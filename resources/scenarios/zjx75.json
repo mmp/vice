@@ -1059,7 +1059,7 @@
         "ZJX 49 Moultrie"
       ],
       "default_maps": ["ZJX HI"],
-      "arrivals": {
+      "inbound_rates": {
         "TTHOR3": {
           "KDAB": 3
         },
@@ -1147,7 +1147,7 @@
         "ZJX 76 Keystone"
       ],
       "default_maps": ["ZJX HI"],
-      "arrivals": {
+      "inbound_rates": {
         "TTHOR3": {
           "KDAB": 15
         },

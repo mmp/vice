@@ -261,7 +261,7 @@
           "runway": "28L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "KYAAN4": {
           "KBOI": 5
         },
@@ -301,7 +301,7 @@
           "runway": "10R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "KYAAN4": {
           "KBOI": 5
         },

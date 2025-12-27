@@ -801,7 +801,7 @@
           "runway": "24"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "SHIMS": {
           "KBHM": 5
         },
@@ -858,7 +858,7 @@
           "runway": "6"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "SHIMS": {
           "KBHM": 5
         },

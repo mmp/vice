@@ -852,7 +852,7 @@
           "runway": "33"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BROOK4": {
           "KGSO": 5,
           "KINT": 3
@@ -918,7 +918,7 @@
           "runway": "15"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BROOK4": {
           "KGSO": 5,
           "KINT": 3

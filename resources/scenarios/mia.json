@@ -5213,7 +5213,7 @@
           "runway": "10R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BHHIA3 NOSATS EAST": {
           "KFLL": 3
         },
@@ -5305,7 +5305,7 @@
           "runway": "28L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BHHIA3 NOSATS WEST": {
           "KFLL": 3
         },
@@ -5417,7 +5417,7 @@
           "runway": "12"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BHHIA3": {
           "KFLL": 4,
           "KFXE": 2,
@@ -5563,7 +5563,7 @@
           "runway": "30"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BHHIA3": {
           "KFLL": 4,
           "KFXE": 2,

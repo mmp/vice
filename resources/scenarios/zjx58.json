@@ -912,7 +912,7 @@
         "ZJX 49 Moultrie"
       ],
       "default_maps": ["ZJX HI"],
-      "arrivals": {
+      "inbound_rates": {
         "SNFLD3": {
           "KMCO": 10
         },

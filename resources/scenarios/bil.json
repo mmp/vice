@@ -262,7 +262,7 @@
           "runway": "28R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CRAZI4": {
           "KBIL": 5
         },
@@ -302,7 +302,7 @@
           "runway": "10L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CRAZI4": {
           "KBIL": 5
         },

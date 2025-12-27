@@ -992,7 +992,7 @@
           "runway": "31R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "PUCKY1-JENNO": {
           "KJFK": 10
         },

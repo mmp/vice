@@ -3130,7 +3130,7 @@
           "runway": "9R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CRAKN2": {
           "KDTW": 4
         },
@@ -3248,7 +3248,7 @@
           "runway": "9R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CRAKN2": {
           "KDTW": 4
         },
@@ -3371,7 +3371,7 @@
           "runway": "27L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "FERRL2": {
           "KDTW": 4
         },
@@ -3489,7 +3489,7 @@
           "runway": "27L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "FERRL2": {
           "KDTW": 4
         },
@@ -3612,7 +3612,7 @@
           "runway": "27L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CRAKN2": {
           "KDTW": 4
         },
@@ -3714,7 +3714,7 @@
           "runway": "21L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "FERRL2_FINALS": {
           "KDTW": 5
         },
@@ -3763,7 +3763,7 @@
           "runway": "3R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CRAKN2_FINALN": {
           "KDTW": 5
         },
@@ -3812,7 +3812,7 @@
           "runway": "27R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CRAKN2_FINALW": {
           "KDTW": 5
         },

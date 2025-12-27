@@ -1152,7 +1152,7 @@
           "runway": "28"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "DEMME5": {
           "KPIT": 9
         },
@@ -1230,7 +1230,7 @@
           "runway": "28"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "DEMME5": {
           "KPIT": 9
         },
@@ -1304,7 +1304,7 @@
           "runway": "10"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "DEMME5": {
           "KPIT": 9
         },

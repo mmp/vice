@@ -284,7 +284,7 @@
           "runway": "29"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "West": {
           "KPWM": 10
         }
@@ -315,7 +315,7 @@
           "runway": "11"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "East": {
           "KPWM": 10
         }

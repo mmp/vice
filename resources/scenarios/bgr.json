@@ -249,7 +249,7 @@
           "runway": "33"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "AUG Arrival Land North": {
           "KBGR": 10
         },
@@ -289,7 +289,7 @@
           "runway": "15"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "AUG Arrival Land South": {
           "KBGR": 10
         },

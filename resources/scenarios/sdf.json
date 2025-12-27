@@ -673,7 +673,7 @@
           "runway": "17R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "DLAMP8": {
           "KSDF": 5
         },
@@ -724,7 +724,7 @@
           "runway": "35R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "DLAMP8": {
           "KSDF": 5
         },

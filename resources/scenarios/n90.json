@@ -11773,7 +11773,7 @@
           "runway": "31"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BDR1": {
           "KBDR": 1,
           "KHVN": 1,
@@ -12292,7 +12292,7 @@
           "runway": "31"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BDR1": {
           "KBDR": 1,
           "KHVN": 1,
@@ -12801,7 +12801,7 @@
           "runway": "31"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BDR1": {
           "KBDR": 1,
           "KHVN": 1,
@@ -13320,7 +13320,7 @@
           "runway": "31"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BDR1": {
           "KBDR": 1,
           "KHVN": 1,

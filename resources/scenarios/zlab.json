@@ -1780,7 +1780,7 @@
           "runway": "31L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ZIGGY8": {
           "KONT": 5
         },

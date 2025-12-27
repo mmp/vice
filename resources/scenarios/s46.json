@@ -2374,7 +2374,7 @@
           "runway": "16R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CHINS5South": {
           "KSEA": 5
         },
@@ -2435,7 +2435,7 @@
           "runway": "34L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CHINS5North": {
           "KSEA": 5
         },

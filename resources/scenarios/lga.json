@@ -1708,7 +1708,7 @@
           "runway": "22"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "KORRY4": {
           "KLGA": 15
         },
@@ -1797,7 +1797,7 @@
           "runway": "4"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "KORRY4": {
           "KLGA": 15
         },
@@ -1886,7 +1886,7 @@
           "runway": "22"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "KORRY4": {
           "KLGA": 15
         },
@@ -1975,7 +1975,7 @@
           "runway": "4"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "KORRY4": {
           "KLGA": 15
         },
@@ -2064,7 +2064,7 @@
           "runway": "31"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "KORRY4": {
           "KLGA": 15
         },
@@ -2154,7 +2154,7 @@
           "runway": "4"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "Finals-EMPYR-ILS4": {
           "KLGA": 22
         },
@@ -2197,7 +2197,7 @@
           "runway": "4"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "Finals-EMPYR-ILS4": {
           "KLGA": 22
         },
@@ -2240,7 +2240,7 @@
           "runway": "13"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "Finals-EMPYR-ILS13": {
           "KLGA": 22
         },
@@ -2282,7 +2282,7 @@
           "runway": "22"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "Finals-EMPYR-ILS22/D13": {
           "KLGA": 32
         },
@@ -2324,7 +2324,7 @@
           "runway": "22"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "Finals-EMPYR-ILS22/D31": {
           "KLGA": 22
         },
@@ -2366,7 +2366,7 @@
           "runway": "31"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "Finals-EMPYR-RX31": {
           "KLGA": 22
         },
@@ -2408,7 +2408,7 @@
           "runway": "31"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "Finals-EMPYR-LOC31": {
           "KLGA": 22
         },

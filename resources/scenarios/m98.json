@@ -709,7 +709,7 @@
           "runway": "12L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BAINY3": {
           "KMSP": 6
         },
@@ -815,7 +815,7 @@
           "runway": "12L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BAINY3": {
           "KMSP": 6
         },
@@ -921,7 +921,7 @@
           "runway": "30L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BAINY3": {
           "KMSP": 12
         },
@@ -1031,7 +1031,7 @@
           "runway": "35"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BAINY3": {
           "KMSP": 12
         },
@@ -1137,7 +1137,7 @@
           "runway": "30L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BAINY3": {
           "KMSP": 12
         },

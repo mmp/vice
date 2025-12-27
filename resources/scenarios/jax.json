@@ -4146,7 +4146,7 @@
           "runway": "25"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "LUNNI2_E": {
           "KJAX": 3
         },
@@ -4312,7 +4312,7 @@
           "runway": "25"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "LUNNI2_E": {
           "KJAX": 3
         },
@@ -4477,7 +4477,7 @@
           "runway": "25"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "LUNNI2_W": {
           "KJAX": 3
         },
@@ -4643,7 +4643,7 @@
           "runway": "25"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "LUNNI2_W": {
           "KJAX": 3
         },
@@ -4816,7 +4816,7 @@
           "runway": "18"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "LUNNI2_W": {
           "KJAX": 3
         },
@@ -5012,7 +5012,7 @@
           "runway": "18"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "LUNNI2_W": {
           "KJAX": 3
         },
@@ -5207,7 +5207,7 @@
           "runway": "36"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "LUNNI2_E": {
           "KJAX": 3
         },
@@ -5403,7 +5403,7 @@
           "runway": "36"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "LUNNI2_E": {
           "KJAX": 3
         },

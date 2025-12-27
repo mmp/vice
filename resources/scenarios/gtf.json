@@ -165,7 +165,7 @@
           "runway": "3"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "North": {
           "KGTF": 5
         }

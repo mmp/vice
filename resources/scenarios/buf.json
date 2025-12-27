@@ -799,7 +799,7 @@
           "runway": "28R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENEE": {
           "KBUF": 5
         },
@@ -871,7 +871,7 @@
           "runway": "10L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENEE": {
           "KBUF": 5
         },

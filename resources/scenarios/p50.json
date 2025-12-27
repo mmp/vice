@@ -3512,7 +3512,7 @@
           "runway": "30L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRUSR1.W": {
           "KPHX": 10
         },
@@ -3612,7 +3612,7 @@
           "runway": "12R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRUSR1.E": {
           "KPHX": 15
         },
@@ -3703,7 +3703,7 @@
           "runway": "3"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "NAA EAST ARR": {
           "KFLG": 5,
           "KSEZ": 2
@@ -3784,7 +3784,7 @@
           "runway": "3"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "NAA EAST ARR": {
           "KFLG": 5,
           "KSEZ": 2
@@ -3861,7 +3861,7 @@
           "runway": "7R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRUSR1_FE": {
           "KPHX": 10
         },
@@ -3920,7 +3920,7 @@
           "runway": "25L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRUSR1_FW": {
           "KPHX": 10
         },

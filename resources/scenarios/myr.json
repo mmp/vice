@@ -893,7 +893,7 @@
           "runway": "23"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CAE.fast": {
           "KMYR": 5,
           "KCRE": 1
@@ -978,7 +978,7 @@
           "runway": "5"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CAE.fast": {
           "KMYR": 5,
           "KCRE": 1

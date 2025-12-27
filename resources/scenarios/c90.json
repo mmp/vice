@@ -6400,7 +6400,7 @@
           "runway": "27R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6": {
           "KORD": 10
         },
@@ -6518,7 +6518,7 @@
           "runway": "31R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6": {
           "KORD": 10
         },
@@ -6651,7 +6651,7 @@
           "runway": "16"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6": {
           "KORD": 10
         },
@@ -6833,7 +6833,7 @@
           "runway": "30"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6": {
           "KORD": 10
         },
@@ -7088,7 +7088,7 @@
           "runway": "12"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6": {
           "KORD": 10
         },
@@ -7343,7 +7343,7 @@
           "runway": "16"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6": {
           "KORD": 10
         },
@@ -7494,7 +7494,7 @@
           "runway": "22L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6": {
           "KORD": 10
         },
@@ -7612,7 +7612,7 @@
           "runway": "4R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6": {
           "KORD": 10
         },
@@ -7707,7 +7707,7 @@
           "runway": "4R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6": {
           "KORD": 10
         },
@@ -7817,7 +7817,7 @@
           "runway": "16"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6": {
           "KORD": 10
         },
@@ -7957,7 +7957,7 @@
           "runway": "30"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6": {
           "KORD": 10
         },
@@ -8143,7 +8143,7 @@
           "runway": "22R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6": {
           "KORD": 10
         },
@@ -8242,7 +8242,7 @@
           "runway": "22L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6": {
           "KORD": 10
         },
@@ -8356,7 +8356,7 @@
           "runway": "16"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6": {
           "KORD": 10
         },
@@ -8519,7 +8519,7 @@
           "runway": "12"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6": {
           "KORD": 10
         },
@@ -8748,7 +8748,7 @@
           "runway": "9L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ERNNY8": {
           "KORD": 5
         },
@@ -8866,7 +8866,7 @@
           "runway": "4R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ERNNY8": {
           "KORD": 5
         },
@@ -8995,7 +8995,7 @@
           "runway": "13L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ERNNY8": {
           "KORD": 5
         },
@@ -9144,7 +9144,7 @@
           "runway": "20L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6": {
           "KORD": 10
         },
@@ -9399,7 +9399,7 @@
           "runway": "12"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6": {
           "KORD": 10
         },
@@ -9634,7 +9634,7 @@
           "runway": "16"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6": {
           "KORD": 10
         },
@@ -9760,7 +9760,7 @@
           "runway": "31R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ENDEE6": {
           "KMDW": 10
         },
@@ -9802,7 +9802,7 @@
           "runway": "4R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ENDEE6": {
           "KMDW": 10
         },
@@ -9843,7 +9843,7 @@
           "runway": "13L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ENDEE6": {
           "KMDW": 10
         },
@@ -9884,7 +9884,7 @@
           "runway": "22L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ENDEE6": {
           "KMDW": 10
         },
@@ -9922,7 +9922,7 @@
           "runway": "27R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "FYTTE7_FINALNW": {
           "KORD": 30
         }
@@ -9949,7 +9949,7 @@
           "runway": "9L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "FYTTE7_FINALNE": {
           "KORD": 30
         }
@@ -9976,7 +9976,7 @@
           "runway": "27C"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "WATSN4": {
           "KORD": 15
         },
@@ -10014,7 +10014,7 @@
           "runway": "28C"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "WATSN4": {
           "KORD": 15
         },
@@ -10060,7 +10060,7 @@
           "runway": "28C"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BENKY6_FINALWW": {
           "KORD": 20
         },
@@ -10122,7 +10122,7 @@
           "runway": "12"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "FIYER": {
           "KPWK": 3,
           "KDPA": 3,

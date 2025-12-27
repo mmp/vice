@@ -2549,7 +2549,7 @@
           "runway": "1"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JSONN4": {
           "KMCI": 10,
           "KSTJ": 1,
@@ -2652,7 +2652,7 @@
           "runway": "19"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JSONN4": {
           "KMCI": 10
         },
@@ -2735,7 +2735,7 @@
           "runway": "1"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JSONN4": {
           "KMCI": 10
         },
@@ -2813,7 +2813,7 @@
           "runway": "1"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JSONN4": {
           "KMCI": 10
         },

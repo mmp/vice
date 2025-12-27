@@ -8885,7 +8885,7 @@
           "runway": "22"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "COATE": {
           "KTEB": 5,
           "KMMU": 2,
@@ -9006,7 +9006,7 @@
           "runway": "4"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "South 22 background": {
           "KEWR": 30
         },
@@ -9127,7 +9127,7 @@
           "runway": "6"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "North 4 background": {
           "KEWR": 45
         },
@@ -9237,7 +9237,7 @@
           "runway": "4"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "COATE": {
           "KTEB": 5,
           "KMMU": 2,
@@ -9382,7 +9382,7 @@
       "airspace": {
         "4U": ["ZEEBO_NE", "METRO_NE", "MUGZY_NE"]
       },
-      "arrivals": {
+      "inbound_rates": {
         "COATE": {
           "KTEB": 10,
           "KMMU": 1
@@ -9479,7 +9479,7 @@
           "runway": "22"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "COATE": {
           "KTEB": 7,
           "KMMU": 2
@@ -9576,7 +9576,7 @@
           "runway": "22L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "FQM3": {
           "KEWR": 15
         },
@@ -9654,7 +9654,7 @@
           "runway": "22"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "FQM3": {
           "KEWR": 15
         },
@@ -9772,7 +9772,7 @@
           "runway": "22"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "FQM3": {
           "KEWR": 15
         },
@@ -9893,7 +9893,7 @@
           "runway": "22"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "FLOSI4": {
           "KEWR": 14
         },
@@ -10007,7 +10007,7 @@
           "runway": "22"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "FLOSI4": {
           "KEWR": 7
         },
@@ -10112,7 +10112,7 @@
           "runway": "29"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "FLOSI4": {
           "KEWR": 13
         },
@@ -10180,7 +10180,7 @@
       "airspace": {
         "4P": ["NOA_NE", "YARDLEY_NE", "FINAL_VECTORS_4"]
       },
-      "arrivals": {
+      "inbound_rates": {
         "North": {
           "KEWR": 12
         },
@@ -10280,7 +10280,7 @@
           "runway": "4"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "North": {
           "KEWR": 12
         },
@@ -10378,7 +10378,7 @@
       "airspace": {
         "4A": ["NOA_NE", "FINAL_VECTORS_4"]
       },
-      "arrivals": {
+      "inbound_rates": {
         "FLOSI4": {
           "KEWR": 10
         },
@@ -10451,7 +10451,7 @@
           "runway": "4"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "COATE": {
           "KTEB": 5,
           "KMMU": 2

@@ -7261,7 +7261,7 @@
           "runway": "6"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2": {
           "KBOS": 10
         },
@@ -7486,7 +7486,7 @@
           "runway": "24"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2": {
           "KBOS": 10
         },
@@ -7712,7 +7712,7 @@
           "runway": "24"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2": {
           "KBOS": 10
         },
@@ -7930,7 +7930,7 @@
           "runway": "24"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2": {
           "KBOS": 10
         },
@@ -8116,7 +8116,7 @@
           "runway": "6"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2": {
           "KBOS": 10
         },
@@ -8209,7 +8209,7 @@
           "runway": "24"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2": {
           "KBOS": 10
         },
@@ -8307,7 +8307,7 @@
           "runway": "24"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2": {
           "KBOS": 10
         },
@@ -8401,7 +8401,7 @@
           "runway": "24"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "JFUND2": {
           "KBOS": 10
         },

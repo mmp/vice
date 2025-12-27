@@ -3060,7 +3060,7 @@
           "runway": "2"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CCR2.N": {
           "KSMF": 2
         },
@@ -3165,7 +3165,7 @@
           "runway": "2"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "CCR2.S": {
           "KSMF": 2
         },
@@ -3262,7 +3262,7 @@
           "runway": "17L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ANAHO2": {
           "KRNO": 2
         },
@@ -3319,7 +3319,7 @@
           "runway": "35L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "EELZA4": {
           "KRNO": 5
         },

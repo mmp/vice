@@ -65,8 +65,6 @@ type scenario struct {
 	// Map from inbound flow names to a map from airport name to default rate,
 	// with "overflights" a special case to denote overflights
 	InboundFlowDefaultRates map[string]map[string]int `json:"inbound_rates"`
-	// Temporary backwards compatibility
-	ArrivalGroupDefaultRates map[string]map[string]int `json:"arrivals"`
 
 	Airspace map[sim.TCP][]string `json:"airspace"`
 
@@ -111,16 +109,6 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	}
 
 	s.ControllerConfiguration.Validate(sg.ControlPositions, e)
-
-	// Temporary backwards-compatibility for inbound flows
-	if len(s.ArrivalGroupDefaultRates) > 0 {
-		if len(s.InboundFlowDefaultRates) > 0 {
-			e.ErrorString("cannot specify both \"arrivals\" and \"inbound_rates\"")
-		} else {
-			s.InboundFlowDefaultRates = s.ArrivalGroupDefaultRates
-			s.ArrivalGroupDefaultRates = nil
-		}
-	}
 
 	// Validate inbound flow assignments
 	if s.ControllerConfiguration != nil {

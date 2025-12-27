@@ -1765,7 +1765,7 @@
           "runway": "5L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BLOGS3": {
           "KRDU": 10
         },
@@ -1818,7 +1818,7 @@
           "runway": "23L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BLOGS3": {
           "KRDU": 10
         },

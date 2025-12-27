@@ -6350,7 +6350,7 @@
           "runway": "30"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "REELI": {
           "KAAC": 10,
           "KJKE": 0,
@@ -6473,7 +6473,7 @@
           "runway": "28R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BARTS_FINAL": {
           "KAAC": 10
         },
@@ -6503,7 +6503,7 @@
           "runway": "28R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ATOKA_FINAL": {
           "KAAC": 12
         },
@@ -6533,7 +6533,7 @@
           "runway": "28R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ATOKA_FINAL": {
           "KAAC": 12
         },
@@ -6566,7 +6566,7 @@
           "runway": "28R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ATOKA_FINAL_6NM": {
           "KAAC": 20
         },
@@ -6596,7 +6596,7 @@
           "runway": "28R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ATOKA_FINAL": {
           "KAAC": 10
         },
@@ -6662,7 +6662,7 @@
           "runway": "28R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ATOKA_STAGGER": {
           "KAAC": 0
         },
@@ -6707,7 +6707,7 @@
           "runway": "30"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "SCAN": {
           "KAAC": 30,
           "KBRT": 15,

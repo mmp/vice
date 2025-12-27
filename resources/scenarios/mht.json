@@ -850,7 +850,7 @@
           "runway": "16"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ROZZE2": {
           "KMHT": 10
         },
@@ -908,7 +908,7 @@
           "runway": "34"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ROZZE2": {
           "KMHT": 10
         },

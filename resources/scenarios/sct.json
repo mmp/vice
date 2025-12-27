@@ -13835,7 +13835,7 @@
           "runway": "21"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "ANJLL4": {
           "KLAX": 25
         },
@@ -14187,7 +14187,7 @@
           "runway": "3"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "BRUEN2": {
           "KLAX": 25
         },
@@ -14498,7 +14498,7 @@
           "runway": "3"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "MDNYT2.HLYWD": {
           "KLAX": 6
         },

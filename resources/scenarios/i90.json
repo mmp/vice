@@ -2162,7 +2162,7 @@
           "runway": "32"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "DOOBI2": {
           "KIAH": 10
         },
@@ -2410,7 +2410,7 @@
           "runway": "14"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "GESNR1": {
           "KIAH": 10
         },
@@ -2649,7 +2649,7 @@
           "runway": "26L"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "FINALSNW": {
           "KIAH": 20
         },

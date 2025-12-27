@@ -6871,7 +6871,7 @@
           "runway": "34R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "GIBBZ5.MGW": {
           "KIAD": 8,
           "KHEF": 2
@@ -7002,7 +7002,7 @@
           "runway": "34R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "GIBBZ5.MGW": {
           "KIAD": 8,
           "KHEF": 2
@@ -7121,7 +7121,7 @@
           "runway": "16R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "GIBBZ5.MGW": {
           "KIAD": 8,
           "KHEF": 2
@@ -7239,7 +7239,7 @@
           "runway": "16R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "GIBBZ5.MGW": {
           "KIAD": 8,
           "KHEF": 2
@@ -7358,7 +7358,7 @@
           "runway": "16R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "GIBBZ5.MGW": {
           "KIAD": 8,
           "KHEF": 2
@@ -7469,7 +7469,7 @@
           "runway": "34R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "GIBBZ5.MGW": {
           "KIAD": 6,
           "KHEF": 2

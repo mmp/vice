@@ -1870,7 +1870,7 @@
           "runway": "25"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "RUKKI1/BAUBB3": {
           "KSNA": 10,
           "KLGB": 3

@@ -911,7 +911,7 @@
           "runway": "23R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "SNKPT2": {
           "KIND": 6
         },
@@ -976,7 +976,7 @@
           "runway": "5R"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "SNKPT2": {
           "KIND": 6
         },
@@ -1037,7 +1037,7 @@
           "runway": "32"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "SNKPT2": {
           "KIND": 3
         },
@@ -1093,7 +1093,7 @@
           "runway": "14"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "SNKPT2": {
           "KIND": 3
         },
