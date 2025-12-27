@@ -277,7 +277,11 @@ func init() {
 			Closed:   false,
 			Vertices: [][]math.Point2LL{{pos}},
 		}
-		sp.wipRestrictionAreaMousePos = ctx.Mouse.Pos
+		if ctx.Mouse != nil {
+			sp.wipRestrictionAreaMousePos = ctx.Mouse.Pos
+		} else {
+			sp.wipRestrictionAreaMousePos = [2]float32{}
+		}
 		sp.wipRestrictionAreaMouseMoved = false
 
 		return CommandStatus{
