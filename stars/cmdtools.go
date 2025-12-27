@@ -633,11 +633,12 @@ func init() {
 				tcps = tcps[1:]
 
 				// Must be followed by a space if not at the end
-				if len(tcps) > 0 && tcps[0] != ' ' {
-					return ErrSTARSCommandFormat
+				if len(tcps) > 0 {
+					if tcps[0] != ' ' {
+						return ErrSTARSCommandFormat
+					}
+					tcps = tcps[1:]
 				}
-
-				tcps = tcps[1:]
 			}
 		}
 		return nil
