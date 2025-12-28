@@ -55,7 +55,7 @@ func (m *Model) fetchAtmos(t time.Time) <-chan AtmosResult {
 		return nil
 	}
 
-	ch := make(chan AtmosResult)
+	ch := make(chan AtmosResult, 1)
 
 	go func() {
 		defer close(ch)
