@@ -886,10 +886,24 @@ func (g *fpSpecMatchGenerator) Generate(r *rand.Rand, ctx *GeneratorContext) Gen
 // raTextMatchGenerator generates restriction area text.
 type raTextMatchGenerator struct {
 	WithLocation bool
+	ClosedShape  bool
 }
 
 func (g *raTextMatchGenerator) Generate(r *rand.Rand, ctx *GeneratorContext) GeneratorResult {
 	text := randomField(r, 3+r.Intn(10))
+
+	// Optionally add modifiers. △ (blink) is always valid; + (shade) and *N (color)
+	// are only valid for closed shapes (circles/polygons).
+	if r.Float32() < 0.2 {
+		text += " " + STARSTriangleCharacter // blink
+	}
+	if g.ClosedShape && r.Float32() < 0.2 {
+		text += " +" // shade
+	}
+	if g.ClosedShape && r.Float32() < 0.2 {
+		text += " *" + string('1'+byte(r.Intn(8))) // color 1-8
+	}
+
 	if g.WithLocation {
 		fixes := collectFixes(ctx.SP.visibleTracks)
 		if len(fixes) > 0 {

@@ -728,9 +728,13 @@ func typeNameToGenerator(typeName string) matchGenerator {
 	case "USER_RA_INDEX":
 		return &raIndexMatchGenerator{UserOnly: true}
 	case "RA_TEXT":
-		return &raTextMatchGenerator{WithLocation: false}
+		return &raTextMatchGenerator{WithLocation: false, ClosedShape: false}
 	case "RA_TEXT_AND_LOCATION":
-		return &raTextMatchGenerator{WithLocation: true}
+		return &raTextMatchGenerator{WithLocation: true, ClosedShape: false}
+	case "RA_CLOSED_TEXT":
+		return &raTextMatchGenerator{WithLocation: false, ClosedShape: true}
+	case "RA_CLOSED_TEXT_AND_LOCATION":
+		return &raTextMatchGenerator{WithLocation: true, ClosedShape: true}
 	case "RA_LOCATION":
 		return &raLocationMatchGenerator{}
 	case "QL_POSITIONS":

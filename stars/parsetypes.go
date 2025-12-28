@@ -73,8 +73,10 @@ var typeParsers = []typeParser{
 	&numberParser{id: "NUM"},
 	&tpaFloatParser{},
 	&floatParser{},
-	&raTextParser{expectLocation: false},
-	&raTextParser{expectLocation: true},
+	&raTextParser{expectLocation: false, closedShape: false},
+	&raTextParser{expectLocation: true, closedShape: false},
+	&raTextParser{expectLocation: false, closedShape: true},
+	&raTextParser{expectLocation: true, closedShape: true},
 	&raLocationParser{},
 	&qlPositionsParser{},
 
@@ -810,8 +812,11 @@ func (h *raIndexParser) GoType() reflect.Type { return reflect.TypeOf(0) }
 func (h *raIndexParser) ConsumesClick() bool  { return false }
 
 // raTextParser parses restriction area text with modifiers (△ blink, + shade, *N color).
+// closedShape controls whether + (shade) and *N (color) are valid; they are only
+// allowed for closed shapes (circles and polygons), not for text-only restriction areas.
 type raTextParser struct {
 	expectLocation bool
+	closedShape    bool
 }
 
 type RAText struct {
@@ -823,15 +828,14 @@ type RAText struct {
 }
 
 func (h *raTextParser) Identifier() string {
-	return "RA_TEXT" + util.Select(h.expectLocation, "_AND_LOCATION", "")
+	return util.Select(h.closedShape, "RA_CLOSED_TEXT", "RA_TEXT") +
+		util.Select(h.expectLocation, "_AND_LOCATION", "")
 }
 
 func (h *raTextParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
 	if text == "" {
 		return nil, text, false, nil
 	}
-
-	closedShape := false // FIXME FIXME
 
 	var parsed RAText
 	doTriPlus := func(s string) error {
@@ -845,9 +849,9 @@ func (h *raTextParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandIn
 				getColor = false
 			} else if string(ch) == STARSTriangleCharacter {
 				parsed.blink = true
-			} else if ch == '+' && closedShape {
+			} else if ch == '+' && h.closedShape {
 				parsed.shaded = true
-			} else if ch == '*' && closedShape {
+			} else if ch == '*' && h.closedShape {
 				getColor = true
 			} else {
 				return ErrSTARSCommandFormat

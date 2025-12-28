@@ -8,7 +8,6 @@ package stars
 
 import (
 	"fmt"
-	"maps"
 	"slices"
 	"strings"
 	"time"
@@ -265,8 +264,8 @@ func init() {
 			),
 		}, nil
 	}
-	registerCommand(CommandModeRestrictionArea, "C[FLOAT][RA_TEXT][POS]", startRACircle)
-	registerCommand(CommandModeRestrictionArea, "C[FLOAT][RA_TEXT_AND_LOCATION]",
+	registerCommand(CommandModeRestrictionArea, "C[FLOAT][RA_CLOSED_TEXT][POS]", startRACircle)
+	registerCommand(CommandModeRestrictionArea, "C[FLOAT][RA_CLOSED_TEXT_AND_LOCATION]",
 		func(sp *STARSPane, ctx *panes.Context, radius float32, parsed RAText) (CommandStatus, error) {
 			return startRACircle(sp, ctx, radius, parsed, parsed.pos)
 		})
@@ -294,7 +293,7 @@ func init() {
 					sp.wipRestrictionAreaMouseMoved = false
 					return CommandStatus{Clear: ClearInput}
 				},
-				"[RA_TEXT][POS]", func(sp *STARSPane, ctx *panes.Context, parsed RAText, p math.Point2LL) CommandStatus {
+				"[RA_CLOSED_TEXT][POS]", func(sp *STARSPane, ctx *panes.Context, parsed RAText, p math.Point2LL) CommandStatus {
 					ra := sp.wipRestrictionArea
 					ra.Text = parsed.text
 					ra.TextPosition = p
