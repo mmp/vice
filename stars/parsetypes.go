@@ -1032,7 +1032,8 @@ type posParser struct{}
 func (h *posParser) Identifier() string { return "POS" }
 
 func (h *posParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
-	if !input.hasClick {
+	// Only match clicks on empty space, not on tracks. Use SLEW for track clicks.
+	if !input.hasClick || input.clickedTrack != nil {
 		return nil, text, false, nil
 	}
 	p := input.transforms.LatLongFromWindowP(input.mousePosition)
@@ -1048,7 +1049,8 @@ type posNormParser struct{}
 func (h *posNormParser) Identifier() string { return "POS_NORM" }
 
 func (h *posNormParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
-	if !input.hasClick {
+	// Only match clicks on empty space, not on tracks. Use SLEW for track clicks.
+	if !input.hasClick || input.clickedTrack != nil {
 		return nil, text, false, nil
 	}
 	return input.transforms.NormalizedFromWindowP(input.mousePosition), text, true, nil
@@ -1063,7 +1065,8 @@ type posRawParser struct{}
 func (h *posRawParser) Identifier() string { return "POS_RAW" }
 
 func (h *posRawParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
-	if !input.hasClick {
+	// Only match clicks on empty space, not on tracks. Use SLEW for track clicks.
+	if !input.hasClick || input.clickedTrack != nil {
 		return nil, text, false, nil
 	}
 	return input.mousePosition, text, true, nil
