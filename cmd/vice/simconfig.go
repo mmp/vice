@@ -52,6 +52,9 @@ type NewSimConfiguration struct {
 	selectedTCW         sim.TCW
 	selectedTCPs        map[sim.TCP]bool
 
+	// New UI state for improved flow
+	filterText string // search/filter for scenario selection
+
 	mu              util.LoggingMutex // protects airportMETAR/fetchingMETAR/availableWXIntervals
 	airportMETAR    map[string][]wx.METAR
 	metarAirports   []string
@@ -304,11 +307,36 @@ func (c *NewSimConfiguration) UIButtonText() string {
 	return util.Select(c.newSimType == NewSimJoinRemote, "Join", "Next")
 }
 
-func (c *NewSimConfiguration) ShowRatesWindow() bool {
+// ShowConfigurationWindow returns true if we should show the configuration screen
+// (for create flows), false for join flow which goes directly to join.
+func (c *NewSimConfiguration) ShowConfigurationWindow() bool {
 	return c.newSimType != NewSimJoinRemote
 }
 
-func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
+// ScenarioSelectionDisabled returns true if the Next/Join button should be disabled
+// on the scenario selection screen.
+func (c *NewSimConfiguration) ScenarioSelectionDisabled(config *Config) bool {
+	if c.newSimType == NewSimJoinRemote {
+		// For join, need TCW selected and initials
+		if c.selectedTCW == "" || len(config.ControllerInitials) != 2 {
+			return true
+		}
+	}
+	// For create flows, just need a valid scenario selected (no validation needed here)
+	return false
+}
+
+// ConfigurationDisabled returns true if the Create button should be disabled
+// on the configuration screen.
+func (c *NewSimConfiguration) ConfigurationDisabled(config *Config) bool {
+	if len(config.ControllerInitials) != 2 {
+		return true
+	}
+	return c.newSimType == NewSimCreateRemote && (c.NewSimName == "" || (c.RequirePassword && c.Password == ""))
+}
+
+// DrawScenarioSelectionUI draws Screen 1: scenario selection, sim type choice, and join flow UI
+func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, config *Config) bool {
 	if err := c.mgr.UpdateRunningSims(); err != nil {
 		c.lg.Warnf("UpdateRunningSims: %v", err)
 	}
@@ -435,42 +463,77 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 		return facility
 	}
 
-	drawGetControllerInitials := func() {
-		imgui.Text("Controller Initials:")
-		imgui.SameLine()
-		imgui.SetNextItemWidth(50)
-		initialsFlags := imgui.InputTextFlagsCharsUppercase | imgui.InputTextFlagsCallbackCharFilter | imgui.InputTextFlagsCallbackEdit
-		imgui.InputTextWithHint("##initials", "XX", &config.ControllerInitials, initialsFlags,
-			func(input imgui.InputTextCallbackData) int {
-				if input.EventFlag()&imgui.InputTextFlagsCallbackCharFilter != 0 {
-					if ch := input.EventChar(); ch < 'A' || ch > 'Z' {
-						return 1
-					}
-				}
-				if input.EventFlag()&imgui.InputTextFlagsCallbackEdit != 0 {
-					if input.BufTextLen() > 2 {
-						input.DeleteChars(2, input.BufTextLen()-2)
-					}
-				}
-				return 0
-			})
-		if imgui.IsItemHovered() {
-			imgui.SetTooltip("Enter two letters for controller initials")
-		}
-
-		if len(config.ControllerInitials) < 2 {
-			imgui.SameLine()
-			imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{.7, .1, .1, 1})
-			imgui.Text(renderer.FontAwesomeIconExclamationTriangle + " Must enter initials")
-			imgui.PopStyleColor()
-		}
-	}
-
 	if c.newSimType == NewSimCreateLocal || c.newSimType == NewSimCreateRemote {
+		tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
+
+		// Search/filter input
+		imgui.SetNextItemWidth(imgui.ContentRegionAvail().X - 60)
+		imgui.InputTextWithHint("##filter", "Search scenarios, TRACONs, ARTCCs...", &c.filterText, 0, nil)
+		imgui.SameLine()
+		if imgui.Button("Clear") {
+			c.filterText = ""
+		}
+		imgui.Spacing()
+
+		// Helper to check if text matches filter
+		matchesFilter := func(text string) bool {
+			if c.filterText == "" {
+				return true
+			}
+			return strings.Contains(strings.ToLower(text), strings.ToLower(c.filterText))
+		}
+
+		// Helper to check if a catalog has matching airports
+		catalogHasMatchingAirport := func(catalog *server.ScenarioCatalog) bool {
+			if c.filterText == "" {
+				return true
+			}
+			filter := strings.ToLower(c.filterText)
+			for _, ap := range catalog.Airports {
+				if strings.Contains(strings.ToLower(ap), filter) {
+					return true
+				}
+			}
+			return false
+		}
+
+		// Helper to check if a catalog matches the filter (name, facility, or airports)
+		catalogMatchesFilter := func(catalog *server.ScenarioCatalog) bool {
+			if c.filterText == "" {
+				return true
+			}
+			// Check airports in the catalog
+			if catalogHasMatchingAirport(catalog) {
+				return true
+			}
+			// Check facility name
+			if matchesFilter(catalog.Facility) {
+				return true
+			}
+			return false
+		}
+
+		// Helper to check if any catalog in a facility matches
+		facilityMatchesFilter := func(facility string, catalogs map[string]*server.ScenarioCatalog) bool {
+			if c.filterText == "" {
+				return true
+			}
+			// Check facility name
+			if matchesFilter(facility) {
+				return true
+			}
+			// Check catalog airports
+			for _, catalog := range catalogs {
+				if catalogHasMatchingAirport(catalog) {
+					return true
+				}
+			}
+			return false
+		}
+
 		flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg |
 			imgui.TableFlagsSizingStretchProp
-		tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
-		if imgui.BeginTableV("SelectScenario", 3, flags, imgui.Vec2{tableScale * 600, tableScale * 300}, 0.) {
+		if imgui.BeginTableV("SelectScenario", 3, flags, imgui.Vec2{tableScale * 700, tableScale * 500}, 0.) {
 			imgui.TableSetupColumn("ARTCC")
 			imgui.TableSetupColumn("TRACON/AREA")
 			imgui.TableSetupColumn("Scenario")
@@ -488,36 +551,100 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 				}
 			}
 
+			// Collect unique ARTCCs and track which ones match the filter
+			artccs := make(map[string]interface{})
+			matchingARTCCs := make(map[string]interface{})
+			matchingFacilities := make(map[string]interface{})
+			for facility, catalogs := range catalogsByFacility {
+				info := facilityCatalogs[facility]
+				if info == nil {
+					continue
+				}
+				artcc := getARTCCForFacility(facility, info)
+				artccs[artcc] = nil
+
+				// Check if this facility matches the filter
+				if facilityMatchesFilter(facility, catalogs) {
+					matchingARTCCs[artcc] = nil
+					matchingFacilities[facility] = nil
+				}
+			}
+
+			// Auto-select ARTCC if only one matches the filter
 			selectedARTCC := ""
 			if c.Facility != "" {
 				selectedARTCC = getARTCCForFacility(c.Facility, facilityCatalogs[c.Facility])
 			}
-
-			// Collect unique ARTCCs with matching scenarios
-			artccs := make(map[string]interface{})
-			for facility, info := range facilityCatalogs {
-				if info != nil {
-					artcc := getARTCCForFacility(facility, info)
-					artccs[artcc] = nil
+			if c.filterText != "" && len(matchingARTCCs) == 1 {
+				for artcc := range matchingARTCCs {
+					if artcc != selectedARTCC {
+						// Find first matching facility in this ARTCC and select it
+						for facility := range matchingFacilities {
+							if getARTCCForFacility(facility, facilityCatalogs[facility]) == artcc {
+								c.SetFacility(facility)
+								selectedARTCC = artcc
+								break
+							}
+						}
+					}
+					break
 				}
 			}
 
+			// Auto-select facility if only one matches within the selected ARTCC
+			if c.filterText != "" && selectedARTCC != "" {
+				var matchingInARTCC []string
+				for facility := range matchingFacilities {
+					if getARTCCForFacility(facility, facilityCatalogs[facility]) == selectedARTCC {
+						matchingInARTCC = append(matchingInARTCC, facility)
+					}
+				}
+				if len(matchingInARTCC) == 1 && matchingInARTCC[0] != c.Facility {
+					c.SetFacility(matchingInARTCC[0])
+				}
+			}
+
+			// Calculate proportional column widths: 25%, 25%, 50%
+			totalWidth := tableScale * 700
+			artccWidth := max(totalWidth*0.25, tableScale*170)
+			traconWidth := max(totalWidth*0.25, tableScale*160)
+			scenarioWidth := max(totalWidth*0.50, tableScale*280)
+			columnHeight := tableScale * 480
+
 			// Column 1: ARTCC list
 			imgui.TableNextColumn()
-			if imgui.BeginChildStrV("artccs", imgui.Vec2{tableScale * 150, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
+			if imgui.BeginChildStrV("artccs", imgui.Vec2{artccWidth, columnHeight}, 0, 0) {
 				for artcc := range util.SortedMap(artccs) {
 					name := trimFacilityName(av.DB.ARTCCs[artcc].Name, "ARTCC")
 					if name == "" {
 						name = artcc
 					}
 					label := fmt.Sprintf("%s (%s)", artcc, name)
+					// Filter: show if name matches or if any facility in this ARTCC has matching airports
+					_, artccMatches := matchingARTCCs[artcc]
+					if c.filterText != "" && !artccMatches && !matchesFilter(artcc) && !matchesFilter(name) {
+						continue
+					}
 					if imgui.SelectableBoolV(label, artcc == selectedARTCC, 0, imgui.Vec2{}) && artcc != selectedARTCC {
-						// Find first facility in this ARTCC
-						idx := slices.IndexFunc(allFacilities, func(facility string) bool {
-							return getARTCCForFacility(facility, facilityCatalogs[facility]) == artcc
-						})
-						if idx >= 0 {
-							c.SetFacility(allFacilities[idx])
+						// Find first matching facility in this ARTCC
+						var facilityToSelect string
+						for facility := range matchingFacilities {
+							if getARTCCForFacility(facility, facilityCatalogs[facility]) == artcc {
+								facilityToSelect = facility
+								break
+							}
+						}
+						if facilityToSelect == "" {
+							// No matching facility, just pick the first one
+							for _, facility := range allFacilities {
+								if getARTCCForFacility(facility, facilityCatalogs[facility]) == artcc {
+									facilityToSelect = facility
+									break
+								}
+							}
+						}
+						if facilityToSelect != "" {
+							c.SetFacility(facilityToSelect)
 						}
 					}
 				}
@@ -526,7 +653,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 
 			// Column 2: TRACONs or ARTCC areas for selected ARTCC
 			imgui.TableNextColumn()
-			if imgui.BeginChildStrV("tracons/areas", imgui.Vec2{tableScale * 150, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
+			if imgui.BeginChildStrV("tracons/areas", imgui.Vec2{traconWidth, columnHeight}, 0, 0) {
 				for _, facility := range allFacilities {
 					info := facilityCatalogs[facility]
 					if info == nil {
@@ -537,12 +664,16 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 						continue
 					}
 
-					// Build area/group structure for this facility
+					// Build area/group structure for this facility, only including matching catalogs
 					catalogs := catalogsByFacility[facility]
 					_, isTRACON := av.DB.TRACONs[facility]
 					areaToGroups := make(map[string]*areaInfo)
 
 					for groupName, gcfg := range catalogs {
+						// Skip catalogs that don't match the filter
+						if c.filterText != "" && !catalogMatchesFilter(gcfg) {
+							continue
+						}
 						// For TRACONs, use groupName as area; for ARTCCs, use the Area field
 						area := groupName
 						if !isTRACON {
@@ -591,7 +722,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 
 			// Column 3: Scenarios for the selected TRACON or area
 			imgui.TableNextColumn()
-			if imgui.BeginChildStrV("scenarios", imgui.Vec2{tableScale * 300, tableScale * 350}, 0, imgui.WindowFlagsNoResize) {
+			if imgui.BeginChildStrV("scenarios", imgui.Vec2{scenarioWidth, columnHeight}, 0, 0) {
 				selectedCatalog := c.selectedFacilityCatalogs[c.GroupName]
 				if selectedCatalog != nil {
 					// Use same area logic as column 2: for TRACONs, use group name; for ARTCCs, use Area field
@@ -636,19 +767,6 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 			imgui.EndTable()
 		}
 
-		if c.newSimType == NewSimCreateRemote {
-			imgui.Text("Name: " + c.NewSimName)
-		}
-
-		fmtPosition := func(id sim.TCP) string {
-			if catalog := c.selectedFacilityCatalogs[c.GroupName]; catalog != nil {
-				if ctrl, ok := catalog.ControlPositions[id]; ok {
-					return string(id) + " (" + ctrl.Position + ")"
-				}
-			}
-			return string(id)
-		}
-
 		if len(c.ScenarioSpec.ArrivalRunways) > 0 {
 			var a []string
 			for _, rwy := range c.ScenarioSpec.ArrivalRunways {
@@ -668,98 +786,7 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 				}
 			}
 		}
-
-		rootPosition, _ := c.ScenarioSpec.ControllerConfiguration.RootPosition()
-		imgui.Text("Control Position: " + fmtPosition(rootPosition))
-
-		drawGetControllerInitials()
-
-		if c.newSimType == NewSimCreateRemote {
-			// Various extras only for remote sims
-			imgui.Checkbox("Sign in with instructor/RPO privileges", &c.Privileged)
-
-			imgui.Checkbox("Require Password", &c.RequirePassword)
-			if c.RequirePassword {
-				imgui.InputTextWithHint("Password", "", &c.Password, 0, nil)
-				if c.Password == "" {
-					imgui.SameLine()
-					imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{.7, .1, .1, 1})
-					imgui.Text(renderer.FontAwesomeIconExclamationTriangle)
-					imgui.PopStyleColor()
-				}
-			}
-		}
-
-		// Show TTS disable option if the server supports TTS
-		if c.selectedServer.HaveTTS {
-			imgui.Checkbox("Disable text-to-speech", &config.DisableTextToSpeech)
-			// Also update configs for both joining remote sims and creating new sims
-			c.joinRequest.DisableTextToSpeech = config.DisableTextToSpeech
-			c.NewSimRequest.DisableTextToSpeech = config.DisableTextToSpeech
-		}
-
-		imgui.Checkbox("Ensure that the last two characters in callsigns are unique",
-			&c.NewSimRequest.EnforceUniqueCallsignSuffix)
-
-		imgui.SliderFloatV("Minimum interval between readback errors (minutes)", &c.PilotErrorInterval, 1, 30, "%.1f", imgui.SliderFlagsNone)
-
-		// Lock for accessing METAR variables
-		c.mu.Lock(c.lg)
-		defer c.mu.Unlock(c.lg)
-
-		if c.fetchingMETAR {
-			imgui.Text("METAR: Fetching...")
-		} else if c.fetchMETARError != nil {
-			imgui.Text("METAR error: " + c.fetchMETARError.Error())
-		} else if len(c.airportMETAR) > 0 {
-			metarAirports := slices.Collect(maps.Keys(c.airportMETAR))
-			slices.Sort(metarAirports)
-			if idx := slices.Index(metarAirports, c.ScenarioSpec.PrimaryAirport); idx > 0 {
-				// Move primary to the front
-				metarAirports = slices.Delete(metarAirports, idx, idx+1)
-				metarAirports = slices.Insert(metarAirports, 0, c.ScenarioSpec.PrimaryAirport)
-			}
-
-			metar := c.airportMETAR[metarAirports[0]]
-			TimePicker("Simulation start date/time", &c.NewSimRequest.StartTime,
-				c.availableWXIntervals, metar, &ui.fixedFont.Ifont)
-
-			imgui.SameLine()
-			if imgui.Button(renderer.FontAwesomeIconRedo) {
-				c.updateStartTimeForRunways()
-			}
-
-			tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
-			if imgui.BeginTableV("metar", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{tableScale * 800, 0}, 0.) {
-				// Determine how many METARs to show
-				numToShow := len(metarAirports)
-				if !c.showAllMETAR && len(metarAirports) > 5 {
-					numToShow = 4
-				}
-
-				for i := range numToShow {
-					ap := metarAirports[i]
-					imgui.TableNextRow()
-					imgui.TableNextColumn()
-					if i == 0 {
-						imgui.Text("METAR:")
-					}
-					imgui.TableNextColumn()
-					imgui.PushFont(&ui.fixedFont.Ifont)
-					metar := wx.METARForTime(c.airportMETAR[ap], c.NewSimRequest.StartTime)
-					imgui.Text(metar.Raw)
-					imgui.PopFont()
-				}
-				imgui.EndTable()
-			}
-
-			// Show button if there are more than 5 METARs and we haven't clicked to show all
-			if !c.showAllMETAR && len(metarAirports) > 5 {
-				if imgui.Button("Show all METAR") {
-					c.showAllMETAR = true
-				}
-			}
-		}
+		// Configuration options (initials, checkboxes, METAR) are now on Screen 2
 	} else {
 		// Join remote
 		rs, ok := runningSims[c.joinRequest.SimName]
@@ -1030,6 +1057,233 @@ func (c *NewSimConfiguration) DrawUI(p platform.Platform, config *Config) bool {
 	return false
 }
 
+// drawSectionHeader draws a styled section header
+func drawSectionHeader(title string) {
+	imgui.Spacing()
+	imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{0.6, 0.8, 1.0, 1.0})
+	imgui.Text(strings.ToUpper(title))
+	imgui.PopStyleColor()
+	imgui.Separator()
+}
+
+// DrawConfigurationUI draws Screen 2: configuration options and traffic rates (combined)
+func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *Config) bool {
+	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
+
+	if c.displayError != nil {
+		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
+		imgui.Text(c.displayError.Error())
+		imgui.PopStyleColor()
+		imgui.Separator()
+	}
+
+	// CONTROLLER SETTINGS section
+	drawSectionHeader("Controller Settings")
+
+	// Controller initials
+	imgui.Text("Initials:")
+	imgui.SameLine()
+	imgui.SetNextItemWidth(50)
+	initialsFlags := imgui.InputTextFlagsCharsUppercase | imgui.InputTextFlagsCallbackCharFilter | imgui.InputTextFlagsCallbackEdit
+	imgui.InputTextWithHint("##initials", "XX", &config.ControllerInitials, initialsFlags,
+		func(input imgui.InputTextCallbackData) int {
+			if input.EventFlag()&imgui.InputTextFlagsCallbackCharFilter != 0 {
+				if ch := input.EventChar(); ch < 'A' || ch > 'Z' {
+					return 1
+				}
+			}
+			if input.EventFlag()&imgui.InputTextFlagsCallbackEdit != 0 {
+				if input.BufTextLen() > 2 {
+					input.DeleteChars(2, input.BufTextLen()-2)
+				}
+			}
+			return 0
+		})
+	if imgui.IsItemHovered() {
+		imgui.SetTooltip("Enter two letters for controller initials")
+	}
+	if len(config.ControllerInitials) < 2 {
+		imgui.SameLine()
+		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{.7, .1, .1, 1})
+		imgui.Text(renderer.FontAwesomeIconExclamationTriangle + " Must enter initials")
+		imgui.PopStyleColor()
+	}
+
+	if c.newSimType == NewSimCreateRemote {
+		imgui.Checkbox("Sign in with instructor/RPO privileges", &c.Privileged)
+	}
+	imgui.Spacing()
+
+	// SESSION OPTIONS section (remote only)
+	if c.newSimType == NewSimCreateRemote {
+		drawSectionHeader("Session Options")
+
+		imgui.Text("Name: " + c.NewSimName)
+
+		imgui.Checkbox("Require Password", &c.RequirePassword)
+		if c.RequirePassword {
+			imgui.SameLine()
+			imgui.SetNextItemWidth(150)
+			imgui.InputTextWithHint("##password", "Enter password", &c.Password, 0, nil)
+			if c.Password == "" {
+				imgui.SameLine()
+				imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{.7, .1, .1, 1})
+				imgui.Text(renderer.FontAwesomeIconExclamationTriangle)
+				imgui.PopStyleColor()
+			}
+		}
+		imgui.Spacing()
+	}
+
+	// SIMULATION SETTINGS section
+	drawSectionHeader("Simulation Settings")
+
+	if c.selectedServer.HaveTTS {
+		imgui.Checkbox("Disable text-to-speech", &config.DisableTextToSpeech)
+		c.NewSimRequest.DisableTextToSpeech = config.DisableTextToSpeech
+	}
+
+	imgui.Checkbox("Ensure unique callsign suffixes", &c.NewSimRequest.EnforceUniqueCallsignSuffix)
+
+	imgui.Text("Readback error interval:")
+	imgui.SameLine()
+	imgui.SetNextItemWidth(200)
+	imgui.SliderFloatV("##errorInterval", &c.PilotErrorInterval, 1, 30, "%.1f min", imgui.SliderFlagsNone)
+	imgui.Spacing()
+
+	// WEATHER & TIME section
+	drawSectionHeader("Weather & Time")
+
+	c.mu.Lock(c.lg)
+	defer c.mu.Unlock(c.lg)
+
+	if c.fetchingMETAR {
+		imgui.Text("Fetching weather data...")
+	} else if c.fetchMETARError != nil {
+		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
+		imgui.Text("Error: " + c.fetchMETARError.Error())
+		imgui.PopStyleColor()
+	} else if len(c.airportMETAR) > 0 {
+		metarAirports := slices.Collect(maps.Keys(c.airportMETAR))
+		slices.Sort(metarAirports)
+		if idx := slices.Index(metarAirports, c.ScenarioSpec.PrimaryAirport); idx > 0 {
+			metarAirports = slices.Delete(metarAirports, idx, idx+1)
+			metarAirports = slices.Insert(metarAirports, 0, c.ScenarioSpec.PrimaryAirport)
+		}
+
+		metar := c.airportMETAR[metarAirports[0]]
+		TimePicker("Start time", &c.NewSimRequest.StartTime,
+			c.availableWXIntervals, metar, &ui.fixedFont.Ifont)
+
+		imgui.SameLine()
+		if imgui.Button(renderer.FontAwesomeIconRedo + "##refreshTime") {
+			c.updateStartTimeForRunways()
+		}
+		if imgui.IsItemHovered() {
+			imgui.SetTooltip("Select optimal time for configured runways")
+		}
+
+		imgui.Spacing()
+		currentMetar := wx.METARForTime(c.airportMETAR[metarAirports[0]], c.NewSimRequest.StartTime)
+		imgui.Text("METAR:")
+		imgui.SameLine()
+		imgui.PushFont(&ui.fixedFont.Ifont)
+		imgui.Text(currentMetar.Raw)
+		imgui.PopFont()
+
+		if len(metarAirports) > 1 && !c.showAllMETAR {
+			if imgui.Button("Show all METAR") {
+				c.showAllMETAR = true
+			}
+		}
+		if c.showAllMETAR && len(metarAirports) > 1 {
+			if imgui.BeginTableV("allMetar", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{tableScale * 750, 0}, 0.) {
+				for i := 1; i < len(metarAirports); i++ {
+					ap := metarAirports[i]
+					imgui.TableNextRow()
+					imgui.TableNextColumn()
+					imgui.Text(ap + ":")
+					imgui.TableNextColumn()
+					imgui.PushFont(&ui.fixedFont.Ifont)
+					m := wx.METARForTime(c.airportMETAR[ap], c.NewSimRequest.StartTime)
+					imgui.Text(m.Raw)
+					imgui.PopFont()
+				}
+				imgui.EndTable()
+			}
+		}
+	}
+	imgui.Spacing()
+
+	// TRAFFIC RATES section
+	drawSectionHeader("Traffic Rates")
+
+	// Rate limit warning
+	const rateLimit = 100.0
+	if !c.ScenarioSpec.LaunchConfig.CheckRateLimits(rateLimit) {
+		c.ScenarioSpec.LaunchConfig.ClampRates(rateLimit)
+		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
+		imgui.Text(renderer.FontAwesomeIconExclamationTriangle + " Rates reduced to stay within limits")
+		imgui.PopStyleColor()
+	}
+
+	// Departures (collapsible)
+	lc := &c.ScenarioSpec.LaunchConfig
+	if len(lc.DepartureRates) > 0 {
+		depRate := lc.TotalDepartureRate()
+		headerText := fmt.Sprintf("Departures (Total: %d/hr)###departures", int(depRate+0.5))
+		if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
+			drawDepartureUI(lc, p)
+			imgui.Spacing()
+		}
+	}
+
+	// VFR Departures (collapsible)
+	if len(lc.VFRAirportRates) > 0 {
+		vfrRate := 0
+		for _, rate := range lc.VFRAirportRates {
+			r := float32(rate) * lc.VFRDepartureRateScale
+			if r > 0 {
+				vfrRate += int(r)
+			}
+		}
+		headerText := fmt.Sprintf("VFR Departures (%d/hr)###vfrdepartures", vfrRate)
+		if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
+			drawVFRDepartureUI(lc, p)
+			imgui.Spacing()
+		}
+	}
+
+	// Arrivals (collapsible)
+	arrRate := lc.TotalArrivalRate()
+	if arrRate > 0 {
+		headerText := fmt.Sprintf("Arrivals (Total: %d/hr)###arrivals", int(arrRate+0.5))
+		if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
+			drawArrivalUI(lc, p)
+			imgui.Spacing()
+		}
+	}
+
+	// Overflights (collapsible)
+	ofRate := lc.TotalOverflightRate()
+	if ofRate > 0 {
+		headerText := fmt.Sprintf("Overflights (%d/hr)###overflights", int(ofRate+0.5))
+		if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
+			drawOverflightUI(lc, p)
+			imgui.Spacing()
+		}
+	}
+
+	// Emergency rate (always visible)
+	imgui.Spacing()
+	imgui.Text("Emergency aircraft rate:")
+	imgui.SameLine()
+	imgui.SetNextItemWidth(150)
+	imgui.SliderFloatV("##emergencyRate", &lc.EmergencyAircraftRate, 0, 20, "%.1f /hr", imgui.SliderFlagsNone)
+
+	return false
+}
+
 func (c *NewSimConfiguration) DrawRatesUI(p platform.Platform) bool {
 	// Check rate limits and clamp if necessary
 	const rateLimit = 100.0
@@ -1052,16 +1306,6 @@ func (c *NewSimConfiguration) DrawRatesUI(p platform.Platform) bool {
 	drawOverflightUI(&c.ScenarioSpec.LaunchConfig, p)
 	drawEmergencyAircraftUI(&c.ScenarioSpec.LaunchConfig, p)
 	return false
-}
-
-func (c *NewSimConfiguration) OkDisabled(config *Config) bool {
-	if len(config.ControllerInitials) != 2 {
-		return true
-	}
-	if c.newSimType == NewSimJoinRemote && c.selectedTCW == "" {
-		return true
-	}
-	return c.newSimType == NewSimCreateRemote && (c.NewSimName == "" || (c.RequirePassword && c.Password == ""))
 }
 
 func (c *NewSimConfiguration) Start(config *Config) error {
@@ -1106,9 +1350,6 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 		return
 	}
 
-	imgui.Text("Departures")
-
-	sumRates := lc.TotalDepartureRate()
 	airportDepartures := make(map[string]int) // key is e.g. KJFK, then count of active runways cross categories.
 	for ap, runwayRates := range lc.DepartureRates {
 		for _, categories := range runwayRates {
@@ -1119,8 +1360,6 @@ func drawDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	for _, n := range airportDepartures {
 		maxDepartureCategories = max(n, maxDepartureCategories)
 	}
-
-	imgui.Text(fmt.Sprintf("Overall departure rate: %d / hour", int(sumRates+0.5)))
 
 	// SliderFlagsNoInput is more or less a hack to prevent keyboard focus
 	// from being here initially.
@@ -1203,14 +1442,6 @@ func drawVFRDepartureUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool
 		return
 	}
 
-	sumVFRRates := 0
-	for _, rate := range lc.VFRAirportRates {
-		r := float32(rate) * lc.VFRDepartureRateScale
-		if r > 0 {
-			sumVFRRates += int(r)
-		}
-	}
-	imgui.Text(fmt.Sprintf("Overall VFR departure rate: %d / hour", sumVFRRates))
 	// SliderFlagsNoInput is more or less a hack to prevent keyboard focus
 	// from being here initially.
 	changed = imgui.SliderFloatV("VFR departure rate scale", &lc.VFRDepartureRateScale, 0, 2, "%.1f", imgui.SliderFlagsNoInput) || changed
@@ -1232,7 +1463,6 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	// Figure out the maximum number of inbound flows per airport to figure
 	// out the number of table columns and also sum up the overall arrival
 	// rate.
-	sumRates := lc.TotalArrivalRate()
 	numAirportFlows := make(map[string]int)
 	for _, agr := range lc.InboundFlowRates {
 		for ap := range agr {
@@ -1248,9 +1478,6 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	for _, n := range numAirportFlows {
 		maxAirportFlows = max(n, maxAirportFlows)
 	}
-
-	imgui.Text("Arrivals")
-	imgui.Text(fmt.Sprintf("Overall arrival rate: %d / hour", int(sumRates+0.5)))
 
 	changed = imgui.SliderFloatV("Arrival/overflight rate scale", &lc.InboundFlowRateScale, 0, 5, "%.1f", imgui.SliderFlagsNoInput) || changed
 
@@ -1329,7 +1556,6 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	// Sum up the overall overflight rate
 	overflightGroups := make(map[string]interface{})
-	sumRates := lc.TotalOverflightRate()
 	for group, rates := range lc.InboundFlowRates {
 		if _, ok := rates["overflights"]; ok {
 			overflightGroups[group] = nil
@@ -1338,9 +1564,6 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 	if len(overflightGroups) == 0 {
 		return
 	}
-
-	imgui.Text("Overflights")
-	imgui.Text(fmt.Sprintf("Overall overflight rate: %d / hour", int(sumRates+0.5)))
 
 	ofColumns := min(3, len(overflightGroups))
 	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH | imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp

@@ -1425,6 +1425,7 @@ func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[stri
 		Facility:         facility,
 		ARTCC:            artcc,
 		Area:             sg.Area,
+		Airports:         util.SortedMapKeys(sg.Airports),
 	}
 
 	vfrAirports := make(map[string]*av.Airport)

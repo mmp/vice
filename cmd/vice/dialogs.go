@@ -57,7 +57,7 @@ func uiShowModalDialog(d *ModalDialogBox, atFront bool) {
 }
 
 func uiShowConnectDialog(mgr *client.ConnectionManager, allowCancel bool, config *Config, p platform.Platform, lg *log.Logger) {
-	client := &ConnectModalClient{
+	client := &ScenarioSelectionModalClient{
 		mgr:         mgr,
 		lg:          lg,
 		allowCancel: allowCancel,
@@ -144,7 +144,7 @@ func (m *ModalDialogBox) Draw() {
 	dpiScale := util.Select(runtime.GOOS == "windows", m.platform.DPIScale(), float32(1))
 	windowSize := m.platform.WindowSize()
 	maxHeight := float32(windowSize[1]) * 19 / 20
-	imgui.SetNextWindowSizeConstraints(imgui.Vec2{dpiScale * 400, dpiScale * 100}, imgui.Vec2{-1, maxHeight})
+	imgui.SetNextWindowSizeConstraints(imgui.Vec2{dpiScale * 850, dpiScale * 100}, imgui.Vec2{-1, maxHeight})
 
 	// Position the window near the top of the screen to ensure it doesn't extend below the bottom
 	// Use a small margin from the top (5% of screen height)
@@ -196,7 +196,8 @@ func (m *ModalDialogBox) Draw() {
 	}
 }
 
-type ConnectModalClient struct {
+// ScenarioSelectionModalClient handles Screen 1: scenario selection and sim type choice
+type ScenarioSelectionModalClient struct {
 	mgr         *client.ConnectionManager
 	lg          *log.Logger
 	simConfig   *NewSimConfiguration
@@ -205,15 +206,15 @@ type ConnectModalClient struct {
 	config      *Config
 }
 
-func (c *ConnectModalClient) Title() string { return "New Simulation" }
+func (c *ScenarioSelectionModalClient) Title() string { return "New Simulation" }
 
-func (c *ConnectModalClient) Opening() {
+func (c *ScenarioSelectionModalClient) Opening() {
 	if c.simConfig == nil {
 		c.simConfig = MakeNewSimConfiguration(c.mgr, &c.config.LastTRACON, &c.config.TFRCache, c.lg)
 	}
 }
 
-func (c *ConnectModalClient) Buttons() []ModalDialogButton {
+func (c *ScenarioSelectionModalClient) Buttons() []ModalDialogButton {
 	var b []ModalDialogButton
 	if c.allowCancel {
 		b = append(b, ModalDialogButton{text: "Cancel"})
@@ -221,17 +222,22 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 
 	next := ModalDialogButton{
 		text:     c.simConfig.UIButtonText(),
-		disabled: c.simConfig.OkDisabled(c.config),
+		disabled: c.simConfig.ScenarioSelectionDisabled(c.config),
 		action: func() bool {
-			if c.simConfig.ShowRatesWindow() {
-				client := &RatesModalClient{
-					lg:            c.lg,
-					connectClient: c,
-					platform:      c.platform,
+			if c.simConfig.ShowConfigurationWindow() {
+				// Go to configuration screen for create flows
+				client := &ConfigurationModalClient{
+					lg:          c.lg,
+					simConfig:   c.simConfig,
+					allowCancel: c.allowCancel,
+					platform:    c.platform,
+					config:      c.config,
+					mgr:         c.mgr,
 				}
 				uiShowModalDialog(NewModalDialogBox(client, c.platform), false)
 				return true
 			} else {
+				// Join flow - start directly
 				c.simConfig.displayError = c.simConfig.Start(c.config)
 				return c.simConfig.displayError == nil
 			}
@@ -241,60 +247,73 @@ func (c *ConnectModalClient) Buttons() []ModalDialogButton {
 	return append(b, next)
 }
 
-func (c *ConnectModalClient) Draw() int {
-	if enter := c.simConfig.DrawUI(c.platform, c.config); enter {
-		return 1
-	} else {
-		return -1
+func (c *ScenarioSelectionModalClient) Draw() int {
+	if enter := c.simConfig.DrawScenarioSelectionUI(c.platform, c.config); enter {
+		return util.Select(c.allowCancel, 1, 0)
 	}
+	return -1
 }
 
-type RatesModalClient struct {
-	lg *log.Logger
-	// Hold on to the connect client both to pick up various parameters
-	// from it but also so we can go back to it when "Previous" is pressed.
-	connectClient *ConnectModalClient
-	platform      platform.Platform
+// ConfigurationModalClient handles Screen 2: configuration options and traffic rates
+type ConfigurationModalClient struct {
+	mgr         *client.ConnectionManager
+	lg          *log.Logger
+	simConfig   *NewSimConfiguration
+	allowCancel bool
+	platform    platform.Platform
+	config      *Config
 }
 
-func (r *RatesModalClient) Title() string { return "Arrival / Departure Rates" }
+func (c *ConfigurationModalClient) Title() string {
+	return c.simConfig.Facility + " - " + c.simConfig.ScenarioName
+}
 
-func (r *RatesModalClient) Opening() {}
+func (c *ConfigurationModalClient) Opening() {}
 
-func (r *RatesModalClient) Buttons() []ModalDialogButton {
+func (c *ConfigurationModalClient) Buttons() []ModalDialogButton {
 	var b []ModalDialogButton
 
+	// Previous button - go back to scenario selection
 	prev := ModalDialogButton{
 		text: "Previous",
 		action: func() bool {
-			uiShowModalDialog(NewModalDialogBox(r.connectClient, r.platform), false)
+			client := &ScenarioSelectionModalClient{
+				mgr:         c.mgr,
+				lg:          c.lg,
+				simConfig:   c.simConfig,
+				allowCancel: c.allowCancel,
+				platform:    c.platform,
+				config:      c.config,
+			}
+			uiShowModalDialog(NewModalDialogBox(client, c.platform), false)
 			return true
 		},
 	}
 	b = append(b, prev)
 
-	if r.connectClient.allowCancel {
+	if c.allowCancel {
 		b = append(b, ModalDialogButton{text: "Cancel"})
 	}
 
-	ok := ModalDialogButton{
+	// Create button
+	create := ModalDialogButton{
 		text:     "Create",
-		disabled: r.connectClient.simConfig.OkDisabled(r.connectClient.config),
+		disabled: c.simConfig.ConfigurationDisabled(c.config),
 		action: func() bool {
-			r.connectClient.simConfig.displayError = r.connectClient.simConfig.Start(r.connectClient.config)
-			return r.connectClient.simConfig.displayError == nil
+			c.simConfig.displayError = c.simConfig.Start(c.config)
+			return c.simConfig.displayError == nil
 		},
 	}
+	b = append(b, create)
 
-	return append(b, ok)
+	return b
 }
 
-func (r *RatesModalClient) Draw() int {
-	if enter := r.connectClient.simConfig.DrawRatesUI(r.platform); enter {
-		return 1
-	} else {
-		return -1
+func (c *ConfigurationModalClient) Draw() int {
+	if enter := c.simConfig.DrawConfigurationUI(c.platform, c.config); enter {
+		return util.Select(c.allowCancel, 2, 1)
 	}
+	return -1
 }
 
 type YesOrNoModalClient struct {

@@ -60,6 +60,7 @@ type ScenarioCatalog struct {
 	Facility         string
 	ARTCC            string
 	Area             string
+	Airports         []string // ICAO codes of airports in this scenario group
 }
 
 type ScenarioSpec struct {
