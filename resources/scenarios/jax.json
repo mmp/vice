@@ -3107,7 +3107,7 @@
           "route": "OMN",
           "initial_controller": "Daytona North Approach",
           "initial_altitude": 8000,
-          "description": "jets VITTS",
+          "description": "jets Vitts",
           "initial_speed": 250,
           "expect_approach": null,
           "airlines": {
@@ -3132,7 +3132,7 @@
           "route": "OMN",
           "initial_controller": "Daytona North Approach",
           "initial_altitude": 6000,
-          "description": "prop VITTS",
+          "description": "prop Vitts",
           "initial_speed": 250,
           "expect_approach": null,
           "airlines": {
@@ -4017,7 +4017,7 @@
       "sector_id": "1A",
       "default_airport": "KJAX"
     },
-    "Radar Gainsville": {
+    "Radar Gainesville": {
       "frequency": 118175,
       "radio_name": "Jacksonville approach",
       "sector_id": "1G",
@@ -4055,9 +4055,9 @@
       "radio_name": "Ocala Tower",
       "sector_id": "3OT"
     },
-    "Gainsville Tower": {
+    "Gainesville Tower": {
       "frequency": 119550,
-      "radio_name": "Gainsville Tower",
+      "radio_name": "Gainesville Tower",
       "sector_id": "3GT"
     },
     "Cecil Tower": {
@@ -4076,7 +4076,7 @@
       "sector_id": "3MT"
     }
   },
-  "default_scenario": "KJAX East, No VITTS",
+  "default_scenario": "KJAX East, No Vitts",
   "name": "KJAX",
   "primary_airport": "KJAX",
   "reporting_points": ["BASSS", "WILON", "ESENT", "CRG", "KJAX", "KFHB", "KNIP", "KVQQ", "KCRG", "OCF", "GNV", "OMN"],
@@ -4107,7 +4107,7 @@
     }
   ],
   "scenarios": {
-    "KJAX East, No VITTS": {
+    "KJAX East, No Vitts": {
       "arrival_runways": [
         {
           "airport": "KJAX",
@@ -4205,10 +4205,10 @@
         "config_id": "KJA",
         "default_consolidation": {
           "Radar Arrival": ["Radar West"],
-          "Radar Gainsville": ["Radar Palatka"],
+          "Radar Gainesville": ["Radar Palatka"],
           "Radar North": ["Radar Arrival", "Radar Final"],
           "Radar Satellite": ["Radar North", "Radar Vitts"],
-          "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"],
+          "Radar Vitts": ["Radar Dunnellon", "Radar Gainesville"],
           "Radar West": ["Radar East"]
         }
       },
@@ -4273,172 +4273,7 @@
         "direction": "70-130"
       }
     },
-    "KJAX East, No VITTS (N/S)": {
-      "arrival_runways": [
-        {
-          "airport": "KJAX",
-          "runway": "8"
-        },
-        {
-          "airport": "KJAX",
-          "runway": "14"
-        },
-        {
-          "airport": "KCRG",
-          "runway": "14"
-        },
-        {
-          "airport": "KSGJ",
-          "runway": "13"
-        },
-        {
-          "airport": "KVQQ",
-          "runway": "36R"
-        },
-        {
-          "airport": "KNIP",
-          "runway": "10"
-        },
-        {
-          "airport": "KFHB",
-          "runway": "13"
-        },
-        {
-          "airport": "KNRB",
-          "runway": "5"
-        },
-        {
-          "airport": "KHEG",
-          "runway": "25"
-        }
-      ],
-      "inbound_rates": {
-        "LUNNI2_E": {
-          "KJAX": 3
-        },
-        "MARQO3": {
-          "KJAX": 3
-        },
-        "OHDEA2": {
-          "KJAX": 3
-        },
-        "QUBEN2": {
-          "KJAX": 3
-        },
-        "TEBOW2": {
-          "KJAX": 3
-        },
-        "OMN": {
-          "KCRG": 2,
-          "KSGJ": 2,
-          "KFHB": 2,
-          "KNIP": 2,
-          "KNRB": 2,
-          "KVQQ": 2
-        },
-        "ALLMA": {
-          "KCRG": 2,
-          "KSGJ": 2,
-          "KFHB": 2,
-          "KNIP": 2,
-          "KNRB": 2,
-          "KVQQ": 2
-        },
-        "ORLNOV": {
-          "KCRG": 2,
-          "KSGJ": 2,
-          "KFHB": 2,
-          "KNIP": 2,
-          "KNRB": 2,
-          "KVQQ": 2
-        },
-        "ESENT": {
-          "KCRG": 2,
-          "KSGJ": 2,
-          "KFHB": 2,
-          "KNIP": 2,
-          "KNRB": 2,
-          "KVQQ": 2
-        },
-        "V51": {
-          "overflights": 2
-        },
-        "V159_S": {
-          "overflights": 2
-        }
-      },
-      "configuration": {
-        "config_id": "KJ1",
-        "default_consolidation": {
-          "Radar Arrival": ["Radar Final"],
-          "Radar Gainsville": ["Radar Palatka"],
-          "Radar North": ["Radar Arrival"],
-          "Radar Satellite": ["Radar East", "Radar North", "Radar Vitts", "Radar West"],
-          "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"]
-        }
-      },
-      "controllers": [
-        "Jacksonville Center (Sector 57)",
-        "Jacksonville Center (Sector 54)",
-        "Jacksonville Center (Sector 15)",
-        "Jacksonville Center (Sector 77)",
-        "Jacksonville Center (Sector 79)",
-        "Daytona North Approach",
-        "Orlando East Approach",
-        "Tampa East Approach",
-        "Radar Vitts",
-        "Jacksonville Tower",
-        "Craig Tower",
-        "St. Augustine Tower"
-      ],
-      "default_maps": ["EAST FLOW"],
-      "departure_runways": [
-        {
-          "airport": "KJAX",
-          "rate": 10,
-          "runway": "8"
-        },
-        {
-          "airport": "KCRG",
-          "rate": 10,
-          "runway": "14"
-        },
-        {
-          "airport": "KSGJ",
-          "rate": 10,
-          "runway": "13"
-        },
-        {
-          "airport": "KVQQ",
-          "rate": 10,
-          "runway": "36R"
-        },
-        {
-          "airport": "KNIP",
-          "rate": 10,
-          "runway": "10"
-        },
-        {
-          "airport": "KFHB",
-          "rate": 10,
-          "runway": "4"
-        },
-        {
-          "airport": "KNRB",
-          "rate": 10,
-          "runway": "5"
-        },
-        {
-          "airport": "KHEG",
-          "rate": 2,
-          "runway": "7"
-        }
-      ],
-      "wind": {
-        "direction": "70-130"
-      }
-    },
-    "KJAX West, No VITTS": {
+    "KJAX West, No Vitts": {
       "arrival_runways": [
         {
           "airport": "KJAX",
@@ -4536,10 +4371,10 @@
         "config_id": "KJ3",
         "default_consolidation": {
           "Radar Arrival": ["Radar West"],
-          "Radar Gainsville": ["Radar Palatka"],
+          "Radar Gainesville": ["Radar Palatka"],
           "Radar North": ["Radar Arrival", "Radar Final"],
           "Radar Satellite": ["Radar North", "Radar Vitts"],
-          "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"],
+          "Radar Vitts": ["Radar Dunnellon", "Radar Gainesville"],
           "Radar West": ["Radar East"]
         }
       },
@@ -4604,172 +4439,7 @@
         "direction": "250-310"
       }
     },
-    "KJAX West, No VITTS (N/S)": {
-      "arrival_runways": [
-        {
-          "airport": "KJAX",
-          "runway": "26"
-        },
-        {
-          "airport": "KJAX",
-          "runway": "32"
-        },
-        {
-          "airport": "KCRG",
-          "runway": "32"
-        },
-        {
-          "airport": "KSGJ",
-          "runway": "31"
-        },
-        {
-          "airport": "KVQQ",
-          "runway": "18L"
-        },
-        {
-          "airport": "KNIP",
-          "runway": "28"
-        },
-        {
-          "airport": "KFHB",
-          "runway": "22"
-        },
-        {
-          "airport": "KNRB",
-          "runway": "23"
-        },
-        {
-          "airport": "KHEG",
-          "runway": "25"
-        }
-      ],
-      "inbound_rates": {
-        "LUNNI2_W": {
-          "KJAX": 3
-        },
-        "MARQO3": {
-          "KJAX": 3
-        },
-        "OHDEA2": {
-          "KJAX": 3
-        },
-        "QUBEN2": {
-          "KJAX": 3
-        },
-        "TEBOW2": {
-          "KJAX": 3
-        },
-        "OMN": {
-          "KCRG": 2,
-          "KSGJ": 2,
-          "KFHB": 2,
-          "KNIP": 2,
-          "KNRB": 2,
-          "KVQQ": 2
-        },
-        "ALLMA": {
-          "KCRG": 2,
-          "KSGJ": 2,
-          "KFHB": 2,
-          "KNIP": 2,
-          "KNRB": 2,
-          "KVQQ": 2
-        },
-        "ORLNOV": {
-          "KCRG": 2,
-          "KSGJ": 2,
-          "KFHB": 2,
-          "KNIP": 2,
-          "KNRB": 2,
-          "KVQQ": 2
-        },
-        "ESENT": {
-          "KCRG": 2,
-          "KSGJ": 2,
-          "KFHB": 2,
-          "KNIP": 2,
-          "KNRB": 2,
-          "KVQQ": 2
-        },
-        "V51": {
-          "overflights": 2
-        },
-        "V159_S": {
-          "overflights": 2
-        }
-      },
-      "configuration": {
-        "config_id": "KJ4",
-        "default_consolidation": {
-          "Radar Arrival": ["Radar Final"],
-          "Radar Gainsville": ["Radar Palatka"],
-          "Radar North": ["Radar Arrival"],
-          "Radar Satellite": ["Radar East", "Radar North", "Radar Vitts", "Radar West"],
-          "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"]
-        }
-      },
-      "controllers": [
-        "Jacksonville Center (Sector 57)",
-        "Jacksonville Center (Sector 54)",
-        "Jacksonville Center (Sector 15)",
-        "Jacksonville Center (Sector 77)",
-        "Jacksonville Center (Sector 79)",
-        "Daytona North Approach",
-        "Orlando East Approach",
-        "Tampa East Approach",
-        "Radar Vitts",
-        "Jacksonville Tower",
-        "Craig Tower",
-        "St. Augustine Tower"
-      ],
-      "default_maps": ["WEST FLOW"],
-      "departure_runways": [
-        {
-          "airport": "KJAX",
-          "rate": 10,
-          "runway": "26"
-        },
-        {
-          "airport": "KCRG",
-          "rate": 10,
-          "runway": "32"
-        },
-        {
-          "airport": "KSGJ",
-          "rate": 10,
-          "runway": "31"
-        },
-        {
-          "airport": "KVQQ",
-          "rate": 10,
-          "runway": "18L"
-        },
-        {
-          "airport": "KNIP",
-          "rate": 10,
-          "runway": "28"
-        },
-        {
-          "airport": "KFHB",
-          "rate": 10,
-          "runway": "22"
-        },
-        {
-          "airport": "KNRB",
-          "rate": 10,
-          "runway": "23"
-        },
-        {
-          "airport": "KHEG",
-          "rate": 2,
-          "runway": "25"
-        }
-      ],
-      "wind": {
-        "direction": "250-310"
-      }
-    },
-    "KJAX West, VITTS": {
+    "KJAX West, Vitts": {
       "arrival_runways": [
         {
           "airport": "KJAX",
@@ -4897,10 +4567,10 @@
         "config_id": "KJ5",
         "default_consolidation": {
           "Radar Arrival": ["Radar West"],
-          "Radar Gainsville": ["Radar Palatka"],
+          "Radar Gainesville": ["Radar Palatka"],
           "Radar North": ["Radar Arrival", "Radar Final"],
           "Radar Satellite": ["Radar North", "Radar Vitts"],
-          "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"],
+          "Radar Vitts": ["Radar Dunnellon", "Radar Gainesville"],
           "Radar West": ["Radar East"]
         }
       },
@@ -4959,199 +4629,14 @@
           "airport": "KHEG",
           "rate": 2,
           "runway": "25"
-        }
-      ],
-      "wind": {
-        "direction": "250-310"
-      }
-    },
-    "KJAX West, VITTS (N/S/V)": {
-      "arrival_runways": [
-        {
-          "airport": "KJAX",
-          "runway": "26"
-        },
-        {
-          "airport": "KJAX",
-          "runway": "32"
-        },
-        {
-          "airport": "KCRG",
-          "runway": "32"
-        },
-        {
-          "airport": "KSGJ",
-          "runway": "31"
-        },
-        {
-          "airport": "KVQQ",
-          "runway": "18L"
-        },
-        {
-          "airport": "KNIP",
-          "runway": "28"
-        },
-        {
-          "airport": "KFHB",
-          "runway": "22"
-        },
-        {
-          "airport": "KNRB",
-          "runway": "23"
-        },
-        {
-          "airport": "KHEG",
-          "runway": "25"
-        },
-        {
-          "airport": "KGNV",
-          "runway": "29"
         },
         {
           "airport": "KOCF",
+          "rate": 2,
           "runway": "18"
-        }
-      ],
-      "inbound_rates": {
-        "LUNNI2_W": {
-          "KJAX": 3
-        },
-        "MARQO3": {
-          "KJAX": 3
-        },
-        "OHDEA2": {
-          "KJAX": 3
-        },
-        "QUBEN2": {
-          "KJAX": 3
-        },
-        "TEBOW2": {
-          "KJAX": 3
-        },
-        "OMN": {
-          "KCRG": 2,
-          "KVQQ": 2,
-          "KFHB": 2,
-          "KOCF": 2,
-          "KSGJ": 2,
-          "KGNV": 2
-        },
-        "ALLMA": {
-          "KCRG": 2,
-          "KSGJ": 2,
-          "KOCF": 2,
-          "KFHB": 2,
-          "KNIP": 2,
-          "KNRB": 2,
-          "KVQQ": 2
-        },
-        "ORL": {
-          "KCRG": 2,
-          "KVQQ": 2,
-          "KFHB": 2,
-          "KSGJ": 2,
-          "KGNV": 2,
-          "KOCF": 2,
-          "KNIP": 2,
-          "KNRB": 2
-        },
-        "ESENT": {
-          "KCRG": 2,
-          "KSGJ": 2,
-          "KOCF": 2,
-          "KFHB": 2,
-          "KNIP": 2,
-          "KNRB": 2,
-          "KVQQ": 2
-        },
-        "V51": {
-          "overflights": 2
-        },
-        "V159": {
-          "overflights": 2
-        },
-        "V159_S": {
-          "overflights": 2
-        },
-        "V441 North": {
-          "overflights": 2
-        },
-        "V441 South": {
-          "overflights": 2
-        },
-        "V537 East": {
-          "overflights": 2
-        },
-        "V537 West": {
-          "overflights": 1
-        },
-        "SHREK2": {
-          "overflights": 2
-        }
-      },
-      "configuration": {
-        "config_id": "KJ6",
-        "default_consolidation": {
-          "Radar Arrival": ["Radar Final"],
-          "Radar Gainsville": ["Radar Palatka"],
-          "Radar North": ["Radar Arrival"],
-          "Radar Satellite": ["Radar East", "Radar North", "Radar Vitts", "Radar West"],
-          "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"]
-        }
-      },
-      "controllers": [
-        "Jacksonville Center (Sector 57)",
-        "Jacksonville Center (Sector 54)",
-        "Jacksonville Center (Sector 15)",
-        "Jacksonville Center (Sector 77)",
-        "Jacksonville Center (Sector 79)",
-        "Daytona North Approach",
-        "Orlando East Approach",
-        "Tampa East Approach",
-        "Radar Vitts",
-        "Jacksonville Tower",
-        "Craig Tower",
-        "St. Augustine Tower"
-      ],
-      "default_maps": ["WEST FLOW"],
-      "departure_runways": [
-        {
-          "airport": "KJAX",
-          "rate": 10,
-          "runway": "26"
         },
         {
-          "airport": "KCRG",
-          "rate": 10,
-          "runway": "32"
-        },
-        {
-          "airport": "KSGJ",
-          "rate": 10,
-          "runway": "31"
-        },
-        {
-          "airport": "KVQQ",
-          "rate": 10,
-          "runway": "18L"
-        },
-        {
-          "airport": "KNIP",
-          "rate": 10,
-          "runway": "28"
-        },
-        {
-          "airport": "KFHB",
-          "rate": 10,
-          "runway": "22"
-        },
-        {
-          "airport": "KNRB",
-          "rate": 10,
-          "runway": "23"
-        },
-        {
-          "airport": "KHEG",
+          "airport": "KGNV",
           "rate": 2,
           "runway": "25"
         }
@@ -5160,7 +4645,7 @@
         "direction": "250-310"
       }
     },
-    "KJAX East, VITTS": {
+    "KJAX East, Vitts": {
       "arrival_runways": [
         {
           "airport": "KJAX",
@@ -5288,10 +4773,10 @@
         "config_id": "KJ2",
         "default_consolidation": {
           "Radar Arrival": ["Radar West"],
-          "Radar Gainsville": ["Radar Palatka"],
+          "Radar Gainesville": ["Radar Palatka"],
           "Radar North": ["Radar Arrival", "Radar Final"],
           "Radar Satellite": ["Radar North", "Radar Vitts"],
-          "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"],
+          "Radar Vitts": ["Radar Dunnellon", "Radar Gainesville"],
           "Radar West": ["Radar East"]
         }
       },
@@ -5350,201 +4835,16 @@
           "airport": "KHEG",
           "rate": 2,
           "runway": "7"
-        }
-      ],
-      "wind": {
-        "direction": "70-130"
-      }
-    },
-    "KJAX East, VITTS (N/S/V)": {
-      "arrival_runways": [
-        {
-          "airport": "KJAX",
-          "runway": "8"
-        },
-        {
-          "airport": "KJAX",
-          "runway": "14"
-        },
-        {
-          "airport": "KCRG",
-          "runway": "14"
-        },
-        {
-          "airport": "KSGJ",
-          "runway": "13"
-        },
-        {
-          "airport": "KVQQ",
-          "runway": "36R"
-        },
-        {
-          "airport": "KNIP",
-          "runway": "10"
-        },
-        {
-          "airport": "KFHB",
-          "runway": "4"
-        },
-        {
-          "airport": "KNRB",
-          "runway": "5"
-        },
-        {
-          "airport": "KHEG",
-          "runway": "25"
         },
         {
           "airport": "KGNV",
-          "runway": "11"
+          "rate": 2,
+          "runway": "7"
         },
         {
           "airport": "KOCF",
-          "runway": "36"
-        }
-      ],
-      "inbound_rates": {
-        "LUNNI2_E": {
-          "KJAX": 3
-        },
-        "MARQO3": {
-          "KJAX": 3
-        },
-        "OHDEA2": {
-          "KJAX": 3
-        },
-        "QUBEN2": {
-          "KJAX": 3
-        },
-        "TEBOW2": {
-          "KJAX": 3
-        },
-        "OMN": {
-          "KCRG": 2,
-          "KVQQ": 2,
-          "KFHB": 2,
-          "KOCF": 2,
-          "KSGJ": 2,
-          "KGNV": 2
-        },
-        "ALLMA": {
-          "KCRG": 2,
-          "KSGJ": 2,
-          "KOCF": 2,
-          "KFHB": 2,
-          "KNIP": 2,
-          "KNRB": 2,
-          "KVQQ": 2
-        },
-        "ORL": {
-          "KCRG": 2,
-          "KVQQ": 2,
-          "KFHB": 2,
-          "KSGJ": 2,
-          "KGNV": 2,
-          "KOCF": 2,
-          "KNIP": 2,
-          "KNRB": 2
-        },
-        "ESENT": {
-          "KCRG": 2,
-          "KSGJ": 2,
-          "KOCF": 2,
-          "KFHB": 2,
-          "KNIP": 2,
-          "KNRB": 2,
-          "KVQQ": 2
-        },
-        "V51": {
-          "overflights": 2
-        },
-        "V159": {
-          "overflights": 2
-        },
-        "V159_S": {
-          "overflights": 2
-        },
-        "V441 North": {
-          "overflights": 2
-        },
-        "V441 South": {
-          "overflights": 2
-        },
-        "V537 East": {
-          "overflights": 2
-        },
-        "V537 West": {
-          "overflights": 1
-        },
-        "SHREK2": {
-          "overflights": 2
-        }
-      },
-      "configuration": {
-        "config_id": "KJ2",
-        "default_consolidation": {
-          "Radar Arrival": ["Radar Final"],
-          "Radar Gainsville": ["Radar Palatka"],
-          "Radar North": ["Radar Arrival"],
-          "Radar Satellite": ["Radar East", "Radar North", "Radar Vitts", "Radar West"],
-          "Radar Vitts": ["Radar Dunnellon", "Radar Gainsville"]
-        }
-      },
-      "controllers": [
-        "Jacksonville Center (Sector 57)",
-        "Jacksonville Center (Sector 54)",
-        "Jacksonville Center (Sector 15)",
-        "Jacksonville Center (Sector 77)",
-        "Jacksonville Center (Sector 79)",
-        "Daytona North Approach",
-        "Orlando East Approach",
-        "Tampa East Approach",
-        "Radar Vitts",
-        "Jacksonville Tower",
-        "Craig Tower",
-        "St. Augustine Tower"
-      ],
-      "default_maps": ["EAST FLOW"],
-      "departure_runways": [
-        {
-          "airport": "KJAX",
-          "rate": 10,
-          "runway": "8"
-        },
-        {
-          "airport": "KCRG",
-          "rate": 10,
-          "runway": "14"
-        },
-        {
-          "airport": "KSGJ",
-          "rate": 10,
-          "runway": "13"
-        },
-        {
-          "airport": "KVQQ",
-          "rate": 10,
-          "runway": "36R"
-        },
-        {
-          "airport": "KNIP",
-          "rate": 10,
-          "runway": "10"
-        },
-        {
-          "airport": "KFHB",
-          "rate": 10,
-          "runway": "4"
-        },
-        {
-          "airport": "KNRB",
-          "rate": 10,
-          "runway": "5"
-        },
-        {
-          "airport": "KHEG",
           "rate": 2,
-          "runway": "7"
+          "runway": "36"
         }
       ],
       "wind": {
@@ -5572,9 +4872,10 @@
           "KCRG": "Radar Satellite",
           "KFHB": "Radar North",
           "KHEG": "Radar West",
-          "KJAX": "Radar North",
-          "KNIP": "Radar West",
-          "KNRB": "Radar North",
+          "KJAX/8": "Radar North",
+          "KJAX/14": "Radar Satellite",
+          "KNIP": "Radar Satellite",
+          "KNRB": "Radar Satellite",
           "KSGJ": "Radar Satellite",
           "KVQQ": "Radar West"
         }
@@ -5628,11 +4929,14 @@
           "KCRG": "Radar Satellite",
           "KFHB": "Radar North",
           "KHEG": "Radar West",
-          "KJAX": "Radar Satellite",
-          "KNIP": "Radar West",
-          "KNRB": "Radar North",
+          "KJAX/8": "Radar North",
+          "KJAX/14": "Radar Satellite",
+          "KNIP": "Radar Satellite",
+          "KNRB": "Radar Satellite",
           "KSGJ": "Radar Satellite",
-          "KVQQ": "Radar West"
+          "KVQQ": "Radar West",
+          "KGNV": "Radar Gainesville",
+          "KOCF": "Radar Vitts"
         }
       },
       "KJ3": {
@@ -5653,9 +4957,13 @@
           "KCRG": "Radar Satellite",
           "KFHB": "Radar North",
           "KHEG": "Radar West",
-          "KJAX": "Radar West",
+          "KJAX/BRSTL1": "Radar North",
+          "KJAX/CROSB2": "Radar North",
+          "KJAX/EXBOX2": "Radar Satellite",
+          "KJAX/JETIN2": "Radar North",
+          "KJAX/SAWGY3": "Radar Satellite",
           "KNIP": "Radar West",
-          "KNRB": "Radar North",
+          "KNRB": "Radar Satellite",
           "KSGJ": "Radar Satellite",
           "KVQQ": "Radar West"
         }
@@ -5709,11 +5017,17 @@
           "KCRG": "Radar Satellite",
           "KFHB": "Radar North",
           "KHEG": "Radar West",
-          "KJAX": "Radar North",
+          "KJAX/BRSTL1": "Radar North",
+          "KJAX/CROSB2": "Radar North",
+          "KJAX/EXBOX2": "Radar Satellite",
+          "KJAX/JETIN2": "Radar North",
+          "KJAX/SAWGY3": "Radar Satellite",
           "KNIP": "Radar West",
-          "KNRB": "Radar North",
+          "KNRB": "Radar Satellite",
           "KSGJ": "Radar Satellite",
-          "KVQQ": "Radar West"
+          "KVQQ": "Radar West",
+          "KOCF": "Radar Vitts",
+          "KGNV": "Radar Gainesville"
         }
       },
       "KJ6": {
