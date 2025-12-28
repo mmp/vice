@@ -199,7 +199,7 @@ func (ts *TrackState) TrackHeading(nmPerLongitude float32) float32 {
 
 func (sp *STARSPane) trackStateForACID(ctx *panes.Context, acid sim.ACID) (*TrackState, bool) {
 	// Figure out the ADSB callsign for this ACID.
-	for _, trk := range ctx.Client.State.Tracks {
+	for _, trk := range sp.visibleTracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
 			s, ok := sp.TrackState[trk.ADSBCallsign]
 			return s, ok
@@ -406,7 +406,7 @@ func (sp *STARSPane) isQuicklooked(ctx *panes.Context, trk sim.Track) bool {
 func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 	// See if there are any MVA issues
 	mvas := av.DB.MVAs[ctx.Client.State.Facility]
-	for _, trk := range ctx.Client.State.Tracks {
+	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 		if !trk.MVAsApply {
 			state.MSAW = false

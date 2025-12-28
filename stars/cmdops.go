@@ -204,7 +204,7 @@ func init() {
 			dep := lookupDeparture(sp, ctx, func(dep sim.ReleaseDeparture) bool { return dep.Squawk == sq })
 
 			if dep == nil {
-				for _, trk := range ctx.Client.State.Tracks {
+				for _, trk := range sp.visibleTracks {
 					if trk.Squawk == sq {
 						// There is such a flight but it's not in our release list.
 						if trk.HoldForRelease {

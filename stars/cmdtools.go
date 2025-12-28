@@ -475,7 +475,7 @@ func init() {
 					}
 
 					if sq, err := av.ParseSquawk(fixBeaconOrACID); err == nil {
-						for _, trk := range ctx.Client.State.Tracks {
+						for _, trk := range sp.visibleTracks {
 							if trk.IsAssociated() && trk.FlightPlan.AssignedSquawk == sq {
 								rbl.P[1].ADSBCallsign = trk.ADSBCallsign
 								return true
@@ -483,7 +483,7 @@ func init() {
 						}
 					}
 
-					for _, trk := range ctx.Client.State.Tracks {
+					for _, trk := range sp.visibleTracks {
 						if trk.IsAssociated() && trk.FlightPlan.ACID == sim.ACID(fixBeaconOrACID) {
 							rbl.P[1].ADSBCallsign = trk.ADSBCallsign
 							return true
@@ -1039,8 +1039,7 @@ func init() {
 	// 6.13.28 Selected beacon code display
 	registerCommand(CommandModeNone, "**[BCN]",
 		func(sp *STARSPane, ctx *panes.Context, beacon av.Squawk) error {
-			if !util.SeqContainsFunc(maps.Values(ctx.Client.State.Tracks),
-				func(trk *sim.Track) bool { return trk.Squawk == beacon }) {
+			if !slices.ContainsFunc(sp.visibleTracks, func(trk sim.Track) bool { return trk.Squawk == beacon }) {
 				return ErrSTARSNoTrack
 			}
 
