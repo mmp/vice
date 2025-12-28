@@ -13,6 +13,8 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/rand"
+
+	"github.com/goforj/godump"
 )
 
 const initialSimSeconds = 30 * 60
@@ -412,9 +414,11 @@ func (s *Sim) Prespawn() {
 	}
 
 	s.lg.Info("finished aircraft prespawn")
-	fmt.Printf("Prespawn in %s, rates: dep %f arrival %f overflight %f LaunchConfig %#v\n", time.Since(start),
+	fmt.Printf("Prespawn in %s, rates: dep %f arrival %f overflight %f\n", time.Since(start),
 		s.State.LaunchConfig.TotalDepartureRate(), s.State.LaunchConfig.TotalArrivalRate(),
-		s.State.LaunchConfig.TotalOverflightRate(), s.State.LaunchConfig)
+		s.State.LaunchConfig.TotalOverflightRate())
+	fmt.Println("LaunchConfig:")
+	godump.Dump(s.State.LaunchConfig)
 }
 
 func (s *Sim) setInitialSpawnTimes(now time.Time) {

@@ -21,6 +21,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/goforj/godump"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
@@ -267,8 +268,10 @@ func main() {
 		s.SetWaypointCommands(sim.TCW(rootController), *waypointCommands)
 
 		// Check launch configuration
-		fmt.Printf("Departure rates: %v\n", state.LaunchConfig.DepartureRates)
-		fmt.Printf("Inbound flow rates: %v\n", state.LaunchConfig.InboundFlowRates)
+		fmt.Println("Departure rates:")
+		godump.Dump(state.LaunchConfig.DepartureRates)
+		fmt.Println("Inbound flow rates:")
+		godump.Dump(state.LaunchConfig.InboundFlowRates)
 
 		startTime := time.Now()
 		s.Prespawn()
