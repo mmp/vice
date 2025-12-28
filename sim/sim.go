@@ -841,6 +841,11 @@ func (s *Sim) consolidateRadioEventsForTCW(tcw TCW, events []Event) []Event {
 			}
 		}
 
+		// For emergency aircraft, 50% of the time add "emergency aircraft" after heavy/super.
+		if ac.EmergencyState != nil && s.Rand.Bool() {
+			heavySuper += " emergency aircraft"
+		}
+
 		switch e.RadioTransmissionType {
 		case av.RadioTransmissionContact:
 			csArg := av.CallsignArg{

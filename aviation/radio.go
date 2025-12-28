@@ -852,11 +852,6 @@ func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 
 	result := strings.TrimSpace(tel + " " + sayFlightNumber(fnum) + suffix)
 
-	// For emergency aircraft, 50% of the time add "emergency aircraft" after callsign.
-	if ca.IsEmergency && r.Bool() {
-		result += " emergency aircraft"
-	}
-
 	return result
 }
 
