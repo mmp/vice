@@ -2811,7 +2811,7 @@
         }
       },
       "configuration": {
-        "config_id": "DAY",
+        "config_id": "DAE",
         "default_consolidation": {
           "DAB_H_APP": ["DAB_M_APP"],
           "DAB_L_APP": ["DAB_N_APP"],
@@ -2985,7 +2985,7 @@
         }
       },
       "configuration": {
-        "config_id": "DA1",
+        "config_id": "DAW",
         "default_consolidation": {
           "DAB_H_APP": ["DAB_M_APP"],
           "DAB_L_APP": ["DAB_N_APP"],
@@ -3031,7 +3031,7 @@
   },
   "stars_config": {
     "configurations": {
-      "DAY": {
+      "DAE": {
         "inbound_assignments": {
           "DOMES": "DAB_L_APP",
           "FOLUT": "DAB_M_APP",
@@ -3057,10 +3057,10 @@
           "KDED": "DAB_W_APP",
           "KEVB": "DAB_S_APP",
           "KFIN": "DAB_N_APP",
-          "KOMN": "DAB_N_APP"
+          "KOMN": "DAB_E_APP"
         }
       },
-      "DA1": {
+      "DAW": {
         "inbound_assignments": {
           "DOMES": "DAB_L_APP",
           "FOLUT": "DAB_M_APP",
@@ -3082,7 +3082,7 @@
           "WORMSW": "DAB_H_APP"
         },
         "departure_assignments": {
-          "KDAB": "DAB_E_APP",
+          "KDAB": "DAB_W_APP",
           "KDED": "DAB_W_APP",
           "KEVB": "DAB_S_APP",
           "KFIN": "DAB_N_APP",

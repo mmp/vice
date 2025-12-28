@@ -2516,6 +2516,10 @@
         "departure_assignments": {
           "KENW": "MKE_B_DEP",
           "KMKE": "MKE_B_DEP",
+          "KMKE/MKE9EAST": "MKE_M_DEP",
+          "KMKE/ACCRA5": "MKE_M_DEP",
+          "KMKE/UECKR6": "MKE_M_DEP",
+          "KMKE/MKE9": "MKE_B_DEP",
           "KMWC": "MKE_B_DEP",
           "KOSH": "MKE_L_APP",
           "KUES": "MKE_B_DEP"
@@ -2532,7 +2536,10 @@
         },
         "departure_assignments": {
           "KENW": "MKE_M_DEP",
-          "KMKE": "MKE_M_DEP",
+          "KMKE/MKE9EAST": "MKE_M_DEP",
+          "KMKE/ACCRA5": "MKE_M_DEP",
+          "KMKE/UECKR6": "MKE_M_DEP",
+          "KMKE/MKE9": "MKE_B_DEP",
           "KMWC": "MKE_M_DEP",
           "KOSH": "MKE_L_APP",
           "KUES": "MKE_M_DEP"
