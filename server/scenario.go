@@ -348,7 +348,8 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 
 				// Check for mixing SIDs and runways for this airport
 				if len(assignedSIDs[ap]) > 0 && len(assignedRunways[ap]) > 0 {
-					e.ErrorString("departure_assignments: cannot mix runways and SIDs as specifiers for airport %q", ap)
+					e.ErrorString("departure_assignments: cannot mix runways and SIDs as specifiers for airport %q in %q",
+						ap, s.ControllerConfiguration.ConfigId)
 				}
 			} else {
 				// Plain airport assignment (fallback)
@@ -367,19 +368,22 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 				// Using SID-based assignments - check all active SIDs are covered
 				for sid := range activeSIDs {
 					if _, ok := assigned[sid]; !ok {
-						e.ErrorString("departure_assignments: airport %q uses SID-based assignments but SID %q has no assignment", ap, sid)
+						e.ErrorString("departure_assignments: airport %q uses SID-based assignments but SID %q has no assignment in %q",
+							ap, sid, s.ControllerConfiguration.ConfigId)
 					}
 				}
 			} else if assigned, ok := assignedRunways[ap]; ok {
 				// Using runway-based assignments - check all active runways are covered
 				for rwy := range activeAirportRunways[ap] {
 					if _, ok := assigned[rwy]; !ok {
-						e.ErrorString("departure_assignments: airport %q uses runway-based assignments but runway %q has no assignment", ap, rwy)
+						e.ErrorString("departure_assignments: airport %q uses runway-based assignments but runway %q has no assignment in %q",
+							ap, rwy, s.ControllerConfiguration.ConfigId)
 					}
 				}
 			} else {
 				// No assignments at all for this airport
-				e.ErrorString("departure airport %q has no assignment in \"departure_assignments\"", ap)
+				e.ErrorString("departure airport %q has no assignment in \"departure_assignments\" in %q", ap,
+					s.ControllerConfiguration.ConfigId)
 			}
 		}
 	}
