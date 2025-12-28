@@ -1126,7 +1126,21 @@ func (sp *STARSPane) drawDCBSpinner(ctx *panes.Context, spinner dcbSpinner, comm
 	// to do that trick then.
 	commandModeSelected := !active && sp.commandMode == commandMode &&
 		commandMode != CommandModeBriteSpinner && commandMode != CommandModeCharSizeSpinner
-	if (drawDCBButton(ctx, spinner.Label(), flags, buttonScale, active) && !active) || commandModeSelected {
+	clicked := drawDCBButton(ctx, spinner.Label(), flags, buttonScale, active)
+	if clicked && active {
+		// Clicking an active spinner deselects it
+		modeAfter := spinner.ModeAfter()
+		if modeAfter == CommandModeNone {
+			sp.resetInputState(ctx)
+		} else {
+			sp.commandMode = modeAfter
+			sp.activeSpinner = nil
+			sp.previewAreaInput = ""
+			sp.transientCommandHandlers = nil
+		}
+		return
+	}
+	if (clicked && !active) || commandModeSelected {
 		sp.setCommandMode(ctx, commandMode)
 
 		if ctx.Mouse != nil {
