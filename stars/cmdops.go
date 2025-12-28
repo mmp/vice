@@ -651,14 +651,18 @@ func init() {
 	// {C: "[*FP_ACID|FP_TRI_SP1|FP_PLUS_SP2|FP_ALT_A|FP_NUM_ACTYPE][SLEW]" }
 
 	// 5.5.5 Create flight plan (p. 5-109)
-	createFlightPlan := func(sp *STARSPane, ctx *panes.Context, spec sim.FlightPlanSpecifier) {
-		spec.TypeOfFlight.Set(av.FlightTypeArrival)
-		spec.PlanType.Set(sim.LocalNonEnroute)
-		createFlightPlan(sp, ctx, spec)
-	}
-	registerCommand(CommandModeFlightData, "[FP_ACID]", createFlightPlan)
+	registerCommand(CommandModeFlightData, "[FP_ACID]",
+		func(sp *STARSPane, ctx *panes.Context, spec sim.FlightPlanSpecifier) {
+			spec.TypeOfFlight.Set(av.FlightTypeArrival)
+			spec.PlanType.Set(sim.LocalNonEnroute)
+			createFlightPlan(sp, ctx, spec)
+		})
 	registerCommand(CommandModeFlightData, "[FP_ACID] [*FP_BEACON|FP_TCP|FP_FIX_PAIR|FP_COORD_TIME|FP_TRI_SP1|FP_PLUS_SP2|FP_NUM_ACTYPE|FP_ALT_R|FP_RULES]",
-		createFlightPlan)
+		func(sp *STARSPane, ctx *panes.Context, spec sim.FlightPlanSpecifier) {
+			spec.TypeOfFlight.Set(av.FlightTypeArrival)
+			spec.PlanType.Set(sim.LocalNonEnroute)
+			createFlightPlan(sp, ctx, spec)
+		})
 
 	// 5.5.6 Create Departure FP with DM indicator
 	// registerCommand(CommandModeFlightData, "* [FP_ACID]", ...)
