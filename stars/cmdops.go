@@ -920,25 +920,31 @@ func init() {
 	registerCommand(CommandModeNone, "*[FP_ACID][SLEW]", modifyFP)
 
 	// 5.7.1 Display flight plan in Preview area (p. 5-186)
-	displayFlightPlan := func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) (CommandStatus, error) {
-		if trk.IsUnassociated() {
-			return CommandStatus{}, ErrSTARSNoFlight
-		}
-
-		output := formatFlightPlan(sp, ctx, trk.FlightPlan, trk)
+	displayFlightPlan := func(sp *STARSPane, ctx *panes.Context, fp *sim.NASFlightPlan, trk *sim.Track) (CommandStatus, error) {
+		output := formatFlightPlan(sp, ctx, fp, trk)
 
 		// Handle ModifyAfterDisplay mode transition (STARS Manual 5-186)
 		// When enabled, after displaying a flight plan, the system automatically
 		// enters M (modify) mode with the ACID pre-filled, allowing immediate modification.
 		if ctx.FacilityAdaptation.FlightPlan.ModifyAfterDisplay {
 			sp.multiFuncPrefix = "M"
-			sp.previewAreaInput = string(trk.FlightPlan.ACID) + " "
+			sp.previewAreaInput = string(fp.ACID) + " "
 			return CommandStatus{Output: output, Clear: ClearNone}, nil
 		}
 
 		return CommandStatus{Output: output}, nil
 	}
-	registerCommand(CommandModeMultiFunc, "D[TRK_ACID]|D[TRK_BCN]|D[TRK_INDEX]|D[SLEW]", displayFlightPlan)
+	registerCommand(CommandModeMultiFunc, "D[TRK_ACID]|D[TRK_BCN]|D[TRK_INDEX]|D[SLEW]",
+		func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) (CommandStatus, error) {
+			if trk.IsUnassociated() {
+				return CommandStatus{}, ErrSTARSNoFlight
+			}
+			return displayFlightPlan(sp, ctx, trk.FlightPlan, trk)
+		})
+	registerCommand(CommandModeMultiFunc, "D[UNASSOC_FP]",
+		func(sp *STARSPane, ctx *panes.Context, fp *sim.NASFlightPlan) (CommandStatus, error) {
+			return displayFlightPlan(sp, ctx, fp, nil)
+		})
 
 	// 5.7.3 Reposition active track's (or unsupported) Full data block (p. 5-191)
 	registerCommand(CommandModeTrackReposition, "[SLEW]",
