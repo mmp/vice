@@ -16,13 +16,11 @@
     "KFCI": { "vfr": { "random_routes": { "rate": 5 } } },
     "KOPF": { "vfr": { "random_routes": { "rate": 5 } } },
     "KPTB": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KCHO": { "vfr": { "random_routes": { "rate": 5 } } },
     "KGVE": { "vfr": { "random_routes": { "rate": 5 } } },
     "KMFV": { "vfr": { "random_routes": { "rate": 5 } } },
     "KWAL": { "vfr": { "random_routes": { "rate": 5 } } },
     "KOXB": { "vfr": { "random_routes": { "rate": 5 } } },
     "KAPG": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KFDK": { "vfr": { "random_routes": { "rate": 5 } } },
     "W29": { "vfr": { "random_routes": { "rate": 5 } } },
     "KFME": { "vfr": { "random_routes": { "rate": 5 } } },
     "KGAI": { "vfr": { "random_routes": { "rate": 5 } } },
@@ -3433,6 +3431,7 @@
       "tower_list": 1
     },
     "KCHO": {
+      "vfr": { "random_routes": { "rate": 5 } },
       "approaches": {
         "I3": { "cifp_id": "I3" },
         "R3": { "cifp_id": "R3" },
@@ -5699,52 +5698,6 @@
           "waypoints": "PRTZL N039.58.31.601,W077.08.08.314/ho HYPER/s250",
           "runway_waypoints": {
             "KIAD": {
-              "19L": "HYPER/s250 PHATT/a9000/flyover/h230",
-              "19C": "HYPER/s250 PHATT/a9000/flyover/h230",
-              "19R": "HYPER/s250 PHATT/a9000/flyover/h230",
-              "1L": "HYPER/s250 CRAIN/a6000 KUKSE ELISN/flyover/h191",
-              "1C": "HYPER/s250 SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK TICON/flyover/h191",
-              "1R": "HYPER/s250 SIGBE/a7000 MOWAT/a5000 HUSEL/a4000 YACKK TICON/flyover/h191",
-              "30": "HYPER/s250 CRAIN/a6000 KUKSE ELISN/flyover/h191"
-            }
-          },
-          "star": "PRTZL1",
-          "initial_controller": "NY_A1_CTR",
-          "initial_altitude": 14000,
-          "assigned_altitude": 9000,
-          "initial_speed": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KIAD": [
-              {
-                "icao": "POE",
-                "airport": "CYTZ"
-              },
-              {
-                "icao": "WUP",
-                "airport": "KBFA"
-              },
-              {
-                "icao": "N",
-                "fleet": "GAturbine",
-                "airport": "KSYR"
-              },
-              {
-                "icao": "N",
-                "fleet": "GAturbine",
-                "airport": "KTEB"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "PRTZL1": {
-      "arrivals": [
-        {
-          "waypoints": "PRTZL N039.58.31.601,W077.08.08.314/ho HYPER/s250",
-          "runway_waypoints": {
-            "KIAD": {
               "19L": "HYPER PHATT/a9000/h230",
               "19C": "HYPER PHATT/a9000/h230",
               "19R": "HYPER PHATT/a9000/h230",
@@ -7342,12 +7295,6 @@
         "CAPSS3": {
           "KDCA": 15
         },
-        "CLIPR3": {
-          "KDCA": 10
-        },
-        "SKILS5": {
-          "KDCA": 3
-        },
         "DEALE3/MIIDY3": {
           "KBWI": 10,
           "KDCA": 10
@@ -7357,9 +7304,6 @@
         },
         "TRUPS5": {
           "KDCA": 10
-        },
-        "RAVNN8": {
-          "KBWI": 10
         },
         "GIBBZ5.MGW": {
           "KIAD": 8,
@@ -7411,10 +7355,6 @@
         },
         "RAVNN8": {
           "KBWI": 15
-        },
-        "DEALE3/MIIDY3": {
-          "KBWI": 10,
-          "KDCA": 10
         },
         "TRISH4.NUGGY": {
           "KBWI": 7

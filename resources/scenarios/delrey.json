@@ -6,15 +6,11 @@
     "KCMA": { "vfr": { "random_routes": { "rate": 8 } } },
     "KOXR": { "vfr": { "random_routes": { "rate": 8 } } },
     "KRAL": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KTOA": { "vfr": { "random_routes": { "rate": 7 } } },
-    "KLGB": { "vfr": { "random_routes": { "rate": 8 } } },
     "KVNY": { "vfr": { "random_routes": { "rate": 10 } } },
     "KWHP": { "vfr": { "random_routes": { "rate": 6 } } },
     "KEMT": { "vfr": { "random_routes": { "rate": 4 } } },
     "KCNO": { "vfr": { "random_routes": { "rate": 5 } } },
     "KPOC": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KSMO": { "vfr": { "random_routes": { "rate": 3 } } },
-    "KHHR": { "vfr": { "random_routes": { "rate": 5 } } },
     "KTOA": {
       "vfr": {
         "random_routes": { "rate": 7 },
@@ -2631,6 +2627,7 @@
       "tower_list": 1
     },
     "KHHR": {
+      "vfr": { "random_routes": { "rate": 5 } },
       "departure_routes": {
         "25": {
           "SPACX": {
@@ -2686,6 +2683,7 @@
         "RY30": { "cifp_id": "RY30" }
       },
       "vfr": {
+        "random_routes": { "rate": 8 },
         "routes": [
           {
             "destination": "KLGB",
@@ -3056,6 +3054,7 @@
       }
     },
     "KSMO": {
+      "vfr": { "random_routes": { "rate": 3 } },
       "departure_routes": {
         "21": {
           "STOKD,SCTRR": {
@@ -3167,7 +3166,6 @@
         }
       ],
       "exit_categories": {
-        "SCTRR": "Northwest",
         "STOKD": "Northwest",
         "LAS": "East",
         "MISEN": "East",

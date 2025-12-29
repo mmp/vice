@@ -10,7 +10,6 @@
     "KHMT": { "vfr": { "random_routes": { "rate": 3 } } },
     "KAJO": { "vfr": { "random_routes": { "rate": 10 } } },
     "KOKB": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KLGB": { "vfr": { "random_routes": { "rate": 8 } } },
     "KCNO": { "vfr": { "random_routes": { "rate": 10 } } },
     "KTOA": {
       "vfr": {
@@ -490,6 +489,7 @@
         "RY30": { "cifp_id": "RY30" }
       },
       "vfr": {
+        "random_routes": { "rate": 8 },
         "routes": [
           {
             "destination": "KLGB",
@@ -2433,11 +2433,6 @@
       "frequency": 135400,
       "radio_name": "Socal Approach",
       "sector_id": "3I"
-    },
-    "LAX_D_APP": {
-      "frequency": 124900,
-      "radio_name": "Socal Approach",
-      "sector_id": "2D"
     },
     "LAX_TWR": {
       "frequency": 120950,

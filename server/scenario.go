@@ -1477,6 +1477,17 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *scen
 		return nil
 	}
 
+	// Check for duplicate keys in the JSON
+	if dups := util.FindDuplicateJSONKeys(contents); len(dups) > 0 {
+		for _, d := range dups {
+			if d.Path != "" {
+				e.ErrorString("duplicate JSON key %q in %s", d.Key, d.Path)
+			} else {
+				e.ErrorString("duplicate JSON key %q at root level", d.Key)
+			}
+		}
+	}
+
 	util.CheckJSON[scenarioGroup](contents, e)
 	if e.HaveErrors() {
 		return nil

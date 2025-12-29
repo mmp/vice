@@ -2879,6 +2879,26 @@
           "floor": 0,
           "ceiling": 40000
         }
+      ],
+      "inhibit_ca": [
+        {
+          "id": "ISPNOCA",
+          "description": "ISP CONFLICT SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1200,
+          "radius": 2,
+          "center": "KISP"
+        },
+        {
+          "id": "HVNNOCA",
+          "description": "HVN CONFLICT SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1200,
+          "radius": 2,
+          "center": "KHVN"
+        }
       ]
     },
     "center": "KISP",
@@ -2958,28 +2978,6 @@
       { "name": "FOK.", "id": "C", "airports": ["KFOK"] },
       { "name": "OXC.", "id": "D", "airports": ["KOXC"] }
     ],
-    "filters": {
-      "inhibit_ca": [
-        {
-          "id": "ISPNOCA",
-          "description": "ISP CONFLICT SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
-          "center": "KISP"
-        },
-        {
-          "id": "HVNNOCA",
-          "description": "HVN CONFLICT SUPPRESS",
-          "type": "circle",
-          "floor": 0,
-          "ceiling": 1200,
-          "radius": 2,
-          "center": "KHVN"
-        }
-      ]
-    },
     "force_ql_self": true,
     "scratchpad1": { "display_exit_fix": true },
     "significant_points": {
