@@ -1068,42 +1068,46 @@ how it simulates aircraft or the STARS interface.
             <h3 id="release-0.13.3">0.13.3 (TODO)</h3>
             <ul>
               <li>New scenarios: PCT consolidated (Ketan K), MYR (Jud Lopez)</li>
-              <li>Scenario updates: C90, F11, ZJX (Jud Lopez), Sav (manaphy), DelRey, SNA, P50, L30 (Ketan K), ISP, ZNY Area D (Ryan G), P80 (Mike Fries)</li>
+              <li>Scenario updates: A80, C90, D01, D10, DAB, F11, JAX, MKE, ZJX (Jud Lopez), SAV (manaphy), DelRey, SNA, P50, L30 (Ketan K), ISP, ZNY Area D (Ryan G), P80 (Mike Fries)</li>
               <li>STARS updates:
                 <ul>
-                  <li>Added support for changing position consolidation during the sim: `[multifunc]1A1B+[enter]`, etc.
+                  <li>Added support for changing position consolidation during the sim: <code>[multifunc]1A1B+[enter]</code>, etc.
                     <ul>
-                      <li>New sign-on flow, allowing users to select a workstation and which positions to control</li>
-                      <li>Users can sign in as relief controllers at the same scope as another controller</li>
-                      <li>Instructor/RPO/observer has been rewritten and should work much better overall</li>
+                      <li>New sign-on flow, allowing users to select a workstation and which positions to control.</li>
+                      <li>Users can sign in as relief controllers at the same scope as another controller.</li>
+                      <li>Instructor/RPO/observer has been rewritten and should work much better. overall</li>
                   </ul></li>
-                  <li>ATPA improvements: added enable/disable commands, improved various details</li>
-                  <li>Added support for middle-click-drag to move lists</li>
+                  <li>ATPA improvements: added enable/disable commands, improved various details.</li>
+                  <li>Added support for middle-click-drag to move lists.</li>
                   <li>Also, middle clicking anywhere that's not inside a list or on a track shows the bounds of all visible lists.</li>
+                  <li>Fixed bug with DCB spinners not disabling after a click.</li>
               </ul></li>
               <li>ERAM updates:
                 <ul>
-                  <li>Added CRR (continuous range readout)</li>
-                  <li>Added .drawroute</li>
+                  <li>Added CRR (continuous range readout).</li>
+                  <li>Added <code>.drawroute</code></li>
               </ul></li>
-              <li>Assorted improvements to emergency aircraft handling</li>
+              <li>Assorted improvements to emergency aircraft handling.</li>
               <li>"At fix, cleared approach" no longer requires naming the approach: <code>AFIX/C</code> is sufficient.</li>
+              <li>Reinstated "/message" in TGT GEN mode to send a global chat message to all controllers.</li>
               <li>VFR updates:
                 <ul>
-                  <li>Improved pronunciation for most GA aircraft types</li>
-                  <li>Sometimes aircraft start with "VFR request": use the new <code>GA</code> ("go ahead") command when ready for it</li>
+                  <li>Improved pronunciation for most GA aircraft types.</li>
+                  <li>Sometimes aircraft start with "VFR request": use the new <code>GA</code> ("go ahead") command when ready for it.</li>
               </ul></li>
               <li>Bug fixes:
                 <ul>
-                  <li>Fixed an occasional crash on startup</li>
-                  <li>Fixed a bug where hold for release wasn't actually happening</li>
-                  <li>Fixed a bug with auto-select of the scenario start time based on the runway config</li>
-                  <li>Fixed a bug where the first departure would almost always be an emergency aircraft</li>
+                  <li>Fixed an occasional crash on startup.</li>
+                  <li>Fixed a bug where hold for release wasn't actually happening.</li>
+                  <li>Fixed a bug with auto-select of the scenario start time based on the runway config.</li>
+                  <li>Fixed a bug where the first departure would almost always be an emergency aircraft.</li>
+                  <li>Fixed a number of cases where the server was missing locks that could have led to rare crashes.</li>
                   </ul></li>
               <li>Facility engineering
                 <ul>
                   <li>Added "max_distance" field for when far-away aircraft are culled (125nm default)</li>
                   <li>"solo_controller" and "multi_controllers" are both gone: "configuration"s are now specified in "stars_config"; they give which arrival/departure flows go to which controller. Then each scenario has a "configuration" field as well; it references a configuration from "stars_config" and also provides a default consolidation: the controller hierarchy.</li>
+                  <li>Removed deprecated "arrivals" for specifying arrival rates; this is now "inbound_rates".</li>
               </ul></li>
             </ul>
 
