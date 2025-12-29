@@ -354,7 +354,9 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns
 					cs.WriteByte(byte('0' + r.Intn(10)))
 				}
 			case '@':
-				cs.WriteByte(byte('A' + r.Intn(26)))
+				// Exclude I and O which can be confused with 1 and 0
+				const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ"
+				cs.WriteByte(letters[r.Intn(len(letters))])
 			case 'x':
 				break loop
 			}
