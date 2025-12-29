@@ -71,7 +71,7 @@ func (s *Sim) processGateDepartures(depState *RunwayLaunchState, now time.Time) 
 			s.STARSComputer.AddHeldDeparture(ac)
 			depState.Held = append(depState.Held, depState.Gate[i])
 			depState.Gate = append(depState.Gate[:i], depState.Gate[i+1:]...)
-		} else if s.State.LaunchConfig.Mode == LaunchAutomatic {
+		} else if s.State.LaunchConfig.DepartureMode == LaunchAutomatic {
 			depState.ReleasedIFR = append(depState.ReleasedIFR, depState.Gate[i])
 			depState.Gate = append(depState.Gate[:i], depState.Gate[i+1:]...)
 		}

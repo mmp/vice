@@ -39,7 +39,25 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 
 	for group, rates := range s.State.LaunchConfig.InboundFlowRates {
 		if now.After(s.NextInboundSpawn[group]) {
-			flow, rateSum := sampleRateMap(rates, s.State.LaunchConfig.InboundFlowRateScale, s.Rand)
+			// Filter rates to only include types that are in automatic mode
+			filteredRates := make(map[string]float32)
+			for name, rate := range rates {
+				if name == "overflights" {
+					if s.State.LaunchConfig.OverflightMode == LaunchAutomatic {
+						filteredRates[name] = rate
+					}
+				} else {
+					if s.State.LaunchConfig.ArrivalMode == LaunchAutomatic {
+						filteredRates[name] = rate
+					}
+				}
+			}
+
+			if len(filteredRates) == 0 {
+				continue // Nothing automatic in this group
+			}
+
+			flow, rateSum := sampleRateMap(filteredRates, s.State.LaunchConfig.InboundFlowRateScale, s.Rand)
 
 			var ac *Aircraft
 			var err error

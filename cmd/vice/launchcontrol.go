@@ -93,8 +93,15 @@ func MakeLaunchControlWindow(client *client.ControlClient, lg *log.Logger) *Laun
 		}
 	}
 
-	if config.Mode == sim.LaunchManual {
-		lc.spawnAllAircraft()
+	// Spawn aircraft for any types in manual mode
+	if config.DepartureMode == sim.LaunchManual {
+		lc.spawnDepartures()
+	}
+	if config.ArrivalMode == sim.LaunchManual {
+		lc.spawnArrivals()
+	}
+	if config.OverflightMode == sim.LaunchManual {
+		lc.spawnOverflights()
 	}
 
 	return lc
@@ -151,8 +158,7 @@ func (lc *LaunchControlWindow) getLastDeparture(airport, runway string) (callsig
 	return
 }
 
-func (lc *LaunchControlWindow) spawnAllAircraft() {
-	// Spawn all aircraft for automatic mode
+func (lc *LaunchControlWindow) spawnDepartures() {
 	for i := range lc.departures {
 		if lc.departures[i].Aircraft.ADSBCallsign == "" {
 			lc.spawnIFRDeparture(lc.departures[i])
@@ -163,14 +169,27 @@ func (lc *LaunchControlWindow) spawnAllAircraft() {
 			lc.spawnVFRDeparture(lc.vfrDepartures[i])
 		}
 	}
+}
+
+func (lc *LaunchControlWindow) spawnArrivals() {
 	for i := range lc.arrivalsOverflights {
-		if lc.arrivalsOverflights[i].Aircraft.ADSBCallsign == "" {
+		if lc.arrivalsOverflights[i].Airport != "overflights" &&
+			lc.arrivalsOverflights[i].Aircraft.ADSBCallsign == "" {
 			lc.spawnArrivalOverflight(lc.arrivalsOverflights[i])
 		}
 	}
 }
 
-func (lc *LaunchControlWindow) cleanupAircraft() {
+func (lc *LaunchControlWindow) spawnOverflights() {
+	for i := range lc.arrivalsOverflights {
+		if lc.arrivalsOverflights[i].Airport == "overflights" &&
+			lc.arrivalsOverflights[i].Aircraft.ADSBCallsign == "" {
+			lc.spawnArrivalOverflight(lc.arrivalsOverflights[i])
+		}
+	}
+}
+
+func (lc *LaunchControlWindow) cleanupDepartures() {
 	var toDelete []sim.Aircraft
 
 	add := func(la *LaunchAircraft) {
@@ -186,8 +205,25 @@ func (lc *LaunchControlWindow) cleanupAircraft() {
 	for i := range lc.vfrDepartures {
 		add(&lc.vfrDepartures[i].LaunchAircraft)
 	}
+
+	if len(toDelete) > 0 {
+		lc.client.DeleteAircraft(toDelete, func(err error) {
+			if err != nil {
+				lc.lg.Errorf("Error deleting aircraft: %v", err)
+			}
+		})
+	}
+}
+
+func (lc *LaunchControlWindow) cleanupArrivals() {
+	var toDelete []sim.Aircraft
+
 	for i := range lc.arrivalsOverflights {
-		add(&lc.arrivalsOverflights[i].LaunchAircraft)
+		if lc.arrivalsOverflights[i].Airport != "overflights" &&
+			lc.arrivalsOverflights[i].Aircraft.ADSBCallsign != "" {
+			toDelete = append(toDelete, lc.arrivalsOverflights[i].Aircraft)
+			lc.arrivalsOverflights[i].Aircraft = sim.Aircraft{}
+		}
 	}
 
 	if len(toDelete) > 0 {
@@ -197,6 +233,32 @@ func (lc *LaunchControlWindow) cleanupAircraft() {
 			}
 		})
 	}
+}
+
+func (lc *LaunchControlWindow) cleanupOverflights() {
+	var toDelete []sim.Aircraft
+
+	for i := range lc.arrivalsOverflights {
+		if lc.arrivalsOverflights[i].Airport == "overflights" &&
+			lc.arrivalsOverflights[i].Aircraft.ADSBCallsign != "" {
+			toDelete = append(toDelete, lc.arrivalsOverflights[i].Aircraft)
+			lc.arrivalsOverflights[i].Aircraft = sim.Aircraft{}
+		}
+	}
+
+	if len(toDelete) > 0 {
+		lc.client.DeleteAircraft(toDelete, func(err error) {
+			if err != nil {
+				lc.lg.Errorf("Error deleting aircraft: %v", err)
+			}
+		})
+	}
+}
+
+func (lc *LaunchControlWindow) cleanupAllAircraft() {
+	lc.cleanupDepartures()
+	lc.cleanupArrivals()
+	lc.cleanupOverflights()
 }
 
 func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Platform) {
@@ -223,45 +285,21 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 	canLaunch := ctrl == lc.client.State.UserTCW || (len(lc.client.State.ActiveTCWs) <= 1 && ctrl == "") ||
 		lc.client.State.TCWIsPrivileged(lc.client.State.UserTCW)
 	if canLaunch {
-		imgui.Text("Mode:")
-		imgui.SameLine()
-		if imgui.RadioButtonIntPtr("Manual", &lc.client.State.LaunchConfig.Mode, sim.LaunchManual) {
-			lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
-			lc.spawnAllAircraft()
-		}
-		imgui.SameLine()
-		if imgui.RadioButtonIntPtr("Automatic", &lc.client.State.LaunchConfig.Mode, sim.LaunchAutomatic) {
-			lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
-			lc.cleanupAircraft()
-		}
-
-		width, _ := ui.font.BoundText(renderer.FontAwesomeIconPlayCircle, 0)
-		// Right-justify
-		imgui.SameLine()
-		imgui.Text("                            ")
-		imgui.SameLine()
-		//	imgui.SetCursorPos(imgui.Vec2{imgui.CursorPosX() + imgui.ContentRegionAvail().X - float32(3*width+10),
-		imgui.SetCursorPos(imgui.Vec2{imgui.WindowWidth() - float32(7*width), imgui.CursorPosY()})
+		// Simulation controls row
 		if lc.client != nil && lc.client.Connected() {
 			if lc.client.State.Paused {
-				if imgui.Button(renderer.FontAwesomeIconPlayCircle) {
+				if imgui.Button(renderer.FontAwesomeIconPlayCircle + " Resume") {
 					lc.client.ToggleSimPause()
-				}
-				if imgui.IsItemHovered() {
-					imgui.SetTooltip("Resume simulation")
 				}
 			} else {
-				if imgui.Button(renderer.FontAwesomeIconPauseCircle) {
+				if imgui.Button(renderer.FontAwesomeIconPauseCircle + " Pause") {
 					lc.client.ToggleSimPause()
-				}
-				if imgui.IsItemHovered() {
-					imgui.SetTooltip("Pause simulation")
 				}
 			}
 		}
 
 		imgui.SameLine()
-		if imgui.Button(renderer.FontAwesomeIconTrash) {
+		if imgui.Button(renderer.FontAwesomeIconTrash + " Delete All") {
 			uiShowModalDialog(NewModalDialogBox(&YesOrNoModalClient{
 				title: "Are you sure?",
 				query: "All aircraft will be deleted. Go ahead?",
@@ -276,34 +314,71 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				},
 			}, p), true)
 		}
-		if imgui.IsItemHovered() {
-			imgui.SetTooltip("Delete all aircraft and restart")
+
+		// Emergency selector row (if emergencies available)
+		if etypes := lc.client.State.Emergencies; len(etypes) > 0 {
+			emergencyLabel := func(et sim.Emergency) string {
+				return et.Name + " (" + et.ApplicableTo.String() + ")"
+			}
+			imgui.Text("Emergency:")
+			imgui.SameLine()
+			imgui.SetNextItemWidth(250)
+			if imgui.BeginCombo("##emergency", emergencyLabel(etypes[lc.selectedEmergency])) {
+				for i, em := range etypes {
+					if imgui.SelectableBoolV(emergencyLabel(em), i == lc.selectedEmergency, 0, imgui.Vec2{}) {
+						lc.selectedEmergency = i
+					}
+				}
+				imgui.EndCombo()
+			}
+			imgui.SameLine()
+			if imgui.Button("Trigger") {
+				lc.client.TriggerEmergency(etypes[lc.selectedEmergency].Name)
+			}
 		}
+
+		imgui.Separator()
 
 		flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg |
 			imgui.TableFlagsSizingStretchProp
 		tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 
-		if lc.client.State.LaunchConfig.Mode == sim.LaunchManual {
-			mitAndTime := func(ac *sim.Aircraft, launchPosition math.Point2LL,
-				lastLaunchCallsign av.ADSBCallsign, lastLaunchTime time.Time) {
+		// Helper function for manual launch UI to show MIT and time since last launch
+		mitAndTime := func(ac *sim.Aircraft, launchPosition math.Point2LL,
+			lastLaunchCallsign av.ADSBCallsign, lastLaunchTime time.Time) {
+
+			imgui.TableNextColumn()
+			if prev, ok := lc.client.State.GetTrackByCallsign(lastLaunchCallsign); ok {
+				dist := math.NMDistance2LL(prev.Location, launchPosition)
+				imgui.Text(fmt.Sprintf("%.1f", dist))
 
 				imgui.TableNextColumn()
-				if prev, ok := lc.client.State.GetTrackByCallsign(lastLaunchCallsign); ok {
-					dist := math.NMDistance2LL(prev.Location, launchPosition)
-					imgui.Text(fmt.Sprintf("%.1f", dist))
 
-					imgui.TableNextColumn()
+				delta := lc.client.CurrentTime().Sub(lastLaunchTime).Round(time.Second).Seconds()
+				m, s := int(delta)/60, int(delta)%60
+				imgui.Text(fmt.Sprintf("%02d:%02d", m, s))
+			} else {
+				imgui.TableNextColumn()
+			}
+		}
 
-					delta := lc.client.CurrentTime().Sub(lastLaunchTime).Round(time.Second).Seconds()
-					m, s := int(delta)/60, int(delta)%60
-					imgui.Text(fmt.Sprintf("%02d:%02d", m, s))
-				} else {
-					imgui.TableNextColumn()
-				}
+		changed := false
+
+		// Departures section - check DepartureMode
+		if imgui.CollapsingHeaderBoolPtr("Departures", nil) {
+			imgui.Text("Aircraft spawn:")
+			imgui.SameLine()
+			if imgui.RadioButtonIntPtr("Manual##dep", &lc.client.State.LaunchConfig.DepartureMode, sim.LaunchManual) {
+				lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
+				lc.spawnDepartures()
+			}
+			imgui.SameLine()
+			if imgui.RadioButtonIntPtr("Automatic##dep", &lc.client.State.LaunchConfig.DepartureMode, sim.LaunchAutomatic) {
+				lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
+				lc.cleanupDepartures()
 			}
 
-			if imgui.CollapsingHeaderBoolPtr("Departures", nil) {
+			if lc.client.State.LaunchConfig.DepartureMode == sim.LaunchManual {
 				ndep := util.ReduceSlice(lc.departures, func(dep *LaunchDeparture, n int) int {
 					return n + dep.TotalLaunches
 				}, 0)
@@ -412,9 +487,26 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 					imgui.EndTable()
 				}
+			} else {
+				changed = drawDepartureUI(&lc.client.State.LaunchConfig, p) || changed
+			}
+		}
+
+		// VFR Departures section - check DepartureMode
+		if len(lc.vfrDepartures) > 0 && imgui.CollapsingHeaderBoolPtr("VFR Departures", nil) {
+			imgui.Text("Aircraft spawn:")
+			imgui.SameLine()
+			if imgui.RadioButtonIntPtr("Manual##vfrdep", &lc.client.State.LaunchConfig.DepartureMode, sim.LaunchManual) {
+				lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
+				lc.spawnDepartures()
+			}
+			imgui.SameLine()
+			if imgui.RadioButtonIntPtr("Automatic##vfrdep", &lc.client.State.LaunchConfig.DepartureMode, sim.LaunchAutomatic) {
+				lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
+				lc.cleanupDepartures()
 			}
 
-			if len(lc.vfrDepartures) > 0 && imgui.CollapsingHeaderBoolPtr("VFR Departures", nil) {
+			if lc.client.State.LaunchConfig.DepartureMode == sim.LaunchManual {
 				ndep := util.ReduceSlice(lc.vfrDepartures, func(dep *LaunchDeparture, n int) int {
 					return n + dep.TotalLaunches
 				}, 0)
@@ -497,23 +589,45 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 					imgui.EndTable()
 				}
+			} else {
+				changed = drawVFRDepartureUI(&lc.client.State.LaunchConfig, p) || changed
+			}
+		}
+
+		// Arrivals section - check ArrivalMode
+		if imgui.CollapsingHeaderBoolPtr("Arrivals", nil) {
+			imgui.Text("Aircraft spawn:")
+			imgui.SameLine()
+			if imgui.RadioButtonIntPtr("Manual##arr", &lc.client.State.LaunchConfig.ArrivalMode, sim.LaunchManual) {
+				lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
+				lc.spawnArrivals()
+			}
+			imgui.SameLine()
+			if imgui.RadioButtonIntPtr("Automatic##arr", &lc.client.State.LaunchConfig.ArrivalMode, sim.LaunchAutomatic) {
+				lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
+				lc.cleanupArrivals()
 			}
 
-			if imgui.CollapsingHeaderBoolPtr("Arrivals / Overflights", nil) {
-				narof := util.ReduceSlice(lc.arrivalsOverflights, func(arr *LaunchArrivalOverflight, n int) int {
+			if lc.client.State.LaunchConfig.ArrivalMode == sim.LaunchManual {
+				// Filter to only show arrivals (not overflights)
+				arrivals := util.FilterSlice(lc.arrivalsOverflights, func(ao *LaunchArrivalOverflight) bool {
+					return ao.Airport != "overflights"
+				})
+
+				narr := util.ReduceSlice(arrivals, func(arr *LaunchArrivalOverflight, n int) int {
 					return n + arr.TotalLaunches
 				}, 0)
 
-				imgui.Text(fmt.Sprintf("Arrivals/Overflights: %d total", narof))
+				imgui.Text(fmt.Sprintf("Arrivals: %d total", narr))
 
-				sortedInbound := util.DuplicateSlice(lc.arrivalsOverflights)
-				slices.SortFunc(sortedInbound, func(a, b *LaunchArrivalOverflight) int {
+				sortedArrivals := util.DuplicateSlice(arrivals)
+				slices.SortFunc(sortedArrivals, func(a, b *LaunchArrivalOverflight) int {
 					return strings.Compare(a.Airport+"/"+a.Group, b.Airport+"/"+b.Group)
 				})
 
 				maxGroups, numGroups := 0, 1
 				lastAirport := ""
-				for _, ao := range sortedInbound {
+				for _, ao := range sortedArrivals {
 					if ao.Airport != lastAirport {
 						maxGroups = max(maxGroups, numGroups)
 						lastAirport = ao.Airport
@@ -524,7 +638,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 				}
 				numColumns := min(maxGroups, 3)
 
-				if imgui.BeginTableV("arrof", int32(1+7*numColumns), flags, imgui.Vec2{tableScale * float32(100+350*numColumns), 0}, 0.0) {
+				if len(sortedArrivals) > 0 && imgui.BeginTableV("arrivals", int32(1+7*numColumns), flags, imgui.Vec2{tableScale * float32(100+350*numColumns), 0}, 0.0) {
 					imgui.TableSetupColumn("Airport")
 					for range numColumns {
 						imgui.TableSetupColumn("Group")
@@ -539,13 +653,13 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 					curColumn := 0
 					lastAirport := ""
-					for _, arof := range sortedInbound {
-						if arof.Airport != lastAirport {
+					for _, arr := range sortedArrivals {
+						if arr.Airport != lastAirport {
 							imgui.TableNextRow()
-							lastAirport = arof.Airport
+							lastAirport = arr.Airport
 							curColumn = 0
 							imgui.TableNextColumn()
-							imgui.Text(arof.Airport)
+							imgui.Text(arr.Airport)
 						} else if curColumn+1 == numColumns {
 							curColumn = 0
 							imgui.TableNextRow()
@@ -555,36 +669,36 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 							curColumn++
 						}
 
-						imgui.PushIDStr(arof.Group + arof.Airport)
+						imgui.PushIDStr(arr.Group + arr.Airport)
 
 						imgui.TableNextColumn()
-						imgui.Text(arof.Group)
+						imgui.Text(arr.Group)
 
 						imgui.TableNextColumn()
-						imgui.Text(strconv.Itoa(arof.TotalLaunches))
+						imgui.Text(strconv.Itoa(arr.TotalLaunches))
 
-						if arof.Aircraft.ADSBCallsign != "" {
+						if arr.Aircraft.ADSBCallsign != "" {
 							imgui.TableNextColumn()
-							imgui.Text(arof.Aircraft.FlightPlan.AircraftType)
+							imgui.Text(arr.Aircraft.FlightPlan.AircraftType)
 
-							mitAndTime(&arof.Aircraft, arof.Aircraft.Position(), arof.LastLaunchCallsign,
-								arof.LastLaunchTime)
+							mitAndTime(&arr.Aircraft, arr.Aircraft.Position(), arr.LastLaunchCallsign,
+								arr.LastLaunchTime)
 
 							imgui.TableNextColumn()
 							if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
-								lc.client.LaunchArrivalOverflight(arof.Aircraft)
-								arof.LastLaunchCallsign = arof.Aircraft.ADSBCallsign
-								arof.LastLaunchTime = lc.client.CurrentTime()
-								arof.TotalLaunches++
+								lc.client.LaunchArrivalOverflight(arr.Aircraft)
+								arr.LastLaunchCallsign = arr.Aircraft.ADSBCallsign
+								arr.LastLaunchTime = lc.client.CurrentTime()
+								arr.TotalLaunches++
 
-								arof.Aircraft = sim.Aircraft{}
-								lc.spawnArrivalOverflight(arof)
+								arr.Aircraft = sim.Aircraft{}
+								lc.spawnArrivalOverflight(arr)
 							}
 
 							imgui.TableNextColumn()
 							if imgui.Button(renderer.FontAwesomeIconRedo) {
-								arof.Aircraft = sim.Aircraft{}
-								lc.spawnArrivalOverflight(arof)
+								arr.Aircraft = sim.Aircraft{}
+								lc.spawnArrivalOverflight(arr)
 							}
 						} else {
 							for range 5 {
@@ -597,47 +711,103 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 					imgui.EndTable()
 				}
-			}
-		} else {
-			changed := false
-			if imgui.CollapsingHeaderBoolPtr("Departures", nil) {
-				changed = drawDepartureUI(&lc.client.State.LaunchConfig, p)
-			}
-			if len(lc.client.State.LaunchConfig.VFRAirportRates) > 0 &&
-				imgui.CollapsingHeaderBoolPtr("VFR Departures", nil) {
-				changed = drawVFRDepartureUI(&lc.client.State.LaunchConfig, p) || changed
-			}
-			if imgui.CollapsingHeaderBoolPtr("Arrivals / Overflights", nil) {
+			} else {
 				changed = drawArrivalUI(&lc.client.State.LaunchConfig, p) || changed
+			}
+		}
+
+		// Overflights section - check OverflightMode
+		if imgui.CollapsingHeaderBoolPtr("Overflights", nil) {
+			imgui.Text("Aircraft spawn:")
+			imgui.SameLine()
+			if imgui.RadioButtonIntPtr("Manual##of", &lc.client.State.LaunchConfig.OverflightMode, sim.LaunchManual) {
+				lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
+				lc.spawnOverflights()
+			}
+			imgui.SameLine()
+			if imgui.RadioButtonIntPtr("Automatic##of", &lc.client.State.LaunchConfig.OverflightMode, sim.LaunchAutomatic) {
+				lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
+				lc.cleanupOverflights()
+			}
+
+			if lc.client.State.LaunchConfig.OverflightMode == sim.LaunchManual {
+				// Filter to only show overflights
+				overflights := util.FilterSlice(lc.arrivalsOverflights, func(ao *LaunchArrivalOverflight) bool {
+					return ao.Airport == "overflights"
+				})
+
+				nof := util.ReduceSlice(overflights, func(of *LaunchArrivalOverflight, n int) int {
+					return n + of.TotalLaunches
+				}, 0)
+
+				imgui.Text(fmt.Sprintf("Overflights: %d total", nof))
+
+				sortedOverflights := util.DuplicateSlice(overflights)
+				slices.SortFunc(sortedOverflights, func(a, b *LaunchArrivalOverflight) int {
+					return strings.Compare(a.Group, b.Group)
+				})
+
+				if len(sortedOverflights) > 0 && imgui.BeginTableV("overflights", 7, flags, imgui.Vec2{tableScale * 400, 0}, 0.0) {
+					imgui.TableSetupColumn("Group")
+					imgui.TableSetupColumn("#")
+					imgui.TableSetupColumn("A/C Type")
+					imgui.TableSetupColumn("MIT")
+					imgui.TableSetupColumn("Time")
+					imgui.TableSetupColumn("")
+					imgui.TableSetupColumn("")
+					imgui.TableHeadersRow()
+
+					for _, of := range sortedOverflights {
+						imgui.TableNextRow()
+						imgui.PushIDStr(of.Group + "overflight")
+
+						imgui.TableNextColumn()
+						imgui.Text(of.Group)
+
+						imgui.TableNextColumn()
+						imgui.Text(strconv.Itoa(of.TotalLaunches))
+
+						if of.Aircraft.ADSBCallsign != "" {
+							imgui.TableNextColumn()
+							imgui.Text(of.Aircraft.FlightPlan.AircraftType)
+
+							mitAndTime(&of.Aircraft, of.Aircraft.Position(), of.LastLaunchCallsign,
+								of.LastLaunchTime)
+
+							imgui.TableNextColumn()
+							if imgui.Button(renderer.FontAwesomeIconPlaneDeparture) {
+								lc.client.LaunchArrivalOverflight(of.Aircraft)
+								of.LastLaunchCallsign = of.Aircraft.ADSBCallsign
+								of.LastLaunchTime = lc.client.CurrentTime()
+								of.TotalLaunches++
+
+								of.Aircraft = sim.Aircraft{}
+								lc.spawnArrivalOverflight(of)
+							}
+
+							imgui.TableNextColumn()
+							if imgui.Button(renderer.FontAwesomeIconRedo) {
+								of.Aircraft = sim.Aircraft{}
+								lc.spawnArrivalOverflight(of)
+							}
+						} else {
+							for range 5 {
+								imgui.TableNextColumn()
+							}
+						}
+
+						imgui.PopID()
+					}
+
+					imgui.EndTable()
+				}
+			} else {
 				changed = drawOverflightUI(&lc.client.State.LaunchConfig, p) || changed
 			}
-
-			if changed {
-				lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
-			}
-		}
-	}
-
-	if etypes := lc.client.State.Emergencies; len(etypes) > 0 {
-		imgui.Text("Emergency: ")
-		imgui.SameLine()
-
-		emergencyLabel := func(et sim.Emergency) string {
-			return et.Name + " (" + et.ApplicableTo.String() + ")"
-		}
-		imgui.SetNextItemWidth(300)
-		if imgui.BeginCombo("##emergency", emergencyLabel(etypes[lc.selectedEmergency])) {
-			for i, em := range etypes {
-				if imgui.SelectableBoolV(emergencyLabel(em), i == lc.selectedEmergency, 0, imgui.Vec2{}) {
-					lc.selectedEmergency = i
-				}
-			}
-			imgui.EndCombo()
 		}
 
-		imgui.SameLine()
-		if imgui.Button("Trigger") {
-			lc.client.TriggerEmergency(etypes[lc.selectedEmergency].Name)
+		if changed {
+			lc.client.SetLaunchConfig(lc.client.State.LaunchConfig)
 		}
 	}
 
@@ -696,7 +866,7 @@ func (lc *LaunchControlWindow) Draw(eventStream *sim.EventStream, p platform.Pla
 
 	if !showLaunchControls {
 		lc.client.TakeOrReturnLaunchControl(eventStream)
-		lc.cleanupAircraft()
+		lc.cleanupAllAircraft()
 		ui.showLaunchControl = false
 	}
 }

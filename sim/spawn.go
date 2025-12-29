@@ -83,8 +83,10 @@ type LaunchConfig struct {
 	// Controller is the TCW in charge of the launch settings; if empty then
 	// launch control may be taken by any signed in controller.
 	Controller TCW
-	// LaunchManual or LaunchAutomatic
-	Mode int32
+	// LaunchManual or LaunchAutomatic, separate for each aircraft type
+	DepartureMode  int32
+	ArrivalMode    int32
+	OverflightMode int32
 
 	GoAroundRate float32
 	// airport -> runway -> category -> rate
@@ -533,9 +535,12 @@ func randomInitialWait(rate float32, r *rand.Rand) time.Duration {
 }
 
 func (s *Sim) spawnAircraft() {
-	if s.State.LaunchConfig.Mode == LaunchAutomatic {
-		// Don't spawn automatically if someone is spawning manually.
+	// Spawn each type independently based on its mode
+	if s.State.LaunchConfig.ArrivalMode == LaunchAutomatic ||
+		s.State.LaunchConfig.OverflightMode == LaunchAutomatic {
 		s.spawnArrivalsAndOverflights()
+	}
+	if s.State.LaunchConfig.DepartureMode == LaunchAutomatic {
 		s.spawnDepartures()
 	}
 	s.updateDepartureSequence()
