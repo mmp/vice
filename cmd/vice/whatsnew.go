@@ -303,4 +303,13 @@ var whatsNew []string = []string{
 	`New scenarios: ZJX (Jud Lopez), HNL, OGG TRACONs (Ketan K)`,
 	`Added emergency aircraft`,
 	`STARS: 'C' command clears aircraft on the already-assigned approach`,
+	`New scenarios: PCT consolidated (Ketan K), MYR (Jud Lopez)`,
+	`Scenario updates: A80, C90, D01, D10, DAB, F11, JAX, MKE, ZJX (Jud Lopez), SAV (manaphy), DelRey, SNA, P50, L30 (Ketan K)`,
+	`More scenario updates: ISP, ZNY Area D (Ryan G), P80 (Mike Fries), BOS (radarcontacto)`,
+	`ERAM: added CRR (continuous range readout)`,
+	`STARS: added support for position consolidation`,
+	`Redesigned the new sim / sign in flow, also allowing specifying which positions to sign in for`,
+	`Reinstated "/" in TGT GEN mode to send text messages to all controllers`,
+	`VFRs will sometimes just say "VFR request"; use the new "GA" (go ahead) command when/if ready`,
+	`Many small bugfixes`,
 }
