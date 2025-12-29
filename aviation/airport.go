@@ -713,6 +713,7 @@ type ExitRoute struct {
 	SpeedRestriction int           `json:"speed_restriction"`
 	Waypoints        WaypointArray `json:"waypoints"`
 	Description      string        `json:"description"`
+	IsRNAV           bool          `json:"is_rnav"`
 	// optional, control position to handoff to at a /ho
 	HandoffController ControlPosition `json:"handoff_controller"`
 	// optional, the initial tracking controller for the departure.

@@ -117,6 +117,7 @@ type Arrival struct {
 	SecondaryScratchpad string          `json:"secondary_scratchpad"`
 	Description         string          `json:"description"`
 	CoordinationFix     string          `json:"coordination_fix"`
+	IsRNAV              bool            `json:"is_rnav"`
 
 	ExpectApproach util.OneOf[string, map[string]string] `json:"expect_approach"`
 

@@ -420,8 +420,9 @@ type FacilityAdaptation struct {
 	TowerList struct {
 		Format string `json:"format"`
 	} `json:"tower_list" scope:"stars"`
-	RestrictionAreas []av.RestrictionArea `json:"restriction_areas" scope:"stars"`
-	UseLegacyFont    bool                 `json:"use_legacy_font" scope:"stars"`
+	RestrictionAreas  []av.RestrictionArea `json:"restriction_areas" scope:"stars"`
+	UseLegacyFont     bool                 `json:"use_legacy_font" scope:"stars"`
+	DisplayRNAVSymbol bool                 `json:"display_rnav_symbol"`
 }
 
 type FilterRegion struct {

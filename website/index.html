@@ -7240,8 +7240,13 @@ Given the id, the approach can be specified with:</p>
               <tr>
                 <td>"departure_controller"</td>
                 <td>String</td>
-                <td><i>(Optional)</i> A string indicating which controller should initially control the aircraft. Controller must be 
+                <td><i>(Optional)</i> A string indicating which controller should initially control the aircraft. Controller must be
                   a virtual controller.</td>
+              </tr>
+              <tr>
+                <td>"is_rnav"</td>
+                <td>Boolean</td>
+                <td><i>(Optional)</i> If true, aircraft departing on this route will have the RNAV flag set in their flight plan.</td>
               </tr>
               <tr>
                 <td>"sid"</td>
@@ -7467,6 +7472,11 @@ Given the id, the approach can be specified with:</p>
                 <td>(<i>Optional</i>) String</td>
                 <td>Name of the STAR that the aircraft is flying.</td>
               </tr>
+              <tr>
+                <td>"is_rnav"</td>
+                <td>Boolean</td>
+                <td><i>(Optional)</i> If true, aircraft on this arrival will have the RNAV flag set in their flight plan.</td>
+              </tr>
             </tbody>
             </table>
 
@@ -7683,6 +7693,11 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                   off to the controller at that waypoint.  (Otherwise, they are kept by the virtual controller
                   for their entire overflight; this can be useful for adding "ambient" traffic that the controller
                 doesn't have to work themselves.)</td>
+              </tr>
+              <tr>
+                <td>"is_rnav"</td>
+                <td>Boolean</td>
+                <td><i>(Optional)</i> If true, aircraft on this overflight will have the RNAV flag set in their flight plan.</td>
               </tr>
             </tbody>
             </table>
@@ -8283,6 +8298,12 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 <td>Array of strings</td>
                 <td>Custom special purpose codes for the facility. When assigned to an aircraft, these are displayed
                   in yellow at the top of the datablock (e.g., "PJ" is used at some facilities for parachute jumps.)</td>
+              </tr>
+              <tr>
+                <td>"display_rnav_symbol"</td>
+                <td>Boolean</td>
+                <td>(<i>Optional</i>) If true, the "is_rnav" setting in departure routes, arrivals, and overflights
+                  will cause the RNAV flag to be set in aircraft flight plans when they spawn.</td>
               </tr>
               <tr>
                 <td>"coast_suspend_list"</td>

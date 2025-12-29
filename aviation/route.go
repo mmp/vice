@@ -1668,6 +1668,7 @@ type Overflight struct {
 	Scratchpad          string                  `json:"scratchpad"`
 	SecondaryScratchpad string                  `json:"secondary_scratchpad"`
 	Description         string                  `json:"description"`
+	IsRNAV              bool                    `json:"is_rnav"`
 	Airlines            []OverflightAirline     `json:"airlines"`
 }
 
