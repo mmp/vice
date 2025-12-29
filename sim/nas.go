@@ -84,6 +84,7 @@ func (sc *STARSComputer) AddHeldDeparture(ac *Aircraft) {
 	sc.HoldForRelease = append(sc.HoldForRelease, ac)
 }
 
+// Note: called with Sim holding its mutex, so we can access its members here.
 func (sc *STARSComputer) Update(s *Sim) {
 	// Delete any dropped flight plans after the few minute delay has passed.
 	sc.FlightPlans = util.FilterSlice(sc.FlightPlans, func(fp *NASFlightPlan) bool {
@@ -183,7 +184,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 
 			if associate {
 				if fp := sc.takeFlightPlanBySquawk(ac.Squawk); fp != nil {
-					fp.OwningTCW = s.State.TCWForPosition(fp.TrackingController)
+					fp.OwningTCW = s.tcwForPosition(fp.TrackingController)
 
 					if fp.ManuallyCreated {
 						// If an aircraft tagged up on a manually created

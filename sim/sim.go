@@ -1022,7 +1022,7 @@ func (s *Sim) updateState() {
 				if s.State.IsLocalController(fp.TrackingController) {
 					fp.LastLocalController = fp.TrackingController
 				}
-				fp.OwningTCW = s.State.TCWForPosition(fp.TrackingController)
+				fp.OwningTCW = s.tcwForPosition(fp.TrackingController)
 				fp.HandoffController = ""
 			}
 		}
@@ -1600,6 +1600,16 @@ func (s *Sim) getFlightPlanForACID(acid ACID) (*NASFlightPlan, *Aircraft, bool) 
 		}
 	}
 	return nil, nil, false
+}
+
+func (s *Sim) TCWForPosition(pos ControlPosition) TCW {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	return s.tcwForPosition(pos)
+}
+
+func (s *Sim) tcwForPosition(pos ControlPosition) TCW {
+	return s.State.TCWForPosition(pos)
 }
 
 // Make sure we're not leaking beacon codes or list indices.
