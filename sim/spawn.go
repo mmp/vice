@@ -541,18 +541,6 @@ func (s *Sim) spawnAircraft() {
 	s.updateDepartureSequence()
 }
 
-func (s *Sim) initialControllerIsVirtual(ac *Aircraft) bool {
-	if ac.FlightPlan.Rules == av.FlightRulesVFR {
-		return true
-	}
-
-	fp := ac.NASFlightPlan
-	if fp == nil {
-		fp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
-	}
-	return fp == nil || fp.InboundHandoffController == ""
-}
-
 func getAircraftTime(now time.Time, r *rand.Rand) time.Time {
 	// Hallucinate a random time around the present for the aircraft.
 	delta := time.Duration(-20 + r.Intn(40))

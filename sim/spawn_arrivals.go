@@ -52,12 +52,7 @@ func (s *Sim) spawnArrivalsAndOverflights() {
 			if err != nil {
 				s.lg.Errorf("create inbound error: %v", err)
 			} else if ac != nil {
-				if s.prespawnUncontrolledOnly && !s.initialControllerIsVirtual(ac) {
-					s.lg.Debugf("%s: discarding arrival/overflight\n", ac.ADSBCallsign)
-					s.deleteAircraft(ac)
-				} else {
-					s.addAircraftNoLock(*ac)
-				}
+				s.addAircraftNoLock(*ac)
 				s.NextInboundSpawn[group] = now.Add(randomWait(rateSum, pushActive, s.Rand))
 			}
 		}

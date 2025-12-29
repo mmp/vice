@@ -1054,6 +1054,7 @@ func (s *Sim) updateState() {
 	// Update the simulation state once a second.
 	if now.Sub(s.lastSimUpdate) >= time.Second {
 		s.lastSimUpdate = now
+
 		for callsign, ac := range s.Aircraft {
 			if ac.HoldForRelease && !ac.Released {
 				// nvm...
@@ -1097,6 +1098,12 @@ func (s *Sim) updateState() {
 				// when they're currently tracked by an external facility.
 				if passedWaypoint.HumanHandoff {
 					// Handoff from virtual controller to a human controller.
+					// During prespawn uncontrolled-only phase, cull aircraft that would be handed off to humans
+					// rather than initiating the handoff.
+					if s.prespawnUncontrolledOnly {
+						s.deleteAircraft(ac)
+						continue
+					}
 					sfp := ac.NASFlightPlan
 					if sfp == nil {
 						sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
@@ -1105,6 +1112,11 @@ func (s *Sim) updateState() {
 						s.handoffTrack(sfp, sfp.InboundHandoffController)
 					}
 				} else if passedWaypoint.HandoffController != "" {
+					// During prespawn uncontrolled-only phase, cull if handoff target is a human controller
+					if s.prespawnUncontrolledOnly && !s.isVirtualController(TCP(passedWaypoint.HandoffController)) {
+						s.deleteAircraft(ac)
+						continue
+					}
 					sfp := ac.NASFlightPlan
 					if sfp == nil {
 						sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
@@ -1218,31 +1230,39 @@ func (s *Sim) updateState() {
 			}
 
 			// Possibly contact the departure controller
-			if ac.DepartureContactAltitude != 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude &&
-				!s.prespawn {
-				// Time to check in
+			if ac.DepartureContactAltitude != 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude {
 				fp := ac.NASFlightPlan
 				if fp == nil {
 					fp = s.STARSComputer.lookupFlightPlanBySquawk(ac.Squawk)
 				}
 				if fp != nil {
-					// Use the original InboundHandoffController position for the radio event,
-					// not the resolved position. This ensures TCWControlsPosition checks
-					// correctly match when the user has that position consolidated.
-					tcp := fp.InboundHandoffController
-					s.lg.Debug("contacting departure controller", slog.String("tcp", string(tcp)))
+					// During prespawn uncontrolled-only phase, cull departures that would
+					// contact a human controller rather than initiating the contact.
+					if s.prespawnUncontrolledOnly && !s.isVirtualController(fp.InboundHandoffController) {
+						s.deleteAircraft(ac)
+						continue
+					}
 
-					rt := ac.Nav.DepartureMessage()
-					s.postRadioEvent(ac.ADSBCallsign, tcp, *rt)
+					if !s.prespawn {
+						// Time to check in
+						// Use the original InboundHandoffController position for the radio event,
+						// not the resolved position. This ensures TCWControlsPosition checks
+						// correctly match when the user has that position consolidated.
+						tcp := fp.InboundHandoffController
+						s.lg.Debug("contacting departure controller", slog.String("tcp", string(tcp)))
 
-					// Clear this out so we only send one contact message
-					ac.DepartureContactAltitude = 0
+						rt := ac.Nav.DepartureMessage()
+						s.postRadioEvent(ac.ADSBCallsign, tcp, *rt)
 
-					// Only after we're on frequency can the controller start
-					// issuing control commands.. (Note that track may have
-					// already been handed off to the next controller at this
-					// point.)
-					fp.ControllingController = tcp
+						// Clear this out so we only send one contact message
+						ac.DepartureContactAltitude = 0
+
+						// Only after we're on frequency can the controller start
+						// issuing control commands.. (Note that track may have
+						// already been handed off to the next controller at this
+						// point.)
+						fp.ControllingController = tcp
+					}
 				}
 			}
 

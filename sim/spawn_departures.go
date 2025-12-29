@@ -87,9 +87,11 @@ func (s *Sim) processHeldDepartures(depState *RunwayLaunchState, now time.Time) 
 
 		if !held.ReleaseRequested {
 			if s.prespawnUncontrolledOnly {
-				s.deleteAircraft(s.Aircraft[held.ADSBCallsign])
-				depState.Held = append(depState.Held[:i], depState.Held[i+1:]...)
-				return
+				// Auto-release during prespawn - aircraft will be culled
+				// when it reaches DepartureContactAltitude in updateState.
+				ac := s.Aircraft[held.ADSBCallsign]
+				ac.Released = true
+				ac.ReleaseTime = now
 			}
 			depState.Held[i].ReleaseRequested = true
 			depState.Held[i].ReleaseDelay = time.Duration(20+s.Rand.Intn(100)) * time.Second
@@ -159,12 +161,6 @@ func (s *Sim) launchSequencedDeparture(depState *RunwayLaunchState, airport, dep
 
 	dep := depState.Sequenced[0]
 	ac := s.Aircraft[dep.ADSBCallsign]
-
-	if s.prespawnUncontrolledOnly && !s.initialControllerIsVirtual(ac) {
-		depState.Sequenced = depState.Sequenced[1:]
-		s.deleteAircraft(ac)
-		return
-	}
 
 	ac.WaitingForLaunch = false
 	dep.LaunchTime = now
