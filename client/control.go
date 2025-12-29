@@ -80,7 +80,7 @@ func (c *ControlClient) AssociateFlightPlan(callsign av.ADSBCallsign, spec sim.F
 			}))
 }
 
-func (c *ControlClient) ActivateFlightPlan(callsign av.ADSBCallsign, fpACID sim.ACID, spec *sim.FlightPlanSpecifier,
+func (c *ControlClient) ActivateFlightPlan(callsign av.ADSBCallsign, fpACID sim.ACID, spec sim.FlightPlanSpecifier,
 	callback func(error)) {
 	var update server.SimStateUpdate
 	c.addCall(

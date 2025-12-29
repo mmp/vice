@@ -483,6 +483,8 @@ func (s *Sim) AssociateFlightPlan(tcw TCW, callsign av.ADSBCallsign, spec Flight
 			// Either the flight plan was passed in or fp was initialized  in the validation function.
 			fp := s.STARSComputer.takeFlightPlanByACID(spec.ACID.Get())
 
+			fp.Update(spec, s)
+
 			ac.AssociateFlightPlan(fp)
 
 			s.eventStream.Post(Event{

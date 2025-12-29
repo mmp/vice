@@ -178,7 +178,7 @@ type ActivateFlightPlanArgs struct {
 	ControllerToken     string
 	TrackCallsign       av.ADSBCallsign
 	FpACID              sim.ACID
-	FlightPlanSpecifier *sim.FlightPlanSpecifier
+	FlightPlanSpecifier sim.FlightPlanSpecifier
 }
 
 const ActivateFlightPlanRPC = "Sim.ActivateFlightPlan"
@@ -190,7 +190,7 @@ func (sd *dispatcher) ActivateFlightPlan(af *ActivateFlightPlanArgs, update *Sim
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	err := c.sim.ActivateFlightPlan(c.tcw, af.TrackCallsign, af.FpACID, af.FlightPlanSpecifier)
+	err := c.sim.ActivateFlightPlan(c.tcw, af.TrackCallsign, af.FpACID, &af.FlightPlanSpecifier)
 	if err == nil {
 		*update = c.GetStateUpdate()
 	}

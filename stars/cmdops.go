@@ -394,7 +394,9 @@ func init() {
 			if trk.IsAssociated() {
 				return ErrSTARSIllegalTrack
 			}
-			ctx.Client.ActivateFlightPlan(trk.ADSBCallsign, fp.ACID, nil,
+			var spec sim.FlightPlanSpecifier
+			spec.TrackingController.Set(ctx.UserPrimaryPosition())
+			ctx.Client.ActivateFlightPlan(trk.ADSBCallsign, fp.ACID, spec,
 				func(err error) { sp.displayError(err, ctx, "") })
 			return nil
 		})
@@ -409,6 +411,7 @@ func init() {
 	registerCommand(CommandModeInitiateControl, "[UNASSOC_FP] [*FP_SP1|FP_TRI_SP1|FP_PLUS_SP2|FP_ALT_A][POS]",
 		func(sp *STARSPane, ctx *panes.Context, fp *sim.NASFlightPlan, spec sim.FlightPlanSpecifier, pos math.Point2LL) {
 			spec.Location.Set(pos)
+			spec.TrackingController.Set(ctx.UserPrimaryPosition())
 			modifyFlightPlan(sp, ctx, fp.ACID, spec, false)
 		})
 	registerCommand(CommandModeInitiateControl, "[UNASSOC_FP] [*FP_SP1|FP_TRI_SP1|FP_PLUS_SP2|FP_ALT_A][SLEW]",
@@ -416,7 +419,8 @@ func init() {
 			if trk.IsAssociated() {
 				return ErrSTARSIllegalTrack
 			}
-			ctx.Client.ActivateFlightPlan(trk.ADSBCallsign, fp.ACID, &spec,
+			spec.TrackingController.Set(ctx.UserPrimaryPosition())
+			ctx.Client.ActivateFlightPlan(trk.ADSBCallsign, fp.ACID, spec,
 				func(err error) { sp.displayError(err, ctx, "") })
 			return nil
 		})
@@ -425,7 +429,9 @@ func init() {
 			if trk.IsAssociated() {
 				return ErrSTARSIllegalTrack
 			}
-			ctx.Client.ActivateFlightPlan(trk.ADSBCallsign, fp.ACID, nil,
+			var spec sim.FlightPlanSpecifier
+			spec.TrackingController.Set(ctx.UserPrimaryPosition())
+			ctx.Client.ActivateFlightPlan(trk.ADSBCallsign, fp.ACID, spec,
 				func(err error) { sp.displayError(err, ctx, "") })
 			return nil
 		})
