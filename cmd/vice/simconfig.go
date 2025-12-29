@@ -1229,7 +1229,7 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 
 	// Departures (collapsible)
 	lc := &c.ScenarioSpec.LaunchConfig
-	if len(lc.DepartureRates) > 0 {
+	if lc.HaveDepartures() {
 		depRate := lc.TotalDepartureRate()
 		headerText := fmt.Sprintf("Departures (Total: %d/hr)###departures", int(depRate+0.5))
 		if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
@@ -1255,8 +1255,8 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	}
 
 	// Arrivals (collapsible)
-	arrRate := lc.TotalArrivalRate()
-	if arrRate > 0 {
+	if lc.HaveArrivals() {
+		arrRate := lc.TotalArrivalRate()
 		headerText := fmt.Sprintf("Arrivals (Total: %d/hr)###arrivals", int(arrRate+0.5))
 		if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
 			drawArrivalUI(lc, p)
@@ -1265,8 +1265,8 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	}
 
 	// Overflights (collapsible)
-	ofRate := lc.TotalOverflightRate()
-	if ofRate > 0 {
+	if lc.HaveOverflights() {
+		ofRate := lc.TotalOverflightRate()
 		headerText := fmt.Sprintf("Overflights (%d/hr)###overflights", int(ofRate+0.5))
 		if imgui.CollapsingHeaderBoolPtr(headerText, nil) {
 			drawOverflightUI(lc, p)

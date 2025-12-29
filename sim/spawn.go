@@ -160,6 +160,10 @@ func (lc *LaunchConfig) TotalDepartureRate() float32 {
 	return sum
 }
 
+func (lc *LaunchConfig) HaveDepartures() bool {
+	return len(lc.DepartureRates) > 0
+}
+
 // TotalInboundFlowRate returns the total inbound flow rate (aircraft per hour) for all flows
 func (lc *LaunchConfig) TotalInboundFlowRate() float32 {
 	var sum float32
@@ -184,6 +188,17 @@ func (lc *LaunchConfig) TotalArrivalRate() float32 {
 	return sum
 }
 
+func (lc *LaunchConfig) HaveArrivals() bool {
+	for _, flowRates := range lc.InboundFlowRates {
+		for rate := range flowRates {
+			if rate != "overflights" {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 // TotalOverflightRate returns the total overflight rate (aircraft per hour)
 func (lc *LaunchConfig) TotalOverflightRate() float32 {
 	var sum float32
@@ -193,6 +208,17 @@ func (lc *LaunchConfig) TotalOverflightRate() float32 {
 		}
 	}
 	return sum
+}
+
+func (lc *LaunchConfig) HaveOverflights() bool {
+	for _, flowRates := range lc.InboundFlowRates {
+		for rate := range flowRates {
+			if rate == "overflights" {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 // CheckRateLimits returns true if both total departure rates and total inbound flow rates
