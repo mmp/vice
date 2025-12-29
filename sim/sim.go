@@ -1678,7 +1678,7 @@ func (s *Sim) CheckLeaks() {
 }
 
 func IsValidACID(acid string) bool {
-	if len(acid) < 3 {
+	if len(acid) < 2 {
 		return false
 	}
 	if acid[0] < 'A' || acid[0] > 'Z' {
