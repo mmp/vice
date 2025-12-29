@@ -353,7 +353,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
               Here is an example:
             </p>
             <div class="text-center">
-              <img src="config.png" srcset="config-2x.png 2x" width="619" height="668" class="img-fluid" alt="configuration dialog box">
+              <img src="config.png" srcset="config-2x.png 2x" width="716" height="731">
             </div>
             <br>
             <p>After selecting an ARTCC, the available TRACONs and ATCT/TRACONs in that ARTCC are shown.
@@ -362,15 +362,15 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
               button, a window with further settings is shown:
             </p>
             <div class="text-center">
-              <img src="config-rates.png" srcset="config-rates-2x.png 2x" width="518" height="485" class="img-fluid" alt="configuration rates dialog box">
+              <img src="config-rates.png" srcset="config-rates-2x.png 2x" width="576" height="612">
             </div>
             <br>
             <p>
-              In the second configuration window, you can set the airport departure rate (ADR)
-              for all of the airports that may have departures in the scenario as well as the airport arrival rate (AAR) for all of the
-              arrival airports.
+              In the second configuration window, you can specify your initials, used to identify yourself to other
+              controllers, as well as various additional settings.
+              You can also adjust how heavy the traffic is; here, the departure rate settings are shown.
               (The PHL scenario only includes the Philadelphia Airport, though many other scenarios include multiple airports.)
-              Both of these rates are specified in terms of aircraft per hour, so an ADR of 30 corresponds to one aircraft departing
+              These rates are specified in terms of aircraft per hour, so an ADR of 30 corresponds to one aircraft departing
               every two minutes (on average).
               If you'd like an arrival-only scenario, for example, just set all of the departure rates to zero.
             </p>
@@ -382,7 +382,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
               before traffic returns to regular levels.
             </p>
             <p>
-              After you have configured the simulation, click "Ok" and you will have a STARS scope and flight strip window to work with.
+              After you have configured the simulation, click "Create" and you will have a STARS scope and flight strip window to work with.
               Use the usual STARS commands as appropriate (to initiate track, accept handoffs, handoff to other controllers, etc.),
               and the additional <a href="#atc-commands">ATC commands below</a> to issue control commands to aircraft.
             </p>
@@ -500,37 +500,44 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
             <h2 class="section-heading">Multiple Controllers</h2>
 
             <p>With <i>vice</i> you can also have multiple controllers working aircraft together.
-              Select "Create multi-controller" in the "New Simulation" window and
+              Select "Create a sim on the public vice server" in the "New Simulation" window and
               you can select an ARTCC, ATCT/TRACON, and scenario in the same way
               that you do with a single controller.
               For multi-controller scenarios, there are some additional settings, shown beneath
               the list of scenarios:
             </p>
             <div class="text-center">
-              <img src="create-multi.png" srcset="create-multi-2x.png 2x" width="617" height="226" class="img-fluid" alt="create multi-controller window">
+              <img src="create-multi.png" srcset="create-multi-2x.png 2x" width="626" height="178">
             </div>
             <br>
             <p>
-              Each multi-controller simulation has a name associated with it;
-              <i>vice</i> chooses a random one by default (above, it's "choice-length").
-              You're welcome to choose a different name if you prefer.
+              If you sign in with instructor/RPO (remote pilot operator) privileges, then
+              you are able to issue control instructions to all aircraft.
+              Each multi-controller simulation also has a name associated with it;
+              <i>vice</i> chooses a random one (above, it's "plenty-manufacturer").
               These names can be used so that you can tell other people which
               simulation to choose in order to join you.
               You may also enable "Require password" and enter a password for the
               simulation so that only people you allow can join it.
             </p>
             <p>
-              Selecting "Join multi-controller" shows a list of the simulations
+              Selecting "Join a sim on the public vice server" shows a list of the simulations
               that are currently available, including how many controllers
               are signed into each one.
               Note that the simulation names are shown in the first column.
-              After selecting one, you can choose one of the available control
-              positions and join.
+              After selecting one, the currently unoccupied radar workstations (TCWs)
+              are shown, though if you select "Join as relief", you may connect to
+              a TCW that is already in use; this allows relieving another controller,
+              who may then disconnect after briefing you.
+              After selecting a TCW, you can select one or more terminal control positions (TCPs)
+              that you will be responsible for; your TCPs determine the airspace and which
+              handoff flows are your responsibility.
               <i>vice</i> also allows you to join a simulation as an observer,
-              in which case you have no control capabilities.
+              in which case you have no control capabilities; to do so, select a free TCW
+              and then do not select any TCPs.
             </p>
             <div class="text-center">
-              <img src="join-multi.jpg" srcset="join-multi-2x.jpg 2x" width="518" height="323" class="img-fluid" alt="create multi-controller window">
+              <img src="join-multi.png" srcset="join-multi-2x.png 2x" width="716" height="389">
             </div>
             <br>
 
