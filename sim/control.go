@@ -434,7 +434,7 @@ func (s *Sim) ModifyFlightPlan(tcw TCW, acid ACID, spec FlightPlanSpecifier) err
 		}
 	}
 
-	fp.Update(spec, s.LocalCodePool, s.ERAMComputer.SquawkCodePool)
+	fp.Update(spec, s)
 
 	return s.postCheckFlightPlanSpecifier(spec)
 }
@@ -519,7 +519,7 @@ func (s *Sim) ActivateFlightPlan(tcw TCW, callsign av.ADSBCallsign, acid ACID, s
 		return ErrNoMatchingFlightPlan
 	}
 	if spec != nil {
-		fp.Update(*spec, s.LocalCodePool, s.ERAMComputer.SquawkCodePool)
+		fp.Update(*spec, s)
 	}
 
 	s.lastControlCommandTime = time.Now()

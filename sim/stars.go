@@ -750,8 +750,7 @@ func assignCode(assignment util.Optional[string], planType NASFlightPlanType, ru
 	}
 }
 
-func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, localPool *av.LocalSquawkCodePool,
-	nasPool *av.EnrouteSquawkCodePool) (err error) {
+func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) {
 	if spec.ACID.IsSet {
 		fp.ACID = spec.ACID.Get()
 	}
@@ -789,7 +788,8 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, localPool *av.LocalSqu
 		fp.AssignedSquawk = spec.ImplicitSquawkAssignment.Get()
 	} else if spec.SquawkAssignment.IsSet {
 		var rules av.FlightRules
-		fp.AssignedSquawk, rules, err = assignCode(spec.SquawkAssignment, fp.PlanType, fp.Rules, localPool, nasPool)
+		fp.AssignedSquawk, rules, err = assignCode(spec.SquawkAssignment, fp.PlanType, fp.Rules, sim.LocalCodePool,
+			sim.ERAMComputer.SquawkCodePool)
 		if !spec.Rules.IsSet {
 			// Only take the rules from the pool if no rules were given in spec.
 			fp.Rules = rules
@@ -829,6 +829,7 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, localPool *av.LocalSqu
 	}
 	if spec.TrackingController.IsSet {
 		fp.TrackingController = spec.TrackingController.Get()
+		fp.OwningTCW = sim.tcwForPosition(fp.TrackingController)
 	}
 	if spec.AssignedAltitude.IsSet {
 		fp.AssignedAltitude = spec.AssignedAltitude.Get()
