@@ -28,6 +28,7 @@ import (
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
@@ -241,6 +242,12 @@ func main() {
 			lg.Errorf("Failed to create simulation configuration: %v", err)
 			os.Exit(1)
 		}
+
+		// Pick a random time in November 2025
+		r := rand.Make()
+		day, hour, min, sec := 1+r.Intn(30), r.Intn(24), r.Intn(60), r.Intn(60)
+		newSimConfig.StartTime = time.Date(2025, time.November, day, hour, min, sec, 0, time.UTC)
+		fmt.Printf("Simulation start time: %s\n", newSimConfig.StartTime.Format(time.RFC3339))
 
 		var emergencyLogger util.ErrorLogger
 		emergencies := loadEmergencies(&emergencyLogger)
