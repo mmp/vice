@@ -32,19 +32,18 @@ type AudioData struct {
 	Data       []int16 // PCM audio data
 }
 
-// Input for the function
-type OpenAIMessage struct {
+// OpenAI API types for transcript-to-DSL conversion
+type openAIMessage struct {
 	Role    string `json:"role"`
 	Content string `json:"content"`
 }
 
-type OpenAIRequest struct {
+type openAIRequest struct {
 	Model    string          `json:"model"`
-	Messages []OpenAIMessage `json:"input"`
+	Messages []openAIMessage `json:"input"`
 }
 
-// Response format (simplified)
-type OpenAIResponse struct {
+type openAIResponse struct {
 	Output []struct {
 		Content []struct {
 			Text string `json:"text"`
@@ -52,86 +51,90 @@ type OpenAIResponse struct {
 	} `json:"output"`
 }
 
-func callModel(model string, approaches [][2]string, transcript string) (string, error) {
-	apiKey := os.Getenv("OPENAI_API_KEY")
-	if apiKey == "" {
-		return "", fmt.Errorf("OPENAI_API_KEY is not set")
-	}
-	if model == "" {
-		return "", fmt.Errorf("OPENAI_MODEL is not set")
-	}
+const openAITimeout = 30 * time.Second
 
-	// Build the system + user messages
-	systemMsg := OpenAIMessage{
-		Role:    "system",
-		Content: "Convert ATC transcripts to DSL; output only the DSL line.",
-	}
-	var apprBuilder strings.Builder
+// formatApproachesForModel converts approach data into a string format suitable for the model prompt.
+// Each approach is formatted as "pronunciation": "code" pairs.
+func formatApproachesForModel(approaches [][2]string) string {
+	var b strings.Builder
 	for i, approach := range approaches {
 		if i > 0 {
-			apprBuilder.WriteString(", ")
+			b.WriteString(", ")
 		}
 		pronounce := formatToModel(approach[0])
-		// Replace only standalone 'l' or 'r' at the end (with space before them)
+		// Expand standalone 'l' or 'r' suffix to full words for clarity
 		if strings.HasSuffix(pronounce, " l") {
 			pronounce = strings.TrimSuffix(pronounce, " l") + " left"
 		} else if strings.HasSuffix(pronounce, " r") {
 			pronounce = strings.TrimSuffix(pronounce, " r") + " right"
 		}
 		pronounce = strings.TrimSpace(pronounce)
-
-		fmt.Fprintf(&apprBuilder, "\"%s\": \"%s\"", pronounce, approach[1])
+		fmt.Fprintf(&b, "\"%s\": \"%s\"", pronounce, approach[1])
 	}
-	apprStr := apprBuilder.String()
+	return b.String()
+}
 
-	userContent := fmt.Sprintf("AllowedApproaches: %s\nTranscript: \"%s\"", apprStr, transcript)
-	userMsg := OpenAIMessage{
-		Role:    "user",
-		Content: userContent,
+// transcriptToDSL calls the OpenAI API to convert a transcript into a DSL command.
+func transcriptToDSL(model, apiKey string, approaches [][2]string, transcript string) (string, error) {
+	req := openAIRequest{
+		Model: model,
+		Messages: []openAIMessage{
+			{Role: "system", Content: "Convert ATC transcripts to DSL; output only the DSL line."},
+			{Role: "user", Content: fmt.Sprintf("AllowedApproaches: %s\nTranscript: \"%s\"",
+				formatApproachesForModel(approaches), transcript)},
+		},
 	}
 
-	reqBody := OpenAIRequest{
-		Model:    model,
-		Messages: []OpenAIMessage{systemMsg, userMsg},
-	}
-
-	jsonBytes, err := json.Marshal(reqBody)
+	jsonBytes, err := json.Marshal(req)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to marshal request: %w", err)
 	}
 
-	// Make request
-	req, err := http.NewRequest("POST", "https://api.openai.com/v1/responses", bytes.NewBuffer(jsonBytes))
+	httpReq, err := http.NewRequest("POST", "https://api.openai.com/v1/responses", bytes.NewBuffer(jsonBytes))
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to create request: %w", err)
 	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+apiKey)
+	httpReq.Header.Set("Content-Type", "application/json")
+	httpReq.Header.Set("Authorization", "Bearer "+apiKey)
 
-	httpClient := &http.Client{Timeout: 30 * time.Second}
-	resp, err := httpClient.Do(req)
+	httpClient := &http.Client{Timeout: openAITimeout}
+	resp, err := httpClient.Do(httpReq)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("API request failed: %w", err)
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to read response: %w", err)
 	}
 
-	// Parse JSON response
-	var parsed OpenAIResponse
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("API returned status %d", resp.StatusCode)
+	}
+
+	var parsed openAIResponse
 	if err := json.Unmarshal(body, &parsed); err != nil {
-		return "", fmt.Errorf("failed to parse response: %v\nraw: %s", err, string(body))
+		return "", fmt.Errorf("failed to parse API response: %w", err)
 	}
 
-	// Extract first text output
 	if len(parsed.Output) > 0 && len(parsed.Output[0].Content) > 0 {
 		return parsed.Output[0].Content[0].Text, nil
 	}
 
-	return "", fmt.Errorf("no output found: %s", string(body))
+	return "", fmt.Errorf("API returned empty response")
+}
+
+// callModel converts a transcript to a DSL command using the OpenAI API.
+func callModel(model string, approaches [][2]string, transcript string) (string, error) {
+	apiKey := os.Getenv("OPENAI_API_KEY")
+	if apiKey == "" {
+		return "", fmt.Errorf("OPENAI_API_KEY environment variable is not set")
+	}
+	if model == "" {
+		return "", fmt.Errorf("OPENAI_MODEL environment variable is not set")
+	}
+	return transcriptToDSL(model, apiKey, approaches, transcript)
 }
 
 // VoiceToCommand transcribes audio and converts it to a command.
@@ -192,78 +195,77 @@ func formatToModel(text string) string {
 
 func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, lg *log.Logger,
 	PTTKey imgui.Key, SelectedMicrophone *string) {
-	if PTTKey != imgui.KeyNone {
-		// Start on initial press (ignore repeats by checking our own flag)
-		if imgui.IsKeyDown(PTTKey) && !client.RadioIsActive() {
-			if !client.PTTRecording.Load() && !p.IsAudioRecording() {
-				if err := p.StartAudioRecordingWithDevice(*SelectedMicrophone); err != nil {
-					lg.Errorf("Failed to start audio recording: %v", err)
-				} else {
-					client.PTTRecording.Store(true)
-					lg.Infof("Push-to-talk: Started recording")
-				}
+	if client == nil || PTTKey == imgui.KeyNone {
+		return
+	}
+
+	// Start on initial press (ignore repeats by checking our own flag)
+	if imgui.IsKeyDown(PTTKey) && !client.RadioIsActive() {
+		if !client.PTTRecording.Load() && !p.IsAudioRecording() {
+			if err := p.StartAudioRecordingWithDevice(*SelectedMicrophone); err != nil {
+				lg.Errorf("Failed to start audio recording: %v", err)
+			} else {
+				client.PTTRecording.Store(true)
+				lg.Infof("Push-to-talk: Started recording")
 			}
-		} else if client.RadioIsActive() {
-			// TODO: think of something to do (ie. a sound effect, the pilot readback gets cut off, etc.)
 		}
+	}
 
-		// Independently detect release (do not tie to pressed state; key repeat may keep it true)
-		if client.PTTRecording.Load() && !imgui.IsKeyDown(PTTKey) {
-			if p.IsAudioRecording() {
-				data, err := p.StopAudioRecording()
-				client.PTTRecording.Store(false)
-				if err != nil {
-					lg.Errorf("Failed to stop audio recording: %v", err)
-				} else {
-					lg.Infof("Push-to-talk: Stopped recording, transcribing...")
-					go func(samples []int16) {
-						defer lg.CatchAndReportCrash()
+	// Independently detect release (do not tie to pressed state; key repeat may keep it true)
+	if client.PTTRecording.Load() && !imgui.IsKeyDown(PTTKey) {
+		if p.IsAudioRecording() {
+			data, err := p.StopAudioRecording()
+			client.PTTRecording.Store(false)
+			if err != nil {
+				lg.Errorf("Failed to stop audio recording: %v", err)
+			} else {
+				lg.Infof("Push-to-talk: Stopped recording, transcribing...")
+				go func(samples []int16) {
+					defer lg.CatchAndReportCrash()
 
-						// Make approach map
-						approaches := [][2]string{} // Type (eg. ILS) and runway (eg. 28R)
-						for _, apt := range client.State.Airports {
-							for code, appr := range apt.Approaches {
-								approaches = append(approaches, [2]string{appr.FullName, code})
-							}
+					// Make approach map
+					approaches := [][2]string{} // Type (eg. ILS) and runway (eg. 28R)
+					for _, apt := range client.State.Airports {
+						for code, appr := range apt.Approaches {
+							approaches = append(approaches, [2]string{appr.FullName, code})
 						}
-						audio := &AudioData{SampleRate: platform.AudioSampleRate, Channels: 1, Data: samples}
-						command, transcription, err := VoiceToCommand(audio, approaches, lg)
-						client.SetLastTranscription(transcription)
-						if err != nil {
-							lg.Errorf("Push-to-talk: Transcription error: %v", err)
-							return
-						}
-						fields := strings.Fields(command)
+					}
+					audio := &AudioData{SampleRate: platform.AudioSampleRate, Channels: 1, Data: samples}
+					command, transcription, err := VoiceToCommand(audio, approaches, lg)
+					client.SetLastTranscription(transcription)
+					if err != nil {
+						lg.Errorf("Push-to-talk: Transcription error: %v", err)
+						return
+					}
+					fields := strings.Fields(command)
 
-						if len(fields) > 0 {
-							callsign := fields[0]
-							// Check if callsign matches, if not check if the numbers match
-							_, ok := client.State.GetTrackByCallsign(av.ADSBCallsign(callsign))
-							if !ok {
-								// Trim until first digit for suffix matching
-								callsign = strings.TrimLeftFunc(callsign, func(r rune) bool { return !unicode.IsDigit(r) })
-								// Only try suffix matching if we have something to match
-								if callsign != "" {
-									matching := tracksFromSuffix(client.State.Tracks, callsign)
-									if len(matching) == 1 {
-										callsign = string(matching[0].ADSBCallsign)
-									}
+					if len(fields) > 0 {
+						callsign := fields[0]
+						// Check if callsign matches, if not check if the numbers match
+						_, ok := client.State.GetTrackByCallsign(av.ADSBCallsign(callsign))
+						if !ok {
+							// Trim until first digit for suffix matching
+							callsign = strings.TrimLeftFunc(callsign, func(r rune) bool { return !unicode.IsDigit(r) })
+							// Only try suffix matching if we have something to match
+							if callsign != "" {
+								matching := tracksFromSuffix(client.State.Tracks, callsign)
+								if len(matching) == 1 {
+									callsign = string(matching[0].ADSBCallsign)
 								}
 							}
-							if len(fields) > 1 && callsign != "" {
-								cmd := strings.Join(fields[1:], " ")
-								client.RunAircraftCommands(av.ADSBCallsign(callsign), cmd, false, false, nil)
-								lg.Infof("STT command: %s %s", callsign, cmd)
-								client.SetLastCommand(callsign + " " + cmd)
-							}
 						}
-					}(data)
-				}
-			} else if !p.IsAudioRecording() {
-				// Platform already not recording; reset our flag
-				client.PTTRecording.Store(false)
-				return
+						if len(fields) > 1 && callsign != "" {
+							cmd := strings.Join(fields[1:], " ")
+							client.RunAircraftCommands(av.ADSBCallsign(callsign), cmd, false, false, nil)
+							lg.Infof("STT command: %s %s", callsign, cmd)
+							client.SetLastCommand(callsign + " " + cmd)
+						}
+					}
+				}(data)
 			}
+		} else {
+			// Platform already not recording; reset our flag
+			client.PTTRecording.Store(false)
 		}
 	}
 }

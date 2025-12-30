@@ -133,17 +133,12 @@ func pcmInt16ToFloat32Mono16k(pcm []int16, inRate, inChans int) ([]float32, erro
 	}
 
 	// To mono (float64 for processing precision)
+	// Note: int16 range is [-32768, 32767], so dividing by 32768.0 gives [-1, 1)
 	var mono []float64
 	if inChans == 1 {
 		mono = make([]float64, len(pcm))
 		for i := range pcm {
-			v := float64(pcm[i]) / 32768.0
-			if v > 1 {
-				v = 1
-			} else if v < -1 {
-				v = -1
-			}
-			mono[i] = v
+			mono[i] = float64(pcm[i]) / 32768.0
 		}
 	} else { // stereo interleaved
 		if len(pcm)%2 != 0 {
@@ -154,17 +149,6 @@ func pcmInt16ToFloat32Mono16k(pcm []int16, inRate, inChans int) ([]float32, erro
 		for i := 0; i < frames; i++ {
 			l := float64(pcm[2*i]) / 32768.0
 			r := float64(pcm[2*i+1]) / 32768.0
-			// clamp
-			if l > 1 {
-				l = 1
-			} else if l < -1 {
-				l = -1
-			}
-			if r > 1 {
-				r = 1
-			} else if r < -1 {
-				r = -1
-			}
 			mono[i] = 0.5 * (l + r)
 		}
 	}
