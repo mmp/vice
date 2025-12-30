@@ -40,6 +40,7 @@ var (
 	ErrUnknownAircraftType             = errors.New("Unknown aircraft type")
 	ErrUnknownController               = errors.New("Unknown controller")
 	ErrUnknownControllerFacility       = errors.New("Unknown controller facility")
+	ErrVFRBelowMVA                     = errors.New("VFR aircraft below MVA")
 	ErrVFRSimTookTooLong               = errors.New("VFR simulation took too long")
 	ErrViolatedAirspace                = errors.New("Violated B/C airspace")
 	ErrVolumeDisabled                  = errors.New("ATPA volume is disabled")
