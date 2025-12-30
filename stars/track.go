@@ -404,8 +404,6 @@ func (sp *STARSPane) isQuicklooked(ctx *panes.Context, trk sim.Track) bool {
 }
 
 func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
-	// See if there are any MVA issues
-	mvas := av.DB.MVAs[ctx.Client.State.Facility]
 	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 		if !trk.MVAsApply {
@@ -435,9 +433,8 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 			continue
 		}
 
-		warn := slices.ContainsFunc(mvas, func(mva av.MVA) bool {
-			return alt < mva.MinimumLimit && mva.Inside(state.track.Location)
-		})
+		mva := sp.mvaGrid.GetMVA(state.track.Location)
+		warn := mva > 0 && alt < mva
 
 		if !warn && state.InhibitMSAW {
 			// The warning has cleared, so the inhibit is disabled (p.7-25)

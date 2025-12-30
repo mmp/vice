@@ -93,6 +93,8 @@ type STARSPane struct {
 
 	visibleTracks []sim.Track
 
+	mvaGrid *av.MVAGrid
+
 	// Which weather history snapshot to draw: this is always 0 unless the
 	// 'display weather history' command was entered.
 	wxHistoryDraw int
@@ -491,6 +493,7 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform
 	sp.lastHistoryTrackUpdate = time.Time{}
 
 	sp.atmosGrid = nil
+	sp.mvaGrid = av.MakeMVAGrid(av.DB.MVAs[client.State.Facility])
 
 	// nil these out rather than clearing them so that they are rebuilt
 	// from scratch.
