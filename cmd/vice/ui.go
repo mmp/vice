@@ -731,7 +731,6 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 			imgui.TextColored(imgui.Vec4{1, 1, 0, 1}, "Press any key for Push-to-Talk...")
 			if kb := p.GetKeyboard(); kb != nil {
 				for key := range kb.Pressed {
-					fmt.Println("Pressed: ", platform.GetImGuiKeyName(key))
 					if key != imgui.KeyLeftShift && key != imgui.KeyRightShift &&
 						key != imgui.KeyLeftCtrl && key != imgui.KeyRightCtrl &&
 						key != imgui.KeyLeftAlt && key != imgui.KeyRightAlt &&
@@ -781,7 +780,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 			imgui.EndCombo()
 		}
 
-		if c.PTTRecording {
+		if c.PTTRecording.Load() {
 			imgui.TextColored(imgui.Vec4{1, 0, 0, 1}, "Recording...")
 		} else {
 			if c.LastTranscription != "" {

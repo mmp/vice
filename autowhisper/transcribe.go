@@ -2,7 +2,6 @@ package autowhisper
 
 import (
 	"errors"
-	"fmt"
 	"io"
 	"math"
 	"runtime"
@@ -10,6 +9,28 @@ import (
 
 	whisper "github.com/mmp/vice/autowhisper/internal/whisper"
 )
+
+// Model wraps a loaded whisper model for reuse across transcriptions.
+type Model struct {
+	model whisper.Model
+}
+
+// LoadModelFromBytes loads a whisper model from bytes for reuse.
+func LoadModelFromBytes(data []byte) (*Model, error) {
+	m, err := whisper.NewFromBytes(data)
+	if err != nil {
+		return nil, err
+	}
+	return &Model{model: m}, nil
+}
+
+// Close releases the model resources.
+func (m *Model) Close() error {
+	if m.model != nil {
+		return m.model.Close()
+	}
+	return nil
+}
 
 // Options configures the transcription behavior.
 type Options struct {
@@ -29,102 +50,16 @@ type Options struct {
 	MaxTokensPerSegment uint
 }
 
-// TranscribeFile loads the model at modelPath, reads the WAV at audioPath,
-// converts it to 16 kHz mono if needed, and returns the full transcription text.
-//
-// Requirements:
-// - audioPath must be a WAV file. Other formats should be converted upstream.
-func TranscribeFile(modelPath, audioPath string, opts Options) (string, error) {
-	// Load model
-	model, err := whisper.New(modelPath)
-	if err != nil {
-		return "", err
+// TranscribeWithModel transcribes PCM16 audio using a pre-loaded model.
+// This is more efficient when transcribing multiple audio samples as it
+// avoids reloading the model each time.
+func TranscribeWithModel(m *Model, pcm []int16, inSampleRate, inChannels int, opts Options) (string, error) {
+	if m == nil || m.model == nil {
+		return "", errors.New("model not loaded")
 	}
-	defer model.Close()
 
 	// Create context
-	ctx, err := model.NewContext()
-	if err != nil {
-		return "", err
-	}
-
-	// Configure context
-	if opts.Threads > 0 {
-		ctx.SetThreads(uint(opts.Threads))
-	} else {
-		ctx.SetThreads(uint(runtime.NumCPU()))
-	}
-	ctx.SetTranslate(opts.Translate)
-	ctx.SetSplitOnWord(opts.SplitOnWord)
-	ctx.SetTokenTimestamps(opts.TokenTimestamps)
-	if opts.MaxTokensPerSegment > 0 {
-		ctx.SetMaxTokensPerSegment(opts.MaxTokensPerSegment)
-	}
-	if strings.TrimSpace(opts.InitialPrompt) != "" {
-		ctx.SetInitialPrompt(opts.InitialPrompt)
-	}
-
-	// Language selection
-	lang := strings.TrimSpace(opts.Language)
-	if lang == "" {
-		lang = "auto"
-	}
-	if lang != "auto" {
-		if err := ctx.SetLanguage(lang); err != nil {
-			return "", err
-		}
-	}
-
-	// Load audio and convert to 16k mono []float32
-	pcm, err := ReadWavAsFloat32Mono16k(audioPath)
-	if err != nil {
-		return "", err
-	}
-	if len(pcm) == 0 {
-		return "", errors.New("empty audio after conversion")
-	}
-
-	// Process
-	if err := ctx.Process(pcm, nil, nil, nil); err != nil {
-		return "", err
-	}
-
-	// Collect segments
-	var b strings.Builder
-	for {
-		seg, err := ctx.NextSegment()
-		if err != nil {
-			if errors.Is(err, fmt.Errorf("%w", err)) { // keep linter happy; io.EOF checked below via string
-				// no-op
-			}
-		}
-		if err != nil {
-			if errors.Is(err, io.EOF) {
-				break
-			}
-			return "", err
-		}
-		if b.Len() > 0 {
-			b.WriteByte(' ')
-		}
-		b.WriteString(seg.Text)
-	}
-	return strings.TrimSpace(b.String()), nil
-}
-
-// TranscribePCM16 takes raw PCM16 samples (interleaved if stereo), automatically converts
-// them to 16 kHz mono, and returns the transcription text.
-// inSampleRate is the input sample rate in Hz, inChannels must be 1 or 2.
-func Transcribe(modelData []byte, pcm []int16, inSampleRate, inChannels int, opts Options) (string, error) {
-	// Load model from bytes
-	model, err := whisper.NewFromBytes(modelData)
-	if err != nil {
-		return "", err
-	}
-	defer model.Close()
-
-	// Create context
-	ctx, err := model.NewContext()
+	ctx, err := m.model.NewContext()
 	if err != nil {
 		return "", err
 	}
@@ -175,12 +110,7 @@ func Transcribe(modelData []byte, pcm []int16, inSampleRate, inChannels int, opt
 	for {
 		seg, err := ctx.NextSegment()
 		if err != nil {
-			if errors.Is(err, fmt.Errorf("%w", err)) {
-				// no-op
-			}
-		}
-		if err != nil {
-			if strings.Contains(err.Error(), "EOF") {
+			if errors.Is(err, io.EOF) {
 				break
 			}
 			return "", err

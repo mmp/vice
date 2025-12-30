@@ -40,7 +40,7 @@ type ControlClient struct {
 	lastSpeechHoldTime       time.Time
 	awaitReadbackCallsign    av.ADSBCallsign
 	lastTransmissionCallsign av.ADSBCallsign
-	PTTRecording             bool
+	PTTRecording             util.AtomicBool
 	PTTCapture               bool
 	LastTranscription        string
 	LastCommand              string

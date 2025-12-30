@@ -2,6 +2,7 @@ package whisperlow
 
 import (
 	"errors"
+	"sync"
 	"unsafe"
 )
 
@@ -144,9 +145,13 @@ func (ctx *Context) Whisper_tokenize(text string, tokens []Token) (int, error) {
 	return 0, ErrTokenizerFailed
 }
 
-func (ctx *Context) Whisper_lang_id(lang string) int { return int(C.whisper_lang_id(C.CString(lang))) }
-func Whisper_lang_max_id() int                       { return int(C.whisper_lang_max_id()) }
-func Whisper_lang_str(id int) string                 { return C.GoString(C.whisper_lang_str(C.int(id))) }
+func (ctx *Context) Whisper_lang_id(lang string) int {
+	cLang := C.CString(lang)
+	defer C.free(unsafe.Pointer(cLang))
+	return int(C.whisper_lang_id(cLang))
+}
+func Whisper_lang_max_id() int       { return int(C.whisper_lang_max_id()) }
+func Whisper_lang_str(id int) string { return C.GoString(C.whisper_lang_str(C.int(id))) }
 
 func (ctx *Context) Whisper_lang_auto_detect(offset_ms, n_threads int) ([]float32, error) {
 	probs := make([]float32, Whisper_lang_max_id()+1)
@@ -276,12 +281,15 @@ func (ctx *Context) Whisper_full_get_token_p(segment int, token int) float32 {
 }
 
 var (
+	cbMu           sync.RWMutex
 	cbNewSegment   = make(map[unsafe.Pointer]func(int))
 	cbProgress     = make(map[unsafe.Pointer]func(int))
 	cbEncoderBegin = make(map[unsafe.Pointer]func() bool)
 )
 
 func registerNewSegmentCallback(ctx *Context, fn func(int)) {
+	cbMu.Lock()
+	defer cbMu.Unlock()
 	if fn == nil {
 		delete(cbNewSegment, unsafe.Pointer(ctx))
 	} else {
@@ -290,6 +298,8 @@ func registerNewSegmentCallback(ctx *Context, fn func(int)) {
 }
 
 func registerProgressCallback(ctx *Context, fn func(int)) {
+	cbMu.Lock()
+	defer cbMu.Unlock()
 	if fn == nil {
 		delete(cbProgress, unsafe.Pointer(ctx))
 	} else {
@@ -298,6 +308,8 @@ func registerProgressCallback(ctx *Context, fn func(int)) {
 }
 
 func registerEncoderBeginCallback(ctx *Context, fn func() bool) {
+	cbMu.Lock()
+	defer cbMu.Unlock()
 	if fn == nil {
 		delete(cbEncoderBegin, unsafe.Pointer(ctx))
 	} else {
@@ -307,21 +319,30 @@ func registerEncoderBeginCallback(ctx *Context, fn func() bool) {
 
 //export callNewSegment
 func callNewSegment(user_data unsafe.Pointer, new C.int) {
-	if fn, ok := cbNewSegment[user_data]; ok {
+	cbMu.RLock()
+	fn, ok := cbNewSegment[user_data]
+	cbMu.RUnlock()
+	if ok {
 		fn(int(new))
 	}
 }
 
 //export callProgress
 func callProgress(user_data unsafe.Pointer, progress C.int) {
-	if fn, ok := cbProgress[user_data]; ok {
+	cbMu.RLock()
+	fn, ok := cbProgress[user_data]
+	cbMu.RUnlock()
+	if ok {
 		fn(int(progress))
 	}
 }
 
 //export callEncoderBegin
 func callEncoderBegin(user_data unsafe.Pointer) C.bool {
-	if fn, ok := cbEncoderBegin[user_data]; ok {
+	cbMu.RLock()
+	fn, ok := cbEncoderBegin[user_data]
+	cbMu.RUnlock()
+	if ok {
 		if fn() {
 			return C.bool(true)
 		}

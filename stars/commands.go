@@ -766,7 +766,7 @@ func (sp *STARSPane) setCommandMode(ctx *panes.Context, mode CommandMode) {
 	sp.resetInputState(ctx)
 	sp.commandMode = mode
 
-	if mode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock || ctx.Client.PTTRecording {
+	if mode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock || ctx.Client.PTTRecording.Load() {
 		ctx.Client.HoldRadioTransmissions()
 	} else {
 		ctx.Client.AllowRadioTransmissions()

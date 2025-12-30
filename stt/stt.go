@@ -62,8 +62,11 @@ func callModel(model string, approaches [][2]string, transcript string) (string,
 		Role:    "system",
 		Content: "Convert ATC transcripts to DSL; output only the DSL line.",
 	}
-	var apprStr string
-	for _, approach := range approaches {
+	var apprBuilder strings.Builder
+	for i, approach := range approaches {
+		if i > 0 {
+			apprBuilder.WriteString(", ")
+		}
 		pronounce := formatToModel(approach[0])
 		// Replace only standalone 'l' or 'r' at the end (with space before them)
 		if strings.HasSuffix(pronounce, " l") {
@@ -73,9 +76,9 @@ func callModel(model string, approaches [][2]string, transcript string) (string,
 		}
 		pronounce = strings.TrimSpace(pronounce)
 
-		apprStr += fmt.Sprintf("\"%s\": \"%s\", ", pronounce, approach[1])
+		fmt.Fprintf(&apprBuilder, "\"%s\": \"%s\"", pronounce, approach[1])
 	}
-	apprStr = strings.TrimSuffix(apprStr, ", ")
+	apprStr := apprBuilder.String()
 
 	userContent := fmt.Sprintf("AllowedApproaches: %s\nTranscript: \"%s\"", apprStr, transcript)
 	userMsg := OpenAIMessage{
@@ -142,14 +145,19 @@ func VoiceToCommand(audio *AudioData, approaches [][2]string, lastTranscription 
 	return command, nil
 }
 
-var whisperModelData []byte
+var whisperModel *whisper.Model
 var whisperModelOnce sync.Once
 
 func Transcribe(audio *AudioData) (string, error) {
+	var loadErr error
 	whisperModelOnce.Do(func() {
-		whisperModelData = util.LoadResourceBytes("models/ggml-medium-q5_0.bin")
+		data := util.LoadResourceBytes("models/ggml-medium-q5_0.bin")
+		whisperModel, loadErr = whisper.LoadModelFromBytes(data)
 	})
-	text, err := whisper.Transcribe(whisperModelData, audio.Data, audio.SampleRate, audio.Channels, whisper.Options{
+	if loadErr != nil {
+		return "", loadErr
+	}
+	text, err := whisper.TranscribeWithModel(whisperModel, audio.Data, audio.SampleRate, audio.Channels, whisper.Options{
 		Language: "en",
 	})
 	if err != nil {
@@ -158,33 +166,27 @@ func Transcribe(audio *AudioData) (string, error) {
 	return formatToModel(text), nil
 }
 
+// formatReplacer removes punctuation and replaces numbers with ICAO words
+var formatReplacer = strings.NewReplacer(
+	// Punctuation -> empty
+	",", "", ".", "", "-", "", "–", "", "—", "", ":", "", ";", "",
+	"/", "", "\\", "", "(", "", ")", "", "[", "", "]", "", "{", "", "}", "",
+	"!", "", "?", "", "+", "", "_", "", "=", "", "*", "", "\"", "", "'", "",
+	"<", "", ">", "", "|", "",
+	// Numbers -> ICAO words (with trailing space for word separation)
+	"0", "zero ", "1", "wun ", "2", "too ", "3", "tree ", "4", "fower ",
+	"5", "fife ", "6", "six ", "7", "seven ", "8", "ait ", "9", "niner ",
+)
+
 // The OpenAI model was fine-tuned to handle numbers as their ICAO words (eg. 1 as wun, 2 as too, etc.)
 // This is mainly to bring some normalization to the transcription and between controller phraseology.
 // For example, sometimes the transcription will be 3-5-0 rather than 350, or controllers will say "climb and maintain 1-0, ten, thousand"
 // formatToModel() removes all punctuation and numbers, and replaces them with their ICAO counterparts.
 func formatToModel(text string) string {
-	punctuation := []string{",", ".", "-", "–", "—", ":", ";", "/", "\\", "(", ")", "[", "]", "{", "}", "!", "?", "+", "_", "=", "*", "\"", "'", "<", ">", "|"}
-	for _, p := range punctuation {
-		text = strings.ReplaceAll(text, p, "")
-	}
-	numberToWord := map[string]string{
-		"0": "zero",
-		"1": "wun",
-		"2": "too",
-		"3": "tree",
-		"4": "fower",
-		"5": "fife",
-		"6": "six",
-		"7": "seven",
-		"8": "ait",
-		"9": "niner",
-	}
-	for number, word := range numberToWord {
-		text = strings.ReplaceAll(text, number, word+" ")
-	}
+	text = formatReplacer.Replace(text)
 	text = strings.ReplaceAll(text, "  ", " ") // Remove double spaces
 	text = strings.ToLower(text)
-	return text
+	return strings.TrimSpace(text)
 }
 
 func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, lg *log.Logger,
@@ -192,11 +194,11 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 	if PTTKey != imgui.KeyNone {
 		// Start on initial press (ignore repeats by checking our own flag)
 		if imgui.IsKeyDown(PTTKey) && !client.RadioIsActive() {
-			if !client.PTTRecording && !p.IsAudioRecording() {
+			if !client.PTTRecording.Load() && !p.IsAudioRecording() {
 				if err := p.StartAudioRecordingWithDevice(*SelectedMicrophone); err != nil {
 					lg.Errorf("Failed to start audio recording: %v", err)
 				} else {
-					client.PTTRecording = true
+					client.PTTRecording.Store(true)
 					lg.Infof("Push-to-talk: Started recording")
 				}
 			}
@@ -205,10 +207,10 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 		}
 
 		// Independently detect release (do not tie to pressed state; key repeat may keep it true)
-		if client.PTTRecording && !imgui.IsKeyDown(PTTKey) {
+		if client.PTTRecording.Load() && !imgui.IsKeyDown(PTTKey) {
 			if p.IsAudioRecording() {
 				data, err := p.StopAudioRecording()
-				client.PTTRecording = false
+				client.PTTRecording.Store(false)
 				if err != nil {
 					lg.Errorf("Failed to stop audio recording: %v", err)
 				} else {
@@ -244,9 +246,12 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 							if !ok {
 								// trim until first number
 								callsign = trimFunc(callsign)
-								matching := tracksFromSuffix(client.State.Tracks, callsign)
-								if len(matching) == 1 {
-									callsign = string(matching[0].ADSBCallsign)
+								// Only try suffix matching if we have something to match
+								if callsign != "" {
+									matching := tracksFromSuffix(client.State.Tracks, callsign)
+									if len(matching) == 1 {
+										callsign = string(matching[0].ADSBCallsign)
+									}
 								}
 							}
 							if len(fields) > 1 && callsign != "" {
@@ -255,7 +260,7 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 								lg.Infof("Command: %v Callsign: %v", cmd, callsign)
 								client.LastCommand = callsign + " " + cmd
 							}
-							client.PTTRecording = false
+							client.PTTRecording.Store(false)
 							lg.Infof("Push-to-talk: Transcription: %s\n", text)
 
 						}
@@ -264,7 +269,7 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 				}
 			} else if !p.IsAudioRecording() {
 				// Platform already not recording; reset our flag
-				client.PTTRecording = false
+				client.PTTRecording.Store(false)
 				return
 			}
 		}
