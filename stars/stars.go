@@ -464,6 +464,8 @@ func (sp *STARSPane) LoadedSim(client *client.ControlClient, pl platform.Platfor
 
 	sp.makeMaps(client, lg)
 	sp.makeSignificantPoints(client.State)
+
+	sp.mvaGrid = av.MakeMVAGrid(av.DB.MVAs[client.State.Facility])
 }
 
 func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
