@@ -30,6 +30,18 @@ func New(path string) (Model, error) {
 	return m, nil
 }
 
+func NewFromBytes(data []byte) (Model, error) {
+	m := new(model)
+	// silence native logs before init
+	whisperlow.Whisper_log_set_silent()
+	if ctx := whisperlow.Whisper_init_from_buffer(data); ctx == nil {
+		return nil, ErrUnableToLoadModel
+	} else {
+		m.ctx = ctx
+	}
+	return m, nil
+}
+
 func (m *model) Close() error {
 	if m.ctx != nil {
 		m.ctx.Whisper_free()

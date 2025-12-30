@@ -115,9 +115,9 @@ func TranscribeFile(modelPath, audioPath string, opts Options) (string, error) {
 // TranscribePCM16 takes raw PCM16 samples (interleaved if stereo), automatically converts
 // them to 16 kHz mono, and returns the transcription text.
 // inSampleRate is the input sample rate in Hz, inChannels must be 1 or 2.
-func Transcribe(modelPath string, pcm []int16, inSampleRate, inChannels int, opts Options) (string, error) {
-	// Load model
-	model, err := whisper.New(modelPath)
+func Transcribe(modelData []byte, pcm []int16, inSampleRate, inChannels int, opts Options) (string, error) {
+	// Load model from bytes
+	model, err := whisper.NewFromBytes(modelData)
 	if err != nil {
 		return "", err
 	}

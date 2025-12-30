@@ -92,6 +92,16 @@ func Whisper_init(path string) *Context {
 	}
 }
 
+func Whisper_init_from_buffer(data []byte) *Context {
+	if len(data) == 0 {
+		return nil
+	}
+	if ctx := C.whisper_init_from_buffer_with_params(unsafe.Pointer(&data[0]), C.size_t(len(data)), C.whisper_context_default_params()); ctx != nil {
+		return (*Context)(ctx)
+	}
+	return nil
+}
+
 // Whisper_log_set_silent disables all logging from the underlying library.
 func Whisper_log_set_silent() { C.whisper_log_set_silent_bridge() }
 

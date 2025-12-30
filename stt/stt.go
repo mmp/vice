@@ -5,14 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"maps"
 	"net/http"
 	"os"
-	"path/filepath"
-	"strings"
-	"unicode"
-
-	"maps"
 	"slices"
+	"strings"
+	"sync"
+	"unicode"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
@@ -143,11 +142,14 @@ func VoiceToCommand(audio *AudioData, approaches [][2]string, lastTranscription 
 	return command, nil
 }
 
+var whisperModelData []byte
+var whisperModelOnce sync.Once
+
 func Transcribe(audio *AudioData) (string, error) {
-	// Make a model
-	resourcesPath := util.GetResourcesFolderPath()
-	modelPath := filepath.Join(resourcesPath, "models", "ggml-medium-q5_0.bin")
-	text, err := whisper.Transcribe(modelPath, audio.Data, audio.SampleRate, audio.Channels, whisper.Options{
+	whisperModelOnce.Do(func() {
+		whisperModelData = util.LoadResourceBytes("models/ggml-medium-q5_0.bin")
+	})
+	text, err := whisper.Transcribe(whisperModelData, audio.Data, audio.SampleRate, audio.Channels, whisper.Options{
 		Language: "en",
 	})
 	if err != nil {
