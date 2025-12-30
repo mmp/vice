@@ -594,6 +594,10 @@ func PlausibleFinalAltitude(fp av.FlightPlan, perf av.AircraftPerformance, nmPer
 	// Enforce ceiling
 	alt = min(alt, ceiling)
 
+	if fp.Rules == av.FlightRulesVFR {
+		alt = min(alt, 17) // VFRs stay out of class A airspace
+	}
+
 	if math.Heading2LL(pDep, pArr, nmPerLongitude, magneticVariation) > 180 {
 		// Decrease rather than increasing so that we don't potentially go
 		// above the aircraft's ceiling.
