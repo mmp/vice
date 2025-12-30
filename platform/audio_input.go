@@ -61,17 +61,8 @@ func (ar *AudioRecorder) StartRecordingWithDevice(deviceName string) error {
 		UserData: user,
 	}
 
-	// Use SDL's default device mechanism for empty string
-	var deviceID sdl.AudioDeviceID
-	var err error
-	if deviceName == "" {
-		deviceID, err = sdl.OpenAudioDevice("", true, &spec, nil, 0)
-	} else {
-		// For named devices, we need to pass a C string directly
-		// to avoid the Go pointer issue
-		deviceID, err = sdl.OpenAudioDevice(deviceName, true, &spec, nil, 0)
-	}
-
+	// Empty string uses SDL's default device
+	deviceID, err := sdl.OpenAudioDevice(deviceName, true, &spec, nil, 0)
 	if err != nil {
 		ar.pinner.Unpin()
 		return fmt.Errorf("failed to open audio device: %v", err)
@@ -79,7 +70,7 @@ func (ar *AudioRecorder) StartRecordingWithDevice(deviceName string) error {
 
 	ar.deviceID = deviceID
 	ar.recording = true
-	ar.audioData = make([]int16, 0, AudioSampleRate*60) // Pre-allocate for up to 60 seconds
+	ar.audioData = nil // Will grow dynamically as needed
 
 	// Start recording
 	sdl.PauseAudioDevice(deviceID, false)

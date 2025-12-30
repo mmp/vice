@@ -11,6 +11,7 @@ import (
 	"slices"
 	"strings"
 	"sync"
+	"time"
 	"unicode"
 
 	av "github.com/mmp/vice/aviation"
@@ -55,6 +56,9 @@ func callModel(model string, approaches [][2]string, transcript string) (string,
 	apiKey := os.Getenv("OPENAI_API_KEY")
 	if apiKey == "" {
 		return "", fmt.Errorf("OPENAI_API_KEY is not set")
+	}
+	if model == "" {
+		return "", fmt.Errorf("OPENAI_MODEL is not set")
 	}
 
 	// Build the system + user messages
@@ -104,8 +108,8 @@ func callModel(model string, approaches [][2]string, transcript string) (string,
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+apiKey)
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
+	httpClient := &http.Client{Timeout: 30 * time.Second}
+	resp, err := httpClient.Do(req)
 	if err != nil {
 		return "", err
 	}
@@ -130,32 +134,32 @@ func callModel(model string, approaches [][2]string, transcript string) (string,
 	return "", fmt.Errorf("no output found: %s", string(body))
 }
 
-func VoiceToCommand(audio *AudioData, approaches [][2]string, lastTranscription *string, lg *log.Logger) (string, error) {
+// VoiceToCommand transcribes audio and converts it to a command.
+// Returns (command, transcription, error).
+func VoiceToCommand(audio *AudioData, approaches [][2]string, lg *log.Logger) (string, string, error) {
 	text, err := Transcribe(audio)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	*lastTranscription = text
 	model := os.Getenv("OPENAI_MODEL")
 	command, err := callModel(model, approaches, text)
-	lg.Infof("Command: %s", command)
 	if err != nil {
-		return "", err
+		return "", text, err
 	}
-	return command, nil
+	return command, text, nil
 }
 
 var whisperModel *whisper.Model
+var whisperModelErr error
 var whisperModelOnce sync.Once
 
 func Transcribe(audio *AudioData) (string, error) {
-	var loadErr error
 	whisperModelOnce.Do(func() {
 		data := util.LoadResourceBytes("models/ggml-medium-q5_0.bin")
-		whisperModel, loadErr = whisper.LoadModelFromBytes(data)
+		whisperModel, whisperModelErr = whisper.LoadModelFromBytes(data)
 	})
-	if loadErr != nil {
-		return "", loadErr
+	if whisperModelErr != nil {
+		return "", whisperModelErr
 	}
 	text, err := whisper.TranscribeWithModel(whisperModel, audio.Data, audio.SampleRate, audio.Channels, whisper.Options{
 		Language: "en",
@@ -168,11 +172,8 @@ func Transcribe(audio *AudioData) (string, error) {
 
 // formatReplacer removes punctuation and replaces numbers with ICAO words
 var formatReplacer = strings.NewReplacer(
-	// Punctuation -> empty
-	",", "", ".", "", "-", "", "–", "", "—", "", ":", "", ";", "",
-	"/", "", "\\", "", "(", "", ")", "", "[", "", "]", "", "{", "", "}", "",
-	"!", "", "?", "", "+", "", "_", "", "=", "", "*", "", "\"", "", "'", "",
-	"<", "", ">", "", "|", "",
+	// Common punctuation in speech transcription -> empty
+	",", "", ".", "", "-", "", ":", "", ";", "", "!", "", "?", "", "'", "", "\"", "",
 	// Numbers -> ICAO words (with trailing space for word separation)
 	"0", "zero ", "1", "wun ", "2", "too ", "3", "tree ", "4", "fower ",
 	"5", "fife ", "6", "six ", "7", "seven ", "8", "ait ", "9", "niner ",
@@ -216,6 +217,8 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 				} else {
 					lg.Infof("Push-to-talk: Stopped recording, transcribing...")
 					go func(samples []int16) {
+						defer lg.CatchAndReportCrash()
+
 						// Make approach map
 						approaches := [][2]string{} // Type (eg. ILS) and runway (eg. 28R)
 						for _, apt := range client.State.Airports {
@@ -224,28 +227,21 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 							}
 						}
 						audio := &AudioData{SampleRate: platform.AudioSampleRate, Channels: 1, Data: samples}
-						text, err := VoiceToCommand(audio, approaches, &client.LastTranscription, lg)
+						command, transcription, err := VoiceToCommand(audio, approaches, lg)
+						client.SetLastTranscription(transcription)
 						if err != nil {
-							lg.Errorf("Push-to-talk: Transcription error: %v\n", err)
+							lg.Errorf("Push-to-talk: Transcription error: %v", err)
 							return
 						}
-						fields := strings.Fields(text)
+						fields := strings.Fields(command)
 
-						trimFunc := func(s string) string {
-							for i, char := range s {
-								if unicode.IsDigit(char) {
-									return s[i:]
-								}
-							}
-							return ""
-						}
 						if len(fields) > 0 {
 							callsign := fields[0]
 							// Check if callsign matches, if not check if the numbers match
 							_, ok := client.State.GetTrackByCallsign(av.ADSBCallsign(callsign))
 							if !ok {
-								// trim until first number
-								callsign = trimFunc(callsign)
+								// Trim until first digit for suffix matching
+								callsign = strings.TrimLeftFunc(callsign, func(r rune) bool { return !unicode.IsDigit(r) })
 								// Only try suffix matching if we have something to match
 								if callsign != "" {
 									matching := tracksFromSuffix(client.State.Tracks, callsign)
@@ -257,14 +253,10 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 							if len(fields) > 1 && callsign != "" {
 								cmd := strings.Join(fields[1:], " ")
 								client.RunAircraftCommands(av.ADSBCallsign(callsign), cmd, false, false, nil)
-								lg.Infof("Command: %v Callsign: %v", cmd, callsign)
-								client.LastCommand = callsign + " " + cmd
+								lg.Infof("STT command: %s %s", callsign, cmd)
+								client.SetLastCommand(callsign + " " + cmd)
 							}
-							client.PTTRecording.Store(false)
-							lg.Infof("Push-to-talk: Transcription: %s\n", text)
-
 						}
-
 					}(data)
 				}
 			} else if !p.IsAudioRecording() {

@@ -783,13 +783,13 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 		if c.PTTRecording.Load() {
 			imgui.TextColored(imgui.Vec4{1, 0, 0, 1}, "Recording...")
 		} else {
-			if c.LastTranscription != "" {
+			if transcription := c.GetLastTranscription(); transcription != "" {
 				imgui.Text("Last transcription:")
-				imgui.TextWrapped(c.LastTranscription)
+				imgui.TextWrapped(transcription)
 			}
-			if c.LastCommand != "" {
+			if lastCmd := c.GetLastCommand(); lastCmd != "" {
 				imgui.Text("Last command:")
-				imgui.TextWrapped(c.LastCommand)
+				imgui.TextWrapped(lastCmd)
 			}
 		}
 	}

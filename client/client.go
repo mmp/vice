@@ -692,3 +692,28 @@ func BroadcastMessage(hostname, msg, password string, lg *log.Logger) {
 		lg.Errorf("broadcast error: %v", err)
 	}
 }
+
+// Thread-safe access to STT fields
+func (c *ControlClient) SetLastTranscription(s string) {
+	c.mu.Lock()
+	c.LastTranscription = s
+	c.mu.Unlock()
+}
+
+func (c *ControlClient) GetLastTranscription() string {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.LastTranscription
+}
+
+func (c *ControlClient) SetLastCommand(s string) {
+	c.mu.Lock()
+	c.LastCommand = s
+	c.mu.Unlock()
+}
+
+func (c *ControlClient) GetLastCommand() string {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.LastCommand
+}
