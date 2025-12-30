@@ -5,86 +5,11 @@
 package math
 
 import (
-	gomath "math"
+	"math"
 	"testing"
 
 	"github.com/mmp/vice/rand"
 )
-
-func TestCompass(t *testing.T) {
-	type ch struct {
-		h     float32
-		dir   string
-		short string
-		hour  int
-	}
-
-	for _, c := range []ch{ch{0, "North", "N", 12}, ch{22, "North", "N", 1}, ch{338, "North", "N", 11},
-		ch{337, "Northwest", "NW", 11}, ch{95, "East", "E", 3}, ch{47, "Northeast", "NE", 2},
-		ch{140, "Southeast", "SE", 5}, ch{170, "South", "S", 6}, ch{205, "Southwest", "SW", 7},
-		ch{260, "West", "W", 9}} {
-		if Compass(c.h) != c.dir {
-			t.Errorf("compass gave %s for %f; expected %s", Compass(c.h), c.h, c.dir)
-		}
-		if ShortCompass(c.h) != c.short {
-			t.Errorf("shortCompass gave %s for %f; expected %s", ShortCompass(c.h), c.h, c.short)
-		}
-		if HeadingAsHour(c.h) != c.hour {
-			t.Errorf("headingAsHour gave %d for %f; expected %d", HeadingAsHour(c.h), c.h, c.hour)
-		}
-	}
-}
-
-func TestHeadingDifference(t *testing.T) {
-	type hd struct {
-		a, b, d float32
-	}
-
-	for _, h := range []hd{hd{10, 90, 80}, hd{350, 12, 22}, hd{340, 120, 140}, hd{-90, 80, 170},
-		hd{40, 181, 141}, hd{-170, 160, 30}, hd{-120, -150, 30}} {
-		if HeadingDifference(h.a, h.b) != h.d {
-			t.Errorf("headingDifference(%f, %f) -> %f, expected %f", h.a, h.b,
-				HeadingDifference(h.a, h.b), h.d)
-		}
-		if HeadingDifference(h.b, h.a) != h.d {
-			t.Errorf("headingDifference(%f, %f) -> %f, expected %f", h.b, h.a,
-				HeadingDifference(h.b, h.a), h.d)
-		}
-	}
-}
-
-func TestOppositeHeading(t *testing.T) {
-	h := [][2]float32{{90, 270}, {1, 181}, {2, 182}, {350, 170}}
-	for _, pair := range h {
-		if OppositeHeading(pair[0]) != pair[1] {
-			t.Errorf("opposite heading error: %f -> %f, expected %f",
-				pair[0], OppositeHeading(pair[0]), pair[1])
-		}
-		if OppositeHeading(pair[1]) != pair[0] {
-			t.Errorf("opposite heading error: %f -> %f, expected %f",
-				pair[1], OppositeHeading(pair[1]), pair[0])
-		}
-	}
-}
-
-func TestNormalizeHeading(t *testing.T) {
-	h := [][2]float32{{90, 90}, {360, 0}, {-10, 350}, {380, 20}, {-380, 340}}
-	for _, pair := range h {
-		if NormalizeHeading(pair[0]) != pair[1] {
-			t.Errorf("normalize heading error: %f -> %f, expected %f",
-				pair[0], NormalizeHeading(pair[0]), pair[1])
-		}
-	}
-}
-
-func TestHeadingSignedTurn(t *testing.T) {
-	turns := [][3]float32{{10, 90, 80}, {10, 350, -20}, {120, 10, -110}, {120, 270, 150}}
-	for _, turn := range turns {
-		if result := HeadingSignedTurn(turn[0], turn[1]); result != turn[2] {
-			t.Errorf("HeadingSignedTurn(%f, %f) = %f; expected %f", turn[0], turn[1], result, turn[2])
-		}
-	}
-}
 
 func TestParseLatLong(t *testing.T) {
 	type LL struct {
@@ -328,8 +253,8 @@ func TestSegmentSegmentIntersect(t *testing.T) {
 
 func TestSignBit(t *testing.T) {
 	for _, v := range []float32{-1, 0, -0, 1, 55, -125.2} {
-		if SignBit(v) != gomath.Signbit(float64(v)) {
-			t.Errorf("%f: got %v for sign bit; expected %v", v, SignBit(v), gomath.Signbit(float64(v)))
+		if SignBit(v) != math.Signbit(float64(v)) {
+			t.Errorf("%f: got %v for sign bit; expected %v", v, SignBit(v), math.Signbit(float64(v)))
 		}
 	}
 }

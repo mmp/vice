@@ -5,6 +5,7 @@
 package stars
 
 import (
+	"bytes"
 	"fmt"
 	"maps"
 	"slices"
@@ -16,6 +17,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
+	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
@@ -27,47 +29,42 @@ import (
 // drawSystemList handles the formatting details in a single place.
 type ListFormatter struct {
 	Title      string
+	FrameTitle string
 	Lines      int
 	Entries    int
 	FormatLine func(idx int, sb *strings.Builder)
 }
 
-// drawSystemList is a helper function that handles the common pattern of drawing lists
-// with title, optional "MORE" indicator, and formatted lines.
-func drawSystemList(pw [2]float32, style renderer.TextStyle, td *renderer.TextDrawBuilder, formatter ListFormatter) {
-	// To avoid allocations when it's just the title, do it directly,
-	// without the strings.Builder.
+// drawSystemList draws a list with title, optional "MORE" indicator, and formatted lines.
+// Returns the bounds of the drawn list.
+func (sp *STARSPane) drawSystemList(ctx *panes.Context, paneExtent math.Extent2D, pos *[2]float32,
+	style renderer.TextStyle, td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder, formatter ListFormatter) math.Extent2D {
+	var allText strings.Builder
 	if formatter.Title != "" {
-		pw = td.AddText(formatter.Title+"\n", pw, style)
+		allText.WriteString(formatter.Title + "\n")
 	}
-
-	var text strings.Builder
 	if formatter.Entries > formatter.Lines && formatter.Lines > 0 {
-		text.WriteString(fmt.Sprintf("MORE: %d/%d\n", formatter.Lines, formatter.Entries))
+		allText.WriteString(fmt.Sprintf("MORE: %d/%d\n", formatter.Lines, formatter.Entries))
 	}
-
-	for i := 0; i < min(formatter.Entries, formatter.Lines); i++ {
-		l := text.Len()
-		formatter.FormatLine(i, &text)
-		// Only add newline if something was written
-		if text.Len() > l {
-			text.WriteByte('\n')
+	for i := range min(formatter.Entries, formatter.Lines) {
+		l := allText.Len()
+		formatter.FormatLine(i, &allText)
+		if allText.Len() > l {
+			allText.WriteByte('\n')
 		}
 	}
 
-	if text.Len() > 0 {
-		td.AddText(rewriteDelta(text.String()), pw, style)
-	}
+	return sp.drawListText(ctx, paneExtent, pos, rewriteDelta(allText.String()), style, td, formatter.FrameTitle, ld)
 }
 
 // formatListEntry formats a single entry of a STARS system list based on
 // the provided format string, which uses []-delimited specifiers to
 // specify entries in a line; characters outside of brackets are passed
 // through unchanged. A number of built-in specifiers are available to show
-// values from the STARSFlightPlan; additional custom specifiers can be
+// values from the NASFlightPlan; additional custom specifiers can be
 // provided in custom for items that are not in the flight plan and are
 // limited to specific list types.
-func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.STARSFlightPlan,
+func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.NASFlightPlan,
 	custom map[string]func() string) string {
 	rewriteFixForList := func(fix string) string {
 		if spt, ok := sp.significantPoints[fix]; ok && spt.ShortName != "" {
@@ -79,11 +76,11 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 		return fmt.Sprintf("%3s", fix)
 	}
 
-	formatters := map[string]func(*sim.STARSFlightPlan) string{
-		"ACID": func(fp *sim.STARSFlightPlan) string {
+	formatters := map[string]func(*sim.NASFlightPlan) string{
+		"ACID": func(fp *sim.NASFlightPlan) string {
 			return fmt.Sprintf("%-7s", string(fp.ACID))
 		},
-		"ACID_MSAWCA": func(fp *sim.STARSFlightPlan) string {
+		"ACID_MSAWCA": func(fp *sim.NASFlightPlan) string {
 			s := string(fp.ACID)
 			if fp.DisableMSAW {
 				if fp.DisableCA {
@@ -96,10 +93,10 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 			}
 			return fmt.Sprintf("%-8s", s)
 		},
-		"ACTYPE": func(fp *sim.STARSFlightPlan) string {
+		"ACTYPE": func(fp *sim.NASFlightPlan) string {
 			return fmt.Sprintf("%4s", fp.AircraftType)
 		},
-		"BEACON": func(fp *sim.STARSFlightPlan) string {
+		"BEACON": func(fp *sim.NASFlightPlan) string {
 			haveCode := fp.Rules == av.FlightRulesIFR || ctx.Now.Sub(sp.VFRFPFirstSeen[fp.ACID]) > 2*time.Second
 			if haveCode {
 				return fp.AssignedSquawk.String()
@@ -107,22 +104,22 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 				return "VFR "
 			}
 		},
-		"CWT": func(fp *sim.STARSFlightPlan) string {
+		"CWT": func(fp *sim.NASFlightPlan) string {
 			return util.Select(fp.CWTCategory != "", string(fp.CWTCategory[:1]), " ")
 		},
-		"DEP_EXIT_FIX": func(fp *sim.STARSFlightPlan) string {
+		"DEP_EXIT_FIX": func(fp *sim.NASFlightPlan) string {
 			if fp.TypeOfFlight == av.FlightTypeDeparture {
 				return rewriteFixForList(fp.ExitFix)
 			}
 			return "   "
 		},
-		"ENTRY_FIX": func(fp *sim.STARSFlightPlan) string {
+		"ENTRY_FIX": func(fp *sim.NASFlightPlan) string {
 			return rewriteFixForList(fp.EntryFix)
 		},
-		"EXIT_FIX": func(fp *sim.STARSFlightPlan) string {
+		"EXIT_FIX": func(fp *sim.NASFlightPlan) string {
 			return rewriteFixForList(fp.ExitFix)
 		},
-		"EXIT_GATE": func(fp *sim.STARSFlightPlan) string {
+		"EXIT_GATE": func(fp *sim.NASFlightPlan) string {
 			exit := rewriteFixForList(fp.ExitFix)
 			if ctx.FacilityAdaptation.AllowLongScratchpad {
 				return exit + fmt.Sprintf("%03d", fp.RequestedAltitude/100)
@@ -130,19 +127,19 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 				return exit + fmt.Sprintf("%02d", fp.RequestedAltitude/1000)
 			}
 		},
-		"INDEX": func(fp *sim.STARSFlightPlan) string {
+		"INDEX": func(fp *sim.NASFlightPlan) string {
 			if fp.ListIndex == sim.UnsetSTARSListIndex {
 				return "  "
 			}
 			return fmt.Sprintf("%2d", fp.ListIndex)
 		},
-		"NUMAC": func(fp *sim.STARSFlightPlan) string {
+		"NUMAC": func(fp *sim.NASFlightPlan) string {
 			return strconv.Itoa(fp.AircraftCount)
 		},
-		"OWNER": func(fp *sim.STARSFlightPlan) string {
-			return fmt.Sprintf("%3s", fp.TrackingController)
+		"OWNER": func(fp *sim.NASFlightPlan) string {
+			return fmt.Sprintf("%3s", ctx.ResolveController(fp.TrackingController))
 		},
-		"REQ_ALT": func(fp *sim.STARSFlightPlan) string {
+		"REQ_ALT": func(fp *sim.NASFlightPlan) string {
 			return fmt.Sprintf("%03d", fp.RequestedAltitude/100)
 		},
 	}
@@ -179,8 +176,7 @@ func (sp *STARSPane) formatListEntry(ctx *panes.Context, format string, fp *sim.
 	return result.String()
 }
 
-func (sp *STARSPane) drawSystemLists(ctx *panes.Context, tracks []sim.Track, paneExtent math.Extent2D,
-	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawSystemLists(ctx *panes.Context, paneExtent math.Extent2D, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	transforms.LoadWindowViewingMatrices(cb)
@@ -192,43 +188,149 @@ func (sp *STARSPane) drawSystemLists(ctx *panes.Context, tracks []sim.Track, pan
 
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 
 	normalizedToWindow := func(p [2]float32) [2]float32 {
 		return [2]float32{p[0] * paneExtent.Width(), p[1] * paneExtent.Height()}
 	}
 
 	previewAreaColor := ps.Brightness.FullDatablocks.ScaleRGB(STARSListColor)
-	if ctx.Client.RadioIsActive() && (sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) {
+	if ctx.Client.RadioIsActive() && (sp.commandMode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock) &&
+		!ctx.TCWIsPrivileged(ctx.UserTCW) {
 		previewAreaColor = ps.Brightness.FullDatablocks.ScaleRGB(STARSTextAlertColor)
 	}
 
-	sp.drawPreviewArea(ctx, normalizedToWindow(ps.PreviewAreaPosition), previewAreaColor, td)
-
-	sp.drawSSAList(ctx, normalizedToWindow(ps.SSAList.Position), tracks, listStyle, td, transforms, cb)
-	sp.drawVFRList(ctx, normalizedToWindow(ps.VFRList.Position), tracks, listStyle, td)
-	sp.drawTABList(ctx, normalizedToWindow(ps.TABList.Position), tracks, listStyle, td)
-	sp.drawAlertList(ctx, normalizedToWindow(ps.AlertList.Position), tracks, listStyle, td)
-	sp.drawCoastList(ctx, normalizedToWindow(ps.CoastList.Position), listStyle, td)
-	sp.drawMapsList(ctx, normalizedToWindow(ps.VideoMapsList.Position), listStyle, td)
-	sp.drawRestrictionAreasList(ctx, normalizedToWindow(ps.RestrictionAreaList.Position), listStyle, td)
-	sp.drawCRDAStatusList(ctx, normalizedToWindow(ps.CRDAStatusList.Position), tracks, listStyle, td)
-	sp.drawMCISuppressionList(ctx, normalizedToWindow(ps.MCISuppressionList.Position), tracks, listStyle, td)
+	// Collect bounds from all lists for overlap detection
+	allBounds := []math.Extent2D{
+		sp.drawPreviewArea(ctx, paneExtent, previewAreaColor, td, ld),
+		sp.drawSSAList(ctx, normalizedToWindow(ps.SSAList.Position), listStyle, td, transforms, ld, paneExtent, cb),
+		sp.drawVFRList(ctx, paneExtent, listStyle, td, ld),
+		sp.drawTABList(ctx, paneExtent, listStyle, td, ld),
+		sp.drawAlertList(ctx, paneExtent, listStyle, td, ld),
+		sp.drawCoastList(ctx, paneExtent, listStyle, td, ld),
+		sp.drawMapsList(ctx, paneExtent, listStyle, td, ld),
+		sp.drawRestrictionAreasList(ctx, paneExtent, listStyle, td, ld),
+		sp.drawCRDAStatusList(ctx, paneExtent, listStyle, td, ld),
+		sp.drawMCISuppressionList(ctx, paneExtent, listStyle, td, ld),
+	}
 
 	towerListAirports := ctx.Client.TowerListAirports()
-	for i, tl := range ps.TowerLists {
-		if tl.Visible && i < len(towerListAirports) {
-			sp.drawTowerList(ctx, normalizedToWindow(tl.Position), towerListAirports[i], tl.Lines,
-				tracks, listStyle, td)
+	for i := range ps.TowerLists {
+		if ps.TowerLists[i].Visible && i < len(towerListAirports) {
+			allBounds = append(allBounds, sp.drawTowerList(ctx, paneExtent, towerListAirports[i], i, listStyle, td, ld))
 		}
 	}
 
-	sp.drawSignOnList(ctx, normalizedToWindow(ps.SignOnList.Position), listStyle, td)
-	sp.drawCoordinationLists(ctx, paneExtent, transforms, cb)
+	allBounds = append(allBounds, sp.drawSignOnList(ctx, paneExtent, listStyle, td, ld))
+	allBounds = append(allBounds, sp.drawCoordinationLists(ctx, paneExtent, transforms, td, ld)...)
 
 	td.GenerateCommands(cb)
+
+	// Draw green frames around overlapping lists (only when not actively moving a list)
+	if sp.movingList == "" && ctx.Mouse != nil && !ctx.Mouse.Down[platform.MouseButtonTertiary] {
+		for i, b1 := range allBounds {
+			if b1.Width() <= 0 {
+				continue
+			}
+			for _, b2 := range allBounds[i+1:] {
+				if b2.Width() <= 0 {
+					continue
+				}
+				if math.Overlaps(b1, b2) {
+					sp.drawListFrameColor(ctx, b1, STARSListColor, ld)
+					sp.drawListFrameColor(ctx, b2, STARSListColor, ld)
+				}
+			}
+		}
+	}
+
+	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawPreviewArea(ctx *panes.Context, pw [2]float32, color renderer.RGB, td *renderer.TextDrawBuilder) {
+func (sp *STARSPane) drawListFrame(ctx *panes.Context, bounds math.Extent2D, title string,
+	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) {
+	if bounds.Width() <= 0 {
+		return
+	}
+
+	sp.drawListFrameColor(ctx, bounds, STARSListColor, ld)
+
+	// Draw title above the frame in a smaller font
+	ps := sp.currentPrefs()
+	font := sp.systemFont(ctx, max(0, ps.CharSize.Lists-1))
+	style := renderer.TextStyle{Font: font, Color: ps.Brightness.Lists.ScaleRGB(STARSListColor)}
+	td.AddText(title, [2]float32{bounds.P0[0], bounds.P1[1] + float32(font.Size)}, style)
+}
+
+func (sp *STARSPane) drawListFrameColor(ctx *panes.Context, bounds math.Extent2D, color renderer.RGB,
+	ld *renderer.ColoredLinesDrawBuilder) {
+	ps := sp.currentPrefs()
+	c := ps.Brightness.Lists.ScaleRGB(color)
+	ld.AddLineLoop(c, [][2]float32{bounds.P0, {bounds.P1[0], bounds.P0[1]}, bounds.P1, {bounds.P0[0], bounds.P1[1]}})
+}
+
+func (sp *STARSPane) handleListDrag(ctx *panes.Context, bounds math.Extent2D, pos *[2]float32, listId string, paneExtent math.Extent2D,
+	ld *renderer.ColoredLinesDrawBuilder) {
+	if ctx.Mouse == nil {
+		return
+	}
+
+	// First middle click inside this list's bounds starts moving
+	if sp.movingList == "" && ctx.Mouse.Clicked[platform.MouseButtonTertiary] && bounds.Inside(ctx.Mouse.Pos) {
+		sp.movingList = listId
+		sp.movingListBounds = bounds
+		sp.movingListOffset = math.Sub2f(ctx.Mouse.Pos, bounds.P0)
+	}
+
+	if sp.movingList == listId {
+		// Draw green frame at original location
+		sp.drawListFrameColor(ctx, sp.movingListBounds, STARSListColor, ld)
+
+		// Draw white frame at current cursor position
+		cursorPos := ctx.Mouse.Pos
+		offset := sp.movingListOffset
+		size := [2]float32{sp.movingListBounds.Width(), sp.movingListBounds.Height()}
+		movedBounds := math.Extent2D{
+			P0: math.Sub2f(cursorPos, offset),
+			P1: math.Add2f(math.Sub2f(cursorPos, offset), size),
+		}
+		sp.drawListFrameColor(ctx, movedBounds, renderer.RGB{1, 1, 1}, ld)
+
+		// Second middle click outside original bounds finishes the move
+		if ctx.Mouse.Clicked[platform.MouseButtonTertiary] && !sp.movingListBounds.Inside(ctx.Mouse.Pos) {
+			delta := math.Sub2f(movedBounds.P0, sp.movingListBounds.P0)
+			pos[0] += delta[0] / paneExtent.Width()
+			pos[1] += delta[1] / paneExtent.Height()
+			sp.movingList = ""
+		}
+	}
+}
+
+func (sp *STARSPane) drawListText(ctx *panes.Context, paneExtent math.Extent2D, pos *[2]float32,
+	text string, style renderer.TextStyle, td *renderer.TextDrawBuilder,
+	frameTitle string, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
+	if text == "" {
+		return math.Extent2D{}
+	}
+
+	pw := [2]float32{pos[0] * paneExtent.Width(), pos[1] * paneExtent.Height()}
+	w, h := style.Font.BoundText(text, 0)
+	td.AddText(text, pw, style)
+
+	bounds := math.Extent2D{
+		P0: [2]float32{pw[0], pw[1] - float32(h)},
+		P1: [2]float32{pw[0] + float32(w), pw[1]},
+	}
+	sp.handleListDrag(ctx, bounds, pos, frameTitle, paneExtent, ld)
+	if sp.showListFrames {
+		sp.drawListFrame(ctx, bounds, frameTitle, td, ld)
+	}
+	return bounds
+}
+
+func (sp *STARSPane) drawPreviewArea(ctx *panes.Context, paneExtent math.Extent2D, color renderer.RGB,
+	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	var text strings.Builder
 	text.WriteString(sp.previewAreaOutput)
 	text.WriteByte('\n')
@@ -249,19 +351,21 @@ func (sp *STARSPane) drawPreviewArea(ctx *panes.Context, pw [2]float32, color re
 
 	text.WriteString(strings.Join(strings.Fields(sp.previewAreaInput), "\n")) // spaces are rendered as newlines
 
-	if text.Len() > 0 {
-		ps := sp.currentPrefs()
-		style := renderer.TextStyle{
-			Font:  sp.systemFont(ctx, ps.CharSize.Lists),
-			Color: color,
-		}
-		td.AddText(rewriteDelta(text.String()), pw, style)
+	ps := sp.currentPrefs()
+	style := renderer.TextStyle{
+		Font:  sp.systemFont(ctx, ps.CharSize.Lists),
+		Color: color,
 	}
+	return sp.drawListText(ctx, paneExtent, &ps.PreviewAreaPosition, rewriteDelta(text.String()),
+		style, td, "PREVIEW AREA (P)", ld)
 }
 
-func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, listStyle renderer.TextStyle,
-	td *renderer.TextDrawBuilder, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle renderer.TextStyle, td *renderer.TextDrawBuilder,
+	transforms radar.ScopeTransformations, ld *renderer.ColoredLinesDrawBuilder, paneExtent math.Extent2D, cb *renderer.CommandBuffer) math.Extent2D {
 	ps := sp.currentPrefs()
+	startY := pw[1]
+	startX := pw[0]
+	maxX := pw[0]
 
 	font := sp.systemFont(ctx, ps.CharSize.Lists)
 	alertStyle := renderer.TextStyle{
@@ -283,6 +387,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 
 	x := pw[0]
 	newline := func() {
+		maxX = max(maxX, pw[0])
 		pw[0] = x
 		pw[1] -= float32(font.Size)
 	}
@@ -290,8 +395,6 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 	// Inverted red triangle and green box...
 	trid := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(trid)
-	ld := renderer.GetColoredLinesDrawBuilder()
-	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	scale := ctx.DrawPixelScale
 
 	pIndicator := math.Add2f(pw, [2]float32{5 * scale, 0})
@@ -337,7 +440,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 			text += ctx.Client.CurrentTime().UTC().Format("1504/05 ")
 		}
 		if filter.All || filter.Altimeter {
-			if metar := ctx.Client.State.WX.GetMETAR(ctx.Client.State.PrimaryAirport); metar != nil {
+			if metar, ok := ctx.Client.State.METAR[ctx.Client.State.PrimaryAirport]; ok {
 				text += fmt.Sprintf("%4.2f", metar.Altimeter_inHg())
 			}
 		}
@@ -346,24 +449,23 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 	}
 
 	// ATIS/GI text. (Note that per 4-44 filter.All does not apply to GI text.)
-	if filter.Text.Main && (ps.ATIS != "" || ps.GIText[0] != "") {
-		pw = td.AddText(rewriteDelta(strings.Join([]string{ps.ATIS, ps.GIText[0]}, " ")), pw, listStyle)
-		newline()
-	}
-	for i := 1; i < len(ps.GIText); i++ {
-		if filter.Text.GI[i] && ps.GIText[i] != "" {
-			pw = td.AddText(rewriteDelta(ps.GIText[i]), pw, listStyle)
+	for i := range ps.GIText {
+		if filter.GIText[i] && (ps.ATIS[i] != "" || ps.GIText[i] != "") {
+			pw = td.AddText(ps.ATIS[i]+" "+rewriteDelta(ps.GIText[i]), pw, listStyle)
 			newline()
 		}
 	}
 
-	if filter.All || filter.Status || filter.Radar {
+	if filter.All || filter.Status || filter.ConfigPlan || filter.Radar {
 		if filter.All || filter.Status {
 			if ctx.Client.Connected() {
 				pw = td.AddText("OK/OK/NA ", pw, listStyle)
 			} else {
 				pw = td.AddText("NA/NA/NA ", pw, alertStyle)
 			}
+		}
+		if filter.All || filter.ConfigPlan {
+			pw = td.AddText(ctx.Client.State.ConfigurationId+" ", pw, listStyle)
 		}
 		if filter.All || filter.Radar {
 			pw = td.AddText(sp.radarSiteId(ctx.FacilityAdaptation.RadarSites), pw, listStyle)
@@ -394,9 +496,8 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 
 	if filter.All || filter.SpecialPurposeCodes {
 		// Active special purpose codes.
-		// those.
 		codes := make(map[string]interface{})
-		for _, trk := range tracks {
+		for _, trk := range sp.visibleTracks {
 			if ok, code := trk.Squawk.IsSPC(); ok {
 				codes[code] = nil
 			} else if trk.IsAssociated() && trk.FlightPlan.SPCOverride != "" {
@@ -434,6 +535,9 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 		if ps.CRDA.Disabled {
 			disabled = append(disabled, "CRDA")
 		}
+		if !ctx.Client.State.ATPAEnabled {
+			disabled = append(disabled, "INTRAIL")
+		}
 		// TODO: others? 2-84
 		if len(disabled) > 0 {
 			pw = td.AddText(strings.Join(disabled, " "), pw, listStyle)
@@ -441,29 +545,53 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 		}
 	}
 
-	if filter.All || filter.Intrail {
-		// We don't have any way to disable them, so this is easy..
-		pw = td.AddText("INTRAIL ON", pw, listStyle)
-		newline()
+	// For lines >32 characters, chop to 32 characters and then find the
+	// last space; replace it with a '+' and then chop the rest.
+	ssaChopLong := func(s string) string {
+		if len(s) <= 32 {
+			return s
+		}
+		b := []byte(s[:32])
+		if idx := bytes.LastIndexByte(b, ' '); idx != -1 {
+			b[idx] = '+'
+			b = b[:idx+1]
+		}
+		return string(b)
 	}
-	if filter.All || filter.Intrail25 {
-		var vols []string
+
+	if (filter.All || filter.Intrail || filter.Intrail25) && ctx.Client.State.ATPAEnabled { // 8-55 / 2-78
+		var off, on, twoFive []string
 		for _, r := range ctx.Client.State.ArrivalRunways {
 			if ap, ok := ctx.Client.State.Airports[r.Airport]; ok {
-				if vol, ok := ap.ATPAVolumes[r.Runway]; ok && vol.Enable25nmApproach {
-					vols = append(vols, vol.Id) // TODO:include airport?
+				if vol, ok := ap.ATPAVolumes[r.Runway]; ok {
+					if ctx.Client.State.IsATPAVolumeDisabled(vol.Id) {
+						off = append(off, vol.Id)
+					} else {
+						on = append(on, vol.Id)
+						if vol.Enable25nmApproach && ctx.Client.State.IsATPAVolume25nmEnabled(vol.Id) {
+							twoFive = append(twoFive, vol.Id)
+						}
+					}
 				}
 			}
 		}
-		if len(vols) > 0 {
-			v := strings.Join(vols, " ")
-			if len(v) > 16 { // 32 - "INTRAIL 2.5 ON: " == 16
-				b := []byte(v)
-				b[15] = '+'
-				v = string(b)
+
+		if filter.All || filter.Intrail {
+			if len(off) > 0 {
+				text := ssaChopLong("INTRAIL OFF: " + strings.Join(off, " "))
+				pw = td.AddText(text, pw, listStyle)
+				newline()
+			} else if len(on) > 0 {
+				pw = td.AddText("INTRAIL ON", pw, listStyle)
+				newline()
 			}
-			pw = td.AddText("INTRAIL 2.5 ON: "+v, pw, listStyle)
-			newline()
+		}
+		if filter.All || filter.Intrail25 {
+			if len(twoFive) > 0 {
+				text := ssaChopLong("INTRAIL 2.5 ON: " + strings.Join(twoFive, " "))
+				pw = td.AddText(text, pw, listStyle)
+				newline()
+			}
 		}
 	}
 
@@ -524,7 +652,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 
 		var altimeters []string
 		for _, ap := range airports {
-			if metar := ctx.Client.State.WX.GetMETAR(ap); metar != nil {
+			if metar, ok := ctx.Client.State.METAR[ap]; ok {
 				altimeters = append(altimeters, stripK(ap)+" "+fmt.Sprintf("%4.2fA", metar.Altimeter_inHg())) // 2-79: A -> automatic
 			}
 		}
@@ -546,7 +674,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 		}
 	}
 
-	if (filter.All || filter.QuickLookPositions) && (ps.QuickLookAll || len(ps.QuickLookPositions) > 0) {
+	if (filter.All || filter.QuickLookPositions) && (ps.QuickLookAll || len(ps.QuickLookTCPs) > 0) {
 		if ps.QuickLookAll {
 			if ps.QuickLookAllIsPlus {
 				pw = td.AddText("QL: ALL+", pw, listStyle)
@@ -554,10 +682,63 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 				pw = td.AddText("QL: ALL", pw, listStyle)
 			}
 		} else {
-			pos := util.MapSlice(ps.QuickLookPositions,
-				func(q QuickLookPosition) string { return q.String() })
-			pw = td.AddText("QL: "+strings.Join(pos, " "), pw, listStyle)
+			pw = td.AddText("QL: "+sp.qlPositionsString(), pw, listStyle)
 		}
+		newline()
+	}
+
+	if filter.All || filter.Consolidation {
+		// Display consolidation status per STARS manual 2-81
+		// Format: TCW CON: primary secondary secondary...
+		// Only show if the TCW actually owns positions (has a primary)
+		var tcps []string
+		if cons := ctx.Client.State.GetUserConsolidation(); cons != nil {
+			if cons.PrimaryTCP != "" {
+				tcps = append(tcps, string(cons.PrimaryTCP))
+				for _, sec := range cons.SecondaryTCPs {
+					tcps = append(tcps, string(sec.TCP))
+				}
+			}
+		}
+
+		// Do we still own any tracks for a TCP that went to another TCW via basic consolidation?
+		othersBasicTCPs := make(map[sim.TCP]struct{})
+		for tcw, cons := range ctx.Client.State.CurrentConsolidation {
+			if tcw == ctx.UserTCW {
+				continue
+			}
+			for _, sec := range cons.SecondaryTCPs {
+				if sec.Type == sim.ConsolidationBasic {
+					othersBasicTCPs[sec.TCP] = struct{}{}
+				}
+			}
+		}
+
+		ourOwnedBasicTCPs := make(map[sim.TCP]struct{})
+		for _, trk := range sp.visibleTracks {
+			if trk.IsUnassociated() {
+				continue
+			}
+			fp := trk.FlightPlan
+			if fp.OwningTCW != ctx.UserTCW {
+				continue
+			}
+			if _, ok := othersBasicTCPs[fp.TrackingController]; ok {
+				ourOwnedBasicTCPs[fp.TrackingController] = struct{}{}
+			}
+		}
+
+		ourTCPs := util.SortedMapKeys(ourOwnedBasicTCPs)
+		tcps = append(tcps, util.MapSlice(ourTCPs, func(tcp sim.TCP) string { return "*" + string(tcp) })...)
+
+		if len(tcps) > 10 {
+			// 2-81 says a plus sign is added to the end; presumably it's also truncated?
+			tcps = tcps[:10]
+			tcps[9] = tcps[9] + "+"
+		}
+
+		text := string(ctx.UserTCW) + " CON: " + strings.Join(tcps, " ")
+		pw = td.AddText(text, pw, listStyle)
 		newline()
 	}
 
@@ -584,6 +765,17 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, tracks []sim
 			newline()
 		}
 	}
+
+	maxX = max(maxX, pw[0])
+	bounds := math.Extent2D{
+		P0: [2]float32{startX, pw[1]},
+		P1: [2]float32{maxX, startY},
+	}
+	sp.handleListDrag(ctx, bounds, &ps.SSAList.Position, "ssa", paneExtent, ld)
+	if sp.showListFrames {
+		sp.drawListFrame(ctx, bounds, "SSA (S)", td, ld)
+	}
+	return bounds
 }
 
 func getDuplicateBeaconCodes(ctx *panes.Context) map[av.Squawk]interface{} {
@@ -609,15 +801,15 @@ func getDuplicateBeaconCodes(ctx *panes.Context) map[av.Squawk]interface{} {
 	return dupes
 }
 
-func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
-	td *renderer.TextDrawBuilder) {
+func (sp *STARSPane) drawVFRList(ctx *panes.Context, paneExtent math.Extent2D, style renderer.TextStyle,
+	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	ps := sp.currentPrefs()
 	if !ps.VFRList.Visible {
-		return
+		return math.Extent2D{}
 	}
 
 	vfr := util.FilterSlice(ctx.Client.State.UnassociatedFlightPlans,
-		func(fp *sim.STARSFlightPlan) bool {
+		func(fp *sim.NASFlightPlan) bool {
 			// Only include NAS VFR flight plans.
 			return fp.Rules != av.FlightRulesIFR && fp.Location.IsZero() && fp.PlanType == sim.LocalEnroute
 		})
@@ -627,14 +819,15 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 			sp.VFRFPFirstSeen[fp.ACID] = ctx.Now
 		}
 	}
-	slices.SortFunc(vfr, func(a, b *sim.STARSFlightPlan) int {
+	slices.SortFunc(vfr, func(a, b *sim.NASFlightPlan) int {
 		return sp.VFRFPFirstSeen[a.ACID].Compare(sp.VFRFPFirstSeen[b.ACID])
 	})
 
-	drawSystemList(pw, style, td, ListFormatter{
-		Title:   "VFR LIST",
-		Lines:   ps.VFRList.Lines,
-		Entries: len(vfr),
+	return sp.drawSystemList(ctx, paneExtent, &ps.VFRList.Position, style, td, ld, ListFormatter{
+		Title:      "VFR LIST",
+		FrameTitle: "VFR LIST (TV)",
+		Lines:      ps.VFRList.Lines,
+		Entries:    len(vfr),
 		FormatLine: func(idx int, sb *strings.Builder) {
 			fp := vfr[idx]
 			format := ctx.FacilityAdaptation.VFRList.Format
@@ -644,15 +837,15 @@ func (sp *STARSPane) drawVFRList(ctx *panes.Context, pw [2]float32, tracks []sim
 	})
 }
 
-func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
-	td *renderer.TextDrawBuilder) {
+func (sp *STARSPane) drawTABList(ctx *panes.Context, paneExtent math.Extent2D, style renderer.TextStyle,
+	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	ps := sp.currentPrefs()
 	if !ps.TABList.Visible {
-		return
+		return math.Extent2D{}
 	}
 
 	plans := util.FilterSlice(ctx.Client.State.UnassociatedFlightPlans,
-		func(fp *sim.STARSFlightPlan) bool {
+		func(fp *sim.NASFlightPlan) bool {
 			if seen, ok := sp.VFRFPFirstSeen[fp.ACID]; ok {
 				// If it's a VFR still waiting for a NAS code, don't show it yet.
 				if ctx.Now.Sub(seen) < 2*time.Second {
@@ -665,8 +858,7 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 				return false
 			}
 
-			// TODO: handle consolidation, etc.
-			if fp.TrackingController == ctx.UserTCP {
+			if ctx.UserOwnsFlightPlan(fp) {
 				return true
 			}
 
@@ -678,21 +870,21 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 				return false
 			}
 
-			ctrl := ctx.Client.State.ResolveController(fp.InboundHandoffController)
-			return ctrl == ctx.UserTCP
+			return ctx.UserControlsPosition(fp.InboundHandoffController)
 		})
 
 	// 2-92: default sort is by ACID
-	slices.SortFunc(plans, func(a, b *sim.STARSFlightPlan) int {
+	slices.SortFunc(plans, func(a, b *sim.NASFlightPlan) int {
 		return strings.Compare(string(a.ACID), string(b.ACID))
 	})
 
 	dupes := getDuplicateBeaconCodes(ctx)
 
-	drawSystemList(pw, style, td, ListFormatter{
-		Title:   "FLIGHT PLAN",
-		Lines:   ps.TABList.Lines,
-		Entries: len(plans),
+	return sp.drawSystemList(ctx, paneExtent, &ps.TABList.Position, style, td, ld, ListFormatter{
+		Title:      "FLIGHT PLAN",
+		FrameTitle: "FLIGHT PLAN (T)",
+		Lines:      ps.TABList.Lines,
+		Entries:    len(plans),
 		FormatLine: func(idx int, sb *strings.Builder) {
 			fp := plans[idx]
 			// TODO: after INDEX, + in-out-in flight, / dupe acid, * DM message on departure
@@ -709,21 +901,21 @@ func (sp *STARSPane) drawTABList(ctx *panes.Context, pw [2]float32, tracks []sim
 	})
 }
 
-func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
-	td *renderer.TextDrawBuilder) {
+func (sp *STARSPane) drawAlertList(ctx *panes.Context, paneExtent math.Extent2D, style renderer.TextStyle,
+	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	// The alert list can't be hidden.
 	var text strings.Builder
 	var lists []string
 	ps := sp.currentPrefs()
 
 	if ps.DisableMSAW && ps.DisableCAWarnings && ps.DisableMCIWarnings {
-		return
+		return math.Extent2D{}
 	}
 
 	var msaw []sim.Track
 	if !ps.DisableMSAW {
 		lists = append(lists, "LA")
-		for _, trk := range tracks {
+		for _, trk := range sp.visibleTracks {
 			if sp.TrackState[trk.ADSBCallsign].MSAW && trk.IsAssociated() && !trk.FlightPlan.DisableMSAW {
 				msaw = append(msaw, trk)
 			}
@@ -808,12 +1000,15 @@ func (sp *STARSPane) drawAlertList(ctx *panes.Context, pw [2]float32, tracks []s
 		}
 
 		if text.Len() > 0 {
-			td.AddText(text.String(), pw, style)
+			return sp.drawListText(ctx, paneExtent, &ps.AlertList.Position, text.String(),
+				style, td, "ALERT LIST (TM)", ld)
 		}
 	}
+	return math.Extent2D{}
 }
 
-func (sp *STARSPane) drawCoastList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle, td *renderer.TextDrawBuilder) {
+func (sp *STARSPane) drawCoastList(ctx *panes.Context, paneExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder,
+	ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	// Get suspended tracks (coast not yet supported)
 	tracks := slices.Collect(util.FilterSeq(maps.Values(ctx.Client.State.Tracks),
 		func(t *sim.Track) bool { return t.IsAssociated() && t.FlightPlan.Suspended }))
@@ -821,10 +1016,12 @@ func (sp *STARSPane) drawCoastList(ctx *panes.Context, pw [2]float32, style rend
 	slices.SortFunc(tracks,
 		func(a, b *sim.Track) int { return a.FlightPlan.CoastSuspendIndex - b.FlightPlan.CoastSuspendIndex })
 
-	drawSystemList(pw, style, td, ListFormatter{
-		Title:   "COAST/SUSPEND",
-		Lines:   len(tracks), // Show all suspended tracks
-		Entries: len(tracks),
+	ps := sp.currentPrefs()
+	return sp.drawSystemList(ctx, paneExtent, &ps.CoastList.Position, style, td, ld, ListFormatter{
+		Title:      "COAST/SUSPEND",
+		FrameTitle: "COAST/SUSPEND (TC)",
+		Lines:      len(tracks), // Show all suspended tracks
+		Entries:    len(tracks),
 		FormatLine: func(idx int, sb *strings.Builder) {
 			trk := tracks[idx]
 			fp := trk.FlightPlan
@@ -848,10 +1045,11 @@ func (sp *STARSPane) drawCoastList(ctx *panes.Context, pw [2]float32, style rend
 	})
 }
 
-func (sp *STARSPane) drawMapsList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle, td *renderer.TextDrawBuilder) {
+func (sp *STARSPane) drawMapsList(ctx *panes.Context, paneExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder,
+	ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	ps := sp.currentPrefs()
 	if !ps.VideoMapsList.Visible {
-		return
+		return math.Extent2D{}
 	}
 
 	var text strings.Builder
@@ -894,13 +1092,13 @@ func (sp *STARSPane) drawMapsList(ctx *panes.Context, pw [2]float32, style rende
 	if ps.VideoMapsList.Selection == VideoMapCurrent {
 		for _, vm := range sp.allVideoMaps {
 			if _, ok := ps.VideoMapVisible[vm.Id]; ok {
-				m = append(m, vm)
+				m = append(m, vm.VideoMap)
 			}
 		}
 	} else {
 		for _, vm := range sp.allVideoMaps {
 			if vm.Category == int(ps.VideoMapsList.Selection) {
-				m = append(m, vm)
+				m = append(m, vm.VideoMap)
 			}
 		}
 	}
@@ -917,13 +1115,15 @@ func (sp *STARSPane) drawMapsList(ctx *panes.Context, pw [2]float32, style rende
 		format(vm)
 	}
 
-	td.AddText(text.String(), pw, style)
+	return sp.drawListText(ctx, paneExtent, &ps.VideoMapsList.Position, text.String(),
+		style, td, "MAPS", ld)
 }
 
-func (sp *STARSPane) drawRestrictionAreasList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle, td *renderer.TextDrawBuilder) {
+func (sp *STARSPane) drawRestrictionAreasList(ctx *panes.Context, paneExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder,
+	ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	ps := sp.currentPrefs()
 	if !ps.RestrictionAreaList.Visible {
-		return
+		return math.Extent2D{}
 	}
 
 	// Collect all restriction areas with their indices
@@ -943,10 +1143,11 @@ func (sp *STARSPane) drawRestrictionAreasList(ctx *panes.Context, pw [2]float32,
 		}
 	}
 
-	drawSystemList(pw, style, td, ListFormatter{
-		Title:   "GEO RESTRICTIONS",
-		Lines:   len(areas), // Show all restriction areas
-		Entries: len(areas),
+	return sp.drawSystemList(ctx, paneExtent, &ps.RestrictionAreaList.Position, style, td, ld, ListFormatter{
+		Title:      "GEO RESTRICTIONS",
+		FrameTitle: "GEO RESTRICTIONS (TRA)",
+		Lines:      len(areas), // Show all restriction areas
+		Entries:    len(areas),
 		FormatLine: func(idx int, sb *strings.Builder) {
 			area := areas[idx]
 			if settings, ok := ps.RestrictionAreaSettings[area.idx]; ok && settings.Visible {
@@ -964,17 +1165,15 @@ func (sp *STARSPane) drawRestrictionAreasList(ctx *panes.Context, pw [2]float32,
 	})
 }
 
-func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
-	td *renderer.TextDrawBuilder) {
+func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, paneExtent math.Extent2D, style renderer.TextStyle,
+	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	ps := sp.currentPrefs()
 	if !ps.CRDAStatusList.Visible {
-		return
+		return math.Extent2D{}
 	}
 
 	// Pre-compute the line data since it needs stateful processing
 	var lines []string
-	pairIndex := 0 // reset for each new airport
-	currentAirport := ""
 	for i, crda := range ps.CRDA.RunwayPairState {
 		var line strings.Builder
 		if !crda.Enabled {
@@ -984,52 +1183,47 @@ func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, pw [2]float32, track
 		}
 
 		pair := sp.ConvergingRunways[i]
-		ap := pair.Airport
-		if ap != currentAirport {
-			currentAirport = ap
-			pairIndex = 1
-		}
-
-		line.WriteString(strconv.Itoa(pairIndex))
+		line.WriteString(strconv.Itoa(pair.Index))
 		line.WriteByte(' ')
-		pairIndex++
-		line.WriteString(ap + " ")
+		line.WriteString(pair.Airport + " ")
 		line.WriteString(pair.getRunwaysString())
 		if crda.Enabled {
 			for line.Len() < 16 {
 				line.WriteByte(' ')
 			}
-			line.WriteString(ctx.UserTCP)
+			line.WriteString(string(ctx.UserPrimaryPosition()))
 		}
 		lines = append(lines, line.String())
 	}
 
-	drawSystemList(pw, style, td, ListFormatter{
-		Title:   "CRDA STATUS",
-		Lines:   len(lines), // Show all CRDA pairs
-		Entries: len(lines),
+	return sp.drawSystemList(ctx, paneExtent, &ps.CRDAStatusList.Position, style, td, ld, ListFormatter{
+		Title:      "CRDA STATUS",
+		FrameTitle: "CRDA STATUS (TN)",
+		Lines:      len(lines), // Show all CRDA pairs
+		Entries:    len(lines),
 		FormatLine: func(idx int, sb *strings.Builder) {
 			sb.WriteString(lines[idx])
 		},
 	})
 }
 
-func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, pw [2]float32, tracks []sim.Track, style renderer.TextStyle,
-	td *renderer.TextDrawBuilder) {
+func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, paneExtent math.Extent2D, style renderer.TextStyle,
+	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	ps := sp.currentPrefs()
 	if !ps.MCISuppressionList.Visible {
-		return
+		return math.Extent2D{}
 	}
 
 	// Filter tracks with MCI suppression
-	mciTracks := util.FilterSlice(tracks, func(trk sim.Track) bool {
+	mciTracks := util.FilterSlice(sp.visibleTracks, func(trk sim.Track) bool {
 		return trk.IsAssociated() && trk.FlightPlan.MCISuppressedCode != av.Squawk(0)
 	})
 
-	drawSystemList(pw, style, td, ListFormatter{
-		Title:   "MCI SUPPRESSION",
-		Lines:   len(mciTracks), // Show all MCI tracks
-		Entries: len(mciTracks),
+	return sp.drawSystemList(ctx, paneExtent, &ps.MCISuppressionList.Position, style, td, ld, ListFormatter{
+		Title:      "MCI SUPPRESSION",
+		FrameTitle: "MCI SUPPRESSION (TQ)",
+		Lines:      len(mciTracks), // Show all MCI tracks
+		Entries:    len(mciTracks),
 		FormatLine: func(idx int, sb *strings.Builder) {
 			trk := mciTracks[idx]
 			fp := trk.FlightPlan
@@ -1041,8 +1235,8 @@ func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, pw [2]float32, t
 	})
 }
 
-func (sp *STARSPane) drawTowerList(ctx *panes.Context, pw [2]float32, airport string, lines int, tracks []sim.Track,
-	style renderer.TextStyle, td *renderer.TextDrawBuilder) {
+func (sp *STARSPane) drawTowerList(ctx *panes.Context, paneExtent math.Extent2D, airport string, towerIndex int,
+	style renderer.TextStyle, td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	stripK := func(airport string) string {
 		if len(airport) == 4 && airport[0] == 'K' {
 			return airport[1:]
@@ -1051,9 +1245,10 @@ func (sp *STARSPane) drawTowerList(ctx *panes.Context, pw [2]float32, airport st
 		}
 	}
 
+	ps := sp.currentPrefs()
 	loc := ctx.Client.State.Airports[airport].Location
 	m := make(map[float32]string)
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		if trk.IsAssociated() && trk.ArrivalAirport == airport {
 			dist := math.NMDistance2LL(loc, trk.Location)
 			// We'll punt on the chance that two aircraft have the
@@ -1064,31 +1259,39 @@ func (sp *STARSPane) drawTowerList(ctx *panes.Context, pw [2]float32, airport st
 
 	k := util.SortedMapKeys(m)
 
-	drawSystemList(pw, style, td, ListFormatter{
-		Title:   stripK(airport) + " TOWER",
-		Lines:   lines,
-		Entries: len(k),
+	return sp.drawSystemList(ctx, paneExtent, &ps.TowerLists[towerIndex].Position, style, td, ld, ListFormatter{
+		Title:      stripK(airport) + " TOWER",
+		FrameTitle: stripK(airport) + " TOWER (P" + strconv.Itoa(towerIndex+1) + ")",
+		Lines:      ps.TowerLists[towerIndex].Lines,
+		Entries:    len(k),
 		FormatLine: func(idx int, sb *strings.Builder) {
 			sb.WriteString(m[k[idx]])
 		},
 	})
 }
 
-func (sp *STARSPane) drawSignOnList(ctx *panes.Context, pw [2]float32, style renderer.TextStyle, td *renderer.TextDrawBuilder) {
+func (sp *STARSPane) drawSignOnList(ctx *panes.Context, paneExtent math.Extent2D, style renderer.TextStyle, td *renderer.TextDrawBuilder,
+	ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
 	ps := sp.currentPrefs()
 	if !ps.SignOnList.Visible {
-		return
+		return math.Extent2D{}
 	}
 
-	var text strings.Builder
-	if ctrl := ctx.Client.State.Controllers[ctx.UserTCP]; ctrl != nil {
+	if ctrl := ctx.UserController(); ctrl != nil {
 		signOnTime := ctx.Client.SessionStats.SignOnTime
-		text.WriteString(ctx.UserTCP + " " + signOnTime.UTC().Format("1504")) // TODO: initials
-		td.AddText(text.String(), pw, style)
+		initials := ctx.Client.SessionStats.Initials
+		if initials != "" {
+			initials = " " + initials
+		}
+		s := string(ctx.UserTCW) + initials + " " + signOnTime.UTC().Format("1504")
+		return sp.drawListText(ctx, paneExtent, &ps.SignOnList.Position, s,
+			style, td, "SIGN ON (TS)", ld)
 	}
+	return math.Extent2D{}
 }
 
-func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.Extent2D, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.Extent2D, transforms radar.ScopeTransformations,
+	td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) []math.Extent2D {
 	ps := sp.currentPrefs()
 	font := sp.systemFont(ctx, ps.CharSize.Lists)
 	titleStyle := renderer.TextStyle{
@@ -1096,14 +1299,13 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 		Color: ps.Brightness.Lists.ScaleRGB(STARSListColor),
 	}
 
-	td := renderer.GetTextDrawBuilder()
-	defer renderer.ReturnTextDrawBuilder(td)
 	normalizedToWindow := func(p [2]float32) [2]float32 {
 		return [2]float32{p[0] * paneExtent.Width(), p[1] * paneExtent.Height()}
 	}
 
 	releaseDepartures := ctx.Client.State.GetSTARSReleaseDepartures()
 
+	var allBounds []math.Extent2D
 	fa := ctx.FacilityAdaptation
 	for i, cl := range fa.CoordinationLists {
 		listStyle := renderer.TextStyle{
@@ -1136,7 +1338,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 		// deleted from the list by the controller.
 		rel := util.FilterSlice(releaseDepartures,
 			func(dep sim.ReleaseDeparture) bool {
-				if ctx.Client.State.ResolveController(dep.DepartureController) != ctx.UserTCP {
+				if !ctx.UserControlsPosition(dep.DepartureController) {
 					return false
 				}
 
@@ -1154,7 +1356,9 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 			continue
 		}
 
-		pw := normalizedToWindow(list.Position)
+		startPos := normalizedToWindow(list.Position)
+		pw := startPos
+		maxX := pw[0]
 
 		halfSeconds := ctx.Now.UnixMilli() / 500
 		blinkDim := halfSeconds&1 == 0
@@ -1164,8 +1368,10 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 		} else {
 			pw = td.AddText(strings.ToUpper(cl.Name)+"\n", pw, titleStyle)
 		}
+		maxX = max(maxX, pw[0])
 		if len(rel) > list.Lines {
 			pw = td.AddText(fmt.Sprintf("MORE: %d/%d\n", list.Lines, len(rel)), pw, listStyle)
+			maxX = max(maxX, pw[0])
 		}
 		var text strings.Builder
 		for i := range min(len(rel), list.Lines) {
@@ -1173,7 +1379,7 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 			text.Reset()
 			text.WriteString("     ")
 			if idx := slices.IndexFunc(ctx.Client.State.UnassociatedFlightPlans,
-				func(fp *sim.STARSFlightPlan) bool { return string(fp.ACID) == string(dep.ADSBCallsign) }); idx == -1 {
+				func(fp *sim.NASFlightPlan) bool { return string(fp.ACID) == string(dep.ADSBCallsign) }); idx == -1 {
 				text.WriteString(fmt.Sprintf(" %-10s NO FP", string(dep.ADSBCallsign)))
 			} else {
 				fp := ctx.Client.State.UnassociatedFlightPlans[idx]
@@ -1187,9 +1393,20 @@ func (sp *STARSPane) drawCoordinationLists(ctx *panes.Context, paneExtent math.E
 				} else {
 					pw = td.AddText(rewriteDelta(text.String()), pw, listStyle)
 				}
+				maxX = max(maxX, pw[0])
 			}
 		}
+
+		bounds := math.Extent2D{
+			P0: [2]float32{startPos[0], pw[1]},
+			P1: [2]float32{maxX, startPos[1]},
+		}
+		sp.handleListDrag(ctx, bounds, &list.Position, "coord:"+cl.Name, paneExtent, ld)
+		if sp.showListFrames {
+			sp.drawListFrame(ctx, bounds, strings.ToUpper(cl.Name), td, ld)
+		}
+		allBounds = append(allBounds, bounds)
 	}
 
-	td.GenerateCommands(cb)
+	return allBounds
 }

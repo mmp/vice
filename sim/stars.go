@@ -12,6 +12,7 @@ import (
 	"io"
 	"io/fs"
 	"path/filepath"
+	"reflect"
 	"slices"
 	"sort"
 	"strconv"
@@ -21,19 +22,18 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
-	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/util"
 
 	"github.com/klauspost/compress/zstd"
 )
 
 type RedirectedHandoff struct {
-	OriginalOwner string   // Controller callsign
-	Redirector    []string // Controller callsign
-	RedirectedTo  string   // Controller callsign
+	OriginalOwner ControlPosition   // Controller position
+	Redirector    []ControlPosition // Redirecting controllers
+	RedirectedTo  ControlPosition
 }
 
-func (rd *RedirectedHandoff) GetLastRedirector() string {
+func (rd *RedirectedHandoff) GetLastRedirector() ControlPosition {
 	if length := len(rd.Redirector); length > 0 {
 		return rd.Redirector[length-1]
 	} else {
@@ -41,23 +41,23 @@ func (rd *RedirectedHandoff) GetLastRedirector() string {
 	}
 }
 
-func (rd *RedirectedHandoff) ShowRDIndicator(callsign string, RDIndicatorEnd time.Time) bool {
+func (rd *RedirectedHandoff) ShowRDIndicator(pos ControlPosition, RDIndicatorEnd time.Time) bool {
 	// Show "RD" to the redirect target, last redirector until the RD is accepted.
 	// Show "RD" to the original owner up to 30 seconds after the RD is accepted.
-	return rd.RedirectedTo == callsign || rd.GetLastRedirector() == callsign ||
-		rd.OriginalOwner == callsign || time.Until(RDIndicatorEnd) > 0
+	return pos != "" && (rd.RedirectedTo == pos || rd.GetLastRedirector() == pos ||
+		rd.OriginalOwner == pos || time.Until(RDIndicatorEnd) > 0)
 }
 
-func (rd *RedirectedHandoff) ShouldFallbackToHandoff(ctrl, octrl string) bool {
+func (rd *RedirectedHandoff) ShouldFallbackToHandoff(ctrl, octrl ControlPosition) bool {
 	// True if the 2nd redirector redirects back to the 1st redirector
 	return (len(rd.Redirector) == 1 || (len(rd.Redirector) > 1) && rd.Redirector[1] == ctrl) && octrl == rd.Redirector[0]
 }
 
 func (rd *RedirectedHandoff) AddRedirector(ctrl *av.Controller) {
-	if len(rd.Redirector) == 0 || rd.Redirector[len(rd.Redirector)-1] != ctrl.Id() {
+	if len(rd.Redirector) == 0 || rd.Redirector[len(rd.Redirector)-1] != ctrl.PositionId() {
 		// Don't append the same controller multiple times
 		// (the case in which the last redirector recalls and then redirects again)
-		rd.Redirector = append(rd.Redirector, ctrl.Id())
+		rd.Redirector = append(rd.Redirector, ctrl.PositionId())
 	}
 }
 
@@ -79,14 +79,29 @@ type VideoMap struct {
 	}
 	Color int
 	Lines [][]math.Point2LL
-
-	CommandBuffer renderer.CommandBuffer
 }
 
 // This should match VideoMapLibrary in dat2vice
 type VideoMapLibrary struct {
-	Maps []VideoMap
+	Maps          []VideoMap
+	ERAMMapGroups ERAMMapGroups
 }
+
+type ERAMMap struct {
+	BcgName    string
+	LabelLine1 string
+	LabelLine2 string
+	Name       string
+	Lines      [][]math.Point2LL
+}
+
+type ERAMMapGroup struct {
+	Maps       []ERAMMap
+	LabelLine1 string
+	LabelLine2 string
+}
+
+type ERAMMapGroups map[string]ERAMMapGroup
 
 // VideoMapManifest stores which maps are available in a video map file and
 // is also able to provide the video map file's hash.
@@ -98,6 +113,10 @@ type VideoMapManifest struct {
 
 func CheckVideoMapManifest(filename string, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
+
+	if strings.Contains(filename, "eram") {
+		return // ERAM manifest not here
+	}
 
 	manifest, err := LoadVideoMapManifest(filename)
 	if err != nil {
@@ -159,8 +178,26 @@ func LoadVideoMapManifest(filename string) (*VideoMapManifest, error) {
 }
 
 func (v VideoMapManifest) HasMap(s string) bool {
-	_, ok := v.names[s]
-	return ok
+	for i, m := range v.names {
+		if i == s {
+			return true
+		}
+		if names, ok := m.([]string); ok {
+			if slices.Contains(names, s) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (v VideoMapManifest) HasMapGroup(s string) bool {
+	for i := range v.names {
+		if i == s {
+			return true
+		}
+	}
+	return false
 }
 
 // Hash returns a hash of the underlying video map file (i.e., not the manifest!)
@@ -202,33 +239,25 @@ func LoadVideoMapLibrary(path string) (*VideoMapLibrary, error) {
 	var vmf VideoMapLibrary
 	if err := gob.NewDecoder(r).Decode(&vmf); err != nil {
 		// Try the old format, just an array of maps
-		_, _ = br.Seek(0, io.SeekStart)
+		// Create a new reader to avoid racing with the zstd decoder goroutine
+		br = bytes.NewReader(contents)
 		if zr != nil {
 			_ = zr.Reset(br)
+		} else {
+			r = br
 		}
-		if err := gob.NewDecoder(r).Decode(&vmf.Maps); err != nil {
-			return nil, err
+		if strings.Contains(path, "eram") {
+			if vmf.ERAMMapGroups == nil {
+				vmf.ERAMMapGroups = make(ERAMMapGroups)
+			}
+			if err := gob.NewDecoder(r).Decode(&vmf.ERAMMapGroups); err != nil {
+				return nil, err
+			}
+		} else {
+			if err := gob.NewDecoder(r).Decode(&vmf.Maps); err != nil {
+				return nil, err
+			}
 		}
-	}
-
-	// Convert the line specifications into command buffers for drawing.
-	ld := renderer.GetLinesDrawBuilder()
-	defer renderer.ReturnLinesDrawBuilder(ld)
-	for i, m := range vmf.Maps {
-		ld.Reset()
-
-		for _, lines := range m.Lines {
-			// Slightly annoying: the line vertices are stored with
-			// Point2LLs but AddLineStrip() expects [2]float32s.
-			fl := util.MapSlice(lines, func(p math.Point2LL) [2]float32 { return p })
-			ld.AddLineStrip(fl)
-		}
-		ld.GenerateCommands(&m.CommandBuffer)
-
-		// Clear out Lines so that the memory can be reclaimed since they
-		// aren't needed any more.
-		m.Lines = nil
-		vmf.Maps[i] = m
 	}
 
 	return &vmf, nil
@@ -284,33 +313,46 @@ func PrintVideoMaps(path string, e *util.ErrorLogger) {
 	}
 }
 
-type STARSFacilityAdaptation struct {
-	AirspaceAwareness   []AirspaceAwareness               `json:"airspace_awareness"`
-	ForceQLToSelf       bool                              `json:"force_ql_self"`
-	AllowLongScratchpad bool                              `json:"allow_long_scratchpad"`
-	VideoMapNames       []string                          `json:"stars_maps"`
-	VideoMapLabels      map[string]string                 `json:"map_labels"`
-	ControllerConfigs   map[string]*STARSControllerConfig `json:"controller_configs"`
-	RadarSites          map[string]*av.RadarSite          `json:"radar_sites"`
-	Center              math.Point2LL                     `json:"-"`
-	CenterString        string                            `json:"center"`
-	Range               float32                           `json:"range"`
-	Scratchpads         map[string]string                 `json:"scratchpads"`
-	SignificantPoints   map[string]SignificantPoint       `json:"significant_points"`
-	Altimeters          []string                          `json:"altimeters"`
+// ControllerAssignments defines which controller handles each inbound/departure flow.
+// This is separate from the consolidation hierarchy (PositionConsolidation).
+type ControllerAssignments struct {
+	InboundAssignments   map[string]TCP `json:"inbound_assignments"`
+	DepartureAssignments map[string]TCP `json:"departure_assignments"`
+}
+
+type FacilityAdaptation struct {
+	// Configurations maps config IDs (max 3 chars) to controller assignments.
+	// These define which TCP handles each inbound flow and departure airport/runway/SID.
+	Configurations map[string]*ControllerAssignments `json:"configurations"`
+
+	AirspaceAwareness   []AirspaceAwareness                        `json:"airspace_awareness" scope:"stars"`
+	ForceQLToSelf       bool                                       `json:"force_ql_self" scope:"stars"`
+	AllowLongScratchpad bool                                       `json:"allow_long_scratchpad" scope:"stars"`
+	VideoMapNames       []string                                   `json:"stars_maps" scope:"stars"`
+	ERAMMapNames        map[string][]string                        `json:"eram_maps" scope:"eram"`
+	VideoMapLabels      map[string]string                          `json:"map_labels"`
+	ControllerConfigs   map[ControlPosition]*STARSControllerConfig `json:"controller_configs"`
+	RadarSites          map[string]*av.RadarSite                   `json:"radar_sites" scope:"stars"`
+	Center              math.Point2LL                              `json:"-"`
+	CenterString        string                                     `json:"center"`
+	MaxDistance         float32                                    `json:"max_distance"` // Distance from center where aircraft get culled from (default 125nm)
+	Range               float32                                    `json:"range"`
+	Scratchpads         map[string]string                          `json:"scratchpads" scope:"stars"`
+	SignificantPoints   map[string]SignificantPoint                `json:"significant_points" scope:"stars"`
+	Altimeters          []string                                   `json:"altimeters"`
 
 	// Airpsace filters
 	Filters struct {
-		ArrivalAcquisition   FilterRegions `json:"arrival_acquisition"`
-		ArrivalDrop          FilterRegions `json:"arrival_drop"`
-		DepartureAcquisition FilterRegions `json:"departure_acquisition"`
-		InhibitCA            FilterRegions `json:"inhibit_ca"`
-		InhibitMSAW          FilterRegions `json:"inhibit_msaw"`
-		Quicklook            FilterRegions `json:"quicklook"`
-		SecondaryDrop        FilterRegions `json:"secondary_drop"`
-		SurfaceTracking      FilterRegions `json:"surface_tracking"`
-		VFRInhibit           FilterRegions `json:"vfr_inhibit"`
-	} `json:"filters"`
+		AutoAcquisition FilterRegions `json:"auto_acquisition"`
+		ArrivalDrop     FilterRegions `json:"arrival_drop"`
+		Departure       FilterRegions `json:"departure"`
+		InhibitCA       FilterRegions `json:"inhibit_ca"`
+		InhibitMSAW     FilterRegions `json:"inhibit_msaw"`
+		Quicklook       FilterRegions `json:"quicklook"`
+		SecondaryDrop   FilterRegions `json:"secondary_drop"`
+		SurfaceTracking FilterRegions `json:"surface_tracking"`
+		VFRInhibit      FilterRegions `json:"vfr_inhibit"`
+	} `json:"filters" scope:"stars"` //Should this be STARS or justy parts of it?
 
 	MonitoredBeaconCodeBlocksString  *string
 	MonitoredBeaconCodeBlocks        []av.Squawk
@@ -318,25 +360,27 @@ type STARSFacilityAdaptation struct {
 		CodeRangesString string         `json:"beacon_codes"`
 		CodeRanges       [][2]av.Squawk // inclusive
 		Symbol           string         `json:"symbol"`
-	} `json:"untracked_position_symbol_overrides"`
+	} `json:"untracked_position_symbol_overrides" scope:"stars"`
 
 	VideoMapFile      string                        `json:"video_map_file"`
-	CoordinationFixes map[string]av.AdaptationFixes `json:"coordination_fixes"`
-	SingleCharAIDs    map[string]string             `json:"single_char_aids"` // Char to airport
-	KeepLDB           bool                          `json:"keep_ldb"`
-	FullLDBSeconds    int                           `json:"full_ldb_seconds"`
+	CoordinationFixes map[string]av.AdaptationFixes `json:"coordination_fixes" scope:"stars"`
+	SingleCharAIDs    map[string]string             `json:"single_char_aids" scope:"stars"` // Char to airport. TODO: Check if this is for ERAM as well.
+	KeepLDB           bool                          `json:"keep_ldb" scope:"stars"`
+	FullLDBSeconds    int                           `json:"full_ldb_seconds" scope:"stars"`
 
-	SSRCodes av.LocalSquawkCodePoolSpecifier `json:"ssr_codes"`
+	SSRCodes av.LocalSquawkCodePoolSpecifier `json:"ssr_codes" scope:"stars"`
 
-	HandoffAcceptFlashDuration int  `json:"handoff_acceptance_flash_duration"`
-	DisplayHOFacilityOnly      bool `json:"display_handoff_facility_only"`
-	HOSectorDisplayDuration    int  `json:"handoff_sector_display_duration"`
+	HandoffAcceptFlashDuration int  `json:"handoff_acceptance_flash_duration" scope:"stars"`
+	DisplayHOFacilityOnly      bool `json:"display_handoff_facility_only" scope:"stars"`
+	HOSectorDisplayDuration    int  `json:"handoff_sector_display_duration" scope:"stars"`
+
+	AirportCodes map[string]string `json:"airport_codes" scope:"eram"`
 
 	FlightPlan struct {
 		QuickACID          string            `json:"quick_acid"`
 		ACIDExpansions     map[string]string `json:"acid_expansions"`
 		ModifyAfterDisplay bool              `json:"modify_after_display"`
-	} `json:"flight_plan"`
+	} `json:"flight_plan" scope:"stars"`
 
 	PDB struct {
 		ShowScratchpad2   bool `json:"show_scratchpad2"`
@@ -344,40 +388,41 @@ type STARSFacilityAdaptation struct {
 		ShowAircraftType  bool `json:"show_aircraft_type"`
 		SplitGSAndCWT     bool `json:"split_gs_and_cwt"`
 		DisplayCustomSPCs bool `json:"display_custom_spcs"`
-	} `json:"pdb"`
+	} `json:"pdb" scope:"stars"`
 
 	FDB struct {
 		DisplayRequestedAltitude bool `json:"display_requested_altitude"`
 		Scratchpad2OnLine3       bool `json:"scratchpad2_on_line3"`
-	} `json:"fdb"`
+	} `json:"fdb" scope:"stars"`
 
 	Scratchpad1 struct {
 		DisplayExitFix     bool `json:"display_exit_fix"`
 		DisplayExitFix1    bool `json:"display_exit_fix_1"`
 		DisplayExitGate    bool `json:"display_exit_gate"`
 		DisplayAltExitGate bool `json:"display_alternate_exit_gate"`
-	} `json:"scratchpad1"`
+	} `json:"scratchpad1" scope:"stars"`
 
 	CustomSPCs []string `json:"custom_spcs"`
 
-	CoordinationLists []CoordinationList `json:"coordination_lists"`
+	CoordinationLists []CoordinationList `json:"coordination_lists" scope:"stars"`
 	VFRList           struct {
 		Format string `json:"format"`
-	} `json:"vfr_list"`
+	} `json:"vfr_list" scope:"stars"`
 	TABList struct {
 		Format string `json:"format"`
-	} `json:"tab_list"`
+	} `json:"tab_list" scope:"stars"`
 	CoastSuspendList struct {
 		Format string `json:"format"`
-	} `json:"coast_suspend_list"`
+	} `json:"coast_suspend_list" scope:"stars"`
 	MCISuppressionList struct {
 		Format string `json:"format"`
-	} `json:"mci_suppression_list"`
+	} `json:"mci_suppression_list" scope:"stars"`
 	TowerList struct {
 		Format string `json:"format"`
-	} `json:"tower_list"`
-	RestrictionAreas []av.RestrictionArea `json:"restriction_areas"`
-	UseLegacyFont    bool                 `json:"use_legacy_font"`
+	} `json:"tower_list" scope:"stars"`
+	RestrictionAreas  []av.RestrictionArea `json:"restriction_areas" scope:"stars"`
+	UseLegacyFont     bool                 `json:"use_legacy_font" scope:"stars"`
+	DisplayRNAVSymbol bool                 `json:"display_rnav_symbol"`
 }
 
 type FilterRegion struct {
@@ -452,21 +497,24 @@ type AirspaceAwareness struct {
 	AircraftType        []string `json:"aircraft_type"`
 }
 
-type STARSFlightPlan struct {
+type NASFlightPlan struct {
 	ACID                  ACID
+	CID                   string
 	EntryFix              string
 	ExitFix               string
+	ArrivalAirport        string // Technically not a string, but until the NAS system is fully integrated, we'll need this.
 	ExitFixIsIntermediate bool
 	Rules                 av.FlightRules
 	CoordinationTime      time.Time
-	PlanType              STARSFlightPlanType
+	PlanType              NASFlightPlanType
 
 	AssignedSquawk av.Squawk
 
-	TrackingController     string // Who has the radar track
-	ControllingController  string // Who has control; not necessarily the same as TrackingController
-	HandoffTrackController string // Handoff offered but not yet accepted
-	LastLocalController    string // (May be the current controller.)
+	TrackingController    ControlPosition // Who has the radar track
+	ControllingController ControlPosition // Who has control; not necessarily the same as TrackingController
+	HandoffController     ControlPosition // Handoff offered but not yet accepted
+	LastLocalController   ControlPosition // (May be the current controller.)
+	OwningTCW             TCW             // TCW that owns this track
 
 	AircraftCount   int
 	AircraftType    string
@@ -475,6 +523,13 @@ type STARSFlightPlan struct {
 	TypeOfFlight av.TypeOfFlight
 
 	AssignedAltitude      int
+	PerceivedAssigned     int // what the previous controller would put into the hard alt, even though the aircraft is descending via a STAR.
+	InterimAlt            int
+	InterimType           int
+	AltitudeBlock         [2]int
+	ControllerReportedAlt int
+	VFROTP                bool
+
 	RequestedAltitude     int
 	PilotReportedAltitude int
 
@@ -487,8 +542,9 @@ type STARSFlightPlan struct {
 	RNAV bool
 
 	Location math.Point2LL
+	Route    string
 
-	PointOutHistory             []string
+	PointOutHistory             []ControlPosition
 	InhibitModeCAltitudeDisplay bool
 	SPCOverride                 string
 	DisableMSAW                 bool
@@ -507,7 +563,7 @@ type STARSFlightPlan struct {
 
 	// First controller in the local facility to get the track: used both
 	// for /ho and for departures
-	InboundHandoffController string
+	InboundHandoffController ControlPosition
 
 	CoordinationFix     string
 	ContainedFacilities []string
@@ -527,19 +583,19 @@ type STARSFlightPlan struct {
 
 type ACID string
 
-type STARSFlightPlanSpecifier struct {
+type FlightPlanSpecifier struct {
 	ACID                  util.Optional[ACID]
 	EntryFix              util.Optional[string]
 	ExitFix               util.Optional[string]
 	ExitFixIsIntermediate util.Optional[bool]
 	Rules                 util.Optional[av.FlightRules]
 	CoordinationTime      util.Optional[time.Time]
-	PlanType              util.Optional[STARSFlightPlanType]
+	PlanType              util.Optional[NASFlightPlanType]
 
 	SquawkAssignment         util.Optional[string]
 	ImplicitSquawkAssignment util.Optional[av.Squawk] // only used when taking the track's current code
 
-	TrackingController util.Optional[string]
+	TrackingController util.Optional[ControlPosition]
 
 	AircraftCount   util.Optional[int]
 	AircraftType    util.Optional[string]
@@ -548,6 +604,11 @@ type STARSFlightPlanSpecifier struct {
 	TypeOfFlight util.Optional[av.TypeOfFlight]
 
 	AssignedAltitude      util.Optional[int]
+	InterimAlt            util.Optional[int]
+	InterimType           util.Optional[string]
+	AltitudeBlock         util.Optional[[2]int]
+	ControllerReportedAlt util.Optional[int]
+	VFROTP                util.Optional[bool]
 	RequestedAltitude     util.Optional[int]
 	PilotReportedAltitude util.Optional[int]
 
@@ -575,9 +636,9 @@ type STARSFlightPlanSpecifier struct {
 	ForceACTypeDisplayEndTime util.Optional[time.Time]
 }
 
-func (s STARSFlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
-	nasPool *av.EnrouteSquawkCodePool) (STARSFlightPlan, error) {
-	sfp := STARSFlightPlan{
+func (s FlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePool,
+	nasPool *av.EnrouteSquawkCodePool) (NASFlightPlan, error) {
+	sfp := NASFlightPlan{
 		ACID:                  s.ACID.GetOr(""),
 		EntryFix:              s.EntryFix.GetOr(""),
 		ExitFix:               s.ExitFix.GetOr(""),
@@ -604,7 +665,7 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePoo
 
 		Location: s.Location.GetOr(math.Point2LL{}),
 
-		PointOutHistory:             s.PointOutHistory.GetOr(nil),
+		PointOutHistory:             util.MapSlice(s.PointOutHistory.GetOr(nil), func(s string) ControlPosition { return ControlPosition(s) }),
 		InhibitModeCAltitudeDisplay: s.InhibitModeCAltitudeDisplay.GetOr(false),
 		SPCOverride:                 s.SPCOverride.GetOr(""),
 		DisableMSAW:                 s.DisableMSAW.GetOr(false),
@@ -648,7 +709,29 @@ func (s STARSFlightPlanSpecifier) GetFlightPlan(localPool *av.LocalSquawkCodePoo
 	return sfp, err
 }
 
-func assignCode(assignment util.Optional[string], planType STARSFlightPlanType, rules av.FlightRules,
+// Merge incorporates set fields from other into s. Fields set in other take precedence.
+func (s *FlightPlanSpecifier) Merge(other FlightPlanSpecifier) {
+	// Rather than have to handle each FlightPlanSpecifier individually, we get (sort of) fancy and
+	// use the reflect package to iterate over the members, check which are set through
+	// util.Optional, and copy those that are. This isn't necessarily super performant, but we don't
+	// need to do this too much.
+	sVal := reflect.ValueOf(s).Elem()
+	otherVal := reflect.ValueOf(other)
+	typ := otherVal.Type()
+
+	for i := range otherVal.NumField() {
+		otherField := otherVal.Field(i)
+		isSet := otherField.FieldByName("IsSet")
+		if !isSet.IsValid() || isSet.Kind() != reflect.Bool {
+			panic(fmt.Sprintf("FlightPlanSpecifier field %q is not a util.Optional", typ.Field(i).Name))
+		}
+		if isSet.Bool() {
+			sVal.Field(i).Set(otherField)
+		}
+	}
+}
+
+func assignCode(assignment util.Optional[string], planType NASFlightPlanType, rules av.FlightRules,
 	localPool *av.LocalSquawkCodePool, nasPool *av.EnrouteSquawkCodePool) (av.Squawk, av.FlightRules, error) {
 	if planType == LocalEnroute {
 		// Squawk assignment is either empty or a straight up code (for a quick flight plan, 5-141)
@@ -667,8 +750,7 @@ func assignCode(assignment util.Optional[string], planType STARSFlightPlanType, 
 	}
 }
 
-func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.LocalSquawkCodePool,
-	nasPool *av.EnrouteSquawkCodePool) (err error) {
+func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) {
 	if spec.ACID.IsSet {
 		fp.ACID = spec.ACID.Get()
 	}
@@ -706,7 +788,8 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.L
 		fp.AssignedSquawk = spec.ImplicitSquawkAssignment.Get()
 	} else if spec.SquawkAssignment.IsSet {
 		var rules av.FlightRules
-		fp.AssignedSquawk, rules, err = assignCode(spec.SquawkAssignment, fp.PlanType, fp.Rules, localPool, nasPool)
+		fp.AssignedSquawk, rules, err = assignCode(spec.SquawkAssignment, fp.PlanType, fp.Rules, sim.LocalCodePool,
+			sim.ERAMComputer.SquawkCodePool)
 		if !spec.Rules.IsSet {
 			// Only take the rules from the pool if no rules were given in spec.
 			fp.Rules = rules
@@ -714,6 +797,19 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.L
 			if rules != av.FlightRulesIFR && !spec.DisableMSAW.IsSet {
 				fp.DisableMSAW = true
 			}
+		}
+	}
+	if spec.InterimAlt.IsSet {
+		fp.InterimAlt = spec.InterimAlt.Get()
+	}
+	if spec.InterimType.IsSet {
+		interimType := spec.InterimType.Get()
+		fmt.Println("Interim type:", interimType)
+		switch interimType {
+		case "L":
+			fp.InterimType = 2
+		case "P":
+			fp.InterimType = 1
 		}
 	}
 
@@ -733,6 +829,7 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.L
 	}
 	if spec.TrackingController.IsSet {
 		fp.TrackingController = spec.TrackingController.Get()
+		fp.OwningTCW = sim.tcwForPosition(fp.TrackingController)
 	}
 	if spec.AssignedAltitude.IsSet {
 		fp.AssignedAltitude = spec.AssignedAltitude.Get()
@@ -769,7 +866,7 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.L
 		fp.Location = spec.Location.Get()
 	}
 	if spec.PointOutHistory.IsSet {
-		fp.PointOutHistory = spec.PointOutHistory.Get()
+		fp.PointOutHistory = util.MapSlice(spec.PointOutHistory.Get(), func(s string) ControlPosition { return ControlPosition(s) })
 	}
 	if spec.InhibitModeCAltitudeDisplay.IsSet {
 		fp.InhibitModeCAltitudeDisplay = spec.InhibitModeCAltitudeDisplay.Get()
@@ -810,11 +907,11 @@ func (fp *STARSFlightPlan) Update(spec STARSFlightPlanSpecifier, localPool *av.L
 	return
 }
 
-type STARSFlightPlanType int
+type NASFlightPlanType int
 
 // Flight plan types (STARS)
 const (
-	UnknownFlightPlanType STARSFlightPlanType = iota
+	UnknownFlightPlanType NASFlightPlanType = iota
 
 	// Flight plan received from a NAS ARTCC.  This is a flight plan that
 	// has been sent over by an overlying ERAM facility.
@@ -835,7 +932,7 @@ const (
 	LocalNonEnroute
 )
 
-func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports []string, allAirports []string, e *util.ErrorLogger) {
+func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports []string, allAirports []string, e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	if ctr := fa.CenterString; ctr == "" {
@@ -851,10 +948,10 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 		for tcp, config := range fa.ControllerConfigs {
 			for i := range config.FlightFollowingAirspace {
 				if config.FlightFollowingAirspace[i].Id == "" {
-					config.FlightFollowingAirspace[i].Id = "FF" + tcp + strconv.Itoa(i+1)
+					config.FlightFollowingAirspace[i].Id = "FF" + string(tcp) + strconv.Itoa(i+1)
 				}
 				if config.FlightFollowingAirspace[i].Description == "" {
-					config.FlightFollowingAirspace[i].Description = "FLIGHT FOLLOWING " + tcp + " " + strconv.Itoa(i+1)
+					config.FlightFollowingAirspace[i].Description = "FLIGHT FOLLOWING " + string(tcp) + " " + strconv.Itoa(i+1)
 				}
 
 				config.FlightFollowingAirspace[i].PostDeserialize(loc, e)
@@ -980,8 +1077,8 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 	if len(fa.Filters.ArrivalDrop) == 0 {
 		fa.Filters.ArrivalDrop = makePolygonAirportFilters("DROP", "ARRIVAL DROP", 0.35, 0, 500, controlledAirports)
 	}
-	if len(fa.Filters.DepartureAcquisition) == 0 {
-		fa.Filters.DepartureAcquisition = makePolygonAirportFilters("ACQ", "DEPARTURE ACQUISITION", 0.35, 0, 500, controlledAirports)
+	if len(fa.Filters.Departure) == 0 {
+		fa.Filters.Departure = makePolygonAirportFilters("DEP", "DEPARTURE", 0.5, 0, 500, controlledAirports)
 	}
 	if len(fa.Filters.InhibitCA) == 0 {
 		fa.Filters.InhibitCA = makeCircleAirportFilters("NOCA", "CONFLICT SUPPRESS", 5, 0, 3000, controlledAirports)
@@ -990,7 +1087,7 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 		fa.Filters.InhibitMSAW = makeCircleAirportFilters("NOSA", "MSAW SUPPRESS", 5, 0, 3000, controlledAirports)
 	}
 	if len(fa.Filters.SurfaceTracking) == 0 {
-		fa.Filters.SurfaceTracking = makePolygonAirportFilters("SURF", "SURFACE TRACKING", 0.15, 0, 250, allAirports)
+		fa.Filters.SurfaceTracking = makePolygonAirportFilters("SURF", "SURFACE TRACKING", 0.15, 0, 200, allAirports)
 	}
 
 	checkFilter := func(f FilterRegions, name string) {
@@ -1007,9 +1104,9 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 			e.Pop()
 		}
 	}
-	checkFilter(fa.Filters.ArrivalAcquisition, "arrival_acquisition")
+	checkFilter(fa.Filters.AutoAcquisition, "auto_acquisition")
 	checkFilter(fa.Filters.ArrivalDrop, "arrival_drop")
-	checkFilter(fa.Filters.DepartureAcquisition, "departure_acquisition")
+	checkFilter(fa.Filters.Departure, "departure")
 	checkFilter(fa.Filters.InhibitCA, "inhibit_ca")
 	checkFilter(fa.Filters.InhibitMSAW, "inhibit_msaw")
 	checkFilter(fa.Filters.Quicklook, "quicklook")
@@ -1110,7 +1207,7 @@ func (fa *STARSFacilityAdaptation) PostDeserialize(loc av.Locator, controlledAir
 	e.Pop()
 }
 
-func (fa STARSFacilityAdaptation) CheckScratchpad(sp string) bool {
+func (fa FacilityAdaptation) CheckScratchpad(sp string) bool {
 	lc := len([]rune(sp))
 
 	// 5-148

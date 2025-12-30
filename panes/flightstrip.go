@@ -89,7 +89,7 @@ func (fsp *FlightStripPane) Activate(r renderer.Renderer, p platform.Platform, e
 	if fsp.FontSize == 0 {
 		fsp.FontSize = 12
 	}
-	if fsp.font = renderer.GetFont(renderer.FontIdentifier{Name: "Flight Strip Printer", Size: fsp.FontSize}); fsp.font == nil {
+	if fsp.font = renderer.GetFont(renderer.FontIdentifier{Name: renderer.FlightStripPrinter, Size: fsp.FontSize}); fsp.font == nil {
 		fsp.font = renderer.GetDefaultFont()
 	}
 	if fsp.addedPlans == nil {
@@ -131,7 +131,7 @@ func (fsp *FlightStripPane) getCID(acid sim.ACID) int {
 	return start
 }
 
-func (fsp *FlightStripPane) possiblyAdd(fp *sim.STARSFlightPlan, tcp string) {
+func (fsp *FlightStripPane) possiblyAdd(fp *sim.NASFlightPlan, ctx *Context) {
 	if _, ok := fsp.addedPlans[fp.ACID]; ok {
 		// We've seen it before.
 		return
@@ -142,17 +142,17 @@ func (fsp *FlightStripPane) possiblyAdd(fp *sim.STARSFlightPlan, tcp string) {
 		return
 	}
 
-	if fp.TrackingController == tcp {
+	if ctx.UserOwnsFlightPlan(fp) {
 		fsp.strips = append(fsp.strips, fp.ACID)
 		fsp.addedPlans[fp.ACID] = nil
 		fsp.Annotations[fp.ACID] = [9]string{"", "", "", "", "", "", "", "", ""}
 	}
 }
 
-func (fsp *FlightStripPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (fsp *FlightStripPane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 }
 
-func (fsp *FlightStripPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (fsp *FlightStripPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	fsp.strips = nil
 	fsp.addedPlans = make(map[sim.ACID]interface{})
 	fsp.CIDs = make(map[sim.ACID]int)
@@ -167,7 +167,7 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 	// Added aircraft
 	for _, trk := range ctx.Client.State.Tracks {
 		if trk.FlightPlan != nil {
-			fsp.possiblyAdd(trk.FlightPlan, ctx.UserTCP)
+			fsp.possiblyAdd(trk.FlightPlan, ctx)
 		}
 	}
 
@@ -191,21 +191,21 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 			// necessary to check that it's still in
 			// ControlClient.Aircraft.
 			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && fsp.AddPushed {
-				fsp.possiblyAdd(fp, ctx.UserTCP)
+				fsp.possiblyAdd(fp, ctx)
 			}
 
 		case sim.FlightPlanAssociatedEvent:
 			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && fsp.AutoAddTracked {
-				fsp.possiblyAdd(fp, ctx.UserTCP)
+				fsp.possiblyAdd(fp, ctx)
 			}
 
 		case sim.AcceptedHandoffEvent, sim.AcceptedRedirectedHandoffEvent:
 			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && fsp.AutoAddAcceptedHandoffs {
-				fsp.possiblyAdd(fp, ctx.UserTCP)
+				fsp.possiblyAdd(fp, ctx)
 			}
 
 		case sim.HandoffControlEvent:
-			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && fp.TrackingController != ctx.UserTCP {
+			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && !ctx.UserOwnsFlightPlan(fp) {
 				remove(event.ACID)
 			}
 		}
@@ -231,9 +231,11 @@ func (fsp *FlightStripPane) processEvents(ctx *Context) {
 	}
 }
 
-func (fsp *FlightStripPane) DisplayName() string { return "Flight Strips" }
-
 func (fsp *FlightStripPane) Hide() bool { return fsp.HideFlightStrips }
+
+var _ UIDrawer = (*FlightStripPane)(nil)
+
+func (fsp *FlightStripPane) DisplayName() string { return "Flight Strips" }
 
 func (fsp *FlightStripPane) DrawUI(p platform.Platform, config *platform.Config) {
 	show := !fsp.HideFlightStrips
@@ -346,8 +348,11 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 		if sfp == nil {
 			continue
 		}
-		fp := ctx.Client.State.ACFlightPlans[av.ADSBCallsign(fsp.strips[i])] // HAX: conflates callsign/ACID
 		acid := fsp.strips[i]
+		track := ctx.Client.State.Tracks[av.ADSBCallsign(acid)] // HAX: conflates callsign/ACID
+		if track == nil {
+			continue
+		}
 		annots := fsp.Annotations[acid]
 
 		x := float32(0)
@@ -434,11 +439,11 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 			// Third column: departure airport, (empty), (empty)
 			x += width1
 			// Departures
-			drawColumn(fp.DepartureAirport, "", "", width2, false)
+			drawColumn(track.DepartureAirport, "", "", width2, false)
 
 			x += width2
 			// Fourth column: route and destination airport
-			route := formatRoute(fp.Route+" "+fp.ArrivalAirport, widthCenter, 3)
+			route := formatRoute(track.FiledRoute+" "+track.ArrivalAirport, widthCenter, 3)
 			drawColumn(route[0], route[1], route[2], widthCenter, false)
 		} else if sfp.TypeOfFlight == av.FlightTypeArrival {
 			// Second column; 3 entries: squawk, previous fix, coordination fix
@@ -451,7 +456,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 
 			// Fourth column: flight rules, destination airport
 			x += width2
-			drawColumn(util.Select(fp.Rules == av.FlightRulesIFR, "IFR", "VFR"), "", fp.ArrivalAirport, widthCenter, false)
+			drawColumn(util.Select(sfp.Rules == av.FlightRulesIFR, "IFR", "VFR"), "", track.ArrivalAirport, widthCenter, false)
 		} else {
 			// Overflight
 			// Second column; 3 entries: squawk, entry fix, exit fix
@@ -465,8 +470,8 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 			// Fourth column: altitude, route
 			x += width2
 			// TODO: e.g. "VFR/65" for altitude if it's VFR
-			route := formatRoute(fp.DepartureAirport+" "+fp.Route+" "+fp.ArrivalAirport, widthCenter, 2)
-			drawColumn(strconv.Itoa(fp.Altitude/100), route[0], route[1], widthCenter, false)
+			route := formatRoute(track.DepartureAirport+" "+track.FiledRoute+" "+track.ArrivalAirport, widthCenter, 2)
+			drawColumn(strconv.Itoa(track.FiledAltitude/100), route[0], route[1], widthCenter, false)
 		}
 
 		// Annotations

@@ -1,23 +1,21 @@
-// pkg/server/manager.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// server/manager.go
+// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package server
 
 import (
+	"context"
 	crand "crypto/rand"
 	"encoding/base64"
 	"fmt"
 	"log/slog"
-	gomath "math"
-	"net"
 	"net/http"
-	"net/http/pprof"
 	"os"
-	"runtime"
-	"strconv"
+	"slices"
 	"strings"
-	"text/template"
+	"sync"
+	"sync/atomic"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -28,262 +26,220 @@ import (
 	"github.com/mmp/vice/wx"
 
 	"github.com/brunoga/deep"
-	"github.com/gorilla/websocket"
-	"github.com/shirou/gopsutil/cpu"
-	"github.com/vmihailenco/msgpack/v5"
 )
 
-///////////////////////////////////////////////////////////////////////////
-// SimManager
-
-type ttsUsageStats struct {
-	Calls    int
-	Words    int
-	LastUsed time.Time
-}
-
 type SimManager struct {
-	scenarioGroups     map[string]map[string]*scenarioGroup
-	configs            map[string]map[string]*Configuration
-	activeSims         map[string]*activeSim
-	controllersByToken map[string]*humanController
-	mu                 util.LoggingMutex
-	mapManifests       map[string]*sim.VideoMapManifest
-	startTime          time.Time
-	httpPort           int
-	websocketTXBytes   int64
-	tts                sim.TTSProvider
-	ttsUsageByIP       map[string]*ttsUsageStats
-	local              bool
-	lg                 *log.Logger
+	scenarioGroups   map[string]map[string]*scenarioGroup
+	scenarioCatalogs map[string]map[string]*ScenarioCatalog
+
+	// Active sessions
+	sessionsByName  map[string]*simSession
+	sessionsByToken map[string]*simSession
+
+	// Helpers and such
+	tts            sim.TTSProvider
+	wxProvider     wx.Provider
+	providersReady chan struct{}
+	mapManifests   map[string]*sim.VideoMapManifest
+	lg             *log.Logger
+
+	// Stats and internal details
+	mu               util.LoggingMutex
+	startTime        time.Time
+	httpPort         int
+	websocketTXBytes atomic.Int64
+	ttsUsageByIP     map[string]*ttsUsageStats
+	local            bool
 }
 
-type Configuration struct {
-	ScenarioConfigs  map[string]*SimScenarioConfiguration
-	ControlPositions map[string]*av.Controller
+// Client-side info about the available scenarios.
+type ScenarioCatalog struct {
+	Scenarios        map[string]*ScenarioSpec
+	ControlPositions map[sim.TCP]*av.Controller
 	DefaultScenario  string
+	Facility         string
+	ARTCC            string
+	Area             string
+	Airports         []string // ICAO codes of airports in this scenario group
 }
 
-type humanController struct {
-	asim                *activeSim
-	tcp                 string
-	token               string
-	lastUpdateCall      time.Time
-	warnedNoUpdateCalls bool
-	speechWs            *websocket.Conn
-	disableTextToSpeech bool
-}
+type ScenarioSpec struct {
+	ControllerConfiguration *sim.ControllerConfiguration
+	PrimaryAirport          string
+	MagneticVariation       float32
+	WindSpecifier           *wx.WindSpecifier
 
-type SimScenarioConfiguration struct {
-	SelectedController  string
-	SelectedSplit       string
-	SplitConfigurations av.SplitConfigurationSet
-	PrimaryAirport      string
-
-	AverageWind  wx.WindLayer
 	LaunchConfig sim.LaunchConfig
 
 	DepartureRunways []sim.DepartureRunway
 	ArrivalRunways   []sim.ArrivalRunway
 }
 
-type activeSim struct {
-	name          string
-	scenarioGroup string
-	scenario      string
-	sim           *sim.Sim
-	password      string
-
-	controllersByTCP map[string]*humanController
-}
-
-type NewSimConfiguration struct {
-	NewSimName   string
-	GroupName    string
-	ScenarioName string
-
-	Scenario *SimScenarioConfiguration
-
-	TFRs []av.TFR
-
-	TRACONName      string
-	RequirePassword bool
-	Password        string
-
-	EnforceUniqueCallsignSuffix bool
-
-	AllowInstructorRPO  bool
-	Instructor          bool
-	DisableTextToSpeech bool
-}
-
-type SimConnectionConfiguration struct {
-	RemoteSim           string
-	Position            string
-	Password            string
-	Instructor          bool
-	DisableTextToSpeech bool
-}
-
-func MakeNewSimConfiguration() NewSimConfiguration {
-	return NewSimConfiguration{NewSimName: rand.Make().AdjectiveNoun()}
-}
-
-type RemoteSim struct {
-	GroupName          string
-	ScenarioName       string
-	PrimaryController  string
-	RequirePassword    bool
-	AvailablePositions map[string]av.Controller
-	CoveredPositions   map[string]av.Controller
-}
-
-func (as *activeSim) AddHumanController(tcp, token string, disableTextToSpeech bool) *humanController {
-	hc := &humanController{
-		asim:                as,
-		tcp:                 tcp,
-		lastUpdateCall:      time.Now(),
-		token:               token,
-		disableTextToSpeech: disableTextToSpeech,
+func (s *ScenarioSpec) AllAirports() []string {
+	allAirports := make(map[string]bool)
+	for _, runway := range s.DepartureRunways {
+		allAirports[runway.Airport] = true
 	}
-
-	as.controllersByTCP[tcp] = hc
-
-	return hc
+	for _, runway := range s.ArrivalRunways {
+		allAirports[runway.Airport] = true
+	}
+	return util.SortedMapKeys(allAirports)
 }
 
-func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup,
-	simConfigurations map[string]map[string]*Configuration, manifests map[string]*sim.VideoMapManifest,
-	serverAddress string, isLocal bool, lg *log.Logger) *SimManager {
+///////////////////////////////////////////////////////////////////////////
+// Constructor and Initialization
+
+func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup, scenarioCatalogs map[string]map[string]*ScenarioCatalog,
+	mapManifests map[string]*sim.VideoMapManifest, serverAddress string, isLocal bool, lg *log.Logger) *SimManager {
 	sm := &SimManager{
-		scenarioGroups:     scenarioGroups,
-		configs:            simConfigurations,
-		activeSims:         make(map[string]*activeSim),
-		controllersByToken: make(map[string]*humanController),
-		mapManifests:       manifests,
-		startTime:          time.Now(),
-		tts:                makeTTSProvider(serverAddress, lg),
-		ttsUsageByIP:       make(map[string]*ttsUsageStats),
-		local:              isLocal,
-		lg:                 lg,
+		scenarioGroups:   scenarioGroups,
+		scenarioCatalogs: scenarioCatalogs,
+		sessionsByName:   make(map[string]*simSession),
+		sessionsByToken:  make(map[string]*simSession),
+		mapManifests:     mapManifests,
+		startTime:        time.Now(),
+		ttsUsageByIP:     make(map[string]*ttsUsageStats),
+		local:            isLocal,
+		providersReady:   make(chan struct{}),
+		lg:               lg,
 	}
+
+	// Initialize TTS and WX providers asynchronously so the server can start
+	// accepting connections immediately. Callers that need providers will
+	// block in getProviders() until initialization completes or times out.
+	go sm.initRemoteProviders(serverAddress, lg)
 
 	sm.launchHTTPServer()
 
 	return sm
 }
 
-func makeTTSProvider(serverAddress string, lg *log.Logger) sim.TTSProvider {
-	// Try to create a Google TTS provider first
-	p, err := NewGoogleTTSProvider(lg)
-	if err == nil {
-		lg.Info("Using Google TTS provider")
-		return p
-	}
+func (sm *SimManager) initRemoteProviders(serverAddress string, lg *log.Logger) {
+	defer close(sm.providersReady)
 
-	// If Google TTS is not available (no credentials), try to connect to the remote server
-	lg.Infof("Google TTS unavailable: %v, attempting to use remote TTS provider at %s", err, serverAddress)
-	rp, err := NewRemoteTTSProvider(serverAddress, lg)
-	if err != nil {
-		lg.Errorf("Failed to connect to remote TTS provider: %v", err)
-		return nil
-	}
+	// Use a single context to control all provider initialization.
+	// This must complete before the client RPC timeout (5 seconds).
+	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
+	defer cancel()
 
-	lg.Info("Successfully connected to remote TTS provider")
-	return rp
+	// Initialize TTS and WX providers in parallel since they're independent
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	go func() {
+		defer wg.Done()
+		sm.tts = makeTTSProvider(ctx, serverAddress, lg)
+	}()
+
+	go func() {
+		defer wg.Done()
+		sm.wxProvider, _ = MakeWXProvider(ctx, serverAddress, lg)
+	}()
+
+	wg.Wait()
+}
+
+func (sm *SimManager) getProviders() (sim.TTSProvider, wx.Provider) {
+	<-sm.providersReady
+	return sm.tts, sm.wxProvider
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Session Management - Creating and Connecting to Sims
+
+type NewSimRequest struct {
+	Facility     string
+	NewSimName   string
+	GroupName    string
+	ScenarioName string
+
+	ScenarioSpec *ScenarioSpec
+	StartTime    time.Time
+
+	TFRs        []av.TFR
+	Emergencies []sim.Emergency
+
+	RequirePassword bool
+	Password        string
+
+	EnforceUniqueCallsignSuffix bool
+
+	PilotErrorInterval float32
+
+	Initials            string // Controller initials (e.g., "XX")
+	Privileged          bool
+	DisableTextToSpeech bool
+}
+
+func MakeNewSimRequest() NewSimRequest {
+	return NewSimRequest{
+		NewSimName:         rand.Make().AdjectiveNoun(),
+		PilotErrorInterval: 3,
+	}
 }
 
 type NewSimResult struct {
-	SimState        *sim.State
+	SimState        *SimState
 	ControllerToken string
 	SpeechWSPort    int
 }
 
-func (sm *SimManager) NewSim(config *NewSimConfiguration, result *NewSimResult) error {
-	c2 := config
-	c2.TFRs = nil
-	fmt.Printf("NewSim %#v\n", c2)
+// SimState wraps sim.UserState and adds server-specific fields.
+type SimState struct {
+	sim.UserState
 
-	lg := sm.lg.With(slog.String("sim_name", config.NewSimName))
-	if nsc := sm.makeSimConfiguration(config, lg); nsc != nil {
-		manifest := sm.mapManifests[nsc.STARSFacilityAdaptation.VideoMapFile]
-		sim := sim.NewSim(*nsc, manifest, lg)
-		as := &activeSim{
-			name:             config.NewSimName,
-			scenarioGroup:    config.GroupName,
-			scenario:         config.ScenarioName,
-			sim:              sim,
-			password:         config.Password,
-			controllersByTCP: make(map[string]*humanController),
-		}
-		pos := sim.State.PrimaryController
-		return sm.Add(as, result, pos, config.Instructor, true, config.DisableTextToSpeech)
+	// User-related items not managed by the Sim.
+	UserTCW                             sim.TCW
+	ActiveTCWs                          []sim.TCW
+	ControllerVideoMaps                 []string
+	ControllerDefaultVideoMaps          []string
+	ControllerMonitoredBeaconCodeBlocks []av.Squawk
+}
+
+const NewSimRPC = "SimManager.NewSim"
+
+func (sm *SimManager) NewSim(req *NewSimRequest, result *NewSimResult) error {
+	lg := sm.lg.With(slog.String("sim_name", req.NewSimName))
+
+	if nsc := sm.makeSimConfiguration(req, lg); nsc != nil {
+		manifest := sm.mapManifests[nsc.FacilityAdaptation.VideoMapFile]
+		s := sim.NewSim(*nsc, manifest, lg)
+		session := makeSimSession(req.NewSimName, req.GroupName, req.ScenarioName, req.Password, s, sm.lg)
+		pos := s.ScenarioRootPosition()
+		return sm.Add(session, result, pos, req.Initials, req.Privileged, true, req.DisableTextToSpeech)
 	} else {
-		return ErrInvalidSSimConfiguration
+		return ErrInvalidSimConfiguration
 	}
 }
 
-func (sm *SimManager) ConnectToSim(config *SimConnectionConfiguration, result *NewSimResult) error {
-	sm.mu.Lock(sm.lg)
-	defer sm.mu.Unlock(sm.lg)
-
-	as, ok := sm.activeSims[config.RemoteSim]
+func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *sim.NewSimConfiguration {
+	facility, ok := sm.scenarioGroups[req.Facility]
 	if !ok {
-		return ErrNoNamedSim
-	}
-
-	if as.password != "" && config.Password != as.password {
-		return ErrInvalidPassword
-	}
-
-	// If signing on as dedicated instructor/RPO, ignore the additional instructor flag
-	signOnConfig := *config
-	signOnConfig.Instructor = config.Instructor && config.Position == ""
-	ss, token, err := sm.signOn(as, &signOnConfig)
-	if err != nil {
-		return err
-	}
-
-	hc := as.AddHumanController(config.Position, token, config.DisableTextToSpeech)
-	sm.controllersByToken[token] = hc
-
-	*result = NewSimResult{
-		SimState:        ss,
-		ControllerToken: token,
-		SpeechWSPort:    util.Select(sm.tts != nil, sm.httpPort, 0),
-	}
-	result.PruneForClient()
-
-	return nil
-}
-
-func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.Logger) *sim.NewSimConfiguration {
-	tracon, ok := sm.scenarioGroups[config.TRACONName]
-	if !ok {
-		lg.Errorf("%s: unknown TRACON", config.TRACONName)
+		lg.Errorf("%s: unknown facility", req.Facility)
 		return nil
 	}
-	sg, ok := tracon[config.GroupName]
+	sg, ok := facility[req.GroupName]
 	if !ok {
-		lg.Errorf("%s: unknown scenario group", config.GroupName)
+		lg.Errorf("%s: unknown scenario group", req.GroupName)
 		return nil
 	}
-	sc, ok := sg.Scenarios[config.ScenarioName]
+	sc, ok := sg.Scenarios[req.ScenarioName]
 	if !ok {
-		lg.Errorf("%s: unknown scenario", config.ScenarioName)
+		lg.Errorf("%s: unknown scenario", req.ScenarioName)
 		return nil
 	}
 
-	description := util.Select(sm.local, " "+config.ScenarioName,
-		"@"+config.NewSimName+": "+config.ScenarioName)
+	description := util.Select(sm.local, " "+req.ScenarioName, "@"+req.NewSimName+": "+req.ScenarioName)
+
+	_, wxp := sm.getProviders()
 
 	nsc := sim.NewSimConfiguration{
-		TFRs:                        config.TFRs,
-		TRACON:                      config.TRACONName,
-		LaunchConfig:                config.Scenario.LaunchConfig,
-		STARSFacilityAdaptation:     deep.MustCopy(sg.STARSFacilityAdaptation),
-		IsLocal:                     sm.local,
-		EnforceUniqueCallsignSuffix: config.EnforceUniqueCallsignSuffix,
+		TFRs:                        req.TFRs,
+		Facility:                    req.Facility,
+		LaunchConfig:                req.ScenarioSpec.LaunchConfig,
+		FacilityAdaptation:          deep.MustCopy(sg.FacilityAdaptation),
+		EnforceUniqueCallsignSuffix: req.EnforceUniqueCallsignSuffix,
+		PilotErrorInterval:          req.PilotErrorInterval,
 		DepartureRunways:            sc.DepartureRunways,
 		ArrivalRunways:              sc.ArrivalRunways,
 		VFRReportingPoints:          sg.VFRReportingPoints,
@@ -291,218 +247,313 @@ func (sm *SimManager) makeSimConfiguration(config *NewSimConfiguration, lg *log.
 		Description:                 description,
 		MagneticVariation:           sg.MagneticVariation,
 		NmPerLongitude:              sg.NmPerLongitude,
-		Wind:                        sc.Wind,
+		WindSpecifier:               sc.WindSpecifier,
 		Airports:                    sg.Airports,
 		Fixes:                       sg.Fixes,
 		PrimaryAirport:              sg.PrimaryAirport,
-		Center:                      util.Select(sc.Center.IsZero(), sg.STARSFacilityAdaptation.Center, sc.Center),
-		Range:                       util.Select(sc.Range == 0, sg.STARSFacilityAdaptation.Range, sc.Range),
+		Center:                      util.Select(sc.Center.IsZero(), sg.FacilityAdaptation.Center, sc.Center),
+		Range:                       util.Select(sc.Range == 0, sg.FacilityAdaptation.Range, sc.Range),
 		DefaultMaps:                 sc.DefaultMaps,
+		DefaultMapGroup:             sc.DefaultMapGroup,
 		InboundFlows:                sg.InboundFlows,
 		Airspace:                    sg.Airspace,
 		ControllerAirspace:          sc.Airspace,
 		ControlPositions:            sg.ControlPositions,
 		VirtualControllers:          sc.VirtualControllers,
-		SignOnPositions:             make(map[string]*av.Controller),
-		TTSProvider:                 sm.tts,
-	}
-
-	if !sm.local {
-		selectedSplit := config.Scenario.SelectedSplit
-		var err error
-		nsc.PrimaryController, err = sc.SplitConfigurations.GetPrimaryController(selectedSplit)
-		if err != nil {
-			lg.Errorf("Unable to get primary controller: %v", err)
-		}
-		nsc.MultiControllers, err = sc.SplitConfigurations.GetConfiguration(selectedSplit)
-		if err != nil {
-			lg.Errorf("Unable to get multi controllers: %v", err)
-		}
-	} else {
-		nsc.PrimaryController = sc.SoloController
-	}
-
-	add := func(callsign string) {
-		if ctrl, ok := sg.ControlPositions[callsign]; !ok {
-			lg.Errorf("%s: control position unknown??!", callsign)
-		} else {
-			nsc.SignOnPositions[callsign] = ctrl
-		}
-	}
-	if !sm.local {
-		configs, err := sc.SplitConfigurations.GetConfiguration(config.Scenario.SelectedSplit)
-		if err != nil {
-			lg.Errorf("unable to get configurations for split: %v", err)
-		}
-		for callsign := range configs {
-			add(callsign)
-		}
-	} else {
-		add(sc.SoloController)
-	}
-	if config.AllowInstructorRPO {
-		nsc.SignOnPositions["INS"] = &av.Controller{
-			Position:   "Instructor",
-			Instructor: true,
-		}
-		nsc.SignOnPositions["RPO"] = &av.Controller{
-			Position: "Remote Pilot Operator",
-			RPO:      true,
-		}
+		ControllerConfiguration:     sc.ControllerConfiguration,
+		WXProvider:                  wxp,
+		Emergencies:                 req.Emergencies,
+		StartTime:                   req.StartTime,
 	}
 
 	return &nsc
 }
 
-func (sm *SimManager) AddLocal(sim *sim.Sim, result *NewSimResult) error {
-	as := &activeSim{ // no password, etc.
-		sim:              sim,
-		controllersByTCP: make(map[string]*humanController),
+type JoinSimRequest struct {
+	SimName             string
+	TCW                 sim.TCW   // Which TCW to sign into
+	SelectedTCPs        []sim.TCP // TCPs to consolidate (non-relief only)
+	Initials            string    // Controller initials (e.g., "MP")
+	Password            string
+	Privileged          bool
+	DisableTextToSpeech bool
+	JoiningAsRelief     bool
+}
+
+const ConnectToSimRPC = "SimManager.ConnectToSim"
+
+func (sm *SimManager) ConnectToSim(req *JoinSimRequest, result *NewSimResult) error {
+	sm.mu.Lock(sm.lg)
+	defer sm.mu.Unlock(sm.lg)
+
+	session, ok := sm.sessionsByName[req.SimName]
+	if !ok {
+		return ErrNoNamedSim
 	}
+
+	if session.password != "" && req.Password != session.password {
+		return ErrInvalidPassword
+	}
+
+	tcw := req.TCW
+
+	var token string
+	var eventSub *sim.EventsSubscription
+	if req.JoiningAsRelief {
+		// Relief mode: don't call sim.SignOn (position already signed in)
+		// Just generate a token for this user
+		token = sm.makeControllerToken()
+
+		// Relief controllers get their own event subscription
+		eventSub = session.sim.Subscribe()
+	} else {
+		// Normal sign-in: check if TCW is already occupied
+		if err := sm.checkTCWAvailable(session, tcw); err != nil {
+			return err
+		}
+
+		// Normal sign-in: call sim.SignOn
+		var err error
+		token, eventSub, err = sm.signOn(session, req)
+		if err != nil {
+			return err
+		}
+	}
+
+	session.AddHumanController(token, tcw, req.Initials, req.DisableTextToSpeech, eventSub)
+	sm.sessionsByToken[token] = session
+
+	*result = *sm.buildNewSimResult(session, tcw, token)
+
+	return nil
+}
+
+func (sm *SimManager) makeControllerToken() string {
+	var buf [16]byte
+	if _, err := crand.Read(buf[:]); err != nil {
+		sm.lg.Errorf("%v", err)
+		return ""
+	}
+	return base64.StdEncoding.EncodeToString(buf[:])
+}
+
+// checkTCWAvailable checks if a TCW is available (not already occupied by a human).
+// Returns ErrTCWAlreadyOccupied if the TCW is in use.
+// Assumes SimManager lock is held.
+func (sm *SimManager) checkTCWAvailable(ss *simSession, tcw sim.TCW) error {
+	ss.mu.Lock(ss.lg)
+	defer ss.mu.Unlock(ss.lg)
+
+	for _, conn := range ss.connectionsByToken {
+		if conn.tcw == tcw {
+			return ErrTCWAlreadyOccupied
+		}
+	}
+
+	return nil
+}
+
+func (sm *SimManager) buildNewSimResult(session *simSession, tcw sim.TCW, token string) *NewSimResult {
+	videoMaps, defaultMaps, beaconCodes := session.sim.GetControllerVideoMaps(tcw)
+
+	return &NewSimResult{
+		SimState: &SimState{
+			UserState:                           *session.sim.GetUserState(),
+			UserTCW:                             tcw,
+			ActiveTCWs:                          session.GetActiveTCWs(),
+			ControllerVideoMaps:                 videoMaps,
+			ControllerDefaultVideoMaps:          defaultMaps,
+			ControllerMonitoredBeaconCodeBlocks: beaconCodes,
+		},
+		ControllerToken: token,
+		SpeechWSPort:    util.Select(sm.tts != nil, sm.httpPort, 0),
+	}
+}
+
+const AddLocalRPC = "SimManager.AddLocal"
+
+func (sm *SimManager) AddLocal(s *sim.Sim, result *NewSimResult) error {
+	session := makeLocalSimSession(s, sm.lg)
 	if !sm.local {
 		sm.lg.Errorf("Called AddLocal with sm.local == false")
 	}
-	return sm.Add(as, result, sim.State.PrimaryController, false, false, false)
+	return sm.Add(session, result, s.ScenarioRootPosition(), "", false, false, false)
 }
 
-func (sm *SimManager) Add(as *activeSim, result *NewSimResult, initialTCP string, instructor bool, prespawn bool, disableTextToSpeech bool) error {
-	lg := sm.lg
-	if as.name != "" {
-		lg = lg.With(slog.String("sim_name", as.name))
-	}
-	as.sim.Activate(lg, sm.tts)
+func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP sim.ControlPosition, initials string, instructor bool,
+	prespawn bool, disableTextToSpeech bool) error {
+	_, wxp := sm.getProviders()
+	session.sim.Activate(session.lg, wxp)
 
 	sm.mu.Lock(sm.lg)
 
 	// Empty sim name is just a local sim, so no problem with replacing it...
-	if _, ok := sm.activeSims[as.name]; ok && as.name != "" {
+	if _, ok := sm.sessionsByName[session.name]; ok && session.name != "" {
 		sm.mu.Unlock(sm.lg)
 		return ErrDuplicateSimName
 	}
 
-	sm.lg.Infof("%s: adding sim", as.name)
-	sm.activeSims[as.name] = as
+	sm.lg.Infof("%s: adding sim", session.name)
+	sm.sessionsByName[session.name] = session
 
-	signOnConfig := &SimConnectionConfiguration{
-		Position:            initialTCP,
-		Instructor:          instructor,
+	tcw := sim.TCW(initialTCP)
+	joinReq := &JoinSimRequest{
+		TCW:                 tcw,
+		Privileged:          instructor,
 		DisableTextToSpeech: disableTextToSpeech,
 	}
-	ss, token, err := sm.signOn(as, signOnConfig)
+	token, eventSub, err := sm.signOn(session, joinReq)
 	if err != nil {
 		sm.mu.Unlock(sm.lg)
 		return err
 	}
 
-	hc := as.AddHumanController(initialTCP, token, disableTextToSpeech)
-	sm.controllersByToken[token] = hc
+	session.AddHumanController(token, tcw, initials, disableTextToSpeech, eventSub)
+	sm.sessionsByToken[token] = session
 
 	sm.mu.Unlock(sm.lg)
 
-	// Run prespawn after the primary controller is signed in.
+	// Run prespawn after the root controller is signed in.
 	if prespawn {
-		as.sim.Prespawn()
+		session.sim.Prespawn()
 	}
 
-	go func() {
-		defer sm.lg.CatchAndReportCrash()
+	go sm.runSimUpdateLoop(session)
 
-		for !sm.SimShouldExit(as.sim) {
-			// Terminate idle Sims after 4 hours, but not local Sims.
-			if !sm.local {
-				// Sign off controllers we haven't heard from in 15 seconds so that
-				// someone else can take their place. We only make this check for
-				// multi-controller sims; we don't want to do this for local sims
-				// so that we don't kick people off e.g. when their computer
-				// sleeps.
-				sm.mu.Lock(sm.lg) // FIXME: have a per-ActiveSim lock?
-				for tcp, ctrl := range as.controllersByTCP {
-					if time.Since(ctrl.lastUpdateCall) > 5*time.Second {
-						if !ctrl.warnedNoUpdateCalls {
-							ctrl.warnedNoUpdateCalls = true
-							sm.lg.Warnf("%s: no messages for 5 seconds", tcp)
-							as.sim.PostEvent(sim.Event{
-								Type:        sim.StatusMessageEvent,
-								WrittenText: tcp + " has not been heard from for 5 seconds. Connection lost?",
-							})
-						}
-
-						if time.Since(ctrl.lastUpdateCall) > 15*time.Second {
-							sm.lg.Warnf("%s: signing off idle controller", tcp)
-							if err := sm.signOff(ctrl.token); err != nil {
-								sm.lg.Errorf("%s: error signing off idle controller: %v", tcp, err)
-							}
-						}
-					}
-				}
-				sm.mu.Unlock(sm.lg)
-			}
-
-			as.sim.Update()
-
-			for tcp, ctrl := range as.controllersByTCP {
-				if ctrl.speechWs == nil {
-					continue
-				}
-
-				for _, ps := range as.sim.GetControllerSpeech(tcp) {
-					sm.websocketTXBytes += int64(len(ps.MP3))
-
-					w, err := ctrl.speechWs.NextWriter(websocket.BinaryMessage)
-					if err != nil {
-						sm.lg.Errorf("speechWs: %v", err)
-						continue
-					}
-
-					if err := msgpack.NewEncoder(w).Encode(ps); err != nil {
-						sm.lg.Errorf("speechWs encode: %v", err)
-						continue
-					}
-
-					if err := w.Close(); err != nil {
-						sm.lg.Errorf("speechWs close: %v", err)
-						continue
-					}
-				}
-			}
-
-			time.Sleep(100 * time.Millisecond)
-		}
-
-		sm.lg.Infof("%s: terminating sim after %s idle", as.name, as.sim.IdleTime())
-
-		as.sim.Destroy()
-
-		sm.mu.Lock(sm.lg)
-		delete(sm.activeSims, as.name)
-		sm.mu.Unlock(sm.lg)
-	}()
-
-	*result = NewSimResult{
-		SimState:        ss,
-		ControllerToken: token,
-		SpeechWSPort:    util.Select(sm.tts != nil, sm.httpPort, 0),
-	}
-	result.PruneForClient()
+	// Get the state after prespawn (if any) has completed.
+	*result = *sm.buildNewSimResult(session, tcw, token)
 
 	return nil
 }
 
-// PruneForClient tidies the NewSimResult, removing fields that are not used by client code
-// in order to reduce the amount of bandwidth used to send the NewSimResult to the client.
-func (r *NewSimResult) PruneForClient() {
-	r.SimState = deep.MustCopy(r.SimState)
+// runSimUpdateLoop runs the update loop for a sim session, handling idle
+// timeout and cleanup.
+func (sm *SimManager) runSimUpdateLoop(session *simSession) {
+	defer sm.lg.CatchAndReportCrash()
 
-	for _, ap := range r.SimState.Airports {
-		ap.Departures = nil
+	// Terminate idle Sims after 4 hours, but not local Sims.
+	const simIdleLimit = 4 * time.Hour
+	for sm.local || session.sim.IdleTime() < simIdleLimit {
+		if !sm.local && !util.DebuggerIsRunning() {
+			session.CullIdleControllers(sm)
+		}
+
+		session.sim.Update()
+
+		sm.websocketTXBytes.Add(session.SendSpeechMP3s())
+
+		time.Sleep(100 * time.Millisecond)
 	}
+
+	sm.lg.Infof("%s: terminating sim after %s idle", session.name, session.sim.IdleTime())
+
+	session.sim.Destroy()
+
+	sm.mu.Lock(sm.lg)
+	// Clean up all controllers for this sim
+	for token, ss := range sm.sessionsByToken {
+		if ss == session {
+			delete(sm.sessionsByToken, token)
+		}
+	}
+	delete(sm.sessionsByName, session.name)
+	sm.mu.Unlock(sm.lg)
 }
+
+///////////////////////////////////////////////////////////////////////////
+// Session Management - Sign On/Off
+
+func (sm *SimManager) SignOff(token string) error {
+	sm.mu.Lock(sm.lg)
+	defer sm.mu.Unlock(sm.lg)
+
+	return sm.signOff(token)
+}
+
+func (sm *SimManager) signOff(token string) error {
+	session, ok := sm.sessionsByToken[token]
+	if !ok {
+		return ErrNoSimForControllerToken
+	}
+
+	delete(sm.sessionsByToken, token)
+
+	result, ok := session.SignOff(token)
+	if !ok {
+		return ErrNoSimForControllerToken
+	}
+
+	// If this was the last user at the TCW, post messages and clear privileges
+	if result.UsersAtTCW == 0 {
+		// Get positions for the uncovered message
+		uncoveredPositions := session.sim.GetPositionsForTCW(result.TCW)
+
+		// Clear privileged status
+		session.sim.SetPrivilegedTCW(result.TCW, false)
+
+		msg := string(result.TCW)
+		if result.Initials != "" {
+			msg += " (" + result.Initials + ")"
+		}
+		msg += " has signed off."
+		session.sim.PostEvent(sim.Event{
+			Type:        sim.StatusMessageEvent,
+			WrittenText: msg,
+		})
+
+		// If there are uncovered positions, post an error message
+		if len(uncoveredPositions) > 0 {
+			tcpStrs := make([]string, len(uncoveredPositions))
+			for i, tcp := range uncoveredPositions {
+				tcpStrs[i] = string(tcp)
+			}
+			slices.Sort(tcpStrs)
+			session.sim.PostEvent(sim.Event{
+				Type:        sim.ErrorMessageEvent,
+				WrittenText: "Uncovered positions: " + strings.Join(tcpStrs, ", "),
+			})
+		}
+	}
+
+	return nil
+}
+
+// assume SimManager lock is held
+func (sm *SimManager) signOn(ss *simSession, req *JoinSimRequest) (string, *sim.EventsSubscription, error) {
+	_, eventSub, err := ss.sim.SignOn(req.TCW, req.SelectedTCPs)
+	if err != nil {
+		return "", nil, err
+	}
+
+	// Set privileged status if instructor
+	if req.Privileged {
+		ss.sim.SetPrivilegedTCW(req.TCW, true)
+	}
+
+	// Post sign-on message
+	msg := string(req.TCW) + " (" + req.Initials + ") has signed on for "
+	positions := ss.sim.GetPositionsForTCW(req.TCW)
+	msg += strings.Join(util.MapSlice(positions, func(p sim.ControlPosition) string { return string(p) }), ", ")
+	msg += "."
+	ss.sim.PostEvent(sim.Event{
+		Type:        sim.StatusMessageEvent,
+		WrittenText: msg,
+	})
+
+	return sm.makeControllerToken(), eventSub, nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Controller Lookup and State Updates
 
 type ConnectResult struct {
-	Configurations map[string]map[string]*Configuration
-	RunningSims    map[string]*RemoteSim
-	HaveTTS        bool
+	ScenarioCatalogs    map[string]map[string]*ScenarioCatalog
+	RunningSims         map[string]*RunningSim
+	HaveTTS             bool
+	AvailableWXByTRACON map[string][]util.TimeInterval
 }
+
+const ConnectRPC = "SimManager.Connect"
 
 func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 	if version != ViceRPCVersion {
@@ -514,201 +565,168 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 		return err
 	}
 
+	tts, wxp := sm.getProviders()
+	result.HaveTTS = tts != nil
+	result.AvailableWXByTRACON = wxp.GetAvailableTimeIntervals()
+
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
-	result.Configurations = sm.configs
-	result.HaveTTS = sm.tts != nil
+	result.ScenarioCatalogs = sm.scenarioCatalogs
 
 	return nil
 }
 
-// assume SimManager lock is held
-func (sm *SimManager) signOn(as *activeSim, config *SimConnectionConfiguration) (*sim.State, string, error) {
-	ss, err := as.sim.SignOn(config.Position, config.Instructor, config.DisableTextToSpeech)
-	if err != nil {
-		return nil, "", err
-	}
-
-	var buf [16]byte
-	if _, err := crand.Read(buf[:]); err != nil {
-		return nil, "", err
-	}
-	token := base64.StdEncoding.EncodeToString(buf[:])
-
-	return ss, token, nil
+type TCPConsolidation struct {
+	sim.TCPConsolidation
+	Initials []string // Server-layer addition: initials of signed-in controllers
 }
 
-func (sm *SimManager) SignOff(token string) error {
+func (s TCPConsolidation) IsOccupied() bool { return len(s.Initials) > 0 }
+
+type RunningSim struct {
+	GroupName                    string
+	ScenarioName                 string
+	RequirePassword              bool
+	ScenarioDefaultConsolidation map[sim.TCP][]sim.TCP
+	CurrentConsolidation         map[sim.TCW]TCPConsolidation
+}
+
+const GetRunningSimsRPC = "SimManager.GetRunningSims"
+
+func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RunningSim) error {
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
-	return sm.signOff(token)
-}
-
-func (sm *SimManager) signOff(token string) error {
-	if ctrl, s, ok := sm.lookupController(token); !ok {
-		return ErrNoSimForControllerToken
-	} else {
-		err := s.SignOff(ctrl.tcp)
-
-		// Do this cleanup regardless of an error return from SignOff
-		delete(sm.controllersByToken[token].asim.controllersByTCP, ctrl.tcp)
-		delete(sm.controllersByToken, token)
-
-		return err
-	}
-}
-
-func (sm *SimManager) handleSpeechWSConnection(w http.ResponseWriter, r *http.Request) {
-	authHeader := r.Header.Get("Authorization")
-	if !strings.HasPrefix(authHeader, "Bearer ") {
-		http.Error(w, "Missing or invalid Authorization header", http.StatusUnauthorized)
-		return
-	}
-
-	token := strings.TrimPrefix(authHeader, "Bearer ")
-	ctrl, ok := sm.controllersByToken[token]
-	if !ok {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		sm.lg.Errorf("Invalid token for speech websocket: %s", token)
-		return
-	}
-	if ctrl.speechWs != nil {
-		ctrl.speechWs.Close()
-	}
-
-	var err error
-	upgrader := websocket.Upgrader{EnableCompression: false}
-	ctrl.speechWs, err = upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		sm.lg.Errorf("Unable to upgrade speech websocket: %v", err)
-		return
-	}
-}
-
-func (sm *SimManager) GetRunningSims(_ int, result *map[string]*RemoteSim) error {
-	sm.mu.Lock(sm.lg)
-	defer sm.mu.Unlock(sm.lg)
-
-	running := make(map[string]*RemoteSim)
-	for name, as := range sm.activeSims {
-		rs := &RemoteSim{
-			GroupName:         as.scenarioGroup,
-			ScenarioName:      as.scenario,
-			PrimaryController: as.sim.State.PrimaryController,
-			RequirePassword:   as.password != "",
+	running := make(map[string]*RunningSim)
+	for name, ss := range sm.sessionsByName {
+		running[name] = &RunningSim{
+			GroupName:                    ss.scenarioGroup,
+			ScenarioName:                 ss.scenario,
+			RequirePassword:              ss.password != "",
+			ScenarioDefaultConsolidation: ss.sim.ScenarioDefaultConsolidation,
+			CurrentConsolidation:         ss.GetCurrentConsolidation(),
 		}
-
-		rs.AvailablePositions, rs.CoveredPositions = as.sim.GetAvailableCoveredPositions()
-
-		running[name] = rs
 	}
 
 	*result = running
 	return nil
 }
 
-func (sm *SimManager) LookupController(token string) (*humanController, *sim.Sim, bool) {
+// controllerContext holds the context for a connected controller, returned by LookupController.
+// A nil value indicates the controller was not found.
+type controllerContext struct {
+	tcw      sim.TCW
+	initials string
+	sim      *sim.Sim
+	eventSub *sim.EventsSubscription
+	session  *simSession
+}
+
+func (sm *SimManager) LookupController(token string) *controllerContext {
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
 	return sm.lookupController(token)
 }
 
-func (sm *SimManager) lookupController(token string) (*humanController, *sim.Sim, bool) {
-	if ctrl, ok := sm.controllersByToken[token]; ok {
-		return ctrl, ctrl.asim.sim, true
+func (sm *SimManager) lookupController(token string) *controllerContext {
+	if session, ok := sm.sessionsByToken[token]; ok {
+		return session.MakeControllerContext(token)
 	}
-	return nil, nil, false
+	return nil
 }
 
-const simIdleLimit = 4 * time.Hour
+func (sm *SimManager) GetStateUpdate(token string) (*SimStateUpdate, error) {
+	sm.mu.Lock(sm.lg)
+	session, ok := sm.sessionsByToken[token]
+	if !ok {
+		sm.mu.Unlock(sm.lg)
+		return nil, ErrNoSimForControllerToken
+	}
+	sm.mu.Unlock(sm.lg)
 
-func (sm *SimManager) SimShouldExit(sim *sim.Sim) bool {
-	if sim.IdleTime() < simIdleLimit {
-		return false
+	return session.GetStateUpdate(token, sm.tts), nil
+}
+
+// SimStateUpdate wraps sim.StateUpdate and adds server-specific fields.
+type SimStateUpdate struct {
+	sim.StateUpdate
+
+	ActiveTCWs []sim.TCW
+	Events     []sim.Event
+}
+
+// Apply applies the update to the state, including server-specific fields.
+// If eventStream is provided, events from the update are posted to it.
+func (su *SimStateUpdate) Apply(state *SimState, eventStream *sim.EventStream) {
+	// Make sure the generation index is above the current index so that if
+	// updates are returned out of order we ignore stale ones.
+	if state.GenerationIndex < su.GenerationIndex {
+		state.DynamicState = su.DynamicState
+		state.DerivedState = su.DerivedState
 	}
 
-	sm.mu.Lock(sm.lg)
-	defer sm.mu.Unlock(sm.lg)
+	state.ActiveTCWs = su.ActiveTCWs
 
-	nIdle := 0
-	for _, as := range sm.activeSims {
-		if as.sim.IdleTime() >= simIdleLimit {
-			nIdle++
+	// Post events after updating state so they reflect current state.
+	if eventStream != nil {
+		for _, e := range su.Events {
+			eventStream.Post(e)
 		}
 	}
-	return nIdle > 10
 }
+
+// GetStateUpdate fills in a server.SimStateUpdate with both sim state and human controllers.
+func (c *controllerContext) GetStateUpdate() SimStateUpdate {
+	return SimStateUpdate{
+		StateUpdate: c.sim.GetStateUpdate(),
+		ActiveTCWs:  c.session.GetActiveTCWs(),
+		Events:      c.sim.ConsolidateRadioEventsForTCW(c.tcw, c.eventSub.Get()),
+	}
+}
+
+const GetSerializeSimRPC = "SimManager.GetSerializeSim"
 
 func (sm *SimManager) GetSerializeSim(token string, s *sim.Sim) error {
-	if _, sim, ok := sm.LookupController(token); !ok {
+	c := sm.LookupController(token)
+	if c == nil {
 		return ErrNoSimForControllerToken
-	} else {
-		sm.mu.Lock(sm.lg)
-		defer sm.mu.Unlock(sm.lg)
-
-		*s = sim.GetSerializeSim()
-	}
-	return nil
-}
-
-func (sm *SimManager) GetStateUpdate(token string, update *sim.StateUpdate) error {
-	sm.mu.Lock(sm.lg)
-
-	if ctrl, ok := sm.controllersByToken[token]; !ok {
-		sm.mu.Unlock(sm.lg)
-		return ErrNoSimForControllerToken
-	} else {
-		s := ctrl.asim.sim
-		ctrl.lastUpdateCall = time.Now()
-		if ctrl.warnedNoUpdateCalls {
-			ctrl.warnedNoUpdateCalls = false
-			sm.lg.Warnf("%s: connection re-established", ctrl.tcp)
-			s.PostEvent(sim.Event{
-				Type:        sim.StatusMessageEvent,
-				WrittenText: ctrl.tcp + " is back online.",
-			})
-		}
-
-		sm.mu.Unlock(sm.lg)
-
-		s.GetStateUpdate(ctrl.tcp, update)
-
-		return nil
-	}
-}
-
-type SimBroadcastMessage struct {
-	Password string
-	Message  string
-}
-
-func (sm *SimManager) Broadcast(m *SimBroadcastMessage, _ *struct{}) error {
-	pw, err := os.ReadFile("password")
-	if err != nil {
-		return err
-	}
-
-	password := strings.TrimRight(string(pw), "\n\r")
-	if password != m.Password {
-		return ErrInvalidPassword
 	}
 
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
-	sm.lg.Infof("Broadcasting message: %s", m.Message)
-
-	for _, as := range sm.activeSims {
-		as.sim.PostEvent(sim.Event{
-			Type:        sim.ServerBroadcastMessageEvent,
-			WrittenText: m.Message,
-		})
-	}
+	*s = c.sim.GetSerializeSim()
 	return nil
 }
+
+///////////////////////////////////////////////////////////////////////////
+// Text-to-Speech
+
+func (sm *SimManager) HandleSpeechWSConnection(w http.ResponseWriter, r *http.Request) {
+	authHeader := r.Header.Get("Authorization")
+	if !strings.HasPrefix(authHeader, "Bearer ") {
+		http.Error(w, "Missing or invalid Authorization header", http.StatusUnauthorized)
+		return
+	}
+	token := strings.TrimPrefix(authHeader, "Bearer ")
+
+	sm.mu.Lock(sm.lg)
+
+	session, ok := sm.sessionsByToken[token]
+	if !ok {
+		sm.mu.Unlock(sm.lg)
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		sm.lg.Errorf("Invalid token for speech websocket: %s", token)
+		return
+	}
+	sm.mu.Unlock(sm.lg)
+
+	session.HandleSpeechWSConnection(token, w, r)
+}
+
+const GetAllVoicesRPC = "SimManager.GetAllVoices"
 
 // GetAllVoices returns all available voices for TTS
 func (sm *SimManager) GetAllVoices(_ struct{}, voices *[]sim.Voice) error {
@@ -717,6 +735,9 @@ func (sm *SimManager) GetAllVoices(_ struct{}, voices *[]sim.Voice) error {
 	}
 
 	fut := sm.tts.GetAllVoices()
+	// Note: TTS implementations guarantee exactly one channel will send a value
+	// before both channels are closed. If both close without sending, this loop
+	// would hang indefinitely.
 	for {
 		select {
 		case v, ok := <-fut.VoicesCh:
@@ -733,6 +754,8 @@ func (sm *SimManager) GetAllVoices(_ struct{}, voices *[]sim.Voice) error {
 		}
 	}
 }
+
+const TextToSpeechRPC = "SimManager.TextToSpeech"
 
 // TextToSpeech converts text to speech and returns the audio data
 func (sm *SimManager) TextToSpeech(req *TTSRequest, speechMp3 *[]byte) error {
@@ -755,7 +778,8 @@ func (sm *SimManager) TextToSpeech(req *TTSRequest, speechMp3 *[]byte) error {
 	}
 
 	fut := sm.tts.TextToSpeech(req.Voice, req.Text)
-
+	// Note: Current TTS implementations guarantee that exactly one channel will send a value before
+	// both channels are closed. If both close without sending, this loop would hang indefinitely.
 	for {
 		select {
 		case mp3, ok := <-fut.Mp3Ch:
@@ -774,276 +798,121 @@ func (sm *SimManager) TextToSpeech(req *TTSRequest, speechMp3 *[]byte) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// TTS usage tracking
+// Weather
 
-func (sm *SimManager) UpdateTTSUsage(ip, text string) error {
-	sm.mu.Lock(sm.lg)
-	defer sm.mu.Unlock(sm.lg)
+const GetMETARRPC = "SimManager.GetMETAR"
 
-	if _, ok := sm.ttsUsageByIP[ip]; !ok {
-		sm.ttsUsageByIP[ip] = &ttsUsageStats{}
+func (sm *SimManager) GetMETAR(airports []string, result *map[string]wx.METARSOA) error {
+	defer sm.lg.CatchAndReportCrash()
+
+	if sm.wxProvider == nil {
+		return ErrWeatherUnavailable
 	}
 
-	stats := sm.ttsUsageByIP[ip]
-	stats.Calls++
-	stats.Words += len(strings.Fields(text))
-	stats.LastUsed = time.Now()
+	var err error
+	*result, err = sm.wxProvider.GetMETAR(airports)
+	return err
+}
 
-	if stats.Words > 30000 {
-		return fmt.Errorf("TTS capacity exceeded")
+const GetTimeIntervalsRPC = "SimManager.GetTimeIntervals"
+
+func (sm *SimManager) GetTimeIntervals(_ struct{}, result *map[string][]util.TimeInterval) error {
+	defer sm.lg.CatchAndReportCrash()
+
+	if sm.wxProvider == nil {
+		return ErrWeatherUnavailable
 	}
 
+	*result = sm.wxProvider.GetAvailableTimeIntervals()
 	return nil
 }
 
-func (sm *SimManager) GetTTSStats() []ttsClientStats {
-	sm.mu.Lock(sm.lg)
-	defer sm.mu.Unlock(sm.lg)
+type PrecipURLArgs struct {
+	Facility string
+	Time     time.Time
+}
 
-	var stats []ttsClientStats
-	for ip, usage := range sm.ttsUsageByIP {
-		stats = append(stats, ttsClientStats{
-			IP:       ip,
-			Calls:    usage.Calls,
-			Words:    usage.Words,
-			LastUsed: usage.LastUsed,
-		})
+type PrecipURL struct {
+	URL      string
+	NextTime time.Time
+}
+
+const GetPrecipURLRPC = "SimManager.GetPrecipURL"
+
+func (sm *SimManager) GetPrecipURL(args PrecipURLArgs, result *PrecipURL) error {
+	defer sm.lg.CatchAndReportCrash()
+
+	if sm.wxProvider == nil {
+		return ErrWeatherUnavailable
 	}
-	return stats
+
+	var err error
+	result.URL, result.NextTime, err = sm.wxProvider.GetPrecipURL(args.Facility, args.Time)
+	return err
+}
+
+type GetAtmosArgs struct {
+	Facility       string
+	Time           time.Time
+	PrimaryAirport string
+}
+
+type GetAtmosResult struct {
+	AtmosByPointSOA *wx.AtmosByPointSOA
+	Time            time.Time
+	NextTime        time.Time
+}
+
+const GetAtmosGridRPC = "SimManager.GetAtmosGrid"
+
+func (sm *SimManager) GetAtmosGrid(args GetAtmosArgs, result *GetAtmosResult) error {
+	defer sm.lg.CatchAndReportCrash()
+
+	if sm.wxProvider == nil {
+		return ErrWeatherUnavailable
+	}
+
+	// Only load for TRACON scenarios (for now)
+	if _, ok := av.DB.TRACONs[args.Facility]; !ok {
+		return nil
+	}
+
+	var err error
+	result.AtmosByPointSOA, result.Time, result.NextTime, err = sm.wxProvider.GetAtmosGrid(args.Facility, args.Time, args.PrimaryAirport)
+	return err
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Status / statistics via HTTP...
+// Admin
 
-func (sm *SimManager) launchHTTPServer() int {
-	mux := http.NewServeMux()
+type BroadcastMessage struct {
+	Password string
+	Message  string
+}
 
-	mux.HandleFunc("/sup", func(w http.ResponseWriter, r *http.Request) {
-		sm.statsHandler(w, r)
-		sm.lg.Infof("%s: served stats request", r.URL.String())
-	})
+const BroadcastRPC = "SimManager.Broadcast"
 
-	mux.HandleFunc("/speech", sm.handleSpeechWSConnection)
-
-	mux.HandleFunc("/debug/pprof/", pprof.Index)
-	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
-	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)
-	mux.HandleFunc("/debug/pprof/symbol", pprof.Symbol)
-	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
-
-	var listener net.Listener
-	var err error
-	var port int
-	for i := range 10 {
-		port = ViceHTTPServerPort + i
-		if listener, err = net.Listen("tcp", ":"+strconv.Itoa(port)); err == nil {
-			sm.httpPort = port
-			fmt.Printf("Launching HTTP server on port %d\n", port)
-			break
-		}
-	}
-
+func (sm *SimManager) Broadcast(m *BroadcastMessage, _ *struct{}) error {
+	pw, err := os.ReadFile("password")
 	if err != nil {
-		sm.lg.Warnf("Unable to start HTTP server")
-		return 0
-	} else {
-		go http.Serve(listener, mux)
-
-		sm.httpPort = port
-		return port
+		return err
 	}
-}
 
-type ttsClientStats struct {
-	IP       string
-	Calls    int
-	Words    int
-	LastUsed time.Time
-}
-
-type serverStats struct {
-	Uptime           time.Duration
-	AllocMemory      uint64
-	TotalAllocMemory uint64
-	SysMemory        uint64
-	RX, TX           int64
-	TXWebsocket      int64
-	NumGC            uint32
-	NumGoRoutines    int
-	CPUUsage         int
-
-	SimStatus []simStatus
-	TTSStats  []ttsClientStats
-}
-
-func formatBytes(v int64) string {
-	if v < 1024 {
-		return fmt.Sprintf("%d B", v)
-	} else if v < 1024*1024 {
-		return fmt.Sprintf("%d KiB", v/1024)
-	} else if v < 1024*1024*1024 {
-		return fmt.Sprintf("%d MiB", v/1024/1024)
-	} else {
-		return fmt.Sprintf("%d GiB", v/1024/1024/1024)
+	password := strings.TrimRight(string(pw), "\n\r")
+	if password != m.Password {
+		return ErrInvalidPassword
 	}
-}
 
-type simStatus struct {
-	Name               string
-	Config             string
-	IdleTime           time.Duration
-	Controllers        string
-	TotalIFR, TotalVFR int
-}
-
-func (ss simStatus) LogValue() slog.Value {
-	return slog.GroupValue(
-		slog.String("name", ss.Name),
-		slog.String("config", ss.Config),
-		slog.Duration("idle", ss.IdleTime),
-		slog.String("controllers", ss.Controllers),
-		slog.Int("total_ifr", ss.TotalIFR),
-		slog.Int("total_vfr", ss.TotalVFR))
-}
-
-func (sm *SimManager) GetSimStatus() []simStatus {
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
 
-	var ss []simStatus
-	for _, name := range util.SortedMapKeys(sm.activeSims) {
-		as := sm.activeSims[name]
-		status := simStatus{
-			Name:        name,
-			Config:      as.scenario,
-			IdleTime:    as.sim.IdleTime().Round(time.Second),
-			TotalIFR:    as.sim.State.TotalIFR,
-			TotalVFR:    as.sim.State.TotalVFR,
-			Controllers: strings.Join(as.sim.ActiveControllers(), ", "),
-		}
+	sm.lg.Warnf("Broadcasting message: %s", m.Message)
 
-		ss = append(ss, status)
+	for _, ss := range sm.sessionsByName {
+		ss.sim.PostEvent(sim.Event{
+			Type:        sim.ServerBroadcastMessageEvent,
+			WrittenText: m.Message,
+		})
 	}
-
-	return ss
-}
-
-var templateFuncs = template.FuncMap{"bytes": formatBytes}
-
-var statsTemplate = template.Must(template.New("").Funcs(templateFuncs).Parse(`
-<!DOCTYPE html>
-<html>
-<head>
-<title>vice vice baby</title>
-</head>
-<style>
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
-
-th, td {
-  border: 1px solid #dddddd;
-  padding: 8px;
-  text-align: left;
-}
-
-tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-#log {
-    font-family: "Courier New", monospace;  /* use a monospace font */
-    width: 100%;
-    height: 500px;
-    font-size: 12px;
-    overflow: auto;  /* add scrollbars as necessary */
-    white-space: pre-wrap;  /* wrap text */
-    border: 1px solid #ccc;
-    padding: 10px;
-}
-</style>
-<body>
-<h1>Server Status</h1>
-<ul>
-  <li>Uptime: {{.Uptime}}</li>
-  <li>CPU usage: {{.CPUUsage}}%</li>
-  <li>Bandwidth: {{bytes .RX}} RX, {{bytes .TX}} TX, {{bytes .TXWebsocket}} TX Websocket</li>
-  <li>Allocated memory: {{.AllocMemory}} MB</li>
-  <li>Total allocated memory: {{.TotalAllocMemory}} MB</li>
-  <li>System memory: {{.SysMemory}} MB</li>
-  <li>Garbage collection passes: {{.NumGC}}</li>
-  <li>Running goroutines: {{.NumGoRoutines}}</li>
-</ul>
-
-<h1>Sim Status</h1>
-<table>
-  <tr>
-  <th>Name</th>
-  <th>Scenario</th>
-  <th>IFR</th>
-  <th>VFR</th>
-  <th>Idle Time</th>
-  <th>Active Controllers</th>
-
-{{range .SimStatus}}
-  </tr>
-  <td>{{.Name}}</td>
-  <td>{{.Config}}</td>
-  <td>{{.TotalIFR}}</td>
-  <td>{{.TotalVFR}}</td>
-  <td>{{.IdleTime}}</td>
-  <td><tt>{{.Controllers}}</tt></td>
-</tr>
-{{end}}
-</table>
-
-<h1>Text-to-Speech Usage</h1>
-{{if .TTSStats}}
-<table>
-  <tr>
-  <th>Client IP</th>
-  <th>Call Count</th>
-  <th>Word Count</th>
-  <th>Last Used</th>
-  </tr>
-{{range .TTSStats}}
-  <tr>
-  <td>{{.IP}}</td>
-  <td>{{.Calls}}</td>
-  <td>{{.Words}}</td>
-  <td>{{.LastUsed.Format "2006-01-02 15:04:05"}}</td>
-  </tr>
-{{end}}
-</table>
-{{else}}
-<p>No TTS usage recorded.</p>
-{{end}}
-
-</body>
-</html>
-`))
-
-func (sm *SimManager) statsHandler(w http.ResponseWriter, r *http.Request) {
-	var m runtime.MemStats
-	runtime.ReadMemStats(&m)
-
-	usage, _ := cpu.Percent(time.Second, false)
-	stats := serverStats{
-		Uptime:           time.Since(sm.startTime).Round(time.Second),
-		AllocMemory:      m.Alloc / (1024 * 1024),
-		TotalAllocMemory: m.TotalAlloc / (1024 * 1024),
-		SysMemory:        m.Sys / (1024 * 1024),
-		NumGC:            m.NumGC,
-		NumGoRoutines:    runtime.NumGoroutine(),
-		CPUUsage:         int(gomath.Round(usage[0])),
-		TXWebsocket:      sm.websocketTXBytes,
-
-		SimStatus: sm.GetSimStatus(),
-		TTSStats:  sm.GetTTSStats(),
-	}
-
-	stats.RX, stats.TX = util.GetLoggedRPCBandwidth()
-
-	statsTemplate.Execute(w, stats)
+	return nil
 }

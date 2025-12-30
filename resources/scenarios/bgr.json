@@ -118,38 +118,38 @@
         }
       ]
     },
-"AUG Arrival Land South": {
-  "arrivals": [
-    {
-      "waypoints": "AUG/ho KBHB",
-      "route": "AUG KBHB",
-      "initial_controller": "BOS_17_CTR",
-      "initial_altitude": 11000,
-      "initial_speed": 270,
-      "expect_approach": null,
-      "airlines": {
-        "KBGR": [
-          {
-            "icao": "EJA",
-            "airport": "KDTW"
-          },
-          {
-            "icao": "JIA",
-            "airport": "KORD"
-          },
-          {
-            "icao": "LXJ",
-            "airport": "KMKE"
-          },
-          {
-            "icao": "RPA",
-            "airport": "KASE"
+    "AUG Arrival Land South": {
+      "arrivals": [
+        {
+          "waypoints": "AUG/ho KBHB",
+          "route": "AUG KBHB",
+          "initial_controller": "BOS_17_CTR",
+          "initial_altitude": 11000,
+          "initial_speed": 270,
+          "expect_approach": null,
+          "airlines": {
+            "KBGR": [
+              {
+                "icao": "EJA",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KORD"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KMKE"
+              },
+              {
+                "icao": "RPA",
+                "airport": "KASE"
+              }
+            ]
           }
-        ]
-      }
-    }
-  ]
-},
+        }
+      ]
+    },
     "RANGY Arrival Land North": {
       "arrivals": [
         {
@@ -249,7 +249,7 @@
           "runway": "33"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "AUG Arrival Land North": {
           "KBGR": 10
         },
@@ -263,13 +263,13 @@
           "KBGR": 0
         }
       },
-      "solo_controller": "BGR_B_APP",
-      "controllers": [
-        "BGR_B_APP",
-        "BGR_S_APP",
-        "BGR_TWR",
-        "BOS_17_CTR"
-      ],
+      "configuration": {
+        "config_id": "STD",
+        "default_consolidation": {
+          "BGR_B_APP": []
+        }
+      },
+      "controllers": ["BGR_B_APP", "BGR_S_APP", "BGR_TWR", "BOS_17_CTR"],
       "departure_runways": [
         {
           "airport": "KBGR",
@@ -278,12 +278,9 @@
         }
       ],
       "wind": {
-        "direction": 350,
-        "speed": 12
+        "direction": "300-0"
       },
-      "default_maps": [
-        "BGR MAIN"
-      ]
+      "default_maps": ["BGR MAIN"]
     },
     "Land South": {
       "arrival_runways": [
@@ -292,7 +289,7 @@
           "runway": "15"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "AUG Arrival Land South": {
           "KBGR": 10
         },
@@ -306,32 +303,13 @@
           "KBGR": 0
         }
       },
-      "solo_controller": "BGR_B_APP",
-      "multi_controllers": {
-        "default": {
-          "BGR_B_APP": {
-            "primary": true,
-            "departures": [
-              "KBGR"
-            ],
-            "arrivals": [
-              "RANGY Arrival Land South",
-              "RANGY Arrival Land North",
-              "AUG Arrival Land South",
-              "AUG Arrival Land North"
-            ]
-          },
-          "BGR_S_APP": {
-            "backup": "BGR_B_APP"
-          }
+      "configuration": {
+        "config_id": "STD",
+        "default_consolidation": {
+          "BGR_B_APP": ["BGR_S_APP"]
         }
       },
-      "controllers": [
-        "BGR_B_APP",
-        "BGR_S_APP",
-        "BGR_TWR",
-        "BOS_17_CTR"
-      ],
+      "controllers": ["BGR_B_APP", "BGR_S_APP", "BGR_TWR", "BOS_17_CTR"],
       "departure_runways": [
         {
           "airport": "KBGR",
@@ -340,24 +318,29 @@
         }
       ],
       "wind": {
-        "direction": 120,
-        "speed": 21
+        "direction": "120-180"
       },
-      "default_maps": [
-        "BGR MAIN"
-      ]
+      "default_maps": ["BGR MAIN"]
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "AUG Arrival Land North": "BGR_B_APP",
+          "AUG Arrival Land South": "BGR_B_APP",
+          "RANGY Arrival Land North": "BGR_B_APP",
+          "RANGY Arrival Land South": "BGR_B_APP"
+        },
+        "departure_assignments": {
+          "KBGR": "BGR_B_APP"
+        }
+      }
+    },
+
     "center": "KBGR",
     "scratchpads": {},
-    "stars_maps": [
-      "BGR MAIN",
-      "BGR EOVM",
-      "BGR VFR",
-      "BGR MVA",
-      "BGR RVM"
-    ],
+    "stars_maps": ["BGR MAIN", "BGR EOVM", "BGR VFR", "BGR MVA", "BGR RVM"],
     "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
   }
 }

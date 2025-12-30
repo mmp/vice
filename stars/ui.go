@@ -13,6 +13,8 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -20,9 +22,11 @@ import (
 	"github.com/AllenDang/cimgui-go/imgui"
 )
 
-func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
-	ps := sp.currentPrefs()
+var _ panes.UIDrawer = (*STARSPane)(nil)
 
+func (sp *STARSPane) DisplayName() string { return "STARS" }
+
+func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.Text("Font: ")
 	imgui.SameLine()
 	imgui.RadioButtonIntPtr("Default", &sp.FontSelection, fontDefault)
@@ -44,15 +48,18 @@ func (sp *STARSPane) DrawUI(p platform.Platform, config *platform.Config) {
 		imgui.EndCombo()
 	}
 
-	imgui.Separator()
-	imgui.Text("Non-standard Audio Effects")
+	if sp.prefSet != nil { // Hacky workaround to crash if DrawUI runs with no active STARS Pane.
+		imgui.Separator()
+		imgui.Text("Non-standard Audio Effects")
 
-	// Only offer the non-standard ones to globally disable.
-	for _, i := range []AudioType{AudioInboundHandoff, AudioHandoffAccepted} {
-		imgui.Text("  ")
-		imgui.SameLine()
-		if imgui.Checkbox(AudioType(i).String(), &ps.AudioEffectEnabled[i]) && ps.AudioEffectEnabled[i] {
-			sp.playOnce(p, i)
+		ps := sp.currentPrefs()
+		// Only offer the non-standard ones to globally disable.
+		for _, i := range []AudioType{AudioInboundHandoff, AudioHandoffAccepted} {
+			imgui.Text("  ")
+			imgui.SameLine()
+			if imgui.Checkbox(AudioType(i).String(), &ps.AudioEffectEnabled[i]) && ps.AudioEffectEnabled[i] {
+				sp.playOnce(p, i)
+			}
 		}
 	}
 }
@@ -78,8 +85,8 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 			imgui.TableSetupColumn("Description")
 			imgui.TableHeadersRow()
 
-			for _, name := range util.SortedMapKeys(c.State.InboundFlows) {
-				arrivals := c.State.InboundFlows[name].Arrivals
+			for name, flow := range util.SortedMap(c.State.InboundFlows) {
+				arrivals := flow.Arrivals
 				if len(arrivals) == 0 {
 					continue
 				}
@@ -145,8 +152,7 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 					if sp.scopeDraw.approaches[rwy.Airport] == nil {
 						sp.scopeDraw.approaches[rwy.Airport] = make(map[string]bool)
 					}
-					for _, name := range util.SortedMapKeys(ap.Approaches) {
-						appr := ap.Approaches[name]
+					for name, appr := range util.SortedMap(ap.Approaches) {
 						if appr.Runway == rwy.Runway {
 							imgui.TableNextRow()
 							imgui.TableNextColumn()
@@ -186,15 +192,16 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 		imgui.SameLine()
 		imgui.ColorEdit3V("Draw Color##3", sp.IFPHelpers.DeparturesColor, imgui.ColorEditFlagsNoInputs|imgui.ColorEditFlagsNoLabel)
 
-		if imgui.BeginTableV("departures", 5, tableFlags, imgui.Vec2{}, 0) {
+		if imgui.BeginTableV("departures", 6, tableFlags, imgui.Vec2{}, 0) {
 			if sp.scopeDraw.departures == nil {
 				sp.scopeDraw.departures = make(map[string]map[string]map[string]bool)
 			}
 
 			imgui.TableSetupColumn("Draw")
 			imgui.TableSetupColumn("Airport")
-			imgui.TableSetupColumn("Runway")
-			imgui.TableSetupColumn("Exit")
+			imgui.TableSetupColumn("SID")
+			imgui.TableSetupColumn("Runways")
+			imgui.TableSetupColumn("Exits")
 			imgui.TableSetupColumn("Description")
 			imgui.TableHeadersRow()
 
@@ -203,59 +210,81 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 					sp.scopeDraw.departures[airport] = make(map[string]map[string]bool)
 				}
 				ap := c.State.Airports[airport]
-
 				runwayRates := c.State.LaunchConfig.DepartureRates[airport]
+
+				// --- 1. Group by SID instead of runway ---
+				sidGroups := make(map[string]struct {
+					Runways      []string
+					Exits        []string
+					Descriptions []string
+				})
+
 				for _, rwy := range util.SortedMapKeys(runwayRates) {
 					if sp.scopeDraw.departures[airport][rwy] == nil {
 						sp.scopeDraw.departures[airport][rwy] = make(map[string]bool)
 					}
 
 					exitRoutes := ap.DepartureRoutes[rwy]
-
-					// Multiple routes may have the same waypoints, so
-					// we'll reverse-engineer that here so we can present
-					// them together in the UI.
-					routeToExit := make(map[string][]string)
-					for _, exit := range util.SortedMapKeys(exitRoutes) {
-						exitRoute := ap.DepartureRoutes[rwy][exit]
-						r := exitRoute.Waypoints.Encode()
-						routeToExit[r] = append(routeToExit[r], exit)
-					}
-
-					for _, exit := range util.SortedMapKeys(exitRoutes) {
-						// Draw the row only when we hit the first exit
-						// that uses the corresponding route route.
-						r := exitRoutes[exit].Waypoints.Encode()
-						if routeToExit[r][0] != exit {
-							continue
+					for exit, exitRoute := range util.SortedMap(exitRoutes) {
+						group := sidGroups[exitRoute.SID]
+						if !slices.Contains(group.Runways, rwy) {
+							group.Runways = append(group.Runways, rwy)
 						}
-
-						imgui.TableNextRow()
-						imgui.TableNextColumn()
-						enabled := sp.scopeDraw.departures[airport][rwy][exit]
-						imgui.Checkbox("##enable-"+airport+"-"+rwy+"-"+exit, &enabled)
-						sp.scopeDraw.departures[airport][rwy][exit] = enabled
-
-						imgui.TableNextColumn()
-						imgui.Text(airport)
-						imgui.TableNextColumn()
-						rwyBase, _, _ := strings.Cut(rwy, ".")
-						imgui.Text(rwyBase)
-						imgui.TableNextColumn()
-						if len(routeToExit) == 1 {
-							// If we only saw a single departure route, no
-							// need to list all of the exits in the UI
-							// (there are often a lot of them!)
-							imgui.Text("(all)")
-						} else {
-							// List all of the exits that use this route.
-							imgui.Text(strings.Join(routeToExit[r], ", "))
+						if !slices.Contains(group.Exits, exit) {
+							group.Exits = append(group.Exits, exit)
 						}
-						imgui.TableNextColumn()
-						imgui.Text(exitRoutes[exit].Description)
+						if exitRoute.Description != "" && !slices.Contains(group.Descriptions, exitRoute.Description) {
+							group.Descriptions = append(group.Descriptions, exitRoute.Description)
+						}
+						sidGroups[exitRoute.SID] = group
 					}
 				}
+
+				// --- 2. Render each SID once ---
+				for _, sid := range util.SortedMapKeys(sidGroups) {
+					group := sidGroups[sid]
+
+					imgui.TableNextRow()
+					imgui.TableNextColumn()
+
+					// Combine checkbox across runways (one toggle per SID)
+					enabled := false
+					for _, rwy := range group.Runways {
+						for _, exit := range group.Exits {
+							if sp.scopeDraw.departures[airport][rwy][exit] {
+								enabled = true
+							}
+						}
+					}
+					imgui.Checkbox("##enable-"+airport+"-"+sid, &enabled)
+					for _, rwy := range group.Runways {
+						for _, exit := range group.Exits {
+							sp.scopeDraw.departures[airport][rwy][exit] = enabled
+						}
+					}
+
+					imgui.TableNextColumn()
+					imgui.Text(airport)
+
+					imgui.TableNextColumn()
+					imgui.Text(sid)
+
+					imgui.TableNextColumn()
+					rwys := []string{}
+					for _, r := range group.Runways {
+						rwyBase, _, _ := strings.Cut(r, ".")
+						rwys = append(rwys, rwyBase)
+					}
+					imgui.Text(strings.Join(rwys, ", "))
+
+					imgui.TableNextColumn()
+					imgui.Text(strings.Join(group.Exits, ", "))
+
+					imgui.TableNextColumn()
+					imgui.Text(strings.Join(group.Descriptions, " / "))
+				}
 			}
+
 			imgui.EndTable()
 		}
 	}
@@ -275,8 +304,8 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 			imgui.TableSetupColumn("Description")
 			imgui.TableHeadersRow()
 
-			for _, name := range util.SortedMapKeys(c.State.InboundFlows) {
-				overflights := c.State.InboundFlows[name].Overflights
+			for name, flow := range util.SortedMap(c.State.InboundFlows) {
+				overflights := flow.Overflights
 				if len(overflights) == 0 {
 					continue
 				}
@@ -318,7 +347,7 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 		imgui.ColorEdit3V("Draw Color##5", sp.IFPHelpers.AirspaceColor, imgui.ColorEditFlagsNoInputs|imgui.ColorEditFlagsNoLabel)
 
 		if sp.scopeDraw.airspace == nil {
-			sp.scopeDraw.airspace = make(map[string]map[string]bool)
+			sp.scopeDraw.airspace = make(map[sim.TCP]map[string]bool)
 			for ctrl, sectors := range c.State.Airspace {
 				sp.scopeDraw.airspace[ctrl] = make(map[string]bool)
 				for _, sector := range util.SortedMapKeys(sectors) {
@@ -327,7 +356,7 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 			}
 		}
 		for _, pos := range util.SortedMapKeys(sp.scopeDraw.airspace) {
-			hdr := pos
+			hdr := string(pos)
 			if ctrl, ok := c.State.Controllers[pos]; ok {
 				hdr += " (" + ctrl.Position + ")"
 			}
@@ -368,7 +397,7 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 				imgui.Text(ap)
 			}
 
-			cl := util.DuplicateSlice(c.State.STARSFacilityAdaptation.CoordinationLists)
+			cl := util.DuplicateSlice(c.State.FacilityAdaptation.CoordinationLists)
 			slices.SortFunc(cl, func(a, b sim.CoordinationList) int { return strings.Compare(a.Id, b.Id) })
 
 			for _, list := range cl {
@@ -384,7 +413,7 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 		}
 	}
 
-	if aa := c.State.STARSFacilityAdaptation.AirspaceAwareness; len(aa) > 0 {
+	if aa := c.State.FacilityAdaptation.AirspaceAwareness; len(aa) > 0 {
 		if imgui.CollapsingHeaderBoolPtr("Airspace Awareness", nil) {
 			if imgui.BeginTableV("awareness", 4, tableFlags, imgui.Vec2{}, 0) {
 				imgui.TableSetupColumn("Fix")
@@ -421,5 +450,71 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 				imgui.EndTable()
 			}
 		}
+	}
+
+	// Holds section - show enroute and unassociated holds within 75nm
+	if imgui.CollapsingHeaderBoolPtr("Holds", nil) {
+		imgui.Text("Color:")
+		imgui.SameLine()
+		imgui.ColorEdit3V("Draw Color##6", sp.IFPHelpers.HoldsColor, imgui.ColorEditFlagsNoInputs|imgui.ColorEditFlagsNoLabel)
+
+		candidateHolds := make(map[string]av.Hold)
+		ps := sp.currentPrefs()
+		ctr := util.Select(ps.UseUserCenter, ps.UserCenter, ps.DefaultCenter)
+		for fix, holds := range util.SortedMap(av.DB.EnrouteHolds) {
+			loc, _ := av.DB.LookupWaypoint(fix)
+			if dist := math.NMDistance2LL(ctr, loc); dist <= ps.Range {
+				for _, h := range holds {
+					// Only show holds that aren't part of procedures
+					// (holds with Procedure set are drawn with their procedures)
+					if h.Procedure == "" {
+						candidateHolds[h.DisplayName()] = h
+					}
+				}
+			}
+		}
+
+		if imgui.Checkbox("Draw all holds", &sp.scopeDraw.allHolds) && !sp.scopeDraw.allHolds {
+			clear(sp.scopeDraw.holds)
+		}
+
+		if sp.scopeDraw.allHolds {
+			sp.scopeDraw.holds = candidateHolds
+			imgui.BeginDisabled()
+		}
+
+		const ncol = 4
+		if imgui.BeginTableV("holds", ncol, tableFlags, imgui.Vec2{}, 0) {
+			if sp.scopeDraw.holds == nil {
+				sp.scopeDraw.holds = make(map[string]av.Hold)
+			}
+
+			// Display holds
+			i := 0
+			for name, hold := range util.SortedMap(candidateHolds) {
+				if i%ncol == 0 {
+					imgui.TableNextRow()
+				}
+				imgui.TableNextColumn()
+
+				_, enabled := sp.scopeDraw.holds[name]
+				enabled = enabled || sp.scopeDraw.allHolds
+				if imgui.Checkbox(name+"##hold", &enabled) {
+					if enabled {
+						sp.scopeDraw.holds[name] = hold
+					} else {
+						delete(sp.scopeDraw.holds, name)
+					}
+				}
+				i++
+			}
+
+			imgui.EndTable()
+		}
+
+		if sp.scopeDraw.allHolds {
+			imgui.EndDisabled()
+		}
+
 	}
 }

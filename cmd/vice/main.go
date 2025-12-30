@@ -13,20 +13,26 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"os/signal"
 	"runtime"
 	"runtime/debug"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 
+	"github.com/goforj/godump"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/stars"
 	"github.com/mmp/vice/stt"
 	"github.com/mmp/vice/util"
 
@@ -53,7 +59,27 @@ var (
 	listMaps          = flag.String("listmaps", "", "path to a video map file to list maps of (e.g., resources/videomaps/ZNY-videomaps.gob.zst)")
 	listScenarios     = flag.Bool("listscenarios", false, "list all available scenarios in ARTCC/TRACON/scenario format")
 	runSim            = flag.String("runsim", "", "run specified scenario for 3600 update steps (format: ARTCC/TRACON/scenario)")
+	navLog            = flag.Bool("navlog", false, "enable navigation logging")
+	navLogCategories  = flag.String("navlog-categories", "all", "navigation log categories (comma-separated: state,waypoint,altitude,speed,heading,approach,command,route)")
+	navLogCallsign    = flag.String("navlog-callsign", "", "filter navigation logs to only show this callsign (empty = show all)")
+	replayMode        = flag.Bool("replay", false, "replay scenario from saved config")
+	replayDuration    = flag.String("replay-duration", "3600", "replay duration in seconds or 'until:CALLSIGN'")
+	waypointCommands  = flag.String("waypoint-commands", "", "waypoint commands in format 'FIX:CMD CMD CMD, FIX:CMD ...,'")
+	starsRandoms      = flag.Bool("starsrandoms", false, "run STARS command fuzz testing with full UI (randomly picks a scenario)")
 )
+
+func setupSignalHandler(profiler *util.Profiler) {
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, os.Interrupt, syscall.SIGTERM)
+
+	go func() {
+		<-sigCh
+		fmt.Fprintln(os.Stderr, "Caught signal, cleaning up...")
+		profiler.Cleanup()
+		fmt.Fprintln(os.Stderr, "Cleanup complete, exiting")
+		os.Exit(0)
+	}()
+}
 
 func init() {
 	// OpenGL and friends require that all calls be made from the primary
@@ -61,6 +87,27 @@ func init() {
 	// run on different hardware threads over the course of
 	// execution. Therefore, we must lock the main thread at startup time.
 	runtime.LockOSThread()
+}
+
+func replayScenario(lg *log.Logger) {
+	// Initialize navigation logging
+	nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
+
+	config, err := LoadOrMakeDefaultConfig(lg)
+	if err != nil {
+		lg.Errorf("Error loading config: %v", err)
+		os.Exit(1)
+	}
+
+	if config.Sim == nil {
+		lg.Errorf("No saved simulation found in config. Please configure a scenario in the UI first.")
+		os.Exit(1)
+	}
+
+	if err := config.Sim.ReplayScenario(*waypointCommands, *replayDuration, lg); err != nil {
+		lg.Errorf("Scenario replay failed: %v", err)
+		os.Exit(1)
+	}
 }
 
 func main() {
@@ -81,6 +128,10 @@ func main() {
 		lg.Errorf("%v", err)
 	}
 	defer profiler.Cleanup()
+
+	if *cpuprofile != "" || *memprofile != "" {
+		setupSignalHandler(&profiler)
+	}
 
 	if *serverAddress != "" && !strings.Contains(*serverAddress, ":") {
 		*serverAddress = net.JoinHostPort(*serverAddress, strconv.Itoa(server.ViceServerPort))
@@ -108,14 +159,16 @@ func main() {
 		cliInit()
 
 		var e util.ErrorLogger
-		scenarioGroups, _, _ :=
-			server.LoadScenarioGroups(true, *scenarioFilename, *videoMapFilename, &e, lg)
+		scenarioGroups, _, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, &e, lg)
+
+		// Check emergencies.json
+		loadEmergencies(&e)
 
 		videoMaps := make(map[string]interface{})
 		for _, sgs := range scenarioGroups {
 			for _, sg := range sgs {
-				if sg.STARSFacilityAdaptation.VideoMapFile != "" {
-					videoMaps[sg.STARSFacilityAdaptation.VideoMapFile] = nil
+				if sg.FacilityAdaptation.VideoMapFile != "" {
+					videoMaps[sg.FacilityAdaptation.VideoMapFile] = nil
 				}
 			}
 		}
@@ -167,7 +220,7 @@ func main() {
 		tracon, scenarioName := parts[0], parts[1]
 
 		var e util.ErrorLogger
-		scenarioGroups, configs, _ := server.LoadScenarioGroups(false, *scenarioFilename, *videoMapFilename, &e, lg)
+		scenarioGroups, configs, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, &e, lg)
 		if e.HaveErrors() {
 			e.PrintErrors(lg)
 			os.Exit(1)
@@ -182,23 +235,51 @@ func main() {
 
 		fmt.Printf("Running scenario: %s\n", *runSim)
 
+		// Initialize navigation logging if requested
+		nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
+
 		newSimConfig, err := server.CreateNewSimConfiguration(config, scenarioGroup, scenarioName)
 		if err != nil {
 			lg.Errorf("Failed to create simulation configuration: %v", err)
 			os.Exit(1)
 		}
 
-		s := sim.NewSim(*newSimConfig, nil /*manifest*/, lg)
+		// Pick a random time in November 2025
+		r := rand.Make()
+		day, hour, min, sec := 1+r.Intn(30), r.Intn(24), r.Intn(60), r.Intn(60)
+		newSimConfig.StartTime = time.Date(2025, time.November, day, hour, min, sec, 0, time.UTC)
+		fmt.Printf("Simulation start time: %s\n", newSimConfig.StartTime.Format(time.RFC3339))
 
-		state, err := s.SignOn(newSimConfig.PrimaryController, false, false)
-		if err != nil {
-			lg.Errorf("Failed to sign in primary controller %s: %v", newSimConfig.PrimaryController, err)
+		var emergencyLogger util.ErrorLogger
+		emergencies := loadEmergencies(&emergencyLogger)
+		if emergencyLogger.HaveErrors() {
+			emergencyLogger.PrintErrors(lg)
 			os.Exit(1)
 		}
 
+		newSimConfig.Emergencies = emergencies
+		s := sim.NewSim(*newSimConfig, nil /*manifest*/, lg)
+
+		// Sign on as instructor if waypoint commands are specified
+		instructor := *waypointCommands != ""
+		rootController, _ := newSimConfig.ControllerConfiguration.RootPosition()
+		state, _, err := s.SignOn(sim.TCW(rootController), s.AllScenarioPositions())
+		if err != nil {
+			lg.Errorf("Failed to sign in root controller %s: %v", rootController, err)
+			os.Exit(1)
+		}
+		if instructor {
+			s.SetPrivilegedTCW(sim.TCW(rootController), true)
+		}
+
+		// Apply waypoint commands after signing on
+		s.SetWaypointCommands(sim.TCW(rootController), *waypointCommands)
+
 		// Check launch configuration
-		fmt.Printf("Departure rates: %v\n", state.LaunchConfig.DepartureRates)
-		fmt.Printf("Inbound flow rates: %v\n", state.LaunchConfig.InboundFlowRates)
+		fmt.Println("Departure rates:")
+		godump.Dump(state.LaunchConfig.DepartureRates)
+		fmt.Println("Inbound flow rates:")
+		godump.Dump(state.LaunchConfig.InboundFlowRates)
 
 		startTime := time.Now()
 		s.Prespawn()
@@ -218,17 +299,23 @@ func main() {
 		elapsed := time.Since(startTime)
 		fmt.Printf("Simulation complete: %d updates in %.2f seconds (%.1fx real-time)\n",
 			totalUpdates, elapsed.Seconds(), totalUpdates/elapsed.Seconds())
+	} else if *replayMode {
+		cliInit()
+		replayScenario(lg)
 	} else if *broadcastMessage != "" {
 		client.BroadcastMessage(*serverAddress, *broadcastMessage, *broadcastPassword, lg)
 	} else if *runServer {
 		cliInit()
+
+		// Initialize navigation logging if requested
+		nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
+
 		server.LaunchServer(server.ServerLaunchConfig{
-			Port:                *serverPort,
-			MultiControllerOnly: true,
-			ExtraScenario:       *scenarioFilename,
-			ExtraVideoMap:       *videoMapFilename,
-			ServerAddress:       *serverAddress,
-			IsLocal:             false,
+			Port:          *serverPort,
+			ExtraScenario: *scenarioFilename,
+			ExtraVideoMap: *videoMapFilename,
+			ServerAddress: *serverAddress,
+			IsLocal:       false,
 		}, lg)
 	} else if *showRoutes != "" {
 		cliInit()
@@ -248,6 +335,7 @@ func main() {
 		var stats Stats
 		var render renderer.Renderer
 		var plat platform.Platform
+		var fuzzController *stars.FuzzController // For -starsrandoms mode
 
 		defer lg.CatchAndReportCrash()
 
@@ -290,19 +378,37 @@ func main() {
 
 		av.InitDB()
 
+		// Initialize navigation logging if requested
+		nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
+
 		// After we have plat and render
 		if configErr != nil {
-			ShowErrorDialog(plat, lg, "Configuration file is corrupt: %v", configErr)
+			ShowErrorDialog(plat, lg, "Saved configuration file is corrupt. Discarding. (%v)", configErr)
 		}
 
 		config.Activate(render, plat, eventStream, lg)
 
 		var mgr *client.ConnectionManager
 		var errorLogger util.ErrorLogger
-		mgr, errorLogger = client.MakeServerManager(*serverAddress, *scenarioFilename, *videoMapFilename, lg,
+		var extraScenarioErrors string
+		mgr, errorLogger, extraScenarioErrors = client.MakeServerManager(*serverAddress, *scenarioFilename, *videoMapFilename, lg,
 			func(c *client.ControlClient) { // updated client
 				if c != nil {
-					panes.ResetSim(config.DisplayRoot, c, c.State, plat, lg)
+					// Determine if this is a STARS or ERAM scenario
+					_, isSTARSSim := av.DB.TRACONs[c.State.Facility]
+
+					// Rebuild the display hierarchy with the appropriate pane
+					config.RebuildDisplayRootForSim(isSTARSSim)
+
+					// Reactivate the display hierarchy
+					panes.Activate(config.DisplayRoot, render, plat, eventStream, lg)
+
+					panes.ResetSim(config.DisplayRoot, c, plat, lg)
+
+					// Apply waypoint commands if specified via command line (only for new clients)
+					if *waypointCommands != "" {
+						c.SetWaypointCommands(*waypointCommands)
+					}
 				}
 				uiResetControlClient(c, plat, lg)
 				controlClient = c
@@ -331,18 +437,76 @@ func main() {
 			ShowFatalErrorDialog(render, plat, lg, "%s", errorLogger.String())
 		}
 
+		// Show non-fatal dialog for extra scenario errors
+		if extraScenarioErrors != "" {
+			ShowErrorDialog(plat, lg, "Errors in additional scenario file (scenario will not be loaded):\n\n%s", extraScenarioErrors)
+		}
+
+		// Show warning if server is unreachable and TTS is unavailable
+		if mgr.LocalServer != nil && !mgr.LocalServer.HaveTTS {
+			ShowErrorDialog(plat, lg,
+				"Unable to connect to vice server.\n\n"+
+					"Running in local-only mode without text-to-speech support.")
+		}
+
 		// After config.Activate(), if we have a loaded sim, get configured for it.
-		if config.Sim != nil && !*resetSim {
-			if client, err := mgr.LoadLocalSim(config.Sim, lg); err != nil {
+		if config.Sim != nil && !*resetSim && !*starsRandoms {
+			if client, err := mgr.LoadLocalSim(config.Sim, config.ControllerInitials, lg); err != nil {
 				lg.Errorf("Error loading local sim: %v", err)
 			} else {
-				panes.LoadedSim(config.DisplayRoot, client, client.State, plat, lg)
+				panes.LoadedSim(config.DisplayRoot, client, plat, lg)
 				uiResetControlClient(client, plat, lg)
 				controlClient = client
+				// Apply waypoint commands if specified via command line
+				if *waypointCommands != "" {
+					client.SetWaypointCommands(*waypointCommands)
+				}
 			}
 		}
 
-		if !mgr.Connected() {
+		// Handle -starsrandoms: randomly pick a scenario and start fuzz testing
+		if *starsRandoms {
+			// Determine which server to use (local or remote)
+			var srv *client.Server
+			defaultAddr := net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceServerPort))
+			useRemote := *serverAddress != defaultAddr && *serverAddress != ""
+
+			if useRemote {
+				fmt.Printf("Waiting for remote server at %s...\n", *serverAddress)
+				timeout := time.After(30 * time.Second)
+				for mgr.RemoteServer == nil {
+					mgr.Update(eventStream, plat, lg)
+					select {
+					case <-timeout:
+						lg.Errorf("Timeout waiting for remote server connection")
+						os.Exit(1)
+					case <-time.After(100 * time.Millisecond):
+					}
+				}
+				srv = mgr.RemoteServer
+				fmt.Printf("Connected to remote server\n")
+			} else {
+				srv = mgr.LocalServer
+			}
+
+			// Select a random scenario and create the sim
+			req, err := stars.SelectRandomScenario(srv)
+			if err != nil {
+				lg.Errorf("%v", err)
+				os.Exit(1)
+			}
+			req.Privileged = true // Fuzz testing needs privileged access to control all aircraft
+			if err := mgr.CreateNewSim(req, "FUZZ", srv, lg); err != nil {
+				lg.Errorf("Failed to create sim: %v", err)
+				os.Exit(1)
+			}
+			// controlClient is now set via the onNewClient callback
+
+			// Create fuzz controller with the STARSPane
+			fuzzController = stars.NewFuzzController(config.STARSPane, stars.FuzzConfig{}, lg)
+		}
+
+		if !mgr.Connected() && !*starsRandoms {
 			uiShowConnectDialog(mgr, false, config, plat, lg)
 		}
 
@@ -351,21 +515,20 @@ func main() {
 		lg.Info("Starting main loop")
 
 		stats.startTime = time.Now()
+
 		for {
 			plat.SetWindowTitle("vice: " + controlClient.Status())
 
 			if controlClient == nil {
 				SetDiscordStatus(DiscordStatus{Start: mgr.ConnectionStartTime()}, config, lg)
 			} else {
-				id := controlClient.State.UserTCP
-				if ctrl, ok := controlClient.State.Controllers[id]; ok {
-					id += " (" + ctrl.Position + ")"
-				}
+				pos := controlClient.State.GetPositionsForTCW(controlClient.State.UserTCW)
+				posStr := strings.Join(util.MapSlice(pos, func(p sim.ControlPosition) string { return string(p) }), ", ")
 				stats := controlClient.SessionStats
 				SetDiscordStatus(DiscordStatus{
 					TotalDepartures: stats.Departures + stats.IntraFacility,
 					TotalArrivals:   stats.Arrivals + stats.IntraFacility,
-					Position:        id,
+					Position:        posStr,
 					Start:           mgr.ConnectionStartTime(),
 				}, config, lg)
 			}
@@ -386,6 +549,12 @@ func main() {
 
 			stt.ProcessSTTKeyboardInput(plat, controlClient, lg, config.UserPTTKey, &config.SelectedMicrophone)
 
+			// Execute fuzz commands if in fuzz testing mode
+			if fuzzController != nil && controlClient != nil {
+				ctx := panes.NewFuzzContext(plat, render, controlClient, lg)
+				fuzzController.ExecuteFrame(ctx, controlClient)
+			}
+
 			// Draw the user interface
 			stats.drawUI = uiDraw(mgr, config, plat, render, controlClient, eventStream, lg)
 
@@ -397,9 +566,23 @@ func main() {
 				lg.Info("performance", "stats", stats)
 			}
 
-			if plat.ShouldStop() && len(ui.activeModalDialogs) == 0 {
+			// Check for fuzz test completion
+			if fuzzController != nil && !fuzzController.ShouldContinue() {
+				elapsed := time.Since(stats.startTime)
+				fuzzController.PrintStatistics()
+				frameCount := fuzzController.FrameCount()
+				fmt.Printf("Fuzz testing completed: %d frames in %.2fs (%.0f fps)\n",
+					frameCount, elapsed.Seconds(), float64(frameCount)/elapsed.Seconds())
+				mgr.Disconnect()
+				break
+			}
+
+			if plat.ShouldStop() && !hasActiveModalDialogs() {
 				// Do this while we're still running the event loop.
-				saveSim := mgr.ClientIsLocal()
+				if fuzzController != nil {
+					fuzzController.PrintStatistics()
+				}
+				saveSim := mgr.ClientIsLocal() && fuzzController == nil // Don't save fuzz sims
 				config.SaveIfChanged(render, plat, controlClient, saveSim, lg)
 				mgr.Disconnect()
 				break

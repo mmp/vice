@@ -8,50 +8,51 @@ import (
 	"maps"
 	"slices"
 	"testing"
+	"testing/synctest"
 	"time"
 )
 
 func TestTransientMap(t *testing.T) {
-	ts := NewTransientMap[int, int]()
-	ts.Add(1, 10, 250*time.Millisecond)
-	ts.Add(2, 20, 750*time.Millisecond)
+	synctest.Test(t, func(*testing.T) {
+		ts := NewTransientMap[int, int]()
+		ts.Add(1, 10, 250*time.Millisecond)
+		ts.Add(2, 20, 750*time.Millisecond)
 
-	// Should have both
-	if v, ok := ts.Get(1); !ok {
-		t.Errorf("transient set doesn't have expected entry")
-	} else if v != 10 {
-		t.Errorf("transient set didn't return expected value")
-	}
-	if v, ok := ts.Get(2); !ok {
-		t.Errorf("transient set doesn't have expected entry")
-	} else if v != 20 {
-		t.Errorf("transient set didn't return expected value")
-	}
+		// Should have both
+		if v, ok := ts.Get(1); !ok {
+			t.Errorf("transient set doesn't have expected entry")
+		} else if v != 10 {
+			t.Errorf("transient set didn't return expected value")
+		}
+		if v, ok := ts.Get(2); !ok {
+			t.Errorf("transient set doesn't have expected entry")
+		} else if v != 20 {
+			t.Errorf("transient set didn't return expected value")
+		}
 
-	// Note that after this point this test has the potential to be flaky,
-	// if the thread is not scheduled for ~250+ms; it's possible that more
-	// time will elapse than we think and thence some of the checks may not
-	// add up...
-	time.Sleep(500 * time.Millisecond)
+		time.Sleep(500 * time.Millisecond)
+		synctest.Wait()
 
-	// Should just have 2
-	if _, ok := ts.Get(1); ok {
-		t.Errorf("transient set still has value that it shouldn't")
-	}
-	if v, ok := ts.Get(2); !ok {
-		t.Errorf("transient set doesn't have expected entry")
-	} else if v != 20 {
-		t.Errorf("transient set didn't return expected value")
-	}
+		// Should just have 2
+		if _, ok := ts.Get(1); ok {
+			t.Errorf("transient set still has value that it shouldn't")
+		}
+		if v, ok := ts.Get(2); !ok {
+			t.Errorf("transient set doesn't have expected entry")
+		} else if v != 20 {
+			t.Errorf("transient set didn't return expected value")
+		}
 
-	time.Sleep(250 * time.Millisecond)
+		time.Sleep(251 * time.Millisecond)
+		synctest.Wait()
 
-	if _, ok := ts.Get(1); ok {
-		t.Errorf("transient set still has value that it shouldn't")
-	}
-	if _, ok := ts.Get(2); ok {
-		t.Errorf("transient set still has value that it shouldn't")
-	}
+		if _, ok := ts.Get(1); ok {
+			t.Errorf("transient set still has value that it shouldn't")
+		}
+		if _, ok := ts.Get(2); ok {
+			t.Errorf("transient set still has value that it shouldn't")
+		}
+	})
 }
 
 func TestMapSlice(t *testing.T) {
@@ -371,27 +372,6 @@ func TestSortedMapKeys(t *testing.T) {
 	}
 }
 
-func TestDuplicateMap(t *testing.T) {
-	original := map[string]int{
-		"a": 1,
-		"b": 2,
-		"c": 3,
-	}
-
-	duplicate := DuplicateMap(original)
-
-	// Check that the maps are equal
-	if !maps.Equal(original, duplicate) {
-		t.Error("DuplicateMap should create an identical map")
-	}
-
-	// Check that modifying the duplicate doesn't affect the original
-	duplicate["d"] = 4
-	if maps.Equal(original, duplicate) {
-		t.Error("Modifying duplicate should not affect original")
-	}
-}
-
 func TestMapContains(t *testing.T) {
 	m := map[string]int{
 		"a": 1,
@@ -478,5 +458,114 @@ func TestSeqMinMaxIndexFunc(t *testing.T) {
 	}
 	if _, ok := SeqMinIndexFunc(nil, func(i int, s string) int { return len(s) }); ok {
 		t.Errorf("unexpected ok == true for empty seq")
+	}
+}
+
+func TestSeqContainsFunc(t *testing.T) {
+	s := []int{1, 2, 3, 4, 5}
+
+	// Test finding even number
+	if !SeqContainsFunc(slices.Values(s), func(v int) bool { return v%2 == 0 }) {
+		t.Error("should find even number")
+	}
+
+	// Test finding number > 10
+	if SeqContainsFunc(slices.Values(s), func(v int) bool { return v > 10 }) {
+		t.Error("should not find number > 10")
+	}
+
+	// Test empty sequence
+	empty := []int{}
+	if SeqContainsFunc(slices.Values(empty), func(v int) bool { return true }) {
+		t.Error("should not find anything in empty sequence")
+	}
+}
+
+func TestSeqConcat(t *testing.T) {
+	s1 := []int{1, 2, 3}
+	s2 := []int{4, 5}
+	s3 := []int{6, 7, 8}
+
+	result := slices.Collect(SeqConcat(slices.Values(s1), slices.Values(s2), slices.Values(s3)))
+	expected := []int{1, 2, 3, 4, 5, 6, 7, 8}
+
+	if !slices.Equal(result, expected) {
+		t.Errorf("SeqConcat returned %v, expected %v", result, expected)
+	}
+
+	// Test with single sequence
+	single := slices.Collect(SeqConcat(slices.Values(s1)))
+	if !slices.Equal(single, s1) {
+		t.Errorf("SeqConcat with single sequence returned %v, expected %v", single, s1)
+	}
+
+	// Test with no sequences
+	empty := slices.Collect(SeqConcat[int]())
+	if len(empty) != 0 {
+		t.Errorf("SeqConcat with no sequences should return empty, got %v", empty)
+	}
+}
+
+func TestSeqSingle(t *testing.T) {
+	value := 42
+	result := slices.Collect(SeqSingle(value))
+
+	if len(result) != 1 || result[0] != value {
+		t.Errorf("SeqSingle returned %v, expected [%d]", result, value)
+	}
+
+	// Test with string
+	str := "hello"
+	strResult := slices.Collect(SeqSingle(str))
+	if len(strResult) != 1 || strResult[0] != str {
+		t.Errorf("SeqSingle returned %v, expected [%s]", strResult, str)
+	}
+}
+
+func TestSeq2Concat(t *testing.T) {
+	m1 := map[string]int{"a": 1, "b": 2}
+	m2 := map[string]int{"c": 3, "d": 4}
+	m3 := map[string]int{"e": 5}
+
+	result := maps.Collect(Seq2Concat(maps.All(m1), maps.All(m2), maps.All(m3)))
+
+	// Check all keys and values are present
+	if len(result) != 5 {
+		t.Errorf("Seq2Concat should combine all maps, got %d entries", len(result))
+	}
+
+	expected := map[string]int{"a": 1, "b": 2, "c": 3, "d": 4, "e": 5}
+	if !maps.Equal(result, expected) {
+		t.Errorf("Seq2Concat returned %v, expected %v", result, expected)
+	}
+
+	// Test with single map
+	single := maps.Collect(Seq2Concat(maps.All(m1)))
+	if !maps.Equal(single, m1) {
+		t.Errorf("Seq2Concat with single map returned %v, expected %v", single, m1)
+	}
+
+	// Test with no maps
+	empty := maps.Collect(Seq2Concat[string, int]())
+	if len(empty) != 0 {
+		t.Errorf("Seq2Concat with no maps should return empty, got %v", empty)
+	}
+}
+
+func TestSeq2Single(t *testing.T) {
+	key := "test"
+	value := 123
+	result := maps.Collect(Seq2Single(key, value))
+
+	if len(result) != 1 || result[key] != value {
+		t.Errorf("Seq2Single returned %v, expected map[%s:%d]", result, key, value)
+	}
+
+	// Test with different types
+	k2 := 42
+	v2 := "hello"
+	result2 := maps.Collect(Seq2Single(k2, v2))
+	if len(result2) != 1 || result2[k2] != v2 {
+		t.Errorf("Seq2Single returned %v, expected map[%d:%s]", result2, k2, v2)
 	}
 }

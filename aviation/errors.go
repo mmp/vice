@@ -7,6 +7,7 @@ package aviation
 import "errors"
 
 var (
+	ErrBadPoolSpecifier           = errors.New("Bad pool specifier")
 	ErrInvalidAltitude            = errors.New("Altitude above aircraft's ceiling")
 	ErrInvalidController          = errors.New("Invalid controller")
 	ErrInvalidFacility            = errors.New("Invalid facility")

@@ -13,6 +13,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
+	"maps"
 	"net/http"
 	"os"
 	"slices"
@@ -38,7 +39,9 @@ type StaticDatabase struct {
 	Airports            map[string]FAAAirport
 	Fixes               map[string]Fix
 	Airways             map[string][]Airway
-	Callsigns           map[string]string // 3 letter -> callsign
+	EnrouteHolds        map[string][]Hold            // Fix -> Holds
+	TerminalHolds       map[string]map[string][]Hold // Airport ICAO -> Fix -> Holds
+	Callsigns           map[string]string            // 3 letter -> callsign
 	AircraftTypeAliases map[string]string
 	AircraftPerformance map[string]AircraftPerformance
 	Airlines            map[string]Airline
@@ -151,6 +154,19 @@ func (d StaticDatabase) LookupWaypoint(f string) (math.Point2LL, bool) {
 	}
 }
 
+func (d StaticDatabase) LookupAirport(name string) (FAAAirport, bool) {
+	if ap, ok := d.Airports[name]; ok {
+		return ap, true
+	} else if len(name) == 3 {
+		if ap, ok := d.Airports["K"+name]; ok {
+			return ap, true
+		} else if ap, ok := d.Airports["P"+name]; ok {
+			return ap, true
+		}
+	}
+	return FAAAirport{}, false
+}
+
 type AircraftPerformance struct {
 	Name string `json:"name"`
 	ICAO string `json:"icao"`
@@ -188,6 +204,10 @@ type AircraftPerformance struct {
 		MaxBankAngle float32 `json:"maxBankAngle"`
 		MaxBankRate  float32 `json:"maxBankRate"`
 	}
+	Capacity struct {
+		Passengers int `json:"passengers"`
+		FuelPounds int `json:"fuel_pounds"`
+	} `json:"capacity"`
 }
 
 type Airline struct {
@@ -254,7 +274,19 @@ func InitDB() {
 	go func() { db.Airlines, db.Callsigns = parseAirlines(); wg.Done() }()
 	var airports map[string]FAAAirport
 	wg.Add(1)
-	go func() { airports, db.Navaids, db.Fixes, db.Airways = parseCIFP(); wg.Done() }()
+	go func() {
+		r := parseCIFP()
+		airports = r.Airports
+		db.Navaids = r.Navaids
+		db.Fixes = r.Fixes
+		db.Airways = r.Airways
+		db.EnrouteHolds = r.EnrouteHolds
+		db.TerminalHolds = r.TerminalHolds
+		wg.Done()
+	}()
+	var hpfEnroute map[string][]Hold
+	wg.Add(1)
+	go func() { hpfEnroute = parseHPF(); wg.Done() }()
 	wg.Add(1)
 	go func() { db.MagneticGrid = parseMagneticGrid(); wg.Done() }()
 	wg.Add(1)
@@ -271,6 +303,11 @@ func InitDB() {
 		wg.Done()
 	}()
 	wg.Wait()
+
+	// Merge HPF holds with CIFP holds
+	for fix, holds := range hpfEnroute {
+		db.EnrouteHolds[fix] = append(db.EnrouteHolds[fix], holds...)
+	}
 
 	for icao, ap := range airports {
 		if _, ok := customAirports[icao]; !ok { // ignore ones defined in custom_airports.json
@@ -527,10 +564,126 @@ func parseAirlines() (map[string]Airline, map[string]string) {
 
 // FAA Coded Instrument Flight Procedures (CIFP)
 // https://www.faa.gov/air_traffic/flight_info/aeronav/digital_products/cifp/download/
-func parseCIFP() (map[string]FAAAirport, map[string]Navaid, map[string]Fix, map[string][]Airway) {
+func parseCIFP() ARINC424Result {
 	r := util.LoadResource("FAACIFP18.zst")
 	defer r.Close()
 	return ParseARINC424(r)
+}
+
+// parseHPF parses the FAA Holding Pattern File (HPF) CSV files and returns holds.
+// HPF provides additional holds not found in CIFP, particularly for STARs and enroute holds.
+// https://www.faa.gov/air_traffic/flight_info/aeronav/aero_data/NASR_Subscription/
+func parseHPF() map[string][]Hold {
+	type hpfBase struct {
+		fixID         string
+		courseInbound string
+		turnDirection string
+		legLengthDist string
+		chartType     string
+		speedRange    string
+		altitudeRange string
+	}
+
+	holds := make(map[string]hpfBase) // HP_NAME -> hold data
+
+	// Parse HPF_BASE.csv for core hold data
+	baseR := util.LoadResource("HPF_BASE.csv.zst")
+	defer baseR.Close()
+	mungeCSV("HPF_BASE", baseR,
+		[]string{"HP_NAME", "FIX_ID", "COURSE_INBOUND_DEG", "TURN_DIRECTION", "LEG_LENGTH_DIST"},
+		func(s []string) {
+			h := hpfBase{
+				fixID:         strings.TrimSpace(s[1]),
+				courseInbound: strings.TrimSpace(s[2]),
+				turnDirection: strings.TrimSpace(s[3]),
+				legLengthDist: strings.TrimSpace(s[4]),
+			}
+			holds[strings.TrimSpace(s[0])] = h
+		})
+
+	// Parse HPF_CHRT.csv for charting type
+	chartR := util.LoadResource("HPF_CHRT.csv.zst")
+	defer chartR.Close()
+	mungeCSV("HPF_CHRT", chartR,
+		[]string{"HP_NAME", "CHARTING_TYPE_DESC"},
+		func(s []string) {
+			name := strings.TrimSpace(s[0])
+			if h, ok := holds[name]; ok {
+				h.chartType = strings.TrimSpace(s[1])
+				holds[name] = h
+			}
+		})
+
+	// Parse HPF_SPD_ALT.csv for speed and altitude restrictions
+	spdAltR := util.LoadResource("HPF_SPD_ALT.csv.zst")
+	defer spdAltR.Close()
+	mungeCSV("HPF_SPD_ALT", spdAltR,
+		[]string{"HP_NAME", "SPEED_RANGE", "ALTITUDE"},
+		func(s []string) {
+			name := strings.TrimSpace(s[0])
+			if h, ok := holds[name]; ok {
+				h.speedRange = strings.TrimSpace(s[1])
+				h.altitudeRange = strings.TrimSpace(s[2])
+				holds[name] = h
+			}
+		})
+
+	// Convert to Hold objects
+	enrouteHolds := make(map[string][]Hold)
+
+	for _, h := range holds {
+		if h.fixID == "" || h.courseInbound == "" || h.turnDirection == "" {
+			continue
+		}
+
+		hold := Hold{
+			Fix:           h.fixID,
+			TurnDirection: TurnLeft,
+		}
+
+		if course, err := strconv.Atoi(h.courseInbound); err == nil {
+			hold.InboundCourse = float32(course)
+		}
+		if h.turnDirection == "R" {
+			hold.TurnDirection = TurnRight
+		}
+		// Parse leg length (nautical miles) or default to time-based
+		if h.legLengthDist != "" {
+			if dist, err := strconv.Atoi(h.legLengthDist); err == nil {
+				hold.LegLengthNM = float32(dist)
+			}
+		} else {
+			// Default to 1 minute hold if no distance specified
+			hold.LegMinutes = 1
+		}
+
+		if h.speedRange != "" {
+			if speed, err := strconv.Atoi(h.speedRange); err == nil {
+				hold.HoldingSpeed = speed
+			}
+		}
+
+		// Parse altitude restrictions (format: "MIN/MAX" in hundreds of feet)
+		if h.altitudeRange != "" {
+			parts := strings.Split(h.altitudeRange, "/")
+			if len(parts) == 2 {
+				if minAlt, err := strconv.Atoi(parts[0]); err == nil {
+					hold.MinimumAltitude = minAlt * 100
+				}
+				if maxAlt, err := strconv.Atoi(parts[1]); err == nil {
+					hold.MaximumAltitude = maxAlt * 100
+				}
+			}
+		}
+
+		// HPF doesn't provide specific procedure names
+		hold.Procedure = ""
+
+		// Add to enroute holds (HPF doesn't provide airport associations for terminal holds)
+		enrouteHolds[h.fixID] = append(enrouteHolds[h.fixID], hold)
+	}
+
+	return enrouteHolds
 }
 
 type MagneticGrid struct {
@@ -734,7 +887,7 @@ func parseMVAs() map[string][]MVA {
 				panic(err)
 			}
 
-			zr, err := zstd.NewReader(r)
+			zr, err := zstd.NewReader(r, zstd.WithDecoderConcurrency(0))
 			if err != nil {
 				panic(err)
 			}
@@ -910,13 +1063,13 @@ func PrintCIFPRoutes(airport string) error {
 	}
 
 	fmt.Printf("STARs:\n")
-	for _, s := range util.SortedMapKeys(ap.STARs) {
-		ap.STARs[s].Print(s)
+	for name, star := range util.SortedMap(ap.STARs) {
+		star.Print(name)
 	}
 	fmt.Printf("\nApproaches:\n")
-	for _, appr := range util.SortedMapKeys(ap.Approaches) {
-		fmt.Printf("%-5s: ", appr)
-		for i, wp := range ap.Approaches[appr].Waypoints {
+	for name, appr := range util.SortedMap(ap.Approaches) {
+		fmt.Printf("%-5s: ", name)
+		for i, wp := range appr.Waypoints {
 			if i > 0 {
 				fmt.Printf("       ")
 			}
@@ -959,7 +1112,7 @@ func (t *TFRCache) UpdateAsync(lg *log.Logger) {
 		return
 	}
 	t.ch = make(chan map[string]TFR)
-	go fetchTFRs(util.DuplicateMap(t.TFRs), t.ch, lg)
+	go fetchTFRs(maps.Clone(t.TFRs), t.ch, lg)
 }
 
 // Sync synchronizes the cache, adding any newly-downloaded TFRs.  It
@@ -987,8 +1140,8 @@ func (t *TFRCache) TFRsForTRACON(tracon string, lg *log.Logger) []TFR {
 		return nil
 	} else {
 		var tfrs []TFR
-		for _, url := range util.SortedMapKeys(t.TFRs) {
-			if tfr := t.TFRs[url]; tfr.ARTCC == tr.ARTCC {
+		for _, tfr := range util.SortedMap(t.TFRs) {
+			if tfr.ARTCC == tr.ARTCC {
 				tfrs = append(tfrs, tfr)
 			}
 		}

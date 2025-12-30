@@ -56,11 +56,9 @@ func init() {
 
 func NewMessagesPane() *MessagesPane {
 	return &MessagesPane{
-		FontIdentifier: renderer.FontIdentifier{Name: "Roboto Regular", Size: 16},
+		FontIdentifier: renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: 16},
 	}
 }
-
-func (mp *MessagesPane) DisplayName() string { return "Messages" }
 
 func (mp *MessagesPane) Hide() bool { return false }
 
@@ -75,8 +73,8 @@ func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, event
 	mp.events = eventStream.Subscribe()
 
 	mp.alertAudioIndex = make(map[string]int)
-	for _, alert := range util.SortedMapKeys(audioAlerts) {
-		idx, err := p.AddMP3(util.LoadResourceBytes("audio/" + audioAlerts[alert]))
+	for alert, path := range util.SortedMap(audioAlerts) {
+		idx, err := p.AddMP3(util.LoadResourceBytes("audio/" + path))
 		if err != nil {
 			lg.Errorf("Error adding static audio effect: %v", err)
 		}
@@ -85,17 +83,14 @@ func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, event
 
 	if _, ok := mp.alertAudioIndex[mp.AudioAlertSelection]; !ok { // Not available (or unset)
 		// Take the first one alphabetically.
-		for _, alert := range util.SortedMapKeys(audioAlerts) {
-			mp.AudioAlertSelection = alert
-			break
-		}
+		mp.AudioAlertSelection, _ = util.FirstSortedMapEntry(audioAlerts)
 	}
 }
 
-func (mp *MessagesPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (mp *MessagesPane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 }
 
-func (mp *MessagesPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (mp *MessagesPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	mp.messages = nil
 }
 
@@ -104,6 +99,10 @@ func (mp *MessagesPane) CanTakeKeyboardFocus() bool { return false }
 func (mp *MessagesPane) Upgrade(prev, current int) {
 }
 
+var _ UIDrawer = (*MessagesPane)(nil)
+
+func (mp *MessagesPane) DisplayName() string { return "Messages" }
+
 func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
 	if newFont, changed := renderer.DrawFontSizeSelector(&mp.FontIdentifier); changed {
 		mp.font = newFont
@@ -111,7 +110,7 @@ func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
 
 	imgui.Separator()
 	if imgui.BeginCombo("Audio alert", mp.AudioAlertSelection) {
-		for _, alert := range util.SortedMapKeys(audioAlerts) {
+		for alert := range util.SortedMap(audioAlerts) {
 			if imgui.SelectableBoolV(alert, alert == mp.AudioAlertSelection, 0, imgui.Vec2{}) {
 				mp.AudioAlertSelection = alert
 				p.PlayAudioOnce(mp.alertAudioIndex[alert])
@@ -183,15 +182,16 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 	for _, event := range mp.events.Get() {
 		switch event.Type {
 		case sim.RadioTransmissionEvent:
-			toUs := event.ToController == ctx.UserTCP
+			toUs := ctx.UserControlsPosition(event.ToController)
 
-			if !toUs && !ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP) {
+			privObs := ctx.TCWIsPrivileged(ctx.UserTCW) || ctx.TCWIsObserver(ctx.UserTCW)
+			if !toUs && !privObs {
 				break
 			}
 
 			prefix := ""
-			if ctx.Client.State.AreInstructorOrRPO(ctx.UserTCP) {
-				prefix = "[to " + event.ToController + "] "
+			if privObs {
+				prefix = "[to " + string(event.ToController) + "] "
 			}
 
 			var msg Message
@@ -205,7 +205,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 					event.WrittenText = strings.ToUpper(event.WrittenText[:1]) + event.WrittenText[1:]
 				}
 				msg = Message{contents: prefix + event.WrittenText,
-					error: event.RadioTransmissionType == av.RadioTransmissionUnexpected,
+					error: event.RadioTransmissionType == av.RadioTransmissionUnexpected || event.RadioTransmissionType == av.RadioTransmissionMixUp,
 				}
 				if mp.ReadbackTransmissionsAlert {
 					ctx.Platform.PlayAudioOnce(mp.alertAudioIndex[mp.AudioAlertSelection])
@@ -216,11 +216,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			mp.messages = append(mp.messages, msg)
 
 		case sim.GlobalMessageEvent:
-			if event.FromController != ctx.UserTCP {
-				for _, line := range strings.Split(event.WrittenText, "\n") {
-					mp.messages = append(mp.messages, Message{contents: line, global: true})
-				}
-			}
+			mp.messages = append(mp.messages, Message{contents: event.WrittenText, global: true})
 
 		case sim.StatusMessageEvent:
 			// Don't spam the same message repeatedly; look in the most recent 5.
@@ -234,6 +230,13 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 						system:   true,
 					})
 			}
+
+		case sim.ErrorMessageEvent:
+			mp.messages = append(mp.messages,
+				Message{
+					contents: event.WrittenText,
+					error:    true,
+				})
 		}
 	}
 }

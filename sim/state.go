@@ -1,5 +1,5 @@
-// pkg/sim/state.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// sim/state.go
+// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package sim
@@ -7,7 +7,6 @@ package sim
 import (
 	"maps"
 	"slices"
-	"strconv"
 	"strings"
 	"time"
 
@@ -20,85 +19,86 @@ import (
 	"github.com/brunoga/deep"
 )
 
-const serverCallsign = "__SERVER__"
+// DynamicState is the subset of CommonState that is sent to the user once a second as the Sim
+// executes. In this way, we limit network traffic to what is actually changing and only send the
+// static information in CommonState once, when the Sim starts.
+type DynamicState struct {
+	GenerationIndex int
 
-// State serves two purposes: first, the Sim object holds one to organize
-// assorted information about the world state that it updates as part of
-// the simulation. Second, an instance of it is given to clients when they
-// join a sim.  As the sim runs, the client's State is updated roughly once
-// a second.  Clients can then use the State as a read-only reference for
-// assorted information they may need (the state of aircraft in the sim,
-// etc.)
-type State struct {
-	Tracks map[av.ADSBCallsign]*Track
+	CurrentConsolidation map[TCW]*TCPConsolidation
 
-	// Unassociated ones, including unsupported DBs
-	UnassociatedFlightPlans []*STARSFlightPlan
+	SimTime time.Time // this is our fake time--accounting for pauses & simRate..
 
-	ACFlightPlans map[av.ADSBCallsign]av.FlightPlan // needed for flight strips...
+	METAR map[string]wx.METAR
+
+	LaunchConfig LaunchConfig
+
+	UserRestrictionAreas []av.RestrictionArea
+
+	Paused  bool
+	SimRate float32
+
+	ATPAEnabled     bool                                   // True if ATPA is enabled system-wide
+	ATPAVolumeState map[string]map[string]*ATPAVolumeState // airport -> volumeId -> state
+}
+
+type ATPAVolumeState struct {
+	Disabled          bool
+	Reduced25Disabled bool
+}
+
+// CommonState represents the sim state that is both used server side and client-side.
+type CommonState struct {
+	DynamicState
 
 	Airports          map[string]*av.Airport
+	Controllers       map[ControlPosition]*av.Controller
 	DepartureAirports map[string]interface{}
 	ArrivalAirports   map[string]interface{}
 	Fixes             map[string]math.Point2LL
 	VFRRunways        map[string]av.Runway // assume just one runway per airport
-	ReleaseDepartures []ReleaseDeparture
 
-	// Signed in human controllers + virtual controllers
-	Controllers      map[string]*av.Controller
-	HumanControllers []string
+	ConfigurationId string // Short identifier for the configuration (from ControllerConfiguration.ConfigId)
 
-	PrimaryController string
-	MultiControllers  av.SplitConfiguration
-	UserTCP           string
-	Airspace          map[string]map[string][]av.ControllerAirspaceVolume // ctrl id -> vol name -> definition
-
-	GenerationIndex int
+	Airspace map[ControlPosition]map[string][]av.ControllerAirspaceVolume // position -> vol name -> definition
 
 	DepartureRunways []DepartureRunway
 	ArrivalRunways   []ArrivalRunway
 	InboundFlows     map[string]*av.InboundFlow
-	LaunchConfig     LaunchConfig
+	Emergencies      []Emergency
 
-	Center                   math.Point2LL
-	Range                    float32
-	ScenarioDefaultVideoMaps []string
-	UserRestrictionAreas     []av.RestrictionArea
+	Center                    math.Point2LL
+	Range                     float32
+	ScenarioDefaultVideoMaps  []string
+	ScenarioDefaultVideoGroup string
 
-	STARSFacilityAdaptation STARSFacilityAdaptation
+	FacilityAdaptation FacilityAdaptation
 
-	TRACON            string
+	Facility          string
 	MagneticVariation float32
 	NmPerLongitude    float32
 	PrimaryAirport    string
 
-	WX *wx.WeatherModel
-
-	TotalIFR, TotalVFR int
-
-	Paused         bool
-	SimRate        float32
 	SimDescription string
-	SimTime        time.Time // this is our fake time--accounting for pauses & simRate..
 
-	QuickFlightPlanIndex int // for auto ACIDs for quick ACID flight plan 5-145
-
-	Instructors map[string]bool
+	PrivilegedTCWs map[TCW]bool // TCWs with elevated privileges (can control any aircraft)
+	Observers      map[TCW]bool // TCWs connected as observers (no position)
 
 	VideoMapLibraryHash []byte
+}
 
-	// Set in State returned by GetStateForController
-	ControllerVideoMaps                 []string
-	ControllerDefaultVideoMaps          []string
-	ControllerMonitoredBeaconCodeBlocks []av.Squawk
-
-	RadioTransmissions [][]byte
+// DerivedState collects state used on the client-side that is derived from Sim state that is not
+// shared with the client.
+type DerivedState struct {
+	Tracks                  map[av.ADSBCallsign]*Track
+	UnassociatedFlightPlans []*NASFlightPlan // Unassociated ones, including unsupported DBs
+	ReleaseDepartures       []ReleaseDeparture
 }
 
 type ReleaseDeparture struct {
 	ADSBCallsign        av.ADSBCallsign
 	DepartureAirport    string
-	DepartureController string
+	DepartureController ControlPosition
 	Released            bool
 	Squawk              av.Squawk
 	ListIndex           int
@@ -106,44 +106,154 @@ type ReleaseDeparture struct {
 	Exit                string
 }
 
-func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMapManifest, lg *log.Logger) *State {
+// UserState is the simulation-related state provided to a user on the client-side.
+type UserState struct {
+	CommonState
+	DerivedState
+}
+
+// StateUpdate encapsulates the simulation state data sent from server to client each tick.
+type StateUpdate struct {
+	DynamicState
+	DerivedState
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+// makeDerivedState creates a DerivedState from the current simulation state.  It builds Tracks from
+// Aircraft and gathers flight plan information from STARSComputer. This is called when preparing
+// state updates for clients.
+func makeDerivedState(s *Sim) DerivedState {
+	ds := DerivedState{
+		UnassociatedFlightPlans: s.STARSComputer.FlightPlans,
+	}
+
+	// Build ReleaseDepartures from STARSComputer.HoldForRelease
+	for _, ac := range s.STARSComputer.HoldForRelease {
+		fp, _, _ := s.getFlightPlanForACID(ACID(ac.ADSBCallsign))
+		if fp == nil {
+			s.lg.Warnf("%s: no flight plan for hold for release aircraft", string(ac.ADSBCallsign))
+			continue
+		}
+		ds.ReleaseDepartures = append(ds.ReleaseDepartures,
+			ReleaseDeparture{
+				ADSBCallsign:        ac.ADSBCallsign,
+				DepartureAirport:    "K" + fp.EntryFix,
+				DepartureController: fp.InboundHandoffController,
+				Released:            ac.Released,
+				Squawk:              ac.Squawk,
+				ListIndex:           fp.ListIndex,
+				AircraftType:        fp.AircraftType,
+				Exit:                fp.ExitFix,
+			})
+	}
+
+	// Build Tracks from Aircraft
+	ds.Tracks = make(map[av.ADSBCallsign]*Track)
+	for callsign, ac := range util.SortedMap(s.Aircraft) {
+		if !s.isRadarVisible(ac) {
+			continue
+		}
+
+		rt := Track{
+			RadarTrack:                ac.GetRadarTrack(s.State.SimTime),
+			FlightPlan:                ac.NASFlightPlan,
+			DepartureAirport:          ac.FlightPlan.DepartureAirport,
+			DepartureAirportElevation: ac.DepartureAirportElevation(),
+			DepartureAirportLocation:  ac.DepartureAirportLocation(),
+			ArrivalAirport:            ac.FlightPlan.ArrivalAirport,
+			ArrivalAirportElevation:   ac.ArrivalAirportElevation(),
+			ArrivalAirportLocation:    ac.ArrivalAirportLocation(),
+			FiledRoute:                ac.FlightPlan.Route,
+			FiledAltitude:             ac.FlightPlan.Altitude,
+			OnExtendedCenterline:      ac.OnExtendedCenterline(0.2),
+			OnApproach:                ac.OnApproach(false), /* don't check altitude */
+			MVAsApply:                 ac.MVAsApply(),
+			HoldForRelease:            ac.HoldForRelease,
+			MissingFlightPlan:         ac.MissingFlightPlan,
+			ATPAVolume:                ac.ATPAVolume(),
+			IsTentative:               s.State.SimTime.Sub(ac.FirstSeen) < 5*time.Second,
+		}
+
+		for _, wp := range ac.Nav.Waypoints {
+			rt.Route = append(rt.Route, wp.Location)
+		}
+
+		ds.Tracks[callsign] = &rt
+	}
+
+	// Make up fake tracks for unsupported datablocks
+	for i, fp := range s.STARSComputer.FlightPlans {
+		if fp.Location.IsZero() {
+			continue
+		}
+		callsign := av.ADSBCallsign("__" + string(fp.ACID))
+		ds.Tracks[callsign] = &Track{
+			RadarTrack: av.RadarTrack{
+				ADSBCallsign: callsign,
+				Location:     fp.Location,
+			},
+			FlightPlan: s.STARSComputer.FlightPlans[i],
+		}
+	}
+
+	return ds
+}
+
+func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *VideoMapManifest, model *wx.Model,
+	metar map[string][]wx.METAR, lg *log.Logger) *CommonState {
 	// Roll back the start time to account for prespawn
 	startTime = startTime.Add(-initialSimSeconds * time.Second)
 
-	ss := &State{
-		Airports:   config.Airports,
-		Fixes:      config.Fixes,
-		VFRRunways: make(map[string]av.Runway),
+	ss := &CommonState{
+		DynamicState: DynamicState{
+			CurrentConsolidation: make(map[TCW]*TCPConsolidation),
 
-		Controllers:       make(map[string]*av.Controller),
-		PrimaryController: config.PrimaryController,
-		MultiControllers:  config.MultiControllers,
-		UserTCP:           serverCallsign,
+			METAR: make(map[string]wx.METAR),
+
+			LaunchConfig: config.LaunchConfig,
+
+			SimRate: 1,
+			SimTime: startTime,
+
+			ATPAEnabled:     true,
+			ATPAVolumeState: initATPAVolumeState(config.Airports),
+		},
+
+		Airports:    config.Airports,
+		Controllers: maps.Clone(config.ControlPositions),
+		Fixes:       config.Fixes,
+		VFRRunways:  make(map[string]av.Runway),
+
+		ConfigurationId: config.ControllerConfiguration.ConfigId,
 
 		DepartureRunways: config.DepartureRunways,
 		ArrivalRunways:   config.ArrivalRunways,
 		InboundFlows:     config.InboundFlows,
-		LaunchConfig:     config.LaunchConfig,
+		Emergencies:      config.Emergencies,
 
-		Center:                   config.Center,
-		Range:                    config.Range,
-		ScenarioDefaultVideoMaps: config.DefaultMaps,
+		Center:                    config.Center,
+		Range:                     config.Range,
+		ScenarioDefaultVideoMaps:  config.DefaultMaps,
+		ScenarioDefaultVideoGroup: config.DefaultMapGroup,
 
-		STARSFacilityAdaptation: deep.MustCopy(config.STARSFacilityAdaptation),
+		FacilityAdaptation: deep.MustCopy(config.FacilityAdaptation),
 
-		TRACON:            config.TRACON,
+		Facility:          config.Facility,
 		MagneticVariation: config.MagneticVariation,
 		NmPerLongitude:    config.NmPerLongitude,
 		PrimaryAirport:    config.PrimaryAirport,
+		SimDescription:    config.Description,
 
-		WX: wx.MakeWeatherModel(slices.Collect(maps.Keys(config.Airports)), startTime,
-			config.NmPerLongitude, config.MagneticVariation, config.Wind, lg),
+		PrivilegedTCWs: make(map[TCW]bool),
+		Observers:      make(map[TCW]bool),
+	}
 
-		SimRate:        1,
-		SimDescription: config.Description,
-		SimTime:        startTime,
-
-		Instructors: make(map[string]bool),
+	// Grab initial METAR for each airport
+	for ap, m := range metar {
+		if len(m) > 0 {
+			ss.METAR[ap] = m[0]
+		}
 	}
 
 	if manifest != nil {
@@ -151,27 +261,15 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 	}
 
 	if len(config.ControllerAirspace) > 0 {
-		ss.Airspace = make(map[string]map[string][]av.ControllerAirspaceVolume)
-		if config.IsLocal {
-			ss.Airspace[ss.PrimaryController] = make(map[string][]av.ControllerAirspaceVolume)
-			// Take all the airspace
-			for _, vnames := range config.ControllerAirspace {
-				for _, vname := range vnames {
-					// Remap from strings provided in the scenario to the
-					// actual volumes defined in the scenario group.
-					ss.Airspace[ss.PrimaryController][vname] = config.Airspace.Volumes[vname]
-				}
+		ss.Airspace = make(map[ControlPosition]map[string][]av.ControllerAirspaceVolume)
+		for ctrl, vnames := range config.ControllerAirspace {
+			if _, ok := ss.Airspace[ctrl]; !ok {
+				ss.Airspace[ctrl] = make(map[string][]av.ControllerAirspaceVolume)
 			}
-		} else {
-			for ctrl, vnames := range config.ControllerAirspace {
-				if _, ok := ss.Airspace[ctrl]; !ok {
-					ss.Airspace[ctrl] = make(map[string][]av.ControllerAirspaceVolume)
-				}
-				for _, vname := range vnames {
-					// Remap from strings provided in the scenario to the
-					// actual volumes defined in the scenario group.
-					ss.Airspace[ctrl][vname] = config.Airspace.Volumes[vname]
-				}
+			for _, vname := range vnames {
+				// Remap from strings provided in the scenario to the
+				// actual volumes defined in the scenario group.
+				ss.Airspace[ctrl][vname] = config.Airspace.Volumes[vname]
 			}
 		}
 	}
@@ -179,24 +277,19 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 	// Add the TFR restriction areas
 	for _, tfr := range config.TFRs {
 		ra := av.RestrictionAreaFromTFR(tfr)
-		ss.STARSFacilityAdaptation.RestrictionAreas = append(ss.STARSFacilityAdaptation.RestrictionAreas, ra)
+		ss.FacilityAdaptation.RestrictionAreas = append(ss.FacilityAdaptation.RestrictionAreas, ra)
 	}
 
-	for _, callsign := range config.VirtualControllers {
-		// Filter out any that are actually human-controlled positions.
-		if callsign == ss.PrimaryController {
-			continue
-		}
-		if ss.MultiControllers != nil {
-			if _, ok := ss.MultiControllers[callsign]; ok {
-				continue
-			}
-		}
-
-		if ctrl, ok := config.ControlPositions[callsign]; ok {
-			ss.Controllers[callsign] = ctrl
-		} else {
-			lg.Errorf("%s: controller not found in ControlPositions??", callsign)
+	// Consolidate all positions to the root TCW
+	defaultConsolidation := config.ControllerConfiguration.DefaultConsolidation
+	rootTCP, _ := defaultConsolidation.RootPosition()
+	rootCons := &TCPConsolidation{PrimaryTCP: rootTCP}
+	ss.CurrentConsolidation[TCW(rootTCP)] = rootCons
+	for _, tcp := range defaultConsolidation.AllPositions() {
+		if tcp != rootTCP {
+			rootCons.SecondaryTCPs = append(rootCons.SecondaryTCPs,
+				SecondaryTCP{TCP: tcp, Type: ConsolidationFull})
+			ss.CurrentConsolidation[TCW(tcp)] = &TCPConsolidation{}
 		}
 	}
 
@@ -209,7 +302,7 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 			ss.DepartureAirports[name] = nil
 
 			ap := av.DB.Airports[name]
-			windDir := ss.WX.LookupWind(ap.Location, float32(ap.Elevation)).Direction
+			windDir := model.Lookup(ap.Location, float32(ap.Elevation), startTime).WindDirection()
 			if rwy, _ := ap.SelectBestRunway(windDir, ss.MagneticVariation); rwy != nil {
 				ss.VFRRunways[name] = *rwy
 			} else {
@@ -230,30 +323,20 @@ func newState(config NewSimConfiguration, startTime time.Time, manifest *VideoMa
 	return ss
 }
 
-func (ss *State) GetStateForController(tcp string) *State {
-	// Make a deep copy so that if the server is running on the same
-	// system, that the client doesn't see updates until they're explicitly
-	// sent. (And similarly, that any speculative client changes to the
-	// World state to improve responsiveness don't actually affect the
-	// server.)
-	state := deep.MustCopy(*ss)
-	state.UserTCP = tcp
-
-	// Now copy the appropriate video maps into ControllerVideoMaps and ControllerDefaultVideoMaps
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[tcp]; ok && len(config.VideoMapNames) > 0 {
-		state.ControllerVideoMaps = config.VideoMapNames
-		state.ControllerDefaultVideoMaps = config.DefaultMaps
-		state.ControllerMonitoredBeaconCodeBlocks = config.MonitoredBeaconCodeBlocks
-	} else {
-		state.ControllerVideoMaps = ss.STARSFacilityAdaptation.VideoMapNames
-		state.ControllerDefaultVideoMaps = ss.ScenarioDefaultVideoMaps
-		state.ControllerMonitoredBeaconCodeBlocks = ss.STARSFacilityAdaptation.MonitoredBeaconCodeBlocks
+func initATPAVolumeState(airports map[string]*av.Airport) map[string]map[string]*ATPAVolumeState {
+	result := make(map[string]map[string]*ATPAVolumeState)
+	for icao, ap := range airports {
+		if len(ap.ATPAVolumes) > 0 {
+			result[icao] = make(map[string]*ATPAVolumeState)
+			for volId := range ap.ATPAVolumes {
+				result[icao][volId] = &ATPAVolumeState{}
+			}
+		}
 	}
-
-	return &state
+	return result
 }
 
-func (ss *State) Locate(s string) (math.Point2LL, bool) {
+func (ss *CommonState) Locate(s string) (math.Point2LL, bool) {
 	s = strings.ToUpper(s)
 	// ScenarioGroup's definitions take precedence...
 	if ap, ok := ss.Airports[s]; ok {
@@ -278,229 +361,118 @@ func (ss *State) Locate(s string) (math.Point2LL, bool) {
 	return math.Point2LL{}, false
 }
 
-func (ss *State) GetConsolidatedPositions(id string) []string {
-	var cons []string
+///////////////////////////////////////////////////////////////////////////
+// CommonState methods for controller/consolidation management
 
-	for pos := range ss.MultiControllers {
-		rid, _ := ss.MultiControllers.ResolveController(pos, func(id string) bool {
-			_, ok := ss.Controllers[id]
-			return ok // active
-		})
-		if rid == id { // The position resolves to us.
-			cons = append(cons, pos)
-		}
-	}
-
-	slices.Sort(cons)
-
-	return cons
-}
-
-func (ss *State) ResolveController(tcp string) string {
-	if _, ok := ss.Controllers[tcp]; ok {
-		// The easy case: the controller is already signed in
-		return tcp
-	}
-
-	if len(ss.MultiControllers) > 0 {
-		mtcp, err := ss.MultiControllers.ResolveController(tcp,
-			func(multiTCP string) bool {
-				return slices.Contains(ss.HumanControllers, multiTCP)
-			})
-		if err == nil {
-			return mtcp
-		}
-	}
-
-	return ss.PrimaryController
-}
-
-func (ss *State) GetAllReleaseDepartures() []ReleaseDeparture {
-	return util.FilterSlice(ss.ReleaseDepartures,
-		func(dep ReleaseDeparture) bool {
-			// When ControlClient DeleteAllAircraft() is called, we do our usual trick of
-			// making the update locally pending the next update from the server. However, it
-			// doesn't clear out the ones in the STARSComputer; that happens server side only.
-			// So, here is a band-aid to not return aircraft that no longer exist.
-			//if _, ok := ss.Aircraft[ac.ADSBCallsign]; !ok {
-			//return false
-			//}
-			return ss.ResolveController(dep.DepartureController) == ss.UserTCP
-		})
-}
-
-func (ss *State) GetRegularReleaseDepartures() []ReleaseDeparture {
-	return util.FilterSlice(ss.ReleaseDepartures,
-		func(dep ReleaseDeparture) bool {
-			if dep.Released {
-				return false
-			}
-
-			for _, cl := range ss.STARSFacilityAdaptation.CoordinationLists {
-				if slices.Contains(cl.Airports, dep.DepartureAirport) {
-					// It'll be in a STARS coordination list
-					return false
-				}
-			}
-			return true
-		})
-}
-
-func (ss *State) GetSTARSReleaseDepartures() []ReleaseDeparture {
-	return util.FilterSlice(ss.ReleaseDepartures,
-		func(dep ReleaseDeparture) bool {
-			for _, cl := range ss.STARSFacilityAdaptation.CoordinationLists {
-				if slices.Contains(cl.Airports, dep.DepartureAirport) {
-					return true
-				}
-			}
-			return false
-		})
-}
-
-func (ss *State) GetInitialRange() float32 {
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.UserTCP]; ok && config.Range != 0 {
-		return config.Range
-	}
-	return ss.Range
-}
-
-func (ss *State) GetInitialCenter() math.Point2LL {
-	if config, ok := ss.STARSFacilityAdaptation.ControllerConfigs[ss.UserTCP]; ok && !config.Center.IsZero() {
-		return config.Center
-	}
-	return ss.Center
-}
-
-func (ss *State) FacilityFromController(callsign string) (string, bool) {
-	if controller := ss.Controllers[callsign]; controller != nil {
-		if controller.Facility != "" {
-			return controller.Facility, true
-		} else if controller != nil {
-			return ss.TRACON, true
-		}
-	}
-	if slices.Contains(ss.HumanControllers, callsign) || callsign == ss.PrimaryController {
-		return ss.TRACON, true
-	}
-	if _, ok := ss.MultiControllers[callsign]; ok {
-		return ss.TRACON, true
-	}
-
-	return "", false
-}
-
-func (ss *State) AreInstructorOrRPO(tcp string) bool {
-	// Check if they're marked as an instructor in the Instructors map (for regular controllers with instructor privileges)
-	if ss.Instructors[tcp] {
-		return true
-	}
-	// Also check if they're signed in as a dedicated instructor/RPO position
-	ctrl, ok := ss.Controllers[tcp]
-	return ok && (ctrl.Instructor || ctrl.RPO)
-}
-
-func (ss *State) BeaconCodeInUse(sq av.Squawk) bool {
-	if util.SeqContainsFunc(maps.Values(ss.Tracks),
-		func(tr *Track) bool {
-			return tr.IsAssociated() && tr.Squawk == sq
-		}) {
-		return true
-	}
-
-	if slices.ContainsFunc(ss.UnassociatedFlightPlans,
-		func(fp *STARSFlightPlan) bool { return fp.AssignedSquawk == sq }) {
-		return true
-	}
-
-	return false
-}
-
-func (ss *State) FindMatchingFlightPlan(s string) *STARSFlightPlan {
-	n := -1
-	if pn, err := strconv.Atoi(s); err == nil && len(s) <= 2 {
-		n = pn
-	}
-
-	sq := av.Squawk(0)
-	if ps, err := av.ParseSquawk(s); err == nil {
-		sq = ps
-	}
-
-	for _, fp := range ss.UnassociatedFlightPlans {
-		if fp.ACID == ACID(s) {
-			return fp
-		}
-		if fp.ListIndex != UnsetSTARSListIndex && n == fp.ListIndex {
-			return fp
-		}
-		if sq == fp.AssignedSquawk {
-			return fp
-		}
-	}
-	return nil
-}
-
-func (ss *State) GetTrackByCallsign(callsign av.ADSBCallsign) (*Track, bool) {
-	for i, trk := range ss.Tracks {
-		if trk.ADSBCallsign == callsign {
-			return ss.Tracks[i], true
-		}
-	}
-	return nil, false
-}
-
-func (ss *State) GetOurTrackByCallsign(callsign av.ADSBCallsign) (*Track, bool) {
-	for i, trk := range ss.Tracks {
-		if trk.ADSBCallsign == callsign && trk.IsAssociated() &&
-			trk.FlightPlan.TrackingController == ss.UserTCP {
-			return ss.Tracks[i], true
-		}
-	}
-	return nil, false
-}
-
-func (ss *State) GetTrackByACID(acid ACID) (*Track, bool) {
-	for i, trk := range ss.Tracks {
-		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
-			return ss.Tracks[i], true
-		}
-	}
-	return nil, false
-}
-
-func (ss *State) GetOurTrackByACID(acid ACID) (*Track, bool) {
-	for i, trk := range ss.Tracks {
-		if trk.IsAssociated() && trk.FlightPlan.ACID == acid &&
-			trk.FlightPlan.TrackingController == ss.UserTCP {
-			return ss.Tracks[i], true
-		}
-	}
-	return nil, false
-}
-
-// FOOTGUN: this should not be called from server-side code, since Tracks isn't initialized there.
-// FIXME FIXME FIXME
-func (ss *State) GetFlightPlanForACID(acid ACID) *STARSFlightPlan {
-	for _, trk := range ss.Tracks {
-		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
-			return trk.FlightPlan
-		}
-	}
-	for i, fp := range ss.UnassociatedFlightPlans {
-		if fp.ACID == acid {
-			return ss.UnassociatedFlightPlans[i]
-		}
-	}
-	return nil
-}
-
-func (ss *State) IsExternalController(tcp string) bool {
-	ctrl, ok := ss.Controllers[tcp]
+func (ss *CommonState) IsExternalController(pos ControlPosition) bool {
+	// Resolve consolidated positions to whoever currently controls them
+	resolved := ss.ResolveController(pos)
+	ctrl, ok := ss.Controllers[resolved]
 	return ok && ctrl.FacilityIdentifier != ""
 }
 
-func (ss *State) IsLocalController(tcp string) bool {
-	ctrl, ok := ss.Controllers[tcp]
+func (ss *CommonState) IsLocalController(pos ControlPosition) bool {
+	// Resolve consolidated positions to whoever currently controls them
+	resolved := ss.ResolveController(pos)
+	ctrl, ok := ss.Controllers[resolved]
 	return ok && ctrl.FacilityIdentifier == ""
+}
+
+func (ss *CommonState) TCWIsPrivileged(tcw TCW) bool {
+	return ss.PrivilegedTCWs[tcw]
+}
+
+func (ss *CommonState) TCWIsObserver(tcw TCW) bool {
+	return ss.Observers[tcw]
+}
+
+func (ss *CommonState) ResolveController(pos ControlPosition) ControlPosition {
+	// Check who actually controls this position via consolidation.
+	for _, cons := range ss.CurrentConsolidation {
+		if cons.ControlsPosition(pos) {
+			return cons.PrimaryTCP
+		}
+	}
+
+	return pos
+}
+
+func (ss *CommonState) GetPositionsForTCW(tcw TCW) []ControlPosition {
+	if cons, ok := ss.CurrentConsolidation[tcw]; ok {
+		return cons.OwnedPositions()
+	}
+	return nil
+}
+
+// TCWControlsTrack returns true if the given TCW owns the track.
+// Track ownership is determined by the OwningTCW field, which is set when
+// the track is accepted/spawned and updated during full consolidation.
+func (ss *CommonState) TCWControlsTrack(tcw TCW, track *Track) bool {
+	return track != nil && track.IsAssociated() && track.FlightPlan.OwningTCW == tcw
+}
+
+// TCWControlsPosition returns true if the given TCW controls the specified position
+// (either as primary or as a secondary position).
+func (ss *CommonState) TCWControlsPosition(tcw TCW, pos ControlPosition) bool {
+	cons, ok := ss.CurrentConsolidation[tcw]
+	return ok && cons.ControlsPosition(pos)
+}
+
+func (ss *CommonState) TCWForPosition(pos ControlPosition) TCW {
+	for tcw, cons := range ss.CurrentConsolidation {
+		if cons.ControlsPosition(pos) {
+			return tcw
+		}
+	}
+	return TCW(pos) // it may be a center or external controller, etc.
+}
+
+// PrimaryPositionForTCW returns the primary position for the given TCW.
+// Returns the TCW as position if no consolidation state exists or if Primary is empty.
+func (ss *CommonState) PrimaryPositionForTCW(tcw TCW) ControlPosition {
+	if cons, ok := ss.CurrentConsolidation[tcw]; ok && cons.PrimaryTCP != "" {
+		return cons.PrimaryTCP
+	}
+	return ControlPosition(tcw)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// CommonState methods for ATPA configuration
+
+// FindAirportForATPAVolume returns the airport ICAO code that contains the given volume ID
+func (ss *CommonState) FindAirportForATPAVolume(volumeId string) string {
+	for icao, ap := range ss.Airports {
+		if _, ok := ap.ATPAVolumes[volumeId]; ok {
+			return icao
+		}
+	}
+	return ""
+}
+
+// IsATPAVolumeDisabled checks if the given ATPA volume is disabled
+func (ss *CommonState) IsATPAVolumeDisabled(volumeId string) bool {
+	airport := ss.FindAirportForATPAVolume(volumeId)
+	if airport == "" {
+		return true // Volume not found, treat as disabled
+	}
+	if airportState, ok := ss.ATPAVolumeState[airport]; ok {
+		if volState, ok := airportState[volumeId]; ok {
+			return volState.Disabled
+		}
+	}
+	return true
+}
+
+// IsATPAVolume25nmEnabled checks if 2.5nm reduced separation is enabled for the volume
+func (ss *CommonState) IsATPAVolume25nmEnabled(volumeId string) bool {
+	airport := ss.FindAirportForATPAVolume(volumeId)
+	if airport == "" {
+		return false
+	}
+	if ap, ok := ss.ATPAVolumeState[airport]; ok {
+		if vol, ok := ap[volumeId]; ok {
+			return !vol.Reduced25Disabled
+		}
+	}
+	return false
 }

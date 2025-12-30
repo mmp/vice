@@ -140,7 +140,11 @@ func (e *EventsSubscription) Unsubscribe() {
 		e.stream.lg.Errorf("Attempted to unsubscribe invalid subscription: %+v", e)
 	}
 	delete(e.stream.subscriptions, e)
-	e.stream = nil
+	// Note: we intentionally do not set e.stream = nil here. SignOff may race
+	// with outstanding RPCs that hold a controllerContext with a pointer to this
+	// subscription. If we nil out stream, those RPCs would crash when calling Get().
+	// Instead, Get() checks if the subscription is still registered and returns
+	// nil if not.
 }
 
 // Post adds an event to the event stream. The type used to encode the
@@ -244,6 +248,7 @@ const (
 	RejectedHandoffEvent
 	RadioTransmissionEvent
 	StatusMessageEvent
+	ErrorMessageEvent
 	ServerBroadcastMessageEvent
 	GlobalMessageEvent
 	AcknowledgedPointOutEvent
@@ -255,15 +260,16 @@ const (
 	TransferRejectedEvent
 	RecalledPointOutEvent
 	FlightPlanAssociatedEvent
+	FixCoordinatesEvent
 	NumEventTypes
 )
 
 func (t EventType) String() string {
 	return []string{"PushedFlightStrip", "PointOut",
 		"OfferedHandoff", "AcceptedHandoff", "AcceptedRedirectedHandoffEvent", "CanceledHandoff",
-		"RejectedHandoff", "RadioTransmission", "StatusMessage", "ServerBroadcastMessage",
-		"GlobalMessage", "AcknowledgedPointOut", "RejectedPointOut", "HandoffControl",
-		"SetGlobalLeaderLine", "ForceQL", "TransferAccepted", "TransferRejected",
+		"RejectedHandoff", "RadioTransmission", "StatusMessage", "ErrorMessage",
+		"ServerBroadcastMessage", "GlobalMessage", "AcknowledgedPointOut", "RejectedPointOut",
+		"HandoffControl", "SetGlobalLeaderLine", "ForceQL", "TransferAccepted", "TransferRejected",
 		"RecalledPointOut", "FlightPlanAssociated"}[t]
 }
 
@@ -271,12 +277,13 @@ type Event struct {
 	Type                  EventType
 	ADSBCallsign          av.ADSBCallsign
 	ACID                  ACID
-	FromController        string
-	ToController          string // For radio transmissions, the controlling controller.
+	FromController        ControlPosition
+	ToController          ControlPosition // For radio transmissions, the controlling controller.
 	WrittenText           string
 	SpokenText            string
 	RadioTransmissionType av.RadioTransmissionType       // For radio transmissions only
 	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent
+	WaypointInfo          []math.Point2LL
 }
 
 func (e *Event) String() string {
@@ -300,10 +307,10 @@ func (e Event) LogValue() slog.Value {
 		attrs = append(attrs, slog.String("acid", string(e.ACID)))
 	}
 	if e.FromController != "" {
-		attrs = append(attrs, slog.String("from_controller", e.FromController))
+		attrs = append(attrs, slog.String("from_controller", string(e.FromController)))
 	}
 	if e.ToController != "" {
-		attrs = append(attrs, slog.String("to_controller", e.ToController))
+		attrs = append(attrs, slog.String("to_controller", string(e.ToController)))
 	}
 	if e.WrittenText != "" {
 		attrs = append(attrs, slog.String("written_text", e.WrittenText))

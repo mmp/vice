@@ -1,10 +1,11 @@
-// pkg/util/json.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// util/json.go
+// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package util
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -14,6 +15,121 @@ import (
 
 ///////////////////////////////////////////////////////////////////////////
 // JSON
+
+// DuplicateJSONKey represents a duplicate key found in JSON.
+type DuplicateJSONKey struct {
+	Path string // JSON path to the duplicate (e.g., "scenarios.P50.inbound_rates")
+	Key  string // The duplicate key name
+}
+
+// FindDuplicateJSONKeys scans JSON content and returns all duplicate keys found.
+// It uses the json.Decoder token-based API to walk the JSON structure while
+// tracking seen keys at each object nesting level.
+func FindDuplicateJSONKeys(data []byte) []DuplicateJSONKey {
+	dec := json.NewDecoder(bytes.NewReader(data))
+	var duplicates []DuplicateJSONKey
+
+	// Stack entry tracks state for each nesting level
+	type stackEntry struct {
+		isObject  bool            // true for object, false for array
+		seenKeys  map[string]bool // keys seen at this level (only for objects)
+		expectKey bool            // true if next string token is an object key
+		popPath   bool            // true if we should pop path when closing this container
+	}
+	var stack []stackEntry
+	var path []string // Current path components
+
+	for {
+		tok, err := dec.Token()
+		if err != nil {
+			break
+		}
+
+		switch v := tok.(type) {
+		case json.Delim:
+			switch v {
+			case '{':
+				// Check if this object is a value (parent is object expecting value)
+				popPath := len(stack) > 0 && stack[len(stack)-1].isObject && !stack[len(stack)-1].expectKey
+				stack = append(stack, stackEntry{
+					isObject:  true,
+					seenKeys:  make(map[string]bool),
+					expectKey: true,
+					popPath:   popPath,
+				})
+			case '}':
+				// Pop path only if this object was a value of a key
+				if len(stack) > 0 {
+					if stack[len(stack)-1].popPath && len(path) > 0 {
+						path = path[:len(path)-1]
+					}
+					stack = stack[:len(stack)-1]
+				}
+				// After closing, parent expects next key if it's an object
+				if len(stack) > 0 && stack[len(stack)-1].isObject {
+					stack[len(stack)-1].expectKey = true
+				}
+			case '[':
+				// Check if this array is a value (parent is object expecting value)
+				popPath := len(stack) > 0 && stack[len(stack)-1].isObject && !stack[len(stack)-1].expectKey
+				stack = append(stack, stackEntry{
+					isObject: false,
+					popPath:  popPath,
+				})
+			case ']':
+				// Pop path only if this array was a value of a key
+				if len(stack) > 0 {
+					if stack[len(stack)-1].popPath && len(path) > 0 {
+						path = path[:len(path)-1]
+					}
+					stack = stack[:len(stack)-1]
+				}
+				// After closing, parent expects next key if it's an object
+				if len(stack) > 0 && stack[len(stack)-1].isObject {
+					stack[len(stack)-1].expectKey = true
+				}
+			}
+		case string:
+			if len(stack) > 0 {
+				top := &stack[len(stack)-1]
+				if top.isObject && top.expectKey {
+					// This is an object key
+					if top.seenKeys[v] {
+						fullPath := strings.Join(path, ".")
+						duplicates = append(duplicates, DuplicateJSONKey{
+							Path: fullPath,
+							Key:  v,
+						})
+					}
+					top.seenKeys[v] = true
+					top.expectKey = false
+					path = append(path, v)
+				} else {
+					// This is a string value - pop the key from path
+					if top.isObject {
+						top.expectKey = true
+						if len(path) > 0 {
+							path = path[:len(path)-1]
+						}
+					}
+				}
+			}
+		default:
+			// Other primitive values (numbers, bools, null) - pop the key from path
+			if len(stack) > 0 {
+				top := &stack[len(stack)-1]
+				if top.isObject {
+					top.expectKey = true
+					if len(path) > 0 {
+						path = path[:len(path)-1]
+					}
+				}
+			}
+		}
+	}
+
+	return duplicates
+}
 
 func UnmarshalJSON[T any](r io.Reader, out *T) error {
 	// Unfortunately we need the contents as an array of bytes so that we

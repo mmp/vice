@@ -1,9 +1,27 @@
 {
   "tracon": "PWM",
   "airports": {
-    "KAUG": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KLEW": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KRKD": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KAUG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KLEW": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KRKD": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
     "KPWM": {
       "name": "PWM",
       "approaches": {
@@ -266,18 +284,18 @@
           "runway": "29"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "West": {
           "KPWM": 10
         }
       },
-      "solo_controller": "PWM_S_APP",
-      "controllers": [
-        "PWM_S_APP",
-        "PWM_L_APP",
-        "PWM_TWR",
-        "BOS_17_CTR"
-      ],
+      "configuration": {
+        "config_id": "STD",
+        "default_consolidation": {
+          "PWM_S_APP": []
+        }
+      },
+      "controllers": ["PWM_S_APP", "PWM_L_APP", "PWM_TWR", "BOS_17_CTR"],
       "departure_runways": [
         {
           "airport": "KPWM",
@@ -286,13 +304,9 @@
         }
       ],
       "wind": {
-        "direction": 280,
-        "speed": 12
+        "direction": "260-320"
       },
-      "default_maps": [
-        "PWM MAIN",
-        "PWM EVENT RWY 29"
-      ]
+      "default_maps": ["PWM MAIN", "PWM EVENT RWY 29"]
     },
     "Land East": {
       "arrival_runways": [
@@ -301,18 +315,18 @@
           "runway": "11"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "East": {
           "KPWM": 10
         }
       },
-      "solo_controller": "PWM_S_APP",
-      "controllers": [
-        "PWM_S_APP",
-        "PWM_L_APP",
-        "PWM_TWR",
-        "BOS_17_CTR"
-      ],
+      "configuration": {
+        "config_id": "STD",
+        "default_consolidation": {
+          "PWM_S_APP": []
+        }
+      },
+      "controllers": ["PWM_S_APP", "PWM_L_APP", "PWM_TWR", "BOS_17_CTR"],
       "departure_runways": [
         {
           "airport": "KPWM",
@@ -321,16 +335,24 @@
         }
       ],
       "wind": {
-        "direction": 110,
-        "speed": 12
+        "direction": "80-140"
       },
-      "default_maps": [
-        "PWM MAIN",
-        "PWM EVENT RWY 11"
-      ]
+      "default_maps": ["PWM MAIN", "PWM EVENT RWY 11"]
     }
   },
   "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "East": "PWM_S_APP",
+          "West": "PWM_S_APP"
+        },
+        "departure_assignments": {
+          "KPWM": "PWM_S_APP"
+        }
+      }
+    },
+
     "center": "KPWM",
     "scratchpads": {},
     "stars_maps": [

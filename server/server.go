@@ -49,7 +49,17 @@ import (
 // 39: speech v0.1
 // 40: clean up what's transmitted server->client at initial connect/spawn, gob->msgpack
 // 41: sim.State.SimStartTime
-const ViceSerializeVersion = 41
+// 42: server.NewSimRequest.StartTime
+// 43: WX rework (scrape, etc.)
+// 44: store pane instances and split positions separately, rather than the entire DisplayNode hierarchy
+// 45: Change STARSFacilityAdaptation to FacilityAdaptation
+// 46: Remove token from video map fetch RPC, misc wx updates
+// 47: pass PrimaryAirport to GetAtmosGrid RPC
+// 48: release bump
+// 49: STARS consolidation
+// 50: rework State/StateUpdate management
+// 51: preemptive before v0.13.3 release
+const ViceSerializeVersion = 51
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 + ViceRPCVersion
@@ -57,38 +67,41 @@ const ViceRPCVersion = ViceSerializeVersion
 const ViceHTTPServerPort = 6502
 
 type ServerLaunchConfig struct {
-	Port                int // if 0, finds an open one
-	MultiControllerOnly bool
-	ExtraScenario       string
-	ExtraVideoMap       string
-	ServerAddress       string // address to use for remote TTS provider
-	IsLocal             bool
+	Port          int // if 0, finds an open one
+	ExtraScenario string
+	ExtraVideoMap string
+	ServerAddress string // address to use for remote TTS provider
+	IsLocal       bool
 }
 
 func LaunchServer(config ServerLaunchConfig, lg *log.Logger) {
+	util.InitFlightRecorder(lg)
 	util.MonitorCPUUsage(95, false /* don't panic if wedged */, lg)
-	util.MonitorMemoryUsage(192 /* trigger MB */, 64 /* delta MB */, lg)
+	util.MonitorMemoryUsage(512 /* trigger MB */, 64 /* delta MB */, lg)
 
-	_, server, e := makeServer(config, lg)
+	_, server, e, extraScenarioErrors := makeServer(config, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		os.Exit(1)
 	}
+	if extraScenarioErrors != "" {
+		lg.Warnf("Extra scenario file had errors:\n%s", extraScenarioErrors)
+	}
 	server()
 }
 
-func LaunchServerAsync(config ServerLaunchConfig, lg *log.Logger) (int, util.ErrorLogger) {
-	rpcPort, server, e := makeServer(config, lg)
+func LaunchServerAsync(config ServerLaunchConfig, lg *log.Logger) (int, util.ErrorLogger, string) {
+	rpcPort, server, e, extraScenarioErrors := makeServer(config, lg)
 	if e.HaveErrors() {
-		return 0, e
+		return 0, e, ""
 	}
 
 	go server()
 
-	return rpcPort, e
+	return rpcPort, e, extraScenarioErrors
 }
 
-func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.ErrorLogger) {
+func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.ErrorLogger, string) {
 	var listener net.Listener
 	var err error
 	var errorLogger util.ErrorLogger
@@ -96,26 +109,26 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 	if config.Port == 0 {
 		if listener, err = net.Listen("tcp", ":0"); err != nil {
 			errorLogger.Error(err)
-			return 0, nil, errorLogger
+			return 0, nil, errorLogger, ""
 		}
 		rpcPort = listener.Addr().(*net.TCPAddr).Port
 	} else if listener, err = net.Listen("tcp", ":"+strconv.Itoa(config.Port)); err == nil {
 		rpcPort = config.Port
 	} else {
 		errorLogger.Error(err)
-		return 0, nil, errorLogger
+		return 0, nil, errorLogger, ""
 	}
 
-	scenarioGroups, simConfigurations, mapManifests :=
-		LoadScenarioGroups(config.MultiControllerOnly, config.ExtraScenario, config.ExtraVideoMap, &errorLogger, lg)
+	scenarioGroups, scenarioCatalogs, mapManifests, extraScenarioErrors :=
+		LoadScenarioGroups(config.ExtraScenario, config.ExtraVideoMap, &errorLogger, lg)
 	if errorLogger.HaveErrors() {
-		return 0, nil, errorLogger
+		return 0, nil, errorLogger, ""
 	}
 
 	serverFunc := func() {
 		server := rpc.NewServer()
 
-		sm := NewSimManager(scenarioGroups, simConfigurations, mapManifests, config.ServerAddress, config.IsLocal, lg)
+		sm := NewSimManager(scenarioGroups, scenarioCatalogs, mapManifests, config.ServerAddress, config.IsLocal, lg)
 		if err := server.Register(sm); err != nil {
 			lg.Errorf("unable to register SimManager: %v", err)
 			os.Exit(1)
@@ -142,5 +155,5 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 		}
 	}
 
-	return rpcPort, serverFunc, errorLogger
+	return rpcPort, serverFunc, errorLogger, extraScenarioErrors
 }

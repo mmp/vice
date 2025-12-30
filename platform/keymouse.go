@@ -123,6 +123,9 @@ func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 	if imgui.IsKeyPressedBool(imgui.KeyPageDown) {
 		keyboard.Pressed[imgui.KeyPageDown] = nil
 	}
+	if imgui.IsKeyPressedBool(imgui.KeyG) {
+		keyboard.Pressed[imgui.KeyG] = nil
+	}
 	if imgui.IsKeyPressedBool(imgui.KeyV) {
 		keyboard.Pressed[imgui.KeyV] = nil
 	}

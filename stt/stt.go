@@ -11,11 +11,14 @@ import (
 	"strings"
 	"unicode"
 
+	"maps"
+	"slices"
+
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/stars"
+	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -239,15 +242,14 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 							if !ok {
 								// trim until first number
 								callsign = trimFunc(callsign)
-								matching := stars.TracksFromACIDSuffix(client, callsign)
+								matching := tracksFromSuffix(client.State.Tracks, callsign)
 								if len(matching) == 1 {
 									callsign = string(matching[0].ADSBCallsign)
 								}
 							}
 							if len(fields) > 1 && callsign != "" {
 								cmd := strings.Join(fields[1:], " ")
-								client.RunAircraftCommands(av.ADSBCallsign(callsign), cmd,
-									nil)
+								client.RunAircraftCommands(av.ADSBCallsign(callsign), cmd, false, false, nil)
 								lg.Infof("Command: %v Callsign: %v", cmd, callsign)
 								client.LastCommand = callsign + " " + cmd
 							}
@@ -265,5 +267,15 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 			}
 		}
 	}
-	return
+}
+
+// tracksFromSuffix returns tracks whose callsign ends with the given suffix.
+func tracksFromSuffix(tracks map[av.ADSBCallsign]*sim.Track, suffix string) []*sim.Track {
+	match := func(trk *sim.Track) bool {
+		if trk.IsUnassociated() {
+			return strings.HasSuffix(string(trk.ADSBCallsign), suffix)
+		}
+		return strings.HasSuffix(string(trk.FlightPlan.ACID), suffix)
+	}
+	return slices.Collect(util.FilterSeq(maps.Values(tracks), match))
 }

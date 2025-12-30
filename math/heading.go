@@ -94,6 +94,10 @@ func VectorHeading(v [2]float32) float32 {
 	return NormalizeHeading(Degrees(Atan2(v[0], v[1])))
 }
 
+func HeadingVector(hdg float32) [2]float32 {
+	return SinCos(Radians(hdg))
+}
+
 // HeadingDifference returns the minimum difference between two
 // headings. (i.e., the result is always in the range [0,180].)
 func HeadingDifference[T HeadingT](a, b T) T {
@@ -158,4 +162,18 @@ func NormalizeHeading[T HeadingT](h T) T {
 
 func OppositeHeading[T HeadingT](h T) T {
 	return NormalizeHeading(h + 180)
+}
+
+// IsHeadingBetween checks if heading h is between h1 and h2 (clockwise from h1 to h2).
+// Returns true if h is in the clockwise arc from h1 to h2, inclusive of both endpoints.
+func IsHeadingBetween[T HeadingT](h, h1, h2 T) bool {
+	h = NormalizeHeading(h)
+	h1 = NormalizeHeading(h1)
+	h2 = NormalizeHeading(h2)
+
+	if h1 <= h2 {
+		return h >= h1 && h <= h2
+	} else {
+		return h >= h1 || h <= h2
+	}
 }

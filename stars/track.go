@@ -55,12 +55,14 @@ type TrackState struct {
 	ConeLength     float32
 	DisplayTPASize *bool // unspecified->system default if nil
 
-	DisplayATPAMonitor       *bool // unspecified->system default if nil
-	DisplayATPAWarnAlert     *bool // unspecified->system default if nil
-	IntrailDistance          float32
-	ATPAStatus               ATPAStatus
-	MinimumMIT               float32
-	ATPALeadAircraftCallsign av.ADSBCallsign
+	DisplayATPAMonitor        *bool // unspecified->system default if nil
+	DisplayATPAWarnAlert      *bool // unspecified->system default if nil
+	IntrailDistance           float32
+	InhibitDisplayInTrailDist bool
+	ATPAStatus                ATPAStatus
+	MinimumMIT                float32
+	ATPALeadAircraftCallsign  av.ADSBCallsign
+	DrawATPAGraphics          bool
 
 	POFlashingEndTime time.Time
 	UNFlashingEndTime time.Time
@@ -197,7 +199,7 @@ func (ts *TrackState) TrackHeading(nmPerLongitude float32) float32 {
 
 func (sp *STARSPane) trackStateForACID(ctx *panes.Context, acid sim.ACID) (*TrackState, bool) {
 	// Figure out the ADSB callsign for this ACID.
-	for _, trk := range ctx.Client.State.Tracks {
+	for _, trk := range sp.visibleTracks {
 		if trk.IsAssociated() && trk.FlightPlan.ACID == acid {
 			s, ok := sp.TrackState[trk.ADSBCallsign]
 			return s, ok
@@ -241,13 +243,9 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 
 	// See if any aircraft we have state for have been removed
 	for callsign := range sp.TrackState {
-		if strings.HasPrefix(string(callsign), "__") { // unsupported fp
-			acid := sim.ACID(strings.TrimPrefix(string(callsign), "__"))
-			if !slices.ContainsFunc(ctx.Client.State.UnassociatedFlightPlans,
-				func(fp *sim.STARSFlightPlan) bool { return fp.ACID == acid }) {
-				delete(sp.TrackState, callsign)
-			}
-		} else if _, ok := ctx.GetTrackByCallsign(callsign); !ok {
+		// For all tracks (including "__" prefixed fake tracks for unsupported DBs),
+		// delete TrackState if the track no longer exists in State.Tracks
+		if _, ok := ctx.GetTrackByCallsign(callsign); !ok {
 			delete(sp.TrackState, callsign)
 		}
 	}
@@ -298,9 +296,9 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 		case sim.AcknowledgedPointOutEvent:
 			if tcps, ok := sp.PointOuts[event.ACID]; ok {
 				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
-					if tcps.From == ctx.UserTCP {
+					if ctx.UserControlsPosition(tcps.From) {
 						state.POFlashingEndTime = time.Now().Add(5 * time.Second)
-					} else if tcps.To == ctx.UserTCP {
+					} else if ctx.UserControlsPosition(tcps.To) {
 						state.PointOutAcknowledged = true
 					}
 				}
@@ -311,7 +309,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			delete(sp.PointOuts, event.ACID)
 
 		case sim.RejectedPointOutEvent:
-			if tcps, ok := sp.PointOuts[event.ACID]; ok && tcps.From == ctx.UserTCP {
+			if tcps, ok := sp.PointOuts[event.ACID]; ok && ctx.UserControlsPosition(tcps.From) {
 				sp.RejectedPointOuts[event.ACID] = nil
 				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
 					state.UNFlashingEndTime = time.Now().Add(5 * time.Second)
@@ -321,7 +319,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 
 		case sim.FlightPlanAssociatedEvent:
 			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil {
-				if fp.TrackingController == ctx.UserTCP {
+				if ctx.UserOwnsFlightPlan(fp) {
 					if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
 						state.DisplayFDB = true
 
@@ -333,14 +331,14 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			}
 
 		case sim.OfferedHandoffEvent:
-			if event.ToController == ctx.UserTCP {
+			if ctx.UserControlsPosition(event.ToController) {
 				sp.playOnce(ctx.Platform, AudioInboundHandoff)
 			}
 
 		case sim.AcceptedHandoffEvent, sim.AcceptedRedirectedHandoffEvent:
 			if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
-				outbound := event.FromController == ctx.UserTCP && event.ToController != ctx.UserTCP
-				inbound := event.FromController != ctx.UserTCP && event.ToController == ctx.UserTCP
+				outbound := ctx.UserControlsPosition(event.FromController) && !ctx.UserControlsPosition(event.ToController)
+				inbound := !ctx.UserControlsPosition(event.FromController) && ctx.UserControlsPosition(event.ToController)
 				if outbound {
 					sp.playOnce(ctx.Platform, AudioHandoffAccepted)
 					state.OutboundHandoffAccepted = true
@@ -353,7 +351,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 					}
 				}
 				if outbound || inbound {
-					state.AcceptedHandoffSector = util.Select(outbound, event.ToController, event.FromController)
+					state.AcceptedHandoffSector = string(util.Select(outbound, event.ToController, event.FromController))
 					dur := time.Duration(ctx.FacilityAdaptation.HOSectorDisplayDuration) * time.Second
 					state.AcceptedHandoffDisplayEnd = time.Now().Add(dur)
 				}
@@ -377,7 +375,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 		case sim.TransferRejectedEvent:
 			if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
 				state.IFFlashing = true
-				sp.cancelHandoff(ctx, event.ACID)
+				ctx.Client.CancelHandoff(event.ACID, func(err error) { sp.displayError(err, ctx, "") })
 			}
 
 		case sim.TransferAcceptedEvent:
@@ -400,20 +398,15 @@ func (sp *STARSPane) isQuicklooked(ctx *panes.Context, trk sim.Track) bool {
 		return true
 	}
 
-	// Quick Look Positions.
-	for _, quickLookPositions := range sp.currentPrefs().QuickLookPositions {
-		if trk.FlightPlan.TrackingController == quickLookPositions.Id {
-			return true
-		}
-	}
-
-	return false
+	// Quick Look Positions - use OwningTCW to determine which tracks to show.
+	_, ok := sp.currentPrefs().QuickLookTCPs[string(ctx.PrimaryTCPForTCW(trk.FlightPlan.OwningTCW))]
+	return ok
 }
 
 func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 	// See if there are any MVA issues
-	mvas := av.DB.MVAs[ctx.Client.State.TRACON]
-	for _, trk := range ctx.Client.State.Tracks {
+	mvas := av.DB.MVAs[ctx.Client.State.Facility]
+	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 		if !trk.MVAsApply {
 			state.MSAW = false
@@ -436,7 +429,7 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 		alt := util.Select(pilotAlt != 0, pilotAlt, int(trk.TransponderAltitude))
 
 		// Check MSAW suppression filters
-		msawFilter := ctx.Client.State.STARSFacilityAdaptation.Filters.InhibitMSAW
+		msawFilter := ctx.Client.State.FacilityAdaptation.Filters.InhibitMSAW
 		if msawFilter.Inside(state.track.Location, alt) {
 			state.MSAW = false
 			continue
@@ -460,10 +453,10 @@ func (sp *STARSPane) updateMSAWs(ctx *panes.Context) {
 	}
 }
 
-func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
+func (sp *STARSPane) updateRadarTracks(ctx *panes.Context) {
 	// FIXME: all aircraft radar tracks are updated at the same time.
 	now := ctx.Client.CurrentTime()
-	fa := ctx.Client.State.STARSFacilityAdaptation
+	fa := ctx.Client.State.FacilityAdaptation
 	if sp.radarMode(fa.RadarSites) == RadarModeFused {
 		if now.Sub(sp.lastTrackUpdate) < 1*time.Second {
 			return
@@ -475,7 +468,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	}
 	sp.lastTrackUpdate = now
 
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
 		if trk.TypeOfFlight == av.FlightTypeDeparture && trk.IsTentative && !state.trackTime.IsZero() {
@@ -493,7 +486,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	}
 
 	// Check quicklook regions
-	sp.updateQuicklookRegionTracks(ctx, tracks)
+	sp.updateQuicklookRegionTracks(ctx)
 
 	// Update low altitude alerts now that we have updated tracks
 	sp.updateMSAWs(ctx)
@@ -503,7 +496,7 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 	ps := sp.currentPrefs()
 	if now.Sub(sp.lastHistoryTrackUpdate).Seconds() >= float64(ps.RadarTrackHistoryRate) {
 		sp.lastHistoryTrackUpdate = now
-		for _, trk := range tracks { // We only get radar tracks for visible aircraft
+		for _, trk := range sp.visibleTracks { // We only get radar tracks for visible aircraft
 			state := sp.TrackState[trk.ADSBCallsign]
 			if trk.IsTentative {
 				// No history tracks for tentative
@@ -520,19 +513,20 @@ func (sp *STARSPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 		}
 	}
 
-	sp.updateCAAircraft(ctx, tracks)
-	sp.updateInTrailDistance(ctx, tracks)
+	sp.updateCAAircraft(ctx)
+	sp.updateInTrailDistance(ctx)
 }
 
-func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context, tracks []sim.Track) {
+func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context) {
 	ps := sp.currentPrefs()
-	fa := ctx.Client.State.STARSFacilityAdaptation
+	fa := ctx.Client.State.FacilityAdaptation
 
 	qlfilt := util.FilterSlice(fa.Filters.Quicklook,
 		func(f sim.FilterRegion) bool {
-			return !slices.Contains(ps.DisabledQuicklookRegions, f.Id)
+			_, disabled := ps.DisabledQLRegions[f.Id]
+			return !disabled
 		})
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
 		if trk.IsUnassociated() || state.DisplayFDB {
@@ -577,8 +571,7 @@ func (sp *STARSPane) checkUnreasonableModeC(state *TrackState) {
 	}
 }
 
-func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
-	cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawTracks(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 	trackBuilder := renderer.GetColoredTrianglesDrawBuilder()
@@ -592,14 +585,14 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transfor
 	// Update cached command buffers for tracks
 	sp.fusedTrackVertices = getTrackVertices(ctx, sp.getTrackSize(ctx, transforms))
 
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
 		positionSymbol := ""
 
 		if trk.IsUnassociated() {
 			// See if a position symbol override applies. Note that this may be overridden in code following shortly.
-			fa := ctx.Client.State.STARSFacilityAdaptation
+			fa := ctx.Client.State.FacilityAdaptation
 			for _, r := range fa.UntrackedPositionSymbolOverrides.CodeRanges {
 				if trk.Squawk >= r[0] && trk.Squawk <= r[1] { // ranges are inclusive
 					positionSymbol = fa.UntrackedPositionSymbolOverrides.Symbol
@@ -627,15 +620,20 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, tracks []sim.Track, transfor
 			}
 		} else {
 			positionSymbol = "?"
-			if ctrl, ok := ctx.Client.State.Controllers[trk.FlightPlan.TrackingController]; ok && ctrl != nil {
+			// Use the owning TCW's primary TCP to determine the position symbol.
+			tcp := ctx.PrimaryTCPForTCW(trk.FlightPlan.OwningTCW)
+			if tcp == "" && trk.FlightPlan.OwningTCW != "" {
+				// Owning TCW has no positions. Use its character id
+				positionSymbol = string(trk.FlightPlan.OwningTCW[1:])
+			} else if ctrl := ctx.Client.State.Controllers[tcp]; ctrl != nil {
 				if ctrl.Scope != "" {
 					// Explicitly specified scope_char overrides everything.
 					positionSymbol = ctrl.Scope
 				} else if ctrl.FacilityIdentifier != "" {
 					// For external facilities we use the facility id
 					positionSymbol = ctrl.FacilityIdentifier
-				} else {
-					positionSymbol = ctrl.TCP[len(ctrl.TCP)-1:]
+				} else if len(ctrl.SectorID) > 0 {
+					positionSymbol = ctrl.SectorID[len(ctrl.SectorID)-1:]
 				}
 			}
 		}
@@ -678,7 +676,7 @@ func (sp *STARSPane) getTrackSize(ctx *panes.Context, transforms radar.ScopeTran
 	return size
 }
 
-func (sp *STARSPane) getGhostTracks(ctx *panes.Context, tracks []sim.Track) []*av.GhostTrack {
+func (sp *STARSPane) getGhostTracks(ctx *panes.Context) []*av.GhostTrack {
 	var ghosts []*av.GhostTrack
 	ps := sp.currentPrefs()
 
@@ -709,7 +707,7 @@ func (sp *STARSPane) getGhostTracks(ctx *panes.Context, tracks []sim.Track) []*a
 
 			nmPerLongitude := ctx.NmPerLongitude
 			magneticVariation := ctx.MagneticVariation
-			for _, trk := range tracks {
+			for _, trk := range sp.visibleTracks {
 				if trk.IsUnassociated() {
 					continue
 				}
@@ -928,8 +926,7 @@ func getTrackVertices(ctx *panes.Context, diameter float32) [][2]float32 {
 	return pts
 }
 
-func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
-	cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 	if ps.Brightness.History == 0 {
 		// Don't draw if brightness == 0.
@@ -942,7 +939,7 @@ func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.Track, t
 	const historyTrackDiameter = 8
 	historyTrackVertices := getTrackVertices(ctx, historyTrackDiameter)
 
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
 		// In general, if the datablock isn't being drawn (e.g. due to
@@ -977,7 +974,7 @@ func (sp *STARSPane) drawHistoryTrails(ctx *panes.Context, tracks []sim.Track, t
 
 func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, trk sim.Track) ([][2]int, bool) {
 	// Only report on ones that are tracked by us
-	if trk.IsAssociated() && trk.FlightPlan.TrackingController != ctx.UserTCP {
+	if trk.IsAssociated() && !ctx.UserOwnsFlightPlan(trk.FlightPlan) {
 		return nil, false
 	}
 
@@ -987,7 +984,7 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, trk sim.Track) ([][
 	}
 
 	state := sp.TrackState[trk.ADSBCallsign]
-	vols := ctx.Client.ControllerAirspace(ctx.UserTCP)
+	vols := ctx.Client.AirspaceForTCW(ctx.UserTCW)
 
 	inside, alts := av.InAirspace(state.track.Location, state.track.TrueAltitude, vols)
 	if state.EnteredOurAirspace && !inside {
@@ -998,9 +995,9 @@ func (sp *STARSPane) WarnOutsideAirspace(ctx *panes.Context, trk sim.Track) ([][
 	return nil, false
 }
 
-func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
+func (sp *STARSPane) updateCAAircraft(ctx *panes.Context) {
 	tracked, untracked := make(map[av.ADSBCallsign]sim.Track), make(map[av.ADSBCallsign]sim.Track)
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		if trk.IsAssociated() {
 			tracked[trk.ADSBCallsign] = trk
 		} else {
@@ -1009,7 +1006,7 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 	}
 
 	inCAInhibitFilter := func(trk *sim.Track) bool {
-		nocaFilter := ctx.Client.State.STARSFacilityAdaptation.Filters.InhibitCA
+		nocaFilter := ctx.Client.State.FacilityAdaptation.Filters.InhibitCA
 		state := sp.TrackState[trk.ADSBCallsign]
 		return nocaFilter.Inside(state.track.Location, int(state.track.TransponderAltitude))
 	}
@@ -1158,17 +1155,23 @@ func (sp *STARSPane) updateCAAircraft(ctx *panes.Context, tracks []sim.Track) {
 	}
 }
 
-func (sp *STARSPane) updateInTrailDistance(ctx *panes.Context, tracks []sim.Track) {
+func (sp *STARSPane) updateInTrailDistance(ctx *panes.Context) {
 	nmPerLongitude := ctx.NmPerLongitude
 	magneticVariation := ctx.MagneticVariation
 
 	// Zero out the previous distance
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 		state.IntrailDistance = 0
 		state.MinimumMIT = 0
 		state.ATPAStatus = ATPAStatusUnset
 		state.ATPALeadAircraftCallsign = ""
+		state.DrawATPAGraphics = false
+	}
+
+	// Skip ATPA processing if disabled system-wide
+	if !ctx.Client.State.ATPAEnabled {
+		return
 	}
 
 	// For simplicity, we always compute all of the necessary distances
@@ -1178,62 +1181,59 @@ func (sp *STARSPane) updateInTrailDistance(ctx *panes.Context, tracks []sim.Trac
 	// of the potential per-aircraft overrides. This does mean that
 	// sometimes the work here is fully wasted.
 
-	// We basically want to loop over each active volume and process all of
-	// the aircraft inside it together. There's no direct way to iterate
-	// over them, so we'll instead loop over aircraft and when we find one
-	// that's inside a volume that hasn't been processed, process all
-	// aircraft inside it and then mark the volume as completed.
-	handledVolumes := make(map[string]interface{})
-
-	for _, trk := range tracks {
-		vol := trk.ATPAVolume
-		if vol == nil {
-			continue
-		}
-		if _, ok := handledVolumes[vol.Id]; ok {
-			continue
-		}
-
-		// Get all aircraft on approach to this runway
-		runwayAircraft := util.FilterSlice(tracks, func(trk sim.Track) bool {
-			if v := trk.ATPAVolume; v == nil || v.Id != vol.Id {
-				return false
-			}
-
-			// Excluded scratchpad -> aircraft doesn't participate in the
-			// party whatsoever.
-			if trk.IsAssociated() && trk.FlightPlan.Scratchpad != "" &&
-				slices.Contains(vol.ExcludedScratchpads, trk.FlightPlan.Scratchpad) {
-				return false
-			}
-
-			state := sp.TrackState[trk.ADSBCallsign]
-			return vol.Inside(state.track.Location, state.track.TransponderAltitude,
-				state.TrackHeading(nmPerLongitude)+magneticVariation,
-				nmPerLongitude, magneticVariation)
-		})
-
-		// Sort by distance to threshold (there will be some redundant
-		// lookups of STARSAircraft state et al. here, but it's
-		// straightforward to implement it like this.)
-		sort.Slice(runwayAircraft, func(i, j int) bool {
-			pi := sp.TrackState[runwayAircraft[i].ADSBCallsign].track.Location
-			pj := sp.TrackState[runwayAircraft[j].ADSBCallsign].track.Location
-			return math.NMDistance2LL(pi, vol.Threshold) < math.NMDistance2LL(pj, vol.Threshold)
-		})
-
-		for i := range runwayAircraft {
-			if i == 0 {
-				// The first one doesn't have anyone in front...
+	// Loop over each ATPA volume at arrival airports and process all
+	// aircraft inside it.
+	ss := ctx.Client.State
+	for icao, apVolState := range ss.ATPAVolumeState {
+		for id, volState := range apVolState {
+			if volState.Disabled {
 				continue
 			}
-			leading, trailing := runwayAircraft[i-1], runwayAircraft[i]
-			leadingState, trailingState := sp.TrackState[leading.ADSBCallsign], sp.TrackState[trailing.ADSBCallsign]
-			trailingState.IntrailDistance =
-				math.NMDistance2LL(leadingState.track.Location, trailingState.track.Location)
-			sp.checkInTrailCwtSeparation(ctx, trailing, leading)
+			vol := ss.Airports[icao].ATPAVolumes[id]
+
+			// Get all aircraft on approach to this runway
+			runwayAircraft := util.FilterSlice(sp.visibleTracks, func(trk sim.Track) bool {
+				if !trk.IsAssociated() {
+					return false
+				}
+
+				if trk.ATPAVolume == nil || trk.ATPAVolume.Id != vol.Id || trk.ATPAVolume.Threshold != vol.Threshold {
+					return false
+				}
+
+				// Excluded scratchpad -> aircraft doesn't participate in the party whatsoever.
+				if trk.FlightPlan.Scratchpad != "" && slices.Contains(vol.ExcludedScratchpads, trk.FlightPlan.Scratchpad) {
+					return false
+				}
+
+				state := sp.TrackState[trk.ADSBCallsign]
+				return vol.Inside(state.track.Location, state.track.TransponderAltitude,
+					state.TrackHeading(nmPerLongitude)+magneticVariation,
+					nmPerLongitude, magneticVariation)
+			})
+
+			// Sort by distance to threshold (there will be some redundant lookups of TrackState
+			// and distance computations here, but it's straightforward to implement it like this
+			// and we shouldn't have many aircraft in runwayAircraft anyway...
+			sort.Slice(runwayAircraft, func(i, j int) bool {
+				pi := sp.TrackState[runwayAircraft[i].ADSBCallsign].track.Location
+				pj := sp.TrackState[runwayAircraft[j].ADSBCallsign].track.Location
+				return math.NMDistance2LL(pi, vol.Threshold) < math.NMDistance2LL(pj, vol.Threshold)
+			})
+
+			for i := range runwayAircraft {
+				if i == 0 {
+					// The first one doesn't have anyone in front...
+					continue
+				}
+				leading, trailing := runwayAircraft[i-1], runwayAircraft[i]
+				leadingState, trailingState := sp.TrackState[leading.ADSBCallsign], sp.TrackState[trailing.ADSBCallsign]
+				trailingState.IntrailDistance =
+					math.NMDistance2LL(leadingState.track.Location, trailingState.track.Location)
+				trailingState.DrawATPAGraphics = true
+				sp.checkInTrailCwtSeparation(ctx, trailing, leading)
+			}
 		}
-		handledVolumes[vol.Id] = nil
 	}
 }
 
@@ -1298,24 +1298,31 @@ func (sp *STARSPane) checkInTrailCwtSeparation(ctx *panes.Context, back, front s
 	if front.IsUnassociated() || back.IsUnassociated() {
 		return
 	}
-	cwtSeparation := av.CWTApproachSeparation(front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory)
 
 	state := sp.TrackState[back.ADSBCallsign]
 	vol := back.ATPAVolume
+
+	cwtSeparation := av.CWTApproachSeparation(front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory)
 	if cwtSeparation == 0 {
-		cwtSeparation = float32(LateralMinimum)
+		// No CWT requirement; 3nm baseline
+		cwtSeparation = 3
+	}
 
-		// 7110.126B replaces 7110.65Z 5-5-4(j), which is now 7110.65AA 5-5-4(i)
-		// Reduced separation allowed 10 NM out (also enabled for the ATPA volume)
-		if vol.Enable25nmApproach &&
-			math.NMDistance2LL(vol.Threshold, back.Location) < vol.Dist25nmApproach {
-
-			// between aircraft established on the final approach course
-			// Note 1: checked with OnExtendedCenterline since reduced separation probably
-			// doesn't apply to approaches with curved final approach segment
-			// Note 2: 0.2 NM is slightly less than full-scale deflection at 5 NM out
-			if back.OnExtendedCenterline && front.OnExtendedCenterline {
-				// Not-implemented: Required separation must exist prior to applying 2.5 NM separation (TBL 5-5-2)
+	if vol.Enable25nmApproach && ctx.Client.State.IsATPAVolume25nmEnabled(vol.Id) {
+		// Reduced separation allowed if:
+		// 1. Volume is adapted for 2.5nm (vol.Enable25nmApproach)
+		// 2. 2.5nm is enabled for this volume (via 2.5[volume]E command)
+		// 3. Aircraft is within the distance threshold for 2.5nm separation
+		// 4. Both aircraft are on extended centerline
+		if math.NMDistance2LL(vol.Threshold, back.Location) < vol.Dist25nmApproach &&
+			back.OnExtendedCenterline && front.OnExtendedCenterline {
+			// ... and 7110.65 5-5-4(i):
+			// 1. The leading aircraft's weight class is the same or less than the trailing aircraft;
+			// 2. Super and heavy aircraft are permitted to participate in the separation reduction as the trailing aircraft only;
+			fcat, bcat := front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory
+			if len(fcat) == 1 && fcat[0] >= 'E' && fcat[0] <= 'I' && // no heavy / super
+				len(bcat) == 1 && bcat[0] >= 'A' && bcat[0] <= 'I' &&
+				fcat[0] >= bcat[0] { // swap test since lower weight is higher letter
 				cwtSeparation = 2.5
 			}
 		}
@@ -1340,7 +1347,7 @@ func (sp *STARSPane) checkInTrailCwtSeparation(ctx *panes.Context, back, front s
 	// we don't include altitude separation here since what we need is
 	// distance separation by the threshold...)
 	frontPosition, backPosition := frontModel.p, backModel.p
-	for s := 0; s < 45; s++ {
+	for s := range 45 {
 		frontPosition, backPosition = frontModel.NextPosition(frontPosition), backModel.NextPosition(backPosition)
 		distance := math.Distance2f(frontPosition, backPosition)
 		if distance < cwtSeparation { // no bueno
@@ -1384,8 +1391,8 @@ func (sp *STARSPane) diverging(ctx *panes.Context, a, b *sim.Track) bool {
 	return math.HeadingDifference(sa.TrackHeading(nmPerLongitude), sb.TrackHeading(nmPerLongitude)) >= 15
 }
 
-func (sp *STARSPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs map[av.ADSBCallsign]datablock,
-	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawLeaderLines(ctx *panes.Context, dbs map[av.ADSBCallsign]datablock, transforms radar.ScopeTransformations,
+	cb *renderer.CommandBuffer) {
 
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
@@ -1414,7 +1421,7 @@ func (sp *STARSPane) drawLeaderLines(ctx *panes.Context, tracks []sim.Track, dbs
 		}
 	}
 
-	draw(tracks)
+	draw(sp.visibleTracks)
 
 	transforms.LoadWindowViewingMatrices(cb)
 	cb.LineWidth(1, ctx.DPIScale)
@@ -1430,19 +1437,19 @@ func (sp *STARSPane) getLeaderLineDirection(ctx *panes.Context, trk sim.Track) m
 		if sfp.Suspended {
 			// Suspended are always north, evidently.
 			return math.North
-		} else if state.UseGlobalLeaderLine {
+		} else if state.UseGlobalLeaderLine && sfp.GlobalLeaderLineDirection != nil {
 			return *sfp.GlobalLeaderLineDirection
 		} else if state.LeaderLineDirection != nil {
 			// The direction was specified for the aircraft specifically
 			return *state.LeaderLineDirection
-		} else if sfp.TrackingController == ctx.UserTCP {
+		} else if ctx.UserOwnsFlightPlan(sfp) {
 			// Tracked by us
 			return ps.LeaderLineDirection
-		} else if sfp.HandoffTrackController == ctx.UserTCP {
+		} else if ctx.UserControlsPosition(sfp.HandoffController) {
 			// Being handed off to us
 			return ps.LeaderLineDirection
-		} else if dir, ok := ps.ControllerLeaderLineDirections[sfp.TrackingController]; ok {
-			// Tracked by another controller for whom a direction was specified
+		} else if dir, ok := ps.ControllerLeaderLineDirections[ctx.PrimaryTCPForTCW(sfp.OwningTCW)]; ok {
+			// Owned by another controller for whom a direction was specified
 			return dir
 		} else if ps.OtherControllerLeaderLineDirection != nil {
 			// Tracked by another controller without a per-controller direction specified

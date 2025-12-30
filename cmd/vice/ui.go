@@ -7,14 +7,9 @@ package main
 import (
 	"bytes"
 	_ "embed"
-	"encoding/json"
 	"fmt"
 	"image/png"
-	"log/slog"
-	"net/http"
-	"os"
 	"runtime"
-	"runtime/debug"
 	"strconv"
 	"strings"
 	"time"
@@ -35,6 +30,7 @@ import (
 var (
 	ui struct {
 		font           *renderer.Font
+		fixedFont      *renderer.Font
 		aboutFont      *renderer.Font
 		aboutFontSmall *renderer.Font
 
@@ -44,15 +40,11 @@ var (
 
 		showAboutDialog bool
 
-		iconTextureID     uint32
-		sadTowerTextureID uint32
-
-		activeModalDialogs []*ModalDialogBox
+		iconTextureID uint32
 
 		newReleaseDialogChan chan *NewReleaseModalClient
 
-		launchControlWindow  *LaunchControlWindow
-		missingPrimaryDialog *ModalDialogBox
+		launchControlWindow *LaunchControlWindow
 
 		// Scenario routes to draw on the scope
 		showSettings      bool
@@ -62,13 +54,16 @@ var (
 
 	//go:embed icons/tower-256x256.png
 	iconPNG string
-	//go:embed icons/sad-tower-alpha-128x128.png
-	sadTowerPNG string
 )
 
 func imguiInit() *imgui.Context {
 	context := imgui.CreateContext()
 	imgui.CurrentIO().SetIniFilename("")
+
+	// Disable the nav windowing popup (Ctrl+Tab/Cmd+Tab window switcher) by
+	// clearing the shortcut keys that trigger it.
+	context.SetConfigNavWindowingKeyNext(imgui.KeyChord(imgui.KeyNone))
+	context.SetConfigNavWindowingKeyPrev(imgui.KeyChord(imgui.KeyNone))
 
 	// General imgui styling
 	style := imgui.CurrentStyle()
@@ -86,9 +81,10 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, es *sim.Ev
 		imgui.CurrentStyle().ScaleAllSizes(p.DPIScale())
 	}
 
-	ui.font = renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: config.UIFontSize})
-	ui.aboutFont = renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: 18})
-	ui.aboutFontSmall = renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: 14})
+	ui.font = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: config.UIFontSize})
+	ui.fixedFont = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoMono, Size: config.UIFontSize + 2 /* better match regular size */})
+	ui.aboutFont = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: 18})
+	ui.aboutFontSmall = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: 14})
 	ui.eventsSubscription = es.Subscribe()
 
 	if iconImage, err := png.Decode(bytes.NewReader([]byte(iconPNG))); err != nil {
@@ -97,11 +93,7 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, es *sim.Ev
 		ui.iconTextureID = r.CreateTextureFromImage(iconImage, false)
 	}
 
-	if sadTowerImage, err := png.Decode(bytes.NewReader([]byte(sadTowerPNG))); err != nil {
-		lg.Errorf("Unable to decode sad tower PNG: %v", err)
-	} else {
-		ui.sadTowerTextureID = r.CreateTextureFromImage(sadTowerImage, false)
-	}
+	dialogsInit(r, lg)
 
 	// Do this asynchronously since it involves network traffic and may
 	// take some time (or may even time out, etc.)
@@ -118,39 +110,6 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, es *sim.Ev
 	if !config.NotifiedTargetGenMode {
 		uiShowTargetGenCommandModeDialog(p, config)
 	}
-}
-
-func uiShowModalDialog(d *ModalDialogBox, atFront bool) {
-	if atFront {
-		ui.activeModalDialogs = append([]*ModalDialogBox{d}, ui.activeModalDialogs...)
-	} else {
-		ui.activeModalDialogs = append(ui.activeModalDialogs, d)
-	}
-}
-
-func uiCloseModalDialog(d *ModalDialogBox) {
-	ui.activeModalDialogs = util.FilterSliceInPlace(ui.activeModalDialogs,
-		func(m *ModalDialogBox) bool { return m != d })
-}
-
-func uiShowConnectDialog(mgr *client.ConnectionManager, allowCancel bool, config *Config, p platform.Platform, lg *log.Logger) {
-	client := &ConnectModalClient{
-		mgr:         mgr,
-		lg:          lg,
-		allowCancel: allowCancel,
-		platform:    p,
-		config:      config,
-	}
-	uiShowModalDialog(NewModalDialogBox(client, p), false)
-}
-
-func uiShowDiscordOptInDialog(p platform.Platform, config *Config) {
-	uiShowModalDialog(NewModalDialogBox(&DiscordOptInModalClient{config: config}, p), true)
-}
-
-func uiShowTargetGenCommandModeDialog(p platform.Platform, config *Config) {
-	client := &NotifyTargetGenModalClient{notifiedNew: &config.NotifiedTargetGenMode}
-	uiShowModalDialog(NewModalDialogBox(client, p), true)
 }
 
 func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,
@@ -288,8 +247,6 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			ui.showScenarioInfo = drawScenarioInfoWindow(config, controlClient, p, lg)
 		}
 
-		uiDrawMissingPrimaryDialog(mgr, controlClient, p)
-
 		if ui.showLaunchControl {
 			if ui.launchControlWindow == nil {
 				ui.launchControlWindow = MakeLaunchControlWindow(controlClient, lg)
@@ -322,504 +279,11 @@ func uiResetControlClient(c *client.ControlClient, p platform.Platform, lg *log.
 	ui.launchControlWindow = nil
 }
 
-func drawActiveDialogBoxes() {
-	for len(ui.activeModalDialogs) > 0 {
-		d := ui.activeModalDialogs[0]
-		if !d.closed {
-			d.Draw()
-			break
-		} else {
-			ui.activeModalDialogs = ui.activeModalDialogs[1:]
-		}
-	}
-
-	if ui.showAboutDialog {
-		showAboutDialog()
-	}
-}
-
-func setCursorForRightButtons(text []string) {
-	style := imgui.CurrentStyle()
-	width := float32(0)
-
-	for i, t := range text {
-		width += imgui.CalcTextSize(t).X + 2*style.FramePadding().X
-		if i > 0 {
-			// space between buttons
-			width += style.ItemSpacing().X
-		}
-	}
-	offset := imgui.ContentRegionAvail().X - width
-	imgui.SetCursorPos(imgui.Vec2{offset, imgui.CursorPosY()})
-}
-
-///////////////////////////////////////////////////////////////////////////
-
-type ModalDialogBox struct {
-	closed, isOpen bool
-	client         ModalDialogClient
-	platform       platform.Platform
-}
-
-type ModalDialogButton struct {
-	text     string
-	disabled bool
-	action   func() bool
-}
-
-type ModalDialogClient interface {
-	Title() string
-	Opening()
-	Buttons() []ModalDialogButton
-	Draw() int /* returns index of equivalently-clicked button; out of range if none */
-}
-
-func NewModalDialogBox(c ModalDialogClient, p platform.Platform) *ModalDialogBox {
-	return &ModalDialogBox{client: c, platform: p}
-}
-
-func (m *ModalDialogBox) Draw() {
-	if m.closed {
-		return
-	}
-
-	title := fmt.Sprintf("%s##%p", m.client.Title(), m)
-	imgui.OpenPopupStr(title)
-
-	flags := imgui.WindowFlagsNoResize | imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
-	dpiScale := util.Select(runtime.GOOS == "windows", m.platform.DPIScale(), float32(1))
-	imgui.SetNextWindowSizeConstraints(imgui.Vec2{dpiScale * 400, dpiScale * 100}, imgui.Vec2{-1, float32(m.platform.WindowSize()[1]) * 19 / 20})
-	if imgui.BeginPopupModalV(title, nil, flags) {
-		if !m.isOpen {
-			imgui.SetKeyboardFocusHere()
-			m.client.Opening()
-			m.isOpen = true
-		}
-
-		selIndex := m.client.Draw()
-		imgui.Text("\n") // spacing
-
-		buttons := m.client.Buttons()
-
-		// Only position buttons if we have any
-		if len(buttons) > 0 {
-			// First, figure out where to start drawing so the buttons end up right-justified.
-			// https://github.com/ocornut/imgui/discussions/3862
-			var allButtonText []string
-			for _, b := range buttons {
-				allButtonText = append(allButtonText, b.text)
-			}
-			setCursorForRightButtons(allButtonText)
-		}
-
-		for i, b := range buttons {
-			if b.disabled {
-				imgui.BeginDisabled()
-			}
-			if i > 0 {
-				imgui.SameLine()
-			}
-			if (imgui.Button(b.text) || i == selIndex) && !b.disabled {
-				if b.action == nil || b.action() {
-					imgui.CloseCurrentPopup()
-					m.closed = true
-					m.isOpen = false
-				}
-			}
-			if b.disabled {
-				imgui.EndDisabled()
-			}
-		}
-		imgui.EndPopup()
-	}
-}
-
-type ConnectModalClient struct {
-	mgr         *client.ConnectionManager
-	lg          *log.Logger
-	simConfig   *NewSimConfiguration
-	allowCancel bool
-	platform    platform.Platform
-	config      *Config
-}
-
-func (c *ConnectModalClient) Title() string { return "New Simulation" }
-
-func (c *ConnectModalClient) Opening() {
-	if c.simConfig == nil {
-		c.simConfig = MakeNewSimConfiguration(c.mgr, &c.config.LastTRACON, &c.config.TFRCache, c.lg)
-	}
-}
-
-func (c *ConnectModalClient) Buttons() []ModalDialogButton {
-	var b []ModalDialogButton
-	if c.allowCancel {
-		b = append(b, ModalDialogButton{text: "Cancel"})
-	}
-
-	next := ModalDialogButton{
-		text:     c.simConfig.UIButtonText(),
-		disabled: c.simConfig.OkDisabled(),
-		action: func() bool {
-			if c.simConfig.ShowRatesWindow() {
-				client := &RatesModalClient{
-					lg:            c.lg,
-					connectClient: c,
-					platform:      c.platform,
-				}
-				uiShowModalDialog(NewModalDialogBox(client, c.platform), false)
-				return true
-			} else {
-				c.simConfig.displayError = c.simConfig.Start()
-				return c.simConfig.displayError == nil
-			}
-		},
-	}
-
-	return append(b, next)
-}
-
-func (c *ConnectModalClient) Draw() int {
-	if enter := c.simConfig.DrawUI(c.platform, c.config); enter {
-		return 1
-	} else {
-		return -1
-	}
-}
-
-type RatesModalClient struct {
-	lg *log.Logger
-	// Hold on to the connect client both to pick up various parameters
-	// from it but also so we can go back to it when "Previous" is pressed.
-	connectClient *ConnectModalClient
-	platform      platform.Platform
-}
-
-func (r *RatesModalClient) Title() string { return "Arrival / Departure Rates" }
-
-func (r *RatesModalClient) Opening() {}
-
-func (r *RatesModalClient) Buttons() []ModalDialogButton {
-	var b []ModalDialogButton
-
-	prev := ModalDialogButton{
-		text: "Previous",
-		action: func() bool {
-			uiShowModalDialog(NewModalDialogBox(r.connectClient, r.platform), false)
-			return true
-		},
-	}
-	b = append(b, prev)
-
-	if r.connectClient.allowCancel {
-		b = append(b, ModalDialogButton{text: "Cancel"})
-	}
-
-	ok := ModalDialogButton{
-		text:     "Create",
-		disabled: r.connectClient.simConfig.OkDisabled(),
-		action: func() bool {
-			r.connectClient.simConfig.displayError = r.connectClient.simConfig.Start()
-			return r.connectClient.simConfig.displayError == nil
-		},
-	}
-
-	return append(b, ok)
-}
-
-func (r *RatesModalClient) Draw() int {
-	if enter := r.connectClient.simConfig.DrawRatesUI(r.platform); enter {
-		return 1
-	} else {
-		return -1
-	}
-}
-
-type YesOrNoModalClient struct {
-	title, query string
-	ok, notok    func()
-}
-
-func (yn *YesOrNoModalClient) Title() string { return yn.title }
-
-func (yn *YesOrNoModalClient) Opening() {}
-
-func (yn *YesOrNoModalClient) Buttons() []ModalDialogButton {
-	var b []ModalDialogButton
-	b = append(b, ModalDialogButton{text: "No", action: func() bool {
-		if yn.notok != nil {
-			yn.notok()
-		}
-		return true
-	}})
-	b = append(b, ModalDialogButton{text: "Yes", action: func() bool {
-		if yn.ok != nil {
-			yn.ok()
-		}
-		return true
-	}})
-	return b
-}
-
-func (yn *YesOrNoModalClient) Draw() int {
-	imgui.Text(yn.query)
-	return -1
-}
-
-func checkForNewRelease(newReleaseDialogChan chan *NewReleaseModalClient, config *Config, lg *log.Logger) {
-	defer close(newReleaseDialogChan)
-
-	url := "https://api.github.com/repos/mmp/vice/releases"
-
-	resp, err := http.Get(url)
-	if err != nil {
-		lg.Warn("new release GET error", slog.String("url", url), slog.Any("error", err))
-		return
-	}
-	defer resp.Body.Close()
-
-	type Release struct {
-		TagName string    `json:"tag_name"`
-		Created time.Time `json:"created_at"`
-	}
-
-	decoder := json.NewDecoder(resp.Body)
-	var releases []Release
-	if err := decoder.Decode(&releases); err != nil {
-		lg.Errorf("JSON decode error: %v", err)
-		return
-	}
-	if len(releases) == 0 {
-		return
-	}
-
-	var newestRelease *Release
-	for i := range releases {
-		if strings.HasSuffix(releases[i].TagName, "-beta") {
-			continue
-		}
-		if newestRelease == nil || releases[i].Created.After(newestRelease.Created) {
-			newestRelease = &releases[i]
-		}
-	}
-	if newestRelease == nil {
-		lg.Warnf("No vice releases found?")
-		return
-	}
-
-	lg.Infof("newest release found: %v", newestRelease)
-
-	buildTime := ""
-	if bi, ok := debug.ReadBuildInfo(); !ok {
-		lg.Errorf("unable to read build info")
-		return
-	} else {
-		for _, setting := range bi.Settings {
-			if setting.Key == "vcs.time" {
-				buildTime = setting.Value
-				break
-			}
-		}
-
-		if buildTime == "" {
-			lg.Errorf("build time unavailable in BuildInfo.Settings")
-			return
-		}
-	}
-
-	if bt, err := time.Parse(time.RFC3339, buildTime); err != nil {
-		lg.Errorf("error parsing build time \"%s\": %v", buildTime, err)
-	} else if newestRelease.Created.UTC().After(bt.UTC()) {
-		lg.Infof("build time %s newest release %s -> release is newer",
-			bt.UTC().String(), newestRelease.Created.UTC().String())
-		newReleaseDialogChan <- &NewReleaseModalClient{
-			version: newestRelease.TagName,
-			date:    newestRelease.Created}
-	} else {
-		lg.Infof("build time %s newest release %s -> build is newer",
-			bt.UTC().String(), newestRelease.Created.UTC().String())
-	}
-}
-
-type NewReleaseModalClient struct {
-	version string
-	date    time.Time
-}
-
-func (nr *NewReleaseModalClient) Title() string {
-	return "A new vice release is available"
-}
-func (nr *NewReleaseModalClient) Opening() {}
-
-func (nr *NewReleaseModalClient) Buttons() []ModalDialogButton {
-	return []ModalDialogButton{
-		ModalDialogButton{
-			text: "Quit and update",
-			action: func() bool {
-				browser.OpenURL("https://pharr.org/vice/index.html#section-installation")
-				os.Exit(0)
-				return true
-			},
-		},
-		ModalDialogButton{text: "Update later"}}
-}
-
-func (nr *NewReleaseModalClient) Draw() int {
-	imgui.Text(fmt.Sprintf("vice version %s is the latest version", nr.version))
-	imgui.Text("Would you like to quit and open the vice downloads page?")
-	return -1
-}
-
-type WhatsNewModalClient struct {
-	config *Config
-}
-
-func (wn *WhatsNewModalClient) Title() string {
-	return "What's new in this version of vice"
-}
-
-func (wn *WhatsNewModalClient) Opening() {}
-
-func (wn *WhatsNewModalClient) Buttons() []ModalDialogButton {
-	return []ModalDialogButton{
-		ModalDialogButton{
-			text: "View Release Notes",
-			action: func() bool {
-				browser.OpenURL("https://pharr.org/vice/index.html#releases")
-				return false
-			},
-		},
-		ModalDialogButton{
-			text: "Ok",
-			action: func() bool {
-				wn.config.WhatsNewIndex = len(whatsNew)
-				return true
-			},
-		},
-	}
-}
-
-func (wn *WhatsNewModalClient) Draw() int {
-	for i := wn.config.WhatsNewIndex; i < len(whatsNew); i++ {
-		imgui.Text(renderer.FontAwesomeIconSquare + " " + whatsNew[i])
-	}
-	return -1
-}
-
-type BroadcastModalDialog struct {
-	Message string
-}
-
-func (b *BroadcastModalDialog) Title() string {
-	return "Server Broadcast Message"
-}
-
-func (b *BroadcastModalDialog) Opening() {}
-
-func (b *BroadcastModalDialog) Buttons() []ModalDialogButton {
-	return []ModalDialogButton{
-		ModalDialogButton{
-			text: "Ok",
-			action: func() bool {
-				return true
-			},
-		},
-	}
-}
-
-func (b *BroadcastModalDialog) Draw() int {
-	imgui.Text(b.Message)
-	return -1
-}
-
-type DiscordOptInModalClient struct {
-	config *Config
-}
-
-func (d *DiscordOptInModalClient) Title() string {
-	return "Discord Activity Updates"
-}
-
-func (d *DiscordOptInModalClient) Opening() {}
-
-func (d *DiscordOptInModalClient) Buttons() []ModalDialogButton {
-	return []ModalDialogButton{
-		ModalDialogButton{
-			text: "Ok",
-			action: func() bool {
-				d.config.AskedDiscordOptIn = true
-				return true
-			},
-		},
-	}
-}
-
-func (d *DiscordOptInModalClient) Draw() int {
-	style := imgui.CurrentStyle()
-	spc := style.ItemSpacing()
-	spc.Y -= 4
-	imgui.PushStyleVarVec2(imgui.StyleVarItemSpacing, spc)
-
-	imgui.Text("By default, vice will automatically update your Discord Activity to say")
-	imgui.Text("that you are running vice, using information about your current session.")
-	imgui.Text("If you do not want it to do this, you can disable this feature using the")
-	imgui.Text("checkbox below. You can also change this setting any time in the future")
-	imgui.Text("in the settings window " + renderer.FontAwesomeIconCog + " via the menu bar.")
-
-	imgui.PopStyleVar()
-
-	imgui.Text("")
-
-	update := !d.config.InhibitDiscordActivity.Load()
-	imgui.Checkbox("Update Discord activity status", &update)
-	d.config.InhibitDiscordActivity.Store(!update)
-
-	return -1
-}
-
-type NotifyTargetGenModalClient struct {
-	notifiedNew *bool
-}
-
-func (ns *NotifyTargetGenModalClient) Title() string {
-	return "Aircraft Control Command Entry Has Changed"
-}
-
-func (ns *NotifyTargetGenModalClient) Opening() {}
-
-func (ns *NotifyTargetGenModalClient) Buttons() []ModalDialogButton {
-	return []ModalDialogButton{
-		ModalDialogButton{
-			text: "Ok",
-			action: func() bool {
-				*ns.notifiedNew = true
-				return true
-			},
-		},
-	}
-}
-
-func (ns *NotifyTargetGenModalClient) Draw() int {
-	style := imgui.CurrentStyle()
-	spc := style.ItemSpacing()
-	spc.Y -= 4
-	imgui.PushStyleVarVec2(imgui.StyleVarItemSpacing, spc)
-
-	imgui.Text(`Aircraft control commands are now entered in STARS and not in the messages`)
-	imgui.Text(`window at the bottom of the screen. Enter a semicolon ";" to enable control`)
-	imgui.Text(`command entry mode. Then, either enter a callsign followed by control commands`)
-	imgui.Text(`or enter control commands and click on an aircraft's track to issue an instruction.`)
-
-	imgui.PopStyleVar()
-
-	return -1
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // "about" dialog box
 
 func showAboutDialog() {
-	flags := imgui.WindowFlagsNoResize | imgui.WindowFlagsNoSavedSettings
+	flags := imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
 	imgui.BeginV("About vice...", &ui.showAboutDialog, flags)
 
 	imgui.Image(imgui.TextureID(ui.iconTextureID), imgui.Vec2{256, 256})
@@ -834,7 +298,7 @@ func showAboutDialog() {
 
 	imgui.PushFont(&ui.aboutFont.Ifont)
 	center("vice")
-	center(renderer.FontAwesomeIconCopyright + "2023 Matt Pharr")
+	center(renderer.FontAwesomeIconCopyright + "2023-2025 Matt Pharr")
 	center("Licensed under the GPL, Version 3")
 	if imgui.IsItemHovered() && imgui.IsMouseClickedBool(imgui.MouseButton(0)) {
 		browser.OpenURL("https://www.gnu.org/licenses/gpl-3.0.html")
@@ -848,133 +312,21 @@ func showAboutDialog() {
 	imgui.Separator()
 
 	imgui.PushFont(&ui.aboutFontSmall.Ifont)
-	// We would very much like to use imgui.{Push,Pop}TextWrapPos()
-	// here, but for unclear reasons that makes the info window
-	// vertically maximized. So we hand-wrap the lines for the
-	// font we're using...
-	credits :=
-		`Additional credits:
-- Software Development: Xavier Caldwell,
-  Artem Dorofeev, Dennis Graiani, Ethan
-  Malimon, Neel P, Makoto Sakaguchi,
-  Michael Trokel, radarcontacto, Rick R,
-  Samuel Valencia, and Yi Zhang.
+	credits := `Additional credits:
+- Software Development: Xavier Caldwell, Artem Dorofeev, Adam E, Dennis Graiani, Ethan Malimon, Neel P, Makoto Sakaguchi, Michael Trokel, radarcontacto, Rick R, Samuel Valencia, and Yi Zhang.
 - Timely feedback: radarcontacto.
-- Facility engineering: Connor Allen, anguse,
-  Adam Bolek, Brody Carty, Lucas Chan,
-  Aaron Flett, Ryan G, Thomas Halpin,
-  Jason Helkenberg, Austin Jenkins, Ketan K,
-  Mike K, Allison L, Josh Lambert,
-  Kayden Lambert, Mike LeGall, Jonah
-  Lefkoff, Jud Lopez, Ethan Malimon, Jace
-  Martin, Michael McConnell, Merry, Yahya
-  Nazimuddin, Justin Nguyen, Giovanni,
-  Andrew S, Logan S, Arya T, Nelson T,
-  Tyler Temerowski, Eli Thompson, Michael
-  Trokel, Samuel Valencia, Gavin Velicevic,
-  and Jackson Verdoorn.
-- Video maps: thanks to the ZAU, ZBW, ZDC,
-  ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB,
-  ZSE, and ZTL VATSIM ARTCCs and to the
-  FAA, from whence the original maps came.
-- Additionally: OpenScope for the aircraft
-  performance and airline databases,
-  ourairports.com for the airport database,
-  and for the FAA for being awesome about
-  providing the CIFP, MVA specifications,
-  and other useful aviation data digitally.
-- One more thing: see the file CREDITS.txt
-  in the vice source code distribution for
-  third-party software, fonts, sounds, etc.`
+- Facility engineering: Connor Allen, anguse, Adam Bolek, Brody Carty, Lucas Chan, Aaron Flett, Mike Fries, Ryan G, Thomas Halpin, Jason Helkenberg, Trey Hensley, Austin Jenkins, Ketan K, Mike K, Allison L, Josh Lambert, Kayden Lambert, Mike LeGall, Jonah Lefkoff, Jud Lopez, Ethan Malimon, manaphy, Jace Martin, Michael McConnell, Merry, Yahya Nazimuddin, Justin Nguyen, Giovanni, Andrew S, Logan S, Arya T, Nelson T, Tyler Temerowski, Eli Thompson, Michael Trokel, Samuel Valencia, Gavin Velicevic, and Jackson Verdoorn.
+- Video maps: thanks to the ZAU, ZBW, ZDC, ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB, ZSE, and ZTL VATSIM ARTCCs and to the FAA, from whence the original maps came.
+- Additionally: OpenScope for the aircraft performance and airline databases, ourairports.com for the airport database, and for the FAA for being awesome about providing the CIFP, MVA specifications, and other useful aviation data digitally.
+- One more thing: see the file CREDITS.txt in the vice source code distribution for third-party software, fonts, sounds, etc.`
 
+	imgui.PushTextWrapPos()
 	imgui.Text(credits)
+	imgui.PopTextWrapPos()
 
 	imgui.PopFont()
 
 	imgui.End()
-}
-
-///////////////////////////////////////////////////////////////////////////
-
-type MessageModalClient struct {
-	title   string
-	message string
-}
-
-func (m *MessageModalClient) Title() string { return m.title }
-func (m *MessageModalClient) Opening()      {}
-
-func (m *MessageModalClient) Buttons() []ModalDialogButton {
-	return []ModalDialogButton{{text: "Ok", action: func() bool { return true }}}
-}
-
-func (m *MessageModalClient) Draw() int {
-	text, _ := util.WrapText(m.message, 80, 0, true)
-	imgui.Text("\n\n" + text + "\n\n")
-	return -1
-}
-
-type ErrorModalClient struct {
-	message string
-}
-
-func (e *ErrorModalClient) Title() string { return "Vice Error" }
-func (e *ErrorModalClient) Opening()      {}
-
-func (e *ErrorModalClient) Buttons() []ModalDialogButton {
-	var b []ModalDialogButton
-	b = append(b, ModalDialogButton{text: "Ok", action: func() bool {
-		return true
-	}})
-	return b
-}
-
-func (e *ErrorModalClient) Draw() int {
-	if imgui.BeginTableV("Error", 2, 0, imgui.Vec2{}, 0) {
-		imgui.TableSetupColumn("icon")
-		imgui.TableSetupColumn("text")
-
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		imgui.Image(imgui.TextureID(ui.sadTowerTextureID), imgui.Vec2{128, 128})
-
-		imgui.TableNextColumn()
-		text, _ := util.WrapText(e.message, 80, 0, true)
-		imgui.Text("\n\n" + text)
-
-		imgui.EndTable()
-	}
-	return -1
-}
-
-func ShowErrorDialog(p platform.Platform, lg *log.Logger, s string, args ...interface{}) {
-	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)}, p)
-	uiShowModalDialog(d, true)
-
-	lg.Errorf(s, args...)
-}
-
-func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logger, s string, args ...interface{}) {
-	lg.Errorf(s, args...)
-
-	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)}, p)
-
-	for !d.closed {
-		p.ProcessEvents()
-		p.NewFrame()
-		imgui.NewFrame()
-		imgui.PushFont(&ui.font.Ifont)
-		d.Draw()
-		imgui.PopFont()
-
-		imgui.Render()
-		var cb renderer.CommandBuffer
-		renderer.GenerateImguiCommandBuffer(&cb, p.DisplaySize(), p.FramebufferSize(), lg)
-		r.RenderCommandBuffer(&cb)
-
-		p.PostRender()
-	}
-	os.Exit(1)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1001,6 +353,7 @@ If no speed is given, "cancel speed restrictions".`, "*S210*, *S*"},
 altitude. (*TS* = 'then speed')`, "*TS210*"},
 	[3]string{"*E_appr", `"Expect the _appr_ approach."`, "*EI2L*"},
 	[3]string{"*C_appr", `"Cleared _appr_ approach."`, "*CI2L*"},
+	[3]string{"*C*", `"Cleared for the approach that was previously assigned."`, "*C*"},
 	[3]string{"*TO*", `"Contact tower"`, "*TO*"},
 	[3]string{"*FC*", `"Contact _ctrl_ on _freq_, where _ctrl_ is the controller who has the track and _freq_ is their frequency."`, "*FC*"},
 	[3]string{"*CT_tcp*", `"Contact the controller identified by TCP _tcp_."`, "*CT2J*"},
@@ -1013,9 +366,11 @@ var secondaryAcCommands = [][3]string{
 	[3]string{"*R_hdg", `"Turn right heading _hdg_".`, "*R210*"},
 	[3]string{"*T_deg*R", `"Turn _deg_ degrees right".`, "*T20R*"},
 	[3]string{"*D_fix*/H_hdg", `"Depart _fix_ heading _hdg_".`, "*DLENDY/H180*"},
+	[3]string{"*H_fix*", `"Hold at _fix_ (published hold)".`, "*HJIMEE*"},
+	[3]string{"*H_fix*/[opts]",
+		`"Hold at _fix_ (controller-specified)." Options: *L*/*R* (turns), *xxNM*/*xxM* (legs), *Rxxx* (radial, req'd).`, "*HJIMEE/L/5NM/R090*"},
 	[3]string{"*C_fix*/A_alt*/S_kts",
-		`"Cross _fix_ at _alt_ / _kts_ knots."
-Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
+		`"Cross _fix_ at _alt_ / _kts_ knots." Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
 	[3]string{"*ED*", `"Expedite descent"`, "*ED*"},
 	[3]string{"*EC*", `"Expedite climb"`, "*EC*"},
 	[3]string{"*SMIN*", `"Maintain slowest practical speed".`, "*SMIN*"},
@@ -1027,7 +382,7 @@ Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
 	[3]string{"*SQS", `"Squawk standby."`, "*SQS*"},
 	[3]string{"*SQA", `"Squawk altitude."`, "*SQA*"},
 	[3]string{"*SQON", `"Squawk on."`, "*SSON*"},
-	[3]string{"*A_fix*/C_appr", `"At _fix_, cleared _appr_ approach."`, "*AROSLY/CI2L*"},
+	[3]string{"*A_fix*/C[_appr]", `"At _fix_, cleared [_appr_] approach." (approach is optional)`, "*AROSLY/C*"},
 	[3]string{"*CAC*", `"Cancel approach clearance".`, "*CAC*"},
 	[3]string{"*CSI_appr", `"Cleared straight-in _appr_ approach.`, "*CSII6*"},
 	[3]string{"*I*", `"Intercept the localizer."`, "*I*"},
@@ -1038,7 +393,9 @@ Either one or both of *A* and *S* may be specified.`, "*CCAMRN/A110+*"},
 	[3]string{"*A*", `"Altitude your discretion, maintain VFR" (VFR)`, "*A*"},
 	[3]string{"*A_alt*", `"Maintain _alt_`, "*A120*"},
 	[3]string{"*RST*", `"Radar services terminated, squawk VFR, frequency change approved" (VFR)`, "*RST*"},
+	[3]string{"*GA*", `"Go ahead" (VFR) - respond to abbreviated VFR request`, "*GA*"},
 	[3]string{"*P*", `Pauses/unpauses the sim`, "*P*"},
+	[3]string{"*/_message*", `Displays a message to all controllers`, "*/DINNER TIME 2A CLOSED*"},
 }
 
 var starsCommands = [][2]string{
@@ -1083,8 +440,8 @@ func uiDrawKeyboardWindow(c *client.ControlClient, config *Config, platform plat
 
 	imgui.Separator()
 
-	fixedFont := renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Mono", Size: config.UIFontSize})
-	italicFont := renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Mono Italic", Size: config.UIFontSize})
+	fixedFont := renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoMono, Size: config.UIFontSize})
+	italicFont := renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoMonoItalic, Size: config.UIFontSize})
 
 	// Tighten up the line spacing
 	spc := style.ItemSpacing()
@@ -1303,53 +660,6 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 	imgui.PopFont() // regular font
 }
 
-type MissingPrimaryModalClient struct {
-	mgr    *client.ConnectionManager
-	client *client.ControlClient
-}
-
-func (mp *MissingPrimaryModalClient) Title() string {
-	return "Missing Primary Controller"
-}
-
-func (mp *MissingPrimaryModalClient) Opening() {}
-
-func (mp *MissingPrimaryModalClient) Buttons() []ModalDialogButton {
-	var b []ModalDialogButton
-	b = append(b, ModalDialogButton{text: "Sign in to " + mp.client.State.PrimaryController, action: func() bool {
-		err := mp.client.ChangeControlPosition(mp.client.State.PrimaryController, true)
-		return err == nil
-	}})
-	b = append(b, ModalDialogButton{text: "Disconnect", action: func() bool {
-		mp.mgr.Disconnect()
-		uiCloseModalDialog(ui.missingPrimaryDialog)
-		return true
-	}})
-	return b
-}
-
-func (mp *MissingPrimaryModalClient) Draw() int {
-	imgui.Text("The primary controller, " + mp.client.State.PrimaryController + ", is not signed in.\nThe simulation will be paused until that position is covered.")
-	return -1
-}
-
-func uiDrawMissingPrimaryDialog(mgr *client.ConnectionManager, c *client.ControlClient, p platform.Platform) {
-	if _, ok := c.State.Controllers[c.State.PrimaryController]; ok {
-		if ui.missingPrimaryDialog != nil {
-			uiCloseModalDialog(ui.missingPrimaryDialog)
-			ui.missingPrimaryDialog = nil
-		}
-	} else {
-		if ui.missingPrimaryDialog == nil {
-			ui.missingPrimaryDialog = NewModalDialogBox(&MissingPrimaryModalClient{
-				mgr:    mgr,
-				client: c,
-			}, p)
-			uiShowModalDialog(ui.missingPrimaryDialog, true)
-		}
-	}
-}
-
 func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Platform) {
 	if !ui.showSettings {
 		return
@@ -1368,11 +678,11 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 	imgui.Separator()
 
 	if imgui.BeginComboV("UI Font Size", strconv.Itoa(config.UIFontSize), imgui.ComboFlagsHeightLarge) {
-		sizes := renderer.AvailableFontSizes("Roboto Regular")
+		sizes := renderer.AvailableFontSizes(renderer.RobotoRegular)
 		for _, size := range sizes {
 			if imgui.SelectableBoolV(strconv.Itoa(size), size == config.UIFontSize, 0, imgui.Vec2{}) {
 				config.UIFontSize = size
-				ui.font = renderer.GetFont(renderer.FontIdentifier{Name: "Roboto Regular", Size: config.UIFontSize})
+				ui.font = renderer.GetFont(renderer.FontIdentifier{Name: renderer.RobotoRegular, Size: config.UIFontSize})
 			}
 		}
 		imgui.EndCombo()
@@ -1487,6 +797,9 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 
 	if imgui.CollapsingHeaderBoolPtr("Scenario Files", nil) {
 		imgui.BeginGroup()
+		imgui.Text("For testing new scenarios, an additional scenario and/or video map file can be specified.")
+		imgui.Text("Note that vice must be restarted to reload scenarios after they are changed.")
+		imgui.Separator()
 		imgui.Text(fmt.Sprintf("Scenario: %s", util.Select(config.ScenarioFile != "", config.ScenarioFile, "None Selected")))
 		imgui.SameLine()
 		if imgui.Button("Select##scenario") {
@@ -1537,13 +850,13 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 		imgui.EndGroup()
 	}
 
-	config.DisplayRoot.VisitPanes(func(pane panes.Pane) {
+	for pane := range config.AllPanes() {
 		if draw, ok := pane.(panes.UIDrawer); ok {
 			if imgui.CollapsingHeaderBoolPtr(draw.DisplayName(), nil) {
 				draw.DrawUI(p, &config.Config)
 			}
 		}
-	})
+	}
 
 	imgui.End()
 }

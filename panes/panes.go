@@ -6,6 +6,8 @@ package panes
 
 import (
 	"fmt"
+	"maps"
+	"slices"
 	"strings"
 	"time"
 
@@ -30,10 +32,10 @@ type Pane interface {
 	Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger)
 
 	// LoadedSim is called when vice is restarted and a Sim is loaded from disk.
-	LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger)
+	LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger)
 
 	// ResetSim is called when a brand new Sim is launched
-	ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger)
+	ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger)
 
 	CanTakeKeyboardFocus() bool
 	Hide() bool
@@ -89,10 +91,10 @@ type Context struct {
 	Client *client.ControlClient
 
 	// from Client.State, here for convenience
-	UserTCP            string
+	UserTCW            sim.TCW // User's workstation identifier
 	NmPerLongitude     float32
 	MagneticVariation  float32
-	FacilityAdaptation *sim.STARSFacilityAdaptation
+	FacilityAdaptation *sim.FacilityAdaptation
 
 	// Full display size, including the menu and status bar.
 	displaySize [2]float32
@@ -111,6 +113,30 @@ func (ctx *Context) InitializeMouse(p platform.Platform) {
 	ctx.Mouse.DeltaPos[1] *= -1
 	ctx.Mouse.Wheel[1] *= -1
 	ctx.Mouse.DragDelta[1] *= -1
+}
+
+// NewFuzzContext creates a Context suitable for fuzz testing.
+// This is used by the -starsrandoms mode to inject random commands.
+func NewFuzzContext(p platform.Platform, r renderer.Renderer, c *client.ControlClient, lg *log.Logger) *Context {
+	displaySize := p.DisplaySize()
+	return &Context{
+		PaneExtent:         math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1]}},
+		ParentPaneExtent:   math.Extent2D{P0: [2]float32{0, 0}, P1: [2]float32{displaySize[0], displaySize[1]}},
+		Platform:           p,
+		DrawPixelScale:     1,
+		PixelsPerInch:      72,
+		DPIScale:           p.DPIScale(),
+		Renderer:           r,
+		HaveFocus:          true,
+		Now:                time.Now(),
+		Lg:                 lg,
+		Client:             c,
+		UserTCW:            c.State.UserTCW,
+		NmPerLongitude:     c.State.NmPerLongitude,
+		MagneticVariation:  c.State.MagneticVariation,
+		FacilityAdaptation: &c.State.FacilityAdaptation,
+		displaySize:        displaySize,
+	}
 }
 
 func (ctx *Context) SetMousePosition(p [2]float32) {
@@ -161,6 +187,110 @@ func (ctx *Context) GetOurTrackByACID(acid sim.ACID) (*sim.Track, bool) {
 	return ctx.Client.State.GetOurTrackByACID(acid)
 }
 
+// UserControlsPosition returns true if the current user controls the given position
+// (either as their primary position or as a consolidated secondary).
+func (ctx *Context) UserControlsPosition(pos sim.ControlPosition) bool {
+	return ctx.Client.State.UserControlsPosition(pos)
+}
+
+// UserOwnsFlightPlan returns true if the current user owns the given flight plan.
+// Track ownership is determined by the OwningTCW field.
+func (ctx *Context) UserOwnsFlightPlan(fp *sim.NASFlightPlan) bool {
+	return fp != nil && fp.OwningTCW == ctx.UserTCW
+}
+
+// ResolveController returns the signed-in controller who controls the given position.
+// If the position is a primary controller, it returns it as-is. If it is
+// a consolidated secondary, it returns the primary position of the controlling TCW.
+func (ctx *Context) ResolveController(pos sim.ControlPosition) sim.ControlPosition {
+	return ctx.Client.State.ResolveController(pos)
+}
+
+// GetResolvedController returns the controller for the given position, resolving consolidated
+// secondary positions to their controlling primary. Returns nil if not found.
+func (ctx *Context) GetResolvedController(pos sim.ControlPosition) *av.Controller {
+	return ctx.Client.State.Controllers[ctx.Client.State.ResolveController(pos)]
+}
+
+// UserPrimaryPosition returns the user's primary position (the position they signed into).
+func (ctx *Context) UserPrimaryPosition() sim.ControlPosition {
+	return ctx.Client.State.PrimaryPositionForTCW(ctx.UserTCW)
+}
+
+func (ctx *Context) PrimaryTCPForTCW(tcw sim.TCW) sim.TCP {
+	return sim.TCP(ctx.Client.State.PrimaryPositionForTCW(tcw))
+}
+
+// UserController returns the Controller for the user's primary position.
+func (ctx *Context) UserController() *av.Controller {
+	return ctx.Client.State.Controllers[ctx.UserPrimaryPosition()]
+}
+
+func (ctx *Context) TCWIsPrivileged(tcw sim.TCW) bool {
+	return ctx.Client.State.TCWIsPrivileged(tcw)
+}
+
+func (ctx *Context) TCWIsObserver(tcw sim.TCW) bool {
+	return ctx.Client.State.TCWIsObserver(tcw)
+}
+
+// UserWasRedirector returns true if any of the user's controlled positions
+// are in the given redirector list.
+func (ctx *Context) UserWasRedirector(redirectors []sim.ControlPosition) bool {
+	for _, pos := range ctx.Client.State.GetPositionsForTCW(ctx.UserTCW) {
+		if slices.Contains(redirectors, pos) {
+			return true
+		}
+	}
+	return false
+}
+
+// IsHandoffToUser returns true if the given track is being handed off to any
+// of the user's controlled TCPs (primary or secondary).
+func (ctx *Context) IsHandoffToUser(trk *sim.Track) bool {
+	if trk.IsUnassociated() {
+		return false
+	}
+	sfp := trk.FlightPlan
+	// Check if handoff target is one of user's TCPs
+	if !ctx.UserControlsPosition(sfp.HandoffController) {
+		return false
+	}
+	// Not if we're a redirector (unless redirected back to us)
+	if ctx.UserWasRedirector(sfp.RedirectedHandoff.Redirector) &&
+		!ctx.UserControlsPosition(sfp.RedirectedHandoff.RedirectedTo) {
+		return false
+	}
+	return true
+}
+
+// Returns all aircraft that match the given suffix. If instructor, returns
+// all matching aircraft; otherwise only ones under the current
+// controller's control are considered for matching.
+func (ctx *Context) TracksFromACIDSuffix(suffix string) []*sim.Track {
+	match := func(trk *sim.Track) bool {
+		if trk.IsUnassociated() {
+			return strings.HasSuffix(string(trk.ADSBCallsign), suffix)
+		} else {
+			fp := trk.FlightPlan
+			if !strings.HasSuffix(string(fp.ACID), suffix) {
+				return false
+			}
+
+			if ctx.UserControlsPosition(fp.ControllingController) || ctx.TCWIsPrivileged(ctx.UserTCW) {
+				return true
+			}
+
+			// Hold for release aircraft still in the list
+			if ctx.UserOwnsFlightPlan(trk.FlightPlan) && trk.FlightPlan.ControllingController == "" {
+				return true
+			}
+			return false
+		}
+	}
+	return slices.Collect(util.FilterSeq(maps.Values(ctx.Client.State.Tracks), match))
+}
+
 var paneUnmarshalRegistry map[string]func([]byte) (Pane, error) = make(map[string]func([]byte) (Pane, error))
 
 func RegisterUnmarshalPane(name string, fn func([]byte) (Pane, error)) {
@@ -200,9 +330,9 @@ func init() {
 }
 
 func (ep *EmptyPane) Activate(renderer.Renderer, platform.Platform, *sim.EventStream, *log.Logger) {}
-func (ep *EmptyPane) LoadedSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (ep *EmptyPane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 }
-func (ep *EmptyPane) ResetSim(client *client.ControlClient, ss sim.State, pl platform.Platform, lg *log.Logger) {
+func (ep *EmptyPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 }
 func (ep *EmptyPane) CanTakeKeyboardFocus() bool { return false }
 func (ep *EmptyPane) Hide() bool                 { return false }

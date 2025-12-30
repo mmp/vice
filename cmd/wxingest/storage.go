@@ -8,9 +8,11 @@ import (
 	"os"
 	fpath "path/filepath"
 	"strings"
+	"sync/atomic"
 
 	"cloud.google.com/go/storage"
 	"github.com/klauspost/compress/zstd"
+	"github.com/mmp/vice/util"
 	"github.com/vmihailenco/msgpack/v5"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
@@ -18,7 +20,9 @@ import (
 
 type StorageBackend interface {
 	List(path string) (map[string]int64, error)
+	ChanList(path string, ch chan<- string) error
 	OpenRead(path string) (io.ReadCloser, error)
+	ReadObject(path string, result any) error
 	Store(path string, r io.Reader) (int64, error)
 	StoreObject(path string, object any) (int64, error)
 	Delete(path string) error
@@ -54,8 +58,16 @@ func (d DryRunBackend) List(path string) (map[string]int64, error) {
 	return d.g.List(path)
 }
 
+func (d DryRunBackend) ChanList(path string, ch chan<- string) error {
+	return d.g.ChanList(path, ch)
+}
+
 func (d DryRunBackend) OpenRead(path string) (io.ReadCloser, error) {
 	return d.g.OpenRead(path)
+}
+
+func (d DryRunBackend) ReadObject(path string, result any) error {
+	return d.g.ReadObject(path, result)
 }
 
 func (d DryRunBackend) Store(path string, r io.Reader) (int64, error) {
@@ -83,9 +95,12 @@ func (d DryRunBackend) Delete(path string) error { return nil }
 func (d DryRunBackend) Close() {}
 
 type GCSBackend struct {
-	ctx    context.Context
-	client *storage.Client
-	bucket *storage.BucketHandle
+	ctx       context.Context
+	client    *storage.Client
+	bucket    *storage.BucketHandle
+	listOps   atomic.Int64
+	insertOps atomic.Int64
+	deleteOps atomic.Int64
 }
 
 func MakeGCSBackend(bucketName string) (StorageBackend, error) {
@@ -106,33 +121,98 @@ func MakeGCSBackend(bucketName string) (StorageBackend, error) {
 	}, nil
 }
 
-func (g GCSBackend) List(path string) (map[string]int64, error) {
+func (g *GCSBackend) List(path string) (map[string]int64, error) {
 	path = fpath.Clean(path)
 	query := storage.Query{
 		Projection: storage.ProjectionNoACL,
 		Prefix:     path,
 	}
 
-	m := make(map[string]int64)
 	it := g.bucket.Objects(g.ctx, &query)
+	pager := iterator.NewPager(it, 1000, "")
+
+	m := make(map[string]int64)
 	for {
-		if obj, err := it.Next(); err == iterator.Done {
-			break
-		} else if err != nil {
+		var objects []*storage.ObjectAttrs
+		pageToken, err := pager.NextPage(&objects)
+		if err != nil {
 			return nil, err
-		} else if fpath.Clean(obj.Name) != path { // don't return the root ~folder
-			m[obj.Name] = obj.Size
+		}
+
+		g.listOps.Add(1)
+
+		for _, obj := range objects {
+			if fpath.Clean(obj.Name) != path { // don't return the root ~folder
+				m[obj.Name] = obj.Size
+			}
+		}
+
+		if pageToken == "" {
+			break
 		}
 	}
 
 	return m, nil
 }
 
-func (g GCSBackend) OpenRead(path string) (io.ReadCloser, error) {
+func (g *GCSBackend) ChanList(path string, ch chan<- string) error {
+	path = fpath.Clean(path)
+	query := storage.Query{
+		Projection: storage.ProjectionNoACL,
+		Prefix:     path,
+	}
+
+	it := g.bucket.Objects(g.ctx, &query)
+	pager := iterator.NewPager(it, 1000, "")
+
+	for {
+		var objects []*storage.ObjectAttrs
+		pageToken, err := pager.NextPage(&objects)
+		if err != nil {
+			return err
+		}
+
+		g.listOps.Add(1)
+
+		for _, obj := range objects {
+			if fpath.Clean(obj.Name) != path { // don't return the root ~folder
+				select {
+				case <-g.ctx.Done():
+					return g.ctx.Err()
+				case ch <- obj.Name:
+				}
+			}
+		}
+
+		if pageToken == "" {
+			return nil
+		}
+	}
+}
+
+func (g *GCSBackend) OpenRead(path string) (io.ReadCloser, error) {
 	return g.bucket.Object(path).NewReader(g.ctx)
 }
 
-func (g GCSBackend) Store(path string, r io.Reader) (int64, error) {
+func (g *GCSBackend) ReadObject(path string, result any) error {
+	r, err := g.OpenRead(path)
+	if err != nil {
+		return err
+	}
+	defer r.Close()
+
+	zr, err := zstd.NewReader(r)
+	if err != nil {
+		return err
+	}
+	defer zr.Close()
+
+	return msgpack.NewDecoder(zr).Decode(result)
+}
+
+func (g *GCSBackend) Store(path string, r io.Reader) (int64, error) {
+	g.insertOps.Add(1)
+
 	objw := g.bucket.Object(path).NewWriter(g.ctx)
 	n, err := io.Copy(objw, r)
 	if err != nil {
@@ -141,7 +221,9 @@ func (g GCSBackend) Store(path string, r io.Reader) (int64, error) {
 	return n, objw.Close()
 }
 
-func (g GCSBackend) StoreObject(path string, object any) (int64, error) {
+func (g *GCSBackend) StoreObject(path string, object any) (int64, error) {
+	g.insertOps.Add(1)
+
 	objw := g.bucket.Object(path).NewWriter(g.ctx)
 	cw := &CountingWriter{Writer: objw}
 
@@ -160,11 +242,123 @@ func (g GCSBackend) StoreObject(path string, object any) (int64, error) {
 	return cw.N, nil
 }
 
-func (g GCSBackend) Delete(path string) error {
+func (g *GCSBackend) Delete(path string) error {
 	if !strings.HasPrefix(path, "scrape/") {
 		return errors.New("Can only delete from scrape/")
 	}
+	g.deleteOps.Add(1)
 	return g.bucket.Object(path).Delete(g.ctx)
 }
 
-func (g GCSBackend) Close() { g.client.Close() }
+func (g *GCSBackend) Close() { g.client.Close() }
+
+func (g *GCSBackend) ReportClassAOperations() {
+	list := g.listOps.Load()
+	insert := g.insertOps.Load()
+	del := g.deleteOps.Load()
+	cost := float32(list+insert+del) / 1000 * 0.005
+	LogInfo("GCS Class A operations: %d list, %d insert, %d delete, %d total (~$%.02f)", list, insert, del, list+insert+del, cost)
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+// TrackingBackend wraps a StorageBackend and tracks bytes uploaded/downloaded
+type TrackingBackend struct {
+	sb   StorageBackend
+	up   atomic.Int64
+	down atomic.Int64
+}
+
+func NewTrackingBackend(sb StorageBackend) *TrackingBackend {
+	return &TrackingBackend{sb: sb}
+}
+
+func (t *TrackingBackend) List(path string) (map[string]int64, error) {
+	return t.sb.List(path)
+}
+
+func (t *TrackingBackend) ChanList(path string, ch chan<- string) error {
+	return t.sb.ChanList(path, ch)
+}
+
+func (t *TrackingBackend) OpenRead(path string) (io.ReadCloser, error) {
+	rc, err := t.sb.OpenRead(path)
+	if err != nil {
+		return nil, err
+	}
+	// Wrap the reader to count bytes
+	return &countingReadCloser{
+		ReadCloser: rc,
+		n:          &t.down,
+	}, nil
+}
+
+func (t *TrackingBackend) ReadObject(path string, result any) error {
+	// We don't need to track bytes for ReadObject since it uses OpenRead internally
+	// and OpenRead already tracks the bytes
+	return t.sb.ReadObject(path, result)
+}
+
+func (t *TrackingBackend) Store(path string, r io.Reader) (int64, error) {
+	// Wrap the reader to count bytes
+	cr := &countingReader{
+		Reader: r,
+		n:      &t.up,
+	}
+	n, err := t.sb.Store(path, cr)
+	return n, err
+}
+
+func (t *TrackingBackend) StoreObject(path string, object any) (int64, error) {
+	n, err := t.sb.StoreObject(path, object)
+	if err == nil {
+		t.up.Add(n)
+	}
+	return n, err
+}
+
+func (t *TrackingBackend) Delete(path string) error {
+	return t.sb.Delete(path)
+}
+
+func (t *TrackingBackend) Close() {
+	t.sb.Close()
+}
+
+func (t *TrackingBackend) MergeStats(other *TrackingBackend) {
+	t.up.Add(other.up.Load())
+	t.down.Add(other.down.Load())
+}
+
+func (t *TrackingBackend) ReportStats() {
+	upBytes := t.up.Load()
+	downBytes := t.down.Load()
+	LogInfo("Transfer statistics: uploaded %s, downloaded %s, total %s",
+		util.ByteCount(upBytes),
+		util.ByteCount(downBytes),
+		util.ByteCount(upBytes+downBytes))
+}
+
+// countingReader wraps an io.Reader and counts bytes read
+type countingReader struct {
+	io.Reader
+	n *atomic.Int64
+}
+
+func (cr *countingReader) Read(p []byte) (n int, err error) {
+	n, err = cr.Reader.Read(p)
+	cr.n.Add(int64(n))
+	return n, err
+}
+
+// countingReadCloser wraps an io.ReadCloser and counts bytes read
+type countingReadCloser struct {
+	io.ReadCloser
+	n *atomic.Int64
+}
+
+func (trc *countingReadCloser) Read(p []byte) (n int, err error) {
+	n, err = trc.ReadCloser.Read(p)
+	trc.n.Add(int64(n))
+	return n, err
+}

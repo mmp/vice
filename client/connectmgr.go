@@ -1,5 +1,5 @@
-// pkg/client/connectmgr.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// client/connectmgr.go
+// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package client
@@ -18,6 +18,7 @@ import (
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 )
 
 type ConnectionManager struct {
@@ -27,9 +28,12 @@ type ConnectionManager struct {
 
 	serverRPCVersionMismatch bool
 
-	lastRemoteSimsUpdate  time.Time
-	updateRemoteSimsCall  *pendingCall
-	updateRemoteSimsError error
+	lastRunningSimsUpdate  time.Time
+	updateRunningSimsCall  *pendingCall
+	updateRunningSimsError error
+
+	// METAR fetch state
+	pendingMETARCall *pendingCall
 
 	LocalServer   *Server
 	RemoteServer  *Server
@@ -43,7 +47,7 @@ type ConnectionManager struct {
 }
 
 func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap string, lg *log.Logger,
-	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger) {
+	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger, string) {
 	cm := &ConnectionManager{
 		serverAddress:           serverAddress,
 		lastRemoteServerAttempt: time.Now(),
@@ -53,7 +57,7 @@ func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap str
 	}
 
 	// Launch local server
-	rpcPort, errorLogger := server.LaunchServerAsync(server.ServerLaunchConfig{
+	rpcPort, errorLogger, extraScenarioErrors := server.LaunchServerAsync(server.ServerLaunchConfig{
 		ExtraScenario: additionalScenario,
 		ExtraVideoMap: additionalVideoMap,
 		ServerAddress: serverAddress,
@@ -66,44 +70,45 @@ func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap str
 			errorLogger.Error(err)
 		} else {
 			var cr server.ConnectResult
-			if err := client.callWithTimeout("SimManager.Connect", server.ViceRPCVersion, &cr); err != nil {
+			if err := client.callWithTimeout(server.ConnectRPC, server.ViceRPCVersion, &cr); err != nil {
 				errorLogger.Error(err)
 			} else {
 				cm.LocalServer = &Server{
-					RPCClient:   client,
-					HaveTTS:     cr.HaveTTS,
-					name:        "Local (Single controller)",
-					configs:     cr.Configurations,
-					runningSims: cr.RunningSims,
+					RPCClient:           client,
+					HaveTTS:             cr.HaveTTS,
+					AvailableWXByTRACON: cr.AvailableWXByTRACON,
+					name:                "Local (Single controller)",
+					catalogs:            cr.ScenarioCatalogs,
+					runningSims:         cr.RunningSims,
 				}
 			}
 		}
 	}
 
-	return cm, errorLogger
+	return cm, errorLogger, extraScenarioErrors
 }
 
-func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, lg *log.Logger) (*ControlClient, error) {
+func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, initials string, lg *log.Logger) (*ControlClient, error) {
 	if cm.LocalServer == nil {
 		cm.LocalServer = <-cm.localServerChan
 	}
 
 	var result server.NewSimResult
-	if err := cm.LocalServer.Call("SimManager.AddLocal", s, &result); err != nil {
+	if err := cm.LocalServer.Call(server.AddLocalRPC, s, &result); err != nil {
 		return nil, err
 	}
 
 	wsAddress := "localhost:" + strconv.Itoa(result.SpeechWSPort)
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken, wsAddress, cm.LocalServer.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, wsAddress, initials, cm.LocalServer.RPCClient, lg)
 	cm.connectionStartTime = time.Now()
 
 	return cm.client, nil
 }
 
-func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, srv *Server, lg *log.Logger) error {
+func (cm *ConnectionManager) CreateNewSim(config server.NewSimRequest, initials string, srv *Server, lg *log.Logger) error {
 	var result server.NewSimResult
 
-	if err := srv.callWithTimeout("SimManager.NewSim", config, &result); err != nil {
+	if err := srv.callWithTimeout(server.NewSimRPC, config, &result); err != nil {
 		err = server.TryDecodeError(err)
 		if err == server.ErrRPCTimeout || err == server.ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
 			// Problem with the connection to the remote server? Let the main
@@ -112,7 +117,7 @@ func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, srv
 		}
 		return err
 	} else {
-		cm.handleSuccessfulConnection(result, srv, config.DisableTextToSpeech, lg)
+		cm.handleSuccessfulConnection(result, srv, config.DisableTextToSpeech, initials, lg)
 		return nil
 	}
 }
@@ -120,7 +125,7 @@ func (cm *ConnectionManager) CreateNewSim(config server.NewSimConfiguration, srv
 // handleSuccessfulConnection handles the common logic for setting up a client
 // connection after a successful RPC call to create or join a sim
 func (cm *ConnectionManager) handleSuccessfulConnection(result server.NewSimResult, srv *Server,
-	disableTextToSpeech bool, lg *log.Logger) {
+	disableTextToSpeech bool, initials string, lg *log.Logger) {
 	if cm.client != nil {
 		cm.client.Disconnect()
 	}
@@ -135,7 +140,7 @@ func (cm *ConnectionManager) handleSuccessfulConnection(result server.NewSimResu
 			wsAddress += ":" + strconv.Itoa(result.SpeechWSPort)
 		}
 	}
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken, wsAddress, srv.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, wsAddress, initials, srv.RPCClient, lg)
 
 	cm.connectionStartTime = time.Now()
 
@@ -174,26 +179,26 @@ func (cm *ConnectionManager) Disconnect() {
 	}
 }
 
-func (cm *ConnectionManager) UpdateRemoteSims() error {
-	if cm.updateRemoteSimsCall != nil && cm.updateRemoteSimsCall.CheckFinished(nil, nil) {
-		cm.updateRemoteSimsCall = nil
-		err := cm.updateRemoteSimsError
-		cm.updateRemoteSimsError = nil
+func (cm *ConnectionManager) UpdateRunningSims() error {
+	if cm.updateRunningSimsCall != nil && cm.updateRunningSimsCall.CheckFinished(nil, nil) {
+		cm.updateRunningSimsCall = nil
+		err := cm.updateRunningSimsError
+		cm.updateRunningSimsError = nil
 		return err
-	} else if time.Since(cm.lastRemoteSimsUpdate) > 2*time.Second &&
-		cm.RemoteServer != nil && cm.updateRemoteSimsCall == nil {
-		cm.lastRemoteSimsUpdate = time.Now()
+	} else if time.Since(cm.lastRunningSimsUpdate) > 2*time.Second &&
+		cm.RemoteServer != nil && cm.updateRunningSimsCall == nil {
+		cm.lastRunningSimsUpdate = time.Now()
 
-		var rs map[string]*server.RemoteSim
-		cm.updateRemoteSimsError = nil
-		cm.updateRemoteSimsCall = makeRPCCall(cm.RemoteServer.Go("SimManager.GetRunningSims", 0, &rs, nil),
+		var rs map[string]*server.RunningSim
+		cm.updateRunningSimsError = nil
+		cm.updateRunningSimsCall = makeRPCCall(cm.RemoteServer.Go(server.GetRunningSimsRPC, 0, &rs, nil),
 			func(err error) {
 				if err == nil {
 					if cm.RemoteServer != nil {
 						cm.RemoteServer.setRunningSims(rs)
 					}
 				} else {
-					cm.updateRemoteSimsError = err
+					cm.updateRunningSimsError = err
 
 					// nil out the server if we've lost the connection; the
 					// main loop will attempt to reconnect.
@@ -206,9 +211,9 @@ func (cm *ConnectionManager) UpdateRemoteSims() error {
 	return nil
 }
 
-func (cm *ConnectionManager) ConnectToSim(config server.SimConnectionConfiguration, srv *Server, lg *log.Logger) error {
+func (cm *ConnectionManager) ConnectToSim(config server.JoinSimRequest, initials string, srv *Server, lg *log.Logger) error {
 	var result server.NewSimResult
-	if err := srv.callWithTimeout("SimManager.ConnectToSim", config, &result); err != nil {
+	if err := srv.callWithTimeout(server.ConnectToSimRPC, config, &result); err != nil {
 		err = server.TryDecodeError(err)
 		if err == server.ErrRPCTimeout || err == server.ErrRPCVersionMismatch || errors.Is(err, rpc.ErrShutdown) {
 			// Problem with the connection to the remote server? Let the main
@@ -217,7 +222,7 @@ func (cm *ConnectionManager) ConnectToSim(config server.SimConnectionConfigurati
 		}
 		return err
 	} else {
-		cm.handleSuccessfulConnection(result, srv, config.DisableTextToSpeech, lg)
+		cm.handleSuccessfulConnection(result, srv, config.DisableTextToSpeech, initials, lg)
 		return nil
 	}
 }
@@ -251,6 +256,10 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg
 		cm.remoteSimServerChan = TryConnectRemoteServer(cm.serverAddress, lg)
 	}
 
+	if cm.pendingMETARCall != nil && cm.pendingMETARCall.CheckFinished(nil, nil) {
+		cm.pendingMETARCall = nil
+	}
+
 	if cm.client != nil {
 		cm.client.GetUpdates(es, p,
 			func(err error) {
@@ -275,4 +284,28 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg
 				}
 			})
 	}
+}
+
+func (cm *ConnectionManager) GetMETAR(srv *Server, airports []string, callback func(map[string][]wx.METAR, error)) {
+	if srv == nil || srv.RPCClient == nil {
+		callback(nil, errors.New("no server available"))
+		return
+	}
+
+	// Cancel any pending METAR call
+	cm.pendingMETARCall = nil
+
+	var soaMETAR map[string]wx.METARSOA
+	cm.pendingMETARCall = makeRPCCall(srv.Go(server.GetMETARRPC, airports, &soaMETAR, nil),
+		func(err error) {
+			if err != nil {
+				callback(nil, err)
+			} else {
+				m := make(map[string][]wx.METAR)
+				for ap, soa := range soaMETAR {
+					m[ap] = soa.Decode()
+				}
+				callback(m, nil)
+			}
+		})
 }

@@ -29,30 +29,32 @@ type Waypoint struct {
 	AltitudeRestriction      *AltitudeRestriction `json:"altitude_restriction,omitempty"`
 	Speed                    int                  `json:"speed,omitempty"`
 	Heading                  int                  `json:"heading,omitempty"` // outbound heading after waypoint
-	PresentHeading           bool
-	ProcedureTurn            *ProcedureTurn `json:"pt,omitempty"`
-	NoPT                     bool           `json:"nopt,omitempty"`
-	HumanHandoff             bool           `json:"human_handoff"` // To named TCP.
-	TCPHandoff               string         `json:"tcp_handoff"`   // To named TCP.
-	PointOut                 string         `json:"pointout,omitempty"`
-	ClearApproach            bool           `json:"clear_approach,omitempty"` // used for distractor a/c, clears them for the approach passing the wp.
-	FlyOver                  bool           `json:"flyover,omitempty"`
-	Delete                   bool           `json:"delete,omitempty"`
-	Land                     bool           `json:"land,omitempty"`
-	Arc                      *DMEArc        `json:"arc,omitempty"`
-	IAF, IF, FAF             bool           // not provided in scenario JSON; derived from fix
-	Airway                   string         // when parsing waypoints, this is set if we're on an airway after the fix
-	OnSID, OnSTAR            bool           // set during deserialization
-	OnApproach               bool           // set during deserialization
-	AirworkRadius            int            // set during deserialization
-	AirworkMinutes           int            // set during deserialization
-	Radius                   float32
-	Shift                    float32
-	PrimaryScratchpad        string
-	ClearPrimaryScratchpad   bool
-	SecondaryScratchpad      string
-	ClearSecondaryScratchpad bool
-	TransferComms            bool
+	PresentHeading           bool                 `json:",omitempty"`
+	ProcedureTurn            *ProcedureTurn       `json:"pt,omitempty"`
+	NoPT                     bool                 `json:"nopt,omitempty"`
+	HumanHandoff             bool                 `json:"human_handoff,omitempty"` // Handoff to human controller
+	HandoffController        ControlPosition      `json:"tcp_handoff,omitempty"`   // Controller position for handoff
+	PointOut                 ControlPosition      `json:"pointout,omitempty"`
+	ClearApproach            bool                 `json:"clear_approach,omitempty"` // used for distractor a/c, clears them for the approach passing the wp.
+	FlyOver                  bool                 `json:"flyover,omitempty"`
+	Delete                   bool                 `json:"delete,omitempty"`
+	Land                     bool                 `json:"land,omitempty"`
+	Arc                      *DMEArc              `json:"arc,omitempty"`
+	IAF, IF, FAF             bool                 `json:",omitempty"` // not provided in scenario JSON; derived from fix
+	Airway                   string               `json:",omitempty"` // when parsing waypoints, this is set if we're on an airway after the fix
+	OnSID, OnSTAR            bool                 `json:",omitempty"` // set during deserialization
+	OnApproach               bool                 `json:",omitempty"` // set during deserialization
+	AirworkRadius            int                  `json:",omitempty"` // set during deserialization
+	AirworkMinutes           int                  `json:",omitempty"` // set during deserialization
+	Radius                   float32              `json:",omitempty"`
+	Shift                    float32              `json:",omitempty"`
+	PrimaryScratchpad        string               `json:",omitempty"`
+	ClearPrimaryScratchpad   bool                 `json:",omitempty"`
+	SecondaryScratchpad      string               `json:",omitempty"`
+	ClearSecondaryScratchpad bool                 `json:",omitempty"`
+	TransferComms            bool                 `json:",omitempty"`
+	ClimbAltitude            *int                 `json:",omitempty"` // altitude in feet to climb to when passing waypoint
+	DescendAltitude          *int                 `json:",omitempty"` // altitude in feet to descend to when passing waypoint
 }
 
 func (wp Waypoint) LogValue() slog.Value {
@@ -87,11 +89,11 @@ func (wp Waypoint) LogValue() slog.Value {
 	if wp.HumanHandoff {
 		attrs = append(attrs, slog.Bool("human_handoff", wp.HumanHandoff))
 	}
-	if wp.TCPHandoff != "" {
-		attrs = append(attrs, slog.String("tcp_handoff", wp.TCPHandoff))
+	if wp.HandoffController != "" {
+		attrs = append(attrs, slog.String("tcp_handoff", string(wp.HandoffController)))
 	}
 	if wp.PointOut != "" {
-		attrs = append(attrs, slog.String("pointout", wp.PointOut))
+		attrs = append(attrs, slog.String("pointout", string(wp.PointOut)))
 	}
 	if wp.ClearApproach {
 		attrs = append(attrs, slog.Bool("clear_approach", wp.ClearApproach))
@@ -135,6 +137,12 @@ func (wp Waypoint) LogValue() slog.Value {
 	if wp.TransferComms {
 		attrs = append(attrs, slog.Bool("transfer_comms", wp.TransferComms))
 	}
+	if wp.ClimbAltitude != nil {
+		attrs = append(attrs, slog.Int("climb_altitude", *wp.ClimbAltitude))
+	}
+	if wp.DescendAltitude != nil {
+		attrs = append(attrs, slog.Int("descend_altitude", *wp.DescendAltitude))
+	}
 
 	return slog.GroupValue(attrs...)
 }
@@ -149,6 +157,11 @@ func (wp *Waypoint) ETA(p math.Point2LL, gs float32, nmPerLongitude float32) tim
 // WaypointArray
 
 type WaypointArray []Waypoint
+
+// HasHumanHandoff returns true if any waypoint has HumanHandoff set.
+func (wa WaypointArray) HasHumanHandoff() bool {
+	return slices.ContainsFunc(wa, func(wp Waypoint) bool { return wp.HumanHandoff })
+}
 
 func (wa WaypointArray) Encode() string {
 	var entries []string
@@ -201,11 +214,11 @@ func (wa WaypointArray) Encode() string {
 		if w.HumanHandoff {
 			s += "/ho"
 		}
-		if w.TCPHandoff != "" {
-			s += "/ho" + w.TCPHandoff
+		if w.HandoffController != "" {
+			s += "/ho" + string(w.HandoffController)
 		}
 		if w.PointOut != "" {
-			s += "/po" + w.PointOut
+			s += "/po" + string(w.PointOut)
 		}
 		if w.ClearApproach {
 			s += "/clearapp"
@@ -268,6 +281,12 @@ func (wa WaypointArray) Encode() string {
 		if w.TransferComms {
 			s += "/tc"
 		}
+		if w.ClimbAltitude != nil {
+			s += fmt.Sprintf("/c%d", *w.ClimbAltitude/100)
+		}
+		if w.DescendAltitude != nil {
+			s += fmt.Sprintf("/d%d", *w.DescendAltitude/100)
+		}
 
 		entries = append(entries, s)
 	}
@@ -314,7 +333,7 @@ func (wa WaypointArray) RouteString() string {
 	return strings.Join(r, " ")
 }
 
-func (wa WaypointArray) CheckDeparture(e *util.ErrorLogger, controllers map[string]*Controller, checkScratchpads func(string) bool) {
+func (wa WaypointArray) CheckDeparture(e *util.ErrorLogger, controllers map[ControlPosition]*Controller, checkScratchpads func(string) bool) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	wa.checkBasics(e, controllers, checkScratchpads)
@@ -348,7 +367,7 @@ func (wa WaypointArray) CheckDeparture(e *util.ErrorLogger, controllers map[stri
 	}
 }
 
-func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]*Controller, checkScratchpad func(string) bool) {
+func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[ControlPosition]*Controller, checkScratchpad func(string) bool) {
 	defer e.CheckDepth(e.CurrentDepth())
 
 	haveHO := false
@@ -370,24 +389,28 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]
 
 		if wp.PointOut != "" {
 			if !util.MapContains(controllers,
-				func(callsign string, ctrl *Controller) bool { return ctrl.Id() == wp.PointOut }) {
+				func(_ ControlPosition, ctrl *Controller) bool {
+					return ctrl.PositionId() == wp.PointOut
+				}) {
 				e.ErrorString("No controller found with id %q for point out", wp.PointOut)
 			}
 		}
 
-		if wp.TCPHandoff != "" {
+		if wp.HandoffController != "" {
 			if !util.MapContains(controllers,
-				func(callsign string, ctrl *Controller) bool { return ctrl.Id() == wp.TCPHandoff }) {
-				e.ErrorString("No controller found with id %q for handoff", wp.TCPHandoff)
+				func(_ ControlPosition, ctrl *Controller) bool {
+					return ctrl.PositionId() == ControlPosition(wp.HandoffController)
+				}) {
+				e.ErrorString("No controller found with id %q for handoff", wp.HandoffController)
 			}
 		}
 
 		if wp.HumanHandoff {
 			haveHO = true
 
-			// Check if any subsequent waypoints have a TCPHandoff
+			// Check if any subsequent waypoints have a HandoffController
 			for _, wfut := range wa[i:] {
-				if wfut.TCPHandoff != "" {
+				if wfut.HandoffController != "" {
 					e.ErrorString("Cannot have handoff to virtual controller after human handoff")
 					break
 				}
@@ -416,7 +439,7 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[string]
 	}
 }
 
-func CheckApproaches(e *util.ErrorLogger, wps []WaypointArray, requireFAF bool, controllers map[string]*Controller,
+func CheckApproaches(e *util.ErrorLogger, wps []WaypointArray, requireFAF bool, controllers map[ControlPosition]*Controller,
 	checkScratchpad func(string) bool) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -440,7 +463,7 @@ func CheckApproaches(e *util.ErrorLogger, wps []WaypointArray, requireFAF bool, 
 	}
 }
 
-func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[string]*Controller, approachAssigned bool,
+func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[ControlPosition]*Controller, approachAssigned bool,
 	checkScratchpad func(string) bool) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -459,7 +482,7 @@ func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[string]*Contr
 	}
 }
 
-func (wa WaypointArray) CheckOverflight(e *util.ErrorLogger, ctrl map[string]*Controller, checkScratchpads func(string) bool) {
+func (wa WaypointArray) CheckOverflight(e *util.ErrorLogger, ctrl map[ControlPosition]*Controller, checkScratchpads func(string) bool) {
 	wa.checkBasics(e, ctrl, checkScratchpads)
 }
 
@@ -746,7 +769,7 @@ func parseWaypoints(str string) (WaypointArray, error) {
 				if f == "ho" {
 					wp.HumanHandoff = true
 				} else if strings.HasPrefix(f, "ho") {
-					wp.TCPHandoff = f[2:]
+					wp.HandoffController = ControlPosition(f[2:])
 				} else if f == "clearapp" {
 					wp.ClearApproach = true
 				} else if f == "flyover" {
@@ -810,7 +833,7 @@ func parseWaypoints(str string) (WaypointArray, error) {
 						wp.Shift = float32(shift)
 					}
 				} else if len(f) > 2 && f[:2] == "po" {
-					wp.PointOut = f[2:]
+					wp.PointOut = ControlPosition(f[2:])
 				} else if strings.HasPrefix(f, "spsp") {
 					wp.PrimaryScratchpad = f[4:]
 				} else if f == "cpsp" {
@@ -912,9 +935,31 @@ func parseWaypoints(str string) (WaypointArray, error) {
 				} else if f[0] == 'h' { // after "ho" and "hilpt" check...
 					if hdg, err := strconv.Atoi(f[1:]); err != nil {
 						return nil, fmt.Errorf("%s: invalid waypoint outbound heading: %v", f[1:], err)
+					} else if hdg < 0 || hdg > 360 {
+						return nil, fmt.Errorf("%s: waypoint outbound heading must be between 0-360: %v", f[1:], err)
 					} else {
 						wp.Heading = hdg
 					}
+				} else if f[0] == 'c' {
+					alt, err := strconv.Atoi(f[1:])
+					if err != nil {
+						return nil, fmt.Errorf("%s: error parsing altitude after /c: %v", f[1:], err)
+					}
+					if alt < 0 || alt > 600 {
+						return nil, fmt.Errorf("%s: climb altitude must be between 0 and 600 (in 100s of feet)", f)
+					}
+					altFeet := alt * 100
+					wp.ClimbAltitude = &altFeet
+				} else if f[0] == 'd' {
+					alt, err := strconv.Atoi(f[1:])
+					if err != nil {
+						return nil, fmt.Errorf("%s: error parsing altitude after /d: %v", f[1:], err)
+					}
+					if alt < 0 || alt > 600 {
+						return nil, fmt.Errorf("%s: descend altitude must be between 0 and 600 (in 100s of feet)", f)
+					}
+					altFeet := alt * 100
+					wp.DescendAltitude = &altFeet
 
 				} else {
 					return nil, fmt.Errorf("%s: unknown fix modifier: %s", field, f)
@@ -924,6 +969,10 @@ func parseWaypoints(str string) (WaypointArray, error) {
 
 		if wp.ProcedureTurn != nil && wp.ProcedureTurn.Type == PTUndefined {
 			return nil, fmt.Errorf("%s: no procedure turn specified for fix (e.g., pt45/hilpt) even though PT parameters were given", wp.Fix)
+		}
+
+		if wp.ClimbAltitude != nil && wp.DescendAltitude != nil {
+			return nil, fmt.Errorf("%s: cannot specify both /c and /d at the same waypoint", wp.Fix)
 		}
 
 		waypoints = append(waypoints, wp)
@@ -1457,6 +1506,105 @@ type DMEArc struct {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// Hold
+
+// TurnDirection specifies the direction of turns in a holding pattern
+type TurnDirection int
+
+const (
+	TurnLeft TurnDirection = iota
+	TurnRight
+)
+
+func (t TurnDirection) String() string {
+	return []string{"Left", "Right"}[int(t)]
+}
+
+// Hold represents a charted holding pattern from CIFP or HPF
+type Hold struct {
+	Fix             string  // Fix identifier where hold is located
+	InboundCourse   float32 // Inbound magnetic course to the fix
+	TurnDirection   TurnDirection
+	LegLengthNM     float32 // Distance-based leg length (nautical miles), 0 if time-based
+	LegMinutes      float32 // Time-based leg duration (minutes), 0 if distance-based
+	MinimumAltitude int     // Minimum altitude for hold (feet)
+	MaximumAltitude int     // Maximum altitude for hold (feet), 0 if no maximum
+	HoldingSpeed    int     // Speed limit in hold (knots), 0 if not specified
+	Procedure       string  // Associated procedure (e.g., "ILS06 (IAP)", "CAMRN5", "ENROUTE HIGH")
+}
+
+func (h Hold) DisplayName() string {
+	n := fmt.Sprintf("%s (%s", h.Fix, h.TurnDirection)
+	if h.LegLengthNM != 0 {
+		n += fmt.Sprintf(", %.1f nm", h.LegLengthNM)
+	} else if h.LegMinutes != 0 {
+		n += fmt.Sprintf(", %.1f min", h.LegMinutes)
+	}
+	return n + ")"
+}
+
+// Speed returns the holding speed in knots for the given altitude.
+// If the hold has a published holding speed, that is returned.
+// Otherwise, standard holding speeds are applied based on altitude:
+// ≤6000 ft: 200 knots, ≤14000 ft: 230 knots, >14000 ft: 265 knots.
+func (h Hold) Speed(alt float32) float32 {
+	if h.HoldingSpeed > 0 {
+		return float32(h.HoldingSpeed)
+	} else if alt <= 6000 {
+		return 200
+	} else if alt <= 14000 {
+		return 230
+	} else {
+		return 265
+	}
+}
+
+type HoldEntry int
+
+const (
+	HoldEntryDirect HoldEntry = iota
+	HoldEntryParallel
+	HoldEntryTeardrop
+)
+
+func (e HoldEntry) String() string {
+	return []string{"Direct", "Parallel", "Teardrop"}[int(e)]
+}
+
+func (h Hold) Entry(headingToFix float32) HoldEntry {
+	outboundCourse := math.OppositeHeading(h.InboundCourse)
+
+	// Dividing line is 70° from outbound on holding side This creates
+	// three sectors measured from the outbound course:
+	// - Parallel: 110° on holding side from outbound
+	// - Teardrop: 70° on non-holding side from outbound
+	// - Direct: remaining 180°
+	if h.TurnDirection == TurnRight {
+		// Right turns: holding side is clockwise from outbound
+		// Parallel sector: outbound to outbound+110°
+		// Teardrop sector: outbound-70° to outbound
+		if math.IsHeadingBetween(headingToFix, outboundCourse, outboundCourse+110) {
+			return HoldEntryParallel
+		} else if math.IsHeadingBetween(headingToFix, outboundCourse-70, outboundCourse) {
+			return HoldEntryTeardrop
+		} else {
+			return HoldEntryDirect
+		}
+	} else {
+		// Left turns: holding side is counter-clockwise from outbound
+		// Parallel sector: outbound-110° to outbound
+		// Teardrop sector: outbound to outbound+70°
+		if math.IsHeadingBetween(headingToFix, outboundCourse-110, outboundCourse) {
+			return HoldEntryParallel
+		} else if math.IsHeadingBetween(headingToFix, outboundCourse, outboundCourse+70) {
+			return HoldEntryTeardrop
+		} else {
+			return HoldEntryDirect
+		}
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
 // Airways
 
 type AirwayLevel int
@@ -1516,10 +1664,11 @@ type Overflight struct {
 	InitialSpeed        float32                 `json:"initial_speed"`
 	AssignedSpeed       float32                 `json:"assigned_speed"`
 	SpeedRestriction    float32                 `json:"speed_restriction"`
-	InitialController   string                  `json:"initial_controller"`
+	InitialController   ControlPosition         `json:"initial_controller"`
 	Scratchpad          string                  `json:"scratchpad"`
 	SecondaryScratchpad string                  `json:"secondary_scratchpad"`
 	Description         string                  `json:"description"`
+	IsRNAV              bool                    `json:"is_rnav"`
 	Airlines            []OverflightAirline     `json:"airlines"`
 }
 
@@ -1530,7 +1679,7 @@ type OverflightAirline struct {
 }
 
 func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magneticVariation float32,
-	airports map[string]*Airport, controlPositions map[string]*Controller, checkScratchpad func(string) bool,
+	airports map[string]*Airport, controlPositions map[ControlPosition]*Controller, checkScratchpad func(string) bool,
 	e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 	if len(of.Waypoints) < 2 {
@@ -1547,22 +1696,22 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 	if len(of.Airlines) == 0 {
 		e.ErrorString("must specify at least one airline in \"airlines\"")
 	}
-	for _, al := range of.Airlines {
-		al.Check(e)
+	for i := range of.Airlines {
+		of.Airlines[i].Check(e)
 
-		if al.DepartureAirport == "" {
+		if of.Airlines[i].DepartureAirport == "" {
 			e.ErrorString("must specify \"departure_airport\"")
-		} else if _, ok := airports[al.DepartureAirport]; !ok {
-			if _, ok := DB.Airports[al.DepartureAirport]; !ok {
-				e.ErrorString("departure airport %q is unknown", al.DepartureAirport)
+		} else if _, ok := airports[of.Airlines[i].DepartureAirport]; !ok {
+			if _, ok := DB.Airports[of.Airlines[i].DepartureAirport]; !ok {
+				e.ErrorString("departure airport %q is unknown", of.Airlines[i].DepartureAirport)
 			}
 		}
 
-		if al.ArrivalAirport == "" {
+		if of.Airlines[i].ArrivalAirport == "" {
 			e.ErrorString("must specify \"arrival_airport\"")
-		} else if _, ok := airports[al.ArrivalAirport]; !ok {
-			if _, ok := DB.Airports[al.ArrivalAirport]; !ok {
-				e.ErrorString("arrival airport %q is unknown", al.ArrivalAirport)
+		} else if _, ok := airports[of.Airlines[i].ArrivalAirport]; !ok {
+			if _, ok := DB.Airports[of.Airlines[i].ArrivalAirport]; !ok {
+				e.ErrorString("arrival airport %q is unknown", of.Airlines[i].ArrivalAirport)
 			}
 		}
 	}

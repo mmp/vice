@@ -1,5 +1,5 @@
-// pkg/util/text.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// util/text.go
+// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package util
@@ -30,52 +30,113 @@ func (b ByteCount) String() string {
 	}
 }
 
-// WrapText wraps the provided text string to the given column limit, returning the
-// wrapped string and the number of lines it became.  indent gives the amount to
-// indent wrapped lines.  By default, lines that start with a space are assumed to be
-// preformatted and are not wrapped; providing a true value for wrapAll overrides
-// that behavior and causes them to be wrapped as well.
-func WrapText(s string, columnLimit int, indent int, wrapAll bool) (string, int) {
-	var accum, result strings.Builder
+type TextWrapConfig struct {
+	ColumnLimit int
+	Indent      int
+	WrapAll     bool
+	WrapNoSpace bool
+}
 
-	var wrapLine bool
-	column := 0
+func (cfg TextWrapConfig) Wrap(s string) (string, int) {
+	if cfg.ColumnLimit <= 0 {
+		return s, strings.Count(s, "\n") + 1
+	}
+
+	var result strings.Builder
 	lines := 1
 
-	flush := func() {
-		if wrapLine && column > columnLimit {
-			result.WriteRune('\n')
-			lines++
-			for i := 0; i < indent; i++ {
-				result.WriteRune(' ')
-			}
-			column = indent + accum.Len()
+	// Buffer for the current (not-yet-emitted) line segment
+	var currentLine []rune
+	isContinuation := false // true if current physical line is a wrapped continuation
+	preformatted := false   // true if current input line should bypass wrapping
+
+	// Helper to compute capacity for the current physical line
+	capacityForLine := func() int {
+		if isContinuation {
+			cap := cfg.ColumnLimit - cfg.Indent
+			return max(1, cap)
 		}
-		result.WriteString(accum.String())
-		accum.Reset()
+		return cfg.ColumnLimit
 	}
 
 	for _, ch := range s {
-		// If wrapAll isn't enabled, then if the line starts with a space,
-		// assume it is preformatted and pass it through unchanged.
-		if column == 0 {
-			wrapLine = wrapAll || ch != ' '
+		// Detect preformatted input lines (those that begin with a space) unless WrapAll
+		if len(currentLine) == 0 && !isContinuation {
+			preformatted = !cfg.WrapAll && ch == ' '
 		}
 
-		accum.WriteRune(ch)
-		column++
+		if preformatted {
+			// Pass through until input newline
+			result.WriteRune(ch)
+			if ch == '\n' {
+				lines++
+				isContinuation = false
+				preformatted = false
+			}
+			continue
+		}
 
+		currentLine = append(currentLine, ch)
+
+		// If an input newline is present in the buffer, flush the whole buffer
 		if ch == '\n' {
-			flush()
-			column = 0
+			result.WriteString(string(currentLine))
+			currentLine = currentLine[:0]
 			lines++
-		} else if ch == ' ' {
-			flush()
+			isContinuation = false
+			continue
+		}
+
+		// Wrap while currentLine exceeds capacity
+		for cap := capacityForLine(); len(currentLine) > cap; cap = capacityForLine() {
+			lastSpaceIndex := -1
+			for i := len(currentLine) - 1; i >= 0; i-- {
+				if currentLine[i] == ' ' {
+					lastSpaceIndex = i
+					break
+				}
+			}
+
+			// If we are not allowed to break mid-word and there is no space, allow overflow until space/newline
+			if !cfg.WrapNoSpace && lastSpaceIndex == -1 {
+				break
+			}
+
+			breakPos := cap
+			if !cfg.WrapNoSpace && lastSpaceIndex >= 0 {
+				// Prefer wrapping at last space when allowed
+				breakPos = min(lastSpaceIndex+1, len(currentLine))
+			}
+
+			// Emit up to breakPos, then newline + indent
+			result.WriteString(string(currentLine[:breakPos]))
+			result.WriteRune('\n')
+			lines++
+			for range cfg.Indent {
+				result.WriteRune(' ')
+			}
+
+			// Remainder stays in currentLine
+			currentLine = currentLine[breakPos:]
+			isContinuation = true
 		}
 	}
 
-	flush()
+	if len(currentLine) > 0 {
+		result.WriteString(string(currentLine))
+	}
+
 	return result.String(), lines
+}
+
+func WrapText(s string, columnLimit int, indent int, wrapAll bool, noSpace bool) (string, int) {
+	cfg := TextWrapConfig{
+		ColumnLimit: columnLimit,
+		Indent:      indent,
+		WrapAll:     wrapAll,
+		WrapNoSpace: noSpace,
+	}
+	return cfg.Wrap(s)
 }
 
 // StopShouting turns text of the form "UNITED AIRLINES" to "United Airlines"
@@ -129,15 +190,15 @@ func IsAllLetters(s string) bool {
 // of the form "foo,bar,bat", return a new map where each comma-delineated
 // string in the keys has its own entry in the returned map.  Returns an
 // error if a key is repeated.
-func CommaKeyExpand[T any](in map[string]T) (map[string]T, error) {
-	m := make(map[string]T)
+func CommaKeyExpand[S ~string, T any](in map[S]T) (map[S]T, error) {
+	m := make(map[S]T)
 	for k, v := range in {
-		for _, s := range strings.Split(k, ",") {
+		for _, s := range strings.Split(string(k), ",") {
 			s = strings.TrimSpace(s)
-			if _, ok := m[s]; ok {
+			if _, ok := m[S(s)]; ok {
 				return nil, errors.New("key repeated in map " + s)
 			}
-			m[s] = v
+			m[S(s)] = v
 		}
 	}
 	return m, nil
@@ -225,4 +286,47 @@ func SelectInTwoEdits(str string, seq iter.Seq[string], dist1, dist2 []string) (
 		}
 	}
 	return dist1, dist2
+}
+
+func TransposeStrings(strs []string) ([]string, error) {
+	if len(strs) == 0 {
+		return nil, nil
+	}
+
+	n := len(strs[0])
+	b := make([]strings.Builder, n)
+	for _, s := range strs {
+		if len(s) != n {
+			return nil, errors.New("not all string lengths are equal")
+		}
+		for i := range len(s) {
+			b[i].WriteByte(s[i])
+		}
+	}
+
+	r := make([]string, n)
+	for i := range n {
+		r[i] = b[i].String()
+	}
+	return r, nil
+}
+
+// Similar to strings.Cut, but cuts at the first rune where `f` return true;
+// note that the second returned string includes the cutpoint rune.
+func CutFunc(s string, f func(rune) bool) (string, string, bool) {
+	for i, ch := range s {
+		if f(ch) {
+			return s[:i], s[i:], true
+		}
+	}
+	return s, "", false
+}
+
+// CutAtSpace is like strings.Cut(s, " ") but preserves the space in the
+// second return value.
+func CutAtSpace(s string) (string, string) {
+	if idx := strings.IndexByte(s, ' '); idx >= 0 {
+		return s[:idx], s[idx:]
+	}
+	return s, ""
 }

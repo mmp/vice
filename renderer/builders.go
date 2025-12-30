@@ -46,6 +46,26 @@ func (l *LinesDrawBuilder) AddLine(p0, p1 [2]float32) {
 	l.indices = append(l.indices, idx, idx+1)
 }
 
+// AddDashedLine adds a dashed line from p0 to p1, where dashLength specifies
+// the length of each dash segment and dashStep specifies the total length
+// (dash + gap) before the next dash starts. The number of dashes drawn is returned.
+func (l *LinesDrawBuilder) AddDashedLine(p0, p1 [2]float32, dashLength, dashStep float32) int {
+	v := math.Sub2f(p1, p0)
+	totalLength := math.Length2f(v)
+	dir := math.Scale2f(v, 1/totalLength)
+	n := 0
+
+	for d := float32(0); d < totalLength; d += dashStep {
+		dashStart := math.Add2f(p0, math.Scale2f(dir, d))
+		dashEndDist := min(d+dashLength, totalLength)
+		dashEnd := math.Add2f(p0, math.Scale2f(dir, dashEndDist))
+		l.AddLine(dashStart, dashEnd)
+		n++
+	}
+
+	return n
+}
+
 // AddLineStrip adds multiple lines to the lines draw builder where each
 // line is given by a successive pair of points, a la GL_LINE_STRIP.
 func (l *LinesDrawBuilder) AddLineStrip(p [][2]float32) {
@@ -190,6 +210,13 @@ func (l *ColoredLinesDrawBuilder) AddLine(p0, p1 [2]float32, color RGB) {
 	l.color = append(l.color, color, color)
 }
 
+func (l *ColoredLinesDrawBuilder) AddDashedLine(p0, p1 [2]float32, dashLength, dashStep float32, color RGB) {
+	n := l.LinesDrawBuilder.AddDashedLine(p0, p1, dashLength, dashStep)
+	for range n {
+		l.color = append(l.color, color, color)
+	}
+}
+
 func (l *ColoredLinesDrawBuilder) AddLineLoop(color RGB, p [][2]float32) {
 	l.LinesDrawBuilder.AddLineLoop(p)
 	for range p {
@@ -205,6 +232,43 @@ func (l *ColoredLinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs 
 
 	for i := 0; i < nsegs; i++ {
 		l.color = append(l.color, color)
+	}
+}
+
+// AddGappedCircle draws the outline of a circle like AddCircle but omits
+// segments whose midpoint angle falls within any of the specified gap ranges
+// (in degrees). Each gap is a two-element slice giving the start and end
+// angles. If start > end, the gap is assumed to wrap around 360 degrees.
+func (l *ColoredLinesDrawBuilder) AddGappedCircle(p [2]float32, radius float32, nsegs int, gaps [][2]float32, color RGB) {
+	circle := math.CirclePoints(nsegs)
+	for i := 0; i < nsegs; i++ {
+		start := float32(i) / float32(nsegs) * 360
+		end := float32(i+1) / float32(nsegs) * 360
+		diff := math.Mod(end-start+360, 360)
+		mid := math.Mod(start+diff/2, 360)
+
+		inGap := false
+		for _, g := range gaps {
+			gs, ge := g[0], g[1]
+			if gs <= ge {
+				if mid >= gs && mid <= ge {
+					inGap = true
+					break
+				}
+			} else {
+				if mid >= gs || mid <= ge {
+					inGap = true
+					break
+				}
+			}
+		}
+		if inGap {
+			continue
+		}
+
+		p0 := [2]float32{p[0] + radius*circle[i][0], p[1] + radius*circle[i][1]}
+		p1 := [2]float32{p[0] + radius*circle[(i+1)%nsegs][0], p[1] + radius*circle[(i+1)%nsegs][1]}
+		l.AddLine(p0, p1, color)
 	}
 }
 
@@ -660,8 +724,7 @@ func (td *TextDrawBuilder) GenerateCommands(cb *CommandBuffer) {
 	// draw order from the user, so drawing from two atlases where
 	// characters from different atlases overlap may not turn out as
 	// expected. We'll assume that's not worth worrying about...
-	for _, id := range util.SortedMapKeys(td.regular) {
-		regular := td.regular[id]
+	for id, regular := range util.SortedMap(td.regular) {
 		if len(regular.indices) == 0 {
 			continue
 		}

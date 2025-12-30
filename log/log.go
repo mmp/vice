@@ -202,6 +202,12 @@ func (l *Logger) With(args ...any) *Logger {
 }
 
 func (l *Logger) CatchAndReportCrash() any {
+	// Skip recovery when race detector is active - let panics propagate
+	// so race conditions are clearly visible with full stack traces.
+	if RaceEnabled {
+		return nil
+	}
+
 	// Janky way to check if we're running under the debugger.
 	if dlv, ok := os.LookupEnv("_"); ok && strings.HasSuffix(dlv, "/dlv") {
 		return nil
@@ -209,31 +215,35 @@ func (l *Logger) CatchAndReportCrash() any {
 
 	err := recover()
 	if err != nil {
-		l.Errorf("Crashed: %v", err)
-
-		// Format the report information
-		report := fmt.Sprintf("Crashed: %v\n", err)
-		report += "Sys: " + runtime.GOARCH + "/" + runtime.GOOS + "\n"
-
-		if bi, ok := debug.ReadBuildInfo(); ok {
-			for _, setting := range bi.Settings {
-				report += setting.Key + ": " + setting.Value + "\n"
-			}
-		}
-		report += string(debug.Stack())
-
-		// Print it to stdout
-		fmt.Println(report)
-
-		// Try to save it to disk locally
-		fn := filepath.Join(l.LogDir, "crash-"+time.Now().Format(time.RFC3339)+".txt")
-		_ = os.WriteFile(fn, []byte(report), 0o600)
-
-		// And pass it along to the crash report server.
-		l.postCrashReport(report)
+		l.ReportCrash(err)
 	}
 
 	return err
+}
+
+func (l *Logger) ReportCrash(err any) {
+	l.Errorf("Crashed: %v", err)
+
+	// Format the report information
+	report := fmt.Sprintf("Crashed: %v\n", err)
+	report += "Sys: " + runtime.GOARCH + "/" + runtime.GOOS + "\n"
+
+	if bi, ok := debug.ReadBuildInfo(); ok {
+		for _, setting := range bi.Settings {
+			report += setting.Key + ": " + setting.Value + "\n"
+		}
+	}
+	report += string(debug.Stack())
+
+	// Print it to stdout
+	fmt.Println(report)
+
+	// Try to save it to disk locally
+	fn := filepath.Join(l.LogDir, "crash-"+time.Now().Format(time.RFC3339)+".txt")
+	_ = os.WriteFile(fn, []byte(report), 0o600)
+
+	// And pass it along to the crash report server.
+	l.postCrashReport(report)
 }
 
 func (l *Logger) postCrashReport(report string) {

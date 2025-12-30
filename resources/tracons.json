@@ -399,7 +399,7 @@
     "Radius": 128
   },
   "EWR": {
-    "Name": "New York TRACON",
+    "Name": "Newark TRACON",
     "ARTCC": "ZNY",
     "Latitude": 40.6925,
     "Longitude": -74.1687,
@@ -530,6 +530,13 @@
     "Latitude": 47.482,
     "Longitude": -111.3706,
     "Radius": 75
+  },
+  "HNL": {
+    "Name": "Honolulu TRACON",
+    "ARTCC": "ZHN",
+    "Latitude": 21.3209,
+    "Longitude": -157.9266,
+    "Radius": 128
   },
   "HLN": {
     "Name": "Helena TRACON",
@@ -803,6 +810,13 @@
     "Latitude": 32.3526,
     "Longitude": -88.7514,
     "Radius": 100
+  },
+  "OGG": {
+    "Name": "Maui TRACON",
+    "ARTCC": "ZHN",
+    "Latitude": 21.3209,
+    "Longitude": -157.9266,
+    "Radius": 128
   },
   "OKC": {
     "Name": "Oklahoma City TRACON",

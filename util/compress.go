@@ -4,7 +4,9 @@
 
 package util
 
-import "golang.org/x/exp/constraints"
+import (
+	"golang.org/x/exp/constraints"
+)
 
 func DeltaEncode[T constraints.Integer](d []T) []T {
 	if len(d) == 0 {

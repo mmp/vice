@@ -1,11 +1,10 @@
-// pkg/aviation/aviation.go
+// aviation/aviation.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package aviation
 
 import (
-	"errors"
 	"fmt"
 	"maps"
 	"slices"
@@ -61,6 +60,46 @@ type InboundFlow struct {
 	Overflights []Overflight `json:"overflights"`
 }
 
+// HasHumanHandoff returns true if any arrival or overflight in the flow
+// has a waypoint with HumanHandoff set.
+func (f InboundFlow) HasHumanHandoff() bool {
+	for _, ar := range f.Arrivals {
+		if ar.Waypoints.HasHumanHandoff() {
+			return true
+		}
+		for _, rwys := range ar.RunwayWaypoints {
+			for _, wps := range rwys {
+				if wps.HasHumanHandoff() {
+					return true
+				}
+			}
+		}
+	}
+	for _, of := range f.Overflights {
+		if of.Waypoints.HasHumanHandoff() {
+			return true
+		}
+	}
+	return false
+}
+
+// InitialControllers returns a list of all initial controllers specified
+// for arrivals and overflights in this flow.
+func (f InboundFlow) InitialControllers() []ControlPosition {
+	c := make(map[ControlPosition]struct{})
+	for _, ar := range f.Arrivals {
+		if ar.InitialController != "" {
+			c[ar.InitialController] = struct{}{}
+		}
+	}
+	for _, of := range f.Overflights {
+		if of.InitialController != "" {
+			c[of.InitialController] = struct{}{}
+		}
+	}
+	return slices.Collect(maps.Keys(c))
+}
+
 type Arrival struct {
 	Waypoints       WaypointArray                       `json:"waypoints"`
 	RunwayWaypoints map[string]map[string]WaypointArray `json:"runway_waypoints"` // Airport -> runway -> waypoints
@@ -69,15 +108,16 @@ type Arrival struct {
 	Route           string                              `json:"route"`
 	STAR            string                              `json:"star"`
 
-	InitialController   string  `json:"initial_controller"`
-	InitialAltitude     float32 `json:"initial_altitude"`
-	AssignedAltitude    float32 `json:"assigned_altitude"`
-	InitialSpeed        float32 `json:"initial_speed"`
-	SpeedRestriction    float32 `json:"speed_restriction"`
-	Scratchpad          string  `json:"scratchpad"`
-	SecondaryScratchpad string  `json:"secondary_scratchpad"`
-	Description         string  `json:"description"`
-	CoordinationFix     string  `json:"coordination_fix"`
+	InitialController   ControlPosition `json:"initial_controller"`
+	InitialAltitude     float32         `json:"initial_altitude"`
+	AssignedAltitude    float32         `json:"assigned_altitude"`
+	InitialSpeed        float32         `json:"initial_speed"`
+	SpeedRestriction    float32         `json:"speed_restriction"`
+	Scratchpad          string          `json:"scratchpad"`
+	SecondaryScratchpad string          `json:"secondary_scratchpad"`
+	Description         string          `json:"description"`
+	CoordinationFix     string          `json:"coordination_fix"`
+	IsRNAV              bool            `json:"is_rnav"`
 
 	ExpectApproach util.OneOf[string, map[string]string] `json:"expect_approach"`
 
@@ -203,8 +243,25 @@ var badCallsigns map[string]interface{} = map[string]interface{}{
 	"PSA5342": nil,
 }
 
+// cwtMaxRanges defines the maximum flight distances (in nautical miles)
+// for each CWT category (semi ad-hoc, but seems to work reasonably); 0 means no limit.
+var cwtMaxRanges = map[string]float32{
+	"A": 0,    // A380
+	"B": 0,    // Large widebody (B777, B787, A330, B747)
+	"C": 6500, // Medium widebody (B767, A300, DC-10)
+	"D": 5500, // Large widebody variants (A350-1000, B747SP, L-1011)
+	"E": 4500, // B757
+	"F": 3800, // Narrowbody jets (A320, B737)
+	"G": 2000, // Regional jets/turboprops (CRJ, ATR, Dash 8)
+	"H": 2000, // Light jets (Citation, Learjet)
+	"I": 1200, // Small aircraft (King Air, Baron)
+}
+
+// Though category C, these can go quite far, so don't prohibit them.
+var extraLongRange = []string{"A35K", "A359"}
+
 // currentCallsigns will be empty if we don't care about unique suffixes.
-func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns []ADSBCallsign, uniqueSuffix bool, lg *log.Logger) (actype, callsign string) {
+func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns []ADSBCallsign, uniqueSuffix bool, departureAirport, arrivalAirport string, lg *log.Logger) (actype, callsign string) {
 	dbAirline, ok := DB.Airlines[strings.ToUpper(a.ICAO)]
 	if !ok {
 		// TODO: this should be caught at load validation time...
@@ -212,13 +269,38 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns
 		return "", ""
 	}
 
-	// Sample according to fleet count
+	// Calculate flight distance to filter aircraft by CWT category
+	dep, arr := DB.Airports[departureAirport], DB.Airports[arrivalAirport]
+	flightDistance := math.NMDistance2LL(dep.Location, arr.Location)
+
+	// Sample according to fleet count, filtering by maximum distance for CWT category
 	acCount := 0
 	for _, ac := range a.Aircraft() {
+		// Filter based on flight distance and aircraft CWT category
+		if flightDistance > 0 && !slices.Contains(extraLongRange, ac.ICAO) {
+			if perf, ok := DB.AircraftPerformance[ac.ICAO]; ok {
+				if maxRange, ok := cwtMaxRanges[perf.Category.CWT]; ok {
+					// Check if flight distance exceeds category maximum (0 means no limit)
+					if maxRange > 0 && flightDistance > maxRange {
+						continue
+					}
+				}
+			}
+		}
+
 		// Reservoir sampling...
 		acCount += ac.Count
 		if r.Float32() < float32(ac.Count)/float32(acCount) {
 			actype = ac.ICAO
+		}
+	}
+	if actype == "" {
+		// Try again without considering range.
+		for _, ac := range a.Aircraft() {
+			acCount += ac.Count
+			if r.Float32() < float32(ac.Count)/float32(acCount) {
+				actype = ac.ICAO
+			}
 		}
 	}
 
@@ -272,7 +354,9 @@ func (a AirlineSpecifier) SampleAcTypeAndCallsign(r *rand.Rand, currentCallsigns
 					cs.WriteByte(byte('0' + r.Intn(10)))
 				}
 			case '@':
-				cs.WriteByte(byte('A' + r.Intn(26)))
+				// Exclude I and O which can be confused with 1 and 0
+				const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ"
+				cs.WriteByte(letters[r.Intn(len(letters))])
 			case 'x':
 				break loop
 			}
@@ -433,6 +517,10 @@ func FormatAltitude(falt float32) string {
 			return fmt.Sprintf("%d,%03d", th, hu)
 		}
 	}
+}
+
+func FormatScopeAltitude[T ~int | ~float32](alt T) string {
+	return fmt.Sprintf("%03v", int(alt+50)/100)
 }
 
 type TransponderMode int
@@ -605,7 +693,7 @@ func TASToIAS(tas, altitude float32) float32 {
 // Arrival
 
 func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magneticVariation float32,
-	airports map[string]*Airport, controlPositions map[string]*Controller, checkScratchpad func(string) bool,
+	airports map[string]*Airport, controlPositions map[ControlPosition]*Controller, checkScratchpad func(string) bool,
 	e *util.ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
@@ -797,15 +885,15 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	approachAssigned := ar.ExpectApproach.A != nil || ar.ExpectApproach.B != nil
 	ar.Waypoints.CheckArrival(e, controlPositions, approachAssigned, checkScratchpad)
 
-	for arrivalAirport, airlines := range ar.Airlines {
+	for arrivalAirport := range ar.Airlines {
 		e.Push("Arrival airport " + arrivalAirport)
-		if len(airlines) == 0 {
+		if len(ar.Airlines[arrivalAirport]) == 0 {
 			e.ErrorString("no \"airlines\" specified for arrivals to %q", arrivalAirport)
 		}
-		for _, al := range airlines {
-			al.Check(e)
-			if _, ok := DB.Airports[al.Airport]; !ok {
-				e.ErrorString("departure airport \"airport\" %q unknown", al.Airport)
+		for i := range ar.Airlines[arrivalAirport] {
+			ar.Airlines[arrivalAirport][i].Check(e)
+			if _, ok := DB.Airports[ar.Airlines[arrivalAirport][i].Airport]; !ok {
+				e.ErrorString("departure airport \"airport\" %q unknown", ar.Airlines[arrivalAirport][i].Airport)
 			}
 		}
 
@@ -875,11 +963,12 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 		e.ErrorString("controller %q not found for \"initial_controller\"", ar.InitialController)
 	}
 
-	for id, controller := range controlPositions {
-		if controller.ERAMFacility && controller.FacilityIdentifier == "" {
-			e.ErrorString("%q is an ERAM facility, but has no facility id specified", id)
-		}
-	}
+	// TODO: Change for only STARS scenarios
+	// for id, controller := range controlPositions {
+	// 	if controller.ERAMFacility && controller.FacilityIdentifier == "" {
+	// 		e.ErrorString("%q is an ERAM facility, but has no facility id specified", id)
+	// 	}
+	// }
 
 	if !checkScratchpad(ar.Scratchpad) {
 		e.ErrorString("%s: invalid scratchpad", ar.Scratchpad)
@@ -1297,8 +1386,7 @@ func (p *LocalSquawkCodePool) Get(spec string, rules FlightRules, r *rand.Rand) 
 	}
 
 	if pool, ok := p.Pools[spec]; !ok {
-		fmt.Printf("%s: no pool available!\n", spec)
-		return Squawk(0), FlightRulesUnknown, errors.New("bad pool specifier")
+		return Squawk(0), FlightRulesUnknown, ErrBadPoolSpecifier
 	} else {
 		backups := pool.Backups
 		rules := pool.FlightRules // initial pool's rules are sticky even if we go to a backup
@@ -1306,7 +1394,7 @@ func (p *LocalSquawkCodePool) Get(spec string, rules FlightRules, r *rand.Rand) 
 			if sq, err := pool.Available.GetRandom(r); err == nil {
 				return Squawk(sq), rules, nil
 			} else if len(backups) == 0 {
-				return Squawk(sq), rules, err
+				return Squawk(0), rules, ErrNoMoreAvailableSquawkCodes
 			} else {
 				pool = p.Pools[string(backups[0])]
 				backups = backups[1:]
@@ -1351,6 +1439,7 @@ const (
 	RadioTransmissionContact    // Messages initiated by the pilot
 	RadioTransmissionReadback   // Reading back an instruction
 	RadioTransmissionUnexpected // Something urgent or unusual
+	RadioTransmissionMixUp      // Pilot confused about who was being addressed
 )
 
 func (r RadioTransmissionType) String() string {
@@ -1361,6 +1450,8 @@ func (r RadioTransmissionType) String() string {
 		return "readback"
 	case RadioTransmissionUnexpected:
 		return "urgent"
+	case RadioTransmissionMixUp:
+		return "mixup"
 	default:
 		return "(unhandled type)"
 	}

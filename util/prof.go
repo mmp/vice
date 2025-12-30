@@ -7,16 +7,16 @@ package util
 import (
 	"fmt"
 	"os"
-	"os/signal"
 	"path/filepath"
 	"runtime"
 	"runtime/pprof"
+	"runtime/trace"
 	"slices"
 	"sync"
 	"time"
 
 	"github.com/mmp/vice/log"
-	"github.com/shirou/gopsutil/cpu"
+	"github.com/shirou/gopsutil/v3/process"
 )
 
 type Profiler struct {
@@ -59,27 +59,6 @@ func CreateProfiler(cpu, mem string) (Profiler, error) {
 		}
 	}
 
-	if p.cpu != nil || p.mem != nil {
-		// Catch ctrl-c and to write out the profile before exiting
-		sig := make(chan os.Signal, 1)
-		signal.Notify(sig, os.Interrupt)
-
-		go func() {
-			<-sig
-			if p.cpu != nil {
-				pprof.StopCPUProfile()
-				p.cpu.Close()
-			}
-			if p.mem != nil {
-				if err := pprof.WriteHeapProfile(p.mem); err != nil {
-					fmt.Fprintf(os.Stderr, "%s: unable to write memory profile file: %v", mem, err)
-				}
-				p.mem.Close()
-			}
-			os.Exit(0)
-		}()
-	}
-
 	return p, nil
 }
 
@@ -100,18 +79,76 @@ func (p *Profiler) Cleanup() {
 	}
 }
 
+var flightRecorder *trace.FlightRecorder
+
+// InitFlightRecorder initializes the flight recorder to continuously record
+// the last 10 seconds of execution traces.
+func InitFlightRecorder(lg *log.Logger) {
+	if log.RaceEnabled {
+		lg.Warnf("Ignoring request to initialize flight recorder since -race is being used")
+		return
+	}
+
+	cfg := trace.FlightRecorderConfig{
+		MinAge: 10 * time.Second,
+	}
+	flightRecorder = trace.NewFlightRecorder(cfg)
+	if err := flightRecorder.Start(); err != nil {
+		lg.Errorf("failed to start flight recorder: %v", err)
+		flightRecorder = nil
+		return
+	}
+	lg.Infof("Flight recorder started (recording last 10 seconds)")
+}
+
+// dumpFlightRecorder exports the last 10 seconds of trace data to a file.
+func dumpFlightRecorder(lg *log.Logger) {
+	if flightRecorder == nil {
+		lg.Warnf("flight recorder not initialized, skipping trace dump")
+		return
+	}
+
+	filename := fmt.Sprintf("trace_%d.trace", time.Now().Unix())
+	f, err := os.Create(filename)
+	if err != nil {
+		lg.Errorf("failed to create trace file: %v", err)
+		return
+	}
+	defer f.Close()
+
+	n, err := flightRecorder.WriteTo(f)
+	if err != nil {
+		lg.Errorf("failed to write flight recorder trace: %v", err)
+		return
+	}
+
+	lg.Warnf("trace written to %s (%d bytes)", filename, n)
+}
+
 func MonitorCPUUsage(limit int, panicIfWedged bool, lg *log.Logger) {
+	if log.RaceEnabled {
+		lg.Warnf("Ignoring request to monitor CPU usage since -race is being used")
+		return
+	}
+
 	const nhist = 10
 	var history []float64
+
+	proc, err := process.NewProcess(int32(os.Getpid()))
+	if err != nil {
+		lg.Errorf("Failed to create process monitor: %v", err)
+		return
+	}
+
 	go func() {
 		t := time.Tick(1 * time.Second)
 		for {
 			<-t
 
-			if usage, err := cpu.Percent(0, false); err != nil {
-				lg.Errorf("cpu.Percent: %v", err)
+			if usage, err := proc.CPUPercent(); err != nil {
+				lg.Errorf("process.CPUPercent: %v", err)
 			} else {
-				history = append(history, usage[0])
+				history = append(history, usage)
 				if n := len(history); n > nhist {
 					history = history[1:]
 
@@ -119,16 +156,13 @@ func MonitorCPUUsage(limit int, panicIfWedged bool, lg *log.Logger) {
 						lg.Warnf("Last %d ticks over %d utilization: %#v. Dumping", nhist, limit, history)
 
 						writeProfile("mutex", lg)
+						dumpFlightRecorder(lg)
 
 						filename := fmt.Sprintf("dump%d.txt", time.Now().Unix())
 						if f, err := os.Create(filename); err != nil {
 							lg.Errorf("failed to create dump file: %v", err)
 						} else {
 							fmt.Fprint(f, DumpHeldMutexes(lg))
-							fmt.Fprint(f, "\n")
-
-							pprof.Lookup("goroutine").WriteTo(f, 2)
-
 							f.Close()
 						}
 
@@ -147,6 +181,11 @@ func MonitorCPUUsage(limit int, panicIfWedged bool, lg *log.Logger) {
 // MonitorMemoryUsage launches a goroutine that periodically checks how much memory is in use; if it's above
 // the threshold, it writes out a memory profile file and then bumps the threshold by the given increment.
 func MonitorMemoryUsage(triggerMB int, incMB int, lg *log.Logger) {
+	if log.RaceEnabled {
+		lg.Warnf("Ignoring request to monitor memory usage since -race is being used")
+		return
+	}
+
 	go func() {
 		threshold := uint64(triggerMB) * 1024 * 1024
 		delta := uint64(incMB) * 1024 * 1024

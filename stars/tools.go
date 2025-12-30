@@ -214,7 +214,7 @@ func (sp *STARSPane) drawVFRAirports(ctx *panes.Context, transforms radar.ScopeT
 }
 
 // Draw all of the range-bearing lines that have been specified.
-func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawRBLs(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -253,7 +253,7 @@ func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms
 			p1 := transforms.LatLongFromWindowP(ctx.Mouse.Pos)
 			if wp.ADSBCallsign != "" {
 				if trk, ok := ctx.GetTrackByCallsign(wp.ADSBCallsign); ok && sp.datablockVisible(ctx, *trk) &&
-					slices.ContainsFunc(tracks, func(t sim.Track) bool { return t.ADSBCallsign == trk.ADSBCallsign }) {
+					slices.ContainsFunc(sp.visibleTracks, func(t sim.Track) bool { return t.ADSBCallsign == trk.ADSBCallsign }) {
 					state := sp.TrackState[wp.ADSBCallsign]
 					drawRBL(state.track.Location, p1, len(sp.RangeBearingLines)+1, state.track.Groundspeed)
 				}
@@ -264,7 +264,7 @@ func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms
 	}
 
 	for i, rbl := range sp.RangeBearingLines {
-		if p0, p1 := rbl.GetPoints(ctx, tracks, sp); !p0.IsZero() && !p1.IsZero() {
+		if p0, p1 := rbl.GetPoints(ctx, sp); !p0.IsZero() && !p1.IsZero() {
 			gs := float32(0)
 
 			// If one but not both are tracks, get the groundspeed so we
@@ -285,7 +285,7 @@ func (sp *STARSPane) drawRBLs(ctx *panes.Context, tracks []sim.Track, transforms
 
 	// Remove stale ones that include aircraft that have landed, etc.
 	sp.RangeBearingLines = util.FilterSlice(sp.RangeBearingLines, func(rbl STARSRangeBearingLine) bool {
-		p0, p1 := rbl.GetPoints(ctx, tracks, sp)
+		p0, p1 := rbl.GetPoints(ctx, sp)
 		return !p0.IsZero() && !p1.IsZero()
 	})
 
@@ -401,7 +401,7 @@ func (sp *STARSPane) drawMinSep(ctx *panes.Context, transforms radar.ScopeTransf
 
 func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font, cb *renderer.CommandBuffer) {
 	if len(sp.scopeDraw.arrivals) == 0 && len(sp.scopeDraw.approaches) == 0 && len(sp.scopeDraw.departures) == 0 &&
-		len(sp.scopeDraw.overflights) == 0 && len(sp.scopeDraw.airspace) == 0 {
+		len(sp.scopeDraw.overflights) == 0 && len(sp.scopeDraw.airspace) == 0 && len(sp.scopeDraw.holds) == 0 {
 		return
 	}
 
@@ -425,6 +425,7 @@ func (sp *STARSPane) drawScenarioRoutes(ctx *panes.Context, transforms radar.Sco
 	sp.drawScenarioDepartureRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
 	sp.drawScenarioOverflightRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
 	sp.drawScenarioAirspaceRoutes(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
+	sp.drawScenarioHolds(ctx, transforms, font, cb, drawnWaypoints, td, ld, pd, ldr)
 }
 
 func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
@@ -439,12 +440,12 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms ra
 		DrawBackground: true}
 
 	if sp.scopeDraw.arrivals != nil {
-		for _, name := range util.SortedMapKeys(ctx.Client.State.InboundFlows) {
+		for name, flow := range util.SortedMap(ctx.Client.State.InboundFlows) {
 			if sp.scopeDraw.arrivals[name] == nil {
 				continue
 			}
 
-			arrivals := ctx.Client.State.InboundFlows[name].Arrivals
+			arrivals := flow.Arrivals
 			for i, arr := range arrivals {
 				if sp.scopeDraw.arrivals == nil || !sp.scopeDraw.arrivals[name][i] {
 					continue
@@ -452,10 +453,26 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms ra
 
 				radar.DrawWaypoints(ctx, arr.Waypoints, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 
+				// Draw holds associated with this STAR
+				if arr.STAR != "" {
+					// Check all airports this arrival goes to
+					for airport := range arr.RunwayWaypoints {
+						for _, holds := range av.DB.TerminalHolds[airport] {
+							for _, h := range holds {
+								if h.Procedure == arr.STAR {
+									sp.drawHoldPattern(ctx, transforms, h, color, td, ld, style)
+								}
+							}
+						}
+					}
+
+					// Also check enroute holds at waypoints
+					sp.drawEnrouteHolds(ctx, transforms, arr.Waypoints, arr.STAR, color, ld, td, style)
+				}
+
 				// Draw runway-specific waypoints
-				for _, ap := range util.SortedMapKeys(arr.RunwayWaypoints) {
-					for _, rwy := range util.SortedMapKeys(arr.RunwayWaypoints[ap]) {
-						wp := arr.RunwayWaypoints[ap][rwy]
+				for _, rwys := range util.SortedMap(arr.RunwayWaypoints) {
+					for rwy, wp := range util.SortedMap(rwys) {
 						radar.DrawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
 
 						if len(wp) > 1 {
@@ -481,10 +498,23 @@ func (sp *STARSPane) drawScenarioArrivalRoutes(ctx *panes.Context, transforms ra
 	radar.GenerateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
 }
 
+func (sp *STARSPane) drawEnrouteHolds(ctx *panes.Context, transforms radar.ScopeTransformations, wps av.WaypointArray, procedure string,
+	color renderer.RGB, ld *renderer.ColoredLinesDrawBuilder, td *renderer.TextDrawBuilder, style renderer.TextStyle) {
+	for _, wp := range wps {
+		if holds, ok := av.DB.EnrouteHolds[wp.Fix]; ok {
+			for _, h := range holds {
+				// Draw if: procedure matches OR procedure is empty (HPF hold at this waypoint)
+				if h.Procedure == procedure || h.Procedure == "" {
+					sp.drawHoldPattern(ctx, transforms, h, color, td, ld, style)
+				}
+			}
+		}
+	}
+}
+
 func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
 	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
-
 	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.ApproachesColor)
 
 	style := renderer.TextStyle{
@@ -498,11 +528,30 @@ func (sp *STARSPane) drawScenarioApproachRoutes(ctx *panes.Context, transforms r
 				continue
 			}
 			ap := ctx.Client.State.Airports[rwy.Airport]
-			for _, name := range util.SortedMapKeys(ap.Approaches) {
-				appr := ap.Approaches[name]
+			for name, appr := range util.SortedMap(ap.Approaches) {
 				if appr.Runway == rwy.Runway && sp.scopeDraw.approaches[rwy.Airport][name] {
 					for _, wp := range appr.Waypoints {
 						radar.DrawWaypoints(ctx, wp, drawnWaypoints, transforms, td, style, ld, pd, ldr, color)
+					}
+
+					// Draw holds associated with this approach
+					for _, holds := range av.DB.TerminalHolds[rwy.Airport] {
+						for _, h := range holds {
+							if h.Procedure == name {
+								// Missed approach point
+								sp.drawHoldPattern(ctx, transforms, h, color, td, ld, style)
+
+								// Dashed line from airport to the missed approach point
+								pMissed, _ := av.DB.LookupWaypoint(h.Fix)
+								pAp := av.DB.Airports[rwy.Airport].Location
+								ld.AddDashedLine(pAp, pMissed, .005, .0075, color)
+							}
+						}
+					}
+
+					// Also check enroute holds at approach waypoints
+					for _, wpArr := range appr.Waypoints {
+						sp.drawEnrouteHolds(ctx, transforms, wpArr, name, color, ld, td, style)
 					}
 				}
 			}
@@ -536,9 +585,9 @@ func (sp *STARSPane) drawScenarioDepartureRoutes(ctx *panes.Context, transforms 
 				}
 
 				exitRoutes := ap.DepartureRoutes[rwy]
-				for _, exit := range util.SortedMapKeys(exitRoutes) {
+				for exit, exitRoute := range util.SortedMap(exitRoutes) {
 					if sp.scopeDraw.departures[name][rwy][exit] {
-						radar.DrawWaypoints(ctx, exitRoutes[exit].Waypoints, drawnWaypoints, transforms,
+						radar.DrawWaypoints(ctx, exitRoute.Waypoints, drawnWaypoints, transforms,
 							td, style, ld, pd, ldr, color)
 					}
 				}
@@ -560,12 +609,12 @@ func (sp *STARSPane) drawScenarioOverflightRoutes(ctx *panes.Context, transforms
 		DrawBackground: true}
 
 	if sp.scopeDraw.overflights != nil {
-		for _, name := range util.SortedMapKeys(ctx.Client.State.InboundFlows) {
+		for name, flow := range util.SortedMap(ctx.Client.State.InboundFlows) {
 			if sp.scopeDraw.overflights[name] == nil {
 				continue
 			}
 
-			overflights := ctx.Client.State.InboundFlows[name].Overflights
+			overflights := flow.Overflights
 			for i, of := range overflights {
 				if sp.scopeDraw.overflights == nil || !sp.scopeDraw.overflights[name][i] {
 					continue
@@ -591,13 +640,13 @@ func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms r
 	}
 
 	if sp.scopeDraw.airspace != nil {
-		for _, ctrl := range util.SortedMapKeys(sp.scopeDraw.airspace) {
-			for _, volname := range util.SortedMapKeys(sp.scopeDraw.airspace[ctrl]) {
-				if !sp.scopeDraw.airspace[ctrl][volname] {
+		for _, tcp := range util.SortedMapKeys(sp.scopeDraw.airspace) {
+			for _, volname := range util.SortedMapKeys(sp.scopeDraw.airspace[tcp]) {
+				if !sp.scopeDraw.airspace[tcp][volname] {
 					continue
 				}
 
-				for _, vol := range ctx.Client.State.Airspace[ctrl][volname] {
+				for _, vol := range ctx.Client.State.Airspace[tcp][volname] {
 					for _, pts := range vol.Boundaries {
 						for i := range pts[:len(pts)-1] {
 							ld.AddLine(pts[i], pts[i+1], color)
@@ -617,7 +666,7 @@ func (sp *STARSPane) ScaledRGBFromColorPickerRGB(input [3]float32) renderer.RGB 
 	return ps.Brightness.Lists.ScaleRGB(renderer.RGB{input[0], input[1], input[2]})
 }
 
-func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawPTLs(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := sp.currentPrefs()
 
 	ld := renderer.GetColoredLinesDrawBuilder()
@@ -625,7 +674,7 @@ func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms
 
 	color := ps.Brightness.Lines.RGB()
 
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 		if !state.HaveHeading() {
 			continue
@@ -636,8 +685,8 @@ func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms
 			continue
 		}
 		// We have it or it's an inbound handoff to us.
-		ourTrack := trk.IsAssociated() && (trk.FlightPlan.TrackingController == ctx.UserTCP ||
-			trk.FlightPlan.HandoffTrackController == ctx.UserTCP)
+		ourTrack := trk.IsAssociated() && (ctx.UserOwnsFlightPlan(trk.FlightPlan) ||
+			ctx.UserControlsPosition(trk.FlightPlan.HandoffController))
 		if !state.DisplayPTL && !ps.PTLAll && !(ps.PTLOwn && ourTrack) {
 			continue
 		}
@@ -662,8 +711,7 @@ func (sp *STARSPane) drawPTLs(ctx *panes.Context, tracks []sim.Track, transforms
 	ld.GenerateCommands(cb)
 }
 
-func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, transforms radar.ScopeTransformations,
-	cb *renderer.CommandBuffer) {
+func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ld := renderer.GetColoredLinesDrawBuilder()
 	defer renderer.ReturnColoredLinesDrawBuilder(ld)
 	td := renderer.GetTextDrawBuilder()
@@ -675,7 +723,7 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, t
 	font := sp.systemFont(ctx, ps.CharSize.Datablocks)
 	color := ps.Brightness.Lines.ScaleRGB(STARSJRingConeColor)
 
-	for _, trk := range tracks {
+	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
 		// Format a radius/length for printing, ditching the ".0" if it's
@@ -705,7 +753,13 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, t
 				td.AddText(format(state.JRingRadius), pt, textStyle)
 			}
 		}
+
 		atpaStatus := state.ATPAStatus // this may change
+
+		// Don't draw any ATPA graphics if ATPA is disabled.
+		if !state.DrawATPAGraphics {
+			atpaStatus = ATPAStatusUnset
+		}
 
 		// If warning/alert cones are inhibited but monitor cones are not,
 		// we may still draw a monitor cone.
@@ -764,6 +818,8 @@ func (sp *STARSPane) drawRingsAndCones(ctx *panes.Context, tracks []sim.Track, t
 			}
 			ld.AddLineLoop(coneColor, pts[:])
 
+			// FIXME: per 6.21.10, if disabled but dwell is enabled and the track is being dwelled,
+			// then display the size after all.
 			if ps.DisplayTPASize || (state.DisplayTPASize != nil && *state.DisplayTPASize) {
 				textStyle := renderer.TextStyle{Font: font, Color: coneColor}
 
@@ -838,59 +894,66 @@ func (sp *STARSPane) drawPlotPoints(ctx *panes.Context, transforms radar.ScopeTr
 }
 
 func (sp *STARSPane) drawWind(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
-	if sp.commandMode != CommandModeDrawWind {
+	if sp.commandMode != CommandModeDrawWind || sp.atmosGrid == nil {
 		return
 	}
 
 	ld := renderer.GetLinesDrawBuilder()
 	defer renderer.ReturnLinesDrawBuilder(ld)
-	td := renderer.GetTrianglesDrawBuilder()
-	defer renderer.ReturnTrianglesDrawBuilder(td)
+	txtd := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(txtd)
 
-	// Wind barbs: https://www.weather.gov/hfo/windbarbinfo
-	const pix = 50
-	for y := range max(1, int(ctx.PaneExtent.Height()/pix)) {
-		for x := range max(1, int(ctx.PaneExtent.Width()/pix)) {
-			pw := [2]float32{float32(x)*pix + pix/2, float32(y)*pix + pix/2}
-			pll := transforms.LatLongFromWindowP(pw)
-			ws := ctx.Client.State.WX.LookupWind(pll, float32(sp.windDrawAltitude))
-			// Round to nearest 5 knots
-			spd := int(ws.Speed+2.5) / 5 * 5
+	ps := sp.currentPrefs()
+	font := sp.systemFont(ctx, ps.CharSize.Tools)
+	color := ps.Brightness.Lines.RGB()
 
-			// Rotate so we can draw a canonical barb below
-			rot := math.Rotator2f(ws.Direction)
+	const arrowLength = 25
+	const arrowheadSize = 8
+	step := 1
+	if r := ps.Range; r > 80 {
+		step = 4
+	} else if r > 45 {
+		step = 3
+	} else if r > 25 {
+		step = 2
+	}
+	for pll, samp := range sp.atmosGrid.SamplesAtLevel(sp.windDrawAltitudeIndex, step) {
+		// Round to nearest integer knot
+		spd := int(samp.WindSpeed() + 0.5)
 
-			// Main line
-			ld.AddLine(pw, math.Add2f(pw, rot([2]float32{0, pix / 2})))
-			pb := [2]float32{0, pix / 2}
-			for spd > 50 {
-				// Triangle
-				v0 := math.Add2f(pw, rot(pb))
-				v1 := math.Add2f(pw, rot(math.Add2f(pb, [2]float32{0, -6})))
-				v2 := math.Add2f(pw, rot(math.Add2f(pb, [2]float32{pix / 4, -3})))
-				td.AddTriangle(v0, v1, v2)
-				pb[1] -= 6
-				spd -= 50
-			}
-			for spd > 10 {
-				// long line
-				ld.AddLine(math.Add2f(pw, rot(pb)), math.Add2f(pw, rot(math.Add2f(pb, [2]float32{pix / 4, pix / 20}))))
-				pb[1] -= 3
-				spd -= 10
-			}
-			if spd > 5 {
-				// short line
-				ld.AddLine(math.Add2f(pw, rot(pb)), math.Add2f(pw, rot(math.Add2f(pb, [2]float32{pix / 8, pix / 40}))))
-			}
+		pw := transforms.WindowFromLatLongP(pll)
+		if spd <= 5 {
+			ld.AddCircle(pw, 4 /* pix */, 10)
+			continue
 		}
+
+		// Rotate so we can draw an arrow pointing in the wind direction;
+		// add an extra 180 so it points where the wind is blowing.
+		rot := math.Rotator2f(samp.WindDirection() + 180)
+
+		// Draw arrow shaft
+		shaftStart := math.Add2f(pw, rot([2]float32{0, -arrowLength / 2}))
+		shaftEnd := math.Add2f(pw, rot([2]float32{0, arrowLength / 2}))
+		ld.AddLine(shaftStart, shaftEnd)
+
+		// Draw arrowhead (two lines forming a V at the tip)
+		arrowTip := shaftEnd
+		leftBarb := math.Add2f(pw, rot([2]float32{-arrowheadSize / 2, arrowLength/2 - arrowheadSize}))
+		rightBarb := math.Add2f(pw, rot([2]float32{arrowheadSize / 2, arrowLength/2 - arrowheadSize}))
+		ld.AddLine(arrowTip, leftBarb)
+		ld.AddLine(arrowTip, rightBarb)
+
+		// Draw speed text below the arrow
+		textPos := math.Add2f(pw, rot([2]float32{0, -arrowLength/2 - 5}))
+		speedText := fmt.Sprintf("%d", spd)
+		txtd.AddTextCentered(speedText, textPos, renderer.TextStyle{Font: font, Color: color})
 	}
 
 	cb.LineWidth(1, ctx.DPIScale)
-	ps := sp.currentPrefs()
-	cb.SetRGB(ps.Brightness.Lines.RGB())
+	cb.SetRGB(color)
 	transforms.LoadWindowViewingMatrices(cb)
 	ld.GenerateCommands(cb)
-	td.GenerateCommands(cb)
+	txtd.GenerateCommands(cb)
 }
 
 type STARSRangeBearingLine struct {
@@ -902,7 +965,7 @@ type STARSRangeBearingLine struct {
 	}
 }
 
-func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, tracks []sim.Track, sp *STARSPane) (math.Point2LL, math.Point2LL) {
+func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, sp *STARSPane) (math.Point2LL, math.Point2LL) {
 	// Each line endpoint may be specified either by a track's
 	// position or by a fixed position.
 	getLoc := func(i int) math.Point2LL {
@@ -914,26 +977,7 @@ func (rbl STARSRangeBearingLine) GetPoints(ctx *panes.Context, tracks []sim.Trac
 	return getLoc(0), getLoc(1)
 }
 
-func rblSecondClickHandler(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
-	transforms radar.ScopeTransformations) (status CommandStatus) {
-	if sp.wipRBL == nil {
-		// this shouldn't happen, but let's not crash if it does...
-		return
-	}
-
-	rbl := *sp.wipRBL
-	sp.wipRBL = nil
-	if trk, _ := sp.tryGetClosestTrack(ctx, pw, transforms, tracks); trk != nil {
-		rbl.P[1].ADSBCallsign = trk.ADSBCallsign
-	} else {
-		rbl.P[1].Loc = transforms.LatLongFromWindowP(pw)
-	}
-	sp.RangeBearingLines = append(sp.RangeBearingLines, rbl)
-	status.clear = true
-	return
-}
-
-func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLongitude, magneticVariation float32) (status CommandStatus) {
+func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLongitude, magneticVariation float32) CommandStatus {
 	// Find the closest significant point to p1.
 	minDist := float32(1000000)
 	var closest *sim.SignificantPoint
@@ -945,12 +989,9 @@ func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLong
 		}
 	}
 
-	sp.wipSignificantPoint = nil
-	status.clear = true
-
 	if closest == nil {
 		// No significant points defined?
-		return
+		return CommandStatus{}
 	}
 
 	// Display a blinking square at the point
@@ -971,9 +1012,8 @@ func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLong
 
 		if sig.Description != "" {
 			return str + strings.ToUpper(sig.Description)
-		} else {
-			return str + sig.Name
 		}
+		return str + sig.Name
 	}
 
 	str := format(*closest)
@@ -990,19 +1030,172 @@ func (sp *STARSPane) displaySignificantPointInfo(p0, p1 math.Point2LL, nmPerLong
 		}
 	}
 
-	status.output = str
-
-	return
+	return CommandStatus{Output: str}
 }
 
-func toSignificantPointClickHandler(ctx *panes.Context, sp *STARSPane, tracks []sim.Track, pw [2]float32,
-	transforms radar.ScopeTransformations) (status CommandStatus) {
-	if sp.wipSignificantPoint == nil {
-		status.clear = true
+func (sp *STARSPane) drawScenarioHolds(ctx *panes.Context, transforms radar.ScopeTransformations, font *renderer.Font,
+	cb *renderer.CommandBuffer, drawnWaypoints map[string]interface{}, td *renderer.TextDrawBuilder,
+	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder) {
+	if len(sp.scopeDraw.holds) == 0 {
 		return
+	}
+
+	color := sp.ScaledRGBFromColorPickerRGB(*sp.IFPHelpers.HoldsColor)
+
+	style := renderer.TextStyle{
+		Font:           font,
+		Color:          color,
+		DrawBackground: true,
+	}
+
+	// Draw enabled holds
+	for _, hold := range util.SortedMap(sp.scopeDraw.holds) {
+		sp.drawHoldPattern(ctx, transforms, hold, color, td, ld, style)
+	}
+
+	radar.GenerateRouteDrawingCommands(cb, transforms, ctx, ld, pd, td, ldr)
+}
+
+func (sp *STARSPane) drawHoldPattern(ctx *panes.Context, transforms radar.ScopeTransformations,
+	hold av.Hold, color renderer.RGB, td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
+	style renderer.TextStyle) {
+	fixLoc, _ := av.DB.LookupWaypoint(hold.Fix)
+
+	// Default leg length/time if not specified
+	legLength := hold.LegLengthNM
+	if legLength == 0 && hold.LegMinutes > 0 {
+		// Approximate: assume 120 knots = 2 nm/minute
+		legLength = hold.LegMinutes * 2
+	}
+	if legLength == 0 {
+		legLength = 4 // Default 4nm legs
+	}
+
+	// Convert fix location to nm coordinates
+	fixNM := math.LL2NM(fixLoc, ctx.NmPerLongitude)
+
+	// Inbound course (magnetic to true)
+	inboundMag := hold.InboundCourse
+	inboundTrue := inboundMag - ctx.MagneticVariation
+	inboundRad := math.Radians(inboundTrue)
+
+	// Outbound is 180° from inbound
+	outboundRad := inboundRad + math.Pi
+
+	// Inbound vector (pointing toward fix)
+	inboundVec := math.SinCos(inboundRad)
+
+	// Outbound vector (pointing away from fix)
+	outboundVec := [2]float32{-inboundVec[0], -inboundVec[1]}
+
+	// Calculate turn radius for standard rate turn at 120 knots
+	// Turn radius = speed / (turning rate in rad/s) / 60
+	// At 120 knots, standard rate (3°/s): radius ≈ 0.67 nm
+	turnRadius := float32(0.67)
+
+	// Perpendicular vector for turn offset (depends on turn direction)
+	var perpVec [2]float32
+	if hold.TurnDirection == av.TurnRight {
+		perpVec = [2]float32{inboundVec[1], -inboundVec[0]} // 90° right of inbound
 	} else {
-		p1 := transforms.LatLongFromWindowP(pw)
-		return sp.displaySignificantPointInfo(*sp.wipSignificantPoint, p1,
-			ctx.NmPerLongitude, ctx.MagneticVariation)
+		perpVec = [2]float32{-inboundVec[1], inboundVec[0]} // 90° left of inbound
+	}
+
+	// The hold pattern geometry:
+	// After a 180° turn, aircraft is displaced by 2*turnRadius perpendicular to course
+
+	// Turn 1 at fix: from inbound to outbound
+	turnCenter1 := math.Add2f(fixNM, math.Scale2f(perpVec, turnRadius))
+
+	// After the first turn, aircraft is displaced by 2*turnRadius from the inbound centerline
+	outboundStart := math.Add2f(fixNM, math.Scale2f(perpVec, 2*turnRadius))
+	outboundEnd := math.Add2f(outboundStart, math.Scale2f(outboundVec, legLength))
+
+	// Turn 2 at end of outbound: from outbound to inbound
+	// For outbound leg, perpendicular is in opposite direction
+	var perpVec2 [2]float32
+	if hold.TurnDirection == av.TurnRight {
+		perpVec2 = [2]float32{outboundVec[1], -outboundVec[0]} // 90° right of outbound
+	} else {
+		perpVec2 = [2]float32{-outboundVec[1], outboundVec[0]} // 90° left of outbound
+	}
+	turnCenter2 := math.Add2f(outboundEnd, math.Scale2f(perpVec2, turnRadius))
+
+	// After the second turn, we're back on the inbound centerline
+	inboundStart := math.Add2f(outboundEnd, math.Scale2f(perpVec2, 2*turnRadius))
+
+	// Draw inbound leg
+	p1ll := math.NM2LL(inboundStart, ctx.NmPerLongitude)
+	ld.AddLine(p1ll, fixLoc, color)
+
+	// Draw first turn (at fix)
+	// The arc starts from the fix and sweeps to the outbound leg
+	// Angle from turn center to fix (where arc starts)
+	turn1StartAngle := inboundRad - math.Pi/2
+	if hold.TurnDirection == av.TurnLeft {
+		turn1StartAngle = inboundRad + math.Pi/2
+	}
+	sp.drawHoldTurn(transforms, ctx, turnCenter1, turnRadius, turn1StartAngle, hold.TurnDirection, color, ld)
+
+	// Draw outbound leg
+	p3ll := math.NM2LL(outboundStart, ctx.NmPerLongitude)
+	p4ll := math.NM2LL(outboundEnd, ctx.NmPerLongitude)
+	ld.AddLine(p3ll, p4ll, color)
+
+	// Draw arrow on outbound leg showing direction of flight
+	outboundMid := math.Mid2f(outboundStart, outboundEnd)
+	aa := outboundRad + math.Radians(180+30)
+	pa := math.Add2f(outboundMid, math.Scale2f(math.SinCos(aa), 0.5))
+	ld.AddLine(math.NM2LL(outboundMid, ctx.NmPerLongitude), math.NM2LL(pa, ctx.NmPerLongitude), color)
+	ba := outboundRad - math.Radians(180+30)
+	pb := math.Add2f(outboundMid, math.Scale2f(math.SinCos(ba), 0.5))
+	ld.AddLine(math.NM2LL(outboundMid, ctx.NmPerLongitude), math.NM2LL(pb, ctx.NmPerLongitude), color)
+
+	// Draw second turn (connecting outbound back to inbound)
+	// Angle from turn center to end of outbound leg (where arc starts)
+	turn2StartAngle := outboundRad - math.Pi/2
+	if hold.TurnDirection == av.TurnLeft {
+		turn2StartAngle = outboundRad + math.Pi/2
+	}
+	sp.drawHoldTurn(transforms, ctx, turnCenter2, turnRadius, turn2StartAngle, hold.TurnDirection, color, ld)
+
+	// Draw fix label (needs window coordinates)
+	fixWin := transforms.WindowFromLatLongP(fixLoc)
+	td.AddText(hold.Fix, fixWin, style)
+}
+
+func (sp *STARSPane) drawHoldTurn(transforms radar.ScopeTransformations, ctx *panes.Context, centerNM [2]float32, radius float32,
+	startAngle float32, turnDirection av.TurnDirection, color renderer.RGB, ld *renderer.ColoredLinesDrawBuilder) {
+	// Draw 180° turn arc with segments
+	clockwise := turnDirection == av.TurnRight
+	numSegments := 16
+	for i := range numSegments {
+		t1 := float32(i) / float32(numSegments)
+		t2 := float32(i+1) / float32(numSegments)
+
+		// For hold patterns, we always turn 180° (π radians)
+		var a1, a2 float32
+		if clockwise {
+			// Turn right (clockwise): add positive angles
+			a1 = startAngle + t1*math.Pi
+			a2 = startAngle + t2*math.Pi
+		} else {
+			// Turn left (counterclockwise): subtract angles
+			a1 = startAngle - t1*math.Pi
+			a2 = startAngle - t2*math.Pi
+		}
+
+		p1nm := [2]float32{
+			centerNM[0] + radius*math.Sin(a1),
+			centerNM[1] + radius*math.Cos(a1),
+		}
+		p2nm := [2]float32{
+			centerNM[0] + radius*math.Sin(a2),
+			centerNM[1] + radius*math.Cos(a2),
+		}
+
+		p1ll := math.NM2LL(p1nm, ctx.NmPerLongitude)
+		p2ll := math.NM2LL(p2nm, ctx.NmPerLongitude)
+		ld.AddLine(p1ll, p2ll, color)
 	}
 }

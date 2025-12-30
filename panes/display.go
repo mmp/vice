@@ -1,5 +1,5 @@
-// display.go
-// Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
+// panes/display.go
+// Copyright(c) 2022-2025 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 // This file contains functionality related to vice's "window manager",
@@ -81,8 +81,8 @@ type SplitLine struct {
 
 func (s *SplitLine) Activate(renderer.Renderer, platform.Platform, *sim.EventStream, *log.Logger) {}
 func (s *SplitLine) Deactivate()                                                                  {}
-func (s *SplitLine) LoadedSim(*client.ControlClient, sim.State, platform.Platform, *log.Logger)   {}
-func (s *SplitLine) ResetSim(*client.ControlClient, sim.State, platform.Platform, *log.Logger)    {}
+func (s *SplitLine) LoadedSim(*client.ControlClient, platform.Platform, *log.Logger)              {}
+func (s *SplitLine) ResetSim(*client.ControlClient, platform.Platform, *log.Logger)               {}
 func (s *SplitLine) CanTakeKeyboardFocus() bool                                                   { return false }
 func (s *SplitLine) Hide() bool                                                                   { return false }
 
@@ -493,10 +493,10 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 				MenuBarHeight:      menuBarHeight,
 				KeyboardFocus:      &wm.focus,
 				Client:             controlClient,
-				UserTCP:            controlClient.State.UserTCP,
+				UserTCW:            controlClient.State.UserTCW,
 				NmPerLongitude:     controlClient.State.NmPerLongitude,
 				MagneticVariation:  controlClient.State.MagneticVariation,
-				FacilityAdaptation: &controlClient.State.STARSFacilityAdaptation,
+				FacilityAdaptation: &controlClient.State.FacilityAdaptation,
 				displaySize:        p.DisplaySize(),
 			}
 
@@ -543,7 +543,7 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 	return renderer.RendererStats{}
 }
 
-func NewDisplayPanes(stars, messages, fsp Pane) *DisplayNode {
+func NewDisplayPanes(radar, messages, fsp Pane) *DisplayNode {
 	return &DisplayNode{
 		SplitLine: SplitLine{
 			Pos:  0.8,
@@ -557,7 +557,7 @@ func NewDisplayPanes(stars, messages, fsp Pane) *DisplayNode {
 				},
 				Children: [2]*DisplayNode{
 					&DisplayNode{Pane: messages},
-					&DisplayNode{Pane: stars},
+					&DisplayNode{Pane: radar},
 				},
 			},
 			&DisplayNode{Pane: fsp},
@@ -597,14 +597,14 @@ func Activate(root *DisplayNode, r renderer.Renderer, p platform.Platform, event
 	})
 }
 
-func LoadedSim(root *DisplayNode, client *client.ControlClient, state sim.State, pl platform.Platform, lg *log.Logger) {
+func LoadedSim(root *DisplayNode, client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	root.VisitPanes(func(p Pane) {
-		p.LoadedSim(client, state, pl, lg)
+		p.LoadedSim(client, pl, lg)
 	})
 }
 
-func ResetSim(root *DisplayNode, client *client.ControlClient, state sim.State, pl platform.Platform, lg *log.Logger) {
+func ResetSim(root *DisplayNode, client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	root.VisitPanes(func(p Pane) {
-		p.ResetSim(client, state, pl, lg)
+		p.ResetSim(client, pl, lg)
 	})
 }

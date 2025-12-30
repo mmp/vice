@@ -3,11 +3,21 @@
   "airports": {
     "KPIT": {
       "approaches": {
-        "I0L": { "cifp_id": "I10L" },
-        "I0R": { "cifp_id": "I10R" },
-        "I8L": { "cifp_id": "I28L" },
-        "I8R": { "cifp_id": "I28R" },
-        "I32": { "cifp_id": "I32" }
+        "I0L": {
+          "cifp_id": "I10L"
+        },
+        "I0R": {
+          "cifp_id": "I10R"
+        },
+        "I8L": {
+          "cifp_id": "I28L"
+        },
+        "I8R": {
+          "cifp_id": "I28R"
+        },
+        "I32": {
+          "cifp_id": "I32"
+        }
       },
       "approach_regions": {
         "28C": {
@@ -24,9 +34,7 @@
           "reference_heading": 281.1,
           "reference_length": 30,
           "reference_altitude": 0,
-          "scratchpad_patterns": [
-            "8C"
-          ]
+          "scratchpad_patterns": ["8C"]
         },
         "28L": {
           "heading_tolerance": 90,
@@ -42,9 +50,7 @@
           "reference_heading": 281.1,
           "reference_length": 30,
           "reference_altitude": 0,
-          "scratchpad_patterns": [
-            "8R"
-          ]
+          "scratchpad_patterns": ["8R"]
         },
         "32": {
           "heading_tolerance": 90,
@@ -60,40 +66,25 @@
           "reference_heading": 325.5,
           "reference_length": 30,
           "reference_altitude": 0,
-          "scratchpad_patterns": [
-            "32"
-          ]
+          "scratchpad_patterns": ["32"]
         }
       },
       "converging_runways": [
         {
-          "runways": [
-            "28L",
-            "32"
-          ],
-          "leader_directions": [
-            "W",
-            "NW"
-          ],
+          "runways": ["28L", "32"],
+          "leader_directions": ["W", "NW"],
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2.5
         },
         {
-          "runways": [
-            "28C",
-            "32"
-          ],
-          "leader_directions": [
-            "W",
-            "NW"
-          ],
+          "runways": ["28C", "32"],
+          "leader_directions": ["W", "NW"],
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2.5
         }
       ],
-
       "departure_routes": {
         "28C": {
           "AIR": {
@@ -105,8 +96,8 @@
             "cleared_altitude": 5000,
             "sid": "PIT5",
             "waypoints": "_PIT_10C/h281"
-		      },
-		      "JST": {
+          },
+          "JST": {
             "cleared_altitude": 5000,
             "sid": "PIT5",
             "waypoints": "_PIT_10C/h281"
@@ -164,8 +155,8 @@
             "cleared_altitude": 5000,
             "sid": "PIT5",
             "waypoints": "_PIT_32/h145"
-		      },
-		      "JST": {
+          },
+          "JST": {
             "cleared_altitude": 5000,
             "sid": "PIT5",
             "waypoints": "_PIT_32/h145"
@@ -221,14 +212,14 @@
           "altitude": 37000,
           "route": "EWC WOMBT PIGGZ PONCT JFUND2",
           "airlines": [
-              {
-                  "icao": "JBU",
-                  "fleet": "default"
-              },
-              {
-                  "icao": "RPA",
-                  "fleet": "default"
-              }
+            {
+              "icao": "JBU",
+              "fleet": "default"
+            },
+            {
+              "icao": "RPA",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -237,18 +228,18 @@
           "altitude": 38000,
           "route": "CKB COBBE DANCO Q103 SLOJO Q83 ROYCO Q85 LPERD GTOUT1",
           "airlines": [
-              {
-                  "icao": "NKS",
-                  "fleet": "default"
-              },
-              {
-                  "icao": "SWA",
-                  "fleet": "default"
-              },
-              {
-                  "icao": "FFT",
-                  "fleet": "default"
-              }
+            {
+              "icao": "NKS",
+              "fleet": "default"
+            },
+            {
+              "icao": "SWA",
+              "fleet": "default"
+            },
+            {
+              "icao": "FFT",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -257,10 +248,10 @@
           "altitude": 34000,
           "route": "BSV BBARB CRL GRB GEP J70 ABR J32 BAM J32 LLC LEGGS BDEGA3",
           "airlines": [
-              {
-                  "icao": "UAL",
-                  "fleet": "default"
-              }
+            {
+              "icao": "UAL",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -269,22 +260,22 @@
           "altitude": 36000,
           "route": "DILNE TVTRN CVG PXV KM39I FSM KOMMA RRNET SEEVR4",
           "airlines": [
-              {
-                  "icao": "AAL",
-                  "fleet": "default"
-              }
+            {
+              "icao": "AAL",
+              "fleet": "default"
+            }
           ]
         },
-        { 
+        {
           "exit": "DILNE",
           "destination": "KAFW",
           "altitude": 38000,
           "route": "DILNE TVTRN APE PXV DYR LIT PONYY TRUUK2",
           "airlines": [
-              {
-                  "icao": "SCX",
-                  "fleet": "default"
-              }
+            {
+              "icao": "SCX",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -293,14 +284,14 @@
           "altitude": 34000,
           "route": "AIR OOM FAM ICT J28 PUB DVC TYEGR CHOWW2",
           "airlines": [
-              {
-                  "icao": "NKS",
-                  "fleet": "default"
-              },
-              {
-                  "icao": "SWA",
-                  "fleet": "default"
-              }
+            {
+              "icao": "NKS",
+              "fleet": "default"
+            },
+            {
+              "icao": "SWA",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -309,14 +300,14 @@
           "altitude": 34000,
           "route": "CKB COBBE DANCO SLOJO Q75 SHRIL Q75 ENEME KNOST M215 PISAD UM215 NUDIS UT38 LEVAT UM782 VOMAR",
           "airlines": [
-              {
-                  "icao": "AAY",
-                  "fleet": "default"
-              },
-              {
-                  "icao": "SWA",
-                  "fleet": "default"
-              }
+            {
+              "icao": "AAY",
+              "fleet": "default"
+            },
+            {
+              "icao": "SWA",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -325,10 +316,10 @@
           "altitude": 33000,
           "route": "MGW BUCKO RDU GARIC CLOWR JAINS L451 LETON L451 IORIO POKEG DCY W28 PNA",
           "airlines": [
-              {
-                  "icao": "AAY",
-                  "fleet": "default"
-              }
+            {
+              "icao": "AAY",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -337,10 +328,10 @@
           "altitude": 37000,
           "route": "CKB ROA SBV RDU",
           "airlines": [
-              {
-                  "icao": "NKS",
-                  "fleet": "default"
-              }
+            {
+              "icao": "NKS",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -349,10 +340,10 @@
           "altitude": 43000,
           "route": "PARKE J6 HVQ Q68 LITTR DIRRK SLANT3",
           "airlines": [
-              {
-                  "icao": "LXJ",
-                  "fleet": "default"
-              }
+            {
+              "icao": "LXJ",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -361,10 +352,10 @@
           "altitude": 36000,
           "route": "CKB ROA SBV RDU ILM WYLMS",
           "airlines": [
-              {
-                  "icao": "AAY",
-                  "fleet": "default"
-              }
+            {
+              "icao": "AAY",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -373,10 +364,10 @@
           "altitude": 23000,
           "route": "TYROO PSB MIP4",
           "airlines": [
-              {
-                  "icao": "AAL",
-                  "fleet": "default"
-              }
+            {
+              "icao": "AAL",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -385,10 +376,10 @@
           "altitude": 9000,
           "route": "HAR",
           "airlines": [
-              {
-                  "icao": "FDY",
-                  "fleet": "default"
-              }
+            {
+              "icao": "FDY",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -397,10 +388,10 @@
           "altitude": 21000,
           "route": "JST BOJID4",
           "airlines": [
-              {
-                  "icao": "AAL",
-                  "fleet": "default"
-              }
+            {
+              "icao": "AAL",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -409,10 +400,10 @@
           "altitude": 29000,
           "route": "EWC WOMBT PIGGZ PONCT JFUND2",
           "airlines": [
-              {
-                  "icao": "JBU",
-                  "fleet": "default"
-              }
+            {
+              "icao": "JBU",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -421,10 +412,10 @@
           "altitude": 36000,
           "route": "CKB COBBE DANCO Q103 SLOJO Q83 EFFAY Q83 JEVED Q97 PRMUS CUUDA3",
           "airlines": [
-              {
-                  "icao": "SWA",
-                  "fleet": "short"
-              }
+            {
+              "icao": "SWA",
+              "fleet": "short"
+            }
           ]
         },
         {
@@ -433,10 +424,10 @@
           "altitude": 32000,
           "route": "CKB COBBE DANCO Q103 SLOJO Q83 ROYCO Q85 LPERD GTOUT1",
           "airlines": [
-              {
-                  "icao": "SWA",
-                  "fleet": "default"
-              }
+            {
+              "icao": "SWA",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -445,10 +436,10 @@
           "altitude": 34000,
           "route": "AHTIY BURGS RANDE HVQ HLRRY ONDRE1",
           "airlines": [
-              {
-                  "icao": "DAL",
-                  "fleet": "short"
-              }
+            {
+              "icao": "DAL",
+              "fleet": "short"
+            }
           ]
         },
         {
@@ -457,10 +448,10 @@
           "altitude": 29000,
           "route": "EWC ZORBO BFD HOXIE J70 LVZ LENDY8",
           "airlines": [
-              {
-                  "icao": "EDV",
-                  "fleet": "default"
-              }
+            {
+              "icao": "EDV",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -469,10 +460,10 @@
           "altitude": 27000,
           "route": "EWC OXMAN LINNG3",
           "airlines": [
-              {
-                  "icao": "JZA",
-                  "fleet": "default"
-              }
+            {
+              "icao": "JZA",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -481,10 +472,10 @@
           "altitude": 8000,
           "route": "EWC PEREA ",
           "airlines": [
-              {
-                  "icao": "FDY",
-                  "fleet": "default"
-              }
+            {
+              "icao": "FDY",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -493,10 +484,10 @@
           "altitude": 11000,
           "route": "EWC EEYES ",
           "airlines": [
-              {
-                  "icao": "FDY",
-                  "fleet": "default"
-              }
+            {
+              "icao": "FDY",
+              "fleet": "default"
+            }
           ]
         },
         {
@@ -505,10 +496,10 @@
           "altitude": 36000,
           "route": "DILNE TVTRN FLM RAMRD Q68 LITTR MEEOW FEWWW SEEVR4",
           "airlines": [
-              {
-                  "icao": "AAL",
-                  "fleet": "short"
-              }
+            {
+              "icao": "AAL",
+              "fleet": "short"
+            }
           ]
         }
       ],
@@ -530,124 +521,128 @@
     },
     "KAGC": {
       "approaches": {
-        "I10": { "cifp_id": "I10" },
-        "I28": { "cifp_id": "I28" }
+        "I10": {
+          "cifp_id": "I10"
+        },
+        "I28": {
+          "cifp_id": "I28"
+        }
       },
       "departure_routes": {
-      "28": {
-        "AIR": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_10/h279"
-        },
-        "EWC": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_10/h279"
-        },
-        "BSV": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_10/h279"
-        },
-        "CKB": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_10/h279"
-        },
-        "PSB": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_10/h279"
-        },
-        "JST": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_10/h279"
-        },
-        "MGW": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_10/h279"
-        },
-        "EKN": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_28/h099"
-        },
-        "TYROO": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_10/h279"
-        },
-        "AHTIY": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_28/h099"
-        },
-        "DILNE": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_28/h099"
-      }
-      },
-      "10": {
-        "AIR": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_28/h099"
-        },
-        "EWC": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_28/h099"
-        },
-        "BSV": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_28/h099"
-        },
-        "CKB": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_28/h099"
-        },
-        "PSB": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_28/h099"
-        },
-        "JST": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_28/h099"
-        },
-        "MGW": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_28/h099"
-        },
-        "EKN": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_28/h099"
-        },
-        "TYROO": {
-          "cleared_altitude": 3000,
-          "sid": "AGC9",
-          "waypoints": "_AGC_28/h099"
-        },
-        "AHTIY": {
+        "28": {
+          "AIR": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_10/h279"
+          },
+          "EWC": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_10/h279"
+          },
+          "BSV": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_10/h279"
+          },
+          "CKB": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_10/h279"
+          },
+          "PSB": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_10/h279"
+          },
+          "JST": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_10/h279"
+          },
+          "MGW": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_10/h279"
+          },
+          "EKN": {
             "cleared_altitude": 3000,
             "sid": "AGC9",
             "waypoints": "_AGC_28/h099"
-        },
-        "DILNE": {
+          },
+          "TYROO": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_10/h279"
+          },
+          "AHTIY": {
             "cleared_altitude": 3000,
             "sid": "AGC9",
             "waypoints": "_AGC_28/h099"
+          },
+          "DILNE": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_28/h099"
+          }
+        },
+        "10": {
+          "AIR": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_28/h099"
+          },
+          "EWC": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_28/h099"
+          },
+          "BSV": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_28/h099"
+          },
+          "CKB": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_28/h099"
+          },
+          "PSB": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_28/h099"
+          },
+          "JST": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_28/h099"
+          },
+          "MGW": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_28/h099"
+          },
+          "EKN": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_28/h099"
+          },
+          "TYROO": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_28/h099"
+          },
+          "AHTIY": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_28/h099"
+          },
+          "DILNE": {
+            "cleared_altitude": 3000,
+            "sid": "AGC9",
+            "waypoints": "_AGC_28/h099"
+          }
         }
-      }
       },
       "departures": [
         {
@@ -656,35 +651,35 @@
           "altitude": 41000,
           "route": "BSV WEEVR Q62 WATSN WATSN4",
           "airlines": [
-              {
-                  "icao": "EJA",
-                  "fleet": "default"
-              }
+            {
+              "icao": "EJA",
+              "fleet": "default"
+            }
           ]
         },
         {
-        "exit": "AHTIY",
-        "destination": "KBNA",
-        "altitude": 41000,
-        "route": "AHTIY BURGS JAYKB ENGRA GROAT PASLY4",
-        "airlines": [
+          "exit": "AHTIY",
+          "destination": "KBNA",
+          "altitude": 41000,
+          "route": "AHTIY BURGS JAYKB ENGRA GROAT PASLY4",
+          "airlines": [
             {
-                "icao": "EJA",
-                "fleet": "default"
+              "icao": "EJA",
+              "fleet": "default"
             }
-        ]
+          ]
         },
         {
-        "exit": "DILNE",
-        "destination": "KCMH",
-        "altitude": 29000,
-        "route": "DILNE TVTRN ",
-        "airlines": [
+          "exit": "DILNE",
+          "destination": "KCMH",
+          "altitude": 29000,
+          "route": "DILNE TVTRN ",
+          "airlines": [
             {
-                "icao": "N",
-                "fleet": "default"
+              "icao": "N",
+              "fleet": "default"
             }
-        ]
+          ]
         },
         {
           "exit": "TYROO",
@@ -692,36 +687,36 @@
           "altitude": 41000,
           "route": "TYROO PSB CAM CDOGG4",
           "airlines": [
-              {
-                  "icao": "N",
-                  "fleet": "default"
-              }
-          ]
-          },
-          {
-            "exit": "CKB",
-            "destination": "KGSO",
-            "altitude": 20000,
-            "route": "CKB ROA  HENBY3",
-            "airlines": [
-                {
-                    "icao": "N",
-                    "fleet": "default"
-                }
-            ]
-            },
             {
-              "exit": "PSB",
-              "destination": "KTEB",
-              "altitude": 27000,
-              "route": "PSB MAGIO LVZ LVZ4",
-              "airlines": [
-                  {
-                      "icao": "N",
-                      "fleet": "default"
-                  }
-              ]
-              }
+              "icao": "N",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "CKB",
+          "destination": "KGSO",
+          "altitude": 20000,
+          "route": "CKB ROA  HENBY3",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "PSB",
+          "destination": "KTEB",
+          "altitude": 27000,
+          "route": "PSB MAGIO LVZ LVZ4",
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "default"
+            }
+          ]
+        }
       ],
       "exit_categories": {
         "EWC": "ALL",
@@ -739,10 +734,8 @@
         "PSB": "ALL"
       },
       "tower_list": 1
-      }
-    },
-
-
+    }
+  },
   "airspace": {
     "boundaries": {
       "PITAPP0100": [
@@ -768,320 +761,314 @@
         "N040.06.16.364,W079.48.48.515",
         "N040.01.32.134,W079.59.54.396",
         "N040.01.24.526,W080.00.56.744",
-        "N039.59.36.242,W080.11.24.640",       
+        "N039.59.36.242,W080.11.24.640",
         "N039.59.34.195,W080.15.09.503",
         "N040.00.48.271,W080.24.41.314",
         "N040.01.52.870,W080.28.34.608",
         "N039.52.49.747,W080.39.30.355",
         "N039.59.59.409,W080.52.27.775",
         "N040.12.23.280,W080.45.54.107"
-
-
-
       ]
     },
     "volumes": {
       "PITAPP": [
         {
-          "boundaries": [
-            "PITAPP0100"
-          ],
+          "boundaries": ["PITAPP0100"],
           "lower": 0,
           "upper": 14000
         }
       ]
     }
   },
-
   "inbound_flows": {
-  "DEMME5": {
-    "arrivals": [
-      {
-        "waypoints": "VINSE/ho LEJOY",
-        "runway_waypoints": {
-          "KPIT": {
-            "10L": "LEJOY PLEEZ NESTO/a10000 DEMME PENGN RIVRZ HEINZ/a6000+/h281",
-            "10R": "LEJOY PLEEZ NESTO/a10000 DEMME PENGN RIVRZ HEINZ/a6000+/h281",
-            "28L": "LEJOY PLEEZ NESTO/a10000 DEMME LMBRT STILR/a6000+/h71",
-            "28R": "LEJOY PLEEZ NESTO/a10000 DEMME LMBRT STILR/a6000+/h71",
-            "32": "LEJOY PLEEZ NESTO/a10000 DEMME GRUNZ/a6000+/h303"
+    "DEMME5": {
+      "arrivals": [
+        {
+          "waypoints": "VINSE/ho LEJOY",
+          "runway_waypoints": {
+            "KPIT": {
+              "10L": "LEJOY PLEEZ NESTO/a10000 DEMME PENGN RIVRZ HEINZ/a6000+/h281",
+              "10R": "LEJOY PLEEZ NESTO/a10000 DEMME PENGN RIVRZ HEINZ/a6000+/h281",
+              "28L": "LEJOY PLEEZ NESTO/a10000 DEMME LMBRT STILR/a6000+/h71",
+              "28R": "LEJOY PLEEZ NESTO/a10000 DEMME LMBRT STILR/a6000+/h71",
+              "32": "LEJOY PLEEZ NESTO/a10000 DEMME GRUNZ/a6000+/h303"
+            }
+          },
+          "cruise_altitude": 26000,
+          "star": "DEMME5",
+          "initial_controller": "CLE_55_CTR",
+          "initial_altitude": 15000,
+          "initial_speed": 280,
+          "expect_approach": null,
+          "airlines": {
+            "KPIT": [
+              {
+                "icao": "AAY",
+                "airport": "KSFB"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KDCA"
+              },
+              {
+                "icao": "NKS",
+                "airport": "KMCO"
+              },
+              {
+                "icao": "RPA",
+                "airport": "KIAD"
+              },
+              {
+                "icao": "N",
+                "airport": "KHPN"
+              },
+              {
+                "icao": "RPA",
+                "airport": "KEWR"
+              },
+              {
+                "icao": "EDV",
+                "airport": "KLGA"
+              }
+            ]
           }
-        },
-        "cruise_altitude": 26000,
-        "star": "DEMME5",
-        "initial_controller": "CLE_55_CTR",
-        "initial_altitude": 15000,
-        "initial_speed": 280,
-        "expect_approach": null,
-        "airlines": {
-          "KPIT": [
-            {
-              "icao": "AAY",
-              "airport": "KSFB"
-            },
-            {
-              "icao": "JIA",
-              "airport": "KDCA"
-            },
-            {
-              "icao": "NKS",
-              "airport": "KMCO"
-            },
-            {
-              "icao": "RPA",
-              "airport": "KIAD"
-            },
-            {
-              "icao": "N",
-              "airport": "KHPN"
-            },
-            {
-              "icao": "RPA",
-              "airport": "KEWR"
-            },
-            {
-              "icao": "EDV",
-              "airport": "KLGA"
-            }
-          ]
         }
-      }
-    ]
-  },
-  "FEWGA7": {
-    "arrivals": [
-      {
-        "waypoints": "PYRAT AIR/ho",
-        "runway_waypoints": {
-          "KPIT": {
-            "10L": "AIR WISKE/a10000 FEWGA LEMEW/h301",
-            "10R": "AIR WISKE/a10000 FEWGA LEMEW/h301",
-            "28L": "AIR WISKE/a10000 FEWGA BBLAK GOLDH JOEPA GUINZ CYDNY/h101",
-            "28R": "AIR WISKE/a10000 FEWGA BBLAK GOLDH JOEPA GUINZ CYDNY/h101",
-            "32": "AIR WISKE/a10000 FEWGA BBLAK GOLDH FLURY MLKIN CRSBY/h146"
+      ]
+    },
+    "FEWGA7": {
+      "arrivals": [
+        {
+          "waypoints": "PYRAT AIR/ho",
+          "runway_waypoints": {
+            "KPIT": {
+              "10L": "AIR WISKE/a10000 FEWGA LEMEW/h301",
+              "10R": "AIR WISKE/a10000 FEWGA LEMEW/h301",
+              "28L": "AIR WISKE/a10000 FEWGA BBLAK GOLDH JOEPA GUINZ CYDNY/h101",
+              "28R": "AIR WISKE/a10000 FEWGA BBLAK GOLDH JOEPA GUINZ CYDNY/h101",
+              "32": "AIR WISKE/a10000 FEWGA BBLAK GOLDH FLURY MLKIN CRSBY/h146"
+            }
+          },
+          "cruise_altitude": 29000,
+          "star": "FEWGA7",
+          "initial_controller": "CLE_55_CTR",
+          "initial_altitude": 15000,
+          "initial_speed": 280,
+          "expect_approach": null,
+          "airlines": {
+            "KPIT": [
+              {
+                "icao": "AAL",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KSTL"
+              },
+              {
+                "icao": "N",
+                "airport": "KSUS"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KHOU"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KATL"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KHOU"
+              },
+              {
+                "icao": "UPS",
+                "airport": "KSDF"
+              }
+            ]
           }
-        },
-        "cruise_altitude": 29000,
-        "star": "FEWGA7",
-        "initial_controller": "CLE_55_CTR",
-        "initial_altitude": 15000,
-        "initial_speed": 280,
-        "expect_approach": null,
-        "airlines": {
-          "KPIT": [
-            {
-              "icao": "AAL",
-              "airport": "KDFW"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KSTL"
-            },
-            {
-              "icao": "N",
-              "airport": "KSUS"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KHOU"
-            },
-            {
-              "icao": "DAL",
-              "airport": "KATL"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KHOU"
-            },
-            {
-              "icao": "UPS",
-              "airport": "KSDF"
-            }
-          ]
         }
-      }
-    ]
-  },
-  "HAYNZ7": {
-    "arrivals": [
-      {
-        "waypoints": "SLT/ho EARED",
-        "runway_waypoints": {
-          "KPIT": {
-            "10L": "EARED GRACE/a10000 HAYNZ ROOSA TERBL TOWEL/h282",
-            "10R": "EARED GRACE/a10000 HAYNZ ROOSA TERBL TOWEL/h282",
-            "28L": "EARED GRACE/a10000 HAYNZ MYRON/h126",
-            "28R": "EARED GRACE/a10000 HAYNZ MYRON/h126",
-            "32": "EARED GRACE/a10000 HAYNZ MYRON COPPE/h166"
+      ]
+    },
+    "HAYNZ7": {
+      "arrivals": [
+        {
+          "waypoints": "SLT/ho EARED",
+          "runway_waypoints": {
+            "KPIT": {
+              "10L": "EARED GRACE/a10000 HAYNZ ROOSA TERBL TOWEL/h282",
+              "10R": "EARED GRACE/a10000 HAYNZ ROOSA TERBL TOWEL/h282",
+              "28L": "EARED GRACE/a10000 HAYNZ MYRON/h126",
+              "28R": "EARED GRACE/a10000 HAYNZ MYRON/h126",
+              "32": "EARED GRACE/a10000 HAYNZ MYRON COPPE/h166"
+            }
+          },
+          "cruise_altitude": 38000,
+          "star": "HAYNZ7",
+          "initial_controller": "CLE_55_CTR",
+          "initial_altitude": 15000,
+          "initial_speed": 280,
+          "expect_approach": null,
+          "airlines": {
+            "KPIT": [
+              {
+                "icao": "EJA",
+                "airport": "4NY0"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KPWM"
+              },
+              {
+                "icao": "BAW",
+                "fleet": "long",
+                "airport": "EGLL"
+              },
+              {
+                "icao": "JBU",
+                "airport": "KBOS"
+              },
+              {
+                "icao": "ICE",
+                "airport": "BIKF"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KBVY"
+              }
+            ]
           }
-        },
-        "cruise_altitude": 38000,
-        "star": "HAYNZ7",
-        "initial_controller": "CLE_55_CTR",
-        "initial_altitude": 15000,
-        "initial_speed": 280,
-        "expect_approach": null,
-        "airlines": {
-          "KPIT": [
-            {
-              "icao": "EJA",
-              "airport": "4NY0"
-            },
-            {
-              "icao": "EJA",
-              "airport": "KPWM"
-            },
-            {
-              "icao": "BAW",
-              "fleet": "long",
-              "airport": "EGLL"
-            },
-            {
-              "icao": "JBU",
-              "airport": "KBOS"
-            },
-            {
-              "icao": "ICE",
-              "airport": "BIKF"
-            },
-            {
-              "icao": "LXJ",
-              "airport": "KBVY"
-            }
-          ]
         }
-      }
-    ]
-  },
-  "HOMEE": {
-    "arrivals": [
-      {
-        "waypoints": "ETG/ho HOMEE",
-        "cruise_altitude": 18000,
-        "route": "ETG HOMEE",
-        "initial_controller": "CLE_55_CTR",
-        "initial_altitude": 18000,
-        "assigned_altitude": 15000,
-        "initial_speed": 280,
-        "expect_approach": null,
-        "airlines": {
-          "KAGC": [
-            {
-              "icao": "EJA",
-              "airport": "KPSM"
-            },
-            {
-              "icao": "LXJ",
-              "airport": "KPWM"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "JESEY4": {
-    "arrivals": [
-      {
-        "waypoints": "ACO/ho CUTTA/a10000",
-        "runway_waypoints": {
-          "KPIT": {
-            "10L": "CUTTA/a10000 JESEY YINZZ/h251",
-            "10R": "CUTTA/a10000 JESEY YINZZ/h251",
-            "28L": "CUTTA/a10000 JESEY KRIKK SSOXX ROOSA/h102",
-            "28R": "CUTTA/a10000 JESEY KRIKK SSOXX ROOSA/h102",
-            "32": "CUTTA/a10000 JESEY KRIKK PROGY PRUIT/h146"
+      ]
+    },
+    "HOMEE": {
+      "arrivals": [
+        {
+          "waypoints": "ETG/ho HOMEE",
+          "cruise_altitude": 18000,
+          "route": "ETG HOMEE",
+          "initial_controller": "CLE_55_CTR",
+          "initial_altitude": 18000,
+          "assigned_altitude": 15000,
+          "initial_speed": 280,
+          "expect_approach": null,
+          "airlines": {
+            "KAGC": [
+              {
+                "icao": "EJA",
+                "airport": "KPSM"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KPWM"
+              }
+            ]
           }
-        },
-        "cruise_altitude": 19000,
-        "star": "JESEY4",
-        "initial_controller": "CLE_55_CTR",
-        "initial_altitude": 15000,
-        "initial_speed": 280,
-        "expect_approach": null,
-        "airlines": {
-          "KPIT": [
-            {
-              "icao": "UAL",
-              "airport": "KSFO"
-            },
-            {
-              "icao": "EDV",
-              "airport": "KDTW"
-            },
-            {
-              "icao": "DAL",
-              "airport": "KDTW"
-            },
-            {
-              "icao": "ENY",
-              "airport": "KORD"
-            },
-            {
-              "icao": "SWA",
-              "airport": "KDEN"
-            }
-          ]
         }
-      }
-    ]
+      ]
+    },
+    "JESEY4": {
+      "arrivals": [
+        {
+          "waypoints": "ACO/ho CUTTA/a10000",
+          "runway_waypoints": {
+            "KPIT": {
+              "10L": "CUTTA/a10000 JESEY YINZZ/h251",
+              "10R": "CUTTA/a10000 JESEY YINZZ/h251",
+              "28L": "CUTTA/a10000 JESEY KRIKK SSOXX ROOSA/h102",
+              "28R": "CUTTA/a10000 JESEY KRIKK SSOXX ROOSA/h102",
+              "32": "CUTTA/a10000 JESEY KRIKK PROGY PRUIT/h146"
+            }
+          },
+          "cruise_altitude": 19000,
+          "star": "JESEY4",
+          "initial_controller": "CLE_55_CTR",
+          "initial_altitude": 15000,
+          "initial_speed": 280,
+          "expect_approach": null,
+          "airlines": {
+            "KPIT": [
+              {
+                "icao": "UAL",
+                "airport": "KSFO"
+              },
+              {
+                "icao": "EDV",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "ENY",
+                "airport": "KORD"
+              },
+              {
+                "icao": "SWA",
+                "airport": "KDEN"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "NESTO": {
+      "arrivals": [
+        {
+          "waypoints": "LEJOY/ho NESTO",
+          "cruise_altitude": 18000,
+          "route": "LEJOY NESTO",
+          "initial_controller": "CLE_55_CTR",
+          "initial_altitude": 18000,
+          "assigned_altitude": 15000,
+          "initial_speed": 280,
+          "expect_approach": null,
+          "airlines": {
+            "KAGC": [
+              {
+                "icao": "EJA",
+                "airport": "KTEB"
+              },
+              {
+                "icao": "N",
+                "airport": "KIAD"
+              },
+              {
+                "icao": "N",
+                "airport": "KTTN"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "WISKE": {
+      "arrivals": [
+        {
+          "waypoints": "AIR/ho WISKE",
+          "cruise_altitude": 27000,
+          "route": "IR/ho WISKE",
+          "initial_controller": "CLE_55_CTR",
+          "initial_altitude": 17000,
+          "assigned_altitude": 15000,
+          "initial_speed": 280,
+          "expect_approach": null,
+          "airlines": {
+            "KAGC": [
+              {
+                "icao": "LXJ",
+                "airport": "KDFW"
+              },
+              {
+                "icao": "EJA",
+                "airport": "KLAS"
+              }
+            ]
+          }
+        }
+      ]
+    }
   },
-  "NESTO": {
-    "arrivals": [
-      {
-        "waypoints": "LEJOY/ho NESTO",
-        "cruise_altitude": 18000,
-        "route": "LEJOY NESTO",
-        "initial_controller": "CLE_55_CTR",
-        "initial_altitude": 18000,
-        "assigned_altitude": 15000,
-        "initial_speed": 280,
-        "expect_approach": null,
-        "airlines": {
-          "KAGC": [
-            {
-              "icao": "EJA",
-              "airport": "KTEB"
-            },
-            {
-              "icao": "N",
-              "airport": "KIAD"
-            },
-            {
-              "icao": "N",
-              "airport": "KTTN"
-            }
-          ]
-        }
-      }
-    ]
-  },
-  "WISKE": {
-    "arrivals": [
-      {
-        "waypoints": "AIR/ho WISKE",
-        "cruise_altitude": 27000,
-        "route": "IR/ho WISKE",
-        "initial_controller": "CLE_55_CTR",
-        "initial_altitude": 17000,
-        "assigned_altitude": 15000,
-        "initial_speed": 280,
-        "expect_approach": null,
-        "airlines": {
-          "KAGC": [
-            {
-              "icao": "LXJ",
-              "airport": "KDFW"
-            },
-            {
-              "icao": "EJA",
-              "airport": "KLAS"
-            }
-          ]
-        }
-      }
-    ]
-  }
-},
   "control_positions": {
     "CLE_55_CTR": {
       "eram_facility": true,
@@ -1104,17 +1091,20 @@
     "PIT_B_APP": {
       "frequency": 124150,
       "radio_name": "Pittsburgh Approach",
-      "sector_id": "1B"
+      "sector_id": "1B",
+      "default_airport": "KPIT"
     },
     "PIT_S_DEP": {
       "frequency": 119350,
       "radio_name": "Pittsburgh Departure",
-      "sector_id": "1S"
+      "sector_id": "1S",
+      "default_airport": "KPIT"
     },
     "PIT_N_DEP": {
       "frequency": 124750,
       "radio_name": "Pittsburgh Approach",
-      "sector_id": "1N"
+      "sector_id": "1N",
+      "default_airport": "KPIT"
     },
     "AGC_TWR": {
       "frequency": 121100,
@@ -1122,7 +1112,6 @@
       "sector_id": "1T"
     }
   },
-
   "default_scenario": "PIT West (ARR 28L/R)",
   "fixes": {
     "_PIT_10C": "N040.29.23.085,W080.14.45.882",
@@ -1138,18 +1127,9 @@
     "_AGC_10": "N040.21.15.814,W079.56.28.183",
     "KAGC": "N040.21.17.806,W079.55.36.575"
   },
-
   "name": "KPIT",
   "primary_airport": "KPIT",
-  "reporting_points": [
-    "ETG",
-    "LEJOY",
-    "AIR",
-    "EARED",
-    "CUTTA",
-    "AIR"
-  ],
-
+  "reporting_points": ["ETG", "LEJOY", "AIR", "EARED", "CUTTA", "AIR"],
   "scenarios": {
     "PIT West (ARR 28L/R)": {
       "airspace": {
@@ -1163,7 +1143,8 @@
           "airport": "KPIT",
           "runway": "28R"
         },
-        {"airport": "KPIT",
+        {
+          "airport": "KPIT",
           "runway": "28L"
         },
         {
@@ -1171,7 +1152,7 @@
           "runway": "28"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "DEMME5": {
           "KPIT": 9
         },
@@ -1184,35 +1165,29 @@
         "JESEY4": {
           "KPIT": 9
         },
-        "NESTO":{ 
+        "NESTO": {
           "KAGC": 3
         },
-        "HOMEE":{
+        "HOMEE": {
           "KAGC": 1
         },
-        "WISKE":{
+        "WISKE": {
           "KAGC": 1
         }
-        },
-      "solo_controller": "PIT_D_APP",
-      "multi_controllers": {
-        "default" : {
-           "PIT_D_APP": {"primary": true , "arrivals": ["DEMME5", "FEWGA7", "NESTO", "WISKE"]},
-           "PIT_B_APP": {"backup": "PIT_D_APP", "arrivals": ["JESEY4", "HAYNZ7", "HOMEE"]},
-           "PIT_S_DEP": {"departures": ["KPIT/28C", "KAGC"], "backup": "PIT_D_APP"},
-           "PIT_N_DEP": {"departures": ["KPIT/28R"], "backup": "PIT_S_DEP"}
+      },
+      "configuration": {
+        "config_id": "STD",
+        "default_consolidation": {
+          "PIT_D_APP": ["PIT_B_APP", "PIT_S_DEP"],
+          "PIT_S_DEP": ["PIT_N_DEP"]
         }
-    },
-      "controllers": [
-        "PIT_TWR",
-        "AGC_TWR",
-        "CLE_55_CTR"
-      ],
-      "default_maps": [ "PIT-001 (WEST FLOW)" ],
+      },
+      "controllers": ["PIT_TWR", "AGC_TWR", "CLE_55_CTR"],
+      "default_maps": ["PIT-001 (WEST FLOW)"],
       "departure_runways": [
         {
           "airport": "KPIT",
-          "rate" : 6,
+          "rate": 6,
           "runway": "28R"
         },
         {
@@ -1227,16 +1202,15 @@
         }
       ],
       "wind": {
-        "direction": 280,
-        "speed": 6
+        "direction": "250-310"
       }
     },
     "PIT West (ARR 28L/R + 32)": {
       "airspace": {
-        "PIT_D_APP": [ "PITAPP" ],
-        "PIT_B_APP": [ "PITAPP" ],
-        "PIT_S_DEP": [ "PITAPP" ],
-        "PIT_N_DEP": [ "PITAPP" ]
+        "PIT_D_APP": ["PITAPP"],
+        "PIT_B_APP": ["PITAPP"],
+        "PIT_S_DEP": ["PITAPP"],
+        "PIT_N_DEP": ["PITAPP"]
       },
       "arrival_runways": [
         {
@@ -1246,7 +1220,6 @@
         {
           "airport": "KPIT",
           "runway": "28R"
-
         },
         {
           "airport": "KPIT",
@@ -1257,7 +1230,7 @@
           "runway": "28"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "DEMME5": {
           "KPIT": 9
         },
@@ -1270,35 +1243,29 @@
         "JESEY4": {
           "KPIT": 9
         },
-        "NESTO":{ 
+        "NESTO": {
           "KAGC": 3
         },
-        "HOMEE":{
+        "HOMEE": {
           "KAGC": 1
         },
-        "WISKE":{
+        "WISKE": {
           "KAGC": 1
         }
-        },
-      "solo_controller": "PIT_D_APP",
-      "multi_controllers": {
-        "default" : {
-           "PIT_D_APP": {"primary": true , "arrivals": ["DEMME5", "FEWGA7", "NESTO", "WISKE"]},
-           "PIT_B_APP": {"backup": "PIT_D_APP", "arrivals": ["JESEY4", "HAYNZ7", "HOMEE"]},
-           "PIT_S_DEP": {"departures": ["KPIT/28C", "KAGC"], "backup": "PIT_D_APP"},
-           "PIT_N_DEP": {"departures": ["KPIT/28R"], "backup": "PIT_S_DEP"}
+      },
+      "configuration": {
+        "config_id": "STD",
+        "default_consolidation": {
+          "PIT_D_APP": ["PIT_B_APP", "PIT_S_DEP"],
+          "PIT_S_DEP": ["PIT_N_DEP"]
         }
-    },
-      "controllers": [
-        "PIT_TWR",
-        "AGC_TWR",
-        "CLE_55_CTR"
-      ],
-      "default_maps": [ "PIT-001 (WEST FLOW)" ],
+      },
+      "controllers": ["PIT_TWR", "AGC_TWR", "CLE_55_CTR"],
+      "default_maps": ["PIT-001 (WEST FLOW)"],
       "departure_runways": [
         {
           "airport": "KPIT",
-          "rate" : 6,
+          "rate": 6,
           "runway": "28R"
         },
         {
@@ -1313,16 +1280,15 @@
         }
       ],
       "wind": {
-        "direction": 280,
-        "speed": 6
+        "direction": "255-315"
       }
     },
     "PIT East": {
       "airspace": {
-        "PIT_D_APP": [ "PITAPP" ],
-        "PIT_B_APP": [ "PITAPP" ],
-        "PIT_S_DEP": [ "PITAPP" ],
-        "PIT_N_DEP": [ "PITAPP" ]
+        "PIT_D_APP": ["PITAPP"],
+        "PIT_B_APP": ["PITAPP"],
+        "PIT_S_DEP": ["PITAPP"],
+        "PIT_N_DEP": ["PITAPP"]
       },
       "arrival_runways": [
         {
@@ -1338,7 +1304,7 @@
           "runway": "10"
         }
       ],
-      "arrivals": {
+      "inbound_rates": {
         "DEMME5": {
           "KPIT": 9
         },
@@ -1351,31 +1317,25 @@
         "JESEY4": {
           "KPIT": 9
         }
-        },
-      "solo_controller": "PIT_D_APP",
-      "multi_controllers": {
-        "default" : {
-           "PIT_D_APP": {"primary": true , "arrivals": ["DEMME5", "FEWGA7"]},
-           "PIT_B_APP": {"backup": "PIT_D_APP", "arrivals": ["JESEY4", "HAYNZ7"]},
-           "PIT_S_DEP": {"departures": ["KPIT/14", "KAGC"], "backup": "PIT_D_APP"},
-           "PIT_N_DEP": {"departures": ["KPIT/10C"], "backup": "PIT_S_DEP"}
+      },
+      "configuration": {
+        "config_id": "STD",
+        "default_consolidation": {
+          "PIT_D_APP": ["PIT_B_APP", "PIT_S_DEP"],
+          "PIT_S_DEP": ["PIT_N_DEP"]
         }
       },
-      "controllers": [
-        "PIT_TWR",
-        "AGC_TWR",
-        "CLE_55_CTR"
-      ],
-      "default_maps": [ "PIT-002 (EAST FLOW)" ],
+      "controllers": ["PIT_TWR", "AGC_TWR", "CLE_55_CTR"],
+      "default_maps": ["PIT-002 (EAST FLOW)"],
       "departure_runways": [
         {
           "airport": "KPIT",
-          "rate" : 12,
+          "rate": 12,
           "runway": "10C"
         },
         {
           "airport": "KPIT",
-          "rate" : 12,
+          "rate": 12,
           "runway": "14"
         },
         {
@@ -1385,77 +1345,93 @@
         }
       ],
       "wind": {
-        "direction": 100,
-        "speed": 6
+        "direction": "80-140"
       }
     }
   },
-      
-"stars_config": {
+  "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "DEMME5": "PIT_D_APP",
+          "FEWGA7": "PIT_D_APP",
+          "HAYNZ7": "PIT_B_APP",
+          "HOMEE": "PIT_B_APP",
+          "JESEY4": "PIT_B_APP",
+          "NESTO": "PIT_D_APP",
+          "WISKE": "PIT_D_APP"
+        },
+        "departure_assignments": {
+          "KAGC": "PIT_S_DEP",
+          "KPIT": "PIT_S_DEP"
+        }
+      }
+    },
+
     "force_ql_self": true,
     "allow_long_scratchpad": true,
     "coordination_fixes": {
       "LEJOY": [
         {
-            "type": "route",
-            "to": "PIT",
-            "from": "ZOB"
+          "type": "route",
+          "to": "PIT",
+          "from": "ZOB"
         }
-    ],
-    "AIR": [
+      ],
+      "AIR": [
         {
-            "type": "route",
-            "to": "PIT",
-            "from": "ZOB"
+          "type": "route",
+          "to": "PIT",
+          "from": "ZOB"
         }
-    ],
-    "EARED": [
+      ],
+      "EARED": [
         {
-            "type": "route",
-            "to": "PIT",
-            "from": "ZOB"
+          "type": "route",
+          "to": "PIT",
+          "from": "ZOB"
         }
-    ],
-    "CUTTA": [
+      ],
+      "CUTTA": [
         {
-            "type": "route",
-            "to": "PIT",
-            "from": "ZOB"
+          "type": "route",
+          "to": "PIT",
+          "from": "ZOB"
         }
-    ],
-    "HOMEE": [
+      ],
+      "HOMEE": [
         {
-            "type": "route",
-            "to": "PIT",
-            "from": "ZOB"
+          "type": "route",
+          "to": "PIT",
+          "from": "ZOB"
         }
-    ]
+      ]
     },
     "center": "KPIT",
     "filters": {
-	"inhibit_ca": [
-	    {
-		"id": "PITNOCA",
-		"description": "PIT CONFLICT SUPPRESS",
-		"type": "circle",
-		"floor": 0,
-		"ceiling": 4000,
-		"center": "N040.29.37.491,W080.14.19.515",
-		"radius": 6
-	    },
-	    {
-		"id": "AGCNOCA",
-		"description": "AGC CONFLICT SUPPRESS",
-		"type": "circle",
-		"floor": 0,
-		"ceiling": 4000,
-		"center": "N040.21.17.806,W079.55.36.575",
-		"radius": 3
-	    }
-	]
+      "inhibit_ca": [
+        {
+          "id": "PITNOCA",
+          "description": "PIT CONFLICT SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 4000,
+          "center": "N040.29.37.491,W080.14.19.515",
+          "radius": 6
+        },
+        {
+          "id": "AGCNOCA",
+          "description": "AGC CONFLICT SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 4000,
+          "center": "N040.21.17.806,W079.55.36.575",
+          "radius": 3
+        }
+      ]
     },
     "radar_sites": {
-     "PIT": {
+      "PIT": {
         "char": "A",
         "position": "N040.29.37.491,W080.14.19.515",
         "elevation": 1203,
@@ -1463,47 +1439,53 @@
         "secondary_range": 120,
         "silence_angle": 30,
         "slope_angle": 0.175
-        }
-        },
+      }
+    },
     "range": 60,
-    "scratchpads":{
-        "EWC": "EWC",
-        "AIR": "AIR",
-        "TYROO": "TYRO",
-        "BSV": "BSV",
-        "JST": "JST",
-        "MGW": "MGW",
-        "CKB": "CKB",
-        "DILNE": "DILN",
-        "AHTIY": "AHTI",
-        "PARKE": "PARK",
-        "HAR": "HAR",
-        "AGARD": "AGAR",
-        "PSB": "ALL"
-      },
-  "significant_points": {
-      "AGARD": {  },
-      "AHTIY": { },
-      "AIR": {  },
-      "BSV": {  },
-      "CKB": {  },
-      "DILNE": { },
-      "EWC": {  },
-      "HAR": {  },
-      "JST": {  },
-      "MGW": {  },
-      "PARKE": { },
-      "PSB": { },
-      "TYROO": { }
-  },
-    "stars_maps": [ "PIT-001 (WEST FLOW)",  "PIT-002 (EAST FLOW)",  "PIT-003 (MVA)",  "PIT-005 (VFR)",  "PIT-006 (RNAV APPROACHES)",
-                    "PIT-009 (CLASS B)",  "PIT-010 (LIFEFLIGHT APPROACHES)",  "PIT-013 (ADJACENT APPROACHES)",  "PIT-129 (DEMME)",
-                    "PIT-131 (FEWGA)",  "PIT-133 (HAYNZ)",  "PIT-135 (JESEY)"
+    "scratchpads": {
+      "EWC": "EWC",
+      "AIR": "AIR",
+      "TYROO": "TYRO",
+      "BSV": "BSV",
+      "JST": "JST",
+      "MGW": "MGW",
+      "CKB": "CKB",
+      "DILNE": "DILN",
+      "AHTIY": "AHTI",
+      "PARKE": "PARK",
+      "HAR": "HAR",
+      "AGARD": "AGAR",
+      "PSB": "ALL"
+    },
+    "significant_points": {
+      "AGARD": {},
+      "AHTIY": {},
+      "AIR": {},
+      "BSV": {},
+      "CKB": {},
+      "DILNE": {},
+      "EWC": {},
+      "HAR": {},
+      "JST": {},
+      "MGW": {},
+      "PARKE": {},
+      "PSB": {},
+      "TYROO": {}
+    },
+    "stars_maps": [
+      "PIT-001 (WEST FLOW)",
+      "PIT-002 (EAST FLOW)",
+      "PIT-003 (MVA)",
+      "PIT-005 (VFR)",
+      "PIT-006 (RNAV APPROACHES)",
+      "PIT-009 (CLASS B)",
+      "PIT-010 (LIFEFLIGHT APPROACHES)",
+      "PIT-013 (ADJACENT APPROACHES)",
+      "PIT-129 (DEMME)",
+      "PIT-131 (FEWGA)",
+      "PIT-133 (HAYNZ)",
+      "PIT-135 (JESEY)"
     ],
- "video_map_file": "videomaps/ZOB-videomaps.gob.zst"
+    "video_map_file": "videomaps/ZOB-videomaps.gob.zst"
   }
-    }
-
-
-
-
+}

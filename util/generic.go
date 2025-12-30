@@ -169,12 +169,31 @@ func SortedMapKeys[K constraints.Ordered, V any](m map[K]V) []K {
 	return slices.Sorted(maps.Keys(m))
 }
 
-// DuplicateMap returns a newly allocated map
-// that stores copies of all the values in the given map.
-func DuplicateMap[K comparable, V any](m map[K]V) map[K]V {
-	mnew := make(map[K]V, len(m))
-	maps.Copy(mnew, m)
-	return mnew
+func SortedMap[K constraints.Ordered, V any](m map[K]V) iter.Seq2[K, V] {
+	return func(yield func(k K, v V) bool) {
+		sk := SortedMapKeys(m)
+		for k := range slices.Values(sk) {
+			if !yield(k, m[k]) {
+				return
+			}
+		}
+	}
+}
+
+func FirstSortedMapEntry[K constraints.Ordered, V any](m map[K]V) (K, V) {
+	if len(m) == 0 {
+		panic("empty map")
+	}
+
+	var first K
+	initial := true
+	for k := range m {
+		if initial || k < first {
+			first = k
+			initial = false
+		}
+	}
+	return first, m[first]
 }
 
 // ReduceSlice applies the provided reduction function to the given slice,
@@ -381,7 +400,7 @@ func SeqContainsFunc[T any](seq iter.Seq[T], check func(T) bool) bool {
 	return false
 }
 
-func SeqLookupFunc[T comparable](seq iter.Seq[T], check func(T) bool) (T, bool) {
+func SeqLookupFunc[T any](seq iter.Seq[T], check func(T) bool) (T, bool) {
 	for s := range seq {
 		if check(s) {
 			return s, true
@@ -462,6 +481,42 @@ func Seq2Values[K, V any](seq iter.Seq2[K, V]) iter.Seq[V] {
 				break
 			}
 		}
+	}
+}
+
+func SeqConcat[V any](seq ...iter.Seq[V]) iter.Seq[V] {
+	return func(yield func(V) bool) {
+		for _, s := range seq {
+			for v := range s {
+				if !yield(v) {
+					return
+				}
+			}
+		}
+	}
+}
+
+func SeqSingle[V any](v V) iter.Seq[V] {
+	return func(yield func(V) bool) {
+		yield(v)
+	}
+}
+
+func Seq2Concat[K, V any](seq ...iter.Seq2[K, V]) iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		for _, s := range seq {
+			for k, v := range s {
+				if !yield(k, v) {
+					return
+				}
+			}
+		}
+	}
+}
+
+func Seq2Single[K, V any](k K, v V) iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		yield(k, v)
 	}
 }
 

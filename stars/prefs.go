@@ -8,10 +8,10 @@ import (
 	"slices"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
-	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 
 	"github.com/brunoga/deep"
@@ -52,13 +52,13 @@ func (p *PreferenceSet) SetCurrent(cur Preferences, pl platform.Platform, sp *ST
 // Reset ends up being called when a new Sim is started. It is responsible
 // for resetting all of the preference values in the PreferenceSet that we
 // don't expect to persist on a restart (e.g. quick look positions.)
-func (p *PreferenceSet) Reset(ss sim.State, sp *STARSPane) {
+func (p *PreferenceSet) Reset(ss client.SimState, sp *STARSPane) {
 	// Only reset Current; leave everything as is in the saved prefs.
 	p.Current.Reset(ss, sp)
 }
 
 // ResetDefault resets the current preferences to the system defaults.
-func (p *PreferenceSet) ResetDefault(ss sim.State, pl platform.Platform, sp *STARSPane) {
+func (p *PreferenceSet) ResetDefault(ss client.SimState, pl platform.Platform, sp *STARSPane) {
 	// Start with the full-on STARS defaults and then update for the current Sim.
 	p.Current = *makeDefaultPreferences()
 	p.Reset(ss, sp)
@@ -85,8 +85,8 @@ type Preferences struct {
 	UseUserRangeRingsCenter bool `json:"RangeRingsUserCenter"`
 
 	// User-supplied text for the SSA list
-	ATIS   string
-	GIText [9]string
+	ATIS   [10]string `json:"ATISes"` /* rename after making array */
+	GIText [10]string
 
 	// If empty, then then MULTI or FUSED mode, depending on
 	// FusedRadarMode.  The custom JSON name is so we don't get errors
@@ -95,7 +95,7 @@ type Preferences struct {
 	FusedRadarMode    bool
 
 	// For tracked by other controllers
-	ControllerLeaderLineDirections map[string]math.CardinalOrdinalDirection
+	ControllerLeaderLineDirections map[av.ControlPosition]math.CardinalOrdinalDirection
 	// If not specified in ControllerLeaderLineDirections...
 	OtherControllerLeaderLineDirection *math.CardinalOrdinalDirection
 	// Only set if specified by the user (and not used currently...)
@@ -111,10 +111,10 @@ type Preferences struct {
 		Intrafacility bool
 	}
 
-	QuickLookAll             bool
-	QuickLookAllIsPlus       bool
-	QuickLookPositions       []QuickLookPosition
-	DisabledQuicklookRegions []string
+	QuickLookAll       bool
+	QuickLookAllIsPlus bool
+	QuickLookTCPs      map[string]bool // in map: is quicklooked; bool indicates QL+
+	DisabledQLRegions  map[string]interface{}
 
 	DisplayEmptyCoordinationLists bool
 
@@ -221,6 +221,7 @@ type CommonPreferences struct {
 			Time                bool
 			Altimeter           bool
 			Status              bool
+			ConfigPlan          bool
 			Radar               bool
 			Codes               bool
 			SpecialPurposeCodes bool
@@ -235,11 +236,8 @@ type CommonPreferences struct {
 			DisabledTerminal    bool
 			ActiveCRDAPairs     bool
 			WxHistory           bool
-
-			Text struct {
-				Main bool
-				GI   [9]bool
-			}
+			Consolidation       bool
+			GIText              [10]bool
 		}
 	}
 	VFRList       BasicSTARSList
@@ -282,7 +280,7 @@ type RestrictionAreaSettings struct {
 	ForceBlinkingText bool
 }
 
-func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
+func (p *Preferences) Reset(ss client.SimState, sp *STARSPane) {
 	// Get the scope centered and set the range according to the Sim's initial values.
 	p.DefaultCenter = ss.GetInitialCenter()
 	p.UserCenter = p.DefaultCenter
@@ -290,11 +288,11 @@ func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
 	p.RangeRingsUserCenter = p.DefaultCenter
 	p.UseUserRangeRingsCenter = false
 	p.Range = ss.GetInitialRange()
-	p.QuickLookPositions = nil
-	p.DisabledQuicklookRegions = nil
+	p.QuickLookTCPs = nil
+	p.DisabledQLRegions = nil
 
-	p.ATIS = ""
-	for i := range p.GIText {
+	for i := range p.ATIS {
+		p.ATIS[i] = ""
 		p.GIText[i] = ""
 	}
 
@@ -304,10 +302,14 @@ func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
 
 	// Reset CRDA state
 	p.CRDA.RunwayPairState = nil
-	state := CRDARunwayPairState{}
-	// The first runway is enabled by default
-	state.RunwayState[0].Enabled = true
-	for range sp.ConvergingRunways {
+	for _, pair := range sp.ConvergingRunways {
+		state := CRDARunwayPairState{}
+		// The first runway is enabled by default
+		state.RunwayState[0].Enabled = true
+		state.RunwayState[0].Airport = pair.Airport
+		state.RunwayState[0].Runway = pair.Runways[0]
+		state.RunwayState[1].Airport = pair.Airport
+		state.RunwayState[1].Runway = pair.Runways[1]
 		p.CRDA.RunwayPairState = append(p.CRDA.RunwayPairState, state)
 	}
 
@@ -317,7 +319,7 @@ func (p *Preferences) Reset(ss sim.State, sp *STARSPane) {
 	p.VideoMapVisible = make(map[int]interface{})
 
 	for _, dm := range ss.ControllerDefaultVideoMaps {
-		if idx := slices.IndexFunc(sp.allVideoMaps, func(v sim.VideoMap) bool { return v.Name == dm }); idx != -1 {
+		if idx := slices.IndexFunc(sp.allVideoMaps, func(v radar.ClientVideoMap) bool { return v.Name == dm }); idx != -1 {
 			p.VideoMapVisible[sp.allVideoMaps[idx].Id] = nil
 		} else {
 			// This should have been validated at load time.
@@ -392,9 +394,8 @@ func makeDefaultPreferences() *Preferences {
 	prefs.SSAList.Position = [2]float32{.05, .9}
 	prefs.SSAList.Filter.All = true
 
-	prefs.SSAList.Filter.Text.Main = true
-	for i := range prefs.SSAList.Filter.Text.GI {
-		prefs.SSAList.Filter.Text.GI[i] = true
+	for i := range prefs.SSAList.Filter.GIText {
+		prefs.SSAList.Filter.GIText[i] = true
 	}
 
 	prefs.TABList.Position = [2]float32{.05, .65}
@@ -566,9 +567,8 @@ func (p *Preferences) Upgrade(from, to int) {
 		}
 	}
 	if from < 27 {
-		p.SSAList.Filter.Text.Main = true
-		for i := range p.SSAList.Filter.Text.GI {
-			p.SSAList.Filter.Text.GI[i] = true
+		for i := range p.SSAList.Filter.GIText {
+			p.SSAList.Filter.GIText[i] = true
 		}
 		p.CoordinationLists = make(map[string]*CoordinationList)
 	}
@@ -581,8 +581,8 @@ func (p *Preferences) Upgrade(from, to int) {
 	}
 }
 
-func (sp *STARSPane) initPrefsForLoadedSim(ss sim.State, pl platform.Platform) {
-	prefSet, ok := sp.TRACONPreferenceSets[ss.TRACON]
+func (sp *STARSPane) initPrefsForLoadedSim(ss client.SimState, pl platform.Platform) {
+	prefSet, ok := sp.TRACONPreferenceSets[ss.Facility]
 	if !ok {
 		// First time we've seen this TRACON. Start out with system defaults.
 		prefSet = &PreferenceSet{
@@ -614,7 +614,7 @@ func (sp *STARSPane) initPrefsForLoadedSim(ss sim.State, pl platform.Platform) {
 			prefSet.Current.CommonPreferences = sp.prefSet.Current.CommonPreferences
 		}
 
-		sp.TRACONPreferenceSets[ss.TRACON] = prefSet
+		sp.TRACONPreferenceSets[ss.Facility] = prefSet
 	}
 
 	// Cache the PreferenceSet for use throughout the rest of the STARSPane
@@ -624,7 +624,7 @@ func (sp *STARSPane) initPrefsForLoadedSim(ss sim.State, pl platform.Platform) {
 }
 
 // This is called when a new Sim is started from scratch.
-func (sp *STARSPane) resetPrefsForNewSim(ss sim.State, pl platform.Platform) {
+func (sp *STARSPane) resetPrefsForNewSim(ss client.SimState, pl platform.Platform) {
 	sp.initPrefsForLoadedSim(ss, pl)
 
 	// Clear out the preference-related state (e.g. quicklooks) that we

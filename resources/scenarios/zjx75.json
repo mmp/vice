@@ -1,0 +1,1251 @@
+{
+  "artcc": "ZJX",
+  "area": "South Area",
+  "name": "ZJX 75",
+  "airports": {
+    "KMCO": {
+      "departure_controller": "Orlando Departure",
+      "name": "Orlando",
+      "approaches": {
+        "R6L": {
+          "cifp_id": "R36L"
+        }
+      },
+      "departure_routes": {
+        "35L": {
+          "VIYAP": {
+            "handoff_controller": "ZJX 75 Greencove",
+            "cleared_altitude": 16000,
+            "sid": "FATHE4",
+            "waypoints": "KMCO-17R JWOLF/a2600- JIRAN/a3000+ BIGSE/ho GOTHA/a7000- BUFFI FATHE/a14000+ MDBOG BKENI/a16000+ FEMON"
+          },
+          "PAINN": {
+            "handoff_controller": "ZJX 75 Greencove",
+            "cleared_altitude": 16000,
+            "sid": "JEEMY4",
+            "waypoints": "KMCO-17R JWOLF/a2600+ JIRAN/a3000+ BIGSE/ho ALOHH/a7000- SNOBE MDUSA JEEMY/a16000+ ACCHE"
+          }
+        },
+        "36R": {
+          "VIYAP": {
+            "handoff_controller": "ZJX 75 Greencove",
+            "cleared_altitude": 16000,
+            "sid": "FATHE4",
+            "waypoints": "KMCO-18L FACTS/a2300+ HANDD/a3000+  TRYNA/a7000-/ho BUFFI FATHE/a14000+ MDBOG BKENI/a16000+ FEMON"
+          },
+          "PAINN": {
+            "handoff_controller": "ZJX 75 Greencove",
+            "cleared_altitude": 16000,
+            "sid": "JEEMY4",
+            "waypoints": "KMCO-18L FACTS/a2300+ HANDD/a3000+ CHUKG/a7000-/ho SNOBE MDUSA JEEMY/a16000+ ACCHE"
+          }
+        }
+      },
+      "departures": [
+        {
+          "exit": "PAINN",
+          "destination": "KATL",
+          "altitude": 35000,
+          "route": "PAINN SHRKS LAIRI LARZZ JJEDI3",
+          "airlines": [
+            {
+              "icao": "NKS",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "PAINN",
+          "destination": "KATL",
+          "altitude": 35000,
+          "route": "PAINN SHRKS LAIRI LARZZ JJEDI3",
+          "airlines": [
+            {
+              "icao": "NKS",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "VIYAP",
+          "destination": "KJFK",
+          "altitude": 35000,
+          "route": "VIYAP Q87 JROSS JOHAR Q109 DFENC SAWED Q108 SIE CAMRN5",
+          "airlines": [
+            {
+              "icao": "JBU",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "VIYAP",
+          "destination": "KJFK",
+          "altitude": 37000,
+          "route": "VIYAP Q87 JROSS JOHAR Q109 DFENC SAWED Q108 SIE CAMRN5",
+          "airlines": [
+            {
+              "icao": "JBU",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "VIYAP",
+          "destination": "KJFK",
+          "altitude": 35000,
+          "route": "VIYAP Q87 JROSS JOHAR Q109 DFENC SAWED Q108 SIE CAMRN5",
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "VIYAP",
+          "destination": "KJFK",
+          "altitude": 37000,
+          "route": "VIYAP Q87 JROSS JOHAR Q109 DFENC SAWED Q108 SIE CAMRN5",
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "VIYAP",
+          "destination": "KIAD",
+          "altitude": 37000,
+          "route": "VIYAP Q87 JROSS FLO RDU BZNGA DORRN CAVLR6",
+          "airlines": [
+            {
+              "icao": "FFT",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "VIYAP",
+          "destination": "KIAD",
+          "altitude": 37000,
+          "route": "VIYAP Q87 ALWZZ OGRAE BZNGA DORRN CAVLR6",
+          "airlines": [
+            {
+              "icao": "UAL",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "VIYAP",
+          "destination": "KIAD",
+          "altitude": 35000,
+          "route": "VIYAP Q87 ALWZZ OGRAE BZNGA DORRN CAVLR6",
+          "airlines": [
+            {
+              "icao": "UAL",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "VIYAP",
+          "destination": "KBOS",
+          "altitude": 35000,
+          "route": "VIYAP Q87 JROSS ELLDE Q97 PAACK JAMIE Q133 JFK ROBUC3",
+          "airlines": [
+            {
+              "icao": "JBU",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "VIYAP",
+          "destination": "KBOS",
+          "altitude": 37000,
+          "route": "VIYAP Q87 JROSS ELLDE Q97 PAACK JAMIE CONFR Q133 JFK ROBUC3",
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "VIYAP",
+          "destination": "KRDU",
+          "altitude": 37000,
+          "route": "VIYAP BROUN SAV PETTO DMSTR2",
+          "airlines": [
+            {
+              "icao": "SWA",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "VIYAP",
+          "destination": "KRDU",
+          "altitude": 31000,
+          "route": "VIYAP BROUN SAV PETTO DMSTR2",
+          "airlines": [
+            {
+              "icao": "MXY",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "PAINN",
+          "destination": "KBNA",
+          "altitude": 36000,
+          "route": "PAINN SHRKS YANTI THRSR SWFFT3",
+          "airlines": [
+            {
+              "icao": "NKS",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "PAINN",
+          "destination": "KDTW",
+          "altitude": 36000,
+          "route": "PAINN SHRKS Q77 TEUFL Q77 WIGVO IRQ SPA HNN SUBWY HTROD2",
+          "airlines": [
+            {
+              "icao": "NKS",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "PAINN",
+          "destination": "KDTW",
+          "altitude": 34000,
+          "route": "PAINN SHRKS Q77 TEUFL Q77 WIGVO IRQ SPA HNN SUBWY HTROD2",
+          "airlines": [
+            {
+              "icao": "FFT",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "PAINN",
+          "destination": "KDTW",
+          "altitude": 30000,
+          "route": "PAINN SHRKS Q77 TEUFL Q77 WIGVO IRQ SPA HNN SUBWY HTROD2",
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "PAINN",
+          "destination": "KORD",
+          "altitude": 38000,
+          "route": "PAINN SHRKS YANTI THRSR Q118 KAILL Q118 VOSTK Q118 HEVAN BONNT VEECK5",
+          "airlines": [
+            {
+              "icao": "SWA",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "PAINN",
+          "destination": "KSTL",
+          "altitude": 38000,
+          "route": "PAINN SHRKS YANTI VLKNN GETME J151 VISQA BOOSH3",
+          "airlines": [
+            {
+              "icao": "SWA",
+              "fleet": "default"
+            }
+          ]
+        }
+      ],
+      "exit_categories": {
+        "PAINN": "PAINN",
+        "VIYAP": "VIYAP"
+      }
+    },
+    "KSFB": {
+      "departure_controller": "Orlando Departure",
+      "name": "Sanford",
+      "departure_routes": {
+        "9L": {
+          "WORMS": {
+            "handoff_controller": "ZJX 75 Greencove",
+            "cleared_altitude": 11000,
+            "sid": "SFB1",
+            "waypoints": "KSFB-27R N028.51.47.606,W081.18.12.453/ho"
+          }
+        }
+      },
+      "departures": [
+        {
+          "exit": "WORMS",
+          "destination": "KABE",
+          "altitude": 35000,
+          "route": "WORMS GUANO BKENI VIYAP Q87 ALWZZ OGRAE Q99 SHIRY THEOO COURG BAMMY T299 SCAPE T299 DUMMR",
+          "airlines": [
+            {
+              "icao": "AAY",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "WORMS",
+          "destination": "KBGR",
+          "altitude": 35000,
+          "route": "WORMS GUANO BKENI VIYAP Q87 GEARS BBOBO Q22 FOXWD BOS",
+          "airlines": [
+            {
+              "icao": "AAY",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "WORMS",
+          "destination": "KAVL",
+          "altitude": 38000,
+          "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 TEUFL TWINS PLYRR",
+          "airlines": [
+            {
+              "icao": "AAY",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "WORMS",
+          "destination": "KTYS",
+          "altitude": 36000,
+          "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 TEUFL ODF",
+          "airlines": [
+            {
+              "icao": "AAY",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "WORMS",
+          "destination": "KFWA",
+          "altitude": 38000,
+          "route": "WORMS JEEMY ACCHE PAINN SHRKS Q77 TEUFL IRQ J99 VXV J43 FLM RID",
+          "airlines": [
+            {
+              "icao": "AAY",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "WORMS",
+          "destination": "KMDT",
+          "altitude": 33000,
+          "route": " WORMS GUANO BKENI VIYAP Q69 GURGE BLAAN Q69 ILLSA COURG BAMMY T299 SCAPE T299 HAR",
+          "airlines": [
+            {
+              "icao": "AAY",
+              "fleet": "default"
+            }
+          ]
+        }
+      ]
+    },
+    "KDAB": {
+      "departure_controller": "Orlando Departure",
+      "name": "Daytona",
+      "departure_routes": {
+        "7L": {
+          "CRG": {
+            "handoff_controller": "ZJX 75 Greencove",
+            "cleared_altitude": 16000,
+            "sid": "FATHE4",
+            "waypoints": "KDAB-25R N029.10.51.523,W080.58.59.163/ho ROYES"
+          }
+        }
+      },
+      "departures": [
+        {
+          "exit": "CRG",
+          "destination": "KILG",
+          "altitude": 35000,
+          "route": "CRG VIYAP Q87 ASHEL Q87 NOWAE THHMP ARLFT2",
+          "airlines": [
+            {
+              "icao": "VXP",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "CRG",
+          "destination": "KCLT",
+          "altitude": 35000,
+          "route": "CRG VIYAP CHECR STOCR4",
+          "airlines": [
+            {
+              "icao": "AAL",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "CRG",
+          "destination": "KCAK",
+          "altitude": 31000,
+          "route": "CRG VIYAP Q69 GURGE PETTO DMSTR2",
+          "airlines": [
+            {
+              "icao": "MXY",
+              "fleet": "default"
+            }
+          ]
+        }
+      ],
+      "approaches": {
+        "I7L": {
+          "cifp_id": "I7L"
+        }
+      }
+    },
+    "KJAX": {
+      "departure_controller": "Orlando Departure",
+      "name": "Daytona",
+      "approaches": {
+        "IY8": {
+          "cifp_id": "IY8"
+        }
+      }
+    }
+  },
+  "inbound_flows": {
+    "TTHOR3": {
+      "arrivals": [
+        {
+          "waypoints": "N031.03.23.398,W081.56.23.486/ho KYLEG JAGGZ/a24000+ WEEEK/d160 TTHOR/d120 BIKEZ N029.12.14.504,W081.22.16.184/d20 KDAB/d0/delete",
+          "star": "TTHOR3",
+          "route": "/. TTHOR3",
+          "initial_controller": "ZJX 50 Alma",
+          "initial_altitude": 24000,
+          "initial_speed": 280,
+          "assigned_altitude": 24000,
+          "airlines": {
+            "KDAB": [
+              {
+                "icao": "DAL",
+                "types": ["B738"],
+                "airport": "KATL"
+              },
+              {
+                "icao": "AAY",
+                "types": ["A320"],
+                "airport": "KTYS"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "GRNCH5": {
+      "arrivals": [
+        {
+          "waypoints": "WHYYT/ho78 ADLYN ELITE/ho15 MAYYR/a24000+ COAXE/a26000-/hoO1E GRTNG/a17000+/s290 GRNCH BUGGZ/a11000-16000/s280 BLAYK WHOVL/a9000-14000 HARAM DORII/a8000+ BRICE/a5000/s210 N028.16.00.520,W081.23.39.296/a2000 BRICE KMCO-36L/a0/delete",
+          "star": "GRNCH5",
+          "expect_approach": "R6L",
+          "route": "/. GRNCH",
+          "initial_controller": "ZJX 50 Alma",
+          "initial_altitude": 33000,
+          "initial_speed": 300,
+          "airlines": {
+            "KMCO": [
+              {
+                "icao": "DAL",
+                "types": ["B738"],
+                "airport": "KATL"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A320"],
+                "airport": "KORD"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "RIDES2": {
+      "arrivals": [
+        {
+          "waypoints": "CHEFS/a19000-21000/hoO1E MOOTS/a15000+ RIDES/a8000+ HAHNA/a6000/s210  SERAY/a4000 FESHA/a3000 HEWES/a1600 KMCO-35R/a50/delete",
+          "star": "RIDES2",
+          "route": "/. RIDES2",
+          "initial_controller": "ZMA 02 Key West",
+          "initial_altitude": 21000,
+          "initial_speed": 300,
+          "airlines": {
+            "KMCO": [
+              {
+                "icao": "DAL",
+                "types": ["B738"],
+                "airport": "KATL"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A320"],
+                "airport": "KORD"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "SNFLD3": {
+      "arrivals": [
+        {
+          "waypoints": "GIPPL LPERD/a30000-34000 NOOMN/a23000+ FORYU/a13000+ NICCK/a12000+ SNFLD GTOUT/a12000-16000/hoO1E TUGLE HIGGZ/a10000-12000/s250 VOSSS/a230/a8000+ SUNDE/a6000+ CUBAL/a5000/s210 N028.18.51.042,W081.12.31.794/a3000 HEWES KMCO-35R/a50/delete",
+          "star": "SNFLD3",
+          "route": "/. SNFLD3",
+          "initial_controller": "ZJX 58 St. Augustine",
+          "initial_altitude": 34000,
+          "initial_speed": 300,
+          "airlines": {
+            "KMCO": [
+              {
+                "icao": "DAL",
+                "types": ["B738"],
+                "airport": "KATL"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A320"],
+                "airport": "KORD"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "QUBEN2": {
+      "arrivals": [
+        {
+          "waypoints": "STYMY/ho HAINY/a24000+ MISCL MEAAT BASSS POGIE/a13000 QUBEN/d20 N030.25.54.936,W082.00.39.523/d0 KJAX-8/delete",
+          "star": "QUBEN2",
+          "route": "/. QUBEN2",
+          "initial_controller": "ZMA 02 Key West",
+          "initial_altitude": 31000,
+          "assigned_altitude": 31000,
+          "initial_speed": 290,
+          "airlines": {
+            "KJAX": [
+              {
+                "icao": "DAL",
+                "types": ["B738"],
+                "airport": "KATL"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A320"],
+                "airport": "KORD"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "Southbound Overflights": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "TJSJ",
+              "icao": "DAL"
+            }
+          ],
+          "initial_altitude": 34000,
+          "assigned_altitude": 34000,
+          "initial_controller": "ZJX 50 Alma",
+          "initial_speed": 300,
+          "waypoints": "N030.59.08.103,W082.12.22.648/ho SHRKS Q89 MANLE/delete"
+        }
+      ]
+    },
+    "Northbound Overflights": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KATL",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KATL",
+              "icao": "ENY"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KATL",
+              "icao": "FFT"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KATL",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KATL",
+              "icao": "ENY"
+            }
+          ],
+          "initial_altitude": 37000,
+          "assigned_altitude": 37000,
+          "initial_controller": "ZMA 02 Key West",
+          "initial_speed": 300,
+          "waypoints": "STYMY/ho Q77 SHRKS LAIRI LARZZ"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KIND",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KIND",
+              "icao": "FDX"
+            }
+          ],
+          "initial_altitude": 37000,
+          "assigned_altitude": 37000,
+          "initial_controller": "ZMA 02 Key West",
+          "initial_speed": 300,
+          "waypoints": "STYMY/ho Q77 SHRKS LAIRI LARZZ"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KORD",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KORD",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KTYS",
+              "icao": "ENY"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KTYS",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KTYS",
+              "icao": "VJA"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KTYS",
+              "icao": "RPA"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KBNA",
+              "icao": "RPA"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KBNA",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KBNA",
+              "icao": "ENY"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KBNA",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KBNA",
+              "icao": "NKS"
+            }
+          ],
+          "initial_altitude": 35000,
+          "assigned_altitude": 35000,
+          "initial_controller": "ZMA 02 Key West",
+          "initial_speed": 300,
+          "waypoints": "STYMY/ho Q77 TEUFL"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KFLL",
+              "arrival_airport": "KCLT",
+              "icao": "NKS"
+            },
+            {
+              "departure_airport": "KFLL",
+              "arrival_airport": "KCLT",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 33000,
+          "assigned_altitude": 33000,
+          "initial_controller": "ZMA 02 Key West",
+          "initial_speed": 300,
+          "waypoints": "MATLK/ho Q87 VIYAP CHECR"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KDTW",
+              "icao": "NKS"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KDTW",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KDTW",
+              "icao": "NKS"
+            }
+          ],
+          "initial_altitude": 33000,
+          "assigned_altitude": 33000,
+          "initial_controller": "ZMA 02 Key West",
+          "initial_speed": 300,
+          "waypoints": "MATLK/ho Q87 VIYAP Q69 GURGE"
+        }
+      ]
+    },
+    "Northbound Overflights (UH)": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KATL",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KATL",
+              "icao": "ENY"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KATL",
+              "icao": "FFT"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KATL",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KATL",
+              "icao": "ENY"
+            }
+          ],
+          "initial_altitude": 37000,
+          "assigned_altitude": 37000,
+          "initial_controller": "ZMA 02 Key West",
+          "initial_speed": 300,
+          "waypoints": "STYMY/ho76 Q77 SHRKS LAIRI LARZZ"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KIND",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KIND",
+              "icao": "FDX"
+            }
+          ],
+          "initial_altitude": 37000,
+          "assigned_altitude": 37000,
+          "initial_controller": "ZMA 02 Key West",
+          "initial_speed": 300,
+          "waypoints": "STYMY/ho76 Q77 SHRKS LAIRI LARZZ"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KORD",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KORD",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KTYS",
+              "icao": "ENY"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KTYS",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KTYS",
+              "icao": "VJA"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KTYS",
+              "icao": "RPA"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KBNA",
+              "icao": "RPA"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KBNA",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KBNA",
+              "icao": "ENY"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KBNA",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KBNA",
+              "icao": "NKS"
+            }
+          ],
+          "initial_altitude": 35000,
+          "assigned_altitude": 35000,
+          "initial_controller": "ZMA 02 Key West",
+          "initial_speed": 300,
+          "waypoints": "STYMY/ho76 Q77 TEUFL"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KFLL",
+              "arrival_airport": "KCLT",
+              "icao": "NKS"
+            },
+            {
+              "departure_airport": "KFLL",
+              "arrival_airport": "KCLT",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 33000,
+          "assigned_altitude": 33000,
+          "initial_controller": "ZMA 02 Key West",
+          "initial_speed": 300,
+          "waypoints": "MATLK/ho Q87 VIYAP CHECR"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KDTW",
+              "icao": "NKS"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KDTW",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KDTW",
+              "icao": "NKS"
+            }
+          ],
+          "initial_altitude": 33000,
+          "assigned_altitude": 33000,
+          "initial_controller": "ZMA 02 Key West",
+          "initial_speed": 300,
+          "waypoints": "MATLK/ho Q87 VIYAP Q69 GURGE"
+        }
+      ]
+    }
+  },
+  "control_positions": {
+    "ZJX 75 Greencove": {
+      "frequency": 127475,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "75"
+    },
+    "ZJX 58 St. Augustine": {
+      "frequency": 126350,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "58"
+    },
+    "ZJX 16 Mayo": {
+      "frequency": 125175,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "16"
+    },
+    "ZJX 78 Lake City": {
+      "frequency": 133875,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "78"
+    },
+    "ZJX 50 Alma": {
+      "frequency": 135975,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "50"
+    },
+    "ZJX 68 States": {
+      "frequency": 126125,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "68"
+    },
+    "ZMA 02 Key West": {
+      "frequency": 132200,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "R02"
+    },
+    "ZJX 14 Cedar Key": {
+      "frequency": 135750,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "14"
+    },
+    "ZJX 15 Ocala": {
+      "frequency": 133325,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "15"
+    },
+    "ZJX 77 Taylor": {
+      "frequency": 125375,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "77"
+    },
+    "ZJX 54 Jeckyl": {
+      "frequency": 124675,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "54"
+    },
+    "Orlando Departure": {
+      "frequency": 124800,
+      "radio_name": "Orlando Departure",
+      "sector_id": "1E",
+      "facility": "F11",
+      "facility_id": "O"
+    },
+    "Orlando Approach": {
+      "frequency": 128375,
+      "radio_name": "Orlando Approach",
+      "sector_id": "1B",
+      "facility": "F11",
+      "facility_id": "O"
+    },
+    "Daytona Approach": {
+      "frequency": 125800,
+      "radio_name": "Daytona Approach",
+      "sector_id": "1N",
+      "facility": "DAB",
+      "facility_id": "B"
+    },
+    "JAX Approach": {
+      "frequency": 124900,
+      "radio_name": "JAX Approach",
+      "sector_id": "1S",
+      "facility": "JAX",
+      "facility_id": "J"
+    },
+    "ZJX 87 Lawtey": {
+      "frequency": 132825,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "87"
+    },
+    "ZJX 76 Keystone": {
+      "frequency": 135450,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "76"
+    },
+    "ZJX 86 Zephyr": {
+      "frequency": 128425,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "86"
+    },
+    "ZJX 49 Moultrie": {
+      "frequency": 133300,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "49"
+    }
+  },
+  "default_scenario": "75",
+  "scenarios": {
+    "75": {
+      "configuration": {
+        "config_id": "STD",
+        "default_consolidation": {
+          "ZJX 75 Greencove": []
+        }
+      },
+      "controllers": [
+        "ZJX 78 Lake City",
+        "ZMA 02 Key West",
+        "ZJX 15 Ocala",
+        "ZJX 68 States",
+        "ZJX 58 St. Augustine",
+        "ZJX 50 Alma",
+        "ZJX 16 Mayo",
+        "Orlando Departure",
+        "JAX Approach",
+        "Orlando Approach",
+        "Daytona Approach",
+        "ZJX 87 Lawtey",
+        "ZJX 76 Keystone",
+        "ZJX 86 Zephyr",
+        "ZJX 49 Moultrie"
+      ],
+      "default_maps": ["ZJX HI"],
+      "inbound_rates": {
+        "TTHOR3": {
+          "KDAB": 3
+        },
+        "GRNCH5": {
+          "KMCO": 10
+        },
+        "RIDES2": {
+          "KMCO": 5
+        },
+        "SNFLD3": {
+          "KMCO": 22
+        },
+        "QUBEN2": {
+          "KJAX": 5
+        },
+        "Northbound Overflights": {
+          "overflights": 20
+        },
+        "Southbound Overflights": {
+          "overflights": 5
+        }
+      },
+      "arrival_runways": [
+        {
+          "airport": "KMCO",
+          "runway": "36L"
+        },
+        {
+          "airport": "KDAB",
+          "runway": "7L"
+        },
+        {
+          "airport": "KJAX",
+          "runway": "8"
+        }
+      ],
+      "default_map_group": "ZJX",
+      "departure_runways": [
+        {
+          "airport": "KMCO",
+          "rate": 15,
+          "runway": "35L",
+          "category": "PAINN"
+        },
+        {
+          "airport": "KMCO",
+          "rate": 10,
+          "runway": "36R",
+          "category": "VIYAP"
+        },
+        {
+          "airport": "KDAB",
+          "rate": 10,
+          "runway": "7L"
+        },
+        {
+          "airport": "KSFB",
+          "rate": 10,
+          "runway": "9L"
+        }
+      ]
+    },
+    "75 (UH Online)": {
+      "configuration": {
+        "config_id": "STD",
+        "default_consolidation": {
+          "ZJX 75 Greencove": []
+        }
+      },
+      "controllers": [
+        "ZJX 78 Lake City",
+        "ZMA 02 Key West",
+        "ZJX 15 Ocala",
+        "ZJX 68 States",
+        "ZJX 58 St. Augustine",
+        "ZJX 50 Alma",
+        "ZJX 16 Mayo",
+        "Orlando Departure",
+        "JAX Approach",
+        "Orlando Approach",
+        "Daytona Approach",
+        "ZJX 87 Lawtey",
+        "ZJX 86 Zephyr",
+        "ZJX 49 Moultrie",
+        "ZJX 76 Keystone"
+      ],
+      "default_maps": ["ZJX HI"],
+      "inbound_rates": {
+        "TTHOR3": {
+          "KDAB": 15
+        },
+        "GRNCH5": {
+          "KMCO": 10
+        },
+        "RIDES2": {
+          "KMCO": 5
+        },
+        "SNFLD3": {
+          "KMCO": 22
+        },
+        "QUBEN2": {
+          "KJAX": 5
+        },
+        "Northbound Overflights (UH)": {
+          "overflights": 20
+        },
+        "Southbound Overflights": {
+          "overflights": 5
+        }
+      },
+      "arrival_runways": [
+        {
+          "airport": "KMCO",
+          "runway": "36L"
+        },
+        {
+          "airport": "KDAB",
+          "runway": "7L"
+        },
+        {
+          "airport": "KJAX",
+          "runway": "8"
+        }
+      ],
+      "default_map_group": "ZJX",
+      "departure_runways": [
+        {
+          "airport": "KMCO",
+          "rate": 15,
+          "runway": "35L",
+          "category": "PAINN"
+        },
+        {
+          "airport": "KMCO",
+          "rate": 10,
+          "runway": "36R",
+          "category": "VIYAP"
+        },
+        {
+          "airport": "KDAB",
+          "rate": 10,
+          "runway": "7L"
+        },
+        {
+          "airport": "KSFB",
+          "rate": 10,
+          "runway": "9L"
+        }
+      ]
+    }
+  },
+  "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "Northbound Overflights": "ZJX 75 Greencove",
+          "Northbound Overflights (UH)": "ZJX 75 Greencove",
+          "QUBEN2": "ZJX 75 Greencove",
+          "Southbound Overflights": "ZJX 75 Greencove",
+          "TTHOR3": "ZJX 75 Greencove"
+        }
+      }
+    },
+
+    "center": "28J",
+    "range": 50000,
+    "stars_maps": [
+      "BOUND",
+      "ZJX LO",
+      "ZJX UH",
+      "HIGH AWAYS",
+      "FIN APP CRS",
+      "MOA",
+      "Y M L ROUTES",
+      "AR ROUTES",
+      "ATCT",
+      "ZJX HI",
+      "HI 2-WAY",
+      "LOW AWAYS",
+      "CLASS ASPACE",
+      "WARNING",
+      "MIA",
+      "T ROUTES",
+      "CAMAN",
+      "GEO"
+    ],
+    "video_map_file": "videomaps/ZJX-eram-videomaps.gob.zst"
+  }
+}

@@ -15,11 +15,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ macos-13 ]
+        os: [ macos-latest ]
 
     name: Build ${{ matrix.os }}
 
     runs-on: ${{ matrix.os }}
+
+    env:
+      MACOSX_DEPLOYMENT_TARGET: '13.0'
+      CGO_CFLAGS: '-mmacosx-version-min=13.0'
+      CGO_LDFLAGS: '-mmacosx-version-min=13.0'
 
     steps:
     - name: Checkout source

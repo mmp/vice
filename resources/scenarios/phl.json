@@ -1,172 +1,241 @@
 {
   "tracon": "PHL",
   "airports": {
-    "KTTN": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KILG": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KDYL": { "vfr": { "random_routes": { "rate": 5 } } },
-    "19N": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KAPG": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KMIV": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KPTW": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KOQN": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KLNS": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KXLL": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KRDG": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KESN": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KTTN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KILG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KDYL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "19N": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KAPG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KMIV": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KPTW": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KOQN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KLNS": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KXLL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KRDG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KESN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
     "KPHL": {
       "name": "Philadelphia",
       "approaches": {
-        "17Z": { "cifp_id": "IZ17" },
-        "27L": { "cifp_id": "I27L" },
-        "27R": { "cifp_id": "I27R" },
-        "9RZ": { "cifp_id": "IZ9R" },
+        "17Z": {
+          "cifp_id": "IZ17"
+        },
+        "27L": {
+          "cifp_id": "I27L"
+        },
+        "27R": {
+          "cifp_id": "I27R"
+        },
+        "9RZ": {
+          "cifp_id": "IZ9R"
+        },
         "RVR": {
           "full_name": "River Visual Runway 9 Right",
           "runway": "9R",
           "type": "Visual",
-          "waypoints": [
-            "DQO/a4000+ _rvrd5/a4000 _rvrd9/a3000 _rvrd14/a1500 N039.51.29.273,W075.17.17.274"
-          ]
+          "waypoints": ["DQO/a4000+ _rvrd5/a4000 _rvrd9/a3000 _rvrd14/a1500 N039.51.29.273,W075.17.17.274"]
         },
-        "G35": { "cifp_id": "R35" },
-        "I26": { "cifp_id": "I26" },
-        "I9L": { "cifp_id": "I9L" }
+        "G35": {
+          "cifp_id": "R35"
+        },
+        "I26": {
+          "cifp_id": "I26"
+        },
+        "I9L": {
+          "cifp_id": "I9L"
+        }
       },
       "approach_regions": {
-          "9L": {
-              "heading_tolerance":  90,
-
-              "near_distance": 0.01,
-              "near_half_width": 1.5,
-              "far_half_width": 5,
-              "region_length": 20,
-
-              "descent_distance": 11.4,
-              "descent_altitude": 3000,
-              "above_altitude_tolerance": 1000,
-              "below_altitude_tolerance": 1000,
-
-              "reference_point": "39.868525,-75.256239",
-              "reference_heading": 87.7,
-              "reference_length": 22,
-              "reference_altitude": 0
-          },
-          "27L": {
-              "heading_tolerance":  90,
-
-              "near_distance": 0.01,
-              "near_half_width": 1.5,
-              "far_half_width": 5,
-              "region_length": 20,
-
-              "descent_distance": 11.4,
-              "descent_altitude": 3000,
-              "above_altitude_tolerance": 1000,
-              "below_altitude_tolerance": 1000,
-
-              "reference_point": "39.86913,-75.23322",
-              "reference_heading": 267.7,
-              "reference_length": 22,
-              "reference_altitude": 0
-          },
-          "27R": {
-              "heading_tolerance":  90,
-
-              "near_distance": 0.01,
-              "near_half_width": 1.5,
-              "far_half_width": 5,
-              "region_length": 20,
-
-              "descent_distance": 11.4,
-              "descent_altitude": 3000,
-              "above_altitude_tolerance": 1000,
-              "below_altitude_tolerance": 1000,
-
-              "reference_point": "39.87528,-75.22262",
-              "reference_heading": 267.7,
-              "reference_length": 22,
-              "reference_altitude": 0
-          },
-          "17": {
-              "heading_tolerance":  90,
-
-              "near_distance": 0.01,
-              "near_half_width": 1.5,
-              "far_half_width": 6,
-              "region_length": 20,
-
-              "descent_distance": 11.4,
-              "descent_altitude": 3000,
-              "above_altitude_tolerance": 1000,
-              "below_altitude_tolerance": 1000,
-
-              "reference_point": "39.887977,-75.236228",
-              "reference_heading": 171.3,
-              "reference_length": 20,
-              "reference_altitude": 0
-          },
-          "35": {
-              "heading_tolerance":  90,
-
-              "near_distance": 0.01,
-              "near_half_width": 1.5,
-              "far_half_width": 5,
-              "region_length": 20,
-
-              "descent_distance": 11.4,
-              "descent_altitude": 3000,
-              "above_altitude_tolerance": 1000,
-              "below_altitude_tolerance": 1000,
-
-              "reference_point": "39.869,-75.22675",
-              "reference_heading": 351.3,
-              "reference_length": 20,
-              "reference_altitude": 3
-          }
+        "9L": {
+          "heading_tolerance": 90,
+          "near_distance": 0.01,
+          "near_half_width": 1.5,
+          "far_half_width": 5,
+          "region_length": 20,
+          "descent_distance": 11.4,
+          "descent_altitude": 3000,
+          "above_altitude_tolerance": 1000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "39.868525,-75.256239",
+          "reference_heading": 87.7,
+          "reference_length": 22,
+          "reference_altitude": 0
+        },
+        "27L": {
+          "heading_tolerance": 90,
+          "near_distance": 0.01,
+          "near_half_width": 1.5,
+          "far_half_width": 5,
+          "region_length": 20,
+          "descent_distance": 11.4,
+          "descent_altitude": 3000,
+          "above_altitude_tolerance": 1000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "39.86913,-75.23322",
+          "reference_heading": 267.7,
+          "reference_length": 22,
+          "reference_altitude": 0
+        },
+        "27R": {
+          "heading_tolerance": 90,
+          "near_distance": 0.01,
+          "near_half_width": 1.5,
+          "far_half_width": 5,
+          "region_length": 20,
+          "descent_distance": 11.4,
+          "descent_altitude": 3000,
+          "above_altitude_tolerance": 1000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "39.87528,-75.22262",
+          "reference_heading": 267.7,
+          "reference_length": 22,
+          "reference_altitude": 0
+        },
+        "17": {
+          "heading_tolerance": 90,
+          "near_distance": 0.01,
+          "near_half_width": 1.5,
+          "far_half_width": 6,
+          "region_length": 20,
+          "descent_distance": 11.4,
+          "descent_altitude": 3000,
+          "above_altitude_tolerance": 1000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "39.887977,-75.236228",
+          "reference_heading": 171.3,
+          "reference_length": 20,
+          "reference_altitude": 0
+        },
+        "35": {
+          "heading_tolerance": 90,
+          "near_distance": 0.01,
+          "near_half_width": 1.5,
+          "far_half_width": 5,
+          "region_length": 20,
+          "descent_distance": 11.4,
+          "descent_altitude": 3000,
+          "above_altitude_tolerance": 1000,
+          "below_altitude_tolerance": 1000,
+          "reference_point": "39.869,-75.22675",
+          "reference_heading": 351.3,
+          "reference_length": 20,
+          "reference_altitude": 3
+        }
       },
       "converging_runways": [
-          {
-              "runways": [ "27R", "35" ],
-              "leader_directions": [ "W", "N" ],
-              "tie_symbol": "/",
-              "stagger_symbol": "7",
-              "tie_offset": 0.88
-          },
-          {
-              "runways": [ "27R", "17" ],
-              "leader_directions": [ "W", "N" ],
-              "tie_symbol": "/",
-              "stagger_symbol": "7",
-              "tie_offset": 1.15
-          },
-          {
-              "runways": [ "9L", "17" ],
-              "leader_directions": [ "E", "N" ],
-              "tie_symbol": "/",
-              "stagger_symbol": "7",
-              "tie_offset": 0.01
-          },
-          {
-              "runways": [ "27R", "27L" ],
-              "leader_directions": [ "S", "N" ],
-              "tie_symbol": "/",
-              "stagger_symbol": "7",
-              "tie_offset": 5
-          },
-          {
-              "runways": [ "27L", "35" ],
-              "leader_directions": [ "W", "N" ],
-              "tie_symbol": "/",
-              "stagger_symbol": "7",
-              "tie_offset": 1
-          }
+        {
+          "runways": ["27R", "35"],
+          "leader_directions": ["W", "N"],
+          "tie_symbol": "/",
+          "stagger_symbol": "7",
+          "tie_offset": 0.88
+        },
+        {
+          "runways": ["27R", "17"],
+          "leader_directions": ["W", "N"],
+          "tie_symbol": "/",
+          "stagger_symbol": "7",
+          "tie_offset": 1.15
+        },
+        {
+          "runways": ["9L", "17"],
+          "leader_directions": ["E", "N"],
+          "tie_symbol": "/",
+          "stagger_symbol": "7",
+          "tie_offset": 0.01
+        },
+        {
+          "runways": ["27R", "27L"],
+          "leader_directions": ["S", "N"],
+          "tie_symbol": "/",
+          "stagger_symbol": "7",
+          "tie_offset": 5
+        },
+        {
+          "runways": ["27L", "35"],
+          "leader_directions": ["W", "N"],
+          "tie_symbol": "/",
+          "stagger_symbol": "7",
+          "tie_offset": 1
+        }
       ],
       "departure_routes": {
         "27L": {
           "ARD,FJC,MAZIE,MXE,PTW": {
             "cleared_altitude": 5000,
             "sid": "PHL2",
-              "waypoints": "KPHL-9R/h265"
+            "waypoints": "KPHL-9R/h265"
           },
           "DITCH,OOD,RUUTH": {
             "cleared_altitude": 5000,
@@ -3147,10 +3216,7 @@
         "N039.52.36.344,W074.43.26.506",
         "N039.56.34.226,W074.44.36.104"
       ],
-      "PHL_TWR-SPLIT": [
-        "N039.58.18.115,W075.16.52.280",
-        "N039.46.17.041,W075.13.35.734"
-      ],
+      "PHL_TWR-SPLIT": ["N039.58.18.115,W075.16.52.280", "N039.46.17.041,W075.13.35.734"],
       "PHL_W_TWR_SCL": [
         "N039.46.17.041,W075.13.35.734",
         "N039.46.54.765,W075.11.18.955",
@@ -3172,1569 +3238,1135 @@
     "volumes": {
       "PHL_DU_APP27": [
         {
-          "boundaries": [
-            "PHL_DQO27_33"
-          ],
+          "boundaries": ["PHL_DQO27_33"],
           "lower": 5000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_DQO27_37_42"
-          ],
+          "boundaries": ["PHL_DQO27_37_42"],
           "lower": 6000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_DQO27_40_50"
-          ],
+          "boundaries": ["PHL_DQO27_40_50"],
           "lower": 0,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_DQO27_41"
-          ],
+          "boundaries": ["PHL_DQO27_41"],
           "lower": 4000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_DQO27_44"
-          ],
+          "boundaries": ["PHL_DQO27_44"],
           "lower": 0,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "PHL_DQO27_45_46"
-          ],
+          "boundaries": ["PHL_DQO27_45_46"],
           "lower": 5000,
           "upper": 8000
         }
       ],
       "PHL_DU_APP9": [
         {
-          "boundaries": [
-            "PHL_DQO9_33"
-          ],
+          "boundaries": ["PHL_DQO9_33"],
           "lower": 5000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_DQO9_37_42"
-          ],
+          "boundaries": ["PHL_DQO9_37_42"],
           "lower": 6000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_DQO9_41"
-          ],
+          "boundaries": ["PHL_DQO9_41"],
           "lower": 4000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_DQO9_44"
-          ],
+          "boundaries": ["PHL_DQO9_44"],
           "lower": 0,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "PHL_DQO9_45_46"
-          ],
+          "boundaries": ["PHL_DQO9_45_46"],
           "lower": 5000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_DQO9_50_NW"
-          ],
+          "boundaries": ["PHL_DQO9_50_NW"],
           "lower": 0,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_DQO9_50_N"
-          ],
+          "boundaries": ["PHL_DQO9_50_N"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_DQO9_50_NE"
-          ],
+          "boundaries": ["PHL_DQO9_50_NE"],
           "lower": 0,
           "upper": 2000
         },
         {
-          "boundaries": [
-            "PHL_DQO9_50_E"
-          ],
+          "boundaries": ["PHL_DQO9_50_E"],
           "lower": 0,
           "upper": 3000
         },
         {
-          "boundaries": [
-            "PHL_DQO9_50_M"
-          ],
+          "boundaries": ["PHL_DQO9_50_M"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_DQO9_50_S"
-          ],
+          "boundaries": ["PHL_DQO9_50_S"],
           "lower": 0,
           "upper": 6000
         }
       ],
       "PHL_F1_APP27": [
         {
-          "boundaries": [
-            "PHL_F127_15"
-          ],
+          "boundaries": ["PHL_F127_15"],
           "lower": 4000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_F127_16"
-          ],
+          "boundaries": ["PHL_F127_16"],
           "lower": 3000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_F127_17"
-          ],
+          "boundaries": ["PHL_F127_17"],
           "lower": 0,
           "upper": 5000
         }
       ],
       "PHL_F1_APP9": [
         {
-          "boundaries": [
-            "PHL_F19_50_W"
-          ],
+          "boundaries": ["PHL_F19_50_W"],
           "lower": 4000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_F19_50_MW"
-          ],
+          "boundaries": ["PHL_F19_50_MW"],
           "lower": 3000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_F19_50_ME"
-          ],
+          "boundaries": ["PHL_F19_50_ME"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_F19_50_E"
-          ],
+          "boundaries": ["PHL_F19_50_E"],
           "lower": 3000,
           "upper": 3000
         }
       ],
       "PHL_F2_APP27": [
         {
-          "boundaries": [
-            "PHL_F127_50"
-          ],
+          "boundaries": ["PHL_F127_50"],
           "lower": 3000,
           "upper": 3000
         },
         {
-          "boundaries": [
-            "PHL_F227_18"
-          ],
+          "boundaries": ["PHL_F227_18"],
           "lower": 3000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_F227_19"
-          ],
+          "boundaries": ["PHL_F227_19"],
           "lower": 4000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_F227_50"
-          ],
+          "boundaries": ["PHL_F227_50"],
           "lower": 0,
           "upper": 5000
         }
       ],
       "PHL_F2_APP9": [
         {
-          "boundaries": [
-            "PHL_F29_50_W"
-          ],
+          "boundaries": ["PHL_F29_50_W"],
           "lower": 4000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_F29_50_M"
-          ],
+          "boundaries": ["PHL_F29_50_M"],
           "lower": 4000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_F29_50_E"
-          ],
+          "boundaries": ["PHL_F29_50_E"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_F29_50_N"
-          ],
+          "boundaries": ["PHL_F29_50_N"],
           "lower": 3000,
           "upper": 5000
         }
       ],
       "PHL_GND": [
         {
-          "boundaries": [
-            "PHL_GND_SCL"
-          ],
+          "boundaries": ["PHL_GND_SCL"],
           "lower": 0,
           "upper": 100
         }
       ],
       "PHL_N_APP27": [
         {
-          "boundaries": [
-            "PHL_NN107_1"
-          ],
+          "boundaries": ["PHL_NN107_1"],
           "lower": 6000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_NN107_3_4_6"
-          ],
+          "boundaries": ["PHL_NN107_3_4_6"],
           "lower": 7000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_NN107_5"
-          ],
+          "boundaries": ["PHL_NN107_5"],
           "lower": 7000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "PHL_NN107_6_N"
-          ],
+          "boundaries": ["PHL_NN107_6_N"],
           "lower": 7000,
           "upper": 10000
         },
         {
           "label_position": "N040.07.15.140,W075.28.56.114",
-          "boundaries": [
-            "PHL_NN107_6_W"
-          ],
+          "boundaries": ["PHL_NN107_6_W"],
           "lower": 6000,
           "upper": 8000
         },
         {
           "label_position": "N040.06.23.628,W075.10.54.400",
-          "boundaries": [
-            "PHL_NN107_6_9"
-          ],
+          "boundaries": ["PHL_NN107_6_9"],
           "lower": 6000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_NN107_8_W"
-          ],
+          "boundaries": ["PHL_NN107_8_W"],
           "lower": 6000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "PHL_NN107_8_E"
-          ],
+          "boundaries": ["PHL_NN107_8_E"],
           "lower": 7000,
           "upper": 7000
         },
         {
           "label_position": "N039.59.48.931,W074.49.11.449",
-          "boundaries": [
-            "PHL_NN107_9_15_16"
-          ],
+          "boundaries": ["PHL_NN107_9_15_16"],
           "lower": 6000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_NN107_10B"
-          ],
+          "boundaries": ["PHL_NN107_10B"],
           "lower": 6000,
           "upper": 9000
         }
       ],
       "PHL_N_APP9": [
         {
-          "boundaries": [
-            "PHL_NA9_1A_1B"
-          ],
+          "boundaries": ["PHL_NA9_1A_1B"],
           "lower": 6000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_NA9_1C"
-          ],
+          "boundaries": ["PHL_NA9_1C"],
           "lower": 0,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_NA9_3_4_6"
-          ],
+          "boundaries": ["PHL_NA9_3_4_6"],
           "lower": 7000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_NA9_5"
-          ],
+          "boundaries": ["PHL_NA9_5"],
           "lower": 7000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "PHL_NA9_6_N"
-          ],
+          "boundaries": ["PHL_NA9_6_N"],
           "lower": 7000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_NA9_6_S"
-          ],
+          "boundaries": ["PHL_NA9_6_S"],
           "lower": 6000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_NA9_6_50"
-          ],
+          "boundaries": ["PHL_NA9_6_50"],
           "lower": 6000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_NA9_46"
-          ],
+          "boundaries": ["PHL_NA9_46"],
           "lower": 5000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_NA9_47_50"
-          ],
+          "boundaries": ["PHL_NA9_47_50"],
           "lower": 0,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_NA9_50_W"
-          ],
+          "boundaries": ["PHL_NA9_50_W"],
           "lower": 0,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_NA9_50_M"
-          ],
+          "boundaries": ["PHL_NA9_50_M"],
           "lower": 6000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_NA9_50_M"
-          ],
+          "boundaries": ["PHL_NA9_50_M"],
           "lower": 0,
           "upper": 2000
         }
       ],
       "PHL_N_DEP27": [
         {
-          "boundaries": [
-            "PHL_ND27_47"
-          ],
+          "boundaries": ["PHL_ND27_47"],
           "lower": 0,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_ND27_48_49"
-          ],
+          "boundaries": ["PHL_ND27_48_49"],
           "lower": 9000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_ND27_6_50_W"
-          ],
+          "boundaries": ["PHL_ND27_6_50_W"],
           "lower": 0,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_ND27_47"
-          ],
+          "boundaries": ["PHL_ND27_47"],
           "lower": 0,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_ND27_50_9_W"
-          ],
+          "boundaries": ["PHL_ND27_50_9_W"],
           "lower": 0,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_ND27_50_S"
-          ],
+          "boundaries": ["PHL_ND27_50_S"],
           "lower": 0,
           "upper": 10000
         }
       ],
       "PHL_N_DEP9": [
         {
-          "boundaries": [
-            "PHL_ND9_1C"
-          ],
+          "boundaries": ["PHL_ND9_1C"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_ND9_47_48_49"
-          ],
+          "boundaries": ["PHL_ND9_47_48_49"],
           "lower": 9000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_ND9_6_50_W"
-          ],
+          "boundaries": ["PHL_ND9_6_50_W"],
           "lower": 9000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_ND9_50_9_W"
-          ],
+          "boundaries": ["PHL_ND9_50_9_W"],
           "lower": 0,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_ND9_9_M"
-          ],
+          "boundaries": ["PHL_ND9_9_M"],
           "lower": 0,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_ND9_9_S"
-          ],
+          "boundaries": ["PHL_ND9_9_S"],
           "lower": 0,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_ND9_16"
-          ],
+          "boundaries": ["PHL_ND9_16"],
           "lower": 3000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_ND9_15"
-          ],
+          "boundaries": ["PHL_ND9_15"],
           "lower": 4000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_ND9_9_N"
-          ],
+          "boundaries": ["PHL_ND9_9_N"],
           "lower": 6000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_ND9_8_S"
-          ],
+          "boundaries": ["PHL_ND9_8_S"],
           "lower": 6000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "PHL_ND9_8_N"
-          ],
+          "boundaries": ["PHL_ND9_8_N"],
           "lower": 7000,
           "upper": 7000
         }
       ],
       "PHL_N_HIGH27": [
         {
-          "boundaries": [
-            "PHL_NH27_50_W"
-          ],
+          "boundaries": ["PHL_NH27_50_W"],
           "lower": 13000,
           "upper": 13000
         },
         {
-          "boundaries": [
-            "PHL_NH27_50_E"
-          ],
+          "boundaries": ["PHL_NH27_50_E"],
           "lower": 9000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_NH27_6_W"
-          ],
+          "boundaries": ["PHL_NH27_6_W"],
           "lower": 13000,
           "upper": 13000
         },
         {
-          "boundaries": [
-            "PHL_NH27_6_M"
-          ],
+          "boundaries": ["PHL_NH27_6_M"],
           "lower": 11000,
           "upper": 13000
         },
         {
-          "boundaries": [
-            "PHL_NH27_6_E"
-          ],
+          "boundaries": ["PHL_NH27_6_E"],
           "lower": 7000,
           "upper": 13000
         }
       ],
       "PHL_N_HIGH9": [
         {
-          "boundaries": [
-            "PHL_NH9_50_W"
-          ],
+          "boundaries": ["PHL_NH9_50_W"],
           "lower": 13000,
           "upper": 13000
         },
         {
-          "boundaries": [
-            "PHL_NH9_50_E"
-          ],
+          "boundaries": ["PHL_NH9_50_E"],
           "lower": 9000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_NH9_6_W"
-          ],
+          "boundaries": ["PHL_NH9_6_W"],
           "lower": 9000,
           "upper": 13000
         },
         {
-          "boundaries": [
-            "PHL_NH9_6_M"
-          ],
+          "boundaries": ["PHL_NH9_6_M"],
           "lower": 11000,
           "upper": 13000
         },
         {
-          "boundaries": [
-            "PHL_NH9_6_E"
-          ],
+          "boundaries": ["PHL_NH9_6_E"],
           "lower": 7000,
           "upper": 13000
         }
       ],
       "PHL_PT_APP27": [
         {
-          "boundaries": [
-            "PHL_PTW27_3"
-          ],
+          "boundaries": ["PHL_PTW27_3"],
           "lower": 6000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_PTW27_4"
-          ],
+          "boundaries": ["PHL_PTW27_4"],
           "lower": 6000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_PTW27_5_6"
-          ],
+          "boundaries": ["PHL_PTW27_5_6"],
           "lower": 0,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_PTW27_6_E"
-          ],
+          "boundaries": ["PHL_PTW27_6_E"],
           "lower": 0,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "PHL_PTW27_6_W"
-          ],
+          "boundaries": ["PHL_PTW27_6_W"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_PTW27_9_50"
-          ],
+          "boundaries": ["PHL_PTW27_9_50"],
           "lower": 0,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "PHL_PTW27_50_S"
-          ],
+          "boundaries": ["PHL_PTW27_50_S"],
           "lower": 4000,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "PHL_PTW27_50_W"
-          ],
+          "boundaries": ["PHL_PTW27_50_W"],
           "lower": 0,
           "upper": 4000
         }
       ],
       "PHL_PT_APP9": [
         {
-          "boundaries": [
-            "PHL_PTW9_3"
-          ],
+          "boundaries": ["PHL_PTW9_3"],
           "lower": 6000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_PTW9_4"
-          ],
+          "boundaries": ["PHL_PTW9_4"],
           "lower": 6000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_PTW9_5_6"
-          ],
+          "boundaries": ["PHL_PTW9_5_6"],
           "lower": 0,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_PTW9_6_E"
-          ],
+          "boundaries": ["PHL_PTW9_6_E"],
           "lower": 0,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "PHL_PTW9_6_W"
-          ],
+          "boundaries": ["PHL_PTW9_6_W"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_PTW9_50_S"
-          ],
+          "boundaries": ["PHL_PTW9_50_S"],
           "lower": 4000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_PTW9_50_W"
-          ],
+          "boundaries": ["PHL_PTW9_50_W"],
           "lower": 0,
           "upper": 4000
         }
       ],
       "PHL_S_APP27": [
         {
-          "boundaries": [
-            "PHL_SN107_9_16"
-          ],
+          "boundaries": ["PHL_SN107_9_16"],
           "lower": 6000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_SN107_19_to_50"
-          ],
+          "boundaries": ["PHL_SN107_19_to_50"],
           "lower": 6000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_SN107_22"
-          ],
+          "boundaries": ["PHL_SN107_22"],
           "lower": 6000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_SN107_24"
-          ],
+          "boundaries": ["PHL_SN107_24"],
           "lower": 7000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_SN107_24"
-          ],
+          "boundaries": ["PHL_SN107_24"],
           "lower": 7000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_SN107_25"
-          ],
+          "boundaries": ["PHL_SN107_25"],
           "lower": 6000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_SN107_26"
-          ],
+          "boundaries": ["PHL_SN107_26"],
           "lower": 8000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_SN107_45_46"
-          ],
+          "boundaries": ["PHL_SN107_45_46"],
           "lower": 9000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "PHL_SN107_50_47"
-          ],
+          "boundaries": ["PHL_SN107_50_47"],
           "lower": 7000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "PHL_SN107_50_S"
-          ],
+          "boundaries": ["PHL_SN107_50_S"],
           "lower": 7000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SN107_50_N"
-          ],
+          "boundaries": ["PHL_SN107_50_N"],
           "lower": 6000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "PHL_SN107_33"
-          ],
+          "boundaries": ["PHL_SN107_33"],
           "lower": 7000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_SN107_37_38"
-          ],
+          "boundaries": ["PHL_SN107_37_38"],
           "lower": 7000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "PHL_SN107_40_41_42"
-          ],
+          "boundaries": ["PHL_SN107_40_41_42"],
           "lower": 7000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SN107_43"
-          ],
+          "boundaries": ["PHL_SN107_43"],
           "lower": 10000,
           "upper": 10000
         }
       ],
       "PHL_S_APP9": [
         {
-          "boundaries": [
-            "PHL_SA9_27_to_50"
-          ],
+          "boundaries": ["PHL_SA9_27_to_50"],
           "lower": 6000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_SA9_33"
-          ],
+          "boundaries": ["PHL_SA9_33"],
           "lower": 7000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_SA9_37_38"
-          ],
+          "boundaries": ["PHL_SA9_37_38"],
           "lower": 7000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "PHL_SA9_40_41_42"
-          ],
+          "boundaries": ["PHL_SA9_40_41_42"],
           "lower": 7000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SA9_43"
-          ],
+          "boundaries": ["PHL_SA9_43"],
           "lower": 10000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SA9_24"
-          ],
+          "boundaries": ["PHL_SA9_24"],
           "lower": 6000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_SA9_25"
-          ],
+          "boundaries": ["PHL_SA9_25"],
           "lower": 6000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_SA9_26"
-          ],
+          "boundaries": ["PHL_SA9_26"],
           "lower": 8000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_SA9_45_46"
-          ],
+          "boundaries": ["PHL_SA9_45_46"],
           "lower": 9000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "PHL_SA9_50_N"
-          ],
+          "boundaries": ["PHL_SA9_50_N"],
           "lower": 6000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "PHL_SA9_50_S"
-          ],
+          "boundaries": ["PHL_SA9_50_S"],
           "lower": 7000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SA9_47_50"
-          ],
+          "boundaries": ["PHL_SA9_47_50"],
           "lower": 7000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "PHL_SA9_50_M"
-          ],
+          "boundaries": ["PHL_SA9_50_M"],
           "lower": 6000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SA9_50_NE"
-          ],
+          "boundaries": ["PHL_SA9_50_NE"],
           "lower": 6000,
           "upper": 7000
         },
         {
-          "boundaries": [
-            "PHL_SA9_50_E"
-          ],
+          "boundaries": ["PHL_SA9_50_E"],
           "lower": 6000,
           "upper": 7000
         }
       ],
       "PHL_S_DEP27": [
         {
-          "boundaries": [
-            "PHL_SD27_34"
-          ],
+          "boundaries": ["PHL_SD27_34"],
           "lower": 9000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SD27_32_33_50"
-          ],
+          "boundaries": ["PHL_SD27_32_33_50"],
           "lower": 9000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SD27_50_S"
-          ],
+          "boundaries": ["PHL_SD27_50_S"],
           "lower": 8000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SD27_50_M"
-          ],
+          "boundaries": ["PHL_SD27_50_M"],
           "lower": 6000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SD27_50_45"
-          ],
+          "boundaries": ["PHL_SD27_50_45"],
           "lower": 0,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SD27_50_N"
-          ],
+          "boundaries": ["PHL_SD27_50_N"],
           "lower": 0,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SD27_50_N"
-          ],
+          "boundaries": ["PHL_SD27_50_N"],
           "lower": 3000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SD27_50_NE"
-          ],
+          "boundaries": ["PHL_SD27_50_NE"],
           "lower": 0,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SD27_50_NE"
-          ],
+          "boundaries": ["PHL_SD27_50_NE"],
           "lower": 5000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SD27_50_NEE"
-          ],
+          "boundaries": ["PHL_SD27_50_NEE"],
           "lower": 6000,
           "upper": 10000
         }
       ],
       "PHL_S_DEP9": [
         {
-          "boundaries": [
-            "PHL_SD9_9"
-          ],
+          "boundaries": ["PHL_SD9_9"],
           "lower": 0,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SD9_11"
-          ],
+          "boundaries": ["PHL_SD9_11"],
           "lower": 7000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_SD9_12"
-          ],
+          "boundaries": ["PHL_SD9_12"],
           "lower": 7000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_SD9_13"
-          ],
+          "boundaries": ["PHL_SD9_13"],
           "lower": 7000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "PHL_SD9_14_15_16_9"
-          ],
+          "boundaries": ["PHL_SD9_14_15_16_9"],
           "lower": 7000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SD9_15"
-          ],
+          "boundaries": ["PHL_SD9_15"],
           "lower": 4000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SD9_16"
-          ],
+          "boundaries": ["PHL_SD9_16"],
           "lower": 3000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SD9_17A"
-          ],
+          "boundaries": ["PHL_SD9_17A"],
           "lower": 3000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SD9_17B"
-          ],
+          "boundaries": ["PHL_SD9_17B"],
           "lower": 0,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SD9_18"
-          ],
+          "boundaries": ["PHL_SD9_18"],
           "lower": 3000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SD9_19"
-          ],
+          "boundaries": ["PHL_SD9_19"],
           "lower": 4000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SD9_20"
-          ],
+          "boundaries": ["PHL_SD9_20"],
           "lower": 7000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SD9_21"
-          ],
+          "boundaries": ["PHL_SD9_21"],
           "lower": 7000,
           "upper": 80000
         },
         {
-          "boundaries": [
-            "PHL_SD9_22"
-          ],
+          "boundaries": ["PHL_SD9_22"],
           "lower": 9000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SD9_23_E"
-          ],
+          "boundaries": ["PHL_SD9_23_E"],
           "lower": 6000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SD9_23_W"
-          ],
+          "boundaries": ["PHL_SD9_23_W"],
           "lower": 6000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SD9_24"
-          ],
+          "boundaries": ["PHL_SD9_24"],
           "lower": 9000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SD9_50_E"
-          ],
+          "boundaries": ["PHL_SD9_50_E"],
           "lower": 0,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SD9_50_SE"
-          ],
+          "boundaries": ["PHL_SD9_50_SE"],
           "lower": 3000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SD9_50_S"
-          ],
+          "boundaries": ["PHL_SD9_50_S"],
           "lower": 5000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SD9_50_N"
-          ],
+          "boundaries": ["PHL_SD9_50_N"],
           "lower": 0,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SD9_50_N"
-          ],
+          "boundaries": ["PHL_SD9_50_N"],
           "lower": 5000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SD9_50_W"
-          ],
+          "boundaries": ["PHL_SD9_50_W"],
           "lower": 6000,
           "upper": 8000
         }
       ],
       "PHL_S_HIGH27": [
         {
-          "boundaries": [
-            "PHL_SH27_9_14_15_16"
-          ],
+          "boundaries": ["PHL_SH27_9_14_15_16"],
           "lower": 7000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SH27_9_16"
-          ],
+          "boundaries": ["PHL_SH27_9_16"],
           "lower": 8000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SH27_11"
-          ],
+          "boundaries": ["PHL_SH27_11"],
           "lower": 7000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_SH27_12"
-          ],
+          "boundaries": ["PHL_SH27_12"],
           "lower": 7000,
           "upper": 8000
         },
         {
-          "boundaries": [
-            "PHL_SH27_13"
-          ],
+          "boundaries": ["PHL_SH27_13"],
           "lower": 7000,
           "upper": 9000
         },
         {
-          "boundaries": [
-            "PHL_SH27_17"
-          ],
+          "boundaries": ["PHL_SH27_17"],
           "lower": 8000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SH27_18_19"
-          ],
+          "boundaries": ["PHL_SH27_18_19"],
           "lower": 8000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SH27_18_19_50"
-          ],
+          "boundaries": ["PHL_SH27_18_19_50"],
           "lower": 8000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SH27_18_19_22_23_50"
-          ],
+          "boundaries": ["PHL_SH27_18_19_22_23_50"],
           "lower": 9000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SH27_19_20"
-          ],
+          "boundaries": ["PHL_SH27_19_20"],
           "lower": 7000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SH27_21"
-          ],
+          "boundaries": ["PHL_SH27_21"],
           "lower": 9000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SH27_24"
-          ],
+          "boundaries": ["PHL_SH27_24"],
           "lower": 9000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SH27_46_47"
-          ],
+          "boundaries": ["PHL_SH27_46_47"],
           "lower": 11000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SH27_44_50"
-          ],
+          "boundaries": ["PHL_SH27_44_50"],
           "lower": 11000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SH27_50_NW"
-          ],
+          "boundaries": ["PHL_SH27_50_NW"],
           "lower": 10000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SH27_50_N"
-          ],
+          "boundaries": ["PHL_SH27_50_N"],
           "lower": 11000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SH27_50_NW"
-          ],
+          "boundaries": ["PHL_SH27_50_NW"],
           "lower": 11000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SD27_50_N"
-          ],
+          "boundaries": ["PHL_SD27_50_N"],
           "lower": 11000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SD27_50_NE"
-          ],
+          "boundaries": ["PHL_SD27_50_NE"],
           "lower": 11000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SD27_50_NEE"
-          ],
+          "boundaries": ["PHL_SD27_50_NEE"],
           "lower": 11000,
           "upper": 12000
         }
       ],
       "PHL_S_HIGH9": [
         {
-          "boundaries": [
-            "PHL_SH9_31"
-          ],
+          "boundaries": ["PHL_SH9_31"],
           "lower": 9000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SH9_32_50"
-          ],
+          "boundaries": ["PHL_SH9_32_50"],
           "lower": 9000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SH9_44_50"
-          ],
+          "boundaries": ["PHL_SH9_44_50"],
           "lower": 11000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SH9_45_50"
-          ],
+          "boundaries": ["PHL_SH9_45_50"],
           "lower": 10000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SH9_46_47"
-          ],
+          "boundaries": ["PHL_SH9_46_47"],
           "lower": 10000,
           "upper": 10000
         },
         {
-          "boundaries": [
-            "PHL_SH9_50_N"
-          ],
+          "boundaries": ["PHL_SH9_50_N"],
           "lower": 8000,
           "upper": 12000
         },
         {
-          "boundaries": [
-            "PHL_SH9_50_SE"
-          ],
+          "boundaries": ["PHL_SH9_50_SE"],
           "lower": 8000,
           "upper": 12000
         }
       ],
       "PHL_TWR": [
         {
-          "boundaries": [
-            "PHL_E_TWR_SCL",
-            "PHL_TWR-SPLIT"
-          ],
+          "boundaries": ["PHL_E_TWR_SCL", "PHL_TWR-SPLIT"],
           "lower": 0,
           "upper": 2000
         },
         {
-          "boundaries": [
-            "PHL_W_TWR_SCL",
-            "PHL_TWR-SPLIT"
-          ],
+          "boundaries": ["PHL_W_TWR_SCL", "PHL_TWR-SPLIT"],
           "lower": 0,
           "upper": 2000
         }
       ],
       "PHL_WD_APP27": [
         {
-          "boundaries": [
-            "PHL_OOD27_28_50"
-          ],
+          "boundaries": ["PHL_OOD27_28_50"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_OOD27_29_32"
-          ],
+          "boundaries": ["PHL_OOD27_29_32"],
           "lower": 3000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_OOD27_33"
-          ],
+          "boundaries": ["PHL_OOD27_33"],
           "lower": 4000,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "PHL_OOD27_33_34"
-          ],
+          "boundaries": ["PHL_OOD27_33_34"],
           "lower": 4000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_OOD27_50_NE"
-          ],
+          "boundaries": ["PHL_OOD27_50_NE"],
           "lower": 5000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_OOD27_50_N"
-          ],
+          "boundaries": ["PHL_OOD27_50_N"],
           "lower": 0,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "PHL_OOD27_50_NW"
-          ],
+          "boundaries": ["PHL_OOD27_50_NW"],
           "lower": 0,
           "upper": 2000
         }
       ],
       "PHL_WD_APP9": [
         {
-          "boundaries": [
-            "PHL_OOD9_28_50"
-          ],
+          "boundaries": ["PHL_OOD9_28_50"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_OOD9_29_32"
-          ],
+          "boundaries": ["PHL_OOD9_29_32"],
           "lower": 3000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_OOD9_33"
-          ],
+          "boundaries": ["PHL_OOD9_33"],
           "lower": 4000,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "PHL_OOD9_33_34"
-          ],
+          "boundaries": ["PHL_OOD9_33_34"],
           "lower": 4000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_OOD9_50_N"
-          ],
+          "boundaries": ["PHL_OOD9_50_N"],
           "lower": 0,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "PHL_OOD9_50_NW"
-          ],
+          "boundaries": ["PHL_OOD9_50_NW"],
           "lower": 4000,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_OOD9_50_ME"
-          ],
+          "boundaries": ["PHL_OOD9_50_ME"],
           "lower": 0,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "PHL_OOD9_50_E"
-          ],
+          "boundaries": ["PHL_OOD9_50_E"],
           "lower": 0,
           "upper": 2000
         }
       ],
       "PHL_YD_APP27": [
         {
-          "boundaries": [
-            "PHL_ARD27_6"
-          ],
+          "boundaries": ["PHL_ARD27_6"],
           "lower": 5000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_ARD27_6_8"
-          ],
+          "boundaries": ["PHL_ARD27_6_8"],
           "lower": 0,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_ARD27_6_8_9"
-          ],
+          "boundaries": ["PHL_ARD27_6_8_9"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_ARD27_7"
-          ],
+          "boundaries": ["PHL_ARD27_7"],
           "lower": 0,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "PHL_ARD27_10A"
-          ],
+          "boundaries": ["PHL_ARD27_10A"],
           "lower": 3000,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "PHL_ARD27_10B"
-          ],
+          "boundaries": ["PHL_ARD27_10B"],
           "lower": 3000,
           "upper": 5000
         }
       ],
       "PHL_YD_APP9": [
         {
-          "boundaries": [
-            "PHL_ARD9_6"
-          ],
+          "boundaries": ["PHL_ARD9_6"],
           "lower": 5000,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_ARD9_6_8"
-          ],
+          "boundaries": ["PHL_ARD9_6_8"],
           "lower": 0,
           "upper": 6000
         },
         {
-          "boundaries": [
-            "PHL_ARD9_6_8_9"
-          ],
+          "boundaries": ["PHL_ARD9_6_8_9"],
           "lower": 0,
           "upper": 5000
         },
         {
-          "boundaries": [
-            "PHL_ARD9_7"
-          ],
+          "boundaries": ["PHL_ARD9_7"],
           "lower": 0,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "PHL_ARD9_10A"
-          ],
+          "boundaries": ["PHL_ARD9_10A"],
           "lower": 3000,
           "upper": 4000
         },
         {
-          "boundaries": [
-            "PHL_ARD9_10B"
-          ],
+          "boundaries": ["PHL_ARD9_10B"],
           "lower": 3000,
           "upper": 5000
         }
@@ -4742,431 +4374,549 @@
     }
   },
   "inbound_flows": {
-      "BOJID4/HAR5": {
-          "arrivals": [
-      {
-        "airlines": {
-          "KPHL": [
+    "BOJID4/HAR5": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KPHL": [
+              {
+                "airport": "KDEN",
+                "icao": "AAL"
+              },
+              {
+                "airport": "CYYZ",
+                "icao": "PDT"
+              },
+              {
+                "airport": "KIND",
+                "icao": "JIA"
+              },
+              {
+                "airport": "KDAY",
+                "icao": "JIA"
+              },
+              {
+                "airport": "CYYZ",
+                "icao": "JZA"
+              },
+              {
+                "airport": "KCVG",
+                "icao": "PDT"
+              },
+              {
+                "airport": "KLAX",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KORD",
+                "icao": "AAL"
+              }
+            ]
+          },
+          "assigned_altitude": 8000,
+          "cruise_altitude": 39000,
+          "initial_altitude": 9000,
+          "initial_controller": "N26",
+          "initial_speed": 250,
+          "spawn": "LRP",
+          "star": "BOJID4"
+        }
+      ],
+      "overflights": [
+        {
+          "airlines": [
             {
-              "airport": "KDEN",
-              "icao": "AAL"
+              "icao": "BAZOO",
+              "departure_airport": "KSPS",
+              "arrival_airport": "KWRI"
             },
             {
-              "airport": "CYYZ",
-              "icao": "PDT"
+              "icao": "SNOOP",
+              "departure_airport": "KSKF",
+              "arrival_airport": "KWRI"
             },
             {
-              "airport": "KIND",
-              "icao": "JIA"
-            },
-            {
-              "airport": "KDAY",
-              "icao": "JIA"
-            },
-            {
-              "airport": "CYYZ",
-              "icao": "JZA"
-            },
-            {
-              "airport": "KCVG",
-              "icao": "PDT"
-            },
-            {
-              "airport": "KLAX",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KORD",
-              "icao": "AAL"
+              "icao": "COBRA",
+              "departure_airport": "KCFO",
+              "arrival_airport": "KWRI"
             }
-          ]
-        },
-        "assigned_altitude": 8000,
-        "cruise_altitude": 39000,
-        "initial_altitude": 9000,
-        "initial_controller": "N26",
-        "initial_speed": 250,
-        "spawn": "LRP",
-        "star": "BOJID4"
-      }
           ],
-          "overflights": [
-            {
-                "airlines": [
-                    { "icao": "BAZOO", "departure_airport": "KSPS", "arrival_airport": "KWRI" },
-                    { "icao": "SNOOP", "departure_airport": "KSKF", "arrival_airport": "KWRI" },
-                    { "icao": "COBRA", "departure_airport": "KCFO", "arrival_airport": "KWRI" }
-                ],
-                "waypoints": "LRP TRAGG/ho BUNTS RELNY NAGGS CYN",
-                "initial_altitude": 12000,
-                "assigned_altitude": 9000,
-                "initial_speed": 300,
-                "description": "KWRI HAR5 arrivals",
-                "initial_controller": "W32"
-            }
-          ]
-      },
-      "FINAL27_NORTH": { "arrivals": [
-      {
-        "airlines": {
-          "KPHL": [
-            {
-              "airport": "KDEN",
-              "icao": "AAL"
-            },
-            {
-              "airport": "CYYZ",
-              "icao": "PDT"
-            },
-            {
-              "airport": "KIND",
-              "icao": "JIA"
-            },
-            {
-              "airport": "KDAY",
-              "icao": "JIA"
-            },
-            {
-              "airport": "CYYZ",
-              "icao": "JZA"
-            },
-            {
-              "airport": "KCVG",
-              "icao": "PDT"
-            },
-            {
-              "airport": "KLAX",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KORD",
-              "icao": "AAL"
-            }
-          ]
-        },
-        "assigned_altitude": 4000,
-        "cruise_altitude": 39000,
-        "expect_approach": "27R",
-        "initial_altitude": 6000,
-        "initial_controller": "1N",
-        "initial_speed": 220,
-        "speed_restriction": 220,
-        "star": "BOJID4",
-        "scratchpad": "27R",
-        "waypoints": "BOJID N040.01.51.140,W075.11.43.262/ho HIFAL EYRIE FERUS/h085"
-      }
-      ] },
-    "FINAL27_SOUTH":  { "arrivals": [
-      {
-        "airlines": {
-          "KPHL": [
-            {
-              "airport": "KLAS",
-              "icao": "AAL"
-            },
-            {
-              "airport": "MMUN",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KTPA",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KATL",
-              "icao": "FFT"
-            },
-            {
-              "airport": "KMEM",
-              "icao": "JIA"
-            }
-          ]
-        },
-        "assigned_altitude": 4000,
-        "cruise_altitude": 37000,
-        "expect_approach": "27R",
-        "initial_altitude": 6000,
-        "initial_controller": "1S",
-        "initial_speed": 220,
-        "speed_restriction": 220,
-        "star": "PAATS4",
-        "scratchpad": "27R",
-        "waypoints": "N039.39.39.130,W075.08.38.554 CHPMN/ho PSOUT MKORD/h087"
-      }
-    ] },
-    "FINAL17_NORTH":  { "arrivals": [
-      {
-        "airlines": {
-          "KPHL": [
-            {
-              "airport": "KBUF",
-              "icao": "JIA"
-            },
-            {
-              "airport": "KBOS",
-              "icao": "JBU"
-            },
-            {
-              "airport": "KPIT",
-              "icao": "FFT"
-            },
-            {
-              "airport": "KPWM",
-              "icao": "EJA"
-            },
-            {
-              "airport": "KCLE",
-              "icao": "NKS"
-            }
-          ]
-        },
-        "assigned_altitude": 5000,
-        "cruise_altitude": 37000,
-        "expect_approach": "17Z",
-        "initial_altitude": 8000,
-        "initial_controller": "1N",
-        "initial_speed": 220,
-        "speed_restriction": 220,
-        "star": "BOJID4",
-        "scratchpad": "17Z",
-        "waypoints": "N040.05.01.382,W075.44.56.319 N040.04.20.458,W075.35.49.255/ho/h110"
-      }
-    ] },
-    "JIIMS4":  { "arrivals": [
-      {
-        "airlines": {
-          "KPHL": [
-            {
-              "airport": "KJAX",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KPBI",
-              "icao": "FFT"
-            },
-            {
-              "airport": "KFLL",
-              "icao": "NKS"
-            },
-            {
-              "airport": "KCHS",
-              "icao": "PDT"
-            },
-            {
-              "airport": "KMCO",
-              "icao": "NKS"
-            },
-            {
-              "airport": "KBCT",
-              "icao": "LXJ"
-            },
-            {
-              "airport": "KPBI",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KBOS",
-              "icao": "JBU"
-            },
-            {
-              "airport": "KBOS",
-              "icao": "RPA"
-            }
-          ]
-        },
-        "initial_altitude": 9000,
-        "initial_controller": "W32",
-        "initial_speed": 250,
-        "star": "JIIMS4",
-        "spawn": "WNSTN@0.7"
-      }
-    ] },
-    "PAATS4":  { "arrivals": [
-      {
-        "airlines": {
-          "KPHL": [
-            {
-              "airport": "KLAS",
-              "icao": "AAL"
-            },
-            {
-              "airport": "MMUN",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KTPA",
-              "icao": "AAL"
-            },
-            {
-              "airport": "KATL",
-              "icao": "FFT"
-            },
-            {
-              "airport": "KMEM",
-              "icao": "JIA"
-            }
-          ]
-        },
-        "assigned_altitude": 10000,
-        "cruise_altitude": 37000,
-        "initial_altitude": 10000,
-        "initial_controller": "W32",
-        "initial_speed": 250,
-        "star": "PAATS4",
-        "spawn": "CANNY"
-      }
-    ] },
-    "SPUDS7":  { "arrivals": [
-      {
-        "airlines": {
-          "KPHL": [
-            {
-              "airport": "KPIT",
-              "icao": "LXJ"
-            },
-            {
-              "airport": "KALB",
-              "icao": "EJA"
-            },
-            {
-              "airport": "KBUF",
-              "icao": "LXJ"
-            },
-            {
-              "airport": "CYUL",
-              "icao": "PDT"
-            }
-          ]
-        },
-        "assigned_altitude": 10000,
-        "initial_altitude": 10000,
-        "initial_controller": "N26",
-        "initial_speed": 250,
-        "star": "SPUDS7",
-        "spawn": "ETX"
-      }
-    ] },
-      "PROUD2": { "overflights": [
-            {
-                "airlines": [
-                    { "icao": "JBU", "departure_airport": "KFLL", "arrival_airport": "KLGA" },
-                    { "icao": "SWA", "departure_airport": "KATL", "arrival_airport": "KLGA" },
-                    { "icao": "NKS", "departure_airport": "KCLT", "arrival_airport": "KLGA" },
-                    { "icao": "DAL", "departure_airport": "KMIA", "arrival_airport": "KLGA" }
-                ],
-                "waypoints": "ENO/a24000+ SKIPY/a19000-22000 BESSI/a17000+ EDJER/a13000-17000 DAVYS/a13000+ HOLEY BRAND/a11000+ KORRY/a10000 DEPDY",
-                "initial_altitude": 24000,
-                "initial_speed": 350,
-                "description": "KLGA PROUD2 arrivals",
-                "initial_controller": "W32"
-            }
-      ] },
-        "PHLBO4/JAKIE4":  { "overflights": [
-            {
-                "airlines": [
-                    { "icao": "UAL", "departure_airport": "KMSY", "arrival_airport": "KEWR" },
-                    { "icao": "FFT", "departure_airport": "KATL", "arrival_airport": "KEWR" },
-                    { "icao": "AAL", "departure_airport": "KBNA", "arrival_airport": "KEWR" },
-                    { "icao": "NKS", "departure_airport": "KTPA", "arrival_airport": "KEWR" },
-                    { "icao": "DAL", "departure_airport": "KCLT", "arrival_airport": "KEWR" }
-                ],
-                "waypoints": "FUBRR DQO/a20000+ STEFE/a13000-17000 SOMTO/a11000 ARD DYLIN/a8000 MERSR METRO",
-                "initial_altitude": 24000,
-                "initial_speed": 350,
-                "description": "KEWR PHLBO4 arrivals",
-                "initial_controller": "W32"
-            },
-            {
-                "airlines": [
-                    { "icao": "LXJ", "departure_airport": "KRIC", "arrival_airport": "KTEB" },
-                    { "icao": "WUP", "departure_airport": "KTPA", "arrival_airport": "KTEB" },
-                    { "icao": "EJA", "departure_airport": "KBCT", "arrival_airport": "KTEB" }
-                ],
-                "waypoints": "JNJEN BUZIE SPNCR/ho JAIKE/a13000 ILENE/a13000 WACKI/s250/a11000 MAZIE REGLE/a7000 SBJ",
-                "initial_altitude": 22000,
-                "assigned_altitude": 13000,
-                "initial_speed": 300,
-                "description": "KTEB JAKIE4 arrivals",
-                "initial_controller": "W32"
-            }
-        ] },
-        "BRAND1":  { "overflights": [
-            {
-                "airlines": [
-                    { "icao": "FDX", "fleet": "short", "departure_airport": "KCLT", "arrival_airport": "KEWR" }
-                ],
-                "waypoints": "BACKY ODESA DQO/ho RUUTH WNDYL BRAND/a7000 KORRY WATJA",
-                "initial_altitude": 18000,
-                "initial_speed": 250,
-                "description": "KEWR BRAND1 arrivals",
-                "initial_controller": "W32"
-            }
-        ] },
-        "V29.Low":  { "overflights": [
-            {
-                "airlines": [
-                    { "icao": "N", "fleet": "lightGA", "departure_airport": "KGED", "arrival_airport": "KABE" }
-                ],
-                "waypoints": "N038.59.30.652,W075.31.03.803 N039.05.18.397,W075.31.25.034/ho ENO V29 ETX",
-                "initial_altitude": 9000,
-                "assigned_altitude": 9000,
-                "initial_speed": 150,
-                "description": "V29 overflights",
-                "initial_controller": "W32"
-            }
-        ] },
-        "V29.High":  { "overflights": [
-            {
-                "airlines": [
-                    { "icao": "LXJ", "departure_airport": "KGED", "arrival_airport": "KABE" },
-                    { "icao": "EJA", "departure_airport": "15N", "arrival_airport": "KABE" }
-                ],
-                "waypoints": "N038.59.30.652,W075.31.03.803 N039.05.18.397,W075.31.25.034/ho ENO V29 ETX",
-                "initial_altitude": 11000,
-                "assigned_altitude": 11000,
-                "initial_speed": 150,
-                "description": "V29 overflights",
-                "initial_controller": "W32"
-            }
-        ] },
-        "ABE-ACY":  { "overflights": [
-            {
-                "airlines": [
-                    { "icao": "N", "departure_airport": "KABE", "arrival_airport": "KACY" }
-                ],
-                "waypoints": "FJC N040.35.02.110,W075.18.19.346/ho ARD CYN ACY",
-                "initial_altitude": 5000,
-                "assigned_altitude": 5000,
-                "initial_speed": 150,
-                "description": "ABE-ACY flights",
-                "initial_controller": "41A"
-            }
-        ] },
-        "RDG-WRI":  { "overflights": [
-            {
-                "airlines": [
-                    { "icao": "N", "fleet": "lightGA", "departure_airport": "KRDG", "arrival_airport": "KMJX" }
-                ],
-                "waypoints": "WILEN LRP/ho V210 ARD KBLM",
-                "initial_altitude": 3000,
-                "assigned_altitude": 3000,
-                "initial_speed": 150,
-                "description": "RDG-WRI area flights (slow)",
-                "initial_controller": "71X"
-            },
-            {
-                "airlines": [
-                    { "icao": "N", "fleet": "fastGA", "departure_airport": "KRDG", "arrival_airport": "KBLM" }
-                ],
-                "waypoints": "WILEN LRP/ho V210 ARD KBLM",
-                "initial_altitude": 5000,
-                "assigned_altitude": 5000,
-                "initial_speed": 250,
-                "description": "RDG-WRI area flights (fast)",
-                "initial_controller": "71X"
-            }
-        ] }
+          "waypoints": "LRP TRAGG/ho BUNTS RELNY NAGGS CYN",
+          "initial_altitude": 12000,
+          "assigned_altitude": 9000,
+          "initial_speed": 300,
+          "description": "KWRI HAR5 arrivals",
+          "initial_controller": "W32"
+        }
+      ]
     },
+    "FINAL27_NORTH": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KPHL": [
+              {
+                "airport": "KDEN",
+                "icao": "AAL"
+              },
+              {
+                "airport": "CYYZ",
+                "icao": "PDT"
+              },
+              {
+                "airport": "KIND",
+                "icao": "JIA"
+              },
+              {
+                "airport": "KDAY",
+                "icao": "JIA"
+              },
+              {
+                "airport": "CYYZ",
+                "icao": "JZA"
+              },
+              {
+                "airport": "KCVG",
+                "icao": "PDT"
+              },
+              {
+                "airport": "KLAX",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KORD",
+                "icao": "AAL"
+              }
+            ]
+          },
+          "assigned_altitude": 4000,
+          "cruise_altitude": 39000,
+          "expect_approach": "27R",
+          "initial_altitude": 6000,
+          "initial_controller": "1N",
+          "initial_speed": 220,
+          "speed_restriction": 220,
+          "star": "BOJID4",
+          "scratchpad": "27R",
+          "waypoints": "BOJID N040.01.51.140,W075.11.43.262/ho HIFAL EYRIE FERUS/h085"
+        }
+      ]
+    },
+    "FINAL27_SOUTH": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KPHL": [
+              {
+                "airport": "KLAS",
+                "icao": "AAL"
+              },
+              {
+                "airport": "MMUN",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KTPA",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KATL",
+                "icao": "FFT"
+              },
+              {
+                "airport": "KMEM",
+                "icao": "JIA"
+              }
+            ]
+          },
+          "assigned_altitude": 4000,
+          "cruise_altitude": 37000,
+          "expect_approach": "27R",
+          "initial_altitude": 6000,
+          "initial_controller": "1S",
+          "initial_speed": 220,
+          "speed_restriction": 220,
+          "star": "PAATS4",
+          "scratchpad": "27R",
+          "waypoints": "N039.39.39.130,W075.08.38.554 CHPMN/ho PSOUT MKORD/h087"
+        }
+      ]
+    },
+    "FINAL17_NORTH": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KPHL": [
+              {
+                "airport": "KBUF",
+                "icao": "JIA"
+              },
+              {
+                "airport": "KBOS",
+                "icao": "JBU"
+              },
+              {
+                "airport": "KPIT",
+                "icao": "FFT"
+              },
+              {
+                "airport": "KPWM",
+                "icao": "EJA"
+              },
+              {
+                "airport": "KCLE",
+                "icao": "NKS"
+              }
+            ]
+          },
+          "assigned_altitude": 5000,
+          "cruise_altitude": 37000,
+          "expect_approach": "17Z",
+          "initial_altitude": 8000,
+          "initial_controller": "1N",
+          "initial_speed": 220,
+          "speed_restriction": 220,
+          "star": "BOJID4",
+          "scratchpad": "17Z",
+          "waypoints": "N040.05.01.382,W075.44.56.319 N040.04.20.458,W075.35.49.255/ho/h110"
+        }
+      ]
+    },
+    "JIIMS4": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KPHL": [
+              {
+                "airport": "KJAX",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "FFT"
+              },
+              {
+                "airport": "KFLL",
+                "icao": "NKS"
+              },
+              {
+                "airport": "KCHS",
+                "icao": "PDT"
+              },
+              {
+                "airport": "KMCO",
+                "icao": "NKS"
+              },
+              {
+                "airport": "KBCT",
+                "icao": "LXJ"
+              },
+              {
+                "airport": "KPBI",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KBOS",
+                "icao": "JBU"
+              },
+              {
+                "airport": "KBOS",
+                "icao": "RPA"
+              }
+            ]
+          },
+          "initial_altitude": 9000,
+          "initial_controller": "W32",
+          "initial_speed": 250,
+          "star": "JIIMS4",
+          "spawn": "WNSTN@0.7"
+        }
+      ]
+    },
+    "PAATS4": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KPHL": [
+              {
+                "airport": "KLAS",
+                "icao": "AAL"
+              },
+              {
+                "airport": "MMUN",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KTPA",
+                "icao": "AAL"
+              },
+              {
+                "airport": "KATL",
+                "icao": "FFT"
+              },
+              {
+                "airport": "KMEM",
+                "icao": "JIA"
+              }
+            ]
+          },
+          "assigned_altitude": 10000,
+          "cruise_altitude": 37000,
+          "initial_altitude": 10000,
+          "initial_controller": "W32",
+          "initial_speed": 250,
+          "star": "PAATS4",
+          "spawn": "CANNY"
+        }
+      ]
+    },
+    "SPUDS7": {
+      "arrivals": [
+        {
+          "airlines": {
+            "KPHL": [
+              {
+                "airport": "KPIT",
+                "icao": "LXJ"
+              },
+              {
+                "airport": "KALB",
+                "icao": "EJA"
+              },
+              {
+                "airport": "KBUF",
+                "icao": "LXJ"
+              },
+              {
+                "airport": "CYUL",
+                "icao": "PDT"
+              }
+            ]
+          },
+          "assigned_altitude": 10000,
+          "initial_altitude": 10000,
+          "initial_controller": "N26",
+          "initial_speed": 250,
+          "star": "SPUDS7",
+          "spawn": "ETX"
+        }
+      ]
+    },
+    "PROUD2": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "icao": "JBU",
+              "departure_airport": "KFLL",
+              "arrival_airport": "KLGA"
+            },
+            {
+              "icao": "SWA",
+              "departure_airport": "KATL",
+              "arrival_airport": "KLGA"
+            },
+            {
+              "icao": "NKS",
+              "departure_airport": "KCLT",
+              "arrival_airport": "KLGA"
+            },
+            {
+              "icao": "DAL",
+              "departure_airport": "KMIA",
+              "arrival_airport": "KLGA"
+            }
+          ],
+          "waypoints": "ENO/a24000+ SKIPY/a19000-22000 BESSI/a17000+ EDJER/a13000-17000 DAVYS/a13000+ HOLEY BRAND/a11000+ KORRY/a10000 DEPDY",
+          "initial_altitude": 24000,
+          "initial_speed": 350,
+          "description": "KLGA PROUD2 arrivals",
+          "initial_controller": "W32"
+        }
+      ]
+    },
+    "PHLBO4/JAKIE4": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "icao": "UAL",
+              "departure_airport": "KMSY",
+              "arrival_airport": "KEWR"
+            },
+            {
+              "icao": "FFT",
+              "departure_airport": "KATL",
+              "arrival_airport": "KEWR"
+            },
+            {
+              "icao": "AAL",
+              "departure_airport": "KBNA",
+              "arrival_airport": "KEWR"
+            },
+            {
+              "icao": "NKS",
+              "departure_airport": "KTPA",
+              "arrival_airport": "KEWR"
+            },
+            {
+              "icao": "DAL",
+              "departure_airport": "KCLT",
+              "arrival_airport": "KEWR"
+            }
+          ],
+          "waypoints": "FUBRR DQO/a20000+ STEFE/a13000-17000 SOMTO/a11000 ARD DYLIN/a8000 MERSR METRO",
+          "initial_altitude": 24000,
+          "initial_speed": 350,
+          "description": "KEWR PHLBO4 arrivals",
+          "initial_controller": "W32"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "LXJ",
+              "departure_airport": "KRIC",
+              "arrival_airport": "KTEB"
+            },
+            {
+              "icao": "WUP",
+              "departure_airport": "KTPA",
+              "arrival_airport": "KTEB"
+            },
+            {
+              "icao": "EJA",
+              "departure_airport": "KBCT",
+              "arrival_airport": "KTEB"
+            }
+          ],
+          "waypoints": "JNJEN BUZIE SPNCR/ho JAIKE/a13000 ILENE/a13000 WACKI/s250/a11000 MAZIE REGLE/a7000 SBJ",
+          "initial_altitude": 22000,
+          "assigned_altitude": 13000,
+          "initial_speed": 300,
+          "description": "KTEB JAKIE4 arrivals",
+          "initial_controller": "W32"
+        }
+      ]
+    },
+    "BRAND1": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "icao": "FDX",
+              "fleet": "short",
+              "departure_airport": "KCLT",
+              "arrival_airport": "KEWR"
+            }
+          ],
+          "waypoints": "BACKY ODESA DQO/ho RUUTH WNDYL BRAND/a7000 KORRY WATJA",
+          "initial_altitude": 18000,
+          "initial_speed": 250,
+          "description": "KEWR BRAND1 arrivals",
+          "initial_controller": "W32"
+        }
+      ]
+    },
+    "V29.Low": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "lightGA",
+              "departure_airport": "KGED",
+              "arrival_airport": "KABE"
+            }
+          ],
+          "waypoints": "N038.59.30.652,W075.31.03.803 N039.05.18.397,W075.31.25.034/ho ENO V29 ETX",
+          "initial_altitude": 9000,
+          "assigned_altitude": 9000,
+          "initial_speed": 150,
+          "description": "V29 overflights",
+          "initial_controller": "W32"
+        }
+      ]
+    },
+    "V29.High": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "icao": "LXJ",
+              "departure_airport": "KGED",
+              "arrival_airport": "KABE"
+            },
+            {
+              "icao": "EJA",
+              "departure_airport": "15N",
+              "arrival_airport": "KABE"
+            }
+          ],
+          "waypoints": "N038.59.30.652,W075.31.03.803 N039.05.18.397,W075.31.25.034/ho ENO V29 ETX",
+          "initial_altitude": 11000,
+          "assigned_altitude": 11000,
+          "initial_speed": 150,
+          "description": "V29 overflights",
+          "initial_controller": "W32"
+        }
+      ]
+    },
+    "ABE-ACY": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "departure_airport": "KABE",
+              "arrival_airport": "KACY"
+            }
+          ],
+          "waypoints": "FJC N040.35.02.110,W075.18.19.346/ho ARD CYN ACY",
+          "initial_altitude": 5000,
+          "assigned_altitude": 5000,
+          "initial_speed": 150,
+          "description": "ABE-ACY flights",
+          "initial_controller": "41A"
+        }
+      ]
+    },
+    "RDG-WRI": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "lightGA",
+              "departure_airport": "KRDG",
+              "arrival_airport": "KMJX"
+            }
+          ],
+          "waypoints": "WILEN LRP/ho V210 ARD KBLM",
+          "initial_altitude": 3000,
+          "assigned_altitude": 3000,
+          "initial_speed": 150,
+          "description": "RDG-WRI area flights (slow)",
+          "initial_controller": "71X"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA",
+              "departure_airport": "KRDG",
+              "arrival_airport": "KBLM"
+            }
+          ],
+          "waypoints": "WILEN LRP/ho V210 ARD KBLM",
+          "initial_altitude": 5000,
+          "assigned_altitude": 5000,
+          "initial_speed": 250,
+          "description": "RDG-WRI area flights (fast)",
+          "initial_controller": "71X"
+        }
+      ]
+    }
+  },
   "control_positions": {
     "Allentown Arrival Radar": {
       "frequency": 119650,
@@ -5237,7 +4987,8 @@
     "Philadelphia North Departure": {
       "frequency": 124350,
       "radio_name": "Philly departure",
-      "sector_id": "1E"
+      "sector_id": "1E",
+      "default_airport": "KPHL"
     },
     "Philadelphia Tower": {
       "frequency": 118500,
@@ -5312,25 +5063,17 @@
   },
   "default_scenario": "KPHL Depart 27L Land 27R/35",
   "fixes": {
-      "_rvrd5": "DQO@061/5",
-      "_rvrd9": "N039.46.14.391,W075.28.05.879",
-      "_rvrd14": "N039.49.23.699,W075.22.51.176"
+    "_rvrd5": "DQO@061/5",
+    "_rvrd9": "N039.46.14.391,W075.28.05.879",
+    "_rvrd14": "N039.49.23.699,W075.22.51.176"
   },
   "name": "KPHL",
   "primary_airport": "KPHL",
-  "reporting_points": [
-      "BOJID",
-      "HIFAL",
-      "JIIMS",
-      "PAATS",
-      "PSOUT",
-      "SPUDS",
-      "TRAGG"
-  ],
+  "reporting_points": ["BOJID", "HIFAL", "JIIMS", "PAATS", "PSOUT", "SPUDS", "TRAGG"],
   "scenarios": {
     "KPHL 27R/17 Final": {
       "airspace": {
-        "1F": [ "PHL_F1_APP27", "PHL_F2_APP27" ]
+        "1F": ["PHL_F1_APP27", "PHL_F2_APP27"]
       },
       "arrival_runways": [
         {
@@ -5353,28 +5096,26 @@
           "KPHL": 20
         }
       },
-      "solo_controller": "1F",
+      "configuration": {
+        "config_id": "21X",
+        "default_consolidation": {
+          "1F": []
+        }
+      },
       "center": "N039.55.00.306,W074.59.15.972",
       "range": 30,
-      "controllers": [
-        "1Q",
-        "1N",
-        "1S",
-        "W32",
-        "N26"
-      ],
-      "default_maps": [ "PHL West" ],
+      "controllers": ["1Q", "1N", "1S", "W32", "N26"],
+      "default_maps": ["PHL West"],
       "wind": {
-        "direction": 290,
-        "speed": 8
+        "direction": "190-250"
       }
     },
     "KPHL Depart 27L Land 27R/35": {
       "airspace": {
-        "1E": [ "PHL_N_DEP27", "PHL_S_DEP27", "PHL_N_HIGH27", "PHL_S_HIGH27" ],
-        "1F": [ "PHL_F1_APP27", "PHL_F2_APP27" ],
-        "1N": [ "PHL_N_APP27", "PHL_PT_APP27", "PHL_YD_APP27" ],
-        "1S": [ "PHL_S_APP27", "PHL_WD_APP27", "PHL_DU_APP27" ]
+        "1E": ["PHL_N_DEP27", "PHL_S_DEP27", "PHL_N_HIGH27", "PHL_S_HIGH27"],
+        "1F": ["PHL_F1_APP27", "PHL_F2_APP27"],
+        "1N": ["PHL_N_APP27", "PHL_PT_APP27", "PHL_YD_APP27"],
+        "1S": ["PHL_S_APP27", "PHL_WD_APP27", "PHL_DU_APP27"]
       },
       "arrival_runways": [
         {
@@ -5388,8 +5129,8 @@
       ],
       "inbound_rates": {
         "BOJID4/HAR5": {
-            "KPHL": 12,
-            "overflights": 5
+          "KPHL": 12,
+          "overflights": 5
         },
         "JIIMS4": {
           "KPHL": 12
@@ -5400,34 +5141,36 @@
         "SPUDS7": {
           "KPHL": 10
         },
-        "PROUD2": { "overflights": 5 },
-        "PHLBO4/JAKIE4": { "overflights": 5 },
-        "BRAND1": { "overflights": 5 },
-        "V29.Low": { "overflights": 5 },
-        "V29.High": { "overflights": 5 },
-        "ABE-ACY": { "overflights": 5 },
-        "RDG-WRI": { "overflights": 5 }
+        "PROUD2": {
+          "overflights": 5
+        },
+        "PHLBO4/JAKIE4": {
+          "overflights": 5
+        },
+        "BRAND1": {
+          "overflights": 5
+        },
+        "V29.Low": {
+          "overflights": 5
+        },
+        "V29.High": {
+          "overflights": 5
+        },
+        "ABE-ACY": {
+          "overflights": 5
+        },
+        "RDG-WRI": {
+          "overflights": 5
+        }
       },
-      "solo_controller": "1N",
-      "multi_controllers": {
-          "default" : {
-              "1N": { "primary": true, "inbound_flows": [ "BOJID4/HAR5", "SPUDS7", "ABE-ACY", "RDG-WRI" ] },
-              "1S": { "backup": "1N", "inbound_flows": [ "JIIMS4", "PAATS4", "V29.Low" ] },
-              "1F": { "backup": "1N" },
-              "1E": { "backup": "1N", "departures": ["KPHL"], "inbound_flows": [ "PHLBO4/JAKIE4", "BRAND1", "V29.High" ] }
-          }
+      "configuration": {
+        "config_id": "27L",
+        "default_consolidation": {
+          "1N": ["1E", "1F", "1S"]
+        }
       },
-      "controllers": [
-        "1Q",
-        "W32",
-        "14P",
-        "51Y",
-        "71X",
-        "41A",
-        "11V",
-        "N26"
-      ],
-      "default_maps": [ "PHL West" ],
+      "controllers": ["1Q", "W32", "14P", "51Y", "71X", "41A", "11V", "N26"],
+      "default_maps": ["PHL West"],
       "departure_runways": [
         {
           "airport": "KPHL",
@@ -5436,17 +5179,15 @@
         }
       ],
       "wind": {
-        "direction": 290,
-        "gust": 17,
-        "speed": 12
+        "direction": "265-325"
       }
     },
     "KPHL Depart 9L Land 9R/17": {
       "airspace": {
-        "1F": [ "PHL_F1_APP9", "PHL_F2_APP9" ],
-        "1N": [ "PHL_N_APP9", "PHL_PT_APP9", "PHL_YD_APP9"],
-        "1S": [ "PHL_S_APP9", "PHL_WD_APP9", "PHL_DU_APP9" ],
-        "1E": [ "PHL_N_DEP9", "PHL_N_HIGH9", "PHL_S_DEP9", "PHL_S_HIGH9" ]
+        "1F": ["PHL_F1_APP9", "PHL_F2_APP9"],
+        "1N": ["PHL_N_APP9", "PHL_PT_APP9", "PHL_YD_APP9"],
+        "1S": ["PHL_S_APP9", "PHL_WD_APP9", "PHL_DU_APP9"],
+        "1E": ["PHL_N_DEP9", "PHL_N_HIGH9", "PHL_S_DEP9", "PHL_S_HIGH9"]
       },
       "arrival_runways": [
         {
@@ -5472,34 +5213,36 @@
         "SPUDS7": {
           "KPHL": 10
         },
-        "PROUD2": { "overflights": 5 },
-        "PHLBO4/JAKIE4": { "overflights": 5 },
-        "BRAND1": { "overflights": 5 },
-        "V29.Low": { "overflights": 5 },
-        "V29.High": { "overflights": 5 },
-        "ABE-ACY": { "overflights": 5 },
-        "RDG-WRI": { "overflights": 5 }
+        "PROUD2": {
+          "overflights": 5
+        },
+        "PHLBO4/JAKIE4": {
+          "overflights": 5
+        },
+        "BRAND1": {
+          "overflights": 5
+        },
+        "V29.Low": {
+          "overflights": 5
+        },
+        "V29.High": {
+          "overflights": 5
+        },
+        "ABE-ACY": {
+          "overflights": 5
+        },
+        "RDG-WRI": {
+          "overflights": 5
+        }
       },
-      "solo_controller": "1N",
-      "multi_controllers": {
-          "default" : {
-              "1N": { "primary": true, "inbound_flows": [ "BOJID4/HAR5", "SPUDS7", "ABE-ACY", "RDG-WRI" ] },
-              "1S": { "backup": "1N", "inbound_flows": [ "JIIMS4", "PAATS4", "V29.Low" ] },
-              "1F": { "backup": "1N" },
-              "1E": { "backup": "1N", "departures": ["KPHL"], "inbound_flows": [ "PHLBO4/JAKIE4", "BRAND1", "V29.High" ] }
-          }
+      "configuration": {
+        "config_id": "27L",
+        "default_consolidation": {
+          "1N": ["1E", "1F", "1S"]
+        }
       },
-      "controllers": [
-        "1Q",
-        "W32",
-        "14P",
-        "51Y",
-        "71X",
-        "41A",
-        "11V",
-        "N26"
-      ],
-      "default_maps": [ "PHL East" ],
+      "controllers": ["1Q", "W32", "14P", "51Y", "71X", "41A", "11V", "N26"],
+      "default_maps": ["PHL East"],
       "departure_runways": [
         {
           "airport": "KPHL",
@@ -5508,13 +5251,38 @@
         }
       ],
       "wind": {
-        "direction": 70,
-        "gust": 24,
-        "speed": 17
+        "direction": "85-145"
       }
     }
   },
   "stars_config": {
+    "configurations": {
+      "21X": {
+        "inbound_assignments": {
+          "FINAL17_NORTH": "1F",
+          "FINAL27_NORTH": "1F",
+          "FINAL27_SOUTH": "1F"
+        }
+      },
+      "27L": {
+        "inbound_assignments": {
+          "ABE-ACY": "1N",
+          "BOJID4/HAR5": "1N",
+          "BRAND1": "1E",
+          "JIIMS4": "1S",
+          "PAATS4": "1S",
+          "PHLBO4/JAKIE4": "1E",
+          "RDG-WRI": "1N",
+          "SPUDS7": "1N",
+          "V29.High": "1E",
+          "V29.Low": "1S"
+        },
+        "departure_assignments": {
+          "KPHL": "1E"
+        }
+      }
+    },
+
     "center": "KPHL",
     "controller_configs": {
       "1N": {
@@ -5607,167 +5375,167 @@
         ]
       }
     },
-  "coordination_fixes": {
-    "OOD": [
-      {
-        "type": "route",
-        "to": "ZDC",
-        "from": "ZNY"
-      }
-    ],
-    "DQO": [
-      {
-        "type": "route",
-        "to": "ZDC",
-        "from": "ZNY"
-      }
-    ],
-    "BOJID": [
-      {
+    "coordination_fixes": {
+      "OOD": [
+        {
           "type": "route",
-          "to": "PHL",
+          "to": "ZDC",
           "from": "ZNY"
-      }
-  ],
-  "HIFAL": [
-      {
-          "type": "route",
-          "to": "PHL",
-          "from": "ZNY"
-      }
-  ],
-  "CHPMN": [
-      {
-          "type": "route",
-          "to": "PHL",
-          "from": "ZNY"
-      }
-  ],
-  "SPERY": [
-      {
-          "type": "route",
-          "to": "PHL",
-          "from": "ZNY"
-      }
-  ],
-  "JIIMS": [
-      {
-          "type": "route",
-          "to": "PHL",
-          "from": "ZNY"
-      }
-  ],
-  "PAATS": [
-      {
-          "type": "route",
-          "to": "PHL",
-          "from": "ZNY"
-      }
-  ],
-  "SPUDS": [
-      {
-          "type": "route",
-          "to": "PHL",
-          "from": "ZNY"
-      }
-  ]
-  },
-  "radar_sites": {
-    "NXX": {
-      "char": "N",
-      "position": "40.19980, -75.14820",
-      "elevation": 408,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 50.4,
-      "slope_angle": 0.175
-    },
-    "PHL": {
-      "char": "P",
-      "position": "KPHL",
-      "elevation": 150,
-      "primary_range": 60,
-      "secondary_range": 120,
-      "silence_angle": 50.4,
-      "slope_angle": 0.175
-    }
-  },
-  "filters": {
-      "inhibit_ca": [
-	  {
-              "id": "PHLNOCA",
-              "description": "PHL CONFLICT SUPPRESS",
-              "type": "polygon",
-              "floor": 0,
-              "ceiling": 1200,
-              "vertices": [
-		  "39.99353,-75.27406",
-		  "39.88791,-75.21548",
-		  "39.93058,-75.047",
-		  "39.89772,-75.03668",
-		  "39.85968,-75.20819",
-		  "39.73525,-75.14333",
-		  "39.7281,-75.1677",
-		  "39.86025,-75.23223",
-		  "39.82196,-75.42499",
-		  "39.84186,-75.43244",
-		  "39.8784,-75.24258",
-		  "39.98712,-75.2978"
-              ]
-	  },
-	  {
-              "id": "ILGNOCA",
-              "description": "ILG CONFLICT SUPPRESS",
-              "type": "circle",
-              "floor": 0,
-              "ceiling": 1200,
-              "radius": 7,
-              "center": "39.67787,-75.60479"
-	  },
-	  {
-              "id": "PNENOCA",
-              "description": "PNE CONFLICT SUPPRESS",
-              "type": "polygon",
-              "floor": 0,
-              "ceiling": 1200,
-              "vertices": [
-		  "40.07569,-75.03271",
-		  "40.01926,-75.1147",
-		  "40.0049,-75.10013",
-		  "40.06448,-75.01097",
-		  "39.99652,-74.94562",
-		  "40.0159,-74.91596",
-		  "40.07651,-74.99092",
-		  "40.14525,-74.89523",
-		  "40.16401,-74.91683",
-		  "40.09764,-75.00448",
-		  "40.22654,-75.14552",
-		  "40.21517,-75.16453"
-              ]
-	  },
-	  {
-              "id": "TTNNOCA",
-              "description": "TTN CONFLICT SUPPRESS",
-              "type": "polygon",
-              "floor": 0,
-              "ceiling": 1200,
-              "vertices": [
-		  "40.27265,-74.82605",
-		  "40.21457,-74.90508",
-		  "40.20265,-74.88945",
-		  "40.26373,-74.81612",
-		  "40.1944,-74.75272",
-		  "40.20421,-74.73504",
-		  "40.27346,-74.80138",
-		  "40.29985,-74.71533",
-		  "40.31505,-74.72249",
-		  "40.28611,-74.80537",
-		  "40.36191,-74.87496",
-		  "40.35088,-74.897"
-              ]
-	  }
+        }
       ],
-      "arrival_acquisition": [
+      "DQO": [
+        {
+          "type": "route",
+          "to": "ZDC",
+          "from": "ZNY"
+        }
+      ],
+      "BOJID": [
+        {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+        }
+      ],
+      "HIFAL": [
+        {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+        }
+      ],
+      "CHPMN": [
+        {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+        }
+      ],
+      "SPERY": [
+        {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+        }
+      ],
+      "JIIMS": [
+        {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+        }
+      ],
+      "PAATS": [
+        {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+        }
+      ],
+      "SPUDS": [
+        {
+          "type": "route",
+          "to": "PHL",
+          "from": "ZNY"
+        }
+      ]
+    },
+    "radar_sites": {
+      "NXX": {
+        "char": "N",
+        "position": "40.19980, -75.14820",
+        "elevation": 408,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 50.4,
+        "slope_angle": 0.175
+      },
+      "PHL": {
+        "char": "P",
+        "position": "KPHL",
+        "elevation": 150,
+        "primary_range": 60,
+        "secondary_range": 120,
+        "silence_angle": 50.4,
+        "slope_angle": 0.175
+      }
+    },
+    "filters": {
+      "inhibit_ca": [
+        {
+          "id": "PHLNOCA",
+          "description": "PHL CONFLICT SUPPRESS",
+          "type": "polygon",
+          "floor": 0,
+          "ceiling": 1200,
+          "vertices": [
+            "39.99353,-75.27406",
+            "39.88791,-75.21548",
+            "39.93058,-75.047",
+            "39.89772,-75.03668",
+            "39.85968,-75.20819",
+            "39.73525,-75.14333",
+            "39.7281,-75.1677",
+            "39.86025,-75.23223",
+            "39.82196,-75.42499",
+            "39.84186,-75.43244",
+            "39.8784,-75.24258",
+            "39.98712,-75.2978"
+          ]
+        },
+        {
+          "id": "ILGNOCA",
+          "description": "ILG CONFLICT SUPPRESS",
+          "type": "circle",
+          "floor": 0,
+          "ceiling": 1200,
+          "radius": 7,
+          "center": "39.67787,-75.60479"
+        },
+        {
+          "id": "PNENOCA",
+          "description": "PNE CONFLICT SUPPRESS",
+          "type": "polygon",
+          "floor": 0,
+          "ceiling": 1200,
+          "vertices": [
+            "40.07569,-75.03271",
+            "40.01926,-75.1147",
+            "40.0049,-75.10013",
+            "40.06448,-75.01097",
+            "39.99652,-74.94562",
+            "40.0159,-74.91596",
+            "40.07651,-74.99092",
+            "40.14525,-74.89523",
+            "40.16401,-74.91683",
+            "40.09764,-75.00448",
+            "40.22654,-75.14552",
+            "40.21517,-75.16453"
+          ]
+        },
+        {
+          "id": "TTNNOCA",
+          "description": "TTN CONFLICT SUPPRESS",
+          "type": "polygon",
+          "floor": 0,
+          "ceiling": 1200,
+          "vertices": [
+            "40.27265,-74.82605",
+            "40.21457,-74.90508",
+            "40.20265,-74.88945",
+            "40.26373,-74.81612",
+            "40.1944,-74.75272",
+            "40.20421,-74.73504",
+            "40.27346,-74.80138",
+            "40.29985,-74.71533",
+            "40.31505,-74.72249",
+            "40.28611,-74.80537",
+            "40.36191,-74.87496",
+            "40.35088,-74.897"
+          ]
+        }
+      ],
+      "auto_acquisition": [
         {
           "id": "phlack",
           "description": "phl arrival acquisition all",
@@ -5788,56 +5556,94 @@
         }
       ]
     },
-  "scratchpads": {
-    "ARD": "ARD",
-    "BAYYS": "BAY",
-    "BDR": "BDR",
-    "COATE": "COA",
-    "DITCH": "DIT",
-    "DIXIE": "DIX",
-    "DQO": "DQO",
-    "FJC": "FJC",
-    "GAYEL": "GAY",
-    "GREKI": "GRE",
-    "HAAYS": "HAY",
-    "HAPIE": "HAP",
-    "MERIT": "MER",
-    "MXE": "MXE",
-    "NEION": "NEI",
-    "OOD": "OOD",
-    "PTW": "PTW",
-    "RBV": "RBV",
-    "RUUTH": "RUU",
-    "STOEN": "STO",
-    "WHITE": "WHI"
-  },
-  "significant_points": {
-      "ARD": { },
-      "BAYYS": { },
-      "BDR": { },
-      "COATE": { },
-      "DITCH": { },
-      "DIXIE": { },
-      "DQO": { },
-      "FJC": { },
-      "GAYEL": { },
-      "GREKI": { },
-      "HAAYS": { "short_name": "HAY" },
-      "HAPIE": { },
-      "MERIT": { },
-      "MXE": { },
-      "NEION": { },
-      "OOD": { },
-      "PTW": { },
-      "RBV": { },
-      "RUUTH": { },
-      "STOEN": { },
-      "WHITE": { }
-  },
-      "stars_maps": [ "PHL West", "P Class B", "",
-                      "PHL East", "PHL MVA", "",
-                      "PHL ATCT West", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-                      "PHL ATCT East", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" ],
-  "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
+    "scratchpads": {
+      "ARD": "ARD",
+      "BAYYS": "BAY",
+      "BDR": "BDR",
+      "COATE": "COA",
+      "DITCH": "DIT",
+      "DIXIE": "DIX",
+      "DQO": "DQO",
+      "FJC": "FJC",
+      "GAYEL": "GAY",
+      "GREKI": "GRE",
+      "HAAYS": "HAY",
+      "HAPIE": "HAP",
+      "MERIT": "MER",
+      "MXE": "MXE",
+      "NEION": "NEI",
+      "OOD": "OOD",
+      "PTW": "PTW",
+      "RBV": "RBV",
+      "RUUTH": "RUU",
+      "STOEN": "STO",
+      "WHITE": "WHI"
+    },
+    "significant_points": {
+      "ARD": {},
+      "BAYYS": {},
+      "BDR": {},
+      "COATE": {},
+      "DITCH": {},
+      "DIXIE": {},
+      "DQO": {},
+      "FJC": {},
+      "GAYEL": {},
+      "GREKI": {},
+      "HAAYS": {
+        "short_name": "HAY"
+      },
+      "HAPIE": {},
+      "MERIT": {},
+      "MXE": {},
+      "NEION": {},
+      "OOD": {},
+      "PTW": {},
+      "RBV": {},
+      "RUUTH": {},
+      "STOEN": {},
+      "WHITE": {}
+    },
+    "stars_maps": [
+      "PHL West",
+      "P Class B",
+      "",
+      "PHL East",
+      "PHL MVA",
+      "",
+      "PHL ATCT West",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "PHL ATCT East",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
   }
 }
