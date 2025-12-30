@@ -15,12 +15,16 @@ import (
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
 	"github.com/brunoga/deep"
 )
+
+// How low below the MVA a VFR can be
+const vfrMVABuffer = 1000
 
 func (s *Sim) spawnDepartures() {
 	now := s.State.SimTime
@@ -692,7 +696,6 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		ac.Mode = av.TransponderModeStandby // flat out off
 	}
 	ac.InitializeFlightPlan(rules, acType, depart, arrive)
-	// This doesnt need an 11 altitude
 
 	perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]
 	if !ok {
@@ -775,11 +778,11 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 				}
 			}()
 
-			// At for the first half, even if unattainable so that they climb
 			var ar *av.AltitudeRestriction
 			alt := float32(ac.FlightPlan.Altitude)
 			if i < nsteps/2 {
-				ar = &av.AltitudeRestriction{Range: [2]float32{alt, alt}}
+				// At or above for the first half, even if unattainable so that they climb
+				ar = &av.AltitudeRestriction{Range: [2]float32{alt, 0}}
 			} else {
 				if i < nsteps-1 {
 					// at or below to be able to start descending
@@ -807,6 +810,14 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		}
 	}
 
+	// Initialize grids if needed (must be done before adjustRouteForMVA)
+	if s.bravoAirspace == nil || s.charlieAirspace == nil || s.mvaGrid == nil {
+		s.initializeAirspaceGrids()
+	}
+
+	// Adjust route for MVA requirements
+	wps = s.adjustRouteForMVA(string(ac.ADSBCallsign), wps)
+
 	wps[len(wps)-1].Land = true
 
 	if err := ac.InitializeVFRDeparture(s.State.Airports[depart], wps, randomizeAltitudeRange,
@@ -814,20 +825,39 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 		return nil, "", err
 	}
 
-	if s.bravoAirspace == nil || s.charlieAirspace == nil {
-		s.initializeAirspaceGrids()
-	}
-
-	// Check airspace violations
 	simac := deep.MustCopy(*ac)
-	for range 3 * 60 * 60 { // limit to 3 hours of sim time, just in case
+	for i := range 3 * 60 * 60 { // limit to 3 hours of sim time, just in case
 		if wp := simac.Update(s.wxModel, simTime, s.bravoAirspace, nil); wp != nil && wp.Delete {
 			return ac, rwy.Id, nil
+		}
+
+		if (i % 4) != 0 {
+			continue
 		}
 		if s.bravoAirspace.Inside(simac.Position(), int(simac.Altitude())) ||
 			s.charlieAirspace.Inside(simac.Position(), int(simac.Altitude())) ||
 			s.State.FacilityAdaptation.Filters.VFRInhibit.Inside(simac.Position(), int(simac.Altitude())) {
 			return nil, "", ErrViolatedAirspace
+		}
+		// Check MVA violation: aircraft must stay at or above MVA - 1000'.
+		// Skip when within 3nm of departure airport or 5nm of arrival airport.
+		distFromDeparture := math.NMDistance2LL(simac.Position(), simac.Nav.FlightState.DepartureAirportLocation)
+		distToArrival := math.NMDistance2LL(simac.Position(), simac.Nav.FlightState.ArrivalAirportLocation)
+		if distFromDeparture > 3 && distToArrival > 5 {
+			if mva := s.mvaGrid.GetMVA(simac.Position()); mva > 0 && simac.Altitude() < float32(mva-vfrMVABuffer) {
+				// Find which waypoint we're heading toward
+				wpIdx := -1
+				var wpName string
+				for j, wp := range simac.Nav.Waypoints {
+					wpIdx = j
+					wpName = wp.Fix
+					break
+				}
+				nav.NavLog(string(simac.ADSBCallsign), simTime, "state",
+					"rejected at %.0f' (MVA %d, need %d) heading to wp %d %q, pos %v, %.1fnm from dep, %.1fnm from arr",
+					simac.Altitude(), mva, mva-vfrMVABuffer, wpIdx, wpName, simac.Position(), distFromDeparture, distToArrival)
+				return nil, "", ErrVFRBelowMVA
+			}
 		}
 	}
 
@@ -848,4 +878,78 @@ func (s *Sim) initializeAirspaceGrids() {
 	}
 	s.bravoAirspace = initAirspace(av.DB.BravoAirspace)
 	s.charlieAirspace = initAirspace(av.DB.CharlieAirspace)
+	s.mvaGrid = av.MakeMVAGrid(av.DB.MVAs[s.State.Facility])
+}
+
+// adjustRouteForMVA modifies the waypoint altitude restrictions to ensure
+// the aircraft stays above MVA - vfrMVABuffer along the route.
+func (s *Sim) adjustRouteForMVA(callsign string, wps []av.Waypoint) []av.Waypoint {
+	if s.mvaGrid == nil || len(wps) < 2 {
+		return wps
+	}
+
+	result := make([]av.Waypoint, 0, len(wps)*2)
+	mvaWpNum := 0
+
+	for i, wp := range wps {
+		if i > 0 {
+			// Sample between previous waypoint and this one to look for MVA transitions.
+			prevWp := wps[i-1]
+			dist := math.NMDistance2LL(prevWp.Location, wp.Location)
+			nSamples := max(1, int(dist+0.5))
+
+			prevMVA := s.mvaGrid.GetMVA(prevWp.Location)
+			prevPos := prevWp.Location
+
+			for j := range nSamples {
+				// Sample between waypoints, not at them
+				t := float32(j+1) / float32(nSamples+1)
+				pos := math.Lerp2f(t, prevWp.Location, wp.Location)
+				mva := s.mvaGrid.GetMVA(pos)
+
+				if mva != prevMVA && mva > 0 && prevMVA > 0 {
+					// MVA changed - insert a waypoint
+					// Higher MVA: insert a new waypoint with an altitude restriction at the
+					// previous sample position so that we can record "at or above" there with the
+					// hopes that the aircraft will be able to reach it.
+					// Lower MVA: insert at the current position to indicate that a descent may be
+					// possible.
+					pNew := util.Select(mva > prevMVA, prevPos, pos)
+
+					minAlt := float32(mva - vfrMVABuffer)
+					mvaWpNum++
+					result = append(result, av.Waypoint{
+						Fix:      fmt.Sprintf("_mva%d@%.0f", mvaWpNum, minAlt),
+						Location: pNew,
+						AltitudeRestriction: &av.AltitudeRestriction{
+							Range: [2]float32{minAlt, 0},
+						},
+					})
+				}
+
+				prevMVA = mva
+				prevPos = pos
+			}
+		}
+
+		// Apply MVA constraints to this waypoint and add it
+		if mva := s.mvaGrid.GetMVA(wp.Location); mva > 0 {
+			minAlt := float32(mva - vfrMVABuffer)
+			if wp.AltitudeRestriction == nil {
+				wp.AltitudeRestriction = &av.AltitudeRestriction{
+					Range: [2]float32{minAlt, 0},
+				}
+			} else {
+				if wp.AltitudeRestriction.Range[0] < minAlt {
+					wp.AltitudeRestriction.Range[0] = minAlt
+				}
+				if wp.AltitudeRestriction.Range[1] != 0 && wp.AltitudeRestriction.Range[1] < wp.AltitudeRestriction.Range[0] {
+					wp.AltitudeRestriction.Range[1] = wp.AltitudeRestriction.Range[0] + 1000
+				}
+			}
+		}
+		result = append(result, wp)
+	}
+
+	return result
 }

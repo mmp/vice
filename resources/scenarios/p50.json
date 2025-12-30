@@ -1,12 +1,15 @@
 {
   "tracon": "P50",
   "airports": {
-    "KDVT": { "vfr": { "random_routes": { "rate": 25 } } },
+    "KDVT": { "vfr": { "random_routes": { "rate": 20 } } },
     "KFFZ": { "vfr": { "random_routes": { "rate": 15 } } },
-    "KGYR": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KGEU": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KCHD": { "vfr": { "random_routes": { "rate": 15 } } },
+    "KGYR": { "vfr": { "random_routes": { "rate": 8 } } },
+    "KGEU": { "vfr": { "random_routes": { "rate": 8 } } },
+    "KCHD": { "vfr": { "random_routes": { "rate": 12 } } },
     "KBKX": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KGXF": { "vfr": { "random_routes": { "rate": 8 } } },
+    "KPAN": { "vfr": { "random_routes": { "rate": 8 } } },
+    "KCGZ": { "vfr": { "random_routes": { "rate": 8 } } },
     "KPHX": {
       "name": "Phoenix Sky Harbor",
       "approaches": {

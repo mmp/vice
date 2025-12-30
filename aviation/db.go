@@ -1541,3 +1541,48 @@ func (g *AirspaceGrid) Below(p math.Point2LL, alt int) bool {
 	}
 	return false
 }
+
+// MVAGrid organizes MVA definitions and provides efficient lookups via a
+// grid in lat-long space that records which MVAs overlap grid cells. Grid
+// cells are initialized on demand rather than upfront.
+type MVAGrid struct {
+	mvas    []MVA
+	entries map[[2]int][]MVA
+}
+
+func MakeMVAGrid(mvas []MVA) *MVAGrid {
+	return &MVAGrid{
+		mvas:    slices.Clone(mvas),
+		entries: make(map[[2]int][]MVA),
+	}
+}
+
+func (g *MVAGrid) getEntries(p [2]float32) []MVA {
+	// Quantize coordinates to grid; roughly 6nm resolution
+	pq := [2]int{int(10 * p[0]), int(10 * p[1])}
+
+	if mvas, ok := g.entries[pq]; ok {
+		return mvas
+	} else {
+		// Center of the grid cell
+		pc := [2]float32{(float32(pq[0]) + 0.5) / 10, (float32(pq[1]) + 0.5) / 10}
+
+		mvas := util.FilterSlice(g.mvas, func(m MVA) bool {
+			// Check if grid cell center is within 10nm of the MVA bounds
+			return math.NMDistance2LL(m.Bounds.ClosestPointInBox(pc), pc) < 10
+		})
+		g.entries[pq] = mvas
+		return mvas
+	}
+}
+
+// GetMVA returns the maximum MVA altitude at the given location.
+// Returns 0 if no MVA covers the point.
+func (g *MVAGrid) GetMVA(p [2]float32) int {
+	for _, mva := range g.getEntries(p) {
+		if mva.Inside(p) {
+			return mva.MinimumLimit
+		}
+	}
+	return 0
+}

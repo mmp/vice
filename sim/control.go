@@ -862,7 +862,7 @@ func (s *Sim) RedirectHandoff(tcw TCW, acid ACID, controller TCP) error {
 			primaryTCP := s.State.PrimaryPositionForTCW(tcw)
 			if octrl, ok := s.State.Controllers[controller]; !ok {
 				return av.ErrNoController
-			} else if s.State.TCWControlsPosition(tcw, TCP(octrl.PositionId())) || TCP(octrl.PositionId()) == ac.NASFlightPlan.TrackingController {
+			} else if s.State.TCWControlsPosition(tcw, TCP(octrl.PositionId())) || TCP(octrl.PositionId()) == fp.TrackingController {
 				// Can't redirect to ourself (including consolidated positions) or the controller who initiated the handoff
 				return av.ErrInvalidController
 			} else if ctrl, ok := s.State.Controllers[primaryTCP]; !ok {
@@ -1022,13 +1022,11 @@ func (s *Sim) AcknowledgePointOut(tcw TCW, acid ACID) error {
 				ToController:   po.FromController,
 				ACID:           acid,
 			})
-			if ac.NASFlightPlan != nil {
-				if len(ac.NASFlightPlan.PointOutHistory) < 20 {
-					fp.PointOutHistory = append([]TCP{po.ToController}, fp.PointOutHistory...)
-				} else {
-					fp.PointOutHistory = fp.PointOutHistory[:19]
-					fp.PointOutHistory = append([]TCP{po.ToController}, fp.PointOutHistory...)
-				}
+			if len(fp.PointOutHistory) < 20 {
+				fp.PointOutHistory = append([]TCP{po.ToController}, fp.PointOutHistory...)
+			} else {
+				fp.PointOutHistory = fp.PointOutHistory[:19]
+				fp.PointOutHistory = append([]TCP{po.ToController}, fp.PointOutHistory...)
 			}
 
 			delete(s.PointOuts, acid)

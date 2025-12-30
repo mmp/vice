@@ -101,6 +101,7 @@ type Sim struct {
 	// No need to serialize these; they're caches anyway.
 	bravoAirspace   *av.AirspaceGrid
 	charlieAirspace *av.AirspaceGrid
+	mvaGrid         *av.MVAGrid
 
 	// Waypoint commands: commands to execute when aircraft pass specific fixes
 	waypointCommands map[TCP]map[string]string // tcp -> fix -> commands
