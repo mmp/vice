@@ -53,7 +53,7 @@ func (ar *AudioRecorder) StartRecordingWithDevice(deviceName string) error {
 	user := unsafe.Pointer(ar)
 	ar.pinner.Pin(user)
 	spec := sdl.AudioSpec{
-		Freq:     AudioSampleRate,
+		Freq:     AudioInputSampleRate,
 		Format:   sdl.AUDIO_S16SYS,
 		Channels: 1,
 		Samples:  2048,

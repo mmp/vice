@@ -2,6 +2,7 @@ package stt
 
 import (
 	"bytes"
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -32,56 +33,61 @@ type AudioData struct {
 	Data       []int16 // PCM audio data
 }
 
-// OpenAI API types for transcript-to-DSL conversion
-type openAIMessage struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
-}
+//go:embed systemPrompt.md
+var systemPrompt string
 
-type openAIRequest struct {
-	Model    string          `json:"model"`
-	Messages []openAIMessage `json:"input"`
-}
-
-type openAIResponse struct {
-	Output []struct {
+// transcriptToDSL calls the OpenAI API to convert a transcript into a DSL command.
+func transcriptToDSL(approaches [][2]string, callsigns []av.ADSBCallsign, transcript string) (string, error) {
+	type claudeMessage struct {
+		Role    string `json:"role"`
+		Content string `json:"content"`
+	}
+	type claudeRequest struct {
+		Model     string          `json:"model"`
+		MaxTokens int             `json:"max_tokens"`
+		System    string          `json:"system"`
+		Messages  []claudeMessage `json:"messages"`
+	}
+	type claudeResponse struct {
 		Content []struct {
 			Text string `json:"text"`
 		} `json:"content"`
-	} `json:"output"`
-}
-
-const openAITimeout = 30 * time.Second
-
-// formatApproachesForModel converts approach data into a string format suitable for the model prompt.
-// Each approach is formatted as "pronunciation": "code" pairs.
-func formatApproachesForModel(approaches [][2]string) string {
-	var b strings.Builder
-	for i, approach := range approaches {
-		if i > 0 {
-			b.WriteString(", ")
-		}
-		pronounce := formatToModel(approach[0])
-		// Expand standalone 'l' or 'r' suffix to full words for clarity
-		if strings.HasSuffix(pronounce, " l") {
-			pronounce = strings.TrimSuffix(pronounce, " l") + " left"
-		} else if strings.HasSuffix(pronounce, " r") {
-			pronounce = strings.TrimSuffix(pronounce, " r") + " right"
-		}
-		pronounce = strings.TrimSpace(pronounce)
-		fmt.Fprintf(&b, "\"%s\": \"%s\"", pronounce, approach[1])
 	}
-	return b.String()
-}
 
-// transcriptToDSL calls the OpenAI API to convert a transcript into a DSL command.
-func transcriptToDSL(model, apiKey string, approaches [][2]string, transcript string) (string, error) {
-	req := openAIRequest{
-		Model: model,
-		Messages: []openAIMessage{
-			{Role: "system", Content: "Convert ATC transcripts to DSL; output only the DSL line."},
-			{Role: "user", Content: fmt.Sprintf("AllowedApproaches: %s\nTranscript: \"%s\"",
-				formatApproachesForModel(approaches), transcript)},
+	type userQuery struct {
+		Callsigns  []av.ADSBCallsign `json:"callsigns,omitempty"`
+		Airlines   map[string]string `json:"airlines,omitempty"`
+		Approaches [][2]string       `json:"approaches,omitempty"`
+		Transcript string            `json:"transcript"`
+	}
+	uq := userQuery{
+		Callsigns:  callsigns,
+		Airlines:   make(map[string]string),
+		Approaches: approaches,
+		Transcript: transcript,
+	}
+	for _, cs := range callsigns {
+		for i := range cs {
+			if cs[i] >= '0' && cs[i] <= '9' {
+				// Hit the first number
+				if tele, ok := av.DB.Callsigns[string(cs[:i])]; ok {
+					uq.Airlines[tele] = string(cs[:i])
+				}
+				break
+			}
+		}
+	}
+	queryBytes, err := json.Marshal(uq)
+	if err != nil {
+		return "", err
+	}
+
+	req := claudeRequest{
+		Model:     "claude-haiku-4-5",
+		MaxTokens: 16,
+		System:    systemPrompt,
+		Messages: []claudeMessage{
+			{Role: "user", Content: string(queryBytes)},
 		},
 	}
 
@@ -89,15 +95,22 @@ func transcriptToDSL(model, apiKey string, approaches [][2]string, transcript st
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal request: %w", err)
 	}
+	fmt.Println(string(jsonBytes))
 
-	httpReq, err := http.NewRequest("POST", "https://api.openai.com/v1/responses", bytes.NewBuffer(jsonBytes))
+	apiKey := os.Getenv("VICE_ANTHROPIC_KEY")
+	if apiKey == "" {
+		panic("must set VICE_ANTHROPIC_KEY")
+	}
+
+	httpReq, err := http.NewRequest("POST", "https://api.anthropic.com/v1/messages", bytes.NewBuffer(jsonBytes))
 	if err != nil {
 		return "", fmt.Errorf("failed to create request: %w", err)
 	}
 	httpReq.Header.Set("Content-Type", "application/json")
-	httpReq.Header.Set("Authorization", "Bearer "+apiKey)
+	httpReq.Header.Set("x-api-key", apiKey)
+	httpReq.Header.Set("anthropic-version", "2023-06-01")
 
-	httpClient := &http.Client{Timeout: openAITimeout}
+	httpClient := &http.Client{Timeout: 30 * time.Second}
 	resp, err := httpClient.Do(httpReq)
 	if err != nil {
 		return "", fmt.Errorf("API request failed: %w", err)
@@ -113,43 +126,29 @@ func transcriptToDSL(model, apiKey string, approaches [][2]string, transcript st
 		return "", fmt.Errorf("API returned status %d", resp.StatusCode)
 	}
 
-	var parsed openAIResponse
+	var parsed claudeResponse
 	if err := json.Unmarshal(body, &parsed); err != nil {
 		return "", fmt.Errorf("failed to parse API response: %w", err)
 	}
 
-	if len(parsed.Output) > 0 && len(parsed.Output[0].Content) > 0 {
-		return parsed.Output[0].Content[0].Text, nil
+	if len(parsed.Content) > 0 {
+		fmt.Println("  -----> " + parsed.Content[0].Text)
+		return parsed.Content[0].Text, nil
 	}
 
 	return "", fmt.Errorf("API returned empty response")
 }
 
-// callModel converts a transcript to a DSL command using the OpenAI API.
-func callModel(model string, approaches [][2]string, transcript string) (string, error) {
-	apiKey := os.Getenv("OPENAI_API_KEY")
-	if apiKey == "" {
-		return "", fmt.Errorf("OPENAI_API_KEY environment variable is not set")
-	}
-	if model == "" {
-		return "", fmt.Errorf("OPENAI_MODEL environment variable is not set")
-	}
-	return transcriptToDSL(model, apiKey, approaches, transcript)
-}
-
 // VoiceToCommand transcribes audio and converts it to a command.
 // Returns (command, transcription, error).
-func VoiceToCommand(audio *AudioData, approaches [][2]string, lg *log.Logger) (string, string, error) {
-	text, err := Transcribe(audio)
-	if err != nil {
+func VoiceToCommand(audio *AudioData, approaches [][2]string, callsigns []av.ADSBCallsign, lg *log.Logger) (string, string, error) {
+	if text, err := Transcribe(audio); err != nil {
 		return "", "", err
-	}
-	model := os.Getenv("OPENAI_MODEL")
-	command, err := callModel(model, approaches, text)
-	if err != nil {
+	} else if command, err := transcriptToDSL(approaches, callsigns, text); err != nil {
 		return "", text, err
+	} else {
+		return command, text, nil
 	}
-	return command, text, nil
 }
 
 var whisperModel *whisper.Model
@@ -170,39 +169,18 @@ func Transcribe(audio *AudioData) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return formatToModel(text), nil
+	return text, nil
 }
 
-// formatReplacer removes punctuation and replaces numbers with ICAO words
-var formatReplacer = strings.NewReplacer(
-	// Common punctuation in speech transcription -> empty
-	",", "", ".", "", "-", "", ":", "", ";", "", "!", "", "?", "", "'", "", "\"", "",
-	// Numbers -> ICAO words (with trailing space for word separation)
-	"0", "zero ", "1", "wun ", "2", "too ", "3", "tree ", "4", "fower ",
-	"5", "fife ", "6", "six ", "7", "seven ", "8", "ait ", "9", "niner ",
-)
-
-// The OpenAI model was fine-tuned to handle numbers as their ICAO words (eg. 1 as wun, 2 as too, etc.)
-// This is mainly to bring some normalization to the transcription and between controller phraseology.
-// For example, sometimes the transcription will be 3-5-0 rather than 350, or controllers will say "climb and maintain 1-0, ten, thousand"
-// formatToModel() removes all punctuation and numbers, and replaces them with their ICAO counterparts.
-func formatToModel(text string) string {
-	text = formatReplacer.Replace(text)
-	text = strings.ReplaceAll(text, "  ", " ") // Remove double spaces
-	text = strings.ToLower(text)
-	return strings.TrimSpace(text)
-}
-
-func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, lg *log.Logger,
-	PTTKey imgui.Key, SelectedMicrophone *string) {
-	if client == nil || PTTKey == imgui.KeyNone {
+func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, lg *log.Logger, pttKey imgui.Key, selectedMicrophone string) {
+	if client == nil || pttKey == imgui.KeyNone {
 		return
 	}
 
 	// Start on initial press (ignore repeats by checking our own flag)
-	if imgui.IsKeyDown(PTTKey) && !client.RadioIsActive() {
+	if imgui.IsKeyDown(pttKey) && !client.RadioIsActive() {
 		if !client.PTTRecording.Load() && !p.IsAudioRecording() {
-			if err := p.StartAudioRecordingWithDevice(*SelectedMicrophone); err != nil {
+			if err := p.StartAudioRecordingWithDevice(selectedMicrophone); err != nil {
 				lg.Errorf("Failed to start audio recording: %v", err)
 			} else {
 				client.PTTRecording.Store(true)
@@ -212,7 +190,7 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 	}
 
 	// Independently detect release (do not tie to pressed state; key repeat may keep it true)
-	if client.PTTRecording.Load() && !imgui.IsKeyDown(PTTKey) {
+	if client.PTTRecording.Load() && !imgui.IsKeyDown(pttKey) {
 		if p.IsAudioRecording() {
 			data, err := p.StopAudioRecording()
 			client.PTTRecording.Store(false)
@@ -230,8 +208,17 @@ func ProcessSTTKeyboardInput(p platform.Platform, client *client.ControlClient, 
 							approaches = append(approaches, [2]string{appr.FullName, code})
 						}
 					}
-					audio := &AudioData{SampleRate: platform.AudioSampleRate, Channels: 1, Data: samples}
-					command, transcription, err := VoiceToCommand(audio, approaches, lg)
+					audio := &AudioData{SampleRate: platform.AudioInputSampleRate, Channels: 1, Data: samples}
+					ourTracks := util.FilterSeq2(maps.All(client.State.Tracks), func(cs av.ADSBCallsign, trk *sim.Track) bool {
+						if trk.IsAssociated() {
+							return client.State.TCWControlsPosition(client.State.UserTCW, trk.FlightPlan.ControllingController)
+						} else {
+							// TODO: also include VFRs who have called in
+							return false
+						}
+					})
+					callsigns := slices.Collect(util.Seq2Keys(ourTracks))
+					command, transcription, err := VoiceToCommand(audio, approaches, callsigns, lg)
 					client.SetLastTranscription(transcription)
 					if err != nil {
 						lg.Errorf("Push-to-talk: Transcription error: %v", err)

@@ -547,7 +547,7 @@ func main() {
 			stats.drawPanes = panes.DrawPanes(config.DisplayRoot, plat, render, controlClient,
 				ui.menuBarHeight, lg)
 
-			stt.ProcessSTTKeyboardInput(plat, controlClient, lg, config.UserPTTKey, &config.SelectedMicrophone)
+			stt.ProcessSTTKeyboardInput(plat, controlClient, lg, config.UserPTTKey, config.SelectedMicrophone)
 
 			// Execute fuzz commands if in fuzz testing mode
 			if fuzzController != nil && controlClient != nil {

@@ -24,6 +24,7 @@ import (
 )
 
 const AudioSampleRate = 44100
+const AudioInputSampleRate = 16000 // Whisper's native sample rate
 
 type audioEngine struct {
 	pinner   runtime.Pinner
