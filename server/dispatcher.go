@@ -915,3 +915,29 @@ func (sd *dispatcher) ConfigureATPA(args *ATPAConfigArgs, result *ATPAConfigResu
 	}
 	return err
 }
+
+type ProcessSTTTranscriptArgs struct {
+	ControllerToken string
+	Transcript      string
+}
+
+type ProcessSTTTranscriptResult struct {
+	Callsign string
+	Command  string
+}
+
+const ProcessSTTTranscriptRPC = "Sim.ProcessSTTTranscript"
+
+func (sd *dispatcher) ProcessSTTTranscript(args *ProcessSTTTranscriptArgs, result *ProcessSTTTranscriptResult) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+
+	callsign, command, err := processSTTTranscript(c, args.Transcript)
+	result.Callsign = callsign
+	result.Command = command
+	return err
+}

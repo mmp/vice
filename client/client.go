@@ -15,6 +15,7 @@ import (
 	"sync"
 	"time"
 
+	whisper "github.com/mmp/vice/autowhisper"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
@@ -40,8 +41,6 @@ type ControlClient struct {
 	lastSpeechHoldTime       time.Time
 	awaitReadbackCallsign    av.ADSBCallsign
 	lastTransmissionCallsign av.ADSBCallsign
-	PTTRecording             util.AtomicBool
-	PTTCapture               bool
 	LastTranscription        string
 	LastCommand              string
 
@@ -602,6 +601,63 @@ func (c *ControlClient) GetAtmosGrid(t time.Time, callback func(*wx.AtmosGrid, e
 				} else {
 					callback(nil, err)
 				}
+			}
+		}))
+}
+
+///////////////////////////////////////////////////////////////////////////
+// STT
+
+var whisperModel *whisper.Model
+var whisperModelErr error
+var whisperModelOnce sync.Once
+
+// ProcessRecordedAudio transcribes recorded audio samples and sends them to the server for command processing.
+func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
+	defer lg.CatchAndReportCrash()
+
+	whisperModelOnce.Do(func() {
+		data := util.LoadResourceBytes("models/ggml-medium-q5_0.bin")
+		whisperModel, whisperModelErr = whisper.LoadModelFromBytes(data)
+	})
+	if whisperModelErr != nil {
+		lg.Errorf("whisper LoadModelFromBytes: %v", whisperModelErr)
+		return
+	}
+	if whisperModel == nil {
+		lg.Errorf("unable to initialize whisper")
+		return
+	}
+
+	transcript, err := whisper.TranscribeWithModel(whisperModel, samples, platform.AudioInputSampleRate, 1, /* channels */
+		whisper.Options{Language: "en"})
+
+	c.SetLastTranscription(transcript)
+	if err != nil {
+		lg.Errorf("Push-to-talk: Transcription error: %v", err)
+		return
+	}
+
+	c.ProcessSTTTranscript(transcript, func(callsign, command string, err error) {
+		if err != nil {
+			lg.Errorf("STT command error: %v", err)
+		} else {
+			lg.Infof("STT command: %s %s", callsign, command)
+			c.SetLastCommand(callsign + " " + command)
+		}
+	})
+}
+
+// ProcessSTTTranscript sends the transcript to the server for DSL conversion and command execution.
+func (c *ControlClient) ProcessSTTTranscript(transcript string, callback func(callsign, command string, err error)) {
+	var result server.ProcessSTTTranscriptResult
+	c.addCall(makeRPCCall(c.client.Go(server.ProcessSTTTranscriptRPC, &server.ProcessSTTTranscriptArgs{
+		ControllerToken: c.controllerToken,
+		Transcript:      transcript,
+	}, &result, nil),
+		func(err error) {
+			if callback != nil {
+				callback(result.Callsign, result.Command, err)
 			}
 		}))
 }

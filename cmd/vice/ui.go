@@ -50,6 +50,10 @@ var (
 		showSettings      bool
 		showScenarioInfo  bool
 		showLaunchControl bool
+
+		// STT state
+		pttRecording bool
+		pttCapture   bool // capturing new PTT key assignment
 	}
 
 	//go:embed icons/tower-256x256.png
@@ -215,8 +219,25 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			imgui.SetTooltip("Display online vice documentation")
 		}
 
+		// Handle PTT key for STT recording
+		uiHandlePTTKey(p, controlClient, config, lg)
+
+		// Position for right-side icons (add space for mic icon when recording)
 		width, _ := ui.font.BoundText(renderer.FontAwesomeIconInfoCircle, 0)
-		imgui.SetCursorPos(imgui.Vec2{p.DisplaySize()[0] - float32(6*width+15), 0})
+		numIcons := 6
+		if ui.pttRecording {
+			numIcons = 7
+		}
+		imgui.SetCursorPos(imgui.Vec2{p.DisplaySize()[0] - float32(numIcons*width+15), 0})
+
+		// Show red microphone icon while recording
+		if ui.pttRecording {
+			imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, 0, 0, 1})
+			imgui.TextUnformatted(renderer.FontAwesomeIconMicrophone)
+			imgui.PopStyleColor()
+			imgui.SameLine()
+		}
+
 		if imgui.Button(renderer.FontAwesomeIconInfoCircle) {
 			ui.showAboutDialog = !ui.showAboutDialog
 		}
@@ -727,7 +748,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 		imgui.SameLine()
 		imgui.TextColored(imgui.Vec4{0, 1, 1, 1}, keyName)
 
-		if c.PTTCapture {
+		if ui.pttCapture {
 			imgui.TextColored(imgui.Vec4{1, 1, 0, 1}, "Press any key for Push-to-Talk...")
 			if kb := p.GetKeyboard(); kb != nil {
 				for key := range kb.Pressed {
@@ -736,7 +757,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 						key != imgui.KeyLeftAlt && key != imgui.KeyRightAlt &&
 						key != imgui.KeyLeftSuper && key != imgui.KeyRightSuper {
 						config.UserPTTKey = key
-						c.PTTCapture = false
+						ui.pttCapture = false
 						break
 					}
 				}
@@ -744,7 +765,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 		} else {
 			imgui.SameLine()
 			if imgui.Button("Change Key") {
-				c.PTTCapture = true
+				ui.pttCapture = true
 			}
 			imgui.SameLine()
 			if imgui.Button("Clear") {
@@ -780,7 +801,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 			imgui.EndCombo()
 		}
 
-		if c.PTTRecording.Load() {
+		if p.IsAudioRecording() {
 			imgui.TextColored(imgui.Vec4{1, 0, 0, 1}, "Recording...")
 		} else {
 			if transcription := c.GetLastTranscription(); transcription != "" {
@@ -858,4 +879,43 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 	}
 
 	imgui.End()
+}
+
+// uiHandlePTTKey handles push-to-talk key input for STT recording.
+func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, config *Config, lg *log.Logger) {
+	pttKey := config.UserPTTKey
+	if pttKey == imgui.KeyNone {
+		return
+	}
+
+	// Start on initial press (ignore repeats by checking our own flag)
+	if imgui.IsKeyDown(pttKey) && (controlClient == nil || !controlClient.RadioIsActive()) {
+		if !ui.pttRecording && !p.IsAudioRecording() {
+			if err := p.StartAudioRecordingWithDevice(config.SelectedMicrophone); err != nil {
+				lg.Errorf("Failed to start audio recording: %v", err)
+			} else {
+				ui.pttRecording = true
+				lg.Infof("Push-to-talk: Started recording")
+			}
+		}
+	}
+
+	// Independently detect release (do not tie to pressed state; key repeat may keep it true)
+	if ui.pttRecording && !imgui.IsKeyDown(pttKey) {
+		if p.IsAudioRecording() {
+			samples, err := p.StopAudioRecording()
+			ui.pttRecording = false
+			if err != nil {
+				lg.Errorf("Failed to stop audio recording: %v", err)
+			} else {
+				lg.Infof("Push-to-talk: Stopped recording, transcribing...")
+				if controlClient != nil {
+					go controlClient.ProcessRecordedAudio(samples, lg)
+				}
+			}
+		} else {
+			// Platform already not recording; reset our flag
+			ui.pttRecording = false
+		}
+	}
 }
