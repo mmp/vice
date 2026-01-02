@@ -20,6 +20,7 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -28,6 +29,10 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/vmihailenco/msgpack/v5"
 )
+
+// stepOnProbability is the chance that another pilot will transmit
+// despite a priority readback being expected.
+const stepOnProbability = 0.05
 
 type ControlClient struct {
 	controllerToken string
@@ -38,6 +43,7 @@ type ControlClient struct {
 	bufferedSpeech           []sim.PilotSpeech
 	playingSpeech            bool
 	holdSpeech               bool
+	sttActive                bool
 	lastSpeechHoldTime       time.Time
 	awaitReadbackCallsign    av.ADSBCallsign
 	lastTransmissionCallsign av.ADSBCallsign
@@ -395,16 +401,17 @@ loop:
 		c.holdSpeech = false
 	}
 
-	if c.holdSpeech || c.playingSpeech || len(c.bufferedSpeech) == 0 || c.State.Paused {
+	if c.holdSpeech || c.sttActive || c.playingSpeech || len(c.bufferedSpeech) == 0 || c.State.Paused {
 		// Don't/can't kick off additional speech playback
 		return
 	}
 
 	// Time to play speech
 	if c.awaitReadbackCallsign != "" {
-		// ; prioritize responses from issued aircraft instructions over cold calls.
+		// Prioritize responses from issued aircraft instructions over cold calls.
 		isResponse := func(ps sim.PilotSpeech) bool { return ps.Callsign == c.awaitReadbackCallsign }
 		if idx := slices.IndexFunc(c.bufferedSpeech, isResponse); idx != -1 {
+			// Found the awaited readback - play it
 			bs := c.bufferedSpeech[idx]
 			c.bufferedSpeech = append(c.bufferedSpeech[:idx], c.bufferedSpeech[idx+1:]...)
 
@@ -412,6 +419,7 @@ loop:
 			if len(bs.MP3) == 0 {
 				c.lg.Warnf("Skipping speech for %s due to empty MP3 (TTS error)", bs.Callsign)
 				c.awaitReadbackCallsign = ""
+				c.holdSpeech = false
 				return
 			}
 
@@ -420,14 +428,33 @@ loop:
 				c.playingSpeech = false
 				c.holdSpeech = true
 				c.lastTransmissionCallsign = bs.Callsign
-				//fmt.Printf("play completed %s @ %s\n", bs.Callsign, time.Now().String())
 				c.lastSpeechHoldTime = time.Now().Add(3 * time.Second / 2)
 			}); err == nil {
-				//fmt.Printf("play awaited speech %s at %s\n", bs.Callsign, time.Now().String())
+				c.playingSpeech = true
+			}
+		} else if len(c.bufferedSpeech) > 0 && rand.Make().Float32() < stepOnProbability {
+			// Awaited readback not yet available, but another pilot "steps on" the frequency
+			bs := c.bufferedSpeech[0]
+			c.bufferedSpeech = c.bufferedSpeech[1:]
+
+			if len(bs.MP3) == 0 {
+				c.lg.Warnf("Skipping speech for %s due to empty MP3 (TTS error)", bs.Callsign)
+				return
+			}
+
+			c.lg.Infof("Pilot %s stepping on frequency (awaiting %s)", bs.Callsign, c.awaitReadbackCallsign)
+			if err := p.TryEnqueueSpeechMP3(bs.MP3, func() {
+				c.playingSpeech = false
+				// Don't clear awaitReadbackCallsign - still waiting for that pilot
+				c.lastTransmissionCallsign = bs.Callsign
+				c.lastSpeechHoldTime = time.Now().Add(2 * time.Second)
+			}); err == nil {
 				c.playingSpeech = true
 			}
 		}
+		// else: awaited readback not available and no step-on - wait
 	} else {
+		// No priority callsign - play in FIFO order
 		bs := c.bufferedSpeech[0]
 		c.bufferedSpeech = c.bufferedSpeech[1:]
 
@@ -440,11 +467,9 @@ loop:
 		if err := p.TryEnqueueSpeechMP3(bs.MP3, func() {
 			c.playingSpeech = false
 			c.holdSpeech = true
-			//fmt.Printf("play completed %s at %s\n", bs.Callsign, time.Now().String())
 			c.lastTransmissionCallsign = bs.Callsign
 			c.lastSpeechHoldTime = time.Now().Add(2 * time.Second)
 		}); err == nil {
-			//fmt.Printf("play random speech %s at %s\n", bs.Callsign, time.Now().String())
 			c.playingSpeech = true
 		}
 	}
@@ -591,6 +616,19 @@ func (c *ControlClient) AllowRadioTransmissions() {
 	c.holdSpeech = false
 }
 
+func (c *ControlClient) SetSTTActive(active bool) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	c.sttActive = active
+	if active {
+		c.holdSpeech = true
+	} else {
+		// PTT released - allow readback to play
+		c.holdSpeech = false
+	}
+}
+
 func (c *ControlClient) LastTTSCallsign() av.ADSBCallsign {
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -684,6 +722,13 @@ func (c *ControlClient) ProcessSTTTranscript(transcript string, callback func(ca
 		Transcript:      transcript,
 	}, &result, nil),
 		func(err error) {
+			if err == nil && result.Callsign != "" {
+				// Set priority for readback from addressed pilot
+				c.mu.Lock()
+				c.awaitReadbackCallsign = av.ADSBCallsign(result.Callsign)
+				// Note: don't clear holdSpeech here - wait for PTT release via SetSTTActive(false)
+				c.mu.Unlock()
+			}
 			if callback != nil {
 				callback(result.Callsign, result.Command, err)
 			}

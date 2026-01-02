@@ -20,12 +20,14 @@ import (
 
 // AudioRecorder handles microphone recording
 type AudioRecorder struct {
-	deviceID  sdl.AudioDeviceID
-	recording bool
-	audioData []int16
-	mu        sync.Mutex
-	lg        *log.Logger
-	pinner    runtime.Pinner
+	deviceID      sdl.AudioDeviceID
+	deviceOpen    bool   // Whether the device is currently open
+	currentDevice string // Name of the currently open device
+	recording     bool
+	audioData     []int16
+	mu            sync.Mutex
+	lg            *log.Logger
+	pinner        runtime.Pinner
 }
 
 // NewAudioRecorder creates a new audio recorder
@@ -49,33 +51,48 @@ func (ar *AudioRecorder) StartRecordingWithDevice(deviceName string) error {
 		return fmt.Errorf("already recording")
 	}
 
-	// Open audio device for recording
-	user := unsafe.Pointer(ar)
-	ar.pinner.Pin(user)
-	spec := sdl.AudioSpec{
-		Freq:     AudioInputSampleRate,
-		Format:   sdl.AUDIO_S16SYS,
-		Channels: 1,
-		Samples:  2048,
-		Callback: sdl.AudioCallback(C.audioInputCallback),
-		UserData: user,
-	}
-
-	// Empty string uses SDL's default device
-	deviceID, err := sdl.OpenAudioDevice(deviceName, true, &spec, nil, 0)
-	if err != nil {
+	// If a different device is requested, close the current one first
+	if ar.deviceOpen && ar.currentDevice != deviceName {
+		sdl.PauseAudioDevice(ar.deviceID, true)
+		sdl.CloseAudioDevice(ar.deviceID)
 		ar.pinner.Unpin()
-		return fmt.Errorf("failed to open audio device: %v", err)
+		ar.deviceOpen = false
+		ar.lg.Infof("Closed audio device %q to switch to %q", ar.currentDevice, deviceName)
 	}
 
-	ar.deviceID = deviceID
+	// Open the device if not already open
+	if !ar.deviceOpen {
+		user := unsafe.Pointer(ar)
+		ar.pinner.Pin(user)
+		spec := sdl.AudioSpec{
+			Freq:     AudioInputSampleRate,
+			Format:   sdl.AUDIO_S16SYS,
+			Channels: 1,
+			Samples:  2048,
+			Callback: sdl.AudioCallback(C.audioInputCallback),
+			UserData: user,
+		}
+
+		// Empty string uses SDL's default device
+		deviceID, err := sdl.OpenAudioDevice(deviceName, true, &spec, nil, 0)
+		if err != nil {
+			ar.pinner.Unpin()
+			return fmt.Errorf("failed to open audio device: %v", err)
+		}
+
+		ar.deviceID = deviceID
+		ar.deviceOpen = true
+		ar.currentDevice = deviceName
+		ar.lg.Infof("Opened audio device: %q", deviceName)
+	}
+
 	ar.recording = true
 	ar.audioData = nil // Will grow dynamically as needed
 
-	// Start recording
-	sdl.PauseAudioDevice(deviceID, false)
+	// Start recording (unpause the device)
+	sdl.PauseAudioDevice(ar.deviceID, false)
 
-	ar.lg.Infof("Started audio recording from device: %s", deviceName)
+	ar.lg.Infof("Started audio recording")
 	return nil
 }
 
@@ -88,19 +105,29 @@ func (ar *AudioRecorder) StopRecording() ([]int16, error) {
 		return nil, fmt.Errorf("not recording")
 	}
 
-	// Stop recording
+	// Pause recording (but keep device open to avoid SDL audio subsystem issues)
 	sdl.PauseAudioDevice(ar.deviceID, true)
-	sdl.CloseAudioDevice(ar.deviceID)
 
 	ar.recording = false
 	audioData := ar.audioData
 	ar.audioData = nil
 
-	// Safe to unpin now that device is closed and callback won't run
-	ar.pinner.Unpin()
-
 	ar.lg.Infof("Stopped audio recording, captured %d samples", len(audioData))
 	return audioData, nil
+}
+
+// Close closes the audio recording device. Should be called when the application exits.
+func (ar *AudioRecorder) Close() {
+	ar.mu.Lock()
+	defer ar.mu.Unlock()
+
+	if ar.deviceOpen {
+		sdl.PauseAudioDevice(ar.deviceID, true)
+		sdl.CloseAudioDevice(ar.deviceID)
+		ar.pinner.Unpin()
+		ar.deviceOpen = false
+		ar.lg.Info("Closed audio recording device")
+	}
 }
 
 // IsRecording returns true if currently recording

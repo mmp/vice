@@ -27,12 +27,13 @@ const AudioSampleRate = 44100
 const AudioInputSampleRate = 16000 // Whisper's native sample rate
 
 type audioEngine struct {
-	pinner   runtime.Pinner
-	effects  []audioEffect
-	speechq  []int16
-	speechcb func()
-	mu       sync.Mutex
-	volume   int
+	pinner        runtime.Pinner
+	effects       []audioEffect
+	speechq       []int16
+	speechcb      func()
+	speechGarbled bool
+	mu            sync.Mutex
+	volume        int
 }
 
 type audioEffect struct {
@@ -110,9 +111,11 @@ func (a *audioEngine) TryEnqueueSpeechMP3(mp3 []byte, finished func()) error {
 		return nil
 	}
 
-	if _, pcm, err := minimp3.DecodeFull(mp3); err != nil {
+	if dec, pcm, err := minimp3.DecodeFull(mp3); err != nil {
 		return err
 	} else {
+		_ = dec // sample rate info available if needed
+
 		// Poor man's resampling: repeat each sample rep times to get close
 		// to the standard rate.
 		pcm16 := pcm16FromBytes(pcm)
@@ -212,6 +215,18 @@ func (a *audioEngine) StopPlayAudio(index int) {
 	a.mu.Unlock()
 }
 
+func (a *audioEngine) SetSpeechGarbled(garbled bool) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	a.speechGarbled = garbled
+}
+
+func (a *audioEngine) IsPlayingSpeech() bool {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	return len(a.speechq) > 0
+}
+
 //export audioCallback
 func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 	n := int(size)
@@ -224,13 +239,23 @@ func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 	defer a.mu.Unlock()
 
 	as := 0 // accum index for speech
+	var r *rand.Rand
+	if a.speechGarbled && len(a.speechq) > 0 {
+		r = rand.Make()
+	}
 	for len(a.speechq) > 0 && as < len(accum) {
-		accum[as] = int(a.speechq[0])
+		sample := int(a.speechq[0])
+		if a.speechGarbled {
+			// Audio ducking: reduce to 25% volume
+			sample = sample / 4
+			// Add loud static noise
+			sample += -4000 + r.Intn(8000)
+		}
+		accum[as] = sample
 		as++
 		a.speechq = a.speechq[1:]
 	}
 	if len(a.speechq) == 0 && as > 0 && a.speechcb != nil {
-		// We finished the speech; call the callback function
 		a.speechcb()
 		a.speechcb = nil
 	}

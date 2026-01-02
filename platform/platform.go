@@ -118,6 +118,13 @@ type Platform interface {
 	// callback function is called after the speech has finished.
 	TryEnqueueSpeechMP3(mp3 []byte, finished func()) error
 
+	// SetSpeechGarbled enables or disables garbling of speech audio.
+	// When enabled, speech is ducked and static noise is added.
+	SetSpeechGarbled(garbled bool)
+
+	// IsPlayingSpeech returns true if speech audio is currently playing.
+	IsPlayingSpeech() bool
+
 	// SetAudioVolume sets the volume for audio playback; the value passed
 	// should be between 0 and 10.
 	SetAudioVolume(vol int)

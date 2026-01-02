@@ -53,6 +53,7 @@ var (
 
 		// STT state
 		pttRecording bool
+		pttGarbling  bool // true if PTT pressed while audio was playing (no recording)
 		pttCapture   bool // capturing new PTT key assignment
 	}
 
@@ -222,17 +223,22 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		// Handle PTT key for STT recording
 		uiHandlePTTKey(p, controlClient, config, lg)
 
-		// Position for right-side icons (add space for mic icon when recording)
+		// Position for right-side icons (add space for mic icon when recording/garbling)
 		width, _ := ui.font.BoundText(renderer.FontAwesomeIconInfoCircle, 0)
 		numIcons := 6
-		if ui.pttRecording {
+		if ui.pttRecording || ui.pttGarbling {
 			numIcons = 7
 		}
 		imgui.SetCursorPos(imgui.Vec2{p.DisplaySize()[0] - float32(numIcons*width+15), 0})
 
-		// Show red microphone icon while recording
+		// Show microphone icon while recording (red) or garbling (yellow)
 		if ui.pttRecording {
 			imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, 0, 0, 1})
+			imgui.TextUnformatted(renderer.FontAwesomeIconMicrophone)
+			imgui.PopStyleColor()
+			imgui.SameLine()
+		} else if ui.pttGarbling {
+			imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, 1, 0, 1})
 			imgui.TextUnformatted(renderer.FontAwesomeIconMicrophone)
 			imgui.PopStyleColor()
 			imgui.SameLine()
@@ -888,33 +894,49 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 		return
 	}
 
-	// Start on initial press (ignore repeats by checking our own flag)
-	if imgui.IsKeyDown(pttKey) && (controlClient == nil || !controlClient.RadioIsActive()) {
-		if !ui.pttRecording && !p.IsAudioRecording() {
+	// Start on initial press (ignore repeats by checking our own flags)
+	if imgui.IsKeyDown(pttKey) && !ui.pttRecording && !ui.pttGarbling {
+		if p.IsPlayingSpeech() {
+			// Audio is playing - garble it instead of recording
+			p.SetSpeechGarbled(true)
+			ui.pttGarbling = true
+			lg.Infof("Push-to-talk: Garbling audio (pressed during playback)")
+		} else {
+			// No audio playing - start recording
 			if err := p.StartAudioRecordingWithDevice(config.SelectedMicrophone); err != nil {
 				lg.Errorf("Failed to start audio recording: %v", err)
 			} else {
 				ui.pttRecording = true
+				if controlClient != nil {
+					controlClient.SetSTTActive(true)
+				}
 				lg.Infof("Push-to-talk: Started recording")
 			}
 		}
 	}
 
-	// Independently detect release (do not tie to pressed state; key repeat may keep it true)
-	if ui.pttRecording && !imgui.IsKeyDown(pttKey) {
-		if p.IsAudioRecording() {
-			samples, err := p.StopAudioRecording()
-			ui.pttRecording = false
-			if err != nil {
-				lg.Errorf("Failed to stop audio recording: %v", err)
-			} else {
-				lg.Infof("Push-to-talk: Stopped recording, transcribing...")
-				if controlClient != nil {
-					go controlClient.ProcessRecordedAudio(samples, lg)
+	// Detect release
+	if !imgui.IsKeyDown(pttKey) {
+		if ui.pttGarbling {
+			// Was garbling - stop garbling
+			p.SetSpeechGarbled(false)
+			ui.pttGarbling = false
+			lg.Infof("Push-to-talk: Stopped garbling")
+		}
+		if ui.pttRecording {
+			// Was recording - stop and process
+			if p.IsAudioRecording() {
+				samples, err := p.StopAudioRecording()
+				if err != nil {
+					lg.Errorf("Failed to stop audio recording: %v", err)
+				} else {
+					lg.Infof("Push-to-talk: Stopped recording, transcribing...")
+					if controlClient != nil {
+						controlClient.SetSTTActive(false)
+						go controlClient.ProcessRecordedAudio(samples, lg)
+					}
 				}
 			}
-		} else {
-			// Platform already not recording; reset our flag
 			ui.pttRecording = false
 		}
 	}
