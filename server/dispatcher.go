@@ -931,13 +931,7 @@ const ProcessSTTTranscriptRPC = "Sim.ProcessSTTTranscript"
 func (sd *dispatcher) ProcessSTTTranscript(args *ProcessSTTTranscriptArgs, result *ProcessSTTTranscriptResult) error {
 	defer sd.sm.lg.CatchAndReportCrash()
 
-	c := sd.sm.LookupController(args.ControllerToken)
-	if c == nil {
-		return ErrNoSimForControllerToken
-	}
-
-	callsign, command, err := processSTTTranscript(c, args.Transcript)
-	result.Callsign = callsign
-	result.Command = command
+	var err error
+	result.Callsign, result.Command, err = sd.sm.ProcessSTTTranscript(args.ControllerToken, args.Transcript)
 	return err
 }

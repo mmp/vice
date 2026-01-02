@@ -167,16 +167,18 @@ func makeStateUpdateRPCCall(call *rpc.Call, update *server.SimStateUpdate, callb
 	}
 }
 
-func (p *pendingCall) CheckFinished(es *sim.EventStream, state *SimState) bool {
+func (p *pendingCall) CheckFinished() bool {
 	select {
-	case c := <-p.Call.Done:
-		if p.Callback != nil {
-			p.Callback(es, state, c.Error)
-		}
+	case <-p.Call.Done:
 		return true
-
 	default:
 		return false
+	}
+}
+
+func (p *pendingCall) InvokeCallback(es *sim.EventStream, state *SimState) {
+	if p.Callback != nil {
+		p.Callback(es, state, p.Call.Error)
 	}
 }
 
@@ -304,23 +306,25 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 	// with the lock held is verboten since it may call Disconnect(), which
 	// also needs the lock.
 	var callbackErr error
+	var completedCalls []*pendingCall
+	var updateCallFinished *pendingCall
 
 	c.mu.Lock()
 
 	if c.updateCall != nil {
-		if c.updateCall.CheckFinished(eventStream, &c.State) {
+		if c.updateCall.CheckFinished() {
+			updateCallFinished = c.updateCall
 			c.updateCall = nil
 			c.SessionStats.Update(&c.State)
-			c.mu.Unlock()
-			return
+		} else {
+			callbackErr = checkTimeout(c.updateCall, eventStream)
 		}
-		callbackErr = checkTimeout(c.updateCall, eventStream)
 	}
 
 	c.updateSpeech(p)
 
 	if callbackErr == nil {
-		callbackErr = c.checkPendingRPCs(eventStream)
+		completedCalls, callbackErr = c.checkPendingRPCs(eventStream)
 	}
 
 	// Wait in seconds between update fetches; no less than 50ms
@@ -329,6 +333,13 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 		if c.updateCall != nil && !util.DebuggerIsRunning() {
 			c.lg.Warnf("GetUpdates still waiting for %s on last update call", d)
 			c.mu.Unlock()
+			// Invoke callbacks after releasing lock to avoid deadlock
+			if updateCallFinished != nil {
+				updateCallFinished.InvokeCallback(eventStream, &c.State)
+			}
+			for _, call := range completedCalls {
+				call.InvokeCallback(eventStream, &c.State)
+			}
 			if callbackErr != nil && onErr != nil {
 				onErr(callbackErr)
 			}
@@ -337,9 +348,10 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 		c.lastUpdateRequest = time.Now()
 
 		var update server.SimStateUpdate
+		issueTime := time.Now()
 		c.updateCall = makeStateUpdateRPCCall(c.client.Go(server.GetStateUpdateRPC, c.controllerToken, &update, nil), &update,
 			func(err error) {
-				d := time.Since(c.updateCall.IssueTime)
+				d := time.Since(issueTime)
 				c.lastUpdateLatency = d
 				if d > 250*time.Millisecond {
 					c.lg.Warnf("Slow world update response %s", d)
@@ -351,6 +363,13 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 
 	c.mu.Unlock()
 
+	// Invoke callbacks after releasing lock to avoid deadlock
+	if updateCallFinished != nil {
+		updateCallFinished.InvokeCallback(eventStream, &c.State)
+	}
+	for _, call := range completedCalls {
+		call.InvokeCallback(eventStream, &c.State)
+	}
 	if callbackErr != nil && onErr != nil {
 		onErr(callbackErr)
 	}
@@ -431,16 +450,23 @@ loop:
 	}
 }
 
-func (c *ControlClient) checkPendingRPCs(eventStream *sim.EventStream) error {
+func (c *ControlClient) checkPendingRPCs(eventStream *sim.EventStream) ([]*pendingCall, error) {
+	var completed []*pendingCall
 	c.pendingCalls = slices.DeleteFunc(c.pendingCalls,
-		func(call *pendingCall) bool { return call.CheckFinished(eventStream, &c.State) })
+		func(call *pendingCall) bool {
+			if call.CheckFinished() {
+				completed = append(completed, call)
+				return true
+			}
+			return false
+		})
 
 	for _, call := range c.pendingCalls {
 		if err := checkTimeout(call, eventStream); err != nil {
-			return err
+			return completed, err
 		}
 	}
-	return nil
+	return completed, nil
 }
 
 func checkTimeout(call *pendingCall, eventStream *sim.EventStream) error {
@@ -614,38 +640,40 @@ var whisperModelOnce sync.Once
 
 // ProcessRecordedAudio transcribes recorded audio samples and sends them to the server for command processing.
 func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
-	defer lg.CatchAndReportCrash()
+	go func() {
+		defer lg.CatchAndReportCrash()
 
-	whisperModelOnce.Do(func() {
-		data := util.LoadResourceBytes("models/ggml-medium-q5_0.bin")
-		whisperModel, whisperModelErr = whisper.LoadModelFromBytes(data)
-	})
-	if whisperModelErr != nil {
-		lg.Errorf("whisper LoadModelFromBytes: %v", whisperModelErr)
-		return
-	}
-	if whisperModel == nil {
-		lg.Errorf("unable to initialize whisper")
-		return
-	}
-
-	transcript, err := whisper.TranscribeWithModel(whisperModel, samples, platform.AudioInputSampleRate, 1, /* channels */
-		whisper.Options{Language: "en"})
-
-	c.SetLastTranscription(transcript)
-	if err != nil {
-		lg.Errorf("Push-to-talk: Transcription error: %v", err)
-		return
-	}
-
-	c.ProcessSTTTranscript(transcript, func(callsign, command string, err error) {
-		if err != nil {
-			lg.Errorf("STT command error: %v", err)
-		} else {
-			lg.Infof("STT command: %s %s", callsign, command)
-			c.SetLastCommand(callsign + " " + command)
+		whisperModelOnce.Do(func() {
+			model := util.LoadResourceBytes("models/whisper-ggml-large-v3-turbo-q5_0.bin")
+			whisperModel, whisperModelErr = whisper.LoadModelFromBytes(model)
+		})
+		if whisperModelErr != nil {
+			lg.Errorf("whisper LoadModelFromBytes: %v", whisperModelErr)
+			return
 		}
-	})
+
+		start := time.Now()
+
+		transcript, err := whisper.TranscribeWithModel(whisperModel, samples, platform.AudioInputSampleRate, 1, /* channels */
+			whisper.Options{Language: "en"})
+
+		fmt.Printf("whisper %q in %s\n", transcript, time.Since(start))
+
+		c.SetLastTranscription(transcript)
+		if err != nil {
+			lg.Errorf("Push-to-talk: Transcription error: %v", err)
+			return
+		}
+
+		c.ProcessSTTTranscript(transcript, func(callsign, command string, err error) {
+			if err != nil {
+				lg.Errorf("STT command error: %v", err)
+			} else {
+				lg.Infof("STT command: %s %s", callsign, command)
+				c.SetLastCommand(callsign + " " + command)
+			}
+		})
+	}()
 }
 
 // ProcessSTTTranscript sends the transcript to the server for DSL conversion and command execution.

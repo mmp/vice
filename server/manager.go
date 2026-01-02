@@ -5,10 +5,14 @@
 package server
 
 import (
+	"bytes"
 	"context"
 	crand "crypto/rand"
+	_ "embed"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 	"os"
@@ -18,8 +22,10 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/goforj/godump"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -795,6 +801,253 @@ func (sm *SimManager) TextToSpeech(req *TTSRequest, speechMp3 *[]byte) error {
 			fut.ErrCh = nil // stop checking
 		}
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Speech-to-text
+
+func (sm *SimManager) ProcessSTTTranscript(token, transcript string) (string, string, error) {
+	c := sm.LookupController(token)
+	if c == nil {
+		return "", "", ErrNoSimForControllerToken
+	}
+
+	qc := makeSTTQueryContext(c, transcript)
+
+	commands, err := transcriptToCommands(qc)
+	if err != nil {
+		return "", "", err
+	}
+	if commands == "" {
+		return "", "", nil
+	}
+
+	// Sometimes claude gives us backticks...
+	commands = strings.Trim(commands, "`")
+
+	callsign, commands, _ := strings.Cut(commands, " ")
+	er := c.sim.RunAircraftControlCommands(c.tcw, av.ADSBCallsign(callsign), commands)
+	if er.Error != nil {
+		return callsign, commands, er.Error
+	}
+	return callsign, commands, nil
+}
+
+//go:embed sttSystemPrompt.md
+var systemPrompt string
+
+func transcriptToCommands(qc sttQueryContext) (string, error) {
+	type claudeMessage struct {
+		Role    string `json:"role"`
+		Content string `json:"content"`
+	}
+	type claudeRequest struct {
+		Model     string          `json:"model"`
+		MaxTokens int             `json:"max_tokens"`
+		System    string          `json:"system"`
+		Messages  []claudeMessage `json:"messages"`
+	}
+	type claudeResponse struct {
+		Content []struct {
+			Text string `json:"text"`
+		} `json:"content"`
+	}
+
+	queryBytes, err := json.Marshal(qc)
+	if err != nil {
+		return "", err
+	}
+
+	req := claudeRequest{
+		Model:     "claude-haiku-4-5",
+		MaxTokens: 16,
+		System:    systemPrompt,
+		Messages: []claudeMessage{
+			{Role: "user", Content: string(queryBytes)},
+		},
+	}
+
+	jsonBytes, err := json.Marshal(req)
+	if err != nil {
+		return "", fmt.Errorf("failed to marshal request: %w", err)
+	}
+
+	apiKey := os.Getenv("VICE_ANTHROPIC_KEY")
+	if apiKey == "" {
+		panic("must set VICE_ANTHROPIC_KEY")
+	}
+
+	start := time.Now()
+
+	httpReq, err := http.NewRequest("POST", "https://api.anthropic.com/v1/messages", bytes.NewBuffer(jsonBytes))
+	if err != nil {
+		return "", fmt.Errorf("failed to create request: %w", err)
+	}
+	httpReq.Header.Set("Content-Type", "application/json")
+	httpReq.Header.Set("x-api-key", apiKey)
+	httpReq.Header.Set("anthropic-version", "2023-06-01")
+
+	httpClient := &http.Client{Timeout: 30 * time.Second}
+	resp, err := httpClient.Do(httpReq)
+	if err != nil {
+		return "", fmt.Errorf("API request failed: %w", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("failed to read response: %w", err)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("API returned status %d", resp.StatusCode)
+	}
+
+	fmt.Printf("claude in %s\n", time.Since(start))
+
+	var parsed claudeResponse
+	if err := json.Unmarshal(body, &parsed); err != nil {
+		return "", fmt.Errorf("failed to parse API response: %w", err)
+	}
+
+	if len(parsed.Content) > 0 {
+		fmt.Println("  -----> " + parsed.Content[0].Text)
+		return parsed.Content[0].Text, nil
+	}
+
+	return "", fmt.Errorf("API returned empty response")
+}
+
+type sttQueryContext struct {
+	Aircraft   map[string]sttAircraft       `json:"aircraft,omitempty"`
+	Approaches map[string]map[string]string `json:"approaches,omitempty"`
+	Transcript string                       `json:"transcript"`
+}
+
+type sttAircraft struct {
+	Callsign        av.ADSBCallsign   `json:"callsign"`
+	Fixes           map[string]string `json:"fixes"`
+	ApproachAirport string            `json:"approach_airport,omitempty"`
+	Altitude        int               `json:"altitude"`
+	Type            string            `json:"type"`
+}
+
+func makeSTTQueryContext(c *controllerContext, transcript string) sttQueryContext {
+	qc := sttQueryContext{
+		Aircraft:   make(map[string]sttAircraft),
+		Approaches: make(map[string]map[string]string),
+		Transcript: transcript,
+	}
+
+	for cs, ac := range c.sim.Aircraft {
+		ours := ac.IsAssociated() && c.sim.TCWControlsPosition(c.tcw, ac.NASFlightPlan.ControllingController)
+		vff := ac.IsUnassociated() && (ac.RequestedFlightFollowing || ac.WaitingForGoAhead)
+		if !ours && !vff {
+			continue
+		}
+
+		sttAc := sttAircraft{
+			Callsign: cs,
+			Fixes:    getSTTFixes(ac),
+			Altitude: int(ac.Nav.FlightState.Altitude),
+			Type: func() string {
+				switch ac.TypeOfFlight {
+				case av.FlightTypeDeparture:
+					return "departure"
+				case av.FlightTypeArrival:
+					return "arrival"
+				case av.FlightTypeOverflight:
+					return "overflight"
+				default:
+					return ""
+				}
+			}(),
+		}
+
+		if ac.TypeOfFlight == av.FlightTypeArrival {
+			ap := ac.FlightPlan.ArrivalAirport
+			sttAc.ApproachAirport = ap
+			if _, ok := qc.Approaches[ap]; !ok {
+				qc.Approaches[ap] = getActiveApproaches(c.sim.State, ap)
+			}
+		}
+
+		telephony := getAircraftTelephony(ac)
+		qc.Aircraft[telephony] = sttAc
+	}
+
+	godump.Dump(qc)
+
+	return qc
+}
+
+func getActiveApproaches(ss *sim.CommonState, ap string) map[string]string {
+	m := make(map[string]string)
+	for _, ar := range ss.ArrivalRunways {
+		if ar.Airport != ap {
+			continue
+		}
+		for code, appr := range ss.Airports[ap].Approaches {
+			if appr.Runway == ar.Runway {
+				m[appr.FullName] = code
+			}
+		}
+	}
+	return m
+}
+
+func getSTTFixes(ac *sim.Aircraft) map[string]string {
+	fixes := make(map[string]string)
+	p := ac.Nav.FlightState.Position
+	for _, wp := range ac.Nav.Waypoints {
+		if math.NMDistance2LL(p, wp.Location) > 75 {
+			break
+		}
+		if len(wp.Fix) > 5 || len(wp.Fix) < 3 || wp.Fix[0] == '_' {
+			continue
+		}
+
+		if aid, ok := av.DB.Navaids[wp.Fix]; ok {
+			fixes[util.StopShouting(aid.Name)] = wp.Fix
+		} else if ap, ok := av.DB.Airports[wp.Fix]; ok {
+			fixes[ap.Name] = wp.Fix
+		} else {
+			fixes[wp.Fix] = wp.Fix
+		}
+	}
+	return fixes
+}
+
+func getAircraftTelephony(ac *sim.Aircraft) string {
+	cs := string(ac.ADSBCallsign)
+
+	prefix, number := func() (string, string) {
+		for i := range cs {
+			if cs[i] >= '0' && cs[i] <= '9' {
+				return cs[:i], cs[i:]
+			}
+		}
+		return cs, ""
+	}()
+	var tele string
+	if prefix == "N" {
+		tele = "november"
+	} else if t, ok := av.DB.Callsigns[prefix]; !ok {
+		fmt.Printf("NO TELEPHONY %q -> prefix %q\n", ac.ADSBCallsign, prefix)
+	} else {
+		tele = t
+	}
+	tele += " " + number
+
+	if ac.IsAssociated() {
+		if ac.NASFlightPlan.CWTCategory == "A" {
+			tele += " super"
+		} else if ac.NASFlightPlan.CWTCategory[0] <= 'D' {
+			tele += " heavy"
+		}
+	}
+
+	return tele
 }
 
 ///////////////////////////////////////////////////////////////////////////
