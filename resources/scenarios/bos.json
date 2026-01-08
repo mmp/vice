@@ -59325,6 +59325,186 @@
         "direction": "190-250"
       }
     },
+    "BOS 22Y": {
+      "arrival_runways": [
+        {
+          "airport": "KBOS",
+          "runway": "22L"
+        },
+        {
+          "airport": "KBED",
+          "runway": "29"
+        },
+        {
+          "airport": "KLWM",
+          "runway": "23"
+        },
+        {
+          "airport": "KLWM",
+          "runway": "32"
+        },
+        {
+          "airport": "KBVY",
+          "runway": "34"
+        },
+        {
+          "airport": "KBVY",
+          "runway": "27"
+        },
+        {
+          "airport": "KOWD",
+          "runway": "35"
+        },
+        {
+          "airport": "KPSM",
+          "runway": "34"
+        },
+        {
+          "airport": "KMHT",
+          "runway": "35"
+        },
+        {
+          "airport": "KASH",
+          "runway": "32"
+        },
+        {
+          "airport": "KACK",
+          "runway": "6"
+        },
+        {
+          "airport": "KMVY",
+          "runway": "6"
+        },
+        {
+          "airport": "KHYA",
+          "runway": "6"
+        },
+        {
+          "airport": "KFMH",
+          "runway": "5"
+        }
+      ],
+      "inbound_rates": {
+        "JFUND2.22L": {
+          "KBOS": 0
+        },
+        "ROBUC3.22L": {
+          "KBOS": 0
+        },
+        "OOSHN5.22L": {
+          "KBOS": 0
+        },
+        "DREEM2": {
+          "KBED": 0,
+          "KBVY": 0,
+          "KLWM": 0
+        },
+        "ZELKA2": {
+          "KBED": 0,
+          "KBVY": 0,
+          "KLWM": 0
+        },
+        "WOONS.LO": {
+          "KBED": 0,
+          "KOWD": 0,
+          "KLWM": 0,
+          "KBVY": 0
+        },
+        "WOONS": {
+          "KBOS": 0
+        },
+        "GDM": {
+          "KBOS": 0,
+          "KBED": 0,
+          "KOWD": 0,
+          "KLWM": 0,
+          "KBVY": 0
+        },
+        "FREDO": {
+          "KBOS": 0
+        },
+        "LWRNC": {
+          "KBOS": 0
+        },
+        "LWRNC.SAT": {
+          "KBED": 0,
+          "KOWD": 0,
+          "KLWM": 0,
+          "KBVY": 0
+        },
+        "KLANE": {
+          "KPSM": 0
+        }
+      },
+      "configuration": {
+        "config_id": "CSW",
+        "default_consolidation": {
+          "BOS_D_APP": ["BOS_R_APP", "BOS_U_APP"],
+          "BOS_F_APP": ["BOS_I_APP"],
+          "BOS_M_APP": ["BOS_L_APP"],
+          "BOS_R_APP": ["BOS_B_APP", "BOS_F_APP", "BOS_M_APP"]
+        }
+      },
+      "controllers": [
+        "BOS_E_TWR",
+        "BOS_W_TWR",
+        "BOS_37_CTR",
+        "BOS_36_CTR",
+        "BOS_42_CTR",
+        "BOS_34_CTR",
+        "BOS_16_CTR",
+        "BOS_18_CTR",
+        "BED_TWR",
+        "OWD_TWR",
+        "LWM_TWR",
+        "BVY_TWR",
+        "PSM_TWR",
+        "MHT_TWR",
+        "ASH_TWR",
+        "ACK_TWR",
+        "MVY_TWR",
+        "HYA_TWR",
+        "FMH_TWR"
+      ],
+      "default_maps": ["A90 MASTER BASE MAP A", "RWY 22L", "RNAV 22L Y"],
+      "departure_runways": [
+        {
+          "airport": "KBOS",
+          "rate": 40,
+          "runway": "22R",
+          "category": "Primary.22/22"
+        },
+        {
+          "airport": "KBOS",
+          "rate": 15,
+          "runway": "22R",
+          "category": "PROP.22/22"
+        },
+        {
+          "airport": "KBED",
+          "rate": 0,
+          "runway": "29"
+        },
+        {
+          "airport": "KLWM",
+          "rate": 0,
+          "runway": "23"
+        },
+        {
+          "airport": "KOWD",
+          "rate": 0,
+          "runway": "35"
+        },
+        {
+          "airport": "KBVY",
+          "rate": 0,
+          "runway": "27"
+        }
+      ],
+      "wind": {
+        "direction": "190-250"
+      }
+    },
     "BOS 27/22": {
       "arrival_runways": [
         {
