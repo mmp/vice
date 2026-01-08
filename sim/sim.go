@@ -786,39 +786,11 @@ func (s *Sim) GetTrafficCounts() (ifr, vfr int) {
 	return s.TotalIFR, s.TotalVFR
 }
 
-// consolidateRadioEventsForTCW consolidates consecutive radio transmissions from the same
-// aircraft and adds callsign/controller prefixes to contact transmissions.
+// prepareRadioTransmissions adds callsign/controller prefixes to radio transmissions.
+// (Multi-command batching is now handled at intent generation time in RunAircraftControlCommands.)
 // This is called for both main event subscriptions and TTS event subscriptions.
 // Must be called with s.mu held.
-func (s *Sim) consolidateRadioEventsForTCW(tcw TCW, events []Event) []Event {
-	// Consolidate consecutive radio transmissions from the same aircraft
-	consolidateRadioTransmissions := func(events []Event) []Event {
-		canConsolidate := func(a, b Event) bool {
-			return a.Type == RadioTransmissionEvent && b.Type == RadioTransmissionEvent &&
-				a.RadioTransmissionType != av.RadioTransmissionMixUp && b.RadioTransmissionType != av.RadioTransmissionMixUp &&
-				a.ADSBCallsign == b.ADSBCallsign && a.Type == b.Type && a.ToController == b.ToController
-		}
-		lastRadio := -1
-		var c []Event
-		for _, e := range events {
-			if lastRadio != -1 && canConsolidate(e, c[lastRadio]) {
-				c[lastRadio].WrittenText += ", " + e.WrittenText
-				c[lastRadio].SpokenText += ", " + e.SpokenText
-				if e.RadioTransmissionType == av.RadioTransmissionUnexpected {
-					c[lastRadio].RadioTransmissionType = av.RadioTransmissionUnexpected
-				}
-			} else {
-				if e.Type == RadioTransmissionEvent {
-					lastRadio = len(c)
-				}
-				c = append(c, e)
-			}
-		}
-		return c
-	}
-
-	events = consolidateRadioTransmissions(events)
-
+func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 	primaryTCP := s.State.PrimaryPositionForTCW(tcw)
 	ctrl := s.State.Controllers[primaryTCP]
 
@@ -878,14 +850,14 @@ func (s *Sim) consolidateRadioEventsForTCW(tcw TCW, events []Event) []Event {
 	return events
 }
 
-// ConsolidateRadioEventsForTCW processes events for TTS, consolidating radio transmissions
-// and adding callsign/controller prefixes. This is the public API for the server
-// to process TTS events from a separate subscription.
-func (s *Sim) ConsolidateRadioEventsForTCW(tcw TCW, events []Event) []Event {
+// PrepareRadioTransmissionsForTCW processes events for TTS, adding
+// callsign/controller prefixes to radio transmissions. This is the public API
+// for the server to process TTS events from a separate subscription.
+func (s *Sim) PrepareRadioTransmissionsForTCW(tcw TCW, events []Event) []Event {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.consolidateRadioEventsForTCW(tcw, events)
+	return s.prepareRadioTransmissions(tcw, events)
 }
 
 func (s *Sim) GetStateUpdate() StateUpdate {
@@ -1513,9 +1485,12 @@ func (s *Sim) goAround(ac *Aircraft) {
 
 	sfp.ControllingController = ac.ApproachTCP
 
-	rt := ac.GoAround()
-	rt.Type = av.RadioTransmissionUnexpected
-	s.postRadioEvent(ac.ADSBCallsign, ac.ApproachTCP /* FIXME: issue #540 */, *rt)
+	intent := ac.GoAround()
+	rt := av.RenderIntents([]av.CommandIntent{intent}, s.Rand)
+	if rt != nil {
+		rt.Type = av.RadioTransmissionUnexpected
+		s.postRadioEvent(ac.ADSBCallsign, ac.ApproachTCP /* FIXME: issue #540 */, *rt)
+	}
 
 	// If it was handed off to tower, hand it back to us
 	if towerHadTrack {

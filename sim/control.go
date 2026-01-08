@@ -19,13 +19,6 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-func setTransmissionController(tcp TCP, rt *av.RadioTransmission) *av.RadioTransmission {
-	if rt != nil {
-		rt.Controller = string(tcp)
-	}
-	return rt
-}
-
 // TCWCanCommandAircraft returns true if the TCW can issue ATC commands to an aircraft
 // (altitude, heading, speed, etc.). This is true if the TCW is privileged, owns the track,
 // or controls the ControllingController position.
@@ -54,39 +47,35 @@ func (s *Sim) TCWCanModifyFlightPlan(tcw TCW, fp *NASFlightPlan) bool {
 }
 
 func (s *Sim) dispatchAircraftCommand(tcw TCW, callsign av.ADSBCallsign, check func(tcw TCW, ac *Aircraft) error,
-	cmd func(tcw TCW, ac *Aircraft) *av.RadioTransmission) error {
+	cmd func(tcw TCW, ac *Aircraft) av.CommandIntent) (av.CommandIntent, error) {
 	s.lastControlCommandTime = time.Now()
 
 	if ac, ok := s.Aircraft[callsign]; !ok {
-		return av.ErrNoAircraftForCallsign
+		return nil, av.ErrNoAircraftForCallsign
 	} else if _, ok := s.State.CurrentConsolidation[tcw]; !ok {
-		return ErrUnknownController
+		return nil, ErrUnknownController
 	} else {
 		if check != nil {
 			if err := check(tcw, ac); err != nil {
-				return err
+				return nil, err
 			}
 		}
 
 		preAc := *ac
-		radioTransmission := cmd(tcw, ac)
+		intent := cmd(tcw, ac)
 
 		s.lg.Info("dispatch_command", slog.String("adsb_callsign", string(ac.ADSBCallsign)),
 			slog.Any("prepost_aircraft", []Aircraft{preAc, *ac}),
-			slog.Any("radio_transmission", radioTransmission))
+			slog.Any("intent", intent))
 
-		if radioTransmission != nil {
-			s.postRadioEvent(ac.ADSBCallsign, s.State.PrimaryPositionForTCW(tcw), *radioTransmission)
-		}
-
-		return nil
+		return intent, nil
 	}
 }
 
 // Commands that are allowed by the controlling controller, who may not still have the track;
 // e.g., turns after handoffs.
 func (s *Sim) dispatchControlledAircraftCommand(tcw TCW, callsign av.ADSBCallsign,
-	cmd func(tcw TCW, ac *Aircraft) *av.RadioTransmission) error {
+	cmd func(tcw TCW, ac *Aircraft) av.CommandIntent) (av.CommandIntent, error) {
 	return s.dispatchAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) error {
 			if ac.IsUnassociated() {
@@ -106,7 +95,7 @@ func (s *Sim) dispatchControlledAircraftCommand(tcw TCW, callsign av.ADSBCallsig
 
 // Can issue both to aircraft we track but also unassociated VFRs
 func (s *Sim) dispatchVFRAircraftCommand(tcw TCW, callsign av.ADSBCallsign,
-	cmd func(tcw TCW, ac *Aircraft) *av.RadioTransmission) error {
+	cmd func(tcw TCW, ac *Aircraft) av.CommandIntent) (av.CommandIntent, error) {
 	return s.dispatchAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) error {
 			// Allow issuing this command to random unassociated VFRs but
@@ -121,42 +110,38 @@ func (s *Sim) dispatchVFRAircraftCommand(tcw TCW, callsign av.ADSBCallsign,
 
 // Note that ac may be nil, but flight plan will not be!
 func (s *Sim) dispatchFlightPlanCommand(tcw TCW, acid ACID, check func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error,
-	cmd func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) *av.RadioTransmission) error {
+	cmd func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent) (av.CommandIntent, error) {
 	s.lastControlCommandTime = time.Now()
 
 	fp, ac, _ := s.getFlightPlanForACID(acid)
 	if fp == nil {
-		return ErrNoMatchingFlightPlan
+		return nil, ErrNoMatchingFlightPlan
 	}
 	// ac may or may not be nil; we'll pass it along if we have it
 
 	if _, ok := s.State.CurrentConsolidation[tcw]; !ok {
-		return ErrUnknownController
+		return nil, ErrUnknownController
 	}
 
 	if check != nil {
 		if err := check(tcw, fp, ac); err != nil {
-			return err
+			return nil, err
 		}
 	}
 
 	preFp := *fp
-	radioTransmission := cmd(tcw, fp, ac)
+	intent := cmd(tcw, fp, ac)
 
 	s.lg.Info("dispatch_fp_command", slog.String("acid", string(fp.ACID)),
 		slog.Any("prepost_fp", []NASFlightPlan{preFp, *fp}),
-		slog.Any("radio_transmission", radioTransmission))
+		slog.Any("intent", intent))
 
-	if radioTransmission != nil {
-		s.postRadioEvent(av.ADSBCallsign(fp.ACID), s.State.PrimaryPositionForTCW(tcw), *radioTransmission)
-	}
-
-	return nil
+	return intent, nil
 }
 
 func (s *Sim) dispatchTrackedFlightPlanCommand(tcw TCW, acid ACID, check func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error,
 	cmd func(tcw TCW, fp *NASFlightPlan, ac *Aircraft)) error {
-	return s.dispatchFlightPlanCommand(tcw, acid,
+	_, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
 			if !s.TCWCanModifyFlightPlan(tcw, fp) {
 				return av.ErrOtherControllerHasTrack
@@ -166,25 +151,26 @@ func (s *Sim) dispatchTrackedFlightPlanCommand(tcw TCW, acid ACID, check func(tc
 			}
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) *av.RadioTransmission {
+		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
 			cmd(tcw, fp, ac)
 			// No radio transmissions for these
 			return nil
 		})
+	return err
 }
 
 func (s *Sim) DeleteAircraft(tcw TCW, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchAircraftCommand(tcw, callsign,
+	_, err := s.dispatchAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) error {
 			if lctrl := s.State.LaunchConfig.Controller; lctrl != "" && lctrl != tcw {
 				return av.ErrOtherControllerHasTrack
 			}
 			return nil
 		},
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			s.eventStream.Post(Event{
 				Type:        StatusMessageEvent,
 				WrittenText: fmt.Sprintf("%s deleted %s", tcw, ac.ADSBCallsign),
@@ -194,6 +180,7 @@ func (s *Sim) DeleteAircraft(tcw TCW, callsign av.ADSBCallsign) error {
 
 			return nil
 		})
+	return err
 }
 
 func (s *Sim) deleteAircraft(ac *Aircraft) {
@@ -275,37 +262,37 @@ func (s *Sim) clearDepartureQueues() {
 	}
 }
 
-func (s *Sim) ChangeSquawk(tcw TCW, callsign av.ADSBCallsign, sq av.Squawk) error {
+func (s *Sim) ChangeSquawk(tcw TCW, callsign av.ADSBCallsign, sq av.Squawk) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchVFRAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			s.enqueueTransponderChange(ac.ADSBCallsign, sq, ac.Mode)
 
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), av.MakeReadbackTransmission("squawk {beacon}", sq))
+			return av.TransponderIntent{Code: &sq}
 		})
 }
 
-func (s *Sim) ChangeTransponderMode(tcw TCW, callsign av.ADSBCallsign, mode av.TransponderMode) error {
+func (s *Sim) ChangeTransponderMode(tcw TCW, callsign av.ADSBCallsign, mode av.TransponderMode) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchVFRAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			s.enqueueTransponderChange(ac.ADSBCallsign, ac.Squawk, mode)
 
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), av.MakeReadbackTransmission("squawk "+strings.ToLower(mode.String())))
+			return av.TransponderIntent{Mode: &mode}
 		})
 }
 
-func (s *Sim) Ident(tcw TCW, callsign av.ADSBCallsign) error {
+func (s *Sim) Ident(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchVFRAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.Ident(s.State.SimTime))
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.Ident(s.State.SimTime)
 		})
 }
 
@@ -459,7 +446,7 @@ func (s *Sim) AssociateFlightPlan(tcw TCW, callsign av.ADSBCallsign, spec Flight
 		return err
 	}
 
-	err := s.dispatchAircraftCommand(tcw, callsign,
+	_, err := s.dispatchAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) error {
 			// Make sure no one has the track already
 			if ac.IsAssociated() {
@@ -479,7 +466,7 @@ func (s *Sim) AssociateFlightPlan(tcw TCW, callsign av.ADSBCallsign, spec Flight
 
 			return nil
 		},
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			// Either the flight plan was passed in or fp was initialized  in the validation function.
 			fp := s.STARSComputer.takeFlightPlanByACID(spec.ACID.Get())
 
@@ -710,7 +697,7 @@ func (s *Sim) handoffTrack(fp *NASFlightPlan, toTCP TCP) {
 	}
 }
 
-func (s *Sim) ContactTrackingController(tcw TCW, acid ACID) error {
+func (s *Sim) ContactTrackingController(tcw TCW, acid ACID) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -724,12 +711,12 @@ func (s *Sim) ContactTrackingController(tcw TCW, acid ACID) error {
 			}
 			return nil
 		},
-		func(tcw TCW, sfp *NASFlightPlan, ac *Aircraft) *av.RadioTransmission {
+		func(tcw TCW, sfp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
 			return s.contactController(s.State.PrimaryPositionForTCW(tcw), sfp, ac, sfp.TrackingController)
 		})
 }
 
-func (s *Sim) ContactController(tcw TCW, acid ACID, toTCP TCP) error {
+func (s *Sim) ContactController(tcw TCW, acid ACID, toTCP TCP) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -743,25 +730,29 @@ func (s *Sim) ContactController(tcw TCW, acid ACID, toTCP TCP) error {
 			}
 			return nil
 		},
-		func(tcw TCW, sfp *NASFlightPlan, ac *Aircraft) *av.RadioTransmission {
+		func(tcw TCW, sfp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
 			return s.contactController(s.State.PrimaryPositionForTCW(tcw), sfp, ac, toTCP)
 		})
 }
 
-func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, toTCP TCP) *av.RadioTransmission {
+func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, toTCP TCP) av.CommandIntent {
 	// Immediately respond to the current controller that we're
 	// changing frequency.
-	var resp *av.RadioTransmission
+	var intent av.ContactIntent
 	if octrl, ok := s.State.Controllers[toTCP]; ok {
 		if toTCP == fromTCP {
-			resp = av.MakeReadbackTransmission("Unable, we are already on {freq}", octrl.Frequency)
-		} else if ac.TypeOfFlight == av.FlightTypeDeparture {
-			resp = av.MakeReadbackTransmission("[contact|over to|] {dctrl} on {freq}, [good day|seeya|]", octrl, octrl.Frequency)
-		} else {
-			resp = av.MakeReadbackTransmission("[contact|over to|] {actrl} on {freq}, [good day|seeya|]", octrl, octrl.Frequency)
+			return av.MakeUnableIntent("Unable, we are already on {freq}", octrl.Frequency)
+		}
+		intent = av.ContactIntent{
+			Type:         av.ContactController,
+			ToController: octrl,
+			Frequency:    octrl.Frequency,
+			IsDeparture:  ac.TypeOfFlight == av.FlightTypeDeparture,
 		}
 	} else {
-		resp = av.MakeReadbackTransmission("[goodbye|seeya]")
+		intent = av.ContactIntent{
+			Type: av.ContactGoodbye,
+		}
 	}
 
 	s.eventStream.Post(Event{
@@ -770,6 +761,9 @@ func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, t
 		ToController:   toTCP,
 		ACID:           sfp.ACID,
 	})
+
+	// Capture controller before clearing it
+	controller := sfp.ControllingController
 
 	// Take away the current controller's ability to issue control
 	// commands.
@@ -780,14 +774,15 @@ func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, t
 	wait := time.Duration(5+s.Rand.Intn(10)) * time.Second
 	s.enqueueControllerContact(ac.ADSBCallsign, toTCP, wait)
 
-	return setTransmissionController(sfp.ControllingController, resp)
+	intent.ControllingController = string(controller)
+	return intent
 }
 
 func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchFlightPlanCommand(tcw, acid,
+	_, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
 			// Check if the caller's TCW controls the HandoffTrackController TCP (consolidation-aware)
 			if s.State.TCWControlsPosition(tcw, fp.HandoffController) {
@@ -799,7 +794,7 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 			}
 			return av.ErrNotBeingHandedOffToMe
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) *av.RadioTransmission {
+		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
 			// The new tracking controller should be the HandoffTrackController (the target TCP),
 			// not the acceptor's primary TCP. This preserves correct ownership when accepting
 			// handoffs to consolidated secondary positions.
@@ -839,6 +834,7 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 			}
 			return nil
 		})
+	return err
 }
 
 func (s *Sim) CancelHandoff(tcw TCW, acid ACID) error {
@@ -857,7 +853,7 @@ func (s *Sim) RedirectHandoff(tcw TCW, acid ACID, controller TCP) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchFlightPlanCommand(tcw, acid,
+	_, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
 			primaryTCP := s.State.PrimaryPositionForTCW(tcw)
 			if octrl, ok := s.State.Controllers[controller]; !ok {
@@ -875,7 +871,7 @@ func (s *Sim) RedirectHandoff(tcw TCW, acid ACID, controller TCP) error {
 			}
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) *av.RadioTransmission {
+		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
 			primaryTCP := s.State.PrimaryPositionForTCW(tcw)
 			octrl := s.State.Controllers[controller]
 			rh := &fp.RedirectedHandoff
@@ -891,20 +887,21 @@ func (s *Sim) RedirectHandoff(tcw TCW, acid ACID, controller TCP) error {
 
 			return nil
 		})
+	return err
 }
 
 func (s *Sim) AcceptRedirectedHandoff(tcw TCW, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchFlightPlanCommand(tcw, acid,
+	_, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
 			// TODO(mtrokel): need checks here that we do have an inbound
 			// redirected handoff or that we have an outbound one to
 			// recall.
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) *av.RadioTransmission {
+		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
 			rh := &fp.RedirectedHandoff
 			if s.State.TCWControlsPosition(tcw, rh.RedirectedTo) { // Accept
 				s.eventStream.Post(Event{
@@ -929,20 +926,21 @@ func (s *Sim) AcceptRedirectedHandoff(tcw TCW, acid ACID) error {
 
 			return nil
 		})
+	return err
 }
 
 func (s *Sim) ForceQL(tcw TCW, acid ACID, controller TCP) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchFlightPlanCommand(tcw, acid,
+	_, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
 			if _, ok := s.State.Controllers[controller]; !ok {
 				return av.ErrNoController
 			}
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) *av.RadioTransmission {
+		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
 			octrl := s.State.Controllers[controller]
 			s.eventStream.Post(Event{
 				Type:           ForceQLEvent,
@@ -953,6 +951,7 @@ func (s *Sim) ForceQL(tcw TCW, acid ACID, controller TCP) error {
 
 			return nil
 		})
+	return err
 }
 
 func (s *Sim) PointOut(fromTCW TCW, acid ACID, toTCP TCP) error {
@@ -1004,7 +1003,7 @@ func (s *Sim) AcknowledgePointOut(tcw TCW, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchFlightPlanCommand(tcw, acid,
+	_, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
 			if po, ok := s.PointOuts[acid]; !ok || !s.State.TCWControlsPosition(tcw, po.ToController) {
 				return av.ErrNotPointedOutToMe
@@ -1012,7 +1011,7 @@ func (s *Sim) AcknowledgePointOut(tcw TCW, acid ACID) error {
 
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) *av.RadioTransmission {
+		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
 			po := s.PointOuts[acid]
 			// As with auto accepts, "to" and "from" are swapped in the
 			// event since they are w.r.t. the original point out.
@@ -1032,6 +1031,7 @@ func (s *Sim) AcknowledgePointOut(tcw TCW, acid ACID) error {
 			delete(s.PointOuts, acid)
 			return nil
 		})
+	return err
 }
 
 func (s *Sim) RecallPointOut(tcw TCW, acid ACID) error {
@@ -1062,14 +1062,14 @@ func (s *Sim) RejectPointOut(tcw TCW, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchFlightPlanCommand(tcw, acid,
+	_, err := s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
 			if po, ok := s.PointOuts[acid]; !ok || !s.State.TCWControlsPosition(tcw, po.ToController) {
 				return av.ErrNotPointedOutToMe
 			}
 			return nil
 		},
-		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) *av.RadioTransmission {
+		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
 			po := s.PointOuts[acid]
 			// As with auto accepts, "to" and "from" are swapped in the
 			// event since they are w.r.t. the original point out.
@@ -1084,6 +1084,7 @@ func (s *Sim) RejectPointOut(tcw TCW, acid ACID) error {
 
 			return nil
 		})
+	return err
 }
 
 // TODO: Migrate to ERAM computer.
@@ -1190,23 +1191,28 @@ func (s *Sim) ShouldTriggerPilotMixUp(callsign av.ADSBCallsign) bool {
 	return true
 }
 
+// PilotMixUp is called standalone (not as part of a command batch) so it posts its own event.
 func (s *Sim) PilotMixUp(tcw TCW, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
+	intent, err := s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			return ac.PilotMixUp()
 		})
+	if err == nil && intent != nil {
+		s.renderAndPostIntents(callsign, tcw, []av.CommandIntent{intent})
+	}
+	return err
 }
 
-func (s *Sim) AssignAltitude(tcw TCW, callsign av.ADSBCallsign, altitude int, afterSpeed bool) error {
+func (s *Sim) AssignAltitude(tcw TCW, callsign av.ADSBCallsign, altitude int, afterSpeed bool) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.AssignAltitude(altitude, afterSpeed))
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.AssignAltitude(altitude, afterSpeed)
 		})
 }
 
@@ -1220,165 +1226,165 @@ type HeadingArgs struct {
 	Turn         nav.TurnMethod
 }
 
-func (s *Sim) AssignHeading(hdg *HeadingArgs) error {
+func (s *Sim) AssignHeading(hdg *HeadingArgs) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(hdg.TCW, hdg.ADSBCallsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			if hdg.Present {
-				return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.FlyPresentHeading())
+				return ac.FlyPresentHeading()
 			} else if hdg.LeftDegrees != 0 {
-				return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.TurnLeft(hdg.LeftDegrees))
+				return ac.TurnLeft(hdg.LeftDegrees)
 			} else if hdg.RightDegrees != 0 {
-				return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.TurnRight(hdg.RightDegrees))
+				return ac.TurnRight(hdg.RightDegrees)
 			} else {
-				return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.AssignHeading(hdg.Heading, hdg.Turn))
+				return ac.AssignHeading(hdg.Heading, hdg.Turn)
 			}
 		})
 }
 
-func (s *Sim) AssignSpeed(tcw TCW, callsign av.ADSBCallsign, speed int, afterAltitude bool) error {
+func (s *Sim) AssignSpeed(tcw TCW, callsign av.ADSBCallsign, speed int, afterAltitude bool) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.AssignSpeed(speed, afterAltitude))
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.AssignSpeed(speed, afterAltitude)
 		})
 }
 
-func (s *Sim) MaintainSlowestPractical(tcw TCW, callsign av.ADSBCallsign) error {
+func (s *Sim) MaintainSlowestPractical(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.MaintainSlowestPractical())
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.MaintainSlowestPractical()
 		})
 }
 
-func (s *Sim) MaintainMaximumForward(tcw TCW, callsign av.ADSBCallsign) error {
+func (s *Sim) MaintainMaximumForward(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.MaintainMaximumForward())
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.MaintainMaximumForward()
 		})
 }
 
-func (s *Sim) SaySpeed(tcw TCW, callsign av.ADSBCallsign) error {
+func (s *Sim) SaySpeed(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.SaySpeed())
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.SaySpeed()
 		})
 }
 
-func (s *Sim) SayAltitude(tcw TCW, callsign av.ADSBCallsign) error {
+func (s *Sim) SayAltitude(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.SayAltitude())
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.SayAltitude()
 		})
 }
 
-func (s *Sim) SayHeading(tcw TCW, callsign av.ADSBCallsign) error {
+func (s *Sim) SayHeading(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.SayHeading())
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.SayHeading()
 		})
 }
 
-func (s *Sim) ExpediteDescent(tcw TCW, callsign av.ADSBCallsign) error {
+func (s *Sim) ExpediteDescent(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.ExpediteDescent())
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.ExpediteDescent()
 		})
 }
 
-func (s *Sim) ExpediteClimb(tcw TCW, callsign av.ADSBCallsign) error {
+func (s *Sim) ExpediteClimb(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.ExpediteClimb())
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.ExpediteClimb()
 		})
 }
 
-func (s *Sim) DirectFix(tcw TCW, callsign av.ADSBCallsign, fix string) error {
+func (s *Sim) DirectFix(tcw TCW, callsign av.ADSBCallsign, fix string) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.DirectFix(fix))
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.DirectFix(fix)
 		})
 }
 
-func (s *Sim) HoldAtFix(tcw TCW, callsign av.ADSBCallsign, fix string, hold *av.Hold) error {
+func (s *Sim) HoldAtFix(tcw TCW, callsign av.ADSBCallsign, fix string, hold *av.Hold) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.HoldAtFix(fix, hold))
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.HoldAtFix(fix, hold)
 		})
 }
 
-func (s *Sim) DepartFixDirect(tcw TCW, callsign av.ADSBCallsign, fixa string, fixb string) error {
+func (s *Sim) DepartFixDirect(tcw TCW, callsign av.ADSBCallsign, fixa string, fixb string) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.DepartFixDirect(fixa, fixb))
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.DepartFixDirect(fixa, fixb)
 		})
 }
 
-func (s *Sim) DepartFixHeading(tcw TCW, callsign av.ADSBCallsign, fix string, heading int) error {
+func (s *Sim) DepartFixHeading(tcw TCW, callsign av.ADSBCallsign, fix string, heading int) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.DepartFixHeading(fix, heading))
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.DepartFixHeading(fix, heading)
 		})
 }
 
-func (s *Sim) CrossFixAt(tcw TCW, callsign av.ADSBCallsign, fix string, ar *av.AltitudeRestriction, speed int) error {
+func (s *Sim) CrossFixAt(tcw TCW, callsign av.ADSBCallsign, fix string, ar *av.AltitudeRestriction, speed int) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.CrossFixAt(fix, ar, speed))
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.CrossFixAt(fix, ar, speed)
 		})
 }
 
-func (s *Sim) AtFixCleared(tcw TCW, callsign av.ADSBCallsign, fix, approach string) error {
+func (s *Sim) AtFixCleared(tcw TCW, callsign av.ADSBCallsign, fix, approach string) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.AtFixCleared(fix, approach))
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.AtFixCleared(fix, approach)
 		})
 }
 
-func (s *Sim) ExpectApproach(tcw TCW, callsign av.ADSBCallsign, approach string) error {
+func (s *Sim) ExpectApproach(tcw TCW, callsign av.ADSBCallsign, approach string) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -1386,132 +1392,127 @@ func (s *Sim) ExpectApproach(tcw TCW, callsign av.ADSBCallsign, approach string)
 	if ac, ok := s.Aircraft[callsign]; ok {
 		ap = s.State.Airports[ac.FlightPlan.ArrivalAirport]
 		if ap == nil {
-			return av.ErrUnknownAirport
+			return nil, av.ErrUnknownAirport
 		}
 	}
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.ExpectApproach(approach, ap, s.lg))
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.ExpectApproach(approach, ap, s.lg)
 		})
 }
 
-func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string, straightIn bool) error {
+func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string, straightIn bool) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			var err error
-			var resp *av.RadioTransmission
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			var intent av.CommandIntent
+			var ok bool
 			if straightIn {
-				resp, err = ac.ClearedStraightInApproach(approach, s.lg)
+				intent, ok = ac.ClearedStraightInApproach(approach, s.lg)
 			} else {
-				resp, err = ac.ClearedApproach(approach, s.lg)
+				intent, ok = ac.ClearedApproach(approach, s.lg)
 			}
 
-			if err == nil && ac.IsAssociated() {
+			if ok && ac.IsAssociated() {
 				ac.ApproachTCP = ac.NASFlightPlan.ControllingController
 			}
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), resp)
+			return intent
 		})
 }
 
-func (s *Sim) InterceptLocalizer(tcw TCW, callsign av.ADSBCallsign) error {
+func (s *Sim) InterceptLocalizer(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.InterceptApproach(s.lg))
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.InterceptApproach(s.lg)
 		})
 }
 
-func (s *Sim) CancelApproachClearance(tcw TCW, callsign av.ADSBCallsign) error {
+func (s *Sim) CancelApproachClearance(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.CancelApproachClearance())
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.CancelApproachClearance()
 		})
 }
 
-func (s *Sim) ClimbViaSID(tcw TCW, callsign av.ADSBCallsign) error {
+func (s *Sim) ClimbViaSID(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.ClimbViaSID())
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.ClimbViaSID()
 		})
 }
 
-func (s *Sim) DescendViaSTAR(tcw TCW, callsign av.ADSBCallsign) error {
+func (s *Sim) DescendViaSTAR(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.DescendViaSTAR())
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.DescendViaSTAR()
 		})
 }
 
-func (s *Sim) GoAround(tcw TCW, callsign av.ADSBCallsign) error {
+func (s *Sim) GoAround(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			rt := ac.GoAround()
-			if rt != nil {
-				rt.Type = av.RadioTransmissionUnexpected
-			}
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), rt)
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.GoAround()
 		})
 }
 
-func (s *Sim) ContactTower(tcw TCW, callsign av.ADSBCallsign) error {
+func (s *Sim) ContactTower(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			result := ac.ContactTower(s.lg)
-			if result != nil && result.Type != av.RadioTransmissionUnexpected && ac.IsAssociated() {
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			result, ok := ac.ContactTower(s.lg)
+			if ok && ac.IsAssociated() {
 				ac.NASFlightPlan.ControllingController = "_TOWER"
 			}
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), result)
+			return result
 		})
-
 }
 
-func (s *Sim) ResumeOwnNavigation(tcw TCW, callsign av.ADSBCallsign) error {
+func (s *Sim) ResumeOwnNavigation(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.ResumeOwnNavigation())
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.ResumeOwnNavigation()
 		})
 }
 
-func (s *Sim) AltitudeOurDiscretion(tcw TCW, callsign av.ADSBCallsign) error {
+func (s *Sim) AltitudeOurDiscretion(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), ac.AltitudeOurDiscretion())
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.AltitudeOurDiscretion()
 		})
 }
 
-func (s *Sim) RadarServicesTerminated(tcw TCW, callsign av.ADSBCallsign) error {
+func (s *Sim) RadarServicesTerminated(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			s.enqueueTransponderChange(ac.ADSBCallsign, 0o1200, ac.Mode)
 
 			// Leave our frequency
@@ -1519,7 +1520,9 @@ func (s *Sim) RadarServicesTerminated(tcw TCW, callsign av.ADSBCallsign) error {
 				ac.NASFlightPlan.ControllingController = ""
 			}
 
-			return setTransmissionController(s.State.PrimaryPositionForTCW(tcw), av.MakeReadbackTransmission("[radar services terminated, seeya|radar services terminated, squawk VFR]"))
+			return av.ContactIntent{
+				Type: av.ContactRadarTerminated,
+			}
 		})
 }
 
@@ -1527,8 +1530,8 @@ func (s *Sim) GoAhead(tcw TCW, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchVFRAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) *av.RadioTransmission {
+	_, err := s.dispatchVFRAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			if !ac.WaitingForGoAhead {
 				return nil
 			}
@@ -1540,6 +1543,7 @@ func (s *Sim) GoAhead(tcw TCW, callsign av.ADSBCallsign) error {
 
 			return nil
 		})
+	return err
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1664,20 +1668,37 @@ type ControlCommandsResult struct {
 // RunAircraftControlCommands executes a space-separated string of control commands for an aircraft.
 // Returns the remaining unparsed input and any error that occurred.
 // This is the core command execution logic shared by the dispatcher and automated test code.
+// All intents from commands are collected and rendered together as a single transmission.
 func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string) ControlCommandsResult {
 	commands := strings.Fields(commandStr)
+	var intents []av.CommandIntent
 
 	for i, command := range commands {
-		err := s.runOneControlCommand(tcw, callsign, command)
+		intent, err := s.runOneControlCommand(tcw, callsign, command)
 		if err != nil {
+			// Post any collected intents before returning error
+			s.renderAndPostIntents(callsign, tcw, intents)
 			return ControlCommandsResult{
 				RemainingInput: strings.Join(commands[i:], " "),
 				Error:          err,
 			}
 		}
+		if intent != nil {
+			intents = append(intents, intent)
+		}
 	}
 
+	// Render all intents together as a single transmission
+	s.renderAndPostIntents(callsign, tcw, intents)
 	return ControlCommandsResult{}
+}
+
+// renderAndPostIntents renders a batch of intents and posts them as a single radio event.
+func (s *Sim) renderAndPostIntents(callsign av.ADSBCallsign, tcw TCW, intents []av.CommandIntent) {
+	if rt := av.RenderIntents(intents, s.Rand); rt != nil {
+		rt.Controller = string(s.State.PrimaryPositionForTCW(tcw))
+		s.postRadioEvent(callsign, s.State.PrimaryPositionForTCW(tcw), *rt)
+	}
 }
 
 // parseHold parses a hold command string in the format "FIX/[option]/[option]"
@@ -1777,55 +1798,43 @@ func parseHold(command string) (string, *av.Hold, bool) {
 }
 
 // runOneControlCommand executes a single control command for an aircraft.
-func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command string) error {
+// Returns the intent generated by the command (if any) for batching.
+func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command string) (av.CommandIntent, error) {
 	if len(command) == 0 {
-		return ErrInvalidCommandSyntax
+		return nil, ErrInvalidCommandSyntax
 	}
 
 	// A###, C###, and D### all equivalently assign an altitude
 	if (command[0] == 'A' || command[0] == 'C' || command[0] == 'D') && len(command) > 1 && util.IsAllNumbers(command[1:]) {
 		alt, err := strconv.Atoi(command[1:])
 		if err != nil {
-			return err
+			return nil, err
 		}
-		if err := s.AssignAltitude(tcw, callsign, 100*alt, false); err != nil {
-			return err
-		}
-		return nil
+		return s.AssignAltitude(tcw, callsign, 100*alt, false)
 	}
 
 	switch command[0] {
 	case 'A':
 		if command == "A" {
-			if err := s.AltitudeOurDiscretion(tcw, callsign); err != nil {
-				return err
-			}
+			return s.AltitudeOurDiscretion(tcw, callsign)
 		} else {
 			components := strings.Split(command, "/")
 			if len(components) != 2 || len(components[1]) == 0 || components[1][0] != 'C' {
-				return ErrInvalidCommandSyntax
+				return nil, ErrInvalidCommandSyntax
 			}
 
 			fix := strings.ToUpper(components[0][1:])
 			approach := components[1][1:]
-			if err := s.AtFixCleared(tcw, callsign, fix, approach); err != nil {
-				return err
-			}
+			return s.AtFixCleared(tcw, callsign, fix, approach)
 		}
 
 	case 'C':
 		if command == "CAC" {
-			if err := s.CancelApproachClearance(tcw, callsign); err != nil {
-				return err
-			}
+			return s.CancelApproachClearance(tcw, callsign)
 		} else if command == "CVS" {
-			if err := s.ClimbViaSID(tcw, callsign); err != nil {
-				return err
-			}
+			return s.ClimbViaSID(tcw, callsign)
 		} else if len(command) > 4 && command[:3] == "CSI" && !util.IsAllNumbers(command[3:]) {
-			if err := s.ClearedApproach(tcw, callsign, command[3:], true); err != nil {
-				return err
-			}
+			return s.ClearedApproach(tcw, callsign, command[3:], true)
 		} else if components := strings.Split(command, "/"); len(components) > 1 {
 			fix := components[0][1:]
 			var ar *av.AltitudeRestriction
@@ -1833,289 +1842,220 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 
 			for _, cmd := range components[1:] {
 				if len(cmd) == 0 {
-					return ErrInvalidCommandSyntax
+					return nil, ErrInvalidCommandSyntax
 				}
 
 				var err error
 				if cmd[0] == 'A' && len(cmd) > 1 {
 					if ar, err = av.ParseAltitudeRestriction(cmd[1:]); err != nil {
-						return err
+						return nil, err
 					}
 					ar.Range[0] *= 100
 					ar.Range[1] *= 100
 				} else if cmd[0] == 'S' {
 					if speed, err = strconv.Atoi(cmd[1:]); err != nil {
-						return err
+						return nil, err
 					}
 				} else {
-					return ErrInvalidCommandSyntax
+					return nil, ErrInvalidCommandSyntax
 				}
 			}
 
-			if err := s.CrossFixAt(tcw, callsign, fix, ar, speed); err != nil {
-				return err
-			}
+			return s.CrossFixAt(tcw, callsign, fix, ar, speed)
 		} else if strings.HasPrefix(command, "CT") && len(command) > 2 {
-			if err := s.ContactController(tcw, ACID(callsign), TCP(command[2:])); err != nil {
-				return err
-			}
-		} else if err := s.ClearedApproach(tcw, callsign, command[1:], false); err != nil {
-			return err
+			return s.ContactController(tcw, ACID(callsign), TCP(command[2:]))
+		} else {
+			return s.ClearedApproach(tcw, callsign, command[1:], false)
 		}
 
 	case 'D':
 		if command == "DVS" {
-			if err := s.DescendViaSTAR(tcw, callsign); err != nil {
-				return err
-			}
+			return s.DescendViaSTAR(tcw, callsign)
 		} else if components := strings.Split(command, "/"); len(components) > 1 && len(components[1]) > 1 {
 			fix := components[0][1:]
 
 			switch components[1][0] {
 			case 'D':
-				if err := s.DepartFixDirect(tcw, callsign, fix, components[1][1:]); err != nil {
-					return err
-				}
+				return s.DepartFixDirect(tcw, callsign, fix, components[1][1:])
 			case 'H':
 				hdg, err := strconv.Atoi(components[1][1:])
 				if err != nil {
-					return err
+					return nil, err
 				}
-				if err := s.DepartFixHeading(tcw, callsign, fix, hdg); err != nil {
-					return err
-				}
+				return s.DepartFixHeading(tcw, callsign, fix, hdg)
 			default:
-				return ErrInvalidCommandSyntax
+				return nil, ErrInvalidCommandSyntax
 			}
 		} else if len(command) >= 4 && len(command) <= 6 {
-			if err := s.DirectFix(tcw, callsign, command[1:]); err != nil {
-				return err
-			}
+			return s.DirectFix(tcw, callsign, command[1:])
 		} else {
-			return ErrInvalidCommandSyntax
+			return nil, ErrInvalidCommandSyntax
 		}
 
 	case 'E':
 		if command == "ED" {
-			if err := s.ExpediteDescent(tcw, callsign); err != nil {
-				return err
-			}
+			return s.ExpediteDescent(tcw, callsign)
 		} else if command == "EC" {
-			if err := s.ExpediteClimb(tcw, callsign); err != nil {
-				return err
-			}
+			return s.ExpediteClimb(tcw, callsign)
 		} else if len(command) > 1 {
-			if err := s.ExpectApproach(tcw, callsign, command[1:]); err != nil {
-				return err
-			}
+			return s.ExpectApproach(tcw, callsign, command[1:])
 		} else {
-			return ErrInvalidCommandSyntax
+			return nil, ErrInvalidCommandSyntax
 		}
 
 	case 'F':
 		if command == "FC" {
-			if err := s.ContactTrackingController(tcw, ACID(callsign)); err != nil {
-				return err
-			}
+			return s.ContactTrackingController(tcw, ACID(callsign))
 		} else {
-			return ErrInvalidCommandSyntax
+			return nil, ErrInvalidCommandSyntax
 		}
 
 	case 'G':
 		if command == "GA" {
 			if err := s.GoAhead(tcw, callsign); err != nil {
-				return err
+				return nil, err
 			}
+			return nil, nil // GoAhead returns no intent
 		} else {
-			return ErrInvalidCommandSyntax
+			return nil, ErrInvalidCommandSyntax
 		}
 
 	case 'H':
 		if len(command) == 1 {
 			// Present heading
-			if err := s.AssignHeading(&HeadingArgs{
+			return s.AssignHeading(&HeadingArgs{
 				TCW:          tcw,
 				ADSBCallsign: callsign,
 				Present:      true,
-			}); err != nil {
-				return err
-			}
+			})
 		} else if hdg, err := strconv.Atoi(command[1:]); err == nil {
 			// Fly heading xxx
-			if err := s.AssignHeading(&HeadingArgs{
+			return s.AssignHeading(&HeadingArgs{
 				TCW:          tcw,
 				ADSBCallsign: callsign,
 				Heading:      hdg,
 				Turn:         nav.TurnClosest,
-			}); err != nil {
-				return err
-			}
+			})
 		} else {
 			// Hold at fix (published or controller-specified)
 			if fix, hold, ok := parseHold(command[1:]); !ok {
-				return ErrInvalidCommandSyntax
-			} else if err := s.HoldAtFix(tcw, callsign, fix, hold); err != nil {
-				return err
+				return nil, ErrInvalidCommandSyntax
+			} else {
+				return s.HoldAtFix(tcw, callsign, fix, hold)
 			}
 		}
 
 	case 'I':
 		if len(command) == 1 {
-			if err := s.InterceptLocalizer(tcw, callsign); err != nil {
-				return err
-			}
+			return s.InterceptLocalizer(tcw, callsign)
 		} else if command == "ID" {
-			if err := s.Ident(tcw, callsign); err != nil {
-				return err
-			}
+			return s.Ident(tcw, callsign)
 		} else {
-			return ErrInvalidCommandSyntax
+			return nil, ErrInvalidCommandSyntax
 		}
 
 	case 'L':
 		if l := len(command); l > 2 && command[l-1] == 'D' {
 			deg, err := strconv.Atoi(command[1 : l-1])
 			if err != nil {
-				return err
+				return nil, err
 			}
-			if err := s.AssignHeading(&HeadingArgs{
+			return s.AssignHeading(&HeadingArgs{
 				TCW:          tcw,
 				ADSBCallsign: callsign,
 				LeftDegrees:  deg,
-			}); err != nil {
-				return err
-			}
+			})
 		} else {
 			hdg, err := strconv.Atoi(command[1:])
 			if err != nil {
-				return err
+				return nil, err
 			}
-			if err := s.AssignHeading(&HeadingArgs{
+			return s.AssignHeading(&HeadingArgs{
 				TCW:          tcw,
 				ADSBCallsign: callsign,
 				Heading:      hdg,
 				Turn:         nav.TurnLeft,
-			}); err != nil {
-				return err
-			}
+			})
 		}
 
 	case 'R':
 		if command == "RON" {
-			if err := s.ResumeOwnNavigation(tcw, callsign); err != nil {
-				return err
-			}
+			return s.ResumeOwnNavigation(tcw, callsign)
 		} else if command == "RST" {
-			if err := s.RadarServicesTerminated(tcw, callsign); err != nil {
-				return err
-			}
+			return s.RadarServicesTerminated(tcw, callsign)
 		} else if l := len(command); l > 2 && command[l-1] == 'D' {
 			deg, err := strconv.Atoi(command[1 : l-1])
 			if err != nil {
-				return err
+				return nil, err
 			}
-			if err := s.AssignHeading(&HeadingArgs{
+			return s.AssignHeading(&HeadingArgs{
 				TCW:          tcw,
 				ADSBCallsign: callsign,
 				RightDegrees: deg,
-			}); err != nil {
-				return err
-			}
+			})
 		} else {
 			hdg, err := strconv.Atoi(command[1:])
 			if err != nil {
-				return err
+				return nil, err
 			}
-			if err := s.AssignHeading(&HeadingArgs{
+			return s.AssignHeading(&HeadingArgs{
 				TCW:          tcw,
 				ADSBCallsign: callsign,
 				Heading:      hdg,
 				Turn:         nav.TurnRight,
-			}); err != nil {
-				return err
-			}
+			})
 		}
 
 	case 'S':
 		if len(command) == 1 {
-			if err := s.AssignSpeed(tcw, callsign, 0, false); err != nil {
-				return err
-			}
+			return s.AssignSpeed(tcw, callsign, 0, false)
 		} else if command == "SMIN" {
-			if err := s.MaintainSlowestPractical(tcw, callsign); err != nil {
-				return err
-			}
+			return s.MaintainSlowestPractical(tcw, callsign)
 		} else if command == "SMAX" {
-			if err := s.MaintainMaximumForward(tcw, callsign); err != nil {
-				return err
-			}
+			return s.MaintainMaximumForward(tcw, callsign)
 		} else if command == "SS" {
-			if err := s.SaySpeed(tcw, callsign); err != nil {
-				return err
-			}
+			return s.SaySpeed(tcw, callsign)
 		} else if command == "SQS" {
-			if err := s.ChangeTransponderMode(tcw, callsign, av.TransponderModeStandby); err != nil {
-				return err
-			}
+			return s.ChangeTransponderMode(tcw, callsign, av.TransponderModeStandby)
 		} else if command == "SQA" {
-			if err := s.ChangeTransponderMode(tcw, callsign, av.TransponderModeAltitude); err != nil {
-				return err
-			}
+			return s.ChangeTransponderMode(tcw, callsign, av.TransponderModeAltitude)
 		} else if command == "SQON" {
-			if err := s.ChangeTransponderMode(tcw, callsign, av.TransponderModeOn); err != nil {
-				return err
-			}
+			return s.ChangeTransponderMode(tcw, callsign, av.TransponderModeOn)
 		} else if len(command) == 6 && command[:2] == "SQ" {
 			sq, err := av.ParseSquawk(command[2:])
 			if err != nil {
-				return err
+				return nil, err
 			}
-			if err := s.ChangeSquawk(tcw, callsign, sq); err != nil {
-				return err
-			}
+			return s.ChangeSquawk(tcw, callsign, sq)
 		} else if command == "SH" {
-			if err := s.SayHeading(tcw, callsign); err != nil {
-				return err
-			}
+			return s.SayHeading(tcw, callsign)
 		} else if command == "SA" {
-			if err := s.SayAltitude(tcw, callsign); err != nil {
-				return err
-			}
+			return s.SayAltitude(tcw, callsign)
 		} else {
 			kts, err := strconv.Atoi(command[1:])
 			if err != nil {
-				return err
+				return nil, err
 			}
-			if err := s.AssignSpeed(tcw, callsign, kts, false); err != nil {
-				return err
-			}
+			return s.AssignSpeed(tcw, callsign, kts, false)
 		}
 
 	case 'T':
 		if command == "TO" {
-			if err := s.ContactTower(tcw, callsign); err != nil {
-				return err
-			}
+			return s.ContactTower(tcw, callsign)
 		} else if n := len(command); n > 2 {
 			if deg, err := strconv.Atoi(command[1 : n-1]); err == nil {
 				if command[n-1] == 'L' {
-					if err := s.AssignHeading(&HeadingArgs{
+					return s.AssignHeading(&HeadingArgs{
 						TCW:          tcw,
 						ADSBCallsign: callsign,
 						LeftDegrees:  deg,
-					}); err != nil {
-						return err
-					}
-					return nil
+					})
 				} else if command[n-1] == 'R' {
-					if err := s.AssignHeading(&HeadingArgs{
+					return s.AssignHeading(&HeadingArgs{
 						TCW:          tcw,
 						ADSBCallsign: callsign,
 						RightDegrees: deg,
-					}); err != nil {
-						return err
-					}
-					return nil
+					})
 				}
 			}
 
@@ -2123,34 +2063,29 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			case "TS":
 				kts, err := strconv.Atoi(command[2:])
 				if err != nil {
-					return err
+					return nil, err
 				}
-				if err := s.AssignSpeed(tcw, callsign, kts, true); err != nil {
-					return err
-				}
+				return s.AssignSpeed(tcw, callsign, kts, true)
 
 			case "TA", "TC", "TD":
 				alt, err := strconv.Atoi(command[2:])
 				if err != nil {
-					return err
+					return nil, err
 				}
-				if err := s.AssignAltitude(tcw, callsign, 100*alt, true); err != nil {
-					return err
-				}
+				return s.AssignAltitude(tcw, callsign, 100*alt, true)
 
 			default:
-				return ErrInvalidCommandSyntax
+				return nil, ErrInvalidCommandSyntax
 			}
 		} else {
-			return ErrInvalidCommandSyntax
+			return nil, ErrInvalidCommandSyntax
 		}
 
 	case 'X':
 		s.DeleteAircraft(tcw, callsign)
+		return nil, nil // DeleteAircraft returns no intent
 
 	default:
-		return ErrInvalidCommandSyntax
+		return nil, ErrInvalidCommandSyntax
 	}
-
-	return nil
 }

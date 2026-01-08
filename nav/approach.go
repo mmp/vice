@@ -116,14 +116,17 @@ func (nav *Nav) getApproach(airport *av.Airport, id string, lg *log.Logger) (*av
 }
 
 func (nav *Nav) ExpectApproach(airport *av.Airport, id string, runwayWaypoints map[string]av.WaypointArray,
-	lg *log.Logger) *av.RadioTransmission {
+	lg *log.Logger) av.CommandIntent {
 	ap, err := nav.getApproach(airport, id, lg)
 	if err != nil {
-		return av.MakeUnexpectedTransmission("unable. We don't know the {appr} approach.", id)
+		return av.MakeUnableIntent("unable. We don't know the {appr} approach.", id)
 	}
 
 	if id == nav.Approach.AssignedId && nav.Approach.Assigned != nil {
-		return av.MakeReadbackTransmission("you already told us to expect the {appr} approach.", ap.FullName)
+		return av.ApproachIntent{
+			Type:         av.ApproachAlreadyExpecting,
+			ApproachName: ap.FullName,
+		}
 	}
 
 	nav.Approach.Assigned = ap
@@ -199,49 +202,57 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, id string, runwayWaypoints m
 		}
 	}
 
-	return av.MakeReadbackTransmission("[we'll expect the|expecting the|we'll plan for the] {appr} approach", ap.FullName)
+	return av.ApproachIntent{
+		Type:         av.ApproachExpect,
+		ApproachName: ap.FullName,
+	}
 }
 
-func (nav *Nav) InterceptApproach(airport string, lg *log.Logger) *av.RadioTransmission {
+func (nav *Nav) InterceptApproach(airport string, lg *log.Logger) av.CommandIntent {
 	if nav.Approach.AssignedId == "" {
-		return av.MakeUnexpectedTransmission("you never told us to expect an approach")
+		return av.MakeUnableIntent("unable. you never told us to expect an approach")
 	}
 
 	if _, onHeading := nav.AssignedHeading(); !onHeading {
 		wps := nav.AssignedWaypoints()
 		if len(wps) == 0 || !wps[0].OnApproach {
-			return av.MakeUnexpectedTransmission("we have to be on a heading or direct to an approach fix to intercept")
+			return av.MakeUnableIntent("unable. we have to be on a heading or direct to an approach fix to intercept")
 		}
 	}
 
-	resp, err := nav.prepareForApproach(false)
-	if err != nil {
-		return resp
+	if intent := nav.prepareForApproach(false); intent != nil {
+		return intent
 	} else {
 		ap := nav.Approach.Assigned
 		if ap.Type == av.ILSApproach || ap.Type == av.LocalizerApproach {
-			return av.MakeReadbackTransmission("[intercepting the {appr} approach|intercepting {appr}]", ap.FullName)
+			return av.ApproachIntent{
+				Type:         av.ApproachIntercept,
+				ApproachName: ap.FullName,
+			}
 		} else {
-			return av.MakeReadbackTransmission("[joining the {appr} approach course|joining {appr}]", ap.FullName)
+			return av.ApproachIntent{
+				Type:         av.ApproachJoin,
+				ApproachName: ap.FullName,
+			}
 		}
 	}
 }
 
-func (nav *Nav) AtFixCleared(fix, id string) *av.RadioTransmission {
+func (nav *Nav) AtFixCleared(fix, id string) av.CommandIntent {
 	if nav.Approach.AssignedId == "" {
-		return av.MakeUnexpectedTransmission("you never told us to expect an approach")
+		return av.MakeUnableIntent("unable. you never told us to expect an approach")
 	}
 
 	ap := nav.Approach.Assigned
 	if ap == nil {
-		return av.MakeUnexpectedTransmission("unable. We were never told to expect an approach")
+		return av.MakeUnableIntent("unable. We were never told to expect an approach")
 	}
 	if id != "" && nav.Approach.AssignedId != id {
-		return av.MakeUnexpectedTransmission("unable. We were told to expect the {appr} approach.", ap.FullName)
+		return av.MakeUnableIntent("unable. We were told to expect the {appr} approach.", ap.FullName)
 	}
 
 	if !slices.ContainsFunc(nav.AssignedWaypoints(), func(wp av.Waypoint) bool { return wp.Fix == fix }) {
-		return av.MakeUnexpectedTransmission("unable. {fix} is not in our route", fix)
+		return av.MakeUnableIntent("unable. {fix} is not in our route", fix)
 	}
 	nav.Approach.AtFixClearedRoute = nil
 	for _, route := range ap.Waypoints {
@@ -252,13 +263,16 @@ func (nav *Nav) AtFixCleared(fix, id string) *av.RadioTransmission {
 		}
 	}
 
-	return av.MakeReadbackTransmission("at {fix} cleared {appr}", fix, ap.FullName)
+	return av.ApproachIntent{
+		Type:         av.ApproachAtFixCleared,
+		ApproachName: ap.FullName,
+		Fix:          fix,
+	}
 }
 
-func (nav *Nav) prepareForApproach(straightIn bool) (*av.RadioTransmission, error) {
+func (nav *Nav) prepareForApproach(straightIn bool) av.CommandIntent {
 	if nav.Approach.AssignedId == "" {
-		return av.MakeUnexpectedTransmission("you never told us to expect an approach"),
-			ErrClearedForUnexpectedApproach
+		return av.MakeUnableIntent("unable. you never told us to expect an approach")
 	}
 
 	ap := nav.Approach.Assigned
@@ -298,8 +312,7 @@ func (nav *Nav) prepareForApproach(straightIn bool) (*av.RadioTransmission, erro
 	} else if assignedHeading {
 		nav.Approach.InterceptState = InitialHeading
 	} else {
-		return av.MakeUnexpectedTransmission("unable. We need either direct or a heading to intercept"),
-			ErrUnableCommand
+		return av.MakeUnableIntent("unable. We need either direct or a heading to intercept")
 	}
 	// If the aircraft is on a heading, there's nothing more to do for
 	// now; keep flying the heading and after we intercept we'll add
@@ -308,10 +321,10 @@ func (nav *Nav) prepareForApproach(straightIn bool) (*av.RadioTransmission, erro
 	// No procedure turn if it intercepts via a heading or we're coming off a hold.
 	nav.Approach.NoPT = straightIn || assignedHeading || nav.Heading.Hold != nil
 
-	return nil, nil
+	return nil
 }
 
-func (nav *Nav) prepareForChartedVisual() (*av.RadioTransmission, error) {
+func (nav *Nav) prepareForChartedVisual() av.CommandIntent {
 	// Airport PostDeserialize() checks that there is just a single set of
 	// waypoints for charted visual approaches.
 	wp := nav.Approach.Assigned.Waypoints[0]
@@ -397,25 +410,22 @@ func (nav *Nav) prepareForChartedVisual() (*av.RadioTransmission, error) {
 		nav.Waypoints = append(wi, nav.FlightState.ArrivalAirport)
 		nav.Heading = NavHeading{}
 		nav.DeferredNavHeading = nil
-		return nil, nil
+		return nil
 	}
 
-	return av.MakeUnexpectedTransmission("unable. We are not on course to intercept the approach"),
-		ErrUnableCommand
+	return av.MakeUnableIntent("unable. We are not on course to intercept the approach")
 }
-func (nav *Nav) ClearedApproach(airport string, id string, straightIn bool) (*av.RadioTransmission, error) {
+func (nav *Nav) ClearedApproach(airport string, id string, straightIn bool) (av.CommandIntent, bool) {
 	ap := nav.Approach.Assigned
 	if ap == nil {
-		return av.MakeUnexpectedTransmission("unable. We haven't been told to expect an approach"),
-			ErrClearedForUnexpectedApproach
+		return av.MakeUnableIntent("unable. We haven't been told to expect an approach"), false
 	}
 	if id != "" && nav.Approach.AssignedId != id {
-		return av.MakeUnexpectedTransmission("unable. We were told to expect the {appr} approach.", ap.FullName),
-			ErrClearedForUnexpectedApproach
+		return av.MakeUnableIntent("unable. We were told to expect the {appr} approach.", ap.FullName), false
 	}
 
-	if resp, err := nav.prepareForApproach(straightIn); err != nil {
-		return resp, err
+	if intent := nav.prepareForApproach(straightIn); intent != nil {
+		return intent, false
 	} else {
 		nav.Approach.Cleared = true
 		if nav.Approach.PassedApproachFix {
@@ -442,16 +452,15 @@ func (nav *Nav) ClearedApproach(airport string, id string, straightIn bool) (*av
 
 		nav.flyProcedureTurnIfNecessary()
 
-		cancelHold := ""
+		cancelHold := nav.Heading.Hold != nil
 		if nav.Heading.Hold != nil {
 			nav.Heading.Hold.Cancel = true
-			cancelHold = "cancel hold, "
 		}
 
-		if straightIn {
-			return av.MakeReadbackTransmission(cancelHold+"cleared straight in {appr} [approach|]", ap.FullName), nil
-		} else {
-			return av.MakeReadbackTransmission(cancelHold+"cleared {appr} [approach|]", ap.FullName), nil
-		}
+		return av.ClearedApproachIntent{
+			Approach:   ap.FullName,
+			StraightIn: straightIn,
+			CancelHold: cancelHold,
+		}, true
 	}
 }

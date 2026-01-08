@@ -14,7 +14,7 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-func (nav *Nav) GoAround() *av.RadioTransmission {
+func (nav *Nav) GoAround() av.CommandIntent {
 	hdg := nav.FlightState.Heading
 	nav.Heading = NavHeading{Assigned: &hdg}
 	nav.DeferredNavHeading = nil
@@ -28,187 +28,201 @@ func (nav *Nav) GoAround() *av.RadioTransmission {
 	// Keep the destination airport at the end of the route.
 	nav.Waypoints = []av.Waypoint{nav.FlightState.ArrivalAirport}
 
-	return av.MakeReadbackTransmission("[going around|on the go]")
+	return av.GoAroundIntent{}
 }
 
-func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) *av.RadioTransmission {
+func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) av.CommandIntent {
 	if alt > nav.Perf.Ceiling {
-		return av.MakeUnexpectedTransmission("unable. That altitude is above our ceiling.")
+		return av.MakeUnableIntent("unable. That altitude is above our ceiling.")
 	}
 
-	var response *av.RadioTransmission
+	var direction av.AltitudeDirection
 	if alt > nav.FlightState.Altitude {
-		response = av.MakeReadbackTransmission("[climb-and-maintain|up to|] {alt}", alt)
+		direction = av.AltitudeClimb
 	} else if alt == nav.FlightState.Altitude {
-		response = av.MakeReadbackTransmission("[maintain|we'll keep it at|] {alt}", alt)
+		direction = av.AltitudeMaintain
 	} else {
-		response = av.MakeReadbackTransmission("[descend-and-maintain|down to|] {alt}", alt)
+		direction = av.AltitudeDescend
+	}
+
+	intent := av.AltitudeIntent{
+		Altitude:  alt,
+		Direction: direction,
 	}
 
 	if afterSpeed && nav.Speed.Assigned != nil && *nav.Speed.Assigned != nav.FlightState.IAS {
 		nav.Altitude.AfterSpeed = &alt
 		spd := *nav.Speed.Assigned
 		nav.Altitude.AfterSpeedSpeed = &spd
-
-		rspeed := av.MakeReadbackTransmission("at {spd}", *nav.Speed.Assigned)
-		rspeed.Merge(response)
-		response = rspeed
+		intent.AfterSpeed = &spd
 	} else {
 		nav.Altitude = NavAltitude{Assigned: &alt}
 	}
-	return response
+
+	return intent
 }
 
-func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) *av.RadioTransmission {
+func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) av.CommandIntent {
 	maxIAS := av.TASToIAS(nav.Perf.Speed.MaxTAS, nav.FlightState.Altitude)
 	maxIAS = 10 * float32(int((maxIAS+5)/10)) // round to 10s
 
 	if speed == 0 {
 		nav.Speed = NavSpeed{}
-		return av.MakeReadbackTransmission("cancel speed restrictions")
+		return av.SpeedIntent{Type: av.SpeedCancel}
 	} else if float32(speed) < nav.Perf.Speed.Landing {
-		return av.MakeReadbackTransmission("unable. Our minimum speed is {spd}", nav.Perf.Speed.Landing)
+		return av.MakeUnableIntent("unable. Our minimum speed is {spd}", nav.Perf.Speed.Landing)
 	} else if float32(speed) > maxIAS {
-		return av.MakeReadbackTransmission("unable. Our maximum speed is {spd}", maxIAS)
+		return av.MakeUnableIntent("unable. Our maximum speed is {spd}", maxIAS)
 	} else if nav.Approach.Cleared {
 		// TODO: make sure we're not within 5 miles...
 		nav.Speed = NavSpeed{Assigned: &speed}
-		return av.MakeReadbackTransmission("{spd} until 5 mile final", speed)
+		return av.SpeedIntent{Speed: speed, Type: av.SpeedUntilFinal}
 	} else if afterAltitude && nav.Altitude.Assigned != nil &&
 		*nav.Altitude.Assigned != nav.FlightState.Altitude {
 		nav.Speed.AfterAltitude = &speed
 		alt := *nav.Altitude.Assigned
 		nav.Speed.AfterAltitudeAltitude = &alt
-
-		return av.MakeReadbackTransmission("[at {alt} maintain {spd}|at {alt} {spd}|{alt} then {spd}]", alt, speed)
+		return av.SpeedIntent{Speed: speed, AfterAltitude: &alt, Type: av.SpeedAssign}
 	} else {
 		nav.Speed = NavSpeed{Assigned: &speed}
 		if speed < nav.FlightState.IAS {
-			return av.MakeReadbackTransmission("[reduce to {spd}|speed {spd}|slow to {spd}|{spd}]",
-				speed)
+			return av.SpeedIntent{Speed: speed, Type: av.SpeedReduce}
 		} else if speed > nav.FlightState.IAS {
-			return av.MakeReadbackTransmission("[increase to {spd}|speed {spd}|maintain {spd}|{spd}]", speed)
+			return av.SpeedIntent{Speed: speed, Type: av.SpeedIncrease}
 		} else {
-			return av.MakeReadbackTransmission("[maintain {spd}|keep it at {spd}|we'll stay at {spd}|{spd}]", speed)
+			return av.SpeedIntent{Speed: speed, Type: av.SpeedAssign}
 		}
 	}
 }
 
-func (nav *Nav) MaintainSlowestPractical() *av.RadioTransmission {
+func (nav *Nav) MaintainSlowestPractical() av.CommandIntent {
 	nav.Speed = NavSpeed{MaintainSlowestPractical: true}
-	return av.MakeReadbackTransmission("[slowest practical speed|slowing as much as we can]")
+	return av.SpeedIntent{Type: av.SpeedSlowestPractical}
 }
 
-func (nav *Nav) MaintainMaximumForward() *av.RadioTransmission {
+func (nav *Nav) MaintainMaximumForward() av.CommandIntent {
 	nav.Speed = NavSpeed{MaintainMaximumForward: true}
-	return av.MakeReadbackTransmission("[maximum forward speed|maintaining maximum forward speed]")
+	return av.SpeedIntent{Type: av.SpeedMaximumForward}
 }
 
-func (nav *Nav) SaySpeed() *av.RadioTransmission {
+func (nav *Nav) SaySpeed() av.CommandIntent {
 	currentSpeed := nav.FlightState.IAS
-
+	intent := av.ReportSpeedIntent{Current: currentSpeed}
 	if nav.Speed.Assigned != nil {
-		assignedSpeed := *nav.Speed.Assigned
-		if assignedSpeed < currentSpeed {
-			return av.MakeReadbackTransmission("[at {spd} slowing to {spd}|at {spd} down to {spd}]", currentSpeed, assignedSpeed)
-		} else if assignedSpeed > currentSpeed {
-			return av.MakeReadbackTransmission("at {spd} speeding up to {spd}", currentSpeed, assignedSpeed)
-		} else {
-			return av.MakeReadbackTransmission("[maintaining {spd}|at {spd}]", currentSpeed)
-		}
-	} else {
-		return av.MakeReadbackTransmission("[maintaining {spd}|at {spd}]", currentSpeed)
+		intent.Assigned = nav.Speed.Assigned
 	}
+	return intent
 }
 
-func (nav *Nav) SayHeading() *av.RadioTransmission {
+func (nav *Nav) SayHeading() av.CommandIntent {
 	currentHeading := nav.FlightState.Heading
-
+	intent := av.ReportHeadingIntent{Current: currentHeading}
 	if nav.Heading.Assigned != nil {
-		assignedHeading := *nav.Heading.Assigned
-		if assignedHeading != currentHeading {
-			return av.MakeReadbackTransmission("[heading {hdg}|{hdg}]", currentHeading, assignedHeading)
-		} else {
-			return av.MakeReadbackTransmission("heading {hdg}", currentHeading)
-		}
-	} else {
-		return av.MakeReadbackTransmission("heading {hdg}", currentHeading)
+		intent.Assigned = nav.Heading.Assigned
 	}
+	return intent
 }
 
-func (nav *Nav) SayAltitude() *av.RadioTransmission {
+func (nav *Nav) SayAltitude() av.CommandIntent {
 	currentAltitude := nav.FlightState.Altitude
-
+	intent := av.ReportAltitudeIntent{Current: currentAltitude}
 	if nav.Altitude.Assigned != nil {
-		assignedAltitude := *nav.Altitude.Assigned
-		if assignedAltitude < currentAltitude {
-			return av.MakeReadbackTransmission("[at {alt} descending to {alt}|at {alt} and descending]",
-				currentAltitude, assignedAltitude)
-		} else if assignedAltitude > currentAltitude {
-			return av.MakeReadbackTransmission("at {alt} climbing to {alt}", currentAltitude, assignedAltitude)
+		intent.Assigned = nav.Altitude.Assigned
+		if *nav.Altitude.Assigned < currentAltitude {
+			intent.Direction = av.AltitudeDescend
+		} else if *nav.Altitude.Assigned > currentAltitude {
+			intent.Direction = av.AltitudeClimb
 		} else {
-			return av.MakeReadbackTransmission("[maintaining {alt}|at {alt}]", currentAltitude)
+			intent.Direction = av.AltitudeMaintain
 		}
-	} else {
-		return av.MakeReadbackTransmission("maintaining {alt}", currentAltitude)
 	}
+	return intent
 }
 
-func (nav *Nav) ExpediteDescent() *av.RadioTransmission {
+func (nav *Nav) ExpediteDescent() av.CommandIntent {
 	alt, _ := nav.TargetAltitude()
 	if alt >= nav.FlightState.Altitude {
 		if nav.Altitude.AfterSpeed != nil {
 			nav.Altitude.ExpediteAfterSpeed = true
-			return av.MakeReadbackTransmission("[expediting down to|expedite to] {alt} once we're at {spd}",
-				*nav.Altitude.AfterSpeed, *nav.Altitude.AfterSpeedSpeed)
+			return av.AltitudeIntent{
+				Direction:  av.AltitudeDescend,
+				Altitude:   *nav.Altitude.AfterSpeed,
+				AfterSpeed: nav.Altitude.AfterSpeedSpeed,
+			}
 		} else {
-			return av.MakeUnexpectedTransmission("unable. We're not descending")
+			return av.MakeUnableIntent("unable. We're not descending")
 		}
 	} else if nav.Altitude.Expedite {
-		return av.MakeReadbackTransmission("[we're already expediting|that's our best rate]")
+		return av.AltitudeIntent{
+			Direction:         av.AltitudeDescend,
+			Altitude:          alt,
+			AlreadyExpediting: true,
+		}
 	} else {
 		nav.Altitude.Expedite = true
-		return av.MakeReadbackTransmission("[expediting down to|expedite] {alt}", alt)
+		return av.AltitudeIntent{
+			Direction: av.AltitudeDescend,
+			Altitude:  alt,
+			Expedite:  true,
+		}
 	}
 }
 
-func (nav *Nav) ExpediteClimb() *av.RadioTransmission {
+func (nav *Nav) ExpediteClimb() av.CommandIntent {
 	alt, _ := nav.TargetAltitude()
 	if alt <= nav.FlightState.Altitude {
 		if nav.Altitude.AfterSpeed != nil {
 			nav.Altitude.ExpediteAfterSpeed = true
-			return av.MakeReadbackTransmission("[expediting up to|expedite to] {alt} once we're at {spd}",
-				*nav.Altitude.AfterSpeed, *nav.Altitude.AfterSpeedSpeed)
+			return av.AltitudeIntent{
+				Direction:  av.AltitudeClimb,
+				Altitude:   *nav.Altitude.AfterSpeed,
+				AfterSpeed: nav.Altitude.AfterSpeedSpeed,
+			}
 		} else {
-			return av.MakeUnexpectedTransmission("unable. We're not climbing")
+			return av.MakeUnableIntent("unable. We're not climbing")
 		}
 	} else if nav.Altitude.Expedite {
-		return av.MakeReadbackTransmission("[we're already expediting|that's our best rate]")
+		return av.AltitudeIntent{
+			Direction:         av.AltitudeClimb,
+			Altitude:          alt,
+			AlreadyExpediting: true,
+		}
 	} else {
 		nav.Altitude.Expedite = true
-		return av.MakeReadbackTransmission("[expediting up to|expedite] {alt}", alt)
+		return av.AltitudeIntent{
+			Direction: av.AltitudeClimb,
+			Altitude:  alt,
+			Expedite:  true,
+		}
 	}
 }
 
-func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) *av.RadioTransmission {
+func (nav *Nav) AssignHeading(hdg float32, turn TurnMethod) av.CommandIntent {
 	if hdg <= 0 || hdg > 360 {
-		return av.MakeUnexpectedTransmission("unable. {hdg} isn't a valid heading", hdg)
+		return av.MakeUnableIntent("unable. {hdg} isn't a valid heading", hdg)
 	}
 
-	cancelHold := util.Select(nav.Heading.Hold != nil, "cancel the hold, ", "")
-
+	cancelHold := nav.Heading.Hold != nil
 	nav.assignHeading(hdg, turn)
+
+	intent := av.HeadingIntent{
+		Heading:    hdg,
+		Type:       av.HeadingAssign,
+		CancelHold: cancelHold,
+	}
 
 	switch turn {
 	case TurnClosest:
-		return av.MakeReadbackTransmission(cancelHold+"[heading|fly heading] {hdg}", hdg)
+		intent.Turn = av.HeadingTurnClosest
 	case TurnRight:
-		return av.MakeReadbackTransmission(cancelHold+"[right heading|right|turn right] {hdg}", hdg)
+		intent.Turn = av.HeadingTurnToRight
 	case TurnLeft:
-		return av.MakeReadbackTransmission(cancelHold+"[left heading|left|turn left] {hdg}", hdg)
+		intent.Turn = av.HeadingTurnToLeft
 	default:
 		panic(fmt.Sprintf("%d: unhandled turn type", turn))
 	}
+
+	return intent
 }
 
 func (nav *Nav) assignHeading(hdg float32, turn TurnMethod) {
@@ -237,9 +251,12 @@ func (nav *Nav) assignHeading(hdg float32, turn TurnMethod) {
 	nav.EnqueueHeading(hdg, turn)
 }
 
-func (nav *Nav) FlyPresentHeading() *av.RadioTransmission {
+func (nav *Nav) FlyPresentHeading() av.CommandIntent {
 	nav.assignHeading(nav.FlightState.Heading, TurnClosest)
-	return av.MakeReadbackTransmission("[fly present heading|present heading]")
+	return av.HeadingIntent{
+		Heading: nav.FlightState.Heading,
+		Type:    av.HeadingPresent,
+	}
 }
 
 func (nav *Nav) fixInRoute(fix string) bool {
@@ -364,7 +381,7 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, error) {
 	return nil, ErrInvalidFix
 }
 
-func (nav *Nav) DirectFix(fix string) *av.RadioTransmission {
+func (nav *Nav) DirectFix(fix string) av.CommandIntent {
 	if wps, err := nav.directFixWaypoints(fix); err == nil {
 		if hold := nav.Heading.Hold; hold != nil {
 			// We'll finish our lap and then depart the holding fix direct to the fix
@@ -372,25 +389,32 @@ func (nav *Nav) DirectFix(fix string) *av.RadioTransmission {
 			nfa := NavFixAssignment{}
 			nfa.Depart.Fix = &wps[0]
 			nav.FixAssignments[hold.Hold.Fix] = nfa
-			return av.MakeReadbackTransmission("cancel the hold and depart {fix} direct {fix}", hold.Hold.Fix, fix)
+			return av.NavigationIntent{
+				Type:      av.NavDirectFixFromHold,
+				Fix:       hold.Hold.Fix,
+				SecondFix: fix,
+			}
 		} else {
 			nav.EnqueueDirectFix(wps)
 			nav.Approach.NoPT = false
 			nav.Approach.InterceptState = NotIntercepting
-			return av.MakeReadbackTransmission("direct {fix}", fix)
+			return av.NavigationIntent{
+				Type: av.NavDirectFix,
+				Fix:  fix,
+			}
 		}
 	} else if err == ErrFixIsTooFarAway {
-		return av.MakeUnexpectedTransmission("unable. {fix} is too far away to go direct", fix)
+		return av.MakeUnableIntent("unable. {fix} is too far away to go direct", fix)
 	} else {
-		return av.MakeUnexpectedTransmission("unable. {fix} isn't a valid fix", fix)
+		return av.MakeUnableIntent("unable. {fix} isn't a valid fix", fix)
 	}
 }
 
-func (nav *Nav) HoldAtFix(callsign string, fix string, hold *av.Hold) *av.RadioTransmission {
+func (nav *Nav) HoldAtFix(callsign string, fix string, hold *av.Hold) av.CommandIntent {
 	if _, ok := av.DB.LookupWaypoint(fix); !ok {
-		return av.MakeUnexpectedTransmission("unable. {fix} isn't a valid fix", fix)
+		return av.MakeUnableIntent("unable. {fix} isn't a valid fix", fix)
 	} else if !nav.fixInRoute(fix) {
-		return av.MakeUnexpectedTransmission("unable. {fix} isn't in our route")
+		return av.MakeUnableIntent("unable. {fix} isn't in our route", fix)
 	}
 
 	// Use controller-specified hold if provided, otherwise look up published hold
@@ -402,7 +426,7 @@ func (nav *Nav) HoldAtFix(callsign string, fix string, hold *av.Hold) *av.RadioT
 		// Published hold
 		holds, ok := av.DB.EnrouteHolds[fix]
 		if !ok || len(holds) == 0 {
-			return av.MakeUnexpectedTransmission("unable. no published hold at {fix}", fix)
+			return av.MakeUnableIntent("unable. no published hold at {fix}", fix)
 		}
 		h = holds[0]
 	}
@@ -424,10 +448,18 @@ func (nav *Nav) HoldAtFix(callsign string, fix string, hold *av.Hold) *av.RadioT
 	nav.Approach.PassedApproachFix = false
 
 	turnDir := util.Select(h.TurnDirection == av.TurnRight, "right", "left")
+	var legLength string
 	if h.LegLengthNM > 0 {
-		return av.MakeReadbackTransmission("hold "+turnDir+" of {fix}, {num} mile legs", h.Fix, h.LegLengthNM)
+		legLength = fmt.Sprintf("%g mile", h.LegLengthNM)
 	} else {
-		return av.MakeReadbackTransmission("hold "+turnDir+" of {fix}, {num} minute legs", h.Fix, h.LegMinutes)
+		legLength = fmt.Sprintf("%g minute", h.LegMinutes)
+	}
+
+	return av.NavigationIntent{
+		Type:          av.NavHold,
+		Fix:           h.Fix,
+		HoldDirection: turnDir,
+		HoldLegLength: legLength,
 	}
 }
 
@@ -447,28 +479,32 @@ func (nav *Nav) makeFlyHold(callsign string, hold av.Hold) *FlyHold {
 	}
 }
 
-func (nav *Nav) DepartFixDirect(fixa string, fixb string) *av.RadioTransmission {
+func (nav *Nav) DepartFixDirect(fixa string, fixb string) av.CommandIntent {
 	fa, fb := nav.fixPairInRoute(fixa, fixb)
 	if fa == nil {
-		return av.MakeUnexpectedTransmission("unable. {fix} isn't in our route", fixa)
+		return av.MakeUnableIntent("unable. {fix} isn't in our route", fixa)
 	}
 	if fb == nil {
-		return av.MakeUnexpectedTransmission("unable. {fix} isn't in our route after {fix}", fixb, fixa)
+		return av.MakeUnableIntent("unable. {fix} isn't in our route after {fix}", fixb, fixa)
 	}
 
 	nfa := nav.FixAssignments[fixa]
 	nfa.Depart.Fix = fb
 	nav.FixAssignments[fixa] = nfa
 
-	return av.MakeReadbackTransmission("depart {fix} direct {fix}", fixa, fixb)
+	return av.NavigationIntent{
+		Type:      av.NavDepartFixDirect,
+		Fix:       fixa,
+		SecondFix: fixb,
+	}
 }
 
-func (nav *Nav) DepartFixHeading(fix string, hdg float32) *av.RadioTransmission {
+func (nav *Nav) DepartFixHeading(fix string, hdg float32) av.CommandIntent {
 	if hdg <= 0 || hdg > 360 {
-		return av.MakeUnexpectedTransmission("unable. Heading {hdg} is invalid", hdg)
+		return av.MakeUnableIntent("unable. Heading {hdg} is invalid", hdg)
 	}
 	if !nav.fixInRoute(fix) {
-		return av.MakeUnexpectedTransmission("unable. {fix} isn't in our route")
+		return av.MakeUnableIntent("unable. {fix} isn't in our route", fix)
 	}
 
 	nfa := nav.FixAssignments[fix]
@@ -476,67 +512,74 @@ func (nav *Nav) DepartFixHeading(fix string, hdg float32) *av.RadioTransmission 
 	nfa.Depart.Heading = &h
 	nav.FixAssignments[fix] = nfa
 
-	return av.MakeReadbackTransmission("depart {fix} heading {hdg}", fix, hdg)
+	return av.NavigationIntent{
+		Type:    av.NavDepartFixHeading,
+		Fix:     fix,
+		Heading: hdg,
+	}
 }
 
-func (nav *Nav) CrossFixAt(fix string, ar *av.AltitudeRestriction, speed int) *av.RadioTransmission {
+func (nav *Nav) CrossFixAt(fix string, ar *av.AltitudeRestriction, speed int) av.CommandIntent {
 	if !nav.fixInRoute(fix) {
-		return av.MakeUnexpectedTransmission("unable. " + fix + " isn't in our route")
+		return av.MakeUnableIntent("unable. {fix} isn't in our route", fix)
 	}
 
-	pt := av.MakeReadbackTransmission("cross {fix}", fix)
+	intent := av.NavigationIntent{
+		Type: av.NavCrossFixAt,
+		Fix:  fix,
+	}
 
 	nfa := nav.FixAssignments[fix]
 	if ar != nil {
 		nfa.Arrive.Altitude = ar
-		pt.Merge(av.MakeReadbackTransmission("{altrest}", ar))
+		intent.AltRestriction = ar
 		// Delete other altitude restrictions
 		nav.Altitude = NavAltitude{}
 	}
 	if speed != 0 {
 		s := float32(speed)
 		nfa.Arrive.Speed = &s
-		pt.Add("at {spd}", s)
+		intent.Speed = &s
 		// Delete other speed restrictions
 		nav.Speed = NavSpeed{}
 	}
 	nav.FixAssignments[fix] = nfa
 
-	return pt
+	return intent
 }
 
-func (nav *Nav) CancelApproachClearance() *av.RadioTransmission {
+func (nav *Nav) CancelApproachClearance() av.CommandIntent {
 	if !nav.Approach.Cleared {
-		return av.MakeUnexpectedTransmission("we're not currently cleared for an approach")
+		return av.MakeUnableIntent("unable. we're not currently cleared for an approach")
 	}
 
 	nav.Approach.Cleared = false
 	nav.Approach.InterceptState = NotIntercepting
 	nav.Approach.NoPT = false
 
-	return av.MakeReadbackTransmission("cancel approach clearance.")
+	return av.ApproachIntent{Type: av.ApproachCancel}
 }
 
-func (nav *Nav) ClimbViaSID() *av.RadioTransmission {
+func (nav *Nav) ClimbViaSID() av.CommandIntent {
 	if wps := nav.AssignedWaypoints(); len(wps) == 0 || !wps[0].OnSID {
-		return av.MakeUnexpectedTransmission("unable. We're not flying a departure procedure")
+		return av.MakeUnableIntent("unable. We're not flying a departure procedure")
 	}
 
 	nav.Altitude = NavAltitude{}
 	nav.Speed = NavSpeed{}
 	nav.EnqueueOnCourse()
-	return av.MakeReadbackTransmission("climb via the SID")
+	return av.ProcedureIntent{Type: av.ProcedureClimbViaSID}
 }
 
-func (nav *Nav) DescendViaSTAR() *av.RadioTransmission {
+func (nav *Nav) DescendViaSTAR() av.CommandIntent {
 	if wps := nav.AssignedWaypoints(); len(wps) == 0 || !wps[0].OnSTAR {
-		return av.MakeUnexpectedTransmission("unable. We're not on a STAR")
+		return av.MakeUnableIntent("unable. We're not on a STAR")
 	}
 
 	nav.Altitude = NavAltitude{}
 	nav.Speed = NavSpeed{}
 	nav.EnqueueOnCourse()
-	return av.MakeReadbackTransmission("descend via the STAR")
+	return av.ProcedureIntent{Type: av.ProcedureDescendViaSTAR}
 }
 
 func (nav *Nav) DistanceAlongRoute(fix string) (float32, error) {
@@ -559,9 +602,10 @@ func (nav *Nav) DistanceAlongRoute(fix string) (float32, error) {
 	}
 }
 
-func (nav *Nav) ResumeOwnNavigation() *av.RadioTransmission {
+func (nav *Nav) ResumeOwnNavigation() av.CommandIntent {
 	if nav.Heading.Assigned == nil {
-		return av.MakeReadbackTransmission("I don't think you ever put us on a heading...")
+		// This is a weird response but keeping the original behavior
+		return av.MakeUnableIntent("unable. I don't think you ever put us on a heading...")
 	}
 
 	nav.Heading = NavHeading{}
@@ -587,24 +631,21 @@ func (nav *Nav) ResumeOwnNavigation() *av.RadioTransmission {
 		}
 		nav.Waypoints = nav.Waypoints[startIdx:]
 	}
-	return av.MakeReadbackTransmission("[own navigation|resuming own navigation]")
+	return av.NavigationIntent{Type: av.NavResumeOwnNav}
 }
 
-func (nav *Nav) AltitudeOurDiscretion() *av.RadioTransmission {
+func (nav *Nav) AltitudeOurDiscretion() av.CommandIntent {
 	if nav.Altitude.Assigned == nil {
-		return av.MakeReadbackTransmission("You never assigned us an altitude...")
+		return av.MakeUnableIntent("unable. You never assigned us an altitude...")
 	}
 
 	nav.Altitude = NavAltitude{}
 	alt := nav.FinalAltitude
 	nav.Altitude.Cleared = &alt
 
-	return av.MakeReadbackTransmission("[altitude our discretion|altitude our discretion, maintain VFR]")
+	return av.NavigationIntent{Type: av.NavAltitudeDiscretion}
 }
 
 func (nav *Nav) InterceptedButNotCleared() bool {
 	return nav.Approach.InterceptState == OnApproachCourse && !nav.Approach.Cleared
 }
-
-///////////////////////////////////////////////////////////////////////////
-// Procedure turns

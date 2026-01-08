@@ -225,7 +225,7 @@ func (ss *simSession) GetStateUpdate(token string, tts sim.TTSProvider) *SimStat
 	return &SimStateUpdate{
 		StateUpdate: ss.sim.GetStateUpdate(),
 		ActiveTCWs:  ss.GetActiveTCWs(),
-		Events:      ss.sim.ConsolidateRadioEventsForTCW(tcw, eventSub.Get()),
+		Events:      ss.sim.PrepareRadioTransmissionsForTCW(tcw, eventSub.Get()),
 	}
 }
 
@@ -362,7 +362,7 @@ func (ss *simSession) ProcessTTS(token string, events []sim.Event, tts sim.TTSPr
 
 	ss.voiceAssigner.TryInit(tts, ss.lg)
 
-	for _, e := range ss.sim.ConsolidateRadioEventsForTCW(conn.tcw, events) {
+	for _, e := range ss.sim.PrepareRadioTransmissionsForTCW(conn.tcw, events) {
 		if e.Type != sim.RadioTransmissionEvent || !ss.sim.TCWControlsPosition(conn.tcw, e.ToController) {
 			continue
 		}
