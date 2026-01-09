@@ -438,10 +438,17 @@ type triTCPParser struct{}
 func (h *triTCPParser) Identifier() string { return "TCP_TRI" }
 
 func (h *triTCPParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
-	if len(text) < 3 || text[:1] != STARSTriangleCharacter || !isNum(text[1]) || !isAlpha(text[2]) {
+	if !strings.HasPrefix(text, STARSTriangleCharacter) {
 		return nil, text, false, nil
 	}
-	return text[:3], text[3:], true, nil
+
+	tcp := strings.TrimPrefix(text, STARSTriangleCharacter)
+	// Should be a digit identifying the facility followed by a regular digit+character TCP identifier.
+	if len(tcp) < 3 || !isNum(tcp[0]) || !isNum(tcp[1]) || !isAlpha(tcp[2]) {
+		return nil, text, false, nil
+	}
+
+	return STARSTriangleCharacter + tcp[:3], tcp[3:], true, nil
 }
 
 func (h *triTCPParser) GoType() reflect.Type { return reflect.TypeOf("") }
