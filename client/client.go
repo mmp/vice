@@ -49,6 +49,7 @@ type ControlClient struct {
 	lastTransmissionCallsign av.ADSBCallsign
 	LastTranscription        string
 	LastCommand              string
+	eventStream              *sim.EventStream
 
 	lg *log.Logger
 	mu sync.Mutex
@@ -316,6 +317,9 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 	var updateCallFinished *pendingCall
 
 	c.mu.Lock()
+
+	// Store eventStream for STT event posting
+	c.eventStream = eventStream
 
 	if c.updateCall != nil {
 		if c.updateCall.CheckFinished() {
@@ -706,12 +710,30 @@ func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
 		c.ProcessSTTTranscript(transcript, func(callsign, command string, err error) {
 			if err != nil {
 				lg.Errorf("STT command error: %v", err)
+				c.postSTTEvent(transcript, "")
 			} else {
 				lg.Infof("STT command: %s %s", callsign, command)
-				c.SetLastCommand(callsign + " " + command)
+				fullCommand := callsign + " " + command
+				c.SetLastCommand(fullCommand)
+				c.postSTTEvent(transcript, fullCommand)
 			}
 		})
 	}()
+}
+
+// postSTTEvent posts an STTCommandEvent to the event stream.
+func (c *ControlClient) postSTTEvent(transcript, command string) {
+	c.mu.Lock()
+	es := c.eventStream
+	c.mu.Unlock()
+
+	if es != nil {
+		es.Post(sim.Event{
+			Type:          sim.STTCommandEvent,
+			STTTranscript: transcript,
+			STTCommand:    command,
+		})
+	}
 }
 
 // ProcessSTTTranscript sends the transcript to the server for DSL conversion and command execution.

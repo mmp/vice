@@ -6,6 +6,7 @@ package panes
 
 import (
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"slices"
 	"strings"
@@ -237,6 +238,16 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 					contents: event.WrittenText,
 					error:    true,
 				})
+
+		case sim.STTCommandEvent:
+			// Display the controller's STT transcript and resulting command
+			if event.STTTranscript != "" || event.STTCommand != "" {
+				mp.messages = append(mp.messages,
+					Message{
+						contents: fmt.Sprintf("STT: %q -> %s", event.STTTranscript, event.STTCommand),
+						system:   true,
+					})
+			}
 		}
 	}
 }

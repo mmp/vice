@@ -261,6 +261,7 @@ const (
 	RecalledPointOutEvent
 	FlightPlanAssociatedEvent
 	FixCoordinatesEvent
+	STTCommandEvent
 	NumEventTypes
 )
 
@@ -270,7 +271,7 @@ func (t EventType) String() string {
 		"RejectedHandoff", "RadioTransmission", "StatusMessage", "ErrorMessage",
 		"ServerBroadcastMessage", "GlobalMessage", "AcknowledgedPointOut", "RejectedPointOut",
 		"HandoffControl", "SetGlobalLeaderLine", "ForceQL", "TransferAccepted", "TransferRejected",
-		"RecalledPointOut", "FlightPlanAssociated"}[t]
+		"RecalledPointOut", "FlightPlanAssociated", "FixCoordinates", "STTCommand"}[t]
 }
 
 type Event struct {
@@ -284,6 +285,8 @@ type Event struct {
 	RadioTransmissionType av.RadioTransmissionType       // For radio transmissions only
 	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent
 	WaypointInfo          []math.Point2LL
+	STTTranscript         string
+	STTCommand            string
 }
 
 func (e *Event) String() string {
