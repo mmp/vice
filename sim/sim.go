@@ -798,9 +798,9 @@ func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 	primaryTCP := s.State.PrimaryPositionForTCW(tcw)
 	ctrl := s.State.Controllers[primaryTCP]
 
-	// Add identifying info to radio transmissions
+	// Add identifying info to radio transmissions destined for this TCW
 	for i, e := range events {
-		if e.Type != RadioTransmissionEvent || !s.State.TCWControlsPosition(tcw, e.ToController) {
+		if e.Type != RadioTransmissionEvent || e.DestinationTCW != tcw {
 			continue
 		}
 
@@ -1229,7 +1229,7 @@ func (s *Sim) updateState() {
 						s.lg.Debug("contacting departure controller", slog.String("tcp", string(tcp)))
 
 						rt := ac.Nav.DepartureMessage()
-						s.postRadioEvent(ac.ADSBCallsign, tcp, *rt)
+						s.postContactTransmission(ac.ADSBCallsign, tcp, *rt)
 
 						// Clear this out so we only send one contact message
 						ac.DepartureContactAltitude = 0
@@ -1369,7 +1369,7 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp TCP) {
 		rt := av.MakeContactTransmission("[VFR request|with a VFR request]")
 		rt.Type = av.RadioTransmissionContact
 
-		s.postRadioEvent(ac.ADSBCallsign, tcp, *rt)
+		s.postContactTransmission(ac.ADSBCallsign, tcp, *rt)
 	} else {
 		// Full flight following request
 		s.sendFullFlightFollowingRequest(ac, tcp)
@@ -1465,7 +1465,7 @@ func (s *Sim) sendFullFlightFollowingRequest(ac *Aircraft, tcp TCP) {
 
 	rt.Type = av.RadioTransmissionContact
 
-	s.postRadioEvent(ac.ADSBCallsign, tcp, *rt)
+	s.postContactTransmission(ac.ADSBCallsign, tcp, *rt)
 }
 
 func (s *Sim) isRadarVisible(ac *Aircraft) bool {
@@ -1493,7 +1493,7 @@ func (s *Sim) goAround(ac *Aircraft) {
 	rt := av.RenderIntents([]av.CommandIntent{intent}, s.Rand)
 	if rt != nil {
 		rt.Type = av.RadioTransmissionUnexpected
-		s.postRadioEvent(ac.ADSBCallsign, ac.ApproachTCP /* FIXME: issue #540 */, *rt)
+		s.postContactTransmission(ac.ADSBCallsign, ac.ApproachTCP /* FIXME: issue #540 */, *rt)
 	}
 
 	// If it was handed off to tower, hand it back to us
@@ -1509,12 +1509,11 @@ func (s *Sim) goAround(ac *Aircraft) {
 	}
 }
 
-func (s *Sim) postRadioEvent(from av.ADSBCallsign, defaultTCP TCP, tr av.RadioTransmission) {
+// postContactTransmission posts a radio event for a pilot contacting a position (TCP).
+// DestinationTCW is resolved from whoever currently controls the TCP.
+// Use this for initial contacts, flight following requests, go-arounds, etc.
+func (s *Sim) postContactTransmission(from av.ADSBCallsign, tcp TCP, tr av.RadioTransmission) {
 	tr.Validate(s.lg)
-
-	if tr.Controller == "" {
-		tr.Controller = string(defaultTCP)
-	}
 
 	if ac, ok := s.Aircraft[from]; ok {
 		ac.LastRadioTransmission = s.State.SimTime
@@ -1523,7 +1522,30 @@ func (s *Sim) postRadioEvent(from av.ADSBCallsign, defaultTCP TCP, tr av.RadioTr
 	s.eventStream.Post(Event{
 		Type:                  RadioTransmissionEvent,
 		ADSBCallsign:          from,
-		ToController:          TCP(tr.Controller),
+		ToController:          tcp,
+		DestinationTCW:        s.State.TCWForPosition(tcp),
+		WrittenText:           tr.Written(s.Rand),
+		SpokenText:            tr.Spoken(s.Rand),
+		RadioTransmissionType: tr.Type,
+	})
+}
+
+// postReadbackTransmission posts a radio event for a pilot responding to a command.
+// DestinationTCW is the specific TCW that issued the command.
+// Use this for readbacks, where the response must go to the issuing controller
+// regardless of any consolidation changes.
+func (s *Sim) postReadbackTransmission(from av.ADSBCallsign, tr av.RadioTransmission, tcw TCW) {
+	tr.Validate(s.lg)
+
+	if ac, ok := s.Aircraft[from]; ok {
+		ac.LastRadioTransmission = s.State.SimTime
+	}
+
+	s.eventStream.Post(Event{
+		Type:                  RadioTransmissionEvent,
+		ADSBCallsign:          from,
+		ToController:          s.State.PrimaryPositionForTCW(tcw),
+		DestinationTCW:        tcw,
 		WrittenText:           tr.Written(s.Rand),
 		SpokenText:            tr.Spoken(s.Rand),
 		RadioTransmissionType: tr.Type,

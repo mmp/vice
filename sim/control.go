@@ -762,9 +762,6 @@ func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, t
 		ACID:           sfp.ACID,
 	})
 
-	// Capture controller before clearing it
-	controller := sfp.ControllingController
-
 	// Take away the current controller's ability to issue control
 	// commands.
 	sfp.ControllingController = ""
@@ -774,7 +771,6 @@ func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, t
 	wait := time.Duration(5+s.Rand.Intn(10)) * time.Second
 	s.enqueueControllerContact(ac.ADSBCallsign, toTCP, wait)
 
-	intent.ControllingController = string(controller)
 	return intent
 }
 
@@ -1201,7 +1197,7 @@ func (s *Sim) PilotMixUp(tcw TCW, callsign av.ADSBCallsign) error {
 			return ac.PilotMixUp()
 		})
 	if err == nil && intent != nil {
-		s.renderAndPostIntents(callsign, tcw, []av.CommandIntent{intent})
+		s.renderAndPostReadback(callsign, tcw, []av.CommandIntent{intent})
 	}
 	return err
 }
@@ -1598,7 +1594,7 @@ func (s *Sim) processEnqueued() {
 					rt := ac.ContactMessage(s.ReportingPoints)
 					rt.Type = av.RadioTransmissionContact
 
-					s.postRadioEvent(c.ADSBCallsign, c.TCP, *rt)
+					s.postContactTransmission(c.ADSBCallsign, c.TCP, *rt)
 
 					// Activate pre-assigned external emergency; the transmission will be
 					// consolidated with the initial contact transmission.
@@ -1677,7 +1673,7 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 		intent, err := s.runOneControlCommand(tcw, callsign, command)
 		if err != nil {
 			// Post any collected intents before returning error
-			s.renderAndPostIntents(callsign, tcw, intents)
+			s.renderAndPostReadback(callsign, tcw, intents)
 			return ControlCommandsResult{
 				RemainingInput: strings.Join(commands[i:], " "),
 				Error:          err,
@@ -1689,15 +1685,16 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 	}
 
 	// Render all intents together as a single transmission
-	s.renderAndPostIntents(callsign, tcw, intents)
+	s.renderAndPostReadback(callsign, tcw, intents)
 	return ControlCommandsResult{}
 }
 
-// renderAndPostIntents renders a batch of intents and posts them as a single radio event.
-func (s *Sim) renderAndPostIntents(callsign av.ADSBCallsign, tcw TCW, intents []av.CommandIntent) {
+// renderAndPostReadback renders a batch of command intents as a pilot readback transmission.
+// The tcw ensures the readback goes to the controller who issued the command,
+// regardless of any consolidation changes.
+func (s *Sim) renderAndPostReadback(callsign av.ADSBCallsign, tcw TCW, intents []av.CommandIntent) {
 	if rt := av.RenderIntents(intents, s.Rand); rt != nil {
-		rt.Controller = string(s.State.PrimaryPositionForTCW(tcw))
-		s.postRadioEvent(callsign, s.State.PrimaryPositionForTCW(tcw), *rt)
+		s.postReadbackTransmission(callsign, *rt, tcw)
 	}
 }
 

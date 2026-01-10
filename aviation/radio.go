@@ -73,10 +73,9 @@ func loadPronunciationsIfNeeded() {
 // radio transmission by a pilot; they may be built up from multiple
 // instructions provided in a single controller command.
 type RadioTransmission struct {
-	Strings    []PhraseFormatString
-	Args       [][]any // each slice contains values passed to the corresponding PhraseFormatString
-	Controller string
-	Type       RadioTransmissionType
+	Strings []PhraseFormatString
+	Args    [][]any // each slice contains values passed to the corresponding PhraseFormatString
+	Type    RadioTransmissionType
 }
 
 // MakeContactRadioTransmission is a helper function to make a pilot

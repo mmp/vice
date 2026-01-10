@@ -363,7 +363,7 @@ func (ss *simSession) ProcessTTS(token string, events []sim.Event, tts sim.TTSPr
 	ss.voiceAssigner.TryInit(tts, ss.lg)
 
 	for _, e := range ss.sim.PrepareRadioTransmissionsForTCW(conn.tcw, events) {
-		if e.Type != sim.RadioTransmissionEvent || !ss.sim.TCWControlsPosition(conn.tcw, e.ToController) {
+		if e.Type != sim.RadioTransmissionEvent || e.DestinationTCW != conn.tcw {
 			continue
 		}
 
