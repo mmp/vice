@@ -30,14 +30,12 @@ type STTTranscriptProvider interface {
 func MakeSTTProvider(ctx context.Context, serverAddress string, lg *log.Logger) STTTranscriptProvider {
 	// Try Anthropic first (direct API access)
 	if p, err := NewAnthropicSTTProvider(lg); err == nil {
-		fmt.Println("local")
 		return p
 	}
 
 	// Fall back to remote proxy
 	lg.Info("Anthropic API key not available, attempting remote STT provider")
 	if p, err := NewRemoteSTTProvider(ctx, serverAddress, lg); err == nil {
-		fmt.Println("server")
 		return p
 	}
 
