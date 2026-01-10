@@ -925,11 +925,12 @@ type sttQueryContext struct {
 }
 
 type sttAircraft struct {
-	Callsign        av.ADSBCallsign   `json:"callsign"`
-	Fixes           map[string]string `json:"fixes"`
-	ApproachAirport string            `json:"approach_airport,omitempty"`
-	Altitude        int               `json:"altitude"`
-	Type            string            `json:"type"`
+	Callsign         av.ADSBCallsign   `json:"callsign"`
+	Fixes            map[string]string `json:"fixes"`
+	ApproachAirport  string            `json:"approach_airport,omitempty"`
+	AssignedApproach string            `json:"assigned_approach,omitempty"`
+	Altitude         int               `json:"altitude"`
+	State            string            `json:"state"`
 }
 
 func makeSTTQueryContext(c *controllerContext, transcript string) sttQueryContext {
@@ -950,12 +951,20 @@ func makeSTTQueryContext(c *controllerContext, transcript string) sttQueryContex
 			Callsign: cs,
 			Fixes:    getSTTFixes(ac),
 			Altitude: int(ac.Nav.FlightState.Altitude),
-			Type: func() string {
+			State: func() string {
+				if vff {
+					return "vfr flight following"
+				}
+
 				switch ac.TypeOfFlight {
 				case av.FlightTypeDeparture:
 					return "departure"
 				case av.FlightTypeArrival:
-					return "arrival"
+					if appr := ac.Nav.Approach; appr.Assigned != nil && appr.Cleared && appr.PassedApproachFix {
+						return "on approach"
+					} else {
+						return "arrival"
+					}
 				case av.FlightTypeOverflight:
 					return "overflight"
 				default:
@@ -965,6 +974,10 @@ func makeSTTQueryContext(c *controllerContext, transcript string) sttQueryContex
 		}
 
 		if ac.TypeOfFlight == av.FlightTypeArrival {
+			if appr := ac.Nav.Approach.Assigned; appr != nil {
+				sttAc.AssignedApproach = appr.FullName
+			}
+
 			ap := ac.FlightPlan.ArrivalAirport
 			sttAc.ApproachAirport = ap
 			if _, ok := qc.Approaches[ap]; !ok {
@@ -999,7 +1012,18 @@ func getActiveApproaches(ss *sim.CommonState, ap string) map[string]string {
 func getSTTFixes(ac *sim.Aircraft) map[string]string {
 	fixes := make(map[string]string)
 	p := ac.Nav.FlightState.Position
-	for _, wp := range ac.Nav.Waypoints {
+
+	add := func(fix string) {
+		if aid, ok := av.DB.Navaids[fix]; ok {
+			fixes[util.StopShouting(aid.Name)] = fix
+		} else if ap, ok := av.DB.Airports[fix]; ok {
+			fixes[ap.Name] = fix
+		} else {
+			fixes[fix] = fix
+		}
+	}
+
+	for _, wp := range ac.Nav.AssignedWaypoints() {
 		if math.NMDistance2LL(p, wp.Location) > 75 {
 			break
 		}
@@ -1007,14 +1031,28 @@ func getSTTFixes(ac *sim.Aircraft) map[string]string {
 			continue
 		}
 
-		if aid, ok := av.DB.Navaids[wp.Fix]; ok {
-			fixes[util.StopShouting(aid.Name)] = wp.Fix
-		} else if ap, ok := av.DB.Airports[wp.Fix]; ok {
-			fixes[ap.Name] = wp.Fix
-		} else {
-			fixes[wp.Fix] = wp.Fix
-		}
+		add(wp.Fix)
 	}
+
+	if ac.Nav.Approach.Assigned != nil {
+		// Check if approach waypoints are already in the route
+		hasApproachWaypoints := slices.ContainsFunc(ac.Nav.AssignedWaypoints(),
+			func(wp av.Waypoint) bool { return wp.OnApproach })
+
+		// If not, add all approach waypoints (aircraft is being vectored to intercept)
+		if !hasApproachWaypoints {
+			for _, wps := range ac.Nav.Approach.Assigned.Waypoints {
+				for _, wp := range wps {
+					if len(wp.Fix) >= 3 && len(wp.Fix) <= 5 && wp.Fix[0] != '_' {
+						add(wp.Fix)
+					}
+				}
+			}
+		}
+		// If approach waypoints ARE in the route, they'll be handled by the
+		// AssignedWaypoints loop above (only the remaining fixes ahead of the aircraft)
+	}
+
 	return fixes
 }
 
