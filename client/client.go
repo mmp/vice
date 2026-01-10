@@ -686,7 +686,8 @@ func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
 		defer lg.CatchAndReportCrash()
 
 		whisperModelOnce.Do(func() {
-			model := util.LoadResourceBytes("models/whisper-ggml-large-v3-turbo-q5_0.bin")
+			// https://huggingface.co/ggerganov/whisper.cpp/tree/main
+			model := util.LoadResourceBytes("models/ggml-small.en.bin")
 			whisperModel, whisperModelErr = whisper.LoadModelFromBytes(model)
 		})
 		if whisperModelErr != nil {
@@ -697,7 +698,7 @@ func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
 		start := time.Now()
 
 		transcript, err := whisper.TranscribeWithModel(whisperModel, samples, platform.AudioInputSampleRate, 1, /* channels */
-			whisper.Options{Language: "en"})
+			whisper.Options{})
 
 		fmt.Printf("whisper %q in %s\n", transcript, time.Since(start))
 
