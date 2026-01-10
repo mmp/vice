@@ -66,6 +66,8 @@ type Sim struct {
 	Handoffs  map[ACID]Handoff
 	PointOuts map[ACID]PointOut
 
+	PrivilegedTCWs map[TCW]bool // TCWs with elevated privileges (can control any aircraft)
+
 	ReportingPoints []av.ReportingPoint
 
 	EnforceUniqueCallsignSuffix bool
@@ -264,6 +266,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		Handoffs:  make(map[ACID]Handoff),
 		PointOuts: make(map[ACID]PointOut),
 
+		PrivilegedTCWs: make(map[TCW]bool),
+
 		VirtualControllers: config.VirtualControllers,
 
 		Rand: rand.Make(),
@@ -350,7 +354,7 @@ func (s *Sim) SetWaypointCommands(tcw TCW, commands string) error {
 	delete(s.waypointCommands, tcp)
 	s.waypointCommands[tcp] = make(map[string]string)
 	if len(commands) != 0 {
-		s.State.PrivilegedTCWs[tcw] = true
+		s.PrivilegedTCWs[tcw] = true
 	}
 
 	for cmd := range strings.SplitSeq(commands, ",") {

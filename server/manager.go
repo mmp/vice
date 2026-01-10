@@ -194,6 +194,14 @@ type SimState struct {
 	ControllerVideoMaps                 []string
 	ControllerDefaultVideoMaps          []string
 	ControllerMonitoredBeaconCodeBlocks []av.Squawk
+
+	UserIsPrivileged bool // Whether this user has elevated privileges (can control any aircraft)
+}
+
+// TCWIsPrivileged returns whether the given TCW has elevated privileges.
+// Note: only the current user's TCW should be passed; this is for API compatibility.
+func (ss *SimState) TCWIsPrivileged(tcw sim.TCW) bool {
+	return ss.UserIsPrivileged
 }
 
 const NewSimRPC = "SimManager.NewSim"
@@ -364,6 +372,7 @@ func (sm *SimManager) buildNewSimResult(session *simSession, tcw sim.TCW, token 
 			ControllerVideoMaps:                 videoMaps,
 			ControllerDefaultVideoMaps:          defaultMaps,
 			ControllerMonitoredBeaconCodeBlocks: beaconCodes,
+			UserIsPrivileged:                    session.sim.TCWIsPrivileged(tcw),
 		},
 		ControllerToken: token,
 		SpeechWSPort:    util.Select(sm.tts != nil, sm.httpPort, 0),

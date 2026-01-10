@@ -223,10 +223,6 @@ func (ctx *Context) TCWIsPrivileged(tcw sim.TCW) bool {
 	return ctx.Client.State.TCWIsPrivileged(tcw)
 }
 
-func (ctx *Context) TCWIsObserver(tcw sim.TCW) bool {
-	return ctx.Client.State.TCWIsObserver(tcw)
-}
-
 // UserWasRedirector returns true if any of the user's controlled positions
 // are in the given redirector list.
 func (ctx *Context) UserWasRedirector(redirectors []sim.ControlPosition) bool {

@@ -23,14 +23,14 @@ import (
 // (altitude, heading, speed, etc.). This is true if the TCW is privileged, owns the track,
 // or controls the ControllingController position.
 func (s *Sim) TCWCanCommandAircraft(tcw TCW, fp *NASFlightPlan) bool {
-	return s.State.PrivilegedTCWs[tcw] ||
+	return s.PrivilegedTCWs[tcw] ||
 		s.State.TCWControlsPosition(tcw, fp.ControllingController)
 }
 
 // TCWCanModifyTrack returns true if the TCW can modify the track itself (delete, reposition).
 // This is true if the TCW is privileged, owns the track, or controls the TrackingController position.
 func (s *Sim) TCWCanModifyTrack(tcw TCW, fp *NASFlightPlan) bool {
-	return s.State.PrivilegedTCWs[tcw] ||
+	return s.PrivilegedTCWs[tcw] ||
 		fp.OwningTCW == tcw ||
 		s.State.TCWControlsPosition(tcw, fp.TrackingController) ||
 		s.State.TCWControlsPosition(tcw, fp.LastLocalController)
@@ -40,7 +40,7 @@ func (s *Sim) TCWCanModifyTrack(tcw TCW, fp *NASFlightPlan) bool {
 // Checks if TCW controls the owner's position (consolidation-aware). This is true if
 // the TCW is privileged, owns the track, or controls the position that owns the track.
 func (s *Sim) TCWCanModifyFlightPlan(tcw TCW, fp *NASFlightPlan) bool {
-	return s.State.PrivilegedTCWs[tcw] ||
+	return s.PrivilegedTCWs[tcw] ||
 		fp.OwningTCW == tcw ||
 		s.State.TCWControlsPosition(tcw, fp.TrackingController) ||
 		s.State.TCWControlsPosition(tcw, fp.LastLocalController)
@@ -80,7 +80,7 @@ func (s *Sim) dispatchControlledAircraftCommand(tcw TCW, callsign av.ADSBCallsig
 		func(tcw TCW, ac *Aircraft) error {
 			if ac.IsUnassociated() {
 				// For unassociated aircraft, allow if privileged or controls pre-arrival drop position
-				if s.State.PrivilegedTCWs[tcw] || s.State.TCWControlsPosition(tcw, ac.PreArrivalDropTCP) {
+				if s.PrivilegedTCWs[tcw] || s.State.TCWControlsPosition(tcw, ac.PreArrivalDropTCP) {
 					return nil
 				}
 				return ErrTrackIsNotActive

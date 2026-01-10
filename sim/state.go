@@ -81,9 +81,6 @@ type CommonState struct {
 
 	SimDescription string
 
-	PrivilegedTCWs map[TCW]bool // TCWs with elevated privileges (can control any aircraft)
-	Observers      map[TCW]bool // TCWs connected as observers (no position)
-
 	VideoMapLibraryHash []byte
 }
 
@@ -244,9 +241,6 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *V
 		NmPerLongitude:    config.NmPerLongitude,
 		PrimaryAirport:    config.PrimaryAirport,
 		SimDescription:    config.Description,
-
-		PrivilegedTCWs: make(map[TCW]bool),
-		Observers:      make(map[TCW]bool),
 	}
 
 	// Grab initial METAR for each airport
@@ -376,14 +370,6 @@ func (ss *CommonState) IsLocalController(pos ControlPosition) bool {
 	resolved := ss.ResolveController(pos)
 	ctrl, ok := ss.Controllers[resolved]
 	return ok && ctrl.FacilityIdentifier == ""
-}
-
-func (ss *CommonState) TCWIsPrivileged(tcw TCW) bool {
-	return ss.PrivilegedTCWs[tcw]
-}
-
-func (ss *CommonState) TCWIsObserver(tcw TCW) bool {
-	return ss.Observers[tcw]
 }
 
 func (ss *CommonState) ResolveController(pos ControlPosition) ControlPosition {
