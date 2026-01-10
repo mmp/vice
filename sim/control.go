@@ -16,6 +16,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
+	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 )
 
@@ -24,7 +25,7 @@ import (
 // or controls the ControllingController position.
 func (s *Sim) TCWCanCommandAircraft(tcw TCW, fp *NASFlightPlan) bool {
 	return s.State.PrivilegedTCWs[tcw] ||
-		s.State.TCWControlsPosition(tcw, fp.ControllingController)
+		(fp != nil && s.State.TCWControlsPosition(tcw, fp.ControllingController))
 }
 
 // TCWCanModifyTrack returns true if the TCW can modify the track itself (delete, reposition).
@@ -1538,12 +1539,37 @@ func (s *Sim) GoAhead(tcw TCW, callsign av.ADSBCallsign) error {
 
 			ac.WaitingForGoAhead = false
 
-			// Send the full flight following request
 			s.sendFullFlightFollowingRequest(ac, s.State.PrimaryPositionForTCW(tcw))
 
 			return nil
 		})
 	return err
+}
+
+func (s *Sim) SayBlocked(tcw TCW) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	tcp := s.State.PrimaryPositionForTCW(tcw)
+
+	// Have a random pilot speak up
+	callsign, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.Aircraft), func(cs av.ADSBCallsign) int {
+		ac := s.Aircraft[cs]
+		return util.Select(s.TCWCanCommandAircraft(tcw, ac.NASFlightPlan), 1, 0)
+	})
+	if ok {
+		s.postRadioEvent(callsign, tcp, *av.MakeNoIdTransmission("blocked"))
+	}
+	return nil, nil
+}
+
+func (s *Sim) SayAgain(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	tcp := s.State.PrimaryPositionForTCW(tcw)
+	s.postRadioEvent(callsign, tcp, *av.MakeReadbackTransmission("say again for"))
+	return nil, nil
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1810,6 +1836,10 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 		if err != nil {
 			return nil, err
 		}
+		if alt > 600 && (alt%100 == 0) {
+			// Sometimes STT transcript interpretation forgets altitudes are in 100s...
+			alt /= 100
+		}
 		return s.AssignAltitude(tcw, callsign, 100*alt, false)
 	}
 
@@ -1817,6 +1847,8 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 	case 'A':
 		if command == "A" {
 			return s.AltitudeOurDiscretion(tcw, callsign)
+		} else if command == "AGAIN" {
+			return s.SayAgain(tcw, callsign)
 		} else {
 			components := strings.Split(command, "/")
 			if len(components) != 2 || len(components[1]) == 0 || components[1][0] != 'C' {
@@ -1827,6 +1859,12 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			approach := components[1][1:]
 			return s.AtFixCleared(tcw, callsign, fix, approach)
 		}
+
+	case 'B':
+		if command == "BLOCKED" {
+			return s.SayBlocked(tcw)
+		}
+		return nil, ErrInvalidCommandSyntax
 
 	case 'C':
 		if command == "CAC" {
@@ -1905,7 +1943,13 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 
 	case 'F':
 		if command == "FC" {
-			return s.ContactTrackingController(tcw, ACID(callsign))
+			if ac, ok := s.Aircraft[callsign]; ok && ac.Nav.Approach.Cleared {
+				// STT sometimes gets confused and gives FC for "contact tower" instructions, so
+				// we'll just roll with that.
+				return s.ContactTower(tcw, callsign)
+			} else {
+				return s.ContactTrackingController(tcw, ACID(callsign))
+			}
 		} else {
 			return nil, ErrInvalidCommandSyntax
 		}

@@ -114,6 +114,14 @@ func MakeMixedUpTransmission(s string, args ...any) *RadioTransmission {
 	return rt
 }
 
+// MakeNoIdTransmission creates a pilot transmission where the pilot doesn't
+// identify themselves with their callsign (e.g., for saying "blocked").
+func MakeNoIdTransmission(s string, args ...any) *RadioTransmission {
+	rt := &RadioTransmission{Type: RadioTransmissionNoId}
+	rt.Add(s, args...)
+	return rt
+}
+
 // Merge takes a separately-constructed RadioTransmission and merges its
 // contents with the current one.
 func (rt *RadioTransmission) Merge(r *RadioTransmission) {

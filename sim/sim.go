@@ -836,6 +836,8 @@ func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 			events[i].SpokenText = tr.Spoken(s.Rand) + e.SpokenText
 		case av.RadioTransmissionMixUp:
 			// No additional formatting for mix-up transmissions; the callsign is already in there.
+		case av.RadioTransmissionNoId:
+			// No callsign formatting for NoId transmissions (e.g., "blocked").
 		default:
 			csArg := av.CallsignArg{
 				Callsign:    ac.ADSBCallsign,
