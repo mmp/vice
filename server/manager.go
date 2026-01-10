@@ -5,14 +5,11 @@
 package server
 
 import (
-	"bytes"
 	"context"
 	crand "crypto/rand"
 	_ "embed"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
-	"io"
 	"log/slog"
 	"net/http"
 	"os"
@@ -45,6 +42,7 @@ type SimManager struct {
 	// Helpers and such
 	tts            sim.TTSProvider
 	wxProvider     wx.Provider
+	sttProvider    STTTranscriptProvider
 	providersReady chan struct{}
 	mapManifests   map[string]*sim.VideoMapManifest
 	lg             *log.Logger
@@ -128,9 +126,9 @@ func (sm *SimManager) initRemoteProviders(serverAddress string, lg *log.Logger) 
 	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
 	defer cancel()
 
-	// Initialize TTS and WX providers in parallel since they're independent
+	// Initialize TTS, WX, and STT providers in parallel since they're independent
 	var wg sync.WaitGroup
-	wg.Add(2)
+	wg.Add(3)
 
 	go func() {
 		defer wg.Done()
@@ -140,6 +138,11 @@ func (sm *SimManager) initRemoteProviders(serverAddress string, lg *log.Logger) 
 	go func() {
 		defer wg.Done()
 		sm.wxProvider, _ = MakeWXProvider(ctx, serverAddress, lg)
+	}()
+
+	go func() {
+		defer wg.Done()
+		sm.sttProvider = MakeSTTProvider(ctx, serverAddress, lg)
 	}()
 
 	wg.Wait()
@@ -812,9 +815,13 @@ func (sm *SimManager) ProcessSTTTranscript(token, transcript string) (string, st
 		return "", "", ErrNoSimForControllerToken
 	}
 
+	if sm.sttProvider == nil {
+		return "", "", ErrSTTUnavailable
+	}
+
 	qc := makeSTTQueryContext(c, transcript)
 
-	commands, err := transcriptToCommands(qc)
+	commands, err := sm.sttProvider.DecodeTranscript(qc)
 	if err != nil {
 		return "", "", err
 	}
@@ -836,95 +843,29 @@ func (sm *SimManager) ProcessSTTTranscript(token, transcript string) (string, st
 //go:embed sttSystemPrompt.md
 var systemPrompt string
 
-func transcriptToCommands(qc sttQueryContext) (string, error) {
-	type claudeMessage struct {
-		Role    string `json:"role"`
-		Content string `json:"content"`
-	}
-	type claudeRequest struct {
-		Model     string          `json:"model"`
-		MaxTokens int             `json:"max_tokens"`
-		System    string          `json:"system"`
-		Messages  []claudeMessage `json:"messages"`
-	}
-	type claudeResponse struct {
-		Content []struct {
-			Text string `json:"text"`
-		} `json:"content"`
+const DecodeSTTTranscriptRPC = "SimManager.DecodeSTTTranscript"
+
+// DecodeSTTTranscript is the RPC handler for proxying STT decoding requests.
+// It's called by RemoteSTTProvider on local servers that don't have the API key.
+func (sm *SimManager) DecodeSTTTranscript(ctx STTQueryContext, result *string) error {
+	defer sm.lg.CatchAndReportCrash()
+
+	if sm.sttProvider == nil {
+		return ErrSTTUnavailable
 	}
 
-	queryBytes, err := json.Marshal(qc)
-	if err != nil {
-		return "", err
-	}
-
-	req := claudeRequest{
-		Model:     "claude-haiku-4-5",
-		MaxTokens: 16,
-		System:    systemPrompt,
-		Messages: []claudeMessage{
-			{Role: "user", Content: string(queryBytes)},
-		},
-	}
-
-	jsonBytes, err := json.Marshal(req)
-	if err != nil {
-		return "", fmt.Errorf("failed to marshal request: %w", err)
-	}
-
-	apiKey := os.Getenv("VICE_ANTHROPIC_KEY")
-	if apiKey == "" {
-		panic("must set VICE_ANTHROPIC_KEY")
-	}
-
-	start := time.Now()
-
-	httpReq, err := http.NewRequest("POST", "https://api.anthropic.com/v1/messages", bytes.NewBuffer(jsonBytes))
-	if err != nil {
-		return "", fmt.Errorf("failed to create request: %w", err)
-	}
-	httpReq.Header.Set("Content-Type", "application/json")
-	httpReq.Header.Set("x-api-key", apiKey)
-	httpReq.Header.Set("anthropic-version", "2023-06-01")
-
-	httpClient := &http.Client{Timeout: 30 * time.Second}
-	resp, err := httpClient.Do(httpReq)
-	if err != nil {
-		return "", fmt.Errorf("API request failed: %w", err)
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", fmt.Errorf("failed to read response: %w", err)
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("API returned status %d", resp.StatusCode)
-	}
-
-	fmt.Printf("claude in %s\n", time.Since(start))
-
-	var parsed claudeResponse
-	if err := json.Unmarshal(body, &parsed); err != nil {
-		return "", fmt.Errorf("failed to parse API response: %w", err)
-	}
-
-	if len(parsed.Content) > 0 {
-		fmt.Println("  -----> " + parsed.Content[0].Text)
-		return parsed.Content[0].Text, nil
-	}
-
-	return "", fmt.Errorf("API returned empty response")
+	var err error
+	*result, err = sm.sttProvider.DecodeTranscript(ctx)
+	return err
 }
 
-type sttQueryContext struct {
-	Aircraft   map[string]sttAircraft       `json:"aircraft,omitempty"`
+type STTQueryContext struct {
+	Aircraft   map[string]STTAircraft       `json:"aircraft,omitempty"`
 	Approaches map[string]map[string]string `json:"approaches,omitempty"`
 	Transcript string                       `json:"transcript"`
 }
 
-type sttAircraft struct {
+type STTAircraft struct {
 	Callsign         av.ADSBCallsign   `json:"callsign"`
 	Fixes            map[string]string `json:"fixes"`
 	ApproachAirport  string            `json:"approach_airport,omitempty"`
@@ -933,9 +874,9 @@ type sttAircraft struct {
 	State            string            `json:"state"`
 }
 
-func makeSTTQueryContext(c *controllerContext, transcript string) sttQueryContext {
-	qc := sttQueryContext{
-		Aircraft:   make(map[string]sttAircraft),
+func makeSTTQueryContext(c *controllerContext, transcript string) STTQueryContext {
+	qc := STTQueryContext{
+		Aircraft:   make(map[string]STTAircraft),
 		Approaches: make(map[string]map[string]string),
 		Transcript: transcript,
 	}
@@ -947,7 +888,7 @@ func makeSTTQueryContext(c *controllerContext, transcript string) sttQueryContex
 			continue
 		}
 
-		sttAc := sttAircraft{
+		sttAc := STTAircraft{
 			Callsign: cs,
 			Fixes:    getSTTFixes(ac),
 			Altitude: int(ac.Nav.FlightState.Altitude),
