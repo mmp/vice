@@ -296,7 +296,8 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 
 	if lc.EmergencyAircraftRate != s.State.LaunchConfig.EmergencyAircraftRate {
 		if lc.EmergencyAircraftRate > 0 {
-			s.NextEmergencyTime = s.State.SimTime.Add(randomInitialWait(lc.EmergencyAircraftRate, s.Rand))
+			delay := max(5*time.Minute, randomInitialWait(lc.EmergencyAircraftRate, s.Rand))
+			s.NextEmergencyTime = s.State.SimTime.Add(delay)
 		} else {
 			s.NextEmergencyTime = time.Time{} // zero time = disabled
 		}
@@ -438,7 +439,8 @@ func (s *Sim) Prespawn() {
 	s.NextVFFRequest = s.State.SimTime.Add(randomInitialWait(float32(s.State.LaunchConfig.VFFRequestRate), s.Rand))
 
 	if s.State.LaunchConfig.EmergencyAircraftRate > 0 {
-		s.NextEmergencyTime = s.State.SimTime.Add(randomInitialWait(s.State.LaunchConfig.EmergencyAircraftRate, s.Rand))
+		delay := max(5*time.Minute, randomInitialWait(s.State.LaunchConfig.EmergencyAircraftRate, s.Rand))
+		s.NextEmergencyTime = s.State.SimTime.Add(delay)
 	}
 
 	s.lg.Info("finished aircraft prespawn")

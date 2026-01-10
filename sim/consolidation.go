@@ -482,10 +482,18 @@ func (s *Sim) SetPrivilegedTCW(tcw TCW, privileged bool) {
 	defer s.mu.Unlock(s.lg)
 
 	if privileged {
-		s.State.PrivilegedTCWs[tcw] = true
+		s.PrivilegedTCWs[tcw] = true
 	} else {
-		delete(s.State.PrivilegedTCWs, tcw)
+		delete(s.PrivilegedTCWs, tcw)
 	}
+}
+
+// TCWIsPrivileged returns whether the given TCW has elevated privileges.
+func (s *Sim) TCWIsPrivileged(tcw TCW) bool {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.PrivilegedTCWs[tcw]
 }
 
 // GetConsolidatedPositions returns all positions controlled by a TCW

@@ -24,14 +24,14 @@ import (
 // (altitude, heading, speed, etc.). This is true if the TCW is privileged, owns the track,
 // or controls the ControllingController position.
 func (s *Sim) TCWCanCommandAircraft(tcw TCW, fp *NASFlightPlan) bool {
-	return s.State.PrivilegedTCWs[tcw] ||
+	return s.PrivilegedTCWs[tcw] ||
 		(fp != nil && s.State.TCWControlsPosition(tcw, fp.ControllingController))
 }
 
 // TCWCanModifyTrack returns true if the TCW can modify the track itself (delete, reposition).
 // This is true if the TCW is privileged, owns the track, or controls the TrackingController position.
 func (s *Sim) TCWCanModifyTrack(tcw TCW, fp *NASFlightPlan) bool {
-	return s.State.PrivilegedTCWs[tcw] ||
+	return s.PrivilegedTCWs[tcw] ||
 		fp.OwningTCW == tcw ||
 		s.State.TCWControlsPosition(tcw, fp.TrackingController) ||
 		s.State.TCWControlsPosition(tcw, fp.LastLocalController)
@@ -41,7 +41,7 @@ func (s *Sim) TCWCanModifyTrack(tcw TCW, fp *NASFlightPlan) bool {
 // Checks if TCW controls the owner's position (consolidation-aware). This is true if
 // the TCW is privileged, owns the track, or controls the position that owns the track.
 func (s *Sim) TCWCanModifyFlightPlan(tcw TCW, fp *NASFlightPlan) bool {
-	return s.State.PrivilegedTCWs[tcw] ||
+	return s.PrivilegedTCWs[tcw] ||
 		fp.OwningTCW == tcw ||
 		s.State.TCWControlsPosition(tcw, fp.TrackingController) ||
 		s.State.TCWControlsPosition(tcw, fp.LastLocalController)
@@ -81,7 +81,7 @@ func (s *Sim) dispatchControlledAircraftCommand(tcw TCW, callsign av.ADSBCallsig
 		func(tcw TCW, ac *Aircraft) error {
 			if ac.IsUnassociated() {
 				// For unassociated aircraft, allow if privileged or controls pre-arrival drop position
-				if s.State.PrivilegedTCWs[tcw] || s.State.TCWControlsPosition(tcw, ac.PreArrivalDropTCP) {
+				if s.PrivilegedTCWs[tcw] || s.State.TCWControlsPosition(tcw, ac.PreArrivalDropTCP) {
 					return nil
 				}
 				return ErrTrackIsNotActive
@@ -763,9 +763,6 @@ func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, t
 		ACID:           sfp.ACID,
 	})
 
-	// Capture controller before clearing it
-	controller := sfp.ControllingController
-
 	// Take away the current controller's ability to issue control
 	// commands.
 	sfp.ControllingController = ""
@@ -775,7 +772,6 @@ func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, t
 	wait := time.Duration(5+s.Rand.Intn(10)) * time.Second
 	s.enqueueControllerContact(ac.ADSBCallsign, toTCP, wait)
 
-	intent.ControllingController = string(controller)
 	return intent
 }
 
@@ -1202,7 +1198,7 @@ func (s *Sim) PilotMixUp(tcw TCW, callsign av.ADSBCallsign) error {
 			return ac.PilotMixUp()
 		})
 	if err == nil && intent != nil {
-		s.renderAndPostIntents(callsign, tcw, []av.CommandIntent{intent})
+		s.renderAndPostReadback(callsign, tcw, []av.CommandIntent{intent})
 	}
 	return err
 }
@@ -1550,15 +1546,13 @@ func (s *Sim) SayBlocked(tcw TCW) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	tcp := s.State.PrimaryPositionForTCW(tcw)
-
 	// Have a random pilot speak up
 	callsign, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.Aircraft), func(cs av.ADSBCallsign) int {
 		ac := s.Aircraft[cs]
 		return util.Select(s.TCWCanCommandAircraft(tcw, ac.NASFlightPlan), 1, 0)
 	})
 	if ok {
-		s.postRadioEvent(callsign, tcp, *av.MakeNoIdTransmission("blocked"))
+		s.postReadbackTransmission(callsign, *av.MakeNoIdTransmission("blocked"), tcw)
 	}
 	return nil, nil
 }
@@ -1567,8 +1561,7 @@ func (s *Sim) SayAgain(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, err
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	tcp := s.State.PrimaryPositionForTCW(tcw)
-	s.postRadioEvent(callsign, tcp, *av.MakeReadbackTransmission("say again for"))
+	s.postReadbackTransmission(callsign, *av.MakeReadbackTransmission("say again for"), tcw)
 	return nil, nil
 }
 
@@ -1624,7 +1617,7 @@ func (s *Sim) processEnqueued() {
 					rt := ac.ContactMessage(s.ReportingPoints)
 					rt.Type = av.RadioTransmissionContact
 
-					s.postRadioEvent(c.ADSBCallsign, c.TCP, *rt)
+					s.postContactTransmission(c.ADSBCallsign, c.TCP, *rt)
 
 					// Activate pre-assigned external emergency; the transmission will be
 					// consolidated with the initial contact transmission.
@@ -1703,7 +1696,7 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 		intent, err := s.runOneControlCommand(tcw, callsign, command)
 		if err != nil {
 			// Post any collected intents before returning error
-			s.renderAndPostIntents(callsign, tcw, intents)
+			s.renderAndPostReadback(callsign, tcw, intents)
 			return ControlCommandsResult{
 				RemainingInput: strings.Join(commands[i:], " "),
 				Error:          err,
@@ -1715,15 +1708,16 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 	}
 
 	// Render all intents together as a single transmission
-	s.renderAndPostIntents(callsign, tcw, intents)
+	s.renderAndPostReadback(callsign, tcw, intents)
 	return ControlCommandsResult{}
 }
 
-// renderAndPostIntents renders a batch of intents and posts them as a single radio event.
-func (s *Sim) renderAndPostIntents(callsign av.ADSBCallsign, tcw TCW, intents []av.CommandIntent) {
+// renderAndPostReadback renders a batch of command intents as a pilot readback transmission.
+// The tcw ensures the readback goes to the controller who issued the command,
+// regardless of any consolidation changes.
+func (s *Sim) renderAndPostReadback(callsign av.ADSBCallsign, tcw TCW, intents []av.CommandIntent) {
 	if rt := av.RenderIntents(intents, s.Rand); rt != nil {
-		rt.Controller = string(s.State.PrimaryPositionForTCW(tcw))
-		s.postRadioEvent(callsign, s.State.PrimaryPositionForTCW(tcw), *rt)
+		s.postReadbackTransmission(callsign, *rt, tcw)
 	}
 }
 

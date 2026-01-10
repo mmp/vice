@@ -185,13 +185,13 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 		case sim.RadioTransmissionEvent:
 			toUs := ctx.UserControlsPosition(event.ToController)
 
-			privObs := ctx.TCWIsPrivileged(ctx.UserTCW) || ctx.TCWIsObserver(ctx.UserTCW)
-			if !toUs && !privObs {
+			priv := ctx.TCWIsPrivileged(ctx.UserTCW)
+			if !toUs && !priv {
 				break
 			}
 
 			prefix := ""
-			if privObs {
+			if priv {
 				prefix = "[to " + string(event.ToController) + "] "
 			}
 

@@ -493,18 +493,13 @@ const (
 
 // ContactIntent represents contact/handoff commands
 type ContactIntent struct {
-	Type                  ContactType
-	ToController          *Controller // the controller being contacted
-	Frequency             Frequency
-	IsDeparture           bool   // affects rendering (departure vs approach controller)
-	ControllingController string // captures the controller issuing the handoff
+	Type         ContactType
+	ToController *Controller // the controller being contacted
+	Frequency    Frequency
+	IsDeparture  bool // affects rendering (departure vs approach controller)
 }
 
 func (c ContactIntent) Render(rt *RadioTransmission, r *rand.Rand) {
-	if c.ControllingController != "" {
-		rt.Controller = c.ControllingController
-	}
-
 	switch c.Type {
 	case ContactController:
 		if c.IsDeparture {
