@@ -5,7 +5,9 @@
 package server
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"log/slog"
 	"net"
 	"net/http"
@@ -90,6 +92,43 @@ func (sm *SimManager) GetTTSStats() []ttsClientStats {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// STT logging
+
+// STTLogEntry represents logged data from an STT transcription.
+type STTLogEntry struct {
+	Transcript      string        `json:"transcript"`
+	WhisperDuration time.Duration `json:"whisper_duration"`
+	Callsign        string        `json:"callsign"`
+	Command         string        `json:"command"`
+	STTDuration     time.Duration `json:"stt_duration"`
+}
+
+func (sm *SimManager) handleSTTLog(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, "Failed to read body", http.StatusBadRequest)
+		return
+	}
+	defer r.Body.Close()
+
+	var entry STTLogEntry
+	if err := json.Unmarshal(body, &entry); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	sm.lg.Infof("STT log: transcript=%q whisper=%s callsign=%s command=%q stt=%s",
+		entry.Transcript, entry.WhisperDuration, entry.Callsign, entry.Command, entry.STTDuration)
+
+	w.WriteHeader(http.StatusOK)
+}
+
+///////////////////////////////////////////////////////////////////////////
 // Status / statistics via HTTP...
 
 func (sm *SimManager) launchHTTPServer() {
@@ -101,6 +140,8 @@ func (sm *SimManager) launchHTTPServer() {
 	})
 
 	mux.HandleFunc("/speech", sm.HandleSpeechWSConnection)
+
+	mux.HandleFunc("/stt-log", sm.handleSTTLog)
 
 	mux.HandleFunc("/debug/pprof/", pprof.Index)
 	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)

@@ -6,6 +6,7 @@ package server
 
 import (
 	"fmt"
+	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
@@ -922,8 +923,9 @@ type ProcessSTTTranscriptArgs struct {
 }
 
 type ProcessSTTTranscriptResult struct {
-	Callsign string
-	Command  string
+	Callsign    string
+	Command     string
+	STTDuration time.Duration
 }
 
 const ProcessSTTTranscriptRPC = "Sim.ProcessSTTTranscript"
@@ -932,6 +934,6 @@ func (sd *dispatcher) ProcessSTTTranscript(args *ProcessSTTTranscriptArgs, resul
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	var err error
-	result.Callsign, result.Command, err = sd.sm.ProcessSTTTranscript(args.ControllerToken, args.Transcript)
+	result.Callsign, result.Command, result.STTDuration, err = sd.sm.ProcessSTTTranscript(args.ControllerToken, args.Transcript)
 	return err
 }

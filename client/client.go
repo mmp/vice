@@ -5,6 +5,8 @@
 package client
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net"
@@ -12,6 +14,7 @@ import (
 	"net/rpc"
 	"slices"
 	"sort"
+	"strconv"
 	"sync"
 	"time"
 
@@ -700,7 +703,8 @@ func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
 		transcript, err := whisper.TranscribeWithModel(whisperModel, samples, platform.AudioInputSampleRate, 1, /* channels */
 			whisper.Options{})
 
-		fmt.Printf("whisper %q in %s\n", transcript, time.Since(start))
+		whisperDuration := time.Since(start)
+		fmt.Printf("whisper %q in %s\n", transcript, whisperDuration)
 
 		c.SetLastTranscription(transcript)
 		if err != nil {
@@ -708,17 +712,20 @@ func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
 			return
 		}
 
-		c.ProcessSTTTranscript(transcript, func(callsign, command string, err error) {
-			if err != nil {
-				lg.Errorf("STT command error: %v", err)
-				c.postSTTEvent(transcript, "")
-			} else {
-				lg.Infof("STT command: %s %s", callsign, command)
-				fullCommand := callsign + " " + command
-				c.SetLastCommand(fullCommand)
-				c.postSTTEvent(transcript, fullCommand)
-			}
-		})
+		if transcript != "[BLANK_AUDIO]" { // whisper seems consistent about this..
+			c.ProcessSTTTranscript(transcript, whisperDuration, func(callsign, command string, sttDuration time.Duration, err error) {
+				if err != nil {
+					lg.Errorf("STT command error: %v", err)
+					c.postSTTEvent(transcript, "")
+				} else {
+					lg.Infof("STT command: %s %s", callsign, command)
+					fullCommand := callsign + " " + command
+					c.SetLastCommand(fullCommand)
+					c.postSTTEvent(transcript, fullCommand)
+				}
+				sendSTTLog(transcript, whisperDuration, callsign, command, sttDuration, lg)
+			})
+		}
 	}()
 }
 
@@ -738,7 +745,8 @@ func (c *ControlClient) postSTTEvent(transcript, command string) {
 }
 
 // ProcessSTTTranscript sends the transcript to the server for DSL conversion and command execution.
-func (c *ControlClient) ProcessSTTTranscript(transcript string, callback func(callsign, command string, err error)) {
+func (c *ControlClient) ProcessSTTTranscript(transcript string, whisperDuration time.Duration,
+	callback func(callsign, command string, sttDuration time.Duration, err error)) {
 	var result server.ProcessSTTTranscriptResult
 	c.addCall(makeRPCCall(c.client.Go(server.ProcessSTTTranscriptRPC, &server.ProcessSTTTranscriptArgs{
 		ControllerToken: c.controllerToken,
@@ -753,9 +761,38 @@ func (c *ControlClient) ProcessSTTTranscript(transcript string, callback func(ca
 				c.mu.Unlock()
 			}
 			if callback != nil {
-				callback(result.Callsign, result.Command, err)
+				callback(result.Callsign, result.Command, result.STTDuration, err)
 			}
 		}))
+}
+
+// sendSTTLog sends STT results to the public server for logging.
+func sendSTTLog(transcript string, whisperDuration time.Duration, callsign, command string, sttDuration time.Duration, lg *log.Logger) {
+	go func() {
+		defer lg.CatchAndReportCrash()
+
+		entry := server.STTLogEntry{
+			Transcript:      transcript,
+			WhisperDuration: whisperDuration,
+			Callsign:        callsign,
+			Command:         command,
+			STTDuration:     sttDuration,
+		}
+
+		jsonBytes, err := json.Marshal(entry)
+		if err != nil {
+			lg.Debugf("STT log marshal error: %v", err)
+			return
+		}
+
+		url := "http://" + net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceHTTPServerPort)) + "/stt-log"
+		resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonBytes))
+		if err != nil {
+			lg.Debugf("STT log POST error: %v", err)
+			return
+		}
+		resp.Body.Close()
+	}()
 }
 
 ///////////////////////////////////////////////////////////////////////////

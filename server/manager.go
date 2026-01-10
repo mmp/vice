@@ -818,24 +818,29 @@ func (sm *SimManager) TextToSpeech(req *TTSRequest, speechMp3 *[]byte) error {
 ///////////////////////////////////////////////////////////////////////////
 // Speech-to-text
 
-func (sm *SimManager) ProcessSTTTranscript(token, transcript string) (string, string, error) {
+// ProcessSTTTranscript decodes an STT transcript and executes the resulting command.
+// Returns callsign, command, STT duration, and error.
+func (sm *SimManager) ProcessSTTTranscript(token, transcript string) (string, string, time.Duration, error) {
 	c := sm.LookupController(token)
 	if c == nil {
-		return "", "", ErrNoSimForControllerToken
+		return "", "", 0, ErrNoSimForControllerToken
 	}
 
 	if sm.sttProvider == nil {
-		return "", "", ErrSTTUnavailable
+		return "", "", 0, ErrSTTUnavailable
 	}
 
 	qc := makeSTTQueryContext(c, transcript)
 
+	start := time.Now()
 	commands, err := sm.sttProvider.DecodeTranscript(qc)
+	sttDuration := time.Since(start)
+
 	if err != nil {
-		return "", "", err
+		return "", "", sttDuration, err
 	}
 	if commands == "" {
-		return "", "", nil
+		return "", "", sttDuration, nil
 	}
 
 	// Sometimes claude gives us backticks...
@@ -844,9 +849,9 @@ func (sm *SimManager) ProcessSTTTranscript(token, transcript string) (string, st
 	callsign, commands, _ := strings.Cut(commands, " ")
 	er := c.sim.RunAircraftControlCommands(c.tcw, av.ADSBCallsign(callsign), commands)
 	if er.Error != nil {
-		return callsign, commands, er.Error
+		return callsign, commands, sttDuration, er.Error
 	}
-	return callsign, commands, nil
+	return callsign, commands, sttDuration, nil
 }
 
 //go:embed sttSystemPrompt.md
