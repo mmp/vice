@@ -688,7 +688,7 @@ func (c *controllerContext) GetStateUpdate() SimStateUpdate {
 	return SimStateUpdate{
 		StateUpdate: c.sim.GetStateUpdate(),
 		ActiveTCWs:  c.session.GetActiveTCWs(),
-		Events:      c.sim.ConsolidateRadioEventsForTCW(c.tcw, c.eventSub.Get()),
+		Events:      c.sim.PrepareRadioTransmissionsForTCW(c.tcw, c.eventSub.Get()),
 	}
 }
 

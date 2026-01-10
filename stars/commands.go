@@ -253,8 +253,16 @@ func (sp *STARSPane) processKeyboardInput(ctx *panes.Context) {
 			var status CommandStatus
 			var err error
 
-			// Check if transient command handlers should intercept this input
-			if len(sp.transientCommandHandlers) > 0 {
+			// If there's an active spinner, it gets keyboard input first.
+			if sp.activeSpinner != nil {
+				mode, inputErr := sp.activeSpinner.KeyboardInput(sp.previewAreaInput)
+				if inputErr != nil {
+					err = inputErr
+				} else {
+					sp.setCommandMode(ctx, mode)
+				}
+			} else if len(sp.transientCommandHandlers) > 0 {
+				// Check if transient command handlers should intercept this input
 				status, err = sp.executeTransientCommandHandlers(ctx, sp.previewAreaInput,
 					nil, false, [2]float32{}, nil, radar.ScopeTransformations{})
 			} else {
@@ -429,19 +437,6 @@ func (sp *STARSPane) minWindDrawAltitudeIndex(ctx *panes.Context) int {
 }
 
 func (sp *STARSPane) executeSTARSCommand(ctx *panes.Context, cmd string) (CommandStatus, error) {
-	// If there's an active spinner, it gets keyboard input; we thus won't
-	// worry about the corresponding CommandModes in the following.
-	if sp.activeSpinner != nil {
-		mode, err := sp.activeSpinner.KeyboardInput(cmd)
-		if err != nil {
-			return CommandStatus{}, err
-		}
-		// Clear the input area, and disable the spinner's mouse
-		// capture, and switch to the indicated command mode.
-		sp.setCommandMode(ctx, mode)
-		return CommandStatus{}, nil
-	}
-
 	if status, err, ok := sp.tryExecuteUserCommand(ctx, cmd, nil, false, [2]float32{}, radar.ScopeTransformations{}, nil, nil); ok {
 		return status, err
 	}

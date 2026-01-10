@@ -14,6 +14,9 @@ import (
 	"github.com/mmp/vice/wx"
 )
 
+///////////////////////////////////////////////////////////////////////////
+// Procedure turns
+
 type FlyRacetrackPT struct {
 	ProcedureTurn      *av.ProcedureTurn
 	Fix                string
