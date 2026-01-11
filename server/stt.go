@@ -122,7 +122,7 @@ func (p *AnthropicSTTProvider) DecodeTranscript(qc STTQueryContext) (string, err
 		return "", fmt.Errorf("API returned status %d", resp.StatusCode)
 	}
 
-	fmt.Printf("claude in %s\n", time.Since(start))
+	p.lg.Infof("claude STT in %s", time.Since(start))
 
 	var parsed claudeResponse
 	if err := json.Unmarshal(body, &parsed); err != nil {
@@ -130,7 +130,7 @@ func (p *AnthropicSTTProvider) DecodeTranscript(qc STTQueryContext) (string, err
 	}
 
 	if len(parsed.Content) > 0 {
-		fmt.Println("  -----> " + parsed.Content[0].Text)
+		p.lg.Infof("claude STT result: %s", parsed.Content[0].Text)
 		return parsed.Content[0].Text, nil
 	}
 

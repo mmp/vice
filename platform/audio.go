@@ -111,11 +111,9 @@ func (a *audioEngine) TryEnqueueSpeechMP3(mp3 []byte, finished func()) error {
 		return nil
 	}
 
-	if dec, pcm, err := minimp3.DecodeFull(mp3); err != nil {
+	if _, pcm, err := minimp3.DecodeFull(mp3); err != nil {
 		return err
 	} else {
-		_ = dec // sample rate info available if needed
-
 		// Poor man's resampling: repeat each sample rep times to get close
 		// to the standard rate.
 		pcm16 := pcm16FromBytes(pcm)

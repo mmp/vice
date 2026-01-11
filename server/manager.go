@@ -19,7 +19,6 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/goforj/godump"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/rand"
@@ -942,8 +941,6 @@ func makeSTTQueryContext(c *controllerContext, transcript string) STTQueryContex
 		telephony := getAircraftTelephony(ac)
 		qc.Aircraft[telephony] = sttAc
 	}
-
-	godump.Dump(qc)
 
 	return qc
 }

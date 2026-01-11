@@ -687,6 +687,9 @@ var whisperModelMu sync.Mutex
 
 // ProcessRecordedAudio transcribes recorded audio samples and sends them to the server for command processing.
 func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
+	// Snapshot state data before async processing to avoid races with GetUpdates.
+	state := c.State
+
 	go func() {
 		defer lg.CatchAndReportCrash()
 
@@ -715,8 +718,8 @@ func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
 		// Add telephony, approaches, and fixes for user-controlled tracks.
 		assignedApproaches := make(map[string]struct{})
 		fixes := make(map[string]struct{})
-		for _, trk := range c.State.Tracks {
-			if c.State.UserControlsTrack(trk) && trk.IsAssociated() {
+		for _, trk := range state.Tracks {
+			if state.UserControlsTrack(trk) && trk.IsAssociated() {
 				tele := av.GetTelephony(string(trk.ADSBCallsign), trk.FlightPlan.CWTCategory)
 				promptParts = append(promptParts, tele)
 				if trk.Approach != "" {
@@ -735,8 +738,8 @@ func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
 
 		// Add active approaches (converted to spoken form, excluding already-added assigned ones)
 		activeApproaches := make(map[string]struct{})
-		for _, ar := range c.State.ArrivalRunways {
-			if ap, ok := c.State.Airports[ar.Airport]; ok {
+		for _, ar := range state.ArrivalRunways {
+			if ap, ok := state.Airports[ar.Airport]; ok {
 				for _, appr := range ap.Approaches {
 					if appr.Runway == ar.Runway {
 						activeApproaches[appr.FullName] = struct{}{}
@@ -755,36 +758,38 @@ func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
 			promptParts = append(promptParts, av.GetFixTelephony(fix))
 		}
 
-		fmt.Println(strings.Join(promptParts, ", "))
-
 		whisperModelMu.Lock()
 		transcript, err := whisper.TranscribeWithModel(whisperModel, samples, platform.AudioInputSampleRate, 1, /* channels */
 			whisper.Options{InitialPrompt: strings.Join(promptParts, ", ")})
 		whisperModelMu.Unlock()
 
 		whisperDuration := time.Since(start)
-		fmt.Printf("whisper %q in %s\n", transcript, whisperDuration)
+		lg.Infof("whisper transcription %q in %s", transcript, whisperDuration)
 
 		c.SetLastTranscription(transcript)
 		if err != nil {
 			lg.Errorf("Push-to-talk: Transcription error: %v", err)
+			c.postSTTEvent("Transcription error: "+err.Error(), "")
 			return
 		}
 
-		if transcript != "[BLANK_AUDIO]" { // whisper seems consistent about this..
-			c.ProcessSTTTranscript(transcript, whisperDuration, func(callsign, command string, sttDuration time.Duration, err error) {
-				if err != nil {
-					lg.Errorf("STT command error: %v", err)
-					c.postSTTEvent(transcript, "")
-				} else {
-					lg.Infof("STT command: %s %s", callsign, command)
-					fullCommand := callsign + " " + command
-					c.SetLastCommand(fullCommand)
-					c.postSTTEvent(transcript, fullCommand)
-				}
-				sendSTTLog(transcript, whisperDuration, callsign, command, sttDuration, lg)
-			})
+		if transcript == "[BLANK_AUDIO]" {
+			c.postSTTEvent("", "")
+			return
 		}
+
+		c.ProcessSTTTranscript(transcript, whisperDuration, func(callsign, command string, sttDuration time.Duration, err error) {
+			if err != nil {
+				lg.Errorf("STT command error: %v", err)
+				c.postSTTEvent(transcript, "Error: "+err.Error())
+			} else {
+				lg.Infof("STT command: %s %s", callsign, command)
+				fullCommand := callsign + " " + command
+				c.SetLastCommand(fullCommand)
+				c.postSTTEvent(transcript, fullCommand)
+			}
+			sendSTTLog(transcript, whisperDuration, callsign, command, sttDuration, lg)
+		})
 	}()
 }
 

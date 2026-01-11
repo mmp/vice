@@ -6,8 +6,11 @@ import (
 
 /*
 #include <whisper.h>
+#include <stdlib.h>
 */
 import "C"
+
+import "unsafe"
 
 func (p *Params) SetTranslate(v bool)       { p.translate = toBool(v) }
 func (p *Params) SetSplitOnWord(v bool)     { p.split_on_word = toBool(v) }
@@ -81,8 +84,13 @@ func (p *Params) SetTemperature(t float32) { p.temperature = C.float(t) }
 // Pass -1.0 to disable this feature
 func (p *Params) SetTemperatureFallback(t float32) { p.temperature_inc = C.float(t) }
 
-// Set initial prompt
-func (p *Params) SetInitialPrompt(prompt string) { p.initial_prompt = C.CString(prompt) }
+// Set initial prompt. Frees any previously set prompt.
+func (p *Params) SetInitialPrompt(prompt string) {
+	if p.initial_prompt != nil {
+		C.free(unsafe.Pointer(p.initial_prompt))
+	}
+	p.initial_prompt = C.CString(prompt)
+}
 
 func toBool(v bool) C.bool {
 	if v {

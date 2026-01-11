@@ -140,9 +140,9 @@ func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 		keyboard.Pressed[imgui.KeyComma] = nil
 	}
 	// F15-24
-	for i := 586; i <= 595; i++ {
-		if imgui.IsKeyPressedBool(imgui.Key(i)) {
-			keyboard.Pressed[imgui.Key(i)] = nil
+	for k := imgui.KeyF15; k <= imgui.KeyF24; k++ {
+		if imgui.IsKeyPressedBool(k) {
+			keyboard.Pressed[k] = nil
 		}
 	}
 
