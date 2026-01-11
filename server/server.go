@@ -59,7 +59,8 @@ import (
 // 49: STARS consolidation
 // 50: rework State/StateUpdate management
 // 51: preemptive before v0.13.3 release
-const ViceSerializeVersion = 51
+// 52: STT
+const ViceSerializeVersion = 52
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 + ViceRPCVersion
