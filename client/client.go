@@ -683,6 +683,7 @@ func (c *ControlClient) GetAtmosGrid(t time.Time, callback func(*wx.AtmosGrid, e
 var whisperModel *whisper.Model
 var whisperModelErr error
 var whisperModelOnce sync.Once
+var whisperModelMu sync.Mutex
 
 // ProcessRecordedAudio transcribes recorded audio samples and sends them to the server for command processing.
 func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
@@ -756,8 +757,10 @@ func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
 
 		fmt.Println(strings.Join(promptParts, ", "))
 
+		whisperModelMu.Lock()
 		transcript, err := whisper.TranscribeWithModel(whisperModel, samples, platform.AudioInputSampleRate, 1, /* channels */
 			whisper.Options{InitialPrompt: strings.Join(promptParts, ", ")})
+		whisperModelMu.Unlock()
 
 		whisperDuration := time.Since(start)
 		fmt.Printf("whisper %q in %s\n", transcript, whisperDuration)
