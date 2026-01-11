@@ -152,6 +152,11 @@ func makeDerivedState(s *Sim) DerivedState {
 			continue
 		}
 
+		var approach string
+		if ac.Nav.Approach.Assigned != nil {
+			approach = ac.Nav.Approach.Assigned.FullName
+		}
+
 		rt := Track{
 			RadarTrack:                ac.GetRadarTrack(s.State.SimTime),
 			FlightPlan:                ac.NASFlightPlan,
@@ -165,6 +170,8 @@ func makeDerivedState(s *Sim) DerivedState {
 			FiledAltitude:             ac.FlightPlan.Altitude,
 			OnExtendedCenterline:      ac.OnExtendedCenterline(0.2),
 			OnApproach:                ac.OnApproach(false), /* don't check altitude */
+			Approach:                  approach,
+			Fixes:                     ac.GetSTTFixes(),
 			MVAsApply:                 ac.MVAsApply(),
 			HoldForRelease:            ac.HoldForRelease,
 			MissingFlightPlan:         ac.MissingFlightPlan,

@@ -147,6 +147,8 @@ type Track struct {
 	FiledAltitude             int
 	OnExtendedCenterline      bool
 	OnApproach                bool
+	Approach                  string   // Full name of assigned approach, if any
+	Fixes                     []string // Relevant fix names for STT
 	ATPAVolume                *av.ATPAVolume
 	MVAsApply                 bool
 	HoldForRelease            bool

@@ -697,19 +697,7 @@ func (FixSnippetFormatter) Written(arg any) string {
 }
 
 func (f FixSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
-	loadPronunciationsIfNeeded()
-	fix := arg.(string)
-	// Cut off any trailing bits like COLIN.JT
-	fix, _, _ = strings.Cut(fix, ".")
-
-	if len(fix) == 3 || (len(fix) == 4 && fix[0] == 'K') { // VOR, airport, etc.
-		return f.Written(fix)
-	} else if say, ok := sayFixMap[fix]; ok {
-		return say
-	} else {
-		// All-caps tends to be read letter by letter, while this can sometimes be decent.
-		return util.StopShouting(fix) // #yolo
-	}
+	return GetFixTelephony(arg.(string))
 }
 
 func (FixSnippetFormatter) Validate(arg any) error {
@@ -785,6 +773,123 @@ func (BasicNumberSnippetFormatter) Validate(arg any) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// Callsign utilities
+
+// SplitCallsign splits a callsign into ICAO prefix and flight number.
+// For "UAL123" returns ("UAL", "123"). For "N12345" returns ("N", "12345").
+func SplitCallsign(callsign string) (prefix, number string) {
+	if idx := strings.IndexAny(callsign, "0123456789"); idx != -1 {
+		return callsign[:idx], callsign[idx:]
+	}
+	return callsign, ""
+}
+
+// GetTelephony returns the spoken telephony string for a callsign.
+// cwtCategory determines the heavy/super suffix: "A" = super, "B"/"C"/"D" = heavy.
+func GetTelephony(callsign string, cwtCategory string) string {
+	prefix, number := SplitCallsign(callsign)
+
+	var tele string
+	if prefix == "N" {
+		tele = "november"
+	} else if t, ok := DB.Callsigns[prefix]; ok {
+		tele = t
+	}
+
+	if number != "" {
+		tele += " " + number
+	}
+
+	if cwtCategory == "A" {
+		tele += " super"
+	} else if len(cwtCategory) > 0 && cwtCategory[0] <= 'D' {
+		tele += " heavy"
+	}
+
+	return tele
+}
+
+// GetFixTelephony returns the spoken name for a fix (navaid, airport, or waypoint).
+// It uses pronunciations from sayfix.json when available, falls back to database
+// lookups for navaids/airports, and uses StopShouting for other fixes.
+func GetFixTelephony(fix string) string {
+	loadPronunciationsIfNeeded()
+
+	// Cut off any trailing bits like COLIN.JT
+	fix, _, _ = strings.Cut(fix, ".")
+
+	// For 3-char fixes or 4-char starting with K (VORs, airports), use the full name
+	if len(fix) == 3 || (len(fix) == 4 && fix[0] == 'K') {
+		if aid, ok := DB.Navaids[fix]; ok {
+			return util.StopShouting(aid.Name)
+		} else if ap, ok := DB.Airports[fix]; ok {
+			return ap.Name
+		}
+	}
+
+	// Check sayfix.json for pronunciation
+	if say, ok := sayFixMap[fix]; ok {
+		return say
+	}
+
+	// Fall back to StopShouting for readability
+	return util.StopShouting(fix)
+}
+
+// GetApproachTelephony returns the spoken form of an approach name.
+// For example, "RNAV X Runway 22L" becomes "r-nav x-ray runway 2 2 left".
+func GetApproachTelephony(approach string) string {
+	var result []string
+	lastRunway := false
+
+	for _, word := range strings.Fields(approach) {
+		if lastRunway {
+			// Handle runway number and suffix (e.g., "22L")
+			for _, ch := range strings.ToLower(word) {
+				switch ch {
+				case 'l':
+					result = append(result, "left")
+				case 'r':
+					result = append(result, "right")
+				case 'c':
+					result = append(result, "center")
+				case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+					result = append(result, sayDigit(int(ch-'0')))
+				}
+			}
+			lastRunway = false
+		} else {
+			upper := strings.ToUpper(word)
+			lower := strings.ToLower(word)
+			if lower == "runway" {
+				lastRunway = true
+				result = append(result, "runway")
+			} else if upper == "ILS" {
+				result = append(result, "I L S")
+			} else if upper == "RNAV" {
+				result = append(result, "r-nav")
+			} else if upper == "VOR" {
+				result = append(result, "V O R")
+			} else if upper == "GPS" {
+				result = append(result, "G P S")
+			} else if upper == "LOC" {
+				result = append(result, "localizer")
+			} else if upper == "LDA" {
+				result = append(result, "L D A")
+			} else if upper == "NDB" {
+				result = append(result, "N D B")
+			} else if sp, ok := spokenLetters[upper]; ok {
+				result = append(result, sp)
+			} else {
+				result = append(result, word)
+			}
+		}
+	}
+
+	return strings.Join(result, " ")
+}
+
+///////////////////////////////////////////////////////////////////////////
 // CallsignSnippetFormatter
 
 type CallsignSnippetFormatter struct{}
@@ -800,8 +905,7 @@ func (CallsignSnippetFormatter) Written(arg any) string {
 	ca := arg.(CallsignArg)
 	callsign := string(ca.Callsign)
 
-	idx := strings.IndexAny(callsign, "0123456789")
-	icao, fnum := callsign[:idx], callsign[idx:]
+	icao, fnum := SplitCallsign(callsign)
 	if icao == "N" {
 		return callsign
 	}
@@ -821,8 +925,7 @@ func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	ca := arg.(CallsignArg)
 	callsign := string(ca.Callsign)
 
-	idx := strings.IndexAny(callsign, "0123456789")
-	icao, fnum := callsign[:idx], callsign[idx:]
+	icao, fnum := SplitCallsign(callsign)
 
 	if icao == "N" {
 		var s []string
@@ -838,11 +941,11 @@ func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 
 	// peel off any trailing letters
 	var suffix string
-	if idx = strings.IndexAny(fnum, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"); idx != -1 {
-		for _, ch := range fnum[idx:] {
+	if suffixIdx := strings.IndexAny(fnum, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"); suffixIdx != -1 {
+		for _, ch := range fnum[suffixIdx:] {
 			suffix += " " + spokenLetters[string(ch)]
 		}
-		fnum = fnum[:idx]
+		fnum = fnum[:suffixIdx]
 	}
 
 	// figure out the telephony

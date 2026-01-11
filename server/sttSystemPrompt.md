@@ -139,7 +139,7 @@ You receive JSON with:
 
 | Cmd | Syntax | Phraseology |
 |-----|--------|-------------|
-| Expect Approach | `E{APPR}` | "expect {appr}", "expect vectors {appr}" |
+| Expect Approach | `E{APPR}` | "expect {appr}", "vectors {appr}" |
 | Cleared Approach | `C{APPR}` | "cleared {appr}" |
 | Cleared Straight-In | `CSI{APPR}` | "cleared straight-in {appr}" |
 | At Fix Cleared | `A{FIX}/C{APPR}` | "at {fix} cleared {appr}" |

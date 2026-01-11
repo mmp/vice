@@ -22,7 +22,6 @@ import (
 	"github.com/goforj/godump"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
-	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -966,81 +965,14 @@ func getActiveApproaches(ss *sim.CommonState, ap string) map[string]string {
 
 func getSTTFixes(ac *sim.Aircraft) map[string]string {
 	fixes := make(map[string]string)
-	p := ac.Nav.FlightState.Position
-
-	add := func(fix string) {
-		if aid, ok := av.DB.Navaids[fix]; ok {
-			fixes[util.StopShouting(aid.Name)] = fix
-		} else if ap, ok := av.DB.Airports[fix]; ok {
-			fixes[ap.Name] = fix
-		} else {
-			fixes[fix] = fix
-		}
+	for _, fix := range ac.GetSTTFixes() {
+		fixes[av.GetFixTelephony(fix)] = fix
 	}
-
-	for _, wp := range ac.Nav.AssignedWaypoints() {
-		if math.NMDistance2LL(p, wp.Location) > 75 {
-			break
-		}
-		if len(wp.Fix) > 5 || len(wp.Fix) < 3 || wp.Fix[0] == '_' {
-			continue
-		}
-
-		add(wp.Fix)
-	}
-
-	if ac.Nav.Approach.Assigned != nil {
-		// Check if approach waypoints are already in the route
-		hasApproachWaypoints := slices.ContainsFunc(ac.Nav.AssignedWaypoints(),
-			func(wp av.Waypoint) bool { return wp.OnApproach })
-
-		// If not, add all approach waypoints (aircraft is being vectored to intercept)
-		if !hasApproachWaypoints {
-			for _, wps := range ac.Nav.Approach.Assigned.Waypoints {
-				for _, wp := range wps {
-					if len(wp.Fix) >= 3 && len(wp.Fix) <= 5 && wp.Fix[0] != '_' {
-						add(wp.Fix)
-					}
-				}
-			}
-		}
-		// If approach waypoints ARE in the route, they'll be handled by the
-		// AssignedWaypoints loop above (only the remaining fixes ahead of the aircraft)
-	}
-
 	return fixes
 }
 
 func getAircraftTelephony(ac *sim.Aircraft) string {
-	cs := string(ac.ADSBCallsign)
-
-	prefix, number := func() (string, string) {
-		for i := range cs {
-			if cs[i] >= '0' && cs[i] <= '9' {
-				return cs[:i], cs[i:]
-			}
-		}
-		return cs, ""
-	}()
-	var tele string
-	if prefix == "N" {
-		tele = "november"
-	} else if t, ok := av.DB.Callsigns[prefix]; !ok {
-		fmt.Printf("NO TELEPHONY %q -> prefix %q\n", ac.ADSBCallsign, prefix)
-	} else {
-		tele = t
-	}
-	tele += " " + number
-
-	if ac.IsAssociated() {
-		if ac.NASFlightPlan.CWTCategory == "A" {
-			tele += " super"
-		} else if ac.NASFlightPlan.CWTCategory[0] <= 'D' {
-			tele += " heavy"
-		}
-	}
-
-	return tele
+	return av.GetTelephony(string(ac.ADSBCallsign), ac.AircraftPerformance().Category.CWT)
 }
 
 ///////////////////////////////////////////////////////////////////////////

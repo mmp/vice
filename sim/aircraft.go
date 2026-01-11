@@ -97,6 +97,45 @@ func (ac *Aircraft) GetRadarTrack(now time.Time) av.RadarTrack {
 	}
 }
 
+// GetSTTFixes returns the raw fix names relevant for STT context.
+// This includes assigned waypoints within 75nm and approach waypoints if applicable.
+func (ac *Aircraft) GetSTTFixes() []string {
+	var fixes []string
+	p := ac.Nav.FlightState.Position
+
+	isValidFix := func(fix string) bool {
+		return len(fix) >= 3 && len(fix) <= 5 && fix[0] != '_'
+	}
+
+	for _, wp := range ac.Nav.AssignedWaypoints() {
+		if math.NMDistance2LL(p, wp.Location) > 75 {
+			break
+		}
+		if isValidFix(wp.Fix) {
+			fixes = append(fixes, wp.Fix)
+		}
+	}
+
+	if ac.Nav.Approach.Assigned != nil {
+		// Check if approach waypoints are already in the route
+		hasApproachWaypoints := slices.ContainsFunc(ac.Nav.AssignedWaypoints(),
+			func(wp av.Waypoint) bool { return wp.OnApproach })
+
+		// If not, add all approach waypoints (aircraft is being vectored to intercept)
+		if !hasApproachWaypoints {
+			for _, wps := range ac.Nav.Approach.Assigned.Waypoints {
+				for _, wp := range wps {
+					if isValidFix(wp.Fix) {
+						fixes = append(fixes, wp.Fix)
+					}
+				}
+			}
+		}
+	}
+
+	return fixes
+}
+
 func (ac *Aircraft) InitializeFlightPlan(r av.FlightRules, acType, dep, arr string) {
 	ac.FlightPlan = av.FlightPlan{
 		Rules:            r,
