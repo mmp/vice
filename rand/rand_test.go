@@ -13,7 +13,7 @@ func TestPermutationElement(t *testing.T) {
 		for _, h := range []uint32{0, 0xff, 0xfeedface} {
 			m := make(map[int]int)
 
-			for i := 0; i < n; i++ {
+			for i := range n {
 				perm := PermutationElement(i, n, h)
 				if _, ok := m[perm]; ok {
 					t.Errorf("%d: appeared multiple times", perm)
@@ -68,7 +68,7 @@ func TestSampleFiltered(t *testing.T) {
 	}
 
 	var counts [5]int
-	for i := 0; i < 9000; i++ {
+	for range 9000 {
 		idx := SampleFiltered(r, []int{0, 1, 2, 3, 4}, func(v int) bool { return v&1 == 0 })
 		counts[idx]++
 	}
@@ -91,7 +91,7 @@ func TestSampleWeighted(t *testing.T) {
 	n := 100000
 	r := Make()
 	r.Seed(6502)
-	for i := 0; i < n; i++ {
+	for range n {
 		v, ok := SampleWeighted(r, a, func(v int) int { return v })
 		if !ok {
 			t.Errorf("Unexpected failure of SampleWeighted")

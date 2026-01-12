@@ -1222,7 +1222,7 @@ func (s *LocalSquawkCodePoolSpecifier) PostDeserialize(e *util.ErrorLogger) {
 				return (a[0] >= b[0] && a[0] <= b[1]) || (a[1] >= b[0] && a[1] <= b[1])
 			}
 			for i := range poolRanges {
-				for j := 0; j < i; j++ {
+				for j := range i {
 					if overlaps(poolRanges[i], poolRanges[j]) {
 						e.ErrorString("Range %s-%s overlaps with range %s-%s in the same pool",
 							poolRanges[i][0], poolRanges[i][1], poolRanges[j][0], poolRanges[j][1])

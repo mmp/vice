@@ -63,7 +63,7 @@ func GenerateImguiCommandBuffer(cb *CommandBuffer, displaySize, framebufferSize 
 			buf16 := unsafe.Slice((*uint16)(indexBufferPtr), n)
 
 			buf32 := make([]int32, n)
-			for i := 0; i < n; i++ {
+			for i := range n {
 				buf32[i] = int32(buf16[i])
 			}
 			indexBufferPtr = unsafe.Pointer(&buf32[0])

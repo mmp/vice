@@ -29,7 +29,7 @@ func Callstack(fr []StackFrame) StackFrames {
 		fr = make([]StackFrame, n)
 	}
 
-	for i := 0; i < n; i++ {
+	for i := range n {
 		frame, more := frames.Next()
 		fn := strings.TrimPrefix(frame.Function, "github.com/mmp/vice")
 		fn = strings.TrimPrefix(fn, "main.")

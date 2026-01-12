@@ -526,7 +526,7 @@ func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
 		ld.AddLine([2]float32{x, y - stripHeight/3}, [2]float32{drawWidth, y - stripHeight/3})
 		ld.AddLine([2]float32{x, y - stripHeight*2/3}, [2]float32{drawWidth, y - stripHeight*2/3})
 		// Vertical lines
-		for i := 0; i < 3; i++ {
+		for i := range 3 {
 			xp := x + float32(i)*widthAnn
 			ld.AddLine([2]float32{xp, y}, [2]float32{xp, y - stripHeight})
 		}

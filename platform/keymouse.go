@@ -45,7 +45,7 @@ func (g *glfwPlatform) GetMouse() *MouseState {
 		Wheel:    [2]float32{wx, wy},
 	}
 
-	for b := MouseButtonPrimary; b < MouseButtonCount; b++ {
+	for b := range MouseButtonCount {
 		m.Down[b] = imgui.IsMouseDown(b)
 		m.Released[b] = imgui.IsMouseReleased(b)
 		m.Clicked[b] = imgui.IsMouseClickedBool(b)
@@ -146,7 +146,7 @@ func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 		}
 	}
 
-	for i := 0; i < 16; i++ { // 16 f-keys on the STARS keyboard
+	for i := range 16 { // 16 f-keys on the STARS keyboard
 		k := imgui.KeyF1 + imgui.Key(i)
 		if imgui.IsKeyPressedBool(k) {
 			keyboard.Pressed[k] = nil

@@ -146,7 +146,7 @@ func pcmInt16ToFloat32Mono16k(pcm []int16, inRate, inChans int) ([]float32, erro
 		}
 		frames := len(pcm) / 2
 		mono = make([]float64, frames)
-		for i := 0; i < frames; i++ {
+		for i := range frames {
 			l := float64(pcm[2*i]) / 32768.0
 			r := float64(pcm[2*i+1]) / 32768.0
 			mono[i] = 0.5 * (l + r)
@@ -159,7 +159,7 @@ func pcmInt16ToFloat32Mono16k(pcm []int16, inRate, inChans int) ([]float32, erro
 		ratio := float64(outRate) / float64(inRate)
 		outLen := int(math.Ceil(float64(len(mono)) * ratio))
 		res := make([]float64, outLen)
-		for i := 0; i < outLen; i++ {
+		for i := range outLen {
 			srcPos := float64(i) / ratio
 			j := int(math.Floor(srcPos))
 			t := srcPos - float64(j)

@@ -241,8 +241,8 @@ func RadarImageToDBZ(img image.Image) []byte {
 	// Determine the dBZ for each pixel.
 	ny, nx := img.Bounds().Dy(), img.Bounds().Dx()
 	dbzImage := make([]byte, nx*ny)
-	for y := 0; y < ny; y++ {
-		for x := 0; x < nx; x++ {
+	for y := range ny {
+		for x := range nx {
 			px := rgba.RGBAAt(x, y)
 			dbz := estimateDBZ(root, [3]byte{px.R, px.G, px.B})
 

@@ -223,7 +223,7 @@ func (g *glfwPlatform) ProcessEvents() bool {
 		return true
 	}
 
-	for i := 0; i < len(g.mouseJustPressed); i++ {
+	for i := range len(g.mouseJustPressed) {
 		if g.window.GetMouseButton(glfwButtonIDByIndex[imgui.MouseButton(i)]) == glfw.Press {
 			return true
 		}
@@ -285,7 +285,7 @@ func (g *glfwPlatform) NewFrame() {
 		g.imguiIO.SetMousePos(imgui.Vec2{X: -gomath.MaxFloat32, Y: -gomath.MaxFloat32})
 	}
 
-	for i := 0; i < len(g.mouseJustPressed); i++ {
+	for i := range len(g.mouseJustPressed) {
 		down := g.mouseJustPressed[i] ||
 			(g.window.GetMouseButton(glfwButtonIDByIndex[imgui.MouseButton(i)]) == glfw.Press)
 		g.imguiIO.SetMouseButtonDown(i, down)

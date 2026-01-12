@@ -136,7 +136,7 @@ func TestPointSegmentDistance(t *testing.T) {
 	refSampled := func(p, v, w [2]float32) float32 {
 		const n = 16384
 		dmin := float32(1e30)
-		for i := 0; i < n; i++ {
+		for i := range n {
 			t := float32(i) / float32(n-1)
 			pp := Lerp2f(t, v, w)
 			dmin = min(dmin, Distance2f(pp, p))
@@ -166,7 +166,7 @@ func TestPointSegmentDistance(t *testing.T) {
 
 	// Do some randoms
 	r := rand.Make()
-	for i := 0; i < 32; i++ {
+	for range 32 {
 		r := func() float32 { return -10 + 20*r.Float32() }
 		p := [2]float32{r(), r()}
 		v := [2]float32{r(), r()}
