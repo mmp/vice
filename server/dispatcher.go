@@ -920,6 +920,8 @@ func (sd *dispatcher) ConfigureATPA(args *ATPAConfigArgs, result *ATPAConfigResu
 type ProcessSTTTranscriptArgs struct {
 	ControllerToken string
 	Transcript      string
+	WhisperDuration time.Duration
+	NumCores        int
 }
 
 type ProcessSTTTranscriptResult struct {
@@ -934,6 +936,6 @@ func (sd *dispatcher) ProcessSTTTranscript(args *ProcessSTTTranscriptArgs, resul
 	defer sd.sm.lg.CatchAndReportCrash()
 
 	var err error
-	result.Callsign, result.Command, result.STTDuration, err = sd.sm.ProcessSTTTranscript(args.ControllerToken, args.Transcript)
+	result.Callsign, result.Command, result.STTDuration, err = sd.sm.ProcessSTTTranscript(args.ControllerToken, args.Transcript, args.WhisperDuration, args.NumCores)
 	return err
 }

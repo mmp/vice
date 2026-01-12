@@ -5,16 +5,14 @@
 package client
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"net"
 	"net/http"
 	"net/rpc"
+	"runtime"
 	"slices"
 	"sort"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -788,7 +786,6 @@ func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
 				c.SetLastCommand(fullCommand)
 				c.postSTTEvent(transcript, fullCommand)
 			}
-			sendSTTLog(transcript, whisperDuration, callsign, command, sttDuration, lg)
 		})
 	}()
 }
@@ -815,6 +812,8 @@ func (c *ControlClient) ProcessSTTTranscript(transcript string, whisperDuration 
 	c.addCall(makeRPCCall(c.client.Go(server.ProcessSTTTranscriptRPC, &server.ProcessSTTTranscriptArgs{
 		ControllerToken: c.controllerToken,
 		Transcript:      transcript,
+		WhisperDuration: whisperDuration,
+		NumCores:        runtime.NumCPU(),
 	}, &result, nil),
 		func(err error) {
 			if err == nil && result.Callsign != "" {
@@ -828,35 +827,6 @@ func (c *ControlClient) ProcessSTTTranscript(transcript string, whisperDuration 
 				callback(result.Callsign, result.Command, result.STTDuration, err)
 			}
 		}))
-}
-
-// sendSTTLog sends STT results to the public server for logging.
-func sendSTTLog(transcript string, whisperDuration time.Duration, callsign, command string, sttDuration time.Duration, lg *log.Logger) {
-	go func() {
-		defer lg.CatchAndReportCrash()
-
-		entry := server.STTLogEntry{
-			Transcript:      transcript,
-			WhisperDuration: whisperDuration,
-			Callsign:        callsign,
-			Command:         command,
-			STTDuration:     sttDuration,
-		}
-
-		jsonBytes, err := json.Marshal(entry)
-		if err != nil {
-			lg.Debugf("STT log marshal error: %v", err)
-			return
-		}
-
-		url := "http://" + net.JoinHostPort(server.ViceServerAddress, strconv.Itoa(server.ViceHTTPServerPort)) + "/stt-log"
-		resp, err := http.Post(url, "application/json", bytes.NewBuffer(jsonBytes))
-		if err != nil {
-			lg.Debugf("STT log POST error: %v", err)
-			return
-		}
-		resp.Body.Close()
-	}()
 }
 
 ///////////////////////////////////////////////////////////////////////////

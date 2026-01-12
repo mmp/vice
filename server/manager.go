@@ -818,7 +818,7 @@ func (sm *SimManager) TextToSpeech(req *TTSRequest, speechMp3 *[]byte) error {
 
 // ProcessSTTTranscript decodes an STT transcript and executes the resulting command.
 // Returns callsign, command, STT duration, and error.
-func (sm *SimManager) ProcessSTTTranscript(token, transcript string) (string, string, time.Duration, error) {
+func (sm *SimManager) ProcessSTTTranscript(token, transcript string, whisperDuration time.Duration, numCores int) (string, string, time.Duration, error) {
 	c := sm.LookupController(token)
 	if c == nil {
 		return "", "", 0, ErrNoSimForControllerToken
@@ -828,16 +828,20 @@ func (sm *SimManager) ProcessSTTTranscript(token, transcript string) (string, st
 		return "", "", 0, ErrSTTUnavailable
 	}
 
-	qc := makeSTTQueryContext(c, transcript)
+	qc := makeSTTQueryContext(c, transcript, whisperDuration, numCores)
 
 	start := time.Now()
 	commands, err := sm.sttProvider.DecodeTranscript(qc)
 	sttDuration := time.Since(start)
 
 	if err != nil {
+		sm.lg.Infof("STT: transcript=%q whisper=%s stt=%s cores=%d error=%v",
+			transcript, whisperDuration, sttDuration, numCores, err)
 		return "", "", sttDuration, err
 	}
 	if commands == "" {
+		sm.lg.Infof("STT: transcript=%q whisper=%s stt=%s cores=%d (no command)",
+			transcript, whisperDuration, sttDuration, numCores)
 		return "", "", sttDuration, nil
 	}
 
@@ -845,6 +849,10 @@ func (sm *SimManager) ProcessSTTTranscript(token, transcript string) (string, st
 	commands = strings.Trim(commands, "`")
 
 	callsign, commands, _ := strings.Cut(commands, " ")
+
+	sm.lg.Infof("STT: transcript=%q whisper=%s callsign=%s command=%q stt=%s cores=%d",
+		transcript, whisperDuration, callsign, commands, sttDuration, numCores)
+
 	er := c.sim.RunAircraftControlCommands(c.tcw, av.ADSBCallsign(callsign), commands)
 	if er.Error != nil {
 		return callsign, commands, sttDuration, er.Error
@@ -872,25 +880,29 @@ func (sm *SimManager) DecodeSTTTranscript(ctx STTQueryContext, result *string) e
 }
 
 type STTQueryContext struct {
-	Aircraft   map[string]STTAircraft       `json:"aircraft,omitempty"`
-	Approaches map[string]map[string]string `json:"approaches,omitempty"`
-	Transcript string                       `json:"transcript"`
+	Aircraft        map[string]STTAircraft       `json:"aircraft,omitempty"`
+	Approaches      map[string]map[string]string `json:"approaches,omitempty"`
+	Transcript      string                       `json:"transcript"`
+	WhisperDuration time.Duration                `json:"whisper_duration,omitempty"`
+	NumCores        int                          `json:"num_cores,omitempty"`
 }
 
 type STTAircraft struct {
 	Callsign         av.ADSBCallsign   `json:"callsign"`
 	Fixes            map[string]string `json:"fixes"`
 	ApproachAirport  string            `json:"approach_airport,omitempty"`
-	AssignedApproach string            `json:"assigned_approach,omitempty"`
+	AssignedApproach string            `json:"assigned_approach"`
 	Altitude         int               `json:"altitude"`
 	State            string            `json:"state"`
 }
 
-func makeSTTQueryContext(c *controllerContext, transcript string) STTQueryContext {
+func makeSTTQueryContext(c *controllerContext, transcript string, whisperDuration time.Duration, numCores int) STTQueryContext {
 	qc := STTQueryContext{
-		Aircraft:   make(map[string]STTAircraft),
-		Approaches: make(map[string]map[string]string),
-		Transcript: transcript,
+		Aircraft:        make(map[string]STTAircraft),
+		Approaches:      make(map[string]map[string]string),
+		Transcript:      transcript,
+		WhisperDuration: whisperDuration,
+		NumCores:        numCores,
 	}
 
 	for cs, ac := range c.sim.Aircraft {
