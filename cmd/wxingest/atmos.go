@@ -683,10 +683,7 @@ func MergeAll(grids []*Grid) *Grid {
 // buildGridFromGRIB2 constructs a grid index from GRIB2 records.
 // This index can be reused across multiple TRACON queries.
 func buildGridFromGRIB2(records []*squall.GRIB2) *Grid {
-	numWorkers := *nWorkers
-	if numWorkers > len(records) {
-		numWorkers = len(records)
-	}
+	numWorkers := min(*nWorkers, len(records))
 
 	// Partition records across workers
 	recordsPerWorker := (len(records) + numWorkers - 1) / numWorkers
