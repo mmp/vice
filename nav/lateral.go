@@ -435,7 +435,8 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 		} else if wp.Heading != 0 && !clearedAtFix {
 			// We have an outbound heading
 			hdg := float32(wp.Heading)
-			nav.Heading = NavHeading{Assigned: &hdg}
+			turn := TurnMethod(wp.Turn)
+			nav.Heading = NavHeading{Assigned: &hdg, Turn: &turn}
 		} else if wp.PresentHeading && !clearedAtFix {
 			// Round to nearest 5 degrees
 			hdg := float32(5 * int((nav.FlightState.Heading+2.5)/5))

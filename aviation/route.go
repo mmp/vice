@@ -29,6 +29,7 @@ type Waypoint struct {
 	AltitudeRestriction      *AltitudeRestriction `json:"altitude_restriction,omitempty"`
 	Speed                    int                  `json:"speed,omitempty"`
 	Heading                  int                  `json:"heading,omitempty"` // outbound heading after waypoint
+	Turn                     int                  `json:",omitempty"`        // 1 = left, 2= right
 	PresentHeading           bool                 `json:",omitempty"`
 	ProcedureTurn            *ProcedureTurn       `json:"pt,omitempty"`
 	NoPT                     bool                 `json:"nopt,omitempty"`
@@ -939,6 +940,24 @@ func parseWaypoints(str string) (WaypointArray, error) {
 						return nil, fmt.Errorf("%s: waypoint outbound heading must be between 0-360: %v", f[1:], err)
 					} else {
 						wp.Heading = hdg
+					}
+				} else if f[0] == 'l' {
+					if hdg, err := strconv.Atoi(f[1:]); err != nil {
+						return nil, fmt.Errorf("%s: invalid waypoint outbound heading: %v", f[1:], err)
+					} else if hdg < 0 || hdg > 360 {
+						return nil, fmt.Errorf("%s: waypoint outbound heading must be between 0-360: %v", f[1:], err)
+					} else {
+						wp.Heading = hdg
+						wp.Turn = 1
+					}
+				} else if f[0] == 'r' {
+					if hdg, err := strconv.Atoi(f[1:]); err != nil {
+						return nil, fmt.Errorf("%s: invalid waypoint outbound heading: %v", f[1:], err)
+					} else if hdg < 0 || hdg > 360 {
+						return nil, fmt.Errorf("%s: waypoint outbound heading must be between 0-360: %v", f[1:], err)
+					} else {
+						wp.Heading = hdg
+						wp.Turn = 2
 					}
 				} else if f[0] == 'c' {
 					alt, err := strconv.Atoi(f[1:])
