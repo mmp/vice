@@ -55,7 +55,7 @@ jobs:
         ls
 
     - name: Build vice
-      run: build.bat --icons
+      run: .\build.bat --icons
       env:
         CGO_CFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
         CGO_CPPFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
@@ -78,7 +78,7 @@ jobs:
 
     - name: Build for release (download resources)
       run: |
-        build.bat --release
+        .\build.bat --release
         go build -o ./crc2vice.exe ./cmd/crc2vice
         go build -o ./dat2vice.exe ./cmd/dat2vice
       env:
