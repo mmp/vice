@@ -43,21 +43,8 @@ jobs:
         sudo apt update
         sudo apt install xorg-dev libsdl2-dev libsystemd-dev
 
-    - name: Install whisper-cpp
-      run: |
-        cmake -S whisper.cpp -B whisper.cpp/build_go \
-          -DBUILD_SHARED_LIBS=OFF \
-          -DGGML_CPU=ON \
-          -DGGML_OPENMP=ON \
-          -DCMAKE_BUILD_TYPE=Release
-        cmake --build whisper.cpp/build_go --parallel 4
-        ls -l whisper.cpp/build_go/src/libwhisper.a
-        ls -l whisper.cpp/build_go/ggml/src/libggml*.a
-
-    - name: Build for lint (local resources)
-      run: |
-        go build -tags imguifreetype -o ./ ./cmd/vice
-        ls
+    - name: Build vice
+      run: ./build.sh
 
     - name: Check scenarios
       run:
@@ -74,10 +61,8 @@ jobs:
             mv manifest.json cmd/vice
         fi
 
-    - name: Build
-      run: |
-        git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
-        go build -tags imguifreetype,downloadresources ./...
+    - name: Build for release
+      run: ./build.sh --release
 
     - name: Run tests
       run:

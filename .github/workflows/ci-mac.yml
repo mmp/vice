@@ -46,33 +46,8 @@ jobs:
     - name: Install Mac dependencies
       run: brew install sdl2 pkg-config glfw
 
-    - name: Install whisper-cpp
-      run: |
-        cmake -S whisper.cpp -B whisper.cpp/build_go \
-          -DBUILD_SHARED_LIBS=OFF \
-          -DGGML_CPU=ON \
-          -DGGML_METAL=ON \
-          -DGGML_BLAS=ON \
-          -DGGML_METAL_EMBED_LIBRARY=ON \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
-          -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0
-        cmake --build whisper.cpp/build_go --parallel 4
-        ls -l whisper.cpp/build_go/src/libwhisper.a
-        ls -l whisper.cpp/build_go/ggml/src/libggml*.a
-        ls -l whisper.cpp/build_go/ggml/src/ggml-metal/libggml-metal.a
-        ls -l whisper.cpp/build_go/ggml/src/ggml-blas/libggml-blas.a
-        lipo -info whisper.cpp/build_go/src/libwhisper.a || true
-        lipo -info whisper.cpp/build_go/ggml/src/libggml.a || true
-        lipo -info whisper.cpp/build_go/ggml/src/libggml-base.a || true
-        lipo -info whisper.cpp/build_go/ggml/src/libggml-cpu.a || true
-        lipo -info whisper.cpp/build_go/ggml/src/ggml-metal/libggml-metal.a || true
-        lipo -info whisper.cpp/build_go/ggml/src/ggml-blas/libggml-blas.a || true
-
-    - name: Build for lint (local resources, single arch)
-      run: |
-        git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
-        CGO_ENABLED=1 GOOS=darwin go build -ldflags="-s -w" -tags static -o vice ./cmd/vice
+    - name: Build vice
+      run: ./build.sh
 
     - name: Check scenarios
       run: ./vice -lint
@@ -89,11 +64,7 @@ jobs:
         fi
 
     - name: Build universal binary
-      run: |
-        git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
-        CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -tags static,downloadresources -o vice_amd64 ./cmd/vice
-        CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -tags static,downloadresources -o vice_arm64 ./cmd/vice
-        lipo -create -output vice vice_amd64 vice_arm64
+      run: ./build.sh --release --universal
 
     - name: Run tests
       run: go test -v ./...

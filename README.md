@@ -13,9 +13,16 @@ about how to use vice.
 
 # Building vice
 
-To build *vice* from scratch, first make sure that you have a recent *go*
-compiler installed: ([go compiler downloads](https://go.dev/dl/)).
-Then clone the *vice* repository to a folder on your computer.
+To build *vice* from scratch:
+- First make sure that you have a recent *go* compiler installed: ([go compiler downloads](https://go.dev/dl/))
+- Make sure that you have [git lfs](https://git-lfs.com) installed and run `git lfs install`
+- Clone the *vice* repository to a folder on your computer. Note that you must use the `--recursive` flag so that you also check out submodules that *vice* requires:
+```bash
+$ git clone --recursive https://github.com/mmp/vice.git
+```
+
+If you accidentally clone *vice* without using ``--recursive`` (or to update the source tree after a new submodule has been added, 
+run `git submodule update --init --recursive`.
 
 ## Windows
 
@@ -33,8 +40,7 @@ in the following replaced with the directory where you installed `SDL2-devel`:
   * `CGO_CPPFLAGS`: `'-I INSTALL/SDL2-2.24.0/x86_64-w64-mingw32/include'`
   * `CGO_LDFLAGS`: `'-L INSTALL/SDL2-2.24.0/x86_64-w64-mingw32/lib'`
 
-To build *vice*, run the command `go build -ldflags -H=windowsgui -o ./vice.exe ./cmd/vice`
-from a command shell in the repository directory.
+To build *vice*, run the command `./build.bat` from a command shell in the repository directory.
 
 ## Mac OSX
 
@@ -42,13 +48,12 @@ If you have [homebrew](https://brew.sh) installed, running `brew
 install sdl2` will install SDL2. Otherwise consult your package manager
 documentation or install [SDL](https://www.libsdl.org) from source.
 
-From a command shell in the repositoiry directory `go build -o vice ./cmd/vice` to
-build a *vice* executable.
+From a command shell in the repositoiry directory, run `./build.sh` to build a *vice* executable.
 
 ## Linux
 
 On Ubuntu, `sudo apt install xorg-dev libsdl2-dev` will install the necessary libraries.
-Then, from a command shell in the repositoiry directory `go build -o vice ./cmd/vice` to
+Then, from a command shell in the repositoiry directory, run `./build.sh` to
 build a *vice* executable.
 
 ## Docker
