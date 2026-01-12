@@ -84,6 +84,11 @@ jobs:
     - name: Build vice
       run: ./build.sh
 
+    - name: Fetch videomaps for linting
+      run: |
+        git lfs install
+        git lfs pull --include="resources/videomaps/*"
+
     - name: Check scenarios
       run: ./vice -lint
 
@@ -131,9 +136,6 @@ jobs:
 
     - name: Build vice
       run: ./build.sh
-
-    - name: Check scenarios
-      run: ./vice -lint
 
     - name: Download manifest
       uses: actions/download-artifact@v4
