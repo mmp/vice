@@ -372,8 +372,8 @@ func parseFpRNAVToggle(s string, checkSp func(s string, primary bool) bool, spec
 }
 
 func parseFpFlightRules(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
-	if strings.HasPrefix(s, ".") {
-		switch strings.TrimPrefix(s, ".") {
+	if after, ok := strings.CutPrefix(s, "."); ok {
+		switch after {
 		case "V", "P" /* VFR on top */ :
 			spec.Rules.Set(av.FlightRulesVFR)
 			return true, nil

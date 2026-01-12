@@ -377,8 +377,8 @@ func (s *Sim) ReplayScenario(waypointCommands string, durationSpec string, lg *l
 	// Parse replay duration
 	var maxUpdates int
 	var untilCallsign av.ADSBCallsign
-	if strings.HasPrefix(durationSpec, "until:") {
-		untilCallsign = av.ADSBCallsign(strings.TrimPrefix(durationSpec, "until:"))
+	if after, ok := strings.CutPrefix(durationSpec, "until:"); ok {
+		untilCallsign = av.ADSBCallsign(after)
 		maxUpdates = 7200 // 2 hours max
 		fmt.Printf("Running until aircraft %s completes (max %d seconds)\n", untilCallsign, maxUpdates)
 	} else {

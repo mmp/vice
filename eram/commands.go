@@ -154,8 +154,8 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 	}
 	prefix := fieldsFull[0]
 	cmd := strings.Join(fieldsFull[1:], " ")
-	if strings.HasPrefix(original, "//") {
-		cmd = strings.TrimPrefix(original, "//")
+	if after, ok := strings.CutPrefix(original, "//"); ok {
+		cmd = after
 		cmd = strings.TrimSpace(cmd)
 		prefix = "//"
 	}

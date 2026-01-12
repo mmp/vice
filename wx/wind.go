@@ -78,15 +78,15 @@ func validateDirection(dir string) error {
 func validateSpeed(speed string) error {
 	speed = strings.TrimSpace(speed)
 
-	if strings.HasSuffix(speed, "+") {
+	if before, ok := strings.CutSuffix(speed, "+"); ok {
 		// Minimum speed: "5+"
-		val := strings.TrimSuffix(speed, "+")
+		val := before
 		if _, err := strconv.Atoi(val); err != nil {
 			return fmt.Errorf("invalid minimum speed: %w", err)
 		}
-	} else if strings.HasSuffix(speed, "-") {
+	} else if before, ok := strings.CutSuffix(speed, "-"); ok {
 		// Maximum speed: "5-"
-		val := strings.TrimSuffix(speed, "-")
+		val := before
 		if _, err := strconv.Atoi(val); err != nil {
 			return fmt.Errorf("invalid maximum speed: %w", err)
 		}
@@ -169,14 +169,14 @@ func matchesDirection(dirSpec string, heading float32) bool {
 func matchesSpeed(speedSpec string, windSpeed int) bool {
 	speedSpec = strings.TrimSpace(speedSpec)
 
-	if strings.HasSuffix(speedSpec, "+") {
+	if before, ok := strings.CutSuffix(speedSpec, "+"); ok {
 		// Minimum speed
-		val := strings.TrimSuffix(speedSpec, "+")
+		val := before
 		min, _ := strconv.Atoi(val)
 		return windSpeed >= min
-	} else if strings.HasSuffix(speedSpec, "-") {
+	} else if before, ok := strings.CutSuffix(speedSpec, "-"); ok {
 		// Maximum speed
-		val := strings.TrimSuffix(speedSpec, "-")
+		val := before
 		max, _ := strconv.Atoi(val)
 		return windSpeed <= max
 	} else if strings.Contains(speedSpec, "-") {

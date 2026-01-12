@@ -115,8 +115,8 @@ func (m METAR) IsVMC() bool {
 // Visibility extracts visibility in statute miles from the raw METAR
 func (m METAR) Visibility() (float32, error) {
 	for _, f := range strings.Fields(m.Raw) {
-		if strings.HasSuffix(f, "SM") {
-			f = strings.TrimSuffix(f, "SM")
+		if before, ok := strings.CutSuffix(f, "SM"); ok {
+			f = before
 			f = strings.TrimPrefix(f, "M") // there if 1/4 or less
 
 			// Handle fractional visibility like 1/4SM
