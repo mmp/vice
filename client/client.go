@@ -702,63 +702,9 @@ func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
 		}
 
 		start := time.Now()
-
-		// Build initial prompt with common phrases, aircraft telephony, and approaches.
-		// Most important items first since whisper has a 224 token limit.
-		promptParts := []string{
-			"climb and maintain", "descend and maintain", "maintain",
-			"turn left", "turn right", "proceed direct", "expect the",
-			"reduce speed to", "maintain maximum forward speed", "contact",
-			"expect", "vectors", "squawk", "ident",
-			"reduce to final approach speed", "miles from", "established", "cleared",
-		}
-
-		// Add telephony, approaches, and fixes for user-controlled tracks.
-		assignedApproaches := make(map[string]struct{})
-		fixes := make(map[string]struct{})
-		for _, trk := range state.Tracks {
-			if state.UserControlsTrack(trk) && trk.IsAssociated() {
-				tele := av.GetTelephony(string(trk.ADSBCallsign), trk.FlightPlan.CWTCategory)
-				promptParts = append(promptParts, tele)
-				if trk.Approach != "" {
-					assignedApproaches[trk.Approach] = struct{}{}
-				}
-				for _, fix := range trk.Fixes {
-					fixes[fix] = struct{}{}
-				}
-			}
-		}
-
-		// Add assigned approaches (higher priority)
-		for appr := range assignedApproaches {
-			promptParts = append(promptParts, av.GetApproachTelephony(appr))
-		}
-
-		// Add active approaches (converted to spoken form, excluding already-added assigned ones)
-		activeApproaches := make(map[string]struct{})
-		for _, ar := range state.ArrivalRunways {
-			if ap, ok := state.Airports[ar.Airport]; ok {
-				for _, appr := range ap.Approaches {
-					if appr.Runway == ar.Runway {
-						activeApproaches[appr.FullName] = struct{}{}
-					}
-				}
-			}
-		}
-		for appr := range activeApproaches {
-			if _, assigned := assignedApproaches[appr]; !assigned {
-				promptParts = append(promptParts, av.GetApproachTelephony(appr))
-			}
-		}
-
-		// Add fixes (lower priority, may get truncated by token limit)
-		for fix := range fixes {
-			promptParts = append(promptParts, av.GetFixTelephony(fix))
-		}
-
 		whisperModelMu.Lock()
-		transcript, err := whisper.TranscribeWithModel(whisperModel, samples, platform.AudioInputSampleRate, 1, /* channels */
-			whisper.Options{InitialPrompt: strings.Join(promptParts, ", ")})
+		transcript, err := whisper.TranscribeWithModel(whisperModel, samples, platform.AudioInputSampleRate,
+			1 /* channels */, whisper.Options{InitialPrompt: makeWhisperPrompt(state)})
 		whisperModelMu.Unlock()
 
 		whisperDuration := time.Since(start)
@@ -778,7 +724,7 @@ func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
 
 		c.ProcessSTTTranscript(transcript, whisperDuration, func(callsign, command string, sttDuration time.Duration, err error) {
 			if err != nil {
-				lg.Errorf("STT command error: %v", err)
+				lg.Infof("STT command error: %v", err)
 				c.postSTTEvent(transcript, "Error: "+err.Error())
 			} else {
 				lg.Infof("STT command: %s %s", callsign, command)
@@ -790,22 +736,76 @@ func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
 	}()
 }
 
+func makeWhisperPrompt(state SimState) string {
+	// Build initial prompt with common phrases, aircraft telephony, and approaches.
+	// Most important items first since whisper has a 224 token limit.
+	promptParts := []string{
+		"climb and maintain", "descend and maintain", "maintain",
+		"turn left", "turn right", "fly heading", "proceed direct", "expect the",
+		"reduce speed to", "maintain maximum forward speed", "contact tower",
+		"expect", "vectors", "squawk", "ident", "altimieter", "radar contact",
+		"reduce to final approach speed", "miles from", "established", "cleared",
+	}
+
+	// Add telephony, approaches, and fixes for user-controlled tracks.
+	assignedApproaches := make(map[string]struct{})
+	fixes := make(map[string]struct{})
+	for _, trk := range state.Tracks {
+		if state.UserControlsTrack(trk) && trk.IsAssociated() {
+			tele := av.GetTelephony(string(trk.ADSBCallsign), trk.FlightPlan.CWTCategory)
+			promptParts = append(promptParts, tele)
+			if trk.Approach != "" {
+				assignedApproaches[trk.Approach] = struct{}{}
+			}
+			for _, fix := range trk.Fixes {
+				fixes[fix] = struct{}{}
+			}
+		}
+	}
+
+	// Add assigned approaches (higher priority)
+	for appr := range assignedApproaches {
+		promptParts = append(promptParts, av.GetApproachTelephony(appr))
+	}
+
+	// Add active approaches (converted to spoken form, excluding already-added assigned ones)
+	activeApproaches := make(map[string]struct{})
+	for _, ar := range state.ArrivalRunways {
+		if ap, ok := state.Airports[ar.Airport]; ok {
+			for _, appr := range ap.Approaches {
+				if appr.Runway == ar.Runway {
+					activeApproaches[appr.FullName] = struct{}{}
+				}
+			}
+		}
+	}
+	for appr := range activeApproaches {
+		if _, assigned := assignedApproaches[appr]; !assigned {
+			promptParts = append(promptParts, av.GetApproachTelephony(appr))
+		}
+	}
+
+	// Add fixes (lower priority, may get truncated by token limit)
+	for fix := range fixes {
+		promptParts = append(promptParts, av.GetFixTelephony(fix))
+	}
+
+	return strings.Join(promptParts, ", ")
+}
+
 // postSTTEvent posts an STTCommandEvent to the event stream.
 func (c *ControlClient) postSTTEvent(transcript, command string) {
 	c.mu.Lock()
-	es := c.eventStream
-	c.mu.Unlock()
+	defer c.mu.Unlock()
 
-	if es != nil {
-		es.Post(sim.Event{
-			Type:          sim.STTCommandEvent,
-			STTTranscript: transcript,
-			STTCommand:    command,
-		})
-	}
+	c.eventStream.Post(sim.Event{
+		Type:          sim.STTCommandEvent,
+		STTTranscript: transcript,
+		STTCommand:    command,
+	})
 }
 
-// ProcessSTTTranscript sends the transcript to the server for DSL conversion and command execution.
+// ProcessSTTTranscript sends the transcript to the server for decoding and command execution.
 func (c *ControlClient) ProcessSTTTranscript(transcript string, whisperDuration time.Duration,
 	callback func(callsign, command string, sttDuration time.Duration, err error)) {
 	var result server.ProcessSTTTranscriptResult
