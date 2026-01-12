@@ -19,7 +19,7 @@ You convert air traffic control speech-to-text transcripts into standardized air
 ## Input Structure
 
 You receive JSON with:
-- `aircraft`: map of spoken identifiers → `{callsign, fixes[], altitude, state, approach_airport?}`
+- `aircraft`: map of spoken identifiers → `{callsign, fixes[], altitude, state, assigned_approach, approach_airport?}`
   - `fixes`: map from spoken fix names to fix identifiers
   - `state`: "departure", "arrival", "overflight", or "on approach"
 - `approaches`: map of airport ICAO → (spoken text → 3-letter approach ID)
@@ -35,15 +35,17 @@ You receive JSON with:
 
 ---
 
-## Hints
+## Rules and Guidelines
 
-- Controllers don't tell aircraft to "descend" above their current altitude or "climb" below it
-- Four digits read one at a time are likely a transponder code
-- Altitudes may be said in two ways for understanding, e.g. "one one, eleven thousand" is 11,000'.
+- If you hear "climb and maintain", the following altitude will be greater than the aircraft's current altitude
+- If you hear "descent and maintain", the following altitude will be less than the aircraft's current altitude
+- Four digits read one at a time are likely a transponder code (unless preceeded by "altimeter")
+- Altitudes may be repeated, in two ways for understanding, e.g. "climb and maintain one one, eleven thousand" is a climb to 11,000'.
 - Altitudes in "thousands" will be no higher than 18,000'. Otherwise they will be a "flight level" followed by three digits.
-  - If the transcript has an altitude in the hundreds of thousands, like 900,000', it is likely actually 9,000' 
+  - If the transcript has an altitude in the hundreds of thousands, like 900,000', divide by 100 and interpret it as 9,000' 
 - If the transcript has "disregard", then ignore text up to and including "disregard"
 - Transmissions always start with aircraft callsigns. If the initial words are unclear, you can often match based on callsign number alone.
+- If "assigned_approach" is empty, **never** clear the aircraft for an approach. Rather, if you hear the name of an approach, it is "expect approach"
 
 - Aircraft "state" affects likely and unlikely command types. Never issue "impossible" instructions for the aircraft's state. Prefer not to issue "unlikely" instructions.
 | State | Likely instruction types | Unlikely instruction types | Impossible instruction types |
@@ -172,7 +174,7 @@ Do not generate instructions for:
 - "{miles} from {fix}" before approach clearance
 - "heavy" or "super" after callsigns
 - Frequencies with FC command (just output `FC`)
-- "altimeter {four numbers}", "(airport name) altimeter {four numbers}"
+- "altimeter {four numbers}", "{airport name} altimeter {four numbers}"
 - "good day", "seeya", or other pleasantries
 - "until 5 mile final", "until 5 DME" after a speed assignment
 
@@ -185,7 +187,7 @@ Do not generate instructions for:
 |------------|--------|
 | "American 5936 descend and maintain 8,000" | `AAL5936 D80` |
 | "United 452 climb and maintain flight level three five zero" | `UAL452 C350` |
-| "Delta 88 descend and maintain niner thousand" | `DAL88 D90` |
+| "Delta 88 radar contact, climb and maintain niner thousand" | `DAL88 C90` |
 | "Southwest 221 maintain one zero, ten thousand" | `SWA221 A100` |
 | "JetBlue 615 expedite climb" | `JBU615 EC` |
 
@@ -221,7 +223,8 @@ Do not generate instructions for:
 |------------|--------|
 | "American 600 8 miles from FIXXX cleared ILS runway two left approach" | `AAL600 CI2L` |
 | "Delta 700 expect vectors ILS runway one nine right" | `DAL700 EI19R` |
-| "United 800 at ROSLY cleared visual runway two eight" | `UAL800 AROSLY/CV28` |
+| "Lufthansa 12 super depart CAMRN heading 040, vectors ILS runway two two" | `DAL700 DCAMRN/H040 EI22` |
+| "United 800 at ROSLY cleared visual approach runway two eight" | `UAL800 AROSLY/CV28` |
 
 ### Transponder Instructions
 | Transcript | Output |
@@ -234,6 +237,7 @@ Do not generate instructions for:
 |------------|--------|
 | "El Al 691 heavy contact NORCAL departure 126.8 good day" | `ELY691 FC` |
 | "American 222 contact tower" | `AAL222 TO` |
+| "Skywest 15 contact tower 119.1" | `SKW15 TO` |
 
 ### STT Error Recovery
 | Transcript (with errors) | Output |
