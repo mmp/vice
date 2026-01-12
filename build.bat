@@ -54,11 +54,13 @@ shift
 goto parse_args
 :done_parsing
 
-REM Set SDL2 paths
-set SDL2_DIR=%CD%\ext\SDL2-2.24.0\x86_64-w64-mingw32
-set CGO_CFLAGS=-I %SDL2_DIR%\include
-set CGO_CPPFLAGS=-I %SDL2_DIR%\include
-set CGO_LDFLAGS=-L %SDL2_DIR%\lib
+REM Set SDL2 paths only if not already set (allows CI to override)
+if not defined CGO_CFLAGS (
+    set SDL2_DIR=%CD%\ext\SDL2-2.24.0\x86_64-w64-mingw32
+    set CGO_CFLAGS=-I !SDL2_DIR!\include
+    set CGO_CPPFLAGS=-I !SDL2_DIR!\include
+    set CGO_LDFLAGS=-L !SDL2_DIR!\lib
+)
 
 REM Build whisper-cpp if needed
 if not exist "whisper.cpp\build_go\src\libwhisper.a" (
