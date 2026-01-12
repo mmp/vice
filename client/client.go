@@ -701,14 +701,17 @@ func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
 			return
 		}
 
-		start := time.Now()
+		waitStart := time.Now()
 		whisperModelMu.Lock()
+		waitDuration := time.Since(waitStart)
+
+		whisperStart := time.Now()
 		transcript, err := whisper.TranscribeWithModel(whisperModel, samples, platform.AudioInputSampleRate,
 			1 /* channels */, whisper.Options{InitialPrompt: makeWhisperPrompt(state)})
+		whisperDuration := time.Since(whisperStart)
 		whisperModelMu.Unlock()
 
-		whisperDuration := time.Since(start)
-		lg.Infof("whisper transcription %q in %s", transcript, whisperDuration)
+		lg.Infof("whisper transcription %q in %s (waited %s for lock)", transcript, whisperDuration, waitDuration)
 
 		c.SetLastTranscription(transcript)
 		if err != nil {
