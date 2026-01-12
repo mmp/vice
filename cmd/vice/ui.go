@@ -611,7 +611,7 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 	fixed, italic := false, false
 	// Split the string into words. Note that this doesn't preserve extra
 	// spacing from multiple spaces or respect embedded newlines.
-	for _, word := range strings.Fields(str) {
+	for word := range strings.FieldsSeq(str) {
 		if textWidth(word) > imgui.ContentRegionAvail().X {
 			// start a new line
 			imgui.Text("\n")

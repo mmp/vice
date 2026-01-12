@@ -313,7 +313,7 @@ func allResolvedHelper(spre string, spost string, err func(string)) []PhraseForm
 		} else if ch == ']' {
 			inBrackets = false
 			var resolved []PhraseFormatString
-			for _, opt := range strings.Split(options.String(), "|") {
+			for opt := range strings.SplitSeq(options.String(), "|") {
 				resolved = append(resolved, allResolvedHelper(pre.String()+opt, spost[i+1:], err)...)
 			}
 			return resolved
@@ -478,7 +478,7 @@ func (ApproachSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 
 	var result []string
 	lastRunway := false
-	for _, word := range strings.Fields(appr) {
+	for word := range strings.FieldsSeq(appr) {
 		if lastRunway {
 			for _, ch := range strings.ToLower(word) {
 				switch ch {
@@ -842,7 +842,7 @@ func GetApproachTelephony(approach string) string {
 	var result []string
 	lastRunway := false
 
-	for _, word := range strings.Fields(approach) {
+	for word := range strings.FieldsSeq(approach) {
 		if lastRunway {
 			// Handle runway number and suffix (e.g., "22L")
 			for _, ch := range strings.ToLower(word) {

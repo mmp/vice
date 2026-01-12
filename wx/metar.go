@@ -114,7 +114,7 @@ func (m METAR) IsVMC() bool {
 
 // Visibility extracts visibility in statute miles from the raw METAR
 func (m METAR) Visibility() (float32, error) {
-	for _, f := range strings.Fields(m.Raw) {
+	for f := range strings.FieldsSeq(m.Raw) {
 		if before, ok := strings.CutSuffix(f, "SM"); ok {
 			f = before
 			f = strings.TrimPrefix(f, "M") // there if 1/4 or less
@@ -140,7 +140,7 @@ func (m METAR) Visibility() (float32, error) {
 
 // Ceiling returns ceiling in feet AGL (above ground level)
 func (m METAR) Ceiling() (int, error) {
-	for _, f := range strings.Fields(m.Raw) {
+	for f := range strings.FieldsSeq(m.Raw) {
 		// BKN (broken) or OVC (overcast) constitute a ceiling
 		if strings.HasPrefix(f, "BKN") || strings.HasPrefix(f, "OVC") {
 			if len(f) < 6 {

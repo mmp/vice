@@ -85,7 +85,7 @@ func parseOneFlightPlan(format string, text string, checkSp func(s string, prima
 		return spec, ErrCommandFormat
 	}
 
-	for _, s := range strings.Split(format, ",") {
+	for s := range strings.SplitSeq(format, ",") {
 		if parse, ok := fpParseFuncs[s]; !ok {
 			panic("unknown fp entry specifier: " + s)
 		} else if ok, err := parse(text, checkSp, &spec); ok {

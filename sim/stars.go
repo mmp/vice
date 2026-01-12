@@ -962,7 +962,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 				// None specified: 12xx block by default
 				config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, 0o12)
 			} else {
-				for _, s := range strings.Split(*config.MonitoredBeaconCodeBlocksString, ",") {
+				for s := range strings.SplitSeq(*config.MonitoredBeaconCodeBlocksString, ",") {
 					s = strings.TrimSpace(s)
 					if code, err := av.ParseSquawkOrBlock(s); err != nil {
 						e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", s, err)

@@ -1224,7 +1224,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 	if s.MonitoredBeaconCodeBlocksString == nil {
 		s.MonitoredBeaconCodeBlocks = []av.Squawk{0o12} // 12xx block by default
 	} else {
-		for _, bl := range strings.Split(*s.MonitoredBeaconCodeBlocksString, ",") {
+		for bl := range strings.SplitSeq(*s.MonitoredBeaconCodeBlocksString, ",") {
 			bl = strings.TrimSpace(bl)
 			if code, err := av.ParseSquawkOrBlock(bl); err != nil {
 				e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", bl, err)
