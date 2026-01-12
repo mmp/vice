@@ -935,7 +935,7 @@ func init() {
 				delete(ps.DisabledQLRegions, regionID)
 			} else {
 				if ps.DisabledQLRegions == nil {
-					ps.DisabledQLRegions = make(map[string]interface{})
+					ps.DisabledQLRegions = make(map[string]any)
 				}
 				ps.DisabledQLRegions[regionID] = nil
 			}
@@ -948,7 +948,7 @@ func init() {
 				return ErrSTARSIllegalFunction
 			}
 			if ps.DisabledQLRegions == nil {
-				ps.DisabledQLRegions = make(map[string]interface{})
+				ps.DisabledQLRegions = make(map[string]any)
 			}
 			ps.DisabledQLRegions[regionID] = nil
 			sp.updateQuicklookRegionTracks(ctx)
@@ -968,7 +968,7 @@ func init() {
 	registerCommand(CommandModeMultiFunc, "Q*", func(sp *STARSPane, ctx *panes.Context) {
 		ps := sp.currentPrefs()
 		if ps.DisabledQLRegions == nil {
-			ps.DisabledQLRegions = make(map[string]interface{})
+			ps.DisabledQLRegions = make(map[string]any)
 		}
 		for _, f := range ctx.FacilityAdaptation.Filters.Quicklook {
 			ps.DisabledQLRegions[f.Id] = nil

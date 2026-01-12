@@ -193,7 +193,7 @@ func IsAllLetters(s string) bool {
 func CommaKeyExpand[S ~string, T any](in map[S]T) (map[S]T, error) {
 	m := make(map[S]T)
 	for k, v := range in {
-		for _, s := range strings.Split(string(k), ",") {
+		for s := range strings.SplitSeq(string(k), ",") {
 			s = strings.TrimSpace(s)
 			if _, ok := m[S(s)]; ok {
 				return nil, errors.New("key repeated in map " + s)

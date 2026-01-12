@@ -28,7 +28,7 @@ type EventSubscriberId int
 type EventStream struct {
 	mu            sync.Mutex
 	events        []Event
-	subscriptions map[*EventsSubscription]interface{}
+	subscriptions map[*EventsSubscription]any
 	lastPost      time.Time
 	warnedLong    bool
 	done          chan struct{}
@@ -58,7 +58,7 @@ func (e *EventsSubscription) PostEvent(event Event) {
 
 func NewEventStream(lg *log.Logger) *EventStream {
 	es := &EventStream{
-		subscriptions: make(map[*EventsSubscription]interface{}),
+		subscriptions: make(map[*EventsSubscription]any),
 		lastPost:      time.Now(),
 		done:          make(chan struct{}),
 		lg:            lg,
@@ -261,6 +261,7 @@ const (
 	RecalledPointOutEvent
 	FlightPlanAssociatedEvent
 	FixCoordinatesEvent
+	STTCommandEvent
 	NumEventTypes
 )
 
@@ -270,7 +271,7 @@ func (t EventType) String() string {
 		"RejectedHandoff", "RadioTransmission", "StatusMessage", "ErrorMessage",
 		"ServerBroadcastMessage", "GlobalMessage", "AcknowledgedPointOut", "RejectedPointOut",
 		"HandoffControl", "SetGlobalLeaderLine", "ForceQL", "TransferAccepted", "TransferRejected",
-		"RecalledPointOut", "FlightPlanAssociated"}[t]
+		"RecalledPointOut", "FlightPlanAssociated", "FixCoordinates", "STTCommand"}[t]
 }
 
 type Event struct {
@@ -285,6 +286,8 @@ type Event struct {
 	RadioTransmissionType av.RadioTransmissionType       // For radio transmissions only
 	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent
 	WaypointInfo          []math.Point2LL
+	STTTranscript         string
+	STTCommand            string
 }
 
 func (e *Event) String() string {

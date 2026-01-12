@@ -55,7 +55,7 @@ func TestEventStreamCompact(t *testing.T) {
 	for i < 65536 {
 		// Add a bunch of consecutive numbers to the stream
 		n := r.Intn(255)
-		for j := 0; j < n; j++ {
+		for j := range n {
 			es.Post(Event{Type: EventType((i + j) % int(NumEventTypes))})
 		}
 		i += n

@@ -113,13 +113,11 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#bugs">Reporting Bugs</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#releases">Release History</a>
 	    <ul class="submenu">
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.0">0.14.0</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.3">0.13.3</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.2">0.13.2</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.1">0.13.1</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.0">0.13.0</a></li>
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.2">0.12.2</a></li>
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.1">0.12.1</a></li>
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.0">0.12.0</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-earlier">Earlier Releases</a></li>
 	    </ul>
 	  </li>
@@ -1073,6 +1071,32 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
+            <h3 id="release-0.14.0">0.14.0 (TBD)</h3>
+            <ul>
+              <li>Added speech-to-text support (Michael Trokel)</li>
+              <li>New Scenarios: ZLC Area C (JY_SUPn't)</li>
+              <li>Scenario updates: BOS (radarcontacto)</li>
+              <li>Added search box to filter scenarios</li>
+              <li>Improved pilot readbacks to be more natural / cohesive</li>
+              <li>VFRs are better about not flying into terrain</li>
+              <li>STARS:
+                <ul>
+                  <li>Fixed bug where interfacility handoffs would get a FORMAT error</li>
+                  <li>Fixed keyboard input for DCB button values (e.g. RANGE)</li>
+                </ul>
+              </li>
+              <li>Bug fixes:
+                <ul>
+                  <li>Fixed bug with multi-controller scenarios where controllers could be locked out of issuing aircraft commands.</li>
+                </ul>
+              </li>
+              <li>Facility engineering:
+                <ul>
+                  <li>Headings leaving fixes in routes can be specified to be left or right turns: <code>PUCKY/l320</code>, <code>ROSLY/r250</code>, etc. (Xavier Caldwell).</li>
+                </ul>
+              </li>
+            </ul>
+            
             <h3 id="release-0.13.3">0.13.3 (29 Dec 2025)</h3>
             <ul>
               <li>New scenarios: PCT consolidated (Ketan K), MYR (Jud Lopez)</li>
@@ -1214,7 +1238,12 @@ how it simulates aircraft or the STARS interface.
                 </ul>
               </li>
                 
-              
+            <div id="release-earlier" class="container">
+              <button id="toggleButton">🔍 Show Earlier Releases</button>
+              <br>
+            <div id="hiddenText" style="display:none;">
+              <br>
+          
             </ul>
 
             <h3 id="release-0.12.2">0.12.2 (29 August 2025)</h3>
@@ -1315,12 +1344,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </ul>
               </li>
             </ul>
-
-            <div id="release-earlier" class="container">
-              <button id="toggleButton">🔍 Show Earlier Releases</button>
-              <br>
-            <div id="hiddenText" style="display:none;">
-              <br>
 
             <h3 id="release-0.11.10">0.11.10 (15 April 2025)</h3>
             <ul>
@@ -4118,8 +4141,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </tbody>
             </table>
 
-            TODO create and make unsupported DB
-
             <h3 id="activating-flight-plans">Activating Existing Flight Plans</h3>
 
             <p>If an unassociated track is squawking the beacon code associated with a flight plan, the flight plan
@@ -6606,6 +6627,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </li>
               <li> <code>/delete</code>: the aircraft will be deleted when it reaches the fix</li>
               <li> <code>/h</code><i>heading</i>: depart the fix at specified heading</li>
+              <li> <code>/l</code><i>heading</i>: turn left to the specified heading at the fix</li>
+              <li> <code>/r</code><i>heading</i>: turn right to the specified heading at the fix</li>
               <li> <code>/iaf</code>: indicates that the fix is an IAF (initial approach fix)</li>
               <li> <code>/if</code>: indicates that the fix is the IF (intermediate fix)</li>
               <li> <code>/faf</code>: indicates that the fix is the FAF (final approach fix). This must be specified for one fix in each approach.</li>

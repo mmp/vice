@@ -155,7 +155,6 @@ func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (s
 		return
 	}
 
-	// All commands are now handled by the new parser system
 	return
 }
 

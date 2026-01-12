@@ -16,7 +16,7 @@ import (
 func InitNavLog(enabled bool, categories string, callsign string) {}
 
 // NavLog is a no-op in release builds
-func NavLog(callsign string, simTime time.Time, category string, format string, args ...interface{}) {
+func NavLog(callsign string, simTime time.Time, category string, format string, args ...any) {
 }
 
 // NavLogEnabled always returns false in release builds

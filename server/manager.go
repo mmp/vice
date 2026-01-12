@@ -7,6 +7,7 @@ package server
 import (
 	"context"
 	crand "crypto/rand"
+	_ "embed"
 	"encoding/base64"
 	"fmt"
 	"log/slog"
@@ -39,6 +40,7 @@ type SimManager struct {
 	// Helpers and such
 	tts            sim.TTSProvider
 	wxProvider     wx.Provider
+	sttProvider    STTTranscriptProvider
 	providersReady chan struct{}
 	mapManifests   map[string]*sim.VideoMapManifest
 	lg             *log.Logger
@@ -122,9 +124,9 @@ func (sm *SimManager) initRemoteProviders(serverAddress string, lg *log.Logger) 
 	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
 	defer cancel()
 
-	// Initialize TTS and WX providers in parallel since they're independent
+	// Initialize TTS, WX, and STT providers in parallel since they're independent
 	var wg sync.WaitGroup
-	wg.Add(2)
+	wg.Add(3)
 
 	go func() {
 		defer wg.Done()
@@ -134,6 +136,11 @@ func (sm *SimManager) initRemoteProviders(serverAddress string, lg *log.Logger) 
 	go func() {
 		defer wg.Done()
 		sm.wxProvider, _ = MakeWXProvider(ctx, serverAddress, lg)
+	}()
+
+	go func() {
+		defer wg.Done()
+		sm.sttProvider = MakeSTTProvider(ctx, serverAddress, lg)
 	}()
 
 	wg.Wait()
@@ -804,6 +811,182 @@ func (sm *SimManager) TextToSpeech(req *TTSRequest, speechMp3 *[]byte) error {
 			fut.ErrCh = nil // stop checking
 		}
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Speech-to-text
+
+// ProcessSTTTranscript decodes an STT transcript and executes the resulting command.
+// Returns callsign, command, STT duration, and error.
+func (sm *SimManager) ProcessSTTTranscript(token, transcript string, whisperDuration time.Duration, numCores int) (string, string, time.Duration, error) {
+	c := sm.LookupController(token)
+	if c == nil {
+		return "", "", 0, ErrNoSimForControllerToken
+	}
+
+	if sm.sttProvider == nil {
+		return "", "", 0, ErrSTTUnavailable
+	}
+
+	qc := makeSTTQueryContext(c, transcript, whisperDuration, numCores)
+
+	start := time.Now()
+	commands, err := sm.sttProvider.DecodeTranscript(qc)
+	sttDuration := time.Since(start)
+
+	if err != nil {
+		sm.lg.Infof("STT: transcript=%q whisper=%s stt=%s cores=%d error=%v",
+			transcript, whisperDuration, sttDuration, numCores, err)
+		return "", "", sttDuration, err
+	}
+	if commands == "" {
+		sm.lg.Infof("STT: transcript=%q whisper=%s stt=%s cores=%d (no command)",
+			transcript, whisperDuration, sttDuration, numCores)
+		return "", "", sttDuration, nil
+	}
+
+	// Sometimes claude gives us backticks...
+	commands = strings.Trim(commands, "`")
+
+	sm.lg.Infof("STT: transcript=%q command=%q whisper=%s stt=%s cores=%d",
+		transcript, commands, whisperDuration, sttDuration, numCores)
+
+	callsign, commands, _ := strings.Cut(commands, " ")
+	er := c.sim.RunAircraftControlCommands(c.tcw, av.ADSBCallsign(callsign), commands)
+	if er.Error != nil {
+		return callsign, commands, sttDuration, er.Error
+	}
+	return callsign, commands, sttDuration, nil
+}
+
+//go:embed sttSystemPrompt.md
+var systemPrompt string
+
+const DecodeSTTTranscriptRPC = "SimManager.DecodeSTTTranscript"
+
+// DecodeSTTTranscript is the RPC handler for proxying STT decoding requests.
+// It's called by RemoteSTTProvider on local servers that don't have the API key.
+func (sm *SimManager) DecodeSTTTranscript(ctx STTQueryContext, result *string) error {
+	defer sm.lg.CatchAndReportCrash()
+
+	if sm.sttProvider == nil {
+		return ErrSTTUnavailable
+	}
+
+	start := time.Now()
+	var err error
+	*result, err = sm.sttProvider.DecodeTranscript(ctx)
+	sttDuration := time.Since(start)
+
+	sm.lg.Infof("STT: transcript=%q command=%q whisper=%s stt=%s cores=%d",
+		ctx.Transcript, *result, ctx.WhisperDuration, sttDuration, ctx.NumCores)
+
+	return err
+}
+
+type STTQueryContext struct {
+	Aircraft        map[string]STTAircraft       `json:"aircraft,omitempty"`
+	Approaches      map[string]map[string]string `json:"approaches,omitempty"`
+	Transcript      string                       `json:"transcript"`
+	WhisperDuration time.Duration                `json:"whisper_duration,omitempty"`
+	NumCores        int                          `json:"num_cores,omitempty"`
+}
+
+type STTAircraft struct {
+	Callsign         av.ADSBCallsign   `json:"callsign"`
+	Fixes            map[string]string `json:"fixes"`
+	ApproachAirport  string            `json:"approach_airport,omitempty"`
+	AssignedApproach string            `json:"assigned_approach"`
+	Altitude         int               `json:"altitude"`
+	State            string            `json:"state"`
+}
+
+func makeSTTQueryContext(c *controllerContext, transcript string, whisperDuration time.Duration, numCores int) STTQueryContext {
+	qc := STTQueryContext{
+		Aircraft:        make(map[string]STTAircraft),
+		Approaches:      make(map[string]map[string]string),
+		Transcript:      transcript,
+		WhisperDuration: whisperDuration,
+		NumCores:        numCores,
+	}
+
+	for cs, ac := range c.sim.Aircraft {
+		ours := ac.IsAssociated() && c.sim.TCWControlsPosition(c.tcw, ac.NASFlightPlan.ControllingController)
+		vff := ac.IsUnassociated() && (ac.RequestedFlightFollowing || ac.WaitingForGoAhead)
+		if !ours && !vff {
+			continue
+		}
+
+		sttAc := STTAircraft{
+			Callsign: cs,
+			Fixes:    getSTTFixes(ac),
+			Altitude: int(ac.Nav.FlightState.Altitude),
+			State: func() string {
+				if vff {
+					return "vfr flight following"
+				}
+
+				switch ac.TypeOfFlight {
+				case av.FlightTypeDeparture:
+					return "departure"
+				case av.FlightTypeArrival:
+					if appr := ac.Nav.Approach; appr.Assigned != nil && appr.Cleared && appr.PassedApproachFix {
+						return "on approach"
+					} else {
+						return "arrival"
+					}
+				case av.FlightTypeOverflight:
+					return "overflight"
+				default:
+					return ""
+				}
+			}(),
+		}
+
+		if ac.TypeOfFlight == av.FlightTypeArrival {
+			if appr := ac.Nav.Approach.Assigned; appr != nil {
+				sttAc.AssignedApproach = appr.FullName
+			}
+
+			ap := ac.FlightPlan.ArrivalAirport
+			sttAc.ApproachAirport = ap
+			if _, ok := qc.Approaches[ap]; !ok {
+				qc.Approaches[ap] = getActiveApproaches(c.sim.State, ap)
+			}
+		}
+
+		telephony := getAircraftTelephony(ac)
+		qc.Aircraft[telephony] = sttAc
+	}
+
+	return qc
+}
+
+func getActiveApproaches(ss *sim.CommonState, ap string) map[string]string {
+	m := make(map[string]string)
+	for _, ar := range ss.ArrivalRunways {
+		if ar.Airport != ap {
+			continue
+		}
+		for code, appr := range ss.Airports[ap].Approaches {
+			if appr.Runway == ar.Runway {
+				m[appr.FullName] = code
+			}
+		}
+	}
+	return m
+}
+
+func getSTTFixes(ac *sim.Aircraft) map[string]string {
+	fixes := make(map[string]string)
+	for _, fix := range ac.GetSTTFixes() {
+		fixes[av.GetFixTelephony(fix)] = fix
+	}
+	return fixes
+}
+
+func getAircraftTelephony(ac *sim.Aircraft) string {
+	return av.GetTelephony(string(ac.ADSBCallsign), ac.AircraftPerformance().Category.CWT)
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -121,7 +121,7 @@ func makeWeatherCommandBuffers(precip *wx.Precip) [NumWxLevels]*renderer.Command
 		levelHasWeather := false
 
 		// Process each row of the precipitation grid
-		for y := 0; y < ny; y++ {
+		for y := range ny {
 			for x := 0; x < nx; x++ {
 				idx := x + y*nx
 				if idx >= len(precip.DBZ) {

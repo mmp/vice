@@ -10,15 +10,19 @@ import (
 	"net"
 	"net/http"
 	"net/rpc"
+	"runtime"
 	"slices"
 	"sort"
+	"strings"
 	"sync"
 	"time"
 
+	whisper "github.com/mmp/vice/autowhisper"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
+	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -27,6 +31,10 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/vmihailenco/msgpack/v5"
 )
+
+// stepOnProbability is the chance that another pilot will transmit
+// despite a priority readback being expected.
+const stepOnProbability = 0.05
 
 type ControlClient struct {
 	controllerToken string
@@ -37,9 +45,13 @@ type ControlClient struct {
 	bufferedSpeech           []sim.PilotSpeech
 	playingSpeech            bool
 	holdSpeech               bool
+	sttActive                bool
 	lastSpeechHoldTime       time.Time
 	awaitReadbackCallsign    av.ADSBCallsign
 	lastTransmissionCallsign av.ADSBCallsign
+	LastTranscription        string
+	LastCommand              string
+	eventStream              *sim.EventStream
 
 	lg *log.Logger
 	mu sync.Mutex
@@ -79,7 +91,7 @@ type SessionStats struct {
 	SignOnTime time.Time
 	Initials   string
 
-	seenCallsigns map[av.ADSBCallsign]interface{}
+	seenCallsigns map[av.ADSBCallsign]any
 }
 
 func (s *SessionStats) Update(ss *SimState) {
@@ -164,16 +176,18 @@ func makeStateUpdateRPCCall(call *rpc.Call, update *server.SimStateUpdate, callb
 	}
 }
 
-func (p *pendingCall) CheckFinished(es *sim.EventStream, state *SimState) bool {
+func (p *pendingCall) CheckFinished() bool {
 	select {
-	case c := <-p.Call.Done:
-		if p.Callback != nil {
-			p.Callback(es, state, c.Error)
-		}
+	case <-p.Call.Done:
 		return true
-
 	default:
 		return false
+	}
+}
+
+func (p *pendingCall) InvokeCallback(es *sim.EventStream, state *SimState) {
+	if p.Callback != nil {
+		p.Callback(es, state, p.Call.Error)
 	}
 }
 
@@ -192,7 +206,7 @@ func NewControlClient(ss server.SimState, controllerToken string, wsURL string, 
 
 	cc.SessionStats.SignOnTime = ss.SimTime
 	cc.SessionStats.Initials = initials
-	cc.SessionStats.seenCallsigns = make(map[av.ADSBCallsign]interface{})
+	cc.SessionStats.seenCallsigns = make(map[av.ADSBCallsign]any)
 	return cc
 }
 
@@ -301,23 +315,28 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 	// with the lock held is verboten since it may call Disconnect(), which
 	// also needs the lock.
 	var callbackErr error
+	var completedCalls []*pendingCall
+	var updateCallFinished *pendingCall
 
 	c.mu.Lock()
 
+	// Store eventStream for STT event posting
+	c.eventStream = eventStream
+
 	if c.updateCall != nil {
-		if c.updateCall.CheckFinished(eventStream, &c.State) {
+		if c.updateCall.CheckFinished() {
+			updateCallFinished = c.updateCall
 			c.updateCall = nil
 			c.SessionStats.Update(&c.State)
-			c.mu.Unlock()
-			return
+		} else {
+			callbackErr = checkTimeout(c.updateCall, eventStream)
 		}
-		callbackErr = checkTimeout(c.updateCall, eventStream)
 	}
 
 	c.updateSpeech(p)
 
 	if callbackErr == nil {
-		callbackErr = c.checkPendingRPCs(eventStream)
+		completedCalls, callbackErr = c.checkPendingRPCs(eventStream)
 	}
 
 	// Wait in seconds between update fetches; no less than 50ms
@@ -326,6 +345,13 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 		if c.updateCall != nil && !util.DebuggerIsRunning() {
 			c.lg.Warnf("GetUpdates still waiting for %s on last update call", d)
 			c.mu.Unlock()
+			// Invoke callbacks after releasing lock to avoid deadlock
+			if updateCallFinished != nil {
+				updateCallFinished.InvokeCallback(eventStream, &c.State)
+			}
+			for _, call := range completedCalls {
+				call.InvokeCallback(eventStream, &c.State)
+			}
 			if callbackErr != nil && onErr != nil {
 				onErr(callbackErr)
 			}
@@ -334,9 +360,10 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 		c.lastUpdateRequest = time.Now()
 
 		var update server.SimStateUpdate
+		issueTime := time.Now()
 		c.updateCall = makeStateUpdateRPCCall(c.client.Go(server.GetStateUpdateRPC, c.controllerToken, &update, nil), &update,
 			func(err error) {
-				d := time.Since(c.updateCall.IssueTime)
+				d := time.Since(issueTime)
 				c.lastUpdateLatency = d
 				if d > 250*time.Millisecond {
 					c.lg.Warnf("Slow world update response %s", d)
@@ -348,6 +375,13 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 
 	c.mu.Unlock()
 
+	// Invoke callbacks after releasing lock to avoid deadlock
+	if updateCallFinished != nil {
+		updateCallFinished.InvokeCallback(eventStream, &c.State)
+	}
+	for _, call := range completedCalls {
+		call.InvokeCallback(eventStream, &c.State)
+	}
 	if callbackErr != nil && onErr != nil {
 		onErr(callbackErr)
 	}
@@ -373,16 +407,17 @@ loop:
 		c.holdSpeech = false
 	}
 
-	if c.holdSpeech || c.playingSpeech || len(c.bufferedSpeech) == 0 || c.State.Paused {
+	if c.holdSpeech || c.sttActive || c.playingSpeech || len(c.bufferedSpeech) == 0 || c.State.Paused {
 		// Don't/can't kick off additional speech playback
 		return
 	}
 
 	// Time to play speech
 	if c.awaitReadbackCallsign != "" {
-		// ; prioritize responses from issued aircraft instructions over cold calls.
+		// Prioritize responses from issued aircraft instructions over cold calls.
 		isResponse := func(ps sim.PilotSpeech) bool { return ps.Callsign == c.awaitReadbackCallsign }
 		if idx := slices.IndexFunc(c.bufferedSpeech, isResponse); idx != -1 {
+			// Found the awaited readback - play it
 			bs := c.bufferedSpeech[idx]
 			c.bufferedSpeech = append(c.bufferedSpeech[:idx], c.bufferedSpeech[idx+1:]...)
 
@@ -390,6 +425,7 @@ loop:
 			if len(bs.MP3) == 0 {
 				c.lg.Warnf("Skipping speech for %s due to empty MP3 (TTS error)", bs.Callsign)
 				c.awaitReadbackCallsign = ""
+				c.holdSpeech = false
 				return
 			}
 
@@ -398,14 +434,33 @@ loop:
 				c.playingSpeech = false
 				c.holdSpeech = true
 				c.lastTransmissionCallsign = bs.Callsign
-				//fmt.Printf("play completed %s @ %s\n", bs.Callsign, time.Now().String())
 				c.lastSpeechHoldTime = time.Now().Add(3 * time.Second / 2)
 			}); err == nil {
-				//fmt.Printf("play awaited speech %s at %s\n", bs.Callsign, time.Now().String())
+				c.playingSpeech = true
+			}
+		} else if len(c.bufferedSpeech) > 0 && rand.Make().Float32() < stepOnProbability {
+			// Awaited readback not yet available, but another pilot "steps on" the frequency
+			bs := c.bufferedSpeech[0]
+			c.bufferedSpeech = c.bufferedSpeech[1:]
+
+			if len(bs.MP3) == 0 {
+				c.lg.Warnf("Skipping speech for %s due to empty MP3 (TTS error)", bs.Callsign)
+				return
+			}
+
+			c.lg.Infof("Pilot %s stepping on frequency (awaiting %s)", bs.Callsign, c.awaitReadbackCallsign)
+			if err := p.TryEnqueueSpeechMP3(bs.MP3, func() {
+				c.playingSpeech = false
+				// Don't clear awaitReadbackCallsign - still waiting for that pilot
+				c.lastTransmissionCallsign = bs.Callsign
+				c.lastSpeechHoldTime = time.Now().Add(2 * time.Second)
+			}); err == nil {
 				c.playingSpeech = true
 			}
 		}
+		// else: awaited readback not available and no step-on - wait
 	} else {
+		// No priority callsign - play in FIFO order
 		bs := c.bufferedSpeech[0]
 		c.bufferedSpeech = c.bufferedSpeech[1:]
 
@@ -418,26 +473,31 @@ loop:
 		if err := p.TryEnqueueSpeechMP3(bs.MP3, func() {
 			c.playingSpeech = false
 			c.holdSpeech = true
-			//fmt.Printf("play completed %s at %s\n", bs.Callsign, time.Now().String())
 			c.lastTransmissionCallsign = bs.Callsign
 			c.lastSpeechHoldTime = time.Now().Add(2 * time.Second)
 		}); err == nil {
-			//fmt.Printf("play random speech %s at %s\n", bs.Callsign, time.Now().String())
 			c.playingSpeech = true
 		}
 	}
 }
 
-func (c *ControlClient) checkPendingRPCs(eventStream *sim.EventStream) error {
+func (c *ControlClient) checkPendingRPCs(eventStream *sim.EventStream) ([]*pendingCall, error) {
+	var completed []*pendingCall
 	c.pendingCalls = slices.DeleteFunc(c.pendingCalls,
-		func(call *pendingCall) bool { return call.CheckFinished(eventStream, &c.State) })
+		func(call *pendingCall) bool {
+			if call.CheckFinished() {
+				completed = append(completed, call)
+				return true
+			}
+			return false
+		})
 
 	for _, call := range c.pendingCalls {
 		if err := checkTimeout(call, eventStream); err != nil {
-			return err
+			return completed, err
 		}
 	}
-	return nil
+	return completed, nil
 }
 
 func checkTimeout(call *pendingCall, eventStream *sim.EventStream) error {
@@ -562,6 +622,19 @@ func (c *ControlClient) AllowRadioTransmissions() {
 	c.holdSpeech = false
 }
 
+func (c *ControlClient) SetSTTActive(active bool) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	c.sttActive = active
+	if active {
+		c.holdSpeech = true
+	} else {
+		// PTT released - allow readback to play
+		c.holdSpeech = false
+	}
+}
+
 func (c *ControlClient) LastTTSCallsign() av.ADSBCallsign {
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -598,6 +671,163 @@ func (c *ControlClient) GetAtmosGrid(t time.Time, callback func(*wx.AtmosGrid, e
 				} else {
 					callback(nil, err)
 				}
+			}
+		}))
+}
+
+///////////////////////////////////////////////////////////////////////////
+// STT
+
+var whisperModel *whisper.Model
+var whisperModelErr error
+var whisperModelOnce sync.Once
+var whisperModelMu sync.Mutex
+
+// ProcessRecordedAudio transcribes recorded audio samples and sends them to the server for command processing.
+func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
+	// Snapshot state data before async processing to avoid races with GetUpdates.
+	state := c.State
+
+	go func() {
+		defer lg.CatchAndReportCrash()
+
+		whisperModelOnce.Do(func() {
+			// https://huggingface.co/ggerganov/whisper.cpp/tree/main
+			model := util.LoadResourceBytes("models/ggml-small.en.bin")
+			whisperModel, whisperModelErr = whisper.LoadModelFromBytes(model)
+		})
+		if whisperModelErr != nil {
+			lg.Errorf("whisper LoadModelFromBytes: %v", whisperModelErr)
+			return
+		}
+
+		waitStart := time.Now()
+		whisperModelMu.Lock()
+		waitDuration := time.Since(waitStart)
+
+		whisperStart := time.Now()
+		transcript, err := whisper.TranscribeWithModel(whisperModel, samples, platform.AudioInputSampleRate,
+			1 /* channels */, whisper.Options{InitialPrompt: makeWhisperPrompt(state)})
+		whisperDuration := time.Since(whisperStart)
+		whisperModelMu.Unlock()
+
+		lg.Infof("whisper transcription %q in %s (waited %s for lock)", transcript, whisperDuration, waitDuration)
+
+		c.SetLastTranscription(transcript)
+		if err != nil {
+			lg.Errorf("Push-to-talk: Transcription error: %v", err)
+			c.postSTTEvent("Transcription error: "+err.Error(), "")
+			return
+		}
+
+		if transcript == "[BLANK_AUDIO]" {
+			c.postSTTEvent("", "")
+			return
+		}
+
+		c.ProcessSTTTranscript(transcript, whisperDuration, func(callsign, command string, sttDuration time.Duration, err error) {
+			if err != nil {
+				lg.Infof("STT command error: %v", err)
+				c.postSTTEvent(transcript, "Error: "+err.Error())
+			} else {
+				lg.Infof("STT command: %s %s", callsign, command)
+				fullCommand := callsign + " " + command
+				c.SetLastCommand(fullCommand)
+				c.postSTTEvent(transcript, fullCommand)
+			}
+		})
+	}()
+}
+
+func makeWhisperPrompt(state SimState) string {
+	// Build initial prompt with common phrases, aircraft telephony, and approaches.
+	// Most important items first since whisper has a 224 token limit.
+	promptParts := []string{
+		"climb and maintain", "descend and maintain", "maintain",
+		"turn left", "turn right", "fly heading", "proceed direct", "expect the",
+		"reduce speed to", "maintain maximum forward speed", "contact tower",
+		"expect", "vectors", "squawk", "ident", "altimieter", "radar contact",
+		"reduce to final approach speed", "miles from", "established", "cleared",
+	}
+
+	// Add telephony, approaches, and fixes for user-controlled tracks.
+	assignedApproaches := make(map[string]struct{})
+	fixes := make(map[string]struct{})
+	for _, trk := range state.Tracks {
+		if state.UserControlsTrack(trk) && trk.IsAssociated() {
+			tele := av.GetTelephony(string(trk.ADSBCallsign), trk.FlightPlan.CWTCategory)
+			promptParts = append(promptParts, tele)
+			if trk.Approach != "" {
+				assignedApproaches[trk.Approach] = struct{}{}
+			}
+			for _, fix := range trk.Fixes {
+				fixes[fix] = struct{}{}
+			}
+		}
+	}
+
+	// Add assigned approaches (higher priority)
+	for appr := range assignedApproaches {
+		promptParts = append(promptParts, av.GetApproachTelephony(appr))
+	}
+
+	// Add active approaches (converted to spoken form, excluding already-added assigned ones)
+	activeApproaches := make(map[string]struct{})
+	for _, ar := range state.ArrivalRunways {
+		if ap, ok := state.Airports[ar.Airport]; ok {
+			for _, appr := range ap.Approaches {
+				if appr.Runway == ar.Runway {
+					activeApproaches[appr.FullName] = struct{}{}
+				}
+			}
+		}
+	}
+	for appr := range activeApproaches {
+		if _, assigned := assignedApproaches[appr]; !assigned {
+			promptParts = append(promptParts, av.GetApproachTelephony(appr))
+		}
+	}
+
+	// Add fixes (lower priority, may get truncated by token limit)
+	for fix := range fixes {
+		promptParts = append(promptParts, av.GetFixTelephony(fix))
+	}
+
+	return strings.Join(promptParts, ", ")
+}
+
+// postSTTEvent posts an STTCommandEvent to the event stream.
+func (c *ControlClient) postSTTEvent(transcript, command string) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	c.eventStream.Post(sim.Event{
+		Type:          sim.STTCommandEvent,
+		STTTranscript: transcript,
+		STTCommand:    command,
+	})
+}
+
+// ProcessSTTTranscript sends the transcript to the server for decoding and command execution.
+func (c *ControlClient) ProcessSTTTranscript(transcript string, whisperDuration time.Duration,
+	callback func(callsign, command string, sttDuration time.Duration, err error)) {
+	var result server.ProcessSTTTranscriptResult
+	c.addCall(makeRPCCall(c.client.Go(server.ProcessSTTTranscriptRPC, &server.ProcessSTTTranscriptArgs{
+		ControllerToken: c.controllerToken,
+		Transcript:      transcript,
+		WhisperDuration: whisperDuration,
+		NumCores:        runtime.NumCPU(),
+	}, &result, nil),
+		func(err error) {
+			if err == nil && result.Callsign != "" {
+				// Set priority for readback from addressed pilot
+				c.mu.Lock()
+				c.awaitReadbackCallsign = av.ADSBCallsign(result.Callsign)
+				// Note: don't clear holdSpeech here - wait for PTT release via SetSTTActive(false)
+				c.mu.Unlock()
+			}
+			if callback != nil {
+				callback(result.Callsign, result.Command, result.STTDuration, err)
 			}
 		}))
 }
@@ -687,4 +917,29 @@ func BroadcastMessage(hostname, msg, password string, lg *log.Logger) {
 	if err != nil {
 		lg.Errorf("broadcast error: %v", err)
 	}
+}
+
+// Thread-safe access to STT fields
+func (c *ControlClient) SetLastTranscription(s string) {
+	c.mu.Lock()
+	c.LastTranscription = s
+	c.mu.Unlock()
+}
+
+func (c *ControlClient) GetLastTranscription() string {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.LastTranscription
+}
+
+func (c *ControlClient) SetLastCommand(s string) {
+	c.mu.Lock()
+	c.LastCommand = s
+	c.mu.Unlock()
+}
+
+func (c *ControlClient) GetLastCommand() string {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.LastCommand
 }

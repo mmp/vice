@@ -203,7 +203,7 @@ func (a *AirlineSpecifier) Check(e *util.ErrorLogger) {
 	}
 }
 
-var badCallsigns map[string]interface{} = map[string]interface{}{
+var badCallsigns map[string]any = map[string]any{
 	// 9/11
 	"AAL11":  nil,
 	"UAL175": nil,
@@ -1222,7 +1222,7 @@ func (s *LocalSquawkCodePoolSpecifier) PostDeserialize(e *util.ErrorLogger) {
 				return (a[0] >= b[0] && a[0] <= b[1]) || (a[1] >= b[0] && a[1] <= b[1])
 			}
 			for i := range poolRanges {
-				for j := 0; j < i; j++ {
+				for j := range i {
 					if overlaps(poolRanges[i], poolRanges[j]) {
 						e.ErrorString("Range %s-%s overlaps with range %s-%s in the same pool",
 							poolRanges[i][0], poolRanges[i][1], poolRanges[j][0], poolRanges[j][1])
@@ -1440,6 +1440,7 @@ const (
 	RadioTransmissionReadback   // Reading back an instruction
 	RadioTransmissionUnexpected // Something urgent or unusual
 	RadioTransmissionMixUp      // Pilot confused about who was being addressed
+	RadioTransmissionNoId       // No callsign included (e.g. to say "blocked")
 )
 
 func (r RadioTransmissionType) String() string {
@@ -1452,6 +1453,8 @@ func (r RadioTransmissionType) String() string {
 		return "urgent"
 	case RadioTransmissionMixUp:
 		return "mixup"
+	case RadioTransmissionNoId:
+		return "noid"
 	default:
 		return "(unhandled type)"
 	}

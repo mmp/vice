@@ -342,7 +342,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	splitDepartureRoutes := make(map[string]map[string]*ExitRoute)
 	for rwy, rwyRoutes := range ap.DepartureRoutes {
 		e.Push("Departure runway " + rwy)
-		seenExits := make(map[string]interface{})
+		seenExits := make(map[string]any)
 		splitDepartureRoutes[rwy] = make(map[string]*ExitRoute)
 
 		r, ok := LookupRunway(icao, rwy)
@@ -374,7 +374,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 			route.Waypoints.CheckDeparture(e, controlPositions, checkScratchpad)
 
-			for _, exit := range strings.Split(exitList, ",") {
+			for exit := range strings.SplitSeq(exitList, ",") {
 				exit = strings.TrimSpace(exit)
 				if _, ok := seenExits[exit]; ok {
 					e.ErrorString("%s: exit repeatedly specified in routes", exit)

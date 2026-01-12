@@ -38,7 +38,7 @@ func (e *ErrorLogger) Pop() {
 	e.hierarchy = e.hierarchy[:len(e.hierarchy)-1]
 }
 
-func (e *ErrorLogger) ErrorString(s string, args ...interface{}) {
+func (e *ErrorLogger) ErrorString(s string, args ...any) {
 	if e == nil {
 		return
 	}

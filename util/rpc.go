@@ -104,7 +104,7 @@ func (c *LoggingServerCodec) ReadRequestBody(body any) error {
 	// the caller. This seems to be the least-gross way to pipe that information back to the caller
 	// for logging.
 	val := reflect.ValueOf(body)
-	if val.Kind() == reflect.Ptr && val.Elem().Kind() == reflect.Struct {
+	if val.Kind() == reflect.Pointer && val.Elem().Kind() == reflect.Struct {
 		structVal := val.Elem()
 		clientIPField := structVal.FieldByName("ClientIP")
 

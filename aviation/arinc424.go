@@ -44,7 +44,7 @@ func parseAltitude(s []byte) int {
 }
 
 func printColumnHeader() {
-	for i := 0; i < ARINC424LineLength/10; i++ {
+	for range ARINC424LineLength / 10 {
 		fmt.Printf("         |")
 	}
 	fmt.Printf("\n")

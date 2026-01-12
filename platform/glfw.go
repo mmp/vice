@@ -44,12 +44,14 @@ type glfwPlatform struct {
 	mouseCapture           math.Extent2D
 	// These are the keys that are actively held down; for now just the
 	// function keys, since all we currently need is F1 for beaconator.
-	heldFKeys map[imgui.Key]interface{}
+	heldFKeys map[imgui.Key]any
 
 	mouseDeltaMode         bool
 	mouseDeltaStartPos     [2]float32
 	mouseDeltaWindowCenter [2]float32
 	mouseDelta             [2]float32
+
+	audioRecorder *AudioRecorder
 }
 
 type Config struct {
@@ -123,11 +125,12 @@ func New(config *Config, lg *log.Logger) (Platform, error) {
 	window.MakeContextCurrent()
 
 	platform := &glfwPlatform{
-		config:      config,
-		imguiIO:     io,
-		window:      window,
-		multisample: config.EnableMSAA,
-		heldFKeys:   make(map[imgui.Key]interface{}),
+		config:        config,
+		imguiIO:       io,
+		window:        window,
+		multisample:   config.EnableMSAA,
+		heldFKeys:     make(map[imgui.Key]any),
+		audioRecorder: NewAudioRecorder(lg),
 	}
 	platform.installCallbacks()
 	platform.createMouseCursors()
@@ -220,7 +223,7 @@ func (g *glfwPlatform) ProcessEvents() bool {
 		return true
 	}
 
-	for i := 0; i < len(g.mouseJustPressed); i++ {
+	for i := range len(g.mouseJustPressed) {
 		if g.window.GetMouseButton(glfwButtonIDByIndex[imgui.MouseButton(i)]) == glfw.Press {
 			return true
 		}
@@ -282,7 +285,7 @@ func (g *glfwPlatform) NewFrame() {
 		g.imguiIO.SetMousePos(imgui.Vec2{X: -gomath.MaxFloat32, Y: -gomath.MaxFloat32})
 	}
 
-	for i := 0; i < len(g.mouseJustPressed); i++ {
+	for i := range len(g.mouseJustPressed) {
 		down := g.mouseJustPressed[i] ||
 			(g.window.GetMouseButton(glfwButtonIDByIndex[imgui.MouseButton(i)]) == glfw.Press)
 		g.imguiIO.SetMouseButtonDown(i, down)
@@ -769,4 +772,25 @@ func glfwKeyToImguiKey(keycode glfw.Key) imgui.Key {
 	default:
 		return imgui.KeyNone
 	}
+}
+
+// Audio recording methods
+func (g *glfwPlatform) StartAudioRecording() error {
+	return g.audioRecorder.StartRecording()
+}
+
+func (g *glfwPlatform) StartAudioRecordingWithDevice(deviceName string) error {
+	return g.audioRecorder.StartRecordingWithDevice(deviceName)
+}
+
+func (g *glfwPlatform) StopAudioRecording() ([]int16, error) {
+	return g.audioRecorder.StopRecording()
+}
+
+func (g *glfwPlatform) IsAudioRecording() bool {
+	return g.audioRecorder.IsRecording()
+}
+
+func (g *glfwPlatform) GetAudioInputDevices() []string {
+	return GetAudioInputDevices()
 }

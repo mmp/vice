@@ -967,10 +967,10 @@ func (gm greedyMatcher) Generator() matchGenerator {
 
 // Common reflect types used in function binding
 var (
-	trackType      = reflect.TypeOf((*sim.Track)(nil))
-	trackStateType = reflect.TypeOf((*TrackState)(nil))
-	statusType     = reflect.TypeOf(CommandStatus{})
-	errorInterface = reflect.TypeOf((*error)(nil)).Elem()
+	trackType      = reflect.TypeFor[*sim.Track]()
+	trackStateType = reflect.TypeFor[*TrackState]()
+	statusType     = reflect.TypeFor[CommandStatus]()
+	errorInterface = reflect.TypeFor[error]()
 )
 
 // normalizeType maps *TrackState to *sim.Track for type comparison.
@@ -1067,9 +1067,9 @@ func validateReturnTypes(funcType reflect.Type) error {
 
 // initialArgTypes lists the allowed initial argument types for command handlers.
 var initialArgTypes = []reflect.Type{
-	reflect.TypeOf((*STARSPane)(nil)),
-	reflect.TypeOf((*panes.Context)(nil)),
-	reflect.TypeOf((*Preferences)(nil)),
+	reflect.TypeFor[*STARSPane](),
+	reflect.TypeFor[*panes.Context](),
+	reflect.TypeFor[*Preferences](),
 }
 
 // countInitialArgs counts how many initial arguments a function expects.
@@ -1143,9 +1143,9 @@ func (cmd userCommand) bindArgs(sp *STARSPane, extractedArgs []any) []any {
 
 // initialArgProviders maps initial arg types to functions that provide their values.
 var initialArgProviders = map[reflect.Type]func(sp *STARSPane, ctx *panes.Context) reflect.Value{
-	reflect.TypeOf((*STARSPane)(nil)):     func(sp *STARSPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(sp) },
-	reflect.TypeOf((*panes.Context)(nil)): func(sp *STARSPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(ctx) },
-	reflect.TypeOf((*Preferences)(nil)):   func(sp *STARSPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(sp.currentPrefs()) },
+	reflect.TypeFor[*STARSPane]():     func(sp *STARSPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(sp) },
+	reflect.TypeFor[*panes.Context](): func(sp *STARSPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(ctx) },
+	reflect.TypeFor[*Preferences]():   func(sp *STARSPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(sp.currentPrefs()) },
 }
 
 // call invokes the command handler function with the provided arguments.

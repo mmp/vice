@@ -50,6 +50,11 @@ var (
 		showSettings      bool
 		showScenarioInfo  bool
 		showLaunchControl bool
+
+		// STT state
+		pttRecording bool
+		pttGarbling  bool // true if PTT pressed while audio was playing (no recording)
+		pttCapture   bool // capturing new PTT key assignment
 	}
 
 	//go:embed icons/tower-256x256.png
@@ -215,8 +220,30 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			imgui.SetTooltip("Display online vice documentation")
 		}
 
+		// Handle PTT key for STT recording
+		uiHandlePTTKey(p, controlClient, config, lg)
+
+		// Position for right-side icons (add space for mic icon when recording/garbling)
 		width, _ := ui.font.BoundText(renderer.FontAwesomeIconInfoCircle, 0)
-		imgui.SetCursorPos(imgui.Vec2{p.DisplaySize()[0] - float32(6*width+15), 0})
+		numIcons := 6
+		if ui.pttRecording || ui.pttGarbling {
+			numIcons = 7
+		}
+		imgui.SetCursorPos(imgui.Vec2{p.DisplaySize()[0] - float32(numIcons*width+15), 0})
+
+		// Show microphone icon while recording (red) or garbling (yellow)
+		if ui.pttRecording {
+			imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, 0, 0, 1})
+			imgui.TextUnformatted(renderer.FontAwesomeIconMicrophone)
+			imgui.PopStyleColor()
+			imgui.SameLine()
+		} else if ui.pttGarbling {
+			imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, 1, 0, 1})
+			imgui.TextUnformatted(renderer.FontAwesomeIconMicrophone)
+			imgui.PopStyleColor()
+			imgui.SameLine()
+		}
+
 		if imgui.Button(renderer.FontAwesomeIconInfoCircle) {
 			ui.showAboutDialog = !ui.showAboutDialog
 		}
@@ -315,7 +342,7 @@ func showAboutDialog() {
 	credits := `Additional credits:
 - Software Development: Xavier Caldwell, Artem Dorofeev, Adam E, Dennis Graiani, Ethan Malimon, Neel P, Makoto Sakaguchi, Michael Trokel, radarcontacto, Rick R, Samuel Valencia, and Yi Zhang.
 - Timely feedback: radarcontacto.
-- Facility engineering: Connor Allen, anguse, Adam Bolek, Brody Carty, Lucas Chan, Aaron Flett, Mike Fries, Ryan G, Thomas Halpin, Jason Helkenberg, Trey Hensley, Austin Jenkins, Ketan K, Mike K, Allison L, Josh Lambert, Kayden Lambert, Mike LeGall, Jonah Lefkoff, Jud Lopez, Ethan Malimon, manaphy, Jace Martin, Michael McConnell, Merry, Yahya Nazimuddin, Justin Nguyen, Giovanni, Andrew S, Logan S, Arya T, Nelson T, Tyler Temerowski, Eli Thompson, Michael Trokel, Samuel Valencia, Gavin Velicevic, and Jackson Verdoorn.
+- Facility engineering: Connor Allen, anguse, Adam Bolek, Brody Carty, Lucas Chan, Aaron Flett, Mike Fries, Ryan G, Thomas Halpin, Jason Helkenberg, Trey Hensley, Elijah J, Austin Jenkins, Ketan K, Mike K, Allison L, Josh Lambert, Kayden Lambert, Mike LeGall, Jonah Lefkoff, Jud Lopez, Ethan Malimon, manaphy, Jace Martin, Michael McConnell, Merry, Yahya Nazimuddin, Justin Nguyen, Giovanni, Andrew S, Logan S, Arya T, Nelson T, Tyler Temerowski, Eli Thompson, Michael Trokel, Samuel Valencia, Gavin Velicevic, and Jackson Verdoorn.
 - Video maps: thanks to the ZAU, ZBW, ZDC, ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB, ZSE, and ZTL VATSIM ARTCCs and to the FAA, from whence the original maps came.
 - Additionally: OpenScope for the aircraft performance and airline databases, ourairports.com for the airport database, and for the FAA for being awesome about providing the CIFP, MVA specifications, and other useful aviation data digitally.
 - One more thing: see the file CREDITS.txt in the vice source code distribution for third-party software, fonts, sounds, etc.`
@@ -584,7 +611,7 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 	fixed, italic := false, false
 	// Split the string into words. Note that this doesn't preserve extra
 	// spacing from multiple spaces or respect embedded newlines.
-	for _, word := range strings.Fields(str) {
+	for word := range strings.FieldsSeq(str) {
 		if textWidth(word) > imgui.ContentRegionAvail().X {
 			// start a new line
 			imgui.Text("\n")
@@ -675,6 +702,8 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 	imgui.Checkbox("Update Discord activity status", &update)
 	config.InhibitDiscordActivity.Store(!update)
 
+	imgui.Separator()
+
 	if imgui.BeginComboV("UI Font Size", strconv.Itoa(config.UIFontSize), imgui.ComboFlagsHeightLarge) {
 		sizes := renderer.AvailableFontSizes(renderer.RobotoRegular)
 		for _, size := range sizes {
@@ -685,6 +714,8 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 		}
 		imgui.EndCombo()
 	}
+
+	imgui.Separator()
 
 	if imgui.CollapsingHeaderBoolPtr("Display", nil) {
 		if imgui.Checkbox("Enable anti-aliasing", &config.EnableMSAA) {
@@ -709,6 +740,84 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 			}
 
 			imgui.EndCombo()
+		}
+	}
+
+	if imgui.CollapsingHeaderBoolPtr("Speech to Text", nil) {
+		// Push-to-talk key
+		if config.UserPTTKey == imgui.KeyNone {
+			config.UserPTTKey = imgui.KeySemicolon
+		}
+		keyName := platform.GetImGuiKeyName(config.UserPTTKey)
+
+		imgui.Text("Push-to-Talk Key: ")
+		imgui.SameLine()
+		imgui.TextColored(imgui.Vec4{0, 1, 1, 1}, keyName)
+
+		if ui.pttCapture {
+			imgui.TextColored(imgui.Vec4{1, 1, 0, 1}, "Press any key for Push-to-Talk...")
+			if kb := p.GetKeyboard(); kb != nil {
+				for key := range kb.Pressed {
+					if key != imgui.KeyLeftShift && key != imgui.KeyRightShift &&
+						key != imgui.KeyLeftCtrl && key != imgui.KeyRightCtrl &&
+						key != imgui.KeyLeftAlt && key != imgui.KeyRightAlt &&
+						key != imgui.KeyLeftSuper && key != imgui.KeyRightSuper {
+						config.UserPTTKey = key
+						ui.pttCapture = false
+						break
+					}
+				}
+			}
+		} else {
+			imgui.SameLine()
+			if imgui.Button("Change Key") {
+				ui.pttCapture = true
+			}
+			imgui.SameLine()
+			if imgui.Button("Clear") {
+				config.UserPTTKey = imgui.KeyNone
+			}
+		}
+
+		// Microphone selection
+		imgui.Text("Microphone:")
+		imgui.SameLine()
+		micName := config.SelectedMicrophone
+		cleanMic := func(r rune) rune {
+			if (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9') || r == ' ' {
+				return r
+			}
+			return -1
+		}
+		if micName == "" {
+			micName = "Default"
+		}
+		micName = strings.Map(cleanMic, micName)
+		if imgui.BeginComboV("##microphone", micName, 0) {
+			if imgui.SelectableBoolV("Default", config.SelectedMicrophone == "", 0, imgui.Vec2{}) {
+				config.SelectedMicrophone = ""
+			}
+			mics := p.GetAudioInputDevices()
+			for _, mic := range mics {
+				micFormatted := strings.Map(cleanMic, mic)
+				if imgui.SelectableBoolV(micFormatted, mic == config.SelectedMicrophone, 0, imgui.Vec2{}) {
+					config.SelectedMicrophone = mic
+				}
+			}
+			imgui.EndCombo()
+		}
+
+		if p.IsAudioRecording() {
+			imgui.TextColored(imgui.Vec4{1, 0, 0, 1}, "Recording...")
+		} else {
+			if transcription := c.GetLastTranscription(); transcription != "" {
+				imgui.Text("Last transcription:")
+				imgui.TextWrapped(transcription)
+			}
+			if lastCmd := c.GetLastCommand(); lastCmd != "" {
+				imgui.Text("Last command:")
+				imgui.TextWrapped(lastCmd)
+			}
 		}
 	}
 
@@ -776,4 +885,59 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 	}
 
 	imgui.End()
+}
+
+// uiHandlePTTKey handles push-to-talk key input for STT recording.
+func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, config *Config, lg *log.Logger) {
+	pttKey := config.UserPTTKey
+	if pttKey == imgui.KeyNone {
+		return
+	}
+
+	// Start on initial press (ignore repeats by checking our own flags)
+	if imgui.IsKeyDown(pttKey) && !ui.pttRecording && !ui.pttGarbling {
+		if p.IsPlayingSpeech() {
+			// Audio is playing - garble it instead of recording
+			p.SetSpeechGarbled(true)
+			ui.pttGarbling = true
+			lg.Infof("Push-to-talk: Garbling audio (pressed during playback)")
+		} else {
+			// No audio playing - start recording
+			if err := p.StartAudioRecordingWithDevice(config.SelectedMicrophone); err != nil {
+				lg.Errorf("Failed to start audio recording: %v", err)
+			} else {
+				ui.pttRecording = true
+				if controlClient != nil {
+					controlClient.SetSTTActive(true)
+				}
+				lg.Infof("Push-to-talk: Started recording")
+			}
+		}
+	}
+
+	// Detect release
+	if !imgui.IsKeyDown(pttKey) {
+		if ui.pttGarbling {
+			// Was garbling - stop garbling
+			p.SetSpeechGarbled(false)
+			ui.pttGarbling = false
+			lg.Infof("Push-to-talk: Stopped garbling")
+		}
+		if ui.pttRecording {
+			// Was recording - stop and process
+			if p.IsAudioRecording() {
+				samples, err := p.StopAudioRecording()
+				if err != nil {
+					lg.Errorf("Failed to stop audio recording: %v", err)
+				} else {
+					lg.Infof("Push-to-talk: Stopped recording, transcribing...")
+					if controlClient != nil {
+						controlClient.SetSTTActive(false)
+						go controlClient.ProcessRecordedAudio(samples, lg)
+					}
+				}
+			}
+			ui.pttRecording = false
+		}
+	}
 }

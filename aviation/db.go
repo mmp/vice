@@ -217,7 +217,7 @@ type Airline struct {
 		Name            string   `json:"name"`
 		CallsignFormats []string `json:"callsignFormats"`
 	} `json:"callsign"`
-	JSONFleets map[string][][2]interface{} `json:"fleets"`
+	JSONFleets map[string][][2]any `json:"fleets"`
 	Fleets     map[string][]FleetAircraft
 }
 
@@ -266,15 +266,11 @@ func InitDB() {
 
 	var wg sync.WaitGroup
 	var customAirports map[string]FAAAirport
-	wg.Add(1)
-	go func() { db.Airports, customAirports = parseAirports(); wg.Done() }()
-	wg.Add(1)
-	go func() { db.AircraftTypeAliases, db.AircraftPerformance = parseAircraft(); wg.Done() }()
-	wg.Add(1)
-	go func() { db.Airlines, db.Callsigns = parseAirlines(); wg.Done() }()
+	wg.Go(func() { db.Airports, customAirports = parseAirports() })
+	wg.Go(func() { db.AircraftTypeAliases, db.AircraftPerformance = parseAircraft() })
+	wg.Go(func() { db.Airlines, db.Callsigns = parseAirlines() })
 	var airports map[string]FAAAirport
-	wg.Add(1)
-	go func() {
+	wg.Go(func() {
 		r := parseCIFP()
 		airports = r.Airports
 		db.Navaids = r.Navaids
@@ -282,26 +278,18 @@ func InitDB() {
 		db.Airways = r.Airways
 		db.EnrouteHolds = r.EnrouteHolds
 		db.TerminalHolds = r.TerminalHolds
-		wg.Done()
-	}()
+	})
 	var hpfEnroute map[string][]Hold
-	wg.Add(1)
-	go func() { hpfEnroute = parseHPF(); wg.Done() }()
-	wg.Add(1)
-	go func() { db.MagneticGrid = parseMagneticGrid(); wg.Done() }()
-	wg.Add(1)
-	go func() { db.ARTCCs, db.TRACONs = parseARTCCsAndTRACONs(); wg.Done() }()
-	wg.Add(1)
-	go func() { db.MVAs = parseMVAs(); wg.Done() }()
-	wg.Add(1)
-	go func() { db.ERAMAdaptations = parseAdaptations(); wg.Done() }()
-	wg.Add(1)
-	go func() {
+	wg.Go(func() { hpfEnroute = parseHPF() })
+	wg.Go(func() { db.MagneticGrid = parseMagneticGrid() })
+	wg.Go(func() { db.ARTCCs, db.TRACONs = parseARTCCsAndTRACONs() })
+	wg.Go(func() { db.MVAs = parseMVAs() })
+	wg.Go(func() { db.ERAMAdaptations = parseAdaptations() })
+	wg.Go(func() {
 		db.BravoAirspace = parseAirspace("bravo-airspace.json.zst")
 		db.CharlieAirspace = parseAirspace("charlie-airspace.json.zst")
 		db.DeltaAirspace = parseAirspace("delta-airspace.json.zst")
-		wg.Done()
-	}()
+	})
 	wg.Wait()
 
 	// Merge HPF holds with CIFP holds
@@ -1210,7 +1198,7 @@ func allTFRUrls(lg *log.Logger) []string {
 // result on the provided chan when done.
 func fetchTFRs(tfrs map[string]TFR, ch chan<- map[string]TFR, lg *log.Logger) {
 	// Semaphore to limit to 4 concurrent requests.
-	sem := make(chan interface{}, 4)
+	sem := make(chan any, 4)
 	defer func() { close(sem) }()
 
 	type TFROrError struct {

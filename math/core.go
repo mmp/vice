@@ -5,6 +5,7 @@
 package math
 
 import (
+	"cmp"
 	gomath "math"
 
 	"golang.org/x/exp/constraints"
@@ -104,7 +105,7 @@ func Pow(a, b float32) float32 {
 func Sqr[V constraints.Integer | constraints.Float](v V) V { return v * v }
 
 // Clamp restricts x to the range [low, high]
-func Clamp[T constraints.Ordered](x T, low T, high T) T {
+func Clamp[T cmp.Ordered](x T, low T, high T) T {
 	if x < low {
 		return low
 	} else if x > high {

@@ -93,10 +93,7 @@ func (cb *CommandBuffer) Reset() {
 // the buffer without going past its capacity.
 func (cb *CommandBuffer) growFor(n int) {
 	if len(cb.Buf)+n > cap(cb.Buf) {
-		sz := 2 * cap(cb.Buf)
-		if sz < 1024 {
-			sz = 1024
-		}
+		sz := max(2*cap(cb.Buf), 1024)
 		if sz < len(cb.Buf)+n {
 			sz = 2 * (len(cb.Buf) + n)
 		}

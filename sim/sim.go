@@ -98,7 +98,7 @@ type Sim struct {
 
 	Rand *rand.Rand
 
-	SquawkWarnedACIDs map[ACID]interface{} // Warn once in CheckLeaks(); don't spam the logs
+	SquawkWarnedACIDs map[ACID]any // Warn once in CheckLeaks(); don't spam the logs
 
 	// No need to serialize these; they're caches anyway.
 	bravoAirspace   *av.AirspaceGrid
@@ -147,6 +147,8 @@ type Track struct {
 	FiledAltitude             int
 	OnExtendedCenterline      bool
 	OnApproach                bool
+	Approach                  string   // Full name of assigned approach, if any
+	Fixes                     []string // Relevant fix names for STT
 	ATPAVolume                *av.ATPAVolume
 	MVAsApply                 bool
 	HoldForRelease            bool
@@ -272,7 +274,7 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 		Rand: rand.Make(),
 
-		SquawkWarnedACIDs: make(map[ACID]interface{}),
+		SquawkWarnedACIDs: make(map[ACID]any),
 
 		wxProvider: config.WXProvider,
 	}
@@ -375,8 +377,8 @@ func (s *Sim) ReplayScenario(waypointCommands string, durationSpec string, lg *l
 	// Parse replay duration
 	var maxUpdates int
 	var untilCallsign av.ADSBCallsign
-	if strings.HasPrefix(durationSpec, "until:") {
-		untilCallsign = av.ADSBCallsign(strings.TrimPrefix(durationSpec, "until:"))
+	if after, ok := strings.CutPrefix(durationSpec, "until:"); ok {
+		untilCallsign = av.ADSBCallsign(after)
 		maxUpdates = 7200 // 2 hours max
 		fmt.Printf("Running until aircraft %s completes (max %d seconds)\n", untilCallsign, maxUpdates)
 	} else {
@@ -840,6 +842,8 @@ func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 			events[i].SpokenText = tr.Spoken(s.Rand) + e.SpokenText
 		case av.RadioTransmissionMixUp:
 			// No additional formatting for mix-up transmissions; the callsign is already in there.
+		case av.RadioTransmissionNoId:
+			// No callsign formatting for NoId transmissions (e.g., "blocked").
 		default:
 			csArg := av.CallsignArg{
 				Callsign:    ac.ADSBCallsign,
@@ -1618,7 +1622,7 @@ func (s *Sim) tcwForPosition(pos ControlPosition) TCW {
 func (s *Sim) CheckLeaks() {
 	var usedIndices [100]bool // 1-99 are handed out
 	nUsedIndices := 0
-	seenSquawks := make(map[av.Squawk]interface{})
+	seenSquawks := make(map[av.Squawk]any)
 
 	check := func(fp *NASFlightPlan) {
 		if fp.ListIndex != UnsetSTARSListIndex {

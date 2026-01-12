@@ -117,7 +117,7 @@ func parseCRRLocation(ctx *panes.Context, token string) (math.Point2LL, bool) {
 // resolveAircraftTokens converts a slash-separated list of ACIDs/FLIDs/CIDs to callsigns.
 func resolveAircraftTokens(ctx *panes.Context, s string) []av.ADSBCallsign {
 	var out []av.ADSBCallsign
-	for _, tok := range strings.Split(s, "/") {
+	for tok := range strings.SplitSeq(s, "/") {
 		tok = strings.ToUpper(strings.TrimSpace(tok))
 		if tok == "" {
 			continue

@@ -184,7 +184,7 @@ func UnmarshalJSONBytes[T any](b []byte, out *T) error {
 func CheckJSON[T any](contents []byte, e *ErrorLogger) {
 	defer e.CheckDepth(e.CurrentDepth())
 
-	var items interface{}
+	var items any
 	if err := UnmarshalJSONBytes(contents, &items); err != nil {
 		e.Error(err)
 		return
@@ -198,9 +198,9 @@ func CheckJSON[T any](contents []byte, e *ErrorLogger) {
 
 // TypeCheckJSON returns a Boolean indicating whether the provided raw
 // unmarshaled JSON values are type-compatible with the given type T.
-func TypeCheckJSON[T any](json interface{}) bool {
+func TypeCheckJSON[T any](json any) bool {
 	var e ErrorLogger
-	ty := reflect.TypeOf((*T)(nil)).Elem()
+	ty := reflect.TypeFor[T]()
 	structTypeCache := make(map[reflect.Type]map[string]reflect.Type)
 	typeCheckJSON(json, ty, structTypeCache, &e)
 	return !e.HaveErrors()
@@ -210,16 +210,16 @@ func TypeCheckJSON[T any](json interface{}) bool {
 // unmarshalers to check whether raw unmarshled JSON types are compatible
 // with their underlying type.
 type JSONChecker interface {
-	CheckJSON(json interface{}) bool
+	CheckJSON(json any) bool
 }
 
-func typeCheckJSON(json interface{}, ty reflect.Type, structTypeCache map[reflect.Type]map[string]reflect.Type, e *ErrorLogger) {
-	for ty.Kind() == reflect.Ptr {
+func typeCheckJSON(json any, ty reflect.Type, structTypeCache map[reflect.Type]map[string]reflect.Type, e *ErrorLogger) {
+	for ty.Kind() == reflect.Pointer {
 		ty = ty.Elem()
 	}
 
 	// Use the type's JSONChecker, if there is one.
-	chty := reflect.TypeOf((*JSONChecker)(nil)).Elem()
+	chty := reflect.TypeFor[JSONChecker]()
 	if ty.Implements(chty) || reflect.PointerTo(ty).Implements(chty) {
 		checker := reflect.New(ty).Interface().(JSONChecker)
 		if !checker.CheckJSON(json) {
@@ -231,7 +231,7 @@ func typeCheckJSON(json interface{}, ty reflect.Type, structTypeCache map[reflec
 
 	switch ty.Kind() {
 	case reflect.Array, reflect.Slice:
-		if array, ok := json.([]interface{}); ok {
+		if array, ok := json.([]any); ok {
 			for _, item := range array {
 				typeCheckJSON(item, ty.Elem(), structTypeCache, e)
 			}
@@ -245,7 +245,7 @@ func typeCheckJSON(json interface{}, ty reflect.Type, structTypeCache map[reflec
 		}
 
 	case reflect.Map:
-		if m, ok := json.(map[string]interface{}); ok {
+		if m, ok := json.(map[string]any); ok {
 			for k, v := range m {
 				e.Push(k)
 				typeCheckJSON(v, ty.Elem(), structTypeCache, e)
@@ -257,7 +257,7 @@ func typeCheckJSON(json interface{}, ty reflect.Type, structTypeCache map[reflec
 		}
 
 	case reflect.Struct:
-		if items, ok := json.(map[string]interface{}); !ok {
+		if items, ok := json.(map[string]any); !ok {
 			e.ErrorString("unexpected data format provided for object: %s",
 				reflect.TypeOf(json))
 		} else {

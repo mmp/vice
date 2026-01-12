@@ -424,7 +424,7 @@ func (s *Sim) Prespawn() {
 
 	// Prime the pump before the user gets involved
 	s.prespawn = true
-	for i := 0; i < initialSimSeconds; i++ {
+	for i := range initialSimSeconds {
 		// Controlled only at the tail end.
 		s.prespawnUncontrolledOnly = i < initialSimSeconds-initialSimControlledSeconds
 

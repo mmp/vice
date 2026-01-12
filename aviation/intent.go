@@ -49,7 +49,7 @@ type intentMerger struct {
 var intentMergers []intentMerger
 
 // commandIntentType is the reflect.Type for the CommandIntent interface
-var commandIntentType = reflect.TypeOf((*CommandIntent)(nil)).Elem()
+var commandIntentType = reflect.TypeFor[CommandIntent]()
 
 // RegisterIntentMerger registers a merge function.
 // fn must have signature: func(IntentType1, IntentType2, ...) ([]CommandIntent, bool)
@@ -67,11 +67,11 @@ func RegisterIntentMerger(fn any) {
 	if fnType.NumOut() != 2 {
 		panic("RegisterIntentMerger: function must return ([]CommandIntent, bool)")
 	}
-	sliceType := reflect.TypeOf([]CommandIntent{})
+	sliceType := reflect.TypeFor[[]CommandIntent]()
 	if fnType.Out(0) != sliceType {
 		panic("RegisterIntentMerger: first return value must be []CommandIntent")
 	}
-	if fnType.Out(1) != reflect.TypeOf(true) {
+	if fnType.Out(1) != reflect.TypeFor[bool]() {
 		panic("RegisterIntentMerger: second return value must be bool")
 	}
 

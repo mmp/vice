@@ -85,7 +85,7 @@ func parseOneFlightPlan(format string, text string, checkSp func(s string, prima
 		return spec, ErrCommandFormat
 	}
 
-	for _, s := range strings.Split(format, ",") {
+	for s := range strings.SplitSeq(format, ",") {
 		if parse, ok := fpParseFuncs[s]; !ok {
 			panic("unknown fp entry specifier: " + s)
 		} else if ok, err := parse(text, checkSp, &spec); ok {
@@ -372,8 +372,8 @@ func parseFpRNAVToggle(s string, checkSp func(s string, primary bool) bool, spec
 }
 
 func parseFpFlightRules(s string, checkSp func(s string, primary bool) bool, spec *sim.FlightPlanSpecifier) (bool, error) {
-	if strings.HasPrefix(s, ".") {
-		switch strings.TrimPrefix(s, ".") {
+	if after, ok := strings.CutPrefix(s, "."); ok {
+		switch after {
 		case "V", "P" /* VFR on top */ :
 			spec.Rules.Set(av.FlightRulesVFR)
 			return true, nil

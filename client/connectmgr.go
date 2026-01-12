@@ -180,7 +180,8 @@ func (cm *ConnectionManager) Disconnect() {
 }
 
 func (cm *ConnectionManager) UpdateRunningSims() error {
-	if cm.updateRunningSimsCall != nil && cm.updateRunningSimsCall.CheckFinished(nil, nil) {
+	if cm.updateRunningSimsCall != nil && cm.updateRunningSimsCall.CheckFinished() {
+		cm.updateRunningSimsCall.InvokeCallback(nil, nil)
 		cm.updateRunningSimsCall = nil
 		err := cm.updateRunningSimsError
 		cm.updateRunningSimsError = nil
@@ -256,7 +257,8 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg
 		cm.remoteSimServerChan = TryConnectRemoteServer(cm.serverAddress, lg)
 	}
 
-	if cm.pendingMETARCall != nil && cm.pendingMETARCall.CheckFinished(nil, nil) {
+	if cm.pendingMETARCall != nil && cm.pendingMETARCall.CheckFinished() {
+		cm.pendingMETARCall.InvokeCallback(nil, nil)
 		cm.pendingMETARCall = nil
 	}
 

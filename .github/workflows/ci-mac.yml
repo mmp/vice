@@ -29,6 +29,10 @@ jobs:
     steps:
     - name: Checkout source
       uses: actions/checkout@v4
+      with:
+        submodules: true
+        fetch-depth: 0
+        lfs: true
 
     - name: Setup go
       uses: actions/setup-go@v5
@@ -42,10 +46,8 @@ jobs:
     - name: Install Mac dependencies
       run: brew install sdl2 pkg-config glfw
 
-    - name: Build for lint (local resources, single arch)
-      run: |
-        git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
-        CGO_ENABLED=1 GOOS=darwin go build -ldflags="-s -w" -tags static -o vice ./cmd/vice
+    - name: Build vice
+      run: ./build.sh
 
     - name: Check scenarios
       run: ./vice -lint
@@ -62,11 +64,7 @@ jobs:
         fi
 
     - name: Build universal binary
-      run: |
-        git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
-        CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -tags static,downloadresources -o vice_amd64 ./cmd/vice
-        CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -tags static,downloadresources -o vice_arm64 ./cmd/vice
-        lipo -create -output vice vice_amd64 vice_arm64
+      run: ./build.sh --release --universal
 
     - name: Run tests
       run: go test -v ./...

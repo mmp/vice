@@ -53,8 +53,8 @@ type CommonState struct {
 
 	Airports          map[string]*av.Airport
 	Controllers       map[ControlPosition]*av.Controller
-	DepartureAirports map[string]interface{}
-	ArrivalAirports   map[string]interface{}
+	DepartureAirports map[string]any
+	ArrivalAirports   map[string]any
 	Fixes             map[string]math.Point2LL
 	VFRRunways        map[string]av.Runway // assume just one runway per airport
 
@@ -152,6 +152,11 @@ func makeDerivedState(s *Sim) DerivedState {
 			continue
 		}
 
+		var approach string
+		if ac.Nav.Approach.Assigned != nil {
+			approach = ac.Nav.Approach.Assigned.FullName
+		}
+
 		rt := Track{
 			RadarTrack:                ac.GetRadarTrack(s.State.SimTime),
 			FlightPlan:                ac.NASFlightPlan,
@@ -165,6 +170,8 @@ func makeDerivedState(s *Sim) DerivedState {
 			FiledAltitude:             ac.FlightPlan.Altitude,
 			OnExtendedCenterline:      ac.OnExtendedCenterline(0.2),
 			OnApproach:                ac.OnApproach(false), /* don't check altitude */
+			Approach:                  approach,
+			Fixes:                     ac.GetSTTFixes(),
 			MVAsApply:                 ac.MVAsApply(),
 			HoldForRelease:            ac.HoldForRelease,
 			MissingFlightPlan:         ac.MissingFlightPlan,
@@ -287,7 +294,7 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *V
 		}
 	}
 
-	ss.DepartureAirports = make(map[string]interface{})
+	ss.DepartureAirports = make(map[string]any)
 	for name := range ss.LaunchConfig.DepartureRates {
 		ss.DepartureAirports[name] = nil
 	}
@@ -305,7 +312,7 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *V
 		}
 	}
 
-	ss.ArrivalAirports = make(map[string]interface{})
+	ss.ArrivalAirports = make(map[string]any)
 	for _, airportRates := range ss.LaunchConfig.InboundFlowRates {
 		for name := range airportRates {
 			if name != "overflights" {

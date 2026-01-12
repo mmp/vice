@@ -31,7 +31,7 @@ func EmptyExtent2D() Extent2D {
 func Extent2DFromPoints(pts [][2]float32) Extent2D {
 	e := EmptyExtent2D()
 	for _, p := range pts {
-		for d := 0; d < 2; d++ {
+		for d := range 2 {
 			if p[d] < e.P0[d] {
 				e.P0[d] = p[d]
 			}
@@ -52,7 +52,7 @@ func Extent2DFromP2LLs(pts []Point2LL) Extent2D {
 func Extent2DFromSeq(it iter.Seq[Point2LL]) Extent2D {
 	e := EmptyExtent2D()
 	for p := range it {
-		for d := 0; d < 2; d++ {
+		for d := range 2 {
 			if p[d] < e.P0[d] {
 				e.P0[d] = p[d]
 			}
@@ -263,7 +263,7 @@ func EquilateralTriangleVertices(height float32) [3][2]float32 {
 // the edge from pts[len(pts)-1] to pts[0] in its test.
 func PointInPolygon(p [2]float32, pts [][2]float32) bool {
 	inside := false
-	for i := 0; i < len(pts); i++ {
+	for i := range pts {
 		p0, p1 := pts[i], pts[(i+1)%len(pts)]
 		if (p0[1] <= p[1] && p[1] < p1[1]) || (p1[1] <= p[1] && p[1] < p0[1]) {
 			x := p0[0] + (p[1]-p0[1])*(p1[0]-p0[0])/(p1[1]-p0[1])
@@ -277,7 +277,7 @@ func PointInPolygon(p [2]float32, pts [][2]float32) bool {
 
 func PointInPolygon2LL(p Point2LL, pts []Point2LL) bool {
 	inside := false
-	for i := 0; i < len(pts); i++ {
+	for i := range pts {
 		p0, p1 := pts[i], pts[(i+1)%len(pts)]
 		if (p0[1] <= p[1] && p[1] < p1[1]) || (p1[1] <= p[1] && p[1] < p0[1]) {
 			x := p0[0] + (p[1]-p0[1])*(p1[0]-p0[0])/(p1[1]-p0[1])
@@ -307,7 +307,7 @@ func CirclePoints(nsegs int) [][2]float32 {
 	if _, ok := circlePoints[nsegs]; !ok {
 		// Evaluate the vertices of the circle to initialize a new slice.
 		var pts [][2]float32
-		for d := 0; d < nsegs; d++ {
+		for d := range nsegs {
 			angle := Radians(float32(d) / float32(nsegs) * 360)
 			pt := [2]float32{Sin(angle), Cos(angle)}
 			pts = append(pts, pt)

@@ -6,6 +6,7 @@ package server
 
 import (
 	"fmt"
+	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
@@ -913,5 +914,28 @@ func (sd *dispatcher) ConfigureATPA(args *ATPAConfigArgs, result *ATPAConfigResu
 	if err == nil {
 		result.SimStateUpdate = c.GetStateUpdate()
 	}
+	return err
+}
+
+type ProcessSTTTranscriptArgs struct {
+	ControllerToken string
+	Transcript      string
+	WhisperDuration time.Duration
+	NumCores        int
+}
+
+type ProcessSTTTranscriptResult struct {
+	Callsign    string
+	Command     string
+	STTDuration time.Duration
+}
+
+const ProcessSTTTranscriptRPC = "Sim.ProcessSTTTranscript"
+
+func (sd *dispatcher) ProcessSTTTranscript(args *ProcessSTTTranscriptArgs, result *ProcessSTTTranscriptResult) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	var err error
+	result.Callsign, result.Command, result.STTDuration, err = sd.sm.ProcessSTTTranscript(args.ControllerToken, args.Transcript, args.WhisperDuration, args.NumCores)
 	return err
 }

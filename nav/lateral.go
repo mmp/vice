@@ -435,7 +435,8 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 		} else if wp.Heading != 0 && !clearedAtFix {
 			// We have an outbound heading
 			hdg := float32(wp.Heading)
-			nav.Heading = NavHeading{Assigned: &hdg}
+			turn := TurnMethod(wp.Turn)
+			nav.Heading = NavHeading{Assigned: &hdg, Turn: &turn}
 		} else if wp.PresentHeading && !clearedAtFix {
 			// Round to nearest 5 degrees
 			hdg := float32(5 * int((nav.FlightState.Heading+2.5)/5))
@@ -593,7 +594,7 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMet
 
 	// Don't simulate the turn longer than it will take to do it.
 	n := int(1 + turnAngle/3)
-	for i := 0; i < n; i++ {
+	for range n {
 		nav2.UpdateWithWeather("", wxs, nil, time.Time{}, nil)
 		curDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position,
 			nav2.FlightState.NmPerLongitude),
@@ -632,7 +633,7 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMe
 	nav2.Approach.InterceptState = NotIntercepting // avoid recursive calls..
 
 	n := int(1 + turnAngle)
-	for i := 0; i < n; i++ {
+	for range n {
 		nav2.UpdateWithWeather("", wxs, nil, time.Time{}, nil)
 		curDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position, nav2.FlightState.NmPerLongitude), p0, p1)
 		if (math.Abs(curDist) < 0.02 || math.Sign(initialDist) != math.Sign(curDist)) && math.Abs(curDist) < .25 && math.HeadingDifference(hdg, nav2.FlightState.Heading) < 10 {

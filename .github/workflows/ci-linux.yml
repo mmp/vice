@@ -24,6 +24,10 @@ jobs:
     steps:
     - name: Checkout source
       uses: actions/checkout@v4
+      with:
+        submodules: true
+        fetch-depth: 0
+        lfs: true
 
     - name: Setup go
       uses: actions/setup-go@v5
@@ -39,10 +43,8 @@ jobs:
         sudo apt update
         sudo apt install xorg-dev libsdl2-dev libsystemd-dev
 
-    - name: Build for lint (local resources)
-      run: |
-        go build -tags imguifreetype -o ./ ./cmd/vice
-        ls
+    - name: Build vice
+      run: ./build.sh
 
     - name: Check scenarios
       run:
@@ -59,10 +61,8 @@ jobs:
             mv manifest.json cmd/vice
         fi
 
-    - name: Build
-      run: |
-        git describe --tags --abbrev=8 --dirty --always --long > resources/version.txt
-        go build -tags imguifreetype,downloadresources ./...
+    - name: Build for release
+      run: ./build.sh --release
 
     - name: Run tests
       run:

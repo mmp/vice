@@ -71,7 +71,7 @@ func write(maps []sim.VideoMap, fn string) {
 	err = gob.NewEncoder(gf).Encode(vmf)
 	errorExit("GOB error", err)
 
-	names := make(map[string]interface{})
+	names := make(map[string]any)
 	for _, m := range maps {
 		names[m.Name] = nil
 	}

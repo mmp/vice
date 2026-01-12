@@ -48,7 +48,7 @@ func (a *AtomicBool) UnmarshalJSON(data []byte) error {
 // LoggingMutex
 
 var heldMutexesMutex sync.Mutex
-var heldMutexes map[*LoggingMutex]interface{} = make(map[*LoggingMutex]interface{})
+var heldMutexes map[*LoggingMutex]any = make(map[*LoggingMutex]any)
 
 type LoggingMutex struct {
 	sync.Mutex

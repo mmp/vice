@@ -106,8 +106,8 @@ func Identity3x3() Matrix3 {
 
 func (m Matrix3) PostMultiply(m2 Matrix3) Matrix3 {
 	var result Matrix3
-	for i := 0; i < 3; i++ {
-		for j := 0; j < 3; j++ {
+	for i := range 3 {
+		for j := range 3 {
 			result[i][j] = m[i][0]*m2[0][j] + m[i][1]*m2[1][j] + m[i][2]*m2[2][j]
 		}
 	}

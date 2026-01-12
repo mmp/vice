@@ -6,6 +6,7 @@ package platform
 
 // typedef unsigned char uint8;
 // void audioCallback(void *userdata, uint8 *stream, int len);
+// void audioInputCallback(void *userdata, uint8 *stream, int len);
 import "C"
 
 import (
@@ -23,14 +24,16 @@ import (
 )
 
 const AudioSampleRate = 44100
+const AudioInputSampleRate = 16000 // Whisper's native sample rate
 
 type audioEngine struct {
-	pinner   runtime.Pinner
-	effects  []audioEffect
-	speechq  []int16
-	speechcb func()
-	mu       sync.Mutex
-	volume   int
+	pinner        runtime.Pinner
+	effects       []audioEffect
+	speechq       []int16
+	speechcb      func()
+	speechGarbled bool
+	mu            sync.Mutex
+	volume        int
 }
 
 type audioEffect struct {
@@ -210,6 +213,18 @@ func (a *audioEngine) StopPlayAudio(index int) {
 	a.mu.Unlock()
 }
 
+func (a *audioEngine) SetSpeechGarbled(garbled bool) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	a.speechGarbled = garbled
+}
+
+func (a *audioEngine) IsPlayingSpeech() bool {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	return len(a.speechq) > 0
+}
+
 //export audioCallback
 func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 	n := int(size)
@@ -222,13 +237,23 @@ func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 	defer a.mu.Unlock()
 
 	as := 0 // accum index for speech
+	var r *rand.Rand
+	if a.speechGarbled && len(a.speechq) > 0 {
+		r = rand.Make()
+	}
 	for len(a.speechq) > 0 && as < len(accum) {
-		accum[as] = int(a.speechq[0])
+		sample := int(a.speechq[0])
+		if a.speechGarbled {
+			// Audio ducking: reduce to 25% volume
+			sample = sample / 4
+			// Add loud static noise
+			sample += -4000 + r.Intn(8000)
+		}
+		accum[as] = sample
 		as++
 		a.speechq = a.speechq[1:]
 	}
 	if len(a.speechq) == 0 && as > 0 && a.speechcb != nil {
-		// We finished the speech; call the callback function
 		a.speechcb()
 		a.speechcb = nil
 	}
@@ -260,4 +285,19 @@ func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 		out[2*i] = C.uint8(v & 0xff)
 		out[2*i+1] = C.uint8((v >> 8) & 0xff)
 	}
+}
+
+//export audioInputCallback
+func audioInputCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
+	n := int(size)
+	in := unsafe.Slice(ptr, n)
+	ar := (*AudioRecorder)(user)
+
+	// Convert bytes to int16 samples
+	samples := make([]int16, n/2)
+	for i := 0; i < n/2; i++ {
+		samples[i] = int16(in[2*i]) | (int16(in[2*i+1]) << 8)
+	}
+
+	ar.addAudioData(samples)
 }

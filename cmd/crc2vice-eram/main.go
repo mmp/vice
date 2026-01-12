@@ -254,7 +254,7 @@ func main() {
 	}
 
 	// Create output with only map names
-	manifest := make(map[string]interface{}) // MapGroup -> []MapNames
+	manifest := make(map[string]any) // MapGroup -> []MapNames
 	for groupName, group := range output {
 		for _, mapItem := range group.Maps {
 			if _, ok := manifest[groupName]; !ok {
