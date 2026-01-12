@@ -11,7 +11,7 @@ import (
 #cgo LDFLAGS: ${SRCDIR}/../../../whisper.cpp/build_go/src/libwhisper.a ${SRCDIR}/../../../whisper.cpp/build_go/ggml/src/libggml.a ${SRCDIR}/../../../whisper.cpp/build_go/ggml/src/libggml-base.a ${SRCDIR}/../../../whisper.cpp/build_go/ggml/src/libggml-cpu.a -lm -lstdc++
 #cgo linux LDFLAGS: -fopenmp
 #cgo darwin LDFLAGS: ${SRCDIR}/../../../whisper.cpp/build_go/ggml/src/ggml-blas/libggml-blas.a ${SRCDIR}/../../../whisper.cpp/build_go/ggml/src/ggml-metal/libggml-metal.a -framework Accelerate -framework Metal -framework Foundation -framework CoreGraphics
-#cgo windows LDFLAGS:
+#cgo windows LDFLAGS: -static-libstdc++ -static-libgcc
 #include <whisper.h>
 #include <stdlib.h>
 
