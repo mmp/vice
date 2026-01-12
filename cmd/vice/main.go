@@ -163,7 +163,7 @@ func main() {
 		// Check emergencies.json
 		loadEmergencies(&e)
 
-		videoMaps := make(map[string]interface{})
+		videoMaps := make(map[string]any)
 		for _, sgs := range scenarioGroups {
 			for _, sg := range sgs {
 				if sg.FacilityAdaptation.VideoMapFile != "" {
@@ -180,10 +180,10 @@ func main() {
 			os.Exit(1)
 		}
 
-		scenarioAirports := make(map[string]map[string]interface{})
+		scenarioAirports := make(map[string]map[string]any)
 		for tracon, scenarios := range scenarioGroups {
 			if scenarioAirports[tracon] == nil {
-				scenarioAirports[tracon] = make(map[string]interface{})
+				scenarioAirports[tracon] = make(map[string]any)
 			}
 			for _, sg := range scenarios {
 				for name := range sg.Airports {

@@ -473,7 +473,7 @@ func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCal
 
 func (sp *STARSPane) autoReleaseDepartures(ctx *panes.Context) {
 	if sp.ReleaseRequests == nil {
-		sp.ReleaseRequests = make(map[av.ADSBCallsign]interface{})
+		sp.ReleaseRequests = make(map[av.ADSBCallsign]any)
 	}
 
 	ps := sp.currentPrefs()

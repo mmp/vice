@@ -65,13 +65,13 @@ type KeyboardState struct {
 	Input string
 	// A key shows up here once each time it is pressed (though repeatedly
 	// if key repeat kicks in.)
-	Pressed   map[imgui.Key]interface{}
-	HeldFKeys map[imgui.Key]interface{}
+	Pressed   map[imgui.Key]any
+	HeldFKeys map[imgui.Key]any
 }
 
 func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 	keyboard := &KeyboardState{
-		Pressed:   make(map[imgui.Key]interface{}),
+		Pressed:   make(map[imgui.Key]any),
 		HeldFKeys: g.heldFKeys,
 	}
 

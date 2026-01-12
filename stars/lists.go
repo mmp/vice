@@ -496,7 +496,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 
 	if filter.All || filter.SpecialPurposeCodes {
 		// Active special purpose codes.
-		codes := make(map[string]interface{})
+		codes := make(map[string]any)
 		for _, trk := range sp.visibleTracks {
 			if ok, code := trk.Squawk.IsSPC(); ok {
 				codes[code] = nil
@@ -778,7 +778,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 	return bounds
 }
 
-func getDuplicateBeaconCodes(ctx *panes.Context) map[av.Squawk]interface{} {
+func getDuplicateBeaconCodes(ctx *panes.Context) map[av.Squawk]any {
 	n := len(ctx.Client.State.UnassociatedFlightPlans) + len(ctx.Client.State.Tracks)
 	count := make(map[av.Squawk]int, n)
 
@@ -792,7 +792,7 @@ func getDuplicateBeaconCodes(ctx *panes.Context) map[av.Squawk]interface{} {
 		}
 	}
 
-	dupes := make(map[av.Squawk]interface{})
+	dupes := make(map[av.Squawk]any)
 	for sq, n := range count {
 		if n > 1 {
 			dupes[sq] = nil

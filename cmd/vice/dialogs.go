@@ -655,14 +655,14 @@ func (e *ErrorModalClient) Draw() int {
 	return -1
 }
 
-func ShowErrorDialog(p platform.Platform, lg *log.Logger, s string, args ...interface{}) {
+func ShowErrorDialog(p platform.Platform, lg *log.Logger, s string, args ...any) {
 	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)}, p)
 	uiShowModalDialog(d, true)
 
 	lg.Errorf(s, args...)
 }
 
-func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logger, s string, args ...interface{}) {
+func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logger, s string, args ...any) {
 	lg.Errorf(s, args...)
 
 	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)}, p)

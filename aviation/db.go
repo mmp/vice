@@ -217,7 +217,7 @@ type Airline struct {
 		Name            string   `json:"name"`
 		CallsignFormats []string `json:"callsignFormats"`
 	} `json:"callsign"`
-	JSONFleets map[string][][2]interface{} `json:"fleets"`
+	JSONFleets map[string][][2]any `json:"fleets"`
 	Fleets     map[string][]FleetAircraft
 }
 
@@ -1210,7 +1210,7 @@ func allTFRUrls(lg *log.Logger) []string {
 // result on the provided chan when done.
 func fetchTFRs(tfrs map[string]TFR, ch chan<- map[string]TFR, lg *log.Logger) {
 	// Semaphore to limit to 4 concurrent requests.
-	sem := make(chan interface{}, 4)
+	sem := make(chan any, 4)
 	defer func() { close(sem) }()
 
 	type TFROrError struct {

@@ -89,8 +89,8 @@ func LogError(msg string, args ...any) {
 	log.Printf("ERROR "+msg, args...)
 }
 
-func listExisting(ctx context.Context, bucket *storage.BucketHandle, base string) map[string]interface{} {
-	m := make(map[string]interface{})
+func listExisting(ctx context.Context, bucket *storage.BucketHandle, base string) map[string]any {
+	m := make(map[string]any)
 
 	// See what has been archived already
 	query := storage.Query{

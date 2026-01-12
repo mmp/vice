@@ -44,7 +44,7 @@ type glfwPlatform struct {
 	mouseCapture           math.Extent2D
 	// These are the keys that are actively held down; for now just the
 	// function keys, since all we currently need is F1 for beaconator.
-	heldFKeys map[imgui.Key]interface{}
+	heldFKeys map[imgui.Key]any
 
 	mouseDeltaMode         bool
 	mouseDeltaStartPos     [2]float32
@@ -129,7 +129,7 @@ func New(config *Config, lg *log.Logger) (Platform, error) {
 		imguiIO:       io,
 		window:        window,
 		multisample:   config.EnableMSAA,
-		heldFKeys:     make(map[imgui.Key]interface{}),
+		heldFKeys:     make(map[imgui.Key]any),
 		audioRecorder: NewAudioRecorder(lg),
 	}
 	platform.installCallbacks()

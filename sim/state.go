@@ -53,8 +53,8 @@ type CommonState struct {
 
 	Airports          map[string]*av.Airport
 	Controllers       map[ControlPosition]*av.Controller
-	DepartureAirports map[string]interface{}
-	ArrivalAirports   map[string]interface{}
+	DepartureAirports map[string]any
+	ArrivalAirports   map[string]any
 	Fixes             map[string]math.Point2LL
 	VFRRunways        map[string]av.Runway // assume just one runway per airport
 
@@ -294,7 +294,7 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *V
 		}
 	}
 
-	ss.DepartureAirports = make(map[string]interface{})
+	ss.DepartureAirports = make(map[string]any)
 	for name := range ss.LaunchConfig.DepartureRates {
 		ss.DepartureAirports[name] = nil
 	}
@@ -312,7 +312,7 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *V
 		}
 	}
 
-	ss.ArrivalAirports = make(map[string]interface{})
+	ss.ArrivalAirports = make(map[string]any)
 	for _, airportRates := range ss.LaunchConfig.InboundFlowRates {
 		for name := range airportRates {
 			if name != "overflights" {

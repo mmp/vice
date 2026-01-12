@@ -40,7 +40,7 @@ type FlightStripPane struct {
 	DarkMode                  bool
 
 	strips     []sim.ACID
-	addedPlans map[sim.ACID]interface{}
+	addedPlans map[sim.ACID]any
 
 	mouseDragging       bool
 	lastMousePos        [2]float32
@@ -56,7 +56,7 @@ type FlightStripPane struct {
 
 	// computer id number: 000-999
 	CIDs          map[sim.ACID]int
-	AllocatedCIDs map[int]interface{}
+	AllocatedCIDs map[int]any
 }
 
 func init() {
@@ -80,7 +80,7 @@ func NewFlightStripPane() *FlightStripPane {
 		selectedStrip:      -1,
 		selectedAnnotation: -1,
 		CIDs:               make(map[sim.ACID]int),
-		AllocatedCIDs:      make(map[int]interface{}),
+		AllocatedCIDs:      make(map[int]any),
 		Annotations:        make(map[sim.ACID][9]string),
 	}
 }
@@ -93,7 +93,7 @@ func (fsp *FlightStripPane) Activate(r renderer.Renderer, p platform.Platform, e
 		fsp.font = renderer.GetDefaultFont()
 	}
 	if fsp.addedPlans == nil {
-		fsp.addedPlans = make(map[sim.ACID]interface{})
+		fsp.addedPlans = make(map[sim.ACID]any)
 	}
 	if fsp.scrollbar == nil {
 		fsp.scrollbar = NewVerticalScrollBar(4, true)
@@ -102,7 +102,7 @@ func (fsp *FlightStripPane) Activate(r renderer.Renderer, p platform.Platform, e
 		fsp.CIDs = make(map[sim.ACID]int)
 	}
 	if fsp.AllocatedCIDs == nil {
-		fsp.AllocatedCIDs = make(map[int]interface{})
+		fsp.AllocatedCIDs = make(map[int]any)
 	}
 	if fsp.Annotations == nil {
 		fsp.Annotations = make(map[sim.ACID][9]string)
@@ -154,9 +154,9 @@ func (fsp *FlightStripPane) LoadedSim(client *client.ControlClient, pl platform.
 
 func (fsp *FlightStripPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	fsp.strips = nil
-	fsp.addedPlans = make(map[sim.ACID]interface{})
+	fsp.addedPlans = make(map[sim.ACID]any)
 	fsp.CIDs = make(map[sim.ACID]int)
-	fsp.AllocatedCIDs = make(map[int]interface{})
+	fsp.AllocatedCIDs = make(map[int]any)
 	fsp.Annotations = make(map[sim.ACID][9]string)
 }
 

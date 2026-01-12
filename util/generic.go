@@ -69,8 +69,8 @@ type OrderedMap struct {
 	orderedmap.OrderedMap
 }
 
-func (o *OrderedMap) CheckJSON(json interface{}) bool {
-	_, ok := json.(map[string]interface{})
+func (o *OrderedMap) CheckJSON(json any) bool {
+	_, ok := json.(map[string]any)
 	return ok
 }
 
@@ -108,7 +108,7 @@ func (s *SingleOrArray[V]) UnmarshalJSON(b []byte) error {
 	}
 }
 
-func (s *SingleOrArray[V]) CheckJSON(json interface{}) bool {
+func (s *SingleOrArray[V]) CheckJSON(json any) bool {
 	return TypeCheckJSON[V](json) || TypeCheckJSON[[]V](json)
 }
 
@@ -150,7 +150,7 @@ func (o *OneOf[A, B]) UnmarshalJSON(j []byte) error {
 	return err
 }
 
-func (o OneOf[A, B]) CheckJSON(json interface{}) bool {
+func (o OneOf[A, B]) CheckJSON(json any) bool {
 	return TypeCheckJSON[A](json) || TypeCheckJSON[B](json)
 }
 

@@ -182,12 +182,12 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		addController(sim.TCP(aa.ReceivingController))
 	}
 
-	airportExits := make(map[string]map[string]interface{}) // airport -> exit -> is it covered
+	airportExits := make(map[string]map[string]any) // airport -> exit -> is it covered
 	for _, rwy := range s.DepartureRunways {
 		e.Push("Departure runway " + rwy.Airport + " " + rwy.Runway)
 
 		if airportExits[rwy.Airport] == nil {
-			airportExits[rwy.Airport] = make(map[string]interface{})
+			airportExits[rwy.Airport] = make(map[string]any)
 		}
 
 		if ap, ok := sg.Airports[rwy.Airport]; !ok {
@@ -229,7 +229,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		return s.ArrivalRunways[i].Airport < s.ArrivalRunways[j].Airport
 	})
 
-	activeAirports := make(map[*av.Airport]interface{}) // all airports with departures or arrivals
+	activeAirports := make(map[*av.Airport]any) // all airports with departures or arrivals
 	for _, rwy := range s.ArrivalRunways {
 		e.Push("Arrival runway " + rwy.Airport + " " + rwy.Runway)
 
@@ -247,9 +247,9 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	}
 
 	// Figure out which airports/runways and airports/SIDs are used in the scenario.
-	activeAirportSIDs := make(map[string]map[string]interface{})
-	activeAirportRunways := make(map[string]map[string]interface{})
-	activeDepartureAirports := make(map[string]interface{})
+	activeAirportSIDs := make(map[string]map[string]any)
+	activeAirportRunways := make(map[string]map[string]any)
+	activeDepartureAirports := make(map[string]any)
 	for _, rwy := range s.DepartureRunways {
 		e.Push("departure runway " + rwy.Runway)
 
@@ -280,10 +280,10 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 					}
 					if rwy.Category == "" || fixCategory == rwy.Category {
 						if activeAirportSIDs[rwy.Airport] == nil {
-							activeAirportSIDs[rwy.Airport] = make(map[string]interface{})
+							activeAirportSIDs[rwy.Airport] = make(map[string]any)
 						}
 						if activeAirportRunways[rwy.Airport] == nil {
-							activeAirportRunways[rwy.Airport] = make(map[string]interface{})
+							activeAirportRunways[rwy.Airport] = make(map[string]any)
 						}
 						if route.DepartureController != "" {
 							routeDepCtrl := sim.TCP(route.DepartureController)
@@ -311,9 +311,9 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	if s.ControllerConfiguration != nil {
 		// Track per-airport: assigned SIDs, assigned runways, and whether there's a fallback
 		// Only track assignments that are relevant to THIS scenario's active airports/SIDs/runways
-		assignedSIDs := make(map[string]map[string]interface{})    // airport -> set of SIDs
-		assignedRunways := make(map[string]map[string]interface{}) // airport -> set of runways
-		hasAirportFallback := make(map[string]bool)                // airport -> has plain airport assignment
+		assignedSIDs := make(map[string]map[string]any)    // airport -> set of SIDs
+		assignedRunways := make(map[string]map[string]any) // airport -> set of runways
+		hasAirportFallback := make(map[string]bool)        // airport -> has plain airport assignment
 
 		for spec := range s.ControllerConfiguration.DepartureAssignments {
 			ap, sidRunway, haveSIDRunway := strings.Cut(spec, "/")
@@ -333,13 +333,13 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 
 				if okSID {
 					if assignedSIDs[ap] == nil {
-						assignedSIDs[ap] = make(map[string]interface{})
+						assignedSIDs[ap] = make(map[string]any)
 					}
 					assignedSIDs[ap][sidRunway] = nil
 				}
 				if okRunway {
 					if assignedRunways[ap] == nil {
-						assignedRunways[ap] = make(map[string]interface{})
+						assignedRunways[ap] = make(map[string]any)
 					}
 					assignedRunways[ap][sidRunway] = nil
 				}
@@ -1127,7 +1127,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		e.ErrorString("\"display_custom_spcs\" was set but none were defined in \"custom_spcs\".")
 	}
 
-	disp := make(map[string]interface{})
+	disp := make(map[string]any)
 	if s.Scratchpad1.DisplayExitFix {
 		disp["display_exit_fix"] = nil
 	}

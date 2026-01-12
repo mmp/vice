@@ -123,20 +123,20 @@ type STARSPane struct {
 
 	// a/c callsign -> controllers
 	PointOuts         map[sim.ACID]PointOutControllers
-	RejectedPointOuts map[sim.ACID]interface{}
-	ForceQLACIDs      map[sim.ACID]interface{}
+	RejectedPointOuts map[sim.ACID]any
+	ForceQLACIDs      map[sim.ACID]any
 
 	CoastSuspendIndex int // Next index to assign
 
 	// Hold for release callsigns we have seen but not released. (We need
 	// to track this since auto release only applies to new ones seen after
 	// it is enabled.)
-	ReleaseRequests map[av.ADSBCallsign]interface{}
+	ReleaseRequests map[av.ADSBCallsign]any
 
 	// Periodically updated in processEvents
-	DuplicateBeacons map[av.Squawk]interface{}
+	DuplicateBeacons map[av.Squawk]any
 
-	queryUnassociated *util.TransientMap[av.ADSBCallsign, interface{}]
+	queryUnassociated *util.TransientMap[av.ADSBCallsign, any]
 
 	RangeBearingLines []STARSRangeBearingLine
 	MinSepAircraft    [2]av.ADSBCallsign
@@ -402,10 +402,10 @@ func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStr
 		sp.PointOuts = make(map[sim.ACID]PointOutControllers)
 	}
 	if sp.RejectedPointOuts == nil {
-		sp.RejectedPointOuts = make(map[sim.ACID]interface{})
+		sp.RejectedPointOuts = make(map[sim.ACID]any)
 	}
 	if sp.queryUnassociated == nil {
-		sp.queryUnassociated = util.NewTransientMap[av.ADSBCallsign, interface{}]()
+		sp.queryUnassociated = util.NewTransientMap[av.ADSBCallsign, any]()
 	}
 	if sp.TRACONPreferenceSets == nil {
 		sp.TRACONPreferenceSets = make(map[string]*PreferenceSet)
@@ -508,7 +508,7 @@ func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform
 }
 
 func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
-	usedIds := make(map[int]interface{})
+	usedIds := make(map[int]any)
 
 	// Helper to add a ClientVideoMap directly (for airspace volumes)
 	addMap := func(vm radar.ClientVideoMap) {

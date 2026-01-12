@@ -28,7 +28,7 @@ type EventSubscriberId int
 type EventStream struct {
 	mu            sync.Mutex
 	events        []Event
-	subscriptions map[*EventsSubscription]interface{}
+	subscriptions map[*EventsSubscription]any
 	lastPost      time.Time
 	warnedLong    bool
 	done          chan struct{}
@@ -58,7 +58,7 @@ func (e *EventsSubscription) PostEvent(event Event) {
 
 func NewEventStream(lg *log.Logger) *EventStream {
 	es := &EventStream{
-		subscriptions: make(map[*EventsSubscription]interface{}),
+		subscriptions: make(map[*EventsSubscription]any),
 		lastPost:      time.Now(),
 		done:          make(chan struct{}),
 		lg:            lg,

@@ -1344,7 +1344,7 @@ func (sp *STARSPane) getDatablockAlerts(ctx *panes.Context, trk sim.Track, dbtyp
 	state := sp.TrackState[trk.ADSBCallsign]
 
 	var alerts []dbChar
-	added := make(map[string]interface{})
+	added := make(map[string]any)
 	addAlert := func(s string, flash bool, red bool) {
 		if _, ok := added[s]; ok {
 			return // don't duplicate it

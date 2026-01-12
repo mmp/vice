@@ -1640,7 +1640,7 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 
 func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	// Sum up the overall overflight rate
-	overflightGroups := make(map[string]interface{})
+	overflightGroups := make(map[string]any)
 	for group, rates := range lc.InboundFlowRates {
 		if _, ok := rates["overflights"]; ok {
 			overflightGroups[group] = nil

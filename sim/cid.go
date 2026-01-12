@@ -5,7 +5,7 @@ var nonPreferredAlphas = []rune{'M', 'X', 'L', 'J', 'U', 'B', 'G', 'Q', 'S', 'H'
 
 // CIDAllocator manages allocation of unique three-character CIDs.
 type CIDAllocator struct {
-	List [7]map[string]interface{}
+	List [7]map[string]any
 }
 
 func NewCIDAllocator() *CIDAllocator {
@@ -45,11 +45,11 @@ func (c *CIDAllocator) Release(cid string) {
 	}
 }
 
-func generateCIDList() [7]map[string]interface{} {
+func generateCIDList() [7]map[string]any {
 	digits := []rune{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'}
-	var codes [7]map[string]interface{}
+	var codes [7]map[string]any
 	for i := range codes {
-		codes[i] = make(map[string]interface{})
+		codes[i] = make(map[string]any)
 	}
 	add := func(r1, r2, r3 rune, i int) { codes[i][string([]rune{r1, r2, r3})] = nil }
 	// 1. ddd

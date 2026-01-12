@@ -91,7 +91,7 @@ type SessionStats struct {
 	SignOnTime time.Time
 	Initials   string
 
-	seenCallsigns map[av.ADSBCallsign]interface{}
+	seenCallsigns map[av.ADSBCallsign]any
 }
 
 func (s *SessionStats) Update(ss *SimState) {
@@ -206,7 +206,7 @@ func NewControlClient(ss server.SimState, controllerToken string, wsURL string, 
 
 	cc.SessionStats.SignOnTime = ss.SimTime
 	cc.SessionStats.Initials = initials
-	cc.SessionStats.seenCallsigns = make(map[av.ADSBCallsign]interface{})
+	cc.SessionStats.seenCallsigns = make(map[av.ADSBCallsign]any)
 	return cc
 }
 

@@ -203,7 +203,7 @@ func (a *AirlineSpecifier) Check(e *util.ErrorLogger) {
 	}
 }
 
-var badCallsigns map[string]interface{} = map[string]interface{}{
+var badCallsigns map[string]any = map[string]any{
 	// 9/11
 	"AAL11":  nil,
 	"UAL175": nil,

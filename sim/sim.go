@@ -98,7 +98,7 @@ type Sim struct {
 
 	Rand *rand.Rand
 
-	SquawkWarnedACIDs map[ACID]interface{} // Warn once in CheckLeaks(); don't spam the logs
+	SquawkWarnedACIDs map[ACID]any // Warn once in CheckLeaks(); don't spam the logs
 
 	// No need to serialize these; they're caches anyway.
 	bravoAirspace   *av.AirspaceGrid
@@ -274,7 +274,7 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 		Rand: rand.Make(),
 
-		SquawkWarnedACIDs: make(map[ACID]interface{}),
+		SquawkWarnedACIDs: make(map[ACID]any),
 
 		wxProvider: config.WXProvider,
 	}
@@ -1622,7 +1622,7 @@ func (s *Sim) tcwForPosition(pos ControlPosition) TCW {
 func (s *Sim) CheckLeaks() {
 	var usedIndices [100]bool // 1-99 are handed out
 	nUsedIndices := 0
-	seenSquawks := make(map[av.Squawk]interface{})
+	seenSquawks := make(map[av.Squawk]any)
 
 	check := func(fp *NASFlightPlan) {
 		if fp.ListIndex != UnsetSTARSListIndex {
