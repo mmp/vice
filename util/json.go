@@ -200,7 +200,7 @@ func CheckJSON[T any](contents []byte, e *ErrorLogger) {
 // unmarshaled JSON values are type-compatible with the given type T.
 func TypeCheckJSON[T any](json any) bool {
 	var e ErrorLogger
-	ty := reflect.TypeOf((*T)(nil)).Elem()
+	ty := reflect.TypeFor[T]()
 	structTypeCache := make(map[reflect.Type]map[string]reflect.Type)
 	typeCheckJSON(json, ty, structTypeCache, &e)
 	return !e.HaveErrors()
@@ -219,7 +219,7 @@ func typeCheckJSON(json any, ty reflect.Type, structTypeCache map[reflect.Type]m
 	}
 
 	// Use the type's JSONChecker, if there is one.
-	chty := reflect.TypeOf((*JSONChecker)(nil)).Elem()
+	chty := reflect.TypeFor[JSONChecker]()
 	if ty.Implements(chty) || reflect.PointerTo(ty).Implements(chty) {
 		checker := reflect.New(ty).Interface().(JSONChecker)
 		if !checker.CheckJSON(json) {
