@@ -214,7 +214,7 @@ type JSONChecker interface {
 }
 
 func typeCheckJSON(json any, ty reflect.Type, structTypeCache map[reflect.Type]map[string]reflect.Type, e *ErrorLogger) {
-	for ty.Kind() == reflect.Ptr {
+	for ty.Kind() == reflect.Pointer {
 		ty = ty.Elem()
 	}
 
