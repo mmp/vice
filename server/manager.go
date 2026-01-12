@@ -848,11 +848,10 @@ func (sm *SimManager) ProcessSTTTranscript(token, transcript string, whisperDura
 	// Sometimes claude gives us backticks...
 	commands = strings.Trim(commands, "`")
 
+	sm.lg.Infof("STT: transcript=%q command=%q whisper=%s stt=%s cores=%d",
+		transcript, commands, whisperDuration, sttDuration, numCores)
+
 	callsign, commands, _ := strings.Cut(commands, " ")
-
-	sm.lg.Infof("STT: transcript=%q whisper=%s callsign=%s command=%q stt=%s cores=%d",
-		transcript, whisperDuration, callsign, commands, sttDuration, numCores)
-
 	er := c.sim.RunAircraftControlCommands(c.tcw, av.ADSBCallsign(callsign), commands)
 	if er.Error != nil {
 		return callsign, commands, sttDuration, er.Error
@@ -874,8 +873,14 @@ func (sm *SimManager) DecodeSTTTranscript(ctx STTQueryContext, result *string) e
 		return ErrSTTUnavailable
 	}
 
+	start := time.Now()
 	var err error
 	*result, err = sm.sttProvider.DecodeTranscript(ctx)
+	sttDuration := time.Since(start)
+
+	sm.lg.Infof("STT: transcript=%q command=%q whisper=%s stt=%s cores=%d",
+		ctx.Transcript, *result, ctx.WhisperDuration, sttDuration, ctx.NumCores)
+
 	return err
 }
 
