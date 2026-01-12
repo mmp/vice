@@ -32,7 +32,7 @@ jobs:
       with:
         submodules: true
         fetch-depth: 0
-        lfs: true
+        lfs: false
 
     - name: Setup go
       uses: actions/setup-go@v5
