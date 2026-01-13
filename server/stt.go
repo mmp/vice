@@ -25,6 +25,10 @@ type STTTranscriptProvider interface {
 	// DecodeTranscript converts an STT transcript to aircraft commands.
 	// Returns the full command string (e.g., "UAL123 H250 C120") or error.
 	DecodeTranscript(qc STTQueryContext) (string, error)
+
+	// GetUsageStats returns a string describing cumulative usage statistics.
+	// Returns empty string if the provider doesn't track usage.
+	GetUsageStats() string
 }
 
 func MakeSTTProvider(ctx context.Context, serverAddress string, lg *log.Logger) STTTranscriptProvider {
@@ -47,8 +51,16 @@ func MakeSTTProvider(ctx context.Context, serverAddress string, lg *log.Logger) 
 // AnthropicSTTProvider - Direct Anthropic API calls
 
 type AnthropicSTTProvider struct {
-	apiKey string
-	lg     *log.Logger
+	apiKey         string
+	netClaudeUsage claudeUsage
+	lg             *log.Logger
+}
+
+type claudeUsage struct {
+	CacheCreateInputTokens int `json:"cache_creation_input_tokens"`
+	CacheReadInputTokens   int `json:"cache_read_input_tokens"`
+	InputTokens            int `json:"input_tokens"`
+	OutputTokens           int `json:"output_tokens"`
 }
 
 func NewAnthropicSTTProvider(lg *log.Logger) (*AnthropicSTTProvider, error) {
@@ -65,16 +77,25 @@ func (p *AnthropicSTTProvider) DecodeTranscript(qc STTQueryContext) (string, err
 		Role    string `json:"role"`
 		Content string `json:"content"`
 	}
+	type claudeCacheControl struct {
+		Type string `json:"type"`
+	}
+	type claudeSystem struct {
+		Type         string             `json:"type"`
+		Text         string             `json:"text"`
+		CacheControl claudeCacheControl `json:"cache_control"`
+	}
 	type claudeRequest struct {
 		Model     string          `json:"model"`
 		MaxTokens int             `json:"max_tokens"`
-		System    string          `json:"system"`
+		System    []claudeSystem  `json:"system"`
 		Messages  []claudeMessage `json:"messages"`
 	}
 	type claudeResponse struct {
 		Content []struct {
 			Text string `json:"text"`
 		} `json:"content"`
+		Usage claudeUsage `json:"usage"`
 	}
 
 	queryBytes, err := json.Marshal(qc)
@@ -84,8 +105,10 @@ func (p *AnthropicSTTProvider) DecodeTranscript(qc STTQueryContext) (string, err
 
 	req := claudeRequest{
 		Model:     "claude-haiku-4-5",
-		MaxTokens: 16,
-		System:    systemPrompt,
+		MaxTokens: 10,
+		System: []claudeSystem{
+			{Type: "text", Text: systemPrompt, CacheControl: claudeCacheControl{Type: "ephemeral"}},
+		},
 		Messages: []claudeMessage{
 			{Role: "user", Content: string(queryBytes)},
 		},
@@ -105,6 +128,7 @@ func (p *AnthropicSTTProvider) DecodeTranscript(qc STTQueryContext) (string, err
 	httpReq.Header.Set("Content-Type", "application/json")
 	httpReq.Header.Set("x-api-key", p.apiKey)
 	httpReq.Header.Set("anthropic-version", "2023-06-01")
+	httpReq.Header.Set("anthropic-beta", "prompt-caching-2024-07-31")
 
 	httpClient := &http.Client{Timeout: 30 * time.Second}
 	resp, err := httpClient.Do(httpReq)
@@ -122,19 +146,26 @@ func (p *AnthropicSTTProvider) DecodeTranscript(qc STTQueryContext) (string, err
 		return "", fmt.Errorf("API returned status %d", resp.StatusCode)
 	}
 
-	p.lg.Infof("claude STT in %s", time.Since(start))
-
 	var parsed claudeResponse
 	if err := json.Unmarshal(body, &parsed); err != nil {
 		return "", fmt.Errorf("failed to parse API response: %w", err)
 	}
 
+	p.netClaudeUsage.CacheCreateInputTokens += parsed.Usage.CacheCreateInputTokens
+	p.netClaudeUsage.CacheReadInputTokens += parsed.Usage.CacheReadInputTokens
+	p.netClaudeUsage.InputTokens += parsed.Usage.InputTokens
+	p.netClaudeUsage.OutputTokens += parsed.Usage.OutputTokens
+
 	if len(parsed.Content) > 0 {
-		p.lg.Infof("claude STT result: %s", parsed.Content[0].Text)
+		p.lg.Infof("claude STT result: %q in %s net usage: %#v", parsed.Content[0].Text, time.Since(start), p.netClaudeUsage)
 		return parsed.Content[0].Text, nil
 	}
 
 	return "", fmt.Errorf("API returned empty response")
+}
+
+func (p *AnthropicSTTProvider) GetUsageStats() string {
+	return fmt.Sprintf("%+v", p.netClaudeUsage)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -194,4 +225,8 @@ func (r *RemoteSTTProvider) DecodeTranscript(qc STTQueryContext) (string, error)
 		return "", err
 	}
 	return result, nil
+}
+
+func (r *RemoteSTTProvider) GetUsageStats() string {
+	return ""
 }
