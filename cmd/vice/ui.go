@@ -904,7 +904,16 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 		} else {
 			// No audio playing - start recording
 			if err := p.StartAudioRecordingWithDevice(config.SelectedMicrophone); err != nil {
-				lg.Errorf("Failed to start audio recording: %v", err)
+				var hint string
+				switch runtime.GOOS {
+				case "darwin":
+					hint = "Please check System Settings -> Privacy & Security -> Microphone and ensure vice has permission."
+				case "windows":
+					hint = "Please check Settings -> Privacy & Security -> Microphone and ensure \"Let desktop apps access your microphone\" is enabled."
+				default:
+					hint = "Please check your system's audio settings and ensure microphone access is permitted."
+				}
+				ShowErrorDialog(p, lg, "Unable to access microphone: %v\n\n%s", err, hint)
 			} else {
 				ui.pttRecording = true
 				if controlClient != nil {
