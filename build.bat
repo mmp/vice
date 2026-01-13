@@ -69,7 +69,6 @@ if exist "!MINGW_BIN!\libgcc_s_seh-1.dll" (
         echo Copying MinGW runtime DLLs to windows/
         copy "!MINGW_BIN!\libgcc_s_seh-1.dll" "windows\" >nul
         copy "!MINGW_BIN!\libstdc++-6.dll" "windows\" >nul
-        copy "!MINGW_BIN!\libwinpthread-1.dll" "windows\" >nul
     )
 )
 if exist "!SDL2_DIR!\bin\SDL2.dll" (

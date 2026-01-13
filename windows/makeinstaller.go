@@ -121,9 +121,6 @@ const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
           <Component Id="SDLDLL" Guid='85535501-4016-47c4-9466-846df4cf49a5'>
             <File KeyPath="yes" Source="windows/SDL2.dll"></File>
           </Component>
-          <Component Id="winpthread" Guid='05955099-1a0a-42a2-94ed-155df1351ad9'>
-            <File KeyPath="yes" Source="windows/libwinpthread-1.dll"></File>
-          </Component>
           <Component Id="gccseh" Guid='68f22a6b-1710-4987-820c-b5cbad791dbe'>
             <File KeyPath="yes" Source="windows/libgcc_s_seh-1.dll"></File>
           </Component>
@@ -202,7 +199,6 @@ const xmlTemplate = `<?xml version='1.0' encoding='utf-8'?>
     <Feature Id="MyFeature">
       <ComponentRef Id="ViceExe" />
       <ComponentRef Id="SDLDLL" />
-      <ComponentRef Id="winpthread" />
       <ComponentRef Id="gccseh" />
       <ComponentRef Id="libstdcpp" />
       <ComponentRef Id="FontsId" />
