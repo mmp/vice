@@ -954,7 +954,7 @@ func (cmd userCommand) bindArgs(ep *ERAMPane, extractedArgs []any) []any {
 
 // initialArgProviders maps initial arg types to functions that provide their values.
 var initialArgProviders = map[reflect.Type]func(ep *ERAMPane, ctx *panes.Context) reflect.Value{
-	reflect.TypeOf((*ERAMPane)(nil)):     func(ep *ERAMPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(ep) },
+	reflect.TypeOf((*ERAMPane)(nil)):      func(ep *ERAMPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(ep) },
 	reflect.TypeOf((*panes.Context)(nil)): func(ep *ERAMPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(ctx) },
 	reflect.TypeOf((*PrefrenceSet)(nil)):  func(ep *ERAMPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(ep.currentPrefs()) },
 }
