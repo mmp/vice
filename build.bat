@@ -62,6 +62,23 @@ if not defined CGO_CFLAGS (
     set CGO_LDFLAGS=-L !SDL2_DIR!\lib
 )
 
+REM Copy runtime DLLs from ext/ to windows/ if available
+set MINGW_BIN=%CD%\ext\mingw\mingw64\bin
+if exist "!MINGW_BIN!\libgcc_s_seh-1.dll" (
+    if not exist "windows\libgcc_s_seh-1.dll" (
+        echo Copying MinGW runtime DLLs to windows/
+        copy "!MINGW_BIN!\libgcc_s_seh-1.dll" "windows\" >nul
+        copy "!MINGW_BIN!\libstdc++-6.dll" "windows\" >nul
+        copy "!MINGW_BIN!\libwinpthread-1.dll" "windows\" >nul
+    )
+)
+if exist "!SDL2_DIR!\bin\SDL2.dll" (
+    if not exist "windows\SDL2.dll" (
+        echo Copying SDL2.dll to windows/
+        copy "!SDL2_DIR!\bin\SDL2.dll" "windows\" >nul
+    )
+)
+
 REM Build whisper-cpp if needed
 if not exist "whisper.cpp\build_go\src\libwhisper.a" (
     echo === Building whisper-cpp ===
