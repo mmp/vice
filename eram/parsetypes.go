@@ -56,6 +56,7 @@ var typeParsers = []typeParser{
 	// Navigation
 	&fixParser{},
 	&crrLocParser{},
+	&crrLabelParser{},
 
 	// Generic type parsers
 	&numberParser{id: "NUM"},

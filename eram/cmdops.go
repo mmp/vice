@@ -63,7 +63,7 @@ func init() {
 	registerCommand(CommandModeNone, "LF [CRR_LOC] [CRR_LABEL] [ALL_TEXT]", handleCRRCreateWithAircraft)
 	registerCommand(CommandModeNone, "LF [CRR_LOC] [CRR_LABEL]", handleCRRCreate)
 	registerCommand(CommandModeNone, "LF [CRR_LOC]", handleCRRCreateAutoLabel)
-	registerCommand(CommandModeNone, "LF [CRR_LABEL][SLEW]", handleCRRAddClicked)
+	registerCommand(CommandModeNone, "LF [CRR_LABEL][POS]", handleCRRAddClicked)
 	registerCommand(CommandModeNone, "LF [CRR_LABEL] [ALL_TEXT]", handleCRRToggleMembership)
 
 	// // - Toggle VCI (on-frequency indicator)
@@ -305,15 +305,15 @@ func handleCRRCreateAutoLabel(ep *ERAMPane, ctx *panes.Context, loc CRRLocation)
 	return CommandStatus{}, NewERAMError("REJECT - MESSAGE TOO SHORT\nCONT RANGE\nLF //%s", loc.Token)
 }
 
-func handleCRRAddClicked(ep *ERAMPane, ctx *panes.Context, label string, pos [2]float32, transforms radar.ScopeTransformations) (CommandStatus, error) {
+func handleCRRAddClicked(ep *ERAMPane, ctx *panes.Context, label string, pos [2]float32) (CommandStatus, error) {
 	// Find existing group
 	g := ep.crrGroups[label]
 	if g == nil {
 		return CommandStatus{}, NewERAMError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s", strings.ToUpper(label))
 	}
 
-	// Convert window position to lat/long
-	loc := transforms.LatLongFromWindowP(pos)
+	// pos is already lat/long from the [POS] parser
+	loc := math.Point2LL{pos[0], pos[1]}
 
 	// Find nearest track to clicked position
 	nearest := ep.closestTrackToLL(ctx, loc, 5)
