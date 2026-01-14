@@ -146,8 +146,19 @@ type CommandStatus struct {
 func (ep *ERAMPane) executeERAMCommand(ctx *panes.Context, cmdLine inputText) (status CommandStatus) {
 	original := cmdLine.String()
 
+	// Check for embedded location from clicking while typing
+	var hasClick bool
+	var mousePosition [2]float32
+	var posIsLatLong bool
+	if loc, ok := tryExtractLocation(cmdLine); ok {
+		hasClick = true
+		posIsLatLong = true // coordinates are already lat/long from embedded location
+		mousePosition = [2]float32{loc[0], loc[1]}
+		// Keep the location symbol in the text - the parser will match it positionally
+	}
+
 	// First try the new parser-based command system
-	if newStatus, err, handled := ep.tryExecuteUserCommand(ctx, original, nil, false, [2]float32{}, radar.ScopeTransformations{}); handled {
+	if newStatus, err, handled := ep.tryExecuteUserCommand(ctx, original, nil, hasClick, mousePosition, posIsLatLong, radar.ScopeTransformations{}); handled {
 		status.clear = newStatus.clear
 		status.output = newStatus.output
 		status.bigOutput = newStatus.bigOutput
@@ -340,7 +351,7 @@ func (ep *ERAMPane) executeERAMClickedCommand(ctx *panes.Context, cmdLine inputT
 	original := cmdLine.String()
 
 	// Use the new parser-based command system for clicked commands
-	if newStatus, err, handled := ep.tryExecuteUserCommand(ctx, original, trk, true, [2]float32{}, transforms); handled {
+	if newStatus, err, handled := ep.tryExecuteUserCommand(ctx, original, trk, true, [2]float32{}, false, transforms); handled {
 		status.clear = newStatus.clear
 		status.output = newStatus.output
 		status.bigOutput = newStatus.bigOutput

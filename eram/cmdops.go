@@ -58,13 +58,17 @@ func init() {
 	// LF - CRR (Continuous Range Readout)
 	// LF //FIX [LABEL]: Create new CRR group at fix location
 	// LF //FIX [LABEL] [AIRCRAFT]: Create new CRR group with aircraft
-	// LF [LABEL][SLEW]: Add nearest aircraft to existing group at clicked position
+	// LF {pos} [LABEL]: Create group at clicked position (click first, then label)
 	// LF [LABEL] [FLID]: Toggle aircraft membership in existing group
 	registerCommand(CommandModeNone, "LF [CRR_LOC] [CRR_LABEL] [ALL_TEXT]", handleCRRCreateWithAircraft)
 	registerCommand(CommandModeNone, "LF [CRR_LOC] [CRR_LABEL]", handleCRRCreate)
 	registerCommand(CommandModeNone, "LF [CRR_LOC]", handleCRRCreateAutoLabel)
-	registerCommand(CommandModeNone, "LF [CRR_LABEL][POS]", handleCRRAddClicked)
+	registerCommand(CommandModeNone, "LF [LOC_SYM] [CRR_LABEL]", handleCRRAddClicked)  // LF {pos} LABEL - valid order
+	registerCommand(CommandModeNone, "LF [CRR_LABEL] [LOC_SYM]", handleCRRWrongOrder) // LF LABEL {pos} - wrong order
 	registerCommand(CommandModeNone, "LF [CRR_LABEL] [ALL_TEXT]", handleCRRToggleMembership)
+	// Error handlers for incomplete LF commands
+	registerCommand(CommandModeNone, "LF [CRR_LABEL]", handleCRRLabelOnly)     // LF LABEL without click or aircraft
+	registerCommand(CommandModeNone, "LF", handleCRREmpty)                      // LF alone
 
 	// // - Toggle VCI (on-frequency indicator)
 	// Keyboard: //[FLID] or // [FLID]
@@ -305,20 +309,40 @@ func handleCRRCreateAutoLabel(ep *ERAMPane, ctx *panes.Context, loc CRRLocation)
 	return CommandStatus{}, NewERAMError("REJECT - MESSAGE TOO SHORT\nCONT RANGE\nLF //%s", loc.Token)
 }
 
-func handleCRRAddClicked(ep *ERAMPane, ctx *panes.Context, label string, pos [2]float32) (CommandStatus, error) {
-	// Find existing group
-	g := ep.crrGroups[label]
-	if g == nil {
-		return CommandStatus{}, NewERAMError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s", strings.ToUpper(label))
+// handleCRRAddClicked handles LF {pos} LABEL - position comes first, then label
+func handleCRRAddClicked(ep *ERAMPane, ctx *panes.Context, pos [2]float32, label string) (CommandStatus, error) {
+	// Validate label
+	if !validCRRLabel(label) {
+		return CommandStatus{}, NewERAMError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s %s", locationSymbol, strings.ToUpper(label))
 	}
 
-	// pos is already lat/long from the [POS] parser
+	// pos is already lat/long from the [LOC_SYM] parser
 	loc := math.Point2LL{pos[0], pos[1]}
 
-	// Find nearest track to clicked position
+	// Check if group exists
+	g := ep.crrGroups[label]
+	if g == nil {
+		// Create new group at clicked position
+		if ep.crrGroups == nil {
+			ep.crrGroups = make(map[string]*CRRGroup)
+		}
+		g = &CRRGroup{
+			Label:    label,
+			Location: loc,
+			Color:    ep.currentPrefs().CRR.SelectedColor,
+			Aircraft: make(map[av.ADSBCallsign]struct{}),
+		}
+		ep.crrGroups[label] = g
+
+		return CommandStatus{
+			bigOutput: fmt.Sprintf("ACCEPT\nCRR GROUP %s CREATED", label),
+		}, nil
+	}
+
+	// Group exists - find nearest track and add to group
 	nearest := ep.closestTrackToLL(ctx, loc, 5)
 	if nearest == nil {
-		return CommandStatus{}, NewERAMError("REJECT - NO TB FLIGHT ID\nCAPTURE\nCONT RANGE\nLF %s", strings.ToUpper(label))
+		return CommandStatus{}, NewERAMError("REJECT - NO TB FLIGHT ID\nCAPTURE\nCONT RANGE\nLF %s %s", locationSymbol, strings.ToUpper(label))
 	}
 
 	g.Aircraft[nearest.ADSBCallsign] = struct{}{}
@@ -326,6 +350,11 @@ func handleCRRAddClicked(ep *ERAMPane, ctx *panes.Context, label string, pos [2]
 	return CommandStatus{
 		bigOutput: fmt.Sprintf("ACCEPT\nCRR UPDATED %s", g.Label),
 	}, nil
+}
+
+// handleCRRWrongOrder handles LF LABEL {pos} - wrong order error
+func handleCRRWrongOrder(label string, pos [2]float32) (CommandStatus, error) {
+	return CommandStatus{}, NewERAMError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s %s", strings.ToUpper(label), locationSymbol)
 }
 
 func handleCRRToggleMembership(ep *ERAMPane, ctx *panes.Context, label string, aircraftStr string) (CommandStatus, error) {
@@ -352,6 +381,16 @@ func handleCRRToggleMembership(ep *ERAMPane, ctx *panes.Context, label string, a
 	return CommandStatus{
 		bigOutput: fmt.Sprintf("ACCEPT\nCRR UPDATED %s", g.Label),
 	}, nil
+}
+
+func handleCRRLabelOnly(label string) (CommandStatus, error) {
+	// LF LABEL without click or aircraft - group not found
+	return CommandStatus{}, NewERAMError("REJECT - CRR - GROUP NOT\nFOUND\nCONT RANGE\nLF %s", strings.ToUpper(label))
+}
+
+func handleCRREmpty() (CommandStatus, error) {
+	// LF alone - message too short
+	return CommandStatus{}, NewERAMError("REJECT - MESSAGE TOO SHORT\nCONT RANGE\nLF")
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -247,7 +247,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 		bodyP0 := math.Add2f(p0, [2]float32{0, -titleH})
 		bodyP1 := math.Add2f(bodyP0, [2]float32{width, 0})
 		bodyP2 := math.Add2f(bodyP1, [2]float32{0, -bodyHeight})
-		bodyP3 := math.Add2f(bodyP0, [2]float32{-width, 0})
+		bodyP3 := math.Add2f(bodyP0, [2]float32{-width, -bodyHeight})
 		trid.AddQuad(bodyP0, bodyP1, bodyP2, bodyP3, renderer.RGB{R: 0, G: 0, B: 0})
 	}
 
@@ -860,8 +860,6 @@ func (ep *ERAMPane) drawCRRFixes(ctx *panes.Context, transforms radar.ScopeTrans
 	}
 
 	font := ep.ERAMFont(ps.CRR.Font)
-	neon := CRRGreen.BrightRGB(radar.Brightness(90))
-	style := renderer.TextStyle{Font: font, Color: neon}
 
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
@@ -875,6 +873,10 @@ func (ep *ERAMPane) drawCRRFixes(ctx *panes.Context, transforms radar.ScopeTrans
 	}
 	sort.Strings(fixLabels)
 	for _, l := range fixLabels {
+		// Get the color for the CRR fix 
+		fixColor := ep.crrGroups[l].Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[ps.CRR.SelectedColor]), 0, 100)))
+		style := renderer.TextStyle{Font: font, Color: fixColor}
+
 		g := ep.crrGroups[l]
 		if g == nil {
 			continue

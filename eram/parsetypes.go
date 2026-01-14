@@ -57,6 +57,7 @@ var typeParsers = []typeParser{
 	&fixParser{},
 	&crrLocParser{},
 	&crrLabelParser{},
+	&locSymParser{}, // Matches location symbol 'w' in text
 
 	// Generic type parsers
 	&numberParser{id: "NUM"},
@@ -370,7 +371,15 @@ func (h *posParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput,
 	if !input.hasClick || input.clickedTrack != nil {
 		return nil, text, false, nil
 	}
-	p := input.transforms.LatLongFromWindowP(input.mousePosition)
+
+	var p [2]float32
+	if input.posIsLatLong {
+		// mousePosition is already lat/long (from embedded location in text)
+		p = input.mousePosition
+	} else {
+		// Convert window coordinates to lat/long
+		p = input.transforms.LatLongFromWindowP(input.mousePosition)
+	}
 	return p, text, true, nil
 }
 
@@ -496,3 +505,38 @@ func (h *crrLocParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInp
 
 func (h *crrLocParser) GoType() reflect.Type { return reflect.TypeOf(CRRLocation{}) }
 func (h *crrLocParser) ConsumesClick() bool  { return false }
+
+// locSymParser matches the location symbol 'w' embedded in text from clicking.
+// Returns [2]float32 lat/long coordinates from CommandInput.
+type locSymParser struct{}
+
+func (h *locSymParser) Identifier() string { return "LOC_SYM" }
+
+func (h *locSymParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
+	// Must have a click and the text must start with the location symbol
+	if !input.hasClick {
+		return nil, text, false, nil
+	}
+
+	// Check if text starts with the location symbol (possibly with leading space)
+	trimmed := strings.TrimLeft(text, " ")
+	if !strings.HasPrefix(trimmed, locationSymbol) {
+		return nil, text, false, nil
+	}
+
+	// Consume the location symbol (and any leading space)
+	remaining := strings.TrimPrefix(trimmed, locationSymbol)
+
+	// Return the position from input
+	var p [2]float32
+	if input.posIsLatLong {
+		p = input.mousePosition
+	} else {
+		p = input.transforms.LatLongFromWindowP(input.mousePosition)
+	}
+
+	return p, remaining, true, nil
+}
+
+func (h *locSymParser) GoType() reflect.Type { return reflect.TypeOf((*[2]float32)(nil)).Elem() }
+func (h *locSymParser) ConsumesClick() bool  { return true } // Uses click position from input
