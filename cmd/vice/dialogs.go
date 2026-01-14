@@ -153,7 +153,7 @@ func (m *ModalDialogBox) Draw() {
 	var flags imgui.WindowFlags
 	if fixedSize, ok := m.client.(FixedSizeDialogClient); ok {
 		// Fixed size dialog - don't auto-resize
-		flags = imgui.WindowFlagsNoResize | imgui.WindowFlagsNoSavedSettings
+		flags = imgui.WindowFlagsNoResize | imgui.WindowFlagsNoSavedSettings | imgui.WindowFlagsNoScrollbar
 		size := fixedSize.FixedSize()
 		imgui.SetNextWindowSize(imgui.Vec2{dpiScale * size[0], dpiScale * size[1]})
 	} else {
