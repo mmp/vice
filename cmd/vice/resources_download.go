@@ -72,6 +72,8 @@ func (r *ResourcesDownloadModalClient) Draw() int {
 
 	if r.currentFileName != "" {
 		imgui.Text(fmt.Sprintf("Downloading: %s", r.currentFileName))
+	} else {
+		imgui.Text("\n")
 	}
 
 	imgui.Spacing()
@@ -145,7 +147,9 @@ func removeStaleResourcesFiles(resourcesDir string, manifest map[string]string) 
 			return nil
 		}
 
-		if _, ok := manifest[relPath]; !ok {
+		// Use forward slashes for lookup since manifest keys use forward slashes,
+		// but filepath.Rel returns OS-native separators (backslashes on Windows).
+		if _, ok := manifest[filepath.ToSlash(relPath)]; !ok {
 			os.Remove(path)
 		}
 
