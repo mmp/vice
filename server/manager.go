@@ -828,10 +828,10 @@ func (sm *SimManager) ProcessSTTTranscript(token, transcript string, whisperDura
 		return "", "", 0, ErrSTTUnavailable
 	}
 
-	qc := makeSTTQueryContext(c, transcript, whisperDuration, numCores)
+	acCtx := makeSTTAircraftContext(c)
 
 	start := time.Now()
-	commands, err := sm.sttProvider.DecodeTranscript(qc)
+	commands, err := sm.sttProvider.DecodeTranscript(acCtx, transcript, whisperDuration, numCores)
 	sttDuration := time.Since(start)
 
 	if err != nil {
@@ -866,7 +866,7 @@ const DecodeSTTTranscriptRPC = "SimManager.DecodeSTTTranscript"
 
 // DecodeSTTTranscript is the RPC handler for proxying STT decoding requests.
 // It's called by RemoteSTTProvider on local servers that don't have the API key.
-func (sm *SimManager) DecodeSTTTranscript(ctx STTQueryContext, result *string) error {
+func (sm *SimManager) DecodeSTTTranscript(ctx DecodeSTTArgs, result *string) error {
 	defer sm.lg.CatchAndReportCrash()
 
 	if sm.sttProvider == nil {
@@ -875,7 +875,7 @@ func (sm *SimManager) DecodeSTTTranscript(ctx STTQueryContext, result *string) e
 
 	start := time.Now()
 	var err error
-	*result, err = sm.sttProvider.DecodeTranscript(ctx)
+	*result, err = sm.sttProvider.DecodeTranscript(ctx.STTAircraftContext, ctx.Transcript, ctx.WhisperDuration, ctx.NumCores)
 	sttDuration := time.Since(start)
 
 	sm.lg.Infof("STT: transcript=%q command=%q whisper=%s stt=%s cores=%d",
@@ -884,31 +884,26 @@ func (sm *SimManager) DecodeSTTTranscript(ctx STTQueryContext, result *string) e
 	return err
 }
 
-type STTQueryContext struct {
-	Aircraft        map[string]STTAircraft       `json:"aircraft,omitempty"`
-	Approaches      map[string]map[string]string `json:"approaches,omitempty"`
-	Transcript      string                       `json:"transcript"`
-	WhisperDuration time.Duration                `json:"whisper_duration,omitempty"`
-	NumCores        int                          `json:"num_cores,omitempty"`
+type DecodeSTTArgs struct {
+	STTAircraftContext
+	Transcript      string        `json:"transcript"`
+	WhisperDuration time.Duration `json:"whisper_duration,omitempty"`
+	NumCores        int           `json:"num_cores,omitempty"`
 }
+
+type STTAircraftContext map[string]STTAircraft
 
 type STTAircraft struct {
-	Callsign         av.ADSBCallsign   `json:"callsign"`
-	Fixes            map[string]string `json:"fixes"`
-	ApproachAirport  string            `json:"approach_airport,omitempty"`
-	AssignedApproach string            `json:"assigned_approach"`
-	Altitude         int               `json:"altitude"`
-	State            string            `json:"state"`
+	Callsign            av.ADSBCallsign   `json:"callsign"`
+	Fixes               map[string]string `json:"fixes"`
+	CandidateApproaches map[string]string `json:"candidate_approaches,omitempty"`
+	AssignedApproach    string            `json:"assigned_approach"`
+	Altitude            int               `json:"altitude"`
+	State               string            `json:"state"`
 }
 
-func makeSTTQueryContext(c *controllerContext, transcript string, whisperDuration time.Duration, numCores int) STTQueryContext {
-	qc := STTQueryContext{
-		Aircraft:        make(map[string]STTAircraft),
-		Approaches:      make(map[string]map[string]string),
-		Transcript:      transcript,
-		WhisperDuration: whisperDuration,
-		NumCores:        numCores,
-	}
+func makeSTTAircraftContext(c *controllerContext) STTAircraftContext {
+	acCtx := make(map[string]STTAircraft)
 
 	for cs, ac := range c.sim.Aircraft {
 		ours := ac.IsAssociated() && c.sim.TCWControlsPosition(c.tcw, ac.NASFlightPlan.ControllingController)
@@ -947,19 +942,14 @@ func makeSTTQueryContext(c *controllerContext, transcript string, whisperDuratio
 			if appr := ac.Nav.Approach.Assigned; appr != nil {
 				sttAc.AssignedApproach = appr.FullName
 			}
-
-			ap := ac.FlightPlan.ArrivalAirport
-			sttAc.ApproachAirport = ap
-			if _, ok := qc.Approaches[ap]; !ok {
-				qc.Approaches[ap] = getActiveApproaches(c.sim.State, ap)
-			}
+			sttAc.CandidateApproaches = getActiveApproaches(c.sim.State, ac.FlightPlan.ArrivalAirport)
 		}
 
 		telephony := getAircraftTelephony(ac)
-		qc.Aircraft[telephony] = sttAc
+		acCtx[telephony] = sttAc
 	}
 
-	return qc
+	return acCtx
 }
 
 func getActiveApproaches(ss *sim.CommonState, ap string) map[string]string {

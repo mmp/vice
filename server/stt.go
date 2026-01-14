@@ -16,6 +16,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/goforj/godump"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/util"
 )
@@ -24,7 +25,7 @@ import (
 type STTTranscriptProvider interface {
 	// DecodeTranscript converts an STT transcript to aircraft commands.
 	// Returns the full command string (e.g., "UAL123 H250 C120") or error.
-	DecodeTranscript(qc STTQueryContext) (string, error)
+	DecodeTranscript(ac STTAircraftContext, transcript string, whisperDuration time.Duration, numCores int) (string, error)
 
 	// GetUsageStats returns a string describing cumulative usage statistics.
 	// Returns empty string if the provider doesn't track usage.
@@ -72,7 +73,7 @@ func NewAnthropicSTTProvider(lg *log.Logger) (*AnthropicSTTProvider, error) {
 	return &AnthropicSTTProvider{apiKey: apiKey, lg: lg}, nil
 }
 
-func (p *AnthropicSTTProvider) DecodeTranscript(qc STTQueryContext) (string, error) {
+func (p *AnthropicSTTProvider) DecodeTranscript(ac STTAircraftContext, transcript string, whisperDuration time.Duration, numCores int) (string, error) {
 	type claudeMessage struct {
 		Role    string `json:"role"`
 		Content string `json:"content"`
@@ -98,14 +99,20 @@ func (p *AnthropicSTTProvider) DecodeTranscript(qc STTQueryContext) (string, err
 		Usage claudeUsage `json:"usage"`
 	}
 
-	queryBytes, err := json.Marshal(qc)
+	type query struct {
+		Aircraft   STTAircraftContext `json:"aircraft"`
+		Transcript string             `json:"transcript"`
+	}
+	queryBytes, err := json.Marshal(query{Aircraft: ac, Transcript: transcript})
 	if err != nil {
 		return "", err
 	}
 
+	godump.Dump(query{Aircraft: ac, Transcript: transcript})
+
 	req := claudeRequest{
 		Model:     "claude-haiku-4-5",
-		MaxTokens: 10,
+		MaxTokens: 16,
 		System: []claudeSystem{
 			{Type: "text", Text: systemPrompt, CacheControl: claudeCacheControl{Type: "ephemeral"}},
 		},
@@ -158,6 +165,7 @@ func (p *AnthropicSTTProvider) DecodeTranscript(qc STTQueryContext) (string, err
 
 	if len(parsed.Content) > 0 {
 		p.lg.Infof("claude STT result: %q in %s net usage: %#v", parsed.Content[0].Text, time.Since(start), p.netClaudeUsage)
+		fmt.Printf("claude STT result: %q in %s net usage: %#v\n", parsed.Content[0].Text, time.Since(start), p.netClaudeUsage)
 		return parsed.Content[0].Text, nil
 	}
 
@@ -219,9 +227,15 @@ func (r *RemoteSTTProvider) callWithTimeout(serviceMethod string, args any, repl
 	}
 }
 
-func (r *RemoteSTTProvider) DecodeTranscript(qc STTQueryContext) (string, error) {
+func (r *RemoteSTTProvider) DecodeTranscript(ac STTAircraftContext, transcript string, whisperDuration time.Duration, numCores int) (string, error) {
 	var result string
-	if err := r.callWithTimeout(DecodeSTTTranscriptRPC, qc, &result); err != nil {
+	args := DecodeSTTArgs{
+		STTAircraftContext: ac,
+		Transcript:         transcript,
+		WhisperDuration:    whisperDuration,
+		NumCores:           numCores,
+	}
+	if err := r.callWithTimeout(DecodeSTTTranscriptRPC, args, &result); err != nil {
 		return "", err
 	}
 	return result, nil

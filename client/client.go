@@ -629,10 +629,14 @@ func (c *ControlClient) SetSTTActive(active bool) {
 	c.sttActive = active
 	if active {
 		c.holdSpeech = true
-	} else {
-		// PTT released - allow readback to play
-		c.holdSpeech = false
+		// Set a timeout to prevent holdSpeech from being cleared during
+		// STT processing (Whisper + Claude can take a few seconds).
+		c.lastSpeechHoldTime = time.Now().Add(7 * time.Second)
 	}
+	// Note: don't clear holdSpeech on PTT release. STT processing takes
+	// time (Whisper + Claude), and we need to keep holdSpeech true until
+	// awaitReadbackCallsign is set. The ProcessSTTTranscript callback
+	// handles clearing holdSpeech on failure/empty results.
 }
 
 func (c *ControlClient) LastTTSCallsign() av.ADSBCallsign {
@@ -819,13 +823,18 @@ func (c *ControlClient) ProcessSTTTranscript(transcript string, whisperDuration 
 		NumCores:        runtime.NumCPU(),
 	}, &result, nil),
 		func(err error) {
+			c.mu.Lock()
 			if err == nil && result.Callsign != "" {
-				// Set priority for readback from addressed pilot
-				c.mu.Lock()
+				// Set priority for readback from addressed pilot.
+				// holdSpeech stays true; it will be cleared after the
+				// readback plays (in the TryEnqueueSpeechMP3 callback).
 				c.awaitReadbackCallsign = av.ADSBCallsign(result.Callsign)
-				// Note: don't clear holdSpeech here - wait for PTT release via SetSTTActive(false)
-				c.mu.Unlock()
+			} else {
+				// STT failed or returned no command - clear holdSpeech
+				// so other buffered transmissions can play.
+				c.holdSpeech = false
 			}
+			c.mu.Unlock()
 			if callback != nil {
 				callback(result.Callsign, result.Command, result.STTDuration, err)
 			}

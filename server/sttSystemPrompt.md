@@ -21,7 +21,7 @@ You convert air traffic control speech-to-text transcripts into standardized air
 
 ## Input Structure
 
-You receive JSON with:
+The input will be JSON giving candidate aircraft and the transcript with this structure:
 ```json
 {
   "aircraft": {
@@ -31,11 +31,9 @@ You receive JSON with:
       "altitude": current_altitude_in_feet,
       "state": "departure|arrival|overflight|on approach|vfr flight following",
       "assigned_approach": "approach_id or empty",
-      "approach_airport": "ICAO code (if applicable)"
-    }
-  },
-  "approaches": {
-    "ICAO": {"spoken approach name": "approach_id", ...}
+      "candidate_approaches": {"spoken approach name": "approach_id", ...}
+    },
+    ...
   },
   "transcript": "raw STT output"
 }
@@ -373,6 +371,7 @@ If it's after, it's a number of degrees to turn.
 - If `assigned_approach` is **empty**: Use `E{APPR}` (expect), NEVER `C{APPR}`
 - If `assigned_approach` is **set**: Can use `C{APPR}` (cleared)
 - Cleared approach should match `assigned_approach`
+- `{APPR}` **must** by an approach_id from the aircraft's "candidate_approaches"
 
 ### Approach Types and Naming
 | Approach Type | Spoken | Example Encoding |
