@@ -128,6 +128,12 @@ type ModalDialogClient interface {
 	Draw() int /* returns index of equivalently-clicked button; out of range if none */
 }
 
+// FixedSizeDialogClient is an optional interface that dialog clients can implement
+// to specify a fixed window size instead of auto-resizing based on content.
+type FixedSizeDialogClient interface {
+	FixedSize() [2]float32 // Returns [width, height] in pixels (before DPI scaling)
+}
+
 func NewModalDialogBox(c ModalDialogClient, p platform.Platform) *ModalDialogBox {
 	return &ModalDialogBox{client: c, platform: p}
 }
@@ -140,11 +146,22 @@ func (m *ModalDialogBox) Draw() {
 	title := fmt.Sprintf("%s##%p", m.client.Title(), m)
 	imgui.OpenPopupStr(title)
 
-	flags := imgui.WindowFlagsNoResize | imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
 	dpiScale := util.Select(runtime.GOOS == "windows", m.platform.DPIScale(), float32(1))
 	windowSize := m.platform.WindowSize()
-	maxHeight := float32(windowSize[1]) * 19 / 20
-	imgui.SetNextWindowSizeConstraints(imgui.Vec2{dpiScale * 850, dpiScale * 100}, imgui.Vec2{-1, maxHeight})
+
+	// Check if client wants a fixed size window
+	var flags imgui.WindowFlags
+	if fixedSize, ok := m.client.(FixedSizeDialogClient); ok {
+		// Fixed size dialog - don't auto-resize
+		flags = imgui.WindowFlagsNoResize | imgui.WindowFlagsNoSavedSettings
+		size := fixedSize.FixedSize()
+		imgui.SetNextWindowSize(imgui.Vec2{dpiScale * size[0], dpiScale * size[1]})
+	} else {
+		// Auto-resize dialog with constraints
+		flags = imgui.WindowFlagsNoResize | imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
+		maxHeight := float32(windowSize[1]) * 19 / 20
+		imgui.SetNextWindowSizeConstraints(imgui.Vec2{dpiScale * 850, dpiScale * 100}, imgui.Vec2{-1, maxHeight})
+	}
 
 	// Position the window near the top of the screen to ensure it doesn't extend below the bottom
 	// Use a small margin from the top (5% of screen height)

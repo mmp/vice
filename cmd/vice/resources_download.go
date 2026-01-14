@@ -50,6 +50,10 @@ func (r *ResourcesDownloadModalClient) Title() string {
 
 func (r *ResourcesDownloadModalClient) Opening() {}
 
+func (r *ResourcesDownloadModalClient) FixedSize() [2]float32 {
+	return [2]float32{450, 120}
+}
+
 func (r *ResourcesDownloadModalClient) Buttons() []ModalDialogButton {
 	btext := util.Select(r.currentFile == r.totalFiles && len(r.errors) > 0, "Ok", "Cancel")
 	return []ModalDialogButton{ModalDialogButton{text: btext,
@@ -70,7 +74,6 @@ func (r *ResourcesDownloadModalClient) Draw() int {
 		imgui.Text(fmt.Sprintf("Downloading: %s", r.currentFileName))
 	}
 
-	// Add some spacing
 	imgui.Spacing()
 
 	if r.totalBytes > 0 {
@@ -78,12 +81,10 @@ func (r *ResourcesDownloadModalClient) Draw() int {
 		totalDownloaded := r.downloadedBytes + r.currentFileBytes
 		progress := float32(totalDownloaded) / float32(r.totalBytes)
 
-		// Use a fixed width progress bar to ensure minimum dialog width
-		imgui.ProgressBarV(progress, imgui.Vec2{350, 0}, fmt.Sprintf("%.1f MB / %.1f MB",
+		// Progress bar fills available width (-1 for width)
+		imgui.ProgressBarV(progress, imgui.Vec2{-1, 0}, fmt.Sprintf("%.1f MB / %.1f MB",
 			float64(totalDownloaded)/(1024*1024), float64(r.totalBytes)/(1024*1024)))
 	}
-
-	imgui.Spacing()
 
 	return -1
 }
