@@ -9551,7 +9551,7 @@
           "COATE": "EWR_S_APP",
           "DENNA3": "SWF_APP",
           "FLOSI4": "EWR_A_APP",
-          "FQM3": "EWR_P_APP",
+          "FQM3": "EWR_W_APP",
           "HAARP3": "LGA_V_APP",
           "HUD4": "SWF_APP",
           "JAIKE4": "EWR_H_APP",
@@ -11278,6 +11278,12 @@
       "sector_id": "4S",
       "default_airport": "KJFK"
     },
+    "EWR_W_APP": {
+      "frequency": 120150,
+      "radio_name": "New York Approach",
+      "sector_id": "4W",
+      "default_airport": "KJFK"
+    },
     "EWR_TWR": {
       "frequency": 118300,
       "radio_name": "Newark tower",
@@ -11899,7 +11905,7 @@
       "configuration": {
         "config_id": "STD",
         "default_consolidation": {
-          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP"],
+          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP", "EWR_W_APP"],
           "EWR_U_APP": ["EWR_H_APP", "EWR_S_APP"],
           "ISP_H_APP": ["ISP_B_APP", "ISP_I_APP", "ISP_N_APP", "ISP_O_APP", "ISP_R_APP", "ISP_Z_APP", "SWF_APP"],
           "JFK_G_APP": [
@@ -12418,7 +12424,7 @@
       "configuration": {
         "config_id": "STD",
         "default_consolidation": {
-          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP"],
+          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP", "EWR_W_APP"],
           "EWR_U_APP": ["EWR_H_APP", "EWR_S_APP"],
           "ISP_H_APP": ["ISP_B_APP", "ISP_I_APP", "ISP_N_APP", "ISP_O_APP", "ISP_R_APP", "ISP_Z_APP", "SWF_APP"],
           "JFK_G_APP": [
@@ -12927,7 +12933,7 @@
       "configuration": {
         "config_id": "STD",
         "default_consolidation": {
-          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP"],
+          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP", "EWR_W_APP"],
           "EWR_U_APP": ["EWR_H_APP", "EWR_S_APP"],
           "ISP_H_APP": ["ISP_B_APP", "ISP_I_APP", "ISP_N_APP", "ISP_O_APP", "ISP_R_APP", "ISP_Z_APP", "SWF_APP"],
           "JFK_G_APP": [
@@ -13446,7 +13452,7 @@
       "configuration": {
         "config_id": "STD",
         "default_consolidation": {
-          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP"],
+          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP", "EWR_W_APP"],
           "EWR_U_APP": ["EWR_H_APP", "EWR_S_APP"],
           "ISP_H_APP": ["ISP_B_APP", "ISP_I_APP", "ISP_N_APP", "ISP_O_APP", "ISP_R_APP", "ISP_Z_APP", "SWF_APP"],
           "JFK_G_APP": [

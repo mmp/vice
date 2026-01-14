@@ -8688,6 +8688,13 @@
       "sector_id": "4U",
       "facility": "N90"
     },
+    "PENNS": {
+      "frequency": 120150,
+      "radio_name": "New York approach",
+      "sector_id": "4W",
+      "facility": "N90",
+      "default_airport": "KEWR"
+    },
     "HAARP": {
       "frequency": 120800,
       "radio_name": "New York approach",
@@ -8925,7 +8932,7 @@
       "configuration": {
         "config_id": "4LX",
         "default_consolidation": {
-          "4P": ["4A", "4M", "4N", "4U"],
+          "4P": ["4A", "4M", "4N", "4U", "4W"],
           "4U": ["4H", "4S"]
         }
       },
@@ -9277,7 +9284,7 @@
       "configuration": {
         "config_id": "4LX",
         "default_consolidation": {
-          "4P": ["4A", "4M", "4N", "4U"],
+          "4P": ["4A", "4M", "4N", "4U", "4W"],
           "4U": ["4H", "4S"]
         }
       },
@@ -9301,6 +9308,7 @@
         "4T",
         "4A",
         "4P",
+        "4W",
         "4U",
         "5E",
         "5W",
@@ -10575,7 +10583,7 @@
         "inbound_assignments": {
           "COATE": "4S",
           "FLOSI4": "4A",
-          "FQM3": "4P",
+          "FQM3": "4W",
           "JAIKE4": "4H",
           "LVZ4": "4S",
           "MAZIE": "4H",
