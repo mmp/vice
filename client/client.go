@@ -912,14 +912,12 @@ func (c *ControlClient) ProcessSTTTranscript(transcript string, whisperDuration 
 			c.mu.Lock()
 			if err == nil && result.Callsign != "" {
 				// Set priority for readback from addressed pilot.
-				// holdSpeech stays true; it will be cleared after the
-				// readback plays (in the TryEnqueueSpeechMP3 callback).
 				c.awaitReadbackCallsign = av.ADSBCallsign(result.Callsign)
-			} else {
-				// STT failed or returned no command - clear holdSpeech
-				// so other buffered transmissions can play.
-				c.holdSpeech = false
 			}
+			// Clear holdSpeech now that STT processing is complete.
+			// The hold's purpose was to prevent speech during STT processing;
+			// now we can let the awaited readback (or other buffered speech) play.
+			c.holdSpeech = false
 			c.mu.Unlock()
 			if callback != nil {
 				callback(result.Callsign, result.Command, result.STTDuration, err)
