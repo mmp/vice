@@ -262,6 +262,7 @@ const (
 	FlightPlanAssociatedEvent
 	FixCoordinatesEvent
 	STTCommandEvent
+	FlightPlanDirectEvent
 	NumEventTypes
 )
 
@@ -271,7 +272,7 @@ func (t EventType) String() string {
 		"RejectedHandoff", "RadioTransmission", "StatusMessage", "ErrorMessage",
 		"ServerBroadcastMessage", "GlobalMessage", "AcknowledgedPointOut", "RejectedPointOut",
 		"HandoffControl", "SetGlobalLeaderLine", "ForceQL", "TransferAccepted", "TransferRejected",
-		"RecalledPointOut", "FlightPlanAssociated", "FixCoordinates", "STTCommand"}[t]
+		"RecalledPointOut", "FlightPlanAssociated", "FixCoordinates", "STTCommand", "FlightPlanDirect"}[t]
 }
 
 type Event struct {
@@ -288,6 +289,7 @@ type Event struct {
 	WaypointInfo          []math.Point2LL
 	STTTranscript         string
 	STTCommand            string
+	Route                 av.WaypointArray // For QU 
 }
 
 func (e *Event) String() string {

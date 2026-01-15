@@ -129,6 +129,18 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 				coords:     coords,
 				deleteTime: ctx.Client.CurrentTime().Add(15 * time.Second), // check this time also
 			}
+		case sim.FlightPlanDirectEvent:
+			ac := event.ACID
+			// Draw the waypoints like QU /M line 
+			
+			var coords []math.Point2LL
+			for _, wp := range event.Route {
+				coords = append(coords, wp.Location)
+			}
+			ep.aircraftFixCoordinates[string(ac)] = aircraftFixCoordinates{
+				coords:     coords,
+				deleteTime: ctx.Client.CurrentTime().Add(15 * time.Second), // check this time also
+			}
 		}
 	}
 }

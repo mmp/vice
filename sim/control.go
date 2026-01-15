@@ -1114,28 +1114,28 @@ func (s *Sim) SendRouteCoordinates(tcw TCW, acid ACID) error {
 func (s *Sim) FlightPlanDirect(tcp TCP, fix string, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
-
 	ac := s.Aircraft[av.ADSBCallsign(acid)]
-	fp := ac.FlightPlan
-	idx := strings.Index(fp.Route, fix)
-	if idx < 0 {
-		return av.ErrNoMatchingFix
-	}
-	rte := fp.Route[idx:]
-	fp.Route = rte
-	// Update the aircraft's waypoints (Track.Route is derived from these)
-	pos, ok := av.DB.LookupWaypoint(fix)
-	if !ok {
-		return av.ErrNoMatchingFix // Check this pls
-	}
+	var success bool 
 	for i, wp := range ac.Nav.Waypoints {
-		if wp.Location == pos {
+		if wp.Fix == fix {
 			// Remove all waypoints before the fix
 			ac.Nav.Waypoints = ac.Nav.Waypoints[i:]
+			success = true
 			break
 		}
 	}
-	// TODO: Post an event that will update the controller's output.
+
+	if !success {
+		return av.ErrNoMatchingFix
+	}
+
+	// Post event 
+	s.eventStream.Post(Event{
+		Type:         FlightPlanDirectEvent,
+			ACID:         acid,
+			Route:        ac.Nav.Waypoints,
+		})
+
 	return nil
 }
 
