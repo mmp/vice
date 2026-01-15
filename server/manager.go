@@ -960,7 +960,7 @@ func getActiveApproaches(ss *sim.CommonState, ap string) map[string]string {
 		}
 		for code, appr := range ss.Airports[ap].Approaches {
 			if appr.Runway == ar.Runway {
-				m[appr.FullName] = code
+				m[av.GetApproachTelephony(appr.FullName)] = code
 			}
 		}
 	}

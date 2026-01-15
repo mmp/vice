@@ -18,6 +18,7 @@ import (
 
 	"github.com/goforj/godump"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/sttlocal"
 	"github.com/mmp/vice/util"
 )
 
@@ -33,6 +34,13 @@ type STTTranscriptProvider interface {
 }
 
 func MakeSTTProvider(ctx context.Context, serverAddress string, lg *log.Logger) STTTranscriptProvider {
+	// Use local algorithmic provider by default (fast, no API dependency)
+	lg.Info("Using local STT provider (algorithmic parsing)")
+	return NewLocalSTTProvider(lg)
+}
+
+// MakeSTTProviderWithFallback creates an STT provider with LLM fallback for uncertain parses.
+func MakeSTTProviderWithFallback(ctx context.Context, serverAddress string, lg *log.Logger) STTTranscriptProvider {
 	// Try Anthropic first (direct API access)
 	if p, err := NewAnthropicSTTProvider(lg); err == nil {
 		return p
@@ -44,8 +52,45 @@ func MakeSTTProvider(ctx context.Context, serverAddress string, lg *log.Logger) 
 		return p
 	}
 
-	lg.Warn("STT provider unavailable: no API key and unable to connect to remote server")
-	return nil
+	// Final fallback: use local provider
+	lg.Warn("LLM STT providers unavailable, using local algorithmic provider")
+	return NewLocalSTTProvider(lg)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// LocalSTTProvider - Fast local algorithmic parsing
+
+type LocalSTTProvider struct {
+	provider *sttlocal.LocalSTTProvider
+	lg       *log.Logger
+}
+
+func NewLocalSTTProvider(lg *log.Logger) *LocalSTTProvider {
+	return &LocalSTTProvider{
+		provider: sttlocal.NewLocalSTTProvider(lg),
+		lg:       lg,
+	}
+}
+
+func (p *LocalSTTProvider) DecodeTranscript(ac STTAircraftContext, transcript string, whisperDuration time.Duration, numCores int) (string, error) {
+	// Convert server.STTAircraftContext to sttlocal format
+	localAC := make(map[string]sttlocal.STTAircraft)
+	for spokenName, serverAC := range ac {
+		localAC[spokenName] = sttlocal.STTAircraft{
+			Callsign:            string(serverAC.Callsign),
+			Fixes:               serverAC.Fixes,
+			CandidateApproaches: serverAC.CandidateApproaches,
+			AssignedApproach:    serverAC.AssignedApproach,
+			Altitude:            serverAC.Altitude,
+			State:               serverAC.State,
+		}
+	}
+
+	return p.provider.DecodeTranscript(localAC, transcript, whisperDuration, numCores)
+}
+
+func (p *LocalSTTProvider) GetUsageStats() string {
+	return p.provider.GetUsageStats()
 }
 
 ///////////////////////////////////////////////////////////////////////////
