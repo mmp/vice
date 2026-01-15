@@ -139,6 +139,33 @@ func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 	if imgui.IsKeyPressedBool(imgui.KeyComma) {
 		keyboard.Pressed[imgui.KeyComma] = nil
 	}
+
+	// Shift, Super, Control, Alt
+	if imgui.IsKeyPressedBool(imgui.KeyLeftShift) {
+		keyboard.Pressed[imgui.KeyLeftShift] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyLeftSuper) {
+		keyboard.Pressed[imgui.KeyLeftSuper] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyLeftCtrl) {
+		keyboard.Pressed[imgui.KeyLeftCtrl] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyLeftAlt) {
+		keyboard.Pressed[imgui.KeyLeftAlt] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyRightShift) {
+		keyboard.Pressed[imgui.KeyRightShift] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyRightSuper) {
+		keyboard.Pressed[imgui.KeyRightSuper] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyRightCtrl) {
+		keyboard.Pressed[imgui.KeyRightCtrl] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyRightAlt) {
+		keyboard.Pressed[imgui.KeyRightAlt] = nil
+	}
+	
 	// F15-24
 	for k := imgui.KeyF15; k <= imgui.KeyF24; k++ {
 		if imgui.IsKeyPressedBool(k) {
