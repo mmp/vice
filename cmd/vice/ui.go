@@ -758,14 +758,9 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 			imgui.TextColored(imgui.Vec4{1, 1, 0, 1}, "Press any key for Push-to-Talk...")
 			if kb := p.GetKeyboard(); kb != nil {
 				for key := range kb.Pressed {
-					if key != imgui.KeyLeftShift && key != imgui.KeyRightShift &&
-						key != imgui.KeyLeftCtrl && key != imgui.KeyRightCtrl &&
-						key != imgui.KeyLeftAlt && key != imgui.KeyRightAlt &&
-						key != imgui.KeyLeftSuper && key != imgui.KeyRightSuper {
-						config.UserPTTKey = key
-						ui.pttCapture = false
-						break
-					}
+					config.UserPTTKey = key
+					ui.pttCapture = false
+					break
 				}
 			}
 		} else {
