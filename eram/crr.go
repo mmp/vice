@@ -962,7 +962,8 @@ func (ep *ERAMPane) drawCRRDistances(ctx *panes.Context, transforms radar.ScopeT
 		}
 
 		// Get position below the track target
-		trackWin := transforms.WindowFromLatLongP(trk.Location)
+		location  := state.track.Location
+		trackWin := transforms.WindowFromLatLongP(location)
 
 		// Position the distance text below and to the left of the track
 		distStr := fmt.Sprintf("%.1f", entry.distNM)
