@@ -748,7 +748,7 @@ func makeWhisperPrompt(state SimState) string {
 }
 
 // postSTTEvent posts an STTCommandEvent to the event stream.
-func (c *ControlClient) postSTTEvent(transcript, command string) {
+func (c *ControlClient) postSTTEvent(transcript, command, timings string) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -756,6 +756,7 @@ func (c *ControlClient) postSTTEvent(transcript, command string) {
 		Type:          sim.STTCommandEvent,
 		STTTranscript: transcript,
 		STTCommand:    command,
+		STTTimings:    timings,
 	})
 }
 
@@ -868,7 +869,7 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 		c.SetLastTranscription(finalText)
 
 		if finalText == "" || finalText == "[BLANK_AUDIO]" {
-			c.postSTTEvent("", "")
+			c.postSTTEvent("", "", "")
 			return
 		}
 
@@ -876,12 +877,12 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 		c.ProcessSTTTranscript(finalText, whisperDuration, func(callsign, command string, sttDuration time.Duration, err error) {
 			if err != nil {
 				lg.Infof("STT command error: %v", err)
-				c.postSTTEvent(finalText, "Error: "+err.Error())
+				c.postSTTEvent(finalText, "Error: "+err.Error(), fmt.Sprintf("whisper: %.1fms", float64(whisperDuration.Microseconds())/1000))
 			} else {
 				lg.Infof("STT command: %s %s", callsign, command)
 				fullCommand := callsign + " " + command
 				c.SetLastCommand(fullCommand)
-				c.postSTTEvent(finalText, fullCommand)
+				c.postSTTEvent(finalText, fullCommand, fmt.Sprintf("whisper: %.1fms, stt: %.1fms", float64(whisperDuration.Microseconds())/1000, float64(sttDuration.Microseconds())/1000))
 			}
 		})
 	}()

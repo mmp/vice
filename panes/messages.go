@@ -242,9 +242,13 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 		case sim.STTCommandEvent:
 			// Display the controller's STT transcript and resulting command
 			if event.STTTranscript != "" || event.STTCommand != "" {
+				msg := fmt.Sprintf("STT: %q -> %s", event.STTTranscript, event.STTCommand)
+				if event.STTTimings != "" {
+					msg += " (" + event.STTTimings + ")"
+				}
 				mp.messages = append(mp.messages,
 					Message{
-						contents: fmt.Sprintf("STT: %q -> %s", event.STTTranscript, event.STTCommand),
+						contents: msg,
 						system:   true,
 					})
 			}
