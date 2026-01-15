@@ -1115,7 +1115,7 @@ func (s *Sim) FlightPlanDirect(tcp TCP, fix string, acid ACID) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 	ac := s.Aircraft[av.ADSBCallsign(acid)]
-	var success bool 
+	var success bool
 	for i, wp := range ac.Nav.Waypoints {
 		if wp.Fix == fix {
 			// Remove all waypoints before the fix
@@ -1129,12 +1129,12 @@ func (s *Sim) FlightPlanDirect(tcp TCP, fix string, acid ACID) error {
 		return av.ErrNoMatchingFix
 	}
 
-	// Post event 
+	// Post event
 	s.eventStream.Post(Event{
-		Type:         FlightPlanDirectEvent,
-			ACID:         acid,
-			Route:        ac.Nav.Waypoints,
-		})
+		Type:  FlightPlanDirectEvent,
+		ACID:  acid,
+		Route: ac.Nav.Waypoints,
+	})
 
 	return nil
 }

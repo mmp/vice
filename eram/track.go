@@ -131,8 +131,8 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 			}
 		case sim.FlightPlanDirectEvent:
 			ac := event.ACID
-			// Draw the waypoints like QU /M line 
-			
+			// Draw the waypoints like QU /M line
+
 			var coords []math.Point2LL
 			for _, wp := range event.Route {
 				coords = append(coords, wp.Location)

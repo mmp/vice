@@ -63,12 +63,12 @@ func init() {
 	registerCommand(CommandModeNone, "LF [CRR_LOC] [CRR_LABEL] [ALL_TEXT]", handleCRRCreateWithAircraft)
 	registerCommand(CommandModeNone, "LF [CRR_LOC] [CRR_LABEL]", handleCRRCreate)
 	registerCommand(CommandModeNone, "LF [CRR_LOC]", handleCRRCreateAutoLabel)
-	registerCommand(CommandModeNone, "LF [LOC_SYM] [CRR_LABEL]", handleCRRAddClicked)  // LF {pos} LABEL - valid order
+	registerCommand(CommandModeNone, "LF [LOC_SYM] [CRR_LABEL]", handleCRRAddClicked) // LF {pos} LABEL - valid order
 	registerCommand(CommandModeNone, "LF [CRR_LABEL] [LOC_SYM]", handleCRRWrongOrder) // LF LABEL {pos} - wrong order
 	registerCommand(CommandModeNone, "LF [CRR_LABEL] [ALL_TEXT]", handleCRRToggleMembership)
 	// Error handlers for incomplete LF commands
-	registerCommand(CommandModeNone, "LF [CRR_LABEL]", handleCRRLabelOnly)     // LF LABEL without click or aircraft
-	registerCommand(CommandModeNone, "LF", handleCRREmpty)                      // LF alone
+	registerCommand(CommandModeNone, "LF [CRR_LABEL]", handleCRRLabelOnly) // LF LABEL without click or aircraft
+	registerCommand(CommandModeNone, "LF", handleCRREmpty)                 // LF alone
 
 	// // - Toggle VCI (on-frequency indicator)
 	// Keyboard: //[FLID] or // [FLID]

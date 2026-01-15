@@ -165,7 +165,7 @@ func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 	if imgui.IsKeyPressedBool(imgui.KeyRightAlt) {
 		keyboard.Pressed[imgui.KeyRightAlt] = nil
 	}
-	
+
 	// F15-24
 	for k := imgui.KeyF15; k <= imgui.KeyF24; k++ {
 		if imgui.IsKeyPressedBool(k) {

@@ -243,7 +243,7 @@ func (h *sectorIDParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 	// Sector ID formats:
 	// - Single digit + letter: "1A", "2B" (most common)
 	// - Two digits: "15", "20" (for centers)
-// - Facility + sector: "B20", "N2K"
+	// - Facility + sector: "B20", "N2K"
 	// - Single letter (rare, for single-character shortcuts)
 
 	if len(field) == 2 && isNum(field[0]) && isAlpha(field[1]) {

@@ -873,7 +873,7 @@ func (ep *ERAMPane) drawCRRFixes(ctx *panes.Context, transforms radar.ScopeTrans
 	}
 	sort.Strings(fixLabels)
 	for _, l := range fixLabels {
-		// Get the color for the CRR fix 
+		// Get the color for the CRR fix
 		fixColor := ep.crrGroups[l].Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[ps.CRR.SelectedColor]), 0, 100)))
 		style := renderer.TextStyle{Font: font, Color: fixColor}
 
@@ -962,7 +962,7 @@ func (ep *ERAMPane) drawCRRDistances(ctx *panes.Context, transforms radar.ScopeT
 		}
 
 		// Get position below the track target
-		location  := state.track.Location
+		location := state.track.Location
 		trackWin := transforms.WindowFromLatLongP(location)
 
 		// Position the distance text below and to the left of the track
