@@ -1,4 +1,4 @@
-package sttlocal
+package stt
 
 import (
 	"strings"
@@ -7,15 +7,15 @@ import (
 	"github.com/mmp/vice/log"
 )
 
-// LocalSTTProvider implements STTTranscriptProvider using local algorithmic parsing.
-// It replaces the LLM-based approach with fast fuzzy matching.
-type LocalSTTProvider struct {
+// Transcriber converts speech transcripts to aircraft control commands using
+// local algorithmic parsing with fast fuzzy matching.
+type Transcriber struct {
 	lg *log.Logger
 }
 
-// NewLocalSTTProvider creates a new local STT provider.
-func NewLocalSTTProvider(lg *log.Logger) *LocalSTTProvider {
-	return &LocalSTTProvider{lg: lg}
+// NewTranscriber creates a new STT transcriber.
+func NewTranscriber(lg *log.Logger) *Transcriber {
+	return &Transcriber{lg: lg}
 }
 
 // DecodeTranscript converts a speech transcript to aircraft control commands.
@@ -24,8 +24,8 @@ func NewLocalSTTProvider(lg *log.Logger) *LocalSTTProvider {
 //   - "{CALLSIGN} AGAIN" if callsign identified but commands unclear
 //   - "BLOCKED" if no callsign could be identified
 //   - "" if transcript is empty
-func (p *LocalSTTProvider) DecodeTranscript(
-	aircraft map[string]STTAircraft,
+func (p *Transcriber) DecodeTranscript(
+	aircraft map[string]Aircraft,
 	transcript string,
 	whisperDuration time.Duration,
 	numCores int,
@@ -79,7 +79,7 @@ func (p *LocalSTTProvider) DecodeTranscript(
 	}
 
 	// Get aircraft context for the matched callsign
-	var ac STTAircraft
+	var ac Aircraft
 	if callsignMatch.SpokenKey != "" {
 		ac = aircraft[callsignMatch.SpokenKey]
 	}
@@ -140,7 +140,7 @@ func (p *LocalSTTProvider) DecodeTranscript(
 }
 
 // GetUsageStats returns usage statistics for this provider.
-func (p *LocalSTTProvider) GetUsageStats() string {
+func (p *Transcriber) GetUsageStats() string {
 	return "local algorithmic parser (no API calls)"
 }
 
@@ -156,8 +156,8 @@ type ParseResult struct {
 }
 
 // ParseTranscriptDetailed provides detailed parsing results for testing.
-func (p *LocalSTTProvider) ParseTranscriptDetailed(
-	aircraft map[string]STTAircraft,
+func (p *Transcriber) ParseTranscriptDetailed(
+	aircraft map[string]Aircraft,
 	transcript string,
 ) ParseResult {
 	result := ParseResult{}
@@ -183,7 +183,7 @@ func (p *LocalSTTProvider) ParseTranscriptDetailed(
 	}
 
 	// Get aircraft context
-	var ac STTAircraft
+	var ac Aircraft
 	if callsignMatch.SpokenKey != "" {
 		ac = aircraft[callsignMatch.SpokenKey]
 	}
@@ -218,13 +218,13 @@ func applyDisregard(tokens []Token) []Token {
 
 // logging helpers
 
-func (p *LocalSTTProvider) logDebug(format string, args ...interface{}) {
+func (p *Transcriber) logDebug(format string, args ...interface{}) {
 	if p.lg != nil {
 		p.lg.Debugf(format, args...)
 	}
 }
 
-func (p *LocalSTTProvider) logInfo(format string, args ...interface{}) {
+func (p *Transcriber) logInfo(format string, args ...interface{}) {
 	if p.lg != nil {
 		p.lg.Infof(format, args...)
 	}

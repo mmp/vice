@@ -1,4 +1,4 @@
-package sttlocal
+package stt
 
 import (
 	"fmt"
@@ -414,7 +414,7 @@ var commandTemplates = []CommandTemplate{
 }
 
 // ParseCommands parses tokens into a sequence of commands.
-func ParseCommands(tokens []Token, ac STTAircraft) ([]string, float64) {
+func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 	logLocalStt("ParseCommands: %d tokens", len(tokens))
 	if len(tokens) == 0 {
 		return nil, 0
@@ -485,7 +485,7 @@ func ParseCommands(tokens []Token, ac STTAircraft) ([]string, float64) {
 }
 
 // matchCommand tries to match tokens against all command templates.
-func matchCommand(tokens []Token, ac STTAircraft, isThen bool) (CommandMatch, int) {
+func matchCommand(tokens []Token, ac Aircraft, isThen bool) (CommandMatch, int) {
 	var bestMatch CommandMatch
 	var bestPriority int
 
@@ -501,7 +501,7 @@ func matchCommand(tokens []Token, ac STTAircraft, isThen bool) (CommandMatch, in
 }
 
 // tryMatchTemplate attempts to match tokens against a single template.
-func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac STTAircraft, isThen bool) (CommandMatch, int) {
+func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen bool) (CommandMatch, int) {
 	consumed := 0
 
 	// Match keyword sequences

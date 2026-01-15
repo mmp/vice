@@ -1,4 +1,4 @@
-package sttlocal
+package stt
 
 import (
 	"strconv"
@@ -14,7 +14,7 @@ type ValidationResult struct {
 
 // ValidateCommands validates a list of commands against aircraft state.
 // Returns filtered commands and adjusted confidence.
-func ValidateCommands(commands []string, ac STTAircraft) ValidationResult {
+func ValidateCommands(commands []string, ac Aircraft) ValidationResult {
 	if len(commands) == 0 {
 		return ValidationResult{Confidence: 0}
 	}
@@ -49,7 +49,7 @@ func ValidateCommands(commands []string, ac STTAircraft) ValidationResult {
 
 // validateCommand validates a single command against aircraft state.
 // Returns empty string if valid, or an error message if invalid.
-func validateCommand(cmd string, ac STTAircraft) string {
+func validateCommand(cmd string, ac Aircraft) string {
 	if len(cmd) == 0 {
 		return "empty command"
 	}
@@ -175,7 +175,7 @@ func validateCommand(cmd string, ac STTAircraft) string {
 
 // Validation helper functions
 
-func validateDescend(altStr string, ac STTAircraft) string {
+func validateDescend(altStr string, ac Aircraft) string {
 	alt, err := strconv.Atoi(altStr)
 	if err != nil {
 		return "invalid altitude format"
@@ -197,7 +197,7 @@ func validateDescend(altStr string, ac STTAircraft) string {
 	return ""
 }
 
-func validateClimb(altStr string, ac STTAircraft) string {
+func validateClimb(altStr string, ac Aircraft) string {
 	alt, err := strconv.Atoi(altStr)
 	if err != nil {
 		return "invalid altitude format"
@@ -219,7 +219,7 @@ func validateClimb(altStr string, ac STTAircraft) string {
 	return ""
 }
 
-func validateClearedApproach(apprCode string, ac STTAircraft) string {
+func validateClearedApproach(apprCode string, ac Aircraft) string {
 	// Can only clear approach if assigned_approach is set
 	if ac.AssignedApproach == "" {
 		return "cannot clear approach without assigned approach (use expect instead)"
@@ -233,7 +233,7 @@ func validateClearedApproach(apprCode string, ac STTAircraft) string {
 	return ""
 }
 
-func validateExpectApproach(apprCode string, ac STTAircraft) string {
+func validateExpectApproach(apprCode string, ac Aircraft) string {
 	// Expect approach is valid when assigned_approach is empty
 	// (actually valid in both cases, but more common when empty)
 
@@ -245,7 +245,7 @@ func validateExpectApproach(apprCode string, ac STTAircraft) string {
 	return ""
 }
 
-func validateContactTower(ac STTAircraft) string {
+func validateContactTower(ac Aircraft) string {
 	// Contact tower only valid for aircraft on approach
 	if ac.State != "on approach" {
 		return "contact tower only valid for aircraft on approach"
@@ -253,7 +253,7 @@ func validateContactTower(ac STTAircraft) string {
 	return ""
 }
 
-func validateClimbViaSID(ac STTAircraft) string {
+func validateClimbViaSID(ac Aircraft) string {
 	// Climb via SID only for departures
 	if ac.State != "departure" {
 		return "climb via SID only valid for departures"
@@ -261,7 +261,7 @@ func validateClimbViaSID(ac STTAircraft) string {
 	return ""
 }
 
-func validateCancelApproach(ac STTAircraft) string {
+func validateCancelApproach(ac Aircraft) string {
 	// Cancel approach only for aircraft on approach
 	if ac.State != "on approach" {
 		return "cancel approach only valid for aircraft on approach"
@@ -269,7 +269,7 @@ func validateCancelApproach(ac STTAircraft) string {
 	return ""
 }
 
-func validateGoAhead(ac STTAircraft) string {
+func validateGoAhead(ac Aircraft) string {
 	// Go ahead typically for VFR check-ins
 	if ac.State != "vfr flight following" {
 		// Not an error, just less common
@@ -277,7 +277,7 @@ func validateGoAhead(ac STTAircraft) string {
 	return ""
 }
 
-func validateVFRAltitude(ac STTAircraft) string {
+func validateVFRAltitude(ac Aircraft) string {
 	// VFR altitude discretion only for VFR
 	if ac.State != "vfr flight following" {
 		return "altitude discretion only valid for VFR"

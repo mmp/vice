@@ -1,6 +1,6 @@
-// Package sttlocal provides a local algorithmic speech-to-command parser
+// Package stt provides a local algorithmic speech-to-command parser
 // for ATC transcripts, replacing the LLM-based approach with fast fuzzy matching.
-package sttlocal
+package stt
 
 import (
 	"strings"

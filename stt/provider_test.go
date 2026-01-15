@@ -1,4 +1,4 @@
-package sttlocal
+package stt
 
 import (
 	"testing"
@@ -11,13 +11,13 @@ func TestBasicAltitudeCommands(t *testing.T) {
 	tests := []struct {
 		name       string
 		transcript string
-		aircraft   map[string]STTAircraft
+		aircraft   map[string]Aircraft
 		expected   string
 	}{
 		{
 			name:       "descend and maintain",
 			transcript: "American 5936 descend and maintain 8000",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"American 5936": {Callsign: "AAL5936", Altitude: 12000, State: "arrival"},
 			},
 			expected: "AAL5936 D80",
@@ -25,7 +25,7 @@ func TestBasicAltitudeCommands(t *testing.T) {
 		{
 			name:       "climb and maintain flight level",
 			transcript: "United 452 climb and maintain flight level three five zero",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"United 452": {Callsign: "UAL452", Altitude: 28000, State: "overflight"},
 			},
 			expected: "UAL452 C350",
@@ -33,7 +33,7 @@ func TestBasicAltitudeCommands(t *testing.T) {
 		{
 			name:       "radar contact climb",
 			transcript: "Delta 88 radar contact climb and maintain niner thousand",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"Delta 88": {Callsign: "DAL88", Altitude: 3000, State: "departure"},
 			},
 			expected: "DAL88 C90",
@@ -41,7 +41,7 @@ func TestBasicAltitudeCommands(t *testing.T) {
 		{
 			name:       "maintain altitude at same level",
 			transcript: "Southwest 221 maintain one zero ten thousand",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"Southwest 221": {Callsign: "SWA221", Altitude: 10000, State: "overflight"},
 			},
 			expected: "SWA221 A100",
@@ -49,7 +49,7 @@ func TestBasicAltitudeCommands(t *testing.T) {
 		{
 			name:       "expedite climb",
 			transcript: "JetBlue 615 expedite climb",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"JetBlue 615": {Callsign: "JBU615", Altitude: 5000, State: "departure"},
 			},
 			expected: "JBU615 EC",
@@ -57,7 +57,7 @@ func TestBasicAltitudeCommands(t *testing.T) {
 		{
 			name:       "descend via star",
 			transcript: "Frontier 900 descend via the star",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"Frontier 900": {Callsign: "FFT900", Altitude: 25000, State: "arrival"},
 			},
 			expected: "FFT900 DVS",
@@ -65,7 +65,7 @@ func TestBasicAltitudeCommands(t *testing.T) {
 		{
 			name:       "alphanumeric callsign with heavy suffix and single digit altitude",
 			transcript: "Lufthansa 4WJ heavy descend and maintain niner",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"Lufthansa 4WJ heavy": {Callsign: "DLH4WJ", Altitude: 12000, State: "arrival"},
 			},
 			expected: "DLH4WJ D90",
@@ -73,14 +73,14 @@ func TestBasicAltitudeCommands(t *testing.T) {
 		{
 			name:       "hyphenated altitude from STT",
 			transcript: "Republic 4583 climb and maintain 1-1-thousand",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"Republic 4583": {Callsign: "RPA4583", Altitude: 3000, State: "departure"},
 			},
 			expected: "RPA4583 C110",
 		},
 	}
 
-	provider := NewLocalSTTProvider(nil)
+	provider := NewTranscriber(nil)
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -100,13 +100,13 @@ func TestBasicHeadingCommands(t *testing.T) {
 	tests := []struct {
 		name       string
 		transcript string
-		aircraft   map[string]STTAircraft
+		aircraft   map[string]Aircraft
 		expected   string
 	}{
 		{
 			name:       "turn left heading",
 			transcript: "American 123 turn left heading two seven zero",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"American 123": {Callsign: "AAL123", State: "arrival"},
 			},
 			expected: "AAL123 L270",
@@ -114,7 +114,7 @@ func TestBasicHeadingCommands(t *testing.T) {
 		{
 			name:       "turn right heading with leading zero",
 			transcript: "Delta 456 turn right heading zero niner zero",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"Delta 456": {Callsign: "DAL456", State: "arrival"},
 			},
 			expected: "DAL456 R090",
@@ -122,7 +122,7 @@ func TestBasicHeadingCommands(t *testing.T) {
 		{
 			name:       "fly present heading",
 			transcript: "United 789 fly present heading",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"United 789": {Callsign: "UAL789", State: "arrival"},
 			},
 			expected: "UAL789 H",
@@ -130,7 +130,7 @@ func TestBasicHeadingCommands(t *testing.T) {
 		{
 			name:       "turn degrees left",
 			transcript: "Southwest 333 turn twenty degrees left",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"Southwest 333": {Callsign: "SWA333", State: "arrival"},
 			},
 			expected: "SWA333 T20L",
@@ -138,14 +138,14 @@ func TestBasicHeadingCommands(t *testing.T) {
 		{
 			name:       "heading only",
 			transcript: "JetBlue 100 heading one eight zero",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"JetBlue 100": {Callsign: "JBU100", State: "arrival"},
 			},
 			expected: "JBU100 H180",
 		},
 	}
 
-	provider := NewLocalSTTProvider(nil)
+	provider := NewTranscriber(nil)
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -165,13 +165,13 @@ func TestBasicSpeedCommands(t *testing.T) {
 	tests := []struct {
 		name       string
 		transcript string
-		aircraft   map[string]STTAircraft
+		aircraft   map[string]Aircraft
 		expected   string
 	}{
 		{
 			name:       "reduce speed",
 			transcript: "Alaska 500 reduce speed to two five zero",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"Alaska 500": {Callsign: "ASA500", State: "arrival"},
 			},
 			expected: "ASA500 S250",
@@ -179,7 +179,7 @@ func TestBasicSpeedCommands(t *testing.T) {
 		{
 			name:       "slowest practical",
 			transcript: "Spirit 101 maintain slowest practical speed",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"Spirit 101": {Callsign: "NKS101", State: "on approach"},
 			},
 			expected: "NKS101 SMIN",
@@ -187,7 +187,7 @@ func TestBasicSpeedCommands(t *testing.T) {
 		{
 			name:       "increase speed",
 			transcript: "Delta 200 increase speed to two eight zero",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"Delta 200": {Callsign: "DAL200", State: "departure"},
 			},
 			expected: "DAL200 S280",
@@ -195,14 +195,14 @@ func TestBasicSpeedCommands(t *testing.T) {
 		{
 			name:       "say airspeed",
 			transcript: "American 300 say airspeed",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"American 300": {Callsign: "AAL300", State: "arrival"},
 			},
 			expected: "AAL300 SS",
 		},
 	}
 
-	provider := NewLocalSTTProvider(nil)
+	provider := NewTranscriber(nil)
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -222,13 +222,13 @@ func TestCompoundCommands(t *testing.T) {
 	tests := []struct {
 		name       string
 		transcript string
-		aircraft   map[string]STTAircraft
+		aircraft   map[string]Aircraft
 		expected   string
 	}{
 		{
 			name:       "speed then descend",
 			transcript: "JetBlue 789 reduce speed to two five zero then descend and maintain one zero thousand",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"JetBlue 789": {Callsign: "JBU789", Altitude: 15000, State: "arrival"},
 			},
 			expected: "JBU789 S250 TD100",
@@ -236,7 +236,7 @@ func TestCompoundCommands(t *testing.T) {
 		{
 			name:       "descend then speed",
 			transcript: "American 100 descend and maintain eight thousand then reduce speed to two one zero",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"American 100": {Callsign: "AAL100", Altitude: 12000, State: "arrival"},
 			},
 			expected: "AAL100 D80 TS210",
@@ -244,14 +244,14 @@ func TestCompoundCommands(t *testing.T) {
 		{
 			name:       "turn and descend",
 			transcript: "United 333 turn left heading one eight zero descend and maintain six thousand",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"United 333": {Callsign: "UAL333", Altitude: 10000, State: "arrival"},
 			},
 			expected: "UAL333 L180 D60",
 		},
 	}
 
-	provider := NewLocalSTTProvider(nil)
+	provider := NewTranscriber(nil)
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -271,13 +271,13 @@ func TestTransponderCommands(t *testing.T) {
 	tests := []struct {
 		name       string
 		transcript string
-		aircraft   map[string]STTAircraft
+		aircraft   map[string]Aircraft
 		expected   string
 	}{
 		{
 			name:       "squawk code",
 			transcript: "Southwest 900 squawk one two zero zero",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"Southwest 900": {Callsign: "SWA900", State: "departure"},
 			},
 			expected: "SWA900 SQ1200",
@@ -285,7 +285,7 @@ func TestTransponderCommands(t *testing.T) {
 		{
 			name:       "ident",
 			transcript: "Spirit 111 ident",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"Spirit 111": {Callsign: "NKS111", State: "vfr flight following"},
 			},
 			expected: "NKS111 ID",
@@ -293,14 +293,14 @@ func TestTransponderCommands(t *testing.T) {
 		{
 			name:       "squawk altitude",
 			transcript: "Delta 222 squawk altitude",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"Delta 222": {Callsign: "DAL222", State: "departure"},
 			},
 			expected: "DAL222 SQA",
 		},
 	}
 
-	provider := NewLocalSTTProvider(nil)
+	provider := NewTranscriber(nil)
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -320,13 +320,13 @@ func TestHandoffCommands(t *testing.T) {
 	tests := []struct {
 		name       string
 		transcript string
-		aircraft   map[string]STTAircraft
+		aircraft   map[string]Aircraft
 		expected   string
 	}{
 		{
 			name:       "contact tower",
 			transcript: "American 222 contact tower",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"American 222": {Callsign: "AAL222", State: "on approach"},
 			},
 			expected: "AAL222 TO",
@@ -334,14 +334,14 @@ func TestHandoffCommands(t *testing.T) {
 		{
 			name:       "frequency change with frequency",
 			transcript: "Delta 500 contact Los Angeles Center one three two point four",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"Delta 500": {Callsign: "DAL500", State: "overflight"},
 			},
 			expected: "DAL500 FC",
 		},
 	}
 
-	provider := NewLocalSTTProvider(nil)
+	provider := NewTranscriber(nil)
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -361,13 +361,13 @@ func TestVFRCommands(t *testing.T) {
 	tests := []struct {
 		name       string
 		transcript string
-		aircraft   map[string]STTAircraft
+		aircraft   map[string]Aircraft
 		expected   string
 	}{
 		{
 			name:       "go ahead",
 			transcript: "Cessna 345 go ahead",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"Cessna 345": {Callsign: "N345", State: "vfr flight following"},
 			},
 			expected: "N345 GA",
@@ -375,14 +375,14 @@ func TestVFRCommands(t *testing.T) {
 		{
 			name:       "radar services terminated",
 			transcript: "November 123AB radar services terminated squawk VFR frequency change approved",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"November 123AB": {Callsign: "N123AB", State: "vfr flight following"},
 			},
 			expected: "N123AB RST",
 		},
 	}
 
-	provider := NewLocalSTTProvider(nil)
+	provider := NewTranscriber(nil)
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -402,13 +402,13 @@ func TestNavigationCommands(t *testing.T) {
 	tests := []struct {
 		name       string
 		transcript string
-		aircraft   map[string]STTAircraft
+		aircraft   map[string]Aircraft
 		expected   string
 	}{
 		{
 			name:       "depart fix heading",
 			transcript: "American 870 depart Pucky heading 180",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"American 870": {
 					Callsign: "AAL870",
 					Altitude: 19000,
@@ -421,7 +421,7 @@ func TestNavigationCommands(t *testing.T) {
 		{
 			name:       "depart fix heading with approach",
 			transcript: "American 870 depart Pucky heading 180 vectors I L S runway two two left",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"American 870": {
 					Callsign:            "AAL870",
 					Altitude:            19000,
@@ -435,7 +435,7 @@ func TestNavigationCommands(t *testing.T) {
 		{
 			name:       "direct fix",
 			transcript: "United 300 proceed direct JENNY",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"United 300": {
 					Callsign: "UAL300",
 					Altitude: 15000,
@@ -448,7 +448,7 @@ func TestNavigationCommands(t *testing.T) {
 		{
 			name:       "depart fix heading with fuzzy keyword",
 			transcript: "American 870 tepart pucky heading 180",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"American 870": {
 					Callsign: "AAL870",
 					Altitude: 19000,
@@ -460,7 +460,7 @@ func TestNavigationCommands(t *testing.T) {
 		},
 	}
 
-	provider := NewLocalSTTProvider(nil)
+	provider := NewTranscriber(nil)
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -480,13 +480,13 @@ func TestSTTErrorRecovery(t *testing.T) {
 	tests := []struct {
 		name       string
 		transcript string
-		aircraft   map[string]STTAircraft
+		aircraft   map[string]Aircraft
 		expected   string
 	}{
 		{
 			name:       "phonetic numbers in callsign",
 			transcript: "American fife niner tree six descended and maintained 8000",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"American 5936": {Callsign: "AAL5936", Altitude: 12000, State: "arrival"},
 			},
 			expected: "AAL5936 D80",
@@ -494,7 +494,7 @@ func TestSTTErrorRecovery(t *testing.T) {
 		{
 			name:       "tree for too in callsign",
 			transcript: "Delta for fower too turn left heading too seven zero",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"Delta 442": {Callsign: "DAL442", State: "arrival"},
 			},
 			expected: "DAL442 L270",
@@ -502,14 +502,14 @@ func TestSTTErrorRecovery(t *testing.T) {
 		{
 			name:       "garbage word at start of transcript",
 			transcript: "Lass China Southern 940 heavy fly heading 180",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"China Southern 940 heavy": {Callsign: "CSN940", State: "arrival"},
 			},
 			expected: "CSN940 H180",
 		},
 	}
 
-	provider := NewLocalSTTProvider(nil)
+	provider := NewTranscriber(nil)
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -529,20 +529,20 @@ func TestDisregardHandling(t *testing.T) {
 	tests := []struct {
 		name       string
 		transcript string
-		aircraft   map[string]STTAircraft
+		aircraft   map[string]Aircraft
 		expected   string
 	}{
 		{
 			name:       "disregard cancels previous",
 			transcript: "American 100 turn left no disregard turn right heading two seven zero",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"American 100": {Callsign: "AAL100", State: "arrival"},
 			},
 			expected: "AAL100 R270",
 		},
 	}
 
-	provider := NewLocalSTTProvider(nil)
+	provider := NewTranscriber(nil)
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -562,13 +562,13 @@ func TestEdgeCases(t *testing.T) {
 	tests := []struct {
 		name       string
 		transcript string
-		aircraft   map[string]STTAircraft
+		aircraft   map[string]Aircraft
 		expected   string
 	}{
 		{
 			name:       "empty transcript",
 			transcript: "",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"American 100": {Callsign: "AAL100", State: "arrival"},
 			},
 			expected: "",
@@ -576,14 +576,14 @@ func TestEdgeCases(t *testing.T) {
 		{
 			name:       "no callsign match",
 			transcript: "unintelligible static noise",
-			aircraft: map[string]STTAircraft{
+			aircraft: map[string]Aircraft{
 				"American 100": {Callsign: "AAL100", State: "arrival"},
 			},
 			expected: "BLOCKED",
 		},
 	}
 
-	provider := NewLocalSTTProvider(nil)
+	provider := NewTranscriber(nil)
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -728,8 +728,8 @@ func TestTokenize(t *testing.T) {
 // Benchmark for performance verification
 
 func BenchmarkDecodeTranscript(b *testing.B) {
-	provider := NewLocalSTTProvider(nil)
-	aircraft := map[string]STTAircraft{
+	provider := NewTranscriber(nil)
+	aircraft := map[string]Aircraft{
 		"American 5936": {
 			Callsign: "AAL5936",
 			Altitude: 12000,
@@ -748,8 +748,8 @@ func BenchmarkDecodeTranscript(b *testing.B) {
 }
 
 func BenchmarkDecodeTranscriptComplex(b *testing.B) {
-	provider := NewLocalSTTProvider(nil)
-	aircraft := map[string]STTAircraft{
+	provider := NewTranscriber(nil)
+	aircraft := map[string]Aircraft{
 		"JetBlue 789": {
 			Callsign: "JBU789",
 			Altitude: 15000,

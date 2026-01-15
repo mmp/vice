@@ -7,7 +7,6 @@ package server
 import (
 	"context"
 	crand "crypto/rand"
-	_ "embed"
 	"encoding/base64"
 	"fmt"
 	"log/slog"
@@ -23,6 +22,7 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/stt"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -40,7 +40,7 @@ type SimManager struct {
 	// Helpers and such
 	tts            sim.TTSProvider
 	wxProvider     wx.Provider
-	sttProvider    STTTranscriptProvider
+	sttTranscriber *stt.Transcriber
 	providersReady chan struct{}
 	mapManifests   map[string]*sim.VideoMapManifest
 	lg             *log.Logger
@@ -124,9 +124,12 @@ func (sm *SimManager) initRemoteProviders(serverAddress string, lg *log.Logger) 
 	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
 	defer cancel()
 
-	// Initialize TTS, WX, and STT providers in parallel since they're independent
+	// STT is always local - no network needed
+	sm.sttTranscriber = stt.NewTranscriber(lg)
+
+	// Initialize TTS and WX providers in parallel since they're independent
 	var wg sync.WaitGroup
-	wg.Add(3)
+	wg.Add(2)
 
 	go func() {
 		defer wg.Done()
@@ -136,11 +139,6 @@ func (sm *SimManager) initRemoteProviders(serverAddress string, lg *log.Logger) 
 	go func() {
 		defer wg.Done()
 		sm.wxProvider, _ = MakeWXProvider(ctx, serverAddress, lg)
-	}()
-
-	go func() {
-		defer wg.Done()
-		sm.sttProvider = MakeSTTProvider(ctx, serverAddress, lg)
 	}()
 
 	wg.Wait()
@@ -824,14 +822,27 @@ func (sm *SimManager) ProcessSTTTranscript(token, transcript string, whisperDura
 		return "", "", 0, ErrNoSimForControllerToken
 	}
 
-	if sm.sttProvider == nil {
+	if sm.sttTranscriber == nil {
 		return "", "", 0, ErrSTTUnavailable
 	}
 
 	acCtx := makeSTTAircraftContext(c)
 
+	// Convert server.STTAircraftContext to stt package format
+	sttAC := make(map[string]stt.Aircraft)
+	for telephony, ac := range acCtx {
+		sttAC[telephony] = stt.Aircraft{
+			Callsign:            string(ac.Callsign),
+			Fixes:               ac.Fixes,
+			CandidateApproaches: ac.CandidateApproaches,
+			AssignedApproach:    ac.AssignedApproach,
+			Altitude:            ac.Altitude,
+			State:               ac.State,
+		}
+	}
+
 	start := time.Now()
-	commands, err := sm.sttProvider.DecodeTranscript(acCtx, transcript, whisperDuration, numCores)
+	commands, err := sm.sttTranscriber.DecodeTranscript(sttAC, transcript, whisperDuration, numCores)
 	sttDuration := time.Since(start)
 
 	if err != nil {
@@ -845,7 +856,6 @@ func (sm *SimManager) ProcessSTTTranscript(token, transcript string, whisperDura
 		return "", "", sttDuration, nil
 	}
 
-	// Sometimes claude gives us backticks...
 	commands = strings.Trim(commands, "`")
 
 	sm.lg.Infof("STT: transcript=%q command=%q whisper=%s stt=%s cores=%d",
@@ -857,49 +867,6 @@ func (sm *SimManager) ProcessSTTTranscript(token, transcript string, whisperDura
 		return callsign, commands, sttDuration, er.Error
 	}
 	return callsign, commands, sttDuration, nil
-}
-
-//go:embed sttSystemPrompt.md
-var systemPrompt string
-
-const DecodeSTTTranscriptRPC = "SimManager.DecodeSTTTranscript"
-
-// DecodeSTTTranscript is the RPC handler for proxying STT decoding requests.
-// It's called by RemoteSTTProvider on local servers that don't have the API key.
-func (sm *SimManager) DecodeSTTTranscript(ctx DecodeSTTArgs, result *string) error {
-	defer sm.lg.CatchAndReportCrash()
-
-	if sm.sttProvider == nil {
-		return ErrSTTUnavailable
-	}
-
-	start := time.Now()
-	var err error
-	*result, err = sm.sttProvider.DecodeTranscript(ctx.STTAircraftContext, ctx.Transcript, ctx.WhisperDuration, ctx.NumCores)
-	sttDuration := time.Since(start)
-
-	sm.lg.Infof("STT: transcript=%q command=%q whisper=%s stt=%s cores=%d",
-		ctx.Transcript, *result, ctx.WhisperDuration, sttDuration, ctx.NumCores)
-
-	return err
-}
-
-type DecodeSTTArgs struct {
-	STTAircraftContext
-	Transcript      string        `json:"transcript"`
-	WhisperDuration time.Duration `json:"whisper_duration,omitempty"`
-	NumCores        int           `json:"num_cores,omitempty"`
-}
-
-type STTAircraftContext map[string]STTAircraft
-
-type STTAircraft struct {
-	Callsign            av.ADSBCallsign   `json:"callsign"`
-	Fixes               map[string]string `json:"fixes"`
-	CandidateApproaches map[string]string `json:"candidate_approaches,omitempty"`
-	AssignedApproach    string            `json:"assigned_approach"`
-	Altitude            int               `json:"altitude"`
-	State               string            `json:"state"`
 }
 
 func makeSTTAircraftContext(c *controllerContext) STTAircraftContext {

@@ -280,8 +280,8 @@ func (sm *SimManager) statsHandler(w http.ResponseWriter, r *http.Request) {
 
 	usage, _ := cpu.Percent(time.Second, false)
 	var sttStats string
-	if sm.sttProvider != nil {
-		sttStats = sm.sttProvider.GetUsageStats()
+	if sm.sttTranscriber != nil {
+		sttStats = sm.sttTranscriber.GetUsageStats()
 	}
 
 	stats := serverStats{

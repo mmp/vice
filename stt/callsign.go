@@ -1,4 +1,4 @@
-package sttlocal
+package stt
 
 import (
 	"strconv"
@@ -16,7 +16,7 @@ type CallsignMatch struct {
 // MatchCallsign attempts to match tokens to an aircraft callsign.
 // Tries starting at different positions to handle garbage words at the beginning.
 // Returns the best match and remaining tokens after the callsign.
-func MatchCallsign(tokens []Token, aircraft map[string]STTAircraft) (CallsignMatch, []Token) {
+func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch, []Token) {
 	logLocalStt("MatchCallsign: %d tokens, %d aircraft", len(tokens), len(aircraft))
 	if len(tokens) == 0 || len(aircraft) == 0 {
 		return CallsignMatch{}, tokens
@@ -353,7 +353,7 @@ func scoreGACallsign(tokens []Token, callsign string) (float64, int) {
 // tryFlightNumberOnlyMatch attempts to match a callsign using just the flight number.
 // Used as fallback when airline name is garbled/missing. Only succeeds if the number
 // uniquely identifies one aircraft.
-func tryFlightNumberOnlyMatch(tokens []Token, aircraft map[string]STTAircraft) (CallsignMatch, []Token) {
+func tryFlightNumberOnlyMatch(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch, []Token) {
 	// Scan tokens for numbers
 	for i, t := range tokens {
 		var numStr string
@@ -368,14 +368,14 @@ func tryFlightNumberOnlyMatch(tokens []Token, aircraft map[string]STTAircraft) (
 		// Find aircraft whose flight number matches
 		var matches []struct {
 			spokenKey string
-			ac        STTAircraft
+			ac        Aircraft
 		}
 		for spokenName, ac := range aircraft {
 			_, flightNum := splitCallsign(string(ac.Callsign))
 			if flightNum == numStr {
 				matches = append(matches, struct {
 					spokenKey string
-					ac        STTAircraft
+					ac        Aircraft
 				}{spokenName, ac})
 			}
 		}
@@ -438,8 +438,8 @@ func isAlphanumeric(s string) bool {
 	return hasLetter && hasDigit
 }
 
-// STTAircraft holds context for a single aircraft (matches server.STTAircraft).
-type STTAircraft struct {
+// Aircraft holds context for a single aircraft for STT processing.
+type Aircraft struct {
 	Callsign            string
 	Fixes               map[string]string // spoken name -> fix ID
 	CandidateApproaches map[string]string // spoken name -> approach ID

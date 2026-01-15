@@ -1,4 +1,4 @@
-package sttlocal
+package stt
 
 import (
 	"strconv"

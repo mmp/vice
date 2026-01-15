@@ -60,7 +60,8 @@ import (
 // 50: rework State/StateUpdate management
 // 51: preemptive before v0.13.3 release
 // 52: STT
-const ViceSerializeVersion = 52
+// 53: local STT
+const ViceSerializeVersion = 53
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 + ViceRPCVersion
