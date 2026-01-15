@@ -878,6 +878,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 		if !ok || c.joinRequest.SimName == "" {
 			c.joinRequest.SimName, rs = util.FirstSortedMapEntry(runningSims)
 		}
+		controllersForGroup := controlPositionsForGroup(c.selectedServer, rs.GroupName)
 
 		imgui.Text("Available simulations:")
 		flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg |
@@ -920,7 +921,9 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 					total++
 					if state.IsOccupied() {
 						occupied++
-						occupiedTCWs = append(occupiedTCWs, string(tcw))
+						occupiedTCWs = append(occupiedTCWs,
+							controllerDisplayLabel(controllersForGroup, av.ControlPosition(tcw)),
+						)
 					}
 				}
 				controllers := fmt.Sprintf("%d / %d", occupied, total)
@@ -951,13 +954,14 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 
 		// Format TCPs for display (SSA style: "primary *sec1 sec2")
 		fmtTCPs := func(cons server.TCPConsolidation) string {
-			result := string(cons.PrimaryTCP)
+			result := controllerDisplayLabel(controllersForGroup, av.ControlPosition(cons.PrimaryTCP))
 			for _, sec := range cons.SecondaryTCPs {
 				prefix := ""
 				if sec.Type == sim.ConsolidationBasic {
 					prefix = "*"
 				}
-				result += " " + prefix + string(sec.TCP)
+				result += " " + prefix +
+					controllerDisplayLabel(controllersForGroup, av.ControlPosition(sec.TCP))
 			}
 			return result
 		}
@@ -1046,8 +1050,9 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 				}
 				first = false
 
+				label := controllerDisplayLabel(controllersForGroup, av.ControlPosition(tcw))
 				selected := tcw == c.selectedTCW
-				if imgui.RadioButtonBool(string(tcw)+"##tcw", selected) {
+				if imgui.RadioButtonBool(fmt.Sprintf("%s##tcw-%s", label, tcw), selected) {
 					c.selectedTCW = tcw
 					c.joinRequest.JoiningAsRelief = c.showReliefPositions
 					// Initialize selected TCPs from TCW's current positions
@@ -1082,7 +1087,8 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 					}
 
 					isSelected := c.selectedTCPs[tcp]
-					if imgui.Checkbox(string(tcp)+"##tcp", &isSelected) {
+					label := controllerDisplayLabel(controllersForGroup, av.ControlPosition(tcp))
+					if imgui.Checkbox(fmt.Sprintf("%s##tcp-%s", label, tcp), &isSelected) {
 						if c.selectedTCPs == nil {
 							c.selectedTCPs = make(map[sim.TCP]bool)
 						}
@@ -1696,6 +1702,27 @@ func drawEmergencyAircraftUI(lc *sim.LaunchConfig, p platform.Platform) {
 		0, 20, "%.1f", imgui.SliderFlagsNone)
 }
 
+func controllerDisplayLabel(controllers map[av.ControlPosition]*av.Controller, pos av.ControlPosition) string {
+	if ctrl, ok := controllers[pos]; ok && ctrl != nil {
+		if label := ctrl.ERAMID(); label != "" {
+			return label
+		}
+	}
+	return string(pos)
+}
+
+func controlPositionsForGroup(server *client.Server, groupName string) map[sim.TCP]*av.Controller {
+	if server == nil || groupName == "" {
+		return nil
+	}
+	for _, groups := range server.GetScenarioCatalogs() {
+		if catalog, ok := groups[groupName]; ok {
+			return catalog.ControlPositions
+		}
+	}
+	return nil
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
 func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.Platform, lg *log.Logger) bool {
@@ -1723,7 +1750,7 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.
 			for _, tcw := range tcws {
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
-				imgui.Text(string(tcw))
+				imgui.Text(controllerDisplayLabel(c.State.Controllers, av.ControlPosition(tcw)))
 
 				imgui.TableNextColumn()
 				sq := renderer.FontAwesomeIconCheckSquare
@@ -1741,7 +1768,11 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.
 					for _, pos := range cons.OwnedPositions() {
 						coveredPositions[pos] = struct{}{}
 						ctrl := c.State.Controllers[pos]
-						p = append(p, fmt.Sprintf("%s (%s, %s)", ctrl.PositionId(), ctrl.Position, ctrl.Frequency.String()))
+						p = append(p, fmt.Sprintf("%s (%s, %s)",
+							controllerDisplayLabel(c.State.Controllers, ctrl.PositionId()),
+							ctrl.Position,
+							ctrl.Frequency.String(),
+						))
 					}
 
 					s := ""
@@ -1774,10 +1805,14 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.
 				ctrl := c.State.Controllers[pos]
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
-				imgui.Text(string(ctrl.PositionId()))
+				imgui.Text(controllerDisplayLabel(c.State.Controllers, ctrl.PositionId()))
 				imgui.TableNextColumn()
 				imgui.TableNextColumn()
-				imgui.Text(fmt.Sprintf("%s (%s, %s)", ctrl.PositionId(), ctrl.Position, ctrl.Frequency.String()))
+				imgui.Text(fmt.Sprintf("%s (%s, %s)",
+					controllerDisplayLabel(c.State.Controllers, ctrl.PositionId()),
+					ctrl.Position,
+					ctrl.Frequency.String(),
+				))
 			}
 
 			imgui.EndTable()

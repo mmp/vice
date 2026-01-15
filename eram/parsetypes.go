@@ -105,6 +105,9 @@ func getTypePriority(id string) int {
 
 func isAlpha(ch byte) bool { return ch >= 'A' && ch <= 'Z' }
 func isNum(ch byte) bool   { return ch >= '0' && ch <= '9' }
+func isAlphaNum(ch byte) bool {
+	return isAlpha(ch) || isNum(ch)
+}
 
 // fpSpecType is the Go type for FlightPlanSpecifier.
 var fpSpecType = reflect.TypeOf(sim.FlightPlanSpecifier{})
@@ -240,6 +243,7 @@ func (h *sectorIDParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 	// Sector ID formats:
 	// - Single digit + letter: "1A", "2B" (most common)
 	// - Two digits: "15", "20" (for centers)
+// - Facility + sector: "B20", "N2K"
 	// - Single letter (rare, for single-character shortcuts)
 
 	if len(field) == 2 && isNum(field[0]) && isAlpha(field[1]) {
@@ -248,6 +252,11 @@ func (h *sectorIDParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 	}
 	if len(field) == 2 && isNum(field[0]) && isNum(field[1]) {
 		// Two-digit sector
+		return field, remaining, true, nil
+	}
+	if len(field) == 3 && isAlpha(field[0]) && isAlphaNum(field[1]) && isAlphaNum(field[2]) &&
+		(isNum(field[1]) || isNum(field[2])) {
+		// Facility + sector (e.g., B20, N2K)
 		return field, remaining, true, nil
 	}
 	if len(field) == 1 && isAlpha(field[0]) {
