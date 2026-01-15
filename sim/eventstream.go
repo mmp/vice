@@ -289,8 +289,8 @@ type Event struct {
 	WaypointInfo          []math.Point2LL
 	STTTranscript         string
 	STTCommand            string
-	Route                 av.WaypointArray // For QU
 	STTTimings            string
+	Route                 av.WaypointArray // For QU
 }
 
 func (e *Event) String() string {
