@@ -147,4 +147,9 @@ type Platform interface {
 	StopAudioRecording() ([]int16, error)
 	IsAudioRecording() bool
 	GetAudioInputDevices() []string
+
+	// SetAudioStreamCallback sets a callback that receives audio samples
+	// as they are recorded. This enables streaming audio to a transcriber.
+	// Pass nil to disable the callback.
+	SetAudioStreamCallback(cb func([]int16))
 }

@@ -197,6 +197,12 @@ func (g *glfwPlatform) MonitorCallback(monitor *glfw.Monitor, event glfw.Periphe
 }
 
 func (g *glfwPlatform) Dispose() {
+	// Close audio devices before terminating
+	if g.audioRecorder != nil {
+		g.audioRecorder.Close()
+	}
+	g.audioEngine.Close()
+
 	g.window.Destroy()
 	glfw.Terminate()
 }
@@ -793,4 +799,8 @@ func (g *glfwPlatform) IsAudioRecording() bool {
 
 func (g *glfwPlatform) GetAudioInputDevices() []string {
 	return GetAudioInputDevices()
+}
+
+func (g *glfwPlatform) SetAudioStreamCallback(cb func([]int16)) {
+	g.audioRecorder.SetStreamCallback(cb)
 }

@@ -20,14 +20,15 @@ import (
 
 // AudioRecorder handles microphone recording
 type AudioRecorder struct {
-	deviceID      sdl.AudioDeviceID
-	deviceOpen    bool   // Whether the device is currently open
-	currentDevice string // Name of the currently open device
-	recording     bool
-	audioData     []int16
-	mu            sync.Mutex
-	lg            *log.Logger
-	pinner        runtime.Pinner
+	deviceID       sdl.AudioDeviceID
+	deviceOpen     bool   // Whether the device is currently open
+	currentDevice  string // Name of the currently open device
+	recording      bool
+	audioData      []int16
+	streamCallback func(samples []int16) // Optional callback for streaming audio
+	mu             sync.Mutex
+	lg             *log.Logger
+	pinner         runtime.Pinner
 }
 
 // NewAudioRecorder creates a new audio recorder
@@ -144,7 +145,19 @@ func (ar *AudioRecorder) addAudioData(data []int16) {
 
 	if ar.recording {
 		ar.audioData = append(ar.audioData, data...)
+		if ar.streamCallback != nil {
+			ar.streamCallback(data)
+		}
 	}
+}
+
+// SetStreamCallback sets a callback function that receives audio samples
+// as they are recorded. This enables streaming audio to a transcriber.
+// Pass nil to disable the callback.
+func (ar *AudioRecorder) SetStreamCallback(cb func([]int16)) {
+	ar.mu.Lock()
+	defer ar.mu.Unlock()
+	ar.streamCallback = cb
 }
 
 // GetAudioInputDevices returns a list of available audio input devices

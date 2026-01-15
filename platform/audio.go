@@ -67,6 +67,12 @@ func (a *audioEngine) Initialize(lg *log.Logger) {
 	lg.Info("Finished initializing audio")
 }
 
+func (a *audioEngine) Close() {
+	sdl.PauseAudio(true)
+	sdl.CloseAudio()
+	a.pinner.Unpin()
+}
+
 func (a *audioEngine) AddPCM(pcm []byte, rate int) (int, error) {
 	a.mu.Lock()
 	defer a.mu.Unlock()

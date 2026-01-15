@@ -912,9 +912,17 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 			} else {
 				ui.pttRecording = true
 				if controlClient != nil {
-					controlClient.SetSTTActive(true)
+					// Start streaming transcription
+					if err := controlClient.StartStreamingSTT(lg); err != nil {
+						lg.Errorf("Failed to start streaming STT: %v", err)
+					} else {
+						// Set up audio streaming callback to feed samples to transcriber
+						p.SetAudioStreamCallback(func(samples []int16) {
+							controlClient.FeedAudioToStreaming(samples)
+						})
+					}
 				}
-				lg.Infof("Push-to-talk: Started recording")
+				lg.Infof("Push-to-talk: Started recording (streaming)")
 			}
 		}
 	}
@@ -928,20 +936,22 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 			lg.Infof("Push-to-talk: Stopped garbling")
 		}
 		if ui.pttRecording {
-			// Was recording - stop and process
+			// Clear streaming callback first
+			p.SetAudioStreamCallback(nil)
+
+			// Stop SDL audio device
 			if p.IsAudioRecording() {
-				samples, err := p.StopAudioRecording()
-				if err != nil {
-					lg.Errorf("Failed to stop audio recording: %v", err)
-				} else {
-					lg.Infof("Push-to-talk: Stopped recording, transcribing...")
-					if controlClient != nil {
-						controlClient.SetSTTActive(false)
-						go controlClient.ProcessRecordedAudio(samples, lg)
-					}
-				}
+				p.StopAudioRecording()
 			}
+
+			// Stop streaming and process final result (synchronous to avoid race
+			// if user quickly presses PTT again)
+			if controlClient != nil {
+				controlClient.StopStreamingSTT(lg)
+			}
+
 			ui.pttRecording = false
+			lg.Infof("Push-to-talk: Stopped recording, processing streaming result...")
 		}
 	}
 }

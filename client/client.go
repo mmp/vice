@@ -53,6 +53,9 @@ type ControlClient struct {
 	LastCommand              string
 	eventStream              *sim.EventStream
 
+	// Streaming STT state
+	streamingSTT *streamingSTT
+
 	lg *log.Logger
 	mu sync.Mutex
 
@@ -622,23 +625,6 @@ func (c *ControlClient) AllowRadioTransmissions() {
 	c.holdSpeech = false
 }
 
-func (c *ControlClient) SetSTTActive(active bool) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-
-	c.sttActive = active
-	if active {
-		c.holdSpeech = true
-		// Set a timeout to prevent holdSpeech from being cleared during
-		// STT processing (Whisper + Claude can take a few seconds).
-		c.lastSpeechHoldTime = time.Now().Add(7 * time.Second)
-	}
-	// Note: don't clear holdSpeech on PTT release. STT processing takes
-	// time (Whisper + Claude), and we need to keep holdSpeech true until
-	// awaitReadbackCallsign is set. The ProcessSTTTranscript callback
-	// handles clearing holdSpeech on failure/empty results.
-}
-
 func (c *ControlClient) LastTTSCallsign() av.ADSBCallsign {
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -687,57 +673,18 @@ var whisperModelErr error
 var whisperModelOnce sync.Once
 var whisperModelMu sync.Mutex
 
-// ProcessRecordedAudio transcribes recorded audio samples and sends them to the server for command processing.
-func (c *ControlClient) ProcessRecordedAudio(samples []int16, lg *log.Logger) {
-	// Snapshot state data before async processing to avoid races with GetUpdates.
-	state := c.State
-
+// PreloadWhisperModel loads the whisper model in the background so it's
+// ready when PTT is first pressed. This avoids blocking the UI.
+func PreloadWhisperModel(lg *log.Logger) {
 	go func() {
-		defer lg.CatchAndReportCrash()
-
 		whisperModelOnce.Do(func() {
-			// https://huggingface.co/ggerganov/whisper.cpp/tree/main
+			lg.Info("Preloading whisper model...")
 			model := util.LoadResourceBytes("models/ggml-small.en.bin")
 			whisperModel, whisperModelErr = whisper.LoadModelFromBytes(model)
-		})
-		if whisperModelErr != nil {
-			lg.Errorf("whisper LoadModelFromBytes: %v", whisperModelErr)
-			return
-		}
-
-		waitStart := time.Now()
-		whisperModelMu.Lock()
-		waitDuration := time.Since(waitStart)
-
-		whisperStart := time.Now()
-		transcript, err := whisper.TranscribeWithModel(whisperModel, samples, platform.AudioInputSampleRate,
-			1 /* channels */, whisper.Options{InitialPrompt: makeWhisperPrompt(state)})
-		whisperDuration := time.Since(whisperStart)
-		whisperModelMu.Unlock()
-
-		lg.Infof("whisper transcription %q in %s (waited %s for lock)", transcript, whisperDuration, waitDuration)
-
-		c.SetLastTranscription(transcript)
-		if err != nil {
-			lg.Errorf("Push-to-talk: Transcription error: %v", err)
-			c.postSTTEvent("Transcription error: "+err.Error(), "")
-			return
-		}
-
-		if transcript == "[BLANK_AUDIO]" {
-			c.postSTTEvent("", "")
-			return
-		}
-
-		c.ProcessSTTTranscript(transcript, whisperDuration, func(callsign, command string, sttDuration time.Duration, err error) {
-			if err != nil {
-				lg.Infof("STT command error: %v", err)
-				c.postSTTEvent(transcript, "Error: "+err.Error())
+			if whisperModelErr != nil {
+				lg.Errorf("Failed to load whisper model: %v", whisperModelErr)
 			} else {
-				lg.Infof("STT command: %s %s", callsign, command)
-				fullCommand := callsign + " " + command
-				c.SetLastCommand(fullCommand)
-				c.postSTTEvent(transcript, fullCommand)
+				lg.Info("Whisper model loaded")
 			}
 		})
 	}()
@@ -810,6 +757,145 @@ func (c *ControlClient) postSTTEvent(transcript, command string) {
 		STTTranscript: transcript,
 		STTCommand:    command,
 	})
+}
+
+// streamingSTT holds state for a streaming transcription session.
+type streamingSTT struct {
+	transcriber *whisper.StreamingTranscriber
+	resultChan  <-chan whisper.StreamingResult
+	state       SimState // Snapshot of state at start of streaming
+}
+
+// StartStreamingSTT begins a streaming transcription session.
+// Audio samples can be fed via FeedAudioToStreaming.
+// Call StopStreamingSTT to end the session and process the result.
+func (c *ControlClient) StartStreamingSTT(lg *log.Logger) error {
+	// Load model if not already loaded
+	whisperModelOnce.Do(func() {
+		model := util.LoadResourceBytes("models/ggml-small.en.bin")
+		whisperModel, whisperModelErr = whisper.LoadModelFromBytes(model)
+	})
+	if whisperModelErr != nil {
+		return fmt.Errorf("whisper LoadModelFromBytes: %w", whisperModelErr)
+	}
+
+	// Snapshot state for prompt construction
+	state := c.State
+
+	st := whisper.NewStreamingTranscriber(whisperModel, &whisperModelMu, whisper.Options{
+		InitialPrompt: makeWhisperPrompt(state),
+	})
+
+	c.mu.Lock()
+	c.streamingSTT = &streamingSTT{
+		transcriber: st,
+		resultChan:  st.Start(),
+		state:       state,
+	}
+	// Set STT active state - hold speech playback during recording/processing.
+	// Set lastSpeechHoldTime far in future so timeout doesn't fire during recording.
+	// The actual timeout (7s) is set in StopStreamingSTT when PTT is released.
+	c.sttActive = true
+	c.holdSpeech = true
+	c.lastSpeechHoldTime = time.Now().Add(time.Hour)
+	c.mu.Unlock()
+
+	lg.Info("SPEECH: streaming STT started, sttActive=true holdSpeech=true")
+
+	// Start goroutine to handle streaming results
+	go c.handleStreamingResults(lg)
+
+	return nil
+}
+
+// handleStreamingResults processes intermediate transcription results.
+func (c *ControlClient) handleStreamingResults(lg *log.Logger) {
+	defer lg.CatchAndReportCrash()
+
+	c.mu.Lock()
+	stt := c.streamingSTT
+	c.mu.Unlock()
+
+	if stt == nil {
+		return
+	}
+
+	for result := range stt.resultChan {
+		if result.IsFinal {
+			break
+		}
+		// Update UI with intermediate result (add "..." to indicate in progress)
+		c.SetLastTranscription(result.Text + "...")
+	}
+}
+
+// StopStreamingSTT ends the streaming session and processes the final result.
+// The session is captured synchronously to avoid races, then processing
+// continues asynchronously to avoid blocking the UI.
+func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
+	// Synchronously capture and clear the session to avoid race if user
+	// quickly presses PTT again
+	c.mu.Lock()
+	stt := c.streamingSTT
+	c.streamingSTT = nil
+	c.sttActive = false
+	// Now that PTT is released, set the actual timeout for holdSpeech.
+	// This gives STT processing (Whisper finalize + Claude) time to complete.
+	c.lastSpeechHoldTime = time.Now().Add(7 * time.Second)
+	c.mu.Unlock()
+
+	lg.Info("SPEECH: streaming STT stopped, sttActive=false, holdSpeech timeout started")
+
+	if stt == nil {
+		// No active session - StartStreamingSTT was never called or failed
+		// before acquiring the mutex, so don't unlock
+		return
+	}
+
+	// Capture start time before spawning goroutine so we measure from PTT release
+	whisperStart := time.Now()
+
+	// Process the rest asynchronously to avoid blocking the UI
+	go func() {
+		defer lg.CatchAndReportCrash()
+
+		// Get final transcription
+		finalText := stt.transcriber.Stop()
+		whisperDuration := time.Since(whisperStart)
+
+		lg.Infof("streaming whisper transcription %q (final pass in %s)", finalText, whisperDuration)
+
+		c.SetLastTranscription(finalText)
+
+		if finalText == "" || finalText == "[BLANK_AUDIO]" {
+			c.postSTTEvent("", "")
+			return
+		}
+
+		// Process the command through the same flow as batch mode
+		c.ProcessSTTTranscript(finalText, whisperDuration, func(callsign, command string, sttDuration time.Duration, err error) {
+			if err != nil {
+				lg.Infof("STT command error: %v", err)
+				c.postSTTEvent(finalText, "Error: "+err.Error())
+			} else {
+				lg.Infof("STT command: %s %s", callsign, command)
+				fullCommand := callsign + " " + command
+				c.SetLastCommand(fullCommand)
+				c.postSTTEvent(finalText, fullCommand)
+			}
+		})
+	}()
+}
+
+// FeedAudioToStreaming sends audio samples to the streaming transcriber.
+func (c *ControlClient) FeedAudioToStreaming(samples []int16) {
+	c.mu.Lock()
+	stt := c.streamingSTT
+	c.mu.Unlock()
+
+	if stt != nil && stt.transcriber != nil {
+		stt.transcriber.AddSamples(samples)
+	}
 }
 
 // ProcessSTTTranscript sends the transcript to the server for decoding and command execution.

@@ -377,6 +377,10 @@ func main() {
 
 		av.InitDB()
 
+		// Start loading the whisper model in the background so it's ready
+		// when the user first presses PTT
+		client.PreloadWhisperModel(lg)
+
 		// Initialize navigation logging if requested
 		nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
 
@@ -579,6 +583,12 @@ func main() {
 				if fuzzController != nil {
 					fuzzController.PrintStatistics()
 				}
+
+				// Stop any active streaming STT session to prevent hanging on quit
+				if controlClient != nil {
+					controlClient.StopStreamingSTT(lg)
+				}
+
 				saveSim := mgr.ClientIsLocal() && fuzzController == nil // Don't save fuzz sims
 				config.SaveIfChanged(render, plat, controlClient, saveSim, lg)
 				mgr.Disconnect()
