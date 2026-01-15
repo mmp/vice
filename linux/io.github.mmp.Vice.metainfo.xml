@@ -28,14 +28,16 @@
       <caption>Boston Approach Consolidated</caption>
     </screenshot>
     <screenshot>
+      <image>https://i.imgur.com/r8mlorU.png</image>
+      <caption>New York Center Area C</caption>
+    </screenshot>
+    <screenshot>
       <image>https://i.imgur.com/XfmZKcs.png</image>
       <caption>Scenario Selection Menu</caption>
     </screenshot>
   </screenshots>
   
-  <content_rating type="oars-1.0">
-    <content_attribute id="social-chat">intense</content_attribute>
-  </content_rating>
+  <content_rating type="oars-1.0" />
   
   <branding>
     <color type="primary" scheme_preference="light">#b9d6ed</color>
