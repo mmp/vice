@@ -138,7 +138,7 @@ func (a *AirspaceVolume) PostDeserialize(loc Locator, e *util.ErrorLogger) {
 			var vstrs []string
 			if a.VerticesStr.A != nil { // single string provided
 				vstrs = strings.Fields(*a.VerticesStr.A)
-			} else {
+			} else if a.VerticesStr.B != nil {
 				vstrs = *a.VerticesStr.B
 			}
 			if len(vstrs) == 0 {
