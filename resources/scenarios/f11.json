@@ -324,7 +324,7 @@
           "destination": "KATL",
           "exit": "PAINN",
           "scratchpad": "J35",
-          "route": "PAINN SHRKS LAIRI LARZZ JJEDI3"
+          "route": "PAINN SHRKS LAIRI LARZZ JBPXI3"
         },
         {
           "airlines": [
@@ -13260,7 +13260,7 @@
             {
               "departure_airport": "KPIE",
               "arrival_airport": "KDAB",
-              "icao": "JED"
+              "icao": "BPX"
             },
             {
               "departure_airport": "KSRQ",
@@ -13281,7 +13281,7 @@
             {
               "departure_airport": "KSRQ",
               "arrival_airport": "KDAB",
-              "icao": "JED"
+              "icao": "BPX"
             }
           ],
           "assigned_altitude": 5000,
@@ -13343,7 +13343,7 @@
             {
               "departure_airport": "KDAB",
               "arrival_airport": "KLAL",
-              "icao": "JED"
+              "icao": "BPX"
             },
             {
               "departure_airport": "KDAB",
@@ -13364,7 +13364,7 @@
             {
               "departure_airport": "KDAB",
               "arrival_airport": "KSRQ",
-              "icao": "JED"
+              "icao": "BPX"
             }
           ],
           "assigned_altitude": 5000,
@@ -13426,7 +13426,7 @@
             {
               "departure_airport": "KPBI",
               "arrival_airport": "KSAV",
-              "icao": "JED"
+              "icao": "BPX"
             },
             {
               "departure_airport": "KPBI",
@@ -13447,7 +13447,7 @@
             {
               "departure_airport": "KPBI",
               "arrival_airport": "KSGJ",
-              "icao": "JED"
+              "icao": "BPX"
             }
           ],
           "assigned_altitude": 15000,
@@ -13478,7 +13478,7 @@
             {
               "departure_airport": "KSGJ",
               "arrival_airport": "KOPF",
-              "icao": "JED"
+              "icao": "BPX"
             },
             {
               "departure_airport": "KJAX",
@@ -13499,7 +13499,7 @@
             {
               "departure_airport": "KSGJ",
               "arrival_airport": "KFXE",
-              "icao": "JED"
+              "icao": "BPX"
             }
           ],
           "assigned_altitude": 16000,
@@ -13534,7 +13534,7 @@
             {
               "departure_airport": "KDAB",
               "arrival_airport": "KPBI",
-              "icao": "JED"
+              "icao": "BPX"
             },
             {
               "departure_airport": "KDAB",
@@ -13555,7 +13555,7 @@
             {
               "departure_airport": "KDAB",
               "arrival_airport": "KPBI",
-              "icao": "JED"
+              "icao": "BPX"
             }
           ],
           "assigned_altitude": 11000,
@@ -13586,7 +13586,7 @@
             {
               "departure_airport": "KDAB",
               "arrival_airport": "KPBI",
-              "icao": "JED"
+              "icao": "BPX"
             },
             {
               "departure_airport": "KDAB",
@@ -13607,7 +13607,7 @@
             {
               "departure_airport": "KDAB",
               "arrival_airport": "KPBI",
-              "icao": "JED"
+              "icao": "BPX"
             }
           ],
           "assigned_altitude": 10000,

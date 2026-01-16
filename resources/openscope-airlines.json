@@ -1980,10 +1980,10 @@
       }
     },
     {
-      "icao": "JED",
+      "icao": "BPX",
       "name": "Pheonix East Aviation",
       "callsign": {
-        "name": "Jed East",
+        "name": "Blue Phoenix",
         "callsignFormats": ["##", "###"]
       },
       "fleets": {
@@ -6006,6 +6006,23 @@
       }
     },
     {
+      "icao": "cxk",
+      "name": "ATP Flight School",
+      "callsign": {
+        "name": "Career Track",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["C172", 2],
+          ["C182", 4],
+          ["C525", 1],
+          ["PA44", 2]
+        ],
+        "daytona": [["PA44", 2]]
+      }
+    },
+    {
       "icao": "d2",
       "name": "General Aviation Angola",
       "callsign": {
@@ -7402,6 +7419,10 @@
         "callsignFormats": ["10#", "4##"]
       },
       "fleets": {
+        "Riddle": [
+          ["C172", 70],
+          ["DA42", 10]
+        ],
         "default": [
           ["C172", 70],
           ["DA42", 10]

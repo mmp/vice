@@ -227,7 +227,7 @@
           "destination": "KATL",
           "exit": "PAINN",
           "scratchpad": "J35",
-          "route": "PAINN SHRKS LAIRI LARZZ JJEDI3"
+          "route": "PAINN SHRKS LAIRI LARZZ JBPXI3"
         },
         {
           "airlines": [
@@ -12333,7 +12333,7 @@
             {
               "departure_airport": "KPIE",
               "arrival_airport": "KDAB",
-              "icao": "JED"
+              "icao": "BPX"
             },
             {
               "departure_airport": "KSRQ",
@@ -12354,7 +12354,7 @@
             {
               "departure_airport": "KSRQ",
               "arrival_airport": "KDAB",
-              "icao": "JED"
+              "icao": "BPX"
             }
           ],
           "assigned_altitude": 5000,
@@ -12425,7 +12425,7 @@
             {
               "departure_airport": "KDAB",
               "arrival_airport": "KLAL",
-              "icao": "JED"
+              "icao": "BPX"
             },
             {
               "departure_airport": "KDAB",
@@ -12446,7 +12446,7 @@
             {
               "departure_airport": "KDAB",
               "arrival_airport": "KSRQ",
-              "icao": "JED"
+              "icao": "BPX"
             }
           ],
           "assigned_altitude": 4000,
