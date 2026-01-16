@@ -27,7 +27,7 @@ import (
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
-	"github.com/shirou/gopsutil/cpu"
+	"golang.org/x/sys/cpu"
 )
 
 type ControlClient struct {
@@ -550,18 +550,8 @@ func checkCPUSupport() error {
 		return nil
 	}
 
-	cpuInfo, err := cpu.Info()
-	if err != nil {
-		// If we can't get CPU info, assume it's supported and let it fail later if not.
-		return nil
-	}
-
-	if len(cpuInfo) == 0 {
-		return nil
-	}
-
-	// Check for AVX support (required for our whisper build).
-	if slices.Contains(cpuInfo[0].Flags, "avx") {
+	// Use golang.org/x/sys/cpu for reliable cross-platform feature detection.
+	if cpu.X86.HasAVX {
 		return nil
 	}
 

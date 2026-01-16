@@ -27,6 +27,7 @@ require (
 	golang.org/x/exp v0.0.0-20251017212417-90e834f514db
 	golang.org/x/oauth2 v0.30.0
 	golang.org/x/sync v0.17.0
+	golang.org/x/sys v0.33.0
 	google.golang.org/api v0.235.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
@@ -82,7 +83,6 @@ require (
 	golang.org/x/crypto v0.38.0 // indirect
 	golang.org/x/image v0.20.0 // indirect
 	golang.org/x/net v0.40.0 // indirect
-	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.25.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
 	google.golang.org/genproto v0.0.0-20250505200425-f936aa4a68b2 // indirect
