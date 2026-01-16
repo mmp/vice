@@ -83,17 +83,16 @@ if not exist "whisper.cpp\build_go\src\libwhisper.a" (
     echo === Building whisper-cpp ===
     REM Disable GGML_NATIVE to avoid using -march=native which would compile
     REM for the build machine's CPU. Instead, explicitly enable instruction sets
-    REM that are safe for computers from ~2012+ (Ivy Bridge/Sandy Bridge era):
-    REM - SSE4.2: Intel Nehalem 2008+, AMD Bulldozer 2011+
-    REM - AVX: Intel Sandy Bridge 2011+, AMD Bulldozer 2011+
-    REM - F16C: Intel Ivy Bridge 2012+, AMD Piledriver 2012+
-    REM We intentionally disable AVX2/FMA/BMI2 (Haswell 2013+) for broader compatibility.
+    REM that are available on computers from ~2013+ (Haswell era):
+    REM - SSE4.2, AVX, F16C: Intel Ivy Bridge 2012+, AMD Piledriver 2012+
+    REM - AVX2, FMA, BMI2: Intel Haswell 2013+, AMD Excavator 2015+
     cmake -S whisper.cpp -B whisper.cpp\build_go ^
         -G "MinGW Makefiles" ^
         -DBUILD_SHARED_LIBS=OFF ^
         -DGGML_CPU=ON ^
         -DGGML_OPENMP=OFF ^
         -DGGML_NATIVE=OFF ^
+        -DGGML_SSE42=ON ^
         -DGGML_AVX=ON ^
         -DGGML_AVX2=ON ^
         -DGGML_FMA=ON ^

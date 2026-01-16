@@ -71,12 +71,13 @@ build_whisper() {
             -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0
     elif [ "$OS_TYPE" = "linux" ]; then
         # Disable GGML_NATIVE to avoid -march=native. Enable instruction sets
-        # safe for computers from ~2012+ (see build.bat for details).
+        # safe for computers from ~2013+ (Haswell era, see build.bat for details).
         cmake -S whisper.cpp -B whisper.cpp/build_go \
             -DBUILD_SHARED_LIBS=OFF \
             -DGGML_CPU=ON \
             -DGGML_OPENMP=ON \
             -DGGML_NATIVE=OFF \
+            -DGGML_SSE42=ON \
             -DGGML_AVX=ON \
             -DGGML_AVX2=ON \
             -DGGML_FMA=ON \
