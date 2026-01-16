@@ -380,7 +380,7 @@ func (g *GoogleTTSProvider) TextToSpeech(voice sim.Voice, text string) sim.TTSSp
 			},
 			AudioConfig: audioConfig{
 				AudioEncoding:   "MP3",
-				SpeakingRate:    1.5,
+				SpeakingRate:    1.75,
 				SampleRateHertz: 24000,
 			},
 		}
