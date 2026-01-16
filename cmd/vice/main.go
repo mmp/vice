@@ -165,7 +165,7 @@ func main() {
 		cliInit()
 
 		var e util.ErrorLogger
-		scenarioGroups, _, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, &e, lg)
+		scenarioGroups, _, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, false /* skipVideoMaps */, &e, lg)
 
 		// Check emergencies.json
 		loadEmergencies(&e)
@@ -226,7 +226,7 @@ func main() {
 		tracon, scenarioName := parts[0], parts[1]
 
 		var e util.ErrorLogger
-		scenarioGroups, configs, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, &e, lg)
+		scenarioGroups, configs, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, true /* skipVideoMaps */, &e, lg)
 		if e.HaveErrors() {
 			e.PrintErrors(lg)
 			os.Exit(1)

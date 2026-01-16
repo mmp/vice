@@ -122,7 +122,7 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 	}
 
 	scenarioGroups, scenarioCatalogs, mapManifests, extraScenarioErrors :=
-		LoadScenarioGroups(config.ExtraScenario, config.ExtraVideoMap, &errorLogger, lg)
+		LoadScenarioGroups(config.ExtraScenario, config.ExtraVideoMap, false /* skipVideoMaps */, &errorLogger, lg)
 	if errorLogger.HaveErrors() {
 		return 0, nil, errorLogger, ""
 	}

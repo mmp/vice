@@ -29,19 +29,8 @@ jobs:
         sudo apt update
         sudo apt install xorg-dev libsdl2-dev libsystemd-dev
 
-    - name: Build whisper-cpp
-      run: |
-        cmake -S whisper.cpp -B whisper.cpp/build_go \
-          -DBUILD_SHARED_LIBS=OFF \
-          -DGGML_CPU=ON \
-          -DGGML_OPENMP=ON \
-          -DCMAKE_BUILD_TYPE=Release
-        cmake --build whisper.cpp/build_go --parallel 4
-        ls -l whisper.cpp/build_go/src/libwhisper.a
-        ls -l whisper.cpp/build_go/ggml/src/libggml*.a
-
     - name: Build vice
-      run: go build -o vice ./cmd/vice
+      run: ./build.sh
     
     - name: Run all scenarios
       run: ./run-all-scenarios.sh ./vice
