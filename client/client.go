@@ -7,6 +7,7 @@ package client
 import (
 	"errors"
 	"fmt"
+	"io/fs"
 	"net"
 	"net/rpc"
 	"runtime"
@@ -534,9 +535,11 @@ func (c *ControlClient) GetAtmosGrid(t time.Time, callback func(*wx.AtmosGrid, e
 // STT
 
 var whisperModel *whisper.Model
+var whisperModelName string
 var whisperModelErr error
-var whisperModelOnce sync.Once
 var whisperModelMu sync.Mutex
+var whisperModelDone = make(chan struct{})
+var whisperModelOnce sync.Once
 
 // ErrCPUNotSupported is returned when the CPU doesn't support the required
 // instruction sets for speech-to-text (AVX on x86/amd64).
@@ -558,11 +561,78 @@ func checkCPUSupport() error {
 	return ErrCPUNotSupported
 }
 
-var whisperModelDone = make(chan struct{})
+// GetWhisperModelName returns the name of the currently loaded whisper model.
+func GetWhisperModelName() string {
+	whisperModelMu.Lock()
+	defer whisperModelMu.Unlock()
+	return whisperModelName
+}
+
+// ListWhisperModels returns a sorted list of whisper model filenames
+// found in the resources/models directory.
+func ListWhisperModels() []string {
+	var models []string
+	util.WalkResources("models", func(path string, d fs.DirEntry, filesystem fs.FS, err error) error {
+		if err != nil {
+			return nil
+		}
+		if d.IsDir() {
+			return nil
+		}
+		name := d.Name()
+		if strings.HasPrefix(name, "ggml-") && strings.HasSuffix(name, ".bin") {
+			models = append(models, name)
+		}
+		return nil
+	})
+	slices.Sort(models)
+	return models
+}
+
+// SwitchWhisperModel switches to a different whisper model.
+// The model name should be just the filename (e.g. "ggml-tiny.en.bin").
+// This blocks until the new model is loaded.
+func SwitchWhisperModel(modelName string, lg *log.Logger) error {
+	whisperModelMu.Lock()
+	defer whisperModelMu.Unlock()
+
+	// Check CPU compatibility before attempting to load.
+	if err := checkCPUSupport(); err != nil {
+		return fmt.Errorf("%w (AVX instruction set not available)", ErrCPUNotSupported)
+	}
+
+	// Don't reload if already loaded
+	if whisperModelName == modelName && whisperModel != nil {
+		return nil
+	}
+
+	// Close existing model if any
+	if whisperModel != nil {
+		whisperModel.Close()
+		whisperModel = nil
+		whisperModelName = ""
+	}
+
+	lg.Infof("Loading whisper model: %s", modelName)
+	modelBytes := util.LoadResourceBytes("models/" + modelName)
+	newModel, err := whisper.LoadModelFromBytes(modelBytes)
+	if err != nil {
+		lg.Errorf("Failed to load whisper model %s: %v", modelName, err)
+		return err
+	}
+
+	whisperModel = newModel
+	whisperModelName = modelName
+	whisperModelErr = nil
+	lg.Infof("Whisper model loaded: %s", modelName)
+	return nil
+}
 
 // PreloadWhisperModel loads the whisper model in the background so it's
 // ready when PTT is first pressed. This avoids blocking the UI.
-func PreloadWhisperModel(lg *log.Logger) {
+// The modelName parameter specifies which model to load (e.g. "ggml-tiny.en.bin").
+// If empty, defaults to the first model alphabetically.
+func PreloadWhisperModel(modelName string, lg *log.Logger) {
 	go func() {
 		whisperModelOnce.Do(func() {
 			defer close(whisperModelDone)
@@ -574,14 +644,29 @@ func PreloadWhisperModel(lg *log.Logger) {
 				return
 			}
 
-			lg.Info("Preloading whisper model...")
-			model := util.LoadResourceBytes("models/ggml-small.en.bin")
-			whisperModel, whisperModelErr = whisper.LoadModelFromBytes(model)
+			// Default to first model alphabetically if not specified
+			if modelName == "" {
+				models := ListWhisperModels()
+				if len(models) > 0 {
+					modelName = models[0]
+				} else {
+					whisperModelErr = errors.New("no whisper models found in resources/models")
+					lg.Errorf("Speech-to-text unavailable: %v", whisperModelErr)
+					return
+				}
+			}
+
+			lg.Infof("Preloading whisper model: %s", modelName)
+			modelBytes := util.LoadResourceBytes("models/" + modelName)
+			whisperModelMu.Lock()
+			whisperModel, whisperModelErr = whisper.LoadModelFromBytes(modelBytes)
 			if whisperModelErr != nil {
 				lg.Errorf("Failed to load whisper model: %v", whisperModelErr)
 			} else {
-				lg.Info("Whisper model loaded")
+				whisperModelName = modelName
+				lg.Infof("Whisper model loaded: %s", modelName)
 			}
+			whisperModelMu.Unlock()
 		})
 	}()
 }
@@ -691,11 +776,8 @@ type streamingSTT struct {
 // Audio samples can be fed via FeedAudioToStreaming.
 // Call StopStreamingSTT to end the session and process the result.
 func (c *ControlClient) StartStreamingSTT(lg *log.Logger) error {
-	// Load model if not already loaded
-	whisperModelOnce.Do(func() {
-		model := util.LoadResourceBytes("models/ggml-small.en.bin")
-		whisperModel, whisperModelErr = whisper.LoadModelFromBytes(model)
-	})
+	// Wait for initial model load to complete
+	<-whisperModelDone
 	if whisperModelErr != nil {
 		return fmt.Errorf("whisper LoadModelFromBytes: %w", whisperModelErr)
 	}
@@ -778,8 +860,9 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 
 		// Get final transcription from whisper
 		finalText := sttSession.transcriber.Stop()
+		whisperDuration := time.Since(pttReleaseTime)
 
-		lg.Infof("streaming whisper transcription %q", finalText)
+		fmt.Printf("whisper transcription took %dms: %q\n", whisperDuration.Milliseconds(), finalText)
 
 		c.SetLastTranscription(finalText)
 
