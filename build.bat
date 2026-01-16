@@ -95,10 +95,10 @@ if not exist "whisper.cpp\build_go\src\libwhisper.a" (
         -DGGML_OPENMP=OFF ^
         -DGGML_NATIVE=OFF ^
         -DGGML_AVX=ON ^
-        -DGGML_AVX2=OFF ^
-        -DGGML_FMA=OFF ^
+        -DGGML_AVX2=ON ^
+        -DGGML_FMA=ON ^
         -DGGML_F16C=ON ^
-        -DGGML_BMI2=OFF ^
+        -DGGML_BMI2=ON ^
         -DCMAKE_BUILD_TYPE=Release ^
         -DCMAKE_C_FLAGS="-D_WIN32_WINNT=0x0601 -DWINVER=0x0601" ^
         -DCMAKE_CXX_FLAGS="-D_WIN32_WINNT=0x0601 -DWINVER=0x0601"

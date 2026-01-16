@@ -66,12 +66,6 @@ build_whisper() {
             -DGGML_METAL=ON \
             -DGGML_BLAS=ON \
             -DGGML_METAL_EMBED_LIBRARY=ON \
-            -DGGML_NATIVE=OFF \
-            -DGGML_AVX=ON \
-            -DGGML_AVX2=OFF \
-            -DGGML_FMA=OFF \
-            -DGGML_F16C=ON \
-            -DGGML_BMI2=OFF \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
             -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0
@@ -84,10 +78,10 @@ build_whisper() {
             -DGGML_OPENMP=ON \
             -DGGML_NATIVE=OFF \
             -DGGML_AVX=ON \
-            -DGGML_AVX2=OFF \
-            -DGGML_FMA=OFF \
+            -DGGML_AVX2=ON \
+            -DGGML_FMA=ON \
             -DGGML_F16C=ON \
-            -DGGML_BMI2=OFF \
+            -DGGML_BMI2=ON \
             -DCMAKE_BUILD_TYPE=Release
     fi
 
