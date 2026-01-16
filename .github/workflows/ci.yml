@@ -79,7 +79,7 @@ jobs:
     - name: Install CUDA Toolkit
       uses: Jimver/cuda-toolkit@v0.2.21
       with:
-        cuda: '13.0.1'
+        cuda: '12.6.0'
         method: 'network'
         sub-packages: '["nvcc", "cudart-static"]'
 
@@ -212,7 +212,7 @@ jobs:
     - name: Install CUDA Toolkit
       uses: Jimver/cuda-toolkit@v0.2.21
       with:
-        cuda: '13.0.1'
+        cuda: '12.6.0'
         method: 'network'
         sub-packages: '["nvcc", "cudart_static"]'
 
