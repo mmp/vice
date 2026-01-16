@@ -76,13 +76,20 @@ jobs:
     - name: Check go install
       run: go version
 
+    - name: Install CUDA Toolkit
+      uses: Jimver/cuda-toolkit@v0.2.21
+      with:
+        cuda: '13.0.1'
+        method: 'network'
+        sub-packages: '["nvcc", "cudart-static"]'
+
     - name: Install Linux dependencies
       run: |
         sudo apt update
         sudo apt install xorg-dev libsdl2-dev libsystemd-dev
 
     - name: Build vice
-      run: ./build.sh
+      run: ./build.sh --cuda
 
     - name: Fetch videomaps for linting
       run: |
@@ -99,7 +106,7 @@ jobs:
         path: cmd/vice/
 
     - name: Build for release
-      run: ./build.sh --release
+      run: ./build.sh --release --cuda
 
     - name: Run tests
       run: go test -v ./...
@@ -202,6 +209,13 @@ jobs:
         go-version-file: go.mod
         cache-dependency-path: go.sum
 
+    - name: Install CUDA Toolkit
+      uses: Jimver/cuda-toolkit@v0.2.21
+      with:
+        cuda: '13.0.1'
+        method: 'network'
+        sub-packages: '["nvcc", "cudart_static"]'
+
     - name: Checkout Windows prebuilts
       uses: actions/checkout@v4
       with:
@@ -223,7 +237,7 @@ jobs:
         cp ext/SDL2-2.24.0/x86_64-w64-mingw32/bin/SDL2.dll windows/
 
     - name: Build vice
-      run: .\build.bat --icons
+      run: .\build.bat --icons --cuda
       env:
         CGO_CFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
         CGO_CPPFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
@@ -240,7 +254,7 @@ jobs:
 
     - name: Build for release (download resources)
       run: |
-        .\build.bat --release
+        .\build.bat --release --cuda
         go build -o ./crc2vice.exe ./cmd/crc2vice
         go build -o ./dat2vice.exe ./cmd/dat2vice
       env:

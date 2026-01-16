@@ -10,6 +10,7 @@
 #   --all           Run all steps (--check --test, then build)
 #   --release       Build release binary (with downloadresources tag)
 #   --universal     Build universal binary on macOS (arm64 + amd64)
+#   --cuda          Build with CUDA support (Linux only)
 #   --help          Show this help message
 #
 # whisper-cpp is built automatically if needed.
@@ -29,6 +30,7 @@ DO_CHECK=false
 DO_TEST=false
 DO_RELEASE=false
 DO_UNIVERSAL=false
+DO_CUDA=false
 
 # Parse arguments
 for arg in "$@"; do
@@ -37,6 +39,7 @@ for arg in "$@"; do
         --test)      DO_TEST=true ;;
         --release)   DO_RELEASE=true ;;
         --universal) DO_UNIVERSAL=true ;;
+        --cuda)      DO_CUDA=true ;;
         --all)
             DO_CHECK=true
             DO_TEST=true
@@ -72,6 +75,11 @@ build_whisper() {
     elif [ "$OS_TYPE" = "linux" ]; then
         # Disable GGML_NATIVE to avoid -march=native. Enable instruction sets
         # safe for computers from ~2013+ (Haswell era, see build.bat for details).
+        CUDA_FLAGS=""
+        if [ "$DO_CUDA" = true ]; then
+            echo "Building with CUDA support (static linking)"
+            CUDA_FLAGS="-DGGML_CUDA=ON -DGGML_CUDA_STATIC=ON"
+        fi
         cmake -S whisper.cpp -B whisper.cpp/build_go \
             -DBUILD_SHARED_LIBS=OFF \
             -DGGML_CPU=ON \
@@ -83,7 +91,8 @@ build_whisper() {
             -DGGML_FMA=ON \
             -DGGML_F16C=ON \
             -DGGML_BMI2=ON \
-            -DCMAKE_BUILD_TYPE=Release
+            -DCMAKE_BUILD_TYPE=Release \
+            $CUDA_FLAGS
     fi
 
     cmake --build whisper.cpp/build_go --parallel "$(nproc 2>/dev/null || sysctl -n hw.ncpu)"

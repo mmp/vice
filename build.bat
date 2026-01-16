@@ -11,6 +11,7 @@ REM   --test          Run tests
 REM   --all           Run all steps (--check --test, then build)
 REM   --release       Build release binary (with downloadresources tag)
 REM   --icons         Prepare Windows icon resources (requires go-winres)
+REM   --cuda          Build with CUDA support
 REM   --help          Show this help message
 REM
 REM Prerequisites:
@@ -24,6 +25,7 @@ set DO_CHECK=0
 set DO_TEST=0
 set DO_RELEASE=0
 set DO_ICONS=0
+set DO_CUDA=0
 
 REM Parse arguments
 :parse_args
@@ -32,6 +34,7 @@ if "%~1"=="--check" set DO_CHECK=1
 if "%~1"=="--test" set DO_TEST=1
 if "%~1"=="--release" set DO_RELEASE=1
 if "%~1"=="--icons" set DO_ICONS=1
+if "%~1"=="--cuda" set DO_CUDA=1
 if "%~1"=="--all" (
     set DO_CHECK=1
     set DO_TEST=1
@@ -47,6 +50,7 @@ if "%~1"=="--help" (
     echo   --all           Run all steps
     echo   --release       Build release binary
     echo   --icons         Prepare Windows icon resources
+    echo   --cuda          Build with CUDA support
     echo   --help          Show this help message
     exit /b 0
 )
@@ -86,6 +90,13 @@ if not exist "whisper.cpp\build_go\src\libwhisper.a" (
     REM that are available on computers from ~2013+ (Haswell era):
     REM - SSE4.2, AVX, F16C: Intel Ivy Bridge 2012+, AMD Piledriver 2012+
     REM - AVX2, FMA, BMI2: Intel Haswell 2013+, AMD Excavator 2015+
+
+    set CUDA_FLAGS=
+    if %DO_CUDA%==1 (
+        echo Building with CUDA support ^(static linking^)
+        set CUDA_FLAGS=-DGGML_CUDA=ON -DGGML_CUDA_STATIC=ON
+    )
+
     cmake -S whisper.cpp -B whisper.cpp\build_go ^
         -G "MinGW Makefiles" ^
         -DBUILD_SHARED_LIBS=OFF ^
@@ -100,7 +111,8 @@ if not exist "whisper.cpp\build_go\src\libwhisper.a" (
         -DGGML_BMI2=ON ^
         -DCMAKE_BUILD_TYPE=Release ^
         -DCMAKE_C_FLAGS="-D_WIN32_WINNT=0x0601 -DWINVER=0x0601" ^
-        -DCMAKE_CXX_FLAGS="-D_WIN32_WINNT=0x0601 -DWINVER=0x0601"
+        -DCMAKE_CXX_FLAGS="-D_WIN32_WINNT=0x0601 -DWINVER=0x0601" ^
+        !CUDA_FLAGS!
     if errorlevel 1 exit /b 1
 
     cmake --build whisper.cpp\build_go --parallel 4
@@ -113,6 +125,12 @@ if not exist "whisper.cpp\build_go\src\libwhisper.a" (
             for /r whisper.cpp\build_go %%f in (%%b.a lib%%b.a) do (
                 if exist "%%f" copy /y "%%f" "whisper.cpp\build_go\ggml\src\lib%%b.a" >nul 2>&1
             )
+        )
+    )
+    REM Copy ggml-cuda library if CUDA build
+    if %DO_CUDA%==1 (
+        for /r whisper.cpp\build_go %%f in (ggml-cuda.a libggml-cuda.a) do (
+            if exist "%%f" copy /y "%%f" "whisper.cpp\build_go\ggml\src\libggml-cuda.a" >nul 2>&1
         )
     )
     echo whisper-cpp built successfully.
