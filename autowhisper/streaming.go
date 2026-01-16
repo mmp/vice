@@ -1,6 +1,7 @@
 package autowhisper
 
 import (
+	"fmt"
 	"runtime"
 	"strings"
 	"sync"
@@ -201,14 +202,20 @@ func (st *StreamingTranscriber) transcribe(audio []float32) string {
 		return ""
 	}
 
+	transcribeStart := time.Now()
+
 	// Acquire mutex to serialize whisper access
+	mutexStart := time.Now()
 	st.modelMu.Lock()
 	defer st.modelMu.Unlock()
+	mutexWait := time.Since(mutexStart)
 
+	ctxStart := time.Now()
 	ctx, err := st.model.model.NewContext()
 	if err != nil {
 		return ""
 	}
+	ctxCreate := time.Since(ctxStart)
 
 	// Configure context
 	if st.opts.Threads > 0 {
@@ -225,6 +232,12 @@ func (st *StreamingTranscriber) transcribe(audio []float32) string {
 	if strings.TrimSpace(st.opts.InitialPrompt) != "" {
 		ctx.SetInitialPrompt(st.opts.InitialPrompt)
 	}
+
+	// Disable temperature fallback to prevent multiple decode passes.
+	// Default whisper retries at increasingly higher temperatures (0.2, 0.4, etc.)
+	// when confidence is low, which can cause 2-10x slowdowns.
+	// For ATC commands we expect clear speech, so disable retries.
+	ctx.SetTemperatureFallback(-1.0)
 
 	// Language selection
 	lang := strings.TrimSpace(st.opts.Language)
@@ -243,9 +256,26 @@ func (st *StreamingTranscriber) transcribe(audio []float32) string {
 		segments = append(segments, seg.Text)
 	}
 
+	processStart := time.Now()
 	if err := ctx.Process(audio, nil, segmentCb, nil); err != nil {
 		return ""
 	}
+	processTime := time.Since(processStart)
+
+	totalTime := time.Since(transcribeStart)
+	audioDuration := time.Duration(len(audio)) * time.Second / 16000
+
+	// Log timing details for slow transcriptions (>500ms)
+	if totalTime > 500*time.Millisecond {
+		logWhisperTiming("SLOW whisper: total=%v (mutex=%v, ctx=%v, process=%v) audio=%v samples=%d",
+			totalTime, mutexWait, ctxCreate, processTime, audioDuration, len(audio))
+	}
 
 	return strings.TrimSpace(strings.Join(segments, " "))
+}
+
+// logWhisperTiming logs whisper timing information. Can be enabled via build tag or always-on for debugging.
+func logWhisperTiming(format string, args ...interface{}) {
+	// Always log for now to diagnose the issue
+	println("[whisper-timing]", fmt.Sprintf(format, args...))
 }

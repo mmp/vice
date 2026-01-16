@@ -205,8 +205,9 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 				if len(event.WrittenText) > 0 {
 					event.WrittenText = strings.ToUpper(event.WrittenText[:1]) + event.WrittenText[1:]
 				}
-				msg = Message{contents: prefix + event.WrittenText,
-					error: event.RadioTransmissionType == av.RadioTransmissionUnexpected || event.RadioTransmissionType == av.RadioTransmissionMixUp,
+				msg = Message{
+					contents: prefix + event.WrittenText,
+					error:    event.RadioTransmissionType == av.RadioTransmissionUnexpected || event.RadioTransmissionType == av.RadioTransmissionMixUp,
 				}
 				if mp.ReadbackTransmissionsAlert {
 					ctx.Platform.PlayAudioOnce(mp.alertAudioIndex[mp.AudioAlertSelection])
@@ -243,9 +244,6 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			// Display the controller's STT transcript and resulting command
 			if event.STTTranscript != "" || event.STTCommand != "" {
 				msg := fmt.Sprintf("STT: %q -> %s", event.STTTranscript, event.STTCommand)
-				if event.STTTimings != "" {
-					msg += " (" + event.STTTimings + ")"
-				}
 				mp.messages = append(mp.messages,
 					Message{
 						contents: msg,

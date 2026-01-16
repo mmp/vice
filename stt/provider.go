@@ -4,7 +4,9 @@ import (
 	"strings"
 	"time"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
+	"github.com/mmp/vice/sim"
 )
 
 // Transcriber converts speech transcripts to aircraft control commands using
@@ -27,8 +29,6 @@ func NewTranscriber(lg *log.Logger) *Transcriber {
 func (p *Transcriber) DecodeTranscript(
 	aircraft map[string]Aircraft,
 	transcript string,
-	whisperDuration time.Duration,
-	numCores int,
 ) (string, error) {
 	start := time.Now()
 
@@ -137,6 +137,91 @@ func (p *Transcriber) DecodeTranscript(
 		transcript, output, confidence, elapsed)
 
 	return strings.TrimSpace(output), nil
+}
+
+// DecodeFromState decodes a transcript using the simulation state directly.
+// It builds the aircraft context internally from the provided state.
+// Only tracks on the user's frequency (ControllingController) are included in the context.
+func (p *Transcriber) DecodeFromState(
+	state *sim.UserState,
+	userTCW sim.TCW,
+	transcript string,
+) (string, error) {
+	// Build aircraft context from state
+	aircraft := p.buildAircraftContext(state, userTCW)
+
+	// Delegate to existing decoder
+	return p.DecodeTranscript(aircraft, transcript)
+}
+
+// buildAircraftContext creates the STT aircraft context from simulation state.
+func (p *Transcriber) buildAircraftContext(
+	state *sim.UserState,
+	userTCW sim.TCW,
+) map[string]Aircraft {
+	acCtx := make(map[string]Aircraft)
+
+	for _, trk := range state.Tracks {
+		// Check if the aircraft is on the user's frequency (ControllingController)
+		if trk.FlightPlan == nil || !state.TCWControlsPosition(userTCW, trk.FlightPlan.ControllingController) {
+			continue
+		}
+
+		sttAc := Aircraft{
+			Callsign: string(trk.ADSBCallsign),
+			Altitude: int(trk.TrueAltitude),
+		}
+
+		// Build fixes map
+		sttAc.Fixes = make(map[string]string)
+		for _, fix := range trk.Fixes {
+			sttAc.Fixes[av.GetFixTelephony(fix)] = fix
+		}
+
+		// Determine state
+		if trk.IsDeparture() {
+			sttAc.State = "departure"
+		} else if trk.IsArrival() {
+			if trk.OnApproach {
+				sttAc.State = "on approach"
+			} else {
+				sttAc.State = "arrival"
+			}
+		} else if trk.IsOverflight() {
+			sttAc.State = "overflight"
+		}
+
+		// Build candidate approaches for arrivals
+		if trk.IsArrival() && trk.ArrivalAirport != "" {
+			sttAc.CandidateApproaches = make(map[string]string)
+			if trk.Approach != "" {
+				sttAc.AssignedApproach = trk.Approach
+			}
+			// Add active approaches for the arrival airport
+			for _, ar := range state.ArrivalRunways {
+				if ar.Airport != trk.ArrivalAirport {
+					continue
+				}
+				if ap, ok := state.Airports[ar.Airport]; ok {
+					for code, appr := range ap.Approaches {
+						if appr.Runway == ar.Runway {
+							sttAc.CandidateApproaches[av.GetApproachTelephony(appr.FullName)] = code
+						}
+					}
+				}
+			}
+		}
+
+		// Key by telephony (spoken callsign)
+		var cwt string
+		if trk.FlightPlan != nil {
+			cwt = trk.FlightPlan.CWTCategory
+		}
+		telephony := av.GetTelephony(string(trk.ADSBCallsign), cwt)
+		acCtx[telephony] = sttAc
+	}
+
+	return acCtx
 }
 
 // GetUsageStats returns usage statistics for this provider.

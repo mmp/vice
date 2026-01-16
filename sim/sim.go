@@ -181,10 +181,12 @@ type PointOut struct {
 }
 
 type PilotSpeech struct {
-	Callsign av.ADSBCallsign
-	Type     av.RadioTransmissionType
-	Text     string
-	MP3      []byte
+	Callsign       av.ADSBCallsign
+	Type           av.RadioTransmissionType
+	Text           string
+	MP3            []byte
+	SimTime        time.Time // Virtual simulation time when transmission was made
+	PTTReleaseTime time.Time // Wall clock time when PTT was released (for STT latency tracking)
 }
 
 // NewSimConfiguration collects all of the information required to create a new Sim
@@ -518,6 +520,14 @@ func (s *Sim) IdleTime() time.Duration {
 	defer s.mu.Unlock(s.lg)
 
 	return time.Since(s.lastUpdateTime)
+}
+
+// SimTime returns the current simulation time.
+func (s *Sim) SimTime() time.Time {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.State.SimTime
 }
 
 func (s *Sim) SetSimRate(tcw TCW, rate float32) error {

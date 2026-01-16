@@ -391,16 +391,11 @@ func (c *ControlClient) FlightPlanDirect(aircraft sim.ACID, fix string, callback
 
 func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds string, multiple, clickedTrack bool,
 	handleResult func(message string, remainingInput string)) {
-	if c.HaveTTS() && cmds != "P" && cmds != "X" {
-		c.mu.Lock()
+	// Determine if TTS is enabled for this command
+	enableTTS := c.HaveTTS() && (c.disableTTSPtr == nil || !*c.disableTTSPtr) && cmds != "P" && cmds != "X"
 
-		if c.awaitReadbackCallsign != "" {
-			c.lg.Warnf("Already awaiting readback for %q, just got %q!", c.awaitReadbackCallsign, callsign)
-		}
-		c.awaitReadbackCallsign = callsign
-
-		c.mu.Unlock()
-	}
+	// Capture PTT release time now (before async RPC) - will be zero for non-STT commands
+	pttReleaseTime := c.GetAndClearPTTReleaseTime()
 
 	var result server.AircraftCommandsResult
 	c.addCall(makeRPCCall(c.client.Go(server.RunAircraftCommandsRPC, &server.AircraftCommandsArgs{
@@ -409,10 +404,14 @@ func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds strin
 		Commands:        cmds,
 		Multiple:        multiple,
 		ClickedTrack:    clickedTrack,
+		EnableTTS:       enableTTS,
 	}, &result, nil),
 		func(err error) {
-			if result.RemainingInput == cmds {
-				c.awaitReadbackCallsign = ""
+			// Handle readback from RPC result
+			if result.Readback != nil {
+				// Set PTT release time for latency tracking (only set for STT commands)
+				result.Readback.PTTReleaseTime = pttReleaseTime
+				c.transmissions.EnqueueReadback(*result.Readback)
 			}
 			if handleResult != nil {
 				handleResult(result.ErrorMessage, result.RemainingInput)

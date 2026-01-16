@@ -1189,7 +1189,8 @@ func (s *Sim) ShouldTriggerPilotMixUp(callsign av.ADSBCallsign) bool {
 }
 
 // PilotMixUp is called standalone (not as part of a command batch) so it posts its own event.
-func (s *Sim) PilotMixUp(tcw TCW, callsign av.ADSBCallsign) error {
+// Returns the spoken text for TTS synthesis.
+func (s *Sim) PilotMixUp(tcw TCW, callsign av.ADSBCallsign) (string, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -1198,9 +1199,10 @@ func (s *Sim) PilotMixUp(tcw TCW, callsign av.ADSBCallsign) error {
 			return ac.PilotMixUp()
 		})
 	if err == nil && intent != nil {
-		s.renderAndPostReadback(callsign, tcw, []av.CommandIntent{intent})
+		spokenText := s.renderAndPostReadback(callsign, tcw, []av.CommandIntent{intent})
+		return spokenText, nil
 	}
-	return err
+	return "", err
 }
 
 func (s *Sim) AssignAltitude(tcw TCW, callsign av.ADSBCallsign, altitude int, afterSpeed bool) (av.CommandIntent, error) {
@@ -1680,8 +1682,10 @@ func (s *Sim) processEnqueued() {
 var ErrInvalidCommandSyntax = fmt.Errorf("invalid command syntax")
 
 type ControlCommandsResult struct {
-	RemainingInput string
-	Error          error
+	RemainingInput     string
+	Error              error
+	ReadbackSpokenText string          // Spoken text for TTS synthesis (if readback was generated)
+	ReadbackCallsign   av.ADSBCallsign // Aircraft callsign for the readback
 }
 
 // RunAircraftControlCommands executes a space-separated string of control commands for an aircraft.
@@ -1696,10 +1700,12 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 		intent, err := s.runOneControlCommand(tcw, callsign, command)
 		if err != nil {
 			// Post any collected intents before returning error
-			s.renderAndPostReadback(callsign, tcw, intents)
+			spokenText := s.renderAndPostReadback(callsign, tcw, intents)
 			return ControlCommandsResult{
-				RemainingInput: strings.Join(commands[i:], " "),
-				Error:          err,
+				RemainingInput:     strings.Join(commands[i:], " "),
+				Error:              err,
+				ReadbackSpokenText: spokenText,
+				ReadbackCallsign:   callsign,
 			}
 		}
 		if intent != nil {
@@ -1708,17 +1714,59 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 	}
 
 	// Render all intents together as a single transmission
-	s.renderAndPostReadback(callsign, tcw, intents)
-	return ControlCommandsResult{}
+	spokenText := s.renderAndPostReadback(callsign, tcw, intents)
+	return ControlCommandsResult{
+		ReadbackSpokenText: spokenText,
+		ReadbackCallsign:   callsign,
+	}
 }
 
 // renderAndPostReadback renders a batch of command intents as a pilot readback transmission.
 // The tcw ensures the readback goes to the controller who issued the command,
 // regardless of any consolidation changes.
-func (s *Sim) renderAndPostReadback(callsign av.ADSBCallsign, tcw TCW, intents []av.CommandIntent) {
+// Returns the spoken text for TTS synthesis, including the callsign suffix.
+func (s *Sim) renderAndPostReadback(callsign av.ADSBCallsign, tcw TCW, intents []av.CommandIntent) string {
 	if rt := av.RenderIntents(intents, s.Rand); rt != nil {
 		s.postReadbackTransmission(callsign, *rt, tcw)
+		// Return spoken text with callsign suffix for TTS synthesis
+		return rt.Spoken(s.Rand) + s.readbackCallsignSuffix(callsign, tcw)
 	}
+	return ""
+}
+
+// readbackCallsignSuffix generates the ", [callsign] [heavy/super]." suffix for readbacks.
+// This is used both for synchronous TTS and matches what prepareRadioTransmissions does for events.
+func (s *Sim) readbackCallsignSuffix(callsign av.ADSBCallsign, tcw TCW) string {
+	ac, ok := s.Aircraft[callsign]
+	if !ok {
+		return ""
+	}
+
+	primaryTCP := s.State.PrimaryPositionForTCW(tcw)
+	ctrl := s.State.Controllers[primaryTCP]
+
+	var heavySuper string
+	if ctrl != nil && !ctrl.ERAMFacility {
+		if perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok {
+			if perf.WeightClass == "H" {
+				heavySuper = " heavy"
+			} else if perf.WeightClass == "J" {
+				heavySuper = " super"
+			}
+		}
+	}
+
+	// For emergency aircraft, 50% of the time add "emergency aircraft" after heavy/super.
+	if ac.EmergencyState != nil && s.Rand.Bool() {
+		heavySuper += " emergency aircraft"
+	}
+
+	csArg := av.CallsignArg{
+		Callsign:    ac.ADSBCallsign,
+		IsEmergency: ac.EmergencyState != nil,
+	}
+	tr := av.MakeReadbackTransmission(", {callsign}"+heavySuper+". ", csArg)
+	return tr.Spoken(s.Rand)
 }
 
 // parseHold parses a hold command string in the format "FIX/[option]/[option]"

@@ -80,6 +80,9 @@ func TranscribeWithModel(m *Model, pcm []int16, inSampleRate, inChannels int, op
 		ctx.SetInitialPrompt(opts.InitialPrompt)
 	}
 
+	// Disable temperature fallback to prevent multiple decode passes on uncertain audio
+	ctx.SetTemperatureFallback(-1.0)
+
 	// Language selection
 	lang := strings.TrimSpace(opts.Language)
 	if lang == "" {

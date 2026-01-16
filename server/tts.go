@@ -77,53 +77,6 @@ type ttsUsageStats struct {
 	LastUsed time.Time
 }
 
-// ttsRequest represents a pending TTS request
-type ttsRequest struct {
-	callsign av.ADSBCallsign
-	ty       av.RadioTransmissionType
-	text     string
-	fut      sim.TTSSpeechFuture
-}
-
-type ttsRequestPool []ttsRequest
-
-func (p *ttsRequestPool) add(req ttsRequest) { *p = append(*p, req) }
-
-// drainCompleted checks pending TTS requests and returns any that have
-// completed (either successfully or with errors).
-func (p *ttsRequestPool) drainCompleted(lg *log.Logger) []sim.PilotSpeech {
-	var speech []sim.PilotSpeech
-
-	*p = util.FilterSlice(*p, func(req ttsRequest) bool {
-		select {
-		case mp3, ok := <-req.fut.Mp3Ch:
-			if ok {
-				speech = append(speech, sim.PilotSpeech{
-					Callsign: req.callsign,
-					Type:     req.ty,
-					Text:     req.text,
-					MP3:      mp3,
-				})
-			}
-			return false // remove from slice
-		case err, ok := <-req.fut.ErrCh:
-			if ok {
-				lg.Warnf("TTS error for %s %q: %v", req.callsign, req.text, err)
-				speech = append(speech, sim.PilotSpeech{
-					Callsign: req.callsign,
-					Type:     req.ty,
-					Text:     req.text,
-				})
-			}
-			return false // remove from slice
-		default:
-			return true // still pending
-		}
-	})
-
-	return speech
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // VoiceAssigner
 
@@ -540,6 +493,49 @@ func (r *RemoteTTSProvider) TextToSpeech(voice sim.Voice, text string) sim.TTSSp
 	}()
 
 	return fut
+}
+
+// SynthesizeSpeechWithTimeout synchronously synthesizes speech with the given timeout.
+// Returns a PilotSpeech struct on success, nil on timeout or error.
+// This is used for synchronous readback synthesis in RunAircraftCommands.
+func SynthesizeSpeechWithTimeout(va *VoiceAssigner, tts sim.TTSProvider, callsign av.ADSBCallsign,
+	transmissionType av.RadioTransmissionType, text string, simTime time.Time, timeout time.Duration, lg *log.Logger) *sim.PilotSpeech {
+	if tts == nil || text == "" {
+		return nil
+	}
+
+	// Get voice for this aircraft
+	voice, ok := va.GetVoice(callsign)
+	if !ok {
+		lg.Warnf("No voice available for %s", callsign)
+		return nil
+	}
+
+	// Start TTS synthesis
+	fut := tts.TextToSpeech(voice, text)
+
+	// Wait for result with timeout
+	select {
+	case mp3, ok := <-fut.Mp3Ch:
+		if ok && len(mp3) > 0 {
+			return &sim.PilotSpeech{
+				Callsign: callsign,
+				Type:     transmissionType,
+				Text:     text,
+				MP3:      mp3,
+				SimTime:  simTime,
+			}
+		}
+		return nil
+	case err, ok := <-fut.ErrCh:
+		if ok {
+			lg.Warnf("TTS error for %s %q: %v", callsign, text, err)
+		}
+		return nil
+	case <-time.After(timeout):
+		lg.Warnf("TTS timeout for %s %q after %v", callsign, text, timeout)
+		return nil
+	}
 }
 
 // makeTTSProvider creates a TTS provider, preferring Google TTS if credentials

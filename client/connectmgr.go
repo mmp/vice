@@ -10,7 +10,6 @@ import (
 	"net"
 	"net/rpc"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/mmp/vice/log"
@@ -41,17 +40,19 @@ type ConnectionManager struct {
 
 	client              *ControlClient
 	connectionStartTime time.Time
+	disableTTSPtr       *bool // Pointer to config's DisableTextToSpeech for runtime toggle
 
 	onNewClient func(*ControlClient)
 	onError     func(error)
 }
 
-func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap string, lg *log.Logger,
+func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap string, disableTTSPtr *bool, lg *log.Logger,
 	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger, string) {
 	cm := &ConnectionManager{
 		serverAddress:           serverAddress,
 		lastRemoteServerAttempt: time.Now(),
 		remoteSimServerChan:     TryConnectRemoteServer(serverAddress, lg),
+		disableTTSPtr:           disableTTSPtr,
 		onNewClient:             onNewClient,
 		onError:                 onError,
 	}
@@ -98,8 +99,7 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, initials string, lg *log.L
 		return nil, err
 	}
 
-	wsAddress := "localhost:" + strconv.Itoa(result.SpeechWSPort)
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken, wsAddress, initials, cm.LocalServer.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.LocalServer.HaveTTS, cm.disableTTSPtr, initials, cm.LocalServer.RPCClient, lg)
 	cm.connectionStartTime = time.Now()
 
 	return cm.client, nil
@@ -117,7 +117,7 @@ func (cm *ConnectionManager) CreateNewSim(config server.NewSimRequest, initials 
 		}
 		return err
 	} else {
-		cm.handleSuccessfulConnection(result, srv, config.DisableTextToSpeech, initials, lg)
+		cm.handleSuccessfulConnection(result, srv, initials, lg)
 		return nil
 	}
 }
@@ -125,22 +125,12 @@ func (cm *ConnectionManager) CreateNewSim(config server.NewSimRequest, initials 
 // handleSuccessfulConnection handles the common logic for setting up a client
 // connection after a successful RPC call to create or join a sim
 func (cm *ConnectionManager) handleSuccessfulConnection(result server.NewSimResult, srv *Server,
-	disableTextToSpeech bool, initials string, lg *log.Logger) {
+	initials string, lg *log.Logger) {
 	if cm.client != nil {
 		cm.client.Disconnect()
 	}
 
-	var wsAddress string
-	// Only set websocket address if TTS is not disabled
-	if !disableTextToSpeech {
-		if srv == cm.LocalServer {
-			wsAddress = "localhost:" + strconv.Itoa(result.SpeechWSPort)
-		} else {
-			wsAddress, _, _ = strings.Cut(cm.serverAddress, ":")
-			wsAddress += ":" + strconv.Itoa(result.SpeechWSPort)
-		}
-	}
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken, wsAddress, initials, srv.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, srv.HaveTTS, cm.disableTTSPtr, initials, srv.RPCClient, lg)
 
 	cm.connectionStartTime = time.Now()
 
@@ -223,7 +213,7 @@ func (cm *ConnectionManager) ConnectToSim(config server.JoinSimRequest, initials
 		}
 		return err
 	} else {
-		cm.handleSuccessfulConnection(result, srv, config.DisableTextToSpeech, initials, lg)
+		cm.handleSuccessfulConnection(result, srv, initials, lg)
 		return nil
 	}
 }

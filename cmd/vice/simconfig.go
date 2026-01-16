@@ -1231,11 +1231,6 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	// SIMULATION SETTINGS section
 	drawSectionHeader("Simulation Settings")
 
-	if c.selectedServer.HaveTTS {
-		imgui.Checkbox("Disable text-to-speech", &config.DisableTextToSpeech)
-		c.NewSimRequest.DisableTextToSpeech = config.DisableTextToSpeech
-	}
-
 	imgui.Checkbox("Ensure unique callsign suffixes", &c.NewSimRequest.EnforceUniqueCallsignSuffix)
 
 	imgui.Text("Readback error interval:")

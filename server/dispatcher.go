@@ -593,6 +593,7 @@ type AircraftCommandsArgs struct {
 	Commands        string
 	Multiple        bool
 	ClickedTrack    bool
+	EnableTTS       bool // Whether to synthesize readback audio
 }
 
 // If an RPC call returns an error, then the result argument is not returned(!?).
@@ -600,6 +601,7 @@ type AircraftCommandsArgs struct {
 type AircraftCommandsResult struct {
 	ErrorMessage   string
 	RemainingInput string
+	Readback       *sim.PilotSpeech // Synthesized readback audio if EnableTTS was set
 }
 
 const RunAircraftCommandsRPC = "Sim.RunAircraftCommands"
@@ -613,6 +615,7 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	}
 
 	callsign := cmds.Callsign
+	simTime := c.sim.SimTime()
 
 	rewriteError := func(err error) {
 		result.RemainingInput = cmds.Commands
@@ -621,15 +624,29 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 		}
 	}
 
+	// Helper to synthesize TTS for readback
+	synthesizeReadback := func(spokenText string) {
+		if cmds.EnableTTS && spokenText != "" {
+			result.Readback = SynthesizeSpeechWithTimeout(
+				c.session.voiceAssigner, sd.sm.tts, callsign,
+				av.RadioTransmissionReadback, spokenText, simTime,
+				2*time.Second, sd.sm.lg)
+		}
+	}
+
 	if cmds.Multiple {
-		if err := c.sim.PilotMixUp(c.tcw, callsign); err != nil {
+		spokenText, err := c.sim.PilotMixUp(c.tcw, callsign)
+		if err != nil {
 			rewriteError(err)
 		}
+		synthesizeReadback(spokenText)
 		return nil // don't continue with the commands
 	} else if !cmds.ClickedTrack && c.sim.ShouldTriggerPilotMixUp(callsign) {
-		if err := c.sim.PilotMixUp(c.tcw, callsign); err != nil {
+		spokenText, err := c.sim.PilotMixUp(c.tcw, callsign)
+		if err != nil {
 			rewriteError(err)
 		}
+		synthesizeReadback(spokenText)
 		return nil // don't continue with the commands
 	}
 
@@ -638,6 +655,7 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	if execResult.Error != nil {
 		result.ErrorMessage = execResult.Error.Error()
 	}
+	synthesizeReadback(execResult.ReadbackSpokenText)
 
 	return nil
 }
@@ -914,28 +932,5 @@ func (sd *dispatcher) ConfigureATPA(args *ATPAConfigArgs, result *ATPAConfigResu
 	if err == nil {
 		result.SimStateUpdate = c.GetStateUpdate()
 	}
-	return err
-}
-
-type ProcessSTTTranscriptArgs struct {
-	ControllerToken string
-	Transcript      string
-	WhisperDuration time.Duration
-	NumCores        int
-}
-
-type ProcessSTTTranscriptResult struct {
-	Callsign    string
-	Command     string
-	STTDuration time.Duration
-}
-
-const ProcessSTTTranscriptRPC = "Sim.ProcessSTTTranscript"
-
-func (sd *dispatcher) ProcessSTTTranscript(args *ProcessSTTTranscriptArgs, result *ProcessSTTTranscriptResult) error {
-	defer sd.sm.lg.CatchAndReportCrash()
-
-	var err error
-	result.Callsign, result.Command, result.STTDuration, err = sd.sm.ProcessSTTTranscript(args.ControllerToken, args.Transcript, args.WhisperDuration, args.NumCores)
 	return err
 }

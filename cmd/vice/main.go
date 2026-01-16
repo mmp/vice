@@ -394,7 +394,7 @@ func main() {
 		var mgr *client.ConnectionManager
 		var errorLogger util.ErrorLogger
 		var extraScenarioErrors string
-		mgr, errorLogger, extraScenarioErrors = client.MakeServerManager(*serverAddress, *scenarioFilename, *videoMapFilename, lg,
+		mgr, errorLogger, extraScenarioErrors = client.MakeServerManager(*serverAddress, *scenarioFilename, *videoMapFilename, &config.DisableTextToSpeech, lg,
 			func(c *client.ControlClient) { // updated client
 				if c != nil {
 					// Determine if this is a STARS or ERAM scenario

@@ -2,7 +2,6 @@ package stt
 
 import (
 	"testing"
-	"time"
 )
 
 // Test cases from sttSystemPrompt.md
@@ -84,7 +83,7 @@ func TestBasicAltitudeCommands(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, 0, 0)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -149,7 +148,7 @@ func TestBasicHeadingCommands(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, 0, 0)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -206,7 +205,7 @@ func TestBasicSpeedCommands(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, 0, 0)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -255,7 +254,7 @@ func TestCompoundCommands(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, 0, 0)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -304,7 +303,7 @@ func TestTransponderCommands(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, 0, 0)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -345,7 +344,7 @@ func TestHandoffCommands(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, 0, 0)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -386,7 +385,7 @@ func TestVFRCommands(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, 0, 0)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -464,7 +463,7 @@ func TestNavigationCommands(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, 0, 0)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -513,7 +512,7 @@ func TestSTTErrorRecovery(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, 0, 0)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -546,7 +545,7 @@ func TestDisregardHandling(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, 0, 0)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -587,7 +586,7 @@ func TestEdgeCases(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, 0, 0)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -743,7 +742,7 @@ func BenchmarkDecodeTranscript(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		provider.DecodeTranscript(aircraft, "American 5936 descend and maintain 8000", time.Duration(0), 0)
+		provider.DecodeTranscript(aircraft, "American 5936 descend and maintain 8000")
 	}
 }
 
@@ -759,6 +758,6 @@ func BenchmarkDecodeTranscriptComplex(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		provider.DecodeTranscript(aircraft, "JetBlue 789 reduce speed to two five zero then descend and maintain one zero thousand", time.Duration(0), 0)
+		provider.DecodeTranscript(aircraft, "JetBlue 789 reduce speed to two five zero then descend and maintain one zero thousand")
 	}
 }

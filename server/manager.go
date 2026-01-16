@@ -10,7 +10,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"log/slog"
-	"net/http"
 	"os"
 	"slices"
 	"strings"
@@ -22,7 +21,6 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/sim"
-	"github.com/mmp/vice/stt"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -40,7 +38,6 @@ type SimManager struct {
 	// Helpers and such
 	tts            sim.TTSProvider
 	wxProvider     wx.Provider
-	sttTranscriber *stt.Transcriber
 	providersReady chan struct{}
 	mapManifests   map[string]*sim.VideoMapManifest
 	lg             *log.Logger
@@ -124,9 +121,6 @@ func (sm *SimManager) initRemoteProviders(serverAddress string, lg *log.Logger) 
 	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
 	defer cancel()
 
-	// STT is always local - no network needed
-	sm.sttTranscriber = stt.NewTranscriber(lg)
-
 	// Initialize TTS and WX providers in parallel since they're independent
 	var wg sync.WaitGroup
 	wg.Add(2)
@@ -171,9 +165,8 @@ type NewSimRequest struct {
 
 	PilotErrorInterval float32
 
-	Initials            string // Controller initials (e.g., "XX")
-	Privileged          bool
-	DisableTextToSpeech bool
+	Initials   string // Controller initials (e.g., "XX")
+	Privileged bool
 }
 
 func MakeNewSimRequest() NewSimRequest {
@@ -219,7 +212,7 @@ func (sm *SimManager) NewSim(req *NewSimRequest, result *NewSimResult) error {
 		s := sim.NewSim(*nsc, manifest, lg)
 		session := makeSimSession(req.NewSimName, req.GroupName, req.ScenarioName, req.Password, s, sm.lg)
 		pos := s.ScenarioRootPosition()
-		return sm.Add(session, result, pos, req.Initials, req.Privileged, true, req.DisableTextToSpeech)
+		return sm.Add(session, result, pos, req.Initials, req.Privileged, true)
 	} else {
 		return ErrInvalidSimConfiguration
 	}
@@ -283,14 +276,13 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *
 }
 
 type JoinSimRequest struct {
-	SimName             string
-	TCW                 sim.TCW   // Which TCW to sign into
-	SelectedTCPs        []sim.TCP // TCPs to consolidate (non-relief only)
-	Initials            string    // Controller initials (e.g., "MP")
-	Password            string
-	Privileged          bool
-	DisableTextToSpeech bool
-	JoiningAsRelief     bool
+	SimName         string
+	TCW             sim.TCW   // Which TCW to sign into
+	SelectedTCPs    []sim.TCP // TCPs to consolidate (non-relief only)
+	Initials        string    // Controller initials (e.g., "MP")
+	Password        string
+	Privileged      bool
+	JoiningAsRelief bool
 }
 
 const ConnectToSimRPC = "SimManager.ConnectToSim"
@@ -333,7 +325,7 @@ func (sm *SimManager) ConnectToSim(req *JoinSimRequest, result *NewSimResult) er
 		}
 	}
 
-	session.AddHumanController(token, tcw, req.Initials, req.DisableTextToSpeech, eventSub)
+	session.AddHumanController(token, tcw, req.Initials, eventSub)
 	sm.sessionsByToken[token] = session
 
 	*result = *sm.buildNewSimResult(session, tcw, token)
@@ -391,11 +383,11 @@ func (sm *SimManager) AddLocal(s *sim.Sim, result *NewSimResult) error {
 	if !sm.local {
 		sm.lg.Errorf("Called AddLocal with sm.local == false")
 	}
-	return sm.Add(session, result, s.ScenarioRootPosition(), "", false, false, false)
+	return sm.Add(session, result, s.ScenarioRootPosition(), "", false, false)
 }
 
 func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP sim.ControlPosition, initials string, instructor bool,
-	prespawn bool, disableTextToSpeech bool) error {
+	prespawn bool) error {
 	_, wxp := sm.getProviders()
 	session.sim.Activate(session.lg, wxp)
 
@@ -412,9 +404,8 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 
 	tcw := sim.TCW(initialTCP)
 	joinReq := &JoinSimRequest{
-		TCW:                 tcw,
-		Privileged:          instructor,
-		DisableTextToSpeech: disableTextToSpeech,
+		TCW:        tcw,
+		Privileged: instructor,
 	}
 	token, eventSub, err := sm.signOn(session, joinReq)
 	if err != nil {
@@ -422,7 +413,7 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 		return err
 	}
 
-	session.AddHumanController(token, tcw, initials, disableTextToSpeech, eventSub)
+	session.AddHumanController(token, tcw, initials, eventSub)
 	sm.sessionsByToken[token] = session
 
 	sm.mu.Unlock(sm.lg)
@@ -453,8 +444,6 @@ func (sm *SimManager) runSimUpdateLoop(session *simSession) {
 		}
 
 		session.sim.Update()
-
-		sm.websocketTXBytes.Add(session.SendSpeechMP3s())
 
 		time.Sleep(100 * time.Millisecond)
 	}
@@ -667,8 +656,9 @@ func (sm *SimManager) GetStateUpdate(token string) (*SimStateUpdate, error) {
 type SimStateUpdate struct {
 	sim.StateUpdate
 
-	ActiveTCWs []sim.TCW
-	Events     []sim.Event
+	ActiveTCWs  []sim.TCW
+	Events      []sim.Event
+	RadioSpeech []sim.PilotSpeech // Pilot-initiated transmissions with synthesized MP3s
 }
 
 // Apply applies the update to the state, including server-specific fields.
@@ -716,29 +706,7 @@ func (sm *SimManager) GetSerializeSim(token string, s *sim.Sim) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Text-to-Speech
-
-func (sm *SimManager) HandleSpeechWSConnection(w http.ResponseWriter, r *http.Request) {
-	authHeader := r.Header.Get("Authorization")
-	if !strings.HasPrefix(authHeader, "Bearer ") {
-		http.Error(w, "Missing or invalid Authorization header", http.StatusUnauthorized)
-		return
-	}
-	token := strings.TrimPrefix(authHeader, "Bearer ")
-
-	sm.mu.Lock(sm.lg)
-
-	session, ok := sm.sessionsByToken[token]
-	if !ok {
-		sm.mu.Unlock(sm.lg)
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		sm.lg.Errorf("Invalid token for speech websocket: %s", token)
-		return
-	}
-	sm.mu.Unlock(sm.lg)
-
-	session.HandleSpeechWSConnection(token, w, r)
-}
+// Text-to-Speech (RPC interface for remote TTS provider)
 
 const GetAllVoicesRPC = "SimManager.GetAllVoices"
 
@@ -809,141 +777,6 @@ func (sm *SimManager) TextToSpeech(req *TTSRequest, speechMp3 *[]byte) error {
 			fut.ErrCh = nil // stop checking
 		}
 	}
-}
-
-///////////////////////////////////////////////////////////////////////////
-// Speech-to-text
-
-// ProcessSTTTranscript decodes an STT transcript and executes the resulting command.
-// Returns callsign, command, STT duration, and error.
-func (sm *SimManager) ProcessSTTTranscript(token, transcript string, whisperDuration time.Duration, numCores int) (string, string, time.Duration, error) {
-	c := sm.LookupController(token)
-	if c == nil {
-		return "", "", 0, ErrNoSimForControllerToken
-	}
-
-	if sm.sttTranscriber == nil {
-		return "", "", 0, ErrSTTUnavailable
-	}
-
-	acCtx := makeSTTAircraftContext(c)
-
-	// Convert server.STTAircraftContext to stt package format
-	sttAC := make(map[string]stt.Aircraft)
-	for telephony, ac := range acCtx {
-		sttAC[telephony] = stt.Aircraft{
-			Callsign:            string(ac.Callsign),
-			Fixes:               ac.Fixes,
-			CandidateApproaches: ac.CandidateApproaches,
-			AssignedApproach:    ac.AssignedApproach,
-			Altitude:            ac.Altitude,
-			State:               ac.State,
-		}
-	}
-
-	start := time.Now()
-	commands, err := sm.sttTranscriber.DecodeTranscript(sttAC, transcript, whisperDuration, numCores)
-	sttDuration := time.Since(start)
-
-	if err != nil {
-		sm.lg.Infof("STT: transcript=%q whisper=%s stt=%s cores=%d error=%v",
-			transcript, whisperDuration, sttDuration, numCores, err)
-		return "", "", sttDuration, err
-	}
-	if commands == "" {
-		sm.lg.Infof("STT: transcript=%q whisper=%s stt=%s cores=%d (no command)",
-			transcript, whisperDuration, sttDuration, numCores)
-		return "", "", sttDuration, nil
-	}
-
-	commands = strings.Trim(commands, "`")
-
-	sm.lg.Infof("STT: transcript=%q command=%q whisper=%s stt=%s cores=%d",
-		transcript, commands, whisperDuration, sttDuration, numCores)
-
-	callsign, commands, _ := strings.Cut(commands, " ")
-	er := c.sim.RunAircraftControlCommands(c.tcw, av.ADSBCallsign(callsign), commands)
-	if er.Error != nil {
-		return callsign, commands, sttDuration, er.Error
-	}
-	return callsign, commands, sttDuration, nil
-}
-
-func makeSTTAircraftContext(c *controllerContext) STTAircraftContext {
-	acCtx := make(map[string]STTAircraft)
-
-	for cs, ac := range c.sim.Aircraft {
-		ours := ac.IsAssociated() && c.sim.TCWControlsPosition(c.tcw, ac.NASFlightPlan.ControllingController)
-		vff := ac.IsUnassociated() && (ac.RequestedFlightFollowing || ac.WaitingForGoAhead)
-		if !ours && !vff {
-			continue
-		}
-
-		sttAc := STTAircraft{
-			Callsign: cs,
-			Fixes:    getSTTFixes(ac),
-			Altitude: int(ac.Nav.FlightState.Altitude),
-			State: func() string {
-				if vff {
-					return "vfr flight following"
-				}
-
-				switch ac.TypeOfFlight {
-				case av.FlightTypeDeparture:
-					return "departure"
-				case av.FlightTypeArrival:
-					if appr := ac.Nav.Approach; appr.Assigned != nil && appr.Cleared && appr.PassedApproachFix {
-						return "on approach"
-					} else {
-						return "arrival"
-					}
-				case av.FlightTypeOverflight:
-					return "overflight"
-				default:
-					return ""
-				}
-			}(),
-		}
-
-		if ac.TypeOfFlight == av.FlightTypeArrival {
-			if appr := ac.Nav.Approach.Assigned; appr != nil {
-				sttAc.AssignedApproach = appr.FullName
-			}
-			sttAc.CandidateApproaches = getActiveApproaches(c.sim.State, ac.FlightPlan.ArrivalAirport)
-		}
-
-		telephony := getAircraftTelephony(ac)
-		acCtx[telephony] = sttAc
-	}
-
-	return acCtx
-}
-
-func getActiveApproaches(ss *sim.CommonState, ap string) map[string]string {
-	m := make(map[string]string)
-	for _, ar := range ss.ArrivalRunways {
-		if ar.Airport != ap {
-			continue
-		}
-		for code, appr := range ss.Airports[ap].Approaches {
-			if appr.Runway == ar.Runway {
-				m[av.GetApproachTelephony(appr.FullName)] = code
-			}
-		}
-	}
-	return m
-}
-
-func getSTTFixes(ac *sim.Aircraft) map[string]string {
-	fixes := make(map[string]string)
-	for _, fix := range ac.GetSTTFixes() {
-		fixes[av.GetFixTelephony(fix)] = fix
-	}
-	return fixes
-}
-
-func getAircraftTelephony(ac *sim.Aircraft) string {
-	return av.GetTelephony(string(ac.ADSBCallsign), ac.AircraftPerformance().Category.CWT)
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -45,7 +45,9 @@ func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch,
 				logLocalStt("  candidate %q at pos %d: score=%.2f (adjusted=%.2f) consumed=%d",
 					spokenName, startPos, score, adjustedScore, consumed)
 			}
-			if adjustedScore > bestMatch.Confidence {
+			// Prefer higher score, or more tokens consumed on tie (more specific match)
+			if adjustedScore > bestMatch.Confidence ||
+				(adjustedScore == bestMatch.Confidence && startPos+consumed > bestMatch.Consumed) {
 				bestMatch = CallsignMatch{
 					Callsign:   string(ac.Callsign),
 					SpokenKey:  spokenName,
@@ -114,7 +116,7 @@ func scoreCallsignMatch(tokens []Token, spokenName, callsign string) (float64, i
 			matchCount++
 		} else {
 			// Try to match tokens against airline name parts
-			airlineScore, airlineConsumed := scoreMultiWordAirline(tokens, airlineParts, prefix)
+			airlineScore, airlineConsumed := scoreMultiWordAirline(tokens, airlineParts)
 			if airlineScore > 0.6 {
 				totalScore += airlineScore
 				consumed += airlineConsumed
@@ -173,7 +175,7 @@ func scoreCallsignMatch(tokens []Token, spokenName, callsign string) (float64, i
 }
 
 // scoreMultiWordAirline scores how well tokens match a multi-word airline name.
-func scoreMultiWordAirline(tokens []Token, airlineParts []string, icao string) (float64, int) {
+func scoreMultiWordAirline(tokens []Token, airlineParts []string) (float64, int) {
 	if len(tokens) < len(airlineParts) {
 		return 0, 0
 	}

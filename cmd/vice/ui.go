@@ -702,6 +702,10 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 	imgui.Checkbox("Update Discord activity status", &update)
 	config.InhibitDiscordActivity.Store(!update)
 
+	if c != nil && c.HaveTTS() {
+		imgui.Checkbox("Disable text-to-speech", &config.DisableTextToSpeech)
+	}
+
 	imgui.Separator()
 
 	if imgui.BeginComboV("UI Font Size", strconv.Itoa(config.UIFontSize), imgui.ComboFlagsHeightLarge) {

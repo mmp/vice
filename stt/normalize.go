@@ -23,6 +23,9 @@ var digitWords = map[string]string{
 	"sicks": "6", "seeks": "6", "sex": "6",
 	"ate": "8", "ait": "8", "eat": "8",
 	"oh": "0",
+	// Ordinals sometimes transcribed instead of cardinals
+	"first": "1", "second": "2", "third": "3", "fourth": "4", "fifth": "5",
+	"sixth": "6", "seventh": "7", "eighth": "8", "ninth": "9",
 }
 
 // numberWords maps multi-digit number words to values.

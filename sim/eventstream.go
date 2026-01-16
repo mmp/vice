@@ -263,6 +263,7 @@ const (
 	FixCoordinatesEvent
 	STTCommandEvent
 	FlightPlanDirectEvent
+	TTSPlaybackStartedEvent
 	NumEventTypes
 )
 
@@ -272,7 +273,8 @@ func (t EventType) String() string {
 		"RejectedHandoff", "RadioTransmission", "StatusMessage", "ErrorMessage",
 		"ServerBroadcastMessage", "GlobalMessage", "AcknowledgedPointOut", "RejectedPointOut",
 		"HandoffControl", "SetGlobalLeaderLine", "ForceQL", "TransferAccepted", "TransferRejected",
-		"RecalledPointOut", "FlightPlanAssociated", "FixCoordinates", "STTCommand", "FlightPlanDirect"}[t]
+		"RecalledPointOut", "FlightPlanAssociated", "FixCoordinates", "STTCommand", "FlightPlanDirect",
+		"TTSPlaybackStarted"}[t]
 }
 
 type Event struct {
@@ -291,6 +293,7 @@ type Event struct {
 	STTCommand            string
 	STTTimings            string
 	Route                 av.WaypointArray // For QU
+	TTSLatencyMs          int              // For TTSPlaybackStartedEvent: latency from PTT release to playback start
 }
 
 func (e *Event) String() string {

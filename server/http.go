@@ -44,7 +44,6 @@ type serverStats struct {
 
 	SimStatus []simStatus
 	TTSStats  []ttsClientStats
-	STTStats  string
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -100,8 +99,6 @@ func (sm *SimManager) launchHTTPServer() {
 		sm.statsHandler(w, r)
 		sm.lg.Infof("%s: served stats request", r.URL.String())
 	})
-
-	mux.HandleFunc("/speech", sm.HandleSpeechWSConnection)
 
 	mux.HandleFunc("/debug/pprof/", pprof.Index)
 	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
@@ -263,13 +260,6 @@ tr:nth-child(even) {
 <p>No TTS usage recorded.</p>
 {{end}}
 
-<h1>Speech-to-Text Usage</h1>
-{{if .STTStats}}
-<p><tt>{{.STTStats}}</tt></p>
-{{else}}
-<p>No STT usage recorded.</p>
-{{end}}
-
 </body>
 </html>
 `))
@@ -279,10 +269,6 @@ func (sm *SimManager) statsHandler(w http.ResponseWriter, r *http.Request) {
 	runtime.ReadMemStats(&m)
 
 	usage, _ := cpu.Percent(time.Second, false)
-	var sttStats string
-	if sm.sttTranscriber != nil {
-		sttStats = sm.sttTranscriber.GetUsageStats()
-	}
 
 	stats := serverStats{
 		Uptime:           time.Since(sm.startTime).Round(time.Second),
@@ -296,7 +282,6 @@ func (sm *SimManager) statsHandler(w http.ResponseWriter, r *http.Request) {
 
 		SimStatus: sm.GetSimStatus(),
 		TTSStats:  sm.GetTTSStats(),
-		STTStats:  sttStats,
 	}
 
 	stats.RX, stats.TX = util.GetLoggedRPCBandwidth()
