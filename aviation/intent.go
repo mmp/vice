@@ -405,7 +405,6 @@ type ApproachIntentType int
 
 const (
 	ApproachExpect ApproachIntentType = iota
-	ApproachAlreadyExpecting
 	ApproachIntercept
 	ApproachJoin // for non-ILS approaches
 	ApproachAtFixCleared
@@ -423,8 +422,6 @@ func (a ApproachIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	switch a.Type {
 	case ApproachExpect:
 		rt.Add("[we'll expect the|expecting the|we'll plan for the] {appr} approach", a.ApproachName)
-	case ApproachAlreadyExpecting:
-		rt.Add("you already told us to expect the {appr} approach.", a.ApproachName)
 	case ApproachIntercept:
 		rt.Add("[intercepting the {appr} approach|intercepting {appr}]", a.ApproachName)
 	case ApproachJoin:

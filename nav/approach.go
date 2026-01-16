@@ -124,7 +124,7 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, id string, runwayWaypoints m
 
 	if id == nav.Approach.AssignedId && nav.Approach.Assigned != nil {
 		return av.ApproachIntent{
-			Type:         av.ApproachAlreadyExpecting,
+			Type:         av.ApproachExpect,
 			ApproachName: ap.FullName,
 		}
 	}
