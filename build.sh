@@ -58,20 +58,36 @@ build_whisper() {
     echo "=== Building whisper-cpp ==="
 
     if [ "$OS_TYPE" = "macos" ]; then
+        # Disable GGML_NATIVE since we're building a universal binary.
+        # x86 flags (AVX, etc.) only affect x86_64 compilation; ARM uses NEON.
         cmake -S whisper.cpp -B whisper.cpp/build_go \
             -DBUILD_SHARED_LIBS=OFF \
             -DGGML_CPU=ON \
             -DGGML_METAL=ON \
             -DGGML_BLAS=ON \
             -DGGML_METAL_EMBED_LIBRARY=ON \
+            -DGGML_NATIVE=OFF \
+            -DGGML_AVX=ON \
+            -DGGML_AVX2=OFF \
+            -DGGML_FMA=OFF \
+            -DGGML_F16C=ON \
+            -DGGML_BMI2=OFF \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
             -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0
     elif [ "$OS_TYPE" = "linux" ]; then
+        # Disable GGML_NATIVE to avoid -march=native. Enable instruction sets
+        # safe for computers from ~2012+ (see build.bat for details).
         cmake -S whisper.cpp -B whisper.cpp/build_go \
             -DBUILD_SHARED_LIBS=OFF \
             -DGGML_CPU=ON \
             -DGGML_OPENMP=ON \
+            -DGGML_NATIVE=OFF \
+            -DGGML_AVX=ON \
+            -DGGML_AVX2=OFF \
+            -DGGML_FMA=OFF \
+            -DGGML_F16C=ON \
+            -DGGML_BMI2=OFF \
             -DCMAKE_BUILD_TYPE=Release
     fi
 

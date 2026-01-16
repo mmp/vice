@@ -9,6 +9,7 @@ package main
 // exits.
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"net"
@@ -37,6 +38,7 @@ import (
 
 	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/apenwarr/fixconsole"
+	"github.com/shirou/gopsutil/cpu"
 )
 
 var (
@@ -121,6 +123,11 @@ func main() {
 
 	// Initialize the logging system first and foremost.
 	lg := log.New(*runServer, *logLevel, *logDir)
+
+	// Log CPU information for debugging hardware compatibility issues.
+	if cpuInfo, err := cpu.Info(); err == nil && len(cpuInfo) > 0 {
+		lg.Infof("CPU: %s", cpuInfo[0].ModelName)
+	}
 
 	profiler, err := util.CreateProfiler(*cpuprofile, *memprofile)
 	if err != nil {
@@ -380,6 +387,20 @@ func main() {
 		// Start loading the whisper model in the background so it's ready
 		// when the user first presses PTT
 		client.PreloadWhisperModel(lg)
+
+		// Check for whisper model errors asynchronously and show dialog if CPU not supported.
+		go func() {
+			if err := client.WhisperModelError(); err != nil {
+				if errors.Is(err, client.ErrCPUNotSupported) {
+					ShowErrorDialog(plat, lg, "Speech-to-text is unavailable on this computer.\n\n"+
+						"Your CPU does not support the AVX instruction set, which is required "+
+						"for the speech recognition engine. You can still use vice, but the "+
+						"push-to-talk voice command feature will not work.\n\n"+
+						"CPUs manufactured since approximately 2011 (Intel Sandy Bridge / AMD Bulldozer) "+
+						"typically support AVX.")
+				}
+			}
+		}()
 
 		// Initialize navigation logging if requested
 		nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)

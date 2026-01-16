@@ -81,11 +81,24 @@ if exist "!SDL2_DIR!\bin\SDL2.dll" (
 REM Build whisper-cpp if needed
 if not exist "whisper.cpp\build_go\src\libwhisper.a" (
     echo === Building whisper-cpp ===
+    REM Disable GGML_NATIVE to avoid using -march=native which would compile
+    REM for the build machine's CPU. Instead, explicitly enable instruction sets
+    REM that are safe for computers from ~2012+ (Ivy Bridge/Sandy Bridge era):
+    REM - SSE4.2: Intel Nehalem 2008+, AMD Bulldozer 2011+
+    REM - AVX: Intel Sandy Bridge 2011+, AMD Bulldozer 2011+
+    REM - F16C: Intel Ivy Bridge 2012+, AMD Piledriver 2012+
+    REM We intentionally disable AVX2/FMA/BMI2 (Haswell 2013+) for broader compatibility.
     cmake -S whisper.cpp -B whisper.cpp\build_go ^
         -G "MinGW Makefiles" ^
         -DBUILD_SHARED_LIBS=OFF ^
         -DGGML_CPU=ON ^
         -DGGML_OPENMP=OFF ^
+        -DGGML_NATIVE=OFF ^
+        -DGGML_AVX=ON ^
+        -DGGML_AVX2=OFF ^
+        -DGGML_FMA=OFF ^
+        -DGGML_F16C=ON ^
+        -DGGML_BMI2=OFF ^
         -DCMAKE_BUILD_TYPE=Release ^
         -DCMAKE_C_FLAGS="-D_WIN32_WINNT=0x0601 -DWINVER=0x0601" ^
         -DCMAKE_CXX_FLAGS="-D_WIN32_WINNT=0x0601 -DWINVER=0x0601"

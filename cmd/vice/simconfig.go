@@ -480,7 +480,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 
 		// Search/filter input
 		filterW := tableScale*700 - 60
-		
+
 		imgui.SetNextItemWidth(filterW)
 		imgui.InputTextWithHint("##filter", "Search scenarios, TRACONs, ARTCCs...", &c.filterText, 0, nil)
 		imgui.SameLine()

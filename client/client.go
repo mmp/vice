@@ -5,9 +5,11 @@
 package client
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"net/rpc"
+	"runtime"
 	"slices"
 	"sort"
 	"strings"
@@ -24,6 +26,8 @@ import (
 	"github.com/mmp/vice/stt"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
+
+	"github.com/shirou/gopsutil/cpu"
 )
 
 type ControlClient struct {
@@ -534,11 +538,52 @@ var whisperModelErr error
 var whisperModelOnce sync.Once
 var whisperModelMu sync.Mutex
 
+// ErrCPUNotSupported is returned when the CPU doesn't support the required
+// instruction sets for speech-to-text (AVX on x86/amd64).
+var ErrCPUNotSupported = errors.New("CPU does not support required instructions for speech-to-text")
+
+// checkCPUSupport verifies that the CPU supports the instruction sets
+// required by the whisper library. Returns an error if not supported.
+func checkCPUSupport() error {
+	// Only x86/amd64 needs AVX support check; ARM uses NEON which is always available.
+	if runtime.GOARCH != "amd64" && runtime.GOARCH != "386" {
+		return nil
+	}
+
+	cpuInfo, err := cpu.Info()
+	if err != nil {
+		// If we can't get CPU info, assume it's supported and let it fail later if not.
+		return nil
+	}
+
+	if len(cpuInfo) == 0 {
+		return nil
+	}
+
+	// Check for AVX support (required for our whisper build).
+	if slices.Contains(cpuInfo[0].Flags, "avx") {
+		return nil
+	}
+
+	return ErrCPUNotSupported
+}
+
+var whisperModelDone = make(chan struct{})
+
 // PreloadWhisperModel loads the whisper model in the background so it's
 // ready when PTT is first pressed. This avoids blocking the UI.
 func PreloadWhisperModel(lg *log.Logger) {
 	go func() {
 		whisperModelOnce.Do(func() {
+			defer close(whisperModelDone)
+
+			// Check CPU compatibility before attempting to load.
+			if err := checkCPUSupport(); err != nil {
+				whisperModelErr = fmt.Errorf("%w (AVX instruction set not available)", ErrCPUNotSupported)
+				lg.Warnf("Speech-to-text unavailable: %v", whisperModelErr)
+				return
+			}
+
 			lg.Info("Preloading whisper model...")
 			model := util.LoadResourceBytes("models/ggml-small.en.bin")
 			whisperModel, whisperModelErr = whisper.LoadModelFromBytes(model)
@@ -549,6 +594,20 @@ func PreloadWhisperModel(lg *log.Logger) {
 			}
 		})
 	}()
+}
+
+// WhisperModelError waits for the whisper model to finish loading and returns
+// any error that occurred. Returns nil if the model loaded successfully.
+// This can be used to check if STT is available and show an error dialog if not.
+func WhisperModelError() error {
+	<-whisperModelDone
+	return whisperModelErr
+}
+
+// IsSTTAvailable returns true if speech-to-text is available.
+// This blocks until the whisper model finishes loading.
+func IsSTTAvailable() bool {
+	return WhisperModelError() == nil
 }
 
 func makeWhisperPrompt(state SimState) string {
