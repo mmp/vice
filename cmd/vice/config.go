@@ -77,8 +77,9 @@ type ConfigNoSim struct {
 	ScenarioFile string
 	VideoMapFile string
 
-	UserPTTKey         imgui.Key
-	SelectedMicrophone string
+	UserPTTKey           imgui.Key
+	SelectedMicrophone   string
+	SelectedWhisperModel string
 }
 
 type ConfigSim struct {
