@@ -1544,7 +1544,9 @@ func (s *Sim) GoAhead(tcw TCW, callsign av.ADSBCallsign) error {
 	return err
 }
 
-func (s *Sim) SayBlocked(tcw TCW) (av.CommandIntent, error) {
+// SayBlocked triggers a random pilot saying "blocked" in response to an unclear transmission.
+// Returns the callsign selected (for voice assignment) and the spoken text for TTS synthesis.
+func (s *Sim) SayBlocked(tcw TCW) (av.ADSBCallsign, string, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -1553,18 +1555,31 @@ func (s *Sim) SayBlocked(tcw TCW) (av.CommandIntent, error) {
 		ac := s.Aircraft[cs]
 		return util.Select(s.TCWCanCommandAircraft(tcw, ac.NASFlightPlan), 1, 0)
 	})
-	if ok {
-		s.postReadbackTransmission(callsign, *av.MakeNoIdTransmission("blocked"), tcw)
+	if !ok {
+		// No aircraft available to speak
+		return "", "", nil
 	}
-	return nil, nil
+
+	tr := av.MakeNoIdTransmission("blocked")
+	s.postReadbackTransmission(callsign, *tr, tcw)
+
+	// Return spoken text for TTS synthesis (no callsign suffix for "blocked")
+	spokenText := tr.Spoken(s.Rand)
+	return callsign, spokenText, nil
 }
 
-func (s *Sim) SayAgain(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
+// SayAgain triggers a pilot saying "say again" in response to an unclear command.
+// Returns the spoken text for TTS synthesis and the callsign to use for voice selection.
+func (s *Sim) SayAgain(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign, string, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	s.postReadbackTransmission(callsign, *av.MakeReadbackTransmission("say again for"), tcw)
-	return nil, nil
+	tr := av.MakeReadbackTransmission("say again for")
+	s.postReadbackTransmission(callsign, *tr, tcw)
+
+	// Return spoken text with callsign suffix for TTS synthesis
+	spokenText := tr.Spoken(s.Rand) + s.readbackCallsignSuffix(callsign, tcw)
+	return callsign, spokenText, nil
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1694,6 +1709,28 @@ type ControlCommandsResult struct {
 // All intents from commands are collected and rendered together as a single transmission.
 func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string) ControlCommandsResult {
 	commands := strings.Fields(commandStr)
+
+	// Handle special STT commands that need direct TTS synthesis
+	// These short-circuit normal command processing
+	if len(commands) == 1 {
+		switch commands[0] {
+		case "AGAIN":
+			cs, spokenText, err := s.SayAgain(tcw, callsign)
+			return ControlCommandsResult{
+				Error:              err,
+				ReadbackSpokenText: spokenText,
+				ReadbackCallsign:   cs,
+			}
+		case "BLOCKED":
+			cs, spokenText, err := s.SayBlocked(tcw)
+			return ControlCommandsResult{
+				Error:              err,
+				ReadbackSpokenText: spokenText,
+				ReadbackCallsign:   cs,
+			}
+		}
+	}
+
 	var intents []av.CommandIntent
 
 	for i, command := range commands {
@@ -1890,7 +1927,8 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 		if command == "A" {
 			return s.AltitudeOurDiscretion(tcw, callsign)
 		} else if command == "AGAIN" {
-			return s.SayAgain(tcw, callsign)
+			// AGAIN is handled specially in RunAircraftControlCommands for TTS synthesis
+			return nil, nil
 		} else {
 			components := strings.Split(command, "/")
 			if len(components) != 2 || len(components[1]) == 0 || components[1][0] != 'C' {
@@ -1904,7 +1942,8 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 
 	case 'B':
 		if command == "BLOCKED" {
-			return s.SayBlocked(tcw)
+			// BLOCKED is handled specially in RunAircraftControlCommands for TTS synthesis
+			return nil, nil
 		}
 		return nil, ErrInvalidCommandSyntax
 

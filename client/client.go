@@ -745,7 +745,7 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 			return
 		}
 
-		if decoded == "" || decoded == "BLOCKED" {
+		if decoded == "" {
 			lg.Infof("STT: no command decoded from %q", finalText)
 			c.transmissions.Unhold()
 			c.postSTTEvent(finalText, decoded, timingStr)
@@ -753,7 +753,13 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 		}
 
 		// Parse callsign and command from decoded result
-		callsign, command, _ := strings.Cut(decoded, " ")
+		// BLOCKED is special: no callsign, server picks a random aircraft
+		var callsign, command string
+		if decoded == "BLOCKED" {
+			command = "BLOCKED"
+		} else {
+			callsign, command, _ = strings.Cut(decoded, " ")
+		}
 		lg.Infof("STT command: %s %s", callsign, command)
 
 		c.SetLastCommand(decoded)
