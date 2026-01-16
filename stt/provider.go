@@ -364,7 +364,29 @@ func isPositionIdentification(tokens []Token, controllerRadioName string) bool {
 		}
 	}
 
-	// Build the phrase from remaining tokens
+	// Command keywords that indicate actual commands (not position identification).
+	// If any of these appear in the tokens, this isn't JUST a position ID - there are
+	// commands to process. Position-related words like "departure", "approach" are NOT in this set.
+	commandStopWords := map[string]bool{
+		"proceed": true, "direct": true, "climb": true, "descend": true,
+		"maintain": true, "turn": true, "heading": true, "speed": true,
+		"cleared": true, "expect": true, "vectors": true, "squawk": true,
+		"contact": true, "cross": true, "expedite": true, "reduce": true,
+		"increase": true, "fly": true, "intercept": true, "cancel": true,
+		"resume": true, "ident": true, "go": true,
+	}
+
+	// Check if any command keywords appear in the tokens.
+	// If so, this isn't just a position ID - there are commands to process.
+	for i := 0; i <= lastIdx; i++ {
+		word := strings.ToLower(tokens[i].Text)
+		if commandStopWords[word] {
+			logLocalStt("  position ID: found command keyword %q at position %d - not just position ID", word, i)
+			return false
+		}
+	}
+
+	// Build the phrase from remaining tokens (no command keywords present)
 	var parts []string
 	for i := 0; i <= lastIdx; i++ {
 		parts = append(parts, strings.ToLower(tokens[i].Text))

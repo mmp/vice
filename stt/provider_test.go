@@ -678,6 +678,16 @@ func TestPositionIdentification(t *testing.T) {
 			expected:         "JBU2655 DBETTE",
 			expectPositionID: false,
 		},
+		{
+			name:       "position ID prefix followed by direct and climb commands",
+			transcript: "JetBlue 25 New York departure proceed direct Wavy climb and maintain 12000",
+			aircraft: map[string]Aircraft{
+				"JetBlue 25": {Callsign: "JBU25", State: "departure", Fixes: map[string]string{"Wavey": "WAVEY"}},
+			},
+			radioName:        "New York Approach",
+			expected:         "JBU25 DWAVEY C120",
+			expectPositionID: false,
+		},
 	}
 
 	provider := NewTranscriber(nil)
