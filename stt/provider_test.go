@@ -83,7 +83,7 @@ func TestBasicAltitudeCommands(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -148,7 +148,7 @@ func TestBasicHeadingCommands(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -205,7 +205,7 @@ func TestBasicSpeedCommands(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -254,7 +254,7 @@ func TestCompoundCommands(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -303,7 +303,7 @@ func TestTransponderCommands(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -344,7 +344,7 @@ func TestHandoffCommands(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -385,7 +385,7 @@ func TestVFRCommands(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -463,7 +463,7 @@ func TestNavigationCommands(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -512,7 +512,7 @@ func TestSTTErrorRecovery(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -545,7 +545,7 @@ func TestDisregardHandling(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -586,7 +586,95 @@ func TestEdgeCases(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript)
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
+}
+
+// Test position identification detection
+func TestPositionIdentification(t *testing.T) {
+	tests := []struct {
+		name             string
+		transcript       string
+		aircraft         map[string]Aircraft
+		radioName        string
+		expected         string
+		expectPositionID bool
+	}{
+		{
+			name:       "new york departure exact match",
+			transcript: "Encore 208 New York departure",
+			aircraft: map[string]Aircraft{
+				"Encore 208": {Callsign: "WEN208", State: "departure"},
+			},
+			radioName:        "New York Departure",
+			expected:         "",
+			expectPositionID: true,
+		},
+		{
+			name:       "new york approach when radio is departure (interchangeable)",
+			transcript: "Encore 208 New York approach",
+			aircraft: map[string]Aircraft{
+				"Encore 208": {Callsign: "WEN208", State: "departure"},
+			},
+			radioName:        "New York Departure",
+			expected:         "",
+			expectPositionID: true,
+		},
+		{
+			name:       "position ID with radar contact suffix",
+			transcript: "Delta 100 New York departure radar contact",
+			aircraft: map[string]Aircraft{
+				"Delta 100": {Callsign: "DAL100", State: "departure"},
+			},
+			radioName:        "New York Departure",
+			expected:         "",
+			expectPositionID: true,
+		},
+		{
+			name:       "fuzzy facility match",
+			transcript: "American 5936 neww york departure",
+			aircraft: map[string]Aircraft{
+				"American 5936": {Callsign: "AAL5936", State: "departure"},
+			},
+			radioName:        "New York Departure",
+			expected:         "",
+			expectPositionID: true,
+		},
+		{
+			name:       "no position ID - actual command",
+			transcript: "Encore 208 climb and maintain 8000",
+			aircraft: map[string]Aircraft{
+				"Encore 208": {Callsign: "WEN208", State: "departure"},
+			},
+			radioName:        "New York Departure",
+			expected:         "WEN208 C80",
+			expectPositionID: false,
+		},
+		{
+			name:       "no position ID without radio name",
+			transcript: "Encore 208 New York departure",
+			aircraft: map[string]Aircraft{
+				"Encore 208": {Callsign: "WEN208", State: "departure"},
+			},
+			radioName:        "", // No radio name - should not detect position ID
+			expected:         "WEN208 AGAIN",
+			expectPositionID: false,
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, tt.radioName)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 				return
@@ -742,7 +830,7 @@ func BenchmarkDecodeTranscript(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		provider.DecodeTranscript(aircraft, "American 5936 descend and maintain 8000")
+		provider.DecodeTranscript(aircraft, "American 5936 descend and maintain 8000", "")
 	}
 }
 
@@ -758,6 +846,6 @@ func BenchmarkDecodeTranscriptComplex(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		provider.DecodeTranscript(aircraft, "JetBlue 789 reduce speed to two five zero then descend and maintain one zero thousand")
+		provider.DecodeTranscript(aircraft, "JetBlue 789 reduce speed to two five zero then descend and maintain one zero thousand", "")
 	}
 }

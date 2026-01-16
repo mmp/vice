@@ -25,10 +25,14 @@ func NewTranscriber(lg *log.Logger) *Transcriber {
 //   - "{CALLSIGN} {CMD1} {CMD2} ..." for successful parsing
 //   - "{CALLSIGN} AGAIN" if callsign identified but commands unclear
 //   - "BLOCKED" if no callsign could be identified
-//   - "" if transcript is empty
+//   - "" if transcript is empty or only contains position identification
+//
+// controllerRadioName is the user's controller radio name (e.g., "New York Departure")
+// used to detect position identification phrases. Pass empty string if not available.
 func (p *Transcriber) DecodeTranscript(
 	aircraft map[string]Aircraft,
 	transcript string,
+	controllerRadioName string,
 ) (string, error) {
 	start := time.Now()
 
@@ -100,6 +104,16 @@ func (p *Transcriber) DecodeTranscript(
 		logLocalStt("  remaining[%d]: Text=%q Type=%d Value=%d", i, t.Text, t.Type, t.Value)
 	}
 
+	// Check for position identification phrases (e.g., "New York departure", "Kennedy approach")
+	// These are informational only and should return empty (no command needed)
+	if isPositionIdentification(remainingTokens, controllerRadioName) {
+		logLocalStt("detected position identification, returning empty")
+		elapsed := time.Since(start)
+		logLocalStt("=== DecodeTranscript END: \"\" (position ID, time=%s) ===", elapsed)
+		p.logInfo("local STT: %q -> \"\" (position identification, time=%s)", transcript, elapsed)
+		return "", nil
+	}
+
 	// Layer 4: Command parsing
 	commands, cmdConf := ParseCommands(remainingTokens, ac)
 	logLocalStt("parsed commands: %v (conf=%.2f)", commands, cmdConf)
@@ -150,8 +164,15 @@ func (p *Transcriber) DecodeFromState(
 	// Build aircraft context from state
 	aircraft := p.BuildAircraftContext(state, userTCW)
 
+	// Get the controller's radio name for position identification detection
+	controllerRadioName := ""
+	primaryPos := state.PrimaryPositionForTCW(userTCW)
+	if ctrl, ok := state.Controllers[primaryPos]; ok && ctrl != nil {
+		controllerRadioName = ctrl.RadioName
+	}
+
 	// Delegate to existing decoder
-	return p.DecodeTranscript(aircraft, transcript)
+	return p.DecodeTranscript(aircraft, transcript, controllerRadioName)
 }
 
 // BuildAircraftContext creates the STT aircraft context from simulation state.
@@ -299,6 +320,102 @@ func applyDisregard(tokens []Token) []Token {
 		}
 	}
 	return tokens
+}
+
+// isPositionIdentification detects controller position identification phrases
+// like "New York departure", "Kennedy approach", "Boston center", etc.
+// These are informational (controller identifying themselves) and need no response.
+//
+// controllerRadioName is the user's radio name (e.g., "New York Departure").
+// The function does fuzzy matching allowing "departure" and "approach" to be
+// interchangeable since controllers may say either depending on context.
+func isPositionIdentification(tokens []Token, controllerRadioName string) bool {
+	if len(tokens) == 0 || controllerRadioName == "" {
+		return false
+	}
+
+	// Build the phrase from tokens, stripping trailing "radar contact" if present
+	lastIdx := len(tokens) - 1
+
+	// Check for trailing "radar contact"
+	if lastIdx >= 1 {
+		if strings.ToLower(tokens[lastIdx].Text) == "contact" &&
+			strings.ToLower(tokens[lastIdx-1].Text) == "radar" {
+			lastIdx -= 2
+			if lastIdx < 0 {
+				// Just "radar contact" with no position - still informational
+				logLocalStt("  position ID: just 'radar contact' - informational")
+				return true
+			}
+		}
+	}
+
+	// Build the phrase from remaining tokens
+	var parts []string
+	for i := 0; i <= lastIdx; i++ {
+		parts = append(parts, strings.ToLower(tokens[i].Text))
+	}
+	phrase := strings.Join(parts, " ")
+
+	// Normalize the controller radio name for comparison
+	radioName := strings.ToLower(controllerRadioName)
+
+	// Position suffixes that are interchangeable
+	positionSuffixes := []string{"departure", "approach", "center", "tower", "ground"}
+
+	// Check for exact or fuzzy match
+	if FuzzyMatch(phrase, radioName, 0.75) {
+		logLocalStt("  position ID: fuzzy match %q ~ %q", phrase, radioName)
+		return true
+	}
+
+	// Try swapping position suffixes (e.g., "new york approach" matches "New York Departure")
+	for _, suffix := range positionSuffixes {
+		if strings.HasSuffix(phrase, suffix) {
+			// Extract the facility part (everything before the suffix)
+			facilityPart := strings.TrimSuffix(phrase, suffix)
+			facilityPart = strings.TrimSpace(facilityPart)
+
+			// Try matching with each alternative suffix
+			for _, altSuffix := range positionSuffixes {
+				altPhrase := facilityPart + " " + altSuffix
+				if FuzzyMatch(altPhrase, radioName, 0.75) {
+					logLocalStt("  position ID: fuzzy match with suffix swap %q ~ %q (orig: %q)",
+						altPhrase, radioName, phrase)
+					return true
+				}
+			}
+			break // Only one suffix match is possible
+		}
+	}
+
+	// Check if the phrase ends with a position suffix and the facility part fuzzy matches
+	// the controller's facility (e.g., "mumble departure" where mumble ~ "new york")
+	for _, suffix := range positionSuffixes {
+		if strings.HasSuffix(phrase, suffix) {
+			spokenFacility := strings.TrimSuffix(phrase, suffix)
+			spokenFacility = strings.TrimSpace(spokenFacility)
+
+			// Extract facility from radio name
+			for _, radioSuffix := range positionSuffixes {
+				if strings.HasSuffix(radioName, radioSuffix) {
+					radioFacility := strings.TrimSuffix(radioName, radioSuffix)
+					radioFacility = strings.TrimSpace(radioFacility)
+
+					if spokenFacility != "" && radioFacility != "" &&
+						FuzzyMatch(spokenFacility, radioFacility, 0.70) {
+						logLocalStt("  position ID: facility fuzzy match %q ~ %q (suffix: %s)",
+							spokenFacility, radioFacility, suffix)
+						return true
+					}
+					break
+				}
+			}
+			break
+		}
+	}
+
+	return false
 }
 
 // logging helpers

@@ -818,11 +818,18 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 		// Build aircraft context before decoding
 		aircraftCtx := c.sttTranscriber.BuildAircraftContext(&c.State.UserState, c.State.UserTCW)
 
+		// Get controller radio name for position identification detection
+		controllerRadioName := ""
+		primaryPos := c.State.UserState.PrimaryPositionForTCW(c.State.UserTCW)
+		if ctrl, ok := c.State.UserState.Controllers[primaryPos]; ok && ctrl != nil {
+			controllerRadioName = ctrl.RadioName
+		}
+
 		// Start capturing debug logs
 		stt.StartCapture()
 
 		// Decode transcript locally using current state
-		decoded, err := c.sttTranscriber.DecodeTranscript(aircraftCtx, finalText)
+		decoded, err := c.sttTranscriber.DecodeTranscript(aircraftCtx, finalText, controllerRadioName)
 
 		// Stop capturing and get debug logs
 		debugLogs := stt.StopCapture()
