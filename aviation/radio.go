@@ -954,9 +954,9 @@ func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 		tel = tel2
 	}
 
-	// For non-emergency aircraft reading back instructions, 25% of the time
+	// For non-emergency aircraft reading back instructions, 5% of the time
 	// skip the ICAO identifier and just say the flight number.
-	if !ca.IsEmergency && !ca.AlwaysFullCallsign && r.Float32() < 0.25 {
+	if !ca.IsEmergency && !ca.AlwaysFullCallsign && r.Float32() < 0.05 {
 		tel = ""
 	}
 
