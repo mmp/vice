@@ -44,6 +44,9 @@ type ControlClient struct {
 	sttTranscriber *stt.Transcriber
 	pttReleaseTime time.Time // Wall clock time when PTT was released (for latency tracking)
 
+	// Previous STT context for bug reporting
+	prevSTTContext *STTBugContext
+
 	lg *log.Logger
 	mu sync.Mutex
 
@@ -59,6 +62,15 @@ type ControlClient struct {
 	// This is all read-only data that we expect other parts of the system
 	// to access directly.
 	State SimState
+}
+
+// STTBugContext stores context from a previous STT decode for bug reporting.
+type STTBugContext struct {
+	Transcript      string                  // Raw whisper transcript
+	AircraftContext map[string]stt.Aircraft // Aircraft context used for decoding
+	DebugLogs       []string                // Captured logLocalStt output
+	DecodedCommand  string                  // Result of DecodeTranscript
+	Timestamp       time.Time               // When this decode happened
 }
 
 // This is the client-side representation of a server (perhaps could be better-named...)
@@ -728,15 +740,47 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 			return
 		}
 
-		// Decode transcript locally using current state (not the snapshot from PTT press)
-		// to match against the current set of aircraft
-		decoded, err := c.sttTranscriber.DecodeFromState(
-			&c.State.UserState,
-			c.State.UserTCW,
-			finalText,
-		)
+		// Check for "STT bug" command pattern
+		// After normalization, "sierra tango tango bug" becomes ["s", "t", "t", "bug", ...]
+		words := stt.NormalizeTranscript(finalText)
+		if len(words) >= 4 && words[0] == "s" && words[1] == "t" && words[2] == "t" && words[3] == "bug" {
+			// Extract user explanation (words after "bug")
+			var explanation string
+			if len(words) > 4 {
+				explanation = strings.Join(words[4:], " ")
+			}
+
+			c.reportSTTBug(explanation, lg)
+			c.transmissions.Unhold()
+			c.postSTTEvent(finalText, "[STT Bug Reported]", "")
+			return
+		}
+
+		// Build aircraft context before decoding
+		aircraftCtx := c.sttTranscriber.BuildAircraftContext(&c.State.UserState, c.State.UserTCW)
+
+		// Start capturing debug logs
+		stt.StartCapture()
+
+		// Decode transcript locally using current state
+		decoded, err := c.sttTranscriber.DecodeTranscript(aircraftCtx, finalText)
+
+		// Stop capturing and get debug logs
+		debugLogs := stt.StopCapture()
+
 		totalDuration := time.Since(pttReleaseTime)
 		timingStr := fmt.Sprintf("%.0fms", float64(totalDuration.Microseconds())/1000)
+
+		// Store this context as "previous" for future bug reports
+		c.mu.Lock()
+		c.prevSTTContext = &STTBugContext{
+			Transcript:      finalText,
+			AircraftContext: aircraftCtx,
+			DebugLogs:       debugLogs,
+			DecodedCommand:  decoded,
+			Timestamp:       time.Now(),
+		}
+		c.mu.Unlock()
 
 		if err != nil {
 			lg.Infof("STT decode error: %v", err)
@@ -779,12 +823,43 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 // FeedAudioToStreaming sends audio samples to the streaming transcriber.
 func (c *ControlClient) FeedAudioToStreaming(samples []int16) {
 	c.mu.Lock()
-	stt := c.streamingSTT
+	sttSession := c.streamingSTT
 	c.mu.Unlock()
 
-	if stt != nil && stt.transcriber != nil {
-		stt.transcriber.AddSamples(samples)
+	if sttSession != nil && sttSession.transcriber != nil {
+		sttSession.transcriber.AddSamples(samples)
 	}
+}
+
+// reportSTTBug sends an STT bug report to the server using the previous STT context.
+func (c *ControlClient) reportSTTBug(explanation string, lg *log.Logger) {
+	c.mu.Lock()
+	prevCtx := c.prevSTTContext
+	c.mu.Unlock()
+
+	if prevCtx == nil {
+		lg.Info("STT bug reported but no previous context available")
+		return
+	}
+
+	args := server.STTBugReportArgs{
+		ControllerToken: c.controllerToken,
+		PrevTranscript:  prevCtx.Transcript,
+		PrevCommand:     prevCtx.DecodedCommand,
+		AircraftContext: prevCtx.AircraftContext,
+		DebugLogs:       prevCtx.DebugLogs,
+		UserExplanation: explanation,
+		ReportTime:      time.Now(),
+	}
+
+	c.addCall(makeRPCCall(c.client.Go(server.ReportSTTBugRPC, &args, nil, nil),
+		func(err error) {
+			if err != nil {
+				lg.Errorf("STT bug report failed: %v", err)
+			} else {
+				lg.Info("STT bug report submitted")
+			}
+		}))
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -148,14 +148,14 @@ func (p *Transcriber) DecodeFromState(
 	transcript string,
 ) (string, error) {
 	// Build aircraft context from state
-	aircraft := p.buildAircraftContext(state, userTCW)
+	aircraft := p.BuildAircraftContext(state, userTCW)
 
 	// Delegate to existing decoder
 	return p.DecodeTranscript(aircraft, transcript)
 }
 
-// buildAircraftContext creates the STT aircraft context from simulation state.
-func (p *Transcriber) buildAircraftContext(
+// BuildAircraftContext creates the STT aircraft context from simulation state.
+func (p *Transcriber) BuildAircraftContext(
 	state *sim.UserState,
 	userTCW sim.TCW,
 ) map[string]Aircraft {

@@ -6,11 +6,13 @@ package server
 
 import (
 	"fmt"
+	"log/slog"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/stt"
 	"github.com/mmp/vice/util"
 )
 
@@ -933,4 +935,54 @@ func (sd *dispatcher) ConfigureATPA(args *ATPAConfigArgs, result *ATPAConfigResu
 		result.SimStateUpdate = c.GetStateUpdate()
 	}
 	return err
+}
+
+// STTBugReportArgs contains data for an STT bug report.
+type STTBugReportArgs struct {
+	ControllerToken string
+	PrevTranscript  string                  // Transcript of the previous transmission
+	PrevCommand     string                  // Decoded command from previous transmission
+	AircraftContext map[string]stt.Aircraft // Aircraft context used for decoding
+	DebugLogs       []string                // Debug log lines from the decode
+	UserExplanation string                  // User's explanation of the issue
+	ReportTime      time.Time
+}
+
+const ReportSTTBugRPC = "Sim.ReportSTTBug"
+
+func (sd *dispatcher) ReportSTTBug(args *STTBugReportArgs, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+
+	// Log the bug report
+	sd.sm.lg.Info("STT Bug Report",
+		slog.String("tcw", string(c.tcw)),
+		slog.String("transcript", args.PrevTranscript),
+		slog.String("decoded_command", args.PrevCommand),
+		slog.String("user_explanation", args.UserExplanation),
+		slog.Int("aircraft_count", len(args.AircraftContext)),
+		slog.Int("debug_log_lines", len(args.DebugLogs)),
+		slog.Time("report_time", args.ReportTime),
+	)
+
+	// Log the detailed debug output
+	for _, line := range args.DebugLogs {
+		sd.sm.lg.Debug("STT Bug Debug", slog.String("line", line))
+	}
+
+	// Log aircraft context
+	for telephony, ac := range args.AircraftContext {
+		sd.sm.lg.Debug("STT Bug Aircraft",
+			slog.String("telephony", telephony),
+			slog.String("callsign", ac.Callsign),
+			slog.String("state", ac.State),
+			slog.Int("altitude", ac.Altitude),
+		)
+	}
+
+	return nil
 }
