@@ -457,6 +457,7 @@ func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCal
 	prevMode := sp.commandMode
 
 	ctx.Client.RunAircraftCommands(callsign, cmds, multiple, clickedTrack,
+		0, "", // keyboard input: no whisper duration or transcript
 		func(errStr string, remaining string) {
 			if errStr != "" {
 				sp.commandMode = prevMode // CommandModeTargetGen or TargetGenLock

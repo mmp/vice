@@ -870,6 +870,7 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 
 		// Execute the command via RPC (this handles TTS readback)
 		c.RunAircraftCommands(av.ADSBCallsign(callsign), command, false, false,
+			totalDuration, finalText,
 			func(message string, remainingInput string) {
 				c.transmissions.Unhold()
 				if message != "" {

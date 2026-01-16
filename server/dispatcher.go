@@ -590,12 +590,14 @@ func (sd *dispatcher) FlightPlanDirect(da *FlightPlanDirectArgs, update *SimStat
 }
 
 type AircraftCommandsArgs struct {
-	ControllerToken string
-	Callsign        av.ADSBCallsign
-	Commands        string
-	Multiple        bool
-	ClickedTrack    bool
-	EnableTTS       bool // Whether to synthesize readback audio
+	ControllerToken   string
+	Callsign          av.ADSBCallsign
+	Commands          string
+	Multiple          bool
+	ClickedTrack      bool
+	EnableTTS         bool          // Whether to synthesize readback audio
+	WhisperDuration   time.Duration // Time from PTT release to whisper completion (zero for keyboard input)
+	WhisperTranscript string        // Raw whisper transcript (empty for keyboard input)
 }
 
 // If an RPC call returns an error, then the result argument is not returned(!?).
@@ -658,6 +660,12 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 		result.ErrorMessage = execResult.Error.Error()
 	}
 	synthesizeReadback(execResult.ReadbackSpokenText)
+
+	// Log whisper STT commands (WhisperDuration is non-zero for voice commands)
+	if cmds.WhisperDuration > 0 {
+		sd.sm.lg.Infof("STT: transcript=%q duration=%s callsign=%s command=%q",
+			cmds.WhisperTranscript, cmds.WhisperDuration, cmds.Callsign, cmds.Commands)
+	}
 
 	return nil
 }

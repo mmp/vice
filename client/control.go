@@ -5,6 +5,8 @@
 package client
 
 import (
+	"time"
+
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/server"
@@ -390,6 +392,7 @@ func (c *ControlClient) FlightPlanDirect(aircraft sim.ACID, fix string, callback
 }
 
 func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds string, multiple, clickedTrack bool,
+	whisperDuration time.Duration, whisperTranscript string,
 	handleResult func(message string, remainingInput string)) {
 	// Determine if TTS is enabled for this command
 	enableTTS := c.HaveTTS() && (c.disableTTSPtr == nil || !*c.disableTTSPtr) && cmds != "P" && cmds != "X"
@@ -399,12 +402,14 @@ func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds strin
 
 	var result server.AircraftCommandsResult
 	c.addCall(makeRPCCall(c.client.Go(server.RunAircraftCommandsRPC, &server.AircraftCommandsArgs{
-		ControllerToken: c.controllerToken,
-		Callsign:        callsign,
-		Commands:        cmds,
-		Multiple:        multiple,
-		ClickedTrack:    clickedTrack,
-		EnableTTS:       enableTTS,
+		ControllerToken:   c.controllerToken,
+		Callsign:          callsign,
+		Commands:          cmds,
+		Multiple:          multiple,
+		ClickedTrack:      clickedTrack,
+		EnableTTS:         enableTTS,
+		WhisperDuration:   whisperDuration,
+		WhisperTranscript: whisperTranscript,
 	}, &result, nil),
 		func(err error) {
 			// Handle readback from RPC result
