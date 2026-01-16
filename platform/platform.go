@@ -152,4 +152,8 @@ type Platform interface {
 	// as they are recorded. This enables streaming audio to a transcriber.
 	// Pass nil to disable the callback.
 	SetAudioStreamCallback(cb func([]int16))
+
+	// GetGPUInfo returns the GPU vendor and renderer strings from OpenGL.
+	// Should be called after OpenGL is initialized.
+	GetGPUInfo() (vendor, renderer string)
 }

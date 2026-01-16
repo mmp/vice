@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"path/filepath"
 	"slices"
 	"strings"
 	"sync"
@@ -896,5 +897,27 @@ func (sm *SimManager) Broadcast(m *BroadcastMessage, _ *struct{}) error {
 			WrittenText: m.Message,
 		})
 	}
+	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Crash Reporting
+
+// ReportCrash receives crash reports from clients and logs them.
+// This RPC does not require a controller token.
+func (sm *SimManager) ReportCrash(report *log.CrashReport, _ *struct{}) error {
+	defer sm.lg.CatchAndReportCrash()
+
+	sm.lg.Warn("Received crash report from client",
+		slog.String("cpu_model", report.System.CPUModel),
+		slog.String("gpu_renderer", report.System.GPURenderer),
+		slog.Time("crash_time", report.Timestamp))
+
+	// Save the crash report to disk
+	fn := filepath.Join(sm.lg.LogDir, "client-crash-"+report.Timestamp.Format(time.RFC3339)+".txt")
+	if err := os.WriteFile(fn, []byte(report.Report), 0o600); err != nil {
+		sm.lg.Errorf("Failed to write crash report: %v", err)
+	}
+
 	return nil
 }

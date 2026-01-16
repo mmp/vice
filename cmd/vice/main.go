@@ -374,6 +374,11 @@ func main() {
 		}
 		renderer.FontsInit(render, plat)
 
+		// Capture GPU info for crash reports now that OpenGL is initialized
+		gpuVendor, gpuRenderer := plat.GetGPUInfo()
+		lg.SetGPUInfo(gpuVendor, gpuRenderer)
+		lg.Infof("GPU: %s (%s)", gpuRenderer, gpuVendor)
+
 		eventStream := sim.NewEventStream(lg)
 
 		uiInit(render, plat, config, eventStream, lg)
@@ -433,6 +438,17 @@ func main() {
 					if *waypointCommands != "" {
 						c.SetWaypointCommands(*waypointCommands)
 					}
+
+					// Set crash report RPC client - prefer remote server so crashes
+					// are reported to the public server even for local sims
+					if mgr.RemoteServer != nil && mgr.RemoteServer.RPCClient != nil {
+						lg.SetCrashReportClient(mgr.RemoteServer.RPCClient.Client)
+					} else if mgr.LocalServer != nil && mgr.LocalServer.RPCClient != nil {
+						lg.SetCrashReportClient(mgr.LocalServer.RPCClient.Client)
+					}
+				} else {
+					// Clear crash report client when disconnecting
+					lg.SetCrashReportClient(nil)
 				}
 				uiResetControlClient(c, plat, lg)
 				controlClient = c

@@ -804,3 +804,7 @@ func (g *glfwPlatform) GetAudioInputDevices() []string {
 func (g *glfwPlatform) SetAudioStreamCallback(cb func([]int16)) {
 	g.audioRecorder.SetStreamCallback(cb)
 }
+
+func (g *glfwPlatform) GetGPUInfo() (vendor, renderer string) {
+	return gl.GoStr(gl.GetString(gl.VENDOR)), gl.GoStr(gl.GetString(gl.RENDERER))
+}
