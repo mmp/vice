@@ -334,19 +334,33 @@ func isPositionIdentification(tokens []Token, controllerRadioName string) bool {
 		return false
 	}
 
-	// Build the phrase from tokens, stripping trailing "radar contact" if present
-	lastIdx := len(tokens) - 1
+	// Find "radar contact" anywhere in the tokens
+	radarContactIdx := -1
+	for i := range len(tokens) - 1 {
+		if strings.ToLower(tokens[i].Text) == "radar" &&
+			strings.ToLower(tokens[i+1].Text) == "contact" {
+			radarContactIdx = i
+			break
+		}
+	}
 
-	// Check for trailing "radar contact"
-	if lastIdx >= 1 {
-		if strings.ToLower(tokens[lastIdx].Text) == "contact" &&
-			strings.ToLower(tokens[lastIdx-1].Text) == "radar" {
-			lastIdx -= 2
-			if lastIdx < 0 {
-				// Just "radar contact" with no position - still informational
-				logLocalStt("  position ID: just 'radar contact' - informational")
-				return true
-			}
+	// If "radar contact" found and there are tokens after it, this isn't just position ID
+	if radarContactIdx >= 0 && radarContactIdx+2 < len(tokens) {
+		// There are tokens after "radar contact" - these are commands, not position ID
+		logLocalStt("  position ID: 'radar contact' at position %d with %d tokens after - not position ID",
+			radarContactIdx, len(tokens)-radarContactIdx-2)
+		return false
+	}
+
+	// Determine lastIdx for phrase building
+	lastIdx := len(tokens) - 1
+	if radarContactIdx >= 0 {
+		// "radar contact" is at the end, strip it
+		lastIdx = radarContactIdx - 1
+		if lastIdx < 0 {
+			// Just "radar contact" with no position - still informational
+			logLocalStt("  position ID: just 'radar contact' - informational")
+			return true
 		}
 	}
 
