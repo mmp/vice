@@ -74,10 +74,15 @@ fi
 
 # Get list of all scenarios
 print_status "$BLUE" "Getting list of all scenarios..."
-if ! scenarios_raw=$("$VICE_BINARY" -listscenarios 2>/dev/null); then
+listscenarios_stderr=$(mktemp)
+if ! scenarios_raw=$("$VICE_BINARY" -listscenarios 2>"$listscenarios_stderr"); then
     print_status "$RED" "Error: Failed to get scenario list from vice -listscenarios"
+    print_status "$RED" "stderr output:"
+    cat "$listscenarios_stderr"
+    rm -f "$listscenarios_stderr"
     exit 1
 fi
+rm -f "$listscenarios_stderr"
 
 # Convert to array, handling spaces properly (portable approach)
 IFS=$'\n' read -d '' -r -a scenarios <<< "$scenarios_raw" || true
