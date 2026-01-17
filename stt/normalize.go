@@ -91,6 +91,8 @@ var commandKeywords = map[string]string{
 	"climbed":    "climb",
 	"climbing":   "climb",
 	"climin":     "climb", // STT error: "climb and" -> "climin"
+	"clementine": "climb", // STT error: "climb and maintain" -> "clementine"
+	"con":        "climb", // STT error: "climb" -> "con" (not "contact")
 	"maintain":   "maintain",
 	"altitude":   "altitude",
 	"thousand":   "thousand",
