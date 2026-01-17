@@ -69,7 +69,7 @@ security default-keychain -d "user" -s "${EPHEMERAL_KEYCHAIN_FULL_PATH}"
 rm cert.p12
 
 echo "=== Signing Vice.app ==="
-codesign -s "${APPLE_DEVELOPER_ID_APPLICATION}" -f -v --timestamp --options runtime Vice.app
+codesign -s "${APPLE_DEVELOPER_ID_APPLICATION}" -f -v --timestamp --options runtime --entitlements osx/vice.entitlements Vice.app
 
 # Check if notarization credentials are available
 if [ -z "$APPLE_CODESIGN_ID" ] || [ -z "$APPLE_CODESIGN_PASSWORD" ] || [ -z "$APPLE_TEAMID" ]; then
