@@ -63,6 +63,7 @@ func TranscribeWithModel(m *Model, pcm []int16, inSampleRate, inChannels int, op
 	if err != nil {
 		return "", err
 	}
+	defer ctx.Close() // Free C-allocated params
 
 	// Configure context
 	if opts.Threads > 0 {

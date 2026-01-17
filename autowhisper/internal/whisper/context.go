@@ -25,6 +25,12 @@ func newContext(m *model, p whisperlow.Params) (Context, error) {
 	return c, nil
 }
 
+// Close releases the C-allocated params memory.
+// Must be called when the context is no longer needed.
+func (c *context) Close() {
+	c.params.Free()
+}
+
 func (c *context) SetLanguage(lang string) error {
 	if c.model.ctx == nil {
 		return ErrInternalAppError

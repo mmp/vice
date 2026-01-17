@@ -215,6 +215,7 @@ func (st *StreamingTranscriber) transcribe(audio []float32) string {
 	if err != nil {
 		return ""
 	}
+	defer ctx.Close() // Free C-allocated params
 	ctxCreate := time.Since(ctxStart)
 
 	// Configure context

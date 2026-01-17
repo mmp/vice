@@ -42,15 +42,29 @@ static bool whisper_encoder_begin_cb(struct whisper_context* ctx, struct whisper
     return false;
 }
 
-static struct whisper_full_params whisper_full_default_params_cb(struct whisper_context* ctx, enum whisper_sampling_strategy strategy) {
-    struct whisper_full_params params = whisper_full_default_params(strategy);
-    params.new_segment_callback = whisper_new_segment_cb;
-    params.new_segment_callback_user_data = (void*)(ctx);
-    params.encoder_begin_callback = whisper_encoder_begin_cb;
-    params.encoder_begin_callback_user_data = (void*)(ctx);
-    params.progress_callback = whisper_progress_cb;
-    params.progress_callback_user_data = (void*)(ctx);
+// Allocate and initialize params in C memory to avoid large struct pass-by-value
+// issues across the CGO boundary (causes crashes on Windows).
+static struct whisper_full_params* whisper_full_default_params_alloc(struct whisper_context* ctx, enum whisper_sampling_strategy strategy) {
+    struct whisper_full_params* params = (struct whisper_full_params*)malloc(sizeof(struct whisper_full_params));
+    if (params == NULL) return NULL;
+    *params = whisper_full_default_params(strategy);
+    params->new_segment_callback = whisper_new_segment_cb;
+    params->new_segment_callback_user_data = (void*)(ctx);
+    params->encoder_begin_callback = whisper_encoder_begin_cb;
+    params->encoder_begin_callback_user_data = (void*)(ctx);
+    params->progress_callback = whisper_progress_cb;
+    params->progress_callback_user_data = (void*)(ctx);
     return params;
+}
+
+// Wrapper that takes params by pointer to avoid large struct pass-by-value
+static int whisper_full_ptr(struct whisper_context* ctx, struct whisper_full_params* params, const float* samples, int n_samples) {
+    return whisper_full(ctx, *params, samples, n_samples);
+}
+
+// Wrapper for parallel version
+static int whisper_full_parallel_ptr(struct whisper_context* ctx, struct whisper_full_params* params, const float* samples, int n_samples, int n_processors) {
+    return whisper_full_parallel(ctx, *params, samples, n_samples, n_processors);
 }
 */
 import "C"
@@ -60,8 +74,13 @@ type (
 	Token            C.whisper_token
 	TokenData        C.struct_whisper_token_data
 	SamplingStrategy C.enum_whisper_sampling_strategy
-	Params           C.struct_whisper_full_params
 )
+
+// Params wraps a C-allocated whisper_full_params pointer.
+// It must be freed with Free() when no longer needed.
+type Params struct {
+	ptr *C.struct_whisper_full_params
+}
 
 const (
 	SAMPLING_GREEDY      SamplingStrategy = C.WHISPER_SAMPLING_GREEDY
@@ -215,8 +234,19 @@ func (ctx *Context) Whisper_reset_timings() {
 }
 func Whisper_print_system_info() string { return C.GoString(C.whisper_print_system_info()) }
 
+// Whisper_full_default_params allocates and returns params in C memory.
+// The returned Params must be freed with Free() when no longer needed.
 func (ctx *Context) Whisper_full_default_params(strategy SamplingStrategy) Params {
-	return Params(C.whisper_full_default_params_cb((*C.struct_whisper_context)(ctx), C.enum_whisper_sampling_strategy(strategy)))
+	ptr := C.whisper_full_default_params_alloc((*C.struct_whisper_context)(ctx), C.enum_whisper_sampling_strategy(strategy))
+	return Params{ptr: ptr}
+}
+
+// Free releases the C-allocated params memory.
+func (p *Params) Free() {
+	if p != nil && p.ptr != nil {
+		C.free(unsafe.Pointer(p.ptr))
+		p.ptr = nil
+	}
 }
 
 func (ctx *Context) Whisper_full(
@@ -232,7 +262,8 @@ func (ctx *Context) Whisper_full(
 	defer registerEncoderBeginCallback(ctx, nil)
 	defer registerNewSegmentCallback(ctx, nil)
 	defer registerProgressCallback(ctx, nil)
-	if C.whisper_full((*C.struct_whisper_context)(ctx), (C.struct_whisper_full_params)(params), (*C.float)(&samples[0]), C.int(len(samples))) == 0 {
+	// Use pointer-based wrapper to avoid large struct pass-by-value issues on Windows
+	if C.whisper_full_ptr((*C.struct_whisper_context)(ctx), params.ptr, (*C.float)(&samples[0]), C.int(len(samples))) == 0 {
 		return nil
 	}
 	return ErrConversionFailed
@@ -243,7 +274,8 @@ func (ctx *Context) Whisper_full_parallel(params Params, samples []float32, proc
 	registerNewSegmentCallback(ctx, newSegmentCallback)
 	defer registerEncoderBeginCallback(ctx, nil)
 	defer registerNewSegmentCallback(ctx, nil)
-	if C.whisper_full_parallel((*C.struct_whisper_context)(ctx), (C.struct_whisper_full_params)(params), (*C.float)(&samples[0]), C.int(len(samples)), C.int(processors)) == 0 {
+	// Use pointer-based wrapper to avoid large struct pass-by-value issues on Windows
+	if C.whisper_full_parallel_ptr((*C.struct_whisper_context)(ctx), params.ptr, (*C.float)(&samples[0]), C.int(len(samples)), C.int(processors)) == 0 {
 		return nil
 	}
 	return ErrConversionFailed

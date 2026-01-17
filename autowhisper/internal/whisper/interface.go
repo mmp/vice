@@ -36,7 +36,9 @@ type Model interface {
 }
 
 // Context is the speech recognition context.
+// Close must be called when done to free C-allocated memory.
 type Context interface {
+	Close()                   // Free C-allocated memory
 	SetLanguage(string) error // Set the language to use for speech recognition, use "auto" for auto detect language.
 	SetTranslate(bool)        // Set translate flag
 	IsMultilingual() bool     // Return true if the model is multilingual.
