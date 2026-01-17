@@ -81,6 +81,7 @@ jobs:
       with:
         cuda: '12.6.0'
         method: 'local'
+        use-github-cache: false
 
     - name: Install Linux dependencies
       run: |
@@ -213,6 +214,7 @@ jobs:
       with:
         cuda: '12.6.0'
         method: 'local'
+        use-github-cache: false
 
     - name: Checkout Windows prebuilts
       uses: actions/checkout@v4
