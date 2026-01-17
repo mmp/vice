@@ -80,6 +80,7 @@ jobs:
       uses: Jimver/cuda-toolkit@v0.2.28
       with:
         cuda: '12.9.1'
+        linux-local-args: '["--toolkit"]'
         use-github-cache: false
         use-local-cache: false
 
@@ -213,6 +214,7 @@ jobs:
       uses: Jimver/cuda-toolkit@v0.2.28
       with:
         cuda: '12.9.1'
+        linux-local-args: '["--toolkit"]'
         use-github-cache: false
         use-local-cache: false
 
