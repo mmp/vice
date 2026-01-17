@@ -32,6 +32,14 @@ func (m *Model) Close() error {
 	return nil
 }
 
+// GPUEnabled returns true if GPU acceleration is being used for inference.
+// On Windows with Vulkan support, this is true if a Vulkan GPU is available.
+// On macOS, Metal is always used (handled by the whisper.cpp library internally).
+// On Linux or Windows without Vulkan, this returns false (CPU-only).
+func GPUEnabled() bool {
+	return whisper.GPUEnabled()
+}
+
 // Options configures the transcription behavior.
 type Options struct {
 	// Language to use for speech recognition. Use "auto" to auto-detect (default).

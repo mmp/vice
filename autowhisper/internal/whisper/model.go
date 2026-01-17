@@ -65,6 +65,11 @@ func (m *model) Languages() []string {
 	return result
 }
 
+// GPUEnabled returns true if GPU acceleration is being used for inference.
+func GPUEnabled() bool {
+	return whisperlow.GPUEnabled()
+}
+
 func (m *model) NewContext() (Context, error) {
 	if m.ctx == nil {
 		return nil, ErrInternalAppError
