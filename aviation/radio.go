@@ -966,6 +966,9 @@ func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 }
 
 func sayFlightNumber(id string) string {
+	if len(id) == 0 {
+		return ""
+	}
 	if id[0] != '0' {
 		// No leading zeros, just do regular group form.
 		n, _ := strconv.Atoi(id)
