@@ -580,6 +580,12 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 		if altConsumed == 0 {
 			return CommandMatch{}, 0
 		}
+		// Apply context-aware altitude correction for climb/descend commands
+		// This handles cases where Whisper drops trailing zeros (e.g., "one seven oh" -> "17" instead of "170")
+		if corrected, ok := shouldCorrectAltitude(tmpl, alt, int(ac.Altitude)); ok {
+			logLocalStt("  altitude correction: %d -> %d (aircraft at %.0f ft)", alt, corrected, ac.Altitude)
+			alt = corrected
+		}
 		argStr = strconv.Itoa(alt)
 		consumed += altConsumed
 
@@ -1089,4 +1095,29 @@ func mustAtoi(s string) int {
 	}
 	n, _ := strconv.Atoi(s)
 	return n
+}
+
+// shouldCorrectAltitude checks if an extracted altitude should be multiplied by 10
+// to recover a likely dropped trailing zero from transcription errors.
+// For example, "one seven oh" might be transcribed as "one seventh at" -> 17 instead of 170.
+func shouldCorrectAltitude(tmpl CommandTemplate, alt int, acAltitude int) (int, bool) {
+	altFeet := alt * 100
+	isClimb := strings.Contains(tmpl.Name, "climb")
+	isDescend := strings.Contains(tmpl.Name, "descend")
+
+	if isClimb && altFeet <= acAltitude {
+		// Climb but altitude is at or below current - try *10
+		correctedFeet := alt * 1000
+		if correctedFeet > acAltitude && correctedFeet <= 60000 {
+			return alt * 10, true
+		}
+	}
+	if isDescend && altFeet >= acAltitude {
+		// Descend but altitude is at or above current - try *10
+		correctedFeet := alt * 1000
+		if correctedFeet < acAltitude && correctedFeet >= 1000 {
+			return alt * 10, true
+		}
+	}
+	return alt, false
 }
