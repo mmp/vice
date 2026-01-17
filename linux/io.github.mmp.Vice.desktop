@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Vice
+Comment=Air Traffic Control Simulator
+Exec=vice
+Type=Application
+Icon=io.github.mmp.Vice
+Categories=Game;
