@@ -83,6 +83,14 @@ static int whisper_full_parallel_ptr(struct whisper_context* ctx, struct whisper
     // Use library's pointer-based function to avoid ABI issues with by-value struct passing
     return whisper_full_parallel_with_params_ptr(ctx, params, samples, n_samples, n_processors);
 }
+
+// Create context params with GPU configuration
+static struct whisper_context_params whisper_context_params_with_gpu(bool use_gpu, int gpu_device) {
+    struct whisper_context_params params = whisper_context_default_params();
+    params.use_gpu = use_gpu;
+    params.gpu_device = gpu_device;
+    return params;
+}
 */
 import "C"
 
@@ -119,21 +127,28 @@ var (
 	ErrInvalidLanguage  = errors.New("invalid language")
 )
 
+// GPU configuration (set by init() in platform-specific files)
+var (
+	gpuEnabled = false
+	gpuDevice  = 0
+)
+
 func Whisper_init(path string) *Context {
 	cPath := C.CString(path)
 	defer C.free(unsafe.Pointer(cPath))
-	if ctx := C.whisper_init_from_file_with_params(cPath, C.whisper_context_default_params()); ctx != nil {
+	params := C.whisper_context_params_with_gpu(C.bool(gpuEnabled), C.int(gpuDevice))
+	if ctx := C.whisper_init_from_file_with_params(cPath, params); ctx != nil {
 		return (*Context)(ctx)
-	} else {
-		return nil
 	}
+	return nil
 }
 
 func Whisper_init_from_buffer(data []byte) *Context {
 	if len(data) == 0 {
 		return nil
 	}
-	if ctx := C.whisper_init_from_buffer_with_params(unsafe.Pointer(&data[0]), C.size_t(len(data)), C.whisper_context_default_params()); ctx != nil {
+	params := C.whisper_context_params_with_gpu(C.bool(gpuEnabled), C.int(gpuDevice))
+	if ctx := C.whisper_init_from_buffer_with_params(unsafe.Pointer(&data[0]), C.size_t(len(data)), params); ctx != nil {
 		return (*Context)(ctx)
 	}
 	return nil

@@ -110,6 +110,15 @@ if exist "!SDL2_DIR!\bin\SDL2.dll" (
     )
 )
 
+REM Check if Vulkan SDK is available
+set VULKAN_AVAILABLE=0
+if defined VULKAN_SDK (
+    if exist "!VULKAN_SDK!\Bin\glslc.exe" (
+        set VULKAN_AVAILABLE=1
+        echo Vulkan SDK detected at !VULKAN_SDK!
+    )
+)
+
 REM Build whisper-cpp if needed
 if not exist "whisper.cpp\build_go\src\libwhisper.a" (
     echo === Building whisper-cpp ===
@@ -118,21 +127,42 @@ if not exist "whisper.cpp\build_go\src\libwhisper.a" (
     REM that are available on computers from ~2013+ (Haswell era):
     REM - SSE4.2, AVX, F16C: Intel Ivy Bridge 2012+, AMD Piledriver 2012+
     REM - AVX2, FMA, BMI2: Intel Haswell 2013+, AMD Excavator 2015+
-    cmake -S whisper.cpp -B whisper.cpp\build_go ^
-        -G "MinGW Makefiles" ^
-        -DBUILD_SHARED_LIBS=OFF ^
-        -DGGML_CPU=ON ^
-        -DGGML_OPENMP=OFF ^
-        -DGGML_NATIVE=OFF ^
-        -DGGML_SSE42=ON ^
-        -DGGML_AVX=ON ^
-        -DGGML_AVX2=ON ^
-        -DGGML_FMA=ON ^
-        -DGGML_F16C=ON ^
-        -DGGML_BMI2=ON ^
-        -DCMAKE_BUILD_TYPE=Release ^
-        -DCMAKE_C_FLAGS="-D_WIN32_WINNT=0x0601 -DWINVER=0x0601" ^
-        -DCMAKE_CXX_FLAGS="-D_WIN32_WINNT=0x0601 -DWINVER=0x0601"
+    if !VULKAN_AVAILABLE!==1 (
+        echo Building with Vulkan GPU support...
+        cmake -S whisper.cpp -B whisper.cpp\build_go ^
+            -G "MinGW Makefiles" ^
+            -DBUILD_SHARED_LIBS=OFF ^
+            -DGGML_CPU=ON ^
+            -DGGML_VULKAN=ON ^
+            -DGGML_OPENMP=OFF ^
+            -DGGML_NATIVE=OFF ^
+            -DGGML_SSE42=ON ^
+            -DGGML_AVX=ON ^
+            -DGGML_AVX2=ON ^
+            -DGGML_FMA=ON ^
+            -DGGML_F16C=ON ^
+            -DGGML_BMI2=ON ^
+            -DCMAKE_BUILD_TYPE=Release ^
+            -DCMAKE_C_FLAGS="-D_WIN32_WINNT=0x0601 -DWINVER=0x0601" ^
+            -DCMAKE_CXX_FLAGS="-D_WIN32_WINNT=0x0601 -DWINVER=0x0601"
+    ) else (
+        echo Building without GPU support (Vulkan SDK not found^)...
+        cmake -S whisper.cpp -B whisper.cpp\build_go ^
+            -G "MinGW Makefiles" ^
+            -DBUILD_SHARED_LIBS=OFF ^
+            -DGGML_CPU=ON ^
+            -DGGML_OPENMP=OFF ^
+            -DGGML_NATIVE=OFF ^
+            -DGGML_SSE42=ON ^
+            -DGGML_AVX=ON ^
+            -DGGML_AVX2=ON ^
+            -DGGML_FMA=ON ^
+            -DGGML_F16C=ON ^
+            -DGGML_BMI2=ON ^
+            -DCMAKE_BUILD_TYPE=Release ^
+            -DCMAKE_C_FLAGS="-D_WIN32_WINNT=0x0601 -DWINVER=0x0601" ^
+            -DCMAKE_CXX_FLAGS="-D_WIN32_WINNT=0x0601 -DWINVER=0x0601"
+    )
     if errorlevel 1 exit /b 1
 
     cmake --build whisper.cpp\build_go --parallel 4
@@ -145,6 +175,13 @@ if not exist "whisper.cpp\build_go\src\libwhisper.a" (
             for /r whisper.cpp\build_go %%f in (%%b.a lib%%b.a) do (
                 if exist "%%f" copy /y "%%f" "whisper.cpp\build_go\ggml\src\lib%%b.a" >nul 2>&1
             )
+        )
+    )
+    REM Copy Vulkan library if built with Vulkan support
+    if !VULKAN_AVAILABLE!==1 (
+        if not exist whisper.cpp\build_go\ggml\src\ggml-vulkan mkdir whisper.cpp\build_go\ggml\src\ggml-vulkan
+        for /r whisper.cpp\build_go %%f in (libggml-vulkan.a) do (
+            if exist "%%f" copy /y "%%f" "whisper.cpp\build_go\ggml\src\ggml-vulkan\libggml-vulkan.a" >nul 2>&1
         )
     )
     echo whisper-cpp built successfully.
@@ -193,9 +230,10 @@ for /f "delims=" %%v in (resources\version.txt) do echo Version: %%v
 
 REM Determine build tags
 set BUILD_TAGS=static
-if %DO_RELEASE%==1 set BUILD_TAGS=%BUILD_TAGS%,downloadresources
+if %DO_RELEASE%==1 set BUILD_TAGS=!BUILD_TAGS!,downloadresources
+if !VULKAN_AVAILABLE!==1 set BUILD_TAGS=!BUILD_TAGS!,vulkan
 
-go build -tags %BUILD_TAGS% -ldflags="-s -w -H=windowsgui" -o vice.exe .\cmd\vice
+go build -tags !BUILD_TAGS! -ldflags="-s -w -H=windowsgui" -o vice.exe .\cmd\vice
 if errorlevel 1 exit /b 1
 
 echo Build complete: vice.exe

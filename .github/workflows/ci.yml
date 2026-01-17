@@ -216,6 +216,27 @@ jobs:
         echo ${{ github.workspace }}/ext/mingw/mingw64 >> $GITHUB_PATH
         ls
 
+    - name: Install Vulkan SDK
+      run: |
+        $ErrorActionPreference = 'Stop'
+        $vulkanVersion = "1.3.296.0"
+        $installerUrl = "https://sdk.lunarg.com/sdk/download/$vulkanVersion/windows/VulkanSDK-$vulkanVersion-Installer.exe"
+        $installerPath = "$env:TEMP\VulkanSDK-Installer.exe"
+
+        Write-Host "Downloading Vulkan SDK $vulkanVersion..."
+        Invoke-WebRequest -Uri $installerUrl -OutFile $installerPath
+
+        Write-Host "Installing Vulkan SDK..."
+        Start-Process -FilePath $installerPath -ArgumentList "--accept-licenses --default-answer --confirm-command install" -Wait -NoNewWindow
+
+        # Set environment variables for this job
+        $sdkPath = "C:\VulkanSDK\$vulkanVersion"
+        echo "VULKAN_SDK=$sdkPath" >> $env:GITHUB_ENV
+        echo "$sdkPath\Bin" >> $env:GITHUB_PATH
+
+        Write-Host "Vulkan SDK installed at $sdkPath"
+      shell: pwsh
+
     - name: Copy runtime DLLs to windows/
       run: |
         cp ext/mingw/mingw64/bin/libgcc_s_seh-1.dll windows/
@@ -223,11 +244,25 @@ jobs:
         cp ext/SDL2-2.24.0/x86_64-w64-mingw32/bin/SDL2.dll windows/
 
     - name: Build vice
-      run: .\build.bat --icons
+      run: |
+        # Add Vulkan SDK lib path to CGO_LDFLAGS
+        $env:CGO_LDFLAGS = "-L ../ext/SDL2-2.24.0/x86_64-w64-mingw32/lib -L $env:VULKAN_SDK/Lib"
+        .\build.bat --icons
+      shell: pwsh
       env:
         CGO_CFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
         CGO_CPPFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
-        CGO_LDFLAGS: "-L ../ext/SDL2-2.24.0/x86_64-w64-mingw32/lib"
+
+    - name: Verify Vulkan build
+      run: |
+        Write-Host "Checking for Vulkan library..."
+        if (Test-Path "whisper.cpp\build_go\ggml\src\ggml-vulkan\libggml-vulkan.a") {
+          Write-Host "✓ libggml-vulkan.a found - Vulkan support built successfully"
+        } else {
+          Write-Error "✗ libggml-vulkan.a not found - Vulkan build may have failed"
+          exit 1
+        }
+      shell: pwsh
 
     - name: Check scenarios
       run: ./vice.exe -lint
@@ -240,13 +275,15 @@ jobs:
 
     - name: Build for release (download resources)
       run: |
+        # Add Vulkan SDK lib path to CGO_LDFLAGS
+        $env:CGO_LDFLAGS = "-L ../ext/SDL2-2.24.0/x86_64-w64-mingw32/lib -L $env:VULKAN_SDK/Lib"
         .\build.bat --release
         go build -o ./crc2vice.exe ./cmd/crc2vice
         go build -o ./dat2vice.exe ./cmd/dat2vice
+      shell: pwsh
       env:
         CGO_CFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
         CGO_CPPFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
-        CGO_LDFLAGS: "-L ../ext/SDL2-2.24.0/x86_64-w64-mingw32/lib"
 
     - name: Add WIX to path
       run: echo "C:\Program Files (x86)\WiX Toolset v3.14\bin" >> $GITHUB_PATH
