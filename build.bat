@@ -188,15 +188,15 @@ if not exist "whisper.cpp\build_go\src\libwhisper.a" (
         echo Looking for Vulkan library in build output...
         if not exist whisper.cpp\build_go\ggml\src\ggml-vulkan mkdir whisper.cpp\build_go\ggml\src\ggml-vulkan
         set VULKAN_LIB_FOUND=0
-        for /r whisper.cpp\build_go %%f in (libggml-vulkan.a) do (
+        for /r whisper.cpp\build_go %%f in (ggml-vulkan.a) do (
             if exist "%%f" (
                 echo Found: %%f
-                copy /y "%%f" "whisper.cpp\build_go\ggml\src\ggml-vulkan\libggml-vulkan.a"
+                copy /y "%%f" "whisper.cpp\build_go\ggml\src\ggml-vulkan\ggml-vulkan.a"
                 set VULKAN_LIB_FOUND=1
             )
         )
         if !VULKAN_LIB_FOUND!==0 (
-            echo ERROR: libggml-vulkan.a not found in build output!
+            echo ERROR: ggml-vulkan.a not found in build output!
             echo Listing ggml build directories:
             dir /s /b whisper.cpp\build_go\ggml 2>nul | findstr /i "\.a$"
             exit /b 1
@@ -207,14 +207,14 @@ if not exist "whisper.cpp\build_go\src\libwhisper.a" (
 
 REM Verify Vulkan library exists if we're building with Vulkan support
 if !VULKAN_AVAILABLE!==1 (
-    if not exist "whisper.cpp\build_go\ggml\src\ggml-vulkan\libggml-vulkan.a" (
-        echo ERROR: Vulkan support requested but libggml-vulkan.a not found!
+    if not exist "whisper.cpp\build_go\ggml\src\ggml-vulkan\ggml-vulkan.a" (
+        echo ERROR: Vulkan support requested but ggml-vulkan.a not found!
         echo This may indicate a cached build without Vulkan. Cleaning and rebuilding...
         rmdir /s /q whisper.cpp\build_go 2>nul
         echo Please run build.bat again to rebuild with Vulkan support.
         exit /b 1
     )
-    echo Vulkan library verified at whisper.cpp\build_go\ggml\src\ggml-vulkan\libggml-vulkan.a
+    echo Vulkan library verified at whisper.cpp\build_go\ggml\src\ggml-vulkan\ggml-vulkan.a
 )
 
 REM Prepare icon resources
