@@ -143,7 +143,7 @@ func (c *RPCClient) callWithTimeout(serviceMethod string, args any, reply any) e
 		case <-pc.Call.Done:
 			return pc.Call.Error
 
-		case <-time.After(5 * time.Second):
+		case <-time.After(10 * time.Second):
 			if !util.DebuggerIsRunning() {
 				return fmt.Errorf("%s: %w", serviceMethod, server.ErrRPCTimeout)
 			}
