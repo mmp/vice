@@ -257,6 +257,15 @@ jobs:
 
     - name: Build vice
       run: |
+        Write-Host "VULKAN_SDK = $env:VULKAN_SDK"
+        Write-Host "Checking for glslc.exe..."
+        if (Test-Path "$env:VULKAN_SDK\Bin\glslc.exe") {
+          Write-Host "Found glslc.exe at $env:VULKAN_SDK\Bin\glslc.exe"
+        } else {
+          Write-Host "glslc.exe NOT found at $env:VULKAN_SDK\Bin\glslc.exe"
+          Write-Host "Listing $env:VULKAN_SDK\Bin:"
+          Get-ChildItem "$env:VULKAN_SDK\Bin" -ErrorAction SilentlyContinue | Select-Object Name
+        }
         # Add Vulkan SDK lib path to CGO_LDFLAGS
         $env:CGO_LDFLAGS = "-L ../ext/SDL2-2.24.0/x86_64-w64-mingw32/lib -L $env:VULKAN_SDK/Lib"
         .\build.bat --icons
