@@ -243,6 +243,18 @@ jobs:
         cp ext/mingw/mingw64/bin/libstdc++-6.dll windows/
         cp ext/SDL2-2.24.0/x86_64-w64-mingw32/bin/SDL2.dll windows/
 
+    - name: Get whisper.cpp commit SHA
+      id: whisper-sha
+      run: echo "sha=$(git -C whisper.cpp rev-parse HEAD)" >> $env:GITHUB_OUTPUT
+      shell: pwsh
+
+    - name: Cache whisper.cpp build
+      id: cache-whisper
+      uses: actions/cache@v4
+      with:
+        path: whisper.cpp/build_go
+        key: whisper-cpp-win-vulkan-${{ steps.whisper-sha.outputs.sha }}-sdk1.3.296.0
+
     - name: Build vice
       run: |
         # Add Vulkan SDK lib path to CGO_LDFLAGS
