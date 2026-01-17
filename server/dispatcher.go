@@ -595,9 +595,11 @@ type AircraftCommandsArgs struct {
 	Commands          string
 	Multiple          bool
 	ClickedTrack      bool
-	EnableTTS         bool          // Whether to synthesize readback audio
-	WhisperDuration   time.Duration // Time from PTT release to whisper completion (zero for keyboard input)
-	WhisperTranscript string        // Raw whisper transcript (empty for keyboard input)
+	EnableTTS         bool                    // Whether to synthesize readback audio
+	WhisperDuration   time.Duration           // Time from PTT release to whisper completion (zero for keyboard input)
+	WhisperTranscript string                  // Raw whisper transcript (empty for keyboard input)
+	AircraftContext   map[string]stt.Aircraft // Aircraft context used for STT decoding (for logging)
+	STTDebugLogs      string                  // Local STT processing logs (for logging)
 }
 
 // If an RPC call returns an error, then the result argument is not returned(!?).
@@ -663,8 +665,28 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 
 	// Log whisper STT commands (WhisperDuration is non-zero for voice commands)
 	if cmds.WhisperDuration > 0 {
-		sd.sm.lg.Infof("STT: transcript=%q duration=%s callsign=%s command=%q",
-			cmds.WhisperTranscript, cmds.WhisperDuration, cmds.Callsign, cmds.Commands)
+		sd.sm.lg.Info("STT command",
+			slog.String("transcript", cmds.WhisperTranscript),
+			slog.Duration("duration", cmds.WhisperDuration),
+			slog.String("callsign", string(cmds.Callsign)),
+			slog.String("command", cmds.Commands),
+			slog.Int("aircraft_count", len(cmds.AircraftContext)),
+		)
+
+		// Log detailed aircraft context
+		for telephony, ac := range cmds.AircraftContext {
+			sd.sm.lg.Debug("STT aircraft",
+				slog.String("telephony", telephony),
+				slog.String("callsign", ac.Callsign),
+				slog.String("state", ac.State),
+				slog.Int("altitude", ac.Altitude),
+			)
+		}
+
+		// Log STT debug logs if present
+		if cmds.STTDebugLogs != "" {
+			sd.sm.lg.Debug("STT debug logs", slog.String("logs", cmds.STTDebugLogs))
+		}
 	}
 
 	return nil

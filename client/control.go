@@ -11,6 +11,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/stt"
 )
 
 func (c *ControlClient) TakeOrReturnLaunchControl(eventStream *sim.EventStream) {
@@ -393,6 +394,7 @@ func (c *ControlClient) FlightPlanDirect(aircraft sim.ACID, fix string, callback
 
 func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds string, multiple, clickedTrack bool,
 	whisperDuration time.Duration, whisperTranscript string,
+	aircraftContext map[string]stt.Aircraft, sttDebugLogs string,
 	handleResult func(message string, remainingInput string)) {
 	// Determine if TTS is enabled for this command
 	enableTTS := c.HaveTTS() && (c.disableTTSPtr == nil || !*c.disableTTSPtr) && cmds != "P" && cmds != "X"
@@ -410,6 +412,8 @@ func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds strin
 		EnableTTS:         enableTTS,
 		WhisperDuration:   whisperDuration,
 		WhisperTranscript: whisperTranscript,
+		AircraftContext:   aircraftContext,
+		STTDebugLogs:      sttDebugLogs,
 	}, &result, nil),
 		func(err error) {
 			// Handle readback from RPC result

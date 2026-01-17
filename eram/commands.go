@@ -207,7 +207,7 @@ func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCall
 	ep.targetGenLastCallsign = callsign
 
 	ctx.Client.RunAircraftCommands(callsign, cmds, false, false,
-		0, "", // keyboard input: no whisper duration or transcript
+		0, "", nil, "", // keyboard input: no whisper duration, transcript, or STT context
 		func(errStr string, remaining string) {
 			if errStr != "" {
 
