@@ -77,11 +77,11 @@ jobs:
       run: go version
 
     - name: Install CUDA Toolkit
-      uses: Jimver/cuda-toolkit@v0.2.21
+      uses: Jimver/cuda-toolkit@v0.2.28
       with:
-        cuda: '12.6.0'
-        method: 'local'
+        cuda: '12.9.1'
         use-github-cache: false
+        use-local-cache: false
 
     - name: Install Linux dependencies
       run: |
@@ -210,11 +210,11 @@ jobs:
         cache-dependency-path: go.sum
 
     - name: Install CUDA Toolkit
-      uses: Jimver/cuda-toolkit@v0.2.21
+      uses: Jimver/cuda-toolkit@v0.2.28
       with:
-        cuda: '12.6.0'
-        method: 'local'
+        cuda: '12.9.1'
         use-github-cache: false
+        use-local-cache: false
 
     - name: Checkout Windows prebuilts
       uses: actions/checkout@v4
