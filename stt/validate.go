@@ -219,21 +219,15 @@ func validateClimb(altStr string, ac Aircraft) string {
 	return ""
 }
 
-func validateClearedApproach(apprCode string, ac Aircraft) string {
-	// Can only clear approach if assigned_approach is set
-	if ac.AssignedApproach == "" {
-		return "cannot clear approach without assigned approach (use expect instead)"
-	}
-
-	// The approach should match the assigned approach
-	if !strings.EqualFold(apprCode, ac.AssignedApproach) {
-		// Allow it but it's unusual
-	}
-
+func validateClearedApproach(_ string, _ Aircraft) string {
+	// Note: We allow clearing approach even without a prior "expect" command.
+	// If the controller clearly says "cleared ILS runway 22 left", that's
+	// unambiguous. The pilot will respond appropriately if they weren't
+	// previously told to expect the approach.
 	return ""
 }
 
-func validateExpectApproach(apprCode string, ac Aircraft) string {
+func validateExpectApproach(_ string, ac Aircraft) string {
 	// Expect approach is valid when assigned_approach is empty
 	// (actually valid in both cases, but more common when empty)
 
