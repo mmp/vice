@@ -14,6 +14,7 @@ import (
 #cgo windows LDFLAGS: -static-libstdc++ -static-libgcc -static
 #include <whisper.h>
 #include <stdlib.h>
+#include <string.h>
 
 // no-op logger to silence library output
 static void cb_log_disable(enum ggml_log_level level, const char * text, void * user_data) { (void)level; (void)text; (void)user_data; }
@@ -42,29 +43,45 @@ static bool whisper_encoder_begin_cb(struct whisper_context* ctx, struct whisper
     return false;
 }
 
-// Allocate and initialize params in C memory to avoid large struct pass-by-value
-// issues across the CGO boundary (causes crashes on Windows).
+// Allocate params using malloc and copy defaults via by-ref API.
+// This avoids ABI mismatches when passing large structs by value across CGO/C++ boundary.
 static struct whisper_full_params* whisper_full_default_params_alloc(struct whisper_context* ctx, enum whisper_sampling_strategy strategy) {
+    // Use by-ref API to avoid by-value struct return across ABI boundary
+    struct whisper_full_params* defaults = whisper_full_default_params_by_ref(strategy);
+    if (defaults == NULL) return NULL;
+
+    // Allocate our own copy
     struct whisper_full_params* params = (struct whisper_full_params*)malloc(sizeof(struct whisper_full_params));
-    if (params == NULL) return NULL;
-    *params = whisper_full_default_params(strategy);
+    if (params == NULL) {
+        whisper_free_params(defaults);
+        return NULL;
+    }
+
+    // Copy defaults using memcpy to ensure correct byte-level copy
+    memcpy(params, defaults, sizeof(struct whisper_full_params));
+    whisper_free_params(defaults);
+
+    // Set callbacks
     params->new_segment_callback = whisper_new_segment_cb;
     params->new_segment_callback_user_data = (void*)(ctx);
     params->encoder_begin_callback = whisper_encoder_begin_cb;
     params->encoder_begin_callback_user_data = (void*)(ctx);
     params->progress_callback = whisper_progress_cb;
     params->progress_callback_user_data = (void*)(ctx);
+
     return params;
 }
 
 // Wrapper that takes params by pointer to avoid large struct pass-by-value
 static int whisper_full_ptr(struct whisper_context* ctx, struct whisper_full_params* params, const float* samples, int n_samples) {
-    return whisper_full(ctx, *params, samples, n_samples);
+    // Use library's pointer-based function to avoid ABI issues with by-value struct passing
+    return whisper_full_with_params_ptr(ctx, params, samples, n_samples);
 }
 
 // Wrapper for parallel version
 static int whisper_full_parallel_ptr(struct whisper_context* ctx, struct whisper_full_params* params, const float* samples, int n_samples, int n_processors) {
-    return whisper_full_parallel(ctx, *params, samples, n_samples, n_processors);
+    // Use library's pointer-based function to avoid ABI issues with by-value struct passing
+    return whisper_full_parallel_with_params_ptr(ctx, params, samples, n_samples, n_processors);
 }
 */
 import "C"
