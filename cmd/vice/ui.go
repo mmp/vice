@@ -806,36 +806,12 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 			imgui.EndCombo()
 		}
 
-		// Whisper model selection
-		imgui.Text("Whisper Model:")
-		imgui.SameLine()
-		models := client.ListWhisperModels()
-		currentModel := config.SelectedWhisperModel
-		if currentModel == "" && len(models) > 0 {
-			currentModel = models[0]
-		}
-		if imgui.BeginComboV("##whispermodel", currentModel, 0) {
-			for _, model := range models {
-				if imgui.SelectableBoolV(model, model == currentModel, 0, imgui.Vec2{}) {
-					if model != config.SelectedWhisperModel {
-						config.SelectedWhisperModel = model
-						// Switch the model in the background
-						go func(m string) {
-							if err := client.SwitchWhisperModel(m, lg); err != nil {
-								lg.Errorf("Failed to switch whisper model: %v", err)
-							}
-						}(model)
-					}
-				}
-			}
-			imgui.EndCombo()
-		}
-
 		if p.IsAudioRecording() {
 			imgui.TextColored(imgui.Vec4{1, 0, 0, 1}, "Recording...")
 		} else {
 			if transcription := c.GetLastTranscription(); transcription != "" {
-				imgui.Text("Last transcription:")
+				durationMs := c.GetLastWhisperDurationMs()
+				imgui.Text(fmt.Sprintf("Last transcription (%dms):", durationMs))
 				imgui.TextWrapped(transcription)
 			}
 			if lastCmd := c.GetLastCommand(); lastCmd != "" {

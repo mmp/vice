@@ -391,7 +391,7 @@ func main() {
 
 		// Start loading the whisper model in the background so it's ready
 		// when the user first presses PTT
-		client.PreloadWhisperModel(config.SelectedWhisperModel, lg)
+		client.PreloadWhisperModel(lg)
 
 		// Check for whisper model errors asynchronously and show dialog if CPU not supported.
 		go func() {

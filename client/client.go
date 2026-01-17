@@ -7,7 +7,6 @@ package client
 import (
 	"errors"
 	"fmt"
-	"io/fs"
 	"net"
 	"net/rpc"
 	"runtime"
@@ -36,13 +35,14 @@ type ControlClient struct {
 	client          *RPCClient
 
 	// Speech/TTS management
-	transmissions     *TransmissionManager
-	haveTTS           bool // whether TTS is enabled for this session
-	disableTTSPtr     *bool
-	sttActive         bool
-	LastTranscription string
-	LastCommand       string
-	eventStream       *sim.EventStream
+	transmissions         *TransmissionManager
+	haveTTS               bool // whether TTS is enabled for this session
+	disableTTSPtr         *bool
+	sttActive             bool
+	LastTranscription     string
+	LastCommand           string
+	LastWhisperDurationMs int64 // Last whisper transcription time in milliseconds
+	eventStream           *sim.EventStream
 
 	// Streaming STT state
 	streamingSTT   *streamingSTT
@@ -568,71 +568,11 @@ func GetWhisperModelName() string {
 	return whisperModelName
 }
 
-// ListWhisperModels returns a sorted list of whisper model filenames
-// found in the resources/models directory.
-func ListWhisperModels() []string {
-	var models []string
-	util.WalkResources("models", func(path string, d fs.DirEntry, filesystem fs.FS, err error) error {
-		if err != nil {
-			return nil
-		}
-		if d.IsDir() {
-			return nil
-		}
-		name := d.Name()
-		if strings.HasPrefix(name, "ggml-") && strings.HasSuffix(name, ".bin") {
-			models = append(models, name)
-		}
-		return nil
-	})
-	slices.Sort(models)
-	return models
-}
-
-// SwitchWhisperModel switches to a different whisper model.
-// The model name should be just the filename (e.g. "ggml-tiny.en.bin").
-// This blocks until the new model is loaded.
-func SwitchWhisperModel(modelName string, lg *log.Logger) error {
-	whisperModelMu.Lock()
-	defer whisperModelMu.Unlock()
-
-	// Check CPU compatibility before attempting to load.
-	if err := checkCPUSupport(); err != nil {
-		return fmt.Errorf("%w (AVX instruction set not available)", ErrCPUNotSupported)
-	}
-
-	// Don't reload if already loaded
-	if whisperModelName == modelName && whisperModel != nil {
-		return nil
-	}
-
-	// Close existing model if any
-	if whisperModel != nil {
-		whisperModel.Close()
-		whisperModel = nil
-		whisperModelName = ""
-	}
-
-	lg.Infof("Loading whisper model: %s", modelName)
-	modelBytes := util.LoadResourceBytes("models/" + modelName)
-	newModel, err := whisper.LoadModelFromBytes(modelBytes)
-	if err != nil {
-		lg.Errorf("Failed to load whisper model %s: %v", modelName, err)
-		return err
-	}
-
-	whisperModel = newModel
-	whisperModelName = modelName
-	whisperModelErr = nil
-	lg.Infof("Whisper model loaded: %s", modelName)
-	return nil
-}
-
 // PreloadWhisperModel loads the whisper model in the background so it's
 // ready when PTT is first pressed. This avoids blocking the UI.
-// The modelName parameter specifies which model to load (e.g. "ggml-tiny.en.bin").
-// If empty, defaults to the first model alphabetically.
-func PreloadWhisperModel(modelName string, lg *log.Logger) {
+// Model selection is automatic: ggml-small.en.bin on macOS (Metal GPU),
+// ggml-tiny.en.bin on other platforms (CPU-only).
+func PreloadWhisperModel(lg *log.Logger) {
 	go func() {
 		whisperModelOnce.Do(func() {
 			defer close(whisperModelDone)
@@ -644,16 +584,12 @@ func PreloadWhisperModel(modelName string, lg *log.Logger) {
 				return
 			}
 
-			// Default to first model alphabetically if not specified
-			if modelName == "" {
-				models := ListWhisperModels()
-				if len(models) > 0 {
-					modelName = models[0]
-				} else {
-					whisperModelErr = errors.New("no whisper models found in resources/models")
-					lg.Errorf("Speech-to-text unavailable: %v", whisperModelErr)
-					return
-				}
+			// Use larger model on macOS (Metal GPU), smaller on CPU-only platforms
+			var modelName string
+			if runtime.GOOS == "darwin" {
+				modelName = "ggml-small.en.bin"
+			} else {
+				modelName = "ggml-tiny.en.bin"
 			}
 
 			lg.Infof("Preloading whisper model: %s", modelName)
@@ -862,9 +798,10 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 		finalText := sttSession.transcriber.Stop()
 		whisperDuration := time.Since(pttReleaseTime)
 
-		fmt.Printf("whisper transcription took %dms: %q\n", whisperDuration.Milliseconds(), finalText)
-
-		c.SetLastTranscription(finalText)
+		c.mu.Lock()
+		c.LastWhisperDurationMs = whisperDuration.Milliseconds()
+		c.LastTranscription = finalText
+		c.mu.Unlock()
 
 		if finalText == "" || finalText == "[BLANK_AUDIO]" {
 			c.transmissions.Unhold()
@@ -1112,4 +1049,10 @@ func (c *ControlClient) GetLastCommand() string {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	return c.LastCommand
+}
+
+func (c *ControlClient) GetLastWhisperDurationMs() int64 {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.LastWhisperDurationMs
 }
