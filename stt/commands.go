@@ -911,6 +911,18 @@ func extractFix(tokens []Token, fixes map[string]string) (string, float64, int) 
 				bestScore = 0.85
 				bestLength = length
 			}
+			// Try vowel-normalized comparison for syllable contractions
+			// (e.g., "gail" should match "gayel")
+			normPhrase := normalizeVowels(phrase)
+			normSpoken := normalizeVowels(spokenName)
+			if normPhrase != phrase || normSpoken != spokenName {
+				normScore := JaroWinkler(normPhrase, normSpoken)
+				if normScore >= 0.85 && normScore*0.95 > bestScore {
+					bestFix = fixID
+					bestScore = normScore * 0.95 // Slight penalty for needing normalization
+					bestLength = length
+				}
+			}
 		}
 	}
 

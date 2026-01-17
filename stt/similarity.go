@@ -420,6 +420,18 @@ func isVowel(c byte) bool {
 	return c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U'
 }
 
+// normalizeVowels normalizes common vowel patterns for better fuzzy matching.
+// Handles cases where speech recognition contracts syllables (e.g., "gayel" -> "gail").
+func normalizeVowels(s string) string {
+	s = strings.ToLower(s)
+	// Common vowel-y-vowel patterns that get contracted in speech
+	s = strings.ReplaceAll(s, "aye", "ai")
+	s = strings.ReplaceAll(s, "eye", "i")
+	s = strings.ReplaceAll(s, "oye", "oi")
+	s = strings.ReplaceAll(s, "uye", "ui")
+	return s
+}
+
 // CleanWord removes non-alphanumeric characters from a word.
 func CleanWord(w string) string {
 	var sb strings.Builder
