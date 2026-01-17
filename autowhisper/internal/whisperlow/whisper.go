@@ -2,6 +2,7 @@ package whisperlow
 
 import (
 	"errors"
+	"strings"
 	"sync"
 	"unsafe"
 )
@@ -214,6 +215,15 @@ func (ctx *Context) Whisper_reset_timings() {
 	C.whisper_reset_timings((*C.struct_whisper_context)(ctx))
 }
 func Whisper_print_system_info() string { return C.GoString(C.whisper_print_system_info()) }
+
+// Whisper_cuda_available returns true if the whisper library was compiled with
+// CUDA support AND CUDA is available on this system.
+func Whisper_cuda_available() bool {
+	info := Whisper_print_system_info()
+	// System info format: "AVX = 1 | AVX2 = 1 | ... | CUDA = 1 | ..."
+	// Look for "CUDA = 1" to confirm CUDA is compiled in and available.
+	return strings.Contains(info, "CUDA = 1")
+}
 
 func (ctx *Context) Whisper_full_default_params(strategy SamplingStrategy) Params {
 	return Params(C.whisper_full_default_params_cb((*C.struct_whisper_context)(ctx), C.enum_whisper_sampling_strategy(strategy)))

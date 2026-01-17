@@ -570,8 +570,8 @@ func GetWhisperModelName() string {
 
 // PreloadWhisperModel loads the whisper model in the background so it's
 // ready when PTT is first pressed. This avoids blocking the UI.
-// Model selection is automatic: ggml-small.en.bin on macOS (Metal GPU),
-// ggml-tiny.en.bin on other platforms (CPU-only).
+// Model selection is automatic: ggml-small.en.bin on macOS (Metal GPU) or
+// when CUDA is available, ggml-tiny.en.bin on CPU-only platforms.
 func PreloadWhisperModel(lg *log.Logger) {
 	go func() {
 		whisperModelOnce.Do(func() {
@@ -584,12 +584,19 @@ func PreloadWhisperModel(lg *log.Logger) {
 				return
 			}
 
-			// Use larger model on macOS (Metal GPU), smaller on CPU-only platforms
+			// Use larger model when GPU acceleration is available (Metal on macOS, CUDA on Linux/Windows),
+			// smaller model for CPU-only platforms.
 			var modelName string
+			cudaAvailable := whisper.CUDAAvailable()
 			if runtime.GOOS == "darwin" {
 				modelName = "ggml-small.en.bin"
+				lg.Infof("Using Metal GPU acceleration")
+			} else if cudaAvailable {
+				modelName = "ggml-small.en.bin"
+				lg.Infof("Using CUDA GPU acceleration")
 			} else {
 				modelName = "ggml-tiny.en.bin"
+				lg.Infof("Using CPU (no GPU acceleration available)")
 			}
 
 			lg.Infof("Preloading whisper model: %s", modelName)

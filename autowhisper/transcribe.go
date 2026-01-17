@@ -8,7 +8,14 @@ import (
 	"strings"
 
 	whisper "github.com/mmp/vice/autowhisper/internal/whisper"
+	"github.com/mmp/vice/autowhisper/internal/whisperlow"
 )
+
+// CUDAAvailable returns true if the whisper library was compiled with CUDA
+// support AND CUDA is available on this system.
+func CUDAAvailable() bool {
+	return whisperlow.Whisper_cuda_available()
+}
 
 // Model wraps a loaded whisper model for reuse across transcriptions.
 type Model struct {
