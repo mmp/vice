@@ -123,6 +123,10 @@ func (a *audioEngine) TryEnqueueSpeechMP3(mp3 []byte, finished func()) error {
 		// Poor man's resampling: repeat each sample rep times to get close
 		// to the standard rate.
 		pcm16 := pcm16FromBytes(pcm)
+		if len(pcm16) == 0 {
+			finished()
+			return nil
+		}
 		rep := 2
 		pcmr := make([]int16, rep*len(pcm16))
 		for i := range len(pcm16) {
@@ -238,9 +242,9 @@ func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 	a := (*audioEngine)(user)
 
 	accum := make([]int, n/2)
+	var cbToCall func() // Save callback to call after releasing the lock
 
 	a.mu.Lock()
-	defer a.mu.Unlock()
 
 	as := 0 // accum index for speech
 	var r *rand.Rand
@@ -260,7 +264,7 @@ func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 		a.speechq = a.speechq[1:]
 	}
 	if len(a.speechq) == 0 && as > 0 && a.speechcb != nil {
-		a.speechcb()
+		cbToCall = a.speechcb // Save callback, don't call yet
 		a.speechcb = nil
 	}
 
@@ -290,6 +294,13 @@ func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 		v := math.Clamp(accum[i]*a.volume/10, -32768, 32767)
 		out[2*i] = C.uint8(v & 0xff)
 		out[2*i+1] = C.uint8((v >> 8) & 0xff)
+	}
+
+	a.mu.Unlock()
+
+	// Call callback outside lock to prevent deadlock with tm.mu
+	if cbToCall != nil {
+		cbToCall()
 	}
 }
 
