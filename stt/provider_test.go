@@ -491,6 +491,49 @@ func TestNavigationCommands(t *testing.T) {
 	}
 }
 
+func TestCallsignMatchingPriority(t *testing.T) {
+	tests := []struct {
+		name       string
+		transcript string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "exact flight number beats fuzzy airline with wrong number",
+			transcript: "Detva 5778 turn 10 degrees left",
+			aircraft: map[string]Aircraft{
+				"Delta 2991":    {Callsign: "DAL2991", State: "arrival"},
+				"Endeavor 5778": {Callsign: "EDV5778", State: "arrival"},
+			},
+			expected: "EDV5778 T10L",
+		},
+		{
+			name:       "exact airline and number beats number-only match",
+			transcript: "Delta 2991 turn left heading 270",
+			aircraft: map[string]Aircraft{
+				"Delta 2991":    {Callsign: "DAL2991", State: "arrival"},
+				"Endeavor 2991": {Callsign: "EDV2991", State: "arrival"},
+			},
+			expected: "DAL2991 L270",
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
+}
+
 func TestSTTErrorRecovery(t *testing.T) {
 	tests := []struct {
 		name       string

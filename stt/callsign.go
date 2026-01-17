@@ -134,11 +134,31 @@ func scoreCallsignMatch(tokens []Token, spokenName, callsign string) (float64, i
 	}
 
 	// Try to match flight number
-	if consumed < len(tokens) && number != "" {
-		numScore, numConsumed := scoreFlightNumberMatch(tokens[consumed:], number)
-		if numScore > 0.5 {
-			totalScore += numScore
-			consumed += numConsumed
+	if number != "" {
+		bestNumScore := 0.0
+		bestNumConsumed := 0
+		bestNumStart := consumed
+
+		// Search from current position (after airline if matched) to a few positions later.
+		// This handles cases where the airline didn't match but the flight number is in the tokens.
+		searchStart := 0
+		if matchCount > 0 {
+			searchStart = consumed // If airline matched, start searching after it
+		}
+		searchEnd := min(len(tokens), searchStart+3) // Don't search too far
+
+		for startIdx := searchStart; startIdx < searchEnd; startIdx++ {
+			numScore, numConsumed := scoreFlightNumberMatch(tokens[startIdx:], number)
+			if numScore > bestNumScore {
+				bestNumScore = numScore
+				bestNumConsumed = numConsumed
+				bestNumStart = startIdx
+			}
+		}
+
+		if bestNumScore > 0.5 {
+			totalScore += bestNumScore
+			consumed = bestNumStart + bestNumConsumed
 			matchCount++
 		}
 	}
