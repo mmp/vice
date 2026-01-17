@@ -8,6 +8,7 @@ import (
 	"reflect"
 	"slices"
 
+	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 )
@@ -312,7 +313,36 @@ type ReportHeadingIntent struct {
 
 func (r ReportHeadingIntent) Render(rt *RadioTransmission, rnd *rand.Rand) {
 	if r.Assigned != nil && *r.Assigned != r.Current {
-		rt.Add("[heading|at|] {hdg} [turning to|turning|]", r.Current, *r.Assigned)
+		// Round current heading to multiple of 5 toward assigned heading
+		current := r.Current
+		assigned := *r.Assigned
+
+		lower := math.Floor(current/5) * 5
+		upper := math.Ceil(current/5) * 5
+
+		var rounded float32
+		if lower == upper {
+			// Current is already a multiple of 5
+			rounded = current
+		} else if math.HeadingSignedTurn(current, assigned) >= 0 {
+			// Turning right/clockwise, round up
+			rounded = upper
+		} else {
+			// Turning left/counter-clockwise, round down
+			rounded = lower
+		}
+
+		// Normalize 0 to 360 for aviation convention
+		if rounded == 0 {
+			rounded = 360
+		}
+
+		if rounded == assigned {
+			// Rounded heading equals assigned, just report current
+			rt.Add("[heading|] {hdg}", r.Current)
+		} else {
+			rt.Add("[heading|at|] {hdg} [turning to|turning|] {hdg}", rounded, assigned)
+		}
 	} else {
 		rt.Add("[heading|] {hdg}", r.Current)
 	}
