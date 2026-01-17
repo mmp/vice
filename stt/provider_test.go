@@ -565,6 +565,22 @@ func TestSTTErrorRecovery(t *testing.T) {
 			},
 			expected: "CSN940 H180",
 		},
+		{
+			name:       "fight instead of flight (STT error)",
+			transcript: "American 49 maintain fight level two one zero",
+			aircraft: map[string]Aircraft{
+				"American 49": {Callsign: "AAL49", Altitude: 25000, State: "overflight"},
+			},
+			expected: "AAL49 A210",
+		},
+		{
+			name:       "climin instead of climb and (STT error)",
+			transcript: "November 355UC proceed direct Forpe climin maintain flight level two one zero",
+			aircraft: map[string]Aircraft{
+				"November 355UC": {Callsign: "N355UC", Altitude: 15000, State: "overflight", Fixes: map[string]string{"Forpe": "FORPE"}},
+			},
+			expected: "N355UC DFORPE C210",
+		},
 	}
 
 	provider := NewTranscriber(nil)
