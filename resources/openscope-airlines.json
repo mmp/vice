@@ -19345,6 +19345,51 @@
           ["C17", 10]
         ]
       }
+    },
+    {
+      "icao": "bmj",
+      "name": "Bemidji Air Lines",
+      "callsign": {
+        "name": "Bemidji",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["BE99", 11],
+          ["SW4", 9],
+          ["BE65", 23]
+        ]
+      }
+    },
+    {
+      "icao": "lym",
+      "name": "Key Lime Air",
+      "callsign": {
+        "name": "Key Lime",
+        "callsignFormats": ["###"]
+      },
+      "fleets": {
+        "default": [
+          ["E145", 8],
+          ["D328", 5],
+          ["SW4", 4]
+        ]
+      }
+    },
+    {
+      "icao": "ocn",
+      "name": "Discover Air Lines",
+      "callsign": {
+        "name": "Ocean",
+        "callsignFormats": ["####", "###", "##"]
+      },
+      "fleets": {
+        "default": [
+          ["A320", 15],
+          ["A332", 3],
+          ["A333", 11]
+        ]
+      }
     }
   ]
 }
