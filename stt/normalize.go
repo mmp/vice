@@ -236,6 +236,20 @@ func NormalizeTranscript(transcript string) []string {
 			continue
 		}
 
+		// Handle "or" as STT misrecognition of "niner" when between digits.
+		// STT sometimes transcribes "niner" as "nine or", so "two nine or zero"
+		// becomes "2 9 or 0" instead of "2 9 0". Skip "or" when it appears
+		// between digit-like tokens.
+		if w == "or" && len(result) > 0 && i+1 < len(words) {
+			prevIsDigit := IsNumber(result[len(result)-1])
+			nextWord := CleanWord(words[i+1])
+			_, nextIsDigitWord := digitWords[nextWord]
+			nextIsDigit := IsNumber(nextWord) || nextIsDigitWord
+			if prevIsDigit && nextIsDigit {
+				continue // Skip "or" between digits
+			}
+		}
+
 		// Keep as-is
 		result = append(result, w)
 	}

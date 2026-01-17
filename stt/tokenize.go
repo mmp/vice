@@ -251,16 +251,24 @@ func parseAltitudePattern(words []string) (int, int) {
 func parseDigitSequence(words []string) (int, int) {
 	num := 0
 	consumed := 0
+	lastWasMultiDigit := false
 
 	for consumed < len(words) {
 		w := words[consumed]
 		if IsDigit(w) {
+			// Single digit - always safe to merge
 			num = num*10 + ParseDigit(w)
 			consumed++
+			lastWasMultiDigit = false
 		} else if IsNumber(w) {
 			// Multi-digit number from normalization (e.g., "20", "250")
 			n := ParseNumber(w)
 			if n < 0 {
+				break
+			}
+			// Don't merge two consecutive multi-digit numbers
+			// This prevents "210 210" from becoming "210210"
+			if lastWasMultiDigit {
 				break
 			}
 			// If we already have digits, combine appropriately
@@ -271,6 +279,7 @@ func parseDigitSequence(words []string) (int, int) {
 				num = n
 			}
 			consumed++
+			lastWasMultiDigit = len(w) > 1
 		} else {
 			break
 		}

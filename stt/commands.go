@@ -798,6 +798,15 @@ func extractAltitude(tokens []Token) (int, int) {
 		if i > 3 { // Don't look too far
 			break
 		}
+
+		// Skip numbers followed by "mile" or "miles" - those are distances, not altitudes
+		if i+1 < len(tokens) {
+			nextText := strings.ToLower(tokens[i+1].Text)
+			if nextText == "mile" || nextText == "miles" {
+				continue
+			}
+		}
+
 		if t.Type == TokenAltitude {
 			return t.Value, i + 1
 		}

@@ -87,8 +87,8 @@ func (p *Transcriber) DecodeTranscript(
 	if callsignMatch.SpokenKey != "" {
 		ac = aircraft[callsignMatch.SpokenKey]
 	}
-	logLocalStt("aircraft context: State=%q Altitude=%d Fixes=%d Approaches=%d",
-		ac.State, ac.Altitude, len(ac.Fixes), len(ac.CandidateApproaches))
+	logLocalStt("aircraft context: State=%q Altitude=%d Fixes=%d Approaches=%d AssignedApproach=%q",
+		ac.State, ac.Altitude, len(ac.Fixes), len(ac.CandidateApproaches), ac.AssignedApproach)
 	for spokenName, fixID := range ac.Fixes {
 		logLocalStt("  fix: %q -> %q", spokenName, fixID)
 	}

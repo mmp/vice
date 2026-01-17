@@ -248,6 +248,22 @@ func TestCompoundCommands(t *testing.T) {
 			},
 			expected: "UAL333 L180 D60",
 		},
+		{
+			name:       "cleared approach with speed until distance (5 mile final is not altitude)",
+			transcript: "Turkish 10Z heavy cleared I L S runway two two left approach maintain speed 180 until 5 mile final",
+			aircraft: map[string]Aircraft{
+				"Turkish 10Z heavy": {
+					Callsign:         "THY10Z",
+					Altitude:         3000,
+					State:            "arrival",
+					AssignedApproach: "I2L", // Required for cleared approach validation
+					CandidateApproaches: map[string]string{
+						"I L S runway two two left": "I2L",
+					},
+				},
+			},
+			expected: "THY10Z CI2L S180",
+		},
 	}
 
 	provider := NewTranscriber(nil)
@@ -792,6 +808,9 @@ func TestNormalizeTranscript(t *testing.T) {
 		// Note: disregard handling moved to provider level after callsign matching
 		{"turn left disregard turn right", []string{"turn", "left", "disregard", "turn", "right"}},
 		{"1-1-thousand", []string{"1", "1", "thousand"}}, // Hyphens split into separate words
+		// "niner" sometimes transcribed as "nine or" - should skip "or" between digits
+		{"two nine or zero", []string{"2", "9", "0"}},
+		{"heading two niner zero", []string{"heading", "2", "9", "0"}},
 		{"", nil},
 	}
 
