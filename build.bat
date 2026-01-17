@@ -25,6 +25,38 @@ set DO_TEST=0
 set DO_RELEASE=0
 set DO_ICONS=0
 
+REM Expected whisper.cpp submodule SHA (update this when bumping the submodule)
+set WHISPER_EXPECTED_SHA=9dc0d4695d97d5b57e4abe9d6a309fa9e05ae318
+
+REM Check that whisper.cpp submodule is at the expected commit
+if not exist "whisper.cpp\.git" (
+    echo Error: whisper.cpp submodule is not initialized.
+    echo.
+    echo Please run:
+    echo   git submodule update --init --recursive
+    exit /b 1
+)
+
+for /f "delims=" %%i in ('git -C whisper.cpp rev-parse HEAD 2^>nul') do set WHISPER_ACTUAL_SHA=%%i
+if not defined WHISPER_ACTUAL_SHA (
+    echo Error: Could not determine whisper.cpp submodule version.
+    echo.
+    echo Please run:
+    echo   git submodule update --init --recursive
+    exit /b 1
+)
+
+if not "!WHISPER_ACTUAL_SHA!"=="!WHISPER_EXPECTED_SHA!" (
+    echo Error: whisper.cpp submodule is at wrong commit.
+    echo.
+    echo   Expected: !WHISPER_EXPECTED_SHA!
+    echo   Actual:   !WHISPER_ACTUAL_SHA!
+    echo.
+    echo Please run:
+    echo   git submodule update --init --recursive
+    exit /b 1
+)
+
 REM Parse arguments
 :parse_args
 if "%~1"=="" goto done_parsing

@@ -16,6 +16,42 @@
 
 set -e
 
+# Expected whisper.cpp submodule SHA (update this when bumping the submodule)
+WHISPER_EXPECTED_SHA="9dc0d4695d97d5b57e4abe9d6a309fa9e05ae318"
+
+# Check that whisper.cpp submodule is at the expected commit
+check_whisper_submodule() {
+    if [ ! -d "whisper.cpp/.git" ] && [ ! -f "whisper.cpp/.git" ]; then
+        echo "Error: whisper.cpp submodule is not initialized."
+        echo ""
+        echo "Please run:"
+        echo "  git submodule update --init --recursive"
+        exit 1
+    fi
+
+    WHISPER_ACTUAL_SHA=$(git -C whisper.cpp rev-parse HEAD 2>/dev/null || echo "")
+    if [ -z "$WHISPER_ACTUAL_SHA" ]; then
+        echo "Error: Could not determine whisper.cpp submodule version."
+        echo ""
+        echo "Please run:"
+        echo "  git submodule update --init --recursive"
+        exit 1
+    fi
+
+    if [ "$WHISPER_ACTUAL_SHA" != "$WHISPER_EXPECTED_SHA" ]; then
+        echo "Error: whisper.cpp submodule is at wrong commit."
+        echo ""
+        echo "  Expected: $WHISPER_EXPECTED_SHA"
+        echo "  Actual:   $WHISPER_ACTUAL_SHA"
+        echo ""
+        echo "Please run:"
+        echo "  git submodule update --init --recursive"
+        exit 1
+    fi
+}
+
+check_whisper_submodule
+
 # Detect OS
 OS="$(uname -s)"
 case "$OS" in
