@@ -113,10 +113,16 @@ if exist "!SDL2_DIR!\bin\SDL2.dll" (
 REM Check if Vulkan SDK is available
 set VULKAN_AVAILABLE=0
 if defined VULKAN_SDK (
+    echo Checking for Vulkan SDK at !VULKAN_SDK!
     if exist "!VULKAN_SDK!\Bin\glslc.exe" (
         set VULKAN_AVAILABLE=1
         echo Vulkan SDK detected at !VULKAN_SDK!
+    ) else (
+        echo glslc.exe not found at !VULKAN_SDK!\Bin\glslc.exe
+        dir "!VULKAN_SDK!\Bin" 2>nul || echo Bin directory not found
     )
+) else (
+    echo VULKAN_SDK environment variable not set
 )
 
 REM Build whisper-cpp if needed
@@ -179,12 +185,36 @@ if not exist "whisper.cpp\build_go\src\libwhisper.a" (
     )
     REM Copy Vulkan library if built with Vulkan support
     if !VULKAN_AVAILABLE!==1 (
+        echo Looking for Vulkan library in build output...
         if not exist whisper.cpp\build_go\ggml\src\ggml-vulkan mkdir whisper.cpp\build_go\ggml\src\ggml-vulkan
+        set VULKAN_LIB_FOUND=0
         for /r whisper.cpp\build_go %%f in (libggml-vulkan.a) do (
-            if exist "%%f" copy /y "%%f" "whisper.cpp\build_go\ggml\src\ggml-vulkan\libggml-vulkan.a" >nul 2>&1
+            if exist "%%f" (
+                echo Found: %%f
+                copy /y "%%f" "whisper.cpp\build_go\ggml\src\ggml-vulkan\libggml-vulkan.a"
+                set VULKAN_LIB_FOUND=1
+            )
+        )
+        if !VULKAN_LIB_FOUND!==0 (
+            echo ERROR: libggml-vulkan.a not found in build output!
+            echo Listing ggml build directories:
+            dir /s /b whisper.cpp\build_go\ggml 2>nul | findstr /i "\.a$"
+            exit /b 1
         )
     )
     echo whisper-cpp built successfully.
+)
+
+REM Verify Vulkan library exists if we're building with Vulkan support
+if !VULKAN_AVAILABLE!==1 (
+    if not exist "whisper.cpp\build_go\ggml\src\ggml-vulkan\libggml-vulkan.a" (
+        echo ERROR: Vulkan support requested but libggml-vulkan.a not found!
+        echo This may indicate a cached build without Vulkan. Cleaning and rebuilding...
+        rmdir /s /q whisper.cpp\build_go 2>nul
+        echo Please run build.bat again to rebuild with Vulkan support.
+        exit /b 1
+    )
+    echo Vulkan library verified at whisper.cpp\build_go\ggml\src\ggml-vulkan\libggml-vulkan.a
 )
 
 REM Prepare icon resources
