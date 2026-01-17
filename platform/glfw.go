@@ -67,6 +67,19 @@ type Config struct {
 // New returns a new instance of a Platform implemented with a window
 // of the specified size open at the specified position on the screen.
 func New(config *Config, lg *log.Logger) (Platform, error) {
+	// Request microphone permission early, before SDL audio is initialized.
+	// This avoids potential conflicts between AVFoundation and CoreAudio.
+	micStatus := GetMicrophoneAuthorizationStatus()
+	lg.Infof("Microphone authorization status: %s", micStatus)
+	if micStatus == MicAuthNotDetermined {
+		lg.Info("Requesting microphone permission (dialog will appear)...")
+		RequestMicrophoneAccess()
+	} else if micStatus == MicAuthDenied {
+		lg.Warn("Microphone access denied - enable in System Settings > Privacy & Security > Microphone")
+	} else if micStatus == MicAuthRestricted {
+		lg.Warn("Microphone access restricted by system policy")
+	}
+
 	lg.Info("Starting GLFW initialization")
 	err := glfw.Init()
 	if err != nil {
