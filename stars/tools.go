@@ -648,6 +648,9 @@ func (sp *STARSPane) drawScenarioAirspaceRoutes(ctx *panes.Context, transforms r
 
 				for _, vol := range ctx.Client.State.Airspace[tcp][volname] {
 					for _, pts := range vol.Boundaries {
+						if len(pts) < 2 {
+							continue
+						}
 						for i := range pts[:len(pts)-1] {
 							ld.AddLine(pts[i], pts[i+1], color)
 						}

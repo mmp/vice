@@ -32,7 +32,7 @@ func (e *ErrorLogger) Push(s string) {
 }
 
 func (e *ErrorLogger) Pop() {
-	if e == nil {
+	if e == nil || len(e.hierarchy) == 0 {
 		return
 	}
 	e.hierarchy = e.hierarchy[:len(e.hierarchy)-1]
