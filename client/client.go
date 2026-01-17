@@ -625,11 +625,12 @@ func makeWhisperPrompt(state SimState) string {
 	// Build initial prompt with common phrases, aircraft telephony, and approaches.
 	// Most important items first since whisper has a 224 token limit.
 	promptParts := []string{
-		"climb and maintain", "descend and maintain", "maintain",
+		"climb and maintain", "descend and maintain", "maintain", "direct", "cleared direct",
 		"turn left", "turn right", "fly heading", "proceed direct", "expect the",
 		"reduce speed to", "maintain maximum forward speed", "contact tower",
 		"expect", "vectors", "squawk", "ident", "altimieter", "radar contact",
 		"reduce to final approach speed", "miles from", "established", "cleared",
+		"until established", "on the localizer", "flight level",
 	}
 
 	// Add telephony, approaches, and fixes for user-controlled tracks.
