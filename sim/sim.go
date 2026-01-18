@@ -1117,10 +1117,6 @@ func (s *Sim) updateState() {
 					}
 				}
 
-				if ac.IsDeparture() && passedWaypoint.TransferComms {
-					s.contactDeparture(ac)
-				}
-
 				if ac.IsAssociated() {
 					// Things that only apply to associated aircraft
 					sfp := ac.NASFlightPlan
@@ -1130,17 +1126,22 @@ func (s *Sim) updateState() {
 					}
 
 					if passedWaypoint.TransferComms {
-						// We didn't enqueue this before since we knew an
-						// explicit comms handoff was coming so go ahead and
-						// send them to the controller's frequency. Note that
-						// we use InboundHandoffController and not
-						// ac.TrackingController, since the human controller
-						// may have already flashed the track to a virtual
-						// controller.
-						ctrl := s.State.ResolveController(sfp.InboundHandoffController)
-						// Make sure they've bought the handoff.
-						if ctrl != sfp.HandoffController {
-							s.enqueueControllerContact(ac.ADSBCallsign, ctrl, 0 /* no delay */)
+						// This is a departure that hasn't contacted the departure controller yet, do it here
+						if ac.IsDeparture() && ac.DepartureContactAltitude == 0 {
+							s.contactDeparture(ac)
+						} else {
+							// We didn't enqueue this before since we knew an
+							// explicit comms handoff was coming so go ahead and
+							// send them to the controller's frequency. Note that
+							// we use InboundHandoffController and not
+							// ac.TrackingController, since the human controller
+							// may have already flashed the track to a virtual
+							// controller.
+							ctrl := s.State.ResolveController(sfp.InboundHandoffController)
+							// Make sure they've bought the handoff.
+							if ctrl != sfp.HandoffController {
+								s.enqueueControllerContact(ac.ADSBCallsign, ctrl, 0 /* no delay */)
+							}
 						}
 					}
 
@@ -1225,7 +1226,7 @@ func (s *Sim) updateState() {
 			}
 
 			// Possibly contact the departure controller
-			if ac.DepartureContactAltitude != 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude {
+			if ac.DepartureContactAltitude > 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude {
 				fp := ac.NASFlightPlan
 				if fp == nil {
 					fp = s.STARSComputer.lookupFlightPlanBySquawk(ac.Squawk)
@@ -1483,7 +1484,7 @@ func (s *Sim) contactDeparture(ac *Aircraft) {
 	s.postContactTransmission(ac.ADSBCallsign, tcp, *rt)
 
 	// Clear this out so we only send one contact message
-	ac.DepartureContactAltitude = 0
+	ac.DepartureContactAltitude = -1
 
 	// Only after we're on frequency can the controller start
 	// issuing control commands.. (Note that track may have
