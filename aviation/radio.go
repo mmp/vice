@@ -476,6 +476,16 @@ func (ApproachSnippetFormatter) Written(arg any) string {
 func (ApproachSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	appr := arg.(string)
 
+	// Split on commas first, process each part, then rejoin with commas.
+	// This handles approach names like "ILS Runway 15R, then visual approach..."
+	var spokenParts []string
+	for part := range strings.SplitSeq(appr, ",") {
+		spokenParts = append(spokenParts, spokenApproachPart(r, strings.TrimSpace(part)))
+	}
+	return strings.Join(spokenParts, ", ")
+}
+
+func spokenApproachPart(r *rand.Rand, appr string) string {
 	var result []string
 	lastRunway := false
 	for word := range strings.FieldsSeq(appr) {
