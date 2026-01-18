@@ -850,7 +850,10 @@ func extractAltitude(tokens []Token) (int, int) {
 		}
 		if t.Type == TokenNumber {
 			// Heuristic: if it looks like altitude encoding (2-3 digits, reasonable value)
-			if t.Value >= 10 && t.Value <= 600 {
+			// But exclude the speed range (100-400) since those are ambiguous and more likely
+			// to be speeds. Real altitudes in that range are typically spoken as "one eight
+			// thousand" not "180".
+			if t.Value >= 10 && t.Value <= 600 && (t.Value < 100 || t.Value > 400) {
 				return t.Value, i + 1
 			}
 			// Large number might be raw feet
@@ -871,6 +874,7 @@ func extractAltitude(tokens []Token) (int, int) {
 }
 
 // extractHeading extracts a heading value (1-360) from tokens.
+// Only called after command context has determined a heading is expected.
 func extractHeading(tokens []Token) (int, int) {
 	if len(tokens) == 0 {
 		return 0, 0
@@ -879,9 +883,6 @@ func extractHeading(tokens []Token) (int, int) {
 	for i, t := range tokens {
 		if i > 3 {
 			break
-		}
-		if t.Type == TokenHeading {
-			return t.Value, i + 1
 		}
 		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 360 {
 			return t.Value, i + 1
@@ -892,6 +893,7 @@ func extractHeading(tokens []Token) (int, int) {
 }
 
 // extractSpeed extracts a speed value from tokens.
+// Only called after command context has determined a speed is expected.
 func extractSpeed(tokens []Token) (int, int) {
 	if len(tokens) == 0 {
 		return 0, 0
@@ -901,11 +903,7 @@ func extractSpeed(tokens []Token) (int, int) {
 		if i > 3 {
 			break
 		}
-		if t.Type == TokenSpeed {
-			return t.Value, i + 1
-		}
-		// A 3-digit number like 250 might be classified as heading but could be speed in context
-		if (t.Type == TokenNumber || t.Type == TokenHeading) && t.Value >= 100 && t.Value <= 400 {
+		if t.Type == TokenNumber && t.Value >= 100 && t.Value <= 400 {
 			return t.Value, i + 1
 		}
 	}
@@ -1003,7 +1001,7 @@ func extractApproach(tokens []Token, approaches map[string]string) (string, floa
 		for i := 0; i < length; i++ {
 			// Expand numeric tokens to spoken form to match telephony
 			// e.g., "22" -> "two two"
-			if tokens[i].Type == TokenNumber || tokens[i].Type == TokenHeading {
+			if tokens[i].Type == TokenNumber {
 				parts = append(parts, spokenDigits(tokens[i].Value))
 			} else {
 				parts = append(parts, tokens[i].Text)
@@ -1068,8 +1066,7 @@ func extractSquawk(tokens []Token) (string, int) {
 		if IsDigit(t.Text) {
 			code.WriteString(t.Text)
 			consumed++
-		} else if (t.Type == TokenNumber || t.Type == TokenSpeed || t.Type == TokenHeading) && t.Value >= 0 && t.Value <= 7777 {
-			// Accept number, speed, or heading tokens since squawk codes (0000-7777) overlap those ranges
+		} else if t.Type == TokenNumber && t.Value >= 0 && t.Value <= 7777 {
 			code.WriteString(fmt.Sprintf("%04d", t.Value))
 			consumed++
 			break
@@ -1176,7 +1173,8 @@ func isAltitudeToken(t Token) bool {
 	}
 	if t.Type == TokenNumber {
 		// Encoded altitude (10-600 means 1000-60000 ft)
-		if t.Value >= 10 && t.Value <= 600 {
+		// But exclude speed range (100-400) to avoid ambiguity
+		if t.Value >= 10 && t.Value <= 600 && (t.Value < 100 || t.Value > 400) {
 			return true
 		}
 		// Raw feet value
@@ -1194,8 +1192,8 @@ func extractAltitudeValue(t Token) int {
 		return t.Value
 	}
 	if t.Type == TokenNumber {
-		// Already encoded (10-600)
-		if t.Value >= 10 && t.Value <= 600 {
+		// Already encoded (10-600), excluding speed range (100-400)
+		if t.Value >= 10 && t.Value <= 600 && (t.Value < 100 || t.Value > 400) {
 			return t.Value
 		}
 		// Raw feet - convert to encoded

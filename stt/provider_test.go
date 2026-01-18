@@ -1000,7 +1000,7 @@ func TestParseCommandsBasic(t *testing.T) {
 				{Text: "turn", Type: TokenWord},
 				{Text: "left", Type: TokenWord},
 				{Text: "heading", Type: TokenWord},
-				{Text: "270", Type: TokenHeading, Value: 270},
+				{Text: "270", Type: TokenNumber, Value: 270},
 			},
 			ac:       Aircraft{State: "arrival"},
 			expected: []string{"L270"},
@@ -1011,7 +1011,7 @@ func TestParseCommandsBasic(t *testing.T) {
 				{Text: "turn", Type: TokenWord},
 				{Text: "right", Type: TokenWord},
 				{Text: "heading", Type: TokenWord},
-				{Text: "090", Type: TokenHeading, Value: 90},
+				{Text: "090", Type: TokenNumber, Value: 90},
 			},
 			ac:       Aircraft{State: "arrival"},
 			expected: []string{"R090"},
@@ -1021,7 +1021,7 @@ func TestParseCommandsBasic(t *testing.T) {
 			tokens: []Token{
 				{Text: "reduce", Type: TokenWord},
 				{Text: "speed", Type: TokenWord},
-				{Text: "250", Type: TokenSpeed, Value: 250},
+				{Text: "250", Type: TokenNumber, Value: 250},
 			},
 			ac:       Aircraft{State: "arrival"},
 			expected: []string{"S250"},
@@ -1080,7 +1080,7 @@ func TestParseCommandsThenSequencing(t *testing.T) {
 			tokens: []Token{
 				{Text: "reduce", Type: TokenWord},
 				{Text: "speed", Type: TokenWord},
-				{Text: "250", Type: TokenSpeed, Value: 250},
+				{Text: "250", Type: TokenNumber, Value: 250},
 				{Text: "then", Type: TokenWord},
 				{Text: "descend", Type: TokenWord},
 				{Text: "80", Type: TokenAltitude, Value: 80},
@@ -1095,7 +1095,7 @@ func TestParseCommandsThenSequencing(t *testing.T) {
 				{Text: "80", Type: TokenAltitude, Value: 80},
 				{Text: "then", Type: TokenWord},
 				{Text: "reduce", Type: TokenWord},
-				{Text: "210", Type: TokenSpeed, Value: 210},
+				{Text: "210", Type: TokenNumber, Value: 210},
 			},
 			ac:       Aircraft{Altitude: 12000, State: "arrival"},
 			expected: []string{"D80", "TS210"},
@@ -1107,7 +1107,7 @@ func TestParseCommandsThenSequencing(t *testing.T) {
 				{Text: "30", Type: TokenAltitude, Value: 30},
 				{Text: "reduce", Type: TokenWord},
 				{Text: "speed", Type: TokenWord},
-				{Text: "180", Type: TokenSpeed, Value: 180},
+				{Text: "180", Type: TokenNumber, Value: 180},
 			},
 			ac:       Aircraft{Altitude: 5000, State: "arrival"},
 			expected: []string{"TS180"},
@@ -1166,7 +1166,7 @@ func TestParseCommandsPriorityResolution(t *testing.T) {
 				{Text: "turn", Type: TokenWord},
 				{Text: "left", Type: TokenWord},
 				{Text: "heading", Type: TokenWord},
-				{Text: "270", Type: TokenHeading, Value: 270},
+				{Text: "270", Type: TokenNumber, Value: 270},
 			},
 			ac:       Aircraft{State: "arrival"},
 			expected: []string{"L270"},
@@ -1363,14 +1363,6 @@ func TestExtractHeading(t *testing.T) {
 		expectedCons int
 	}{
 		{
-			name: "heading token",
-			tokens: []Token{
-				{Text: "270", Type: TokenHeading, Value: 270},
-			},
-			expectedHdg:  270,
-			expectedCons: 1,
-		},
-		{
 			name: "number in valid heading range",
 			tokens: []Token{
 				{Text: "180", Type: TokenNumber, Value: 180},
@@ -1415,27 +1407,11 @@ func TestExtractSpeed(t *testing.T) {
 		expectedCons int
 	}{
 		{
-			name: "speed token",
-			tokens: []Token{
-				{Text: "250", Type: TokenSpeed, Value: 250},
-			},
-			expectedSpd:  250,
-			expectedCons: 1,
-		},
-		{
 			name: "number in valid speed range",
 			tokens: []Token{
 				{Text: "210", Type: TokenNumber, Value: 210},
 			},
 			expectedSpd:  210,
-			expectedCons: 1,
-		},
-		{
-			name: "heading token in speed context",
-			tokens: []Token{
-				{Text: "180", Type: TokenHeading, Value: 180},
-			},
-			expectedSpd:  180,
 			expectedCons: 1,
 		},
 		{

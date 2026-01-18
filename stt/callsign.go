@@ -260,8 +260,8 @@ func scoreFlightNumberMatch(tokens []Token, expectedNum string) (float64, int) {
 			continue
 		}
 
-		// Multi-digit number token (any numeric type)
-		if (t.Type == TokenNumber || t.Type == TokenHeading || t.Type == TokenSpeed || t.Type == TokenAltitude) && t.Value >= 0 {
+		// Multi-digit number token
+		if (t.Type == TokenNumber || t.Type == TokenAltitude) && t.Value >= 0 {
 			builtNum.WriteString(strconv.Itoa(t.Value))
 			consumed++
 			continue
@@ -390,7 +390,7 @@ func tryFlightNumberOnlyMatch(tokens []Token, aircraft map[string]Aircraft) (Cal
 	// Scan tokens for numbers
 	for i, t := range tokens {
 		var numStr string
-		if t.Type == TokenNumber || t.Type == TokenHeading || t.Type == TokenSpeed {
+		if t.Type == TokenNumber {
 			numStr = strconv.Itoa(t.Value)
 		} else if IsNumber(t.Text) {
 			numStr = t.Text
