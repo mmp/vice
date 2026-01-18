@@ -633,7 +633,8 @@ func makeWhisperPrompt(state SimState) string {
 		"until established", "on the localizer", "flight level", "niner",
 	}
 
-	// Add telephony, approaches, and fixes for user-controlled tracks.
+	// Add telephony and approaches for user-controlled tracks.
+	// Collect fixes separately using map to dedupe.
 	assignedApproaches := make(map[string]struct{})
 	fixes := make(map[string]struct{})
 	for _, trk := range state.Tracks {
@@ -643,7 +644,11 @@ func makeWhisperPrompt(state SimState) string {
 			if trk.Approach != "" {
 				assignedApproaches[trk.Approach] = struct{}{}
 			}
-			for _, fix := range trk.Fixes {
+			// Add up to 3 upcoming fixes from this aircraft's route
+			for i, fix := range trk.Fixes {
+				if i >= 3 {
+					break
+				}
 				fixes[fix] = struct{}{}
 			}
 		}
@@ -654,13 +659,21 @@ func makeWhisperPrompt(state SimState) string {
 		promptParts = append(promptParts, av.GetApproachTelephony(appr))
 	}
 
-	// Add active approaches (converted to spoken form, excluding already-added assigned ones)
+	// Collect active approaches and their fixes
 	activeApproaches := make(map[string]struct{})
 	for _, ar := range state.ArrivalRunways {
 		if ap, ok := state.Airports[ar.Airport]; ok {
 			for _, appr := range ap.Approaches {
 				if appr.Runway == ar.Runway {
 					activeApproaches[appr.FullName] = struct{}{}
+					// Add all fixes from this active approach
+					for _, wps := range appr.Waypoints {
+						for _, wp := range wps {
+							if len(wp.Fix) >= 3 && len(wp.Fix) <= 5 && wp.Fix[0] != '_' {
+								fixes[wp.Fix] = struct{}{}
+							}
+						}
+					}
 				}
 			}
 		}
