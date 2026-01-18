@@ -81,6 +81,13 @@ var natoAlphabet = map[string]string{
 	"zulu": "z", "zoolu": "z",
 }
 
+// ConvertNATOLetter converts a NATO phonetic word to its letter.
+// Returns the letter and true if found, empty string and false otherwise.
+func ConvertNATOLetter(word string) (string, bool) {
+	letter, ok := natoAlphabet[strings.ToLower(word)]
+	return letter, ok
+}
+
 // commandKeywords maps spoken command words to normalized forms.
 var commandKeywords = map[string]string{
 	// Altitude
@@ -228,11 +235,10 @@ func NormalizeTranscript(transcript string) []string {
 			continue
 		}
 
-		// Try NATO alphabet
-		if letter, ok := natoAlphabet[w]; ok {
-			result = append(result, letter)
-			continue
-		}
+		// NOTE: NATO alphabet conversion is NOT done here because words like
+		// "delta" could be airline names (Delta Air Lines). NATO conversion is
+		// deferred to scoreGACallsign() and scoreFlightNumberMatch() where the
+		// context makes it clear we're building a callsign from phonetics.
 
 		// Try command keyword normalization
 		if norm, ok := commandKeywords[w]; ok {

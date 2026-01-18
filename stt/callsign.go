@@ -274,6 +274,13 @@ func scoreFlightNumberMatch(tokens []Token, expectedNum string) (float64, int) {
 			continue
 		}
 
+		// NATO phonetic letter (e.g., "whiskey" -> "W", "juliet" -> "J")
+		if letter, ok := ConvertNATOLetter(t.Text); ok {
+			builtNum.WriteString(strings.ToUpper(letter))
+			consumed++
+			continue
+		}
+
 		// Alphanumeric token (like "4wj") - common in callsigns
 		if isAlphanumeric(t.Text) {
 			builtNum.WriteString(strings.ToUpper(t.Text))
@@ -344,6 +351,10 @@ func scoreGACallsign(tokens []Token, callsign string) (float64, int) {
 			consumed++
 		} else if len(text) == 1 && text[0] >= 'a' && text[0] <= 'z' {
 			built.WriteString(strings.ToUpper(text))
+			consumed++
+		} else if letter, ok := ConvertNATOLetter(text); ok {
+			// Handle NATO phonetic letters: "alpha" -> "A", "bravo" -> "B", etc.
+			built.WriteString(strings.ToUpper(letter))
 			consumed++
 		} else {
 			break
