@@ -111,6 +111,7 @@ var commandKeywords = map[string]string{
 
 	// Heading
 	"heading": "heading",
+	"hitting": "heading", // STT error
 	"turn":    "turn",
 	"left":    "left",
 	"right":   "right",

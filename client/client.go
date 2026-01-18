@@ -630,7 +630,7 @@ func makeWhisperPrompt(state SimState) string {
 		"reduce speed to", "maintain maximum forward speed", "contact tower",
 		"expect", "vectors", "squawk", "ident", "altimieter", "radar contact",
 		"reduce to final approach speed", "miles from", "established", "cleared",
-		"until established", "on the localizer", "flight level",
+		"until established", "on the localizer", "flight level", "niner",
 	}
 
 	// Add telephony, approaches, and fixes for user-controlled tracks.
