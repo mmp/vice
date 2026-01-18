@@ -145,21 +145,25 @@ var commandTemplates = []CommandTemplate{
 	},
 
 	// === HEADING COMMANDS ===
+	// Note: turn_left_heading and turn_right_heading REQUIRE "left" or "right" to be
+	// explicitly present in the transcript. This prevents transcription errors like
+	// "flight heading" (instead of "fly heading") from incorrectly matching as a
+	// directional turn command.
 	{
 		Name:      "turn_left_heading",
-		Keywords:  [][]string{{"turn", "left"}, {"left", "heading"}},
+		Keywords:  [][]string{{"left"}, {"heading"}},
 		ArgType:   ArgHeading,
 		OutputFmt: "L%03d",
 		Priority:  10,
-		SkipWords: []string{"to"},
+		SkipWords: []string{"turn", "to"},
 	},
 	{
 		Name:      "turn_right_heading",
-		Keywords:  [][]string{{"turn", "right"}, {"right", "heading"}},
+		Keywords:  [][]string{{"right"}, {"heading"}},
 		ArgType:   ArgHeading,
 		OutputFmt: "R%03d",
 		Priority:  10,
-		SkipWords: []string{"to"},
+		SkipWords: []string{"turn", "to"},
 	},
 	{
 		Name:      "fly_heading",
@@ -312,6 +316,14 @@ var commandTemplates = []CommandTemplate{
 	{
 		Name:      "cleared_approach",
 		Keywords:  [][]string{{"cleared"}},
+		ArgType:   ArgApproach,
+		OutputFmt: "C%s",
+		Priority:  8,
+		SkipWords: []string{"approach"},
+	},
+	{
+		Name:      "clear_to_approach", // Whisper sometimes mistranscribes "cleared" as "clear to"
+		Keywords:  [][]string{{"clear"}, {"to"}},
 		ArgType:   ArgApproach,
 		OutputFmt: "C%s",
 		Priority:  8,
