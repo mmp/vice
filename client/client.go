@@ -598,11 +598,21 @@ func PreloadWhisperModel(lg *log.Logger) {
 			whisperModel, whisperModelErr = whisper.LoadModelFromBytes(modelBytes)
 			if whisperModelErr != nil {
 				lg.Errorf("Failed to load whisper model: %v", whisperModelErr)
-			} else {
-				whisperModelName = modelName
-				lg.Infof("Whisper model loaded: %s", modelName)
+				whisperModelMu.Unlock()
+				return
 			}
+			whisperModelName = modelName
+			lg.Infof("Whisper model loaded: %s", modelName)
 			whisperModelMu.Unlock()
+
+			// Run warmup transcription with 1 second of silence.  The first inference pass on a
+			// newly loaded model is slower due to shader compilation and memory allocation. Running
+			// a warmup pass ensures the first real transcription works reliably.
+			warmupST := whisper.NewStreamingTranscriber(whisperModel, &whisperModelMu, whisper.Options{})
+			warmupST.Start()
+			warmupST.AddSamples(make([]int16, 16000)) // 1 second at 16kHz
+			warmupST.Stop()
+			lg.Info("Whisper model warmed up")
 		})
 	}()
 }
