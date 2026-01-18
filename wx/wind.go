@@ -202,3 +202,138 @@ func SampleMETARWithSpec(metar []METAR, intervals []util.TimeInterval, spec *Win
 		return spec.Matches(m, magVar)
 	})
 }
+
+// FlightRulesFilter represents user preference for VMC/IMC
+type FlightRulesFilter int
+
+const (
+	FlightRulesAny FlightRulesFilter = iota
+	FlightRulesVMC
+	FlightRulesIMC
+)
+
+// GustFilter represents user preference for gusting winds
+type GustFilter int
+
+const (
+	GustAny GustFilter = iota
+	GustYes
+	GustNo
+)
+
+// WeatherFilter defines UI-specified constraints for sampling weather data.
+// All fields are optional; nil/zero means "don't care".
+type WeatherFilter struct {
+	FlightRules FlightRulesFilter
+
+	// Wind speed range in knots (nil means no constraint)
+	WindSpeedMin *int
+	WindSpeedMax *int
+
+	Gusting GustFilter
+
+	// Wind direction range in magnetic degrees (nil means no constraint)
+	// Uses the same wraparound logic as WindSpecifier
+	WindDirMin *int
+	WindDirMax *int
+
+	// Temperature range in Celsius (nil means no constraint)
+	TemperatureMin *int
+	TemperatureMax *int
+}
+
+// IsEmpty returns true if no filter constraints are set
+func (wf *WeatherFilter) IsEmpty() bool {
+	return wf.FlightRules == FlightRulesAny &&
+		wf.WindSpeedMin == nil && wf.WindSpeedMax == nil &&
+		wf.Gusting == GustAny &&
+		wf.WindDirMin == nil && wf.WindDirMax == nil &&
+		wf.TemperatureMin == nil && wf.TemperatureMax == nil
+}
+
+// Matches checks if a METAR matches this weather filter
+func (wf *WeatherFilter) Matches(metar METAR, magVar float32) bool {
+	// Check flight rules
+	switch wf.FlightRules {
+	case FlightRulesVMC:
+		if !metar.IsVMC() {
+			return false
+		}
+	case FlightRulesIMC:
+		if metar.IsVMC() {
+			return false
+		}
+	}
+
+	// Check wind speed
+	if wf.WindSpeedMin != nil && metar.WindSpeed < *wf.WindSpeedMin {
+		return false
+	}
+	if wf.WindSpeedMax != nil && metar.WindSpeed > *wf.WindSpeedMax {
+		return false
+	}
+
+	// Check gusting
+	switch wf.Gusting {
+	case GustYes:
+		if metar.WindGust == nil || *metar.WindGust == 0 {
+			return false
+		}
+	case GustNo:
+		if metar.WindGust != nil && *metar.WindGust > 0 {
+			return false
+		}
+	}
+
+	// Check wind direction
+	if wf.WindDirMin != nil || wf.WindDirMax != nil {
+		if metar.WindDir == nil {
+			// Variable winds don't match a specific direction requirement
+			return false
+		}
+		windMagnetic := math.NormalizeHeading(float32(*metar.WindDir) - magVar)
+
+		minDir := 0
+		if wf.WindDirMin != nil {
+			minDir = *wf.WindDirMin
+		}
+		maxDir := 360
+		if wf.WindDirMax != nil {
+			maxDir = *wf.WindDirMax
+		}
+
+		if minDir <= maxDir {
+			// Simple range, no wrap
+			if windMagnetic < float32(minDir) || windMagnetic > float32(maxDir) {
+				return false
+			}
+		} else {
+			// Wraps through North
+			if windMagnetic < float32(minDir) && windMagnetic > float32(maxDir) {
+				return false
+			}
+		}
+	}
+
+	// Check temperature
+	if wf.TemperatureMin != nil && metar.Temperature < float32(*wf.TemperatureMin) {
+		return false
+	}
+	if wf.TemperatureMax != nil && metar.Temperature > float32(*wf.TemperatureMax) {
+		return false
+	}
+
+	return true
+}
+
+// SampleMETARWithFilter randomly samples a METAR that matches the weather filter
+func SampleMETARWithFilter(metar []METAR, intervals []util.TimeInterval, filter *WeatherFilter, magVar float32) *METAR {
+	if filter == nil || filter.IsEmpty() {
+		// No constraints, sample any METAR
+		return SampleMatchingMETAR(metar, intervals, func(m METAR) bool { return true })
+	}
+
+	return SampleMatchingMETAR(metar, intervals, func(m METAR) bool {
+		return filter.Matches(m, magVar)
+	})
+}

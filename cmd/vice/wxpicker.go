@@ -754,7 +754,7 @@ func drawTimePickerPopup(date *time.Time, intervals []util.TimeInterval, metars 
 
 // TimePicker displays a calendar widget for time selection and displays
 // the METAR for the selected time.  Returns true if the time was changed.
-func TimePicker(label string, date *time.Time, intervals []util.TimeInterval, metars []wx.METAR, monospaceFont *imgui.Font) bool {
+func TimePicker(date *time.Time, intervals []util.TimeInterval, metars []wx.METAR, monospaceFont *imgui.Font) bool {
 	// We lose the timezone when the times come through RPC from the
 	// server, so reestablish that here since we'd like to work in UTC
 	// throughout.
@@ -782,12 +782,10 @@ func TimePicker(label string, date *time.Time, intervals []util.TimeInterval, me
 		metarIdx = len(metars) - 1
 	}
 
-	imgui.Text(label)
-	imgui.SameLine()
 	if imgui.Button(date.Format("2006-01-02 15:04")) {
-		imgui.OpenPopupStr(label + "_popup")
+		imgui.OpenPopupStr("##timepicker_popup")
 	}
-	if imgui.BeginPopupV(label+"_popup", imgui.WindowFlagsNone) {
+	if imgui.BeginPopupV("##timepicker_popup", imgui.WindowFlagsNone) {
 		changed = drawTimePickerPopup(date, intervals, metars, metarIdx, monospaceFont) || changed
 		imgui.EndPopup()
 	}
