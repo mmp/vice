@@ -1099,16 +1099,24 @@ func (FrequencySnippetFormatter) Written(arg any) string {
 func (FrequencySnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	f := arg.(Frequency)
 	whole := (f / 1000) % 100
-	frac := (f % 1000) / 10
-	point := ""
-	if frac%10 == 0 { // e.g., 121.9 -> read as 21 point 9 not 21 90
-		frac /= 10
-		point = "point "
-	}
-	if r.Bool() {
-		return fmt.Sprintf("%d ", whole) + point + fmt.Sprintf("%d", frac)
-	} else {
+	frac := (f % 1000) / 10 // Two digits after decimal
+
+	switch r.Intn(3) {
+	case 0:
+		// Two digit pairs: "twenty-three forty-five" or "twenty-eight twenty"
+		return fmt.Sprintf("%d %d", whole, frac)
+	case 1:
+		// With "one" prefix: "one twenty-three point forty-five" or "one twenty-eight point two"
+		if frac%10 == 0 {
+			return fmt.Sprintf("one %d point %d", whole, frac/10)
+		}
 		return fmt.Sprintf("one %d point %d", whole, frac)
+	default:
+		// Without "one": "twenty-three point forty-five" or "twenty-eight point two"
+		if frac%10 == 0 {
+			return fmt.Sprintf("%d point %d", whole, frac/10)
+		}
+		return fmt.Sprintf("%d point %d", whole, frac)
 	}
 }
 
