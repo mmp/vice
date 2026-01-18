@@ -132,7 +132,7 @@ var commandTemplates = []CommandTemplate{
 		ArgType:   ArgHeading,
 		OutputFmt: "L%03d",
 		Priority:  10,
-		SkipWords: []string{"heading", "to"},
+		SkipWords: []string{"to"},
 	},
 	{
 		Name:      "turn_right_heading",
@@ -140,7 +140,7 @@ var commandTemplates = []CommandTemplate{
 		ArgType:   ArgHeading,
 		OutputFmt: "R%03d",
 		Priority:  10,
-		SkipWords: []string{"heading", "to"},
+		SkipWords: []string{"to"},
 	},
 	{
 		Name:      "fly_heading",
