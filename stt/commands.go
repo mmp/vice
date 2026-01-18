@@ -456,6 +456,33 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 			}
 		}
 
+		// Check for "{altitude} until established" pattern (PTAC instruction)
+		// e.g., "4000 until established on the localizer" -> A40
+		if isAltitudeToken(tokens[i]) && i+2 < len(tokens) {
+			if strings.ToLower(tokens[i+1].Text) == "until" &&
+				FuzzyMatch(tokens[i+2].Text, "established", 0.8) {
+				alt := extractAltitudeValue(tokens[i])
+				if alt > 0 {
+					cmd := fmt.Sprintf("A%d", alt)
+					logLocalStt("  found '{altitude} until established' pattern: %s", cmd)
+					commands = append(commands, cmd)
+					totalConf += 1.0
+					i += 3 // Skip altitude, "until", "established"
+					// Skip additional words like "on the localizer"
+					for i < len(tokens) {
+						text := strings.ToLower(tokens[i].Text)
+						if text == "on" || text == "the" || text == "localizer" ||
+							text == "glide" || text == "slope" || text == "glideslope" {
+							i++
+						} else {
+							break
+						}
+					}
+					continue
+				}
+			}
+		}
+
 		// Try to match a command
 		match, consumed := matchCommand(tokens[i:], ac, isThen)
 		if consumed > 0 {
@@ -1129,4 +1156,41 @@ func shouldCorrectAltitude(tmpl CommandTemplate, alt int, acAltitude int) (int, 
 		}
 	}
 	return alt, false
+}
+
+// isAltitudeToken returns true if the token represents an altitude value.
+func isAltitudeToken(t Token) bool {
+	if t.Type == TokenAltitude {
+		return true
+	}
+	if t.Type == TokenNumber {
+		// Encoded altitude (10-600 means 1000-60000 ft)
+		if t.Value >= 10 && t.Value <= 600 {
+			return true
+		}
+		// Raw feet value
+		if t.Value >= 1000 && t.Value <= 60000 && t.Value%100 == 0 {
+			return true
+		}
+	}
+	return false
+}
+
+// extractAltitudeValue extracts the encoded altitude from a token.
+// Returns the altitude in hundreds of feet (e.g., 40 for 4000 ft).
+func extractAltitudeValue(t Token) int {
+	if t.Type == TokenAltitude {
+		return t.Value
+	}
+	if t.Type == TokenNumber {
+		// Already encoded (10-600)
+		if t.Value >= 10 && t.Value <= 600 {
+			return t.Value
+		}
+		// Raw feet - convert to encoded
+		if t.Value >= 1000 && t.Value <= 60000 && t.Value%100 == 0 {
+			return t.Value / 100
+		}
+	}
+	return 0
 }
