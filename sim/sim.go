@@ -1239,20 +1239,7 @@ func (s *Sim) updateState() {
 						// Use the original InboundHandoffController position for the radio event,
 						// not the resolved position. This ensures TCWControlsPosition checks
 						// correctly match when the user has that position consolidated.
-						tcp := fp.InboundHandoffController
-						s.lg.Debug("contacting departure controller", slog.String("tcp", string(tcp)))
-
-						rt := ac.Nav.DepartureMessage()
-						s.postContactTransmission(ac.ADSBCallsign, tcp, *rt)
-
-						// Clear this out so we only send one contact message
-						ac.DepartureContactAltitude = 0
-
-						// Only after we're on frequency can the controller start
-						// issuing control commands.. (Note that track may have
-						// already been handed off to the next controller at this
-						// point.)
-						fp.ControllingController = tcp
+						s.contactDeparture(ac)
 					}
 				}
 			}
@@ -1480,6 +1467,25 @@ func (s *Sim) sendFullFlightFollowingRequest(ac *Aircraft, tcp TCP) {
 	rt.Type = av.RadioTransmissionContact
 
 	s.postContactTransmission(ac.ADSBCallsign, tcp, *rt)
+}
+
+func (s *Sim) contactDeparture(ac *Aircraft) {
+	fp := ac.NASFlightPlan
+
+	tcp := fp.InboundHandoffController
+	s.lg.Debug("contacting departure controller", slog.String("tcp", string(tcp)))
+
+	rt := ac.Nav.DepartureMessage()
+	s.postContactTransmission(ac.ADSBCallsign, tcp, *rt)
+
+	// Clear this out so we only send one contact message
+	ac.DepartureContactAltitude = 0
+
+	// Only after we're on frequency can the controller start
+	// issuing control commands.. (Note that track may have
+	// already been handed off to the next controller at this
+	// point.)
+	fp.ControllingController = tcp
 }
 
 func (s *Sim) isRadarVisible(ac *Aircraft) bool {
