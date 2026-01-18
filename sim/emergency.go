@@ -208,7 +208,7 @@ func (s *Sim) triggerEmergency(idx int) bool {
 
 	// Trigger the first stage immediately unless it's an external arrival that hasn't been handed
 	// off yet. Those trigger when controller contact happens in processEnququed.
-	if ac.IsAssociated() {
+	if ac.IsAssociated() && ac.DepartureContactAltitude != 0 {
 		s.runEmergencyStage(ac)
 	} else {
 		// Mark as dormant until handoff; -1 signals the emergency should activate

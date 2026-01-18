@@ -1226,7 +1226,7 @@ func (s *Sim) updateState() {
 			}
 
 			// Possibly contact the departure controller
-			if ac.DepartureContactAltitude > 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude {
+			if (ac.DepartureContactAltitude > 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude) || (ac.DepartureContactAltitude == 0 && ac.EmergencyState != nil) {
 				fp := ac.NASFlightPlan
 				if fp == nil {
 					fp = s.STARSComputer.lookupFlightPlanBySquawk(ac.Squawk)
@@ -1491,6 +1491,12 @@ func (s *Sim) contactDeparture(ac *Aircraft) {
 	// already been handed off to the next controller at this
 	// point.)
 	fp.ControllingController = tcp
+
+	// Queued emergencies can now proceed
+	if ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1 {
+		ac.EmergencyState.CurrentStage = 0
+		s.runEmergencyStage(ac)
+	}
 }
 
 func (s *Sim) isRadarVisible(ac *Aircraft) bool {
