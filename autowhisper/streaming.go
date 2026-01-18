@@ -122,7 +122,7 @@ func (st *StreamingTranscriber) Stop() string {
 		return ""
 	}
 
-	finalText := st.transcribe(allAudio)
+	finalText := st.transcribe(allAudio, true)
 
 	// Send final result
 	st.resultChan <- StreamingResult{
@@ -174,7 +174,7 @@ func (st *StreamingTranscriber) processLoop() {
 			}
 
 			// Run transcription
-			text := st.transcribe(audioWindow)
+			text := st.transcribe(audioWindow, false)
 
 			// Only emit if text changed and is non-empty
 			if text != st.lastText && text != "" && text != "[BLANK_AUDIO]" {
@@ -197,7 +197,7 @@ func (st *StreamingTranscriber) processLoop() {
 }
 
 // transcribe runs whisper on the given audio samples.
-func (st *StreamingTranscriber) transcribe(audio []float32) string {
+func (st *StreamingTranscriber) transcribe(audio []float32, isFinal bool) string {
 	if st.model == nil || st.model.model == nil || len(audio) == 0 {
 		return ""
 	}
@@ -266,8 +266,10 @@ func (st *StreamingTranscriber) transcribe(audio []float32) string {
 	totalTime := time.Since(transcribeStart)
 	audioDuration := time.Duration(len(audio)) * time.Second / 16000
 
-	// Log timing details for slow transcriptions (>500ms)
-	if totalTime > 500*time.Millisecond {
+	// Log timing details for slow transcriptions (>500ms), but only for final
+	// transcriptions (after PTT release). Intermediate transcriptions during PTT
+	// hold are not meaningful for latency measurement.
+	if isFinal && totalTime > 500*time.Millisecond {
 		logWhisperTiming("SLOW whisper: total=%v (mutex=%v, ctx=%v, process=%v) audio=%v samples=%d",
 			totalTime, mutexWait, ctxCreate, processTime, audioDuration, len(audio))
 	}
