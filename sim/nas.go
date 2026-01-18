@@ -125,10 +125,6 @@ func (sc *STARSComputer) Update(s *Sim) {
 		if ac.IsAssociated() && drop {
 			fp := ac.DisassociateFlightPlan()
 			fp.DeleteTime = s.State.SimTime.Add(2 * time.Minute) // hold it for a bit before deleting
-			if ac.TypeOfFlight == av.FlightTypeArrival {
-				// Record who had the track so they can still issue control instructions.
-				ac.PreArrivalDropTCP = fp.TrackingController
-			}
 			sc.FlightPlans = append(sc.FlightPlans, fp)
 		} else if ac.IsUnassociated() && !drop { // unassociated--associate?
 			fp := sc.lookupFlightPlanBySquawk(ac.Squawk)
@@ -190,7 +186,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 						// If an aircraft tagged up on a manually created
 						// FP, assume that they called and asked for flight
 						// following and so are already on frequency.
-						fp.ControllingController = fp.TrackingController
+						ac.ControllerFrequency = ControlPosition(fp.TrackingController)
 					}
 					if s.State.IsLocalController(fp.TrackingController) {
 						fp.LastLocalController = fp.TrackingController

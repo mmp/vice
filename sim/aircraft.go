@@ -52,6 +52,12 @@ type Aircraft struct {
 
 	NASFlightPlan *NASFlightPlan
 
+	// ControllerFrequency is the controller position whose radio frequency
+	// this aircraft is tuned to. Only this controller can issue ATC commands
+	// to the aircraft. Empty means the aircraft is not on any controller's
+	// frequency.
+	ControllerFrequency ControlPosition
+
 	HoldForRelease    bool
 	Released          bool // only used for hold for release
 	ReleaseTime       time.Time
@@ -65,9 +71,6 @@ type Aircraft struct {
 
 	// The controller who gave approach clearance
 	ApproachTCP TCP
-
-	// Who had control when the fp disassociated due to an arrival filter.
-	PreArrivalDropTCP TCP
 
 	FirstSeen time.Time
 
@@ -686,7 +689,6 @@ func (ac *Aircraft) IsAssociated() bool {
 func (ac *Aircraft) AssociateFlightPlan(fp *NASFlightPlan) {
 	fp.Location = math.Point2LL{} // clear location in case it was an unsupported DB
 	ac.NASFlightPlan = fp
-	ac.PreArrivalDropTCP = ""
 }
 
 func (ac *Aircraft) DisassociateFlightPlan() *NASFlightPlan {

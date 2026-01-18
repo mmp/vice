@@ -155,7 +155,7 @@ func (p *Transcriber) DecodeTranscript(
 
 // DecodeFromState decodes a transcript using the simulation state directly.
 // It builds the aircraft context internally from the provided state.
-// Only tracks on the user's frequency (ControllingController) are included in the context.
+// Only tracks on the user's frequency (ControllerFrequency) are included in the context.
 func (p *Transcriber) DecodeFromState(
 	state *sim.UserState,
 	userTCW sim.TCW,
@@ -183,8 +183,8 @@ func (p *Transcriber) BuildAircraftContext(
 	acCtx := make(map[string]Aircraft)
 
 	for _, trk := range state.Tracks {
-		// Check if the aircraft is on the user's frequency (ControllingController)
-		if trk.FlightPlan == nil || !state.TCWControlsPosition(userTCW, trk.FlightPlan.ControllingController) {
+		// Check if the aircraft is on the user's frequency
+		if !state.TCWControlsPosition(userTCW, trk.ControllerFrequency) {
 			continue
 		}
 

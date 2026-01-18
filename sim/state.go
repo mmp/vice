@@ -160,6 +160,7 @@ func makeDerivedState(s *Sim) DerivedState {
 		rt := Track{
 			RadarTrack:                ac.GetRadarTrack(s.State.SimTime),
 			FlightPlan:                ac.NASFlightPlan,
+			ControllerFrequency:       ac.ControllerFrequency,
 			DepartureAirport:          ac.FlightPlan.DepartureAirport,
 			DepartureAirportElevation: ac.DepartureAirportElevation(),
 			DepartureAirportLocation:  ac.DepartureAirportLocation(),

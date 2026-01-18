@@ -61,7 +61,8 @@ import (
 // 51: preemptive before v0.13.3 release
 // 52: STT
 // 53: local STT
-const ViceSerializeVersion = 53
+// 54: Move ControllerFrequency from NASFlightPlan to Aircraft
+const ViceSerializeVersion = 54
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 + ViceRPCVersion

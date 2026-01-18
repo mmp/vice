@@ -134,7 +134,8 @@ type AircraftDisplayState struct {
 type Track struct {
 	av.RadarTrack
 
-	FlightPlan *NASFlightPlan
+	FlightPlan          *NASFlightPlan
+	ControllerFrequency ControlPosition
 
 	// Sort of hacky to carry these along here but it's convenient...
 	DepartureAirport          string
@@ -1117,13 +1118,13 @@ func (s *Sim) updateState() {
 					}
 				}
 
+				if passedWaypoint.ClearApproach {
+					ac.ApproachTCP = TCP(ac.ControllerFrequency)
+				}
+
 				if ac.IsAssociated() {
 					// Things that only apply to associated aircraft
 					sfp := ac.NASFlightPlan
-
-					if passedWaypoint.ClearApproach {
-						ac.ApproachTCP = sfp.ControllingController
-					}
 
 					if passedWaypoint.TransferComms {
 						// We didn't enqueue this before since we knew an
@@ -1142,7 +1143,7 @@ func (s *Sim) updateState() {
 
 					// Update scratchpads if the waypoint has scratchpad commands
 					// Only update if aircraft is controlled by a virtual controller
-					if s.isVirtualController(sfp.ControllingController) {
+					if s.isVirtualController(ac.ControllerFrequency) {
 						if passedWaypoint.PrimaryScratchpad != "" {
 							sfp.Scratchpad = passedWaypoint.PrimaryScratchpad
 						}
@@ -1160,8 +1161,8 @@ func (s *Sim) updateState() {
 					if passedWaypoint.PointOut != "" {
 						if ctrl, ok := s.State.Controllers[TCP(passedWaypoint.PointOut)]; ok {
 							// Only do automatic point outs for virtual controllers
-							if s.isVirtualController(sfp.ControllingController) {
-								fromCtrl := s.State.Controllers[sfp.ControllingController]
+							if s.isVirtualController(ac.ControllerFrequency) {
+								fromCtrl := s.State.Controllers[TCP(ac.ControllerFrequency)]
 								s.pointOut(sfp.ACID, fromCtrl, ctrl)
 								break
 							}
@@ -1252,7 +1253,7 @@ func (s *Sim) updateState() {
 						// issuing control commands.. (Note that track may have
 						// already been handed off to the next controller at this
 						// point.)
-						fp.ControllingController = tcp
+						ac.ControllerFrequency = ControlPosition(tcp)
 					}
 				}
 			}
@@ -1375,6 +1376,7 @@ func (s *Sim) possiblyRequestFlightFollowing() {
 
 func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp TCP) {
 	ac.RequestedFlightFollowing = true
+	ac.ControllerFrequency = ControlPosition(tcp)
 
 	// About 30% of the time, make an abbreviated request and wait for "go ahead"
 	if s.Rand.Float32() < 0.3 {
@@ -1501,7 +1503,7 @@ func (s *Sim) goAround(ac *Aircraft) {
 
 	towerHadTrack := sfp.TrackingController != "" && sfp.TrackingController != ac.ApproachTCP
 
-	sfp.ControllingController = ac.ApproachTCP
+	ac.ControllerFrequency = ControlPosition(ac.ApproachTCP)
 
 	intent := ac.GoAround()
 	rt := av.RenderIntents([]av.CommandIntent{intent}, s.Rand)
@@ -1512,7 +1514,7 @@ func (s *Sim) goAround(ac *Aircraft) {
 
 	// If it was handed off to tower, hand it back to us
 	if towerHadTrack {
-		sfp.HandoffController = sfp.ControllingController
+		sfp.HandoffController = ac.ControllerFrequency
 
 		s.eventStream.Post(Event{
 			Type:           OfferedHandoffEvent,

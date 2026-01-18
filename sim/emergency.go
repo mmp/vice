@@ -190,10 +190,7 @@ func (s *Sim) triggerEmergency(idx int) bool {
 			return 0
 		}
 
-		humanAllocated := false
-		if fp := ac.NASFlightPlan; fp != nil {
-			humanAllocated = !s.isVirtualController(fp.ControllingController)
-		}
+		humanAllocated := !s.isVirtualController(ac.ControllerFrequency)
 		return util.Select(em.ApplicableTo.Applies(ac, humanAllocated), em.Weight, float32(0))
 	})
 	if !ok {
@@ -464,8 +461,7 @@ func (s *Sim) runEmergencyStage(ac *Aircraft) {
 	// Post the radio transmission
 	// Note: MakeContactTransmission automatically prepends controller position and callsign
 	rt := av.MakeContactTransmission(strings.Join(transmission, ", "), args...)
-	controller := ac.NASFlightPlan.ControllingController
-	s.postContactTransmission(ac.ADSBCallsign, controller, *rt)
+	s.postContactTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), *rt)
 
 	// Schedule next stage based on current stage's duration
 	es.CurrentStage++
