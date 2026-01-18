@@ -263,11 +263,8 @@ func validateCancelApproach(ac Aircraft) string {
 	return ""
 }
 
-func validateGoAhead(ac Aircraft) string {
-	// Go ahead typically for VFR check-ins
-	if ac.State != "vfr flight following" {
-		// Not an error, just less common
-	}
+func validateGoAhead(_ Aircraft) string {
+	// Go ahead is valid for any aircraft state (typically VFR check-ins)
 	return ""
 }
 

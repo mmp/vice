@@ -42,7 +42,26 @@ type CommandMatch struct {
 	IsThen     bool    // Whether this is a "then" sequenced command
 }
 
-// Define all command templates
+// commandTemplates defines patterns for recognizing ATC commands.
+//
+// Priority Guidelines:
+// When multiple templates match the same tokens, the one with higher priority wins.
+// On equal priority, the template that consumes more tokens wins (more specific match).
+//
+// Priority Levels:
+//   - 20: Informational phrases that should block command parsing (e.g., "radar contact")
+//   - 15: Highly specific multi-keyword commands (e.g., "climb via sid", "cancel approach clearance")
+//   - 12: Compound commands with specific intent (e.g., "present heading", "squawk ident")
+//   - 10: Standard commands with keyword sequences (e.g., "descend maintain", "turn left heading")
+//   - 8:  Shorter variants of standard commands (e.g., "fly heading", "turn degrees")
+//   - 5:  Single-keyword commands (e.g., "descend", "heading")
+//   - 2-3: Fallback commands that match broadly (e.g., "maintain" for altitude or speed)
+//
+// The hierarchy ensures that:
+//   - "descend maintain 8000" matches descend_maintain (10), not just descend (5)
+//   - "climb via the sid" matches climb_via_sid (15), not climb (5)
+//   - "present heading" matches present_heading (12), not heading_only (5)
+//   - "turn left heading 270" matches turn_left_heading (10), not heading_only (5)
 var commandTemplates = []CommandTemplate{
 	// === ALTITUDE COMMANDS ===
 	{
@@ -531,42 +550,34 @@ func matchCommand(tokens []Token, ac Aircraft, isThen bool) (CommandMatch, int) 
 func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen bool) (CommandMatch, int) {
 	consumed := 0
 
-	// Match keyword sequences
+	// Match each keyword group in sequence.
+	// For each group, we skip over skip words and filler words, then try to
+	// match the first significant token against any keyword in that group.
 	for _, keywordGroup := range tmpl.Keywords {
-		matched := false
+		// Skip over skip words and filler words to find the next significant token
 		for consumed < len(tokens) {
 			text := strings.ToLower(tokens[consumed].Text)
-
-			// Skip designated skip words
-			if contains(tmpl.SkipWords, text) {
+			if contains(tmpl.SkipWords, text) || IsFillerWord(text) {
 				consumed++
 				continue
-			}
-
-			// Skip filler words
-			if IsFillerWord(text) {
-				consumed++
-				continue
-			}
-
-			// Try to match any keyword in the group
-			for _, kw := range keywordGroup {
-				if FuzzyMatch(text, kw, 0.8) {
-					matched = true
-					consumed++
-					break
-				}
-			}
-
-			if matched {
-				break
-			}
-
-			// If we didn't match and haven't matched any keyword yet, fail
-			if consumed == 0 {
-				return CommandMatch{}, 0
 			}
 			break
+		}
+
+		// Check if we ran out of tokens
+		if consumed >= len(tokens) {
+			return CommandMatch{}, 0
+		}
+
+		// Try to match the current token against any keyword in the group
+		text := strings.ToLower(tokens[consumed].Text)
+		matched := false
+		for _, kw := range keywordGroup {
+			if FuzzyMatch(text, kw, 0.8) {
+				matched = true
+				consumed++
+				break
+			}
 		}
 
 		if !matched {
