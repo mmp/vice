@@ -371,7 +371,6 @@ func (wa WaypointArray) CheckDeparture(e *util.ErrorLogger, controllers map[Cont
 func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[ControlPosition]*Controller, checkScratchpad func(string) bool) {
 	defer e.CheckDepth(e.CurrentDepth())
 
-	haveHO := false
 	for i, wp := range wa {
 		e.Push(wp.Fix)
 		if wp.Speed < 0 || wp.Speed > 300 {
@@ -407,8 +406,6 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[Control
 		}
 
 		if wp.HumanHandoff {
-			haveHO = true
-
 			// Check if any subsequent waypoints have a HandoffController
 			for _, wfut := range wa[i:] {
 				if wfut.HandoffController != "" {
@@ -416,10 +413,6 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[Control
 					break
 				}
 			}
-		}
-
-		if wp.TransferComms && !haveHO {
-			e.ErrorString("Must have /ho to handoff to a human controller at a waypoint prior to /tc")
 		}
 
 		if i == 0 && wp.Shift > 0 {
@@ -470,6 +463,7 @@ func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[ControlPositi
 
 	wa.checkBasics(e, ctrl, checkScratchpad)
 	wa.checkDescending(e)
+	haveHO := false
 
 	for _, wp := range wa {
 		e.Push(wp.Fix)
@@ -478,6 +472,12 @@ func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[ControlPositi
 		}
 		if wp.ClearApproach && !approachAssigned {
 			e.ErrorString("/clearapp specified but no approach has been assigned")
+		}
+		if wp.HumanHandoff {
+			haveHO = true
+		}
+		if wp.TransferComms && !haveHO {
+			e.ErrorString("Must have /ho to handoff to a human controller at a waypoint prior to /tc")
 		}
 		e.Pop()
 	}
