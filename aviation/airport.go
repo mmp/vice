@@ -370,6 +370,10 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 			for i := range route.Waypoints {
 				route.Waypoints[i].OnSID = true
+
+				if route.Waypoints[i].TransferComms {
+					route.WaitToContactDeparture = true
+				}
 			}
 
 			route.Waypoints.CheckDeparture(e, controlPositions, checkScratchpad)
@@ -718,6 +722,8 @@ type ExitRoute struct {
 	HandoffController ControlPosition `json:"handoff_controller"`
 	// optional, the initial tracking controller for the departure.
 	DepartureController ControlPosition `json:"departure_controller"`
+
+	WaitToContactDeparture bool // whether the aircraft waits until a /TC point to contact departure
 }
 
 type Departure struct {

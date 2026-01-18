@@ -1117,6 +1117,10 @@ func (s *Sim) updateState() {
 					}
 				}
 
+				if ac.IsDeparture() && passedWaypoint.TransferComms {
+					s.contactDeparture(ac)
+				}
+
 				if ac.IsAssociated() {
 					// Things that only apply to associated aircraft
 					sfp := ac.NASFlightPlan
