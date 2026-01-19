@@ -1293,8 +1293,8 @@ func TestShouldCorrectAltitude(t *testing.T) {
 		{
 			name:        "climb correction would produce flight level - no correction",
 			tmplName:    "climb",
-			alt:         30,   // encoded 30 = 3000 ft
-			acAltitude:  5000, // aircraft at 5000 ft
+			alt:         30,    // encoded 30 = 3000 ft
+			acAltitude:  5000,  // aircraft at 5000 ft
 			expectCorr:  false, // correction would be 300 (FL300) - not allowed without "flight level"
 			expectedAlt: 30,
 		},
@@ -1309,9 +1309,9 @@ func TestShouldCorrectAltitude(t *testing.T) {
 		{
 			name:        "climb correction to 17000 ft is allowed",
 			tmplName:    "climb",
-			alt:         17,    // encoded 17 = 1700 ft
-			acAltitude:  5000,  // aircraft at 5000 ft
-			expectCorr:  true,  // correction to 170 (17000 ft) is allowed - below FL180
+			alt:         17,   // encoded 17 = 1700 ft
+			acAltitude:  5000, // aircraft at 5000 ft
+			expectCorr:  true, // correction to 170 (17000 ft) is allowed - below FL180
 			expectedAlt: 170,
 		},
 		{

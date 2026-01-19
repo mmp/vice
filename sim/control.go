@@ -1735,6 +1735,19 @@ type ControlCommandsResult struct {
 func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string) ControlCommandsResult {
 	commands := strings.Fields(commandStr)
 
+	// Parse addressing form suffix from callsign: /T indicates type+trailing3 addressing
+	// (e.g., "skyhawk 3 alpha bravo" instead of "november 1 2 3 alpha bravo")
+	addressingForm := AddressingFormFull
+	if strings.HasSuffix(string(callsign), "/T") {
+		addressingForm = AddressingFormTypeTrailing3
+		callsign = av.ADSBCallsign(strings.TrimSuffix(string(callsign), "/T"))
+	}
+
+	// Update aircraft's last addressing form for readback rendering
+	if ac, ok := s.Aircraft[callsign]; ok {
+		ac.LastAddressingForm = addressingForm
+	}
+
 	// Handle special STT commands that need direct TTS synthesis
 	// These short-circuit normal command processing
 	if len(commands) == 1 {
@@ -1823,9 +1836,20 @@ func (s *Sim) readbackCallsignSuffix(callsign av.ADSBCallsign, tcw TCW) string {
 		heavySuper += " emergency aircraft"
 	}
 
-	csArg := av.CallsignArg{
-		Callsign:    ac.ADSBCallsign,
-		IsEmergency: ac.EmergencyState != nil,
+	// Use GACallsignArg for GA aircraft when addressed with type+trailing3 form
+	var csArg any
+	if strings.HasPrefix(string(callsign), "N") && ac.LastAddressingForm == AddressingFormTypeTrailing3 {
+		csArg = av.GACallsignArg{
+			Callsign:     ac.ADSBCallsign,
+			AircraftType: ac.FlightPlan.AircraftType,
+			UseTypeForm:  true,
+			IsEmergency:  ac.EmergencyState != nil,
+		}
+	} else {
+		csArg = av.CallsignArg{
+			Callsign:    ac.ADSBCallsign,
+			IsEmergency: ac.EmergencyState != nil,
+		}
 	}
 	tr := av.MakeReadbackTransmission(", {callsign}"+heavySuper+". ", csArg)
 	return tr.Spoken(s.Rand)

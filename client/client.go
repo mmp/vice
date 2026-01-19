@@ -656,8 +656,26 @@ func makeWhisperPrompt(state SimState) string {
 	fixes := make(map[string]struct{})
 	for _, trk := range state.Tracks {
 		if state.UserControlsTrack(trk) && trk.IsAssociated() {
-			tele := av.GetTelephony(string(trk.ADSBCallsign), trk.FlightPlan.CWTCategory)
+			callsign := string(trk.ADSBCallsign)
+			tele := av.GetTelephony(callsign, trk.FlightPlan.CWTCategory)
 			promptParts = append(promptParts, tele)
+
+			// For GA callsigns (N-prefix), also add type+trailing3 variants
+			if strings.HasPrefix(callsign, "N") && trk.FlightPlan.AircraftType != "" {
+				typePronunciations := av.GetACTypePronunciations(trk.FlightPlan.AircraftType)
+				if len(typePronunciations) > 0 {
+					trailing3 := av.GetTrailing3Spoken(callsign)
+					if trailing3 != "" {
+						// Only use pronunciations without numbers to avoid callsign confusion
+						for _, typeSpoken := range typePronunciations {
+							if !strings.ContainsAny(typeSpoken, "0123456789") {
+								promptParts = append(promptParts, typeSpoken+" "+trailing3)
+							}
+						}
+					}
+				}
+			}
+
 			if trk.Approach != "" {
 				assignedApproaches[trk.Approach] = struct{}{}
 			}

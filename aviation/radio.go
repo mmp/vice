@@ -785,6 +785,48 @@ func (BasicNumberSnippetFormatter) Validate(arg any) error {
 ///////////////////////////////////////////////////////////////////////////
 // Callsign utilities
 
+// GetACTypePronunciations returns all pronunciation variants for an aircraft type.
+// For example, "C172" might return ["skyhawk", "cessna one seventy-two"].
+// Returns nil if the type is not found in sayactype.json.
+func GetACTypePronunciations(acType string) []string {
+	loadPronunciationsIfNeeded()
+	if variants, ok := sayACTypeMap[acType]; ok {
+		return variants
+	}
+	return nil
+}
+
+// GetTrailing3Spoken returns the trailing 3 characters of a callsign as spoken phonetics.
+// For "N123AB", returns "3 alpha bravo".
+// For callsigns shorter than 3 chars (excluding N prefix), returns the whole number.
+func GetTrailing3Spoken(callsign string) string {
+	if len(callsign) < 2 {
+		return ""
+	}
+
+	// Get the part after N (or the whole callsign if no N prefix)
+	suffix := callsign
+	if strings.HasPrefix(callsign, "N") {
+		suffix = callsign[1:]
+	}
+
+	// Get trailing 3 characters
+	if len(suffix) > 3 {
+		suffix = suffix[len(suffix)-3:]
+	}
+
+	// Convert to spoken form
+	var parts []string
+	for _, ch := range strings.ToUpper(suffix) {
+		if ch >= '0' && ch <= '9' {
+			parts = append(parts, sayDigit(int(ch-'0')))
+		} else if sp, ok := spokenLetters[string(ch)]; ok {
+			parts = append(parts, strings.ToLower(sp))
+		}
+	}
+	return strings.Join(parts, " ")
+}
+
 // SplitCallsign splits a callsign into ICAO prefix and flight number.
 // For "UAL123" returns ("UAL", "123"). For "N12345" returns ("N", "12345").
 func SplitCallsign(callsign string) (prefix, number string) {
@@ -911,18 +953,60 @@ type CallsignArg struct {
 	AlwaysFullCallsign bool
 }
 
+// GACallsignArg provides context for formatting GA callsigns with type-based addressing.
+// When UseTypeForm is true, the callsign is spoken as "aircraft type + trailing 3"
+// (e.g., "skyhawk 3 alpha bravo" instead of "november 1 2 3 alpha bravo").
+type GACallsignArg struct {
+	Callsign     ADSBCallsign
+	AircraftType string // e.g., "C172"
+	UseTypeForm  bool   // If true, use type+trailing3 form
+	IsEmergency  bool
+}
+
 func (CallsignSnippetFormatter) Written(arg any) string {
-	ca := arg.(CallsignArg)
-	callsign := string(ca.Callsign)
+	var callsign string
+	var isEmergency bool
+	var useTypeForm bool
+	var acType string
+
+	switch ca := arg.(type) {
+	case CallsignArg:
+		callsign = string(ca.Callsign)
+		isEmergency = ca.IsEmergency
+	case GACallsignArg:
+		callsign = string(ca.Callsign)
+		isEmergency = ca.IsEmergency
+		useTypeForm = ca.UseTypeForm
+		acType = ca.AircraftType
+	default:
+		return "???"
+	}
 
 	icao, fnum := SplitCallsign(callsign)
 	if icao == "N" {
+		// For GA callsigns with type form, show abbreviated version
+		if useTypeForm && acType != "" {
+			acAlias := DB.AircraftTypeAliases[acType]
+			if acAlias == "" {
+				acAlias = acType
+			}
+			// Get trailing 3
+			suffix := fnum
+			if len(suffix) > 3 {
+				suffix = suffix[len(suffix)-3:]
+			}
+			cs := acAlias + " " + suffix
+			if isEmergency {
+				cs += " (emergency)"
+			}
+			return cs
+		}
 		return callsign
 	}
 
 	cs := DB.Callsigns[icao] + " " + fnum
 
-	if ca.IsEmergency {
+	if isEmergency {
 		cs += " (emergency)"
 	}
 
@@ -932,12 +1016,51 @@ func (CallsignSnippetFormatter) Written(arg any) string {
 func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	loadPronunciationsIfNeeded()
 
-	ca := arg.(CallsignArg)
-	callsign := string(ca.Callsign)
+	var callsign string
+	var isEmergency bool
+	var alwaysFullCallsign bool
+	var useTypeForm bool
+	var acType string
+
+	switch ca := arg.(type) {
+	case CallsignArg:
+		callsign = string(ca.Callsign)
+		isEmergency = ca.IsEmergency
+		alwaysFullCallsign = ca.AlwaysFullCallsign
+	case GACallsignArg:
+		callsign = string(ca.Callsign)
+		isEmergency = ca.IsEmergency
+		useTypeForm = ca.UseTypeForm
+		acType = ca.AircraftType
+		alwaysFullCallsign = true // GA always says full identifier in type form
+	default:
+		return "???"
+	}
 
 	icao, fnum := SplitCallsign(callsign)
 
 	if icao == "N" {
+		// For GA callsigns with type form, use aircraft type + trailing 3
+		if useTypeForm && acType != "" {
+			typeVariants := sayACTypeMap[acType]
+			if len(typeVariants) > 0 {
+				// Filter out variants with numbers to avoid callsign confusion
+				var filtered []string
+				for _, v := range typeVariants {
+					if !strings.ContainsAny(v, "0123456789") {
+						filtered = append(filtered, v)
+					}
+				}
+				if len(filtered) > 0 {
+					// Pick a random pronunciation variant
+					typeSpoken, _ := rand.SampleSeq(r, slices.Values(filtered))
+					trailing3 := GetTrailing3Spoken(callsign)
+					return typeSpoken + " " + trailing3
+				}
+			}
+		}
+
+		// Default: spell out the full N-number
 		var s []string
 		for _, ch := range callsign {
 			if ch >= '0' && ch <= '9' {
@@ -966,7 +1089,7 @@ func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 
 	// For non-emergency aircraft reading back instructions, 5% of the time
 	// skip the ICAO identifier and just say the flight number.
-	if !ca.IsEmergency && !ca.AlwaysFullCallsign && r.Float32() < 0.05 {
+	if !isEmergency && !alwaysFullCallsign && r.Float32() < 0.05 {
 		tel = ""
 	}
 
@@ -994,10 +1117,12 @@ func sayFlightNumber(id string) string {
 }
 
 func (CallsignSnippetFormatter) Validate(arg any) error {
-	if _, ok := arg.(CallsignArg); !ok {
-		return fmt.Errorf("expected CallsignArg, got %T", arg)
+	switch arg.(type) {
+	case CallsignArg, GACallsignArg:
+		return nil
+	default:
+		return fmt.Errorf("expected CallsignArg or GACallsignArg, got %T", arg)
 	}
-	return nil
 }
 
 ///////////////////////////////////////////////////////////////////////////

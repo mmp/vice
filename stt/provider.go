@@ -132,17 +132,23 @@ func (p *Transcriber) DecodeTranscript(
 	}
 
 	// Generate output
+	// Encode addressing form in callsign: append /T for type-based addressing (GA aircraft)
+	callsignWithForm := callsignMatch.Callsign
+	if callsignMatch.AddressingForm == sim.AddressingFormTypeTrailing3 {
+		callsignWithForm += "/T"
+	}
+
 	var output string
 	if len(validation.ValidCommands) == 0 {
 		if confidence >= 0.4 {
 			// We're confident about the callsign but couldn't parse commands
-			output = callsignMatch.Callsign + " AGAIN"
+			output = callsignWithForm + " AGAIN"
 		} else {
 			// Low confidence overall
 			output = "BLOCKED"
 		}
 	} else {
-		output = callsignMatch.Callsign + " " + strings.Join(validation.ValidCommands, " ")
+		output = callsignWithForm + " " + strings.Join(validation.ValidCommands, " ")
 	}
 
 	elapsed := time.Since(start)
@@ -194,9 +200,10 @@ func (p *Transcriber) BuildAircraftContext(
 			ControllerFrequency: string(trk.ControllerFrequency),
 		}
 
-		// Add tracking controller from flight plan
+		// Add tracking controller and aircraft type from flight plan
 		if trk.FlightPlan != nil {
 			sttAc.TrackingController = string(trk.FlightPlan.TrackingController)
+			sttAc.AircraftType = trk.FlightPlan.AircraftType
 		}
 
 		// Build fixes map
@@ -245,7 +252,34 @@ func (p *Transcriber) BuildAircraftContext(
 			cwt = trk.FlightPlan.CWTCategory
 		}
 		telephony := av.GetTelephony(string(trk.ADSBCallsign), cwt)
+
+		// Default addressing form is full callsign
+		sttAc.AddressingForm = sim.AddressingFormFull
 		acCtx[telephony] = sttAc
+
+		// For GA callsigns (N-prefix), also add type-based addressing variants
+		callsign := string(trk.ADSBCallsign)
+		if strings.HasPrefix(callsign, "N") && sttAc.AircraftType != "" {
+			typePronunciations := av.GetACTypePronunciations(sttAc.AircraftType)
+			if len(typePronunciations) > 0 {
+				trailing3 := av.GetTrailing3Spoken(callsign)
+				if trailing3 != "" {
+					// Create a copy with TypeTrailing3 addressing form
+					typeAc := sttAc
+					typeAc.AddressingForm = sim.AddressingFormTypeTrailing3
+
+					// Add entry for each pronunciation variant that doesn't contain numbers
+					// (to avoid confusion with other callsigns)
+					for _, typeSpoken := range typePronunciations {
+						if strings.ContainsAny(typeSpoken, "0123456789") {
+							continue
+						}
+						key := typeSpoken + " " + trailing3
+						acCtx[key] = typeAc
+					}
+				}
+			}
+		}
 	}
 
 	return acCtx

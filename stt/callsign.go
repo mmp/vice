@@ -3,14 +3,17 @@ package stt
 import (
 	"strconv"
 	"strings"
+
+	"github.com/mmp/vice/sim"
 )
 
 // CallsignMatch represents a matched callsign with confidence score.
 type CallsignMatch struct {
-	Callsign   string  // The matched ICAO callsign (e.g., "AAL5936")
-	SpokenKey  string  // The key in the aircraft context map
-	Confidence float64 // Match confidence (0.0-1.0)
-	Consumed   int     // Number of tokens consumed for the callsign
+	Callsign       string                     // The matched ICAO callsign (e.g., "AAL5936")
+	SpokenKey      string                     // The key in the aircraft context map
+	Confidence     float64                    // Match confidence (0.0-1.0)
+	Consumed       int                        // Number of tokens consumed for the callsign
+	AddressingForm sim.CallsignAddressingForm // How the callsign was addressed (full vs type+trailing3)
 }
 
 // MatchCallsign attempts to match tokens to an aircraft callsign.
@@ -49,10 +52,11 @@ func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch,
 			if adjustedScore > bestMatch.Confidence ||
 				(adjustedScore == bestMatch.Confidence && startPos+consumed > bestMatch.Consumed) {
 				bestMatch = CallsignMatch{
-					Callsign:   string(ac.Callsign),
-					SpokenKey:  spokenName,
-					Confidence: adjustedScore,
-					Consumed:   startPos + consumed, // Include skipped tokens
+					Callsign:       string(ac.Callsign),
+					SpokenKey:      spokenName,
+					Confidence:     adjustedScore,
+					Consumed:       startPos + consumed, // Include skipped tokens
+					AddressingForm: ac.AddressingForm,
 				}
 				bestStartPos = startPos
 			}
@@ -474,11 +478,13 @@ func isAlphanumeric(s string) bool {
 // Aircraft holds context for a single aircraft for STT processing.
 type Aircraft struct {
 	Callsign            string
+	AircraftType        string            // Aircraft type code (e.g., "C172", "BE36")
 	Fixes               map[string]string // spoken name -> fix ID
 	CandidateApproaches map[string]string // spoken name -> approach ID
 	AssignedApproach    string
-	Altitude            int    // Current altitude in feet
-	State               string // "departure", "arrival", "overflight", "on approach", "vfr flight following"
-	ControllerFrequency string // Current controller position the aircraft is tuned to
-	TrackingController  string // Controller tracking this aircraft (from flight plan)
+	Altitude            int                        // Current altitude in feet
+	State               string                     // "departure", "arrival", "overflight", "on approach", "vfr flight following"
+	ControllerFrequency string                     // Current controller position the aircraft is tuned to
+	TrackingController  string                     // Controller tracking this aircraft (from flight plan)
+	AddressingForm      sim.CallsignAddressingForm // How this aircraft was addressed (based on which key matched)
 }

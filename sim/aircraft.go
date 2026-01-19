@@ -20,6 +20,16 @@ import (
 	"github.com/mmp/vice/wx"
 )
 
+// CallsignAddressingForm indicates how a controller addressed an aircraft's callsign.
+type CallsignAddressingForm int
+
+const (
+	// AddressingFormFull is the full callsign form (e.g., "november 1 2 3 alpha bravo")
+	AddressingFormFull CallsignAddressingForm = iota
+	// AddressingFormTypeTrailing3 is the aircraft type + trailing 3 form (e.g., "skyhawk 3 alpha bravo")
+	AddressingFormTypeTrailing3
+)
+
 type Aircraft struct {
 	// This is ADS-B callsign of the aircraft. Just because different the
 	// callsign in the flight plan can be different across multiple STARS
@@ -83,6 +93,10 @@ type Aircraft struct {
 	EmergencyState *EmergencyState
 
 	LastRadioTransmission time.Time
+
+	// LastAddressingForm tracks how the controller last addressed this aircraft.
+	// Used for readbacks to match the controller's style.
+	LastAddressingForm CallsignAddressingForm
 }
 
 func (ac *Aircraft) GetRadarTrack(now time.Time) av.RadarTrack {
