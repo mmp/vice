@@ -329,6 +329,22 @@ func TestTransponderCommands(t *testing.T) {
 			},
 			expected: "DAL222 SQA",
 		},
+		{
+			name:       "transponder on",
+			transcript: "Delta 222 transponder on",
+			aircraft: map[string]Aircraft{
+				"Delta 222": {Callsign: "DAL222", State: "departure"},
+			},
+			expected: "DAL222 SQON",
+		},
+		{
+			name:       "squawk normal",
+			transcript: "Delta 222 squawk normal",
+			aircraft: map[string]Aircraft{
+				"Delta 222": {Callsign: "DAL222", State: "departure"},
+			},
+			expected: "DAL222 SQON",
+		},
 	}
 
 	provider := NewTranscriber(nil)

@@ -405,6 +405,20 @@ var commandTemplates = []CommandTemplate{
 		OutputFmt: "SQA",
 		Priority:  12,
 	},
+	{
+		Name:      "squawk_on",
+		Keywords:  [][]string{{"transponder"}, {"on"}},
+		ArgType:   ArgNone,
+		OutputFmt: "SQON",
+		Priority:  12,
+	},
+	{
+		Name:      "squawk_normal",
+		Keywords:  [][]string{{"squawk"}, {"normal"}},
+		ArgType:   ArgNone,
+		OutputFmt: "SQON",
+		Priority:  12,
+	},
 
 	// === HANDOFF COMMANDS ===
 	{
@@ -1347,7 +1361,7 @@ func isCommandKeyword(word string) bool {
 		"speed":   true, "reduce": true, "increase": true,
 		"direct": true, "proceed": true,
 		"cleared": true, "expect": true, "vectors": true,
-		"squawk": true, "ident": true,
+		"squawk": true, "ident": true, "transponder": true,
 		"cross": true, "expedite": true,
 		"fly": true, "intercept": true,
 		"cancel": true, "resume": true,
