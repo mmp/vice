@@ -21,11 +21,11 @@ import (
 )
 
 // TCWCanCommandAircraft returns true if the TCW can issue ATC commands to an aircraft
-// (altitude, heading, speed, etc.). This is true if the TCW is privileged, owns the track,
-// or controls the ControllingController position.
-func (s *Sim) TCWCanCommandAircraft(tcw TCW, fp *NASFlightPlan) bool {
+// (altitude, heading, speed, etc.). This is true if the TCW is privileged or controls
+// the position whose frequency the aircraft is tuned to.
+func (s *Sim) TCWCanCommandAircraft(tcw TCW, ac *Aircraft) bool {
 	return s.PrivilegedTCWs[tcw] ||
-		(fp != nil && s.State.TCWControlsPosition(tcw, fp.ControllingController))
+		(ac != nil && s.State.TCWControlsPosition(tcw, ac.ControllerFrequency))
 }
 
 // TCWCanModifyTrack returns true if the TCW can modify the track itself (delete, reposition).
@@ -73,35 +73,13 @@ func (s *Sim) dispatchAircraftCommand(tcw TCW, callsign av.ADSBCallsign, check f
 	}
 }
 
-// Commands that are allowed by the controlling controller, who may not still have the track;
-// e.g., turns after handoffs.
+// dispatchControlledAircraftCommand dispatches a command to an aircraft if the
+// TCW controls the position whose frequency the aircraft is tuned to.
 func (s *Sim) dispatchControlledAircraftCommand(tcw TCW, callsign av.ADSBCallsign,
 	cmd func(tcw TCW, ac *Aircraft) av.CommandIntent) (av.CommandIntent, error) {
 	return s.dispatchAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) error {
-			if ac.IsUnassociated() {
-				// For unassociated aircraft, allow if privileged or controls pre-arrival drop position
-				if s.PrivilegedTCWs[tcw] || s.State.TCWControlsPosition(tcw, ac.PreArrivalDropTCP) {
-					return nil
-				}
-				return ErrTrackIsNotActive
-			}
-			if !s.TCWCanCommandAircraft(tcw, ac.NASFlightPlan) {
-				return av.ErrOtherControllerHasTrack
-			}
-			return nil
-		},
-		cmd)
-}
-
-// Can issue both to aircraft we track but also unassociated VFRs
-func (s *Sim) dispatchVFRAircraftCommand(tcw TCW, callsign av.ADSBCallsign,
-	cmd func(tcw TCW, ac *Aircraft) av.CommandIntent) (av.CommandIntent, error) {
-	return s.dispatchAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) error {
-			// Allow issuing this command to random unassociated VFRs but
-			// not IFRs that other controllers already own.
-			if ac.IsAssociated() && !s.TCWCanCommandAircraft(tcw, ac.NASFlightPlan) {
+			if !s.TCWCanCommandAircraft(tcw, ac) {
 				return av.ErrOtherControllerHasTrack
 			}
 			return nil
@@ -267,7 +245,7 @@ func (s *Sim) ChangeSquawk(tcw TCW, callsign av.ADSBCallsign, sq av.Squawk) (av.
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchVFRAircraftCommand(tcw, callsign,
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			s.enqueueTransponderChange(ac.ADSBCallsign, sq, ac.Mode)
 
@@ -279,7 +257,7 @@ func (s *Sim) ChangeTransponderMode(tcw TCW, callsign av.ADSBCallsign, mode av.T
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchVFRAircraftCommand(tcw, callsign,
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			s.enqueueTransponderChange(ac.ADSBCallsign, ac.Squawk, mode)
 
@@ -291,7 +269,7 @@ func (s *Sim) Ident(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error)
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.dispatchVFRAircraftCommand(tcw, callsign,
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			return ac.Ident(s.State.SimTime)
 		})
@@ -704,11 +682,11 @@ func (s *Sim) ContactTrackingController(tcw TCW, acid ACID) (av.CommandIntent, e
 
 	return s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, sfp *NASFlightPlan, ac *Aircraft) error {
-			if !s.TCWCanCommandAircraft(tcw, sfp) {
-				return av.ErrOtherControllerHasTrack
-			}
 			if ac == nil {
 				return av.ErrNoAircraftForCallsign
+			}
+			if !s.TCWCanCommandAircraft(tcw, ac) {
+				return av.ErrOtherControllerHasTrack
 			}
 			return nil
 		},
@@ -723,11 +701,11 @@ func (s *Sim) ContactController(tcw TCW, acid ACID, toTCP TCP) (av.CommandIntent
 
 	return s.dispatchFlightPlanCommand(tcw, acid,
 		func(tcw TCW, sfp *NASFlightPlan, ac *Aircraft) error {
-			if !s.TCWCanCommandAircraft(tcw, sfp) {
-				return av.ErrOtherControllerHasTrack
-			}
 			if ac == nil {
 				return av.ErrNoAircraftForCallsign
+			}
+			if !s.TCWCanCommandAircraft(tcw, ac) {
+				return av.ErrOtherControllerHasTrack
 			}
 			return nil
 		},
@@ -758,14 +736,14 @@ func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, t
 
 	s.eventStream.Post(Event{
 		Type:           HandoffControlEvent,
-		FromController: sfp.ControllingController,
+		FromController: ac.ControllerFrequency,
 		ToController:   toTCP,
 		ACID:           sfp.ACID,
 	})
 
 	// Take away the current controller's ability to issue control
 	// commands.
-	sfp.ControllingController = ""
+	ac.ControllerFrequency = ""
 
 	// In 5-10 seconds, have the aircraft contact the new controller
 	// (and give them control only then).
@@ -1415,8 +1393,8 @@ func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string
 				intent, ok = ac.ClearedApproach(approach, s.lg)
 			}
 
-			if ok && ac.IsAssociated() {
-				ac.ApproachTCP = ac.NASFlightPlan.ControllingController
+			if ok {
+				ac.ApproachTCP = TCP(ac.ControllerFrequency)
 			}
 			return intent
 		})
@@ -1479,8 +1457,8 @@ func (s *Sim) ContactTower(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent,
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			result, ok := ac.ContactTower(s.lg)
-			if ok && ac.IsAssociated() {
-				ac.NASFlightPlan.ControllingController = "_TOWER"
+			if ok {
+				ac.ControllerFrequency = "_TOWER"
 			}
 			return result
 		})
@@ -1515,9 +1493,7 @@ func (s *Sim) RadarServicesTerminated(tcw TCW, callsign av.ADSBCallsign) (av.Com
 			s.enqueueTransponderChange(ac.ADSBCallsign, 0o1200, ac.Mode)
 
 			// Leave our frequency
-			if ac.IsAssociated() {
-				ac.NASFlightPlan.ControllingController = ""
-			}
+			ac.ControllerFrequency = ""
 
 			return av.ContactIntent{
 				Type: av.ContactRadarTerminated,
@@ -1529,7 +1505,7 @@ func (s *Sim) GoAhead(tcw TCW, callsign av.ADSBCallsign) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	_, err := s.dispatchVFRAircraftCommand(tcw, callsign,
+	_, err := s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			if !ac.WaitingForGoAhead {
 				return nil
@@ -1553,7 +1529,7 @@ func (s *Sim) SayBlocked(tcw TCW) (av.ADSBCallsign, string, error) {
 	// Have a random pilot speak up
 	callsign, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.Aircraft), func(cs av.ADSBCallsign) int {
 		ac := s.Aircraft[cs]
-		return util.Select(s.TCWCanCommandAircraft(tcw, ac.NASFlightPlan), 1, 0)
+		return util.Select(s.TCWCanCommandAircraft(tcw, ac), 1, 0)
 	})
 	if !ok {
 		// No aircraft available to speak
@@ -1629,7 +1605,7 @@ func (s *Sim) processEnqueued() {
 
 			if ac, ok := s.Aircraft[c.ADSBCallsign]; ok {
 				if ac.IsAssociated() {
-					ac.NASFlightPlan.ControllingController = c.TCP
+					ac.ControllerFrequency = ControlPosition(c.TCP)
 
 					rt := ac.ContactMessage(s.ReportingPoints)
 					rt.Type = av.RadioTransmissionContact
@@ -1639,7 +1615,7 @@ func (s *Sim) processEnqueued() {
 					// Activate pre-assigned external emergency; the transmission will be
 					// consolidated with the initial contact transmission.
 					// Check if controlling controller is a human-allocated position (not virtual)
-					humanAllocated := !s.isVirtualController(ac.NASFlightPlan.ControllingController)
+					humanAllocated := !s.isVirtualController(ac.ControllerFrequency)
 					if humanAllocated && ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1 {
 						ac.EmergencyState.CurrentStage = 0
 						s.runEmergencyStage(ac)

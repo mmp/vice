@@ -11,6 +11,7 @@ import (
 	"runtime"
 	"slices"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -54,6 +55,10 @@ type NewSimConfiguration struct {
 
 	// New UI state for improved flow
 	filterText string // search/filter for scenario selection
+
+	// Weather filter UI state
+	weatherFilter      wx.WeatherFilter
+	weatherFilterError string
 
 	mu              util.LoggingMutex // protects airportMETAR/fetchingMETAR/availableWXIntervals
 	airportMETAR    map[string][]wx.METAR
@@ -207,9 +212,52 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	}
 	c.ScenarioName = scenarioName
 
+	// Initialize default wind direction from runways
+	c.initDefaultWindDirection()
+
 	c.fetchMETAR()
 
 	c.updateStartTimeForRunways()
+}
+
+// initDefaultWindDirection computes the default wind direction range from the scenario's runways.
+// It calculates the average runway heading and sets a ±30 degree range around it.
+func (c *NewSimConfiguration) initDefaultWindDirection() {
+	if c.ScenarioSpec == nil {
+		return
+	}
+
+	// Calculate average runway heading
+	var sumRunwayVecs [2]float32
+	ap := c.ScenarioSpec.PrimaryAirport
+	if dbap, ok := av.DB.Airports[ap]; ok {
+		for _, rwy := range dbap.Runways {
+			if slices.ContainsFunc(c.ScenarioSpec.DepartureRunways, func(r sim.DepartureRunway) bool {
+				return r.Airport == ap && r.Runway == rwy.Id
+			}) {
+				sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(rwy.Heading))
+			}
+			if slices.ContainsFunc(c.ScenarioSpec.ArrivalRunways, func(r sim.ArrivalRunway) bool {
+				return r.Airport == ap && r.Runway == rwy.Id
+			}) {
+				sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(rwy.Heading))
+			}
+		}
+	}
+
+	avgRwyHeading := math.VectorHeading(sumRunwayVecs)
+	avgRwyMagneticHeading := avgRwyHeading + c.ScenarioSpec.MagneticVariation
+
+	// Set default wind direction range to ±30 degrees from average runway heading
+	windDirMin := int(math.NormalizeHeading(avgRwyMagneticHeading - 30))
+	windDirMax := int(math.NormalizeHeading(avgRwyMagneticHeading + 30))
+
+	// Reset weather filter for the new scenario with default wind direction
+	c.weatherFilter = wx.WeatherFilter{
+		WindDirMin: &windDirMin,
+		WindDirMax: &windDirMax,
+	}
+	c.weatherFilterError = ""
 }
 
 func (c *NewSimConfiguration) fetchMETAR() {
@@ -1161,8 +1209,6 @@ func drawSectionHeader(title string) {
 
 // DrawConfigurationUI draws Screen 2: configuration options and traffic rates (combined)
 func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *Config) bool {
-	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
-
 	if c.displayError != nil {
 		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
 		imgui.Text(c.displayError.Error())
@@ -1252,54 +1298,7 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 		imgui.Text("Error: " + c.fetchMETARError.Error())
 		imgui.PopStyleColor()
 	} else if len(c.airportMETAR) > 0 {
-		metarAirports := slices.Collect(maps.Keys(c.airportMETAR))
-		slices.Sort(metarAirports)
-		if idx := slices.Index(metarAirports, c.ScenarioSpec.PrimaryAirport); idx > 0 {
-			metarAirports = slices.Delete(metarAirports, idx, idx+1)
-			metarAirports = slices.Insert(metarAirports, 0, c.ScenarioSpec.PrimaryAirport)
-		}
-
-		metar := c.airportMETAR[metarAirports[0]]
-		TimePicker("Start time", &c.NewSimRequest.StartTime,
-			c.availableWXIntervals, metar, &ui.fixedFont.Ifont)
-
-		imgui.SameLine()
-		if imgui.Button(renderer.FontAwesomeIconRedo + "##refreshTime") {
-			c.updateStartTimeForRunways()
-		}
-		if imgui.IsItemHovered() {
-			imgui.SetTooltip("Select optimal time for configured runways")
-		}
-
-		imgui.Spacing()
-		currentMetar := wx.METARForTime(c.airportMETAR[metarAirports[0]], c.NewSimRequest.StartTime)
-		imgui.Text("METAR:")
-		imgui.SameLine()
-		imgui.PushFont(&ui.fixedFont.Ifont)
-		imgui.Text(currentMetar.Raw)
-		imgui.PopFont()
-
-		if len(metarAirports) > 1 && !c.showAllMETAR {
-			if imgui.Button("Show all METAR") {
-				c.showAllMETAR = true
-			}
-		}
-		if c.showAllMETAR && len(metarAirports) > 1 {
-			if imgui.BeginTableV("allMetar", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{tableScale * 750, 0}, 0.) {
-				for i := 1; i < len(metarAirports); i++ {
-					ap := metarAirports[i]
-					imgui.TableNextRow()
-					imgui.TableNextColumn()
-					imgui.Text(ap + ":")
-					imgui.TableNextColumn()
-					imgui.PushFont(&ui.fixedFont.Ifont)
-					m := wx.METARForTime(c.airportMETAR[ap], c.NewSimRequest.StartTime)
-					imgui.Text(m.Raw)
-					imgui.PopFont()
-				}
-				imgui.EndTable()
-			}
-		}
+		c.drawWeatherFilterUI()
 	}
 	imgui.Spacing()
 
@@ -1826,7 +1825,204 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.
 	return show
 }
 
+// drawWeatherFilterUI draws the weather filter controls
+func (c *NewSimConfiguration) drawWeatherFilterUI() {
+	const inputWidth float32 = 50
+	changed := false
+
+	// Helper to convert *int to string for display
+	intPtrToStr := func(v *int) string {
+		if v == nil {
+			return ""
+		}
+		return strconv.Itoa(*v)
+	}
+
+	// Helper to parse string to *int
+	parseOptionalInt := func(s string) *int {
+		s = strings.TrimSpace(s)
+		if s == "" {
+			return nil
+		}
+		if v, err := strconv.Atoi(s); err == nil {
+			return &v
+		}
+		return nil
+	}
+
+	// Helper for optional int input fields, returns true if changed
+	optionalIntInput := func(label, hint string, value **int) bool {
+		s := intPtrToStr(*value)
+		imgui.SetNextItemWidth(inputWidth)
+		if imgui.InputTextWithHint(label, hint, &s, 0, nil) {
+			*value = parseOptionalInt(s)
+			return true
+		}
+		return false
+	}
+
+	if imgui.BeginTableV("weatherFilters", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{}, 0) {
+		imgui.TableSetupColumnV("Label", imgui.TableColumnFlagsWidthFixed, 110, 0)
+		imgui.TableSetupColumnV("Value", imgui.TableColumnFlagsWidthStretch, 0, 0)
+
+		// Row 1: Flight Rules
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text("Flight Rules:")
+		imgui.TableNextColumn()
+		flightRulesInt := int32(c.weatherFilter.FlightRules)
+		if imgui.RadioButtonIntPtr("Any##fr", &flightRulesInt, int32(wx.FlightRulesAny)) {
+			c.weatherFilter.FlightRules = wx.FlightRulesAny
+			changed = true
+		}
+		imgui.SameLine()
+		if imgui.RadioButtonIntPtr("VMC##fr", &flightRulesInt, int32(wx.FlightRulesVMC)) {
+			c.weatherFilter.FlightRules = wx.FlightRulesVMC
+			changed = true
+		}
+		imgui.SameLine()
+		if imgui.RadioButtonIntPtr("IMC##fr", &flightRulesInt, int32(wx.FlightRulesIMC)) {
+			c.weatherFilter.FlightRules = wx.FlightRulesIMC
+			changed = true
+		}
+
+		// Row 2: Wind Speed
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text("Wind Speed (kt):")
+		imgui.TableNextColumn()
+		if optionalIntInput("##windSpeedMin", "Min", &c.weatherFilter.WindSpeedMin) {
+			changed = true
+		}
+		imgui.SameLine()
+		imgui.Text("-")
+		imgui.SameLine()
+		if optionalIntInput("##windSpeedMax", "Max", &c.weatherFilter.WindSpeedMax) {
+			changed = true
+		}
+
+		// Row 3: Gusting
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text("Gusting:")
+		imgui.TableNextColumn()
+		gustInt := int32(c.weatherFilter.Gusting)
+		if imgui.RadioButtonIntPtr("Any##gust", &gustInt, int32(wx.GustAny)) {
+			c.weatherFilter.Gusting = wx.GustAny
+			changed = true
+		}
+		imgui.SameLine()
+		if imgui.RadioButtonIntPtr("Yes##gust", &gustInt, int32(wx.GustYes)) {
+			c.weatherFilter.Gusting = wx.GustYes
+			changed = true
+		}
+		imgui.SameLine()
+		if imgui.RadioButtonIntPtr("No##gust", &gustInt, int32(wx.GustNo)) {
+			c.weatherFilter.Gusting = wx.GustNo
+			changed = true
+		}
+
+		// Row 4: Wind Direction
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text("Wind Dir (mag):")
+		imgui.TableNextColumn()
+		if optionalIntInput("##windDirMin", "Min", &c.weatherFilter.WindDirMin) {
+			changed = true
+		}
+		imgui.SameLine()
+		imgui.Text("-")
+		imgui.SameLine()
+		if optionalIntInput("##windDirMax", "Max", &c.weatherFilter.WindDirMax) {
+			changed = true
+		}
+
+		// Row 5: Temperature
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text("Temp (C):")
+		imgui.TableNextColumn()
+		if optionalIntInput("##tempMin", "Min", &c.weatherFilter.TemperatureMin) {
+			changed = true
+		}
+		imgui.SameLine()
+		imgui.Text("-")
+		imgui.SameLine()
+		if optionalIntInput("##tempMax", "Max", &c.weatherFilter.TemperatureMax) {
+			changed = true
+		}
+
+		// Row 6: Filter error (if any)
+		if c.weatherFilterError != "" {
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.TableNextColumn()
+			imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
+			imgui.Text(renderer.FontAwesomeIconExclamationTriangle + " " + c.weatherFilterError)
+			imgui.PopStyleColor()
+		}
+
+		// Row 7: Start time
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text("Start time:")
+		imgui.TableNextColumn()
+		metarAirports := slices.Collect(maps.Keys(c.airportMETAR))
+		slices.Sort(metarAirports)
+		if idx := slices.Index(metarAirports, c.ScenarioSpec.PrimaryAirport); idx > 0 {
+			metarAirports = slices.Delete(metarAirports, idx, idx+1)
+			metarAirports = slices.Insert(metarAirports, 0, c.ScenarioSpec.PrimaryAirport)
+		}
+		metar := c.airportMETAR[metarAirports[0]]
+		TimePicker(&c.NewSimRequest.StartTime, c.availableWXIntervals, metar, &ui.fixedFont.Ifont)
+		imgui.SameLine()
+		if imgui.Button(renderer.FontAwesomeIconRedo + "##refreshTime") {
+			c.updateStartTimeForRunways()
+		}
+		if imgui.IsItemHovered() {
+			imgui.SetTooltip("Select random time matching weather filters")
+		}
+
+		// Row 8: METAR
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text("METAR:")
+		imgui.TableNextColumn()
+		currentMetar := wx.METARForTime(c.airportMETAR[metarAirports[0]], c.NewSimRequest.StartTime)
+		imgui.PushFont(&ui.fixedFont.Ifont)
+		imgui.Text(strings.TrimPrefix(currentMetar.Raw, "METAR "))
+		imgui.PopFont()
+
+		if c.showAllMETAR && len(metarAirports) > 1 {
+			for i := 1; i < len(metarAirports); i++ {
+				ap := metarAirports[i]
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.TableNextColumn()
+				imgui.PushFont(&ui.fixedFont.Ifont)
+				m := wx.METARForTime(c.airportMETAR[ap], c.NewSimRequest.StartTime)
+				imgui.Text(strings.TrimPrefix(m.Raw, "METAR "))
+				imgui.PopFont()
+			}
+		}
+
+		imgui.EndTable()
+
+		if len(metarAirports) > 1 && !c.showAllMETAR {
+			if imgui.Button("Show all airport METAR") {
+				c.showAllMETAR = true
+			}
+		}
+	}
+
+	if changed {
+		c.updateStartTimeForRunways()
+	}
+}
+
 func (c *NewSimConfiguration) updateStartTimeForRunways() {
+	c.weatherFilterError = ""
+
 	if c.ScenarioSpec == nil || c.selectedServer == nil || c.airportMETAR == nil {
 		return
 	}
@@ -1842,36 +2038,10 @@ func (c *NewSimConfiguration) updateStartTimeForRunways() {
 		ap = airports[0]
 	}
 
-	// Use METAR sampling with wind specifier if available
 	if apMETAR, ok := c.airportMETAR[ap]; ok && len(apMETAR) > 0 {
-		var sampledMETAR *wx.METAR
-
-		if c.ScenarioSpec.WindSpecifier != nil {
-			// Use the scenario's wind specifier
-			sampledMETAR = wx.SampleMETARWithSpec(apMETAR, c.availableWXIntervals,
-				c.ScenarioSpec.WindSpecifier, c.ScenarioSpec.MagneticVariation)
-		} else {
-			// Fallback: calculate average runway heading and use that
-			var sumRunwayVecs [2]float32
-			if dbap, ok := av.DB.Airports[ap]; ok {
-				for _, rwy := range dbap.Runways {
-					if slices.ContainsFunc(c.ScenarioSpec.DepartureRunways, func(r sim.DepartureRunway) bool {
-						return r.Airport == ap && r.Runway == rwy.Id
-					}) {
-						sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(rwy.Heading))
-					}
-					if slices.ContainsFunc(c.ScenarioSpec.ArrivalRunways, func(r sim.ArrivalRunway) bool {
-						return r.Airport == ap && r.Runway == rwy.Id
-					}) {
-						sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(rwy.Heading))
-					}
-				}
-			}
-			avgRwyHeading := math.VectorHeading(sumRunwayVecs)
-			avgRwyMagneticHeading := avgRwyHeading + c.ScenarioSpec.MagneticVariation
-
-			sampledMETAR = wx.SampleMETAR(apMETAR, c.availableWXIntervals, avgRwyMagneticHeading)
-		}
+		// Sample using the weather filter
+		sampledMETAR := wx.SampleMETARWithFilter(apMETAR, c.availableWXIntervals,
+			&c.weatherFilter, c.ScenarioSpec.MagneticVariation)
 
 		if sampledMETAR != nil {
 			c.StartTime = sampledMETAR.Time.UTC()
@@ -1880,6 +2050,8 @@ func (c *NewSimConfiguration) updateStartTimeForRunways() {
 			if !sampledMETAR.IsVMC() {
 				c.ScenarioSpec.LaunchConfig.VFRDepartureRateScale = 0
 			}
+		} else {
+			c.weatherFilterError = "No weather matching filters found"
 		}
 	}
 }

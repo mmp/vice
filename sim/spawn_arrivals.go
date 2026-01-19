@@ -120,8 +120,8 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	nasFp.EntryFix = "" // TODO
 	nasFp.ExitFix = util.Select(len(ac.FlightPlan.ArrivalAirport) == 4, ac.FlightPlan.ArrivalAirport[1:], ac.FlightPlan.ArrivalAirport)
 	nasFp.TrackingController = arr.InitialController
-	nasFp.ControllingController = arr.InitialController
 	nasFp.OwningTCW = s.tcwForPosition(arr.InitialController)
+	ac.ControllerFrequency = arr.InitialController
 	nasFp.InboundHandoffController = s.InboundAssignments[group]
 	nasFp.Scratchpad = arr.Scratchpad
 	nasFp.SecondaryScratchpad = arr.SecondaryScratchpad
@@ -267,8 +267,8 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	nasFp.EntryFix = "" // TODO
 	nasFp.ExitFix = ""  // TODO
 	nasFp.TrackingController = of.InitialController
-	nasFp.ControllingController = of.InitialController
 	nasFp.OwningTCW = s.tcwForPosition(of.InitialController)
+	ac.ControllerFrequency = of.InitialController
 	nasFp.InboundHandoffController = s.InboundAssignments[group]
 	nasFp.Scratchpad = of.Scratchpad
 	nasFp.SecondaryScratchpad = of.SecondaryScratchpad

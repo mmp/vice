@@ -260,8 +260,8 @@ func scoreFlightNumberMatch(tokens []Token, expectedNum string) (float64, int) {
 			continue
 		}
 
-		// Multi-digit number token (any numeric type)
-		if (t.Type == TokenNumber || t.Type == TokenHeading || t.Type == TokenSpeed || t.Type == TokenAltitude) && t.Value >= 0 {
+		// Multi-digit number token
+		if (t.Type == TokenNumber || t.Type == TokenAltitude) && t.Value >= 0 {
 			builtNum.WriteString(strconv.Itoa(t.Value))
 			consumed++
 			continue
@@ -270,6 +270,13 @@ func scoreFlightNumberMatch(tokens []Token, expectedNum string) (float64, int) {
 		// Letter in callsign (GA: N123AB)
 		if len(t.Text) == 1 && isLetter(t.Text) {
 			builtNum.WriteString(strings.ToUpper(t.Text))
+			consumed++
+			continue
+		}
+
+		// NATO phonetic letter (e.g., "whiskey" -> "W", "juliet" -> "J")
+		if letter, ok := ConvertNATOLetter(t.Text); ok {
+			builtNum.WriteString(strings.ToUpper(letter))
 			consumed++
 			continue
 		}
@@ -345,6 +352,10 @@ func scoreGACallsign(tokens []Token, callsign string) (float64, int) {
 		} else if len(text) == 1 && text[0] >= 'a' && text[0] <= 'z' {
 			built.WriteString(strings.ToUpper(text))
 			consumed++
+		} else if letter, ok := ConvertNATOLetter(text); ok {
+			// Handle NATO phonetic letters: "alpha" -> "A", "bravo" -> "B", etc.
+			built.WriteString(strings.ToUpper(letter))
+			consumed++
 		} else {
 			break
 		}
@@ -379,7 +390,7 @@ func tryFlightNumberOnlyMatch(tokens []Token, aircraft map[string]Aircraft) (Cal
 	// Scan tokens for numbers
 	for i, t := range tokens {
 		var numStr string
-		if t.Type == TokenNumber || t.Type == TokenHeading || t.Type == TokenSpeed {
+		if t.Type == TokenNumber {
 			numStr = strconv.Itoa(t.Value)
 		} else if IsNumber(t.Text) {
 			numStr = t.Text
@@ -468,4 +479,6 @@ type Aircraft struct {
 	AssignedApproach    string
 	Altitude            int    // Current altitude in feet
 	State               string // "departure", "arrival", "overflight", "on approach", "vfr flight following"
+	ControllerFrequency string // Current controller position the aircraft is tuned to
+	TrackingController  string // Controller tracking this aircraft (from flight plan)
 }

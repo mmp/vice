@@ -11,9 +11,7 @@ type TokenType int
 const (
 	TokenWord TokenType = iota
 	TokenNumber
-	TokenAltitude // Specifically identified as an altitude
-	TokenHeading  // Specifically identified as a heading (3 digits)
-	TokenSpeed    // Specifically identified as a speed
+	TokenAltitude // Specifically identified as an altitude (e.g., "8 thousand")
 	TokenFix      // Matched against aircraft fixes
 	TokenApproach // Matched against candidate approaches
 	TokenCallsign // Part of callsign
@@ -72,28 +70,18 @@ func Tokenize(words []string) []Token {
 			}
 		}
 
-		// Check for multi-digit numbers (heading, speed, squawk)
-		// This handles both single digits and multi-digit numbers from normalization
+		// Check for multi-digit numbers (callsign parts, squawk codes, etc.)
+		// Type classification (heading, speed) is deferred to command parsing
+		// where context determines meaning.
 		if IsDigit(w) || IsNumber(w) {
 			num, consumed := parseDigitSequence(words[i:])
 			if consumed > 0 {
-				tok := Token{
+				tokens = append(tokens, Token{
 					Text:  strconv.Itoa(num),
 					Type:  TokenNumber,
 					Value: num,
 					Pos:   i,
-				}
-				// Classify based on digit count and value
-				digitCount := len(strconv.Itoa(num))
-				if digitCount == 3 && num >= 1 && num <= 360 {
-					tok.Type = TokenHeading
-				} else if digitCount == 4 && num >= 0 && num <= 7777 {
-					// Could be squawk code - keep as number for now
-				} else if num >= 100 && num <= 400 {
-					// Likely speed
-					tok.Type = TokenSpeed
-				}
-				tokens = append(tokens, tok)
+				})
 				i += consumed
 				continue
 			}
@@ -329,8 +317,7 @@ func FindTokenOfType(tokens []Token, start int, tokenType TokenType) int {
 // FindNumber finds the first numeric token starting at index.
 func FindNumber(tokens []Token, start int) (int, int) {
 	for i := start; i < len(tokens); i++ {
-		if tokens[i].Type == TokenNumber || tokens[i].Type == TokenAltitude ||
-			tokens[i].Type == TokenHeading || tokens[i].Type == TokenSpeed {
+		if tokens[i].Type == TokenNumber || tokens[i].Type == TokenAltitude {
 			return tokens[i].Value, i
 		}
 	}

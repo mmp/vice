@@ -77,6 +77,22 @@ func TestBasicAltitudeCommands(t *testing.T) {
 			},
 			expected: "RPA4583 C110",
 		},
+		{
+			name:       "garbled niner as 9r",
+			transcript: "Southwest 7343, descend and maintain, 9r,000",
+			aircraft: map[string]Aircraft{
+				"Southwest 7343": {Callsign: "SWA7343", Altitude: 12000, State: "arrival"},
+			},
+			expected: "SWA7343 D90",
+		},
+		{
+			name:       "niner thousand as 9 or 1000",
+			transcript: "American 17 descend and maintain, 9 or 1000",
+			aircraft: map[string]Aircraft{
+				"American 17": {Callsign: "AAL17", Altitude: 12000, State: "arrival"},
+			},
+			expected: "AAL17 D90",
+		},
 	}
 
 	provider := NewTranscriber(nil)
@@ -887,6 +903,11 @@ func TestNormalizeTranscript(t *testing.T) {
 		{"two nine or zero", []string{"2", "9", "0"}},
 		{"heading two niner zero", []string{"heading", "2", "9", "0"}},
 		{"", nil},
+		// Garbled "niner" transcribed as "9r" (e.g., "9r,000" -> "9000")
+		{"descend and maintain, 9r,000", []string{"descend", "and", "maintain", "9000"}},
+		{"9r", []string{"9"}},
+		// "niner thousand" transcribed as "9 or 1000" - should convert 1000 to thousand
+		{"descend and maintain, 9 or 1000", []string{"descend", "and", "maintain", "9", "thousand"}},
 	}
 
 	for _, tt := range tests {
@@ -961,5 +982,1261 @@ func BenchmarkDecodeTranscriptComplex(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		provider.DecodeTranscript(aircraft, "JetBlue 789 reduce speed to two five zero then descend and maintain one zero thousand", "")
+	}
+}
+
+// =============================================================================
+// Unit Tests for commands.go
+// =============================================================================
+
+func TestParseCommandsBasic(t *testing.T) {
+	tests := []struct {
+		name     string
+		tokens   []Token
+		ac       Aircraft
+		expected []string
+	}{
+		{
+			name: "descend command",
+			tokens: []Token{
+				{Text: "descend", Type: TokenWord},
+				{Text: "maintain", Type: TokenWord},
+				{Text: "80", Type: TokenAltitude, Value: 80},
+			},
+			ac:       Aircraft{Altitude: 12000, State: "arrival"},
+			expected: []string{"D80"},
+		},
+		{
+			name: "climb command",
+			tokens: []Token{
+				{Text: "climb", Type: TokenWord},
+				{Text: "90", Type: TokenAltitude, Value: 90},
+			},
+			ac:       Aircraft{Altitude: 5000, State: "departure"},
+			expected: []string{"C90"},
+		},
+		{
+			name: "turn left heading",
+			tokens: []Token{
+				{Text: "turn", Type: TokenWord},
+				{Text: "left", Type: TokenWord},
+				{Text: "heading", Type: TokenWord},
+				{Text: "270", Type: TokenNumber, Value: 270},
+			},
+			ac:       Aircraft{State: "arrival"},
+			expected: []string{"L270"},
+		},
+		{
+			name: "turn right heading",
+			tokens: []Token{
+				{Text: "turn", Type: TokenWord},
+				{Text: "right", Type: TokenWord},
+				{Text: "heading", Type: TokenWord},
+				{Text: "090", Type: TokenNumber, Value: 90},
+			},
+			ac:       Aircraft{State: "arrival"},
+			expected: []string{"R090"},
+		},
+		{
+			name: "reduce speed",
+			tokens: []Token{
+				{Text: "reduce", Type: TokenWord},
+				{Text: "speed", Type: TokenWord},
+				{Text: "250", Type: TokenNumber, Value: 250},
+			},
+			ac:       Aircraft{State: "arrival"},
+			expected: []string{"S250"},
+		},
+		{
+			name: "expedite climb",
+			tokens: []Token{
+				{Text: "expedite", Type: TokenWord},
+				{Text: "climb", Type: TokenWord},
+			},
+			ac:       Aircraft{State: "departure"},
+			expected: []string{"EC"},
+		},
+		{
+			name: "expedite descent",
+			tokens: []Token{
+				{Text: "expedite", Type: TokenWord},
+				{Text: "descent", Type: TokenWord},
+			},
+			ac:       Aircraft{State: "arrival"},
+			expected: []string{"ED"},
+		},
+		{
+			name:     "empty tokens",
+			tokens:   []Token{},
+			ac:       Aircraft{State: "arrival"},
+			expected: nil,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			commands, _ := ParseCommands(tt.tokens, tt.ac)
+			if len(commands) != len(tt.expected) {
+				t.Errorf("ParseCommands() got %v, want %v", commands, tt.expected)
+				return
+			}
+			for i := range commands {
+				if commands[i] != tt.expected[i] {
+					t.Errorf("ParseCommands()[%d] = %q, want %q", i, commands[i], tt.expected[i])
+				}
+			}
+		})
+	}
+}
+
+func TestParseCommandsThenSequencing(t *testing.T) {
+	tests := []struct {
+		name     string
+		tokens   []Token
+		ac       Aircraft
+		expected []string
+	}{
+		{
+			name: "speed then descend",
+			tokens: []Token{
+				{Text: "reduce", Type: TokenWord},
+				{Text: "speed", Type: TokenWord},
+				{Text: "250", Type: TokenNumber, Value: 250},
+				{Text: "then", Type: TokenWord},
+				{Text: "descend", Type: TokenWord},
+				{Text: "80", Type: TokenAltitude, Value: 80},
+			},
+			ac:       Aircraft{Altitude: 12000, State: "arrival"},
+			expected: []string{"S250", "TD80"},
+		},
+		{
+			name: "descend then speed",
+			tokens: []Token{
+				{Text: "descend", Type: TokenWord},
+				{Text: "80", Type: TokenAltitude, Value: 80},
+				{Text: "then", Type: TokenWord},
+				{Text: "reduce", Type: TokenWord},
+				{Text: "210", Type: TokenNumber, Value: 210},
+			},
+			ac:       Aircraft{Altitude: 12000, State: "arrival"},
+			expected: []string{"D80", "TS210"},
+		},
+		{
+			name: "at altitude triggers then",
+			tokens: []Token{
+				{Text: "at", Type: TokenWord},
+				{Text: "30", Type: TokenAltitude, Value: 30},
+				{Text: "reduce", Type: TokenWord},
+				{Text: "speed", Type: TokenWord},
+				{Text: "180", Type: TokenNumber, Value: 180},
+			},
+			ac:       Aircraft{Altitude: 5000, State: "arrival"},
+			expected: []string{"TS180"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			commands, _ := ParseCommands(tt.tokens, tt.ac)
+			if len(commands) != len(tt.expected) {
+				t.Errorf("ParseCommands() got %v, want %v", commands, tt.expected)
+				return
+			}
+			for i := range commands {
+				if commands[i] != tt.expected[i] {
+					t.Errorf("ParseCommands()[%d] = %q, want %q", i, commands[i], tt.expected[i])
+				}
+			}
+		})
+	}
+}
+
+func TestParseCommandsPriorityResolution(t *testing.T) {
+	tests := []struct {
+		name     string
+		tokens   []Token
+		ac       Aircraft
+		expected []string
+		desc     string
+	}{
+		{
+			name: "descend_maintain beats descend (higher priority)",
+			tokens: []Token{
+				{Text: "descend", Type: TokenWord},
+				{Text: "maintain", Type: TokenWord},
+				{Text: "80", Type: TokenAltitude, Value: 80},
+			},
+			ac:       Aircraft{Altitude: 12000, State: "arrival"},
+			expected: []string{"D80"},
+			desc:     "Both match but descend_maintain (priority 10) wins over descend (priority 5)",
+		},
+		{
+			name: "climb_maintain beats climb (higher priority)",
+			tokens: []Token{
+				{Text: "climb", Type: TokenWord},
+				{Text: "maintain", Type: TokenWord},
+				{Text: "100", Type: TokenAltitude, Value: 100},
+			},
+			ac:       Aircraft{Altitude: 5000, State: "departure"},
+			expected: []string{"C100"},
+			desc:     "climb_maintain (priority 10) beats climb (priority 5)",
+		},
+		{
+			name: "turn_left_heading beats heading_only",
+			tokens: []Token{
+				{Text: "turn", Type: TokenWord},
+				{Text: "left", Type: TokenWord},
+				{Text: "heading", Type: TokenWord},
+				{Text: "270", Type: TokenNumber, Value: 270},
+			},
+			ac:       Aircraft{State: "arrival"},
+			expected: []string{"L270"},
+			desc:     "turn_left_heading (priority 10) beats heading_only (priority 5)",
+		},
+		{
+			name: "climb_via_sid beats climb",
+			tokens: []Token{
+				{Text: "climb", Type: TokenWord},
+				{Text: "via", Type: TokenWord},
+				{Text: "the", Type: TokenWord},
+				{Text: "sid", Type: TokenWord},
+			},
+			ac:       Aircraft{State: "departure"},
+			expected: []string{"CVS"},
+			desc:     "climb_via_sid (priority 15) beats climb (priority 5)",
+		},
+		{
+			name: "present_heading beats heading_only",
+			tokens: []Token{
+				{Text: "present", Type: TokenWord},
+				{Text: "heading", Type: TokenWord},
+			},
+			ac:       Aircraft{State: "arrival"},
+			expected: []string{"H"},
+			desc:     "present_heading (priority 12) beats heading_only (priority 5)",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			commands, _ := ParseCommands(tt.tokens, tt.ac)
+			if len(commands) != len(tt.expected) {
+				t.Errorf("%s: got %v, want %v", tt.desc, commands, tt.expected)
+				return
+			}
+			for i := range commands {
+				if commands[i] != tt.expected[i] {
+					t.Errorf("%s: [%d] = %q, want %q", tt.desc, i, commands[i], tt.expected[i])
+				}
+			}
+		})
+	}
+}
+
+func TestShouldCorrectAltitude(t *testing.T) {
+	tests := []struct {
+		name        string
+		tmplName    string
+		alt         int
+		acAltitude  int
+		expectCorr  bool
+		expectedAlt int
+	}{
+		{
+			name:        "climb to lower altitude needs correction",
+			tmplName:    "climb",
+			alt:         17,    // encoded 17 = 1700 ft
+			acAltitude:  10000, // aircraft at 10000 ft
+			expectCorr:  true,  // 1700 <= 10000 triggers correction
+			expectedAlt: 170,   // corrected to 17000 ft which is > 10000
+		},
+		{
+			name:        "climb to higher altitude no correction",
+			tmplName:    "climb",
+			alt:         170,   // encoded 170 = 17000 ft
+			acAltitude:  10000, // aircraft at 10000 ft
+			expectCorr:  false, // 17000 > 10000, no correction needed
+			expectedAlt: 170,
+		},
+		{
+			name:        "descend to lower altitude no correction",
+			tmplName:    "descend",
+			alt:         50,    // encoded 50 = 5000 ft
+			acAltitude:  10000, // aircraft at 10000 ft
+			expectCorr:  false, // 5000 < 10000, valid descend
+			expectedAlt: 50,
+		},
+		{
+			name:        "maintain altitude no correction",
+			tmplName:    "maintain_altitude",
+			alt:         50,
+			acAltitude:  5000,
+			expectCorr:  false,
+			expectedAlt: 50,
+		},
+		{
+			name:        "climb correction would exceed 60000 ft - no correction",
+			tmplName:    "climb",
+			alt:         650, // encoded 650 = 65000 ft, correction would be 650000 ft
+			acAltitude:  60000,
+			expectCorr:  false, // correctedFeet > 60000 limit
+			expectedAlt: 650,
+		},
+		{
+			name:        "climb single digit altitude correction",
+			tmplName:    "climb",
+			alt:         3,    // encoded 3 = 300 ft (likely meant 3000 ft)
+			acAltitude:  2000, // aircraft at 2000 ft
+			expectCorr:  true, // 300 <= 2000 triggers correction
+			expectedAlt: 30,   // corrected to 3000 ft
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tmpl := CommandTemplate{Name: tt.tmplName}
+			corrected, didCorrect := shouldCorrectAltitude(tmpl, tt.alt, tt.acAltitude)
+
+			if didCorrect != tt.expectCorr {
+				t.Errorf("shouldCorrectAltitude() correction = %v, want %v", didCorrect, tt.expectCorr)
+			}
+			if corrected != tt.expectedAlt {
+				t.Errorf("shouldCorrectAltitude() = %d, want %d", corrected, tt.expectedAlt)
+			}
+		})
+	}
+}
+
+func TestExtractAltitude(t *testing.T) {
+	tests := []struct {
+		name         string
+		tokens       []Token
+		expectedAlt  int
+		expectedCons int
+	}{
+		{
+			name: "altitude token",
+			tokens: []Token{
+				{Text: "80", Type: TokenAltitude, Value: 80},
+			},
+			expectedAlt:  80,
+			expectedCons: 1,
+		},
+		{
+			name: "number in valid altitude range",
+			tokens: []Token{
+				{Text: "50", Type: TokenNumber, Value: 50},
+			},
+			expectedAlt:  50,
+			expectedCons: 1,
+		},
+		{
+			name: "large number (raw feet)",
+			tokens: []Token{
+				{Text: "8000", Type: TokenNumber, Value: 8000},
+			},
+			expectedAlt:  80,
+			expectedCons: 1,
+		},
+		{
+			name: "single digit converted to thousands",
+			tokens: []Token{
+				{Text: "9", Type: TokenNumber, Value: 9},
+			},
+			expectedAlt:  90,
+			expectedCons: 1,
+		},
+		{
+			name: "skip miles - not altitude",
+			tokens: []Token{
+				{Text: "5", Type: TokenNumber, Value: 5},
+				{Text: "miles", Type: TokenWord},
+			},
+			expectedAlt:  0,
+			expectedCons: 0,
+		},
+		{
+			name:         "empty tokens",
+			tokens:       []Token{},
+			expectedAlt:  0,
+			expectedCons: 0,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			alt, consumed := extractAltitude(tt.tokens)
+			if alt != tt.expectedAlt {
+				t.Errorf("extractAltitude() alt = %d, want %d", alt, tt.expectedAlt)
+			}
+			if consumed != tt.expectedCons {
+				t.Errorf("extractAltitude() consumed = %d, want %d", consumed, tt.expectedCons)
+			}
+		})
+	}
+}
+
+func TestExtractHeading(t *testing.T) {
+	tests := []struct {
+		name         string
+		tokens       []Token
+		expectedHdg  int
+		expectedCons int
+	}{
+		{
+			name: "number in valid heading range",
+			tokens: []Token{
+				{Text: "180", Type: TokenNumber, Value: 180},
+			},
+			expectedHdg:  180,
+			expectedCons: 1,
+		},
+		{
+			name: "heading 360",
+			tokens: []Token{
+				{Text: "360", Type: TokenNumber, Value: 360},
+			},
+			expectedHdg:  360,
+			expectedCons: 1,
+		},
+		{
+			name:         "empty tokens",
+			tokens:       []Token{},
+			expectedHdg:  0,
+			expectedCons: 0,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			hdg, consumed := extractHeading(tt.tokens)
+			if hdg != tt.expectedHdg {
+				t.Errorf("extractHeading() hdg = %d, want %d", hdg, tt.expectedHdg)
+			}
+			if consumed != tt.expectedCons {
+				t.Errorf("extractHeading() consumed = %d, want %d", consumed, tt.expectedCons)
+			}
+		})
+	}
+}
+
+func TestExtractSpeed(t *testing.T) {
+	tests := []struct {
+		name         string
+		tokens       []Token
+		expectedSpd  int
+		expectedCons int
+	}{
+		{
+			name: "number in valid speed range",
+			tokens: []Token{
+				{Text: "210", Type: TokenNumber, Value: 210},
+			},
+			expectedSpd:  210,
+			expectedCons: 1,
+		},
+		{
+			name:         "empty tokens",
+			tokens:       []Token{},
+			expectedSpd:  0,
+			expectedCons: 0,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			spd, consumed := extractSpeed(tt.tokens)
+			if spd != tt.expectedSpd {
+				t.Errorf("extractSpeed() spd = %d, want %d", spd, tt.expectedSpd)
+			}
+			if consumed != tt.expectedCons {
+				t.Errorf("extractSpeed() consumed = %d, want %d", consumed, tt.expectedCons)
+			}
+		})
+	}
+}
+
+func TestExtractFix(t *testing.T) {
+	fixes := map[string]string{
+		"jenny":     "JENNY",
+		"deer park": "DPK",
+		"pucky":     "PUCKY",
+		"gayel":     "GAYEL",
+	}
+
+	tests := []struct {
+		name         string
+		tokens       []Token
+		expectedFix  string
+		expectedCons int
+	}{
+		{
+			name: "exact match",
+			tokens: []Token{
+				{Text: "jenny", Type: TokenWord},
+			},
+			expectedFix:  "JENNY",
+			expectedCons: 1,
+		},
+		{
+			name: "multi-word fix",
+			tokens: []Token{
+				{Text: "deer", Type: TokenWord},
+				{Text: "park", Type: TokenWord},
+			},
+			expectedFix:  "DPK",
+			expectedCons: 2,
+		},
+		{
+			name: "fuzzy match",
+			tokens: []Token{
+				{Text: "jenney", Type: TokenWord},
+			},
+			expectedFix:  "JENNY",
+			expectedCons: 1,
+		},
+		{
+			name: "vowel normalization (gail -> gayel)",
+			tokens: []Token{
+				{Text: "gail", Type: TokenWord},
+			},
+			expectedFix:  "GAYEL",
+			expectedCons: 1,
+		},
+		{
+			name:         "no match",
+			tokens:       []Token{{Text: "xyz", Type: TokenWord}},
+			expectedFix:  "",
+			expectedCons: 0,
+		},
+		{
+			name:         "empty tokens",
+			tokens:       []Token{},
+			expectedFix:  "",
+			expectedCons: 0,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			fix, _, consumed := extractFix(tt.tokens, fixes)
+			if fix != tt.expectedFix {
+				t.Errorf("extractFix() fix = %q, want %q", fix, tt.expectedFix)
+			}
+			if consumed != tt.expectedCons {
+				t.Errorf("extractFix() consumed = %d, want %d", consumed, tt.expectedCons)
+			}
+		})
+	}
+}
+
+func TestExtractSquawk(t *testing.T) {
+	tests := []struct {
+		name         string
+		tokens       []Token
+		expectedCode string
+		expectedCons int
+	}{
+		{
+			name: "four digit tokens",
+			tokens: []Token{
+				{Text: "1", Type: TokenWord},
+				{Text: "2", Type: TokenWord},
+				{Text: "0", Type: TokenWord},
+				{Text: "0", Type: TokenWord},
+			},
+			expectedCode: "1200",
+			expectedCons: 4,
+		},
+		{
+			name: "number token",
+			tokens: []Token{
+				{Text: "7700", Type: TokenNumber, Value: 7700},
+			},
+			expectedCode: "7700",
+			expectedCons: 1,
+		},
+		{
+			name:         "incomplete code",
+			tokens:       []Token{{Text: "1", Type: TokenWord}, {Text: "2", Type: TokenWord}},
+			expectedCode: "",
+			expectedCons: 0,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			code, consumed := extractSquawk(tt.tokens)
+			if code != tt.expectedCode {
+				t.Errorf("extractSquawk() code = %q, want %q", code, tt.expectedCode)
+			}
+			if consumed != tt.expectedCons {
+				t.Errorf("extractSquawk() consumed = %d, want %d", consumed, tt.expectedCons)
+			}
+		})
+	}
+}
+
+func TestExtractDegrees(t *testing.T) {
+	tests := []struct {
+		name         string
+		tokens       []Token
+		expectedDeg  int
+		expectedDir  string
+		expectedCons int
+	}{
+		{
+			name: "degrees left",
+			tokens: []Token{
+				{Text: "20", Type: TokenNumber, Value: 20},
+				{Text: "degrees", Type: TokenWord},
+				{Text: "left", Type: TokenWord},
+			},
+			expectedDeg:  20,
+			expectedDir:  "left",
+			expectedCons: 3,
+		},
+		{
+			name: "degrees right",
+			tokens: []Token{
+				{Text: "30", Type: TokenNumber, Value: 30},
+				{Text: "right", Type: TokenWord},
+			},
+			expectedDeg:  30,
+			expectedDir:  "right",
+			expectedCons: 2,
+		},
+		{
+			name: "direction before number",
+			tokens: []Token{
+				{Text: "left", Type: TokenWord},
+				{Text: "15", Type: TokenNumber, Value: 15},
+			},
+			expectedDeg:  15,
+			expectedDir:  "left",
+			expectedCons: 2,
+		},
+		{
+			name:         "missing direction",
+			tokens:       []Token{{Text: "20", Type: TokenNumber, Value: 20}},
+			expectedDeg:  0,
+			expectedDir:  "",
+			expectedCons: 0,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			deg, dir, consumed := extractDegrees(tt.tokens)
+			if deg != tt.expectedDeg {
+				t.Errorf("extractDegrees() deg = %d, want %d", deg, tt.expectedDeg)
+			}
+			if dir != tt.expectedDir {
+				t.Errorf("extractDegrees() dir = %q, want %q", dir, tt.expectedDir)
+			}
+			if consumed != tt.expectedCons {
+				t.Errorf("extractDegrees() consumed = %d, want %d", consumed, tt.expectedCons)
+			}
+		})
+	}
+}
+
+func TestUntilEstablishedPattern(t *testing.T) {
+	tests := []struct {
+		name     string
+		tokens   []Token
+		ac       Aircraft
+		expected []string
+	}{
+		{
+			name: "altitude until established",
+			tokens: []Token{
+				{Text: "40", Type: TokenAltitude, Value: 40},
+				{Text: "until", Type: TokenWord},
+				{Text: "established", Type: TokenWord},
+			},
+			ac:       Aircraft{State: "arrival"},
+			expected: []string{"A40"},
+		},
+		{
+			name: "altitude until established on localizer",
+			tokens: []Token{
+				{Text: "30", Type: TokenAltitude, Value: 30},
+				{Text: "until", Type: TokenWord},
+				{Text: "established", Type: TokenWord},
+				{Text: "on", Type: TokenWord},
+				{Text: "the", Type: TokenWord},
+				{Text: "localizer", Type: TokenWord},
+			},
+			ac:       Aircraft{State: "arrival"},
+			expected: []string{"A30"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			commands, _ := ParseCommands(tt.tokens, tt.ac)
+			if len(commands) != len(tt.expected) {
+				t.Errorf("ParseCommands() got %v, want %v", commands, tt.expected)
+				return
+			}
+			for i := range commands {
+				if commands[i] != tt.expected[i] {
+					t.Errorf("ParseCommands()[%d] = %q, want %q", i, commands[i], tt.expected[i])
+				}
+			}
+		})
+	}
+}
+
+// =============================================================================
+// Unit Tests for validate.go
+// =============================================================================
+
+func TestValidateCommands(t *testing.T) {
+	tests := []struct {
+		name         string
+		commands     []string
+		ac           Aircraft
+		expectedLen  int
+		minConf      float64
+		expectErrors bool
+	}{
+		{
+			name:         "valid descend for arrival",
+			commands:     []string{"D80"},
+			ac:           Aircraft{Altitude: 12000, State: "arrival"},
+			expectedLen:  1,
+			minConf:      0.9,
+			expectErrors: false,
+		},
+		{
+			name:         "invalid descend - target above current",
+			commands:     []string{"D150"},
+			ac:           Aircraft{Altitude: 10000, State: "arrival"},
+			expectedLen:  0,
+			minConf:      0.0,
+			expectErrors: true,
+		},
+		{
+			name:         "valid climb for departure",
+			commands:     []string{"C100"},
+			ac:           Aircraft{Altitude: 5000, State: "departure"},
+			expectedLen:  1,
+			minConf:      0.9,
+			expectErrors: false,
+		},
+		{
+			name:         "invalid climb - target below current",
+			commands:     []string{"C50"},
+			ac:           Aircraft{Altitude: 10000, State: "departure"},
+			expectedLen:  0,
+			minConf:      0.0,
+			expectErrors: true,
+		},
+		{
+			name:         "expedite climb invalid for arrival",
+			commands:     []string{"EC"},
+			ac:           Aircraft{Altitude: 10000, State: "arrival"},
+			expectedLen:  0,
+			minConf:      0.0,
+			expectErrors: true,
+		},
+		{
+			name:         "expedite descent invalid for departure",
+			commands:     []string{"ED"},
+			ac:           Aircraft{Altitude: 10000, State: "departure"},
+			expectedLen:  0,
+			minConf:      0.0,
+			expectErrors: true,
+		},
+		{
+			name:         "contact tower only valid on approach",
+			commands:     []string{"TO"},
+			ac:           Aircraft{State: "arrival"},
+			expectedLen:  0,
+			minConf:      0.0,
+			expectErrors: true,
+		},
+		{
+			name:         "contact tower valid on approach",
+			commands:     []string{"TO"},
+			ac:           Aircraft{State: "on approach"},
+			expectedLen:  1,
+			minConf:      0.9,
+			expectErrors: false,
+		},
+		{
+			name:         "CVS only valid for departures",
+			commands:     []string{"CVS"},
+			ac:           Aircraft{State: "arrival"},
+			expectedLen:  0,
+			minConf:      0.0,
+			expectErrors: true,
+		},
+		{
+			name:         "CVS valid for departures",
+			commands:     []string{"CVS"},
+			ac:           Aircraft{State: "departure"},
+			expectedLen:  1,
+			minConf:      0.9,
+			expectErrors: false,
+		},
+		{
+			name:         "expect approach invalid for departure",
+			commands:     []string{"EILS22L"},
+			ac:           Aircraft{State: "departure"},
+			expectedLen:  0,
+			minConf:      0.0,
+			expectErrors: true,
+		},
+		{
+			name:         "altitude discretion only valid for VFR",
+			commands:     []string{"A"},
+			ac:           Aircraft{State: "arrival"},
+			expectedLen:  0,
+			minConf:      0.0,
+			expectErrors: true,
+		},
+		{
+			name:         "altitude discretion valid for VFR",
+			commands:     []string{"A"},
+			ac:           Aircraft{State: "vfr flight following"},
+			expectedLen:  1,
+			minConf:      0.9,
+			expectErrors: false,
+		},
+		{
+			name:         "mixed valid and invalid commands",
+			commands:     []string{"L270", "D150"}, // heading valid, descend invalid (target > current)
+			ac:           Aircraft{Altitude: 10000, State: "arrival"},
+			expectedLen:  1, // only heading survives
+			minConf:      0.0,
+			expectErrors: true,
+		},
+		{
+			name:         "empty commands",
+			commands:     []string{},
+			ac:           Aircraft{State: "arrival"},
+			expectedLen:  0,
+			minConf:      0.0,
+			expectErrors: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := ValidateCommands(tt.commands, tt.ac)
+
+			if len(result.ValidCommands) != tt.expectedLen {
+				t.Errorf("ValidateCommands() got %d commands, want %d (got %v)",
+					len(result.ValidCommands), tt.expectedLen, result.ValidCommands)
+			}
+			if result.Confidence < tt.minConf {
+				t.Errorf("ValidateCommands() confidence = %.2f, want >= %.2f",
+					result.Confidence, tt.minConf)
+			}
+			if tt.expectErrors && len(result.Errors) == 0 {
+				t.Error("ValidateCommands() expected errors but got none")
+			}
+			if !tt.expectErrors && len(result.Errors) > 0 {
+				t.Errorf("ValidateCommands() unexpected errors: %v", result.Errors)
+			}
+		})
+	}
+}
+
+func TestValidateCommandsForState(t *testing.T) {
+	tests := []struct {
+		name     string
+		commands []string
+		state    string
+		expected []string
+	}{
+		{
+			name:     "departure rejects descend altitude",
+			commands: []string{"D80", "L270", "C100"},
+			state:    "departure",
+			expected: []string{"L270", "C100"},
+		},
+		{
+			name:     "departure rejects contact tower",
+			commands: []string{"L270", "TO"},
+			state:    "departure",
+			expected: []string{"L270"},
+		},
+		{
+			name:     "arrival rejects climb altitude",
+			commands: []string{"C100", "L270", "DVS"},
+			state:    "arrival",
+			expected: []string{"L270", "DVS"},
+		},
+		{
+			name:     "arrival rejects contact tower",
+			commands: []string{"L270", "TO"},
+			state:    "arrival",
+			expected: []string{"L270"},
+		},
+		{
+			name:     "overflight rejects contact tower",
+			commands: []string{"D80", "C100", "TO"},
+			state:    "overflight",
+			expected: []string{"D80", "C100"},
+		},
+		{
+			name:     "on approach allows all",
+			commands: []string{"TO", "S250"},
+			state:    "on approach",
+			expected: []string{"TO", "S250"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := ValidateCommandsForState(tt.commands, tt.state)
+			if len(result) != len(tt.expected) {
+				t.Errorf("ValidateCommandsForState() = %v, want %v", result, tt.expected)
+				return
+			}
+			for i := range result {
+				if result[i] != tt.expected[i] {
+					t.Errorf("ValidateCommandsForState()[%d] = %q, want %q",
+						i, result[i], tt.expected[i])
+				}
+			}
+		})
+	}
+}
+
+// =============================================================================
+// Unit Tests for callsign.go
+// =============================================================================
+
+func TestMatchCallsignDirect(t *testing.T) {
+	tests := []struct {
+		name          string
+		tokens        []Token
+		aircraft      map[string]Aircraft
+		expectedCS    string
+		expectedConf  float64
+		expectedCons  int
+		expectNoMatch bool
+	}{
+		{
+			name: "exact airline and number match",
+			tokens: []Token{
+				{Text: "american", Type: TokenWord},
+				{Text: "5936", Type: TokenNumber, Value: 5936},
+			},
+			aircraft: map[string]Aircraft{
+				"American 5936": {Callsign: "AAL5936"},
+			},
+			expectedCS:   "AAL5936",
+			expectedConf: 0.9,
+			expectedCons: 2,
+		},
+		{
+			name: "digit tokens for flight number",
+			tokens: []Token{
+				{Text: "delta", Type: TokenWord},
+				{Text: "4", Type: TokenWord},
+				{Text: "4", Type: TokenWord},
+				{Text: "2", Type: TokenWord},
+			},
+			aircraft: map[string]Aircraft{
+				"Delta 442": {Callsign: "DAL442"},
+			},
+			expectedCS:   "DAL442",
+			expectedConf: 0.9,
+			expectedCons: 4,
+		},
+		{
+			name: "ICAO code match",
+			tokens: []Token{
+				{Text: "AAL", Type: TokenICAO},
+				{Text: "100", Type: TokenNumber, Value: 100},
+			},
+			aircraft: map[string]Aircraft{
+				"American 100": {Callsign: "AAL100"},
+			},
+			expectedCS:   "AAL100",
+			expectedConf: 0.9,
+			expectedCons: 2,
+		},
+		{
+			name: "multi-word airline",
+			tokens: []Token{
+				{Text: "china", Type: TokenWord},
+				{Text: "southern", Type: TokenWord},
+				{Text: "940", Type: TokenNumber, Value: 940},
+			},
+			aircraft: map[string]Aircraft{
+				"China Southern 940": {Callsign: "CSN940"},
+			},
+			expectedCS:   "CSN940",
+			expectedConf: 0.9,
+			expectedCons: 3,
+		},
+		{
+			name: "fuzzy airline match",
+			tokens: []Token{
+				{Text: "amurican", Type: TokenWord}, // fuzzy
+				{Text: "100", Type: TokenNumber, Value: 100},
+			},
+			aircraft: map[string]Aircraft{
+				"American 100": {Callsign: "AAL100"},
+			},
+			expectedCS:   "AAL100",
+			expectedConf: 0.5,
+			expectedCons: 2,
+		},
+		{
+			name: "skip garbage at start",
+			tokens: []Token{
+				{Text: "lass", Type: TokenWord}, // garbage
+				{Text: "delta", Type: TokenWord},
+				{Text: "100", Type: TokenNumber, Value: 100},
+			},
+			aircraft: map[string]Aircraft{
+				"Delta 100": {Callsign: "DAL100"},
+			},
+			expectedCS:   "DAL100",
+			expectedConf: 0.5,
+			expectedCons: 3,
+		},
+		{
+			name: "no match returns empty",
+			tokens: []Token{
+				{Text: "xyz", Type: TokenWord},
+				{Text: "999", Type: TokenNumber, Value: 999},
+			},
+			aircraft: map[string]Aircraft{
+				"American 100": {Callsign: "AAL100"},
+			},
+			expectNoMatch: true,
+		},
+		{
+			name:          "empty tokens",
+			tokens:        []Token{},
+			aircraft:      map[string]Aircraft{"American 100": {Callsign: "AAL100"}},
+			expectNoMatch: true,
+		},
+		{
+			name: "empty aircraft",
+			tokens: []Token{
+				{Text: "american", Type: TokenWord},
+				{Text: "100", Type: TokenNumber, Value: 100},
+			},
+			aircraft:      map[string]Aircraft{},
+			expectNoMatch: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			match, remaining := MatchCallsign(tt.tokens, tt.aircraft)
+
+			if tt.expectNoMatch {
+				if match.Callsign != "" {
+					t.Errorf("MatchCallsign() expected no match, got %q", match.Callsign)
+				}
+				return
+			}
+
+			if match.Callsign != tt.expectedCS {
+				t.Errorf("MatchCallsign() callsign = %q, want %q", match.Callsign, tt.expectedCS)
+			}
+			if match.Confidence < tt.expectedConf {
+				t.Errorf("MatchCallsign() confidence = %.2f, want >= %.2f",
+					match.Confidence, tt.expectedConf)
+			}
+			if match.Consumed != tt.expectedCons {
+				t.Errorf("MatchCallsign() consumed = %d, want %d", match.Consumed, tt.expectedCons)
+			}
+			expectedRemaining := len(tt.tokens) - tt.expectedCons
+			if len(remaining) != expectedRemaining {
+				t.Errorf("MatchCallsign() remaining = %d tokens, want %d",
+					len(remaining), expectedRemaining)
+			}
+		})
+	}
+}
+
+func TestMatchCallsignGACallsigns(t *testing.T) {
+	tests := []struct {
+		name         string
+		tokens       []Token
+		aircraft     map[string]Aircraft
+		expectedCS   string
+		expectedCons int
+	}{
+		{
+			name: "november N-number",
+			tokens: []Token{
+				{Text: "november", Type: TokenWord},
+				{Text: "1", Type: TokenWord},
+				{Text: "2", Type: TokenWord},
+				{Text: "3", Type: TokenWord},
+				{Text: "a", Type: TokenWord},
+				{Text: "b", Type: TokenWord},
+			},
+			aircraft: map[string]Aircraft{
+				"November 123AB": {Callsign: "N123AB"},
+			},
+			expectedCS:   "N123AB",
+			expectedCons: 6,
+		},
+		{
+			name: "N prefix",
+			tokens: []Token{
+				{Text: "n", Type: TokenWord},
+				{Text: "3", Type: TokenWord},
+				{Text: "4", Type: TokenWord},
+				{Text: "5", Type: TokenWord},
+			},
+			aircraft: map[string]Aircraft{
+				"November 345": {Callsign: "N345"},
+			},
+			expectedCS:   "N345",
+			expectedCons: 4,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			match, _ := MatchCallsign(tt.tokens, tt.aircraft)
+			if match.Callsign != tt.expectedCS {
+				t.Errorf("MatchCallsign() = %q, want %q", match.Callsign, tt.expectedCS)
+			}
+			if match.Consumed != tt.expectedCons {
+				t.Errorf("MatchCallsign() consumed = %d, want %d", match.Consumed, tt.expectedCons)
+			}
+		})
+	}
+}
+
+func TestMatchCallsignWithSuffix(t *testing.T) {
+	tests := []struct {
+		name         string
+		tokens       []Token
+		aircraft     map[string]Aircraft
+		expectedCS   string
+		expectedCons int
+	}{
+		{
+			name: "heavy suffix consumed",
+			tokens: []Token{
+				{Text: "lufthansa", Type: TokenWord},
+				{Text: "4wj", Type: TokenWord},
+				{Text: "heavy", Type: TokenWord},
+			},
+			aircraft: map[string]Aircraft{
+				"Lufthansa 4WJ heavy": {Callsign: "DLH4WJ"},
+			},
+			expectedCS:   "DLH4WJ",
+			expectedCons: 3,
+		},
+		{
+			name: "super suffix consumed",
+			tokens: []Token{
+				{Text: "emirates", Type: TokenWord},
+				{Text: "100", Type: TokenNumber, Value: 100},
+				{Text: "super", Type: TokenWord},
+			},
+			aircraft: map[string]Aircraft{
+				"Emirates 100 super": {Callsign: "UAE100"},
+			},
+			expectedCS:   "UAE100",
+			expectedCons: 3,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			match, _ := MatchCallsign(tt.tokens, tt.aircraft)
+			if match.Callsign != tt.expectedCS {
+				t.Errorf("MatchCallsign() = %q, want %q", match.Callsign, tt.expectedCS)
+			}
+			if match.Consumed != tt.expectedCons {
+				t.Errorf("MatchCallsign() consumed = %d, want %d", match.Consumed, tt.expectedCons)
+			}
+		})
+	}
+}
+
+func TestFlightNumberOnlyFallback(t *testing.T) {
+	tests := []struct {
+		name        string
+		tokens      []Token
+		aircraft    map[string]Aircraft
+		expectedCS  string
+		expectMatch bool
+	}{
+		{
+			name: "unique flight number matches",
+			tokens: []Token{
+				{Text: "garbled", Type: TokenWord},
+				{Text: "5936", Type: TokenNumber, Value: 5936},
+			},
+			aircraft: map[string]Aircraft{
+				"American 5936": {Callsign: "AAL5936"},
+			},
+			expectedCS:  "AAL5936",
+			expectMatch: true,
+		},
+		{
+			name: "completely garbled input with no flight number",
+			tokens: []Token{
+				{Text: "xyz", Type: TokenWord},
+				{Text: "abc", Type: TokenWord},
+			},
+			aircraft: map[string]Aircraft{
+				"American 100": {Callsign: "AAL100"},
+			},
+			expectMatch: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			match, _ := MatchCallsign(tt.tokens, tt.aircraft)
+			if tt.expectMatch {
+				if match.Callsign != tt.expectedCS {
+					t.Errorf("MatchCallsign() = %q, want %q", match.Callsign, tt.expectedCS)
+				}
+			} else {
+				if match.Callsign != "" {
+					t.Errorf("MatchCallsign() expected no match, got %q", match.Callsign)
+				}
+			}
+		})
+	}
+}
+
+func TestSplitCallsign(t *testing.T) {
+	tests := []struct {
+		callsign       string
+		expectedPrefix string
+		expectedNumber string
+	}{
+		{"AAL5936", "AAL", "5936"},
+		{"N123AB", "N", "123AB"},
+		{"DLH4WJ", "DLH", "4WJ"},
+		{"ABC", "ABC", ""},
+		{"123", "", "123"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.callsign, func(t *testing.T) {
+			prefix, number := splitCallsign(tt.callsign)
+			if prefix != tt.expectedPrefix {
+				t.Errorf("splitCallsign(%q) prefix = %q, want %q",
+					tt.callsign, prefix, tt.expectedPrefix)
+			}
+			if number != tt.expectedNumber {
+				t.Errorf("splitCallsign(%q) number = %q, want %q",
+					tt.callsign, number, tt.expectedNumber)
+			}
+		})
 	}
 }

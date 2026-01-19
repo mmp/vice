@@ -42,7 +42,26 @@ type CommandMatch struct {
 	IsThen     bool    // Whether this is a "then" sequenced command
 }
 
-// Define all command templates
+// commandTemplates defines patterns for recognizing ATC commands.
+//
+// Priority Guidelines:
+// When multiple templates match the same tokens, the one with higher priority wins.
+// On equal priority, the template that consumes more tokens wins (more specific match).
+//
+// Priority Levels:
+//   - 20: Informational phrases that should block command parsing (e.g., "radar contact")
+//   - 15: Highly specific multi-keyword commands (e.g., "climb via sid", "cancel approach clearance")
+//   - 12: Compound commands with specific intent (e.g., "present heading", "squawk ident")
+//   - 10: Standard commands with keyword sequences (e.g., "descend maintain", "turn left heading")
+//   - 8:  Shorter variants of standard commands (e.g., "fly heading", "turn degrees")
+//   - 5:  Single-keyword commands (e.g., "descend", "heading")
+//   - 2-3: Fallback commands that match broadly (e.g., "maintain" for altitude or speed)
+//
+// The hierarchy ensures that:
+//   - "descend maintain 8000" matches descend_maintain (10), not just descend (5)
+//   - "climb via the sid" matches climb_via_sid (15), not climb (5)
+//   - "present heading" matches present_heading (12), not heading_only (5)
+//   - "turn left heading 270" matches turn_left_heading (10), not heading_only (5)
 var commandTemplates = []CommandTemplate{
 	// === ALTITUDE COMMANDS ===
 	{
@@ -126,21 +145,25 @@ var commandTemplates = []CommandTemplate{
 	},
 
 	// === HEADING COMMANDS ===
+	// Note: turn_left_heading and turn_right_heading REQUIRE "left" or "right" to be
+	// explicitly present in the transcript. This prevents transcription errors like
+	// "flight heading" (instead of "fly heading") from incorrectly matching as a
+	// directional turn command.
 	{
 		Name:      "turn_left_heading",
-		Keywords:  [][]string{{"turn", "left"}, {"left", "heading"}},
+		Keywords:  [][]string{{"left"}, {"heading"}},
 		ArgType:   ArgHeading,
 		OutputFmt: "L%03d",
 		Priority:  10,
-		SkipWords: []string{"to"},
+		SkipWords: []string{"turn", "to"},
 	},
 	{
 		Name:      "turn_right_heading",
-		Keywords:  [][]string{{"turn", "right"}, {"right", "heading"}},
+		Keywords:  [][]string{{"right"}, {"heading"}},
 		ArgType:   ArgHeading,
 		OutputFmt: "R%03d",
 		Priority:  10,
-		SkipWords: []string{"to"},
+		SkipWords: []string{"turn", "to"},
 	},
 	{
 		Name:      "fly_heading",
@@ -293,6 +316,14 @@ var commandTemplates = []CommandTemplate{
 	{
 		Name:      "cleared_approach",
 		Keywords:  [][]string{{"cleared"}},
+		ArgType:   ArgApproach,
+		OutputFmt: "C%s",
+		Priority:  8,
+		SkipWords: []string{"approach"},
+	},
+	{
+		Name:      "clear_to_approach", // Whisper sometimes mistranscribes "cleared" as "clear to"
+		Keywords:  [][]string{{"clear"}, {"to"}},
 		ArgType:   ArgApproach,
 		OutputFmt: "C%s",
 		Priority:  8,
@@ -531,42 +562,34 @@ func matchCommand(tokens []Token, ac Aircraft, isThen bool) (CommandMatch, int) 
 func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen bool) (CommandMatch, int) {
 	consumed := 0
 
-	// Match keyword sequences
+	// Match each keyword group in sequence.
+	// For each group, we skip over skip words and filler words, then try to
+	// match the first significant token against any keyword in that group.
 	for _, keywordGroup := range tmpl.Keywords {
-		matched := false
+		// Skip over skip words and filler words to find the next significant token
 		for consumed < len(tokens) {
 			text := strings.ToLower(tokens[consumed].Text)
-
-			// Skip designated skip words
-			if contains(tmpl.SkipWords, text) {
+			if contains(tmpl.SkipWords, text) || IsFillerWord(text) {
 				consumed++
 				continue
-			}
-
-			// Skip filler words
-			if IsFillerWord(text) {
-				consumed++
-				continue
-			}
-
-			// Try to match any keyword in the group
-			for _, kw := range keywordGroup {
-				if FuzzyMatch(text, kw, 0.8) {
-					matched = true
-					consumed++
-					break
-				}
-			}
-
-			if matched {
-				break
-			}
-
-			// If we didn't match and haven't matched any keyword yet, fail
-			if consumed == 0 {
-				return CommandMatch{}, 0
 			}
 			break
+		}
+
+		// Check if we ran out of tokens
+		if consumed >= len(tokens) {
+			return CommandMatch{}, 0
+		}
+
+		// Try to match the current token against any keyword in the group
+		text := strings.ToLower(tokens[consumed].Text)
+		matched := false
+		for _, kw := range keywordGroup {
+			if FuzzyMatch(text, kw, 0.8) {
+				matched = true
+				consumed++
+				break
+			}
 		}
 
 		if !matched {
@@ -601,6 +624,17 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	switch tmpl.ArgType {
 	case ArgNone:
 		// No argument needed
+		// Special case: frequency_change ("contact") should not match if followed by a
+		// command keyword. This prevents misrecognized "radar contact" (where "radar"
+		// was dropped) from being interpreted as a frequency change when followed by
+		// actual commands like "climb and maintain".
+		if tmpl.Name == "frequency_change" && consumed < len(tokens) {
+			nextWord := strings.ToLower(tokens[consumed].Text)
+			if isCommandKeyword(nextWord) {
+				logLocalStt("  frequency_change rejected: followed by command keyword %q", nextWord)
+				return CommandMatch{}, 0
+			}
+		}
 
 	case ArgAltitude:
 		alt, altConsumed := extractAltitude(tokens[consumed:])
@@ -839,7 +873,10 @@ func extractAltitude(tokens []Token) (int, int) {
 		}
 		if t.Type == TokenNumber {
 			// Heuristic: if it looks like altitude encoding (2-3 digits, reasonable value)
-			if t.Value >= 10 && t.Value <= 600 {
+			// But exclude the speed range (100-400) since those are ambiguous and more likely
+			// to be speeds. Real altitudes in that range are typically spoken as "one eight
+			// thousand" not "180".
+			if t.Value >= 10 && t.Value <= 600 && (t.Value < 100 || t.Value > 400) {
 				return t.Value, i + 1
 			}
 			// Large number might be raw feet
@@ -860,6 +897,7 @@ func extractAltitude(tokens []Token) (int, int) {
 }
 
 // extractHeading extracts a heading value (1-360) from tokens.
+// Only called after command context has determined a heading is expected.
 func extractHeading(tokens []Token) (int, int) {
 	if len(tokens) == 0 {
 		return 0, 0
@@ -868,9 +906,6 @@ func extractHeading(tokens []Token) (int, int) {
 	for i, t := range tokens {
 		if i > 3 {
 			break
-		}
-		if t.Type == TokenHeading {
-			return t.Value, i + 1
 		}
 		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 360 {
 			return t.Value, i + 1
@@ -881,6 +916,7 @@ func extractHeading(tokens []Token) (int, int) {
 }
 
 // extractSpeed extracts a speed value from tokens.
+// Only called after command context has determined a speed is expected.
 func extractSpeed(tokens []Token) (int, int) {
 	if len(tokens) == 0 {
 		return 0, 0
@@ -890,11 +926,7 @@ func extractSpeed(tokens []Token) (int, int) {
 		if i > 3 {
 			break
 		}
-		if t.Type == TokenSpeed {
-			return t.Value, i + 1
-		}
-		// A 3-digit number like 250 might be classified as heading but could be speed in context
-		if (t.Type == TokenNumber || t.Type == TokenHeading) && t.Value >= 100 && t.Value <= 400 {
+		if t.Type == TokenNumber && t.Value >= 100 && t.Value <= 400 {
 			return t.Value, i + 1
 		}
 	}
@@ -992,7 +1024,7 @@ func extractApproach(tokens []Token, approaches map[string]string) (string, floa
 		for i := 0; i < length; i++ {
 			// Expand numeric tokens to spoken form to match telephony
 			// e.g., "22" -> "two two"
-			if tokens[i].Type == TokenNumber || tokens[i].Type == TokenHeading {
+			if tokens[i].Type == TokenNumber {
 				parts = append(parts, spokenDigits(tokens[i].Value))
 			} else {
 				parts = append(parts, tokens[i].Text)
@@ -1057,8 +1089,7 @@ func extractSquawk(tokens []Token) (string, int) {
 		if IsDigit(t.Text) {
 			code.WriteString(t.Text)
 			consumed++
-		} else if (t.Type == TokenNumber || t.Type == TokenSpeed || t.Type == TokenHeading) && t.Value >= 0 && t.Value <= 7777 {
-			// Accept number, speed, or heading tokens since squawk codes (0000-7777) overlap those ranges
+		} else if t.Type == TokenNumber && t.Value >= 0 && t.Value <= 7777 {
 			code.WriteString(fmt.Sprintf("%04d", t.Value))
 			consumed++
 			break
@@ -1123,6 +1154,27 @@ func contains(slice []string, s string) bool {
 	return false
 }
 
+// isCommandKeyword returns true if the word is a command keyword.
+// Used to detect when "contact" is followed by a command rather than a controller name.
+func isCommandKeyword(word string) bool {
+	commandKeywords := map[string]bool{
+		"climb": true, "climbed": true, "climbing": true,
+		"descend": true, "descended": true, "descending": true,
+		"maintain": true,
+		"turn":     true, "left": true, "right": true,
+		"heading": true,
+		"speed":   true, "reduce": true, "increase": true,
+		"direct": true, "proceed": true,
+		"cleared": true, "expect": true, "vectors": true,
+		"squawk": true, "ident": true,
+		"cross": true, "expedite": true,
+		"fly": true, "intercept": true,
+		"cancel": true, "resume": true,
+		"say": true,
+	}
+	return commandKeywords[word]
+}
+
 func mustAtoi(s string) int {
 	// Remove leading zeros for proper formatting
 	s = strings.TrimLeft(s, "0")
@@ -1165,7 +1217,8 @@ func isAltitudeToken(t Token) bool {
 	}
 	if t.Type == TokenNumber {
 		// Encoded altitude (10-600 means 1000-60000 ft)
-		if t.Value >= 10 && t.Value <= 600 {
+		// But exclude speed range (100-400) to avoid ambiguity
+		if t.Value >= 10 && t.Value <= 600 && (t.Value < 100 || t.Value > 400) {
 			return true
 		}
 		// Raw feet value
@@ -1183,8 +1236,8 @@ func extractAltitudeValue(t Token) int {
 		return t.Value
 	}
 	if t.Type == TokenNumber {
-		// Already encoded (10-600)
-		if t.Value >= 10 && t.Value <= 600 {
+		// Already encoded (10-600), excluding speed range (100-400)
+		if t.Value >= 10 && t.Value <= 600 && (t.Value < 100 || t.Value > 400) {
 			return t.Value
 		}
 		// Raw feet - convert to encoded

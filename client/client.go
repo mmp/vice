@@ -598,11 +598,21 @@ func PreloadWhisperModel(lg *log.Logger) {
 			whisperModel, whisperModelErr = whisper.LoadModelFromBytes(modelBytes)
 			if whisperModelErr != nil {
 				lg.Errorf("Failed to load whisper model: %v", whisperModelErr)
-			} else {
-				whisperModelName = modelName
-				lg.Infof("Whisper model loaded: %s", modelName)
+				whisperModelMu.Unlock()
+				return
 			}
+			whisperModelName = modelName
+			lg.Infof("Whisper model loaded: %s", modelName)
 			whisperModelMu.Unlock()
+
+			// Run warmup transcription with 1 second of silence.  The first inference pass on a
+			// newly loaded model is slower due to shader compilation and memory allocation. Running
+			// a warmup pass ensures the first real transcription works reliably.
+			warmupST := whisper.NewStreamingTranscriber(whisperModel, &whisperModelMu, whisper.Options{})
+			warmupST.Start()
+			warmupST.AddSamples(make([]int16, 16000)) // 1 second at 16kHz
+			warmupST.Stop()
+			lg.Info("Whisper model warmed up")
 		})
 	}()
 }
@@ -630,10 +640,11 @@ func makeWhisperPrompt(state SimState) string {
 		"reduce speed to", "maintain maximum forward speed", "contact tower",
 		"expect", "vectors", "squawk", "ident", "altimieter", "radar contact",
 		"reduce to final approach speed", "miles from", "established", "cleared",
-		"until established", "on the localizer", "flight level",
+		"until established", "on the localizer", "flight level", "niner",
 	}
 
-	// Add telephony, approaches, and fixes for user-controlled tracks.
+	// Add telephony and approaches for user-controlled tracks.
+	// Collect fixes separately using map to dedupe.
 	assignedApproaches := make(map[string]struct{})
 	fixes := make(map[string]struct{})
 	for _, trk := range state.Tracks {
@@ -643,7 +654,11 @@ func makeWhisperPrompt(state SimState) string {
 			if trk.Approach != "" {
 				assignedApproaches[trk.Approach] = struct{}{}
 			}
-			for _, fix := range trk.Fixes {
+			// Add up to 3 upcoming fixes from this aircraft's route
+			for i, fix := range trk.Fixes {
+				if i >= 3 {
+					break
+				}
 				fixes[fix] = struct{}{}
 			}
 		}
@@ -654,13 +669,21 @@ func makeWhisperPrompt(state SimState) string {
 		promptParts = append(promptParts, av.GetApproachTelephony(appr))
 	}
 
-	// Add active approaches (converted to spoken form, excluding already-added assigned ones)
+	// Collect active approaches and their fixes
 	activeApproaches := make(map[string]struct{})
 	for _, ar := range state.ArrivalRunways {
 		if ap, ok := state.Airports[ar.Airport]; ok {
 			for _, appr := range ap.Approaches {
 				if appr.Runway == ar.Runway {
 					activeApproaches[appr.FullName] = struct{}{}
+					// Add all fixes from this active approach
+					for _, wps := range appr.Waypoints {
+						for _, wp := range wps {
+							if len(wp.Fix) >= 3 && len(wp.Fix) <= 5 && wp.Fix[0] != '_' {
+								fixes[wp.Fix] = struct{}{}
+							}
+						}
+					}
 				}
 			}
 		}

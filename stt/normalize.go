@@ -81,6 +81,13 @@ var natoAlphabet = map[string]string{
 	"zulu": "z", "zoolu": "z",
 }
 
+// ConvertNATOLetter converts a NATO phonetic word to its letter.
+// Returns the letter and true if found, empty string and false otherwise.
+func ConvertNATOLetter(word string) (string, bool) {
+	letter, ok := natoAlphabet[strings.ToLower(word)]
+	return letter, ok
+}
+
 // commandKeywords maps spoken command words to normalized forms.
 var commandKeywords = map[string]string{
 	// Altitude
@@ -104,6 +111,7 @@ var commandKeywords = map[string]string{
 
 	// Heading
 	"heading": "heading",
+	"hitting": "heading", // STT error
 	"turn":    "turn",
 	"left":    "left",
 	"right":   "right",
@@ -216,6 +224,10 @@ func NormalizeTranscript(transcript string) []string {
 			continue
 		}
 
+		// Handle garbled "niner" transcriptions like "9r,000" -> "9r000" -> "9000"
+		// Whisper sometimes transcribes "niner" as "9r" when followed by digits.
+		w = fixGarbledNiner(w)
+
 		// Try digit word normalization
 		if digit, ok := digitWords[w]; ok {
 			result = append(result, digit)
@@ -228,11 +240,10 @@ func NormalizeTranscript(transcript string) []string {
 			continue
 		}
 
-		// Try NATO alphabet
-		if letter, ok := natoAlphabet[w]; ok {
-			result = append(result, letter)
-			continue
-		}
+		// NOTE: NATO alphabet conversion is NOT done here because words like
+		// "delta" could be airline names (Delta Air Lines). NATO conversion is
+		// deferred to scoreGACallsign() and scoreFlightNumberMatch() where the
+		// context makes it clear we're building a callsign from phonetics.
 
 		// Try command keyword normalization
 		if norm, ok := commandKeywords[w]; ok {
@@ -244,12 +255,17 @@ func NormalizeTranscript(transcript string) []string {
 		// STT sometimes transcribes "niner" as "nine or", so "two nine or zero"
 		// becomes "2 9 or 0" instead of "2 9 0". Skip "or" when it appears
 		// between digit-like tokens.
+		// Also handle "niner thousand" -> "9 or 1000" where "1000" is really "thousand".
 		if w == "or" && len(result) > 0 && i+1 < len(words) {
 			prevIsDigit := IsNumber(result[len(result)-1])
 			nextWord := CleanWord(words[i+1])
 			_, nextIsDigitWord := digitWords[nextWord]
 			nextIsDigit := IsNumber(nextWord) || nextIsDigitWord
 			if prevIsDigit && nextIsDigit {
+				// Special case: "9 or 1000" means "niner thousand" - convert 1000 to thousand
+				if nextWord == "1000" {
+					words[i+1] = "thousand"
+				}
 				continue // Skip "or" between digits
 			}
 		}
@@ -302,4 +318,36 @@ func ParseNumber(s string) int {
 		n = n*10 + int(c-'0')
 	}
 	return n
+}
+
+// fixGarbledNiner fixes STT transcription errors where "niner" is garbled as "9r".
+// For example, "9r,000" -> "9r000" after CleanWord, which should become "9000".
+// This handles patterns like:
+//   - "9r" -> "9" (just the garbled niner)
+//   - "9r000" -> "9000" (niner followed by more digits)
+func fixGarbledNiner(w string) string {
+	if len(w) < 2 {
+		return w
+	}
+
+	// Look for pattern: single digit followed by 'r' followed by optional digits
+	// e.g., "9r", "9r000"
+	if w[0] >= '0' && w[0] <= '9' && w[1] == 'r' {
+		// Remove the 'r' - keep the leading digit and any trailing digits
+		if len(w) == 2 {
+			return string(w[0]) // "9r" -> "9"
+		}
+		// Check that everything after 'r' is digits
+		allDigits := true
+		for j := 2; j < len(w); j++ {
+			if w[j] < '0' || w[j] > '9' {
+				allDigits = false
+				break
+			}
+		}
+		if allDigits {
+			return string(w[0]) + w[2:] // "9r000" -> "9000"
+		}
+	}
+	return w
 }

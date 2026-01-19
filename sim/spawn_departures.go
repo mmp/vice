@@ -517,9 +517,9 @@ func (s *Sim) assignDepartureController(ac *Aircraft, nasFp *NASFlightPlan,
 	if ap.DepartureController != "" && s.isVirtualController(ap.DepartureController) {
 		// Virtual controller from airport; automatically release since there's no human.
 		nasFp.TrackingController = TCP(ap.DepartureController)
-		nasFp.ControllingController = TCP(ap.DepartureController)
 		nasFp.OwningTCW = s.tcwForPosition(ap.DepartureController)
 		nasFp.InboundHandoffController = TCP(exitRoute.HandoffController)
+		ac.ControllerFrequency = ControlPosition(ap.DepartureController)
 		ac.HoldForRelease = false
 		return
 	}
@@ -527,9 +527,9 @@ func (s *Sim) assignDepartureController(ac *Aircraft, nasFp *NASFlightPlan,
 	if exitRoute.DepartureController != "" && s.isVirtualController(exitRoute.DepartureController) {
 		// Virtual controller from exit route; automatically release.
 		nasFp.TrackingController = TCP(exitRoute.DepartureController)
-		nasFp.ControllingController = TCP(exitRoute.DepartureController)
 		nasFp.OwningTCW = s.tcwForPosition(exitRoute.DepartureController)
 		nasFp.InboundHandoffController = TCP(exitRoute.HandoffController)
+		ac.ControllerFrequency = ControlPosition(exitRoute.DepartureController)
 		ac.HoldForRelease = false
 		return
 	}

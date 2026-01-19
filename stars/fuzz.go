@@ -217,15 +217,15 @@ func (fc *FuzzController) ExecuteRandomCommand(ctx *panes.Context) {
 	}
 
 	// Filter to tracks the user actually controls for target-gen commands.
-	// TracksFromACIDSuffix requires the user to control the ControllingController position,
+	// TracksFromACIDSuffix requires the user to control the ControllerFrequency position,
 	// so we must filter the same way to ensure commands will actually execute.
 	var controlledTracks []sim.Track
 	var seenControllers = make(map[string]bool)
 	for _, trk := range fc.sp.visibleTracks {
-		if trk.IsAssociated() && trk.FlightPlan.ControllingController != "" {
-			seenControllers[string(trk.FlightPlan.ControllingController)] = true
+		if trk.ControllerFrequency != "" {
+			seenControllers[string(trk.ControllerFrequency)] = true
 			// Only include tracks where user controls the position
-			if ctx.UserControlsPosition(trk.FlightPlan.ControllingController) || ctx.TCWIsPrivileged(ctx.UserTCW) {
+			if ctx.UserControlsPosition(trk.ControllerFrequency) || ctx.TCWIsPrivileged(ctx.UserTCW) {
 				controlledTracks = append(controlledTracks, trk)
 			}
 		}

@@ -510,11 +510,10 @@ type NASFlightPlan struct {
 
 	AssignedSquawk av.Squawk
 
-	TrackingController    ControlPosition // Who has the radar track
-	ControllingController ControlPosition // Who has control; not necessarily the same as TrackingController
-	HandoffController     ControlPosition // Handoff offered but not yet accepted
-	LastLocalController   ControlPosition // (May be the current controller.)
-	OwningTCW             TCW             // TCW that owns this track
+	TrackingController  ControlPosition // Who has the radar track
+	HandoffController   ControlPosition // Handoff offered but not yet accepted
+	LastLocalController ControlPosition // (May be the current controller.)
+	OwningTCW           TCW             // TCW that owns this track
 
 	AircraftCount   int
 	AircraftType    string

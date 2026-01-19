@@ -266,12 +266,12 @@ func (ctx *Context) TracksFromACIDSuffix(suffix string) []*sim.Track {
 				return false
 			}
 
-			if ctx.UserControlsPosition(fp.ControllingController) || ctx.TCWIsPrivileged(ctx.UserTCW) {
+			if ctx.UserControlsPosition(trk.ControllerFrequency) || ctx.TCWIsPrivileged(ctx.UserTCW) {
 				return true
 			}
 
 			// Hold for release aircraft still in the list
-			if ctx.UserOwnsFlightPlan(trk.FlightPlan) && trk.FlightPlan.ControllingController == "" {
+			if ctx.UserOwnsFlightPlan(trk.FlightPlan) && trk.ControllerFrequency == "" {
 				return true
 			}
 			return false

@@ -155,7 +155,12 @@ func validateCommand(cmd string, ac Aircraft) string {
 	case 'F':
 		// FC - frequency change
 		if cmd == "FC" {
-			// Always valid
+			// Don't generate FC if aircraft is already on the tracking controller's frequency.
+			// This catches misrecognized "radar contact" where only "contact" was heard.
+			if ac.ControllerFrequency != "" && ac.TrackingController != "" &&
+				ac.ControllerFrequency == ac.TrackingController {
+				return "FC invalid: already on tracking controller frequency"
+			}
 			return ""
 		}
 
@@ -263,11 +268,8 @@ func validateCancelApproach(ac Aircraft) string {
 	return ""
 }
 
-func validateGoAhead(ac Aircraft) string {
-	// Go ahead typically for VFR check-ins
-	if ac.State != "vfr flight following" {
-		// Not an error, just less common
-	}
+func validateGoAhead(_ Aircraft) string {
+	// Go ahead is valid for any aircraft state (typically VFR check-ins)
 	return ""
 }
 
