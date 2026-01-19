@@ -389,13 +389,8 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	}
 
 	// Do any active airports have CRDA?
-	haveCRDA := false
-	for ap := range activeAirports {
-		if len(ap.ConvergingRunways) > 0 {
-			haveCRDA = true
-			break
-		}
-	}
+	haveCRDA := util.SeqContainsFunc(maps.Keys(activeAirports),
+		func(ap *av.Airport) bool { return len(ap.ConvergingRunways) > 0 })
 	if haveCRDA && s.ControllerConfiguration != nil {
 		// Make sure all of the controllers involved have a valid default airport
 		for _, pos := range s.ControllerConfiguration.AllPositions() {
@@ -1810,13 +1805,8 @@ func CreateLaunchConfig(scenario *scenario, scenarioGroup *scenarioGroup) sim.La
 	}
 
 	// Check for VFR reporting regions
-	haveVFRReportingRegions := false
-	for _, cfg := range scenarioGroup.FacilityAdaptation.ControllerConfigs {
-		if cfg.FlightFollowingAirspace != nil {
-			haveVFRReportingRegions = true
-			break
-		}
-	}
+	haveVFRReportingRegions := util.SeqContainsFunc(maps.Values(scenarioGroup.FacilityAdaptation.ControllerConfigs),
+		func(cfg *sim.STARSControllerConfig) bool { return cfg.FlightFollowingAirspace != nil })
 
 	// Create proper LaunchConfig
 	return sim.MakeLaunchConfig(

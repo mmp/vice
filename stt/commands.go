@@ -2,6 +2,7 @@ package stt
 
 import (
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -569,7 +570,7 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 		// Skip over skip words and filler words to find the next significant token
 		for consumed < len(tokens) {
 			text := strings.ToLower(tokens[consumed].Text)
-			if contains(tmpl.SkipWords, text) || IsFillerWord(text) {
+			if slices.Contains(tmpl.SkipWords, text) || IsFillerWord(text) {
 				consumed++
 				continue
 			}
@@ -610,7 +611,7 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	// Skip any remaining skip words and filler words before extracting argument
 	for consumed < len(tokens) {
 		text := strings.ToLower(tokens[consumed].Text)
-		if contains(tmpl.SkipWords, text) || IsFillerWord(text) {
+		if slices.Contains(tmpl.SkipWords, text) || IsFillerWord(text) {
 			consumed++
 		} else {
 			break
@@ -1141,17 +1142,6 @@ func extractDegrees(tokens []Token) (int, string, int) {
 	}
 
 	return 0, "", 0
-}
-
-// Helper functions
-
-func contains(slice []string, s string) bool {
-	for _, item := range slice {
-		if item == s {
-			return true
-		}
-	}
-	return false
 }
 
 // isCommandKeyword returns true if the word is a command keyword.

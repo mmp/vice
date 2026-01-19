@@ -848,14 +848,8 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 		shouldReport := isSlowCandidate && !c.slowPerformanceReported
 
 		if shouldReport {
-			allSlow := true
-			for _, d := range c.recentWhisperDurations {
-				if d < slowPerformanceThreshold {
-					allSlow = false
-					break
-				}
-			}
-			shouldReport = allSlow
+			shouldReport = util.SeqContainsAllFunc(slices.Values(c.recentWhisperDurations),
+				func(d time.Duration) bool { return d >= slowPerformanceThreshold })
 		}
 		c.mu.Unlock()
 
