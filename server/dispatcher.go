@@ -601,6 +601,7 @@ type AircraftCommandsArgs struct {
 	EnableTTS         bool                    // Whether to synthesize readback audio
 	WhisperDuration   time.Duration           // Time from PTT release to whisper completion (zero for keyboard input)
 	WhisperTranscript string                  // Raw whisper transcript (empty for keyboard input)
+	WhisperProcessor  string                  // Description of the processor running whisper (GPU model or CPU info)
 	AircraftContext   map[string]stt.Aircraft // Aircraft context used for STT decoding (for logging)
 	STTDebugLogs      string                  // Local STT processing logs (for logging)
 }
@@ -671,6 +672,7 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 		sd.sm.lg.Info("STT command",
 			slog.String("transcript", cmds.WhisperTranscript),
 			slog.Duration("duration", cmds.WhisperDuration),
+			slog.String("processor", cmds.WhisperProcessor),
 			slog.String("callsign", string(cmds.Callsign)),
 			slog.String("command", cmds.Commands),
 			slog.Int("aircraft_count", len(cmds.AircraftContext)),
