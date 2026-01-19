@@ -1195,16 +1195,26 @@ func shouldCorrectAltitude(tmpl CommandTemplate, alt int, acAltitude int) (int, 
 
 	if isClimb && altFeet <= acAltitude {
 		// Climb but altitude is at or below current - try *10
+		corrected := alt * 10
+		// Never correct into flight levels (>=18,000 ft) - requires explicit "flight level" speech
+		if corrected >= 180 {
+			return alt, false
+		}
 		correctedFeet := alt * 1000
 		if correctedFeet > acAltitude && correctedFeet <= 60000 {
-			return alt * 10, true
+			return corrected, true
 		}
 	}
 	if isDescend && altFeet >= acAltitude {
 		// Descend but altitude is at or above current - try *10
+		corrected := alt * 10
+		// Never correct into flight levels (>=18,000 ft) - requires explicit "flight level" speech
+		if corrected >= 180 {
+			return alt, false
+		}
 		correctedFeet := alt * 1000
 		if correctedFeet < acAltitude && correctedFeet >= 1000 {
-			return alt * 10, true
+			return corrected, true
 		}
 	}
 	return alt, false
