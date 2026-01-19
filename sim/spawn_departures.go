@@ -618,7 +618,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 	nasFp.AssignedAltitude = util.Select(!isTRACON, ac.FlightPlan.Altitude, 0)
 	nasFp.RNAV = s.State.FacilityAdaptation.DisplayRNAVSymbol && exitRoute.IsRNAV
 
-	ac.HoldForRelease = ap.HoldForRelease && ac.FlightPlan.Rules == av.FlightRulesIFR // VFRs aren't held
+	ac.HoldForRelease = (ap.HoldForRelease || exitRoute.HoldForRelease) && ac.FlightPlan.Rules == av.FlightRulesIFR // VFRs aren't held
 	s.assignDepartureController(ac, &nasFp, ap, exitRoute, departureAirport, runway)
 
 	if err := s.assignSquawk(ac, &nasFp); err != nil {

@@ -1209,7 +1209,16 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 			}
 		}
 
-		if ap.HoldForRelease {
+		hfr := ap.HoldForRelease
+		for _, rwy := range ap.DepartureRoutes {
+			for _, exitRoute := range rwy {
+				if exitRoute.HoldForRelease {
+					hfr = true
+				}
+			}
+		}
+
+		if hfr {
 			// Make sure it's in either zero or one of the coordination lists.
 			if len(matches) > 1 {
 				e.ErrorString("Airport %q is in multiple entries in \"coordination_lists\": %s.", airport, strings.Join(matches, ", "))
