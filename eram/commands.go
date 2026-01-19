@@ -265,8 +265,8 @@ func (ep *ERAMPane) recallHandoff(ctx *panes.Context, acid sim.ACID) {
 		func(err error) { ep.bigOutput.displayError(ep.currentPrefs(), err) })
 }
 
-func (ep *ERAMPane) getQULines(ctx *panes.Context, acid sim.ACID) {
-	ctx.Client.SendRouteCoordinates(acid, func(err error) {
+func (ep *ERAMPane) getQULines(ctx *panes.Context, acid sim.ACID, minutes int) {
+	ctx.Client.SendRouteCoordinates(acid, minutes, func(err error) {
 		if err != nil {
 			ep.bigOutput.displayError(ep.currentPrefs(), err)
 		}

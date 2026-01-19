@@ -1063,7 +1063,7 @@ func (s *Sim) RejectPointOut(tcw TCW, acid ACID) error {
 }
 
 // TODO: Migrate to ERAM computer.
-func (s *Sim) SendRouteCoordinates(tcw TCW, acid ACID) error {
+func (s *Sim) SendRouteCoordinates(tcw TCW, acid ACID, minutes int) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -1071,18 +1071,67 @@ func (s *Sim) SendRouteCoordinates(tcw TCW, acid ACID) error {
 	if ac == nil {
 		return av.ErrNoAircraftForCallsign
 	}
+
+	// Get the aircraft's speed. TODO: Find out if ERAM uses current or filed speed.
+	speed := ac.Nav.FlightState.GS
+
 	waypoints := []av.Waypoint(ac.Nav.Waypoints)
 	waypointPairs := []math.Point2LL{}
 	for _, wyp := range waypoints {
 		if _, ok := av.DB.LookupWaypoint(wyp.Fix); ok { // only send actual waypoints
 			waypointPairs = append(waypointPairs, [2]float32{wyp.Location[0], wyp.Location[1]})
 		}
-
 	}
+
+	if minutes == -1 {
+		s.eventStream.Post(Event{
+			Type:         FixCoordinatesEvent,
+			ACID:         acid,
+			WaypointInfo: waypointPairs,
+			ToController: s.State.PrimaryPositionForTCW(tcw),
+		})
+		return nil
+	}
+
+	// Calculate the total distance required to be shown
+	requiredDistance := speed * float32(minutes) / 60
+
+	// Build the path starting from the aircraft's current position
+	currentPos := ac.Nav.FlightState.Position
+	nmPerLongitude := ac.Nav.FlightState.NmPerLongitude
+	magVar := ac.Nav.FlightState.MagneticVariation
+	const nmPerLatitude float32 = 60
+
+	var distance float32
+	var futureWaypoints []math.Point2LL
+
+	for _, wp := range waypointPairs {
+		legDistance := math.NMDistance2LL(currentPos, wp)
+
+		if distance+legDistance >= requiredDistance {
+			// The endpoint is somewhere along this leg
+			remainingDistance := requiredDistance - distance
+			bearing := math.Heading2LL(currentPos, wp, nmPerLongitude, magVar)
+
+			// Create a new waypoint at the calculated position
+			location := math.Point2LL{
+				currentPos[0] + remainingDistance*math.Sin(math.Radians(bearing))/nmPerLongitude,
+				currentPos[1] + remainingDistance*math.Cos(math.Radians(bearing))/nmPerLatitude,
+			}
+			futureWaypoints = append(futureWaypoints, location)
+			break
+		}
+
+		// Add this waypoint and continue
+		futureWaypoints = append(futureWaypoints, wp)
+		distance += legDistance
+		currentPos = wp
+	}
+
 	s.eventStream.Post(Event{
 		Type:         FixCoordinatesEvent,
 		ACID:         acid,
-		WaypointInfo: waypointPairs,
+		WaypointInfo: futureWaypoints,
 		ToController: s.State.PrimaryPositionForTCW(tcw),
 	})
 	return nil

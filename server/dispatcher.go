@@ -552,6 +552,7 @@ func (sd *dispatcher) DeleteAircraft(da *DeleteAircraftListArgs, update *SimStat
 type SendRouteCoordinatesArgs struct {
 	ControllerToken string
 	ACID            sim.ACID
+	Minutes         int
 }
 
 const SendRouteCoordinatesRPC = "Sim.SendRouteCoordinates"
@@ -563,7 +564,7 @@ func (sd *dispatcher) SendRouteCoordinates(rca *SendRouteCoordinatesArgs, update
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	err := c.sim.SendRouteCoordinates(c.tcw, rca.ACID)
+	err := c.sim.SendRouteCoordinates(c.tcw, rca.ACID, rca.Minutes)
 	*update = c.GetStateUpdate()
 	return err
 }
