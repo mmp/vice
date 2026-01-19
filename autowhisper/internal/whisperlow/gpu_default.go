@@ -1,4 +1,4 @@
-//go:build !vulkan || !windows
+//go:build !vulkan
 
 package whisperlow
 
