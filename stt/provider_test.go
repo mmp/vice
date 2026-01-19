@@ -77,6 +77,22 @@ func TestBasicAltitudeCommands(t *testing.T) {
 			},
 			expected: "RPA4583 C110",
 		},
+		{
+			name:       "garbled niner as 9r",
+			transcript: "Southwest 7343, descend and maintain, 9r,000",
+			aircraft: map[string]Aircraft{
+				"Southwest 7343": {Callsign: "SWA7343", Altitude: 12000, State: "arrival"},
+			},
+			expected: "SWA7343 D90",
+		},
+		{
+			name:       "niner thousand as 9 or 1000",
+			transcript: "American 17 descend and maintain, 9 or 1000",
+			aircraft: map[string]Aircraft{
+				"American 17": {Callsign: "AAL17", Altitude: 12000, State: "arrival"},
+			},
+			expected: "AAL17 D90",
+		},
 	}
 
 	provider := NewTranscriber(nil)
@@ -887,6 +903,11 @@ func TestNormalizeTranscript(t *testing.T) {
 		{"two nine or zero", []string{"2", "9", "0"}},
 		{"heading two niner zero", []string{"heading", "2", "9", "0"}},
 		{"", nil},
+		// Garbled "niner" transcribed as "9r" (e.g., "9r,000" -> "9000")
+		{"descend and maintain, 9r,000", []string{"descend", "and", "maintain", "9000"}},
+		{"9r", []string{"9"}},
+		// "niner thousand" transcribed as "9 or 1000" - should convert 1000 to thousand
+		{"descend and maintain, 9 or 1000", []string{"descend", "and", "maintain", "9", "thousand"}},
 	}
 
 	for _, tt := range tests {
