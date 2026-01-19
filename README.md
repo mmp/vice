@@ -45,15 +45,15 @@ To build *vice*, run the command `./build.bat` from a command shell in the repos
 ## Mac OSX
 
 If you have [homebrew](https://brew.sh) installed, running `brew
-install sdl2` will install SDL2. Otherwise consult your package manager
+install sdl2` will install SDL2. Otherwise, consult your package manager
 documentation or install [SDL](https://www.libsdl.org) from source.
 
-From a command shell in the repositoiry directory, run `./build.sh` to build a *vice* executable.
+From a command shell in the repository directory, run `./build.sh` to build a *vice* executable.
 
 ## Linux
 
 On Ubuntu, `sudo apt install xorg-dev libsdl2-dev` will install the necessary libraries.
-Then, from a command shell in the repositoiry directory, run `./build.sh` to
+Then, from a command shell in the repository directory, run `./build.sh` to
 build a *vice* executable.
 
 ### Vulkan
