@@ -67,7 +67,7 @@ type Aircraft struct {
 	GoAroundDistance *float32
 
 	// Departure related state
-	DepartureContactAltitude float32
+	DepartureContactAltitude float32 // 0 = waiting for /tc point, -1 = already contacted departure
 
 	// The controller who gave approach clearance
 	ApproachTCP TCP
