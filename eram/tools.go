@@ -520,3 +520,73 @@ func (ep *ERAMPane) drawPlotPoints(ctx *panes.Context, transforms radar.ScopeTra
 	transforms.LoadWindowViewingMatrices(cb)
 	ld.GenerateCommands(cb)
 }
+
+func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+	td := renderer.GetTextDrawBuilder()
+	defer renderer.ReturnTextDrawBuilder(td)
+	ld := renderer.GetColoredLinesDrawBuilder()
+	defer renderer.ReturnColoredLinesDrawBuilder(ld)
+
+	horizontalPxLength := float32(120)
+	verticalPxLength := float32(40)
+	ps := ep.currentPrefs()
+
+	p0 := ps.clockPosition
+	p1 := math.Add2f(p0, [2]float32{horizontalPxLength, 0})
+	p2 := math.Add2f(p1, [2]float32{0, -verticalPxLength})
+	p3 := math.Add2f(p2, [2]float32{-horizontalPxLength, 0})
+	p4 := math.Add2f(p3, [2]float32{0, verticalPxLength})
+
+	cb.LineWidth(.3, ctx.DPIScale)
+	ld.AddLine(p0, p1, renderer.RGB{1, 1, 1})
+	ld.AddLine(p1, p2, renderer.RGB{1, 1, 1})
+	ld.AddLine(p2, p3, renderer.RGB{1, 1, 1})
+	ld.AddLine(p3, p4, renderer.RGB{1, 1, 1})
+	cb.LineWidth(1, ctx.DPIScale)
+
+	verticalOffset := float32(3)
+	center := [2]float32{p0[0] + horizontalPxLength/2, p0[1] - verticalPxLength/2 + verticalOffset}
+
+	simTime := ctx.Client.State.SimTime
+	timeStr := simTime.Format("1504 02")
+
+	td.AddTextCentered(timeStr, center, renderer.TextStyle{Font: ep.ERAMFont(3), Color: renderer.RGB{1, 1, 1}})
+
+	// check if the clock is clicked on for repos
+	extent := math.Extent2DFromPoints([][2]float32{p0, p2})
+	mouse := ctx.Mouse
+	mouseInside := mouse != nil && extent.Inside(mouse.Pos)
+	if (mouseInside && mouse.Clicked[platform.MouseButtonPrimary]) != ep.repositionClock {
+		if !ep.repositionClock {
+		ep.timeSinceRepo = time.Now()
+		}
+		extent := ctx.PaneExtent
+		extent.P1[1] -= verticalPxLength
+		ctx.Platform.StartCaptureMouse(extent)
+		ep.repositionClock = true
+
+		sz := [2]float32{horizontalPxLength, verticalPxLength}
+		if mouse != nil {
+			p0 = mouse.Pos
+			p1 = math.Add2f(p0, [2]float32{sz[0], 0})
+			p2 = math.Add2f(p1, [2]float32{0, -sz[1]})
+			p3 = math.Add2f(p2, [2]float32{-sz[0], 0})
+			color := renderer.RGB{1, 1, 1} // White outline. TODO: Check if brightness affects this.
+			ld.AddLine(p0, p1, color)
+			ld.AddLine(p1, p2, color)
+			ld.AddLine(p2, p3, color)
+			ld.AddLine(p3, p0, color)
+
+			if (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) && ep.repositionClock &&
+				time.Since(ep.timeSinceRepo) > 100*time.Millisecond {
+				ps.clockPosition = mouse.Pos
+				ep.repositionClock = false
+				ctx.Platform.EndCaptureMouse()
+			}
+		}
+
+	}
+
+	ld.GenerateCommands(cb)
+	td.GenerateCommands(cb)
+}

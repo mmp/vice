@@ -68,7 +68,7 @@ type PrefrenceSet struct {
 }
 
 type CommonPreferences struct {
-	ClockPosition        []int
+	clockPosition        [2]float32
 	commandBigPosition   [2]float32
 	commandSmallPosition [2]float32
 	CharSize             struct {
@@ -162,6 +162,7 @@ func makeDefaultPreferences() *Preferences {
 
 	prefs.commandBigPosition = [2]float32{2, 80}
 	prefs.commandSmallPosition = [2]float32{392, 80}
+	prefs.clockPosition = [2]float32{10, 500}
 	prefs.altitudeFilter = [2]int{0, 999}
 
 	prefs.Line4Size = 0
