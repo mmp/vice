@@ -85,7 +85,7 @@ type ERAMPane struct {
 
 	repositionLargeInput  bool      `json:"-"`
 	repositionSmallOutput bool      `json:"-"`
-	repositionClock bool `json:"-"`
+	repositionClock       bool      `json:"-"`
 	timeSinceRepo         time.Time `json:"-"`
 
 	velocityTime int `json:"-"` // 0, 1, 4, or 8 minutes

@@ -169,7 +169,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 			// CRC doesn't even simulate this...
 		}
 		if ep.drawToolbarFullButton(ctx, "WX", 0, scale, false, false) {
-			// Opens WX menu 
+			// Opens WX menu
 		}
 
 	case toolbarFont:

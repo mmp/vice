@@ -558,7 +558,7 @@ func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransfor
 	mouseInside := mouse != nil && extent.Inside(mouse.Pos)
 	if (mouseInside && mouse.Clicked[platform.MouseButtonPrimary]) != ep.repositionClock {
 		if !ep.repositionClock {
-		ep.timeSinceRepo = time.Now()
+			ep.timeSinceRepo = time.Now()
 		}
 		extent := ctx.PaneExtent
 		extent.P1[1] -= verticalPxLength
