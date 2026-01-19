@@ -422,6 +422,7 @@ type FlightPlan struct {
 	AircraftType     string
 	CruiseSpeed      int
 	DepartureAirport string
+	DepartureRunway  string
 	Altitude         int
 	ArrivalAirport   string
 	AlternateAirport string

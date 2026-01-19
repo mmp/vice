@@ -721,6 +721,17 @@ type ExitRoute struct {
 	DepartureController ControlPosition `json:"departure_controller"`
 }
 
+// FinalHeading returns the final heading from the exit route's waypoints.
+// Returns 0 if no heading waypoint is found.
+func (er ExitRoute) FinalHeading() int {
+	for i := len(er.Waypoints) - 1; i >= 0; i-- {
+		if er.Waypoints[i].Heading != 0 {
+			return er.Waypoints[i].Heading
+		}
+	}
+	return 0
+}
+
 type Departure struct {
 	Exit string `json:"exit"`
 

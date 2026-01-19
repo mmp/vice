@@ -78,6 +78,7 @@ type Aircraft struct {
 
 	// Departure related state
 	DepartureContactAltitude float32
+	ReportDepartureHeading   bool // true if runway has multiple exit headings
 
 	// The controller who gave approach clearance
 	ApproachTCP TCP
@@ -410,6 +411,7 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport string,
 	}
 
 	ac.FlightPlan.Exit = dep.Exit
+	ac.FlightPlan.DepartureRunway = runway
 
 	r := rand.Make()
 	idx := rand.SampleFiltered(r, dep.Altitudes, func(alt int) bool { return alt <= int(perf.Ceiling) })
@@ -492,7 +494,10 @@ func (ac *Aircraft) NavSummary(model *wx.Model, simTime time.Time, lg *log.Logge
 }
 
 func (ac *Aircraft) ContactMessage(reportingPoints []av.ReportingPoint) *av.RadioTransmission {
-	return ac.Nav.ContactMessage(reportingPoints, ac.STAR)
+	// For departures, only report heading if the runway has varied exit headings.
+	// For arrivals (and others), always report heading if assigned.
+	reportHeading := !ac.IsDeparture() || ac.ReportDepartureHeading
+	return ac.Nav.ContactMessage(reportingPoints, ac.STAR, reportHeading)
 }
 
 func (ac *Aircraft) DepartOnCourse(lg *log.Logger) {
