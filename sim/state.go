@@ -173,6 +173,8 @@ func makeDerivedState(s *Sim) DerivedState {
 			OnApproach:                ac.OnApproach(false), /* don't check altitude */
 			Approach:                  approach,
 			Fixes:                     ac.GetSTTFixes(),
+			SID:                       ac.SID,
+			STAR:                      ac.STAR,
 			MVAsApply:                 ac.MVAsApply(),
 			HoldForRelease:            ac.HoldForRelease,
 			MissingFlightPlan:         ac.MissingFlightPlan,

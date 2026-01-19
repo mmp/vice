@@ -150,6 +150,8 @@ type Track struct {
 	OnApproach                bool
 	Approach                  string   // Full name of assigned approach, if any
 	Fixes                     []string // Relevant fix names for STT
+	SID                       string
+	STAR                      string
 	ATPAVolume                *av.ATPAVolume
 	MVAsApply                 bool
 	HoldForRelease            bool

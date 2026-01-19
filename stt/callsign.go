@@ -506,6 +506,8 @@ type Aircraft struct {
 	Fixes               map[string]string // spoken name -> fix ID
 	CandidateApproaches map[string]string // spoken name -> approach ID
 	AssignedApproach    string
+	SID                 string
+	STAR                string
 	Altitude            int                        // Current altitude in feet
 	State               string                     // "departure", "arrival", "overflight", "on approach", "vfr flight following"
 	ControllerFrequency string                     // Current controller position the aircraft is tuned to

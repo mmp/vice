@@ -55,6 +55,9 @@ type Aircraft struct {
 	// State related to navigation.
 	Nav nav.Nav
 
+	// Departure-related state
+	SID string
+
 	// Arrival-related state
 	STAR                string
 	STARRunwayWaypoints map[string]av.WaypointArray
@@ -399,6 +402,7 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport string,
 	wp = util.FilterSliceInPlace(wp, func(wp av.Waypoint) bool { return !wp.Location.IsZero() })
 
 	if exitRoute.SID != "" {
+		ac.SID = exitRoute.SID
 		ac.FlightPlan.Route = exitRoute.SID + " " + dep.Route
 	} else {
 		ac.FlightPlan.Route = dep.Route

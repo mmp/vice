@@ -888,6 +888,34 @@ func GetFixTelephony(fix string) string {
 	return util.StopShouting(fix)
 }
 
+// GetSIDTelephony returns the spoken form of a SID name.
+// For example, "MERIT5" becomes "merit five".
+func GetSIDTelephony(sid string) string {
+	loadPronunciationsIfNeeded()
+	name, num := trimNumber(sid)
+	if say, ok := saySIDMap[name]; ok {
+		name = say
+	}
+	if num > 0 {
+		return name + " " + sayDigit(num)
+	}
+	return name
+}
+
+// GetSTARTelephony returns the spoken form of a STAR name.
+// For example, "CAMRN4" becomes "cameron four".
+func GetSTARTelephony(star string) string {
+	loadPronunciationsIfNeeded()
+	name, num := trimNumber(star)
+	if say, ok := saySTARMap[name]; ok {
+		name = say
+	}
+	if num > 0 {
+		return name + " " + sayDigit(num)
+	}
+	return name
+}
+
 // GetApproachTelephony returns the spoken form of an approach name.
 // For example, "RNAV X Runway 22L" becomes "r-nav x-ray runway 2 2 left".
 func GetApproachTelephony(approach string) string {

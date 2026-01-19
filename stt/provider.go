@@ -212,15 +212,17 @@ func (p *Transcriber) BuildAircraftContext(
 			sttAc.Fixes[av.GetFixTelephony(fix)] = fix
 		}
 
-		// Determine state
+		// Determine state and set SID/STAR
 		if trk.IsDeparture() {
 			sttAc.State = "departure"
+			sttAc.SID = trk.SID
 		} else if trk.IsArrival() {
 			if trk.OnApproach {
 				sttAc.State = "on approach"
 			} else {
 				sttAc.State = "arrival"
 			}
+			sttAc.STAR = trk.STAR
 		} else if trk.IsOverflight() {
 			sttAc.State = "overflight"
 		}

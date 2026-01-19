@@ -648,6 +648,7 @@ func makeWhisperPrompt(state SimState) string {
 		"expect", "vectors", "squawk", "ident", "altimieter", "radar contact",
 		"reduce to final approach speed", "miles from", "established", "cleared",
 		"until established", "on the localizer", "flight level", "niner",
+		"climb via", "descend via", "arrival",
 	}
 
 	// Add telephony and approaches for user-controlled tracks.
@@ -717,6 +718,36 @@ func makeWhisperPrompt(state SimState) string {
 		if _, assigned := assignedApproaches[appr]; !assigned {
 			promptParts = append(promptParts, av.GetApproachTelephony(appr))
 		}
+	}
+
+	// Collect active SIDs from departure airports
+	activeSIDs := make(map[string]struct{})
+	for _, dr := range state.DepartureRunways {
+		if ap, ok := state.Airports[dr.Airport]; ok {
+			if rwyRoutes, ok := ap.DepartureRoutes[dr.Runway]; ok {
+				for _, route := range rwyRoutes {
+					if route.SID != "" {
+						activeSIDs[route.SID] = struct{}{}
+					}
+				}
+			}
+		}
+	}
+	for sid := range activeSIDs {
+		promptParts = append(promptParts, av.GetSIDTelephony(sid))
+	}
+
+	// Collect active STARs from inbound flows
+	activeSTARs := make(map[string]struct{})
+	for _, flow := range state.InboundFlows {
+		for _, arr := range flow.Arrivals {
+			if arr.STAR != "" {
+				activeSTARs[arr.STAR] = struct{}{}
+			}
+		}
+	}
+	for star := range activeSTARs {
+		promptParts = append(promptParts, av.GetSTARTelephony(star))
 	}
 
 	// Add fixes (lower priority, may get truncated by token limit)

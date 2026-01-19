@@ -5,6 +5,8 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+
+	av "github.com/mmp/vice/aviation"
 )
 
 // ArgType specifies the type of argument a command expects.
@@ -22,6 +24,8 @@ const (
 	ArgFixAltitude // Fix followed by altitude (e.g., "cross MERIT at 5000")
 	ArgFixSpeed    // Fix followed by speed (e.g., "cross MERIT at 250 knots")
 	ArgFixHeading  // Fix followed by heading (e.g., "depart MERIT heading 180")
+	ArgSID         // SID name (e.g., "climb via the Kennedy Five")
+	ArgSTAR        // STAR name (e.g., "descend via the Camrn Four")
 )
 
 // CommandTemplate defines a pattern for recognizing a command.
@@ -125,17 +129,19 @@ var commandTemplates = []CommandTemplate{
 	},
 	{
 		Name:      "climb_via_sid",
-		Keywords:  [][]string{{"climb"}, {"via"}, {"sid", "the"}},
-		ArgType:   ArgNone,
+		Keywords:  [][]string{{"climb"}, {"via"}},
+		ArgType:   ArgSID,
 		OutputFmt: "CVS",
 		Priority:  15,
+		SkipWords: []string{"the"},
 	},
 	{
 		Name:      "descend_via_star",
-		Keywords:  [][]string{{"descend"}, {"via"}, {"star", "the"}},
-		ArgType:   ArgNone,
+		Keywords:  [][]string{{"descend"}, {"via"}},
+		ArgType:   ArgSTAR,
 		OutputFmt: "DVS",
 		Priority:  15,
+		SkipWords: []string{"the"},
 	},
 	{
 		Name:      "say_altitude",
@@ -693,6 +699,22 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 		argStr = code
 		consumed += sqkConsumed
 
+	case ArgSID:
+		sidConsumed := extractSID(tokens[consumed:], ac.SID)
+		if sidConsumed == 0 {
+			return CommandMatch{}, 0
+		}
+		consumed += sidConsumed
+		// ArgSID doesn't need argStr - the command is just "CVS"
+
+	case ArgSTAR:
+		starConsumed := extractSTAR(tokens[consumed:], ac.STAR)
+		if starConsumed == 0 {
+			return CommandMatch{}, 0
+		}
+		consumed += starConsumed
+		// ArgSTAR doesn't need argStr - the command is just "DVS"
+
 	case ArgDegrees:
 		deg, dir, degConsumed := extractDegrees(tokens[consumed:])
 		if degConsumed == 0 {
@@ -1055,6 +1077,128 @@ func extractApproach(tokens []Token, approaches map[string]string) (string, floa
 		return bestAppr, bestScore, bestLength
 	}
 	return "", 0, 0
+}
+
+// extractSID extracts a SID name from tokens by matching against the aircraft's assigned SID.
+// Also accepts the generic word "sid" as a match (for "climb via the sid" without specific name).
+// Returns the number of tokens consumed (0 if no match).
+func extractSID(tokens []Token, sid string) int {
+	if len(tokens) == 0 {
+		return 0
+	}
+
+	// Check for generic "sid" word first (handles "climb via the sid")
+	if strings.EqualFold(tokens[0].Text, "sid") {
+		logLocalStt("  extractSID: matched generic 'sid'")
+		return 1
+	}
+
+	// If aircraft has no SID assigned, we can only match the generic word
+	if sid == "" {
+		logLocalStt("  extractSID: no SID assigned and no generic match")
+		return 0
+	}
+
+	// Get the telephony for this SID
+	sidTelephony := av.GetSIDTelephony(sid)
+	logLocalStt("  extractSID: looking for SID=%q telephony=%q", sid, sidTelephony)
+
+	// Build candidate phrases (1-4 words for SID names)
+	for length := min(4, len(tokens)); length >= 1; length-- {
+		var parts []string
+		for i := range length {
+			// Expand numeric tokens to spoken form
+			if tokens[i].Type == TokenNumber {
+				parts = append(parts, spokenDigits(tokens[i].Value))
+			} else {
+				parts = append(parts, tokens[i].Text)
+			}
+		}
+		phrase := strings.Join(parts, " ")
+
+		// Try exact match
+		if strings.EqualFold(phrase, sidTelephony) {
+			logLocalStt("  extractSID: exact match %q -> %q", phrase, sid)
+			return length
+		}
+
+		// Try fuzzy match
+		score := JaroWinkler(phrase, sidTelephony)
+		if score >= 0.80 {
+			logLocalStt("  extractSID: fuzzy match %q -> %q (score=%.2f)", phrase, sid, score)
+			return length
+		}
+
+		// Try phonetic match
+		if PhoneticMatch(phrase, sidTelephony) {
+			logLocalStt("  extractSID: phonetic match %q -> %q", phrase, sid)
+			return length
+		}
+	}
+
+	logLocalStt("  extractSID: no match found")
+	return 0
+}
+
+// extractSTAR extracts a STAR name from tokens by matching against the aircraft's assigned STAR.
+// Also accepts the generic word "star" as a match (for "descend via the star" without specific name).
+// Returns the number of tokens consumed (0 if no match).
+func extractSTAR(tokens []Token, star string) int {
+	if len(tokens) == 0 {
+		return 0
+	}
+
+	// Check for generic "star" word first (handles "descend via the star")
+	if strings.EqualFold(tokens[0].Text, "star") {
+		logLocalStt("  extractSTAR: matched generic 'star'")
+		return 1
+	}
+
+	// If aircraft has no STAR assigned, we can only match the generic word
+	if star == "" {
+		logLocalStt("  extractSTAR: no STAR assigned and no generic match")
+		return 0
+	}
+
+	// Get the telephony for this STAR
+	starTelephony := av.GetSTARTelephony(star)
+	logLocalStt("  extractSTAR: looking for STAR=%q telephony=%q", star, starTelephony)
+
+	// Build candidate phrases (1-4 words for STAR names)
+	for length := min(4, len(tokens)); length >= 1; length-- {
+		var parts []string
+		for i := range length {
+			// Expand numeric tokens to spoken form
+			if tokens[i].Type == TokenNumber {
+				parts = append(parts, spokenDigits(tokens[i].Value))
+			} else {
+				parts = append(parts, tokens[i].Text)
+			}
+		}
+		phrase := strings.Join(parts, " ")
+
+		// Try exact match
+		if strings.EqualFold(phrase, starTelephony) {
+			logLocalStt("  extractSTAR: exact match %q -> %q", phrase, star)
+			return length
+		}
+
+		// Try fuzzy match
+		score := JaroWinkler(phrase, starTelephony)
+		if score >= 0.80 {
+			logLocalStt("  extractSTAR: fuzzy match %q -> %q (score=%.2f)", phrase, star, score)
+			return length
+		}
+
+		// Try phonetic match
+		if PhoneticMatch(phrase, starTelephony) {
+			logLocalStt("  extractSTAR: phonetic match %q -> %q", phrase, star)
+			return length
+		}
+	}
+
+	logLocalStt("  extractSTAR: no match found")
+	return 0
 }
 
 // spokenDigits converts a number to its spoken digit form.
