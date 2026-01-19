@@ -1492,7 +1492,7 @@ func (s *Sim) contactDeparture(ac *Aircraft) {
 	// issuing control commands.. (Note that track may have
 	// already been handed off to the next controller at this
 	// point.)
-	fp.ControllingController = tcp
+	ac.ControllerFrequency = ControlPosition(tcp)
 
 	// Queued emergencies can now proceed
 	if ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1 {
