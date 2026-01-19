@@ -25,6 +25,30 @@ func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch,
 		return CallsignMatch{}, tokens
 	}
 
+	// First, try exact match - if tokens exactly match a spoken name, use it immediately.
+	// Try different phrase lengths (longest first for more specific matches).
+	maxPhraseLen := min(len(tokens), 8) // Reasonable max for callsigns like GA N-numbers
+	for length := maxPhraseLen; length >= 1; length-- {
+		var parts []string
+		for i := 0; i < length; i++ {
+			parts = append(parts, tokens[i].Text)
+		}
+		phrase := strings.Join(parts, " ")
+
+		for spokenName, ac := range aircraft {
+			if strings.EqualFold(phrase, spokenName) {
+				logLocalStt("  exact match: %q -> %q (consumed %d)", phrase, ac.Callsign, length)
+				return CallsignMatch{
+					Callsign:       string(ac.Callsign),
+					SpokenKey:      spokenName,
+					Confidence:     1.0,
+					Consumed:       length,
+					AddressingForm: ac.AddressingForm,
+				}, tokens[length:]
+			}
+		}
+	}
+
 	var bestMatch CallsignMatch
 	bestStartPos := 0
 
