@@ -479,4 +479,6 @@ type Aircraft struct {
 	AssignedApproach    string
 	Altitude            int    // Current altitude in feet
 	State               string // "departure", "arrival", "overflight", "on approach", "vfr flight following"
+	ControllerFrequency string // Current controller position the aircraft is tuned to
+	TrackingController  string // Controller tracking this aircraft (from flight plan)
 }

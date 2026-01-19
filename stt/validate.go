@@ -155,7 +155,12 @@ func validateCommand(cmd string, ac Aircraft) string {
 	case 'F':
 		// FC - frequency change
 		if cmd == "FC" {
-			// Always valid
+			// Don't generate FC if aircraft is already on the tracking controller's frequency.
+			// This catches misrecognized "radar contact" where only "contact" was heard.
+			if ac.ControllerFrequency != "" && ac.TrackingController != "" &&
+				ac.ControllerFrequency == ac.TrackingController {
+				return "FC invalid: already on tracking controller frequency"
+			}
 			return ""
 		}
 

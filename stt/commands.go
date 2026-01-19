@@ -624,6 +624,17 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	switch tmpl.ArgType {
 	case ArgNone:
 		// No argument needed
+		// Special case: frequency_change ("contact") should not match if followed by a
+		// command keyword. This prevents misrecognized "radar contact" (where "radar"
+		// was dropped) from being interpreted as a frequency change when followed by
+		// actual commands like "climb and maintain".
+		if tmpl.Name == "frequency_change" && consumed < len(tokens) {
+			nextWord := strings.ToLower(tokens[consumed].Text)
+			if isCommandKeyword(nextWord) {
+				logLocalStt("  frequency_change rejected: followed by command keyword %q", nextWord)
+				return CommandMatch{}, 0
+			}
+		}
 
 	case ArgAltitude:
 		alt, altConsumed := extractAltitude(tokens[consumed:])
@@ -1141,6 +1152,27 @@ func contains(slice []string, s string) bool {
 		}
 	}
 	return false
+}
+
+// isCommandKeyword returns true if the word is a command keyword.
+// Used to detect when "contact" is followed by a command rather than a controller name.
+func isCommandKeyword(word string) bool {
+	commandKeywords := map[string]bool{
+		"climb": true, "climbed": true, "climbing": true,
+		"descend": true, "descended": true, "descending": true,
+		"maintain": true,
+		"turn":     true, "left": true, "right": true,
+		"heading": true,
+		"speed":   true, "reduce": true, "increase": true,
+		"direct": true, "proceed": true,
+		"cleared": true, "expect": true, "vectors": true,
+		"squawk": true, "ident": true,
+		"cross": true, "expedite": true,
+		"fly": true, "intercept": true,
+		"cancel": true, "resume": true,
+		"say": true,
+	}
+	return commandKeywords[word]
 }
 
 func mustAtoi(s string) int {

@@ -189,8 +189,14 @@ func (p *Transcriber) BuildAircraftContext(
 		}
 
 		sttAc := Aircraft{
-			Callsign: string(trk.ADSBCallsign),
-			Altitude: int(trk.TrueAltitude),
+			Callsign:            string(trk.ADSBCallsign),
+			Altitude:            int(trk.TrueAltitude),
+			ControllerFrequency: string(trk.ControllerFrequency),
+		}
+
+		// Add tracking controller from flight plan
+		if trk.FlightPlan != nil {
+			sttAc.TrackingController = string(trk.FlightPlan.TrackingController)
 		}
 
 		// Build fixes map
