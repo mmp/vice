@@ -1,4 +1,4 @@
-//go:build windows && vulkan
+//go:build vulkan
 
 package whisperlow
 
