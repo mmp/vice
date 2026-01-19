@@ -2031,7 +2031,13 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 
 			return s.CrossFixAt(tcw, callsign, fix, ar, speed)
 		} else if strings.HasPrefix(command, "CT") && len(command) > 2 {
-			return s.ContactController(tcw, ACID(callsign), TCP(command[2:]))
+			// Only treat as contact command if the TCP exists as a valid controller;
+			// otherwise treat as cleared approach (e.g., "CTTL" -> cleared for TTL approach)
+			tcp := TCP(command[2:])
+			if _, ok := s.State.Controllers[tcp]; ok {
+				return s.ContactController(tcw, ACID(callsign), tcp)
+			}
+			return s.ClearedApproach(tcw, callsign, command[1:], false)
 		} else {
 			return s.ClearedApproach(tcw, callsign, command[1:], false)
 		}
