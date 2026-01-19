@@ -16,7 +16,6 @@ REM
 REM Prerequisites:
 REM   - Go installed and in PATH
 REM   - MinGW-w64 installed and in PATH (for gcc, cmake)
-REM   - SDL2 development files in ext\SDL2-2.24.0\x86_64-w64-mingw32\
 REM
 REM whisper-cpp is built automatically if needed.
 
@@ -86,13 +85,25 @@ shift
 goto parse_args
 :done_parsing
 
+REM Download and extract SDL2 if not present
+if not exist "ext\SDL2-2.24.0" (
+    echo === Downloading SDL2 ===
+    if not exist "ext" mkdir ext
+    curl -L -o ext\SDL2-devel-2.24.0-mingw.zip https://github.com/libsdl-org/SDL/releases/download/release-2.24.0/SDL2-devel-2.24.0-mingw.zip
+    if errorlevel 1 exit /b 1
+    echo Extracting SDL2...
+    powershell -Command "Expand-Archive -Path 'ext\SDL2-devel-2.24.0-mingw.zip' -DestinationPath 'ext'"
+    if errorlevel 1 exit /b 1
+    del ext\SDL2-devel-2.24.0-mingw.zip
+)
+
 REM Set SDL2 paths only if not already set (allows CI to override)
 if not defined CGO_CFLAGS (
     set SDL2_DIR=%CD%\ext\SDL2-2.24.0\x86_64-w64-mingw32
     set CGO_CFLAGS=-I !SDL2_DIR!\include
     set CGO_CPPFLAGS=-I !SDL2_DIR!\include
     set CGO_LDFLAGS=-L !SDL2_DIR!\lib
-)
+)   
 
 REM Copy runtime DLLs from ext/ to windows/ if available
 set MINGW_BIN=%CD%\ext\mingw\mingw64\bin
