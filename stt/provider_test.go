@@ -489,6 +489,21 @@ func TestNavigationCommands(t *testing.T) {
 			},
 			expected: "AAL870 DPUCKY/H180",
 		},
+		{
+			name:       "at fix cleared approach",
+			transcript: "Delta 8499 at Fergi clear for the River Visual runway one niner approach",
+			aircraft: map[string]Aircraft{
+				"Delta 8499": {
+					Callsign:            "DAL8499",
+					Altitude:            4000,
+					State:               "arrival",
+					AssignedApproach:    "RIV",
+					Fixes:               map[string]string{"Fergi": "FERGI"},
+					CandidateApproaches: map[string]string{"River Visual runway one niner": "RIV"},
+				},
+			},
+			expected: "DAL8499 AFERGI/CRIV",
+		},
 	}
 
 	provider := NewTranscriber(nil)

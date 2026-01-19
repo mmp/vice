@@ -24,6 +24,7 @@ const (
 	ArgFixAltitude // Fix followed by altitude (e.g., "cross MERIT at 5000")
 	ArgFixSpeed    // Fix followed by speed (e.g., "cross MERIT at 250 knots")
 	ArgFixHeading  // Fix followed by heading (e.g., "depart MERIT heading 180")
+	ArgFixApproach // Fix followed by approach (e.g., "at FERGI cleared River Visual")
 	ArgSID         // SID name (e.g., "climb via the Kennedy Five")
 	ArgSTAR        // STAR name (e.g., "descend via the Camrn Four")
 )
@@ -314,6 +315,14 @@ var commandTemplates = []CommandTemplate{
 
 	// === APPROACH COMMANDS ===
 	{
+		Name:      "at_fix_cleared_approach",
+		Keywords:  [][]string{{"at"}},
+		ArgType:   ArgFixApproach,
+		OutputFmt: "A%s/C%s",
+		Priority:  15, // High priority - specific compound command
+		SkipWords: []string{"cleared", "clear", "for", "approach"},
+	},
+	{
 		Name:      "expect_approach",
 		Keywords:  [][]string{{"expect", "vectors"}},
 		ArgType:   ArgApproach,
@@ -326,11 +335,11 @@ var commandTemplates = []CommandTemplate{
 		ArgType:   ArgApproach,
 		OutputFmt: "C%s",
 		Priority:  8,
-		SkipWords: []string{"approach"},
+		SkipWords: []string{"approach", "for"},
 	},
 	{
-		Name:      "clear_to_approach", // Whisper sometimes mistranscribes "cleared" as "clear to"
-		Keywords:  [][]string{{"clear"}, {"to"}},
+		Name:      "clear_to_approach", // Whisper sometimes mistranscribes "cleared" as "clear to" or "clear for"
+		Keywords:  [][]string{{"clear"}, {"to", "for"}},
 		ArgType:   ArgApproach,
 		OutputFmt: "C%s",
 		Priority:  8,
@@ -818,6 +827,44 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 		return CommandMatch{
 			Command:    cmd,
 			Confidence: fixConf,
+			Consumed:   consumed,
+			IsThen:     isThen,
+		}, consumed
+
+	case ArgFixApproach:
+		fix, fixConf, fixConsumed := extractFix(tokens[consumed:], ac.Fixes)
+		if fixConsumed == 0 {
+			logLocalStt("  tryMatchTemplate %q: fix extraction failed", tmpl.Name)
+			return CommandMatch{}, 0
+		}
+		consumed += fixConsumed
+		// Skip "cleared", "clear", "for", "approach" and filler words between fix and approach name
+		for consumed < len(tokens) {
+			text := strings.ToLower(tokens[consumed].Text)
+			if slices.Contains(tmpl.SkipWords, text) || IsFillerWord(text) {
+				consumed++
+			} else {
+				break
+			}
+		}
+		appr, apprConf, apprConsumed := extractApproach(tokens[consumed:], ac.CandidateApproaches)
+		if apprConsumed == 0 {
+			logLocalStt("  tryMatchTemplate %q: approach extraction failed", tmpl.Name)
+			return CommandMatch{}, 0
+		}
+		consumed += apprConsumed
+		// Build command directly for compound type
+		cmd := fmt.Sprintf(tmpl.OutputFmt, fix, appr)
+		logLocalStt("  tryMatchTemplate %q: cmd=%q fix=%q appr=%q consumed=%d",
+			tmpl.Name, cmd, fix, appr, consumed)
+		// Use the lower confidence between fix and approach
+		conf := fixConf
+		if apprConf < conf {
+			conf = apprConf
+		}
+		return CommandMatch{
+			Command:    cmd,
+			Confidence: conf,
 			Consumed:   consumed,
 			IsThen:     isThen,
 		}, consumed
