@@ -49,6 +49,18 @@ func GPUDiscrete() bool {
 	return whisper.GPUDiscrete()
 }
 
+// GPUDeviceInfo re-exports the GPU device information type.
+type GPUDeviceInfo = whisper.GPUDeviceInfo
+
+// GPUInfo re-exports the GPU information type.
+type GPUInfo = whisper.GPUInfo
+
+// GetGPUInfo returns detailed information about GPU acceleration status and devices.
+// This includes all available GPU devices, their memory, and which device is selected.
+func GetGPUInfo() GPUInfo {
+	return whisper.GetGPUInfo()
+}
+
 // Options configures the transcription behavior.
 type Options struct {
 	// Language to use for speech recognition. Use "auto" to auto-detect (default).

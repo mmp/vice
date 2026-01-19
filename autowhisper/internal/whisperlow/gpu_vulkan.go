@@ -10,27 +10,18 @@ package whisperlow
 import "C"
 import "unsafe"
 
-// Vulkan physical device types (from VkPhysicalDeviceType)
-const (
-	VkDeviceTypeOther         = 0
-	VkDeviceTypeIntegratedGPU = 1
-	VkDeviceTypeDiscreteGPU   = 2
-	VkDeviceTypeVirtualGPU    = 3
-	VkDeviceTypeCPU           = 4
-)
-
 // VulkanDeviceInfo contains information about a Vulkan GPU device.
 type VulkanDeviceInfo struct {
 	Index       int
 	Description string
 	FreeMemory  uint64
 	TotalMemory uint64
-	DeviceType  int
+	DeviceType  GPUDeviceType
 }
 
 // IsDiscrete returns true if the device is a discrete GPU.
 func (d VulkanDeviceInfo) IsDiscrete() bool {
-	return d.DeviceType == VkDeviceTypeDiscreteGPU
+	return d.DeviceType == GPUDeviceTypeDiscrete
 }
 
 // GetVulkanDevices returns information about all available Vulkan devices.
@@ -53,7 +44,7 @@ func GetVulkanDevices() []VulkanDeviceInfo {
 			Description: C.GoString(&desc[0]),
 			FreeMemory:  uint64(free),
 			TotalMemory: uint64(total),
-			DeviceType:  int(C.ggml_backend_vk_get_device_type(C.int(i))),
+			DeviceType:  GPUDeviceType(C.ggml_backend_vk_get_device_type(C.int(i))),
 		}
 	}
 	return devices
@@ -103,7 +94,28 @@ func init() {
 	if GPUAvailable() {
 		gpuEnabled = true
 		gpuDevice = GetPreferredGPUDevice()
-		gpuDiscrete = int(C.ggml_backend_vk_get_device_type(C.int(gpuDevice))) == VkDeviceTypeDiscreteGPU
+		gpuDiscrete = GPUDeviceType(C.ggml_backend_vk_get_device_type(C.int(gpuDevice))) == GPUDeviceTypeDiscrete
+	}
+}
+
+// GetGPUInfo returns detailed information about GPU acceleration status and devices.
+func GetGPUInfo() GPUInfo {
+	vulkanDevices := GetVulkanDevices()
+	devices := make([]GPUDeviceInfo, len(vulkanDevices))
+	for i, vd := range vulkanDevices {
+		devices[i] = GPUDeviceInfo{
+			Index:       vd.Index,
+			Description: vd.Description,
+			FreeMemory:  vd.FreeMemory,
+			TotalMemory: vd.TotalMemory,
+			DeviceType:  vd.DeviceType,
+		}
+	}
+
+	return GPUInfo{
+		Enabled:       gpuEnabled,
+		SelectedIndex: gpuDevice,
+		Devices:       devices,
 	}
 }
 

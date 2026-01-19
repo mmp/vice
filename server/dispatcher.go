@@ -7,8 +7,10 @@ package server
 import (
 	"fmt"
 	"log/slog"
+	"strings"
 	"time"
 
+	whisper "github.com/mmp/vice/autowhisper"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
@@ -977,6 +979,12 @@ type STTBugReportArgs struct {
 	DebugLogs       []string                // Debug log lines from the decode
 	UserExplanation string                  // User's explanation of the issue
 	ReportTime      time.Time
+
+	// GPU and performance information
+	GPUInfo           whisper.GPUInfo // GPU acceleration status and devices
+	WhisperModelName  string          // Name of the whisper model being used
+	RecentDurations   []time.Duration // Recent whisper transcription durations
+	IsSlowPerformance bool            // True if this is an automatic slow performance report
 }
 
 const ReportSTTBugRPC = "Sim.ReportSTTBug"
@@ -989,31 +997,41 @@ func (sd *dispatcher) ReportSTTBug(args *STTBugReportArgs, _ *struct{}) error {
 		return ErrNoSimForControllerToken
 	}
 
-	// Log the bug report
-	sd.sm.lg.Info("STT Bug Report",
+	// Format GPU device info for logging
+	gpuDevices := util.MapSlice(args.GPUInfo.Devices, func(dev whisper.GPUDeviceInfo) string {
+		return fmt.Sprintf("%s (idx=%d, type=%s, mem=%dMB/%dMB)",
+			dev.Description, dev.Index, dev.DeviceType, dev.FreeMemory/(1024*1024), dev.TotalMemory/(1024*1024))
+	})
+
+	// Format recent durations for logging
+	durationsStr := util.MapSlice(args.RecentDurations, func(d time.Duration) string { return d.String() })
+
+	// Format aircraft context for logging
+	aircraftStr := util.MapSlice(util.SortedMapKeys(args.AircraftContext), func(telephony string) string {
+		ac := args.AircraftContext[telephony]
+		return fmt.Sprintf("%s: %s state=%s alt=%d", telephony, ac.Callsign, ac.State, ac.Altitude)
+	})
+
+	reportType := util.Select(args.IsSlowPerformance, "slow_performance", "user")
+	logFunc := util.Select(args.IsSlowPerformance, sd.sm.lg.Warn, sd.sm.lg.Info)
+
+	logFunc("STT Bug Report",
+		slog.String("type", reportType),
 		slog.String("tcw", string(c.tcw)),
 		slog.String("transcript", args.PrevTranscript),
 		slog.String("decoded_command", args.PrevCommand),
 		slog.String("user_explanation", args.UserExplanation),
-		slog.Int("aircraft_count", len(args.AircraftContext)),
-		slog.Int("debug_log_lines", len(args.DebugLogs)),
 		slog.Time("report_time", args.ReportTime),
+		// GPU info
+		slog.String("whisper_model", args.WhisperModelName),
+		slog.Bool("gpu_enabled", args.GPUInfo.Enabled),
+		slog.Int("gpu_selected_idx", args.GPUInfo.SelectedIndex),
+		slog.String("gpu_devices", strings.Join(gpuDevices, "; ")),
+		slog.String("recent_durations", strings.Join(durationsStr, ", ")),
+		// STT context
+		slog.String("debug_logs", strings.Join(args.DebugLogs, "\n")),
+		slog.String("aircraft_context", strings.Join(aircraftStr, "; ")),
 	)
-
-	// Log the detailed debug output
-	for _, line := range args.DebugLogs {
-		sd.sm.lg.Debug("STT Bug Debug", slog.String("line", line))
-	}
-
-	// Log aircraft context
-	for telephony, ac := range args.AircraftContext {
-		sd.sm.lg.Debug("STT Bug Aircraft",
-			slog.String("telephony", telephony),
-			slog.String("callsign", ac.Callsign),
-			slog.String("state", ac.State),
-			slog.Int("altitude", ac.Altitude),
-		)
-	}
 
 	return nil
 }

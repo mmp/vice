@@ -149,6 +149,60 @@ func GPUDiscrete() bool {
 	return gpuDiscrete
 }
 
+// GPUDeviceType represents the type of GPU device.
+type GPUDeviceType int
+
+// GPU device types (matching Vulkan VkPhysicalDeviceType)
+const (
+	GPUDeviceTypeOther      GPUDeviceType = 0
+	GPUDeviceTypeIntegrated GPUDeviceType = 1
+	GPUDeviceTypeDiscrete   GPUDeviceType = 2
+	GPUDeviceTypeVirtual    GPUDeviceType = 3
+	GPUDeviceTypeCPU        GPUDeviceType = 4
+)
+
+// String returns a human-readable name for the device type.
+func (t GPUDeviceType) String() string {
+	switch t {
+	case GPUDeviceTypeIntegrated:
+		return "integrated"
+	case GPUDeviceTypeDiscrete:
+		return "discrete"
+	case GPUDeviceTypeVirtual:
+		return "virtual"
+	case GPUDeviceTypeCPU:
+		return "cpu"
+	default:
+		return "other"
+	}
+}
+
+// GPUDeviceInfo contains information about a GPU device being used for inference.
+type GPUDeviceInfo struct {
+	Index       int           // Device index (0-based)
+	Description string        // Device name/description
+	FreeMemory  uint64        // Available memory in bytes
+	TotalMemory uint64        // Total memory in bytes
+	DeviceType  GPUDeviceType // Device type
+}
+
+// IsDiscrete returns true if this is a discrete GPU.
+func (d GPUDeviceInfo) IsDiscrete() bool {
+	return d.DeviceType == GPUDeviceTypeDiscrete
+}
+
+// GPUInfo contains information about GPU acceleration status and available devices.
+type GPUInfo struct {
+	Enabled       bool            // Whether GPU acceleration is enabled
+	SelectedIndex int             // Index of the selected device (if GPU enabled)
+	Devices       []GPUDeviceInfo // All available GPU devices
+}
+
+// GPUDeviceIndex returns the index of the selected GPU device.
+func GPUDeviceIndex() int {
+	return gpuDevice
+}
+
 func Whisper_init(path string) *Context {
 	cPath := C.CString(path)
 	defer C.free(unsafe.Pointer(cPath))
