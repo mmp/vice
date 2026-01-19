@@ -81,7 +81,7 @@ type Aircraft struct {
 
 	// Departure related state
 	DepartureContactAltitude float32 // 0 = waiting for /tc point, -1 = already contacted departure
-	ReportDepartureHeading   bool // true if runway has multiple exit heading
+	ReportDepartureHeading   bool    // true if runway has multiple exit heading
 
 	// The controller who gave approach clearance
 	ApproachTCP TCP
