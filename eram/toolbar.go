@@ -154,6 +154,7 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		}
 		main := "ATC\nTOOLS"
 		toolbarDrawState.customButton[main] = toolbarActiveButtonColor
+		toolbarDrawState.customButton["WX"] = toolbarButtonColor
 		drawButtonSamePosition(ctx, main)
 		if ep.drawToolbarFullButton(ctx, main, 0, scale, true, false) {
 			ep.activeToolbarMenu = toolbarMain
@@ -164,6 +165,13 @@ func (ep *ERAMPane) drawtoolbar(ctx *panes.Context, transforms radar.ScopeTransf
 		if ep.drawToolbarFullButton(ctx, "CRR\nFIX", 0, scale, false, false) {
 			ps.CRR.DisplayFixes = !ps.CRR.DisplayFixes
 		}
+		if ep.drawToolbarFullButton(ctx, "SPEED\nADVSRY", 0, scale, false, false) {
+			// CRC doesn't even simulate this...
+		}
+		if ep.drawToolbarFullButton(ctx, "WX", 0, scale, false, false) {
+			// Opens WX menu 
+		}
+
 	case toolbarFont:
 		if toolbarDrawState.lightToolbar != [4][2]float32{} {
 			t := toolbarDrawState.lightToolbar
