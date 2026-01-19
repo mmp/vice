@@ -553,7 +553,7 @@ func (h *locSymParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInp
 func (h *locSymParser) GoType() reflect.Type { return reflect.TypeOf((*[2]float32)(nil)).Elem() }
 func (h *locSymParser) ConsumesClick() bool  { return true } // Uses click position from input
 
-// minutesParse parses minutes for QU 
+// minutesParse parses minutes for QU
 type minutesParser struct{}
 
 func (h *minutesParser) Identifier() string { return "MINUTES" }
