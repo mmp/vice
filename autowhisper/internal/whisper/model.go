@@ -70,6 +70,11 @@ func GPUEnabled() bool {
 	return whisperlow.GPUEnabled()
 }
 
+// GPUDiscrete returns true if a discrete GPU is being used for inference.
+func GPUDiscrete() bool {
+	return whisperlow.GPUDiscrete()
+}
+
 func (m *model) NewContext() (Context, error) {
 	if m.ctx == nil {
 		return nil, ErrInternalAppError

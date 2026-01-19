@@ -40,6 +40,15 @@ func GPUEnabled() bool {
 	return whisper.GPUEnabled()
 }
 
+// GPUDiscrete returns true if a discrete GPU is being used for inference.
+// On Windows with Vulkan, this distinguishes between discrete GPUs (NVIDIA,
+// AMD Radeon, Intel Arc) and integrated GPUs (Intel UHD/Iris, AMD APU graphics).
+// On other platforms (macOS, Linux), this returns false; callers should handle
+// macOS specially since Metal provides good performance even on integrated GPUs.
+func GPUDiscrete() bool {
+	return whisper.GPUDiscrete()
+}
+
 // Options configures the transcription behavior.
 type Options struct {
 	// Language to use for speech recognition. Use "auto" to auto-detect (default).

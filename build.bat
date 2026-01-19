@@ -26,7 +26,7 @@ set DO_RELEASE=0
 set DO_ICONS=0
 
 REM Expected whisper.cpp submodule SHA (update this when bumping the submodule)
-set WHISPER_EXPECTED_SHA=d8e355def01e4f9c381c4e80873ac49bb5b594e1
+set WHISPER_EXPECTED_SHA=050f4ef8286ca6d49b1b0e131462b9d71959f5ff
 
 REM Check that whisper.cpp submodule is at the expected commit
 if not exist "whisper.cpp\.git" (

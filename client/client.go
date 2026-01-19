@@ -584,9 +584,12 @@ func PreloadWhisperModel(lg *log.Logger) {
 				return
 			}
 
-			// Use larger model when GPU acceleration is available (macOS Metal, Windows Vulkan)
+			// Use larger model when a discrete GPU or macOS Metal is available.
+			// On Windows, integrated GPUs (Intel UHD/Iris, AMD APU) are too slow for
+			// larger models, so we only use them with a discrete GPU.
+			// On macOS, Metal provides good performance even on integrated GPUs.
 			var modelName string
-			if runtime.GOOS == "darwin" || whisper.GPUEnabled() {
+			if runtime.GOOS == "darwin" || whisper.GPUDiscrete() {
 				modelName = "ggml-small.en.bin"
 			} else {
 				modelName = "ggml-tiny.en.bin"

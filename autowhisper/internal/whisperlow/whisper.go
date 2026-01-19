@@ -129,8 +129,9 @@ var (
 
 // GPU configuration (set by init() in platform-specific files)
 var (
-	gpuEnabled = false
-	gpuDevice  = 0
+	gpuEnabled  = false
+	gpuDiscrete = false
+	gpuDevice   = 0
 )
 
 // GPUEnabled returns true if GPU acceleration is being used for inference.
@@ -139,6 +140,13 @@ var (
 // On other platforms, this returns false (CPU-only).
 func GPUEnabled() bool {
 	return gpuEnabled
+}
+
+// GPUDiscrete returns true if a discrete GPU is being used for inference.
+// This is useful for deciding whether to use larger models that benefit from
+// dedicated GPU memory and compute power.
+func GPUDiscrete() bool {
+	return gpuDiscrete
 }
 
 func Whisper_init(path string) *Context {

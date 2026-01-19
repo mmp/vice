@@ -17,7 +17,7 @@
 set -e
 
 # Expected whisper.cpp submodule SHA (update this when bumping the submodule)
-WHISPER_EXPECTED_SHA="d8e355def01e4f9c381c4e80873ac49bb5b594e1"
+WHISPER_EXPECTED_SHA="050f4ef8286ca6d49b1b0e131462b9d71959f5ff"
 
 # Check that whisper.cpp submodule is at the expected commit
 check_whisper_submodule() {
