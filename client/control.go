@@ -7,6 +7,7 @@ package client
 import (
 	"time"
 
+	whisper "github.com/mmp/vice/autowhisper"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/server"
@@ -375,11 +376,12 @@ func (c *ControlClient) DeleteAircraft(aircraft []sim.Aircraft, callback func(er
 	}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) SendRouteCoordinates(aircraft sim.ACID, callback func(err error)) {
+func (c *ControlClient) SendRouteCoordinates(aircraft sim.ACID, minutes int, callback func(err error)) {
 	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.SendRouteCoordinatesRPC, &server.SendRouteCoordinatesArgs{
 		ControllerToken: c.controllerToken,
 		ACID:            aircraft,
+		Minutes:         minutes,
 	}, &update, nil), &update, callback))
 }
 
@@ -402,6 +404,12 @@ func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds strin
 	// Capture PTT release time now (before async RPC) - will be zero for non-STT commands
 	pttReleaseTime := c.GetAndClearPTTReleaseTime()
 
+	// Get processor info for voice commands
+	var processorDesc string
+	if whisperDuration > 0 {
+		processorDesc = whisper.ProcessorDescription()
+	}
+
 	var result server.AircraftCommandsResult
 	c.addCall(makeRPCCall(c.client.Go(server.RunAircraftCommandsRPC, &server.AircraftCommandsArgs{
 		ControllerToken:   c.controllerToken,
@@ -412,6 +420,7 @@ func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds strin
 		EnableTTS:         enableTTS,
 		WhisperDuration:   whisperDuration,
 		WhisperTranscript: whisperTranscript,
+		WhisperProcessor:  processorDesc,
 		AircraftContext:   aircraftContext,
 		STTDebugLogs:      sttDebugLogs,
 	}, &result, nil),

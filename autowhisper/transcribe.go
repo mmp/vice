@@ -2,6 +2,7 @@ package autowhisper
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"math"
 	"runtime"
@@ -33,11 +34,57 @@ func (m *Model) Close() error {
 }
 
 // GPUEnabled returns true if GPU acceleration is being used for inference.
-// On Windows with Vulkan support, this is true if a Vulkan GPU is available.
+// On Windows or Linux with Vulkan support, this is true if a Vulkan GPU is available.
 // On macOS, Metal is always used (handled by the whisper.cpp library internally).
 // On Linux or Windows without Vulkan, this returns false (CPU-only).
 func GPUEnabled() bool {
 	return whisper.GPUEnabled()
+}
+
+// GPUDiscrete returns true if a discrete GPU is being used for inference.
+// On Windows or Linux with Vulkan, this distinguishes between discrete GPUs (NVIDIA,
+// AMD Radeon, Intel Arc) and integrated GPUs (Intel UHD/Iris, AMD APU graphics).
+// On other platforms (macOS), this returns false; callers should handle
+// macOS specially since Metal provides good performance even on integrated GPUs.
+func GPUDiscrete() bool {
+	return whisper.GPUDiscrete()
+}
+
+// GPUDeviceInfo re-exports the GPU device information type.
+type GPUDeviceInfo = whisper.GPUDeviceInfo
+
+// GPUInfo re-exports the GPU information type.
+type GPUInfo = whisper.GPUInfo
+
+// GetGPUInfo returns detailed information about GPU acceleration status and devices.
+// This includes all available GPU devices, their memory, and which device is selected.
+func GetGPUInfo() GPUInfo {
+	return whisper.GetGPUInfo()
+}
+
+// ProcessorDescription returns a string describing the processor being used for whisper.
+// If GPU acceleration is enabled, it returns the GPU device description.
+// If running on CPU, it returns CPU info with OS, architecture, and core count.
+func ProcessorDescription() string {
+	info := GetGPUInfo()
+	if info.Enabled && len(info.Devices) > 0 {
+		// Find the selected GPU device
+		for _, dev := range info.Devices {
+			if dev.Index == info.SelectedIndex {
+				if dev.TotalMemory > 0 {
+					return fmt.Sprintf("GPU: %s (%dMB)", dev.Description, dev.TotalMemory/(1024*1024))
+				}
+				return fmt.Sprintf("GPU: %s", dev.Description)
+			}
+		}
+		// Fallback if selected index not found in devices
+		dev := info.Devices[0]
+		if dev.TotalMemory > 0 {
+			return fmt.Sprintf("GPU: %s (%dMB)", dev.Description, dev.TotalMemory/(1024*1024))
+		}
+		return fmt.Sprintf("GPU: %s", dev.Description)
+	}
+	return fmt.Sprintf("CPU: %s/%s (%d cores)", runtime.GOOS, runtime.GOARCH, runtime.NumCPU())
 }
 
 // Options configures the transcription behavior.

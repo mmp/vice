@@ -718,12 +718,24 @@ type ExitRoute struct {
 	Waypoints        WaypointArray `json:"waypoints"`
 	Description      string        `json:"description"`
 	IsRNAV           bool          `json:"is_rnav"`
+	HoldForRelease   bool          `json:"hold_for_release"`
 	// optional, control position to handoff to at a /ho
 	HandoffController ControlPosition `json:"handoff_controller"`
 	// optional, the initial tracking controller for the departure.
 	DepartureController ControlPosition `json:"departure_controller"`
 
 	WaitToContactDeparture bool // whether the aircraft waits until a /TC point to contact departure
+}
+
+// FinalHeading returns the final heading from the exit route's waypoints.
+// Returns 0 if no heading waypoint is found.
+func (er ExitRoute) FinalHeading() int {
+	for i := len(er.Waypoints) - 1; i >= 0; i-- {
+		if er.Waypoints[i].Heading != 0 {
+			return er.Waypoints[i].Heading
+		}
+	}
+	return 0
 }
 
 type Departure struct {

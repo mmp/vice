@@ -20,6 +20,16 @@ import (
 	"github.com/mmp/vice/wx"
 )
 
+// CallsignAddressingForm indicates how a controller addressed an aircraft's callsign.
+type CallsignAddressingForm int
+
+const (
+	// AddressingFormFull is the full callsign form (e.g., "november 1 2 3 alpha bravo")
+	AddressingFormFull CallsignAddressingForm = iota
+	// AddressingFormTypeTrailing3 is the aircraft type + trailing 3 form (e.g., "skyhawk 3 alpha bravo")
+	AddressingFormTypeTrailing3
+)
+
 type Aircraft struct {
 	// This is ADS-B callsign of the aircraft. Just because different the
 	// callsign in the flight plan can be different across multiple STARS
@@ -45,6 +55,9 @@ type Aircraft struct {
 	// State related to navigation.
 	Nav nav.Nav
 
+	// Departure-related state
+	SID string
+
 	// Arrival-related state
 	STAR                string
 	STARRunwayWaypoints map[string]av.WaypointArray
@@ -68,6 +81,7 @@ type Aircraft struct {
 
 	// Departure related state
 	DepartureContactAltitude float32 // 0 = waiting for /tc point, -1 = already contacted departure
+	ReportDepartureHeading   bool // true if runway has multiple exit heading
 
 	// The controller who gave approach clearance
 	ApproachTCP TCP
@@ -83,6 +97,10 @@ type Aircraft struct {
 	EmergencyState *EmergencyState
 
 	LastRadioTransmission time.Time
+
+	// LastAddressingForm tracks how the controller last addressed this aircraft.
+	// Used for readbacks to match the controller's style.
+	LastAddressingForm CallsignAddressingForm
 }
 
 func (ac *Aircraft) GetRadarTrack(now time.Time) av.RadarTrack {
@@ -384,6 +402,7 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport string,
 	wp = util.FilterSliceInPlace(wp, func(wp av.Waypoint) bool { return !wp.Location.IsZero() })
 
 	if exitRoute.SID != "" {
+		ac.SID = exitRoute.SID
 		ac.FlightPlan.Route = exitRoute.SID + " " + dep.Route
 	} else {
 		ac.FlightPlan.Route = dep.Route
@@ -396,6 +415,7 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport string,
 	}
 
 	ac.FlightPlan.Exit = dep.Exit
+	ac.FlightPlan.DepartureRunway = runway
 
 	r := rand.Make()
 	idx := rand.SampleFiltered(r, dep.Altitudes, func(alt int) bool { return alt <= int(perf.Ceiling) })
@@ -478,7 +498,10 @@ func (ac *Aircraft) NavSummary(model *wx.Model, simTime time.Time, lg *log.Logge
 }
 
 func (ac *Aircraft) ContactMessage(reportingPoints []av.ReportingPoint) *av.RadioTransmission {
-	return ac.Nav.ContactMessage(reportingPoints, ac.STAR)
+	// For departures, only report heading if the runway has varied exit headings.
+	// For arrivals (and others), always report heading if assigned.
+	reportHeading := !ac.IsDeparture() || ac.ReportDepartureHeading
+	return ac.Nav.ContactMessage(reportingPoints, ac.STAR, reportHeading)
 }
 
 func (ac *Aircraft) DepartOnCourse(lg *log.Logger) {

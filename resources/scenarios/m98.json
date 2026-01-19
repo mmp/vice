@@ -13,6 +13,18 @@
     "KRNH": { "vfr": { "random_routes": { "rate": 1 } } },
     "KSGS": { "vfr": { "random_routes": { "rate": 1 } } },
     "KSYN": { "vfr": { "random_routes": { "rate": 1 } } },
+    "KOWA": { "vfr": { "random_routes": { "rate": 1 } } },
+    "KULM": { "vfr": { "random_routes": { "rate": 1 } } },
+    "KTOB": { "vfr": { "random_routes": { "rate": 1 } } },
+    "KAHH": { "vfr": { "random_routes": { "rate": 1 } } },
+    "KLUM": { "vfr": { "random_routes": { "rate": 1 } } },
+    "KEAU": { "vfr": { "random_routes": { "rate": 1 } } },
+    "KCBG": { "vfr": { "random_routes": { "rate": 1 } } },
+    "KROS": { "vfr": { "random_routes": { "rate": 1 } } },
+    "KPNM": { "vfr": { "random_routes": { "rate": 1 } } },
+    "KHCD": { "vfr": { "random_routes": { "rate": 1 } } },
+    "KGYL": { "vfr": { "random_routes": { "rate": 1 } } },
+    "KMKT": { "vfr": { "random_routes": { "rate": 5 } } },
     "KMSP": {
       "name": "Minneapolis",
       "approaches": {
@@ -171,77 +183,77 @@
           "FGT.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30L/h170"
+            "waypoints": "KMSP-30L/h121"
           },
           "FGT.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30L/h170"
+            "waypoints": "KMSP-30L/h121"
           },
           "FGT.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30L/h170"
+            "waypoints": "KMSP-30L/h121"
           },
           "HUGIR.JET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
-            "waypoints": "KMSP-30L/h170"
+            "waypoints": "KMSP-30L/h121"
           },
           "HUGIR.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SCHEP1",
-            "waypoints": "KMSP-30L/h170"
+            "waypoints": "KMSP-30L/h121"
           },
           "HUGIR.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SCHEP1",
-            "waypoints": "KMSP-30L/h170"
+            "waypoints": "KMSP-30L/h121"
           },
           "JURNY.JET": {
             "assigned_altitude": 7000,
             "sid": "ORSKY3",
-            "waypoints": "KMSP-30L/h170"
+            "waypoints": "KMSP-30L/h121"
           },
           "JURNY.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ORSKY3",
-            "waypoints": "KMSP-30L/h170"
+            "waypoints": "KMSP-30L/h121"
           },
           "JURNY.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ORSKY3",
-            "waypoints": "KMSP-30L/h170"
+            "waypoints": "KMSP-30L/h121"
           },
           "FOBUG.JET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
-            "waypoints": "KMSP-30L/h170"
+            "waypoints": "KMSP-30L/h121"
           },
           "FOBUG.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "RST1",
-            "waypoints": "KMSP-30L/h170"
+            "waypoints": "KMSP-30L/h121"
           },
           "FOBUG.PISTON": {
             "assigned_altitude": 4000,
             "sid": "RST1",
-            "waypoints": "KMSP-30L/h170"
+            "waypoints": "KMSP-30L/h121"
           },
           "JEDET.JET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
-            "waypoints": "KMSP-30L/h140"
+            "waypoints": "KMSP-30L/h121"
           },
           "JEDET.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ZMBRO7",
-            "waypoints": "KMSP-30L/h140"
+            "waypoints": "KMSP-30L/h121"
           },
           "JEDET.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ZMBRO7",
-            "waypoints": "KMSP-30L/h140"
+            "waypoints": "KMSP-30L/h121"
           }
         },
         "12R_17": {
@@ -275,137 +287,137 @@
           "GEP.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "GEP.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "GEP.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "BRNRD.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "BRNRD.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "BRNRD.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "DLH.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "DLH.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "DLH.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "STILS.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "STILS.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "STILS.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "HRBEK.JET": {
             "assigned_altitude": 7000,
             "sid": "KBREW2",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "HRBEK.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "KBREW2",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "HRBEK.PISTON": {
             "assigned_altitude": 4000,
             "sid": "KBREW2",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "ZOGAP.JET": {
             "assigned_altitude": 7000,
             "sid": "SMERF7",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "ZOGAP.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SMERF7",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "ZOGAP.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SMERF7",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "TONCA.JET": {
             "assigned_altitude": 7000,
             "sid": "LEINY6",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "TONCA.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "LEINY6",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "TONCA.PISTON": {
             "assigned_altitude": 4000,
             "sid": "LEINY6",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h090"
           },
           "TAXEE.JET": {
             "assigned_altitude": 7000,
             "sid": "COULT7",
-            "waypoints": "KMSP-30R/h110"
+            "waypoints": "KMSP-30R/h105"
           },
           "TAXEE.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "COULT7",
-            "waypoints": "KMSP-30R/h110"
+            "waypoints": "KMSP-30R/h105"
           },
           "TAXEE.PISTON": {
             "assigned_altitude": 4000,
             "sid": "COULT7",
-            "waypoints": "KMSP-30R/h110"
+            "waypoints": "KMSP-30R/h105"
           },
           "SNINE.JET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h105"
           },
           "SNINE.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "WLSTN7",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h105"
           },
           "SNINE.PISTON": {
             "assigned_altitude": 4000,
             "sid": "WLSTN7",
-            "waypoints": "KMSP-30R/h070"
+            "waypoints": "KMSP-30R/h105"
           }
         },
         "30L": {
@@ -467,17 +479,17 @@
           "HUGIR.JET": {
             "assigned_altitude": 7000,
             "sid": "SCHEP1",
-            "waypoints": "KMSP-12R/h260"
+            "waypoints": "KMSP-12R/h280"
           },
           "HUGIR.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "SCHEP1",
-            "waypoints": "KMSP-12R/h260"
+            "waypoints": "KMSP-12R/h280"
           },
           "HUGIR.PISTON": {
             "assigned_altitude": 4000,
             "sid": "SCHEP1",
-            "waypoints": "KMSP-12R/h260"
+            "waypoints": "KMSP-12R/h280"
           },
           "JURNY.JET": {
             "assigned_altitude": 7000,
@@ -586,32 +598,32 @@
           "DLH.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
-            "waypoints": "KMSP-12L/h360"
+            "waypoints": "KMSP-12L/h340"
           },
           "DLH.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
-            "waypoints": "KMSP-12L/h360"
+            "waypoints": "KMSP-12L/h340"
           },
           "DLH.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
-            "waypoints": "KMSP-12L/h360"
+            "waypoints": "KMSP-12L/h340"
           },
           "STILS.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
-            "waypoints": "KMSP-12L/h360"
+            "waypoints": "KMSP-12L/h340"
           },
           "STILS.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
-            "waypoints": "KMSP-12L/h360"
+            "waypoints": "KMSP-12L/h340"
           },
           "STILS.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
-            "waypoints": "KMSP-12L/h360"
+            "waypoints": "KMSP-12L/h340"
           },
           "HRBEK.JET": {
             "assigned_altitude": 7000,
@@ -676,34 +688,34 @@
           "SNINE.JET": {
             "assigned_altitude": 7000,
             "sid": "WLSTN7",
-            "waypoints": "KMSP-12L/h360"
+            "waypoints": "KMSP-12L/h340"
           },
           "SNINE.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "WLSTN7",
-            "waypoints": "KMSP-12L/h360"
+            "waypoints": "KMSP-12L/h340"
           },
           "SNINE.PISTON": {
             "assigned_altitude": 4000,
             "sid": "WLSTN7",
-            "waypoints": "KMSP-12L/h360"
+            "waypoints": "KMSP-12L/h340"
           }
         },
         "17_12s": {
           "LSE.JET": {
             "assigned_altitude": 7000,
             "sid": "MSP9",
-            "waypoints": "KMSP-35 N044.50.14.071,W093.13.49.495/h120"
+            "waypoints": "KMSP-35/h120"
           },
           "LSE.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "MSP9",
-            "waypoints": "KMSP-35 N044.50.14.071,W093.13.49.495/h120"
+            "waypoints": "KMSP-35/h120"
           },
           "LSE.PISTON": {
             "assigned_altitude": 4000,
             "sid": "MSP9",
-            "waypoints": "KMSP-35 N044.50.14.071,W093.13.49.495/h120"
+            "waypoints": "KMSP-35/h120"
           },
           "FGT.JET": {
             "assigned_altitude": 7000,
@@ -753,32 +765,32 @@
           "FOBUG.JET": {
             "assigned_altitude": 7000,
             "sid": "RST1",
-            "waypoints": "KMSP-35 N044.50.14.071,W093.13.49.495/h160"
+            "waypoints": "KMSP-35/h140"
           },
           "FOBUG.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "RST1",
-            "waypoints": "KMSP-35 N044.50.14.071,W093.13.49.495/h160"
+            "waypoints": "KMSP-35/h140"
           },
           "FOBUG.PISTON": {
             "assigned_altitude": 4000,
             "sid": "RST1",
-            "waypoints": "KMSP-35 N044.50.14.071,W093.13.49.495/h160"
+            "waypoints": "KMSP-35/h140"
           },
           "JEDET.JET": {
             "assigned_altitude": 7000,
             "sid": "ZMBRO7",
-            "waypoints": "KMSP-35 N044.50.14.071,W093.13.49.495/h140"
+            "waypoints": "KMSP-35/h120"
           },
           "JEDET.TURBOPROP": {
             "assigned_altitude": 5000,
             "sid": "ZMBRO7",
-            "waypoints": "KMSP-35 N044.50.14.071,W093.13.49.495/h140"
+            "waypoints": "KMSP-35/h120"
           },
           "JEDET.PISTON": {
             "assigned_altitude": 4000,
             "sid": "ZMBRO7",
-            "waypoints": "KMSP-35 N044.50.14.071,W093.13.49.495/h140"
+            "waypoints": "KMSP-35/h120"
           }
         },
         "17_30s": {
@@ -3487,8 +3499,8 @@
           "waypoints": "BAINY/a15000-19000/s280 N045.41.31.273,W093.39.58.233/ho LUCCY/a11000+/s280 SAUGR",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210",
-              "12R": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210",
+              "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/h181",
+              "12R": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/h181",
               "30L": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ MAUER/a8000/s210 JJENI/h121",
               "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210 IRRRV/h122",
               "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 GWAIT/h176"
@@ -3703,8 +3715,8 @@
           "waypoints": "BAINY/a15000-19000/s280 N045.41.31.273,W093.39.58.233/ho LUCCY/a11000+/s280 SAUGR",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210",
-              "12R": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210",
+              "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/h181",
+              "12R": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/h181",
               "30L": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ MAUER/a8000/s210 JJENI/h121",
               "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210 IRRRV/h122",
               "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 GWAIT/h176"
@@ -3921,9 +3933,9 @@
             "KMSP": {
               "12L": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 CMMOE/a8000/s230 COZZZ/h301",
               "12R": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 GREAK/a8000/s230 DOLEE/h301",
-              "30L": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210",
-              "30R": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210",
-              "35": "FARBO JAMEZ/a7000+"
+              "30L": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
+              "30R": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
+              "35": "FARBO JAMEZ/a7000+/h013"
             }
           },
           "star": "BLUEM4",
@@ -4159,9 +4171,9 @@
             "KMSP": {
               "12L": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 CMMOE/a8000/s230 COZZZ/h301",
               "12R": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 GREAK/a8000/s230 DOLEE/h301",
-              "30L": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210",
-              "30R": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210",
-              "35": "FARBO JAMEZ/a7000+"
+              "30L": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
+              "30R": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
+              "35": "FARBO JAMEZ/a7000+/h013"
             }
           },
           "star": "BLUEM4",
@@ -4397,9 +4409,9 @@
             "KMSP": {
               "12L": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 CMMOE/a8000/s230 COZZZ/h301",
               "12R": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 GREAK/a8000/s230 DOLEE/h301",
-              "30L": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210",
-              "30R": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210",
-              "35": "FARBO JAMEZ/a7000+"
+              "30L": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
+              "30R": "FARBO NOFLD/a10000+/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
+              "35": "FARBO JAMEZ/a7000+/h013"
             }
           },
           "star": "BLUEM4",
@@ -4635,8 +4647,8 @@
             "KMSP": {
               "12L": "KRISP AFTYN/a10000+/s250 CMMOE/a8000/s230 COZZZ/h301",
               "12R": "KRISP AFTYN/a10000+/s250 GREAK/a8000/s230 DOLEE/h301",
-              "30L": "KRISP GEEQU/a7000/s210",
-              "30R": "KRISP GEEQU/a7000/s210",
+              "30L": "KRISP GEEQU/a7000/s210/h243",
+              "30R": "KRISP GEEQU/a7000/s210/h243",
               "35": "KRISP AFTYN/a10000+/s250 GREAK/a8000/s230 DOLEE/h301"
             }
           },
@@ -4889,8 +4901,8 @@
             "KMSP": {
               "12L": "KRISP AFTYN/a10000+/s250 CMMOE/a8000/s230 COZZZ/h301",
               "12R": "KRISP AFTYN/a10000+/s250 GREAK/a8000/s230 DOLEE/h301",
-              "30L": "KRISP GEEQU/a7000/s210",
-              "30R": "KRISP GEEQU/a7000/s210",
+              "30L": "KRISP GEEQU/a7000/s210/h243",
+              "30R": "KRISP GEEQU/a7000/s210/h243",
               "35": "KRISP AFTYN/a10000+/s250 GREAK/a8000/s230 DOLEE/h301"
             }
           },
@@ -5143,8 +5155,8 @@
             "KMSP": {
               "12L": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 COZZZ/h301",
               "12R": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301",
-              "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210",
-              "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210",
+              "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224",
+              "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224",
               "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301"
             }
           },
@@ -5393,8 +5405,8 @@
             "KMSP": {
               "12L": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 COZZZ/h301",
               "12R": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301",
-              "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210",
-              "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210",
+              "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224",
+              "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224",
               "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301"
             }
           },
@@ -5643,9 +5655,9 @@
             "KMSP": {
               "12L": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 CMMOE/a8000/s230 COZZZ/h301",
               "12R": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 GREAK/a8000/s230 DOLEE/h301",
-              "30L": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210",
-              "30R": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210",
-              "35": "DAHRL SHILD/a9000/s230 GDNEE NNEWW/a7000"
+              "30L": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210/h036",
+              "30R": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210/h036",
+              "35": "DAHRL SHILD/a9000/s230 GDNEE NNEWW/a7000/h023"
             }
           },
           "star": "NITZR3",
@@ -5789,9 +5801,9 @@
             "KMSP": {
               "12L": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 CMMOE/a8000/s230 COZZZ/h301",
               "12R": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 GREAK/a8000/s230 DOLEE/h301",
-              "30L": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210",
-              "30R": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210",
-              "35": "DAHRL SHILD/a9000/s230 GDNEE NNEWW/a7000"
+              "30L": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210/h036",
+              "30R": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210/h036",
+              "35": "DAHRL SHILD/a9000/s230 GDNEE NNEWW/a7000/h023"
             }
           },
           "star": "NITZR3",
@@ -5935,9 +5947,9 @@
             "KMSP": {
               "12L": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 CMMOE/a8000/s230 COZZZ/h301",
               "12R": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 GREAK/a8000/s230 DOLEE/h301",
-              "30L": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210",
-              "30R": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210",
-              "35": "DAHRL SHILD/a9000/s230 GDNEE NNEWW/a7000"
+              "30L": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210/h036",
+              "30R": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210/h036",
+              "35": "DAHRL SHILD/a9000/s230 GDNEE NNEWW/a7000/h023"
             }
           },
           "star": "NITZR3",
@@ -6079,8 +6091,8 @@
           "waypoints": "ERICX/a24000+/s280 TORGY/a13000+/s280/ho OFSON/a12000 HMBRG CONIA",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210",
-              "12R": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210",
+              "12L": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/h042",
+              "12R": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/h042",
               "30L": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ MAUER/a8000/s210 JJENI/h121",
               "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ OSMOH/a8000/s210 IRRRV/h122",
               "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 GWAIT/h176"
@@ -6381,8 +6393,8 @@
           "waypoints": "ERICX/a24000+/s280 TORGY/a13000+/s280/ho OFSON/a12000 HMBRG CONIA",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210",
-              "12R": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210",
+              "12L": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/h042",
+              "12R": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/h042",
               "30L": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ MAUER/a8000/s210 JJENI/h121",
               "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ OSMOH/a8000/s210 IRRRV/h122",
               "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 GWAIT/h176"
@@ -6653,11 +6665,11 @@
     "GEP1.30s": {
       "arrivals": [
         {
-          "waypoints": "GOLLF N045.38.53.921,W093.38.30.040/ho OLLEE/a7000 SAUGR GEP VYKES",
+          "waypoints": "GOLLF N045.38.53.921,W093.38.30.040/ho OLLEE/a9000 SAUGR GEP VYKES",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "VYKES",
-              "12R": "VYKES",
+              "12L": "VYKES/h160",
+              "12R": "VYKES/h160",
               "30L": "VYKES/h120",
               "30R": "VYKES/h120",
               "35": "VYKES/h185"
@@ -6718,11 +6730,11 @@
     "GEP1.12s": {
       "arrivals": [
         {
-          "waypoints": "GOLLF N045.38.53.921,W093.38.30.040/ho OLLEE/a7000 SAUGR GEP VYKES",
+          "waypoints": "GOLLF N045.38.53.921,W093.38.30.040/ho OLLEE/a9000 SAUGR GEP VYKES",
           "runway_waypoints": {
             "KMSP": {
-              "12L": "VYKES",
-              "12R": "VYKES",
+              "12L": "VYKES/h160",
+              "12R": "VYKES/h160",
               "30L": "VYKES/h120",
               "30R": "VYKES/h120",
               "35": "VYKES/h185"
@@ -6780,7 +6792,27 @@
         }
       ]
     },
-    "LSE": {
+    "LSE.30s": {
+      "arrivals": [
+        {
+          "waypoints": "N044.16.44.122,W092.04.47.484/ho KMSP",
+          "route": "DCT KMSP",
+          "initial_controller": "MSP_05_CTR",
+          "initial_altitude": 5000,
+          "initial_speed": 250,
+          "airlines": {
+            "KMSP": [
+              {
+                "icao": "BMJ",
+                "types": ["SW4"],
+                "airport": "KLSE"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "LSE.12s": {
       "arrivals": [
         {
           "waypoints": "N044.16.44.122,W092.04.47.484/ho KMSP",
@@ -6803,7 +6835,7 @@
     "RPD": {
       "arrivals": [
         {
-          "waypoints": "N045.22.18.684,W091.55.26.605/ho KMSP",
+          "waypoints": "N045.22.18.684,W091.55.26.605 N045.16.47.899,W092.10.12.844/ho KMSP",
           "route": "DCT KMSP",
           "initial_controller": "MSP_05_CTR",
           "initial_altitude": 4000,
@@ -7225,27 +7257,27 @@
       ],
       "inbound_rates": {
         "BAINY3.12s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "BLUEM4.12s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "KKILR3.12s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "MUSCL3.12s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "NITZR3.12s": {
           "KMSP": 3
         },
         "TORGY3.12s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "GEP1.12s": {
-          "KMSP": 3
+          "KMSP": 1
         },
-        "LSE": {
+        "LSE.12s": {
           "KMSP": 1
         },
         "RPD": {
@@ -7287,12 +7319,12 @@
       "departure_runways": [
         {
           "airport": "KMSP",
-          "rate": 4,
+          "rate": 7,
           "runway": "12L"
         },
         {
           "airport": "KMSP",
-          "rate": 5,
+          "rate": 9,
           "runway": "12R"
         }
       ],
@@ -7313,27 +7345,27 @@
       ],
       "inbound_rates": {
         "BAINY3.30s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "BLUEM4.30s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "KKILR3.30s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "MUSCL3.30s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "NITZR3.30s": {
           "KMSP": 3
         },
         "TORGY3.30s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "GEP1.30s": {
-          "KMSP": 3
+          "KMSP": 1
         },
-        "LSE": {
+        "LSE.30s": {
           "KMSP": 1
         },
         "RPD": {
@@ -7375,12 +7407,12 @@
       "departure_runways": [
         {
           "airport": "KMSP",
-          "rate": 4,
+          "rate": 7,
           "runway": "30R"
         },
         {
           "airport": "KMSP",
-          "rate": 5,
+          "rate": 9,
           "runway": "30L"
         }
       ],
@@ -7401,27 +7433,27 @@
       ],
       "inbound_rates": {
         "BAINY3.12s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "BLUEM4.12s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "KKILR3.12s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "MUSCL3.12s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "NITZR3.12s": {
           "KMSP": 3
         },
         "TORGY3.12s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "GEP1.12s": {
-          "KMSP": 3
+          "KMSP": 1
         },
-        "LSE": {
+        "LSE.12s": {
           "KMSP": 1
         },
         "RPD": {
@@ -7494,27 +7526,27 @@
       ],
       "inbound_rates": {
         "BAINY3.30s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "BLUEM4.30s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "KKILR3.30s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "MUSCL3.30s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "NITZR3.30s": {
           "KMSP": 3
         },
         "TORGY3.30s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "GEP1.30s": {
-          "KMSP": 3
+          "KMSP": 1
         },
-        "LSE": {
+        "LSE.30s": {
           "KMSP": 1
         },
         "RPD": {
@@ -7566,7 +7598,7 @@
         },
         {
           "airport": "KMSP",
-          "rate": 5,
+          "rate": 7,
           "runway": "30R"
         }
       ],
@@ -7591,27 +7623,27 @@
       ],
       "inbound_rates": {
         "BAINY3.30s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "BLUEM4.35": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "KKILR3.30s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "MUSCL3.30s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "NITZR3.35": {
           "KMSP": 3
         },
         "TORGY3.30s": {
-          "KMSP": 3
+          "KMSP": 2
         },
         "GEP1.30s": {
-          "KMSP": 3
+          "KMSP": 1
         },
-        "LSE": {
+        "LSE.30s": {
           "KMSP": 1
         },
         "RPD": {
@@ -7653,7 +7685,7 @@
       "departure_runways": [
         {
           "airport": "KMSP",
-          "rate": 5,
+          "rate": 7,
           "runway": "30R"
         },
         {
@@ -7687,8 +7719,9 @@
           "TORGY3.12s": "MSP_H_APP",
           "GEP1.30s": "MSP_I_APP",
           "GEP1.12s": "MSP_I_APP",
-          "LSE": "MSP_H_APP",
-          "RPD": "MSP_I_APP"
+          "LSE.30s": "MSP_G_APP",
+          "LSE.12s": "MSP_G_APP",
+          "RPD": "MSP_G_APP"
         },
         "departure_assignments": {
           "KMSP/30L": "MSP_R_DEP",
@@ -7777,9 +7810,11 @@
       "HRBEK.PISTON": "FAR",
       "HRBEK.TURBOPROP": "FAR",
       "HRBEK.JET": "FAR",
+      "HRBEK.HEAVYJET": "FAR",
       "ZOGAP.PISTON": "SME",
       "ZOGAP.TURBOPROP": "SME",
       "ZOGAP.JET": "SME",
+      "ZOGAP.HEAVYJET": "SME",
       "TONCA.PISTON": "LEI",
       "TONCA.TURBOPROP": "LEI",
       "TONCA.JET": "LEI",
@@ -7801,12 +7836,15 @@
       "SNINE.PISTON": "GRB",
       "SNINE.TURBOPROP": "GRB",
       "SNINE.JET": "GRB",
+      "SNINE.HEAVYJET": "GRB",
       "DLH.PISTON": "DLH",
       "DLH.TURBOPROP": "DLH",
       "DLH.JET": "DLH",
+      "DLH.HEAVYJET": "DLH",
       "BRNRD.PISTON": "BRD",
       "BRNRD.TURBOPROP": "BRD",
       "BRNRD.JET": "BRD",
+      "BRNRD.HEAVYJET": "BRD",
       "LSE.PISTON": "LSE",
       "LSE.TURBOPROP": "LSE",
       "LSE.JET": "LSE",

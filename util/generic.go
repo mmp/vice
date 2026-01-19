@@ -400,6 +400,15 @@ func SeqContainsFunc[T any](seq iter.Seq[T], check func(T) bool) bool {
 	return false
 }
 
+func SeqContainsAllFunc[T any](seq iter.Seq[T], check func(T) bool) bool {
+	for s := range seq {
+		if !check(s) {
+			return false
+		}
+	}
+	return true
+}
+
 func SeqLookupFunc[T any](seq iter.Seq[T], check func(T) bool) (T, bool) {
 	for s := range seq {
 		if check(s) {

@@ -85,6 +85,7 @@ type ERAMPane struct {
 
 	repositionLargeInput  bool      `json:"-"`
 	repositionSmallOutput bool      `json:"-"`
+	repositionClock       bool      `json:"-"`
 	timeSinceRepo         time.Time `json:"-"`
 
 	velocityTime int `json:"-"` // 0, 1, 4, or 8 minutes
@@ -240,6 +241,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.drawJRings(ctx, tracks, transforms, cb)
 	ep.drawQULines(ctx, transforms, cb)
 	// Draw clock
+	ep.drawClock(ctx, transforms, cb)
 	// Draw views
 	ep.drawCRRView(ctx, transforms, cb)
 	ep.drawCommandInput(ctx, transforms, cb)
@@ -332,6 +334,9 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
 	}
 	if ep.prefSet.Current.commandSmallPosition == ([2]float32{}) {
 		ep.prefSet.Current.commandSmallPosition = def.commandSmallPosition
+	}
+	if ep.prefSet.Current.clockPosition == ([2]float32{}) {
+		ep.prefSet.Current.clockPosition = def.clockPosition
 	}
 	// Fill in CRR defaults if this preference set was created before CRR existed
 	if ep.prefSet.Current.CRR.ColorBright == nil {

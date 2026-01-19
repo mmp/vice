@@ -7275,6 +7275,15 @@ Given the id, the approach can be specified with:</p>
                 <td><i>(Optional)</i> If true, aircraft departing on this route will have the RNAV flag set in their flight plan.</td>
               </tr>
               <tr>
+                <td>"hold_for_release"</td>
+                <td>Boolean</td>
+                <td>(<i>Optional</i>) If true, departures on this route must be released by a controller.
+                  If the airport is listed in "coordination_lists" in <a href="#fe-stars-videomaps">"stars_config"</a>,
+                  then the release will be managed using STARS coordination lists; otherwise it will appear
+                  in the <i>Launch Control</i> window.
+                </td>
+              </tr>
+              <tr>
                 <td>"sid"</td>
                 <td>String</td>
                 <td><i>(Optional)</i> A string naming the SID that the aircraft is flying.</td>

@@ -38,9 +38,12 @@ func init() {
 	// QU - Direct to fix / Route display
 	// QU: Clear all route displays
 	// QU /M [FLID] or QU /M[SLEW]: Display route
+	// QU [MINUTES] [FLID] or QU [MINUTES][SLEW]: Display route for specified minutes
 	// QU [FIX] [FLID] or QU [FIX][SLEW]: Direct to fix
 	registerCommand(CommandModeNone, "QU", handleClearRouteDisplay)
-	registerCommand(CommandModeNone, "QU /M [FLID]|QU /M[SLEW]", handleRouteDisplay)
+	registerCommand(CommandModeNone, "QU [FLID]|QU [SLEW]", handleDefaultRouteDisplay)
+	registerCommand(CommandModeNone, "QU /M [FLID]|QU /M[SLEW]", handleMaxRouteDisplay)
+	registerCommand(CommandModeNone, "QU [MINUTES] [FLID]|QU [MINUTES][SLEW]", handleRouteDisplayMinutes)
 	registerCommand(CommandModeNone, "QU [FIX] [FLID]|QU [FIX][SLEW]", handleDirectToFix)
 
 	// QP - J rings
@@ -163,8 +166,32 @@ func handleClearRouteDisplay(ep *ERAMPane) {
 	clear(ep.aircraftFixCoordinates)
 }
 
-func handleRouteDisplay(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
-	ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign))
+// Either displays the route for 20 minutes ahead or clears the route display
+func handleDefaultRouteDisplay(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+	// Check if the route is currently displayed
+	if _, ok := ep.aircraftFixCoordinates[trk.ADSBCallsign.String()]; ok {
+		delete(ep.aircraftFixCoordinates, trk.ADSBCallsign.String())
+		return CommandStatus{
+			bigOutput: fmt.Sprintf("ACCEPT\nROUTE DISPLAY\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID), // TODO: Find correct message
+		}
+	}
+	ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign), 20)
+
+	return CommandStatus{
+		bigOutput: fmt.Sprintf("ACCEPT\nROUTE DISPLAY\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+	}
+}
+
+func handleMaxRouteDisplay(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+	ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign), -1)
+
+	return CommandStatus{
+		bigOutput: fmt.Sprintf("ACCEPT\nROUTE DISPLAY\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+	}
+}
+
+func handleRouteDisplayMinutes(ep *ERAMPane, ctx *panes.Context, minutes int, trk *sim.Track) CommandStatus {
+	ep.getQULines(ctx, sim.ACID(trk.ADSBCallsign), minutes)
 
 	return CommandStatus{
 		bigOutput: fmt.Sprintf("ACCEPT\nROUTE DISPLAY\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),

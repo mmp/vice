@@ -52,6 +52,10 @@ type ControlClient struct {
 	// Previous STT context for bug reporting
 	prevSTTContext *STTBugContext
 
+	// Whisper performance tracking for slow GPU detection
+	recentWhisperDurations  []time.Duration // Sliding window of recent whisper durations
+	slowPerformanceReported bool            // True if we've already reported slow performance
+
 	lg *log.Logger
 	mu sync.Mutex
 
@@ -584,9 +588,12 @@ func PreloadWhisperModel(lg *log.Logger) {
 				return
 			}
 
-			// Use larger model when GPU acceleration is available (macOS Metal, Windows Vulkan)
+			// Use larger model when a discrete GPU or macOS Metal is available.
+			// On Windows, integrated GPUs (Intel UHD/Iris, AMD APU) are too slow for
+			// larger models, so we only use them with a discrete GPU.
+			// On macOS, Metal provides good performance even on integrated GPUs.
 			var modelName string
-			if runtime.GOOS == "darwin" || whisper.GPUEnabled() {
+			if runtime.GOOS == "darwin" || whisper.GPUDiscrete() {
 				modelName = "ggml-small.en.bin"
 			} else {
 				modelName = "ggml-tiny.en.bin"
@@ -641,6 +648,7 @@ func makeWhisperPrompt(state SimState) string {
 		"expect", "vectors", "squawk", "ident", "altimieter", "radar contact",
 		"reduce to final approach speed", "miles from", "established", "cleared",
 		"until established", "on the localizer", "flight level", "niner",
+		"climb via", "descend via", "arrival",
 	}
 
 	// Add telephony and approaches for user-controlled tracks.
@@ -649,8 +657,26 @@ func makeWhisperPrompt(state SimState) string {
 	fixes := make(map[string]struct{})
 	for _, trk := range state.Tracks {
 		if state.UserControlsTrack(trk) && trk.IsAssociated() {
-			tele := av.GetTelephony(string(trk.ADSBCallsign), trk.FlightPlan.CWTCategory)
+			callsign := string(trk.ADSBCallsign)
+			tele := av.GetTelephony(callsign, trk.FlightPlan.CWTCategory)
 			promptParts = append(promptParts, tele)
+
+			// For GA callsigns (N-prefix), also add type+trailing3 variants
+			if strings.HasPrefix(callsign, "N") && trk.FlightPlan.AircraftType != "" {
+				typePronunciations := av.GetACTypePronunciations(trk.FlightPlan.AircraftType)
+				if len(typePronunciations) > 0 {
+					trailing3 := av.GetTrailing3Spoken(callsign)
+					if trailing3 != "" {
+						// Only use pronunciations without numbers to avoid callsign confusion
+						for _, typeSpoken := range typePronunciations {
+							if !strings.ContainsAny(typeSpoken, "0123456789") {
+								promptParts = append(promptParts, typeSpoken+" "+trailing3)
+							}
+						}
+					}
+				}
+			}
+
 			if trk.Approach != "" {
 				assignedApproaches[trk.Approach] = struct{}{}
 			}
@@ -692,6 +718,36 @@ func makeWhisperPrompt(state SimState) string {
 		if _, assigned := assignedApproaches[appr]; !assigned {
 			promptParts = append(promptParts, av.GetApproachTelephony(appr))
 		}
+	}
+
+	// Collect active SIDs from departure airports
+	activeSIDs := make(map[string]struct{})
+	for _, dr := range state.DepartureRunways {
+		if ap, ok := state.Airports[dr.Airport]; ok {
+			if rwyRoutes, ok := ap.DepartureRoutes[dr.Runway]; ok {
+				for _, route := range rwyRoutes {
+					if route.SID != "" {
+						activeSIDs[route.SID] = struct{}{}
+					}
+				}
+			}
+		}
+	}
+	for sid := range activeSIDs {
+		promptParts = append(promptParts, av.GetSIDTelephony(sid))
+	}
+
+	// Collect active STARs from inbound flows
+	activeSTARs := make(map[string]struct{})
+	for _, flow := range state.InboundFlows {
+		for _, arr := range flow.Arrivals {
+			if arr.STAR != "" {
+				activeSTARs[arr.STAR] = struct{}{}
+			}
+		}
+	}
+	for star := range activeSTARs {
+		promptParts = append(promptParts, av.GetSTARTelephony(star))
 	}
 
 	// Add fixes (lower priority, may get truncated by token limit)
@@ -825,7 +881,31 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 		c.mu.Lock()
 		c.LastWhisperDurationMs = whisperDuration.Milliseconds()
 		c.LastTranscription = finalText
+
+		// Track recent whisper durations for slow performance detection
+		c.recentWhisperDurations = append(c.recentWhisperDurations, whisperDuration)
+		const maxTrackedDurations = 5
+		if len(c.recentWhisperDurations) > maxTrackedDurations {
+			c.recentWhisperDurations = c.recentWhisperDurations[1:]
+		}
+
+		// Check for consistently slow performance (all recent durations > 1 second)
+		// Only check when using ggml-small model (not ggml-tiny)
+		slowPerformanceThreshold := time.Second
+		modelName := GetWhisperModelName()
+		isSlowCandidate := strings.Contains(modelName, "small") && len(c.recentWhisperDurations) >= 3
+		shouldReport := isSlowCandidate && !c.slowPerformanceReported
+
+		if shouldReport {
+			shouldReport = util.SeqContainsAllFunc(slices.Values(c.recentWhisperDurations),
+				func(d time.Duration) bool { return d >= slowPerformanceThreshold })
+		}
 		c.mu.Unlock()
+
+		// Report slow performance outside the lock
+		if shouldReport {
+			c.reportSlowWhisperPerformance(lg)
+		}
 
 		if finalText == "" || finalText == "[BLANK_AUDIO]" {
 			c.transmissions.Unhold()
@@ -937,6 +1017,7 @@ func (c *ControlClient) FeedAudioToStreaming(samples []int16) {
 func (c *ControlClient) reportSTTBug(explanation string, lg *log.Logger) {
 	c.mu.Lock()
 	prevCtx := c.prevSTTContext
+	recentDurations := slices.Clone(c.recentWhisperDurations)
 	c.mu.Unlock()
 
 	if prevCtx == nil {
@@ -945,13 +1026,17 @@ func (c *ControlClient) reportSTTBug(explanation string, lg *log.Logger) {
 	}
 
 	args := server.STTBugReportArgs{
-		ControllerToken: c.controllerToken,
-		PrevTranscript:  prevCtx.Transcript,
-		PrevCommand:     prevCtx.DecodedCommand,
-		AircraftContext: prevCtx.AircraftContext,
-		DebugLogs:       prevCtx.DebugLogs,
-		UserExplanation: explanation,
-		ReportTime:      time.Now(),
+		ControllerToken:   c.controllerToken,
+		PrevTranscript:    prevCtx.Transcript,
+		PrevCommand:       prevCtx.DecodedCommand,
+		AircraftContext:   prevCtx.AircraftContext,
+		DebugLogs:         prevCtx.DebugLogs,
+		UserExplanation:   explanation,
+		ReportTime:        time.Now(),
+		GPUInfo:           whisper.GetGPUInfo(),
+		WhisperModelName:  GetWhisperModelName(),
+		RecentDurations:   recentDurations,
+		IsSlowPerformance: false,
 	}
 
 	c.addCall(makeRPCCall(c.client.Go(server.ReportSTTBugRPC, &args, nil, nil),
@@ -960,6 +1045,56 @@ func (c *ControlClient) reportSTTBug(explanation string, lg *log.Logger) {
 				lg.Errorf("STT bug report failed: %v", err)
 			} else {
 				lg.Info("STT bug report submitted")
+			}
+		}))
+}
+
+// reportSlowWhisperPerformance sends an automatic bug report when whisper is consistently slow.
+// This indicates a possible GPU selection issue (integrated GPU selected instead of discrete).
+func (c *ControlClient) reportSlowWhisperPerformance(lg *log.Logger) {
+	c.mu.Lock()
+	if c.slowPerformanceReported {
+		c.mu.Unlock()
+		return
+	}
+	c.slowPerformanceReported = true
+	recentDurations := slices.Clone(c.recentWhisperDurations)
+	prevCtx := c.prevSTTContext
+	c.mu.Unlock()
+
+	// Include previous STT context if available for debugging
+	var prevTranscript, prevCommand string
+	var aircraftContext map[string]stt.Aircraft
+	var debugLogs []string
+	if prevCtx != nil {
+		prevTranscript = prevCtx.Transcript
+		prevCommand = prevCtx.DecodedCommand
+		aircraftContext = prevCtx.AircraftContext
+		debugLogs = prevCtx.DebugLogs
+	}
+
+	args := server.STTBugReportArgs{
+		ControllerToken:   c.controllerToken,
+		PrevTranscript:    prevTranscript,
+		PrevCommand:       prevCommand,
+		AircraftContext:   aircraftContext,
+		DebugLogs:         debugLogs,
+		UserExplanation:   "Automatic: slow whisper performance detected",
+		ReportTime:        time.Now(),
+		GPUInfo:           whisper.GetGPUInfo(),
+		WhisperModelName:  GetWhisperModelName(),
+		RecentDurations:   recentDurations,
+		IsSlowPerformance: true,
+	}
+
+	lg.Warn("Reporting slow whisper performance - possible integrated GPU selection issue")
+
+	c.addCall(makeRPCCall(c.client.Go(server.ReportSTTBugRPC, &args, nil, nil),
+		func(err error) {
+			if err != nil {
+				lg.Errorf("Slow performance report failed: %v", err)
+			} else {
+				lg.Info("Slow performance report submitted")
 			}
 		}))
 }

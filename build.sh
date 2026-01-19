@@ -8,6 +8,7 @@
 #   --check         Run gofmt and staticcheck
 #   --test          Run tests
 #   --all           Run all steps (--check --test, then build)
+#   --vulkan        Build with vulkan support
 #   --release       Build release binary (with downloadresources tag)
 #   --universal     Build universal binary on macOS (arm64 + amd64)
 #   --help          Show this help message
@@ -17,7 +18,7 @@
 set -e
 
 # Expected whisper.cpp submodule SHA (update this when bumping the submodule)
-WHISPER_EXPECTED_SHA="d8e355def01e4f9c381c4e80873ac49bb5b594e1"
+WHISPER_EXPECTED_SHA="050f4ef8286ca6d49b1b0e131462b9d71959f5ff"
 
 # Check that whisper.cpp submodule is at the expected commit
 check_whisper_submodule() {
@@ -65,6 +66,7 @@ DO_CHECK=false
 DO_TEST=false
 DO_RELEASE=false
 DO_UNIVERSAL=false
+DO_VULKAN=false
 
 # Parse arguments
 for arg in "$@"; do
@@ -73,6 +75,7 @@ for arg in "$@"; do
         --test)      DO_TEST=true ;;
         --release)   DO_RELEASE=true ;;
         --universal) DO_UNIVERSAL=true ;;
+        --vulkan)    DO_VULKAN=true ;;
         --all)
             DO_CHECK=true
             DO_TEST=true
@@ -108,18 +111,34 @@ build_whisper() {
     elif [ "$OS_TYPE" = "linux" ]; then
         # Disable GGML_NATIVE to avoid -march=native. Enable instruction sets
         # safe for computers from ~2013+ (Haswell era, see build.bat for details).
-        cmake -S whisper.cpp -B whisper.cpp/build_go \
-            -DBUILD_SHARED_LIBS=OFF \
-            -DGGML_CPU=ON \
-            -DGGML_OPENMP=ON \
-            -DGGML_NATIVE=OFF \
-            -DGGML_SSE42=ON \
-            -DGGML_AVX=ON \
-            -DGGML_AVX2=ON \
-            -DGGML_FMA=ON \
-            -DGGML_F16C=ON \
-            -DGGML_BMI2=ON \
-            -DCMAKE_BUILD_TYPE=Release
+        if [ "$DO_VULKAN" = true ]; then
+            cmake -S whisper.cpp -B whisper.cpp/build_go \
+                -DBUILD_SHARED_LIBS=OFF \
+                -DGGML_CPU=ON \
+                -DGGML_OPENMP=ON \
+                -DGGML_NATIVE=OFF \
+                -DGGML_SSE42=ON \
+                -DGGML_AVX=ON \
+                -DGGML_AVX2=ON \
+                -DGGML_FMA=ON \
+                -DGGML_F16C=ON \
+                -DGGML_BMI2=ON \
+                -DGGML_VULKAN=ON \
+                -DCMAKE_BUILD_TYPE=Release
+        else
+            cmake -S whisper.cpp -B whisper.cpp/build_go \
+                -DBUILD_SHARED_LIBS=OFF \
+                -DGGML_CPU=ON \
+                -DGGML_OPENMP=ON \
+                -DGGML_NATIVE=OFF \
+                -DGGML_SSE42=ON \
+                -DGGML_AVX=ON \
+                -DGGML_AVX2=ON \
+                -DGGML_FMA=ON \
+                -DGGML_F16C=ON \
+                -DGGML_BMI2=ON \
+                -DCMAKE_BUILD_TYPE=Release
+        fi
     fi
 
     cmake --build whisper.cpp/build_go --parallel "$(nproc 2>/dev/null || sysctl -n hw.ncpu)"
@@ -186,6 +205,9 @@ build_vice() {
             CGO_ENABLED=1 GOOS=darwin go build -ldflags="-s -w" -tags "$BUILD_TAGS" -o vice ./cmd/vice
         fi
     elif [ "$OS_TYPE" = "linux" ]; then
+        if [ "$DO_VULKAN" = true ]; then
+            BUILD_TAGS="$BUILD_TAGS,vulkan"
+        fi
         go build -tags "$BUILD_TAGS" -o vice ./cmd/vice
     fi
 

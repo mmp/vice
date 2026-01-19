@@ -1,4 +1,4 @@
-//go:build windows && vulkan
+//go:build vulkan
 
 package whisperlow
 
@@ -7,5 +7,6 @@ package whisperlow
 
 /*
 #cgo windows LDFLAGS: ${SRCDIR}/../../../whisper.cpp/build_go/ggml/src/ggml-vulkan/ggml-vulkan.a -lvulkan-1
+#cgo linux LDFLAGS: ${SRCDIR}/../../../whisper.cpp/build_go/ggml/src/ggml-vulkan/libggml-vulkan.a -lvulkan
 */
 import "C"
