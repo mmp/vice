@@ -577,7 +577,7 @@ func init() {
 				return ErrSTARSIllegalTrack
 			}
 
-			ctrl := sp.lookupControllerForId(ctx, tcp, trk.FlightPlan.ACID)
+			ctrl := lookupControllerWithAirspace(ctx, tcp, trk)
 			if ctrl == nil {
 				return ErrSTARSIllegalPosition
 			}
@@ -616,7 +616,7 @@ func init() {
 					return ErrSTARSCommandFormat
 				}
 
-				ctrl := sp.lookupControllerForId(ctx, tcps[:2], trk.FlightPlan.ACID)
+				ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcps[:2], ctx.UserController().SectorID)
 				if ctrl == nil {
 					return ErrSTARSIllegalPosition
 				}
@@ -624,7 +624,7 @@ func init() {
 				tcps = tcps[2:]
 			} else {
 				// TCP without controller subset
-				ctrl := sp.lookupControllerForId(ctx, tcps[:1], trk.FlightPlan.ACID)
+				ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcps[:1], ctx.UserController().SectorID)
 				if ctrl == nil {
 					return ErrSTARSIllegalPosition
 				}
@@ -722,7 +722,7 @@ func init() {
 		plus := strings.HasSuffix(tcp, "+")
 		tcp = strings.TrimSuffix(tcp, "+")
 
-		ctrl := sp.lookupControllerForId(ctx, tcp, "")
+		ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcp, ctx.UserController().SectorID)
 		if ctrl == nil {
 			return ErrSTARSIllegalPosition
 		}
