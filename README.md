@@ -56,6 +56,10 @@ On Ubuntu, `sudo apt install xorg-dev libsdl2-dev` will install the necessary li
 Then, from a command shell in the repositoiry directory, run `./build.sh` to
 build a *vice* executable.
 
+### Vulkan
+For better speech to text performance, you can compile vice with vulkan support if you have a vulkan compatible gpu.
+On Ubuntu, in addition to the above dependencies, install `libvulkan-dev` and then run `./build.sh --vulkan`.
+
 ## Docker
 
 Docker can be used to build a binary without installing build time dependencies. To build via docker run `make docker`.

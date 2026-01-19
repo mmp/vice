@@ -33,7 +33,7 @@ func (m *Model) Close() error {
 }
 
 // GPUEnabled returns true if GPU acceleration is being used for inference.
-// On Windows with Vulkan support, this is true if a Vulkan GPU is available.
+// On Windows or Linux with Vulkan support, this is true if a Vulkan GPU is available.
 // On macOS, Metal is always used (handled by the whisper.cpp library internally).
 // On Linux or Windows without Vulkan, this returns false (CPU-only).
 func GPUEnabled() bool {
@@ -41,9 +41,9 @@ func GPUEnabled() bool {
 }
 
 // GPUDiscrete returns true if a discrete GPU is being used for inference.
-// On Windows with Vulkan, this distinguishes between discrete GPUs (NVIDIA,
+// On Windows or Linux with Vulkan, this distinguishes between discrete GPUs (NVIDIA,
 // AMD Radeon, Intel Arc) and integrated GPUs (Intel UHD/Iris, AMD APU graphics).
-// On other platforms (macOS, Linux), this returns false; callers should handle
+// On other platforms (macOS), this returns false; callers should handle
 // macOS specially since Metal provides good performance even on integrated GPUs.
 func GPUDiscrete() bool {
 	return whisper.GPUDiscrete()

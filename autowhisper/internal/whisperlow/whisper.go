@@ -135,7 +135,7 @@ var (
 )
 
 // GPUEnabled returns true if GPU acceleration is being used for inference.
-// On Windows with Vulkan support compiled in, this is true if a Vulkan GPU is available.
+// On Windows or Linux with Vulkan support compiled in, this is true if a Vulkan GPU is available.
 // On macOS, Metal is always used (handled by the whisper.cpp library).
 // On other platforms, this returns false (CPU-only).
 func GPUEnabled() bool {
