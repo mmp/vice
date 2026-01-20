@@ -169,7 +169,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		}
 
 		if imgui.Button(renderer.FontAwesomeIconRedo) {
-			uiShowConnectDialog(mgr, true, config, p, lg)
+			uiShowConnectOrBenchmarkDialog(mgr, true, config, p, lg)
 		}
 		if imgui.IsItemHovered() {
 			imgui.SetTooltip("Start new simulation")
@@ -804,6 +804,23 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 				}
 			}
 			imgui.EndCombo()
+		}
+
+		// Show selected whisper model and re-benchmark button
+		if modelName := client.GetWhisperModelName(); modelName != "" {
+			imgui.Text("Model:")
+			imgui.SameLine()
+			imgui.TextColored(imgui.Vec4{0.5, 0.8, 0.5, 1}, modelName)
+			imgui.SameLine()
+			if imgui.Button("Re-benchmark") {
+				client.ForceWhisperRebenchmark(lg, func(modelName, deviceID string) {
+					config.WhisperModelName = modelName
+					config.WhisperDeviceID = deviceID
+				})
+				// Show benchmark progress dialog
+				benchClient := &rebenchmarkModalClient{config: config, lg: lg}
+				uiShowModalDialog(NewModalDialogBox(benchClient, p), false)
+			}
 		}
 
 		if p.IsAudioRecording() {

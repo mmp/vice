@@ -921,3 +921,31 @@ func (sm *SimManager) ReportCrash(report *log.CrashReport, _ *struct{}) error {
 
 	return nil
 }
+
+///////////////////////////////////////////////////////////////////////////
+// Whisper Benchmark Reporting
+
+// WhisperBenchmarkResult contains benchmark results for a single model.
+type WhisperBenchmarkResult struct {
+	ModelName string
+	LatencyMs int64
+	Status    string // "selected", "acceptable", "too_slow", "failed", "skipped"
+}
+
+// WhisperBenchmarkReport contains the full benchmark results from a client.
+type WhisperBenchmarkReport struct {
+	DeviceName    string // GPU/device description from whisper.ProcessorDescription()
+	SelectedModel string
+	Results       []WhisperBenchmarkResult
+}
+
+const ReportWhisperBenchmarkRPC = "SimManager.ReportWhisperBenchmark"
+
+// ReportWhisperBenchmark receives whisper benchmark results from clients and logs them.
+func (sm *SimManager) ReportWhisperBenchmark(report *WhisperBenchmarkReport, _ *struct{}) error {
+	defer sm.lg.CatchAndReportCrash()
+
+	sm.lg.Info("Received whisper benchmark report", slog.Any("report", *report))
+
+	return nil
+}

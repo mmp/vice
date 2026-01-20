@@ -79,6 +79,10 @@ type ConfigNoSim struct {
 
 	UserPTTKey         imgui.Key
 	SelectedMicrophone string
+
+	// Cached whisper model selection from benchmarking
+	WhisperModelName string // Selected model filename (e.g., "ggml-small.en.bin")
+	WhisperDeviceID  string // Device identifier used for benchmarking
 }
 
 type ConfigSim struct {

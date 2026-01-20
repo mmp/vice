@@ -390,8 +390,11 @@ func main() {
 		av.InitDB()
 
 		// Start loading the whisper model in the background so it's ready
-		// when the user first presses PTT
-		client.PreloadWhisperModel(lg)
+		// when the user first presses PTT. Use cached model if same device.
+		client.PreloadWhisperModel(lg, config.WhisperModelName, config.WhisperDeviceID, func(modelName, deviceID string) {
+			config.WhisperModelName = modelName
+			config.WhisperDeviceID = deviceID
+		})
 
 		// Check for whisper model errors asynchronously and show dialog if CPU not supported.
 		go func() {
@@ -465,7 +468,7 @@ func main() {
 
 				case server.ErrServerDisconnected:
 					ShowErrorDialog(plat, lg, "Lost connection to the vice server.")
-					uiShowConnectDialog(mgr, false, config, plat, lg)
+					uiShowConnectOrBenchmarkDialog(mgr, false, config, plat, lg)
 
 				default:
 					lg.Errorf("Server connection error: %v", err)
@@ -488,6 +491,10 @@ func main() {
 				"Unable to connect to vice server.\n\n"+
 					"Running in local-only mode without text-to-speech support.")
 		}
+
+		// Wait for whisper benchmark to complete before loading saved sim.
+		// This shows a progress dialog if benchmarking is still in progress.
+		WaitForWhisperBenchmark(render, plat, lg)
 
 		// After config.Activate(), if we have a loaded sim, get configured for it.
 		if config.Sim != nil && !*resetSim && !*starsRandoms {
@@ -547,7 +554,7 @@ func main() {
 		}
 
 		if !mgr.Connected() && !*starsRandoms {
-			uiShowConnectDialog(mgr, false, config, plat, lg)
+			uiShowConnectOrBenchmarkDialog(mgr, false, config, plat, lg)
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -574,6 +581,9 @@ func main() {
 			}
 
 			mgr.Update(eventStream, plat, lg)
+
+			// Report whisper benchmark to server (only sends once, when benchmark done and server available)
+			client.ReportWhisperBenchmark(mgr.RemoteServer, lg)
 
 			// Inform imgui about input events from the user.
 			plat.ProcessEvents()
