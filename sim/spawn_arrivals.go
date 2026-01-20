@@ -117,6 +117,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	}
 
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeArrival)
+	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = "" // TODO
 	nasFp.ExitFix = util.Select(len(ac.FlightPlan.ArrivalAirport) == 4, ac.FlightPlan.ArrivalAirport[1:], ac.FlightPlan.ArrivalAirport)
 	nasFp.TrackingController = arr.InitialController
@@ -264,6 +265,7 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 
 	_, isTRACON := av.DB.TRACONs[s.State.Facility]
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeOverflight)
+	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = "" // TODO
 	nasFp.ExitFix = ""  // TODO
 	nasFp.TrackingController = of.InitialController
