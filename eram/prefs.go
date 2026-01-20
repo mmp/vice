@@ -110,6 +110,9 @@ type CommonPreferences struct {
 	}
 
 	Line4Type int
+
+	TornOffButtons map[string][2]float32 // button name -> screen position
+	MasterToolbarPosition [2]float32 // top-left position of the master toolbar button
 }
 
 const (
@@ -164,6 +167,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.commandSmallPosition = [2]float32{392, 80}
 	prefs.clockPosition = [2]float32{10, 500}
 	prefs.altitudeFilter = [2]int{0, 999}
+	prefs.TornOffButtons = make(map[string][2]float32)
 
 	prefs.Line4Size = 0
 	prefs.FDBSize = 1
