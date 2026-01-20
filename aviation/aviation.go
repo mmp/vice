@@ -455,7 +455,7 @@ func icaoFromCallsign(callsign string) string {
 	if len(callsign) < 3 {
 		return ""
 	}
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		ch := callsign[i]
 		if ch < 'A' || ch > 'Z' {
 			return ""
