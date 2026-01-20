@@ -271,7 +271,9 @@ func (a AirlineSpecifier) sampleAcType(r *rand.Rand, departureAirport, arrivalAi
 
 	// Sample according to fleet count, filtering by maximum distance for CWT category
 	var actype string
-	acCount := 0
+
+	// First attempt: filter aircraft by distance and sample weighted by fleet count
+	filteredAircraft := make([]FleetAircraft, 0)
 	for _, ac := range a.Aircraft() {
 		// Filter based on flight distance and aircraft CWT category
 		if flightDistance > 0 && !slices.Contains(extraLongRange, ac.ICAO) {
@@ -284,20 +286,27 @@ func (a AirlineSpecifier) sampleAcType(r *rand.Rand, departureAirport, arrivalAi
 				}
 			}
 		}
+		filteredAircraft = append(filteredAircraft, ac)
+	}
 
-		// Reservoir sampling...
-		acCount += ac.Count
-		if r.Float32() < float32(ac.Count)/float32(acCount) {
-			actype = ac.ICAO
+	if len(filteredAircraft) > 0 {
+		sampled, ok := rand.SampleWeighted(r, filteredAircraft, func(ac FleetAircraft) float32 {
+			return float32(ac.Count)
+		})
+
+		if ok {
+			actype = sampled.ICAO
 		}
 	}
+
 	if actype == "" {
 		// Try again without considering range.
-		for _, ac := range a.Aircraft() {
-			acCount += ac.Count
-			if r.Float32() < float32(ac.Count)/float32(acCount) {
-				actype = ac.ICAO
-			}
+		sampled, ok := rand.SampleWeighted(r, a.Aircraft(), func(ac FleetAircraft) float32 {
+			return float32(ac.Count)
+		})
+		
+		if ok {
+			actype = sampled.ICAO
 		}
 	}
 	if actype != "" {
@@ -977,7 +986,6 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 
 	approachAssigned := ar.ExpectApproach.A != nil || ar.ExpectApproach.B != nil
 	ar.Waypoints.CheckArrival(e, controlPositions, approachAssigned, checkScratchpad)
-
 
 	for arrivalAirport := range ar.Airlines {
 		e.Push("Arrival airport " + arrivalAirport)
