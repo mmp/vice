@@ -52,6 +52,9 @@ func init() {
 	registerCommand(CommandModeNone, "QP J [FLID]|QP J[SLEW]", handleJRing)
 	registerCommand(CommandModeNone, "QP T [FLID]|QP T[SLEW]", handleReducedJRing)
 
+	// QF - Flight Plan Display
+	registerCommand(CommandModeNone, "QF [FLID]|QF[SLEW]", handleFlightPlanReadout)
+
 	// MR - Map request (keyboard only)
 	// MR: List available map groups
 	// MR [GROUP]: Load map group
@@ -232,6 +235,40 @@ func handleReducedJRing(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
 	return CommandStatus{
 		bigOutput: fmt.Sprintf("ACCEPT\nREQ/DELETE DRI\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
 	}, nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// QF - Flight Plan Readout Handlers
+
+func handleFlightPlanReadout(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+	fp := trk.FlightPlan
+	if fp == nil {
+		return CommandStatus{
+			err: fmt.Errorf("REJECT - NO FLIGHT PLAN\nFLIGHT PLAN READOUT\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID), // TODO: find the correct error message
+		}
+	}
+	/*
+		The flight plan readout contains the following elements:
+
+		The Zulu time
+		The aircraft's CID
+		The aircraft's ID
+		The track's owning sector ID (in parentheses)
+		The aircraft's type and equipment suffix
+		The aircraft's assigned beacon code
+		The aircraft's filed cruise speed (not in NASFlightPlan so 0 for now)
+		The aircraft's assigned altitude
+		The aircraft's route
+		The aircraft's flight plan remarks (not in NASFlightPlan so nothing for now)
+	*/
+	zTime := ctx.Client.State.SimTime.Format("1504")
+	rte := strings.TrimPrefix(fp.Route, "/. ")
+	rte = strings.ReplaceAll(rte, " ", ".")
+	rte += fmt.Sprintf(".%v", fp.ArrivalAirport)
+	fmt.Printf("rte: %v route: %v\n", rte, fp.Route)
+	return CommandStatus{
+		output: fmt.Sprintf("%v\n%v %v(%v) %v %v 0 %v %v", zTime, fp.CID, fp.ACID, fp.TrackingController, fp.AircraftType, fp.AssignedSquawk, fp.AssignedAltitude, rte),
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////

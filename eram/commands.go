@@ -41,6 +41,7 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 	if mouse == nil {
 		return
 	}
+	ps := ep.currentPrefs()
 	if (ctx.Mouse.Clicked[platform.MouseButtonPrimary] || ctx.Mouse.Clicked[platform.MouseButtonSecondary] ||
 		ctx.Mouse.Clicked[platform.MouseButtonTertiary]) && !ctx.HaveFocus {
 		ctx.KeyboardFocus.Take(ep)
@@ -62,10 +63,11 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 				ep.bigOutput.displayError(ep.currentPrefs(), status.err)
 			} else if status.bigOutput != "" {
 				ep.bigOutput.displaySuccess(ep.currentPrefs(), status.bigOutput)
+			} else if status.output != "" {
+				ep.smallOutput.Set(ps, status.output)
 			}
 		}
 	}
-	ps := ep.currentPrefs()
 	// try get closest track
 
 	// pan

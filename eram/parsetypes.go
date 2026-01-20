@@ -147,7 +147,13 @@ type slewParser struct{}
 func (h *slewParser) Identifier() string { return "SLEW" }
 
 func (h *slewParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
-	return input.clickedTrack, text, input.clickedTrack != nil, nil
+	if input.clickedTrack == nil {
+		return nil, text, false, nil
+	}
+	if strings.TrimSpace(text) != "" {
+		return nil, text, false, nil
+	}
+	return input.clickedTrack, "", true, nil
 }
 
 func (h *slewParser) GoType() reflect.Type { return reflect.TypeOf((*sim.Track)(nil)) }
