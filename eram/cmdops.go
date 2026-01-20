@@ -527,6 +527,10 @@ func handleTargetGenEmptyClicked(ep *ERAMPane, trk *sim.Track) CommandStatus {
 // Default Command Handlers (keyboard and clicked)
 
 func handleDefaultTrack(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (CommandStatus, error) {
+	if trk.FlightPlan == nil {
+		return CommandStatus{}, ErrERAMIllegalACID
+	}
+
 	if ctx.IsHandoffToUser(trk) {
 		// Accept handoff
 		acid := sim.ACID(trk.ADSBCallsign.String())
