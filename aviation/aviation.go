@@ -978,9 +978,6 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 	approachAssigned := ar.ExpectApproach.A != nil || ar.ExpectApproach.B != nil
 	ar.Waypoints.CheckArrival(e, controlPositions, approachAssigned, checkScratchpad)
 
-	if len(ar.Airlines) == 0 {
-		e.ErrorString("no \"airlines\" specified for arrivals")
-	}
 
 	for arrivalAirport := range ar.Airlines {
 		e.Push("Arrival airport " + arrivalAirport)
