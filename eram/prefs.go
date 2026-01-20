@@ -111,8 +111,8 @@ type CommonPreferences struct {
 
 	Line4Type int
 
-	TornOffButtons map[string][2]float32 // button name -> screen position
-	MasterToolbarPosition [2]float32 // top-left position of the master toolbar button
+	TornOffButtons        map[string][2]float32 // button name -> screen position
+	MasterToolbarPosition [2]float32            // top-left position of the master toolbar button
 }
 
 const (

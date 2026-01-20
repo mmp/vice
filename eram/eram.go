@@ -88,16 +88,16 @@ type ERAMPane struct {
 	repositionClock       bool      `json:"-"`
 	timeSinceRepo         time.Time `json:"-"`
 
-	tearoffInProgress   string     `json:"-"` // Button name being torn off
-	tearoffIsReposition bool       `json:"-"` // Repositioning existing vs new tearoff
-	tearoffStart        time.Time  `json:"-"` // Debounce timer
-	tearoffDragOffset   [2]float32 `json:"-"` // Mouse offset from button corner
-	deleteTearoffMode   bool       `json:"-"` // Delete mode active
-	tearoffMenus        map[string]int       `json:"-"` // torn-off menu button name -> menu state
-	tearoffMenuOpened   map[string]time.Time `json:"-"` // debounce open clicks per menu
+	tearoffInProgress        string                   `json:"-"` // Button name being torn off
+	tearoffIsReposition      bool                     `json:"-"` // Repositioning existing vs new tearoff
+	tearoffStart             time.Time                `json:"-"` // Debounce timer
+	tearoffDragOffset        [2]float32               `json:"-"` // Mouse offset from button corner
+	deleteTearoffMode        bool                     `json:"-"` // Delete mode active
+	tearoffMenus             map[string]int           `json:"-"` // torn-off menu button name -> menu state
+	tearoffMenuOpened        map[string]time.Time     `json:"-"` // debounce open clicks per menu
 	tearoffMenuLightToolbar  map[string][4][2]float32 `json:"-"` // cached menu backgrounds for tearoffs
 	tearoffMenuLightToolbar2 map[string][4][2]float32 `json:"-"` // cached secondary backgrounds (MAP BRIGHT)
-	tearoffMenuOrder    []string `json:"-"` // draw/input order for tearoff menus (oldest -> newest)
+	tearoffMenuOrder         []string                 `json:"-"` // draw/input order for tearoff menus (oldest -> newest)
 
 	velocityTime int `json:"-"` // 0, 1, 4, or 8 minutes
 
