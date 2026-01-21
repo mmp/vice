@@ -1193,8 +1193,9 @@ func extractApproach(tokens []Token, approaches map[string]string) (string, floa
 }
 
 // generateApproachPhraseVariants generates variants of an approach phrase
-// to handle common STT issues with separated letters.
+// to handle common STT issues with separated letters and missing words.
 // For example: "l s runway 7 right" → also try "i l s runway 7 right"
+// For example: "ils two eight center" → also try "i l s runway two eight center"
 func generateApproachPhraseVariants(phrase string) []string {
 	variants := []string{phrase}
 
@@ -1209,6 +1210,28 @@ func generateApproachPhraseVariants(phrase string) []string {
 		variant := "ils " + phrase[3:]
 		variants = append(variants, variant)
 	}
+
+	// Handle "ils" → "i l s" (Whisper sometimes joins "ILS" into one word)
+	if strings.HasPrefix(phrase, "ils ") {
+		variant := "i l s " + phrase[4:]
+		variants = append(variants, variant)
+	}
+
+	// Generate variants with "runway" inserted after approach type prefixes.
+	// Handles cases where user omits "runway" but candidate includes it
+	// (e.g., "i l s two eight center" should match "I L S runway two eight center")
+	approachPrefixes := []string{"i l s ", "ils ", "visual ", "rnav ", "v o r ", "vor ", "localizer ", "loc "}
+	var runwayVariants []string
+	for _, v := range variants {
+		for _, prefix := range approachPrefixes {
+			if strings.HasPrefix(v, prefix) && !strings.Contains(v, "runway") {
+				runwayVariant := prefix + "runway " + v[len(prefix):]
+				runwayVariants = append(runwayVariants, runwayVariant)
+				break
+			}
+		}
+	}
+	variants = append(variants, runwayVariants...)
 
 	return variants
 }

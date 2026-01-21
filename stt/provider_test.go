@@ -280,6 +280,22 @@ func TestCompoundCommands(t *testing.T) {
 			},
 			expected: "THY10Z CI2L S180",
 		},
+		{
+			name:       "cleared approach with joined ILS and missing runway",
+			transcript: "American 717 cleared ILS 28 Center approach",
+			aircraft: map[string]Aircraft{
+				"American 717": {
+					Callsign:         "AAL717",
+					Altitude:         7000,
+					State:            "arrival",
+					AssignedApproach: "ILS Runway 28C",
+					CandidateApproaches: map[string]string{
+						"I L S runway two eight center": "I8C",
+					},
+				},
+			},
+			expected: "AAL717 CI8C",
+		},
 	}
 
 	provider := NewTranscriber(nil)
