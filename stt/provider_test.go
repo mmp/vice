@@ -597,6 +597,87 @@ func TestCallsignMatchingPriority(t *testing.T) {
 	}
 }
 
+func TestHeadingVsDegreesDisambiguation(t *testing.T) {
+	tests := []struct {
+		name       string
+		transcript string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "turn left 100 is heading not degrees",
+			transcript: "Delta 123 turn left 100",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", State: "arrival"},
+			},
+			expected: "DAL123 L100",
+		},
+		{
+			name:       "turn 30 left is degrees turn",
+			transcript: "Delta 123 turn 30 left",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", State: "arrival"},
+			},
+			expected: "DAL123 T30L",
+		},
+		{
+			name:       "turn left 30 degrees is degrees turn",
+			transcript: "Delta 123 turn left 30 degrees",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", State: "arrival"},
+			},
+			expected: "DAL123 T30L",
+		},
+		{
+			name:       "turn 20 degrees right is degrees turn",
+			transcript: "Delta 123 turn 20 degrees right",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", State: "arrival"},
+			},
+			expected: "DAL123 T20R",
+		},
+		{
+			name:       "turn right 45 degrees is degrees turn",
+			transcript: "Delta 123 turn right 45 degrees",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", State: "arrival"},
+			},
+			expected: "DAL123 T45R",
+		},
+		{
+			name:       "turn left heading 100 is heading",
+			transcript: "Delta 123 turn left heading 100",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", State: "arrival"},
+			},
+			expected: "DAL123 L100",
+		},
+		{
+			name:       "turn right 200 is heading not degrees",
+			transcript: "Delta 123 turn right 200",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", State: "arrival"},
+			},
+			expected: "DAL123 R200",
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
+}
+
 func TestSTTErrorRecovery(t *testing.T) {
 	tests := []struct {
 		name       string
@@ -1688,14 +1769,25 @@ func TestExtractDegrees(t *testing.T) {
 			expectedCons: 2,
 		},
 		{
-			name: "direction before number",
+			name: "direction before number without degrees keyword - no match",
 			tokens: []Token{
 				{Text: "left", Type: TokenWord},
 				{Text: "15", Type: TokenNumber, Value: 15},
 			},
+			expectedDeg:  0,
+			expectedDir:  "",
+			expectedCons: 0,
+		},
+		{
+			name: "direction before number with degrees keyword - matches",
+			tokens: []Token{
+				{Text: "left", Type: TokenWord},
+				{Text: "15", Type: TokenNumber, Value: 15},
+				{Text: "degrees", Type: TokenWord},
+			},
 			expectedDeg:  15,
 			expectedDir:  "left",
-			expectedCons: 2,
+			expectedCons: 3,
 		},
 		{
 			name:         "missing direction",

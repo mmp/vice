@@ -1408,6 +1408,9 @@ func extractSquawk(tokens []Token) (string, int) {
 }
 
 // extractDegrees extracts a degree turn value and direction.
+// Uses word order to disambiguate: "turn 20 left" is a degrees turn,
+// but "turn left 20" is interpreted as heading (direction before number).
+// The "degrees" keyword overrides this: "turn left 20 degrees" is a degrees turn.
 func extractDegrees(tokens []Token) (int, string, int) {
 	if len(tokens) == 0 {
 		return 0, "", 0
@@ -1415,31 +1418,48 @@ func extractDegrees(tokens []Token) (int, string, int) {
 
 	var deg int
 	var dir string
+	var degPos, dirPos int = -1, -1
+	var hasDegreesKeyword bool
 	consumed := 0
 
-	// Look for number and direction
+	// Look for number and direction, tracking positions
 	for consumed < len(tokens) && consumed < 5 {
 		t := tokens[consumed]
 		text := strings.ToLower(t.Text)
 
-		if t.Type == TokenNumber && t.Value > 0 && t.Value <= 180 {
+		if t.Type == TokenNumber && t.Value > 0 && t.Value <= 45 && degPos == -1 {
 			deg = t.Value
-		} else if text == "left" {
-			dir = "left"
-		} else if text == "right" {
-			dir = "right"
+			degPos = consumed
+		} else if (text == "left" || text == "right") && dirPos == -1 {
+			dir = text
+			dirPos = consumed
 		} else if text == "degrees" || text == "degree" {
-			// Skip
+			hasDegreesKeyword = true
 		}
 		consumed++
 
-		if deg > 0 && dir != "" {
+		// Keep scanning even after finding both to check for "degrees" keyword
+		if deg > 0 && dir != "" && !hasDegreesKeyword {
+			// Continue scanning a couple more tokens for "degrees"
+			for i := 0; i < 2 && consumed < len(tokens); i++ {
+				if text := strings.ToLower(tokens[consumed].Text); text == "degrees" || text == "degree" {
+					hasDegreesKeyword = true
+					consumed++
+					break
+				}
+				consumed++
+			}
 			break
 		}
 	}
 
+	// Only return match if:
+	// 1. Both number and direction found, AND
+	// 2. Number came before direction OR "degrees" keyword present
 	if deg > 0 && dir != "" {
-		return deg, dir, consumed
+		if degPos < dirPos || hasDegreesKeyword {
+			return deg, dir, consumed
+		}
 	}
 
 	return 0, "", 0
