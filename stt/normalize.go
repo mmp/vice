@@ -251,6 +251,12 @@ func NormalizeTranscript(transcript string) []string {
 			continue
 		}
 
+		// Special case: "flighting" is commonly transcribed instead of "fly heading"
+		if w == "flighting" {
+			result = append(result, "fly", "heading")
+			continue
+		}
+
 		// Handle "or" as STT misrecognition of "niner" when between digits.
 		// STT sometimes transcribes "niner" as "nine or", so "two nine or zero"
 		// becomes "2 9 or 0" instead of "2 9 0". Skip "or" when it appears

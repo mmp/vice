@@ -939,6 +939,8 @@ func TestNormalizeTranscript(t *testing.T) {
 		{"9r", []string{"9"}},
 		// "niner thousand" transcribed as "9 or 1000" - should convert 1000 to thousand
 		{"descend and maintain, 9 or 1000", []string{"descend", "and", "maintain", "9", "thousand"}},
+		// "fly heading" sometimes transcribed as "flighting"
+		{"flighting 030", []string{"fly", "heading", "030"}},
 	}
 
 	for _, tt := range tests {
