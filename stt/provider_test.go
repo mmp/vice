@@ -509,6 +509,19 @@ func TestNavigationCommands(t *testing.T) {
 			expected: "UAL300 DJENNY",
 		},
 		{
+			name:       "procedure at misrecognized as proceed direct",
+			transcript: "Delta 450 procedure at MERIT",
+			aircraft: map[string]Aircraft{
+				"Delta 450": {
+					Callsign: "DAL450",
+					Altitude: 10000,
+					State:    "arrival",
+					Fixes:    map[string]string{"merit": "MERIT"},
+				},
+			},
+			expected: "DAL450 DMERIT",
+		},
+		{
 			name:       "depart fix heading with fuzzy keyword",
 			transcript: "American 870 tepart pucky heading 180",
 			aircraft: map[string]Aircraft{

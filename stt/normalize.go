@@ -136,13 +136,14 @@ var commandKeywords = map[string]string{
 	"knots":    "knots",
 
 	// Navigation
-	"direct":  "direct",
-	"proceed": "proceed",
-	"cross":   "cross",
-	"depart":  "depart",
-	"hold":    "hold",
-	"via":     "via",
-	"by":      "via", // STT error: "via" often transcribed as "by"
+	"direct":    "direct",
+	"proceed":   "proceed",
+	"procedure": "proceed", // STT error: "proceed" often transcribed as "procedure"
+	"cross":     "cross",
+	"depart":    "depart",
+	"hold":      "hold",
+	"via":       "via",
+	"by":        "via", // STT error: "via" often transcribed as "by"
 
 	// Approach
 	"cleared":   "cleared",

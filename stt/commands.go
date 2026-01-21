@@ -312,7 +312,7 @@ var commandTemplates = []CommandTemplate{
 		ArgType:   ArgFix,
 		OutputFmt: "D%s",
 		Priority:  10,
-		SkipWords: []string{"to"},
+		SkipWords: []string{"to", "at"},
 	},
 	{
 		Name:      "cross_fix_altitude",
