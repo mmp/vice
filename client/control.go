@@ -395,7 +395,7 @@ func (c *ControlClient) FlightPlanDirect(aircraft sim.ACID, fix string, callback
 }
 
 func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds string, multiple, clickedTrack bool,
-	whisperDuration time.Duration, whisperTranscript string,
+	whisperDuration time.Duration, audioDuration time.Duration, whisperTranscript string,
 	aircraftContext map[string]stt.Aircraft, sttDebugLogs string,
 	handleResult func(message string, remainingInput string)) {
 	// Determine if TTS is enabled for this command
@@ -419,6 +419,7 @@ func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds strin
 		ClickedTrack:      clickedTrack,
 		EnableTTS:         enableTTS,
 		WhisperDuration:   whisperDuration,
+		AudioDuration:     audioDuration,
 		WhisperTranscript: whisperTranscript,
 		WhisperProcessor:  processorDesc,
 		AircraftContext:   aircraftContext,

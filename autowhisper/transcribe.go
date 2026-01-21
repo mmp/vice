@@ -103,6 +103,10 @@ type Options struct {
 	TokenTimestamps bool
 	// Max tokens per segment (0 = no limit).
 	MaxTokensPerSegment uint
+	// RealtimeFactor is the ratio of transcription time to audio duration from benchmarking.
+	// A value < 0.05 (20x+ realtime) indicates fast hardware suitable for beam search.
+	// A value of 0 means unknown/not benchmarked.
+	RealtimeFactor float64
 }
 
 // TranscribeWithModel transcribes PCM16 audio using a pre-loaded model.

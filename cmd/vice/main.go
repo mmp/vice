@@ -391,10 +391,11 @@ func main() {
 
 		// Start loading the whisper model in the background so it's ready
 		// when the user first presses PTT. Use cached model if same device and benchmark index.
-		client.PreloadWhisperModel(lg, config.WhisperModelName, config.WhisperDeviceID, config.WhisperBenchmarkIndex, func(modelName, deviceID string, benchmarkIndex int) {
+		client.PreloadWhisperModel(lg, config.WhisperModelName, config.WhisperDeviceID, config.WhisperBenchmarkIndex, config.WhisperRealtimeFactor, func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64) {
 			config.WhisperModelName = modelName
 			config.WhisperDeviceID = deviceID
 			config.WhisperBenchmarkIndex = benchmarkIndex
+			config.WhisperRealtimeFactor = realtimeFactor
 		})
 
 		// Check for whisper model errors asynchronously and show dialog if CPU not supported.

@@ -81,9 +81,10 @@ type ConfigNoSim struct {
 	SelectedMicrophone string
 
 	// Cached whisper model selection from benchmarking
-	WhisperModelName      string // Selected model filename (e.g., "ggml-small.en.bin")
-	WhisperDeviceID       string // Device identifier used for benchmarking
-	WhisperBenchmarkIndex int    // Benchmark generation; rebenchmark if code's value is higher
+	WhisperModelName      string  // Selected model filename (e.g., "ggml-small.en.bin")
+	WhisperDeviceID       string  // Device identifier used for benchmarking
+	WhisperBenchmarkIndex int     // Benchmark generation; rebenchmark if code's value is higher
+	WhisperRealtimeFactor float64 // Ratio of transcription time to audio duration (for quality tuning)
 }
 
 type ConfigSim struct {

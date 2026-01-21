@@ -549,6 +549,7 @@ var whisperModelMu sync.Mutex
 var whisperModelDone chan struct{}
 var whisperModelStarted bool
 var whisperModelStartMu sync.Mutex
+var whisperRealtimeFactor float64 // ratio of transcription time to audio duration from benchmark
 
 // Benchmark status for UI display
 var whisperBenchmarkStatus string
@@ -558,10 +559,10 @@ var whisperIsBenchmarking bool // true only when actually running benchmarks, no
 // WhisperBenchmarkIndex is the current benchmark generation. If the stored
 // index in config is less than this, re-benchmarking is triggered. Increment
 // this when benchmark criteria change (e.g., models, thresholds).
-const WhisperBenchmarkIndex = 1
+const WhisperBenchmarkIndex = 2
 
 // Callback to save model selection to config
-var whisperSaveCallback func(modelName, deviceID string, benchmarkIndex int)
+var whisperSaveCallback func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64)
 
 // Benchmark report data to be sent to server
 var whisperBenchmarkReport *server.WhisperBenchmarkReport
@@ -674,7 +675,7 @@ func ReportWhisperBenchmark(remoteServer *Server, lg *log.Logger) bool {
 
 // ForceWhisperRebenchmark closes the current model and triggers a fresh benchmark.
 // This should be called when the user wants to re-run the benchmark.
-func ForceWhisperRebenchmark(lg *log.Logger, saveCallback func(modelName, deviceID string, benchmarkIndex int)) {
+func ForceWhisperRebenchmark(lg *log.Logger, saveCallback func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64)) {
 	whisperModelStartMu.Lock()
 	// Close existing model if any
 	whisperModelMu.Lock()
@@ -684,6 +685,7 @@ func ForceWhisperRebenchmark(lg *log.Logger, saveCallback func(modelName, device
 	}
 	whisperModelNameAtomic.Store("")
 	whisperModelErr = nil
+	whisperRealtimeFactor = 0
 	whisperModelMu.Unlock()
 
 	// Reset state for new benchmark
@@ -697,7 +699,7 @@ func ForceWhisperRebenchmark(lg *log.Logger, saveCallback func(modelName, device
 	whisperBenchmarkStatusMu.Unlock()
 
 	// Start fresh benchmark (pass 0 for cachedBenchmarkIndex to force rebenchmark)
-	PreloadWhisperModel(lg, "", "", 0, saveCallback)
+	PreloadWhisperModel(lg, "", "", 0, 0, saveCallback)
 }
 
 // benchmarkModel loads a model, runs warmup passes, then benchmarks it with
@@ -720,10 +722,9 @@ func benchmarkModel(modelName string) (latencyMs int64, model *whisper.Model, er
 	// runPass runs a single transcription pass and returns the latency
 	runPass := func() int64 {
 		start := time.Now()
-		st := whisper.NewStreamingTranscriber(model, &benchMu, whisper.Options{})
-		st.Start()
-		st.AddSamples(samples)
-		st.Stop()
+		t := whisper.NewTranscriber(model, &benchMu, whisper.Options{})
+		t.AddSamples(samples)
+		t.Stop() // Discard text and audio duration for benchmark
 		return time.Since(start).Milliseconds()
 	}
 
@@ -770,7 +771,7 @@ var whisperModelTiers = []string{
 //
 // The saveCallback is called when a model is selected (after benchmarking)
 // to allow saving the selection to config.
-func PreloadWhisperModel(lg *log.Logger, cachedModelName, cachedDeviceID string, cachedBenchmarkIndex int, saveCallback func(modelName, deviceID string, benchmarkIndex int)) {
+func PreloadWhisperModel(lg *log.Logger, cachedModelName, cachedDeviceID string, cachedBenchmarkIndex int, cachedRealtimeFactor float64, saveCallback func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64)) {
 	whisperModelStartMu.Lock()
 	if whisperModelStarted {
 		whisperModelStartMu.Unlock()
@@ -802,7 +803,7 @@ func PreloadWhisperModel(lg *log.Logger, cachedModelName, cachedDeviceID string,
 			setWhisperBenchmarkStatus("No GPU available, using tiny model")
 			lg.Info("No GPU available, using tiny whisper model")
 			modelName := "ggml-tiny.en.bin"
-			loadModelDirect(modelName, currentDeviceID, lg)
+			loadModelDirect(modelName, currentDeviceID, 0, lg) // 0 = unknown realtime factor
 			return
 		}
 
@@ -810,7 +811,7 @@ func PreloadWhisperModel(lg *log.Logger, cachedModelName, cachedDeviceID string,
 		if cachedModelName != "" && cachedDeviceID == currentDeviceID && cachedBenchmarkIndex >= WhisperBenchmarkIndex {
 			setWhisperBenchmarkStatus(fmt.Sprintf("Using cached model: %s", cachedModelName))
 			lg.Infof("Using cached whisper model: %s (device: %s)", cachedModelName, currentDeviceID)
-			loadModelDirect(cachedModelName, currentDeviceID, lg)
+			loadModelDirect(cachedModelName, currentDeviceID, cachedRealtimeFactor, lg)
 			return
 		}
 
@@ -840,7 +841,7 @@ func PreloadWhisperModel(lg *log.Logger, cachedModelName, cachedDeviceID string,
 }
 
 // loadModelDirect loads a model without benchmarking (used for cached or no-GPU case)
-func loadModelDirect(modelName, deviceID string, lg *log.Logger) {
+func loadModelDirect(modelName, deviceID string, cachedRealtimeFactor float64, lg *log.Logger) {
 	modelBytes := util.LoadResourceBytes("models/" + modelName)
 	whisperModelMu.Lock()
 	var err error
@@ -853,21 +854,21 @@ func loadModelDirect(modelName, deviceID string, lg *log.Logger) {
 		return
 	}
 	whisperModelNameAtomic.Store(modelName)
+	whisperRealtimeFactor = cachedRealtimeFactor
 	whisperModelMu.Unlock()
 
 	// Warmup pass
 	setWhisperBenchmarkStatus(fmt.Sprintf("Warming up %s...", modelName))
-	warmupST := whisper.NewStreamingTranscriber(whisperModel, &whisperModelMu, whisper.Options{})
-	warmupST.Start()
-	warmupST.AddSamples(make([]int16, platform.AudioInputSampleRate)) // 1 second
-	warmupST.Stop()
+	warmupT := whisper.NewTranscriber(whisperModel, &whisperModelMu, whisper.Options{})
+	warmupT.AddSamples(make([]int16, platform.AudioInputSampleRate)) // 1 second
+	warmupT.Stop()                                                   // Discard results for warmup
 
 	setWhisperBenchmarkStatus(fmt.Sprintf("Selected: %s", modelName))
-	lg.Infof("Whisper model loaded: %s", modelName)
+	lg.Infof("Whisper model loaded: %s (realtimeFactor=%.3f)", modelName, cachedRealtimeFactor)
 
 	// Save to config if callback provided
 	if whisperSaveCallback != nil {
-		whisperSaveCallback(modelName, deviceID, WhisperBenchmarkIndex)
+		whisperSaveCallback(modelName, deviceID, WhisperBenchmarkIndex, cachedRealtimeFactor)
 	}
 }
 
@@ -876,9 +877,13 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 	setWhisperBenchmarkStatus("Starting benchmark (GPU available)")
 	lg.Info("Starting whisper model benchmark")
 
+	// Tightened thresholds for better latency guarantees.
+	// With Whisper's fixed encoder time (~60-80% of total), a 1s benchmark with
+	// 350ms threshold gives ~1.3-1.5x safety factor for real 3s commands.
+	// Real 3s command: ~350 * 1.3 = ~455ms, well under 500ms target.
 	const (
-		continueThresholdMs = 400 // <400ms: fast enough, try larger model
-		acceptThresholdMs   = 750 // Must process 1s of speech in <750ms to be usable
+		continueThresholdMs = 250 // <250ms: fast enough, try larger model
+		acceptThresholdMs   = 350 // Must process 1s of speech in <350ms to be usable
 	)
 
 	var selectedModel *whisper.Model
@@ -903,7 +908,7 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 		allResults = append(allResults, benchResult{modelName, latencyMs, ""})
 
 		if latencyMs > acceptThresholdMs {
-			// Too slow (>750ms) - can't use this model, use the previous one
+			// Too slow (>350ms) - can't use this model, use the previous one
 			fmt.Printf("[whisper-benchmark] %s too slow (%dms > %dms), using previous\n",
 				modelName, latencyMs, acceptThresholdMs)
 			model.Close()
@@ -919,22 +924,26 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 		selectedLatency = latencyMs
 
 		if latencyMs > continueThresholdMs {
-			// Acceptable but not fast (400-750ms) - stop here
+			// Acceptable but not fast (250-350ms) - stop here
 			fmt.Printf("[whisper-benchmark] %s acceptable (%dms), stopping\n", modelName, latencyMs)
 			break
 		}
 
-		// Fast enough (<400ms) - continue to try larger model
+		// Fast enough (<250ms) - continue to try larger model
 		fmt.Printf("[whisper-benchmark] %s fast (%dms), trying larger\n", modelName, latencyMs)
 	}
 
 	// Check if we found any usable model
 	if selectedModel == nil {
-		whisperModelErr = errors.New("no model fast enough (need <750ms for 1s of speech)")
+		whisperModelErr = errors.New("no model fast enough (need <350ms for 1s of speech)")
 		lg.Error("No whisper model fast enough")
 		setWhisperBenchmarkStatus("No model fast enough")
 		return
 	}
+
+	// Calculate realtime factor: ratio of transcription time to audio duration
+	// Used to enable quality features (beam search) on fast hardware
+	realtimeFactor := float64(selectedLatency) / 1000.0 // latency for 1s audio
 
 	// Print summary and build report for server
 	fmt.Printf("[whisper-benchmark] === Results Summary ===\n")
@@ -961,6 +970,7 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 			Status:    status,
 		})
 	}
+	fmt.Printf("[whisper-benchmark] Realtime factor: %.3f (%.1fx realtime)\n", realtimeFactor, 1.0/realtimeFactor)
 
 	// Store benchmark report for later sending to server
 	whisperBenchmarkReportMu.Lock()
@@ -975,14 +985,15 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 	whisperModelMu.Lock()
 	whisperModel = selectedModel
 	whisperModelNameAtomic.Store(selectedName)
+	whisperRealtimeFactor = realtimeFactor
 	whisperModelMu.Unlock()
 
 	setWhisperBenchmarkStatus(fmt.Sprintf("Selected: %s (%dms)", selectedName, selectedLatency))
-	lg.Infof("Whisper model selected: %s (%dms)", selectedName, selectedLatency)
+	lg.Infof("Whisper model selected: %s (%dms, realtimeFactor=%.3f)", selectedName, selectedLatency, realtimeFactor)
 
 	// Save to config if callback provided
 	if whisperSaveCallback != nil {
-		whisperSaveCallback(selectedName, deviceID, WhisperBenchmarkIndex)
+		whisperSaveCallback(selectedName, deviceID, WhisperBenchmarkIndex, realtimeFactor)
 	}
 }
 
@@ -1143,14 +1154,13 @@ func (c *ControlClient) GetAndClearPTTReleaseTime() time.Time {
 	return t
 }
 
-// streamingSTT holds state for a streaming transcription session.
+// streamingSTT holds state for a transcription session.
 type streamingSTT struct {
-	transcriber *whisper.StreamingTranscriber
-	resultChan  <-chan whisper.StreamingResult
+	transcriber *whisper.Transcriber
 	state       SimState // Snapshot of state at start of streaming
 }
 
-// StartStreamingSTT begins a streaming transcription session.
+// StartStreamingSTT begins a transcription session.
 // Audio samples can be fed via FeedAudioToStreaming.
 // Call StopStreamingSTT to end the session and process the result.
 func (c *ControlClient) StartStreamingSTT(lg *log.Logger) error {
@@ -1163,14 +1173,14 @@ func (c *ControlClient) StartStreamingSTT(lg *log.Logger) error {
 	// Snapshot state for prompt construction
 	state := c.State
 
-	st := whisper.NewStreamingTranscriber(whisperModel, &whisperModelMu, whisper.Options{
-		InitialPrompt: makeWhisperPrompt(state),
+	st := whisper.NewTranscriber(whisperModel, &whisperModelMu, whisper.Options{
+		InitialPrompt:  makeWhisperPrompt(state),
+		RealtimeFactor: whisperRealtimeFactor,
 	})
 
 	c.mu.Lock()
 	c.streamingSTT = &streamingSTT{
 		transcriber: st,
-		resultChan:  st.Start(),
 		state:       state,
 	}
 	// Hold speech playback during recording/processing
@@ -1178,33 +1188,9 @@ func (c *ControlClient) StartStreamingSTT(lg *log.Logger) error {
 	c.transmissions.Hold()
 	c.mu.Unlock()
 
-	lg.Info("SPEECH: streaming STT started, sttActive=true")
-
-	// Start goroutine to handle streaming results
-	go c.handleStreamingResults(lg)
+	lg.Info("SPEECH: STT started, sttActive=true")
 
 	return nil
-}
-
-// handleStreamingResults processes intermediate transcription results.
-func (c *ControlClient) handleStreamingResults(lg *log.Logger) {
-	defer lg.CatchAndReportCrash()
-
-	c.mu.Lock()
-	stt := c.streamingSTT
-	c.mu.Unlock()
-
-	if stt == nil {
-		return
-	}
-
-	for result := range stt.resultChan {
-		if result.IsFinal {
-			break
-		}
-		// Update UI with intermediate result (add "..." to indicate in progress)
-		c.SetLastTranscription(result.Text + "...")
-	}
 }
 
 // StopStreamingSTT ends the streaming session and processes the final result.
@@ -1237,7 +1223,7 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 		defer lg.CatchAndReportCrash()
 
 		// Get final transcription from whisper
-		finalText := sttSession.transcriber.Stop()
+		finalText, audioDuration := sttSession.transcriber.Stop()
 		whisperDuration := time.Since(pttReleaseTime)
 
 		c.mu.Lock()
@@ -1392,7 +1378,7 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 
 		// Execute the command via RPC (this handles TTS readback)
 		c.RunAircraftCommands(av.ADSBCallsign(callsign), command, false, false,
-			totalDuration, finalText,
+			totalDuration, audioDuration, finalText,
 			aircraftCtx, strings.Join(debugLogs, "\n"),
 			func(message string, remainingInput string) {
 				c.transmissions.Unhold()
