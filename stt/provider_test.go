@@ -2303,3 +2303,91 @@ func TestSplitCallsign(t *testing.T) {
 		})
 	}
 }
+
+// TestDecodeCommandsForCallsign tests decoding commands when callsign is already known.
+// This is used when controller repeats a command without callsign after an AGAIN response.
+func TestDecodeCommandsForCallsign(t *testing.T) {
+	// Helper to create aircraft map with both telephony and ICAO callsign keys
+	// (matching what BuildAircraftContext does)
+	makeAircraftMap := func(telephony string, ac Aircraft) map[string]Aircraft {
+		return map[string]Aircraft{
+			telephony:   ac,
+			ac.Callsign: ac,
+		}
+	}
+
+	tests := []struct {
+		name       string
+		transcript string
+		callsign   string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "simple altitude command",
+			transcript: "descend and maintain 8000",
+			callsign:   "AAL5936",
+			aircraft:   makeAircraftMap("American 5936", Aircraft{Callsign: "AAL5936", Altitude: 12000, State: "arrival"}),
+			expected:   "D80",
+		},
+		{
+			name:       "heading command",
+			transcript: "turn left heading two seven zero",
+			callsign:   "UAL452",
+			aircraft:   makeAircraftMap("United 452", Aircraft{Callsign: "UAL452", Altitude: 10000, State: "arrival"}),
+			expected:   "L270",
+		},
+		{
+			name:       "speed command",
+			transcript: "reduce speed to two five zero",
+			callsign:   "DAL88",
+			aircraft:   makeAircraftMap("Delta 88", Aircraft{Callsign: "DAL88", Altitude: 10000, State: "arrival"}),
+			expected:   "S250",
+		},
+		{
+			name:       "multiple commands",
+			transcript: "turn right heading one eight zero descend and maintain six thousand",
+			callsign:   "SWA221",
+			aircraft:   makeAircraftMap("Southwest 221", Aircraft{Callsign: "SWA221", Altitude: 10000, State: "arrival"}),
+			expected:   "R180 D60",
+		},
+		{
+			name:       "no valid commands returns AGAIN",
+			transcript: "mumble garble nonsense",
+			callsign:   "AAL5936",
+			aircraft:   makeAircraftMap("American 5936", Aircraft{Callsign: "AAL5936", Altitude: 12000, State: "arrival"}),
+			expected:   "AGAIN",
+		},
+		{
+			name:       "empty transcript",
+			transcript: "",
+			callsign:   "AAL5936",
+			aircraft:   makeAircraftMap("American 5936", Aircraft{Callsign: "AAL5936", Altitude: 12000, State: "arrival"}),
+			expected:   "",
+		},
+		{
+			name:       "callsign not in aircraft context",
+			transcript: "descend and maintain 8000",
+			callsign:   "UNKNOWN",
+			aircraft:   makeAircraftMap("American 5936", Aircraft{Callsign: "AAL5936", Altitude: 12000, State: "arrival"}),
+			expected:   "AGAIN",
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeCommandsForCallsign(tt.aircraft, tt.transcript, tt.callsign)
+			if err != nil {
+				t.Errorf("DecodeCommandsForCallsign(%q, %q) error = %v",
+					tt.transcript, tt.callsign, err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("DecodeCommandsForCallsign(%q, %q) = %q, want %q",
+					tt.transcript, tt.callsign, result, tt.expected)
+			}
+		})
+	}
+}

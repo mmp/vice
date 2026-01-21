@@ -52,6 +52,9 @@ type ControlClient struct {
 	// Previous STT context for bug reporting
 	prevSTTContext *STTBugContext
 
+	// Last callsign that replied "AGAIN" - allows controller to repeat command without callsign
+	lastAgainCallsign av.ADSBCallsign
+
 	// Whisper performance tracking for slow GPU detection
 	recentWhisperDurations  []time.Duration // Sliding window of recent whisper durations
 	slowPerformanceReported bool            // True if we've already reported slow performance
@@ -1377,10 +1380,33 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 		}
 
 		// Parse callsign and command from decoded result
-		// BLOCKED is special: no callsign, server picks a random aircraft
+		// BLOCKED is special: no callsign found
 		var callsign, command string
 		if decoded == "BLOCKED" {
-			command = "BLOCKED"
+			// Check if we have a last AGAIN callsign to use as fallback
+			c.mu.Lock()
+			lastAgain := c.lastAgainCallsign
+			c.mu.Unlock()
+
+			if lastAgain != "" {
+				// Try to decode commands for the last AGAIN callsign
+				lg.Infof("STT: BLOCKED but have lastAgainCallsign=%s, trying fallback decode", lastAgain)
+				fallbackDecoded, fallbackErr := c.sttTranscriber.DecodeCommandsForCallsign(
+					aircraftCtx, finalText, string(lastAgain))
+				if fallbackErr == nil && fallbackDecoded != "" && fallbackDecoded != "AGAIN" {
+					// Successfully parsed commands for the fallback callsign
+					callsign = string(lastAgain)
+					command = fallbackDecoded
+					decoded = callsign + " " + command
+					lg.Infof("STT: fallback decode success: %s %s", callsign, command)
+				} else {
+					// Fallback failed, treat as normal BLOCKED
+					command = "BLOCKED"
+					lg.Infof("STT: fallback decode failed, using BLOCKED")
+				}
+			} else {
+				command = "BLOCKED"
+			}
 		} else {
 			callsign, command, _ = strings.Cut(decoded, " ")
 		}
@@ -1388,6 +1414,22 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 
 		c.SetLastCommand(decoded)
 		c.postSTTEvent(finalText, decoded, timingStr)
+
+		// Track AGAIN responses for fallback callsign
+		if command == "AGAIN" {
+			c.mu.Lock()
+			c.lastAgainCallsign = av.ADSBCallsign(callsign)
+			c.mu.Unlock()
+			lg.Infof("STT: set lastAgainCallsign=%s", callsign)
+		} else if command != "BLOCKED" {
+			// Clear the last AGAIN callsign on successful command
+			c.mu.Lock()
+			if c.lastAgainCallsign != "" {
+				lg.Infof("STT: clearing lastAgainCallsign (was %s)", c.lastAgainCallsign)
+				c.lastAgainCallsign = ""
+			}
+			c.mu.Unlock()
+		}
 
 		// Execute the command via RPC (this handles TTS readback)
 		c.RunAircraftCommands(av.ADSBCallsign(callsign), command, false, false,
