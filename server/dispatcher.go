@@ -675,23 +675,8 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 			slog.String("processor", cmds.WhisperProcessor),
 			slog.String("callsign", string(cmds.Callsign)),
 			slog.String("command", cmds.Commands),
-			slog.Int("aircraft_count", len(cmds.AircraftContext)),
-		)
-
-		// Log detailed aircraft context
-		for telephony, ac := range cmds.AircraftContext {
-			sd.sm.lg.Debug("STT aircraft",
-				slog.String("telephony", telephony),
-				slog.String("callsign", ac.Callsign),
-				slog.String("state", ac.State),
-				slog.Int("altitude", ac.Altitude),
-			)
-		}
-
-		// Log STT debug logs if present
-		if cmds.STTDebugLogs != "" {
-			sd.sm.lg.Debug("STT debug logs", slog.String("logs", cmds.STTDebugLogs))
-		}
+			slog.Any("stt_aircraft", cmds.AircraftContext),
+			slog.String("logs", cmds.STTDebugLogs))
 	}
 
 	return nil
