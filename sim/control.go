@@ -1607,6 +1607,21 @@ func (s *Sim) SayAgain(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign, stri
 	return callsign, spokenText, nil
 }
 
+// SayNotCleared is called when the controller issues "contact tower" to an arrival
+// aircraft that hasn't been cleared for an approach. The pilot responds that they
+// haven't received approach clearance.
+func (s *Sim) SayNotCleared(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign, string, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	tr := av.MakeReadbackTransmission("we haven't been cleared for an approach")
+	s.postReadbackTransmission(callsign, *tr, tcw)
+
+	// Return spoken text with callsign suffix for TTS synthesis
+	spokenText := tr.Spoken(s.Rand) + s.readbackCallsignSuffix(callsign, tcw)
+	return callsign, spokenText, nil
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Deferred operations
 
@@ -1761,6 +1776,13 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 			}
 		case "BLOCKED":
 			cs, spokenText, err := s.SayBlocked(tcw)
+			return ControlCommandsResult{
+				Error:              err,
+				ReadbackSpokenText: spokenText,
+				ReadbackCallsign:   cs,
+			}
+		case "NOTCLEARED":
+			cs, spokenText, err := s.SayNotCleared(tcw, callsign)
 			return ControlCommandsResult{
 				Error:              err,
 				ReadbackSpokenText: spokenText,

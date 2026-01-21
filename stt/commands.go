@@ -277,7 +277,7 @@ var commandTemplates = []CommandTemplate{
 	},
 	{
 		Name:      "slowest_practical",
-		Keywords:  [][]string{{"slowest", "minimum"}, {"practical", "speed"}},
+		Keywords:  [][]string{{"slowest", "minimum"}, {"practical", "speed", "possible"}},
 		ArgType:   ArgNone,
 		OutputFmt: "SMIN",
 		Priority:  12,
@@ -295,6 +295,14 @@ var commandTemplates = []CommandTemplate{
 		ArgType:   ArgNone,
 		OutputFmt: "SS",
 		Priority:  10,
+	},
+	{
+		Name:      "final_approach_speed",
+		Keywords:  [][]string{{"reduce"}, {"final"}, {"approach"}, {"speed"}},
+		ArgType:   ArgNone,
+		OutputFmt: "SFAS",
+		Priority:  15,
+		SkipWords: []string{"to"},
 	},
 
 	// === NAVIGATION COMMANDS ===
@@ -1037,8 +1045,20 @@ func extractSpeed(tokens []Token) (int, int) {
 		if i > 3 {
 			break
 		}
-		if t.Type == TokenNumber && t.Value >= 100 && t.Value <= 400 {
-			return t.Value, i + 1
+		if t.Type == TokenNumber {
+			// Normal speed range (100-400 knots)
+			if t.Value >= 100 && t.Value <= 400 {
+				return t.Value, i + 1
+			}
+			// Handle 4-digit speeds with extra digit (e.g., "1709" → 170, "2101" → 210)
+			// STT sometimes appends an extra digit to speeds
+			if t.Value > 400 {
+				corrected := t.Value / 10
+				if corrected >= 100 && corrected <= 400 {
+					logLocalStt("  extractSpeed: corrected %d -> %d (extra digit)", t.Value, corrected)
+					return corrected, i + 1
+				}
+			}
 		}
 	}
 
@@ -1132,7 +1152,7 @@ func extractApproach(tokens []Token, approaches map[string]string) (string, floa
 	// Build candidate phrases (1-7 words for approach names, since spoken numbers expand)
 	for length := min(7, len(tokens)); length >= 1; length-- {
 		var parts []string
-		for i := 0; i < length; i++ {
+		for i := range length {
 			// Expand numeric tokens to spoken form to match telephony
 			// e.g., "22" -> "two two"
 			if tokens[i].Type == TokenNumber {
@@ -1143,20 +1163,25 @@ func extractApproach(tokens []Token, approaches map[string]string) (string, floa
 		}
 		phrase := strings.Join(parts, " ")
 
-		// Try exact match first - return immediately
-		for spokenName, apprID := range approaches {
-			if strings.EqualFold(phrase, spokenName) {
-				return apprID, 1.0, length
-			}
-		}
+		// Generate phrase variants to handle letter separation issues
+		phraseVariants := generateApproachPhraseVariants(phrase)
 
-		// Try fuzzy match - find the best one
-		for spokenName, apprID := range approaches {
-			score := JaroWinkler(phrase, spokenName)
-			if score >= 0.80 && score > bestScore {
-				bestAppr = apprID
-				bestScore = score
-				bestLength = length
+		for _, variant := range phraseVariants {
+			// Try exact match first - return immediately
+			for spokenName, apprID := range approaches {
+				if strings.EqualFold(variant, spokenName) {
+					return apprID, 1.0, length
+				}
+			}
+
+			// Try fuzzy match - find the best one
+			for spokenName, apprID := range approaches {
+				score := JaroWinkler(variant, spokenName)
+				if score >= 0.80 && score > bestScore {
+					bestAppr = apprID
+					bestScore = score
+					bestLength = length
+				}
 			}
 		}
 	}
@@ -1165,6 +1190,27 @@ func extractApproach(tokens []Token, approaches map[string]string) (string, floa
 		return bestAppr, bestScore, bestLength
 	}
 	return "", 0, 0
+}
+
+// generateApproachPhraseVariants generates variants of an approach phrase
+// to handle common STT issues with separated letters.
+// For example: "l s runway 7 right" → also try "i l s runway 7 right"
+func generateApproachPhraseVariants(phrase string) []string {
+	variants := []string{phrase}
+
+	// Handle "l s" → "i l s" (missing "i" in "ILS")
+	if strings.Contains(phrase, "l s ") {
+		variant := strings.Replace(phrase, "l s ", "i l s ", 1)
+		variants = append(variants, variant)
+	}
+
+	// Handle "ls" → "ils" (already joined but missing "i")
+	if strings.HasPrefix(phrase, "ls ") {
+		variant := "ils " + phrase[3:]
+		variants = append(variants, variant)
+	}
+
+	return variants
 }
 
 // extractSID extracts a SID name from tokens by matching against the aircraft's assigned SID.

@@ -24,6 +24,7 @@ func NewTranscriber(lg *log.Logger) *Transcriber {
 // It returns one of:
 //   - "{CALLSIGN} {CMD1} {CMD2} ..." for successful parsing
 //   - "{CALLSIGN} AGAIN" if callsign identified but commands unclear
+//   - "{CALLSIGN} NOTCLEARED" if contact tower given to aircraft not cleared for approach
 //   - "BLOCKED" if no callsign could be identified
 //   - "" if transcript is empty or only contains position identification
 //

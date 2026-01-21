@@ -1816,12 +1816,12 @@ func TestValidateCommands(t *testing.T) {
 			expectErrors: true,
 		},
 		{
-			name:         "contact tower only valid on approach",
+			name:         "contact tower for arrival returns NOTCLEARED",
 			commands:     []string{"TO"},
 			ac:           Aircraft{State: "arrival"},
-			expectedLen:  0,
-			minConf:      0.0,
-			expectErrors: true,
+			expectedLen:  1, // Returns NOTCLEARED instead of blocking
+			minConf:      0.9,
+			expectErrors: false,
 		},
 		{
 			name:         "contact tower valid on approach",
