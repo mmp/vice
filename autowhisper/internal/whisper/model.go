@@ -70,6 +70,22 @@ func GPUEnabled() bool {
 	return whisperlow.GPUEnabled()
 }
 
+// GPUDiscrete returns true if a discrete GPU is being used for inference.
+func GPUDiscrete() bool {
+	return whisperlow.GPUDiscrete()
+}
+
+// GPUDeviceInfo re-exports whisperlow.GPUDeviceInfo for external use.
+type GPUDeviceInfo = whisperlow.GPUDeviceInfo
+
+// GPUInfo re-exports whisperlow.GPUInfo for external use.
+type GPUInfo = whisperlow.GPUInfo
+
+// GetGPUInfo returns detailed information about GPU acceleration status.
+func GetGPUInfo() GPUInfo {
+	return whisperlow.GetGPUInfo()
+}
+
 func (m *model) NewContext() (Context, error) {
 	if m.ctx == nil {
 		return nil, ErrInternalAppError

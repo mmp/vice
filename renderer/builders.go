@@ -6,6 +6,7 @@ package renderer
 
 import (
 	gomath "math"
+	"slices"
 	"sync"
 
 	"github.com/mmp/vice/math"
@@ -247,21 +248,13 @@ func (l *ColoredLinesDrawBuilder) AddGappedCircle(p [2]float32, radius float32, 
 		diff := math.Mod(end-start+360, 360)
 		mid := math.Mod(start+diff/2, 360)
 
-		inGap := false
-		for _, g := range gaps {
+		inGap := util.SeqContainsFunc(slices.Values(gaps), func(g [2]float32) bool {
 			gs, ge := g[0], g[1]
 			if gs <= ge {
-				if mid >= gs && mid <= ge {
-					inGap = true
-					break
-				}
-			} else {
-				if mid >= gs || mid <= ge {
-					inGap = true
-					break
-				}
+				return mid >= gs && mid <= ge
 			}
-		}
+			return mid >= gs || mid <= ge
+		})
 		if inGap {
 			continue
 		}

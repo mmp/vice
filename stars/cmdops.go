@@ -28,7 +28,7 @@ func init() {
 		}
 
 		fp := trk.FlightPlan
-		ctrl := sp.lookupControllerForId(ctx, tcp, fp.ACID)
+		ctrl := lookupControllerWithAirspace(ctx, tcp, trk)
 		if ctrl == nil {
 			return ErrSTARSIllegalPosition
 		}

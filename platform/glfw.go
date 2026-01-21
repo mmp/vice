@@ -13,10 +13,12 @@ import (
 	"fmt"
 	gomath "math"
 	"runtime"
+	"slices"
 	"strconv"
 
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/go-gl/gl/v2.1/gl"
@@ -183,12 +185,10 @@ func (g *glfwPlatform) IsMacOSNativeFullScreen() bool {
 		monitors := glfw.GetMonitors()
 		windowSize := g.WindowSize()
 
-		for _, monitor := range monitors {
+		return util.SeqContainsFunc(slices.Values(monitors), func(monitor *glfw.Monitor) bool {
 			vm := monitor.GetVideoMode()
-			if windowSize[0] == vm.Width && windowSize[1] == vm.Height {
-				return true
-			}
-		}
+			return windowSize[0] == vm.Width && windowSize[1] == vm.Height
+		})
 	}
 	return false
 }

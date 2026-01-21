@@ -1063,7 +1063,7 @@ func (s *Sim) RejectPointOut(tcw TCW, acid ACID) error {
 }
 
 // TODO: Migrate to ERAM computer.
-func (s *Sim) SendRouteCoordinates(tcw TCW, acid ACID) error {
+func (s *Sim) SendRouteCoordinates(tcw TCW, acid ACID, minutes int) error {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -1071,18 +1071,67 @@ func (s *Sim) SendRouteCoordinates(tcw TCW, acid ACID) error {
 	if ac == nil {
 		return av.ErrNoAircraftForCallsign
 	}
+
+	// Get the aircraft's speed. TODO: Find out if ERAM uses current or filed speed.
+	speed := ac.Nav.FlightState.GS
+
 	waypoints := []av.Waypoint(ac.Nav.Waypoints)
 	waypointPairs := []math.Point2LL{}
 	for _, wyp := range waypoints {
 		if _, ok := av.DB.LookupWaypoint(wyp.Fix); ok { // only send actual waypoints
 			waypointPairs = append(waypointPairs, [2]float32{wyp.Location[0], wyp.Location[1]})
 		}
-
 	}
+
+	if minutes == -1 {
+		s.eventStream.Post(Event{
+			Type:         FixCoordinatesEvent,
+			ACID:         acid,
+			WaypointInfo: waypointPairs,
+			ToController: s.State.PrimaryPositionForTCW(tcw),
+		})
+		return nil
+	}
+
+	// Calculate the total distance required to be shown
+	requiredDistance := speed * float32(minutes) / 60
+
+	// Build the path starting from the aircraft's current position
+	currentPos := ac.Nav.FlightState.Position
+	nmPerLongitude := ac.Nav.FlightState.NmPerLongitude
+	magVar := ac.Nav.FlightState.MagneticVariation
+	const nmPerLatitude float32 = 60
+
+	var distance float32
+	var futureWaypoints []math.Point2LL
+
+	for _, wp := range waypointPairs {
+		legDistance := math.NMDistance2LL(currentPos, wp)
+
+		if distance+legDistance >= requiredDistance {
+			// The endpoint is somewhere along this leg
+			remainingDistance := requiredDistance - distance
+			bearing := math.Heading2LL(currentPos, wp, nmPerLongitude, magVar)
+
+			// Create a new waypoint at the calculated position
+			location := math.Point2LL{
+				currentPos[0] + remainingDistance*math.Sin(math.Radians(bearing))/nmPerLongitude,
+				currentPos[1] + remainingDistance*math.Cos(math.Radians(bearing))/nmPerLatitude,
+			}
+			futureWaypoints = append(futureWaypoints, location)
+			break
+		}
+
+		// Add this waypoint and continue
+		futureWaypoints = append(futureWaypoints, wp)
+		distance += legDistance
+		currentPos = wp
+	}
+
 	s.eventStream.Post(Event{
 		Type:         FixCoordinatesEvent,
 		ACID:         acid,
-		WaypointInfo: waypointPairs,
+		WaypointInfo: futureWaypoints,
 		ToController: s.State.PrimaryPositionForTCW(tcw),
 	})
 	return nil
@@ -1558,6 +1607,21 @@ func (s *Sim) SayAgain(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign, stri
 	return callsign, spokenText, nil
 }
 
+// SayNotCleared is called when the controller issues "contact tower" to an arrival
+// aircraft that hasn't been cleared for an approach. The pilot responds that they
+// haven't received approach clearance.
+func (s *Sim) SayNotCleared(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign, string, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	tr := av.MakeReadbackTransmission("we haven't been cleared for an approach")
+	s.postReadbackTransmission(callsign, *tr, tcw)
+
+	// Return spoken text with callsign suffix for TTS synthesis
+	spokenText := tr.Spoken(s.Rand) + s.readbackCallsignSuffix(callsign, tcw)
+	return callsign, spokenText, nil
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Deferred operations
 
@@ -1686,6 +1750,19 @@ type ControlCommandsResult struct {
 func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, commandStr string) ControlCommandsResult {
 	commands := strings.Fields(commandStr)
 
+	// Parse addressing form suffix from callsign: /T indicates type+trailing3 addressing
+	// (e.g., "skyhawk 3 alpha bravo" instead of "november 1 2 3 alpha bravo")
+	addressingForm := AddressingFormFull
+	if strings.HasSuffix(string(callsign), "/T") {
+		addressingForm = AddressingFormTypeTrailing3
+		callsign = av.ADSBCallsign(strings.TrimSuffix(string(callsign), "/T"))
+	}
+
+	// Update aircraft's last addressing form for readback rendering
+	if ac, ok := s.Aircraft[callsign]; ok {
+		ac.LastAddressingForm = addressingForm
+	}
+
 	// Handle special STT commands that need direct TTS synthesis
 	// These short-circuit normal command processing
 	if len(commands) == 1 {
@@ -1699,6 +1776,13 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 			}
 		case "BLOCKED":
 			cs, spokenText, err := s.SayBlocked(tcw)
+			return ControlCommandsResult{
+				Error:              err,
+				ReadbackSpokenText: spokenText,
+				ReadbackCallsign:   cs,
+			}
+		case "NOTCLEARED":
+			cs, spokenText, err := s.SayNotCleared(tcw, callsign)
 			return ControlCommandsResult{
 				Error:              err,
 				ReadbackSpokenText: spokenText,
@@ -1774,9 +1858,20 @@ func (s *Sim) readbackCallsignSuffix(callsign av.ADSBCallsign, tcw TCW) string {
 		heavySuper += " emergency aircraft"
 	}
 
-	csArg := av.CallsignArg{
-		Callsign:    ac.ADSBCallsign,
-		IsEmergency: ac.EmergencyState != nil,
+	// Use GACallsignArg for GA aircraft when addressed with type+trailing3 form
+	var csArg any
+	if strings.HasPrefix(string(callsign), "N") && ac.LastAddressingForm == AddressingFormTypeTrailing3 {
+		csArg = av.GACallsignArg{
+			Callsign:     ac.ADSBCallsign,
+			AircraftType: ac.FlightPlan.AircraftType,
+			UseTypeForm:  true,
+			IsEmergency:  ac.EmergencyState != nil,
+		}
+	} else {
+		csArg = av.CallsignArg{
+			Callsign:    ac.ADSBCallsign,
+			IsEmergency: ac.EmergencyState != nil,
+		}
 	}
 	tr := av.MakeReadbackTransmission(", {callsign}"+heavySuper+". ", csArg)
 	return tr.Spoken(s.Rand)
@@ -1958,7 +2053,13 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 
 			return s.CrossFixAt(tcw, callsign, fix, ar, speed)
 		} else if strings.HasPrefix(command, "CT") && len(command) > 2 {
-			return s.ContactController(tcw, ACID(callsign), TCP(command[2:]))
+			// Only treat as contact command if the TCP exists as a valid controller;
+			// otherwise treat as cleared approach (e.g., "CTTL" -> cleared for TTL approach)
+			tcp := TCP(command[2:])
+			if _, ok := s.State.Controllers[tcp]; ok {
+				return s.ContactController(tcw, ACID(callsign), tcp)
+			}
+			return s.ClearedApproach(tcw, callsign, command[1:], false)
 		} else {
 			return s.ClearedApproach(tcw, callsign, command[1:], false)
 		}

@@ -2,8 +2,11 @@ package stt
 
 import (
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
+
+	av "github.com/mmp/vice/aviation"
 )
 
 // ArgType specifies the type of argument a command expects.
@@ -21,6 +24,9 @@ const (
 	ArgFixAltitude // Fix followed by altitude (e.g., "cross MERIT at 5000")
 	ArgFixSpeed    // Fix followed by speed (e.g., "cross MERIT at 250 knots")
 	ArgFixHeading  // Fix followed by heading (e.g., "depart MERIT heading 180")
+	ArgFixApproach // Fix followed by approach (e.g., "at FERGI cleared River Visual")
+	ArgSID         // SID name (e.g., "climb via the Kennedy Five")
+	ArgSTAR        // STAR name (e.g., "descend via the Camrn Four")
 )
 
 // CommandTemplate defines a pattern for recognizing a command.
@@ -124,17 +130,19 @@ var commandTemplates = []CommandTemplate{
 	},
 	{
 		Name:      "climb_via_sid",
-		Keywords:  [][]string{{"climb"}, {"via"}, {"sid", "the"}},
-		ArgType:   ArgNone,
+		Keywords:  [][]string{{"climb"}, {"via"}},
+		ArgType:   ArgSID,
 		OutputFmt: "CVS",
 		Priority:  15,
+		SkipWords: []string{"the"},
 	},
 	{
 		Name:      "descend_via_star",
-		Keywords:  [][]string{{"descend"}, {"via"}, {"star", "the"}},
-		ArgType:   ArgNone,
+		Keywords:  [][]string{{"descend"}, {"via"}},
+		ArgType:   ArgSTAR,
 		OutputFmt: "DVS",
 		Priority:  15,
+		SkipWords: []string{"the"},
 	},
 	{
 		Name:      "say_altitude",
@@ -163,6 +171,24 @@ var commandTemplates = []CommandTemplate{
 		ArgType:   ArgHeading,
 		OutputFmt: "R%03d",
 		Priority:  10,
+		SkipWords: []string{"turn", "to"},
+	},
+	// Turn direction without explicit "heading" keyword
+	// Handles "turn left 310", "left 310" patterns
+	{
+		Name:      "turn_left_only",
+		Keywords:  [][]string{{"left"}},
+		ArgType:   ArgHeading,
+		OutputFmt: "L%03d",
+		Priority:  7, // Lower than turn_left_heading (10) to prefer explicit matches
+		SkipWords: []string{"turn", "to"},
+	},
+	{
+		Name:      "turn_right_only",
+		Keywords:  [][]string{{"right"}},
+		ArgType:   ArgHeading,
+		OutputFmt: "R%03d",
+		Priority:  7, // Lower than turn_right_heading (10) to prefer explicit matches
 		SkipWords: []string{"turn", "to"},
 	},
 	{
@@ -251,7 +277,7 @@ var commandTemplates = []CommandTemplate{
 	},
 	{
 		Name:      "slowest_practical",
-		Keywords:  [][]string{{"slowest", "minimum"}, {"practical", "speed"}},
+		Keywords:  [][]string{{"slowest", "minimum"}, {"practical", "speed", "possible"}},
 		ArgType:   ArgNone,
 		OutputFmt: "SMIN",
 		Priority:  12,
@@ -269,6 +295,14 @@ var commandTemplates = []CommandTemplate{
 		ArgType:   ArgNone,
 		OutputFmt: "SS",
 		Priority:  10,
+	},
+	{
+		Name:      "final_approach_speed",
+		Keywords:  [][]string{{"reduce"}, {"final"}, {"approach"}, {"speed"}},
+		ArgType:   ArgNone,
+		OutputFmt: "SFAS",
+		Priority:  15,
+		SkipWords: []string{"to"},
 	},
 
 	// === NAVIGATION COMMANDS ===
@@ -304,8 +338,25 @@ var commandTemplates = []CommandTemplate{
 		Priority:  10,
 		SkipWords: []string{"heading"},
 	},
+	// Hold commands
+	{
+		Name:      "hold_at_fix",
+		Keywords:  [][]string{{"hold"}, {"at"}},
+		ArgType:   ArgFix,
+		OutputFmt: "H%s",
+		Priority:  10,
+		SkipWords: []string{"as", "published"},
+	},
 
 	// === APPROACH COMMANDS ===
+	{
+		Name:      "at_fix_cleared_approach",
+		Keywords:  [][]string{{"at"}},
+		ArgType:   ArgFixApproach,
+		OutputFmt: "A%s/C%s",
+		Priority:  15, // High priority - specific compound command
+		SkipWords: []string{"cleared", "clear", "for", "approach"},
+	},
 	{
 		Name:      "expect_approach",
 		Keywords:  [][]string{{"expect", "vectors"}},
@@ -319,11 +370,11 @@ var commandTemplates = []CommandTemplate{
 		ArgType:   ArgApproach,
 		OutputFmt: "C%s",
 		Priority:  8,
-		SkipWords: []string{"approach"},
+		SkipWords: []string{"approach", "for"},
 	},
 	{
-		Name:      "clear_to_approach", // Whisper sometimes mistranscribes "cleared" as "clear to"
-		Keywords:  [][]string{{"clear"}, {"to"}},
+		Name:      "clear_to_approach", // Whisper sometimes mistranscribes "cleared" as "clear to" or "clear for"
+		Keywords:  [][]string{{"clear"}, {"to", "for"}},
 		ArgType:   ArgApproach,
 		OutputFmt: "C%s",
 		Priority:  8,
@@ -387,6 +438,20 @@ var commandTemplates = []CommandTemplate{
 		Keywords:  [][]string{{"squawk"}, {"altitude", "mode"}},
 		ArgType:   ArgNone,
 		OutputFmt: "SQA",
+		Priority:  12,
+	},
+	{
+		Name:      "squawk_on",
+		Keywords:  [][]string{{"transponder"}, {"on"}},
+		ArgType:   ArgNone,
+		OutputFmt: "SQON",
+		Priority:  12,
+	},
+	{
+		Name:      "squawk_normal",
+		Keywords:  [][]string{{"squawk"}, {"normal"}},
+		ArgType:   ArgNone,
+		OutputFmt: "SQON",
 		Priority:  12,
 	},
 
@@ -569,7 +634,7 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 		// Skip over skip words and filler words to find the next significant token
 		for consumed < len(tokens) {
 			text := strings.ToLower(tokens[consumed].Text)
-			if contains(tmpl.SkipWords, text) || IsFillerWord(text) {
+			if slices.Contains(tmpl.SkipWords, text) || IsFillerWord(text) {
 				consumed++
 				continue
 			}
@@ -610,7 +675,7 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	// Skip any remaining skip words and filler words before extracting argument
 	for consumed < len(tokens) {
 		text := strings.ToLower(tokens[consumed].Text)
-		if contains(tmpl.SkipWords, text) || IsFillerWord(text) {
+		if slices.Contains(tmpl.SkipWords, text) || IsFillerWord(text) {
 			consumed++
 		} else {
 			break
@@ -691,6 +756,22 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 		}
 		argStr = code
 		consumed += sqkConsumed
+
+	case ArgSID:
+		sidConsumed := extractSID(tokens[consumed:], ac.SID)
+		if sidConsumed == 0 {
+			return CommandMatch{}, 0
+		}
+		consumed += sidConsumed
+		// ArgSID doesn't need argStr - the command is just "CVS"
+
+	case ArgSTAR:
+		starConsumed := extractSTAR(tokens[consumed:], ac.STAR)
+		if starConsumed == 0 {
+			return CommandMatch{}, 0
+		}
+		consumed += starConsumed
+		// ArgSTAR doesn't need argStr - the command is just "DVS"
 
 	case ArgDegrees:
 		deg, dir, degConsumed := extractDegrees(tokens[consumed:])
@@ -795,6 +876,44 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 		return CommandMatch{
 			Command:    cmd,
 			Confidence: fixConf,
+			Consumed:   consumed,
+			IsThen:     isThen,
+		}, consumed
+
+	case ArgFixApproach:
+		fix, fixConf, fixConsumed := extractFix(tokens[consumed:], ac.Fixes)
+		if fixConsumed == 0 {
+			logLocalStt("  tryMatchTemplate %q: fix extraction failed", tmpl.Name)
+			return CommandMatch{}, 0
+		}
+		consumed += fixConsumed
+		// Skip "cleared", "clear", "for", "approach" and filler words between fix and approach name
+		for consumed < len(tokens) {
+			text := strings.ToLower(tokens[consumed].Text)
+			if slices.Contains(tmpl.SkipWords, text) || IsFillerWord(text) {
+				consumed++
+			} else {
+				break
+			}
+		}
+		appr, apprConf, apprConsumed := extractApproach(tokens[consumed:], ac.CandidateApproaches)
+		if apprConsumed == 0 {
+			logLocalStt("  tryMatchTemplate %q: approach extraction failed", tmpl.Name)
+			return CommandMatch{}, 0
+		}
+		consumed += apprConsumed
+		// Build command directly for compound type
+		cmd := fmt.Sprintf(tmpl.OutputFmt, fix, appr)
+		logLocalStt("  tryMatchTemplate %q: cmd=%q fix=%q appr=%q consumed=%d",
+			tmpl.Name, cmd, fix, appr, consumed)
+		// Use the lower confidence between fix and approach
+		conf := fixConf
+		if apprConf < conf {
+			conf = apprConf
+		}
+		return CommandMatch{
+			Command:    cmd,
+			Confidence: conf,
 			Consumed:   consumed,
 			IsThen:     isThen,
 		}, consumed
@@ -926,8 +1045,20 @@ func extractSpeed(tokens []Token) (int, int) {
 		if i > 3 {
 			break
 		}
-		if t.Type == TokenNumber && t.Value >= 100 && t.Value <= 400 {
-			return t.Value, i + 1
+		if t.Type == TokenNumber {
+			// Normal speed range (100-400 knots)
+			if t.Value >= 100 && t.Value <= 400 {
+				return t.Value, i + 1
+			}
+			// Handle 4-digit speeds with extra digit (e.g., "1709" → 170, "2101" → 210)
+			// STT sometimes appends an extra digit to speeds
+			if t.Value > 400 {
+				corrected := t.Value / 10
+				if corrected >= 100 && corrected <= 400 {
+					logLocalStt("  extractSpeed: corrected %d -> %d (extra digit)", t.Value, corrected)
+					return corrected, i + 1
+				}
+			}
 		}
 	}
 
@@ -1021,7 +1152,7 @@ func extractApproach(tokens []Token, approaches map[string]string) (string, floa
 	// Build candidate phrases (1-7 words for approach names, since spoken numbers expand)
 	for length := min(7, len(tokens)); length >= 1; length-- {
 		var parts []string
-		for i := 0; i < length; i++ {
+		for i := range length {
 			// Expand numeric tokens to spoken form to match telephony
 			// e.g., "22" -> "two two"
 			if tokens[i].Type == TokenNumber {
@@ -1032,20 +1163,25 @@ func extractApproach(tokens []Token, approaches map[string]string) (string, floa
 		}
 		phrase := strings.Join(parts, " ")
 
-		// Try exact match first - return immediately
-		for spokenName, apprID := range approaches {
-			if strings.EqualFold(phrase, spokenName) {
-				return apprID, 1.0, length
-			}
-		}
+		// Generate phrase variants to handle letter separation issues
+		phraseVariants := generateApproachPhraseVariants(phrase)
 
-		// Try fuzzy match - find the best one
-		for spokenName, apprID := range approaches {
-			score := JaroWinkler(phrase, spokenName)
-			if score >= 0.80 && score > bestScore {
-				bestAppr = apprID
-				bestScore = score
-				bestLength = length
+		for _, variant := range phraseVariants {
+			// Try exact match first - return immediately
+			for spokenName, apprID := range approaches {
+				if strings.EqualFold(variant, spokenName) {
+					return apprID, 1.0, length
+				}
+			}
+
+			// Try fuzzy match - find the best one
+			for spokenName, apprID := range approaches {
+				score := JaroWinkler(variant, spokenName)
+				if score >= 0.80 && score > bestScore {
+					bestAppr = apprID
+					bestScore = score
+					bestLength = length
+				}
 			}
 		}
 	}
@@ -1054,6 +1190,149 @@ func extractApproach(tokens []Token, approaches map[string]string) (string, floa
 		return bestAppr, bestScore, bestLength
 	}
 	return "", 0, 0
+}
+
+// generateApproachPhraseVariants generates variants of an approach phrase
+// to handle common STT issues with separated letters.
+// For example: "l s runway 7 right" → also try "i l s runway 7 right"
+func generateApproachPhraseVariants(phrase string) []string {
+	variants := []string{phrase}
+
+	// Handle "l s" → "i l s" (missing "i" in "ILS")
+	if strings.Contains(phrase, "l s ") {
+		variant := strings.Replace(phrase, "l s ", "i l s ", 1)
+		variants = append(variants, variant)
+	}
+
+	// Handle "ls" → "ils" (already joined but missing "i")
+	if strings.HasPrefix(phrase, "ls ") {
+		variant := "ils " + phrase[3:]
+		variants = append(variants, variant)
+	}
+
+	return variants
+}
+
+// extractSID extracts a SID name from tokens by matching against the aircraft's assigned SID.
+// Also accepts the generic word "sid" as a match (for "climb via the sid" without specific name).
+// Returns the number of tokens consumed (0 if no match).
+func extractSID(tokens []Token, sid string) int {
+	if len(tokens) == 0 {
+		return 0
+	}
+
+	// Check for generic "sid" word first (handles "climb via the sid")
+	if strings.EqualFold(tokens[0].Text, "sid") {
+		logLocalStt("  extractSID: matched generic 'sid'")
+		return 1
+	}
+
+	// If aircraft has no SID assigned, we can only match the generic word
+	if sid == "" {
+		logLocalStt("  extractSID: no SID assigned and no generic match")
+		return 0
+	}
+
+	// Get the telephony for this SID
+	sidTelephony := av.GetSIDTelephony(sid)
+	logLocalStt("  extractSID: looking for SID=%q telephony=%q", sid, sidTelephony)
+
+	// Build candidate phrases (1-4 words for SID names)
+	for length := min(4, len(tokens)); length >= 1; length-- {
+		var parts []string
+		for i := range length {
+			// Expand numeric tokens to spoken form
+			if tokens[i].Type == TokenNumber {
+				parts = append(parts, spokenDigits(tokens[i].Value))
+			} else {
+				parts = append(parts, tokens[i].Text)
+			}
+		}
+		phrase := strings.Join(parts, " ")
+
+		// Try exact match
+		if strings.EqualFold(phrase, sidTelephony) {
+			logLocalStt("  extractSID: exact match %q -> %q", phrase, sid)
+			return length
+		}
+
+		// Try fuzzy match
+		score := JaroWinkler(phrase, sidTelephony)
+		if score >= 0.80 {
+			logLocalStt("  extractSID: fuzzy match %q -> %q (score=%.2f)", phrase, sid, score)
+			return length
+		}
+
+		// Try phonetic match
+		if PhoneticMatch(phrase, sidTelephony) {
+			logLocalStt("  extractSID: phonetic match %q -> %q", phrase, sid)
+			return length
+		}
+	}
+
+	logLocalStt("  extractSID: no match found")
+	return 0
+}
+
+// extractSTAR extracts a STAR name from tokens by matching against the aircraft's assigned STAR.
+// Also accepts the generic word "star" as a match (for "descend via the star" without specific name).
+// Returns the number of tokens consumed (0 if no match).
+func extractSTAR(tokens []Token, star string) int {
+	if len(tokens) == 0 {
+		return 0
+	}
+
+	// Check for generic "star" word first (handles "descend via the star")
+	if strings.EqualFold(tokens[0].Text, "star") {
+		logLocalStt("  extractSTAR: matched generic 'star'")
+		return 1
+	}
+
+	// If aircraft has no STAR assigned, we can only match the generic word
+	if star == "" {
+		logLocalStt("  extractSTAR: no STAR assigned and no generic match")
+		return 0
+	}
+
+	// Get the telephony for this STAR
+	starTelephony := av.GetSTARTelephony(star)
+	logLocalStt("  extractSTAR: looking for STAR=%q telephony=%q", star, starTelephony)
+
+	// Build candidate phrases (1-4 words for STAR names)
+	for length := min(4, len(tokens)); length >= 1; length-- {
+		var parts []string
+		for i := range length {
+			// Expand numeric tokens to spoken form
+			if tokens[i].Type == TokenNumber {
+				parts = append(parts, spokenDigits(tokens[i].Value))
+			} else {
+				parts = append(parts, tokens[i].Text)
+			}
+		}
+		phrase := strings.Join(parts, " ")
+
+		// Try exact match
+		if strings.EqualFold(phrase, starTelephony) {
+			logLocalStt("  extractSTAR: exact match %q -> %q", phrase, star)
+			return length
+		}
+
+		// Try fuzzy match
+		score := JaroWinkler(phrase, starTelephony)
+		if score >= 0.80 {
+			logLocalStt("  extractSTAR: fuzzy match %q -> %q (score=%.2f)", phrase, star, score)
+			return length
+		}
+
+		// Try phonetic match
+		if PhoneticMatch(phrase, starTelephony) {
+			logLocalStt("  extractSTAR: phonetic match %q -> %q", phrase, star)
+			return length
+		}
+	}
+
+	logLocalStt("  extractSTAR: no match found")
+	return 0
 }
 
 // spokenDigits converts a number to its spoken digit form.
@@ -1143,17 +1422,6 @@ func extractDegrees(tokens []Token) (int, string, int) {
 	return 0, "", 0
 }
 
-// Helper functions
-
-func contains(slice []string, s string) bool {
-	for _, item := range slice {
-		if item == s {
-			return true
-		}
-	}
-	return false
-}
-
 // isCommandKeyword returns true if the word is a command keyword.
 // Used to detect when "contact" is followed by a command rather than a controller name.
 func isCommandKeyword(word string) bool {
@@ -1166,7 +1434,7 @@ func isCommandKeyword(word string) bool {
 		"speed":   true, "reduce": true, "increase": true,
 		"direct": true, "proceed": true,
 		"cleared": true, "expect": true, "vectors": true,
-		"squawk": true, "ident": true,
+		"squawk": true, "ident": true, "transponder": true,
 		"cross": true, "expedite": true,
 		"fly": true, "intercept": true,
 		"cancel": true, "resume": true,
@@ -1195,16 +1463,26 @@ func shouldCorrectAltitude(tmpl CommandTemplate, alt int, acAltitude int) (int, 
 
 	if isClimb && altFeet <= acAltitude {
 		// Climb but altitude is at or below current - try *10
+		corrected := alt * 10
+		// Never correct into flight levels (>=18,000 ft) - requires explicit "flight level" speech
+		if corrected >= 180 {
+			return alt, false
+		}
 		correctedFeet := alt * 1000
 		if correctedFeet > acAltitude && correctedFeet <= 60000 {
-			return alt * 10, true
+			return corrected, true
 		}
 	}
 	if isDescend && altFeet >= acAltitude {
 		// Descend but altitude is at or above current - try *10
+		corrected := alt * 10
+		// Never correct into flight levels (>=18,000 ft) - requires explicit "flight level" speech
+		if corrected >= 180 {
+			return alt, false
+		}
 		correctedFeet := alt * 1000
 		if correctedFeet < acAltitude && correctedFeet >= 1000 {
-			return alt * 10, true
+			return corrected, true
 		}
 	}
 	return alt, false

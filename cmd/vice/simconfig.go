@@ -550,28 +550,14 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 
 		// Helper to check if a catalog has matching airports
 		catalogHasMatchingAirport := func(catalog *server.ScenarioCatalog) bool {
-			if filterLower == "" {
-				return true
-			}
-			for _, ap := range catalog.Airports {
-				if strings.Contains(strings.ToLower(ap), filterLower) {
-					return true
-				}
-			}
-			return false
+			return filterLower == "" || util.SeqContainsFunc(slices.Values(catalog.Airports),
+				func(ap string) bool { return strings.Contains(strings.ToLower(ap), filterLower) })
 		}
 
 		// Helper to check if a catalog has matching scenario names
 		catalogHasMatchingScenario := func(catalog *server.ScenarioCatalog) bool {
-			if filterLower == "" {
-				return true
-			}
-			for scenarioName := range catalog.Scenarios {
-				if strings.Contains(strings.ToLower(scenarioName), filterLower) {
-					return true
-				}
-			}
-			return false
+			return filterLower == "" || util.SeqContainsFunc(maps.Keys(catalog.Scenarios),
+				func(scenarioName string) bool { return strings.Contains(strings.ToLower(scenarioName), filterLower) })
 		}
 
 		// Helper to check if a catalog matches the filter (name, facility, airports, or scenarios)

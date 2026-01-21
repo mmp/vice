@@ -457,7 +457,7 @@ func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCal
 	prevMode := sp.commandMode
 
 	ctx.Client.RunAircraftCommands(callsign, cmds, multiple, clickedTrack,
-		0, "", nil, "", // keyboard input: no whisper duration, transcript, or STT context
+		0, 0, "", nil, "", // keyboard input: no whisper duration, audio duration, transcript, or STT context
 		func(errStr string, remaining string) {
 			if errStr != "" {
 				sp.commandMode = prevMode // CommandModeTargetGen or TargetGenLock
@@ -835,12 +835,7 @@ func (sp *STARSPane) maybeAutoHomeCursor(ctx *panes.Context) {
 
 // returns the controller responsible for the aircraft given its altitude
 // and route.
-func calculateAirspace(ctx *panes.Context, acid sim.ACID) (string, error) {
-	trk, ok := ctx.GetTrackByCallsign(av.ADSBCallsign(acid)) // HAX conflates callsign/ACID
-	if !ok || !trk.IsAssociated() {
-		return "", ErrSTARSIllegalFlight
-	}
-
+func calculateAirspace(ctx *panes.Context, trk *sim.Track) (string, error) {
 	for _, rules := range ctx.FacilityAdaptation.AirspaceAwareness {
 		fp := trk.FlightPlan
 		for _, fix := range rules.Fix {
@@ -870,82 +865,79 @@ func calculateAirspace(ctx *panes.Context, acid sim.ACID) (string, error) {
 	return "", ErrSTARSIllegalPosition
 }
 
-func singleScope(ctx *panes.Context, facilityIdentifier string) *av.Controller {
-	var controllersInFacility []*av.Controller
-	for _, controller := range ctx.Client.State.Controllers {
-		if controller.FacilityIdentifier == facilityIdentifier {
-			controllersInFacility = append(controllersInFacility, controller)
+// lookupControllerByTCP resolves a TCP identifier to a controller.
+// Handles: triangle prefix (external facility), single char (same sector expansion),
+// and two char (same facility or ERAM).
+// userSectorId is required for single-char expansion (e.g., "K" -> "2K" if user is in sector 2).
+func lookupControllerByTCP(controllers map[sim.ControlPosition]*av.Controller, id string, userSectorId string) *av.Controller {
+	findController := func(pred func(*av.Controller) bool) *av.Controller {
+		for _, ctrl := range controllers {
+			if pred(ctrl) {
+				return ctrl
+			}
 		}
-	}
-	if len(controllersInFacility) == 1 {
-		return controllersInFacility[0]
-	} else {
 		return nil
 	}
-}
 
-// Given a controller TCP id and optionally an aircraft callsign, returns
-// the associated Controller.
-func (sp *STARSPane) lookupControllerForId(ctx *panes.Context, id string, acid sim.ACID) *av.Controller {
 	haveTrianglePrefix := strings.HasPrefix(id, STARSTriangleCharacter)
 	id = strings.TrimPrefix(id, STARSTriangleCharacter)
 
-	lc := len(id)
-	if lc == 0 {
+	if len(id) == 0 {
 		return nil
 	}
 
 	if haveTrianglePrefix {
-		if lc == 1 {
-			// Facility id where there's only one controller at that facility.
-			return singleScope(ctx, id)
-		} else if lc == 3 {
-			// ∆N4P for example. Must be a different facility.
-			for _, control := range ctx.Client.State.Controllers {
-				if control.SectorID == id[1:] && control.FacilityIdentifier == string(id[0]) {
-					return control
-				}
-			}
+		// Triangle prefix: ∆N4P format - facility identifier + sector ID
+		if len(id) == 3 {
+			return findController(func(ctrl *av.Controller) bool {
+				return ctrl.SectorID == id[1:] && ctrl.FacilityIdentifier == string(id[0])
+			})
 		}
-	} else if id == "C" {
-		// ARTCC airspace-awareness; must have an aircraft callsign
-		if acid == "" {
-			return nil
-		}
+		return nil
+	}
 
-		if tcp, err := calculateAirspace(ctx, acid); err != nil {
-			return nil
-		} else if ctrl, ok := ctx.Client.State.Controllers[sim.ControlPosition(tcp)]; ok {
+	// Single char: expand using user's sector (e.g., "K" -> "2K" if user is "2J")
+	if len(id) == 1 && len(userSectorId) >= 2 {
+		if ctrl := findController(func(ctrl *av.Controller) bool {
+			return ctrl.FacilityIdentifier == "" &&
+				ctrl.SectorID[0] == userSectorId[0] &&
+				ctrl.SectorID[1] == id[0]
+		}); ctrl != nil {
 			return ctrl
 		}
-	} else {
-		// Non ARTCC airspace-awareness handoffs
-		if lc == 1 { // Must be the same sector.
-			userController := *ctx.UserController()
+	}
 
-			for _, control := range ctx.Client.State.Controllers { // If the controller fac/ sector == userControllers fac/ sector its all good!
-				if control.FacilityIdentifier == "" && // Same facility? (Facility ID will be "" if they are the same fac)
-					control.SectorID[0] == userController.SectorID[0] && // Same Sector?
-					control.SectorID[1] == id[0] { // The actual controller
-					return control
-				}
-			}
-		} else if lc == 2 {
-			// Must be a same sector || same facility.
-			for _, control := range ctx.Client.State.Controllers {
-				if control.SectorID == id && control.FacilityIdentifier == "" {
-					return control
-				}
-			}
-		}
-
-		for _, control := range ctx.Client.State.Controllers {
-			if control.ERAMFacility && control.SectorID == id {
-				return control
-			}
+	// Two chars: same facility lookup
+	if len(id) == 2 {
+		if ctrl := findController(func(ctrl *av.Controller) bool {
+			return ctrl.SectorID == id && ctrl.FacilityIdentifier == ""
+		}); ctrl != nil {
+			return ctrl
 		}
 	}
-	return nil
+
+	// Fallback: ERAM facility
+	return findController(func(ctrl *av.Controller) bool {
+		return ctrl.ERAMFacility && ctrl.SectorID == id
+	})
+}
+
+// lookupControllerWithAirspace resolves a TCP identifier to a controller,
+// with support for ARTCC airspace awareness ("C" identifier).
+// Use this when the TCP might be "C" and you have an aircraft context.
+func lookupControllerWithAirspace(ctx *panes.Context, id string, trk *sim.Track) *av.Controller {
+	if id == "C" {
+		tcp, err := calculateAirspace(ctx, trk)
+		if err != nil {
+			return nil
+		}
+		if ctrl, ok := ctx.Client.State.Controllers[sim.ControlPosition(tcp)]; ok {
+			return ctrl
+		}
+		return nil
+	}
+
+	return lookupControllerByTCP(ctx.Client.State.Controllers, id, ctx.UserController().SectorID)
 }
 
 func (sp *STARSPane) tryGetClosestTrack(ctx *panes.Context, mousePosition [2]float32, transforms radar.ScopeTransformations) (*sim.Track, float32) {

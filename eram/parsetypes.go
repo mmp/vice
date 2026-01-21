@@ -68,6 +68,9 @@ var typeParsers = []typeParser{
 
 	// Mouse click consumers
 	&posParser{},
+
+	// QU minutes
+	&minutesParser{},
 }
 
 // typeParserMap provides O(1) lookup of parsers by identifier.
@@ -144,7 +147,13 @@ type slewParser struct{}
 func (h *slewParser) Identifier() string { return "SLEW" }
 
 func (h *slewParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
-	return input.clickedTrack, text, input.clickedTrack != nil, nil
+	if input.clickedTrack == nil {
+		return nil, text, false, nil
+	}
+	if strings.TrimSpace(text) != "" {
+		return nil, text, false, nil
+	}
+	return input.clickedTrack, "", true, nil
 }
 
 func (h *slewParser) GoType() reflect.Type { return reflect.TypeOf((*sim.Track)(nil)) }
@@ -549,3 +558,24 @@ func (h *locSymParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInp
 
 func (h *locSymParser) GoType() reflect.Type { return reflect.TypeOf((*[2]float32)(nil)).Elem() }
 func (h *locSymParser) ConsumesClick() bool  { return true } // Uses click position from input
+
+// minutesParse parses minutes for QU
+type minutesParser struct{}
+
+func (h *minutesParser) Identifier() string { return "MINUTES" }
+
+func (h *minutesParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
+	field, remaining := util.CutAtSpace(text)
+	if field == "" {
+		return nil, text, false, nil
+	}
+
+	minutes, err := strconv.Atoi(field)
+	if err != nil {
+		return nil, text, false, nil
+	}
+	return minutes, remaining, true, nil
+}
+
+func (h *minutesParser) GoType() reflect.Type { return reflect.TypeOf(0) }
+func (h *minutesParser) ConsumesClick() bool  { return false }

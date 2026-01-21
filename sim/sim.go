@@ -150,6 +150,8 @@ type Track struct {
 	OnApproach                bool
 	Approach                  string   // Full name of assigned approach, if any
 	Fixes                     []string // Relevant fix names for STT
+	SID                       string
+	STAR                      string
 	ATPAVolume                *av.ATPAVolume
 	MVAsApply                 bool
 	HoldForRelease            bool
@@ -1243,7 +1245,7 @@ func (s *Sim) updateState() {
 						tcp := fp.InboundHandoffController
 						s.lg.Debug("contacting departure controller", slog.String("tcp", string(tcp)))
 
-						rt := ac.Nav.DepartureMessage()
+						rt := ac.Nav.DepartureMessage(ac.ReportDepartureHeading)
 						s.postContactTransmission(ac.ADSBCallsign, tcp, *rt)
 
 						// Clear this out so we only send one contact message

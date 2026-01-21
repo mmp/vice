@@ -329,6 +329,22 @@ func TestTransponderCommands(t *testing.T) {
 			},
 			expected: "DAL222 SQA",
 		},
+		{
+			name:       "transponder on",
+			transcript: "Delta 222 transponder on",
+			aircraft: map[string]Aircraft{
+				"Delta 222": {Callsign: "DAL222", State: "departure"},
+			},
+			expected: "DAL222 SQON",
+		},
+		{
+			name:       "squawk normal",
+			transcript: "Delta 222 squawk normal",
+			aircraft: map[string]Aircraft{
+				"Delta 222": {Callsign: "DAL222", State: "departure"},
+			},
+			expected: "DAL222 SQON",
+		},
 	}
 
 	provider := NewTranscriber(nil)
@@ -488,6 +504,21 @@ func TestNavigationCommands(t *testing.T) {
 				},
 			},
 			expected: "AAL870 DPUCKY/H180",
+		},
+		{
+			name:       "at fix cleared approach",
+			transcript: "Delta 8499 at Fergi clear for the River Visual runway one niner approach",
+			aircraft: map[string]Aircraft{
+				"Delta 8499": {
+					Callsign:            "DAL8499",
+					Altitude:            4000,
+					State:               "arrival",
+					AssignedApproach:    "RIV",
+					Fixes:               map[string]string{"Fergi": "FERGI"},
+					CandidateApproaches: map[string]string{"River Visual runway one niner": "RIV"},
+				},
+			},
+			expected: "DAL8499 AFERGI/CRIV",
 		},
 	}
 
@@ -908,6 +939,8 @@ func TestNormalizeTranscript(t *testing.T) {
 		{"9r", []string{"9"}},
 		// "niner thousand" transcribed as "9 or 1000" - should convert 1000 to thousand
 		{"descend and maintain, 9 or 1000", []string{"descend", "and", "maintain", "9", "thousand"}},
+		// "fly heading" sometimes transcribed as "flighting"
+		{"flighting 030", []string{"fly", "heading", "030"}},
 	}
 
 	for _, tt := range tests {
@@ -1289,6 +1322,38 @@ func TestShouldCorrectAltitude(t *testing.T) {
 			acAltitude:  2000, // aircraft at 2000 ft
 			expectCorr:  true, // 300 <= 2000 triggers correction
 			expectedAlt: 30,   // corrected to 3000 ft
+		},
+		{
+			name:        "climb correction would produce flight level - no correction",
+			tmplName:    "climb",
+			alt:         30,    // encoded 30 = 3000 ft
+			acAltitude:  5000,  // aircraft at 5000 ft
+			expectCorr:  false, // correction would be 300 (FL300) - not allowed without "flight level"
+			expectedAlt: 30,
+		},
+		{
+			name:        "descend correction would produce flight level - no correction",
+			tmplName:    "descend",
+			alt:         25,    // encoded 25 = 2500 ft
+			acAltitude:  2000,  // aircraft at 2000 ft
+			expectCorr:  false, // correction would be 250 (FL250) - not allowed without "flight level"
+			expectedAlt: 25,
+		},
+		{
+			name:        "climb correction to 17000 ft is allowed",
+			tmplName:    "climb",
+			alt:         17,   // encoded 17 = 1700 ft
+			acAltitude:  5000, // aircraft at 5000 ft
+			expectCorr:  true, // correction to 170 (17000 ft) is allowed - below FL180
+			expectedAlt: 170,
+		},
+		{
+			name:        "climb correction to 18000 ft not allowed",
+			tmplName:    "climb",
+			alt:         18,    // encoded 18 = 1800 ft
+			acAltitude:  5000,  // aircraft at 5000 ft
+			expectCorr:  false, // correction would be 180 (18000 ft = FL180) - requires "flight level"
+			expectedAlt: 18,
 		},
 	}
 
@@ -1751,12 +1816,12 @@ func TestValidateCommands(t *testing.T) {
 			expectErrors: true,
 		},
 		{
-			name:         "contact tower only valid on approach",
+			name:         "contact tower for arrival returns NOTCLEARED",
 			commands:     []string{"TO"},
 			ac:           Aircraft{State: "arrival"},
-			expectedLen:  0,
-			minConf:      0.0,
-			expectErrors: true,
+			expectedLen:  1, // Returns NOTCLEARED instead of blocking
+			minConf:      0.9,
+			expectErrors: false,
 		},
 		{
 			name:         "contact tower valid on approach",
@@ -2236,6 +2301,94 @@ func TestSplitCallsign(t *testing.T) {
 			if number != tt.expectedNumber {
 				t.Errorf("splitCallsign(%q) number = %q, want %q",
 					tt.callsign, number, tt.expectedNumber)
+			}
+		})
+	}
+}
+
+// TestDecodeCommandsForCallsign tests decoding commands when callsign is already known.
+// This is used when controller repeats a command without callsign after an AGAIN response.
+func TestDecodeCommandsForCallsign(t *testing.T) {
+	// Helper to create aircraft map with both telephony and ICAO callsign keys
+	// (matching what BuildAircraftContext does)
+	makeAircraftMap := func(telephony string, ac Aircraft) map[string]Aircraft {
+		return map[string]Aircraft{
+			telephony:   ac,
+			ac.Callsign: ac,
+		}
+	}
+
+	tests := []struct {
+		name       string
+		transcript string
+		callsign   string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "simple altitude command",
+			transcript: "descend and maintain 8000",
+			callsign:   "AAL5936",
+			aircraft:   makeAircraftMap("American 5936", Aircraft{Callsign: "AAL5936", Altitude: 12000, State: "arrival"}),
+			expected:   "D80",
+		},
+		{
+			name:       "heading command",
+			transcript: "turn left heading two seven zero",
+			callsign:   "UAL452",
+			aircraft:   makeAircraftMap("United 452", Aircraft{Callsign: "UAL452", Altitude: 10000, State: "arrival"}),
+			expected:   "L270",
+		},
+		{
+			name:       "speed command",
+			transcript: "reduce speed to two five zero",
+			callsign:   "DAL88",
+			aircraft:   makeAircraftMap("Delta 88", Aircraft{Callsign: "DAL88", Altitude: 10000, State: "arrival"}),
+			expected:   "S250",
+		},
+		{
+			name:       "multiple commands",
+			transcript: "turn right heading one eight zero descend and maintain six thousand",
+			callsign:   "SWA221",
+			aircraft:   makeAircraftMap("Southwest 221", Aircraft{Callsign: "SWA221", Altitude: 10000, State: "arrival"}),
+			expected:   "R180 D60",
+		},
+		{
+			name:       "no valid commands returns AGAIN",
+			transcript: "mumble garble nonsense",
+			callsign:   "AAL5936",
+			aircraft:   makeAircraftMap("American 5936", Aircraft{Callsign: "AAL5936", Altitude: 12000, State: "arrival"}),
+			expected:   "AGAIN",
+		},
+		{
+			name:       "empty transcript",
+			transcript: "",
+			callsign:   "AAL5936",
+			aircraft:   makeAircraftMap("American 5936", Aircraft{Callsign: "AAL5936", Altitude: 12000, State: "arrival"}),
+			expected:   "",
+		},
+		{
+			name:       "callsign not in aircraft context",
+			transcript: "descend and maintain 8000",
+			callsign:   "UNKNOWN",
+			aircraft:   makeAircraftMap("American 5936", Aircraft{Callsign: "AAL5936", Altitude: 12000, State: "arrival"}),
+			expected:   "AGAIN",
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeCommandsForCallsign(tt.aircraft, tt.transcript, tt.callsign)
+			if err != nil {
+				t.Errorf("DecodeCommandsForCallsign(%q, %q) error = %v",
+					tt.transcript, tt.callsign, err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("DecodeCommandsForCallsign(%q, %q) = %q, want %q",
+					tt.transcript, tt.callsign, result, tt.expected)
 			}
 		})
 	}

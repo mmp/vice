@@ -389,13 +389,8 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	}
 
 	// Do any active airports have CRDA?
-	haveCRDA := false
-	for ap := range activeAirports {
-		if len(ap.ConvergingRunways) > 0 {
-			haveCRDA = true
-			break
-		}
-	}
+	haveCRDA := util.SeqContainsFunc(maps.Keys(activeAirports),
+		func(ap *av.Airport) bool { return len(ap.ConvergingRunways) > 0 })
 	if haveCRDA && s.ControllerConfiguration != nil {
 		// Make sure all of the controllers involved have a valid default airport
 		for _, pos := range s.ControllerConfiguration.AllPositions() {
@@ -494,17 +489,19 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		}
 	}
 
-	for _, dm := range s.DefaultMaps {
-		if !manifest.HasMap(dm) {
-			e.ErrorString("video map %q in \"default_maps\" not found. Use -listmaps "+
-				"<path to Zxx-videomaps.gob.zst> to show available video maps for an ARTCC.", dm)
+	if manifest != nil {
+		for _, dm := range s.DefaultMaps {
+			if !manifest.HasMap(dm) {
+				e.ErrorString("video map %q in \"default_maps\" not found. Use -listmaps "+
+					"<path to Zxx-videomaps.gob.zst> to show available video maps for an ARTCC.", dm)
+			}
 		}
-	}
 
-	if sg.ARTCC != "" {
-		if !manifest.HasMapGroup(s.DefaultMapGroup) {
-			e.ErrorString("video map group %q in \"default_map_group\" not found. Use -listmaps "+
-				"<path to Zxx-videomaps.gob.zst> to show available video map groups for an ARTCC.", s.DefaultMapGroup)
+		if sg.ARTCC != "" {
+			if !manifest.HasMapGroup(s.DefaultMapGroup) {
+				e.ErrorString("video map group %q in \"default_map_group\" not found. Use -listmaps "+
+					"<path to Zxx-videomaps.gob.zst> to show available video map groups for an ARTCC.", s.DefaultMapGroup)
+			}
 		}
 	}
 
@@ -1006,9 +1003,11 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 			e.ErrorString("video map %q in \"map_labels\" is not in \"stars_maps\"", m)
 		}
 	}
-	for _, m := range s.VideoMapNames {
-		if m != "" && !manifest.HasMap(m) {
-			e.ErrorString("video map %q in \"stars_maps\" is not a valid video map", m)
+	if manifest != nil {
+		for _, m := range s.VideoMapNames {
+			if m != "" && !manifest.HasMap(m) {
+				e.ErrorString("video map %q in \"stars_maps\" is not a valid video map", m)
+			}
 		}
 	}
 
@@ -1025,16 +1024,18 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		}
 
 		for tcp, config := range s.ControllerConfigs {
-			for _, name := range config.DefaultMaps {
-				if !manifest.HasMap(name) {
-					e.ErrorString("video map %q in \"default_maps\" for controller %q is not a valid video map",
-						name, tcp)
+			if manifest != nil {
+				for _, name := range config.DefaultMaps {
+					if !manifest.HasMap(name) {
+						e.ErrorString("video map %q in \"default_maps\" for controller %q is not a valid video map",
+							name, tcp)
+					}
 				}
-			}
-			for _, name := range config.VideoMapNames {
-				if name != "" && !manifest.HasMap(name) {
-					e.ErrorString("video map %q in \"video_maps\" for controller %q is not a valid video map",
-						name, tcp)
+				for _, name := range config.VideoMapNames {
+					if name != "" && !manifest.HasMap(name) {
+						e.ErrorString("video map %q in \"video_maps\" for controller %q is not a valid video map",
+							name, tcp)
+					}
 				}
 			}
 
@@ -1209,7 +1210,16 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 			}
 		}
 
-		if ap.HoldForRelease {
+		hfr := ap.HoldForRelease
+		for _, rwy := range ap.DepartureRoutes {
+			for _, exitRoute := range rwy {
+				if exitRoute.HoldForRelease {
+					hfr = true
+				}
+			}
+		}
+
+		if hfr {
 			// Make sure it's in either zero or one of the coordination lists.
 			if len(matches) > 1 {
 				e.ErrorString("Airport %q is in multiple entries in \"coordination_lists\": %s.", airport, strings.Join(matches, ", "))
@@ -1665,7 +1675,11 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 				scenarioNames[scenarioName] = groupName
 			}
 
-			if !skipVideoMaps {
+			if skipVideoMaps {
+				// When skipping video maps, still call PostDeserialize but with nil manifest
+				// to initialize catalogs and set default values
+				sgroup.PostDeserialize(e, catalogs, nil)
+			} else {
 				// Make sure we have what we need in terms of video maps
 				fa := &sgroup.FacilityAdaptation
 				if vf := fa.VideoMapFile; vf == "" {
@@ -1686,7 +1700,9 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 	// Validate the extra scenario separately with its own error logger
 	if extraScenario != nil {
 		if skipVideoMaps {
-			// When skipping video maps, just add the extra scenario without validation
+			// When skipping video maps, still call PostDeserialize but with nil manifest
+			var extraE util.ErrorLogger
+			extraScenario.PostDeserialize(&extraE, catalogs, nil)
 			if scenarioGroups[extraScenarioFacility] == nil {
 				scenarioGroups[extraScenarioFacility] = make(map[string]*scenarioGroup)
 			}
@@ -1801,13 +1817,8 @@ func CreateLaunchConfig(scenario *scenario, scenarioGroup *scenarioGroup) sim.La
 	}
 
 	// Check for VFR reporting regions
-	haveVFRReportingRegions := false
-	for _, cfg := range scenarioGroup.FacilityAdaptation.ControllerConfigs {
-		if cfg.FlightFollowingAirspace != nil {
-			haveVFRReportingRegions = true
-			break
-		}
-	}
+	haveVFRReportingRegions := util.SeqContainsFunc(maps.Values(scenarioGroup.FacilityAdaptation.ControllerConfigs),
+		func(cfg *sim.STARSControllerConfig) bool { return cfg.FlightFollowingAirspace != nil })
 
 	// Create proper LaunchConfig
 	return sim.MakeLaunchConfig(

@@ -94,6 +94,8 @@ var commandKeywords = map[string]string{
 	"descend":    "descend",
 	"descended":  "descend",
 	"descending": "descend",
+	"descendant": "descend", // STT error
+	"descent":    "descend", // STT error
 	"climb":      "climb",
 	"climbed":    "climb",
 	"climbing":   "climb",
@@ -110,15 +112,17 @@ var commandKeywords = map[string]string{
 	"expedite":   "expedite",
 
 	// Heading
-	"heading": "heading",
-	"hitting": "heading", // STT error
-	"turn":    "turn",
-	"left":    "left",
-	"right":   "right",
-	"degrees": "degrees",
-	"degree":  "degrees",
-	"fly":     "fly",
-	"present": "present",
+	"heading":  "heading",
+	"hitting":  "heading", // STT error
+	"turn":     "turn",
+	"left":     "left",
+	"lefting":  "left", // STT error
+	"right":    "right",
+	"righting": "right", // STT error
+	"degrees":  "degrees",
+	"degree":   "degrees",
+	"fly":      "fly",
+	"present":  "present",
 
 	// Speed
 	"speed":    "speed",
@@ -136,6 +140,9 @@ var commandKeywords = map[string]string{
 	"proceed": "proceed",
 	"cross":   "cross",
 	"depart":  "depart",
+	"hold":    "hold",
+	"via":     "via",
+	"by":      "via", // STT error: "via" often transcribed as "by"
 
 	// Approach
 	"cleared":   "cleared",
@@ -148,6 +155,12 @@ var commandKeywords = map[string]string{
 	"clearance": "clearance",
 	"visual":    "visual",
 	"ils":       "ils",
+	"ios":       "ils", // STT error
+	"outlast":   "ils", // STT error
+	"eyeless":   "ils", // STT error
+	"dalas":     "ils", // STT error
+	"dallas":    "ils", // STT error
+	"ls":        "ils", // STT error: "ILS" sometimes transcribed as "LS"
 	"rnav":      "rnav",
 	"vor":       "vor",
 	"runway":    "runway",
@@ -161,6 +174,10 @@ var commandKeywords = map[string]string{
 
 	// Handoff
 	"contact":   "contact",
+	"konnek":    "contact", // STT error
+	"konek":     "contact", // STT error
+	"kannak":    "contact", // STT error
+	"connector": "contact", // STT error
 	"tower":     "tower",
 	"frequency": "frequency",
 	"departure": "departure",
@@ -251,6 +268,12 @@ func NormalizeTranscript(transcript string) []string {
 			continue
 		}
 
+		// Special case: "flighting" is commonly transcribed instead of "fly heading"
+		if w == "flighting" {
+			result = append(result, "fly", "heading")
+			continue
+		}
+
 		// Handle "or" as STT misrecognition of "niner" when between digits.
 		// STT sometimes transcribes "niner" as "nine or", so "two nine or zero"
 		// becomes "2 9 or 0" instead of "2 9 0". Skip "or" when it appears
@@ -272,6 +295,61 @@ func NormalizeTranscript(transcript string) []string {
 
 		// Keep as-is
 		result = append(result, w)
+	}
+
+	// Post-process: join letter sequences and fix common multi-word errors
+	result = postProcessNormalized(result)
+
+	return result
+}
+
+// postProcessNormalized handles multi-word STT errors and letter joining.
+func postProcessNormalized(tokens []string) []string {
+	result := make([]string, 0, len(tokens))
+
+	for i := range len(tokens) {
+		// Handle "december 18" → ["descend", "maintain"]
+		// This is a garbled transcription of "descend and maintain"
+		if tokens[i] == "december" && i+1 < len(tokens) && tokens[i+1] == "18" {
+			result = append(result, "descend", "maintain")
+			i++ // Skip the "18"
+			continue
+		}
+
+		// Handle "i l s" → "ils" (3 separate letters)
+		if tokens[i] == "i" && i+2 < len(tokens) && tokens[i+1] == "l" && tokens[i+2] == "s" {
+			result = append(result, "ils")
+			i += 2 // Skip the "l" and "s"
+			continue
+		}
+
+		// Handle "l s" → "ils" (2 letters, missing "i")
+		// Only when it looks like approach context (followed by "runway" or a number)
+		if tokens[i] == "l" && i+1 < len(tokens) && tokens[i+1] == "s" {
+			// Check if next token after "l s" suggests approach context
+			if i+2 < len(tokens) {
+				next := tokens[i+2]
+				if next == "runway" || IsNumber(next) {
+					result = append(result, "ils")
+					i++ // Skip the "s"
+					continue
+				}
+			}
+		}
+
+		// Handle "10XXX" headings where "10" is a garbled transcription of "heading"
+		// e.g., "10140" → ["heading", "140"], "10270" → ["heading", "270"]
+		if len(tokens[i]) == 5 && tokens[i][:2] == "10" && IsNumber(tokens[i]) {
+			possibleHeading := tokens[i][2:]
+			hdg := ParseNumber(possibleHeading)
+			if hdg >= 1 && hdg <= 360 {
+				result = append(result, "heading", possibleHeading)
+				continue
+			}
+		}
+
+		// Default: keep the token as-is
+		result = append(result, tokens[i])
 	}
 
 	return result

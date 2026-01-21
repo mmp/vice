@@ -109,10 +109,15 @@ func Tokenize(words []string) []Token {
 			// Large numbers might be malformed altitudes from STT
 			if num >= 1000 && num%1000 == 0 {
 				// "8000" spoken as number -> altitude 80
-				tok.Type = TokenAltitude
-				tok.Value = num / 100
-			} else if num >= 100000 {
+				encoded := num / 100
+				// Flight levels (>=18,000 ft = 180 encoded) require explicit "flight level" speech
+				if encoded < 180 {
+					tok.Type = TokenAltitude
+					tok.Value = encoded
+				}
+			} else if num >= 100000 && num < 1800000 {
 				// STT error: "800,000" -> 8000 ft -> 80
+				// Cap below 18,000 ft (180 encoded) - flight levels require explicit "flight level"
 				tok.Type = TokenAltitude
 				tok.Value = num / 10000
 			}

@@ -10,195 +10,65 @@ import (
 	whisper "github.com/mmp/vice/autowhisper/internal/whisper"
 )
 
-// StreamingResult contains a transcription result from the streaming transcriber.
-type StreamingResult struct {
-	Text      string
-	IsFinal   bool
-	Timestamp time.Time
-}
-
-// StreamingTranscriber handles real-time audio streaming to whisper.
-// It uses a sliding window approach to process audio incrementally.
-type StreamingTranscriber struct {
+// Transcriber accumulates audio during PTT and transcribes on Stop().
+// This replaces the previous streaming approach which was wasteful:
+// it processed 3s windows every 500ms during PTT but discarded all
+// intermediate results and reprocessed ALL audio on PTT release anyway.
+type Transcriber struct {
 	model   *Model
 	modelMu *sync.Mutex // External mutex to serialize whisper access
 	opts    Options
 
 	// Audio buffer
-	audioBuffer []float32
-	bufferMu    sync.Mutex
-
-	// Streaming state
-	stopChan   chan struct{}
-	loopDone   chan struct{} // Signals processLoop has exited
-	resultChan chan StreamingResult
-	stopped    bool
-	stoppedMu  sync.Mutex
-
-	// Timing configuration (in samples at 16kHz)
-	stepSamples   int // How often to process
-	lengthSamples int // Context window
-	keepSamples   int // Overlap to keep
-
-	// Previous results for deduplication
-	lastText string
-
-	// Accumulated audio for final processing
-	allAudio []float32
+	audio   []float32
+	audioMu sync.Mutex
 }
 
-// NewStreamingTranscriber creates a new streaming transcriber.
+// NewTranscriber creates a new transcriber for accumulating audio.
 // The modelMu mutex is used to serialize access to the whisper model.
-// Parameters are tuned for short ATC commands:
-//   - stepMs: 500ms - process every 500ms
-//   - lengthMs: 3000ms - context window of 3 seconds
-//   - keepMs: 200ms - overlap between windows
-func NewStreamingTranscriber(m *Model, modelMu *sync.Mutex, opts Options) *StreamingTranscriber {
-	const sampleRate = 16000
-	stepMs := 500
-	lengthMs := 3000
-	keepMs := 200
-
-	return &StreamingTranscriber{
-		model:         m,
-		modelMu:       modelMu,
-		opts:          opts,
-		stopChan:      make(chan struct{}),
-		loopDone:      make(chan struct{}),
-		resultChan:    make(chan StreamingResult, 10),
-		stepSamples:   stepMs * sampleRate / 1000,
-		lengthSamples: lengthMs * sampleRate / 1000,
-		keepSamples:   keepMs * sampleRate / 1000,
+func NewTranscriber(m *Model, modelMu *sync.Mutex, opts Options) *Transcriber {
+	return &Transcriber{
+		model:   m,
+		modelMu: modelMu,
+		opts:    opts,
 	}
 }
 
-// Start begins the streaming session and returns a channel for results.
-// The channel will receive intermediate results as audio is processed.
-// Call Stop() to end the session and get the final result.
-func (st *StreamingTranscriber) Start() <-chan StreamingResult {
-	go st.processLoop()
-	return st.resultChan
-}
-
-// AddSamples adds new audio samples to the streaming buffer.
+// AddSamples adds new audio samples to the buffer.
 // This should be called from the audio capture callback.
-func (st *StreamingTranscriber) AddSamples(samples []int16) {
+func (t *Transcriber) AddSamples(samples []int16) {
 	// Convert int16 to float32
 	floats := make([]float32, len(samples))
 	for i, s := range samples {
 		floats[i] = float32(s) / 32768.0
 	}
 
-	st.bufferMu.Lock()
-	st.audioBuffer = append(st.audioBuffer, floats...)
-	st.allAudio = append(st.allAudio, floats...)
-	st.bufferMu.Unlock()
+	t.audioMu.Lock()
+	t.audio = append(t.audio, floats...)
+	t.audioMu.Unlock()
 }
 
-// Stop ends the streaming session and returns the final transcription.
-// This performs a final transcription pass on all accumulated audio.
-func (st *StreamingTranscriber) Stop() string {
-	st.stoppedMu.Lock()
-	if st.stopped {
-		st.stoppedMu.Unlock()
-		return st.lastText
-	}
-	st.stopped = true
-	st.stoppedMu.Unlock()
+// Stop ends the recording session and returns the final transcription
+// along with the duration of the recorded audio.
+func (t *Transcriber) Stop() (text string, audioDuration time.Duration) {
+	t.audioMu.Lock()
+	audio := t.audio
+	t.audio = nil // Clear for potential reuse
+	t.audioMu.Unlock()
 
-	close(st.stopChan)
-
-	// Wait for processLoop to fully exit before we call transcribe,
-	// since whisper isn't safe for concurrent use
-	<-st.loopDone
-
-	// Final transcription on all accumulated audio
-	st.bufferMu.Lock()
-	allAudio := st.allAudio
-	st.bufferMu.Unlock()
-
-	if len(allAudio) == 0 {
-		close(st.resultChan)
-		return ""
+	if len(audio) == 0 {
+		return "", 0
 	}
 
-	finalText := st.transcribe(allAudio, true)
+	// Calculate audio duration from sample count (16kHz sample rate)
+	audioDuration = time.Duration(len(audio)) * time.Second / 16000
 
-	// Send final result
-	st.resultChan <- StreamingResult{
-		Text:      finalText,
-		IsFinal:   true,
-		Timestamp: time.Now(),
-	}
-	close(st.resultChan)
-
-	return finalText
-}
-
-// processLoop runs the sliding window transcription loop.
-func (st *StreamingTranscriber) processLoop() {
-	defer close(st.loopDone) // Signal that we've exited
-
-	ticker := time.NewTicker(time.Duration(st.stepSamples*1000/16000) * time.Millisecond)
-	defer ticker.Stop()
-
-	var previousAudio []float32
-
-	for {
-		select {
-		case <-st.stopChan:
-			return
-		case <-ticker.C:
-			st.bufferMu.Lock()
-			if len(st.audioBuffer) < st.stepSamples {
-				st.bufferMu.Unlock()
-				continue
-			}
-
-			// Take new samples from buffer
-			newSamples := st.audioBuffer
-			st.audioBuffer = nil
-			st.bufferMu.Unlock()
-
-			// Build audio window: previous overlap + new samples
-			audioWindow := make([]float32, 0, st.lengthSamples)
-			if len(previousAudio) > 0 {
-				takeFromPrev := min(len(previousAudio), st.keepSamples)
-				audioWindow = append(audioWindow, previousAudio[len(previousAudio)-takeFromPrev:]...)
-			}
-			audioWindow = append(audioWindow, newSamples...)
-
-			// Trim to max length
-			if len(audioWindow) > st.lengthSamples {
-				audioWindow = audioWindow[len(audioWindow)-st.lengthSamples:]
-			}
-
-			// Run transcription
-			text := st.transcribe(audioWindow, false)
-
-			// Only emit if text changed and is non-empty
-			if text != st.lastText && text != "" && text != "[BLANK_AUDIO]" {
-				st.lastText = text
-				select {
-				case st.resultChan <- StreamingResult{
-					Text:      text,
-					IsFinal:   false,
-					Timestamp: time.Now(),
-				}:
-				default:
-					// Channel full, skip this update
-				}
-			}
-
-			// Save for next iteration's overlap
-			previousAudio = audioWindow
-		}
-	}
+	return t.transcribe(audio), audioDuration
 }
 
 // transcribe runs whisper on the given audio samples.
-func (st *StreamingTranscriber) transcribe(audio []float32, isFinal bool) string {
-	if st.model == nil || st.model.model == nil || len(audio) == 0 {
+func (t *Transcriber) transcribe(audio []float32) string {
+	if t.model == nil || t.model.model == nil || len(audio) == 0 {
 		return ""
 	}
 
@@ -206,12 +76,12 @@ func (st *StreamingTranscriber) transcribe(audio []float32, isFinal bool) string
 
 	// Acquire mutex to serialize whisper access
 	mutexStart := time.Now()
-	st.modelMu.Lock()
-	defer st.modelMu.Unlock()
+	t.modelMu.Lock()
+	defer t.modelMu.Unlock()
 	mutexWait := time.Since(mutexStart)
 
 	ctxStart := time.Now()
-	ctx, err := st.model.model.NewContext()
+	ctx, err := t.model.model.NewContext()
 	if err != nil {
 		return ""
 	}
@@ -219,19 +89,19 @@ func (st *StreamingTranscriber) transcribe(audio []float32, isFinal bool) string
 	ctxCreate := time.Since(ctxStart)
 
 	// Configure context
-	if st.opts.Threads > 0 {
-		ctx.SetThreads(uint(st.opts.Threads))
+	if t.opts.Threads > 0 {
+		ctx.SetThreads(uint(t.opts.Threads))
 	} else {
 		ctx.SetThreads(uint(runtime.NumCPU()))
 	}
-	ctx.SetTranslate(st.opts.Translate)
+	ctx.SetTranslate(t.opts.Translate)
 	ctx.SetSplitOnWord(true)
-	ctx.SetTokenTimestamps(st.opts.TokenTimestamps)
-	if st.opts.MaxTokensPerSegment > 0 {
-		ctx.SetMaxTokensPerSegment(st.opts.MaxTokensPerSegment)
+	ctx.SetTokenTimestamps(t.opts.TokenTimestamps)
+	if t.opts.MaxTokensPerSegment > 0 {
+		ctx.SetMaxTokensPerSegment(t.opts.MaxTokensPerSegment)
 	}
-	if strings.TrimSpace(st.opts.InitialPrompt) != "" {
-		ctx.SetInitialPrompt(st.opts.InitialPrompt)
+	if strings.TrimSpace(t.opts.InitialPrompt) != "" {
+		ctx.SetInitialPrompt(t.opts.InitialPrompt)
 	}
 
 	// Disable temperature fallback to prevent multiple decode passes.
@@ -240,8 +110,15 @@ func (st *StreamingTranscriber) transcribe(audio []float32, isFinal bool) string
 	// For ATC commands we expect clear speech, so disable retries.
 	ctx.SetTemperatureFallback(-1.0)
 
+	// Enable beam search for fast hardware (bounded ~1.5x impact on decoder,
+	// which is only 20-40% of total compute, so ~1.1-1.2x total impact).
+	// RealtimeFactor < 0.05 means the model processes audio at 20x+ realtime.
+	if t.opts.RealtimeFactor > 0 && t.opts.RealtimeFactor < 0.05 {
+		ctx.SetBeamSize(3)
+	}
+
 	// Language selection
-	lang := strings.TrimSpace(st.opts.Language)
+	lang := strings.TrimSpace(t.opts.Language)
 	if lang == "" {
 		lang = "auto"
 	}
@@ -266,10 +143,8 @@ func (st *StreamingTranscriber) transcribe(audio []float32, isFinal bool) string
 	totalTime := time.Since(transcribeStart)
 	audioDuration := time.Duration(len(audio)) * time.Second / 16000
 
-	// Log timing details for slow transcriptions (>500ms), but only for final
-	// transcriptions (after PTT release). Intermediate transcriptions during PTT
-	// hold are not meaningful for latency measurement.
-	if isFinal && totalTime > 500*time.Millisecond {
+	// Log timing details for slow transcriptions (>500ms)
+	if totalTime > 500*time.Millisecond {
 		logWhisperTiming("SLOW whisper: total=%v (mutex=%v, ctx=%v, process=%v) audio=%v samples=%d",
 			totalTime, mutexWait, ctxCreate, processTime, audioDuration, len(audio))
 	}
@@ -277,8 +152,7 @@ func (st *StreamingTranscriber) transcribe(audio []float32, isFinal bool) string
 	return strings.TrimSpace(strings.Join(segments, " "))
 }
 
-// logWhisperTiming logs whisper timing information. Can be enabled via build tag or always-on for debugging.
-func logWhisperTiming(format string, args ...interface{}) {
-	// Always log for now to diagnose the issue
+// logWhisperTiming logs whisper timing information.
+func logWhisperTiming(format string, args ...any) {
 	println("[whisper-timing]", fmt.Sprintf(format, args...))
 }

@@ -581,6 +581,18 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 		AltRange: [2]float32{24000, 24000}, // will fix up min below
 	}
 
+	// Handle degenerate extent (single point or collinear points)
+	const minExtent float32 = 0.1 // ~6nm minimum extent
+	center := g.Extent.Center()
+	if g.Extent.Width() < minExtent {
+		g.Extent.P0[0] = center[0] - minExtent/2
+		g.Extent.P1[0] = center[0] + minExtent/2
+	}
+	if g.Extent.Height() < minExtent {
+		g.Extent.P0[1] = center[1] - minExtent/2
+		g.Extent.P1[1] = center[1] + minExtent/2
+	}
+
 	const xyDelta = 2 /* roughly 2nm spacing */
 	nmPerLongitude := math.NMPerLongitudeAt(math.Point2LL(g.Extent.Center()))
 	g.Res[0] = int(max(1, nmPerLongitude*g.Extent.Width()/xyDelta))

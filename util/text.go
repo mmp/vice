@@ -89,23 +89,33 @@ func (cfg TextWrapConfig) Wrap(s string) (string, int) {
 
 		// Wrap while currentLine exceeds capacity
 		for cap := capacityForLine(); len(currentLine) > cap; cap = capacityForLine() {
-			lastSpaceIndex := -1
-			for i := len(currentLine) - 1; i >= 0; i-- {
-				if currentLine[i] == ' ' {
-					lastSpaceIndex = i
+			lastBreakIndex := -1
+			scanFrom := min(cap, len(currentLine)) - 1
+			for i := scanFrom; i >= 0; i-- {
+				if currentLine[i] == ' ' || currentLine[i] == '.' {
+					lastBreakIndex = i
 					break
 				}
 			}
 
-			// If we are not allowed to break mid-word and there is no space, allow overflow until space/newline
-			if !cfg.WrapNoSpace && lastSpaceIndex == -1 {
-				break
+			// If we are not allowed to break mid-word and there is no break in the first cap chars,
+			// scan the rest of the buffer for the first break point
+			if !cfg.WrapNoSpace && lastBreakIndex == -1 {
+				for i := cap; i < len(currentLine); i++ {
+					if currentLine[i] == ' ' || currentLine[i] == '.' {
+						lastBreakIndex = i
+						break
+					}
+				}
+				if lastBreakIndex == -1 {
+					break // still no break found, allow overflow until break/newline
+				}
 			}
 
 			breakPos := cap
-			if !cfg.WrapNoSpace && lastSpaceIndex >= 0 {
-				// Prefer wrapping at last space when allowed
-				breakPos = min(lastSpaceIndex+1, len(currentLine))
+			if !cfg.WrapNoSpace && lastBreakIndex >= 0 {
+				// Prefer wrapping at last break when allowed
+				breakPos = min(lastBreakIndex+1, len(currentLine))
 			}
 
 			// Emit up to breakPos, then newline + indent

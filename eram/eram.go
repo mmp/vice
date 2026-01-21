@@ -85,7 +85,19 @@ type ERAMPane struct {
 
 	repositionLargeInput  bool      `json:"-"`
 	repositionSmallOutput bool      `json:"-"`
+	repositionClock       bool      `json:"-"`
 	timeSinceRepo         time.Time `json:"-"`
+
+	tearoffInProgress        string                   `json:"-"` // Button name being torn off
+	tearoffIsReposition      bool                     `json:"-"` // Repositioning existing vs new tearoff
+	tearoffStart             time.Time                `json:"-"` // Debounce timer
+	tearoffDragOffset        [2]float32               `json:"-"` // Mouse offset from button corner
+	deleteTearoffMode        bool                     `json:"-"` // Delete mode active
+	tearoffMenus             map[string]int           `json:"-"` // torn-off menu button name -> menu state
+	tearoffMenuOpened        map[string]time.Time     `json:"-"` // debounce open clicks per menu
+	tearoffMenuLightToolbar  map[string][4][2]float32 `json:"-"` // cached menu backgrounds for tearoffs
+	tearoffMenuLightToolbar2 map[string][4][2]float32 `json:"-"` // cached secondary backgrounds (MAP BRIGHT)
+	tearoffMenuOrder         []string                 `json:"-"` // draw/input order for tearoff menus (oldest -> newest)
 
 	velocityTime int `json:"-"` // 0, 1, 4, or 8 minutes
 
@@ -227,7 +239,14 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.drawScenarioRoutes(ctx, transforms, renderer.GetDefaultFont(), cb)
 	ep.drawPlotPoints(ctx, transforms, cb)
 	ep.drawCRRFixes(ctx, transforms, cb)
-	scopeExtent := ep.drawtoolbar(ctx, transforms, cb)
+	// Handle button tearoff placement BEFORE drawing toolbar (so placement click isn't consumed)
+	ep.handleTearoffPlacement(ctx)
+	scopeExtent := ctx.PaneExtent
+	if ps.DisplayToolbar {
+		scale := ep.toolbarButtonScale(ctx)
+		sz := buttonSize(buttonFull, scale)
+		scopeExtent.P1[1] -= sz[1]
+	}
 	cb.SetScissorBounds(scopeExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	ep.drawHistoryTracks(ctx, tracks, transforms, cb)
 	dbs := ep.getAllDatablocks(ctx, tracks)
@@ -240,9 +259,21 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.drawJRings(ctx, tracks, transforms, cb)
 	ep.drawQULines(ctx, transforms, cb)
 	// Draw clock
+	ep.drawClock(ctx, transforms, cb)
 	// Draw views
 	ep.drawCRRView(ctx, transforms, cb)
+	// Draw toolbar and menus on top of the scope
+	cb.SetScissorBounds(ctx.PaneExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
+	ep.drawtoolbar(ctx, transforms, cb)
 	ep.drawCommandInput(ctx, transforms, cb)
+
+	// Draw torn-off buttons
+	ep.drawTornOffButtons(ctx, transforms, cb)
+	// Draw torn-off menus
+	ep.drawTearoffMenus(ctx, transforms, cb)
+	// Draw tearoff preview outline while dragging
+	ep.drawTearoffPreview(ctx, transforms, cb)
+
 	// The TOOLBAR tearoff is different from the toolbar (DCB). It overlaps the toolbar and tracks and everything else I've tried.
 	ep.drawMasterMenu(ctx, cb)
 	if ctx.Mouse != nil {
@@ -332,6 +363,9 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
 	}
 	if ep.prefSet.Current.commandSmallPosition == ([2]float32{}) {
 		ep.prefSet.Current.commandSmallPosition = def.commandSmallPosition
+	}
+	if ep.prefSet.Current.clockPosition == ([2]float32{}) {
+		ep.prefSet.Current.clockPosition = def.clockPosition
 	}
 	// Fill in CRR defaults if this preference set was created before CRR existed
 	if ep.prefSet.Current.CRR.ColorBright == nil {
@@ -515,6 +549,15 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				ep.smallOutput.Set(ps, status.output)
 			}
 		case imgui.KeyEscape:
+			if ep.tearoffInProgress != "" || ep.deleteTearoffMode {
+				if ep.tearoffInProgress != "" {
+					ep.tearoffInProgress = ""
+					ep.tearoffIsReposition = false
+					ctx.Platform.EndCaptureMouse()
+				}
+				ep.deleteTearoffMode = false
+				break
+			}
 			// Clear the input
 			if ep.repositionLargeInput || ep.repositionSmallOutput {
 				ep.repositionLargeInput = false

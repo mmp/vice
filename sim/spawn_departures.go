@@ -26,6 +26,27 @@ import (
 // How low below the MVA a VFR can be
 const vfrMVABuffer = 1000
 
+// exitRoutesHaveVariedHeadings returns true if the given exit routes have
+// different final headings. This is used to determine whether departures
+// should report their heading when checking in with departure control.
+func exitRoutesHaveVariedHeadings(exitRoutes map[string]*av.ExitRoute) bool {
+	var firstHeading int
+	first := true
+	for _, route := range exitRoutes {
+		hdg := route.FinalHeading()
+		if hdg == 0 {
+			continue
+		}
+		if first {
+			firstHeading = hdg
+			first = false
+		} else if hdg != firstHeading {
+			return true
+		}
+	}
+	return false
+}
+
 func (s *Sim) spawnDepartures() {
 	now := s.State.SimTime
 
@@ -605,10 +626,12 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 	if err != nil {
 		return nil, err
 	}
+	ac.ReportDepartureHeading = exitRoutesHaveVariedHeadings(exitRoutes)
 
 	shortExit, _, _ := strings.Cut(dep.Exit, ".") // chop any excess
 	_, isTRACON := av.DB.TRACONs[s.State.Facility]
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeDeparture)
+	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = util.Select(len(ac.FlightPlan.DepartureAirport) == 4, ac.FlightPlan.DepartureAirport[1:],
 		ac.FlightPlan.DepartureAirport)
 	nasFp.ExitFix = shortExit
@@ -618,7 +641,7 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 	nasFp.AssignedAltitude = util.Select(!isTRACON, ac.FlightPlan.Altitude, 0)
 	nasFp.RNAV = s.State.FacilityAdaptation.DisplayRNAVSymbol && exitRoute.IsRNAV
 
-	ac.HoldForRelease = ap.HoldForRelease && ac.FlightPlan.Rules == av.FlightRulesIFR // VFRs aren't held
+	ac.HoldForRelease = (ap.HoldForRelease || exitRoute.HoldForRelease) && ac.FlightPlan.Rules == av.FlightRulesIFR // VFRs aren't held
 	s.assignDepartureController(ac, &nasFp, ap, exitRoute, departureAirport, runway)
 
 	if err := s.assignSquawk(ac, &nasFp); err != nil {

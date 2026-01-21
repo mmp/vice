@@ -41,6 +41,7 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 	if mouse == nil {
 		return
 	}
+	ps := ep.currentPrefs()
 	if (ctx.Mouse.Clicked[platform.MouseButtonPrimary] || ctx.Mouse.Clicked[platform.MouseButtonSecondary] ||
 		ctx.Mouse.Clicked[platform.MouseButtonTertiary]) && !ctx.HaveFocus {
 		ctx.KeyboardFocus.Take(ep)
@@ -62,10 +63,11 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 				ep.bigOutput.displayError(ep.currentPrefs(), status.err)
 			} else if status.bigOutput != "" {
 				ep.bigOutput.displaySuccess(ep.currentPrefs(), status.bigOutput)
+			} else if status.output != "" {
+				ep.smallOutput.Set(ps, status.output)
 			}
 		}
 	}
-	ps := ep.currentPrefs()
 	// try get closest track
 
 	// pan
@@ -207,7 +209,7 @@ func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCall
 	ep.targetGenLastCallsign = callsign
 
 	ctx.Client.RunAircraftCommands(callsign, cmds, false, false,
-		0, "", nil, "", // keyboard input: no whisper duration, transcript, or STT context
+		0, 0, "", nil, "", // keyboard input: no whisper duration, audio duration, transcript, or STT context
 		func(errStr string, remaining string) {
 			if errStr != "" {
 
@@ -265,8 +267,8 @@ func (ep *ERAMPane) recallHandoff(ctx *panes.Context, acid sim.ACID) {
 		func(err error) { ep.bigOutput.displayError(ep.currentPrefs(), err) })
 }
 
-func (ep *ERAMPane) getQULines(ctx *panes.Context, acid sim.ACID) {
-	ctx.Client.SendRouteCoordinates(acid, func(err error) {
+func (ep *ERAMPane) getQULines(ctx *panes.Context, acid sim.ACID, minutes int) {
+	ctx.Client.SendRouteCoordinates(acid, minutes, func(err error) {
 		if err != nil {
 			ep.bigOutput.displayError(ep.currentPrefs(), err)
 		}
