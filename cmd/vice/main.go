@@ -390,10 +390,11 @@ func main() {
 		av.InitDB()
 
 		// Start loading the whisper model in the background so it's ready
-		// when the user first presses PTT. Use cached model if same device.
-		client.PreloadWhisperModel(lg, config.WhisperModelName, config.WhisperDeviceID, func(modelName, deviceID string) {
+		// when the user first presses PTT. Use cached model if same device and benchmark index.
+		client.PreloadWhisperModel(lg, config.WhisperModelName, config.WhisperDeviceID, config.WhisperBenchmarkIndex, func(modelName, deviceID string, benchmarkIndex int) {
 			config.WhisperModelName = modelName
 			config.WhisperDeviceID = deviceID
+			config.WhisperBenchmarkIndex = benchmarkIndex
 		})
 
 		// Check for whisper model errors asynchronously and show dialog if CPU not supported.

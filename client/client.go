@@ -555,8 +555,13 @@ var whisperBenchmarkStatus string
 var whisperBenchmarkStatusMu sync.Mutex
 var whisperIsBenchmarking bool // true only when actually running benchmarks, not just loading cached model
 
+// WhisperBenchmarkIndex is the current benchmark generation. If the stored
+// index in config is less than this, re-benchmarking is triggered. Increment
+// this when benchmark criteria change (e.g., models, thresholds).
+const WhisperBenchmarkIndex = 1
+
 // Callback to save model selection to config
-var whisperSaveCallback func(modelName, deviceID string)
+var whisperSaveCallback func(modelName, deviceID string, benchmarkIndex int)
 
 // Benchmark report data to be sent to server
 var whisperBenchmarkReport *server.WhisperBenchmarkReport
@@ -669,7 +674,7 @@ func ReportWhisperBenchmark(remoteServer *Server, lg *log.Logger) bool {
 
 // ForceWhisperRebenchmark closes the current model and triggers a fresh benchmark.
 // This should be called when the user wants to re-run the benchmark.
-func ForceWhisperRebenchmark(lg *log.Logger, saveCallback func(modelName, deviceID string)) {
+func ForceWhisperRebenchmark(lg *log.Logger, saveCallback func(modelName, deviceID string, benchmarkIndex int)) {
 	whisperModelStartMu.Lock()
 	// Close existing model if any
 	whisperModelMu.Lock()
@@ -691,8 +696,8 @@ func ForceWhisperRebenchmark(lg *log.Logger, saveCallback func(modelName, device
 	whisperIsBenchmarking = true
 	whisperBenchmarkStatusMu.Unlock()
 
-	// Start fresh benchmark (force=true to skip cache)
-	PreloadWhisperModel(lg, "", "", saveCallback)
+	// Start fresh benchmark (pass 0 for cachedBenchmarkIndex to force rebenchmark)
+	PreloadWhisperModel(lg, "", "", 0, saveCallback)
 }
 
 // benchmarkModel loads a model, runs warmup passes, then benchmarks it with
@@ -747,27 +752,25 @@ func benchmarkModel(modelName string) (latencyMs int64, model *whisper.Model, er
 	return minLatency, model, nil
 }
 
-// Model size tiers for progressive benchmarking
-var whisperModelTiers = []struct {
-	quantized   string
-	unquantized string
-}{
-	{"ggml-tiny.en-q8_0.bin", "ggml-tiny.en.bin"},
-	{"ggml-base.en-q8_0.bin", "ggml-base.en.bin"},
-	{"ggml-small.en-q8_0.bin", "ggml-small.en.bin"},
-	{"ggml-medium.en-q8_0.bin", "ggml-medium.en.bin"},
+// Model size tiers for progressive benchmarking (smallest to largest)
+var whisperModelTiers = []string{
+	"ggml-tiny.en.bin",
+	"ggml-base.en.bin",
+	"ggml-small.en.bin",
+	"ggml-medium.en.bin",
 }
 
 // PreloadWhisperModel loads the whisper model in the background so it's
 // ready when PTT is first pressed. This avoids blocking the UI.
 //
-// If cachedModelName and cachedDeviceID match the current device, the cached
+// If cachedModelName and cachedDeviceID match the current device and the
+// cachedBenchmarkIndex matches the current WhisperBenchmarkIndex, the cached
 // model is loaded directly without benchmarking. Otherwise, a full benchmark
 // is performed.
 //
 // The saveCallback is called when a model is selected (after benchmarking)
 // to allow saving the selection to config.
-func PreloadWhisperModel(lg *log.Logger, cachedModelName, cachedDeviceID string, saveCallback func(modelName, deviceID string)) {
+func PreloadWhisperModel(lg *log.Logger, cachedModelName, cachedDeviceID string, cachedBenchmarkIndex int, saveCallback func(modelName, deviceID string, benchmarkIndex int)) {
 	whisperModelStartMu.Lock()
 	if whisperModelStarted {
 		whisperModelStartMu.Unlock()
@@ -798,23 +801,29 @@ func PreloadWhisperModel(lg *log.Logger, cachedModelName, cachedDeviceID string,
 		if runtime.GOOS != "darwin" && !whisper.GPUEnabled() {
 			setWhisperBenchmarkStatus("No GPU available, using tiny model")
 			lg.Info("No GPU available, using tiny whisper model")
-			modelName := "ggml-tiny.en-q8_0.bin"
+			modelName := "ggml-tiny.en.bin"
 			loadModelDirect(modelName, currentDeviceID, lg)
 			return
 		}
 
 		// Check if we can use the cached model
-		if cachedModelName != "" && cachedDeviceID == currentDeviceID {
+		if cachedModelName != "" && cachedDeviceID == currentDeviceID && cachedBenchmarkIndex >= WhisperBenchmarkIndex {
 			setWhisperBenchmarkStatus(fmt.Sprintf("Using cached model: %s", cachedModelName))
 			lg.Infof("Using cached whisper model: %s (device: %s)", cachedModelName, currentDeviceID)
 			loadModelDirect(cachedModelName, currentDeviceID, lg)
 			return
 		}
 
-		if cachedModelName != "" && cachedDeviceID != currentDeviceID {
-			fmt.Printf("[whisper-benchmark] Device changed: was %q, now %q - re-benchmarking\n",
-				cachedDeviceID, currentDeviceID)
-			lg.Infof("Whisper device changed, re-benchmarking")
+		if cachedModelName != "" {
+			if cachedDeviceID != currentDeviceID {
+				fmt.Printf("[whisper-benchmark] Device changed: was %q, now %q - re-benchmarking\n",
+					cachedDeviceID, currentDeviceID)
+				lg.Infof("Whisper device changed, re-benchmarking")
+			} else if cachedBenchmarkIndex < WhisperBenchmarkIndex {
+				fmt.Printf("[whisper-benchmark] Benchmark criteria changed (index %d -> %d) - re-benchmarking\n",
+					cachedBenchmarkIndex, WhisperBenchmarkIndex)
+				lg.Infof("Whisper benchmark criteria changed, re-benchmarking")
+			}
 		}
 
 		// GPU is available - benchmark models progressively
@@ -858,7 +867,7 @@ func loadModelDirect(modelName, deviceID string, lg *log.Logger) {
 
 	// Save to config if callback provided
 	if whisperSaveCallback != nil {
-		whisperSaveCallback(modelName, deviceID)
+		whisperSaveCallback(modelName, deviceID, WhisperBenchmarkIndex)
 	}
 }
 
@@ -868,12 +877,10 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 	lg.Info("Starting whisper model benchmark")
 
 	const (
-		continueThresholdMs = 400  // <400ms: fast enough, try larger model
-		acceptThresholdMs   = 1100 // 400-1100ms: acceptable, use this model
-		// >1100ms: too slow, use previous model
+		continueThresholdMs = 400 // <400ms: fast enough, try larger model
+		acceptThresholdMs   = 750 // Must process 1s of speech in <750ms to be usable
 	)
 
-	var useQuantized bool
 	var selectedModel *whisper.Model
 	var selectedName string
 	var selectedLatency int64
@@ -886,68 +893,8 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 	}
 	var allResults []benchResult
 
-	// Step 1: Benchmark both tiny models to determine quantized vs unquantized
-	setWhisperBenchmarkStatus("Testing tiny models to determine best type...")
-
-	tinyQ8Latency, tinyQ8Model, tinyQ8Err := benchmarkModel(whisperModelTiers[0].quantized)
-	if tinyQ8Err == nil {
-		allResults = append(allResults, benchResult{whisperModelTiers[0].quantized, tinyQ8Latency, ""})
-	}
-
-	tinyLatency, tinyModel, tinyErr := benchmarkModel(whisperModelTiers[0].unquantized)
-	if tinyErr == nil {
-		allResults = append(allResults, benchResult{whisperModelTiers[0].unquantized, tinyLatency, ""})
-	}
-
-	// Determine which type is faster and select the better tiny model
-	if tinyQ8Err != nil && tinyErr != nil {
-		whisperModelErr = errors.New("failed to load any tiny model")
-		lg.Error("Failed to load any tiny model")
-		setWhisperBenchmarkStatus("Failed to load models")
-		return
-	}
-
-	if tinyQ8Err != nil {
-		useQuantized = false
-		selectedModel = tinyModel
-		selectedName = whisperModelTiers[0].unquantized
-		selectedLatency = tinyLatency
-	} else if tinyErr != nil {
-		useQuantized = true
-		selectedModel = tinyQ8Model
-		selectedName = whisperModelTiers[0].quantized
-		selectedLatency = tinyQ8Latency
-	} else {
-		// Both loaded successfully - pick the faster one
-		if tinyQ8Latency <= tinyLatency {
-			useQuantized = true
-			selectedModel = tinyQ8Model
-			selectedName = whisperModelTiers[0].quantized
-			selectedLatency = tinyQ8Latency
-			tinyModel.Close()
-		} else {
-			useQuantized = false
-			selectedModel = tinyModel
-			selectedName = whisperModelTiers[0].unquantized
-			selectedLatency = tinyLatency
-			tinyQ8Model.Close()
-		}
-	}
-
-	fmt.Printf("[whisper-benchmark] Using %s models (quantized=%v)\n",
-		util.Select(useQuantized, "quantized", "unquantized"), useQuantized)
-
-	// If even tiny is >400ms, just use it
-	if selectedLatency > continueThresholdMs {
-		fmt.Printf("[whisper-benchmark] Tiny model >%dms, stopping here\n", continueThresholdMs)
-		goto done
-	}
-
-	// Step 2: Try larger models (base, small, medium)
-	for tierIdx := 1; tierIdx < len(whisperModelTiers); tierIdx++ {
-		tier := whisperModelTiers[tierIdx]
-		modelName := util.Select(useQuantized, tier.quantized, tier.unquantized)
-
+	// Progressively benchmark models from smallest to largest
+	for _, modelName := range whisperModelTiers {
 		latencyMs, model, err := benchmarkModel(modelName)
 		if err != nil {
 			fmt.Printf("[whisper-benchmark] Skipping %s due to error\n", modelName)
@@ -956,7 +903,7 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 		allResults = append(allResults, benchResult{modelName, latencyMs, ""})
 
 		if latencyMs > acceptThresholdMs {
-			// Too slow (>1100ms) - use the previous model
+			// Too slow (>750ms) - can't use this model, use the previous one
 			fmt.Printf("[whisper-benchmark] %s too slow (%dms > %dms), using previous\n",
 				modelName, latencyMs, acceptThresholdMs)
 			model.Close()
@@ -964,13 +911,15 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 		}
 
 		// This model is acceptable - update selection
-		selectedModel.Close()
+		if selectedModel != nil {
+			selectedModel.Close()
+		}
 		selectedModel = model
 		selectedName = modelName
 		selectedLatency = latencyMs
 
 		if latencyMs > continueThresholdMs {
-			// Acceptable but not fast (400-1100ms) - stop here
+			// Acceptable but not fast (400-750ms) - stop here
 			fmt.Printf("[whisper-benchmark] %s acceptable (%dms), stopping\n", modelName, latencyMs)
 			break
 		}
@@ -979,7 +928,14 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 		fmt.Printf("[whisper-benchmark] %s fast (%dms), trying larger\n", modelName, latencyMs)
 	}
 
-done:
+	// Check if we found any usable model
+	if selectedModel == nil {
+		whisperModelErr = errors.New("no model fast enough (need <750ms for 1s of speech)")
+		lg.Error("No whisper model fast enough")
+		setWhisperBenchmarkStatus("No model fast enough")
+		return
+	}
+
 	// Print summary and build report for server
 	fmt.Printf("[whisper-benchmark] === Results Summary ===\n")
 	var reportResults []server.WhisperBenchmarkResult
@@ -1026,7 +982,7 @@ done:
 
 	// Save to config if callback provided
 	if whisperSaveCallback != nil {
-		whisperSaveCallback(selectedName, deviceID)
+		whisperSaveCallback(selectedName, deviceID, WhisperBenchmarkIndex)
 	}
 }
 

@@ -813,9 +813,10 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 			imgui.TextColored(imgui.Vec4{0.5, 0.8, 0.5, 1}, modelName)
 			imgui.SameLine()
 			if imgui.Button("Re-benchmark") {
-				client.ForceWhisperRebenchmark(lg, func(modelName, deviceID string) {
+				client.ForceWhisperRebenchmark(lg, func(modelName, deviceID string, benchmarkIndex int) {
 					config.WhisperModelName = modelName
 					config.WhisperDeviceID = deviceID
+					config.WhisperBenchmarkIndex = benchmarkIndex
 				})
 				// Show benchmark progress dialog
 				benchClient := &rebenchmarkModalClient{config: config, lg: lg}
