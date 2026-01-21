@@ -80,8 +80,8 @@ type Aircraft struct {
 	GoAroundDistance *float32
 
 	// Departure related state
-	DepartureContactAltitude float32
-	ReportDepartureHeading   bool // true if runway has multiple exit headings
+	DepartureContactAltitude float32 // 0 = waiting for /tc point, -1 = already contacted departure
+	ReportDepartureHeading   bool    // true if runway has multiple exit heading
 
 	// The controller who gave approach clearance
 	ApproachTCP TCP

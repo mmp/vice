@@ -1129,17 +1129,22 @@ func (s *Sim) updateState() {
 					sfp := ac.NASFlightPlan
 
 					if passedWaypoint.TransferComms {
-						// We didn't enqueue this before since we knew an
-						// explicit comms handoff was coming so go ahead and
-						// send them to the controller's frequency. Note that
-						// we use InboundHandoffController and not
-						// ac.TrackingController, since the human controller
-						// may have already flashed the track to a virtual
-						// controller.
-						ctrl := s.State.ResolveController(sfp.InboundHandoffController)
-						// Make sure they've bought the handoff.
-						if ctrl != sfp.HandoffController {
-							s.enqueueControllerContact(ac.ADSBCallsign, ctrl, 0 /* no delay */)
+						// This is a departure that hasn't contacted the departure controller yet, do it here
+						if ac.IsDeparture() && ac.DepartureContactAltitude == 0 {
+							s.contactDeparture(ac)
+						} else {
+							// We didn't enqueue this before since we knew an
+							// explicit comms handoff was coming so go ahead and
+							// send them to the controller's frequency. Note that
+							// we use InboundHandoffController and not
+							// ac.TrackingController, since the human controller
+							// may have already flashed the track to a virtual
+							// controller.
+							ctrl := s.State.ResolveController(sfp.InboundHandoffController)
+							// Make sure they've bought the handoff.
+							if ctrl != sfp.HandoffController {
+								s.enqueueControllerContact(ac.ADSBCallsign, ctrl, 0 /* no delay */)
+							}
 						}
 					}
 
@@ -1224,7 +1229,7 @@ func (s *Sim) updateState() {
 			}
 
 			// Possibly contact the departure controller
-			if ac.DepartureContactAltitude != 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude {
+			if (ac.DepartureContactAltitude > 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude) || (ac.DepartureContactAltitude == 0 && ac.EmergencyState != nil) {
 				fp := ac.NASFlightPlan
 				if fp == nil {
 					fp = s.STARSComputer.lookupFlightPlanBySquawk(ac.Squawk)
@@ -1242,20 +1247,7 @@ func (s *Sim) updateState() {
 						// Use the original InboundHandoffController position for the radio event,
 						// not the resolved position. This ensures TCWControlsPosition checks
 						// correctly match when the user has that position consolidated.
-						tcp := fp.InboundHandoffController
-						s.lg.Debug("contacting departure controller", slog.String("tcp", string(tcp)))
-
-						rt := ac.Nav.DepartureMessage(ac.ReportDepartureHeading)
-						s.postContactTransmission(ac.ADSBCallsign, tcp, *rt)
-
-						// Clear this out so we only send one contact message
-						ac.DepartureContactAltitude = 0
-
-						// Only after we're on frequency can the controller start
-						// issuing control commands.. (Note that track may have
-						// already been handed off to the next controller at this
-						// point.)
-						ac.ControllerFrequency = ControlPosition(tcp)
+						s.contactDeparture(ac)
 					}
 				}
 			}
@@ -1484,6 +1476,31 @@ func (s *Sim) sendFullFlightFollowingRequest(ac *Aircraft, tcp TCP) {
 	rt.Type = av.RadioTransmissionContact
 
 	s.postContactTransmission(ac.ADSBCallsign, tcp, *rt)
+}
+
+func (s *Sim) contactDeparture(ac *Aircraft) {
+	fp := ac.NASFlightPlan
+
+	tcp := fp.InboundHandoffController
+	s.lg.Debug("contacting departure controller", slog.String("tcp", string(tcp)))
+
+	rt := ac.Nav.DepartureMessage(ac.ReportDepartureHeading)
+	s.postContactTransmission(ac.ADSBCallsign, tcp, *rt)
+
+	// Clear this out so we only send one contact message
+	ac.DepartureContactAltitude = 0
+
+	// Only after we're on frequency can the controller start
+	// issuing control commands.. (Note that track may have
+	// already been handed off to the next controller at this
+	// point.)
+	ac.ControllerFrequency = ControlPosition(tcp)
+
+	// Queued emergencies can now proceed
+	if ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1 {
+		ac.EmergencyState.CurrentStage = 0
+		s.runEmergencyStage(ac)
+	}
 }
 
 func (s *Sim) isRadarVisible(ac *Aircraft) bool {
