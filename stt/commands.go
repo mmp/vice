@@ -173,6 +173,24 @@ var commandTemplates = []CommandTemplate{
 		Priority:  10,
 		SkipWords: []string{"turn", "to"},
 	},
+	// Turn direction without explicit "heading" keyword
+	// Handles "turn left 310", "left 310" patterns
+	{
+		Name:      "turn_left_only",
+		Keywords:  [][]string{{"left"}},
+		ArgType:   ArgHeading,
+		OutputFmt: "L%03d",
+		Priority:  7, // Lower than turn_left_heading (10) to prefer explicit matches
+		SkipWords: []string{"turn", "to"},
+	},
+	{
+		Name:      "turn_right_only",
+		Keywords:  [][]string{{"right"}},
+		ArgType:   ArgHeading,
+		OutputFmt: "R%03d",
+		Priority:  7, // Lower than turn_right_heading (10) to prefer explicit matches
+		SkipWords: []string{"turn", "to"},
+	},
 	{
 		Name:      "fly_heading",
 		Keywords:  [][]string{{"fly", "heading"}},
@@ -311,6 +329,15 @@ var commandTemplates = []CommandTemplate{
 		OutputFmt: "D%s/H%03d",
 		Priority:  10,
 		SkipWords: []string{"heading"},
+	},
+	// Hold commands
+	{
+		Name:      "hold_at_fix",
+		Keywords:  [][]string{{"hold"}, {"at"}},
+		ArgType:   ArgFix,
+		OutputFmt: "H%s",
+		Priority:  10,
+		SkipWords: []string{"as", "published"},
 	},
 
 	// === APPROACH COMMANDS ===

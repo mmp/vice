@@ -94,6 +94,8 @@ var commandKeywords = map[string]string{
 	"descend":    "descend",
 	"descended":  "descend",
 	"descending": "descend",
+	"descendant": "descend", // STT error
+	"descent":    "descend", // STT error
 	"climb":      "climb",
 	"climbed":    "climb",
 	"climbing":   "climb",
@@ -110,15 +112,17 @@ var commandKeywords = map[string]string{
 	"expedite":   "expedite",
 
 	// Heading
-	"heading": "heading",
-	"hitting": "heading", // STT error
-	"turn":    "turn",
-	"left":    "left",
-	"right":   "right",
-	"degrees": "degrees",
-	"degree":  "degrees",
-	"fly":     "fly",
-	"present": "present",
+	"heading":  "heading",
+	"hitting":  "heading", // STT error
+	"turn":     "turn",
+	"left":     "left",
+	"lefting":  "left", // STT error
+	"right":    "right",
+	"righting": "right", // STT error
+	"degrees":  "degrees",
+	"degree":   "degrees",
+	"fly":      "fly",
+	"present":  "present",
 
 	// Speed
 	"speed":    "speed",
@@ -136,6 +140,7 @@ var commandKeywords = map[string]string{
 	"proceed": "proceed",
 	"cross":   "cross",
 	"depart":  "depart",
+	"hold":    "hold",
 
 	// Approach
 	"cleared":   "cleared",
@@ -148,6 +153,11 @@ var commandKeywords = map[string]string{
 	"clearance": "clearance",
 	"visual":    "visual",
 	"ils":       "ils",
+	"ios":       "ils", // STT error
+	"outlast":   "ils", // STT error
+	"eyeless":   "ils", // STT error
+	"dalas":     "ils", // STT error
+	"dallas":    "ils", // STT error
 	"rnav":      "rnav",
 	"vor":       "vor",
 	"runway":    "runway",
@@ -161,6 +171,10 @@ var commandKeywords = map[string]string{
 
 	// Handoff
 	"contact":   "contact",
+	"konnek":    "contact", // STT error
+	"konek":     "contact", // STT error
+	"kannak":    "contact", // STT error
+	"connector": "contact", // STT error
 	"tower":     "tower",
 	"frequency": "frequency",
 	"departure": "departure",
