@@ -14,6 +14,7 @@ import (
 	"sort"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	whisper "github.com/mmp/vice/autowhisper"
@@ -542,7 +543,7 @@ func (c *ControlClient) GetAtmosGrid(t time.Time, callback func(*wx.AtmosGrid, e
 // STT
 
 var whisperModel *whisper.Model
-var whisperModelName string
+var whisperModelNameAtomic atomic.Value // stores string, for lock-free reads from UI
 var whisperModelErr error
 var whisperModelMu sync.Mutex
 var whisperModelDone chan struct{}
@@ -583,10 +584,12 @@ func checkCPUSupport() error {
 }
 
 // GetWhisperModelName returns the name of the currently loaded whisper model.
+// Uses atomic load to avoid blocking the UI thread during whisper inference.
 func GetWhisperModelName() string {
-	whisperModelMu.Lock()
-	defer whisperModelMu.Unlock()
-	return whisperModelName
+	if v := whisperModelNameAtomic.Load(); v != nil {
+		return v.(string)
+	}
+	return ""
 }
 
 // GetWhisperDeviceID returns the device identifier used for whisper inference.
@@ -674,7 +677,7 @@ func ForceWhisperRebenchmark(lg *log.Logger, saveCallback func(modelName, device
 		whisperModel.Close()
 		whisperModel = nil
 	}
-	whisperModelName = ""
+	whisperModelNameAtomic.Store("")
 	whisperModelErr = nil
 	whisperModelMu.Unlock()
 
@@ -840,7 +843,7 @@ func loadModelDirect(modelName, deviceID string, lg *log.Logger) {
 		setWhisperBenchmarkStatus("Failed to load model")
 		return
 	}
-	whisperModelName = modelName
+	whisperModelNameAtomic.Store(modelName)
 	whisperModelMu.Unlock()
 
 	// Warmup pass
@@ -1015,7 +1018,7 @@ done:
 
 	whisperModelMu.Lock()
 	whisperModel = selectedModel
-	whisperModelName = selectedName
+	whisperModelNameAtomic.Store(selectedName)
 	whisperModelMu.Unlock()
 
 	setWhisperBenchmarkStatus(fmt.Sprintf("Selected: %s (%dms)", selectedName, selectedLatency))
