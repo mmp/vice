@@ -1276,10 +1276,16 @@ func generateApproachPhraseVariants(phrase string) []string {
 		variants = append(variants, variant)
 	}
 
+	// Handle "rnav" → "r-nav" (approach telephony uses hyphenated form)
+	if strings.HasPrefix(phrase, "rnav ") {
+		variant := "r-nav " + phrase[5:]
+		variants = append(variants, variant)
+	}
+
 	// Generate variants with "runway" inserted after approach type prefixes.
 	// Handles cases where user omits "runway" but candidate includes it
 	// (e.g., "i l s two eight center" should match "I L S runway two eight center")
-	approachPrefixes := []string{"i l s ", "ils ", "visual ", "rnav ", "v o r ", "vor ", "localizer ", "loc "}
+	approachPrefixes := []string{"i l s ", "ils ", "visual ", "rnav ", "r-nav ", "v o r ", "vor ", "localizer ", "loc "}
 	var runwayVariants []string
 	for _, v := range variants {
 		for _, prefix := range approachPrefixes {

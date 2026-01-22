@@ -339,20 +339,26 @@ func NormalizeTranscript(transcript string) []string {
 // postProcessNormalized handles multi-word STT errors and letter joining.
 func postProcessNormalized(tokens []string) []string {
 	result := make([]string, 0, len(tokens))
+	skip := 0
 
 	for i := range len(tokens) {
+		if skip > 0 {
+			skip--
+			continue
+		}
+
 		// Handle "december 18" → ["descend", "maintain"]
 		// This is a garbled transcription of "descend and maintain"
 		if tokens[i] == "december" && i+1 < len(tokens) && tokens[i+1] == "18" {
 			result = append(result, "descend", "maintain")
-			i++ // Skip the "18"
+			skip = 1 // Skip the "18"
 			continue
 		}
 
 		// Handle "i l s" → "ils" (3 separate letters)
 		if tokens[i] == "i" && i+2 < len(tokens) && tokens[i+1] == "l" && tokens[i+2] == "s" {
 			result = append(result, "ils")
-			i += 2 // Skip the "l" and "s"
+			skip = 2 // Skip the "l" and "s"
 			continue
 		}
 
@@ -364,10 +370,18 @@ func postProcessNormalized(tokens []string) []string {
 				next := tokens[i+2]
 				if next == "runway" || IsNumber(next) {
 					result = append(result, "ils")
-					i++ // Skip the "s"
+					skip = 1 // Skip the "s"
 					continue
 				}
 			}
+		}
+
+		// Handle "r nav" → "rnav" (from "R-nav" after hyphen removal)
+		// This joins the letter "r" with "nav" to form "rnav" for approach matching
+		if tokens[i] == "r" && i+1 < len(tokens) && tokens[i+1] == "nav" {
+			result = append(result, "rnav")
+			skip = 1 // Skip "nav"
+			continue
 		}
 
 		// Handle "10XXX" headings where "10" is a garbled transcription of "heading"
@@ -377,6 +391,25 @@ func postProcessNormalized(tokens []string) []string {
 			hdg := ParseNumber(possibleHeading)
 			if hdg >= 1 && hdg <= 360 {
 				result = append(result, "heading", possibleHeading)
+				continue
+			}
+		}
+
+		// Handle runway designators: "13l" → "13" "left", "22r" → "22" "right", "9c" → "9" "center"
+		// This handles cases where Whisper transcribes "one three left" as "13L"
+		if len(tokens[i]) >= 2 {
+			lastChar := tokens[i][len(tokens[i])-1]
+			numPart := tokens[i][:len(tokens[i])-1]
+			if IsNumber(numPart) && (lastChar == 'l' || lastChar == 'r' || lastChar == 'c') {
+				result = append(result, numPart)
+				switch lastChar {
+				case 'l':
+					result = append(result, "left")
+				case 'r':
+					result = append(result, "right")
+				case 'c':
+					result = append(result, "center")
+				}
 				continue
 			}
 		}

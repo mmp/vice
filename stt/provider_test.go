@@ -1,7 +1,13 @@
 package stt
 
 import (
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"strings"
 	"testing"
+
+	"github.com/mmp/vice/sim"
 )
 
 // Test cases from sttSystemPrompt.md
@@ -2589,6 +2595,108 @@ func TestDecodeCommandsForCallsign(t *testing.T) {
 			if result != tt.expected {
 				t.Errorf("DecodeCommandsForCallsign(%q, %q) = %q, want %q",
 					tt.transcript, tt.callsign, result, tt.expected)
+			}
+		})
+	}
+}
+
+// =============================================================================
+// JSON File Tests from tests/ directory
+// =============================================================================
+
+// STTTestFile represents the JSON structure of test files in tests/ directory.
+// These files are logged by SimManager.ReportSTTLog and contain the full context
+// present when an STT command was processed.
+type STTTestFile struct {
+	Transcript  string `json:"transcript"`
+	Callsign    string `json:"callsign"`
+	Command     string `json:"command"` // Expected command output
+	STTAircraft map[string]struct {
+		Callsign            string            `json:"Callsign"`
+		AircraftType        string            `json:"AircraftType"`
+		Fixes               map[string]string `json:"Fixes"`
+		CandidateApproaches map[string]string `json:"CandidateApproaches"`
+		AssignedApproach    string            `json:"AssignedApproach"`
+		SID                 string            `json:"SID"`
+		STAR                string            `json:"STAR"`
+		Altitude            int               `json:"Altitude"`
+		State               string            `json:"State"`
+		ControllerFrequency string            `json:"ControllerFrequency"`
+		TrackingController  string            `json:"TrackingController"`
+		AddressingForm      int               `json:"AddressingForm"`
+	} `json:"stt_aircraft"`
+}
+
+// TestSTTFromJSONFiles runs all JSON test files from the tests/ directory.
+// Each file contains a transcript, the full aircraft context, and the expected
+// command output. This allows regression testing with real-world scenarios.
+func TestSTTFromJSONFiles(t *testing.T) {
+	testsDir := "tests"
+
+	// Check if tests directory exists
+	if _, err := os.Stat(testsDir); os.IsNotExist(err) {
+		t.Skip("tests/ directory not found")
+		return
+	}
+
+	// Find all JSON files
+	files, err := filepath.Glob(filepath.Join(testsDir, "*.json"))
+	if err != nil {
+		t.Fatalf("failed to glob test files: %v", err)
+	}
+
+	if len(files) == 0 {
+		t.Skip("no JSON test files found in tests/")
+		return
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, file := range files {
+		testName := strings.TrimSuffix(filepath.Base(file), ".json")
+		t.Run(testName, func(t *testing.T) {
+			// Read and parse the JSON file
+			data, err := os.ReadFile(file)
+			if err != nil {
+				t.Fatalf("failed to read %s: %v", file, err)
+			}
+
+			var testFile STTTestFile
+			if err := json.Unmarshal(data, &testFile); err != nil {
+				t.Fatalf("failed to parse %s: %v", file, err)
+			}
+
+			// Convert JSON aircraft to STT Aircraft map
+			aircraft := make(map[string]Aircraft)
+			for key, ac := range testFile.STTAircraft {
+				aircraft[key] = Aircraft{
+					Callsign:            ac.Callsign,
+					AircraftType:        ac.AircraftType,
+					Fixes:               ac.Fixes,
+					CandidateApproaches: ac.CandidateApproaches,
+					AssignedApproach:    ac.AssignedApproach,
+					SID:                 ac.SID,
+					STAR:                ac.STAR,
+					Altitude:            ac.Altitude,
+					State:               ac.State,
+					ControllerFrequency: ac.ControllerFrequency,
+					TrackingController:  ac.TrackingController,
+					AddressingForm:      sim.CallsignAddressingForm(ac.AddressingForm),
+				}
+			}
+
+			// Run the transcript through STT
+			result, err := provider.DecodeTranscript(aircraft, testFile.Transcript, "")
+			if err != nil {
+				t.Errorf("DecodeTranscript error: %v", err)
+				return
+			}
+
+			// Build expected output: "CALLSIGN COMMANDS"
+			expected := testFile.Callsign + " " + testFile.Command
+
+			if result != expected {
+				t.Errorf("got %q, want %q", result, expected)
 			}
 		})
 	}
