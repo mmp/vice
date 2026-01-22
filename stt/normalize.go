@@ -145,6 +145,27 @@ var commandKeywords = map[string]string{
 	"via":       "via",
 	"by":        "via", // STT error: "via" often transcribed as "by"
 
+	// Hold-related
+	"radial":    "radial",
+	"bearing":   "bearing",
+	"inbound":   "inbound",
+	"legs":      "legs",
+	"leg":       "legs",
+	"minute":    "minute",
+	"minutes":   "minute",
+	"turns":     "turns",
+	"published": "published",
+
+	// Compass directions (for hold instructions)
+	"north":     "north",
+	"south":     "south",
+	"east":      "east",
+	"west":      "west",
+	"northeast": "northeast",
+	"northwest": "northwest",
+	"southeast": "southeast",
+	"southwest": "southwest",
+
 	// Approach
 	"cleared":   "cleared",
 	"expect":    "expect",
@@ -199,6 +220,9 @@ var commandKeywords = map[string]string{
 	"disregard":  "disregard",
 	"correction": "disregard",
 	"negative":   "negative",
+
+	// Expected clearance (to be ignored in hold instructions)
+	"further": "further",
 
 	// Then sequencing
 	"then": "then",

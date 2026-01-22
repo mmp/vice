@@ -549,6 +549,85 @@ func TestNavigationCommands(t *testing.T) {
 			},
 			expected: "DAL8499 AFERGI/CRIV",
 		},
+		// Hold commands
+		{
+			name:       "hold at fix as published",
+			transcript: "American 500 hold at MERIT as published",
+			aircraft: map[string]Aircraft{
+				"American 500": {
+					Callsign: "AAL500",
+					Altitude: 8000,
+					State:    "arrival",
+					Fixes:    map[string]string{"MERIT": "MERIT"},
+				},
+			},
+			expected: "AAL500 HMERIT",
+		},
+		{
+			name:       "hold direction of fix as published",
+			transcript: "Delta 200 hold north of JIMEE as published",
+			aircraft: map[string]Aircraft{
+				"Delta 200": {
+					Callsign: "DAL200",
+					Altitude: 10000,
+					State:    "arrival",
+					Fixes:    map[string]string{"JIMEE": "JIMEE"},
+				},
+			},
+			expected: "DAL200 HJIMEE",
+		},
+		{
+			name:       "hold direction of fix as published with maintain",
+			transcript: "United 300 hold south of BETTE as published maintain 6000",
+			aircraft: map[string]Aircraft{
+				"United 300": {
+					Callsign: "UAL300",
+					Altitude: 10000,
+					State:    "arrival",
+					Fixes:    map[string]string{"BETTE": "BETTE"},
+				},
+			},
+			expected: "UAL300 HBETTE A60",
+		},
+		{
+			name:       "hold with expect further clearance ignored",
+			transcript: "Southwest 400 hold at MERIT as published expect further clearance 1 2 3 0",
+			aircraft: map[string]Aircraft{
+				"Southwest 400": {
+					Callsign: "SWA400",
+					Altitude: 8000,
+					State:    "arrival",
+					Fixes:    map[string]string{"MERIT": "MERIT"},
+				},
+			},
+			expected: "SWA400 HMERIT",
+		},
+		{
+			name:       "hold controller specified with radial and turns",
+			transcript: "JetBlue 600 hold west of MERIT on the 280 radial inbound 2 minute legs left turns",
+			aircraft: map[string]Aircraft{
+				"JetBlue 600": {
+					Callsign: "JBU600",
+					Altitude: 8000,
+					State:    "arrival",
+					Fixes:    map[string]string{"MERIT": "MERIT"},
+				},
+			},
+			expected: "JBU600 HMERIT/R280/2M/L",
+		},
+		{
+			name:       "hold controller specified with radial right turns default",
+			transcript: "Alaska 700 hold east of JIMEE on the 90 radial 3 minute legs right turns",
+			aircraft: map[string]Aircraft{
+				"Alaska 700": {
+					Callsign: "ASA700",
+					Altitude: 10000,
+					State:    "arrival",
+					Fixes:    map[string]string{"JIMEE": "JIMEE"},
+				},
+			},
+			expected: "ASA700 HJIMEE/R90/3M/R",
+		},
 	}
 
 	provider := NewTranscriber(nil)

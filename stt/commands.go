@@ -27,6 +27,7 @@ const (
 	ArgFixApproach // Fix followed by approach (e.g., "at FERGI cleared River Visual")
 	ArgSID         // SID name (e.g., "climb via the Kennedy Five")
 	ArgSTAR        // STAR name (e.g., "descend via the Camrn Four")
+	ArgHold        // Hold with optional parameters (e.g., "hold west of MERIT on the 280 radial, 2 minute legs, left turns")
 )
 
 // CommandTemplate defines a pattern for recognizing a command.
@@ -339,13 +340,24 @@ var commandTemplates = []CommandTemplate{
 		SkipWords: []string{"heading"},
 	},
 	// Hold commands
+	// "hold (direction) of (fix) as published" - direction is ignored, just extract fix
 	{
-		Name:      "hold_at_fix",
-		Keywords:  [][]string{{"hold"}, {"at"}},
+		Name:      "hold_published",
+		Keywords:  [][]string{{"hold"}},
 		ArgType:   ArgFix,
 		OutputFmt: "H%s",
 		Priority:  10,
-		SkipWords: []string{"as", "published"},
+		SkipWords: []string{"north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest", "of", "at", "as", "published"},
+	},
+	// "hold (direction) of (fix) on the (radial) radial [inbound], (minutes) minute legs, (left/right) turns"
+	// This needs special handling via ArgHold to extract multiple parameters
+	{
+		Name:      "hold_controller_specified",
+		Keywords:  [][]string{{"hold"}},
+		ArgType:   ArgHold,
+		OutputFmt: "H%s", // Format string is filled in by extractHold
+		Priority:  15,    // Higher priority than hold_published to try first
+		SkipWords: []string{"north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest", "of", "at", "the", "inbound"},
 	},
 
 	// === APPROACH COMMANDS ===
@@ -576,6 +588,25 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 					}
 					continue
 				}
+			}
+		}
+
+		// Skip "expect further clearance" phrase (informational only, not a command)
+		// e.g., "hold at MERIT expect further clearance 1230"
+		if tokens[i].Text == "expect" && i+2 < len(tokens) {
+			if strings.ToLower(tokens[i+1].Text) == "further" &&
+				strings.ToLower(tokens[i+2].Text) == "clearance" {
+				logLocalStt("  skipping 'expect further clearance' at position %d", i)
+				i += 3 // Skip "expect further clearance"
+				// Skip any following digits (the time, e.g., "1 2 3 0")
+				for i < len(tokens) {
+					if tokens[i].Type == TokenNumber || IsDigit(tokens[i].Text) {
+						i++
+					} else {
+						break
+					}
+				}
+				continue
 			}
 		}
 
@@ -914,6 +945,34 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 		return CommandMatch{
 			Command:    cmd,
 			Confidence: conf,
+			Consumed:   consumed,
+			IsThen:     isThen,
+		}, consumed
+
+	case ArgHold:
+		// Extract fix name first
+		fix, fixConf, fixConsumed := extractFix(tokens[consumed:], ac.Fixes)
+		if fixConsumed == 0 {
+			logLocalStt("  tryMatchTemplate %q: fix extraction failed", tmpl.Name)
+			return CommandMatch{}, 0
+		}
+		consumed += fixConsumed
+
+		// Try to extract hold parameters (radial, minutes, turn direction)
+		// Pattern: "on the (radial) radial [inbound], (minutes) minute legs, (left/right) turns"
+		holdCmd, holdConsumed := extractHoldParams(tokens[consumed:], fix)
+		if holdConsumed == 0 {
+			// No hold parameters found - this should fall back to hold_published template
+			logLocalStt("  tryMatchTemplate %q: no hold parameters found, falling back", tmpl.Name)
+			return CommandMatch{}, 0
+		}
+		consumed += holdConsumed
+
+		logLocalStt("  tryMatchTemplate %q: cmd=%q fix=%q consumed=%d",
+			tmpl.Name, holdCmd, fix, consumed)
+		return CommandMatch{
+			Command:    holdCmd,
+			Confidence: fixConf,
 			Consumed:   consumed,
 			IsThen:     isThen,
 		}, consumed
@@ -1463,6 +1522,164 @@ func extractDegrees(tokens []Token) (int, string, int) {
 	}
 
 	return 0, "", 0
+}
+
+// extractHoldParams extracts hold parameters from tokens for controller-specified holds.
+// Pattern: "on the (radial) radial [inbound], (minutes) minute legs, (left/right) turns"
+// Returns the full hold command string and number of tokens consumed.
+// Returns empty string and 0 if no hold parameters found.
+func extractHoldParams(tokens []Token, fix string) (string, int) {
+	if len(tokens) == 0 {
+		return "", 0
+	}
+
+	consumed := 0
+	var radial int
+	var minutes int
+	turnDir := "R" // Default to right turns
+
+	// Skip filler words
+	skipHoldFillers := func() {
+		for consumed < len(tokens) {
+			text := strings.ToLower(tokens[consumed].Text)
+			if text == "on" || text == "the" || text == "inbound" || IsFillerWord(text) {
+				consumed++
+			} else {
+				break
+			}
+		}
+	}
+
+	skipHoldFillers()
+
+	// Look for radial specification: "(number) radial" or "(number) bearing"
+	foundRadial := false
+	for consumed < len(tokens) {
+		t := tokens[consumed]
+		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 360 {
+			// Found a number, check if followed by "radial" or "bearing"
+			if consumed+1 < len(tokens) {
+				nextText := strings.ToLower(tokens[consumed+1].Text)
+				if nextText == "radial" || nextText == "bearing" {
+					radial = t.Value
+					consumed += 2 // Skip number and "radial"/"bearing"
+					foundRadial = true
+					break
+				}
+			}
+		}
+		consumed++
+		if consumed > 10 { // Don't scan too far
+			break
+		}
+	}
+
+	if !foundRadial {
+		return "", 0
+	}
+
+	skipHoldFillers()
+
+	// Look for leg duration: "(number) minute legs"
+	for consumed < len(tokens) {
+		t := tokens[consumed]
+		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 10 {
+			// Check if followed by "minute" then "legs"
+			if consumed+1 < len(tokens) {
+				nextText := strings.ToLower(tokens[consumed+1].Text)
+				if nextText == "minute" {
+					minutes = t.Value
+					consumed += 2 // Skip number and "minute"
+					// Skip "legs" if present
+					if consumed < len(tokens) && strings.ToLower(tokens[consumed].Text) == "legs" {
+						consumed++
+					}
+					break
+				}
+			}
+		}
+		consumed++
+		if consumed > 20 { // Don't scan too far
+			break
+		}
+	}
+
+	// Look for turn direction: "left turns" or "right turns"
+	for consumed < len(tokens) {
+		text := strings.ToLower(tokens[consumed].Text)
+		if text == "left" {
+			turnDir = "L"
+			consumed++
+			// Skip "turns" if present
+			if consumed < len(tokens) && strings.ToLower(tokens[consumed].Text) == "turns" {
+				consumed++
+			}
+			break
+		} else if text == "right" {
+			turnDir = "R"
+			consumed++
+			// Skip "turns" if present
+			if consumed < len(tokens) && strings.ToLower(tokens[consumed].Text) == "turns" {
+				consumed++
+			}
+			break
+		}
+		consumed++
+		if consumed > 25 { // Don't scan too far
+			break
+		}
+	}
+
+	// Skip "expect further clearance" and any following digits if present
+	consumed = skipExpectFurtherClearance(tokens, consumed)
+
+	// Build the command string: HFIX/Rradial/minutesM/L or R
+	// Format from parseHold: HFIX/R{radial}/{minutes}M/{L|R}
+	var cmd strings.Builder
+	cmd.WriteString("H")
+	cmd.WriteString(fix)
+	cmd.WriteString("/R")
+	cmd.WriteString(strconv.Itoa(radial))
+	if minutes > 0 {
+		cmd.WriteString("/")
+		cmd.WriteString(strconv.Itoa(minutes))
+		cmd.WriteString("M")
+	}
+	cmd.WriteString("/")
+	cmd.WriteString(turnDir)
+
+	return cmd.String(), consumed
+}
+
+// skipExpectFurtherClearance skips "expect further clearance" and any following digits.
+// Returns the new consumed position.
+func skipExpectFurtherClearance(tokens []Token, start int) int {
+	consumed := start
+
+	// Skip filler words first
+	for consumed < len(tokens) && IsFillerWord(strings.ToLower(tokens[consumed].Text)) {
+		consumed++
+	}
+
+	// Look for "expect further clearance" pattern
+	if consumed+2 < len(tokens) {
+		t1 := strings.ToLower(tokens[consumed].Text)
+		t2 := strings.ToLower(tokens[consumed+1].Text)
+		t3 := strings.ToLower(tokens[consumed+2].Text)
+		if t1 == "expect" && t2 == "further" && t3 == "clearance" {
+			consumed += 3
+			// Skip any following digits (the time, e.g., "1 2 3 0")
+			for consumed < len(tokens) {
+				if tokens[consumed].Type == TokenNumber || IsDigit(tokens[consumed].Text) {
+					consumed++
+				} else {
+					break
+				}
+			}
+		}
+	}
+
+	return consumed
 }
 
 // isCommandKeyword returns true if the word is a command keyword.
