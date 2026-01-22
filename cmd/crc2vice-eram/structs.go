@@ -446,7 +446,7 @@ type ARTCC struct {
 					LabelLine1 string `json:"labelLine1"`
 					LabelLine2 string `json:"labelLine2"`
 				} `json:"filterMenu"`
-				BcgMenu     []StringOrInt `json:"bcgMenu"`
+				BcgMenu     []string `json:"bcgMenu"`
 				VideoMapIds []string      `json:"videoMapIds"`
 			} `json:"geoMaps"`
 			EmergencyChecklist      []string `json:"emergencyChecklist"`
@@ -572,34 +572,6 @@ type ARTCC struct {
 }
 
 type Point2LL [2]float32
-
-// StringOrInt is a helper type for fields that may be numeric or a numeric string in JSON.
-type StringOrInt int
-
-func (s *StringOrInt) UnmarshalJSON(b []byte) error {
-	// Try number first
-	var n int
-	if err := json.Unmarshal(b, &n); err == nil {
-		*s = StringOrInt(n)
-		return nil
-	}
-	// Then string containing a number
-	var str string
-	if err := json.Unmarshal(b, &str); err == nil {
-		str = strings.TrimSpace(str)
-		if str == "" {
-			*s = 0
-			return nil
-		}
-		if v, err := strconv.Atoi(str); err == nil {
-			*s = StringOrInt(v)
-			return nil
-		}
-	}
-	// Fallback: leave zero
-	*s = 0
-	return nil
-}
 
 type GeoMap struct {
 	Type     string `json:"type"`
