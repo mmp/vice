@@ -548,7 +548,7 @@ func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransfor
 	center := [2]float32{p0[0] + horizontalPxLength/2, p0[1] - verticalPxLength/2 + verticalOffset}
 
 	simTime := ctx.Client.State.SimTime
-	timeStr := simTime.Format("1504 02")
+	timeStr := simTime.Format("1504 05")
 
 	td.AddTextCentered(timeStr, center, renderer.TextStyle{Font: ep.ERAMFont(3), Color: renderer.RGB{1, 1, 1}})
 
