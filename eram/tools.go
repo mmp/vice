@@ -531,6 +531,10 @@ func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransfor
 	verticalPxLength := float32(40)
 	ps := ep.currentPrefs()
 
+	if ps.clockPosition == [2]float32{} {
+		ps.clockPosition = [2]float32{10, ctx.PaneExtent.Height() - 300}
+	}
+
 	p0 := ps.clockPosition
 	p1 := math.Add2f(p0, [2]float32{horizontalPxLength, 0})
 	p2 := math.Add2f(p1, [2]float32{0, -verticalPxLength})
