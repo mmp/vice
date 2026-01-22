@@ -1133,7 +1133,7 @@ func (s *Sim) updateState() {
 					if passedWaypoint.TransferComms {
 						// This is a departure that hasn't contacted the departure controller yet, do it here
 						if ac.IsDeparture() && ac.DepartureContactAltitude == 0 {
-							s.contactDeparture(ac)
+							s.contactDeparture(ac, sfp)
 						} else {
 							// We didn't enqueue this before since we knew an
 							// explicit comms handoff was coming so go ahead and
@@ -1249,7 +1249,7 @@ func (s *Sim) updateState() {
 						// Use the original InboundHandoffController position for the radio event,
 						// not the resolved position. This ensures TCWControlsPosition checks
 						// correctly match when the user has that position consolidated.
-						s.contactDeparture(ac)
+						s.contactDeparture(ac, fp)
 					}
 				}
 			}
@@ -1480,9 +1480,7 @@ func (s *Sim) sendFullFlightFollowingRequest(ac *Aircraft, tcp TCP) {
 	s.postContactTransmission(ac.ADSBCallsign, tcp, *rt)
 }
 
-func (s *Sim) contactDeparture(ac *Aircraft) {
-	fp := ac.NASFlightPlan
-
+func (s *Sim) contactDeparture(ac *Aircraft, fp *NASFlightPlan) {
 	tcp := fp.InboundHandoffController
 	s.lg.Debug("contacting departure controller", slog.String("tcp", string(tcp)))
 
