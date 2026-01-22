@@ -32,13 +32,14 @@ const (
 
 // CommandTemplate defines a pattern for recognizing a command.
 type CommandTemplate struct {
-	Name        string     // Template name for debugging
-	Keywords    [][]string // Required keyword sequences (alternatives within each group)
-	ArgType     ArgType    // Type of argument expected
-	OutputFmt   string     // Format string for output (e.g., "D%d", "L%03d")
-	ThenVariant string     // Output format for "then" variant (e.g., "TD%d")
-	Priority    int        // Higher priority wins when multiple match
-	SkipWords   []string   // Words to skip during matching
+	Name            string     // Template name for debugging
+	Keywords        [][]string // Required keyword sequences (alternatives within each group)
+	ArgType         ArgType    // Type of argument expected
+	OutputFmt       string     // Format string for output (e.g., "D%d", "L%03d")
+	ThenVariant     string     // Output format for "then" variant (e.g., "TD%d")
+	Priority        int        // Higher priority wins when multiple match
+	SkipWords       []string   // Words to skip during matching
+	SkipNonKeywords bool       // Skip any words between keywords (e.g., "contact [facility] tower")
 }
 
 // CommandMatch represents a matched command.
@@ -476,11 +477,12 @@ var commandTemplates = []CommandTemplate{
 		Priority:  20, // Higher than contact commands
 	},
 	{
-		Name:      "contact_tower",
-		Keywords:  [][]string{{"contact"}, {"tower"}},
-		ArgType:   ArgNone,
-		OutputFmt: "TO",
-		Priority:  15,
+		Name:            "contact_tower",
+		Keywords:        [][]string{{"contact"}, {"tower"}},
+		ArgType:         ArgNone,
+		OutputFmt:       "TO",
+		Priority:        15,
+		SkipNonKeywords: true, // Allow facility names between "contact" and "tower"
 	},
 	{
 		Name:      "frequency_change",
@@ -663,31 +665,39 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	// match the first significant token against any keyword in that group.
 	for _, keywordGroup := range tmpl.Keywords {
 		// Skip over skip words and filler words to find the next significant token
+		// If SkipNonKeywords is set, also skip any word that doesn't match a keyword
+		matched := false
 		for consumed < len(tokens) {
 			text := strings.ToLower(tokens[consumed].Text)
 			if slices.Contains(tmpl.SkipWords, text) || IsFillerWord(text) {
 				consumed++
 				continue
 			}
-			break
-		}
 
-		// Check if we ran out of tokens
-		if consumed >= len(tokens) {
+			// Try to match the current token against any keyword in the group
+			for _, kw := range keywordGroup {
+				if FuzzyMatch(text, kw, 0.8) {
+					matched = true
+					consumed++
+					break
+				}
+			}
+
+			if matched {
+				break
+			}
+
+			// If SkipNonKeywords is set, skip this non-matching token and continue looking
+			if tmpl.SkipNonKeywords {
+				consumed++
+				continue
+			}
+
+			// Otherwise, this is a non-matching significant token - fail
 			return CommandMatch{}, 0
 		}
 
-		// Try to match the current token against any keyword in the group
-		text := strings.ToLower(tokens[consumed].Text)
-		matched := false
-		for _, kw := range keywordGroup {
-			if FuzzyMatch(text, kw, 0.8) {
-				matched = true
-				consumed++
-				break
-			}
-		}
-
+		// Check if we ran out of tokens without matching
 		if !matched {
 			return CommandMatch{}, 0
 		}
