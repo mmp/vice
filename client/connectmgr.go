@@ -242,6 +242,10 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg
 			cm.RemoteServer = nil
 		} else {
 			cm.RemoteServer = remoteServerConn.Server
+			// Update existing client with remote server for STT log reporting
+			if cm.client != nil && cm.ClientIsLocal() {
+				cm.client.SetRemoteServer(cm.RemoteServer.RPCClient)
+			}
 		}
 
 	default:
