@@ -1625,15 +1625,37 @@ func (s *Sim) SayNotCleared(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign,
 ///////////////////////////////////////////////////////////////////////////
 // Deferred operations
 
+type RadioActivity struct {
+	EndTime    time.Time // estimated end of transmission
+	WasContact bool      // true if it was a contact (vs readback)
+}
+
 type FutureControllerContact struct {
-	ADSBCallsign av.ADSBCallsign
-	TCP          TCP
-	Time         time.Time
+	ADSBCallsign           av.ADSBCallsign
+	TCP                    TCP
+	Time                   time.Time
+	IsDeparture            bool
+	ReportDepartureHeading bool
+	HasQueuedEmergency     bool
 }
 
 func (s *Sim) enqueueControllerContact(callsign av.ADSBCallsign, tcp TCP, wait time.Duration) {
+	wait += s.radioActivityDelay(tcp)
 	s.FutureControllerContacts = append(s.FutureControllerContacts,
 		FutureControllerContact{ADSBCallsign: callsign, TCP: tcp, Time: s.State.SimTime.Add(wait)})
+}
+
+func (s *Sim) enqueueDepartureContact(ac *Aircraft, tcp TCP) {
+	wait := s.radioActivityDelay(tcp)
+	s.FutureControllerContacts = append(s.FutureControllerContacts,
+		FutureControllerContact{
+			ADSBCallsign:           ac.ADSBCallsign,
+			TCP:                    tcp,
+			Time:                   s.State.SimTime.Add(wait),
+			IsDeparture:            true,
+			ReportDepartureHeading: ac.ReportDepartureHeading,
+			HasQueuedEmergency:     ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1,
+		})
 }
 
 type FutureOnCourse struct {
@@ -1671,8 +1693,13 @@ func (s *Sim) processEnqueued() {
 				if ac.IsAssociated() {
 					ac.ControllerFrequency = ControlPosition(c.TCP)
 
-					rt := ac.ContactMessage(s.ReportingPoints)
-					rt.Type = av.RadioTransmissionContact
+					var rt *av.RadioTransmission
+					if c.IsDeparture {
+						rt = ac.Nav.DepartureMessage(c.ReportDepartureHeading)
+					} else {
+						rt = ac.ContactMessage(s.ReportingPoints)
+						rt.Type = av.RadioTransmissionContact
+					}
 
 					s.postContactTransmission(c.ADSBCallsign, c.TCP, *rt)
 
@@ -1680,9 +1707,16 @@ func (s *Sim) processEnqueued() {
 					// consolidated with the initial contact transmission.
 					// Check if controlling controller is a human-allocated position (not virtual)
 					humanAllocated := !s.isVirtualController(ac.ControllerFrequency)
-					if humanAllocated && ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1 {
-						ac.EmergencyState.CurrentStage = 0
-						s.runEmergencyStage(ac)
+					if c.IsDeparture {
+						if humanAllocated && c.HasQueuedEmergency {
+							ac.EmergencyState.CurrentStage = 0
+							s.runEmergencyStage(ac)
+						}
+					} else {
+						if humanAllocated && ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1 {
+							ac.EmergencyState.CurrentStage = 0
+							s.runEmergencyStage(ac)
+						}
 					}
 
 					// For departures handed off to virtual controllers,

@@ -77,6 +77,8 @@ type Sim struct {
 	FutureSquawkChanges      []FutureChangeSquawk
 	FutureEmergencyUpdates   []FutureEmergencyUpdate
 
+	LastRadioActivity map[TCP]RadioActivity
+
 	NextEmergencyTime time.Time
 
 	PilotErrorInterval time.Duration
@@ -1484,23 +1486,11 @@ func (s *Sim) contactDeparture(ac *Aircraft) {
 	tcp := fp.InboundHandoffController
 	s.lg.Debug("contacting departure controller", slog.String("tcp", string(tcp)))
 
-	rt := ac.Nav.DepartureMessage(ac.ReportDepartureHeading)
-	s.postContactTransmission(ac.ADSBCallsign, tcp, *rt)
-
 	// Mark as already contacted so we only send one contact message
 	ac.DepartureContactAltitude = -1
 
-	// Only after we're on frequency can the controller start
-	// issuing control commands.. (Note that track may have
-	// already been handed off to the next controller at this
-	// point.)
-	ac.ControllerFrequency = ControlPosition(tcp)
-
-	// Queued emergencies can now proceed
-	if ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1 {
-		ac.EmergencyState.CurrentStage = 0
-		s.runEmergencyStage(ac)
-	}
+	// Queue the contact (may be delayed due to radio activity)
+	s.enqueueDepartureContact(ac, tcp)
 }
 
 func (s *Sim) isRadarVisible(ac *Aircraft) bool {
@@ -1554,15 +1544,17 @@ func (s *Sim) postContactTransmission(from av.ADSBCallsign, tcp TCP, tr av.Radio
 		ac.LastRadioTransmission = s.State.SimTime
 	}
 
+	spokenText := tr.Spoken(s.Rand)
 	s.eventStream.Post(Event{
 		Type:                  RadioTransmissionEvent,
 		ADSBCallsign:          from,
 		ToController:          tcp,
 		DestinationTCW:        s.State.TCWForPosition(tcp),
 		WrittenText:           tr.Written(s.Rand),
-		SpokenText:            tr.Spoken(s.Rand),
+		SpokenText:            spokenText,
 		RadioTransmissionType: tr.Type,
 	})
+	s.recordRadioActivity(tcp, spokenText, true /* isContact */)
 }
 
 // postReadbackTransmission posts a radio event for a pilot responding to a command.
@@ -1576,15 +1568,59 @@ func (s *Sim) postReadbackTransmission(from av.ADSBCallsign, tr av.RadioTransmis
 		ac.LastRadioTransmission = s.State.SimTime
 	}
 
+	tcp := s.State.PrimaryPositionForTCW(tcw)
+	spokenText := tr.Spoken(s.Rand)
 	s.eventStream.Post(Event{
 		Type:                  RadioTransmissionEvent,
 		ADSBCallsign:          from,
-		ToController:          s.State.PrimaryPositionForTCW(tcw),
+		ToController:          tcp,
 		DestinationTCW:        tcw,
 		WrittenText:           tr.Written(s.Rand),
-		SpokenText:            tr.Spoken(s.Rand),
+		SpokenText:            spokenText,
 		RadioTransmissionType: tr.Type,
 	})
+	s.recordRadioActivity(tcp, spokenText, false /* isContact */)
+}
+
+// estimateSpeechDuration estimates speech duration from text (~150 words/min)
+func estimateSpeechDuration(text string) time.Duration {
+	words := len(strings.Fields(text))
+	if words == 0 {
+		return 2 * time.Second // minimum for any transmission
+	}
+	return time.Duration(words) * 400 * time.Millisecond
+}
+
+func (s *Sim) recordRadioActivity(tcp TCP, spokenText string, isContact bool) {
+	if s.LastRadioActivity == nil {
+		s.LastRadioActivity = make(map[TCP]RadioActivity)
+	}
+	s.LastRadioActivity[tcp] = RadioActivity{
+		EndTime:    s.State.SimTime.Add(estimateSpeechDuration(spokenText)),
+		WasContact: isContact,
+	}
+}
+
+func (s *Sim) radioActivityDelay(tcp TCP) time.Duration {
+	activity, ok := s.LastRadioActivity[tcp]
+	if !ok {
+		return 0
+	}
+
+	var busyUntil time.Time
+	if activity.WasContact {
+		// After a contact: frequency busy until 5s after transmission ends
+		// (controller needs time to respond)
+		busyUntil = activity.EndTime.Add(5 * time.Second)
+	} else {
+		// After a readback: frequency busy until 1s after transmission ends
+		busyUntil = activity.EndTime.Add(time.Second)
+	}
+
+	if s.State.SimTime.Before(busyUntil) {
+		return busyUntil.Sub(s.State.SimTime) + time.Duration(s.Rand.Intn(2))*time.Second
+	}
+	return 0
 }
 
 func (s *Sim) CallsignForACID(acid ACID) (av.ADSBCallsign, bool) {
