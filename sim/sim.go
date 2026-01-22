@@ -1230,6 +1230,23 @@ func (s *Sim) updateState() {
 				}
 			}
 
+			// Cull any departures withn ~5NM of their first /tc point
+			culled := false
+			if s.prespawnUncontrolledOnly && ac.IsDeparture() && ac.DepartureContactAltitude == 0 {
+				for _, wp := range ac.Nav.Waypoints {
+					if wp.TransferComms {
+						if math.NMDistance2LLFast(ac.Position(), wp.Location, ac.NmPerLongitude()) < 5 {
+							s.deleteAircraft(ac)
+							culled = true
+						}
+						break
+					}
+				}
+			}
+			if culled {
+				continue
+			}
+
 			// Possibly contact the departure controller
 			if ac.IsDeparture() && ((ac.DepartureContactAltitude > 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude) || (ac.DepartureContactAltitude == 0 && ac.EmergencyState != nil)) {
 				fp := ac.NASFlightPlan
