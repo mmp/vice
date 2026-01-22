@@ -447,7 +447,7 @@ type ARTCC struct {
 					LabelLine2 string `json:"labelLine2"`
 				} `json:"filterMenu"`
 				BcgMenu     []string `json:"bcgMenu"`
-				VideoMapIds []string      `json:"videoMapIds"`
+				VideoMapIds []string `json:"videoMapIds"`
 			} `json:"geoMaps"`
 			EmergencyChecklist      []string `json:"emergencyChecklist"`
 			PositionReliefChecklist []string `json:"positionReliefChecklist"`
