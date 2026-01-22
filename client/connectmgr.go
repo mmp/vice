@@ -102,6 +102,11 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, initials string, lg *log.L
 	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.LocalServer.HaveTTS, cm.disableTTSPtr, initials, cm.LocalServer.RPCClient, lg)
 	cm.connectionStartTime = time.Now()
 
+	// Set remote server for STT log reporting (local sims report to remote server)
+	if cm.RemoteServer != nil {
+		cm.client.SetRemoteServer(cm.RemoteServer.RPCClient)
+	}
+
 	return cm.client, nil
 }
 
