@@ -512,7 +512,7 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 	input := ep.Input.String()
 	for key := range ctx.Keyboard.Pressed {
 		switch key {
-		case imgui.KeyG:
+		case imgui.KeyG: // debugging
 			if ctx.Keyboard.KeyControl() && ctx.Keyboard.KeyShift() && ctx.Mouse != nil {
 				big := ctx.Mouse.Pos
 				big[1] -= 38
@@ -559,9 +559,10 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				break
 			}
 			// Clear the input
-			if ep.repositionLargeInput || ep.repositionSmallOutput {
+			if ep.repositionLargeInput || ep.repositionSmallOutput || ep.repositionClock {
 				ep.repositionLargeInput = false
 				ep.repositionSmallOutput = false
+				ep.repositionClock = false
 			} else {
 				if ep.commandMode == CommandModeDrawRoute {
 					ep.commandMode = CommandModeNone
