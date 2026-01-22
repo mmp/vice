@@ -501,7 +501,7 @@ func (ac *Aircraft) ContactMessage(reportingPoints []av.ReportingPoint) *av.Radi
 	// For departures, only report heading if the runway has varied exit headings.
 	// For arrivals (and others), always report heading if assigned.
 	reportHeading := !ac.IsDeparture() || ac.ReportDepartureHeading
-	return ac.Nav.ContactMessage(reportingPoints, ac.STAR, reportHeading)
+	return ac.Nav.ContactMessage(reportingPoints, ac.STAR, reportHeading, ac.IsDeparture())
 }
 
 func (ac *Aircraft) DepartOnCourse(lg *log.Logger) {
