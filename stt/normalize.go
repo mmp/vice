@@ -184,6 +184,8 @@ var commandKeywords = map[string]string{
 	"dallas":    "ils", // STT error
 	"ls":        "ils", // STT error: "ILS" sometimes transcribed as "LS"
 	"rnav":      "rnav",
+	"rnf":       "rnav", // STT error
+	"rf":        "rnav", // STT error: "RNAV" -> "R&F" -> "rf" after cleanup
 	"vor":       "vor",
 	"runway":    "runway",
 
@@ -296,6 +298,12 @@ func NormalizeTranscript(transcript string) []string {
 		// Special case: "flighting" is commonly transcribed instead of "fly heading"
 		if w == "flighting" {
 			result = append(result, "fly", "heading")
+			continue
+		}
+
+		// Special case: "commenting" is commonly transcribed instead of "climb and maintain"
+		if w == "commenting" {
+			result = append(result, "climb", "maintain")
 			continue
 		}
 
