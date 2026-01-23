@@ -1558,6 +1558,7 @@ func matchApproachByTypeAndNumber(tokens []Token, approaches map[string]string) 
 		validAfterWords := map[string]bool{
 			"approach": true, "for": true, "and": true, "the": true, "a": true,
 			"maintain": true, "speed": true, "until": true, "cleared": true,
+			"our": true, // Common before "approach" in STT
 		}
 		if !validAfterWords[afterWord] && !IsFillerWord(afterWord) {
 			// Unknown word after runway - likely garbage, reject the match
@@ -1620,7 +1621,7 @@ func extractApproachType(tokens []Token) (string, int) {
 
 	// Single-word approach types
 	switch text {
-	case "ils", "alice", "dallas", "als", "atlas", "dialogues": // STT errors for "ILS"
+	case "ils", "alice", "dallas", "als", "atlas", "dialogues", "dial": // STT errors for "ILS"
 		return "ils", 1
 	case "rnav":
 		return "rnav", 1
