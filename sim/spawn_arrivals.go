@@ -129,12 +129,20 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	nasFp.RNAV = s.State.FacilityAdaptation.DisplayRNAVSymbol && arr.IsRNAV
 
 	// For ERAM, set AssignedAltitude and derive PerceivedAssigned from waypoint restrictions.
-	if _, isERAM := av.DB.ARTCCs[s.State.Facility]; isERAM && arr.AssignedAltitude == 0 {
-		nasFp.AssignedAltitude = int(arr.AssignedAltitude)
-		if alt, ok := findLowestWaypointAltitude(arr.Waypoints, arr.InitialAltitude); ok {
-			nasFp.PerceivedAssigned = alt
+	if _, isERAM := av.DB.ARTCCs[s.State.Facility]; isERAM {
+		if arr.AssignedAltitude > 0 {
+			nasFp.AssignedAltitude = int(arr.AssignedAltitude)
+			if alt, ok := findLowestWaypointAltitude(arr.Waypoints, arr.InitialAltitude); ok {
+				nasFp.PerceivedAssigned = alt
+			}
 		} else {
-			s.lg.Warnf("Warning: no altitude restriction found for arrival %v", ac.ADSBCallsign)
+			// Try to derive from waypoint restrictions
+			if alt, ok := findLowestWaypointAltitude(arr.Waypoints, arr.InitialAltitude); ok {
+				nasFp.AssignedAltitude = alt
+				nasFp.PerceivedAssigned = alt
+			} else {
+				s.lg.Warnf("Warning: no altitude restriction found for arrival %v", ac.ADSBCallsign)
+			}
 		}
 	}
 
