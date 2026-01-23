@@ -175,6 +175,7 @@ var commandKeywords = map[string]string{
 
 	// Heading
 	"heading": "heading",
+	"eating":  "heading", // STT error: "heading" misheard as "eating" (phonetically similar)
 	"turn":    "turn",
 	"turning": "turn", // STT captures continuous tense
 	"left":    "left",
@@ -200,6 +201,7 @@ var commandKeywords = map[string]string{
 	"direct":   "direct",
 	"directed": "direct", // Past tense variant
 	"rig":      "direct", // STT error: "direct" garbled as "rig"
+	"drag":     "direct", // STT error: "direct" garbled as "drag"
 	"colonel":  "kernel", // English homophones: both pronounced /ˈkɜːrnəl/
 	"proceed": "proceed",
 	"cross":   "cross",
@@ -247,9 +249,11 @@ var commandKeywords = map[string]string{
 	"alice":     "ils",
 	"als":       "ils",
 	"rnav":      "rnav",
+	"arnavie":   "rnav", // STT error: "rnav" garbled with extra syllables
 	"vor":       "vor",
 	"runway":    "runway",
 	"romn":      "runway", // STT error: garbled "runway"
+	"renoya":    "runway", // STT error: garbled "runway"
 
 	// Transponder
 	"squawk":      "squawk",
@@ -295,6 +299,9 @@ var commandKeywords = map[string]string{
 var phraseExpansions = map[string][]string{
 	"flighting":        {"fly", "heading"},      // "fly heading" -> "flighting"
 	"disundermaintain": {"descend", "maintain"}, // "descend and maintain" -> "disundermaintain"
+	"thunbright":       {"turn", "right"},       // STT error: "turn right" merged together
+	"cleardrick":       {"cleared", "direct"},   // STT error: "cleared direct" merged
+	"expectilis":       {"expect", "ils"},       // STT error: "expect ILS" merged
 }
 
 // multiTokenReplacements maps sequences of tokens (space-joined) to replacements.

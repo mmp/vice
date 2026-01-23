@@ -412,6 +412,7 @@ var fuzzyMatchBlocklist = map[string][]string{
 	"climbington": {"climb", "climbing", "climbed"}, // garbage word with similar prefix
 	"rudy":        {"right"},                        // name/garbage word vs turn direction
 	"rig":         {"right"},                        // garbage word vs turn direction
+	"senate":      {"descend"},                      // garbage word vs descend command
 }
 
 // FuzzyMatch returns true if word matches target with Jaro-Winkler >= threshold
