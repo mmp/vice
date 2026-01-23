@@ -95,6 +95,36 @@ func ConvertNATOLetter(word string) (string, bool) {
 	return letter, ok
 }
 
+// spellingTriggerWords are words that introduce a spelling of a previously spoken name.
+// For example: "proceed direct Deer Park, that's delta papa kilo"
+var spellingTriggerWords = map[string]bool{
+	"thats":    true, // "that's" after punctuation removal
+	"spelled":  true,
+	"spelling": true,
+}
+
+// IsSpellingTrigger returns true if the word introduces a spelling correction.
+func IsSpellingTrigger(word string) bool {
+	return spellingTriggerWords[strings.ToLower(word)]
+}
+
+// ExtractNATOSpelling extracts consecutive NATO phonetic letters from words.
+// Returns the spelled-out string (uppercase) and number of words consumed.
+// Stops at the first non-NATO word.
+func ExtractNATOSpelling(words []string) (string, int) {
+	var result strings.Builder
+	consumed := 0
+	for _, word := range words {
+		if letter, ok := ConvertNATOLetter(word); ok {
+			result.WriteString(strings.ToUpper(letter))
+			consumed++
+		} else {
+			break
+		}
+	}
+	return result.String(), consumed
+}
+
 // natoCanonical maps each letter to its canonical NATO phonetic name.
 // Used for fuzzy matching merged NATO letters.
 var natoCanonical = map[string]string{
