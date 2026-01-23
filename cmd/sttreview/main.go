@@ -49,6 +49,13 @@ type AppState struct {
 	correction   string // editable correction (CALLSIGN COMMAND format)
 	cursorPos    int
 	showContext  bool
+
+	// Search state
+	searchMode     bool   // true when actively typing search
+	searchString   string // current search query
+	searchLocked   bool   // true when search is locked (after Enter)
+	filteredIdx    []int  // indices into entries that match search
+	filteredCursor int    // position within filteredIdx
 }
 
 // Action represents the result of handling an event.
@@ -145,32 +152,33 @@ func main() {
 			}
 			return
 		case ActionSkip:
-			persisted.markDone(appState.entries[appState.currentIndex])
-			appState.currentIndex++
-			if appState.currentIndex < len(appState.entries) {
-				appState.initFromEntry(appState.entries[appState.currentIndex])
+			currentEntry := getCurrentEntry(appState)
+			if currentEntry == nil {
+				continue
 			}
+			persisted.markDone(*currentEntry)
+			advanceToNextEntry(appState)
 			if err := persisted.save(); err != nil {
 				fmt.Fprintf(os.Stderr, "Error saving state: %v\n", err)
 			}
 		case ActionSave:
-			entry := appState.entries[appState.currentIndex]
-			if err := saveEntry(entry, appState.correction, *outputDir); err != nil {
+			currentEntry := getCurrentEntry(appState)
+			if currentEntry == nil {
+				continue
+			}
+			if err := saveEntry(*currentEntry, appState.correction, *outputDir); err != nil {
 				// Show error briefly - for now just continue
 				_ = err
 			}
-			persisted.markDone(entry)
-			appState.currentIndex++
-			if appState.currentIndex < len(appState.entries) {
-				appState.initFromEntry(appState.entries[appState.currentIndex])
-			}
+			persisted.markDone(*currentEntry)
+			advanceToNextEntry(appState)
 			if err := persisted.save(); err != nil {
 				fmt.Fprintf(os.Stderr, "Error saving state: %v\n", err)
 			}
 		}
 
-		// Check if done
-		if appState.currentIndex >= len(appState.entries) {
+		// Check if done (only when not in locked search mode)
+		if !appState.searchLocked && appState.currentIndex >= len(appState.entries) {
 			// Clear the queue since all entries have been processed
 			persisted.Queue = nil
 			if err := persisted.save(); err != nil {
@@ -186,6 +194,72 @@ func (state *AppState) initFromEntry(entry LogEntry) {
 	callsign := strings.TrimSuffix(entry.Callsign, "/T")
 	state.correction = callsign + " " + entry.Command
 	state.cursorPos = len(state.correction)
+}
+
+// updateSearchFilter updates the filtered indices based on the current search string.
+func (state *AppState) updateSearchFilter() {
+	if state.searchString == "" {
+		state.filteredIdx = nil
+		state.filteredCursor = 0
+		return
+	}
+
+	searchLower := strings.ToLower(state.searchString)
+	state.filteredIdx = nil
+
+	for i := state.currentIndex; i < len(state.entries); i++ {
+		entry := state.entries[i]
+		// Match against transcript or callsign (case-insensitive)
+		transcriptLower := strings.ToLower(entry.Transcript)
+		callsignLower := strings.ToLower(entry.Callsign)
+		if strings.Contains(transcriptLower, searchLower) || strings.Contains(callsignLower, searchLower) {
+			state.filteredIdx = append(state.filteredIdx, i)
+		}
+	}
+	state.filteredCursor = 0
+}
+
+// clearSearch clears search state and reverts to showing all entries.
+func (state *AppState) clearSearch() {
+	state.searchMode = false
+	state.searchString = ""
+	state.searchLocked = false
+	state.filteredIdx = nil
+	state.filteredCursor = 0
+}
+
+// getCurrentEntry returns a pointer to the current entry based on search state.
+func getCurrentEntry(state *AppState) *LogEntry {
+	if state.searchLocked && len(state.filteredIdx) > 0 {
+		if state.filteredCursor < len(state.filteredIdx) {
+			return &state.entries[state.filteredIdx[state.filteredCursor]]
+		}
+		return nil
+	}
+	if state.currentIndex < len(state.entries) {
+		return &state.entries[state.currentIndex]
+	}
+	return nil
+}
+
+// advanceToNextEntry moves to the next entry based on search state.
+func advanceToNextEntry(state *AppState) {
+	if state.searchLocked && len(state.filteredIdx) > 0 {
+		// In locked search mode, advance within filtered list
+		state.filteredCursor++
+		if state.filteredCursor < len(state.filteredIdx) {
+			state.initFromEntry(state.entries[state.filteredIdx[state.filteredCursor]])
+		} else {
+			// Reached end of filtered list - clear search and continue
+			state.clearSearch()
+		}
+	} else {
+		// Normal mode
+		state.currentIndex++
+		if state.currentIndex < len(state.entries) {
+			state.initFromEntry(state.entries[state.currentIndex])
+		}
+	}
 }
 
 // expandPath expands ~ to home directory.
@@ -461,16 +535,69 @@ func render(screen tcell.Screen, state *AppState) {
 	styleContextLabel := tcell.StyleDefault.Background(tcell.ColorWhite).Foreground(tcell.ColorDarkBlue).Bold(true)
 
 	// Header
-	title := fmt.Sprintf(" STT Review [%d/%d] ", state.currentIndex+1, len(state.entries))
+	var title string
+	if state.searchLocked {
+		matchCount := len(state.filteredIdx)
+		title = fmt.Sprintf(" STT Review [%d/%d] Search: %q (%d matches) ",
+			state.filteredCursor+1, matchCount, state.searchString, matchCount)
+	} else if state.searchMode {
+		title = fmt.Sprintf(" STT Review - Search: %s_ ", state.searchString)
+	} else {
+		title = fmt.Sprintf(" STT Review [%d/%d] ", state.currentIndex+1, len(state.entries))
+	}
 	help := " [-]=Skip [\u23ce]=Save "
+	if state.searchMode {
+		help = " [Esc]=Cancel [Enter]=Lock "
+	} else if state.searchLocked {
+		help = " [Esc]=Clear Search "
+	}
 	drawText(screen, 0, 0, width, styleHeader, title+strings.Repeat(" ", max(0, width-len(title)-len(help)))+help)
 
-	if state.currentIndex >= len(state.entries) {
+	// Handle search mode with no matches
+	if state.searchMode && state.searchString != "" && len(state.filteredIdx) == 0 {
+		drawText(screen, 0, 3, width, tcell.StyleDefault.Foreground(tcell.ColorRed),
+			" No matches found for: "+state.searchString)
 		return
 	}
 
-	// Current entry
-	entry := state.entries[state.currentIndex]
+	// Determine current entry based on search state
+	var entry LogEntry
+	var displayEntries []LogEntry
+	var displayIndex int
+
+	if state.searchLocked && len(state.filteredIdx) > 0 {
+		// Locked search: show filtered entries
+		displayIndex = state.filteredCursor
+		entry = state.entries[state.filteredIdx[displayIndex]]
+		displayEntries = make([]LogEntry, len(state.filteredIdx))
+		for i, idx := range state.filteredIdx {
+			displayEntries[i] = state.entries[idx]
+		}
+	} else if state.searchMode && len(state.filteredIdx) > 0 {
+		// Active search with matches: show filtered entries
+		displayIndex = 0
+		entry = state.entries[state.filteredIdx[0]]
+		displayEntries = make([]LogEntry, len(state.filteredIdx))
+		for i, idx := range state.filteredIdx {
+			displayEntries[i] = state.entries[idx]
+		}
+	} else if state.searchMode {
+		// Active search with empty query: show all from current
+		if state.currentIndex >= len(state.entries) {
+			return
+		}
+		displayIndex = 0
+		entry = state.entries[state.currentIndex]
+		displayEntries = state.entries[state.currentIndex:]
+	} else {
+		// Normal mode: show all entries from currentIndex
+		if state.currentIndex >= len(state.entries) {
+			return
+		}
+		displayIndex = 0
+		entry = state.entries[state.currentIndex]
+		displayEntries = state.entries[state.currentIndex:]
+	}
 
 	// Column 2: callsign + command (read-only, from entry)
 	entryCallsign := strings.TrimSuffix(entry.Callsign, "/T")
@@ -479,8 +606,8 @@ func render(screen tcell.Screen, state *AppState) {
 	// Calculate col2Width based on content - find max width needed
 	col2Width := len(col2Display)
 	// Check upcoming entries too
-	for i := 1; i < 20 && state.currentIndex+i < len(state.entries); i++ {
-		nextEntry := state.entries[state.currentIndex+i]
+	for i := 1; i < 20 && displayIndex+i < len(displayEntries); i++ {
+		nextEntry := displayEntries[displayIndex+i]
 		nextCallsign := strings.TrimSuffix(nextEntry.Callsign, "/T")
 		nextCol2 := nextCallsign + " " + nextEntry.Command
 		if len(nextCol2) > col2Width {
@@ -510,14 +637,20 @@ func render(screen tcell.Screen, state *AppState) {
 
 	y := 3
 
-	// Column 3: correction (editable)
-	correctionDisplay := state.correction
+	// Column 3: correction (editable) or search input
+	var correctionDisplay string
 	correctionStyle := styleCurrent
+	styleSearch := tcell.StyleDefault.Foreground(tcell.ColorYellow).Bold(true)
 
-	// Special display for "ignore" (single space)
-	if state.correction == " " {
+	if state.searchMode {
+		// Show search input with "/" prefix
+		correctionDisplay = "/" + state.searchString + "_"
+		correctionStyle = styleSearch
+	} else if state.correction == " " {
+		// Special display for "ignore" (single space)
 		correctionDisplay = "(ignore)_"
 	} else {
+		correctionDisplay = state.correction
 		// Add cursor
 		if state.cursorPos <= len(correctionDisplay) {
 			before := correctionDisplay[:state.cursorPos]
@@ -721,8 +854,8 @@ func render(screen tcell.Screen, state *AppState) {
 		maxY := height - 2
 		entryIdx := 1
 
-		for y < maxY && state.currentIndex+entryIdx < len(state.entries) {
-			nextEntry := state.entries[state.currentIndex+entryIdx]
+		for y < maxY && displayIndex+entryIdx < len(displayEntries) {
+			nextEntry := displayEntries[displayIndex+entryIdx]
 
 			// Wrap transcript text
 			nextTranscriptLines := wrapText(nextEntry.Transcript, col1Width, col1Width-indent)
@@ -754,11 +887,22 @@ func render(screen tcell.Screen, state *AppState) {
 
 	// Help footer
 	helpY := height - 1
-	contextHint := "[`]=Context "
-	if state.showContext {
-		contextHint = "[`]=Hide "
+	var helpText string
+	if state.searchMode {
+		helpText = " Type to search  [Enter]=Lock results  [Esc]=Cancel search "
+	} else if state.searchLocked {
+		contextHint := "[`]=Context "
+		if state.showContext {
+			contextHint = "[`]=Hide "
+		}
+		helpText = fmt.Sprintf(" %s[-]=Skip  [Enter]=Save  [Esc]=Clear search  [/]=New search ", contextHint)
+	} else {
+		contextHint := "[`]=Context "
+		if state.showContext {
+			contextHint = "[`]=Hide "
+		}
+		helpText = fmt.Sprintf(" %s[-]=Skip  [Enter]=Save  [Space]=Ignore  [Esc]=Quit  [/]=Search ", contextHint)
 	}
-	helpText := fmt.Sprintf(" %s[-]=Skip  [Enter]=Save  [Space]=Ignore  [Esc]=Quit ", contextHint)
 	drawText(screen, 0, helpY, width, styleHelp, helpText)
 }
 
@@ -798,6 +942,20 @@ func handleEvent(ev tcell.Event, state *AppState, screen tcell.Screen) Action {
 		return ActionNone
 
 	case *tcell.EventKey:
+		// Handle search mode
+		if state.searchMode {
+			return handleSearchEvent(ev, state)
+		}
+
+		// Handle locked search - Escape clears it
+		if state.searchLocked {
+			if ev.Key() == tcell.KeyEscape {
+				state.clearSearch()
+				return ActionNone
+			}
+			// Other keys work normally on the filtered list
+		}
+
 		switch ev.Key() {
 		case tcell.KeyEscape:
 			return ActionQuit
@@ -839,14 +997,60 @@ func handleEvent(ev tcell.Event, state *AppState, screen tcell.Screen) Action {
 				state.showContext = !state.showContext
 				return ActionNone
 			}
-			if r == '-' {
+			if r == '-' && !state.searchLocked {
 				return ActionSkip
+			}
+			// '/' at start of empty correction enters search mode
+			if r == '/' && state.correction == "" && state.cursorPos == 0 {
+				state.searchMode = true
+				state.searchString = ""
+				return ActionNone
 			}
 			// Auto-uppercase
 			r = unicode.ToUpper(r)
 			state.correction = state.correction[:state.cursorPos] + string(r) + state.correction[state.cursorPos:]
 			state.cursorPos++
 		}
+	}
+
+	return ActionNone
+}
+
+// handleSearchEvent handles keyboard events while in search mode.
+func handleSearchEvent(ev *tcell.EventKey, state *AppState) Action {
+	switch ev.Key() {
+	case tcell.KeyEscape:
+		// Clear search and exit search mode
+		state.clearSearch()
+		return ActionNone
+
+	case tcell.KeyEnter:
+		// Lock the search results
+		if state.searchString != "" && len(state.filteredIdx) > 0 {
+			state.searchMode = false
+			state.searchLocked = true
+			// Initialize correction for the first filtered entry
+			if len(state.filteredIdx) > 0 {
+				state.initFromEntry(state.entries[state.filteredIdx[0]])
+			}
+		} else {
+			// No matches or empty search - just exit search mode
+			state.clearSearch()
+		}
+		return ActionNone
+
+	case tcell.KeyBackspace, tcell.KeyBackspace2:
+		if len(state.searchString) > 0 {
+			state.searchString = state.searchString[:len(state.searchString)-1]
+			state.updateSearchFilter()
+		}
+		return ActionNone
+
+	case tcell.KeyRune:
+		r := ev.Rune()
+		state.searchString += string(r)
+		state.updateSearchFilter()
+		return ActionNone
 	}
 
 	return ActionNone
