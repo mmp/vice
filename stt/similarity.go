@@ -364,7 +364,21 @@ func PhoneticMatch(w1, w2 string) bool {
 		return true
 	}
 
-	// Conservative extension: check if one code is a suffix of the other
+	// Conservative extension: check if one code is a prefix of the other
+	// This handles STT errors that add or drop trailing sounds (e.g., "rhea" → "R", "reebo" → "RP")
+	// Only apply when:
+	// 1. The LONGER code is at most 2 chars to avoid overly broad matches
+	// 2. The original words have decent JW similarity (>= 0.65) to filter out false positives
+	maxPLen := max(len(p1), len(p2))
+	if maxPLen == 2 {
+		if strings.HasPrefix(p1, p2) || strings.HasPrefix(p2, p1) {
+			if JaroWinkler(w1, w2) >= 0.65 {
+				return true
+			}
+		}
+	}
+
+	// Also check suffix matching for longer codes
 	// This handles STT errors that drop leading sounds (e.g., "laser" for "localizer")
 	// Only apply when the shorter code is at least 3 chars (to avoid false positives)
 	if len(p1) >= 3 && len(p2) >= 3 {
