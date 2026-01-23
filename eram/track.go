@@ -42,6 +42,8 @@ type TrackState struct {
 
 	ReachedAltitude bool
 
+	HoverVCI bool // if the user is hovering over the VCI field
+
 	// add more as we figure out what to do...
 
 }
