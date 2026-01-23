@@ -1,0 +1,411 @@
+{
+  "time": "2026-01-22T23:18:05.898504887Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Lancholi 404, you're three miles from leg, cleared out from way nine approach reduce speed, two, one, zero",
+  "whisper_duration_ms": 465.655,
+  "audio_duration_ms": 6528,
+  "processor": "GPU: NVIDIA GeForce GTX 1080 (8273MB)",
+  "callsign": "LAN404",
+  "command": "CI9 S210",
+  "stt_aircraft": {
+    "CMP989": {
+      "Callsign": "CMP989",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Haslm": "HASLM",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Morea": "MOREA",
+        "Sndbr": "SNDBR"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 12250,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "Copa 989": {
+      "Callsign": "CMP989",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Haslm": "HASLM",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Morea": "MOREA",
+        "Sndbr": "SNDBR"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 12250,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "DAL2635": {
+      "Callsign": "DAL2635",
+      "AircraftType": "MD90",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 4075,
+      "State": "on approach",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "Delta 2635": {
+      "Callsign": "DAL2635",
+      "AircraftType": "MD90",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 4075,
+      "State": "on approach",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "LAN404": {
+      "Callsign": "LAN404",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 4628,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "LAN574": {
+      "Callsign": "LAN574",
+      "AircraftType": "B789",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Cstio": "CSTIO",
+        "Dahla": "DAHLA",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 8730,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "Lan Chile 404": {
+      "Callsign": "LAN404",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 4628,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "Lan Chile 574 heavy": {
+      "Callsign": "LAN574",
+      "AircraftType": "B789",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Cstio": "CSTIO",
+        "Dahla": "DAHLA",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 8730,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "SLM1480": {
+      "Callsign": "SLM1480",
+      "AircraftType": "B733",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Cstio": "CSTIO",
+        "Dahla": "DAHLA",
+        "Gamey": "GAMEY",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Nekne": "NEKNE",
+        "Raebn": "RAEBN"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 15660,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "SWA614": {
+      "Callsign": "SWA614",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Acere": "ACERE",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Pbjay": "PBJAY",
+        "Schar": "SCHAR"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 13313,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "Southwest 614": {
+      "Callsign": "SWA614",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Acere": "ACERE",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Pbjay": "PBJAY",
+        "Schar": "SCHAR"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 13313,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "Surinam 1480": {
+      "Callsign": "SLM1480",
+      "AircraftType": "B733",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Cstio": "CSTIO",
+        "Dahla": "DAHLA",
+        "Gamey": "GAMEY",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Nekne": "NEKNE",
+        "Raebn": "RAEBN"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 15660,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Lancholi 404, you're three miles from leg, cleared out from way nine approach reduce speed, two, one, zero\"",
+    "[local-stt] normalized words: [lancholi 404 youre 3 miles from legs cleared out from way 9 approach reduce speed 2 1 0]",
+    "[local-stt] tokens: 16",
+    "[local-stt]   token[0]: Text=\"lancholi\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"404\" Type=1 Value=404",
+    "[local-stt]   token[2]: Text=\"youre\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"3\" Type=1 Value=3",
+    "[local-stt]   token[4]: Text=\"miles\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"from\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"legs\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"out\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"from\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"way\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"9\" Type=1 Value=9",
+    "[local-stt]   token[12]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"reduce\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"210\" Type=1 Value=210",
+    "[local-stt] MatchCallsign: 16 tokens, 12 aircraft",
+    "[local-stt]   candidate \"SWA614\" (ICAO=\"SWA614\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Lan Chile 574 heavy\" (ICAO=\"LAN574\"): score=0.85 consumed=1",
+    "[local-stt]   candidate \"Copa 989\" (ICAO=\"CMP989\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"CMP989\" (ICAO=\"CMP989\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Lan Chile 404\" (ICAO=\"LAN404\"): score=1.00 consumed=2",
+    "[local-stt]   candidate \"LAN404\" (ICAO=\"LAN404\"): score=0.96 consumed=2",
+    "[local-stt]   candidate \"Delta 2635\" (ICAO=\"DAL2635\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"DAL2635\" (ICAO=\"DAL2635\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Surinam 1480\" (ICAO=\"SLM1480\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SLM1480\" (ICAO=\"SLM1480\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"LAN574\" (ICAO=\"LAN574\"): score=0.74 consumed=1",
+    "[local-stt]   candidate \"Southwest 614\" (ICAO=\"SWA614\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Lan Chile 404\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   candidate \"LAN404\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   accepted: \"LAN404\" (conf=1.00, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"LAN404\" SpokenKey=\"Lan Chile 404\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4628 Fixes=4 Approaches=3 AssignedApproach=\"ILS Runway 9\"",
+    "[local-stt]   fix: \"Llegg\" -\u003e \"LLEGG\"",
+    "[local-stt]   fix: \"Miami International Airport\" -\u003e \"KMIA\"",
+    "[local-stt]   fix: \"Gritt\" -\u003e \"GRITT\"",
+    "[local-stt]   fix: \"Iness\" -\u003e \"INESS\"",
+    "[local-stt]   approach: \"I L S runway one two\" -\u003e \"I12\"",
+    "[local-stt]   approach: \"r-nav runway eight left\" -\u003e \"R8L\"",
+    "[local-stt]   approach: \"I L S runway niner\" -\u003e \"I9\"",
+    "[local-stt] command tokens after disregard: 14",
+    "[local-stt]   token[0]: Text=\"youre\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"3\" Type=1 Value=3",
+    "[local-stt]   token[2]: Text=\"miles\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"from\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"legs\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"out\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"from\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"way\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"9\" Type=1 Value=9",
+    "[local-stt]   token[10]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"reduce\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"210\" Type=1 Value=210",
+    "[local-stt]   position ID: found command keyword \"cleared\" at position 5 - not just position ID",
+    "[local-stt] ParseCommands: 14 tokens",
+    "[local-stt]   no match at token[0]=\"youre\", skipping",
+    "[local-stt]   no match at token[1]=\"3\", skipping",
+    "[local-stt]   no match at token[2]=\"miles\", skipping",
+    "[local-stt]   no match at token[3]=\"from\", skipping",
+    "[local-stt]   no match at token[4]=\"legs\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"from\" against 4 fixes",
+    "[local-stt]   extractFix: no match found for \"from\"",
+    "[local-stt]   tryMatchTemplate \"at_fix_cleared_approach\": fix extraction failed",
+    "[local-stt]   no match at token[5]=\"cleared\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"from\" against 4 fixes",
+    "[local-stt]   extractFix: no match found for \"from\"",
+    "[local-stt]   tryMatchTemplate \"at_fix_cleared_approach\": fix extraction failed",
+    "[local-stt]   no match at token[6]=\"out\", skipping",
+    "[local-stt]   no match at token[7]=\"from\", skipping",
+    "[local-stt]   no match at token[8]=\"way\", skipping",
+    "[local-stt]   no match at token[9]=\"9\", skipping",
+    "[local-stt]   no match at token[10]=\"approach\", skipping",
+    "[local-stt]   tryMatchTemplate \"reduce_speed\": cmd=\"S210\" argStr=\"210\" consumed=3",
+    "[local-stt]   matched command: \"S210\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt] ParseCommands: result=[S210] (avgConf=1.00)",
+    "[local-stt] parsed commands: [S210] (conf=1.00)",
+    "[local-stt] validated commands: [S210] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"LAN404 S210\" (conf=1.00, time=507.6µs) ==="
+  ]
+}
