@@ -269,6 +269,27 @@ var phraseExpansions = map[string][]string{
 	"disundermaintain": {"descend", "maintain"}, // "descend and maintain" -> "disundermaintain"
 }
 
+// multiTokenReplacements maps sequences of tokens (space-joined) to replacements.
+// These handle STT errors that span multiple tokens.
+var multiTokenReplacements = map[string][]string{
+	"december 18": {"descend", "maintain"}, // STT error: "descend and maintain"
+	"i l s":       {"ils"},                 // Spelled out ILS
+	"r nav":       {"rnav"},                // R-NAV after hyphen removal
+}
+
+// matchMultiToken tries to match tokens against multiTokenReplacements.
+// Returns (matched, replacement, tokensConsumed).
+func matchMultiToken(tokens []string) (bool, []string, int) {
+	// Try longest matches first (3 tokens, then 2)
+	for length := min(3, len(tokens)); length >= 2; length-- {
+		key := strings.Join(tokens[:length], " ")
+		if replacement, ok := multiTokenReplacements[key]; ok {
+			return true, replacement, length
+		}
+	}
+	return false, nil, 0
+}
+
 // localizerPrefixes contains prefixes that indicate "intercept localizer" when
 // combined with "lok" or "lawk" in the word.
 var localizerPrefixes = []string{"zap", "zop", "za"}
@@ -424,25 +445,16 @@ func postProcessNormalized(tokens []string) []string {
 			continue
 		}
 
-		// Handle "december 18" → ["descend", "maintain"]
-		// This is a garbled transcription of "descend and maintain"
-		if tokens[i] == "december" && i+1 < len(tokens) && tokens[i+1] == "18" {
-			result = append(result, "descend", "maintain")
-			skip = 1 // Skip the "18"
-			continue
-		}
-
-		// Handle "i l s" → "ils" (3 separate letters)
-		if tokens[i] == "i" && i+2 < len(tokens) && tokens[i+1] == "l" && tokens[i+2] == "s" {
-			result = append(result, "ils")
-			skip = 2 // Skip the "l" and "s"
+		// Try table-driven multi-token replacements (longest match first)
+		if matched, replacement, consumed := matchMultiToken(tokens[i:]); matched {
+			result = append(result, replacement...)
+			skip = consumed - 1 // -1 because loop will advance by 1
 			continue
 		}
 
 		// Handle "l s" → "ils" (2 letters, missing "i")
-		// Only when it looks like approach context (followed by "runway" or a number)
+		// Context-dependent: only when followed by "runway" or a number
 		if tokens[i] == "l" && i+1 < len(tokens) && tokens[i+1] == "s" {
-			// Check if next token after "l s" suggests approach context
 			if i+2 < len(tokens) {
 				next := tokens[i+2]
 				if next == "runway" || IsNumber(next) {
@@ -451,14 +463,6 @@ func postProcessNormalized(tokens []string) []string {
 					continue
 				}
 			}
-		}
-
-		// Handle "r nav" → "rnav" (from "R-nav" after hyphen removal)
-		// This joins the letter "r" with "nav" to form "rnav" for approach matching
-		if tokens[i] == "r" && i+1 < len(tokens) && tokens[i+1] == "nav" {
-			result = append(result, "rnav")
-			skip = 1 // Skip "nav"
-			continue
 		}
 
 		// Handle "10XXX" headings where "10" is a garbled transcription of "heading"
