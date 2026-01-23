@@ -27,6 +27,8 @@ var digitWords = map[string]string{
 	// Ordinals sometimes transcribed instead of cardinals
 	"first": "1", "second": "2", "third": "3", "fourth": "4", "fifth": "5",
 	"sixth": "6", "seventh": "7", "eighth": "8", "ninth": "9",
+	// Plural digits (sometimes used in readbacks)
+	"fives": "5", "nines": "9",
 }
 
 // numberWords maps multi-digit number words to values.
@@ -154,6 +156,7 @@ var commandKeywords = map[string]string{
 	// Altitude
 	"descend":    "descend",
 	"doesnt":     "descend",
+	"send":       "descend", // "send a maintain" = "descend and maintain"
 	"climb":      "climb",
 	"climin":     "climb",
 	"klimin":     "climb",
@@ -173,6 +176,7 @@ var commandKeywords = map[string]string{
 	// Heading
 	"heading": "heading",
 	"turn":    "turn",
+	"turning": "turn", // STT captures continuous tense
 	"left":    "left",
 	"right":   "right",
 	"degrees": "degrees",
@@ -195,6 +199,8 @@ var commandKeywords = map[string]string{
 	// Navigation
 	"direct":   "direct",
 	"directed": "direct", // Past tense variant
+	"rig":      "direct", // STT error: "direct" garbled as "rig"
+	"colonel":  "kernel", // English homophones: both pronounced /ˈkɜːrnəl/
 	"proceed": "proceed",
 	"cross":   "cross",
 	"depart":  "depart",
@@ -243,6 +249,7 @@ var commandKeywords = map[string]string{
 	"rnav":      "rnav",
 	"vor":       "vor",
 	"runway":    "runway",
+	"romn":      "runway", // STT error: garbled "runway"
 
 	// Transponder
 	"squawk":      "squawk",
@@ -713,8 +720,13 @@ func fixGarbledNiner(w string) string {
 // For example, "4s" likely means "40" (four zero / forty).
 // This handles patterns like "2s" -> "20", "4s" -> "40", etc.
 func fixTrailingS(w string) string {
-	if len(w) == 2 && w[0] >= '0' && w[0] <= '9' && w[1] == 's' {
-		return string(w[0]) + "0" // "4s" -> "40"
+	// Handle "4s" -> "40", "23s" -> "230", etc.
+	// STT sometimes transcribes "forty" as "4s" or "twenty" as "2s"
+	if len(w) >= 2 && w[len(w)-1] == 's' {
+		numPart := w[:len(w)-1]
+		if IsNumber(numPart) {
+			return numPart + "0"
+		}
 	}
 	return w
 }
