@@ -1,0 +1,339 @@
+{
+  "time": "2026-01-22T23:56:06.933944861Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "SpiraWings 4951, Miami approach, expect ILS from Lainaner to send via the star.",
+  "whisper_duration_ms": 442.599,
+  "audio_duration_ms": 4096,
+  "processor": "GPU: NVIDIA GeForce GTX 1080 (8273MB)",
+  "callsign": "NKS4951",
+  "command": "EI9 DVS",
+  "stt_aircraft": {
+    "LAN Peru 9114": {
+      "Callsign": "LPE9114",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 6289,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "LPE9114": {
+      "Callsign": "LPE9114",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 6289,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "NKS4951": {
+      "Callsign": "NKS4951",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Acere": "ACERE",
+        "Asppn": "ASPPN",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Pbjay": "PBJAY",
+        "Schar": "SCHAR"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 13951,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "SLM3865": {
+      "Callsign": "SLM3865",
+      "AircraftType": "B733",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "SLM4569": {
+      "Callsign": "SLM4569",
+      "AircraftType": "A343",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Cstio": "CSTIO",
+        "Dahla": "DAHLA",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Raebn": "RAEBN"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 9709,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "Spirit Wings 4951": {
+      "Callsign": "NKS4951",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Acere": "ACERE",
+        "Asppn": "ASPPN",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Pbjay": "PBJAY",
+        "Schar": "SCHAR"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 13951,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "Surinam 3865": {
+      "Callsign": "SLM3865",
+      "AircraftType": "B733",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "Surinam 4569 heavy": {
+      "Callsign": "SLM4569",
+      "AircraftType": "A343",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Cstio": "CSTIO",
+        "Dahla": "DAHLA",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Raebn": "RAEBN"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 9709,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "UAL7": {
+      "Callsign": "UAL7",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 4114,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "United 7": {
+      "Callsign": "UAL7",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 4114,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"SpiraWings 4951, Miami approach, expect ILS from Lainaner to send via the star.\"",
+    "[local-stt] normalized words: [spirawings 4951 miami approach expect ils from lainaner to send via the star]",
+    "[local-stt] tokens: 13",
+    "[local-stt]   token[0]: Text=\"spirawings\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"4951\" Type=1 Value=4951",
+    "[local-stt]   token[2]: Text=\"miami\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"from\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"lainaner\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"send\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"via\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"star\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 13 tokens, 10 aircraft",
+    "[local-stt]   candidate \"Surinam 3865\" (ICAO=\"SLM3865\"): score=0.64 consumed=1",
+    "[local-stt]   candidate \"SLM3865\" (ICAO=\"SLM3865\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"LPE9114\" (ICAO=\"LPE9114\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Surinam 4569 heavy\" (ICAO=\"SLM4569\"): score=0.64 consumed=1",
+    "[local-stt]   candidate \"Spirit Wings 4951\" (ICAO=\"NKS4951\"): score=1.00 consumed=2",
+    "[local-stt]   candidate \"NKS4951\" (ICAO=\"NKS4951\"): score=1.00 consumed=2",
+    "[local-stt]   candidate \"United 7\" (ICAO=\"UAL7\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"UAL7\" (ICAO=\"UAL7\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"LAN Peru 9114\" (ICAO=\"LPE9114\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SLM4569\" (ICAO=\"SLM4569\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Spirit Wings 4951\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   candidate \"NKS4951\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   accepted: \"NKS4951\" (conf=1.00, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"NKS4951\" SpokenKey=\"Spirit Wings 4951\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=13951 Fixes=8 Approaches=3 AssignedApproach=\"ILS Runway 9\"",
+    "[local-stt]   fix: \"Llegg\" -\u003e \"LLEGG\"",
+    "[local-stt]   fix: \"Miami International Airport\" -\u003e \"KMIA\"",
+    "[local-stt]   fix: \"Gritt\" -\u003e \"GRITT\"",
+    "[local-stt]   fix: \"Iness\" -\u003e \"INESS\"",
+    "[local-stt]   fix: \"Asppn\" -\u003e \"ASPPN\"",
+    "[local-stt]   fix: \"Pbjay\" -\u003e \"PBJAY\"",
+    "[local-stt]   fix: \"Schar\" -\u003e \"SCHAR\"",
+    "[local-stt]   fix: \"Acere\" -\u003e \"ACERE\"",
+    "[local-stt]   approach: \"I L S runway one two\" -\u003e \"I12\"",
+    "[local-stt]   approach: \"r-nav runway eight left\" -\u003e \"R8L\"",
+    "[local-stt]   approach: \"I L S runway niner\" -\u003e \"I9\"",
+    "[local-stt] command tokens after disregard: 11",
+    "[local-stt]   token[0]: Text=\"miami\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"from\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"lainaner\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"send\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"via\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"star\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"expect\" at position 2 - not just position ID",
+    "[local-stt] ParseCommands: 11 tokens",
+    "[local-stt]   no match at token[0]=\"miami\", skipping",
+    "[local-stt]   no match at token[1]=\"approach\", skipping",
+    "[local-stt]   tryMatchTemplate \"expect_approach\": cmd=\"EI9\" argStr=\"I9\" consumed=4",
+    "[local-stt]   matched command: \"EI9\" (conf=0.92, consumed=4, isThen=false)",
+    "[local-stt]   no match at token[6]=\"to\", skipping",
+    "[local-stt]   no match at token[7]=\"send\", skipping",
+    "[local-stt]   no match at token[8]=\"via\", skipping",
+    "[local-stt]   skipping filler word: \"the\"",
+    "[local-stt]   no match at token[10]=\"star\", skipping",
+    "[local-stt] ParseCommands: result=[EI9] (avgConf=0.92)",
+    "[local-stt] parsed commands: [EI9] (conf=0.92)",
+    "[local-stt] validated commands: [EI9] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"NKS4951 EI9\" (conf=0.92, time=590.5µs) ==="
+  ]
+}
