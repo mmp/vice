@@ -709,9 +709,12 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	// Match each keyword group in sequence.
 	// For each group, we skip over skip words and filler words, then try to
 	// match the first significant token against any keyword in that group.
+	// SkipNonKeywords only applies BETWEEN keyword groups, not before the first one.
+	firstKeywordMatched := false
 	for _, keywordGroup := range tmpl.Keywords {
 		// Skip over skip words and filler words to find the next significant token
-		// If SkipNonKeywords is set, also skip any word that doesn't match a keyword
+		// If SkipNonKeywords is set AND we've already matched the first keyword,
+		// also skip any word that doesn't match a keyword
 		matched := false
 		for consumed < len(tokens) {
 			text := strings.ToLower(tokens[consumed].Text)
@@ -733,8 +736,11 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 				break
 			}
 
-			// If SkipNonKeywords is set, skip this non-matching token and continue looking
-			if tmpl.SkipNonKeywords {
+			// If SkipNonKeywords is set and we've already matched the first keyword,
+			// skip this non-matching token and continue looking.
+			// Don't skip before the first keyword - that would cause templates to
+			// consume tokens that belong to earlier commands.
+			if tmpl.SkipNonKeywords && firstKeywordMatched {
 				consumed++
 				continue
 			}
@@ -742,6 +748,7 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 			// Otherwise, this is a non-matching significant token - fail
 			return CommandMatch{}, 0
 		}
+		firstKeywordMatched = true
 
 		// Check if we ran out of tokens without matching
 		if !matched {
@@ -790,6 +797,14 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 
 	case ArgAltitude:
 		alt, altConsumed := extractAltitude(tokens[consumed:])
+		if altConsumed == 0 {
+			// For climb/descend templates, try extracting flight level values (100-400).
+			// These are excluded from regular extractAltitude to avoid conflicts with speeds,
+			// but in climb/descend context they're clearly altitudes (e.g., "climb and maintain one one five" = FL115).
+			if strings.HasPrefix(tmpl.Name, "climb") || strings.HasPrefix(tmpl.Name, "descend") {
+				alt, altConsumed = extractFlightLevelAltitude(tokens[consumed:])
+			}
+		}
 		if altConsumed == 0 {
 			// Keywords matched but couldn't extract altitude - return SAYAGAIN if appropriate
 			if shouldGenerateSayAgain(tokens, consumed) {
@@ -1166,10 +1181,10 @@ func extractAltitude(tokens []Token) (int, int) {
 				}
 			}
 
-			// Heuristic: if it looks like altitude encoding (2-3 digits, reasonable value)
-			// But exclude the speed range (100-400) since those are ambiguous and more likely
-			// to be speeds. Real altitudes in that range are typically spoken as "one eight
-			// thousand" not "180".
+			// Heuristic: if it looks like altitude encoding (2-3 digits, reasonable value).
+			// Exclude the speed range (100-400) since those are ambiguous and more likely
+			// to be speeds. Flight levels in that range are handled by the allowFlightLevel
+			// variant called from climb/descend templates.
 			if t.Value >= 10 && t.Value <= 600 && (t.Value < 100 || t.Value > 400) {
 				return t.Value, i + 1
 			}
@@ -1187,6 +1202,27 @@ func extractAltitude(tokens []Token) (int, int) {
 		}
 	}
 
+	return 0, 0
+}
+
+// extractFlightLevelAltitude extracts altitude values in the flight level range (100-400).
+// This is used as a fallback for climb/descend templates where values like 115 (FL115)
+// are clearly altitudes, not speeds. Regular extractAltitude excludes this range to
+// avoid conflicts with speed commands.
+func extractFlightLevelAltitude(tokens []Token) (int, int) {
+	if len(tokens) == 0 {
+		return 0, 0
+	}
+
+	for i, t := range tokens {
+		if i > 3 {
+			break
+		}
+		if t.Type == TokenNumber && t.Value >= 100 && t.Value <= 400 {
+			logLocalStt("  extractFlightLevelAltitude: accepting %d as FL (climb/descend context)", t.Value)
+			return t.Value, i + 1
+		}
+	}
 	return 0, 0
 }
 
@@ -1228,12 +1264,33 @@ func extractHeading(tokens []Token) (int, int) {
 				}
 			}
 
-			// ATC convention: single-digit headings (1-9) are spoken as "zero X"
-			// meaning heading 0X0 (e.g., "zero eight" = 080, not 008).
-			// Since parseDigitSequence merges "0 8" into 8, we correct here.
-			if hdg < 10 {
+			// Headings are always spoken as 3 digits and almost always multiples of 10.
+			// Use Token.Text to determine if user said leading zero:
+			// - "020" (Text starts with 0) = unambiguous heading 020
+			// - "36" (2 digits, doesn't end in 0) = trailing zero dropped, heading 360
+			// - "10" (2 digits, ends in 0) = ambiguous, could be 010 or 100, be conservative
+			text := t.Text
+			hasLeadingZero := len(text) > 0 && text[0] == '0'
+
+			if hasLeadingZero {
+				// User said "zero two zero" - unambiguous, use value as-is
+				// For single digit after leading zero (e.g., "08"), multiply by 10 for heading 080
+				if hdg < 10 {
+					hdg *= 10
+				}
+				logLocalStt("  extractHeading: %d from %q (has leading zero, unambiguous)", hdg, text)
+			} else if len(text) == 2 && hdg >= 10 && hdg <= 36 && hdg%10 != 0 {
+				// 2-digit number not ending in 0 (like 36, 27, 14): trailing zero was likely dropped
+				// Headings are almost always multiples of 10, so "two seven" is much more likely
+				// to be 270 than 027. If they meant 027, they would say "zero two seven".
+				expanded := hdg * 10
+				logLocalStt("  extractHeading: expanded %d -> %d (2-digit %q, trailing zero dropped)", hdg, expanded, text)
+				hdg = expanded
+			} else if hdg < 10 {
+				// Single digit without leading zero context - assume "zero X" = 0X0
 				hdg *= 10
 			}
+			// For 2-digit numbers ending in 0 (10, 20, 30): ambiguous, use as-is (conservative)
 			return hdg, i + 1
 		}
 	}
@@ -1559,8 +1616,10 @@ func extractSTAR(tokens []Token, star string) int {
 	}
 
 	// Check for generic "star" word first (handles "descend via the star")
-	if strings.EqualFold(tokens[0].Text, "star") {
-		logLocalStt("  extractSTAR: matched generic 'star'")
+	// Also handle common STT errors: "stars" (plural), "start" (mishearing)
+	text := strings.ToLower(tokens[0].Text)
+	if text == "star" || text == "stars" || text == "start" {
+		logLocalStt("  extractSTAR: matched generic %q as 'star'", text)
 		return 1
 	}
 
@@ -1876,25 +1935,30 @@ func skipExpectFurtherClearance(tokens []Token, start int) int {
 	return consumed
 }
 
-// isCommandKeyword returns true if the word is a command keyword.
+// isCommandKeyword returns true if the word is (or fuzzy-matches) a command keyword.
 // Used to detect when "contact" is followed by a command rather than a controller name.
 func isCommandKeyword(word string) bool {
-	commandKeywords := map[string]bool{
-		"climb": true, "climbed": true, "climbing": true,
-		"descend": true, "descended": true, "descending": true,
-		"maintain": true,
-		"turn":     true, "left": true, "right": true,
-		"heading": true,
-		"speed":   true, "reduce": true, "increase": true,
-		"direct": true, "proceed": true,
-		"cleared": true, "expect": true, "vectors": true,
-		"squawk": true, "ident": true, "transponder": true,
-		"cross": true, "expedite": true,
-		"fly": true, "intercept": true,
-		"cancel": true, "resume": true,
-		"say": true,
+	commandKeywords := []string{
+		"climb", "climbed", "climbing",
+		"descend", "descended", "descending",
+		"maintain",
+		"turn", "left", "right",
+		"heading",
+		"speed", "reduce", "increase",
+		"direct", "proceed",
+		"cleared", "expect", "vectors",
+		"squawk", "ident", "transponder",
+		"cross", "expedite",
+		"fly", "intercept",
+		"cancel", "resume",
+		"say",
 	}
-	return commandKeywords[word]
+	for _, kw := range commandKeywords {
+		if FuzzyMatch(word, kw, 0.8) {
+			return true
+		}
+	}
+	return false
 }
 
 func mustAtoi(s string) int {

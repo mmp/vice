@@ -74,10 +74,10 @@ func Tokenize(words []string) []Token {
 		// Type classification (heading, speed) is deferred to command parsing
 		// where context determines meaning.
 		if IsDigit(w) || IsNumber(w) {
-			num, consumed := parseDigitSequence(words[i:])
+			num, text, consumed := parseDigitSequence(words[i:])
 			if consumed > 0 {
 				tokens = append(tokens, Token{
-					Text:  strconv.Itoa(num),
+					Text:  text, // Preserve original digit sequence (e.g., "020" vs "20")
 					Type:  TokenNumber,
 					Value: num,
 					Pos:   i,
@@ -240,9 +240,10 @@ func parseAltitudePattern(words []string) (int, int) {
 
 // parseDigitSequence parses consecutive number tokens into a number.
 // Handles both single digits and multi-digit numbers from normalization.
-// Returns the number and how many words were consumed.
-func parseDigitSequence(words []string) (int, int) {
+// Returns the number, the text representation (preserving leading zeros), and words consumed.
+func parseDigitSequence(words []string) (int, string, int) {
 	num := 0
+	text := ""
 	consumed := 0
 	lastWasMultiDigit := false
 
@@ -251,6 +252,7 @@ func parseDigitSequence(words []string) (int, int) {
 		if IsDigit(w) {
 			// Single digit - always safe to merge
 			num = num*10 + ParseDigit(w)
+			text += w
 			consumed++
 			lastWasMultiDigit = false
 		} else if IsNumber(w) {
@@ -271,6 +273,7 @@ func parseDigitSequence(words []string) (int, int) {
 			} else {
 				num = n
 			}
+			text += w
 			consumed++
 			lastWasMultiDigit = len(w) > 1
 		} else {
@@ -278,7 +281,7 @@ func parseDigitSequence(words []string) (int, int) {
 		}
 	}
 
-	return num, consumed
+	return num, text, consumed
 }
 
 // intPow10 returns 10^n for small n.

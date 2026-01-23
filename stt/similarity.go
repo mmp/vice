@@ -390,9 +390,10 @@ var fuzzyMatchBlocklist = map[string][]string{
 	"intercept": {"increase"},           // "intercept localizer" vs "increase speed"
 	"increase":  {"intercept", "cross"}, // "increase speed" vs "cross fix"
 	"cross":     {"increase"},
-	"see":       {"speed"},    // "see ya" vs "speed"
-	"degrees":   {"increase"}, // garbled STT output
-	"flight":    {"right"},    // "flight 638" vs "turn right"
+	"see":       {"speed"},      // "see ya" vs "speed"
+	"degrees":   {"increase"},   // garbled STT output
+	"flight":    {"right"},      // "flight 638" vs "turn right"
+	"heading":   {"descending"}, // "heading 180" vs "descend"
 }
 
 // FuzzyMatch returns true if word matches target with Jaro-Winkler >= threshold

@@ -1,6 +1,7 @@
 package stt
 
 import (
+	"strconv"
 	"strings"
 )
 
@@ -41,6 +42,7 @@ var numberWords = map[string]string{
 	"eighteen":  "18",
 	"nineteen":  "19",
 	"twenty":    "20",
+	"toser":     "20", // STT error: "twenty" or "two zero" transcribed as "toser"
 	"thirty":    "30",
 	"forty":     "40",
 	"fifty":     "50",
@@ -101,10 +103,13 @@ var commandKeywords = map[string]string{
 	"climbed":    "climb",
 	"climbing":   "climb",
 	"climin":     "climb", // STT error: "climb and" -> "climin"
+	"klimin":     "climb", // STT error: "climb and" -> "klimin"
+	"clomman":    "climb", // STT error: "climb and" -> "clomman"
 	"clementine": "climb", // STT error: "climb and maintain" -> "clementine"
 	"con":        "climb", // STT error: "climb" -> "con" (not "contact")
 	"maintain":   "maintain",
 	"maintained": "maintain", // Past tense
+	"may":        "maintain", // STT error: "climb and may" for "climb and maintain"
 	"altitude":   "altitude",
 	"thousand":   "thousand",
 	"tizen":      "thousand", // STT error: "four tizen" for "four thousand"
@@ -119,6 +124,7 @@ var commandKeywords = map[string]string{
 	"hitting":  "heading", // STT error
 	"nutter":   "heading", // STT error: "turn rate heading to nutter 0" for "heading 270"
 	"turn":     "turn",
+	"turner":   "turn", // STT error: "turner" for "turn"
 	"left":     "left",
 	"lefting":  "left", // STT error
 	"right":    "right",
@@ -134,6 +140,7 @@ var commandKeywords = map[string]string{
 	"speed":    "speed",
 	"dsp":      "speed", // STT error: "DSP" for "speed"
 	"reduce":   "reduce",
+	"root":     "reduce", // STT error: "root of speed" for "reduce speed"
 	"increase": "increase",
 	"slow":     "slow",
 	"slowest":  "slowest",
@@ -199,6 +206,7 @@ var commandKeywords = map[string]string{
 	"eyeless":   "ils", // STT error
 	"dalas":     "ils", // STT error
 	"dallas":    "ils", // STT error
+	"dailies":   "ils", // STT error: "ILS" transcribed as "dailies"
 	"ls":        "ils", // STT error: "ILS" sometimes transcribed as "LS"
 	"rnav":      "rnav",
 	"rnf":       "rnav", // STT error
@@ -220,6 +228,8 @@ var commandKeywords = map[string]string{
 	"kannak":    "contact", // STT error
 	"connector": "contact", // STT error
 	"tower":     "tower",
+	"tar":       "tower", // STT error: "contact tar" for "contact tower"
+	"terror":    "tower", // STT error: "contact terror" for "contact tower"
 	"frequency": "frequency",
 	"departure": "departure",
 	"center":    "center",
@@ -245,6 +255,32 @@ var commandKeywords = map[string]string{
 
 	// Then sequencing
 	"then": "then",
+}
+
+// phraseExpansions maps single STT words to multiple normalized words.
+// These are common STT errors where words get merged together.
+var phraseExpansions = map[string][]string{
+	"flighting":        {"fly", "heading"},      // "fly heading" -> "flighting"
+	"commenting":       {"climb", "maintain"},   // "climb and maintain" -> "commenting"
+	"disundermaintain": {"descend", "maintain"}, // "descend and maintain" -> "disundermaintain"
+}
+
+// localizerPrefixes contains prefixes that indicate "intercept localizer" when
+// combined with "lok" or "lawk" in the word.
+var localizerPrefixes = []string{"zap", "zop", "za"}
+
+// isLocalizerPattern checks if a word is a garbled "intercept localizer".
+// STT often produces words like "zapulokwizer" or "zapulawkwizer".
+func isLocalizerPattern(w string) bool {
+	if !strings.Contains(w, "lok") && !strings.Contains(w, "lawk") {
+		return false
+	}
+	for _, prefix := range localizerPrefixes {
+		if strings.HasPrefix(w, prefix) {
+			return true
+		}
+	}
+	return false
 }
 
 // fillerWords are words to ignore during parsing.
@@ -325,36 +361,23 @@ func NormalizeTranscript(transcript string) []string {
 		// deferred to scoreGACallsign() and scoreFlightNumberMatch() where the
 		// context makes it clear we're building a callsign from phonetics.
 
-		// Try command keyword normalization
+		// Try command keyword normalization (single word → single word)
 		if norm, ok := commandKeywords[w]; ok {
 			result = append(result, norm)
 			continue
 		}
 
-		// Special case: "flighting" is commonly transcribed instead of "fly heading"
-		if w == "flighting" {
-			result = append(result, "fly", "heading")
+		// Try phrase expansions (single word → multiple words)
+		if expansion, ok := phraseExpansions[w]; ok {
+			result = append(result, expansion...)
 			continue
 		}
 
-		// Special case: "commenting" is commonly transcribed instead of "climb and maintain"
-		if w == "commenting" {
-			result = append(result, "climb", "maintain")
+		// Check for "intercept localizer" pattern: words containing "lok" or "lawk"
+		// with certain prefixes (e.g., "zapulokwizer", "zapulawkwizer")
+		if isLocalizerPattern(w) {
+			result = append(result, "intercept", "localizer")
 			continue
-		}
-
-		// Special case: "turner" is commonly transcribed instead of "turn"
-		if w == "turner" {
-			result = append(result, "turn")
-			continue
-		}
-
-		// Special case: "zapulokwizer", "zapulawkwizer", etc. for "intercept localizer"
-		if strings.Contains(w, "lok") || strings.Contains(w, "lawk") {
-			if strings.HasPrefix(w, "zap") || strings.HasPrefix(w, "zop") || strings.HasPrefix(w, "za") {
-				result = append(result, "intercept", "localizer")
-				continue
-			}
 		}
 
 		// Handle "or" as STT misrecognition of "niner" when between digits.
@@ -464,6 +487,14 @@ func postProcessNormalized(tokens []string) []string {
 			}
 		}
 
+		// Handle abnormally large numbers that are likely altitude STT errors.
+		// e.g., "144000" → "14000" (doubled 4), "120000" → "12000" (extra zero)
+		// These occur when STT doubles a digit or adds extra zeros.
+		if correctedNum := fixLargeNumber(tokens[i]); correctedNum != "" {
+			result = append(result, correctedNum)
+			continue
+		}
+
 		// Default: keep the token as-is
 		result = append(result, tokens[i])
 	}
@@ -512,6 +543,41 @@ func ParseNumber(s string) int {
 		n = n*10 + int(c-'0')
 	}
 	return n
+}
+
+// fixLargeNumber corrects abnormally large numbers that are likely STT errors.
+// e.g., "144000" → "14000" (doubled digit), "120000" → "12000" (extra zero)
+// Returns the corrected number string, or empty string if no correction applies.
+func fixLargeNumber(s string) string {
+	if !IsNumber(s) {
+		return ""
+	}
+	n := ParseNumber(s)
+	// Numbers > 60000 are unlikely altitudes (max typical is FL600 = 60000 ft)
+	if n < 100000 || n > 1000000 {
+		return ""
+	}
+
+	// First try: remove a doubled digit (e.g., "144000" → "14000")
+	for j := 1; j < len(s); j++ {
+		if s[j] == s[j-1] {
+			// Try removing the duplicate
+			corrected := s[:j] + s[j+1:]
+			if cn := ParseNumber(corrected); cn >= 1000 && cn <= 60000 {
+				return corrected
+			}
+		}
+	}
+
+	// Second try: remove trailing zero (e.g., "120000" → "12000")
+	if s[len(s)-1] == '0' {
+		corrected := n / 10
+		if corrected >= 1000 && corrected <= 60000 {
+			return strconv.Itoa(corrected)
+		}
+	}
+
+	return ""
 }
 
 // splitTextNumber splits a word that has text followed by digits (or vice versa).
