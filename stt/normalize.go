@@ -44,7 +44,8 @@ var numberWords = map[string]string{
 	"eighteen":  "18",
 	"nineteen":  "19",
 	"twenty":    "20",
-	"toser":     "20", // STT error: "twenty" or "two zero" transcribed as "toser"
+	"toser":     "20",  // STT error: "twenty" or "two zero" transcribed as "toser"
+	"twenzo":    "210", // STT error: "two one zero" transcribed as "twenzo"
 	"thirty":    "30",
 	"forty":     "40",
 	"fifty":     "50",
