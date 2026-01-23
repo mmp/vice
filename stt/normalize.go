@@ -98,41 +98,41 @@ var commandKeywords = map[string]string{
 	"descend":    "descend",
 	"descended":  "descend",
 	"descending": "descend",
-	"descendant": "descend", // STT error
-	"descent":    "descend", // STT error
-	"doesnt":     "descend", // STT error: "doesn't maintain" for "descend and maintain"
+	"descendant": "descend",
+	"descent":    "descend",
+	"doesnt":     "descend",
 	"climb":      "climb",
 	"climbed":    "climb",
 	"climbing":   "climb",
-	"climin":     "climb", // STT error: "climb and" -> "climin"
-	"klimin":     "climb", // STT error: "climb and" -> "klimin"
-	"clomman":    "climb", // STT error: "climb and" -> "clomman"
-	"clementine": "climb", // STT error: "climb and maintain" -> "clementine"
-	"con":        "climb", // STT error: "climb" -> "con" (not "contact")
+	"climin":     "climb",
+	"klimin":     "climb",
+	"clomman":    "climb",
+	"clementine": "climb",
+	"con":        "climb",
 	"maintain":   "maintain",
-	"maintained": "maintain", // Past tense
-	"may":        "maintain", // STT error: "climb and may" for "climb and maintain"
+	"maintained": "maintain",
+	"may":        "maintain",
 	"altitude":   "altitude",
 	"thousand":   "thousand",
-	"tizen":      "thousand", // STT error: "four tizen" for "four thousand"
+	"tizen":      "thousand",
 	"hundred":    "hundred",
 	"flight":     "flight",
-	"fight":      "flight", // STT error: "flight" often transcribed as "fight"
+	"fight":      "flight",
 	"level":      "level",
 	"expedite":   "expedite",
 
 	// Heading
 	"heading":  "heading",
-	"hitting":  "heading", // STT error
-	"nutter":   "heading", // STT error: "turn rate heading to nutter 0" for "heading 270"
+	"hitting":  "heading",
+	"nutter":   "heading",
 	"turn":     "turn",
-	"turner":   "turn", // STT error: "turner" for "turn"
+	"turner":   "turn",
 	"left":     "left",
-	"lefting":  "left", // STT error
+	"lefting":  "left",
 	"right":    "right",
-	"righting": "right", // STT error
-	"rate":     "right", // STT error: "turn rate" for "turn right"
-	"wright":   "right", // STT error: "wright" for "right"
+	"righting": "right",
+	"rate":     "right",
+	"wright":   "right",
 	"degrees":  "degrees",
 	"degree":   "degrees",
 	"fly":      "fly",
@@ -140,9 +140,9 @@ var commandKeywords = map[string]string{
 
 	// Speed
 	"speed":    "speed",
-	"dsp":      "speed", // STT error: "DSP" for "speed"
+	"dsp":      "speed",
 	"reduce":   "reduce",
-	"root":     "reduce", // STT error: "root of speed" for "reduce speed"
+	"root":     "reduce",
 	"increase": "increase",
 	"slow":     "slow",
 	"slowest":  "slowest",
@@ -154,14 +154,14 @@ var commandKeywords = map[string]string{
 	// Navigation
 	"direct":    "direct",
 	"proceed":   "proceed",
-	"procedure": "proceed", // STT error: "proceed" often transcribed as "procedure"
+	"procedure": "proceed",
 	"cross":     "cross",
 	"depart":    "depart",
 	"hold":      "hold",
 	"via":       "via",
-	"by":        "via", // STT error: "via" often transcribed as "by"
+	"by":        "via",
 	"sid":       "sid",
-	"cid":       "sid", // STT error: "climb via cid" for "climb via SID"
+	"cid":       "sid",
 
 	// Hold-related
 	"radial":    "radial",
@@ -190,31 +190,31 @@ var commandKeywords = map[string]string{
 	"vectors":   "vectors",
 	"approach":  "approach",
 	"cancel":    "cancel",
-	"council":   "cancel", // STT error: "council" for "cancel"
+	"council":   "cancel",
 	"localizer": "localizer",
 	"localize":  "localizer",
 	"localiser": "localizer",
-	"glazier":   "localizer", // STT error
-	"glaser":    "localizer", // STT error
-	"gliser":    "localizer", // STT error
-	"laser":     "localizer", // STT error
+	"glazier":   "localizer",
+	"glaser":    "localizer",
+	"gliser":    "localizer",
+	"laser":     "localizer",
 	"intercept": "intercept",
-	"nusselt":   "intercept", // STT error
+	"nusselt":   "intercept",
 	"clearance": "clearance",
 	"visual":    "visual",
 	"ils":       "ils",
-	"ios":       "ils", // STT error
-	"outlast":   "ils", // STT error
-	"eyeless":   "ils", // STT error
-	"dalas":     "ils", // STT error
-	"dallas":    "ils", // STT error
-	"dailies":   "ils", // STT error: "ILS" transcribed as "dailies"
-	"ls":        "ils", // STT error: "ILS" sometimes transcribed as "LS"
-	"alice":     "ils", // STT error: "ILS" transcribed as "alice"
-	"als":       "ils", // STT error: "ILS" transcribed as "als"
+	"ios":       "ils",
+	"outlast":   "ils",
+	"eyeless":   "ils",
+	"dalas":     "ils",
+	"dallas":    "ils",
+	"dailies":   "ils",
+	"ls":        "ils",
+	"alice":     "ils",
+	"als":       "ils",
 	"rnav":      "rnav",
-	"rnf":       "rnav", // STT error
-	"rf":        "rnav", // STT error: "RNAV" -> "R&F" -> "rf" after cleanup
+	"rnf":       "rnav",
+	"rf":        "rnav",
 	"vor":       "vor",
 	"runway":    "runway",
 
@@ -227,13 +227,13 @@ var commandKeywords = map[string]string{
 
 	// Handoff
 	"contact":   "contact",
-	"konnek":    "contact", // STT error
-	"konek":     "contact", // STT error
-	"kannak":    "contact", // STT error
-	"connector": "contact", // STT error
+	"konnek":    "contact",
+	"konek":     "contact",
+	"kannak":    "contact",
+	"connector": "contact",
 	"tower":     "tower",
-	"tar":       "tower", // STT error: "contact tar" for "contact tower"
-	"terror":    "tower", // STT error: "contact terror" for "contact tower"
+	"tar":       "tower",
+	"terror":    "tower",
 	"frequency": "frequency",
 	"departure": "departure",
 	"center":    "center",
