@@ -416,6 +416,14 @@ var commandTemplates = []CommandTemplate{
 		SkipWords: []string{"approach"},
 	},
 	{
+		Name:      "localizer_approach", // "localizer runway X approach" implies cleared approach
+		Keywords:  [][]string{{"localizer"}},
+		ArgType:   ArgApproach,
+		OutputFmt: "C%s",
+		Priority:  7, // Lower than cleared_approach so explicit "cleared" is preferred
+		SkipWords: []string{"approach", "acquired"},
+	},
+	{
 		Name:      "cleared_straight_in",
 		Keywords:  [][]string{{"cleared"}, {"straight"}},
 		ArgType:   ArgApproach,
@@ -1645,8 +1653,15 @@ func extractApproachType(tokens []Token) (string, int) {
 // the number (e.g., "right 30"), that takes precedence over direction after (e.g., "30 left").
 func extractRunwayNumber(tokens []Token) (string, string, int) {
 	for i, t := range tokens {
-		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 36 {
-			num := spokenDigits(t.Value)
+		value := t.Value
+		// Handle "tN" patterns (e.g., "t7" for garbled "twenty-seven" → 27)
+		if t.Type == TokenWord && len(t.Text) == 2 && strings.ToLower(t.Text[:1]) == "t" {
+			if digit := t.Text[1]; digit >= '0' && digit <= '9' {
+				value = 20 + int(digit-'0')
+			}
+		}
+		if (t.Type == TokenNumber || value > 0) && value >= 1 && value <= 36 {
+			num := spokenDigits(value)
 			dir := ""
 
 			// First, check for direction BEFORE the number (e.g., "ILS right 30")

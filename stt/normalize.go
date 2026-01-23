@@ -231,6 +231,7 @@ var commandKeywords = map[string]string{
 	"approach":  "approach",
 	"cancel":    "cancel",
 	"localizer": "localizer",
+	"localize":  "localizer", // STT drops trailing 'r'
 	"intercept": "intercept",
 	"nusselt":   "intercept",
 	"clearance": "clearance",
