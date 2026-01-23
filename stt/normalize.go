@@ -92,18 +92,69 @@ func ConvertNATOLetter(word string) (string, bool) {
 	return letter, ok
 }
 
+// natoCanonical maps each letter to its canonical NATO phonetic name.
+// Used for fuzzy matching merged NATO letters.
+var natoCanonical = map[string]string{
+	"a": "alpha", "b": "bravo", "c": "charlie", "d": "delta", "e": "echo",
+	"f": "foxtrot", "g": "golf", "h": "hotel", "i": "india", "j": "juliet",
+	"k": "kilo", "l": "lima", "m": "mike", "n": "november", "o": "oscar",
+	"p": "papa", "q": "quebec", "r": "romeo", "s": "sierra", "t": "tango",
+	"u": "uniform", "v": "victor", "w": "whiskey", "x": "xray", "y": "yankee",
+	"z": "zulu",
+}
+
+// trySplitMergedNATO attempts to split a word into two NATO phonetic letters.
+// STT sometimes merges "echo whiskey" into "echowiski". This function detects
+// such patterns using fuzzy matching and returns the split words.
+// Returns nil if the word doesn't appear to be merged NATO letters.
+func trySplitMergedNATO(word string) []string {
+	word = strings.ToLower(word)
+	if len(word) < 8 { // Minimum: two short NATO words merged (e.g., "echogolf" = 8)
+		return nil
+	}
+
+	// Don't split if the word itself is already a NATO letter
+	if _, ok := natoAlphabet[word]; ok {
+		return nil
+	}
+
+	// Try each NATO letter as a potential prefix
+	for _, nato1 := range natoCanonical {
+		// Try different split points based on the NATO word length
+		// Allow some flexibility for STT errors
+		minSplit := max(len(nato1)-1, 3)           // Require at least 3 chars for prefix
+		maxSplit := min(len(nato1)+1, len(word)-3) // Require at least 3 chars for suffix
+
+		for splitAt := minSplit; splitAt <= maxSplit; splitAt++ {
+			prefix := word[:splitAt]
+			suffix := word[splitAt:]
+
+			// Check if prefix fuzzy-matches the NATO word (high threshold)
+			if JaroWinkler(prefix, nato1) < 0.85 {
+				continue
+			}
+
+			// Check if suffix fuzzy-matches any NATO word (high threshold, min length)
+			if len(suffix) < 3 {
+				continue
+			}
+			for _, nato2 := range natoCanonical {
+				if JaroWinkler(suffix, nato2) >= 0.80 {
+					// Found a valid split
+					return []string{nato1, nato2}
+				}
+			}
+		}
+	}
+	return nil
+}
+
 // commandKeywords maps spoken command words to normalized forms.
 var commandKeywords = map[string]string{
 	// Altitude
 	"descend":    "descend",
-	"descended":  "descend",
-	"descending": "descend",
-	"descendant": "descend",
-	"descent":    "descend",
 	"doesnt":     "descend",
 	"climb":      "climb",
-	"climbed":    "climb",
-	"climbing":   "climb",
 	"climin":     "climb",
 	"klimin":     "climb",
 	"clomman":    "climb",
@@ -111,11 +162,8 @@ var commandKeywords = map[string]string{
 	"con":        "climb",
 	"maintain":   "maintain",
 	"maintained": "maintain",
-	"mainson":    "maintain",
-	"may":        "maintain",
 	"altitude":   "altitude",
 	"thousand":   "thousand",
-	"tizen":      "thousand",
 	"hundred":    "hundred",
 	"flight":     "flight",
 	"fight":      "flight",
@@ -123,21 +171,13 @@ var commandKeywords = map[string]string{
 	"expedite":   "expedite",
 
 	// Heading
-	"heading":  "heading",
-	"hitting":  "heading",
-	"nutter":   "heading",
-	"turn":     "turn",
-	"turner":   "turn",
-	"left":     "left",
-	"lefting":  "left",
-	"right":    "right",
-	"righting": "right",
-	"rate":     "right",
-	"wright":   "right",
-	"degrees":  "degrees",
-	"degree":   "degrees",
-	"fly":      "fly",
-	"present":  "present",
+	"heading": "heading",
+	"turn":    "turn",
+	"left":    "left",
+	"right":   "right",
+	"degrees": "degrees",
+	"fly":     "fly",
+	"present": "present",
 
 	// Speed
 	"speed":    "speed",
@@ -153,25 +193,22 @@ var commandKeywords = map[string]string{
 	"knots":    "knots",
 
 	// Navigation
-	"direct":    "direct",
-	"proceed":   "proceed",
-	"procedure": "proceed",
-	"cross":     "cross",
-	"depart":    "depart",
-	"hold":      "hold",
-	"via":       "via",
-	"by":        "via",
-	"sid":       "sid",
-	"cid":       "sid",
+	"direct":  "direct",
+	"proceed": "proceed",
+	"cross":   "cross",
+	"depart":  "depart",
+	"hold":    "hold",
+	"via":     "via",
+	"by":      "via",
+	"sid":     "sid",
+	"cid":     "sid",
 
 	// Hold-related
 	"radial":    "radial",
 	"bearing":   "bearing",
 	"inbound":   "inbound",
 	"legs":      "legs",
-	"leg":       "legs",
 	"minute":    "minute",
-	"minutes":   "minute",
 	"turns":     "turns",
 	"published": "published",
 
@@ -191,31 +228,16 @@ var commandKeywords = map[string]string{
 	"vectors":   "vectors",
 	"approach":  "approach",
 	"cancel":    "cancel",
-	"council":   "cancel",
 	"localizer": "localizer",
-	"localize":  "localizer",
-	"localiser": "localizer",
-	"glazier":   "localizer",
-	"glaser":    "localizer",
-	"gliser":    "localizer",
-	"laser":     "localizer",
 	"intercept": "intercept",
 	"nusselt":   "intercept",
 	"clearance": "clearance",
 	"visual":    "visual",
 	"ils":       "ils",
-	"ios":       "ils",
-	"outlast":   "ils",
-	"eyeless":   "ils",
-	"dalas":     "ils",
 	"dallas":    "ils",
-	"dailies":   "ils",
-	"ls":        "ils",
 	"alice":     "ils",
 	"als":       "ils",
 	"rnav":      "rnav",
-	"rnf":       "rnav",
-	"rf":        "rnav",
 	"vor":       "vor",
 	"runway":    "runway",
 
@@ -228,10 +250,6 @@ var commandKeywords = map[string]string{
 
 	// Handoff
 	"contact":   "contact",
-	"konnek":    "contact",
-	"konek":     "contact",
-	"kannak":    "contact",
-	"connector": "contact",
 	"tower":     "tower",
 	"tar":       "tower",
 	"terror":    "tower",
@@ -251,9 +269,8 @@ var commandKeywords = map[string]string{
 	"vfr":        "vfr",
 
 	// Disregard
-	"disregard":  "disregard",
-	"correction": "disregard",
-	"negative":   "negative",
+	"disregard": "disregard",
+	"negative":  "negative",
 
 	// Expected clearance (to be ignored in hold instructions)
 	"further": "further",
@@ -266,9 +283,7 @@ var commandKeywords = map[string]string{
 // These are common STT errors where words get merged together.
 var phraseExpansions = map[string][]string{
 	"flighting":        {"fly", "heading"},      // "fly heading" -> "flighting"
-	"commenting":       {"climb", "maintain"},   // "climb and maintain" -> "commenting"
 	"disundermaintain": {"descend", "maintain"}, // "descend and maintain" -> "disundermaintain"
-	"echowiski":        {"echo", "whiskey"},     // "echo whiskey" -> "echowiski" (NATO letters E W)
 }
 
 // multiTokenReplacements maps sequences of tokens (space-joined) to replacements.
@@ -321,6 +336,7 @@ var fillerWords = map[string]bool{
 	"heavy": true, "super": true, // Callsign suffixes to ignore
 	"continue": true, "your": true, // "continue your right turn" - modifiers, not commands
 	"to":   true,               // Often appears in garbled number sequences ("10 to 1 3 0" for "130")
+	"off":  true,               // STT noise in "turn off heading" → "turn heading"
 	"wing": true,               // STT error: "left-wing" for "left heading" becomes "left wing" after hyphen removal
 	"i":    true, "said": true, // Pilot interjections ("I said I maintained...")
 	// Note: "contact" and "radar" are NOT filler words - they're command keywords
@@ -397,6 +413,12 @@ func NormalizeTranscript(transcript string) []string {
 		// Try phrase expansions (single word → multiple words)
 		if expansion, ok := phraseExpansions[w]; ok {
 			result = append(result, expansion...)
+			continue
+		}
+
+		// Try to split merged NATO phonetic letters (e.g., "echowiski" → "echo whiskey")
+		if natoSplit := trySplitMergedNATO(w); natoSplit != nil {
+			result = append(result, natoSplit...)
 			continue
 		}
 
