@@ -175,6 +175,11 @@
                     "sid": "RST1",
                     "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
                   },
+				  "HUGIR.HEAVYJET": {
+                    "assigned_altitude": 7000,
+                    "sid": "SCHEP1",
+                    "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+                  },
                   "LSE.JET": {
                     "assigned_altitude": 7000,
                     "sid": "MSP9",
@@ -300,6 +305,11 @@
 				  "FOBUG.HEAVYJET": {
                     "assigned_altitude": 7000,
                     "sid": "RST1",
+                    "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
+                  },
+				  "HUGIR.HEAVYJET": {
+                    "assigned_altitude": 7000,
+                    "sid": "SCHEP1",
                     "waypoints": "KMSP-30L N044.52.07.272,W093.11.21.701/h121/tc"
                   }
 				},
@@ -469,11 +479,16 @@
 				  "JEDET.HEAVYJET": {
                     "assigned_altitude": 7000,
                     "sid": "ZMBRO7",
-                    "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h301/tc"
+                    "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h260/tc"
                   },
 				  "FOBUG.HEAVYJET": {
                     "assigned_altitude": 7000,
                     "sid": "RST1",
+                    "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h260/tc"
+                  },
+				  "HUGIR.HEAVYJET": {
+                    "assigned_altitude": 7000,
+                    "sid": "SCHEP1",
                     "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h301/tc"
                   },
 				  "LSE.JET": {
@@ -596,12 +611,17 @@
 				  "JEDET.HEAVYJET": {
                     "assigned_altitude": 7000,
                     "sid": "ZMBRO7",
-                    "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h301/tc"
+                    "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h230/tc"
                   },
 				  "FOBUG.HEAVYJET": {
                     "assigned_altitude": 7000,
                     "sid": "RST1",
-                    "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h301/tc"
+                    "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h230/tc"
+                  },
+				  "HUGIR.HEAVYJET": {
+                    "assigned_altitude": 7000,
+                    "sid": "SCHEP1",
+                    "waypoints": "KMSP-12R N044.53.34.489,W093.14.44.729/h230/tc"
                   }
 				},
                 "30R": {
@@ -745,17 +765,17 @@
 				  "LSE.JET": {
                     "assigned_altitude": 7000,
                     "sid": "MSP9",
-                    "waypoints": "KMSP-35 N044.51.36.057,W093.13.15.602/h120/tc"
+                    "waypoints": "KMSP-35 N044.51.29.671,W093.13.37.630/h140/tc"
                   },
 				  "LSE.TURBOPROP": {
                     "assigned_altitude": 5000,
                     "sid": "MSP9",
-                    "waypoints": "KMSP-35 N044.51.36.057,W093.13.15.602/h120/tc"
+                    "waypoints": "KMSP-35 N044.51.29.671,W093.13.37.630/h140/tc"
                   },
 				  "LSE.PISTON": {
                     "assigned_altitude": 4000,
                     "sid": "MSP9",
-                    "waypoints": "KMSP-35 N044.51.36.057,W093.13.15.602/h120/tc"
+                    "waypoints": "KMSP-35 N044.51.29.671,W093.13.37.630/h140/tc"
                   },
 				  "FGT.JET": {
                     "assigned_altitude": 7000,
@@ -1776,13 +1796,24 @@
 				{
                   "airlines": [
                       {
-						  "types": ["B763"],
+						  "types": ["A333"],
                           "icao": "DAL"
                       }				  
                   ],
                   "destination": "PHNL",
                   "exit": "ZOGAP.HEAVYJET",
                   "route": "ZOGAP PAGOZ SMERF KP09A DIK J70 LWT MSO PDT ONP C1419 HEMLO A332 AUNTI R463 APACK MAGGI3"
+                },
+				{
+                  "airlines": [
+                      {
+						  "types": ["A333"],
+                          "icao": "DAL"
+                      }				  
+                  ],
+                  "destination": "PHNL",
+                  "exit": "HUGIR.HEAVYJET",
+                  "route": "HUGIR MCONL ARREX SCHEP RXANN TEYOU LLUKY MBW OCS TCH KU63K MDOWS FMG PYE BEBOP R464 BITTA MAGGI3"
                 },
 				{
                   "airlines": [
@@ -2725,7 +2756,8 @@
 				{
                   "airlines": [
                       {
-                          "icao": "ASA"
+                          "icao": "ASA",
+						  "fleet": "short"
                       },
                       {
                           "icao": "DAL",
@@ -6290,7 +6322,7 @@
 				}
 				},
 				"star": "BLUEM4",
-				"initial_controller": "MSP_09_CTR",
+				"initial_controller": "MSP_07_CTR",
 				"initial_altitude": 20000,
 				"initial_speed": 280,
 				"expect_approach": "I30L",
@@ -6528,7 +6560,7 @@
 				}
 				},
 				"star": "BLUEM4",
-				"initial_controller": "MSP_09_CTR",
+				"initial_controller": "MSP_07_CTR",
 				"initial_altitude": 20000,
 				"initial_speed": 280,
 				"expect_approach": "I12R",
@@ -6766,7 +6798,7 @@
 				}
 				},
 				"star": "BLUEM4",
-				"initial_controller": "MSP_09_CTR",
+				"initial_controller": "MSP_07_CTR",
 				"initial_altitude": 20000,
 				"initial_speed": 280,
 				"expect_approach": "I35",
@@ -7004,7 +7036,7 @@
 				}
 				},
 				"star": "KKILR3",
-				"initial_controller": "MSP_05_CTR",
+				"initial_controller": "MSP_06_CTR",
 				"initial_altitude": 21000,
 				"initial_speed": 280,
 				"expect_approach": "I30L",
@@ -7258,7 +7290,7 @@
 				}
 				},
 				"star": "KKILR3",
-				"initial_controller": "MSP_05_CTR",
+				"initial_controller": "MSP_06_CTR",
 				"initial_altitude": 21000,
 				"initial_speed": 280,
 				"expect_approach": "I12R",
@@ -7512,7 +7544,7 @@
 				}
 				},
 				"star": "KKILR3",
-				"initial_controller": "MSP_05_CTR",
+				"initial_controller": "MSP_06_CTR",
 				"initial_altitude": 21000,
 				"initial_speed": 280,
 				"expect_approach": "I35",
@@ -7766,7 +7798,7 @@
 				}
 				},
 				"star": "MUSCL3",
-				"initial_controller": "MSP_05_CTR",
+				"initial_controller": "MSP_06_CTR",
 				"initial_altitude": 21000,
 				"initial_speed": 280,
 				"expect_approach": "I30R",
@@ -8016,7 +8048,7 @@
 				}
 				},
 				"star": "MUSCL3",
-				"initial_controller": "MSP_05_CTR",
+				"initial_controller": "MSP_06_CTR",
 				"initial_altitude": 21000,
 				"initial_speed": 280,
 				"expect_approach": "I12L",
@@ -8266,7 +8298,7 @@
 				}
 				},
 				"star": "MUSCL3",
-				"initial_controller": "MSP_05_CTR",
+				"initial_controller": "MSP_06_CTR",
 				"initial_altitude": 21000,
 				"initial_speed": 280,
 				"expect_approach": "I35",
@@ -8516,7 +8548,7 @@
 				}
 				},
 				"star": "NITZR3",
-				"initial_controller": "MSP_09_CTR",
+				"initial_controller": "MSP_07_CTR",
 				"initial_altitude": 20000,
 				"initial_speed": 280,
 				"expect_approach": "I30L",
@@ -8662,7 +8694,7 @@
 				}
 				},
 				"star": "NITZR3",
-				"initial_controller": "MSP_09_CTR",
+				"initial_controller": "MSP_07_CTR",
 				"initial_altitude": 20000,
 				"initial_speed": 280,
 				"expect_approach": "I12R",
@@ -8808,7 +8840,7 @@
 				}
 				},
 				"star": "NITZR3",
-				"initial_controller": "MSP_09_CTR",
+				"initial_controller": "MSP_07_CTR",
 				"initial_altitude": 20000,
 				"initial_speed": 280,
 				"expect_approach": "I35",
@@ -8954,7 +8986,7 @@
 				}
 				},
 				"star": "TORGY3",
-				"initial_controller": "MSP_10_CTR",
+				"initial_controller": "MSP_09_CTR",
 				"initial_altitude": 16000,
 				"initial_speed": 280,
 				"expect_approach": "I30L",
@@ -9118,7 +9150,7 @@
 					},
 					{
 					"icao": "DAL",
-					"types": ["B763"],
+					"types": ["A333"],
 					"airport": "PHNL"
 					},
 					{
@@ -9194,6 +9226,7 @@
 					},
 					{
 					"icao": "ASA",
+					"fleet": "short",
 					"airport": "KSEA"
 					},
 					{
@@ -9256,7 +9289,7 @@
 				}
 				},
 				"star": "TORGY3",
-				"initial_controller": "MSP_10_CTR",
+				"initial_controller": "MSP_09_CTR",
 				"initial_altitude": 16000,
 				"initial_speed": 280,
 				"expect_approach": "I12R",
@@ -9264,10 +9297,12 @@
 				"KMSP": [
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KABQ"
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KCOS"
 					},
 					{
@@ -9276,10 +9311,12 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KDEN"
 					},
 					{
 					"icao": "UAL",
+					"fleet": "short",
 					"airport": "KDEN"
 					},
 					{
@@ -9296,6 +9333,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KLAS"
 					},
 					{
@@ -9308,6 +9346,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KLAX"
 					},
 					{
@@ -9320,10 +9359,12 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KSNA"
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KPHX"
 					},
 					{
@@ -9332,6 +9373,7 @@
 					},
 					{
 					"icao": "AAL",
+					"fleet": "short",
 					"airport": "KPHX"
 					},
 					{
@@ -9340,6 +9382,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KSLC"
 					},
 					{
@@ -9352,6 +9395,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KSAN"
 					},
 					{
@@ -9360,6 +9404,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KFSD"
 					},
 					{
@@ -9376,10 +9421,12 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KBIL"
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KBOI"
 					},
 					{
@@ -9388,6 +9435,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KBZN"
 					},
 					{
@@ -9396,6 +9444,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KGPI"
 					},
 					{
@@ -9404,15 +9453,17 @@
 					},
 					{
 					"icao": "DAL",
-					"types": ["B763"],
+					"types": ["A333"],
 					"airport": "PHNL"
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KJAC"
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KMSO"
 					},
 					{
@@ -9421,6 +9472,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KPDX"
 					},
 					{
@@ -9445,6 +9497,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KRNO"
 					},
 					{
@@ -9453,10 +9506,12 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KSMF"
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KSFO"
 					},
 					{
@@ -9469,14 +9524,17 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KSJC"
 					},
 					{
 					"icao": "ASA",
+					"fleet": "short",
 					"airport": "KSEA"
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KSEA"
 					},
 					{
@@ -9494,6 +9552,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KGEG"
 					},
 					{
@@ -9502,10 +9561,12 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KPSC"
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "CYVR"
 					},
 					{
@@ -9531,7 +9592,7 @@
 				}
 				},
 				"star": "TORGY3",
-				"initial_controller": "MSP_10_CTR",
+				"initial_controller": "MSP_09_CTR",
 				"initial_altitude": 16000,
 				"initial_speed": 280,
 				"expect_approach": "I35",
@@ -9539,10 +9600,12 @@
 				"KMSP": [
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KABQ"
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KCOS"
 					},
 					{
@@ -9551,10 +9614,12 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KDEN"
 					},
 					{
 					"icao": "UAL",
+					"fleet": "short",
 					"airport": "KDEN"
 					},
 					{
@@ -9571,6 +9636,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KLAS"
 					},
 					{
@@ -9583,6 +9649,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KLAX"
 					},
 					{
@@ -9595,10 +9662,12 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KSNA"
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KPHX"
 					},
 					{
@@ -9607,6 +9676,7 @@
 					},
 					{
 					"icao": "AAL",
+					"fleet": "short",
 					"airport": "KPHX"
 					},
 					{
@@ -9615,6 +9685,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KSLC"
 					},
 					{
@@ -9627,6 +9698,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KSAN"
 					},
 					{
@@ -9635,6 +9707,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KFSD"
 					},
 					{
@@ -9651,10 +9724,12 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KBIL"
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KBOI"
 					},
 					{
@@ -9663,6 +9738,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KBZN"
 					},
 					{
@@ -9671,6 +9747,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KGPI"
 					},
 					{
@@ -9679,15 +9756,17 @@
 					},
 					{
 					"icao": "DAL",
-					"types": ["B763"],
+					"types": ["A333"],
 					"airport": "PHNL"
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KJAC"
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KMSO"
 					},
 					{
@@ -9696,6 +9775,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KPDX"
 					},
 					{
@@ -9720,6 +9800,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KRNO"
 					},
 					{
@@ -9728,10 +9809,12 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KSMF"
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KSFO"
 					},
 					{
@@ -9744,14 +9827,17 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KSJC"
 					},
 					{
 					"icao": "ASA",
+					"fleet": "short",
 					"airport": "KSEA"
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KSEA"
 					},
 					{
@@ -9769,6 +9855,7 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KGEG"
 					},
 					{
@@ -9777,10 +9864,12 @@
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "KPSC"
 					},
 					{
 					"icao": "DAL",
+					"fleet": "short",
 					"airport": "CYVR"
 					},
 					{
@@ -10013,7 +10102,7 @@
 				"waypoints": "N044.16.44.122,W092.04.47.484/ho KMSP",
 				"route": "DCT KMSP",
 				"initial_controller": "MSP_05_CTR",
-				"initial_altitude": 6000,
+				"initial_altitude": 4000,
 				"initial_speed": 250,
 				"airlines": {
 				"KMSP": [
@@ -10051,26 +10140,40 @@
       "control_positions": {
         "MSP_05_CTR": {
           "frequency": 125300,
-          "radio_name": "Minnieapolis Center",
+          "radio_name": "Minneapolis Center",
 		  "facility_id": "C",
           "sector_id": "C05",
           "eram_facility": true
         },
+		"MSP_06_CTR": {
+          "frequency": 134300,
+          "radio_name": "Minneapolis Center",
+		  "facility_id": "C",
+          "sector_id": "C06",
+          "eram_facility": true
+        },
+		"MSP_07_CTR": {
+          "frequency": 132350,
+          "radio_name": "Minneapolis Center",
+		  "facility_id": "C",
+          "sector_id": "C07",
+          "eram_facility": true
+        },
         "MSP_09_CTR": {
           "frequency": 125500,
-          "radio_name": "Minnieapolis Center",
+          "radio_name": "Minneapolis Center",
           "facility_id": "C",
           "sector_id": "C09",
           "eram_facility": true
         },
         "MSP_10_CTR": {
           "frequency": 121050,
-          "radio_name": "Minnieapolis Center",
+          "radio_name": "Minneapolis Center",
           "facility_id": "C",
           "sector_id": "C10",
           "eram_facility": true
         },
-		"RST_A_APP": {
+		"RST_APP": {
           "frequency": 119800,
           "radio_name": "Rochester Approach",
 		  "facility_id": "1",
@@ -10078,93 +10181,93 @@
         },
 		"MSP_D_DEP": {
           "frequency": 125750,
-          "radio_name": "Minnieapolis Departure",
+          "radio_name": "Minneapolis Departure",
           "sector_id": "1D"
         },
         "MSP_R_DEP": {
           "frequency": 124700,
-          "radio_name": "Minnieapolis Departure",
+          "radio_name": "Minneapolis Departure",
           "sector_id": "1R"
         },
 		"MSP_L_DEP": {
           "frequency": 132975,
-          "radio_name": "Minnieapolis Departure",
+          "radio_name": "Minneapolis Departure",
           "sector_id": "1L"
         },
         "MSP_I_APP": {
           "frequency": 126350,
-          "radio_name": "Minnieapolis Approach",
+          "radio_name": "Minneapolis Approach",
           "sector_id": "1I"
         },
         "MSP_H_APP": {
           "frequency": 135475,
-          "radio_name": "Minnieapolis Approach",
+          "radio_name": "Minneapolis Approach",
           "sector_id": "1H"
         },
         "MSP_N_APP": {
           "frequency": 119300,
-          "radio_name": "Minnieapolis Approach",
+          "radio_name": "Minneapolis Approach",
           "sector_id": "1N"
         },
         "MSP_S_APP": {
           "frequency": 126350,
-          "radio_name": "Minnieapolis Approach",
+          "radio_name": "Minneapolis Approach",
           "sector_id": "1S"
         },
 		"MSP_J_APP": {
           "frequency": 118725,
-          "radio_name": "Minnieapolis Approach",
+          "radio_name": "Minneapolis Approach",
           "sector_id": "1J"
         },
         "MSP_E_APP": {
           "frequency": 126350,
-          "radio_name": "Minnieapolis Approach",
+          "radio_name": "Minneapolis Approach",
           "sector_id": "1E"
         },
 		"MSP_G_APP": {
           "frequency": 121200,
-          "radio_name": "Minnieapolis Approach",
+          "radio_name": "Minneapolis Approach",
           "sector_id": "1G"
         },
 		"MSP_K_APP": {
           "frequency": 126500,
-          "radio_name": "Minnieapolis Approach",
+          "radio_name": "Minneapolis Approach",
           "sector_id": "1K"
         },
         "MSP_N_TWR": {
           "frequency": 123950,
-          "radio_name": "Minnieapolis Tower",
-          "sector_id": "TN"
+          "radio_name": "Minneapolis Tower",
+          "sector_id": "1T"
         },
         "MSP_S_TWR": {
           "frequency": 126700,
-          "radio_name": "Minnieapolis Tower",
-          "sector_id": "TS"
+          "radio_name": "Minneapolis Tower",
+          "sector_id": "1V"
         },
         "MSP_W_TWR": {
           "frequency": 123675,
-          "radio_name": "Minnieapolis Tower",
-          "sector_id": "TW"
+          "radio_name": "Minneapolis Tower",
+          "sector_id": "1Y"
         },
 		"FCM_TWR": {
           "frequency": 119150,
           "radio_name": "Flying Cloud Tower",
-          "sector_id": "FT"
+          "sector_id": "2F"
         },
 		"STP_TWR": {
           "frequency": 119100,
           "radio_name": "St. Paul Tower",
-          "sector_id": "ST"
+          "sector_id": "2P"
         },
 		"ANE_TWR": {
           "frequency": 132400,
           "radio_name": "Anoka Tower",
-          "sector_id": "AT"
+          "sector_id": "2O"
         },
 		"MIC_TWR": {
           "frequency": 120700,
           "radio_name": "Crystal Tower",
-          "sector_id": "CT"
+          "sector_id": "2M"
         }
       },
       "fixes": {
@@ -10507,9 +10610,11 @@
           },
           "controllers": [
             "MSP_05_CTR",
+			"MSP_06_CTR",
+			"MSP_07_CTR",
             "MSP_09_CTR",
 			"MSP_10_CTR",
-			"RST_A_APP",
+			"RST_APP",
             "MSP_N_TWR",
             "MSP_S_TWR",
 			"FCM_TWR",
@@ -10585,9 +10690,11 @@
           },
           "controllers": [
             "MSP_05_CTR",
+			"MSP_06_CTR",
+			"MSP_07_CTR",
             "MSP_09_CTR",
 			"MSP_10_CTR",
-			"RST_A_APP",
+			"RST_APP",
             "MSP_N_TWR",
             "MSP_S_TWR",
 			"FCM_TWR",
@@ -10663,9 +10770,11 @@
           },
           "controllers": [
             "MSP_05_CTR",
+			"MSP_06_CTR",
+			"MSP_07_CTR",
             "MSP_09_CTR",
 			"MSP_10_CTR",
-			"RST_A_APP",
+			"RST_APP",
             "MSP_N_TWR",
             "MSP_S_TWR",
 			"FCM_TWR",
@@ -10746,9 +10855,11 @@
           },
           "controllers": [
             "MSP_05_CTR",
+			"MSP_06_CTR",
+			"MSP_07_CTR",
             "MSP_09_CTR",
 			"MSP_10_CTR",
-			"RST_A_APP",
+			"RST_APP",
             "MSP_N_TWR",
             "MSP_S_TWR",
 			"FCM_TWR",
@@ -10825,9 +10936,11 @@
           },
           "controllers": [
             "MSP_05_CTR",
+			"MSP_06_CTR",
+			"MSP_07_CTR",
             "MSP_09_CTR",
 			"MSP_10_CTR",
-			"RST_A_APP",
+			"RST_APP",
             "MSP_N_TWR",
             "MSP_S_TWR",
 			"FCM_TWR",
@@ -10907,9 +11020,11 @@
           },
           "controllers": [
             "MSP_05_CTR",
+			"MSP_06_CTR",
+			"MSP_07_CTR",
             "MSP_09_CTR",
 			"MSP_10_CTR",
-			"RST_A_APP",
+			"RST_APP",
             "MSP_N_TWR",
             "MSP_S_TWR",
 			"FCM_TWR",
@@ -11069,15 +11184,31 @@
         "center": "44.890395, -93.230667",
         "airspace_awareness": [
           {
-            "fixes": ["SNINE", "LSE", "STILS", "TAXEE", "JEDET"],
+            "fixes": ["SNINE", "LSE", "STILS", "TAXEE", "JEDET", "EAU"],
+			"altitude_range": [0, 7000],
             "receiving_controller": "MSP_05_CTR"
           },
+		  {
+            "fixes": ["LSE", "TAXEE", "JEDET"],
+			"altitude_range": [8000, 99999],
+            "receiving_controller": "MSP_05_CTR"
+          },
+		  {
+            "fixes": ["SNINE", "STILS", "EAU"],
+			"altitude_range": [8000, 99999],
+            "receiving_controller": "MSP_06_CTR"
+          },
+		  {
+            "fixes": ["FGT", "FOBUG"],
+			"altitude_range": [10000, 99999],
+            "receiving_controller": "MSP_07_CTR"
+          },
           {
-            "fixes": ["FGT", "FOBUG", "JURNY", "HUGIR"],
+            "fixes": ["ABR", "JURNY", "HUGIR", "TONCA", "ZOGAP"],
             "receiving_controller": "MSP_09_CTR"
           },
           {
-            "fixes": ["ABR", "BRNRD", "DLH", "GEP", "HRBEK", "ZOGAP", "TONCA"],
+            "fixes": ["BRNRD", "DLH", "GEP", "HRBEK"],
             "receiving_controller": "MSP_10_CTR"
           }
       ],
@@ -11148,6 +11279,7 @@
           "HUGIR.PISTON": "ONL",
 		  "HUGIR.TURBOPROP": "ONL",
 		  "HUGIR.JET": "ONL",
+		  "HUGIR.HEAVYJET": "ONL",
           "JURNY.PISTON": "FOD",
 		  "JURNY.TURBOPROP": "FOD",
 		  "JURNY.JET": "FOD",
