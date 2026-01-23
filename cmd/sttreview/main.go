@@ -209,10 +209,13 @@ func (state *AppState) updateSearchFilter() {
 
 	for i := state.currentIndex; i < len(state.entries); i++ {
 		entry := state.entries[i]
-		// Match against transcript or callsign (case-insensitive)
+		// Match against transcript, callsign, or command (case-insensitive)
 		transcriptLower := strings.ToLower(entry.Transcript)
 		callsignLower := strings.ToLower(entry.Callsign)
-		if strings.Contains(transcriptLower, searchLower) || strings.Contains(callsignLower, searchLower) {
+		commandLower := strings.ToLower(entry.Command)
+		if strings.Contains(transcriptLower, searchLower) ||
+			strings.Contains(callsignLower, searchLower) ||
+			strings.Contains(commandLower, searchLower) {
 			state.filteredIdx = append(state.filteredIdx, i)
 		}
 	}
