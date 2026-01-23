@@ -1913,11 +1913,6 @@ func (s *Sim) readbackCallsignSuffix(callsign av.ADSBCallsign, tcw TCW) string {
 		}
 	}
 
-	// For emergency aircraft, 50% of the time add "emergency aircraft" after heavy/super.
-	if ac.EmergencyState != nil && s.Rand.Bool() {
-		heavySuper += " emergency aircraft"
-	}
-
 	// Use GACallsignArg for GA aircraft when addressed with type+trailing3 form
 	var csArg any
 	if strings.HasPrefix(string(callsign), "N") && ac.LastAddressingForm == AddressingFormTypeTrailing3 {

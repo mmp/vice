@@ -835,13 +835,13 @@ func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 			}
 		}
 
-		// For emergency aircraft, 50% of the time add "emergency aircraft" after heavy/super.
-		if ac.EmergencyState != nil && s.Rand.Bool() {
-			heavySuper += " emergency aircraft"
-		}
-
 		switch e.RadioTransmissionType {
 		case av.RadioTransmissionContact:
+			// For emergency aircraft, 50% of the time add "emergency aircraft" after heavy/super.
+			// Only on initial contact, not subsequent transmissions.
+			if ac.EmergencyState != nil && s.Rand.Bool() {
+				heavySuper += " emergency aircraft"
+			}
 			csArg := av.CallsignArg{
 				Callsign:           ac.ADSBCallsign,
 				IsEmergency:        ac.EmergencyState != nil,
