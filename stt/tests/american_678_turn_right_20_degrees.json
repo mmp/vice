@@ -1,0 +1,383 @@
+{
+  "time": "2026-01-23T03:29:06.093515364Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "American 678, turn right 20 degrees.",
+  "whisper_duration_ms": 184.136,
+  "audio_duration_ms": 2944,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 Ti (8024MB)",
+  "callsign": "AAL678",
+  "command": "T20R",
+  "stt_aircraft": {
+    "AAL385": {
+      "Callsign": "AAL385",
+      "AircraftType": "B788",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 3987,
+      "State": "on approach",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "AAL4059": {
+      "Callsign": "AAL4059",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 5621,
+      "State": "on approach",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "AAL54": {
+      "Callsign": "AAL54",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Cstio": "CSTIO",
+        "Dahla": "DAHLA",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 9130,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "AAL678": {
+      "Callsign": "AAL678",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Acere": "ACERE",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Schar": "SCHAR"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0
+    },
+    "American 385 heavy": {
+      "Callsign": "AAL385",
+      "AircraftType": "B788",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 3987,
+      "State": "on approach",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "American 4059": {
+      "Callsign": "AAL4059",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 5621,
+      "State": "on approach",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "American 54 heavy": {
+      "Callsign": "AAL54",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Cstio": "CSTIO",
+        "Dahla": "DAHLA",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 9130,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "American 678": {
+      "Callsign": "AAL678",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Acere": "ACERE",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Schar": "SCHAR"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0
+    },
+    "JBU8580": {
+      "Callsign": "JBU8580",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Acere": "ACERE",
+        "Arrtt": "ARRTT",
+        "Asppn": "ASPPN",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Pbjay": "PBJAY",
+        "Schar": "SCHAR"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 15076,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0
+    },
+    "JetBlue 8580": {
+      "Callsign": "JBU8580",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Acere": "ACERE",
+        "Arrtt": "ARRTT",
+        "Asppn": "ASPPN",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Pbjay": "PBJAY",
+        "Schar": "SCHAR"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 15076,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0
+    },
+    "KLM 36W heavy": {
+      "Callsign": "KLM36W",
+      "AircraftType": "A333",
+      "Fixes": {},
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "FOLZZ3",
+      "STAR": "",
+      "Altitude": 3371,
+      "State": "departure",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "KLM36W": {
+      "Callsign": "KLM36W",
+      "AircraftType": "A333",
+      "Fixes": {},
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "FOLZZ3",
+      "STAR": "",
+      "Altitude": 3371,
+      "State": "departure",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "NKS8918": {
+      "Callsign": "NKS8918",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Morea": "MOREA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 11811,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "Spirit Wings 8918": {
+      "Callsign": "NKS8918",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Morea": "MOREA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 11811,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"American 678, turn right 20 degrees.\"",
+    "[local-stt] normalized words: [american 678 turn right 20 degrees]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"american\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"678\" Type=1 Value=678",
+    "[local-stt]   token[2]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"20\" Type=1 Value=20",
+    "[local-stt]   token[5]: Text=\"degrees\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 6 tokens, 14 aircraft",
+    "[local-stt]   exact match: \"american 678\" -\u003e \"AAL678\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"AAL678\" SpokenKey=\"American 678\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=6000 Fixes=6 Approaches=3 AssignedApproach=\"ILS Runway 9\"",
+    "[local-stt]   fix: \"Iness\" -\u003e \"INESS\"",
+    "[local-stt]   fix: \"Schar\" -\u003e \"SCHAR\"",
+    "[local-stt]   fix: \"Acere\" -\u003e \"ACERE\"",
+    "[local-stt]   fix: \"Llegg\" -\u003e \"LLEGG\"",
+    "[local-stt]   fix: \"Miami International Airport\" -\u003e \"KMIA\"",
+    "[local-stt]   fix: \"Gritt\" -\u003e \"GRITT\"",
+    "[local-stt]   approach: \"I L S runway one two\" -\u003e \"I12\"",
+    "[local-stt]   approach: \"r-nav runway eight left\" -\u003e \"R8L\"",
+    "[local-stt]   approach: \"I L S runway niner\" -\u003e \"I9\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"20\" Type=1 Value=20",
+    "[local-stt]   token[3]: Text=\"degrees\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"turn\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   tryMatchTemplate \"turn_right_only\": cmd=\"R020\" argStr=\"020\" consumed=3",
+    "[local-stt]   tryMatchTemplate \"turn_degrees_left\": cmd=\"T20R\" argStr=\"20R\" consumed=4",
+    "[local-stt]   matched command: \"T20R\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[T20R] (avgConf=1.00)",
+    "[local-stt] parsed commands: [T20R] (conf=1.00)",
+    "[local-stt] validated commands: [T20R] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"AAL678 T20R\" (conf=1.00, time=0s) ==="
+  ]
+}

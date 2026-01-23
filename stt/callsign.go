@@ -361,8 +361,15 @@ func scoreFlightNumberMatch(tokens []Token, expectedNum string) (float64, int) {
 
 	// Fuzzy match on the number
 	jwScore := JaroWinkler(built, expectedNum)
-	if jwScore > 0.7 {
+	if jwScore >= 0.7 {
 		return jwScore, consumed
+	}
+
+	// For 2-digit numbers, if the trailing digit matches (like "91" vs "81"),
+	// give a reasonable score since ATC often uses trailing digits to disambiguate.
+	// STT commonly confuses similar-sounding digits (e.g., "eight" vs "nine").
+	if len(built) == 2 && len(expectedNum) == 2 && built[1] == expectedNum[1] {
+		return 0.7, consumed
 	}
 
 	return 0, 0

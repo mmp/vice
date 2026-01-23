@@ -1612,7 +1612,7 @@ func extractApproachType(tokens []Token) (string, int) {
 
 	// Single-word approach types
 	switch text {
-	case "ils", "alice", "dallas", "als", "atlas": // STT errors for "ILS"
+	case "ils", "alice", "dallas", "als", "atlas", "dialogues": // STT errors for "ILS"
 		return "ils", 1
 	case "rnav":
 		return "rnav", 1
@@ -2272,12 +2272,21 @@ func shouldGenerateSayAgain(tokens []Token, consumed int) bool {
 
 	// Check for informational/mode words that complete certain phrases
 	// e.g., "squawk VFR" - VFR is not a garbled squawk code, it's the mode
+	// e.g., "vectors for sequence" - sequence is not a garbled approach, it's spacing
 	infoWords := map[string]bool{
 		"vfr": true, "ifr": true, "frequency": true, "change": true,
 		"approved": true, "terminated": true, "services": true,
+		"sequence": true, "sequencing": true, "spacing": true,
 	}
 	if infoWords[nextText] {
 		return false
+	}
+	// Check "for <info_word>" pattern (e.g., "vectors for sequence")
+	if nextText == "for" && consumed+1 < len(tokens) {
+		afterFor := strings.ToLower(tokens[consumed+1].Text)
+		if infoWords[afterFor] {
+			return false
+		}
 	}
 
 	// Check for goodbye/acknowledgment phrases that often end transmissions
