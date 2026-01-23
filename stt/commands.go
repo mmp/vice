@@ -299,6 +299,14 @@ var commandTemplates = []CommandTemplate{
 		Priority:  10,
 	},
 	{
+		Name:      "cancel_speed_restriction",
+		Keywords:  [][]string{{"cancel"}, {"speed"}},
+		ArgType:   ArgNone,
+		OutputFmt: "S",
+		Priority:  10,
+		SkipWords: []string{"restrictions", "restriction"},
+	},
+	{
 		Name:      "final_approach_speed",
 		Keywords:  [][]string{{"reduce"}, {"final"}, {"approach"}, {"speed"}},
 		ArgType:   ArgNone,
@@ -410,10 +418,11 @@ var commandTemplates = []CommandTemplate{
 	},
 	{
 		Name:      "intercept_localizer",
-		Keywords:  [][]string{{"intercept", "join"}, {"localizer", "the"}},
+		Keywords:  [][]string{{"intercept", "join", "set"}, {"localizer"}},
 		ArgType:   ArgNone,
 		OutputFmt: "I",
 		Priority:  10,
+		SkipWords: []string{"work", "going", "gonna", "to", "low", "load", "look"}, // STT garbage before "localizer"
 	},
 
 	// === TRANSPONDER COMMANDS ===
@@ -1060,6 +1069,17 @@ func extractAltitude(tokens []Token) (int, int) {
 			return t.Value, i + 1
 		}
 		if t.Type == TokenNumber {
+			// Check if there's a better altitude right after this one
+			// e.g., "10 11000" where "10" is garbled and "11000" is the real altitude
+			if i+1 < len(tokens) && tokens[i+1].Type == TokenNumber {
+				next := tokens[i+1]
+				// If current is small (< 100) and next is raw feet, prefer next
+				if t.Value < 100 && next.Value >= 1000 && next.Value <= 60000 && next.Value%100 == 0 {
+					logLocalStt("  extractAltitude: skipping garbled %d, using %d", t.Value, next.Value/100)
+					return next.Value / 100, i + 2
+				}
+			}
+
 			// Heuristic: if it looks like altitude encoding (2-3 digits, reasonable value)
 			// But exclude the speed range (100-400) since those are ambiguous and more likely
 			// to be speeds. Real altitudes in that range are typically spoken as "one eight
@@ -1095,8 +1115,40 @@ func extractHeading(tokens []Token) (int, int) {
 		if i > 3 {
 			break
 		}
+		// Handle 4-digit values where first 3 digits form valid heading (e.g., 2801 → 280)
+		// STT sometimes appends trailing garbage to headings
+		if t.Type == TokenNumber && t.Value > 360 && t.Value < 10000 {
+			// Try dropping the last digit
+			hdg := t.Value / 10
+			if hdg >= 1 && hdg <= 360 {
+				logLocalStt("  extractHeading: corrected %d -> %d (dropped trailing digit)", t.Value, hdg)
+				return hdg, i + 1
+			}
+		}
 		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 360 {
-			return t.Value, i + 1
+			hdg := t.Value
+
+			// Check for pattern: small_number + "to" + larger_number
+			// e.g., "10 to 130" where "10" is garbled and "130" is the real heading
+			// STT sometimes produces this when transcribing "one three zero"
+			if hdg < 100 && i+2 < len(tokens) {
+				nextText := strings.ToLower(tokens[i+1].Text)
+				if nextText == "to" && tokens[i+2].Type == TokenNumber {
+					largerHdg := tokens[i+2].Value
+					if largerHdg >= 100 && largerHdg <= 360 {
+						logLocalStt("  extractHeading: skipping garbled %d, using %d", hdg, largerHdg)
+						return largerHdg, i + 3
+					}
+				}
+			}
+
+			// ATC convention: single-digit headings (1-9) are spoken as "zero X"
+			// meaning heading 0X0 (e.g., "zero eight" = 080, not 008).
+			// Since parseDigitSequence merges "0 8" into 8, we correct here.
+			if hdg < 10 {
+				hdg *= 10
+			}
+			return hdg, i + 1
 		}
 	}
 
@@ -1125,6 +1177,23 @@ func extractSpeed(tokens []Token) (int, int) {
 				corrected := t.Value / 10
 				if corrected >= 100 && corrected <= 400 {
 					logLocalStt("  extractSpeed: corrected %d -> %d (extra digit)", t.Value, corrected)
+					return corrected, i + 1
+				}
+			}
+			// Handle 2-digit speeds with missing leading digit (e.g., "30" → 230, "70" → 170)
+			// STT sometimes drops the leading digit for speeds spoken as "two three zero"
+			// Try prepending "2" first (typical approach speeds are 200-250), then "1"
+			if t.Value >= 10 && t.Value < 100 {
+				// Try prepending "2" first - typical for "increase speed to X"
+				corrected := 200 + t.Value
+				if corrected >= 200 && corrected <= 290 {
+					logLocalStt("  extractSpeed: corrected %d -> %d (missing leading 2)", t.Value, corrected)
+					return corrected, i + 1
+				}
+				// Try prepending "1" - typical for slower speeds
+				corrected = 100 + t.Value
+				if corrected >= 140 && corrected <= 190 {
+					logLocalStt("  extractSpeed: corrected %d -> %d (missing leading 1)", t.Value, corrected)
 					return corrected, i + 1
 				}
 			}
@@ -1175,14 +1244,14 @@ func extractFix(tokens []Token, fixes map[string]string) (string, float64, int) 
 				continue
 			}
 			score := JaroWinkler(phrase, spokenName)
-			if score >= 0.85 && score > bestScore {
+			if score >= 0.78 && score > bestScore {
 				bestFix = fixID
 				bestScore = score
 				bestLength = length
 			}
-			if PhoneticMatch(phrase, spokenName) && bestScore < 0.85 {
+			if PhoneticMatch(phrase, spokenName) && bestScore < 0.80 {
 				bestFix = fixID
-				bestScore = 0.85
+				bestScore = 0.80
 				bestLength = length
 			}
 			// Try vowel-normalized comparison for syllable contractions
@@ -1191,9 +1260,20 @@ func extractFix(tokens []Token, fixes map[string]string) (string, float64, int) 
 			normSpoken := normalizeVowels(spokenName)
 			if normPhrase != phrase || normSpoken != spokenName {
 				normScore := JaroWinkler(normPhrase, normSpoken)
-				if normScore >= 0.85 && normScore*0.95 > bestScore {
+				if normScore >= 0.78 && normScore*0.95 > bestScore {
 					bestFix = fixID
 					bestScore = normScore * 0.95 // Slight penalty for needing normalization
+					bestLength = length
+				}
+			}
+			// Try consonant-only matching for fix names with vowel STT errors
+			// (e.g., "zizou" should match "zzooo" since both have consonants "zz")
+			if len(phrase) >= 3 && len(spokenName) >= 3 {
+				phraseCons := extractConsonants(phrase)
+				spokenCons := extractConsonants(spokenName)
+				if len(phraseCons) >= 2 && phraseCons == spokenCons && bestScore < 0.78 {
+					bestFix = fixID
+					bestScore = 0.78 // Conservative score for consonant-only match
 					bestLength = length
 				}
 			}
@@ -1206,6 +1286,18 @@ func extractFix(tokens []Token, fixes map[string]string) (string, float64, int) 
 	}
 	logLocalStt("  extractFix: no match found for %q", tokens[0].Text)
 	return "", 0, 0
+}
+
+// extractConsonants extracts only consonants from a string (for fuzzy matching).
+func extractConsonants(s string) string {
+	var result strings.Builder
+	s = strings.ToUpper(s) // isVowel expects uppercase
+	for _, c := range s {
+		if c >= 'A' && c <= 'Z' && !isVowel(byte(c)) {
+			result.WriteRune(c)
+		}
+	}
+	return strings.ToLower(result.String())
 }
 
 // extractApproach extracts an approach from tokens.

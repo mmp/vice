@@ -1,0 +1,213 @@
+{
+  "time": "2026-01-22T06:24:21.740496575Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Alaska, so did I turn right at 160?",
+  "whisper_duration_ms": 369.017,
+  "audio_duration_ms": 2944,
+  "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
+  "callsign": "ASA79",
+  "command": "R160",
+  "stt_aircraft": {
+    "ACA27": {
+      "Callsign": "ACA27",
+      "AircraftType": "B789",
+      "Fixes": {
+        "San Diego International Airport": "KSAN"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 1379,
+      "State": "on approach",
+      "ControllerFrequency": "5Z",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    },
+    "ASA1177": {
+      "Callsign": "ASA1177",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4042,
+      "State": "on approach",
+      "ControllerFrequency": "5Z",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    },
+    "ASA79": {
+      "Callsign": "ASA79",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 3800,
+      "State": "arrival",
+      "ControllerFrequency": "5Z",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    },
+    "Air Canada 27 heavy": {
+      "Callsign": "ACA27",
+      "AircraftType": "B789",
+      "Fixes": {
+        "San Diego International Airport": "KSAN"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 1379,
+      "State": "on approach",
+      "ControllerFrequency": "5Z",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    },
+    "Alaska 1177": {
+      "Callsign": "ASA1177",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4042,
+      "State": "on approach",
+      "ControllerFrequency": "5Z",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    },
+    "Alaska 79": {
+      "Callsign": "ASA79",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 3800,
+      "State": "arrival",
+      "ControllerFrequency": "5Z",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Alaska, so did I turn right at 160?\"",
+    "[local-stt] normalized words: [alaska so did i turn right at 160]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"alaska\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"so\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"did\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"i\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"160\" Type=1 Value=160",
+    "[local-stt] MatchCallsign: 8 tokens, 6 aircraft",
+    "[local-stt]   candidate \"Alaska 1177\" (ICAO=\"ASA1177\"): score=1.00 consumed=1",
+    "[local-stt]   candidate \"ASA1177\" (ICAO=\"ASA1177\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Air Canada 27 heavy\" (ICAO=\"ACA27\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"ACA27\" (ICAO=\"ACA27\"): score=0.62 consumed=1",
+    "[local-stt]   candidate \"Alaska 79\" (ICAO=\"ASA79\"): score=1.00 consumed=1",
+    "[local-stt]   candidate \"ASA79\" (ICAO=\"ASA79\"): score=0.63 consumed=1",
+    "[local-stt]   accepted: \"ASA1177\" (conf=1.00, consumed=1, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"ASA1177\" SpokenKey=\"Alaska 1177\" Conf=1.00 Consumed=1",
+    "[local-stt] aircraft context: State=\"on approach\" Altitude=4042 Fixes=4 Approaches=4 AssignedApproach=\"Localizer Runway 27\"",
+    "[local-stt]   fix: \"Okain\" -\u003e \"OKAIN\"",
+    "[local-stt]   fix: \"Cijhi\" -\u003e \"CIJHI\"",
+    "[local-stt]   fix: \"Reebo\" -\u003e \"REEBO\"",
+    "[local-stt]   fix: \"San Diego International Airport\" -\u003e \"KSAN\"",
+    "[local-stt]   approach: \"Localizer runway two seven\" -\u003e \"L27\"",
+    "[local-stt]   approach: \"Visual runway two seven\" -\u003e \"V27\"",
+    "[local-stt]   approach: \"r-nav yankee runway two seven\" -\u003e \"RY7\"",
+    "[local-stt]   approach: \"r-nav zulu runway two seven\" -\u003e \"RZ7\"",
+    "[local-stt] command tokens after disregard: 7",
+    "[local-stt]   token[0]: Text=\"so\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"did\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"i\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"160\" Type=1 Value=160",
+    "[local-stt]   position ID: found command keyword \"turn\" at position 3 - not just position ID",
+    "[local-stt] ParseCommands: 7 tokens",
+    "[local-stt]   no match at token[0]=\"so\", skipping",
+    "[local-stt]   no match at token[1]=\"did\", skipping",
+    "[local-stt]   no match at token[2]=\"i\", skipping",
+    "[local-stt]   tryMatchTemplate \"turn_right_only\": cmd=\"R160\" argStr=\"160\" consumed=4",
+    "[local-stt]   matched command: \"R160\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[R160] (avgConf=1.00)",
+    "[local-stt] parsed commands: [R160] (conf=1.00)",
+    "[local-stt] validated commands: [R160] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"ASA1177 R160\" (conf=1.00, time=549.2µs) ==="
+  ]
+}

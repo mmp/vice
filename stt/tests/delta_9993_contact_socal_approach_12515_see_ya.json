@@ -1,0 +1,224 @@
+{
+  "time": "2026-01-22T05:54:47.945242387Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Delta 9993, contact SoCal approach 125.15, see ya.",
+  "whisper_duration_ms": 242.245,
+  "audio_duration_ms": 6528,
+  "processor": "GPU: NVIDIA GeForce RTX 5070 Ti (15995MB)",
+  "callsign": "DAL9993",
+  "command": "FC",
+  "stt_aircraft": {
+    "ASA4739": {
+      "Callsign": "ASA4739",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Klomn": "KLOMN",
+        "Lntrn": "LNTRN",
+        "Naddo": "NADDO",
+        "San Diego International Airport": "KSAN",
+        "Xmans": "XMANS"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 10866,
+      "State": "arrival",
+      "ControllerFrequency": "5N",
+      "TrackingController": "5N",
+      "AddressingForm": 0
+    },
+    "Alaska 4739": {
+      "Callsign": "ASA4739",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Klomn": "KLOMN",
+        "Lntrn": "LNTRN",
+        "Naddo": "NADDO",
+        "San Diego International Airport": "KSAN",
+        "Xmans": "XMANS"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 10866,
+      "State": "arrival",
+      "ControllerFrequency": "5N",
+      "TrackingController": "5N",
+      "AddressingForm": 0
+    },
+    "DAL9993": {
+      "Callsign": "DAL9993",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "5E",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    },
+    "Delta 9993": {
+      "Callsign": "DAL9993",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "5E",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    },
+    "SWA277": {
+      "Callsign": "SWA277",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lucki": "LUCKI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6284,
+      "State": "arrival",
+      "ControllerFrequency": "5E",
+      "TrackingController": "5E",
+      "AddressingForm": 0
+    },
+    "Southwest 277": {
+      "Callsign": "SWA277",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lucki": "LUCKI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6284,
+      "State": "arrival",
+      "ControllerFrequency": "5E",
+      "TrackingController": "5E",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Delta 9993, contact SoCal approach 125.15, see ya.\"",
+    "[local-stt] normalized words: [delta 9993 contact socal approach 12515 see ya]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"9993\" Type=1 Value=9993",
+    "[local-stt]   token[2]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"socal\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"12515\" Type=1 Value=12515",
+    "[local-stt]   token[6]: Text=\"see\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"ya\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 8 tokens, 6 aircraft",
+    "[local-stt]   exact match: \"delta 9993\" -\u003e \"DAL9993\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"DAL9993\" SpokenKey=\"Delta 9993\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=6000 Fixes=6 Approaches=4 AssignedApproach=\"Localizer Runway 27\"",
+    "[local-stt]   fix: \"Vydda\" -\u003e \"VYDDA\"",
+    "[local-stt]   fix: \"Okain\" -\u003e \"OKAIN\"",
+    "[local-stt]   fix: \"Cijhi\" -\u003e \"CIJHI\"",
+    "[local-stt]   fix: \"Reebo\" -\u003e \"REEBO\"",
+    "[local-stt]   fix: \"San Diego International Airport\" -\u003e \"KSAN\"",
+    "[local-stt]   fix: \"Lyndi\" -\u003e \"LYNDI\"",
+    "[local-stt]   approach: \"Localizer runway two seven\" -\u003e \"L27\"",
+    "[local-stt]   approach: \"Visual runway two seven\" -\u003e \"V27\"",
+    "[local-stt]   approach: \"r-nav yankee runway two seven\" -\u003e \"RY7\"",
+    "[local-stt]   approach: \"r-nav zulu runway two seven\" -\u003e \"RZ7\"",
+    "[local-stt] command tokens after disregard: 6",
+    "[local-stt]   token[0]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"socal\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"12515\" Type=1 Value=12515",
+    "[local-stt]   token[4]: Text=\"see\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"ya\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"contact\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 6 tokens",
+    "[local-stt]   tryMatchTemplate \"frequency_change\": cmd=\"FC\" argStr=\"\" consumed=1",
+    "[local-stt]   matched command: \"FC\" (conf=1.00, consumed=1, isThen=false)",
+    "[local-stt]   no match at token[1]=\"socal\", skipping",
+    "[local-stt]   no match at token[2]=\"approach\", skipping",
+    "[local-stt]   no match at token[3]=\"12515\", skipping",
+    "[local-stt]   no match at token[4]=\"see\", skipping",
+    "[local-stt]   no match at token[5]=\"ya\", skipping",
+    "[local-stt] ParseCommands: result=[FC] (avgConf=1.00)",
+    "[local-stt] parsed commands: [FC] (conf=1.00)",
+    "[local-stt] validated commands: [FC] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"DAL9993 FC\" (conf=1.00, time=0s) ==="
+  ]
+}

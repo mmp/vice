@@ -96,6 +96,7 @@ var commandKeywords = map[string]string{
 	"descending": "descend",
 	"descendant": "descend", // STT error
 	"descent":    "descend", // STT error
+	"doesnt":     "descend", // STT error: "doesn't maintain" for "descend and maintain"
 	"climb":      "climb",
 	"climbed":    "climb",
 	"climbing":   "climb",
@@ -103,8 +104,10 @@ var commandKeywords = map[string]string{
 	"clementine": "climb", // STT error: "climb and maintain" -> "clementine"
 	"con":        "climb", // STT error: "climb" -> "con" (not "contact")
 	"maintain":   "maintain",
+	"maintained": "maintain", // Past tense
 	"altitude":   "altitude",
 	"thousand":   "thousand",
+	"tizen":      "thousand", // STT error: "four tizen" for "four thousand"
 	"hundred":    "hundred",
 	"flight":     "flight",
 	"fight":      "flight", // STT error: "flight" often transcribed as "fight"
@@ -114,11 +117,14 @@ var commandKeywords = map[string]string{
 	// Heading
 	"heading":  "heading",
 	"hitting":  "heading", // STT error
+	"nutter":   "heading", // STT error: "turn rate heading to nutter 0" for "heading 270"
 	"turn":     "turn",
 	"left":     "left",
 	"lefting":  "left", // STT error
 	"right":    "right",
 	"righting": "right", // STT error
+	"rate":     "right", // STT error: "turn rate" for "turn right"
+	"wright":   "right", // STT error: "wright" for "right"
 	"degrees":  "degrees",
 	"degree":   "degrees",
 	"fly":      "fly",
@@ -126,6 +132,7 @@ var commandKeywords = map[string]string{
 
 	// Speed
 	"speed":    "speed",
+	"dsp":      "speed", // STT error: "DSP" for "speed"
 	"reduce":   "reduce",
 	"increase": "increase",
 	"slow":     "slow",
@@ -144,6 +151,8 @@ var commandKeywords = map[string]string{
 	"hold":      "hold",
 	"via":       "via",
 	"by":        "via", // STT error: "via" often transcribed as "by"
+	"sid":       "sid",
+	"cid":       "sid", // STT error: "climb via cid" for "climb via SID"
 
 	// Hold-related
 	"radial":    "radial",
@@ -171,9 +180,17 @@ var commandKeywords = map[string]string{
 	"expect":    "expect",
 	"vectors":   "vectors",
 	"approach":  "approach",
-	"localizer": "localizer",
-	"intercept": "intercept",
 	"cancel":    "cancel",
+	"council":   "cancel", // STT error: "council" for "cancel"
+	"localizer": "localizer",
+	"localize":  "localizer",
+	"localiser": "localizer",
+	"glazier":   "localizer", // STT error
+	"glaser":    "localizer", // STT error
+	"gliser":    "localizer", // STT error
+	"laser":     "localizer", // STT error
+	"intercept": "intercept",
+	"nusselt":   "intercept", // STT error
 	"clearance": "clearance",
 	"visual":    "visual",
 	"ils":       "ils",
@@ -239,6 +256,10 @@ var fillerWords = map[string]bool{
 	"sir": true, "ma'am": true,
 	"roger": true, "wilco": true, "copy": true,
 	"heavy": true, "super": true, // Callsign suffixes to ignore
+	"continue": true, "your": true, // "continue your right turn" - modifiers, not commands
+	"to":   true,               // Often appears in garbled number sequences ("10 to 1 3 0" for "130")
+	"wing": true,               // STT error: "left-wing" for "left heading" becomes "left wing" after hyphen removal
+	"i":    true, "said": true, // Pilot interjections ("I said I maintained...")
 	// Note: "contact" and "radar" are NOT filler words - they're command keywords
 }
 
@@ -271,6 +292,21 @@ func NormalizeTranscript(transcript string) []string {
 		// Handle garbled "niner" transcriptions like "9r,000" -> "9r000" -> "9000"
 		// Whisper sometimes transcribes "niner" as "9r" when followed by digits.
 		w = fixGarbledNiner(w)
+
+		// Handle numbers with trailing 's' like "4s" → "40"
+		// STT sometimes transcribes "four zero" or "forty" as "4s"
+		w = fixTrailingS(w)
+
+		// Split concatenated callsigns like "alaska8383" → ["alaska", "8383"]
+		// This handles STT transcriptions that omit the space between airline and flight number
+		if parts := splitTextNumber(w); len(parts) > 1 {
+			for _, part := range parts {
+				if part != "" {
+					result = append(result, part)
+				}
+			}
+			continue
+		}
 
 		// Try digit word normalization
 		if digit, ok := digitWords[w]; ok {
@@ -305,6 +341,20 @@ func NormalizeTranscript(transcript string) []string {
 		if w == "commenting" {
 			result = append(result, "climb", "maintain")
 			continue
+		}
+
+		// Special case: "turner" is commonly transcribed instead of "turn"
+		if w == "turner" {
+			result = append(result, "turn")
+			continue
+		}
+
+		// Special case: "zapulokwizer", "zapulawkwizer", etc. for "intercept localizer"
+		if strings.Contains(w, "lok") || strings.Contains(w, "lawk") {
+			if strings.HasPrefix(w, "zap") || strings.HasPrefix(w, "zop") || strings.HasPrefix(w, "za") {
+				result = append(result, "intercept", "localizer")
+				continue
+			}
 		}
 
 		// Handle "or" as STT misrecognition of "niner" when between digits.
@@ -464,6 +514,51 @@ func ParseNumber(s string) int {
 	return n
 }
 
+// splitTextNumber splits a word that has text followed by digits (or vice versa).
+// Examples: "alaska8383" → ["alaska", "8383"], "8383alaska" → ["8383", "alaska"]
+// Returns nil if the word doesn't need splitting.
+func splitTextNumber(w string) []string {
+	if len(w) < 2 {
+		return nil
+	}
+
+	// Find the transition point between text and digits
+	var textPart, numPart strings.Builder
+	inDigits := w[0] >= '0' && w[0] <= '9'
+
+	for _, c := range w {
+		isDigit := c >= '0' && c <= '9'
+		if isDigit == inDigits {
+			if inDigits {
+				numPart.WriteRune(c)
+			} else {
+				textPart.WriteRune(c)
+			}
+		} else {
+			// Transition found
+			if inDigits {
+				// Was digits, now text
+				if textPart.Len() > 0 || numPart.Len() > 0 {
+					// Already have content, this is a second transition - don't split
+					return nil
+				}
+				numPart.WriteRune(c)
+			} else {
+				// Was text, now digits - start collecting digits
+				numPart.WriteRune(c)
+			}
+			inDigits = isDigit
+		}
+	}
+
+	// Only split if we have both parts and each is meaningful
+	t, n := textPart.String(), numPart.String()
+	if len(t) >= 2 && len(n) >= 1 {
+		return []string{t, n}
+	}
+	return nil
+}
+
 // fixGarbledNiner fixes STT transcription errors where "niner" is garbled as "9r".
 // For example, "9r,000" -> "9r000" after CleanWord, which should become "9000".
 // This handles patterns like:
@@ -492,6 +587,16 @@ func fixGarbledNiner(w string) string {
 		if allDigits {
 			return string(w[0]) + w[2:] // "9r000" -> "9000"
 		}
+	}
+	return w
+}
+
+// fixTrailingS handles STT transcription errors where a number is followed by 's'.
+// For example, "4s" likely means "40" (four zero / forty).
+// This handles patterns like "2s" -> "20", "4s" -> "40", etc.
+func fixTrailingS(w string) string {
+	if len(w) == 2 && w[0] >= '0' && w[0] <= '9' && w[1] == 's' {
+		return string(w[0]) + "0" // "4s" -> "40"
 	}
 	return w
 }

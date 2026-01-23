@@ -1,0 +1,132 @@
+{
+  "time": "2026-01-22T14:53:44.534868226Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "United 8813, directed Benky.",
+  "whisper_duration_ms": 280.207,
+  "audio_duration_ms": 2304,
+  "processor": "GPU: Apple M5, 10 CPU / 10 GPU cores, 24GB",
+  "callsign": "UAL8813",
+  "command": "DBENKY",
+  "stt_aircraft": {
+    "ENY8271": {
+      "Callsign": "ENY8271",
+      "AircraftType": "E170",
+      "Fixes": {
+        "Mikie": "MYKIE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ORD8.W",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0
+    },
+    "Envoy 8271": {
+      "Callsign": "ENY8271",
+      "AircraftType": "E170",
+      "Fixes": {
+        "Mikie": "MYKIE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ORD8.W",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0
+    },
+    "UAL8813": {
+      "Callsign": "UAL8813",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Aston": "AHSTN",
+        "Benky": "BENKY",
+        "Chicago O'Hare International Airport": "KORD",
+        "Newark": "NEWRK"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight center": "I8C",
+        "I L S runway two seven center": "I7C",
+        "I L S runway two seven right": "I7R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "BENKY6",
+      "Altitude": 19229,
+      "State": "arrival",
+      "ControllerFrequency": "1X",
+      "TrackingController": "1X",
+      "AddressingForm": 0
+    },
+    "United 8813": {
+      "Callsign": "UAL8813",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Aston": "AHSTN",
+        "Benky": "BENKY",
+        "Chicago O'Hare International Airport": "KORD",
+        "Newark": "NEWRK"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight center": "I8C",
+        "I L S runway two seven center": "I7C",
+        "I L S runway two seven right": "I7R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "BENKY6",
+      "Altitude": 19229,
+      "State": "arrival",
+      "ControllerFrequency": "1X",
+      "TrackingController": "1X",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"United 8813, directed Benky.\"",
+    "[local-stt] normalized words: [united 8813 directed benky]",
+    "[local-stt] tokens: 4",
+    "[local-stt]   token[0]: Text=\"united\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"8813\" Type=1 Value=8813",
+    "[local-stt]   token[2]: Text=\"directed\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"benky\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 4 tokens, 4 aircraft",
+    "[local-stt]   exact match: \"united 8813\" -\u003e \"UAL8813\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"UAL8813\" SpokenKey=\"United 8813\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=19229 Fixes=4 Approaches=3 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"Benky\" -\u003e \"BENKY\"",
+    "[local-stt]   fix: \"Newark\" -\u003e \"NEWRK\"",
+    "[local-stt]   fix: \"Aston\" -\u003e \"AHSTN\"",
+    "[local-stt]   fix: \"Chicago O'Hare International Airport\" -\u003e \"KORD\"",
+    "[local-stt]   approach: \"I L S runway two seven right\" -\u003e \"I7R\"",
+    "[local-stt]   approach: \"I L S runway two eight center\" -\u003e \"I8C\"",
+    "[local-stt]   approach: \"I L S runway two seven center\" -\u003e \"I7C\"",
+    "[local-stt] command tokens after disregard: 2",
+    "[local-stt]   token[0]: Text=\"directed\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"benky\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 2 tokens",
+    "[local-stt]   tryMatchTemplate \"direct_fix\": keywords matched, consumed=1, next tokens=[benky]",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"benky\" against 4 fixes",
+    "[local-stt]   extractFix: matched \"benky\" -\u003e \"BENKY\" (exact)",
+    "[local-stt]   tryMatchTemplate \"direct_fix\": cmd=\"DBENKY\" argStr=\"BENKY\" consumed=2",
+    "[local-stt]   matched command: \"DBENKY\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[DBENKY] (avgConf=1.00)",
+    "[local-stt] parsed commands: [DBENKY] (conf=1.00)",
+    "[local-stt] validated commands: [DBENKY] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"UAL8813 DBENKY\" (conf=1.00, time=67.334µs) ==="
+  ]
+}
