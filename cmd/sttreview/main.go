@@ -71,7 +71,7 @@ const (
 const stateDir = "~/.sttreview"
 
 func main() {
-	outputDir := flag.String("output", "stt/tests", "output directory for saved tests")
+	outputDir := flag.String("output", "stt/failing_tests", "output directory for saved tests")
 	ingestMode := flag.Bool("ingest", false, "ingest entries only, don't start review UI")
 	showStatus := flag.Bool("status", false, "show queue status and exit")
 	flag.Parse()
