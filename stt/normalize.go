@@ -167,6 +167,7 @@ var commandKeywords = map[string]string{
 	"maintained": "maintain",
 	"altitude":   "altitude",
 	"thousand":   "thousand",
+	"month":      "thousand", // STT error: "thousand" misheard as "month"
 	"hundred":    "hundred",
 	"flight":     "flight",
 	"fight":      "flight",
@@ -174,9 +175,11 @@ var commandKeywords = map[string]string{
 	"expedite":   "expedite",
 
 	// Heading
-	"heading": "heading",
-	"eating":  "heading", // STT error: "heading" misheard as "eating" (phonetically similar)
-	"turn":    "turn",
+	"heading":  "heading",
+	"eating":   "heading", // STT error: "heading" misheard as "eating" (phonetically similar)
+	"atting":   "heading", // STT error: "heading" misheard as "atting" (phonetically similar)
+	"turn":     "turn",
+	"lefthand": "left", // STT error: "left" with extra "hand" suffix
 	"turning": "turn", // STT captures continuous tense
 	"left":    "left",
 	"right":   "right",
@@ -233,6 +236,7 @@ var commandKeywords = map[string]string{
 
 	// Approach
 	"cleared":   "cleared",
+	"cliud":     "cleared", // STT error: garbled "cleared"
 	"expect":    "expect",
 	"select":    "expect", // "select the ILS" = "expect the ILS"
 	"vectors":   "vectors",
