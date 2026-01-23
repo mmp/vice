@@ -1,6 +1,7 @@
 package stt
 
 import (
+	"strconv"
 	"strings"
 )
 
@@ -41,6 +42,7 @@ var numberWords = map[string]string{
 	"eighteen":  "18",
 	"nineteen":  "19",
 	"twenty":    "20",
+	"toser":     "20", // STT error: "twenty" or "two zero" transcribed as "toser"
 	"thirty":    "30",
 	"forty":     "40",
 	"fifty":     "50",
@@ -96,15 +98,21 @@ var commandKeywords = map[string]string{
 	"descending": "descend",
 	"descendant": "descend", // STT error
 	"descent":    "descend", // STT error
+	"doesnt":     "descend", // STT error: "doesn't maintain" for "descend and maintain"
 	"climb":      "climb",
 	"climbed":    "climb",
 	"climbing":   "climb",
 	"climin":     "climb", // STT error: "climb and" -> "climin"
+	"klimin":     "climb", // STT error: "climb and" -> "klimin"
+	"clomman":    "climb", // STT error: "climb and" -> "clomman"
 	"clementine": "climb", // STT error: "climb and maintain" -> "clementine"
 	"con":        "climb", // STT error: "climb" -> "con" (not "contact")
 	"maintain":   "maintain",
+	"maintained": "maintain", // Past tense
+	"may":        "maintain", // STT error: "climb and may" for "climb and maintain"
 	"altitude":   "altitude",
 	"thousand":   "thousand",
+	"tizen":      "thousand", // STT error: "four tizen" for "four thousand"
 	"hundred":    "hundred",
 	"flight":     "flight",
 	"fight":      "flight", // STT error: "flight" often transcribed as "fight"
@@ -114,11 +122,15 @@ var commandKeywords = map[string]string{
 	// Heading
 	"heading":  "heading",
 	"hitting":  "heading", // STT error
+	"nutter":   "heading", // STT error: "turn rate heading to nutter 0" for "heading 270"
 	"turn":     "turn",
+	"turner":   "turn", // STT error: "turner" for "turn"
 	"left":     "left",
 	"lefting":  "left", // STT error
 	"right":    "right",
 	"righting": "right", // STT error
+	"rate":     "right", // STT error: "turn rate" for "turn right"
+	"wright":   "right", // STT error: "wright" for "right"
 	"degrees":  "degrees",
 	"degree":   "degrees",
 	"fly":      "fly",
@@ -126,7 +138,9 @@ var commandKeywords = map[string]string{
 
 	// Speed
 	"speed":    "speed",
+	"dsp":      "speed", // STT error: "DSP" for "speed"
 	"reduce":   "reduce",
+	"root":     "reduce", // STT error: "root of speed" for "reduce speed"
 	"increase": "increase",
 	"slow":     "slow",
 	"slowest":  "slowest",
@@ -136,22 +150,54 @@ var commandKeywords = map[string]string{
 	"knots":    "knots",
 
 	// Navigation
-	"direct":  "direct",
-	"proceed": "proceed",
-	"cross":   "cross",
-	"depart":  "depart",
-	"hold":    "hold",
-	"via":     "via",
-	"by":      "via", // STT error: "via" often transcribed as "by"
+	"direct":    "direct",
+	"proceed":   "proceed",
+	"procedure": "proceed", // STT error: "proceed" often transcribed as "procedure"
+	"cross":     "cross",
+	"depart":    "depart",
+	"hold":      "hold",
+	"via":       "via",
+	"by":        "via", // STT error: "via" often transcribed as "by"
+	"sid":       "sid",
+	"cid":       "sid", // STT error: "climb via cid" for "climb via SID"
+
+	// Hold-related
+	"radial":    "radial",
+	"bearing":   "bearing",
+	"inbound":   "inbound",
+	"legs":      "legs",
+	"leg":       "legs",
+	"minute":    "minute",
+	"minutes":   "minute",
+	"turns":     "turns",
+	"published": "published",
+
+	// Compass directions (for hold instructions)
+	"north":     "north",
+	"south":     "south",
+	"east":      "east",
+	"west":      "west",
+	"northeast": "northeast",
+	"northwest": "northwest",
+	"southeast": "southeast",
+	"southwest": "southwest",
 
 	// Approach
 	"cleared":   "cleared",
 	"expect":    "expect",
 	"vectors":   "vectors",
 	"approach":  "approach",
-	"localizer": "localizer",
-	"intercept": "intercept",
 	"cancel":    "cancel",
+	"council":   "cancel", // STT error: "council" for "cancel"
+	"localizer": "localizer",
+	"localize":  "localizer",
+	"localiser": "localizer",
+	"glazier":   "localizer", // STT error
+	"glaser":    "localizer", // STT error
+	"gliser":    "localizer", // STT error
+	"laser":     "localizer", // STT error
+	"intercept": "intercept",
+	"nusselt":   "intercept", // STT error
 	"clearance": "clearance",
 	"visual":    "visual",
 	"ils":       "ils",
@@ -160,8 +206,11 @@ var commandKeywords = map[string]string{
 	"eyeless":   "ils", // STT error
 	"dalas":     "ils", // STT error
 	"dallas":    "ils", // STT error
+	"dailies":   "ils", // STT error: "ILS" transcribed as "dailies"
 	"ls":        "ils", // STT error: "ILS" sometimes transcribed as "LS"
 	"rnav":      "rnav",
+	"rnf":       "rnav", // STT error
+	"rf":        "rnav", // STT error: "RNAV" -> "R&F" -> "rf" after cleanup
 	"vor":       "vor",
 	"runway":    "runway",
 
@@ -179,6 +228,8 @@ var commandKeywords = map[string]string{
 	"kannak":    "contact", // STT error
 	"connector": "contact", // STT error
 	"tower":     "tower",
+	"tar":       "tower", // STT error: "contact tar" for "contact tower"
+	"terror":    "tower", // STT error: "contact terror" for "contact tower"
 	"frequency": "frequency",
 	"departure": "departure",
 	"center":    "center",
@@ -199,8 +250,37 @@ var commandKeywords = map[string]string{
 	"correction": "disregard",
 	"negative":   "negative",
 
+	// Expected clearance (to be ignored in hold instructions)
+	"further": "further",
+
 	// Then sequencing
 	"then": "then",
+}
+
+// phraseExpansions maps single STT words to multiple normalized words.
+// These are common STT errors where words get merged together.
+var phraseExpansions = map[string][]string{
+	"flighting":        {"fly", "heading"},      // "fly heading" -> "flighting"
+	"commenting":       {"climb", "maintain"},   // "climb and maintain" -> "commenting"
+	"disundermaintain": {"descend", "maintain"}, // "descend and maintain" -> "disundermaintain"
+}
+
+// localizerPrefixes contains prefixes that indicate "intercept localizer" when
+// combined with "lok" or "lawk" in the word.
+var localizerPrefixes = []string{"zap", "zop", "za"}
+
+// isLocalizerPattern checks if a word is a garbled "intercept localizer".
+// STT often produces words like "zapulokwizer" or "zapulawkwizer".
+func isLocalizerPattern(w string) bool {
+	if !strings.Contains(w, "lok") && !strings.Contains(w, "lawk") {
+		return false
+	}
+	for _, prefix := range localizerPrefixes {
+		if strings.HasPrefix(w, prefix) {
+			return true
+		}
+	}
+	return false
 }
 
 // fillerWords are words to ignore during parsing.
@@ -212,6 +292,10 @@ var fillerWords = map[string]bool{
 	"sir": true, "ma'am": true,
 	"roger": true, "wilco": true, "copy": true,
 	"heavy": true, "super": true, // Callsign suffixes to ignore
+	"continue": true, "your": true, // "continue your right turn" - modifiers, not commands
+	"to":   true,               // Often appears in garbled number sequences ("10 to 1 3 0" for "130")
+	"wing": true,               // STT error: "left-wing" for "left heading" becomes "left wing" after hyphen removal
+	"i":    true, "said": true, // Pilot interjections ("I said I maintained...")
 	// Note: "contact" and "radar" are NOT filler words - they're command keywords
 }
 
@@ -245,6 +329,21 @@ func NormalizeTranscript(transcript string) []string {
 		// Whisper sometimes transcribes "niner" as "9r" when followed by digits.
 		w = fixGarbledNiner(w)
 
+		// Handle numbers with trailing 's' like "4s" → "40"
+		// STT sometimes transcribes "four zero" or "forty" as "4s"
+		w = fixTrailingS(w)
+
+		// Split concatenated callsigns like "alaska8383" → ["alaska", "8383"]
+		// This handles STT transcriptions that omit the space between airline and flight number
+		if parts := splitTextNumber(w); len(parts) > 1 {
+			for _, part := range parts {
+				if part != "" {
+					result = append(result, part)
+				}
+			}
+			continue
+		}
+
 		// Try digit word normalization
 		if digit, ok := digitWords[w]; ok {
 			result = append(result, digit)
@@ -262,15 +361,22 @@ func NormalizeTranscript(transcript string) []string {
 		// deferred to scoreGACallsign() and scoreFlightNumberMatch() where the
 		// context makes it clear we're building a callsign from phonetics.
 
-		// Try command keyword normalization
+		// Try command keyword normalization (single word → single word)
 		if norm, ok := commandKeywords[w]; ok {
 			result = append(result, norm)
 			continue
 		}
 
-		// Special case: "flighting" is commonly transcribed instead of "fly heading"
-		if w == "flighting" {
-			result = append(result, "fly", "heading")
+		// Try phrase expansions (single word → multiple words)
+		if expansion, ok := phraseExpansions[w]; ok {
+			result = append(result, expansion...)
+			continue
+		}
+
+		// Check for "intercept localizer" pattern: words containing "lok" or "lawk"
+		// with certain prefixes (e.g., "zapulokwizer", "zapulawkwizer")
+		if isLocalizerPattern(w) {
+			result = append(result, "intercept", "localizer")
 			continue
 		}
 
@@ -306,20 +412,26 @@ func NormalizeTranscript(transcript string) []string {
 // postProcessNormalized handles multi-word STT errors and letter joining.
 func postProcessNormalized(tokens []string) []string {
 	result := make([]string, 0, len(tokens))
+	skip := 0
 
 	for i := range len(tokens) {
+		if skip > 0 {
+			skip--
+			continue
+		}
+
 		// Handle "december 18" → ["descend", "maintain"]
 		// This is a garbled transcription of "descend and maintain"
 		if tokens[i] == "december" && i+1 < len(tokens) && tokens[i+1] == "18" {
 			result = append(result, "descend", "maintain")
-			i++ // Skip the "18"
+			skip = 1 // Skip the "18"
 			continue
 		}
 
 		// Handle "i l s" → "ils" (3 separate letters)
 		if tokens[i] == "i" && i+2 < len(tokens) && tokens[i+1] == "l" && tokens[i+2] == "s" {
 			result = append(result, "ils")
-			i += 2 // Skip the "l" and "s"
+			skip = 2 // Skip the "l" and "s"
 			continue
 		}
 
@@ -331,10 +443,18 @@ func postProcessNormalized(tokens []string) []string {
 				next := tokens[i+2]
 				if next == "runway" || IsNumber(next) {
 					result = append(result, "ils")
-					i++ // Skip the "s"
+					skip = 1 // Skip the "s"
 					continue
 				}
 			}
+		}
+
+		// Handle "r nav" → "rnav" (from "R-nav" after hyphen removal)
+		// This joins the letter "r" with "nav" to form "rnav" for approach matching
+		if tokens[i] == "r" && i+1 < len(tokens) && tokens[i+1] == "nav" {
+			result = append(result, "rnav")
+			skip = 1 // Skip "nav"
+			continue
 		}
 
 		// Handle "10XXX" headings where "10" is a garbled transcription of "heading"
@@ -346,6 +466,33 @@ func postProcessNormalized(tokens []string) []string {
 				result = append(result, "heading", possibleHeading)
 				continue
 			}
+		}
+
+		// Handle runway designators: "13l" → "13" "left", "22r" → "22" "right", "9c" → "9" "center"
+		// This handles cases where Whisper transcribes "one three left" as "13L"
+		if len(tokens[i]) >= 2 {
+			lastChar := tokens[i][len(tokens[i])-1]
+			numPart := tokens[i][:len(tokens[i])-1]
+			if IsNumber(numPart) && (lastChar == 'l' || lastChar == 'r' || lastChar == 'c') {
+				result = append(result, numPart)
+				switch lastChar {
+				case 'l':
+					result = append(result, "left")
+				case 'r':
+					result = append(result, "right")
+				case 'c':
+					result = append(result, "center")
+				}
+				continue
+			}
+		}
+
+		// Handle abnormally large numbers that are likely altitude STT errors.
+		// e.g., "144000" → "14000" (doubled 4), "120000" → "12000" (extra zero)
+		// These occur when STT doubles a digit or adds extra zeros.
+		if correctedNum := fixLargeNumber(tokens[i]); correctedNum != "" {
+			result = append(result, correctedNum)
+			continue
 		}
 
 		// Default: keep the token as-is
@@ -398,6 +545,86 @@ func ParseNumber(s string) int {
 	return n
 }
 
+// fixLargeNumber corrects abnormally large numbers that are likely STT errors.
+// e.g., "144000" → "14000" (doubled digit), "120000" → "12000" (extra zero)
+// Returns the corrected number string, or empty string if no correction applies.
+func fixLargeNumber(s string) string {
+	if !IsNumber(s) {
+		return ""
+	}
+	n := ParseNumber(s)
+	// Numbers > 60000 are unlikely altitudes (max typical is FL600 = 60000 ft)
+	if n < 100000 || n > 1000000 {
+		return ""
+	}
+
+	// First try: remove a doubled digit (e.g., "144000" → "14000")
+	for j := 1; j < len(s); j++ {
+		if s[j] == s[j-1] {
+			// Try removing the duplicate
+			corrected := s[:j] + s[j+1:]
+			if cn := ParseNumber(corrected); cn >= 1000 && cn <= 60000 {
+				return corrected
+			}
+		}
+	}
+
+	// Second try: remove trailing zero (e.g., "120000" → "12000")
+	if s[len(s)-1] == '0' {
+		corrected := n / 10
+		if corrected >= 1000 && corrected <= 60000 {
+			return strconv.Itoa(corrected)
+		}
+	}
+
+	return ""
+}
+
+// splitTextNumber splits a word that has text followed by digits (or vice versa).
+// Examples: "alaska8383" → ["alaska", "8383"], "8383alaska" → ["8383", "alaska"]
+// Returns nil if the word doesn't need splitting.
+func splitTextNumber(w string) []string {
+	if len(w) < 2 {
+		return nil
+	}
+
+	// Find the transition point between text and digits
+	var textPart, numPart strings.Builder
+	inDigits := w[0] >= '0' && w[0] <= '9'
+
+	for _, c := range w {
+		isDigit := c >= '0' && c <= '9'
+		if isDigit == inDigits {
+			if inDigits {
+				numPart.WriteRune(c)
+			} else {
+				textPart.WriteRune(c)
+			}
+		} else {
+			// Transition found
+			if inDigits {
+				// Was digits, now text
+				if textPart.Len() > 0 || numPart.Len() > 0 {
+					// Already have content, this is a second transition - don't split
+					return nil
+				}
+				numPart.WriteRune(c)
+			} else {
+				// Was text, now digits - start collecting digits
+				numPart.WriteRune(c)
+			}
+			inDigits = isDigit
+		}
+	}
+
+	// Only split if we have both parts and each is meaningful
+	t, n := textPart.String(), numPart.String()
+	if len(t) >= 2 && len(n) >= 1 {
+		return []string{t, n}
+	}
+	return nil
+}
+
 // fixGarbledNiner fixes STT transcription errors where "niner" is garbled as "9r".
 // For example, "9r,000" -> "9r000" after CleanWord, which should become "9000".
 // This handles patterns like:
@@ -426,6 +653,16 @@ func fixGarbledNiner(w string) string {
 		if allDigits {
 			return string(w[0]) + w[2:] // "9r000" -> "9000"
 		}
+	}
+	return w
+}
+
+// fixTrailingS handles STT transcription errors where a number is followed by 's'.
+// For example, "4s" likely means "40" (four zero / forty).
+// This handles patterns like "2s" -> "20", "4s" -> "40", etc.
+func fixTrailingS(w string) string {
+	if len(w) == 2 && w[0] >= '0' && w[0] <= '9' && w[1] == 's' {
+		return string(w[0]) + "0" // "4s" -> "40"
 	}
 	return w
 }

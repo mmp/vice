@@ -442,15 +442,16 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 					ps.VideoMapBrightness[vm.BcgName] = brightness
 				}
 				if i == 19 {
-					e2 = toolbarDrawState.buttonCursor
-					e2[1] -= buttonSize(buttonFull, scale)[1] + 1
-					e1 = [2]float32{e2[0], e0[1]}
-					e3 = [2]float32{e0[0], e2[1]}
-					toolbarDrawState.lightToolbar2 = [4][2]float32{e0, e1, e2, e3}
 					break
 				}
 
 			}
+			// Calculate e1, e2, e3 from the final button cursor position (works for any number of buttons)
+			e2 = toolbarDrawState.buttonCursor
+			e2[1] -= buttonSize(buttonFull, scale)[1] + 1
+			e1 = [2]float32{e2[0], e0[1]}
+			e3 = [2]float32{e0[0], e2[1]}
+			toolbarDrawState.lightToolbar2 = [4][2]float32{e0, e1, e2, e3}
 			toolbarDrawState.processingOcclusion = false
 			toolbarDrawState.buttonCursor = p0
 		}

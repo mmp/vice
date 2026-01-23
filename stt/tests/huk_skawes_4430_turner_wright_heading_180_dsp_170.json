@@ -1,0 +1,265 @@
+{
+  "time": "2026-01-22T06:12:56.571437745Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "-Huk, Ska-Wes, 4430, Turner, Wright, Heading 180, DSP 170.",
+  "whisper_duration_ms": 432.351,
+  "audio_duration_ms": 5376,
+  "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
+  "callsign": "SKW4438",
+  "command": "R180 S170",
+  "stt_aircraft": {
+    "ASA14": {
+      "Callsign": "ASA14",
+      "AircraftType": "B738",
+      "Fixes": {
+        "San Diego International Airport": "KSAN"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 1872,
+      "State": "on approach",
+      "ControllerFrequency": "5Z",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    },
+    "Alaska 14": {
+      "Callsign": "ASA14",
+      "AircraftType": "B738",
+      "Fixes": {
+        "San Diego International Airport": "KSAN"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 1872,
+      "State": "on approach",
+      "ControllerFrequency": "5Z",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    },
+    "SKW4438": {
+      "Callsign": "SKW4438",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "5Z",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    },
+    "SWA8252": {
+      "Callsign": "SWA8252",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3195,
+      "State": "on approach",
+      "ControllerFrequency": "5Z",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    },
+    "SkyWest 4438": {
+      "Callsign": "SKW4438",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "5Z",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    },
+    "Southwest 8252": {
+      "Callsign": "SWA8252",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3195,
+      "State": "on approach",
+      "ControllerFrequency": "5Z",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    },
+    "UAL2731": {
+      "Callsign": "UAL2731",
+      "AircraftType": "B737",
+      "Fixes": {
+        "San Diego International Airport": "KSAN"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 669,
+      "State": "on approach",
+      "ControllerFrequency": "5Z",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    },
+    "United 2731": {
+      "Callsign": "UAL2731",
+      "AircraftType": "B737",
+      "Fixes": {
+        "San Diego International Airport": "KSAN"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 669,
+      "State": "on approach",
+      "ControllerFrequency": "5Z",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"-Huk, Ska-Wes, 4430, Turner, Wright, Heading 180, DSP 170.\"",
+    "[local-stt] normalized words: [huk ska wes 4430 turner wright heading 180 dsp 170]",
+    "[local-stt] tokens: 10",
+    "[local-stt]   token[0]: Text=\"huk\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"ska\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"wes\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"4430\" Type=1 Value=4430",
+    "[local-stt]   token[4]: Text=\"turner\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"wright\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"180\" Type=1 Value=180",
+    "[local-stt]   token[8]: Text=\"dsp\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"170\" Type=1 Value=170",
+    "[local-stt] MatchCallsign: 10 tokens, 8 aircraft",
+    "[local-stt]   candidate \"United 2731\" (ICAO=\"UAL2731\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"UAL2731\" (ICAO=\"UAL2731\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SkyWest 4438\" (ICAO=\"SKW4438\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SKW4438\" (ICAO=\"SKW4438\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest 8252\" (ICAO=\"SWA8252\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SWA8252\" (ICAO=\"SWA8252\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Alaska 14\" (ICAO=\"ASA14\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"ASA14\" (ICAO=\"ASA14\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SKW4438\" at pos 1: score=0.90 (adjusted=0.81) consumed=3",
+    "[local-stt]   candidate \"SkyWest 4438\" at pos 1: score=0.88 (adjusted=0.79) consumed=3",
+    "[local-stt]   candidate \"SkyWest 4438\" at pos 2: score=0.88 (adjusted=0.71) consumed=2",
+    "[local-stt]   candidate \"SKW4438\" at pos 2: score=0.88 (adjusted=0.71) consumed=2",
+    "[local-stt]   candidate \"SkyWest 4438\" at pos 3: score=0.88 (adjusted=0.62) consumed=1",
+    "[local-stt]   candidate \"SKW4438\" at pos 3: score=0.88 (adjusted=0.62) consumed=1",
+    "[local-stt]   accepted: \"SKW4438\" (conf=0.81, consumed=4, startPos=1)",
+    "[local-stt] callsign match: Callsign=\"SKW4438\" SpokenKey=\"SKW4438\" Conf=0.81 Consumed=4",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4000 Fixes=6 Approaches=4 AssignedApproach=\"Localizer Runway 27\"",
+    "[local-stt]   fix: \"Reebo\" -\u003e \"REEBO\"",
+    "[local-stt]   fix: \"San Diego International Airport\" -\u003e \"KSAN\"",
+    "[local-stt]   fix: \"Lyndi\" -\u003e \"LYNDI\"",
+    "[local-stt]   fix: \"Vydda\" -\u003e \"VYDDA\"",
+    "[local-stt]   fix: \"Okain\" -\u003e \"OKAIN\"",
+    "[local-stt]   fix: \"Cijhi\" -\u003e \"CIJHI\"",
+    "[local-stt]   approach: \"r-nav zulu runway two seven\" -\u003e \"RZ7\"",
+    "[local-stt]   approach: \"Localizer runway two seven\" -\u003e \"L27\"",
+    "[local-stt]   approach: \"Visual runway two seven\" -\u003e \"V27\"",
+    "[local-stt]   approach: \"r-nav yankee runway two seven\" -\u003e \"RY7\"",
+    "[local-stt] command tokens after disregard: 6",
+    "[local-stt]   token[0]: Text=\"turner\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"wright\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"180\" Type=1 Value=180",
+    "[local-stt]   token[4]: Text=\"dsp\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"170\" Type=1 Value=170",
+    "[local-stt]   position ID: found command keyword \"heading\" at position 2 - not just position ID",
+    "[local-stt] ParseCommands: 6 tokens",
+    "[local-stt]   no match at token[0]=\"turner\", skipping",
+    "[local-stt]   tryMatchTemplate \"turn_right_heading\": cmd=\"R180\" argStr=\"180\" consumed=3",
+    "[local-stt]   tryMatchTemplate \"turn_right_only\": cmd=\"R180\" argStr=\"180\" consumed=3",
+    "[local-stt]   matched command: \"R180\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   no match at token[4]=\"dsp\", skipping",
+    "[local-stt]   no match at token[5]=\"170\", skipping",
+    "[local-stt] ParseCommands: result=[R180] (avgConf=1.00)",
+    "[local-stt] parsed commands: [R180] (conf=1.00)",
+    "[local-stt] validated commands: [R180] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"SKW4438 R180\" (conf=0.81, time=545.1µs) ==="
+  ]
+}

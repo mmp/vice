@@ -1622,18 +1622,66 @@ func (s *Sim) SayNotCleared(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign,
 	return callsign, spokenText, nil
 }
 
+// SayAgainCommand returns an intent for when STT partially parsed a command but
+// couldn't extract the argument. The pilot will ask the controller to repeat the
+// specific part of the clearance.
+func (s *Sim) SayAgainCommand(tcw TCW, callsign av.ADSBCallsign, commandType string) (av.CommandIntent, error) {
+	var cmdType av.SayAgainCommandType
+	switch commandType {
+	case "HEADING":
+		cmdType = av.SayAgainHeading
+	case "ALTITUDE":
+		cmdType = av.SayAgainAltitude
+	case "SPEED":
+		cmdType = av.SayAgainSpeed
+	case "APPROACH":
+		cmdType = av.SayAgainApproach
+	case "TURN":
+		cmdType = av.SayAgainTurn
+	case "SQUAWK":
+		cmdType = av.SayAgainSquawk
+	case "FIX":
+		cmdType = av.SayAgainFix
+	default:
+		return nil, ErrInvalidCommandSyntax
+	}
+	return av.SayAgainIntent{CommandType: cmdType}, nil
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Deferred operations
 
+type RadioActivity struct {
+	EndTime    time.Time // estimated end of transmission
+	WasContact bool      // true if it was a contact (vs readback)
+}
+
 type FutureControllerContact struct {
-	ADSBCallsign av.ADSBCallsign
-	TCP          TCP
-	Time         time.Time
+	ADSBCallsign           av.ADSBCallsign
+	TCP                    TCP
+	Time                   time.Time
+	IsDeparture            bool
+	ReportDepartureHeading bool
+	HasQueuedEmergency     bool
 }
 
 func (s *Sim) enqueueControllerContact(callsign av.ADSBCallsign, tcp TCP, wait time.Duration) {
+	wait += s.radioActivityDelay(tcp)
 	s.FutureControllerContacts = append(s.FutureControllerContacts,
 		FutureControllerContact{ADSBCallsign: callsign, TCP: tcp, Time: s.State.SimTime.Add(wait)})
+}
+
+func (s *Sim) enqueueDepartureContact(ac *Aircraft, tcp TCP) {
+	wait := s.radioActivityDelay(tcp)
+	s.FutureControllerContacts = append(s.FutureControllerContacts,
+		FutureControllerContact{
+			ADSBCallsign:           ac.ADSBCallsign,
+			TCP:                    tcp,
+			Time:                   s.State.SimTime.Add(wait),
+			IsDeparture:            true,
+			ReportDepartureHeading: ac.ReportDepartureHeading,
+			HasQueuedEmergency:     ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1,
+		})
 }
 
 type FutureOnCourse struct {
@@ -1671,8 +1719,13 @@ func (s *Sim) processEnqueued() {
 				if ac.IsAssociated() {
 					ac.ControllerFrequency = ControlPosition(c.TCP)
 
-					rt := ac.ContactMessage(s.ReportingPoints)
-					rt.Type = av.RadioTransmissionContact
+					var rt *av.RadioTransmission
+					if c.IsDeparture {
+						rt = ac.Nav.DepartureMessage(c.ReportDepartureHeading)
+					} else {
+						rt = ac.ContactMessage(s.ReportingPoints)
+						rt.Type = av.RadioTransmissionContact
+					}
 
 					s.postContactTransmission(c.ADSBCallsign, c.TCP, *rt)
 
@@ -1680,9 +1733,16 @@ func (s *Sim) processEnqueued() {
 					// consolidated with the initial contact transmission.
 					// Check if controlling controller is a human-allocated position (not virtual)
 					humanAllocated := !s.isVirtualController(ac.ControllerFrequency)
-					if humanAllocated && ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1 {
-						ac.EmergencyState.CurrentStage = 0
-						s.runEmergencyStage(ac)
+					if c.IsDeparture {
+						if humanAllocated && c.HasQueuedEmergency {
+							ac.EmergencyState.CurrentStage = 0
+							s.runEmergencyStage(ac)
+						}
+					} else {
+						if humanAllocated && ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1 {
+							ac.EmergencyState.CurrentStage = 0
+							s.runEmergencyStage(ac)
+						}
 					}
 
 					// For departures handed off to virtual controllers,
@@ -1851,11 +1911,6 @@ func (s *Sim) readbackCallsignSuffix(callsign av.ADSBCallsign, tcw TCW) string {
 				heavySuper = " super"
 			}
 		}
-	}
-
-	// For emergency aircraft, 50% of the time add "emergency aircraft" after heavy/super.
-	if ac.EmergencyState != nil && s.Rand.Bool() {
-		heavySuper += " emergency aircraft"
 	}
 
 	// Use GACallsignArg for GA aircraft when addressed with type+trailing3 form
@@ -2233,6 +2288,8 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.SayHeading(tcw, callsign)
 		} else if command == "SA" {
 			return s.SayAltitude(tcw, callsign)
+		} else if strings.HasPrefix(command, "SAYAGAIN/") {
+			return s.SayAgainCommand(tcw, callsign, command[9:])
 		} else {
 			kts, err := strconv.Atoi(command[1:])
 			if err != nil {

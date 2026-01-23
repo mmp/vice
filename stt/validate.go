@@ -24,13 +24,6 @@ func ValidateCommands(commands []string, ac Aircraft) ValidationResult {
 	penalty := 0.0
 
 	for _, cmd := range commands {
-		// Special case: "TO" (contact tower) for arrival aircraft not on approach
-		// Instead of blocking, return "NOTCLEARED" so pilot can respond appropriately
-		if cmd == "TO" && ac.State == "arrival" {
-			valid = append(valid, "NOTCLEARED")
-			continue
-		}
-
 		err := validateCommand(cmd, ac)
 		if err == "" {
 			valid = append(valid, cmd)
@@ -160,16 +153,9 @@ func validateCommand(cmd string, ac Aircraft) string {
 		return ""
 
 	case 'F':
-		// FC - frequency change
-		if cmd == "FC" {
-			// Don't generate FC if aircraft is already on the tracking controller's frequency.
-			// This catches misrecognized "radar contact" where only "contact" was heard.
-			if ac.ControllerFrequency != "" && ac.TrackingController != "" &&
-				ac.ControllerFrequency == ac.TrackingController {
-				return "FC invalid: already on tracking controller frequency"
-			}
-			return ""
-		}
+		// FC - frequency change: always allow if clearly heard.
+		// The sim handles invalid situations (e.g., "unable" readback).
+		return ""
 
 	case 'G':
 		// GA - go ahead
@@ -251,11 +237,8 @@ func validateExpectApproach(_ string, ac Aircraft) string {
 	return ""
 }
 
-func validateContactTower(ac Aircraft) string {
-	// Contact tower only valid for aircraft on approach
-	if ac.State != "on approach" {
-		return "contact tower only valid for aircraft on approach"
-	}
+func validateContactTower(_ Aircraft) string {
+	// Always allow TO - sim handles "unable" readback for non-arrivals
 	return ""
 }
 

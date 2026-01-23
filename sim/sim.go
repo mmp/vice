@@ -77,6 +77,8 @@ type Sim struct {
 	FutureSquawkChanges      []FutureChangeSquawk
 	FutureEmergencyUpdates   []FutureEmergencyUpdate
 
+	LastRadioActivity map[TCP]RadioActivity
+
 	NextEmergencyTime time.Time
 
 	PilotErrorInterval time.Duration
@@ -833,13 +835,13 @@ func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 			}
 		}
 
-		// For emergency aircraft, 50% of the time add "emergency aircraft" after heavy/super.
-		if ac.EmergencyState != nil && s.Rand.Bool() {
-			heavySuper += " emergency aircraft"
-		}
-
 		switch e.RadioTransmissionType {
 		case av.RadioTransmissionContact:
+			// For emergency aircraft, 50% of the time add "emergency aircraft" after heavy/super.
+			// Only on initial contact, not subsequent transmissions.
+			if ac.EmergencyState != nil && s.Rand.Bool() {
+				heavySuper += " emergency aircraft"
+			}
 			csArg := av.CallsignArg{
 				Callsign:           ac.ADSBCallsign,
 				IsEmergency:        ac.EmergencyState != nil,
@@ -1129,17 +1131,22 @@ func (s *Sim) updateState() {
 					sfp := ac.NASFlightPlan
 
 					if passedWaypoint.TransferComms {
-						// We didn't enqueue this before since we knew an
-						// explicit comms handoff was coming so go ahead and
-						// send them to the controller's frequency. Note that
-						// we use InboundHandoffController and not
-						// ac.TrackingController, since the human controller
-						// may have already flashed the track to a virtual
-						// controller.
-						ctrl := s.State.ResolveController(sfp.InboundHandoffController)
-						// Make sure they've bought the handoff.
-						if ctrl != sfp.HandoffController {
-							s.enqueueControllerContact(ac.ADSBCallsign, ctrl, 0 /* no delay */)
+						// This is a departure that hasn't contacted the departure controller yet, do it here
+						if ac.IsDeparture() && ac.DepartureContactAltitude == 0 {
+							s.contactDeparture(ac, sfp)
+						} else {
+							// We didn't enqueue this before since we knew an
+							// explicit comms handoff was coming so go ahead and
+							// send them to the controller's frequency. Note that
+							// we use InboundHandoffController and not
+							// ac.TrackingController, since the human controller
+							// may have already flashed the track to a virtual
+							// controller.
+							ctrl := s.State.ResolveController(sfp.InboundHandoffController)
+							// Make sure they've bought the handoff.
+							if ctrl != sfp.HandoffController {
+								s.enqueueControllerContact(ac.ADSBCallsign, ctrl, 0 /* no delay */)
+							}
 						}
 					}
 
@@ -1223,8 +1230,25 @@ func (s *Sim) updateState() {
 				}
 			}
 
+			// Cull any departures withn ~5NM of their first /tc point
+			culled := false
+			if s.prespawnUncontrolledOnly && ac.IsDeparture() && ac.DepartureContactAltitude == 0 {
+				for _, wp := range ac.Nav.Waypoints {
+					if wp.TransferComms {
+						if math.NMDistance2LLFast(ac.Position(), wp.Location, ac.NmPerLongitude()) < 5 {
+							s.deleteAircraft(ac)
+							culled = true
+						}
+						break
+					}
+				}
+			}
+			if culled {
+				continue
+			}
+
 			// Possibly contact the departure controller
-			if ac.DepartureContactAltitude != 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude {
+			if ac.IsDeparture() && ((ac.DepartureContactAltitude > 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude) || (ac.DepartureContactAltitude == 0 && ac.EmergencyState != nil)) {
 				fp := ac.NASFlightPlan
 				if fp == nil {
 					fp = s.STARSComputer.lookupFlightPlanBySquawk(ac.Squawk)
@@ -1242,20 +1266,7 @@ func (s *Sim) updateState() {
 						// Use the original InboundHandoffController position for the radio event,
 						// not the resolved position. This ensures TCWControlsPosition checks
 						// correctly match when the user has that position consolidated.
-						tcp := fp.InboundHandoffController
-						s.lg.Debug("contacting departure controller", slog.String("tcp", string(tcp)))
-
-						rt := ac.Nav.DepartureMessage(ac.ReportDepartureHeading)
-						s.postContactTransmission(ac.ADSBCallsign, tcp, *rt)
-
-						// Clear this out so we only send one contact message
-						ac.DepartureContactAltitude = 0
-
-						// Only after we're on frequency can the controller start
-						// issuing control commands.. (Note that track may have
-						// already been handed off to the next controller at this
-						// point.)
-						ac.ControllerFrequency = ControlPosition(tcp)
+						s.contactDeparture(ac, fp)
 					}
 				}
 			}
@@ -1486,6 +1497,17 @@ func (s *Sim) sendFullFlightFollowingRequest(ac *Aircraft, tcp TCP) {
 	s.postContactTransmission(ac.ADSBCallsign, tcp, *rt)
 }
 
+func (s *Sim) contactDeparture(ac *Aircraft, fp *NASFlightPlan) {
+	tcp := fp.InboundHandoffController
+	s.lg.Debug("contacting departure controller", slog.String("tcp", string(tcp)))
+
+	// Mark as already contacted so we only send one contact message
+	ac.DepartureContactAltitude = -1
+
+	// Queue the contact (may be delayed due to radio activity)
+	s.enqueueDepartureContact(ac, tcp)
+}
+
 func (s *Sim) isRadarVisible(ac *Aircraft) bool {
 	filters := s.State.FacilityAdaptation.Filters
 	return !filters.SurfaceTracking.Inside(ac.Position(), int(ac.Altitude()))
@@ -1537,15 +1559,17 @@ func (s *Sim) postContactTransmission(from av.ADSBCallsign, tcp TCP, tr av.Radio
 		ac.LastRadioTransmission = s.State.SimTime
 	}
 
+	spokenText := tr.Spoken(s.Rand)
 	s.eventStream.Post(Event{
 		Type:                  RadioTransmissionEvent,
 		ADSBCallsign:          from,
 		ToController:          tcp,
 		DestinationTCW:        s.State.TCWForPosition(tcp),
 		WrittenText:           tr.Written(s.Rand),
-		SpokenText:            tr.Spoken(s.Rand),
+		SpokenText:            spokenText,
 		RadioTransmissionType: tr.Type,
 	})
+	s.recordRadioActivity(tcp, spokenText, true /* isContact */)
 }
 
 // postReadbackTransmission posts a radio event for a pilot responding to a command.
@@ -1559,15 +1583,59 @@ func (s *Sim) postReadbackTransmission(from av.ADSBCallsign, tr av.RadioTransmis
 		ac.LastRadioTransmission = s.State.SimTime
 	}
 
+	tcp := s.State.PrimaryPositionForTCW(tcw)
+	spokenText := tr.Spoken(s.Rand)
 	s.eventStream.Post(Event{
 		Type:                  RadioTransmissionEvent,
 		ADSBCallsign:          from,
-		ToController:          s.State.PrimaryPositionForTCW(tcw),
+		ToController:          tcp,
 		DestinationTCW:        tcw,
 		WrittenText:           tr.Written(s.Rand),
-		SpokenText:            tr.Spoken(s.Rand),
+		SpokenText:            spokenText,
 		RadioTransmissionType: tr.Type,
 	})
+	s.recordRadioActivity(tcp, spokenText, false /* isContact */)
+}
+
+// estimateSpeechDuration estimates speech duration from text (~150 words/min)
+func estimateSpeechDuration(text string) time.Duration {
+	words := len(strings.Fields(text))
+	if words == 0 {
+		return 2 * time.Second // minimum for any transmission
+	}
+	return time.Duration(words) * 400 * time.Millisecond
+}
+
+func (s *Sim) recordRadioActivity(tcp TCP, spokenText string, isContact bool) {
+	if s.LastRadioActivity == nil {
+		s.LastRadioActivity = make(map[TCP]RadioActivity)
+	}
+	s.LastRadioActivity[tcp] = RadioActivity{
+		EndTime:    s.State.SimTime.Add(estimateSpeechDuration(spokenText)),
+		WasContact: isContact,
+	}
+}
+
+func (s *Sim) radioActivityDelay(tcp TCP) time.Duration {
+	activity, ok := s.LastRadioActivity[tcp]
+	if !ok {
+		return 0
+	}
+
+	var busyUntil time.Time
+	if activity.WasContact {
+		// After a contact: frequency busy until 5s after transmission ends
+		// (controller needs time to respond)
+		busyUntil = activity.EndTime.Add(5 * time.Second)
+	} else {
+		// After a readback: frequency busy until 1s after transmission ends
+		busyUntil = activity.EndTime.Add(time.Second)
+	}
+
+	if s.State.SimTime.Before(busyUntil) {
+		return busyUntil.Sub(s.State.SimTime) + time.Duration(s.Rand.Intn(2))*time.Second
+	}
+	return 0
 }
 
 func (s *Sim) CallsignForACID(acid ACID) (av.ADSBCallsign, bool) {

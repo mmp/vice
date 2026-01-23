@@ -1,0 +1,365 @@
+{
+  "time": "2026-01-22T07:00:30.371806563Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "American 478 turn right heading 09 or 0.",
+  "whisper_duration_ms": 322.666,
+  "audio_duration_ms": 3712,
+  "processor": "GPU: NVIDIA GeForce RTX 5070 Ti (15995MB)",
+  "callsign": "AAL478",
+  "command": "R090",
+  "stt_aircraft": {
+    "AAL478": {
+      "Callsign": "AAL478",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lucki": "LUCKI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 11000,
+      "State": "arrival",
+      "ControllerFrequency": "5E",
+      "TrackingController": "5E",
+      "AddressingForm": 0
+    },
+    "ACA97": {
+      "Callsign": "ACA97",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Lyndi": "LYNDI",
+        "San Diego International Airport": "KSAN"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "5E",
+      "TrackingController": "5E",
+      "AddressingForm": 0
+    },
+    "ASA4112": {
+      "Callsign": "ASA4112",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Ikaye": "IKAYE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "PADRZ2",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "departure",
+      "ControllerFrequency": "5W",
+      "TrackingController": "5S",
+      "AddressingForm": 0
+    },
+    "ASA93": {
+      "Callsign": "ASA93",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Jeman": "JEMAN",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "5N",
+      "TrackingController": "5N",
+      "AddressingForm": 0
+    },
+    "Air Canada 97": {
+      "Callsign": "ACA97",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Lyndi": "LYNDI",
+        "San Diego International Airport": "KSAN"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "5E",
+      "TrackingController": "5E",
+      "AddressingForm": 0
+    },
+    "Alaska 4112": {
+      "Callsign": "ASA4112",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Ikaye": "IKAYE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "PADRZ2",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "departure",
+      "ControllerFrequency": "5W",
+      "TrackingController": "5S",
+      "AddressingForm": 0
+    },
+    "Alaska 93": {
+      "Callsign": "ASA93",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Jeman": "JEMAN",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "5N",
+      "TrackingController": "5N",
+      "AddressingForm": 0
+    },
+    "American 478": {
+      "Callsign": "AAL478",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lucki": "LUCKI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 11000,
+      "State": "arrival",
+      "ControllerFrequency": "5E",
+      "TrackingController": "5E",
+      "AddressingForm": 0
+    },
+    "HAL862": {
+      "Callsign": "HAL862",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Malit": "MALIT"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "PADRZ2",
+      "STAR": "",
+      "Altitude": 12000,
+      "State": "departure",
+      "ControllerFrequency": "5W",
+      "TrackingController": "5S",
+      "AddressingForm": 0
+    },
+    "Hawaiian 862": {
+      "Callsign": "HAL862",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Malit": "MALIT"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "PADRZ2",
+      "STAR": "",
+      "Altitude": 12000,
+      "State": "departure",
+      "ControllerFrequency": "5W",
+      "TrackingController": "5S",
+      "AddressingForm": 0
+    },
+    "SWA145": {
+      "Callsign": "SWA145",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "5N",
+      "TrackingController": "5N",
+      "AddressingForm": 0
+    },
+    "SWA768": {
+      "Callsign": "SWA768",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Mtbal": "MTBAL",
+        "Nshee": "NSHEE",
+        "Piezz": "PIEZZ"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ZZOOO4",
+      "STAR": "",
+      "Altitude": 19369,
+      "State": "departure",
+      "ControllerFrequency": "5W",
+      "TrackingController": "5S",
+      "AddressingForm": 0
+    },
+    "Southwest 145": {
+      "Callsign": "SWA145",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "5N",
+      "TrackingController": "5N",
+      "AddressingForm": 0
+    },
+    "Southwest 768": {
+      "Callsign": "SWA768",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Mtbal": "MTBAL",
+        "Nshee": "NSHEE",
+        "Piezz": "PIEZZ"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ZZOOO4",
+      "STAR": "",
+      "Altitude": 19369,
+      "State": "departure",
+      "ControllerFrequency": "5W",
+      "TrackingController": "5S",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"American 478 turn right heading 09 or 0.\"",
+    "[local-stt] normalized words: [american 478 turn right heading 09 0]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"american\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"478\" Type=1 Value=478",
+    "[local-stt]   token[2]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"90\" Type=1 Value=90",
+    "[local-stt] MatchCallsign: 6 tokens, 14 aircraft",
+    "[local-stt]   exact match: \"american 478\" -\u003e \"AAL478\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"AAL478\" SpokenKey=\"American 478\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=11000 Fixes=7 Approaches=4 AssignedApproach=\"Localizer Runway 27\"",
+    "[local-stt]   fix: \"Lyndi\" -\u003e \"LYNDI\"",
+    "[local-stt]   fix: \"San Diego International Airport\" -\u003e \"KSAN\"",
+    "[local-stt]   fix: \"Vydda\" -\u003e \"VYDDA\"",
+    "[local-stt]   fix: \"Okain\" -\u003e \"OKAIN\"",
+    "[local-stt]   fix: \"Cijhi\" -\u003e \"CIJHI\"",
+    "[local-stt]   fix: \"Reebo\" -\u003e \"REEBO\"",
+    "[local-stt]   fix: \"Lucki\" -\u003e \"LUCKI\"",
+    "[local-stt]   approach: \"r-nav zulu runway two seven\" -\u003e \"RZ7\"",
+    "[local-stt]   approach: \"Localizer runway two seven\" -\u003e \"L27\"",
+    "[local-stt]   approach: \"Visual runway two seven\" -\u003e \"V27\"",
+    "[local-stt]   approach: \"r-nav yankee runway two seven\" -\u003e \"RY7\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"90\" Type=1 Value=90",
+    "[local-stt]   position ID: found command keyword \"turn\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   tryMatchTemplate \"turn_right_heading\": cmd=\"R090\" argStr=\"090\" consumed=4",
+    "[local-stt]   tryMatchTemplate \"turn_right_only\": cmd=\"R090\" argStr=\"090\" consumed=4",
+    "[local-stt]   matched command: \"R090\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[R090] (avgConf=1.00)",
+    "[local-stt] parsed commands: [R090] (conf=1.00)",
+    "[local-stt] validated commands: [R090] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"AAL478 R090\" (conf=1.00, time=503.1µs) ==="
+  ]
+}

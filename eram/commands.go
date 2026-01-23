@@ -6,6 +6,7 @@ import (
 	"unicode"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
@@ -208,15 +209,16 @@ func (ep *ERAMPane) deleteFLightplan(ctx *panes.Context, trk sim.Track) {
 func (ep *ERAMPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCallsign, cmds string) {
 	ep.targetGenLastCallsign = callsign
 
-	ctx.Client.RunAircraftCommands(callsign, cmds, false, false,
-		0, 0, "", nil, "", // keyboard input: no whisper duration, audio duration, transcript, or STT context
-		func(errStr string, remaining string) {
-			if errStr != "" {
+	ctx.Client.RunAircraftCommands(client.AircraftCommandRequest{
+		Callsign: callsign,
+		Commands: cmds,
+	}, func(errStr string, remaining string) {
+		if errStr != "" {
 
-				if err := server.TryDecodeErrorString(errStr); err != nil {
-				}
+			if err := server.TryDecodeErrorString(errStr); err != nil {
 			}
-		})
+		}
+	})
 }
 
 // Mainly used for ERAM assigned/ interm alts. May be used for actually changing routes.

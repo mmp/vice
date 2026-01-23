@@ -165,7 +165,6 @@ func makeDefaultPreferences() *Preferences {
 
 	prefs.commandBigPosition = [2]float32{2, 80}
 	prefs.commandSmallPosition = [2]float32{392, 80}
-	prefs.clockPosition = [2]float32{10, 500}
 	prefs.altitudeFilter = [2]int{0, 999}
 	prefs.TornOffButtons = make(map[string][2]float32)
 

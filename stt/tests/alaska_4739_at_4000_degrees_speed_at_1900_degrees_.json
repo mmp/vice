@@ -1,0 +1,173 @@
+{
+  "time": "2026-01-22T06:00:29.412391502Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Alaska, 4739 at 4000 degrees, speed at 1,900 degrees, 0.",
+  "whisper_duration_ms": 545.779,
+  "audio_duration_ms": 4224,
+  "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
+  "callsign": "ASA4739",
+  "command": "TS190",
+  "stt_aircraft": {
+    "ASA4739": {
+      "Callsign": "ASA4739",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lyndi": "LYNDI",
+        "Naddo": "NADDO",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 4405,
+      "State": "arrival",
+      "ControllerFrequency": "5Z",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    },
+    "Alaska 4739": {
+      "Callsign": "ASA4739",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lyndi": "LYNDI",
+        "Naddo": "NADDO",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 4405,
+      "State": "arrival",
+      "ControllerFrequency": "5Z",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    },
+    "UAL485": {
+      "Callsign": "UAL485",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Visual Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 3901,
+      "State": "on approach",
+      "ControllerFrequency": "5Z",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    },
+    "United 485": {
+      "Callsign": "UAL485",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Visual Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 3901,
+      "State": "on approach",
+      "ControllerFrequency": "5Z",
+      "TrackingController": "5Z",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Alaska, 4739 at 4000 degrees, speed at 1,900 degrees, 0.\"",
+    "[local-stt] normalized words: [alaska 4739 at 4000 degrees speed at 1900 degrees 0]",
+    "[local-stt] tokens: 10",
+    "[local-stt]   token[0]: Text=\"alaska\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"4739\" Type=1 Value=4739",
+    "[local-stt]   token[2]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"4000\" Type=1 Value=4000",
+    "[local-stt]   token[4]: Text=\"degrees\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"1900\" Type=1 Value=1900",
+    "[local-stt]   token[8]: Text=\"degrees\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"0\" Type=1 Value=0",
+    "[local-stt] MatchCallsign: 10 tokens, 4 aircraft",
+    "[local-stt]   exact match: \"alaska 4739\" -\u003e \"ASA4739\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"ASA4739\" SpokenKey=\"Alaska 4739\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4405 Fixes=7 Approaches=4 AssignedApproach=\"Localizer Runway 27\"",
+    "[local-stt]   fix: \"Reebo\" -\u003e \"REEBO\"",
+    "[local-stt]   fix: \"Naddo\" -\u003e \"NADDO\"",
+    "[local-stt]   fix: \"San Diego International Airport\" -\u003e \"KSAN\"",
+    "[local-stt]   fix: \"Lyndi\" -\u003e \"LYNDI\"",
+    "[local-stt]   fix: \"Vydda\" -\u003e \"VYDDA\"",
+    "[local-stt]   fix: \"Okain\" -\u003e \"OKAIN\"",
+    "[local-stt]   fix: \"Cijhi\" -\u003e \"CIJHI\"",
+    "[local-stt]   approach: \"Localizer runway two seven\" -\u003e \"L27\"",
+    "[local-stt]   approach: \"Visual runway two seven\" -\u003e \"V27\"",
+    "[local-stt]   approach: \"r-nav yankee runway two seven\" -\u003e \"RY7\"",
+    "[local-stt]   approach: \"r-nav zulu runway two seven\" -\u003e \"RZ7\"",
+    "[local-stt] command tokens after disregard: 8",
+    "[local-stt]   token[0]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"4000\" Type=1 Value=4000",
+    "[local-stt]   token[2]: Text=\"degrees\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"1900\" Type=1 Value=1900",
+    "[local-stt]   token[6]: Text=\"degrees\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"0\" Type=1 Value=0",
+    "[local-stt]   position ID: found command keyword \"speed\" at position 3 - not just position ID",
+    "[local-stt] ParseCommands: 8 tokens",
+    "[local-stt]   found 'at {altitude}' pattern at position 0 (alt=4000), triggering then",
+    "[local-stt]   no match at token[2]=\"degrees\", skipping",
+    "[local-stt]   extractSpeed: corrected 1900 -\u003e 190 (extra digit)",
+    "[local-stt]   tryMatchTemplate \"speed_only\": cmd=\"TS190\" argStr=\"190\" consumed=3",
+    "[local-stt]   matched command: \"TS190\" (conf=1.00, consumed=3, isThen=true)",
+    "[local-stt]   no match at token[6]=\"degrees\", skipping",
+    "[local-stt]   no match at token[7]=\"0\", skipping",
+    "[local-stt] ParseCommands: result=[TS190] (avgConf=1.00)",
+    "[local-stt] parsed commands: [TS190] (conf=1.00)",
+    "[local-stt] validated commands: [TS190] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"ASA4739 TS190\" (conf=1.00, time=0s) ==="
+  ]
+}

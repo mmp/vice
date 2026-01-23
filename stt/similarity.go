@@ -359,10 +359,41 @@ func PhoneticMatch(w1, w2 string) bool {
 	p1, a1 := DoubleMetaphone(w1)
 	p2, a2 := DoubleMetaphone(w2)
 
+	// Exact metaphone match
 	if p1 == p2 || p1 == a2 || a1 == p2 || (a1 != "" && a1 == a2) {
 		return true
 	}
+
+	// Conservative extension: check if one code is a suffix of the other
+	// This handles STT errors that drop leading sounds (e.g., "laser" for "localizer")
+	// Only apply when the shorter code is at least 3 chars (to avoid false positives)
+	if len(p1) >= 3 && len(p2) >= 3 {
+		if strings.HasSuffix(p1, p2) || strings.HasSuffix(p2, p1) {
+			return true
+		}
+		// Also check if they share a common suffix of 3+ characters
+		minLen := min(len(p1), len(p2))
+		for suffixLen := minLen; suffixLen >= 3; suffixLen-- {
+			if p1[len(p1)-suffixLen:] == p2[len(p2)-suffixLen:] {
+				return true
+			}
+		}
+	}
+
 	return false
+}
+
+// fuzzyMatchBlocklist contains pairs of words that should NOT fuzzy-match.
+// These are known false positives where similar-looking words have completely
+// different meanings in ATC context.
+var fuzzyMatchBlocklist = map[string][]string{
+	"intercept": {"increase"},           // "intercept localizer" vs "increase speed"
+	"increase":  {"intercept", "cross"}, // "increase speed" vs "cross fix"
+	"cross":     {"increase"},
+	"see":       {"speed"},      // "see ya" vs "speed"
+	"degrees":   {"increase"},   // garbled STT output
+	"flight":    {"right"},      // "flight 638" vs "turn right"
+	"heading":   {"descending"}, // "heading 180" vs "descend"
 }
 
 // FuzzyMatch returns true if word matches target with Jaro-Winkler >= threshold
@@ -370,6 +401,16 @@ func PhoneticMatch(w1, w2 string) bool {
 func FuzzyMatch(word, target string, threshold float64) bool {
 	if strings.EqualFold(word, target) {
 		return true
+	}
+	// Check blocklist for known false positives
+	wordLower := strings.ToLower(word)
+	targetLower := strings.ToLower(target)
+	if blocked, ok := fuzzyMatchBlocklist[wordLower]; ok {
+		for _, b := range blocked {
+			if b == targetLower {
+				return false
+			}
+		}
 	}
 	// Prevent very short words from fuzzy-matching longer targets
 	// (e.g., "i" shouldn't match "in" via JaroWinkler)

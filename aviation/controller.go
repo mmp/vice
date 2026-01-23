@@ -34,5 +34,8 @@ func (c Controller) PositionId() ControlPosition {
 }
 
 func (c Controller) ERAMID() string { // For display
+	if c.ERAMFacility {
+		return c.SectorID // Already includes the facility letter
+	}
 	return c.FacilityIdentifier + c.SectorID
 }

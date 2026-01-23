@@ -219,6 +219,18 @@ func scoreCallsignMatch(tokens []Token, spokenName, callsign string) (float64, i
 		avgScore = min(1.0, avgScore*1.1)
 	}
 
+	// Penalty for airline-only match when there's a flight number in the transcript
+	// that we couldn't match. This prevents "Southwest" from matching better than
+	// "Southwest 614" when the transcript says "Southwest 1614".
+	if matchCount == 1 && number != "" && consumed < len(tokens) {
+		// Check if next token looks like a flight number
+		nextToken := tokens[consumed]
+		if nextToken.Type == TokenNumber && nextToken.Value > 0 {
+			// There's a number in the transcript that we didn't match - penalize
+			avgScore *= 0.8
+		}
+	}
+
 	return avgScore, consumed
 }
 

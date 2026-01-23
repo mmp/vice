@@ -1,0 +1,83 @@
+{
+  "time": "2026-01-22T14:53:10.021568195Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": ". Envoy 8271 turn left heading one eight zero.",
+  "whisper_duration_ms": 291.33,
+  "audio_duration_ms": 3456,
+  "processor": "GPU: Apple M5, 10 CPU / 10 GPU cores, 24GB",
+  "callsign": "ENY8271",
+  "command": "L180",
+  "stt_aircraft": {
+    "ENY8271": {
+      "Callsign": "ENY8271",
+      "AircraftType": "E170",
+      "Fixes": {
+        "Mikie": "MYKIE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ORD8.W",
+      "STAR": "",
+      "Altitude": 3980,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0
+    },
+    "Envoy 8271": {
+      "Callsign": "ENY8271",
+      "AircraftType": "E170",
+      "Fixes": {
+        "Mikie": "MYKIE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ORD8.W",
+      "STAR": "",
+      "Altitude": 3980,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \". Envoy 8271 turn left heading one eight zero.\"",
+    "[local-stt] normalized words: [envoy 8271 turn left heading 1 8 0]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"envoy\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"8271\" Type=1 Value=8271",
+    "[local-stt]   token[2]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"180\" Type=1 Value=180",
+    "[local-stt] MatchCallsign: 6 tokens, 2 aircraft",
+    "[local-stt]   exact match: \"envoy 8271\" -\u003e \"ENY8271\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"ENY8271\" SpokenKey=\"Envoy 8271\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=3980 Fixes=1 Approaches=0 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"Mikie\" -\u003e \"MYKIE\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"180\" Type=1 Value=180",
+    "[local-stt]   position ID: found command keyword \"turn\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   tryMatchTemplate \"turn_left_heading\": cmd=\"L180\" argStr=\"180\" consumed=4",
+    "[local-stt]   tryMatchTemplate \"turn_left_only\": cmd=\"L180\" argStr=\"180\" consumed=4",
+    "[local-stt]   matched command: \"L180\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[L180] (avgConf=1.00)",
+    "[local-stt] parsed commands: [L180] (conf=1.00)",
+    "[local-stt] validated commands: [L180] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"ENY8271 L180\" (conf=1.00, time=60.25µs) ==="
+  ]
+}

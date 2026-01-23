@@ -1,0 +1,216 @@
+{
+  "time": "2026-01-22T23:57:32.226562249Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Delta 84, Klimin, May 10, 144,000.",
+  "whisper_duration_ms": 499.654,
+  "audio_duration_ms": 2944,
+  "processor": "GPU: Radeon RX550/550 Series (4096MB)",
+  "callsign": "DAL84",
+  "command": "C140",
+  "stt_aircraft": {
+    "DAL15": {
+      "Callsign": "DAL15",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Hartsfield Jackson Atlanta International Airport": "KATL",
+        "March": "MRCHH"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CHPPR1",
+      "Altitude": 13126,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "DAL4975": {
+      "Callsign": "DAL4975",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Hartsfield Jackson Atlanta International Airport": "KATL",
+        "Ondre": "ONDRE",
+        "Smelly": "SMELY",
+        "Straw": "STRWY"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "ONDRE1",
+      "Altitude": 16271,
+      "State": "arrival",
+      "ControllerFrequency": "1L",
+      "TrackingController": "1L",
+      "AddressingForm": 0
+    },
+    "DAL84": {
+      "Callsign": "DAL84",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Riggs": "RIGGZ",
+        "Rivet": "RIVTT",
+        "Slaw": "SLAWW",
+        "Smeltz": "SMLTZ"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "SMLTZ3",
+      "STAR": "",
+      "Altitude": 4435,
+      "State": "departure",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0
+    },
+    "DAL987": {
+      "Callsign": "DAL987",
+      "AircraftType": "B752",
+      "Fixes": {
+        "Bedodd": "BDODD",
+        "Cajun": "KAJIN",
+        "Snuffy": "SNUFY"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "KAJIN2",
+      "STAR": "",
+      "Altitude": 6003,
+      "State": "departure",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0
+    },
+    "Delta 15": {
+      "Callsign": "DAL15",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Hartsfield Jackson Atlanta International Airport": "KATL",
+        "March": "MRCHH"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CHPPR1",
+      "Altitude": 13126,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "Delta 4975": {
+      "Callsign": "DAL4975",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Hartsfield Jackson Atlanta International Airport": "KATL",
+        "Ondre": "ONDRE",
+        "Smelly": "SMELY",
+        "Straw": "STRWY"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "ONDRE1",
+      "Altitude": 16271,
+      "State": "arrival",
+      "ControllerFrequency": "1L",
+      "TrackingController": "1L",
+      "AddressingForm": 0
+    },
+    "Delta 84": {
+      "Callsign": "DAL84",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Riggs": "RIGGZ",
+        "Rivet": "RIVTT",
+        "Slaw": "SLAWW",
+        "Smeltz": "SMLTZ"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "SMLTZ3",
+      "STAR": "",
+      "Altitude": 4435,
+      "State": "departure",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0
+    },
+    "Delta 987": {
+      "Callsign": "DAL987",
+      "AircraftType": "B752",
+      "Fixes": {
+        "Bedodd": "BDODD",
+        "Cajun": "KAJIN",
+        "Snuffy": "SNUFY"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "KAJIN2",
+      "STAR": "",
+      "Altitude": 6003,
+      "State": "departure",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Delta 84, Klimin, May 10, 144,000.\"",
+    "[local-stt] normalized words: [delta 84 klimin may 10 144000]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"84\" Type=1 Value=84",
+    "[local-stt]   token[2]: Text=\"klimin\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"may\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"10\" Type=1 Value=10",
+    "[local-stt]   token[5]: Text=\"144000\" Type=1 Value=144000",
+    "[local-stt] MatchCallsign: 6 tokens, 8 aircraft",
+    "[local-stt]   exact match: \"delta 84\" -\u003e \"DAL84\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"DAL84\" SpokenKey=\"Delta 84\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=4435 Fixes=4 Approaches=0 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"Riggs\" -\u003e \"RIGGZ\"",
+    "[local-stt]   fix: \"Rivet\" -\u003e \"RIVTT\"",
+    "[local-stt]   fix: \"Smeltz\" -\u003e \"SMLTZ\"",
+    "[local-stt]   fix: \"Slaw\" -\u003e \"SLAWW\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"klimin\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"may\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"10\" Type=1 Value=10",
+    "[local-stt]   token[3]: Text=\"144000\" Type=1 Value=144000",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   altitude correction: 10 -\u003e 100 (aircraft at %!f(int=4435) ft)",
+    "[local-stt]   tryMatchTemplate \"climb\": cmd=\"C100\" argStr=\"100\" consumed=3",
+    "[local-stt]   matched command: \"C100\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   no match at token[3]=\"144000\", skipping",
+    "[local-stt] ParseCommands: result=[C100] (avgConf=1.00)",
+    "[local-stt] parsed commands: [C100] (conf=1.00)",
+    "[local-stt] validated commands: [C100] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"DAL84 C100\" (conf=1.00, time=0s) ==="
+  ]
+}

@@ -604,7 +604,7 @@ type AircraftCommandsArgs struct {
 	WhisperTranscript string                  // Raw whisper transcript (empty for keyboard input)
 	WhisperProcessor  string                  // Description of the processor running whisper (GPU model or CPU info)
 	AircraftContext   map[string]stt.Aircraft // Aircraft context used for STT decoding (for logging)
-	STTDebugLogs      string                  // Local STT processing logs (for logging)
+	STTDebugLogs      []string                // Local STT processing logs (for logging)
 }
 
 // If an RPC call returns an error, then the result argument is not returned(!?).
@@ -678,7 +678,7 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 			slog.String("callsign", string(cmds.Callsign)),
 			slog.String("command", cmds.Commands),
 			slog.Any("stt_aircraft", cmds.AircraftContext),
-			slog.String("logs", cmds.STTDebugLogs))
+			slog.Any("logs", cmds.STTDebugLogs))
 	}
 
 	return nil

@@ -728,10 +728,10 @@ func (nav *Nav) DepartureMessage(reportHeading bool) *av.RadioTransmission {
 	return rt
 }
 
-func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string, reportHeading bool) *av.RadioTransmission {
+func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string, reportHeading bool, isDeparture bool) *av.RadioTransmission {
 	var resp av.RadioTransmission
 
-	if star == "" && reportHeading {
+	if isDeparture && reportHeading {
 		// Departure with varied headings
 		hdg, state := nav.DepartureHeading()
 		switch state {

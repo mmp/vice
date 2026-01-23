@@ -1,0 +1,421 @@
+{
+  "time": "2026-01-22T06:24:29.009078496Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "SW 9834, contact Lindbergh Tower 118.3",
+  "whisper_duration_ms": 247.792,
+  "audio_duration_ms": 6784,
+  "processor": "GPU: NVIDIA GeForce RTX 5070 Ti (15995MB)",
+  "callsign": "SWA9834",
+  "command": "TO",
+  "stt_aircraft": {
+    "FFT3601": {
+      "Callsign": "FFT3601",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Mtbal": "MTBAL"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ZZOOO4",
+      "STAR": "",
+      "Altitude": 23000,
+      "State": "departure",
+      "ControllerFrequency": "5W",
+      "TrackingController": "5W",
+      "AddressingForm": 0
+    },
+    "FFT692": {
+      "Callsign": "FFT692",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Anrmn": "ANRMN",
+        "Bluze": "BLUZE",
+        "Gridr": "GRIDR",
+        "Guuse": "GUUSE",
+        "Jorrj": "JORRJ"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ZZOOO4",
+      "STAR": "",
+      "Altitude": 10471,
+      "State": "departure",
+      "ControllerFrequency": "5W",
+      "TrackingController": "5W",
+      "AddressingForm": 0
+    },
+    "FFT896": {
+      "Callsign": "FFT896",
+      "AircraftType": "CC22",
+      "Fixes": {
+        "Piezz": "PIEZZ"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ZZOOO4",
+      "STAR": "",
+      "Altitude": 23000,
+      "State": "departure",
+      "ControllerFrequency": "5W",
+      "TrackingController": "5W",
+      "AddressingForm": 0
+    },
+    "Frontier Flight 3601": {
+      "Callsign": "FFT3601",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Mtbal": "MTBAL"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ZZOOO4",
+      "STAR": "",
+      "Altitude": 23000,
+      "State": "departure",
+      "ControllerFrequency": "5W",
+      "TrackingController": "5W",
+      "AddressingForm": 0
+    },
+    "Frontier Flight 692": {
+      "Callsign": "FFT692",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Anrmn": "ANRMN",
+        "Bluze": "BLUZE",
+        "Gridr": "GRIDR",
+        "Guuse": "GUUSE",
+        "Jorrj": "JORRJ"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ZZOOO4",
+      "STAR": "",
+      "Altitude": 10471,
+      "State": "departure",
+      "ControllerFrequency": "5W",
+      "TrackingController": "5W",
+      "AddressingForm": 0
+    },
+    "Frontier Flight 896": {
+      "Callsign": "FFT896",
+      "AircraftType": "CC22",
+      "Fixes": {
+        "Piezz": "PIEZZ"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ZZOOO4",
+      "STAR": "",
+      "Altitude": 23000,
+      "State": "departure",
+      "ControllerFrequency": "5W",
+      "TrackingController": "5W",
+      "AddressingForm": 0
+    },
+    "SKW2851": {
+      "Callsign": "SKW2851",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Klomn": "KLOMN",
+        "Lntrn": "LNTRN",
+        "Lyndi": "LYNDI",
+        "Naddo": "NADDO",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA",
+        "Xmans": "XMANS"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 10354,
+      "State": "arrival",
+      "ControllerFrequency": "5N",
+      "TrackingController": "5N",
+      "AddressingForm": 0
+    },
+    "SWA244": {
+      "Callsign": "SWA244",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Aztek": "AZTEK",
+        "Cijhi": "CIJHI",
+        "Jackk": "JACKK",
+        "Jeevs": "JEEVS",
+        "Lucki": "LUCKI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 11423,
+      "State": "arrival",
+      "ControllerFrequency": "5E",
+      "TrackingController": "5E",
+      "AddressingForm": 0
+    },
+    "SWA4821": {
+      "Callsign": "SWA4821",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Klomn": "KLOMN",
+        "Lyndi": "LYNDI",
+        "Naddo": "NADDO",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 7218,
+      "State": "arrival",
+      "ControllerFrequency": "5N",
+      "TrackingController": "5N",
+      "AddressingForm": 0
+    },
+    "SWA9834": {
+      "Callsign": "SWA9834",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Ikaye": "IKAYE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "PADRZ2",
+      "STAR": "",
+      "Altitude": 12000,
+      "State": "departure",
+      "ControllerFrequency": "5W",
+      "TrackingController": "5S",
+      "AddressingForm": 0
+    },
+    "SkyWest 2851": {
+      "Callsign": "SKW2851",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Klomn": "KLOMN",
+        "Lntrn": "LNTRN",
+        "Lyndi": "LYNDI",
+        "Naddo": "NADDO",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA",
+        "Xmans": "XMANS"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 10354,
+      "State": "arrival",
+      "ControllerFrequency": "5N",
+      "TrackingController": "5N",
+      "AddressingForm": 0
+    },
+    "Southwest 244": {
+      "Callsign": "SWA244",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Aztek": "AZTEK",
+        "Cijhi": "CIJHI",
+        "Jackk": "JACKK",
+        "Jeevs": "JEEVS",
+        "Lucki": "LUCKI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 11423,
+      "State": "arrival",
+      "ControllerFrequency": "5E",
+      "TrackingController": "5E",
+      "AddressingForm": 0
+    },
+    "Southwest 4821": {
+      "Callsign": "SWA4821",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Klomn": "KLOMN",
+        "Lyndi": "LYNDI",
+        "Naddo": "NADDO",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 7218,
+      "State": "arrival",
+      "ControllerFrequency": "5N",
+      "TrackingController": "5N",
+      "AddressingForm": 0
+    },
+    "Southwest 9834": {
+      "Callsign": "SWA9834",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Ikaye": "IKAYE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "PADRZ2",
+      "STAR": "",
+      "Altitude": 12000,
+      "State": "departure",
+      "ControllerFrequency": "5W",
+      "TrackingController": "5S",
+      "AddressingForm": 0
+    },
+    "UAL58": {
+      "Callsign": "UAL58",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Bluze": "BLUZE",
+        "Gridr": "GRIDR",
+        "Guuse": "GUUSE",
+        "Jorrj": "JORRJ"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ZZOOO4",
+      "STAR": "",
+      "Altitude": 11000,
+      "State": "departure",
+      "ControllerFrequency": "5W",
+      "TrackingController": "5W",
+      "AddressingForm": 0
+    },
+    "United 58": {
+      "Callsign": "UAL58",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Bluze": "BLUZE",
+        "Gridr": "GRIDR",
+        "Guuse": "GUUSE",
+        "Jorrj": "JORRJ"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ZZOOO4",
+      "STAR": "",
+      "Altitude": 11000,
+      "State": "departure",
+      "ControllerFrequency": "5W",
+      "TrackingController": "5W",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"SW 9834, contact Lindbergh Tower 118.3\"",
+    "[local-stt] normalized words: [sw 9834 contact lindbergh tower 1183]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"sw\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"9834\" Type=1 Value=9834",
+    "[local-stt]   token[2]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"lindbergh\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"tower\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"1183\" Type=1 Value=1183",
+    "[local-stt] MatchCallsign: 6 tokens, 16 aircraft",
+    "[local-stt]   candidate \"SkyWest 2851\" (ICAO=\"SKW2851\"): score=0.79 consumed=1",
+    "[local-stt]   candidate \"FFT692\" (ICAO=\"FFT692\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SWA4821\" (ICAO=\"SWA4821\"): score=0.81 consumed=1",
+    "[local-stt]   candidate \"UAL58\" (ICAO=\"UAL58\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SKW2851\" (ICAO=\"SKW2851\"): score=0.79 consumed=1",
+    "[local-stt]   candidate \"FFT3601\" (ICAO=\"FFT3601\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SWA244\" (ICAO=\"SWA244\"): score=0.82 consumed=1",
+    "[local-stt]   candidate \"FFT896\" (ICAO=\"FFT896\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest 4821\" (ICAO=\"SWA4821\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"United 58\" (ICAO=\"UAL58\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SWA9834\" (ICAO=\"SWA9834\"): score=1.00 consumed=2",
+    "[local-stt]   candidate \"Frontier Flight 692\" (ICAO=\"FFT692\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Frontier Flight 896\" (ICAO=\"FFT896\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest 9834\" (ICAO=\"SWA9834\"): score=1.00 consumed=2",
+    "[local-stt]   candidate \"Frontier Flight 3601\" (ICAO=\"FFT3601\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest 244\" (ICAO=\"SWA244\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SWA9834\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   candidate \"Southwest 9834\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   accepted: \"SWA9834\" (conf=1.00, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"SWA9834\" SpokenKey=\"Southwest 9834\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=12000 Fixes=1 Approaches=0 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"Ikaye\" -\u003e \"IKAYE\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"lindbergh\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"tower\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"1183\" Type=1 Value=1183",
+    "[local-stt]   position ID: found command keyword \"contact\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   tryMatchTemplate \"contact_tower\": cmd=\"TO\" argStr=\"\" consumed=3",
+    "[local-stt]   tryMatchTemplate \"frequency_change\": cmd=\"FC\" argStr=\"\" consumed=1",
+    "[local-stt]   matched command: \"TO\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   no match at token[3]=\"1183\", skipping",
+    "[local-stt] ParseCommands: result=[TO] (avgConf=1.00)",
+    "[local-stt] parsed commands: [TO] (conf=1.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] validation errors: [contact tower only valid for aircraft on approach]",
+    "[local-stt] === DecodeTranscript END: \"BLOCKED\" (conf=0.00, time=192.7µs) ==="
+  ]
+}

@@ -27,17 +27,19 @@ const (
 	ArgFixApproach // Fix followed by approach (e.g., "at FERGI cleared River Visual")
 	ArgSID         // SID name (e.g., "climb via the Kennedy Five")
 	ArgSTAR        // STAR name (e.g., "descend via the Camrn Four")
+	ArgHold        // Hold with optional parameters (e.g., "hold west of MERIT on the 280 radial, 2 minute legs, left turns")
 )
 
 // CommandTemplate defines a pattern for recognizing a command.
 type CommandTemplate struct {
-	Name        string     // Template name for debugging
-	Keywords    [][]string // Required keyword sequences (alternatives within each group)
-	ArgType     ArgType    // Type of argument expected
-	OutputFmt   string     // Format string for output (e.g., "D%d", "L%03d")
-	ThenVariant string     // Output format for "then" variant (e.g., "TD%d")
-	Priority    int        // Higher priority wins when multiple match
-	SkipWords   []string   // Words to skip during matching
+	Name            string     // Template name for debugging
+	Keywords        [][]string // Required keyword sequences (alternatives within each group)
+	ArgType         ArgType    // Type of argument expected
+	OutputFmt       string     // Format string for output (e.g., "D%d", "L%03d")
+	ThenVariant     string     // Output format for "then" variant (e.g., "TD%d")
+	Priority        int        // Higher priority wins when multiple match
+	SkipWords       []string   // Words to skip during matching
+	SkipNonKeywords bool       // Skip any words between keywords (e.g., "contact [facility] tower")
 }
 
 // CommandMatch represents a matched command.
@@ -46,6 +48,7 @@ type CommandMatch struct {
 	Confidence float64 // Match confidence
 	Consumed   int     // Tokens consumed
 	IsThen     bool    // Whether this is a "then" sequenced command
+	IsSayAgain bool    // True if this is a partial match that needs say-again
 }
 
 // commandTemplates defines patterns for recognizing ATC commands.
@@ -68,6 +71,19 @@ type CommandMatch struct {
 //   - "climb via the sid" matches climb_via_sid (15), not climb (5)
 //   - "present heading" matches present_heading (12), not heading_only (5)
 //   - "turn left heading 270" matches turn_left_heading (10), not heading_only (5)
+//
+// SAYAGAIN Commands:
+// When keywords are matched but the associated value cannot be extracted (e.g., STT transcribed
+// "fly heading blark bling five" where the heading is garbled), a SAYAGAIN/TYPE command is
+// generated instead. The pilot will read back the valid commands and ask for clarification
+// on the missed part. Supported SAYAGAIN types:
+//   - SAYAGAIN/HEADING - heading value couldn't be extracted
+//   - SAYAGAIN/ALTITUDE - altitude value couldn't be extracted
+//   - SAYAGAIN/SPEED - speed value couldn't be extracted
+//   - SAYAGAIN/APPROACH - approach name couldn't be matched
+//   - SAYAGAIN/TURN - turn degrees couldn't be extracted
+//   - SAYAGAIN/SQUAWK - squawk code couldn't be extracted
+//   - SAYAGAIN/FIX - fix name couldn't be matched
 var commandTemplates = []CommandTemplate{
 	// === ALTITUDE COMMANDS ===
 	{
@@ -297,10 +313,18 @@ var commandTemplates = []CommandTemplate{
 		Priority:  10,
 	},
 	{
+		Name:      "cancel_speed_restriction",
+		Keywords:  [][]string{{"cancel"}, {"speed"}},
+		ArgType:   ArgNone,
+		OutputFmt: "S",
+		Priority:  10,
+		SkipWords: []string{"restrictions", "restriction"},
+	},
+	{
 		Name:      "final_approach_speed",
 		Keywords:  [][]string{{"reduce"}, {"final"}, {"approach"}, {"speed"}},
 		ArgType:   ArgNone,
-		OutputFmt: "SFAS",
+		OutputFmt: "SMIN",
 		Priority:  15,
 		SkipWords: []string{"to"},
 	},
@@ -312,7 +336,7 @@ var commandTemplates = []CommandTemplate{
 		ArgType:   ArgFix,
 		OutputFmt: "D%s",
 		Priority:  10,
-		SkipWords: []string{"to"},
+		SkipWords: []string{"to", "at"},
 	},
 	{
 		Name:      "cross_fix_altitude",
@@ -339,13 +363,24 @@ var commandTemplates = []CommandTemplate{
 		SkipWords: []string{"heading"},
 	},
 	// Hold commands
+	// "hold (direction) of (fix) as published" - direction is ignored, just extract fix
 	{
-		Name:      "hold_at_fix",
-		Keywords:  [][]string{{"hold"}, {"at"}},
+		Name:      "hold_published",
+		Keywords:  [][]string{{"hold"}},
 		ArgType:   ArgFix,
 		OutputFmt: "H%s",
 		Priority:  10,
-		SkipWords: []string{"as", "published"},
+		SkipWords: []string{"north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest", "of", "at", "as", "published"},
+	},
+	// "hold (direction) of (fix) on the (radial) radial [inbound], (minutes) minute legs, (left/right) turns"
+	// This needs special handling via ArgHold to extract multiple parameters
+	{
+		Name:      "hold_controller_specified",
+		Keywords:  [][]string{{"hold"}},
+		ArgType:   ArgHold,
+		OutputFmt: "H%s", // Format string is filled in by extractHold
+		Priority:  15,    // Higher priority than hold_published to try first
+		SkipWords: []string{"north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest", "of", "at", "the", "inbound"},
 	},
 
 	// === APPROACH COMMANDS ===
@@ -397,10 +432,11 @@ var commandTemplates = []CommandTemplate{
 	},
 	{
 		Name:      "intercept_localizer",
-		Keywords:  [][]string{{"intercept", "join"}, {"localizer", "the"}},
+		Keywords:  [][]string{{"intercept", "join", "set"}, {"localizer"}},
 		ArgType:   ArgNone,
 		OutputFmt: "I",
 		Priority:  10,
+		SkipWords: []string{"work", "going", "gonna", "to", "low", "load", "look"}, // STT garbage before "localizer"
 	},
 
 	// === TRANSPONDER COMMANDS ===
@@ -464,11 +500,12 @@ var commandTemplates = []CommandTemplate{
 		Priority:  20, // Higher than contact commands
 	},
 	{
-		Name:      "contact_tower",
-		Keywords:  [][]string{{"contact"}, {"tower"}},
-		ArgType:   ArgNone,
-		OutputFmt: "TO",
-		Priority:  15,
+		Name:            "contact_tower",
+		Keywords:        [][]string{{"contact"}, {"tower"}},
+		ArgType:         ArgNone,
+		OutputFmt:       "TO",
+		Priority:        15,
+		SkipNonKeywords: true, // Allow facility names between "contact" and "tower"
 	},
 	{
 		Name:      "frequency_change",
@@ -579,6 +616,25 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 			}
 		}
 
+		// Skip "expect further clearance" phrase (informational only, not a command)
+		// e.g., "hold at MERIT expect further clearance 1230"
+		if tokens[i].Text == "expect" && i+2 < len(tokens) {
+			if strings.ToLower(tokens[i+1].Text) == "further" &&
+				strings.ToLower(tokens[i+2].Text) == "clearance" {
+				logLocalStt("  skipping 'expect further clearance' at position %d", i)
+				i += 3 // Skip "expect further clearance"
+				// Skip any following digits (the time, e.g., "1 2 3 0")
+				for i < len(tokens) {
+					if tokens[i].Type == TokenNumber || IsDigit(tokens[i].Text) {
+						i++
+					} else {
+						break
+					}
+				}
+				continue
+			}
+		}
+
 		// Try to match a command
 		match, consumed := matchCommand(tokens[i:], ac, isThen)
 		if consumed > 0 {
@@ -608,19 +664,42 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 }
 
 // matchCommand tries to match tokens against all command templates.
+// Returns the best match. Full matches are preferred over SAYAGAIN (partial) matches.
+// A SAYAGAIN match is only returned if no full match is found.
 func matchCommand(tokens []Token, ac Aircraft, isThen bool) (CommandMatch, int) {
 	var bestMatch CommandMatch
 	var bestPriority int
+	var bestSayAgain CommandMatch
+	var bestSayAgainPriority int
 
 	for _, tmpl := range commandTemplates {
 		match, consumed := tryMatchTemplate(tokens, tmpl, ac, isThen)
-		if consumed > 0 && (tmpl.Priority > bestPriority || (tmpl.Priority == bestPriority && consumed > bestMatch.Consumed)) {
-			bestMatch = match
-			bestPriority = tmpl.Priority
+		if consumed > 0 {
+			if match.IsSayAgain {
+				// Track best SAYAGAIN match separately
+				if tmpl.Priority > bestSayAgainPriority || (tmpl.Priority == bestSayAgainPriority && consumed > bestSayAgain.Consumed) {
+					bestSayAgain = match
+					bestSayAgainPriority = tmpl.Priority
+				}
+			} else {
+				// Track best full match
+				if tmpl.Priority > bestPriority || (tmpl.Priority == bestPriority && consumed > bestMatch.Consumed) {
+					bestMatch = match
+					bestPriority = tmpl.Priority
+				}
+			}
 		}
 	}
 
-	return bestMatch, bestMatch.Consumed
+	// Prefer full match over SAYAGAIN match
+	if bestMatch.Consumed > 0 {
+		return bestMatch, bestMatch.Consumed
+	}
+	if bestSayAgain.Consumed > 0 {
+		logLocalStt("  matchCommand: no full match, using SAYAGAIN: %q", bestSayAgain.Command)
+		return bestSayAgain, bestSayAgain.Consumed
+	}
+	return CommandMatch{}, 0
 }
 
 // tryMatchTemplate attempts to match tokens against a single template.
@@ -630,33 +709,48 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	// Match each keyword group in sequence.
 	// For each group, we skip over skip words and filler words, then try to
 	// match the first significant token against any keyword in that group.
+	// SkipNonKeywords only applies BETWEEN keyword groups, not before the first one.
+	firstKeywordMatched := false
 	for _, keywordGroup := range tmpl.Keywords {
 		// Skip over skip words and filler words to find the next significant token
+		// If SkipNonKeywords is set AND we've already matched the first keyword,
+		// also skip any word that doesn't match a keyword
+		matched := false
 		for consumed < len(tokens) {
 			text := strings.ToLower(tokens[consumed].Text)
 			if slices.Contains(tmpl.SkipWords, text) || IsFillerWord(text) {
 				consumed++
 				continue
 			}
-			break
-		}
 
-		// Check if we ran out of tokens
-		if consumed >= len(tokens) {
-			return CommandMatch{}, 0
-		}
+			// Try to match the current token against any keyword in the group
+			for _, kw := range keywordGroup {
+				if FuzzyMatch(text, kw, 0.8) {
+					matched = true
+					consumed++
+					break
+				}
+			}
 
-		// Try to match the current token against any keyword in the group
-		text := strings.ToLower(tokens[consumed].Text)
-		matched := false
-		for _, kw := range keywordGroup {
-			if FuzzyMatch(text, kw, 0.8) {
-				matched = true
-				consumed++
+			if matched {
 				break
 			}
-		}
 
+			// If SkipNonKeywords is set and we've already matched the first keyword,
+			// skip this non-matching token and continue looking.
+			// Don't skip before the first keyword - that would cause templates to
+			// consume tokens that belong to earlier commands.
+			if tmpl.SkipNonKeywords && firstKeywordMatched {
+				consumed++
+				continue
+			}
+
+			// Otherwise, this is a non-matching significant token - fail
+			return CommandMatch{}, 0
+		}
+		firstKeywordMatched = true
+
+		// Check if we ran out of tokens without matching
 		if !matched {
 			return CommandMatch{}, 0
 		}
@@ -704,6 +798,21 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	case ArgAltitude:
 		alt, altConsumed := extractAltitude(tokens[consumed:])
 		if altConsumed == 0 {
+			// For climb/descend templates, try extracting flight level values (100-400).
+			// These are excluded from regular extractAltitude to avoid conflicts with speeds,
+			// but in climb/descend context they're clearly altitudes (e.g., "climb and maintain one one five" = FL115).
+			if strings.HasPrefix(tmpl.Name, "climb") || strings.HasPrefix(tmpl.Name, "descend") {
+				alt, altConsumed = extractFlightLevelAltitude(tokens[consumed:])
+			}
+		}
+		if altConsumed == 0 {
+			// Keywords matched but couldn't extract altitude - return SAYAGAIN if appropriate
+			if shouldGenerateSayAgain(tokens, consumed) {
+				if sayAgainCmd := sayAgainCommandForArg(ArgAltitude, tmpl.Priority); sayAgainCmd != "" {
+					logLocalStt("  %s: keywords matched but altitude extraction failed, returning %s", tmpl.Name, sayAgainCmd)
+					return CommandMatch{Command: sayAgainCmd, Confidence: 0.5, Consumed: consumed, IsSayAgain: true}, consumed
+				}
+			}
 			return CommandMatch{}, 0
 		}
 		// Apply context-aware altitude correction for climb/descend commands
@@ -718,6 +827,13 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	case ArgHeading:
 		hdg, hdgConsumed := extractHeading(tokens[consumed:])
 		if hdgConsumed == 0 {
+			// Keywords matched but couldn't extract heading - return SAYAGAIN if appropriate
+			if shouldGenerateSayAgain(tokens, consumed) {
+				if sayAgainCmd := sayAgainCommandForArg(ArgHeading, tmpl.Priority); sayAgainCmd != "" {
+					logLocalStt("  %s: keywords matched but heading extraction failed, returning %s", tmpl.Name, sayAgainCmd)
+					return CommandMatch{Command: sayAgainCmd, Confidence: 0.5, Consumed: consumed, IsSayAgain: true}, consumed
+				}
+			}
 			return CommandMatch{}, 0
 		}
 		argStr = fmt.Sprintf("%03d", hdg)
@@ -726,6 +842,13 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	case ArgSpeed:
 		spd, spdConsumed := extractSpeed(tokens[consumed:])
 		if spdConsumed == 0 {
+			// Keywords matched but couldn't extract speed - return SAYAGAIN if appropriate
+			if shouldGenerateSayAgain(tokens, consumed) {
+				if sayAgainCmd := sayAgainCommandForArg(ArgSpeed, tmpl.Priority); sayAgainCmd != "" {
+					logLocalStt("  %s: keywords matched but speed extraction failed, returning %s", tmpl.Name, sayAgainCmd)
+					return CommandMatch{Command: sayAgainCmd, Confidence: 0.5, Consumed: consumed, IsSayAgain: true}, consumed
+				}
+			}
 			return CommandMatch{}, 0
 		}
 		argStr = strconv.Itoa(spd)
@@ -734,6 +857,13 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	case ArgFix:
 		fix, fixConf, fixConsumed := extractFix(tokens[consumed:], ac.Fixes)
 		if fixConsumed == 0 {
+			// Keywords matched but couldn't extract fix - return SAYAGAIN if appropriate
+			if shouldGenerateSayAgain(tokens, consumed) {
+				if sayAgainCmd := sayAgainCommandForArg(ArgFix, tmpl.Priority); sayAgainCmd != "" {
+					logLocalStt("  %s: keywords matched but fix extraction failed, returning %s", tmpl.Name, sayAgainCmd)
+					return CommandMatch{Command: sayAgainCmd, Confidence: 0.5, Consumed: consumed, IsSayAgain: true}, consumed
+				}
+			}
 			return CommandMatch{}, 0
 		}
 		argStr = fix
@@ -743,6 +873,13 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	case ArgApproach:
 		appr, apprConf, apprConsumed := extractApproach(tokens[consumed:], ac.CandidateApproaches)
 		if apprConsumed == 0 {
+			// Keywords matched but couldn't extract approach - return SAYAGAIN if appropriate
+			if shouldGenerateSayAgain(tokens, consumed) {
+				if sayAgainCmd := sayAgainCommandForArg(ArgApproach, tmpl.Priority); sayAgainCmd != "" {
+					logLocalStt("  %s: keywords matched but approach extraction failed, returning %s", tmpl.Name, sayAgainCmd)
+					return CommandMatch{Command: sayAgainCmd, Confidence: 0.5, Consumed: consumed, IsSayAgain: true}, consumed
+				}
+			}
 			return CommandMatch{}, 0
 		}
 		argStr = appr
@@ -752,6 +889,13 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	case ArgSquawk:
 		code, sqkConsumed := extractSquawk(tokens[consumed:])
 		if sqkConsumed == 0 {
+			// Keywords matched but couldn't extract squawk code - return SAYAGAIN if appropriate
+			if shouldGenerateSayAgain(tokens, consumed) {
+				if sayAgainCmd := sayAgainCommandForArg(ArgSquawk, tmpl.Priority); sayAgainCmd != "" {
+					logLocalStt("  %s: keywords matched but squawk extraction failed, returning %s", tmpl.Name, sayAgainCmd)
+					return CommandMatch{Command: sayAgainCmd, Confidence: 0.5, Consumed: consumed, IsSayAgain: true}, consumed
+				}
+			}
 			return CommandMatch{}, 0
 		}
 		argStr = code
@@ -776,6 +920,13 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	case ArgDegrees:
 		deg, dir, degConsumed := extractDegrees(tokens[consumed:])
 		if degConsumed == 0 {
+			// Keywords matched but couldn't extract turn degrees - return SAYAGAIN if appropriate
+			if shouldGenerateSayAgain(tokens, consumed) {
+				if sayAgainCmd := sayAgainCommandForArg(ArgDegrees, tmpl.Priority); sayAgainCmd != "" {
+					logLocalStt("  %s: keywords matched but turn degrees extraction failed, returning %s", tmpl.Name, sayAgainCmd)
+					return CommandMatch{Command: sayAgainCmd, Confidence: 0.5, Consumed: consumed, IsSayAgain: true}, consumed
+				}
+			}
 			return CommandMatch{}, 0
 		}
 		if dir == "left" {
@@ -917,6 +1068,34 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 			Consumed:   consumed,
 			IsThen:     isThen,
 		}, consumed
+
+	case ArgHold:
+		// Extract fix name first
+		fix, fixConf, fixConsumed := extractFix(tokens[consumed:], ac.Fixes)
+		if fixConsumed == 0 {
+			logLocalStt("  tryMatchTemplate %q: fix extraction failed", tmpl.Name)
+			return CommandMatch{}, 0
+		}
+		consumed += fixConsumed
+
+		// Try to extract hold parameters (radial, minutes, turn direction)
+		// Pattern: "on the (radial) radial [inbound], (minutes) minute legs, (left/right) turns"
+		holdCmd, holdConsumed := extractHoldParams(tokens[consumed:], fix)
+		if holdConsumed == 0 {
+			// No hold parameters found - this should fall back to hold_published template
+			logLocalStt("  tryMatchTemplate %q: no hold parameters found, falling back", tmpl.Name)
+			return CommandMatch{}, 0
+		}
+		consumed += holdConsumed
+
+		logLocalStt("  tryMatchTemplate %q: cmd=%q fix=%q consumed=%d",
+			tmpl.Name, holdCmd, fix, consumed)
+		return CommandMatch{
+			Command:    holdCmd,
+			Confidence: fixConf,
+			Consumed:   consumed,
+			IsThen:     isThen,
+		}, consumed
 	}
 
 	// Build the command string
@@ -991,10 +1170,21 @@ func extractAltitude(tokens []Token) (int, int) {
 			return t.Value, i + 1
 		}
 		if t.Type == TokenNumber {
-			// Heuristic: if it looks like altitude encoding (2-3 digits, reasonable value)
-			// But exclude the speed range (100-400) since those are ambiguous and more likely
-			// to be speeds. Real altitudes in that range are typically spoken as "one eight
-			// thousand" not "180".
+			// Check if there's a better altitude right after this one
+			// e.g., "10 11000" where "10" is garbled and "11000" is the real altitude
+			if i+1 < len(tokens) && tokens[i+1].Type == TokenNumber {
+				next := tokens[i+1]
+				// If current is small (< 100) and next is raw feet, prefer next
+				if t.Value < 100 && next.Value >= 1000 && next.Value <= 60000 && next.Value%100 == 0 {
+					logLocalStt("  extractAltitude: skipping garbled %d, using %d", t.Value, next.Value/100)
+					return next.Value / 100, i + 2
+				}
+			}
+
+			// Heuristic: if it looks like altitude encoding (2-3 digits, reasonable value).
+			// Exclude the speed range (100-400) since those are ambiguous and more likely
+			// to be speeds. Flight levels in that range are handled by the allowFlightLevel
+			// variant called from climb/descend templates.
 			if t.Value >= 10 && t.Value <= 600 && (t.Value < 100 || t.Value > 400) {
 				return t.Value, i + 1
 			}
@@ -1015,6 +1205,27 @@ func extractAltitude(tokens []Token) (int, int) {
 	return 0, 0
 }
 
+// extractFlightLevelAltitude extracts altitude values in the flight level range (100-400).
+// This is used as a fallback for climb/descend templates where values like 115 (FL115)
+// are clearly altitudes, not speeds. Regular extractAltitude excludes this range to
+// avoid conflicts with speed commands.
+func extractFlightLevelAltitude(tokens []Token) (int, int) {
+	if len(tokens) == 0 {
+		return 0, 0
+	}
+
+	for i, t := range tokens {
+		if i > 3 {
+			break
+		}
+		if t.Type == TokenNumber && t.Value >= 100 && t.Value <= 400 {
+			logLocalStt("  extractFlightLevelAltitude: accepting %d as FL (climb/descend context)", t.Value)
+			return t.Value, i + 1
+		}
+	}
+	return 0, 0
+}
+
 // extractHeading extracts a heading value (1-360) from tokens.
 // Only called after command context has determined a heading is expected.
 func extractHeading(tokens []Token) (int, int) {
@@ -1026,8 +1237,61 @@ func extractHeading(tokens []Token) (int, int) {
 		if i > 3 {
 			break
 		}
+		// Handle 4-digit values where first 3 digits form valid heading (e.g., 2801 → 280)
+		// STT sometimes appends trailing garbage to headings
+		if t.Type == TokenNumber && t.Value > 360 && t.Value < 10000 {
+			// Try dropping the last digit
+			hdg := t.Value / 10
+			if hdg >= 1 && hdg <= 360 {
+				logLocalStt("  extractHeading: corrected %d -> %d (dropped trailing digit)", t.Value, hdg)
+				return hdg, i + 1
+			}
+		}
 		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 360 {
-			return t.Value, i + 1
+			hdg := t.Value
+
+			// Check for pattern: small_number + "to" + larger_number
+			// e.g., "10 to 130" where "10" is garbled and "130" is the real heading
+			// STT sometimes produces this when transcribing "one three zero"
+			if hdg < 100 && i+2 < len(tokens) {
+				nextText := strings.ToLower(tokens[i+1].Text)
+				if nextText == "to" && tokens[i+2].Type == TokenNumber {
+					largerHdg := tokens[i+2].Value
+					if largerHdg >= 100 && largerHdg <= 360 {
+						logLocalStt("  extractHeading: skipping garbled %d, using %d", hdg, largerHdg)
+						return largerHdg, i + 3
+					}
+				}
+			}
+
+			// Headings are always spoken as 3 digits and almost always multiples of 10.
+			// Use Token.Text to determine if user said leading zero:
+			// - "020" (Text starts with 0) = unambiguous heading 020
+			// - "36" (2 digits, doesn't end in 0) = trailing zero dropped, heading 360
+			// - "10" (2 digits, ends in 0) = ambiguous, could be 010 or 100, be conservative
+			text := t.Text
+			hasLeadingZero := len(text) > 0 && text[0] == '0'
+
+			if hasLeadingZero {
+				// User said "zero two zero" - unambiguous, use value as-is
+				// For single digit after leading zero (e.g., "08"), multiply by 10 for heading 080
+				if hdg < 10 {
+					hdg *= 10
+				}
+				logLocalStt("  extractHeading: %d from %q (has leading zero, unambiguous)", hdg, text)
+			} else if len(text) == 2 && hdg >= 10 && hdg <= 36 && hdg%10 != 0 {
+				// 2-digit number not ending in 0 (like 36, 27, 14): trailing zero was likely dropped
+				// Headings are almost always multiples of 10, so "two seven" is much more likely
+				// to be 270 than 027. If they meant 027, they would say "zero two seven".
+				expanded := hdg * 10
+				logLocalStt("  extractHeading: expanded %d -> %d (2-digit %q, trailing zero dropped)", hdg, expanded, text)
+				hdg = expanded
+			} else if hdg < 10 {
+				// Single digit without leading zero context - assume "zero X" = 0X0
+				hdg *= 10
+			}
+			// For 2-digit numbers ending in 0 (10, 20, 30): ambiguous, use as-is (conservative)
+			return hdg, i + 1
 		}
 	}
 
@@ -1056,6 +1320,23 @@ func extractSpeed(tokens []Token) (int, int) {
 				corrected := t.Value / 10
 				if corrected >= 100 && corrected <= 400 {
 					logLocalStt("  extractSpeed: corrected %d -> %d (extra digit)", t.Value, corrected)
+					return corrected, i + 1
+				}
+			}
+			// Handle 2-digit speeds with missing leading digit (e.g., "30" → 230, "70" → 170)
+			// STT sometimes drops the leading digit for speeds spoken as "two three zero"
+			// Try prepending "2" first (typical approach speeds are 200-250), then "1"
+			if t.Value >= 10 && t.Value < 100 {
+				// Try prepending "2" first - typical for "increase speed to X"
+				corrected := 200 + t.Value
+				if corrected >= 200 && corrected <= 290 {
+					logLocalStt("  extractSpeed: corrected %d -> %d (missing leading 2)", t.Value, corrected)
+					return corrected, i + 1
+				}
+				// Try prepending "1" - typical for slower speeds
+				corrected = 100 + t.Value
+				if corrected >= 140 && corrected <= 190 {
+					logLocalStt("  extractSpeed: corrected %d -> %d (missing leading 1)", t.Value, corrected)
 					return corrected, i + 1
 				}
 			}
@@ -1106,14 +1387,14 @@ func extractFix(tokens []Token, fixes map[string]string) (string, float64, int) 
 				continue
 			}
 			score := JaroWinkler(phrase, spokenName)
-			if score >= 0.85 && score > bestScore {
+			if score >= 0.78 && score > bestScore {
 				bestFix = fixID
 				bestScore = score
 				bestLength = length
 			}
-			if PhoneticMatch(phrase, spokenName) && bestScore < 0.85 {
+			if PhoneticMatch(phrase, spokenName) && bestScore < 0.80 {
 				bestFix = fixID
-				bestScore = 0.85
+				bestScore = 0.80
 				bestLength = length
 			}
 			// Try vowel-normalized comparison for syllable contractions
@@ -1122,9 +1403,20 @@ func extractFix(tokens []Token, fixes map[string]string) (string, float64, int) 
 			normSpoken := normalizeVowels(spokenName)
 			if normPhrase != phrase || normSpoken != spokenName {
 				normScore := JaroWinkler(normPhrase, normSpoken)
-				if normScore >= 0.85 && normScore*0.95 > bestScore {
+				if normScore >= 0.78 && normScore*0.95 > bestScore {
 					bestFix = fixID
 					bestScore = normScore * 0.95 // Slight penalty for needing normalization
+					bestLength = length
+				}
+			}
+			// Try consonant-only matching for fix names with vowel STT errors
+			// (e.g., "zizou" should match "zzooo" since both have consonants "zz")
+			if len(phrase) >= 3 && len(spokenName) >= 3 {
+				phraseCons := extractConsonants(phrase)
+				spokenCons := extractConsonants(spokenName)
+				if len(phraseCons) >= 2 && phraseCons == spokenCons && bestScore < 0.78 {
+					bestFix = fixID
+					bestScore = 0.78 // Conservative score for consonant-only match
 					bestLength = length
 				}
 			}
@@ -1137,6 +1429,18 @@ func extractFix(tokens []Token, fixes map[string]string) (string, float64, int) 
 	}
 	logLocalStt("  extractFix: no match found for %q", tokens[0].Text)
 	return "", 0, 0
+}
+
+// extractConsonants extracts only consonants from a string (for fuzzy matching).
+func extractConsonants(s string) string {
+	var result strings.Builder
+	s = strings.ToUpper(s) // isVowel expects uppercase
+	for _, c := range s {
+		if c >= 'A' && c <= 'Z' && !isVowel(byte(c)) {
+			result.WriteRune(c)
+		}
+	}
+	return strings.ToLower(result.String())
 }
 
 // extractApproach extracts an approach from tokens.
@@ -1193,8 +1497,9 @@ func extractApproach(tokens []Token, approaches map[string]string) (string, floa
 }
 
 // generateApproachPhraseVariants generates variants of an approach phrase
-// to handle common STT issues with separated letters.
+// to handle common STT issues with separated letters and missing words.
 // For example: "l s runway 7 right" → also try "i l s runway 7 right"
+// For example: "ils two eight center" → also try "i l s runway two eight center"
 func generateApproachPhraseVariants(phrase string) []string {
 	variants := []string{phrase}
 
@@ -1209,6 +1514,34 @@ func generateApproachPhraseVariants(phrase string) []string {
 		variant := "ils " + phrase[3:]
 		variants = append(variants, variant)
 	}
+
+	// Handle "ils" → "i l s" (Whisper sometimes joins "ILS" into one word)
+	if strings.HasPrefix(phrase, "ils ") {
+		variant := "i l s " + phrase[4:]
+		variants = append(variants, variant)
+	}
+
+	// Handle "rnav" → "r-nav" (approach telephony uses hyphenated form)
+	if strings.HasPrefix(phrase, "rnav ") {
+		variant := "r-nav " + phrase[5:]
+		variants = append(variants, variant)
+	}
+
+	// Generate variants with "runway" inserted after approach type prefixes.
+	// Handles cases where user omits "runway" but candidate includes it
+	// (e.g., "i l s two eight center" should match "I L S runway two eight center")
+	approachPrefixes := []string{"i l s ", "ils ", "visual ", "rnav ", "r-nav ", "v o r ", "vor ", "localizer ", "loc "}
+	var runwayVariants []string
+	for _, v := range variants {
+		for _, prefix := range approachPrefixes {
+			if strings.HasPrefix(v, prefix) && !strings.Contains(v, "runway") {
+				runwayVariant := prefix + "runway " + v[len(prefix):]
+				runwayVariants = append(runwayVariants, runwayVariant)
+				break
+			}
+		}
+	}
+	variants = append(variants, runwayVariants...)
 
 	return variants
 }
@@ -1283,8 +1616,10 @@ func extractSTAR(tokens []Token, star string) int {
 	}
 
 	// Check for generic "star" word first (handles "descend via the star")
-	if strings.EqualFold(tokens[0].Text, "star") {
-		logLocalStt("  extractSTAR: matched generic 'star'")
+	// Also handle common STT errors: "stars" (plural), "start" (mishearing)
+	text := strings.ToLower(tokens[0].Text)
+	if text == "star" || text == "stars" || text == "start" {
+		logLocalStt("  extractSTAR: matched generic %q as 'star'", text)
 		return 1
 	}
 
@@ -1385,6 +1720,9 @@ func extractSquawk(tokens []Token) (string, int) {
 }
 
 // extractDegrees extracts a degree turn value and direction.
+// Uses word order to disambiguate: "turn 20 left" is a degrees turn,
+// but "turn left 20" is interpreted as heading (direction before number).
+// The "degrees" keyword overrides this: "turn left 20 degrees" is a degrees turn.
 func extractDegrees(tokens []Token) (int, string, int) {
 	if len(tokens) == 0 {
 		return 0, "", 0
@@ -1392,55 +1730,235 @@ func extractDegrees(tokens []Token) (int, string, int) {
 
 	var deg int
 	var dir string
+	var degPos, dirPos int = -1, -1
+	var hasDegreesKeyword bool
 	consumed := 0
 
-	// Look for number and direction
+	// Look for number and direction, tracking positions
 	for consumed < len(tokens) && consumed < 5 {
 		t := tokens[consumed]
 		text := strings.ToLower(t.Text)
 
-		if t.Type == TokenNumber && t.Value > 0 && t.Value <= 180 {
+		if t.Type == TokenNumber && t.Value > 0 && t.Value <= 45 && degPos == -1 {
 			deg = t.Value
-		} else if text == "left" {
-			dir = "left"
-		} else if text == "right" {
-			dir = "right"
+			degPos = consumed
+		} else if (text == "left" || text == "right") && dirPos == -1 {
+			dir = text
+			dirPos = consumed
 		} else if text == "degrees" || text == "degree" {
-			// Skip
+			hasDegreesKeyword = true
 		}
 		consumed++
 
-		if deg > 0 && dir != "" {
+		// Keep scanning even after finding both to check for "degrees" keyword
+		if deg > 0 && dir != "" && !hasDegreesKeyword {
+			// Continue scanning a couple more tokens for "degrees"
+			for i := 0; i < 2 && consumed < len(tokens); i++ {
+				if text := strings.ToLower(tokens[consumed].Text); text == "degrees" || text == "degree" {
+					hasDegreesKeyword = true
+					consumed++
+					break
+				}
+				consumed++
+			}
 			break
 		}
 	}
 
+	// Only return match if:
+	// 1. Both number and direction found, AND
+	// 2. Number came before direction OR "degrees" keyword present
 	if deg > 0 && dir != "" {
-		return deg, dir, consumed
+		if degPos < dirPos || hasDegreesKeyword {
+			return deg, dir, consumed
+		}
 	}
 
 	return 0, "", 0
 }
 
-// isCommandKeyword returns true if the word is a command keyword.
+// extractHoldParams extracts hold parameters from tokens for controller-specified holds.
+// Pattern: "on the (radial) radial [inbound], (minutes) minute legs, (left/right) turns"
+// Returns the full hold command string and number of tokens consumed.
+// Returns empty string and 0 if no hold parameters found.
+func extractHoldParams(tokens []Token, fix string) (string, int) {
+	if len(tokens) == 0 {
+		return "", 0
+	}
+
+	consumed := 0
+	var radial int
+	var minutes int
+	turnDir := "R" // Default to right turns
+
+	// Skip filler words
+	skipHoldFillers := func() {
+		for consumed < len(tokens) {
+			text := strings.ToLower(tokens[consumed].Text)
+			if text == "on" || text == "the" || text == "inbound" || IsFillerWord(text) {
+				consumed++
+			} else {
+				break
+			}
+		}
+	}
+
+	skipHoldFillers()
+
+	// Look for radial specification: "(number) radial" or "(number) bearing"
+	foundRadial := false
+	for consumed < len(tokens) {
+		t := tokens[consumed]
+		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 360 {
+			// Found a number, check if followed by "radial" or "bearing"
+			if consumed+1 < len(tokens) {
+				nextText := strings.ToLower(tokens[consumed+1].Text)
+				if nextText == "radial" || nextText == "bearing" {
+					radial = t.Value
+					consumed += 2 // Skip number and "radial"/"bearing"
+					foundRadial = true
+					break
+				}
+			}
+		}
+		consumed++
+		if consumed > 10 { // Don't scan too far
+			break
+		}
+	}
+
+	if !foundRadial {
+		return "", 0
+	}
+
+	skipHoldFillers()
+
+	// Look for leg duration: "(number) minute legs"
+	for consumed < len(tokens) {
+		t := tokens[consumed]
+		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 10 {
+			// Check if followed by "minute" then "legs"
+			if consumed+1 < len(tokens) {
+				nextText := strings.ToLower(tokens[consumed+1].Text)
+				if nextText == "minute" {
+					minutes = t.Value
+					consumed += 2 // Skip number and "minute"
+					// Skip "legs" if present
+					if consumed < len(tokens) && strings.ToLower(tokens[consumed].Text) == "legs" {
+						consumed++
+					}
+					break
+				}
+			}
+		}
+		consumed++
+		if consumed > 20 { // Don't scan too far
+			break
+		}
+	}
+
+	// Look for turn direction: "left turns" or "right turns"
+	for consumed < len(tokens) {
+		text := strings.ToLower(tokens[consumed].Text)
+		if text == "left" {
+			turnDir = "L"
+			consumed++
+			// Skip "turns" if present
+			if consumed < len(tokens) && strings.ToLower(tokens[consumed].Text) == "turns" {
+				consumed++
+			}
+			break
+		} else if text == "right" {
+			turnDir = "R"
+			consumed++
+			// Skip "turns" if present
+			if consumed < len(tokens) && strings.ToLower(tokens[consumed].Text) == "turns" {
+				consumed++
+			}
+			break
+		}
+		consumed++
+		if consumed > 25 { // Don't scan too far
+			break
+		}
+	}
+
+	// Skip "expect further clearance" and any following digits if present
+	consumed = skipExpectFurtherClearance(tokens, consumed)
+
+	// Build the command string: HFIX/Rradial/minutesM/L or R
+	// Format from parseHold: HFIX/R{radial}/{minutes}M/{L|R}
+	var cmd strings.Builder
+	cmd.WriteString("H")
+	cmd.WriteString(fix)
+	cmd.WriteString("/R")
+	cmd.WriteString(strconv.Itoa(radial))
+	if minutes > 0 {
+		cmd.WriteString("/")
+		cmd.WriteString(strconv.Itoa(minutes))
+		cmd.WriteString("M")
+	}
+	cmd.WriteString("/")
+	cmd.WriteString(turnDir)
+
+	return cmd.String(), consumed
+}
+
+// skipExpectFurtherClearance skips "expect further clearance" and any following digits.
+// Returns the new consumed position.
+func skipExpectFurtherClearance(tokens []Token, start int) int {
+	consumed := start
+
+	// Skip filler words first
+	for consumed < len(tokens) && IsFillerWord(strings.ToLower(tokens[consumed].Text)) {
+		consumed++
+	}
+
+	// Look for "expect further clearance" pattern
+	if consumed+2 < len(tokens) {
+		t1 := strings.ToLower(tokens[consumed].Text)
+		t2 := strings.ToLower(tokens[consumed+1].Text)
+		t3 := strings.ToLower(tokens[consumed+2].Text)
+		if t1 == "expect" && t2 == "further" && t3 == "clearance" {
+			consumed += 3
+			// Skip any following digits (the time, e.g., "1 2 3 0")
+			for consumed < len(tokens) {
+				if tokens[consumed].Type == TokenNumber || IsDigit(tokens[consumed].Text) {
+					consumed++
+				} else {
+					break
+				}
+			}
+		}
+	}
+
+	return consumed
+}
+
+// isCommandKeyword returns true if the word is (or fuzzy-matches) a command keyword.
 // Used to detect when "contact" is followed by a command rather than a controller name.
 func isCommandKeyword(word string) bool {
-	commandKeywords := map[string]bool{
-		"climb": true, "climbed": true, "climbing": true,
-		"descend": true, "descended": true, "descending": true,
-		"maintain": true,
-		"turn":     true, "left": true, "right": true,
-		"heading": true,
-		"speed":   true, "reduce": true, "increase": true,
-		"direct": true, "proceed": true,
-		"cleared": true, "expect": true, "vectors": true,
-		"squawk": true, "ident": true, "transponder": true,
-		"cross": true, "expedite": true,
-		"fly": true, "intercept": true,
-		"cancel": true, "resume": true,
-		"say": true,
+	commandKeywords := []string{
+		"climb", "climbed", "climbing",
+		"descend", "descended", "descending",
+		"maintain",
+		"turn", "left", "right",
+		"heading",
+		"speed", "reduce", "increase",
+		"direct", "proceed",
+		"cleared", "expect", "vectors",
+		"squawk", "ident", "transponder",
+		"cross", "expedite",
+		"fly", "intercept",
+		"cancel", "resume",
+		"say",
 	}
-	return commandKeywords[word]
+	for _, kw := range commandKeywords {
+		if FuzzyMatch(word, kw, 0.8) {
+			return true
+		}
+	}
+	return false
 }
 
 func mustAtoi(s string) int {
@@ -1451,6 +1969,89 @@ func mustAtoi(s string) int {
 	}
 	n, _ := strconv.Atoi(s)
 	return n
+}
+
+// sayAgainCommandForArg returns the SAYAGAIN/TYPE command for a given argument type.
+// Returns empty string if this argument type should not generate SAYAGAIN commands.
+// SAYAGAIN commands are generated when STT recognizes command keywords but fails
+// to extract the associated value (e.g., "fly heading blark bling five").
+//
+// The priority parameter is the template priority. Low-priority templates (< 5) are
+// fallback matchers that shouldn't generate SAYAGAIN since they match broadly and
+// often trigger on words that are part of other phrases.
+func sayAgainCommandForArg(argType ArgType, priority int) string {
+	// Don't generate SAYAGAIN for low-priority fallback templates
+	if priority < 5 {
+		return ""
+	}
+
+	switch argType {
+	case ArgAltitude:
+		return "SAYAGAIN/ALTITUDE"
+	case ArgHeading:
+		return "SAYAGAIN/HEADING"
+	case ArgSpeed:
+		return "SAYAGAIN/SPEED"
+	case ArgApproach:
+		return "SAYAGAIN/APPROACH"
+	case ArgSquawk:
+		return "SAYAGAIN/SQUAWK"
+	case ArgFix:
+		return "SAYAGAIN/FIX"
+	case ArgDegrees:
+		return "SAYAGAIN/TURN"
+	default:
+		// Other arg types (ArgNone, ArgSID, ArgSTAR, compound types) don't generate SAYAGAIN
+		return ""
+	}
+}
+
+// shouldGenerateSayAgain checks if we should generate a SAYAGAIN command after
+// keywords matched but argument extraction failed.
+// Returns false if:
+// - No remaining tokens after keyword consumption
+// - The next token is a command keyword (indicates a different command follows, not garbled argument)
+// - The remaining tokens look like goodbye phrases or facility names (not commands)
+func shouldGenerateSayAgain(tokens []Token, consumed int) bool {
+	// No remaining tokens - nothing was garbled, just incomplete
+	if consumed >= len(tokens) {
+		return false
+	}
+
+	// Check if remaining token is a command keyword
+	nextText := strings.ToLower(tokens[consumed].Text)
+	if isCommandKeyword(nextText) {
+		return false
+	}
+
+	// Check for facility type words that indicate this is controller identification, not a command
+	// e.g., "contact socal approach 12515" - "approach" is part of facility name
+	facilityWords := map[string]bool{
+		"approach": true, "departure": true, "center": true, "tower": true,
+		"ground": true, "radio": true,
+	}
+	if facilityWords[nextText] {
+		return false
+	}
+
+	// Check for informational/mode words that complete certain phrases
+	// e.g., "squawk VFR" - VFR is not a garbled squawk code, it's the mode
+	infoWords := map[string]bool{
+		"vfr": true, "ifr": true, "frequency": true, "change": true,
+		"approved": true, "terminated": true, "services": true,
+	}
+	if infoWords[nextText] {
+		return false
+	}
+
+	// Check for goodbye/acknowledgment phrases that often end transmissions
+	// e.g., "see ya", "good day", "have a good one"
+	goodbyeWords := map[string]bool{
+		"see": true, "seeya": true, "goodbye": true, "good": true,
+		"have": true, "roger": true, "wilco": true, "thanks": true,
+		"thank": true, "you": true, "ya": true, "day": true,
+	}
+	return !goodbyeWords[nextText]
 }
 
 // shouldCorrectAltitude checks if an extracted altitude should be multiplied by 10

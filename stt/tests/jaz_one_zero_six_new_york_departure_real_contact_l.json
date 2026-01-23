@@ -1,0 +1,669 @@
+{
+  "time": "2026-01-22T20:17:54.395218228Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:975:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Jaz, one zero six, New York departure, real contact, Left turn heading zero six zero, Clem, maintain one one twice in time",
+  "whisper_duration_ms": 217.678,
+  "audio_duration_ms": 6784,
+  "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11997MB)",
+  "callsign": "JZA106",
+  "command": "L060 C110",
+  "stt_aircraft": {
+    "AAL1707": {
+      "Callsign": "AAL1707",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0
+    },
+    "AAL38": {
+      "Callsign": "AAL38",
+      "AircraftType": "A321",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK",
+        "Vadder": "VADDR"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Altitude": 13000,
+      "State": "arrival",
+      "ControllerFrequency": "2E",
+      "TrackingController": "2E",
+      "AddressingForm": 0
+    },
+    "AAL69": {
+      "Callsign": "AAL69",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "Cimble": "CIMBL",
+        "Deer Park": "DPK",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "John F Kennedy International Airport": "KJFK",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 2000,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0
+    },
+    "AAL917": {
+      "Callsign": "AAL917",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 10785,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0
+    },
+    "ASL477": {
+      "Callsign": "ASL477",
+      "AircraftType": "A332",
+      "Fixes": {
+        "Greki": "GREKI",
+        "Judds": "JUDDS"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 6023,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "2J",
+      "AddressingForm": 0
+    },
+    "Air Serbia 477 heavy": {
+      "Callsign": "ASL477",
+      "AircraftType": "A332",
+      "Fixes": {
+        "Greki": "GREKI",
+        "Judds": "JUDDS"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 6023,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "2J",
+      "AddressingForm": 0
+    },
+    "American 1707": {
+      "Callsign": "AAL1707",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0
+    },
+    "American 38": {
+      "Callsign": "AAL38",
+      "AircraftType": "A321",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK",
+        "Vadder": "VADDR"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Altitude": 13000,
+      "State": "arrival",
+      "ControllerFrequency": "2E",
+      "TrackingController": "2E",
+      "AddressingForm": 0
+    },
+    "American 69": {
+      "Callsign": "AAL69",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "Cimble": "CIMBL",
+        "Deer Park": "DPK",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "John F Kennedy International Airport": "KJFK",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 2000,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0
+    },
+    "American 917": {
+      "Callsign": "AAL917",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 10785,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0
+    },
+    "DAL8424": {
+      "Callsign": "DAL8424",
+      "AircraftType": "B763",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK",
+        "Kmann": "KMANN"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PARCH4",
+      "Altitude": 7283,
+      "State": "arrival",
+      "ControllerFrequency": "2K",
+      "TrackingController": "2K",
+      "AddressingForm": 0
+    },
+    "Delta 8424 heavy": {
+      "Callsign": "DAL8424",
+      "AircraftType": "B763",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK",
+        "Kmann": "KMANN"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PARCH4",
+      "Altitude": 7283,
+      "State": "arrival",
+      "ControllerFrequency": "2K",
+      "TrackingController": "2K",
+      "AddressingForm": 0
+    },
+    "EVA 519 heavy": {
+      "Callsign": "EVA519",
+      "AircraftType": "B77L",
+      "Fixes": {
+        "Cimble": "CIMBL",
+        "Deer Park": "DPK",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "John F Kennedy International Airport": "KJFK",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Vadder": "VADDR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2E",
+      "TrackingController": "2E",
+      "AddressingForm": 0
+    },
+    "EVA519": {
+      "Callsign": "EVA519",
+      "AircraftType": "B77L",
+      "Fixes": {
+        "Cimble": "CIMBL",
+        "Deer Park": "DPK",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "John F Kennedy International Airport": "KJFK",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Vadder": "VADDR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2E",
+      "TrackingController": "2E",
+      "AddressingForm": 0
+    },
+    "JBU14": {
+      "Callsign": "JBU14",
+      "AircraftType": "E190",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0
+    },
+    "JZA106": {
+      "Callsign": "JZA106",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Greki": "GREKI",
+        "Judds": "JUDDS"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 1731,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "2J",
+      "AddressingForm": 0
+    },
+    "Jazz 106": {
+      "Callsign": "JZA106",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Greki": "GREKI",
+        "Judds": "JUDDS"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 1731,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "2J",
+      "AddressingForm": 0
+    },
+    "JetBlue 14": {
+      "Callsign": "JBU14",
+      "AircraftType": "E190",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0
+    },
+    "N533FV": {
+      "Callsign": "N533FV",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Town of East Hampton Airport": "KJPX"
+      },
+      "CandidateApproaches": {},
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 9500,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0
+    },
+    "N7978B": {
+      "Callsign": "N7978B",
+      "AircraftType": "",
+      "Fixes": {
+        "Danbury Municipal Airport": "KDXR"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 1019,
+      "State": "",
+      "ControllerFrequency": "2G",
+      "TrackingController": "",
+      "AddressingForm": 0
+    },
+    "cessna one eighty-two three foxtrot victor": {
+      "Callsign": "N533FV",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Town of East Hampton Airport": "KJPX"
+      },
+      "CandidateApproaches": {},
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 9500,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 1
+    },
+    "cessna skylane three foxtrot victor": {
+      "Callsign": "N533FV",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Town of East Hampton Airport": "KJPX"
+      },
+      "CandidateApproaches": {},
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 9500,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 1
+    },
+    "november 533FV": {
+      "Callsign": "N533FV",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Town of East Hampton Airport": "KJPX"
+      },
+      "CandidateApproaches": {},
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 9500,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0
+    },
+    "november 7978B": {
+      "Callsign": "N7978B",
+      "AircraftType": "",
+      "Fixes": {
+        "Danbury Municipal Airport": "KDXR"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 1019,
+      "State": "",
+      "ControllerFrequency": "2G",
+      "TrackingController": "",
+      "AddressingForm": 0
+    },
+    "skylane three foxtrot victor": {
+      "Callsign": "N533FV",
+      "AircraftType": "C182",
+      "Fixes": {
+        "Town of East Hampton Airport": "KJPX"
+      },
+      "CandidateApproaches": {},
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 9500,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 1
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Jaz, one zero six, New York departure, real contact, Left turn heading zero six zero, Clem, maintain one one twice in time\"",
+    "[local-stt] normalized words: [jaz 1 0 6 new york departure real contact left turn heading 0 6 0 clem maintain 1 1 twice in time]",
+    "[local-stt] tokens: 17",
+    "[local-stt]   token[0]: Text=\"jaz\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"106\" Type=1 Value=106",
+    "[local-stt]   token[2]: Text=\"new\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"york\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"departure\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"real\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"60\" Type=1 Value=60",
+    "[local-stt]   token[11]: Text=\"clem\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"11\" Type=1 Value=11",
+    "[local-stt]   token[14]: Text=\"twice\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"in\" Type=0 Value=-1",
+    "[local-stt]   token[16]: Text=\"time\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 17 tokens, 25 aircraft",
+    "[local-stt]   candidate \"november 7978B\" (ICAO=\"N7978B\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"AAL38\" (ICAO=\"AAL38\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Delta 8424 heavy\" (ICAO=\"DAL8424\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JetBlue 14\" (ICAO=\"JBU14\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JBU14\" (ICAO=\"JBU14\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American 69\" (ICAO=\"AAL69\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"AAL917\" (ICAO=\"AAL917\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Air Serbia 477 heavy\" (ICAO=\"ASL477\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"EVA 519 heavy\" (ICAO=\"EVA519\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"DAL8424\" (ICAO=\"DAL8424\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"skylane three foxtrot victor\" (ICAO=\"N533FV\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"N7978B\" (ICAO=\"N7978B\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American 1707\" (ICAO=\"AAL1707\"): score=0.75 consumed=2",
+    "[local-stt]   candidate \"AAL1707\" (ICAO=\"AAL1707\"): score=0.75 consumed=2",
+    "[local-stt]   candidate \"Jazz 106\" (ICAO=\"JZA106\"): score=1.00 consumed=2",
+    "[local-stt]   candidate \"JZA106\" (ICAO=\"JZA106\"): score=0.96 consumed=2",
+    "[local-stt]   candidate \"november 533FV\" (ICAO=\"N533FV\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"cessna one eighty-two three foxtrot victor\" (ICAO=\"N533FV\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"AAL69\" (ICAO=\"AAL69\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American 917\" (ICAO=\"AAL917\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American 38\" (ICAO=\"AAL38\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"ASL477\" (ICAO=\"ASL477\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"EVA519\" (ICAO=\"EVA519\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"N533FV\" (ICAO=\"N533FV\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"cessna skylane three foxtrot victor\" (ICAO=\"N533FV\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American 1707\" at pos 1: score=0.75 (adjusted=0.68) consumed=1",
+    "[local-stt]   candidate \"AAL1707\" at pos 1: score=0.75 (adjusted=0.68) consumed=1",
+    "[local-stt]   candidate \"Jazz 106\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   candidate \"JZA106\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   accepted: \"JZA106\" (conf=1.00, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"JZA106\" SpokenKey=\"Jazz 106\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=1731 Fixes=2 Approaches=0 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"Greki\" -\u003e \"GREKI\"",
+    "[local-stt]   fix: \"Judds\" -\u003e \"JUDDS\"",
+    "[local-stt] command tokens after disregard: 15",
+    "[local-stt]   token[0]: Text=\"new\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"york\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"departure\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"real\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"60\" Type=1 Value=60",
+    "[local-stt]   token[9]: Text=\"clem\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"11\" Type=1 Value=11",
+    "[local-stt]   token[12]: Text=\"twice\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"in\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"time\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"contact\" at position 4 - not just position ID",
+    "[local-stt] ParseCommands: 15 tokens",
+    "[local-stt]   no match at token[0]=\"new\", skipping",
+    "[local-stt]   no match at token[1]=\"york\", skipping",
+    "[local-stt]   tryMatchTemplate \"depart_fix_heading\": keywords matched, consumed=1, next tokens=[real contact left]",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"real\" against 2 fixes",
+    "[local-stt]   extractFix: no match found for \"real\"",
+    "[local-stt]   tryMatchTemplate \"depart_fix_heading\": fix extraction failed, tokens=[{ real 0 -1 7} { contact 0 -1 8} { left 0 -1 9} { turn 0 -1 10} { heading 0 -1 11} { 60 1 60 12} { clem 0 -1 15} { maintain 0 -1 16} { 11 1 11 17} { twice 0 -1 19} { in 0 -1 20} { time 0 -1 21}] fixes=2",
+    "[local-stt]   no match at token[2]=\"departure\", skipping",
+    "[local-stt]   no match at token[3]=\"real\", skipping",
+    "[local-stt]   frequency_change rejected: followed by command keyword \"left\"",
+    "[local-stt]   no match at token[4]=\"contact\", skipping",
+    "[local-stt]   tryMatchTemplate \"turn_left_heading\": cmd=\"L060\" argStr=\"060\" consumed=4",
+    "[local-stt]   tryMatchTemplate \"turn_left_only\": cmd=\"L060\" argStr=\"060\" consumed=4",
+    "[local-stt]   matched command: \"L060\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   altitude correction: 11 -\u003e 110 (aircraft at %!f(int=1731) ft)",
+    "[local-stt]   tryMatchTemplate \"climb_maintain\": cmd=\"C110\" argStr=\"110\" consumed=3",
+    "[local-stt]   altitude correction: 11 -\u003e 110 (aircraft at %!f(int=1731) ft)",
+    "[local-stt]   tryMatchTemplate \"climb\": cmd=\"C110\" argStr=\"110\" consumed=3",
+    "[local-stt]   matched command: \"C110\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   no match at token[12]=\"twice\", skipping",
+    "[local-stt]   no match at token[13]=\"in\", skipping",
+    "[local-stt]   no match at token[14]=\"time\", skipping",
+    "[local-stt] ParseCommands: result=[L060 C110] (avgConf=1.00)",
+    "[local-stt] parsed commands: [L060 C110] (conf=1.00)",
+    "[local-stt] validated commands: [L060 C110] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"JZA106 L060 C110\" (conf=1.00, time=513.7µs) ==="
+  ]
+}

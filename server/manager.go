@@ -22,6 +22,7 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/stt"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -946,6 +947,40 @@ func (sm *SimManager) ReportWhisperBenchmark(report *WhisperBenchmarkReport, _ *
 	defer sm.lg.CatchAndReportCrash()
 
 	sm.lg.Info("Received whisper benchmark report", slog.Any("report", *report))
+
+	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// STT Log Reporting
+
+// STTLogArgs contains STT command data for logging (sent by local sim clients).
+type STTLogArgs struct {
+	Callsign          string
+	Commands          string
+	WhisperDuration   time.Duration
+	AudioDuration     time.Duration
+	WhisperTranscript string
+	WhisperProcessor  string
+	AircraftContext   map[string]stt.Aircraft
+	STTDebugLogs      []string
+}
+
+const ReportSTTLogRPC = "SimManager.ReportSTTLog"
+
+// ReportSTTLog receives STT command data from local sim clients and logs it.
+func (sm *SimManager) ReportSTTLog(args *STTLogArgs, _ *struct{}) error {
+	defer sm.lg.CatchAndReportCrash()
+
+	sm.lg.Info("STT command",
+		slog.String("transcript", args.WhisperTranscript),
+		slog.Float64("whisper_duration_ms", float64(args.WhisperDuration.Microseconds())/1000.0),
+		slog.Float64("audio_duration_ms", float64(args.AudioDuration.Microseconds())/1000.0),
+		slog.String("processor", args.WhisperProcessor),
+		slog.String("callsign", args.Callsign),
+		slog.String("command", args.Commands),
+		slog.Any("stt_aircraft", args.AircraftContext),
+		slog.Any("logs", args.STTDebugLogs))
 
 	return nil
 }

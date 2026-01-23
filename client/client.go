@@ -34,6 +34,7 @@ import (
 type ControlClient struct {
 	controllerToken string
 	client          *RPCClient
+	remoteServer    *RPCClient // Remote server for STT log reporting (set when running local sim)
 
 	// Speech/TTS management
 	transmissions         *TransmissionManager
@@ -134,6 +135,12 @@ func (s *SessionStats) Update(ss *SimState) {
 
 func (c *ControlClient) RPCClient() *RPCClient {
 	return c.client
+}
+
+func (c *ControlClient) SetRemoteServer(remote *RPCClient) {
+	c.mu.Lock()
+	c.remoteServer = remote
+	c.mu.Unlock()
 }
 
 type RPCClient struct {
@@ -1022,6 +1029,8 @@ func makeWhisperPrompt(state SimState) string {
 		"reduce to final approach speed", "miles from", "established", "cleared",
 		"until established", "on the localizer", "flight level", "niner",
 		"climb via", "descend via", "arrival",
+		"hold", "as published", "radial inbound", "minute legs", "left turns", "right turns",
+		"expect further clearance",
 	}
 
 	// Add telephony and approaches for user-controlled tracks.
@@ -1377,15 +1386,37 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 		}
 
 		// Execute the command via RPC (this handles TTS readback)
-		c.RunAircraftCommands(av.ADSBCallsign(callsign), command, false, false,
-			totalDuration, audioDuration, finalText,
-			aircraftCtx, strings.Join(debugLogs, "\n"),
-			func(message string, remainingInput string) {
-				c.transmissions.Unhold()
-				if message != "" {
-					lg.Infof("STT command result: %s", message)
-				}
-			})
+		c.RunAircraftCommands(AircraftCommandRequest{
+			Callsign:          av.ADSBCallsign(callsign),
+			Commands:          command,
+			WhisperDuration:   totalDuration,
+			AudioDuration:     audioDuration,
+			WhisperTranscript: finalText,
+			AircraftContext:   aircraftCtx,
+			STTDebugLogs:      debugLogs,
+		}, func(message string, remainingInput string) {
+			c.transmissions.Unhold()
+			if message != "" {
+				lg.Infof("STT command result: %s", message)
+			}
+		})
+
+		// Report STT to remote server for logging (when running local sim)
+		c.mu.Lock()
+		remoteServer := c.remoteServer
+		c.mu.Unlock()
+		if remoteServer != nil {
+			go remoteServer.Go(server.ReportSTTLogRPC, &server.STTLogArgs{
+				Callsign:          callsign,
+				Commands:          command,
+				WhisperDuration:   totalDuration,
+				AudioDuration:     audioDuration,
+				WhisperTranscript: finalText,
+				WhisperProcessor:  whisper.ProcessorDescription(),
+				AircraftContext:   aircraftCtx,
+				STTDebugLogs:      debugLogs,
+			}, nil, nil)
+		}
 	}()
 }
 
