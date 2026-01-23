@@ -1530,9 +1530,31 @@ func matchApproachByTypeAndNumber(tokens []Token, approaches map[string]string) 
 	}
 
 	// Look for runway number anywhere in the remaining tokens
-	runwayNum, runwayDir, numPos := extractRunwayNumber(tokens[typeConsumed:])
+	remainingTokens := tokens[typeConsumed:]
+	runwayNum, runwayDir, numPos := extractRunwayNumber(remainingTokens)
 	if runwayNum == "" {
 		return "", 0, 0
+	}
+
+	// Validate: check if there's a suspicious word after the runway number (and direction).
+	// If there's an unknown word immediately after, it's likely garbage and we should
+	// fall back to fuzzy matching. This prevents "atlas runway one month" from matching
+	// when "month" is garbage.
+	afterNumPos := numPos + 1
+	if runwayDir != "" {
+		afterNumPos++ // Skip the direction word too
+	}
+	if afterNumPos < len(remainingTokens) {
+		afterWord := strings.ToLower(remainingTokens[afterNumPos].Text)
+		// Allow filler words, approach-related words, and common command keywords
+		validAfterWords := map[string]bool{
+			"approach": true, "for": true, "and": true, "the": true, "a": true,
+			"maintain": true, "speed": true, "until": true, "cleared": true,
+		}
+		if !validAfterWords[afterWord] && !IsFillerWord(afterWord) {
+			// Unknown word after runway - likely garbage, reject the match
+			return "", 0, 0
+		}
 	}
 
 	// Build the runway designator (e.g., "niner", "one two", "two eight left")
@@ -1590,7 +1612,7 @@ func extractApproachType(tokens []Token) (string, int) {
 
 	// Single-word approach types
 	switch text {
-	case "ils", "alice", "dallas", "als": // STT errors for "ILS"
+	case "ils", "alice", "dallas", "als", "atlas": // STT errors for "ILS"
 		return "ils", 1
 	case "rnav":
 		return "rnav", 1

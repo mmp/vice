@@ -193,7 +193,8 @@ var commandKeywords = map[string]string{
 	"knots":    "knots",
 
 	// Navigation
-	"direct":  "direct",
+	"direct":   "direct",
+	"directed": "direct", // Past tense variant
 	"proceed": "proceed",
 	"cross":   "cross",
 	"depart":  "depart",
@@ -253,6 +254,7 @@ var commandKeywords = map[string]string{
 	"tower":     "tower",
 	"tar":       "tower",
 	"terror":    "tower",
+	"her":       "tower", // STT error: "tower" misheard as "her"
 	"frequency": "frequency",
 	"departure": "departure",
 	"center":    "center",
@@ -667,17 +669,23 @@ func splitTextNumber(w string) []string {
 	return nil
 }
 
-// fixGarbledNiner fixes STT transcription errors where "niner" is garbled as "9r".
-// For example, "9r,000" -> "9r000" after CleanWord, which should become "9000".
+// fixGarbledNiner fixes STT transcription errors where "niner" is garbled.
 // This handles patterns like:
 //   - "9r" -> "9" (just the garbled niner)
 //   - "9r000" -> "9000" (niner followed by more digits)
+//   - "99er" -> "9" (STT transcribed "niner" with doubled digit)
 func fixGarbledNiner(w string) string {
 	if len(w) < 2 {
 		return w
 	}
 
-	// Look for pattern: single digit followed by 'r' followed by optional digits
+	// Pattern 1: "99er" -> "9" (doubled digit + "er" from "niner")
+	// STT sometimes transcribes "niner" as "99er" where "nine" becomes "99"
+	if len(w) == 4 && w[0] == w[1] && w[0] >= '0' && w[0] <= '9' && w[2:] == "er" {
+		return string(w[0]) // "99er" -> "9"
+	}
+
+	// Pattern 2: single digit followed by 'r' followed by optional digits
 	// e.g., "9r", "9r000"
 	if w[0] >= '0' && w[0] <= '9' && w[1] == 'r' {
 		// Remove the 'r' - keep the leading digit and any trailing digits
