@@ -505,6 +505,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			resetButtonPosDefault(ctx, scale)
 		}
 		ep.buttonVerticalOffset(ctx)
+		toolbarDrawState.buttonCursor[1] += buttonSize(buttonFull, scale)[1] + 3
 		p0 := toolbarDrawState.buttonCursor
 		if ep.drawToolbarFullButton(ctx, "ALTIM\nSET", 0, scale, false, false) {
 			// handle ALTIM SET
@@ -551,7 +552,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			}
 		}
 
-		toolbarDrawState.offsetBottom = true
+		// toolbarDrawState.offsetBottom = true
 		if ep.drawToolbarFullButton(ctx, "DEPT\nLIST", 0, scale, false, true) {
 			// handle DEPT LIST
 		}
