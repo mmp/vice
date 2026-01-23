@@ -1460,6 +1460,13 @@ func extractApproach(tokens []Token, approaches map[string]string) (string, floa
 		return "", 0, 0
 	}
 
+	// First, try type+number matching: extract approach type and runway number from tokens,
+	// then find a candidate that matches both. This handles garbage words between type and
+	// number (e.g., "ils front of a niner" should match "I L S runway niner" → I9).
+	if appr, conf, consumed := matchApproachByTypeAndNumber(tokens, approaches); consumed > 0 {
+		return appr, conf, consumed
+	}
+
 	var bestAppr string
 	var bestScore float64
 	var bestLength int
@@ -1506,6 +1513,201 @@ func extractApproach(tokens []Token, approaches map[string]string) (string, floa
 		return bestAppr, bestScore, bestLength
 	}
 	return "", 0, 0
+}
+
+// matchApproachByTypeAndNumber tries to match approach by extracting the approach type
+// (ILS, RNAV, visual, etc.) and runway number separately, ignoring garbage words between them.
+// This handles cases like "ils front of a niner" where STT inserts garbage between type and number.
+func matchApproachByTypeAndNumber(tokens []Token, approaches map[string]string) (string, float64, int) {
+	if len(tokens) == 0 {
+		return "", 0, 0
+	}
+
+	// Extract approach type from the beginning of tokens
+	approachType, typeConsumed := extractApproachType(tokens)
+	if approachType == "" {
+		return "", 0, 0
+	}
+
+	// Look for runway number anywhere in the remaining tokens
+	runwayNum, runwayDir, numPos := extractRunwayNumber(tokens[typeConsumed:])
+	if runwayNum == "" {
+		return "", 0, 0
+	}
+
+	// Build the runway designator (e.g., "niner", "one two", "two eight left")
+	runwaySpoken := runwayNum
+	if runwayDir != "" {
+		runwaySpoken += " " + runwayDir
+	}
+
+	// Find a matching approach that has both the type and runway number
+	var bestAppr string
+	var bestScore float64
+	for spokenName, apprID := range approaches {
+		spokenLower := strings.ToLower(spokenName)
+
+		// Check if the candidate contains the approach type
+		if !approachTypeMatches(spokenLower, approachType) {
+			continue
+		}
+
+		// Check if the candidate's runway matches our extracted runway
+		// The runway in the candidate should start with our spoken runway number
+		if !runwayMatches(spokenLower, runwaySpoken) {
+			continue
+		}
+
+		// We have a type+number match - calculate confidence based on specificity
+		score := 0.95 // High confidence for type+number match
+		if score > bestScore || (score == bestScore && apprID < bestAppr) {
+			bestAppr = apprID
+			bestScore = score
+		}
+	}
+
+	if bestAppr != "" {
+		// Consumed = type tokens + position of number + 1 for number itself + 1 for direction if present
+		consumed := typeConsumed + numPos + 1
+		if runwayDir != "" {
+			consumed++ // Account for direction word (left/right/center)
+		}
+		logLocalStt("  matchApproachByTypeAndNumber: type=%q runway=%q -> %q (consumed=%d)",
+			approachType, runwaySpoken, bestAppr, consumed)
+		return bestAppr, bestScore, consumed
+	}
+	return "", 0, 0
+}
+
+// extractApproachType extracts the approach type from the beginning of tokens.
+// Returns the type (e.g., "ils", "rnav", "visual") and number of tokens consumed.
+func extractApproachType(tokens []Token) (string, int) {
+	if len(tokens) == 0 {
+		return "", 0
+	}
+
+	text := strings.ToLower(tokens[0].Text)
+
+	// Single-word approach types
+	switch text {
+	case "ils", "alice", "dallas", "als": // STT errors for "ILS"
+		return "ils", 1
+	case "rnav":
+		return "rnav", 1
+	case "visual":
+		return "visual", 1
+	case "vor":
+		return "vor", 1
+	case "localizer", "loc":
+		return "localizer", 1
+	}
+
+	// Multi-word: "i l s" (spelled out ILS)
+	if text == "i" && len(tokens) >= 3 {
+		if strings.ToLower(tokens[1].Text) == "l" && strings.ToLower(tokens[2].Text) == "s" {
+			return "ils", 3
+		}
+	}
+
+	// "r nav" or "r-nav" (already split by hyphen removal)
+	if text == "r" && len(tokens) >= 2 && strings.ToLower(tokens[1].Text) == "nav" {
+		return "rnav", 2
+	}
+
+	return "", 0
+}
+
+// extractRunwayNumber looks for a runway number in tokens.
+// Returns the spoken number (e.g., "niner", "one two"), optional direction, and position.
+// Checks for direction both before and after the number. If direction appears before
+// the number (e.g., "right 30"), that takes precedence over direction after (e.g., "30 left").
+func extractRunwayNumber(tokens []Token) (string, string, int) {
+	for i, t := range tokens {
+		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 36 {
+			num := spokenDigits(t.Value)
+			dir := ""
+
+			// First, check for direction BEFORE the number (e.g., "ILS right 30")
+			// This pattern often occurs in approach names like "ILS right runway 30"
+			if i > 0 {
+				prevText := strings.ToLower(tokens[i-1].Text)
+				switch prevText {
+				case "left", "l":
+					dir = "left"
+				case "right", "r":
+					dir = "right"
+				case "center", "c":
+					dir = "center"
+				}
+			}
+
+			// If no direction before, check after the number (e.g., "30 left")
+			if dir == "" && i+1 < len(tokens) {
+				nextText := strings.ToLower(tokens[i+1].Text)
+				switch nextText {
+				case "left", "l":
+					dir = "left"
+				case "right", "r":
+					dir = "right"
+				case "center", "c":
+					dir = "center"
+				}
+			}
+			return num, dir, i
+		}
+	}
+	return "", "", -1
+}
+
+// approachTypeMatches checks if a spoken approach name contains the given approach type.
+func approachTypeMatches(spokenLower, approachType string) bool {
+	switch approachType {
+	case "ils":
+		return strings.Contains(spokenLower, "i l s") || strings.Contains(spokenLower, "ils")
+	case "rnav":
+		return strings.Contains(spokenLower, "r-nav") || strings.Contains(spokenLower, "rnav") || strings.Contains(spokenLower, "r nav")
+	case "visual":
+		return strings.Contains(spokenLower, "visual")
+	case "vor":
+		return strings.Contains(spokenLower, "v o r") || strings.Contains(spokenLower, "vor")
+	case "localizer":
+		return strings.Contains(spokenLower, "localizer") || strings.Contains(spokenLower, "loc")
+	}
+	return false
+}
+
+// runwayMatches checks if the candidate approach's runway matches the extracted runway.
+// The runway in the candidate (after "runway") must start with our spoken runway number.
+// This prevents "two" from matching "two two left" since the candidate starts with "two two".
+func runwayMatches(spokenLower, runwaySpoken string) bool {
+	// Find "runway " in the candidate
+	idx := strings.Index(spokenLower, "runway ")
+	if idx == -1 {
+		return false
+	}
+
+	// Get the part after "runway "
+	runwayPart := spokenLower[idx+7:] // len("runway ") == 7
+
+	// The candidate's runway should start with our extracted runway
+	// e.g., "niner" matches "niner" or "niner left"
+	// but "two" should NOT match "two two left" (must match "two" or "two left")
+	if strings.HasPrefix(runwayPart, runwaySpoken) {
+		// Check that what follows is either end of string, space, or direction
+		rest := runwayPart[len(runwaySpoken):]
+		if rest == "" {
+			return true
+		}
+		if rest[0] == ' ' {
+			// Check if followed by direction (left/right/center) or end
+			restTrimmed := strings.TrimPrefix(rest, " ")
+			return restTrimmed == "" ||
+				strings.HasPrefix(restTrimmed, "left") ||
+				strings.HasPrefix(restTrimmed, "right") ||
+				strings.HasPrefix(restTrimmed, "center")
+		}
+	}
+	return false
 }
 
 // generateApproachPhraseVariants generates variants of an approach phrase
