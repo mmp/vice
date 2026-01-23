@@ -404,10 +404,10 @@ var fuzzyMatchBlocklist = map[string][]string{
 	"intercept":   {"increase"},           // "intercept localizer" vs "increase speed"
 	"increase":    {"intercept", "cross"}, // "increase speed" vs "cross fix"
 	"cross":       {"increase"},
-	"see":         {"speed"},      // "see ya" vs "speed"
-	"degrees":     {"increase"},   // garbled STT output
-	"flight":      {"right"},      // "flight 638" vs "turn right"
-	"heading":     {"descending"}, // "heading 180" vs "descend"
+	"see":         {"speed"},                        // "see ya" vs "speed"
+	"degrees":     {"increase"},                     // garbled STT output
+	"flight":      {"right"},                        // "flight 638" vs "turn right"
+	"heading":     {"descending"},                   // "heading 180" vs "descend"
 	"stand":       {"ident"},                        // "stand on the sand" vs "squawk ident"
 	"climbington": {"climb", "climbing", "climbed"}, // garbage word with similar prefix
 	"rudy":        {"right"},                        // name/garbage word vs turn direction
