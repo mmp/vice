@@ -50,7 +50,9 @@ var numberWords = map[string]string{
 	"seventy":   "70",
 	"eighty":    "80",
 	"ninety":    "90",
-	"hundred":   "100",
+	// Note: "hundred" is NOT in this map because parseAltitudePattern
+	// expects the word "hundred" to remain as-is for patterns like
+	// "two thousand five hundred" -> 2500 ft (encoded as 25).
 }
 
 // natoAlphabet maps NATO phonetic alphabet to letters.
