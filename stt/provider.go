@@ -24,7 +24,6 @@ func NewTranscriber(lg *log.Logger) *Transcriber {
 // It returns one of:
 //   - "{CALLSIGN} {CMD1} {CMD2} ..." for successful parsing
 //   - "{CALLSIGN} AGAIN" if callsign identified but commands unclear
-//   - "{CALLSIGN} NOTCLEARED" if contact tower given to aircraft not cleared for approach
 //   - "BLOCKED" if no callsign could be identified
 //   - "" if transcript is empty or only contains position identification
 //
@@ -177,6 +176,16 @@ func (p *Transcriber) decodeInternal(
 		elapsed := time.Since(start)
 		logLocalStt("=== DecodeTranscript END: \"\" (position ID, time=%s) ===", elapsed)
 		p.logInfo("local STT: %q -> \"\" (position identification, time=%s)", transcript, elapsed)
+		return "", nil
+	}
+
+	// Check if remaining tokens are just acknowledgment filler words (roger, wilco, copy)
+	// These need no response - return empty
+	if isAcknowledgmentOnly(commandTokens) {
+		logLocalStt("detected acknowledgment only (roger/wilco/copy), returning empty")
+		elapsed := time.Since(start)
+		logLocalStt("=== DecodeTranscript END: \"\" (acknowledgment, time=%s) ===", elapsed)
+		p.logInfo("local STT: %q -> \"\" (acknowledgment, time=%s)", transcript, elapsed)
 		return "", nil
 	}
 
@@ -443,6 +452,32 @@ func applyDisregard(tokens []Token) []Token {
 		}
 	}
 	return tokens
+}
+
+// isAcknowledgmentOnly returns true if the tokens contain only acknowledgment
+// words (roger, wilco, copy) and filler words. These are pilot readbacks that
+// need no further action from the controller.
+func isAcknowledgmentOnly(tokens []Token) bool {
+	if len(tokens) == 0 {
+		return false
+	}
+
+	acknowledgmentWords := map[string]bool{
+		"roger": true, "wilco": true, "copy": true, "affirm": true, "affirmative": true,
+	}
+
+	hasAcknowledgment := false
+	for _, t := range tokens {
+		text := strings.ToLower(t.Text)
+		if acknowledgmentWords[text] {
+			hasAcknowledgment = true
+		} else if !IsFillerWord(text) {
+			// Non-acknowledgment, non-filler word found
+			return false
+		}
+	}
+
+	return hasAcknowledgment
 }
 
 // isPositionIdentification detects controller position identification phrases

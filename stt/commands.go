@@ -324,7 +324,7 @@ var commandTemplates = []CommandTemplate{
 		Name:      "final_approach_speed",
 		Keywords:  [][]string{{"reduce"}, {"final"}, {"approach"}, {"speed"}},
 		ArgType:   ArgNone,
-		OutputFmt: "SFAS",
+		OutputFmt: "SMIN",
 		Priority:  15,
 		SkipWords: []string{"to"},
 	},

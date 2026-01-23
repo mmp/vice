@@ -24,13 +24,6 @@ func ValidateCommands(commands []string, ac Aircraft) ValidationResult {
 	penalty := 0.0
 
 	for _, cmd := range commands {
-		// Special case: "TO" (contact tower) for arrival aircraft not on approach
-		// Instead of blocking, return "NOTCLEARED" so pilot can respond appropriately
-		if cmd == "TO" && ac.State == "arrival" {
-			valid = append(valid, "NOTCLEARED")
-			continue
-		}
-
 		err := validateCommand(cmd, ac)
 		if err == "" {
 			valid = append(valid, cmd)
@@ -251,11 +244,8 @@ func validateExpectApproach(_ string, ac Aircraft) string {
 	return ""
 }
 
-func validateContactTower(ac Aircraft) string {
-	// Contact tower only valid for aircraft on approach
-	if ac.State != "on approach" {
-		return "contact tower only valid for aircraft on approach"
-	}
+func validateContactTower(_ Aircraft) string {
+	// Always allow TO - sim handles "unable" readback for non-arrivals
 	return ""
 }
 

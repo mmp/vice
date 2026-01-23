@@ -2065,10 +2065,10 @@ func TestValidateCommands(t *testing.T) {
 			expectErrors: true,
 		},
 		{
-			name:         "contact tower for arrival returns NOTCLEARED",
+			name:         "contact tower valid for arrival",
 			commands:     []string{"TO"},
 			ac:           Aircraft{State: "arrival"},
-			expectedLen:  1, // Returns NOTCLEARED instead of blocking
+			expectedLen:  1,
 			minConf:      0.9,
 			expectErrors: false,
 		},
@@ -2735,8 +2735,13 @@ func TestSTTFromJSONFiles(t *testing.T) {
 				return
 			}
 
-			// Build expected output: "CALLSIGN COMMANDS"
-			expected := testFile.Callsign + " " + testFile.Command
+			// Build expected output: "CALLSIGN COMMANDS" or "" if both empty
+			var expected string
+			if testFile.Callsign == "" && testFile.Command == "" {
+				expected = ""
+			} else {
+				expected = strings.TrimSpace(testFile.Callsign + " " + testFile.Command)
+			}
 
 			if result != expected {
 				t.Errorf("got %q, want %q", result, expected)
