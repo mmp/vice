@@ -40,6 +40,8 @@ type TrackState struct {
 
 	OSectorEndTime time.Time
 
+	ReachedAltitude bool
+
 	// add more as we figure out what to do...
 
 }
@@ -184,6 +186,14 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 		idx := state.historyTrackIndex % len(state.historyTracks)
 		state.historyTracks[idx] = historyTrack{state.track, ep.positionSymbol(trk, state)}
 		state.historyTrackIndex++
+
+		// check to see if the a/c has reached the altitude
+		if trk.IsAssociated() {
+			if av.FormatScopeAltitude(state.track.TransponderAltitude) == av.FormatScopeAltitude(trk.FlightPlan.AssignedAltitude) {
+				state.ReachedAltitude = true
+			}
+		}
+		
 
 		// TODO: check unreasonable C
 		// CA processing
