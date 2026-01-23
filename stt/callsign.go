@@ -72,14 +72,19 @@ func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch,
 				logLocalStt("  candidate %q at pos %d: score=%.2f (adjusted=%.2f) consumed=%d",
 					spokenName, startPos, score, adjustedScore, consumed)
 			}
-			// Prefer higher score, or more tokens consumed on tie (more specific match)
-			if adjustedScore > bestMatch.Confidence ||
-				(adjustedScore == bestMatch.Confidence && startPos+consumed > bestMatch.Consumed) {
+			// Prefer higher score, or more tokens consumed on tie (more specific match),
+			// or alphabetically earlier callsign as final tie-breaker for determinism.
+			totalConsumed := startPos + consumed
+			isBetter := adjustedScore > bestMatch.Confidence ||
+				(adjustedScore == bestMatch.Confidence && totalConsumed > bestMatch.Consumed) ||
+				(adjustedScore == bestMatch.Confidence && totalConsumed == bestMatch.Consumed &&
+					string(ac.Callsign) < bestMatch.Callsign)
+			if isBetter {
 				bestMatch = CallsignMatch{
 					Callsign:       string(ac.Callsign),
 					SpokenKey:      spokenName,
 					Confidence:     adjustedScore,
-					Consumed:       startPos + consumed, // Include skipped tokens
+					Consumed:       totalConsumed, // Include skipped tokens
 					AddressingForm: ac.AddressingForm,
 				}
 				bestStartPos = startPos
@@ -214,9 +219,10 @@ func scoreCallsignMatch(tokens []Token, spokenName, callsign string) (float64, i
 	// Average the scores
 	avgScore := totalScore / float64(matchCount)
 
-	// Bonus for matching both airline and number
+	// Bonus for matching both airline and number.
+	// Don't cap at 1.0 so exact flight number matches rank higher than suffix matches.
 	if matchCount >= 2 {
-		avgScore = min(1.0, avgScore*1.1)
+		avgScore *= 1.1
 	}
 
 	// Penalty for airline-only match when there's a flight number in the transcript

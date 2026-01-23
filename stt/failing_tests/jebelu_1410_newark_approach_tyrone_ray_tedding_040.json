@@ -1,0 +1,340 @@
+{
+  "time": "2026-01-22T23:58:19.466978572Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:975:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Jebelu 1410, Newark Approach, Tyrone Ray, Tedding 040, Descend and maintain 5000",
+  "whisper_duration_ms": 302.428,
+  "audio_duration_ms": 4608,
+  "processor": "GPU: NVIDIA GeForce RTX 4090 (24142MB)",
+  "callsign": "JBU1410",
+  "command": "H040 D50",
+  "stt_aircraft": {
+    "Brickyard 6392": {
+      "Callsign": "RPA6392",
+      "AircraftType": "E75S",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "H40": "H40",
+        "H90": "H90",
+        "Izeko": "IZEKO",
+        "Mart": "MARRT",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0
+    },
+    "JBU1410": {
+      "Callsign": "JBU1410",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "H40": "H40",
+        "H90": "H90",
+        "Izeko": "IZEKO",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0
+    },
+    "JBU64": {
+      "Callsign": "JBU64",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "H40": "H40",
+        "H90": "H90",
+        "Izeko": "IZEKO",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0
+    },
+    "JetBlue 1410": {
+      "Callsign": "JBU1410",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "H40": "H40",
+        "H90": "H90",
+        "Izeko": "IZEKO",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0
+    },
+    "JetBlue 64": {
+      "Callsign": "JBU64",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "H40": "H40",
+        "H90": "H90",
+        "Izeko": "IZEKO",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0
+    },
+    "RPA6392": {
+      "Callsign": "RPA6392",
+      "AircraftType": "E75S",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "H40": "H40",
+        "H90": "H90",
+        "Izeko": "IZEKO",
+        "Mart": "MARRT",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0
+    },
+    "SAS14": {
+      "Callsign": "SAS14",
+      "AircraftType": "A333",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "H40": "H40",
+        "H90": "H90",
+        "Hokir": "HOKIR",
+        "Izeko": "IZEKO",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Sparta": "SAX"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0
+    },
+    "Scandinavian 14 heavy": {
+      "Callsign": "SAS14",
+      "AircraftType": "A333",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "H40": "H40",
+        "H90": "H90",
+        "Hokir": "HOKIR",
+        "Izeko": "IZEKO",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Sparta": "SAX"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0
+    },
+    "UAL405": {
+      "Callsign": "UAL405",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Newark Liberty International Airport": "KEWR"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0
+    },
+    "United 405": {
+      "Callsign": "UAL405",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Newark Liberty International Airport": "KEWR"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Jebelu 1410, Newark Approach, Tyrone Ray, Tedding 040, Descend and maintain 5000\"",
+    "[local-stt] normalized words: [jebelu 1410 newark approach tyrone ray tedding 040 descend and maintain 5000]",
+    "[local-stt] tokens: 12",
+    "[local-stt]   token[0]: Text=\"jebelu\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"1410\" Type=1 Value=1410",
+    "[local-stt]   token[2]: Text=\"newark\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"tyrone\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"ray\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"tedding\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"40\" Type=1 Value=40",
+    "[local-stt]   token[8]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"5000\" Type=1 Value=5000",
+    "[local-stt] MatchCallsign: 12 tokens, 10 aircraft",
+    "[local-stt]   candidate \"Brickyard 6392\" (ICAO=\"RPA6392\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JetBlue 1410\" (ICAO=\"JBU1410\"): score=1.00 consumed=2",
+    "[local-stt]   candidate \"JBU1410\" (ICAO=\"JBU1410\"): score=1.00 consumed=2",
+    "[local-stt]   candidate \"JBU64\" (ICAO=\"JBU64\"): score=0.62 consumed=1",
+    "[local-stt]   candidate \"SAS14\" (ICAO=\"SAS14\"): score=0.87 consumed=2",
+    "[local-stt]   candidate \"RPA6392\" (ICAO=\"RPA6392\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JetBlue 64\" (ICAO=\"JBU64\"): score=0.88 consumed=1",
+    "[local-stt]   candidate \"United 405\" (ICAO=\"UAL405\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"UAL405\" (ICAO=\"UAL405\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Scandinavian 14 heavy\" (ICAO=\"SAS14\"): score=0.87 consumed=2",
+    "[local-stt]   candidate \"JetBlue 1410\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   candidate \"JBU1410\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   candidate \"SAS14\" at pos 1: score=0.87 (adjusted=0.78) consumed=1",
+    "[local-stt]   candidate \"Scandinavian 14 heavy\" at pos 1: score=0.87 (adjusted=0.78) consumed=1",
+    "[local-stt]   accepted: \"JBU1410\" (conf=1.00, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"JBU1410\" SpokenKey=\"JetBlue 1410\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=6000 Fixes=8 Approaches=1 AssignedApproach=\"ILS Runway 22L\"",
+    "[local-stt]   fix: \"Buzzed\" -\u003e \"BUZZD\"",
+    "[local-stt]   fix: \"H40\" -\u003e \"H40\"",
+    "[local-stt]   fix: \"H90\" -\u003e \"H90\"",
+    "[local-stt]   fix: \"Philbo\" -\u003e \"PHLBO\"",
+    "[local-stt]   fix: \"Newark Liberty International Airport\" -\u003e \"KEWR\"",
+    "[local-stt]   fix: \"Pattern\" -\u003e \"PATRN\"",
+    "[local-stt]   fix: \"Izeko\" -\u003e \"IZEKO\"",
+    "[local-stt]   fix: \"Gimme\" -\u003e \"GIMEE\"",
+    "[local-stt]   approach: \"I L S runway two two left\" -\u003e \"I2L\"",
+    "[local-stt] command tokens after disregard: 10",
+    "[local-stt]   token[0]: Text=\"newark\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"tyrone\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"ray\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"tedding\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"40\" Type=1 Value=40",
+    "[local-stt]   token[6]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"5000\" Type=1 Value=5000",
+    "[local-stt]   position ID: found command keyword \"descend\" at position 6 - not just position ID",
+    "[local-stt] ParseCommands: 10 tokens",
+    "[local-stt]   no match at token[0]=\"newark\", skipping",
+    "[local-stt]   no match at token[1]=\"approach\", skipping",
+    "[local-stt]   no match at token[2]=\"tyrone\", skipping",
+    "[local-stt]   no match at token[3]=\"ray\", skipping",
+    "[local-stt]   tryMatchTemplate \"fly_heading\": cmd=\"H040\" argStr=\"040\" consumed=2",
+    "[local-stt]   tryMatchTemplate \"heading_only\": cmd=\"H040\" argStr=\"040\" consumed=2",
+    "[local-stt]   matched command: \"H040\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   tryMatchTemplate \"descend_maintain\": cmd=\"D50\" argStr=\"50\" consumed=4",
+    "[local-stt]   tryMatchTemplate \"descend\": cmd=\"D50\" argStr=\"50\" consumed=4",
+    "[local-stt]   matched command: \"D50\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[H040 D50] (avgConf=1.00)",
+    "[local-stt] parsed commands: [H040 D50] (conf=1.00)",
+    "[local-stt] validated commands: [H040 D50] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"JBU1410 H040 D50\" (conf=1.00, time=519.8µs) ==="
+  ]
+}

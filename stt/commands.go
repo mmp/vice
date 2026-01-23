@@ -1192,6 +1192,15 @@ func extractAltitude(tokens []Token) (int, int) {
 			if t.Value >= 1000 && t.Value <= 60000 && t.Value%100 == 0 {
 				return t.Value / 100, i + 1
 			}
+			// STT sometimes adds extra zeros: "9,000" -> "900,000" or "12,000" -> "120,000"
+			// Detect values 100x too large and correct them
+			if t.Value >= 100000 && t.Value <= 6000000 && t.Value%10000 == 0 {
+				corrected := t.Value / 100
+				if corrected >= 1000 && corrected <= 60000 {
+					logLocalStt("  extractAltitude: corrected %d -> %d (extra zeros)", t.Value, corrected/100)
+					return corrected / 100, i + 1
+				}
+			}
 			// Single digit 1-9 in altitude context means thousands
 			// e.g., "descend and maintain niner" -> 9 means 9000 feet = 90 encoded
 			if t.Value >= 1 && t.Value <= 9 {
@@ -1380,6 +1389,7 @@ func extractFix(tokens []Token, fixes map[string]string) (string, float64, int) 
 		}
 
 		// Try fuzzy match - find the best one (with length ratio check to prevent over-matching)
+		// Use alphabetically earlier fixID as tie-breaker for determinism.
 		for spokenName, fixID := range fixes {
 			// Reject if phrase is much longer than fix name (prevents "pucky heading 180" matching "Pucky")
 			lenRatio := float64(len(phrase)) / float64(len(spokenName))
@@ -1387,12 +1397,12 @@ func extractFix(tokens []Token, fixes map[string]string) (string, float64, int) 
 				continue
 			}
 			score := JaroWinkler(phrase, spokenName)
-			if score >= 0.78 && score > bestScore {
+			if score >= 0.78 && (score > bestScore || (score == bestScore && fixID < bestFix)) {
 				bestFix = fixID
 				bestScore = score
 				bestLength = length
 			}
-			if PhoneticMatch(phrase, spokenName) && bestScore < 0.80 {
+			if PhoneticMatch(phrase, spokenName) && (bestScore < 0.80 || (bestScore == 0.80 && fixID < bestFix)) {
 				bestFix = fixID
 				bestScore = 0.80
 				bestLength = length
@@ -1403,9 +1413,10 @@ func extractFix(tokens []Token, fixes map[string]string) (string, float64, int) 
 			normSpoken := normalizeVowels(spokenName)
 			if normPhrase != phrase || normSpoken != spokenName {
 				normScore := JaroWinkler(normPhrase, normSpoken)
-				if normScore >= 0.78 && normScore*0.95 > bestScore {
+				adjustedScore := normScore * 0.95 // Slight penalty for needing normalization
+				if normScore >= 0.78 && (adjustedScore > bestScore || (adjustedScore == bestScore && fixID < bestFix)) {
 					bestFix = fixID
-					bestScore = normScore * 0.95 // Slight penalty for needing normalization
+					bestScore = adjustedScore
 					bestLength = length
 				}
 			}
@@ -1414,7 +1425,7 @@ func extractFix(tokens []Token, fixes map[string]string) (string, float64, int) 
 			if len(phrase) >= 3 && len(spokenName) >= 3 {
 				phraseCons := extractConsonants(phrase)
 				spokenCons := extractConsonants(spokenName)
-				if len(phraseCons) >= 2 && phraseCons == spokenCons && bestScore < 0.78 {
+				if len(phraseCons) >= 2 && phraseCons == spokenCons && (bestScore < 0.78 || (bestScore == 0.78 && fixID < bestFix)) {
 					bestFix = fixID
 					bestScore = 0.78 // Conservative score for consonant-only match
 					bestLength = length
@@ -1478,10 +1489,11 @@ func extractApproach(tokens []Token, approaches map[string]string) (string, floa
 				}
 			}
 
-			// Try fuzzy match - find the best one
+			// Try fuzzy match - find the best one.
+			// Use alphabetically earlier apprID as tie-breaker for determinism.
 			for spokenName, apprID := range approaches {
 				score := JaroWinkler(variant, spokenName)
-				if score >= 0.80 && score > bestScore {
+				if score >= 0.80 && (score > bestScore || (score == bestScore && apprID < bestAppr)) {
 					bestAppr = apprID
 					bestScore = score
 					bestLength = length

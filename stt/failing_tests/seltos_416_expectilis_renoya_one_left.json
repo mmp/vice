@@ -1,0 +1,236 @@
+{
+  "time": "2026-01-23T00:17:20.891966906Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:975:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Selto's 416, Expectilis, Renoya, One Left.",
+  "whisper_duration_ms": 492.864,
+  "audio_duration_ms": 3968,
+  "processor": "GPU: Radeon RX550/550 Series (4096MB)",
+  "callsign": "SWA416",
+  "command": "EI1L",
+  "stt_aircraft": {
+    "AAL4081": {
+      "Callsign": "AAL4081",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Gandy": "GANDY",
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabee": "SABEE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 1649,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "American 4081": {
+      "Callsign": "AAL4081",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Gandy": "GANDY",
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabee": "SABEE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 1649,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "SWA416": {
+      "Callsign": "SWA416",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Tampa International Airport": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "SWA470": {
+      "Callsign": "SWA470",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Ended": "ENDED",
+        "Lacen": "LACEN"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ENDED2",
+      "STAR": "",
+      "Altitude": 8657,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "Southwest 416": {
+      "Callsign": "SWA416",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Tampa International Airport": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "Southwest 470": {
+      "Callsign": "SWA470",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Ended": "ENDED",
+        "Lacen": "LACEN"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ENDED2",
+      "STAR": "",
+      "Altitude": 8657,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "UAL344": {
+      "Callsign": "UAL344",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Dades": "DADES",
+        "Kokoh": "KOKOH",
+        "Marvi": "MARVI",
+        "Tampa International Airport": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 13000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "United 344": {
+      "Callsign": "UAL344",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Dades": "DADES",
+        "Kokoh": "KOKOH",
+        "Marvi": "MARVI",
+        "Tampa International Airport": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 13000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Selto's 416, Expectilis, Renoya, One Left.\"",
+    "[local-stt] normalized words: [seltos 416 expectilis renoya 1 left]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"seltos\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"416\" Type=1 Value=416",
+    "[local-stt]   token[2]: Text=\"expectilis\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"renoya\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"1\" Type=1 Value=1",
+    "[local-stt]   token[5]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 6 tokens, 8 aircraft",
+    "[local-stt]   candidate \"SWA416\" (ICAO=\"SWA416\"): score=1.00 consumed=2",
+    "[local-stt]   candidate \"Southwest 470\" (ICAO=\"SWA470\"): score=0.66 consumed=1",
+    "[local-stt]   candidate \"SWA470\" (ICAO=\"SWA470\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"United 344\" (ICAO=\"UAL344\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"UAL344\" (ICAO=\"UAL344\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American 4081\" (ICAO=\"AAL4081\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"AAL4081\" (ICAO=\"AAL4081\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest 416\" (ICAO=\"SWA416\"): score=0.91 consumed=2",
+    "[local-stt]   candidate \"Southwest 416\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   candidate \"SWA416\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   candidate \"AAL4081\" at pos 2: score=0.85 (adjusted=0.68) consumed=3",
+    "[local-stt]   candidate \"American 4081\" at pos 2: score=0.85 (adjusted=0.68) consumed=3",
+    "[local-stt]   candidate \"American 4081\" at pos 3: score=0.85 (adjusted=0.59) consumed=2",
+    "[local-stt]   candidate \"AAL4081\" at pos 3: score=0.85 (adjusted=0.59) consumed=2",
+    "[local-stt]   accepted: \"SWA416\" (conf=1.00, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"SWA416\" SpokenKey=\"SWA416\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=10000 Fixes=1 Approaches=5 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"Tampa International Airport\" -\u003e \"KTPA\"",
+    "[local-stt]   approach: \"I L S runway one left\" -\u003e \"I1L\"",
+    "[local-stt]   approach: \"r-nav yankee runway one right\" -\u003e \"RY1R\"",
+    "[local-stt]   approach: \"r-nav zulu runway one right\" -\u003e \"RZ1R\"",
+    "[local-stt]   approach: \"r-nav zulu runway one left\" -\u003e \"RZ1L\"",
+    "[local-stt]   approach: \"r-nav yankee runway one left\" -\u003e \"RY1L\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"expectilis\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"renoya\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"1\" Type=1 Value=1",
+    "[local-stt]   token[3]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   no match at token[0]=\"expectilis\", skipping",
+    "[local-stt]   no match at token[1]=\"renoya\", skipping",
+    "[local-stt]   no match at token[2]=\"1\", skipping",
+    "[local-stt]   no match at token[3]=\"left\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"SWA416 AGAIN\" (conf=1.00, time=150.8µs) ==="
+  ]
+}

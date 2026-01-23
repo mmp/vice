@@ -1,0 +1,432 @@
+{
+  "time": "2026-01-23T00:22:24.149272617Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:975:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "American 481, Climate Maintenance, and 120000.",
+  "whisper_duration_ms": 443.003,
+  "audio_duration_ms": 3968,
+  "processor": "GPU: Radeon RX550/550 Series (4096MB)",
+  "callsign": "AAL4081",
+  "command": "C120",
+  "stt_aircraft": {
+    "AAL4081": {
+      "Callsign": "AAL4081",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Gandy": "GANDY",
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabee": "SABEE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "C46",
+      "AddressingForm": 0
+    },
+    "AAY5695": {
+      "Callsign": "AAY5695",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Deanr": "DEANR",
+        "Ended": "ENDED",
+        "Lacen": "LACEN",
+        "Patoy": "PATOY"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ENDED2",
+      "STAR": "",
+      "Altitude": 9193,
+      "State": "departure",
+      "ControllerFrequency": "1P",
+      "TrackingController": "J30",
+      "AddressingForm": 0
+    },
+    "Allegiant 5695": {
+      "Callsign": "AAY5695",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Deanr": "DEANR",
+        "Ended": "ENDED",
+        "Lacen": "LACEN",
+        "Patoy": "PATOY"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ENDED2",
+      "STAR": "",
+      "Altitude": 9193,
+      "State": "departure",
+      "ControllerFrequency": "1P",
+      "TrackingController": "J30",
+      "AddressingForm": 0
+    },
+    "American 4081": {
+      "Callsign": "AAL4081",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Gandy": "GANDY",
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabee": "SABEE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "C46",
+      "AddressingForm": 0
+    },
+    "JBU6772": {
+      "Callsign": "JBU6772",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Baypo": "BAYPO",
+        "Ecake": "ECAKE",
+        "Finki": "FINKI"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "BAYPO2",
+      "STAR": "",
+      "Altitude": 1022,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "JBU71": {
+      "Callsign": "JBU71",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Gandy": "GANDY",
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabee": "SABEE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 5021,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "JetBlue 6772": {
+      "Callsign": "JBU6772",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Baypo": "BAYPO",
+        "Ecake": "ECAKE",
+        "Finki": "FINKI"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "BAYPO2",
+      "STAR": "",
+      "Altitude": 1022,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "JetBlue 71": {
+      "Callsign": "JBU71",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Gandy": "GANDY",
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabee": "SABEE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 5021,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "N373DC": {
+      "Callsign": "N373DC",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Brekr": "BREKR",
+        "Lyfie": "LYFIE",
+        "Ringy": "RINGY",
+        "Runne": "RUNNE",
+        "Sarasota": "SRQ",
+        "Wuddy": "WUDDY",
+        "Zebon": "ZEBON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "ILS Runway 32",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "SWA416": {
+      "Callsign": "SWA416",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Lagoo": "LAGOO",
+        "Selman": "SELMN",
+        "Tampa International Airport": "KTPA",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "Altitude": 5757,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "Southwest 416": {
+      "Callsign": "SWA416",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Lagoo": "LAGOO",
+        "Selman": "SELMN",
+        "Tampa International Airport": "KTPA",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "Altitude": 5757,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "UAL344": {
+      "Callsign": "UAL344",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Borst": "BORST",
+        "Guzda": "GUZDA",
+        "Jetstream": "JSTRM",
+        "Lagoo": "LAGOO",
+        "Lisa F": "LISAF",
+        "Selman": "SELMN",
+        "St Petersburg": "PIE",
+        "Tampa International Airport": "KTPA",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 11321,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "United 344": {
+      "Callsign": "UAL344",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Borst": "BORST",
+        "Guzda": "GUZDA",
+        "Jetstream": "JSTRM",
+        "Lagoo": "LAGOO",
+        "Lisa F": "LISAF",
+        "Selman": "SELMN",
+        "St Petersburg": "PIE",
+        "Tampa International Airport": "KTPA",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 11321,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "embraer phenom one hundred three delta charlie": {
+      "Callsign": "N373DC",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Brekr": "BREKR",
+        "Lyfie": "LYFIE",
+        "Ringy": "RINGY",
+        "Runne": "RUNNE",
+        "Sarasota": "SRQ",
+        "Wuddy": "WUDDY",
+        "Zebon": "ZEBON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "ILS Runway 32",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 1
+    },
+    "november 373DC": {
+      "Callsign": "N373DC",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Brekr": "BREKR",
+        "Lyfie": "LYFIE",
+        "Ringy": "RINGY",
+        "Runne": "RUNNE",
+        "Sarasota": "SRQ",
+        "Wuddy": "WUDDY",
+        "Zebon": "ZEBON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "ILS Runway 32",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "phenom one hundred three delta charlie": {
+      "Callsign": "N373DC",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Brekr": "BREKR",
+        "Lyfie": "LYFIE",
+        "Ringy": "RINGY",
+        "Runne": "RUNNE",
+        "Sarasota": "SRQ",
+        "Wuddy": "WUDDY",
+        "Zebon": "ZEBON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "ILS Runway 32",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 1
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"American 481, Climate Maintenance, and 120000.\"",
+    "[local-stt] normalized words: [american 481 climate maintenance and 120000]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"american\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"481\" Type=1 Value=481",
+    "[local-stt]   token[2]: Text=\"climate\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"maintenance\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"120000\" Type=1 Value=120000",
+    "[local-stt] MatchCallsign: 6 tokens, 16 aircraft",
+    "[local-stt]   candidate \"JetBlue 6772\" (ICAO=\"JBU6772\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JBU6772\" (ICAO=\"JBU6772\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JetBlue 71\" (ICAO=\"JBU71\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"N373DC\" (ICAO=\"N373DC\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American 4081\" (ICAO=\"AAL4081\"): score=1.00 consumed=2",
+    "[local-stt]   candidate \"United 344\" (ICAO=\"UAL344\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Allegiant 5695\" (ICAO=\"AAY5695\"): score=0.75 consumed=1",
+    "[local-stt]   candidate \"phenom one hundred three delta charlie\" (ICAO=\"N373DC\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JBU71\" (ICAO=\"JBU71\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest 416\" (ICAO=\"SWA416\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SWA416\" (ICAO=\"SWA416\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"UAL344\" (ICAO=\"UAL344\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"AAY5695\" (ICAO=\"AAY5695\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"november 373DC\" (ICAO=\"N373DC\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"embraer phenom one hundred three delta charlie\" (ICAO=\"N373DC\"): score=0.61 consumed=1",
+    "[local-stt]   candidate \"AAL4081\" (ICAO=\"AAL4081\"): score=0.92 consumed=2",
+    "[local-stt]   candidate \"AAL4081\" at pos 1: score=0.92 (adjusted=0.83) consumed=1",
+    "[local-stt]   candidate \"American 4081\" at pos 1: score=0.92 (adjusted=0.83) consumed=1",
+    "[local-stt]   accepted: \"AAL4081\" (conf=1.00, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"AAL4081\" SpokenKey=\"American 4081\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=6000 Fixes=4 Approaches=0 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"Gandy\" -\u003e \"GANDY\"",
+    "[local-stt]   fix: \"Pairs\" -\u003e \"PAIRS\"",
+    "[local-stt]   fix: \"Murdo\" -\u003e \"MURDO\"",
+    "[local-stt]   fix: \"Sabee\" -\u003e \"SABEE\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"climate\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"maintenance\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"120000\" Type=1 Value=120000",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   no match at token[0]=\"climate\", skipping",
+    "[local-stt]   no match at token[1]=\"maintenance\", skipping",
+    "[local-stt]   skipping filler word: \"and\"",
+    "[local-stt]   no match at token[3]=\"120000\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"AAL4081 AGAIN\" (conf=1.00, time=595.8µs) ==="
+  ]
+}
