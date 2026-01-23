@@ -226,6 +226,7 @@ var commandKeywords = map[string]string{
 	// Approach
 	"cleared":   "cleared",
 	"expect":    "expect",
+	"select":    "expect", // "select the ILS" = "expect the ILS"
 	"vectors":   "vectors",
 	"approach":  "approach",
 	"cancel":    "cancel",

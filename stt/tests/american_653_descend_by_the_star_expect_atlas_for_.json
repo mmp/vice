@@ -1,0 +1,372 @@
+{
+  "time": "2026-01-23T03:38:01.743930324Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "American 653, Descend by the Star, Expect Atlas for 99er",
+  "whisper_duration_ms": 216.72,
+  "audio_duration_ms": 4224,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 Ti (8024MB)",
+  "callsign": "AAL653",
+  "command": "DVS EI9",
+  "stt_aircraft": {
+    "AAL237": {
+      "Callsign": "AAL237",
+      "AircraftType": "B772",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 6559,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "AAL54": {
+      "Callsign": "AAL54",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 4213,
+      "State": "on approach",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "AAL653": {
+      "Callsign": "AAL653",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Cstio": "CSTIO",
+        "Dahla": "DAHLA",
+        "Gamey": "GAMEY",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Nekne": "NEKNE",
+        "Raebn": "RAEBN"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 14843,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "American 237 heavy": {
+      "Callsign": "AAL237",
+      "AircraftType": "B772",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 6559,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "American 54 heavy": {
+      "Callsign": "AAL54",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 4213,
+      "State": "on approach",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "American 653": {
+      "Callsign": "AAL653",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Cstio": "CSTIO",
+        "Dahla": "DAHLA",
+        "Gamey": "GAMEY",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Nekne": "NEKNE",
+        "Raebn": "RAEBN"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 14843,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "DAL44": {
+      "Callsign": "DAL44",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Acere": "ACERE",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Schar": "SCHAR"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 11394,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0
+    },
+    "Delta 44": {
+      "Callsign": "DAL44",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Acere": "ACERE",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Schar": "SCHAR"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 11394,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0
+    },
+    "KLM 58F heavy": {
+      "Callsign": "KLM58F",
+      "AircraftType": "B772",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "BNFSH3",
+      "Altitude": 3000,
+      "State": "on approach",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "KLM58F": {
+      "Callsign": "KLM58F",
+      "AircraftType": "B772",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "BNFSH3",
+      "Altitude": 3000,
+      "State": "on approach",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "UPS 83 heavy": {
+      "Callsign": "UPS83",
+      "AircraftType": "B748",
+      "Fixes": {
+        "Kacde": "KACDE",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Morea": "MOREA",
+        "Vicuv": "VICUV"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "RNAV Runway 8L",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 8000,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "UPS83": {
+      "Callsign": "UPS83",
+      "AircraftType": "B748",
+      "Fixes": {
+        "Kacde": "KACDE",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Morea": "MOREA",
+        "Vicuv": "VICUV"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "RNAV Runway 8L",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 8000,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"American 653, Descend by the Star, Expect Atlas for 99er\"",
+    "[local-stt] normalized words: [american 653 descend via the star expect atlas for 99er]",
+    "[local-stt] tokens: 10",
+    "[local-stt]   token[0]: Text=\"american\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"653\" Type=1 Value=653",
+    "[local-stt]   token[2]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"via\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"star\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"atlas\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"for\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"99er\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 10 tokens, 12 aircraft",
+    "[local-stt]   exact match: \"american 653\" -\u003e \"AAL653\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"AAL653\" SpokenKey=\"American 653\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=14843 Fixes=10 Approaches=3 AssignedApproach=\"ILS Runway 9\"",
+    "[local-stt]   fix: \"Nekne\" -\u003e \"NEKNE\"",
+    "[local-stt]   fix: \"Gamey\" -\u003e \"GAMEY\"",
+    "[local-stt]   fix: \"Cstio\" -\u003e \"CSTIO\"",
+    "[local-stt]   fix: \"Dahla\" -\u003e \"DAHLA\"",
+    "[local-stt]   fix: \"Miami International Airport\" -\u003e \"KMIA\"",
+    "[local-stt]   fix: \"Gritt\" -\u003e \"GRITT\"",
+    "[local-stt]   fix: \"Raebn\" -\u003e \"RAEBN\"",
+    "[local-stt]   fix: \"Bilzz\" -\u003e \"BILZZ\"",
+    "[local-stt]   fix: \"Llegg\" -\u003e \"LLEGG\"",
+    "[local-stt]   fix: \"Iness\" -\u003e \"INESS\"",
+    "[local-stt]   approach: \"I L S runway one two\" -\u003e \"I12\"",
+    "[local-stt]   approach: \"r-nav runway eight left\" -\u003e \"R8L\"",
+    "[local-stt]   approach: \"I L S runway niner\" -\u003e \"I9\"",
+    "[local-stt] command tokens after disregard: 8",
+    "[local-stt]   token[0]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"via\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"star\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"atlas\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"for\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"99er\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"descend\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 8 tokens",
+    "[local-stt]   extractSTAR: matched generic 'star'",
+    "[local-stt]   tryMatchTemplate \"descend_via_star\": cmd=\"DVS\" argStr=\"\" consumed=4",
+    "[local-stt]   matched command: \"DVS\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   no match at token[4]=\"expect\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"99er\" against 10 fixes",
+    "[local-stt]   extractFix: no match found for \"99er\"",
+    "[local-stt]   tryMatchTemplate \"at_fix_cleared_approach\": fix extraction failed",
+    "[local-stt]   no match at token[5]=\"atlas\", skipping",
+    "[local-stt]   no match at token[6]=\"for\", skipping",
+    "[local-stt]   no match at token[7]=\"99er\", skipping",
+    "[local-stt] ParseCommands: result=[DVS] (avgConf=1.00)",
+    "[local-stt] parsed commands: [DVS] (conf=1.00)",
+    "[local-stt] validated commands: [DVS] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"AAL653 DVS\" (conf=1.00, time=749.5µs) ==="
+  ]
+}
