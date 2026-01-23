@@ -806,22 +806,44 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 			imgui.EndCombo()
 		}
 
-		// Show selected whisper model and re-benchmark button
+		// Whisper model selection dropdown
 		if modelName := client.GetWhisperModelName(); modelName != "" {
 			imgui.Text("Model:")
 			imgui.SameLine()
-			imgui.TextColored(imgui.Vec4{0.5, 0.8, 0.5, 1}, modelName)
-			imgui.SameLine()
-			if imgui.Button("Re-benchmark") {
-				client.ForceWhisperRebenchmark(lg, func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64) {
-					config.WhisperModelName = modelName
-					config.WhisperDeviceID = deviceID
-					config.WhisperBenchmarkIndex = benchmarkIndex
-					config.WhisperRealtimeFactor = realtimeFactor
-				})
-				// Show benchmark progress dialog
-				benchClient := &rebenchmarkModalClient{config: config, lg: lg}
-				uiShowModalDialog(NewModalDialogBox(benchClient, p), false)
+			// Format display name (remove ggml- prefix and .bin suffix for readability)
+			displayName := modelName
+			displayName = strings.TrimPrefix(displayName, "ggml-")
+			displayName = strings.TrimSuffix(displayName, ".bin")
+			if imgui.BeginComboV("##whispermodel", displayName, 0) {
+				// Auto option runs benchmark
+				if imgui.SelectableBoolV("Auto (Benchmark)", false, 0, imgui.Vec2{}) {
+					client.ForceWhisperRebenchmark(lg, func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64) {
+						config.WhisperModelName = modelName
+						config.WhisperDeviceID = deviceID
+						config.WhisperBenchmarkIndex = benchmarkIndex
+						config.WhisperRealtimeFactor = realtimeFactor
+					})
+					benchClient := &rebenchmarkModalClient{config: config, lg: lg}
+					uiShowModalDialog(NewModalDialogBox(benchClient, p), false)
+				}
+				imgui.Separator()
+				// Individual model options
+				for _, model := range client.GetWhisperModelTiers() {
+					modelDisplay := strings.TrimPrefix(model, "ggml-")
+					modelDisplay = strings.TrimSuffix(modelDisplay, ".bin")
+					isSelected := model == modelName
+					if imgui.SelectableBoolV(modelDisplay, isSelected, 0, imgui.Vec2{}) {
+						if model != modelName {
+							client.SelectWhisperModel(lg, model, func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64) {
+								config.WhisperModelName = modelName
+								config.WhisperDeviceID = deviceID
+								config.WhisperBenchmarkIndex = benchmarkIndex
+								config.WhisperRealtimeFactor = realtimeFactor
+							})
+						}
+					}
+				}
+				imgui.EndCombo()
 			}
 		}
 

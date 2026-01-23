@@ -605,6 +605,41 @@ func GetWhisperModelName() string {
 	return ""
 }
 
+// GetWhisperModelTiers returns the list of available whisper models, from smallest to largest.
+func GetWhisperModelTiers() []string {
+	return whisperModelTiers
+}
+
+// SelectWhisperModel directly selects a whisper model without benchmarking.
+// This is used when the user manually chooses a model from the settings dropdown.
+func SelectWhisperModel(lg *log.Logger, modelName string, saveCallback func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64)) {
+	whisperModelStartMu.Lock()
+	// Close existing model if any
+	whisperModelMu.Lock()
+	if whisperModel != nil {
+		whisperModel.Close()
+		whisperModel = nil
+	}
+	whisperModelNameAtomic.Store("")
+	whisperModelErr = nil
+	whisperRealtimeFactor = 0
+	whisperModelMu.Unlock()
+
+	// Reset state
+	whisperModelStarted = true
+	whisperModelDone = make(chan struct{})
+	whisperSaveCallback = saveCallback
+	whisperModelStartMu.Unlock()
+
+	go func() {
+		defer close(whisperModelDone)
+
+		deviceID := whisper.ProcessorDescription()
+		// Use 0 for realtime factor since we're not benchmarking
+		loadModelDirect(modelName, deviceID, 0, lg)
+	}()
+}
+
 // GetWhisperDeviceID returns the device identifier used for whisper inference.
 func GetWhisperDeviceID() string {
 	return whisper.ProcessorDescription()
