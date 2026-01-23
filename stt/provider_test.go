@@ -36,6 +36,22 @@ func TestBasicAltitudeCommands(t *testing.T) {
 			expected: "UAL452 C350",
 		},
 		{
+			name:       "climb and maintain FL abbreviation",
+			transcript: "United 452 climb and maintain FL three five zero",
+			aircraft: map[string]Aircraft{
+				"United 452": {Callsign: "UAL452", Altitude: 28000, State: "overflight"},
+			},
+			expected: "UAL452 C350",
+		},
+		{
+			name:       "fly level as flight level",
+			transcript: "United 452 climb and maintain fly level two three zero",
+			aircraft: map[string]Aircraft{
+				"United 452": {Callsign: "UAL452", Altitude: 18000, State: "overflight"},
+			},
+			expected: "UAL452 C230",
+		},
+		{
 			name:       "radar contact climb",
 			transcript: "Delta 88 radar contact climb and maintain niner thousand",
 			aircraft: map[string]Aircraft{
@@ -220,6 +236,14 @@ func TestBasicSpeedCommands(t *testing.T) {
 				"American 300": {Callsign: "AAL300", State: "arrival"},
 			},
 			expected: "AAL300 SS",
+		},
+		{
+			name:       "resume normal speed",
+			transcript: "Delta 200 resume normal speed",
+			aircraft: map[string]Aircraft{
+				"Delta 200": {Callsign: "DAL200", State: "arrival"},
+			},
+			expected: "DAL200 S",
 		},
 	}
 

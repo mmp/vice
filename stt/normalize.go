@@ -181,12 +181,12 @@ var commandKeywords = map[string]string{
 	"atting":   "heading", // STT error: "heading" misheard as "atting" (phonetically similar)
 	"turn":     "turn",
 	"lefthand": "left", // STT error: "left" with extra "hand" suffix
-	"turning": "turn", // STT captures continuous tense
-	"left":    "left",
-	"right":   "right",
-	"degrees": "degrees",
-	"fly":     "fly",
-	"present": "present",
+	"turning":  "turn", // STT captures continuous tense
+	"left":     "left",
+	"right":    "right",
+	"degrees":  "degrees",
+	"fly":      "fly",
+	"present":  "present",
 
 	// Speed
 	"speed":    "speed",
@@ -200,6 +200,7 @@ var commandKeywords = map[string]string{
 	"maximum":  "maximum",
 	"forward":  "forward",
 	"knots":    "knots",
+	"normal":   "normal",
 
 	// Navigation
 	"direct":   "direct",
@@ -207,14 +208,14 @@ var commandKeywords = map[string]string{
 	"rig":      "direct", // STT error: "direct" garbled as "rig"
 	"drag":     "direct", // STT error: "direct" garbled as "drag"
 	"colonel":  "kernel", // English homophones: both pronounced /ˈkɜːrnəl/
-	"proceed": "proceed",
-	"cross":   "cross",
-	"depart":  "depart",
-	"hold":    "hold",
-	"via":     "via",
-	"by":      "via",
-	"sid":     "sid",
-	"cid":     "sid",
+	"proceed":  "proceed",
+	"cross":    "cross",
+	"depart":   "depart",
+	"hold":     "hold",
+	"via":      "via",
+	"by":       "via",
+	"sid":      "sid",
+	"cid":      "sid",
 
 	// Hold-related
 	"radial":    "radial",
@@ -307,6 +308,7 @@ var phraseExpansions = map[string][]string{
 	"thunbright":       {"turn", "right"},       // STT error: "turn right" merged together
 	"cleardrick":       {"cleared", "direct"},   // STT error: "cleared direct" merged
 	"expectilis":       {"expect", "ils"},       // STT error: "expect ILS" merged
+	"fl":               {"flight", "level"},     // STT converts "flight level" to "FL"
 }
 
 // multiTokenReplacements maps sequences of tokens (space-joined) to replacements.
@@ -315,6 +317,7 @@ var multiTokenReplacements = map[string][]string{
 	"december 18": {"descend", "maintain"}, // STT error: "descend and maintain"
 	"i l s":       {"ils"},                 // Spelled out ILS
 	"r nav":       {"rnav"},                // R-NAV after hyphen removal
+	"fly level":   {"flight", "level"},     // STT error: "flight level" misheard as "fly level"
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.

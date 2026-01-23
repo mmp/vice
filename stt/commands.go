@@ -321,6 +321,13 @@ var commandTemplates = []CommandTemplate{
 		SkipWords: []string{"restrictions", "restriction"},
 	},
 	{
+		Name:      "resume_normal_speed",
+		Keywords:  [][]string{{"resume"}, {"normal"}, {"speed"}},
+		ArgType:   ArgNone,
+		OutputFmt: "S",
+		Priority:  12,
+	},
+	{
 		Name:      "final_approach_speed",
 		Keywords:  [][]string{{"reduce"}, {"final"}, {"approach"}, {"speed"}},
 		ArgType:   ArgNone,
