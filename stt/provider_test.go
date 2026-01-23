@@ -1842,6 +1842,59 @@ func TestExtractFix(t *testing.T) {
 			expectedFix:  "",
 			expectedCons: 0,
 		},
+		// Spelling correction tests
+		{
+			name: "spelling with thats trigger - deer park thats delta papa kilo",
+			tokens: []Token{
+				{Text: "deer", Type: TokenWord},
+				{Text: "park", Type: TokenWord},
+				{Text: "thats", Type: TokenWord},
+				{Text: "delta", Type: TokenWord},
+				{Text: "papa", Type: TokenWord},
+				{Text: "kilo", Type: TokenWord},
+			},
+			expectedFix:  "DPK",
+			expectedCons: 6, // all tokens consumed
+		},
+		{
+			name: "spelling confirms match - jenny thats juliet echo november november yankee",
+			tokens: []Token{
+				{Text: "jenny", Type: TokenWord},
+				{Text: "thats", Type: TokenWord},
+				{Text: "juliet", Type: TokenWord},
+				{Text: "echo", Type: TokenWord},
+				{Text: "november", Type: TokenWord},
+				{Text: "november", Type: TokenWord},
+				{Text: "yankee", Type: TokenWord},
+			},
+			expectedFix:  "JENNY",
+			expectedCons: 7, // all tokens consumed
+		},
+		{
+			name: "spelling without trigger - pucky papa uniform charlie kilo yankee",
+			tokens: []Token{
+				{Text: "pucky", Type: TokenWord},
+				{Text: "papa", Type: TokenWord},
+				{Text: "uniform", Type: TokenWord},
+				{Text: "charlie", Type: TokenWord},
+				{Text: "kilo", Type: TokenWord},
+				{Text: "yankee", Type: TokenWord},
+			},
+			expectedFix:  "PUCKY",
+			expectedCons: 6, // all tokens consumed
+		},
+		{
+			name: "spelling overrides garbled spoken name",
+			tokens: []Token{
+				{Text: "deerpak", Type: TokenWord}, // garbled "deer park"
+				{Text: "thats", Type: TokenWord},
+				{Text: "delta", Type: TokenWord},
+				{Text: "papa", Type: TokenWord},
+				{Text: "kilo", Type: TokenWord},
+			},
+			expectedFix:  "DPK",
+			expectedCons: 5, // all tokens consumed
+		},
 	}
 
 	for _, tt := range tests {
@@ -2769,6 +2822,89 @@ func TestSTTFromJSONFiles(t *testing.T) {
 
 			if result != expected {
 				t.Errorf("got %q, want %q", result, expected)
+			}
+		})
+	}
+}
+
+func TestSpelledFixNames(t *testing.T) {
+	tests := []struct {
+		name       string
+		transcript string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "direct fix with thats spelling",
+			transcript: "American 123 proceed direct Deer Park thats delta papa kilo",
+			aircraft: map[string]Aircraft{
+				"American 123": {
+					Callsign: "AAL123",
+					State:    "arrival",
+					Fixes: map[string]string{
+						"deer park": "DPK",
+						"merit":     "MERIT",
+					},
+				},
+			},
+			expected: "AAL123 DDPK",
+		},
+		{
+			name:       "direct fix with spelling no trigger word",
+			transcript: "Delta 456 direct Cameron charlie alpha mike romeo november",
+			aircraft: map[string]Aircraft{
+				"Delta 456": {
+					Callsign: "DAL456",
+					State:    "arrival",
+					Fixes: map[string]string{
+						"cameron": "CAMRN",
+						"merit":   "MERIT",
+					},
+				},
+			},
+			expected: "DAL456 DCAMRN",
+		},
+		{
+			name:       "spelling corrects garbled fix name",
+			transcript: "United 789 direct Cameroon thats charlie alpha mike romeo november",
+			aircraft: map[string]Aircraft{
+				"United 789": {
+					Callsign: "UAL789",
+					State:    "arrival",
+					Fixes: map[string]string{
+						"cameron": "CAMRN",
+					},
+				},
+			},
+			expected: "UAL789 DCAMRN",
+		},
+		{
+			name:       "spelling with spelled trigger word",
+			transcript: "Southwest 100 proceed direct carmel spelled charlie alpha romeo mike lima",
+			aircraft: map[string]Aircraft{
+				"Southwest 100": {
+					Callsign: "SWA100",
+					State:    "arrival",
+					Fixes: map[string]string{
+						"carmel": "CARML",
+					},
+				},
+			},
+			expected: "SWA100 DCARML",
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
 			}
 		})
 	}

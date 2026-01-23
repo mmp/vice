@@ -1395,11 +1395,15 @@ func extractFix(tokens []Token, fixes map[string]string) (string, float64, int) 
 		}
 		phrase := strings.Join(parts, " ")
 
-		// Try exact match first - return immediately
+		// Try exact match first - store it as best match (don't return yet, need to check for spelling)
 		for spokenName, fixID := range fixes {
 			if strings.EqualFold(phrase, spokenName) {
 				logLocalStt("  extractFix: matched %q -> %q (exact)", phrase, fixID)
-				return fixID, 1.0, length
+				bestFix = fixID
+				bestScore = 1.0
+				bestLength = length
+				// Break out of both loops - exact match is best possible spoken match
+				goto checkSpelling
 			}
 		}
 
@@ -1449,6 +1453,35 @@ func extractFix(tokens []Token, fixes map[string]string) (string, float64, int) 
 		}
 	}
 
+checkSpelling:
+	// After initial match attempt, look for spelling patterns that may follow.
+	// Controllers often spell out fix names: "direct Deer Park, that's delta papa kilo"
+	searchStart := bestLength
+	if bestFix == "" {
+		// No match yet - still check for spelling after the first word
+		searchStart = 1
+	}
+
+	if searchStart > 0 && searchStart < len(tokens) {
+		spelledFix, spellingConf, spellingConsumed := extractSpelledFix(tokens[searchStart:], fixes)
+		if spelledFix != "" {
+			totalConsumed := searchStart + spellingConsumed
+			if bestFix == "" {
+				// No initial match - use spelling as primary
+				logLocalStt("  extractFix: no spoken match, using spelling %q", spelledFix)
+				return spelledFix, spellingConf, totalConsumed
+			}
+			if spelledFix == bestFix {
+				// Spelling confirms our match - boost confidence
+				logLocalStt("  extractFix: spelling confirms match %q", bestFix)
+				return bestFix, max(bestScore, 0.98), totalConsumed
+			}
+			// Spelling contradicts match - prefer spelling (more explicit)
+			logLocalStt("  extractFix: spelling %q overrides spoken match %q", spelledFix, bestFix)
+			return spelledFix, spellingConf, totalConsumed
+		}
+	}
+
 	if bestFix != "" {
 		logLocalStt("  extractFix: matched %q -> %q (fuzzy %.2f)", tokens[0].Text, bestFix, bestScore)
 		return bestFix, bestScore, bestLength
@@ -1467,6 +1500,51 @@ func extractConsonants(s string) string {
 		}
 	}
 	return strings.ToLower(result.String())
+}
+
+// extractSpelledFix looks for a spelled-out fix name in tokens using NATO phonetic alphabet.
+// Handles patterns like "that's delta papa kilo" or "charlie alpha mike romeo november".
+// Returns the fix ID if spelling matches a fix, confidence, and tokens consumed.
+func extractSpelledFix(tokens []Token, fixes map[string]string) (string, float64, int) {
+	if len(tokens) == 0 || len(fixes) == 0 {
+		return "", 0, 0
+	}
+
+	startIdx := 0
+
+	// Check for trigger phrase ("that's", "spelled", etc.)
+	if IsSpellingTrigger(tokens[0].Text) {
+		startIdx = 1
+		if startIdx >= len(tokens) {
+			return "", 0, 0
+		}
+	}
+
+	// Extract NATO letters from remaining tokens
+	var words []string
+	for i := startIdx; i < len(tokens); i++ {
+		words = append(words, tokens[i].Text)
+	}
+
+	spelled, natoConsumed := ExtractNATOSpelling(words)
+	if len(spelled) < 2 {
+		// Need at least 2 letters for a valid fix spelling
+		return "", 0, 0
+	}
+
+	logLocalStt("  extractSpelledFix: extracted spelling %q from %d NATO words", spelled, natoConsumed)
+
+	// Check if spelled string matches any fix ID (by value)
+	for _, fixID := range fixes {
+		if strings.EqualFold(spelled, fixID) {
+			totalConsumed := startIdx + natoConsumed
+			logLocalStt("  extractSpelledFix: spelling %q matches fix %q", spelled, fixID)
+			return fixID, 0.95, totalConsumed
+		}
+	}
+
+	logLocalStt("  extractSpelledFix: spelling %q does not match any fix", spelled)
+	return "", 0, 0
 }
 
 // extractApproach extracts an approach from tokens.
