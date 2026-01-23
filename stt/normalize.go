@@ -111,6 +111,7 @@ var commandKeywords = map[string]string{
 	"con":        "climb",
 	"maintain":   "maintain",
 	"maintained": "maintain",
+	"mainson":    "maintain",
 	"may":        "maintain",
 	"altitude":   "altitude",
 	"thousand":   "thousand",
@@ -267,6 +268,7 @@ var phraseExpansions = map[string][]string{
 	"flighting":        {"fly", "heading"},      // "fly heading" -> "flighting"
 	"commenting":       {"climb", "maintain"},   // "climb and maintain" -> "commenting"
 	"disundermaintain": {"descend", "maintain"}, // "descend and maintain" -> "disundermaintain"
+	"echowiski":        {"echo", "whiskey"},     // "echo whiskey" -> "echowiski" (NATO letters E W)
 }
 
 // multiTokenReplacements maps sequences of tokens (space-joined) to replacements.
@@ -566,7 +568,17 @@ func fixLargeNumber(s string) string {
 		return ""
 	}
 
-	// First try: remove a doubled digit (e.g., "144000" → "14000")
+	// First try: remove spurious '0' after first digit (e.g., "104000" → "14000")
+	// This handles STT errors where "fourteen" becomes "one oh four" or similar.
+	// Check this first because it's more likely to be the intended altitude.
+	if len(s) >= 3 && s[1] == '0' && s[2] != '0' {
+		corrected := string(s[0]) + s[2:]
+		if cn := ParseNumber(corrected); cn >= 1000 && cn <= 60000 {
+			return corrected
+		}
+	}
+
+	// Second try: remove a doubled digit (e.g., "144000" → "14000")
 	for j := 1; j < len(s); j++ {
 		if s[j] == s[j-1] {
 			// Try removing the duplicate
@@ -577,7 +589,7 @@ func fixLargeNumber(s string) string {
 		}
 	}
 
-	// Second try: remove trailing zero (e.g., "120000" → "12000")
+	// Third try: remove trailing zero (e.g., "120000" → "12000")
 	if s[len(s)-1] == '0' {
 		corrected := n / 10
 		if corrected >= 1000 && corrected <= 60000 {
