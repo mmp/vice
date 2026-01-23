@@ -566,7 +566,7 @@ var whisperIsBenchmarking bool // true only when actually running benchmarks, no
 // WhisperBenchmarkIndex is the current benchmark generation. If the stored
 // index in config is less than this, re-benchmarking is triggered. Increment
 // this when benchmark criteria change (e.g., models, thresholds).
-const WhisperBenchmarkIndex = 2
+const WhisperBenchmarkIndex = 3
 
 // Callback to save model selection to config
 var whisperSaveCallback func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64)
@@ -884,13 +884,13 @@ func runBenchmark(lg *log.Logger, deviceID string) {
 	setWhisperBenchmarkStatus("Starting benchmark (GPU available)")
 	lg.Info("Starting whisper model benchmark")
 
-	// Tightened thresholds for better latency guarantees.
+	// Relaxed thresholds to favor larger models (better accuracy).
 	// With Whisper's fixed encoder time (~60-80% of total), a 1s benchmark with
-	// 350ms threshold gives ~1.3-1.5x safety factor for real 3s commands.
-	// Real 3s command: ~350 * 1.3 = ~455ms, well under 500ms target.
+	// 450ms threshold gives ~1.2x safety factor for real 3s commands.
+	// Real 3s command: ~450 * 1.2 = ~540ms, acceptable for most use cases.
 	const (
-		continueThresholdMs = 250 // <250ms: fast enough, try larger model
-		acceptThresholdMs   = 350 // Must process 1s of speech in <350ms to be usable
+		continueThresholdMs = 300 // <300ms: fast enough, try larger model
+		acceptThresholdMs   = 450 // Must process 1s of speech in <450ms to be usable
 	)
 
 	var selectedModel *whisper.Model

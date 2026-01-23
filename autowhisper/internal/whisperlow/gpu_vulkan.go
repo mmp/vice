@@ -8,7 +8,10 @@ package whisperlow
 #include <string.h>
 */
 import "C"
-import "unsafe"
+import (
+	"strings"
+	"unsafe"
+)
 
 // VulkanDeviceInfo contains information about a Vulkan GPU device.
 type VulkanDeviceInfo struct {
@@ -95,6 +98,16 @@ func init() {
 		gpuEnabled = true
 		gpuDevice = GetPreferredGPUDevice()
 		gpuDiscrete = GPUDeviceType(C.ggml_backend_vk_get_device_type(C.int(gpuDevice))) == GPUDeviceTypeDiscrete
+
+		// Disable flash attention for AMD GPUs - Vulkan FA only works on NVIDIA
+		// with coopmat2 extension; on AMD it falls back to CPU causing severe slowdowns
+		devices := GetVulkanDevices()
+		if gpuDevice < len(devices) {
+			desc := devices[gpuDevice].Description
+			if strings.Contains(desc, "AMD") || strings.Contains(desc, "Radeon") {
+				gpuFlashAttn = false
+			}
+		}
 	}
 }
 

@@ -85,10 +85,11 @@ static int whisper_full_parallel_ptr(struct whisper_context* ctx, struct whisper
 }
 
 // Create context params with GPU configuration
-static struct whisper_context_params whisper_context_params_with_gpu(bool use_gpu, int gpu_device) {
+static struct whisper_context_params whisper_context_params_with_gpu(bool use_gpu, int gpu_device, bool flash_attn) {
     struct whisper_context_params params = whisper_context_default_params();
     params.use_gpu = use_gpu;
     params.gpu_device = gpu_device;
+    params.flash_attn = flash_attn;
     return params;
 }
 */
@@ -129,9 +130,10 @@ var (
 
 // GPU configuration (set by init() in platform-specific files)
 var (
-	gpuEnabled  = false
-	gpuDiscrete = false
-	gpuDevice   = 0
+	gpuEnabled   = false
+	gpuDiscrete  = false
+	gpuDevice    = 0
+	gpuFlashAttn = true // Disabled for AMD GPUs due to Vulkan FA CPU fallback
 )
 
 // GPUEnabled returns true if GPU acceleration is being used for inference.
@@ -206,7 +208,7 @@ func GPUDeviceIndex() int {
 func Whisper_init(path string) *Context {
 	cPath := C.CString(path)
 	defer C.free(unsafe.Pointer(cPath))
-	params := C.whisper_context_params_with_gpu(C.bool(gpuEnabled), C.int(gpuDevice))
+	params := C.whisper_context_params_with_gpu(C.bool(gpuEnabled), C.int(gpuDevice), C.bool(gpuFlashAttn))
 	if ctx := C.whisper_init_from_file_with_params(cPath, params); ctx != nil {
 		return (*Context)(ctx)
 	}
@@ -217,7 +219,7 @@ func Whisper_init_from_buffer(data []byte) *Context {
 	if len(data) == 0 {
 		return nil
 	}
-	params := C.whisper_context_params_with_gpu(C.bool(gpuEnabled), C.int(gpuDevice))
+	params := C.whisper_context_params_with_gpu(C.bool(gpuEnabled), C.int(gpuDevice), C.bool(gpuFlashAttn))
 	if ctx := C.whisper_init_from_buffer_with_params(unsafe.Pointer(&data[0]), C.size_t(len(data)), params); ctx != nil {
 		return (*Context)(ctx)
 	}
