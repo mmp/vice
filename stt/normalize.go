@@ -210,6 +210,8 @@ var commandKeywords = map[string]string{
 	"dallas":    "ils", // STT error
 	"dailies":   "ils", // STT error: "ILS" transcribed as "dailies"
 	"ls":        "ils", // STT error: "ILS" sometimes transcribed as "LS"
+	"alice":     "ils", // STT error: "ILS" transcribed as "alice"
+	"als":       "ils", // STT error: "ILS" transcribed as "als"
 	"rnav":      "rnav",
 	"rnf":       "rnav", // STT error
 	"rf":        "rnav", // STT error: "RNAV" -> "R&F" -> "rf" after cleanup
