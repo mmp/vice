@@ -28,6 +28,12 @@ func NewTranscriber(lg *log.Logger) *Transcriber {
 //   - "BLOCKED" if no callsign could be identified
 //   - "" if transcript is empty or only contains position identification
 //
+// Commands may include SAYAGAIN/TYPE for partial parses where keywords were recognized
+// but the associated value couldn't be extracted (e.g., "fly heading blark" would return
+// "SAYAGAIN/HEADING"). Valid types are: HEADING, ALTITUDE, SPEED, APPROACH, TURN, SQUAWK, FIX.
+// When combined with other commands, e.g., "{CALLSIGN} C50 SAYAGAIN/HEADING", the aircraft
+// will execute the valid commands and ask for clarification on the missed part.
+//
 // controllerRadioName is the user's controller radio name (e.g., "New York Departure")
 // used to detect position identification phrases. Pass empty string if not available.
 func (p *Transcriber) DecodeTranscript(

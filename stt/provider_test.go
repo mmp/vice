@@ -320,6 +320,49 @@ func TestCompoundCommands(t *testing.T) {
 	}
 }
 
+func TestSayAgainCommands(t *testing.T) {
+	// Tests for SAYAGAIN commands - generated when STT recognizes command keywords
+	// but fails to extract the associated value (e.g., garbled heading/altitude)
+	tests := []struct {
+		name       string
+		transcript string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "garbled heading after valid command",
+			transcript: "American 123 descend and maintain five thousand fly heading blark bling",
+			aircraft: map[string]Aircraft{
+				"American 123": {Callsign: "AAL123", Altitude: 10000, State: "arrival"},
+			},
+			expected: "AAL123 D50 SAYAGAIN/HEADING",
+		},
+		{
+			name:       "garbled altitude after callsign",
+			transcript: "Delta 456 climb and maintain mumble jumble",
+			aircraft: map[string]Aircraft{
+				"Delta 456": {Callsign: "DAL456", Altitude: 5000, State: "departure"},
+			},
+			expected: "DAL456 SAYAGAIN/ALTITUDE",
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
+}
+
 func TestTransponderCommands(t *testing.T) {
 	tests := []struct {
 		name       string

@@ -48,6 +48,7 @@ type CommandMatch struct {
 	Confidence float64 // Match confidence
 	Consumed   int     // Tokens consumed
 	IsThen     bool    // Whether this is a "then" sequenced command
+	IsSayAgain bool    // True if this is a partial match that needs say-again
 }
 
 // commandTemplates defines patterns for recognizing ATC commands.
@@ -70,6 +71,19 @@ type CommandMatch struct {
 //   - "climb via the sid" matches climb_via_sid (15), not climb (5)
 //   - "present heading" matches present_heading (12), not heading_only (5)
 //   - "turn left heading 270" matches turn_left_heading (10), not heading_only (5)
+//
+// SAYAGAIN Commands:
+// When keywords are matched but the associated value cannot be extracted (e.g., STT transcribed
+// "fly heading blark bling five" where the heading is garbled), a SAYAGAIN/TYPE command is
+// generated instead. The pilot will read back the valid commands and ask for clarification
+// on the missed part. Supported SAYAGAIN types:
+//   - SAYAGAIN/HEADING - heading value couldn't be extracted
+//   - SAYAGAIN/ALTITUDE - altitude value couldn't be extracted
+//   - SAYAGAIN/SPEED - speed value couldn't be extracted
+//   - SAYAGAIN/APPROACH - approach name couldn't be matched
+//   - SAYAGAIN/TURN - turn degrees couldn't be extracted
+//   - SAYAGAIN/SQUAWK - squawk code couldn't be extracted
+//   - SAYAGAIN/FIX - fix name couldn't be matched
 var commandTemplates = []CommandTemplate{
 	// === ALTITUDE COMMANDS ===
 	{
@@ -650,19 +664,42 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 }
 
 // matchCommand tries to match tokens against all command templates.
+// Returns the best match. Full matches are preferred over SAYAGAIN (partial) matches.
+// A SAYAGAIN match is only returned if no full match is found.
 func matchCommand(tokens []Token, ac Aircraft, isThen bool) (CommandMatch, int) {
 	var bestMatch CommandMatch
 	var bestPriority int
+	var bestSayAgain CommandMatch
+	var bestSayAgainPriority int
 
 	for _, tmpl := range commandTemplates {
 		match, consumed := tryMatchTemplate(tokens, tmpl, ac, isThen)
-		if consumed > 0 && (tmpl.Priority > bestPriority || (tmpl.Priority == bestPriority && consumed > bestMatch.Consumed)) {
-			bestMatch = match
-			bestPriority = tmpl.Priority
+		if consumed > 0 {
+			if match.IsSayAgain {
+				// Track best SAYAGAIN match separately
+				if tmpl.Priority > bestSayAgainPriority || (tmpl.Priority == bestSayAgainPriority && consumed > bestSayAgain.Consumed) {
+					bestSayAgain = match
+					bestSayAgainPriority = tmpl.Priority
+				}
+			} else {
+				// Track best full match
+				if tmpl.Priority > bestPriority || (tmpl.Priority == bestPriority && consumed > bestMatch.Consumed) {
+					bestMatch = match
+					bestPriority = tmpl.Priority
+				}
+			}
 		}
 	}
 
-	return bestMatch, bestMatch.Consumed
+	// Prefer full match over SAYAGAIN match
+	if bestMatch.Consumed > 0 {
+		return bestMatch, bestMatch.Consumed
+	}
+	if bestSayAgain.Consumed > 0 {
+		logLocalStt("  matchCommand: no full match, using SAYAGAIN: %q", bestSayAgain.Command)
+		return bestSayAgain, bestSayAgain.Consumed
+	}
+	return CommandMatch{}, 0
 }
 
 // tryMatchTemplate attempts to match tokens against a single template.
@@ -754,6 +791,13 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	case ArgAltitude:
 		alt, altConsumed := extractAltitude(tokens[consumed:])
 		if altConsumed == 0 {
+			// Keywords matched but couldn't extract altitude - return SAYAGAIN if appropriate
+			if shouldGenerateSayAgain(tokens, consumed) {
+				if sayAgainCmd := sayAgainCommandForArg(ArgAltitude, tmpl.Priority); sayAgainCmd != "" {
+					logLocalStt("  %s: keywords matched but altitude extraction failed, returning %s", tmpl.Name, sayAgainCmd)
+					return CommandMatch{Command: sayAgainCmd, Confidence: 0.5, Consumed: consumed, IsSayAgain: true}, consumed
+				}
+			}
 			return CommandMatch{}, 0
 		}
 		// Apply context-aware altitude correction for climb/descend commands
@@ -768,6 +812,13 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	case ArgHeading:
 		hdg, hdgConsumed := extractHeading(tokens[consumed:])
 		if hdgConsumed == 0 {
+			// Keywords matched but couldn't extract heading - return SAYAGAIN if appropriate
+			if shouldGenerateSayAgain(tokens, consumed) {
+				if sayAgainCmd := sayAgainCommandForArg(ArgHeading, tmpl.Priority); sayAgainCmd != "" {
+					logLocalStt("  %s: keywords matched but heading extraction failed, returning %s", tmpl.Name, sayAgainCmd)
+					return CommandMatch{Command: sayAgainCmd, Confidence: 0.5, Consumed: consumed, IsSayAgain: true}, consumed
+				}
+			}
 			return CommandMatch{}, 0
 		}
 		argStr = fmt.Sprintf("%03d", hdg)
@@ -776,6 +827,13 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	case ArgSpeed:
 		spd, spdConsumed := extractSpeed(tokens[consumed:])
 		if spdConsumed == 0 {
+			// Keywords matched but couldn't extract speed - return SAYAGAIN if appropriate
+			if shouldGenerateSayAgain(tokens, consumed) {
+				if sayAgainCmd := sayAgainCommandForArg(ArgSpeed, tmpl.Priority); sayAgainCmd != "" {
+					logLocalStt("  %s: keywords matched but speed extraction failed, returning %s", tmpl.Name, sayAgainCmd)
+					return CommandMatch{Command: sayAgainCmd, Confidence: 0.5, Consumed: consumed, IsSayAgain: true}, consumed
+				}
+			}
 			return CommandMatch{}, 0
 		}
 		argStr = strconv.Itoa(spd)
@@ -784,6 +842,13 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	case ArgFix:
 		fix, fixConf, fixConsumed := extractFix(tokens[consumed:], ac.Fixes)
 		if fixConsumed == 0 {
+			// Keywords matched but couldn't extract fix - return SAYAGAIN if appropriate
+			if shouldGenerateSayAgain(tokens, consumed) {
+				if sayAgainCmd := sayAgainCommandForArg(ArgFix, tmpl.Priority); sayAgainCmd != "" {
+					logLocalStt("  %s: keywords matched but fix extraction failed, returning %s", tmpl.Name, sayAgainCmd)
+					return CommandMatch{Command: sayAgainCmd, Confidence: 0.5, Consumed: consumed, IsSayAgain: true}, consumed
+				}
+			}
 			return CommandMatch{}, 0
 		}
 		argStr = fix
@@ -793,6 +858,13 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	case ArgApproach:
 		appr, apprConf, apprConsumed := extractApproach(tokens[consumed:], ac.CandidateApproaches)
 		if apprConsumed == 0 {
+			// Keywords matched but couldn't extract approach - return SAYAGAIN if appropriate
+			if shouldGenerateSayAgain(tokens, consumed) {
+				if sayAgainCmd := sayAgainCommandForArg(ArgApproach, tmpl.Priority); sayAgainCmd != "" {
+					logLocalStt("  %s: keywords matched but approach extraction failed, returning %s", tmpl.Name, sayAgainCmd)
+					return CommandMatch{Command: sayAgainCmd, Confidence: 0.5, Consumed: consumed, IsSayAgain: true}, consumed
+				}
+			}
 			return CommandMatch{}, 0
 		}
 		argStr = appr
@@ -802,6 +874,13 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	case ArgSquawk:
 		code, sqkConsumed := extractSquawk(tokens[consumed:])
 		if sqkConsumed == 0 {
+			// Keywords matched but couldn't extract squawk code - return SAYAGAIN if appropriate
+			if shouldGenerateSayAgain(tokens, consumed) {
+				if sayAgainCmd := sayAgainCommandForArg(ArgSquawk, tmpl.Priority); sayAgainCmd != "" {
+					logLocalStt("  %s: keywords matched but squawk extraction failed, returning %s", tmpl.Name, sayAgainCmd)
+					return CommandMatch{Command: sayAgainCmd, Confidence: 0.5, Consumed: consumed, IsSayAgain: true}, consumed
+				}
+			}
 			return CommandMatch{}, 0
 		}
 		argStr = code
@@ -826,6 +905,13 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 	case ArgDegrees:
 		deg, dir, degConsumed := extractDegrees(tokens[consumed:])
 		if degConsumed == 0 {
+			// Keywords matched but couldn't extract turn degrees - return SAYAGAIN if appropriate
+			if shouldGenerateSayAgain(tokens, consumed) {
+				if sayAgainCmd := sayAgainCommandForArg(ArgDegrees, tmpl.Priority); sayAgainCmd != "" {
+					logLocalStt("  %s: keywords matched but turn degrees extraction failed, returning %s", tmpl.Name, sayAgainCmd)
+					return CommandMatch{Command: sayAgainCmd, Confidence: 0.5, Consumed: consumed, IsSayAgain: true}, consumed
+				}
+			}
 			return CommandMatch{}, 0
 		}
 		if dir == "left" {
@@ -1819,6 +1905,89 @@ func mustAtoi(s string) int {
 	}
 	n, _ := strconv.Atoi(s)
 	return n
+}
+
+// sayAgainCommandForArg returns the SAYAGAIN/TYPE command for a given argument type.
+// Returns empty string if this argument type should not generate SAYAGAIN commands.
+// SAYAGAIN commands are generated when STT recognizes command keywords but fails
+// to extract the associated value (e.g., "fly heading blark bling five").
+//
+// The priority parameter is the template priority. Low-priority templates (< 5) are
+// fallback matchers that shouldn't generate SAYAGAIN since they match broadly and
+// often trigger on words that are part of other phrases.
+func sayAgainCommandForArg(argType ArgType, priority int) string {
+	// Don't generate SAYAGAIN for low-priority fallback templates
+	if priority < 5 {
+		return ""
+	}
+
+	switch argType {
+	case ArgAltitude:
+		return "SAYAGAIN/ALTITUDE"
+	case ArgHeading:
+		return "SAYAGAIN/HEADING"
+	case ArgSpeed:
+		return "SAYAGAIN/SPEED"
+	case ArgApproach:
+		return "SAYAGAIN/APPROACH"
+	case ArgSquawk:
+		return "SAYAGAIN/SQUAWK"
+	case ArgFix:
+		return "SAYAGAIN/FIX"
+	case ArgDegrees:
+		return "SAYAGAIN/TURN"
+	default:
+		// Other arg types (ArgNone, ArgSID, ArgSTAR, compound types) don't generate SAYAGAIN
+		return ""
+	}
+}
+
+// shouldGenerateSayAgain checks if we should generate a SAYAGAIN command after
+// keywords matched but argument extraction failed.
+// Returns false if:
+// - No remaining tokens after keyword consumption
+// - The next token is a command keyword (indicates a different command follows, not garbled argument)
+// - The remaining tokens look like goodbye phrases or facility names (not commands)
+func shouldGenerateSayAgain(tokens []Token, consumed int) bool {
+	// No remaining tokens - nothing was garbled, just incomplete
+	if consumed >= len(tokens) {
+		return false
+	}
+
+	// Check if remaining token is a command keyword
+	nextText := strings.ToLower(tokens[consumed].Text)
+	if isCommandKeyword(nextText) {
+		return false
+	}
+
+	// Check for facility type words that indicate this is controller identification, not a command
+	// e.g., "contact socal approach 12515" - "approach" is part of facility name
+	facilityWords := map[string]bool{
+		"approach": true, "departure": true, "center": true, "tower": true,
+		"ground": true, "radio": true,
+	}
+	if facilityWords[nextText] {
+		return false
+	}
+
+	// Check for informational/mode words that complete certain phrases
+	// e.g., "squawk VFR" - VFR is not a garbled squawk code, it's the mode
+	infoWords := map[string]bool{
+		"vfr": true, "ifr": true, "frequency": true, "change": true,
+		"approved": true, "terminated": true, "services": true,
+	}
+	if infoWords[nextText] {
+		return false
+	}
+
+	// Check for goodbye/acknowledgment phrases that often end transmissions
+	// e.g., "see ya", "good day", "have a good one"
+	goodbyeWords := map[string]bool{
+		"see": true, "seeya": true, "goodbye": true, "good": true,
+		"have": true, "roger": true, "wilco": true, "thanks": true,
+		"thank": true, "you": true, "ya": true, "day": true,
+	}
+	return !goodbyeWords[nextText]
 }
 
 // shouldCorrectAltitude checks if an extracted altitude should be multiplied by 10

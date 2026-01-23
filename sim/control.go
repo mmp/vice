@@ -1622,6 +1622,32 @@ func (s *Sim) SayNotCleared(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign,
 	return callsign, spokenText, nil
 }
 
+// SayAgainCommand returns an intent for when STT partially parsed a command but
+// couldn't extract the argument. The pilot will ask the controller to repeat the
+// specific part of the clearance.
+func (s *Sim) SayAgainCommand(tcw TCW, callsign av.ADSBCallsign, commandType string) (av.CommandIntent, error) {
+	var cmdType av.SayAgainCommandType
+	switch commandType {
+	case "HEADING":
+		cmdType = av.SayAgainHeading
+	case "ALTITUDE":
+		cmdType = av.SayAgainAltitude
+	case "SPEED":
+		cmdType = av.SayAgainSpeed
+	case "APPROACH":
+		cmdType = av.SayAgainApproach
+	case "TURN":
+		cmdType = av.SayAgainTurn
+	case "SQUAWK":
+		cmdType = av.SayAgainSquawk
+	case "FIX":
+		cmdType = av.SayAgainFix
+	default:
+		return nil, ErrInvalidCommandSyntax
+	}
+	return av.SayAgainIntent{CommandType: cmdType}, nil
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Deferred operations
 
@@ -2267,6 +2293,8 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.SayHeading(tcw, callsign)
 		} else if command == "SA" {
 			return s.SayAltitude(tcw, callsign)
+		} else if strings.HasPrefix(command, "SAYAGAIN/") {
+			return s.SayAgainCommand(tcw, callsign, command[9:])
 		} else {
 			kts, err := strconv.Atoi(command[1:])
 			if err != nil {
