@@ -132,6 +132,9 @@ func resolveAircraftTokens(ctx *panes.Context, s string) []av.ADSBCallsign {
 		}
 		// CID match
 		for _, t := range ctx.Client.State.Tracks {
+			if !t.IsAssociated() {
+				continue
+			}
 			if t.FlightPlan.CID == tok {
 				out = append(out, t.ADSBCallsign)
 				break
