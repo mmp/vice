@@ -560,7 +560,7 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				break
 			}
 			// Clear the input
-			if ep.repositionLargeInput || ep.repositionSmallOutput || ep.repositionClock || ep.crrReposition{
+			if ep.repositionLargeInput || ep.repositionSmallOutput || ep.repositionClock || ep.crrReposition {
 				ep.repositionLargeInput = false
 				ep.repositionSmallOutput = false
 				ep.repositionClock = false

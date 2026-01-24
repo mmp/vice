@@ -195,7 +195,6 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 				state.ReachedAltitude = true
 			}
 		}
-		
 
 		// TODO: check unreasonable C
 		// CA processing
