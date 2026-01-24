@@ -566,6 +566,11 @@
           "airlines": {
             "KCOS": [
               {
+                "airport": "KORD",
+                "types": ["E75L", "CRJ7"],
+                "icao": "SKW"
+              },
+              {
                 "airport": "KMCI",
                 "icao": "SWA"
               },
@@ -575,9 +580,39 @@
                 "icao": "N"
               },
               {
+                "airport": "KATL",
+                "types": ["A320"],
+                "icao": "DAL"
+              },
+              {
+                "airport": "KPIE",
+                "types": ["A320"],
+                "icao": "AAY"
+              },
+              {
                 "airport": "KDFW",
-                "fleet": "tncmShort",
+                "types": ["B738"],
                 "icao": "AAL"
+              },
+              {
+                "airport": "KDFW",
+                "types": ["CRJ7"],
+                "icao": "SKW"
+              },
+              {
+                "airport": "KDFW",
+                "types": ["E170"],
+                "icao": "ENY"
+              },
+              {
+                "airport": "KIAH",
+                "types": ["E75L"],
+                "icao": "ASH"
+              },
+              {
+                "airport": "KIAH",
+                "types": ["E75L"],
+                "icao": "SKW"
               }
             ]
           },
@@ -612,6 +647,26 @@
                 "airport": "KABQ",
                 "fleet": "GAjet",
                 "icao": "N"
+              },
+              {
+                "airport": "KLAS",
+                "types": ["B738", "B38M"],
+                "icao": "SWA"
+              },
+              {
+                "airport": "KSLC",
+                "types": ["E75L"],
+                "icao": "SKW"
+              },
+              {
+                "airport": "KSAN",
+                "types": ["B738", "B38M"],
+                "icao": "SWA"
+              },
+              {
+                "airport": "KSNA",
+                "types": ["A320"],
+                "icao": "AAY"
               }
             ]
           },

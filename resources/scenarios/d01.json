@@ -3146,7 +3146,117 @@
         "CHNGY": "WEST",
         "ZIMMR": "WEST"
       },
-      "tower_list": 4
+      "tower_list": 4,
+      "atpa_volumes": {
+        "16R": {
+          "runway_threshold": "KDEN-16R",
+          "heading": 173,
+          "max_heading_deviation": 90,
+          "floor": 5000,
+          "ceiling": 10000,
+          "length": 50,
+          "left_width": 10000,
+          "right_width": 10000,
+          "filtered_scratchpads": ["VS"],
+          "excluded_scratchpads": ["16L", "17R", "17L"],
+          "enable_2.5nm": false
+        },
+        "16L": {
+          "runway_threshold": "KDEN-16L",
+          "heading": 173,
+          "max_heading_deviation": 90,
+          "floor": 5000,
+          "ceiling": 10000,
+          "length": 50,
+          "left_width": 10000,
+          "right_width": 10000,
+          "filtered_scratchpads": ["VS"],
+          "excluded_scratchpads": ["16R", "17R", "17L"],
+          "enable_2.5nm": true,
+          "2.5nm_distance": 10
+        },
+        "17R": {
+          "runway_threshold": "KDEN-17R",
+          "heading": 173,
+          "max_heading_deviation": 90,
+          "floor": 5000,
+          "ceiling": 10000,
+          "length": 50,
+          "left_width": 10000,
+          "right_width": 10000,
+          "filtered_scratchpads": ["VS"],
+          "excluded_scratchpads": ["16R", "16L", "17L"],
+          "enable_2.5nm": true,
+          "2.5nm_distance": 10
+        },
+        "17L": {
+          "runway_threshold": "KDEN-17L",
+          "heading": 173,
+          "max_heading_deviation": 90,
+          "floor": 5000,
+          "ceiling": 10000,
+          "length": 50,
+          "left_width": 10000,
+          "right_width": 10000,
+          "filtered_scratchpads": ["VS"],
+          "excluded_scratchpads": ["16R", "16L", "17R"],
+          "enable_2.5nm": false
+        },
+        "34L": {
+          "runway_threshold": "KDEN-34L",
+          "heading": 353,
+          "max_heading_deviation": 90,
+          "floor": 5000,
+          "ceiling": 10000,
+          "length": 50,
+          "left_width": 10000,
+          "right_width": 10000,
+          "filtered_scratchpads": ["VS"],
+          "excluded_scratchpads": ["34R", "35L", "35R"],
+          "enable_2.5nm": false
+        },
+        "34R": {
+          "runway_threshold": "KDEN-34R",
+          "heading": 353,
+          "max_heading_deviation": 90,
+          "floor": 5000,
+          "ceiling": 10000,
+          "length": 50,
+          "left_width": 10000,
+          "right_width": 10000,
+          "filtered_scratchpads": ["VS"],
+          "excluded_scratchpads": ["34L", "35L", "35R"],
+          "enable_2.5nm": false
+        },
+        "35L": {
+          "runway_threshold": "KDEN-35L",
+          "heading": 353,
+          "max_heading_deviation": 90,
+          "floor": 5000,
+          "ceiling": 10000,
+          "length": 50,
+          "left_width": 10000,
+          "right_width": 10000,
+          "filtered_scratchpads": ["VS"],
+          "excluded_scratchpads": ["34L", "34R", "35R"],
+          "enable_2.5nm": true,
+          "2.5nm_distance": 10
+        },
+        "35R": {
+          "runway_threshold": "KDEN-35R",
+          "heading": 353,
+          "max_heading_deviation": 90,
+          "floor": 5000,
+          "ceiling": 10000,
+          "length": 50,
+          "left_width": 10000,
+          "right_width": 10000,
+          "filtered_scratchpads": ["VS"],
+          "excluded_scratchpads": ["34L", "34R", "35L"],
+          "enable_2.5nm": true,
+          "2.5nm_distance": 10
+        }
+      }
     },
     "KAPA": {
       "approaches": {
@@ -11476,7 +11586,7 @@
         }
       },
       "configuration": {
-        "config_id": "EAS",
+        "config_id": "ALL",
         "default_consolidation": {
           "DEN_E_APP": ["DEN_T_APP"],
           "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
@@ -11725,7 +11835,7 @@
         }
       },
       "configuration": {
-        "config_id": "EAS",
+        "config_id": "ALL",
         "default_consolidation": {
           "DEN_E_APP": ["DEN_T_APP"],
           "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
@@ -11972,7 +12082,7 @@
         }
       },
       "configuration": {
-        "config_id": "NOR",
+        "config_id": "ALL",
         "default_consolidation": {
           "DEN_E_APP": ["DEN_T_APP"],
           "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
@@ -12219,7 +12329,7 @@
         }
       },
       "configuration": {
-        "config_id": "NOR",
+        "config_id": "ALL",
         "default_consolidation": {
           "DEN_E_APP": ["DEN_T_APP"],
           "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
@@ -12458,7 +12568,7 @@
         }
       },
       "configuration": {
-        "config_id": "NOR",
+        "config_id": "ALL",
         "default_consolidation": {
           "DEN_E_APP": ["DEN_T_APP"],
           "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
@@ -12697,7 +12807,7 @@
         }
       },
       "configuration": {
-        "config_id": "EAS",
+        "config_id": "ALL",
         "default_consolidation": {
           "DEN_E_APP": ["DEN_T_APP"],
           "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
@@ -12948,7 +13058,7 @@
         }
       },
       "configuration": {
-        "config_id": "EAS",
+        "config_id": "ALL",
         "default_consolidation": {
           "DEN_E_APP": ["DEN_T_APP"],
           "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
@@ -13199,7 +13309,7 @@
         }
       },
       "configuration": {
-        "config_id": "NO1",
+        "config_id": "ALL",
         "default_consolidation": {
           "DEN_E_APP": ["DEN_T_APP"],
           "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
@@ -13450,7 +13560,7 @@
         }
       },
       "configuration": {
-        "config_id": "NOR",
+        "config_id": "ALL",
         "default_consolidation": {
           "DEN_E_APP": ["DEN_T_APP"],
           "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
@@ -13701,7 +13811,7 @@
         }
       },
       "configuration": {
-        "config_id": "SOU",
+        "config_id": "ALL",
         "default_consolidation": {
           "DEN_E_APP": ["DEN_T_APP"],
           "DEN_I_APP": ["DEN_H_APP", "DEN_L_DEP", "DEN_W_APP", "DEN_X_APP"],
@@ -13840,7 +13950,7 @@
         }
       },
       "configuration": {
-        "config_id": "FR1",
+        "config_id": "FRN",
         "default_consolidation": {
           "DEN_E_APP": ["DEN_O_APP"],
           "DEN_W_APP": ["DEN_E_APP", "DEN_T_APP"]
@@ -13896,7 +14006,7 @@
         }
       },
       "configuration": {
-        "config_id": "FR2",
+        "config_id": "FRS",
         "default_consolidation": {
           "DEN_E_APP": ["DEN_O_APP"],
           "DEN_W_APP": ["DEN_E_APP", "DEN_T_APP"]
@@ -13948,7 +14058,7 @@
         }
       },
       "configuration": {
-        "config_id": "FR3",
+        "config_id": "FRW",
         "default_consolidation": {
           "DEN_W_APP": []
         }
@@ -13999,7 +14109,7 @@
         }
       },
       "configuration": {
-        "config_id": "FRL",
+        "config_id": "FRE",
         "default_consolidation": {
           "DEN_W_APP": []
         }
@@ -14121,7 +14231,7 @@
         }
       },
       "configuration": {
-        "config_id": "SRL",
+        "config_id": "SRN",
         "default_consolidation": {
           "DEN_J_APP": []
         }
@@ -14287,7 +14397,7 @@
         }
       },
       "configuration": {
-        "config_id": "SRL",
+        "config_id": "SRS",
         "default_consolidation": {
           "DEN_J_APP": []
         }
@@ -14357,7 +14467,57 @@
   },
   "stars_config": {
     "configurations": {
-      "FRL": {
+      "ALL": {
+        "inbound_assignments": {
+          "AALLE4": "DEN_G_APP",
+          "BRNKO4": "DEN_N_DEP",
+          "CLASH5": "DEN_X_APP",
+          "COS Arrivals/Overflights": "DEN_S_DEP",
+          "CYS Arrivals/Overflights": "DEN_N_DEP",
+          "DANDD1": "DEN_X_APP",
+          "DUNNN6": "DEN_S_DEP",
+          "FLATI5": "DEN_H_APP",
+          "LANDR3": "DEN_G_APP",
+          "LARKS3": "DEN_I_APP",
+          "LAWGR4": "DEN_G_APP",
+          "LONGZ4": "DEN_H_APP",
+          "NIIXX4": "DEN_X_APP",
+          "PINNR3": "DEN_N_DEP",
+          "POWDR1": "DEN_I_APP",
+          "QUAIL1": "DEN_X_APP",
+          "RAMMS8": "DEN_H_APP",
+          "SSKII4": "DEN_I_APP",
+          "TBARR4": "DEN_I_APP",
+          "TOMSN9": "DEN_H_APP",
+          "ZOMBZ6": "DEN_S_DEP"
+        },
+        "departure_assignments": {
+          "KAPA": "DEN_A_APP",
+          "KBJC": "DEN_J_APP",
+          "KBKF": "DEN_S_DEP",
+          "KCFO": "DEN_R_DEP",
+          "KDEN/ZIMMR3": "DEN_L_DEP",
+          "KDEN/CONNR7": "DEN_L_DEP",
+          "KDEN/COORZ6": "DEN_L_DEP",
+          "KDEN/BAYLR6": "DEN_L_DEP",
+          "KDEN/CHUWY1": "DEN_N_DEP",
+          "KDEN/DDRTH1": "DEN_N_DEP",
+          "KDEN/HHOTH2": "DEN_N_DEP",
+          "KDEN/XXWNG1": "DEN_N_DEP",
+          "KDEN/EXTAN7": "DEN_R_DEP",
+          "KDEN/EMMYS8": "DEN_R_DEP",
+          "KDEN/EEONS8": "DEN_R_DEP",
+          "KDEN/EPKEE7": "DEN_R_DEP",
+          "KDEN/SABTH2": "DEN_S_DEP",
+          "KDEN/SUDDZ1": "DEN_S_DEP",
+          "KDEN/SMMUR2": "DEN_S_DEP",
+          "KDEN/SLEEK2": "DEN_S_DEP",
+          "KDEN/DEN3": "DEN_S_DEP",
+          "KFNL": "DEN_D_APP",
+          "KGXY": "DEN_D_APP"
+        }
+      },
+      "FRE": {
         "inbound_assignments": {
           "Final-FLATI-LE": "DEN_W_APP",
           "Final-LONGZ-LE": "DEN_W_APP",
@@ -14367,7 +14527,7 @@
           "Final-TBARR-LE": "DEN_W_APP"
         }
       },
-      "FR1": {
+      "FRN": {
         "inbound_assignments": {
           "Final-CLASH-LN": "DEN_E_APP",
           "Final-NE-Gates-LN": "DEN_E_APP",
@@ -14377,7 +14537,7 @@
           "Final-TBARR-LN": "DEN_T_APP"
         }
       },
-      "FR2": {
+      "FRS": {
         "inbound_assignments": {
           "Final-AALLE-LS": "DEN_O_APP",
           "Final-FLATI-LS": "DEN_T_APP",
@@ -14387,7 +14547,7 @@
           "Final-SW-Gates-LS": "DEN_W_APP"
         }
       },
-      "FR3": {
+      "FRW": {
         "inbound_assignments": {
           "Final-AALLE-LW": "DEN_W_APP",
           "Final-CLASH-LW": "DEN_W_APP",
@@ -14397,107 +14557,7 @@
           "Final-SW-Gates-LW": "DEN_W_APP"
         }
       },
-      "NOR": {
-        "inbound_assignments": {
-          "AALLE4": "DEN_G_APP",
-          "BRNKO4": "DEN_N_DEP",
-          "CLASH5": "DEN_X_APP",
-          "COS Arrivals/Overflights": "DEN_S_DEP",
-          "CYS Arrivals/Overflights": "DEN_N_DEP",
-          "DANDD1": "DEN_X_APP",
-          "DUNNN6": "DEN_S_DEP",
-          "FLATI5": "DEN_H_APP",
-          "LANDR3": "DEN_G_APP",
-          "LARKS3": "DEN_I_APP",
-          "LAWGR4": "DEN_G_APP",
-          "LONGZ4": "DEN_H_APP",
-          "NIIXX4": "DEN_X_APP",
-          "PINNR3": "DEN_N_DEP",
-          "POWDR1": "DEN_I_APP",
-          "QUAIL1": "DEN_X_APP",
-          "RAMMS8": "DEN_H_APP",
-          "SSKII4": "DEN_I_APP",
-          "TBARR4": "DEN_I_APP",
-          "TOMSN9": "DEN_H_APP",
-          "ZOMBZ6": "DEN_S_DEP"
-        },
-        "departure_assignments": {
-          "KAPA": "DEN_A_APP",
-          "KBJC": "DEN_J_APP",
-          "KBKF": "DEN_S_DEP",
-          "KCFO": "DEN_R_DEP",
-          "KDEN/BAYLR6": "DEN_L_DEP",
-          "KDEN/CHUWY1": "DEN_N_DEP",
-          "KDEN/CONNR7": "DEN_L_DEP",
-          "KDEN/COORZ6": "DEN_L_DEP",
-          "KDEN/DDRTH1": "DEN_N_DEP",
-          "KDEN/DEN3": "DEN_N_DEP",
-          "KDEN/EEONS8": "DEN_R_DEP",
-          "KDEN/EMMYS8": "DEN_R_DEP",
-          "KDEN/EPKEE7": "DEN_R_DEP",
-          "KDEN/EXTAN7": "DEN_R_DEP",
-          "KDEN/HHOTH2": "DEN_N_DEP",
-          "KDEN/SABTH2": "DEN_S_DEP",
-          "KDEN/SLEEK2": "DEN_S_DEP",
-          "KDEN/SMMUR2": "DEN_S_DEP",
-          "KDEN/SUDDZ1": "DEN_S_DEP",
-          "KDEN/XXWNG1": "DEN_N_DEP",
-          "KDEN/ZIMMR3": "DEN_L_DEP",
-          "KFNL": "DEN_D_APP",
-          "KGXY": "DEN_D_APP"
-        }
-      },
-      "NO1": {
-        "inbound_assignments": {
-          "AALLE4": "DEN_G_APP",
-          "BRNKO4": "DEN_N_DEP",
-          "CLASH5": "DEN_X_APP",
-          "COS Arrivals/Overflights": "DEN_S_DEP",
-          "CYS Arrivals/Overflights": "DEN_N_DEP",
-          "DANDD1": "DEN_X_APP",
-          "DUNNN6": "DEN_S_DEP",
-          "FLATI5": "DEN_H_APP",
-          "LANDR3": "DEN_G_APP",
-          "LARKS3": "DEN_I_APP",
-          "LAWGR4": "DEN_G_APP",
-          "LONGZ4": "DEN_H_APP",
-          "NIIXX4": "DEN_X_APP",
-          "PINNR3": "DEN_N_DEP",
-          "POWDR1": "DEN_I_APP",
-          "QUAIL1": "DEN_X_APP",
-          "RAMMS8": "DEN_H_APP",
-          "SSKII4": "DEN_I_APP",
-          "TBARR4": "DEN_I_APP",
-          "TOMSN9": "DEN_H_APP",
-          "ZOMBZ6": "DEN_S_DEP"
-        },
-        "departure_assignments": {
-          "KAPA": "DEN_A_APP",
-          "KBJC": "DEN_J_APP",
-          "KBKF": "DEN_S_DEP",
-          "KCFO": "DEN_R_DEP",
-          "KDEN/BAYLR6": "DEN_L_DEP",
-          "KDEN/CHUWY1": "DEN_N_DEP",
-          "KDEN/CONNR7": "DEN_L_DEP",
-          "KDEN/COORZ6": "DEN_L_DEP",
-          "KDEN/DDRTH1": "DEN_N_DEP",
-          "KDEN/DEN3": "DEN_N_DEP",
-          "KDEN/EEONS8": "DEN_R_DEP",
-          "KDEN/EMMYS8": "DEN_R_DEP",
-          "KDEN/EPKEE7": "DEN_R_DEP",
-          "KDEN/EXTAN7": "DEN_R_DEP",
-          "KDEN/HHOTH2": "DEN_N_DEP",
-          "KDEN/SABTH2": "DEN_S_DEP",
-          "KDEN/SLEEK2": "DEN_S_DEP",
-          "KDEN/SMMUR2": "DEN_S_DEP",
-          "KDEN/SUDDZ1": "DEN_S_DEP",
-          "KDEN/XXWNG1": "DEN_N_DEP",
-          "KDEN/ZIMMR3": "DEN_L_DEP",
-          "KFNL": "DEN_D_APP",
-          "KGXY": "DEN_D_APP"
-        }
-      },
-      "SRL": {
+      "SRN": {
         "inbound_assignments": {
           "BRNKO4": "DEN_J_APP",
           "CYS Arrivals/Overflights": "DEN_J_APP",
@@ -14521,108 +14581,31 @@
           "KGXY": "DEN_J_APP"
         }
       },
-      "SOU": {
+      "SRS": {
         "inbound_assignments": {
-          "AALLE4": "DEN_G_APP",
-          "BRNKO4": "DEN_N_DEP",
-          "CLASH5": "DEN_X_APP",
-          "COS Arrivals/Overflights": "DEN_S_DEP",
-          "CYS Arrivals/Overflights": "DEN_N_DEP",
-          "DANDD1": "DEN_X_APP",
-          "DUNNN6": "DEN_S_DEP",
-          "FLATI5": "DEN_H_APP",
-          "LANDR3": "DEN_G_APP",
-          "LARKS3": "DEN_I_APP",
-          "LAWGR4": "DEN_G_APP",
-          "LONGZ4": "DEN_H_APP",
-          "NIIXX4": "DEN_X_APP",
-          "PINNR3": "DEN_N_DEP",
-          "POWDR1": "DEN_I_APP",
-          "QUAIL1": "DEN_X_APP",
-          "RAMMS8": "DEN_H_APP",
-          "SSKII4": "DEN_I_APP",
-          "TBARR4": "DEN_I_APP",
-          "TOMSN9": "DEN_H_APP",
-          "ZOMBZ6": "DEN_S_DEP"
+          "BRNKO4": "DEN_J_APP",
+          "CYS Arrivals/Overflights": "DEN_J_APP",
+          "DANDD1": "DEN_J_APP",
+          "DUNNN6": "DEN_J_APP",
+          "LANDR3": "DEN_J_APP",
+          "LARKS3": "DEN_J_APP",
+          "PINNR3": "DEN_J_APP",
+          "POWDR1": "DEN_J_APP",
+          "QUAIL1": "DEN_J_APP",
+          "RAMMS8": "DEN_J_APP",
+          "TOMSN9": "DEN_J_APP",
+          "ZOMBZ6": "DEN_J_APP"
         },
         "departure_assignments": {
-          "KAPA": "DEN_A_APP",
+          "KAPA": "DEN_J_APP",
           "KBJC": "DEN_J_APP",
-          "KBKF": "DEN_S_DEP",
-          "KCFO": "DEN_R_DEP",
-          "KDEN/BAYLR6": "DEN_L_DEP",
-          "KDEN/CHUWY1": "DEN_N_DEP",
-          "KDEN/CONNR7": "DEN_L_DEP",
-          "KDEN/COORZ6": "DEN_L_DEP",
-          "KDEN/DDRTH1": "DEN_N_DEP",
-          "KDEN/DEN3": "DEN_N_DEP",
-          "KDEN/EEONS8": "DEN_R_DEP",
-          "KDEN/EMMYS8": "DEN_R_DEP",
-          "KDEN/EPKEE7": "DEN_R_DEP",
-          "KDEN/EXTAN7": "DEN_R_DEP",
-          "KDEN/HHOTH2": "DEN_N_DEP",
-          "KDEN/SABTH2": "DEN_S_DEP",
-          "KDEN/SLEEK2": "DEN_S_DEP",
-          "KDEN/SMMUR2": "DEN_S_DEP",
-          "KDEN/SUDDZ1": "DEN_S_DEP",
-          "KDEN/XXWNG1": "DEN_N_DEP",
-          "KDEN/ZIMMR3": "DEN_L_DEP",
-          "KFNL": "DEN_D_APP",
-          "KGXY": "DEN_D_APP"
-        }
-      },
-      "EAS": {
-        "inbound_assignments": {
-          "AALLE4": "DEN_G_APP",
-          "BRNKO4": "DEN_N_DEP",
-          "CLASH5": "DEN_X_APP",
-          "COS Arrivals/Overflights": "DEN_S_DEP",
-          "CYS Arrivals/Overflights": "DEN_N_DEP",
-          "DANDD1": "DEN_X_APP",
-          "DUNNN6": "DEN_S_DEP",
-          "FLATI5": "DEN_H_APP",
-          "LANDR3": "DEN_G_APP",
-          "LARKS3": "DEN_I_APP",
-          "LAWGR4": "DEN_G_APP",
-          "LONGZ4": "DEN_H_APP",
-          "NIIXX4": "DEN_X_APP",
-          "PINNR3": "DEN_N_DEP",
-          "POWDR1": "DEN_I_APP",
-          "QUAIL1": "DEN_X_APP",
-          "RAMMS8": "DEN_H_APP",
-          "SSKII4": "DEN_I_APP",
-          "TBARR4": "DEN_I_APP",
-          "TOMSN9": "DEN_H_APP",
-          "ZOMBZ6": "DEN_S_DEP"
-        },
-        "departure_assignments": {
-          "KAPA": "DEN_A_APP",
-          "KBJC": "DEN_J_APP",
-          "KBKF": "DEN_S_DEP",
-          "KCFO": "DEN_R_DEP",
-          "KDEN/BAYLR6": "DEN_L_DEP",
-          "KDEN/CHUWY1": "DEN_N_DEP",
-          "KDEN/CONNR7": "DEN_L_DEP",
-          "KDEN/COORZ6": "DEN_L_DEP",
-          "KDEN/DDRTH1": "DEN_N_DEP",
-          "KDEN/DEN3": "DEN_N_DEP",
-          "KDEN/EEONS8": "DEN_R_DEP",
-          "KDEN/EMMYS8": "DEN_R_DEP",
-          "KDEN/EPKEE7": "DEN_R_DEP",
-          "KDEN/EXTAN7": "DEN_R_DEP",
-          "KDEN/HHOTH2": "DEN_N_DEP",
-          "KDEN/SABTH2": "DEN_S_DEP",
-          "KDEN/SLEEK2": "DEN_S_DEP",
-          "KDEN/SMMUR2": "DEN_S_DEP",
-          "KDEN/SUDDZ1": "DEN_S_DEP",
-          "KDEN/XXWNG1": "DEN_N_DEP",
-          "KDEN/ZIMMR3": "DEN_L_DEP",
-          "KFNL": "DEN_D_APP",
-          "KGXY": "DEN_D_APP"
+          "KBKF": "DEN_J_APP",
+          "KCFO": "DEN_J_APP",
+          "KFNL": "DEN_J_APP",
+          "KGXY": "DEN_J_APP"
         }
       }
     },
-
     "controller_configs": {
       "DEN_I_APP": {
         "video_maps": [
@@ -15322,6 +15305,28 @@
             "N039.18.14.375,W104.45.11.370",
             "N040.24.47.562,W104.45.01.098",
             "N040.24.22.019,W104.31.03.253"
+          ]
+        }
+      ],
+      "vfr_inhibit": [
+        {
+          "id": "DENVER1",
+          "description": "DENVER CLASS B",
+          "type": "polygon",
+          "floor": 5000,
+          "ceiling": 12000,
+          "vertices": [
+            "N039.48.43.530,W104.34.59.679",
+            "N039.48.43.928,W104.26.39.829",
+            "N039.58.18.554,W104.35.45.822",
+            "N039.58.21.329,W104.43.49.055",
+            "N039.57.22.291,W104.46.07.291",
+            "N039.46.34.592,W104.52.14.454",
+            "N039.46.13.100,W104.48.18.962",
+            "N039.45.13.568,W104.45.20.846",
+            "N039.44.31.105,W104.44.06.688",
+            "N039.44.24.088,W104.43.45.650",
+            "N039.44.24.775,W104.35.00.695"
           ]
         }
       ]
