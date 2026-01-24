@@ -978,7 +978,7 @@ func TestEdgeCases(t *testing.T) {
 			aircraft: map[string]Aircraft{
 				"American 100": {Callsign: "AAL100", State: "arrival"},
 			},
-			expected: "BLOCKED",
+			expected: "",
 		},
 	}
 

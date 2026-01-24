@@ -16,7 +16,6 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
-	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 )
 
@@ -1569,30 +1568,6 @@ func (s *Sim) GoAhead(tcw TCW, callsign av.ADSBCallsign) error {
 	return err
 }
 
-// SayBlocked triggers a random pilot saying "blocked" in response to an unclear transmission.
-// Returns the callsign selected (for voice assignment) and the spoken text for TTS synthesis.
-func (s *Sim) SayBlocked(tcw TCW) (av.ADSBCallsign, string, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	// Have a random pilot speak up
-	callsign, ok := rand.SampleWeightedSeq(s.Rand, maps.Keys(s.Aircraft), func(cs av.ADSBCallsign) int {
-		ac := s.Aircraft[cs]
-		return util.Select(s.TCWCanCommandAircraft(tcw, ac), 1, 0)
-	})
-	if !ok {
-		// No aircraft available to speak
-		return "", "", nil
-	}
-
-	tr := av.MakeNoIdTransmission("blocked")
-	s.postReadbackTransmission(callsign, *tr, tcw)
-
-	// Return spoken text for TTS synthesis (no callsign suffix for "blocked")
-	spokenText := tr.Spoken(s.Rand)
-	return callsign, spokenText, nil
-}
-
 // SayAgain triggers a pilot saying "say again" in response to an unclear command.
 // Returns the spoken text for TTS synthesis and the callsign to use for voice selection.
 func (s *Sim) SayAgain(tcw TCW, callsign av.ADSBCallsign) (av.ADSBCallsign, string, error) {
@@ -1834,13 +1809,6 @@ func (s *Sim) RunAircraftControlCommands(tcw TCW, callsign av.ADSBCallsign, comm
 				ReadbackSpokenText: spokenText,
 				ReadbackCallsign:   cs,
 			}
-		case "BLOCKED":
-			cs, spokenText, err := s.SayBlocked(tcw)
-			return ControlCommandsResult{
-				Error:              err,
-				ReadbackSpokenText: spokenText,
-				ReadbackCallsign:   cs,
-			}
 		case "NOTCLEARED":
 			cs, spokenText, err := s.SayNotCleared(tcw, callsign)
 			return ControlCommandsResult{
@@ -2065,13 +2033,6 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			approach := components[1][1:]
 			return s.AtFixCleared(tcw, callsign, fix, approach)
 		}
-
-	case 'B':
-		if command == "BLOCKED" {
-			// BLOCKED is handled specially in RunAircraftControlCommands for TTS synthesis
-			return nil, nil
-		}
-		return nil, ErrInvalidCommandSyntax
 
 	case 'C':
 		if command == "CAC" {

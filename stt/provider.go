@@ -24,8 +24,7 @@ func NewTranscriber(lg *log.Logger) *Transcriber {
 // It returns one of:
 //   - "{CALLSIGN} {CMD1} {CMD2} ..." for successful parsing
 //   - "{CALLSIGN} AGAIN" if callsign identified but commands unclear
-//   - "BLOCKED" if no callsign could be identified
-//   - "" if transcript is empty or only contains position identification
+//   - "" if transcript is empty, only contains position identification, or no callsign could be matched
 //
 // Commands may include SAYAGAIN/TYPE for partial parses where keywords were recognized
 // but the associated value couldn't be extracted (e.g., "fly heading blark" would return
@@ -130,15 +129,8 @@ func (p *Transcriber) decodeInternal(
 			callsignMatch.Callsign, callsignMatch.SpokenKey, callsignMatch.Confidence, callsignMatch.Consumed)
 
 		if callsignMatch.Callsign == "" {
-			// No callsign identified
-			if len(tokens) > 2 {
-				// Had some content but couldn't match callsign
-				logLocalStt("BLOCKED: no callsign match for %q", transcript)
-				p.logDebug("BLOCKED: no callsign match for %q", transcript)
-				return "BLOCKED", nil
-			}
-			// Very short/empty - treat as no speech
-			logLocalStt("too few tokens without callsign, returning \"\"")
+			// No callsign identified - just ignore the transmission
+			logLocalStt("no callsign match for %q, ignoring", transcript)
 			return "", nil
 		}
 
@@ -223,13 +215,8 @@ func (p *Transcriber) decodeInternal(
 		}
 
 		if len(validation.ValidCommands) == 0 {
-			if confidence >= 0.4 {
-				// We're confident about the callsign but couldn't parse commands
-				output = callsignWithForm + " AGAIN"
-			} else {
-				// Low confidence overall
-				output = "BLOCKED"
-			}
+			// Callsign matched but couldn't parse commands - ask for say again
+			output = callsignWithForm + " AGAIN"
 		} else {
 			output = callsignWithForm + " " + strings.Join(validation.ValidCommands, " ")
 		}
@@ -352,9 +339,6 @@ func (p *Transcriber) BuildAircraftContext(
 		// Default addressing form is full callsign
 		sttAc.AddressingForm = sim.AddressingFormFull
 		acCtx[telephony] = sttAc
-
-		// Also key by ICAO callsign for direct lookup
-		acCtx[sttAc.Callsign] = sttAc
 
 		// For GA callsigns (N-prefix), also add type-based addressing variants
 		callsign := string(trk.ADSBCallsign)
@@ -620,12 +604,6 @@ func isPositionIdentification(tokens []Token, controllerRadioName string) bool {
 }
 
 // logging helpers
-
-func (p *Transcriber) logDebug(format string, args ...interface{}) {
-	if p.lg != nil {
-		p.lg.Debugf(format, args...)
-	}
-}
 
 func (p *Transcriber) logInfo(format string, args ...interface{}) {
 	if p.lg != nil {

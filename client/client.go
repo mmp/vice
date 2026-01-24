@@ -1369,36 +1369,7 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 		}
 
 		// Parse callsign and command from decoded result
-		// BLOCKED is special: no callsign found
-		var callsign, command string
-		if decoded == "BLOCKED" {
-			// Check if we have a last AGAIN callsign to use as fallback
-			c.mu.Lock()
-			lastAgain := c.lastAgainCallsign
-			c.mu.Unlock()
-
-			if lastAgain != "" {
-				// Try to decode commands for the last AGAIN callsign
-				lg.Infof("STT: BLOCKED but have lastAgainCallsign=%s, trying fallback decode", lastAgain)
-				fallbackDecoded, fallbackErr := c.sttTranscriber.DecodeCommandsForCallsign(
-					aircraftCtx, finalText, string(lastAgain))
-				if fallbackErr == nil && fallbackDecoded != "" && fallbackDecoded != "AGAIN" {
-					// Successfully parsed commands for the fallback callsign
-					callsign = string(lastAgain)
-					command = fallbackDecoded
-					decoded = callsign + " " + command
-					lg.Infof("STT: fallback decode success: %s %s", callsign, command)
-				} else {
-					// Fallback failed, treat as normal BLOCKED
-					command = "BLOCKED"
-					lg.Infof("STT: fallback decode failed, using BLOCKED")
-				}
-			} else {
-				command = "BLOCKED"
-			}
-		} else {
-			callsign, command, _ = strings.Cut(decoded, " ")
-		}
+		callsign, command, _ := strings.Cut(decoded, " ")
 		lg.Infof("STT command: %s %s", callsign, command)
 
 		c.SetLastCommand(decoded)
@@ -1410,7 +1381,7 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 			c.lastAgainCallsign = av.ADSBCallsign(callsign)
 			c.mu.Unlock()
 			lg.Infof("STT: set lastAgainCallsign=%s", callsign)
-		} else if command != "BLOCKED" {
+		} else {
 			// Clear the last AGAIN callsign on successful command
 			c.mu.Lock()
 			if c.lastAgainCallsign != "" {
