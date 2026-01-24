@@ -86,7 +86,6 @@
       }
     },
     "KPHL": {
-      "name": "Philadelphia",
       "approaches": {
         "17Z": {
           "cifp_id": "IZ17"
@@ -5282,7 +5281,6 @@
         }
       }
     },
-
     "center": "KPHL",
     "controller_configs": {
       "1N": {

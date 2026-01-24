@@ -6,7 +6,6 @@
   "airports": {
     "KDFW": {
       "hold_for_release": false,
-      "name": "Dallas Fort Worth International Airport",
       "approaches": {
         "I3R": {
           "cifp_id": "IV13R"
@@ -1805,7 +1804,6 @@
           "enable_2.5nm": true,
           "2.5nm_distance": 10
         },
-
         "31L": {
           "runway_threshold": "KDFW-31L",
           "heading": 311,
@@ -1904,7 +1902,6 @@
     },
     "KDAL": {
       "hold_for_release": false,
-      "name": "Dallas Love Field",
       "approaches": {
         "I3L": {
           "cifp_id": "I13L"
@@ -2957,7 +2954,6 @@
       "tower_list": 1
     },
     "KAFW": {
-      "name": "Forth Worth Alliance",
       "hold_for_release": true,
       "approaches": {
         "I6L": {
@@ -3527,7 +3523,6 @@
       "tower_list": 1
     },
     "KADS": {
-      "name": "Addison Airport",
       "hold_for_release": true,
       "approaches": {
         "I16": {
@@ -4141,7 +4136,6 @@
       }
     },
     "KTKI": {
-      "name": "Mckinney National Airport",
       "hold_for_release": true,
       "departure_routes": {
         "18": {
@@ -4710,7 +4704,6 @@
       }
     },
     "KRBD": {
-      "name": "Dallas Executive Airport",
       "vfr": {
         "random_routes": {
           "rate": 3,
@@ -5276,7 +5269,6 @@
       }
     },
     "KFTW": {
-      "name": "Fort Worth Meacham Airport",
       "hold_for_release": true,
       "approaches": {
         "I34": {
@@ -5784,7 +5776,6 @@
       }
     },
     "KDTO": {
-      "name": "Denton",
       "hold_for_release": true,
       "approaches": {
         "I8L": {
@@ -6281,7 +6272,6 @@
       }
     },
     "KLNC": {
-      "name": "Lancaster Regional",
       "hold_for_release": true,
       "approaches": {
         "R31": {
@@ -6821,7 +6811,6 @@
       }
     },
     "KCRS": {
-      "name": "Campbell Corsicana Regional",
       "vfr": {
         "random_routes": {
           "rate": 3,
@@ -6838,7 +6827,6 @@
       }
     },
     "KINJ": {
-      "name": "Hillsborough Municipal",
       "vfr": {
         "random_routes": {
           "rate": 6,
@@ -6855,7 +6843,6 @@
       }
     },
     "KHQZ": {
-      "name": "Mesquite Metro",
       "vfr": {
         "random_routes": {
           "rate": 9,
@@ -6872,7 +6859,6 @@
       }
     },
     "30F": {
-      "name": "Lakeview",
       "vfr": {
         "random_routes": {
           "rate": 1,
@@ -6897,7 +6883,6 @@
       }
     },
     "KGKY": {
-      "name": "Arlington Municipal Airport",
       "hold_for_release": true,
       "approaches": {
         "I34": {
@@ -7388,7 +7373,6 @@
       }
     },
     "KGPM": {
-      "name": "Grand Prairie Municipal Airport",
       "hold_for_release": true,
       "approaches": {
         "R36": {
@@ -7873,7 +7857,6 @@
       }
     },
     "KFWS": {
-      "name": "Fort Worth Spinks Airport",
       "hold_for_release": true,
       "approaches": {
         "I6L": {
@@ -8364,7 +8347,6 @@
       }
     },
     "KNFW": {
-      "name": "Fort Worth Naval Air Station",
       "hold_for_release": true,
       "approaches": {
         "I36": {
@@ -8675,7 +8657,6 @@
       }
     },
     "F41": {
-      "name": "Ennis Municipal Airport",
       "approaches": {
         "VF162": {
           "full_name": "Visual Approach Runway 16",
@@ -8698,7 +8679,6 @@
       }
     },
     "F46": {
-      "name": "Rockwall Municipal Airport",
       "approaches": {
         "R17": {
           "cifp_id": "R17"
@@ -14971,7 +14951,6 @@
         }
       }
     },
-
     "center": "KDFW",
     "pdb": {
       "hide_gs": true,

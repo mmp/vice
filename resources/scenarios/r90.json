@@ -2,7 +2,6 @@
   "tracon": "R90",
   "airports": {
     "KOMA": {
-      "name": "Eppley Airfield",
       "approaches": {
         "14L": {
           "cifp_id": "I14L"
@@ -793,7 +792,6 @@
       "tower_list": 1
     },
     "KLNK": {
-      "name": "Lincoln Airport",
       "approaches": {
         "I18": {
           "full_name": "ILS Runway 18",
@@ -1005,7 +1003,6 @@
       "tower_list": 2
     },
     "KOFF": {
-      "name": "Offutt AFB",
       "approaches": {
         "I13": {
           "full_name": "ILS Runway 13",
@@ -4538,7 +4535,6 @@
         }
       }
     },
-
     "center": "41.143010, -95.903745",
     "airspace_awareness": [
       {

@@ -296,7 +296,14 @@ func (p *Transcriber) BuildAircraftContext(
 		// Build fixes map
 		sttAc.Fixes = make(map[string]string)
 		for _, fix := range trk.Fixes {
-			sttAc.Fixes[av.GetFixTelephony(fix)] = fix
+			// For airports, add all telephony variants so STT can match any of them
+			if variants := av.GetAirportTelephonyVariants(fix); len(variants) > 0 {
+				for _, variant := range variants {
+					sttAc.Fixes[variant] = fix
+				}
+			} else {
+				sttAc.Fixes[av.GetFixTelephony(fix)] = fix
+			}
 		}
 
 		// Determine state and set SID/STAR

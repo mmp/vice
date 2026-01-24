@@ -50,7 +50,6 @@
       ]
     },
     "KBTV": {
-      "name": "BTV",
       "approaches": {
         "I15": {
           "cifp_id": "I15"
@@ -412,7 +411,6 @@
         }
       }
     },
-
     "center": "KBTV",
     "scratchpads": {},
     "stars_maps": ["BTV RVM", "BTV MAIN", "BTV MVA", "BTV VFR", "BTV SATS"],

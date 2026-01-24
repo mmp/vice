@@ -2,7 +2,6 @@
   "tracon": "P80",
   "airports": {
     "KPDX": {
-      "name": "Portland Int'l Airport",
       "atpa_volumes": {
         "28L": {
           "runway_threshold": "KPDX-28L",
@@ -6059,7 +6058,6 @@
         }
       }
     },
-
     "altimeters": ["KPDX", "KHIO", "KUAO"],
     "center": "KPDX",
     "airspace_awareness": [

@@ -1,24 +1,89 @@
 {
   "tracon": "P50",
   "airports": {
-    "KDVT": { "vfr": { "random_routes": { "rate": 20 } } },
-    "KFFZ": { "vfr": { "random_routes": { "rate": 15 } } },
-    "KGYR": { "vfr": { "random_routes": { "rate": 8 } } },
-    "KGEU": { "vfr": { "random_routes": { "rate": 8 } } },
-    "KCHD": { "vfr": { "random_routes": { "rate": 12 } } },
-    "KBKX": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KGXF": { "vfr": { "random_routes": { "rate": 8 } } },
-    "KPAN": { "vfr": { "random_routes": { "rate": 8 } } },
-    "KCGZ": { "vfr": { "random_routes": { "rate": 8 } } },
+    "KDVT": {
+      "vfr": {
+        "random_routes": {
+          "rate": 20
+        }
+      }
+    },
+    "KFFZ": {
+      "vfr": {
+        "random_routes": {
+          "rate": 15
+        }
+      }
+    },
+    "KGYR": {
+      "vfr": {
+        "random_routes": {
+          "rate": 8
+        }
+      }
+    },
+    "KGEU": {
+      "vfr": {
+        "random_routes": {
+          "rate": 8
+        }
+      }
+    },
+    "KCHD": {
+      "vfr": {
+        "random_routes": {
+          "rate": 12
+        }
+      }
+    },
+    "KBKX": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KGXF": {
+      "vfr": {
+        "random_routes": {
+          "rate": 8
+        }
+      }
+    },
+    "KPAN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 8
+        }
+      }
+    },
+    "KCGZ": {
+      "vfr": {
+        "random_routes": {
+          "rate": 8
+        }
+      }
+    },
     "KPHX": {
-      "name": "Phoenix Sky Harbor",
       "approaches": {
-        "I7L": { "cifp_id": "I7L" },
-        "I7R": { "cifp_id": "I7R" },
-        "I8": { "cifp_id": "I8" },
-        "I5L": { "cifp_id": "I25L" },
-        "R5R": { "cifp_id": "RY25R" },
-        "I26": { "cifp_id": "I26" },
+        "I7L": {
+          "cifp_id": "I7L"
+        },
+        "I7R": {
+          "cifp_id": "I7R"
+        },
+        "I8": {
+          "cifp_id": "I8"
+        },
+        "I5L": {
+          "cifp_id": "I25L"
+        },
+        "R5R": {
+          "cifp_id": "RY25R"
+        },
+        "I26": {
+          "cifp_id": "I26"
+        },
         "V7L": {
           "full_name": "Visual Runway 7L",
           "runway": "7L",
@@ -637,17 +702,45 @@
       "tower_list": 1
     },
     "KSDL": {
-      "vfr": { "random_routes": { "rate": 20 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 20
+        }
+      },
       "approaches": {
-        "R21": { "cifp_id": "R21" },
-        "RY3": { "cifp_id": "RY3" },
-        "RZ3": { "cifp_id": "RZ3" },
-        "RE3": { "cifp_id": "RENV", "runway": "3" },
-        "RE21": { "cifp_id": "RENV", "runway": "21" },
-        "RD21": { "cifp_id": "RDNV", "runway": "21" },
-        "RD3": { "cifp_id": "RDNV", "runway": "3" },
-        "VORA21": { "cifp_id": "VADM", "runway": "21" },
-        "VORA3": { "cifp_id": "VADM", "runway": "3" }
+        "R21": {
+          "cifp_id": "R21"
+        },
+        "RY3": {
+          "cifp_id": "RY3"
+        },
+        "RZ3": {
+          "cifp_id": "RZ3"
+        },
+        "RE3": {
+          "cifp_id": "RENV",
+          "runway": "3"
+        },
+        "RE21": {
+          "cifp_id": "RENV",
+          "runway": "21"
+        },
+        "RD21": {
+          "cifp_id": "RDNV",
+          "runway": "21"
+        },
+        "RD3": {
+          "cifp_id": "RDNV",
+          "runway": "3"
+        },
+        "VORA21": {
+          "cifp_id": "VADM",
+          "runway": "21"
+        },
+        "VORA3": {
+          "cifp_id": "VADM",
+          "runway": "3"
+        }
       },
       "departure_routes": {
         "3": {
@@ -985,13 +1078,27 @@
       "hold_for_release": true
     },
     "KIWA": {
-      "vfr": { "random_routes": { "rate": 15 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 15
+        }
+      },
       "approaches": {
-        "I3C": { "cifp_id": "IC30" },
-        "R3L": { "cifp_id": "R30L" },
-        "R3R": { "cifp_id": "R30R" },
-        "RZC": { "cifp_id": "RZ30C" },
-        "RYC": { "cifp_id": "RY30C" },
+        "I3C": {
+          "cifp_id": "IC30"
+        },
+        "R3L": {
+          "cifp_id": "R30L"
+        },
+        "R3R": {
+          "cifp_id": "R30R"
+        },
+        "RZC": {
+          "cifp_id": "RZ30C"
+        },
+        "RYC": {
+          "cifp_id": "RY30C"
+        },
         "V3L": {
           "full_name": "RNAV Visual Runway 30L",
           "runway": "30L",
@@ -1318,11 +1425,21 @@
       "hold_for_release": true
     },
     "KFLG": {
-      "vfr": { "random_routes": { "rate": 10 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      },
       "approaches": {
-        "I21": { "cifp_id": "I21" },
-        "R21": { "cifp_id": "R21" },
-        "R3": { "cifp_id": "R3" }
+        "I21": {
+          "cifp_id": "I21"
+        },
+        "R21": {
+          "cifp_id": "R21"
+        },
+        "R3": {
+          "cifp_id": "R3"
+        }
       },
       "departure_routes": {
         "3": {
@@ -1454,11 +1571,21 @@
       "hold_for_release": true
     },
     "KPRC": {
-      "vfr": { "random_routes": { "rate": 25 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 25
+        }
+      },
       "approaches": {
-        "I1L": { "cifp_id": "I21L" },
-        "R12": { "cifp_id": "R12" },
-        "RY3R": { "cifp_id": "RY3R" }
+        "I1L": {
+          "cifp_id": "I21L"
+        },
+        "R12": {
+          "cifp_id": "R12"
+        },
+        "RY3R": {
+          "cifp_id": "RY3R"
+        }
       },
       "departure_routes": {
         "3R": {
@@ -1640,9 +1767,15 @@
       "hold_for_release": true
     },
     "KSEZ": {
-      "vfr": { "random_routes": { "rate": 5 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      },
       "approaches": {
-        "R3": { "cifp_id": "R3" }
+        "R3": {
+          "cifp_id": "R3"
+        }
       },
       "departure_routes": {
         "21": {
@@ -4033,7 +4166,6 @@
         }
       }
     },
-
     "center": "CACTY",
     "controller_configs": {
       "1K": {
@@ -4341,10 +4473,26 @@
       ]
     },
     "coordination_lists": [
-      { "name": "SDL", "id": "D", "airports": ["KSDL"] },
-      { "name": "IWA", "id": "W", "airports": ["KIWA"] },
-      { "name": "FLG", "id": "F", "airports": ["KFLG"] },
-      { "name": "PRC", "id": "P", "airports": ["KPRC"] }
+      {
+        "name": "SDL",
+        "id": "D",
+        "airports": ["KSDL"]
+      },
+      {
+        "name": "IWA",
+        "id": "W",
+        "airports": ["KIWA"]
+      },
+      {
+        "name": "FLG",
+        "id": "F",
+        "airports": ["KFLG"]
+      },
+      {
+        "name": "PRC",
+        "id": "P",
+        "airports": ["KPRC"]
+      }
     ],
     "airspace_awareness": [
       {
@@ -4386,15 +4534,33 @@
       "ZEPER": "ZEP"
     },
     "significant_points": {
-      "BROAK": { "short_name": "BRK" },
-      "FORPE": { "short_name": "FOR" },
-      "ECLPS": { "short_name": "ECL" },
-      "FYRBD": { "short_name": "FYR" },
-      "IZZZO": { "short_name": "KEE" },
-      "QUAKY": { "short_name": "QUA" },
-      "MRBIL": { "short_name": "MRB" },
-      "ZEPER": { "short_name": "ZEP" },
-      "BNYRD": { "short_name": "BNY" }
+      "BROAK": {
+        "short_name": "BRK"
+      },
+      "FORPE": {
+        "short_name": "FOR"
+      },
+      "ECLPS": {
+        "short_name": "ECL"
+      },
+      "FYRBD": {
+        "short_name": "FYR"
+      },
+      "IZZZO": {
+        "short_name": "KEE"
+      },
+      "QUAKY": {
+        "short_name": "QUA"
+      },
+      "MRBIL": {
+        "short_name": "MRB"
+      },
+      "ZEPER": {
+        "short_name": "ZEP"
+      },
+      "BNYRD": {
+        "short_name": "BNY"
+      }
     },
     "stars_maps": [
       "PHX667 RWY7R_8",

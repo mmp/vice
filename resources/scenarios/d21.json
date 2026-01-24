@@ -4,7 +4,6 @@
   "primary_airport": "KDTW",
   "airports": {
     "KDTW": {
-      "name": "Detroit Metro",
       "approaches": {
         "I4L": {
           "cifp_id": "IZ4L"
@@ -684,7 +683,6 @@
       "tower_list": 1
     },
     "KYIP": {
-      "name": "Willow Run",
       "approaches": {
         "I5": {
           "cifp_id": "I5"
@@ -954,7 +952,6 @@
       "tower_list": 2
     },
     "KDET": {
-      "name": "Detroit Municipal",
       "approaches": {
         "I15": {
           "cifp_id": "I15"
@@ -1177,7 +1174,6 @@
       "tower_list": 3
     },
     "KPTK": {
-      "name": "Oakland County International",
       "approaches": {
         "I9R": {
           "cifp_id": "I9R"
@@ -4086,7 +4082,6 @@
         }
       }
     },
-
     "center": "KDTW",
     "coordination_fixes": {
       "BONZZ": [

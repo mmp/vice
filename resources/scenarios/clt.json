@@ -3506,7 +3506,6 @@
       }
     },
     "KJQF": {
-      "name": "Concord Regional",
       "hold_for_release": false,
       "approaches": {
         "I20": {
@@ -7564,7 +7563,6 @@
         }
       }
     },
-
     "airspace_awareness": [
       {
         "fixes": ["RDU", "TYI", "BARMY", "NUTZE", "AUDII", "KILNS", "LILLS"],

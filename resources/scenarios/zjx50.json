@@ -5,7 +5,6 @@
   "airports": {
     "KJAX": {
       "departure_controller": "Jacksonville Approach",
-      "name": "JAX",
       "approaches": {
         "IY8": {
           "cifp_id": "IY8"
@@ -116,7 +115,6 @@
     },
     "KTPA": {
       "departure_controller": "Jacksonville Approach",
-      "name": "TPA",
       "approaches": {
         "I9L": {
           "cifp_id": "I19L"
@@ -124,7 +122,6 @@
       }
     },
     "KDAB": {
-      "name": "Daytona",
       "approaches": {
         "I7L": {
           "cifp_id": "I7L"
@@ -132,7 +129,6 @@
       }
     },
     "KMCO": {
-      "name": "Orlando",
       "approaches": {
         "R6L": {
           "cifp_id": "R36L"
@@ -141,7 +137,6 @@
     },
     "KSRQ": {
       "departure_controller": "Jacksonville Approach",
-      "name": "SRQ",
       "approaches": {
         "R14": {
           "cifp_id": "R14"
@@ -150,7 +145,6 @@
     },
     "KCHS": {
       "departure_controller": "Jacksonville Approach",
-      "name": "CHS",
       "approaches": {
         "I15": {
           "cifp_id": "I15"
@@ -159,7 +153,6 @@
     },
     "KSAV": {
       "departure_controller": "Savannah Approach",
-      "name": "SAV",
       "departure_routes": {
         "28": {
           "BYYOU": {
@@ -1069,7 +1062,6 @@
         }
       }
     },
-
     "center": "N031.30.29.772,W082.17.03.623",
     "range": 80,
     "stars_maps": [

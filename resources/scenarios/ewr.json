@@ -3,7 +3,6 @@
   "airports": {
     "KEWR": {
       "omit_arrival_scratchpad": true,
-      "name": "Newark",
       "approaches": {
         "I11": {
           "cifp_id": "I11"
@@ -1182,7 +1181,6 @@
       }
     },
     "KTEB": {
-      "name": "Teterboro",
       "hold_for_release": true,
       "approaches": {
         "I6": {
@@ -1951,7 +1949,6 @@
       }
     },
     "KMMU": {
-      "name": "Morristown",
       "hold_for_release": true,
       "approaches": {
         "I23": {
@@ -2603,7 +2600,6 @@
       }
     },
     "KLGA": {
-      "name": "LaGuardia",
       "approaches": {
         "I4": {
           "runway": "4",
@@ -3090,7 +3086,6 @@
       }
     },
     "KCDW": {
-      "name": "Caldwell",
       "hold_for_release": false,
       "approaches": {
         "R10": {
@@ -10666,7 +10661,6 @@
         }
       }
     },
-
     "filters": {
       "inhibit_ca": [
         {

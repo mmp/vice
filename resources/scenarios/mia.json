@@ -2,7 +2,6 @@
   "tracon": "MIA",
   "airports": {
     "KMIA": {
-      "name": "Miami International",
       "approaches": {
         "R8L": {
           "runway": "8L",
@@ -896,7 +895,6 @@
       "tower_list": 1
     },
     "KFLL": {
-      "name": "Fort Lauderdale International",
       "approaches": {
         "I0L": {
           "runway": "10L",
@@ -1490,7 +1488,6 @@
       "tower_list": 2
     },
     "KTMB": {
-      "name": "Miami Executive",
       "approaches": {
         "I9R": {
           "runway": "9R",
@@ -1887,7 +1884,6 @@
       "tower_list": 3
     },
     "KOPF": {
-      "name": "Opa Locka",
       "approaches": {
         "I9L": {
           "runway": "9L",
@@ -2305,7 +2301,6 @@
       "tower_list": 4
     },
     "KFXE": {
-      "name": "Fort Lauderdale Executive",
       "approaches": {
         "I9": {
           "runway": "9",
@@ -5744,7 +5739,6 @@
         }
       }
     },
-
     "coordination_fixes": {
       "HULKY": [
         {

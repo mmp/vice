@@ -2,7 +2,6 @@
   "tracon": "TPA",
   "airports": {
     "KTPA": {
-      "name": "Tampa",
       "approaches": {
         "I1L": {
           "cifp_id": "I1L"
@@ -578,7 +577,6 @@
       "tower_list": 1
     },
     "KSRQ": {
-      "name": "Sarasota",
       "approaches": {
         "I32": {
           "cifp_id": "I32"
@@ -901,7 +899,6 @@
       "tower_list": 2
     },
     "KPIE": {
-      "name": "Clearwater",
       "approaches": {
         "I36": {
           "cifp_id": "I36"
@@ -3033,7 +3030,6 @@
         }
       }
     },
-
     "center": "KTPA",
     "coordination_fixes": {
       "DSIDE": [

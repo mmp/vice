@@ -72,7 +72,6 @@
       }
     },
     "KFRG": {
-      "name": "Republic",
       "approaches": {
         "I14": {
           "runway": "14",
@@ -274,7 +273,6 @@
       "tower_list": 2
     },
     "KHVN": {
-      "name": "New Haven",
       "approaches": {
         "I2": {
           "cifp_id": "I2"
@@ -426,7 +424,6 @@
       }
     },
     "KISP": {
-      "name": "MacArthur",
       "approaches": {
         "R5R": {
           "cifp_id": "R15R"
@@ -682,7 +679,6 @@
       "tower_list": 3
     },
     "KJFK": {
-      "name": "Kennedy",
       "approaches": {
         "I1L": {
           "cifp_id": "I31L"
@@ -11728,7 +11724,6 @@
         }
       }
     },
-
     "center": "KJFK",
     "controller_configs": {
       "2G": {

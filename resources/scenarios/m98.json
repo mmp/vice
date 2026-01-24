@@ -1,53 +1,236 @@
 {
   "tracon": "M98",
   "airports": {
-    "10D": { "vfr": { "random_routes": { "rate": 1 } } },
-    "21D": { "vfr": { "random_routes": { "rate": 1 } } },
-    "25D": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KCFE": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KFBL": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KLVN": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KMGG": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KOEO": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KRGK": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KRNH": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KSGS": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KSYN": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KOWA": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KULM": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KTOB": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KAHH": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KLUM": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KEAU": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KCBG": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KROS": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KPNM": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KHCD": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KGYL": { "vfr": { "random_routes": { "rate": 1 } } },
-    "KMKT": { "vfr": { "random_routes": { "rate": 5 } } },
+    "10D": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "21D": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "25D": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KCFE": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KFBL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KLVN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KMGG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KOEO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KRGK": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KRNH": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KSGS": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KSYN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KOWA": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KULM": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KTOB": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KAHH": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KLUM": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KEAU": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KCBG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KROS": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KPNM": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KHCD": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KGYL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 1
+        }
+      }
+    },
+    "KMKT": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
     "KMSP": {
-      "name": "Minneapolis",
       "approaches": {
-        "I12L": { "cifp_id": "I12L" },
-        "I12R": { "cifp_id": "I12R" },
-        "I30L": { "cifp_id": "I30L" },
-        "I30R": { "cifp_id": "I30R" },
-        "I35": { "cifp_id": "IZ35" },
-        "L17": { "cifp_id": "L17" },
-        "L22": { "cifp_id": "L22" },
-        "L04": { "cifp_id": "L4" },
-        "G22": { "cifp_id": "R22" },
-        "G04": { "cifp_id": "R4" },
-        "YL1": { "cifp_id": "RY12L" },
-        "YR1": { "cifp_id": "RY12R" },
-        "YL3": { "cifp_id": "RY30L" },
-        "YR3": { "cifp_id": "RY30R" },
-        "Y35": { "cifp_id": "RY35" },
-        "ZL1": { "cifp_id": "RZ12L" },
-        "ZR1": { "cifp_id": "RZ12R" },
-        "ZL3": { "cifp_id": "RZ30L" },
-        "ZR3": { "cifp_id": "RZ30R" },
-        "Z35": { "cifp_id": "RZ35" },
+        "I12L": {
+          "cifp_id": "I12L"
+        },
+        "I12R": {
+          "cifp_id": "I12R"
+        },
+        "I30L": {
+          "cifp_id": "I30L"
+        },
+        "I30R": {
+          "cifp_id": "I30R"
+        },
+        "I35": {
+          "cifp_id": "IZ35"
+        },
+        "L17": {
+          "cifp_id": "L17"
+        },
+        "L22": {
+          "cifp_id": "L22"
+        },
+        "L04": {
+          "cifp_id": "L4"
+        },
+        "G22": {
+          "cifp_id": "R22"
+        },
+        "G04": {
+          "cifp_id": "R4"
+        },
+        "YL1": {
+          "cifp_id": "RY12L"
+        },
+        "YR1": {
+          "cifp_id": "RY12R"
+        },
+        "YL3": {
+          "cifp_id": "RY30L"
+        },
+        "YR3": {
+          "cifp_id": "RY30R"
+        },
+        "Y35": {
+          "cifp_id": "RY35"
+        },
+        "ZL1": {
+          "cifp_id": "RZ12L"
+        },
+        "ZR1": {
+          "cifp_id": "RZ12R"
+        },
+        "ZL3": {
+          "cifp_id": "RZ30L"
+        },
+        "ZR3": {
+          "cifp_id": "RZ30R"
+        },
+        "Z35": {
+          "cifp_id": "RZ35"
+        },
         "VL1": {
           "full_name": "Visual Runway 12L",
           "runway": "12L",
@@ -3424,16 +3607,33 @@
       "tower_list": 1
     },
     "KFCM": {
-      "name": "Flying Cloud",
-      "vfr": { "random_routes": { "rate": 10 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 10
+        }
+      },
       "approaches": {
-        "D36": { "cifp_id": "D36" },
-        "R36": { "cifp_id": "R36" },
-        "I10R": { "cifp_id": "I10R" },
-        "R10R": { "cifp_id": "R10R" },
-        "R10L": { "cifp_id": "R10L" },
-        "R28L": { "cifp_id": "R28L" },
-        "R28R": { "cifp_id": "R28R" },
+        "D36": {
+          "cifp_id": "D36"
+        },
+        "R36": {
+          "cifp_id": "R36"
+        },
+        "I10R": {
+          "cifp_id": "I10R"
+        },
+        "R10R": {
+          "cifp_id": "R10R"
+        },
+        "R10L": {
+          "cifp_id": "R10L"
+        },
+        "R28L": {
+          "cifp_id": "R28L"
+        },
+        "R28R": {
+          "cifp_id": "R28R"
+        },
         "V10R": {
           "full_name": "Visual Runway 10R",
           "runway": "10R",
@@ -3486,13 +3686,24 @@
       "hold_for_release": true
     },
     "KSTP": {
-      "name": "St. Paul Downtown",
-      "vfr": { "random_routes": { "rate": 8 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 8
+        }
+      },
       "approaches": {
-        "I14": { "cifp_id": "I14" },
-        "R14": { "cifp_id": "R14" },
-        "I32": { "cifp_id": "I32" },
-        "R32": { "cifp_id": "R32" },
+        "I14": {
+          "cifp_id": "I14"
+        },
+        "R14": {
+          "cifp_id": "R14"
+        },
+        "I32": {
+          "cifp_id": "I32"
+        },
+        "R32": {
+          "cifp_id": "R32"
+        },
         "V14": {
           "full_name": "Visual Runway 14",
           "runway": "14",
@@ -3527,13 +3738,24 @@
       "hold_for_release": true
     },
     "KANE": {
-      "name": "Anoka",
-      "vfr": { "random_routes": { "rate": 8 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 8
+        }
+      },
       "approaches": {
-        "I27": { "cifp_id": "I27" },
-        "R27": { "cifp_id": "R27" },
-        "R18": { "cifp_id": "R18" },
-        "R09": { "cifp_id": "R9" },
+        "I27": {
+          "cifp_id": "I27"
+        },
+        "R27": {
+          "cifp_id": "R27"
+        },
+        "R18": {
+          "cifp_id": "R18"
+        },
+        "R09": {
+          "cifp_id": "R9"
+        },
         "V09": {
           "full_name": "Visual Runway 9",
           "runway": "9",
@@ -3573,11 +3795,18 @@
       "hold_for_release": true
     },
     "KMIC": {
-      "name": "Crystal",
-      "vfr": { "random_routes": { "rate": 7 } },
+      "vfr": {
+        "random_routes": {
+          "rate": 7
+        }
+      },
       "approaches": {
-        "R14": { "cifp_id": "R14" },
-        "R32": { "cifp_id": "R32" },
+        "R14": {
+          "cifp_id": "R14"
+        },
+        "R32": {
+          "cifp_id": "R32"
+        },
         "V14": {
           "full_name": "Visual Runway 14",
           "runway": "14",

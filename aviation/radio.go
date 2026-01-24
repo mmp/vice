@@ -888,6 +888,33 @@ func GetFixTelephony(fix string) string {
 	return util.StopShouting(fix)
 }
 
+// GetAirportTelephonyVariants returns all spoken name variants for an airport.
+// This is used by STT for matching spoken airport names to ICAO codes.
+// Returns all variants from sayairport.json if available, otherwise returns
+// a slice with just the database name (if available), or nil if not found.
+func GetAirportTelephonyVariants(icao string) []string {
+	loadPronunciationsIfNeeded()
+
+	// First check sayairport.json for custom variants
+	if variants, ok := sayAirportMap[icao]; ok && len(variants) > 0 {
+		return variants
+	}
+
+	// Fall back to database name
+	if ap, ok := DB.Airports[icao]; ok && ap.Name != "" {
+		// Strip common suffixes that wouldn't typically be said
+		name := ap.Name
+		for _, extra := range []string{"Airport", "Air Field", "Field", "Strip", "Airstrip", "International", "Regional"} {
+			name = strings.TrimSuffix(name, " "+extra)
+		}
+		if name != "" {
+			return []string{name}
+		}
+	}
+
+	return nil
+}
+
 // GetSIDTelephony returns the spoken form of a SID name.
 // For example, "MERIT5" becomes "merit five".
 func GetSIDTelephony(sid string) string {

@@ -2,7 +2,6 @@
   "tracon": "S46",
   "airports": {
     "KSEA": {
-      "name": "Seattle",
       "approaches": {
         "I6C": {
           "cifp_id": "IC16"
@@ -2502,7 +2501,6 @@
         }
       }
     },
-
     "coordination_fixes": {
       "HUMPP": [
         {

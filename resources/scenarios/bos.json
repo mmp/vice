@@ -35197,7 +35197,6 @@
       "tower_list": 1
     },
     "KLWM": {
-      "name": "Lawrence",
       "hold_for_release": true,
       "vfr": {
         "random_routes": {
@@ -35366,7 +35365,6 @@
       "tower_list": 2
     },
     "KOWD": {
-      "name": "Norwood",
       "hold_for_release": true,
       "vfr": {
         "random_routes": {
@@ -35779,7 +35777,6 @@
       "tower_list": 3
     },
     "KBVY": {
-      "name": "Beverly",
       "hold_for_release": true,
       "vfr": {
         "random_routes": {
@@ -36083,7 +36080,6 @@
       "tower_list": 4
     },
     "KBED": {
-      "name": "Hanscom Field",
       "hold_for_release": true,
       "vfr": {
         "random_routes": {
@@ -36379,7 +36375,6 @@
       "tower_list": 5
     },
     "KPSM": {
-      "name": "Pease",
       "vfr": {
         "random_routes": {
           "rate": 3
@@ -36401,7 +36396,6 @@
       }
     },
     "KMHT": {
-      "name": "Manchester",
       "approaches": {
         "R35": {
           "cifp_id": "I35"
@@ -36409,7 +36403,6 @@
       }
     },
     "KASH": {
-      "name": "Nashua",
       "vfr": {
         "random_routes": {
           "rate": 3
@@ -36431,7 +36424,6 @@
       }
     },
     "KACK": {
-      "name": "Nantucket",
       "vfr": {
         "random_routes": {
           "rate": 5
@@ -36444,7 +36436,6 @@
       }
     },
     "KMVY": {
-      "name": "Vineyard",
       "vfr": {
         "random_routes": {
           "rate": 6
@@ -36457,7 +36448,6 @@
       }
     },
     "KHYA": {
-      "name": "Hayannis",
       "vfr": {
         "random_routes": {
           "rate": 4
@@ -36470,7 +36460,6 @@
       }
     },
     "KFMH": {
-      "name": "Coast Gaurd",
       "approaches": {
         "R5": {
           "cifp_id": "R5"
@@ -36478,7 +36467,6 @@
       }
     },
     "KFIT": {
-      "name": "Fitchburg",
       "vfr": {
         "random_routes": {
           "rate": 2
@@ -36494,7 +36482,6 @@
       }
     },
     "6B6": {
-      "name": "Minute Man",
       "vfr": {
         "random_routes": {
           "rate": 1
@@ -60312,7 +60299,6 @@
         }
       }
     },
-
     "center": "N042.20.55.421,W071.00.22.439",
     "altimeters": ["KBOS", "KFMH", "KMHT"],
     "ssr_codes": {

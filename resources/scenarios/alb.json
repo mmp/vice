@@ -30,7 +30,6 @@
       }
     },
     "KALB": {
-      "name": "ALB",
       "approaches": {
         "I1": {
           "cifp_id": "I1"
@@ -1428,7 +1427,6 @@
         }
       }
     },
-
     "center": "KALB",
     "scratchpads": {},
     "stars_maps": [

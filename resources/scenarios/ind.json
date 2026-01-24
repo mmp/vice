@@ -2,7 +2,6 @@
   "tracon": "IND",
   "airports": {
     "KIND": {
-      "name": "Indianapolis",
       "approaches": {
         "I5L": {
           "cifp_id": "I5L"
@@ -1170,7 +1169,6 @@
         }
       }
     },
-
     "center": "KIND",
     "allow_long_scratchpad": true,
     "coordination_fixes": {

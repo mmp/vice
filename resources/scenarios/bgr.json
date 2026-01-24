@@ -2,7 +2,6 @@
   "tracon": "BGR",
   "airports": {
     "KBHB": {
-      "name": "Bar Harbor",
       "approaches": {
         "R4": {
           "cifp_id": "R4"
@@ -81,9 +80,7 @@
         }
       ]
     },
-
     "KBGR": {
-      "name": "Bangor",
       "approaches": {
         "Y15": {
           "cifp_id": "IY15"

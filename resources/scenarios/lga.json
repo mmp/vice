@@ -86,7 +86,6 @@
       }
     },
     "KLGA": {
-      "name": "LaGuardia",
       "approaches": {
         "I4": {
           "cifp_id": "I4"
@@ -525,7 +524,6 @@
       }
     },
     "KJFK": {
-      "name": "Kennedy",
       "departure_controller": "JFK_DEP",
       "departure_routes": {
         "13R": {
@@ -582,7 +580,6 @@
       }
     },
     "KEWR": {
-      "name": "Newark",
       "departure_controller": "EWR_DEP",
       "departure_routes": {
         "22R": {
@@ -650,7 +647,6 @@
       }
     },
     "KHPN": {
-      "name": "Westchester",
       "departure_controller": "LGA_Y_DEP",
       "departure_routes": {
         "16": {

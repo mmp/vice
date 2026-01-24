@@ -1,14 +1,62 @@
 {
   "tracon": "DAB",
   "airports": {
-    "KLEE": { "vfr": { "random_routes": { "rate": 20 } } },
-    "KORL": { "vfr": { "random_routes": { "rate": 8 } } },
-    "KOCF": { "vfr": { "random_routes": { "rate": 8 } } },
-    "KSGJ": { "vfr": { "random_routes": { "rate": 12 } } },
-    "KGNV": { "vfr": { "random_routes": { "rate": 5 } } },
-    "KCRG": { "vfr": { "random_routes": { "rate": 8 } } },
-    "KMLB": { "vfr": { "random_routes": { "rate": 8 } } },
-    "KTIX": { "vfr": { "random_routes": { "rate": 8 } } },
+    "KLEE": {
+      "vfr": {
+        "random_routes": {
+          "rate": 20
+        }
+      }
+    },
+    "KORL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 8
+        }
+      }
+    },
+    "KOCF": {
+      "vfr": {
+        "random_routes": {
+          "rate": 8
+        }
+      }
+    },
+    "KSGJ": {
+      "vfr": {
+        "random_routes": {
+          "rate": 12
+        }
+      }
+    },
+    "KGNV": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KCRG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 8
+        }
+      }
+    },
+    "KMLB": {
+      "vfr": {
+        "random_routes": {
+          "rate": 8
+        }
+      }
+    },
+    "KTIX": {
+      "vfr": {
+        "random_routes": {
+          "rate": 8
+        }
+      }
+    },
     "7FL6": {
       "vfr": {
         "random_routes": {
@@ -73,7 +121,6 @@
       }
     },
     "KDAB": {
-      "name": "Daytona Beach",
       "approaches": {
         "I7L": {
           "cifp_id": "I7L"
@@ -958,7 +1005,6 @@
       "tower_list": 1
     },
     "KOMN": {
-      "name": "Ormond Beach",
       "vfr": {
         "random_routes": {
           "rate": 10
@@ -1303,7 +1349,6 @@
       "hold_for_release": true
     },
     "KFIN": {
-      "name": "Flagler",
       "vfr": {
         "random_routes": {
           "rate": 10
@@ -1571,7 +1616,6 @@
       "hold_for_release": true
     },
     "KEVB": {
-      "name": "New Smyrna Beach",
       "vfr": {
         "random_routes": {
           "rate": 10
@@ -1839,7 +1883,6 @@
       "hold_for_release": true
     },
     "KDED": {
-      "name": "Deland",
       "vfr": {
         "random_routes": {
           "rate": 10
