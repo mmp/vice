@@ -1,0 +1,387 @@
+{
+  "time": "2026-01-23T03:17:46.279751345Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "West shift 7410 reduced to final approach speed.",
+  "whisper_duration_ms": 570.094,
+  "audio_duration_ms": 2432,
+  "processor": "GPU: NVIDIA GeForce GTX 1080 (8273MB)",
+  "callsign": "WJA7410",
+  "command": "SMIN",
+  "stt_aircraft": {
+    "AAL76": {
+      "Callsign": "AAL76",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Blymy": "BLYMY",
+        "Chuum": "CHUUM",
+        "Glria": "GLRIA",
+        "Gucci": "GUCCI",
+        "Kpone": "KPONE",
+        "Mdona": "MDONA",
+        "Miami International Airport": "KMIA",
+        "Piana": "PIANA",
+        "Rmani": "RMANI",
+        "Vepco": "VEPCO"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "BNFSH3",
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0
+    },
+    "ACA233": {
+      "Callsign": "ACA233",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Chuum": "CHUUM",
+        "Glria": "GLRIA",
+        "Kpone": "KPONE",
+        "Miami International Airport": "KMIA",
+        "Piana": "PIANA",
+        "Vepco": "VEPCO"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "CSTAL3",
+      "Altitude": 5401,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0
+    },
+    "Air Canada 233": {
+      "Callsign": "ACA233",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Chuum": "CHUUM",
+        "Glria": "GLRIA",
+        "Kpone": "KPONE",
+        "Miami International Airport": "KMIA",
+        "Piana": "PIANA",
+        "Vepco": "VEPCO"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "CSTAL3",
+      "Altitude": 5401,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0
+    },
+    "American 76": {
+      "Callsign": "AAL76",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Blymy": "BLYMY",
+        "Chuum": "CHUUM",
+        "Glria": "GLRIA",
+        "Gucci": "GUCCI",
+        "Kpone": "KPONE",
+        "Mdona": "MDONA",
+        "Miami International Airport": "KMIA",
+        "Piana": "PIANA",
+        "Rmani": "RMANI",
+        "Vepco": "VEPCO"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "BNFSH3",
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0
+    },
+    "BAW1650": {
+      "Callsign": "BAW1650",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Blymy": "BLYMY",
+        "Chuum": "CHUUM",
+        "Fende": "FENDE",
+        "Glria": "GLRIA",
+        "Gucci": "GUCCI",
+        "Kpone": "KPONE",
+        "Mdona": "MDONA",
+        "Miami International Airport": "KMIA",
+        "Piana": "PIANA",
+        "Rmani": "RMANI",
+        "Vepco": "VEPCO"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "CSTAL3",
+      "Altitude": 11112,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0
+    },
+    "KLM 69H heavy": {
+      "Callsign": "KLM69H",
+      "AircraftType": "B744",
+      "Fixes": {
+        "Blymy": "BLYMY",
+        "Chuum": "CHUUM",
+        "Glria": "GLRIA",
+        "Gucci": "GUCCI",
+        "Kpone": "KPONE",
+        "Mdona": "MDONA",
+        "Miami International Airport": "KMIA",
+        "Piana": "PIANA",
+        "Rmani": "RMANI",
+        "Vepco": "VEPCO"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "BNFSH3",
+      "Altitude": 16000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0
+    },
+    "KLM69H": {
+      "Callsign": "KLM69H",
+      "AircraftType": "B744",
+      "Fixes": {
+        "Blymy": "BLYMY",
+        "Chuum": "CHUUM",
+        "Glria": "GLRIA",
+        "Gucci": "GUCCI",
+        "Kpone": "KPONE",
+        "Mdona": "MDONA",
+        "Miami International Airport": "KMIA",
+        "Piana": "PIANA",
+        "Rmani": "RMANI",
+        "Vepco": "VEPCO"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "BNFSH3",
+      "Altitude": 16000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0
+    },
+    "SWG323": {
+      "Callsign": "SWG323",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Glria": "GLRIA",
+        "Miami International Airport": "KMIA",
+        "Piana": "PIANA",
+        "Vepco": "VEPCO"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "BNFSH3",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0
+    },
+    "Speedbird 1650 heavy": {
+      "Callsign": "BAW1650",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Blymy": "BLYMY",
+        "Chuum": "CHUUM",
+        "Fende": "FENDE",
+        "Glria": "GLRIA",
+        "Gucci": "GUCCI",
+        "Kpone": "KPONE",
+        "Mdona": "MDONA",
+        "Miami International Airport": "KMIA",
+        "Piana": "PIANA",
+        "Rmani": "RMANI",
+        "Vepco": "VEPCO"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "CSTAL3",
+      "Altitude": 11112,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0
+    },
+    "Sunwing 323": {
+      "Callsign": "SWG323",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Glria": "GLRIA",
+        "Miami International Airport": "KMIA",
+        "Piana": "PIANA",
+        "Vepco": "VEPCO"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "BNFSH3",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0
+    },
+    "WJA7410": {
+      "Callsign": "WJA7410",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Miami International Airport": "KMIA",
+        "Vepco": "VEPCO"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "CSTAL3",
+      "Altitude": 2400,
+      "State": "on approach",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0
+    },
+    "WestJet 7410": {
+      "Callsign": "WJA7410",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Miami International Airport": "KMIA",
+        "Vepco": "VEPCO"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "CSTAL3",
+      "Altitude": 2400,
+      "State": "on approach",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"West shift 7410 reduced to final approach speed.\"",
+    "[local-stt] normalized words: [west shift 7410 reduced to final approach speed]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"west\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"shift\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"7410\" Type=1 Value=7410",
+    "[local-stt]   token[3]: Text=\"reduced\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"final\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 8 tokens, 12 aircraft",
+    "[local-stt]   candidate \"WJA7410\" (ICAO=\"WJA7410\"): score=1.00 consumed=3",
+    "[local-stt]   candidate \"Air Canada 233\" (ICAO=\"ACA233\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"ACA233\" (ICAO=\"ACA233\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Sunwing 323\" (ICAO=\"SWG323\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SWG323\" (ICAO=\"SWG323\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"KLM 69H heavy\" (ICAO=\"KLM69H\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"KLM69H\" (ICAO=\"KLM69H\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"WestJet 7410\" (ICAO=\"WJA7410\"): score=1.00 consumed=3",
+    "[local-stt]   candidate \"American 76\" (ICAO=\"AAL76\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"AAL76\" (ICAO=\"AAL76\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Speedbird 1650 heavy\" (ICAO=\"BAW1650\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"BAW1650\" (ICAO=\"BAW1650\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"WJA7410\" at pos 1: score=1.00 (adjusted=0.90) consumed=2",
+    "[local-stt]   candidate \"WestJet 7410\" at pos 1: score=1.00 (adjusted=0.90) consumed=2",
+    "[local-stt]   candidate \"WJA7410\" at pos 2: score=1.00 (adjusted=0.80) consumed=1",
+    "[local-stt]   candidate \"WestJet 7410\" at pos 2: score=1.00 (adjusted=0.80) consumed=1",
+    "[local-stt]   accepted: \"WJA7410\" (conf=1.00, consumed=3, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"WJA7410\" SpokenKey=\"WJA7410\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"on approach\" Altitude=2400 Fixes=2 Approaches=3 AssignedApproach=\"ILS Runway 12\"",
+    "[local-stt]   fix: \"Vepco\" -\u003e \"VEPCO\"",
+    "[local-stt]   fix: \"Miami International Airport\" -\u003e \"KMIA\"",
+    "[local-stt]   approach: \"r-nav runway eight left\" -\u003e \"R8L\"",
+    "[local-stt]   approach: \"I L S runway niner\" -\u003e \"I9\"",
+    "[local-stt]   approach: \"I L S runway one two\" -\u003e \"I12\"",
+    "[local-stt] command tokens after disregard: 5",
+    "[local-stt]   token[0]: Text=\"reduced\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"final\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"speed\" at position 4 - not just position ID",
+    "[local-stt] ParseCommands: 5 tokens",
+    "[local-stt]   tryMatchTemplate \"final_approach_speed\": cmd=\"SFAS\" argStr=\"\" consumed=5",
+    "[local-stt]   matched command: \"SFAS\" (conf=1.00, consumed=5, isThen=false)",
+    "[local-stt] ParseCommands: result=[SFAS] (avgConf=1.00)",
+    "[local-stt] parsed commands: [SFAS] (conf=1.00)",
+    "[local-stt] validated commands: [SFAS] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"WJA7410 SFAS\" (conf=1.00, time=0s) ==="
+  ]
+}

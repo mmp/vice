@@ -1,0 +1,283 @@
+{
+  "time": "2026-01-23T14:52:53.10535045Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:975:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Alaska 396, expect ILS three five right, fly heading zero two zero.",
+  "whisper_duration_ms": 447.558,
+  "audio_duration_ms": 5888,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 (12108MB)",
+  "callsign": "ASA936",
+  "command": "EI5R H020",
+  "stt_aircraft": {
+    "ASA936": {
+      "Callsign": "ASA936",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Am-ebe": "AMEBE",
+        "Birdie": "BERDY",
+        "Orlando International Airport": "KMCO",
+        "Rutney": "RUTNE"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "AssignedApproach": "RNAV Runway 36L",
+      "SID": "",
+      "STAR": "PRICY4",
+      "Altitude": 3924,
+      "State": "on approach",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "Alaska 936": {
+      "Callsign": "ASA936",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Am-ebe": "AMEBE",
+        "Birdie": "BERDY",
+        "Orlando International Airport": "KMCO",
+        "Rutney": "RUTNE"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "AssignedApproach": "RNAV Runway 36L",
+      "SID": "",
+      "STAR": "PRICY4",
+      "Altitude": 3924,
+      "State": "on approach",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "DAL97": {
+      "Callsign": "DAL97",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Cruise": "CRUSE",
+        "Cubal": "CUBAL",
+        "Fesha": "FESHA",
+        "Hahna": "HAHNA",
+        "Hews": "HEWES",
+        "Orlando International Airport": "KMCO",
+        "Seray": "SERAY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "AssignedApproach": "ILS Runway 35R",
+      "SID": "",
+      "STAR": "SNFLD3",
+      "Altitude": 1717,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "Delta 97": {
+      "Callsign": "DAL97",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Cruise": "CRUSE",
+        "Cubal": "CUBAL",
+        "Fesha": "FESHA",
+        "Hahna": "HAHNA",
+        "Hews": "HEWES",
+        "Orlando International Airport": "KMCO",
+        "Seray": "SERAY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "AssignedApproach": "ILS Runway 35R",
+      "SID": "",
+      "STAR": "SNFLD3",
+      "Altitude": 1717,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "FFT286": {
+      "Callsign": "FFT286",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Am-ebe": "AMEBE",
+        "Birdie": "BERDY",
+        "Exban": "EXBAN",
+        "Lorra": "LORRA",
+        "Orlando International Airport": "KMCO",
+        "Rutney": "RUTNE"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "AssignedApproach": "RNAV Runway 36L",
+      "SID": "",
+      "STAR": "GRNCH5",
+      "Altitude": 1621,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "Frontier Flight 286": {
+      "Callsign": "FFT286",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Am-ebe": "AMEBE",
+        "Birdie": "BERDY",
+        "Exban": "EXBAN",
+        "Lorra": "LORRA",
+        "Orlando International Airport": "KMCO",
+        "Rutney": "RUTNE"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "AssignedApproach": "RNAV Runway 36L",
+      "SID": "",
+      "STAR": "GRNCH5",
+      "Altitude": 1621,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "SWA4628": {
+      "Callsign": "SWA4628",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Am-ebe": "AMEBE",
+        "Amads": "AMADS",
+        "Birdie": "BERDY",
+        "Exban": "EXBAN",
+        "Lorra": "LORRA",
+        "Orlando International Airport": "KMCO",
+        "Rutney": "RUTNE"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "AssignedApproach": "RNAV Runway 36L",
+      "SID": "",
+      "STAR": "PRICY4",
+      "Altitude": 9482,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "Southwest 4628": {
+      "Callsign": "SWA4628",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Am-ebe": "AMEBE",
+        "Amads": "AMADS",
+        "Birdie": "BERDY",
+        "Exban": "EXBAN",
+        "Lorra": "LORRA",
+        "Orlando International Airport": "KMCO",
+        "Rutney": "RUTNE"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "AssignedApproach": "RNAV Runway 36L",
+      "SID": "",
+      "STAR": "PRICY4",
+      "Altitude": 9482,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Alaska 396, expect ILS three five right, fly heading zero two zero.\"",
+    "[local-stt] normalized words: [alaska 396 expect ils 3 5 right fly heading 0 2 0]",
+    "[local-stt] tokens: 9",
+    "[local-stt]   token[0]: Text=\"alaska\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"396\" Type=1 Value=396",
+    "[local-stt]   token[2]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"35\" Type=1 Value=35",
+    "[local-stt]   token[5]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"fly\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"20\" Type=1 Value=20",
+    "[local-stt] MatchCallsign: 9 tokens, 8 aircraft",
+    "[local-stt]   candidate \"Frontier Flight 286\" (ICAO=\"FFT286\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"FFT286\" (ICAO=\"FFT286\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Delta 97\" (ICAO=\"DAL97\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"DAL97\" (ICAO=\"DAL97\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Alaska 936\" (ICAO=\"ASA936\"): score=1.00 consumed=1",
+    "[local-stt]   candidate \"ASA936\" (ICAO=\"ASA936\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest 4628\" (ICAO=\"SWA4628\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SWA4628\" (ICAO=\"SWA4628\"): score=0.00 consumed=0",
+    "[local-stt]   accepted: \"ASA936\" (conf=1.00, consumed=1, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"ASA936\" SpokenKey=\"Alaska 936\" Conf=1.00 Consumed=1",
+    "[local-stt] aircraft context: State=\"on approach\" Altitude=3924 Fixes=4 Approaches=4 AssignedApproach=\"RNAV Runway 36L\"",
+    "[local-stt]   fix: \"Orlando International Airport\" -\u003e \"KMCO\"",
+    "[local-stt]   fix: \"Am-ebe\" -\u003e \"AMEBE\"",
+    "[local-stt]   fix: \"Birdie\" -\u003e \"BERDY\"",
+    "[local-stt]   fix: \"Rutney\" -\u003e \"RUTNE\"",
+    "[local-stt]   approach: \"I L S runway three six left\" -\u003e \"I6L\"",
+    "[local-stt]   approach: \"r-nav runway three six left\" -\u003e \"R6L\"",
+    "[local-stt]   approach: \"I L S runway three five right\" -\u003e \"I5R\"",
+    "[local-stt]   approach: \"r-nav runway three five right\" -\u003e \"R5R\"",
+    "[local-stt] command tokens after disregard: 8",
+    "[local-stt]   token[0]: Text=\"396\" Type=1 Value=396",
+    "[local-stt]   token[1]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"35\" Type=1 Value=35",
+    "[local-stt]   token[4]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"fly\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"20\" Type=1 Value=20",
+    "[local-stt]   position ID: found command keyword \"expect\" at position 1 - not just position ID",
+    "[local-stt] ParseCommands: 8 tokens",
+    "[local-stt]   no match at token[0]=\"396\", skipping",
+    "[local-stt]   tryMatchTemplate \"expect_approach\": cmd=\"EI5R\" argStr=\"I5R\" consumed=4",
+    "[local-stt]   matched command: \"EI5R\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   tryMatchTemplate \"fly_heading\": cmd=\"H020\" argStr=\"020\" consumed=3",
+    "[local-stt]   matched command: \"H020\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt] ParseCommands: result=[EI5R H020] (avgConf=1.00)",
+    "[local-stt] parsed commands: [EI5R H020] (conf=1.00)",
+    "[local-stt] validated commands: [EI5R H020] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"ASA936 EI5R H020\" (conf=1.00, time=783.4µs) ==="
+  ]
+}

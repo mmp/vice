@@ -1,0 +1,318 @@
+{
+  "time": "2026-01-23T07:16:22.354527513Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:975:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Southwest 416, Turnwright, Heading 1-4-0.",
+  "whisper_duration_ms": 679.039,
+  "audio_duration_ms": 4608,
+  "processor": "GPU: Radeon RX550/550 Series (4096MB)",
+  "callsign": "SWA416",
+  "command": "R140",
+  "stt_aircraft": {
+    "AAY5695": {
+      "Callsign": "AAY5695",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Deanr": "DEANR",
+        "Ended": "ENDED",
+        "Lacen": "LACEN",
+        "Patoy": "PATOY"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ENDED2",
+      "STAR": "",
+      "Altitude": 6044,
+      "State": "departure",
+      "ControllerFrequency": "1P",
+      "TrackingController": "J30",
+      "AddressingForm": 0
+    },
+    "Allegiant 5695": {
+      "Callsign": "AAY5695",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Deanr": "DEANR",
+        "Ended": "ENDED",
+        "Lacen": "LACEN",
+        "Patoy": "PATOY"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ENDED2",
+      "STAR": "",
+      "Altitude": 6044,
+      "State": "departure",
+      "ControllerFrequency": "1P",
+      "TrackingController": "J30",
+      "AddressingForm": 0
+    },
+    "JBU71": {
+      "Callsign": "JBU71",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Gandy": "GANDY",
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabee": "SABEE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 2626,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "JetBlue 71": {
+      "Callsign": "JBU71",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Gandy": "GANDY",
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabee": "SABEE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 2626,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "N75WC": {
+      "Callsign": "N75WC",
+      "AircraftType": "C510",
+      "Fixes": {
+        "Lubbr": "LUBBR",
+        "Zebon": "ZEBON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "SWA416": {
+      "Callsign": "SWA416",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Tampa International Airport": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "Altitude": 9713,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "Southwest 416": {
+      "Callsign": "SWA416",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Tampa International Airport": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "Altitude": 9713,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "UAL344": {
+      "Callsign": "UAL344",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Borst": "BORST",
+        "Dades": "DADES",
+        "Guzda": "GUZDA",
+        "Jetstream": "JSTRM",
+        "Lagoo": "LAGOO",
+        "Lisa F": "LISAF",
+        "Lizard": "LZARD",
+        "Selman": "SELMN",
+        "St Petersburg": "PIE",
+        "Tampa International Airport": "KTPA",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 12912,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "United 344": {
+      "Callsign": "UAL344",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Borst": "BORST",
+        "Dades": "DADES",
+        "Guzda": "GUZDA",
+        "Jetstream": "JSTRM",
+        "Lagoo": "LAGOO",
+        "Lisa F": "LISAF",
+        "Lizard": "LZARD",
+        "Selman": "SELMN",
+        "St Petersburg": "PIE",
+        "Tampa International Airport": "KTPA",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 12912,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "citation mustang five whiskey charlie": {
+      "Callsign": "N75WC",
+      "AircraftType": "C510",
+      "Fixes": {
+        "Lubbr": "LUBBR",
+        "Zebon": "ZEBON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 1
+    },
+    "mustang five whiskey charlie": {
+      "Callsign": "N75WC",
+      "AircraftType": "C510",
+      "Fixes": {
+        "Lubbr": "LUBBR",
+        "Zebon": "ZEBON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 1
+    },
+    "november 75WC": {
+      "Callsign": "N75WC",
+      "AircraftType": "C510",
+      "Fixes": {
+        "Lubbr": "LUBBR",
+        "Zebon": "ZEBON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Southwest 416, Turnwright, Heading 1-4-0.\"",
+    "[local-stt] normalized words: [southwest 416 turnwright heading 1 4 0]",
+    "[local-stt] tokens: 5",
+    "[local-stt]   token[0]: Text=\"southwest\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"416\" Type=1 Value=416",
+    "[local-stt]   token[2]: Text=\"turnwright\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"140\" Type=1 Value=140",
+    "[local-stt] MatchCallsign: 5 tokens, 12 aircraft",
+    "[local-stt]   exact match: \"southwest 416\" -\u003e \"SWA416\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"SWA416\" SpokenKey=\"Southwest 416\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=9713 Fixes=1 Approaches=5 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"Tampa International Airport\" -\u003e \"KTPA\"",
+    "[local-stt]   approach: \"r-nav yankee runway one right\" -\u003e \"RY1R\"",
+    "[local-stt]   approach: \"r-nav zulu runway one right\" -\u003e \"RZ1R\"",
+    "[local-stt]   approach: \"I L S runway one left\" -\u003e \"I1L\"",
+    "[local-stt]   approach: \"r-nav zulu runway one left\" -\u003e \"RZ1L\"",
+    "[local-stt]   approach: \"r-nav yankee runway one left\" -\u003e \"RY1L\"",
+    "[local-stt] command tokens after disregard: 3",
+    "[local-stt]   token[0]: Text=\"turnwright\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"140\" Type=1 Value=140",
+    "[local-stt]   position ID: found command keyword \"heading\" at position 1 - not just position ID",
+    "[local-stt] ParseCommands: 3 tokens",
+    "[local-stt]   no match at token[0]=\"turnwright\", skipping",
+    "[local-stt]   tryMatchTemplate \"heading_only\": cmd=\"H140\" argStr=\"140\" consumed=2",
+    "[local-stt]   matched command: \"H140\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[H140] (avgConf=1.00)",
+    "[local-stt] parsed commands: [H140] (conf=1.00)",
+    "[local-stt] validated commands: [H140] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"SWA416 H140\" (conf=1.00, time=0s) ==="
+  ]
+}

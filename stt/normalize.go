@@ -182,6 +182,118 @@ func trySplitMergedNATO(word string) []string {
 	return nil
 }
 
+// mergedCommandPrefixes are command words that commonly appear first in merged transcriptions.
+var mergedCommandPrefixes = []string{"turn", "climb", "descend", "cleared", "expect", "fly"}
+
+// mergedCommandSuffixes maps suffix words to their canonical forms for split detection.
+// These are words that commonly get merged with a prefix command word.
+var mergedCommandSuffixes = map[string]string{
+	"left":     "left",
+	"right":    "right",
+	"maintain": "maintain",
+	"direct":   "direct",
+	"ils":      "ils",
+	"heading":  "heading",
+}
+
+// trySplitMergedCommand attempts to split a word into two command words.
+// STT sometimes merges "turn right" into "turnwright". This function detects
+// such patterns using phonetic matching and returns the split words.
+// Returns nil if the word doesn't appear to be merged command words.
+func trySplitMergedCommand(word string) []string {
+	word = strings.ToLower(word)
+	if len(word) < 7 { // Minimum: "turnleft" = 8, but allow some flexibility
+		return nil
+	}
+
+	// Don't split if it's already a known command keyword
+	if _, ok := commandKeywords[word]; ok {
+		return nil
+	}
+
+	// Try each prefix command word
+	for _, prefix := range mergedCommandPrefixes {
+		// Try different split points based on prefix length (allow ±1 for STT errors)
+		minSplit := max(len(prefix)-1, 3)
+		maxSplit := min(len(prefix)+1, len(word)-3)
+
+		for splitAt := minSplit; splitAt <= maxSplit; splitAt++ {
+			wordPrefix := word[:splitAt]
+			wordSuffix := word[splitAt:]
+
+			// Check if prefix part matches the command word (phonetic or JW >= 0.85)
+			if !PhoneticMatch(wordPrefix, prefix) && JaroWinkler(wordPrefix, prefix) < 0.85 {
+				continue
+			}
+
+			// Check if suffix part matches any known suffix (phonetic match)
+			if len(wordSuffix) < 3 {
+				continue
+			}
+			for suffix, canonical := range mergedCommandSuffixes {
+				if PhoneticMatch(wordSuffix, suffix) || JaroWinkler(wordSuffix, suffix) >= 0.80 {
+					return []string{prefix, canonical}
+				}
+			}
+		}
+	}
+	return nil
+}
+
+// phoneticCommandKeywords are command keywords that should be matched phonetically
+// when exact lookup fails. Only high-value keywords are included to avoid false positives.
+var phoneticCommandKeywords = []string{
+	"heading", "descend", "climb", "maintain", "turn", "left", "right",
+	"direct", "cleared", "contact", "approach", "intercept", "localizer",
+	"expedite", "speed", "altitude", "runway", "reduce",
+}
+
+// phoneticCommandBlocklist prevents specific words from matching certain keywords.
+// Key is the input word, value is the list of keywords it should NOT match.
+var phoneticCommandBlocklist = map[string][]string{
+	"continue":  {"maintain"}, // "continue your turn" is not "maintain"
+	"continued": {"maintain"},
+	"flight":    {"right", "left"}, // "flight 123" is not "right 123"
+	"redu":      {"right"},         // "redu-speed" is "reduce speed", not "right speed"
+	"redo":      {"right"},         // "redo speed" is "reduce speed", not "right speed"
+	"towards":   {"reduce"},        // "contact towards" is not "reduce"
+	// NATO phonetic letters should not match command keywords
+	"tango":   {"heading"},          // NATO letter T, not "heading"
+	"juliet":  {"left"},             // NATO letter J, not "left"
+	"charlie": {"climb", "cleared"}, // NATO letter C, not command keywords
+}
+
+// tryPhoneticCommandMatch attempts to match a word phonetically against
+// high-value command keywords. Returns the canonical keyword if matched.
+func tryPhoneticCommandMatch(word string) string {
+	if len(word) < 3 {
+		return ""
+	}
+	wordLower := strings.ToLower(word)
+	blocked := phoneticCommandBlocklist[wordLower]
+	// Also check fuzzyMatchBlocklist from similarity.go
+	if globalBlocked, ok := fuzzyMatchBlocklist[wordLower]; ok {
+		blocked = append(blocked, globalBlocked...)
+	}
+	for _, kw := range phoneticCommandKeywords {
+		// Skip if this word is blocked from matching this keyword
+		isBlocked := false
+		for _, b := range blocked {
+			if b == kw {
+				isBlocked = true
+				break
+			}
+		}
+		if isBlocked {
+			continue
+		}
+		if PhoneticMatch(word, kw) {
+			return kw
+		}
+	}
+	return ""
+}
+
 // commandKeywords maps spoken command words to normalized forms.
 var commandKeywords = map[string]string{
 	// Altitude
@@ -467,6 +579,7 @@ func NormalizeTranscript(transcript string) []string {
 		}
 
 		// Try phrase expansions (single word → multiple words)
+		// Note: Check this BEFORE phonetic matching so exact table matches take priority
 		if expansion, ok := phraseExpansions[w]; ok {
 			result = append(result, expansion...)
 			continue
@@ -478,6 +591,20 @@ func NormalizeTranscript(transcript string) []string {
 			continue
 		}
 
+		// Try to split merged command words (e.g., "turnwright" → "turn right")
+		// Note: Check BEFORE phonetic matching since long merged words may partially
+		// match a single keyword but should actually be split into multiple words
+		if cmdSplit := trySplitMergedCommand(w); cmdSplit != nil {
+			result = append(result, cmdSplit...)
+			continue
+		}
+
+		// Try phonetic matching for command keywords (e.g., "hitting" → "heading")
+		if phoneticMatch := tryPhoneticCommandMatch(w); phoneticMatch != "" {
+			result = append(result, phoneticMatch)
+			continue
+		}
+
 		// Check for "intercept localizer" pattern: words containing "lok" or "lawk"
 		// with certain prefixes (e.g., "zapulokwizer", "zapulawkwizer")
 		if isLocalizerPattern(w) {
@@ -485,14 +612,13 @@ func NormalizeTranscript(transcript string) []string {
 			continue
 		}
 
-		// Handle "or" as STT misrecognition of "niner" when between digits.
-		// STT sometimes transcribes "niner" as "nine or", so "two nine or zero"
-		// becomes "2 9 or 0" instead of "2 9 0". Skip "or" when it appears
-		// between digit-like tokens.
-		// Also handle "niner thousand" -> "9 or 1000" where "1000" is really "thousand".
+		// Handle "or" as STT noise in various contexts.
 		if w == "or" && len(result) > 0 && i+1 < len(words) {
-			prevIsDigit := IsNumber(result[len(result)-1])
+			prev := result[len(result)-1]
 			nextWord := CleanWord(words[i+1])
+
+			// Skip "or" between digits (e.g., "two nine or zero" for "two niner zero")
+			prevIsDigit := IsNumber(prev)
 			_, nextIsDigitWord := digitWords[nextWord]
 			nextIsDigit := IsNumber(nextWord) || nextIsDigitWord
 			if prevIsDigit && nextIsDigit {
@@ -501,6 +627,12 @@ func NormalizeTranscript(transcript string) []string {
 					words[i+1] = "thousand"
 				}
 				continue // Skip "or" between digits
+			}
+
+			// Skip "or" between "turn" and "left"/"right" (STT transcribes pause as "or")
+			if prev == "turn" && (nextWord == "left" || nextWord == "right" ||
+				PhoneticMatch(nextWord, "left") || PhoneticMatch(nextWord, "right")) {
+				continue // Skip "or" between turn and direction
 			}
 		}
 

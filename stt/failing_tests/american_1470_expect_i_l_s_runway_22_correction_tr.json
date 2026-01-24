@@ -1,0 +1,99 @@
+{
+  "time": "2026-01-24T11:14:07.735640229Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:975:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "American 1470, expect I L S runway 22, correction, trade one right",
+  "whisper_duration_ms": 621.969,
+  "audio_duration_ms": 5504,
+  "processor": "GPU: NVIDIA GeForce GTX 1650 (4149MB)",
+  "callsign": "AAL1470",
+  "command": "EI1R",
+  "stt_aircraft": {
+    "AAL1470": {
+      "Callsign": "AAL1470",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 2439,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    },
+    "American 1470": {
+      "Callsign": "AAL1470",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 2439,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"American 1470, expect I L S runway 22, correction, trade one right\"",
+    "[local-stt] normalized words: [american 1470 expect ils runway 22 disregard trade 1 right]",
+    "[local-stt] tokens: 10",
+    "[local-stt]   token[0]: Text=\"american\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"1470\" Type=1 Value=1470",
+    "[local-stt]   token[2]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"22\" Type=1 Value=22",
+    "[local-stt]   token[6]: Text=\"disregard\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"trade\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"1\" Type=1 Value=1",
+    "[local-stt]   token[9]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 10 tokens, 2 aircraft",
+    "[local-stt]   exact match: \"american 1470\" -\u003e \"AAL1470\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"AAL1470\" SpokenKey=\"American 1470\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=2439 Fixes=1 Approaches=4 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"John F Kennedy International Airport\" -\u003e \"KJFK\"",
+    "[local-stt]   approach: \"I L S runway three one left\" -\u003e \"I1L\"",
+    "[local-stt]   approach: \"r-nav runway three one left\" -\u003e \"R1L\"",
+    "[local-stt]   approach: \"I L S runway three one right\" -\u003e \"I1R\"",
+    "[local-stt]   approach: \"r-nav runway three one right\" -\u003e \"R1R\"",
+    "[local-stt] command tokens after disregard: 3",
+    "[local-stt]   token[0]: Text=\"trade\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"1\" Type=1 Value=1",
+    "[local-stt]   token[2]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 3 tokens",
+    "[local-stt]   no match at token[0]=\"trade\", skipping",
+    "[local-stt]   no match at token[1]=\"1\", skipping",
+    "[local-stt]   no match at token[2]=\"right\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"AAL1470 AGAIN\" (conf=1.00, time=0s) ==="
+  ]
+}
