@@ -812,6 +812,27 @@ func postProcessNormalized(tokens []string) []string {
 			continue
 		}
 
+		// Handle "<number> degrees [to the] left/right" pattern without "turn" keyword.
+		// e.g., "20 degrees to the right" → "turn 20 degrees to the right"
+		// Only applies when number is a valid degree value (1-45) and followed by "degrees".
+		if IsNumber(tokens[i]) {
+			num := ParseNumber(tokens[i])
+			if num >= 1 && num <= 45 && i+1 < len(tokens) && tokens[i+1] == "degrees" {
+				// Look ahead for "left" or "right" within the next few tokens
+				hasDirection := false
+				for j := i + 2; j < len(tokens) && j < i+6; j++ {
+					if tokens[j] == "left" || tokens[j] == "right" {
+						hasDirection = true
+						break
+					}
+				}
+				if hasDirection {
+					result = append(result, "turn")
+					// Continue to add the number below
+				}
+			}
+		}
+
 		// Default: keep the token as-is
 		result = append(result, tokens[i])
 	}
