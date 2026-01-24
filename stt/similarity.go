@@ -401,19 +401,18 @@ func PhoneticMatch(w1, w2 string) bool {
 // These are known false positives where similar-looking words have completely
 // different meanings in ATC context.
 var fuzzyMatchBlocklist = map[string][]string{
-	"intercept":   {"increase"},           // "intercept localizer" vs "increase speed"
-	"increase":    {"intercept", "cross"}, // "increase speed" vs "cross fix"
-	"cross":       {"increase"},
-	"see":         {"speed"},                        // "see ya" vs "speed"
-	"degrees":     {"increase"},                     // garbled STT output
-	"flight":      {"right"},                        // "flight 638" vs "turn right"
-	"heading":     {"descending"},                   // "heading 180" vs "descend"
-	"stand":       {"ident"},                        // "stand on the sand" vs "squawk ident"
-	"climbington": {"climb", "climbing", "climbed"}, // garbage word with similar prefix
-	"rudy":        {"right"},                        // name/garbage word vs turn direction
-	"rig":         {"right"},                        // garbage word vs turn direction
-	"senate":      {"descend"},                      // garbage word vs descend command
-	"tyrone":      {"turn"},                         // name vs turn command
+	"intercept": {"increase"},           // "intercept localizer" vs "increase speed"
+	"increase":  {"intercept", "cross"}, // "increase speed" vs "cross fix"
+	"cross":     {"increase"},
+	"see":       {"speed"},      // "see ya" vs "speed"
+	"degrees":   {"increase"},   // garbled STT output
+	"flight":    {"right"},      // "flight 638" vs "turn right"
+	"heading":   {"descending"}, // "heading 180" vs "descend"
+	"stand":     {"ident"},      // "stand on the sand" vs "squawk ident"
+	"rudy":      {"right"},      // name/garbage word vs turn direction
+	"rig":       {"right"},      // garbage word vs turn direction
+	"senate":    {"descend"},    // garbage word vs descend command
+	"tyrone":    {"turn"},       // name vs turn command
 }
 
 // FuzzyMatch returns true if word matches target with Jaro-Winkler >= threshold

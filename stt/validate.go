@@ -182,8 +182,9 @@ func validateDescend(altStr string, ac Aircraft) string {
 	// Convert encoded altitude to feet
 	altFeet := alt * 100
 
-	// Descend target must be below current altitude
-	if altFeet >= ac.Altitude {
+	// Descend target must be at or below current altitude
+	// Note: equality is allowed as a no-op (controller may re-issue current altitude)
+	if altFeet > ac.Altitude {
 		return "descend target must be below current altitude"
 	}
 
@@ -204,8 +205,9 @@ func validateClimb(altStr string, ac Aircraft) string {
 	// Convert encoded altitude to feet
 	altFeet := alt * 100
 
-	// Climb target must be above current altitude
-	if altFeet <= ac.Altitude {
+	// Climb target must be at or above current altitude
+	// Note: equality is allowed as a no-op (controller may re-issue current altitude)
+	if altFeet < ac.Altitude {
 		return "climb target must be above current altitude"
 	}
 
