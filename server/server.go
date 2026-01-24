@@ -63,10 +63,11 @@ import (
 // 53: local STT
 // 54: Move ControllerFrequency from NASFlightPlan to Aircraft
 // 55: STT logging
-const ViceSerializeVersion = 55
+// 56: STT iteration
+const ViceSerializeVersion = 56
 
 const ViceServerAddress = "vice.pharr.org"
-const ViceServerPort = 8000 + ViceRPCVersion
+const ViceServerPort = 8000 - 50 + ViceRPCVersion
 const ViceRPCVersion = ViceSerializeVersion
 const ViceHTTPServerPort = 6502
 
