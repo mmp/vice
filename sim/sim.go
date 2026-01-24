@@ -919,7 +919,13 @@ func (s *Sim) GetStateUpdate() StateUpdate {
 // Human-allocatable positions (from ControllerConfig) do NOT auto-accept,
 // regardless of whether a human is currently signed in.
 func (s *Sim) isVirtualController(pos ControlPosition) bool {
-	return slices.Contains(s.VirtualControllers, pos)
+	// A controller is virtual if it's a valid control position but NOT
+	// a human-allocatable position (i.e., not in the consolidation hierarchy).
+	if _, ok := s.ControlPositions[TCP(pos)]; !ok {
+		return false
+	}
+	humanPositions := s.ScenarioDefaultConsolidation.AllPositions()
+	return !slices.Contains(humanPositions, TCP(pos))
 }
 
 ///////////////////////////////////////////////////////////////////////////
