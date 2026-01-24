@@ -141,7 +141,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 				nasFp.AssignedAltitude = alt
 				nasFp.PerceivedAssigned = alt
 			} else {
-				s.lg.Warnf("Warning: no altitude restriction found for arrival %v", ac.ADSBCallsign)
+				nasFp.AssignedAltitude = int(arr.InitialAltitude)
 			}
 		}
 	}
