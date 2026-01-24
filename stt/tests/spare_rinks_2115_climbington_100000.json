@@ -14,7 +14,7 @@
   "audio_duration_ms": 3968,
   "processor": "GPU: NVIDIA GeForce RTX 4070 Ti SUPER (16063MB)",
   "callsign": "ASA2115",
-  "command": "SAYAGAIN/ALTITUDE",
+  "command": "C100",
   "stt_aircraft": {
     "AAL3831": {
       "Callsign": "AAL3831",

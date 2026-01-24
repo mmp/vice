@@ -423,6 +423,7 @@ var commandKeywords = map[string]string{
 	"go":         "go",
 	"ahead":      "ahead",
 	"radar":      "radar",
+	"redder":     "radar", // STT error: "radar" garbled as "redder"
 	"services":   "services",
 	"terminated": "terminated",
 	"resume":     "resume",
@@ -446,8 +447,10 @@ var commandKeywords = map[string]string{
 var phraseExpansions = map[string][]string{
 	"flighting":        {"fly", "heading"},      // "fly heading" -> "flighting"
 	"disundermaintain": {"descend", "maintain"}, // "descend and maintain" -> "disundermaintain"
+	"climbington":      {"climb", "maintain"},   // "climb and maintain" -> "climbington"
 	"thunbright":       {"turn", "right"},       // STT error: "turn right" merged together
 	"cleardrick":       {"cleared", "direct"},   // STT error: "cleared direct" merged
+	"cleardered":       {"cleared", "direct"},   // STT error: "cleared direct" merged
 	"expectilis":       {"expect", "ils"},       // STT error: "expect ILS" merged
 	"fl":               {"flight", "level"},     // STT converts "flight level" to "FL"
 }
@@ -892,17 +895,19 @@ func fixGarbledNiner(w string) string {
 	return w
 }
 
-// fixTrailingS handles STT transcription errors where a number is followed by 's'.
+// fixTrailingS handles STT transcription errors where a single digit is followed by 's'.
 // For example, "4s" likely means "40" (four zero / forty).
 // This handles patterns like "2s" -> "20", "4s" -> "40", etc.
+// Note: Only single-digit numbers are converted. Multi-digit numbers like "23s" are
+// likely STT noise (possessive/plural) rather than "two three zero" which would be
+// spoken as separate digits. This prevents turn degree commands like "turn 23 degrees left"
+// from being incorrectly converted to "turn 230 left".
 func fixTrailingS(w string) string {
-	// Handle "4s" -> "40", "23s" -> "230", etc.
+	// Handle "4s" -> "40", etc.
 	// STT sometimes transcribes "forty" as "4s" or "twenty" as "2s"
-	if len(w) >= 2 && w[len(w)-1] == 's' {
-		numPart := w[:len(w)-1]
-		if IsNumber(numPart) {
-			return numPart + "0"
-		}
+	// Only convert single-digit numbers to avoid false positives with multi-digit numbers
+	if len(w) == 2 && w[1] == 's' && w[0] >= '0' && w[0] <= '9' {
+		return string(w[0]) + "0"
 	}
 	return w
 }

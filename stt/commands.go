@@ -591,11 +591,13 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 
 		// Check for "at {altitude}" pattern - implicit "then" trigger
 		// e.g., "at 3000, reduce speed to 180" means "when you reach 3000, reduce speed"
+		// Note: We require flight levels >= 100 to avoid false positives from noise
+		// (small numbers like 55 could be garbled callsign parts, not altitudes)
 		if tokens[i].Text == "at" && i+1 < len(tokens) {
 			nextToken := tokens[i+1]
-			// Check if next token is an altitude
+			// Check if next token is an altitude (FL100+ or raw feet 1000+)
 			if nextToken.Type == TokenAltitude ||
-				(nextToken.Type == TokenNumber && nextToken.Value >= 10 && nextToken.Value <= 600) ||
+				(nextToken.Type == TokenNumber && nextToken.Value >= 100 && nextToken.Value <= 600) ||
 				(nextToken.Type == TokenNumber && nextToken.Value >= 1000 && nextToken.Value <= 60000 && nextToken.Value%100 == 0) {
 				logLocalStt("  found 'at {altitude}' pattern at position %d (alt=%d), triggering then", i, nextToken.Value)
 				isThen = true
