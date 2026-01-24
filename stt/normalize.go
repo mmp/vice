@@ -1,6 +1,7 @@
 package stt
 
 import (
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -22,7 +23,7 @@ var digitWords = map[string]string{
 	"fore":  "4", // "for" is intentionally excluded - it's a common word
 	"fiv":   "5",
 	"sicks": "6", "seeks": "6", "sex": "6",
-	"ate": "8", "ait": "8", "eat": "8",
+	"ate": "8", "ait": "8", "eat": "8", "ada": "8",
 	"oh": "0",
 	// Ordinals sometimes transcribed instead of cardinals
 	"first": "1", "second": "2", "third": "3", "fourth": "4", "fifth": "5",
@@ -185,15 +186,27 @@ func trySplitMergedNATO(word string) []string {
 // mergedCommandPrefixes are command words that commonly appear first in merged transcriptions.
 var mergedCommandPrefixes = []string{"turn", "climb", "descend", "cleared", "expect", "fly"}
 
-// mergedCommandSuffixes maps suffix words to their canonical forms for split detection.
-// These are words that commonly get merged with a prefix command word.
-var mergedCommandSuffixes = map[string]string{
-	"left":     "left",
-	"right":    "right",
-	"maintain": "maintain",
-	"direct":   "direct",
-	"ils":      "ils",
-	"heading":  "heading",
+// canonicalSuffixes are command words that can be matched phonetically after a merged prefix.
+// These are the actual command words that might be merged with a prefix.
+var canonicalSuffixes = []string{"left", "right", "maintain", "direct", "ils", "heading"}
+
+// garbledSuffixMappings maps specific garbled forms to their canonical command words.
+// These are exact matches only - they should NOT be matched phonetically to avoid false positives.
+// For example, "tor" should not match "der" even though they share metaphone "TR".
+var garbledSuffixMappings = map[string]string{
+	"dered": "direct", // garbled "direct" in "cleardered"
+	"dred":  "direct", // garbled "direct"
+	"red":   "direct", // garbled "direct" in "clerder" -> "cler" + "der" split fails, try "cleared" + "red"
+	"der":   "direct", // truncated "direct"
+	"drick": "direct", // garbled "direct" in "cleardrick"
+}
+
+// prefixSuffixCompatibility defines valid suffix words for each prefix.
+// If a prefix is listed here, only the specified suffixes are allowed.
+// This prevents false positives like "cleared" + "right" (which is not valid ATC).
+var prefixSuffixCompatibility = map[string][]string{
+	"cleared": {"direct", "ils"}, // "cleared direct" or "cleared ILS" are valid, not "cleared right"
+	"expect":  {"heading", "ils"}, // "expect heading" or "expect ILS", not "expect direct"
 }
 
 // trySplitMergedCommand attempts to split a word into two command words.
@@ -211,33 +224,110 @@ func trySplitMergedCommand(word string) []string {
 		return nil
 	}
 
+	// Find the best match across all prefixes and split points
+	var bestPrefix, bestSuffix string
+	var bestScore float64
+
 	// Try each prefix command word
 	for _, prefix := range mergedCommandPrefixes {
-		// Try different split points based on prefix length (allow ±1 for STT errors)
-		minSplit := max(len(prefix)-1, 3)
-		maxSplit := min(len(prefix)+1, len(word)-3)
+		// Try different split points based on prefix length (allow ±2 for STT errors)
+		minSplit := max(len(prefix)-2, 3)
+		maxSplit := min(len(prefix)+2, len(word)-1)
 
 		for splitAt := minSplit; splitAt <= maxSplit; splitAt++ {
 			wordPrefix := word[:splitAt]
 			wordSuffix := word[splitAt:]
 
 			// Check if prefix part matches the command word (phonetic or JW >= 0.85)
-			if !PhoneticMatch(wordPrefix, prefix) && JaroWinkler(wordPrefix, prefix) < 0.85 {
+			prefixScore := 0.0
+			if PhoneticMatch(wordPrefix, prefix) {
+				prefixScore = 1.0
+			} else {
+				jw := JaroWinkler(wordPrefix, prefix)
+				if jw >= 0.85 {
+					prefixScore = jw
+				}
+			}
+			if prefixScore == 0 {
 				continue
 			}
 
-			// Check if suffix part matches any known suffix (phonetic match)
-			if len(wordSuffix) < 3 {
+			// Check if suffix part matches any known suffix
+			if len(wordSuffix) < 2 {
 				continue
 			}
-			for suffix, canonical := range mergedCommandSuffixes {
-				if PhoneticMatch(wordSuffix, suffix) || JaroWinkler(wordSuffix, suffix) >= 0.80 {
-					return []string{prefix, canonical}
+			// Get allowed suffixes for this prefix (if restricted)
+			allowedSuffixes := prefixSuffixCompatibility[prefix]
+
+			// First, check for exact match against garbled suffix mappings
+			if canonical, ok := garbledSuffixMappings[wordSuffix]; ok {
+				// Skip if this prefix has restrictions and this suffix isn't allowed
+				if len(allowedSuffixes) == 0 || slices.Contains(allowedSuffixes, canonical) {
+					totalScore := prefixScore + 2.0 // High score for exact garbled match
+					if totalScore > bestScore {
+						bestScore = totalScore
+						bestPrefix = prefix
+						bestSuffix = canonical
+					}
+				}
+			}
+
+			// Then, check for phonetic/fuzzy match against canonical suffixes only
+			for _, canonical := range canonicalSuffixes {
+				// Skip if this prefix has restrictions and this suffix isn't allowed
+				if len(allowedSuffixes) > 0 && !slices.Contains(allowedSuffixes, canonical) {
+					continue
+				}
+				suffixScore := scoreSuffixMatch(wordSuffix, canonical)
+				if suffixScore > 0 {
+					totalScore := prefixScore + suffixScore
+					if totalScore > bestScore {
+						bestScore = totalScore
+						bestPrefix = prefix
+						bestSuffix = canonical
+					}
 				}
 			}
 		}
 	}
+
+	if bestScore > 0 {
+		return []string{bestPrefix, bestSuffix}
+	}
 	return nil
+}
+
+// scoreSuffixMatch returns a match score for suffix matching.
+// Higher scores indicate better matches. Returns 0 for no match.
+func scoreSuffixMatch(wordSuffix, target string) float64 {
+	// Minimum suffix length to avoid false positives like "r" -> "right"
+	if len(wordSuffix) < 2 {
+		return 0
+	}
+
+	// Strategy 1: Exact phonetic match - highest score
+	if PhoneticMatch(wordSuffix, target) {
+		// Bonus for longer target (prefer "right" over "red" when both match phonetically)
+		// Also add small bonus for Jaro-Winkler similarity as tiebreaker
+		return 1.0 + float64(len(target))/10.0 + JaroWinkler(wordSuffix, target)/100.0
+	}
+
+	// Strategy 2: High Jaro-Winkler similarity
+	jw := JaroWinkler(wordSuffix, target)
+	if jw >= 0.80 {
+		return jw
+	}
+
+	// Strategy 3: Metaphone prefix match - handles truncated suffixes
+	// e.g., "der" (TR) matches "direct" (TRKT) because TR is prefix of TRKT
+	suffixMeta, _ := DoubleMetaphone(wordSuffix)
+	targetMeta, _ := DoubleMetaphone(target)
+	if len(suffixMeta) >= 2 && strings.HasPrefix(targetMeta, suffixMeta) {
+		// Score based on how much of target's metaphone is covered
+		return float64(len(suffixMeta)) / float64(len(targetMeta))
+	}
+
+	return 0
 }
 
 // phoneticCommandKeywords are command keywords that should be matched phonetically
@@ -293,6 +383,7 @@ func tryPhoneticCommandMatch(word string) string {
 	}
 	return ""
 }
+
 // commandKeywords maps spoken command words to normalized forms.
 var commandKeywords = map[string]string{
 	// Altitude
@@ -381,6 +472,7 @@ var commandKeywords = map[string]string{
 	"cleared":   "cleared",
 	"cliud":     "cleared", // STT error: garbled "cleared"
 	"expect":    "expect",
+	"spectat":   "expect", // STT error: "expect" garbled
 	"select":    "expect", // "select the ILS" = "expect the ILS"
 	"vectors":   "vectors",
 	"approach":  "approach",
@@ -395,6 +487,7 @@ var commandKeywords = map[string]string{
 	"dallas":    "ils",
 	"alice":     "ils",
 	"als":       "ils",
+	"les":       "ils", // STT error: dropped leading sound
 	"rnav":      "rnav",
 	"arnavie":   "rnav", // STT error: "rnav" garbled with extra syllables
 	"vor":       "vor",
@@ -449,10 +542,9 @@ var phraseExpansions = map[string][]string{
 	"disundermaintain": {"descend", "maintain"}, // "descend and maintain" -> "disundermaintain"
 	"climbington":      {"climb", "maintain"},   // "climb and maintain" -> "climbington"
 	"thunbright":       {"turn", "right"},       // STT error: "turn right" merged together
-	"cleardrick":       {"cleared", "direct"},   // STT error: "cleared direct" merged
-	"cleardered":       {"cleared", "direct"},   // STT error: "cleared direct" merged
-	"expectilis":       {"expect", "ils"},       // STT error: "expect ILS" merged
-	"fl":               {"flight", "level"},     // STT converts "flight level" to "FL"
+	// Note: "cleared direct" merged forms are handled by trySplitMergedCommand
+	"expectilis": {"expect", "ils"},   // STT error: "expect ILS" merged
+	"fl":         {"flight", "level"}, // STT converts "flight level" to "FL"
 }
 
 // multiTokenReplacements maps sequences of tokens (space-joined) to replacements.

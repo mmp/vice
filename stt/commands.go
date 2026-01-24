@@ -346,6 +346,16 @@ var commandTemplates = []CommandTemplate{
 		SkipWords: []string{"to", "at"},
 	},
 	{
+		// "cleared direct <fix>" or "cleared <fix>" - both mean direct to fix
+		// This is separate from direct_fix because it needs to skip "direct" after "cleared"
+		Name:      "cleared_direct_fix",
+		Keywords:  [][]string{{"cleared"}},
+		ArgType:   ArgFix,
+		OutputFmt: "D%s",
+		Priority:  7, // Lower than cleared_approach (8) so approach clearances are preferred
+		SkipWords: []string{"to", "at", "direct"},
+	},
+	{
 		Name:      "cross_fix_altitude",
 		Keywords:  [][]string{{"cross"}},
 		ArgType:   ArgFixAltitude,

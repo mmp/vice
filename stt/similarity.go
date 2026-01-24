@@ -413,6 +413,7 @@ var fuzzyMatchBlocklist = map[string][]string{
 	"rig":       {"right"},      // garbage word vs turn direction
 	"senate":    {"descend"},    // garbage word vs descend command
 	"tyrone":    {"turn"},       // name vs turn command
+	"sampote":   {"climbed"},    // coincidental metaphone suffix match (SMPT vs KLMPT)
 }
 
 // FuzzyMatch returns true if word matches target with Jaro-Winkler >= threshold

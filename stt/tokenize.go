@@ -250,8 +250,21 @@ func parseDigitSequence(words []string) (int, string, int) {
 	for consumed < len(words) {
 		w := words[consumed]
 		if IsDigit(w) {
-			// Single digit - always safe to merge
-			num = num*10 + ParseDigit(w)
+			// Single digit - check if merging would exceed reasonable limit
+			candidate := num*10 + ParseDigit(w)
+			if candidate > 100000 {
+				break // Stop merging - result would be unreasonably large
+			}
+			// Look ahead: if we have a multi-digit number accumulated and the next
+			// word after this digit is a large number (>=1000), don't merge this digit.
+			// This allows "10 1 2000" to parse as "10" + "12000" instead of "101" + "2000".
+			if lastWasMultiDigit && consumed+1 < len(words) {
+				nextN := ParseNumber(words[consumed+1])
+				if nextN >= 1000 {
+					break // Let this digit start a new sequence with the large number
+				}
+			}
+			num = candidate
 			text += w
 			consumed++
 			lastWasMultiDigit = false
@@ -269,7 +282,11 @@ func parseDigitSequence(words []string) (int, string, int) {
 			// If we already have digits, combine appropriately
 			if num > 0 {
 				// Combine: 2 + 50 = 250, 2 + 5 + 0 = 250
-				num = num*intPow10(len(w)) + n
+				candidate := num*intPow10(len(w)) + n
+				if candidate > 100000 {
+					break // Stop merging - result would be unreasonably large
+				}
+				num = candidate
 			} else {
 				num = n
 			}
