@@ -1,0 +1,194 @@
+{
+  "time": "2026-01-24T15:00:33.885738199Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Delta 30, slow to one niner zero.",
+  "whisper_duration_ms": 307.548,
+  "audio_duration_ms": 2816,
+  "processor": "GPU: Apple M5, 10 CPU / 10 GPU cores, 24GB",
+  "callsign": "DAL30",
+  "command": "S190",
+  "stt_aircraft": {
+    "DAL30": {
+      "Callsign": "DAL30",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Bonzo": "BONZO",
+        "Chicago O'Hare International Airport": "KORD",
+        "Harry": "HAREE",
+        "Himgo": "HIMGO",
+        "Iylek": "IYLEK",
+        "Joker": "JOKKR",
+        "Sibly": "SIBLY",
+        "Vinnie": "VINYY",
+        "Vogler": "VOGLR",
+        "Vulcan": "VULCN",
+        "Welev": "WELEV"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven right": "I7R"
+      },
+      "AssignedApproach": "ILS Runway 27R",
+      "SID": "",
+      "STAR": "FYTTE7",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0
+    },
+    "DAL511": {
+      "Callsign": "DAL511",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Bonzo": "BONZO",
+        "Chicago O'Hare International Airport": "KORD",
+        "Harry": "HAREE",
+        "Sibly": "SIBLY"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven right": "I7R"
+      },
+      "AssignedApproach": "ILS Runway 27R",
+      "SID": "",
+      "STAR": "FYTTE7",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0
+    },
+    "Delta 30": {
+      "Callsign": "DAL30",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Bonzo": "BONZO",
+        "Chicago O'Hare International Airport": "KORD",
+        "Harry": "HAREE",
+        "Himgo": "HIMGO",
+        "Iylek": "IYLEK",
+        "Joker": "JOKKR",
+        "Sibly": "SIBLY",
+        "Vinnie": "VINYY",
+        "Vogler": "VOGLR",
+        "Vulcan": "VULCN",
+        "Welev": "WELEV"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven right": "I7R"
+      },
+      "AssignedApproach": "ILS Runway 27R",
+      "SID": "",
+      "STAR": "FYTTE7",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0
+    },
+    "Delta 511": {
+      "Callsign": "DAL511",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Bonzo": "BONZO",
+        "Chicago O'Hare International Airport": "KORD",
+        "Harry": "HAREE",
+        "Sibly": "SIBLY"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven right": "I7R"
+      },
+      "AssignedApproach": "ILS Runway 27R",
+      "SID": "",
+      "STAR": "FYTTE7",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0
+    },
+    "UAL157": {
+      "Callsign": "UAL157",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Chicago O'Hare International Airport": "KORD",
+        "Sibly": "SIBLY"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven right": "I7R"
+      },
+      "AssignedApproach": "ILS Runway 27R",
+      "SID": "",
+      "STAR": "FYTTE7",
+      "Altitude": 4451,
+      "State": "on approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0
+    },
+    "United 157": {
+      "Callsign": "UAL157",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Chicago O'Hare International Airport": "KORD",
+        "Sibly": "SIBLY"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven right": "I7R"
+      },
+      "AssignedApproach": "ILS Runway 27R",
+      "SID": "",
+      "STAR": "FYTTE7",
+      "Altitude": 4451,
+      "State": "on approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Delta 30, slow to one niner zero.\"",
+    "[local-stt] normalized words: [delta 30 slow to 1 9 0]",
+    "[local-stt] tokens: 5",
+    "[local-stt]   token[0]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"30\" Type=1 Value=30",
+    "[local-stt]   token[2]: Text=\"slow\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"190\" Type=1 Value=190",
+    "[local-stt] MatchCallsign: 5 tokens, 6 aircraft",
+    "[local-stt]   exact match: \"delta 30\" -\u003e \"DAL30\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"DAL30\" SpokenKey=\"Delta 30\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=5000 Fixes=11 Approaches=1 AssignedApproach=\"ILS Runway 27R\"",
+    "[local-stt]   fix: \"Bonzo\" -\u003e \"BONZO\"",
+    "[local-stt]   fix: \"Sibly\" -\u003e \"SIBLY\"",
+    "[local-stt]   fix: \"Chicago O'Hare International Airport\" -\u003e \"KORD\"",
+    "[local-stt]   fix: \"Vogler\" -\u003e \"VOGLR\"",
+    "[local-stt]   fix: \"Vinnie\" -\u003e \"VINYY\"",
+    "[local-stt]   fix: \"Iylek\" -\u003e \"IYLEK\"",
+    "[local-stt]   fix: \"Vulcan\" -\u003e \"VULCN\"",
+    "[local-stt]   fix: \"Himgo\" -\u003e \"HIMGO\"",
+    "[local-stt]   fix: \"Joker\" -\u003e \"JOKKR\"",
+    "[local-stt]   fix: \"Welev\" -\u003e \"WELEV\"",
+    "[local-stt]   fix: \"Harry\" -\u003e \"HAREE\"",
+    "[local-stt]   approach: \"I L S runway two seven right\" -\u003e \"I7R\"",
+    "[local-stt] command tokens after disregard: 3",
+    "[local-stt]   token[0]: Text=\"slow\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"190\" Type=1 Value=190",
+    "[local-stt] ParseCommands: 3 tokens",
+    "[local-stt]   tryMatchTemplate \"reduce_speed\": cmd=\"S190\" argStr=\"190\" consumed=3",
+    "[local-stt]   matched command: \"S190\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt] ParseCommands: result=[S190] (avgConf=1.00)",
+    "[local-stt] parsed commands: [S190] (conf=1.00)",
+    "[local-stt] validated commands: [S190] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"DAL30 S190\" (conf=1.00, time=149.542µs) ==="
+  ]
+}

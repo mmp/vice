@@ -1,0 +1,613 @@
+{
+  "time": "2026-01-23T07:23:02.531951813Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:975:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "American 24 Heavy, Clear Direct, Dormur, Clonin, Maitan, 1 2000.",
+  "whisper_duration_ms": 836.79,
+  "audio_duration_ms": 4224,
+  "processor": "GPU: Radeon RX550/550 Series (4096MB)",
+  "callsign": "AAL24",
+  "command": "DDORMR A120",
+  "stt_aircraft": {
+    "AAL24": {
+      "Callsign": "AAL24",
+      "AircraftType": "B788",
+      "Fixes": {
+        "Dormr": "DORMR",
+        "Sykes": "SYKES"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "DORMR3",
+      "STAR": "",
+      "Altitude": 5055,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "American 24 heavy": {
+      "Callsign": "AAL24",
+      "AircraftType": "B788",
+      "Fixes": {
+        "Dormr": "DORMR",
+        "Sykes": "SYKES"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "DORMR3",
+      "STAR": "",
+      "Altitude": 5055,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "FFT2325": {
+      "Callsign": "FFT2325",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Maaty": "MAATY",
+        "Tampa International Airport": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "MAATY4",
+      "Altitude": 11943,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "Frontier Flight 2325": {
+      "Callsign": "FFT2325",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Maaty": "MAATY",
+        "Tampa International Airport": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "MAATY4",
+      "Altitude": 11943,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "JBU9332": {
+      "Callsign": "JBU9332",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Brung": "BRUNG",
+        "Ended": "ENDED",
+        "Hyron": "HYRON",
+        "Tides": "TIDES"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "TIDES1",
+      "STAR": "",
+      "Altitude": 3067,
+      "State": "departure",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "JetBlue 9332": {
+      "Callsign": "JBU9332",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Brung": "BRUNG",
+        "Ended": "ENDED",
+        "Hyron": "HYRON",
+        "Tides": "TIDES"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "TIDES1",
+      "STAR": "",
+      "Altitude": 3067,
+      "State": "departure",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "N75WC": {
+      "Callsign": "N75WC",
+      "AircraftType": "C510",
+      "Fixes": {
+        "Brekr": "BREKR",
+        "Lyfie": "LYFIE",
+        "Murdo": "MURDO",
+        "Ringy": "RINGY",
+        "Sarasota": "SRQ",
+        "Sarasota Bradenton International Airport": "KSRQ",
+        "Wuddy": "WUDDY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "ILS Runway 32",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "N812XH": {
+      "Callsign": "N812XH",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Alroe": "ALROE",
+        "Bangz": "BANGZ",
+        "Fivdo": "FIVDO",
+        "Kidle": "KIDLE",
+        "Mahar": "MAHAR",
+        "Murdo": "MURDO",
+        "Ringy": "RINGY",
+        "Sarasota": "SRQ",
+        "Sarasota Bradenton International Airport": "KSRQ"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "ILS Runway 32",
+      "SID": "",
+      "STAR": "BANGZ1",
+      "Altitude": 13000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "NKS7020": {
+      "Callsign": "NKS7020",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Buggo": "BUGGO",
+        "Cbass": "CBASS",
+        "Felom": "FELOM",
+        "Hidos": "HIDOS",
+        "Lagoo": "LAGOO",
+        "Selman": "SELMN",
+        "St Petersburg": "PIE",
+        "Tampa International Airport": "KTPA",
+        "Tooth": "TOOTH",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "Altitude": 11230,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "SWA1647": {
+      "Callsign": "SWA1647",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Cruuz": "CRUUZ",
+        "Jetstream": "JSTRM",
+        "Lagoo": "LAGOO",
+        "Selman": "SELMN",
+        "St Petersburg": "PIE",
+        "Tampa International Airport": "KTPA",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "BLFRG2",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0
+    },
+    "SWA416": {
+      "Callsign": "SWA416",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Lagoo": "LAGOO",
+        "Selman": "SELMN",
+        "Tampa International Airport": "KTPA",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "Southwest 1647": {
+      "Callsign": "SWA1647",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Cruuz": "CRUUZ",
+        "Jetstream": "JSTRM",
+        "Lagoo": "LAGOO",
+        "Selman": "SELMN",
+        "St Petersburg": "PIE",
+        "Tampa International Airport": "KTPA",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "BLFRG2",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0
+    },
+    "Southwest 416": {
+      "Callsign": "SWA416",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Lagoo": "LAGOO",
+        "Selman": "SELMN",
+        "Tampa International Airport": "KTPA",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "Spirit Wings 7020": {
+      "Callsign": "NKS7020",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Buggo": "BUGGO",
+        "Cbass": "CBASS",
+        "Felom": "FELOM",
+        "Hidos": "HIDOS",
+        "Lagoo": "LAGOO",
+        "Selman": "SELMN",
+        "St Petersburg": "PIE",
+        "Tampa International Airport": "KTPA",
+        "Tooth": "TOOTH",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "Altitude": 11230,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "UAL344": {
+      "Callsign": "UAL344",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Borst": "BORST",
+        "Jetstream": "JSTRM",
+        "Lagoo": "LAGOO",
+        "Selman": "SELMN",
+        "St Petersburg": "PIE",
+        "Tampa International Airport": "KTPA",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 4051,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "United 344": {
+      "Callsign": "UAL344",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Borst": "BORST",
+        "Jetstream": "JSTRM",
+        "Lagoo": "LAGOO",
+        "Selman": "SELMN",
+        "St Petersburg": "PIE",
+        "Tampa International Airport": "KTPA",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 4051,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "citation mustang five whiskey charlie": {
+      "Callsign": "N75WC",
+      "AircraftType": "C510",
+      "Fixes": {
+        "Brekr": "BREKR",
+        "Lyfie": "LYFIE",
+        "Murdo": "MURDO",
+        "Ringy": "RINGY",
+        "Sarasota": "SRQ",
+        "Sarasota Bradenton International Airport": "KSRQ",
+        "Wuddy": "WUDDY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "ILS Runway 32",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 1
+    },
+    "embraer phenom one hundred two x-ray hotel": {
+      "Callsign": "N812XH",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Alroe": "ALROE",
+        "Bangz": "BANGZ",
+        "Fivdo": "FIVDO",
+        "Kidle": "KIDLE",
+        "Mahar": "MAHAR",
+        "Murdo": "MURDO",
+        "Ringy": "RINGY",
+        "Sarasota": "SRQ",
+        "Sarasota Bradenton International Airport": "KSRQ"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "ILS Runway 32",
+      "SID": "",
+      "STAR": "BANGZ1",
+      "Altitude": 13000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1
+    },
+    "mustang five whiskey charlie": {
+      "Callsign": "N75WC",
+      "AircraftType": "C510",
+      "Fixes": {
+        "Brekr": "BREKR",
+        "Lyfie": "LYFIE",
+        "Murdo": "MURDO",
+        "Ringy": "RINGY",
+        "Sarasota": "SRQ",
+        "Sarasota Bradenton International Airport": "KSRQ",
+        "Wuddy": "WUDDY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "ILS Runway 32",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 1
+    },
+    "november 75WC": {
+      "Callsign": "N75WC",
+      "AircraftType": "C510",
+      "Fixes": {
+        "Brekr": "BREKR",
+        "Lyfie": "LYFIE",
+        "Murdo": "MURDO",
+        "Ringy": "RINGY",
+        "Sarasota": "SRQ",
+        "Sarasota Bradenton International Airport": "KSRQ",
+        "Wuddy": "WUDDY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "ILS Runway 32",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "november 812XH": {
+      "Callsign": "N812XH",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Alroe": "ALROE",
+        "Bangz": "BANGZ",
+        "Fivdo": "FIVDO",
+        "Kidle": "KIDLE",
+        "Mahar": "MAHAR",
+        "Murdo": "MURDO",
+        "Ringy": "RINGY",
+        "Sarasota": "SRQ",
+        "Sarasota Bradenton International Airport": "KSRQ"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "ILS Runway 32",
+      "SID": "",
+      "STAR": "BANGZ1",
+      "Altitude": 13000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "phenom one hundred two x-ray hotel": {
+      "Callsign": "N812XH",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Alroe": "ALROE",
+        "Bangz": "BANGZ",
+        "Fivdo": "FIVDO",
+        "Kidle": "KIDLE",
+        "Mahar": "MAHAR",
+        "Murdo": "MURDO",
+        "Ringy": "RINGY",
+        "Sarasota": "SRQ",
+        "Sarasota Bradenton International Airport": "KSRQ"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "ILS Runway 32",
+      "SID": "",
+      "STAR": "BANGZ1",
+      "Altitude": 13000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"American 24 Heavy, Clear Direct, Dormur, Clonin, Maitan, 1 2000.\"",
+    "[local-stt] normalized words: [american 24 heavy clear direct dormur clonin maitan 1 2000]",
+    "[local-stt] tokens: 9",
+    "[local-stt]   token[0]: Text=\"american\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"24\" Type=1 Value=24",
+    "[local-stt]   token[2]: Text=\"heavy\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"clear\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"dormur\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"clonin\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"maitan\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"12000\" Type=1 Value=12000",
+    "[local-stt] MatchCallsign: 9 tokens, 22 aircraft",
+    "[local-stt]   exact match: \"american 24 heavy\" -\u003e \"AAL24\" (consumed 3)",
+    "[local-stt] callsign match: Callsign=\"AAL24\" SpokenKey=\"American 24 heavy\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=5055 Fixes=2 Approaches=0 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"Sykes\" -\u003e \"SYKES\"",
+    "[local-stt]   fix: \"Dormr\" -\u003e \"DORMR\"",
+    "[local-stt] command tokens after disregard: 6",
+    "[local-stt]   token[0]: Text=\"clear\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"dormur\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"clonin\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"maitan\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"12000\" Type=1 Value=12000",
+    "[local-stt]   position ID: found command keyword \"direct\" at position 1 - not just position ID",
+    "[local-stt] ParseCommands: 6 tokens",
+    "[local-stt]   no match at token[0]=\"clear\", skipping",
+    "[local-stt]   tryMatchTemplate \"direct_fix\": keywords matched, consumed=1, next tokens=[dormur clonin maitan]",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"dormur\" against 2 fixes",
+    "[local-stt]   extractFix: matched \"dormur\" -\u003e \"DORMR\" (fuzzy 0.97)",
+    "[local-stt]   tryMatchTemplate \"direct_fix\": cmd=\"DDORMR\" argStr=\"DORMR\" consumed=2",
+    "[local-stt]   matched command: \"DDORMR\" (conf=0.97, consumed=2, isThen=false)",
+    "[local-stt]   no match at token[3]=\"clonin\", skipping",
+    "[local-stt]   tryMatchTemplate \"maintain_altitude\": cmd=\"A120\" argStr=\"120\" consumed=2",
+    "[local-stt]   matched command: \"A120\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[DDORMR A120] (avgConf=0.98)",
+    "[local-stt] parsed commands: [DDORMR A120] (conf=0.98)",
+    "[local-stt] validated commands: [DDORMR A120] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"AAL24 DDORMR A120\" (conf=0.98, time=0s) ==="
+  ]
+}

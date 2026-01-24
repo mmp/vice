@@ -1,0 +1,324 @@
+{
+  "time": "2026-01-23T07:26:22.30628283Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:975:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Scandinavian 60, 90, San Mate 10, 4000",
+  "whisper_duration_ms": 109.261,
+  "audio_duration_ms": 2688,
+  "processor": "GPU: NVIDIA GeForce RTX 5080 (15977MB)",
+  "callsign": "SAS69",
+  "command": "D40",
+  "stt_aircraft": {
+    "Brickyard 4275": {
+      "Callsign": "RPA4275",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Broadway": "BWZ",
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FQM3",
+      "Altitude": 8000,
+      "State": "arrival",
+      "ControllerFrequency": "4W",
+      "TrackingController": "4W",
+      "AddressingForm": 0
+    },
+    "GJS7038": {
+      "Callsign": "GJS7038",
+      "AircraftType": "CRJ7",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5199,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0
+    },
+    "Lindbergh 7038": {
+      "Callsign": "GJS7038",
+      "AircraftType": "CRJ7",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5199,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0
+    },
+    "NKS5349": {
+      "Callsign": "NKS5349",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Mart": "MARRT",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0
+    },
+    "NKS5447": {
+      "Callsign": "NKS5447",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Mart": "MARRT",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0
+    },
+    "RPA4275": {
+      "Callsign": "RPA4275",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Broadway": "BWZ",
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FQM3",
+      "Altitude": 8000,
+      "State": "arrival",
+      "ControllerFrequency": "4W",
+      "TrackingController": "4W",
+      "AddressingForm": 0
+    },
+    "SAS69": {
+      "Callsign": "SAS69",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Hokir": "HOKIR",
+        "Izeko": "IZEKO",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Sparta": "SAX",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0
+    },
+    "Scandinavian 69": {
+      "Callsign": "SAS69",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Hokir": "HOKIR",
+        "Izeko": "IZEKO",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Sparta": "SAX",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0
+    },
+    "Spirit Wings 5349": {
+      "Callsign": "NKS5349",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Mart": "MARRT",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0
+    },
+    "Spirit Wings 5447": {
+      "Callsign": "NKS5447",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Mart": "MARRT",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Scandinavian 60, 90, San Mate 10, 4000\"",
+    "[local-stt] normalized words: [scandinavian 60 90 san mate 10 4000]",
+    "[local-stt] tokens: 7",
+    "[local-stt]   token[0]: Text=\"scandinavian\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"60\" Type=1 Value=60",
+    "[local-stt]   token[2]: Text=\"90\" Type=1 Value=90",
+    "[local-stt]   token[3]: Text=\"san\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"mate\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"10\" Type=1 Value=10",
+    "[local-stt]   token[6]: Text=\"4000\" Type=1 Value=4000",
+    "[local-stt] MatchCallsign: 7 tokens, 10 aircraft",
+    "[local-stt]   candidate \"GJS7038\" (ICAO=\"GJS7038\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"NKS5349\" (ICAO=\"NKS5349\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Spirit Wings 5447\" (ICAO=\"NKS5447\"): score=0.62 consumed=1",
+    "[local-stt]   candidate \"Scandinavian 69\" (ICAO=\"SAS69\"): score=1.00 consumed=3",
+    "[local-stt]   candidate \"Brickyard 4275\" (ICAO=\"RPA4275\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"RPA4275\" (ICAO=\"RPA4275\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Spirit Wings 5349\" (ICAO=\"NKS5349\"): score=0.62 consumed=1",
+    "[local-stt]   candidate \"NKS5447\" (ICAO=\"NKS5447\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SAS69\" (ICAO=\"SAS69\"): score=0.85 consumed=3",
+    "[local-stt]   candidate \"Lindbergh 7038\" (ICAO=\"GJS7038\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SAS69\" at pos 1: score=0.85 (adjusted=0.77) consumed=2",
+    "[local-stt]   candidate \"Scandinavian 69\" at pos 1: score=0.85 (adjusted=0.77) consumed=2",
+    "[local-stt]   candidate \"Scandinavian 69\" at pos 3: score=0.78 (adjusted=0.54) consumed=1",
+    "[local-stt]   candidate \"SAS69\" at pos 3: score=0.75 (adjusted=0.53) consumed=1",
+    "[local-stt]   accepted: \"SAS69\" (conf=1.00, consumed=3, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"SAS69\" SpokenKey=\"Scandinavian 69\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=6000 Fixes=9 Approaches=1 AssignedApproach=\"ILS Runway 22L\"",
+    "[local-stt]   fix: \"Izeko\" -\u003e \"IZEKO\"",
+    "[local-stt]   fix: \"Gimme\" -\u003e \"GIMEE\"",
+    "[local-stt]   fix: \"Zavpi\" -\u003e \"ZAVPI\"",
+    "[local-stt]   fix: \"Buzzed\" -\u003e \"BUZZD\"",
+    "[local-stt]   fix: \"Philbo\" -\u003e \"PHLBO\"",
+    "[local-stt]   fix: \"Hokir\" -\u003e \"HOKIR\"",
+    "[local-stt]   fix: \"Pattern\" -\u003e \"PATRN\"",
+    "[local-stt]   fix: \"Sparta\" -\u003e \"SAX\"",
+    "[local-stt]   fix: \"Newark Liberty International Airport\" -\u003e \"KEWR\"",
+    "[local-stt]   approach: \"I L S runway two two left\" -\u003e \"I2L\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"san\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"mate\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"10\" Type=1 Value=10",
+    "[local-stt]   token[3]: Text=\"4000\" Type=1 Value=4000",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   no match at token[0]=\"san\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"10\" against 9 fixes",
+    "[local-stt]   extractFix: no match found for \"10\"",
+    "[local-stt]   tryMatchTemplate \"at_fix_cleared_approach\": fix extraction failed",
+    "[local-stt]   no match at token[1]=\"mate\", skipping",
+    "[local-stt]   no match at token[2]=\"10\", skipping",
+    "[local-stt]   no match at token[3]=\"4000\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"SAS69 AGAIN\" (conf=1.00, time=0s) ==="
+  ]
+}

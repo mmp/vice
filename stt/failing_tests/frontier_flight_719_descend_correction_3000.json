@@ -1,0 +1,194 @@
+{
+  "time": "2026-01-24T11:17:01.682072271Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:975:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Frontier Flight 719, descend, correction 3000,",
+  "whisper_duration_ms": 611.206,
+  "audio_duration_ms": 6016,
+  "processor": "GPU: NVIDIA GeForce GTX 1650 (4149MB)",
+  "callsign": "FFT719",
+  "command": "D30",
+  "stt_aircraft": {
+    "AAL1470": {
+      "Callsign": "AAL1470",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 2000,
+      "State": "on approach",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    },
+    "American 1470": {
+      "Callsign": "AAL1470",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 2000,
+      "State": "on approach",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    },
+    "Brickyard 3584": {
+      "Callsign": "RPA3584",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Catod": "CATOD",
+        "John F Kennedy International Airport": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    },
+    "FFT719": {
+      "Callsign": "FFT719",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Catod": "CATOD",
+        "John F Kennedy International Airport": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    },
+    "Frontier Flight 719": {
+      "Callsign": "FFT719",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Catod": "CATOD",
+        "John F Kennedy International Airport": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    },
+    "RPA3584": {
+      "Callsign": "RPA3584",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Catod": "CATOD",
+        "John F Kennedy International Airport": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Frontier Flight 719, descend, correction 3000,\"",
+    "[local-stt] normalized words: [frontier flight 719 descend disregard 3000]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"frontier\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"flight\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"719\" Type=1 Value=719",
+    "[local-stt]   token[3]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"disregard\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"3000\" Type=1 Value=3000",
+    "[local-stt] MatchCallsign: 6 tokens, 6 aircraft",
+    "[local-stt]   exact match: \"frontier flight 719\" -\u003e \"FFT719\" (consumed 3)",
+    "[local-stt] callsign match: Callsign=\"FFT719\" SpokenKey=\"Frontier Flight 719\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4000 Fixes=4 Approaches=4 AssignedApproach=\"ILS Runway 31R\"",
+    "[local-stt]   fix: \"John F Kennedy International Airport\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"Catod\" -\u003e \"CATOD\"",
+    "[local-stt]   fix: \"Maldey\" -\u003e \"MALDE\"",
+    "[local-stt]   fix: \"Zulab\" -\u003e \"ZULAB\"",
+    "[local-stt]   approach: \"I L S runway three one left\" -\u003e \"I1L\"",
+    "[local-stt]   approach: \"I L S runway three one right\" -\u003e \"I1R\"",
+    "[local-stt]   approach: \"r-nav runway three one right\" -\u003e \"R1R\"",
+    "[local-stt]   approach: \"r-nav runway three one left\" -\u003e \"R1L\"",
+    "[local-stt] command tokens after disregard: 1",
+    "[local-stt]   token[0]: Text=\"3000\" Type=1 Value=3000",
+    "[local-stt] ParseCommands: 1 tokens",
+    "[local-stt]   no match at token[0]=\"3000\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"FFT719 AGAIN\" (conf=1.00, time=0s) ==="
+  ]
+}
