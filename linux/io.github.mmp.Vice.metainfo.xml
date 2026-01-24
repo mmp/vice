@@ -6,7 +6,7 @@
   <summary>Air Traffic Control Simulator</summary>
   
   <metadata_license>MIT</metadata_license>
-  <project_license>AGPL-3.0-only</project_license>
+  <project_license>GPL-3.0-only</project_license>
   
   <description>
     <p>Vice is an air traffic control simulator, focused on TRACON. It presents a STARS-like interface, but with simulated traffic and other controllers. It also supports multiple users, where each person controls a different position at a facility.</p>
