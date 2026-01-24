@@ -409,6 +409,7 @@ var fuzzyMatchBlocklist = map[string][]string{
 	"flight":    {"right"},      // "flight 638" vs "turn right"
 	"heading":   {"descending"}, // "heading 180" vs "descend"
 	"stand":     {"ident"},      // "stand on the sand" vs "squawk ident"
+	"red":       {"right", "reduce"}, // garbled word in phrases like "Red or Collins"
 	"rudy":      {"right"},      // name/garbage word vs turn direction
 	"rig":       {"right"},      // garbage word vs turn direction
 	"senate":    {"descend"},    // garbage word vs descend command

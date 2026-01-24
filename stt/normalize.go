@@ -344,6 +344,7 @@ var phoneticCommandBlocklist = map[string][]string{
 	"continue":  {"maintain"}, // "continue your turn" is not "maintain"
 	"continued": {"maintain"},
 	"flight":    {"right", "left"}, // "flight 123" is not "right 123"
+	"red":       {"right"},         // "red" in garbled phrases (e.g., "Red or Collins") is not "right"
 	"redu":      {"right"},         // "redu-speed" is "reduce speed", not "right speed"
 	"redo":      {"right"},         // "redo speed" is "reduce speed", not "right speed"
 	"towards":   {"reduce"},        // "contact towards" is not "reduce"
