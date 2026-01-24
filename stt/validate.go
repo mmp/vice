@@ -33,6 +33,11 @@ func ValidateCommands(commands []string, ac Aircraft) ValidationResult {
 		}
 	}
 
+	// Filter incompatible command combinations
+	valid, combinationErrors := filterIncompatibleCommands(valid)
+	errors = append(errors, combinationErrors...)
+	penalty += 0.15 * float64(len(combinationErrors))
+
 	// Calculate confidence based on valid ratio and penalties
 	validRatio := float64(len(valid)) / float64(len(commands))
 	confidence := validRatio * (1.0 - penalty)
@@ -271,6 +276,42 @@ func validateVFRAltitude(ac Aircraft) string {
 		return "altitude discretion only valid for VFR"
 	}
 	return ""
+}
+
+// filterIncompatibleCommands removes commands that are incompatible with each other.
+// For example, heading commands (L/R/H) are incompatible with direct-to-fix commands
+// because you can't be cleared direct to a fix and also given a heading.
+func filterIncompatibleCommands(commands []string) ([]string, []string) {
+	var errors []string
+
+	// Check if there's a direct-to-fix command (D{FIX} or SAYAGAIN/FIX)
+	hasDirectFix := false
+	for _, cmd := range commands {
+		if cmd == "SAYAGAIN/FIX" {
+			hasDirectFix = true
+			break
+		}
+		if len(cmd) > 1 && cmd[0] == 'D' && !isAllDigits(cmd[1:]) {
+			hasDirectFix = true
+			break
+		}
+	}
+
+	// If there's a direct-to-fix command, filter out heading commands
+	if hasDirectFix {
+		var filtered []string
+		for _, cmd := range commands {
+			// Heading commands start with L, R, or H followed by digits
+			if len(cmd) > 1 && (cmd[0] == 'L' || cmd[0] == 'R' || cmd[0] == 'H') && isAllDigits(cmd[1:]) {
+				errors = append(errors, "heading command incompatible with direct-to-fix")
+				continue
+			}
+			filtered = append(filtered, cmd)
+		}
+		return filtered, errors
+	}
+
+	return commands, errors
 }
 
 // isAllDigits returns true if string contains only digits.

@@ -14,7 +14,7 @@
   "audio_duration_ms": 4096,
   "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11997MB)",
   "callsign": "ETD34",
-  "command": "H360",
+  "command": "R360",
   "stt_aircraft": {
     "ASA861": {
       "Callsign": "ASA861",

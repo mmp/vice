@@ -14,7 +14,7 @@
   "audio_duration_ms": 7296,
   "processor": "GPU: Radeon RX550/550 Series (4096MB)",
   "callsign": "DAL15",
-  "command": "SAYAGAIN/APPROACH SAYAGAIN/ALTITUDE",
+  "command": "SAYAGAIN/FIX SAYAGAIN/APPROACH",
   "stt_aircraft": {
     "DAL15": {
       "Callsign": "DAL15",

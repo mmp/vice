@@ -205,7 +205,7 @@ var garbledSuffixMappings = map[string]string{
 // If a prefix is listed here, only the specified suffixes are allowed.
 // This prevents false positives like "cleared" + "right" (which is not valid ATC).
 var prefixSuffixCompatibility = map[string][]string{
-	"cleared": {"direct", "ils"}, // "cleared direct" or "cleared ILS" are valid, not "cleared right"
+	"cleared": {"direct", "ils"},  // "cleared direct" or "cleared ILS" are valid, not "cleared right"
 	"expect":  {"heading", "ils"}, // "expect heading" or "expect ILS", not "expect direct"
 }
 
@@ -414,6 +414,7 @@ var commandKeywords = map[string]string{
 	"turn":     "turn",
 	"lefthand": "left", // STT error: "left" with extra "hand" suffix
 	"turning":  "turn", // STT captures continuous tense
+	"turned":   "turn", // Past tense variant
 	"left":     "left",
 	"right":    "right",
 	"degrees":  "degrees",
@@ -554,6 +555,7 @@ var multiTokenReplacements = map[string][]string{
 	"i l s":       {"ils"},                 // Spelled out ILS
 	"r nav":       {"rnav"},                // R-NAV after hyphen removal
 	"fly level":   {"flight", "level"},     // STT error: "flight level" misheard as "fly level"
+	"eddie had":   {"etihad"},              // STT error: "Etihad" misheard as "eddie had"
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.
@@ -601,6 +603,7 @@ var fillerWords = map[string]bool{
 	"off":  true,               // STT noise in "turn off heading" → "turn heading"
 	"wing": true,               // STT error: "left-wing" for "left heading" becomes "left wing" after hyphen removal
 	"i":    true, "said": true, // Pilot interjections ("I said I maintained...")
+	"having": true, // Prevents "having" from fuzzy matching "heading" (Jaro-Winkler 0.86)
 	// Note: "contact" and "radar" are NOT filler words - they're command keywords
 }
 
