@@ -93,10 +93,10 @@ func dbChopTrailing(f []dbChar) []dbChar {
 func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 	font *renderer.Font, sb *strings.Builder, brightness radar.Brightness,
 	dir math.CardinalOrdinalDirection, halfSeconds int64) {
-	scale := float32(2) // 1.5 for default font
+	scale := float32(dbLineOffsetScale) // 1.5 for default font
 	if len(lines) >= 5 {
 		if lines[3].ch[0].ch != rune('R') {
-			scale = 2
+			scale = dbLineOffsetScale
 		}
 	}
 	glyph := font.LookupGlyph(' ')
@@ -110,7 +110,7 @@ func dbDrawLines(lines []dbLine, td *renderer.TextDrawBuilder, pt [2]float32,
 		if i == 2 || i == 3 {
 			xOffset -= fontWidth
 		}
-		lineSpacing := 1.4
+		lineSpacing := dbLineSpacing
 		sb.Reset()
 		dbDrawLine(line, td, math.Add2f(pt, [2]float32{xOffset, 0}), font, sb,
 			brightness, halfSeconds)
@@ -254,7 +254,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		dbWriteText(db.line1[:], trk.ADSBCallsign.String(), color, false) // also * if satcom
 		vciBright := radar.Brightness(ps.Brightness.ONFREQ + ps.Brightness.Portal)
 		vciColor := vciBright.ScaleRGB(renderer.RGB{0.01, 1, 0.05})
-		dbWriteText(db.vci[:], util.Select(state.DisplayVCI, vci, ""), vciColor, false)
+		dbWriteText(db.vci[:], util.Select(state.DisplayVCI || state.HoverVCI, vci, ""), vciColor, false)
 		dbWriteText(db.line2[:], ep.getAltitudeFormat(trk), color, false)
 		// format line 3.
 		// TODO: HIJK, RDOF, EMERG (what colors are these?) incoming handoff
@@ -337,10 +337,10 @@ func (ep *ERAMPane) getAltitudeFormat(track sim.Track) string {
 		case formatCurrent == formatAssigned:
 			return fmt.Sprintf("%vC", formatCurrent)
 		case currentAltitude > float32(assignedAltitude) && assignedAltitude > -1: // TODO: Find actual font so that the up arrows draw
-			middle := util.Select(state.Descending() || state.IsLevel(), downArrow, "+")
+			middle := util.Select(!state.ReachedAltitude, downArrow, "+")
 			return fmt.Sprintf("%v%v%v", formatAssigned, middle, formatCurrent)
 		case currentAltitude < float32(assignedAltitude):
-			middle := util.Select(state.Climbing() || state.IsLevel(), upArrow, "+")
+			middle := util.Select(!state.ReachedAltitude, upArrow, "+")
 			return fmt.Sprintf("%v%v%v", formatAssigned, middle, formatCurrent) // or maintaining
 
 		}

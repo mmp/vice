@@ -600,10 +600,11 @@ type AircraftCommandsArgs struct {
 	ClickedTrack      bool
 	EnableTTS         bool                    // Whether to synthesize readback audio
 	WhisperDuration   time.Duration           // Time from PTT release to whisper completion (zero for keyboard input)
+	AudioDuration     time.Duration           // Duration of the recorded audio (zero for keyboard input)
 	WhisperTranscript string                  // Raw whisper transcript (empty for keyboard input)
 	WhisperProcessor  string                  // Description of the processor running whisper (GPU model or CPU info)
 	AircraftContext   map[string]stt.Aircraft // Aircraft context used for STT decoding (for logging)
-	STTDebugLogs      string                  // Local STT processing logs (for logging)
+	STTDebugLogs      []string                // Local STT processing logs (for logging)
 }
 
 // If an RPC call returns an error, then the result argument is not returned(!?).
@@ -671,27 +672,13 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	if cmds.WhisperDuration > 0 {
 		sd.sm.lg.Info("STT command",
 			slog.String("transcript", cmds.WhisperTranscript),
-			slog.Duration("duration", cmds.WhisperDuration),
+			slog.Float64("whisper_duration_ms", float64(cmds.WhisperDuration.Microseconds())/1000.0),
+			slog.Float64("audio_duration_ms", float64(cmds.AudioDuration.Microseconds())/1000.0),
 			slog.String("processor", cmds.WhisperProcessor),
 			slog.String("callsign", string(cmds.Callsign)),
 			slog.String("command", cmds.Commands),
-			slog.Int("aircraft_count", len(cmds.AircraftContext)),
-		)
-
-		// Log detailed aircraft context
-		for telephony, ac := range cmds.AircraftContext {
-			sd.sm.lg.Debug("STT aircraft",
-				slog.String("telephony", telephony),
-				slog.String("callsign", ac.Callsign),
-				slog.String("state", ac.State),
-				slog.Int("altitude", ac.Altitude),
-			)
-		}
-
-		// Log STT debug logs if present
-		if cmds.STTDebugLogs != "" {
-			sd.sm.lg.Debug("STT debug logs", slog.String("logs", cmds.STTDebugLogs))
-		}
+			slog.Any("stt_aircraft", cmds.AircraftContext),
+			slog.Any("logs", cmds.STTDebugLogs))
 	}
 
 	return nil

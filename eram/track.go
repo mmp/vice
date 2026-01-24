@@ -40,6 +40,10 @@ type TrackState struct {
 
 	OSectorEndTime time.Time
 
+	ReachedAltitude bool
+
+	HoverVCI bool // if the user is hovering over the VCI field
+
 	// add more as we figure out what to do...
 
 }
@@ -185,6 +189,13 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 		state.historyTracks[idx] = historyTrack{state.track, ep.positionSymbol(trk, state)}
 		state.historyTrackIndex++
 
+		// check to see if the a/c has reached the altitude
+		if trk.IsAssociated() {
+			if av.FormatScopeAltitude(state.track.TransponderAltitude) == av.FormatScopeAltitude(trk.FlightPlan.AssignedAltitude) {
+				state.ReachedAltitude = true
+			}
+		}
+
 		// TODO: check unreasonable C
 		// CA processing
 		// etc
@@ -231,7 +242,7 @@ func (ep *ERAMPane) drawTarget(track sim.Track, state *TrackState, ctx *panes.Co
 	pw := transforms.WindowFromLatLongP(pos)
 	pt := math.Add2f(pw, [2]float32{0.5, -.5}) // Text this out
 
-	color := ep.trackColor(state, track)
+	color := ep.trackColor()
 	font := ep.systemFont[5]
 	if font == nil {
 		fmt.Println("ERAMPane: systemFont[5] is nil, cannot draw targets")
@@ -265,7 +276,7 @@ func (ep *ERAMPane) drawTrack(trk sim.Track, state *TrackState, ctx *panes.Conte
 	// drawDiamond(ctx, transforms, ep.trackColor(state, trk), pos, ld, cb)
 	font := ep.systemFont[9]
 	td.AddTextCentered("\u0000", transforms.WindowFromLatLongP(pos),
-		renderer.TextStyle{Font: font, Color: ep.trackColor(state, trk)})
+		renderer.TextStyle{Font: font, Color: ep.trackColor()})
 }
 
 func (ep *ERAMPane) positionSymbol(trk sim.Track, state *TrackState) string {
@@ -313,14 +324,10 @@ func drawDiamond(ctx *panes.Context, transforms radar.ScopeTransformations, colo
 	ld.AddLine(p3, p0, color)
 }
 
-func (ep *ERAMPane) trackColor(state *TrackState, track sim.Track) renderer.RGB {
+func (ep *ERAMPane) trackColor() renderer.RGB {
 	ps := ep.currentPrefs()
-	bright := util.Select(state.DatablockType == FullDatablock, ps.Brightness.FDB, ps.Brightness.LDB)
-	color := bright.ScaleRGB(ERAMYellow)
-
-	// Scale this color based on the type of tag it is.
-	// DB and Track brights/ color are the same, so call the DB color function TODO
-	return color
+	bright := ps.Brightness.PRTGT
+	return bright.ScaleRGB(ERAMYellow)
 }
 
 func (ep *ERAMPane) visibleTracks(ctx *panes.Context) []sim.Track { // When radar holes are added
@@ -500,7 +507,7 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 		state := ep.TrackState[trk.ADSBCallsign]
 
 		var bright radar.Brightness
-		if trk.IsAssociated() {
+		if trk.IsAssociated() { // TODO: Eventually when coasting tracks, etc, (non associated with aircraft tracks) are added, this will need to be updated to include all tracks that are associated with an aircraft (not just a flight plan)
 			bright = ps.Brightness.PRHST
 		} else {
 			bright = ps.Brightness.UNPHST

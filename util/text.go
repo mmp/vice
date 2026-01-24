@@ -98,9 +98,18 @@ func (cfg TextWrapConfig) Wrap(s string) (string, int) {
 				}
 			}
 
-			// If we are not allowed to break mid-word and there is no break, allow overflow until break/newline
+			// If we are not allowed to break mid-word and there is no break in the first cap chars,
+			// scan the rest of the buffer for the first break point
 			if !cfg.WrapNoSpace && lastBreakIndex == -1 {
-				break
+				for i := cap; i < len(currentLine); i++ {
+					if currentLine[i] == ' ' || currentLine[i] == '.' {
+						lastBreakIndex = i
+						break
+					}
+				}
+				if lastBreakIndex == -1 {
+					break // still no break found, allow overflow until break/newline
+				}
 			}
 
 			breakPos := cap

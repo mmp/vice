@@ -1,7 +1,13 @@
 package stt
 
 import (
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"strings"
 	"testing"
+
+	"github.com/mmp/vice/sim"
 )
 
 // Test cases from sttSystemPrompt.md
@@ -280,6 +286,65 @@ func TestCompoundCommands(t *testing.T) {
 			},
 			expected: "THY10Z CI2L S180",
 		},
+		{
+			name:       "cleared approach with joined ILS and missing runway",
+			transcript: "American 717 cleared ILS 28 Center approach",
+			aircraft: map[string]Aircraft{
+				"American 717": {
+					Callsign:         "AAL717",
+					Altitude:         7000,
+					State:            "arrival",
+					AssignedApproach: "ILS Runway 28C",
+					CandidateApproaches: map[string]string{
+						"I L S runway two eight center": "I8C",
+					},
+				},
+			},
+			expected: "AAL717 CI8C",
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
+}
+
+func TestSayAgainCommands(t *testing.T) {
+	// Tests for SAYAGAIN commands - generated when STT recognizes command keywords
+	// but fails to extract the associated value (e.g., garbled heading/altitude)
+	tests := []struct {
+		name       string
+		transcript string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "garbled heading after valid command",
+			transcript: "American 123 descend and maintain five thousand fly heading blark bling",
+			aircraft: map[string]Aircraft{
+				"American 123": {Callsign: "AAL123", Altitude: 10000, State: "arrival"},
+			},
+			expected: "AAL123 D50 SAYAGAIN/HEADING",
+		},
+		{
+			name:       "garbled altitude after callsign",
+			transcript: "Delta 456 climb and maintain mumble jumble",
+			aircraft: map[string]Aircraft{
+				"Delta 456": {Callsign: "DAL456", Altitude: 5000, State: "departure"},
+			},
+			expected: "DAL456 SAYAGAIN/ALTITUDE",
+		},
 	}
 
 	provider := NewTranscriber(nil)
@@ -493,6 +558,19 @@ func TestNavigationCommands(t *testing.T) {
 			expected: "UAL300 DJENNY",
 		},
 		{
+			name:       "procedure at misrecognized as proceed direct",
+			transcript: "Delta 450 procedure at MERIT",
+			aircraft: map[string]Aircraft{
+				"Delta 450": {
+					Callsign: "DAL450",
+					Altitude: 10000,
+					State:    "arrival",
+					Fixes:    map[string]string{"merit": "MERIT"},
+				},
+			},
+			expected: "DAL450 DMERIT",
+		},
+		{
 			name:       "depart fix heading with fuzzy keyword",
 			transcript: "American 870 tepart pucky heading 180",
 			aircraft: map[string]Aircraft{
@@ -519,6 +597,85 @@ func TestNavigationCommands(t *testing.T) {
 				},
 			},
 			expected: "DAL8499 AFERGI/CRIV",
+		},
+		// Hold commands
+		{
+			name:       "hold at fix as published",
+			transcript: "American 500 hold at MERIT as published",
+			aircraft: map[string]Aircraft{
+				"American 500": {
+					Callsign: "AAL500",
+					Altitude: 8000,
+					State:    "arrival",
+					Fixes:    map[string]string{"MERIT": "MERIT"},
+				},
+			},
+			expected: "AAL500 HMERIT",
+		},
+		{
+			name:       "hold direction of fix as published",
+			transcript: "Delta 200 hold north of JIMEE as published",
+			aircraft: map[string]Aircraft{
+				"Delta 200": {
+					Callsign: "DAL200",
+					Altitude: 10000,
+					State:    "arrival",
+					Fixes:    map[string]string{"JIMEE": "JIMEE"},
+				},
+			},
+			expected: "DAL200 HJIMEE",
+		},
+		{
+			name:       "hold direction of fix as published with maintain",
+			transcript: "United 300 hold south of BETTE as published maintain 6000",
+			aircraft: map[string]Aircraft{
+				"United 300": {
+					Callsign: "UAL300",
+					Altitude: 10000,
+					State:    "arrival",
+					Fixes:    map[string]string{"BETTE": "BETTE"},
+				},
+			},
+			expected: "UAL300 HBETTE A60",
+		},
+		{
+			name:       "hold with expect further clearance ignored",
+			transcript: "Southwest 400 hold at MERIT as published expect further clearance 1 2 3 0",
+			aircraft: map[string]Aircraft{
+				"Southwest 400": {
+					Callsign: "SWA400",
+					Altitude: 8000,
+					State:    "arrival",
+					Fixes:    map[string]string{"MERIT": "MERIT"},
+				},
+			},
+			expected: "SWA400 HMERIT",
+		},
+		{
+			name:       "hold controller specified with radial and turns",
+			transcript: "JetBlue 600 hold west of MERIT on the 280 radial inbound 2 minute legs left turns",
+			aircraft: map[string]Aircraft{
+				"JetBlue 600": {
+					Callsign: "JBU600",
+					Altitude: 8000,
+					State:    "arrival",
+					Fixes:    map[string]string{"MERIT": "MERIT"},
+				},
+			},
+			expected: "JBU600 HMERIT/R280/2M/L",
+		},
+		{
+			name:       "hold controller specified with radial right turns default",
+			transcript: "Alaska 700 hold east of JIMEE on the 90 radial 3 minute legs right turns",
+			aircraft: map[string]Aircraft{
+				"Alaska 700": {
+					Callsign: "ASA700",
+					Altitude: 10000,
+					State:    "arrival",
+					Fixes:    map[string]string{"JIMEE": "JIMEE"},
+				},
+			},
+			expected: "ASA700 HJIMEE/R90/3M/R",
 		},
 	}
 
@@ -562,6 +719,87 @@ func TestCallsignMatchingPriority(t *testing.T) {
 				"Endeavor 2991": {Callsign: "EDV2991", State: "arrival"},
 			},
 			expected: "DAL2991 L270",
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
+}
+
+func TestHeadingVsDegreesDisambiguation(t *testing.T) {
+	tests := []struct {
+		name       string
+		transcript string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "turn left 100 is heading not degrees",
+			transcript: "Delta 123 turn left 100",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", State: "arrival"},
+			},
+			expected: "DAL123 L100",
+		},
+		{
+			name:       "turn 30 left is degrees turn",
+			transcript: "Delta 123 turn 30 left",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", State: "arrival"},
+			},
+			expected: "DAL123 T30L",
+		},
+		{
+			name:       "turn left 30 degrees is degrees turn",
+			transcript: "Delta 123 turn left 30 degrees",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", State: "arrival"},
+			},
+			expected: "DAL123 T30L",
+		},
+		{
+			name:       "turn 20 degrees right is degrees turn",
+			transcript: "Delta 123 turn 20 degrees right",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", State: "arrival"},
+			},
+			expected: "DAL123 T20R",
+		},
+		{
+			name:       "turn right 45 degrees is degrees turn",
+			transcript: "Delta 123 turn right 45 degrees",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", State: "arrival"},
+			},
+			expected: "DAL123 T45R",
+		},
+		{
+			name:       "turn left heading 100 is heading",
+			transcript: "Delta 123 turn left heading 100",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", State: "arrival"},
+			},
+			expected: "DAL123 L100",
+		},
+		{
+			name:       "turn right 200 is heading not degrees",
+			transcript: "Delta 123 turn right 200",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {Callsign: "DAL123", State: "arrival"},
+			},
+			expected: "DAL123 R200",
 		},
 	}
 
@@ -939,6 +1177,8 @@ func TestNormalizeTranscript(t *testing.T) {
 		{"9r", []string{"9"}},
 		// "niner thousand" transcribed as "9 or 1000" - should convert 1000 to thousand
 		{"descend and maintain, 9 or 1000", []string{"descend", "and", "maintain", "9", "thousand"}},
+		// "fly heading" sometimes transcribed as "flighting"
+		{"flighting 030", []string{"fly", "heading", "030"}},
 	}
 
 	for _, tt := range tests {
@@ -1670,14 +1910,25 @@ func TestExtractDegrees(t *testing.T) {
 			expectedCons: 2,
 		},
 		{
-			name: "direction before number",
+			name: "direction before number without degrees keyword - no match",
 			tokens: []Token{
 				{Text: "left", Type: TokenWord},
 				{Text: "15", Type: TokenNumber, Value: 15},
 			},
+			expectedDeg:  0,
+			expectedDir:  "",
+			expectedCons: 0,
+		},
+		{
+			name: "direction before number with degrees keyword - matches",
+			tokens: []Token{
+				{Text: "left", Type: TokenWord},
+				{Text: "15", Type: TokenNumber, Value: 15},
+				{Text: "degrees", Type: TokenWord},
+			},
 			expectedDeg:  15,
 			expectedDir:  "left",
-			expectedCons: 2,
+			expectedCons: 3,
 		},
 		{
 			name:         "missing direction",
@@ -1814,12 +2065,12 @@ func TestValidateCommands(t *testing.T) {
 			expectErrors: true,
 		},
 		{
-			name:         "contact tower only valid on approach",
+			name:         "contact tower valid for arrival",
 			commands:     []string{"TO"},
 			ac:           Aircraft{State: "arrival"},
-			expectedLen:  0,
-			minConf:      0.0,
-			expectErrors: true,
+			expectedLen:  1,
+			minConf:      0.9,
+			expectErrors: false,
 		},
 		{
 			name:         "contact tower valid on approach",
@@ -2299,6 +2550,201 @@ func TestSplitCallsign(t *testing.T) {
 			if number != tt.expectedNumber {
 				t.Errorf("splitCallsign(%q) number = %q, want %q",
 					tt.callsign, number, tt.expectedNumber)
+			}
+		})
+	}
+}
+
+// TestDecodeCommandsForCallsign tests decoding commands when callsign is already known.
+// This is used when controller repeats a command without callsign after an AGAIN response.
+func TestDecodeCommandsForCallsign(t *testing.T) {
+	// Helper to create aircraft map with both telephony and ICAO callsign keys
+	// (matching what BuildAircraftContext does)
+	makeAircraftMap := func(telephony string, ac Aircraft) map[string]Aircraft {
+		return map[string]Aircraft{
+			telephony:   ac,
+			ac.Callsign: ac,
+		}
+	}
+
+	tests := []struct {
+		name       string
+		transcript string
+		callsign   string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "simple altitude command",
+			transcript: "descend and maintain 8000",
+			callsign:   "AAL5936",
+			aircraft:   makeAircraftMap("American 5936", Aircraft{Callsign: "AAL5936", Altitude: 12000, State: "arrival"}),
+			expected:   "D80",
+		},
+		{
+			name:       "heading command",
+			transcript: "turn left heading two seven zero",
+			callsign:   "UAL452",
+			aircraft:   makeAircraftMap("United 452", Aircraft{Callsign: "UAL452", Altitude: 10000, State: "arrival"}),
+			expected:   "L270",
+		},
+		{
+			name:       "speed command",
+			transcript: "reduce speed to two five zero",
+			callsign:   "DAL88",
+			aircraft:   makeAircraftMap("Delta 88", Aircraft{Callsign: "DAL88", Altitude: 10000, State: "arrival"}),
+			expected:   "S250",
+		},
+		{
+			name:       "multiple commands",
+			transcript: "turn right heading one eight zero descend and maintain six thousand",
+			callsign:   "SWA221",
+			aircraft:   makeAircraftMap("Southwest 221", Aircraft{Callsign: "SWA221", Altitude: 10000, State: "arrival"}),
+			expected:   "R180 D60",
+		},
+		{
+			name:       "no valid commands returns AGAIN",
+			transcript: "mumble garble nonsense",
+			callsign:   "AAL5936",
+			aircraft:   makeAircraftMap("American 5936", Aircraft{Callsign: "AAL5936", Altitude: 12000, State: "arrival"}),
+			expected:   "AGAIN",
+		},
+		{
+			name:       "empty transcript",
+			transcript: "",
+			callsign:   "AAL5936",
+			aircraft:   makeAircraftMap("American 5936", Aircraft{Callsign: "AAL5936", Altitude: 12000, State: "arrival"}),
+			expected:   "",
+		},
+		{
+			name:       "callsign not in aircraft context",
+			transcript: "descend and maintain 8000",
+			callsign:   "UNKNOWN",
+			aircraft:   makeAircraftMap("American 5936", Aircraft{Callsign: "AAL5936", Altitude: 12000, State: "arrival"}),
+			expected:   "AGAIN",
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeCommandsForCallsign(tt.aircraft, tt.transcript, tt.callsign)
+			if err != nil {
+				t.Errorf("DecodeCommandsForCallsign(%q, %q) error = %v",
+					tt.transcript, tt.callsign, err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("DecodeCommandsForCallsign(%q, %q) = %q, want %q",
+					tt.transcript, tt.callsign, result, tt.expected)
+			}
+		})
+	}
+}
+
+// =============================================================================
+// JSON File Tests from tests/ directory
+// =============================================================================
+
+// STTTestFile represents the JSON structure of test files in tests/ directory.
+// These files are logged by SimManager.ReportSTTLog and contain the full context
+// present when an STT command was processed.
+type STTTestFile struct {
+	Transcript  string `json:"transcript"`
+	Callsign    string `json:"callsign"`
+	Command     string `json:"command"` // Expected command output
+	STTAircraft map[string]struct {
+		Callsign            string            `json:"Callsign"`
+		AircraftType        string            `json:"AircraftType"`
+		Fixes               map[string]string `json:"Fixes"`
+		CandidateApproaches map[string]string `json:"CandidateApproaches"`
+		AssignedApproach    string            `json:"AssignedApproach"`
+		SID                 string            `json:"SID"`
+		STAR                string            `json:"STAR"`
+		Altitude            int               `json:"Altitude"`
+		State               string            `json:"State"`
+		ControllerFrequency string            `json:"ControllerFrequency"`
+		TrackingController  string            `json:"TrackingController"`
+		AddressingForm      int               `json:"AddressingForm"`
+	} `json:"stt_aircraft"`
+}
+
+// TestSTTFromJSONFiles runs all JSON test files from the tests/ directory.
+// Each file contains a transcript, the full aircraft context, and the expected
+// command output. This allows regression testing with real-world scenarios.
+func TestSTTFromJSONFiles(t *testing.T) {
+	testsDir := "tests"
+
+	// Check if tests directory exists
+	if _, err := os.Stat(testsDir); os.IsNotExist(err) {
+		t.Skip("tests/ directory not found")
+		return
+	}
+
+	// Find all JSON files
+	files, err := filepath.Glob(filepath.Join(testsDir, "*.json"))
+	if err != nil {
+		t.Fatalf("failed to glob test files: %v", err)
+	}
+
+	if len(files) == 0 {
+		t.Skip("no JSON test files found in tests/")
+		return
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, file := range files {
+		testName := strings.TrimSuffix(filepath.Base(file), ".json")
+		t.Run(testName, func(t *testing.T) {
+			// Read and parse the JSON file
+			data, err := os.ReadFile(file)
+			if err != nil {
+				t.Fatalf("failed to read %s: %v", file, err)
+			}
+
+			var testFile STTTestFile
+			if err := json.Unmarshal(data, &testFile); err != nil {
+				t.Fatalf("failed to parse %s: %v", file, err)
+			}
+
+			// Convert JSON aircraft to STT Aircraft map
+			aircraft := make(map[string]Aircraft)
+			for key, ac := range testFile.STTAircraft {
+				aircraft[key] = Aircraft{
+					Callsign:            ac.Callsign,
+					AircraftType:        ac.AircraftType,
+					Fixes:               ac.Fixes,
+					CandidateApproaches: ac.CandidateApproaches,
+					AssignedApproach:    ac.AssignedApproach,
+					SID:                 ac.SID,
+					STAR:                ac.STAR,
+					Altitude:            ac.Altitude,
+					State:               ac.State,
+					ControllerFrequency: ac.ControllerFrequency,
+					TrackingController:  ac.TrackingController,
+					AddressingForm:      sim.CallsignAddressingForm(ac.AddressingForm),
+				}
+			}
+
+			// Run the transcript through STT
+			result, err := provider.DecodeTranscript(aircraft, testFile.Transcript, "")
+			if err != nil {
+				t.Errorf("DecodeTranscript error: %v", err)
+				return
+			}
+
+			// Build expected output: "CALLSIGN COMMANDS" or "" if both empty
+			var expected string
+			if testFile.Callsign == "" && testFile.Command == "" {
+				expected = ""
+			} else {
+				expected = strings.TrimSpace(testFile.Callsign + " " + testFile.Command)
+			}
+
+			if result != expected {
+				t.Errorf("got %q, want %q", result, expected)
 			}
 		})
 	}

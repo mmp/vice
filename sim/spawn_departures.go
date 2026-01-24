@@ -562,8 +562,12 @@ func (s *Sim) assignDepartureController(ac *Aircraft, nasFp *NASFlightPlan,
 	}
 
 	// Set altitude at which aircraft will contact departure control
-	ac.DepartureContactAltitude = ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(s.Rand.Intn(500))
-	ac.DepartureContactAltitude = min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
+	if exitRoute.WaitToContactDeparture {
+		ac.DepartureContactAltitude = 0
+	} else {
+		ac.DepartureContactAltitude = ac.Nav.FlightState.DepartureAirportElevation + 500 + float32(s.Rand.Intn(500))
+		ac.DepartureContactAltitude = min(ac.DepartureContactAltitude, float32(ac.FlightPlan.Altitude))
+	}
 
 	nasFp.TrackingController = pos
 	nasFp.OwningTCW = s.tcwForPosition(pos)

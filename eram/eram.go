@@ -238,9 +238,9 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.drawVideoMaps(ctx, transforms, cb)
 	ep.drawScenarioRoutes(ctx, transforms, renderer.GetDefaultFont(), cb)
 	ep.drawPlotPoints(ctx, transforms, cb)
-	ep.drawCRRFixes(ctx, transforms, cb)
 	// Handle button tearoff placement BEFORE drawing toolbar (so placement click isn't consumed)
 	ep.handleTearoffPlacement(ctx)
+	ep.handleTornOffButtonsInput(ctx)
 	scopeExtent := ctx.PaneExtent
 	if ps.DisplayToolbar {
 		scale := ep.toolbarButtonScale(ctx)
@@ -255,6 +255,8 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.drawTargets(ctx, tracks, transforms, cb)
 	ep.drawTracks(ctx, tracks, transforms, cb)
 	ep.drawDatablocks(tracks, dbs, ctx, transforms, cb)
+	ep.datablockInteractions(ctx, tracks, transforms, cb)
+	ep.drawCRRFixes(ctx, transforms, cb)
 	ep.drawCRRDistances(ctx, transforms, cb)
 	ep.drawJRings(ctx, tracks, transforms, cb)
 	ep.drawQULines(ctx, transforms, cb)
@@ -512,7 +514,7 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 	input := ep.Input.String()
 	for key := range ctx.Keyboard.Pressed {
 		switch key {
-		case imgui.KeyG:
+		case imgui.KeyG: // debugging
 			if ctx.Keyboard.KeyControl() && ctx.Keyboard.KeyShift() && ctx.Mouse != nil {
 				big := ctx.Mouse.Pos
 				big[1] -= 38
@@ -559,9 +561,11 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				break
 			}
 			// Clear the input
-			if ep.repositionLargeInput || ep.repositionSmallOutput {
+			if ep.repositionLargeInput || ep.repositionSmallOutput || ep.repositionClock || ep.crrReposition {
 				ep.repositionLargeInput = false
 				ep.repositionSmallOutput = false
+				ep.repositionClock = false
+				ep.crrReposition = false
 			} else {
 				if ep.commandMode == CommandModeDrawRoute {
 					ep.commandMode = CommandModeNone

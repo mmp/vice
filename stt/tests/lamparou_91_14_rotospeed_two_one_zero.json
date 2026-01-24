@@ -1,0 +1,315 @@
+{
+  "time": "2026-01-22T23:53:18.811906304Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Lamparou 91, 14, RotoSpeed two, one zero.",
+  "whisper_duration_ms": 405.82,
+  "audio_duration_ms": 3840,
+  "processor": "GPU: NVIDIA GeForce GTX 1080 (8273MB)",
+  "callsign": "LPE9114",
+  "command": "S210",
+  "stt_aircraft": {
+    "AAL620": {
+      "Callsign": "AAL620",
+      "AircraftType": "B788",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 4000,
+      "State": "on approach",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "American 620 heavy": {
+      "Callsign": "AAL620",
+      "AircraftType": "B788",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 4000,
+      "State": "on approach",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "LAN Peru 9114": {
+      "Callsign": "LPE9114",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Morea": "MOREA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 7938,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "LPE9114": {
+      "Callsign": "LPE9114",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Morea": "MOREA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 7938,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "SLM3865": {
+      "Callsign": "SLM3865",
+      "AircraftType": "B733",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 6547,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "SLM4569": {
+      "Callsign": "SLM4569",
+      "AircraftType": "A343",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Cstio": "CSTIO",
+        "Dahla": "DAHLA",
+        "Gamey": "GAMEY",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Nekne": "NEKNE",
+        "Raebn": "RAEBN"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 13765,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "Surinam 3865": {
+      "Callsign": "SLM3865",
+      "AircraftType": "B733",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 6547,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "Surinam 4569 heavy": {
+      "Callsign": "SLM4569",
+      "AircraftType": "A343",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Cstio": "CSTIO",
+        "Dahla": "DAHLA",
+        "Gamey": "GAMEY",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Nekne": "NEKNE",
+        "Raebn": "RAEBN"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 13765,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0
+    },
+    "UAL7": {
+      "Callsign": "UAL7",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Acere": "ACERE",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 9491,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "United 7": {
+      "Callsign": "UAL7",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Acere": "ACERE",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 9491,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Lamparou 91, 14, RotoSpeed two, one zero.\"",
+    "[local-stt] normalized words: [lamparou 91 14 rotospeed 2 1 0]",
+    "[local-stt] tokens: 5",
+    "[local-stt]   token[0]: Text=\"lamparou\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"91\" Type=1 Value=91",
+    "[local-stt]   token[2]: Text=\"14\" Type=1 Value=14",
+    "[local-stt]   token[3]: Text=\"rotospeed\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"210\" Type=1 Value=210",
+    "[local-stt] MatchCallsign: 5 tokens, 10 aircraft",
+    "[local-stt]   candidate \"United 7\" (ICAO=\"UAL7\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Surinam 4569 heavy\" (ICAO=\"SLM4569\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SLM4569\" (ICAO=\"SLM4569\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American 620 heavy\" (ICAO=\"AAL620\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Surinam 3865\" (ICAO=\"SLM3865\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"LAN Peru 9114\" (ICAO=\"LPE9114\"): score=0.94 consumed=3",
+    "[local-stt]   candidate \"LPE9114\" (ICAO=\"LPE9114\"): score=1.00 consumed=3",
+    "[local-stt]   candidate \"UAL7\" (ICAO=\"UAL7\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"AAL620\" (ICAO=\"AAL620\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SLM3865\" (ICAO=\"SLM3865\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"LAN Peru 9114\" at pos 1: score=1.00 (adjusted=0.90) consumed=2",
+    "[local-stt]   candidate \"LPE9114\" at pos 1: score=1.00 (adjusted=0.90) consumed=2",
+    "[local-stt]   candidate \"LAN Peru 9114\" at pos 2: score=0.85 (adjusted=0.68) consumed=1",
+    "[local-stt]   candidate \"LPE9114\" at pos 2: score=0.85 (adjusted=0.68) consumed=1",
+    "[local-stt]   accepted: \"LPE9114\" (conf=1.00, consumed=3, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"LPE9114\" SpokenKey=\"LPE9114\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=7938 Fixes=5 Approaches=3 AssignedApproach=\"ILS Runway 9\"",
+    "[local-stt]   fix: \"Iness\" -\u003e \"INESS\"",
+    "[local-stt]   fix: \"Morea\" -\u003e \"MOREA\"",
+    "[local-stt]   fix: \"Llegg\" -\u003e \"LLEGG\"",
+    "[local-stt]   fix: \"Miami International Airport\" -\u003e \"KMIA\"",
+    "[local-stt]   fix: \"Gritt\" -\u003e \"GRITT\"",
+    "[local-stt]   approach: \"I L S runway one two\" -\u003e \"I12\"",
+    "[local-stt]   approach: \"r-nav runway eight left\" -\u003e \"R8L\"",
+    "[local-stt]   approach: \"I L S runway niner\" -\u003e \"I9\"",
+    "[local-stt] command tokens after disregard: 2",
+    "[local-stt]   token[0]: Text=\"rotospeed\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"210\" Type=1 Value=210",
+    "[local-stt] ParseCommands: 2 tokens",
+    "[local-stt]   no match at token[0]=\"rotospeed\", skipping",
+    "[local-stt]   no match at token[1]=\"210\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"LPE9114 AGAIN\" (conf=1.00, time=0s) ==="
+  ]
+}

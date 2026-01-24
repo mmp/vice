@@ -593,6 +593,48 @@ func (c ContactTowerIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// SayAgain Intent
+
+// SayAgainCommandType identifies which type of command the pilot is asking to be repeated.
+type SayAgainCommandType int
+
+const (
+	SayAgainHeading SayAgainCommandType = iota
+	SayAgainAltitude
+	SayAgainSpeed
+	SayAgainApproach
+	SayAgainTurn
+	SayAgainSquawk
+	SayAgainFix
+)
+
+// SayAgainIntent represents a pilot requesting the controller repeat part of a clearance.
+// This is used when STT successfully identifies a command keyword but fails to parse
+// the associated value (e.g., "fly heading blark bling five").
+type SayAgainIntent struct {
+	CommandType SayAgainCommandType
+}
+
+func (s SayAgainIntent) Render(rt *RadioTransmission, r *rand.Rand) {
+	switch s.CommandType {
+	case SayAgainHeading:
+		rt.Add("[say again on that heading|what was that heading again|sorry, you got blocked on the heading|missed the heading, say again]")
+	case SayAgainAltitude:
+		rt.Add("[say again on that altitude|what was that altitude again|sorry, you got blocked on the altitude|missed the altitude, say again]")
+	case SayAgainSpeed:
+		rt.Add("[say again on that speed|what was that speed again|sorry, you got blocked on the speed|missed the speed, say again]")
+	case SayAgainApproach:
+		rt.Add("[say again on that approach|what approach was that again|sorry, you got blocked on the approach|missed the approach, say again]")
+	case SayAgainTurn:
+		rt.Add("[say again on that turn|what was that turn again|sorry, you got blocked on the turn|missed the turn, say again]")
+	case SayAgainSquawk:
+		rt.Add("[say again on that squawk|what was that squawk again|sorry, you got blocked on the squawk|missed the squawk code, say again]")
+	case SayAgainFix:
+		rt.Add("[say again on that fix|what fix was that again|sorry, you got blocked on the fix|missed the fix, say again]")
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
 // MixUp Intent
 
 // MixUpIntent represents pilot confusion about who was addressed

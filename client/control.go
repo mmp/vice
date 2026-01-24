@@ -15,6 +15,23 @@ import (
 	"github.com/mmp/vice/stt"
 )
 
+// AircraftCommandRequest contains parameters for RunAircraftCommands.
+// For keyboard input, only Callsign, Commands, Multiple, and ClickedTrack need to be set;
+// all STT-related fields can be left as zero values.
+type AircraftCommandRequest struct {
+	Callsign     av.ADSBCallsign
+	Commands     string
+	Multiple     bool
+	ClickedTrack bool
+
+	// STT-related fields (zero values for keyboard input)
+	WhisperDuration   time.Duration
+	AudioDuration     time.Duration
+	WhisperTranscript string
+	AircraftContext   map[string]stt.Aircraft
+	STTDebugLogs      []string
+}
+
 func (c *ControlClient) TakeOrReturnLaunchControl(eventStream *sim.EventStream) {
 	c.addCall(makeRPCCall(c.client.Go(server.TakeOrReturnLaunchControlRPC, c.controllerToken, nil, nil),
 		func(err error) {
@@ -394,35 +411,34 @@ func (c *ControlClient) FlightPlanDirect(aircraft sim.ACID, fix string, callback
 	}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds string, multiple, clickedTrack bool,
-	whisperDuration time.Duration, whisperTranscript string,
-	aircraftContext map[string]stt.Aircraft, sttDebugLogs string,
+func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 	handleResult func(message string, remainingInput string)) {
 	// Determine if TTS is enabled for this command
-	enableTTS := c.HaveTTS() && (c.disableTTSPtr == nil || !*c.disableTTSPtr) && cmds != "P" && cmds != "X"
+	enableTTS := c.HaveTTS() && (c.disableTTSPtr == nil || !*c.disableTTSPtr) && req.Commands != "P" && req.Commands != "X"
 
 	// Capture PTT release time now (before async RPC) - will be zero for non-STT commands
 	pttReleaseTime := c.GetAndClearPTTReleaseTime()
 
 	// Get processor info for voice commands
 	var processorDesc string
-	if whisperDuration > 0 {
+	if req.WhisperDuration > 0 {
 		processorDesc = whisper.ProcessorDescription()
 	}
 
 	var result server.AircraftCommandsResult
 	c.addCall(makeRPCCall(c.client.Go(server.RunAircraftCommandsRPC, &server.AircraftCommandsArgs{
 		ControllerToken:   c.controllerToken,
-		Callsign:          callsign,
-		Commands:          cmds,
-		Multiple:          multiple,
-		ClickedTrack:      clickedTrack,
+		Callsign:          req.Callsign,
+		Commands:          req.Commands,
+		Multiple:          req.Multiple,
+		ClickedTrack:      req.ClickedTrack,
 		EnableTTS:         enableTTS,
-		WhisperDuration:   whisperDuration,
-		WhisperTranscript: whisperTranscript,
+		WhisperDuration:   req.WhisperDuration,
+		AudioDuration:     req.AudioDuration,
+		WhisperTranscript: req.WhisperTranscript,
 		WhisperProcessor:  processorDesc,
-		AircraftContext:   aircraftContext,
-		STTDebugLogs:      sttDebugLogs,
+		AircraftContext:   req.AircraftContext,
+		STTDebugLogs:      req.STTDebugLogs,
 	}, &result, nil),
 		func(err error) {
 			// Handle readback from RPC result
@@ -435,7 +451,7 @@ func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds strin
 				handleResult(result.ErrorMessage, result.RemainingInput)
 			}
 			if err != nil {
-				c.lg.Errorf("%s: %v", callsign, err)
+				c.lg.Errorf("%s: %v", req.Callsign, err)
 			}
 		}))
 }

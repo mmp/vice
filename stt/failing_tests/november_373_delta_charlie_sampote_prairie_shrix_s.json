@@ -1,0 +1,403 @@
+{
+  "time": "2026-01-23T00:21:15.830273505Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:975:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "November 373, Delta Charlie, Sampote, Prairie Shrix, Spectat, Les, Runway, 32, Altimeter, 304.",
+  "whisper_duration_ms": 635.517,
+  "audio_duration_ms": 7040,
+  "processor": "GPU: Radeon RX550/550 Series (4096MB)",
+  "callsign": "N373DC",
+  "command": "EI32",
+  "stt_aircraft": {
+    "AAL4081": {
+      "Callsign": "AAL4081",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Gandy": "GANDY",
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabee": "SABEE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "C46",
+      "AddressingForm": 0
+    },
+    "AAY5695": {
+      "Callsign": "AAY5695",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Deanr": "DEANR",
+        "Ended": "ENDED",
+        "Lacen": "LACEN",
+        "Patoy": "PATOY"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ENDED2",
+      "STAR": "",
+      "Altitude": 7017,
+      "State": "departure",
+      "ControllerFrequency": "1P",
+      "TrackingController": "J30",
+      "AddressingForm": 0
+    },
+    "Allegiant 5695": {
+      "Callsign": "AAY5695",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Deanr": "DEANR",
+        "Ended": "ENDED",
+        "Lacen": "LACEN",
+        "Patoy": "PATOY"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ENDED2",
+      "STAR": "",
+      "Altitude": 7017,
+      "State": "departure",
+      "ControllerFrequency": "1P",
+      "TrackingController": "J30",
+      "AddressingForm": 0
+    },
+    "American 4081": {
+      "Callsign": "AAL4081",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Gandy": "GANDY",
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabee": "SABEE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "C46",
+      "AddressingForm": 0
+    },
+    "JBU71": {
+      "Callsign": "JBU71",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Gandy": "GANDY",
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabee": "SABEE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 2956,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "JetBlue 71": {
+      "Callsign": "JBU71",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Gandy": "GANDY",
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabee": "SABEE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 2956,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "N373DC": {
+      "Callsign": "N373DC",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Lubbr": "LUBBR",
+        "Zebon": "ZEBON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "SWA416": {
+      "Callsign": "SWA416",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Lagoo": "LAGOO",
+        "Selman": "SELMN",
+        "Tampa International Airport": "KTPA",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "Altitude": 7290,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "Southwest 416": {
+      "Callsign": "SWA416",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Lagoo": "LAGOO",
+        "Selman": "SELMN",
+        "Tampa International Airport": "KTPA",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "Altitude": 7290,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "UAL344": {
+      "Callsign": "UAL344",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Borst": "BORST",
+        "Guzda": "GUZDA",
+        "Jetstream": "JSTRM",
+        "Lagoo": "LAGOO",
+        "Lisa F": "LISAF",
+        "Lizard": "LZARD",
+        "Selman": "SELMN",
+        "St Petersburg": "PIE",
+        "Tampa International Airport": "KTPA",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 12593,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "United 344": {
+      "Callsign": "UAL344",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Borst": "BORST",
+        "Guzda": "GUZDA",
+        "Jetstream": "JSTRM",
+        "Lagoo": "LAGOO",
+        "Lisa F": "LISAF",
+        "Lizard": "LZARD",
+        "Selman": "SELMN",
+        "St Petersburg": "PIE",
+        "Tampa International Airport": "KTPA",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 12593,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "embraer phenom one hundred three delta charlie": {
+      "Callsign": "N373DC",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Lubbr": "LUBBR",
+        "Zebon": "ZEBON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 1
+    },
+    "november 373DC": {
+      "Callsign": "N373DC",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Lubbr": "LUBBR",
+        "Zebon": "ZEBON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "phenom one hundred three delta charlie": {
+      "Callsign": "N373DC",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Lubbr": "LUBBR",
+        "Zebon": "ZEBON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 1
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"November 373, Delta Charlie, Sampote, Prairie Shrix, Spectat, Les, Runway, 32, Altimeter, 304.\"",
+    "[local-stt] normalized words: [november 373 delta charlie sampote prairie shrix spectat les runway 32 altimeter 304]",
+    "[local-stt] tokens: 13",
+    "[local-stt]   token[0]: Text=\"november\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"373\" Type=1 Value=373",
+    "[local-stt]   token[2]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"charlie\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"sampote\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"prairie\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"shrix\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"spectat\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"les\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"32\" Type=1 Value=32",
+    "[local-stt]   token[11]: Text=\"altimeter\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"304\" Type=1 Value=304",
+    "[local-stt] MatchCallsign: 13 tokens, 14 aircraft",
+    "[local-stt]   candidate \"AAL4081\" (ICAO=\"AAL4081\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Allegiant 5695\" (ICAO=\"AAY5695\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"AAY5695\" (ICAO=\"AAY5695\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JetBlue 71\" (ICAO=\"JBU71\"): score=0.60 consumed=1",
+    "[local-stt]   candidate \"november 373DC\" (ICAO=\"N373DC\"): score=1.00 consumed=4",
+    "[local-stt]   candidate \"N373DC\" (ICAO=\"N373DC\"): score=1.00 consumed=4",
+    "[local-stt]   candidate \"phenom one hundred three delta charlie\" (ICAO=\"N373DC\"): score=1.00 consumed=4",
+    "[local-stt]   candidate \"embraer phenom one hundred three delta charlie\" (ICAO=\"N373DC\"): score=0.98 consumed=4",
+    "[local-stt]   candidate \"SWA416\" (ICAO=\"SWA416\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"United 344\" (ICAO=\"UAL344\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"UAL344\" (ICAO=\"UAL344\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JBU71\" (ICAO=\"JBU71\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest 416\" (ICAO=\"SWA416\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American 4081\" (ICAO=\"AAL4081\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"november 373DC\" at pos 1: score=1.00 (adjusted=0.90) consumed=3",
+    "[local-stt]   candidate \"N373DC\" at pos 1: score=0.93 (adjusted=0.83) consumed=3",
+    "[local-stt]   candidate \"phenom one hundred three delta charlie\" at pos 1: score=1.00 (adjusted=0.90) consumed=3",
+    "[local-stt]   candidate \"embraer phenom one hundred three delta charlie\" at pos 1: score=1.00 (adjusted=0.90) consumed=3",
+    "[local-stt]   candidate \"november 373DC\" at pos 2: score=0.85 (adjusted=0.68) consumed=2",
+    "[local-stt]   candidate \"N373DC\" at pos 2: score=0.85 (adjusted=0.68) consumed=2",
+    "[local-stt]   candidate \"phenom one hundred three delta charlie\" at pos 2: score=0.85 (adjusted=0.68) consumed=2",
+    "[local-stt]   candidate \"embraer phenom one hundred three delta charlie\" at pos 2: score=0.85 (adjusted=0.68) consumed=2",
+    "[local-stt]   candidate \"november 373DC\" at pos 3: score=0.85 (adjusted=0.59) consumed=1",
+    "[local-stt]   candidate \"N373DC\" at pos 3: score=0.85 (adjusted=0.59) consumed=1",
+    "[local-stt]   candidate \"phenom one hundred three delta charlie\" at pos 3: score=0.85 (adjusted=0.59) consumed=1",
+    "[local-stt]   candidate \"embraer phenom one hundred three delta charlie\" at pos 3: score=0.85 (adjusted=0.59) consumed=1",
+    "[local-stt]   accepted: \"N373DC\" (conf=1.00, consumed=4, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"N373DC\" SpokenKey=\"november 373DC\" Conf=1.00 Consumed=4",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=12000 Fixes=2 Approaches=2 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"Lubbr\" -\u003e \"LUBBR\"",
+    "[local-stt]   fix: \"Zebon\" -\u003e \"ZEBON\"",
+    "[local-stt]   approach: \"I L S runway three two\" -\u003e \"I32\"",
+    "[local-stt]   approach: \"r-nav runway three two\" -\u003e \"R32\"",
+    "[local-stt] command tokens after disregard: 9",
+    "[local-stt]   token[0]: Text=\"sampote\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"prairie\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"shrix\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"spectat\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"les\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"32\" Type=1 Value=32",
+    "[local-stt]   token[7]: Text=\"altimeter\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"304\" Type=1 Value=304",
+    "[local-stt] ParseCommands: 9 tokens",
+    "[local-stt]   no match at token[0]=\"sampote\", skipping",
+    "[local-stt]   no match at token[1]=\"prairie\", skipping",
+    "[local-stt]   no match at token[2]=\"shrix\", skipping",
+    "[local-stt]   no match at token[3]=\"spectat\", skipping",
+    "[local-stt]   no match at token[4]=\"les\", skipping",
+    "[local-stt]   no match at token[5]=\"runway\", skipping",
+    "[local-stt]   no match at token[6]=\"32\", skipping",
+    "[local-stt]   no match at token[7]=\"altimeter\", skipping",
+    "[local-stt]   no match at token[8]=\"304\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"N373DC AGAIN\" (conf=1.00, time=610.5µs) ==="
+  ]
+}

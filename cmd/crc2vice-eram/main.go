@@ -11,7 +11,6 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
-	"strconv"
 	"strings"
 )
 
@@ -72,9 +71,9 @@ func main() {
 			// Aggregate lines across all video maps for this filter
 			var aggregatedLines [][]Point2LL
 			bcg := ""
-			// Prefer BCG label aligned with the filter index; treat 0 as empty
-			if j >= 0 && j < len(geoMap.BcgMenu) && int(geoMap.BcgMenu[j]) != 0 {
-				bcg = strconv.Itoa(int(geoMap.BcgMenu[j]))
+			// Prefer BCG label aligned with the filter index; treat empty string as no BCG
+			if j >= 0 && j < len(geoMap.BcgMenu) && geoMap.BcgMenu[j] != "" {
+				bcg = geoMap.BcgMenu[j]
 			}
 
 			for _, videoMapID := range geoMap.VideoMapIds {
@@ -157,8 +156,8 @@ func main() {
 
 					if eff.Bcg-1 >= 0 && eff.Bcg-1 < len(geoMap.BcgMenu) {
 						// Only use element BCG if no filter-index BCG was set
-						if bcg == "" {
-							bcg = strconv.Itoa(int(geoMap.BcgMenu[eff.Bcg-1]))
+						if bcg == "" && geoMap.BcgMenu[eff.Bcg-1] != "" {
+							bcg = geoMap.BcgMenu[eff.Bcg-1]
 						}
 					}
 				}

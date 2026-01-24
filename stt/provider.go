@@ -27,6 +27,12 @@ func NewTranscriber(lg *log.Logger) *Transcriber {
 //   - "BLOCKED" if no callsign could be identified
 //   - "" if transcript is empty or only contains position identification
 //
+// Commands may include SAYAGAIN/TYPE for partial parses where keywords were recognized
+// but the associated value couldn't be extracted (e.g., "fly heading blark" would return
+// "SAYAGAIN/HEADING"). Valid types are: HEADING, ALTITUDE, SPEED, APPROACH, TURN, SQUAWK, FIX.
+// When combined with other commands, e.g., "{CALLSIGN} C50 SAYAGAIN/HEADING", the aircraft
+// will execute the valid commands and ask for clarification on the missed part.
+//
 // controllerRadioName is the user's controller radio name (e.g., "New York Departure")
 // used to detect position identification phrases. Pass empty string if not available.
 func (p *Transcriber) DecodeTranscript(
@@ -34,9 +40,41 @@ func (p *Transcriber) DecodeTranscript(
 	transcript string,
 	controllerRadioName string,
 ) (string, error) {
-	start := time.Now()
+	return p.decodeInternal(aircraft, transcript, controllerRadioName, "")
+}
 
-	logLocalStt("=== DecodeTranscript START ===")
+// DecodeCommandsForCallsign parses commands from a transcript for a known callsign.
+// This is used when the controller repeats a command without saying the callsign
+// after an aircraft replied "AGAIN". It skips callsign matching and directly parses
+// the entire transcript as commands for the specified aircraft.
+// Returns one of:
+//   - "{commands}" for successfully parsed commands
+//   - "AGAIN" if no commands could be parsed
+//   - "" if transcript is empty
+func (p *Transcriber) DecodeCommandsForCallsign(
+	aircraft map[string]Aircraft,
+	transcript string,
+	callsign string,
+) (string, error) {
+	return p.decodeInternal(aircraft, transcript, "", callsign)
+}
+
+// decodeInternal is the shared implementation for DecodeTranscript and DecodeCommandsForCallsign.
+// If fallbackCallsign is non-empty, callsign matching is skipped and that callsign is used directly.
+func (p *Transcriber) decodeInternal(
+	aircraft map[string]Aircraft,
+	transcript string,
+	controllerRadioName string,
+	fallbackCallsign string,
+) (string, error) {
+	start := time.Now()
+	isFallback := fallbackCallsign != ""
+
+	if isFallback {
+		logLocalStt("=== DecodeTranscript START (fallback callsign=%q) ===", fallbackCallsign)
+	} else {
+		logLocalStt("=== DecodeTranscript START ===")
+	}
 	logLocalStt("input transcript: %q", transcript)
 
 	// Handle empty transcript
@@ -65,28 +103,56 @@ func (p *Transcriber) DecodeTranscript(
 		return "", nil
 	}
 
-	// Layer 3: Callsign matching
-	callsignMatch, remainingTokens := MatchCallsign(tokens, aircraft)
-	logLocalStt("callsign match: Callsign=%q SpokenKey=%q Conf=%.2f Consumed=%d",
-		callsignMatch.Callsign, callsignMatch.SpokenKey, callsignMatch.Confidence, callsignMatch.Consumed)
-	if callsignMatch.Callsign == "" {
-		// No callsign identified
-		if len(tokens) > 2 {
-			// Had some content but couldn't match callsign
-			logLocalStt("BLOCKED: no callsign match for %q", transcript)
-			p.logDebug("BLOCKED: no callsign match for %q", transcript)
-			return "BLOCKED", nil
+	var callsign string
+	var addressingForm sim.CallsignAddressingForm
+	var ac Aircraft
+	var commandTokens []Token
+	var callsignConfidence = 1.0
+
+	if isFallback {
+		// Skip callsign matching - use the provided callsign
+		callsign = fallbackCallsign
+		commandTokens = tokens
+
+		// Look up the aircraft context directly by ICAO callsign
+		var found bool
+		if ac, found = aircraft[callsign]; !found {
+			logLocalStt("no aircraft context found for callsign %q, returning AGAIN", callsign)
+			elapsed := time.Since(start)
+			p.logInfo("local STT (fallback): %q -> AGAIN (no aircraft context, time=%s)", transcript, elapsed)
+			return "AGAIN", nil
 		}
-		// Very short/empty - treat as no speech
-		logLocalStt("too few tokens without callsign, returning \"\"")
-		return "", nil
+		logLocalStt("found aircraft context for callsign %q", callsign)
+	} else {
+		// Layer 3: Callsign matching
+		callsignMatch, remainingTokens := MatchCallsign(tokens, aircraft)
+		logLocalStt("callsign match: Callsign=%q SpokenKey=%q Conf=%.2f Consumed=%d",
+			callsignMatch.Callsign, callsignMatch.SpokenKey, callsignMatch.Confidence, callsignMatch.Consumed)
+
+		if callsignMatch.Callsign == "" {
+			// No callsign identified
+			if len(tokens) > 2 {
+				// Had some content but couldn't match callsign
+				logLocalStt("BLOCKED: no callsign match for %q", transcript)
+				p.logDebug("BLOCKED: no callsign match for %q", transcript)
+				return "BLOCKED", nil
+			}
+			// Very short/empty - treat as no speech
+			logLocalStt("too few tokens without callsign, returning \"\"")
+			return "", nil
+		}
+
+		callsign = callsignMatch.Callsign
+		addressingForm = callsignMatch.AddressingForm
+		callsignConfidence = callsignMatch.Confidence
+		commandTokens = remainingTokens
+
+		// Get aircraft context for the matched callsign
+		if callsignMatch.SpokenKey != "" {
+			ac = aircraft[callsignMatch.SpokenKey]
+		}
 	}
 
-	// Get aircraft context for the matched callsign
-	var ac Aircraft
-	if callsignMatch.SpokenKey != "" {
-		ac = aircraft[callsignMatch.SpokenKey]
-	}
 	logLocalStt("aircraft context: State=%q Altitude=%d Fixes=%d Approaches=%d AssignedApproach=%q",
 		ac.State, ac.Altitude, len(ac.Fixes), len(ac.CandidateApproaches), ac.AssignedApproach)
 	for spokenName, fixID := range ac.Fixes {
@@ -98,15 +164,14 @@ func (p *Transcriber) DecodeTranscript(
 
 	// Handle "disregard" or "correction" in remaining tokens
 	// This discards previous command attempts but preserves callsign
-	remainingTokens = applyDisregard(remainingTokens)
-	logLocalStt("remaining tokens after disregard: %d", len(remainingTokens))
-	for i, t := range remainingTokens {
-		logLocalStt("  remaining[%d]: Text=%q Type=%d Value=%d", i, t.Text, t.Type, t.Value)
+	commandTokens = applyDisregard(commandTokens)
+	logLocalStt("command tokens after disregard: %d", len(commandTokens))
+	for i, t := range commandTokens {
+		logLocalStt("  token[%d]: Text=%q Type=%d Value=%d", i, t.Text, t.Type, t.Value)
 	}
 
-	// Check for position identification phrases (e.g., "New York departure", "Kennedy approach")
-	// These are informational only and should return empty (no command needed)
-	if isPositionIdentification(remainingTokens, controllerRadioName) {
+	// Check for position identification phrases (only for normal decode, not fallback)
+	if !isFallback && isPositionIdentification(commandTokens, controllerRadioName) {
 		logLocalStt("detected position identification, returning empty")
 		elapsed := time.Since(start)
 		logLocalStt("=== DecodeTranscript END: \"\" (position ID, time=%s) ===", elapsed)
@@ -114,8 +179,18 @@ func (p *Transcriber) DecodeTranscript(
 		return "", nil
 	}
 
+	// Check if remaining tokens are just acknowledgment filler words (roger, wilco, copy)
+	// These need no response - return empty
+	if isAcknowledgmentOnly(commandTokens) {
+		logLocalStt("detected acknowledgment only (roger/wilco/copy), returning empty")
+		elapsed := time.Since(start)
+		logLocalStt("=== DecodeTranscript END: \"\" (acknowledgment, time=%s) ===", elapsed)
+		p.logInfo("local STT: %q -> \"\" (acknowledgment, time=%s)", transcript, elapsed)
+		return "", nil
+	}
+
 	// Layer 4: Command parsing
-	commands, cmdConf := ParseCommands(remainingTokens, ac)
+	commands, cmdConf := ParseCommands(commandTokens, ac)
 	logLocalStt("parsed commands: %v (conf=%.2f)", commands, cmdConf)
 
 	// Layer 5: Validation
@@ -126,35 +201,47 @@ func (p *Transcriber) DecodeTranscript(
 	}
 
 	// Compute overall confidence
-	confidence := callsignMatch.Confidence
+	confidence := callsignConfidence
 	if len(commands) > 0 {
 		confidence *= cmdConf * validation.Confidence
 	}
 
 	// Generate output
-	// Encode addressing form in callsign: append /T for type-based addressing (GA aircraft)
-	callsignWithForm := callsignMatch.Callsign
-	if callsignMatch.AddressingForm == sim.AddressingFormTypeTrailing3 {
-		callsignWithForm += "/T"
-	}
-
 	var output string
-	if len(validation.ValidCommands) == 0 {
-		if confidence >= 0.4 {
-			// We're confident about the callsign but couldn't parse commands
-			output = callsignWithForm + " AGAIN"
+	if isFallback {
+		// For fallback mode, return just the commands (caller will prepend callsign)
+		if len(validation.ValidCommands) == 0 {
+			output = "AGAIN"
 		} else {
-			// Low confidence overall
-			output = "BLOCKED"
+			output = strings.Join(validation.ValidCommands, " ")
 		}
 	} else {
-		output = callsignWithForm + " " + strings.Join(validation.ValidCommands, " ")
+		// Encode addressing form in callsign: append /T for type-based addressing (GA aircraft)
+		callsignWithForm := callsign
+		if addressingForm == sim.AddressingFormTypeTrailing3 {
+			callsignWithForm += "/T"
+		}
+
+		if len(validation.ValidCommands) == 0 {
+			if confidence >= 0.4 {
+				// We're confident about the callsign but couldn't parse commands
+				output = callsignWithForm + " AGAIN"
+			} else {
+				// Low confidence overall
+				output = "BLOCKED"
+			}
+		} else {
+			output = callsignWithForm + " " + strings.Join(validation.ValidCommands, " ")
+		}
 	}
 
 	elapsed := time.Since(start)
 	logLocalStt("=== DecodeTranscript END: %q (conf=%.2f, time=%s) ===", output, confidence, elapsed)
-	p.logInfo("local STT: %q -> %q (conf=%.2f, time=%s)",
-		transcript, output, confidence, elapsed)
+	if isFallback {
+		p.logInfo("local STT (fallback): %q -> %q (time=%s)", transcript, output, elapsed)
+	} else {
+		p.logInfo("local STT: %q -> %q (conf=%.2f, time=%s)", transcript, output, confidence, elapsed)
+	}
 
 	return strings.TrimSpace(output), nil
 }
@@ -259,6 +346,9 @@ func (p *Transcriber) BuildAircraftContext(
 		sttAc.AddressingForm = sim.AddressingFormFull
 		acCtx[telephony] = sttAc
 
+		// Also key by ICAO callsign for direct lookup
+		acCtx[sttAc.Callsign] = sttAc
+
 		// For GA callsigns (N-prefix), also add type-based addressing variants
 		callsign := string(trk.ADSBCallsign)
 		if strings.HasPrefix(callsign, "N") && sttAc.AircraftType != "" {
@@ -362,6 +452,32 @@ func applyDisregard(tokens []Token) []Token {
 		}
 	}
 	return tokens
+}
+
+// isAcknowledgmentOnly returns true if the tokens contain only acknowledgment
+// words (roger, wilco, copy) and filler words. These are pilot readbacks that
+// need no further action from the controller.
+func isAcknowledgmentOnly(tokens []Token) bool {
+	if len(tokens) == 0 {
+		return false
+	}
+
+	acknowledgmentWords := map[string]bool{
+		"roger": true, "wilco": true, "copy": true, "affirm": true, "affirmative": true,
+	}
+
+	hasAcknowledgment := false
+	for _, t := range tokens {
+		text := strings.ToLower(t.Text)
+		if acknowledgmentWords[text] {
+			hasAcknowledgment = true
+		} else if !IsFillerWord(text) {
+			// Non-acknowledgment, non-filler word found
+			return false
+		}
+	}
+
+	return hasAcknowledgment
 }
 
 // isPositionIdentification detects controller position identification phrases

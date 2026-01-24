@@ -12,6 +12,7 @@ import (
 	"time"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/platform"
@@ -456,20 +457,23 @@ func (sp *STARSPane) runAircraftCommands(ctx *panes.Context, callsign av.ADSBCal
 	sp.targetGenLastCallsign = callsign
 	prevMode := sp.commandMode
 
-	ctx.Client.RunAircraftCommands(callsign, cmds, multiple, clickedTrack,
-		0, "", nil, "", // keyboard input: no whisper duration, transcript, or STT context
-		func(errStr string, remaining string) {
-			if errStr != "" {
-				sp.commandMode = prevMode // CommandModeTargetGen or TargetGenLock
-				sp.previewAreaInput = remaining
-				if err := server.TryDecodeErrorString(errStr); err != nil {
-					err = GetSTARSError(err, ctx.Lg)
-					sp.displayError(err, ctx, "")
-				} else {
-					sp.displayError(ErrSTARSCommandFormat, ctx, "")
-				}
+	ctx.Client.RunAircraftCommands(client.AircraftCommandRequest{
+		Callsign:     callsign,
+		Commands:     cmds,
+		Multiple:     multiple,
+		ClickedTrack: clickedTrack,
+	}, func(errStr string, remaining string) {
+		if errStr != "" {
+			sp.commandMode = prevMode // CommandModeTargetGen or TargetGenLock
+			sp.previewAreaInput = remaining
+			if err := server.TryDecodeErrorString(errStr); err != nil {
+				err = GetSTARSError(err, ctx.Lg)
+				sp.displayError(err, ctx, "")
+			} else {
+				sp.displayError(ErrSTARSCommandFormat, ctx, "")
 			}
-		})
+		}
+	})
 }
 
 func (sp *STARSPane) autoReleaseDepartures(ctx *panes.Context) {

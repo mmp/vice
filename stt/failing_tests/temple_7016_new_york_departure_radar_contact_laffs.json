@@ -1,0 +1,518 @@
+{
+  "time": "2026-01-22T23:11:44.031860419Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:975:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Temple, 7016, New York departure, radar contact, Laffsor, Nadding 0600, climbing, maintain, 1-1-5",
+  "whisper_duration_ms": 520.076,
+  "audio_duration_ms": 4224,
+  "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11997MB)",
+  "callsign": "JBU7016",
+  "command": "H050 C115",
+  "stt_aircraft": {
+    "ASA861": {
+      "Callsign": "ASA861",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Cimble": "CIMBL",
+        "Corvet": "CORVT",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "John F Kennedy International Airport": "KJFK",
+        "Lefer": "LEFER",
+        "Matter": "MATTR",
+        "Norton": "NRTON",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Vadder": "VADDR"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "ILS Runway 22R",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2E",
+      "TrackingController": "2E",
+      "AddressingForm": 0
+    },
+    "Alaska 861": {
+      "Callsign": "ASA861",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Cimble": "CIMBL",
+        "Corvet": "CORVT",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "John F Kennedy International Airport": "KJFK",
+        "Lefer": "LEFER",
+        "Matter": "MATTR",
+        "Norton": "NRTON",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Vadder": "VADDR"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "ILS Runway 22R",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2E",
+      "TrackingController": "2E",
+      "AddressingForm": 0
+    },
+    "DAL281": {
+      "Callsign": "DAL281",
+      "AircraftType": "B763",
+      "Fixes": {
+        "Greki": "GREKI",
+        "Judds": "JUDDS"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 8641,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "2J",
+      "AddressingForm": 0
+    },
+    "Delta 281 heavy": {
+      "Callsign": "DAL281",
+      "AircraftType": "B763",
+      "Fixes": {
+        "Greki": "GREKI",
+        "Judds": "JUDDS"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 8641,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "2J",
+      "AddressingForm": 0
+    },
+    "EDV5338": {
+      "Callsign": "EDV5338",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 9796,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0
+    },
+    "EJA6223": {
+      "Callsign": "EJA6223",
+      "AircraftType": "C560",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0
+    },
+    "ETD34": {
+      "Callsign": "ETD34",
+      "AircraftType": "A35K",
+      "Fixes": {
+        "Cimble": "CIMBL",
+        "Corvet": "CORVT",
+        "Crail": "CRAIL",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "John F Kennedy International Airport": "KJFK",
+        "Lefer": "LEFER",
+        "Matter": "MATTR",
+        "Norton": "NRTON",
+        "Rober": "ROBER",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "ILS Runway 22R",
+      "SID": "",
+      "STAR": "PARCH4",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "2K",
+      "TrackingController": "2K",
+      "AddressingForm": 0
+    },
+    "Endeavor 5338": {
+      "Callsign": "EDV5338",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 9796,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0
+    },
+    "Etihad 34 heavy": {
+      "Callsign": "ETD34",
+      "AircraftType": "A35K",
+      "Fixes": {
+        "Cimble": "CIMBL",
+        "Corvet": "CORVT",
+        "Crail": "CRAIL",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "John F Kennedy International Airport": "KJFK",
+        "Lefer": "LEFER",
+        "Matter": "MATTR",
+        "Norton": "NRTON",
+        "Rober": "ROBER",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "ILS Runway 22R",
+      "SID": "",
+      "STAR": "PARCH4",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "2K",
+      "TrackingController": "2K",
+      "AddressingForm": 0
+    },
+    "ExecJet 6223": {
+      "Callsign": "EJA6223",
+      "AircraftType": "C560",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0
+    },
+    "JBU7016": {
+      "Callsign": "JBU7016",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Greki": "GREKI",
+        "Judds": "JUDDS"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 3611,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "2J",
+      "AddressingForm": 0
+    },
+    "JBU810": {
+      "Callsign": "JBU810",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 7968,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0
+    },
+    "JetBlue 7016": {
+      "Callsign": "JBU7016",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Greki": "GREKI",
+        "Judds": "JUDDS"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 3611,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "2J",
+      "AddressingForm": 0
+    },
+    "JetBlue 810": {
+      "Callsign": "JBU810",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 7968,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0
+    },
+    "N430ME": {
+      "Callsign": "N430ME",
+      "AircraftType": "",
+      "Fixes": {
+        "Danbury Municipal Airport": "KDXR"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 2333,
+      "State": "",
+      "ControllerFrequency": "2G",
+      "TrackingController": "",
+      "AddressingForm": 0
+    },
+    "UPS 373": {
+      "Callsign": "UPS373",
+      "AircraftType": "B752",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK",
+        "Vadder": "VADDR"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Altitude": 13000,
+      "State": "arrival",
+      "ControllerFrequency": "2E",
+      "TrackingController": "2E",
+      "AddressingForm": 0
+    },
+    "UPS373": {
+      "Callsign": "UPS373",
+      "AircraftType": "B752",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK",
+        "Vadder": "VADDR"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Altitude": 13000,
+      "State": "arrival",
+      "ControllerFrequency": "2E",
+      "TrackingController": "2E",
+      "AddressingForm": 0
+    },
+    "november 430ME": {
+      "Callsign": "N430ME",
+      "AircraftType": "",
+      "Fixes": {
+        "Danbury Municipal Airport": "KDXR"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 2333,
+      "State": "",
+      "ControllerFrequency": "2G",
+      "TrackingController": "",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Temple, 7016, New York departure, radar contact, Laffsor, Nadding 0600, climbing, maintain, 1-1-5\"",
+    "[local-stt] normalized words: [temple 7016 new york departure radar contact laffsor nadding 0600 climb maintain 1 1 5]",
+    "[local-stt] tokens: 13",
+    "[local-stt]   token[0]: Text=\"temple\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"7016\" Type=1 Value=7016",
+    "[local-stt]   token[2]: Text=\"new\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"york\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"departure\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"radar\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"laffsor\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"nadding\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"600\" Type=1 Value=600",
+    "[local-stt]   token[10]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"115\" Type=1 Value=115",
+    "[local-stt] MatchCallsign: 13 tokens, 18 aircraft",
+    "[local-stt]   candidate \"DAL281\" (ICAO=\"DAL281\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JBU810\" (ICAO=\"JBU810\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"EDV5338\" (ICAO=\"EDV5338\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"november 430ME\" (ICAO=\"N430ME\"): score=0.62 consumed=1",
+    "[local-stt]   candidate \"EJA6223\" (ICAO=\"EJA6223\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Delta 281 heavy\" (ICAO=\"DAL281\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JetBlue 810\" (ICAO=\"JBU810\"): score=0.66 consumed=1",
+    "[local-stt]   candidate \"UPS 373\" (ICAO=\"UPS373\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"N430ME\" (ICAO=\"N430ME\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"ExecJet 6223\" (ICAO=\"EJA6223\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JetBlue 7016\" (ICAO=\"JBU7016\"): score=0.91 consumed=2",
+    "[local-stt]   candidate \"JBU7016\" (ICAO=\"JBU7016\"): score=1.00 consumed=2",
+    "[local-stt]   candidate \"ETD34\" (ICAO=\"ETD34\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Endeavor 5338\" (ICAO=\"EDV5338\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Alaska 861\" (ICAO=\"ASA861\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"ASA861\" (ICAO=\"ASA861\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"UPS373\" (ICAO=\"UPS373\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Etihad 34 heavy\" (ICAO=\"ETD34\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JetBlue 7016\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   candidate \"JBU7016\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   accepted: \"JBU7016\" (conf=1.00, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"JBU7016\" SpokenKey=\"JBU7016\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=3611 Fixes=2 Approaches=0 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"Greki\" -\u003e \"GREKI\"",
+    "[local-stt]   fix: \"Judds\" -\u003e \"JUDDS\"",
+    "[local-stt] command tokens after disregard: 11",
+    "[local-stt]   token[0]: Text=\"new\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"york\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"departure\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"radar\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"laffsor\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"nadding\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"600\" Type=1 Value=600",
+    "[local-stt]   token[8]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"115\" Type=1 Value=115",
+    "[local-stt]   position ID: 'radar contact' at position 3 with 6 tokens after - not position ID",
+    "[local-stt] ParseCommands: 11 tokens",
+    "[local-stt]   no match at token[0]=\"new\", skipping",
+    "[local-stt]   no match at token[1]=\"york\", skipping",
+    "[local-stt]   tryMatchTemplate \"depart_fix_heading\": keywords matched, consumed=1, next tokens=[radar contact laffsor]",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"radar\" against 2 fixes",
+    "[local-stt]   extractFix: no match found for \"radar\"",
+    "[local-stt]   tryMatchTemplate \"depart_fix_heading\": fix extraction failed, tokens=[{ radar 0 -1 5} { contact 0 -1 6} { laffsor 0 -1 7} { nadding 0 -1 8} { 600 1 600 9} { climb 0 -1 10} { maintain 0 -1 11} { 115 1 115 12}] fixes=2",
+    "[local-stt]   no match at token[2]=\"departure\", skipping",
+    "[local-stt]   tryMatchTemplate \"radar_contact_info\": cmd=\"\" argStr=\"\" consumed=2",
+    "[local-stt]   matched command: \"\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   no match at token[5]=\"laffsor\", skipping",
+    "[local-stt]   tryMatchTemplate \"fly_heading\": cmd=\"H115\" argStr=\"115\" consumed=5",
+    "[local-stt]   tryMatchTemplate \"heading_only\": cmd=\"H115\" argStr=\"115\" consumed=5",
+    "[local-stt]   matched command: \"H115\" (conf=1.00, consumed=5, isThen=false)",
+    "[local-stt] ParseCommands: result=[H115] (avgConf=1.00)",
+    "[local-stt] parsed commands: [H115] (conf=1.00)",
+    "[local-stt] validated commands: [H115] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"JBU7016 H115\" (conf=1.00, time=0s) ==="
+  ]
+}
