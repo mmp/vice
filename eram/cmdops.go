@@ -116,6 +116,10 @@ func handleInterimAltitude(ep *ERAMPane, ctx *panes.Context, alt InterimAltitude
 	}
 
 	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+	state := ep.TrackState[trk.ADSBCallsign]
+	if state != nil {
+		state.ReachedAltitude = false
+	}
 
 	return CommandStatus{
 		bigOutput: fmt.Sprintf("ACCEPT\nINTERIM ALT\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
@@ -127,6 +131,10 @@ func handleClearInterimAltitude(ep *ERAMPane, ctx *panes.Context, trk *sim.Track
 	fp.InterimAlt.Set(0)
 
 	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+	state := ep.TrackState[trk.ADSBCallsign]
+	if state != nil {
+		state.ReachedAltitude = false
+	}
 
 	return CommandStatus{
 		bigOutput: fmt.Sprintf("ACCEPT\nINTERIM ALT\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
@@ -141,6 +149,10 @@ func handleAssignedAltitude(ep *ERAMPane, ctx *panes.Context, alt int, trk *sim.
 	fp.AssignedAltitude.Set(alt)
 
 	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+	state := ep.TrackState[trk.ADSBCallsign]
+	if state != nil {
+		state.ReachedAltitude = false
+	}
 
 	return CommandStatus{
 		bigOutput: fmt.Sprintf("ACCEPT\nASSIGNED ALT\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
