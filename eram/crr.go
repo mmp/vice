@@ -876,14 +876,13 @@ func (ep *ERAMPane) drawCRRFixes(ctx *panes.Context, transforms radar.ScopeTrans
 	}
 	sort.Strings(fixLabels)
 	for _, l := range fixLabels {
-		// Get the color for the CRR fix
-		fixColor := ep.crrGroups[l].Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[ps.CRR.SelectedColor]), 0, 100)))
-		style := renderer.TextStyle{Font: font, Color: fixColor}
-
 		g := ep.crrGroups[l]
 		if g == nil {
 			continue
 		}
+		// Get the color for the CRR fix
+		fixColor := g.Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[g.Color]), 0, 100)))
+		style := renderer.TextStyle{Font: font, Color: fixColor}
 		p := transforms.WindowFromLatLongP(g.Location)
 		// Draw asterisk then label with a space
 		td.AddText("*", p, style)

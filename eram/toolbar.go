@@ -179,8 +179,10 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			resetButtonPosDefault(ctx, scale)
 			delete(toolbarDrawState.customButton, main)
 		}
+		// Anchor the menu extent at the start of this menu's buttons (important for torn-off menus).
+		p0 := toolbarDrawState.buttonCursor
 		ps := ep.currentPrefs()
-		if ep.drawToolbarFullButton(ctx, "CRR\nFIX", 0, scale, false, false) {
+		if ep.drawToolbarFullButton(ctx, "CRR\nFIX", 0, scale, ps.CRR.DisplayFixes, false) {
 			ps.CRR.DisplayFixes = !ps.CRR.DisplayFixes
 		}
 		if ep.drawToolbarFullButton(ctx, "SPEED\nADVSRY", 0, scale, false, false) {
@@ -189,6 +191,14 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		if ep.drawToolbarFullButton(ctx, "WX", 0, scale, false, false) {
 			// Opens WX menu
 		}
+
+		btnH := buttonSize(buttonFull, scale)[1]
+		p2 := [2]float32{toolbarDrawState.buttonCursor[0], p0[1] - btnH}
+		p1 := [2]float32{p2[0], p0[1]}
+		p3 := [2]float32{p0[0], p2[1]}
+
+		toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
+		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
 
 	case toolbarFont:
 		if toolbarDrawState.lightToolbar != [4][2]float32{} {
@@ -1536,7 +1546,7 @@ func (ep *ERAMPane) handleTearoffPlacement(ctx *panes.Context) {
 // drawTornOffButtons draws all torn-off buttons at their stored positions
 func (ep *ERAMPane) drawTornOffButtons(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
-	if ps.TornOffButtons == nil || len(ps.TornOffButtons) == 0 {
+	if len(ps.TornOffButtons) == 0 {
 		return
 	}
 
@@ -1552,20 +1562,7 @@ func (ep *ERAMPane) drawTornOffButtons(ctx *panes.Context, transforms radar.Scop
 		if pressed {
 			if ep.deleteTearoffMode {
 				// Delete the torn-off button
-				delete(ps.TornOffButtons, buttonName)
-				if ep.tearoffMenus != nil {
-					delete(ep.tearoffMenus, buttonName)
-				}
-				if ep.tearoffMenuOpened != nil {
-					delete(ep.tearoffMenuOpened, buttonName)
-				}
-				if ep.tearoffMenuLightToolbar != nil {
-					delete(ep.tearoffMenuLightToolbar, buttonName)
-				}
-				if ep.tearoffMenuLightToolbar2 != nil {
-					delete(ep.tearoffMenuLightToolbar2, buttonName)
-				}
-				ep.removeTearoffMenuOrder(buttonName)
+				ep.deleteTornOffButton(ps, buttonName)
 				ep.deleteTearoffMode = false
 			} else {
 				// Trigger the button action
@@ -1575,9 +1572,108 @@ func (ep *ERAMPane) drawTornOffButtons(ctx *panes.Context, transforms radar.Scop
 	}
 }
 
+// handleTornOffButtonsInput processes torn-off button clicks before other UI.
+// This is important because torn-off UI is visually on top (drawn last) but
+// many other widgets process mouse clicks during their draw calls; if they run
+// first they can "steal" the click (and even move/capture the mouse).
+func (ep *ERAMPane) handleTornOffButtonsInput(ctx *panes.Context) {
+	ps := ep.currentPrefs()
+	mouse := ctx.Mouse
+	if mouse == nil || len(ps.TornOffButtons) == 0 {
+		return
+	}
+	if !mouse.Clicked[platform.MouseButtonPrimary] && !mouse.Clicked[platform.MouseButtonTertiary] {
+		return
+	}
+
+	scale := ep.toolbarButtonScale(ctx)
+	tearoffSz := buttonSize(buttonTearoff, scale)
+	fullSz := buttonSize(buttonFull, scale)
+	gap := float32(1)
+
+	// Deterministic hit-testing in case of overlap.
+	names := util.SortedMapKeys(ps.TornOffButtons)
+	for _, name := range names {
+		pos := ps.TornOffButtons[name]
+
+		// Handle extents.
+		handleP0 := pos
+		handleP2 := math.Add2f(handleP0, [2]float32{tearoffSz[0], -tearoffSz[1]})
+		handleExt := math.Extent2DFromPoints([][2]float32{handleP0, handleP2})
+
+		// Main button extents.
+		buttonP0 := math.Add2f(pos, [2]float32{tearoffSz[0] + gap, 0})
+		buttonP2 := math.Add2f(buttonP0, [2]float32{fullSz[0], -fullSz[1]})
+		buttonExt := math.Extent2DFromPoints([][2]float32{buttonP0, buttonP2})
+
+		handleHovered := handleExt.Inside(mouse.Pos)
+		buttonHovered := buttonExt.Inside(mouse.Pos)
+		if !handleHovered && !buttonHovered {
+			continue
+		}
+
+		// In delete mode, a tertiary click deletes a torn-off button.
+		if ep.deleteTearoffMode {
+			if mouse.Clicked[platform.MouseButtonTertiary] {
+				ep.deleteTornOffButton(ps, name)
+				ep.deleteTearoffMode = false
+			}
+			// Whether we deleted or not, don't let underlying UI see this click
+			// since the cursor is over an overlay widget.
+			mouse.Clicked[platform.MouseButtonPrimary] = false
+			mouse.Clicked[platform.MouseButtonTertiary] = false
+			return
+		}
+
+		// Click on handle - start reposition.
+		if handleHovered && mouse.Clicked[platform.MouseButtonPrimary] && ep.tearoffInProgress == "" {
+			ep.tearoffInProgress = name
+			ep.tearoffIsReposition = true
+			ep.tearoffStart = time.Now()
+			ep.tearoffDragOffset = math.Sub2f(mouse.Pos, pos)
+			ctx.Platform.StartCaptureMouse(ctx.PaneExtent)
+
+			mouse.Clicked[platform.MouseButtonPrimary] = false
+			mouse.Clicked[platform.MouseButtonTertiary] = false
+			return
+		}
+
+		// Click on main button - trigger action.
+		if buttonHovered && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) {
+			ep.handleTornOffButtonClick(ctx, name, pos)
+
+			mouse.Clicked[platform.MouseButtonPrimary] = false
+			mouse.Clicked[platform.MouseButtonTertiary] = false
+			return
+		}
+
+		// Cursor is over overlay, consume the click anyway.
+		mouse.Clicked[platform.MouseButtonPrimary] = false
+		mouse.Clicked[platform.MouseButtonTertiary] = false
+		return
+	}
+}
+
+func (ep *ERAMPane) deleteTornOffButton(ps *Preferences, buttonName string) {
+	delete(ps.TornOffButtons, buttonName)
+	if ep.tearoffMenus != nil {
+		delete(ep.tearoffMenus, buttonName)
+	}
+	if ep.tearoffMenuOpened != nil {
+		delete(ep.tearoffMenuOpened, buttonName)
+	}
+	if ep.tearoffMenuLightToolbar != nil {
+		delete(ep.tearoffMenuLightToolbar, buttonName)
+	}
+	if ep.tearoffMenuLightToolbar2 != nil {
+		delete(ep.tearoffMenuLightToolbar2, buttonName)
+	}
+	ep.removeTearoffMenuOrder(buttonName)
+}
+
 // drawTearoffMenus draws toolbar menus anchored to torn-off buttons.
 func (ep *ERAMPane) drawTearoffMenus(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
-	if ep.tearoffMenus == nil || len(ep.tearoffMenus) == 0 {
+	if len(ep.tearoffMenus) == 0 {
 		return
 	}
 
@@ -1843,6 +1939,9 @@ func (ep *ERAMPane) isTornOffButtonActive(name string) bool {
 	}
 	ps := ep.currentPrefs()
 	if ps != nil {
+		if ep.getTornOffButtonText(name) == "CRR\nFIX" {
+			return ps.CRR.DisplayFixes
+		}
 		if key, ok := ep.videoMapKeyForButton(name); ok {
 			if ps.VideoMapVisible != nil {
 				if _, visible := ps.VideoMapVisible[key]; visible {
@@ -1886,6 +1985,9 @@ func (ep *ERAMPane) videoMapKeyForButton(name string) (string, bool) {
 }
 
 func (ep *ERAMPane) tornOffButtonActiveColor(name string) renderer.RGB {
+	if ep.getTornOffButtonText(name) == "CRR\nFIX" {
+		return eramGray
+	}
 	if _, ok := ep.videoMapKeyForButton(name); ok {
 		return eramGray
 	}
@@ -1895,6 +1997,11 @@ func (ep *ERAMPane) tornOffButtonActiveColor(name string) renderer.RGB {
 func (ep *ERAMPane) tornOffButtonBaseColor(name string) renderer.RGB {
 	display := ep.getTornOffButtonText(name)
 	key := cleanButtonName(display)
+
+	// Individual torn-off buttons that should be black.
+	if display == "CRR\nFIX" {
+		return renderer.RGB{0, 0, 0}
+	}
 
 	if key == "RANGE" || key == "ALT LIM" {
 		return renderer.RGB{0, 0, 0}
@@ -1918,7 +2025,9 @@ func (ep *ERAMPane) tornOffButtonBaseColor(name string) renderer.RGB {
 func (ep *ERAMPane) getTornOffButtonText(name string) string {
 	// Some button names are stored cleaned (no newlines) but need to be displayed with newlines
 	switch name {
-	case "ATCTOOLS":
+	case "CRR FIX", "CRRFIX":
+		return "CRR\nFIX"
+	case "ATCTOOLS", "ATC TOOLS":
 		return "ATC\nTOOLS"
 	case "ABSETTING":
 		return "AB\nSETTING"
@@ -2064,13 +2173,15 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 		return
 	}
 
-	switch buttonName {
+	// Normalize through display text so older saved keys like "CRR FIX" still work.
+	display := ep.getTornOffButtonText(buttonName)
+	switch display {
 	case "DRAW":
 		// Handle DRAW button
-	case "ATC\nTOOLS", "ATCTOOLS":
+	case "ATC\nTOOLS":
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarATCTools)
-	case "AB\nSETTING", "ABSETTING":
+	case "AB\nSETTING":
 		// Handle AB SETTING
 	case "CURSOR":
 		// Handle CURSOR
@@ -2080,7 +2191,7 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 	case "FONT":
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarFont)
-	case "DB\nFIELDS", "DBFIELDS":
+	case "DB\nFIELDS":
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarDBFields)
 	case "VECTOR":
@@ -2088,24 +2199,24 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 	case "VIEWS":
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarViews)
-	case "CHECK\nLISTS", "CHECKLISTS":
+	case "CHECK\nLISTS":
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarChecklist)
-	case "COMMAND\nMENUS", "COMMANDMENUS":
+	case "COMMAND\nMENUS":
 		// Handle COMMAND MENUS
-	case "VIDEOMAP", ep.videoMapLabel:
+	case ep.videoMapLabel:
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarVideomap)
 	case "MAP\nBRIGHT":
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarMapBright)
-	case "RADAR\nFILTER", "RADARFILTER":
+	case "RADAR\nFILTER":
 		// Handle RADAR FILTER
 	case "PREFSET":
 		// Handle PREFSET
-	case "CRR\nFIX", "CRRFIX":
+	case "CRR\nFIX":
 		ps.CRR.DisplayFixes = !ps.CRR.DisplayFixes
-	case "DELETE\nTEAROFF", "DELETETEAROFF":
+	case "DELETE\nTEAROFF":
 		if ctx.Mouse != nil &&
 			(ctx.Mouse.Clicked[platform.MouseButtonPrimary] || ctx.Mouse.Clicked[platform.MouseButtonTertiary]) {
 			ep.deleteTearoffMode = !ep.deleteTearoffMode

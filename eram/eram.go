@@ -238,9 +238,9 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.drawVideoMaps(ctx, transforms, cb)
 	ep.drawScenarioRoutes(ctx, transforms, renderer.GetDefaultFont(), cb)
 	ep.drawPlotPoints(ctx, transforms, cb)
-	ep.drawCRRFixes(ctx, transforms, cb)
 	// Handle button tearoff placement BEFORE drawing toolbar (so placement click isn't consumed)
 	ep.handleTearoffPlacement(ctx)
+	ep.handleTornOffButtonsInput(ctx)
 	scopeExtent := ctx.PaneExtent
 	if ps.DisplayToolbar {
 		scale := ep.toolbarButtonScale(ctx)
@@ -256,6 +256,7 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.drawTracks(ctx, tracks, transforms, cb)
 	ep.drawDatablocks(tracks, dbs, ctx, transforms, cb)
 	ep.datablockInteractions(ctx, tracks, transforms, cb)
+	ep.drawCRRFixes(ctx, transforms, cb)
 	ep.drawCRRDistances(ctx, transforms, cb)
 	ep.drawJRings(ctx, tracks, transforms, cb)
 	ep.drawQULines(ctx, transforms, cb)
