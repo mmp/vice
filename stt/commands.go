@@ -297,6 +297,7 @@ var commandTemplates = []CommandTemplate{
 		ArgType:   ArgNone,
 		OutputFmt: "SMIN",
 		Priority:  12,
+		SkipWords: []string{"approach"}, // "minimum approach speed" is valid phrasing
 	},
 	{
 		Name:      "maximum_speed",
@@ -329,7 +330,7 @@ var commandTemplates = []CommandTemplate{
 	},
 	{
 		Name:      "final_approach_speed",
-		Keywords:  [][]string{{"reduce"}, {"final"}, {"approach"}, {"speed"}},
+		Keywords:  [][]string{{"reduce"}, {"final", "minimum"}, {"approach"}, {"speed"}},
 		ArgType:   ArgNone,
 		OutputFmt: "SMIN",
 		Priority:  15,
