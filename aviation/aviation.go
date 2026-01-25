@@ -616,56 +616,156 @@ func LookupRunway(icao, rwy string) (Runway, bool) {
 	}
 }
 
-func LookupOppositeRunway(icao, rwy string) (Runway, bool) {
-	if ap, ok := DB.Airports[icao]; !ok {
-		return Runway{}, false
-	} else {
-		rwy = cleanRunway(rwy)
-		if rwy == "" {
-			return Runway{}, false
-		}
-
-		// Break runway into number and optional extension and swap
-		// left/right.
-		n := len(rwy)
-		num, ext := "", ""
-		switch rwy[n-1] {
-		case 'R':
-			ext = "L"
-			num = rwy[:n-1]
-		case 'L':
-			ext = "R"
-			num = rwy[:n-1]
-		case 'C':
-			ext = "C"
-			num = rwy[:n-1]
-		case 'W':
-			ext = "W"
-			num = rwy[:n-1]
-		default:
-			num = rwy
-		}
-
-		// Extract the number so we can get the opposite heading
-		v, err := strconv.Atoi(num)
-		if err != nil {
-			return Runway{}, false
-		}
-
-		// The (v+18)%36 below would give us 0 for runway 36, so handle 18
-		// specially.
-		if v == 18 {
-			rwy = "36" + ext
-		} else {
-			rwy = fmt.Sprintf("%d", (v+18)%36) + ext
-		}
-
-		idx := slices.IndexFunc(ap.Runways, func(r Runway) bool { return r.Id == rwy })
-		if idx == -1 {
-			return Runway{}, false
-		}
-		return ap.Runways[idx], true
+// OppositeRunwayId returns the runway ID for the opposite end of the given runway.
+// E.g., "13L" -> "31R", "22R" -> "4L", "9" -> "27".
+func OppositeRunwayId(rwy string) string {
+	rwy = cleanRunway(rwy)
+	if rwy == "" {
+		return ""
 	}
+
+	n := len(rwy)
+	num, ext := "", ""
+	switch rwy[n-1] {
+	case 'R':
+		ext = "L"
+		num = rwy[:n-1]
+	case 'L':
+		ext = "R"
+		num = rwy[:n-1]
+	case 'C':
+		ext = "C"
+		num = rwy[:n-1]
+	case 'W':
+		ext = "W"
+		num = rwy[:n-1]
+	default:
+		num = rwy
+	}
+
+	v, err := strconv.Atoi(num)
+	if err != nil {
+		return ""
+	}
+
+	// (v+18)%36 would give 0 for runway 36, so handle 18 specially.
+	if v == 18 {
+		return "36" + ext
+	}
+	return fmt.Sprintf("%d", (v+18)%36) + ext
+}
+
+func LookupOppositeRunway(icao, rwy string) (Runway, bool) {
+	ap, ok := DB.Airports[icao]
+	if !ok {
+		return Runway{}, false
+	}
+
+	oppRwy := OppositeRunwayId(rwy)
+	if oppRwy == "" {
+		return Runway{}, false
+	}
+
+	idx := slices.IndexFunc(ap.Runways, func(r Runway) bool { return r.Id == oppRwy })
+	if idx == -1 {
+		return Runway{}, false
+	}
+	return ap.Runways[idx], true
+}
+
+// IntersectingRunways returns all runways at airport that physically intersect
+// the given runway. It checks if runway centerlines cross and the intersection
+// point is within maxDistNM of both runway segments (threshold to threshold).
+// Use maxDistNM=0 for strict threshold-to-threshold intersection, or a small
+// value (e.g., 0.5) to account for pavement extending past thresholds.
+// Returns both directions for each intersecting runway (e.g., both "13L" and "31R").
+func IntersectingRunways(airport, rwy string, nmPerLongitude, maxDistNM float32) []string {
+	rwy = TidyRunway(rwy)
+
+	// Get runway threshold positions
+	rwyEndpoints := func(r string) (p1, p2 [2]float32, ok bool) {
+		var runway, opp Runway
+		if runway, ok = LookupRunway(airport, r); !ok {
+			return
+		}
+		if opp, ok = LookupOppositeRunway(airport, r); !ok {
+			return
+		}
+		p1 = math.LL2NM(runway.Threshold, nmPerLongitude)
+		p2 = math.LL2NM(opp.Threshold, nmPerLongitude)
+		return p1, p2, true
+	}
+
+	// Distance from point p to line segment seg0-seg1
+	pointToSegmentDist := func(p, seg0, seg1 [2]float32) float32 {
+		v := math.Sub2f(seg1, seg0)
+		w := math.Sub2f(p, seg0)
+		c1 := math.Dot(w, v)
+		c2 := math.Dot(v, v)
+		if c2 == 0 {
+			return math.Distance2f(p, seg0)
+		}
+		t := c1 / c2
+		// Clamp to segment endpoints
+		if t < 0 {
+			t = 0
+		} else if t > 1 {
+			t = 1
+		}
+		proj := math.Add2f(seg0, math.Scale2f(v, t))
+		return math.Distance2f(p, proj)
+	}
+
+	rwy1, rwy2, ok := rwyEndpoints(rwy)
+	if !ok {
+		return nil
+	}
+
+	oppRwy := OppositeRunwayId(rwy)
+
+	var intersecting []string
+	seen := make(map[string]bool)
+	ap, ok := DB.Airports[airport]
+	if !ok {
+		return nil
+	}
+
+	for _, otherRwy := range ap.Runways {
+		id := TidyRunway(otherRwy.Id)
+		if id == rwy || id == oppRwy {
+			continue
+		}
+
+		oth1, oth2, ok := rwyEndpoints(otherRwy.Id)
+		if !ok {
+			continue
+		}
+
+		// Check if the infinite centerlines intersect
+		p, ok := math.LineLineIntersect(rwy1, rwy2, oth1, oth2)
+		if !ok {
+			continue // Lines are parallel
+		}
+
+		// Check if intersection point is within maxDistNM of both runway segments
+		dist1 := pointToSegmentDist(p, rwy1, rwy2)
+		dist2 := pointToSegmentDist(p, oth1, oth2)
+
+		if dist1 <= maxDistNM && dist2 <= maxDistNM {
+			// Add both this runway and its opposite direction
+			if !seen[id] {
+				seen[id] = true
+				intersecting = append(intersecting, id)
+			}
+			oppId := OppositeRunwayId(id)
+			if oppId != "" && !seen[oppId] {
+				seen[oppId] = true
+				intersecting = append(intersecting, oppId)
+			}
+		}
+	}
+
+	return intersecting
 }
 
 // returns the ratio of air density at the given altitude (in feet) to the

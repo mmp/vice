@@ -289,8 +289,8 @@ func (ac *Aircraft) CrossFixAt(fix string, ar *av.AltitudeRestriction, speed int
 	return ac.Nav.CrossFixAt(strings.ToUpper(fix), ar, speed)
 }
 
-func (ac *Aircraft) ExpectApproach(id string, ap *av.Airport, lg *log.Logger) av.CommandIntent {
-	return ac.Nav.ExpectApproach(ap, id, ac.STARRunwayWaypoints, lg)
+func (ac *Aircraft) ExpectApproach(id string, ap *av.Airport, lahsoRunway string, lg *log.Logger) av.CommandIntent {
+	return ac.Nav.ExpectApproach(ap, id, ac.STARRunwayWaypoints, lahsoRunway, lg)
 }
 
 func (ac *Aircraft) AtFixCleared(fix, approach string) av.CommandIntent {
@@ -383,11 +383,11 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, nmPerLong
 
 	if arr.ExpectApproach.A != nil {
 		lg = lg.With(slog.String("adsb_callsign", string(ac.ADSBCallsign)), slog.Any("aircraft", ac))
-		ac.ExpectApproach(*arr.ExpectApproach.A, ap, lg)
+		ac.ExpectApproach(*arr.ExpectApproach.A, ap, "", lg)
 	} else if arr.ExpectApproach.B != nil {
 		if app, ok := (*arr.ExpectApproach.B)[ac.FlightPlan.ArrivalAirport]; ok {
 			lg = lg.With(slog.String("adsb_callsign", string(ac.ADSBCallsign)), slog.Any("aircraft", ac))
-			ac.ExpectApproach(app, ap, lg)
+			ac.ExpectApproach(app, ap, "", lg)
 		}
 	}
 

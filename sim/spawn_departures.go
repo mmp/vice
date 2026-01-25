@@ -198,51 +198,9 @@ func (s *Sim) launchSequencedDeparture(depState *RunwayLaunchState, airport, dep
 }
 
 // intersectingRunways returns all runways that physically intersect the
-// given runway up to one nm past the opposite threshold.
-func (s *Sim) intersectingRunways(airport, depRwy string) []string {
-	depRwy = av.TidyRunway(depRwy)
-
-	// Get the departure runway info
-	rwySegment := func(rwy string) (seg [2][2]float32, ok bool) {
-		var r, opp av.Runway
-		if r, ok = av.LookupRunway(airport, rwy); !ok {
-			return
-		}
-
-		if opp, ok = av.LookupOppositeRunway(airport, rwy); !ok {
-			return
-		}
-
-		// Line segment from departure threshold to 1nm past opposing threshold
-		rp := math.LL2NM(r.Threshold, s.State.NmPerLongitude)
-		op := math.LL2NM(opp.Threshold, s.State.NmPerLongitude)
-		v := math.Normalize2f(math.Sub2f(op, rp))
-
-		return [2][2]float32{rp, math.Add2f(op, v)}, true
-	}
-
-	depSeg, ok := rwySegment(depRwy)
-	if !ok {
-		return nil
-	}
-
-	// Check all other runways for intersection
-	var intersecting []string
-	if _, ok := s.State.Airports[airport]; ok {
-		for _, otherRwy := range av.DB.Airports[airport].Runways {
-			if av.TidyRunway(otherRwy.Id) == depRwy {
-				continue // Skip the same runway
-			}
-
-			if othSeg, ok := rwySegment(otherRwy.Id); ok {
-				if _, ok := math.SegmentSegmentIntersect(depSeg[0], depSeg[1], othSeg[0], othSeg[1]); ok {
-					intersecting = append(intersecting, otherRwy.Id)
-				}
-			}
-		}
-	}
-
-	return intersecting
+// given runway (centerlines cross within 1nm of both runway segments).
+func (s *Sim) intersectingRunways(airport, rwy string) []string {
+	return av.IntersectingRunways(airport, rwy, s.State.NmPerLongitude, 1)
 }
 
 // sameGroupRunways returns an iterator over all of the runways in the
