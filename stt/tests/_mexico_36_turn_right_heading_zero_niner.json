@@ -1,0 +1,466 @@
+{
+  "time": "2026-01-22T10:34:43.210043-05:00",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_arm64.s:1268:runtime.goexit"
+  ],
+  "transcript": ", Mexico 36 turn right, heading zero niner,",
+  "whisper_duration_ms": 391.607,
+  "audio_duration_ms": 2816,
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "callsign": "AMX36",
+  "command": "R090",
+  "stt_aircraft": {
+    "AMX36": {
+      "Callsign": "AMX36",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Logan International Airport": "KBOS",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Winnie": "WINNI"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 7854,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "AeroMexico 36": {
+      "Callsign": "AMX36",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Logan International Airport": "KBOS",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Winnie": "WINNI"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 7854,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "Cair 216": {
+      "Callsign": "KAP216",
+      "AircraftType": "P212",
+      "Fixes": {
+        "All": "AAALL",
+        "Emtapin": "MTAPN",
+        "Levron": "LVRON",
+        "Logan International Airport": "KBOS",
+        "Nunzo": "NUNZO",
+        "Woons": "WOONS"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "AssignedApproach": "RNAV Runway 4L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1L",
+      "TrackingController": "1F",
+      "AddressingForm": 0
+    },
+    "Cair 675": {
+      "Callsign": "KAP675",
+      "AircraftType": "C402",
+      "Fixes": {
+        "All": "AAALL",
+        "Emtapin": "MTAPN",
+        "Levron": "LVRON",
+        "Logan International Airport": "KBOS",
+        "Lwrnc": "LWRNC",
+        "Nunzo": "NUNZO",
+        "Woons": "WOONS"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "AssignedApproach": "RNAV Runway 4L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    },
+    "GPD497": {
+      "Callsign": "GPD497",
+      "AircraftType": "PC12",
+      "Fixes": {
+        "All": "AAALL",
+        "Emtapin": "MTAPN",
+        "Levron": "LVRON",
+        "Logan International Airport": "KBOS",
+        "Nunzo": "NUNZO",
+        "Woons": "WOONS"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "AssignedApproach": "RNAV Runway 4L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1U",
+      "TrackingController": "1F",
+      "AddressingForm": 0
+    },
+    "Godspeed 497": {
+      "Callsign": "GPD497",
+      "AircraftType": "PC12",
+      "Fixes": {
+        "All": "AAALL",
+        "Emtapin": "MTAPN",
+        "Levron": "LVRON",
+        "Logan International Airport": "KBOS",
+        "Nunzo": "NUNZO",
+        "Woons": "WOONS"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "AssignedApproach": "RNAV Runway 4L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1U",
+      "TrackingController": "1F",
+      "AddressingForm": 0
+    },
+    "JBU964": {
+      "Callsign": "JBU964",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Autumn": "AUTUM",
+        "Gabe": "GGABE",
+        "Goshi": "GOSHI",
+        "Grifi": "GRIFI",
+        "Harris": "HRRIS",
+        "Jobee": "JOBEE",
+        "Logan International Airport": "KBOS",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Spysid": "SPYSD",
+        "Winnie": "WINNI",
+        "Winter": "WINTA"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 15605,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    },
+    "JetBlue 964": {
+      "Callsign": "JBU964",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Autumn": "AUTUM",
+        "Gabe": "GGABE",
+        "Goshi": "GOSHI",
+        "Grifi": "GRIFI",
+        "Harris": "HRRIS",
+        "Jobee": "JOBEE",
+        "Logan International Airport": "KBOS",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Spysid": "SPYSD",
+        "Winnie": "WINNI",
+        "Winter": "WINTA"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 15605,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    },
+    "KAP216": {
+      "Callsign": "KAP216",
+      "AircraftType": "P212",
+      "Fixes": {
+        "All": "AAALL",
+        "Emtapin": "MTAPN",
+        "Levron": "LVRON",
+        "Logan International Airport": "KBOS",
+        "Nunzo": "NUNZO",
+        "Woons": "WOONS"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "AssignedApproach": "RNAV Runway 4L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1L",
+      "TrackingController": "1F",
+      "AddressingForm": 0
+    },
+    "KAP675": {
+      "Callsign": "KAP675",
+      "AircraftType": "C402",
+      "Fixes": {
+        "All": "AAALL",
+        "Emtapin": "MTAPN",
+        "Levron": "LVRON",
+        "Logan International Airport": "KBOS",
+        "Lwrnc": "LWRNC",
+        "Nunzo": "NUNZO",
+        "Woons": "WOONS"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "AssignedApproach": "RNAV Runway 4L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    },
+    "SWA1318": {
+      "Callsign": "SWA1318",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Ernie": "ERNEI",
+        "Goshi": "GOSHI",
+        "Jody": "JOODY",
+        "Logan International Airport": "KBOS",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Provi": "PROVI",
+        "Sofie": "SOFEE",
+        "Winnie": "WINNI"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 12702,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "Southwest 1318": {
+      "Callsign": "SWA1318",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Ernie": "ERNEI",
+        "Goshi": "GOSHI",
+        "Jody": "JOODY",
+        "Logan International Airport": "KBOS",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Provi": "PROVI",
+        "Sofie": "SOFEE",
+        "Winnie": "WINNI"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 12702,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "UAL3163": {
+      "Callsign": "UAL3163",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Gabe": "GGABE",
+        "Goshi": "GOSHI",
+        "Grifi": "GRIFI",
+        "Harris": "HRRIS",
+        "Jobee": "JOBEE",
+        "Logan International Airport": "KBOS",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Spysid": "SPYSD",
+        "Winnie": "WINNI"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 10328,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    },
+    "United 3163": {
+      "Callsign": "UAL3163",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Gabe": "GGABE",
+        "Goshi": "GOSHI",
+        "Grifi": "GRIFI",
+        "Harris": "HRRIS",
+        "Jobee": "JOBEE",
+        "Logan International Airport": "KBOS",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Spysid": "SPYSD",
+        "Winnie": "WINNI"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 10328,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \", Mexico 36 turn right, heading zero niner,\"",
+    "[local-stt] normalized words: [mexico 36 turn right heading 0 9]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"mexico\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"36\" Type=1 Value=36",
+    "[local-stt]   token[2]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"9\" Type=1 Value=9",
+    "[local-stt] MatchCallsign: 6 tokens, 14 aircraft",
+    "[local-stt]   candidate \"GPD497\" (ICAO=\"GPD497\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JBU964\" (ICAO=\"JBU964\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"KAP216\" (ICAO=\"KAP216\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Cair 675\" (ICAO=\"KAP675\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"KAP675\" (ICAO=\"KAP675\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SWA1318\" (ICAO=\"SWA1318\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"United 3163\" (ICAO=\"UAL3163\"): score=0.85 consumed=2",
+    "[local-stt]   candidate \"UAL3163\" (ICAO=\"UAL3163\"): score=0.85 consumed=2",
+    "[local-stt]   candidate \"Godspeed 497\" (ICAO=\"GPD497\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JetBlue 964\" (ICAO=\"JBU964\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Cair 216\" (ICAO=\"KAP216\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest 1318\" (ICAO=\"SWA1318\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"AeroMexico 36\" (ICAO=\"AMX36\"): score=0.94 consumed=2",
+    "[local-stt]   candidate \"AMX36\" (ICAO=\"AMX36\"): score=1.00 consumed=2",
+    "[local-stt]   candidate \"AeroMexico 36\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   candidate \"AMX36\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   candidate \"United 3163\" at pos 1: score=0.85 (adjusted=0.77) consumed=1",
+    "[local-stt]   candidate \"UAL3163\" at pos 1: score=0.85 (adjusted=0.77) consumed=1",
+    "[local-stt]   candidate \"JetBlue 964\" at pos 3: score=0.80 (adjusted=0.56) consumed=3",
+    "[local-stt]   candidate \"JBU964\" at pos 3: score=0.80 (adjusted=0.56) consumed=3",
+    "[local-stt]   accepted: \"AMX36\" (conf=1.00, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"AMX36\" SpokenKey=\"AMX36\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=7854 Fixes=4 Approaches=4 AssignedApproach=\"ILS Runway 4R\"",
+    "[local-stt]   fix: \"Winnie\" -\u003e \"WINNI\"",
+    "[local-stt]   fix: \"Nabbo\" -\u003e \"NABBO\"",
+    "[local-stt]   fix: \"Milt\" -\u003e \"MILTT\"",
+    "[local-stt]   fix: \"Logan International Airport\" -\u003e \"KBOS\"",
+    "[local-stt]   approach: \"r-nav runway four right\" -\u003e \"R4R\"",
+    "[local-stt]   approach: \"I L S runway one five right then visual approach left traffic to runway four left\" -\u003e \"I5RC\"",
+    "[local-stt]   approach: \"r-nav runway four left\" -\u003e \"R4L\"",
+    "[local-stt]   approach: \"I L S runway four right\" -\u003e \"I4R\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"9\" Type=1 Value=9",
+    "[local-stt]   position ID: found command keyword \"turn\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   tryMatchTemplate \"turn_right_heading\": cmd=\"R009\" argStr=\"009\" consumed=4",
+    "[local-stt]   tryMatchTemplate \"turn_right_only\": cmd=\"R009\" argStr=\"009\" consumed=4",
+    "[local-stt]   matched command: \"R009\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[R009] (avgConf=1.00)",
+    "[local-stt] parsed commands: [R009] (conf=1.00)",
+    "[local-stt] validated commands: [R009] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"AMX36 R009\" (conf=1.00, time=366.917µs) ==="
+  ]
+}

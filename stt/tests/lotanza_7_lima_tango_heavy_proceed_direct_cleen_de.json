@@ -1,0 +1,288 @@
+{
+  "time": "2026-01-22T21:40:35.295155-05:00",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_arm64.s:1268:runtime.goexit"
+  ],
+  "transcript": "Lotanza 7, Lima, Tango Heavy, Proceed, Direct, Cleen, Descend and Maintain, 4000",
+  "whisper_duration_ms": 484.18,
+  "audio_duration_ms": 7424,
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "callsign": "DLH7LT",
+  "command": "DKLANE D40",
+  "stt_aircraft": {
+    "DAL406": {
+      "Callsign": "DAL406",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Aibee": "AYBEE",
+        "Claine": "KLANE",
+        "Harris": "HRRIS",
+        "Logan International Airport": "KBOS",
+        "Loner": "LONER",
+        "Ripit": "RIPIT",
+        "River": "REVER",
+        "Seahag": "SEHAG",
+        "Spysid": "SPYSD",
+        "Winter": "WINTA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven": "I27",
+        "r-nav runway two seven": "R27"
+      },
+      "AssignedApproach": "ILS Runway 27",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    },
+    "DLH7LT": {
+      "Callsign": "DLH7LT",
+      "AircraftType": "A346",
+      "Fixes": {
+        "Aibee": "AYBEE",
+        "Claine": "KLANE",
+        "Logan International Airport": "KBOS",
+        "Loner": "LONER",
+        "Pudge": "PUDJJ",
+        "Ripit": "RIPIT"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven": "I27",
+        "r-nav runway two seven": "R27"
+      },
+      "AssignedApproach": "ILS Runway 27",
+      "SID": "",
+      "STAR": "OOSHN5",
+      "Altitude": 10026,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    },
+    "Delta 406": {
+      "Callsign": "DAL406",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Aibee": "AYBEE",
+        "Claine": "KLANE",
+        "Harris": "HRRIS",
+        "Logan International Airport": "KBOS",
+        "Loner": "LONER",
+        "Ripit": "RIPIT",
+        "River": "REVER",
+        "Seahag": "SEHAG",
+        "Spysid": "SPYSD",
+        "Winter": "WINTA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven": "I27",
+        "r-nav runway two seven": "R27"
+      },
+      "AssignedApproach": "ILS Runway 27",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    },
+    "Lufthansa 7LT heavy": {
+      "Callsign": "DLH7LT",
+      "AircraftType": "A346",
+      "Fixes": {
+        "Aibee": "AYBEE",
+        "Claine": "KLANE",
+        "Logan International Airport": "KBOS",
+        "Loner": "LONER",
+        "Pudge": "PUDJJ",
+        "Ripit": "RIPIT"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven": "I27",
+        "r-nav runway two seven": "R27"
+      },
+      "AssignedApproach": "ILS Runway 27",
+      "SID": "",
+      "STAR": "OOSHN5",
+      "Altitude": 10026,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    },
+    "NKS8109": {
+      "Callsign": "NKS8109",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Aibee": "AYBEE",
+        "Claine": "KLANE",
+        "Clebb": "KLEBB",
+        "Cradle": "CRADL",
+        "Hokdu": "HOKDU",
+        "Logan International Airport": "KBOS",
+        "Loner": "LONER",
+        "Ripit": "RIPIT"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven": "I27",
+        "r-nav runway two seven": "R27"
+      },
+      "AssignedApproach": "ILS Runway 27",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 10554,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "Spirit Wings 8109": {
+      "Callsign": "NKS8109",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Aibee": "AYBEE",
+        "Claine": "KLANE",
+        "Clebb": "KLEBB",
+        "Cradle": "CRADL",
+        "Hokdu": "HOKDU",
+        "Logan International Airport": "KBOS",
+        "Loner": "LONER",
+        "Ripit": "RIPIT"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven": "I27",
+        "r-nav runway two seven": "R27"
+      },
+      "AssignedApproach": "ILS Runway 27",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 10554,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "THY622": {
+      "Callsign": "THY622",
+      "AircraftType": "A332",
+      "Fixes": {
+        "Logan International Airport": "KBOS",
+        "Loner": "LONER",
+        "Ripit": "RIPIT"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven": "I27",
+        "r-nav runway two seven": "R27"
+      },
+      "AssignedApproach": "ILS Runway 27",
+      "SID": "",
+      "STAR": "OOSHN5",
+      "Altitude": 4095,
+      "State": "on approach",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    },
+    "Turkish 622 heavy": {
+      "Callsign": "THY622",
+      "AircraftType": "A332",
+      "Fixes": {
+        "Logan International Airport": "KBOS",
+        "Loner": "LONER",
+        "Ripit": "RIPIT"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven": "I27",
+        "r-nav runway two seven": "R27"
+      },
+      "AssignedApproach": "ILS Runway 27",
+      "SID": "",
+      "STAR": "OOSHN5",
+      "Altitude": 4095,
+      "State": "on approach",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Lotanza 7, Lima, Tango Heavy, Proceed, Direct, Cleen, Descend and Maintain, 4000\"",
+    "[local-stt] normalized words: [lotanza 7 lima tango heavy proceed direct cleen descend and maintain 4000]",
+    "[local-stt] tokens: 12",
+    "[local-stt]   token[0]: Text=\"lotanza\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"7\" Type=1 Value=7",
+    "[local-stt]   token[2]: Text=\"lima\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"tango\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"heavy\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"proceed\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"cleen\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"4000\" Type=1 Value=4000",
+    "[local-stt] MatchCallsign: 12 tokens, 8 aircraft",
+    "[local-stt]   candidate \"NKS8109\" (ICAO=\"NKS8109\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Turkish 622 heavy\" (ICAO=\"THY622\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"THY622\" (ICAO=\"THY622\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Delta 406\" (ICAO=\"DAL406\"): score=0.68 consumed=1",
+    "[local-stt]   candidate \"DAL406\" (ICAO=\"DAL406\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Lufthansa 7LT heavy\" (ICAO=\"DLH7LT\"): score=0.98 consumed=5",
+    "[local-stt]   candidate \"DLH7LT\" (ICAO=\"DLH7LT\"): score=1.00 consumed=5",
+    "[local-stt]   candidate \"Spirit Wings 8109\" (ICAO=\"NKS8109\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Lufthansa 7LT heavy\" at pos 1: score=1.00 (adjusted=0.90) consumed=4",
+    "[local-stt]   candidate \"DLH7LT\" at pos 1: score=1.00 (adjusted=0.90) consumed=4",
+    "[local-stt]   candidate \"Lufthansa 7LT heavy\" at pos 2: score=0.81 (adjusted=0.65) consumed=3",
+    "[local-stt]   candidate \"DLH7LT\" at pos 2: score=0.85 (adjusted=0.68) consumed=3",
+    "[local-stt]   candidate \"DLH7LT\" at pos 3: score=0.85 (adjusted=0.59) consumed=2",
+    "[local-stt]   candidate \"Lufthansa 7LT heavy\" at pos 3: score=0.85 (adjusted=0.59) consumed=2",
+    "[local-stt]   accepted: \"DLH7LT\" (conf=1.00, consumed=5, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"DLH7LT\" SpokenKey=\"DLH7LT\" Conf=1.00 Consumed=5",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=10026 Fixes=6 Approaches=2 AssignedApproach=\"ILS Runway 27\"",
+    "[local-stt]   fix: \"Pudge\" -\u003e \"PUDJJ\"",
+    "[local-stt]   fix: \"Aibee\" -\u003e \"AYBEE\"",
+    "[local-stt]   fix: \"Logan International Airport\" -\u003e \"KBOS\"",
+    "[local-stt]   fix: \"Claine\" -\u003e \"KLANE\"",
+    "[local-stt]   fix: \"Loner\" -\u003e \"LONER\"",
+    "[local-stt]   fix: \"Ripit\" -\u003e \"RIPIT\"",
+    "[local-stt]   approach: \"I L S runway two seven\" -\u003e \"I27\"",
+    "[local-stt]   approach: \"r-nav runway two seven\" -\u003e \"R27\"",
+    "[local-stt] command tokens after disregard: 7",
+    "[local-stt]   token[0]: Text=\"proceed\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"cleen\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"4000\" Type=1 Value=4000",
+    "[local-stt]   position ID: found command keyword \"proceed\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 7 tokens",
+    "[local-stt]   tryMatchTemplate \"direct_fix\": keywords matched, consumed=1, next tokens=[direct cleen descend]",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"direct\" against 6 fixes",
+    "[local-stt]   extractFix: no match found for \"direct\"",
+    "[local-stt]   no match at token[0]=\"proceed\", skipping",
+    "[local-stt]   tryMatchTemplate \"direct_fix\": keywords matched, consumed=1, next tokens=[cleen descend and]",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"cleen\" against 6 fixes",
+    "[local-stt]   extractFix: matched \"cleen\" -\u003e \"KLANE\" (fuzzy 0.85)",
+    "[local-stt]   tryMatchTemplate \"direct_fix\": cmd=\"DKLANE\" argStr=\"KLANE\" consumed=2",
+    "[local-stt]   matched command: \"DKLANE\" (conf=0.85, consumed=2, isThen=false)",
+    "[local-stt]   tryMatchTemplate \"descend_maintain\": cmd=\"D40\" argStr=\"40\" consumed=4",
+    "[local-stt]   tryMatchTemplate \"descend\": cmd=\"D40\" argStr=\"40\" consumed=4",
+    "[local-stt]   matched command: \"D40\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[DKLANE D40] (avgConf=0.93)",
+    "[local-stt] parsed commands: [DKLANE D40] (conf=0.93)",
+    "[local-stt] validated commands: [DKLANE D40] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"DLH7LT DKLANE D40\" (conf=0.93, time=418.042µs) ==="
+  ]
+}

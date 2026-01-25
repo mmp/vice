@@ -1,0 +1,189 @@
+{
+  "time": "2026-01-24T23:14:14.51012343Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "JetBlue 5218, turn right heading 310, join the localizer",
+  "whisper_duration_ms": 1196.746,
+  "audio_duration_ms": 3328,
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "callsign": "JBU5218",
+  "command": "R310 I",
+  "stt_aircraft": {
+    "Alaska 5261": {
+      "Callsign": "ASA5261",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Cohas": "COHAS",
+        "Logan": "KBOS",
+        "Nimoy": "NIMOY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    },
+    "Jazz 601": {
+      "Callsign": "JZA601",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Bech": "BECHH",
+        "Ben": "BENNN",
+        "Cohas": "COHAS",
+        "Logan": "KBOS",
+        "Nimoy": "NIMOY",
+        "Scitu": "SCITU"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 4210,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    },
+    "JetBlue 31": {
+      "Callsign": "JBU31",
+      "AircraftType": "E190",
+      "Fixes": {
+        "Logan": "KBOS",
+        "Nimoy": "NIMOY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 3000,
+      "State": "on approach",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "JetBlue 5218": {
+      "Callsign": "JBU5218",
+      "AircraftType": "E190",
+      "Fixes": {
+        "Bech": "BECHH",
+        "Ben": "BENNN",
+        "Cohas": "COHAS",
+        "Logan": "KBOS",
+        "Nimoy": "NIMOY",
+        "Pilgrim": "PLGRM",
+        "Scitu": "SCITU",
+        "Water": "WAATR"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "OOSHN5",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    },
+    "JetBlue 9471": {
+      "Callsign": "JBU9471",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Ben": "BENNN",
+        "Berei": "BEREI",
+        "Bog": "BBOGG",
+        "Cohas": "COHAS",
+        "Logan": "KBOS",
+        "Nimoy": "NIMOY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 7014,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"JetBlue 5218, turn right heading 310, join the localizer\"",
+    "[local-stt] normalized words: [jetblue 5218 turn right heading 310 join the localizer]",
+    "[local-stt] tokens: 9",
+    "[local-stt]   token[0]: Text=\"jetblue\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"5218\" Type=1 Value=5218",
+    "[local-stt]   token[2]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"310\" Type=1 Value=310",
+    "[local-stt]   token[6]: Text=\"join\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 9 tokens, 5 aircraft",
+    "[local-stt]   exact match: \"jetblue 5218\" -\u003e \"JBU5218\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"JBU5218\" SpokenKey=\"JetBlue 5218\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4000 Fixes=8 Approaches=3 AssignedApproach=\"ILS Runway 33L\"",
+    "[local-stt]   fix: \"Scitu\" -\u003e \"SCITU\"",
+    "[local-stt]   fix: \"Logan\" -\u003e \"KBOS\"",
+    "[local-stt]   fix: \"Ben\" -\u003e \"BENNN\"",
+    "[local-stt]   fix: \"Cohas\" -\u003e \"COHAS\"",
+    "[local-stt]   fix: \"Nimoy\" -\u003e \"NIMOY\"",
+    "[local-stt]   fix: \"Water\" -\u003e \"WAATR\"",
+    "[local-stt]   fix: \"Pilgrim\" -\u003e \"PLGRM\"",
+    "[local-stt]   fix: \"Bech\" -\u003e \"BECHH\"",
+    "[local-stt]   approach: \"r-nav zulu runway three three left\" -\u003e \"Z3L\"",
+    "[local-stt]   approach: \"r-nav x-ray runway three three left\" -\u003e \"X3L\"",
+    "[local-stt]   approach: \"I L S runway three three left\" -\u003e \"I3L\"",
+    "[local-stt] command tokens after disregard: 7",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"310\" Type=1 Value=310",
+    "[local-stt]   token[4]: Text=\"join\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"turn\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 7 tokens",
+    "[local-stt]   tryMatchTemplate \"turn_right_heading\": cmd=\"R310\" argStr=\"310\" consumed=4",
+    "[local-stt]   tryMatchTemplate \"turn_right_only\": cmd=\"R310\" argStr=\"310\" consumed=4",
+    "[local-stt]   matched command: \"R310\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   tryMatchTemplate \"intercept_localizer\": cmd=\"I\" argStr=\"\" consumed=3",
+    "[local-stt]   matched command: \"I\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt] ParseCommands: result=[R310 I] (avgConf=1.00)",
+    "[local-stt] parsed commands: [R310 I] (conf=1.00)",
+    "[local-stt] validated commands: [R310 I] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"JBU5218 R310 I\" (conf=1.00, time=549.209µs) ==="
+  ]
+}

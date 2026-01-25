@@ -970,11 +970,23 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 			return CommandMatch{}, 0
 		}
 		consumed += fixConsumed
-		// Skip "at" and filler words between fix and altitude
+		// Skip "at" and filler words, detect "or above" / "or below" modifiers
+		altModifier := "" // "+" for at or above, "-" for at or below
 		for consumed < len(tokens) {
 			text := strings.ToLower(tokens[consumed].Text)
 			if text == "at" || IsFillerWord(text) {
 				consumed++
+			} else if text == "or" && consumed+1 < len(tokens) {
+				nextText := strings.ToLower(tokens[consumed+1].Text)
+				if nextText == "above" {
+					altModifier = "+"
+					consumed += 2
+				} else if nextText == "below" {
+					altModifier = "-"
+					consumed += 2
+				} else {
+					break
+				}
 			} else {
 				break
 			}
@@ -984,8 +996,8 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 			return CommandMatch{}, 0
 		}
 		consumed += altConsumed
-		// Build command directly for compound type
-		cmd := fmt.Sprintf(tmpl.OutputFmt, fix, alt)
+		// Build command directly for compound type, with optional modifier
+		cmd := fmt.Sprintf(tmpl.OutputFmt, fix, alt) + altModifier
 		logLocalStt("  tryMatchTemplate %q: cmd=%q fix=%q alt=%d consumed=%d",
 			tmpl.Name, cmd, fix, alt, consumed)
 		return CommandMatch{

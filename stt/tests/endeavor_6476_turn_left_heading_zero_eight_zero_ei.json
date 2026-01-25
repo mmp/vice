@@ -1,0 +1,151 @@
+{
+  "time": "2026-01-21T23:06:47.365099-05:00",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_arm64.s:1268:runtime.goexit"
+  ],
+  "transcript": "Endeavor 6476, turn left, heading zero eight zero eight,",
+  "whisper_duration_ms": 391.938,
+  "audio_duration_ms": 2944,
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "callsign": "EDV6476",
+  "command": "L080",
+  "stt_aircraft": {
+    "EDV6476": {
+      "Callsign": "EDV6476",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Kingston": "IGN",
+        "Valerie": "VALRE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ALB7",
+      "STAR": "",
+      "Altitude": 3033,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "Endeavor 6476": {
+      "Callsign": "EDV6476",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Kingston": "IGN",
+        "Valerie": "VALRE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ALB7",
+      "STAR": "",
+      "Altitude": 3033,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "N8038Q": {
+      "Callsign": "N8038Q",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Cambridge": "CAM"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 2167,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "embraer phenom one hundred three eight kebeck": {
+      "Callsign": "N8038Q",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Cambridge": "CAM"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 2167,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1
+    },
+    "november 8038Q": {
+      "Callsign": "N8038Q",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Cambridge": "CAM"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 2167,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "phenom one hundred three eight kebeck": {
+      "Callsign": "N8038Q",
+      "AircraftType": "E50P",
+      "Fixes": {
+        "Cambridge": "CAM"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 2167,
+      "State": "departure",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Endeavor 6476, turn left, heading zero eight zero eight,\"",
+    "[local-stt] normalized words: [endeavor 6476 turn left heading 0 8 0 8]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"endeavor\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"6476\" Type=1 Value=6476",
+    "[local-stt]   token[2]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"808\" Type=1 Value=808",
+    "[local-stt] MatchCallsign: 6 tokens, 6 aircraft",
+    "[local-stt]   exact match: \"endeavor 6476\" -\u003e \"EDV6476\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"EDV6476\" SpokenKey=\"Endeavor 6476\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=3033 Fixes=2 Approaches=0 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"Kingston\" -\u003e \"IGN\"",
+    "[local-stt]   fix: \"Valerie\" -\u003e \"VALRE\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"808\" Type=1 Value=808",
+    "[local-stt]   position ID: found command keyword \"turn\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   no match at token[0]=\"turn\", skipping",
+    "[local-stt]   no match at token[1]=\"left\", skipping",
+    "[local-stt]   no match at token[2]=\"heading\", skipping",
+    "[local-stt]   no match at token[3]=\"808\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"EDV6476 AGAIN\" (conf=1.00, time=229.875µs) ==="
+  ]
+}
