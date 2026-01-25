@@ -44,8 +44,9 @@ type TrackState struct {
 
 	HoverVCI bool // if the user is hovering over the VCI field
 
-	// add more as we figure out what to do...
+	HSFHide bool
 
+	// add more as we figure out what to do...
 }
 
 type aircraftFixCoordinates struct {

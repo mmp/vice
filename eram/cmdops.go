@@ -55,6 +55,24 @@ func init() {
 	// QF - Flight Plan Display
 	registerCommand(CommandModeNone, "QF [FLID]|QF[SLEW]", handleFlightPlanReadout)
 
+	// QS - HSF (Heading / Speed-Mach / Free-text) scratchpad handling
+	// Keyboard:
+	//   QS `<text> <FLID>    - set free text (backtick is clear-weather symbol)
+	//   QS <heading> <FLID>  - set heading (1-4 chars; not validated)
+	//   QS /<speedSpec> <FLID> - set speed or mach (see HSF_SPEED parser)
+	//   QS */ <FLID>         - delete heading
+	//   QS /* <FLID>         - delete speed/mach
+	//   QS * <FLID>          - delete all HSF data
+	//   QS <FLID>            - toggle display of HSF data
+	// Clicked: replace <FLID> with [SLEW]
+	registerCommand(CommandModeNone, "QS [HSF_TEXT] [FLID]|QS [HSF_TEXT][SLEW]", handleQSFreeText)
+	registerCommand(CommandModeNone, "QS [HSF_SPEED] [FLID]|QS [HSF_SPEED][SLEW]", handleQSSpeed)
+	registerCommand(CommandModeNone, "QS [HSF_HDG] [FLID]|QS [HSF_HDG][SLEW]", handleQSHeading)
+	registerCommand(CommandModeNone, "QS */ [FLID]|QS */[SLEW]", handleQSDeleteHeading)
+	registerCommand(CommandModeNone, "QS /* [FLID]|QS /*[SLEW]", handleQSDeleteSpeed)
+	registerCommand(CommandModeNone, "QS * [FLID]|QS *[SLEW]", handleQSDeleteAll)
+	registerCommand(CommandModeNone, "QS [FLID]|QS[SLEW]", handleQSToggleHSF)
+
 	// MR - Map request (keyboard only)
 	// MR: List available map groups
 	// MR [GROUP]: Load map group
@@ -668,4 +686,102 @@ func handleDrawRoutePoint(ep *ERAMPane, ctx *panes.Context, pos [2]float32) Comm
 
 func isDigit(r rune) bool {
 	return unicode.IsDigit(r)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// QS - HSF (Heading / Speed-Mach / Free-text) Handlers
+
+func qsFDBDataAcceptMsg(trk *sim.Track) string {
+	if trk == nil || trk.FlightPlan == nil {
+		return ""
+	}
+	return fmt.Sprintf("ACCEPT\nFDB DATA\n%s/%s", trk.ADSBCallsign.String(), trk.FlightPlan.CID)
+}
+
+func handleQSToggleHSF(ep *ERAMPane, trk *sim.Track) CommandStatus {
+	if trk == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+	state := ep.TrackState[trk.ADSBCallsign]
+	if state == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+	state.HSFHide = !state.HSFHide
+	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+}
+
+func handleQSDeleteHeading(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+	if trk == nil || trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+
+	var fp sim.FlightPlanSpecifier
+	fp.Scratchpad.Set("")
+	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+}
+
+func handleQSDeleteSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+	if trk == nil || trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+	var fp sim.FlightPlanSpecifier
+	fp.SecondaryScratchpad.Set("")
+	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+}
+
+func handleQSDeleteAll(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
+	if trk == nil || trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+	var fp sim.FlightPlanSpecifier
+	fp.Scratchpad.Set("")
+	fp.SecondaryScratchpad.Set("")
+	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+}
+
+func handleQSHeading(ep *ERAMPane, ctx *panes.Context, heading string, trk *sim.Track) CommandStatus {
+	if trk == nil || trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+
+	var fp sim.FlightPlanSpecifier
+	fp.Scratchpad.Set(heading)
+	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+
+	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+}
+
+func handleQSSpeed(ep *ERAMPane, ctx *panes.Context, speed string, trk *sim.Track) CommandStatus {
+	if trk == nil || trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+
+	var fp sim.FlightPlanSpecifier
+	fp.SecondaryScratchpad.Set(speed)
+	if isQSFreeText(trk.FlightPlan.Scratchpad) {
+		fp.Scratchpad.Set("")
+	}
+	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+
+	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+}
+
+func handleQSFreeText(ep *ERAMPane, ctx *panes.Context, freeText string, trk *sim.Track) CommandStatus {
+	if trk == nil || trk.FlightPlan == nil {
+		return CommandStatus{err: ErrERAMIllegalACID}
+	}
+
+	var fp sim.FlightPlanSpecifier
+	fp.Scratchpad.Set(freeText)
+	fp.SecondaryScratchpad.Set("")
+	ep.modifyFlightPlan(ctx, trk.FlightPlan.CID, fp)
+
+	return CommandStatus{clear: true, bigOutput: qsFDBDataAcceptMsg(trk)}
+}
+
+func isQSFreeText(s string) bool {
+	return strings.HasPrefix(s, circleClear)
 }

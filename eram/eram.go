@@ -445,8 +445,8 @@ func (inp *inputText) AddBasic(ps *Preferences, str string) {
 }
 
 func formatInput(str string) string {
-	output := strings.ReplaceAll(str, "`", "y")
-	output = strings.ReplaceAll(output, "~", "z")
+	output := strings.ReplaceAll(str, "`", circleClear)
+	output = strings.ReplaceAll(output, "~", circleFilled)
 	return output
 }
 
