@@ -348,6 +348,9 @@ var phoneticCommandBlocklist = map[string][]string{
 	"redu":      {"right"},         // "redu-speed" is "reduce speed", not "right speed"
 	"redo":      {"right"},         // "redo speed" is "reduce speed", not "right speed"
 	"towards":   {"reduce"},        // "contact towards" is not "reduce"
+	// Speed-related words should match "speed" not "intercept" (suffix match on SPT)
+	"rotospeed": {"intercept"}, // STT garble of "reduce speed"
+	"speedo":    {"intercept"}, // STT garble of "speed"
 	// NATO phonetic letters should not match command keywords
 	"tango":   {"heading"},          // NATO letter T, not "heading"
 	"juliet":  {"left"},             // NATO letter J, not "left"
