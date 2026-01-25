@@ -1,0 +1,219 @@
+{
+  "time": "2026-01-22T21:38:15.434727-05:00",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_arm64.s:1268:runtime.goexit"
+  ],
+  "transcript": "Terger 622, Heavy cleared, ILS 27, upgrade.",
+  "whisper_duration_ms": 412.059,
+  "audio_duration_ms": 2816,
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "callsign": "THY622",
+  "command": "CI27",
+  "stt_aircraft": {
+    "DAL406": {
+      "Callsign": "DAL406",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Aibee": "AYBEE",
+        "Claine": "KLANE",
+        "Harris": "HRRIS",
+        "Logan International Airport": "KBOS",
+        "Loner": "LONER",
+        "Ripit": "RIPIT",
+        "River": "REVER",
+        "Seahag": "SEHAG",
+        "Spysid": "SPYSD",
+        "Winter": "WINTA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven": "I27",
+        "r-nav runway two seven": "R27"
+      },
+      "AssignedApproach": "ILS Runway 27",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 10559,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    },
+    "Delta 406": {
+      "Callsign": "DAL406",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Aibee": "AYBEE",
+        "Claine": "KLANE",
+        "Harris": "HRRIS",
+        "Logan International Airport": "KBOS",
+        "Loner": "LONER",
+        "Ripit": "RIPIT",
+        "River": "REVER",
+        "Seahag": "SEHAG",
+        "Spysid": "SPYSD",
+        "Winter": "WINTA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven": "I27",
+        "r-nav runway two seven": "R27"
+      },
+      "AssignedApproach": "ILS Runway 27",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 10559,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    },
+    "NKS8109": {
+      "Callsign": "NKS8109",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Aibee": "AYBEE",
+        "Claine": "KLANE",
+        "Clebb": "KLEBB",
+        "Cradle": "CRADL",
+        "Hokdu": "HOKDU",
+        "Krann": "KRANN",
+        "Logan International Airport": "KBOS",
+        "Loner": "LONER",
+        "Ripit": "RIPIT"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven": "I27",
+        "r-nav runway two seven": "R27"
+      },
+      "AssignedApproach": "ILS Runway 27",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 13602,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "Spirit Wings 8109": {
+      "Callsign": "NKS8109",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Aibee": "AYBEE",
+        "Claine": "KLANE",
+        "Clebb": "KLEBB",
+        "Cradle": "CRADL",
+        "Hokdu": "HOKDU",
+        "Krann": "KRANN",
+        "Logan International Airport": "KBOS",
+        "Loner": "LONER",
+        "Ripit": "RIPIT"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven": "I27",
+        "r-nav runway two seven": "R27"
+      },
+      "AssignedApproach": "ILS Runway 27",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 13602,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "THY622": {
+      "Callsign": "THY622",
+      "AircraftType": "A332",
+      "Fixes": {
+        "Claine": "KLANE",
+        "Logan International Airport": "KBOS",
+        "Loner": "LONER",
+        "Ripit": "RIPIT"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven": "I27",
+        "r-nav runway two seven": "R27"
+      },
+      "AssignedApproach": "ILS Runway 27",
+      "SID": "",
+      "STAR": "OOSHN5",
+      "Altitude": 7652,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    },
+    "Turkish 622 heavy": {
+      "Callsign": "THY622",
+      "AircraftType": "A332",
+      "Fixes": {
+        "Claine": "KLANE",
+        "Logan International Airport": "KBOS",
+        "Loner": "LONER",
+        "Ripit": "RIPIT"
+      },
+      "CandidateApproaches": {
+        "I L S runway two seven": "I27",
+        "r-nav runway two seven": "R27"
+      },
+      "AssignedApproach": "ILS Runway 27",
+      "SID": "",
+      "STAR": "OOSHN5",
+      "Altitude": 7652,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Terger 622, Heavy cleared, ILS 27, upgrade.\"",
+    "[local-stt] normalized words: [terger 622 heavy cleared ils 27 upgrade]",
+    "[local-stt] tokens: 7",
+    "[local-stt]   token[0]: Text=\"terger\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"622\" Type=1 Value=622",
+    "[local-stt]   token[2]: Text=\"heavy\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"27\" Type=1 Value=27",
+    "[local-stt]   token[6]: Text=\"upgrade\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 7 tokens, 6 aircraft",
+    "[local-stt]   candidate \"Spirit Wings 8109\" (ICAO=\"NKS8109\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"NKS8109\" (ICAO=\"NKS8109\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Turkish 622 heavy\" (ICAO=\"THY622\"): score=1.00 consumed=3",
+    "[local-stt]   candidate \"THY622\" (ICAO=\"THY622\"): score=1.00 consumed=3",
+    "[local-stt]   candidate \"Delta 406\" (ICAO=\"DAL406\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"DAL406\" (ICAO=\"DAL406\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Turkish 622 heavy\" at pos 1: score=1.00 (adjusted=0.90) consumed=2",
+    "[local-stt]   candidate \"THY622\" at pos 1: score=1.00 (adjusted=0.90) consumed=2",
+    "[local-stt]   accepted: \"THY622\" (conf=1.00, consumed=3, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"THY622\" SpokenKey=\"Turkish 622 heavy\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=7652 Fixes=4 Approaches=2 AssignedApproach=\"ILS Runway 27\"",
+    "[local-stt]   fix: \"Loner\" -\u003e \"LONER\"",
+    "[local-stt]   fix: \"Ripit\" -\u003e \"RIPIT\"",
+    "[local-stt]   fix: \"Logan International Airport\" -\u003e \"KBOS\"",
+    "[local-stt]   fix: \"Claine\" -\u003e \"KLANE\"",
+    "[local-stt]   approach: \"I L S runway two seven\" -\u003e \"I27\"",
+    "[local-stt]   approach: \"r-nav runway two seven\" -\u003e \"R27\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"27\" Type=1 Value=27",
+    "[local-stt]   token[3]: Text=\"upgrade\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"cleared\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   tryMatchTemplate \"cleared_approach\": cmd=\"CI27\" argStr=\"I27\" consumed=3",
+    "[local-stt]   matched command: \"CI27\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   no match at token[3]=\"upgrade\", skipping",
+    "[local-stt] ParseCommands: result=[CI27] (avgConf=1.00)",
+    "[local-stt] parsed commands: [CI27] (conf=1.00)",
+    "[local-stt] validated commands: [CI27] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"THY622 CI27\" (conf=1.00, time=276.791µs) ==="
+  ]
+}

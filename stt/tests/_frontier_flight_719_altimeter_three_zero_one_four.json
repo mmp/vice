@@ -1,0 +1,157 @@
+{
+  "time": "2026-01-24T11:15:26.398942613Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:975:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": ", Frontier Flight 719, Altimeter three zero one four, expect the I L S approach, runway three one right,",
+  "whisper_duration_ms": 739.77,
+  "audio_duration_ms": 11136,
+  "processor": "GPU: NVIDIA GeForce GTX 1650 (4149MB)",
+  "callsign": "FFT719",
+  "command": "EI1R",
+  "stt_aircraft": {
+    "AAL1470": {
+      "Callsign": "AAL1470",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Catod": "CATOD",
+        "John F Kennedy International Airport": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 2000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    },
+    "American 1470": {
+      "Callsign": "AAL1470",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Catod": "CATOD",
+        "John F Kennedy International Airport": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 2000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    },
+    "FFT719": {
+      "Callsign": "FFT719",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    },
+    "Frontier Flight 719": {
+      "Callsign": "FFT719",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \", Frontier Flight 719, Altimeter three zero one four, expect the I L S approach, runway three one right,\"",
+    "[local-stt] normalized words: [frontier flight 719 altimeter 3 0 1 4 expect the ils approach runway 3 1 right]",
+    "[local-stt] tokens: 12",
+    "[local-stt]   token[0]: Text=\"frontier\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"flight\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"719\" Type=1 Value=719",
+    "[local-stt]   token[3]: Text=\"altimeter\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"3014\" Type=1 Value=3014",
+    "[local-stt]   token[5]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"31\" Type=1 Value=31",
+    "[local-stt]   token[11]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 12 tokens, 4 aircraft",
+    "[local-stt]   exact match: \"frontier flight 719\" -\u003e \"FFT719\" (consumed 3)",
+    "[local-stt] callsign match: Callsign=\"FFT719\" SpokenKey=\"Frontier Flight 719\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4000 Fixes=1 Approaches=4 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"John F Kennedy International Airport\" -\u003e \"KJFK\"",
+    "[local-stt]   approach: \"r-nav runway three one right\" -\u003e \"R1R\"",
+    "[local-stt]   approach: \"I L S runway three one left\" -\u003e \"I1L\"",
+    "[local-stt]   approach: \"r-nav runway three one left\" -\u003e \"R1L\"",
+    "[local-stt]   approach: \"I L S runway three one right\" -\u003e \"I1R\"",
+    "[local-stt] command tokens after disregard: 9",
+    "[local-stt]   token[0]: Text=\"altimeter\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"3014\" Type=1 Value=3014",
+    "[local-stt]   token[2]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"31\" Type=1 Value=31",
+    "[local-stt]   token[8]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"expect\" at position 2 - not just position ID",
+    "[local-stt] ParseCommands: 9 tokens",
+    "[local-stt]   no match at token[0]=\"altimeter\", skipping",
+    "[local-stt]   no match at token[1]=\"3014\", skipping",
+    "[local-stt]   tryMatchTemplate \"expect_approach\": cmd=\"EI1R\" argStr=\"I1R\" consumed=7",
+    "[local-stt]   matched command: \"EI1R\" (conf=0.88, consumed=7, isThen=false)",
+    "[local-stt] ParseCommands: result=[EI1R] (avgConf=0.88)",
+    "[local-stt] parsed commands: [EI1R] (conf=0.88)",
+    "[local-stt] validated commands: [EI1R] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"FFT719 EI1R\" (conf=0.88, time=998µs) ==="
+  ]
+}

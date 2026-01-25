@@ -1,0 +1,316 @@
+{
+  "time": "2026-01-23T14:45:42.734041717Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:975:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Delta 32, maintain one seven zero knots, till final contact tower.",
+  "whisper_duration_ms": 410.509,
+  "audio_duration_ms": 3968,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 (12108MB)",
+  "callsign": "DAL32",
+  "command": "S170 TO",
+  "stt_aircraft": {
+    "DAL32": {
+      "Callsign": "DAL32",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Hews": "HEWES",
+        "Orlando International Airport": "KMCO"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "AssignedApproach": "ILS Runway 35R",
+      "SID": "",
+      "STAR": "SNFLD3",
+      "Altitude": 1600,
+      "State": "on approach",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "Delta 32": {
+      "Callsign": "DAL32",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Hews": "HEWES",
+        "Orlando International Airport": "KMCO"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "AssignedApproach": "ILS Runway 35R",
+      "SID": "",
+      "STAR": "SNFLD3",
+      "Altitude": 1600,
+      "State": "on approach",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "FFT658": {
+      "Callsign": "FFT658",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Am-ebe": "AMEBE",
+        "Birdie": "BERDY",
+        "Exban": "EXBAN",
+        "Lorra": "LORRA",
+        "Orlando International Airport": "KMCO",
+        "Rutney": "RUTNE"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "AssignedApproach": "RNAV Runway 36L",
+      "SID": "",
+      "STAR": "GRNCH5",
+      "Altitude": 3069,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "FFT9942": {
+      "Callsign": "FFT9942",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Am-ebe": "AMEBE",
+        "Birdie": "BERDY",
+        "Exban": "EXBAN",
+        "Orlando International Airport": "KMCO",
+        "Rutney": "RUTNE"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "AssignedApproach": "RNAV Runway 36L",
+      "SID": "",
+      "STAR": "PRICY4",
+      "Altitude": 5067,
+      "State": "on approach",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "Frontier Flight 658": {
+      "Callsign": "FFT658",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Am-ebe": "AMEBE",
+        "Birdie": "BERDY",
+        "Exban": "EXBAN",
+        "Lorra": "LORRA",
+        "Orlando International Airport": "KMCO",
+        "Rutney": "RUTNE"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "AssignedApproach": "RNAV Runway 36L",
+      "SID": "",
+      "STAR": "GRNCH5",
+      "Altitude": 3069,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "Frontier Flight 9942": {
+      "Callsign": "FFT9942",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Am-ebe": "AMEBE",
+        "Birdie": "BERDY",
+        "Exban": "EXBAN",
+        "Orlando International Airport": "KMCO",
+        "Rutney": "RUTNE"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "AssignedApproach": "RNAV Runway 36L",
+      "SID": "",
+      "STAR": "PRICY4",
+      "Altitude": 5067,
+      "State": "on approach",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "SWA422": {
+      "Callsign": "SWA422",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Cruise": "CRUSE",
+        "Fesha": "FESHA",
+        "Hahna": "HAHNA",
+        "Hews": "HEWES",
+        "Orlando International Airport": "KMCO",
+        "Seray": "SERAY",
+        "Wizard": "WISRD"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "AssignedApproach": "ILS Runway 35R",
+      "SID": "",
+      "STAR": "RIDES2",
+      "Altitude": 7426,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "SWA9786": {
+      "Callsign": "SWA9786",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Cruise": "CRUSE",
+        "Cubal": "CUBAL",
+        "Fesha": "FESHA",
+        "Hahna": "HAHNA",
+        "Hews": "HEWES",
+        "Orlando International Airport": "KMCO",
+        "Seray": "SERAY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "AssignedApproach": "ILS Runway 35R",
+      "SID": "",
+      "STAR": "SNFLD3",
+      "Altitude": 4609,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "Southwest 422": {
+      "Callsign": "SWA422",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Cruise": "CRUSE",
+        "Fesha": "FESHA",
+        "Hahna": "HAHNA",
+        "Hews": "HEWES",
+        "Orlando International Airport": "KMCO",
+        "Seray": "SERAY",
+        "Wizard": "WISRD"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "AssignedApproach": "ILS Runway 35R",
+      "SID": "",
+      "STAR": "RIDES2",
+      "Altitude": 7426,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    },
+    "Southwest 9786": {
+      "Callsign": "SWA9786",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Cruise": "CRUSE",
+        "Cubal": "CUBAL",
+        "Fesha": "FESHA",
+        "Hahna": "HAHNA",
+        "Hews": "HEWES",
+        "Orlando International Airport": "KMCO",
+        "Seray": "SERAY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "AssignedApproach": "ILS Runway 35R",
+      "SID": "",
+      "STAR": "SNFLD3",
+      "Altitude": 4609,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Delta 32, maintain one seven zero knots, till final contact tower.\"",
+    "[local-stt] normalized words: [delta 32 maintain 1 7 0 knots till final contact tower]",
+    "[local-stt] tokens: 9",
+    "[local-stt]   token[0]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"32\" Type=1 Value=32",
+    "[local-stt]   token[2]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"170\" Type=1 Value=170",
+    "[local-stt]   token[4]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"till\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"final\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"tower\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 9 tokens, 10 aircraft",
+    "[local-stt]   exact match: \"delta 32\" -\u003e \"DAL32\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"DAL32\" SpokenKey=\"Delta 32\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"on approach\" Altitude=1600 Fixes=2 Approaches=4 AssignedApproach=\"ILS Runway 35R\"",
+    "[local-stt]   fix: \"Hews\" -\u003e \"HEWES\"",
+    "[local-stt]   fix: \"Orlando International Airport\" -\u003e \"KMCO\"",
+    "[local-stt]   approach: \"I L S runway three five right\" -\u003e \"I5R\"",
+    "[local-stt]   approach: \"r-nav runway three five right\" -\u003e \"R5R\"",
+    "[local-stt]   approach: \"I L S runway three six left\" -\u003e \"I6L\"",
+    "[local-stt]   approach: \"r-nav runway three six left\" -\u003e \"R6L\"",
+    "[local-stt] command tokens after disregard: 7",
+    "[local-stt]   token[0]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"170\" Type=1 Value=170",
+    "[local-stt]   token[2]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"till\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"final\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"tower\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"maintain\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 7 tokens",
+    "[local-stt]   tryMatchTemplate \"maintain_speed\": cmd=\"S170\" argStr=\"170\" consumed=2",
+    "[local-stt]   tryMatchTemplate \"contact_tower\": cmd=\"TO\" argStr=\"\" consumed=7",
+    "[local-stt]   matched command: \"TO\" (conf=1.00, consumed=7, isThen=false)",
+    "[local-stt] ParseCommands: result=[TO] (avgConf=1.00)",
+    "[local-stt] parsed commands: [TO] (conf=1.00)",
+    "[local-stt] validated commands: [TO] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"DAL32 TO\" (conf=1.00, time=0s) ==="
+  ]
+}
