@@ -840,7 +840,10 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) 
 		fp.PilotReportedAltitude = spec.PilotReportedAltitude.Get()
 	}
 	if spec.Scratchpad.IsSet {
-		if fp.Scratchpad == spec.Scratchpad.Get() {
+		if spec.Scratchpad.Get() == "" {
+			fp.Scratchpad = ""
+			fp.PriorScratchpad = ""
+		} else if fp.Scratchpad == spec.Scratchpad.Get() {
 			fp.Scratchpad = fp.PriorScratchpad
 		} else {
 			fp.PriorScratchpad = fp.Scratchpad
@@ -848,7 +851,10 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) 
 		}
 	}
 	if spec.SecondaryScratchpad.IsSet {
-		if fp.SecondaryScratchpad == spec.SecondaryScratchpad.Get() {
+		if spec.SecondaryScratchpad.Get() == "" {
+			fp.SecondaryScratchpad = ""
+			fp.PriorSecondaryScratchpad = ""
+		} else if fp.SecondaryScratchpad == spec.SecondaryScratchpad.Get() {
 			fp.SecondaryScratchpad = fp.PriorSecondaryScratchpad
 		} else {
 			fp.PriorSecondaryScratchpad = fp.SecondaryScratchpad

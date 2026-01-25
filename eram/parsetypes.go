@@ -46,6 +46,11 @@ var typeParsers = []typeParser{
 	&flidParser{},
 	&slewParser{},
 
+	// QS HSF (heading / speed-mach / free-text)
+	&hsfTextParser{},
+	&hsfSpeedParser{},
+	&hsfHeadingParser{},
+
 	// Altitude parsers
 	&eramAltAParser{},
 	&eramAltIParser{},
@@ -579,3 +584,168 @@ func (h *minutesParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandIn
 
 func (h *minutesParser) GoType() reflect.Type { return reflect.TypeOf(0) }
 func (h *minutesParser) ConsumesClick() bool  { return false }
+
+///////////////////////////////////////////////////////////////////////////
+// QS HSF parsers
+
+type hsfTextParser struct{}
+
+func (h *hsfTextParser) Identifier() string { return "HSF_TEXT" }
+
+func (h *hsfTextParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
+	field, remaining := util.CutAtSpace(text)
+	if field == "" {
+		return nil, text, false, nil
+	}
+	if field[0] != '`' && !strings.HasPrefix(field, circleClear) {
+		return nil, text, false, nil
+	}
+	// Require at least one character after the indicator.
+	if len(field) < 2 {
+		return nil, text, true, ErrCommandFormat
+	}
+	// Free text is limited to 8 characters (excluding the indicator).
+	if len(field)-1 > 8 {
+		return nil, text, true, NewERAMError("INVALID TEXT FORMAT")
+	}
+	return field, remaining, true, nil
+}
+
+func (h *hsfTextParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *hsfTextParser) ConsumesClick() bool  { return false }
+
+// Headings don't have to be actual headings, just cannot be > 4 characters.
+type hsfHeadingParser struct{}
+
+func (h *hsfHeadingParser) Identifier() string { return "HSF_HDG" }
+
+func (h *hsfHeadingParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
+	field, remaining := util.CutAtSpace(text)
+	if field == "" {
+		return nil, text, false, nil
+	}
+	// Disallow other QS syntaxes from being interpreted as headings.
+	if strings.HasPrefix(field, "/") || strings.HasPrefix(field, "`") || strings.HasPrefix(field, "*") {
+		return nil, text, false, nil
+	}
+	if len(field) > 4 {
+		return nil, text, true, NewERAMError("INVALID HEADING FORMAT")
+	}
+	return field, remaining, true, nil
+}
+
+func (h *hsfHeadingParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *hsfHeadingParser) ConsumesClick() bool  { return false }
+
+// hsfSpeedParser parses QS speed/mach scratchpad entries. It returns the canonical
+// form used for storage and display (e.g. "S250", "M75", "S250+", "M75-").
+//
+// Supported formats:
+//   - /250     => S250 (inferred, 3 digits => knots)
+//   - /75      => M75  (inferred, 2 digits => mach)
+//   - /S250    => S250 (explicit speed)
+//   - /M75     => M75  (explicit mach)
+//
+// Modifiers:
+//   - Inferred: /250+, /75-, /M75- allowed
+//
+// Restrictions:
+//   - /S250+ invalid
+//   - explicit mach with 3 digits (e.g. /M750) cannot have +/- (e.g. /M750+ invalid)
+type hsfSpeedParser struct{}
+
+func (h *hsfSpeedParser) Identifier() string { return "HSF_SPEED" }
+
+func (h *hsfSpeedParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
+	field, remaining := util.CutAtSpace(text)
+	if field == "" || field[0] != '/' {
+		return nil, text, false, nil
+	}
+
+	rest := field[1:]
+	if rest == "" {
+		return nil, text, true, NewERAMError("INVALID SPEED FORMAT")
+	}
+
+	// Optional trailing + or -
+	var mod byte
+	if n := len(rest); n > 0 && (rest[n-1] == '+' || rest[n-1] == '-') {
+		mod = rest[n-1]
+		rest = rest[:n-1]
+	}
+	if rest == "" {
+		return nil, text, true, NewERAMError("INVALID SPEED FORMAT")
+	}
+
+	upper := strings.ToUpper(rest)
+
+	// Explicit speed: /S250. + and - don't work here.
+	if strings.HasPrefix(upper, "S") {
+		if mod != 0 {
+			return nil, text, true, NewERAMError("INVALID SPEED FORMAT")
+		}
+		d := rest[1:]
+		if len(d) != 3 || !allDigits(d) {
+			return nil, text, true, NewERAMError("INVALID SPEED FORMAT")
+		}
+		return "S" + d, remaining, true, nil
+	}
+
+	// Explicit mach: /M75 or /M750. Can be 2-3 digits. + and - don't work when 3 digits.
+	if strings.HasPrefix(upper, "M") {
+		d := rest[1:]
+		if len(d) < 2 || len(d) > 3 || !allDigits(d) {
+			return nil, text, true, NewERAMError("INVALID SPEED FORMAT")
+		}
+
+		if v, _ := strconv.Atoi(d); v < 10 || v > 999 { // 2-3 digits restriction
+			return nil, text, true, NewERAMError("INVALID SPEED FORMAT")
+		}
+		if len(d) == 3 && mod != 0 { // 3 digits +/- restriction
+			return nil, text, true, NewERAMError("INVALID SPEED FORMAT")
+		}
+		out := "M" + d
+		if mod != 0 {
+			out += string(mod)
+		}
+		return out, remaining, true, nil
+	}
+
+	// Inferred: digits only. 2 -> mach; 3 -> speed
+	if !allDigits(rest) {
+		return nil, text, true, NewERAMError("INVALID SPEED FORMAT")
+	}
+	switch len(rest) {
+	case 2:
+		// mach
+		if v, _ := strconv.Atoi(rest); v < 10 || v > 99 {
+			return nil, text, true, NewERAMError("INVALID SPEED FORMAT")
+		}
+		out := "M" + rest
+		if mod != 0 {
+			out += string(mod)
+		}
+		return out, remaining, true, nil
+	case 3:
+		// speed
+		out := "S" + rest
+		if mod != 0 {
+			out += string(mod)
+		}
+		return out, remaining, true, nil
+	default:
+		return nil, text, true, NewERAMError("INVALID SPEED FORMAT")
+	}
+}
+
+func (h *hsfSpeedParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *hsfSpeedParser) ConsumesClick() bool  { return false }
+
+func allDigits(s string) bool {
+	for i := 0; i < len(s); i++ {
+		if !isNum(s[i]) {
+			return false
+		}
+	}
+	return true
+}

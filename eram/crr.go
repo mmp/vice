@@ -152,8 +152,8 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 	}
 
 	// Ensure session state.
-	if ep.crrGroups == nil {
-		ep.crrGroups = make(map[string]*CRRGroup)
+	if ep.CRRGroups == nil {
+		ep.CRRGroups = make(map[string]*CRRGroup)
 	}
 
 	// Sizing and styling
@@ -183,8 +183,8 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 	}
 
 	// Sort group labels
-	labels := make([]string, 0, len(ep.crrGroups))
-	for label := range ep.crrGroups {
+	labels := make([]string, 0, len(ep.CRRGroups))
+	for label := range ep.CRRGroups {
 		labels = append(labels, label)
 	}
 	sort.Strings(labels)
@@ -197,7 +197,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 		if contentLines >= maxLines {
 			break
 		}
-		g := ep.crrGroups[label]
+		g := ep.CRRGroups[label]
 		if g == nil {
 			continue
 		}
@@ -418,7 +418,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 		x := cursor[0]
 		y := cursor[1]
 		for _, label := range labels {
-			g := ep.crrGroups[label]
+			g := ep.CRRGroups[label]
 			if g == nil {
 				continue
 			}
@@ -456,11 +456,11 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 					if mouse.Clicked[platform.MouseButtonPrimary] {
 						ep.Input.Set(ps, "LF "+strings.ToUpper(label)+" ")
 					} else {
-						if g := ep.crrGroups[label]; g != nil {
+						if g := ep.CRRGroups[label]; g != nil {
 							if len(g.Aircraft) > 0 {
 								g.Aircraft = make(map[av.ADSBCallsign]struct{})
 							} else {
-								delete(ep.crrGroups, label)
+								delete(ep.CRRGroups, label)
 							}
 						}
 					}
@@ -475,7 +475,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 		if linesRemaining <= 0 {
 			break
 		}
-		g := ep.crrGroups[label]
+		g := ep.CRRGroups[label]
 		if g == nil {
 			continue
 		}
@@ -549,11 +549,11 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 					ep.Input.Set(ps, "LF "+strings.ToUpper(label)+" ")
 				} else {
 					// Middle click: delete contents or group
-					if g := ep.crrGroups[label]; g != nil {
+					if g := ep.CRRGroups[label]; g != nil {
 						if len(g.Aircraft) > 0 {
 							g.Aircraft = make(map[av.ADSBCallsign]struct{})
 						} else {
-							delete(ep.crrGroups, label)
+							delete(ep.CRRGroups, label)
 						}
 					}
 				}
@@ -565,7 +565,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 			for cs, rect := range rows {
 				if rect.Inside(mouse.Pos) {
 					// Toggle remove on either primary or middle click
-					if g := ep.crrGroups[label]; g != nil && g.Aircraft != nil {
+					if g := ep.CRRGroups[label]; g != nil && g.Aircraft != nil {
 						if _, ok := g.Aircraft[cs]; ok {
 							delete(g.Aircraft, cs)
 						}
@@ -751,14 +751,14 @@ func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, origin [2]float32, width flo
 	cursor = math.Add2f(cursor, [2]float32{0, -float32(swRows) * swH})
 
 	// CRR group labels section
-	groupLabels := make([]string, 0, len(ep.crrGroups))
-	for l := range ep.crrGroups {
+	groupLabels := make([]string, 0, len(ep.CRRGroups))
+	for l := range ep.CRRGroups {
 		groupLabels = append(groupLabels, l)
 	}
 	sort.Strings(groupLabels)
 	groupRows := make(map[string]math.Extent2D)
 	for _, l := range groupLabels {
-		groupRows[l] = row(strings.ToUpper(l), blackBg, ep.crrGroups[l].Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[ep.crrGroups[l].Color]), 0, 100))), false)
+		groupRows[l] = row(strings.ToUpper(l), blackBg, ep.CRRGroups[l].Color.BrightRGB(radar.Brightness(math.Clamp(float32(ps.CRR.ColorBright[ep.CRRGroups[l].Color]), 0, 100))), false)
 	}
 	// Draw border around the entire menu
 	p0 := origin
@@ -846,7 +846,7 @@ func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, origin [2]float32, width flo
 		// Assign color to group
 		for label, ex := range groupRows {
 			if ex.Inside(mouse.Pos) {
-				if g := ep.crrGroups[label]; g != nil {
+				if g := ep.CRRGroups[label]; g != nil {
 					g.Color = ps.CRR.SelectedColor
 				}
 				return
@@ -870,13 +870,13 @@ func (ep *ERAMPane) drawCRRFixes(ctx *panes.Context, transforms radar.ScopeTrans
 	ep.crrFixRects = make(map[string]math.Extent2D)
 
 	// Show existing CRR groups as neon-green asterisk plus label at group location.
-	fixLabels := make([]string, 0, len(ep.crrGroups))
-	for l := range ep.crrGroups {
+	fixLabels := make([]string, 0, len(ep.CRRGroups))
+	for l := range ep.CRRGroups {
 		fixLabels = append(fixLabels, l)
 	}
 	sort.Strings(fixLabels)
 	for _, l := range fixLabels {
-		g := ep.crrGroups[l]
+		g := ep.CRRGroups[l]
 		if g == nil {
 			continue
 		}
@@ -921,7 +921,7 @@ func (ep *ERAMPane) drawCRRFixes(ctx *panes.Context, transforms radar.ScopeTrans
 // CRR group the aircraft belongs to.
 func (ep *ERAMPane) drawCRRDistances(ctx *panes.Context, transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
 	ps := ep.currentPrefs()
-	if ep.crrGroups == nil || len(ep.crrGroups) == 0 {
+	if ep.CRRGroups == nil || len(ep.CRRGroups) == 0 {
 		return
 	}
 
@@ -933,10 +933,10 @@ func (ep *ERAMPane) drawCRRDistances(ctx *panes.Context, transforms radar.ScopeT
 	acCRR := make(map[av.ADSBCallsign]crrEntry)
 
 	for _, trk := range ep.visibleTracks(ctx) {
-		for _, g := range ep.crrGroups {
+		for _, g := range ep.CRRGroups {
 			if _, ok := g.Aircraft[trk.ADSBCallsign]; ok {
 				trkState := ep.TrackState[trk.ADSBCallsign]
-				dist := math.NMDistance2LL(trkState.track.Location, g.Location)
+				dist := math.NMDistance2LL(trkState.Track.Location, g.Location)
 				acCRR[trk.ADSBCallsign] = crrEntry{group: g, distNM: dist}
 				break // aircraft can only be in one group
 			}
@@ -964,7 +964,7 @@ func (ep *ERAMPane) drawCRRDistances(ctx *panes.Context, transforms radar.ScopeT
 		}
 
 		// Get position below the track target
-		location := state.track.Location
+		location := state.Track.Location
 		trackWin := transforms.WindowFromLatLongP(location)
 
 		// Position the distance text below and to the left of the track

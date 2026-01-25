@@ -249,7 +249,7 @@ func (ep *ERAMPane) fullDatablockAnchor(ctx *panes.Context, trk sim.Track,
 	if state == nil {
 		return [2]float32{}, false
 	}
-	start := transforms.WindowFromLatLongP(state.track.Location)
+	start := transforms.WindowFromLatLongP(state.Track.Location)
 	dir := ep.leaderLineDirection(ctx, trk)
 	offset := datablockOffset(*dir)
 	vector := ep.leaderLineVector(*dir)

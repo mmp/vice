@@ -228,6 +228,22 @@ func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.Fl
 		ep.bigOutput.displayError(ep.currentPrefs(), ErrERAMIllegalACID)
 		return
 	}
+
+	if trk.FlightPlan != nil {
+		if spec.Scratchpad.IsSet {
+			trk.FlightPlan.Scratchpad = spec.Scratchpad.Value
+			if spec.Scratchpad.Value == "" {
+				trk.FlightPlan.PriorScratchpad = ""
+			}
+		}
+		if spec.SecondaryScratchpad.IsSet {
+			trk.FlightPlan.SecondaryScratchpad = spec.SecondaryScratchpad.Value
+			if spec.SecondaryScratchpad.Value == "" {
+				trk.FlightPlan.PriorSecondaryScratchpad = ""
+			}
+		}
+	}
+
 	acid := sim.ACID(trk.ADSBCallsign)
 	ctx.Client.ModifyFlightPlan(acid, spec,
 		func(err error) {
@@ -242,7 +258,7 @@ func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.Fl
 	if alt := spec.AssignedAltitude.Value + spec.InterimAlt.Value; alt > 0 { // Only one will be set
 		var cmd string
 		state := ep.TrackState[trk.ADSBCallsign]
-		if alt > int(state.track.TransponderAltitude) {
+		if alt > int(state.Track.TransponderAltitude) {
 			cmd = "C" + fmt.Sprint(alt/100)
 		} else {
 			cmd = "D" + fmt.Sprint(alt/100)
