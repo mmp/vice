@@ -272,6 +272,30 @@ func (nav *Nav) AtFixCleared(fix, id string) av.CommandIntent {
 	}
 }
 
+func (nav *Nav) AtFixIntercept(fix, airport string, lg *log.Logger) av.CommandIntent {
+	if nav.Approach.AssignedId == "" {
+		return av.MakeUnableIntent("unable. you never told us to expect an approach")
+	}
+
+	ap := nav.Approach.Assigned
+	if ap == nil {
+		return av.MakeUnableIntent("unable. We were never told to expect an approach")
+	}
+
+	if !slices.ContainsFunc(nav.AssignedWaypoints(), func(wp av.Waypoint) bool { return wp.Fix == fix }) {
+		return av.MakeUnableIntent("unable. {fix} is not in our route", fix)
+	}
+
+	// Store the fix where the aircraft should intercept
+	nav.Approach.AtFixInterceptFix = fix
+
+	return av.ApproachIntent{
+		Type:         av.ApproachAtFixIntercept,
+		ApproachName: ap.FullName,
+		Fix:          fix,
+	}
+}
+
 func (nav *Nav) prepareForApproach(straightIn bool) av.CommandIntent {
 	if nav.Approach.AssignedId == "" {
 		return av.MakeUnableIntent("unable. you never told us to expect an approach")

@@ -297,6 +297,10 @@ func (ac *Aircraft) AtFixCleared(fix, approach string) av.CommandIntent {
 	return ac.Nav.AtFixCleared(fix, approach)
 }
 
+func (ac *Aircraft) AtFixIntercept(fix string, lg *log.Logger) av.CommandIntent {
+	return ac.Nav.AtFixIntercept(fix, ac.FlightPlan.ArrivalAirport, lg)
+}
+
 func (ac *Aircraft) ClearedApproach(id string, lg *log.Logger) (av.CommandIntent, bool) {
 	return ac.Nav.ClearedApproach(ac.FlightPlan.ArrivalAirport, id, false)
 }

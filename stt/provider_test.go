@@ -622,6 +622,48 @@ func TestNavigationCommands(t *testing.T) {
 			},
 			expected: "DAL8499 AFERGI/CRIV",
 		},
+		{
+			name:       "at fix intercept localizer",
+			transcript: "Delta 8499 at Fergi intercept the localizer",
+			aircraft: map[string]Aircraft{
+				"Delta 8499": {
+					Callsign:         "DAL8499",
+					Altitude:         4000,
+					State:            "arrival",
+					AssignedApproach: "I22L",
+					Fixes:            map[string]string{"Fergi": "FERGI"},
+				},
+			},
+			expected: "DAL8499 AFERGI/I",
+		},
+		{
+			name:       "at fix intercept with runway identifier",
+			transcript: "United 123 at Rosly intercept the 2 2 left localizer",
+			aircraft: map[string]Aircraft{
+				"United 123": {
+					Callsign:         "UAL123",
+					Altitude:         3000,
+					State:            "arrival",
+					AssignedApproach: "I22L",
+					Fixes:            map[string]string{"Rosly": "ROSLY"},
+				},
+			},
+			expected: "UAL123 AROSLY/I",
+		},
+		{
+			name:       "at fix intercept with runway keyword",
+			transcript: "American 456 at Merit intercept the runway 3 1 right localizer",
+			aircraft: map[string]Aircraft{
+				"American 456": {
+					Callsign:         "AAL456",
+					Altitude:         5000,
+					State:            "arrival",
+					AssignedApproach: "I31R",
+					Fixes:            map[string]string{"Merit": "MERIT"},
+				},
+			},
+			expected: "AAL456 AMERIT/I",
+		},
 		// Hold commands
 		{
 			name:       "hold at fix as published",

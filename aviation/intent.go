@@ -438,6 +438,7 @@ const (
 	ApproachIntercept
 	ApproachJoin // for non-ILS approaches
 	ApproachAtFixCleared
+	ApproachAtFixIntercept
 	ApproachCancel
 )
 
@@ -462,6 +463,8 @@ func (a ApproachIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 		rt.Add("[joining the {appr} approach course|joining {appr}]", a.ApproachName)
 	case ApproachAtFixCleared:
 		rt.Add("at {fix} cleared {appr}", a.Fix, a.ApproachName)
+	case ApproachAtFixIntercept:
+		rt.Add("[intercept at {fix}|at {fix} intercept the localizer|at {fix} join the localizer]", a.Fix)
 	case ApproachCancel:
 		rt.Add("cancel approach clearance.")
 	}

@@ -105,6 +105,7 @@ func validateCommand(cmd string, ac Aircraft) string {
 		// A alone = VFR altitude discretion
 		// A{ALT} = maintain altitude
 		// A{FIX}/C{APPR} = at fix cleared approach
+		// A{FIX}/I = at fix intercept localizer
 		if len(cmd) == 1 {
 			return validateVFRAltitude(ac)
 		}

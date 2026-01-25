@@ -161,6 +161,7 @@ type NavApproach struct {
 	PassedFAF         bool
 	NoPT              bool
 	AtFixClearedRoute []av.Waypoint
+	AtFixInterceptFix string // fix where aircraft should intercept the localizer
 }
 
 type NavFixAssignment struct {

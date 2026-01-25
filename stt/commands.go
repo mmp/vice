@@ -23,13 +23,14 @@ const (
 	ArgApproachLAHSO // Approach with optional LAHSO (land and hold short)
 	ArgSquawk
 	ArgDegrees
-	ArgFixAltitude // Fix followed by altitude (e.g., "cross MERIT at 5000")
-	ArgFixSpeed    // Fix followed by speed (e.g., "cross MERIT at 250 knots")
-	ArgFixHeading  // Fix followed by heading (e.g., "depart MERIT heading 180")
-	ArgFixApproach // Fix followed by approach (e.g., "at FERGI cleared River Visual")
-	ArgSID         // SID name (e.g., "climb via the Kennedy Five")
-	ArgSTAR        // STAR name (e.g., "descend via the Camrn Four")
-	ArgHold        // Hold with optional parameters (e.g., "hold west of MERIT on the 280 radial, 2 minute legs, left turns")
+	ArgFixAltitude  // Fix followed by altitude (e.g., "cross MERIT at 5000")
+	ArgFixSpeed     // Fix followed by speed (e.g., "cross MERIT at 250 knots")
+	ArgFixHeading   // Fix followed by heading (e.g., "depart MERIT heading 180")
+	ArgFixApproach  // Fix followed by approach (e.g., "at FERGI cleared River Visual")
+	ArgFixIntercept // Fix followed by intercept localizer (e.g., "at FERGI intercept the localizer")
+	ArgSID          // SID name (e.g., "climb via the Kennedy Five")
+	ArgSTAR         // STAR name (e.g., "descend via the Camrn Four")
+	ArgHold         // Hold with optional parameters (e.g., "hold west of MERIT on the 280 radial, 2 minute legs, left turns")
 )
 
 // CommandTemplate defines a pattern for recognizing a command.
@@ -411,6 +412,14 @@ var commandTemplates = []CommandTemplate{
 		OutputFmt: "A%s/C%s",
 		Priority:  15, // High priority - specific compound command
 		SkipWords: []string{"cleared", "clear", "for", "approach"},
+	},
+	{
+		Name:      "at_fix_intercept_localizer",
+		Keywords:  [][]string{{"at"}},
+		ArgType:   ArgFixIntercept,
+		OutputFmt: "A%s/I",
+		Priority:  15, // High priority - specific compound command
+		SkipWords: []string{"intercept", "join", "the", "localizer", "runway"},
 	},
 	{
 		Name:      "expect_approach",
@@ -1131,6 +1140,53 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 		return CommandMatch{
 			Command:    cmd,
 			Confidence: conf,
+			Consumed:   consumed,
+			IsThen:     isThen,
+		}, consumed
+
+	case ArgFixIntercept:
+		fix, fixConf, fixConsumed := extractFix(tokens[consumed:], ac.Fixes)
+		if fixConsumed == 0 {
+			logLocalStt("  tryMatchTemplate %q: fix extraction failed", tmpl.Name)
+			return CommandMatch{}, 0
+		}
+		consumed += fixConsumed
+		// Skip filler words and template skip words (intercept, the, localizer, runway, etc.)
+		// Also skip optional runway identifiers (e.g., "2 2 left")
+		foundIntercept := false
+		for consumed < len(tokens) {
+			text := strings.ToLower(tokens[consumed].Text)
+			if slices.Contains(tmpl.SkipWords, text) || IsFillerWord(text) {
+				// Use fuzzy matching for key terms that STT might slightly mangle
+				if FuzzyMatch(text, "intercept", 0.8) || FuzzyMatch(text, "join", 0.8) {
+					foundIntercept = true
+				}
+				consumed++
+			} else if tokens[consumed].Type == TokenNumber {
+				// Skip runway numbers (e.g., "2 2" in "2 2 left localizer")
+				consumed++
+			} else if text == "left" || text == "right" || text == "center" {
+				// Skip runway direction indicators
+				consumed++
+			} else if FuzzyMatch(text, "localizer", 0.8) {
+				// Also accept fuzzy match for localizer
+				consumed++
+			} else {
+				break
+			}
+		}
+		// Require at least "intercept" keyword to be found
+		if !foundIntercept {
+			logLocalStt("  tryMatchTemplate %q: 'intercept' keyword not found", tmpl.Name)
+			return CommandMatch{}, 0
+		}
+		// Build command with just the fix
+		cmd := fmt.Sprintf(tmpl.OutputFmt, fix)
+		logLocalStt("  tryMatchTemplate %q: cmd=%q fix=%q consumed=%d",
+			tmpl.Name, cmd, fix, consumed)
+		return CommandMatch{
+			Command:    cmd,
+			Confidence: fixConf,
 			Consumed:   consumed,
 			IsThen:     isThen,
 		}, consumed
