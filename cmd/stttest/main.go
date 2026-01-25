@@ -35,6 +35,7 @@ type STTTestFile struct {
 		ControllerFrequency string            `json:"ControllerFrequency"`
 		TrackingController  string            `json:"TrackingController"`
 		AddressingForm      int               `json:"AddressingForm"`
+		LAHSORunways        []string          `json:"LAHSORunways"`
 	} `json:"stt_aircraft"`
 }
 
@@ -73,6 +74,7 @@ func main() {
 			ControllerFrequency: ac.ControllerFrequency,
 			TrackingController:  ac.TrackingController,
 			AddressingForm:      sim.CallsignAddressingForm(ac.AddressingForm),
+			LAHSORunways:        ac.LAHSORunways,
 		}
 	}
 

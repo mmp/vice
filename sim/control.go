@@ -1409,7 +1409,7 @@ func (s *Sim) AtFixCleared(tcw TCW, callsign av.ADSBCallsign, fix, approach stri
 		})
 }
 
-func (s *Sim) ExpectApproach(tcw TCW, callsign av.ADSBCallsign, approach string) (av.CommandIntent, error) {
+func (s *Sim) ExpectApproach(tcw TCW, callsign av.ADSBCallsign, approach, lahsoRunway string) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
@@ -1423,7 +1423,7 @@ func (s *Sim) ExpectApproach(tcw TCW, callsign av.ADSBCallsign, approach string)
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			return ac.ExpectApproach(approach, ap, s.lg)
+			return ac.ExpectApproach(approach, ap, lahsoRunway, s.lg)
 		})
 }
 
@@ -2110,7 +2110,14 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 		} else if command == "EC" {
 			return s.ExpediteClimb(tcw, callsign)
 		} else if len(command) > 1 {
-			return s.ExpectApproach(tcw, callsign, command[1:])
+			// Parse: "EI22L/LAHSO26" -> approach="I22L", lahsoRunway="26"
+			components := strings.Split(command[1:], "/")
+			approach := components[0]
+			var lahsoRunway string
+			if len(components) > 1 && strings.HasPrefix(components[1], "LAHSO") {
+				lahsoRunway = components[1][5:] // Extract runway after "LAHSO"
+			}
+			return s.ExpectApproach(tcw, callsign, approach, lahsoRunway)
 		} else {
 			return nil, ErrInvalidCommandSyntax
 		}

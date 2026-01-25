@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
+	"github.com/mmp/vice/util"
 )
 
 // ArgType specifies the type of argument a command expects.
@@ -19,6 +20,7 @@ const (
 	ArgSpeed
 	ArgFix
 	ArgApproach
+	ArgApproachLAHSO // Approach with optional LAHSO (land and hold short)
 	ArgSquawk
 	ArgDegrees
 	ArgFixAltitude // Fix followed by altitude (e.g., "cross MERIT at 5000")
@@ -413,7 +415,7 @@ var commandTemplates = []CommandTemplate{
 	{
 		Name:      "expect_approach",
 		Keywords:  [][]string{{"expect", "vectors"}},
-		ArgType:   ArgApproach,
+		ArgType:   ArgApproachLAHSO,
 		OutputFmt: "E%s",
 		Priority:  10,
 	},
@@ -463,7 +465,7 @@ var commandTemplates = []CommandTemplate{
 		OutputFmt:       "I",
 		Priority:        10,
 		SkipWords:       []string{"work", "going", "gonna", "to", "low", "load", "look", "runway", "left", "right"}, // STT garbage and runway designator before "localizer"
-		SkipNonKeywords: true, // Allow runway numbers between "intercept" and "localizer"
+		SkipNonKeywords: true,                                                                                       // Allow runway numbers between "intercept" and "localizer"
 	},
 
 	// === TRANSPONDER COMMANDS ===
@@ -915,6 +917,29 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 		argConf = apprConf
 		consumed += apprConsumed
 
+	case ArgApproachLAHSO:
+		appr, apprConf, apprConsumed := extractApproach(tokens[consumed:], ac.CandidateApproaches)
+		if apprConsumed == 0 {
+			// Keywords matched but couldn't extract approach - return SAYAGAIN if appropriate
+			if shouldGenerateSayAgain(tokens, consumed) {
+				if sayAgainCmd := sayAgainCommandForArg(ArgApproach, tmpl.Priority); sayAgainCmd != "" {
+					logLocalStt("  %s: keywords matched but approach extraction failed, returning %s", tmpl.Name, sayAgainCmd)
+					return CommandMatch{Command: sayAgainCmd, Confidence: 0.5, Consumed: consumed, IsSayAgain: true}, consumed
+				}
+			}
+			return CommandMatch{}, 0
+		}
+		argStr = appr
+		argConf = apprConf
+		consumed += apprConsumed
+
+		// Look for optional LAHSO (land and hold short) in remaining tokens
+		if lahsoRwy, lahsoConsumed := extractLAHSO(tokens[consumed:], ac.LAHSORunways); lahsoConsumed > 0 {
+			argStr = appr + "/LAHSO" + lahsoRwy
+			consumed += lahsoConsumed
+			logLocalStt("  %s: extracted LAHSO runway %s", tmpl.Name, lahsoRwy)
+		}
+
 	case ArgSquawk:
 		code, sqkConsumed := extractSquawk(tokens[consumed:])
 		if sqkConsumed == 0 {
@@ -1160,7 +1185,7 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 			cmd = "T" + argStr
 		} else if argStr != "" {
 			switch tmpl.ArgType {
-			case ArgFix, ArgApproach, ArgSquawk:
+			case ArgFix, ArgApproach, ArgApproachLAHSO, ArgSquawk:
 				cmd = fmt.Sprintf(tmpl.OutputFmt, argStr)
 			default:
 				cmd = fmt.Sprintf(tmpl.OutputFmt, mustAtoi(argStr))
@@ -1857,6 +1882,195 @@ func runwayMatches(spokenLower, runwaySpoken string) bool {
 		}
 	}
 	return false
+}
+
+// extractLAHSO extracts a LAHSO (land and hold short) runway from tokens.
+// Looks for patterns like "land and hold short of runway 26" or "hold short runway 26".
+// Returns the matched runway ID and number of tokens consumed.
+// extractLAHSO looks for "land and hold short" pattern and extracts the LAHSO runway.
+// Returns the matched runway and total tokens consumed from the start of the pattern.
+// Expects tokens starting from "land" or "hold" keyword.
+func extractLAHSO(tokens []Token, lahsoRunways []string) (string, int) {
+	if len(tokens) == 0 || len(lahsoRunways) == 0 {
+		return "", 0
+	}
+
+	// Find pattern: [land] [and] hold short [of] [runway] <runway>
+	// "land and" is expected but we also accept just "hold short" for robustness
+	landIdx := -1
+	holdIdx := -1
+	shortIdx := -1
+
+	for i, t := range tokens {
+		text := strings.ToLower(t.Text)
+		switch {
+		case (text == "land" || FuzzyMatch(text, "land", 0.8)) && landIdx == -1:
+			landIdx = i
+		case (text == "hold" || FuzzyMatch(text, "hold", 0.8)) && holdIdx == -1:
+			holdIdx = i
+		case (text == "short" || FuzzyMatch(text, "short", 0.8)) && shortIdx == -1:
+			shortIdx = i
+		}
+	}
+
+	// Need "hold short" with short after hold
+	if holdIdx == -1 || shortIdx == -1 || shortIdx <= holdIdx {
+		return "", 0
+	}
+
+	// Determine start of pattern for consumed count
+	patternStart := holdIdx
+	if landIdx != -1 && landIdx < holdIdx {
+		patternStart = landIdx
+	}
+
+	// Find runway after "short", skipping fillers
+	searchIdx := shortIdx + 1
+	for searchIdx < len(tokens) {
+		text := strings.ToLower(tokens[searchIdx].Text)
+		if text == "of" || text == "runway" || text == "the" || text == "and" {
+			searchIdx++
+			continue
+		}
+		break
+	}
+
+	if searchIdx >= len(tokens) {
+		return "", 0
+	}
+
+	// Try to extract runway from remaining tokens
+	rwy, consumed := matchLAHSORunway(tokens[searchIdx:], lahsoRunways)
+	if rwy != "" {
+		return rwy, searchIdx + consumed - patternStart
+	}
+
+	return "", 0
+}
+
+// matchLAHSORunway matches tokens against available LAHSO runways.
+// Handles both clean numeric input and garbled STT output.
+func matchLAHSORunway(tokens []Token, lahsoRunways []string) (string, int) {
+	if len(tokens) == 0 {
+		return "", 0
+	}
+
+	// Helper for direction suffix
+	directionSuffix := func(text string) string {
+		switch strings.ToLower(text) {
+		case "left", "l":
+			return "L"
+		case "right", "r":
+			return "R"
+		case "center", "c":
+			return "C"
+		}
+		return ""
+	}
+
+	// Try numeric match first (clean STT case)
+	if tokens[0].Type == TokenNumber && tokens[0].Value >= 1 && tokens[0].Value <= 36 {
+		num := tokens[0].Value
+		consumed := 1
+		suffix := ""
+
+		// Look for direction, skipping "and"
+		for consumed < len(tokens) && consumed < 3 {
+			text := strings.ToLower(tokens[consumed].Text)
+			if text == "and" {
+				consumed++
+				continue
+			}
+			if s := directionSuffix(text); s != "" {
+				suffix = s
+				consumed++
+			}
+			break
+		}
+
+		runwayStr := fmt.Sprintf("%d%s", num, suffix)
+
+		// Exact match
+		for _, rwy := range lahsoRunways {
+			if rwy == runwayStr {
+				logLocalStt("  extractLAHSO: exact match %q", runwayStr)
+				return rwy, consumed
+			}
+		}
+
+		// Number match (direction might be wrong or missing)
+		numStr := fmt.Sprintf("%d", num)
+		for _, rwy := range lahsoRunways {
+			if strings.TrimRight(rwy, "LRC") == numStr {
+				logLocalStt("  extractLAHSO: number match %q -> %q", runwayStr, rwy)
+				return rwy, consumed
+			}
+		}
+	}
+
+	// Fuzzy match: collect tokens and match against runway spoken forms
+	var detectedSuffix string
+	consumed := 0
+	for i := 0; i < len(tokens) && i < 4; i++ {
+		if s := directionSuffix(tokens[i].Text); s != "" {
+			detectedSuffix = s
+		}
+		consumed++
+	}
+
+	// Filter by direction if detected
+	candidates := lahsoRunways
+	if detectedSuffix != "" {
+		candidates = util.FilterSlice(lahsoRunways, func(rwy string) bool {
+			return strings.HasSuffix(rwy, detectedSuffix)
+		})
+	}
+
+	// If only one candidate, use it
+	if len(candidates) == 1 {
+		logLocalStt("  extractLAHSO: single candidate %q", candidates[0])
+		return candidates[0], consumed
+	}
+
+	// Try fuzzy match first token against runway numbers
+	firstText := strings.ToLower(tokens[0].Text)
+	for _, rwy := range candidates {
+		rwyNum := strings.TrimRight(rwy, "LRC")
+		spoken := spokenRunway(rwy)
+
+		// Check if token matches spoken form or phonetically matches number
+		if strings.Contains(spoken, firstText) || PhoneticMatch(firstText, rwyNum) {
+			logLocalStt("  extractLAHSO: fuzzy match %q -> %q", firstText, rwy)
+			return rwy, consumed
+		}
+	}
+
+	// Fallback: if we have direction and candidates, use first
+	if detectedSuffix != "" && len(candidates) > 0 {
+		logLocalStt("  extractLAHSO: direction fallback -> %q", candidates[0])
+		return candidates[0], consumed
+	}
+
+	return "", 0
+}
+
+// spokenRunway returns the spoken form of a runway (e.g., "31L" -> "three one left")
+func spokenRunway(rwy string) string {
+	var parts []string
+	for _, ch := range rwy {
+		switch {
+		case ch >= '0' && ch <= '9':
+			digitWords := []string{"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "niner"}
+			parts = append(parts, digitWords[ch-'0'])
+		case ch == 'L' || ch == 'l':
+			parts = append(parts, "left")
+		case ch == 'R' || ch == 'r':
+			parts = append(parts, "right")
+		case ch == 'C' || ch == 'c':
+			parts = append(parts, "center")
+		}
+	}
+	return strings.Join(parts, " ")
 }
 
 // generateApproachPhraseVariants generates variants of an approach phrase

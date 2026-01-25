@@ -212,6 +212,7 @@ var (
 		"gf":       &GroupFormSnippetFormatter{},
 		"hdg":      &HeadingSnippetFormatter{},
 		"num":      &BasicNumberSnippetFormatter{},
+		"rwy":      &RunwaySnippetFormatter{},
 		"sid":      &SIDSnippetFormatter{},
 		"spd":      &SpeedSnippetFormatter{},
 		"star":     &STARSnippetFormatter{},
@@ -576,6 +577,40 @@ func (AirportSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 }
 
 func (AirportSnippetFormatter) Validate(arg any) error {
+	if _, ok := arg.(string); !ok {
+		return fmt.Errorf("expected string arg, got %T", arg)
+	}
+	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// RunwaySnippetFormatter
+
+type RunwaySnippetFormatter struct{}
+
+func (RunwaySnippetFormatter) Written(arg any) string {
+	return arg.(string)
+}
+
+func (RunwaySnippetFormatter) Spoken(r *rand.Rand, arg any) string {
+	rwy := arg.(string)
+	var result []string
+	for _, ch := range rwy {
+		switch ch {
+		case 'L', 'l':
+			result = append(result, "left")
+		case 'R', 'r':
+			result = append(result, "right")
+		case 'C', 'c':
+			result = append(result, "center")
+		case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+			result = append(result, sayDigit(int(ch-'0')))
+		}
+	}
+	return strings.Join(result, " ")
+}
+
+func (RunwaySnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(string); !ok {
 		return fmt.Errorf("expected string arg, got %T", arg)
 	}

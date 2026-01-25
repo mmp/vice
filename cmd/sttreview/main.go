@@ -744,6 +744,11 @@ func render(screen tcell.Screen, state *AppState) {
 				y++
 			}
 
+			if len(ac.LAHSORunways) > 0 && y < maxY {
+				drawText(screen, 0, y, width, styleContext, fmt.Sprintf(" LAHSO Runways: %-*s", width-17, strings.Join(ac.LAHSORunways, ", ")))
+				y++
+			}
+
 			// Fixes (sorted alphabetically)
 			if len(ac.Fixes) > 0 && y < maxY {
 				drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))

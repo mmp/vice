@@ -446,12 +446,16 @@ type ApproachIntent struct {
 	Type         ApproachIntentType
 	ApproachName string // full name of the approach (e.g., "ILS Runway 22L")
 	Fix          string // for AtFixCleared
+	LAHSORunway  string // runway to hold short of (for LAHSO operations)
 }
 
 func (a ApproachIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	switch a.Type {
 	case ApproachExpect:
 		rt.Add("[we'll expect the|expecting the|we'll plan for the] {appr} approach", a.ApproachName)
+		if a.LAHSORunway != "" {
+			rt.Add("[and we'll hold short of|hold short of] runway {rwy}", a.LAHSORunway)
+		}
 	case ApproachIntercept:
 		rt.Add("[intercepting the {appr} approach|intercepting {appr}]", a.ApproachName)
 	case ApproachJoin:

@@ -538,4 +538,5 @@ type Aircraft struct {
 	ControllerFrequency string                     // Current controller position the aircraft is tuned to
 	TrackingController  string                     // Controller tracking this aircraft (from flight plan)
 	AddressingForm      sim.CallsignAddressingForm // How this aircraft was addressed (based on which key matched)
+	LAHSORunways        []string                   // Runways that intersect the approach runway (for LAHSO matching)
 }

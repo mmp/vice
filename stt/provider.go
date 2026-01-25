@@ -145,8 +145,8 @@ func (p *Transcriber) decodeInternal(
 		}
 	}
 
-	logLocalStt("aircraft context: State=%q Altitude=%d Fixes=%d Approaches=%d AssignedApproach=%q",
-		ac.State, ac.Altitude, len(ac.Fixes), len(ac.CandidateApproaches), ac.AssignedApproach)
+	logLocalStt("aircraft context: State=%q Altitude=%d Fixes=%d Approaches=%d AssignedApproach=%q LAHSORunways=%v",
+		ac.State, ac.Altitude, len(ac.Fixes), len(ac.CandidateApproaches), ac.AssignedApproach, ac.LAHSORunways)
 	for spokenName, fixID := range ac.Fixes {
 		logLocalStt("  fix: %q -> %q", spokenName, fixID)
 	}
@@ -314,6 +314,8 @@ func (p *Transcriber) BuildAircraftContext(
 			if trk.Approach != "" {
 				sttAc.AssignedApproach = trk.Approach
 			}
+			// Track runways we've seen to avoid duplicate LAHSO runway entries
+			seenRunways := make(map[string]bool)
 			// Add active approaches for the arrival airport
 			for _, ar := range state.ArrivalRunways {
 				if ar.Airport != trk.ArrivalAirport {
@@ -324,6 +326,12 @@ func (p *Transcriber) BuildAircraftContext(
 						if appr.Runway == ar.Runway {
 							sttAc.CandidateApproaches[av.GetApproachTelephony(appr.FullName)] = code
 						}
+					}
+					// Build LAHSORunways for this arrival runway (avoid duplicates)
+					if !seenRunways[ar.Runway] {
+						seenRunways[ar.Runway] = true
+						intersecting := av.IntersectingRunways(ar.Airport, ar.Runway, state.NmPerLongitude, 0.5)
+						sttAc.LAHSORunways = append(sttAc.LAHSORunways, intersecting...)
 					}
 				}
 			}

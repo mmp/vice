@@ -116,7 +116,7 @@ func (nav *Nav) getApproach(airport *av.Airport, id string, lg *log.Logger) (*av
 }
 
 func (nav *Nav) ExpectApproach(airport *av.Airport, id string, runwayWaypoints map[string]av.WaypointArray,
-	lg *log.Logger) av.CommandIntent {
+	lahsoRunway string, lg *log.Logger) av.CommandIntent {
 	ap, err := nav.getApproach(airport, id, lg)
 	if err != nil {
 		return av.MakeUnableIntent("unable. We don't know the {appr} approach.", id)
@@ -126,6 +126,7 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, id string, runwayWaypoints m
 		return av.ApproachIntent{
 			Type:         av.ApproachExpect,
 			ApproachName: ap.FullName,
+			LAHSORunway:  lahsoRunway,
 		}
 	}
 
@@ -205,6 +206,7 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, id string, runwayWaypoints m
 	return av.ApproachIntent{
 		Type:         av.ApproachExpect,
 		ApproachName: ap.FullName,
+		LAHSORunway:  lahsoRunway,
 	}
 }
 
