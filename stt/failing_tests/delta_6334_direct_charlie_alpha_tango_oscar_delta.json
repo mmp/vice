@@ -1,0 +1,256 @@
+{
+  "time": "2026-01-24T11:19:45.345741151Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:975:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Delta 6334, direct, Charlie, Alpha, Tango, Oscar, Delta",
+  "whisper_duration_ms": 614.834,
+  "audio_duration_ms": 6016,
+  "processor": "GPU: NVIDIA GeForce GTX 1650 (4149MB)",
+  "callsign": "DAL6334",
+  "command": "DCATOD",
+  "stt_aircraft": {
+    "BWA936": {
+      "Callsign": "BWA936",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    },
+    "Brickyard 3584": {
+      "Callsign": "RPA3584",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Catod": "CATOD",
+        "John F Kennedy International Airport": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    },
+    "Caribbean Airlines 936": {
+      "Callsign": "BWA936",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    },
+    "DAL6334": {
+      "Callsign": "DAL6334",
+      "AircraftType": "A332",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PARCH4",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    },
+    "Delta 6334 heavy": {
+      "Callsign": "DAL6334",
+      "AircraftType": "A332",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PARCH4",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    },
+    "FFT719": {
+      "Callsign": "FFT719",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Catod": "CATOD",
+        "John F Kennedy International Airport": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    },
+    "Frontier Flight 719": {
+      "Callsign": "FFT719",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Catod": "CATOD",
+        "John F Kennedy International Airport": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    },
+    "RPA3584": {
+      "Callsign": "RPA3584",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Catod": "CATOD",
+        "John F Kennedy International Airport": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Delta 6334, direct, Charlie, Alpha, Tango, Oscar, Delta\"",
+    "[local-stt] normalized words: [delta 6334 direct charlie alpha tango oscar delta]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"6334\" Type=1 Value=6334",
+    "[local-stt]   token[2]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"charlie\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"alpha\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"tango\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"oscar\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 8 tokens, 8 aircraft",
+    "[local-stt]   candidate \"FFT719\" (ICAO=\"FFT719\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Caribbean Airlines 936\" (ICAO=\"BWA936\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"BWA936\" (ICAO=\"BWA936\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Delta 6334 heavy\" (ICAO=\"DAL6334\"): score=1.00 consumed=2",
+    "[local-stt]   candidate \"DAL6334\" (ICAO=\"DAL6334\"): score=0.88 consumed=2",
+    "[local-stt]   candidate \"Brickyard 3584\" (ICAO=\"RPA3584\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"RPA3584\" (ICAO=\"RPA3584\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Frontier Flight 719\" (ICAO=\"FFT719\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Delta 6334 heavy\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   candidate \"DAL6334\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   candidate \"Caribbean Airlines 936\" at pos 3: score=0.78 (adjusted=0.55) consumed=1",
+    "[local-stt]   accepted: \"DAL6334\" (conf=1.00, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"DAL6334\" SpokenKey=\"Delta 6334 heavy\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4000 Fixes=1 Approaches=4 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"John F Kennedy International Airport\" -\u003e \"KJFK\"",
+    "[local-stt]   approach: \"r-nav runway three one right\" -\u003e \"R1R\"",
+    "[local-stt]   approach: \"r-nav runway three one left\" -\u003e \"R1L\"",
+    "[local-stt]   approach: \"I L S runway three one left\" -\u003e \"I1L\"",
+    "[local-stt]   approach: \"I L S runway three one right\" -\u003e \"I1R\"",
+    "[local-stt] command tokens after disregard: 6",
+    "[local-stt]   token[0]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"charlie\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"alpha\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"tango\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"oscar\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"direct\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 6 tokens",
+    "[local-stt]   tryMatchTemplate \"direct_fix\": keywords matched, consumed=1, next tokens=[charlie alpha tango]",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"charlie\" against 1 fixes",
+    "[local-stt]   extractFix: no match found for \"charlie\"",
+    "[local-stt]   no match at token[0]=\"direct\", skipping",
+    "[local-stt]   no match at token[1]=\"charlie\", skipping",
+    "[local-stt]   no match at token[2]=\"alpha\", skipping",
+    "[local-stt]   no match at token[3]=\"tango\", skipping",
+    "[local-stt]   no match at token[4]=\"oscar\", skipping",
+    "[local-stt]   no match at token[5]=\"delta\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"DAL6334 AGAIN\" (conf=1.00, time=509.3µs) ==="
+  ]
+}

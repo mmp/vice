@@ -1,0 +1,330 @@
+{
+  "time": "2026-01-23T07:17:17.837061032Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:975:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Allegion 5695, Kontzet, Jaxo, Center 135.92.",
+  "whisper_duration_ms": 779.122,
+  "audio_duration_ms": 5888,
+  "processor": "GPU: Radeon RX550/550 Series (4096MB)",
+  "callsign": "AAY5695",
+  "command": "FC",
+  "stt_aircraft": {
+    "AAY5695": {
+      "Callsign": "AAY5695",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Deanr": "DEANR",
+        "Ended": "ENDED",
+        "Lacen": "LACEN",
+        "Patoy": "PATOY"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ENDED2",
+      "STAR": "",
+      "Altitude": 7820,
+      "State": "departure",
+      "ControllerFrequency": "1P",
+      "TrackingController": "J30",
+      "AddressingForm": 0
+    },
+    "Allegiant 5695": {
+      "Callsign": "AAY5695",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Deanr": "DEANR",
+        "Ended": "ENDED",
+        "Lacen": "LACEN",
+        "Patoy": "PATOY"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "ENDED2",
+      "STAR": "",
+      "Altitude": 7820,
+      "State": "departure",
+      "ControllerFrequency": "1P",
+      "TrackingController": "J30",
+      "AddressingForm": 0
+    },
+    "JBU71": {
+      "Callsign": "JBU71",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Gandy": "GANDY",
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabee": "SABEE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 4279,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "JetBlue 71": {
+      "Callsign": "JBU71",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Gandy": "GANDY",
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabee": "SABEE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 4279,
+      "State": "departure",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0
+    },
+    "N75WC": {
+      "Callsign": "N75WC",
+      "AircraftType": "C510",
+      "Fixes": {
+        "Lubbr": "LUBBR",
+        "Zebon": "ZEBON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "SWA416": {
+      "Callsign": "SWA416",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Tampa International Airport": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "Altitude": 7696,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "Southwest 416": {
+      "Callsign": "SWA416",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Tampa International Airport": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "Altitude": 7696,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0
+    },
+    "UAL344": {
+      "Callsign": "UAL344",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Borst": "BORST",
+        "Guzda": "GUZDA",
+        "Jetstream": "JSTRM",
+        "Lagoo": "LAGOO",
+        "Lisa F": "LISAF",
+        "Lizard": "LZARD",
+        "Selman": "SELMN",
+        "St Petersburg": "PIE",
+        "Tampa International Airport": "KTPA",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 11884,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "United 344": {
+      "Callsign": "UAL344",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Borst": "BORST",
+        "Guzda": "GUZDA",
+        "Jetstream": "JSTRM",
+        "Lagoo": "LAGOO",
+        "Lisa F": "LISAF",
+        "Lizard": "LZARD",
+        "Selman": "SELMN",
+        "St Petersburg": "PIE",
+        "Tampa International Airport": "KTPA",
+        "Tyner": "TYNER"
+      },
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "AssignedApproach": "ILS Runway 1L",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 11884,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    },
+    "citation mustang five whiskey charlie": {
+      "Callsign": "N75WC",
+      "AircraftType": "C510",
+      "Fixes": {
+        "Lubbr": "LUBBR",
+        "Zebon": "ZEBON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 1
+    },
+    "mustang five whiskey charlie": {
+      "Callsign": "N75WC",
+      "AircraftType": "C510",
+      "Fixes": {
+        "Lubbr": "LUBBR",
+        "Zebon": "ZEBON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 1
+    },
+    "november 75WC": {
+      "Callsign": "N75WC",
+      "AircraftType": "C510",
+      "Fixes": {
+        "Lubbr": "LUBBR",
+        "Zebon": "ZEBON"
+      },
+      "CandidateApproaches": {
+        "I L S runway three two": "I32",
+        "r-nav runway three two": "R32"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 12000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Allegion 5695, Kontzet, Jaxo, Center 135.92.\"",
+    "[local-stt] normalized words: [allegion 5695 kontzet jaxo center 13592]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"allegion\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"5695\" Type=1 Value=5695",
+    "[local-stt]   token[2]: Text=\"kontzet\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"jaxo\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"center\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"13592\" Type=1 Value=13592",
+    "[local-stt] MatchCallsign: 6 tokens, 12 aircraft",
+    "[local-stt]   candidate \"UAL344\" (ICAO=\"UAL344\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JetBlue 71\" (ICAO=\"JBU71\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"mustang five whiskey charlie\" (ICAO=\"N75WC\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest 416\" (ICAO=\"SWA416\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SWA416\" (ICAO=\"SWA416\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"United 344\" (ICAO=\"UAL344\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Allegiant 5695\" (ICAO=\"AAY5695\"): score=1.00 consumed=2",
+    "[local-stt]   candidate \"AAY5695\" (ICAO=\"AAY5695\"): score=1.00 consumed=2",
+    "[local-stt]   candidate \"JBU71\" (ICAO=\"JBU71\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"november 75WC\" (ICAO=\"N75WC\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"N75WC\" (ICAO=\"N75WC\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"citation mustang five whiskey charlie\" (ICAO=\"N75WC\"): score=0.67 consumed=1",
+    "[local-stt]   candidate \"AAY5695\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   candidate \"Allegiant 5695\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   accepted: \"AAY5695\" (conf=1.00, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"AAY5695\" SpokenKey=\"Allegiant 5695\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=7820 Fixes=4 Approaches=0 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"Ended\" -\u003e \"ENDED\"",
+    "[local-stt]   fix: \"Lacen\" -\u003e \"LACEN\"",
+    "[local-stt]   fix: \"Patoy\" -\u003e \"PATOY\"",
+    "[local-stt]   fix: \"Deanr\" -\u003e \"DEANR\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"kontzet\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"jaxo\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"center\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"13592\" Type=1 Value=13592",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   no match at token[0]=\"kontzet\", skipping",
+    "[local-stt]   no match at token[1]=\"jaxo\", skipping",
+    "[local-stt]   no match at token[2]=\"center\", skipping",
+    "[local-stt]   no match at token[3]=\"13592\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"AAY5695 AGAIN\" (conf=1.00, time=0s) ==="
+  ]
+}
