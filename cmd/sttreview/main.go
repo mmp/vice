@@ -303,11 +303,14 @@ func loadState() *PersistedState {
 		state.Seen = make(map[string]bool)
 	}
 
-	// Filter out any entries that are already in the Seen set
+	// Filter out any entries that are already in the Seen set and deduplicate
+	seen := make(map[string]bool)
 	var filtered []LogEntry
 	for _, e := range state.Queue {
-		if !state.Seen[entryHash(e)] {
+		h := entryHash(e)
+		if !state.Seen[h] && !seen[h] {
 			filtered = append(filtered, e)
+			seen[h] = true
 		}
 	}
 	state.Queue = filtered
@@ -328,13 +331,20 @@ func (s *PersistedState) save() error {
 	return os.WriteFile(filepath.Join(dir, "state.json"), data, 0644)
 }
 
-// ingest adds new entries to the queue, skipping already-seen ones.
+// ingest adds new entries to the queue, skipping already-seen ones and duplicates.
 func (s *PersistedState) ingest(entries []LogEntry) int {
+	// Build set of hashes already in queue
+	queued := make(map[string]bool)
+	for _, e := range s.Queue {
+		queued[entryHash(e)] = true
+	}
+
 	added := 0
 	for _, e := range entries {
 		h := entryHash(e)
-		if !s.Seen[h] {
+		if !s.Seen[h] && !queued[h] {
 			s.Queue = append(s.Queue, e)
+			queued[h] = true
 			added++
 		}
 	}
