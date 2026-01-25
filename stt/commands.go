@@ -2120,6 +2120,12 @@ func extractDegrees(tokens []Token) (int, string, int) {
 	// 2. Number came before direction OR "degrees" keyword present
 	if deg > 0 && dir != "" {
 		if degPos < dirPos || hasDegreesKeyword {
+			// Snap to nearest 5 degrees (ATC standard)
+			// e.g., 23 -> 20, 27 -> 25, 33 -> 35
+			deg = ((deg + 2) / 5) * 5
+			if deg == 0 {
+				deg = 5 // Minimum 5 degrees
+			}
 			return deg, dir, consumed
 		}
 	}
