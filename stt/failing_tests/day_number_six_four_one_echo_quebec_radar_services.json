@@ -1,0 +1,162 @@
+{
+  "time": "2026-01-24T14:20:54.421105-08:00",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_arm64.s:1268:runtime.goexit"
+  ],
+  "transcript": "Day, number six four one Echo Quebec, Radar Services Terminated, Frequency Change Approved,",
+  "whisper_duration_ms": 484.648,
+  "audio_duration_ms": 5760,
+  "processor": "GPU: Apple M4 Pro, 14 CPU / 20 GPU cores, 48GB",
+  "callsign": "N641EQ",
+  "command": "RST",
+  "stt_aircraft": {
+    "KLM 769 heavy": {
+      "Callsign": "KLM769",
+      "AircraftType": "B78X",
+      "Fixes": {
+        "Betty": "BETTE"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 4653,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "B17",
+      "AddressingForm": 0
+    },
+    "New Zealand 79 heavy": {
+      "Callsign": "ANZ79",
+      "AircraftType": "B789",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "cars": "KARRS"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 11269,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0
+    },
+    "citation mustang one echo kebeck": {
+      "Callsign": "N641EQ",
+      "AircraftType": "C510",
+      "Fixes": {
+        "Danbury": "KDXR"
+      },
+      "CandidateApproaches": {},
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 2102,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 1
+    },
+    "mustang one echo kebeck": {
+      "Callsign": "N641EQ",
+      "AircraftType": "C510",
+      "Fixes": {
+        "Danbury": "KDXR"
+      },
+      "CandidateApproaches": {},
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 2102,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 1
+    },
+    "november 641EQ": {
+      "Callsign": "N641EQ",
+      "AircraftType": "C510",
+      "Fixes": {
+        "Danbury": "KDXR"
+      },
+      "CandidateApproaches": {},
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 2102,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Day, number six four one Echo Quebec, Radar Services Terminated, Frequency Change Approved,\"",
+    "[local-stt] normalized words: [day number 6 4 1 echo quebec radar services terminated frequency change approved]",
+    "[local-stt] tokens: 11",
+    "[local-stt]   token[0]: Text=\"day\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"number\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"641\" Type=1 Value=641",
+    "[local-stt]   token[3]: Text=\"echo\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"quebec\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"radar\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"services\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"terminated\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"frequency\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"change\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"approved\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 11 tokens, 5 aircraft",
+    "[local-stt]   candidate \"mustang one echo kebeck\" (ICAO=\"N641EQ\"): score=1.00 consumed=5",
+    "[local-stt]   candidate \"New Zealand 79 heavy\" (ICAO=\"ANZ79\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"KLM 769 heavy\" (ICAO=\"KLM769\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"november 641EQ\" (ICAO=\"N641EQ\"): score=1.00 consumed=5",
+    "[local-stt]   candidate \"citation mustang one echo kebeck\" (ICAO=\"N641EQ\"): score=1.00 consumed=5",
+    "[local-stt]   candidate \"november 641EQ\" at pos 1: score=0.96 (adjusted=0.87) consumed=4",
+    "[local-stt]   candidate \"citation mustang one echo kebeck\" at pos 1: score=1.00 (adjusted=0.90) consumed=4",
+    "[local-stt]   candidate \"mustang one echo kebeck\" at pos 1: score=1.00 (adjusted=0.90) consumed=4",
+    "[local-stt]   candidate \"november 641EQ\" at pos 2: score=1.00 (adjusted=0.80) consumed=3",
+    "[local-stt]   candidate \"citation mustang one echo kebeck\" at pos 2: score=1.00 (adjusted=0.80) consumed=3",
+    "[local-stt]   candidate \"mustang one echo kebeck\" at pos 2: score=1.00 (adjusted=0.80) consumed=3",
+    "[local-stt]   candidate \"november 641EQ\" at pos 3: score=0.85 (adjusted=0.59) consumed=2",
+    "[local-stt]   candidate \"citation mustang one echo kebeck\" at pos 3: score=0.85 (adjusted=0.59) consumed=2",
+    "[local-stt]   candidate \"mustang one echo kebeck\" at pos 3: score=0.85 (adjusted=0.59) consumed=2",
+    "[local-stt]   accepted: \"N641EQ\" (conf=1.00, consumed=5, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"N641EQ\" SpokenKey=\"mustang one echo kebeck\" Conf=1.00 Consumed=5",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=2102 Fixes=1 Approaches=0 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"Danbury\" -\u003e \"KDXR\"",
+    "[local-stt] command tokens after disregard: 6",
+    "[local-stt]   token[0]: Text=\"radar\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"services\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"terminated\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"frequency\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"change\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"approved\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 6 tokens",
+    "[local-stt]   tryMatchTemplate \"radar_services_terminated\": cmd=\"RST\" argStr=\"\" consumed=3",
+    "[local-stt]   matched command: \"RST\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   no match at token[3]=\"frequency\", skipping",
+    "[local-stt]   no match at token[4]=\"change\", skipping",
+    "[local-stt]   no match at token[5]=\"approved\", skipping",
+    "[local-stt] ParseCommands: result=[RST] (avgConf=1.00)",
+    "[local-stt] parsed commands: [RST] (conf=1.00)",
+    "[local-stt] validated commands: [RST] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"N641EQ/T RST\" (conf=1.00, time=344.125µs) ==="
+  ]
+}

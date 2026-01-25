@@ -492,8 +492,8 @@ var commandKeywords = map[string]string{
 	"dallas":    "ils",
 	"alice":     "ils",
 	"als":       "ils",
-	"les":       "ils",   // STT error: dropped leading sound
-	"dials":     "ils",   // STT error: "d'ILS" or "the ILS" merged
+	"les":       "ils", // STT error: dropped leading sound
+	"dials":     "ils", // STT error: "d'ILS" or "the ILS" merged
 	"rnav":      "rnav",
 	"arnavie":   "rnav", // STT error: "rnav" garbled with extra syllables
 	"vor":       "vor",
