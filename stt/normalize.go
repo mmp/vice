@@ -834,6 +834,20 @@ func postProcessNormalized(tokens []string) []string {
 			}
 		}
 
+		// Handle "for [a] thousand/hundred" → "4 thousand/hundred"
+		// "for" sounds like "four" in altitude contexts
+		if tokens[i] == "for" && i+1 < len(tokens) {
+			nextIdx := i + 1
+			// Skip optional "a" between "for" and "thousand/hundred"
+			if tokens[nextIdx] == "a" && nextIdx+1 < len(tokens) {
+				nextIdx++
+			}
+			if tokens[nextIdx] == "thousand" || tokens[nextIdx] == "hundred" {
+				result = append(result, "4")
+				continue
+			}
+		}
+
 		// Default: keep the token as-is
 		result = append(result, tokens[i])
 	}
