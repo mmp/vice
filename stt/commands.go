@@ -457,12 +457,13 @@ var commandTemplates = []CommandTemplate{
 		Priority:  15,
 	},
 	{
-		Name:      "intercept_localizer",
-		Keywords:  [][]string{{"intercept", "join", "set"}, {"localizer"}},
-		ArgType:   ArgNone,
-		OutputFmt: "I",
-		Priority:  10,
-		SkipWords: []string{"work", "going", "gonna", "to", "low", "load", "look"}, // STT garbage before "localizer"
+		Name:            "intercept_localizer",
+		Keywords:        [][]string{{"intercept", "join", "set"}, {"localizer"}},
+		ArgType:         ArgNone,
+		OutputFmt:       "I",
+		Priority:        10,
+		SkipWords:       []string{"work", "going", "gonna", "to", "low", "load", "look", "runway", "left", "right"}, // STT garbage and runway designator before "localizer"
+		SkipNonKeywords: true, // Allow runway numbers between "intercept" and "localizer"
 	},
 
 	// === TRANSPONDER COMMANDS ===
