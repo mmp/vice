@@ -962,6 +962,7 @@ type STTLogArgs struct {
 	AudioDuration     time.Duration
 	WhisperTranscript string
 	WhisperProcessor  string
+	WhisperModel      string
 	AircraftContext   map[string]stt.Aircraft
 	STTDebugLogs      []string
 }
@@ -977,6 +978,7 @@ func (sm *SimManager) ReportSTTLog(args *STTLogArgs, _ *struct{}) error {
 		slog.Float64("whisper_duration_ms", float64(args.WhisperDuration.Microseconds())/1000.0),
 		slog.Float64("audio_duration_ms", float64(args.AudioDuration.Microseconds())/1000.0),
 		slog.String("processor", args.WhisperProcessor),
+		slog.String("whisper_model", args.WhisperModel),
 		slog.String("callsign", args.Callsign),
 		slog.String("command", args.Commands),
 		slog.Any("stt_aircraft", args.AircraftContext),

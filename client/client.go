@@ -1392,12 +1392,14 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 		}
 
 		// Execute the command via RPC (this handles TTS readback)
+		whisperModelName := GetWhisperModelName()
 		c.RunAircraftCommands(AircraftCommandRequest{
 			Callsign:          av.ADSBCallsign(callsign),
 			Commands:          command,
 			WhisperDuration:   totalDuration,
 			AudioDuration:     audioDuration,
 			WhisperTranscript: finalText,
+			WhisperModel:      whisperModelName,
 			AircraftContext:   aircraftCtx,
 			STTDebugLogs:      debugLogs,
 		}, func(message string, remainingInput string) {
@@ -1419,6 +1421,7 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 				AudioDuration:     audioDuration,
 				WhisperTranscript: finalText,
 				WhisperProcessor:  whisper.ProcessorDescription(),
+				WhisperModel:      whisperModelName,
 				AircraftContext:   aircraftCtx,
 				STTDebugLogs:      debugLogs,
 			}, nil, nil)
