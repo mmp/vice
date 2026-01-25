@@ -163,6 +163,14 @@ func registerAllCommands() {
 		WithPriority(10),
 	)
 
+	// Explanation for the vector; discard
+	registerSTTCommand(
+		"vectors|vector [for] sequence|spacing|final",
+		func() string { return "" },
+		WithName("vectors_for"),
+		WithPriority(5),
+	)
+
 	// === SPEED COMMANDS ===
 	registerSTTCommand(
 		"reduce|slow [speed] [to] {speed}",
@@ -326,14 +334,14 @@ func registerAllCommands() {
 		"expect {approach_lahso}",
 		func(appr string) string { return fmt.Sprintf("E%s", appr) },
 		WithName("expect_approach"),
-		WithPriority(15),      // Higher than heading commands to match approach context first
-		WithSayAgainOnFail(),  // "expect [approach]" should ask for clarification if approach unrecognized
+		WithPriority(15),     // Higher than heading commands to match approach context first
+		WithSayAgainOnFail(), // "expect [approach]" should ask for clarification if approach unrecognized
 	)
 
 	// "vectors {approach}" without SAYAGAIN - "vectors" alone (e.g., "vectors for sequence")
 	// is often informational filler, not an actual expect command
 	registerSTTCommand(
-		"vectors {approach_lahso}",
+		"vector|vectors [for] [to] {approach_lahso}",
 		func(appr string) string { return fmt.Sprintf("E%s", appr) },
 		WithName("vectors_approach"),
 		WithPriority(15),
