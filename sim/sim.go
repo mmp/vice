@@ -1283,6 +1283,9 @@ func (s *Sim) updateState() {
 				s.lg.Debug("culled far-away aircraft", slog.String("adsb_callsign", string(callsign)))
 				s.deleteAircraft(ac)
 			}
+
+			// Check for delayed "traffic in sight" call
+			s.checkDelayedTrafficInSight(ac)
 		}
 
 		s.possiblyRequestFlightFollowing()

@@ -101,6 +101,11 @@ type Aircraft struct {
 	// LastAddressingForm tracks how the controller last addressed this aircraft.
 	// Used for readbacks to match the controller's style.
 	LastAddressingForm CallsignAddressingForm
+
+	// Traffic advisory state
+	TrafficInSight      bool      // True if aircraft has reported traffic in sight
+	TrafficInSightTime  time.Time // When traffic was reported in sight
+	TrafficLookingUntil time.Time // If non-zero, aircraft may report traffic in sight before this time
 }
 
 func (ac *Aircraft) GetRadarTrack(now time.Time) av.RadarTrack {

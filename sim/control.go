@@ -17,6 +17,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/nav"
 	"github.com/mmp/vice/util"
+	"github.com/mmp/vice/wx"
 )
 
 // TCWCanCommandAircraft returns true if the TCW can issue ATC commands to an aircraft
@@ -1522,6 +1523,189 @@ func (s *Sim) ContactTower(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent,
 		})
 }
 
+// TrafficAdvisory handles controller-issued traffic advisories.
+// Command format: TRAFFIC/oclock/miles/altitude (e.g., TRAFFIC/10/4/30 for 10 o'clock, 4 miles, 3000 ft)
+func (s *Sim) TrafficAdvisory(tcw TCW, callsign av.ADSBCallsign, command string) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	// Parse the command: TRAFFIC/oclock/miles/altitude
+	parts := strings.Split(command, "/")
+	if len(parts) != 4 {
+		return nil, ErrInvalidCommandSyntax
+	}
+
+	oclock, err := strconv.Atoi(parts[1])
+	if err != nil || oclock < 1 || oclock > 12 {
+		return nil, ErrInvalidCommandSyntax
+	}
+
+	miles, err := strconv.Atoi(parts[2])
+	if err != nil || miles < 1 {
+		return nil, ErrInvalidCommandSyntax
+	}
+
+	trafficAlt, err := strconv.Atoi(parts[3])
+	if err != nil {
+		return nil, ErrInvalidCommandSyntax
+	}
+	// trafficAlt is encoded altitude (in 100s of feet)
+	trafficAltFeet := float32(trafficAlt * 100)
+
+	return s.dispatchAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) error { return nil },
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return s.handleTrafficAdvisory(ac, oclock, miles, trafficAltFeet)
+		})
+}
+
+// handleTrafficAdvisory determines the pilot response to a traffic advisory based on:
+// 1. Weather conditions (IMC -> "we're in IMC")
+// 2. Presence of traffic (if no traffic in area -> "looking")
+// 3. Random chance based on proximity (closer/higher -> more likely "traffic in sight")
+func (s *Sim) handleTrafficAdvisory(ac *Aircraft, oclock int, miles int, trafficAltFeet float32) av.CommandIntent {
+	// Check weather conditions - find closest airport's METAR
+	isIMC := false
+	if len(s.State.METAR) > 0 {
+		var closestMETAR wx.METAR
+		closestDist := float32(999999)
+		for _, metar := range s.State.METAR {
+			if ap, ok := s.State.Airports[metar.ICAO]; ok {
+				dist := math.NMDistance2LL(ac.Position(), ap.Location)
+				if dist < closestDist {
+					closestDist = dist
+					closestMETAR = metar
+				}
+			}
+		}
+		if closestMETAR.ICAO != "" && !closestMETAR.IsVMC() {
+			isIMC = true
+		}
+	}
+
+	if isIMC {
+		return av.TrafficAdvisoryIntent{Response: av.TrafficResponseIMC}
+	}
+
+	// Convert o'clock to heading offset from aircraft heading
+	// 12 o'clock = 0 degrees, 3 o'clock = 90 degrees, etc.
+	oclockHeading := float32((oclock % 12) * 30) // 0, 30, 60, 90... 330
+	trafficHeading := math.NormalizeHeading(ac.Heading() + oclockHeading)
+
+	// Calculate the approximate position of the reported traffic
+	nmPerLong := ac.NmPerLongitude()
+	magVar := ac.MagneticVariation()
+	trafficPos := math.Offset2LL(ac.Position(), trafficHeading, float32(miles), nmPerLong, magVar)
+
+	// Search for actual traffic near the reported position
+	// Tolerance: +/- 2 miles horizontal, +/- 1000 feet vertical
+	const horizontalToleranceNM = 2.0
+	const verticalToleranceFeet = 1000.0
+
+	trafficFound := false
+	for cs, other := range s.Aircraft {
+		if cs == ac.ADSBCallsign {
+			continue // Skip self
+		}
+
+		dist := math.NMDistance2LL(trafficPos, other.Position())
+		altDiff := math.Abs(other.Altitude() - trafficAltFeet)
+
+		if dist <= horizontalToleranceNM && altDiff <= verticalToleranceFeet {
+			trafficFound = true
+			break
+		}
+	}
+
+	if !trafficFound {
+		// No traffic found - respond "looking"
+		return av.TrafficAdvisoryIntent{Response: av.TrafficResponseLooking}
+	}
+
+	// Traffic found - determine probability of seeing it based on:
+	// 1. Distance (closer = more likely to see)
+	// 2. Relative altitude (higher than us = easier to see against sky, lower = harder against ground)
+
+	// Base probability: start at 70%
+	seeProb := float32(0.7)
+
+	// Distance factor: closer is better (linear from 1.0 at 0 miles to 0.4 at 10+ miles)
+	distFactor := float32(1.0) - float32(min(miles, 10))*0.06
+	seeProb *= distFactor
+
+	// Altitude factor: traffic above is easier to see
+	acAlt := ac.Altitude()
+	if trafficAltFeet > acAlt+500 {
+		// Traffic is significantly higher - easier to see against sky
+		seeProb *= 1.3
+	} else if trafficAltFeet < acAlt-500 {
+		// Traffic is significantly lower - harder to see against ground
+		seeProb *= 0.7
+	}
+
+	// Cap probability between 0.2 and 0.95
+	seeProb = max(0.2, min(0.95, seeProb))
+
+	// Roll the dice
+	if s.Rand.Float32() < seeProb {
+		ac.TrafficInSight = true
+		ac.TrafficInSightTime = s.State.SimTime
+		return av.TrafficAdvisoryIntent{Response: av.TrafficResponseTrafficSeen, WillMaintainSeparation: s.Rand.Float32() < 0.3}
+	}
+
+	// "Looking" - schedule possible delayed traffic-in-sight call
+	ac.TrafficLookingUntil = s.State.SimTime.Add(time.Duration(10+s.Rand.Intn(10)) * time.Second)
+	return av.TrafficAdvisoryIntent{Response: av.TrafficResponseLooking}
+}
+
+// checkDelayedTrafficInSight checks if an aircraft that said "looking" should now report traffic in sight.
+func (s *Sim) checkDelayedTrafficInSight(ac *Aircraft) {
+	// Only check if we're within the looking window
+	if ac.TrafficLookingUntil.IsZero() || s.State.SimTime.After(ac.TrafficLookingUntil) {
+		ac.TrafficLookingUntil = time.Time{} // Clear expired window
+		return
+	}
+
+	// Must be on a frequency to transmit
+	if ac.ControllerFrequency == "" {
+		return
+	}
+
+	// Random chance each update to report traffic in sight (roughly 1/20 chance per second at 10 updates/sec)
+	if s.Rand.Intn(200) != 0 {
+		return
+	}
+
+	// Report traffic in sight
+	ac.TrafficInSight = true
+	ac.TrafficInSightTime = s.State.SimTime
+	ac.TrafficLookingUntil = time.Time{} // Clear the looking window
+
+	// Post the transmission
+	rt := av.MakeReadbackTransmission("[approach|], {callsign}, [we've got the traffic|we have the traffic in sight|traffic in sight now]",
+		av.CallsignArg{Callsign: ac.ADSBCallsign})
+	rt.Type = av.RadioTransmissionContact // Unprompted transmission
+	s.postContactTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), *rt)
+}
+
+// MaintainVisualSeparation handles "maintain visual separation from the traffic" command.
+// The aircraft should have recently reported traffic in sight.
+func (s *Sim) MaintainVisualSeparation(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) error { return nil },
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			// Check if aircraft has traffic in sight (within last 60 seconds)
+			if ac.TrafficInSight && s.State.SimTime.Sub(ac.TrafficInSightTime) < 60*time.Second {
+				return av.VisualSeparationIntent{}
+			}
+			// If they don't have traffic in sight, they can't maintain visual separation
+			return av.MakeUnableIntent("unable, we don't have the traffic")
+		})
+}
+
 func (s *Sim) ResumeOwnNavigation(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -2284,7 +2468,9 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 		}
 
 	case 'T':
-		if command == "TO" {
+		if strings.HasPrefix(command, "TRAFFIC/") {
+			return s.TrafficAdvisory(tcw, callsign, command)
+		} else if command == "TO" {
 			return s.ContactTower(tcw, callsign)
 		} else if n := len(command); n > 2 {
 			if deg, err := strconv.Atoi(command[1 : n-1]); err == nil {
@@ -2324,6 +2510,12 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 		} else {
 			return nil, ErrInvalidCommandSyntax
 		}
+
+	case 'V':
+		if command == "VISSEP" {
+			return s.MaintainVisualSeparation(tcw, callsign)
+		}
+		return nil, ErrInvalidCommandSyntax
 
 	case 'X':
 		s.DeleteAircraft(tcw, callsign)

@@ -600,6 +600,46 @@ func (c ContactTowerIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// Traffic Advisory Intent
+
+// TrafficAdvisoryResponse represents the pilot's response to a traffic advisory
+type TrafficAdvisoryResponse int
+
+const (
+	TrafficResponseIMC         TrafficAdvisoryResponse = iota // In IMC, can't see traffic
+	TrafficResponseLooking                                    // No traffic visible, will look
+	TrafficResponseTrafficSeen                                // Traffic is in sight
+)
+
+// TrafficAdvisoryIntent represents a pilot's response to a traffic advisory
+type TrafficAdvisoryIntent struct {
+	Response               TrafficAdvisoryResponse
+	WillMaintainSeparation bool // If true, add "will maintain visual separation"
+}
+
+func (t TrafficAdvisoryIntent) Render(rt *RadioTransmission, r *rand.Rand) {
+	switch t.Response {
+	case TrafficResponseIMC:
+		rt.Add("[we're in IMC|we're IMC|in the clouds|IMC]")
+	case TrafficResponseLooking:
+		rt.Add("[looking|we're looking|looking for traffic|we'll keep an eye out]")
+	case TrafficResponseTrafficSeen:
+		if t.WillMaintainSeparation {
+			rt.Add("[we have the traffic, will maintain visual separation|traffic in sight, we'll maintain visual|we see the traffic, will maintain visual separation]")
+		} else {
+			rt.Add("[we have the traffic|traffic in sight|we see the traffic|got the traffic]")
+		}
+	}
+}
+
+// VisualSeparationIntent represents a pilot's acknowledgment of visual separation responsibility
+type VisualSeparationIntent struct{}
+
+func (v VisualSeparationIntent) Render(rt *RadioTransmission, r *rand.Rand) {
+	rt.Add("[will maintain visual separation|we'll maintain visual separation|maintaining visual separation|visual separation]")
+}
+
+///////////////////////////////////////////////////////////////////////////
 // SayAgain Intent
 
 // SayAgainCommandType identifies which type of command the pilot is asking to be repeated.

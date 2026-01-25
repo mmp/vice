@@ -31,6 +31,7 @@ const (
 	ArgSID          // SID name (e.g., "climb via the Kennedy Five")
 	ArgSTAR         // STAR name (e.g., "descend via the Camrn Four")
 	ArgHold         // Hold with optional parameters (e.g., "hold west of MERIT on the 280 radial, 2 minute legs, left turns")
+	ArgTraffic      // Traffic advisory (e.g., "traffic 10 o'clock, 4 miles, westbound, a320 at 3000")
 )
 
 // CommandTemplate defines a pattern for recognizing a command.
@@ -581,6 +582,26 @@ var commandTemplates = []CommandTemplate{
 		ArgType:   ArgNone,
 		OutputFmt: "A",
 		Priority:  10,
+	},
+
+	// === TRAFFIC ADVISORY ===
+	{
+		Name:            "traffic_advisory",
+		Keywords:        [][]string{{"traffic"}},
+		ArgType:         ArgTraffic,
+		OutputFmt:       "TRAFFIC/%d/%d/%d", // o'clock/miles/altitude
+		Priority:        10,
+		SkipWords:       []string{"at", "your"},
+		SkipNonKeywords: true, // Skip words between "traffic" and o'clock
+	},
+	{
+		Name:            "visual_separation",
+		Keywords:        [][]string{{"maintain"}, {"visual"}, {"separation"}},
+		ArgType:         ArgNone,
+		OutputFmt:       "VISSEP",
+		Priority:        15,
+		SkipWords:       []string{"from", "the", "traffic"},
+		SkipNonKeywords: true,
 	},
 }
 
@@ -1215,6 +1236,24 @@ func tryMatchTemplate(tokens []Token, tmpl CommandTemplate, ac Aircraft, isThen 
 		return CommandMatch{
 			Command:    holdCmd,
 			Confidence: fixConf,
+			Consumed:   consumed,
+			IsThen:     isThen,
+		}, consumed
+
+	case ArgTraffic:
+		// Extract traffic advisory: o'clock, miles, altitude
+		oclock, miles, alt, trafficConsumed := extractTraffic(tokens[consumed:])
+		if trafficConsumed == 0 {
+			logLocalStt("  tryMatchTemplate %q: traffic extraction failed", tmpl.Name)
+			return CommandMatch{}, 0
+		}
+		consumed += trafficConsumed
+		cmd := fmt.Sprintf(tmpl.OutputFmt, oclock, miles, alt)
+		logLocalStt("  tryMatchTemplate %q: cmd=%q consumed=%d",
+			tmpl.Name, cmd, consumed)
+		return CommandMatch{
+			Command:    cmd,
+			Confidence: 1.0,
 			Consumed:   consumed,
 			IsThen:     isThen,
 		}, consumed
@@ -2414,6 +2453,148 @@ func extractDegrees(tokens []Token) (int, string, int) {
 	}
 
 	return 0, "", 0
+}
+
+// extractTraffic extracts traffic advisory components: o'clock position, distance in miles, and altitude.
+// Pattern: "(N) o'clock, (M) miles, (direction), (aircraft type), (at) (altitude)"
+// Returns o'clock (1-12), miles, encoded altitude (in 100s of feet), and tokens consumed.
+// The direction and aircraft type are ignored.
+func extractTraffic(tokens []Token) (int, int, int, int) {
+	if len(tokens) == 0 {
+		return 0, 0, 0, 0
+	}
+
+	consumed := 0
+	var oclock, miles, alt int
+
+	// Phase 1: Find o'clock position (1-12)
+	for consumed < len(tokens) && consumed < 10 {
+		t := tokens[consumed]
+		text := strings.ToLower(t.Text)
+
+		// Skip filler words
+		if IsFillerWord(text) || text == "at" || text == "your" {
+			consumed++
+			continue
+		}
+
+		// Check for number followed by "o'clock" or just a number in range 1-12
+		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 12 {
+			oclock = t.Value
+			consumed++
+			// Skip "o'clock" if present
+			if consumed < len(tokens) && FuzzyMatch(tokens[consumed].Text, "o'clock", 0.8) {
+				consumed++
+			}
+			break
+		}
+		consumed++
+	}
+
+	if oclock == 0 {
+		return 0, 0, 0, 0
+	}
+
+	// Phase 2: Find distance in miles
+	for consumed < len(tokens) && consumed < 20 {
+		t := tokens[consumed]
+		text := strings.ToLower(t.Text)
+
+		// Skip filler words and punctuation-like words
+		if IsFillerWord(text) || text == "at" || text == "about" || text == "approximately" {
+			consumed++
+			continue
+		}
+
+		// Check for number followed by "miles" or "mile"
+		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 50 {
+			miles = t.Value
+			consumed++
+			// Skip "miles" or "mile" if present
+			if consumed < len(tokens) {
+				nextText := strings.ToLower(tokens[consumed].Text)
+				if FuzzyMatch(nextText, "miles", 0.8) || FuzzyMatch(nextText, "mile", 0.8) {
+					consumed++
+				}
+			}
+			break
+		}
+		consumed++
+	}
+
+	if miles == 0 {
+		return 0, 0, 0, 0
+	}
+
+	// Phase 3: Skip direction and aircraft type, find altitude
+	// The altitude is the current position of the traffic. If followed by "climbing/descending XXXX",
+	// we use the first altitude (current), not the target.
+	// Altitudes are multiples of 100 feet; aircraft types like 787 are not.
+	for consumed < len(tokens) && consumed < 40 {
+		t := tokens[consumed]
+
+		// Check for altitude pattern (TokenAltitude from "N thousand" parsing)
+		if t.Type == TokenAltitude {
+			alt = t.Value
+			consumed++
+			break
+		}
+
+		// Check for number that might be altitude
+		if t.Type == TokenNumber {
+			// Look ahead for "thousand" pattern
+			if consumed+1 < len(tokens) {
+				nextText := strings.ToLower(tokens[consumed+1].Text)
+				if FuzzyMatch(nextText, "thousand", 0.8) {
+					// "N thousand" pattern - multiply by 10 to get encoded altitude
+					alt = t.Value * 10
+					consumed += 2
+					// Check for "N hundred" after thousand
+					if consumed+1 < len(tokens) {
+						if tokens[consumed].Type == TokenNumber {
+							hundredsVal := tokens[consumed].Value
+							if consumed+1 < len(tokens) && FuzzyMatch(tokens[consumed+1].Text, "hundred", 0.8) {
+								alt += hundredsVal
+								consumed += 2
+							}
+						}
+					}
+					break
+				} else if FuzzyMatch(nextText, "hundred", 0.8) {
+					// "N hundred" pattern (low altitude like "five hundred")
+					alt = t.Value
+					consumed += 2
+					break
+				}
+			}
+
+			// Raw number in feet - must be multiple of 100 to be an altitude
+			// This skips aircraft types like 787, 737, etc.
+			if t.Value >= 500 && t.Value <= 60000 && t.Value%100 == 0 {
+				alt = t.Value / 100
+				consumed++
+				// Skip "climbing/descending to XXXX" - we use current altitude, not target
+				if consumed < len(tokens) {
+					nextText := strings.ToLower(tokens[consumed].Text)
+					if FuzzyMatch(nextText, "climbing", 0.8) || FuzzyMatch(nextText, "descending", 0.8) {
+						consumed++
+						if consumed < len(tokens) && tokens[consumed].Type == TokenNumber {
+							consumed++
+						}
+					}
+				}
+				break
+			}
+		}
+
+		consumed++
+	}
+
+	if alt == 0 {
+		return 0, 0, 0, 0
+	}
+
+	return oclock, miles, alt, consumed
 }
 
 // extractHoldParams extracts hold parameters from tokens for controller-specified holds.
