@@ -379,6 +379,14 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			}
 			nav.Waypoints = append(nav.Approach.AtFixClearedRoute, nav.FlightState.ArrivalAirport)
 		}
+		// Check if this is an "at fix intercept" fix
+		if nav.Approach.AtFixInterceptFix == wp.Fix && nav.Approach.Assigned != nil {
+			// Start intercepting the localizer. prepareForApproach handles
+			// both cases: if on a heading, it sets InterceptState = InitialHeading;
+			// if direct to approach fix, it splices the routes.
+			nav.prepareForApproach(false)
+			nav.Approach.AtFixInterceptFix = "" // Clear so we don't trigger again
+		}
 		if nav.Heading.Arc != nil {
 			nav.Heading = NavHeading{}
 		}

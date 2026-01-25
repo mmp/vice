@@ -1409,6 +1409,16 @@ func (s *Sim) AtFixCleared(tcw TCW, callsign av.ADSBCallsign, fix, approach stri
 		})
 }
 
+func (s *Sim) AtFixIntercept(tcw TCW, callsign av.ADSBCallsign, fix string) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.AtFixIntercept(fix, s.lg)
+		})
+}
+
 func (s *Sim) ExpectApproach(tcw TCW, callsign av.ADSBCallsign, approach, lahsoRunway string) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -2025,13 +2035,20 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return nil, nil
 		} else {
 			components := strings.Split(command, "/")
-			if len(components) != 2 || len(components[1]) == 0 || components[1][0] != 'C' {
+			if len(components) != 2 || len(components[1]) == 0 {
 				return nil, ErrInvalidCommandSyntax
 			}
 
 			fix := strings.ToUpper(components[0][1:])
-			approach := components[1][1:]
-			return s.AtFixCleared(tcw, callsign, fix, approach)
+			switch components[1][0] {
+			case 'C':
+				approach := components[1][1:]
+				return s.AtFixCleared(tcw, callsign, fix, approach)
+			case 'I':
+				return s.AtFixIntercept(tcw, callsign, fix)
+			default:
+				return nil, ErrInvalidCommandSyntax
+			}
 		}
 
 	case 'C':
