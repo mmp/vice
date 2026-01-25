@@ -30,6 +30,7 @@ type LogEntry struct {
 	Duration          int64                   `json:"duration,omitempty"`
 	AudioDurationMs   float64                 `json:"audio_duration_ms,omitempty"`
 	Processor         string                  `json:"processor,omitempty"`
+	WhisperModel      string                  `json:"whisper_model,omitempty"`
 	Callsign          string                  `json:"callsign"`
 	Command           string                  `json:"command"`
 	STTAircraft       map[string]stt.Aircraft `json:"stt_aircraft"`
@@ -703,8 +704,24 @@ func render(screen tcell.Screen, state *AppState) {
 		// Draw context on white background
 		maxY := height - 2
 
-		// Always show context for the entry's original callsign
-		ac := getAircraftForCallsign(entryCallsign, entry)
+		// Show whisper model if available
+		if entry.WhisperModel != "" && y < maxY {
+			drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
+			drawText(screen, 0, y, width, styleContextLabel, fmt.Sprintf(" Whisper Model: %s", entry.WhisperModel))
+			y++
+		}
+
+		// Determine which callsign to show context for:
+		// If a valid callsign is in the correction field, use that; otherwise use the entry's callsign
+		contextCallsign := entryCallsign
+		if state.correction != "" && state.correction != " " {
+			parts := strings.SplitN(strings.TrimSpace(state.correction), " ", 2)
+			if len(parts) > 0 && isValidCallsign(parts[0], entry) {
+				contextCallsign = parts[0]
+			}
+		}
+
+		ac := getAircraftForCallsign(contextCallsign, entry)
 		if ac != nil {
 			// Aircraft info
 			drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
