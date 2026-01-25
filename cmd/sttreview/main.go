@@ -13,6 +13,7 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+	"time"
 	"unicode"
 
 	"github.com/gdamore/tcell/v2"
@@ -75,6 +76,7 @@ func main() {
 	outputDir := flag.String("output", "stt/failing_tests", "output directory for saved tests")
 	ingestMode := flag.Bool("ingest", false, "ingest entries only, don't start review UI")
 	showStatus := flag.Bool("status", false, "show queue status and exit")
+	lifoMode := flag.Bool("lifo", false, "order entries by time, most recent first")
 	flag.Parse()
 
 	// Load persisted state
@@ -126,10 +128,18 @@ func main() {
 		Background(tcell.ColorReset).
 		Foreground(tcell.ColorReset))
 
-	// Shuffle the queue for random order
-	rand.Shuffle(len(persisted.Queue), func(i, j int) {
-		persisted.Queue[i], persisted.Queue[j] = persisted.Queue[j], persisted.Queue[i]
-	})
+	// Order the queue: LIFO (most recent first) or random
+	if *lifoMode {
+		sort.Slice(persisted.Queue, func(i, j int) bool {
+			ti, _ := time.Parse(time.RFC3339Nano, persisted.Queue[i].Time)
+			tj, _ := time.Parse(time.RFC3339Nano, persisted.Queue[j].Time)
+			return ti.After(tj)
+		})
+	} else {
+		rand.Shuffle(len(persisted.Queue), func(i, j int) {
+			persisted.Queue[i], persisted.Queue[j] = persisted.Queue[j], persisted.Queue[i]
+		})
+	}
 
 	appState := &AppState{entries: persisted.Queue}
 	// Initialize correction from first entry
