@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T06:16:28.21759208Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 7552,
+  "callsign": "SWA744",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,110 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "South West 744, turn left-wing 240, intercept the localizer, doesn't maintain 3,800",
-  "whisper_duration_ms": 428.882,
-  "audio_duration_ms": 7552,
-  "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
-  "callsign": "SWA744",
   "command": "L240 I D38",
-  "stt_aircraft": {
-    "SKW4438": {
-      "Callsign": "SKW4438",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 2104,
-      "State": "on approach",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "SWA744": {
-      "Callsign": "SWA744",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Lyndi": "LYNDI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "SkyWest 4438": {
-      "Callsign": "SKW4438",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 2104,
-      "State": "on approach",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "Southwest 744": {
-      "Callsign": "SWA744",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Lyndi": "LYNDI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"South West 744, turn left-wing 240, intercept the localizer, doesn't maintain 3,800\"",
@@ -176,5 +73,60 @@
     "[local-stt] parsed commands: [L240 S380] (conf=1.00)",
     "[local-stt] validated commands: [L240 S380] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"SWA744 L240 S380\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
+  "stt_aircraft": {
+    "SkyWest 4438": {
+      "AddressingForm": 0,
+      "AircraftType": "E75L",
+      "Altitude": 2104,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "SKW4438",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5Z",
+      "Fixes": {
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN"
+      },
+      "SID": "",
+      "STAR": "COMIX2",
+      "State": "on approach",
+      "TrackingController": "5Z"
+    },
+    "Southwest 744": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 4000,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "SWA744",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5Z",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "SID": "",
+      "STAR": "COMIX2",
+      "State": "arrival",
+      "TrackingController": "5Z"
+    }
+  },
+  "time": "2026-01-22T06:16:28.21759208Z",
+  "transcript": "South West 744, turn left-wing 240, intercept the localizer, doesn't maintain 3,800",
+  "whisper_duration_ms": 428.882
 }

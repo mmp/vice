@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T23:42:45.14734553Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 3584,
+  "callsign": "AAL634",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,158 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "American 634, cleared L S runway niner, contact tower",
-  "whisper_duration_ms": 569.648,
-  "audio_duration_ms": 3584,
-  "processor": "GPU: NVIDIA GeForce GTX 1080 (8273MB)",
-  "callsign": "AAL634",
   "command": "CI9 TO",
-  "stt_aircraft": {
-    "AAL620": {
-      "Callsign": "AAL620",
-      "AircraftType": "B788",
-      "Fixes": {
-        "Bilzz": "BILZZ",
-        "Cstio": "CSTIO",
-        "Dahla": "DAHLA",
-        "Gamey": "GAMEY",
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA",
-        "Raebn": "RAEBN"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "VIICE2",
-      "Altitude": 11482,
-      "State": "arrival",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    },
-    "AAL634": {
-      "Callsign": "AAL634",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Iness": "INESS",
-        "Miami International Airport": "KMIA"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "FROGZ4",
-      "Altitude": 2843,
-      "State": "on approach",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "American 620 heavy": {
-      "Callsign": "AAL620",
-      "AircraftType": "B788",
-      "Fixes": {
-        "Bilzz": "BILZZ",
-        "Cstio": "CSTIO",
-        "Dahla": "DAHLA",
-        "Gamey": "GAMEY",
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA",
-        "Raebn": "RAEBN"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "VIICE2",
-      "Altitude": 11482,
-      "State": "arrival",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    },
-    "American 634": {
-      "Callsign": "AAL634",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Iness": "INESS",
-        "Miami International Airport": "KMIA"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "FROGZ4",
-      "Altitude": 2843,
-      "State": "on approach",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "NKS9901": {
-      "Callsign": "NKS9901",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "SNDBR3",
-      "Altitude": 5935,
-      "State": "arrival",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    },
-    "Spirit Wings 9901": {
-      "Callsign": "NKS9901",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "SNDBR3",
-      "Altitude": 5935,
-      "State": "arrival",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"American 634, cleared L S runway niner, contact tower\"",
@@ -199,5 +48,84 @@
     "[local-stt] parsed commands: [TO] (conf=1.00)",
     "[local-stt] validated commands: [TO] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"AAL634 TO\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce GTX 1080 (8273MB)",
+  "stt_aircraft": {
+    "American 620 heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "B788",
+      "Altitude": 11482,
+      "AssignedApproach": "ILS Runway 9",
+      "Callsign": "AAL620",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1S",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Cstio": "CSTIO",
+        "Dahla": "DAHLA",
+        "Gamey": "GAMEY",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Raebn": "RAEBN"
+      },
+      "SID": "",
+      "STAR": "VIICE2",
+      "State": "arrival",
+      "TrackingController": "1S"
+    },
+    "American 634": {
+      "AddressingForm": 0,
+      "AircraftType": "B738",
+      "Altitude": 2843,
+      "AssignedApproach": "ILS Runway 9",
+      "Callsign": "AAL634",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Iness": "INESS",
+        "Miami International Airport": "KMIA"
+      },
+      "SID": "",
+      "STAR": "FROGZ4",
+      "State": "on approach",
+      "TrackingController": "1D"
+    },
+    "Spirit Wings 9901": {
+      "AddressingForm": 0,
+      "AircraftType": "A320",
+      "Altitude": 5935,
+      "AssignedApproach": "ILS Runway 9",
+      "Callsign": "NKS9901",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1S",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "SID": "",
+      "STAR": "SNDBR3",
+      "State": "arrival",
+      "TrackingController": "1S"
+    }
+  },
+  "time": "2026-01-22T23:42:45.14734553Z",
+  "transcript": "American 634, cleared L S runway niner, contact tower",
+  "whisper_duration_ms": 569.648
 }

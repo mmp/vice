@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T05:58:05.956785503Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 4736,
+  "callsign": "UAL485",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,156 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "United 45 turn rate heading 2-4s are gonna set the look laser",
-  "whisper_duration_ms": 456.029,
-  "audio_duration_ms": 4736,
-  "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
-  "callsign": "UAL485",
   "command": "R240 I",
-  "stt_aircraft": {
-    "DAL9993": {
-      "Callsign": "DAL9993",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "San Diego International Airport": "KSAN"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 2143,
-      "State": "on approach",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "Delta 9993": {
-      "Callsign": "DAL9993",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "San Diego International Airport": "KSAN"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 2143,
-      "State": "on approach",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "SWA277": {
-      "Callsign": "SWA277",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 5121,
-      "State": "on approach",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "Southwest 277": {
-      "Callsign": "SWA277",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 5121,
-      "State": "on approach",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "UAL485": {
-      "Callsign": "UAL485",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Lyndi": "LYNDI",
-        "Naddo": "NADDO",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Visual Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "United 485": {
-      "Callsign": "UAL485",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Lyndi": "LYNDI",
-        "Naddo": "NADDO",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Visual Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"United 45 turn rate heading 2-4s are gonna set the look laser\"",
@@ -227,5 +78,83 @@
     "[local-stt] parsed commands: [R002] (conf=1.00)",
     "[local-stt] validated commands: [R002] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"UAL485 R002\" (conf=1.00, time=551.6µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
+  "stt_aircraft": {
+    "Delta 9993": {
+      "AddressingForm": 0,
+      "AircraftType": "A21N",
+      "Altitude": 2143,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "DAL9993",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5Z",
+      "Fixes": {
+        "San Diego International Airport": "KSAN"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "on approach",
+      "TrackingController": "5Z"
+    },
+    "Southwest 277": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 5121,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "SWA277",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5Z",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "on approach",
+      "TrackingController": "5Z"
+    },
+    "United 485": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 4000,
+      "AssignedApproach": "Visual Runway 27",
+      "Callsign": "UAL485",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5Z",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lyndi": "LYNDI",
+        "Naddo": "NADDO",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN"
+      },
+      "SID": "",
+      "STAR": "COMIX2",
+      "State": "arrival",
+      "TrackingController": "5Z"
+    }
+  },
+  "time": "2026-01-22T05:58:05.956785503Z",
+  "transcript": "United 45 turn rate heading 2-4s are gonna set the look laser",
+  "whisper_duration_ms": 456.029
 }

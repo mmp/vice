@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T06:31:39.120933807Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 6528,
+  "callsign": "SWA236",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,262 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Sappas, 236, circular approach at Lyndi, cleared look, Ledzer, runway 27, approach, maintain 2-1s or nuts",
-  "whisper_duration_ms": 446.442,
-  "audio_duration_ms": 6528,
-  "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
-  "callsign": "SWA236",
   "command": "ALYNDI/CL27 S210",
-  "stt_aircraft": {
-    "ACA3886": {
-      "Callsign": "ACA3886",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Klomn": "KLOMN",
-        "Lyndi": "LYNDI",
-        "Naddo": "NADDO",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 6703,
-      "State": "arrival",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "Air Canada 3886": {
-      "Callsign": "ACA3886",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Klomn": "KLOMN",
-        "Lyndi": "LYNDI",
-        "Naddo": "NADDO",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 6703,
-      "State": "arrival",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "SKW2851": {
-      "Callsign": "SKW2851",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Lyndi": "LYNDI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "SWA236": {
-      "Callsign": "SWA236",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Lyndi": "LYNDI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 6068,
-      "State": "arrival",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "SWA244": {
-      "Callsign": "SWA244",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 2975,
-      "State": "on approach",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "SWA4821": {
-      "Callsign": "SWA4821",
-      "AircraftType": "B737",
-      "Fixes": {
-        "San Diego International Airport": "KSAN"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 1614,
-      "State": "on approach",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "SkyWest 2851": {
-      "Callsign": "SKW2851",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Lyndi": "LYNDI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "Southwest 236": {
-      "Callsign": "SWA236",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Lyndi": "LYNDI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 6068,
-      "State": "arrival",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "Southwest 244": {
-      "Callsign": "SWA244",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 2975,
-      "State": "on approach",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "Southwest 4821": {
-      "Callsign": "SWA4821",
-      "AircraftType": "B737",
-      "Fixes": {
-        "San Diego International Airport": "KSAN"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 1614,
-      "State": "on approach",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Sappas, 236, circular approach at Lyndi, cleared look, Ledzer, runway 27, approach, maintain 2-1s or nuts\"",
@@ -347,5 +92,136 @@
     "[local-stt] parsed commands: [ALYNDI/CL27 A20] (conf=0.91)",
     "[local-stt] validated commands: [ALYNDI/CL27 A20] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"SWA236 ALYNDI/CL27 A20\" (conf=0.91, time=515.4µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
+  "stt_aircraft": {
+    "Air Canada 3886": {
+      "AddressingForm": 0,
+      "AircraftType": "A321",
+      "Altitude": 6703,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "ACA3886",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5Z",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Klomn": "KLOMN",
+        "Lyndi": "LYNDI",
+        "Naddo": "NADDO",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "SID": "",
+      "STAR": "COMIX2",
+      "State": "arrival",
+      "TrackingController": "5Z"
+    },
+    "SkyWest 2851": {
+      "AddressingForm": 0,
+      "AircraftType": "E75L",
+      "Altitude": 4000,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "SKW2851",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5Z",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "SID": "",
+      "STAR": "COMIX2",
+      "State": "arrival",
+      "TrackingController": "5Z"
+    },
+    "Southwest 236": {
+      "AddressingForm": 0,
+      "AircraftType": "B738",
+      "Altitude": 6068,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "SWA236",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5Z",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "arrival",
+      "TrackingController": "5Z"
+    },
+    "Southwest 244": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 2975,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "SWA244",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5Z",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "on approach",
+      "TrackingController": "5Z"
+    },
+    "Southwest 4821": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 1614,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "SWA4821",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5Z",
+      "Fixes": {
+        "San Diego International Airport": "KSAN"
+      },
+      "SID": "",
+      "STAR": "COMIX2",
+      "State": "on approach",
+      "TrackingController": "5Z"
+    }
+  },
+  "time": "2026-01-22T06:31:39.120933807Z",
+  "transcript": "Sappas, 236, circular approach at Lyndi, cleared look, Ledzer, runway 27, approach, maintain 2-1s or nuts",
+  "whisper_duration_ms": 446.442
 }

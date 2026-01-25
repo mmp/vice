@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-24T15:48:55.473448696Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 3712,
+  "callsign": "FFT994",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,182 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Fronter, Flight niner niner four, BSN, VSR, Expect ILS one zero right.",
-  "whisper_duration_ms": 174.932,
-  "audio_duration_ms": 3712,
-  "processor": "GPU: NVIDIA GeForce RTX 5080 (15977MB)",
-  "callsign": "FFT994",
   "command": "EI0R",
-  "stt_aircraft": {
-    "FFT994": {
-      "Callsign": "FFT994",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Bepac": "BEPAC",
-        "Fort Lauderdale Hollywood International Airport": "KFLL",
-        "Gamve": "GAMVE",
-        "Holid": "HOLID",
-        "Kevey": "KEVEY",
-        "Latnn": "LATNN",
-        "Novae": "NOVAE",
-        "Olahs": "OLAHS",
-        "Wanar": "WANAR",
-        "Waror": "WAROR",
-        "Wavun": "WAVUN"
-      },
-      "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "I L S runway one zero right": "I0R"
-      },
-      "AssignedApproach": "ILS Runway 10L",
-      "SID": "",
-      "STAR": "OLAHS3",
-      "Altitude": 9457,
-      "State": "arrival",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "Frontier Flight 994": {
-      "Callsign": "FFT994",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Bepac": "BEPAC",
-        "Fort Lauderdale Hollywood International Airport": "KFLL",
-        "Gamve": "GAMVE",
-        "Holid": "HOLID",
-        "Kevey": "KEVEY",
-        "Latnn": "LATNN",
-        "Novae": "NOVAE",
-        "Olahs": "OLAHS",
-        "Wanar": "WANAR",
-        "Waror": "WAROR",
-        "Wavun": "WAVUN"
-      },
-      "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "I L S runway one zero right": "I0R"
-      },
-      "AssignedApproach": "ILS Runway 10L",
-      "SID": "",
-      "STAR": "OLAHS3",
-      "Altitude": 9457,
-      "State": "arrival",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "SWA6329": {
-      "Callsign": "SWA6329",
-      "AircraftType": "B38M",
-      "Fixes": {
-        "Bepac": "BEPAC",
-        "Cuuda": "CUUDA",
-        "Fort Lauderdale Hollywood International Airport": "KFLL",
-        "Gamve": "GAMVE",
-        "Holid": "HOLID",
-        "Lokkr": "LOKKR",
-        "Mackl": "MACKL",
-        "Novae": "NOVAE",
-        "Serif": "SERIF",
-        "Wanar": "WANAR",
-        "Waror": "WAROR"
-      },
-      "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "I L S runway one zero right": "I0R"
-      },
-      "AssignedApproach": "ILS Runway 10L",
-      "SID": "",
-      "STAR": "CUUDA3",
-      "Altitude": 12718,
-      "State": "arrival",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    },
-    "Southwest 6329": {
-      "Callsign": "SWA6329",
-      "AircraftType": "B38M",
-      "Fixes": {
-        "Bepac": "BEPAC",
-        "Cuuda": "CUUDA",
-        "Fort Lauderdale Hollywood International Airport": "KFLL",
-        "Gamve": "GAMVE",
-        "Holid": "HOLID",
-        "Lokkr": "LOKKR",
-        "Mackl": "MACKL",
-        "Novae": "NOVAE",
-        "Serif": "SERIF",
-        "Wanar": "WANAR",
-        "Waror": "WAROR"
-      },
-      "CandidateApproaches": {
-        "I L S runway one zero left": "I0L",
-        "I L S runway one zero right": "I0R"
-      },
-      "AssignedApproach": "ILS Runway 10L",
-      "SID": "",
-      "STAR": "CUUDA3",
-      "Altitude": 12718,
-      "State": "arrival",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    },
-    "UPS 7312 heavy": {
-      "Callsign": "UPS7312",
-      "AircraftType": "B744",
-      "Fixes": {
-        "Gritt": "GRITT",
-        "Haslm": "HASLM",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA",
-        "Morea": "MOREA",
-        "Sndbr": "SNDBR"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "SNDBR3",
-      "Altitude": 13228,
-      "State": "arrival",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    },
-    "UPS7312": {
-      "Callsign": "UPS7312",
-      "AircraftType": "B744",
-      "Fixes": {
-        "Gritt": "GRITT",
-        "Haslm": "HASLM",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA",
-        "Morea": "MOREA",
-        "Sndbr": "SNDBR"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "SNDBR3",
-      "Altitude": 13228,
-      "State": "arrival",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Fronter, Flight niner niner four, BSN, VSR, Expect ILS one zero right.\"",
@@ -243,5 +68,96 @@
     "[local-stt] parsed commands: [EI0R] (conf=1.00)",
     "[local-stt] validated commands: [EI0R] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"FFT994 EI0R\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 5080 (15977MB)",
+  "stt_aircraft": {
+    "Frontier Flight 994": {
+      "AddressingForm": 0,
+      "AircraftType": "A321",
+      "Altitude": 9457,
+      "AssignedApproach": "ILS Runway 10L",
+      "Callsign": "FFT994",
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Bepac": "BEPAC",
+        "Fort Lauderdale Hollywood International Airport": "KFLL",
+        "Gamve": "GAMVE",
+        "Holid": "HOLID",
+        "Kevey": "KEVEY",
+        "Latnn": "LATNN",
+        "Novae": "NOVAE",
+        "Olahs": "OLAHS",
+        "Wanar": "WANAR",
+        "Waror": "WAROR",
+        "Wavun": "WAVUN"
+      },
+      "SID": "",
+      "STAR": "OLAHS3",
+      "State": "arrival",
+      "TrackingController": "1D"
+    },
+    "Southwest 6329": {
+      "AddressingForm": 0,
+      "AircraftType": "B38M",
+      "Altitude": 12718,
+      "AssignedApproach": "ILS Runway 10L",
+      "Callsign": "SWA6329",
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "ControllerFrequency": "1R",
+      "Fixes": {
+        "Bepac": "BEPAC",
+        "Cuuda": "CUUDA",
+        "Fort Lauderdale Hollywood International Airport": "KFLL",
+        "Gamve": "GAMVE",
+        "Holid": "HOLID",
+        "Lokkr": "LOKKR",
+        "Mackl": "MACKL",
+        "Novae": "NOVAE",
+        "Serif": "SERIF",
+        "Wanar": "WANAR",
+        "Waror": "WAROR"
+      },
+      "SID": "",
+      "STAR": "CUUDA3",
+      "State": "arrival",
+      "TrackingController": "1R"
+    },
+    "UPS 7312 heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "B744",
+      "Altitude": 13228,
+      "AssignedApproach": "ILS Runway 9",
+      "Callsign": "UPS7312",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1S",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Haslm": "HASLM",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Morea": "MOREA",
+        "Sndbr": "SNDBR"
+      },
+      "SID": "",
+      "STAR": "SNDBR3",
+      "State": "arrival",
+      "TrackingController": "1S"
+    }
+  },
+  "time": "2026-01-24T15:48:55.473448696Z",
+  "transcript": "Fronter, Flight niner niner four, BSN, VSR, Expect ILS one zero right.",
+  "whisper_duration_ms": 174.932
 }

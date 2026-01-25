@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T05:55:42.109873655Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 3968,
+  "callsign": "SWA277",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,126 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "SW 277 contact circle approach 125.15C",
-  "whisper_duration_ms": 299.34,
-  "audio_duration_ms": 3968,
-  "processor": "GPU: NVIDIA GeForce RTX 5070 Ti (15995MB)",
-  "callsign": "SWA277",
   "command": "FC",
-  "stt_aircraft": {
-    "ASA4739": {
-      "Callsign": "ASA4739",
-      "AircraftType": "B39M",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Klomn": "KLOMN",
-        "Lntrn": "LNTRN",
-        "Lyndi": "LYNDI",
-        "Naddo": "NADDO",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA",
-        "Xmans": "XMANS"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 10242,
-      "State": "arrival",
-      "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0
-    },
-    "Alaska 4739": {
-      "Callsign": "ASA4739",
-      "AircraftType": "B39M",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Klomn": "KLOMN",
-        "Lntrn": "LNTRN",
-        "Lyndi": "LYNDI",
-        "Naddo": "NADDO",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA",
-        "Xmans": "XMANS"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 10242,
-      "State": "arrival",
-      "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0
-    },
-    "SWA277": {
-      "Callsign": "SWA277",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Lyndi": "LYNDI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 6000,
-      "State": "arrival",
-      "ControllerFrequency": "5E",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "Southwest 277": {
-      "Callsign": "SWA277",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Lyndi": "LYNDI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 6000,
-      "State": "arrival",
-      "ControllerFrequency": "5E",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"SW 277 contact circle approach 125.15C\"",
@@ -179,5 +60,68 @@
     "[local-stt] parsed commands: [FC] (conf=1.00)",
     "[local-stt] validated commands: [FC] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"SWA277 FC\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 5070 Ti (15995MB)",
+  "stt_aircraft": {
+    "Alaska 4739": {
+      "AddressingForm": 0,
+      "AircraftType": "B39M",
+      "Altitude": 10242,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "ASA4739",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5N",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Klomn": "KLOMN",
+        "Lntrn": "LNTRN",
+        "Lyndi": "LYNDI",
+        "Naddo": "NADDO",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA",
+        "Xmans": "XMANS"
+      },
+      "SID": "",
+      "STAR": "COMIX2",
+      "State": "arrival",
+      "TrackingController": "5N"
+    },
+    "Southwest 277": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 6000,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "SWA277",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5E",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "arrival",
+      "TrackingController": "5Z"
+    }
+  },
+  "time": "2026-01-22T05:55:42.109873655Z",
+  "transcript": "SW 277 contact circle approach 125.15C",
+  "whisper_duration_ms": 299.34
 }

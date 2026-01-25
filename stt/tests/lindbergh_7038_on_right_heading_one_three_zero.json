@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-23T07:27:01.891377497Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 3200,
+  "callsign": "GJS7038",
   "callstack": [
     "manager.go:975:/server.(*SimManager).ReportSTTLog",
     "value.go:581:reflect.Value.call",
@@ -9,314 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Lindbergh 7038 on right heading one three zero",
-  "whisper_duration_ms": 115.976,
-  "audio_duration_ms": 3200,
-  "processor": "GPU: NVIDIA GeForce RTX 5080 (15977MB)",
-  "callsign": "GJS7038",
   "command": "R130",
-  "stt_aircraft": {
-    "Brickyard 4275": {
-      "Callsign": "RPA4275",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Broadway": "BWZ",
-        "Buzzed": "BUZZD",
-        "Gimme": "GIMEE",
-        "Izeko": "IZEKO",
-        "Newark Liberty International Airport": "KEWR",
-        "Pattern": "PATRN",
-        "Zavpi": "ZAVPI"
-      },
-      "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
-      },
-      "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "FQM3",
-      "Altitude": 7923,
-      "State": "arrival",
-      "ControllerFrequency": "4W",
-      "TrackingController": "4W",
-      "AddressingForm": 0
-    },
-    "GJS7038": {
-      "Callsign": "GJS7038",
-      "AircraftType": "CRJ7",
-      "Fixes": {
-        "Buzzed": "BUZZD",
-        "Gimme": "GIMEE",
-        "Izeko": "IZEKO",
-        "Newark Liberty International Airport": "KEWR",
-        "Pattern": "PATRN",
-        "Zavpi": "ZAVPI"
-      },
-      "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
-      },
-      "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 3733,
-      "State": "arrival",
-      "ControllerFrequency": "4P",
-      "TrackingController": "4P",
-      "AddressingForm": 0
-    },
-    "Lindbergh 7038": {
-      "Callsign": "GJS7038",
-      "AircraftType": "CRJ7",
-      "Fixes": {
-        "Buzzed": "BUZZD",
-        "Gimme": "GIMEE",
-        "Izeko": "IZEKO",
-        "Newark Liberty International Airport": "KEWR",
-        "Pattern": "PATRN",
-        "Zavpi": "ZAVPI"
-      },
-      "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
-      },
-      "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 3733,
-      "State": "arrival",
-      "ControllerFrequency": "4P",
-      "TrackingController": "4P",
-      "AddressingForm": 0
-    },
-    "NKS5349": {
-      "Callsign": "NKS5349",
-      "AircraftType": "A319",
-      "Fixes": {
-        "Buzzed": "BUZZD",
-        "Gimme": "GIMEE",
-        "Izeko": "IZEKO",
-        "Mart": "MARRT",
-        "Newark Liberty International Airport": "KEWR",
-        "Pattern": "PATRN",
-        "Philbo": "PHLBO",
-        "Zavpi": "ZAVPI"
-      },
-      "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
-      },
-      "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "PHLBO4",
-      "Altitude": 3000,
-      "State": "arrival",
-      "ControllerFrequency": "4P",
-      "TrackingController": "4P",
-      "AddressingForm": 0
-    },
-    "NKS5447": {
-      "Callsign": "NKS5447",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Buzzed": "BUZZD",
-        "Gimme": "GIMEE",
-        "Izeko": "IZEKO",
-        "Mart": "MARRT",
-        "Newark Liberty International Airport": "KEWR",
-        "Pattern": "PATRN",
-        "Philbo": "PHLBO",
-        "Zavpi": "ZAVPI"
-      },
-      "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
-      },
-      "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "PHLBO4",
-      "Altitude": 6000,
-      "State": "arrival",
-      "ControllerFrequency": "4P",
-      "TrackingController": "4P",
-      "AddressingForm": 0
-    },
-    "RPA4275": {
-      "Callsign": "RPA4275",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Broadway": "BWZ",
-        "Buzzed": "BUZZD",
-        "Gimme": "GIMEE",
-        "Izeko": "IZEKO",
-        "Newark Liberty International Airport": "KEWR",
-        "Pattern": "PATRN",
-        "Zavpi": "ZAVPI"
-      },
-      "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
-      },
-      "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "FQM3",
-      "Altitude": 7923,
-      "State": "arrival",
-      "ControllerFrequency": "4W",
-      "TrackingController": "4W",
-      "AddressingForm": 0
-    },
-    "SAS69": {
-      "Callsign": "SAS69",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Buzzed": "BUZZD",
-        "Gimme": "GIMEE",
-        "Hokir": "HOKIR",
-        "Izeko": "IZEKO",
-        "Newark Liberty International Airport": "KEWR",
-        "Pattern": "PATRN",
-        "Philbo": "PHLBO",
-        "Sparta": "SAX",
-        "Zavpi": "ZAVPI"
-      },
-      "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
-      },
-      "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "FLOSI4",
-      "Altitude": 4979,
-      "State": "arrival",
-      "ControllerFrequency": "4A",
-      "TrackingController": "4A",
-      "AddressingForm": 0
-    },
-    "Scandinavian 69": {
-      "Callsign": "SAS69",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Buzzed": "BUZZD",
-        "Gimme": "GIMEE",
-        "Hokir": "HOKIR",
-        "Izeko": "IZEKO",
-        "Newark Liberty International Airport": "KEWR",
-        "Pattern": "PATRN",
-        "Philbo": "PHLBO",
-        "Sparta": "SAX",
-        "Zavpi": "ZAVPI"
-      },
-      "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
-      },
-      "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "FLOSI4",
-      "Altitude": 4979,
-      "State": "arrival",
-      "ControllerFrequency": "4A",
-      "TrackingController": "4A",
-      "AddressingForm": 0
-    },
-    "Spirit Wings 5349": {
-      "Callsign": "NKS5349",
-      "AircraftType": "A319",
-      "Fixes": {
-        "Buzzed": "BUZZD",
-        "Gimme": "GIMEE",
-        "Izeko": "IZEKO",
-        "Mart": "MARRT",
-        "Newark Liberty International Airport": "KEWR",
-        "Pattern": "PATRN",
-        "Philbo": "PHLBO",
-        "Zavpi": "ZAVPI"
-      },
-      "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
-      },
-      "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "PHLBO4",
-      "Altitude": 3000,
-      "State": "arrival",
-      "ControllerFrequency": "4P",
-      "TrackingController": "4P",
-      "AddressingForm": 0
-    },
-    "Spirit Wings 5447": {
-      "Callsign": "NKS5447",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Buzzed": "BUZZD",
-        "Gimme": "GIMEE",
-        "Izeko": "IZEKO",
-        "Mart": "MARRT",
-        "Newark Liberty International Airport": "KEWR",
-        "Pattern": "PATRN",
-        "Philbo": "PHLBO",
-        "Zavpi": "ZAVPI"
-      },
-      "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
-      },
-      "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "PHLBO4",
-      "Altitude": 6000,
-      "State": "arrival",
-      "ControllerFrequency": "4P",
-      "TrackingController": "4P",
-      "AddressingForm": 0
-    },
-    "UAL8418": {
-      "Callsign": "UAL8418",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Buzzed": "BUZZD",
-        "Gimme": "GIMEE",
-        "Hokir": "HOKIR",
-        "Izeko": "IZEKO",
-        "Newark Liberty International Airport": "KEWR",
-        "Pattern": "PATRN",
-        "Philbo": "PHLBO",
-        "Shaff": "SHAFF",
-        "Sparta": "SAX",
-        "Zavpi": "ZAVPI"
-      },
-      "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
-      },
-      "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "FLOSI4",
-      "Altitude": 7000,
-      "State": "arrival",
-      "ControllerFrequency": "4A",
-      "TrackingController": "4A",
-      "AddressingForm": 0
-    },
-    "United 8418": {
-      "Callsign": "UAL8418",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Buzzed": "BUZZD",
-        "Gimme": "GIMEE",
-        "Hokir": "HOKIR",
-        "Izeko": "IZEKO",
-        "Newark Liberty International Airport": "KEWR",
-        "Pattern": "PATRN",
-        "Philbo": "PHLBO",
-        "Shaff": "SHAFF",
-        "Sparta": "SAX",
-        "Zavpi": "ZAVPI"
-      },
-      "CandidateApproaches": {
-        "I L S runway two two left": "I2L"
-      },
-      "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "FLOSI4",
-      "Altitude": 7000,
-      "State": "arrival",
-      "ControllerFrequency": "4A",
-      "TrackingController": "4A",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Lindbergh 7038 on right heading one three zero\"",
@@ -354,5 +47,162 @@
     "[local-stt] parsed commands: [R130] (conf=1.00)",
     "[local-stt] validated commands: [R130] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"GJS7038 R130\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 5080 (15977MB)",
+  "stt_aircraft": {
+    "Brickyard 4275": {
+      "AddressingForm": 0,
+      "AircraftType": "E75L",
+      "Altitude": 7923,
+      "AssignedApproach": "ILS Runway 22L",
+      "Callsign": "RPA4275",
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ControllerFrequency": "4W",
+      "Fixes": {
+        "Broadway": "BWZ",
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Zavpi": "ZAVPI"
+      },
+      "SID": "",
+      "STAR": "FQM3",
+      "State": "arrival",
+      "TrackingController": "4W"
+    },
+    "Lindbergh 7038": {
+      "AddressingForm": 0,
+      "AircraftType": "CRJ7",
+      "Altitude": 3733,
+      "AssignedApproach": "ILS Runway 22L",
+      "Callsign": "GJS7038",
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ControllerFrequency": "4P",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Zavpi": "ZAVPI"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "arrival",
+      "TrackingController": "4P"
+    },
+    "Scandinavian 69": {
+      "AddressingForm": 0,
+      "AircraftType": "A20N",
+      "Altitude": 4979,
+      "AssignedApproach": "ILS Runway 22L",
+      "Callsign": "SAS69",
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ControllerFrequency": "4A",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Hokir": "HOKIR",
+        "Izeko": "IZEKO",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Sparta": "SAX",
+        "Zavpi": "ZAVPI"
+      },
+      "SID": "",
+      "STAR": "FLOSI4",
+      "State": "arrival",
+      "TrackingController": "4A"
+    },
+    "Spirit Wings 5349": {
+      "AddressingForm": 0,
+      "AircraftType": "A319",
+      "Altitude": 3000,
+      "AssignedApproach": "ILS Runway 22L",
+      "Callsign": "NKS5349",
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ControllerFrequency": "4P",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Mart": "MARRT",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Zavpi": "ZAVPI"
+      },
+      "SID": "",
+      "STAR": "PHLBO4",
+      "State": "arrival",
+      "TrackingController": "4P"
+    },
+    "Spirit Wings 5447": {
+      "AddressingForm": 0,
+      "AircraftType": "A20N",
+      "Altitude": 6000,
+      "AssignedApproach": "ILS Runway 22L",
+      "Callsign": "NKS5447",
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ControllerFrequency": "4P",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Mart": "MARRT",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Zavpi": "ZAVPI"
+      },
+      "SID": "",
+      "STAR": "PHLBO4",
+      "State": "arrival",
+      "TrackingController": "4P"
+    },
+    "United 8418": {
+      "AddressingForm": 0,
+      "AircraftType": "A320",
+      "Altitude": 7000,
+      "AssignedApproach": "ILS Runway 22L",
+      "Callsign": "UAL8418",
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ControllerFrequency": "4A",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Hokir": "HOKIR",
+        "Izeko": "IZEKO",
+        "Newark Liberty International Airport": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Shaff": "SHAFF",
+        "Sparta": "SAX",
+        "Zavpi": "ZAVPI"
+      },
+      "SID": "",
+      "STAR": "FLOSI4",
+      "State": "arrival",
+      "TrackingController": "4A"
+    }
+  },
+  "time": "2026-01-23T07:27:01.891377497Z",
+  "transcript": "Lindbergh 7038 on right heading one three zero",
+  "whisper_duration_ms": 115.976
 }

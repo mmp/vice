@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T02:31:33.535777442Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 2560,
+  "callsign": "DAL8599",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,52 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Delta 85 99 turn left heading two two zero",
-  "whisper_duration_ms": 246.623,
-  "audio_duration_ms": 2560,
-  "processor": "GPU: NVIDIA GeForce RTX 4080 SUPER (16047MB)",
-  "callsign": "DAL8599",
   "command": "L220",
-  "stt_aircraft": {
-    "DAL8599": {
-      "Callsign": "DAL8599",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "Arrex": "ARREX",
-        "Hugir": "HUGIR",
-        "Mconl": "MCONL",
-        "Schep": "SCHEP"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SCHEP1",
-      "STAR": "",
-      "Altitude": 5916,
-      "State": "departure",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    },
-    "Delta 8599": {
-      "Callsign": "DAL8599",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "Arrex": "ARREX",
-        "Hugir": "HUGIR",
-        "Mconl": "MCONL",
-        "Schep": "SCHEP"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SCHEP1",
-      "STAR": "",
-      "Altitude": 5916,
-      "State": "departure",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Delta 85 99 turn left heading two two zero\"",
@@ -95,5 +50,31 @@
     "[local-stt] parsed commands: [L220] (conf=1.00)",
     "[local-stt] validated commands: [L220] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"DAL8599 L220\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 4080 SUPER (16047MB)",
+  "stt_aircraft": {
+    "Delta 8599": {
+      "AddressingForm": 0,
+      "AircraftType": "A21N",
+      "Altitude": 5916,
+      "AssignedApproach": "",
+      "Callsign": "DAL8599",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1R",
+      "Fixes": {
+        "Arrex": "ARREX",
+        "Hugir": "HUGIR",
+        "Mconl": "MCONL",
+        "Schep": "SCHEP"
+      },
+      "SID": "SCHEP1",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1R"
+    }
+  },
+  "time": "2026-01-22T02:31:33.535777442Z",
+  "transcript": "Delta 85 99 turn left heading two two zero",
+  "whisper_duration_ms": 246.623
 }

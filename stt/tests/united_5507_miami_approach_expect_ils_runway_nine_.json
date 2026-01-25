@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T23:44:44.655159071Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 4736,
+  "callsign": "UAL5507",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,282 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "United 5507 Miami approach expect ILS runway nine or descend via the star",
-  "whisper_duration_ms": 409.714,
-  "audio_duration_ms": 4736,
-  "processor": "GPU: NVIDIA GeForce GTX 1080 (8273MB)",
-  "callsign": "UAL5507",
   "command": "EI9 DVS",
-  "stt_aircraft": {
-    "AAL620": {
-      "Callsign": "AAL620",
-      "AircraftType": "B788",
-      "Fixes": {
-        "Bilzz": "BILZZ",
-        "Cstio": "CSTIO",
-        "Dahla": "DAHLA",
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "VIICE2",
-      "Altitude": 9098,
-      "State": "arrival",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    },
-    "American 620 heavy": {
-      "Callsign": "AAL620",
-      "AircraftType": "B788",
-      "Fixes": {
-        "Bilzz": "BILZZ",
-        "Cstio": "CSTIO",
-        "Dahla": "DAHLA",
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "VIICE2",
-      "Altitude": 9098,
-      "State": "arrival",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    },
-    "NKS8435": {
-      "Callsign": "NKS8435",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Gritt": "GRITT",
-        "Haslm": "HASLM",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA",
-        "Morea": "MOREA",
-        "Sndbr": "SNDBR"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "SNDBR3",
-      "Altitude": 12707,
-      "State": "arrival",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    },
-    "NKS9901": {
-      "Callsign": "NKS9901",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Miami International Airport": "KMIA"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "SNDBR3",
-      "Altitude": 4036,
-      "State": "on approach",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    },
-    "SLM3865": {
-      "Callsign": "SLM3865",
-      "AircraftType": "B733",
-      "Fixes": {
-        "Bilzz": "BILZZ",
-        "Cstio": "CSTIO",
-        "Dahla": "DAHLA",
-        "Gamey": "GAMEY",
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA",
-        "Nekne": "NEKNE",
-        "Raebn": "RAEBN",
-        "Viice": "VIICE"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "VIICE2",
-      "Altitude": 17249,
-      "State": "arrival",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    },
-    "Spirit Wings 8435": {
-      "Callsign": "NKS8435",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Gritt": "GRITT",
-        "Haslm": "HASLM",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA",
-        "Morea": "MOREA",
-        "Sndbr": "SNDBR"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "SNDBR3",
-      "Altitude": 12707,
-      "State": "arrival",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    },
-    "Spirit Wings 9901": {
-      "Callsign": "NKS9901",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Miami International Airport": "KMIA"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "SNDBR3",
-      "Altitude": 4036,
-      "State": "on approach",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    },
-    "Surinam 3865": {
-      "Callsign": "SLM3865",
-      "AircraftType": "B733",
-      "Fixes": {
-        "Bilzz": "BILZZ",
-        "Cstio": "CSTIO",
-        "Dahla": "DAHLA",
-        "Gamey": "GAMEY",
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA",
-        "Nekne": "NEKNE",
-        "Raebn": "RAEBN",
-        "Viice": "VIICE"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "VIICE2",
-      "Altitude": 17249,
-      "State": "arrival",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    },
-    "UAL5507": {
-      "Callsign": "UAL5507",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Acere": "ACERE",
-        "Arrtt": "ARRTT",
-        "Asppn": "ASPPN",
-        "Frogz": "FROGZ",
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Jamas": "JAMAS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA",
-        "Pbjay": "PBJAY",
-        "Schar": "SCHAR"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "FROGZ4",
-      "Altitude": 16606,
-      "State": "arrival",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "United 5507": {
-      "Callsign": "UAL5507",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Acere": "ACERE",
-        "Arrtt": "ARRTT",
-        "Asppn": "ASPPN",
-        "Frogz": "FROGZ",
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Jamas": "JAMAS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA",
-        "Pbjay": "PBJAY",
-        "Schar": "SCHAR"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "FROGZ4",
-      "Altitude": 16606,
-      "State": "arrival",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"United 5507 Miami approach expect ILS runway nine or descend via the star\"",
@@ -347,5 +72,146 @@
     "[local-stt] parsed commands: [EI9 DVS] (conf=1.00)",
     "[local-stt] validated commands: [EI9 DVS] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"UAL5507 EI9 DVS\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce GTX 1080 (8273MB)",
+  "stt_aircraft": {
+    "American 620 heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "B788",
+      "Altitude": 9098,
+      "AssignedApproach": "ILS Runway 9",
+      "Callsign": "AAL620",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1S",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Cstio": "CSTIO",
+        "Dahla": "DAHLA",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "SID": "",
+      "STAR": "VIICE2",
+      "State": "arrival",
+      "TrackingController": "1S"
+    },
+    "Spirit Wings 8435": {
+      "AddressingForm": 0,
+      "AircraftType": "A20N",
+      "Altitude": 12707,
+      "AssignedApproach": "ILS Runway 9",
+      "Callsign": "NKS8435",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1S",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Haslm": "HASLM",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Morea": "MOREA",
+        "Sndbr": "SNDBR"
+      },
+      "SID": "",
+      "STAR": "SNDBR3",
+      "State": "arrival",
+      "TrackingController": "1S"
+    },
+    "Spirit Wings 9901": {
+      "AddressingForm": 0,
+      "AircraftType": "A320",
+      "Altitude": 4036,
+      "AssignedApproach": "ILS Runway 9",
+      "Callsign": "NKS9901",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1S",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Miami International Airport": "KMIA"
+      },
+      "SID": "",
+      "STAR": "SNDBR3",
+      "State": "on approach",
+      "TrackingController": "1S"
+    },
+    "Surinam 3865": {
+      "AddressingForm": 0,
+      "AircraftType": "B733",
+      "Altitude": 17249,
+      "AssignedApproach": "ILS Runway 9",
+      "Callsign": "SLM3865",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1S",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Cstio": "CSTIO",
+        "Dahla": "DAHLA",
+        "Gamey": "GAMEY",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Nekne": "NEKNE",
+        "Raebn": "RAEBN",
+        "Viice": "VIICE"
+      },
+      "SID": "",
+      "STAR": "VIICE2",
+      "State": "arrival",
+      "TrackingController": "1S"
+    },
+    "United 5507": {
+      "AddressingForm": 0,
+      "AircraftType": "A320",
+      "Altitude": 16606,
+      "AssignedApproach": "ILS Runway 9",
+      "Callsign": "UAL5507",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Acere": "ACERE",
+        "Arrtt": "ARRTT",
+        "Asppn": "ASPPN",
+        "Frogz": "FROGZ",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Jamas": "JAMAS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Pbjay": "PBJAY",
+        "Schar": "SCHAR"
+      },
+      "SID": "",
+      "STAR": "FROGZ4",
+      "State": "arrival",
+      "TrackingController": "1D"
+    }
+  },
+  "time": "2026-01-22T23:44:44.655159071Z",
+  "transcript": "United 5507 Miami approach expect ILS runway nine or descend via the star",
+  "whisper_duration_ms": 409.714
 }

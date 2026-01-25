@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-21T22:28:59.303765-05:00",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 2944,
+  "callsign": "EDV6476",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,112 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_arm64.s:1268:runtime.goexit"
   ],
-  "transcript": "Endeavor 6476, turn left heading zero niner.",
-  "whisper_duration_ms": 390.058,
-  "audio_duration_ms": 2944,
-  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
-  "callsign": "EDV6476",
   "command": "L090",
-  "stt_aircraft": {
-    "EDV6476": {
-      "Callsign": "EDV6476",
-      "AircraftType": "CRJ9",
-      "Fixes": {
-        "Kingston": "IGN",
-        "Valerie": "VALRE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ALB7",
-      "STAR": "",
-      "Altitude": 2963,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "Endeavor 6476": {
-      "Callsign": "EDV6476",
-      "AircraftType": "CRJ9",
-      "Fixes": {
-        "Kingston": "IGN",
-        "Valerie": "VALRE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ALB7",
-      "STAR": "",
-      "Altitude": 2963,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "N8038Q": {
-      "Callsign": "N8038Q",
-      "AircraftType": "E50P",
-      "Fixes": {
-        "Cambridge": "CAM"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 2115,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "embraer phenom one hundred three eight kebeck": {
-      "Callsign": "N8038Q",
-      "AircraftType": "E50P",
-      "Fixes": {
-        "Cambridge": "CAM"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 2115,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 1
-    },
-    "november 8038Q": {
-      "Callsign": "N8038Q",
-      "AircraftType": "E50P",
-      "Fixes": {
-        "Cambridge": "CAM"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 2115,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "phenom one hundred three eight kebeck": {
-      "Callsign": "N8038Q",
-      "AircraftType": "E50P",
-      "Fixes": {
-        "Cambridge": "CAM"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 2115,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 1
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Endeavor 6476, turn left heading zero niner.\"",
@@ -146,5 +41,93 @@
     "[local-stt] parsed commands: [L009] (conf=1.00)",
     "[local-stt] validated commands: [L009] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"EDV6476 L009\" (conf=1.00, time=142.166µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "stt_aircraft": {
+    "Endeavor 6476": {
+      "AddressingForm": 0,
+      "AircraftType": "CRJ9",
+      "Altitude": 2963,
+      "AssignedApproach": "",
+      "Callsign": "EDV6476",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Kingston": "IGN",
+        "Valerie": "VALRE"
+      },
+      "SID": "ALB7",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "N8038Q": {
+      "AddressingForm": 0,
+      "AircraftType": "E50P",
+      "Altitude": 2115,
+      "AssignedApproach": "",
+      "Callsign": "N8038Q",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Cambridge": "CAM"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "embraer phenom one hundred three eight kebeck": {
+      "AddressingForm": 1,
+      "AircraftType": "E50P",
+      "Altitude": 2115,
+      "AssignedApproach": "",
+      "Callsign": "N8038Q",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Cambridge": "CAM"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "november 8038Q": {
+      "AddressingForm": 0,
+      "AircraftType": "E50P",
+      "Altitude": 2115,
+      "AssignedApproach": "",
+      "Callsign": "N8038Q",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Cambridge": "CAM"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "phenom one hundred three eight kebeck": {
+      "AddressingForm": 1,
+      "AircraftType": "E50P",
+      "Altitude": 2115,
+      "AssignedApproach": "",
+      "Callsign": "N8038Q",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Cambridge": "CAM"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    }
+  },
+  "time": "2026-01-21T22:28:59.303765-05:00",
+  "transcript": "Endeavor 6476, turn left heading zero niner.",
+  "whisper_duration_ms": 390.058
 }

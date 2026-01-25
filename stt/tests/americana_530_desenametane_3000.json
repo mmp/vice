@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T23:28:44.776977956Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 2688,
+  "callsign": "AAL530",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,330 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Americana 530, Desenametane 3000",
-  "whisper_duration_ms": 292.909,
-  "audio_duration_ms": 2688,
-  "processor": "GPU: NVIDIA GeForce RTX 4070 Ti SUPER (16063MB)",
-  "callsign": "AAL530",
   "command": "D30",
-  "stt_aircraft": {
-    "AAL530": {
-      "Callsign": "AAL530",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Chuum": "CHUUM",
-        "Glria": "GLRIA",
-        "Kpone": "KPONE",
-        "Miami International Airport": "KMIA",
-        "Piana": "PIANA",
-        "Vepco": "VEPCO"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 12",
-      "SID": "",
-      "STAR": "CSTAL3",
-      "Altitude": 5121,
-      "State": "arrival",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "AAL83": {
-      "Callsign": "AAL83",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Blymy": "BLYMY",
-        "Chuum": "CHUUM",
-        "Fende": "FENDE",
-        "Glria": "GLRIA",
-        "Gucci": "GUCCI",
-        "Kpone": "KPONE",
-        "Mdona": "MDONA",
-        "Miami International Airport": "KMIA",
-        "Piana": "PIANA",
-        "Rmani": "RMANI",
-        "Vepco": "VEPCO"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 12",
-      "SID": "",
-      "STAR": "CSTAL3",
-      "Altitude": 11592,
-      "State": "arrival",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "ACA422": {
-      "Callsign": "ACA422",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Blymy": "BLYMY",
-        "Bnfsh": "BNFSH",
-        "Chuum": "CHUUM",
-        "Fende": "FENDE",
-        "Glria": "GLRIA",
-        "Gucci": "GUCCI",
-        "Kpone": "KPONE",
-        "Mdona": "MDONA",
-        "Miami International Airport": "KMIA",
-        "Piana": "PIANA",
-        "Rmani": "RMANI",
-        "Vepco": "VEPCO"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 12",
-      "SID": "",
-      "STAR": "BNFSH3",
-      "Altitude": 14882,
-      "State": "arrival",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "Air Canada 422": {
-      "Callsign": "ACA422",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Blymy": "BLYMY",
-        "Bnfsh": "BNFSH",
-        "Chuum": "CHUUM",
-        "Fende": "FENDE",
-        "Glria": "GLRIA",
-        "Gucci": "GUCCI",
-        "Kpone": "KPONE",
-        "Mdona": "MDONA",
-        "Miami International Airport": "KMIA",
-        "Piana": "PIANA",
-        "Rmani": "RMANI",
-        "Vepco": "VEPCO"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 12",
-      "SID": "",
-      "STAR": "BNFSH3",
-      "Altitude": 14882,
-      "State": "arrival",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "American 530": {
-      "Callsign": "AAL530",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Chuum": "CHUUM",
-        "Glria": "GLRIA",
-        "Kpone": "KPONE",
-        "Miami International Airport": "KMIA",
-        "Piana": "PIANA",
-        "Vepco": "VEPCO"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 12",
-      "SID": "",
-      "STAR": "CSTAL3",
-      "Altitude": 5121,
-      "State": "arrival",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "American 83": {
-      "Callsign": "AAL83",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Blymy": "BLYMY",
-        "Chuum": "CHUUM",
-        "Fende": "FENDE",
-        "Glria": "GLRIA",
-        "Gucci": "GUCCI",
-        "Kpone": "KPONE",
-        "Mdona": "MDONA",
-        "Miami International Airport": "KMIA",
-        "Piana": "PIANA",
-        "Rmani": "RMANI",
-        "Vepco": "VEPCO"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 12",
-      "SID": "",
-      "STAR": "CSTAL3",
-      "Altitude": 11592,
-      "State": "arrival",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "NKS3799": {
-      "Callsign": "NKS3799",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Chuum": "CHUUM",
-        "Glria": "GLRIA",
-        "Kpone": "KPONE",
-        "Mdona": "MDONA",
-        "Miami International Airport": "KMIA",
-        "Piana": "PIANA",
-        "Rmani": "RMANI",
-        "Vepco": "VEPCO"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 12",
-      "SID": "",
-      "STAR": "BNFSH3",
-      "Altitude": 8487,
-      "State": "arrival",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "SWA1371": {
-      "Callsign": "SWA1371",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Chuum": "CHUUM",
-        "Glria": "GLRIA",
-        "Miami International Airport": "KMIA",
-        "Piana": "PIANA",
-        "Vepco": "VEPCO"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 12",
-      "SID": "",
-      "STAR": "BNFSH3",
-      "Altitude": 3000,
-      "State": "arrival",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "Southwest 1371": {
-      "Callsign": "SWA1371",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Chuum": "CHUUM",
-        "Glria": "GLRIA",
-        "Miami International Airport": "KMIA",
-        "Piana": "PIANA",
-        "Vepco": "VEPCO"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 12",
-      "SID": "",
-      "STAR": "BNFSH3",
-      "Altitude": 3000,
-      "State": "arrival",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "Spirit Wings 3799": {
-      "Callsign": "NKS3799",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Chuum": "CHUUM",
-        "Glria": "GLRIA",
-        "Kpone": "KPONE",
-        "Mdona": "MDONA",
-        "Miami International Airport": "KMIA",
-        "Piana": "PIANA",
-        "Rmani": "RMANI",
-        "Vepco": "VEPCO"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 12",
-      "SID": "",
-      "STAR": "BNFSH3",
-      "Altitude": 8487,
-      "State": "arrival",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "UAL843": {
-      "Callsign": "UAL843",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Miami International Airport": "KMIA",
-        "Vepco": "VEPCO"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 12",
-      "SID": "",
-      "STAR": "CSTAL3",
-      "Altitude": 2149,
-      "State": "on approach",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "United 843": {
-      "Callsign": "UAL843",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Miami International Airport": "KMIA",
-        "Vepco": "VEPCO"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 12",
-      "SID": "",
-      "STAR": "CSTAL3",
-      "Altitude": 2149,
-      "State": "on approach",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Americana 530, Desenametane 3000\"",
@@ -379,5 +56,170 @@
     "[local-stt] parsed commands: [D30] (conf=1.00)",
     "[local-stt] validated commands: [D30] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"AAL530 D30\" (conf=1.00, time=511.5µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 4070 Ti SUPER (16063MB)",
+  "stt_aircraft": {
+    "Air Canada 422": {
+      "AddressingForm": 0,
+      "AircraftType": "A320",
+      "Altitude": 14882,
+      "AssignedApproach": "ILS Runway 12",
+      "Callsign": "ACA422",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1N",
+      "Fixes": {
+        "Blymy": "BLYMY",
+        "Bnfsh": "BNFSH",
+        "Chuum": "CHUUM",
+        "Fende": "FENDE",
+        "Glria": "GLRIA",
+        "Gucci": "GUCCI",
+        "Kpone": "KPONE",
+        "Mdona": "MDONA",
+        "Miami International Airport": "KMIA",
+        "Piana": "PIANA",
+        "Rmani": "RMANI",
+        "Vepco": "VEPCO"
+      },
+      "SID": "",
+      "STAR": "BNFSH3",
+      "State": "arrival",
+      "TrackingController": "1N"
+    },
+    "American 530": {
+      "AddressingForm": 0,
+      "AircraftType": "A321",
+      "Altitude": 5121,
+      "AssignedApproach": "ILS Runway 12",
+      "Callsign": "AAL530",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1N",
+      "Fixes": {
+        "Chuum": "CHUUM",
+        "Glria": "GLRIA",
+        "Kpone": "KPONE",
+        "Miami International Airport": "KMIA",
+        "Piana": "PIANA",
+        "Vepco": "VEPCO"
+      },
+      "SID": "",
+      "STAR": "CSTAL3",
+      "State": "arrival",
+      "TrackingController": "1N"
+    },
+    "American 83": {
+      "AddressingForm": 0,
+      "AircraftType": "B738",
+      "Altitude": 11592,
+      "AssignedApproach": "ILS Runway 12",
+      "Callsign": "AAL83",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1N",
+      "Fixes": {
+        "Blymy": "BLYMY",
+        "Chuum": "CHUUM",
+        "Fende": "FENDE",
+        "Glria": "GLRIA",
+        "Gucci": "GUCCI",
+        "Kpone": "KPONE",
+        "Mdona": "MDONA",
+        "Miami International Airport": "KMIA",
+        "Piana": "PIANA",
+        "Rmani": "RMANI",
+        "Vepco": "VEPCO"
+      },
+      "SID": "",
+      "STAR": "CSTAL3",
+      "State": "arrival",
+      "TrackingController": "1N"
+    },
+    "Southwest 1371": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 3000,
+      "AssignedApproach": "ILS Runway 12",
+      "Callsign": "SWA1371",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1N",
+      "Fixes": {
+        "Chuum": "CHUUM",
+        "Glria": "GLRIA",
+        "Miami International Airport": "KMIA",
+        "Piana": "PIANA",
+        "Vepco": "VEPCO"
+      },
+      "SID": "",
+      "STAR": "BNFSH3",
+      "State": "arrival",
+      "TrackingController": "1N"
+    },
+    "Spirit Wings 3799": {
+      "AddressingForm": 0,
+      "AircraftType": "A320",
+      "Altitude": 8487,
+      "AssignedApproach": "ILS Runway 12",
+      "Callsign": "NKS3799",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1N",
+      "Fixes": {
+        "Chuum": "CHUUM",
+        "Glria": "GLRIA",
+        "Kpone": "KPONE",
+        "Mdona": "MDONA",
+        "Miami International Airport": "KMIA",
+        "Piana": "PIANA",
+        "Rmani": "RMANI",
+        "Vepco": "VEPCO"
+      },
+      "SID": "",
+      "STAR": "BNFSH3",
+      "State": "arrival",
+      "TrackingController": "1N"
+    },
+    "United 843": {
+      "AddressingForm": 0,
+      "AircraftType": "A320",
+      "Altitude": 2149,
+      "AssignedApproach": "ILS Runway 12",
+      "Callsign": "UAL843",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1N",
+      "Fixes": {
+        "Miami International Airport": "KMIA",
+        "Vepco": "VEPCO"
+      },
+      "SID": "",
+      "STAR": "CSTAL3",
+      "State": "on approach",
+      "TrackingController": "1N"
+    }
+  },
+  "time": "2026-01-22T23:28:44.776977956Z",
+  "transcript": "Americana 530, Desenametane 3000",
+  "whisper_duration_ms": 292.909
 }

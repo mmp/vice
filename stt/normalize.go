@@ -355,6 +355,10 @@ var phoneticCommandBlocklist = map[string][]string{
 	"tango":   {"heading"},          // NATO letter T, not "heading"
 	"juliet":  {"left"},             // NATO letter J, not "left"
 	"charlie": {"climb", "cleared"}, // NATO letter C, not command keywords
+	// Facility/location names should not match command keywords
+	"barracuda": {"direct"},            // Miami position name, not "direct"
+	"veracosta": {"cleared", "direct"}, // Garbled position name
+	"mayr":      {"maintain"},          // Garbled word
 }
 
 // tryPhoneticCommandMatch attempts to match a word phonetically against
@@ -403,6 +407,7 @@ var commandKeywords = map[string]string{
 	"maintain":   "maintain",
 	"maintained": "maintain",
 	"altitude":   "altitude",
+	"aldo":       "altitude", // STT error: "altitude" misheard as "aldo"
 	"thousand":   "thousand",
 	"month":      "thousand", // STT error: "thousand" misheard as "month"
 	"hundred":    "hundred",
@@ -523,6 +528,7 @@ var commandKeywords = map[string]string{
 	"ahead":      "ahead",
 	"radar":      "radar",
 	"redder":     "radar", // STT error: "radar" garbled as "redder"
+	"real":       "radar", // STT error: "radar" garbled as "real" (in "real contact")
 	"services":   "services",
 	"terminated": "terminated",
 	"resume":     "resume",
@@ -548,6 +554,7 @@ var phraseExpansions = map[string][]string{
 	"disundermaintain": {"descend", "maintain"}, // "descend and maintain" -> "disundermaintain"
 	"climbington":      {"climb", "maintain"},   // "climb and maintain" -> "climbington"
 	"thunbright":       {"turn", "right"},       // STT error: "turn right" merged together
+	"leviting":         {"left", "heading"},     // STT error: "left heading" merged together
 	// Note: "cleared direct" merged forms are handled by trySplitMergedCommand
 	"expectilis": {"expect", "ils"},   // STT error: "expect ILS" merged
 	"fl":         {"flight", "level"}, // STT converts "flight level" to "FL"

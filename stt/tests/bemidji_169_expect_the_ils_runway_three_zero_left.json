@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T02:26:30.507629991Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 2688,
+  "callsign": "BMJ169",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,250 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Bemidji 169, expect the ILS runway three zero left.",
-  "whisper_duration_ms": 278.906,
-  "audio_duration_ms": 2688,
-  "processor": "GPU: NVIDIA GeForce RTX 4080 SUPER (16047MB)",
-  "callsign": "BMJ169",
   "command": "EI30L",
-  "stt_aircraft": {
-    "BMJ169": {
-      "Callsign": "BMJ169",
-      "AircraftType": "SW4",
-      "Fixes": {
-        "Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field": "KMSP"
-      },
-      "CandidateApproaches": {
-        "I L S runway three zero left": "I30L",
-        "I L S runway three zero right": "I30R",
-        "Visual runway three zero left": "VL3",
-        "Visual runway three zero right": "VR3",
-        "r-nav yankee runway three zero left": "YL3",
-        "r-nav yankee runway three zero right": "YR3",
-        "r-nav zulu runway three zero left": "ZL3",
-        "r-nav zulu runway three zero right": "ZR3"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "arrival",
-      "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0
-    },
-    "BMJ603": {
-      "Callsign": "BMJ603",
-      "AircraftType": "BE65",
-      "Fixes": {
-        "Bonna": "BONNA",
-        "Geequ": "GEEQU",
-        "Gopher": "GEP",
-        "Grovz": "GROVZ",
-        "Jacko": "JACKO",
-        "Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field": "KMSP",
-        "Ollee": "OLLEE",
-        "Sammz": "SAMMZ",
-        "Saugr": "SAUGR",
-        "Soggy": "SOGGY",
-        "Trtel": "TRTEL",
-        "Vykes": "VYKES",
-        "Wulam": "WULAM"
-      },
-      "CandidateApproaches": {
-        "I L S runway three zero left": "I30L",
-        "I L S runway three zero right": "I30R",
-        "Visual runway three zero left": "VL3",
-        "Visual runway three zero right": "VR3",
-        "r-nav yankee runway three zero left": "YL3",
-        "r-nav yankee runway three zero right": "YR3",
-        "r-nav zulu runway three zero left": "ZL3",
-        "r-nav zulu runway three zero right": "ZR3"
-      },
-      "AssignedApproach": "ILS Runway 30R",
-      "SID": "",
-      "STAR": "GEP1",
-      "Altitude": 9458,
-      "State": "arrival",
-      "ControllerFrequency": "1I",
-      "TrackingController": "1I",
-      "AddressingForm": 0
-    },
-    "Bemidji 169": {
-      "Callsign": "BMJ169",
-      "AircraftType": "SW4",
-      "Fixes": {
-        "Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field": "KMSP"
-      },
-      "CandidateApproaches": {
-        "I L S runway three zero left": "I30L",
-        "I L S runway three zero right": "I30R",
-        "Visual runway three zero left": "VL3",
-        "Visual runway three zero right": "VR3",
-        "r-nav yankee runway three zero left": "YL3",
-        "r-nav yankee runway three zero right": "YR3",
-        "r-nav zulu runway three zero left": "ZL3",
-        "r-nav zulu runway three zero right": "ZR3"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "arrival",
-      "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0
-    },
-    "Bemidji 603": {
-      "Callsign": "BMJ603",
-      "AircraftType": "BE65",
-      "Fixes": {
-        "Bonna": "BONNA",
-        "Geequ": "GEEQU",
-        "Gopher": "GEP",
-        "Grovz": "GROVZ",
-        "Jacko": "JACKO",
-        "Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field": "KMSP",
-        "Ollee": "OLLEE",
-        "Sammz": "SAMMZ",
-        "Saugr": "SAUGR",
-        "Soggy": "SOGGY",
-        "Trtel": "TRTEL",
-        "Vykes": "VYKES",
-        "Wulam": "WULAM"
-      },
-      "CandidateApproaches": {
-        "I L S runway three zero left": "I30L",
-        "I L S runway three zero right": "I30R",
-        "Visual runway three zero left": "VL3",
-        "Visual runway three zero right": "VR3",
-        "r-nav yankee runway three zero left": "YL3",
-        "r-nav yankee runway three zero right": "YR3",
-        "r-nav zulu runway three zero left": "ZL3",
-        "r-nav zulu runway three zero right": "ZR3"
-      },
-      "AssignedApproach": "ILS Runway 30R",
-      "SID": "",
-      "STAR": "GEP1",
-      "Altitude": 9458,
-      "State": "arrival",
-      "ControllerFrequency": "1I",
-      "TrackingController": "1I",
-      "AddressingForm": 0
-    },
-    "DAL91": {
-      "Callsign": "DAL91",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "Aabez": "AABEZ",
-        "Conia": "CONIA",
-        "Dblem": "DBLEM",
-        "Geequ": "GEEQU",
-        "Haptin": "HAPTN",
-        "Hasti": "HASTI",
-        "Hdeee": "HDEEE",
-        "Hmbrg": "HMBRG",
-        "Jaedn": "JAEDN",
-        "Jjeni": "JJENI",
-        "Mauer": "MAUER",
-        "Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field": "KMSP",
-        "Narco": "NARCO",
-        "Pigzi": "PIGZI",
-        "Pinke": "PINKE"
-      },
-      "CandidateApproaches": {
-        "I L S runway three zero left": "I30L",
-        "I L S runway three zero right": "I30R",
-        "Visual runway three zero left": "VL3",
-        "Visual runway three zero right": "VR3",
-        "r-nav yankee runway three zero left": "YL3",
-        "r-nav yankee runway three zero right": "YR3",
-        "r-nav zulu runway three zero left": "ZL3",
-        "r-nav zulu runway three zero right": "ZR3"
-      },
-      "AssignedApproach": "ILS Runway 30L",
-      "SID": "",
-      "STAR": "TORGY3",
-      "Altitude": 12130,
-      "State": "arrival",
-      "ControllerFrequency": "1H",
-      "TrackingController": "1H",
-      "AddressingForm": 0
-    },
-    "Delta 91": {
-      "Callsign": "DAL91",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "Aabez": "AABEZ",
-        "Conia": "CONIA",
-        "Dblem": "DBLEM",
-        "Geequ": "GEEQU",
-        "Haptin": "HAPTN",
-        "Hasti": "HASTI",
-        "Hdeee": "HDEEE",
-        "Hmbrg": "HMBRG",
-        "Jaedn": "JAEDN",
-        "Jjeni": "JJENI",
-        "Mauer": "MAUER",
-        "Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field": "KMSP",
-        "Narco": "NARCO",
-        "Pigzi": "PIGZI",
-        "Pinke": "PINKE"
-      },
-      "CandidateApproaches": {
-        "I L S runway three zero left": "I30L",
-        "I L S runway three zero right": "I30R",
-        "Visual runway three zero left": "VL3",
-        "Visual runway three zero right": "VR3",
-        "r-nav yankee runway three zero left": "YL3",
-        "r-nav yankee runway three zero right": "YR3",
-        "r-nav zulu runway three zero left": "ZL3",
-        "r-nav zulu runway three zero right": "ZR3"
-      },
-      "AssignedApproach": "ILS Runway 30L",
-      "SID": "",
-      "STAR": "TORGY3",
-      "Altitude": 12130,
-      "State": "arrival",
-      "ControllerFrequency": "1H",
-      "TrackingController": "1H",
-      "AddressingForm": 0
-    },
-    "SKW8839": {
-      "Callsign": "SKW8839",
-      "AircraftType": "CRJ7",
-      "Fixes": {
-        "Dwiyt": "DWIYT",
-        "Snine": "SNINE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "WLSTN7",
-      "STAR": "",
-      "Altitude": 5339,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "SkyWest 8839": {
-      "Callsign": "SKW8839",
-      "AircraftType": "CRJ7",
-      "Fixes": {
-        "Dwiyt": "DWIYT",
-        "Snine": "SNINE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "WLSTN7",
-      "STAR": "",
-      "Altitude": 5339,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Bemidji 169, expect the ILS runway three zero left.\"",
@@ -294,5 +51,130 @@
     "[local-stt] parsed commands: [EI30L] (conf=1.00)",
     "[local-stt] validated commands: [EI30L] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"BMJ169 EI30L\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 4080 SUPER (16047MB)",
+  "stt_aircraft": {
+    "Bemidji 169": {
+      "AddressingForm": 0,
+      "AircraftType": "SW4",
+      "Altitude": 5000,
+      "AssignedApproach": "",
+      "Callsign": "BMJ169",
+      "CandidateApproaches": {
+        "I L S runway three zero left": "I30L",
+        "I L S runway three zero right": "I30R",
+        "Visual runway three zero left": "VL3",
+        "Visual runway three zero right": "VR3",
+        "r-nav yankee runway three zero left": "YL3",
+        "r-nav yankee runway three zero right": "YR3",
+        "r-nav zulu runway three zero left": "ZL3",
+        "r-nav zulu runway three zero right": "ZR3"
+      },
+      "ControllerFrequency": "1G",
+      "Fixes": {
+        "Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field": "KMSP"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "arrival",
+      "TrackingController": "1G"
+    },
+    "Bemidji 603": {
+      "AddressingForm": 0,
+      "AircraftType": "BE65",
+      "Altitude": 9458,
+      "AssignedApproach": "ILS Runway 30R",
+      "Callsign": "BMJ603",
+      "CandidateApproaches": {
+        "I L S runway three zero left": "I30L",
+        "I L S runway three zero right": "I30R",
+        "Visual runway three zero left": "VL3",
+        "Visual runway three zero right": "VR3",
+        "r-nav yankee runway three zero left": "YL3",
+        "r-nav yankee runway three zero right": "YR3",
+        "r-nav zulu runway three zero left": "ZL3",
+        "r-nav zulu runway three zero right": "ZR3"
+      },
+      "ControllerFrequency": "1I",
+      "Fixes": {
+        "Bonna": "BONNA",
+        "Geequ": "GEEQU",
+        "Gopher": "GEP",
+        "Grovz": "GROVZ",
+        "Jacko": "JACKO",
+        "Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field": "KMSP",
+        "Ollee": "OLLEE",
+        "Sammz": "SAMMZ",
+        "Saugr": "SAUGR",
+        "Soggy": "SOGGY",
+        "Trtel": "TRTEL",
+        "Vykes": "VYKES",
+        "Wulam": "WULAM"
+      },
+      "SID": "",
+      "STAR": "GEP1",
+      "State": "arrival",
+      "TrackingController": "1I"
+    },
+    "Delta 91": {
+      "AddressingForm": 0,
+      "AircraftType": "A21N",
+      "Altitude": 12130,
+      "AssignedApproach": "ILS Runway 30L",
+      "Callsign": "DAL91",
+      "CandidateApproaches": {
+        "I L S runway three zero left": "I30L",
+        "I L S runway three zero right": "I30R",
+        "Visual runway three zero left": "VL3",
+        "Visual runway three zero right": "VR3",
+        "r-nav yankee runway three zero left": "YL3",
+        "r-nav yankee runway three zero right": "YR3",
+        "r-nav zulu runway three zero left": "ZL3",
+        "r-nav zulu runway three zero right": "ZR3"
+      },
+      "ControllerFrequency": "1H",
+      "Fixes": {
+        "Aabez": "AABEZ",
+        "Conia": "CONIA",
+        "Dblem": "DBLEM",
+        "Geequ": "GEEQU",
+        "Haptin": "HAPTN",
+        "Hasti": "HASTI",
+        "Hdeee": "HDEEE",
+        "Hmbrg": "HMBRG",
+        "Jaedn": "JAEDN",
+        "Jjeni": "JJENI",
+        "Mauer": "MAUER",
+        "Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field": "KMSP",
+        "Narco": "NARCO",
+        "Pigzi": "PIGZI",
+        "Pinke": "PINKE"
+      },
+      "SID": "",
+      "STAR": "TORGY3",
+      "State": "arrival",
+      "TrackingController": "1H"
+    },
+    "SkyWest 8839": {
+      "AddressingForm": 0,
+      "AircraftType": "CRJ7",
+      "Altitude": 5339,
+      "AssignedApproach": "",
+      "Callsign": "SKW8839",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Dwiyt": "DWIYT",
+        "Snine": "SNINE"
+      },
+      "SID": "WLSTN7",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1D"
+    }
+  },
+  "time": "2026-01-22T02:26:30.507629991Z",
+  "transcript": "Bemidji 169, expect the ILS runway three zero left.",
+  "whisper_duration_ms": 278.906
 }

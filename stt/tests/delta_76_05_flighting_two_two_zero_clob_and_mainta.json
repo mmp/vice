@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T02:38:53.92055712Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 3456,
+  "callsign": "DAL7605",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,88 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Delta 76 05, Flighting two two zero, CLOB and maintain one seven thousand",
-  "whisper_duration_ms": 310.416,
-  "audio_duration_ms": 3456,
-  "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11999MB)",
-  "callsign": "DAL7605",
   "command": "H220 C170",
-  "stt_aircraft": {
-    "DAL7605": {
-      "Callsign": "DAL7605",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Arrex": "ARREX",
-        "Hugir": "HUGIR",
-        "Mconl": "MCONL",
-        "Schep": "SCHEP"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SCHEP1",
-      "STAR": "",
-      "Altitude": 2214,
-      "State": "departure",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    },
-    "Delta 7605": {
-      "Callsign": "DAL7605",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Arrex": "ARREX",
-        "Hugir": "HUGIR",
-        "Mconl": "MCONL",
-        "Schep": "SCHEP"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SCHEP1",
-      "STAR": "",
-      "Altitude": 2214,
-      "State": "departure",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    },
-    "SWA9997": {
-      "Callsign": "SWA9997",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cordy": "CORDY",
-        "Doktr": "DOKTR",
-        "Rochester": "RST"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "RST1",
-      "STAR": "",
-      "Altitude": 9054,
-      "State": "departure",
-      "ControllerFrequency": "1R",
-      "TrackingController": "C09",
-      "AddressingForm": 0
-    },
-    "Southwest 9997": {
-      "Callsign": "SWA9997",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cordy": "CORDY",
-        "Doktr": "DOKTR",
-        "Rochester": "RST"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "RST1",
-      "STAR": "",
-      "Altitude": 9054,
-      "State": "departure",
-      "ControllerFrequency": "1R",
-      "TrackingController": "C09",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Delta 76 05, Flighting two two zero, CLOB and maintain one seven thousand\"",
@@ -141,5 +60,49 @@
     "[local-stt] parsed commands: [H220 C170] (conf=1.00)",
     "[local-stt] validated commands: [H220 C170] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"DAL7605 H220 C170\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11999MB)",
+  "stt_aircraft": {
+    "Delta 7605": {
+      "AddressingForm": 0,
+      "AircraftType": "A321",
+      "Altitude": 2214,
+      "AssignedApproach": "",
+      "Callsign": "DAL7605",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1R",
+      "Fixes": {
+        "Arrex": "ARREX",
+        "Hugir": "HUGIR",
+        "Mconl": "MCONL",
+        "Schep": "SCHEP"
+      },
+      "SID": "SCHEP1",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1R"
+    },
+    "Southwest 9997": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 9054,
+      "AssignedApproach": "",
+      "Callsign": "SWA9997",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1R",
+      "Fixes": {
+        "Cordy": "CORDY",
+        "Doktr": "DOKTR",
+        "Rochester": "RST"
+      },
+      "SID": "RST1",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "C09"
+    }
+  },
+  "time": "2026-01-22T02:38:53.92055712Z",
+  "transcript": "Delta 76 05, Flighting two two zero, CLOB and maintain one seven thousand",
+  "whisper_duration_ms": 310.416
 }

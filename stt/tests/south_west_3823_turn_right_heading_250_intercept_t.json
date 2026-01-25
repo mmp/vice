@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T06:05:09.361933745Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 4096,
+  "callsign": "SWA3823",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,168 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "South West 3823 turn right heading 250, intercept the low-gliser",
-  "whisper_duration_ms": 420.802,
-  "audio_duration_ms": 4096,
-  "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
-  "callsign": "SWA3823",
   "command": "R250 I",
-  "stt_aircraft": {
-    "ASA4739": {
-      "Callsign": "ASA4739",
-      "AircraftType": "B39M",
-      "Fixes": {
-        "San Diego International Airport": "KSAN"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 1399,
-      "State": "on approach",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "Alaska 4739": {
-      "Callsign": "ASA4739",
-      "AircraftType": "B39M",
-      "Fixes": {
-        "San Diego International Airport": "KSAN"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 1399,
-      "State": "on approach",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "SWA3823": {
-      "Callsign": "SWA3823",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Lyndi": "LYNDI",
-        "Naddo": "NADDO",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 3800,
-      "State": "arrival",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "Southwest 3823": {
-      "Callsign": "SWA3823",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Lyndi": "LYNDI",
-        "Naddo": "NADDO",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 3800,
-      "State": "arrival",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "UAL2731": {
-      "Callsign": "UAL2731",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Aztek": "AZTEK",
-        "Cijhi": "CIJHI",
-        "Jeevs": "JEEVS",
-        "Lucki": "LUCKI",
-        "Lyndi": "LYNDI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 8846,
-      "State": "arrival",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "United 2731": {
-      "Callsign": "UAL2731",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Aztek": "AZTEK",
-        "Cijhi": "CIJHI",
-        "Jeevs": "JEEVS",
-        "Lucki": "LUCKI",
-        "Lyndi": "LYNDI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 8846,
-      "State": "arrival",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"South West 3823 turn right heading 250, intercept the low-gliser\"",
@@ -234,5 +73,89 @@
     "[local-stt] parsed commands: [R250] (conf=1.00)",
     "[local-stt] validated commands: [R250] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"SWA3823 R250\" (conf=1.00, time=542.3µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
+  "stt_aircraft": {
+    "Alaska 4739": {
+      "AddressingForm": 0,
+      "AircraftType": "B39M",
+      "Altitude": 1399,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "ASA4739",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5Z",
+      "Fixes": {
+        "San Diego International Airport": "KSAN"
+      },
+      "SID": "",
+      "STAR": "COMIX2",
+      "State": "on approach",
+      "TrackingController": "5Z"
+    },
+    "Southwest 3823": {
+      "AddressingForm": 0,
+      "AircraftType": "B738",
+      "Altitude": 3800,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "SWA3823",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5Z",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lyndi": "LYNDI",
+        "Naddo": "NADDO",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "SID": "",
+      "STAR": "COMIX2",
+      "State": "arrival",
+      "TrackingController": "5Z"
+    },
+    "United 2731": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 8846,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "UAL2731",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5Z",
+      "Fixes": {
+        "Aztek": "AZTEK",
+        "Cijhi": "CIJHI",
+        "Jeevs": "JEEVS",
+        "Lucki": "LUCKI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "arrival",
+      "TrackingController": "5Z"
+    }
+  },
+  "time": "2026-01-22T06:05:09.361933745Z",
+  "transcript": "South West 3823 turn right heading 250, intercept the low-gliser",
+  "whisper_duration_ms": 420.802
 }

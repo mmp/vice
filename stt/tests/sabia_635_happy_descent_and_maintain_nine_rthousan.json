@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-24T16:28:58.692930476Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 3584,
+  "callsign": "ASL635",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,64 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Sabia 635, Happy descent and maintain nine r-thousands.",
-  "whisper_duration_ms": 147.489,
-  "audio_duration_ms": 3584,
-  "processor": "GPU: NVIDIA GeForce RTX 5080 (15889MB)",
-  "callsign": "ASL635",
   "command": "D90",
-  "stt_aircraft": {
-    "ASL635": {
-      "Callsign": "ASL635",
-      "AircraftType": "A332",
-      "Fixes": {
-        "Calverton": "CCC",
-        "John F Kennedy International Airport": "KJFK",
-        "Kmann": "KMANN",
-        "Rober": "ROBER"
-      },
-      "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "PARCH4",
-      "Altitude": 12000,
-      "State": "arrival",
-      "ControllerFrequency": "2K",
-      "TrackingController": "2K",
-      "AddressingForm": 0
-    },
-    "Air Serbia 635 heavy": {
-      "Callsign": "ASL635",
-      "AircraftType": "A332",
-      "Fixes": {
-        "Calverton": "CCC",
-        "John F Kennedy International Airport": "KJFK",
-        "Kmann": "KMANN",
-        "Rober": "ROBER"
-      },
-      "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "PARCH4",
-      "Altitude": 12000,
-      "State": "arrival",
-      "ControllerFrequency": "2K",
-      "TrackingController": "2K",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Sabia 635, Happy descent and maintain nine r-thousands.\"",
@@ -120,5 +63,37 @@
     "[local-stt] parsed commands: [D90] (conf=1.00)",
     "[local-stt] validated commands: [D90] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"ASL635 D90\" (conf=1.00, time=507.4µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 5080 (15889MB)",
+  "stt_aircraft": {
+    "Air Serbia 635 heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "A332",
+      "Altitude": 12000,
+      "AssignedApproach": "",
+      "Callsign": "ASL635",
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "ControllerFrequency": "2K",
+      "Fixes": {
+        "Calverton": "CCC",
+        "John F Kennedy International Airport": "KJFK",
+        "Kmann": "KMANN",
+        "Rober": "ROBER"
+      },
+      "SID": "",
+      "STAR": "PARCH4",
+      "State": "arrival",
+      "TrackingController": "2K"
+    }
+  },
+  "time": "2026-01-24T16:28:58.692930476Z",
+  "transcript": "Sabia 635, Happy descent and maintain nine r-thousands.",
+  "whisper_duration_ms": 147.489
 }

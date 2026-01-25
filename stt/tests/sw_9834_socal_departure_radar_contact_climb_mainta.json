@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T06:12:09.567011177Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 7424,
+  "callsign": "SWA9834",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,250 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "SW 9834 SoCal Departure, Radar Contact, Climb Maintain 12000",
-  "whisper_duration_ms": 289.294,
-  "audio_duration_ms": 7424,
-  "processor": "GPU: NVIDIA GeForce RTX 5070 Ti (15995MB)",
-  "callsign": "SWA9834",
   "command": "C120",
-  "stt_aircraft": {
-    "FFT3601": {
-      "Callsign": "FFT3601",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Anrmn": "ANRMN",
-        "Gridr": "GRIDR",
-        "Jorrj": "JORRJ",
-        "Nshee": "NSHEE",
-        "Piezz": "PIEZZ"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ZZOOO4",
-      "STAR": "",
-      "Altitude": 11487,
-      "State": "departure",
-      "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0
-    },
-    "FFT896": {
-      "Callsign": "FFT896",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Anrmn": "ANRMN",
-        "Gridr": "GRIDR",
-        "Jorrj": "JORRJ",
-        "Nshee": "NSHEE",
-        "Piezz": "PIEZZ"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ZZOOO4",
-      "STAR": "",
-      "Altitude": 12802,
-      "State": "departure",
-      "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0
-    },
-    "Frontier Flight 3601": {
-      "Callsign": "FFT3601",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Anrmn": "ANRMN",
-        "Gridr": "GRIDR",
-        "Jorrj": "JORRJ",
-        "Nshee": "NSHEE",
-        "Piezz": "PIEZZ"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ZZOOO4",
-      "STAR": "",
-      "Altitude": 11487,
-      "State": "departure",
-      "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0
-    },
-    "Frontier Flight 896": {
-      "Callsign": "FFT896",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Anrmn": "ANRMN",
-        "Gridr": "GRIDR",
-        "Jorrj": "JORRJ",
-        "Nshee": "NSHEE",
-        "Piezz": "PIEZZ"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ZZOOO4",
-      "STAR": "",
-      "Altitude": 12802,
-      "State": "departure",
-      "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0
-    },
-    "SWA559": {
-      "Callsign": "SWA559",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Klomn": "KLOMN",
-        "Lntrn": "LNTRN",
-        "Lyndi": "LYNDI",
-        "Naddo": "NADDO",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA",
-        "Xmans": "XMANS"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 11039,
-      "State": "arrival",
-      "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0
-    },
-    "SWA744": {
-      "Callsign": "SWA744",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Klomn": "KLOMN",
-        "Lyndi": "LYNDI",
-        "Naddo": "NADDO",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA",
-        "Xmans": "XMANS"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 8115,
-      "State": "arrival",
-      "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0
-    },
-    "SWA9834": {
-      "Callsign": "SWA9834",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Gywnn": "GYWNN",
-        "Kernl": "KERNL",
-        "Padrz": "PADRZ",
-        "Wnfld": "WNFLD"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "PADRZ2",
-      "STAR": "",
-      "Altitude": 2663,
-      "State": "departure",
-      "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0
-    },
-    "Southwest 559": {
-      "Callsign": "SWA559",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Klomn": "KLOMN",
-        "Lntrn": "LNTRN",
-        "Lyndi": "LYNDI",
-        "Naddo": "NADDO",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA",
-        "Xmans": "XMANS"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 11039,
-      "State": "arrival",
-      "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0
-    },
-    "Southwest 744": {
-      "Callsign": "SWA744",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Klomn": "KLOMN",
-        "Lyndi": "LYNDI",
-        "Naddo": "NADDO",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA",
-        "Xmans": "XMANS"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 8115,
-      "State": "arrival",
-      "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0
-    },
-    "Southwest 9834": {
-      "Callsign": "SWA9834",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Gywnn": "GYWNN",
-        "Kernl": "KERNL",
-        "Padrz": "PADRZ",
-        "Wnfld": "WNFLD"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "PADRZ2",
-      "STAR": "",
-      "Altitude": 2663,
-      "State": "departure",
-      "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"SW 9834 SoCal Departure, Radar Contact, Climb Maintain 12000\"",
@@ -312,5 +69,130 @@
     "[local-stt] parsed commands: [C120] (conf=1.00)",
     "[local-stt] validated commands: [C120] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"SWA9834 C120\" (conf=1.00, time=502.7µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 5070 Ti (15995MB)",
+  "stt_aircraft": {
+    "Frontier Flight 3601": {
+      "AddressingForm": 0,
+      "AircraftType": "A20N",
+      "Altitude": 11487,
+      "AssignedApproach": "",
+      "Callsign": "FFT3601",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "5W",
+      "Fixes": {
+        "Anrmn": "ANRMN",
+        "Gridr": "GRIDR",
+        "Jorrj": "JORRJ",
+        "Nshee": "NSHEE",
+        "Piezz": "PIEZZ"
+      },
+      "SID": "ZZOOO4",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "5W"
+    },
+    "Frontier Flight 896": {
+      "AddressingForm": 0,
+      "AircraftType": "A20N",
+      "Altitude": 12802,
+      "AssignedApproach": "",
+      "Callsign": "FFT896",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "5W",
+      "Fixes": {
+        "Anrmn": "ANRMN",
+        "Gridr": "GRIDR",
+        "Jorrj": "JORRJ",
+        "Nshee": "NSHEE",
+        "Piezz": "PIEZZ"
+      },
+      "SID": "ZZOOO4",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "5W"
+    },
+    "Southwest 559": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 11039,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "SWA559",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5N",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Klomn": "KLOMN",
+        "Lntrn": "LNTRN",
+        "Lyndi": "LYNDI",
+        "Naddo": "NADDO",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA",
+        "Xmans": "XMANS"
+      },
+      "SID": "",
+      "STAR": "COMIX2",
+      "State": "arrival",
+      "TrackingController": "5N"
+    },
+    "Southwest 744": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 8115,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "SWA744",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5N",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Klomn": "KLOMN",
+        "Lyndi": "LYNDI",
+        "Naddo": "NADDO",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA",
+        "Xmans": "XMANS"
+      },
+      "SID": "",
+      "STAR": "COMIX2",
+      "State": "arrival",
+      "TrackingController": "5N"
+    },
+    "Southwest 9834": {
+      "AddressingForm": 0,
+      "AircraftType": "B738",
+      "Altitude": 2663,
+      "AssignedApproach": "",
+      "Callsign": "SWA9834",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "5W",
+      "Fixes": {
+        "Gywnn": "GYWNN",
+        "Kernl": "KERNL",
+        "Padrz": "PADRZ",
+        "Wnfld": "WNFLD"
+      },
+      "SID": "PADRZ2",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "5W"
+    }
+  },
+  "time": "2026-01-22T06:12:09.567011177Z",
+  "transcript": "SW 9834 SoCal Departure, Radar Contact, Climb Maintain 12000",
+  "whisper_duration_ms": 289.294
 }

@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T03:28:13.113545006Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 3328,
+  "callsign": "SKW9456",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,46 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": ", West 94 56 turn left heading zero nine zero.",
-  "whisper_duration_ms": 384.527,
-  "audio_duration_ms": 3328,
-  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
-  "callsign": "SKW9456",
   "command": "L090",
-  "stt_aircraft": {
-    "SKW9456": {
-      "Callsign": "SKW9456",
-      "AircraftType": "CRJ7",
-      "Fixes": {
-        "Gopher": "GEP"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "MSP9",
-      "STAR": "",
-      "Altitude": 6880,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "SkyWest 9456": {
-      "Callsign": "SKW9456",
-      "AircraftType": "CRJ7",
-      "Fixes": {
-        "Gopher": "GEP"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "MSP9",
-      "STAR": "",
-      "Altitude": 6880,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \", West 94 56 turn left heading zero nine zero.\"",
@@ -86,5 +47,28 @@
     "[local-stt] parsed commands: [L090] (conf=1.00)",
     "[local-stt] validated commands: [L090] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"SKW9456 L090\" (conf=1.00, time=167.958µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "stt_aircraft": {
+    "SkyWest 9456": {
+      "AddressingForm": 0,
+      "AircraftType": "CRJ7",
+      "Altitude": 6880,
+      "AssignedApproach": "",
+      "Callsign": "SKW9456",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Gopher": "GEP"
+      },
+      "SID": "MSP9",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1D"
+    }
+  },
+  "time": "2026-01-22T03:28:13.113545006Z",
+  "transcript": ", West 94 56 turn left heading zero nine zero.",
+  "whisper_duration_ms": 384.527
 }

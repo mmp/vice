@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T06:01:51.309907149Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 3456,
+  "callsign": "ASA4739",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,110 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Alaska 4739, December 18, 3800",
-  "whisper_duration_ms": 384.157,
-  "audio_duration_ms": 3456,
-  "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
-  "callsign": "ASA4739",
   "command": "D38",
-  "stt_aircraft": {
-    "ASA4739": {
-      "Callsign": "ASA4739",
-      "AircraftType": "B39M",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Lyndi": "LYNDI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "Alaska 4739": {
-      "Callsign": "ASA4739",
-      "AircraftType": "B39M",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Lyndi": "LYNDI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "UAL485": {
-      "Callsign": "UAL485",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Visual Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 2293,
-      "State": "on approach",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    },
-    "United 485": {
-      "Callsign": "UAL485",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Visual Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 2293,
-      "State": "on approach",
-      "ControllerFrequency": "5Z",
-      "TrackingController": "5Z",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Alaska 4739, December 18, 3800\"",
@@ -150,5 +47,60 @@
     "[local-stt] parsed commands: [D38] (conf=1.00)",
     "[local-stt] validated commands: [D38] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"ASA4739 D38\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
+  "stt_aircraft": {
+    "Alaska 4739": {
+      "AddressingForm": 0,
+      "AircraftType": "B39M",
+      "Altitude": 4000,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "ASA4739",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5Z",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "SID": "",
+      "STAR": "COMIX2",
+      "State": "arrival",
+      "TrackingController": "5Z"
+    },
+    "United 485": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 2293,
+      "AssignedApproach": "Visual Runway 27",
+      "Callsign": "UAL485",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5Z",
+      "Fixes": {
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN"
+      },
+      "SID": "",
+      "STAR": "COMIX2",
+      "State": "on approach",
+      "TrackingController": "5Z"
+    }
+  },
+  "time": "2026-01-22T06:01:51.309907149Z",
+  "transcript": "Alaska 4739, December 18, 3800",
+  "whisper_duration_ms": 384.157
 }

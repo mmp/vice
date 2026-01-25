@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T23:16:18.333014032Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 7168,
+  "callsign": "DAL2635",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,280 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Delta 26 35, four miles from LEG, cleared ILS from way nine or approach.",
-  "whisper_duration_ms": 673.191,
-  "audio_duration_ms": 7168,
-  "processor": "GPU: NVIDIA GeForce GTX 1080 (8273MB)",
-  "callsign": "DAL2635",
   "command": "CI9",
-  "stt_aircraft": {
-    "DAL2635": {
-      "Callsign": "DAL2635",
-      "AircraftType": "MD90",
-      "Fixes": {
-        "Acere": "ACERE",
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "FROGZ4",
-      "Altitude": 6195,
-      "State": "arrival",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "Delta 2635": {
-      "Callsign": "DAL2635",
-      "AircraftType": "MD90",
-      "Fixes": {
-        "Acere": "ACERE",
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "FROGZ4",
-      "Altitude": 6195,
-      "State": "arrival",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "LAN404": {
-      "Callsign": "LAN404",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "SNDBR3",
-      "Altitude": 6442,
-      "State": "arrival",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    },
-    "LAN574": {
-      "Callsign": "LAN574",
-      "AircraftType": "B789",
-      "Fixes": {
-        "Bilzz": "BILZZ",
-        "Cstio": "CSTIO",
-        "Dahla": "DAHLA",
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA",
-        "Raebn": "RAEBN"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "VIICE2",
-      "Altitude": 10672,
-      "State": "arrival",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    },
-    "Lan Chile 404": {
-      "Callsign": "LAN404",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "SNDBR3",
-      "Altitude": 6442,
-      "State": "arrival",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    },
-    "Lan Chile 574 heavy": {
-      "Callsign": "LAN574",
-      "AircraftType": "B789",
-      "Fixes": {
-        "Bilzz": "BILZZ",
-        "Cstio": "CSTIO",
-        "Dahla": "DAHLA",
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA",
-        "Raebn": "RAEBN"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "VIICE2",
-      "Altitude": 10672,
-      "State": "arrival",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    },
-    "SLM1480": {
-      "Callsign": "SLM1480",
-      "AircraftType": "B733",
-      "Fixes": {
-        "Bilzz": "BILZZ",
-        "Cstio": "CSTIO",
-        "Dahla": "DAHLA",
-        "Gamey": "GAMEY",
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA",
-        "Nekne": "NEKNE",
-        "Raebn": "RAEBN",
-        "Viice": "VIICE"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "VIICE2",
-      "Altitude": 17474,
-      "State": "arrival",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    },
-    "SWA614": {
-      "Callsign": "SWA614",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Acere": "ACERE",
-        "Arrtt": "ARRTT",
-        "Asppn": "ASPPN",
-        "Frogz": "FROGZ",
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA",
-        "Pbjay": "PBJAY",
-        "Schar": "SCHAR"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "FROGZ4",
-      "Altitude": 16145,
-      "State": "arrival",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "Southwest 614": {
-      "Callsign": "SWA614",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Acere": "ACERE",
-        "Arrtt": "ARRTT",
-        "Asppn": "ASPPN",
-        "Frogz": "FROGZ",
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA",
-        "Pbjay": "PBJAY",
-        "Schar": "SCHAR"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "FROGZ4",
-      "Altitude": 16145,
-      "State": "arrival",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "Surinam 1480": {
-      "Callsign": "SLM1480",
-      "AircraftType": "B733",
-      "Fixes": {
-        "Bilzz": "BILZZ",
-        "Cstio": "CSTIO",
-        "Dahla": "DAHLA",
-        "Gamey": "GAMEY",
-        "Gritt": "GRITT",
-        "Iness": "INESS",
-        "Llegg": "LLEGG",
-        "Miami International Airport": "KMIA",
-        "Nekne": "NEKNE",
-        "Raebn": "RAEBN",
-        "Viice": "VIICE"
-      },
-      "CandidateApproaches": {
-        "I L S runway niner": "I9",
-        "I L S runway one two": "I12",
-        "r-nav runway eight left": "R8L"
-      },
-      "AssignedApproach": "ILS Runway 9",
-      "SID": "",
-      "STAR": "VIICE2",
-      "Altitude": 17474,
-      "State": "arrival",
-      "ControllerFrequency": "1S",
-      "TrackingController": "1S",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Delta 26 35, four miles from LEG, cleared ILS from way nine or approach.\"",
@@ -351,5 +78,145 @@
     "[local-stt] parsed commands: [CI9] (conf=0.92)",
     "[local-stt] validated commands: [CI9] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"DAL2635 CI9\" (conf=0.92, time=568.5µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce GTX 1080 (8273MB)",
+  "stt_aircraft": {
+    "Delta 2635": {
+      "AddressingForm": 0,
+      "AircraftType": "MD90",
+      "Altitude": 6195,
+      "AssignedApproach": "ILS Runway 9",
+      "Callsign": "DAL2635",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Acere": "ACERE",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "SID": "",
+      "STAR": "FROGZ4",
+      "State": "arrival",
+      "TrackingController": "1D"
+    },
+    "Lan Chile 404": {
+      "AddressingForm": 0,
+      "AircraftType": "A320",
+      "Altitude": 6442,
+      "AssignedApproach": "ILS Runway 9",
+      "Callsign": "LAN404",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1S",
+      "Fixes": {
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA"
+      },
+      "SID": "",
+      "STAR": "SNDBR3",
+      "State": "arrival",
+      "TrackingController": "1S"
+    },
+    "Lan Chile 574 heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "B789",
+      "Altitude": 10672,
+      "AssignedApproach": "ILS Runway 9",
+      "Callsign": "LAN574",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1S",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Cstio": "CSTIO",
+        "Dahla": "DAHLA",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Raebn": "RAEBN"
+      },
+      "SID": "",
+      "STAR": "VIICE2",
+      "State": "arrival",
+      "TrackingController": "1S"
+    },
+    "Southwest 614": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 16145,
+      "AssignedApproach": "ILS Runway 9",
+      "Callsign": "SWA614",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Acere": "ACERE",
+        "Arrtt": "ARRTT",
+        "Asppn": "ASPPN",
+        "Frogz": "FROGZ",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Pbjay": "PBJAY",
+        "Schar": "SCHAR"
+      },
+      "SID": "",
+      "STAR": "FROGZ4",
+      "State": "arrival",
+      "TrackingController": "1D"
+    },
+    "Surinam 1480": {
+      "AddressingForm": 0,
+      "AircraftType": "B733",
+      "Altitude": 17474,
+      "AssignedApproach": "ILS Runway 9",
+      "Callsign": "SLM1480",
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ControllerFrequency": "1S",
+      "Fixes": {
+        "Bilzz": "BILZZ",
+        "Cstio": "CSTIO",
+        "Dahla": "DAHLA",
+        "Gamey": "GAMEY",
+        "Gritt": "GRITT",
+        "Iness": "INESS",
+        "Llegg": "LLEGG",
+        "Miami International Airport": "KMIA",
+        "Nekne": "NEKNE",
+        "Raebn": "RAEBN",
+        "Viice": "VIICE"
+      },
+      "SID": "",
+      "STAR": "VIICE2",
+      "State": "arrival",
+      "TrackingController": "1S"
+    }
+  },
+  "time": "2026-01-22T23:16:18.333014032Z",
+  "transcript": "Delta 26 35, four miles from LEG, cleared ILS from way nine or approach.",
+  "whisper_duration_ms": 673.191
 }

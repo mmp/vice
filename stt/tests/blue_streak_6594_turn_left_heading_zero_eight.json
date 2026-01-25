@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T04:10:06.168722978Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 2816,
+  "callsign": "JIA6594",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,184 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Blue Streak 6594, turn left, heading zero eight.",
-  "whisper_duration_ms": 405.919,
-  "audio_duration_ms": 2816,
-  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
-  "callsign": "JIA6594",
   "command": "L080",
-  "stt_aircraft": {
-    "Blue Streak 6594": {
-      "Callsign": "JIA6594",
-      "AircraftType": "CRJ7",
-      "Fixes": {
-        "Pawling": "PWL"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ALB7",
-      "STAR": "",
-      "Altitude": 4000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "Brickyard 6801": {
-      "Callsign": "RPA6801",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Albany International Airport": "KALB"
-      },
-      "CandidateApproaches": {
-        "I L S runway one niner": "I19"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 11000,
-      "State": "arrival",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "JIA6594": {
-      "Callsign": "JIA6594",
-      "AircraftType": "CRJ7",
-      "Fixes": {
-        "Pawling": "PWL"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ALB7",
-      "STAR": "",
-      "Altitude": 4000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "N6661A": {
-      "Callsign": "N6661A",
-      "AircraftType": "E545",
-      "Fixes": {
-        "Griffiss International Airport": "KRME",
-        "Maria": "MARIA"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 3000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "PDT9081": {
-      "Callsign": "PDT9081",
-      "AircraftType": "E145",
-      "Fixes": {
-        "Cedor": "CEDOR",
-        "Delancey": "DNY"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ALB7",
-      "STAR": "",
-      "Altitude": 2484,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "Piedmont 9081": {
-      "Callsign": "PDT9081",
-      "AircraftType": "E145",
-      "Fixes": {
-        "Cedor": "CEDOR",
-        "Delancey": "DNY"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ALB7",
-      "STAR": "",
-      "Altitude": 2484,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "RPA6801": {
-      "Callsign": "RPA6801",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Albany International Airport": "KALB"
-      },
-      "CandidateApproaches": {
-        "I L S runway one niner": "I19"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 11000,
-      "State": "arrival",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "embraer legacy six one alpha": {
-      "Callsign": "N6661A",
-      "AircraftType": "E545",
-      "Fixes": {
-        "Griffiss International Airport": "KRME",
-        "Maria": "MARIA"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 3000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 1
-    },
-    "legacy six hundred six one alpha": {
-      "Callsign": "N6661A",
-      "AircraftType": "E545",
-      "Fixes": {
-        "Griffiss International Airport": "KRME",
-        "Maria": "MARIA"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 3000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 1
-    },
-    "november 6661A": {
-      "Callsign": "N6661A",
-      "AircraftType": "E545",
-      "Fixes": {
-        "Griffiss International Airport": "KRME",
-        "Maria": "MARIA"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 3000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Blue Streak 6594, turn left, heading zero eight.\"",
@@ -218,5 +41,131 @@
     "[local-stt] parsed commands: [L008] (conf=1.00)",
     "[local-stt] validated commands: [L008] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"JIA6594 L008\" (conf=1.00, time=146.625µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "stt_aircraft": {
+    "Blue Streak 6594": {
+      "AddressingForm": 0,
+      "AircraftType": "CRJ7",
+      "Altitude": 4000,
+      "AssignedApproach": "",
+      "Callsign": "JIA6594",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Pawling": "PWL"
+      },
+      "SID": "ALB7",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "Brickyard 6801": {
+      "AddressingForm": 0,
+      "AircraftType": "E75L",
+      "Altitude": 11000,
+      "AssignedApproach": "",
+      "Callsign": "RPA6801",
+      "CandidateApproaches": {
+        "I L S runway one niner": "I19"
+      },
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Albany International Airport": "KALB"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "arrival",
+      "TrackingController": "1W"
+    },
+    "N6661A": {
+      "AddressingForm": 0,
+      "AircraftType": "E545",
+      "Altitude": 3000,
+      "AssignedApproach": "",
+      "Callsign": "N6661A",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Griffiss International Airport": "KRME",
+        "Maria": "MARIA"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "Piedmont 9081": {
+      "AddressingForm": 0,
+      "AircraftType": "E145",
+      "Altitude": 2484,
+      "AssignedApproach": "",
+      "Callsign": "PDT9081",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Cedor": "CEDOR",
+        "Delancey": "DNY"
+      },
+      "SID": "ALB7",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "embraer legacy six one alpha": {
+      "AddressingForm": 1,
+      "AircraftType": "E545",
+      "Altitude": 3000,
+      "AssignedApproach": "",
+      "Callsign": "N6661A",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Griffiss International Airport": "KRME",
+        "Maria": "MARIA"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "legacy six hundred six one alpha": {
+      "AddressingForm": 1,
+      "AircraftType": "E545",
+      "Altitude": 3000,
+      "AssignedApproach": "",
+      "Callsign": "N6661A",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Griffiss International Airport": "KRME",
+        "Maria": "MARIA"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "november 6661A": {
+      "AddressingForm": 0,
+      "AircraftType": "E545",
+      "Altitude": 3000,
+      "AssignedApproach": "",
+      "Callsign": "N6661A",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Griffiss International Airport": "KRME",
+        "Maria": "MARIA"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    }
+  },
+  "time": "2026-01-22T04:10:06.168722978Z",
+  "transcript": "Blue Streak 6594, turn left, heading zero eight.",
+  "whisper_duration_ms": 405.919
 }

@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-23T00:16:04.575573686Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 3456,
+  "callsign": "SWA416",
   "callstack": [
     "manager.go:975:/server.(*SimManager).ReportSTTLog",
     "value.go:581:reflect.Value.call",
@@ -9,94 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Southless 416, Expectilis, Runaway one left.",
-  "whisper_duration_ms": 494.317,
-  "audio_duration_ms": 3456,
-  "processor": "GPU: Radeon RX550/550 Series (4096MB)",
-  "callsign": "SWA416",
   "command": "EI1L",
-  "stt_aircraft": {
-    "SWA416": {
-      "Callsign": "SWA416",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Rayzz": "RAYZZ",
-        "Tampa International Airport": "KTPA"
-      },
-      "CandidateApproaches": {
-        "I L S runway one left": "I1L",
-        "r-nav yankee runway one left": "RY1L",
-        "r-nav yankee runway one right": "RY1R",
-        "r-nav zulu runway one left": "RZ1L",
-        "r-nav zulu runway one right": "RZ1R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "RAYZZ2",
-      "Altitude": 11074,
-      "State": "arrival",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "SWA470": {
-      "Callsign": "SWA470",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Ended": "ENDED",
-        "Lacen": "LACEN"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ENDED2",
-      "STAR": "",
-      "Altitude": 5903,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "Southwest 416": {
-      "Callsign": "SWA416",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Rayzz": "RAYZZ",
-        "Tampa International Airport": "KTPA"
-      },
-      "CandidateApproaches": {
-        "I L S runway one left": "I1L",
-        "r-nav yankee runway one left": "RY1L",
-        "r-nav yankee runway one right": "RY1R",
-        "r-nav zulu runway one left": "RZ1L",
-        "r-nav zulu runway one right": "RZ1R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "RAYZZ2",
-      "Altitude": 11074,
-      "State": "arrival",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "Southwest 470": {
-      "Callsign": "SWA470",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Ended": "ENDED",
-        "Lacen": "LACEN"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ENDED2",
-      "STAR": "",
-      "Altitude": 5903,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Southless 416, Expectilis, Runaway one left.\"",
@@ -139,5 +52,52 @@
     "[local-stt] parsed commands: [] (conf=0.00)",
     "[local-stt] validated commands: [] (conf=0.00)",
     "[local-stt] === DecodeTranscript END: \"SWA416 AGAIN\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: Radeon RX550/550 Series (4096MB)",
+  "stt_aircraft": {
+    "Southwest 416": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 11074,
+      "AssignedApproach": "",
+      "Callsign": "SWA416",
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Rayzz": "RAYZZ",
+        "Tampa International Airport": "KTPA"
+      },
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "State": "arrival",
+      "TrackingController": "1W"
+    },
+    "Southwest 470": {
+      "AddressingForm": 0,
+      "AircraftType": "B738",
+      "Altitude": 5903,
+      "AssignedApproach": "",
+      "Callsign": "SWA470",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Ended": "ENDED",
+        "Lacen": "LACEN"
+      },
+      "SID": "ENDED2",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1D"
+    }
+  },
+  "time": "2026-01-23T00:16:04.575573686Z",
+  "transcript": "Southless 416, Expectilis, Runaway one left.",
+  "whisper_duration_ms": 494.317
 }

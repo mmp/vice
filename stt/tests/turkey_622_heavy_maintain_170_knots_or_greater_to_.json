@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T21:39:28.364223-05:00",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 3712,
+  "callsign": "THY622",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,168 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_arm64.s:1268:runtime.goexit"
   ],
-  "transcript": "Turkey 622 Heavy Maintain 170 knots or greater to Ripit",
-  "whisper_duration_ms": 402.646,
-  "audio_duration_ms": 3712,
-  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
-  "callsign": "THY622",
   "command": "S170",
-  "stt_aircraft": {
-    "DAL406": {
-      "Callsign": "DAL406",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Aibee": "AYBEE",
-        "Claine": "KLANE",
-        "Harris": "HRRIS",
-        "Logan International Airport": "KBOS",
-        "Loner": "LONER",
-        "Ripit": "RIPIT",
-        "River": "REVER",
-        "Seahag": "SEHAG",
-        "Spysid": "SPYSD",
-        "Winter": "WINTA"
-      },
-      "CandidateApproaches": {
-        "I L S runway two seven": "I27",
-        "r-nav runway two seven": "R27"
-      },
-      "AssignedApproach": "ILS Runway 27",
-      "SID": "",
-      "STAR": "JFUND2",
-      "Altitude": 8810,
-      "State": "arrival",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    },
-    "Delta 406": {
-      "Callsign": "DAL406",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Aibee": "AYBEE",
-        "Claine": "KLANE",
-        "Harris": "HRRIS",
-        "Logan International Airport": "KBOS",
-        "Loner": "LONER",
-        "Ripit": "RIPIT",
-        "River": "REVER",
-        "Seahag": "SEHAG",
-        "Spysid": "SPYSD",
-        "Winter": "WINTA"
-      },
-      "CandidateApproaches": {
-        "I L S runway two seven": "I27",
-        "r-nav runway two seven": "R27"
-      },
-      "AssignedApproach": "ILS Runway 27",
-      "SID": "",
-      "STAR": "JFUND2",
-      "Altitude": 8810,
-      "State": "arrival",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    },
-    "NKS8109": {
-      "Callsign": "NKS8109",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Aibee": "AYBEE",
-        "Claine": "KLANE",
-        "Clebb": "KLEBB",
-        "Cradle": "CRADL",
-        "Hokdu": "HOKDU",
-        "Krann": "KRANN",
-        "Logan International Airport": "KBOS",
-        "Loner": "LONER",
-        "Ripit": "RIPIT"
-      },
-      "CandidateApproaches": {
-        "I L S runway two seven": "I27",
-        "r-nav runway two seven": "R27"
-      },
-      "AssignedApproach": "ILS Runway 27",
-      "SID": "",
-      "STAR": "ROBUC3",
-      "Altitude": 12271,
-      "State": "arrival",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "Spirit Wings 8109": {
-      "Callsign": "NKS8109",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Aibee": "AYBEE",
-        "Claine": "KLANE",
-        "Clebb": "KLEBB",
-        "Cradle": "CRADL",
-        "Hokdu": "HOKDU",
-        "Krann": "KRANN",
-        "Logan International Airport": "KBOS",
-        "Loner": "LONER",
-        "Ripit": "RIPIT"
-      },
-      "CandidateApproaches": {
-        "I L S runway two seven": "I27",
-        "r-nav runway two seven": "R27"
-      },
-      "AssignedApproach": "ILS Runway 27",
-      "SID": "",
-      "STAR": "ROBUC3",
-      "Altitude": 12271,
-      "State": "arrival",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "THY622": {
-      "Callsign": "THY622",
-      "AircraftType": "A332",
-      "Fixes": {
-        "Claine": "KLANE",
-        "Logan International Airport": "KBOS",
-        "Loner": "LONER",
-        "Ripit": "RIPIT"
-      },
-      "CandidateApproaches": {
-        "I L S runway two seven": "I27",
-        "r-nav runway two seven": "R27"
-      },
-      "AssignedApproach": "ILS Runway 27",
-      "SID": "",
-      "STAR": "OOSHN5",
-      "Altitude": 6112,
-      "State": "arrival",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    },
-    "Turkish 622 heavy": {
-      "Callsign": "THY622",
-      "AircraftType": "A332",
-      "Fixes": {
-        "Claine": "KLANE",
-        "Logan International Airport": "KBOS",
-        "Loner": "LONER",
-        "Ripit": "RIPIT"
-      },
-      "CandidateApproaches": {
-        "I L S runway two seven": "I27",
-        "r-nav runway two seven": "R27"
-      },
-      "AssignedApproach": "ILS Runway 27",
-      "SID": "",
-      "STAR": "OOSHN5",
-      "Altitude": 6112,
-      "State": "arrival",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Turkey 622 Heavy Maintain 170 knots or greater to Ripit\"",
@@ -225,5 +64,89 @@
     "[local-stt] parsed commands: [S170] (conf=1.00)",
     "[local-stt] validated commands: [S170] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"THY622 S170\" (conf=1.00, time=417.917µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "stt_aircraft": {
+    "Delta 406": {
+      "AddressingForm": 0,
+      "AircraftType": "A321",
+      "Altitude": 8810,
+      "AssignedApproach": "ILS Runway 27",
+      "Callsign": "DAL406",
+      "CandidateApproaches": {
+        "I L S runway two seven": "I27",
+        "r-nav runway two seven": "R27"
+      },
+      "ControllerFrequency": "1R",
+      "Fixes": {
+        "Aibee": "AYBEE",
+        "Claine": "KLANE",
+        "Harris": "HRRIS",
+        "Logan International Airport": "KBOS",
+        "Loner": "LONER",
+        "Ripit": "RIPIT",
+        "River": "REVER",
+        "Seahag": "SEHAG",
+        "Spysid": "SPYSD",
+        "Winter": "WINTA"
+      },
+      "SID": "",
+      "STAR": "JFUND2",
+      "State": "arrival",
+      "TrackingController": "1R"
+    },
+    "Spirit Wings 8109": {
+      "AddressingForm": 0,
+      "AircraftType": "A321",
+      "Altitude": 12271,
+      "AssignedApproach": "ILS Runway 27",
+      "Callsign": "NKS8109",
+      "CandidateApproaches": {
+        "I L S runway two seven": "I27",
+        "r-nav runway two seven": "R27"
+      },
+      "ControllerFrequency": "1M",
+      "Fixes": {
+        "Aibee": "AYBEE",
+        "Claine": "KLANE",
+        "Clebb": "KLEBB",
+        "Cradle": "CRADL",
+        "Hokdu": "HOKDU",
+        "Krann": "KRANN",
+        "Logan International Airport": "KBOS",
+        "Loner": "LONER",
+        "Ripit": "RIPIT"
+      },
+      "SID": "",
+      "STAR": "ROBUC3",
+      "State": "arrival",
+      "TrackingController": "1M"
+    },
+    "Turkish 622 heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "A332",
+      "Altitude": 6112,
+      "AssignedApproach": "ILS Runway 27",
+      "Callsign": "THY622",
+      "CandidateApproaches": {
+        "I L S runway two seven": "I27",
+        "r-nav runway two seven": "R27"
+      },
+      "ControllerFrequency": "1R",
+      "Fixes": {
+        "Claine": "KLANE",
+        "Logan International Airport": "KBOS",
+        "Loner": "LONER",
+        "Ripit": "RIPIT"
+      },
+      "SID": "",
+      "STAR": "OOSHN5",
+      "State": "arrival",
+      "TrackingController": "1R"
+    }
+  },
+  "time": "2026-01-22T21:39:28.364223-05:00",
+  "transcript": "Turkey 622 Heavy Maintain 170 knots or greater to Ripit",
+  "whisper_duration_ms": 402.646
 }

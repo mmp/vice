@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-24T11:15:26.398942613Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 11136,
+  "callsign": "FFT719",
   "callstack": [
     "manager.go:975:/server.(*SimManager).ReportSTTLog",
     "value.go:581:reflect.Value.call",
@@ -9,104 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": ", Frontier Flight 719, Altimeter three zero one four, expect the I L S approach, runway three one right,",
-  "whisper_duration_ms": 739.77,
-  "audio_duration_ms": 11136,
-  "processor": "GPU: NVIDIA GeForce GTX 1650 (4149MB)",
-  "callsign": "FFT719",
   "command": "EI1R",
-  "stt_aircraft": {
-    "AAL1470": {
-      "Callsign": "AAL1470",
-      "AircraftType": "B38M",
-      "Fixes": {
-        "Catod": "CATOD",
-        "John F Kennedy International Airport": "KJFK",
-        "Maldey": "MALDE",
-        "Zulab": "ZULAB"
-      },
-      "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
-      },
-      "AssignedApproach": "ILS Runway 31R",
-      "SID": "",
-      "STAR": "CAMRN5",
-      "Altitude": 2000,
-      "State": "arrival",
-      "ControllerFrequency": "2A",
-      "TrackingController": "2A",
-      "AddressingForm": 0
-    },
-    "American 1470": {
-      "Callsign": "AAL1470",
-      "AircraftType": "B38M",
-      "Fixes": {
-        "Catod": "CATOD",
-        "John F Kennedy International Airport": "KJFK",
-        "Maldey": "MALDE",
-        "Zulab": "ZULAB"
-      },
-      "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
-      },
-      "AssignedApproach": "ILS Runway 31R",
-      "SID": "",
-      "STAR": "CAMRN5",
-      "Altitude": 2000,
-      "State": "arrival",
-      "ControllerFrequency": "2A",
-      "TrackingController": "2A",
-      "AddressingForm": 0
-    },
-    "FFT719": {
-      "Callsign": "FFT719",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "John F Kennedy International Airport": "KJFK"
-      },
-      "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "CAMRN5",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "2A",
-      "TrackingController": "2A",
-      "AddressingForm": 0
-    },
-    "Frontier Flight 719": {
-      "Callsign": "FFT719",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "John F Kennedy International Airport": "KJFK"
-      },
-      "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "CAMRN5",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "2A",
-      "TrackingController": "2A",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \", Frontier Flight 719, Altimeter three zero one four, expect the I L S approach, runway three one right,\"",
@@ -153,5 +56,57 @@
     "[local-stt] parsed commands: [EI1R] (conf=0.88)",
     "[local-stt] validated commands: [EI1R] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"FFT719 EI1R\" (conf=0.88, time=998µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce GTX 1650 (4149MB)",
+  "stt_aircraft": {
+    "American 1470": {
+      "AddressingForm": 0,
+      "AircraftType": "B38M",
+      "Altitude": 2000,
+      "AssignedApproach": "ILS Runway 31R",
+      "Callsign": "AAL1470",
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ControllerFrequency": "2A",
+      "Fixes": {
+        "Catod": "CATOD",
+        "John F Kennedy International Airport": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "SID": "",
+      "STAR": "CAMRN5",
+      "State": "arrival",
+      "TrackingController": "2A"
+    },
+    "Frontier Flight 719": {
+      "AddressingForm": 0,
+      "AircraftType": "A20N",
+      "Altitude": 4000,
+      "AssignedApproach": "",
+      "Callsign": "FFT719",
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ControllerFrequency": "2A",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "SID": "",
+      "STAR": "CAMRN5",
+      "State": "arrival",
+      "TrackingController": "2A"
+    }
+  },
+  "time": "2026-01-24T11:15:26.398942613Z",
+  "transcript": ", Frontier Flight 719, Altimeter three zero one four, expect the I L S approach, runway three one right,",
+  "whisper_duration_ms": 739.77
 }

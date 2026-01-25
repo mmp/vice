@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-24T11:21:20.843424665Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 5376,
+  "callsign": "JBU856",
   "callstack": [
     "manager.go:975:/server.(*SimManager).ReportSTTLog",
     "value.go:581:reflect.Value.call",
@@ -9,188 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": ", JetBlue 86, expected the Isla Spro 23 one right,",
-  "whisper_duration_ms": 503.597,
-  "audio_duration_ms": 5376,
-  "processor": "GPU: NVIDIA GeForce GTX 1650 (4149MB)",
-  "callsign": "JBU856",
   "command": "EI1R",
-  "stt_aircraft": {
-    "BWA936": {
-      "Callsign": "BWA936",
-      "AircraftType": "B38M",
-      "Fixes": {
-        "John F Kennedy International Airport": "KJFK"
-      },
-      "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "CAMRN5",
-      "Altitude": 3000,
-      "State": "arrival",
-      "ControllerFrequency": "2A",
-      "TrackingController": "2A",
-      "AddressingForm": 0
-    },
-    "Caribbean Airlines 936": {
-      "Callsign": "BWA936",
-      "AircraftType": "B38M",
-      "Fixes": {
-        "John F Kennedy International Airport": "KJFK"
-      },
-      "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "CAMRN5",
-      "Altitude": 3000,
-      "State": "arrival",
-      "ControllerFrequency": "2A",
-      "TrackingController": "2A",
-      "AddressingForm": 0
-    },
-    "DAL6334": {
-      "Callsign": "DAL6334",
-      "AircraftType": "A332",
-      "Fixes": {
-        "John F Kennedy International Airport": "KJFK"
-      },
-      "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "PARCH4",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "2A",
-      "TrackingController": "2A",
-      "AddressingForm": 0
-    },
-    "Delta 6334 heavy": {
-      "Callsign": "DAL6334",
-      "AircraftType": "A332",
-      "Fixes": {
-        "John F Kennedy International Airport": "KJFK"
-      },
-      "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "PARCH4",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "2A",
-      "TrackingController": "2A",
-      "AddressingForm": 0
-    },
-    "FFT719": {
-      "Callsign": "FFT719",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Catod": "CATOD",
-        "John F Kennedy International Airport": "KJFK",
-        "Maldey": "MALDE",
-        "Zulab": "ZULAB"
-      },
-      "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
-      },
-      "AssignedApproach": "ILS Runway 31R",
-      "SID": "",
-      "STAR": "CAMRN5",
-      "Altitude": 5000,
-      "State": "arrival",
-      "ControllerFrequency": "2A",
-      "TrackingController": "2A",
-      "AddressingForm": 0
-    },
-    "Frontier Flight 719": {
-      "Callsign": "FFT719",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Catod": "CATOD",
-        "John F Kennedy International Airport": "KJFK",
-        "Maldey": "MALDE",
-        "Zulab": "ZULAB"
-      },
-      "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
-      },
-      "AssignedApproach": "ILS Runway 31R",
-      "SID": "",
-      "STAR": "CAMRN5",
-      "Altitude": 5000,
-      "State": "arrival",
-      "ControllerFrequency": "2A",
-      "TrackingController": "2A",
-      "AddressingForm": 0
-    },
-    "JBU856": {
-      "Callsign": "JBU856",
-      "AircraftType": "BCS3",
-      "Fixes": {
-        "John F Kennedy International Airport": "KJFK"
-      },
-      "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "CAMRN5",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "2A",
-      "TrackingController": "2A",
-      "AddressingForm": 0
-    },
-    "JetBlue 856": {
-      "Callsign": "JBU856",
-      "AircraftType": "BCS3",
-      "Fixes": {
-        "John F Kennedy International Airport": "KJFK"
-      },
-      "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "CAMRN5",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "2A",
-      "TrackingController": "2A",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \", JetBlue 86, expected the Isla Spro 23 one right,\"",
@@ -237,5 +56,99 @@
     "[local-stt] parsed commands: [EI1R] (conf=0.82)",
     "[local-stt] validated commands: [EI1R] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"JBU856 EI1R\" (conf=0.82, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce GTX 1650 (4149MB)",
+  "stt_aircraft": {
+    "Caribbean Airlines 936": {
+      "AddressingForm": 0,
+      "AircraftType": "B38M",
+      "Altitude": 3000,
+      "AssignedApproach": "",
+      "Callsign": "BWA936",
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ControllerFrequency": "2A",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "SID": "",
+      "STAR": "CAMRN5",
+      "State": "arrival",
+      "TrackingController": "2A"
+    },
+    "Delta 6334 heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "A332",
+      "Altitude": 4000,
+      "AssignedApproach": "",
+      "Callsign": "DAL6334",
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ControllerFrequency": "2A",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "SID": "",
+      "STAR": "PARCH4",
+      "State": "arrival",
+      "TrackingController": "2A"
+    },
+    "Frontier Flight 719": {
+      "AddressingForm": 0,
+      "AircraftType": "A20N",
+      "Altitude": 5000,
+      "AssignedApproach": "ILS Runway 31R",
+      "Callsign": "FFT719",
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ControllerFrequency": "2A",
+      "Fixes": {
+        "Catod": "CATOD",
+        "John F Kennedy International Airport": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "SID": "",
+      "STAR": "CAMRN5",
+      "State": "arrival",
+      "TrackingController": "2A"
+    },
+    "JetBlue 856": {
+      "AddressingForm": 0,
+      "AircraftType": "BCS3",
+      "Altitude": 4000,
+      "AssignedApproach": "",
+      "Callsign": "JBU856",
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ControllerFrequency": "2A",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "SID": "",
+      "STAR": "CAMRN5",
+      "State": "arrival",
+      "TrackingController": "2A"
+    }
+  },
+  "time": "2026-01-24T11:21:20.843424665Z",
+  "transcript": ", JetBlue 86, expected the Isla Spro 23 one right,",
+  "whisper_duration_ms": 503.597
 }

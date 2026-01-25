@@ -102,6 +102,19 @@ func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch,
 		return CallsignMatch{}, tokens
 	}
 
+	// Also try flight-number fallback for marginal matches - a clear flight number
+	// match may be better than a weak airline-name match
+	if bestMatch.Confidence < 0.7 {
+		if match, remaining := tryFlightNumberOnlyMatch(tokens, aircraft); match.Callsign != "" {
+			// Use the flight number match if it's at least as confident
+			if match.Confidence >= bestMatch.Confidence {
+				logLocalStt("  flight-number fallback %q (conf=%.2f) beats marginal match %q (conf=%.2f)",
+					match.Callsign, match.Confidence, bestMatch.Callsign, bestMatch.Confidence)
+				return match, remaining
+			}
+		}
+	}
+
 	logLocalStt("  accepted: %q (conf=%.2f, consumed=%d, startPos=%d)",
 		bestMatch.Callsign, bestMatch.Confidence, bestMatch.Consumed, bestStartPos)
 	return bestMatch, tokens[bestMatch.Consumed:]
@@ -225,16 +238,22 @@ func scoreCallsignMatch(tokens []Token, spokenName, callsign string) (float64, i
 		avgScore *= 1.1
 	}
 
-	// Penalty for airline-only match when there's a flight number in the transcript
-	// that we couldn't match. This prevents "Southwest" from matching better than
-	// "Southwest 614" when the transcript says "Southwest 1614".
+	// When we matched airline but not the flight number, consume any trailing
+	// numeric tokens as "garbled callsign noise" rather than leaving them to be
+	// misinterpreted as commands. Skip "at" if it precedes numbers (common STT artifact).
 	if matchCount == 1 && number != "" && consumed < len(tokens) {
-		// Check if next token looks like a flight number
-		nextToken := tokens[consumed]
-		if nextToken.Type == TokenNumber && nextToken.Value > 0 {
-			// There's a number in the transcript that we didn't match - penalize
-			avgScore *= 0.8
+		// Skip "at" if followed by numbers (STT often inserts "at" in garbled callsigns)
+		if strings.ToLower(tokens[consumed].Text) == "at" && consumed+1 < len(tokens) {
+			if tokens[consumed+1].Type == TokenNumber {
+				consumed++
+			}
 		}
+		// Consume consecutive numeric tokens as garbled flight number
+		for consumed < len(tokens) && tokens[consumed].Type == TokenNumber {
+			consumed++
+		}
+		// Penalize for not matching the flight number well
+		avgScore *= 0.8
 	}
 
 	return avgScore, consumed
@@ -451,30 +470,60 @@ func tryFlightNumberOnlyMatch(tokens []Token, aircraft map[string]Aircraft) (Cal
 			continue
 		}
 
-		// Find aircraft whose flight number matches
-		var matches []struct {
+		// Find aircraft whose flight number matches (exact or fuzzy)
+		var exactMatch *struct {
 			spokenKey string
 			ac        Aircraft
 		}
+		var fuzzyMatch *struct {
+			spokenKey string
+			ac        Aircraft
+			score     float64
+		}
+		exactCount, fuzzyCount := 0, 0
+
 		for spokenName, ac := range aircraft {
 			_, flightNum := splitCallsign(string(ac.Callsign))
 			if flightNum == numStr {
-				matches = append(matches, struct {
+				exactMatch = &struct {
 					spokenKey string
 					ac        Aircraft
-				}{spokenName, ac})
+				}{spokenName, ac}
+				exactCount++
+			} else if len(numStr) >= 3 && len(flightNum) >= 3 {
+				// Try fuzzy match for longer flight numbers (3+ digits)
+				score := JaroWinkler(numStr, flightNum)
+				if score >= 0.8 {
+					fuzzyMatch = &struct {
+						spokenKey string
+						ac        Aircraft
+						score     float64
+					}{spokenName, ac, score}
+					fuzzyCount++
+				}
 			}
 		}
 
-		// Only use if exactly one aircraft matches
-		if len(matches) == 1 {
-			match := matches[0]
-			logLocalStt("  flight-number-only fallback: %q matches %q (ICAO=%q)",
-				numStr, match.spokenKey, match.ac.Callsign)
+		// Prefer exact match if unique
+		if exactCount == 1 && exactMatch != nil {
+			logLocalStt("  flight-number-only fallback: %q matches %q (ICAO=%q) exactly",
+				numStr, exactMatch.spokenKey, exactMatch.ac.Callsign)
 			return CallsignMatch{
-				Callsign:   string(match.ac.Callsign),
-				SpokenKey:  match.spokenKey,
-				Confidence: 0.6, // Lower confidence for number-only match
+				Callsign:   string(exactMatch.ac.Callsign),
+				SpokenKey:  exactMatch.spokenKey,
+				Confidence: 0.7,
+				Consumed:   i + 1,
+			}, tokens[i+1:]
+		}
+
+		// Use fuzzy match if unique and no exact matches
+		if exactCount == 0 && fuzzyCount == 1 && fuzzyMatch != nil {
+			logLocalStt("  flight-number-only fallback: %q fuzzy matches %q (ICAO=%q, score=%.2f)",
+				numStr, fuzzyMatch.spokenKey, fuzzyMatch.ac.Callsign, fuzzyMatch.score)
+			return CallsignMatch{
+				Callsign:   string(fuzzyMatch.ac.Callsign),
+				SpokenKey:  fuzzyMatch.spokenKey,
+				Confidence: 0.65,
 				Consumed:   i + 1,
 			}, tokens[i+1:]
 		}

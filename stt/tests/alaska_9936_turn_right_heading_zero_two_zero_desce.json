@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-23T14:53:05.83710938Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 6016,
+  "callsign": "ASA936",
   "callstack": [
     "manager.go:975:/server.(*SimManager).ReportSTTLog",
     "value.go:581:reflect.Value.call",
@@ -9,222 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Alaska 9936, turn right heading zero two zero, descend and maintain 1600.",
-  "whisper_duration_ms": 404.989,
-  "audio_duration_ms": 6016,
-  "processor": "GPU: NVIDIA GeForce RTX 3060 (12108MB)",
-  "callsign": "ASA936",
   "command": "R020 D16",
-  "stt_aircraft": {
-    "ASA936": {
-      "Callsign": "ASA936",
-      "AircraftType": "B39M",
-      "Fixes": {
-        "Am-ebe": "AMEBE",
-        "Birdie": "BERDY",
-        "Orlando International Airport": "KMCO",
-        "Rutney": "RUTNE"
-      },
-      "CandidateApproaches": {
-        "I L S runway three five right": "I5R",
-        "I L S runway three six left": "I6L",
-        "r-nav runway three five right": "R5R",
-        "r-nav runway three six left": "R6L"
-      },
-      "AssignedApproach": "ILS Runway 35R",
-      "SID": "",
-      "STAR": "PRICY4",
-      "Altitude": 3708,
-      "State": "arrival",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "Alaska 936": {
-      "Callsign": "ASA936",
-      "AircraftType": "B39M",
-      "Fixes": {
-        "Am-ebe": "AMEBE",
-        "Birdie": "BERDY",
-        "Orlando International Airport": "KMCO",
-        "Rutney": "RUTNE"
-      },
-      "CandidateApproaches": {
-        "I L S runway three five right": "I5R",
-        "I L S runway three six left": "I6L",
-        "r-nav runway three five right": "R5R",
-        "r-nav runway three six left": "R6L"
-      },
-      "AssignedApproach": "ILS Runway 35R",
-      "SID": "",
-      "STAR": "PRICY4",
-      "Altitude": 3708,
-      "State": "arrival",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "DAL97": {
-      "Callsign": "DAL97",
-      "AircraftType": "B739",
-      "Fixes": {
-        "Cruise": "CRUSE",
-        "Cubal": "CUBAL",
-        "Fesha": "FESHA",
-        "Hahna": "HAHNA",
-        "Hews": "HEWES",
-        "Orlando International Airport": "KMCO",
-        "Seray": "SERAY"
-      },
-      "CandidateApproaches": {
-        "I L S runway three five right": "I5R",
-        "I L S runway three six left": "I6L",
-        "r-nav runway three five right": "R5R",
-        "r-nav runway three six left": "R6L"
-      },
-      "AssignedApproach": "ILS Runway 35R",
-      "SID": "",
-      "STAR": "SNFLD3",
-      "Altitude": 1623,
-      "State": "arrival",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "Delta 97": {
-      "Callsign": "DAL97",
-      "AircraftType": "B739",
-      "Fixes": {
-        "Cruise": "CRUSE",
-        "Cubal": "CUBAL",
-        "Fesha": "FESHA",
-        "Hahna": "HAHNA",
-        "Hews": "HEWES",
-        "Orlando International Airport": "KMCO",
-        "Seray": "SERAY"
-      },
-      "CandidateApproaches": {
-        "I L S runway three five right": "I5R",
-        "I L S runway three six left": "I6L",
-        "r-nav runway three five right": "R5R",
-        "r-nav runway three six left": "R6L"
-      },
-      "AssignedApproach": "ILS Runway 35R",
-      "SID": "",
-      "STAR": "SNFLD3",
-      "Altitude": 1623,
-      "State": "arrival",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "FFT286": {
-      "Callsign": "FFT286",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Am-ebe": "AMEBE",
-        "Birdie": "BERDY",
-        "Exban": "EXBAN",
-        "Lorra": "LORRA",
-        "Orlando International Airport": "KMCO",
-        "Rutney": "RUTNE"
-      },
-      "CandidateApproaches": {
-        "I L S runway three five right": "I5R",
-        "I L S runway three six left": "I6L",
-        "r-nav runway three five right": "R5R",
-        "r-nav runway three six left": "R6L"
-      },
-      "AssignedApproach": "RNAV Runway 36L",
-      "SID": "",
-      "STAR": "GRNCH5",
-      "Altitude": 1600,
-      "State": "arrival",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "Frontier Flight 286": {
-      "Callsign": "FFT286",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Am-ebe": "AMEBE",
-        "Birdie": "BERDY",
-        "Exban": "EXBAN",
-        "Lorra": "LORRA",
-        "Orlando International Airport": "KMCO",
-        "Rutney": "RUTNE"
-      },
-      "CandidateApproaches": {
-        "I L S runway three five right": "I5R",
-        "I L S runway three six left": "I6L",
-        "r-nav runway three five right": "R5R",
-        "r-nav runway three six left": "R6L"
-      },
-      "AssignedApproach": "RNAV Runway 36L",
-      "SID": "",
-      "STAR": "GRNCH5",
-      "Altitude": 1600,
-      "State": "arrival",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "SWA4628": {
-      "Callsign": "SWA4628",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Am-ebe": "AMEBE",
-        "Amads": "AMADS",
-        "Birdie": "BERDY",
-        "Exban": "EXBAN",
-        "Lorra": "LORRA",
-        "Orlando International Airport": "KMCO",
-        "Rutney": "RUTNE"
-      },
-      "CandidateApproaches": {
-        "I L S runway three five right": "I5R",
-        "I L S runway three six left": "I6L",
-        "r-nav runway three five right": "R5R",
-        "r-nav runway three six left": "R6L"
-      },
-      "AssignedApproach": "RNAV Runway 36L",
-      "SID": "",
-      "STAR": "PRICY4",
-      "Altitude": 9318,
-      "State": "arrival",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "Southwest 4628": {
-      "Callsign": "SWA4628",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Am-ebe": "AMEBE",
-        "Amads": "AMADS",
-        "Birdie": "BERDY",
-        "Exban": "EXBAN",
-        "Lorra": "LORRA",
-        "Orlando International Airport": "KMCO",
-        "Rutney": "RUTNE"
-      },
-      "CandidateApproaches": {
-        "I L S runway three five right": "I5R",
-        "I L S runway three six left": "I6L",
-        "r-nav runway three five right": "R5R",
-        "r-nav runway three six left": "R6L"
-      },
-      "AssignedApproach": "RNAV Runway 36L",
-      "SID": "",
-      "STAR": "PRICY4",
-      "Altitude": 9318,
-      "State": "arrival",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Alaska 9936, turn right heading zero two zero, descend and maintain 1600.\"",
@@ -283,5 +68,116 @@
     "[local-stt] parsed commands: [R020 D16] (conf=1.00)",
     "[local-stt] validated commands: [R020 D16] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"ASA936 R020 D16\" (conf=0.99, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 3060 (12108MB)",
+  "stt_aircraft": {
+    "Alaska 936": {
+      "AddressingForm": 0,
+      "AircraftType": "B39M",
+      "Altitude": 3708,
+      "AssignedApproach": "ILS Runway 35R",
+      "Callsign": "ASA936",
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "ControllerFrequency": "1M",
+      "Fixes": {
+        "Am-ebe": "AMEBE",
+        "Birdie": "BERDY",
+        "Orlando International Airport": "KMCO",
+        "Rutney": "RUTNE"
+      },
+      "SID": "",
+      "STAR": "PRICY4",
+      "State": "arrival",
+      "TrackingController": "1M"
+    },
+    "Delta 97": {
+      "AddressingForm": 0,
+      "AircraftType": "B739",
+      "Altitude": 1623,
+      "AssignedApproach": "ILS Runway 35R",
+      "Callsign": "DAL97",
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "ControllerFrequency": "1M",
+      "Fixes": {
+        "Cruise": "CRUSE",
+        "Cubal": "CUBAL",
+        "Fesha": "FESHA",
+        "Hahna": "HAHNA",
+        "Hews": "HEWES",
+        "Orlando International Airport": "KMCO",
+        "Seray": "SERAY"
+      },
+      "SID": "",
+      "STAR": "SNFLD3",
+      "State": "arrival",
+      "TrackingController": "1M"
+    },
+    "Frontier Flight 286": {
+      "AddressingForm": 0,
+      "AircraftType": "A20N",
+      "Altitude": 1600,
+      "AssignedApproach": "RNAV Runway 36L",
+      "Callsign": "FFT286",
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "ControllerFrequency": "1M",
+      "Fixes": {
+        "Am-ebe": "AMEBE",
+        "Birdie": "BERDY",
+        "Exban": "EXBAN",
+        "Lorra": "LORRA",
+        "Orlando International Airport": "KMCO",
+        "Rutney": "RUTNE"
+      },
+      "SID": "",
+      "STAR": "GRNCH5",
+      "State": "arrival",
+      "TrackingController": "1M"
+    },
+    "Southwest 4628": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 9318,
+      "AssignedApproach": "RNAV Runway 36L",
+      "Callsign": "SWA4628",
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "ControllerFrequency": "1M",
+      "Fixes": {
+        "Am-ebe": "AMEBE",
+        "Amads": "AMADS",
+        "Birdie": "BERDY",
+        "Exban": "EXBAN",
+        "Lorra": "LORRA",
+        "Orlando International Airport": "KMCO",
+        "Rutney": "RUTNE"
+      },
+      "SID": "",
+      "STAR": "PRICY4",
+      "State": "arrival",
+      "TrackingController": "1M"
+    }
+  },
+  "time": "2026-01-23T14:53:05.83710938Z",
+  "transcript": "Alaska 9936, turn right heading zero two zero, descend and maintain 1600.",
+  "whisper_duration_ms": 404.989
 }

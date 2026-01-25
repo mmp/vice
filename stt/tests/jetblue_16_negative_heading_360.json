@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T23:07:52.607704573Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 2432,
+  "callsign": "JBU16",
   "callstack": [
     "manager.go:975:/server.(*SimManager).ReportSTTLog",
     "value.go:581:reflect.Value.call",
@@ -9,380 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "JetBlue 16 negative, heading 360.",
-  "whisper_duration_ms": 342.697,
-  "audio_duration_ms": 2432,
-  "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11997MB)",
-  "callsign": "JBU16",
   "command": "H360",
-  "stt_aircraft": {
-    "ASA861": {
-      "Callsign": "ASA861",
-      "AircraftType": "B39M",
-      "Fixes": {
-        "John F Kennedy International Airport": "KJFK",
-        "Vadder": "VADDR"
-      },
-      "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "PUCKY1",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "2E",
-      "TrackingController": "2E",
-      "AddressingForm": 0
-    },
-    "Alaska 861": {
-      "Callsign": "ASA861",
-      "AircraftType": "B39M",
-      "Fixes": {
-        "John F Kennedy International Airport": "KJFK",
-        "Vadder": "VADDR"
-      },
-      "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "PUCKY1",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "2E",
-      "TrackingController": "2E",
-      "AddressingForm": 0
-    },
-    "DAL281": {
-      "Callsign": "DAL281",
-      "AircraftType": "B763",
-      "Fixes": {
-        "Greki": "GREKI",
-        "Judds": "JUDDS"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "JFK5",
-      "STAR": "",
-      "Altitude": 1789,
-      "State": "departure",
-      "ControllerFrequency": "2J",
-      "TrackingController": "2J",
-      "AddressingForm": 0
-    },
-    "Delta 281 heavy": {
-      "Callsign": "DAL281",
-      "AircraftType": "B763",
-      "Fixes": {
-        "Greki": "GREKI",
-        "Judds": "JUDDS"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "JFK5",
-      "STAR": "",
-      "Altitude": 1789,
-      "State": "departure",
-      "ControllerFrequency": "2J",
-      "TrackingController": "2J",
-      "AddressingForm": 0
-    },
-    "EJA6223": {
-      "Callsign": "EJA6223",
-      "AircraftType": "C560",
-      "Fixes": {
-        "Cameron": "CAMRN",
-        "John F Kennedy International Airport": "KJFK"
-      },
-      "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "CAMRN5",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "2G",
-      "TrackingController": "2G",
-      "AddressingForm": 0
-    },
-    "ETD34": {
-      "Callsign": "ETD34",
-      "AircraftType": "A35K",
-      "Fixes": {
-        "John F Kennedy International Airport": "KJFK",
-        "Kmann": "KMANN",
-        "Rober": "ROBER"
-      },
-      "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "PARCH4",
-      "Altitude": 10979,
-      "State": "arrival",
-      "ControllerFrequency": "2K",
-      "TrackingController": "2K",
-      "AddressingForm": 0
-    },
-    "Etihad 34 heavy": {
-      "Callsign": "ETD34",
-      "AircraftType": "A35K",
-      "Fixes": {
-        "John F Kennedy International Airport": "KJFK",
-        "Kmann": "KMANN",
-        "Rober": "ROBER"
-      },
-      "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "PARCH4",
-      "Altitude": 10979,
-      "State": "arrival",
-      "ControllerFrequency": "2K",
-      "TrackingController": "2K",
-      "AddressingForm": 0
-    },
-    "ExecJet 6223": {
-      "Callsign": "EJA6223",
-      "AircraftType": "C560",
-      "Fixes": {
-        "Cameron": "CAMRN",
-        "John F Kennedy International Airport": "KJFK"
-      },
-      "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "CAMRN5",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "2G",
-      "TrackingController": "2G",
-      "AddressingForm": 0
-    },
-    "FIN3": {
-      "Callsign": "FIN3",
-      "AircraftType": "A333",
-      "Fixes": {
-        "Merrit": "MERIT"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "JFK5",
-      "STAR": "",
-      "Altitude": 4869,
-      "State": "departure",
-      "ControllerFrequency": "2J",
-      "TrackingController": "2J",
-      "AddressingForm": 0
-    },
-    "Finnair 3 heavy": {
-      "Callsign": "FIN3",
-      "AircraftType": "A333",
-      "Fixes": {
-        "Merrit": "MERIT"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "JFK5",
-      "STAR": "",
-      "Altitude": 4869,
-      "State": "departure",
-      "ControllerFrequency": "2J",
-      "TrackingController": "2J",
-      "AddressingForm": 0
-    },
-    "JBU1370": {
-      "Callsign": "JBU1370",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "Greki": "GREKI",
-        "Judds": "JUDDS"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "JFK5",
-      "STAR": "",
-      "Altitude": 10821,
-      "State": "departure",
-      "ControllerFrequency": "2J",
-      "TrackingController": "5E",
-      "AddressingForm": 0
-    },
-    "JBU16": {
-      "Callsign": "JBU16",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Cameron": "CAMRN",
-        "John F Kennedy International Airport": "KJFK"
-      },
-      "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "2G",
-      "TrackingController": "2G",
-      "AddressingForm": 0
-    },
-    "JetBlue 1370": {
-      "Callsign": "JBU1370",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "Greki": "GREKI",
-        "Judds": "JUDDS"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "JFK5",
-      "STAR": "",
-      "Altitude": 10821,
-      "State": "departure",
-      "ControllerFrequency": "2J",
-      "TrackingController": "5E",
-      "AddressingForm": 0
-    },
-    "JetBlue 16": {
-      "Callsign": "JBU16",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Cameron": "CAMRN",
-        "John F Kennedy International Airport": "KJFK"
-      },
-      "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 4000,
-      "State": "arrival",
-      "ControllerFrequency": "2G",
-      "TrackingController": "2G",
-      "AddressingForm": 0
-    },
-    "N430ME": {
-      "Callsign": "N430ME",
-      "AircraftType": "",
-      "Fixes": {
-        "Danbury Municipal Airport": "KDXR"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 1804,
-      "State": "",
-      "ControllerFrequency": "2G",
-      "TrackingController": "",
-      "AddressingForm": 0
-    },
-    "UPS 373": {
-      "Callsign": "UPS373",
-      "AircraftType": "B752",
-      "Fixes": {
-        "John F Kennedy International Airport": "KJFK",
-        "Pucky": "PUCKY",
-        "Vadder": "VADDR"
-      },
-      "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "PUCKY1",
-      "Altitude": 16965,
-      "State": "arrival",
-      "ControllerFrequency": "2E",
-      "TrackingController": "2E",
-      "AddressingForm": 0
-    },
-    "UPS373": {
-      "Callsign": "UPS373",
-      "AircraftType": "B752",
-      "Fixes": {
-        "John F Kennedy International Airport": "KJFK",
-        "Pucky": "PUCKY",
-        "Vadder": "VADDR"
-      },
-      "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway two two left": "I2L",
-        "I L S runway two two right": "I2R",
-        "r-nav runway two two right": "R2R",
-        "r-nav x-ray runway two two left": "R2L"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "PUCKY1",
-      "Altitude": 16965,
-      "State": "arrival",
-      "ControllerFrequency": "2E",
-      "TrackingController": "2E",
-      "AddressingForm": 0
-    },
-    "november 430ME": {
-      "Callsign": "N430ME",
-      "AircraftType": "",
-      "Fixes": {
-        "Danbury Municipal Airport": "KDXR"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 1804,
-      "State": "",
-      "ControllerFrequency": "2G",
-      "TrackingController": "",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"JetBlue 16 negative, heading 360.\"",
@@ -417,5 +44,211 @@
     "[local-stt] parsed commands: [H360] (conf=1.00)",
     "[local-stt] validated commands: [H360] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"JBU16 H360\" (conf=1.00, time=510µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11997MB)",
+  "stt_aircraft": {
+    "Alaska 861": {
+      "AddressingForm": 0,
+      "AircraftType": "B39M",
+      "Altitude": 4000,
+      "AssignedApproach": "",
+      "Callsign": "ASA861",
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "ControllerFrequency": "2E",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK",
+        "Vadder": "VADDR"
+      },
+      "SID": "",
+      "STAR": "PUCKY1",
+      "State": "arrival",
+      "TrackingController": "2E"
+    },
+    "Delta 281 heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "B763",
+      "Altitude": 1789,
+      "AssignedApproach": "",
+      "Callsign": "DAL281",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "2J",
+      "Fixes": {
+        "Greki": "GREKI",
+        "Judds": "JUDDS"
+      },
+      "SID": "JFK5",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "2J"
+    },
+    "Etihad 34 heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "A35K",
+      "Altitude": 10979,
+      "AssignedApproach": "",
+      "Callsign": "ETD34",
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "ControllerFrequency": "2K",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK",
+        "Kmann": "KMANN",
+        "Rober": "ROBER"
+      },
+      "SID": "",
+      "STAR": "PARCH4",
+      "State": "arrival",
+      "TrackingController": "2K"
+    },
+    "ExecJet 6223": {
+      "AddressingForm": 0,
+      "AircraftType": "C560",
+      "Altitude": 4000,
+      "AssignedApproach": "",
+      "Callsign": "EJA6223",
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "ControllerFrequency": "2G",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "SID": "",
+      "STAR": "CAMRN5",
+      "State": "arrival",
+      "TrackingController": "2G"
+    },
+    "Finnair 3 heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "A333",
+      "Altitude": 4869,
+      "AssignedApproach": "",
+      "Callsign": "FIN3",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "2J",
+      "Fixes": {
+        "Merrit": "MERIT"
+      },
+      "SID": "JFK5",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "2J"
+    },
+    "JetBlue 1370": {
+      "AddressingForm": 0,
+      "AircraftType": "A21N",
+      "Altitude": 10821,
+      "AssignedApproach": "",
+      "Callsign": "JBU1370",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "2J",
+      "Fixes": {
+        "Greki": "GREKI",
+        "Judds": "JUDDS"
+      },
+      "SID": "JFK5",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "5E"
+    },
+    "JetBlue 16": {
+      "AddressingForm": 0,
+      "AircraftType": "A321",
+      "Altitude": 4000,
+      "AssignedApproach": "",
+      "Callsign": "JBU16",
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "ControllerFrequency": "2G",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "John F Kennedy International Airport": "KJFK"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "arrival",
+      "TrackingController": "2G"
+    },
+    "N430ME": {
+      "AddressingForm": 0,
+      "AircraftType": "",
+      "Altitude": 1804,
+      "AssignedApproach": "",
+      "Callsign": "N430ME",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "2G",
+      "Fixes": {
+        "Danbury Municipal Airport": "KDXR"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "",
+      "TrackingController": ""
+    },
+    "UPS 373": {
+      "AddressingForm": 0,
+      "AircraftType": "B752",
+      "Altitude": 16965,
+      "AssignedApproach": "",
+      "Callsign": "UPS373",
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "ControllerFrequency": "2E",
+      "Fixes": {
+        "John F Kennedy International Airport": "KJFK",
+        "Pucky": "PUCKY",
+        "Vadder": "VADDR"
+      },
+      "SID": "",
+      "STAR": "PUCKY1",
+      "State": "arrival",
+      "TrackingController": "2E"
+    },
+    "november 430ME": {
+      "AddressingForm": 0,
+      "AircraftType": "",
+      "Altitude": 1804,
+      "AssignedApproach": "",
+      "Callsign": "N430ME",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "2G",
+      "Fixes": {
+        "Danbury Municipal Airport": "KDXR"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "",
+      "TrackingController": ""
+    }
+  },
+  "time": "2026-01-22T23:07:52.607704573Z",
+  "transcript": "JetBlue 16 negative, heading 360.",
+  "whisper_duration_ms": 342.697
 }

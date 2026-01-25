@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-23T07:12:33.936416624Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 7424,
+  "callsign": "AAL4081",
   "callstack": [
     "manager.go:975:/server.(*SimManager).ReportSTTLog",
     "value.go:581:reflect.Value.call",
@@ -9,180 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "American 481, Radar Consec, Clarite, Gandy, climbing 10, 1, 2000.",
-  "whisper_duration_ms": 814.649,
-  "audio_duration_ms": 7424,
-  "processor": "GPU: Radeon RX550/550 Series (4096MB)",
-  "callsign": "AAL4081",
   "command": "DGANDY C120",
-  "stt_aircraft": {
-    "AAL4081": {
-      "Callsign": "AAL4081",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Gandy": "GANDY",
-        "Murdo": "MURDO",
-        "Pairs": "PAIRS",
-        "Sabee": "SABEE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "GANDY8",
-      "STAR": "",
-      "Altitude": 1387,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "American 4081": {
-      "Callsign": "AAL4081",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Gandy": "GANDY",
-        "Murdo": "MURDO",
-        "Pairs": "PAIRS",
-        "Sabee": "SABEE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "GANDY8",
-      "STAR": "",
-      "Altitude": 1387,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "SWA416": {
-      "Callsign": "SWA416",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Tampa International Airport": "KTPA"
-      },
-      "CandidateApproaches": {
-        "I L S runway one left": "I1L",
-        "r-nav yankee runway one left": "RY1L",
-        "r-nav yankee runway one right": "RY1R",
-        "r-nav zulu runway one left": "RZ1L",
-        "r-nav zulu runway one right": "RZ1R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "RAYZZ2",
-      "Altitude": 10000,
-      "State": "arrival",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "SWA470": {
-      "Callsign": "SWA470",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Ended": "ENDED",
-        "Lacen": "LACEN"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ENDED2",
-      "STAR": "",
-      "Altitude": 8306,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "Southwest 416": {
-      "Callsign": "SWA416",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Tampa International Airport": "KTPA"
-      },
-      "CandidateApproaches": {
-        "I L S runway one left": "I1L",
-        "r-nav yankee runway one left": "RY1L",
-        "r-nav yankee runway one right": "RY1R",
-        "r-nav zulu runway one left": "RZ1L",
-        "r-nav zulu runway one right": "RZ1R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "RAYZZ2",
-      "Altitude": 10000,
-      "State": "arrival",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "Southwest 470": {
-      "Callsign": "SWA470",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Ended": "ENDED",
-        "Lacen": "LACEN"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ENDED2",
-      "STAR": "",
-      "Altitude": 8306,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "UAL344": {
-      "Callsign": "UAL344",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Dades": "DADES",
-        "Kokoh": "KOKOH",
-        "Marvi": "MARVI",
-        "Tampa International Airport": "KTPA"
-      },
-      "CandidateApproaches": {
-        "I L S runway one left": "I1L",
-        "r-nav yankee runway one left": "RY1L",
-        "r-nav yankee runway one right": "RY1R",
-        "r-nav zulu runway one left": "RZ1L",
-        "r-nav zulu runway one right": "RZ1R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "DADES1",
-      "Altitude": 13000,
-      "State": "arrival",
-      "ControllerFrequency": "1E",
-      "TrackingController": "1E",
-      "AddressingForm": 0
-    },
-    "United 344": {
-      "Callsign": "UAL344",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Dades": "DADES",
-        "Kokoh": "KOKOH",
-        "Marvi": "MARVI",
-        "Tampa International Airport": "KTPA"
-      },
-      "CandidateApproaches": {
-        "I L S runway one left": "I1L",
-        "r-nav yankee runway one left": "RY1L",
-        "r-nav yankee runway one right": "RY1R",
-        "r-nav zulu runway one left": "RZ1L",
-        "r-nav zulu runway one right": "RZ1R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "DADES1",
-      "Altitude": 13000,
-      "State": "arrival",
-      "ControllerFrequency": "1E",
-      "TrackingController": "1E",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"American 481, Radar Consec, Clarite, Gandy, climbing 10, 1, 2000.\"",
@@ -233,5 +60,95 @@
     "[local-stt] parsed commands: [] (conf=0.00)",
     "[local-stt] validated commands: [] (conf=0.00)",
     "[local-stt] === DecodeTranscript END: \"AAL4081 AGAIN\" (conf=1.00, time=650.7µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: Radeon RX550/550 Series (4096MB)",
+  "stt_aircraft": {
+    "American 4081": {
+      "AddressingForm": 0,
+      "AircraftType": "B738",
+      "Altitude": 1387,
+      "AssignedApproach": "",
+      "Callsign": "AAL4081",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Gandy": "GANDY",
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabee": "SABEE"
+      },
+      "SID": "GANDY8",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1D"
+    },
+    "Southwest 416": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 10000,
+      "AssignedApproach": "",
+      "Callsign": "SWA416",
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Tampa International Airport": "KTPA"
+      },
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "State": "arrival",
+      "TrackingController": "1W"
+    },
+    "Southwest 470": {
+      "AddressingForm": 0,
+      "AircraftType": "B738",
+      "Altitude": 8306,
+      "AssignedApproach": "",
+      "Callsign": "SWA470",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Ended": "ENDED",
+        "Lacen": "LACEN"
+      },
+      "SID": "ENDED2",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1D"
+    },
+    "United 344": {
+      "AddressingForm": 0,
+      "AircraftType": "A320",
+      "Altitude": 13000,
+      "AssignedApproach": "",
+      "Callsign": "UAL344",
+      "CandidateApproaches": {
+        "I L S runway one left": "I1L",
+        "r-nav yankee runway one left": "RY1L",
+        "r-nav yankee runway one right": "RY1R",
+        "r-nav zulu runway one left": "RZ1L",
+        "r-nav zulu runway one right": "RZ1R"
+      },
+      "ControllerFrequency": "1E",
+      "Fixes": {
+        "Dades": "DADES",
+        "Kokoh": "KOKOH",
+        "Marvi": "MARVI",
+        "Tampa International Airport": "KTPA"
+      },
+      "SID": "",
+      "STAR": "DADES1",
+      "State": "arrival",
+      "TrackingController": "1E"
+    }
+  },
+  "time": "2026-01-23T07:12:33.936416624Z",
+  "transcript": "American 481, Radar Consec, Clarite, Gandy, climbing 10, 1, 2000.",
+  "whisper_duration_ms": 814.649
 }

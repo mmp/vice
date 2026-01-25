@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T20:09:40.692672749Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 4736,
+  "callsign": "AFR27MG",
   "callstack": [
     "manager.go:975:/server.(*SimManager).ReportSTTLog",
     "value.go:581:reflect.Value.call",
@@ -9,154 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Efferand's two seven, Mike, Golf, Heavy, Contact, Boston Center one three three point two",
-  "whisper_duration_ms": 519.436,
-  "audio_duration_ms": 4736,
-  "processor": "GPU: Apple M4 Pro, 14 CPU / 20 GPU cores, 48GB",
-  "callsign": "AFR27MG",
   "command": "FC",
-  "stt_aircraft": {
-    "AFR27MG": {
-      "Callsign": "AFR27MG",
-      "AircraftType": "A359",
-      "Fixes": {
-        "Happy": "HAPIE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "JFK5",
-      "STAR": "",
-      "Altitude": 2587,
-      "State": "departure",
-      "ControllerFrequency": "2J",
-      "TrackingController": "B17",
-      "AddressingForm": 0
-    },
-    "Air France 27MG heavy": {
-      "Callsign": "AFR27MG",
-      "AircraftType": "A359",
-      "Fixes": {
-        "Happy": "HAPIE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "JFK5",
-      "STAR": "",
-      "Altitude": 2587,
-      "State": "departure",
-      "ControllerFrequency": "2J",
-      "TrackingController": "B17",
-      "AddressingForm": 0
-    },
-    "EIN1JT": {
-      "Callsign": "EIN1JT",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "Cimble": "CIMBL",
-        "Crail": "CRAIL",
-        "Deer Park": "DPK",
-        "Detgy": "DETGY",
-        "Hair": "HAIRR",
-        "Haupt": "HAUPT",
-        "John F Kennedy International Airport": "KJFK",
-        "Lefer": "LEFER",
-        "Norton": "NRTON",
-        "Rober": "ROBER",
-        "Rosley": "ROSLY",
-        "Sajul": "SAJUL",
-        "Seagull": "CEEGL",
-        "Tapper": "TAPPR",
-        "Zalpo": "ZALPO"
-      },
-      "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway one three left": "I3L",
-        "I L S runway two two left": "I2L",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav x-ray runway two two left": "R2L",
-        "r-nav zulu runway one three Left": "R3L"
-      },
-      "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "PARCH4",
-      "Altitude": 12000,
-      "State": "arrival",
-      "ControllerFrequency": "2K",
-      "TrackingController": "2K",
-      "AddressingForm": 0
-    },
-    "KAL6": {
-      "Callsign": "KAL6",
-      "AircraftType": "B77W",
-      "Fixes": {
-        "Gayel": "GAYEL",
-        "Muslin": "MSLIN"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "JFK5",
-      "STAR": "",
-      "Altitude": 6876,
-      "State": "departure",
-      "ControllerFrequency": "2J",
-      "TrackingController": "5E",
-      "AddressingForm": 0
-    },
-    "Korean Air 6 heavy": {
-      "Callsign": "KAL6",
-      "AircraftType": "B77W",
-      "Fixes": {
-        "Gayel": "GAYEL",
-        "Muslin": "MSLIN"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "JFK5",
-      "STAR": "",
-      "Altitude": 6876,
-      "State": "departure",
-      "ControllerFrequency": "2J",
-      "TrackingController": "5E",
-      "AddressingForm": 0
-    },
-    "Shamrock 1JT": {
-      "Callsign": "EIN1JT",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "Cimble": "CIMBL",
-        "Crail": "CRAIL",
-        "Deer Park": "DPK",
-        "Detgy": "DETGY",
-        "Hair": "HAIRR",
-        "Haupt": "HAUPT",
-        "John F Kennedy International Airport": "KJFK",
-        "Lefer": "LEFER",
-        "Norton": "NRTON",
-        "Rober": "ROBER",
-        "Rosley": "ROSLY",
-        "Sajul": "SAJUL",
-        "Seagull": "CEEGL",
-        "Tapper": "TAPPR",
-        "Zalpo": "ZALPO"
-      },
-      "CandidateApproaches": {
-        "Belmont Visual runway two two Left": "BVA",
-        "I L S runway one three left": "I3L",
-        "I L S runway two two left": "I2L",
-        "Parkway Visual runway one three Left": "PVA",
-        "r-nav x-ray runway two two left": "R2L",
-        "r-nav zulu runway one three Left": "R3L"
-      },
-      "AssignedApproach": "ILS Runway 22L",
-      "SID": "",
-      "STAR": "PARCH4",
-      "Altitude": 12000,
-      "State": "arrival",
-      "ControllerFrequency": "2K",
-      "TrackingController": "2K",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Efferand's two seven, Mike, Golf, Heavy, Contact, Boston Center one three three point two\"",
@@ -210,5 +63,82 @@
     "[local-stt] parsed commands: [FC] (conf=1.00)",
     "[local-stt] validated commands: [FC] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"AFR27MG FC\" (conf=1.00, time=272.125µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: Apple M4 Pro, 14 CPU / 20 GPU cores, 48GB",
+  "stt_aircraft": {
+    "Air France 27MG heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "A359",
+      "Altitude": 2587,
+      "AssignedApproach": "",
+      "Callsign": "AFR27MG",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "2J",
+      "Fixes": {
+        "Happy": "HAPIE"
+      },
+      "SID": "JFK5",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "B17"
+    },
+    "Korean Air 6 heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "B77W",
+      "Altitude": 6876,
+      "AssignedApproach": "",
+      "Callsign": "KAL6",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "2J",
+      "Fixes": {
+        "Gayel": "GAYEL",
+        "Muslin": "MSLIN"
+      },
+      "SID": "JFK5",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "5E"
+    },
+    "Shamrock 1JT": {
+      "AddressingForm": 0,
+      "AircraftType": "A21N",
+      "Altitude": 12000,
+      "AssignedApproach": "ILS Runway 22L",
+      "Callsign": "EIN1JT",
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway one three left": "I3L",
+        "I L S runway two two left": "I2L",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav x-ray runway two two left": "R2L",
+        "r-nav zulu runway one three Left": "R3L"
+      },
+      "ControllerFrequency": "2K",
+      "Fixes": {
+        "Cimble": "CIMBL",
+        "Crail": "CRAIL",
+        "Deer Park": "DPK",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "John F Kennedy International Airport": "KJFK",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Rober": "ROBER",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Zalpo": "ZALPO"
+      },
+      "SID": "",
+      "STAR": "PARCH4",
+      "State": "arrival",
+      "TrackingController": "2K"
+    }
+  },
+  "time": "2026-01-22T20:09:40.692672749Z",
+  "transcript": "Efferand's two seven, Mike, Golf, Heavy, Contact, Boston Center one three three point two",
+  "whisper_duration_ms": 519.436
 }

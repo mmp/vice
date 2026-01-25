@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T02:31:25.401104743Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 4736,
+  "callsign": "DAL8599",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,52 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Delta 8599 Minneapolis Departure, radar contact, climb and maintain one seven thousand.",
-  "whisper_duration_ms": 280.95,
-  "audio_duration_ms": 4736,
-  "processor": "GPU: NVIDIA GeForce RTX 4080 SUPER (16047MB)",
-  "callsign": "DAL8599",
   "command": "C170",
-  "stt_aircraft": {
-    "DAL8599": {
-      "Callsign": "DAL8599",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "Arrex": "ARREX",
-        "Hugir": "HUGIR",
-        "Mconl": "MCONL",
-        "Schep": "SCHEP"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SCHEP1",
-      "STAR": "",
-      "Altitude": 5614,
-      "State": "departure",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    },
-    "Delta 8599": {
-      "Callsign": "DAL8599",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "Arrex": "ARREX",
-        "Hugir": "HUGIR",
-        "Mconl": "MCONL",
-        "Schep": "SCHEP"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SCHEP1",
-      "STAR": "",
-      "Altitude": 5614,
-      "State": "departure",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Delta 8599 Minneapolis Departure, radar contact, climb and maintain one seven thousand.\"",
@@ -104,5 +59,31 @@
     "[local-stt] parsed commands: [C170] (conf=1.00)",
     "[local-stt] validated commands: [C170] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"DAL8599 C170\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 4080 SUPER (16047MB)",
+  "stt_aircraft": {
+    "Delta 8599": {
+      "AddressingForm": 0,
+      "AircraftType": "A21N",
+      "Altitude": 5614,
+      "AssignedApproach": "",
+      "Callsign": "DAL8599",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1R",
+      "Fixes": {
+        "Arrex": "ARREX",
+        "Hugir": "HUGIR",
+        "Mconl": "MCONL",
+        "Schep": "SCHEP"
+      },
+      "SID": "SCHEP1",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1R"
+    }
+  },
+  "time": "2026-01-22T02:31:25.401104743Z",
+  "transcript": "Delta 8599 Minneapolis Departure, radar contact, climb and maintain one seven thousand.",
+  "whisper_duration_ms": 280.95
 }

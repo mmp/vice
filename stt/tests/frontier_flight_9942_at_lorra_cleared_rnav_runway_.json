@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-23T14:44:00.386512784Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 4864,
+  "callsign": "FFT9942",
   "callstack": [
     "manager.go:975:/server.(*SimManager).ReportSTTLog",
     "value.go:581:reflect.Value.call",
@@ -9,122 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Frontier Flight 9942 at Lorra, cleared r-nav runway three six left approach.",
-  "whisper_duration_ms": 461.632,
-  "audio_duration_ms": 4864,
-  "processor": "GPU: NVIDIA GeForce RTX 3060 (12108MB)",
-  "callsign": "FFT9942",
   "command": "ALORRA/CR6L",
-  "stt_aircraft": {
-    "DAL32": {
-      "Callsign": "DAL32",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Cruise": "CRUSE",
-        "Cubal": "CUBAL",
-        "Fesha": "FESHA",
-        "Hahna": "HAHNA",
-        "Hews": "HEWES",
-        "Orlando International Airport": "KMCO",
-        "Seray": "SERAY"
-      },
-      "CandidateApproaches": {
-        "I L S runway three five right": "I5R",
-        "I L S runway three six left": "I6L",
-        "r-nav runway three five right": "R5R",
-        "r-nav runway three six left": "R6L"
-      },
-      "AssignedApproach": "ILS Runway 35R",
-      "SID": "",
-      "STAR": "SNFLD3",
-      "Altitude": 4589,
-      "State": "arrival",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "Delta 32": {
-      "Callsign": "DAL32",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Cruise": "CRUSE",
-        "Cubal": "CUBAL",
-        "Fesha": "FESHA",
-        "Hahna": "HAHNA",
-        "Hews": "HEWES",
-        "Orlando International Airport": "KMCO",
-        "Seray": "SERAY"
-      },
-      "CandidateApproaches": {
-        "I L S runway three five right": "I5R",
-        "I L S runway three six left": "I6L",
-        "r-nav runway three five right": "R5R",
-        "r-nav runway three six left": "R6L"
-      },
-      "AssignedApproach": "ILS Runway 35R",
-      "SID": "",
-      "STAR": "SNFLD3",
-      "Altitude": 4589,
-      "State": "arrival",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "FFT9942": {
-      "Callsign": "FFT9942",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Am-ebe": "AMEBE",
-        "Amads": "AMADS",
-        "Birdie": "BERDY",
-        "Exban": "EXBAN",
-        "Lorra": "LORRA",
-        "Orlando International Airport": "KMCO",
-        "Rutney": "RUTNE"
-      },
-      "CandidateApproaches": {
-        "I L S runway three five right": "I5R",
-        "I L S runway three six left": "I6L",
-        "r-nav runway three five right": "R5R",
-        "r-nav runway three six left": "R6L"
-      },
-      "AssignedApproach": "RNAV Runway 36L",
-      "SID": "",
-      "STAR": "PRICY4",
-      "Altitude": 9726,
-      "State": "arrival",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "Frontier Flight 9942": {
-      "Callsign": "FFT9942",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Am-ebe": "AMEBE",
-        "Amads": "AMADS",
-        "Birdie": "BERDY",
-        "Exban": "EXBAN",
-        "Lorra": "LORRA",
-        "Orlando International Airport": "KMCO",
-        "Rutney": "RUTNE"
-      },
-      "CandidateApproaches": {
-        "I L S runway three five right": "I5R",
-        "I L S runway three six left": "I6L",
-        "r-nav runway three five right": "R5R",
-        "r-nav runway three six left": "R6L"
-      },
-      "AssignedApproach": "RNAV Runway 36L",
-      "SID": "",
-      "STAR": "PRICY4",
-      "Altitude": 9726,
-      "State": "arrival",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Frontier Flight 9942 at Lorra, cleared r-nav runway three six left approach.\"",
@@ -176,5 +61,66 @@
     "[local-stt] parsed commands: [ALORRA/CR6L] (conf=1.00)",
     "[local-stt] validated commands: [ALORRA/CR6L] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"FFT9942 ALORRA/CR6L\" (conf=1.00, time=1.0032ms) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 3060 (12108MB)",
+  "stt_aircraft": {
+    "Delta 32": {
+      "AddressingForm": 0,
+      "AircraftType": "A321",
+      "Altitude": 4589,
+      "AssignedApproach": "ILS Runway 35R",
+      "Callsign": "DAL32",
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "ControllerFrequency": "1M",
+      "Fixes": {
+        "Cruise": "CRUSE",
+        "Cubal": "CUBAL",
+        "Fesha": "FESHA",
+        "Hahna": "HAHNA",
+        "Hews": "HEWES",
+        "Orlando International Airport": "KMCO",
+        "Seray": "SERAY"
+      },
+      "SID": "",
+      "STAR": "SNFLD3",
+      "State": "arrival",
+      "TrackingController": "1M"
+    },
+    "Frontier Flight 9942": {
+      "AddressingForm": 0,
+      "AircraftType": "A320",
+      "Altitude": 9726,
+      "AssignedApproach": "RNAV Runway 36L",
+      "Callsign": "FFT9942",
+      "CandidateApproaches": {
+        "I L S runway three five right": "I5R",
+        "I L S runway three six left": "I6L",
+        "r-nav runway three five right": "R5R",
+        "r-nav runway three six left": "R6L"
+      },
+      "ControllerFrequency": "1M",
+      "Fixes": {
+        "Am-ebe": "AMEBE",
+        "Amads": "AMADS",
+        "Birdie": "BERDY",
+        "Exban": "EXBAN",
+        "Lorra": "LORRA",
+        "Orlando International Airport": "KMCO",
+        "Rutney": "RUTNE"
+      },
+      "SID": "",
+      "STAR": "PRICY4",
+      "State": "arrival",
+      "TrackingController": "1M"
+    }
+  },
+  "time": "2026-01-23T14:44:00.386512784Z",
+  "transcript": "Frontier Flight 9942 at Lorra, cleared r-nav runway three six left approach.",
+  "whisper_duration_ms": 461.632
 }

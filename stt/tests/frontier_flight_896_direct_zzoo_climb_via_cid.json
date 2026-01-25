@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T06:09:02.331622313Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 8576,
+  "callsign": "FFT896",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,212 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Frontier Flight 896, Direct, Zzoo, Climb via Cid,",
-  "whisper_duration_ms": 223.579,
-  "audio_duration_ms": 8576,
-  "processor": "GPU: NVIDIA GeForce RTX 5070 Ti (15995MB)",
-  "callsign": "FFT896",
   "command": "DZZOOO CVS",
-  "stt_aircraft": {
-    "FFT3601": {
-      "Callsign": "FFT3601",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Anrmn": "ANRMN",
-        "Gridr": "GRIDR",
-        "Jetti": "JETTI",
-        "Jorrj": "JORRJ",
-        "Nshee": "NSHEE",
-        "Piezz": "PIEZZ",
-        "Zzooo": "ZZOOO"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ZZOOO4",
-      "STAR": "",
-      "Altitude": 4217,
-      "State": "departure",
-      "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0
-    },
-    "FFT896": {
-      "Callsign": "FFT896",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Anrmn": "ANRMN",
-        "Gridr": "GRIDR",
-        "Jetti": "JETTI",
-        "Jorrj": "JORRJ",
-        "Nshee": "NSHEE",
-        "Piezz": "PIEZZ",
-        "Zzooo": "ZZOOO"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ZZOOO4",
-      "STAR": "",
-      "Altitude": 5696,
-      "State": "departure",
-      "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0
-    },
-    "Frontier Flight 3601": {
-      "Callsign": "FFT3601",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Anrmn": "ANRMN",
-        "Gridr": "GRIDR",
-        "Jetti": "JETTI",
-        "Jorrj": "JORRJ",
-        "Nshee": "NSHEE",
-        "Piezz": "PIEZZ",
-        "Zzooo": "ZZOOO"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ZZOOO4",
-      "STAR": "",
-      "Altitude": 4217,
-      "State": "departure",
-      "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0
-    },
-    "Frontier Flight 896": {
-      "Callsign": "FFT896",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Anrmn": "ANRMN",
-        "Gridr": "GRIDR",
-        "Jetti": "JETTI",
-        "Jorrj": "JORRJ",
-        "Nshee": "NSHEE",
-        "Piezz": "PIEZZ",
-        "Zzooo": "ZZOOO"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ZZOOO4",
-      "STAR": "",
-      "Altitude": 5696,
-      "State": "departure",
-      "ControllerFrequency": "5W",
-      "TrackingController": "5W",
-      "AddressingForm": 0
-    },
-    "SKW4438": {
-      "Callsign": "SKW4438",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Klomn": "KLOMN",
-        "Lyndi": "LYNDI",
-        "Naddo": "NADDO",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA",
-        "Xmans": "XMANS"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 8402,
-      "State": "arrival",
-      "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0
-    },
-    "SWA744": {
-      "Callsign": "SWA744",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Flshh": "FLSHH",
-        "Klomn": "KLOMN",
-        "Lntrn": "LNTRN",
-        "Naddo": "NADDO",
-        "San Diego International Airport": "KSAN",
-        "Xmans": "XMANS"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 11943,
-      "State": "arrival",
-      "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0
-    },
-    "SkyWest 4438": {
-      "Callsign": "SKW4438",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Klomn": "KLOMN",
-        "Lyndi": "LYNDI",
-        "Naddo": "NADDO",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA",
-        "Xmans": "XMANS"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 8402,
-      "State": "arrival",
-      "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0
-    },
-    "Southwest 744": {
-      "Callsign": "SWA744",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Flshh": "FLSHH",
-        "Klomn": "KLOMN",
-        "Lntrn": "LNTRN",
-        "Naddo": "NADDO",
-        "San Diego International Airport": "KSAN",
-        "Xmans": "XMANS"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 11943,
-      "State": "arrival",
-      "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Frontier Flight 896, Direct, Zzoo, Climb via Cid,\"",
@@ -261,5 +56,111 @@
     "[local-stt] parsed commands: [DZZOOO] (conf=0.96)",
     "[local-stt] validated commands: [DZZOOO] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"FFT896 DZZOOO\" (conf=0.96, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 5070 Ti (15995MB)",
+  "stt_aircraft": {
+    "Frontier Flight 3601": {
+      "AddressingForm": 0,
+      "AircraftType": "A20N",
+      "Altitude": 4217,
+      "AssignedApproach": "",
+      "Callsign": "FFT3601",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "5W",
+      "Fixes": {
+        "Anrmn": "ANRMN",
+        "Gridr": "GRIDR",
+        "Jetti": "JETTI",
+        "Jorrj": "JORRJ",
+        "Nshee": "NSHEE",
+        "Piezz": "PIEZZ",
+        "Zzooo": "ZZOOO"
+      },
+      "SID": "ZZOOO4",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "5W"
+    },
+    "Frontier Flight 896": {
+      "AddressingForm": 0,
+      "AircraftType": "A20N",
+      "Altitude": 5696,
+      "AssignedApproach": "",
+      "Callsign": "FFT896",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "5W",
+      "Fixes": {
+        "Anrmn": "ANRMN",
+        "Gridr": "GRIDR",
+        "Jetti": "JETTI",
+        "Jorrj": "JORRJ",
+        "Nshee": "NSHEE",
+        "Piezz": "PIEZZ",
+        "Zzooo": "ZZOOO"
+      },
+      "SID": "ZZOOO4",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "5W"
+    },
+    "SkyWest 4438": {
+      "AddressingForm": 0,
+      "AircraftType": "E75L",
+      "Altitude": 8402,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "SKW4438",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5N",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Klomn": "KLOMN",
+        "Lyndi": "LYNDI",
+        "Naddo": "NADDO",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA",
+        "Xmans": "XMANS"
+      },
+      "SID": "",
+      "STAR": "COMIX2",
+      "State": "arrival",
+      "TrackingController": "5N"
+    },
+    "Southwest 744": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 11943,
+      "AssignedApproach": "",
+      "Callsign": "SWA744",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5N",
+      "Fixes": {
+        "Flshh": "FLSHH",
+        "Klomn": "KLOMN",
+        "Lntrn": "LNTRN",
+        "Naddo": "NADDO",
+        "San Diego International Airport": "KSAN",
+        "Xmans": "XMANS"
+      },
+      "SID": "",
+      "STAR": "COMIX2",
+      "State": "arrival",
+      "TrackingController": "5N"
+    }
+  },
+  "time": "2026-01-22T06:09:02.331622313Z",
+  "transcript": "Frontier Flight 896, Direct, Zzoo, Climb via Cid,",
+  "whisper_duration_ms": 223.579
 }

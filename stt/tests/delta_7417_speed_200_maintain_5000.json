@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-24T14:38:01.454238171Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 4224,
+  "callsign": "DAL7417",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,262 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Delta 7417, speed 200, maintain 5,000.",
-  "whisper_duration_ms": 307.858,
-  "audio_duration_ms": 4224,
-  "processor": "GPU: Apple M5, 10 CPU / 10 GPU cores, 24GB",
-  "callsign": "DAL7417",
   "command": "S200 A50",
-  "stt_aircraft": {
-    "ASA591": {
-      "Callsign": "ASA591",
-      "AircraftType": "B39M",
-      "Fixes": {
-        "Bonzo": "BONZO",
-        "Chicago O'Hare International Airport": "KORD",
-        "Harry": "HAREE",
-        "Himgo": "HIMGO",
-        "Iylek": "IYLEK",
-        "Joker": "JOKKR",
-        "Sibly": "SIBLY",
-        "Vinnie": "VINYY",
-        "Vogler": "VOGLR",
-        "Welev": "WELEV"
-      },
-      "CandidateApproaches": {
-        "I L S runway two seven right": "I7R"
-      },
-      "AssignedApproach": "ILS Runway 27R",
-      "SID": "",
-      "STAR": "FYTTE7",
-      "Altitude": 5000,
-      "State": "arrival",
-      "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0
-    },
-    "AWI3829": {
-      "Callsign": "AWI3829",
-      "AircraftType": "CRJ2",
-      "Fixes": {
-        "Bonzo": "BONZO",
-        "Chicago O'Hare International Airport": "KORD",
-        "Harry": "HAREE",
-        "Sibly": "SIBLY"
-      },
-      "CandidateApproaches": {
-        "I L S runway two seven right": "I7R"
-      },
-      "AssignedApproach": "ILS Runway 27R",
-      "SID": "",
-      "STAR": "FYTTE7",
-      "Altitude": 5000,
-      "State": "arrival",
-      "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0
-    },
-    "AWI6308": {
-      "Callsign": "AWI6308",
-      "AircraftType": "CRJ2",
-      "Fixes": {
-        "Bonzo": "BONZO",
-        "Chicago O'Hare International Airport": "KORD",
-        "Sibly": "SIBLY"
-      },
-      "CandidateApproaches": {
-        "I L S runway two seven right": "I7R"
-      },
-      "AssignedApproach": "ILS Runway 27R",
-      "SID": "",
-      "STAR": "FYTTE7",
-      "Altitude": 4789,
-      "State": "on approach",
-      "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0
-    },
-    "Alaska 591": {
-      "Callsign": "ASA591",
-      "AircraftType": "B39M",
-      "Fixes": {
-        "Bonzo": "BONZO",
-        "Chicago O'Hare International Airport": "KORD",
-        "Harry": "HAREE",
-        "Himgo": "HIMGO",
-        "Iylek": "IYLEK",
-        "Joker": "JOKKR",
-        "Sibly": "SIBLY",
-        "Vinnie": "VINYY",
-        "Vogler": "VOGLR",
-        "Welev": "WELEV"
-      },
-      "CandidateApproaches": {
-        "I L S runway two seven right": "I7R"
-      },
-      "AssignedApproach": "ILS Runway 27R",
-      "SID": "",
-      "STAR": "FYTTE7",
-      "Altitude": 5000,
-      "State": "arrival",
-      "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0
-    },
-    "DAL61": {
-      "Callsign": "DAL61",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Bonzo": "BONZO",
-        "Chicago O'Hare International Airport": "KORD",
-        "Harry": "HAREE",
-        "Himgo": "HIMGO",
-        "Iylek": "IYLEK",
-        "Joker": "JOKKR",
-        "Sibly": "SIBLY",
-        "Vinnie": "VINYY",
-        "Vogler": "VOGLR",
-        "Vulcan": "VULCN",
-        "Welev": "WELEV"
-      },
-      "CandidateApproaches": {
-        "I L S runway two seven right": "I7R"
-      },
-      "AssignedApproach": "ILS Runway 27R",
-      "SID": "",
-      "STAR": "FYTTE7",
-      "Altitude": 5000,
-      "State": "arrival",
-      "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0
-    },
-    "DAL7417": {
-      "Callsign": "DAL7417",
-      "AircraftType": "A319",
-      "Fixes": {
-        "Bonzo": "BONZO",
-        "Chicago O'Hare International Airport": "KORD",
-        "Harry": "HAREE",
-        "Himgo": "HIMGO",
-        "Iylek": "IYLEK",
-        "Joker": "JOKKR",
-        "Sibly": "SIBLY",
-        "Vinnie": "VINYY",
-        "Vogler": "VOGLR",
-        "Vulcan": "VULCN",
-        "Welev": "WELEV"
-      },
-      "CandidateApproaches": {
-        "I L S runway two seven right": "I7R"
-      },
-      "AssignedApproach": "ILS Runway 27R",
-      "SID": "",
-      "STAR": "FYTTE7",
-      "Altitude": 7000,
-      "State": "arrival",
-      "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0
-    },
-    "Delta 61": {
-      "Callsign": "DAL61",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Bonzo": "BONZO",
-        "Chicago O'Hare International Airport": "KORD",
-        "Harry": "HAREE",
-        "Himgo": "HIMGO",
-        "Iylek": "IYLEK",
-        "Joker": "JOKKR",
-        "Sibly": "SIBLY",
-        "Vinnie": "VINYY",
-        "Vogler": "VOGLR",
-        "Vulcan": "VULCN",
-        "Welev": "WELEV"
-      },
-      "CandidateApproaches": {
-        "I L S runway two seven right": "I7R"
-      },
-      "AssignedApproach": "ILS Runway 27R",
-      "SID": "",
-      "STAR": "FYTTE7",
-      "Altitude": 5000,
-      "State": "arrival",
-      "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0
-    },
-    "Delta 7417": {
-      "Callsign": "DAL7417",
-      "AircraftType": "A319",
-      "Fixes": {
-        "Bonzo": "BONZO",
-        "Chicago O'Hare International Airport": "KORD",
-        "Harry": "HAREE",
-        "Himgo": "HIMGO",
-        "Iylek": "IYLEK",
-        "Joker": "JOKKR",
-        "Sibly": "SIBLY",
-        "Vinnie": "VINYY",
-        "Vogler": "VOGLR",
-        "Vulcan": "VULCN",
-        "Welev": "WELEV"
-      },
-      "CandidateApproaches": {
-        "I L S runway two seven right": "I7R"
-      },
-      "AssignedApproach": "ILS Runway 27R",
-      "SID": "",
-      "STAR": "FYTTE7",
-      "Altitude": 7000,
-      "State": "arrival",
-      "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0
-    },
-    "Wisconsin 3829": {
-      "Callsign": "AWI3829",
-      "AircraftType": "CRJ2",
-      "Fixes": {
-        "Bonzo": "BONZO",
-        "Chicago O'Hare International Airport": "KORD",
-        "Harry": "HAREE",
-        "Sibly": "SIBLY"
-      },
-      "CandidateApproaches": {
-        "I L S runway two seven right": "I7R"
-      },
-      "AssignedApproach": "ILS Runway 27R",
-      "SID": "",
-      "STAR": "FYTTE7",
-      "Altitude": 5000,
-      "State": "arrival",
-      "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0
-    },
-    "Wisconsin 6308": {
-      "Callsign": "AWI6308",
-      "AircraftType": "CRJ2",
-      "Fixes": {
-        "Bonzo": "BONZO",
-        "Chicago O'Hare International Airport": "KORD",
-        "Sibly": "SIBLY"
-      },
-      "CandidateApproaches": {
-        "I L S runway two seven right": "I7R"
-      },
-      "AssignedApproach": "ILS Runway 27R",
-      "SID": "",
-      "STAR": "FYTTE7",
-      "Altitude": 4789,
-      "State": "on approach",
-      "ControllerFrequency": "1F",
-      "TrackingController": "1F",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Delta 7417, speed 200, maintain 5,000.\"",
@@ -307,5 +52,136 @@
     "[local-stt] parsed commands: [S200 A50] (conf=1.00)",
     "[local-stt] validated commands: [S200 A50] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"DAL7417 S200 A50\" (conf=1.00, time=90.834µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: Apple M5, 10 CPU / 10 GPU cores, 24GB",
+  "stt_aircraft": {
+    "Alaska 591": {
+      "AddressingForm": 0,
+      "AircraftType": "B39M",
+      "Altitude": 5000,
+      "AssignedApproach": "ILS Runway 27R",
+      "Callsign": "ASA591",
+      "CandidateApproaches": {
+        "I L S runway two seven right": "I7R"
+      },
+      "ControllerFrequency": "1F",
+      "Fixes": {
+        "Bonzo": "BONZO",
+        "Chicago O'Hare International Airport": "KORD",
+        "Harry": "HAREE",
+        "Himgo": "HIMGO",
+        "Iylek": "IYLEK",
+        "Joker": "JOKKR",
+        "Sibly": "SIBLY",
+        "Vinnie": "VINYY",
+        "Vogler": "VOGLR",
+        "Welev": "WELEV"
+      },
+      "SID": "",
+      "STAR": "FYTTE7",
+      "State": "arrival",
+      "TrackingController": "1F"
+    },
+    "Delta 61": {
+      "AddressingForm": 0,
+      "AircraftType": "B738",
+      "Altitude": 5000,
+      "AssignedApproach": "ILS Runway 27R",
+      "Callsign": "DAL61",
+      "CandidateApproaches": {
+        "I L S runway two seven right": "I7R"
+      },
+      "ControllerFrequency": "1F",
+      "Fixes": {
+        "Bonzo": "BONZO",
+        "Chicago O'Hare International Airport": "KORD",
+        "Harry": "HAREE",
+        "Himgo": "HIMGO",
+        "Iylek": "IYLEK",
+        "Joker": "JOKKR",
+        "Sibly": "SIBLY",
+        "Vinnie": "VINYY",
+        "Vogler": "VOGLR",
+        "Vulcan": "VULCN",
+        "Welev": "WELEV"
+      },
+      "SID": "",
+      "STAR": "FYTTE7",
+      "State": "arrival",
+      "TrackingController": "1F"
+    },
+    "Delta 7417": {
+      "AddressingForm": 0,
+      "AircraftType": "A319",
+      "Altitude": 7000,
+      "AssignedApproach": "ILS Runway 27R",
+      "Callsign": "DAL7417",
+      "CandidateApproaches": {
+        "I L S runway two seven right": "I7R"
+      },
+      "ControllerFrequency": "1F",
+      "Fixes": {
+        "Bonzo": "BONZO",
+        "Chicago O'Hare International Airport": "KORD",
+        "Harry": "HAREE",
+        "Himgo": "HIMGO",
+        "Iylek": "IYLEK",
+        "Joker": "JOKKR",
+        "Sibly": "SIBLY",
+        "Vinnie": "VINYY",
+        "Vogler": "VOGLR",
+        "Vulcan": "VULCN",
+        "Welev": "WELEV"
+      },
+      "SID": "",
+      "STAR": "FYTTE7",
+      "State": "arrival",
+      "TrackingController": "1F"
+    },
+    "Wisconsin 3829": {
+      "AddressingForm": 0,
+      "AircraftType": "CRJ2",
+      "Altitude": 5000,
+      "AssignedApproach": "ILS Runway 27R",
+      "Callsign": "AWI3829",
+      "CandidateApproaches": {
+        "I L S runway two seven right": "I7R"
+      },
+      "ControllerFrequency": "1F",
+      "Fixes": {
+        "Bonzo": "BONZO",
+        "Chicago O'Hare International Airport": "KORD",
+        "Harry": "HAREE",
+        "Sibly": "SIBLY"
+      },
+      "SID": "",
+      "STAR": "FYTTE7",
+      "State": "arrival",
+      "TrackingController": "1F"
+    },
+    "Wisconsin 6308": {
+      "AddressingForm": 0,
+      "AircraftType": "CRJ2",
+      "Altitude": 4789,
+      "AssignedApproach": "ILS Runway 27R",
+      "Callsign": "AWI6308",
+      "CandidateApproaches": {
+        "I L S runway two seven right": "I7R"
+      },
+      "ControllerFrequency": "1F",
+      "Fixes": {
+        "Bonzo": "BONZO",
+        "Chicago O'Hare International Airport": "KORD",
+        "Sibly": "SIBLY"
+      },
+      "SID": "",
+      "STAR": "FYTTE7",
+      "State": "on approach",
+      "TrackingController": "1F"
+    }
+  },
+  "time": "2026-01-24T14:38:01.454238171Z",
+  "transcript": "Delta 7417, speed 200, maintain 5,000.",
+  "whisper_duration_ms": 307.858
 }

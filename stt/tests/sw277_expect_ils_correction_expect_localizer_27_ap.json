@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T05:53:40.333608043Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 7040,
+  "callsign": "SWA277",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,172 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "SW277 expect ILS correction expect localizer 27 approach",
-  "whisper_duration_ms": 319.33,
-  "audio_duration_ms": 7040,
-  "processor": "GPU: NVIDIA GeForce RTX 5070 Ti (15995MB)",
-  "callsign": "SWA277",
   "command": "EL27",
-  "stt_aircraft": {
-    "DAL9993": {
-      "Callsign": "DAL9993",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Lucki": "LUCKI",
-        "Lyndi": "LYNDI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 6357,
-      "State": "arrival",
-      "ControllerFrequency": "5E",
-      "TrackingController": "5E",
-      "AddressingForm": 0
-    },
-    "Delta 9993": {
-      "Callsign": "DAL9993",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Lucki": "LUCKI",
-        "Lyndi": "LYNDI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 6357,
-      "State": "arrival",
-      "ControllerFrequency": "5E",
-      "TrackingController": "5E",
-      "AddressingForm": 0
-    },
-    "SWA277": {
-      "Callsign": "SWA277",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Jeevs": "JEEVS",
-        "Lucki": "LUCKI",
-        "Lyndi": "LYNDI",
-        "San Diego International Airport": "KSAN"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 7605,
-      "State": "arrival",
-      "ControllerFrequency": "5E",
-      "TrackingController": "5E",
-      "AddressingForm": 0
-    },
-    "Southwest 277": {
-      "Callsign": "SWA277",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Jeevs": "JEEVS",
-        "Lucki": "LUCKI",
-        "Lyndi": "LYNDI",
-        "San Diego International Airport": "KSAN"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 7605,
-      "State": "arrival",
-      "ControllerFrequency": "5E",
-      "TrackingController": "5E",
-      "AddressingForm": 0
-    },
-    "UAL485": {
-      "Callsign": "UAL485",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Klomn": "KLOMN",
-        "Lyndi": "LYNDI",
-        "Naddo": "NADDO",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Xmans": "XMANS"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Visual Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 7502,
-      "State": "arrival",
-      "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0
-    },
-    "United 485": {
-      "Callsign": "UAL485",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Klomn": "KLOMN",
-        "Lyndi": "LYNDI",
-        "Naddo": "NADDO",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Xmans": "XMANS"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Visual Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 7502,
-      "State": "arrival",
-      "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"SW277 expect ILS correction expect localizer 27 approach\"",
@@ -220,5 +55,91 @@
     "[local-stt] parsed commands: [EL27] (conf=1.00)",
     "[local-stt] validated commands: [EL27] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"SWA277 EL27\" (conf=0.96, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 5070 Ti (15995MB)",
+  "stt_aircraft": {
+    "Delta 9993": {
+      "AddressingForm": 0,
+      "AircraftType": "A21N",
+      "Altitude": 6357,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "DAL9993",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5E",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lucki": "LUCKI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "arrival",
+      "TrackingController": "5E"
+    },
+    "Southwest 277": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 7605,
+      "AssignedApproach": "",
+      "Callsign": "SWA277",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5E",
+      "Fixes": {
+        "Jeevs": "JEEVS",
+        "Lucki": "LUCKI",
+        "Lyndi": "LYNDI",
+        "San Diego International Airport": "KSAN"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "arrival",
+      "TrackingController": "5E"
+    },
+    "United 485": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 7502,
+      "AssignedApproach": "Visual Runway 27",
+      "Callsign": "UAL485",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5N",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Klomn": "KLOMN",
+        "Lyndi": "LYNDI",
+        "Naddo": "NADDO",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Xmans": "XMANS"
+      },
+      "SID": "",
+      "STAR": "COMIX2",
+      "State": "arrival",
+      "TrackingController": "5N"
+    }
+  },
+  "time": "2026-01-22T05:53:40.333608043Z",
+  "transcript": "SW277 expect ILS correction expect localizer 27 approach",
+  "whisper_duration_ms": 319.33
 }

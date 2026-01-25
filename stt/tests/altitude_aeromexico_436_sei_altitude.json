@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-21T23:14:31.420637-05:00",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 3712,
+  "callsign": "AMX36",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,74 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_arm64.s:1268:runtime.goexit"
   ],
-  "transcript": "altitude, AeroMexico 436, Sei altitude,",
-  "whisper_duration_ms": 396.832,
-  "audio_duration_ms": 3712,
-  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
-  "callsign": "AMX36",
   "command": "SA",
-  "stt_aircraft": {
-    "AMX36": {
-      "Callsign": "AMX36",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Ernie": "ERNEI",
-        "Goshi": "GOSHI",
-        "Jody": "JOODY",
-        "Logan International Airport": "KBOS",
-        "Milt": "MILTT",
-        "Nabbo": "NABBO",
-        "Provi": "PROVI",
-        "Robuck": "ROBUC",
-        "Sofie": "SOFEE",
-        "Winnie": "WINNI"
-      },
-      "CandidateApproaches": {
-        "I L S runway four right": "I4R",
-        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
-        "r-nav runway four left": "R4L",
-        "r-nav runway four right": "R4R"
-      },
-      "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
-      "STAR": "ROBUC3",
-      "Altitude": 14355,
-      "State": "arrival",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "AeroMexico 36": {
-      "Callsign": "AMX36",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Ernie": "ERNEI",
-        "Goshi": "GOSHI",
-        "Jody": "JOODY",
-        "Logan International Airport": "KBOS",
-        "Milt": "MILTT",
-        "Nabbo": "NABBO",
-        "Provi": "PROVI",
-        "Robuck": "ROBUC",
-        "Sofie": "SOFEE",
-        "Winnie": "WINNI"
-      },
-      "CandidateApproaches": {
-        "I L S runway four right": "I4R",
-        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
-        "r-nav runway four left": "R4L",
-        "r-nav runway four right": "R4R"
-      },
-      "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
-      "STAR": "ROBUC3",
-      "Altitude": 14355,
-      "State": "arrival",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"altitude, AeroMexico 436, Sei altitude,\"",
@@ -121,5 +54,42 @@
     "[local-stt] parsed commands: [SA] (conf=1.00)",
     "[local-stt] validated commands: [SA] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"AMX36 SA\" (conf=0.89, time=237.542µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "stt_aircraft": {
+    "AeroMexico 36": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 14355,
+      "AssignedApproach": "ILS Runway 4R",
+      "Callsign": "AMX36",
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "ControllerFrequency": "1M",
+      "Fixes": {
+        "Ernie": "ERNEI",
+        "Goshi": "GOSHI",
+        "Jody": "JOODY",
+        "Logan International Airport": "KBOS",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Provi": "PROVI",
+        "Robuck": "ROBUC",
+        "Sofie": "SOFEE",
+        "Winnie": "WINNI"
+      },
+      "SID": "",
+      "STAR": "ROBUC3",
+      "State": "arrival",
+      "TrackingController": "1M"
+    }
+  },
+  "time": "2026-01-21T23:14:31.420637-05:00",
+  "transcript": "altitude, AeroMexico 436, Sei altitude,",
+  "whisper_duration_ms": 396.832
 }

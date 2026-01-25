@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T07:04:50.428051663Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 7936,
+  "callsign": "AAL478",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,188 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "American 478, Descendo maintains 7000 direct Lucki.",
-  "whisper_duration_ms": 220.034,
-  "audio_duration_ms": 7936,
-  "processor": "GPU: NVIDIA GeForce RTX 5070 Ti (15995MB)",
-  "callsign": "AAL478",
   "command": "D70 DLUCKI",
-  "stt_aircraft": {
-    "AAL478": {
-      "Callsign": "AAL478",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Lucki": "LUCKI",
-        "Lyndi": "LYNDI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 11000,
-      "State": "arrival",
-      "ControllerFrequency": "5E",
-      "TrackingController": "5E",
-      "AddressingForm": 0
-    },
-    "American 478": {
-      "Callsign": "AAL478",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Cijhi": "CIJHI",
-        "Lucki": "LUCKI",
-        "Lyndi": "LYNDI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 11000,
-      "State": "arrival",
-      "ControllerFrequency": "5E",
-      "TrackingController": "5E",
-      "AddressingForm": 0
-    },
-    "HAL862": {
-      "Callsign": "HAL862",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "Malit": "MALIT"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "PADRZ2",
-      "STAR": "",
-      "Altitude": 12000,
-      "State": "departure",
-      "ControllerFrequency": "5W",
-      "TrackingController": "5S",
-      "AddressingForm": 0
-    },
-    "Hawaiian 862": {
-      "Callsign": "HAL862",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "Malit": "MALIT"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "PADRZ2",
-      "STAR": "",
-      "Altitude": 12000,
-      "State": "departure",
-      "ControllerFrequency": "5W",
-      "TrackingController": "5S",
-      "AddressingForm": 0
-    },
-    "SWA145": {
-      "Callsign": "SWA145",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Baret": "BARET",
-        "Cijhi": "CIJHI",
-        "Lyndi": "LYNDI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 7000,
-      "State": "arrival",
-      "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0
-    },
-    "SWA768": {
-      "Callsign": "SWA768",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Mtbal": "MTBAL",
-        "Nshee": "NSHEE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ZZOOO4",
-      "STAR": "",
-      "Altitude": 23000,
-      "State": "departure",
-      "ControllerFrequency": "5W",
-      "TrackingController": "5S",
-      "AddressingForm": 0
-    },
-    "Southwest 145": {
-      "Callsign": "SWA145",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Baret": "BARET",
-        "Cijhi": "CIJHI",
-        "Lyndi": "LYNDI",
-        "Okain": "OKAIN",
-        "Reebo": "REEBO",
-        "San Diego International Airport": "KSAN",
-        "Vydda": "VYDDA"
-      },
-      "CandidateApproaches": {
-        "Localizer runway two seven": "L27",
-        "Visual runway two seven": "V27",
-        "r-nav yankee runway two seven": "RY7",
-        "r-nav zulu runway two seven": "RZ7"
-      },
-      "AssignedApproach": "Localizer Runway 27",
-      "SID": "",
-      "STAR": "COMIX2",
-      "Altitude": 7000,
-      "State": "arrival",
-      "ControllerFrequency": "5N",
-      "TrackingController": "5N",
-      "AddressingForm": 0
-    },
-    "Southwest 768": {
-      "Callsign": "SWA768",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Mtbal": "MTBAL",
-        "Nshee": "NSHEE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ZZOOO4",
-      "STAR": "",
-      "Altitude": 23000,
-      "State": "departure",
-      "ControllerFrequency": "5W",
-      "TrackingController": "5S",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"American 478, Descendo maintains 7000 direct Lucki.\"",
@@ -238,5 +57,99 @@
     "[local-stt] parsed commands: [D70 DLUCKI] (conf=1.00)",
     "[local-stt] validated commands: [D70 DLUCKI] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"AAL478 D70 DLUCKI\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 5070 Ti (15995MB)",
+  "stt_aircraft": {
+    "American 478": {
+      "AddressingForm": 0,
+      "AircraftType": "A321",
+      "Altitude": 11000,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "AAL478",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5E",
+      "Fixes": {
+        "Cijhi": "CIJHI",
+        "Lucki": "LUCKI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "arrival",
+      "TrackingController": "5E"
+    },
+    "Hawaiian 862": {
+      "AddressingForm": 0,
+      "AircraftType": "A21N",
+      "Altitude": 12000,
+      "AssignedApproach": "",
+      "Callsign": "HAL862",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "5W",
+      "Fixes": {
+        "Malit": "MALIT"
+      },
+      "SID": "PADRZ2",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "5S"
+    },
+    "Southwest 145": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 7000,
+      "AssignedApproach": "Localizer Runway 27",
+      "Callsign": "SWA145",
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ControllerFrequency": "5N",
+      "Fixes": {
+        "Baret": "BARET",
+        "Cijhi": "CIJHI",
+        "Lyndi": "LYNDI",
+        "Okain": "OKAIN",
+        "Reebo": "REEBO",
+        "San Diego International Airport": "KSAN",
+        "Vydda": "VYDDA"
+      },
+      "SID": "",
+      "STAR": "COMIX2",
+      "State": "arrival",
+      "TrackingController": "5N"
+    },
+    "Southwest 768": {
+      "AddressingForm": 0,
+      "AircraftType": "B738",
+      "Altitude": 23000,
+      "AssignedApproach": "",
+      "Callsign": "SWA768",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "5W",
+      "Fixes": {
+        "Mtbal": "MTBAL",
+        "Nshee": "NSHEE"
+      },
+      "SID": "ZZOOO4",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "5S"
+    }
+  },
+  "time": "2026-01-22T07:04:50.428051663Z",
+  "transcript": "American 478, Descendo maintains 7000 direct Lucki.",
+  "whisper_duration_ms": 220.034
 }

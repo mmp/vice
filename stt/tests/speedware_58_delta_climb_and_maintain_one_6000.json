@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-23T03:15:26.237799481Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 3968,
+  "callsign": "BAW58D",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,704 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Speedware 58 Delta, Climb and Maintain, One $6,000",
-  "whisper_duration_ms": 309.111,
-  "audio_duration_ms": 3968,
-  "processor": "GPU: NVIDIA GeForce RTX 4070 Ti SUPER (16063MB)",
-  "callsign": "BAW58D",
   "command": "C160",
-  "stt_aircraft": {
-    "AAL3831": {
-      "Callsign": "AAL3831",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Gladz": "GLADZ"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "GLADZ4",
-      "STAR": "",
-      "Altitude": 10000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "AAL95": {
-      "Callsign": "AAL95",
-      "AircraftType": "B772",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "FOLZZ3",
-      "STAR": "",
-      "Altitude": 10000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "AAY4116": {
-      "Callsign": "AAY4116",
-      "AircraftType": "A319",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "HROCK2",
-      "STAR": "",
-      "Altitude": 13000,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "AEA89UY": {
-      "Callsign": "AEA89UY",
-      "AircraftType": "A332",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "FOLZZ3",
-      "STAR": "",
-      "Altitude": 16000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "AJT5497": {
-      "Callsign": "AJT5497",
-      "AircraftType": "B762",
-      "Fixes": {
-        "Fundi": "FUNDI"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "MAYNR3",
-      "STAR": "",
-      "Altitude": 13000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "ASA2115": {
-      "Callsign": "ASA2115",
-      "AircraftType": "B739",
-      "Fixes": {
-        "Bnice": "BNICE",
-        "Lrick": "LRICK",
-        "Mreno": "MRENO",
-        "Yoloo": "YOLOO"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "BNICE2",
-      "STAR": "",
-      "Altitude": 4493,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "ASA2847": {
-      "Callsign": "ASA2847",
-      "AircraftType": "B739",
-      "Fixes": {
-        "Hurcn": "HURCN",
-        "Joenz": "JOENZ",
-        "Niblt": "NIBLT"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "HURCN4",
-      "STAR": "",
-      "Altitude": 7112,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "Alaska 2115": {
-      "Callsign": "ASA2115",
-      "AircraftType": "B739",
-      "Fixes": {
-        "Bnice": "BNICE",
-        "Lrick": "LRICK",
-        "Mreno": "MRENO",
-        "Yoloo": "YOLOO"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "BNICE2",
-      "STAR": "",
-      "Altitude": 4493,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "Alaska 2847": {
-      "Callsign": "ASA2847",
-      "AircraftType": "B739",
-      "Fixes": {
-        "Hurcn": "HURCN",
-        "Joenz": "JOENZ",
-        "Niblt": "NIBLT"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "HURCN4",
-      "STAR": "",
-      "Altitude": 7112,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "Allegiant 4116": {
-      "Callsign": "AAY4116",
-      "AircraftType": "A319",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "HROCK2",
-      "STAR": "",
-      "Altitude": 13000,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "AmeriJet 5497 heavy": {
-      "Callsign": "AJT5497",
-      "AircraftType": "B762",
-      "Fixes": {
-        "Fundi": "FUNDI"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "MAYNR3",
-      "STAR": "",
-      "Altitude": 13000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "American 3831": {
-      "Callsign": "AAL3831",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Gladz": "GLADZ"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "GLADZ4",
-      "STAR": "",
-      "Altitude": 10000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "American 95 heavy": {
-      "Callsign": "AAL95",
-      "AircraftType": "B772",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "FOLZZ3",
-      "STAR": "",
-      "Altitude": 10000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "BAW58D": {
-      "Callsign": "BAW58D",
-      "AircraftType": "B77W",
-      "Fixes": {
-        "Folzz": "FOLZZ",
-        "Marck": "MARCK"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "FOLZZ3",
-      "STAR": "",
-      "Altitude": 7000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "BHS9039": {
-      "Callsign": "BHS9039",
-      "AircraftType": "AT45",
-      "Fixes": {
-        "Mynn": "MYNN",
-        "Rajay": "RAJAY"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SNAPR2",
-      "STAR": "",
-      "Altitude": 7000,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "C46",
-      "AddressingForm": 0
-    },
-    "BWA807": {
-      "Callsign": "BWA807",
-      "AircraftType": "B738",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "KLADA2",
-      "STAR": "",
-      "Altitude": 16000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "Bahamas 9039": {
-      "Callsign": "BHS9039",
-      "AircraftType": "AT45",
-      "Fixes": {
-        "Mynn": "MYNN",
-        "Rajay": "RAJAY"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SNAPR2",
-      "STAR": "",
-      "Altitude": 7000,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "C46",
-      "AddressingForm": 0
-    },
-    "Caribbean Airlines 807": {
-      "Callsign": "BWA807",
-      "AircraftType": "B738",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "KLADA2",
-      "STAR": "",
-      "Altitude": 16000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "DAL14": {
-      "Callsign": "DAL14",
-      "AircraftType": "MD88",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "FOLZZ3",
-      "STAR": "",
-      "Altitude": 10000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "DAL1869": {
-      "Callsign": "DAL1869",
-      "AircraftType": "CF46",
-      "Fixes": {
-        "Altnn": "ALTNN"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ALTNN2",
-      "STAR": "",
-      "Altitude": 13000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "C46",
-      "AddressingForm": 0
-    },
-    "Delta 14": {
-      "Callsign": "DAL14",
-      "AircraftType": "MD88",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "FOLZZ3",
-      "STAR": "",
-      "Altitude": 10000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "Delta 1869": {
-      "Callsign": "DAL1869",
-      "AircraftType": "CF46",
-      "Fixes": {
-        "Altnn": "ALTNN"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ALTNN2",
-      "STAR": "",
-      "Altitude": 13000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "C46",
-      "AddressingForm": 0
-    },
-    "Europa 89UY heavy": {
-      "Callsign": "AEA89UY",
-      "AircraftType": "A332",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "FOLZZ3",
-      "STAR": "",
-      "Altitude": 16000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "IBE11ZK": {
-      "Callsign": "IBE11ZK",
-      "AircraftType": "A332",
-      "Fixes": {
-        "Folzz": "FOLZZ"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "FOLZZ3",
-      "STAR": "",
-      "Altitude": 5233,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "Iberia 11ZK heavy": {
-      "Callsign": "IBE11ZK",
-      "AircraftType": "A332",
-      "Fixes": {
-        "Folzz": "FOLZZ"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "FOLZZ3",
-      "STAR": "",
-      "Altitude": 5233,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "KLM 23P heavy": {
-      "Callsign": "KLM23P",
-      "AircraftType": "B78X",
-      "Fixes": {
-        "Folzz": "FOLZZ",
-        "Jamba": "JAMBA",
-        "Kbola": "KBOLA",
-        "Marck": "MARCK"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "FOLZZ3",
-      "STAR": "",
-      "Altitude": 3438,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "KLM23P": {
-      "Callsign": "KLM23P",
-      "AircraftType": "B78X",
-      "Fixes": {
-        "Folzz": "FOLZZ",
-        "Jamba": "JAMBA",
-        "Kbola": "KBOLA",
-        "Marck": "MARCK"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "FOLZZ3",
-      "STAR": "",
-      "Altitude": 3438,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "NKS2368": {
-      "Callsign": "NKS2368",
-      "AircraftType": "A319",
-      "Fixes": {
-        "Snapr": "SNAPR"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SNAPR2",
-      "STAR": "",
-      "Altitude": 10000,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "C46",
-      "AddressingForm": 0
-    },
-    "NKS2822": {
-      "Callsign": "NKS2822",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Alnzo": "ALNZO",
-        "Flmgo": "FLMGO",
-        "Geith": "GEITH"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "FLMGO2",
-      "STAR": "",
-      "Altitude": 7938,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "NKS4840": {
-      "Callsign": "NKS4840",
-      "AircraftType": "A319",
-      "Fixes": {
-        "Hrock": "HROCK",
-        "Joenz": "JOENZ"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "HROCK2",
-      "STAR": "",
-      "Altitude": 9281,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "NKS4874": {
-      "Callsign": "NKS4874",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Blfrg": "BLFRG",
-        "Corea": "COREA"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "BNICE2",
-      "STAR": "",
-      "Altitude": 13000,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "C46",
-      "AddressingForm": 0
-    },
-    "NKS6286": {
-      "Callsign": "NKS6286",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Altnn": "ALTNN",
-        "Perts": "PERTS"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ALTNN2",
-      "STAR": "",
-      "Altitude": 12899,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "SCX191": {
-      "Callsign": "SCX191",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Hurcn": "HURCN",
-        "Joenz": "JOENZ"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "HURCN4",
-      "STAR": "",
-      "Altitude": 13000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "C46",
-      "AddressingForm": 0
-    },
-    "SWA962": {
-      "Callsign": "SWA962",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cudel": "CUDEL",
-        "Pastl": "PASTL",
-        "Regae": "REGAE",
-        "Zombi": "ZOMBI"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "REGAE2",
-      "STAR": "",
-      "Altitude": 7351,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "Southwest 962": {
-      "Callsign": "SWA962",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cudel": "CUDEL",
-        "Pastl": "PASTL",
-        "Regae": "REGAE",
-        "Zombi": "ZOMBI"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "REGAE2",
-      "STAR": "",
-      "Altitude": 7351,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "Speedbird 58D heavy": {
-      "Callsign": "BAW58D",
-      "AircraftType": "B77W",
-      "Fixes": {
-        "Folzz": "FOLZZ",
-        "Marck": "MARCK"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "FOLZZ3",
-      "STAR": "",
-      "Altitude": 7000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "Spirit Wings 2368": {
-      "Callsign": "NKS2368",
-      "AircraftType": "A319",
-      "Fixes": {
-        "Snapr": "SNAPR"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SNAPR2",
-      "STAR": "",
-      "Altitude": 10000,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "C46",
-      "AddressingForm": 0
-    },
-    "Spirit Wings 2822": {
-      "Callsign": "NKS2822",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Alnzo": "ALNZO",
-        "Flmgo": "FLMGO",
-        "Geith": "GEITH"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "FLMGO2",
-      "STAR": "",
-      "Altitude": 7938,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "Spirit Wings 4840": {
-      "Callsign": "NKS4840",
-      "AircraftType": "A319",
-      "Fixes": {
-        "Hrock": "HROCK",
-        "Joenz": "JOENZ"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "HROCK2",
-      "STAR": "",
-      "Altitude": 9281,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "Spirit Wings 4874": {
-      "Callsign": "NKS4874",
-      "AircraftType": "A20N",
-      "Fixes": {
-        "Blfrg": "BLFRG",
-        "Corea": "COREA"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "BNICE2",
-      "STAR": "",
-      "Altitude": 13000,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "C46",
-      "AddressingForm": 0
-    },
-    "Spirit Wings 6286": {
-      "Callsign": "NKS6286",
-      "AircraftType": "A321",
-      "Fixes": {
-        "Altnn": "ALTNN",
-        "Perts": "PERTS"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ALTNN2",
-      "STAR": "",
-      "Altitude": 12899,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "1W",
-      "AddressingForm": 0
-    },
-    "Sun Country 191": {
-      "Callsign": "SCX191",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Hurcn": "HURCN",
-        "Joenz": "JOENZ"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "HURCN4",
-      "STAR": "",
-      "Altitude": 13000,
-      "State": "departure",
-      "ControllerFrequency": "1W",
-      "TrackingController": "C46",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Speedware 58 Delta, Climb and Maintain, One $6,000\"",
@@ -788,5 +91,357 @@
     "[local-stt] parsed commands: [C160] (conf=1.00)",
     "[local-stt] validated commands: [C160] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"BAW58D C160\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 4070 Ti SUPER (16063MB)",
+  "stt_aircraft": {
+    "Alaska 2115": {
+      "AddressingForm": 0,
+      "AircraftType": "B739",
+      "Altitude": 4493,
+      "AssignedApproach": "",
+      "Callsign": "ASA2115",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Bnice": "BNICE",
+        "Lrick": "LRICK",
+        "Mreno": "MRENO",
+        "Yoloo": "YOLOO"
+      },
+      "SID": "BNICE2",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1D"
+    },
+    "Alaska 2847": {
+      "AddressingForm": 0,
+      "AircraftType": "B739",
+      "Altitude": 7112,
+      "AssignedApproach": "",
+      "Callsign": "ASA2847",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Hurcn": "HURCN",
+        "Joenz": "JOENZ",
+        "Niblt": "NIBLT"
+      },
+      "SID": "HURCN4",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "Allegiant 4116": {
+      "AddressingForm": 0,
+      "AircraftType": "A319",
+      "Altitude": 13000,
+      "AssignedApproach": "",
+      "Callsign": "AAY4116",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1D",
+      "Fixes": {},
+      "SID": "HROCK2",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1D"
+    },
+    "AmeriJet 5497 heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "B762",
+      "Altitude": 13000,
+      "AssignedApproach": "",
+      "Callsign": "AJT5497",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Fundi": "FUNDI"
+      },
+      "SID": "MAYNR3",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "American 3831": {
+      "AddressingForm": 0,
+      "AircraftType": "B738",
+      "Altitude": 10000,
+      "AssignedApproach": "",
+      "Callsign": "AAL3831",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Gladz": "GLADZ"
+      },
+      "SID": "GLADZ4",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "American 95 heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "B772",
+      "Altitude": 10000,
+      "AssignedApproach": "",
+      "Callsign": "AAL95",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {},
+      "SID": "FOLZZ3",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "Bahamas 9039": {
+      "AddressingForm": 0,
+      "AircraftType": "AT45",
+      "Altitude": 7000,
+      "AssignedApproach": "",
+      "Callsign": "BHS9039",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Mynn": "MYNN",
+        "Rajay": "RAJAY"
+      },
+      "SID": "SNAPR2",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "C46"
+    },
+    "Caribbean Airlines 807": {
+      "AddressingForm": 0,
+      "AircraftType": "B738",
+      "Altitude": 16000,
+      "AssignedApproach": "",
+      "Callsign": "BWA807",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {},
+      "SID": "KLADA2",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "Delta 14": {
+      "AddressingForm": 0,
+      "AircraftType": "MD88",
+      "Altitude": 10000,
+      "AssignedApproach": "",
+      "Callsign": "DAL14",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {},
+      "SID": "FOLZZ3",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "Delta 1869": {
+      "AddressingForm": 0,
+      "AircraftType": "CF46",
+      "Altitude": 13000,
+      "AssignedApproach": "",
+      "Callsign": "DAL1869",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Altnn": "ALTNN"
+      },
+      "SID": "ALTNN2",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "C46"
+    },
+    "Europa 89UY heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "A332",
+      "Altitude": 16000,
+      "AssignedApproach": "",
+      "Callsign": "AEA89UY",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {},
+      "SID": "FOLZZ3",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "Iberia 11ZK heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "A332",
+      "Altitude": 5233,
+      "AssignedApproach": "",
+      "Callsign": "IBE11ZK",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Folzz": "FOLZZ"
+      },
+      "SID": "FOLZZ3",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "KLM 23P heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "B78X",
+      "Altitude": 3438,
+      "AssignedApproach": "",
+      "Callsign": "KLM23P",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Folzz": "FOLZZ",
+        "Jamba": "JAMBA",
+        "Kbola": "KBOLA",
+        "Marck": "MARCK"
+      },
+      "SID": "FOLZZ3",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "Southwest 962": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 7351,
+      "AssignedApproach": "",
+      "Callsign": "SWA962",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Cudel": "CUDEL",
+        "Pastl": "PASTL",
+        "Regae": "REGAE",
+        "Zombi": "ZOMBI"
+      },
+      "SID": "REGAE2",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1D"
+    },
+    "Speedbird 58D heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "B77W",
+      "Altitude": 7000,
+      "AssignedApproach": "",
+      "Callsign": "BAW58D",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Folzz": "FOLZZ",
+        "Marck": "MARCK"
+      },
+      "SID": "FOLZZ3",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "Spirit Wings 2368": {
+      "AddressingForm": 0,
+      "AircraftType": "A319",
+      "Altitude": 10000,
+      "AssignedApproach": "",
+      "Callsign": "NKS2368",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Snapr": "SNAPR"
+      },
+      "SID": "SNAPR2",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "C46"
+    },
+    "Spirit Wings 2822": {
+      "AddressingForm": 0,
+      "AircraftType": "A321",
+      "Altitude": 7938,
+      "AssignedApproach": "",
+      "Callsign": "NKS2822",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Alnzo": "ALNZO",
+        "Flmgo": "FLMGO",
+        "Geith": "GEITH"
+      },
+      "SID": "FLMGO2",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "Spirit Wings 4840": {
+      "AddressingForm": 0,
+      "AircraftType": "A319",
+      "Altitude": 9281,
+      "AssignedApproach": "",
+      "Callsign": "NKS4840",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Hrock": "HROCK",
+        "Joenz": "JOENZ"
+      },
+      "SID": "HROCK2",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1D"
+    },
+    "Spirit Wings 4874": {
+      "AddressingForm": 0,
+      "AircraftType": "A20N",
+      "Altitude": 13000,
+      "AssignedApproach": "",
+      "Callsign": "NKS4874",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Blfrg": "BLFRG",
+        "Corea": "COREA"
+      },
+      "SID": "BNICE2",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "C46"
+    },
+    "Spirit Wings 6286": {
+      "AddressingForm": 0,
+      "AircraftType": "A321",
+      "Altitude": 12899,
+      "AssignedApproach": "",
+      "Callsign": "NKS6286",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Altnn": "ALTNN",
+        "Perts": "PERTS"
+      },
+      "SID": "ALTNN2",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1W"
+    },
+    "Sun Country 191": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 13000,
+      "AssignedApproach": "",
+      "Callsign": "SCX191",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1W",
+      "Fixes": {
+        "Hurcn": "HURCN",
+        "Joenz": "JOENZ"
+      },
+      "SID": "HURCN4",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "C46"
+    }
+  },
+  "time": "2026-01-23T03:15:26.237799481Z",
+  "transcript": "Speedware 58 Delta, Climb and Maintain, One $6,000",
+  "whisper_duration_ms": 309.111
 }

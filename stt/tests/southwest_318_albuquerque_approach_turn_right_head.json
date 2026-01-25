@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-23T00:07:46.179054039Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 6784,
+  "callsign": "SWA318",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,96 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Southwest 318, Albuquerque approach, turn right, heading 220 to Senate maintain one one thousand, vector to I L S runway eight, final approach, cor--",
-  "whisper_duration_ms": 504.951,
-  "audio_duration_ms": 6784,
-  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
-  "callsign": "SWA318",
   "command": "R220 A110 EI8",
-  "stt_aircraft": {
-    "SKW4473": {
-      "Callsign": "SKW4473",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Pnyon": "PNYON",
-        "Rdrnr": "RDRNR",
-        "Spedy": "SPEDY",
-        "Tyilr": "TYILR"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "RDRNR3",
-      "STAR": "",
-      "Altitude": 6701,
-      "State": "departure",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "SWA318": {
-      "Callsign": "SWA318",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Albuquerque International Sunport": "KABQ",
-        "Aside": "ASIDE"
-      },
-      "CandidateApproaches": {
-        "I L S runway eight": "I8",
-        "I L S runway three": "I3",
-        "r-nav runway eight": "RZ8",
-        "r-nav runway three": "RY3"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 15063,
-      "State": "arrival",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "SkyWest 4473": {
-      "Callsign": "SKW4473",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Pnyon": "PNYON",
-        "Rdrnr": "RDRNR",
-        "Spedy": "SPEDY",
-        "Tyilr": "TYILR"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "RDRNR3",
-      "STAR": "",
-      "Altitude": 6701,
-      "State": "departure",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "Southwest 318": {
-      "Callsign": "SWA318",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Albuquerque International Sunport": "KABQ",
-        "Aside": "ASIDE"
-      },
-      "CandidateApproaches": {
-        "I L S runway eight": "I8",
-        "I L S runway three": "I3",
-        "r-nav runway eight": "RZ8",
-        "r-nav runway three": "RY3"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 15063,
-      "State": "arrival",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Southwest 318, Albuquerque approach, turn right, heading 220 to Senate maintain one one thousand, vector to I L S runway eight, final approach, cor--\"",
@@ -173,5 +84,53 @@
     "[local-stt] parsed commands: [R220 A110 EI8] (conf=0.95)",
     "[local-stt] validated commands: [R220 A110 EI8] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"SWA318 R220 A110 EI8\" (conf=0.95, time=612.791µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "stt_aircraft": {
+    "SkyWest 4473": {
+      "AddressingForm": 0,
+      "AircraftType": "E75L",
+      "Altitude": 6701,
+      "AssignedApproach": "",
+      "Callsign": "SKW4473",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1N",
+      "Fixes": {
+        "Pnyon": "PNYON",
+        "Rdrnr": "RDRNR",
+        "Spedy": "SPEDY",
+        "Tyilr": "TYILR"
+      },
+      "SID": "RDRNR3",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1N"
+    },
+    "Southwest 318": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 15063,
+      "AssignedApproach": "",
+      "Callsign": "SWA318",
+      "CandidateApproaches": {
+        "I L S runway eight": "I8",
+        "I L S runway three": "I3",
+        "r-nav runway eight": "RZ8",
+        "r-nav runway three": "RY3"
+      },
+      "ControllerFrequency": "1N",
+      "Fixes": {
+        "Albuquerque International Sunport": "KABQ",
+        "Aside": "ASIDE"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "arrival",
+      "TrackingController": "1N"
+    }
+  },
+  "time": "2026-01-23T00:07:46.179054039Z",
+  "transcript": "Southwest 318, Albuquerque approach, turn right, heading 220 to Senate maintain one one thousand, vector to I L S runway eight, final approach, cor--",
+  "whisper_duration_ms": 504.951
 }

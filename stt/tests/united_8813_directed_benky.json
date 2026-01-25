@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T14:53:44.534868226Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 2304,
+  "callsign": "UAL8813",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,92 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "United 8813, directed Benky.",
-  "whisper_duration_ms": 280.207,
-  "audio_duration_ms": 2304,
-  "processor": "GPU: Apple M5, 10 CPU / 10 GPU cores, 24GB",
-  "callsign": "UAL8813",
   "command": "DBENKY",
-  "stt_aircraft": {
-    "ENY8271": {
-      "Callsign": "ENY8271",
-      "AircraftType": "E170",
-      "Fixes": {
-        "Mikie": "MYKIE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.W",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0
-    },
-    "Envoy 8271": {
-      "Callsign": "ENY8271",
-      "AircraftType": "E170",
-      "Fixes": {
-        "Mikie": "MYKIE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.W",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0
-    },
-    "UAL8813": {
-      "Callsign": "UAL8813",
-      "AircraftType": "B739",
-      "Fixes": {
-        "Aston": "AHSTN",
-        "Benky": "BENKY",
-        "Chicago O'Hare International Airport": "KORD",
-        "Newark": "NEWRK"
-      },
-      "CandidateApproaches": {
-        "I L S runway two eight center": "I8C",
-        "I L S runway two seven center": "I7C",
-        "I L S runway two seven right": "I7R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "BENKY6",
-      "Altitude": 19229,
-      "State": "arrival",
-      "ControllerFrequency": "1X",
-      "TrackingController": "1X",
-      "AddressingForm": 0
-    },
-    "United 8813": {
-      "Callsign": "UAL8813",
-      "AircraftType": "B739",
-      "Fixes": {
-        "Aston": "AHSTN",
-        "Benky": "BENKY",
-        "Chicago O'Hare International Airport": "KORD",
-        "Newark": "NEWRK"
-      },
-      "CandidateApproaches": {
-        "I L S runway two eight center": "I8C",
-        "I L S runway two seven center": "I7C",
-        "I L S runway two seven right": "I7R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "BENKY6",
-      "Altitude": 19229,
-      "State": "arrival",
-      "ControllerFrequency": "1X",
-      "TrackingController": "1X",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"United 8813, directed Benky.\"",
@@ -128,5 +43,51 @@
     "[local-stt] parsed commands: [DBENKY] (conf=1.00)",
     "[local-stt] validated commands: [DBENKY] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"UAL8813 DBENKY\" (conf=1.00, time=67.334µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: Apple M5, 10 CPU / 10 GPU cores, 24GB",
+  "stt_aircraft": {
+    "Envoy 8271": {
+      "AddressingForm": 0,
+      "AircraftType": "E170",
+      "Altitude": 5000,
+      "AssignedApproach": "",
+      "Callsign": "ENY8271",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1G",
+      "Fixes": {
+        "Mikie": "MYKIE"
+      },
+      "SID": "ORD8.W",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1G"
+    },
+    "United 8813": {
+      "AddressingForm": 0,
+      "AircraftType": "B739",
+      "Altitude": 19229,
+      "AssignedApproach": "",
+      "Callsign": "UAL8813",
+      "CandidateApproaches": {
+        "I L S runway two eight center": "I8C",
+        "I L S runway two seven center": "I7C",
+        "I L S runway two seven right": "I7R"
+      },
+      "ControllerFrequency": "1X",
+      "Fixes": {
+        "Aston": "AHSTN",
+        "Benky": "BENKY",
+        "Chicago O'Hare International Airport": "KORD",
+        "Newark": "NEWRK"
+      },
+      "SID": "",
+      "STAR": "BENKY6",
+      "State": "arrival",
+      "TrackingController": "1X"
+    }
+  },
+  "time": "2026-01-22T14:53:44.534868226Z",
+  "transcript": "United 8813, directed Benky.",
+  "whisper_duration_ms": 280.207
 }

@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T02:37:24.753142298Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 4736,
+  "callsign": "SWA9997",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,52 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "SW 99 97, climb and maintain one seven thousand, Clear Direct, Doktr",
-  "whisper_duration_ms": 386.498,
-  "audio_duration_ms": 4736,
-  "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11999MB)",
-  "callsign": "SWA9997",
   "command": "C170 DDOKTR",
-  "stt_aircraft": {
-    "SWA9997": {
-      "Callsign": "SWA9997",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cordy": "CORDY",
-        "Doktr": "DOKTR",
-        "Fobug": "FOBUG",
-        "Rochester": "RST"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "RST1",
-      "STAR": "",
-      "Altitude": 5626,
-      "State": "departure",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    },
-    "Southwest 9997": {
-      "Callsign": "SWA9997",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Cordy": "CORDY",
-        "Doktr": "DOKTR",
-        "Fobug": "FOBUG",
-        "Rochester": "RST"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "RST1",
-      "STAR": "",
-      "Altitude": 5626,
-      "State": "departure",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"SW 99 97, climb and maintain one seven thousand, Clear Direct, Doktr\"",
@@ -107,5 +62,31 @@
     "[local-stt] parsed commands: [C170 DDOKTR] (conf=1.00)",
     "[local-stt] validated commands: [C170 DDOKTR] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"SWA9997 C170 DDOKTR\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11999MB)",
+  "stt_aircraft": {
+    "Southwest 9997": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 5626,
+      "AssignedApproach": "",
+      "Callsign": "SWA9997",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1R",
+      "Fixes": {
+        "Cordy": "CORDY",
+        "Doktr": "DOKTR",
+        "Fobug": "FOBUG",
+        "Rochester": "RST"
+      },
+      "SID": "RST1",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1R"
+    }
+  },
+  "time": "2026-01-22T02:37:24.753142298Z",
+  "transcript": "SW 99 97, climb and maintain one seven thousand, Clear Direct, Doktr",
+  "whisper_duration_ms": 386.498
 }

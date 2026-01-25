@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T02:35:46.046696205Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 2688,
+  "callsign": "ENY6790",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,220 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Envoy 6790 to center maintain 4000",
-  "whisper_duration_ms": 354.216,
-  "audio_duration_ms": 2688,
-  "processor": "GPU: NVIDIA GeForce RTX 4080 SUPER (16047MB)",
-  "callsign": "ENY6790",
   "command": "A40",
-  "stt_aircraft": {
-    "AAY654": {
-      "Callsign": "AAY654",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Aabez": "AABEZ",
-        "Candd": "CANDD",
-        "Dblem": "DBLEM",
-        "Geequ": "GEEQU",
-        "Haptin": "HAPTN",
-        "Hasti": "HASTI",
-        "Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field": "KMSP",
-        "Narco": "NARCO",
-        "Pigzi": "PIGZI",
-        "Pinke": "PINKE"
-      },
-      "CandidateApproaches": {
-        "I L S runway three zero left": "I30L",
-        "I L S runway three zero right": "I30R",
-        "Visual runway three zero left": "VL3",
-        "Visual runway three zero right": "VR3",
-        "r-nav yankee runway three zero left": "YL3",
-        "r-nav yankee runway three zero right": "YR3",
-        "r-nav zulu runway three zero left": "ZL3",
-        "r-nav zulu runway three zero right": "ZR3"
-      },
-      "AssignedApproach": "ILS Runway 30L",
-      "SID": "",
-      "STAR": "BLUEM4",
-      "Altitude": 11907,
-      "State": "arrival",
-      "ControllerFrequency": "1H",
-      "TrackingController": "1H",
-      "AddressingForm": 0
-    },
-    "Allegiant 654": {
-      "Callsign": "AAY654",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Aabez": "AABEZ",
-        "Candd": "CANDD",
-        "Dblem": "DBLEM",
-        "Geequ": "GEEQU",
-        "Haptin": "HAPTN",
-        "Hasti": "HASTI",
-        "Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field": "KMSP",
-        "Narco": "NARCO",
-        "Pigzi": "PIGZI",
-        "Pinke": "PINKE"
-      },
-      "CandidateApproaches": {
-        "I L S runway three zero left": "I30L",
-        "I L S runway three zero right": "I30R",
-        "Visual runway three zero left": "VL3",
-        "Visual runway three zero right": "VR3",
-        "r-nav yankee runway three zero left": "YL3",
-        "r-nav yankee runway three zero right": "YR3",
-        "r-nav zulu runway three zero left": "ZL3",
-        "r-nav zulu runway three zero right": "ZR3"
-      },
-      "AssignedApproach": "ILS Runway 30L",
-      "SID": "",
-      "STAR": "BLUEM4",
-      "Altitude": 11907,
-      "State": "arrival",
-      "ControllerFrequency": "1H",
-      "TrackingController": "1H",
-      "AddressingForm": 0
-    },
-    "ENY6790": {
-      "Callsign": "ENY6790",
-      "AircraftType": "E170",
-      "Fixes": {
-        "Bonna": "BONNA",
-        "Geequ": "GEEQU",
-        "Grovz": "GROVZ",
-        "Jacko": "JACKO",
-        "Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field": "KMSP",
-        "Sammz": "SAMMZ",
-        "Soggy": "SOGGY",
-        "Trtel": "TRTEL",
-        "Wulam": "WULAM"
-      },
-      "CandidateApproaches": {
-        "I L S runway three zero left": "I30L",
-        "I L S runway three zero right": "I30R",
-        "Visual runway three zero left": "VL3",
-        "Visual runway three zero right": "VR3",
-        "r-nav yankee runway three zero left": "YL3",
-        "r-nav yankee runway three zero right": "YR3",
-        "r-nav zulu runway three zero left": "ZL3",
-        "r-nav zulu runway three zero right": "ZR3"
-      },
-      "AssignedApproach": "ILS Runway 30R",
-      "SID": "",
-      "STAR": "KKILR3",
-      "Altitude": 10000,
-      "State": "arrival",
-      "ControllerFrequency": "1I",
-      "TrackingController": "1I",
-      "AddressingForm": 0
-    },
-    "Envoy 6790": {
-      "Callsign": "ENY6790",
-      "AircraftType": "E170",
-      "Fixes": {
-        "Bonna": "BONNA",
-        "Geequ": "GEEQU",
-        "Grovz": "GROVZ",
-        "Jacko": "JACKO",
-        "Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field": "KMSP",
-        "Sammz": "SAMMZ",
-        "Soggy": "SOGGY",
-        "Trtel": "TRTEL",
-        "Wulam": "WULAM"
-      },
-      "CandidateApproaches": {
-        "I L S runway three zero left": "I30L",
-        "I L S runway three zero right": "I30R",
-        "Visual runway three zero left": "VL3",
-        "Visual runway three zero right": "VR3",
-        "r-nav yankee runway three zero left": "YL3",
-        "r-nav yankee runway three zero right": "YR3",
-        "r-nav zulu runway three zero left": "ZL3",
-        "r-nav zulu runway three zero right": "ZR3"
-      },
-      "AssignedApproach": "ILS Runway 30R",
-      "SID": "",
-      "STAR": "KKILR3",
-      "Altitude": 10000,
-      "State": "arrival",
-      "ControllerFrequency": "1I",
-      "TrackingController": "1I",
-      "AddressingForm": 0
-    },
-    "SCX173": {
-      "Callsign": "SCX173",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Aabez": "AABEZ",
-        "Dblem": "DBLEM",
-        "Geequ": "GEEQU",
-        "Haptin": "HAPTN",
-        "Hasti": "HASTI",
-        "Hdeee": "HDEEE",
-        "Jjeni": "JJENI",
-        "Mauer": "MAUER",
-        "Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field": "KMSP",
-        "Narco": "NARCO",
-        "Pigzi": "PIGZI",
-        "Pinke": "PINKE"
-      },
-      "CandidateApproaches": {
-        "I L S runway three zero left": "I30L",
-        "I L S runway three zero right": "I30R",
-        "Visual runway three zero left": "VL3",
-        "Visual runway three zero right": "VR3",
-        "r-nav yankee runway three zero left": "YL3",
-        "r-nav yankee runway three zero right": "YR3",
-        "r-nav zulu runway three zero left": "ZL3",
-        "r-nav zulu runway three zero right": "ZR3"
-      },
-      "AssignedApproach": "ILS Runway 30L",
-      "SID": "",
-      "STAR": "TORGY3",
-      "Altitude": 11613,
-      "State": "arrival",
-      "ControllerFrequency": "1H",
-      "TrackingController": "1H",
-      "AddressingForm": 0
-    },
-    "Sun Country 173": {
-      "Callsign": "SCX173",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Aabez": "AABEZ",
-        "Dblem": "DBLEM",
-        "Geequ": "GEEQU",
-        "Haptin": "HAPTN",
-        "Hasti": "HASTI",
-        "Hdeee": "HDEEE",
-        "Jjeni": "JJENI",
-        "Mauer": "MAUER",
-        "Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field": "KMSP",
-        "Narco": "NARCO",
-        "Pigzi": "PIGZI",
-        "Pinke": "PINKE"
-      },
-      "CandidateApproaches": {
-        "I L S runway three zero left": "I30L",
-        "I L S runway three zero right": "I30R",
-        "Visual runway three zero left": "VL3",
-        "Visual runway three zero right": "VR3",
-        "r-nav yankee runway three zero left": "YL3",
-        "r-nav yankee runway three zero right": "YR3",
-        "r-nav zulu runway three zero left": "ZL3",
-        "r-nav zulu runway three zero right": "ZR3"
-      },
-      "AssignedApproach": "ILS Runway 30L",
-      "SID": "",
-      "STAR": "TORGY3",
-      "Altitude": 11613,
-      "State": "arrival",
-      "ControllerFrequency": "1H",
-      "TrackingController": "1H",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Envoy 6790 to center maintain 4000\"",
@@ -272,5 +59,115 @@
     "[local-stt] parsed commands: [A40] (conf=1.00)",
     "[local-stt] validated commands: [A40] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"ENY6790 A40\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 4080 SUPER (16047MB)",
+  "stt_aircraft": {
+    "Allegiant 654": {
+      "AddressingForm": 0,
+      "AircraftType": "A320",
+      "Altitude": 11907,
+      "AssignedApproach": "ILS Runway 30L",
+      "Callsign": "AAY654",
+      "CandidateApproaches": {
+        "I L S runway three zero left": "I30L",
+        "I L S runway three zero right": "I30R",
+        "Visual runway three zero left": "VL3",
+        "Visual runway three zero right": "VR3",
+        "r-nav yankee runway three zero left": "YL3",
+        "r-nav yankee runway three zero right": "YR3",
+        "r-nav zulu runway three zero left": "ZL3",
+        "r-nav zulu runway three zero right": "ZR3"
+      },
+      "ControllerFrequency": "1H",
+      "Fixes": {
+        "Aabez": "AABEZ",
+        "Candd": "CANDD",
+        "Dblem": "DBLEM",
+        "Geequ": "GEEQU",
+        "Haptin": "HAPTN",
+        "Hasti": "HASTI",
+        "Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field": "KMSP",
+        "Narco": "NARCO",
+        "Pigzi": "PIGZI",
+        "Pinke": "PINKE"
+      },
+      "SID": "",
+      "STAR": "BLUEM4",
+      "State": "arrival",
+      "TrackingController": "1H"
+    },
+    "Envoy 6790": {
+      "AddressingForm": 0,
+      "AircraftType": "E170",
+      "Altitude": 10000,
+      "AssignedApproach": "ILS Runway 30R",
+      "Callsign": "ENY6790",
+      "CandidateApproaches": {
+        "I L S runway three zero left": "I30L",
+        "I L S runway three zero right": "I30R",
+        "Visual runway three zero left": "VL3",
+        "Visual runway three zero right": "VR3",
+        "r-nav yankee runway three zero left": "YL3",
+        "r-nav yankee runway three zero right": "YR3",
+        "r-nav zulu runway three zero left": "ZL3",
+        "r-nav zulu runway three zero right": "ZR3"
+      },
+      "ControllerFrequency": "1I",
+      "Fixes": {
+        "Bonna": "BONNA",
+        "Geequ": "GEEQU",
+        "Grovz": "GROVZ",
+        "Jacko": "JACKO",
+        "Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field": "KMSP",
+        "Sammz": "SAMMZ",
+        "Soggy": "SOGGY",
+        "Trtel": "TRTEL",
+        "Wulam": "WULAM"
+      },
+      "SID": "",
+      "STAR": "KKILR3",
+      "State": "arrival",
+      "TrackingController": "1I"
+    },
+    "Sun Country 173": {
+      "AddressingForm": 0,
+      "AircraftType": "B738",
+      "Altitude": 11613,
+      "AssignedApproach": "ILS Runway 30L",
+      "Callsign": "SCX173",
+      "CandidateApproaches": {
+        "I L S runway three zero left": "I30L",
+        "I L S runway three zero right": "I30R",
+        "Visual runway three zero left": "VL3",
+        "Visual runway three zero right": "VR3",
+        "r-nav yankee runway three zero left": "YL3",
+        "r-nav yankee runway three zero right": "YR3",
+        "r-nav zulu runway three zero left": "ZL3",
+        "r-nav zulu runway three zero right": "ZR3"
+      },
+      "ControllerFrequency": "1H",
+      "Fixes": {
+        "Aabez": "AABEZ",
+        "Dblem": "DBLEM",
+        "Geequ": "GEEQU",
+        "Haptin": "HAPTN",
+        "Hasti": "HASTI",
+        "Hdeee": "HDEEE",
+        "Jjeni": "JJENI",
+        "Mauer": "MAUER",
+        "Minneapolis–Saint Paul International Airport / Wold–Chamberlain Field": "KMSP",
+        "Narco": "NARCO",
+        "Pigzi": "PIGZI",
+        "Pinke": "PINKE"
+      },
+      "SID": "",
+      "STAR": "TORGY3",
+      "State": "arrival",
+      "TrackingController": "1H"
+    }
+  },
+  "time": "2026-01-22T02:35:46.046696205Z",
+  "transcript": "Envoy 6790 to center maintain 4000",
+  "whisper_duration_ms": 354.216
 }

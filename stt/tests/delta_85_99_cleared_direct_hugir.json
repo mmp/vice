@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T02:32:28.956980638Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 3200,
+  "callsign": "DAL8599",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,52 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Delta 85 99 cleared direct Hugir",
-  "whisper_duration_ms": 381.43,
-  "audio_duration_ms": 3200,
-  "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11999MB)",
-  "callsign": "DAL8599",
   "command": "DHUGIR",
-  "stt_aircraft": {
-    "DAL8599": {
-      "Callsign": "DAL8599",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "Arrex": "ARREX",
-        "Hugir": "HUGIR",
-        "Mconl": "MCONL",
-        "Schep": "SCHEP"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SCHEP1",
-      "STAR": "",
-      "Altitude": 7950,
-      "State": "departure",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    },
-    "Delta 8599": {
-      "Callsign": "DAL8599",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "Arrex": "ARREX",
-        "Hugir": "HUGIR",
-        "Mconl": "MCONL",
-        "Schep": "SCHEP"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SCHEP1",
-      "STAR": "",
-      "Altitude": 7950,
-      "State": "departure",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Delta 85 99 cleared direct Hugir\"",
@@ -96,5 +51,31 @@
     "[local-stt] parsed commands: [DHUGIR] (conf=1.00)",
     "[local-stt] validated commands: [DHUGIR] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"DAL8599 DHUGIR\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11999MB)",
+  "stt_aircraft": {
+    "Delta 8599": {
+      "AddressingForm": 0,
+      "AircraftType": "A21N",
+      "Altitude": 7950,
+      "AssignedApproach": "",
+      "Callsign": "DAL8599",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1R",
+      "Fixes": {
+        "Arrex": "ARREX",
+        "Hugir": "HUGIR",
+        "Mconl": "MCONL",
+        "Schep": "SCHEP"
+      },
+      "SID": "SCHEP1",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1R"
+    }
+  },
+  "time": "2026-01-22T02:32:28.956980638Z",
+  "transcript": "Delta 85 99 cleared direct Hugir",
+  "whisper_duration_ms": 381.43
 }

@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-21T23:15:38.424277-05:00",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 8832,
+  "callsign": "AMX36",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,124 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_arm64.s:1268:runtime.goexit"
   ],
-  "transcript": "AeroMexico 36, Proceed direct Winnie, intercept the runway four right localizer, descend and maintain one one thousand.",
-  "whisper_duration_ms": 481.615,
-  "audio_duration_ms": 8832,
-  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
-  "callsign": "AMX36",
   "command": "DWINNI I D110",
-  "stt_aircraft": {
-    "AMX36": {
-      "Callsign": "AMX36",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Ernie": "ERNEI",
-        "Goshi": "GOSHI",
-        "Jody": "JOODY",
-        "Logan International Airport": "KBOS",
-        "Milt": "MILTT",
-        "Nabbo": "NABBO",
-        "Provi": "PROVI",
-        "Sofie": "SOFEE",
-        "Winnie": "WINNI"
-      },
-      "CandidateApproaches": {
-        "I L S runway four right": "I4R",
-        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
-        "r-nav runway four left": "R4L",
-        "r-nav runway four right": "R4R"
-      },
-      "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
-      "STAR": "ROBUC3",
-      "Altitude": 12710,
-      "State": "arrival",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "AeroMexico 36": {
-      "Callsign": "AMX36",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Ernie": "ERNEI",
-        "Goshi": "GOSHI",
-        "Jody": "JOODY",
-        "Logan International Airport": "KBOS",
-        "Milt": "MILTT",
-        "Nabbo": "NABBO",
-        "Provi": "PROVI",
-        "Sofie": "SOFEE",
-        "Winnie": "WINNI"
-      },
-      "CandidateApproaches": {
-        "I L S runway four right": "I4R",
-        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
-        "r-nav runway four left": "R4L",
-        "r-nav runway four right": "R4R"
-      },
-      "AssignedApproach": "ILS Runway 4R",
-      "SID": "",
-      "STAR": "ROBUC3",
-      "Altitude": 12710,
-      "State": "arrival",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "GPD497": {
-      "Callsign": "GPD497",
-      "AircraftType": "PC12",
-      "Fixes": {
-        "All": "AAALL",
-        "Emtapin": "MTAPN",
-        "Levron": "LVRON",
-        "Logan International Airport": "KBOS",
-        "Nunzo": "NUNZO",
-        "Woons": "WOONS"
-      },
-      "CandidateApproaches": {
-        "I L S runway four right": "I4R",
-        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
-        "r-nav runway four left": "R4L",
-        "r-nav runway four right": "R4R"
-      },
-      "AssignedApproach": "RNAV Runway 4L",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 5798,
-      "State": "arrival",
-      "ControllerFrequency": "1U",
-      "TrackingController": "1U",
-      "AddressingForm": 0
-    },
-    "Godspeed 497": {
-      "Callsign": "GPD497",
-      "AircraftType": "PC12",
-      "Fixes": {
-        "All": "AAALL",
-        "Emtapin": "MTAPN",
-        "Levron": "LVRON",
-        "Logan International Airport": "KBOS",
-        "Nunzo": "NUNZO",
-        "Woons": "WOONS"
-      },
-      "CandidateApproaches": {
-        "I L S runway four right": "I4R",
-        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
-        "r-nav runway four left": "R4L",
-        "r-nav runway four right": "R4R"
-      },
-      "AssignedApproach": "RNAV Runway 4L",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 5798,
-      "State": "arrival",
-      "ControllerFrequency": "1U",
-      "TrackingController": "1U",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"AeroMexico 36, Proceed direct Winnie, intercept the runway four right localizer, descend and maintain one one thousand.\"",
@@ -202,5 +85,67 @@
     "[local-stt] parsed commands: [DWINNI D110] (conf=1.00)",
     "[local-stt] validated commands: [DWINNI D110] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"AMX36 DWINNI D110\" (conf=1.00, time=747.084µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "stt_aircraft": {
+    "AeroMexico 36": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 12710,
+      "AssignedApproach": "ILS Runway 4R",
+      "Callsign": "AMX36",
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "ControllerFrequency": "1M",
+      "Fixes": {
+        "Ernie": "ERNEI",
+        "Goshi": "GOSHI",
+        "Jody": "JOODY",
+        "Logan International Airport": "KBOS",
+        "Milt": "MILTT",
+        "Nabbo": "NABBO",
+        "Provi": "PROVI",
+        "Sofie": "SOFEE",
+        "Winnie": "WINNI"
+      },
+      "SID": "",
+      "STAR": "ROBUC3",
+      "State": "arrival",
+      "TrackingController": "1M"
+    },
+    "Godspeed 497": {
+      "AddressingForm": 0,
+      "AircraftType": "PC12",
+      "Altitude": 5798,
+      "AssignedApproach": "RNAV Runway 4L",
+      "Callsign": "GPD497",
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R",
+        "I L S runway one five right then visual approach left traffic to runway four left": "I5RC",
+        "r-nav runway four left": "R4L",
+        "r-nav runway four right": "R4R"
+      },
+      "ControllerFrequency": "1U",
+      "Fixes": {
+        "All": "AAALL",
+        "Emtapin": "MTAPN",
+        "Levron": "LVRON",
+        "Logan International Airport": "KBOS",
+        "Nunzo": "NUNZO",
+        "Woons": "WOONS"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "arrival",
+      "TrackingController": "1U"
+    }
+  },
+  "time": "2026-01-21T23:15:38.424277-05:00",
+  "transcript": "AeroMexico 36, Proceed direct Winnie, intercept the runway four right localizer, descend and maintain one one thousand.",
+  "whisper_duration_ms": 481.615
 }

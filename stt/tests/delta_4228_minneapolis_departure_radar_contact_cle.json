@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T02:33:59.832556773Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 5376,
+  "callsign": "DAL4228",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,86 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Delta 4228, Minneapolis Departure radar contact, clear direct Zogap, climb and maintain one seven thousand.",
-  "whisper_duration_ms": 315.53,
-  "audio_duration_ms": 5376,
-  "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11999MB)",
-  "callsign": "DAL4228",
   "command": "DZOGAP C170",
-  "stt_aircraft": {
-    "DAL4228": {
-      "Callsign": "DAL4228",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Pagoz": "PAGOZ",
-        "Zogap": "ZOGAP"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SMERF7",
-      "STAR": "",
-      "Altitude": 3725,
-      "State": "departure",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    },
-    "DAL59": {
-      "Callsign": "DAL59",
-      "AircraftType": "B739",
-      "Fixes": {
-        "Arrex": "ARREX",
-        "Hugir": "HUGIR",
-        "Mconl": "MCONL",
-        "Schep": "SCHEP"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SCHEP1",
-      "STAR": "",
-      "Altitude": 3687,
-      "State": "departure",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    },
-    "Delta 4228": {
-      "Callsign": "DAL4228",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Pagoz": "PAGOZ",
-        "Zogap": "ZOGAP"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SMERF7",
-      "STAR": "",
-      "Altitude": 3725,
-      "State": "departure",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    },
-    "Delta 59": {
-      "Callsign": "DAL59",
-      "AircraftType": "B739",
-      "Fixes": {
-        "Arrex": "ARREX",
-        "Hugir": "HUGIR",
-        "Mconl": "MCONL",
-        "Schep": "SCHEP"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SCHEP1",
-      "STAR": "",
-      "Altitude": 3687,
-      "State": "departure",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Delta 4228, Minneapolis Departure radar contact, clear direct Zogap, climb and maintain one seven thousand.\"",
@@ -148,5 +69,48 @@
     "[local-stt] parsed commands: [DZOGAP C170] (conf=1.00)",
     "[local-stt] validated commands: [DZOGAP C170] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"DAL4228 DZOGAP C170\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11999MB)",
+  "stt_aircraft": {
+    "Delta 4228": {
+      "AddressingForm": 0,
+      "AircraftType": "A320",
+      "Altitude": 3725,
+      "AssignedApproach": "",
+      "Callsign": "DAL4228",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1R",
+      "Fixes": {
+        "Pagoz": "PAGOZ",
+        "Zogap": "ZOGAP"
+      },
+      "SID": "SMERF7",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1R"
+    },
+    "Delta 59": {
+      "AddressingForm": 0,
+      "AircraftType": "B739",
+      "Altitude": 3687,
+      "AssignedApproach": "",
+      "Callsign": "DAL59",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1R",
+      "Fixes": {
+        "Arrex": "ARREX",
+        "Hugir": "HUGIR",
+        "Mconl": "MCONL",
+        "Schep": "SCHEP"
+      },
+      "SID": "SCHEP1",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1R"
+    }
+  },
+  "time": "2026-01-22T02:33:59.832556773Z",
+  "transcript": "Delta 4228, Minneapolis Departure radar contact, clear direct Zogap, climb and maintain one seven thousand.",
+  "whisper_duration_ms": 315.53
 }

@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T23:57:42.361931083Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 3072,
+  "callsign": "DAL84",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,176 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Delta 84, Clomman, May 10, 14,000.",
-  "whisper_duration_ms": 477.448,
-  "audio_duration_ms": 3072,
-  "processor": "GPU: Radeon RX550/550 Series (4096MB)",
-  "callsign": "DAL84",
   "command": "C140",
-  "stt_aircraft": {
-    "DAL15": {
-      "Callsign": "DAL15",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "Hartsfield Jackson Atlanta International Airport": "KATL",
-        "March": "MRCHH"
-      },
-      "CandidateApproaches": {
-        "I L S runway two eight": "I28",
-        "I L S runway two seven left": "I7L",
-        "I L S runway two six right": "I6R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "CHPPR1",
-      "Altitude": 13025,
-      "State": "arrival",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "DAL4975": {
-      "Callsign": "DAL4975",
-      "AircraftType": "B739",
-      "Fixes": {
-        "Hartsfield Jackson Atlanta International Airport": "KATL",
-        "Ondre": "ONDRE",
-        "Smelly": "SMELY",
-        "Straw": "STRWY"
-      },
-      "CandidateApproaches": {
-        "I L S runway two eight": "I28",
-        "I L S runway two seven left": "I7L",
-        "I L S runway two six right": "I6R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "ONDRE1",
-      "Altitude": 16055,
-      "State": "arrival",
-      "ControllerFrequency": "1L",
-      "TrackingController": "1L",
-      "AddressingForm": 0
-    },
-    "DAL84": {
-      "Callsign": "DAL84",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Riggs": "RIGGZ",
-        "Rivet": "RIVTT",
-        "Slaw": "SLAWW",
-        "Smeltz": "SMLTZ"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SMLTZ3",
-      "STAR": "",
-      "Altitude": 4836,
-      "State": "departure",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "DAL987": {
-      "Callsign": "DAL987",
-      "AircraftType": "B752",
-      "Fixes": {
-        "Bedodd": "BDODD",
-        "Cajun": "KAJIN",
-        "Snuffy": "SNUFY"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "KAJIN2",
-      "STAR": "",
-      "Altitude": 6266,
-      "State": "departure",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "Delta 15": {
-      "Callsign": "DAL15",
-      "AircraftType": "A21N",
-      "Fixes": {
-        "Hartsfield Jackson Atlanta International Airport": "KATL",
-        "March": "MRCHH"
-      },
-      "CandidateApproaches": {
-        "I L S runway two eight": "I28",
-        "I L S runway two seven left": "I7L",
-        "I L S runway two six right": "I6R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "CHPPR1",
-      "Altitude": 13025,
-      "State": "arrival",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "Delta 4975": {
-      "Callsign": "DAL4975",
-      "AircraftType": "B739",
-      "Fixes": {
-        "Hartsfield Jackson Atlanta International Airport": "KATL",
-        "Ondre": "ONDRE",
-        "Smelly": "SMELY",
-        "Straw": "STRWY"
-      },
-      "CandidateApproaches": {
-        "I L S runway two eight": "I28",
-        "I L S runway two seven left": "I7L",
-        "I L S runway two six right": "I6R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "ONDRE1",
-      "Altitude": 16055,
-      "State": "arrival",
-      "ControllerFrequency": "1L",
-      "TrackingController": "1L",
-      "AddressingForm": 0
-    },
-    "Delta 84": {
-      "Callsign": "DAL84",
-      "AircraftType": "A320",
-      "Fixes": {
-        "Riggs": "RIGGZ",
-        "Rivet": "RIVTT",
-        "Slaw": "SLAWW",
-        "Smeltz": "SMLTZ"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SMLTZ3",
-      "STAR": "",
-      "Altitude": 4836,
-      "State": "departure",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "Delta 987": {
-      "Callsign": "DAL987",
-      "AircraftType": "B752",
-      "Fixes": {
-        "Bedodd": "BDODD",
-        "Cajun": "KAJIN",
-        "Snuffy": "SNUFY"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "KAJIN2",
-      "STAR": "",
-      "Altitude": 6266,
-      "State": "departure",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Delta 84, Clomman, May 10, 14,000.\"",
@@ -212,5 +43,93 @@
     "[local-stt] parsed commands: [] (conf=0.00)",
     "[local-stt] validated commands: [] (conf=0.00)",
     "[local-stt] === DecodeTranscript END: \"DAL84 AGAIN\" (conf=1.00, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: Radeon RX550/550 Series (4096MB)",
+  "stt_aircraft": {
+    "Delta 15": {
+      "AddressingForm": 0,
+      "AircraftType": "A21N",
+      "Altitude": 13025,
+      "AssignedApproach": "",
+      "Callsign": "DAL15",
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Hartsfield Jackson Atlanta International Airport": "KATL",
+        "March": "MRCHH"
+      },
+      "SID": "",
+      "STAR": "CHPPR1",
+      "State": "arrival",
+      "TrackingController": "1D"
+    },
+    "Delta 4975": {
+      "AddressingForm": 0,
+      "AircraftType": "B739",
+      "Altitude": 16055,
+      "AssignedApproach": "",
+      "Callsign": "DAL4975",
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ControllerFrequency": "1L",
+      "Fixes": {
+        "Hartsfield Jackson Atlanta International Airport": "KATL",
+        "Ondre": "ONDRE",
+        "Smelly": "SMELY",
+        "Straw": "STRWY"
+      },
+      "SID": "",
+      "STAR": "ONDRE1",
+      "State": "arrival",
+      "TrackingController": "1L"
+    },
+    "Delta 84": {
+      "AddressingForm": 0,
+      "AircraftType": "A320",
+      "Altitude": 4836,
+      "AssignedApproach": "",
+      "Callsign": "DAL84",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1N",
+      "Fixes": {
+        "Riggs": "RIGGZ",
+        "Rivet": "RIVTT",
+        "Slaw": "SLAWW",
+        "Smeltz": "SMLTZ"
+      },
+      "SID": "SMLTZ3",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1N"
+    },
+    "Delta 987": {
+      "AddressingForm": 0,
+      "AircraftType": "B752",
+      "Altitude": 6266,
+      "AssignedApproach": "",
+      "Callsign": "DAL987",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1N",
+      "Fixes": {
+        "Bedodd": "BDODD",
+        "Cajun": "KAJIN",
+        "Snuffy": "SNUFY"
+      },
+      "SID": "KAJIN2",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1N"
+    }
+  },
+  "time": "2026-01-22T23:57:42.361931083Z",
+  "transcript": "Delta 84, Clomman, May 10, 14,000.",
+  "whisper_duration_ms": 477.448
 }

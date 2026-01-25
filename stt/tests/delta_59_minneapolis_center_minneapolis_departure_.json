@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T02:33:26.012134506Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 7424,
+  "callsign": "DAL59",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,52 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Delta 59 Minneapolis Center, Minneapolis Departure radar contact, Flighting two two zero, climb and maintain one seven seventeen thousand.",
-  "whisper_duration_ms": 417.549,
-  "audio_duration_ms": 7424,
-  "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11999MB)",
-  "callsign": "DAL59",
   "command": "H220 C170",
-  "stt_aircraft": {
-    "DAL59": {
-      "Callsign": "DAL59",
-      "AircraftType": "B739",
-      "Fixes": {
-        "Arrex": "ARREX",
-        "Hugir": "HUGIR",
-        "Mconl": "MCONL",
-        "Schep": "SCHEP"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SCHEP1",
-      "STAR": "",
-      "Altitude": 2461,
-      "State": "departure",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    },
-    "Delta 59": {
-      "Callsign": "DAL59",
-      "AircraftType": "B739",
-      "Fixes": {
-        "Arrex": "ARREX",
-        "Hugir": "HUGIR",
-        "Mconl": "MCONL",
-        "Schep": "SCHEP"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "SCHEP1",
-      "STAR": "",
-      "Altitude": 2461,
-      "State": "departure",
-      "ControllerFrequency": "1R",
-      "TrackingController": "1R",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Delta 59 Minneapolis Center, Minneapolis Departure radar contact, Flighting two two zero, climb and maintain one seven seventeen thousand.\"",
@@ -118,5 +73,31 @@
     "[local-stt] parsed commands: [H220 C170] (conf=1.00)",
     "[local-stt] validated commands: [H220 C170] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"DAL59 H220 C170\" (conf=1.00, time=784.9µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11999MB)",
+  "stt_aircraft": {
+    "Delta 59": {
+      "AddressingForm": 0,
+      "AircraftType": "B739",
+      "Altitude": 2461,
+      "AssignedApproach": "",
+      "Callsign": "DAL59",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1R",
+      "Fixes": {
+        "Arrex": "ARREX",
+        "Hugir": "HUGIR",
+        "Mconl": "MCONL",
+        "Schep": "SCHEP"
+      },
+      "SID": "SCHEP1",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1R"
+    }
+  },
+  "time": "2026-01-22T02:33:26.012134506Z",
+  "transcript": "Delta 59 Minneapolis Center, Minneapolis Departure radar contact, Flighting two two zero, climb and maintain one seven seventeen thousand.",
+  "whisper_duration_ms": 417.549
 }

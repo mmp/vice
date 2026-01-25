@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T02:25:52.488482353Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 3712,
+  "callsign": "SKW8839",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,48 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Skywest 8800 9th, Minneapolis, Park Charter, contact, climb and maintain one seven thousand.",
-  "whisper_duration_ms": 329.696,
-  "audio_duration_ms": 3712,
-  "processor": "GPU: NVIDIA GeForce RTX 4080 SUPER (16047MB)",
-  "callsign": "SKW8839",
   "command": "C170",
-  "stt_aircraft": {
-    "SKW8839": {
-      "Callsign": "SKW8839",
-      "AircraftType": "CRJ7",
-      "Fixes": {
-        "Dwiyt": "DWIYT",
-        "Snine": "SNINE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "WLSTN7",
-      "STAR": "",
-      "Altitude": 3827,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "SkyWest 8839": {
-      "Callsign": "SKW8839",
-      "AircraftType": "CRJ7",
-      "Fixes": {
-        "Dwiyt": "DWIYT",
-        "Snine": "SNINE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "WLSTN7",
-      "STAR": "",
-      "Altitude": 3827,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Skywest 8800 9th, Minneapolis, Park Charter, contact, climb and maintain one seven thousand.\"",
@@ -100,5 +59,29 @@
     "[local-stt] parsed commands: [C170] (conf=1.00)",
     "[local-stt] validated commands: [C170] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"SKW8839 C170\" (conf=0.98, time=0s) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce RTX 4080 SUPER (16047MB)",
+  "stt_aircraft": {
+    "SkyWest 8839": {
+      "AddressingForm": 0,
+      "AircraftType": "CRJ7",
+      "Altitude": 3827,
+      "AssignedApproach": "",
+      "Callsign": "SKW8839",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Dwiyt": "DWIYT",
+        "Snine": "SNINE"
+      },
+      "SID": "WLSTN7",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1D"
+    }
+  },
+  "time": "2026-01-22T02:25:52.488482353Z",
+  "transcript": "Skywest 8800 9th, Minneapolis, Park Charter, contact, climb and maintain one seven thousand.",
+  "whisper_duration_ms": 329.696
 }

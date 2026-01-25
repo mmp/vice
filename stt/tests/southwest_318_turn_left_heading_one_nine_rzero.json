@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-23T00:09:49.109280138Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 2816,
+  "callsign": "SWA318",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,170 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Southwest 318, turn left heading one nine r-zero.",
-  "whisper_duration_ms": 390.321,
-  "audio_duration_ms": 2816,
-  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
-  "callsign": "SWA318",
   "command": "L190",
-  "stt_aircraft": {
-    "N627EW": {
-      "Callsign": "N627EW",
-      "AircraftType": "E55P",
-      "Fixes": {
-        "Santa Fe Municipal Airport": "KSAF"
-      },
-      "CandidateApproaches": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 12500,
-      "State": "arrival",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "SKW4473": {
-      "Callsign": "SKW4473",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Pnyon": "PNYON",
-        "Rdrnr": "RDRNR",
-        "Spedy": "SPEDY"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "RDRNR3",
-      "STAR": "",
-      "Altitude": 10896,
-      "State": "departure",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "SWA318": {
-      "Callsign": "SWA318",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Albuquerque International Sunport": "KABQ",
-        "Aside": "ASIDE",
-        "Cmstr": "CMSTR",
-        "Crstn": "CRSTN",
-        "Gzell": "GZELL",
-        "Jilab": "JILAB",
-        "Uncir": "UNCIR",
-        "Unxif": "UNXIF"
-      },
-      "CandidateApproaches": {
-        "I L S runway eight": "I8",
-        "I L S runway three": "I3",
-        "r-nav runway eight": "RZ8",
-        "r-nav runway three": "RZ3"
-      },
-      "AssignedApproach": "ILS Runway 8",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 11055,
-      "State": "arrival",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "SkyWest 4473": {
-      "Callsign": "SKW4473",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Pnyon": "PNYON",
-        "Rdrnr": "RDRNR",
-        "Spedy": "SPEDY"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "RDRNR3",
-      "STAR": "",
-      "Altitude": 10896,
-      "State": "departure",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "Southwest 318": {
-      "Callsign": "SWA318",
-      "AircraftType": "B737",
-      "Fixes": {
-        "Albuquerque International Sunport": "KABQ",
-        "Aside": "ASIDE",
-        "Cmstr": "CMSTR",
-        "Crstn": "CRSTN",
-        "Gzell": "GZELL",
-        "Jilab": "JILAB",
-        "Uncir": "UNCIR",
-        "Unxif": "UNXIF"
-      },
-      "CandidateApproaches": {
-        "I L S runway eight": "I8",
-        "I L S runway three": "I3",
-        "r-nav runway eight": "RZ8",
-        "r-nav runway three": "RZ3"
-      },
-      "AssignedApproach": "ILS Runway 8",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 11055,
-      "State": "arrival",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "embraer phenom three hundred seven echo whiskey": {
-      "Callsign": "N627EW",
-      "AircraftType": "E55P",
-      "Fixes": {
-        "Santa Fe Municipal Airport": "KSAF"
-      },
-      "CandidateApproaches": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 12500,
-      "State": "arrival",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 1
-    },
-    "november 627EW": {
-      "Callsign": "N627EW",
-      "AircraftType": "E55P",
-      "Fixes": {
-        "Santa Fe Municipal Airport": "KSAF"
-      },
-      "CandidateApproaches": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 12500,
-      "State": "arrival",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 0
-    },
-    "phenom three hundred seven echo whiskey": {
-      "Callsign": "N627EW",
-      "AircraftType": "E55P",
-      "Fixes": {
-        "Santa Fe Municipal Airport": "KSAF"
-      },
-      "CandidateApproaches": {},
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "",
-      "Altitude": 12500,
-      "State": "arrival",
-      "ControllerFrequency": "1N",
-      "TrackingController": "1N",
-      "AddressingForm": 1
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"Southwest 318, turn left heading one nine r-zero.\"",
@@ -220,5 +57,122 @@
     "[local-stt] parsed commands: [L019] (conf=1.00)",
     "[local-stt] validated commands: [L019] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"SWA318 L019\" (conf=1.00, time=171.917µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "stt_aircraft": {
+    "N627EW": {
+      "AddressingForm": 0,
+      "AircraftType": "E55P",
+      "Altitude": 12500,
+      "AssignedApproach": "",
+      "Callsign": "N627EW",
+      "CandidateApproaches": {},
+      "ControllerFrequency": "1N",
+      "Fixes": {
+        "Santa Fe Municipal Airport": "KSAF"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "arrival",
+      "TrackingController": "1N"
+    },
+    "SkyWest 4473": {
+      "AddressingForm": 0,
+      "AircraftType": "E75L",
+      "Altitude": 10896,
+      "AssignedApproach": "",
+      "Callsign": "SKW4473",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1N",
+      "Fixes": {
+        "Pnyon": "PNYON",
+        "Rdrnr": "RDRNR",
+        "Spedy": "SPEDY"
+      },
+      "SID": "RDRNR3",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1N"
+    },
+    "Southwest 318": {
+      "AddressingForm": 0,
+      "AircraftType": "B737",
+      "Altitude": 11055,
+      "AssignedApproach": "ILS Runway 8",
+      "Callsign": "SWA318",
+      "CandidateApproaches": {
+        "I L S runway eight": "I8",
+        "I L S runway three": "I3",
+        "r-nav runway eight": "RZ8",
+        "r-nav runway three": "RZ3"
+      },
+      "ControllerFrequency": "1N",
+      "Fixes": {
+        "Albuquerque International Sunport": "KABQ",
+        "Aside": "ASIDE",
+        "Cmstr": "CMSTR",
+        "Crstn": "CRSTN",
+        "Gzell": "GZELL",
+        "Jilab": "JILAB",
+        "Uncir": "UNCIR",
+        "Unxif": "UNXIF"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "arrival",
+      "TrackingController": "1N"
+    },
+    "embraer phenom three hundred seven echo whiskey": {
+      "AddressingForm": 1,
+      "AircraftType": "E55P",
+      "Altitude": 12500,
+      "AssignedApproach": "",
+      "Callsign": "N627EW",
+      "CandidateApproaches": {},
+      "ControllerFrequency": "1N",
+      "Fixes": {
+        "Santa Fe Municipal Airport": "KSAF"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "arrival",
+      "TrackingController": "1N"
+    },
+    "november 627EW": {
+      "AddressingForm": 0,
+      "AircraftType": "E55P",
+      "Altitude": 12500,
+      "AssignedApproach": "",
+      "Callsign": "N627EW",
+      "CandidateApproaches": {},
+      "ControllerFrequency": "1N",
+      "Fixes": {
+        "Santa Fe Municipal Airport": "KSAF"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "arrival",
+      "TrackingController": "1N"
+    },
+    "phenom three hundred seven echo whiskey": {
+      "AddressingForm": 1,
+      "AircraftType": "E55P",
+      "Altitude": 12500,
+      "AssignedApproach": "",
+      "Callsign": "N627EW",
+      "CandidateApproaches": {},
+      "ControllerFrequency": "1N",
+      "Fixes": {
+        "Santa Fe Municipal Airport": "KSAF"
+      },
+      "SID": "",
+      "STAR": "",
+      "State": "arrival",
+      "TrackingController": "1N"
+    }
+  },
+  "time": "2026-01-23T00:09:49.109280138Z",
+  "transcript": "Southwest 318, turn left heading one nine r-zero.",
+  "whisper_duration_ms": 390.321
 }

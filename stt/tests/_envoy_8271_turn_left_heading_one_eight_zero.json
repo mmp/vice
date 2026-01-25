@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T14:53:10.021568195Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 3456,
+  "callsign": "ENY8271",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,46 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": ". Envoy 8271 turn left heading one eight zero.",
-  "whisper_duration_ms": 291.33,
-  "audio_duration_ms": 3456,
-  "processor": "GPU: Apple M5, 10 CPU / 10 GPU cores, 24GB",
-  "callsign": "ENY8271",
   "command": "L180",
-  "stt_aircraft": {
-    "ENY8271": {
-      "Callsign": "ENY8271",
-      "AircraftType": "E170",
-      "Fixes": {
-        "Mikie": "MYKIE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.W",
-      "STAR": "",
-      "Altitude": 3980,
-      "State": "departure",
-      "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0
-    },
-    "Envoy 8271": {
-      "Callsign": "ENY8271",
-      "AircraftType": "E170",
-      "Fixes": {
-        "Mikie": "MYKIE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.W",
-      "STAR": "",
-      "Altitude": 3980,
-      "State": "departure",
-      "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \". Envoy 8271 turn left heading one eight zero.\"",
@@ -79,5 +40,28 @@
     "[local-stt] parsed commands: [L180] (conf=1.00)",
     "[local-stt] validated commands: [L180] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"ENY8271 L180\" (conf=1.00, time=60.25µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: Apple M5, 10 CPU / 10 GPU cores, 24GB",
+  "stt_aircraft": {
+    "Envoy 8271": {
+      "AddressingForm": 0,
+      "AircraftType": "E170",
+      "Altitude": 3980,
+      "AssignedApproach": "",
+      "Callsign": "ENY8271",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1G",
+      "Fixes": {
+        "Mikie": "MYKIE"
+      },
+      "SID": "ORD8.W",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1G"
+    }
+  },
+  "time": "2026-01-22T14:53:10.021568195Z",
+  "transcript": ". Envoy 8271 turn left heading one eight zero.",
+  "whisper_duration_ms": 291.33
 }

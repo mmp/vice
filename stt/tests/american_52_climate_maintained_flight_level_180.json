@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-22T14:55:44.887126778Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 2816,
+  "callsign": "AAL52",
   "callstack": [
     "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
     "value.go:581:reflect.Value.call",
@@ -9,534 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "American 52, Climate Maintained, Flight Level 180.",
-  "whisper_duration_ms": 298.678,
-  "audio_duration_ms": 2816,
-  "processor": "GPU: Apple M5, 10 CPU / 10 GPU cores, 24GB",
-  "callsign": "AAL52",
   "command": "C180",
-  "stt_aircraft": {
-    "AAL4014": {
-      "Callsign": "AAL4014",
-      "AircraftType": "B789",
-      "Fixes": {
-        "Burtman": "BRTMN",
-        "Rayner": "RAYNR",
-        "Taze": "TAAYZ"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.N",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "AAL52": {
-      "Callsign": "AAL52",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Pekue": "PEKUE",
-        "Pippin": "PIPPN"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.W",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0
-    },
-    "ASL605": {
-      "Callsign": "ASL605",
-      "AircraftType": "A332",
-      "Fixes": {
-        "Ebake": "EBAKE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.E",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1B",
-      "TrackingController": "1B",
-      "AddressingForm": 0
-    },
-    "AWI5841": {
-      "Callsign": "AWI5841",
-      "AircraftType": "CRJ2",
-      "Fixes": {
-        "Badger": "BAE",
-        "Dylan": "DLLAN",
-        "Neato": "NEATO",
-        "Pumpkin": "PMPKN",
-        "Ronic": "RONIC"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.N",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "Air Serbia 605 heavy": {
-      "Callsign": "ASL605",
-      "AircraftType": "A332",
-      "Fixes": {
-        "Ebake": "EBAKE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.E",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1B",
-      "TrackingController": "1B",
-      "AddressingForm": 0
-    },
-    "American 4014 heavy": {
-      "Callsign": "AAL4014",
-      "AircraftType": "B789",
-      "Fixes": {
-        "Burtman": "BRTMN",
-        "Rayner": "RAYNR",
-        "Taze": "TAAYZ"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.N",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "American 52": {
-      "Callsign": "AAL52",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Pekue": "PEKUE",
-        "Pippin": "PIPPN"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.W",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0
-    },
-    "ENY5168": {
-      "Callsign": "ENY5168",
-      "AircraftType": "E170",
-      "Fixes": {
-        "Burtman": "BRTMN",
-        "Cutmo": "CUTMO",
-        "General Mitchell International Airport": "KMKE",
-        "Rayner": "RAYNR",
-        "Yount": "YOUNT"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.N",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "ENY6757": {
-      "Callsign": "ENY6757",
-      "AircraftType": "E170",
-      "Fixes": {
-        "Bacon": "BACEN",
-        "Bekki": "BEKKI",
-        "Blocker": "BLOKR"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.S",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "ENY8271": {
-      "Callsign": "ENY8271",
-      "AircraftType": "E170",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.W",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0
-    },
-    "Envoy 5168": {
-      "Callsign": "ENY5168",
-      "AircraftType": "E170",
-      "Fixes": {
-        "Burtman": "BRTMN",
-        "Cutmo": "CUTMO",
-        "General Mitchell International Airport": "KMKE",
-        "Rayner": "RAYNR",
-        "Yount": "YOUNT"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.N",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    },
-    "Envoy 6757": {
-      "Callsign": "ENY6757",
-      "AircraftType": "E170",
-      "Fixes": {
-        "Bacon": "BACEN",
-        "Bekki": "BEKKI",
-        "Blocker": "BLOKR"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.S",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "Envoy 8271": {
-      "Callsign": "ENY8271",
-      "AircraftType": "E170",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.W",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0
-    },
-    "Horizon 8407": {
-      "Callsign": "QXE8407",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Mikie": "MYKIE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.W",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0
-    },
-    "QXE8407": {
-      "Callsign": "QXE8407",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Mikie": "MYKIE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.W",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0
-    },
-    "SKW2091": {
-      "Callsign": "SKW2091",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Olin": "OLINN",
-        "Oreos": "OREOS"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.W",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0
-    },
-    "SKW2785": {
-      "Callsign": "SKW2785",
-      "AircraftType": "CRJ7",
-      "Fixes": {
-        "Bacon": "BACEN",
-        "Bekki": "BEKKI",
-        "Blocker": "BLOKR"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.S",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "SKW4444": {
-      "Callsign": "SKW4444",
-      "AircraftType": "CRJ7",
-      "Fixes": {
-        "Oben": "OBENE",
-        "Olin": "OLINN",
-        "Oreos": "OREOS"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.W",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0
-    },
-    "SKW9781": {
-      "Callsign": "SKW9781",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Bacon": "BACEN",
-        "Blocker": "BLOKR"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.S",
-      "STAR": "",
-      "Altitude": 2372,
-      "State": "departure",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "SkyWest 2091": {
-      "Callsign": "SKW2091",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Olin": "OLINN",
-        "Oreos": "OREOS"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.W",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0
-    },
-    "SkyWest 2785": {
-      "Callsign": "SKW2785",
-      "AircraftType": "CRJ7",
-      "Fixes": {
-        "Bacon": "BACEN",
-        "Bekki": "BEKKI",
-        "Blocker": "BLOKR"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.S",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "SkyWest 4444": {
-      "Callsign": "SKW4444",
-      "AircraftType": "CRJ7",
-      "Fixes": {
-        "Oben": "OBENE",
-        "Olin": "OLINN",
-        "Oreos": "OREOS"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.W",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1G",
-      "TrackingController": "1G",
-      "AddressingForm": 0
-    },
-    "SkyWest 9781": {
-      "Callsign": "SKW9781",
-      "AircraftType": "E75L",
-      "Fixes": {
-        "Bacon": "BACEN",
-        "Blocker": "BLOKR"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.S",
-      "STAR": "",
-      "Altitude": 2372,
-      "State": "departure",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "UAL235": {
-      "Callsign": "UAL235",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Adime": "ADIME",
-        "Mow-bull": "MOBLE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.E",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1B",
-      "TrackingController": "1B",
-      "AddressingForm": 0
-    },
-    "UAL8813": {
-      "Callsign": "UAL8813",
-      "AircraftType": "B739",
-      "Fixes": {
-        "Chicago O'Hare International Airport": "KORD"
-      },
-      "CandidateApproaches": {
-        "I L S runway two eight center": "I8C",
-        "I L S runway two seven center": "I7C",
-        "I L S runway two seven right": "I7R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "BENKY6",
-      "Altitude": 12000,
-      "State": "arrival",
-      "ControllerFrequency": "1X",
-      "TrackingController": "1X",
-      "AddressingForm": 0
-    },
-    "UAL9036": {
-      "Callsign": "UAL9036",
-      "AircraftType": "B38M",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.S",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "United 235": {
-      "Callsign": "UAL235",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Adime": "ADIME",
-        "Mow-bull": "MOBLE"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.E",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1B",
-      "TrackingController": "1B",
-      "AddressingForm": 0
-    },
-    "United 8813": {
-      "Callsign": "UAL8813",
-      "AircraftType": "B739",
-      "Fixes": {
-        "Chicago O'Hare International Airport": "KORD"
-      },
-      "CandidateApproaches": {
-        "I L S runway two eight center": "I8C",
-        "I L S runway two seven center": "I7C",
-        "I L S runway two seven right": "I7R"
-      },
-      "AssignedApproach": "",
-      "SID": "",
-      "STAR": "BENKY6",
-      "Altitude": 12000,
-      "State": "arrival",
-      "ControllerFrequency": "1X",
-      "TrackingController": "1X",
-      "AddressingForm": 0
-    },
-    "United 9036": {
-      "Callsign": "UAL9036",
-      "AircraftType": "B38M",
-      "Fixes": {},
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.S",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1M",
-      "TrackingController": "1M",
-      "AddressingForm": 0
-    },
-    "Wisconsin 5841": {
-      "Callsign": "AWI5841",
-      "AircraftType": "CRJ2",
-      "Fixes": {
-        "Badger": "BAE",
-        "Dylan": "DLLAN",
-        "Neato": "NEATO",
-        "Pumpkin": "PMPKN",
-        "Ronic": "RONIC"
-      },
-      "CandidateApproaches": null,
-      "AssignedApproach": "",
-      "SID": "ORD8.N",
-      "STAR": "",
-      "Altitude": 5000,
-      "State": "departure",
-      "ControllerFrequency": "1D",
-      "TrackingController": "1D",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"American 52, Climate Maintained, Flight Level 180.\"",
@@ -565,5 +38,272 @@
     "[local-stt] parsed commands: [C180] (conf=1.00)",
     "[local-stt] validated commands: [C180] (conf=1.00)",
     "[local-stt] === DecodeTranscript END: \"AAL52 C180\" (conf=1.00, time=74.583µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: Apple M5, 10 CPU / 10 GPU cores, 24GB",
+  "stt_aircraft": {
+    "Air Serbia 605 heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "A332",
+      "Altitude": 5000,
+      "AssignedApproach": "",
+      "Callsign": "ASL605",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1B",
+      "Fixes": {
+        "Ebake": "EBAKE"
+      },
+      "SID": "ORD8.E",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1B"
+    },
+    "American 4014 heavy": {
+      "AddressingForm": 0,
+      "AircraftType": "B789",
+      "Altitude": 5000,
+      "AssignedApproach": "",
+      "Callsign": "AAL4014",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Burtman": "BRTMN",
+        "Rayner": "RAYNR",
+        "Taze": "TAAYZ"
+      },
+      "SID": "ORD8.N",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1D"
+    },
+    "American 52": {
+      "AddressingForm": 0,
+      "AircraftType": "B738",
+      "Altitude": 5000,
+      "AssignedApproach": "",
+      "Callsign": "AAL52",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1G",
+      "Fixes": {
+        "Pekue": "PEKUE",
+        "Pippin": "PIPPN"
+      },
+      "SID": "ORD8.W",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1G"
+    },
+    "Envoy 5168": {
+      "AddressingForm": 0,
+      "AircraftType": "E170",
+      "Altitude": 5000,
+      "AssignedApproach": "",
+      "Callsign": "ENY5168",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Burtman": "BRTMN",
+        "Cutmo": "CUTMO",
+        "General Mitchell International Airport": "KMKE",
+        "Rayner": "RAYNR",
+        "Yount": "YOUNT"
+      },
+      "SID": "ORD8.N",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1D"
+    },
+    "Envoy 6757": {
+      "AddressingForm": 0,
+      "AircraftType": "E170",
+      "Altitude": 5000,
+      "AssignedApproach": "",
+      "Callsign": "ENY6757",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1M",
+      "Fixes": {
+        "Bacon": "BACEN",
+        "Bekki": "BEKKI",
+        "Blocker": "BLOKR"
+      },
+      "SID": "ORD8.S",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1M"
+    },
+    "Envoy 8271": {
+      "AddressingForm": 0,
+      "AircraftType": "E170",
+      "Altitude": 5000,
+      "AssignedApproach": "",
+      "Callsign": "ENY8271",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1G",
+      "Fixes": {},
+      "SID": "ORD8.W",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1G"
+    },
+    "Horizon 8407": {
+      "AddressingForm": 0,
+      "AircraftType": "E75L",
+      "Altitude": 5000,
+      "AssignedApproach": "",
+      "Callsign": "QXE8407",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1G",
+      "Fixes": {
+        "Mikie": "MYKIE"
+      },
+      "SID": "ORD8.W",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1G"
+    },
+    "SkyWest 2091": {
+      "AddressingForm": 0,
+      "AircraftType": "E75L",
+      "Altitude": 5000,
+      "AssignedApproach": "",
+      "Callsign": "SKW2091",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1G",
+      "Fixes": {
+        "Olin": "OLINN",
+        "Oreos": "OREOS"
+      },
+      "SID": "ORD8.W",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1G"
+    },
+    "SkyWest 2785": {
+      "AddressingForm": 0,
+      "AircraftType": "CRJ7",
+      "Altitude": 5000,
+      "AssignedApproach": "",
+      "Callsign": "SKW2785",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1M",
+      "Fixes": {
+        "Bacon": "BACEN",
+        "Bekki": "BEKKI",
+        "Blocker": "BLOKR"
+      },
+      "SID": "ORD8.S",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1M"
+    },
+    "SkyWest 4444": {
+      "AddressingForm": 0,
+      "AircraftType": "CRJ7",
+      "Altitude": 5000,
+      "AssignedApproach": "",
+      "Callsign": "SKW4444",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1G",
+      "Fixes": {
+        "Oben": "OBENE",
+        "Olin": "OLINN",
+        "Oreos": "OREOS"
+      },
+      "SID": "ORD8.W",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1G"
+    },
+    "SkyWest 9781": {
+      "AddressingForm": 0,
+      "AircraftType": "E75L",
+      "Altitude": 2372,
+      "AssignedApproach": "",
+      "Callsign": "SKW9781",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1M",
+      "Fixes": {
+        "Bacon": "BACEN",
+        "Blocker": "BLOKR"
+      },
+      "SID": "ORD8.S",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1M"
+    },
+    "United 235": {
+      "AddressingForm": 0,
+      "AircraftType": "B738",
+      "Altitude": 5000,
+      "AssignedApproach": "",
+      "Callsign": "UAL235",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1B",
+      "Fixes": {
+        "Adime": "ADIME",
+        "Mow-bull": "MOBLE"
+      },
+      "SID": "ORD8.E",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1B"
+    },
+    "United 8813": {
+      "AddressingForm": 0,
+      "AircraftType": "B739",
+      "Altitude": 12000,
+      "AssignedApproach": "",
+      "Callsign": "UAL8813",
+      "CandidateApproaches": {
+        "I L S runway two eight center": "I8C",
+        "I L S runway two seven center": "I7C",
+        "I L S runway two seven right": "I7R"
+      },
+      "ControllerFrequency": "1X",
+      "Fixes": {
+        "Chicago O'Hare International Airport": "KORD"
+      },
+      "SID": "",
+      "STAR": "BENKY6",
+      "State": "arrival",
+      "TrackingController": "1X"
+    },
+    "United 9036": {
+      "AddressingForm": 0,
+      "AircraftType": "B38M",
+      "Altitude": 5000,
+      "AssignedApproach": "",
+      "Callsign": "UAL9036",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1M",
+      "Fixes": {},
+      "SID": "ORD8.S",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1M"
+    },
+    "Wisconsin 5841": {
+      "AddressingForm": 0,
+      "AircraftType": "CRJ2",
+      "Altitude": 5000,
+      "AssignedApproach": "",
+      "Callsign": "AWI5841",
+      "CandidateApproaches": null,
+      "ControllerFrequency": "1D",
+      "Fixes": {
+        "Badger": "BAE",
+        "Dylan": "DLLAN",
+        "Neato": "NEATO",
+        "Pumpkin": "PMPKN",
+        "Ronic": "RONIC"
+      },
+      "SID": "ORD8.N",
+      "STAR": "",
+      "State": "departure",
+      "TrackingController": "1D"
+    }
+  },
+  "time": "2026-01-22T14:55:44.887126778Z",
+  "transcript": "American 52, Climate Maintained, Flight Level 180.",
+  "whisper_duration_ms": 298.678
 }

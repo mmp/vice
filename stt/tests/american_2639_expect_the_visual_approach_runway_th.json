@@ -1,7 +1,6 @@
 {
-  "time": "2026-01-24T10:58:55.642309654Z",
-  "level": "INFO",
-  "msg": "STT command",
+  "audio_duration_ms": 4736,
+  "callsign": "AAL2639",
   "callstack": [
     "manager.go:975:/server.(*SimManager).ReportSTTLog",
     "value.go:581:reflect.Value.call",
@@ -9,62 +8,8 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "American 2639, expect the visual approach, runway three one right,",
-  "whisper_duration_ms": 594.788,
-  "audio_duration_ms": 4736,
-  "processor": "GPU: NVIDIA GeForce GTX 1650 (4149MB)",
-  "callsign": "AAL2639",
   "command": "SAYAGAIN/APPROACH",
-  "stt_aircraft": {
-    "AAL2639": {
-      "Callsign": "AAL2639",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Catod": "CATOD",
-        "John F Kennedy International Airport": "KJFK",
-        "Maldey": "MALDE",
-        "Zulab": "ZULAB"
-      },
-      "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
-      },
-      "AssignedApproach": "ILS Runway 31R",
-      "SID": "",
-      "STAR": "CAMRN5",
-      "Altitude": 2072,
-      "State": "arrival",
-      "ControllerFrequency": "2A",
-      "TrackingController": "2A",
-      "AddressingForm": 0
-    },
-    "American 2639": {
-      "Callsign": "AAL2639",
-      "AircraftType": "B738",
-      "Fixes": {
-        "Catod": "CATOD",
-        "John F Kennedy International Airport": "KJFK",
-        "Maldey": "MALDE",
-        "Zulab": "ZULAB"
-      },
-      "CandidateApproaches": {
-        "I L S runway three one left": "I1L",
-        "I L S runway three one right": "I1R",
-        "r-nav runway three one left": "R1L",
-        "r-nav runway three one right": "R1R"
-      },
-      "AssignedApproach": "ILS Runway 31R",
-      "SID": "",
-      "STAR": "CAMRN5",
-      "Altitude": 2072,
-      "State": "arrival",
-      "ControllerFrequency": "2A",
-      "TrackingController": "2A",
-      "AddressingForm": 0
-    }
-  },
+  "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
     "[local-stt] input transcript: \"American 2639, expect the visual approach, runway three one right,\"",
@@ -112,5 +57,36 @@
     "[local-stt] parsed commands: [] (conf=0.00)",
     "[local-stt] validated commands: [] (conf=0.00)",
     "[local-stt] === DecodeTranscript END: \"AAL2639 AGAIN\" (conf=1.00, time=563µs) ==="
-  ]
+  ],
+  "msg": "STT command",
+  "processor": "GPU: NVIDIA GeForce GTX 1650 (4149MB)",
+  "stt_aircraft": {
+    "American 2639": {
+      "AddressingForm": 0,
+      "AircraftType": "B738",
+      "Altitude": 2072,
+      "AssignedApproach": "ILS Runway 31R",
+      "Callsign": "AAL2639",
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ControllerFrequency": "2A",
+      "Fixes": {
+        "Catod": "CATOD",
+        "John F Kennedy International Airport": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "SID": "",
+      "STAR": "CAMRN5",
+      "State": "arrival",
+      "TrackingController": "2A"
+    }
+  },
+  "time": "2026-01-24T10:58:55.642309654Z",
+  "transcript": "American 2639, expect the visual approach, runway three one right,",
+  "whisper_duration_ms": 594.788
 }
