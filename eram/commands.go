@@ -258,7 +258,7 @@ func (ep *ERAMPane) modifyFlightPlan(ctx *panes.Context, cid string, spec sim.Fl
 	if alt := spec.AssignedAltitude.Value + spec.InterimAlt.Value; alt > 0 { // Only one will be set
 		var cmd string
 		state := ep.TrackState[trk.ADSBCallsign]
-		if alt > int(state.track.TransponderAltitude) {
+		if alt > int(state.Track.TransponderAltitude) {
 			cmd = "C" + fmt.Sprint(alt/100)
 		} else {
 			cmd = "D" + fmt.Sprint(alt/100)

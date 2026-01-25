@@ -143,8 +143,8 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		if ep.drawToolbarFullButton(ctx, "DB\nFIELDS", 0, scale, false, false) {
 			ep.activeToolbarMenu = toolbarDBFields
 		}
-		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("VECTOR\n%d", ep.velocityTime), 0, scale, false, false) {
-			handleMultiplicativeClick(&ep.velocityTime, 0, 8, 2)
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("VECTOR\n%d", ep.VelocityTime), 0, scale, false, false) {
+			handleMultiplicativeClick(&ep.VelocityTime, 0, 8, 2)
 		}
 		if ep.drawToolbarFullButton(ctx, "VIEWS", 0, scale, false, true) { // MANDATORY Done
 			ep.activeToolbarMenu = toolbarViews
@@ -2051,7 +2051,7 @@ func (ep *ERAMPane) getTornOffButtonText(name string) string {
 		}
 		return fmt.Sprintf("RANGE\n%.2f", val)
 	case "VECTOR":
-		return fmt.Sprintf("VECTOR\n%d", ep.velocityTime)
+		return fmt.Sprintf("VECTOR\n%d", ep.VelocityTime)
 	case "ALT LIM":
 		ps := ep.currentPrefs()
 		return fmt.Sprintf("ALT LIM\n%03vB%03v", ps.altitudeFilter[0], ps.altitudeFilter[1])
@@ -2195,7 +2195,7 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarDBFields)
 	case "VECTOR":
-		handleMultiplicativeClick(&ep.velocityTime, 0, 8, 2)
+		handleMultiplicativeClick(&ep.VelocityTime, 0, 8, 2)
 	case "VIEWS":
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarViews)

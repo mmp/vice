@@ -255,7 +255,7 @@ func handleJRing(ep *ERAMPane, trk *sim.Track) CommandStatus {
 func handleReducedJRing(ep *ERAMPane, trk *sim.Track) (CommandStatus, error) {
 	state := ep.TrackState[trk.ADSBCallsign]
 
-	if state.track.TransponderAltitude > 23000 {
+	if state.Track.TransponderAltitude > 23000 {
 		return CommandStatus{}, NewERAMError("REJECT - %s NOT ELIGIBLE\nFOR REDUCED SEPARATION\nREQ/DELETE DRI %s", trk.FlightPlan.CID, trk.ADSBCallsign)
 	}
 
@@ -361,10 +361,10 @@ func handleCRRCreateWithAircraft(ep *ERAMPane, ctx *panes.Context, loc CRRLocati
 	}
 
 	// Check if group already exists
-	if ep.crrGroups == nil {
-		ep.crrGroups = make(map[string]*CRRGroup)
+	if ep.CRRGroups == nil {
+		ep.CRRGroups = make(map[string]*CRRGroup)
 	}
-	if _, ok := ep.crrGroups[label]; ok {
+	if _, ok := ep.CRRGroups[label]; ok {
 		return CommandStatus{}, NewERAMError("REJECT - CRR - GROUP LABEL\n ALREADY EXISTS\nCONT RANGE\nLF %s %s", loc.Token, label)
 	}
 
@@ -375,7 +375,7 @@ func handleCRRCreateWithAircraft(ep *ERAMPane, ctx *panes.Context, loc CRRLocati
 		Color:    ep.currentPrefs().CRR.SelectedColor,
 		Aircraft: make(map[av.ADSBCallsign]struct{}),
 	}
-	ep.crrGroups[label] = g
+	ep.CRRGroups[label] = g
 
 	// Add aircraft if specified
 	if aircraftStr != "" {
@@ -414,11 +414,11 @@ func handleCRRAddClicked(ep *ERAMPane, ctx *panes.Context, pos [2]float32, label
 	loc := math.Point2LL{pos[0], pos[1]}
 
 	// Check if group exists
-	g := ep.crrGroups[label]
+	g := ep.CRRGroups[label]
 	if g == nil {
 		// Create new group at clicked position
-		if ep.crrGroups == nil {
-			ep.crrGroups = make(map[string]*CRRGroup)
+		if ep.CRRGroups == nil {
+			ep.CRRGroups = make(map[string]*CRRGroup)
 		}
 		g = &CRRGroup{
 			Label:    label,
@@ -426,7 +426,7 @@ func handleCRRAddClicked(ep *ERAMPane, ctx *panes.Context, pos [2]float32, label
 			Color:    ep.currentPrefs().CRR.SelectedColor,
 			Aircraft: make(map[av.ADSBCallsign]struct{}),
 		}
-		ep.crrGroups[label] = g
+		ep.CRRGroups[label] = g
 
 		return CommandStatus{
 			bigOutput: fmt.Sprintf("ACCEPT\nCRR GROUP %s CREATED", label),
@@ -458,7 +458,7 @@ func handleCRRToggleMembership(ep *ERAMPane, ctx *panes.Context, label string, a
 	}
 
 	// Find existing group
-	g := ep.crrGroups[label]
+	g := ep.CRRGroups[label]
 	if g == nil {
 		return CommandStatus{}, ErrCommandFormat
 	}
@@ -589,7 +589,7 @@ func handleDefaultTrack(ep *ERAMPane, ctx *panes.Context, trk *sim.Track) (Comma
 	}
 
 	state := ep.TrackState[trk.ADSBCallsign]
-	state.eFDB = !state.eFDB
+	state.EFDB = !state.EFDB
 	state.DisplayJRing = false
 	state.DisplayReducedJRing = false
 
@@ -621,7 +621,7 @@ func handleLeaderLine(ep *ERAMPane, ctx *panes.Context, dir int, trk *sim.Track)
 		}
 	}
 
-	ep.TrackState[callsign].leaderLineDirection = &direction
+	ep.TrackState[callsign].LeaderLineDirection = &direction
 
 	return CommandStatus{
 		bigOutput: fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", callsign, trk.FlightPlan.CID),

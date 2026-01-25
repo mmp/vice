@@ -55,7 +55,7 @@ type ERAMPane struct {
 	ERAMPreferenceSets map[string]*PrefrenceSet        `json:"PreferenceSets,omitempty"`
 	prefSet            *PrefrenceSet                   `json:"-"`
 	tempSavedNames     [numSavedPreferenceSets]string  `json:"-"`
-	TrackState         map[av.ADSBCallsign]*TrackState `json:"-"`
+	TrackState         map[av.ADSBCallsign]*TrackState `json:"TrackState,omitempty"`
 
 	DisableERAMtoRadio bool `json:"-"`
 
@@ -99,7 +99,7 @@ type ERAMPane struct {
 	tearoffMenuLightToolbar2 map[string][4][2]float32 `json:"-"` // cached secondary backgrounds (MAP BRIGHT)
 	tearoffMenuOrder         []string                 `json:"-"` // draw/input order for tearoff menus (oldest -> newest)
 
-	velocityTime int `json:"-"` // 0, 1, 4, or 8 minutes
+	VelocityTime int // 0, 1, 4, or 8 minutes
 
 	dbLastAlternateTime time.Time `json:"-"` // Alternates every 6 seconds
 	dbAlternate         bool      `json:"-"`
@@ -127,7 +127,7 @@ type ERAMPane struct {
 	}
 
 	// CRR state (session)
-	crrGroups        map[string]*CRRGroup                         `json:"-"`
+	CRRGroups        map[string]*CRRGroup                         `json:"CRRGroups,omitempty"`
 	crrMenuOpen      bool                                         `json:"-"`
 	crrFixRects      map[string]math.Extent2D                     `json:"-"`
 	crrLabelRects    map[string]math.Extent2D                     `json:"-"`
@@ -161,8 +161,8 @@ func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.
 	if ep.aircraftFixCoordinates == nil {
 		ep.aircraftFixCoordinates = make(map[string]aircraftFixCoordinates)
 	}
-	if ep.crrGroups == nil {
-		ep.crrGroups = make(map[string]*CRRGroup)
+	if ep.CRRGroups == nil {
+		ep.CRRGroups = make(map[string]*CRRGroup)
 	}
 	if ep.crrFixRects == nil {
 		ep.crrFixRects = make(map[string]math.Extent2D)
@@ -580,16 +580,16 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				ep.Input.Set(ps, "TG ")
 			}
 		case imgui.KeyPageUp: // velocity vector *2
-			if ep.velocityTime == 0 {
-				ep.velocityTime = 1
-			} else if ep.velocityTime < 8 {
-				ep.velocityTime *= 2
+			if ep.VelocityTime == 0 {
+				ep.VelocityTime = 1
+			} else if ep.VelocityTime < 8 {
+				ep.VelocityTime *= 2
 			}
 		case imgui.KeyPageDown: // velocity vector /2
-			if ep.velocityTime > 0 {
-				ep.velocityTime /= 2
+			if ep.VelocityTime > 0 {
+				ep.VelocityTime /= 2
 			} else {
-				ep.velocityTime = 0
+				ep.VelocityTime = 0
 			}
 		}
 	}

@@ -263,7 +263,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		dbWriteText(db.fieldD[:], trk.FlightPlan.CID, color, false)
 
 		fieldEText := ""
-		gsText := fmt.Sprintf(" %v", int(state.track.Groundspeed))
+		gsText := fmt.Sprintf(" %v", int(state.Track.Groundspeed))
 		if trk.FlightPlan.HandoffController != "" {
 			var controller string
 			if ctrl := ctx.GetResolvedController(trk.FlightPlan.HandoffController); ctrl != nil {
@@ -297,7 +297,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 			if ok {
 				middle = airportCode
 			}
-			gsText = fmt.Sprintf("%v%v", middle, int(state.track.Groundspeed))
+			gsText = fmt.Sprintf("%v%v", middle, int(state.Track.Groundspeed))
 			fieldEText = gsText
 			dbWriteText(db.fieldE[:], fieldEText, color, false)
 		}
@@ -349,7 +349,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		db := ep.ldbArena.AllocClear()
 		state := ep.TrackState[trk.ADSBCallsign]
 		dbWriteText(db.line0[:], trk.ADSBCallsign.String(), color, false)
-		dbWriteText(db.line1[:], fmt.Sprintf("%03d", int(state.track.TransponderAltitude+50)/100), color, false)
+		dbWriteText(db.line1[:], fmt.Sprintf("%03d", int(state.Track.TransponderAltitude+50)/100), color, false)
 		return db
 	default:
 		return nil // should not happen
@@ -412,7 +412,7 @@ func speedStartFromGroundspeedLine4(gsText string) int {
 
 func (ep *ERAMPane) getAltitudeFormat(track sim.Track) string {
 	state := ep.TrackState[track.ADSBCallsign]
-	currentAltitude := state.track.TransponderAltitude
+	currentAltitude := state.Track.TransponderAltitude
 	assignedAltitude := track.FlightPlan.AssignedAltitude
 	if assignedAltitude == 0 && track.FlightPlan.PerceivedAssigned != 0 {
 		assignedAltitude = track.FlightPlan.PerceivedAssigned
@@ -498,7 +498,7 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 				sz = ps.LDBSize
 			}
 			font := ep.ERAMFont(sz)
-			start := transforms.WindowFromLatLongP(state.track.Location)
+			start := transforms.WindowFromLatLongP(state.Track.Location)
 			dir := ep.leaderLineDirection(ctx, trk)
 			offset := datablockOffset(*dir)
 			vector := ep.leaderLineVector(*dir)
