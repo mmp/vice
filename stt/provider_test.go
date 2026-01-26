@@ -2939,3 +2939,82 @@ func TestApproachFixInjection(t *testing.T) {
 		})
 	}
 }
+
+// TestAssignedApproachPreference tests that when an aircraft has an assigned approach,
+// approach clearances prefer matching that approach when the direction is ambiguous.
+func TestAssignedApproachPreference(t *testing.T) {
+	tests := []struct {
+		name       string
+		transcript string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "garbled direction prefers assigned approach",
+			transcript: "JetBlue 1695 at Bunker cleared I L S runway one zero at approach",
+			aircraft: map[string]Aircraft{
+				"JetBlue 6095": {
+					Callsign: "JBU6095",
+					State:    "arrival",
+					Fixes: map[string]string{
+						"bunker": "BUNKR",
+					},
+					CandidateApproaches: map[string]string{
+						"i l s runway one zero left":  "I0L",
+						"i l s runway one zero right": "I0R",
+					},
+					AssignedApproach: "ILS Runway 10R", // Expecting 10 Right
+				},
+			},
+			expected: "JBU6095 ABUNKR/CI0R", // Should match 10R, not 10L
+		},
+		{
+			name:       "explicit direction overrides assigned approach",
+			transcript: "Delta 456 cleared ILS runway two eight left approach",
+			aircraft: map[string]Aircraft{
+				"Delta 456": {
+					Callsign: "DAL456",
+					State:    "arrival",
+					CandidateApproaches: map[string]string{
+						"i l s runway two eight left":   "I28L",
+						"i l s runway two eight center": "I28C",
+						"i l s runway two eight right":  "I28R",
+					},
+					AssignedApproach: "ILS Runway 28C", // Expected center, but pilot said left
+				},
+			},
+			expected: "DAL456 CI28L", // Should match what was actually said (left)
+		},
+		{
+			name:       "no assigned approach uses alphabetical tiebreaker",
+			transcript: "United 789 cleared ILS runway three six approach",
+			aircraft: map[string]Aircraft{
+				"United 789": {
+					Callsign: "UAL789",
+					State:    "arrival",
+					CandidateApproaches: map[string]string{
+						"i l s runway three six left":  "I36L",
+						"i l s runway three six right": "I36R",
+					},
+					AssignedApproach: "", // No assigned approach
+				},
+			},
+			expected: "UAL789 CI36L", // Alphabetically earlier (L < R)
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
+}

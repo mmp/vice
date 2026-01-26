@@ -282,7 +282,8 @@ func (p *approachParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 	}
 
 	// Delegate to existing extractApproach function
-	appr, _, consumed := extractApproach(tokens[pos:], ac.CandidateApproaches)
+	// Pass the assigned approach so we prefer it when there are ties
+	appr, _, consumed := extractApproach(tokens[pos:], ac.CandidateApproaches, ac.AssignedApproach)
 	if consumed == 0 {
 		return nil, 0, "APPROACH"
 	}

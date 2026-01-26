@@ -393,7 +393,9 @@ func extractSpelledFix(tokens []Token, fixes map[string]string) (string, float64
 }
 
 // extractApproach extracts an approach from tokens.
-func extractApproach(tokens []Token, approaches map[string]string) (string, float64, int) {
+// assignedApproach is the approach the aircraft was previously told to expect (e.g., "ILS Runway 10R").
+// When there are multiple matches with equal scores, the assigned approach is preferred.
+func extractApproach(tokens []Token, approaches map[string]string, assignedApproach string) (string, float64, int) {
 	if len(tokens) == 0 || len(approaches) == 0 {
 		return "", 0, 0
 	}
@@ -401,7 +403,7 @@ func extractApproach(tokens []Token, approaches map[string]string) (string, floa
 	// First, try type+number matching: extract approach type and runway number from tokens,
 	// then find a candidate that matches both. This handles garbage words between type and
 	// number (e.g., "ils front of a niner" should match "I L S runway niner" → I9).
-	if appr, conf, consumed := matchApproachByTypeAndNumber(tokens, approaches); consumed > 0 {
+	if appr, conf, consumed := matchApproachByTypeAndNumber(tokens, approaches, assignedApproach); consumed > 0 {
 		return appr, conf, consumed
 	}
 
@@ -435,13 +437,26 @@ func extractApproach(tokens []Token, approaches map[string]string) (string, floa
 			}
 
 			// Try fuzzy match - find the best one.
-			// Use alphabetically earlier apprID as tie-breaker for determinism.
+			// Prefer assigned approach on ties, otherwise use alphabetically earlier apprID for determinism.
 			for spokenName, apprID := range approaches {
 				score := JaroWinkler(variant, spokenName)
-				if score >= 0.80 && (score > bestScore || (score == bestScore && apprID < bestAppr)) {
-					bestAppr = apprID
-					bestScore = score
-					bestLength = length
+				if score >= 0.80 {
+					isBetter := score > bestScore
+					if !isBetter && score == bestScore {
+						// Tie-breaker: prefer assigned approach, then alphabetically earlier
+						bestMatchesAssigned := approachMatchesAssigned(bestAppr, assignedApproach)
+						thisMatchesAssigned := approachMatchesAssigned(apprID, assignedApproach)
+						if thisMatchesAssigned && !bestMatchesAssigned {
+							isBetter = true
+						} else if thisMatchesAssigned == bestMatchesAssigned && apprID < bestAppr {
+							isBetter = true
+						}
+					}
+					if isBetter {
+						bestAppr = apprID
+						bestScore = score
+						bestLength = length
+					}
 				}
 			}
 		}
@@ -453,10 +468,48 @@ func extractApproach(tokens []Token, approaches map[string]string) (string, floa
 	return "", 0, 0
 }
 
+// approachMatchesAssigned checks if an approach ID matches the assigned approach.
+// For example, "I0R" matches "ILS Runway 10R" because both end with "R" (runway 10 Right).
+func approachMatchesAssigned(approachID, assignedApproach string) bool {
+	if assignedApproach == "" || approachID == "" {
+		return false
+	}
+
+	// Extract runway direction from assigned approach (last character if it's L/R/C)
+	assignedApproach = strings.ToUpper(strings.TrimSpace(assignedApproach))
+	var assignedDir byte
+	if len(assignedApproach) > 0 {
+		lastChar := assignedApproach[len(assignedApproach)-1]
+		if lastChar == 'L' || lastChar == 'R' || lastChar == 'C' {
+			assignedDir = lastChar
+		}
+	}
+
+	// Extract runway direction from approach ID (last character if it's L/R/C)
+	approachID = strings.ToUpper(strings.TrimSpace(approachID))
+	var approachDir byte
+	if len(approachID) > 0 {
+		lastChar := approachID[len(approachID)-1]
+		if lastChar == 'L' || lastChar == 'R' || lastChar == 'C' {
+			approachDir = lastChar
+		}
+	}
+
+	// If both have directions, they should match
+	if assignedDir != 0 && approachDir != 0 {
+		return assignedDir == approachDir
+	}
+
+	// If neither has a direction, or only one has a direction, consider it a match
+	// (this allows for approaches like "I9" to match "ILS Runway 9")
+	return true
+}
+
 // matchApproachByTypeAndNumber tries to match approach by extracting the approach type
 // (ILS, RNAV, visual, etc.) and runway number separately, ignoring garbage words between them.
 // This handles cases like "ils front of a niner" where STT inserts garbage between type and number.
-func matchApproachByTypeAndNumber(tokens []Token, approaches map[string]string) (string, float64, int) {
+// assignedApproach is used to prefer the expected approach when there are ties.
+func matchApproachByTypeAndNumber(tokens []Token, approaches map[string]string, assignedApproach string) (string, float64, int) {
 	if len(tokens) == 0 {
 		return "", 0, 0
 	}
@@ -488,7 +541,7 @@ func matchApproachByTypeAndNumber(tokens []Token, approaches map[string]string) 
 		validAfterWords := map[string]bool{
 			"approach": true, "for": true, "and": true, "the": true, "a": true,
 			"maintain": true, "speed": true, "until": true, "cleared": true,
-			"our": true, // Common before "approach" in STT
+			"our": true, "at": true, // Common before "approach" in STT; "at" is garble for left/right
 		}
 		if !validAfterWords[afterWord] && !IsFillerWord(afterWord) {
 			// Unknown word after runway - likely garbage, reject the match
@@ -521,7 +574,20 @@ func matchApproachByTypeAndNumber(tokens []Token, approaches map[string]string) 
 
 		// We have a type+number match - calculate confidence based on specificity
 		score := 0.95 // High confidence for type+number match
-		if score > bestScore || (score == bestScore && apprID < bestAppr) {
+
+		// Tie-breaker: prefer assigned approach, then alphabetically earlier
+		isBetter := score > bestScore
+		if !isBetter && score == bestScore && bestAppr != "" {
+			bestMatchesAssigned := approachMatchesAssigned(bestAppr, assignedApproach)
+			thisMatchesAssigned := approachMatchesAssigned(apprID, assignedApproach)
+			if thisMatchesAssigned && !bestMatchesAssigned {
+				isBetter = true
+			} else if thisMatchesAssigned == bestMatchesAssigned && apprID < bestAppr {
+				isBetter = true
+			}
+		}
+
+		if isBetter || bestAppr == "" {
 			bestAppr = apprID
 			bestScore = score
 		}
