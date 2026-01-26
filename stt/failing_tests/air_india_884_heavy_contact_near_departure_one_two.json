@@ -1,0 +1,320 @@
+{
+  "time": "2026-01-25T15:35:36.86961-08:00",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_arm64.s:1268:runtime.goexit"
+  ],
+  "transcript": "Air India 884 heavy contact near departure one two, correction one two six point eight",
+  "whisper_duration_ms": 472.55,
+  "audio_duration_ms": 4736,
+  "processor": "GPU: Apple M4 Pro, 14 CPU / 20 GPU cores, 48GB",
+  "whisper_model": "ggml-medium.en.bin",
+  "callsign": "AIC884",
+  "command": "FC",
+  "stt_aircraft": {
+    "Air India 884 heavy": {
+      "Callsign": "AIC884",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Merrit": "MERIT"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 5377,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "5E",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Air Portugal 9148 heavy": {
+      "Callsign": "TAP9148",
+      "AircraftType": "A332",
+      "Fixes": {
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Kmann": "KMANN",
+        "Rober": "ROBER"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PARCH4",
+      "Altitude": 10833,
+      "State": "arrival",
+      "ControllerFrequency": "2K",
+      "TrackingController": "2K",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L"
+      ]
+    },
+    "Air Serbia 996 heavy": {
+      "Callsign": "ASL996",
+      "AircraftType": "A332",
+      "Fixes": {
+        "Greki": "GREKI",
+        "Judds": "JUDDS"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 2562,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "2J",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 82": {
+      "Callsign": "AAL82",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Cimble": "CIMBL",
+        "Deer Park": "DPK",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4070,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L"
+      ]
+    },
+    "Endeavor 5463": {
+      "Callsign": "EDV5463",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Cimble": "CIMBL",
+        "Deer Park": "DPK",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PUCKY1",
+      "Altitude": 13000,
+      "State": "arrival",
+      "ControllerFrequency": "2E",
+      "TrackingController": "2E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L"
+      ]
+    },
+    "JetBlue 19": {
+      "Callsign": "JBU19",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 11000,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L"
+      ]
+    },
+    "JetBlue 29": {
+      "Callsign": "JBU29",
+      "AircraftType": "E190",
+      "Fixes": {
+        "Cameron": "CAMRN",
+        "Cimble": "CIMBL",
+        "Deer Park": "DPK",
+        "Detgy": "DETGY",
+        "Hair": "HAIRR",
+        "Haupt": "HAUPT",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lefer": "LEFER",
+        "Norton": "NRTON",
+        "Rosley": "ROSLY",
+        "Sajul": "SAJUL",
+        "Seagull": "CEEGL",
+        "Tapper": "TAPPR",
+        "Zalpo": "ZALPO"
+      },
+      "CandidateApproaches": {
+        "Belmont Visual runway two two Left": "BVA",
+        "I L S runway two two left": "I2L",
+        "I L S runway two two right": "I2R",
+        "r-nav runway two two right": "R2R",
+        "r-nav x-ray runway two two left": "R2L"
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 8529,
+      "State": "arrival",
+      "ControllerFrequency": "2G",
+      "TrackingController": "2G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R",
+        "13R",
+        "31L"
+      ]
+    },
+    "Shamrock 217 heavy": {
+      "Callsign": "EIN217",
+      "AircraftType": "A333",
+      "Fixes": {
+        "Greki": "GREKI",
+        "Judds": "JUDDS",
+        "Martin": "MARTN"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "JFK5",
+      "STAR": "",
+      "Altitude": 7000,
+      "State": "departure",
+      "ControllerFrequency": "2J",
+      "TrackingController": "5E",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november 343KU": {
+      "Callsign": "N343KU",
+      "AircraftType": "",
+      "Fixes": {
+        "Danbury": "KDXR"
+      },
+      "CandidateApproaches": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 1267,
+      "State": "",
+      "ControllerFrequency": "2G",
+      "TrackingController": "",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Air India 884 heavy contact near departure one two, correction one two six point eight\"",
+    "[local-stt] normalized words: [air india 884 heavy contact near departure 1 2 correction 1 2 6 point 8]",
+    "[local-stt] tokens: 12",
+    "[local-stt]   token[0]: Text=\"air\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"india\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"884\" Type=1 Value=884",
+    "[local-stt]   token[3]: Text=\"heavy\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"near\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"departure\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"12\" Type=1 Value=12",
+    "[local-stt]   token[8]: Text=\"correction\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"126\" Type=1 Value=126",
+    "[local-stt]   token[10]: Text=\"point\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"8\" Type=1 Value=8",
+    "[local-stt] MatchCallsign: 12 tokens, 9 aircraft",
+    "[local-stt]   exact match: \"air india 884 heavy\" -\u003e \"AIC884\" (consumed 4)",
+    "[local-stt] callsign match: Callsign=\"AIC884\" SpokenKey=\"Air India 884 heavy\" Conf=1.00 Consumed=4",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=5377 Fixes=1 Approaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Merrit\" -\u003e \"MERIT\"",
+    "[local-stt] command tokens after disregard: 3",
+    "[local-stt]   token[0]: Text=\"126\" Type=1 Value=126",
+    "[local-stt]   token[1]: Text=\"point\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"8\" Type=1 Value=8",
+    "[local-stt] ParseCommands: 3 tokens",
+    "[local-stt]   no match at token[0]=\"126\", skipping",
+    "[local-stt]   no match at token[1]=\"point\", skipping",
+    "[local-stt]   no match at token[2]=\"8\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"AIC884 AGAIN\" (conf=1.00, time=214.875µs) ==="
+  ]
+}

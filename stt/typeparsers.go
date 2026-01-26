@@ -99,6 +99,13 @@ func (p *altitudeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 				return t.Value / 100, i - pos + 1, ""
 			}
 
+			// Handle 3-digit values that are likely thousands with decimal artifacts
+			// e.g., "9.00" → 900 means 9000 feet, "5.00" → 500 means 5000 feet
+			// These are outside the ambiguous speed range (100-400)
+			if t.Value >= 500 && t.Value <= 900 && t.Value%100 == 0 {
+				return t.Value / 10, i - pos + 1, ""
+			}
+
 			// STT adds extra zeros
 			if t.Value >= 100000 && t.Value <= 6000000 && t.Value%10000 == 0 {
 				corrected := t.Value / 100

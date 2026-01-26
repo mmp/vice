@@ -401,6 +401,7 @@ var commandKeywords = map[string]string{
 	"climb":      "climb",
 	"climin":     "climb",
 	"klimin":     "climb",
+	"klim":       "climb", // STT error: dropped trailing sound
 	"clomman":    "climb",
 	"clementine": "climb",
 	"con":        "climb",
@@ -420,6 +421,7 @@ var commandKeywords = map[string]string{
 	"heading":  "heading",
 	"eating":   "heading", // STT error: "heading" misheard as "eating" (phonetically similar)
 	"atting":   "heading", // STT error: "heading" misheard as "atting" (phonetically similar)
+	"waiting":  "wavey",   // STT error: "wavey" (fix) misheard as "waiting"
 	"turn":     "turn",
 	"lefthand": "left", // STT error: "left" with extra "hand" suffix
 	"turning":  "turn", // STT captures continuous tense
@@ -479,32 +481,33 @@ var commandKeywords = map[string]string{
 	"southwest": "southwest",
 
 	// Approach
-	"cleared":   "cleared",
-	"cliud":     "cleared", // STT error: garbled "cleared"
-	"expect":    "expect",
-	"spectat":   "expect", // STT error: "expect" garbled
-	"select":    "expect", // "select the ILS" = "expect the ILS"
-	"vectors":   "vectors",
-	"approach":  "approach",
-	"cancel":    "cancel",
-	"localizer": "localizer",
-	"localize":  "localizer", // STT drops trailing 'r'
-	"intercept": "intercept",
-	"nusselt":   "intercept",
-	"clearance": "clearance",
-	"visual":    "visual",
-	"ils":       "ils",
-	"dallas":    "ils",
-	"alice":     "ils",
-	"als":       "ils",
-	"les":       "ils", // STT error: dropped leading sound
-	"dials":     "ils", // STT error: "d'ILS" or "the ILS" merged
-	"rnav":      "rnav",
-	"arnavie":   "rnav", // STT error: "rnav" garbled with extra syllables
-	"vor":       "vor",
-	"runway":    "runway",
-	"romn":      "runway", // STT error: garbled "runway"
-	"renoya":    "runway", // STT error: garbled "runway"
+	"cleared":     "cleared",
+	"cliud":       "cleared", // STT error: garbled "cleared"
+	"expect":      "expect",
+	"spectat":     "expect", // STT error: "expect" garbled
+	"select":      "expect", // "select the ILS" = "expect the ILS"
+	"vectors":     "vectors",
+	"approach":    "approach",
+	"cancel":      "cancel",
+	"localizer":   "localizer",
+	"localize":    "localizer", // STT drops trailing 'r'
+	"intercept":   "intercept",
+	"intercepted": "intercept", // Past tense
+	"nusselt":     "intercept",
+	"clearance":   "clearance",
+	"visual":      "visual",
+	"ils":         "ils",
+	"dallas":      "ils",
+	"alice":       "ils",
+	"als":         "ils",
+	"les":         "ils", // STT error: dropped leading sound
+	"dials":       "ils", // STT error: "d'ILS" or "the ILS" merged
+	"rnav":        "rnav",
+	"arnavie":     "rnav", // STT error: "rnav" garbled with extra syllables
+	"vor":         "vor",
+	"runway":      "runway",
+	"romn":        "runway", // STT error: garbled "runway"
+	"renoya":      "runway", // STT error: garbled "runway"
 
 	// Transponder
 	"squawk":      "squawk",
@@ -519,6 +522,7 @@ var commandKeywords = map[string]string{
 	"tar":       "tower",
 	"terror":    "tower",
 	"her":       "tower", // STT error: "tower" misheard as "her"
+	"hour":      "tower", // STT error: "tower" misheard as "hour"
 	"frequency": "frequency",
 	"departure": "departure",
 	"center":    "center",
@@ -568,6 +572,7 @@ var multiTokenReplacements = map[string][]string{
 	"r nav":       {"rnav"},                // R-NAV after hyphen removal
 	"fly level":   {"flight", "level"},     // STT error: "flight level" misheard as "fly level"
 	"eddie had":   {"etihad"},              // STT error: "Etihad" misheard as "eddie had"
+	"local line":  {"localizer"},           // STT error: "localizer" misheard as "local line"
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.
@@ -615,7 +620,8 @@ var fillerWords = map[string]bool{
 	"off":  true,               // STT noise in "turn off heading" → "turn heading"
 	"wing": true,               // STT error: "left-wing" for "left heading" becomes "left wing" after hyphen removal
 	"i":    true, "said": true, // Pilot interjections ("I said I maintained...")
-	"having": true, // Prevents "having" from fuzzy matching "heading" (Jaro-Winkler 0.86)
+	"having":  true, // Prevents "having" from fuzzy matching "heading" (Jaro-Winkler 0.86)
+	"leaving": true, // Prevents "leaving" from fuzzy matching "heading" (Jaro-Winkler 0.81)
 	// Note: "contact" and "radar" are NOT filler words - they're command keywords
 }
 
@@ -742,6 +748,27 @@ func NormalizeTranscript(transcript string) []string {
 			if prev == "turn" && (nextWord == "left" || nextWord == "right" ||
 				PhoneticMatch(nextWord, "left") || PhoneticMatch(nextWord, "right")) {
 				continue // Skip "or" between turn and direction
+			}
+		}
+
+		// Handle "and" between digits: STT mishears "one" as "and"
+		// e.g., "two and zero" means "two one zero" (210)
+		// But "two nine and zero" should be "290" (and is filler, not replacing one)
+		if w == "and" && len(result) > 0 && i+1 < len(words) {
+			prev := result[len(result)-1]
+			nextWord := CleanWord(words[i+1])
+
+			prevIsDigit := IsNumber(prev)
+			_, nextIsDigitWord := digitWords[nextWord]
+			nextIsDigit := IsNumber(nextWord) || nextIsDigitWord
+			if prevIsDigit && nextIsDigit {
+				// Check if we're in a multi-digit sequence (prev-prev is also a digit)
+				// If so, skip "and" (it's filler). Otherwise convert to "1".
+				if len(result) >= 2 && IsNumber(result[len(result)-2]) {
+					continue // Skip "and" in multi-digit sequence like "two nine and zero"
+				}
+				result = append(result, "1") // "and" → "1" in "two and zero"
+				continue
 			}
 		}
 

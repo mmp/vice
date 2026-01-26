@@ -65,6 +65,14 @@ func extractAltitude(tokens []Token) (int, int) {
 			if t.Value >= 1000 && t.Value <= 60000 && t.Value%100 == 0 {
 				return t.Value / 100, i + 1
 			}
+			// Handle 3-digit values that are likely thousands with decimal artifacts
+			// e.g., "9.00" → 900 means 9000 feet, "5.00" → 500 means 5000 feet
+			// These are outside the ambiguous speed range (100-400)
+			if t.Value >= 500 && t.Value <= 900 && t.Value%100 == 0 {
+				encoded := t.Value / 10
+				logLocalStt("  extractAltitude: interpreted %d as %d000 ft (encoded %d)", t.Value, t.Value/100, encoded)
+				return encoded, i + 1
+			}
 			// STT sometimes adds extra zeros: "9,000" -> "900,000" or "12,000" -> "120,000"
 			// Detect values 100x too large and correct them
 			if t.Value >= 100000 && t.Value <= 6000000 && t.Value%10000 == 0 {
@@ -1479,6 +1487,12 @@ func extractAltitudeValue(t Token) int {
 		// Raw feet - convert to encoded
 		if t.Value >= 1000 && t.Value <= 60000 && t.Value%100 == 0 {
 			return t.Value / 100
+		}
+		// Handle 3-digit values that are likely thousands with decimal artifacts
+		// e.g., "9.00" → 900 means 9000 feet, "5.00" → 500 means 5000 feet
+		// These are outside the ambiguous speed range (100-400)
+		if t.Value >= 500 && t.Value <= 900 && t.Value%100 == 0 {
+			return t.Value / 10
 		}
 	}
 	return 0
