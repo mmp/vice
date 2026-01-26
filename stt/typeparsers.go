@@ -143,6 +143,17 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 	for i := pos; i < len(tokens) && i < pos+4; i++ {
 		t := tokens[i]
 
+		// Handle "to N" pattern where "to" is garbled "two" (2).
+		// E.g., "heading to 70" should be "heading 270".
+		if t.Type == TokenWord && strings.ToLower(t.Text) == "to" && i+1 < len(tokens) {
+			if next := tokens[i+1]; next.Type == TokenNumber && next.Value >= 10 && next.Value <= 99 {
+				hdg := 200 + next.Value
+				if hdg >= 1 && hdg <= 360 {
+					return hdg, i - pos + 2, ""
+				}
+			}
+		}
+
 		// Handle 4-digit values where first 3 digits form valid heading
 		if t.Type == TokenNumber && t.Value > 360 && t.Value < 10000 {
 			hdg := t.Value / 10

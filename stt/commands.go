@@ -425,6 +425,10 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 	var bestScore float64
 	var bestLength int
 
+	// Extract spoken direction from all tokens (left/right/center at any position)
+	// This helps prefer approaches matching the spoken direction.
+	spokenDir := extractSpokenDirection(tokens)
+
 	// Build candidate phrases (1-7 words for approach names, since spoken numbers expand)
 	for length := min(7, len(tokens)); length >= 1; length-- {
 		var parts []string
@@ -455,6 +459,12 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 			for spokenName, apprID := range approaches {
 				score := JaroWinkler(variant, spokenName)
 				if score >= 0.80 {
+					// Bonus for matching spoken direction: if user said "left" and approach ends in "L",
+					// boost the score. This helps "ils ... left" match "I7L" over "I28".
+					if spokenDir != 0 && approachHasDirection(apprID, spokenDir) {
+						score += 0.05
+					}
+
 					isBetter := score > bestScore
 					if !isBetter && score == bestScore {
 						// Tie-breaker: prefer assigned approach, then alphabetically earlier
@@ -517,6 +527,35 @@ func approachMatchesAssigned(approachID, assignedApproach string) bool {
 	// If neither has a direction, or only one has a direction, consider it a match
 	// (this allows for approaches like "I9" to match "ILS Runway 9")
 	return true
+}
+
+// extractSpokenDirection looks for a direction word (left/right/center) in the tokens.
+// Returns 'L', 'R', 'C', or 0 if no direction found.
+func extractSpokenDirection(tokens []Token) byte {
+	for _, t := range tokens {
+		switch strings.ToLower(t.Text) {
+		case "left", "l":
+			return 'L'
+		case "right", "r":
+			return 'R'
+		case "center", "c":
+			return 'C'
+		}
+	}
+	return 0
+}
+
+// approachHasDirection checks if an approach ID ends with the given direction (L/R/C).
+func approachHasDirection(approachID string, dir byte) bool {
+	if len(approachID) == 0 || dir == 0 {
+		return false
+	}
+	lastChar := approachID[len(approachID)-1]
+	// Handle both upper and lower case
+	if lastChar >= 'a' && lastChar <= 'z' {
+		lastChar -= 32 // Convert to uppercase
+	}
+	return lastChar == dir
 }
 
 // matchApproachByTypeAndNumber tries to match approach by extracting the approach type
@@ -878,6 +917,28 @@ func matchLAHSORunway(tokens []Token, lahsoRunways []string) (string, int) {
 			if strings.TrimRight(rwy, "LRC") == numStr {
 				logLocalStt("  extractLAHSO: number match %q -> %q", runwayStr, rwy)
 				return rwy, consumed
+			}
+		}
+
+		// Reciprocal runway match: 31L = 13R, 31R = 13L (same physical pavement)
+		// Reciprocal number is (N + 18) mod 36, with 0 becoming 36
+		reciprocalNum := (num + 18) % 36
+		if reciprocalNum == 0 {
+			reciprocalNum = 36
+		}
+		// Swap direction: L ↔ R, C stays C
+		reciprocalSuffix := suffix
+		if suffix == "L" {
+			reciprocalSuffix = "R"
+		} else if suffix == "R" {
+			reciprocalSuffix = "L"
+		}
+		reciprocalRwy := fmt.Sprintf("%d%s", reciprocalNum, reciprocalSuffix)
+		for _, rwy := range lahsoRunways {
+			if rwy == reciprocalRwy {
+				// Return the spoken runway ID (what the controller said), not the internal ID
+				logLocalStt("  extractLAHSO: reciprocal match %q (internal %q)", runwayStr, rwy)
+				return runwayStr, consumed
 			}
 		}
 	}

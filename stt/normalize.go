@@ -348,6 +348,7 @@ var phoneticCommandBlocklist = map[string][]string{
 	"redu":      {"right"},         // "redu-speed" is "reduce speed", not "right speed"
 	"redo":      {"right"},         // "redo speed" is "reduce speed", not "right speed"
 	"towards":   {"reduce"},        // "contact towards" is not "reduce"
+	"had":       {"heading"},       // "just had to" is not "heading"
 	// Speed-related words should match "speed" not "intercept" (suffix match on SPT)
 	"rotospeed": {"intercept"}, // STT garble of "reduce speed"
 	"speedo":    {"intercept"}, // STT garble of "speed"
@@ -359,6 +360,7 @@ var phoneticCommandBlocklist = map[string][]string{
 	"barracuda": {"direct"},            // Miami position name, not "direct"
 	"veracosta": {"cleared", "direct"}, // Garbled position name
 	"mayr":      {"maintain"},          // Garbled word
+	"argentina": {"maintain"},          // Airline name, not command
 }
 
 // tryPhoneticCommandMatch attempts to match a word phonetically against
@@ -404,6 +406,7 @@ var commandKeywords = map[string]string{
 	"klim":       "climb", // STT error: dropped trailing sound
 	"clomman":    "climb",
 	"clementine": "climb",
+	"klamathay":  "climb", // STT error: "climb and maintain" garbled together
 	"con":        "climb",
 	"maintain":   "maintain",
 	"maintained": "maintain",
@@ -427,8 +430,8 @@ var commandKeywords = map[string]string{
 	"turning":  "turn", // STT captures continuous tense
 	"turned":   "turn", // Past tense variant
 	"left":     "left",
-	"right":   "right",
-	"degrees": "degrees",
+	"right":    "right",
+	"degrees":  "degrees",
 	"fly":      "fly",
 	"present":  "present",
 
@@ -456,6 +459,9 @@ var commandKeywords = map[string]string{
 	"cross":    "cross",
 	"depart":   "depart",
 	"hold":     "hold",
+	"land":     "land",
+	"landen":   "land",  // STT error: "land and" garbled as "landen"
+	"short":    "short", // For "hold short" LAHSO commands
 	"via":      "via",
 	"by":       "via",
 	"sid":      "sid",
@@ -502,6 +508,8 @@ var commandKeywords = map[string]string{
 	"als":         "ils",
 	"les":         "ils", // STT error: dropped leading sound
 	"dials":       "ils", // STT error: "d'ILS" or "the ILS" merged
+	"eyelash":     "ils", // STT error: "I L S" pronounced as "eye-ell-ess" -> "eyelash"
+	"eyelids":     "ils", // STT error: "I L S" garbled as "eyelids"
 	"rnav":        "rnav",
 	"arnavie":     "rnav", // STT error: "rnav" garbled with extra syllables
 	"vor":         "vor",
@@ -818,6 +826,54 @@ func postProcessNormalized(tokens []string) []string {
 			result = append(result, replacement...)
 			skip = consumed - 1 // -1 because loop will advance by 1
 			continue
+		}
+
+		// Handle "heading to N" where "to" is garbled "two" (2).
+		// e.g., "heading to 70" → "heading 270", "heading to 40" → "heading 240"
+		// Also handles "heading to N00" where STT added an extra trailing zero.
+		// e.g., "heading to 900" → "heading 290" (900 has extra 0, should be 90)
+		// IMPORTANT: Only apply when digits form a single token or 3+ consecutive digits.
+		// If digits are spelled out (e.g., "to 8 0" = two tokens), user likely intended
+		// the exact number, so don't transform. Spelled out numbers indicate intentionality.
+		if tokens[i] == "heading" && i+2 < len(tokens) && tokens[i+1] == "to" {
+			// Count consecutive digit tokens starting at i+2
+			digitCount := 0
+			for j := i + 2; j < len(tokens) && IsNumber(tokens[j]); j++ {
+				digitCount++
+			}
+
+			// Only proceed if we have exactly 1 token (already combined number like "70")
+			// or 3+ tokens (like "9 0 0" which is likely garbled with extra zero)
+			// Skip 2-token cases like "8 0" - user spelled it out intentionally as "080"
+			if digitCount == 1 || digitCount >= 3 {
+				// Join the digit tokens
+				var digitStr string
+				for j := i + 2; j < i+2+digitCount; j++ {
+					digitStr += tokens[j]
+				}
+				nextNum := ParseNumber(digitStr)
+
+				// Case 1: N is 2-digit (10-99)
+				if nextNum >= 10 && nextNum <= 99 {
+					combined := 200 + nextNum
+					if combined <= 360 {
+						result = append(result, "heading", strconv.Itoa(combined))
+						skip = 1 + digitCount // Skip "to" and all digit tokens
+						continue
+					}
+				}
+				// Case 2: N is 3-digit ending in 0 (100-990) - STT added extra trailing zero
+				// e.g., "to 900" should be "to 90" → "290"
+				if nextNum >= 100 && nextNum <= 990 && nextNum%10 == 0 {
+					actualNum := nextNum / 10 // Remove trailing zero
+					combined := 200 + actualNum
+					if combined <= 360 {
+						result = append(result, "heading", strconv.Itoa(combined))
+						skip = 1 + digitCount // Skip "to" and all digit tokens
+						continue
+					}
+				}
+			}
 		}
 
 		// Handle "l s" → "ils" (2 letters, missing "i")
