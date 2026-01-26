@@ -235,10 +235,10 @@ func (ss *simSession) GetStateUpdate(token string, tts sim.TTSProvider) *SimStat
 	}
 
 	return &SimStateUpdate{
-		StateUpdate: ss.sim.GetStateUpdate(),
-		ActiveTCWs:  ss.GetActiveTCWs(),
-		Events:      ss.sim.PrepareRadioTransmissionsForTCW(tcw, eventSub.Get()),
-		RadioSpeech: radioSpeech,
+		StateUpdate:            ss.sim.GetStateUpdate(),
+		ActiveTCWs:             ss.GetActiveTCWs(),
+		Events:                 ss.sim.PrepareRadioTransmissionsForTCW(tcw, eventSub.Get()),
+		EmergencyTransmissions: radioSpeech,
 	}
 }
 
@@ -304,4 +304,39 @@ func (ss *simSession) GetActiveTCWs() []sim.TCW {
 	defer ss.mu.Unlock(ss.lg)
 
 	return ss.getActiveTCWs()
+}
+
+// RequestContact pops the next pending contact for the TCW, generates the transmission
+// with current aircraft state, and synthesizes TTS. Returns nil if no contact is pending.
+func (ss *simSession) RequestContact(tcw sim.TCW, tts sim.TTSProvider) *sim.PilotSpeech {
+	if tts == nil {
+		return nil
+	}
+	ss.voiceAssigner.TryInit(tts, ss.lg)
+
+	// Get the primary TCP for this TCW
+	tcp := ss.sim.State.PrimaryPositionForTCW(tcw)
+
+	// Try pending contacts until we get a valid one or run out
+	for {
+		pc := ss.sim.PopReadyContact(tcp)
+		if pc == nil {
+			return nil
+		}
+
+		// Generate the contact transmission with current aircraft state
+		spokenText, _ := ss.sim.GenerateContactTransmission(pc)
+		if spokenText == "" {
+			// Aircraft may be gone or invalid - try the next one
+			continue
+		}
+
+		// Synthesize TTS with 4s timeout (longer than readback since client requests early)
+		speech := SynthesizeSpeechWithTimeout(
+			ss.voiceAssigner, tts, pc.ADSBCallsign,
+			av.RadioTransmissionContact, spokenText, ss.sim.SimTime(),
+			4*time.Second, ss.lg)
+
+		return speech
+	}
 }

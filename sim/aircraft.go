@@ -199,9 +199,9 @@ func (ac *Aircraft) PilotMixUp() av.CommandIntent {
 	}
 }
 
-func (ac *Aircraft) GoAround() av.CommandIntent {
+func (ac *Aircraft) GoAround() {
 	ac.GotContactTower = false
-	return ac.Nav.GoAround()
+	ac.Nav.GoAround()
 }
 
 func (ac *Aircraft) Ident(now time.Time) av.CommandIntent {

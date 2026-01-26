@@ -313,6 +313,14 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 
 	c.updateSpeech(p)
 
+	// Check if we should request a contact transmission from the server
+	// Only do this if TTS is enabled
+	ttsEnabled := c.haveTTS && (c.disableTTSPtr == nil || !*c.disableTTSPtr)
+	if ttsEnabled && c.transmissions.ShouldRequestContact() {
+		c.transmissions.SetContactRequested(true)
+		c.RequestContactTransmission()
+	}
+
 	if callbackErr == nil {
 		completedCalls, callbackErr = c.checkPendingRPCs(eventStream)
 	}
@@ -341,11 +349,13 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 		issueTime := time.Now()
 		c.updateCall = makeStateUpdateRPCCall(c.client.Go(server.GetStateUpdateRPC, c.controllerToken, &update, nil), &update,
 			func(err error) {
-				// Process RadioSpeech (pilot-initiated transmissions) from state update
+				// Process emergency transmissions from state update
 				// Skip if TTS is disabled at runtime (user toggled it off)
 				ttsEnabled := c.disableTTSPtr == nil || !*c.disableTTSPtr
-				if err == nil && len(update.RadioSpeech) > 0 && ttsEnabled {
-					c.transmissions.EnqueueFromStateUpdate(update.RadioSpeech)
+				if err == nil && ttsEnabled {
+					for _, speech := range update.EmergencyTransmissions {
+						c.transmissions.EnqueueTransmission(speech)
+					}
 				}
 
 				d := time.Since(issueTime)
@@ -502,11 +512,6 @@ func (c *ControlClient) HoldRadioTransmissions() {
 	if c.HaveTTS() {
 		c.transmissions.HoldAfterTransmission()
 	}
-}
-
-func (c *ControlClient) AllowRadioTransmissions() {
-	// Hold timeouts are handled by TransmissionManager - this is now a no-op
-	// but kept for API compatibility
 }
 
 func (c *ControlClient) LastTTSCallsign() av.ADSBCallsign {

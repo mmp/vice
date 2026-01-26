@@ -1499,16 +1499,6 @@ func (s *Sim) DescendViaSTAR(tcw TCW, callsign av.ADSBCallsign) (av.CommandInten
 		})
 }
 
-func (s *Sim) GoAround(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-
-	return s.dispatchControlledAircraftCommand(tcw, callsign,
-		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			return ac.GoAround()
-		})
-}
-
 func (s *Sim) ContactTower(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -1681,11 +1671,8 @@ func (s *Sim) checkDelayedTrafficInSight(ac *Aircraft) {
 	ac.TrafficInSightTime = s.State.SimTime
 	ac.TrafficLookingUntil = time.Time{} // Clear the looking window
 
-	// Post the transmission
-	rt := av.MakeReadbackTransmission("[approach|], {callsign}, [we've got the traffic|we have the traffic in sight|traffic in sight now]",
-		av.CallsignArg{Callsign: ac.ADSBCallsign})
-	rt.Type = av.RadioTransmissionContact // Unprompted transmission
-	s.postContactTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), *rt)
+	// Queue the transmission
+	s.enqueuePilotTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), PendingTransmissionTrafficInSight)
 }
 
 // MaintainVisualSeparation handles "maintain visual separation from the traffic" command.
@@ -1755,7 +1742,7 @@ func (s *Sim) GoAhead(tcw TCW, callsign av.ADSBCallsign) error {
 
 			ac.WaitingForGoAhead = false
 
-			s.sendFullFlightFollowingRequest(ac, s.State.PrimaryPositionForTCW(tcw))
+			s.enqueuePilotTransmission(ac.ADSBCallsign, s.State.PrimaryPositionForTCW(tcw), PendingTransmissionFlightFollowingFull)
 
 			return nil
 		})
@@ -1820,37 +1807,231 @@ func (s *Sim) SayAgainCommand(tcw TCW, callsign av.ADSBCallsign, commandType str
 ///////////////////////////////////////////////////////////////////////////
 // Deferred operations
 
-type RadioActivity struct {
-	EndTime    time.Time // estimated end of transmission
-	WasContact bool      // true if it was a contact (vs readback)
-}
+// PendingTransmissionType identifies the type of pilot-initiated transmission.
+type PendingTransmissionType int
 
-type FutureControllerContact struct {
+const (
+	PendingTransmissionDeparture           PendingTransmissionType = iota // Departure checking in
+	PendingTransmissionArrival                                            // Arrival/handoff checking in
+	PendingTransmissionTrafficInSight                                     // "Traffic in sight" call
+	PendingTransmissionFlightFollowingReq                                 // Abbreviated "VFR request"
+	PendingTransmissionFlightFollowingFull                                // Full flight following request
+	PendingTransmissionGoAround                                           // Go-around announcement
+)
+
+// PendingContact represents a pilot-initiated transmission waiting to be played.
+// ReadyTime is when the pilot is ready to transmit (after switching frequencies, etc.)
+// The actual message is generated on-demand when the client requests it,
+// ensuring current aircraft state (altitude, etc.) is used.
+type PendingContact struct {
 	ADSBCallsign           av.ADSBCallsign
 	TCP                    TCP
-	Time                   time.Time
-	IsDeparture            bool
-	ReportDepartureHeading bool
-	HasQueuedEmergency     bool
+	ReadyTime              time.Time               // When pilot is ready to transmit
+	Type                   PendingTransmissionType // What kind of transmission
+	ReportDepartureHeading bool                    // For departures: include assigned heading
+	HasQueuedEmergency     bool                    // For departures: trigger emergency after contact
 }
 
-func (s *Sim) enqueueControllerContact(callsign av.ADSBCallsign, tcp TCP, wait time.Duration) {
-	wait += s.radioActivityDelay(tcp)
-	s.FutureControllerContacts = append(s.FutureControllerContacts,
-		FutureControllerContact{ADSBCallsign: callsign, TCP: tcp, Time: s.State.SimTime.Add(wait)})
+// addPendingContact adds an aircraft to the pending contacts queue for a controller.
+func (s *Sim) addPendingContact(pc PendingContact) {
+	if s.PendingContacts == nil {
+		s.PendingContacts = make(map[TCP][]PendingContact)
+	}
+	s.PendingContacts[pc.TCP] = append(s.PendingContacts[pc.TCP], pc)
 }
 
+// PopReadyContact removes and returns the first pending contact whose ReadyTime has passed,
+// or nil if none are ready yet. This is called when the client is ready to play a contact.
+func (s *Sim) PopReadyContact(tcp TCP) *PendingContact {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.popReadyContact(tcp)
+}
+
+// popReadyContact is the internal version that requires the lock to already be held.
+func (s *Sim) popReadyContact(tcp TCP) *PendingContact {
+	if s.PendingContacts == nil || len(s.PendingContacts[tcp]) == 0 {
+		return nil
+	}
+
+	// Find the first contact that's ready (ReadyTime has passed)
+	for i, pc := range s.PendingContacts[tcp] {
+		if !s.State.SimTime.Before(pc.ReadyTime) {
+			s.PendingContacts[tcp] = slices.Delete(s.PendingContacts[tcp], i, i+1)
+			return &pc
+		}
+	}
+
+	return nil
+}
+
+// enqueueControllerContact adds an aircraft to the pending contacts queue.
+// Called when an aircraft should contact a controller (after handoff accepted, etc.)
+// The delay represents time for pilot to switch frequencies, etc.
+func (s *Sim) enqueueControllerContact(callsign av.ADSBCallsign, tcp TCP, delay time.Duration) {
+	s.addPendingContact(PendingContact{
+		ADSBCallsign: callsign,
+		TCP:          tcp,
+		ReadyTime:    s.State.SimTime.Add(delay),
+		Type:         PendingTransmissionArrival,
+	})
+}
+
+// enqueueDepartureContact adds a departure to the pending contacts queue.
+// Departures are ready immediately (they're already on frequency).
 func (s *Sim) enqueueDepartureContact(ac *Aircraft, tcp TCP) {
-	wait := s.radioActivityDelay(tcp)
-	s.FutureControllerContacts = append(s.FutureControllerContacts,
-		FutureControllerContact{
-			ADSBCallsign:           ac.ADSBCallsign,
-			TCP:                    tcp,
-			Time:                   s.State.SimTime.Add(wait),
-			IsDeparture:            true,
-			ReportDepartureHeading: ac.ReportDepartureHeading,
-			HasQueuedEmergency:     ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1,
-		})
+	s.addPendingContact(PendingContact{
+		ADSBCallsign:           ac.ADSBCallsign,
+		TCP:                    tcp,
+		ReadyTime:              s.State.SimTime, // Ready immediately
+		Type:                   PendingTransmissionDeparture,
+		ReportDepartureHeading: ac.ReportDepartureHeading,
+		HasQueuedEmergency:     ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1,
+	})
+}
+
+// enqueuePilotTransmission adds a pilot-initiated transmission to the pending queue.
+func (s *Sim) enqueuePilotTransmission(callsign av.ADSBCallsign, tcp TCP, txType PendingTransmissionType) {
+	s.addPendingContact(PendingContact{
+		ADSBCallsign: callsign,
+		TCP:          tcp,
+		ReadyTime:    s.State.SimTime, // Ready immediately
+		Type:         txType,
+	})
+}
+
+// GenerateContactTransmission generates a transmission for a pending contact.
+// Returns the spoken and written text, or empty strings if the contact is invalid.
+// This is called when the client requests a contact, using current aircraft state.
+func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writtenText string) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	ac, ok := s.Aircraft[pc.ADSBCallsign]
+	if !ok {
+		return "", ""
+	}
+
+	var rt *av.RadioTransmission
+
+	switch pc.Type {
+	case PendingTransmissionDeparture:
+		if !ac.IsAssociated() {
+			return "", ""
+		}
+		ac.ControllerFrequency = ControlPosition(pc.TCP)
+		rt = ac.Nav.DepartureMessage(pc.ReportDepartureHeading)
+		rt = s.addContactPrefixes(ac, pc.TCP, rt)
+
+		// Handle emergency activation for departures
+		humanAllocated := !s.isVirtualController(ac.ControllerFrequency)
+		if humanAllocated && pc.HasQueuedEmergency {
+			ac.EmergencyState.CurrentStage = 0
+			s.runEmergencyStage(ac)
+		}
+		// For departures to virtual controllers, enqueue climbing to cruise
+		if ac.IsDeparture() && !humanAllocated {
+			s.enqueueDepartOnCourse(ac.ADSBCallsign)
+		}
+
+	case PendingTransmissionArrival:
+		if !ac.IsAssociated() {
+			return "", ""
+		}
+		ac.ControllerFrequency = ControlPosition(pc.TCP)
+		rt = ac.ContactMessage(s.ReportingPoints)
+		rt.Type = av.RadioTransmissionContact
+		rt = s.addContactPrefixes(ac, pc.TCP, rt)
+
+		// Handle emergency activation for arrivals
+		humanAllocated := !s.isVirtualController(ac.ControllerFrequency)
+		if humanAllocated && ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1 {
+			ac.EmergencyState.CurrentStage = 0
+			s.runEmergencyStage(ac)
+		}
+
+	case PendingTransmissionTrafficInSight:
+		rt = av.MakeReadbackTransmission("[approach|], {callsign}, [we've got the traffic|we have the traffic in sight|traffic in sight now]",
+			av.CallsignArg{Callsign: ac.ADSBCallsign})
+		rt.Type = av.RadioTransmissionContact
+
+	case PendingTransmissionFlightFollowingReq:
+		rt = av.MakeContactTransmission("[VFR request|with a VFR request]")
+		rt.Type = av.RadioTransmissionContact
+		rt = s.addContactPrefixes(ac, pc.TCP, rt)
+
+	case PendingTransmissionFlightFollowingFull:
+		rt = s.generateFlightFollowingMessage(ac)
+		rt = s.addContactPrefixes(ac, pc.TCP, rt)
+
+	case PendingTransmissionGoAround:
+		rt = av.MakeContactTransmission("[going around|on the go]")
+		rt.Type = av.RadioTransmissionUnexpected
+
+	default:
+		return "", ""
+	}
+
+	if rt == nil {
+		return "", ""
+	}
+
+	spokenText = rt.Spoken(s.Rand)
+	writtenText = rt.Written(s.Rand)
+
+	// Post the radio event
+	s.eventStream.Post(Event{
+		Type:                  RadioTransmissionEvent,
+		ADSBCallsign:          pc.ADSBCallsign,
+		ToController:          pc.TCP,
+		DestinationTCW:        s.State.TCWForPosition(pc.TCP),
+		WrittenText:           writtenText,
+		SpokenText:            spokenText,
+		RadioTransmissionType: rt.Type,
+	})
+
+	return spokenText, writtenText
+}
+
+// addContactPrefixes adds callsign and controller prefixes to a contact transmission.
+func (s *Sim) addContactPrefixes(ac *Aircraft, tcp TCP, rt *av.RadioTransmission) *av.RadioTransmission {
+	ctrl := s.State.Controllers[tcp]
+	if ctrl == nil {
+		return rt
+	}
+
+	var heavySuper string
+	if perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok && !ctrl.ERAMFacility {
+		if perf.WeightClass == "H" {
+			heavySuper = " heavy"
+		} else if perf.WeightClass == "J" {
+			heavySuper = " super"
+		}
+	}
+
+	// For emergency aircraft, 50% of the time add "emergency aircraft" after heavy/super
+	if ac.EmergencyState != nil && s.Rand.Bool() {
+		heavySuper += " emergency aircraft"
+	}
+
+	csArg := av.CallsignArg{
+		Callsign:           ac.ADSBCallsign,
+		IsEmergency:        ac.EmergencyState != nil,
+		AlwaysFullCallsign: true,
+	}
+
+	var prefix *av.RadioTransmission
+	if ac.TypeOfFlight == av.FlightTypeDeparture {
+		prefix = av.MakeContactTransmission("{dctrl}, {callsign}"+heavySuper+". ", ctrl, csArg)
+	} else {
+		prefix = av.MakeContactTransmission("{actrl}, {callsign}"+heavySuper+". ", ctrl, csArg)
+	}
+
+	// Merge prefix with the main transmission
+	prefix.Merge(rt)
+	prefix.Type = rt.Type
+	return prefix
 }
 
 type FutureOnCourse struct {
@@ -1878,57 +2059,6 @@ func (s *Sim) enqueueTransponderChange(callsign av.ADSBCallsign, code av.Squawk,
 }
 
 func (s *Sim) processEnqueued() {
-	s.FutureControllerContacts = util.FilterSliceInPlace(s.FutureControllerContacts,
-		func(c FutureControllerContact) bool {
-			if !s.State.SimTime.After(c.Time) {
-				return true // keep it in the slice
-			}
-
-			if ac, ok := s.Aircraft[c.ADSBCallsign]; ok {
-				if ac.IsAssociated() {
-					ac.ControllerFrequency = ControlPosition(c.TCP)
-
-					var rt *av.RadioTransmission
-					if c.IsDeparture {
-						rt = ac.Nav.DepartureMessage(c.ReportDepartureHeading)
-					} else {
-						rt = ac.ContactMessage(s.ReportingPoints)
-						rt.Type = av.RadioTransmissionContact
-					}
-
-					s.postContactTransmission(c.ADSBCallsign, c.TCP, *rt)
-
-					// Activate pre-assigned external emergency; the transmission will be
-					// consolidated with the initial contact transmission.
-					// Check if controlling controller is a human-allocated position (not virtual)
-					humanAllocated := !s.isVirtualController(ac.ControllerFrequency)
-					if c.IsDeparture {
-						if humanAllocated && c.HasQueuedEmergency {
-							ac.EmergencyState.CurrentStage = 0
-							s.runEmergencyStage(ac)
-						}
-					} else {
-						if humanAllocated && ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1 {
-							ac.EmergencyState.CurrentStage = 0
-							s.runEmergencyStage(ac)
-						}
-					}
-
-					// For departures handed off to virtual controllers,
-					// enqueue climbing them to cruise sending them direct
-					// to their first fix if they aren't already.
-					if ac.IsDeparture() && !humanAllocated {
-						s.enqueueDepartOnCourse(ac.ADSBCallsign)
-					}
-				} else {
-					if ac.RequestedFlightFollowing {
-						s.requestFlightFollowing(ac, c.TCP)
-					}
-				}
-			}
-			return false // remove it from the slice
-		})
-
 	s.FutureOnCourse = util.FilterSliceInPlace(s.FutureOnCourse,
 		func(oc FutureOnCourse) bool {
 			if s.State.SimTime.After(oc.Time) {

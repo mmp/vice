@@ -768,8 +768,6 @@ func (sp *STARSPane) setCommandMode(ctx *panes.Context, mode CommandMode) {
 
 	if mode == CommandModeTargetGen || sp.commandMode == CommandModeTargetGenLock {
 		ctx.Client.HoldRadioTransmissions()
-	} else {
-		ctx.Client.AllowRadioTransmissions()
 	}
 }
 
@@ -786,8 +784,6 @@ func (sp *STARSPane) resetInputState(ctx *panes.Context) {
 	sp.activeSpinner = nil
 
 	sp.drawRoutePoints = nil
-
-	ctx.Client.AllowRadioTransmissions()
 
 	ctx.Platform.EndCaptureMouse()
 	ctx.Platform.StopMouseDeltaMode()

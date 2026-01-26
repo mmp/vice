@@ -585,13 +585,6 @@ func (t TransponderIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 ///////////////////////////////////////////////////////////////////////////
 // Special Intents
 
-// GoAroundIntent represents a go-around instruction
-type GoAroundIntent struct{}
-
-func (g GoAroundIntent) Render(rt *RadioTransmission, r *rand.Rand) {
-	rt.Add("[going around|on the go]")
-}
-
 // ContactTowerIntent represents contact tower command
 type ContactTowerIntent struct{}
 

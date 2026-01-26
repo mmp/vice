@@ -978,6 +978,29 @@ type STTBugReportArgs struct {
 	IsSlowPerformance bool            // True if this is an automatic slow performance report
 }
 
+type RequestContactArgs struct {
+	ControllerToken string
+}
+
+type RequestContactResult struct {
+	ContactSpeech *sim.PilotSpeech // Synthesized contact speech, or nil if none pending
+}
+
+const RequestContactTransmissionRPC = "Sim.RequestContactTransmission"
+
+func (sd *dispatcher) RequestContactTransmission(args *RequestContactArgs, result *RequestContactResult) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+
+	// Request a contact from the session - this handles the async TTS synthesis
+	result.ContactSpeech = c.session.RequestContact(c.tcw, sd.sm.tts)
+	return nil
+}
+
 const ReportSTTBugRPC = "Sim.ReportSTTBug"
 
 func (sd *dispatcher) ReportSTTBug(args *STTBugReportArgs, _ *struct{}) error {

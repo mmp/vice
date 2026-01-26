@@ -461,7 +461,7 @@ func (s *Sim) runEmergencyStage(ac *Aircraft) {
 	// Post the radio transmission
 	// Note: MakeContactTransmission automatically prepends controller position and callsign
 	rt := av.MakeContactTransmission(strings.Join(transmission, ", "), args...)
-	s.postContactTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), *rt)
+	s.postEmergencyTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), *rt)
 
 	// Schedule next stage based on current stage's duration
 	es.CurrentStage++
