@@ -429,7 +429,8 @@ var fuzzyMatchBlocklist = map[string][]string{
 	"pro":        {"direct", "proceed"},  // Garbled "pro" is not direct/proceed
 	"clerder":    {"departure"},          // Garbled "cleared" should not match "departure"
 	"redo":       {"right"},              // "redo speed" should not match "turn right"
-	"san":        {"say"},                // "san juan" should not match "say"
+	"san":          {"say"},                // "san juan" should not match "say"
+	"intermittent": {"ident"},              // noise word should not match "ident" command
 }
 
 // FuzzyMatch returns true if word matches target with Jaro-Winkler >= threshold

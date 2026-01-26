@@ -427,8 +427,8 @@ var commandKeywords = map[string]string{
 	"turning":  "turn", // STT captures continuous tense
 	"turned":   "turn", // Past tense variant
 	"left":     "left",
-	"right":    "right",
-	"degrees":  "degrees",
+	"right":   "right",
+	"degrees": "degrees",
 	"fly":      "fly",
 	"present":  "present",
 
@@ -573,6 +573,7 @@ var multiTokenReplacements = map[string][]string{
 	"fly level":   {"flight", "level"},     // STT error: "flight level" misheard as "fly level"
 	"eddie had":   {"etihad"},              // STT error: "Etihad" misheard as "eddie had"
 	"local line":  {"localizer"},           // STT error: "localizer" misheard as "local line"
+	"time riding": {"turn", "right"},       // STT error: "turn right" misheard as "time riding"
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.
@@ -645,10 +646,29 @@ func NormalizeTranscript(transcript string) []string {
 
 	// Normalize each word
 	result := make([]string, 0, len(words))
+	skipCount := 0
 	for i := 0; i < len(words); i++ {
+		if skipCount > 0 {
+			skipCount--
+			continue
+		}
+
 		w := CleanWord(words[i])
 		if w == "" {
 			continue
+		}
+
+		// Check for multi-token patterns on raw words BEFORE phonetic matching
+		// This catches patterns like "time riding" → "turn right" before "riding" gets
+		// normalized to "heading" via phonetic match
+		if i+1 < len(words) {
+			rawNext := CleanWord(words[i+1])
+			key := w + " " + rawNext
+			if replacement, ok := multiTokenReplacements[key]; ok {
+				result = append(result, replacement...)
+				skipCount = 1
+				continue
+			}
 		}
 
 		// Handle garbled "niner" transcriptions like "9r,000" -> "9r000" -> "9000"

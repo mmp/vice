@@ -192,6 +192,20 @@ func extractSpeed(tokens []Token) (int, int) {
 					return corrected, i + 1
 				}
 			}
+			// Handle 2-digit speeds followed by a trailing zero token
+			// STT often splits "one niner zero" into separate tokens like "19" "00" or "19" "0"
+			// When the next token is 0, combine them: 19 + 0 → 190
+			// Speeds are almost always multiples of 10 knots
+			if t.Value >= 10 && t.Value <= 40 && i+1 < len(tokens) {
+				next := tokens[i+1]
+				if next.Type == TokenNumber && next.Value == 0 {
+					combined := t.Value * 10
+					if combined >= 100 && combined <= 400 {
+						logLocalStt("  extractSpeed: combined %d + 0 -> %d (split digits)", t.Value, combined)
+						return combined, i + 2
+					}
+				}
+			}
 			// Handle 2-digit speeds with missing leading digit (e.g., "30" → 230, "70" → 170)
 			// STT sometimes drops the leading digit for speeds spoken as "two three zero"
 			// Try prepending "2" first (typical approach speeds are 200-250), then "1"

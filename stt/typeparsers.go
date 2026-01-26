@@ -223,6 +223,20 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 				}
 			}
 
+			// Handle 2-digit speeds followed by a trailing zero token
+			// STT often splits "one niner zero" into separate tokens like "19" "00"
+			// When the next token is 0, combine them: 19 + 0 → 190
+			// Speeds are almost always multiples of 10 knots
+			if t.Value >= 10 && t.Value <= 40 && i+1 < len(tokens) {
+				next := tokens[i+1]
+				if next.Type == TokenNumber && next.Value == 0 {
+					combined := t.Value * 10
+					if combined >= 100 && combined <= 400 {
+						return combined, i - pos + 2, ""
+					}
+				}
+			}
+
 			// 2-digit with missing leading digit
 			if t.Value >= 10 && t.Value < 100 {
 				// Try prepending "2"
