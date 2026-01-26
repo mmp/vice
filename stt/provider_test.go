@@ -2847,3 +2847,95 @@ func TestSpelledFixNames(t *testing.T) {
 		})
 	}
 }
+
+// TestApproachFixInjection tests that when an aircraft is told to expect an approach,
+// the fixes from that approach become available for subsequent commands.
+func TestApproachFixInjection(t *testing.T) {
+	tests := []struct {
+		name       string
+		transcript string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "expect approach then direct to approach fix",
+			transcript: "Delta 123 expect I L S runway two two left direct rosly",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {
+					Callsign: "DAL123",
+					State:    "arrival",
+					Fixes:    map[string]string{}, // ROSLY not in aircraft's route
+					CandidateApproaches: map[string]string{
+						"i l s runway two two left": "I22L",
+					},
+					ApproachFixes: map[string]map[string]string{
+						"I22L": {
+							"rosly": "ROSLY",
+							"torby": "TORBY",
+						},
+					},
+				},
+			},
+			expected: "DAL123 EI22L DROSLY",
+		},
+		{
+			name:       "expect approach with LAHSO then direct to approach fix",
+			transcript: "United 456 vectors ILS runway two eight center land hold short two two direct MERIT",
+			aircraft: map[string]Aircraft{
+				"United 456": {
+					Callsign: "UAL456",
+					State:    "arrival",
+					Fixes:    map[string]string{}, // MERIT not in route
+					CandidateApproaches: map[string]string{
+						"i l s runway two eight center": "I28C",
+					},
+					ApproachFixes: map[string]map[string]string{
+						"I28C": {
+							"merit": "MERIT",
+							"camrn": "CAMRN",
+						},
+					},
+					LAHSORunways: []string{"22"},
+				},
+			},
+			expected: "UAL456 EI28C/LAHSO22 DMERIT",
+		},
+		{
+			name:       "approach fix does not override existing aircraft fix",
+			transcript: "Southwest 789 expect RNAV runway three six direct merit",
+			aircraft: map[string]Aircraft{
+				"Southwest 789": {
+					Callsign: "SWA789",
+					State:    "arrival",
+					Fixes: map[string]string{
+						"merit": "MRIT1", // Aircraft already has MERIT in route (different code)
+					},
+					CandidateApproaches: map[string]string{
+						"rnav runway three six": "R36",
+					},
+					ApproachFixes: map[string]map[string]string{
+						"R36": {
+							"merit": "MERIT", // Approach also has a fix spelled "merit"
+						},
+					},
+				},
+			},
+			expected: "SWA789 ER36 DMRIT1", // Should use the original aircraft's fix, not the approach's
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
+}

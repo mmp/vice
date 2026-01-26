@@ -311,6 +311,7 @@ func (p *Transcriber) BuildAircraftContext(
 		// Build candidate approaches for arrivals
 		if trk.IsArrival() && trk.ArrivalAirport != "" {
 			sttAc.CandidateApproaches = make(map[string]string)
+			sttAc.ApproachFixes = make(map[string]map[string]string)
 			if trk.Approach != "" {
 				sttAc.AssignedApproach = trk.Approach
 			}
@@ -325,6 +326,21 @@ func (p *Transcriber) BuildAircraftContext(
 					for code, appr := range ap.Approaches {
 						if appr.Runway == ar.Runway {
 							sttAc.CandidateApproaches[av.GetApproachTelephony(appr.FullName)] = code
+
+							// Build fixes map for this approach
+							approachFixes := make(map[string]string)
+							for _, wps := range appr.Waypoints {
+								for _, wp := range wps {
+									fix := wp.Fix
+									// Skip internal fixes (start with underscore) and invalid lengths
+									if len(fix) >= 3 && len(fix) <= 5 && fix[0] != '_' {
+										approachFixes[av.GetFixTelephony(fix)] = fix
+									}
+								}
+							}
+							if len(approachFixes) > 0 {
+								sttAc.ApproachFixes[code] = approachFixes
+							}
 						}
 					}
 					// Build LAHSORunways for this arrival runway (avoid duplicates)

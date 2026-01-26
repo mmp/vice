@@ -98,6 +98,27 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 			if match.Command != "" {
 				commands = append(commands, match.Command)
 				totalConf += match.Confidence
+
+				// If this is an expect approach command, add the approach's fixes
+				// to the aircraft context for subsequent command parsing.
+				if strings.HasPrefix(match.Command, "E") && len(match.Command) > 1 {
+					approachID := match.Command[1:]
+					// Strip LAHSO suffix if present (e.g., "I22L/LAHSO26" -> "I22L")
+					if idx := strings.Index(approachID, "/LAHSO"); idx != -1 {
+						approachID = approachID[:idx]
+					}
+					if approachFixes, ok := ac.ApproachFixes[approachID]; ok {
+						logLocalStt("  adding %d fixes from approach %s to aircraft context", len(approachFixes), approachID)
+						if ac.Fixes == nil {
+							ac.Fixes = make(map[string]string)
+						}
+						for spoken, fix := range approachFixes {
+							if _, exists := ac.Fixes[spoken]; !exists {
+								ac.Fixes[spoken] = fix
+							}
+						}
+					}
+				}
 			}
 			pos = newPos
 			isThen = false

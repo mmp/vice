@@ -576,9 +576,10 @@ func isAlphanumeric(s string) bool {
 // Aircraft holds context for a single aircraft for STT processing.
 type Aircraft struct {
 	Callsign            string
-	AircraftType        string            // Aircraft type code (e.g., "C172", "BE36")
-	Fixes               map[string]string // spoken name -> fix ID
-	CandidateApproaches map[string]string // spoken name -> approach ID
+	AircraftType        string                       // Aircraft type code (e.g., "C172", "BE36")
+	Fixes               map[string]string            // spoken name -> fix ID
+	CandidateApproaches map[string]string            // spoken name -> approach ID
+	ApproachFixes       map[string]map[string]string // approach ID -> (spoken name -> fix ID)
 	AssignedApproach    string
 	SID                 string
 	STAR                string
