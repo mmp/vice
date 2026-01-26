@@ -1,0 +1,162 @@
+{
+  "time": "2026-01-25T15:52:08.36158672Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Blue Streak 4964 at 6000, reduce speed of two one zero",
+  "whisper_duration_ms": 502.587,
+  "audio_duration_ms": 4224,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 Ti (8024MB)",
+  "callsign": "JIA4964",
+  "command": "TS210",
+  "stt_aircraft": {
+    "American 297 heavy": {
+      "Callsign": "AAL297",
+      "AircraftType": "B772",
+      "Fixes": {
+        "Cheha": "CHEHA"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BHM8",
+      "STAR": "",
+      "Altitude": 5238,
+      "State": "departure",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Blue Streak 1151": {
+      "Callsign": "JIA1151",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Diode": "DIODE",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 8093,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Blue Streak 4964": {
+      "Callsign": "JIA4964",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Shims": "SHIMS",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 10546,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Envoy 9416": {
+      "Callsign": "ENY9416",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 7559,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Blue Streak 4964 at 6000, reduce speed of two one zero\"",
+    "[local-stt] normalized words: [blue streak 4964 at 6000 reduce speed of 2 1 0]",
+    "[local-stt] tokens: 9",
+    "[local-stt]   token[0]: Text=\"blue\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"streak\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"4964\" Type=1 Value=4964",
+    "[local-stt]   token[3]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"6000\" Type=1 Value=6000",
+    "[local-stt]   token[5]: Text=\"reduce\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"of\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"210\" Type=1 Value=210",
+    "[local-stt] MatchCallsign: 9 tokens, 4 aircraft",
+    "[local-stt]   exact match: \"blue streak 4964\" -\u003e \"JIA4964\" (consumed 3)",
+    "[local-stt] callsign match: Callsign=\"JIA4964\" SpokenKey=\"Blue Streak 4964\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=10546 Fixes=6 Approaches=3 AssignedApproach=\"ILS Runway 24\"",
+    "[local-stt]   fix: \"Shims\" -\u003e \"SHIMS\"",
+    "[local-stt]   fix: \"Birmingham-Shuttlesworth\" -\u003e \"KBHM\"",
+    "[local-stt]   fix: \"Vulcan\" -\u003e \"VUZ\"",
+    "[local-stt]   fix: \"Spat\" -\u003e \"SPATT\"",
+    "[local-stt]   fix: \"Hukev\" -\u003e \"HUKEV\"",
+    "[local-stt]   fix: \"Lowga\" -\u003e \"LOWGA\"",
+    "[local-stt]   approach: \"r-nav zulu runway two four\" -\u003e \"Z24\"",
+    "[local-stt]   approach: \"I L S runway two four\" -\u003e \"I24\"",
+    "[local-stt]   approach: \"r-nav yankee runway two four\" -\u003e \"Y24\"",
+    "[local-stt] command tokens after disregard: 6",
+    "[local-stt]   token[0]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"6000\" Type=1 Value=6000",
+    "[local-stt]   token[2]: Text=\"reduce\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"of\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"210\" Type=1 Value=210",
+    "[local-stt]   position ID: found command keyword \"reduce\" at position 2 - not just position ID",
+    "[local-stt] ParseCommands: 6 tokens",
+    "[local-stt]   found 'at {altitude}' pattern at position 0 (alt=6000), triggering then",
+    "[local-stt]   tryMatchTemplate \"reduce_speed\": cmd=\"TS210\" argStr=\"210\" consumed=4",
+    "[local-stt]   matched command: \"TS210\" (conf=1.00, consumed=4, isThen=true)",
+    "[local-stt] ParseCommands: result=[TS210] (avgConf=1.00)",
+    "[local-stt] parsed commands: [TS210] (conf=1.00)",
+    "[local-stt] validated commands: [TS210] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"JIA4964 TS210\" (conf=1.00, time=0s) ==="
+  ]
+}

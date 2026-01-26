@@ -1,0 +1,478 @@
+{
+  "time": "2026-01-25T22:18:32.295099206Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Air France six eight, Whiskey Quebec direct leg.",
+  "whisper_duration_ms": 419.608,
+  "audio_duration_ms": 3072,
+  "processor": "GPU: AMD Radeon RX 7600 (8176MB)",
+  "callsign": "AFR68WQ",
+  "command": "DLLEGG",
+  "stt_aircraft": {
+    "Air France 68WQ heavy": {
+      "Callsign": "AFR68WQ",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "BNFSH3",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Air France 855W heavy": {
+      "Callsign": "AFR855W",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Bills": "BILZZ",
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "CSTAL3",
+      "Altitude": 5797,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 125": {
+      "Callsign": "AAL125",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "BNFSH3",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 25": {
+      "Callsign": "AAL25",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Gloria": "GLRIA",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "Vepco": "VEPCO",
+        "piano": "PIANA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 6399": {
+      "Callsign": "AAL6399",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "BNFSH3",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 8310": {
+      "Callsign": "AAL8310",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 86 heavy": {
+      "Callsign": "AAL86",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "CSTAL3",
+      "Altitude": 4696,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 89": {
+      "Callsign": "AAL89",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Bills": "BILZZ",
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 5639,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 9268": {
+      "Callsign": "AAL9268",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 124": {
+      "Callsign": "DAL124",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 4870,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Fedex 630 heavy": {
+      "Callsign": "FDX630",
+      "AircraftType": "B763",
+      "Fixes": {
+        "Asere": "ACERE",
+        "Gloria": "GLRIA",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "Vepco": "VEPCO",
+        "piano": "PIANA",
+        "scar": "SCHAR"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 8099,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "KLM 98R heavy": {
+      "Callsign": "KLM98R",
+      "AircraftType": "B744",
+      "Fixes": {
+        "Chum": "CHUUM",
+        "Gloria": "GLRIA",
+        "Kpone": "KPONE",
+        "Miami": "KMIA",
+        "Vepco": "VEPCO",
+        "piano": "PIANA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "BNFSH3",
+      "Altitude": 13036,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Lan Chile 406 heavy": {
+      "Callsign": "LAN406",
+      "AircraftType": "B789",
+      "Fixes": {
+        "Ines": "INESS",
+        "Miami": "KMIA"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "VIICE2",
+      "Altitude": 2241,
+      "State": "on approach",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 3214": {
+      "Callsign": "NKS3214",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Fort Lauderdale": "KFLL"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 10L",
+      "SID": "",
+      "STAR": "CUUDA3",
+      "Altitude": 2350,
+      "State": "on approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 8631": {
+      "Callsign": "NKS8631",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Ines": "INESS",
+        "Leg": "LLEGG",
+        "Miami": "KMIA",
+        "grit": "GRITT"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 9",
+      "SID": "",
+      "STAR": "FROGZ4",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "UPS 1 heavy": {
+      "Callsign": "UPS1",
+      "AircraftType": "B763",
+      "Fixes": {
+        "Miami": "KMIA",
+        "Vepco": "VEPCO"
+      },
+      "CandidateApproaches": {
+        "I L S runway niner": "I9",
+        "I L S runway one two": "I12",
+        "r-nav runway eight left": "R8L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 12",
+      "SID": "",
+      "STAR": "SNDBR3",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Air France six eight, Whiskey Quebec direct leg.\"",
+    "[local-stt] normalized words: [air france 6 8 whiskey quebec direct leg]",
+    "[local-stt] tokens: 7",
+    "[local-stt]   token[0]: Text=\"air\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"france\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"68\" Type=1 Value=68",
+    "[local-stt]   token[3]: Text=\"whiskey\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"quebec\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"leg\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 7 tokens, 16 aircraft",
+    "[local-stt]   candidate \"Air France 855W heavy\" (ICAO=\"AFR855W\"): score=0.80 consumed=2",
+    "[local-stt]   candidate \"American 86 heavy\" (ICAO=\"AAL86\"): score=0.71 consumed=1",
+    "[local-stt]   candidate \"Spirit Wings 3214\" (ICAO=\"NKS3214\"): score=0.67 consumed=1",
+    "[local-stt]   candidate \"Lan Chile 406 heavy\" (ICAO=\"LAN406\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Air France 68WQ heavy\" (ICAO=\"AFR68WQ\"): score=1.10 consumed=5",
+    "[local-stt]   candidate \"KLM 98R heavy\" (ICAO=\"KLM98R\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American 6399\" (ICAO=\"AAL6399\"): score=0.71 consumed=1",
+    "[local-stt]   candidate \"American 25\" (ICAO=\"AAL25\"): score=0.71 consumed=1",
+    "[local-stt]   candidate \"American 89\" (ICAO=\"AAL89\"): score=0.71 consumed=1",
+    "[local-stt]   candidate \"American 9268\" (ICAO=\"AAL9268\"): score=0.71 consumed=1",
+    "[local-stt]   candidate \"American 8310\" (ICAO=\"AAL8310\"): score=0.71 consumed=1",
+    "[local-stt]   candidate \"Delta 124\" (ICAO=\"DAL124\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Fedex 630 heavy\" (ICAO=\"FDX630\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American 125\" (ICAO=\"AAL125\"): score=0.71 consumed=1",
+    "[local-stt]   candidate \"Spirit Wings 8631\" (ICAO=\"NKS8631\"): score=0.67 consumed=1",
+    "[local-stt]   candidate \"UPS 1 heavy\" (ICAO=\"UPS1\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Air France 68WQ heavy\" at pos 1: score=1.00 (adjusted=0.90) consumed=4",
+    "[local-stt]   candidate \"Air France 68WQ heavy\" at pos 2: score=1.00 (adjusted=0.80) consumed=3",
+    "[local-stt]   candidate \"Air France 68WQ heavy\" at pos 3: score=0.85 (adjusted=0.59) consumed=2",
+    "[local-stt]   accepted: \"AFR68WQ\" (conf=1.10, consumed=5, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"AFR68WQ\" SpokenKey=\"Air France 68WQ heavy\" Conf=1.10 Consumed=5",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=5000 Fixes=4 Approaches=3 AssignedApproach=\"ILS Runway 9\"",
+    "[local-stt]   fix: \"Ines\" -\u003e \"INESS\"",
+    "[local-stt]   fix: \"Miami\" -\u003e \"KMIA\"",
+    "[local-stt]   fix: \"Leg\" -\u003e \"LLEGG\"",
+    "[local-stt]   fix: \"grit\" -\u003e \"GRITT\"",
+    "[local-stt]   approach: \"I L S runway one two\" -\u003e \"I12\"",
+    "[local-stt]   approach: \"r-nav runway eight left\" -\u003e \"R8L\"",
+    "[local-stt]   approach: \"I L S runway niner\" -\u003e \"I9\"",
+    "[local-stt] command tokens after disregard: 2",
+    "[local-stt]   token[0]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"leg\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"direct\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 2 tokens",
+    "[local-stt]   tryMatchTemplate \"direct_fix\": keywords matched, consumed=1, next tokens=[leg]",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"leg\" against 4 fixes",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (exact)",
+    "[local-stt]   extractFix: matched \"leg\" -\u003e \"LLEGG\" (fuzzy 1.00)",
+    "[local-stt]   tryMatchTemplate \"direct_fix\": cmd=\"DLLEGG\" argStr=\"LLEGG\" consumed=2",
+    "[local-stt]   matched command: \"DLLEGG\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[DLLEGG] (avgConf=1.00)",
+    "[local-stt] parsed commands: [DLLEGG] (conf=1.00)",
+    "[local-stt] validated commands: [DLLEGG] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"AFR68WQ DLLEGG\" (conf=1.10, time=0s) ==="
+  ]
+}
