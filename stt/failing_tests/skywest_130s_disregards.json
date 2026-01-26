@@ -1,0 +1,190 @@
+{
+  "time": "2026-01-25T16:54:48.556981192Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "SkyWest 130S, disregards.",
+  "whisper_duration_ms": 92.965,
+  "audio_duration_ms": 3712,
+  "processor": "GPU: NVIDIA GeForce RTX 3070 (8018MB)",
+  "callsign": "",
+  "command": "",
+  "stt_aircraft": {
+    "American 12": {
+      "Callsign": "AAL12",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Kiosk": "KIOSK",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 35": {
+      "Callsign": "AAL35",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Kiosk": "KIOSK",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 8507,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 9096": {
+      "Callsign": "AAL9096",
+      "AircraftType": "B738",
+      "Fixes": {
+        "'Merica": "MRICA",
+        "Gadsden": "GAD"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BHM8",
+      "STAR": "",
+      "Altitude": 7742,
+      "State": "departure",
+      "ControllerFrequency": "1S",
+      "TrackingController": "C43",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Blue Streak 8251": {
+      "Callsign": "JIA8251",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ",
+        "Wands": "WANDS"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6252,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 74": {
+      "Callsign": "DAL74",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Kiosk": "KIOSK",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5887,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "SkyWest 130S": {
+      "Callsign": "SKW130S",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Joey": "JOEYE",
+        "San Ignacio 2": "IGB"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BHM8",
+      "STAR": "",
+      "Altitude": 10000,
+      "State": "departure",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"SkyWest 130S, disregards.\"",
+    "[local-stt] normalized words: [skywest 130s reduce]",
+    "[local-stt] tokens: 3",
+    "[local-stt]   token[0]: Text=\"skywest\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"130s\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"reduce\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 3 tokens, 6 aircraft",
+    "[local-stt]   exact match: \"skywest 130s\" -\u003e \"SKW130S\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"SKW130S\" SpokenKey=\"SkyWest 130S\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=10000 Fixes=2 Approaches=0 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"Joey\" -\u003e \"JOEYE\"",
+    "[local-stt]   fix: \"San Ignacio 2\" -\u003e \"IGB\"",
+    "[local-stt] command tokens after disregard: 1",
+    "[local-stt]   token[0]: Text=\"reduce\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"reduce\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 1 tokens",
+    "[local-stt]   no match at token[0]=\"reduce\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"SKW130S AGAIN\" (conf=1.00, time=0s) ==="
+  ]
+}

@@ -1,0 +1,192 @@
+{
+  "time": "2026-01-25T16:59:40.62511454Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "American correction, Bluestreak 7120, Connick Center,",
+  "whisper_duration_ms": 111.544,
+  "audio_duration_ms": 3584,
+  "processor": "GPU: NVIDIA GeForce RTX 3070 (8018MB)",
+  "callsign": "JIA7120",
+  "command": "FC",
+  "stt_aircraft": {
+    "American 12": {
+      "Callsign": "AAL12",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Kiosk": "KIOSK",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5862,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 35": {
+      "Callsign": "AAL35",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Kiosk": "KIOSK",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Blue Streak 7120": {
+      "Callsign": "JIA7120",
+      "AircraftType": "CRJ7",
+      "Fixes": {
+        "Cheha": "CHEHA"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BHM8",
+      "STAR": "",
+      "Altitude": 7561,
+      "State": "departure",
+      "ControllerFrequency": "1S",
+      "TrackingController": "C43",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Brickyard 6575": {
+      "Callsign": "RPA6575",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5062,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 5155": {
+      "Callsign": "DAL5155",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Kiosk": "KIOSK",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"American correction, Bluestreak 7120, Connick Center,\"",
+    "[local-stt] normalized words: [american correction bluestreak 7120 connick center]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"american\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"correction\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"bluestreak\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"7120\" Type=1 Value=7120",
+    "[local-stt]   token[4]: Text=\"connick\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"center\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 6 tokens, 5 aircraft",
+    "[local-stt]   candidate \"American 35\" (ICAO=\"AAL35\"): score=1.00 consumed=1",
+    "[local-stt]   candidate \"Brickyard 6575\" (ICAO=\"RPA6575\"): score=0.65 consumed=1",
+    "[local-stt]   candidate \"Blue Streak 7120\" (ICAO=\"JIA7120\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American 12\" (ICAO=\"AAL12\"): score=1.01 consumed=4",
+    "[local-stt]   candidate \"Delta 5155\" (ICAO=\"DAL5155\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Blue Streak 7120\" at pos 1: score=1.00 (adjusted=0.90) consumed=3",
+    "[local-stt]   candidate \"American 12\" at pos 1: score=0.83 (adjusted=0.75) consumed=3",
+    "[local-stt]   candidate \"American 12\" at pos 2: score=0.83 (adjusted=0.67) consumed=2",
+    "[local-stt]   candidate \"Blue Streak 7120\" at pos 2: score=1.03 (adjusted=0.83) consumed=2",
+    "[local-stt]   candidate \"Blue Streak 7120\" at pos 3: score=1.00 (adjusted=0.70) consumed=1",
+    "[local-stt]   candidate \"American 12\" at pos 3: score=0.83 (adjusted=0.58) consumed=1",
+    "[local-stt]   accepted: \"AAL12\" (conf=1.01, consumed=4, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"AAL12\" SpokenKey=\"American 12\" Conf=1.01 Consumed=4",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=5862 Fixes=6 Approaches=3 AssignedApproach=\"ILS Runway 24\"",
+    "[local-stt]   fix: \"Vulcan\" -\u003e \"VUZ\"",
+    "[local-stt]   fix: \"Spat\" -\u003e \"SPATT\"",
+    "[local-stt]   fix: \"Hukev\" -\u003e \"HUKEV\"",
+    "[local-stt]   fix: \"Lowga\" -\u003e \"LOWGA\"",
+    "[local-stt]   fix: \"Kiosk\" -\u003e \"KIOSK\"",
+    "[local-stt]   fix: \"Birmingham-Shuttlesworth\" -\u003e \"KBHM\"",
+    "[local-stt]   approach: \"r-nav yankee runway two four\" -\u003e \"Y24\"",
+    "[local-stt]   approach: \"r-nav zulu runway two four\" -\u003e \"Z24\"",
+    "[local-stt]   approach: \"I L S runway two four\" -\u003e \"I24\"",
+    "[local-stt] command tokens after disregard: 2",
+    "[local-stt]   token[0]: Text=\"connick\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"center\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 2 tokens",
+    "[local-stt]   frequency_change rejected: followed by command keyword \"center\"",
+    "[local-stt]   no match at token[0]=\"connick\", skipping",
+    "[local-stt]   no match at token[1]=\"center\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"AAL12 AGAIN\" (conf=1.01, time=0s) ==="
+  ]
+}

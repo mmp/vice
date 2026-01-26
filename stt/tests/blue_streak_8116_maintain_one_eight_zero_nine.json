@@ -1,0 +1,109 @@
+{
+  "time": "2026-01-25T16:42:03.033576672Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Blue Streak 8116, maintain, one eight zero nine.",
+  "whisper_duration_ms": 343.759,
+  "audio_duration_ms": 3328,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 Ti (8024MB)",
+  "callsign": "JIA8116",
+  "command": "S180",
+  "stt_aircraft": {
+    "Blue Streak 8116": {
+      "Callsign": "JIA8116",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Diode": "DIODE",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5942,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Fedex 206 heavy": {
+      "Callsign": "FDX206",
+      "AircraftType": "A306",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Blue Streak 8116, maintain, one eight zero nine.\"",
+    "[local-stt] normalized words: [blue streak 8116 maintain 1 8 0 9]",
+    "[local-stt] tokens: 5",
+    "[local-stt]   token[0]: Text=\"blue\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"streak\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"8116\" Type=1 Value=8116",
+    "[local-stt]   token[3]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"1809\" Type=1 Value=1809",
+    "[local-stt] MatchCallsign: 5 tokens, 2 aircraft",
+    "[local-stt]   exact match: \"blue streak 8116\" -\u003e \"JIA8116\" (consumed 3)",
+    "[local-stt] callsign match: Callsign=\"JIA8116\" SpokenKey=\"Blue Streak 8116\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=5942 Fixes=6 Approaches=3 AssignedApproach=\"ILS Runway 24\"",
+    "[local-stt]   fix: \"Vulcan\" -\u003e \"VUZ\"",
+    "[local-stt]   fix: \"Spat\" -\u003e \"SPATT\"",
+    "[local-stt]   fix: \"Hukev\" -\u003e \"HUKEV\"",
+    "[local-stt]   fix: \"Lowga\" -\u003e \"LOWGA\"",
+    "[local-stt]   fix: \"Diode\" -\u003e \"DIODE\"",
+    "[local-stt]   fix: \"Birmingham-Shuttlesworth\" -\u003e \"KBHM\"",
+    "[local-stt]   approach: \"I L S runway two four\" -\u003e \"I24\"",
+    "[local-stt]   approach: \"r-nav zulu runway two four\" -\u003e \"Z24\"",
+    "[local-stt]   approach: \"r-nav yankee runway two four\" -\u003e \"Y24\"",
+    "[local-stt] command tokens after disregard: 2",
+    "[local-stt]   token[0]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"1809\" Type=1 Value=1809",
+    "[local-stt]   position ID: found command keyword \"maintain\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 2 tokens",
+    "[local-stt]   extractSpeed: corrected 1809 -\u003e 180 (extra digit)",
+    "[local-stt]   tryMatchTemplate \"maintain_speed\": cmd=\"S180\" argStr=\"180\" consumed=2",
+    "[local-stt]   matched command: \"S180\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[S180] (avgConf=1.00)",
+    "[local-stt] parsed commands: [S180] (conf=1.00)",
+    "[local-stt] validated commands: [S180] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"JIA8116 S180\" (conf=1.00, time=0s) ==="
+  ]
+}

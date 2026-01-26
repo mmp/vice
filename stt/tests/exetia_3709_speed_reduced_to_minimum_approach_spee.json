@@ -1,0 +1,256 @@
+{
+  "time": "2026-01-26T17:03:55.88252844Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Exetia 3709 speed reduced to minimum approach speed contact tower",
+  "whisper_duration_ms": 398.784,
+  "audio_duration_ms": 4352,
+  "processor": "GPU: NVIDIA GeForce RTX 4070 Ti (12210MB)",
+  "callsign": "EJA3709",
+  "command": "SMIN TO",
+  "stt_aircraft": {
+    "ExecJet 2472": {
+      "Callsign": "EJA2472",
+      "AircraftType": "C750",
+      "Fixes": {
+        "Apart": "APART",
+        "Caldwell": "KCDW",
+        "Dowdy": "DOWDY",
+        "Fair": "FAAIR",
+        "Koli": "KOLLI"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two two": "R22"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "RNAV Runway 22",
+      "SID": "",
+      "STAR": "JAIKE4",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4H",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "ExecJet 3709": {
+      "Callsign": "EJA3709",
+      "AircraftType": "CL35",
+      "Fixes": {
+        "Bada": "BADDA",
+        "Bing": "BINGG",
+        "Morristown": "KMMU"
+      },
+      "CandidateApproaches": {
+        "I L S runway two three": "I23",
+        "r-nav yankee runway two three": "Y23",
+        "r-nav zulu runway two three": "Z23"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 23",
+      "SID": "",
+      "STAR": "LVZ4",
+      "Altitude": 3000,
+      "State": "on approach",
+      "ControllerFrequency": "4S",
+      "TrackingController": "4S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "ExecJet 5029": {
+      "Callsign": "EJA5029",
+      "AircraftType": "C560",
+      "Fixes": {
+        "Caldwell": "KCDW",
+        "Coate": "COATE",
+        "Complejo Medico Del Sur Heliport": "HUO",
+        "Lemur": "LEMOR",
+        "Newark": "KEWR"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two two": "R22"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 7829,
+      "State": "arrival",
+      "ControllerFrequency": "4S",
+      "TrackingController": "4S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "ExecJet 6327": {
+      "Callsign": "EJA6327",
+      "AircraftType": "C680",
+      "Fixes": {
+        "Bing": "BINGG",
+        "Morristown": "KMMU"
+      },
+      "CandidateApproaches": {
+        "I L S runway two three": "I23",
+        "r-nav yankee runway two three": "Y23",
+        "r-nav zulu runway two three": "Z23"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 23",
+      "SID": "",
+      "STAR": "MAZIE",
+      "Altitude": 2918,
+      "State": "on approach",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4H",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "ExecJet 8332": {
+      "Callsign": "EJA8332",
+      "AircraftType": "C560",
+      "Fixes": {
+        "Gonzo": "GNNZO",
+        "Nippy": "NIPIE",
+        "Scooby": "SKUBY",
+        "Solberg": "SBJ",
+        "Strad": "STRAD",
+        "Teterboro": "KTEB",
+        "Tuggs": "TUGGZ",
+        "Unveil": "UNVIL"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner": "I19",
+        "r-nav x-ray runway one niner": "RX9",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 19",
+      "SID": "",
+      "STAR": "JAIKE4",
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4H",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "United 4049 heavy": {
+      "Callsign": "UAL4049",
+      "AircraftType": "B772",
+      "Fixes": {
+        "Broadway": "BWZ",
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FQM3",
+      "Altitude": 3548,
+      "State": "arrival",
+      "ControllerFrequency": "4W",
+      "TrackingController": "4W",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "United 6969": {
+      "Callsign": "UAL6969",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Dillon": "DYLIN",
+        "Mart": "MARRT",
+        "Merser": "MERSR",
+        "Metro": "METRO",
+        "Newark": "KEWR",
+        "Philbo": "PHLBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 8733,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Exetia 3709 speed reduced to minimum approach speed contact tower\"",
+    "[local-stt] normalized words: [exetia 3709 speed reduced to minimum approach speed contact tower]",
+    "[local-stt] tokens: 10",
+    "[local-stt]   token[0]: Text=\"exetia\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"3709\" Type=1 Value=3709",
+    "[local-stt]   token[2]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"reduced\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"minimum\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"tower\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 10 tokens, 7 aircraft",
+    "[local-stt]   candidate \"United 4049 heavy\" (ICAO=\"UAL4049\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"ExecJet 2472\" (ICAO=\"EJA2472\"): score=0.60 consumed=1",
+    "[local-stt]   candidate \"ExecJet 6327\" (ICAO=\"EJA6327\"): score=0.60 consumed=1",
+    "[local-stt]   candidate \"ExecJet 5029\" (ICAO=\"EJA5029\"): score=0.60 consumed=1",
+    "[local-stt]   candidate \"ExecJet 3709\" (ICAO=\"EJA3709\"): score=0.96 consumed=2",
+    "[local-stt]   candidate \"United 6969\" (ICAO=\"UAL6969\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"ExecJet 8332\" (ICAO=\"EJA8332\"): score=0.60 consumed=1",
+    "[local-stt]   candidate \"ExecJet 3709\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   accepted: \"EJA3709\" (conf=0.96, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"EJA3709\" SpokenKey=\"ExecJet 3709\" Conf=0.96 Consumed=2",
+    "[local-stt] aircraft context: State=\"on approach\" Altitude=3000 Fixes=3 Approaches=3 AssignedApproach=\"ILS Runway 23\"",
+    "[local-stt]   fix: \"Bada\" -\u003e \"BADDA\"",
+    "[local-stt]   fix: \"Bing\" -\u003e \"BINGG\"",
+    "[local-stt]   fix: \"Morristown\" -\u003e \"KMMU\"",
+    "[local-stt]   approach: \"r-nav zulu runway two three\" -\u003e \"Z23\"",
+    "[local-stt]   approach: \"r-nav yankee runway two three\" -\u003e \"Y23\"",
+    "[local-stt]   approach: \"I L S runway two three\" -\u003e \"I23\"",
+    "[local-stt] command tokens after disregard: 8",
+    "[local-stt]   token[0]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"reduced\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"minimum\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"tower\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"speed\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 8 tokens",
+    "[local-stt]   reduce_speed: keywords matched but speed extraction failed, returning SAYAGAIN/SPEED",
+    "[local-stt]   matchCommand: no full match, using SAYAGAIN: \"SAYAGAIN/SPEED\"",
+    "[local-stt]   matched command: \"SAYAGAIN/SPEED\" (conf=0.50, consumed=3, isThen=false)",
+    "[local-stt]   no match at token[3]=\"minimum\", skipping",
+    "[local-stt]   no match at token[4]=\"approach\", skipping",
+    "[local-stt]   speed_only: keywords matched but speed extraction failed, returning SAYAGAIN/SPEED",
+    "[local-stt]   matchCommand: no full match, using SAYAGAIN: \"SAYAGAIN/SPEED\"",
+    "[local-stt]   matched command: \"SAYAGAIN/SPEED\" (conf=0.50, consumed=1, isThen=false)",
+    "[local-stt]   tryMatchTemplate \"contact_tower\": cmd=\"TO\" argStr=\"\" consumed=2",
+    "[local-stt]   tryMatchTemplate \"frequency_change\": cmd=\"FC\" argStr=\"\" consumed=1",
+    "[local-stt]   matched command: \"TO\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[SAYAGAIN/SPEED SAYAGAIN/SPEED TO] (avgConf=0.67)",
+    "[local-stt] parsed commands: [SAYAGAIN/SPEED SAYAGAIN/SPEED TO] (conf=0.67)",
+    "[local-stt] validated commands: [SAYAGAIN/SPEED SAYAGAIN/SPEED TO] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"EJA3709 SAYAGAIN/SPEED SAYAGAIN/SPEED TO\" (conf=0.64, time=514.3µs) ==="
+  ]
+}
