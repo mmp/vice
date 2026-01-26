@@ -170,7 +170,11 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 			hasLeadingZero := len(text) > 0 && text[0] == '0'
 
 			if hasLeadingZero {
-				if hdg < 10 {
+				// Rewrite single-digit headings to add trailing zero, with exception:
+				// For 3-digit inputs like "005" that are multiples of 5, leave as-is
+				// (e.g., "001" -> 010 likely transcription error, but "005" is valid heading 5).
+				// For 2-digit like "05", always multiply by 10 (heading 050 - common shorthand).
+				if hdg < 10 && (len(text) < 3 || hdg%5 != 0) {
 					hdg *= 10
 				}
 			} else if len(text) == 2 && hdg >= 10 && hdg <= 36 && hdg%10 != 0 {
