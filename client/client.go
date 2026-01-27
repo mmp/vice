@@ -294,6 +294,7 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 	var callbackErr error
 	var completedCalls []*pendingCall
 	var updateCallFinished *pendingCall
+	var shouldRequestContact bool
 
 	c.mu.Lock()
 
@@ -314,11 +315,12 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 	c.updateSpeech(p)
 
 	// Check if we should request a contact transmission from the server
-	// Only do this if TTS is enabled
+	// Only do this if TTS is enabled. The actual request is made after
+	// releasing the lock since addCall also needs the lock.
 	ttsEnabled := c.haveTTS && (c.disableTTSPtr == nil || !*c.disableTTSPtr)
 	if ttsEnabled && c.transmissions.ShouldRequestContact() {
 		c.transmissions.SetContactRequested(true)
-		c.RequestContactTransmission()
+		shouldRequestContact = true
 	}
 
 	if callbackErr == nil {
@@ -331,6 +333,10 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 		if c.updateCall != nil && !util.DebuggerIsRunning() {
 			c.lg.Warnf("GetUpdates still waiting for %s on last update call", d)
 			c.mu.Unlock()
+			// Make RPC calls that need addCall after releasing the lock
+			if shouldRequestContact {
+				c.RequestContactTransmission()
+			}
 			// Invoke callbacks after releasing lock to avoid deadlock
 			if updateCallFinished != nil {
 				updateCallFinished.InvokeCallback(eventStream, &c.State)
@@ -369,6 +375,11 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 	}
 
 	c.mu.Unlock()
+
+	// Make RPC calls that need addCall after releasing the lock
+	if shouldRequestContact {
+		c.RequestContactTransmission()
+	}
 
 	// Invoke callbacks after releasing lock to avoid deadlock
 	if updateCallFinished != nil {
