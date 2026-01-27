@@ -1,0 +1,196 @@
+{
+  "time": "2026-01-26T17:05:57.416297023Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Executia 5029, Newark Approach, Hello, Caldwell Altimeter two niner niner six, Expect ILS two, correction, Expect R-nav runway two two approach.",
+  "whisper_duration_ms": 497.562,
+  "audio_duration_ms": 10240,
+  "processor": "GPU: NVIDIA GeForce RTX 4070 Ti (12210MB)",
+  "callsign": "EJA5029",
+  "command": "ER22",
+  "stt_aircraft": {
+    "ExecJet 2472": {
+      "Callsign": "EJA2472",
+      "AircraftType": "C750",
+      "Fixes": {
+        "Apart": "APART",
+        "Caldwell": "KCDW",
+        "Dowdy": "DOWDY",
+        "Fair": "FAAIR",
+        "Koli": "KOLLI"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two two": "R22"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "RNAV Runway 22",
+      "SID": "",
+      "STAR": "JAIKE4",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4H",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "ExecJet 5029": {
+      "Callsign": "EJA5029",
+      "AircraftType": "C560",
+      "Fixes": {
+        "Caldwell": "KCDW",
+        "Coate": "COATE",
+        "Newark": "KEWR"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two two": "R22"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4S",
+      "TrackingController": "4S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "ExecJet 6327": {
+      "Callsign": "EJA6327",
+      "AircraftType": "C680",
+      "Fixes": {
+        "Morristown": "KMMU"
+      },
+      "CandidateApproaches": {
+        "I L S runway two three": "I23",
+        "r-nav yankee runway two three": "Y23",
+        "r-nav zulu runway two three": "Z23"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 23",
+      "SID": "",
+      "STAR": "MAZIE",
+      "Altitude": 1578,
+      "State": "on approach",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4H",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "ExecJet 8332": {
+      "Callsign": "EJA8332",
+      "AircraftType": "C560",
+      "Fixes": {
+        "Nippy": "NIPIE",
+        "Scooby": "SKUBY",
+        "Solberg": "SBJ",
+        "Strad": "STRAD",
+        "Teterboro": "KTEB",
+        "Tuggs": "TUGGZ",
+        "Unveil": "UNVIL"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner": "I19",
+        "r-nav x-ray runway one niner": "RX9",
+        "r-nav yankee runway one niner": "RY9",
+        "r-nav zulu runway one niner": "RZ9"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 19",
+      "SID": "",
+      "STAR": "JAIKE4",
+      "Altitude": 5686,
+      "State": "arrival",
+      "ControllerFrequency": "4H",
+      "TrackingController": "4H",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "United 4049 heavy": {
+      "Callsign": "UAL4049",
+      "AircraftType": "B772",
+      "Fixes": {
+        "Broadway": "BWZ",
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FQM3",
+      "Altitude": 2500,
+      "State": "arrival",
+      "ControllerFrequency": "4W",
+      "TrackingController": "4W",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Executia 5029, Newark Approach, Hello, Caldwell Altimeter two niner niner six, Expect ILS two, correction, Expect R-nav runway two two approach.\"",
+    "[local-stt] normalized words: [executia 5029 newark approach hello caldwell altimeter 2 9 9 6 expect ils 2 correction expect rnav runway 2 2 approach]",
+    "[local-stt] tokens: 17",
+    "[local-stt]   token[0]: Text=\"executia\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"5029\" Type=1 Value=5029",
+    "[local-stt]   token[2]: Text=\"newark\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"hello\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"caldwell\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"altimeter\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"2996\" Type=1 Value=2996",
+    "[local-stt]   token[8]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"2\" Type=1 Value=2",
+    "[local-stt]   token[11]: Text=\"correction\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"rnav\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"22\" Type=1 Value=22",
+    "[local-stt]   token[16]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 17 tokens, 5 aircraft",
+    "[local-stt]   candidate \"ExecJet 6327\" (ICAO=\"EJA6327\"): score=0.69 consumed=1",
+    "[local-stt]   candidate \"ExecJet 5029\" (ICAO=\"EJA5029\"): score=1.03 consumed=2",
+    "[local-stt]   candidate \"United 4049 heavy\" (ICAO=\"UAL4049\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"ExecJet 2472\" (ICAO=\"EJA2472\"): score=0.69 consumed=1",
+    "[local-stt]   candidate \"ExecJet 8332\" (ICAO=\"EJA8332\"): score=0.69 consumed=1",
+    "[local-stt]   candidate \"ExecJet 5029\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   accepted: \"EJA5029\" (conf=1.03, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"EJA5029\" SpokenKey=\"ExecJet 5029\" Conf=1.03 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=6000 Fixes=3 Approaches=1 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"Coate\" -\u003e \"COATE\"",
+    "[local-stt]   fix: \"Newark\" -\u003e \"KEWR\"",
+    "[local-stt]   fix: \"Caldwell\" -\u003e \"KCDW\"",
+    "[local-stt]   approach: \"r-nav runway two two\" -\u003e \"R22\"",
+    "[local-stt] command tokens after disregard: 5",
+    "[local-stt]   token[0]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"rnav\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"22\" Type=1 Value=22",
+    "[local-stt]   token[4]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"expect\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 5 tokens",
+    "[local-stt]   matchApproachByTypeAndNumber: type=\"rnav\" runway=\"two two\" -\u003e \"R22\" (consumed=3)",
+    "[local-stt]   tryMatchTemplate \"expect_approach\": cmd=\"ER22\" argStr=\"R22\" consumed=4",
+    "[local-stt]   matched command: \"ER22\" (conf=0.95, consumed=4, isThen=false)",
+    "[local-stt]   no match at token[4]=\"approach\", skipping",
+    "[local-stt] ParseCommands: result=[ER22] (avgConf=0.95)",
+    "[local-stt] parsed commands: [ER22] (conf=0.95)",
+    "[local-stt] validated commands: [ER22] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"EJA5029 ER22\" (conf=0.98, time=509.6µs) ==="
+  ]
+}
