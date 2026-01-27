@@ -95,7 +95,7 @@ func loadCurFile(path string, targetSize int) (*image.RGBA, [2]int, error) {
 		return nil, [2]int{}, fmt.Errorf("%s: unsupported cursor type %d", path, fileType)
 	}
 	count := int(binary.LittleEndian.Uint16(data[4:6])) // number of cursor images
-	if count == 0 { 
+	if count == 0 {
 		return nil, [2]int{}, fmt.Errorf("%s: cursor file has no images", path)
 	}
 
@@ -131,7 +131,7 @@ func loadCurFile(path string, targetSize int) (*image.RGBA, [2]int, error) {
 			bestScore = score
 			best = curEntry{
 				width:   width,
-				height: height,
+				height:  height,
 				hotspot: hotspot,
 				size:    size,
 				offset:  offset,

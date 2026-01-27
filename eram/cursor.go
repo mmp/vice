@@ -22,7 +22,7 @@ func (ep *ERAMPane) SetTemporaryCursor(cursorType string, seconds float64, rollb
 	if size, err := strconv.Atoi(cursorType); err == nil {
 		cursorType = fmt.Sprintf("Eram%d", size)
 	}
- 
+
 	ep.cursorOverrideSelection = cursorType
 	rollback := strings.TrimSpace(rollbackCursor)
 	if rollback != "" {
