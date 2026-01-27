@@ -77,7 +77,7 @@ func (s *Sim) dispatchAircraftCommand(tcw TCW, callsign av.ADSBCallsign, check f
 // TCW controls the position whose frequency the aircraft is tuned to.
 func (s *Sim) dispatchControlledAircraftCommand(tcw TCW, callsign av.ADSBCallsign,
 	cmd func(tcw TCW, ac *Aircraft) av.CommandIntent) (av.CommandIntent, error) {
-	return s.dispatchAircraftCommand(tcw, callsign,
+	intent, err := s.dispatchAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) error {
 			if !s.TCWCanCommandAircraft(tcw, ac) {
 				return av.ErrOtherControllerHasTrack
@@ -85,6 +85,15 @@ func (s *Sim) dispatchControlledAircraftCommand(tcw TCW, callsign av.ADSBCallsig
 			return nil
 		},
 		cmd)
+
+	// If command succeeded, cancel any pending initial contact for this aircraft.
+	// This handles the case where a controller issues commands to an aircraft
+	// that hasn't checked in yet.
+	if err == nil {
+		s.cancelPendingInitialContact(callsign)
+	}
+
+	return intent, err
 }
 
 // Note that ac may be nil, but flight plan will not be!
@@ -1898,6 +1907,20 @@ func (s *Sim) enqueuePilotTransmission(callsign av.ADSBCallsign, tcp TCP, txType
 		TCP:          tcp,
 		ReadyTime:    s.State.SimTime, // Ready immediately
 		Type:         txType,
+	})
+}
+
+// cancelPendingInitialContact removes any pending Departure or Arrival contact
+// for the given aircraft. Called when a controller issues a command to an
+// aircraft that hasn't checked in yet, preventing stale check-ins.
+// Caller must hold s.mu.
+func (s *Sim) cancelPendingInitialContact(callsign av.ADSBCallsign) {
+	ac := s.Aircraft[callsign]
+	tcp := TCP(ac.ControllerFrequency)
+
+	s.PendingContacts[tcp] = slices.DeleteFunc(s.PendingContacts[tcp], func(pc PendingContact) bool {
+		return pc.ADSBCallsign == callsign &&
+			(pc.Type == PendingTransmissionDeparture || pc.Type == PendingTransmissionArrival)
 	})
 }
 
