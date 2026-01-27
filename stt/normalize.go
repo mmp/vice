@@ -812,10 +812,63 @@ func NormalizeTranscript(transcript string) []string {
 		result = append(result, w)
 	}
 
-	// Post-process: join letter sequences and fix common multi-word errors
+	// Post-process: combine tens+units (e.g., "30 2" → "32"), join letter sequences, fix multi-word errors
+	result = combineTensAndUnits(result)
 	result = postProcessNormalized(result)
 
 	return result
+}
+
+// combineTensAndUnits combines "tens + units" patterns into proper two-digit numbers.
+// For example: "30 2" → "32", "40 5" → "45", "20 1" → "21"
+// This handles spoken numbers like "thirty two" which normalize to "30" + "2"
+// but should be understood as the number 32 (e.g., flight 32, heading 320).
+func combineTensAndUnits(tokens []string) []string {
+	if len(tokens) < 2 {
+		return tokens
+	}
+
+	result := make([]string, 0, len(tokens))
+	i := 0
+
+	for i < len(tokens) {
+		// Check for tens + units pattern
+		if i+1 < len(tokens) {
+			curr := tokens[i]
+			next := tokens[i+1]
+
+			// Current token must be a "tens" value (20, 30, 40, 50, 60, 70, 80, 90)
+			// Next token must be a single digit (1-9)
+			if isTensValue(curr) && IsSingleDigit19(next) {
+				// Combine: "30" + "2" → "32"
+				tens := ParseNumber(curr)
+				units := ParseNumber(next)
+				combined := strconv.Itoa(tens + units)
+				result = append(result, combined)
+				i += 2
+				continue
+			}
+		}
+
+		result = append(result, tokens[i])
+		i++
+	}
+
+	return result
+}
+
+// isTensValue returns true if the string is a "tens" value (20, 30, 40, 50, 60, 70, 80, 90).
+func isTensValue(s string) bool {
+	switch s {
+	case "20", "30", "40", "50", "60", "70", "80", "90":
+		return true
+	}
+	return false
+}
+
+// IsSingleDigit19 returns true if the string is a single digit 1-9.
+func IsSingleDigit19(s string) bool {
+	return len(s) == 1 && s[0] >= '1' && s[0] <= '9'
 }
 
 // postProcessNormalized handles multi-word STT errors and letter joining.

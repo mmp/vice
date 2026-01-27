@@ -71,6 +71,12 @@ func LoadResourceBytes(path string) []byte {
 	return b
 }
 
+// ResourceExists returns true if the specified resource file exists.
+func ResourceExists(path string) bool {
+	_, err := (*resourcesFS).Stat(path)
+	return err == nil
+}
+
 func WalkResources(root string, fn func(path string, d fs.DirEntry, filesystem fs.FS, err error) error) error {
 	return fs.WalkDir(*resourcesFS, root,
 		func(path string, d fs.DirEntry, err error) error {

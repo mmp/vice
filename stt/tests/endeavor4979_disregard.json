@@ -1,0 +1,228 @@
+{
+  "time": "2026-01-26T02:54:19.071221769Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Endeavor4979, Disregard,",
+  "whisper_duration_ms": 322.682,
+  "audio_duration_ms": 6656,
+  "processor": "GPU: NVIDIA GeForce RTX 4080 SUPER (16045MB)",
+  "callsign": "",
+  "command": "",
+  "stt_aircraft": {
+    "Delta 1707": {
+      "Callsign": "DAL1707",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Hartsfield": "KATL"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CHPPR1",
+      "Altitude": 10715,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 3222": {
+      "Callsign": "DAL3222",
+      "AircraftType": "B739",
+      "Fixes": {
+        "A jay": "AJAAY",
+        "Atlanta": "KATL",
+        "Bamboo": "BAMBU",
+        "Cloud": "KLOWD",
+        "Hainz": "HAINZ",
+        "Hartsfield": "KATL",
+        "Hog": "HOGGG",
+        "Keavy": "KEAVY",
+        "Kimmy": "KYMMY",
+        "Rain": "RAIIN",
+        "Southern": "STHRN",
+        "Swept": "SWEPT",
+        "Zelow": "ZELOW"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 26R",
+      "SID": "",
+      "STAR": "GLAVN1",
+      "Altitude": 11564,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Endeavor 2492": {
+      "Callsign": "EDV2492",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Glaven": "GLAVN",
+        "Hartsfield": "KATL",
+        "Southern": "STHRN"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "GLAVN1",
+      "Altitude": 15606,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Endeavor 4978": {
+      "Callsign": "EDV4978",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "A jay": "AJAAY",
+        "Atlanta": "KATL",
+        "Bamboo": "BAMBU",
+        "Cloud": "KLOWD",
+        "Hainz": "HAINZ",
+        "Hartsfield": "KATL",
+        "Keavy": "KEAVY",
+        "Kimmy": "KYMMY",
+        "Swept": "SWEPT",
+        "Zelow": "ZELOW"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 26R",
+      "SID": "",
+      "STAR": "GLAVN1",
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Endeavor 7206": {
+      "Callsign": "EDV7206",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Hartsfield": "KATL"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "GLAVN1",
+      "Altitude": 11259,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "United 7": {
+      "Callsign": "UAL7",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "A jay": "AJAAY",
+        "Atlanta": "KATL",
+        "Bamboo": "BAMBU",
+        "Cloud": "KLOWD",
+        "Hainz": "HAINZ",
+        "Hartsfield": "KATL",
+        "Hydro": "HIDRO",
+        "Keavy": "KEAVY",
+        "Kimmy": "KYMMY",
+        "March": "MRCHH",
+        "Rain": "RAIIN",
+        "Swept": "SWEPT",
+        "Zelow": "ZELOW"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 26R",
+      "SID": "",
+      "STAR": "CHPPR1",
+      "Altitude": 11045,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Endeavor4979, Disregard,\"",
+    "[local-stt] normalized words: [endeavor 4979 disregard]",
+    "[local-stt] tokens: 3",
+    "[local-stt]   token[0]: Text=\"endeavor\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"4979\" Type=1 Value=4979",
+    "[local-stt]   token[2]: Text=\"disregard\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 3 tokens, 6 aircraft",
+    "[local-stt]   candidate \"United 7\" (ICAO=\"UAL7\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Delta 3222\" (ICAO=\"DAL3222\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Endeavor 4978\" (ICAO=\"EDV4978\"): score=1.04 consumed=2",
+    "[local-stt]   candidate \"Delta 1707\" (ICAO=\"DAL1707\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Endeavor 7206\" (ICAO=\"EDV7206\"): score=0.80 consumed=1",
+    "[local-stt]   candidate \"Endeavor 2492\" (ICAO=\"EDV2492\"): score=0.80 consumed=1",
+    "[local-stt]   candidate \"Endeavor 4978\" at pos 1: score=0.88 (adjusted=0.80) consumed=1",
+    "[local-stt]   accepted: \"EDV4978\" (conf=1.04, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"EDV4978\" SpokenKey=\"Endeavor 4978\" Conf=1.04 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=7000 Fixes=10 Approaches=3 AssignedApproach=\"ILS Runway 26R\"",
+    "[local-stt]   fix: \"A jay\" -\u003e \"AJAAY\"",
+    "[local-stt]   fix: \"Hartsfield\" -\u003e \"KATL\"",
+    "[local-stt]   fix: \"Zelow\" -\u003e \"ZELOW\"",
+    "[local-stt]   fix: \"Bamboo\" -\u003e \"BAMBU\"",
+    "[local-stt]   fix: \"Cloud\" -\u003e \"KLOWD\"",
+    "[local-stt]   fix: \"Swept\" -\u003e \"SWEPT\"",
+    "[local-stt]   fix: \"Kimmy\" -\u003e \"KYMMY\"",
+    "[local-stt]   fix: \"Keavy\" -\u003e \"KEAVY\"",
+    "[local-stt]   fix: \"Atlanta\" -\u003e \"KATL\"",
+    "[local-stt]   fix: \"Hainz\" -\u003e \"HAINZ\"",
+    "[local-stt]   approach: \"I L S runway two six right\" -\u003e \"I6R\"",
+    "[local-stt]   approach: \"I L S runway two seven left\" -\u003e \"I7L\"",
+    "[local-stt]   approach: \"I L S runway two eight\" -\u003e \"I28\"",
+    "[local-stt] command tokens after disregard: 0",
+    "[local-stt] ParseCommands: 0 tokens",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"EDV4978 AGAIN\" (conf=1.04, time=0s) ==="
+  ]
+}

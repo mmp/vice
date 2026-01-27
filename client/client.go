@@ -294,6 +294,7 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 	var callbackErr error
 	var completedCalls []*pendingCall
 	var updateCallFinished *pendingCall
+	var shouldRequestContact bool
 
 	c.mu.Lock()
 
@@ -314,11 +315,12 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 	c.updateSpeech(p)
 
 	// Check if we should request a contact transmission from the server
-	// Only do this if TTS is enabled
+	// Only do this if TTS is enabled. The actual request is made after
+	// releasing the lock since addCall also needs the lock.
 	ttsEnabled := c.haveTTS && (c.disableTTSPtr == nil || !*c.disableTTSPtr)
 	if ttsEnabled && c.transmissions.ShouldRequestContact() {
 		c.transmissions.SetContactRequested(true)
-		c.RequestContactTransmission()
+		shouldRequestContact = true
 	}
 
 	if callbackErr == nil {
@@ -331,6 +333,10 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 		if c.updateCall != nil && !util.DebuggerIsRunning() {
 			c.lg.Warnf("GetUpdates still waiting for %s on last update call", d)
 			c.mu.Unlock()
+			// Make RPC calls that need addCall after releasing the lock
+			if shouldRequestContact {
+				c.RequestContactTransmission()
+			}
 			// Invoke callbacks after releasing lock to avoid deadlock
 			if updateCallFinished != nil {
 				updateCallFinished.InvokeCallback(eventStream, &c.State)
@@ -369,6 +375,11 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 	}
 
 	c.mu.Unlock()
+
+	// Make RPC calls that need addCall after releasing the lock
+	if shouldRequestContact {
+		c.RequestContactTransmission()
+	}
 
 	// Invoke callbacks after releasing lock to avoid deadlock
 	if updateCallFinished != nil {
@@ -858,11 +869,12 @@ func PreloadWhisperModel(lg *log.Logger, cachedModelName, cachedDeviceID string,
 		if cachedModelName != "" && cachedDeviceID == currentDeviceID && cachedBenchmarkIndex >= WhisperBenchmarkIndex {
 			setWhisperBenchmarkStatus(fmt.Sprintf("Using cached model: %s", cachedModelName))
 			lg.Infof("Using cached whisper model: %s (device: %s)", cachedModelName, currentDeviceID)
-			loadModelDirect(cachedModelName, currentDeviceID, cachedRealtimeFactor, lg)
-			return
-		}
-
-		if cachedModelName != "" {
+			if loadModelDirect(cachedModelName, currentDeviceID, cachedRealtimeFactor, lg) {
+				return
+			}
+			// Model no longer exists (e.g., removed from distribution), fall through to benchmark
+			fmt.Printf("[whisper-benchmark] Cached model %q no longer available - re-benchmarking\n", cachedModelName)
+		} else if cachedModelName != "" {
 			if cachedDeviceID != currentDeviceID {
 				fmt.Printf("[whisper-benchmark] Device changed: was %q, now %q - re-benchmarking\n",
 					cachedDeviceID, currentDeviceID)
@@ -887,9 +899,15 @@ func PreloadWhisperModel(lg *log.Logger, cachedModelName, cachedDeviceID string,
 	}()
 }
 
-// loadModelDirect loads a model without benchmarking (used for cached or no-GPU case)
-func loadModelDirect(modelName, deviceID string, cachedRealtimeFactor float64, lg *log.Logger) {
-	modelBytes := util.LoadResourceBytes("models/" + modelName)
+// loadModelDirect loads a model without benchmarking (used for cached or no-GPU case).
+// Returns true if the model was loaded successfully, false if it doesn't exist or failed to load.
+func loadModelDirect(modelName, deviceID string, cachedRealtimeFactor float64, lg *log.Logger) bool {
+	modelPath := "models/" + modelName
+	if !util.ResourceExists(modelPath) {
+		lg.Warnf("Cached whisper model %q not found, will re-benchmark", modelName)
+		return false
+	}
+	modelBytes := util.LoadResourceBytes(modelPath)
 	whisperModelMu.Lock()
 	var err error
 	whisperModel, err = whisper.LoadModelFromBytes(modelBytes)
@@ -898,7 +916,7 @@ func loadModelDirect(modelName, deviceID string, cachedRealtimeFactor float64, l
 		lg.Errorf("Failed to load whisper model: %v", err)
 		whisperModelMu.Unlock()
 		setWhisperBenchmarkStatus("Failed to load model")
-		return
+		return false
 	}
 	whisperModelNameAtomic.Store(modelName)
 	whisperRealtimeFactor = cachedRealtimeFactor
@@ -917,6 +935,7 @@ func loadModelDirect(modelName, deviceID string, cachedRealtimeFactor float64, l
 	if whisperSaveCallback != nil {
 		whisperSaveCallback(modelName, deviceID, WhisperBenchmarkIndex, cachedRealtimeFactor)
 	}
+	return true
 }
 
 // runBenchmark performs the full progressive benchmark to select the best model
