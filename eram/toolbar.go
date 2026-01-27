@@ -1654,6 +1654,7 @@ func (ep *ERAMPane) handleTornOffButtonsInput(ctx *panes.Context) {
 			if mouse.Clicked[platform.MouseButtonTertiary] {
 				ep.deleteTornOffButton(ps, name)
 				ep.deleteTearoffMode = false
+				ep.ClearTemporaryCursor() // clear the delete cursor
 			}
 			// Whether we deleted or not, don't let underlying UI see this click
 			// since the cursor is over an overlay widget.

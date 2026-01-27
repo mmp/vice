@@ -234,13 +234,13 @@ func (ep *ERAMPane) updateCursorOverride(ctx *panes.Context) {
 	desiredCursor := ""
 	if ep.cursorOverrideSelection != "" {
 		if !ep.cursorOverrideUntil.IsZero() && ctx.Now.After(ep.cursorOverrideUntil) {
-			// Temporary cursor expired, check if we should rollback
-			if ep.cursorRollbackSelection != "" {
+			// Temporary cursor is over. Check the rollback cursor (if it exists).
+			if ep.cursorRollbackSelection != "" { // If there is a rollback selected
 				ep.cursorOverrideSelection = ep.cursorRollbackSelection
 				ep.cursorOverrideUntil = time.Time{} // Keep indefinitely until changed
 				ep.cursorRollbackSelection = ""      // Clear rollback after using it
 				desiredCursor = ep.cursorOverrideSelection
-			} else {
+			} else { // No rollback cursor. Default to the cursor selected in the CURSOR menu.
 				ep.cursorOverrideSelection = ""
 				ep.cursorOverrideUntil = time.Time{}
 			}
@@ -253,15 +253,13 @@ func (ep *ERAMPane) updateCursorOverride(ctx *panes.Context) {
 		cursorSize := ep.currentPrefs().CursorSize
 		if cursorSize > 0 {
 			desiredCursor = fmt.Sprintf("Eram%d", cursorSize)
+		} else {
+			ep.eramCursorSelection = ""
+			ep.eramCursorPath = ""
+			ep.eramCursor = nil
+			ep.eramCursorLoadErr = ""
+			return
 		}
-	}
-
-	if desiredCursor == "" {
-		ep.eramCursorSelection = ""
-		ep.eramCursorPath = ""
-		ep.eramCursor = nil
-		ep.eramCursorLoadErr = ""
-		return
 	}
 
 	if desiredCursor != ep.eramCursorSelection {

@@ -5,16 +5,14 @@
 package platform
 
 import (
-	"bytes"
 	"encoding/binary"
 	"fmt"
 	"image"
 	"image/color"
-	"image/draw"
-	"image/png"
 	"os"
 
 	"github.com/go-gl/glfw/v3.3/glfw"
+	"github.com/mmp/vice/math"
 )
 
 // Cursor is a platform cursor handle created from a .cur file.
@@ -50,8 +48,8 @@ func (g *glfwPlatform) LoadCursorFromFile(path string) (*Cursor, error) {
 		return nil, fmt.Errorf("%s: cursor image has invalid size", path)
 	}
 
-	hotspot[0] = clampInt(hotspot[0], 0, w-1)
-	hotspot[1] = clampInt(hotspot[1], 0, h-1)
+	hotspot[0] = math.Clamp(hotspot[0], 0, w-1)
+	hotspot[1] = math.Clamp(hotspot[1], 0, h-1)
 
 	cursor := glfw.CreateCursor(rgba, hotspot[0], hotspot[1])
 	if cursor == nil {
@@ -67,6 +65,20 @@ type curEntry struct {
 	offset        int
 }
 
+/*
+.cur uses Little Endian encoding:
+
+0-1: header. (0 is valid)
+2-3: file type. (2 is cursor)
+4-5: number of images.
+Each image is 16 bytes, so offset for the 6 bytes up there and the previous images. (6 + 16 * i)
+1: width.
+2: height.
+4-5: hotspot x.
+6-7: hotspot y.
+8-11: size.
+12-15: offset.
+*/
 func loadCurFile(path string, targetSize int) (*image.RGBA, [2]int, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -75,23 +87,23 @@ func loadCurFile(path string, targetSize int) (*image.RGBA, [2]int, error) {
 	if len(data) < 6 {
 		return nil, [2]int{}, fmt.Errorf("%s: cursor file too small", path)
 	}
-	if binary.LittleEndian.Uint16(data[0:2]) != 0 {
+	if binary.LittleEndian.Uint16(data[0:2]) != 0 { // check the validity of the header/ file.
 		return nil, [2]int{}, fmt.Errorf("%s: invalid cursor header", path)
 	}
 	fileType := binary.LittleEndian.Uint16(data[2:4])
-	if fileType != 2 {
+	if fileType != 2 { // ensure this is a cursor and not an icon.
 		return nil, [2]int{}, fmt.Errorf("%s: unsupported cursor type %d", path, fileType)
 	}
-	count := int(binary.LittleEndian.Uint16(data[4:6]))
-	if count == 0 {
+	count := int(binary.LittleEndian.Uint16(data[4:6])) // number of cursor images
+	if count == 0 { 
 		return nil, [2]int{}, fmt.Errorf("%s: cursor file has no images", path)
 	}
 
 	best := curEntry{}
 	bestArea := -1
 	bestScore := int(^uint(0) >> 1)
-	for i := 0; i < count; i++ {
-		entryOffset := 6 + i*16
+	for i := range count { // go over all the images in the file.
+		entryOffset := 6 + i*16 // skip the first 6 bytes and each image is 16 bytes.
 		if entryOffset+16 > len(data) {
 			return nil, [2]int{}, fmt.Errorf("%s: cursor entry %d is truncated", path, i)
 		}
@@ -113,8 +125,8 @@ func loadCurFile(path string, targetSize int) (*image.RGBA, [2]int, error) {
 			continue
 		}
 		area := width * height
-		score := absInt(maxInt(width, height) - targetSize)
-		if score < bestScore || (score == bestScore && area > bestArea) {
+		score := math.Abs(max(width, height) - targetSize)
+		if score < bestScore || (score == bestScore && area > bestArea) { // Select image that's closest to the target size.
 			bestArea = area
 			bestScore = score
 			best = curEntry{
@@ -131,26 +143,14 @@ func loadCurFile(path string, targetSize int) (*image.RGBA, [2]int, error) {
 	}
 
 	imageData := data[best.offset : best.offset+best.size]
-	rgba, err := decodeCursorImage(imageData)
+	rgba, err := decodeCursorDIB(imageData)
 	if err != nil {
 		return nil, [2]int{}, fmt.Errorf("%s: %w", path, err)
 	}
 	return rgba, best.hotspot, nil
 }
 
-var pngSignature = []byte{0x89, 'P', 'N', 'G', '\r', '\n', 0x1a, '\n'}
-
-func decodeCursorImage(data []byte) (*image.RGBA, error) {
-	if bytes.HasPrefix(data, pngSignature) {
-		img, err := png.Decode(bytes.NewReader(data))
-		if err != nil {
-			return nil, err
-		}
-		return toRGBA(img), nil
-	}
-	return decodeCursorDIB(data)
-}
-
+// Turn cursor bitmap into an image.RGBA
 func decodeCursorDIB(data []byte) (*image.RGBA, error) {
 	if len(data) < 40 {
 		return nil, fmt.Errorf("cursor DIB header too small")
@@ -166,7 +166,7 @@ func decodeCursorDIB(data []byte) (*image.RGBA, error) {
 		return nil, fmt.Errorf("cursor DIB has invalid dimensions")
 	}
 	topDown := heightTotal < 0
-	heightAbs := absInt32(heightTotal)
+	heightAbs := int(math.Abs(heightTotal))
 	if heightAbs%2 != 0 {
 		return nil, fmt.Errorf("cursor DIB height is not even")
 	}
@@ -281,47 +281,10 @@ func decodeCursorDIB(data []byte) (*image.RGBA, error) {
 	return rgba, nil
 }
 
-func toRGBA(img image.Image) *image.RGBA {
-	b := img.Bounds()
-	rgba := image.NewRGBA(image.Rect(0, 0, b.Dx(), b.Dy()))
-	draw.Draw(rgba, rgba.Bounds(), img, b.Min, draw.Src)
-	return rgba
-}
-
+// Safely access the palette color.
 func paletteColor(palette []color.RGBA, idx int) color.RGBA {
 	if idx < 0 || idx >= len(palette) {
 		return color.RGBA{}
 	}
 	return palette[idx]
-}
-
-func absInt32(v int32) int {
-	if v < 0 {
-		return int(-v)
-	}
-	return int(v)
-}
-
-func absInt(v int) int {
-	if v < 0 {
-		return -v
-	}
-	return v
-}
-
-func maxInt(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
-func clampInt(v, minVal, maxVal int) int {
-	if v < minVal {
-		return minVal
-	}
-	if v > maxVal {
-		return maxVal
-	}
-	return v
 }
