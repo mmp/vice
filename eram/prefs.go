@@ -38,6 +38,7 @@ type Preferences struct {
 	RDBSize     int // CRR datablocks
 	LDBSize     int
 	OutageSize  int
+	CursorSize  int
 
 	VideoMapBrightness map[string]int
 
@@ -175,6 +176,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.RDBSize = 1
 	prefs.LDBSize = 1
 	prefs.OutageSize = 1
+	prefs.CursorSize = 1
 
 	prefs.VideoMapVisible = make(map[string]interface{})
 	prefs.VideoMapBrightness = make(map[string]int)
