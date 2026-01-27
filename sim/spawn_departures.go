@@ -26,6 +26,9 @@ import (
 // How low below the MVA a VFR can be
 const vfrMVABuffer = 1000
 
+// Max altitude for VFR aircraft (below Class A airspace at 18,000')
+const maxVFRAltitude = 17500
+
 // exitRoutesHaveVariedHeadings returns true if the given exit routes have
 // different final headings. This is used to determine whether departures
 // should report their heading when checking in with departure control.
@@ -790,7 +793,7 @@ func (s *Sim) createUncontrolledVFRDeparture(depart, arrive, fleet string, route
 				wps[len(wps)-1].AirworkRadius = 4 + s.Rand.Intn(4)
 				wps[len(wps)-1].AirworkMinutes = 5 + s.Rand.Intn(15)
 				wps[len(wps)-1].AltitudeRestriction.Range[0] -= 500
-				wps[len(wps)-1].AltitudeRestriction.Range[1] += 2000
+				wps[len(wps)-1].AltitudeRestriction.Range[1] = min(wps[len(wps)-1].AltitudeRestriction.Range[1]+2000, maxVFRAltitude)
 			}
 		}
 	}
@@ -901,7 +904,7 @@ func (s *Sim) adjustRouteForMVA(callsign string, wps []av.Waypoint) []av.Waypoin
 					// possible.
 					pNew := util.Select(mva > prevMVA, prevPos, pos)
 
-					minAlt := float32(mva - vfrMVABuffer)
+					minAlt := min(float32(mva-vfrMVABuffer), maxVFRAltitude)
 					mvaWpNum++
 					result = append(result, av.Waypoint{
 						Fix:      fmt.Sprintf("_mva%d@%.0f", mvaWpNum, minAlt),
@@ -919,7 +922,7 @@ func (s *Sim) adjustRouteForMVA(callsign string, wps []av.Waypoint) []av.Waypoin
 
 		// Apply MVA constraints to this waypoint and add it
 		if mva := s.mvaGrid.GetMVA(wp.Location); mva > 0 {
-			minAlt := float32(mva - vfrMVABuffer)
+			minAlt := min(float32(mva-vfrMVABuffer), maxVFRAltitude)
 			if wp.AltitudeRestriction == nil {
 				wp.AltitudeRestriction = &av.AltitudeRestriction{
 					Range: [2]float32{minAlt, 0},

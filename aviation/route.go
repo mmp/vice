@@ -582,6 +582,11 @@ func RandomizeRoute(w []Waypoint, r *rand.Rand, randomizeAltitudeRange bool, per
 				if high == 0 {
 					high = low + 3000
 				}
+				// Cap at VFR max (17,500') since randomizeAltitudeRange is only true for VFR.
+				// This prevents VFR aircraft from being assigned altitudes in Class A airspace.
+				const maxVFRAltitude = 17500
+				high = min(high, maxVFRAltitude)
+				low = min(low, maxVFRAltitude)
 				alt := math.Lerp(ralt, low, high)
 
 				// Update the altitude restriction to just be the single altitude.
