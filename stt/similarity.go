@@ -401,35 +401,37 @@ func PhoneticMatch(w1, w2 string) bool {
 // These are known false positives where similar-looking words have completely
 // different meanings in ATC context.
 var fuzzyMatchBlocklist = map[string][]string{
-	"intercept":  {"increase", "speed"},  // "intercept localizer" vs "increase/speed"
-	"increase":   {"intercept", "cross"}, // "increase speed" vs "cross fix"
-	"cross":      {"increase"},
-	"see":        {"speed"},              // "see ya" vs "speed"
-	"degrees":    {"increase"},           // garbled STT output
-	"flight":     {"right"},              // "flight 638" vs "turn right"
-	"heading":    {"descending"},         // "heading 180" vs "descend"
-	"descend":    {"present"},            // "descend and maintain" vs "present heading"
-	"present":    {"descend"},            // "present heading" vs "descend"
-	"maximum":    {"minimum"},            // "maximum speed" vs "minimum speed"
-	"minimum":    {"maximum"},            // "minimum speed" vs "maximum speed"
-	"stand":      {"ident"},              // "stand on the sand" vs "squawk ident"
-	"red":        {"right", "reduce"},    // garbled word in phrases like "Red or Collins"
-	"rudy":       {"right"},              // name/garbage word vs turn direction
-	"rig":        {"right"},              // garbage word vs turn direction
-	"senate":     {"descend"},            // garbage word vs descend command
-	"tyrone":     {"turn"},               // name vs turn command
-	"sampote":    {"climbed"},            // coincidental metaphone suffix match (SMPT vs KLMPT)
-	"departure":  {"depart"},             // position ID ("NY departure") vs depart fix instruction
-	"departures": {"depart"},             // position ID plural vs depart instruction
-	"barracuda":  {"direct"},             // Miami position name, not "direct"
-	"veracosta":  {"cleared", "direct"},  // Garbled position name
-	"mayr":       {"maintain", "direct"}, // Garbled word
-	"project":    {"direct", "proceed"},  // "project" in "miami project" is not "direct"
-	"approach":   {"direct", "proceed"},  // "approach" in position ID is not direct
-	"pro":        {"direct", "proceed"},  // Garbled "pro" is not direct/proceed
-	"clerder":    {"departure"},          // Garbled "cleared" should not match "departure"
-	"redo":       {"right"},              // "redo speed" should not match "turn right"
-	"san":        {"say"},                // "san juan" should not match "say"
+	"intercept":    {"increase", "speed"},  // "intercept localizer" vs "increase/speed"
+	"increase":     {"intercept", "cross"}, // "increase speed" vs "cross fix"
+	"cross":        {"increase"},
+	"see":          {"speed"},              // "see ya" vs "speed"
+	"degrees":      {"increase"},           // garbled STT output
+	"flight":       {"right"},              // "flight 638" vs "turn right"
+	"heading":      {"descending"},         // "heading 180" vs "descend"
+	"had":          {"heading"},            // "just had to" vs "heading" command
+	"descend":      {"present"},            // "descend and maintain" vs "present heading"
+	"present":      {"descend"},            // "present heading" vs "descend"
+	"maximum":      {"minimum"},            // "maximum speed" vs "minimum speed"
+	"minimum":      {"maximum"},            // "minimum speed" vs "maximum speed"
+	"stand":        {"ident"},              // "stand on the sand" vs "squawk ident"
+	"red":          {"right", "reduce"},    // garbled word in phrases like "Red or Collins"
+	"rudy":         {"right"},              // name/garbage word vs turn direction
+	"rig":          {"right"},              // garbage word vs turn direction
+	"senate":       {"descend"},            // garbage word vs descend command
+	"tyrone":       {"turn"},               // name vs turn command
+	"sampote":      {"climbed"},            // coincidental metaphone suffix match (SMPT vs KLMPT)
+	"departure":    {"depart"},             // position ID ("NY departure") vs depart fix instruction
+	"departures":   {"depart"},             // position ID plural vs depart instruction
+	"barracuda":    {"direct"},             // Miami position name, not "direct"
+	"veracosta":    {"cleared", "direct"},  // Garbled position name
+	"mayr":         {"maintain", "direct"}, // Garbled word
+	"project":      {"direct", "proceed"},  // "project" in "miami project" is not "direct"
+	"approach":     {"direct", "proceed"},  // "approach" in position ID is not direct
+	"pro":          {"direct", "proceed"},  // Garbled "pro" is not direct/proceed
+	"clerder":      {"departure"},          // Garbled "cleared" should not match "departure"
+	"redo":         {"right"},              // "redo speed" should not match "turn right"
+	"san":          {"say"},                // "san juan" should not match "say"
+	"intermittent": {"ident"},              // noise word should not match "ident" command
 }
 
 // FuzzyMatch returns true if word matches target with Jaro-Winkler >= threshold

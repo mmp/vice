@@ -8,7 +8,7 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "command": "SAYAGAIN/APPROACH",
+  "command": "EI1L",
   "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",

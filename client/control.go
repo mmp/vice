@@ -458,6 +458,27 @@ func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 		}))
 }
 
+// RequestContactTransmission requests the next pending contact transmission from the server.
+// The result (if any) will be delivered via GetStateUpdate and enqueued for playback.
+func (c *ControlClient) RequestContactTransmission() {
+	var result server.RequestContactResult
+	c.addCall(makeRPCCall(c.client.Go(server.RequestContactTransmissionRPC, &server.RequestContactArgs{
+		ControllerToken: c.controllerToken,
+	}, &result, nil),
+		func(err error) {
+			c.transmissions.SetContactRequested(false)
+
+			if err != nil {
+				c.lg.Errorf("RequestContactTransmission: %v", err)
+				return
+			}
+
+			if result.ContactSpeech != nil {
+				c.transmissions.EnqueueTransmission(*result.ContactSpeech)
+			}
+		}))
+}
+
 func (c *ControlClient) ConfigureATPA(op sim.ATPAConfigOp, volumeId string, callback func(output string, err error)) {
 	var result server.ATPAConfigResult
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.ConfigureATPARPC, &server.ATPAConfigArgs{

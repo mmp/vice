@@ -2041,7 +2041,7 @@ func TestValidateCommands(t *testing.T) {
 			name:         "invalid descend - target above current",
 			commands:     []string{"D150"},
 			ac:           Aircraft{Altitude: 10000, State: "arrival"},
-			expectedLen:  0,
+			expectedLen:  1, // becomes SAYAGAIN/ALTITUDE
 			minConf:      0.0,
 			expectErrors: true,
 		},
@@ -2057,7 +2057,7 @@ func TestValidateCommands(t *testing.T) {
 			name:         "invalid climb - target below current",
 			commands:     []string{"C50"},
 			ac:           Aircraft{Altitude: 10000, State: "departure"},
-			expectedLen:  0,
+			expectedLen:  1, // becomes SAYAGAIN/ALTITUDE
 			minConf:      0.0,
 			expectErrors: true,
 		},
@@ -2137,7 +2137,7 @@ func TestValidateCommands(t *testing.T) {
 			name:         "mixed valid and invalid commands",
 			commands:     []string{"L270", "D150"}, // heading valid, descend invalid (target > current)
 			ac:           Aircraft{Altitude: 10000, State: "arrival"},
-			expectedLen:  1, // only heading survives
+			expectedLen:  2, // heading survives, descend becomes SAYAGAIN/ALTITUDE
 			minConf:      0.0,
 			expectErrors: true,
 		},
@@ -2829,6 +2829,177 @@ func TestSpelledFixNames(t *testing.T) {
 				},
 			},
 			expected: "SWA100 DCARML",
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
+}
+
+// TestApproachFixInjection tests that when an aircraft is told to expect an approach,
+// the fixes from that approach become available for subsequent commands.
+func TestApproachFixInjection(t *testing.T) {
+	tests := []struct {
+		name       string
+		transcript string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "expect approach then direct to approach fix",
+			transcript: "Delta 123 expect I L S runway two two left direct rosly",
+			aircraft: map[string]Aircraft{
+				"Delta 123": {
+					Callsign: "DAL123",
+					State:    "arrival",
+					Fixes:    map[string]string{}, // ROSLY not in aircraft's route
+					CandidateApproaches: map[string]string{
+						"i l s runway two two left": "I22L",
+					},
+					ApproachFixes: map[string]map[string]string{
+						"I22L": {
+							"rosly": "ROSLY",
+							"torby": "TORBY",
+						},
+					},
+				},
+			},
+			expected: "DAL123 EI22L DROSLY",
+		},
+		{
+			name:       "expect approach with LAHSO then direct to approach fix",
+			transcript: "United 456 vectors ILS runway two eight center land hold short two two direct MERIT",
+			aircraft: map[string]Aircraft{
+				"United 456": {
+					Callsign: "UAL456",
+					State:    "arrival",
+					Fixes:    map[string]string{}, // MERIT not in route
+					CandidateApproaches: map[string]string{
+						"i l s runway two eight center": "I28C",
+					},
+					ApproachFixes: map[string]map[string]string{
+						"I28C": {
+							"merit": "MERIT",
+							"camrn": "CAMRN",
+						},
+					},
+					LAHSORunways: []string{"22"},
+				},
+			},
+			expected: "UAL456 EI28C/LAHSO22 DMERIT",
+		},
+		{
+			name:       "approach fix does not override existing aircraft fix",
+			transcript: "Southwest 789 expect RNAV runway three six direct merit",
+			aircraft: map[string]Aircraft{
+				"Southwest 789": {
+					Callsign: "SWA789",
+					State:    "arrival",
+					Fixes: map[string]string{
+						"merit": "MRIT1", // Aircraft already has MERIT in route (different code)
+					},
+					CandidateApproaches: map[string]string{
+						"rnav runway three six": "R36",
+					},
+					ApproachFixes: map[string]map[string]string{
+						"R36": {
+							"merit": "MERIT", // Approach also has a fix spelled "merit"
+						},
+					},
+				},
+			},
+			expected: "SWA789 ER36 DMRIT1", // Should use the original aircraft's fix, not the approach's
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
+}
+
+// TestAssignedApproachPreference tests that when an aircraft has an assigned approach,
+// approach clearances prefer matching that approach when the direction is ambiguous.
+func TestAssignedApproachPreference(t *testing.T) {
+	tests := []struct {
+		name       string
+		transcript string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "garbled direction prefers assigned approach",
+			transcript: "JetBlue 1695 at Bunker cleared I L S runway one zero at approach",
+			aircraft: map[string]Aircraft{
+				"JetBlue 6095": {
+					Callsign: "JBU6095",
+					State:    "arrival",
+					Fixes: map[string]string{
+						"bunker": "BUNKR",
+					},
+					CandidateApproaches: map[string]string{
+						"i l s runway one zero left":  "I0L",
+						"i l s runway one zero right": "I0R",
+					},
+					AssignedApproach: "ILS Runway 10R", // Expecting 10 Right
+				},
+			},
+			expected: "JBU6095 ABUNKR/CI0R", // Should match 10R, not 10L
+		},
+		{
+			name:       "explicit direction overrides assigned approach",
+			transcript: "Delta 456 cleared ILS runway two eight left approach",
+			aircraft: map[string]Aircraft{
+				"Delta 456": {
+					Callsign: "DAL456",
+					State:    "arrival",
+					CandidateApproaches: map[string]string{
+						"i l s runway two eight left":   "I28L",
+						"i l s runway two eight center": "I28C",
+						"i l s runway two eight right":  "I28R",
+					},
+					AssignedApproach: "ILS Runway 28C", // Expected center, but pilot said left
+				},
+			},
+			expected: "DAL456 CI28L", // Should match what was actually said (left)
+		},
+		{
+			name:       "no assigned approach uses alphabetical tiebreaker",
+			transcript: "United 789 cleared ILS runway three six approach",
+			aircraft: map[string]Aircraft{
+				"United 789": {
+					Callsign: "UAL789",
+					State:    "arrival",
+					CandidateApproaches: map[string]string{
+						"i l s runway three six left":  "I36L",
+						"i l s runway three six right": "I36R",
+					},
+					AssignedApproach: "", // No assigned approach
+				},
+			},
+			expected: "UAL789 CI36L", // Alphabetically earlier (L < R)
 		},
 	}
 

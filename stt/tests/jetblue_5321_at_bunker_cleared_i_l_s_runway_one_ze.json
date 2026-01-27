@@ -1,0 +1,261 @@
+{
+  "time": "2026-01-25T22:17:50.914249643Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "JetBlue 5321 at bunker cleared I L S runway one zero right approach.",
+  "whisper_duration_ms": 333.298,
+  "audio_duration_ms": 3712,
+  "processor": "GPU: NVIDIA GeForce RTX 3080 (10267MB)",
+  "callsign": "JBU5321",
+  "command": "ABUNKR/CI0R",
+  "stt_aircraft": {
+    "Allegiant 844": {
+      "Callsign": "AAY844",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Bepac": "BEPAC",
+        "Fort Lauderdale": "KFLL",
+        "Holid": "HOLID",
+        "Nova": "NOVAE",
+        "Wanar": "WANAR",
+        "Warrior": "WAROR",
+        "gamvy": "GAMVE"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 10L",
+      "SID": "",
+      "STAR": "CUUDA3",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue 5321": {
+      "Callsign": "JBU5321",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Bezer": "BEZER",
+        "Blame": "BLAIM",
+        "Bunker": "BUNKR",
+        "Fort Lauderdale": "KFLL",
+        "Heeze": "HEEZE",
+        "Lori": "LORII"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 10R",
+      "SID": "",
+      "STAR": "TEEKY3",
+      "Altitude": 4703,
+      "State": "arrival",
+      "ControllerFrequency": "1J",
+      "TrackingController": "1J",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 1327": {
+      "Callsign": "NKS1327",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Banty": "BANTY",
+        "Bezer": "BEZER",
+        "Blame": "BLAIM",
+        "Bunker": "BUNKR",
+        "Fort Lauderdale": "KFLL",
+        "Heeze": "HEEZE",
+        "Lori": "LORII",
+        "Teky": "TEEKY"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 10R",
+      "SID": "",
+      "STAR": "TEEKY3",
+      "Altitude": 14557,
+      "State": "arrival",
+      "ControllerFrequency": "1J",
+      "TrackingController": "1J",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 1841": {
+      "Callsign": "NKS1841",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Bezer": "BEZER",
+        "Blame": "BLAIM",
+        "Bunker": "BUNKR",
+        "Fort Lauderdale": "KFLL",
+        "Lori": "LORII"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 10R",
+      "SID": "",
+      "STAR": "TEEKY3",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1J",
+      "TrackingController": "1J",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 5685": {
+      "Callsign": "NKS5685",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Bepac": "BEPAC",
+        "Fort Lauderdale": "KFLL",
+        "Holid": "HOLID",
+        "Loker": "LOKKR",
+        "Nova": "NOVAE",
+        "Serif": "SERIF",
+        "Wanar": "WANAR",
+        "Warrior": "WAROR",
+        "gamvy": "GAMVE"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 10L",
+      "SID": "",
+      "STAR": "CUUDA3",
+      "Altitude": 4169,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 7582": {
+      "Callsign": "NKS7582",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Bepac": "BEPAC",
+        "Cuda": "CUUDA",
+        "Fort Lauderdale": "KFLL",
+        "Holid": "HOLID",
+        "Loker": "LOKKR",
+        "Makel": "MACKL",
+        "Nova": "NOVAE",
+        "Serif": "SERIF",
+        "Wanar": "WANAR",
+        "Warrior": "WAROR",
+        "gamvy": "GAMVE"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 10L",
+      "SID": "",
+      "STAR": "CUUDA3",
+      "Altitude": 12319,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "WestJet 35": {
+      "Callsign": "WJA35",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Fort Lauderdale": "KFLL",
+        "Holid": "HOLID",
+        "Nova": "NOVAE",
+        "Warrior": "WAROR",
+        "gamvy": "GAMVE"
+      },
+      "CandidateApproaches": {
+        "I L S runway one zero left": "I0L",
+        "I L S runway one zero right": "I0R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 10L",
+      "SID": "",
+      "STAR": "CUUDA3",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1J",
+      "TrackingController": "1J",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"JetBlue 5321 at bunker cleared I L S runway one zero right approach.\"",
+    "[local-stt] normalized words: [jetblue 5321 at bunker cleared ils runway 1 0 right approach]",
+    "[local-stt] tokens: 10",
+    "[local-stt]   token[0]: Text=\"jetblue\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"5321\" Type=1 Value=5321",
+    "[local-stt]   token[2]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"bunker\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"10\" Type=1 Value=10",
+    "[local-stt]   token[8]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 10 tokens, 7 aircraft",
+    "[local-stt]   exact match: \"jetblue 5321\" -\u003e \"JBU5321\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"JBU5321\" SpokenKey=\"JetBlue 5321\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4703 Fixes=6 Approaches=2 AssignedApproach=\"ILS Runway 10R\"",
+    "[local-stt]   fix: \"Fort Lauderdale\" -\u003e \"KFLL\"",
+    "[local-stt]   fix: \"Bezer\" -\u003e \"BEZER\"",
+    "[local-stt]   fix: \"Blame\" -\u003e \"BLAIM\"",
+    "[local-stt]   fix: \"Lori\" -\u003e \"LORII\"",
+    "[local-stt]   fix: \"Heeze\" -\u003e \"HEEZE\"",
+    "[local-stt]   fix: \"Bunker\" -\u003e \"BUNKR\"",
+    "[local-stt]   approach: \"I L S runway one zero right\" -\u003e \"I0R\"",
+    "[local-stt]   approach: \"I L S runway one zero left\" -\u003e \"I0L\"",
+    "[local-stt] command tokens after disregard: 8",
+    "[local-stt]   token[0]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"bunker\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"10\" Type=1 Value=10",
+    "[local-stt]   token[6]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"cleared\" at position 2 - not just position ID",
+    "[local-stt] ParseCommands: 8 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"bunker\" against 6 fixes",
+    "[local-stt]   extractFix: matched \"bunker\" -\u003e \"BUNKR\" (exact)",
+    "[local-stt]   extractFix: matched \"bunker\" -\u003e \"BUNKR\" (fuzzy 1.00)",
+    "[local-stt]   matchApproachByTypeAndNumber: type=\"ils\" runway=\"one zero right\" -\u003e \"I0R\" (consumed=4)",
+    "[local-stt]   tryMatchTemplate \"at_fix_cleared_approach\": cmd=\"ABUNKR/CI0R\" fix=\"BUNKR\" appr=\"I0R\" consumed=7",
+    "[local-stt]   matched command: \"ABUNKR/CI0R\" (conf=0.95, consumed=7, isThen=false)",
+    "[local-stt]   no match at token[7]=\"approach\", skipping",
+    "[local-stt] ParseCommands: result=[ABUNKR/CI0R] (avgConf=0.95)",
+    "[local-stt] parsed commands: [ABUNKR/CI0R] (conf=0.95)",
+    "[local-stt] validated commands: [ABUNKR/CI0R] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"JBU5321 ABUNKR/CI0R\" (conf=0.95, time=0s) ==="
+  ]
+}

@@ -26,6 +26,10 @@ type TransmissionManager struct {
 	lastCallsign av.ADSBCallsign
 	eventStream  *sim.EventStream
 	lg           *log.Logger
+
+	// Contact request management
+	lastWasContact   bool
+	contactRequested bool
 }
 
 // NewTransmissionManager creates a new TransmissionManager.
@@ -59,19 +63,16 @@ func (tm *TransmissionManager) EnqueueReadback(ps sim.PilotSpeech) {
 	tm.queue = append([]sim.PilotSpeech{ps}, tm.queue...)
 }
 
-// EnqueueFromStateUpdate adds pilot-initiated transmissions from state updates.
-// These come from the RadioSpeech field and are appended to the queue.
-func (tm *TransmissionManager) EnqueueFromStateUpdate(speech []sim.PilotSpeech) {
+// EnqueueTransmission adds a pilot transmission to the queue.
+func (tm *TransmissionManager) EnqueueTransmission(ps sim.PilotSpeech) {
 	tm.mu.Lock()
 	defer tm.mu.Unlock()
 
-	for _, ps := range speech {
-		if len(ps.MP3) == 0 {
-			tm.lg.Warnf("Skipping speech for %s due to empty MP3", ps.Callsign)
-			continue
-		}
-		tm.queue = append(tm.queue, ps)
+	if len(ps.MP3) == 0 {
+		tm.lg.Warnf("Skipping speech for %s due to empty MP3", ps.Callsign)
+		return
 	}
+	tm.queue = append(tm.queue, ps)
 }
 
 // Update manages playback state, called each frame.
@@ -104,14 +105,26 @@ func (tm *TransmissionManager) Update(p platform.Platform, paused, sttActive boo
 	ps := tm.queue[0]
 	tm.queue = tm.queue[1:]
 
+	// Track whether this is a contact (vs readback)
+	isContact := ps.Type == av.RadioTransmissionContact
+
 	// Try to enqueue for playback
 	if err := p.TryEnqueueSpeechMP3(ps.MP3, func() {
 		tm.mu.Lock()
 		defer tm.mu.Unlock()
+
 		tm.playing = false
 		tm.lastCallsign = ps.Callsign
-		// Hold for 1.5 seconds after transmission to simulate realistic radio behavior
-		tm.holdUntil = time.Now().Add(3 * time.Second / 2)
+		tm.lastWasContact = isContact
+
+		// Different hold times based on transmission type:
+		// - After contact: 8 seconds (controller needs time to respond)
+		// - After readback: 3 seconds (brief pause before next contact)
+		if isContact {
+			tm.holdUntil = time.Now().Add(8 * time.Second)
+		} else {
+			tm.holdUntil = time.Now().Add(3 * time.Second)
+		}
 	}); err == nil {
 		tm.playing = true
 
@@ -169,4 +182,36 @@ func (tm *TransmissionManager) IsPlaying() bool {
 	defer tm.mu.Unlock()
 
 	return tm.playing
+}
+
+// ShouldRequestContact returns true if the client should request a contact from the server.
+// It checks that we're not playing, not held, queue is empty, and no request is pending.
+// It also returns true slightly early (2s before hold expires) to hide TTS latency.
+func (tm *TransmissionManager) ShouldRequestContact() bool {
+	tm.mu.Lock()
+	defer tm.mu.Unlock()
+
+	if tm.contactRequested || tm.playing || tm.holdCount > 0 || len(tm.queue) > 0 {
+		return false
+	}
+
+	// Request early to hide latency: when hold expires in less than 2s
+	// (or has already expired)
+	return time.Until(tm.holdUntil) < 2*time.Second
+}
+
+// SetContactRequested marks that we've sent a contact request and are waiting.
+func (tm *TransmissionManager) SetContactRequested(requested bool) {
+	tm.mu.Lock()
+	defer tm.mu.Unlock()
+
+	tm.contactRequested = requested
+}
+
+// IsContactRequested returns true if we're waiting for a contact response.
+func (tm *TransmissionManager) IsContactRequested() bool {
+	tm.mu.Lock()
+	defer tm.mu.Unlock()
+
+	return tm.contactRequested
 }

@@ -348,6 +348,7 @@ var phoneticCommandBlocklist = map[string][]string{
 	"redu":      {"right"},         // "redu-speed" is "reduce speed", not "right speed"
 	"redo":      {"right"},         // "redo speed" is "reduce speed", not "right speed"
 	"towards":   {"reduce"},        // "contact towards" is not "reduce"
+	"had":       {"heading"},       // "just had to" is not "heading"
 	// Speed-related words should match "speed" not "intercept" (suffix match on SPT)
 	"rotospeed": {"intercept"}, // STT garble of "reduce speed"
 	"speedo":    {"intercept"}, // STT garble of "speed"
@@ -359,6 +360,7 @@ var phoneticCommandBlocklist = map[string][]string{
 	"barracuda": {"direct"},            // Miami position name, not "direct"
 	"veracosta": {"cleared", "direct"}, // Garbled position name
 	"mayr":      {"maintain"},          // Garbled word
+	"argentina": {"maintain"},          // Airline name, not command
 }
 
 // tryPhoneticCommandMatch attempts to match a word phonetically against
@@ -401,8 +403,10 @@ var commandKeywords = map[string]string{
 	"climb":      "climb",
 	"climin":     "climb",
 	"klimin":     "climb",
+	"klim":       "climb", // STT error: dropped trailing sound
 	"clomman":    "climb",
 	"clementine": "climb",
+	"klamathay":  "climb", // STT error: "climb and maintain" garbled together
 	"con":        "climb",
 	"maintain":   "maintain",
 	"maintained": "maintain",
@@ -416,10 +420,14 @@ var commandKeywords = map[string]string{
 	"level":      "level",
 	"expedite":   "expedite",
 
+	// Airline names (STT errors)
+	"double": "delta", // STT error: "Delta" misheard as "double"
+
 	// Heading
 	"heading":  "heading",
 	"eating":   "heading", // STT error: "heading" misheard as "eating" (phonetically similar)
 	"atting":   "heading", // STT error: "heading" misheard as "atting" (phonetically similar)
+	"waiting":  "wavey",   // STT error: "wavey" (fix) misheard as "waiting"
 	"turn":     "turn",
 	"lefthand": "left", // STT error: "left" with extra "hand" suffix
 	"turning":  "turn", // STT captures continuous tense
@@ -454,6 +462,9 @@ var commandKeywords = map[string]string{
 	"cross":    "cross",
 	"depart":   "depart",
 	"hold":     "hold",
+	"land":     "land",
+	"landen":   "land",  // STT error: "land and" garbled as "landen"
+	"short":    "short", // For "hold short" LAHSO commands
 	"via":      "via",
 	"by":       "via",
 	"sid":      "sid",
@@ -479,32 +490,38 @@ var commandKeywords = map[string]string{
 	"southwest": "southwest",
 
 	// Approach
-	"cleared":   "cleared",
-	"cliud":     "cleared", // STT error: garbled "cleared"
-	"expect":    "expect",
-	"spectat":   "expect", // STT error: "expect" garbled
-	"select":    "expect", // "select the ILS" = "expect the ILS"
-	"vectors":   "vectors",
-	"approach":  "approach",
-	"cancel":    "cancel",
-	"localizer": "localizer",
-	"localize":  "localizer", // STT drops trailing 'r'
-	"intercept": "intercept",
-	"nusselt":   "intercept",
-	"clearance": "clearance",
-	"visual":    "visual",
-	"ils":       "ils",
-	"dallas":    "ils",
-	"alice":     "ils",
-	"als":       "ils",
-	"les":       "ils", // STT error: dropped leading sound
-	"dials":     "ils", // STT error: "d'ILS" or "the ILS" merged
-	"rnav":      "rnav",
-	"arnavie":   "rnav", // STT error: "rnav" garbled with extra syllables
-	"vor":       "vor",
-	"runway":    "runway",
-	"romn":      "runway", // STT error: garbled "runway"
-	"renoya":    "runway", // STT error: garbled "runway"
+	"cleared":     "cleared",
+	"cliud":       "cleared", // STT error: garbled "cleared"
+	"expect":      "expect",
+	"spectat":     "expect", // STT error: "expect" garbled
+	"select":      "expect", // "select the ILS" = "expect the ILS"
+	"vectors":     "vectors",
+	"approach":    "approach",
+	"cancel":      "cancel",
+	"localizer":   "localizer",
+	"localize":    "localizer", // STT drops trailing 'r'
+	"intercept":   "intercept",
+	"intercepted": "intercept", // Past tense
+	"nusselt":     "intercept",
+	"clearance":   "clearance",
+	"visual":      "visual",
+	"ils":         "ils",
+	"dallas":      "ils",
+	"alice":       "ils",
+	"als":         "ils",
+	"les":         "ils", // STT error: dropped leading sound
+	"dials":       "ils", // STT error: "d'ILS" or "the ILS" merged
+	"eyelash":     "ils", // STT error: "I L S" pronounced as "eye-ell-ess" -> "eyelash"
+	"eyelids":     "ils", // STT error: "I L S" garbled as "eyelids"
+	"atlas":       "ils", // STT error: "the ILS" garbled as "atlas"
+	"rnav":        "rnav",
+	"arnavie":     "rnav", // STT error: "rnav" garbled with extra syllables
+	"ironed":      "rnav", // STT error: "RNAV" misheard as "ironed"
+	"vor":         "vor",
+	"runway":      "runway",
+	"romn":        "runway", // STT error: garbled "runway"
+	"renoya":      "runway", // STT error: garbled "runway"
+	"renee":       "runway", // STT error: "runway" garbled as "renee"
 
 	// Transponder
 	"squawk":      "squawk",
@@ -519,6 +536,7 @@ var commandKeywords = map[string]string{
 	"tar":       "tower",
 	"terror":    "tower",
 	"her":       "tower", // STT error: "tower" misheard as "her"
+	"hour":      "tower", // STT error: "tower" misheard as "hour"
 	"frequency": "frequency",
 	"departure": "departure",
 	"center":    "center",
@@ -566,8 +584,12 @@ var multiTokenReplacements = map[string][]string{
 	"december 18": {"descend", "maintain"}, // STT error: "descend and maintain"
 	"i l s":       {"ils"},                 // Spelled out ILS
 	"r nav":       {"rnav"},                // R-NAV after hyphen removal
+	"r nov":       {"rnav"},                // STT error: "R-NAV" misheard as "R-NOV"
 	"fly level":   {"flight", "level"},     // STT error: "flight level" misheard as "fly level"
 	"eddie had":   {"etihad"},              // STT error: "Etihad" misheard as "eddie had"
+	"local line":  {"localizer"},           // STT error: "localizer" misheard as "local line"
+	"time riding": {"turn", "right"},       // STT error: "turn right" misheard as "time riding"
+	"x ray":       {"expedite"},            // STT error: "expedite" misheard as "X-ray"
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.
@@ -615,7 +637,8 @@ var fillerWords = map[string]bool{
 	"off":  true,               // STT noise in "turn off heading" → "turn heading"
 	"wing": true,               // STT error: "left-wing" for "left heading" becomes "left wing" after hyphen removal
 	"i":    true, "said": true, // Pilot interjections ("I said I maintained...")
-	"having": true, // Prevents "having" from fuzzy matching "heading" (Jaro-Winkler 0.86)
+	"having":  true, // Prevents "having" from fuzzy matching "heading" (Jaro-Winkler 0.86)
+	"leaving": true, // Prevents "leaving" from fuzzy matching "heading" (Jaro-Winkler 0.81)
 	// Note: "contact" and "radar" are NOT filler words - they're command keywords
 }
 
@@ -639,10 +662,29 @@ func NormalizeTranscript(transcript string) []string {
 
 	// Normalize each word
 	result := make([]string, 0, len(words))
+	skipCount := 0
 	for i := 0; i < len(words); i++ {
+		if skipCount > 0 {
+			skipCount--
+			continue
+		}
+
 		w := CleanWord(words[i])
 		if w == "" {
 			continue
+		}
+
+		// Check for multi-token patterns on raw words BEFORE phonetic matching
+		// This catches patterns like "time riding" → "turn right" before "riding" gets
+		// normalized to "heading" via phonetic match
+		if i+1 < len(words) {
+			rawNext := CleanWord(words[i+1])
+			key := w + " " + rawNext
+			if replacement, ok := multiTokenReplacements[key]; ok {
+				result = append(result, replacement...)
+				skipCount = 1
+				continue
+			}
 		}
 
 		// Handle garbled "niner" transcriptions like "9r,000" -> "9r000" -> "9000"
@@ -745,6 +787,27 @@ func NormalizeTranscript(transcript string) []string {
 			}
 		}
 
+		// Handle "and" between digits: STT mishears "one" as "and"
+		// e.g., "two and zero" means "two one zero" (210)
+		// But "two nine and zero" should be "290" (and is filler, not replacing one)
+		if w == "and" && len(result) > 0 && i+1 < len(words) {
+			prev := result[len(result)-1]
+			nextWord := CleanWord(words[i+1])
+
+			prevIsDigit := IsNumber(prev)
+			_, nextIsDigitWord := digitWords[nextWord]
+			nextIsDigit := IsNumber(nextWord) || nextIsDigitWord
+			if prevIsDigit && nextIsDigit {
+				// Check if we're in a multi-digit sequence (prev-prev is also a digit)
+				// If so, skip "and" (it's filler). Otherwise convert to "1".
+				if len(result) >= 2 && IsNumber(result[len(result)-2]) {
+					continue // Skip "and" in multi-digit sequence like "two nine and zero"
+				}
+				result = append(result, "1") // "and" → "1" in "two and zero"
+				continue
+			}
+		}
+
 		// Keep as-is
 		result = append(result, w)
 	}
@@ -773,6 +836,54 @@ func postProcessNormalized(tokens []string) []string {
 			continue
 		}
 
+		// Handle "heading to N" where "to" is garbled "two" (2).
+		// e.g., "heading to 70" → "heading 270", "heading to 40" → "heading 240"
+		// Also handles "heading to N00" where STT added an extra trailing zero.
+		// e.g., "heading to 900" → "heading 290" (900 has extra 0, should be 90)
+		// IMPORTANT: Only apply when digits form a single token or 3+ consecutive digits.
+		// If digits are spelled out (e.g., "to 8 0" = two tokens), user likely intended
+		// the exact number, so don't transform. Spelled out numbers indicate intentionality.
+		if tokens[i] == "heading" && i+2 < len(tokens) && tokens[i+1] == "to" {
+			// Count consecutive digit tokens starting at i+2
+			digitCount := 0
+			for j := i + 2; j < len(tokens) && IsNumber(tokens[j]); j++ {
+				digitCount++
+			}
+
+			// Only proceed if we have exactly 1 token (already combined number like "70")
+			// or 3+ tokens (like "9 0 0" which is likely garbled with extra zero)
+			// Skip 2-token cases like "8 0" - user spelled it out intentionally as "080"
+			if digitCount == 1 || digitCount >= 3 {
+				// Join the digit tokens
+				var digitStr string
+				for j := i + 2; j < i+2+digitCount; j++ {
+					digitStr += tokens[j]
+				}
+				nextNum := ParseNumber(digitStr)
+
+				// Case 1: N is 2-digit (10-99)
+				if nextNum >= 10 && nextNum <= 99 {
+					combined := 200 + nextNum
+					if combined <= 360 {
+						result = append(result, "heading", strconv.Itoa(combined))
+						skip = 1 + digitCount // Skip "to" and all digit tokens
+						continue
+					}
+				}
+				// Case 2: N is 3-digit ending in 0 (100-990) - STT added extra trailing zero
+				// e.g., "to 900" should be "to 90" → "290"
+				if nextNum >= 100 && nextNum <= 990 && nextNum%10 == 0 {
+					actualNum := nextNum / 10 // Remove trailing zero
+					combined := 200 + actualNum
+					if combined <= 360 {
+						result = append(result, "heading", strconv.Itoa(combined))
+						skip = 1 + digitCount // Skip "to" and all digit tokens
+						continue
+					}
+				}
+			}
+		}
+
 		// Handle "l s" → "ils" (2 letters, missing "i")
 		// Context-dependent: only when followed by "runway" or a number
 		if tokens[i] == "l" && i+1 < len(tokens) && tokens[i+1] == "s" {
@@ -783,6 +894,22 @@ func postProcessNormalized(tokens []string) []string {
 					skip = 1 // Skip the "s"
 					continue
 				}
+			}
+		}
+
+		// Handle "10 N [M] thousand" where "10" is garbled "to"
+		// e.g., "10 1 4 thousand" → "1 4 thousand" (14,000 ft)
+		// Only apply when followed by single digits then "thousand"
+		if tokens[i] == "10" && i+2 < len(tokens) {
+			// Look for pattern: 10 + single digits + thousand
+			j := i + 1
+			for j < len(tokens) && IsDigit(tokens[j]) {
+				j++
+			}
+			// Must have consumed at least one digit and next word is "thousand"
+			if j > i+1 && j < len(tokens) && tokens[j] == "thousand" {
+				// Skip the "10", keep the remaining digits and thousand
+				continue
 			}
 		}
 

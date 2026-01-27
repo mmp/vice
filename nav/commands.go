@@ -14,7 +14,7 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-func (nav *Nav) GoAround() av.CommandIntent {
+func (nav *Nav) GoAround() {
 	hdg := nav.FlightState.Heading
 	nav.Heading = NavHeading{Assigned: &hdg}
 	nav.DeferredNavHeading = nil
@@ -27,8 +27,6 @@ func (nav *Nav) GoAround() av.CommandIntent {
 	nav.Approach = NavApproach{}
 	// Keep the destination airport at the end of the route.
 	nav.Waypoints = []av.Waypoint{nav.FlightState.ArrivalAirport}
-
-	return av.GoAroundIntent{}
 }
 
 func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) av.CommandIntent {

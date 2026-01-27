@@ -303,11 +303,14 @@ func loadState() *PersistedState {
 		state.Seen = make(map[string]bool)
 	}
 
-	// Filter out any entries that are already in the Seen set
+	// Filter out any entries that are already in the Seen set and deduplicate
+	seen := make(map[string]bool)
 	var filtered []LogEntry
 	for _, e := range state.Queue {
-		if !state.Seen[entryHash(e)] {
+		h := entryHash(e)
+		if !state.Seen[h] && !seen[h] {
 			filtered = append(filtered, e)
+			seen[h] = true
 		}
 	}
 	state.Queue = filtered
@@ -328,13 +331,20 @@ func (s *PersistedState) save() error {
 	return os.WriteFile(filepath.Join(dir, "state.json"), data, 0644)
 }
 
-// ingest adds new entries to the queue, skipping already-seen ones.
+// ingest adds new entries to the queue, skipping already-seen ones and duplicates.
 func (s *PersistedState) ingest(entries []LogEntry) int {
+	// Build set of hashes already in queue
+	queued := make(map[string]bool)
+	for _, e := range s.Queue {
+		queued[entryHash(e)] = true
+	}
+
 	added := 0
 	for _, e := range entries {
 		h := entryHash(e)
-		if !s.Seen[h] {
+		if !s.Seen[h] && !queued[h] {
 			s.Queue = append(s.Queue, e)
+			queued[h] = true
 			added++
 		}
 	}
@@ -841,6 +851,46 @@ func render(screen tcell.Screen, state *AppState) {
 					y++
 				}
 			}
+
+			// If command contains "E" (expect approach), show the approach's fixes
+			if len(ac.ApproachFixes) > 0 && y < maxY {
+				// Check if the command contains an expect approach command
+				approachID := extractExpectApproachID(entry.Command)
+				if approachID != "" {
+					if approachFixes, ok := ac.ApproachFixes[approachID]; ok && len(approachFixes) > 0 {
+						drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
+						styleApprFix := tcell.StyleDefault.Background(tcell.ColorYellow).Foreground(tcell.ColorBlack)
+						drawText(screen, 0, y, width, styleApprFix, fmt.Sprintf(" Approach %s Fixes:", approachID))
+						y++
+
+						// Sort fix names
+						var fixNames []string
+						for spoken := range approachFixes {
+							fixNames = append(fixNames, spoken)
+						}
+						sort.Strings(fixNames)
+
+						fixLine := " "
+						for _, spoken := range fixNames {
+							id := approachFixes[spoken]
+							part := fmt.Sprintf("%s\u2192%s  ", spoken, id)
+							if len(fixLine)+len(part) > width-2 {
+								if y < maxY {
+									drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, fixLine))
+									y++
+								}
+								fixLine = "   " + part
+							} else {
+								fixLine += part
+							}
+						}
+						if fixLine != " " && fixLine != "   " && y < maxY {
+							drawText(screen, 0, y, width, styleContext, fmt.Sprintf("%-*s", width, fixLine))
+							y++
+						}
+					}
+				}
+			}
 		}
 
 		// Always show list of available callsigns (sorted alphabetically)
@@ -1126,6 +1176,23 @@ func saveEntry(entry LogEntry, correction, outputDir string) error {
 	}
 
 	return os.WriteFile(path, data, 0644)
+}
+
+// extractExpectApproachID extracts the approach ID from a command string containing an "E" command.
+// Returns empty string if no expect approach command is found.
+func extractExpectApproachID(command string) string {
+	parts := strings.Fields(command)
+	for _, part := range parts {
+		if strings.HasPrefix(part, "E") && len(part) > 1 {
+			approachID := part[1:]
+			// Strip LAHSO suffix if present (e.g., "EI22L/LAHSO26" -> "I22L")
+			if idx := strings.Index(approachID, "/LAHSO"); idx != -1 {
+				approachID = approachID[:idx]
+			}
+			return approachID
+		}
+	}
+	return ""
 }
 
 // sanitizeFilename creates a safe filename from a transcript.

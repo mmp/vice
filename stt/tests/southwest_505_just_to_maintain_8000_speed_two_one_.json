@@ -1,0 +1,212 @@
+{
+  "time": "2026-01-25T17:04:52.679587837Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Southwest 505, just to maintain 8000 speed, two one zero.",
+  "whisper_duration_ms": 474.261,
+  "audio_duration_ms": 3328,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 Ti (8238MB)",
+  "callsign": "SWA505",
+  "command": "A80 S210",
+  "stt_aircraft": {
+    "Blue Streak 2757": {
+      "Callsign": "JIA2757",
+      "AircraftType": "CRJ7",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Diode": "DIODE",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Blue Streak 8199": {
+      "Callsign": "JIA8199",
+      "AircraftType": "CRJ7",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Nulls": "NULLS",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Brickyard 9320": {
+      "Callsign": "RPA9320",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Shims": "SHIMS"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 8000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "ExecJet 9585": {
+      "Callsign": "EJA9585",
+      "AircraftType": "C750",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Diode": "DIODE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 11000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 505": {
+      "Callsign": "SWA505",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Nests": "NESTS"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 11000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 8274": {
+      "Callsign": "SWA8274",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 9613,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Southwest 505, just to maintain 8000 speed, two one zero.\"",
+    "[local-stt] normalized words: [southwest 505 just to maintain 8000 speed 2 1 0]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"southwest\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"505\" Type=1 Value=505",
+    "[local-stt]   token[2]: Text=\"just\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"8000\" Type=1 Value=8000",
+    "[local-stt]   token[6]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"210\" Type=1 Value=210",
+    "[local-stt] MatchCallsign: 8 tokens, 6 aircraft",
+    "[local-stt]   exact match: \"southwest 505\" -\u003e \"SWA505\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"SWA505\" SpokenKey=\"Southwest 505\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=11000 Fixes=2 Approaches=3 AssignedApproach=\"\"",
+    "[local-stt]   fix: \"Nests\" -\u003e \"NESTS\"",
+    "[local-stt]   fix: \"Birmingham-Shuttlesworth\" -\u003e \"KBHM\"",
+    "[local-stt]   approach: \"I L S runway two four\" -\u003e \"I24\"",
+    "[local-stt]   approach: \"r-nav yankee runway two four\" -\u003e \"Y24\"",
+    "[local-stt]   approach: \"r-nav zulu runway two four\" -\u003e \"Z24\"",
+    "[local-stt] command tokens after disregard: 6",
+    "[local-stt]   token[0]: Text=\"just\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"8000\" Type=1 Value=8000",
+    "[local-stt]   token[4]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"210\" Type=1 Value=210",
+    "[local-stt]   position ID: found command keyword \"maintain\" at position 2 - not just position ID",
+    "[local-stt] ParseCommands: 6 tokens",
+    "[local-stt]   no match at token[0]=\"just\", skipping",
+    "[local-stt]   skipping filler word: \"to\"",
+    "[local-stt]   tryMatchTemplate \"maintain_altitude\": cmd=\"A80\" argStr=\"80\" consumed=2",
+    "[local-stt]   tryMatchTemplate \"maintain_speed\": cmd=\"S210\" argStr=\"210\" consumed=4",
+    "[local-stt]   matched command: \"A80\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   tryMatchTemplate \"speed_only\": cmd=\"S210\" argStr=\"210\" consumed=2",
+    "[local-stt]   matched command: \"S210\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[A80 S210] (avgConf=1.00)",
+    "[local-stt] parsed commands: [A80 S210] (conf=1.00)",
+    "[local-stt] validated commands: [A80 S210] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"SWA505 A80 S210\" (conf=1.00, time=0s) ==="
+  ]
+}

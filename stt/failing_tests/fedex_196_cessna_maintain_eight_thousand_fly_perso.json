@@ -1,0 +1,200 @@
+{
+  "time": "2026-01-25T16:50:55.765276195Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Fedex 196, Cessna maintain eight thousand, fly person heading",
+  "whisper_duration_ms": 464.964,
+  "audio_duration_ms": 3712,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 Ti (8238MB)",
+  "callsign": "FDX196",
+  "command": "A80 H",
+  "stt_aircraft": {
+    "Blue Streak 2205": {
+      "Callsign": "JIA2205",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Diode": "DIODE",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 11000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Brickyard 2624": {
+      "Callsign": "RPA2624",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Shims": "SHIMS",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 8000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "ExecJet 6716": {
+      "Callsign": "EJA6716",
+      "AircraftType": "C560",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Diode": "DIODE",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6883,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Fedex 196": {
+      "Callsign": "FDX196",
+      "AircraftType": "B752",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Nulls": "NULLS",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 11000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 2378": {
+      "Callsign": "SWA2378",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 7603,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Fedex 196, Cessna maintain eight thousand, fly person heading\"",
+    "[local-stt] normalized words: [fedex 196 cessna maintain 8 thousand fly person heading]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"fedex\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"196\" Type=1 Value=196",
+    "[local-stt]   token[2]: Text=\"cessna\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"80\" Type=2 Value=80",
+    "[local-stt]   token[5]: Text=\"fly\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"person\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 8 tokens, 5 aircraft",
+    "[local-stt]   exact match: \"fedex 196\" -\u003e \"FDX196\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"FDX196\" SpokenKey=\"Fedex 196\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=11000 Fixes=6 Approaches=3 AssignedApproach=\"ILS Runway 24\"",
+    "[local-stt]   fix: \"Spat\" -\u003e \"SPATT\"",
+    "[local-stt]   fix: \"Hukev\" -\u003e \"HUKEV\"",
+    "[local-stt]   fix: \"Lowga\" -\u003e \"LOWGA\"",
+    "[local-stt]   fix: \"Nulls\" -\u003e \"NULLS\"",
+    "[local-stt]   fix: \"Birmingham-Shuttlesworth\" -\u003e \"KBHM\"",
+    "[local-stt]   fix: \"Vulcan\" -\u003e \"VUZ\"",
+    "[local-stt]   approach: \"I L S runway two four\" -\u003e \"I24\"",
+    "[local-stt]   approach: \"r-nav yankee runway two four\" -\u003e \"Y24\"",
+    "[local-stt]   approach: \"r-nav zulu runway two four\" -\u003e \"Z24\"",
+    "[local-stt] command tokens after disregard: 6",
+    "[local-stt]   token[0]: Text=\"cessna\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"80\" Type=2 Value=80",
+    "[local-stt]   token[3]: Text=\"fly\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"person\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"maintain\" at position 1 - not just position ID",
+    "[local-stt] ParseCommands: 6 tokens",
+    "[local-stt]   no match at token[0]=\"cessna\", skipping",
+    "[local-stt]   tryMatchTemplate \"maintain_altitude\": cmd=\"A80\" argStr=\"80\" consumed=2",
+    "[local-stt]   matched command: \"A80\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   fly_heading: keywords matched but heading extraction failed, returning SAYAGAIN/HEADING",
+    "[local-stt]   tryMatchTemplate \"present_heading\": cmd=\"H\" argStr=\"\" consumed=3",
+    "[local-stt]   matched command: \"H\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt] ParseCommands: result=[A80 H] (avgConf=1.00)",
+    "[local-stt] parsed commands: [A80 H] (conf=1.00)",
+    "[local-stt] validated commands: [A80 H] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"FDX196 A80 H\" (conf=1.00, time=0s) ==="
+  ]
+}

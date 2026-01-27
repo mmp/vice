@@ -1,0 +1,245 @@
+{
+  "time": "2026-01-25T15:54:19.70589689Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Blue Streak 1151, flooding 220",
+  "whisper_duration_ms": 449.091,
+  "audio_duration_ms": 2816,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 Ti (8024MB)",
+  "callsign": "JIA1151",
+  "command": "H220",
+  "stt_aircraft": {
+    "American 297 heavy": {
+      "Callsign": "AAL297",
+      "AircraftType": "B772",
+      "Fixes": {
+        "Cheha": "CHEHA"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BHM8",
+      "STAR": "",
+      "Altitude": 9886,
+      "State": "departure",
+      "ControllerFrequency": "1S",
+      "TrackingController": "C43",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Blue Streak 1151": {
+      "Callsign": "JIA1151",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Diode": "DIODE",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Blue Streak 4964": {
+      "Callsign": "JIA4964",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Blue Streak 6427": {
+      "Callsign": "JIA6427",
+      "AircraftType": "CRJ7",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Nulls": "NULLS",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 10639,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Blue Streak 8465": {
+      "Callsign": "JIA8465",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Cheha": "CHEHA"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BHM8",
+      "STAR": "",
+      "Altitude": 6488,
+      "State": "departure",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 9597": {
+      "Callsign": "DAL9597",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Kiosk": "KIOSK"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 11000,
+      "State": "arrival",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Envoy 9416": {
+      "Callsign": "ENY9416",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Hukev": "HUKEV",
+        "Lowga": "LOWGA",
+        "Spat": "SPATT",
+        "Vulcan": "VUZ"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 24",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "ExecJet 6708": {
+      "Callsign": "EJA6708",
+      "AircraftType": "C680",
+      "Fixes": {
+        "Birmingham-Shuttlesworth": "KBHM",
+        "Diode": "DIODE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two four": "I24",
+        "r-nav yankee runway two four": "Y24",
+        "r-nav zulu runway two four": "Z24"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 11000,
+      "State": "arrival",
+      "ControllerFrequency": "1N",
+      "TrackingController": "1N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Blue Streak 1151, flooding 220\"",
+    "[local-stt] normalized words: [blue streak 1151 fly heading 220]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"blue\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"streak\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"1151\" Type=1 Value=1151",
+    "[local-stt]   token[3]: Text=\"fly\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"220\" Type=1 Value=220",
+    "[local-stt] MatchCallsign: 6 tokens, 8 aircraft",
+    "[local-stt]   exact match: \"blue streak 1151\" -\u003e \"JIA1151\" (consumed 3)",
+    "[local-stt] callsign match: Callsign=\"JIA1151\" SpokenKey=\"Blue Streak 1151\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=6000 Fixes=6 Approaches=3 AssignedApproach=\"ILS Runway 24\"",
+    "[local-stt]   fix: \"Diode\" -\u003e \"DIODE\"",
+    "[local-stt]   fix: \"Birmingham-Shuttlesworth\" -\u003e \"KBHM\"",
+    "[local-stt]   fix: \"Vulcan\" -\u003e \"VUZ\"",
+    "[local-stt]   fix: \"Spat\" -\u003e \"SPATT\"",
+    "[local-stt]   fix: \"Hukev\" -\u003e \"HUKEV\"",
+    "[local-stt]   fix: \"Lowga\" -\u003e \"LOWGA\"",
+    "[local-stt]   approach: \"r-nav zulu runway two four\" -\u003e \"Z24\"",
+    "[local-stt]   approach: \"I L S runway two four\" -\u003e \"I24\"",
+    "[local-stt]   approach: \"r-nav yankee runway two four\" -\u003e \"Y24\"",
+    "[local-stt] command tokens after disregard: 3",
+    "[local-stt]   token[0]: Text=\"fly\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"220\" Type=1 Value=220",
+    "[local-stt]   position ID: found command keyword \"fly\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 3 tokens",
+    "[local-stt]   tryMatchTemplate \"fly_heading\": cmd=\"H220\" argStr=\"220\" consumed=3",
+    "[local-stt]   matched command: \"H220\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt] ParseCommands: result=[H220] (avgConf=1.00)",
+    "[local-stt] parsed commands: [H220] (conf=1.00)",
+    "[local-stt] validated commands: [H220] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"JIA1151 H220\" (conf=1.00, time=1.0029ms) ==="
+  ]
+}

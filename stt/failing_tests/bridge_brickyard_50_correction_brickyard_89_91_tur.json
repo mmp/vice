@@ -1,0 +1,402 @@
+{
+  "time": "2026-01-25T05:23:58.088783683Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Bridge, Brickyard 50, correction, Brickyard 89, 91 turn right heading 240,",
+  "whisper_duration_ms": 451.203,
+  "audio_duration_ms": 4736,
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "callsign": "RPA8991",
+  "command": "R340",
+  "stt_aircraft": {
+    "American 385": {
+      "Callsign": "AAL385",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Logan": "KBOS",
+        "Nimoy": "NIMOY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 1699,
+      "State": "on approach",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Brickyard 8991": {
+      "Callsign": "RPA8991",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Ben": "BENNN",
+        "Cohas": "COHAS",
+        "Logan": "KBOS",
+        "Nimoy": "NIMOY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "El Al 335 heavy": {
+      "Callsign": "ELY335",
+      "AircraftType": "B763",
+      "Fixes": {
+        "Bech": "BECHH",
+        "Ben": "BENNN",
+        "Cohas": "COHAS",
+        "Logan": "KBOS",
+        "Nimoy": "NIMOY",
+        "Pilgrim": "PLGRM",
+        "Scitu": "SCITU",
+        "Water": "WAATR"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "OOSHN5",
+      "Altitude": 11641,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Fedex 700 heavy": {
+      "Callsign": "FDX700",
+      "AircraftType": "A306",
+      "Fixes": {
+        "Bech": "BECHH",
+        "Ben": "BENNN",
+        "Brody": "BRODI",
+        "Cohas": "COHAS",
+        "Harris": "HRRIS",
+        "Logan": "KBOS",
+        "Nimoy": "NIMOY",
+        "Scitu": "SCITU",
+        "Spysid": "SPYSD"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 8583,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue 92": {
+      "Callsign": "JBU92",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Ben": "BENNN",
+        "Berei": "BEREI",
+        "Bog": "BBOGG",
+        "Cohas": "COHAS",
+        "Logan": "KBOS",
+        "Nimoy": "NIMOY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 7316,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Lufthansa 78Q heavy": {
+      "Callsign": "DLH78Q",
+      "AircraftType": "B748",
+      "Fixes": {
+        "Bech": "BECHH",
+        "Ben": "BENNN",
+        "Cohas": "COHAS",
+        "Logan": "KBOS",
+        "Nimoy": "NIMOY",
+        "Pilgrim": "PLGRM",
+        "Scitu": "SCITU",
+        "Water": "WAATR"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "OOSHN5",
+      "Altitude": 11428,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Scandinavian 7 heavy": {
+      "Callsign": "SAS7",
+      "AircraftType": "A333",
+      "Fixes": {
+        "Ben": "BENNN",
+        "Cohas": "COHAS",
+        "Logan": "KBOS",
+        "Nimoy": "NIMOY",
+        "Scitu": "SCITU"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "OOSHN5",
+      "Altitude": 5974,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Shamrock 8TH heavy": {
+      "Callsign": "EIN8TH",
+      "AircraftType": "A332",
+      "Fixes": {
+        "Ben": "BENNN",
+        "Cohas": "COHAS",
+        "Logan": "KBOS",
+        "Nimoy": "NIMOY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "OOSHN5",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 2768": {
+      "Callsign": "SWA2768",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Ben": "BENNN",
+        "Cohas": "COHAS",
+        "Logan": "KBOS",
+        "Nimoy": "NIMOY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 3042,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 296": {
+      "Callsign": "SWA296",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Bech": "BECHH",
+        "Ben": "BENNN",
+        "Brody": "BRODI",
+        "Cohas": "COHAS",
+        "Logan": "KBOS",
+        "Nimoy": "NIMOY",
+        "Scitu": "SCITU"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 6193,
+      "State": "arrival",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 3088": {
+      "Callsign": "SWA3088",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Anslie": "ANSLY",
+        "Ben": "BENNN",
+        "Berei": "BEREI",
+        "Bog": "BBOGG",
+        "Cohas": "COHAS",
+        "Logan": "KBOS",
+        "Nimoy": "NIMOY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 9679,
+      "State": "arrival",
+      "ControllerFrequency": "1M",
+      "TrackingController": "1M",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "United 50": {
+      "Callsign": "UAL50",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Cohas": "COHAS",
+        "Logan": "KBOS",
+        "Nimoy": "NIMOY"
+      },
+      "CandidateApproaches": {
+        "I L S runway three three left": "I3L",
+        "r-nav x-ray runway three three left": "X3L",
+        "r-nav zulu runway three three left": "Z3L"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 33L",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 3006,
+      "State": "on approach",
+      "ControllerFrequency": "1R",
+      "TrackingController": "1R",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Bridge, Brickyard 50, correction, Brickyard 89, 91 turn right heading 240,\"",
+    "[local-stt] normalized words: [bridge brickyard 50 correction brickyard 89 91 turn right heading 240]",
+    "[local-stt] tokens: 11",
+    "[local-stt]   token[0]: Text=\"bridge\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"brickyard\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"50\" Type=1 Value=50",
+    "[local-stt]   token[3]: Text=\"correction\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"brickyard\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"89\" Type=1 Value=89",
+    "[local-stt]   token[6]: Text=\"91\" Type=1 Value=91",
+    "[local-stt]   token[7]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"240\" Type=1 Value=240",
+    "[local-stt] MatchCallsign: 11 tokens, 12 aircraft",
+    "[local-stt]   candidate \"Lufthansa 78Q heavy\" (ICAO=\"DLH78Q\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JetBlue 92\" (ICAO=\"JBU92\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American 385\" (ICAO=\"AAL385\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"El Al 335 heavy\" (ICAO=\"ELY335\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Brickyard 8991\" (ICAO=\"RPA8991\"): score=0.73 consumed=1",
+    "[local-stt]   candidate \"Southwest 3088\" (ICAO=\"SWA3088\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest 2768\" (ICAO=\"SWA2768\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Fedex 700 heavy\" (ICAO=\"FDX700\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"United 50\" (ICAO=\"UAL50\"): score=1.00 consumed=3",
+    "[local-stt]   candidate \"Scandinavian 7 heavy\" (ICAO=\"SAS7\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Shamrock 8TH heavy\" (ICAO=\"EIN8TH\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest 296\" (ICAO=\"SWA296\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Brickyard 8991\" at pos 1: score=0.80 (adjusted=0.72) consumed=1",
+    "[local-stt]   candidate \"United 50\" at pos 1: score=1.00 (adjusted=0.90) consumed=2",
+    "[local-stt]   candidate \"United 50\" at pos 2: score=1.00 (adjusted=0.80) consumed=1",
+    "[local-stt]   candidate \"Brickyard 8991\" at pos 3: score=1.00 (adjusted=0.70) consumed=4",
+    "[local-stt]   accepted: \"UAL50\" (conf=1.00, consumed=3, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"UAL50\" SpokenKey=\"United 50\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"on approach\" Altitude=3006 Fixes=3 Approaches=3 AssignedApproach=\"ILS Runway 33L\"",
+    "[local-stt]   fix: \"Cohas\" -\u003e \"COHAS\"",
+    "[local-stt]   fix: \"Nimoy\" -\u003e \"NIMOY\"",
+    "[local-stt]   fix: \"Logan\" -\u003e \"KBOS\"",
+    "[local-stt]   approach: \"I L S runway three three left\" -\u003e \"I3L\"",
+    "[local-stt]   approach: \"r-nav zulu runway three three left\" -\u003e \"Z3L\"",
+    "[local-stt]   approach: \"r-nav x-ray runway three three left\" -\u003e \"X3L\"",
+    "[local-stt] command tokens after disregard: 7",
+    "[local-stt]   token[0]: Text=\"brickyard\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"89\" Type=1 Value=89",
+    "[local-stt]   token[2]: Text=\"91\" Type=1 Value=91",
+    "[local-stt]   token[3]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"240\" Type=1 Value=240",
+    "[local-stt]   position ID: found command keyword \"turn\" at position 3 - not just position ID",
+    "[local-stt] ParseCommands: 7 tokens",
+    "[local-stt]   no match at token[0]=\"brickyard\", skipping",
+    "[local-stt]   no match at token[1]=\"89\", skipping",
+    "[local-stt]   no match at token[2]=\"91\", skipping",
+    "[local-stt]   tryMatchTemplate \"turn_right_heading\": cmd=\"R240\" argStr=\"240\" consumed=4",
+    "[local-stt]   tryMatchTemplate \"turn_right_only\": cmd=\"R240\" argStr=\"240\" consumed=4",
+    "[local-stt]   matched command: \"R240\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[R240] (avgConf=1.00)",
+    "[local-stt] parsed commands: [R240] (conf=1.00)",
+    "[local-stt] validated commands: [R240] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"UAL50 R240\" (conf=1.00, time=542.25µs) ==="
+  ]
+}

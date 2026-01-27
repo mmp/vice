@@ -14,7 +14,7 @@
   "audio_duration_ms": 6144,
   "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
   "callsign": "UAL4687",
-  "command": "D30 R040",
+  "command": "D30 R240",
   "stt_aircraft": {
     "JetBlue 3739": {
       "Callsign": "JBU3739",

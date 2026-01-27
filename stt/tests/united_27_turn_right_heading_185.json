@@ -1,0 +1,232 @@
+{
+  "time": "2026-01-25T19:49:30.797344191Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "United 27 turn right heading 185.",
+  "whisper_duration_ms": 401.112,
+  "audio_duration_ms": 2048,
+  "processor": "GPU: AMD Radeon RX 7600 (8176MB)",
+  "callsign": "UAL27",
+  "command": "R185",
+  "stt_aircraft": {
+    "Delta 34": {
+      "Callsign": "DAL34",
+      "AircraftType": "B738",
+      "Fixes": {
+        "A jay": "AJAAY",
+        "Atlanta": "KATL",
+        "Bamboo": "BAMBU",
+        "Cloud": "KLOWD",
+        "Hainz": "HAINZ",
+        "Hartsfield": "KATL",
+        "Keavy": "KEAVY",
+        "Kimmy": "KYMMY",
+        "Swept": "SWEPT",
+        "Zelow": "ZELOW"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 26R",
+      "SID": "",
+      "STAR": "CHPPR1",
+      "Altitude": 10080,
+      "State": "arrival",
+      "ControllerFrequency": "1O",
+      "TrackingController": "1O",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 36": {
+      "Callsign": "DAL36",
+      "AircraftType": "B739",
+      "Fixes": {
+        "A jay": "AJAAY",
+        "Atlanta": "KATL",
+        "Bamboo": "BAMBU",
+        "Hainz": "HAINZ",
+        "Hartsfield": "KATL",
+        "Keavy": "KEAVY",
+        "Kimmy": "KYMMY",
+        "Zelow": "ZELOW"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 26R",
+      "SID": "",
+      "STAR": "GLAVN1",
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "1O",
+      "TrackingController": "1O",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 48": {
+      "Callsign": "DAL48",
+      "AircraftType": "A321",
+      "Fixes": {
+        "A jay": "AJAAY",
+        "Atlanta": "KATL",
+        "Bamboo": "BAMBU",
+        "Hainz": "HAINZ",
+        "Hartsfield": "KATL",
+        "Volts": "VOLTS",
+        "Zelow": "ZELOW"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 26R",
+      "SID": "",
+      "STAR": "ONDRE1",
+      "Altitude": 6017,
+      "State": "arrival",
+      "ControllerFrequency": "1O",
+      "TrackingController": "1O",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Frontier Flight 391": {
+      "Callsign": "FFT391",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Graham": "GRHAM",
+        "Hartsfield": "KATL",
+        "Jubba": "JUBBA",
+        "Poobah": "POOBA",
+        "Purrman": "PRMAN",
+        "Wonzer": "WONZR"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 28",
+      "SID": "",
+      "STAR": "JJEDI3",
+      "Altitude": 6429,
+      "State": "arrival",
+      "ControllerFrequency": "1O",
+      "TrackingController": "1O",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Frontier Flight 4761": {
+      "Callsign": "FFT4761",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Hartsfield": "KATL",
+        "Hit": "HITTT",
+        "Jubba": "JUBBA",
+        "Purrman": "PRMAN",
+        "Wonzer": "WONZR",
+        "Yuri": "YURII"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 28",
+      "SID": "",
+      "STAR": "HOBTT2",
+      "Altitude": 4988,
+      "State": "arrival",
+      "ControllerFrequency": "1O",
+      "TrackingController": "1O",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "United 27": {
+      "Callsign": "UAL27",
+      "AircraftType": "A319",
+      "Fixes": {
+        "A jay": "AJAAY",
+        "Atlanta": "KATL",
+        "Bamboo": "BAMBU",
+        "Hainz": "HAINZ",
+        "Hartsfield": "KATL",
+        "Keavy": "KEAVY",
+        "Zelow": "ZELOW"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 26R",
+      "SID": "",
+      "STAR": "CHPPR1",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1O",
+      "TrackingController": "1O",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"United 27 turn right heading 185.\"",
+    "[local-stt] normalized words: [united 27 turn right heading 185]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"united\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"27\" Type=1 Value=27",
+    "[local-stt]   token[2]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"185\" Type=1 Value=185",
+    "[local-stt] MatchCallsign: 6 tokens, 6 aircraft",
+    "[local-stt]   exact match: \"united 27\" -\u003e \"UAL27\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"UAL27\" SpokenKey=\"United 27\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=5000 Fixes=7 Approaches=3 AssignedApproach=\"ILS Runway 26R\"",
+    "[local-stt]   fix: \"Keavy\" -\u003e \"KEAVY\"",
+    "[local-stt]   fix: \"Atlanta\" -\u003e \"KATL\"",
+    "[local-stt]   fix: \"Hartsfield\" -\u003e \"KATL\"",
+    "[local-stt]   fix: \"Zelow\" -\u003e \"ZELOW\"",
+    "[local-stt]   fix: \"Hainz\" -\u003e \"HAINZ\"",
+    "[local-stt]   fix: \"Bamboo\" -\u003e \"BAMBU\"",
+    "[local-stt]   fix: \"A jay\" -\u003e \"AJAAY\"",
+    "[local-stt]   approach: \"I L S runway two six right\" -\u003e \"I6R\"",
+    "[local-stt]   approach: \"I L S runway two seven left\" -\u003e \"I7L\"",
+    "[local-stt]   approach: \"I L S runway two eight\" -\u003e \"I28\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"185\" Type=1 Value=185",
+    "[local-stt]   position ID: found command keyword \"turn\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   tryMatchTemplate \"turn_right_heading\": cmd=\"R185\" argStr=\"185\" consumed=4",
+    "[local-stt]   tryMatchTemplate \"turn_right_only\": cmd=\"R185\" argStr=\"185\" consumed=4",
+    "[local-stt]   matched command: \"R185\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[R185] (avgConf=1.00)",
+    "[local-stt] parsed commands: [R185] (conf=1.00)",
+    "[local-stt] validated commands: [R185] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"UAL27 R185\" (conf=1.00, time=0s) ==="
+  ]
+}

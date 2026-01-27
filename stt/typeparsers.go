@@ -99,6 +99,13 @@ func (p *altitudeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 				return t.Value / 100, i - pos + 1, ""
 			}
 
+			// Handle 3-digit values that are likely thousands with decimal artifacts
+			// e.g., "9.00" → 900 means 9000 feet, "5.00" → 500 means 5000 feet
+			// These are outside the ambiguous speed range (100-400)
+			if t.Value >= 500 && t.Value <= 900 && t.Value%100 == 0 {
+				return t.Value / 10, i - pos + 1, ""
+			}
+
 			// STT adds extra zeros
 			if t.Value >= 100000 && t.Value <= 6000000 && t.Value%10000 == 0 {
 				corrected := t.Value / 100
@@ -136,6 +143,17 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 	for i := pos; i < len(tokens) && i < pos+4; i++ {
 		t := tokens[i]
 
+		// Handle "to N" pattern where "to" is garbled "two" (2).
+		// E.g., "heading to 70" should be "heading 270".
+		if t.Type == TokenWord && strings.ToLower(t.Text) == "to" && i+1 < len(tokens) {
+			if next := tokens[i+1]; next.Type == TokenNumber && next.Value >= 10 && next.Value <= 99 {
+				hdg := 200 + next.Value
+				if hdg >= 1 && hdg <= 360 {
+					return hdg, i - pos + 2, ""
+				}
+			}
+		}
+
 		// Handle 4-digit values where first 3 digits form valid heading
 		if t.Type == TokenNumber && t.Value > 360 && t.Value < 10000 {
 			hdg := t.Value / 10
@@ -163,7 +181,11 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 			hasLeadingZero := len(text) > 0 && text[0] == '0'
 
 			if hasLeadingZero {
-				if hdg < 10 {
+				// Rewrite single-digit headings to add trailing zero, with exception:
+				// For 3-digit inputs like "005" that are multiples of 5, leave as-is
+				// (e.g., "001" -> 010 likely transcription error, but "005" is valid heading 5).
+				// For 2-digit like "05", always multiply by 10 (heading 050 - common shorthand).
+				if hdg < 10 && (len(text) < 3 || hdg%5 != 0) {
 					hdg *= 10
 				}
 			} else if len(text) == 2 && hdg >= 10 && hdg <= 36 && hdg%10 != 0 {
@@ -209,6 +231,20 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 				corrected := t.Value / 10
 				if corrected >= 100 && corrected <= 400 {
 					return corrected, i - pos + 1, ""
+				}
+			}
+
+			// Handle 2-digit speeds followed by a trailing zero token
+			// STT often splits "one niner zero" into separate tokens like "19" "00"
+			// When the next token is 0, combine them: 19 + 0 → 190
+			// Speeds are almost always multiples of 10 knots
+			if t.Value >= 10 && t.Value <= 40 && i+1 < len(tokens) {
+				next := tokens[i+1]
+				if next.Type == TokenNumber && next.Value == 0 {
+					combined := t.Value * 10
+					if combined >= 100 && combined <= 400 {
+						return combined, i - pos + 2, ""
+					}
 				}
 			}
 
@@ -275,7 +311,8 @@ func (p *approachParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 	}
 
 	// Delegate to existing extractApproach function
-	appr, _, consumed := extractApproach(tokens[pos:], ac.CandidateApproaches)
+	// Pass the assigned approach so we prefer it when there are ties
+	appr, _, consumed := extractApproach(tokens[pos:], ac.CandidateApproaches, ac.AssignedApproach)
 	if consumed == 0 {
 		return nil, 0, "APPROACH"
 	}

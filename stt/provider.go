@@ -134,6 +134,20 @@ func (p *Transcriber) decodeInternal(
 			return "", nil
 		}
 
+		// Check for "not for you" correction pattern
+		// e.g., "479, that was not for you, Virgin 47 Foxtrot, expect..."
+		// If found, re-match callsign from the tokens after the correction phrase
+		if tokensAfterCorrection, found := detectNotForYouCorrection(remainingTokens); found {
+			logLocalStt("detected 'not for you' correction, re-matching callsign")
+			newMatch, newRemaining := MatchCallsign(tokensAfterCorrection, aircraft)
+			if newMatch.Callsign != "" {
+				logLocalStt("new callsign match: Callsign=%q SpokenKey=%q Conf=%.2f Consumed=%d",
+					newMatch.Callsign, newMatch.SpokenKey, newMatch.Confidence, newMatch.Consumed)
+				callsignMatch = newMatch
+				remainingTokens = newRemaining
+			}
+		}
+
 		callsign = callsignMatch.Callsign
 		addressingForm = callsignMatch.AddressingForm
 		callsignConfidence = callsignMatch.Confidence
@@ -152,6 +166,16 @@ func (p *Transcriber) decodeInternal(
 	}
 	for spokenName, apprID := range ac.CandidateApproaches {
 		logLocalStt("  approach: %q -> %q", spokenName, apprID)
+	}
+
+	// Check if "disregard" is the only command (meaning "ignore this transmission")
+	// e.g., "Blue Streak 4193, disregard." should return empty, not AGAIN
+	if isDisregardOnly(commandTokens) {
+		logLocalStt("detected disregard-only command, returning empty")
+		elapsed := time.Since(start)
+		logLocalStt("=== DecodeTranscript END: \"\" (disregard, time=%s) ===", elapsed)
+		p.logInfo("local STT: %q -> \"\" (disregard, time=%s)", transcript, elapsed)
+		return "", nil
 	}
 
 	// Handle "disregard" or "correction" in remaining tokens
@@ -311,6 +335,7 @@ func (p *Transcriber) BuildAircraftContext(
 		// Build candidate approaches for arrivals
 		if trk.IsArrival() && trk.ArrivalAirport != "" {
 			sttAc.CandidateApproaches = make(map[string]string)
+			sttAc.ApproachFixes = make(map[string]map[string]string)
 			if trk.Approach != "" {
 				sttAc.AssignedApproach = trk.Approach
 			}
@@ -325,6 +350,21 @@ func (p *Transcriber) BuildAircraftContext(
 					for code, appr := range ap.Approaches {
 						if appr.Runway == ar.Runway {
 							sttAc.CandidateApproaches[av.GetApproachTelephony(appr.FullName)] = code
+
+							// Build fixes map for this approach
+							approachFixes := make(map[string]string)
+							for _, wps := range appr.Waypoints {
+								for _, wp := range wps {
+									fix := wp.Fix
+									// Skip internal fixes (start with underscore) and invalid lengths
+									if len(fix) >= 3 && len(fix) <= 5 && fix[0] != '_' {
+										approachFixes[av.GetFixTelephony(fix)] = fix
+									}
+								}
+							}
+							if len(approachFixes) > 0 {
+								sttAc.ApproachFixes[code] = approachFixes
+							}
 						}
 					}
 					// Build LAHSORunways for this arrival runway (avoid duplicates)
@@ -441,16 +481,107 @@ func (p *Transcriber) ParseTranscriptDetailed(
 	return result
 }
 
+// detectNotForYouCorrection detects correction phrases like "that was not for you"
+// which indicate the previous callsign was addressed by mistake.
+// Returns the tokens after the correction phrase and true if found.
+func detectNotForYouCorrection(tokens []Token) ([]Token, bool) {
+	// Look for patterns like:
+	// "that was not for you" or "not for you" at the start of tokens
+	// These phrases mean the controller is correcting a mistaken callsign
+	for i := 0; i < len(tokens) && i < 6; i++ {
+		// Check for "not for you" pattern starting at position i
+		if i+2 < len(tokens) {
+			t0 := strings.ToLower(tokens[i].Text)
+			t1 := strings.ToLower(tokens[i+1].Text)
+			t2 := strings.ToLower(tokens[i+2].Text)
+			if t0 == "not" && t1 == "for" && t2 == "you" {
+				// Return tokens after "not for you"
+				return tokens[i+3:], true
+			}
+		}
+	}
+	return tokens, false
+}
+
 // applyDisregard handles "disregard" or "correction" in tokens.
-// Discards everything before the last disregard keyword.
+// For "disregard": discards everything before it.
+// For "correction": if what follows is a complete command (contains command keywords),
+// discard everything before. If it's just numbers (frequency correction), only discard
+// the preceding numbers to preserve command keywords like "contact".
 func applyDisregard(tokens []Token) []Token {
 	for i := len(tokens) - 1; i >= 0; i-- {
 		text := strings.ToLower(tokens[i].Text)
-		if text == "disregard" || text == "correction" {
+		if text == "disregard" {
 			return tokens[i+1:]
+		}
+		if text == "correction" {
+			// Check if tokens after "correction" contain command keywords
+			// If so, it's a full command replacement - discard everything before
+			afterCorrection := tokens[i+1:]
+			hasCommandKeyword := false
+			for j, t := range afterCorrection {
+				w := strings.ToLower(t.Text)
+				// Skip "left"/"right" if they follow a number (runway designation, not command)
+				if (w == "left" || w == "right") && j > 0 && afterCorrection[j-1].Type == TokenNumber {
+					continue
+				}
+				if isCommandKeyword(w) {
+					hasCommandKeyword = true
+					break
+				}
+			}
+			if hasCommandKeyword {
+				// Full command correction - discard everything before
+				return afterCorrection
+			}
+
+			// Just numbers after correction (e.g., frequency) - only discard preceding numbers
+			// e.g., "contact departure 12, correction 126.8"
+			numStart := i
+			for j := i - 1; j >= 0; j-- {
+				if tokens[j].Type == TokenNumber || strings.ToLower(tokens[j].Text) == "point" {
+					numStart = j
+				} else {
+					break
+				}
+			}
+			// Keep tokens before the corrected numbers, add tokens after "correction"
+			return append(tokens[:numStart], afterCorrection...)
 		}
 	}
 	return tokens
+}
+
+// isCommandKeyword returns true if the word is a command keyword that indicates
+// a full command is being spoken (not just a number/frequency correction).
+func isCommandKeyword(w string) bool {
+	commandKeywords := map[string]bool{
+		"turn": true, "heading": true, "left": true, "right": true,
+		"climb": true, "descend": true, "maintain": true,
+		"speed": true, "reduce": true, "increase": true,
+		"expect": true, "cleared": true, "direct": true,
+		"contact": true, "squawk": true, "ident": true,
+		"hold": true, "intercept": true, "localizer": true,
+		"approach": true, "ils": true, "rnav": true, "visual": true,
+	}
+	return commandKeywords[w]
+}
+
+// isDisregardOnly returns true if the tokens consist only of "disregard"
+// (possibly with filler words). This indicates the controller is telling
+// the pilot to ignore the previous transmission, and no command should be sent.
+func isDisregardOnly(tokens []Token) bool {
+	hasDisregard := false
+	for _, t := range tokens {
+		text := strings.ToLower(t.Text)
+		if text == "disregard" {
+			hasDisregard = true
+		} else if !IsFillerWord(text) {
+			// Found a non-filler, non-disregard token
+			return false
+		}
+	}
+	return hasDisregard
 }
 
 // isAcknowledgmentOnly returns true if the tokens contain only acknowledgment

@@ -1,0 +1,337 @@
+{
+  "time": "2026-01-25T19:54:36.322683465Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:673:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Delta 29, spike the ILS 27 left.",
+  "whisper_duration_ms": 268.359,
+  "audio_duration_ms": 2176,
+  "processor": "GPU: NVIDIA GeForce RTX 4080 SUPER (16045MB)",
+  "callsign": "DAL29",
+  "command": "EI7L",
+  "stt_aircraft": {
+    "Air Canada 4441": {
+      "Callsign": "ACA4441",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Hartsfield": "KATL",
+        "Ondre": "ONDRE",
+        "Smelly": "SMELY"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "ONDRE1",
+      "Altitude": 13688,
+      "State": "arrival",
+      "ControllerFrequency": "1L",
+      "TrackingController": "1L",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 1654": {
+      "Callsign": "DAL1654",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Hartsfield": "KATL"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CHPPR1",
+      "Altitude": 13000,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 1788 heavy": {
+      "Callsign": "DAL1788",
+      "AircraftType": "B764",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Harry": "HAARY",
+        "Hartsfield": "KATL"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "OZZZI1",
+      "Altitude": 12073,
+      "State": "arrival",
+      "ControllerFrequency": "1L",
+      "TrackingController": "1L",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 29 heavy": {
+      "Callsign": "DAL29",
+      "AircraftType": "A332",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Calla": "CALLA",
+        "Depot": "DEPOT",
+        "Grumpy": "GRMPI",
+        "Harry": "HAARY",
+        "Hartsfield": "KATL",
+        "Posey": "POSEY",
+        "Romm": "ROMMM",
+        "Sejay": "SEJAY",
+        "Slava": "SLVAA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 27L",
+      "SID": "",
+      "STAR": "OZZZI1",
+      "Altitude": 10075,
+      "State": "arrival",
+      "ControllerFrequency": "1L",
+      "TrackingController": "1L",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 9135": {
+      "Callsign": "DAL9135",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Hartsfield": "KATL",
+        "Southern": "STHRN"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "GLAVN1",
+      "Altitude": 14000,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Frontier Flight 926": {
+      "Callsign": "FFT926",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Hartsfield": "KATL",
+        "March": "MRCHH"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CHPPR1",
+      "Altitude": 13000,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue 50": {
+      "Callsign": "JBU50",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Harry": "HAARY",
+        "Hartsfield": "KATL",
+        "Ozzi": "OZZZI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "OZZZI1",
+      "Altitude": 14634,
+      "State": "arrival",
+      "ControllerFrequency": "1L",
+      "TrackingController": "1L",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 479": {
+      "Callsign": "SWA479",
+      "AircraftType": "B738",
+      "Fixes": {
+        "A jay": "AJAAY",
+        "Atlanta": "KATL",
+        "Bamboo": "BAMBU",
+        "Cloud": "KLOWD",
+        "Hainz": "HAINZ",
+        "Hartsfield": "KATL",
+        "Hog": "HOGGG",
+        "Keavy": "KEAVY",
+        "Kimmy": "KYMMY",
+        "Rain": "RAIIN",
+        "Swept": "SWEPT",
+        "Zelow": "ZELOW"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 26R",
+      "SID": "",
+      "STAR": "GLAVN1",
+      "Altitude": 14000,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 7950": {
+      "Callsign": "SWA7950",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Hartsfield": "KATL"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CHPPR1",
+      "Altitude": 13000,
+      "State": "arrival",
+      "ControllerFrequency": "1D",
+      "TrackingController": "1D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Virgin 47F heavy": {
+      "Callsign": "VIR47F",
+      "AircraftType": "A35K",
+      "Fixes": {
+        "Atlanta": "KATL",
+        "Depot": "DEPOT",
+        "Grumpy": "GRMPI",
+        "Hartsfield": "KATL",
+        "Romm": "ROMMM",
+        "Sejay": "SEJAY",
+        "Slava": "SLVAA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": null,
+      "AssignedApproach": "ILS Runway 27L",
+      "SID": "",
+      "STAR": "OZZZI1",
+      "Altitude": 8137,
+      "State": "on approach",
+      "ControllerFrequency": "1L",
+      "TrackingController": "1L",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Delta 29, spike the ILS 27 left.\"",
+    "[local-stt] normalized words: [delta 29 spike the ils 27 left]",
+    "[local-stt] tokens: 7",
+    "[local-stt]   token[0]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"29\" Type=1 Value=29",
+    "[local-stt]   token[2]: Text=\"spike\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"27\" Type=1 Value=27",
+    "[local-stt]   token[6]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 7 tokens, 10 aircraft",
+    "[local-stt]   candidate \"Frontier Flight 926\" (ICAO=\"FFT926\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JetBlue 50\" (ICAO=\"JBU50\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest 479\" (ICAO=\"SWA479\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Delta 1654\" (ICAO=\"DAL1654\"): score=0.80 consumed=1",
+    "[local-stt]   candidate \"Delta 1788 heavy\" (ICAO=\"DAL1788\"): score=0.80 consumed=1",
+    "[local-stt]   candidate \"Delta 9135\" (ICAO=\"DAL9135\"): score=0.80 consumed=1",
+    "[local-stt]   candidate \"Air Canada 4441\" (ICAO=\"ACA4441\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Virgin 47F heavy\" (ICAO=\"VIR47F\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Delta 29 heavy\" (ICAO=\"DAL29\"): score=1.10 consumed=2",
+    "[local-stt]   candidate \"Southwest 7950\" (ICAO=\"SWA7950\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Delta 29 heavy\" at pos 1: score=1.00 (adjusted=0.90) consumed=1",
+    "[local-stt]   accepted: \"DAL29\" (conf=1.10, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"DAL29\" SpokenKey=\"Delta 29 heavy\" Conf=1.10 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=10075 Fixes=10 Approaches=3 AssignedApproach=\"ILS Runway 27L\"",
+    "[local-stt]   fix: \"Harry\" -\u003e \"HAARY\"",
+    "[local-stt]   fix: \"Calla\" -\u003e \"CALLA\"",
+    "[local-stt]   fix: \"Posey\" -\u003e \"POSEY\"",
+    "[local-stt]   fix: \"Slava\" -\u003e \"SLVAA\"",
+    "[local-stt]   fix: \"Grumpy\" -\u003e \"GRMPI\"",
+    "[local-stt]   fix: \"Romm\" -\u003e \"ROMMM\"",
+    "[local-stt]   fix: \"Atlanta\" -\u003e \"KATL\"",
+    "[local-stt]   fix: \"Hartsfield\" -\u003e \"KATL\"",
+    "[local-stt]   fix: \"Sejay\" -\u003e \"SEJAY\"",
+    "[local-stt]   fix: \"Depot\" -\u003e \"DEPOT\"",
+    "[local-stt]   approach: \"I L S runway two six right\" -\u003e \"I6R\"",
+    "[local-stt]   approach: \"I L S runway two seven left\" -\u003e \"I7L\"",
+    "[local-stt]   approach: \"I L S runway two eight\" -\u003e \"I28\"",
+    "[local-stt] command tokens after disregard: 5",
+    "[local-stt]   token[0]: Text=\"spike\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"27\" Type=1 Value=27",
+    "[local-stt]   token[4]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 5 tokens",
+    "[local-stt]   no match at token[0]=\"spike\", skipping",
+    "[local-stt]   skipping filler word: \"the\"",
+    "[local-stt]   no match at token[2]=\"ils\", skipping",
+    "[local-stt]   no match at token[3]=\"27\", skipping",
+    "[local-stt]   no match at token[4]=\"left\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"DAL29 AGAIN\" (conf=1.10, time=0s) ==="
+  ]
+}
