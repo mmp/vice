@@ -38,6 +38,7 @@ type glfwPlatform struct {
 	mouseJustPressed       [3]bool
 	mouseCursors           [imgui.MouseCursorCOUNT]*glfw.Cursor
 	currentCursor          *glfw.Cursor
+	cursorOverride         *glfw.Cursor
 	inputCharacters        string
 	anyEvents              bool
 	lastMouseX, lastMouseY float64
@@ -320,6 +321,9 @@ func (g *glfwPlatform) NewFrame() {
 	} else {
 		// Show OS mouse cursor
 		cursor := g.mouseCursors[imgui_cursor]
+		if g.cursorOverride != nil {
+			cursor = g.cursorOverride
+		}
 		if cursor == nil {
 			cursor = g.mouseCursors[imgui.MouseCursorArrow]
 		}

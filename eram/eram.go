@@ -67,6 +67,15 @@ type ERAMPane struct {
 	videoMapLabel   string               `json:"-"`
 	currentFacility string               `json:"-"`
 
+	eramCursorSelection string           `json:"-"`
+	eramCursorPath      string           `json:"-"`
+	eramCursor          *platform.Cursor `json:"-"`
+	eramCursorLoadErr   string           `json:"-"`
+
+	cursorOverrideSelection string    `json:"-"`
+	cursorOverrideUntil     time.Time `json:"-"`
+	cursorRollbackSelection string    `json:"-"` // Cursor to use after temporary cursor expires
+
 	InboundPointOuts  map[string]string `json:"-"`
 	OutboundPointOuts map[string]string `json:"-"`
 
@@ -217,8 +226,77 @@ func init() {
 
 func (ep *ERAMPane) CanTakeKeyboardFocus() bool { return true }
 
+func (ep *ERAMPane) updateCursorOverride(ctx *panes.Context) {
+	if ep.prefSet == nil {
+		return
+	}
+
+	desiredCursor := ""
+	if ep.cursorOverrideSelection != "" {
+		if !ep.cursorOverrideUntil.IsZero() && ctx.Now.After(ep.cursorOverrideUntil) {
+			// Temporary cursor expired, check if we should rollback
+			if ep.cursorRollbackSelection != "" {
+				ep.cursorOverrideSelection = ep.cursorRollbackSelection
+				ep.cursorOverrideUntil = time.Time{} // Keep indefinitely until changed
+				ep.cursorRollbackSelection = ""      // Clear rollback after using it
+				desiredCursor = ep.cursorOverrideSelection
+			} else {
+				ep.cursorOverrideSelection = ""
+				ep.cursorOverrideUntil = time.Time{}
+			}
+		} else {
+			desiredCursor = ep.cursorOverrideSelection
+		}
+	}
+
+	if desiredCursor == "" {
+		cursorSize := ep.currentPrefs().CursorSize
+		if cursorSize > 0 {
+			desiredCursor = fmt.Sprintf("Eram%d", cursorSize)
+		}
+	}
+
+	if desiredCursor == "" {
+		ep.eramCursorSelection = ""
+		ep.eramCursorPath = ""
+		ep.eramCursor = nil
+		ep.eramCursorLoadErr = ""
+		return
+	}
+
+	if desiredCursor != ep.eramCursorSelection {
+		ep.eramCursorSelection = desiredCursor
+		ep.eramCursorPath = ""
+		ep.eramCursor = nil
+		ep.eramCursorLoadErr = ""
+		resolvedPath, err := ep.resolveCursorPath(desiredCursor)
+		if err != nil {
+			ep.eramCursorLoadErr = err.Error()
+			if ctx.Lg != nil {
+				ctx.Lg.Warnf("ERAM cursor %q: %v", desiredCursor, err)
+			}
+			return
+		}
+		cursor, err := ctx.Platform.LoadCursorFromFile(resolvedPath)
+		if err != nil {
+			ep.eramCursorLoadErr = err.Error()
+			if ctx.Lg != nil {
+				ctx.Lg.Warnf("ERAM cursor %q: %v", resolvedPath, err)
+			}
+			return
+		}
+		ep.eramCursorPath = resolvedPath
+		ep.eramCursor = cursor
+	}
+
+	if ctx.Mouse != nil && ep.eramCursor != nil {
+		ctx.Platform.SetCursorOverride(ep.eramCursor)
+	}
+}
+
 func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.processEvents(ctx)
+	ep.updateCursorOverride(ctx)
 
 	ps := ep.currentPrefs()
 
@@ -368,6 +446,9 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
 	}
 	if ep.prefSet.Current.clockPosition == ([2]float32{}) {
 		ep.prefSet.Current.clockPosition = def.clockPosition
+	}
+	if ep.prefSet.Current.CursorSize == 0 {
+		ep.prefSet.Current.CursorSize = def.CursorSize
 	}
 	// Fill in CRR defaults if this preference set was created before CRR existed
 	if ep.prefSet.Current.CRR.ColorBright == nil {
@@ -557,7 +638,10 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 					ep.tearoffIsReposition = false
 					ctx.Platform.EndCaptureMouse()
 				}
-				ep.deleteTearoffMode = false
+				if ep.deleteTearoffMode {
+					ep.deleteTearoffMode = false
+					ep.ClearTemporaryCursor()
+				}
 				break
 			}
 			// Clear the input

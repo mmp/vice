@@ -100,6 +100,14 @@ type Platform interface {
 	// and which keys are currently down.
 	GetKeyboard() *KeyboardState
 
+	// Cursor overrides. LoadCursorFromFile parses a .cur file and creates a
+	// cursor handle that can be set as the active cursor via SetCursorOverride.
+	LoadCursorFromFile(path string) (*Cursor, error)
+	// SetCursorOverride replaces the OS cursor until cleared.
+	SetCursorOverride(cursor *Cursor)
+	// ClearCursorOverride removes any cursor override.
+	ClearCursorOverride()
+
 	// AddPCM registers an audio effect encoded via pulse code modulation.
 	// It is assumed to be one channel audio sampled at AudioSampleRate.
 	// The integer return value identifies the effect and can be passed to

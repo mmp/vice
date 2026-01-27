@@ -458,6 +458,7 @@ func DrawPanes(root *DisplayNode, p platform.Platform, r renderer.Renderer, cont
 
 	// Set the default mouse cursor; the pane that owns the mouse may
 	// override this..
+	p.ClearCursorOverride()
 	imgui.SetMouseCursor(imgui.MouseCursorArrow)
 
 	// All of the Panes' draw commands will be added to commandBuffer.
