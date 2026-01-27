@@ -694,54 +694,6 @@ func (m MixUpIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Initial Contact Intents
-
-type InitialContactType int
-
-const (
-	InitialContactDeparture InitialContactType = iota
-	InitialContactArrival
-	InitialContactVFR
-)
-
-// InitialContactIntent represents pilot's initial contact on frequency
-type InitialContactIntent struct {
-	Type            InitialContactType
-	CurrentAltitude float32
-	TargetAltitude  *float32         // if climbing/descending
-	Heading         *float32         // if on assigned heading
-	STAR            string           // if on a STAR
-	AircraftType    string           // for VFR contacts
-	ReportingPoints []ReportingPoint // for position reports
-}
-
-func (i InitialContactIntent) Render(rt *RadioTransmission, r *rand.Rand) {
-	switch i.Type {
-	case InitialContactDeparture:
-		if i.TargetAltitude != nil && *i.TargetAltitude-i.CurrentAltitude > 100 {
-			rt.Add("[at|] {alt} climbing {alt}", i.CurrentAltitude, *i.TargetAltitude)
-		} else {
-			rt.Add("[at|] {alt}", i.CurrentAltitude)
-		}
-	case InitialContactArrival:
-		if i.Heading != nil {
-			rt.Add("[heading {hdg}|on a {hdg} heading]", *i.Heading)
-		} else if i.STAR != "" {
-			if i.TargetAltitude == nil {
-				rt.Add("descending on the {star}", i.STAR)
-			} else {
-				rt.Add("on the {star}", i.STAR)
-			}
-		}
-		if i.TargetAltitude != nil && *i.TargetAltitude != i.CurrentAltitude {
-			rt.Add("[at|] {alt} for {alt} [assigned|]", i.CurrentAltitude, *i.TargetAltitude)
-		}
-	case InitialContactVFR:
-		rt.Add("[VFR request|with a VFR request]")
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////
 // RenderIntents
 
 // RenderIntents converts a slice of CommandIntents into a single coherent RadioTransmission.
