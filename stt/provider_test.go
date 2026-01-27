@@ -2041,7 +2041,7 @@ func TestValidateCommands(t *testing.T) {
 			name:         "invalid descend - target above current",
 			commands:     []string{"D150"},
 			ac:           Aircraft{Altitude: 10000, State: "arrival"},
-			expectedLen:  0,
+			expectedLen:  1, // becomes SAYAGAIN/ALTITUDE
 			minConf:      0.0,
 			expectErrors: true,
 		},
@@ -2057,7 +2057,7 @@ func TestValidateCommands(t *testing.T) {
 			name:         "invalid climb - target below current",
 			commands:     []string{"C50"},
 			ac:           Aircraft{Altitude: 10000, State: "departure"},
-			expectedLen:  0,
+			expectedLen:  1, // becomes SAYAGAIN/ALTITUDE
 			minConf:      0.0,
 			expectErrors: true,
 		},
@@ -2137,7 +2137,7 @@ func TestValidateCommands(t *testing.T) {
 			name:         "mixed valid and invalid commands",
 			commands:     []string{"L270", "D150"}, // heading valid, descend invalid (target > current)
 			ac:           Aircraft{Altitude: 10000, State: "arrival"},
-			expectedLen:  1, // only heading survives
+			expectedLen:  2, // heading survives, descend becomes SAYAGAIN/ALTITUDE
 			minConf:      0.0,
 			expectErrors: true,
 		},

@@ -420,6 +420,9 @@ var commandKeywords = map[string]string{
 	"level":      "level",
 	"expedite":   "expedite",
 
+	// Airline names (STT errors)
+	"double": "delta", // STT error: "Delta" misheard as "double"
+
 	// Heading
 	"heading":  "heading",
 	"eating":   "heading", // STT error: "heading" misheard as "eating" (phonetically similar)
@@ -510,12 +513,15 @@ var commandKeywords = map[string]string{
 	"dials":       "ils", // STT error: "d'ILS" or "the ILS" merged
 	"eyelash":     "ils", // STT error: "I L S" pronounced as "eye-ell-ess" -> "eyelash"
 	"eyelids":     "ils", // STT error: "I L S" garbled as "eyelids"
+	"atlas":       "ils", // STT error: "the ILS" garbled as "atlas"
 	"rnav":        "rnav",
 	"arnavie":     "rnav", // STT error: "rnav" garbled with extra syllables
+	"ironed":      "rnav", // STT error: "RNAV" misheard as "ironed"
 	"vor":         "vor",
 	"runway":      "runway",
 	"romn":        "runway", // STT error: garbled "runway"
 	"renoya":      "runway", // STT error: garbled "runway"
+	"renee":       "runway", // STT error: "runway" garbled as "renee"
 
 	// Transponder
 	"squawk":      "squawk",
@@ -578,10 +584,12 @@ var multiTokenReplacements = map[string][]string{
 	"december 18": {"descend", "maintain"}, // STT error: "descend and maintain"
 	"i l s":       {"ils"},                 // Spelled out ILS
 	"r nav":       {"rnav"},                // R-NAV after hyphen removal
+	"r nov":       {"rnav"},                // STT error: "R-NAV" misheard as "R-NOV"
 	"fly level":   {"flight", "level"},     // STT error: "flight level" misheard as "fly level"
 	"eddie had":   {"etihad"},              // STT error: "Etihad" misheard as "eddie had"
 	"local line":  {"localizer"},           // STT error: "localizer" misheard as "local line"
 	"time riding": {"turn", "right"},       // STT error: "turn right" misheard as "time riding"
+	"x ray":       {"expedite"},            // STT error: "expedite" misheard as "X-ray"
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.
@@ -886,6 +894,22 @@ func postProcessNormalized(tokens []string) []string {
 					skip = 1 // Skip the "s"
 					continue
 				}
+			}
+		}
+
+		// Handle "10 N [M] thousand" where "10" is garbled "to"
+		// e.g., "10 1 4 thousand" → "1 4 thousand" (14,000 ft)
+		// Only apply when followed by single digits then "thousand"
+		if tokens[i] == "10" && i+2 < len(tokens) {
+			// Look for pattern: 10 + single digits + thousand
+			j := i + 1
+			for j < len(tokens) && IsDigit(tokens[j]) {
+				j++
+			}
+			// Must have consumed at least one digit and next word is "thousand"
+			if j > i+1 && j < len(tokens) && tokens[j] == "thousand" {
+				// Skip the "10", keep the remaining digits and thousand
+				continue
 			}
 		}
 

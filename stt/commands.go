@@ -534,7 +534,7 @@ func approachMatchesAssigned(approachID, assignedApproach string) bool {
 func extractSpokenDirection(tokens []Token) byte {
 	for _, t := range tokens {
 		switch strings.ToLower(t.Text) {
-		case "left", "l":
+		case "left", "l", "west": // "west" is STT error for "left"
 			return 'L'
 		case "right", "r":
 			return 'R'
@@ -719,7 +719,7 @@ func extractRunwayNumber(tokens []Token) (string, string, int) {
 			if i > 0 {
 				prevText := strings.ToLower(tokens[i-1].Text)
 				switch prevText {
-				case "left", "l":
+				case "left", "l", "west": // "west" is STT error for "left"
 					dir = "left"
 				case "right", "r":
 					dir = "right"
@@ -732,7 +732,7 @@ func extractRunwayNumber(tokens []Token) (string, string, int) {
 			if dir == "" && i+1 < len(tokens) {
 				nextText := strings.ToLower(tokens[i+1].Text)
 				switch nextText {
-				case "left", "l":
+				case "left", "l", "west": // "west" is STT error for "left"
 					dir = "left"
 				case "right", "r":
 					dir = "right"

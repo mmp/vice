@@ -30,6 +30,13 @@ func ValidateCommands(commands []string, ac Aircraft) ValidationResult {
 		} else {
 			errors = append(errors, err)
 			penalty += 0.15 // Each invalid command reduces confidence
+
+			// Convert invalid altitude commands to SAYAGAIN/ALTITUDE.
+			// When a climb/descend command has an implausible altitude (e.g., climb
+			// to 1000 when at 5000), it likely means the altitude was misheard.
+			if isAltitudeError(err) {
+				valid = append(valid, "SAYAGAIN/ALTITUDE")
+			}
 		}
 	}
 
@@ -326,6 +333,13 @@ func isAllDigits(s string) bool {
 		}
 	}
 	return true
+}
+
+// isAltitudeError returns true if the error indicates an altitude-related issue.
+// This helps determine when to convert a failed command to SAYAGAIN/ALTITUDE.
+func isAltitudeError(err string) bool {
+	return strings.Contains(err, "climb target must be above") ||
+		strings.Contains(err, "descend target must be below")
 }
 
 // ValidateCommandsForState filters commands based on aircraft state likelihood.
