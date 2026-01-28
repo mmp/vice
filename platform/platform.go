@@ -149,7 +149,18 @@ type Platform interface {
 	// by the given identifier.
 	StopPlayAudio(id int)
 
-	// Audio recording methods
+	// Audio capture methods for continuous background capture with preroll buffer.
+	// StartAudioCapture begins capturing to the preroll buffer (200ms ring buffer).
+	// This allows recording to include audio from before PTT was pressed.
+	StartAudioCapture() error
+	StartAudioCaptureWithDevice(deviceName string) error
+	StopAudioCapture()
+	IsAudioCapturing() bool
+	// GetAudioPreroll returns the current preroll buffer (200ms of audio before now).
+	// Returns nil if not capturing.
+	GetAudioPreroll() []int16
+
+	// Audio recording methods. If capture is active, recording includes preroll.
 	StartAudioRecording() error
 	StartAudioRecordingWithDevice(deviceName string) error
 	StopAudioRecording() ([]int16, error)

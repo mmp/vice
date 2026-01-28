@@ -936,6 +936,15 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 		return
 	}
 
+	// Ensure background capture is running for preroll buffer.
+	// This captures audio continuously so we don't lose the start of transmissions.
+	if !p.IsAudioCapturing() {
+		if err := p.StartAudioCaptureWithDevice(config.SelectedMicrophone); err != nil {
+			// Log but don't block - recording will still work, just without preroll
+			lg.Warnf("Failed to start background audio capture: %v", err)
+		}
+	}
+
 	// Start on initial press (ignore repeats by checking our own flags)
 	if imgui.IsKeyDown(pttKey) && !ui.pttRecording && !ui.pttGarbling {
 		if p.IsPlayingSpeech() {
@@ -944,6 +953,9 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 			ui.pttGarbling = true
 			lg.Infof("Push-to-talk: Garbling audio (pressed during playback)")
 		} else {
+			// Get preroll samples before starting recording (if capture is active)
+			preroll := p.GetAudioPreroll()
+
 			// No audio playing - start recording
 			if err := p.StartAudioRecordingWithDevice(config.SelectedMicrophone); err != nil {
 				var hint string
@@ -963,7 +975,12 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 					if err := controlClient.StartStreamingSTT(lg); err != nil {
 						lg.Errorf("Failed to start streaming STT: %v", err)
 					} else {
-						// Set up audio streaming callback to feed samples to transcriber
+						// Feed preroll samples to transcriber first (audio from before PTT press)
+						if len(preroll) > 0 {
+							controlClient.FeedAudioToStreaming(preroll)
+							lg.Debugf("Fed %d preroll samples to transcriber", len(preroll))
+						}
+						// Set up audio streaming callback to feed new samples to transcriber
 						p.SetAudioStreamCallback(func(samples []int16) {
 							controlClient.FeedAudioToStreaming(samples)
 						})

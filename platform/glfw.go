@@ -797,6 +797,27 @@ func glfwKeyToImguiKey(keycode glfw.Key) imgui.Key {
 	}
 }
 
+// Audio capture methods for continuous background capture with preroll buffer
+func (g *glfwPlatform) StartAudioCapture() error {
+	return g.audioRecorder.StartCapture()
+}
+
+func (g *glfwPlatform) StartAudioCaptureWithDevice(deviceName string) error {
+	return g.audioRecorder.StartCaptureWithDevice(deviceName)
+}
+
+func (g *glfwPlatform) StopAudioCapture() {
+	g.audioRecorder.StopCapture()
+}
+
+func (g *glfwPlatform) IsAudioCapturing() bool {
+	return g.audioRecorder.IsCapturing()
+}
+
+func (g *glfwPlatform) GetAudioPreroll() []int16 {
+	return g.audioRecorder.GetPreroll()
+}
+
 // Audio recording methods
 func (g *glfwPlatform) StartAudioRecording() error {
 	return g.audioRecorder.StartRecording()
