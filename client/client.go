@@ -586,7 +586,7 @@ var whisperIsBenchmarking bool // true only when actually running benchmarks, no
 // WhisperBenchmarkIndex is the current benchmark generation. If the stored
 // index in config is less than this, re-benchmarking is triggered. Increment
 // this when benchmark criteria change (e.g., models, thresholds).
-const WhisperBenchmarkIndex = 3
+const WhisperBenchmarkIndex = 4
 
 // Callback to save model selection to config
 var whisperSaveCallback func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64)
