@@ -1,7 +1,7 @@
 {
   "4V4": ["Viney"],
   "4Y3": ["James"],
-  "6B6": ["Minute Man"],
+  "6B6": ["Minute Man", "Stow"],
   "F41": ["Ennis"],
   "F46": ["Rockwall"],
   "KAAC": ["Academy"],
@@ -12,6 +12,8 @@
   "KATL": ["Atlanta", "Hartsfield"],
   "KBDR": ["Bridgeport"],
   "KBED": ["Hanscom", "Bedford"],
+  "KBOS": ["Boston"],
+  "KBVY": ["Beverly"],
   "KBHB": ["Bar Harbor"],
   "KBRT": ["Bartles"],
   "KCDW": ["Caldwell"],
@@ -64,7 +66,7 @@
   "KPHX": ["Phoenix", "Sky Harbor"],
   "KPIE": ["Clearwater"],
   "KPOU": ["Stewart", "Poughkeepsie"],
-  "KPSM": ["Pease"],
+  "KPSM": ["Portsmith", "Pease"],
   "KPTK": ["Oakland County", "Pontiac"],
   "KSEA": ["Seattle", "Sea-Tac"],
   "KSFB": ["Sanford"],
@@ -72,5 +74,11 @@
   "KSTP": ["St. Paul Downtown", "Downtown St. Paul"],
   "KSWF": ["Stewart", "Newburgh"],
   "KTKI": ["McKinney"],
-  "KTMB": ["Miami Executive", "Tamiami"]
+  "KTMB": ["Miami Executive", "Tamiami"],
+  "KGHG": ["Marshfield"],
+  "KPYM": ["Plymouth"],
+  "KPVC": ["Province Town"],
+  "KPVD": ["Providence"],
+  "KOQU": ["Quonset"],
+  "KEWB": ["New Bedford"]
 }
