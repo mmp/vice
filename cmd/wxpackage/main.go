@@ -23,6 +23,7 @@ import (
 	"cloud.google.com/go/storage"
 	"github.com/klauspost/compress/zstd"
 	"github.com/vmihailenco/msgpack/v5"
+	"google.golang.org/api/option"
 )
 
 var (
@@ -91,7 +92,12 @@ func main() {
 
 	// Initialize GCS client
 	ctx := context.Background()
-	client, err := storage.NewClient(ctx)
+	credsJSON := os.Getenv("VICE_GCS_CREDENTIALS")
+	if credsJSON == "" {
+		fmt.Fprintf(os.Stderr, "VICE_GCS_CREDENTIALS environment variable not set")
+		os.Exit(1)
+	}
+	client, err := storage.NewClient(ctx, option.WithCredentialsJSON([]byte(credsJSON)))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to create GCS client: %v", err)
 		os.Exit(1)
