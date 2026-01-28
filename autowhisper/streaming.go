@@ -117,12 +117,12 @@ func (t *Transcriber) transcribe(audio []float32) string {
 		ctx.SetBeamSize(3)
 	}
 
-	// Language selection
+	// Language selection (only for multilingual models; .en models are already English-only)
 	lang := strings.TrimSpace(t.opts.Language)
 	if lang == "" {
 		lang = "auto"
 	}
-	if lang != "auto" {
+	if lang != "auto" && ctx.IsMultilingual() {
 		if err := ctx.SetLanguage(lang); err != nil {
 			return ""
 		}
