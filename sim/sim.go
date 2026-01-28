@@ -1397,8 +1397,8 @@ func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp TCP) {
 	ac.RequestedFlightFollowing = true
 	ac.ControllerFrequency = ControlPosition(tcp)
 
-	// About 30% of the time, make an abbreviated request and wait for "go ahead"
-	if s.Rand.Float32() < 0.3 {
+	// About 90% of the time, make an abbreviated request and wait for "go ahead"
+	if s.Rand.Float32() < 0.9 {
 		ac.WaitingForGoAhead = true
 		s.enqueuePilotTransmission(ac.ADSBCallsign, tcp, PendingTransmissionFlightFollowingReq)
 	} else {
