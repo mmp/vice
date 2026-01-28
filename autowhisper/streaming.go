@@ -51,19 +51,27 @@ func (t *Transcriber) AddSamples(samples []int16) {
 // Stop ends the recording session and returns the final transcription
 // along with the duration of the recorded audio.
 func (t *Transcriber) Stop() (text string, audioDuration time.Duration) {
+	text, audioDuration, _ = t.StopWithAudio()
+	return
+}
+
+// StopWithAudio ends the recording session and returns the final transcription,
+// audio duration, and the raw audio samples (as float32, 16kHz mono).
+// This is useful for evaluation modes that need to re-process the audio.
+func (t *Transcriber) StopWithAudio() (text string, audioDuration time.Duration, audio []float32) {
 	t.audioMu.Lock()
-	audio := t.audio
+	audio = t.audio
 	t.audio = nil // Clear for potential reuse
 	t.audioMu.Unlock()
 
 	if len(audio) == 0 {
-		return "", 0
+		return "", 0, nil
 	}
 
 	// Calculate audio duration from sample count (16kHz sample rate)
 	audioDuration = time.Duration(len(audio)) * time.Second / 16000
 
-	return t.transcribe(audio), audioDuration
+	return t.transcribe(audio), audioDuration, audio
 }
 
 // transcribe runs whisper on the given audio samples.

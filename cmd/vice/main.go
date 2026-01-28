@@ -67,6 +67,7 @@ var (
 	replayDuration    = flag.String("replay-duration", "3600", "replay duration in seconds or 'until:CALLSIGN'")
 	waypointCommands  = flag.String("waypoint-commands", "", "waypoint commands in format 'FIX:CMD CMD CMD, FIX:CMD ...,'")
 	starsRandoms      = flag.Bool("starsrandoms", false, "run STARS command fuzz testing with full UI (randomly picks a scenario)")
+	sttEval           = flag.Bool("stteval", false, "record audio and evaluate all whisper models with STT pipeline")
 )
 
 func setupSignalHandler(profiler *util.Profiler) {
@@ -338,6 +339,11 @@ func main() {
 			e.PrintErrors(lg)
 		}
 	} else {
+		// Enable STT evaluation mode if requested
+		if *sttEval {
+			client.SetSTTEvalEnabled(true)
+			fmt.Println("STT evaluation mode enabled - voice commands will be evaluated against all models")
+		}
 		var stats Stats
 		var render renderer.Renderer
 		var plat platform.Platform
