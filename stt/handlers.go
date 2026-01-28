@@ -74,10 +74,24 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
+		"climb via sid",
+		func() string { return "CVS" },
+		WithName("climb_via_sid"),
+		WithPriority(14),
+	)
+
+	registerSTTCommand(
 		"descend via [the] {star}",
 		func(star string) string { return "DVS" },
 		WithName("descend_via_star"),
 		WithPriority(15),
+	)
+
+	registerSTTCommand(
+		"descend via star",
+		func() string { return "DVS" },
+		WithName("descend_via_star"),
+		WithPriority(16),
 	)
 
 	registerSTTCommand(
