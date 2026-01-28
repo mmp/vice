@@ -382,7 +382,7 @@ func (p *Transcriber) BuildAircraftContext(
 		if trk.FlightPlan != nil {
 			cwt = trk.FlightPlan.CWTCategory
 		}
-		telephony := av.GetTelephony(string(trk.ADSBCallsign), cwt)
+		telephony := av.GetCallsignSpoken(string(trk.ADSBCallsign), cwt)
 
 		// Default addressing form is full callsign
 		sttAc.AddressingForm = sim.AddressingFormFull

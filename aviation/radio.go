@@ -896,6 +896,58 @@ func GetTelephony(callsign string, cwtCategory string) string {
 	return tele
 }
 
+// GetCallsignSpoken returns the spoken telephony string for a callsign,
+// formatted as it would be pronounced (for Whisper prompts).
+// Example: "JBU520" → "jetblue five 20", "BAW22J" → "speedbird 22 juliet"
+func GetCallsignSpoken(callsign string, cwtCategory string) string {
+	loadPronunciationsIfNeeded()
+
+	prefix, fnum := SplitCallsign(callsign)
+
+	// GA N-numbers: spell out character by character
+	if prefix == "N" {
+		var s []string
+		for _, ch := range callsign {
+			if ch >= '0' && ch <= '9' {
+				s = append(s, sayDigit(int(ch-'0')))
+			} else {
+				s = append(s, strings.ToLower(spokenLetters[string(ch)]))
+			}
+		}
+		return strings.Join(s, " ")
+	}
+
+	// Extract trailing letters from flight number (e.g., "22J" → suffix=" juliet")
+	var suffix string
+	if suffixIdx := strings.IndexAny(fnum, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"); suffixIdx != -1 {
+		for _, ch := range fnum[suffixIdx:] {
+			suffix += " " + strings.ToLower(spokenLetters[string(ch)])
+		}
+		fnum = fnum[:suffixIdx]
+	}
+
+	// Get telephony with override
+	var tel string
+	if t, ok := DB.Callsigns[prefix]; ok {
+		tel = t
+	}
+	if tel2, ok := sayAirlineMap[tel]; ok {
+		tel = tel2
+	}
+
+	// Build result with spoken flight number
+	result := strings.TrimSpace(tel + " " + sayFlightNumber(fnum) + suffix)
+
+	// Add heavy/super suffix
+	if cwtCategory == "A" {
+		result += " super"
+	} else if len(cwtCategory) > 0 && cwtCategory[0] <= 'D' {
+		result += " heavy"
+	}
+
+	return result
+}
+
 // GetFixTelephony returns the spoken name for a fix (navaid, airport, or waypoint).
 // It uses pronunciations from sayfix.json when available, falls back to database
 // lookups for navaids/airports, and uses StopShouting for other fixes.
