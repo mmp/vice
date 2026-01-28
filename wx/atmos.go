@@ -341,6 +341,67 @@ func (atsoa AtmosByTimeSOA) ToAOS() AtmosByTime {
 	return at
 }
 
+// GetWindsAloftAtTime returns wind direction (true heading, degrees) and speed (knots)
+// at the given altitude for the given time. If no data is available, ok is false.
+// Uses linear interpolation between pressure levels.
+func (at *AtmosByTime) GetWindsAloftAtTime(t time.Time, altitudeFeet float32) (direction, speed float32, ok bool) {
+	if at == nil || len(at.SampleStacks) == 0 {
+		return 0, 0, false
+	}
+
+	// Find the sample stack at or before the requested time
+	var bestTime time.Time
+	var bestStack *AtmosSampleStack
+	for stackTime, stack := range at.SampleStacks {
+		if stackTime.Before(t) || stackTime.Equal(t) {
+			if bestTime.IsZero() || stackTime.After(bestTime) {
+				bestTime = stackTime
+				bestStack = stack
+			}
+		}
+	}
+
+	if bestStack == nil {
+		return 0, 0, false
+	}
+
+	// Convert altitude to meters
+	const feetToMeters = 0.3048
+	altMeters := altitudeFeet * feetToMeters
+
+	// Find the two levels that bracket our altitude
+	idx, _ := slices.BinarySearchFunc(bestStack.Levels[:], altMeters, func(s AtmosSample, alt float32) int {
+		if s.Height < alt {
+			return -1
+		} else if s.Height > alt {
+			return 1
+		}
+		return 0
+	})
+
+	// Clamp index to valid range (need at least idx-1 and idx for interpolation)
+	idx = math.Clamp(idx, 1, NumSampleLevels-1)
+
+	// Get the two levels and interpolate
+	s0 := bestStack.Levels[idx-1]
+	s1 := bestStack.Levels[idx]
+
+	// Interpolation factor
+	var interpT float32
+	if s1.Height != s0.Height {
+		interpT = (altMeters - s0.Height) / (s1.Height - s0.Height)
+	}
+	interpT = math.Clamp(interpT, 0, 1)
+
+	// Interpolate U and V components
+	u := math.Lerp(interpT, s0.UComponent, s1.UComponent)
+	v := math.Lerp(interpT, s0.VComponent, s1.VComponent)
+
+	// Convert to direction and speed
+	direction, speed = uvToDirSpeed(u, v)
+	return direction, speed, true
+}
+
 func CheckAtmosConversion(at AtmosByPoint, soa AtmosByPointSOA) error {
 	ckat := soa.ToAOS()
 	if len(ckat.SampleStacks) != len(at.SampleStacks) {

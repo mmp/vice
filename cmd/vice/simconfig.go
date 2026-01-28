@@ -60,12 +60,14 @@ type NewSimConfiguration struct {
 	weatherFilter      wx.WeatherFilter
 	weatherFilterError string
 
-	mu              util.LoggingMutex // protects airportMETAR/fetchingMETAR/availableWXIntervals
+	mu              util.LoggingMutex // protects airportMETAR/availableWXIntervals
 	airportMETAR    map[string][]wx.METAR
 	metarAirports   []string
 	fetchMETARError error
-	fetchingMETAR   bool
-	metarGeneration int
+
+	// Winds aloft data for the current facility
+	atmosByTime        *wx.AtmosByTime
+	windsAloftAltitude float32
 
 	availableWXIntervals []util.TimeInterval
 }
@@ -264,8 +266,7 @@ func (c *NewSimConfiguration) fetchMETAR() {
 	c.mu.Lock(c.lg)
 	defer c.mu.Unlock(c.lg)
 
-	if c.ScenarioSpec == nil || c.selectedServer == nil {
-		c.fetchingMETAR = false
+	if c.ScenarioSpec == nil {
 		return
 	}
 
@@ -278,29 +279,53 @@ func (c *NewSimConfiguration) fetchMETAR() {
 	c.airportMETAR = nil
 	c.fetchMETARError = nil
 	c.availableWXIntervals = nil
-	c.fetchingMETAR = true
-	c.metarGeneration++
-	currentGeneration := c.metarGeneration
+	c.atmosByTime = nil
 
-	c.mgr.GetMETAR(c.selectedServer, airports, func(metars map[string][]wx.METAR, err error) {
-		c.mu.Lock(c.lg)
-		defer c.mu.Unlock(c.lg)
+	// Load METAR data from local resources
+	metarSOA, err := wx.GetMETAR(airports)
+	if err != nil {
+		c.fetchMETARError = err
+		return
+	}
 
-		if currentGeneration != c.metarGeneration {
-			return
-		}
+	// Decode SOA to regular METAR slices
+	metars := make(map[string][]wx.METAR)
+	for ap, soa := range metarSOA {
+		metars[ap] = soa.Decode()
+	}
 
-		c.fetchingMETAR = false
+	c.airportMETAR = metars
+	c.metarAirports = airports
 
-		if err != nil {
-			c.fetchMETARError = err
-		} else {
-			c.airportMETAR = metars
-			c.metarAirports = airports
-			c.computeAvailableWXIntervals()
-			c.updateStartTimeForRunways()
-		}
-	})
+	c.loadAtmosphericData()
+	c.computeAvailableWXIntervals()
+	c.updateStartTimeForRunways()
+}
+
+// loadAtmosphericData loads atmospheric data for the current facility and determines
+// the appropriate winds aloft altitude based on whether it's a TRACON or ARTCC.
+func (c *NewSimConfiguration) loadAtmosphericData() {
+	// Determine if this is a TRACON or ARTCC based on the facility
+	_, isTRACON := av.DB.TRACONs[c.Facility]
+
+	// Set altitude based on facility type:
+	// - TRACON: 5,000' - representative of terminal area traffic
+	// - Center/ERAM (ARTCC): FL280 (28,000') - representative of en route traffic
+	if isTRACON {
+		c.windsAloftAltitude = 5000
+	} else {
+		c.windsAloftAltitude = 28000
+	}
+
+	// Try to load atmospheric data for the facility
+	atmosByTime, err := wx.GetAtmosByTime(c.Facility)
+	if err != nil {
+		// We don't yet have data for center scenarios; don't treat this as an error.
+		c.atmosByTime = nil
+		return
+	}
+
+	c.atmosByTime = atmosByTime
 }
 
 func (c *NewSimConfiguration) computeAvailableWXIntervals() {
@@ -319,12 +344,11 @@ func (c *NewSimConfiguration) computeAvailableWXIntervals() {
 		metarIntervals = wx.METARIntervals(metarTimes)
 	}
 
-	// Get TRACON intervals from server
+	// Get TRACON intervals from local resources
+	traconIntervalsMap := wx.GetTimeIntervals()
 	var traconIntervals []util.TimeInterval
-	if c.selectedServer != nil && c.selectedServer.AvailableWXByTRACON != nil {
-		if intervals, ok := c.selectedServer.AvailableWXByTRACON[c.Facility]; ok {
-			traconIntervals = intervals
-		}
+	if intervals, ok := traconIntervalsMap[c.Facility]; ok {
+		traconIntervals = intervals
 	}
 
 	if len(traconIntervals) == 0 {
@@ -1277,9 +1301,7 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	c.mu.Lock(c.lg)
 	defer c.mu.Unlock(c.lg)
 
-	if c.fetchingMETAR {
-		imgui.Text("Fetching weather data...")
-	} else if c.fetchMETARError != nil {
+	if c.fetchMETARError != nil {
 		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
 		imgui.Text("Error: " + c.fetchMETARError.Error())
 		imgui.PopStyleColor()
@@ -1811,7 +1833,7 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.
 	return show
 }
 
-// drawWeatherFilterUI draws the weather filter controls
+// drawWeatherFilterUI draws the weather filter controls organized into logical groups
 func (c *NewSimConfiguration) drawWeatherFilterUI() {
 	const inputWidth float32 = 50
 	changed := false
@@ -1847,35 +1869,63 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		return false
 	}
 
-	if imgui.BeginTableV("weatherFilters", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{}, 0) {
-		imgui.TableSetupColumnV("Label", imgui.TableColumnFlagsWidthFixed, 110, 0)
+	// Flight Rules (always visible, most important filter)
+	imgui.Text("Flight Rules:")
+	imgui.SameLine()
+	flightRulesInt := int32(c.weatherFilter.FlightRules)
+	if imgui.RadioButtonIntPtr("Any##fr", &flightRulesInt, int32(wx.FlightRulesAny)) {
+		c.weatherFilter.FlightRules = wx.FlightRulesAny
+		changed = true
+	}
+	imgui.SameLine()
+	if imgui.RadioButtonIntPtr("VMC##fr", &flightRulesInt, int32(wx.FlightRulesVMC)) {
+		c.weatherFilter.FlightRules = wx.FlightRulesVMC
+		changed = true
+	}
+	imgui.SameLine()
+	if imgui.RadioButtonIntPtr("IMC##fr", &flightRulesInt, int32(wx.FlightRulesIMC)) {
+		c.weatherFilter.FlightRules = wx.FlightRulesIMC
+		changed = true
+	}
+
+	// Temperature
+	imgui.Text("Temperature (C):")
+	imgui.SameLine()
+	if optionalIntInput("##tempMin", "Min", &c.weatherFilter.TemperatureMin) {
+		changed = true
+	}
+	imgui.SameLine()
+	imgui.Text("-")
+	imgui.SameLine()
+	if optionalIntInput("##tempMax", "Max", &c.weatherFilter.TemperatureMax) {
+		changed = true
+	}
+
+	// Surface Wind group
+	imgui.SeparatorText("Surface Wind")
+	if imgui.BeginTableV("surfaceWind", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{}, 0) {
+		imgui.TableSetupColumnV("Label", imgui.TableColumnFlagsWidthFixed, 100, 0)
 		imgui.TableSetupColumnV("Value", imgui.TableColumnFlagsWidthStretch, 0, 0)
 
-		// Row 1: Flight Rules
+		// Direction (most important for runway selection)
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
-		imgui.Text("Flight Rules:")
+		imgui.Text("Direction (mag):")
 		imgui.TableNextColumn()
-		flightRulesInt := int32(c.weatherFilter.FlightRules)
-		if imgui.RadioButtonIntPtr("Any##fr", &flightRulesInt, int32(wx.FlightRulesAny)) {
-			c.weatherFilter.FlightRules = wx.FlightRulesAny
+		if optionalIntInput("##windDirMin", "Min", &c.weatherFilter.WindDirMin) {
 			changed = true
 		}
 		imgui.SameLine()
-		if imgui.RadioButtonIntPtr("VMC##fr", &flightRulesInt, int32(wx.FlightRulesVMC)) {
-			c.weatherFilter.FlightRules = wx.FlightRulesVMC
-			changed = true
-		}
+		imgui.Text("-")
 		imgui.SameLine()
-		if imgui.RadioButtonIntPtr("IMC##fr", &flightRulesInt, int32(wx.FlightRulesIMC)) {
-			c.weatherFilter.FlightRules = wx.FlightRulesIMC
+		if optionalIntInput("##windDirMax", "Max", &c.weatherFilter.WindDirMax) {
 			changed = true
 		}
 
-		// Row 2: Wind Speed
+		// Speed
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
-		imgui.Text("Wind Speed (kt):")
+		imgui.Text("Speed (kt):")
 		imgui.TableNextColumn()
 		if optionalIntInput("##windSpeedMin", "Min", &c.weatherFilter.WindSpeedMin) {
 			changed = true
@@ -1887,7 +1937,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 			changed = true
 		}
 
-		// Row 3: Gusting
+		// Gusting
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
 		imgui.Text("Gusting:")
@@ -1908,57 +1958,81 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 			changed = true
 		}
 
-		// Row 4: Wind Direction
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		imgui.Text("Wind Dir (mag):")
-		imgui.TableNextColumn()
-		if optionalIntInput("##windDirMin", "Min", &c.weatherFilter.WindDirMin) {
-			changed = true
-		}
-		imgui.SameLine()
-		imgui.Text("-")
-		imgui.SameLine()
-		if optionalIntInput("##windDirMax", "Max", &c.weatherFilter.WindDirMax) {
-			changed = true
-		}
+		imgui.EndTable()
+	}
 
-		// Row 5: Temperature
-		imgui.TableNextRow()
-		imgui.TableNextColumn()
-		imgui.Text("Temp (C):")
-		imgui.TableNextColumn()
-		if optionalIntInput("##tempMin", "Min", &c.weatherFilter.TemperatureMin) {
-			changed = true
-		}
-		imgui.SameLine()
-		imgui.Text("-")
-		imgui.SameLine()
-		if optionalIntInput("##tempMax", "Max", &c.weatherFilter.TemperatureMax) {
-			changed = true
-		}
+	// Winds Aloft group (only show if atmosByTime is available)
+	if c.atmosByTime != nil {
+		altLabel := fmt.Sprintf("Winds Aloft (%s)", av.FormatAltitude(c.windsAloftAltitude))
+		imgui.SeparatorText(altLabel)
+		if imgui.BeginTableV("windsAloft", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{}, 0) {
+			imgui.TableSetupColumnV("Label", imgui.TableColumnFlagsWidthFixed, 100, 0)
+			imgui.TableSetupColumnV("Value", imgui.TableColumnFlagsWidthStretch, 0, 0)
 
-		// Row 6: Filter error (if any)
-		if c.weatherFilterError != "" {
+			// Direction
 			imgui.TableNextRow()
 			imgui.TableNextColumn()
+			imgui.Text("Direction (mag):")
 			imgui.TableNextColumn()
-			imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
-			imgui.Text(renderer.FontAwesomeIconExclamationTriangle + " " + c.weatherFilterError)
-			imgui.PopStyleColor()
-		}
+			aloftDirChanged := optionalIntInput("##aloftDirMin", "Min", &c.weatherFilter.WindsAloftDirMin)
+			imgui.SameLine()
+			imgui.Text("-")
+			imgui.SameLine()
+			aloftDirChanged = optionalIntInput("##aloftDirMax", "Max", &c.weatherFilter.WindsAloftDirMax) || aloftDirChanged
+			// Only trigger update when both values are set or both are empty
+			if aloftDirChanged {
+				bothSet := c.weatherFilter.WindsAloftDirMin != nil && c.weatherFilter.WindsAloftDirMax != nil
+				bothEmpty := c.weatherFilter.WindsAloftDirMin == nil && c.weatherFilter.WindsAloftDirMax == nil
+				if bothSet || bothEmpty {
+					changed = true
+				}
+			}
 
-		// Row 7: Start time
+			// Speed
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text("Speed (kt):")
+			imgui.TableNextColumn()
+			if optionalIntInput("##aloftSpeedMin", "Min", &c.weatherFilter.WindsAloftSpeedMin) {
+				changed = true
+			}
+			imgui.SameLine()
+			imgui.Text("-")
+			imgui.SameLine()
+			if optionalIntInput("##aloftSpeedMax", "Max", &c.weatherFilter.WindsAloftSpeedMax) {
+				changed = true
+			}
+
+			imgui.EndTable()
+		}
+	}
+
+	// Filter error (if any)
+	if c.weatherFilterError != "" {
+		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
+		imgui.Text(renderer.FontAwesomeIconExclamationTriangle + " " + c.weatherFilterError)
+		imgui.PopStyleColor()
+	}
+
+	imgui.Separator()
+
+	// Start time and METAR section
+	metarAirports := slices.Collect(maps.Keys(c.airportMETAR))
+	slices.Sort(metarAirports)
+	if idx := slices.Index(metarAirports, c.ScenarioSpec.PrimaryAirport); idx > 0 {
+		metarAirports = slices.Delete(metarAirports, idx, idx+1)
+		metarAirports = slices.Insert(metarAirports, 0, c.ScenarioSpec.PrimaryAirport)
+	}
+
+	if imgui.BeginTableV("timeAndMetar", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{}, 0) {
+		imgui.TableSetupColumnV("Label", imgui.TableColumnFlagsWidthFixed, 70, 0)
+		imgui.TableSetupColumnV("Value", imgui.TableColumnFlagsWidthStretch, 0, 0)
+
+		// Start time
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
 		imgui.Text("Start time:")
 		imgui.TableNextColumn()
-		metarAirports := slices.Collect(maps.Keys(c.airportMETAR))
-		slices.Sort(metarAirports)
-		if idx := slices.Index(metarAirports, c.ScenarioSpec.PrimaryAirport); idx > 0 {
-			metarAirports = slices.Delete(metarAirports, idx, idx+1)
-			metarAirports = slices.Insert(metarAirports, 0, c.ScenarioSpec.PrimaryAirport)
-		}
 		metar := c.airportMETAR[metarAirports[0]]
 		TimePicker(&c.NewSimRequest.StartTime, c.availableWXIntervals, metar, &ui.fixedFont.Ifont)
 		imgui.SameLine()
@@ -1969,7 +2043,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 			imgui.SetTooltip("Select random time matching weather filters")
 		}
 
-		// Row 8: METAR
+		// METAR
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
 		imgui.Text("METAR:")
@@ -1993,11 +2067,11 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		}
 
 		imgui.EndTable()
+	}
 
-		if len(metarAirports) > 1 && !c.showAllMETAR {
-			if imgui.Button("Show all airport METAR") {
-				c.showAllMETAR = true
-			}
+	if len(metarAirports) > 1 && !c.showAllMETAR {
+		if imgui.Button("Show all airport METAR") {
+			c.showAllMETAR = true
 		}
 	}
 
@@ -2009,7 +2083,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 func (c *NewSimConfiguration) updateStartTimeForRunways() {
 	c.weatherFilterError = ""
 
-	if c.ScenarioSpec == nil || c.selectedServer == nil || c.airportMETAR == nil {
+	if c.ScenarioSpec == nil || c.airportMETAR == nil {
 		return
 	}
 
@@ -2025,9 +2099,14 @@ func (c *NewSimConfiguration) updateStartTimeForRunways() {
 	}
 
 	if apMETAR, ok := c.airportMETAR[ap]; ok && len(apMETAR) > 0 {
-		// Sample using the weather filter
-		sampledMETAR := wx.SampleMETARWithFilter(apMETAR, c.availableWXIntervals,
-			&c.weatherFilter, c.ScenarioSpec.MagneticVariation)
+		// Sample using the combined weather filter (ground winds + winds aloft)
+		sampledMETAR := wx.SampleWeatherWithFilter(
+			apMETAR,
+			c.atmosByTime,
+			c.availableWXIntervals,
+			&c.weatherFilter,
+			c.windsAloftAltitude,
+			c.ScenarioSpec.MagneticVariation)
 
 		if sampledMETAR != nil {
 			c.StartTime = sampledMETAR.Time.UTC()

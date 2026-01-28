@@ -570,9 +570,9 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 		return err
 	}
 
-	tts, wxp := sm.getProviders()
+	tts, _ := sm.getProviders()
 	result.HaveTTS = tts != nil
-	result.AvailableWXByTRACON = wxp.GetAvailableTimeIntervals()
+	result.AvailableWXByTRACON = wx.GetTimeIntervals()
 
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
@@ -783,33 +783,6 @@ func (sm *SimManager) TextToSpeech(req *TTSRequest, speechMp3 *[]byte) error {
 
 ///////////////////////////////////////////////////////////////////////////
 // Weather
-
-const GetMETARRPC = "SimManager.GetMETAR"
-
-func (sm *SimManager) GetMETAR(airports []string, result *map[string]wx.METARSOA) error {
-	defer sm.lg.CatchAndReportCrash()
-
-	if sm.wxProvider == nil {
-		return ErrWeatherUnavailable
-	}
-
-	var err error
-	*result, err = sm.wxProvider.GetMETAR(airports)
-	return err
-}
-
-const GetTimeIntervalsRPC = "SimManager.GetTimeIntervals"
-
-func (sm *SimManager) GetTimeIntervals(_ struct{}, result *map[string][]util.TimeInterval) error {
-	defer sm.lg.CatchAndReportCrash()
-
-	if sm.wxProvider == nil {
-		return ErrWeatherUnavailable
-	}
-
-	*result = sm.wxProvider.GetAvailableTimeIntervals()
-	return nil
-}
 
 type PrecipURLArgs struct {
 	Facility string
