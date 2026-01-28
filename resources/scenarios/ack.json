@@ -443,83 +443,6 @@
           }
         }
       ]
-    },
-    "NEWBE3": {
-      "arrivals": [
-        {
-          "spawn": "NEWBE@0.6",
-          "cruise_altitude": 15000,
-          "star": "NEWBE3",
-          "initial_controller": "BOS_37_CTR",
-          "initial_altitude": 13000,
-          "initial_speed": 310,
-          "expect_approach": null,
-          "airlines": {
-            "KACK": [
-              {
-                "icao": "N",
-                "airport": "KHYA"
-              },
-              {
-                "icao": "N",
-                "airport": "KHYA"
-              },
-              {
-                "icao": "N",
-                "airport": "KHYA"
-              },
-              {
-                "icao": "N",
-                "airport": "KLUK"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KLGA"
-              },
-              {
-                "icao": "GJS",
-                "airport": "KEWR"
-              },
-              {
-                "icao": "AMF",
-                "airport": "KHYA"
-              },
-              {
-                "icao": "N",
-                "airport": "KHPN"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KBOS"
-              },
-              {
-                "icao": "KAP",
-                "airport": "KBOS"
-              },
-              {
-                "icao": "N",
-                "airport": "KTEB"
-              },
-              {
-                "icao": "EJA",
-                "airport": "KEWR"
-              },
-              {
-                "icao": "KAP",
-                "airport": "KMVY"
-              },
-              {
-                "icao": "CNS",
-                "airport": "KHPN"
-              },
-              {
-                "icao": "KAP",
-                "airport": "KHYA"
-              }
-            ]
-          }
-        }
-      ]
     }
   },
   "control_positions": {
@@ -589,9 +512,6 @@
       "inbound_rates": {
         "DEEPO2": {
           "KACK": 10
-        },
-        "NEWBE3": {
-          "KACK": 10
         }
       },
       "configuration": {
@@ -636,9 +556,6 @@
       "inbound_rates": {
         "DEEPO2": {
           "KACK": 10
-        },
-        "NEWBE3": {
-          "KACK": 10
         }
       },
       "configuration": {
@@ -674,8 +591,7 @@
     "configurations": {
       "STD": {
         "inbound_assignments": {
-          "DEEPO2": "ACK_N_APP",
-          "NEWBE3": "ACK_N_APP"
+          "DEEPO2": "ACK_N_APP"
         },
         "departure_assignments": {
           "KACK": "ACK_DEP",

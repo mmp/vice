@@ -3709,12 +3709,6 @@
           "runway": "14",
           "type": "Visual",
           "waypoints": ["TEPAW/a3000+/if MRANN/a2900+/faf"]
-        },
-        "V32": {
-          "full_name": "Visual Runway 32",
-          "runway": "32",
-          "type": "Visual",
-          "waypoints": ["FOMRU/a3000+/if RULDE/a2500+/faf JOSVU/a1460+"]
         }
       },
       "exit_categories": {
