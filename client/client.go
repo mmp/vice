@@ -813,10 +813,13 @@ func benchmarkModel(modelName string) (latencyMs int64, model *whisper.Model, er
 
 // Model size tiers for progressive benchmarking (smallest to largest)
 var whisperModelTiers = []string{
-	"ggml-tiny.en.bin",
 	"ggml-base.en.bin",
+	"ggml-base.en-jlvatc-q5_0.bin",
 	"ggml-small.en.bin",
-	"ggml-medium.en.bin",
+	"ggml-small.en-jlvatc-q5_0.bin",
+	"ggml-medium.en-q5_0.bin",
+	"ggml-medium.en-atc-q5_0.bin",
+	"ggml-medium.en-jlvatc-q5_0.bin",
 }
 
 // PreloadWhisperModel loads the whisper model in the background so it's
