@@ -3,6 +3,8 @@ package stt
 import (
 	"strconv"
 	"strings"
+
+	"github.com/mmp/vice/util"
 )
 
 // ValidationResult holds the result of command validation.
@@ -44,6 +46,9 @@ func ValidateCommands(commands []string, ac Aircraft) ValidationResult {
 	valid, combinationErrors := filterIncompatibleCommands(valid)
 	errors = append(errors, combinationErrors...)
 	penalty += 0.15 * float64(len(combinationErrors))
+
+	// Deduplicate SAYAGAIN commands - keep only first of each type
+	valid = deduplicateSayAgainCommands(valid)
 
 	// Calculate confidence based on valid ratio and penalties
 	validRatio := float64(len(valid)) / float64(len(commands))
@@ -404,4 +409,21 @@ func isCommandValidForState(cmd string, state string) bool {
 	}
 
 	return true
+}
+
+// deduplicateSayAgainCommands removes duplicate SAYAGAIN commands, keeping only
+// the first occurrence of each type. For example, if the commands include
+// ["C50", "SAYAGAIN/HEADING", "SAYAGAIN/HEADING"], the output will be
+// ["C50", "SAYAGAIN/HEADING"].
+func deduplicateSayAgainCommands(commands []string) []string {
+	seen := make(map[string]bool)
+	return util.FilterSlice(commands, func(cmd string) bool {
+		if strings.HasPrefix(cmd, "SAYAGAIN/") {
+			if seen[cmd] {
+				return false
+			}
+			seen[cmd] = true
+		}
+		return true
+	})
 }
