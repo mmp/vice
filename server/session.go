@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log/slog"
 	"maps"
+	"net/http"
 	"slices"
 	"time"
 
@@ -15,6 +16,9 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
+
+	"github.com/gorilla/websocket"
+	"github.com/vmihailenco/msgpack/v5"
 )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -62,6 +66,8 @@ type connectionState struct {
 	warnedNoUpdateCalls bool
 	stateUpdateEventSub *sim.EventsSubscription
 	ttsEventSub         *sim.EventsSubscription // Separate subscription for TTS events
+	speechWs            *websocket.Conn         // WebSocket for async speech delivery
+	pendingReadbacks    ttsRequestPool          // Pending readback TTS requests
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -339,4 +345,105 @@ func (ss *simSession) RequestContact(tcw sim.TCW, tts sim.TTSProvider) *sim.Pilo
 
 		return speech
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// WebSocket-based Speech Delivery
+
+// HandleSpeechWSConnection upgrades an HTTP connection to a WebSocket for speech delivery.
+func (ss *simSession) HandleSpeechWSConnection(token string, w http.ResponseWriter, r *http.Request) {
+	ss.mu.Lock(ss.lg)
+	defer ss.mu.Unlock(ss.lg)
+
+	conn, ok := ss.connectionsByToken[token]
+	if !ok {
+		ss.lg.Errorf("%s: unknown token for speech websocket", token)
+		return
+	}
+
+	// Close existing connection if any
+	if conn.speechWs != nil {
+		conn.speechWs.Close()
+	}
+
+	upgrader := websocket.Upgrader{EnableCompression: false}
+	ws, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		ss.lg.Errorf("Unable to upgrade speech websocket: %v", err)
+		return
+	}
+
+	conn.speechWs = ws
+	ss.lg.Infof("%s: speech websocket connected", token)
+}
+
+// QueueReadbackTTS queues an async TTS request for a readback.
+// The synthesized audio will be delivered via WebSocket when ready.
+func (ss *simSession) QueueReadbackTTS(token string, tts sim.TTSProvider, callsign av.ADSBCallsign,
+	spokenText string, simTime time.Time) {
+	if tts == nil || spokenText == "" {
+		return
+	}
+
+	ss.mu.Lock(ss.lg)
+	defer ss.mu.Unlock(ss.lg)
+
+	conn, ok := ss.connectionsByToken[token]
+	if !ok {
+		return
+	}
+
+	ss.voiceAssigner.TryInit(tts, ss.lg)
+
+	voice, ok := ss.voiceAssigner.GetVoice(callsign)
+	if !ok {
+		ss.lg.Warnf("No voice available for %s", callsign)
+		return
+	}
+
+	conn.pendingReadbacks.add(ttsRequest{
+		callsign:    callsign,
+		ty:          av.RadioTransmissionReadback,
+		text:        spokenText,
+		simTime:     simTime,
+		fut:         tts.TextToSpeech(voice, spokenText),
+		requestTime: time.Now(),
+	})
+}
+
+// SendPendingReadbacks sends completed readback TTS to clients via WebSocket.
+// Returns the number of bytes sent.
+func (ss *simSession) SendPendingReadbacks() int64 {
+	ss.mu.Lock(ss.lg)
+	defer ss.mu.Unlock(ss.lg)
+
+	var totalBytes int64
+	for _, conn := range ss.connectionsByToken {
+		if conn.speechWs == nil {
+			continue
+		}
+
+		for _, ps := range conn.pendingReadbacks.drainCompleted(ss.lg) {
+			totalBytes += int64(len(ps.MP3))
+
+			w, err := conn.speechWs.NextWriter(websocket.BinaryMessage)
+			if err != nil {
+				ss.lg.Errorf("speechWs NextWriter: %v", err)
+				continue
+			}
+
+			if err := msgpack.NewEncoder(w).Encode(ps); err != nil {
+				ss.lg.Errorf("speechWs encode: %v", err)
+				w.Close()
+				continue
+			}
+
+			if err := w.Close(); err != nil {
+				ss.lg.Errorf("speechWs close: %v", err)
+				continue
+			}
+		}
+	}
+
+	return totalBytes
 }

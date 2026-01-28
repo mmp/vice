@@ -100,6 +100,8 @@ func (sm *SimManager) launchHTTPServer() {
 		sm.lg.Infof("%s: served stats request", r.URL.String())
 	})
 
+	mux.HandleFunc("/speech", sm.HandleSpeechWSConnection)
+
 	mux.HandleFunc("/debug/pprof/", pprof.Index)
 	mux.HandleFunc("/debug/pprof/cmdline", pprof.Cmdline)
 	mux.HandleFunc("/debug/pprof/profile", pprof.Profile)

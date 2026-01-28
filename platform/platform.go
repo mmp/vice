@@ -120,11 +120,11 @@ type Platform interface {
 	// entrypoints.
 	AddMP3(mp3 []byte) (int, error)
 
-	// Possibly MP3 audio from speech synthesis; it will be played once and
-	// discarded. If speech is currently being played,
-	// ErrCurrentlyPlayingSpeech is returned. If non-nil, the provided
-	// callback function is called after the speech has finished.
-	TryEnqueueSpeechMP3(mp3 []byte, finished func()) error
+	// TryEnqueueSpeechPCM queues pre-decoded PCM speech audio for playback.
+	// If speech is currently being played, ErrCurrentlyPlayingSpeech is returned.
+	// If non-nil, the provided callback function is called after the speech has finished.
+	// Use DecodeSpeechMP3 to decode MP3 to PCM ahead of time.
+	TryEnqueueSpeechPCM(pcm []int16, finished func()) error
 
 	// SetSpeechGarbled enables or disables garbling of speech audio.
 	// When enabled, speech is ducked and static noise is added.

@@ -75,6 +75,7 @@ func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap str
 					HaveTTS:             cr.HaveTTS,
 					AvailableWXByTRACON: cr.AvailableWXByTRACON,
 					name:                "Local (Single controller)",
+					host:                "localhost",
 					catalogs:            cr.ScenarioCatalogs,
 					runningSims:         cr.RunningSims,
 				}
@@ -95,7 +96,8 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, initials string, lg *log.L
 		return nil, err
 	}
 
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.LocalServer.HaveTTS, cm.disableTTSPtr, initials, cm.LocalServer.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.LocalServer.HaveTTS,
+		result.SpeechWSPort, cm.LocalServer.host, cm.disableTTSPtr, initials, cm.LocalServer.RPCClient, lg)
 	cm.connectionStartTime = time.Now()
 
 	// Set remote server for STT log reporting (local sims report to remote server)
@@ -131,7 +133,8 @@ func (cm *ConnectionManager) handleSuccessfulConnection(result server.NewSimResu
 		cm.client.Disconnect()
 	}
 
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken, srv.HaveTTS, cm.disableTTSPtr, initials, srv.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, srv.HaveTTS,
+		result.SpeechWSPort, srv.host, cm.disableTTSPtr, initials, srv.RPCClient, lg)
 
 	cm.connectionStartTime = time.Now()
 

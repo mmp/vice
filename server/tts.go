@@ -559,3 +559,57 @@ func makeTTSProvider(ctx context.Context, serverAddress string, lg *log.Logger) 
 	lg.Info("Successfully connected to remote TTS provider")
 	return rp
 }
+
+///////////////////////////////////////////////////////////////////////////
+// Async TTS Request Pool (for WebSocket-based readback delivery)
+
+// ttsRequest tracks a pending TTS synthesis request.
+type ttsRequest struct {
+	callsign    av.ADSBCallsign
+	ty          av.RadioTransmissionType
+	text        string
+	simTime     time.Time
+	fut         sim.TTSSpeechFuture
+	requestTime time.Time // For latency logging
+}
+
+// ttsRequestPool manages pending TTS requests for async delivery.
+type ttsRequestPool struct {
+	pending []ttsRequest
+}
+
+// add adds a new TTS request to the pool.
+func (p *ttsRequestPool) add(req ttsRequest) {
+	p.pending = append(p.pending, req)
+}
+
+// drainCompleted removes and returns all completed TTS requests.
+func (p *ttsRequestPool) drainCompleted(lg *log.Logger) []sim.PilotSpeech {
+	var completed []sim.PilotSpeech
+	var remaining []ttsRequest
+
+	for _, req := range p.pending {
+		select {
+		case mp3, ok := <-req.fut.Mp3Ch:
+			if ok && len(mp3) > 0 {
+				completed = append(completed, sim.PilotSpeech{
+					Callsign: req.callsign,
+					Type:     req.ty,
+					Text:     req.text,
+					MP3:      mp3,
+					SimTime:  req.simTime,
+				})
+			}
+		case err, ok := <-req.fut.ErrCh:
+			if ok {
+				lg.Warnf("Async TTS error for %s: %v", req.callsign, err)
+			}
+		default:
+			// Not complete yet, keep it
+			remaining = append(remaining, req)
+		}
+	}
+
+	p.pending = remaining
+	return completed
+}

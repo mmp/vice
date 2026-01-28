@@ -10,6 +10,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"log/slog"
+	"net/http"
 	"os"
 	"path/filepath"
 	"slices"
@@ -447,6 +448,9 @@ func (sm *SimManager) runSimUpdateLoop(session *simSession) {
 
 		session.sim.Update()
 
+		// Send any completed async readback TTS via WebSocket
+		sm.websocketTXBytes.Add(session.SendPendingReadbacks())
+
 		time.Sleep(100 * time.Millisecond)
 	}
 
@@ -705,6 +709,31 @@ func (sm *SimManager) GetSerializeSim(token string, s *sim.Sim) error {
 
 	*s = c.sim.GetSerializeSim()
 	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Text-to-Speech
+
+// HandleSpeechWSConnection handles WebSocket connections for async speech delivery.
+func (sm *SimManager) HandleSpeechWSConnection(w http.ResponseWriter, r *http.Request) {
+	authHeader := r.Header.Get("Authorization")
+	if !strings.HasPrefix(authHeader, "Bearer ") {
+		http.Error(w, "Missing or invalid Authorization header", http.StatusUnauthorized)
+		return
+	}
+	token := strings.TrimPrefix(authHeader, "Bearer ")
+
+	sm.mu.Lock(sm.lg)
+	session, ok := sm.sessionsByToken[token]
+	if !ok {
+		sm.mu.Unlock(sm.lg)
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		sm.lg.Errorf("Invalid token for speech websocket: %s", token)
+		return
+	}
+	sm.mu.Unlock(sm.lg)
+
+	session.HandleSpeechWSConnection(token, w, r)
 }
 
 ///////////////////////////////////////////////////////////////////////////

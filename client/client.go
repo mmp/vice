@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"net/http"
 	"net/rpc"
 	"os"
 	"path/filepath"
@@ -32,6 +33,8 @@ import (
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
+	"github.com/gorilla/websocket"
+	"github.com/vmihailenco/msgpack/v5"
 	"golang.org/x/sys/cpu"
 )
 
@@ -49,6 +52,11 @@ type ControlClient struct {
 	LastCommand           string
 	LastWhisperDurationMs int64 // Last whisper transcription time in milliseconds
 	eventStream           *sim.EventStream
+
+	// WebSocket for async speech delivery
+	speechWsServerAddr string
+	speechWsConn       *websocket.Conn
+	speechWsClose      chan struct{}
 
 	// Streaming STT state
 	streamingSTT   *streamingSTT
@@ -99,6 +107,7 @@ type Server struct {
 	AvailableWXByTRACON map[string][]util.TimeInterval
 
 	name        string
+	host        string // hostname for WebSocket connections
 	catalogs    map[string]map[string]*server.ScenarioCatalog
 	runningSims map[string]*server.RunningSim
 }
@@ -218,7 +227,8 @@ func (p *pendingCall) InvokeCallback(es *sim.EventStream, state *SimState) {
 	}
 }
 
-func NewControlClient(ss server.SimState, controllerToken string, haveTTS bool, disableTTSPtr *bool, initials string, client *RPCClient, lg *log.Logger) *ControlClient {
+func NewControlClient(ss server.SimState, controllerToken string, haveTTS bool, speechWSPort int, speechServerHost string,
+	disableTTSPtr *bool, initials string, client *RPCClient, lg *log.Logger) *ControlClient {
 	cc := &ControlClient{
 		controllerToken:   controllerToken,
 		client:            client,
@@ -229,16 +239,106 @@ func NewControlClient(ss server.SimState, controllerToken string, haveTTS bool, 
 		haveTTS:           haveTTS,
 		disableTTSPtr:     disableTTSPtr,
 		sttTranscriber:    stt.NewTranscriber(lg),
+		speechWsClose:     make(chan struct{}),
 	}
 
 	cc.SessionStats.SignOnTime = ss.SimTime
 	cc.SessionStats.Initials = initials
 	cc.SessionStats.seenCallsigns = make(map[av.ADSBCallsign]any)
+
+	// Connect to WebSocket for async speech delivery if available
+	if speechWSPort > 0 && haveTTS {
+		cc.speechWsServerAddr = fmt.Sprintf("ws://%s:%d/speech", speechServerHost, speechWSPort)
+		go cc.connectSpeechWebSocket()
+	}
+
 	return cc
 }
 
 func (c *ControlClient) HaveTTS() bool {
 	return c.haveTTS
+}
+
+// connectSpeechWebSocket establishes and maintains a WebSocket connection for async speech delivery.
+func (c *ControlClient) connectSpeechWebSocket() {
+	defer c.lg.CatchAndReportCrash()
+
+	for {
+		select {
+		case <-c.speechWsClose:
+			return
+		default:
+		}
+
+		c.lg.Infof("Connecting to speech WebSocket: %s", c.speechWsServerAddr)
+
+		// Set up the request with Authorization header
+		header := http.Header{}
+		header.Set("Authorization", "Bearer "+c.controllerToken)
+
+		dialer := websocket.Dialer{}
+		conn, _, err := dialer.Dial(c.speechWsServerAddr, header)
+		if err != nil {
+			c.lg.Warnf("Speech WebSocket dial error: %v", err)
+			select {
+			case <-c.speechWsClose:
+				return
+			case <-time.After(5 * time.Second):
+				continue // Retry connection
+			}
+		}
+
+		c.mu.Lock()
+		c.speechWsConn = conn
+		c.mu.Unlock()
+
+		c.lg.Infof("Speech WebSocket connected")
+
+		// Read messages until error or close
+		c.readSpeechMessages(conn)
+
+		c.mu.Lock()
+		c.speechWsConn = nil
+		c.mu.Unlock()
+
+		// Small delay before reconnecting
+		select {
+		case <-c.speechWsClose:
+			return
+		case <-time.After(1 * time.Second):
+		}
+	}
+}
+
+// readSpeechMessages reads PilotSpeech messages from the WebSocket and enqueues them.
+func (c *ControlClient) readSpeechMessages(conn *websocket.Conn) {
+	for {
+		_, message, err := conn.ReadMessage()
+		if err != nil {
+			if !websocket.IsCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway) {
+				c.lg.Warnf("Speech WebSocket read error: %v", err)
+			}
+			return
+		}
+
+		var ps sim.PilotSpeech
+		if err := msgpack.Unmarshal(message, &ps); err != nil {
+			c.lg.Errorf("Speech WebSocket unmarshal error: %v", err)
+			continue
+		}
+
+		// Decode MP3 to PCM here (off the main thread) to avoid frame drops
+		pcm, err := platform.DecodeSpeechMP3(ps.MP3)
+		if err != nil {
+			c.lg.Errorf("Speech WebSocket MP3 decode error for %s: %v", ps.Callsign, err)
+			continue
+		}
+
+		c.lg.Infof("Received speech via WebSocket for %s (%d bytes)", ps.Callsign, len(ps.MP3))
+
+		// Enqueue with pre-decoded PCM (high priority, front of queue)
+		c.transmissions.EnqueueReadbackPCM(ps.Callsign, ps.Type, pcm)
+	}
 }
 
 func (c *ControlClient) Status() string {
@@ -260,6 +360,19 @@ func (c *ControlClient) Status() string {
 }
 
 func (c *ControlClient) Disconnect() {
+	// Close the WebSocket connection if open (do this before acquiring mu since
+	// the WebSocket receiver also needs mu)
+	if c.speechWsClose != nil {
+		close(c.speechWsClose)
+	}
+
+	c.mu.Lock()
+	if c.speechWsConn != nil {
+		c.speechWsConn.Close()
+		c.speechWsConn = nil
+	}
+	c.mu.Unlock()
+
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -364,7 +477,14 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 				ttsEnabled := c.disableTTSPtr == nil || !*c.disableTTSPtr
 				if err == nil && ttsEnabled {
 					for _, speech := range update.EmergencyTransmissions {
-						c.transmissions.EnqueueTransmission(speech)
+						// Decode MP3 to PCM before enqueueing (off main render loop)
+						pcm, decodeErr := platform.DecodeSpeechMP3(speech.MP3)
+						if decodeErr != nil {
+							c.lg.Errorf("Emergency transmission MP3 decode error for %s: %v",
+								speech.Callsign, decodeErr)
+							continue
+						}
+						c.transmissions.EnqueueTransmissionPCM(speech.Callsign, speech.Type, pcm)
 					}
 				}
 
@@ -1319,6 +1439,8 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 		}
 		whisperDuration := time.Since(pttReleaseTime)
 
+		lg.Infof("Whisper transcription completed in %v: %q", whisperDuration, finalText)
+
 		c.mu.Lock()
 		c.LastWhisperDurationMs = whisperDuration.Milliseconds()
 		c.LastTranscription = finalText
@@ -1447,7 +1569,7 @@ func (c *ControlClient) StopStreamingSTT(lg *log.Logger) {
 			c.mu.Unlock()
 		}
 
-		// Execute the command via RPC (this handles TTS readback)
+		// Execute the command via RPC (TTS readback will arrive via WebSocket)
 		whisperModelName := GetWhisperModelName()
 		c.RunAircraftCommands(AircraftCommandRequest{
 			Callsign:          av.ADSBCallsign(callsign),
@@ -1635,12 +1757,18 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnect
 				ch <- &serverConnection{Err: err}
 			} else {
 				lg.Debugf("%s: server returned configuration in %s", hostname, time.Since(start))
+				// Extract just the host part (without port) for WebSocket connections
+				host, _, _ := net.SplitHostPort(hostname)
+				if host == "" {
+					host = hostname
+				}
 				ch <- &serverConnection{
 					Server: &Server{
 						RPCClient:           client,
 						HaveTTS:             cr.HaveTTS,
 						AvailableWXByTRACON: cr.AvailableWXByTRACON,
 						name:                "Network (Multi-controller)",
+						host:                host,
 						catalogs:            cr.ScenarioCatalogs,
 						runningSims:         cr.RunningSims,
 					},

@@ -53,8 +53,9 @@ var (
 
 		// STT state
 		pttRecording bool
-		pttGarbling  bool // true if PTT pressed while audio was playing (no recording)
-		pttCapture   bool // capturing new PTT key assignment
+		pttGarbling  bool      // true if PTT pressed while audio was playing (no recording)
+		pttCapture   bool      // capturing new PTT key assignment
+		pttPressTime time.Time // for latency logging
 	}
 
 	//go:embed icons/tower-256x256.png
@@ -953,6 +954,8 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 			ui.pttGarbling = true
 			lg.Infof("Push-to-talk: Garbling audio (pressed during playback)")
 		} else {
+			ui.pttPressTime = time.Now()
+
 			// Get preroll samples before starting recording (if capture is active)
 			preroll := p.GetAudioPreroll()
 

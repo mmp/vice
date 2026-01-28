@@ -636,13 +636,10 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 		}
 	}
 
-	// Helper to synthesize TTS for readback
-	synthesizeReadback := func(spokenText string) {
+	// Helper to queue async TTS for readback (delivered via WebSocket)
+	queueReadbackTTS := func(spokenText string) {
 		if cmds.EnableTTS && spokenText != "" {
-			result.Readback = SynthesizeSpeechWithTimeout(
-				c.session.voiceAssigner, sd.sm.tts, callsign,
-				av.RadioTransmissionReadback, spokenText, simTime,
-				2*time.Second, sd.sm.lg)
+			c.session.QueueReadbackTTS(cmds.ControllerToken, sd.sm.tts, callsign, spokenText, simTime)
 		}
 	}
 
@@ -651,14 +648,14 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 		if err != nil {
 			rewriteError(err)
 		}
-		synthesizeReadback(spokenText)
+		queueReadbackTTS(spokenText)
 		return nil // don't continue with the commands
 	} else if !cmds.ClickedTrack && c.sim.ShouldTriggerPilotMixUp(callsign) {
 		spokenText, err := c.sim.PilotMixUp(c.tcw, callsign)
 		if err != nil {
 			rewriteError(err)
 		}
-		synthesizeReadback(spokenText)
+		queueReadbackTTS(spokenText)
 		return nil // don't continue with the commands
 	}
 
@@ -667,7 +664,7 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	if execResult.Error != nil {
 		result.ErrorMessage = execResult.Error.Error()
 	}
-	synthesizeReadback(execResult.ReadbackSpokenText)
+	queueReadbackTTS(execResult.ReadbackSpokenText)
 
 	// Log whisper STT commands (WhisperDuration is non-zero for voice commands)
 	if cmds.WhisperDuration > 0 {

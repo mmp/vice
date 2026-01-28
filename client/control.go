@@ -10,6 +10,7 @@ import (
 	whisper "github.com/mmp/vice/autowhisper"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/stt"
@@ -417,15 +418,13 @@ func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 	// Determine if TTS is enabled for this command
 	enableTTS := c.HaveTTS() && (c.disableTTSPtr == nil || !*c.disableTTSPtr) && req.Commands != "P" && req.Commands != "X"
 
-	// Capture PTT release time now (before async RPC) - will be zero for non-STT commands
-	pttReleaseTime := c.GetAndClearPTTReleaseTime()
-
 	// Get processor info for voice commands
 	var processorDesc string
 	if req.WhisperDuration > 0 {
 		processorDesc = whisper.ProcessorDescription()
 	}
 
+	rpcStart := time.Now()
 	var result server.AircraftCommandsResult
 	c.addCall(makeRPCCall(c.client.Go(server.RunAircraftCommandsRPC, &server.AircraftCommandsArgs{
 		ControllerToken:   c.controllerToken,
@@ -443,11 +442,9 @@ func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 		STTDebugLogs:      req.STTDebugLogs,
 	}, &result, nil),
 		func(err error) {
-			// Handle readback from RPC result
-			if result.Readback != nil {
-				// Set PTT release time for latency tracking (only set for STT commands)
-				result.Readback.PTTReleaseTime = pttReleaseTime
-				c.transmissions.EnqueueReadback(*result.Readback)
+			rpcDuration := time.Since(rpcStart)
+			if req.WhisperDuration > 0 {
+				c.lg.Infof("RPC round-trip: %v", rpcDuration)
 			}
 			if handleResult != nil {
 				handleResult(result.ErrorMessage, result.RemainingInput)
@@ -474,7 +471,15 @@ func (c *ControlClient) RequestContactTransmission() {
 			}
 
 			if result.ContactSpeech != nil {
-				c.transmissions.EnqueueTransmission(*result.ContactSpeech)
+				// Decode MP3 to PCM before enqueueing (off main render loop)
+				pcm, decodeErr := platform.DecodeSpeechMP3(result.ContactSpeech.MP3)
+				if decodeErr != nil {
+					c.lg.Errorf("RequestContactTransmission MP3 decode error for %s: %v",
+						result.ContactSpeech.Callsign, decodeErr)
+					return
+				}
+				c.transmissions.EnqueueTransmissionPCM(result.ContactSpeech.Callsign,
+					result.ContactSpeech.Type, pcm)
 			}
 		}))
 }

@@ -14,12 +14,20 @@ import (
 	"github.com/mmp/vice/sim"
 )
 
+// queuedTransmission holds a transmission ready for playback with pre-decoded PCM audio.
+type queuedTransmission struct {
+	Callsign       av.ADSBCallsign
+	Type           av.RadioTransmissionType
+	PCM            []int16 // Pre-decoded PCM audio
+	PTTReleaseTime time.Time
+}
+
 // TransmissionManager manages queuing and playback of radio transmissions.
 // It centralizes the logic for playing MP3s in the correct order and handling
 // playback state like holds after transmissions.
 type TransmissionManager struct {
 	mu           sync.Mutex
-	queue        []sim.PilotSpeech // pending transmissions
+	queue        []queuedTransmission // pending transmissions
 	playing      bool
 	holdCount    int       // explicit holds (e.g., during STT recording/processing)
 	holdUntil    time.Time // time-based hold for post-transmission pauses
@@ -47,32 +55,43 @@ func (tm *TransmissionManager) SetEventStream(es *sim.EventStream) {
 	tm.eventStream = es
 }
 
-// EnqueueReadback adds a readback to the front of the queue (high priority).
-// Readbacks come directly from RunAircraftCommands RPC results and should
-// be played immediately or as soon as possible.
-func (tm *TransmissionManager) EnqueueReadback(ps sim.PilotSpeech) {
+// EnqueueReadbackPCM adds a readback with pre-decoded PCM to the front of the queue (high priority).
+// Readbacks come from WebSocket delivery with pre-decoded audio.
+func (tm *TransmissionManager) EnqueueReadbackPCM(callsign av.ADSBCallsign, ty av.RadioTransmissionType, pcm []int16) {
 	tm.mu.Lock()
 	defer tm.mu.Unlock()
 
-	if len(ps.MP3) == 0 {
-		tm.lg.Warnf("Skipping readback for %s due to empty MP3", ps.Callsign)
+	if len(pcm) == 0 {
+		tm.lg.Warnf("Skipping readback for %s due to empty PCM", callsign)
 		return
 	}
 
+	qt := queuedTransmission{
+		Callsign: callsign,
+		Type:     ty,
+		PCM:      pcm,
+	}
 	// Insert at front - readbacks have priority
-	tm.queue = append([]sim.PilotSpeech{ps}, tm.queue...)
+	tm.queue = append([]queuedTransmission{qt}, tm.queue...)
 }
 
-// EnqueueTransmission adds a pilot transmission to the queue.
-func (tm *TransmissionManager) EnqueueTransmission(ps sim.PilotSpeech) {
+// EnqueueTransmissionPCM adds a pilot transmission with pre-decoded PCM to the queue.
+// Used for contact and emergency transmissions where MP3 is decoded before enqueueing.
+func (tm *TransmissionManager) EnqueueTransmissionPCM(callsign av.ADSBCallsign, ty av.RadioTransmissionType, pcm []int16) {
 	tm.mu.Lock()
 	defer tm.mu.Unlock()
 
-	if len(ps.MP3) == 0 {
-		tm.lg.Warnf("Skipping speech for %s due to empty MP3", ps.Callsign)
+	if len(pcm) == 0 {
+		tm.lg.Warnf("Skipping transmission for %s due to empty PCM", callsign)
 		return
 	}
-	tm.queue = append(tm.queue, ps)
+
+	qt := queuedTransmission{
+		Callsign: callsign,
+		Type:     ty,
+		PCM:      pcm,
+	}
+	tm.queue = append(tm.queue, qt)
 }
 
 // Update manages playback state, called each frame.
@@ -102,19 +121,18 @@ func (tm *TransmissionManager) Update(p platform.Platform, paused, sttActive boo
 	}
 
 	// Get next speech to play
-	ps := tm.queue[0]
+	qt := tm.queue[0]
 	tm.queue = tm.queue[1:]
 
 	// Track whether this is a contact (vs readback)
-	isContact := ps.Type == av.RadioTransmissionContact
+	isContact := qt.Type == av.RadioTransmissionContact
 
-	// Try to enqueue for playback
-	if err := p.TryEnqueueSpeechMP3(ps.MP3, func() {
+	finishedCallback := func() {
 		tm.mu.Lock()
 		defer tm.mu.Unlock()
 
 		tm.playing = false
-		tm.lastCallsign = ps.Callsign
+		tm.lastCallsign = qt.Callsign
 		tm.lastWasContact = isContact
 
 		// Different hold times based on transmission type:
@@ -125,17 +143,24 @@ func (tm *TransmissionManager) Update(p platform.Platform, paused, sttActive boo
 		} else {
 			tm.holdUntil = time.Now().Add(3 * time.Second)
 		}
-	}); err == nil {
+	}
+
+	// Enqueue pre-decoded PCM for playback
+	err := p.TryEnqueueSpeechPCM(qt.PCM, finishedCallback)
+
+	if err == nil {
 		tm.playing = true
 
 		// Post latency event if this is from an STT command (PTTReleaseTime is set)
-		if !ps.PTTReleaseTime.IsZero() && tm.eventStream != nil {
-			latencyMs := int(time.Since(ps.PTTReleaseTime).Milliseconds())
-			tm.eventStream.Post(sim.Event{
-				Type:         sim.TTSPlaybackStartedEvent,
-				ADSBCallsign: ps.Callsign,
-				TTSLatencyMs: latencyMs,
-			})
+		if !qt.PTTReleaseTime.IsZero() {
+			latencyMs := int(time.Since(qt.PTTReleaseTime).Milliseconds())
+			if tm.eventStream != nil {
+				tm.eventStream.Post(sim.Event{
+					Type:         sim.TTSPlaybackStartedEvent,
+					ADSBCallsign: qt.Callsign,
+					TTSLatencyMs: latencyMs,
+				})
+			}
 		}
 	}
 }

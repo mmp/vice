@@ -104,7 +104,37 @@ func (a *audioEngine) AddMP3(mp3 []byte) (int, error) {
 	}
 }
 
-func (a *audioEngine) TryEnqueueSpeechMP3(mp3 []byte, finished func()) error {
+// DecodeSpeechMP3 decodes MP3 audio to PCM samples ready for playback.
+// This can be called from any goroutine to pre-decode audio.
+func DecodeSpeechMP3(mp3 []byte) ([]int16, error) {
+	if len(mp3) == 0 {
+		return nil, nil
+	}
+
+	_, pcm, err := minimp3.DecodeFull(mp3)
+	if err != nil {
+		return nil, err
+	}
+
+	// Poor man's resampling: repeat each sample rep times to get close
+	// to the standard rate.
+	pcm16 := pcm16FromBytes(pcm)
+	if len(pcm16) == 0 {
+		return nil, nil
+	}
+	rep := 2
+	pcmr := make([]int16, rep*len(pcm16))
+	for i := range len(pcm16) {
+		for j := range rep {
+			pcmr[rep*i+j] = pcm16[i]
+		}
+	}
+
+	addNoise(pcmr)
+	return pcmr, nil
+}
+
+func (a *audioEngine) TryEnqueueSpeechPCM(pcm []int16, finished func()) error {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
@@ -112,36 +142,16 @@ func (a *audioEngine) TryEnqueueSpeechMP3(mp3 []byte, finished func()) error {
 		return ErrCurrentlyPlayingSpeech
 	}
 
-	if len(mp3) == 0 {
-		finished()
-		return nil
-	}
-
-	if _, pcm, err := minimp3.DecodeFull(mp3); err != nil {
-		return err
-	} else {
-		// Poor man's resampling: repeat each sample rep times to get close
-		// to the standard rate.
-		pcm16 := pcm16FromBytes(pcm)
-		if len(pcm16) == 0 {
+	if len(pcm) == 0 {
+		if finished != nil {
 			finished()
-			return nil
 		}
-		rep := 2
-		pcmr := make([]int16, rep*len(pcm16))
-		for i := range len(pcm16) {
-			for j := range rep {
-				pcmr[rep*i+j] = pcm16[i]
-			}
-		}
-
-		addNoise(pcmr)
-
-		a.speechq = pcmr
-		a.speechcb = finished
-
 		return nil
 	}
+
+	a.speechq = pcm
+	a.speechcb = finished
+	return nil
 }
 
 func addNoise(pcm []int16) {
