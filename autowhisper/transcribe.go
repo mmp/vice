@@ -7,8 +7,15 @@ import (
 	"math"
 	"runtime"
 	"strings"
+	"sync"
 
 	whisper "github.com/mmp/vice/autowhisper/internal/whisper"
+)
+
+// Cached processor description to avoid expensive system_profiler calls on every voice command
+var (
+	cachedProcessorDesc     string
+	cachedProcessorDescOnce sync.Once
 )
 
 // Model wraps a loaded whisper model for reuse across transcriptions.
@@ -65,7 +72,15 @@ func GetGPUInfo() GPUInfo {
 // ProcessorDescription returns a string describing the processor being used for whisper.
 // If GPU acceleration is enabled, it returns the GPU device description.
 // If running on CPU, it returns CPU info with OS, architecture, and core count.
+// The result is cached since it involves expensive system calls (e.g., system_profiler on macOS).
 func ProcessorDescription() string {
+	cachedProcessorDescOnce.Do(func() {
+		cachedProcessorDesc = computeProcessorDescription()
+	})
+	return cachedProcessorDesc
+}
+
+func computeProcessorDescription() string {
 	info := GetGPUInfo()
 	if info.Enabled && len(info.Devices) > 0 {
 		// Find the selected GPU device
