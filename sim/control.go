@@ -719,7 +719,11 @@ func (s *Sim) ContactController(tcw TCW, acid ACID, toTCP TCP) (av.CommandIntent
 			return nil
 		},
 		func(tcw TCW, sfp *NASFlightPlan, ac *Aircraft) av.CommandIntent {
-			return s.contactController(s.State.PrimaryPositionForTCW(tcw), sfp, ac, toTCP)
+			if s.State.TCWControlsPosition(tcw, toTCP) {
+				return av.MakeUnableIntent("Unable, we are already on your frequency")
+			} else {
+				return s.contactController(s.State.PrimaryPositionForTCW(tcw), sfp, ac, toTCP)
+			}
 		})
 }
 
