@@ -1946,6 +1946,10 @@ func (s *Sim) enqueueEmergencyTransmission(callsign av.ADSBCallsign, tcp TCP, rt
 // aircraft that hasn't checked in yet, preventing stale check-ins.
 // Caller must hold s.mu.
 func (s *Sim) cancelPendingInitialContact(callsign av.ADSBCallsign) {
+	if s.PendingContacts == nil {
+		return
+	}
+
 	ac := s.Aircraft[callsign]
 	tcp := TCP(ac.ControllerFrequency)
 
