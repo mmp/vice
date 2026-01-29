@@ -93,6 +93,20 @@ func (nav *Nav) AssignSpeed(speed float32, afterAltitude bool) av.CommandIntent 
 	}
 }
 
+func (nav *Nav) AssignSpeedUntil(speed float32, until *av.SpeedUntil) av.CommandIntent {
+	maxIAS := av.TASToIAS(nav.Perf.Speed.MaxTAS, nav.FlightState.Altitude)
+	maxIAS = 10 * float32(int((maxIAS+5)/10)) // round to 10s
+
+	if float32(speed) < nav.Perf.Speed.Landing {
+		return av.MakeUnableIntent("unable. Our minimum speed is {spd}", nav.Perf.Speed.Landing)
+	} else if float32(speed) > maxIAS {
+		return av.MakeUnableIntent("unable. Our maximum speed is {spd}", maxIAS)
+	}
+
+	nav.Speed = NavSpeed{Assigned: &speed}
+	return av.SpeedIntent{Speed: speed, Type: av.SpeedUntilFinal, Until: until}
+}
+
 func (nav *Nav) MaintainSlowestPractical() av.CommandIntent {
 	nav.Speed = NavSpeed{MaintainSlowestPractical: true}
 	return av.SpeedIntent{Type: av.SpeedSlowestPractical}

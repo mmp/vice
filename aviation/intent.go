@@ -194,11 +194,20 @@ const (
 	SpeedUntilFinal // speed restriction until 5 mile final
 )
 
+// SpeedUntil specifies when a speed restriction ends.
+// Only one field should be set at a time.
+type SpeedUntil struct {
+	Fix       string // fix name (e.g., "ROSLY")
+	DME       int    // DME distance (e.g., 5 for "5 DME")
+	MileFinal int    // mile final (e.g., 6 for "6 mile final")
+}
+
 // SpeedIntent represents speed assignment commands
 type SpeedIntent struct {
 	Speed         float32
 	Type          SpeedType
-	AfterAltitude *float32 // speed change conditional on reaching this altitude
+	AfterAltitude *float32    // speed change conditional on reaching this altitude
+	Until         *SpeedUntil // what the speed restriction is "until"
 }
 
 func (s SpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
@@ -212,7 +221,17 @@ func (s SpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	case SpeedPresentSpeed:
 		rt.Add("[maintain present speed|present speed we'll keep it at {spd}|maintaining {spd}]", s.Speed)
 	case SpeedUntilFinal:
-		rt.Add("{spd} until 5 mile final", s.Speed)
+		if s.Until != nil {
+			if s.Until.Fix != "" {
+				rt.Add("{spd} until {fix}", s.Speed, s.Until.Fix)
+			} else if s.Until.DME > 0 {
+				rt.Add("{spd} until {num} D M E", s.Speed, s.Until.DME)
+			} else if s.Until.MileFinal > 0 {
+				rt.Add("{spd} until {num} mile final", s.Speed, s.Until.MileFinal)
+			}
+		} else {
+			rt.Add("[speed {spd} for now|we'll keep it at {spd} for now]", s.Speed)
+		}
 	case SpeedReduce:
 		if s.AfterAltitude != nil {
 			rt.Add("[at {alt} maintain {spd}|at {alt} {spd}|{alt} then {spd}]", *s.AfterAltitude, s.Speed)

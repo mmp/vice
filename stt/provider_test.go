@@ -295,7 +295,7 @@ func TestCompoundCommands(t *testing.T) {
 			expected: "UAL333 L180 D60",
 		},
 		{
-			name:       "cleared approach with speed until distance (5 mile final is not altitude)",
+			name:       "cleared approach with speed until 5 mile final",
 			transcript: "Turkish 10Z heavy cleared I L S runway two two left approach maintain speed 180 until 5 mile final",
 			aircraft: map[string]Aircraft{
 				"Turkish 10Z heavy": {
@@ -308,7 +308,7 @@ func TestCompoundCommands(t *testing.T) {
 					},
 				},
 			},
-			expected: "THY10Z CI2L S180",
+			expected: "THY10Z CI2L S180/U5",
 		},
 		{
 			name:       "cleared approach with joined ILS and missing runway",
@@ -325,6 +325,91 @@ func TestCompoundCommands(t *testing.T) {
 				},
 			},
 			expected: "AAL717 CI8C",
+		},
+		{
+			name:       "speed until DME",
+			transcript: "Delta 456 speed one eight zero until five DME",
+			aircraft: map[string]Aircraft{
+				"Delta 456": {Callsign: "DAL456", Altitude: 3000, State: "arrival"},
+			},
+			expected: "DAL456 S180/U5DME",
+		},
+		{
+			name:       "speed until 6 mile final",
+			transcript: "Southwest 221 maintain speed one niner zero until six mile final",
+			aircraft: map[string]Aircraft{
+				"Southwest 221": {Callsign: "SWA221", Altitude: 4000, State: "arrival"},
+			},
+			expected: "SWA221 S190/U6",
+		},
+		{
+			name:       "reduce speed until fix",
+			transcript: "JetBlue 615 reduce speed to one seven zero until Rosley",
+			aircraft: map[string]Aircraft{
+				"JetBlue 615": {
+					Callsign: "JBU615",
+					Altitude: 5000,
+					State:    "arrival",
+					Fixes:    map[string]string{"Rosley": "ROSLY"},
+				},
+			},
+			expected: "JBU615 S170/UROSLY",
+		},
+		{
+			name:       "speed until with D M E spelled out",
+			transcript: "American 100 speed one eight zero until five D M E",
+			aircraft: map[string]Aircraft{
+				"American 100": {Callsign: "AAL100", Altitude: 3500, State: "arrival"},
+			},
+			expected: "AAL100 S180/U5DME",
+		},
+		{
+			name:       "speed until advised",
+			transcript: "Delta 789 maintain one niner zero until advised",
+			aircraft: map[string]Aircraft{
+				"Delta 789": {Callsign: "DAL789", Altitude: 3000, State: "arrival"},
+			},
+			expected: "DAL789 S190",
+		},
+		{
+			name:       "speed for now",
+			transcript: "Southwest 123 maintain speed one eight zero for now",
+			aircraft: map[string]Aircraft{
+				"Southwest 123": {Callsign: "SWA123", Altitude: 4000, State: "arrival"},
+			},
+			expected: "SWA123 S180",
+		},
+		{
+			name:       "cleared approach with speed until advised",
+			transcript: "United 456 cleared ILS runway two eight left approach maintain one niner zero until advised",
+			aircraft: map[string]Aircraft{
+				"United 456": {
+					Callsign:         "UAL456",
+					Altitude:         3500,
+					State:            "arrival",
+					AssignedApproach: "ILS Runway 28L",
+					CandidateApproaches: map[string]string{
+						"I L S runway two eight left": "I28L",
+					},
+				},
+			},
+			expected: "UAL456 CI28L S190",
+		},
+		{
+			name:       "cleared approach with speed for now",
+			transcript: "American 789 cleared ILS runway three six approach speed one eight zero for now",
+			aircraft: map[string]Aircraft{
+				"American 789": {
+					Callsign:         "AAL789",
+					Altitude:         4000,
+					State:            "arrival",
+					AssignedApproach: "ILS Runway 36",
+					CandidateApproaches: map[string]string{
+						"I L S runway three six": "I36",
+					},
+				},
+			},
+			expected: "AAL789 CI36 S180",
 		},
 	}
 

@@ -549,6 +549,30 @@ func (p *textParser) parse(tokens []Token, pos int, ac Aircraft) (value any, con
 	return nil, 0, ""
 }
 
+// speedUntilParser extracts a speed "until" specification (fix, DME, or mile final).
+type speedUntilParser struct{}
+
+func (p *speedUntilParser) identifier() string {
+	return "speed_until"
+}
+
+func (p *speedUntilParser) goType() reflect.Type {
+	return reflect.TypeOf(speedUntilResult{})
+}
+
+func (p *speedUntilParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
+	if pos >= len(tokens) {
+		return nil, 0, ""
+	}
+
+	result, consumed := extractSpeedUntil(tokens[pos:], ac)
+	if consumed > 0 {
+		return result, consumed, ""
+	}
+
+	return nil, 0, ""
+}
+
 // getTypeParser returns the appropriate parser for a type identifier.
 func getTypeParser(typeID string) typeParser {
 	switch typeID {
@@ -578,6 +602,8 @@ func getTypeParser(typeID string) typeParser {
 		return &holdParser{}
 	case "text":
 		return &textParser{}
+	case "speed_until":
+		return &speedUntilParser{}
 	default:
 		// Check for range pattern: num:min-max
 		if strings.HasPrefix(typeID, "num:") {

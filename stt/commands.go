@@ -1643,5 +1643,147 @@ func extractAltitudeValue(t Token) int {
 	return 0
 }
 
+// speedUntilResult represents the result of extracting a speed "until" specification.
+type speedUntilResult struct {
+	suffix string // e.g., "ROSLY", "5DME", "6"
+}
+
+// extractSpeedUntil extracts a speed "until" specification from tokens.
+// Looks for patterns like:
+//   - "until ROSLY" → fix name
+//   - "until 5 DME" / "until 5 D M E" → DME distance
+//   - "until 6 mile final" → mile final
+//
+// Also handles common STT errors for "until": "unto", "on two", "intel", "and tell"
+// Returns the result and number of tokens consumed.
+func extractSpeedUntil(tokens []Token, ac Aircraft) (speedUntilResult, int) {
+	if len(tokens) == 0 {
+		return speedUntilResult{}, 0
+	}
+
+	consumed := 0
+
+	// Look for "until" keyword or its STT variants
+	untilFound := false
+	for consumed < len(tokens) && consumed < 5 {
+		text := strings.ToLower(tokens[consumed].Text)
+		if isUntilKeyword(text) {
+			untilFound = true
+			consumed++
+			break
+		}
+		// Skip filler words
+		if IsFillerWord(text) {
+			consumed++
+			continue
+		}
+		break
+	}
+
+	if !untilFound || consumed >= len(tokens) {
+		return speedUntilResult{}, 0
+	}
+
+	// Now try to match what comes after "until"
+
+	// 1. Try DME pattern: number followed by "DME" or "D M E"
+	if dme, dmeConsumed := extractDME(tokens[consumed:]); dmeConsumed > 0 {
+		return speedUntilResult{suffix: fmt.Sprintf("%dDME", dme)}, consumed + dmeConsumed
+	}
+
+	// 2. Try mile final pattern: number followed by "mile(s) final"
+	if miles, mileConsumed := extractMileFinal(tokens[consumed:]); mileConsumed > 0 {
+		return speedUntilResult{suffix: fmt.Sprintf("%d", miles)}, consumed + mileConsumed
+	}
+
+	// 3. Try fix name match from aircraft's known fixes (includes approach fixes)
+	if fix, _, fixConsumed := extractFix(tokens[consumed:], ac.Fixes); fixConsumed > 0 {
+		return speedUntilResult{suffix: fix}, consumed + fixConsumed
+	}
+
+	return speedUntilResult{}, 0
+}
+
+// isUntilKeyword checks if a word is "until" or a common STT transcription error.
+func isUntilKeyword(text string) bool {
+	switch text {
+	case "until", "unto", "intel", "untill", "intil":
+		return true
+	}
+	return false
+}
+
+// extractDME extracts a DME distance from tokens.
+// Handles: "5 DME", "5 D M E", "5DME"
+func extractDME(tokens []Token) (int, int) {
+	if len(tokens) == 0 {
+		return 0, 0
+	}
+
+	// First token should be a number
+	if tokens[0].Type != TokenNumber || tokens[0].Value < 1 || tokens[0].Value > 30 {
+		return 0, 0
+	}
+	num := tokens[0].Value
+	consumed := 1
+
+	if consumed >= len(tokens) {
+		return 0, 0
+	}
+
+	// Check for "DME" or "D M E" or "D. M. E." patterns
+	nextText := strings.ToLower(tokens[consumed].Text)
+	if nextText == "dme" || FuzzyMatch(nextText, "dme", 0.8) {
+		return num, consumed + 1
+	}
+
+	// Check for spelled out "D M E"
+	if nextText == "d" && consumed+2 < len(tokens) {
+		if strings.ToLower(tokens[consumed+1].Text) == "m" &&
+			strings.ToLower(tokens[consumed+2].Text) == "e" {
+			return num, consumed + 3
+		}
+	}
+
+	return 0, 0
+}
+
+// extractMileFinal extracts a mile final specification from tokens.
+// Handles: "6 mile final", "5 miles final"
+func extractMileFinal(tokens []Token) (int, int) {
+	if len(tokens) == 0 {
+		return 0, 0
+	}
+
+	// First token should be a number
+	if tokens[0].Type != TokenNumber || tokens[0].Value < 1 || tokens[0].Value > 20 {
+		return 0, 0
+	}
+	num := tokens[0].Value
+	consumed := 1
+
+	if consumed >= len(tokens) {
+		return 0, 0
+	}
+
+	// Check for "mile" or "miles"
+	nextText := strings.ToLower(tokens[consumed].Text)
+	if nextText != "mile" && nextText != "miles" {
+		return 0, 0
+	}
+	consumed++
+
+	if consumed >= len(tokens) {
+		return 0, 0
+	}
+
+	// Check for "final"
+	if strings.ToLower(tokens[consumed].Text) == "final" {
+		return num, consumed + 1
+	}
+
+	return 0, 0
+}
+
 // Compile-time check that slices package is used
 var _ = slices.Contains[[]string]

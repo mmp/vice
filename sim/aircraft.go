@@ -218,6 +218,10 @@ func (ac *Aircraft) AssignSpeed(speed int, afterAltitude bool) av.CommandIntent 
 	return ac.Nav.AssignSpeed(float32(speed), afterAltitude)
 }
 
+func (ac *Aircraft) AssignSpeedUntil(speed int, until *av.SpeedUntil) av.CommandIntent {
+	return ac.Nav.AssignSpeedUntil(float32(speed), until)
+}
+
 func (ac *Aircraft) MaintainSlowestPractical() av.CommandIntent {
 	return ac.Nav.MaintainSlowestPractical()
 }

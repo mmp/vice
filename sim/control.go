@@ -1293,6 +1293,16 @@ func (s *Sim) AssignSpeed(tcw TCW, callsign av.ADSBCallsign, speed int, afterAlt
 		})
 }
 
+func (s *Sim) AssignSpeedUntil(tcw TCW, callsign av.ADSBCallsign, speed int, until *av.SpeedUntil) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.AssignSpeedUntil(speed, until)
+		})
+}
+
 func (s *Sim) MaintainSlowestPractical(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -2305,6 +2315,31 @@ func (s *Sim) readbackCallsignSuffix(callsign av.ADSBCallsign, tcw TCW) string {
 //
 // If options are specified, the Rxxx radial option is required.
 // Multiple options of the same type result in an error.
+// parseSpeedUntil parses the "until" specification from a speed command.
+// Formats:
+//   - "ROSLY" -> fix name
+//   - "5DME"  -> 5 DME
+//   - "6"     -> 6 mile final
+func parseSpeedUntil(untilStr string) *av.SpeedUntil {
+	untilStr = strings.ToUpper(untilStr)
+
+	// Check for DME pattern: digits followed by DME
+	if strings.HasSuffix(untilStr, "DME") {
+		numStr := strings.TrimSuffix(untilStr, "DME")
+		if n, err := strconv.Atoi(numStr); err == nil && n > 0 {
+			return &av.SpeedUntil{DME: n}
+		}
+	}
+
+	// Check for pure number (mile final)
+	if n, err := strconv.Atoi(untilStr); err == nil && n > 0 {
+		return &av.SpeedUntil{MileFinal: n}
+	}
+
+	// Otherwise it's a fix name
+	return &av.SpeedUntil{Fix: untilStr}
+}
+
 func parseHold(command string) (string, *av.Hold, bool) {
 	fix, opts, ok := strings.Cut(command, "/")
 	fix = strings.ToUpper(fix)
@@ -2677,6 +2712,16 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.SayAltitude(tcw, callsign)
 		} else if strings.HasPrefix(command, "SAYAGAIN/") {
 			return s.SayAgainCommand(tcw, callsign, command[9:])
+		} else if idx := strings.Index(command, "/U"); idx > 0 {
+			// Speed until specification: S180/UROSLY, S180/U5DME, S180/U6
+			speedStr := command[1:idx]
+			untilStr := command[idx+2:] // after "/U"
+			kts, err := strconv.Atoi(speedStr)
+			if err != nil {
+				return nil, err
+			}
+			until := parseSpeedUntil(untilStr)
+			return s.AssignSpeedUntil(tcw, callsign, kts, until)
 		} else {
 			kts, err := strconv.Atoi(command[1:])
 			if err != nil {

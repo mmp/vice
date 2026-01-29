@@ -311,6 +311,74 @@ func registerAllCommands() {
 		WithPriority(15),
 	)
 
+	// Speed "until advised" and "for now" patterns - these produce regular speed commands
+	// without a specific termination point. Higher priority than speed_until to match first.
+	// Require at least one speed-related keyword to avoid matching runway numbers.
+	registerSTTCommand(
+		"reduce|slow|increase|maintain [speed] [to] {speed} until|unto|intel advised|further [notice]",
+		func(spd int) string { return fmt.Sprintf("S%d", spd) },
+		WithName("speed_until_advised_verb"),
+		WithPriority(18),
+	)
+
+	registerSTTCommand(
+		"speed [to] {speed} until|unto|intel advised|further [notice]",
+		func(spd int) string { return fmt.Sprintf("S%d", spd) },
+		WithName("speed_until_advised_keyword"),
+		WithPriority(18),
+	)
+
+	registerSTTCommand(
+		"reduce|slow|increase|maintain [speed] [to] {speed} for now",
+		func(spd int) string { return fmt.Sprintf("S%d", spd) },
+		WithName("speed_for_now_verb"),
+		WithPriority(18),
+	)
+
+	registerSTTCommand(
+		"speed [to] {speed} for now",
+		func(spd int) string { return fmt.Sprintf("S%d", spd) },
+		WithName("speed_for_now_keyword"),
+		WithPriority(18),
+	)
+
+	// Speed until commands - higher priority to match before regular speed commands
+	registerSTTCommand(
+		"reduce|slow [speed] [to] {speed} {speed_until}",
+		func(spd int, until speedUntilResult) string {
+			return fmt.Sprintf("S%d/U%s", spd, until.suffix)
+		},
+		WithName("reduce_speed_until"),
+		WithPriority(15),
+	)
+
+	registerSTTCommand(
+		"increase [speed] [to] {speed} {speed_until}",
+		func(spd int, until speedUntilResult) string {
+			return fmt.Sprintf("S%d/U%s", spd, until.suffix)
+		},
+		WithName("increase_speed_until"),
+		WithPriority(15),
+	)
+
+	registerSTTCommand(
+		"speed [to] {speed} {speed_until}",
+		func(spd int, until speedUntilResult) string {
+			return fmt.Sprintf("S%d/U%s", spd, until.suffix)
+		},
+		WithName("speed_until"),
+		WithPriority(12),
+	)
+
+	registerSTTCommand(
+		"maintain [speed] {speed} {speed_until}",
+		func(spd int, until speedUntilResult) string {
+			return fmt.Sprintf("S%d/U%s", spd, until.suffix)
+		},
+		WithName("maintain_speed_until"),
+		WithPriority(12),
+	)
+
 	// === NAVIGATION COMMANDS ===
 	registerSTTCommand(
 		"direct|proceed [direct] [to] [at] {fix}",

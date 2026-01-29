@@ -14,7 +14,7 @@
   "audio_duration_ms": 9856,
   "processor": "GPU: Apple M4 Pro, 14 CPU / 20 GPU cores, 48GB",
   "callsign": "ANZ79",
-  "command": "L250 A30 CI2L S180",
+  "command": "L250 A30 CI2L S180/U5DME",
   "stt_aircraft": {
     "Brickyard 2985": {
       "Callsign": "RPA2985",
