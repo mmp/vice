@@ -254,6 +254,13 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
+		"speed [at] [your] discretion",
+		func() string { return "S" },
+		WithName("speed_your_discretion"),
+		WithPriority(12),
+	)
+
+	registerSTTCommand(
 		"reduce [to] final|minimum approach speed",
 		func() string { return "SMIN" },
 		WithName("final_approach_speed"),

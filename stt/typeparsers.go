@@ -58,6 +58,14 @@ func (p *altitudeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 		}
 
 		if t.Type == TokenNumber {
+			// If a TokenAltitude is nearby (within next 2 tokens), prefer it over
+			// this number - the number is likely noise (e.g., "18 3 thousand" where
+			// "18" is noise and "3 thousand" is the actual altitude).
+			for j := i + 1; j < len(tokens) && j <= i+2; j++ {
+				if tokens[j].Type == TokenAltitude {
+					return tokens[j].Value, j - pos + 1, ""
+				}
+			}
 			// Check for garbled altitude pattern
 			if i+1 < len(tokens) && tokens[i+1].Type == TokenNumber {
 				next := tokens[i+1]

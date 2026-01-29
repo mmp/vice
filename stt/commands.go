@@ -1262,9 +1262,13 @@ func extractDegrees(tokens []Token) (int, string, int) {
 		}
 		consumed++
 
-		// Keep scanning even after finding both to check for "degrees" keyword
-		if deg > 0 && dir != "" && !hasDegreesKeyword {
-			// Continue scanning a couple more tokens for "degrees"
+		// Once we have both degree value and direction, handle exit conditions
+		if deg > 0 && dir != "" {
+			if hasDegreesKeyword {
+				// Already have everything we need - stop scanning
+				break
+			}
+			// Continue scanning a couple more tokens for "degrees" keyword
 			for i := 0; i < 2 && consumed < len(tokens); i++ {
 				if text := strings.ToLower(tokens[consumed].Text); text == "degrees" || text == "degree" {
 					hasDegreesKeyword = true

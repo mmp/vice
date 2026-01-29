@@ -433,6 +433,7 @@ var fuzzyMatchBlocklist = map[string][]string{
 	"san":          {"say"},                // "san juan" should not match "say"
 	"intermittent": {"ident"},              // noise word should not match "ident" command
 	"provincial":   {"cancel"},             // airline name vs "cancel speed" command (shared suffix NSL)
+	"setup":        {"set", "intercept"},   // "setup" followed by numbers is garbled altitude command, not "set the localizer"
 }
 
 // FuzzyMatch returns true if word matches target with Jaro-Winkler >= threshold

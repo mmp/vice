@@ -62,6 +62,7 @@ func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch,
 
 	var bestMatch CallsignMatch
 	bestStartPos := 0
+	tieCount := 0 // Count of candidates with same best score and consumed tokens
 
 	// Try matching starting at different positions (to handle garbage at start)
 	maxStartPos := min(3, len(tokens)-1) // Don't skip more than 3 tokens
@@ -83,14 +84,23 @@ func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch,
 				logLocalStt("  candidate %q at pos %d: score=%.2f (adjusted=%.2f) consumed=%d",
 					spokenName, startPos, score, adjustedScore, consumed)
 			}
+			totalConsumed := startPos + consumed
+
+			// Track ties: candidates with same score and consumed tokens
+			if adjustedScore == bestMatch.Confidence && totalConsumed == bestMatch.Consumed && adjustedScore > 0 {
+				tieCount++
+			}
+
 			// Prefer higher score, or more tokens consumed on tie (more specific match),
 			// or alphabetically earlier callsign as final tie-breaker for determinism.
-			totalConsumed := startPos + consumed
 			isBetter := adjustedScore > bestMatch.Confidence ||
 				(adjustedScore == bestMatch.Confidence && totalConsumed > bestMatch.Consumed) ||
 				(adjustedScore == bestMatch.Confidence && totalConsumed == bestMatch.Consumed &&
 					string(ac.Callsign) < bestMatch.Callsign)
 			if isBetter {
+				if adjustedScore > bestMatch.Confidence || totalConsumed > bestMatch.Consumed {
+					tieCount = 0 // New best, reset tie count
+				}
 				bestMatch = CallsignMatch{
 					Callsign:       string(ac.Callsign),
 					SpokenKey:      spokenName,
@@ -101,6 +111,16 @@ func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch,
 				bestStartPos = startPos
 			}
 		}
+	}
+
+	// If there are ties (multiple candidates with same best score/consumed) AND the entire
+	// input was just the airline name with no additional tokens, it's ambiguous.
+	// When there are additional tokens beyond the match, they could be a garbled flight
+	// number, so use the tie-breaker instead of rejecting.
+	if tieCount > 0 && bestMatch.Consumed == 1 && len(tokens) == 1 {
+		logLocalStt("  ambiguous: %d candidates tied with score=%.2f consumed=%d (airline only, no additional tokens), rejecting match",
+			tieCount+1, bestMatch.Confidence, bestMatch.Consumed)
+		return CallsignMatch{}, tokens
 	}
 
 	// Threshold for accepting a match

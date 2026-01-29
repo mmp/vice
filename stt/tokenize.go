@@ -264,6 +264,11 @@ func parseDigitSequence(words []string) (int, string, int) {
 					break // Let this digit start a new sequence with the large number
 				}
 			}
+			// Don't merge a single digit if "thousand" follows - it's part of an altitude
+			// pattern like "18 3 thousand" where "3 thousand" means 3000 feet.
+			if num > 0 && consumed+1 < len(words) && words[consumed+1] == "thousand" {
+				break // Let this digit be parsed with "thousand" as an altitude
+			}
 			num = candidate
 			text += w
 			consumed++

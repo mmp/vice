@@ -400,6 +400,7 @@ var commandKeywords = map[string]string{
 	"descend":    "descend",
 	"doesnt":     "descend",
 	"send":       "descend", // "send a maintain" = "descend and maintain"
+	"setup":      "descend", // STT garble of "descend to" or "set up to descend"
 	"climb":      "climb",
 	"climin":     "climb",
 	"klimin":     "climb",
