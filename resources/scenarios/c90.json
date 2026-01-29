@@ -1526,13 +1526,7 @@
         "R15": { "cifp_id": "R15" },
         "R27": { "cifp_id": "R27" },
         "L33": { "cifp_id": "L33" },
-        "R33": { "cifp_id": "R33" },
-        "V36": {
-          "runway": "36",
-          "type": "RNAV",
-          "full_name": "VOR Runway 36",
-          "waypoints": ["JOT/iaf WHAIL/a2300/if USAGE/a2300/faf COAST/a1360"]
-        }
+        "R33": { "cifp_id": "R33" }
       },
       "departure_routes": {
         "27": {

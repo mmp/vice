@@ -727,12 +727,12 @@
     }
   },
   "inbound_flows": {
-    "DNKIN1": {
+    "DNKIN2": {
       "arrivals": [
         {
           "spawn": "MOPPP",
           "cruise_altitude": 29000,
-          "star": "DNKIN1",
+          "star": "DNKIN2",
           "initial_altitude": 24000,
           "initial_controller": "HOU_85_CTR",
           "initial_speed": 280,
@@ -760,7 +760,7 @@
         {
           "spawn": "MOPPP",
           "cruise_altitude": 29000,
-          "star": "DNKIN1",
+          "star": "DNKIN2",
           "initial_altitude": 24000,
           "initial_controller": "HOU_85_CTR",
           "initial_speed": 280,
@@ -813,12 +813,12 @@
         }
       ]
     },
-    "POPPO1": {
+    "POPPO2": {
       "arrivals": [
         {
           "spawn": "PPNUT",
           "cruise_altitude": 27000,
-          "star": "POPPO1",
+          "star": "POPPO2",
           "initial_altitude": 22000,
           "initial_speed": 280,
           "initial_controller": "HOU_50_CTR",
@@ -846,7 +846,7 @@
         {
           "spawn": "PPNUT",
           "cruise_altitude": 27000,
-          "star": "POPPO1",
+          "star": "POPPO2",
           "initial_altitude": 22000,
           "initial_speed": 280,
           "initial_controller": "HOU_50_CTR",
@@ -877,12 +877,12 @@
         }
       ]
     },
-    "QERVO2": {
+    "QERVO3": {
       "arrivals": [
         {
           "spawn": "HOSAY",
           "cruise_altitude": 28000,
-          "star": "QERVO2",
+          "star": "QERVO3",
           "initial_altitude": 24000,
           "initial_speed": 280,
           "initial_controller": "HOU_96_CTR",
@@ -910,7 +910,7 @@
         {
           "spawn": "HOSAY",
           "cruise_altitude": 28000,
-          "star": "QERVO2",
+          "star": "QERVO3",
           "initial_altitude": 24000,
           "initial_speed": 280,
           "initial_controller": "HOU_96_CTR",
@@ -963,12 +963,12 @@
         }
       ]
     },
-    "CRVZA1": {
+    "CRVZA2": {
       "arrivals": [
         {
           "spawn": "CRVZA",
           "cruise_altitude": 28000,
-          "star": "CRVZA1",
+          "star": "CRVZA2",
           "initial_altitude": 11000,
           "initial_speed": 250,
           "initial_controller": "HOU_56_CTR",
@@ -996,7 +996,7 @@
         {
           "spawn": "CRVZA",
           "cruise_altitude": 28000,
-          "star": "CRVZA1",
+          "star": "CRVZA2",
           "initial_altitude": 11000,
           "initial_speed": 250,
           "initial_controller": "HOU_56_CTR",
@@ -1156,20 +1156,20 @@
         }
       ],
       "inbound_rates": {
-        "CRVZA1": {
+        "CRVZA2": {
           "KSAT": 5,
           "KSSF": 3
         },
-        "DNKIN1": {
+        "DNKIN2": {
           "KSAT": 6,
           "KSKF": 3,
           "KBAZ": 4
         },
-        "POPPO1": {
+        "POPPO2": {
           "KSAT": 6,
           "KSSF": 2
         },
-        "QERVO2": {
+        "QERVO3": {
           "KSAT": 5,
           "KSKF": 2,
           "KBAZ": 3
@@ -1270,20 +1270,20 @@
         }
       ],
       "inbound_rates": {
-        "CRVZA1": {
+        "CRVZA2": {
           "KSAT": 5,
           "KSSF": 3
         },
-        "DNKIN1": {
+        "DNKIN2": {
           "KSAT": 6,
           "KSKF": 3,
           "KBAZ": 4
         },
-        "POPPO1": {
+        "POPPO2": {
           "KSAT": 6,
           "KSSF": 2
         },
-        "QERVO2": {
+        "QERVO3": {
           "KSAT": 5,
           "KSKF": 2,
           "KBAZ": 3
@@ -1376,20 +1376,20 @@
         }
       ],
       "inbound_rates": {
-        "CRVZA1": {
+        "CRVZA2": {
           "KSAT": 5,
           "KSSF": 3
         },
-        "DNKIN1": {
+        "DNKIN2": {
           "KSAT": 6,
           "KSKF": 3,
           "KBAZ": 4
         },
-        "POPPO1": {
+        "POPPO2": {
           "KSAT": 6,
           "KSSF": 2
         },
-        "QERVO2": {
+        "QERVO3": {
           "KSAT": 5,
           "KSKF": 2,
           "KBAZ": 3
@@ -1486,20 +1486,20 @@
         }
       ],
       "inbound_rates": {
-        "CRVZA1": {
+        "CRVZA2": {
           "KSAT": 5,
           "KSSF": 3
         },
-        "DNKIN1": {
+        "DNKIN2": {
           "KSAT": 6,
           "KSKF": 3,
           "KBAZ": 4
         },
-        "POPPO1": {
+        "POPPO2": {
           "KSAT": 6,
           "KSSF": 2
         },
-        "QERVO2": {
+        "QERVO3": {
           "KSAT": 5,
           "KSKF": 2,
           "KBAZ": 3
@@ -1559,10 +1559,10 @@
     "configurations": {
       "13R": {
         "inbound_assignments": {
-          "CRVZA1": "SAT_S_APP",
-          "DNKIN1": "SAT_W_APP",
-          "POPPO1": "SAT_W_APP",
-          "QERVO2": "SAT_N_APP"
+          "CRVZA2": "SAT_S_APP",
+          "DNKIN2": "SAT_W_APP",
+          "POPPO2": "SAT_W_APP",
+          "QERVO3": "SAT_N_APP"
         },
         "departure_assignments": {
           "KBAZ": "SAT_Q_APP",
@@ -1573,10 +1573,10 @@
       },
       "31L": {
         "inbound_assignments": {
-          "CRVZA1": "SAT_S_APP",
-          "DNKIN1": "SAT_S_APP",
-          "POPPO1": "SAT_W_APP",
-          "QERVO2": "SAT_N_APP"
+          "CRVZA2": "SAT_S_APP",
+          "DNKIN2": "SAT_S_APP",
+          "POPPO2": "SAT_W_APP",
+          "QERVO3": "SAT_N_APP"
         },
         "departure_assignments": {
           "KBAZ": "SAT_N_APP",

@@ -191,11 +191,6 @@
             "sid": "TAZMO3",
             "waypoints": "KBNA-20C/h035 SAAMY"
           },
-          "BRXTN": {
-            "cleared_altitude": 4000,
-            "sid": "TIPPN3",
-            "waypoints": "KBNA-20C/h035 RORRY TIPPN"
-          },
           "TIPPN": {
             "cleared_altitude": 4000,
             "sid": "TIPPN3",
@@ -298,11 +293,6 @@
             "sid": "TAZMO3",
             "waypoints": "KBNA-2C/h200 SAAMY"
           },
-          "BRXTN": {
-            "cleared_altitude": 4000,
-            "sid": "TIPPN3",
-            "waypoints": "KBNA-2C/h200 RORRY TIPPN"
-          },
           "TIPPN": {
             "cleared_altitude": 4000,
             "sid": "TIPPN3",
@@ -320,30 +310,6 @@
             {
               "icao": "AAL",
               "fleet": "default"
-            }
-          ]
-        },
-        {
-          "exit": "BRXTN",
-          "destination": "KFLL",
-          "altitude": 37000,
-          "route": "TIPPN3 BRXTN ACORI TEEKY3",
-          "airlines": [
-            {
-              "icao": "SWA",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
-          "exit": "BRXTN",
-          "destination": "KTPA",
-          "altitude": 37000,
-          "route": "TIPPN3 BRXTN LGC HONID MAATY4",
-          "airlines": [
-            {
-              "icao": "SWA",
-              "fleet": "short"
             }
           ]
         },
@@ -368,18 +334,6 @@
             {
               "icao": "AAL",
               "fleet": "short"
-            }
-          ]
-        },
-        {
-          "exit": "BRXTN",
-          "destination": "KFLL",
-          "altitude": 37000,
-          "route": "TIPPN3 BRXTN ACORI TEEKY3",
-          "airlines": [
-            {
-              "icao": "NKS",
-              "fleet": "default"
             }
           ]
         },
@@ -468,18 +422,6 @@
           ]
         },
         {
-          "exit": "BRXTN",
-          "destination": "KMCO",
-          "altitude": 35000,
-          "route": "TIPPN3 BRXTN THRSR ZJAYX GRNCH5",
-          "airlines": [
-            {
-              "icao": "SWA",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
           "exit": "DANLS",
           "destination": "KLAS",
           "altitude": 38000,
@@ -500,42 +442,6 @@
             {
               "icao": "AAL",
               "fleet": "short"
-            }
-          ]
-        },
-        {
-          "exit": "BRXTN",
-          "destination": "KCCO",
-          "altitude": 21000,
-          "route": "TIPPN3 BRXTN HEFIN TIROE",
-          "airlines": [
-            {
-              "icao": "LXJ",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
-          "exit": "BRXTN",
-          "destination": "KATL",
-          "altitude": 25000,
-          "route": "TIPPN3 BRXTN CHPPR CHPPR1",
-          "airlines": [
-            {
-              "icao": "DAL",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
-          "exit": "BRXTN",
-          "destination": "KRSW",
-          "altitude": 37000,
-          "route": "TIPPN3 BRXTN LAYIN Q19 BULZI Q81 NICKI PLYER TYNEE2",
-          "airlines": [
-            {
-              "icao": "SWA",
-              "fleet": "default"
             }
           ]
         },
@@ -612,18 +518,6 @@
           ]
         },
         {
-          "exit": "BRXTN",
-          "destination": "KMCO",
-          "altitude": 35000,
-          "route": "TIPPN3 BRXTN THRSR ZJAYX GRNCH5",
-          "airlines": [
-            {
-              "icao": "NKS",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
           "exit": "SWAPP",
           "destination": "KDCA",
           "altitude": 29000,
@@ -684,30 +578,6 @@
           ]
         },
         {
-          "exit": "BRXTN",
-          "destination": "KTPA",
-          "altitude": 37000,
-          "route": "TIPPN3 BRXTN LGC HONID MAATY4",
-          "airlines": [
-            {
-              "icao": "SWA",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
-          "exit": "BRXTN",
-          "destination": "KFLL",
-          "altitude": 37000,
-          "route": "TIPPN3 BRXTN ACORI TEEKY3",
-          "airlines": [
-            {
-              "icao": "SWA",
-              "fleet": "short"
-            }
-          ]
-        },
-        {
           "exit": "TINGS",
           "destination": "KOMA",
           "altitude": 36000,
@@ -732,18 +602,6 @@
           ]
         },
         {
-          "exit": "BRXTN",
-          "destination": "KATL",
-          "altitude": 23000,
-          "route": "TIPPN3 BRXTN CHPPR CHPPR1",
-          "airlines": [
-            {
-              "icao": "DAL",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
           "exit": "HODJS",
           "destination": "KOKC",
           "altitude": 34000,
@@ -763,30 +621,6 @@
           "airlines": [
             {
               "icao": "UAL",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
-          "exit": "BRXTN",
-          "destination": "KMCO",
-          "altitude": 37000,
-          "route": "TIPPN3 BRXTN THRSR ZJAYX GRNCH5",
-          "airlines": [
-            {
-              "icao": "SWA",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
-          "exit": "BRXTN",
-          "destination": "KSRQ",
-          "altitude": 35000,
-          "route": "TIPPN3 BRXTN RMG MCN AMG KYYUU LUBBR3",
-          "airlines": [
-            {
-              "icao": "AAY",
               "fleet": "default"
             }
           ]
@@ -1032,18 +866,6 @@
           ]
         },
         {
-          "exit": "BRXTN",
-          "destination": "MMUN",
-          "altitude": 37000,
-          "route": "TIPPN3 BRXTN LEV L214 IRDOV UL214 NUDIS UT38 LEVAT UM782 CUN",
-          "airlines": [
-            {
-              "icao": "SWA",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
           "exit": "BURME",
           "destination": "KCLT",
           "altitude": 27000,
@@ -1104,18 +926,6 @@
           ]
         },
         {
-          "exit": "BRXTN",
-          "destination": "KJAX",
-          "altitude": 33000,
-          "route": "TIPPN3 BRXTN THRSR DUCHY OHDEA1",
-          "airlines": [
-            {
-              "icao": "SWA",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
           "exit": "FAPER",
           "destination": "KORD",
           "altitude": 35000,
@@ -1135,18 +945,6 @@
           "airlines": [
             {
               "icao": "SWA",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
-          "exit": "BRXTN",
-          "destination": "KTPA",
-          "altitude": 33000,
-          "route": "TIPPN3 BRXTN HANKO LGC HONID MAATY4",
-          "airlines": [
-            {
-              "icao": "ENY",
               "fleet": "default"
             }
           ]
@@ -1224,34 +1022,10 @@
           ]
         },
         {
-          "exit": "BRXTN",
-          "destination": "KATL",
-          "altitude": 13000,
-          "route": "TIPPN3 BRXTN CHPPR CHPPR1",
-          "airlines": [
-            {
-              "icao": "DAL",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
           "exit": "OLSIE",
           "destination": "KORD",
           "altitude": 33000,
           "route": "KRSTA3 OLSIE IIU HEVAN BONNT VEECK5",
-          "airlines": [
-            {
-              "icao": "SWA",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
-          "exit": "BRXTN",
-          "destination": "KTPA",
-          "altitude": 37000,
-          "route": "TIPPN3 BRXTN LGC HONID MAATY4",
           "airlines": [
             {
               "icao": "SWA",
@@ -1284,18 +1058,6 @@
           ]
         },
         {
-          "exit": "BRXTN",
-          "destination": "KMIA",
-          "altitude": 35000,
-          "route": "TIPPN3 BRXTN ACORI FROGZ4",
-          "airlines": [
-            {
-              "icao": "ENY",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
           "exit": "OLSIE",
           "destination": "CYYZ",
           "altitude": 37000,
@@ -1316,18 +1078,6 @@
             {
               "icao": "SWA",
               "fleet": "default"
-            }
-          ]
-        },
-        {
-          "exit": "BRXTN",
-          "destination": "KATL",
-          "altitude": 23000,
-          "route": "TIPPN3 BRXTN CHPPR CHPPR1",
-          "airlines": [
-            {
-              "icao": "DAL",
-              "fleet": "b73x"
             }
           ]
         },
@@ -1572,18 +1322,6 @@
           ]
         },
         {
-          "exit": "BRXTN",
-          "destination": "KFLL",
-          "altitude": 35000,
-          "route": "TIPPN3 BRXTN ACORI TEEKY3",
-          "airlines": [
-            {
-              "icao": "JBU",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
           "exit": "OLSIE",
           "destination": "KGRR",
           "altitude": 37000,
@@ -1680,18 +1418,6 @@
           ]
         },
         {
-          "exit": "BRXTN",
-          "destination": "KMIA",
-          "altitude": 35000,
-          "route": "TIPPN3 BRXTN ACORI FROGZ4",
-          "airlines": [
-            {
-              "icao": "SWA",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
           "exit": "GENDE",
           "destination": "KVPS",
           "altitude": 35000,
@@ -1740,18 +1466,6 @@
           ]
         },
         {
-          "exit": "BRXTN",
-          "destination": "KFLL",
-          "altitude": 37000,
-          "route": "TIPPN3 BRXTN ACORI TEEKY3",
-          "airlines": [
-            {
-              "icao": "SWA",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
           "exit": "SWAPP",
           "destination": "KEWR",
           "altitude": 35000,
@@ -1783,18 +1497,6 @@
           "airlines": [
             {
               "icao": "SWA",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
-          "exit": "BRXTN",
-          "destination": "KPGD",
-          "altitude": 37000,
-          "route": "TIPPN3 BRXTN LGC HONID Q81 NICKI PLYER PIKKR7",
-          "airlines": [
-            {
-              "icao": "AAY",
               "fleet": "default"
             }
           ]
@@ -1848,7 +1550,6 @@
         "PARDN": "West",
         "BURME": "East",
         "TAZMO": "East",
-        "BRXTN": "East",
         "TIPPN": "East"
       }
     }
@@ -2320,7 +2021,7 @@
         "receiving_controller": "MEM_42_CTR"
       },
       {
-        "fixes": ["EVVAN", "TAZMO", "BURME", "BRXTN", "TIPPN"],
+        "fixes": ["EVVAN", "TAZMO", "BURME", "TIPPN"],
         "receiving_controller": "MEM_60_CTR"
       }
     ],
@@ -2359,18 +2060,15 @@
       "HGGRD": "MER",
       "OLSIE": "CER",
       "KRSTA": "CER",
-      "JJEFF": "KEL",
       "HODJS": "KEL",
       "NAKIY": "KEL",
       "PARDN": "KEL",
       "BURME": "SAA",
       "TAZMO": "SAA",
-      "BRXTN": "ROR",
       "TIPPN": "ROR"
     },
     "significant_points": {
       "ACKEE": {},
-      "BRXTN": {},
       "BURME": {},
       "CHADM": {},
       "DANLS": {},

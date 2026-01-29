@@ -2299,49 +2299,6 @@
         "direction": "200-260"
       }
     },
-    "PVD/OQU PRACTICE (23+16) - DR ONLY": {
-      "arrival_runways": [
-        {
-          "airport": "KPVD",
-          "runway": "23"
-        },
-        {
-          "airport": "KOQU",
-          "runway": "16"
-        }
-      ],
-      "inbound_rates": {
-        "PQ_PVD_2316": {
-          "KPVD": 15
-        },
-        "PQ_OQU_2316": {
-          "KOQU": 10
-        }
-      },
-      "configuration": {
-        "config_id": "PVD",
-        "default_consolidation": {
-          "1D": ["1A"]
-        }
-      },
-      "controllers": ["1A", "C18", "C32", "C34", "C42", "BDL_1W", "BDL_1B"],
-      "default_maps": ["RVMPVD011S", "RVMPVD019S"],
-      "departure_runways": [
-        {
-          "airport": "KPVD",
-          "rate": 0,
-          "runway": "23"
-        },
-        {
-          "airport": "KOQU",
-          "rate": 0,
-          "runway": "16"
-        }
-      ],
-      "wind": {
-        "direction": "200-260"
-      }
-    },
     "PVD/OQU PRACTICE (5+16)": {
       "arrival_runways": [
         {
