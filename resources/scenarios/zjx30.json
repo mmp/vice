@@ -1,0 +1,504 @@
+{
+  "artcc": "ZJX",
+  "area": "West Area",
+  "name": "ZJX 30",
+  "airports": {
+    "KMCO": {
+      "departure_controller": "Orlando Approach",
+      "approaches": {
+        "I6L": {
+          "cifp_id": "R36L"
+        },
+        "I5R": {
+          "cifp_id": "I35R"
+        }
+      },
+      "departure_routes": {
+        "36R": {
+          "REMIS": {
+            "cleared_altitude": 27000,
+            "sid": "OSPRY1",
+            "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+ LEFTI/a4000+/s230 BLOSM/a7000-/ho88 OSPRY/ho16 GDUNN KNOST N027.56.32.543,W084.20.26.129/ho REMIS",
+            "handoff_controller": "ZJX 30 Nepata"
+          }
+        }
+      },
+      "departures": [
+        {
+          "exit": "REMIS",
+          "destination": "KLAX",
+          "altitude": 34000,
+          "route": "REMIS ROZZI Y280 LEV J86 ELP J50 SSO J4 WLVRN ESTWD HLYWD1",
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "default"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "REMIS",
+          "destination": "KIAH",
+          "altitude": 36000,
+          "route": "REMIS ROZZI Y280 LEV LINKK1",
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "default"
+            },
+            {
+              "icao": "UAL",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "REMIS",
+          "destination": "KBRO",
+          "altitude": 36000,
+          "route": "REMIS PEKON Q56 HEIGH J22 PSX ASCOT V163 BRO",
+          "airlines": [
+            {
+              "icao": "SWA",
+              "fleet": "default"
+            },
+            {
+              "icao": "JBU",
+              "fleet": "default"
+            }
+          ]
+        },
+        {
+          "exit": "REMIS",
+          "destination": "KDFW",
+          "altitude": 36000,
+          "route": "REMIS Y280 REDFN HRV AEX PNUTS WHINY4",
+          "airlines": [
+            {
+              "icao": "FDX",
+              "fleet": "default"
+            },
+            {
+              "icao": "AAL",
+              "fleet": "default"
+            }
+          ]
+        }
+      ]
+    },
+    "KTPA": {
+      "departure_controller": "JAX Approach",
+      "approaches": {
+        "I9L": {
+          "cifp_id": "I19L"
+        }
+      }
+    },
+    "KDAB": {
+      "approaches": {
+        "I7L": {
+          "cifp_id": "I7L"
+        }
+      }
+    },
+    "KSRQ": {
+      "departure_controller": "JAX Approach",
+      "approaches": {
+        "R14": {
+          "cifp_id": "R14"
+        }
+      }
+    },
+    "KCHS": {
+      "departure_controller": "JAX Approach",
+      "approaches": {
+        "I15": {
+          "cifp_id": "I15"
+        }
+      }
+    }
+  },
+  "inbound_flows": {
+    "PRICY4": {
+      "arrivals": [
+        {
+          "waypoints": "N028.43.45.418,W088.36.16.982/ho NAITE ROZZI REMIS CHRGE DAAWG CHIVE/a25000 DECKS/a21000+ BULKS/s280 PRICY/a14000 BOCCE JUMBA AMADS/a9000- LORRA/a7000 KMCO-36L/delete",
+          "route": "/. PRICY4",
+          "initial_controller": "ZHU 24 Leeville",
+          "initial_altitude": 35000,
+          "initial_speed": 300,
+          "assigned_altitude": 35000,
+          "airlines": {
+            "KMCO": [
+              {
+                "icao": "DAL",
+                "types": ["B738"],
+                "airport": "KIAH"
+              },
+              {
+                "icao": "FDX",
+                "types": ["B772"],
+                "airport": "KDFW"
+              },
+              {
+                "icao": "UAL",
+                "types": ["A321"],
+                "airport": "KDFW"
+              },
+              {
+                "icao": "AAL",
+                "types": ["A321"],
+                "airport": "KLAX"
+              },
+              {
+                "icao": "FFT",
+                "types": ["A321"],
+                "airport": "KLAS"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "Overflights": {
+      "overflights": [
+        {
+          "airlines": [
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KMSY",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KDEN",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KRSW",
+              "arrival_airport": "KMEM",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KMEM",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KMIA",
+              "arrival_airport": "KMCI",
+              "icao": "UAL"
+            }
+          ],
+          "initial_altitude": 25000,
+          "assigned_altitude": 34000,
+          "initial_controller": "ZMA 25 Fort Myers",
+          "initial_speed": 300,
+          "waypoints": "BAGGS OCHHO/ho REMIS NUN COOUP/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KMEM",
+              "arrival_airport": "KMIA",
+              "icao": "FDX"
+            },
+            {
+              "departure_airport": "PANC",
+              "arrival_airport": "KMIA",
+              "icao": "GTI"
+            },
+            {
+              "departure_airport": "KSTL",
+              "arrival_airport": "KMIA",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KMCI",
+              "arrival_airport": "KMIA",
+              "icao": "DAL"
+            }
+          ],
+          "initial_altitude": 35000,
+          "assigned_altitude": 35000,
+          "initial_controller": "ZJX 11 Brewton",
+          "initial_speed": 300,
+          "waypoints": "KERMI MGMRY DARED/ho VPRER COVIA GAWKS/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KBRO",
+              "arrival_airport": "KTPA",
+              "icao": "N",
+              "fleet": "fastGA"
+            },
+            {
+              "departure_airport": "KPHX",
+              "arrival_airport": "KRSW",
+              "icao": "AAL"
+            },
+            {
+              "departure_airport": "KDFW",
+              "arrival_airport": "KRSW",
+              "icao": "SWA"
+            },
+            {
+              "departure_airport": "KMSY",
+              "arrival_airport": "KTPA",
+              "icao": "AAL"
+            }
+          ],
+          "initial_altitude": 33000,
+          "assigned_altitude": 33000,
+          "initial_controller": "ZHU 24 Leeville",
+          "initial_speed": 300,
+          "waypoints": "DUNBE BFMLB/ho DYEES PFNRE RAYZZ/delete"
+        }
+      ]
+    }
+  },
+  "control_positions": {
+    "ZJX 75 Greencove": {
+      "frequency": 127475,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "75"
+    },
+    "ZJX 58 St. Augustine": {
+      "frequency": 126350,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "58"
+    },
+    "ZJX 16 Mayo": {
+      "frequency": 125175,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "16"
+    },
+    "ZJX 78 Lake City": {
+      "frequency": 133875,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "78"
+    },
+    "ZJX 50 Alma": {
+      "frequency": 135975,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "50"
+    },
+    "ZJX 88 Darbs": {
+      "frequency": 128050,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "88"
+    },
+    "ZJX 68 States": {
+      "frequency": 126125,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "68"
+    },
+    "ZMA 02 Key West": {
+      "frequency": 132200,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "R02"
+    },
+    "ZJX 14 Cedar Key": {
+      "frequency": 135750,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "14"
+    },
+    "ZJX 15 Ocala": {
+      "frequency": 133325,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "15"
+    },
+    "ZJX 77 Taylor": {
+      "frequency": 125375,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "77"
+    },
+    "ZJX 54 Jeckyl": {
+      "frequency": 124675,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "54"
+    },
+    "ZHU 24 Leeville": {
+      "frequency": 132175,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "24"
+    },
+    "ZJX 30 Nepata": {
+      "frequency": 135925,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "30"
+    },
+    "ZMA 25 Fort Myers": {
+      "frequency": 128225,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "25"
+    },
+    "ZJX 11 Brewton": {
+      "frequency": 124475,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "11"
+    },
+    "Orlando Departure": {
+      "frequency": 124800,
+      "radio_name": "Orlando Departure",
+      "sector_id": "1E",
+      "facility": "F11",
+      "facility_id": "O"
+    },
+    "Orlando Approach": {
+      "frequency": 128375,
+      "radio_name": "Orlando Approach",
+      "sector_id": "1B",
+      "facility": "F11",
+      "facility_id": "O"
+    },
+    "Daytona Approach": {
+      "frequency": 125800,
+      "radio_name": "Daytona Approach",
+      "sector_id": "1N",
+      "facility": "DAB",
+      "facility_id": "B"
+    },
+    "JAX Approach": {
+      "frequency": 124900,
+      "radio_name": "JAX Approach",
+      "sector_id": "1S",
+      "facility": "JAX",
+      "facility_id": "J"
+    },
+    "ZJX 87 Lawtey": {
+      "frequency": 132825,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "87"
+    },
+    "ZJX 76 Keystone": {
+      "frequency": 135450,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "76"
+    },
+    "ZJX 86 Zephyr": {
+      "frequency": 128425,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "86"
+    },
+    "ZJX 49 Moultrie": {
+      "frequency": 133300,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "sector_id": "49"
+    }
+  },
+  "default_scenario": "30 Nepata",
+  "magnetic_adjustment": -6.6,
+  "scenarios": {
+    "30 Nepata": {
+      "configuration": {
+        "config_id": "STD",
+        "default_consolidation": {
+          "ZJX 30 Nepata": []
+        }
+      },
+      "controllers": [
+        "ZJX 78 Lake City",
+        "ZMA 02 Key West",
+        "ZJX 15 Ocala",
+        "ZJX 68 States",
+        "ZHU 24 Leeville",
+        "ZMA 25 Fort Myers",
+        "ZJX 30 Nepata",
+        "ZJX 58 St. Augustine",
+        "ZJX 50 Alma",
+        "ZJX 16 Mayo",
+        "Orlando Departure",
+        "JAX Approach",
+        "Orlando Approach",
+        "Daytona Approach",
+        "ZJX 87 Lawtey",
+        "ZJX 76 Keystone",
+        "ZJX 86 Zephyr",
+        "ZJX 49 Moultrie"
+      ],
+      "default_maps": ["ZJX HI"],
+      "inbound_rates": {
+        "PRICY4": {
+          "KMCO": 10
+        },
+        "Overflights": {
+          "overflights": 10
+        }
+      },
+      "arrival_runways": [
+        {
+          "airport": "KMCO",
+          "runway": "36L"
+        }
+      ],
+      "default_map_group": "ZJX",
+      "departure_runways": [
+        {
+          "airport": "KMCO",
+          "rate": 5,
+          "runway": "36R"
+        }
+      ]
+    }
+  },
+  "stars_config": {
+    "configurations": {
+      "STD": {
+        "inbound_assignments": {
+          "Overflights": "ZJX 30 Nepata",
+          "PRICY4": "ZJX 30 Nepata"
+        }
+      }
+    },
+    "center": "N029.0.0.0,W085.20.16.982",
+    "range": 300,
+    "max_distance": 350,
+    "stars_maps": [
+      "BOUND",
+      "ZJX LO",
+      "ZJX UH",
+      "HIGH AWAYS",
+      "FIN APP CRS",
+      "MOA",
+      "Y M L ROUTES",
+      "AR ROUTES",
+      "ATCT",
+      "ZJX HI",
+      "HI 2-WAY",
+      "LOW AWAYS",
+      "CLASS ASPACE",
+      "WARNING",
+      "MIA",
+      "T ROUTES",
+      "CAMAN",
+      "GEO"
+    ],
+    "video_map_file": "videomaps/ZJX-eram-videomaps.gob.zst"
+  }
+}
