@@ -822,6 +822,7 @@ func combine(x, y string) string {
 	return x + " " + y
 
 }
+
 // Mouse button helpers:
 // When UseRightClick is set, logical primary = physical right button click, logical tertiary = physical left button click.
 func (ep *ERAMPane) mousePrimaryClicked(m *platform.MouseState) bool {
