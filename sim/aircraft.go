@@ -226,6 +226,10 @@ func (ac *Aircraft) MaintainMaximumForward() av.CommandIntent {
 	return ac.Nav.MaintainMaximumForward()
 }
 
+func (ac *Aircraft) MaintainPresentSpeed() av.CommandIntent {
+	return ac.Nav.MaintainPresentSpeed()
+}
+
 func (ac *Aircraft) SaySpeed() av.CommandIntent {
 	return ac.Nav.SaySpeed()
 }

@@ -803,6 +803,21 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                     <td><code>SMAX</code></td>
                   </tr>
                   <tr>
+                    <td><code>SPRES</code></td>
+                    <td>Instructs the aircraft to maintain its present speed.</td>
+                    <td><code>SPRES</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>S</code><i>kts</i><code>+</code></td>
+                    <td>Assigns a speed floor: aircraft should fly at or above the specified speed. Currently treated as a standard speed assignment.</td>
+                    <td><code>S180+</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>S</code><i>kts</i><code>-</code></td>
+                    <td>Assigns a speed ceiling: aircraft should not exceed the specified speed. Currently treated as a standard speed assignment.</td>
+                    <td><code>S180-</code></td>
+                  </tr>
+                  <tr>
                     <td><code>SS</code></td>
                     <td>Directs the aircraft to say its indicated airspeed.</td>
                     <td><code>SS</code></td>
@@ -1176,7 +1191,23 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                   </tr>
                   <tr><td>Cancel Speed</td>
                   <td>
-                    <i>Cancel speed restrictions</i> /  <i>Resume normal speed</i>
+                    <i>Cancel speed restrictions</i> /  <i>Resume normal speed</i> / <i>Speed your discretion</i> /
+                    <i>Comply with speed restrictions</i> / <i>Delete speed restrictions</i> / <i>No speed restrictions</i>
+                  </td>
+                  </tr>
+                  <tr><td>Maintain Present Speed</td>
+                  <td>
+                    <i>Maintain present speed</i> / <i>Present speed</i>
+                  </td>
+                  </tr>
+                  <tr><td>Speed Or Greater</td>
+                  <td>
+                    <i>Maintain (speed) or greater</i> / <i>(speed) or better</i>
+                  </td>
+                  </tr>
+                  <tr><td>Do Not Exceed</td>
+                  <td>
+                    <i>Do not exceed (speed)</i>
                   </td>
                   </tr>
                   <tr><td>Say Speed</td>

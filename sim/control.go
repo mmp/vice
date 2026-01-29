@@ -1313,6 +1313,16 @@ func (s *Sim) MaintainMaximumForward(tcw TCW, callsign av.ADSBCallsign) (av.Comm
 		})
 }
 
+func (s *Sim) MaintainPresentSpeed(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			return ac.MaintainPresentSpeed()
+		})
+}
+
 func (s *Sim) SaySpeed(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, error) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -2442,7 +2452,11 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 					ar.Range[0] *= 100
 					ar.Range[1] *= 100
 				} else if cmd[0] == 'S' {
-					if speed, err = strconv.Atoi(cmd[1:]); err != nil {
+					speedStr := cmd[1:]
+					// Strip +/- suffix for now (treat as regular speed)
+					speedStr = strings.TrimSuffix(speedStr, "+")
+					speedStr = strings.TrimSuffix(speedStr, "-")
+					if speed, err = strconv.Atoi(speedStr); err != nil {
 						return nil, err
 					}
 				} else {
@@ -2617,12 +2631,30 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 	case 'S':
 		if len(command) == 1 {
 			return s.AssignSpeed(tcw, callsign, 0, false)
+		} else if command == "SPRES" {
+			return s.MaintainPresentSpeed(tcw, callsign)
 		} else if command == "SMIN" {
 			return s.MaintainSlowestPractical(tcw, callsign)
 		} else if command == "SMAX" {
 			return s.MaintainMaximumForward(tcw, callsign)
 		} else if command == "SS" {
 			return s.SaySpeed(tcw, callsign)
+		} else if strings.HasSuffix(command, "+") {
+			// Speed floor: S180+
+			kts, err := strconv.Atoi(command[1 : len(command)-1])
+			if err != nil {
+				return nil, err
+			}
+			// For now treat as regular speed assignment
+			return s.AssignSpeed(tcw, callsign, kts, false)
+		} else if strings.HasSuffix(command, "-") {
+			// Speed ceiling: S180-
+			kts, err := strconv.Atoi(command[1 : len(command)-1])
+			if err != nil {
+				return nil, err
+			}
+			// For now treat as regular speed assignment
+			return s.AssignSpeed(tcw, callsign, kts, false)
 		} else if command == "SQS" {
 			return s.ChangeTransponderMode(tcw, callsign, av.TransponderModeStandby)
 		} else if command == "SQA" {

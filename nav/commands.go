@@ -103,6 +103,14 @@ func (nav *Nav) MaintainMaximumForward() av.CommandIntent {
 	return av.SpeedIntent{Type: av.SpeedMaximumForward}
 }
 
+func (nav *Nav) MaintainPresentSpeed() av.CommandIntent {
+	// Capture current indicated airspeed and assign it, rounded to nearest 10
+	currentSpeed := nav.FlightState.IAS
+	speed := float32(int((currentSpeed+5)/10) * 10)
+	nav.Speed = NavSpeed{Assigned: &speed}
+	return av.SpeedIntent{Speed: speed, Type: av.SpeedPresentSpeed}
+}
+
 func (nav *Nav) SaySpeed() av.CommandIntent {
 	currentSpeed := nav.FlightState.IAS
 	intent := av.ReportSpeedIntent{Current: currentSpeed}

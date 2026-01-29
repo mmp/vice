@@ -261,6 +261,50 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
+		"[maintain] present speed",
+		func() string { return "SPRES" },
+		WithName("maintain_present_speed"),
+		WithPriority(12),
+	)
+
+	registerSTTCommand(
+		"[maintain] {speed} or greater|better",
+		func(spd int) string { return fmt.Sprintf("S%d+", spd) },
+		WithName("speed_or_greater"),
+		WithPriority(12),
+		WithThenVariant("TS%d+"),
+	)
+
+	registerSTTCommand(
+		"do not exceed {speed}",
+		func(spd int) string { return fmt.Sprintf("S%d-", spd) },
+		WithName("do_not_exceed"),
+		WithPriority(12),
+		WithThenVariant("TS%d-"),
+	)
+
+	registerSTTCommand(
+		"comply [with] speed restrictions",
+		func() string { return "S" },
+		WithName("comply_speed_restrictions"),
+		WithPriority(12),
+	)
+
+	registerSTTCommand(
+		"delete speed restrictions",
+		func() string { return "S" },
+		WithName("delete_speed_restrictions"),
+		WithPriority(12),
+	)
+
+	registerSTTCommand(
+		"no speed restrictions",
+		func() string { return "S" },
+		WithName("no_speed_restrictions"),
+		WithPriority(12),
+	)
+
+	registerSTTCommand(
 		"reduce [to] final|minimum approach speed",
 		func() string { return "SMIN" },
 		WithName("final_approach_speed"),
@@ -311,6 +355,20 @@ func registerAllCommands() {
 		func(fix string, spd int) string { return fmt.Sprintf("C%s/S%d", fix, spd) },
 		WithName("cross_fix_speed"),
 		WithPriority(10),
+	)
+
+	registerSTTCommand(
+		"cross {fix} [at] {speed} or greater|better",
+		func(fix string, spd int) string { return fmt.Sprintf("C%s/S%d+", fix, spd) },
+		WithName("cross_fix_speed_or_greater"),
+		WithPriority(12),
+	)
+
+	registerSTTCommand(
+		"cross {fix} [at] [or] [and|at] [do] not [to] exceed {speed}",
+		func(fix string, spd int) string { return fmt.Sprintf("C%s/S%d-", fix, spd) },
+		WithName("cross_fix_do_not_exceed"),
+		WithPriority(12),
 	)
 
 	registerSTTCommand(

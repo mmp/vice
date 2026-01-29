@@ -190,6 +190,7 @@ const (
 	SpeedCancel
 	SpeedSlowestPractical
 	SpeedMaximumForward
+	SpeedPresentSpeed
 	SpeedUntilFinal // speed restriction until 5 mile final
 )
 
@@ -208,6 +209,8 @@ func (s SpeedIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 		rt.Add("[slowest practical speed|slowing as much as we can]")
 	case SpeedMaximumForward:
 		rt.Add("[maximum forward speed|maintaining maximum forward speed]")
+	case SpeedPresentSpeed:
+		rt.Add("[maintain present speed|present speed we'll keep it at {spd}|maintaining {spd}]", s.Speed)
 	case SpeedUntilFinal:
 		rt.Add("{spd} until 5 mile final", s.Speed)
 	case SpeedReduce:
