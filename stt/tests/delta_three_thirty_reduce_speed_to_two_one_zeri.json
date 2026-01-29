@@ -15,7 +15,7 @@
   "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
   "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
   "callsign": "DAL330",
-  "command": "S220",
+  "command": "S210",
   "stt_aircraft": {
     "Chronos seven 99": {
       "Callsign": "CNS799",

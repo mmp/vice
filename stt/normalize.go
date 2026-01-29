@@ -24,7 +24,7 @@ var digitWords = map[string]string{
 	"fiv":   "5",
 	"sicks": "6", "seeks": "6", "sex": "6",
 	"ate": "8", "ait": "8", "eat": "8", "ada": "8",
-	"oh": "0",
+	"oh": "0", "zeri": "0",
 	// Ordinals sometimes transcribed instead of cardinals
 	"first": "1", "second": "2", "third": "3", "fourth": "4", "fifth": "5",
 	"sixth": "6", "seventh": "7", "eighth": "8", "ninth": "9",
@@ -514,6 +514,7 @@ var commandKeywords = map[string]string{
 	"eyelash":     "ils", // STT error: "I L S" pronounced as "eye-ell-ess" -> "eyelash"
 	"eyelids":     "ils", // STT error: "I L S" garbled as "eyelids"
 	"atlas":       "ils", // STT error: "the ILS" garbled as "atlas"
+	"lash":        "ils", // STT error: "i-lash" split from "ILS"
 	"rnav":        "rnav",
 	"arnavie":     "rnav", // STT error: "rnav" garbled with extra syllables
 	"ironed":      "rnav", // STT error: "RNAV" misheard as "ironed"
@@ -535,6 +536,7 @@ var commandKeywords = map[string]string{
 	"tower":     "tower",
 	"tar":       "tower",
 	"terror":    "tower",
+	"tarot":     "tower", // STT error: "tower" misheard as "tarot"
 	"her":       "tower", // STT error: "tower" misheard as "her"
 	"hour":      "tower", // STT error: "tower" misheard as "hour"
 	"frequency": "frequency",

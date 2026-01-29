@@ -25,6 +25,17 @@ func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch,
 		return CallsignMatch{}, tokens
 	}
 
+	// Check for "heavy" or "super" in early tokens (within callsign region).
+	// If found, filter to only consider aircraft with matching weight class.
+	weightClass := detectWeightClass(tokens)
+	if weightClass != "" {
+		filtered := filterByWeightClass(aircraft, weightClass)
+		if len(filtered) > 0 {
+			logLocalStt("  detected %q in callsign region, filtering to %d aircraft", weightClass, len(filtered))
+			aircraft = filtered
+		}
+	}
+
 	// First, try exact match - if tokens exactly match a spoken name, use it immediately.
 	// Try different phrase lengths (longest first for more specific matches).
 	maxPhraseLen := min(len(tokens), 8) // Reasonable max for callsigns like GA N-numbers
@@ -589,4 +600,29 @@ type Aircraft struct {
 	TrackingController  string                     // Controller tracking this aircraft (from flight plan)
 	AddressingForm      sim.CallsignAddressingForm // How this aircraft was addressed (based on which key matched)
 	LAHSORunways        []string                   // Runways that intersect the approach runway (for LAHSO matching)
+}
+
+// detectWeightClass checks the early tokens (callsign region) for "heavy" or "super".
+// Returns the weight class if found, empty string otherwise.
+func detectWeightClass(tokens []Token) string {
+	// Check first 5 tokens (reasonable callsign region)
+	limit := min(len(tokens), 5)
+	for i := 0; i < limit; i++ {
+		text := strings.ToLower(tokens[i].Text)
+		if text == "heavy" || text == "super" {
+			return text
+		}
+	}
+	return ""
+}
+
+// filterByWeightClass returns only aircraft whose spoken name contains the weight class.
+func filterByWeightClass(aircraft map[string]Aircraft, weightClass string) map[string]Aircraft {
+	filtered := make(map[string]Aircraft)
+	for spokenName, ac := range aircraft {
+		if strings.Contains(strings.ToLower(spokenName), weightClass) {
+			filtered[spokenName] = ac
+		}
+	}
+	return filtered
 }

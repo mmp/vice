@@ -123,6 +123,15 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 			pos = newPos
 			isThen = false
 		} else {
+			// Before skipping, check if tokens form an implicit approach reference
+			// (approach name without "expect" or "cleared" prefix)
+			if cmd, consumed := tryImplicitApproachMatch(tokens[pos:], ac); consumed > 0 {
+				logLocalStt("  implicit approach match: %q (consumed=%d)", cmd, consumed)
+				commands = append(commands, cmd)
+				totalConf += 1.0
+				pos += consumed
+				continue
+			}
 			logLocalStt("  no match at token[%d]=%q, skipping", pos, tokens[pos].Text)
 			pos++
 		}
@@ -285,4 +294,35 @@ func invokeHandler(handler any, values []any, isThen bool, thenVariant string) s
 	}
 
 	return cmdStr
+}
+
+// tryImplicitApproachMatch checks if tokens form an approach reference without an
+// explicit "expect" or "cleared" prefix. If so, it infers the command type:
+// - If no approach assigned → "E{approach}" (expect approach)
+// - If approach assigned and matches what we heard → "C{approach}" (cleared approach)
+// - If approach assigned but different → "E{approach}" (expect different approach)
+func tryImplicitApproachMatch(tokens []Token, ac Aircraft) (string, int) {
+	if len(ac.CandidateApproaches) == 0 {
+		return "", 0
+	}
+
+	// Try to match an approach reference using type+runway matching
+	appr, _, consumed := matchApproachByTypeAndNumber(tokens, ac.CandidateApproaches, ac.AssignedApproach)
+	if consumed == 0 {
+		return "", 0
+	}
+
+	// Skip trailing "approach" word if present
+	if consumed < len(tokens) && strings.ToLower(tokens[consumed].Text) == "approach" {
+		consumed++
+	}
+
+	// Determine if this should be "expect" or "cleared" based on assigned approach
+	prefix := "E" // Default to expect
+	if ac.AssignedApproach != "" && approachMatchesAssigned(appr, ac.AssignedApproach) {
+		// Aircraft already has this approach assigned, so hearing it again means cleared
+		prefix = "C"
+	}
+
+	return prefix + appr, consumed
 }
