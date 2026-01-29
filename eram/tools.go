@@ -48,7 +48,7 @@ func (ep *ERAMPane) startDrawCommandInput(ctx *panes.Context, transforms radar.S
 		LineSpacing: 0,
 	}
 
-	if ctx.Mouse != nil && (ctx.Mouse.Clicked[platform.MouseButtonPrimary] || ctx.Mouse.Clicked[platform.MouseButtonTertiary]) {
+	if ep.mousePrimaryClicked(ctx.Mouse) || ep.mouseTertiaryClicked(ctx.Mouse) {
 		toolbarDrawState.mouseDownPos = ctx.Mouse.Pos[:]
 	}
 }
@@ -138,7 +138,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 	mouse := ctx.Mouse
 	mouseInside := mouse != nil && extent.Inside(mouse.Pos)
 	if mouse != nil {
-		if (mouseInside && mouse.Clicked[platform.MouseButtonPrimary]) != ep.repositionLargeInput {
+		if (mouseInside && ep.mousePrimaryClicked(mouse)) != ep.repositionLargeInput {
 			if !ep.repositionLargeInput {
 				ep.timeSinceRepo = time.Now() // only do it on first click
 			}
@@ -159,7 +159,7 @@ func (ep *ERAMPane) drawBigCommandInput(ctx *panes.Context) {
 			ld.AddLine(p3, p0, color)
 
 		}
-		if (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) && ep.repositionLargeInput &&
+		if (ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)) && ep.repositionLargeInput &&
 			time.Since(ep.timeSinceRepo) > 100*time.Millisecond {
 			// get the mouse position and set the commandBigPosition to that
 			ps.commandBigPosition = mouse.Pos
@@ -228,7 +228,7 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 	mouse := ctx.Mouse
 	mouseInside := mouse != nil && extent.Inside(mouse.Pos)
 	if mouse != nil {
-		if (mouseInside && mouse.Clicked[platform.MouseButtonPrimary]) != ep.repositionSmallOutput {
+		if (mouseInside && ep.mousePrimaryClicked(mouse)) != ep.repositionSmallOutput {
 			if !ep.repositionSmallOutput {
 				ep.timeSinceRepo = time.Now() // only do it on first click
 			}
@@ -249,7 +249,7 @@ func (ep *ERAMPane) drawSmallCommandOutput(ctx *panes.Context) {
 			ld.AddLine(p3, p0, color)
 
 		}
-		if (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) && ep.repositionSmallOutput &&
+		if (ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)) && ep.repositionSmallOutput &&
 			time.Since(ep.timeSinceRepo) > 100*time.Millisecond {
 			// get the mouse position and set the commandBigPosition to that
 			ps.commandSmallPosition = mouse.Pos
@@ -560,7 +560,7 @@ func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransfor
 	extent := math.Extent2DFromPoints([][2]float32{p0, p2})
 	mouse := ctx.Mouse
 	mouseInside := mouse != nil && extent.Inside(mouse.Pos)
-	if (mouseInside && mouse.Clicked[platform.MouseButtonPrimary]) != ep.repositionClock {
+	if (mouseInside && ep.mousePrimaryClicked(mouse)) != ep.repositionClock {
 		if !ep.repositionClock {
 			ep.timeSinceRepo = time.Now()
 		}
@@ -581,7 +581,7 @@ func (ep *ERAMPane) drawClock(ctx *panes.Context, transforms radar.ScopeTransfor
 			ld.AddLine(p2, p3, color)
 			ld.AddLine(p3, p0, color)
 
-			if (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) && ep.repositionClock &&
+			if (ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)) && ep.repositionClock &&
 				time.Since(ep.timeSinceRepo) > 100*time.Millisecond {
 				ps.clockPosition = mouse.Pos
 				ep.repositionClock = false

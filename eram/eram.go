@@ -822,3 +822,88 @@ func combine(x, y string) string {
 	return x + " " + y
 
 }
+// Mouse button helpers:
+// When UseRightClick is set, logical primary = physical right button click, logical tertiary = physical left button click.
+func (ep *ERAMPane) mousePrimaryClicked(m *platform.MouseState) bool {
+	if m == nil {
+		return false
+	}
+	if ep.currentPrefs().UseRightClick {
+		return m.Clicked[platform.MouseButtonSecondary]
+	}
+	return m.Clicked[platform.MouseButtonPrimary]
+}
+
+func (ep *ERAMPane) mousePrimaryDown(m *platform.MouseState) bool {
+	if m == nil {
+		return false
+	}
+	if ep.currentPrefs().UseRightClick {
+		return m.Down[platform.MouseButtonSecondary]
+	}
+	return m.Down[platform.MouseButtonPrimary]
+}
+
+func (ep *ERAMPane) mousePrimaryReleased(m *platform.MouseState) bool {
+	if m == nil {
+		return false
+	}
+	if ep.currentPrefs().UseRightClick {
+		return m.Released[platform.MouseButtonSecondary]
+	}
+	return m.Released[platform.MouseButtonPrimary]
+}
+
+func (ep *ERAMPane) mouseTertiaryClicked(m *platform.MouseState) bool {
+	if m == nil {
+		return false
+	}
+	if ep.currentPrefs().UseRightClick {
+		return m.Clicked[platform.MouseButtonPrimary]
+	}
+	return m.Clicked[platform.MouseButtonTertiary]
+}
+
+func (ep *ERAMPane) mouseTertiaryDown(m *platform.MouseState) bool {
+	if m == nil {
+		return false
+	}
+	if ep.currentPrefs().UseRightClick {
+		return m.Down[platform.MouseButtonPrimary]
+	}
+	return m.Down[platform.MouseButtonTertiary]
+}
+
+func (ep *ERAMPane) mouseTertiaryReleased(m *platform.MouseState) bool {
+	if m == nil {
+		return false
+	}
+	if ep.currentPrefs().UseRightClick {
+		return m.Released[platform.MouseButtonPrimary]
+	}
+	return m.Released[platform.MouseButtonTertiary]
+}
+
+// clearMousePrimaryConsumed clears the physical button used for logical primary so the click is not processed again.
+func (ep *ERAMPane) clearMousePrimaryConsumed(m *platform.MouseState) {
+	if m == nil {
+		return
+	}
+	if ep.currentPrefs().UseRightClick {
+		m.Clicked[platform.MouseButtonSecondary] = false
+	} else {
+		m.Clicked[platform.MouseButtonPrimary] = false
+	}
+}
+
+// clearMouseTertiaryConsumed clears the physical button used for logical tertiary.
+func (ep *ERAMPane) clearMouseTertiaryConsumed(m *platform.MouseState) {
+	if m == nil {
+		return
+	}
+	if ep.currentPrefs().UseRightClick {
+		m.Clicked[platform.MouseButtonPrimary] = false
+	} else {
+		m.Clicked[platform.MouseButtonTertiary] = false
+	}
+}

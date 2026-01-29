@@ -22,6 +22,8 @@ func (ep *ERAMPane) DisplayName() string { return "ERAM" }
 
 func (ep *ERAMPane) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.Checkbox("Disable ERAM to Radio Commands", &ep.DisableERAMtoRadio)
+	ps := ep.currentPrefs()
+	imgui.Checkbox("Use right click for primary button", &ps.UseRightClick)
 	tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
 		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 	if imgui.CollapsingHeaderBoolPtr("Preferences", nil) {

@@ -12,7 +12,6 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
-	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/radar"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
@@ -366,7 +365,7 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 	}
 
 	// Clicks for title buttons (mouse.Pos is already in pane-local window coordinates)
-	if mouse := ctx.Mouse; mouse != nil && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) {
+	if mouse := ctx.Mouse; ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
 		switch {
 		case mRect.Inside(mouse.Pos):
 			ctx.SetMousePosition(math.Add2f(mouse.Pos, [2]float32{width * 1.5, 0}))
@@ -450,10 +449,10 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 		ld.GenerateCommands(cb)
 		td.GenerateCommands(cb)
 		// Handle clicks on panel labels
-		if mouse := ctx.Mouse; mouse != nil && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) {
+		if mouse := ctx.Mouse; ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
 			for label, rect := range ep.crrLabelRects {
 				if rect.Inside(mouse.Pos) {
-					if mouse.Clicked[platform.MouseButtonPrimary] {
+					if ep.mousePrimaryClicked(mouse) {
 						ep.Input.Set(ps, "LF "+strings.ToUpper(label)+" ")
 					} else {
 						if g := ep.CRRGroups[label]; g != nil {
@@ -540,11 +539,11 @@ func (ep *ERAMPane) drawCRRView(ctx *panes.Context, transforms radar.ScopeTransf
 	}
 
 	// Handle clicks on labels and aircraft rows after layout
-	if mouse := ctx.Mouse; mouse != nil && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) {
+	if mouse := ctx.Mouse; ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
 		// Group labels
 		for label, rect := range ep.crrLabelRects {
 			if rect.Inside(mouse.Pos) {
-				if mouse.Clicked[platform.MouseButtonPrimary] {
+				if ep.mousePrimaryClicked(mouse) {
 					// Seed LF command
 					ep.Input.Set(ps, "LF "+strings.ToUpper(label)+" ")
 				} else {
@@ -773,7 +772,7 @@ func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, origin [2]float32, width flo
 		P1: p1,
 	}
 
-	if mouse := ctx.Mouse; mouse != nil && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) {
+	if mouse := ctx.Mouse; ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
 		if !menuExtent.Inside(mouse.Pos) {
 			ep.crrMenuOpen = false
 		}
@@ -783,7 +782,7 @@ func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, origin [2]float32, width flo
 	ld.GenerateCommands(cb)
 	td.GenerateCommands(cb)
 
-	if mouse := ctx.Mouse; mouse != nil && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) {
+	if mouse := ctx.Mouse; ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
 		// O/T
 		if rt.Inside(mouse.Pos) {
 			ps.CRR.Opaque = !ps.CRR.Opaque
@@ -794,7 +793,7 @@ func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, origin [2]float32, width flo
 			return
 		}
 		if rLines.Inside(mouse.Pos) {
-			if mouse.Clicked[platform.MouseButtonPrimary] {
+			if ep.mousePrimaryClicked(mouse) {
 				ps.CRR.Lines = int(math.Clamp(float32(ps.CRR.Lines-1), 1, 100))
 			} else {
 				ps.CRR.Lines = int(math.Clamp(float32(ps.CRR.Lines+1), 1, 100))
@@ -802,7 +801,7 @@ func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, origin [2]float32, width flo
 			return
 		}
 		if rFont.Inside(mouse.Pos) {
-			if mouse.Clicked[platform.MouseButtonPrimary] {
+			if ep.mousePrimaryClicked(mouse) {
 				ps.CRR.Font--
 				if ps.CRR.Font < 1 {
 					ps.CRR.Font = 4
@@ -816,7 +815,7 @@ func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, origin [2]float32, width flo
 			return
 		}
 		if rBright.Inside(mouse.Pos) {
-			if mouse.Clicked[platform.MouseButtonPrimary] {
+			if ep.mousePrimaryClicked(mouse) {
 				ps.CRR.Bright = int(math.Clamp(float32(ps.CRR.Bright-1), 0, 100))
 			} else {
 				ps.CRR.Bright = int(math.Clamp(float32(ps.CRR.Bright+1), 0, 100))
@@ -829,7 +828,7 @@ func (ep *ERAMPane) drawCRRMenu(ctx *panes.Context, origin [2]float32, width flo
 		}
 		if rColor.Inside(mouse.Pos) {
 			// Adjust brightness of selected color
-			if mouse.Clicked[platform.MouseButtonPrimary] {
+			if ep.mousePrimaryClicked(mouse) {
 				ps.CRR.ColorBright[ps.CRR.SelectedColor] = int(math.Clamp(float32(ps.CRR.ColorBright[ps.CRR.SelectedColor]-1), 0, 100))
 			} else {
 				ps.CRR.ColorBright[ps.CRR.SelectedColor] = int(math.Clamp(float32(ps.CRR.ColorBright[ps.CRR.SelectedColor]+1), 0, 100))
@@ -902,7 +901,7 @@ func (ep *ERAMPane) drawCRRFixes(ctx *panes.Context, transforms radar.ScopeTrans
 	td.GenerateCommands(cb)
 
 	// Handle click to seed LF if input is empty
-	if mouse := ctx.Mouse; mouse != nil && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) && len(ep.Input) == 0 {
+	if mouse := ctx.Mouse; (ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)) && len(ep.Input) == 0 {
 		for id, ex := range ep.crrFixRects {
 			if ex.Inside(mouse.Pos) {
 				ep.Input.Set(ps, "LF "+strings.ToUpper(id)+" ")

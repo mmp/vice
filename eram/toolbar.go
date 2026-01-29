@@ -146,7 +146,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			ep.activeToolbarMenu = toolbarDBFields
 		}
 		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("VECTOR\n%d", ep.VelocityTime), 0, scale, false, false) {
-			handleMultiplicativeClick(&ep.VelocityTime, 0, 8, 2)
+			handleMultiplicativeClick(ep, &ep.VelocityTime, 0, 8, 2)
 		}
 		if ep.drawToolbarFullButton(ctx, "VIEWS", 0, scale, false, true) { // MANDATORY Done
 			ep.activeToolbarMenu = toolbarViews
@@ -162,8 +162,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		ep.drawToolbarFullButton(ctx, "RADAR\nFILTER", 0, scale, false, false)
 		ep.drawToolbarFullButton(ctx, "PREFSET", 0, scale, false, false)
 		if ep.drawToolbarFullButton(ctx, "DELETE\nTEAROFF", 0, scale, ep.deleteTearoffMode, false) {
-			if ctx.Mouse != nil &&
-				(ctx.Mouse.Clicked[platform.MouseButtonPrimary] || ctx.Mouse.Clicked[platform.MouseButtonTertiary]) {
+			if ep.mousePrimaryClicked(ctx.Mouse) || ep.mouseTertiaryClicked(ctx.Mouse) {
 				if !ep.deleteTearoffMode {
 					ep.deleteTearoffMode = true
 					ep.SetTemporaryCursor("EramDeletion", -1, "")
@@ -810,7 +809,7 @@ func (ep *ERAMPane) drawToolbarFullButton(ctx *panes.Context, text string, flag 
 			{tearoffPos[0] + tearoffSz[0], tearoffPos[1] - tearoffSz[1]},
 		})
 
-		if mouse != nil && tearoffExt.Inside(mouse.Pos) && mouse.Clicked[platform.MouseButtonPrimary] {
+		if mouse != nil && tearoffExt.Inside(mouse.Pos) && ep.mousePrimaryClicked(mouse) {
 			_, alreadyTorn := ps.TornOffButtons[buttonName]
 			if !alreadyTorn {
 				// Start new tearoff drag
@@ -872,7 +871,7 @@ func (ep *ERAMPane) drawToolbarHoldButton(ctx *panes.Context, text string, flag 
 			{tearoffPos[0] + tearoffSz[0], tearoffPos[1] - tearoffSz[1]},
 		})
 
-		if mouse != nil && tearoffExt.Inside(mouse.Pos) && mouse.Clicked[platform.MouseButtonPrimary] {
+		if mouse != nil && tearoffExt.Inside(mouse.Pos) && ep.mousePrimaryClicked(mouse) {
 			_, alreadyTorn := ps.TornOffButtons[buttonName]
 			if !alreadyTorn {
 				// Start new tearoff drag
@@ -1161,8 +1160,7 @@ func (ep *ERAMPane) startDrawtoolbar(ctx *panes.Context, buttonScale float32, tr
 			drawEndPos, [2]float32{toolbarDrawState.drawStartPos[0], drawEndPos[1]}, ps.Brightness.Toolbar.ScaleRGB(eramGray))
 		trid.GenerateCommands(cb)
 	}
-	if captureMouse && ctx.Mouse != nil &&
-		(ctx.Mouse.Clicked[platform.MouseButtonPrimary] || ctx.Mouse.Clicked[platform.MouseButtonTertiary]) {
+	if captureMouse && (ep.mousePrimaryClicked(ctx.Mouse) || ep.mouseTertiaryClicked(ctx.Mouse)) {
 		toolbarDrawState.mouseDownPos = ctx.Mouse.Pos[:]
 	}
 }
@@ -1175,7 +1173,7 @@ func (ep *ERAMPane) endDrawtoolbar() {
 	toolbarDrawState.cb.ResetState()
 
 	if mouse := toolbarDrawState.mouse; mouse != nil { // Not sure if this is needed, but we'll find out eventually...
-		if mouse.Released[platform.MouseButtonPrimary] || mouse.Released[platform.MouseButtonTertiary] {
+		if ep.mousePrimaryReleased(mouse) || ep.mouseTertiaryReleased(mouse) {
 			toolbarDrawState.mouseDownPos = nil
 			toolbarDrawState.mouseYetReleased = true
 		}
@@ -1306,13 +1304,13 @@ func handleClick[T ~int](ep *ERAMPane, pref *T, min, max, step int) {
 		return
 	}
 
-	if mouse.Clicked[platform.MouseButtonPrimary] || mouse.Down[platform.MouseButtonPrimary] { // lower value
+	if ep.mousePrimaryClicked(mouse) || ep.mousePrimaryDown(mouse) { // lower value
 		if v-step >= min {
 			v -= step
 		} else {
 			ep.SetTemporaryCursor("EramInvalidSelect", 0.5, "")
 		}
-	} else if mouse.Clicked[platform.MouseButtonTertiary] || mouse.Down[platform.MouseButtonTertiary] { // raise value
+	} else if ep.mouseTertiaryClicked(mouse) || ep.mouseTertiaryDown(mouse) { // raise value
 		if v+step <= max {
 			v += step
 		} else {
@@ -1323,14 +1321,14 @@ func handleClick[T ~int](ep *ERAMPane, pref *T, min, max, step int) {
 }
 
 // Just for leader lines AFAIK
-func handleMultiplicativeClick(pref *int, min, max, step int) {
+func handleMultiplicativeClick(ep *ERAMPane, pref *int, min, max, step int) {
 	mouse := toolbarDrawState.mouse
 	if mouse == nil {
 		return
 	}
 
 	value := *pref
-	if mouse.Clicked[platform.MouseButtonPrimary] || mouse.Down[platform.MouseButtonPrimary] { // lower value
+	if ep.mousePrimaryClicked(mouse) || ep.mousePrimaryDown(mouse) { // lower value
 		if value/step >= min {
 			if value == 1 {
 				*pref = 0
@@ -1338,7 +1336,7 @@ func handleMultiplicativeClick(pref *int, min, max, step int) {
 				*pref = value / step
 			}
 		}
-	} else if mouse.Clicked[platform.MouseButtonTertiary] || mouse.Down[platform.MouseButtonTertiary] { // raise value
+	} else if ep.mouseTertiaryClicked(mouse) || ep.mouseTertiaryDown(mouse) { // raise value
 		if value*step <= max {
 			if value == 0 {
 				*pref = 1
@@ -1556,7 +1554,7 @@ func (ep *ERAMPane) handleTearoffPlacement(ctx *panes.Context) {
 	// Check for placement - use Released so user can drag and release to place
 	shouldPlace := false
 	if time.Since(ep.tearoffStart) > 100*time.Millisecond {
-		if mouse.Released[platform.MouseButtonPrimary] || mouse.Released[platform.MouseButtonTertiary] {
+		if ep.mousePrimaryReleased(mouse) || ep.mouseTertiaryReleased(mouse) {
 			shouldPlace = true
 		}
 	}
@@ -1619,7 +1617,7 @@ func (ep *ERAMPane) handleTornOffButtonsInput(ctx *panes.Context) {
 	if mouse == nil || len(ps.TornOffButtons) == 0 {
 		return
 	}
-	if !mouse.Clicked[platform.MouseButtonPrimary] && !mouse.Clicked[platform.MouseButtonTertiary] {
+	if !ep.mousePrimaryClicked(mouse) && !ep.mouseTertiaryClicked(mouse) {
 		return
 	}
 
@@ -1651,43 +1649,43 @@ func (ep *ERAMPane) handleTornOffButtonsInput(ctx *panes.Context) {
 
 		// In delete mode, a tertiary click deletes a torn-off button.
 		if ep.deleteTearoffMode {
-			if mouse.Clicked[platform.MouseButtonTertiary] {
+			if ep.mouseTertiaryClicked(mouse) {
 				ep.deleteTornOffButton(ps, name)
 				ep.deleteTearoffMode = false
 				ep.ClearTemporaryCursor() // clear the delete cursor
 			}
 			// Whether we deleted or not, don't let underlying UI see this click
 			// since the cursor is over an overlay widget.
-			mouse.Clicked[platform.MouseButtonPrimary] = false
-			mouse.Clicked[platform.MouseButtonTertiary] = false
+			ep.clearMousePrimaryConsumed(mouse)
+			ep.clearMouseTertiaryConsumed(mouse)
 			return
 		}
 
 		// Click on handle - start reposition.
-		if handleHovered && mouse.Clicked[platform.MouseButtonPrimary] && ep.tearoffInProgress == "" {
+		if handleHovered && ep.mousePrimaryClicked(mouse) && ep.tearoffInProgress == "" {
 			ep.tearoffInProgress = name
 			ep.tearoffIsReposition = true
 			ep.tearoffStart = time.Now()
 			ep.tearoffDragOffset = math.Sub2f(mouse.Pos, pos)
 			ctx.Platform.StartCaptureMouse(ctx.PaneExtent)
 
-			mouse.Clicked[platform.MouseButtonPrimary] = false
-			mouse.Clicked[platform.MouseButtonTertiary] = false
+			ep.clearMousePrimaryConsumed(mouse)
+			ep.clearMouseTertiaryConsumed(mouse)
 			return
 		}
 
 		// Click on main button - trigger action.
-		if buttonHovered && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) {
+		if buttonHovered && (ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)) {
 			ep.handleTornOffButtonClick(ctx, name, pos)
 
-			mouse.Clicked[platform.MouseButtonPrimary] = false
-			mouse.Clicked[platform.MouseButtonTertiary] = false
+			ep.clearMousePrimaryConsumed(mouse)
+			ep.clearMouseTertiaryConsumed(mouse)
 			return
 		}
 
 		// Cursor is over overlay, consume the click anyway.
-		mouse.Clicked[platform.MouseButtonPrimary] = false
-		mouse.Clicked[platform.MouseButtonTertiary] = false
+		ep.clearMousePrimaryConsumed(mouse)
+		ep.clearMouseTertiaryConsumed(mouse)
 		return
 	}
 }
@@ -1941,14 +1939,14 @@ func (ep *ERAMPane) drawSingleTornOffButton(ctx *panes.Context, name string, pos
 	// Handle clicks
 	if mouse != nil {
 		if ep.deleteTearoffMode {
-			if (handleHovered || buttonHovered) && mouse.Clicked[platform.MouseButtonTertiary] {
+			if (handleHovered || buttonHovered) && ep.mouseTertiaryClicked(mouse) {
 				return true
 			}
 			return false
 		}
 
 		// Click on handle - start reposition
-		if handleHovered && mouse.Clicked[platform.MouseButtonPrimary] && ep.tearoffInProgress == "" {
+		if handleHovered && ep.mousePrimaryClicked(mouse) && ep.tearoffInProgress == "" {
 			ep.tearoffInProgress = name
 			ep.tearoffIsReposition = true
 			ep.tearoffStart = time.Now()
@@ -1957,7 +1955,7 @@ func (ep *ERAMPane) drawSingleTornOffButton(ctx *panes.Context, name string, pos
 		}
 
 		// Click on main button - trigger action
-		if buttonHovered && (mouse.Clicked[platform.MouseButtonPrimary] || mouse.Clicked[platform.MouseButtonTertiary]) {
+		if buttonHovered && (ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse)) {
 			return true
 		}
 	}
@@ -2220,7 +2218,7 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarATCTools)
 	case "AB\nSETTING":
-		// Handle AB SETTING
+		// Handle AB SETTING (options are in ERAM settings UI in ui.go)
 	case "CURSOR":
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarCursor)
@@ -2234,7 +2232,7 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarDBFields)
 	case "VECTOR":
-		handleMultiplicativeClick(&ep.VelocityTime, 0, 8, 2)
+		handleMultiplicativeClick(ep, &ep.VelocityTime, 0, 8, 2)
 	case "VIEWS":
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarViews)
@@ -2256,8 +2254,7 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 	case "CRR\nFIX":
 		ps.CRR.DisplayFixes = !ps.CRR.DisplayFixes
 	case "DELETE\nTEAROFF":
-		if ctx.Mouse != nil &&
-			(ctx.Mouse.Clicked[platform.MouseButtonPrimary] || ctx.Mouse.Clicked[platform.MouseButtonTertiary]) {
+		if ep.mousePrimaryClicked(ctx.Mouse) || ep.mouseTertiaryClicked(ctx.Mouse) {
 			ep.deleteTearoffMode = !ep.deleteTearoffMode
 		}
 	}

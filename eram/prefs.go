@@ -42,6 +42,8 @@ type Preferences struct {
 
 	VideoMapBrightness map[string]int
 
+	UseRightClick bool
+
 	// CRR view preferences and configuration
 	CRR struct {
 		Visible       bool

@@ -47,14 +47,14 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 		ctx.Mouse.Clicked[platform.MouseButtonTertiary]) && !ctx.HaveFocus {
 		ctx.KeyboardFocus.Take(ep)
 	}
-	if mouse.Released[platform.MouseButtonPrimary] {
+	if ep.mousePrimaryReleased(mouse) {
 		if ctx.Keyboard != nil && ctx.Keyboard.KeyShift() && ctx.Keyboard.KeyControl() {
 			mouseLatLong := transforms.LatLongFromWindowP(mouse.Pos)
 			ctx.Platform.GetClipboard().SetClipboard(strings.ReplaceAll(mouseLatLong.DMSString(), " ", ""))
 
 		}
 	}
-	if mouse.Released[platform.MouseButtonTertiary] {
+	if ep.mouseTertiaryReleased(mouse) {
 		// Try execute a clicked command on the closest track.
 		trk, _ := ep.tryGetClosestTrack(ctx, mouse.Pos, transforms)
 		if trk != nil {
@@ -81,7 +81,7 @@ func (ep *ERAMPane) consumeMouseEvents(ctx *panes.Context, transforms radar.Scop
 		}
 	}
 
-	if mouse.Clicked[platform.MouseButtonPrimary] {
+	if ep.mousePrimaryClicked(mouse) {
 		if ep.commandMode == CommandModeDrawRoute {
 			pos := transforms.LatLongFromWindowP(mouse.Pos)
 			ep.drawRoutePoints = append(ep.drawRoutePoints, pos)
