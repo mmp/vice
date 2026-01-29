@@ -662,9 +662,8 @@ func (sm *SimManager) GetStateUpdate(token string) (*SimStateUpdate, error) {
 type SimStateUpdate struct {
 	sim.StateUpdate
 
-	ActiveTCWs             []sim.TCW
-	Events                 []sim.Event
-	EmergencyTransmissions []sim.PilotSpeech // Emergency transmissions with synthesized MP3s
+	ActiveTCWs []sim.TCW
+	Events     []sim.Event
 }
 
 // Apply applies the update to the state, including server-specific fields.

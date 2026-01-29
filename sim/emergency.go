@@ -458,10 +458,9 @@ func (s *Sim) runEmergencyStage(ac *Aircraft) {
 		transmit("[we'd like equipment standing by|request ARFF waiting for us|roll the trucks for us|we're gonna need the trucks by the runway]")
 	}
 
-	// Post the radio transmission
-	// Note: MakeContactTransmission automatically prepends controller position and callsign
+	// Queue the radio transmission (TTS will be synthesized when client requests it)
 	rt := av.MakeContactTransmission(strings.Join(transmission, ", "), args...)
-	s.postEmergencyTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), *rt)
+	s.enqueueEmergencyTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), rt)
 
 	// Schedule next stage based on current stage's duration
 	es.CurrentStage++

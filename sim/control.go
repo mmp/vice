@@ -1830,6 +1830,7 @@ const (
 	PendingTransmissionFlightFollowingReq                                 // Abbreviated "VFR request"
 	PendingTransmissionFlightFollowingFull                                // Full flight following request
 	PendingTransmissionGoAround                                           // Go-around announcement
+	PendingTransmissionEmergency                                          // Emergency stage transmission
 )
 
 // PendingContact represents a pilot-initiated transmission waiting to be played.
@@ -1843,6 +1844,7 @@ type PendingContact struct {
 	Type                   PendingTransmissionType // What kind of transmission
 	ReportDepartureHeading bool                    // For departures: include assigned heading
 	HasQueuedEmergency     bool                    // For departures: trigger emergency after contact
+	PrebuiltTransmission   *av.RadioTransmission   // For emergency transmissions: pre-built message
 }
 
 // addPendingContact adds an aircraft to the pending contacts queue for a controller.
@@ -1853,26 +1855,29 @@ func (s *Sim) addPendingContact(pc PendingContact) {
 	s.PendingContacts[pc.TCP] = append(s.PendingContacts[pc.TCP], pc)
 }
 
-// PopReadyContact removes and returns the first pending contact whose ReadyTime has passed,
-// or nil if none are ready yet. This is called when the client is ready to play a contact.
-func (s *Sim) PopReadyContact(tcp TCP) *PendingContact {
+// PopReadyContact removes and returns the first pending contact whose ReadyTime has passed
+// for any of the given positions, or nil if none are ready yet.
+// This is called when the client is ready to play a contact.
+func (s *Sim) PopReadyContact(positions []TCP) *PendingContact {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.popReadyContact(tcp)
+	return s.popReadyContact(positions)
 }
 
 // popReadyContact is the internal version that requires the lock to already be held.
-func (s *Sim) popReadyContact(tcp TCP) *PendingContact {
-	if s.PendingContacts == nil || len(s.PendingContacts[tcp]) == 0 {
+func (s *Sim) popReadyContact(positions []TCP) *PendingContact {
+	if s.PendingContacts == nil {
 		return nil
 	}
 
-	// Find the first contact that's ready (ReadyTime has passed)
-	for i, pc := range s.PendingContacts[tcp] {
-		if !s.State.SimTime.Before(pc.ReadyTime) {
-			s.PendingContacts[tcp] = slices.Delete(s.PendingContacts[tcp], i, i+1)
-			return &pc
+	// Find the first contact that's ready (ReadyTime has passed) for any position
+	for _, tcp := range positions {
+		for i, pc := range s.PendingContacts[tcp] {
+			if !s.State.SimTime.Before(pc.ReadyTime) {
+				s.PendingContacts[tcp] = slices.Delete(s.PendingContacts[tcp], i, i+1)
+				return &pc
+			}
 		}
 	}
 
@@ -1911,6 +1916,18 @@ func (s *Sim) enqueuePilotTransmission(callsign av.ADSBCallsign, tcp TCP, txType
 		TCP:          tcp,
 		ReadyTime:    s.State.SimTime, // Ready immediately
 		Type:         txType,
+	})
+}
+
+// enqueueEmergencyTransmission adds an emergency transmission to the pending queue.
+// Emergency transmissions have a pre-built message since they're generated at trigger time.
+func (s *Sim) enqueueEmergencyTransmission(callsign av.ADSBCallsign, tcp TCP, rt *av.RadioTransmission) {
+	s.addPendingContact(PendingContact{
+		ADSBCallsign:         callsign,
+		TCP:                  tcp,
+		ReadyTime:            s.State.SimTime, // Ready immediately
+		Type:                 PendingTransmissionEmergency,
+		PrebuiltTransmission: rt,
 	})
 }
 
@@ -1995,6 +2012,14 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 	case PendingTransmissionGoAround:
 		rt = av.MakeContactTransmission("[going around|on the go]")
 		rt.Type = av.RadioTransmissionUnexpected
+
+	case PendingTransmissionEmergency:
+		if pc.PrebuiltTransmission == nil {
+			return "", ""
+		}
+		rt = pc.PrebuiltTransmission
+		rt.Type = av.RadioTransmissionUnexpected // Mark as urgent for display
+		rt = s.addContactPrefixes(ac, pc.TCP, rt)
 
 	default:
 		return "", ""

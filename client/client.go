@@ -472,22 +472,6 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 		issueTime := time.Now()
 		c.updateCall = makeStateUpdateRPCCall(c.client.Go(server.GetStateUpdateRPC, c.controllerToken, &update, nil), &update,
 			func(err error) {
-				// Process emergency transmissions from state update
-				// Skip if TTS is disabled at runtime (user toggled it off)
-				ttsEnabled := c.disableTTSPtr == nil || !*c.disableTTSPtr
-				if err == nil && ttsEnabled {
-					for _, speech := range update.EmergencyTransmissions {
-						// Decode MP3 to PCM before enqueueing (off main render loop)
-						pcm, decodeErr := platform.DecodeSpeechMP3(speech.MP3)
-						if decodeErr != nil {
-							c.lg.Errorf("Emergency transmission MP3 decode error for %s: %v",
-								speech.Callsign, decodeErr)
-							continue
-						}
-						c.transmissions.EnqueueTransmissionPCM(speech.Callsign, speech.Type, pcm)
-					}
-				}
-
 				d := time.Since(issueTime)
 				c.lastUpdateLatency = d
 				if d > 250*time.Millisecond {

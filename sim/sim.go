@@ -1551,26 +1551,6 @@ func (s *Sim) goAround(ac *Aircraft) {
 	}
 }
 
-// postEmergencyTransmission posts a radio event for an emergency transmission.
-// Emergency transmissions play immediately rather than being queued.
-func (s *Sim) postEmergencyTransmission(from av.ADSBCallsign, tcp TCP, tr av.RadioTransmission) {
-	tr.Validate(s.lg)
-
-	if ac, ok := s.Aircraft[from]; ok {
-		ac.LastRadioTransmission = s.State.SimTime
-	}
-
-	s.eventStream.Post(Event{
-		Type:                  RadioTransmissionEvent,
-		ADSBCallsign:          from,
-		ToController:          tcp,
-		DestinationTCW:        s.State.TCWForPosition(tcp),
-		WrittenText:           tr.Written(s.Rand),
-		SpokenText:            tr.Spoken(s.Rand),
-		RadioTransmissionType: tr.Type,
-	})
-}
-
 // postReadbackTransmission posts a radio event for a pilot responding to a command.
 // DestinationTCW is the specific TCW that issued the command.
 // Use this for readbacks, where the response must go to the issuing controller
