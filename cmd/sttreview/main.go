@@ -233,13 +233,15 @@ func (state *AppState) updateSearchFilter() {
 	state.filteredIdx = nil
 
 	for i, entry := range state.entries {
-		// Match against transcript, callsign, or command (case-insensitive)
+		// Match against transcript, callsign, command, or whisper model (case-insensitive)
 		transcriptLower := strings.ToLower(entry.Transcript)
 		callsignLower := strings.ToLower(entry.Callsign)
 		commandLower := strings.ToLower(entry.Command)
+		whisperModelLower := strings.ToLower(entry.WhisperModel)
 		if strings.Contains(transcriptLower, searchLower) ||
 			strings.Contains(callsignLower, searchLower) ||
-			strings.Contains(commandLower, searchLower) {
+			strings.Contains(commandLower, searchLower) ||
+			strings.Contains(whisperModelLower, searchLower) {
 			state.filteredIdx = append(state.filteredIdx, i)
 		}
 	}
@@ -625,7 +627,16 @@ func render(screen tcell.Screen, state *AppState) {
 	listStartY := y
 	listEndY := height - 2 // Leave room for help line
 	if state.showContext {
-		listEndY = listStartY + 3 // Just show selected entry in context mode
+		// In context mode, only show the selected entry to ensure full transcript is visible
+		state.scrollOffset = state.selectedIndex
+		entryIdx := state.getSelectedEntryIndex()
+		if entryIdx >= 0 {
+			entry := state.entries[entryIdx]
+			transcriptLines := wrapText(entry.Transcript, col1Width, col1Width-indent)
+			listEndY = listStartY + len(transcriptLines)
+		} else {
+			listEndY = listStartY + 1
+		}
 	}
 	visibleLines := listEndY - listStartY
 
@@ -865,14 +876,16 @@ func render(screen tcell.Screen, state *AppState) {
 					}
 				}
 
-				// If command contains "E" (expect approach), show the approach's fixes
+				// Show approach fixes if there's an assigned approach or expect approach command
 				if len(ac.ApproachFixes) > 0 && y < maxY {
-					approachID := extractExpectApproachID(entry.Command)
+					approachID := ac.AssignedApproach
+					if approachID == "" {
+						approachID = extractExpectApproachID(entry.Command)
+					}
 					if approachID != "" {
 						if approachFixes, ok := ac.ApproachFixes[approachID]; ok && len(approachFixes) > 0 {
 							drawText(screen, 0, y, width, styleContext, strings.Repeat(" ", width))
-							styleApprFix := tcell.StyleDefault.Background(tcell.ColorYellow).Foreground(tcell.ColorBlack)
-							drawText(screen, 0, y, width, styleApprFix, fmt.Sprintf(" Approach %s Fixes:", approachID))
+							drawText(screen, 0, y, width, styleContextLabel, fmt.Sprintf(" Approach %s Fixes:", approachID))
 							y++
 
 							var fixNames []string
@@ -1004,21 +1017,13 @@ func handleEvent(ev tcell.Event, state *AppState, screen tcell.Screen) Action {
 			return ActionNone
 		}
 
-		// Handle Escape - clear focused field if non-empty, otherwise quit
+		// Handle Escape - clear search if focused and non-empty, otherwise quit
 		if ev.Key() == tcell.KeyEscape {
-			if state.focusedField == FocusSearch {
-				if state.searchString != "" {
-					state.searchString = ""
-					state.searchCursorPos = 0
-					state.updateSearchFilter()
-					return ActionNone
-				}
-			} else {
-				if state.correction != "" {
-					state.correction = ""
-					state.cursorPos = 0
-					return ActionNone
-				}
+			if state.focusedField == FocusSearch && state.searchString != "" {
+				state.searchString = ""
+				state.searchCursorPos = 0
+				state.updateSearchFilter()
+				return ActionNone
 			}
 			return ActionQuit
 		}
