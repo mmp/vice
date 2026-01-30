@@ -173,8 +173,8 @@ func init() {
 			dep.Released = true // hack for instant update pending the next server update
 			ctx.Client.ReleaseDeparture(dep.ADSBCallsign,
 				func(err error) { sp.displayError(err, ctx, "") })
-		} else {
-			sp.TrackState[dep.ADSBCallsign].ReleaseDeleted = true
+		} else if ts := sp.TrackState[dep.ADSBCallsign]; ts != nil {
+			ts.ReleaseDeleted = true
 		}
 		return nil
 	}
