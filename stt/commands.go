@@ -1707,7 +1707,7 @@ func extractSpeedUntil(tokens []Token, ac Aircraft) (speedUntilResult, int) {
 // isUntilKeyword checks if a word is "until" or a common STT transcription error.
 func isUntilKeyword(text string) bool {
 	switch text {
-	case "until", "unto", "intel", "untill", "intil":
+	case "until", "unto", "intel", "untill", "intil", "til", "till":
 		return true
 	}
 	return false

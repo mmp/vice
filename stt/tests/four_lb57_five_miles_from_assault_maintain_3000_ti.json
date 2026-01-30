@@ -8,7 +8,7 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_arm64.s:1268:runtime.goexit"
   ],
-  "command": "A30 CR3L S180",
+  "command": "A30 CR3L S180/U5",
   "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",

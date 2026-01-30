@@ -14,7 +14,7 @@
   "audio_duration_ms": 2944,
   "processor": "GPU: AMD Radeon RX 7600 (8176MB)",
   "callsign": "NKS6970",
-  "command": "S170",
+  "command": "S170/U5",
   "stt_aircraft": {
     "American 25 heavy": {
       "Callsign": "AAL25",
