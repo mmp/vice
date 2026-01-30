@@ -8,7 +8,7 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "command": "R160",
+  "command": "S160",
   "level": "INFO",
   "logs": [
     "[local-stt] === DecodeTranscript START ===",

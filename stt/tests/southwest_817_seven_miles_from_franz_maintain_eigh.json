@@ -14,7 +14,7 @@
   "audio_duration_ms": 8960,
   "processor": "GPU: NVIDIA GeForce RTX 5070 (11943MB)",
   "callsign": "SWA817",
-  "command": "A80 CI4R S180",
+  "command": "A80 CI4R S180/UCORDE",
   "stt_aircraft": {
     "American 65": {
       "Callsign": "AAL65",

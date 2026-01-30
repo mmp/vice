@@ -106,6 +106,13 @@ func extractHeading(tokens []Token) (int, int) {
 		if i > 3 {
 			break
 		}
+
+		// Skip numbers that follow "speed" keyword - those are speed values, not headings.
+		// This prevents "left approach speed 180" from matching as heading 180.
+		if i > 0 && strings.ToLower(tokens[i-1].Text) == "speed" {
+			continue
+		}
+
 		// Handle 4-digit values where first 3 digits form valid heading (e.g., 2801 → 280)
 		// STT sometimes appends trailing garbage to headings
 		if t.Type == TokenNumber && t.Value > 360 && t.Value < 10000 {
@@ -562,7 +569,14 @@ func approachHasDirection(approachID string, dir byte) bool {
 // (ILS, RNAV, visual, etc.) and runway number separately, ignoring garbage words between them.
 // This handles cases like "ils front of a niner" where STT inserts garbage between type and number.
 // assignedApproach is used to prefer the expected approach when there are ties.
+// allowFallback controls whether to fall back to the assigned approach when the runway doesn't match.
+// Set to true only when there's an explicit command keyword (cleared, expect).
 func matchApproachByTypeAndNumber(tokens []Token, approaches map[string]string, assignedApproach string) (string, float64, int) {
+	return matchApproachByTypeAndNumberWithFallback(tokens, approaches, assignedApproach, true)
+}
+
+// matchApproachByTypeAndNumberWithFallback is the core implementation with fallback control.
+func matchApproachByTypeAndNumberWithFallback(tokens []Token, approaches map[string]string, assignedApproach string, allowFallback bool) (string, float64, int) {
 	if len(tokens) == 0 {
 		return "", 0, 0
 	}
@@ -656,6 +670,58 @@ func matchApproachByTypeAndNumber(tokens []Token, approaches map[string]string, 
 			approachType, runwaySpoken, bestAppr, consumed)
 		return bestAppr, bestScore, consumed
 	}
+
+	// Fallback: if no runway matched but we have an assigned approach with matching type and direction,
+	// use the assigned approach. This handles transcription errors like "runway 21 left" when only
+	// "runway 31 left" exists. The type (ILS) and direction (left) match, just the runway number is wrong.
+	// Only enabled when there's an explicit command keyword (cleared, expect) to avoid false positives
+	// from implicit approach mentions that are purely contextual.
+	if allowFallback && assignedApproach != "" && runwayDir != "" {
+		assignedLower := strings.ToLower(assignedApproach)
+		// Check if assigned approach has the same type
+		if approachTypeMatches(assignedLower, approachType) {
+			// Extract direction from assigned approach (last character if L/R/C)
+			var assignedDir byte
+			if len(assignedApproach) > 0 {
+				lastChar := assignedApproach[len(assignedApproach)-1]
+				if lastChar == 'L' || lastChar == 'l' {
+					assignedDir = 'L'
+				} else if lastChar == 'R' || lastChar == 'r' {
+					assignedDir = 'R'
+				} else if lastChar == 'C' || lastChar == 'c' {
+					assignedDir = 'C'
+				}
+			}
+
+			// Normalize spoken direction to single char
+			var spokenDirChar byte
+			switch runwayDir {
+			case "left":
+				spokenDirChar = 'L'
+			case "right":
+				spokenDirChar = 'R'
+			case "center":
+				spokenDirChar = 'C'
+			}
+
+			// If directions match, find the approach ID for the assigned approach
+			if assignedDir != 0 && assignedDir == spokenDirChar {
+				for spokenName, apprID := range approaches {
+					spokenLower := strings.ToLower(spokenName)
+					if approachTypeMatches(spokenLower, approachType) && approachMatchesAssigned(apprID, assignedApproach) {
+						consumed := typeConsumed + numPos + 1
+						if runwayDir != "" {
+							consumed++
+						}
+						logLocalStt("  matchApproachByTypeAndNumber: runway mismatch, falling back to assigned approach %q (type=%q dir=%c)",
+							apprID, approachType, spokenDirChar)
+						return apprID, 0.85, consumed // Lower confidence for fallback
+					}
+				}
+			}
+		}
+	}
+
 	return "", 0, 0
 }
 
@@ -1672,8 +1738,8 @@ func extractSpeedUntil(tokens []Token, ac Aircraft) (speedUntilResult, int) {
 			consumed++
 			break
 		}
-		// Skip filler words
-		if IsFillerWord(text) {
+		// Skip filler words and speed-related words (e.g., "knots" between speed and "until")
+		if IsFillerWord(text) || isSpeedFillerWord(text) {
 			consumed++
 			continue
 		}
@@ -1681,6 +1747,14 @@ func extractSpeedUntil(tokens []Token, ac Aircraft) (speedUntilResult, int) {
 	}
 
 	if !untilFound || consumed >= len(tokens) {
+		return speedUntilResult{}, 0
+	}
+
+	// Skip filler words between "until" and the number (e.g., "until the 5 mile final")
+	for consumed < len(tokens) && IsFillerWord(strings.ToLower(tokens[consumed].Text)) {
+		consumed++
+	}
+	if consumed >= len(tokens) {
 		return speedUntilResult{}, 0
 	}
 
@@ -1711,6 +1785,12 @@ func isUntilKeyword(text string) bool {
 		return true
 	}
 	return false
+}
+
+// isSpeedFillerWord checks if a word commonly appears between a speed and "until".
+// For example: "maintain 180 knots until 5 mile final" - "knots" should be skipped.
+func isSpeedFillerWord(text string) bool {
+	return text == "knots" || text == "kts" || text == "knot"
 }
 
 // extractDME extracts a DME distance from tokens.

@@ -641,7 +641,7 @@ var fillerWords = map[string]bool{
 	"off":  true,               // STT noise in "turn off heading" → "turn heading"
 	"wing": true,               // STT error: "left-wing" for "left heading" becomes "left wing" after hyphen removal
 	"i":    true, "said": true, // Pilot interjections ("I said I maintained...")
-	"is":     true, // Prevents "is" from fuzzy matching fix names like "ISLAY" (Jaro-Winkler 0.84)
+	"is":      true, // Prevents "is" from fuzzy matching fix names like "ISLAY" (Jaro-Winkler 0.84)
 	"having":  true, // Prevents "having" from fuzzy matching "heading" (Jaro-Winkler 0.86)
 	"leaving": true, // Prevents "leaving" from fuzzy matching "heading" (Jaro-Winkler 0.81)
 	// Note: "contact" and "radar" are NOT filler words - they're command keywords
@@ -1054,6 +1054,30 @@ func postProcessNormalized(tokens []string) []string {
 // IsFillerWord returns true if the word should be ignored during parsing.
 func IsFillerWord(w string) bool {
 	return fillerWords[strings.ToLower(w)]
+}
+
+// commandBoundaryKeywords are words that indicate the start of a new command context.
+// These keywords should stop the slack mechanism from searching past them.
+var commandBoundaryKeywords = map[string]bool{
+	// Speed-related
+	"speed": true, "slow": true, "reduce": true, "increase": true,
+	// Altitude-related
+	"maintain": true, "descend": true, "climb": true, "altitude": true,
+	// Heading-related
+	"heading": true, "turn": true,
+	// Navigation
+	"direct": true, "proceed": true,
+	// Approach
+	"cleared": true, "expect": true, "vectors": true, "approach": true,
+	// Other commands
+	"contact": true, "squawk": true, "ident": true,
+}
+
+// IsCommandKeyword returns true if the word is a command keyword that indicates
+// the start of a new command context. Used by the slack mechanism to avoid
+// searching past command boundaries.
+func IsCommandKeyword(w string) bool {
+	return commandBoundaryKeywords[strings.ToLower(w)]
 }
 
 // IsDigit returns true if the string is a single digit (0-9).

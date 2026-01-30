@@ -307,7 +307,9 @@ func tryImplicitApproachMatch(tokens []Token, ac Aircraft) (string, int) {
 	}
 
 	// Try to match an approach reference using type+runway matching
-	appr, _, consumed := matchApproachByTypeAndNumber(tokens, ac.CandidateApproaches, ac.AssignedApproach)
+	// Don't use the fallback for implicit matches - those are contextual and shouldn't
+	// infer an approach from a mismatched runway number
+	appr, _, consumed := matchApproachByTypeAndNumberWithFallback(tokens, ac.CandidateApproaches, ac.AssignedApproach, false)
 	if consumed == 0 {
 		return "", 0
 	}

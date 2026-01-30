@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce RTX 5070 (11943MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "JZA764",
-  "command": "A30 L180/U5",
+  "command": "A30 S180/U5",
   "stt_aircraft": {
     "Alaska 97": {
       "Callsign": "ASA97",

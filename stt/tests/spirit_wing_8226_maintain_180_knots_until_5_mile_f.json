@@ -14,7 +14,7 @@
   "audio_duration_ms": 3456,
   "processor": "GPU: NVIDIA GeForce RTX 3070 Ti (8231MB)",
   "callsign": "NKS8226",
-  "command": "S180",
+  "command": "S180/U5",
   "stt_aircraft": {
     "Alaska 771": {
       "Callsign": "ASA771",

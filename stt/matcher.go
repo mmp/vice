@@ -73,6 +73,26 @@ func (m *literalMatcher) match(tokens []Token, pos int, ac Aircraft, skipWords [
 				continue
 			}
 
+			// Stop at command boundary keywords - these indicate a new command context.
+			// For example, in "left approach speed 180", when searching for a heading
+			// after "left", we should stop at "speed" because it starts a new command.
+			// Exception: if this keyword is what we're looking for, try to match it.
+			isKeyword := IsCommandKeyword(checkText)
+			if isKeyword {
+				// Check if this keyword is one of our alternatives
+				isOurKeyword := false
+				for _, kw := range m.keywords {
+					if FuzzyMatch(checkText, kw, 0.8) {
+						isOurKeyword = true
+						break
+					}
+				}
+				if !isOurKeyword {
+					// Hit a different command boundary - stop slack search
+					break
+				}
+			}
+
 			// Try to match at this position
 			for _, kw := range m.keywords {
 				if FuzzyMatch(checkText, kw, 0.8) {

@@ -151,6 +151,12 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 	for i := pos; i < len(tokens) && i < pos+4; i++ {
 		t := tokens[i]
 
+		// Skip numbers that follow "speed" keyword - those are speed values, not headings.
+		// This prevents "left approach speed 180" from matching as heading 180.
+		if i > pos && strings.ToLower(tokens[i-1].Text) == "speed" {
+			continue
+		}
+
 		// Handle "to N" pattern where "to" is garbled "two" (2).
 		// E.g., "heading to 70" should be "heading 270".
 		if t.Type == TokenWord && strings.ToLower(t.Text) == "to" && i+1 < len(tokens) {
