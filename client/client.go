@@ -932,7 +932,6 @@ func benchmarkModel(modelName string) (latencyMs int64, model *whisper.Model, er
 var whisperModelTiers = []string{
 	"ggml-base.en.bin",
 	"ggml-base.en-jlvatc-q5_0.bin",
-	"ggml-small.en.bin",
 	"ggml-small.en-jlvatc-q5_0.bin",
 	"ggml-medium.en-q5_0.bin",
 	"ggml-medium.en-atc-q5_0.bin",
