@@ -518,6 +518,7 @@ var commandKeywords = map[string]string{
 	"eyelids":     "ils", // STT error: "I L S" garbled as "eyelids"
 	"atlas":       "ils", // STT error: "the ILS" garbled as "atlas"
 	"lash":        "ils", // STT error: "i-lash" split from "ILS"
+	"ilest":       "ils", // STT error: "ILS" garbled as "ilest"
 	"rnav":        "rnav",
 	"arnavie":     "rnav", // STT error: "rnav" garbled with extra syllables
 	"ironed":      "rnav", // STT error: "RNAV" misheard as "ironed"
@@ -526,6 +527,7 @@ var commandKeywords = map[string]string{
 	"romn":        "runway", // STT error: garbled "runway"
 	"renoya":      "runway", // STT error: garbled "runway"
 	"renee":       "runway", // STT error: "runway" garbled as "renee"
+	"renoir":      "runway", // STT error: "runway" garbled as "renoir"
 
 	// Transponder
 	"squawk":      "squawk",
