@@ -30,7 +30,10 @@ var AtmosTRACONs = []string{
 }
 
 var AtmosARTCCs = []string{
-	"ZBW", "ZJX", "ZLA", "ZNY",
+	// Note: ZHN (Honolulu) is excluded - NOAA uses a currently unsupported grib2 grid format for Hawaii
+	"ZAB", "ZAN", "ZAU", "ZBW", "ZDC", "ZDV", "ZFW", "ZHU",
+	"ZID", "ZJX", "ZKC", "ZLA", "ZLC", "ZMA", "ZME", "ZMP", "ZNY",
+	"ZOA", "ZOB", "ZSE", "ZTL",
 }
 
 // This is fairly specialized to our needs we ingest from: at each
@@ -465,6 +468,7 @@ type AtmosGrid struct {
 	Res      [3]int
 	AltRange [2]float32
 	Points   []Sample
+	lonShift float32 // longitude shift applied for date line crossing regions
 }
 
 type WindSample struct {
@@ -638,9 +642,42 @@ func LerpSample(x float32, s0, s1 Sample) Sample {
 
 func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid {
 	g := &AtmosGrid{
-		Extent:   math.Extent2DFromSeq(maps.Keys(sampleStacks)),
 		AltRange: [2]float32{24000, 24000}, // will fix up min below
 	}
+
+	// Check if region crosses date line (longitude span > 180°).
+	// If so, shift longitudes by 180° so the grid doesn't span the globe.
+	minLon, maxLon := float32(180), float32(-180)
+	for loc := range sampleStacks {
+		if loc[0] < minLon {
+			minLon = loc[0]
+		}
+		if loc[0] > maxLon {
+			maxLon = loc[0]
+		}
+	}
+	if maxLon-minLon > 180 {
+		g.lonShift = 180
+	}
+
+	// Compute extent with shifted coordinates if needed
+	shiftedKeys := func(yield func(math.Point2LL) bool) {
+		for loc := range sampleStacks {
+			shifted := loc
+			if g.lonShift != 0 {
+				shifted[0] += g.lonShift
+				if shifted[0] > 180 {
+					shifted[0] -= 360
+				} else if shifted[0] < -180 {
+					shifted[0] += 360
+				}
+			}
+			if !yield(shifted) {
+				return
+			}
+		}
+	}
+	g.Extent = math.Extent2DFromSeq(shiftedKeys)
 
 	// Handle degenerate extent (single point or collinear points)
 	const minExtent float32 = 0.1 // ~6nm minimum extent
@@ -654,10 +691,22 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 		g.Extent.P1[1] = center[1] + minExtent/2
 	}
 
-	const xyDelta = 2 /* roughly 2nm spacing */
+	// Compute cell size based on facility type.
 	nmPerLongitude := math.NMPerLongitudeAt(math.Point2LL(g.Extent.Center()))
-	g.Res[0] = int(max(1, nmPerLongitude*g.Extent.Width()/xyDelta))
-	g.Res[1] = int(max(1, 60*g.Extent.Height()/xyDelta))
+	widthNM := nmPerLongitude * g.Extent.Width()
+	heightNM := 60 * g.Extent.Height()
+	areaNM2 := widthNM * heightNM
+
+	var xyDelta float32
+	if areaNM2 > 50000 { // ARTCC (large area): use density-based cell size
+		avgSpacing := math.Sqrt(areaNM2 / float32(len(sampleStacks)))
+		xyDelta = avgSpacing * 2
+	} else { // TRACON (small area): fixed 2nm cells
+		xyDelta = 2
+	}
+
+	g.Res[0] = int(max(1, widthNM/xyDelta))
+	g.Res[1] = int(max(1, heightNM/xyDelta))
 
 	const metersToFeet = 3.28084
 	for _, stack := range sampleStacks {
@@ -682,7 +731,7 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 	// z/altitude, we lerp along the non-uniform altitude spacing from the
 	// original data.
 	for p, stack := range sampleStacks {
-		pg := g.ptToGrid(p)
+		pg := g.PtToGrid(p)
 		ipg := [2]int{int(math.Round(pg[0])), int(math.Round(pg[1]))}
 
 		for z := range g.Res[2] {
@@ -741,7 +790,17 @@ func MakeAtmosGrid(sampleStacks map[math.Point2LL]*AtmosSampleStack) *AtmosGrid 
 	return g
 }
 
-func (g *AtmosGrid) ptToGrid(p [2]float32) [2]float32 {
+func (g *AtmosGrid) PtToGrid(p [2]float32) [2]float32 {
+	// Apply longitude shift for date line crossing regions
+	if g.lonShift != 0 {
+		p[0] += g.lonShift
+		if p[0] > 180 {
+			p[0] -= 360
+		} else if p[0] < -180 {
+			p[0] += 360
+		}
+	}
+
 	pg := math.Sub2f(p, g.Extent.P0)
 	pg[0] *= float32(g.Res[0]) / g.Extent.Width()
 	pg[1] *= float32(g.Res[1]) / g.Extent.Height()
@@ -775,7 +834,7 @@ func (g *AtmosGrid) altToGrid(alt float32) float32 {
 }
 
 func (g *AtmosGrid) Lookup(p math.Point2LL, alt float32) (Sample, bool) {
-	pg := g.ptToGrid(p)
+	pg := g.PtToGrid(p)
 	zg := g.altToGrid(alt)
 
 	// Closest lookup for now
@@ -803,6 +862,15 @@ func (g *AtmosGrid) SamplesAtLevel(level, step int) iter.Seq2[math.Point2LL, Sam
 				idx := x + y*g.Res[0] + level*g.Res[0]*g.Res[1]
 
 				p := math.Point2LL(g.Extent.Lerp([2]float32{tx, ty}))
+				// Un-shift longitude for date line crossing regions
+				if g.lonShift != 0 {
+					p[0] -= g.lonShift
+					if p[0] > 180 {
+						p[0] -= 360
+					} else if p[0] < -180 {
+						p[0] += 360
+					}
+				}
 				if !yield(p, g.Points[idx]) {
 					return
 				}

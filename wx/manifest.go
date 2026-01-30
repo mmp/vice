@@ -63,15 +63,16 @@ func MakeManifest(data RawManifest) *Manifest {
 
 func MakeManifestFromMap(m map[string][]time.Time) (*Manifest, error) {
 	manifest := NewManifest()
-	for tracon, times := range m {
-		if err := manifest.SetTRACONTimestamps(tracon, times); err != nil {
+	for facility, times := range m {
+		if err := manifest.SetFacilityTimestamps(facility, times); err != nil {
 			return nil, err
 		}
 	}
 	return manifest, nil
 }
 
-func (m *Manifest) SetTRACONTimestamps(tracon string, times []time.Time) error {
+// SetFacilityTimestamps stores timestamps for a facility (TRACON or ARTCC).
+func (m *Manifest) SetFacilityTimestamps(facilityID string, times []time.Time) error {
 	timestamps := util.MapSlice(times, func(t time.Time) int64 { return t.Unix() })
 
 	// Sort and compress
@@ -81,7 +82,7 @@ func (m *Manifest) SetTRACONTimestamps(tracon string, times []time.Time) error {
 		return err
 	}
 
-	m.data[tracon] = compressed
+	m.data[facilityID] = compressed
 	return nil
 }
 

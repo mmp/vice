@@ -13,14 +13,14 @@ import (
 type Provider interface {
 	// GetPrecipURL returns precipitation radar URL (GCS only).
 	// Returns the item at-or-before the given time.
-	GetPrecipURL(tracon string, t time.Time) (string, time.Time, error)
+	GetPrecipURL(facility string, t time.Time) (string, time.Time, error)
 
 	// GetAtmosGrid returns atmospheric grid for simulation.
 	// GCS provides full spatial grid; local fallback provides single averaged sample.
 	// Returns atmos, its time, the time for the next one in the series.
 	// If primaryAirport is non-empty and no atmos data is available, creates
 	// a fallback grid from the primary airport's METAR wind data.
-	GetAtmosGrid(tracon string, t time.Time, primaryAirport string) (*AtmosByPointSOA, time.Time, time.Time, error)
+	GetAtmosGrid(facility string, t time.Time, primaryAirport string) (*AtmosByPointSOA, time.Time, time.Time, error)
 }
 
 const (

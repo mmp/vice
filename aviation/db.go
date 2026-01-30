@@ -67,20 +67,26 @@ type FAAAirport struct {
 	ARTCC      string
 }
 
-type TRACON struct {
+// Facility represents a geographic facility with a center point and radius.
+// Both TRACONs and ARTCCs use this structure for weather data handling.
+type Facility struct {
 	Name      string
-	ARTCC     string
 	Latitude  float32
 	Longitude float32
 	Radius    float32
 }
 
-func (t TRACON) Center() math.Point2LL {
-	return math.Point2LL{t.Longitude, t.Latitude}
+func (f Facility) Center() math.Point2LL {
+	return math.Point2LL{f.Longitude, f.Latitude}
 }
 
-type ARTCC struct {
-	Name string
+// ARTCC is a type alias for Facility representing an Air Route Traffic Control Center.
+type ARTCC = Facility
+
+// TRACON represents a Terminal Radar Approach Control facility.
+type TRACON struct {
+	Facility
+	ARTCC string
 }
 
 type Navaid struct {
@@ -165,6 +171,28 @@ func (d StaticDatabase) LookupAirport(name string) (FAAAirport, bool) {
 		}
 	}
 	return FAAAirport{}, false
+}
+
+// LookupFacility returns a Facility for the given id, checking both
+// TRACONs and ARTCCs.
+func (d StaticDatabase) LookupFacility(id string) (Facility, bool) {
+	if tracon, ok := d.TRACONs[id]; ok {
+		return tracon.Facility, true
+	}
+	if artcc, ok := d.ARTCCs[id]; ok {
+		return artcc, true
+	}
+	return Facility{}, false
+}
+
+// IsFacility returns true if id is a known TRACON or ARTCC.
+func (d StaticDatabase) IsFacility(id string) bool {
+	_, ok := d.TRACONs[id]
+	if ok {
+		return true
+	}
+	_, ok = d.ARTCCs[id]
+	return ok
 }
 
 type AircraftPerformance struct {

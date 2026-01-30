@@ -23,7 +23,8 @@ var dryRun = flag.Bool("dryrun", false, "Don't upload to GCS or archive local fi
 var nWorkers = flag.Int("nworkers", 16, "Number of worker goroutines for concurrent uploads")
 var profile = flag.Bool("profile", false, "Profile CPU/heap usage")
 var hrrrQuick = flag.Bool("hrrrquick", false, "Fast-path HRRR run, no upload")
-var validateGrid = flag.Bool("validate-grid", false, "Validate that HRRR grid returns same points as exhaustive search")
+var localOutput = flag.String("local-output", "", "Write output to local directory instead of GCS (for testing)")
+var singleTime = flag.String("single-time", "", "Process only a single timestamp (format: 2006-01-02T15:04:05Z)")
 
 // Cleanup coordination for signal handlers
 var (
@@ -87,12 +88,26 @@ func main() {
 	if err != nil {
 		LogFatal("%v", err)
 	}
-	sb := StorageBackend(gcsBackend)
-	if *dryRun {
-		sb = &DryRunBackend{g: sb}
+
+	var sb StorageBackend
+	var localBackend *LocalBackend
+
+	if *localOutput != "" {
+		// Use local backend for writes, GCS for reads (to get METAR/precip times)
+		localBackend, err = MakeLocalBackend(*localOutput, gcsBackend)
+		if err != nil {
+			LogFatal("%v", err)
+		}
+		sb = localBackend
+		LogInfo("Using local output directory: %s", *localOutput)
+	} else {
+		sb = gcsBackend
+		if *dryRun {
+			sb = &DryRunBackend{g: sb}
+		}
+		// Wrap with tracking backend to track bytes uploaded/downloaded
+		sb = NewTrackingBackend(sb)
 	}
-	// Wrap with tracking backend to track bytes uploaded/downloaded
-	sb = NewTrackingBackend(sb)
 	defer sb.Close()
 
 	launchHTTPServer()
@@ -122,7 +137,9 @@ func main() {
 	}
 
 	// Report the total bytes transferred
-	if tb, ok := sb.(*TrackingBackend); ok {
+	if localBackend != nil {
+		localBackend.ReportStats()
+	} else if tb, ok := sb.(*TrackingBackend); ok {
 		tb.ReportStats()
 	}
 

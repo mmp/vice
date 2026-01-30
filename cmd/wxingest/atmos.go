@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"iter"
+	"maps"
 	"os"
 	"slices"
 	"strings"
@@ -22,9 +23,27 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func traconRegion(tracon string) string {
-	if tracon == "A11" || tracon == "FAI" {
+// artccAtmosDownsampleRate computes the spatial downsampling rate for ARTCC
+// atmospheric data based on the coverage radius. The rate scales with radius²
+// (area) to target approximately 4MB output file size regardless of ARTCC size.
+const artccBaseRadius = 330.0 // radius (nm) at which rate=4 produces ~4MB output
+
+func artccAtmosDownsampleRate(radius float32) int {
+	// rate = 4 * (radius / baseRadius)²
+	ratio := float64(radius) / artccBaseRadius
+	rate := int(4*ratio*ratio + 0.5) // round to nearest int
+	if rate < 1 {
+		rate = 1
+	}
+	return rate
+}
+
+func facilityRegion(facilityID string) string {
+	if facilityID == "A11" || facilityID == "FAI" || facilityID == "ZAN" {
 		return "alaska"
+	}
+	if facilityID == "ZHN" {
+		return "hawaii"
 	}
 	return "conus"
 }
@@ -81,6 +100,12 @@ func ingestHRRR(sb StorageBackend) error {
 	}
 	hrrrsb := NewTrackingBackend(hrrrGCS)
 
+	// If --single-time is specified, skip all the time interval calculations
+	// and just process that one time for all facilities
+	if *singleTime != "" {
+		return ingestHRRRSingleTime(sb, hrrrsb)
+	}
+
 	// Get available METAR and precip data times to determine valid intervals
 	metarTimes, err := getAvailableMETARTimes(sb)
 	if err != nil {
@@ -129,21 +154,26 @@ func ingestHRRR(sb StorageBackend) error {
 					break
 				}
 
-				// Check if we already have data for all TRACONs at this time
-				tracons := existing[t] // may be empty
-				slices.Sort(tracons)
+				// Check if we already have data for all facilities at this time
+				facilities := existing[t] // may be empty
+				slices.Sort(facilities)
 				var missing []string
 				for _, tracon := range wx.AtmosTRACONs {
-					if !slices.Contains(tracons, tracon) {
+					if !slices.Contains(facilities, tracon) {
 						missing = append(missing, tracon)
+					}
+				}
+				for _, artcc := range wx.AtmosARTCCs {
+					if !slices.Contains(facilities, artcc) {
+						missing = append(missing, artcc)
 					}
 				}
 
 				// Alaska HRRR data is only available every 3 hours (00Z, 03Z, 06Z, etc.)
-				// Filter out Alaska TRACONs if this time doesn't align with their schedule
+				// Filter out Alaska/Hawaii facilities if this time doesn't align with their schedule
 				if t.Hour()%3 != 0 {
-					missing = util.FilterSlice(missing, func(tracon string) bool {
-						return traconRegion(tracon) != "alaska"
+					missing = util.FilterSlice(missing, func(facility string) bool {
+						return facilityRegion(facility) == "conus"
 					})
 				}
 
@@ -165,10 +195,10 @@ func ingestHRRR(sb StorageBackend) error {
 	})
 
 	type downloadedHRRR struct {
-		path          string
-		t             time.Time
-		region        string
-		targetTRACONs []string
+		path             string
+		t                time.Time
+		region           string
+		targetFacilities []string
 	}
 	hrrrCh := make(chan downloadedHRRR, 1) // buffer 1 to have the next one prefetched.
 	eg.Go(func() error {
@@ -177,21 +207,21 @@ func ingestHRRR(sb StorageBackend) error {
 		// processed.
 		defer close(hrrrCh)
 		for tw := range tCh {
-			// Group missing TRACONs by region
+			// Group missing facilities by region
 			byRegion := make(map[string][]string)
-			for _, tracon := range tw.missing {
-				region := traconRegion(tracon)
-				byRegion[region] = append(byRegion[region], tracon)
+			for _, facility := range tw.missing {
+				region := facilityRegion(facility)
+				byRegion[region] = append(byRegion[region], facility)
 			}
 
 			// Process each region sequentially (memory constraint: one GRIB2 at a time)
-			for region, tracons := range byRegion {
+			for region, facilities := range byRegion {
 				path, err := downloadHRRRForTime(tw.t, region, tfr, hrrrsb)
 				if err != nil {
 					LogError("%v", err)
 				} else {
 					select {
-					case hrrrCh <- downloadedHRRR{path: path, t: tw.t, region: region, targetTRACONs: tracons}:
+					case hrrrCh <- downloadedHRRR{path: path, t: tw.t, region: region, targetFacilities: facilities}:
 					case <-ctx.Done():
 						return ctx.Err()
 					}
@@ -204,7 +234,7 @@ func ingestHRRR(sb StorageBackend) error {
 	eg.Go(func() error {
 		for hrrr := range hrrrCh {
 			LogInfo("Starting work on %s (%s region)", hrrr.t.Format(time.RFC3339), hrrr.region)
-			if err := ingestHRRRForTime(hrrr.path, hrrr.t, hrrr.region, hrrr.targetTRACONs, sb, hrrrsb); err != nil {
+			if err := ingestHRRRForTime(hrrr.path, hrrr.t, hrrr.targetFacilities, sb); err != nil {
 				return err
 			}
 		}
@@ -316,13 +346,16 @@ func downloadHRRRForTime(t time.Time, region string, tfr *util.TempFileRegistry,
 	} else {
 		hrrrpath = fmt.Sprintf("hrrr.%d%02d%02d/conus/hrrr.t%02dz.wrfprsf00.grib2", t.Year(), t.Month(), t.Day(), t.Hour())
 	}
+
+	localPath := fmt.Sprintf("%s-%s.grib2", t.Format(time.RFC3339), region)
+
 	hrrrr, err := hrrrsb.OpenRead(hrrrpath)
 	if err != nil {
 		return "", err
 	}
 	defer hrrrr.Close()
 
-	hf, err := os.Create(fmt.Sprintf("%s-%s.grib2", t.Format(time.RFC3339), region))
+	hf, err := os.Create(localPath)
 	if err != nil {
 		return "", err
 	}
@@ -349,7 +382,7 @@ func downloadHRRRForTime(t time.Time, region string, tfr *util.TempFileRegistry,
 	return hf.Name(), nil
 }
 
-func ingestHRRRForTime(gribPath string, t time.Time, region string, targetTRACONs []string, sb, hrrrsb StorageBackend) error {
+func ingestHRRRForTime(gribPath string, t time.Time, targetFacilities []string, sb StorageBackend) error {
 	defer func() { _ = os.Remove(gribPath) }()
 
 	records, err := parseAndFilterGRIB2(gribPath)
@@ -357,27 +390,21 @@ func ingestHRRRForTime(gribPath string, t time.Time, region string, targetTRACON
 		return err
 	}
 
-	// Build grid once for all TRACONs
+	// Build grid once for all facilities
 	grid := buildGridFromGRIB2(records)
 
 	var eg errgroup.Group
 	var totalUploads, totalUploadBytes int64
 	sem := make(chan struct{}, *nWorkers)
 
-	for _, tracon := range targetTRACONs {
+	for _, facilityID := range targetFacilities {
 		eg.Go(func() error {
 			sem <- struct{}{}
 			defer func() { <-sem }()
 
-			if *validateGrid {
-				if err := validateGridForTracon(grid, records, tracon); err != nil {
-					LogError("%s: grid validation failed: %v", tracon, err)
-				}
-			}
-
-			n, err := ingestHRRRForTracon(grid, records, tracon, t, sb)
+			n, err := ingestHRRRForFacility(grid, records, facilityID, t, sb)
 			if err == nil {
-				LogInfo("Uploaded %s for %s-%s", util.ByteCount(n), tracon, t.Format(time.RFC3339))
+				LogInfo("Uploaded %s for %s-%s", util.ByteCount(n), facilityID, t.Format(time.RFC3339))
 				atomic.AddInt64(&totalUploads, 1)
 				atomic.AddInt64(&totalUploadBytes, n)
 			}
@@ -389,12 +416,12 @@ func ingestHRRRForTime(gribPath string, t time.Time, region string, targetTRACON
 	return eg.Wait()
 }
 
-func ingestHRRRForTracon(grid *Grid, records []*squall.GRIB2, tracon string, t time.Time, sb StorageBackend) (int64, error) {
-	sf, err := sampleFieldFromGRIB2(grid, records, tracon, t)
+func ingestHRRRForFacility(grid *Grid, records []*squall.GRIB2, facilityID string, t time.Time, sb StorageBackend) (int64, error) {
+	sf, err := sampleFieldFromGRIB2(grid, records, facilityID)
 	if err != nil {
-		return 0, fmt.Errorf("%s-%s: GRIB2 parsing failed: %w", tracon, t.Format(time.RFC3339), err)
+		return 0, fmt.Errorf("%s-%s: GRIB2 parsing failed: %w", facilityID, t.Format(time.RFC3339), err)
 	}
-	return uploadWeatherAtmos(sf, tracon, t, sb)
+	return uploadWeatherAtmos(sf, facilityID, t, sb)
 }
 
 func parseAndFilterGRIB2(gribPath string) ([]*squall.GRIB2, error) {
@@ -453,12 +480,48 @@ func parseAndFilterGRIB2(gribPath string) ([]*squall.GRIB2, error) {
 	return filtered, nil
 }
 
-func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, tracon string, t time.Time) (*wx.AtmosByPoint, error) {
-	tspec, ok := av.DB.TRACONs[tracon]
+func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, facilityID string) (*wx.AtmosByPoint, error) {
+	fac, ok := av.DB.LookupFacility(facilityID)
 	if !ok {
-		return nil, fmt.Errorf("%s: unable to find bounds for TRACON", tracon)
+		return nil, fmt.Errorf("%s: unable to find bounds for facility", facilityID)
 	}
-	center, radius := tspec.Center(), tspec.Radius
+	center, radius := fac.Center(), fac.Radius
+
+	_, isARTCC := av.DB.ARTCCs[facilityID]
+
+	var pointRefIter iter.Seq[PointRef]
+	if !isARTCC {
+		// TRACON: all points in range
+		pointRefIter = grid.QueryCircle(center, radius)
+	} else {
+		// ARTCC: downsample
+		allPointRefs := slices.Collect(grid.QueryCircle(center, radius))
+
+		// Dedupe locations (the same location appears once per GRIB2 parameter)
+		locationSet := make(map[math.Point2LL]bool)
+		for _, pr := range allPointRefs {
+			locationSet[pr.Location] = true
+		}
+		locationList := slices.Collect(maps.Keys(locationSet))
+
+		// Select well-distributed subset
+		rate := artccAtmosDownsampleRate(radius)
+		targetCount := max(1, len(locationList)/rate)
+		selectedLocations := math.SelectDistributedPoints(locationList, targetCount)
+
+		LogInfo("%s: KD-tree selected %d of %d locations (rate=%d)",
+			facilityID, len(selectedLocations), len(locationList), rate)
+
+		pointRefIter = func(yield func(PointRef) bool) {
+			for _, ref := range allPointRefs {
+				if _, ok := selectedLocations[ref.Location]; ok {
+					if !yield(ref) {
+						return
+					}
+				}
+			}
+		}
+	}
 
 	var arena []wx.AtmosSampleStack
 	allocStack := func() *wx.AtmosSampleStack {
@@ -472,7 +535,9 @@ func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, tracon string, t 
 
 	at := wx.MakeAtmosByPoint()
 	processedPoints := 0
-	for ref := range grid.QueryCircle(center, radius) {
+
+	// Pass 2 (or single pass for TRACONs): gather data for selected locations
+	for ref := range pointRefIter {
 		processedPoints++
 
 		record := records[ref.RecordIdx()]
@@ -507,14 +572,14 @@ func sampleFieldFromGRIB2(grid *Grid, records []*squall.GRIB2, tracon string, t 
 	}
 
 	if false {
-		LogInfo("GRIB2 %s-%s: processed %d points -> %d unique locations",
-			tracon, t.Format(time.RFC3339), processedPoints, len(at.SampleStacks))
+		LogInfo("GRIB2 %s: processed %d points -> %d unique locations",
+			facilityID, processedPoints, len(at.SampleStacks))
 	}
 
 	return &at, nil
 }
 
-func uploadWeatherAtmos(at *wx.AtmosByPoint, tracon string, t time.Time, st StorageBackend) (int64, error) {
+func uploadWeatherAtmos(at *wx.AtmosByPoint, facilityID string, t time.Time, st StorageBackend) (int64, error) {
 	soa, err := at.ToSOA()
 	if err != nil {
 		return 0, err
@@ -523,7 +588,7 @@ func uploadWeatherAtmos(at *wx.AtmosByPoint, tracon string, t time.Time, st Stor
 		return 0, err
 	}
 
-	path := fmt.Sprintf("atmos/%s/%s.msgpack.zst", tracon, t.Format(time.RFC3339))
+	path := fmt.Sprintf("atmos/%s/%s.msgpack.zst", facilityID, t.Format(time.RFC3339))
 
 	if *hrrrQuick {
 		// skip upload
@@ -600,7 +665,7 @@ func (sg *Grid) AddPoint(p math.Point2LL, recordIdx, pointIdx int) {
 
 // QueryCircle returns an iterator over all points within radiusNM of center.
 // This performs a coarse grid-based filter followed by precise distance checking.
-// Panics if the query region spans the longitude wrap-around at ±180°.
+// Handles the longitude wrap-around at ±180° by querying both sides of the boundary.
 func (sg *Grid) QueryCircle(center math.Point2LL, radiusNM float32) iter.Seq[PointRef] {
 	// Convert radius from nautical miles to degrees for grid cell calculation
 	nmPerLongitude := math.NMPerLongitudeAt(center)
@@ -610,27 +675,61 @@ func (sg *Grid) QueryCircle(center math.Point2LL, radiusNM float32) iter.Seq[Poi
 	// Check for longitude wrap-around (±180°)
 	minLon := center.Longitude() - radiusDegLon
 	maxLon := center.Longitude() + radiusDegLon
-	if minLon < -180 || maxLon > 180 {
-		panic(fmt.Sprintf("QueryCircle: query region spans longitude boundary (center=%v, radius=%fnm, lon range=[%f, %f])",
-			center, radiusNM, minLon, maxLon))
-	}
+	wrapAround := minLon < -180 || maxLon > 180
 
 	// Compute bounding box in grid cells
 	centerCell := sg.cellForPoint(center)
 	cellRadiusLat := int(math.Ceil(radiusDegLat/sg.CellSize)) + 1 // +1 for safety margin
 	cellRadiusLon := int(math.Ceil(radiusDegLon/sg.CellSize)) + 1
 
+	// Determine longitude cell ranges to query. Normally just one range,
+	// but if we wrap around ±180°, we need to query two separate ranges.
+	type lonRange struct{ min, max int }
+	var lonRanges []lonRange
+
+	if minLon < -180 {
+		// Wraps past -180°: query from wrapped portion (near +180°) and from -180° to maxLon
+		wrappedMinLon := minLon + 360 // e.g., -181 -> +179
+		lonRanges = []lonRange{
+			{int(math.Floor(wrappedMinLon / sg.CellSize)), int(math.Floor(180 / sg.CellSize))},
+			{int(math.Floor(-180 / sg.CellSize)), centerCell.LonCell + cellRadiusLon},
+		}
+	} else if maxLon > 180 {
+		// Wraps past +180°: query from minLon to +180° and from -180° to wrapped portion
+		wrappedMaxLon := maxLon - 360 // e.g., +181 -> -179
+		lonRanges = []lonRange{
+			{centerCell.LonCell - cellRadiusLon, int(math.Floor(180 / sg.CellSize))},
+			{int(math.Floor(-180 / sg.CellSize)), int(math.Floor(wrappedMaxLon / sg.CellSize))},
+		}
+	} else {
+		// No wrap-around, single range
+		lonRanges = []lonRange{
+			{centerCell.LonCell - cellRadiusLon, centerCell.LonCell + cellRadiusLon},
+		}
+	}
+
+	// Choose distance function: use accurate Haversine for wrap-around cases
+	// (it handles the date line correctly), fast approximation otherwise.
+	distanceFunc := func(ref PointRef) float32 {
+		if wrapAround {
+			return math.NMDistance2LL(center, ref.Location)
+		}
+		return math.NMDistance2LLFast(center, ref.Location, nmPerLongitude)
+	}
+
 	return func(yield func(PointRef) bool) {
 		// Iterate over all grid cells that could contain points within radius
 		for latCell := centerCell.LatCell - cellRadiusLat; latCell <= centerCell.LatCell+cellRadiusLat; latCell++ {
-			for lonCell := centerCell.LonCell - cellRadiusLon; lonCell <= centerCell.LonCell+cellRadiusLon; lonCell++ {
-				cell := GridCell{LatCell: latCell, LonCell: lonCell}
-				if points, ok := sg.Cells[cell]; ok {
-					// Check each point in this cell
-					for _, ref := range points {
-						if d := math.NMDistance2LLFast(center, ref.Location, nmPerLongitude); d <= radiusNM {
-							if !yield(ref) {
-								return
+			for _, lr := range lonRanges {
+				for lonCell := lr.min; lonCell <= lr.max; lonCell++ {
+					cell := GridCell{LatCell: latCell, LonCell: lonCell}
+					if points, ok := sg.Cells[cell]; ok {
+						// Check each point in this cell
+						for _, ref := range points {
+							if distanceFunc(ref) <= radiusNM {
+								if !yield(ref) {
+									return
+								}
 							}
 						}
 					}
@@ -731,62 +830,66 @@ func buildGridFromGRIB2(records []*squall.GRIB2) *Grid {
 	return finalGrid
 }
 
-// validateGridForTracon validates that QueryCircle returns exactly the
-// same points as an exhaustive search over all points in the records.
-func validateGridForTracon(grid *Grid, records []*squall.GRIB2, tracon string) error {
-	tspec, ok := av.DB.TRACONs[tracon]
-	if !ok {
-		return fmt.Errorf("%s: unable to find bounds for TRACON", tracon)
+// ingestHRRRSingleTime processes HRRR data for a single specified time.
+// This is useful for testing and evaluating runtime/file sizes.
+func ingestHRRRSingleTime(sb StorageBackend, hrrrsb *TrackingBackend) error {
+	t, err := time.Parse(time.RFC3339, *singleTime)
+	if err != nil {
+		return fmt.Errorf("failed to parse --single-time %q: %w", *singleTime, err)
 	}
-	center, radius := tspec.Center(), tspec.Radius
-	nmPerLongitude := math.NMPerLongitudeAt(center)
+	t = t.UTC()
+	LogInfo("Processing single time: %s", t.Format(time.RFC3339))
 
-	// Exhaustive approach: collect all points within radius
-	exhaustivePoints := make(map[PointRef]bool)
-	for recIdx, record := range records {
-		for ptIdx := range record.NumPoints {
-			if squall.IsMissing(record.Data[ptIdx]) {
-				continue
-			}
+	startTime := time.Now()
 
-			lon := record.Longitudes[ptIdx]
-			if lon > 180 {
-				lon -= 360
-			}
-			pt := math.Point2LL{lon, record.Latitudes[ptIdx]}
+	tfr := util.MakeTempFileRegistry(nil)
+	defer tfr.RemoveAll()
+	registerCleanup(tfr.RemoveAll)
 
-			if d := math.NMDistance2LLFast(center, pt, nmPerLongitude); d <= radius {
-				exhaustivePoints[MakePointRef(pt, recIdx, ptIdx)] = true
-			}
+	// Collect all facilities by region
+	byRegion := make(map[string][]string)
+	for _, tracon := range wx.AtmosTRACONs {
+		region := facilityRegion(tracon)
+		byRegion[region] = append(byRegion[region], tracon)
+	}
+	for _, artcc := range wx.AtmosARTCCs {
+		region := facilityRegion(artcc)
+		byRegion[region] = append(byRegion[region], artcc)
+	}
+
+	// Filter out Alaska/Hawaii facilities if time doesn't align with their 3-hour schedule
+	if t.Hour()%3 != 0 {
+		LogInfo("Time %s is not on 3-hour boundary - skipping Alaska/Hawaii facilities", t.Format(time.RFC3339))
+		delete(byRegion, "alaska")
+		delete(byRegion, "hawaii")
+	}
+
+	LogInfo("Facilities by region: conus=%d, alaska=%d, hawaii=%d",
+		len(byRegion["conus"]), len(byRegion["alaska"]), len(byRegion["hawaii"]))
+
+	// Process each region
+	for region, facilities := range byRegion {
+		LogInfo("Processing %s region with %d facilities", region, len(facilities))
+
+		path, err := downloadHRRRForTime(t, region, tfr, hrrrsb)
+		if err != nil {
+			LogError("Failed to download HRRR for %s: %v", region, err)
+			continue
+		}
+
+		if err := ingestHRRRForTime(path, t, facilities, sb); err != nil {
+			LogError("Failed to ingest HRRR for %s: %v", region, err)
+			continue
 		}
 	}
 
-	// Grid approach: collect all points from QueryCircle
-	gridPoints := make(map[PointRef]bool)
-	for ref := range grid.QueryCircle(center, radius) {
-		gridPoints[ref] = true
+	elapsed := time.Since(startTime)
+	LogInfo("Single-time processing completed in %s", elapsed)
+
+	// Merge HRRR transfer statistics into main backend
+	if mainTB, ok := sb.(*TrackingBackend); ok {
+		mainTB.MergeStats(hrrrsb)
 	}
 
-	// Compare the two sets
-	if len(exhaustivePoints) != len(gridPoints) {
-		return fmt.Errorf("%s: point count mismatch - exhaustive: %d, grid: %d",
-			tracon, len(exhaustivePoints), len(gridPoints))
-	}
-
-	// Check that all exhaustive points are in grid results
-	for pt := range exhaustivePoints {
-		if !gridPoints[pt] {
-			return fmt.Errorf("%s: exhaustive point missing from grid: %+v", tracon, pt)
-		}
-	}
-
-	// Check that all grid points are in exhaustive results
-	for pt := range gridPoints {
-		if !exhaustivePoints[pt] {
-			return fmt.Errorf("%s: grid point not in exhaustive results: %+v", tracon, pt)
-		}
-	}
-
-	LogInfo("%s: validation passed - %d points match exactly", tracon, len(exhaustivePoints))
 	return nil
 }
