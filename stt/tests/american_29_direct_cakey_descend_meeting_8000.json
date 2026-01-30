@@ -14,7 +14,7 @@
   "audio_duration_ms": 2944,
   "processor": "GPU: NVIDIA GeForce RTX 4070 Laptop GPU (7948MB)",
   "callsign": "AAL29",
-  "command": "DCAKEY H",
+  "command": "DCAKEY D80",
   "stt_aircraft": {
     "American 29": {
       "Callsign": "AAL29",

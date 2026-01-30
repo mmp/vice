@@ -422,6 +422,7 @@ var fuzzyMatchBlocklist = map[string][]string{
 	"sampote":      {"climbed"},            // coincidental metaphone suffix match (SMPT vs KLMPT)
 	"departure":    {"depart"},             // position ID ("NY departure") vs depart fix instruction
 	"departures":   {"depart"},             // position ID plural vs depart instruction
+	"procello":     {"proceed"},            // garbled word vs proceed command
 	"barracuda":    {"direct"},             // Miami position name, not "direct"
 	"veracosta":    {"cleared", "direct"},  // Garbled position name
 	"mayr":         {"maintain", "direct"}, // Garbled word

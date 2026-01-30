@@ -205,6 +205,16 @@ func (p *Transcriber) decodeInternal(
 		return "", nil
 	}
 
+	// Check if remaining tokens contain "radar contact" phrase (informational only)
+	// This can appear with facility names like "Miami Departure, radar contact"
+	if isRadarContactPhrase(commandTokens) {
+		logLocalStt("detected radar contact phrase, returning empty")
+		elapsed := time.Since(start)
+		logLocalStt("=== DecodeTranscript END: \"\" (radar contact, time=%s) ===", elapsed)
+		p.logInfo("local STT: %q -> \"\" (radar contact, time=%s)", transcript, elapsed)
+		return "", nil
+	}
+
 	// Layer 4: Command parsing
 	commands, cmdConf := ParseCommands(commandTokens, ac)
 	logLocalStt("parsed commands: %v (conf=%.2f)", commands, cmdConf)
@@ -608,6 +618,59 @@ func isAcknowledgmentOnly(tokens []Token) bool {
 	}
 
 	return hasAcknowledgment
+}
+
+// isRadarContactPhrase returns true if the tokens contain "radar contact" phrase,
+// possibly with facility words/names and position identification. This is an
+// informational phrase from controller to pilot that needs no action.
+// Examples: "radar contact", "Miami Departure radar contact", "departure radar contact"
+func isRadarContactPhrase(tokens []Token) bool {
+	if len(tokens) < 2 {
+		return false
+	}
+
+	// Facility type words that commonly appear with "radar contact"
+	// (only positions that use radar - not ground/clearance/delivery)
+	facilityTypes := map[string]bool{
+		"departure": true, "approach": true, "tower": true, "center": true,
+	}
+
+	// Command keywords that would indicate this is NOT just a radar contact phrase
+	commandKeywords := map[string]bool{
+		"climb": true, "descend": true, "maintain": true, "turn": true,
+		"heading": true, "direct": true, "cleared": true, "expect": true,
+		"speed": true, "reduce": true, "increase": true, "squawk": true,
+		"fly": true, "cross": true, "hold": true, "intercept": true,
+	}
+
+	hasRadar := false
+	hasContact := false
+	hasFacilityType := false
+
+	for _, t := range tokens {
+		text := strings.ToLower(t.Text)
+
+		// Reject if we find a command keyword
+		if commandKeywords[text] {
+			return false
+		}
+
+		switch text {
+		case "radar":
+			hasRadar = true
+		case "contact":
+			hasContact = true
+		default:
+			if facilityTypes[text] {
+				hasFacilityType = true
+			}
+			// Allow other words (facility names like "miami", "kennedy", etc.)
+		}
+	}
+
+	// Must have both "radar" and "contact", and typically a facility type
+	// (to distinguish from other uses of these words)
+	return hasRadar && hasContact && hasFacilityType
 }
 
 // isPositionIdentification detects controller position identification phrases

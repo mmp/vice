@@ -407,10 +407,12 @@ var commandKeywords = map[string]string{
 	"klim":       "climb", // STT error: dropped trailing sound
 	"clomman":    "climb",
 	"clementine": "climb",
+	"klein":      "climb", // STT error: "climb" misheard as "klein"
 	"klamathay":  "climb", // STT error: "climb and maintain" garbled together
 	"con":        "climb",
 	"maintain":   "maintain",
 	"maintained": "maintain",
+	"hamilton":   "maintain", // STT error: "maintain" misheard as "hamilton"
 	"altitude":   "altitude",
 	"aldo":       "altitude", // STT error: "altitude" misheard as "aldo"
 	"thousand":   "thousand",
@@ -538,6 +540,7 @@ var commandKeywords = map[string]string{
 	"tar":       "tower",
 	"terror":    "tower",
 	"tarot":     "tower", // STT error: "tower" misheard as "tarot"
+	"error":     "tower", // STT error: "tower" misheard as "error"
 	"her":       "tower", // STT error: "tower" misheard as "her"
 	"hour":      "tower", // STT error: "tower" misheard as "hour"
 	"frequency": "frequency",
@@ -549,6 +552,7 @@ var commandKeywords = map[string]string{
 	"ahead":      "ahead",
 	"radar":      "radar",
 	"redder":     "radar", // STT error: "radar" garbled as "redder"
+	"redair":     "radar", // STT error: "radar" garbled as "redair"
 	"real":       "radar", // STT error: "radar" garbled as "real" (in "real contact")
 	"services":   "services",
 	"terminated": "terminated",
