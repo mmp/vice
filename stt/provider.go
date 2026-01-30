@@ -322,8 +322,8 @@ func (p *Transcriber) BuildAircraftContext(
 			sttAc.State = "departure"
 			sttAc.SID = trk.SID
 		} else if trk.IsArrival() {
-			if trk.OnApproach {
-				sttAc.State = "on approach"
+			if trk.ClearedForApproach {
+				sttAc.State = "cleared approach"
 			} else {
 				sttAc.State = "arrival"
 			}

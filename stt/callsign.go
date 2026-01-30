@@ -615,7 +615,7 @@ type Aircraft struct {
 	SID                 string
 	STAR                string
 	Altitude            int                        // Current altitude in feet
-	State               string                     // "departure", "arrival", "overflight", "on approach", "vfr flight following"
+	State               string                     // "departure", "arrival", "cleared approach", "overflight", "vfr flight following"
 	ControllerFrequency string                     // Current controller position the aircraft is tuned to
 	TrackingController  string                     // Controller tracking this aircraft (from flight plan)
 	AddressingForm      sim.CallsignAddressingForm // How this aircraft was addressed (based on which key matched)

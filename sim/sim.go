@@ -148,6 +148,7 @@ type Track struct {
 	FiledAltitude             int
 	OnExtendedCenterline      bool
 	OnApproach                bool
+	ClearedForApproach        bool
 	Approach                  string   // Full name of assigned approach, if any
 	Fixes                     []string // Relevant fix names for STT
 	SID                       string

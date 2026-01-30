@@ -188,7 +188,7 @@
       "SID": "",
       "STAR": "CAMRN5",
       "Altitude": 4000,
-      "State": "arrival",
+      "State": "cleared approach",
       "ControllerFrequency": "2A",
       "TrackingController": "2A",
       "AddressingForm": 0,

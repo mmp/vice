@@ -478,7 +478,7 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
-		"expect {approach_lahso}",
+		"expect [vectors] [for] [to] [the] {approach_lahso}",
 		func(appr string) string { return fmt.Sprintf("E%s", appr) },
 		WithName("expect_approach"),
 		WithPriority(15),     // Higher than heading commands to match approach context first

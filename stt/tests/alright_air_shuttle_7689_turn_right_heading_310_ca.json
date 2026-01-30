@@ -38,7 +38,7 @@
       "SID": "",
       "STAR": "MURAH3",
       "Altitude": 3000,
-      "State": "arrival",
+      "State": "cleared approach",
       "ControllerFrequency": "1S",
       "TrackingController": "1S",
       "AddressingForm": 0,

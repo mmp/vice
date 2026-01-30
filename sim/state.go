@@ -171,6 +171,7 @@ func makeDerivedState(s *Sim) DerivedState {
 			FiledAltitude:             ac.FlightPlan.Altitude,
 			OnExtendedCenterline:      ac.OnExtendedCenterline(0.2),
 			OnApproach:                ac.OnApproach(false), /* don't check altitude */
+			ClearedForApproach:        ac.Nav.Approach.Cleared,
 			Approach:                  approach,
 			Fixes:                     ac.GetSTTFixes(),
 			SID:                       ac.SID,

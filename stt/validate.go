@@ -128,7 +128,7 @@ func validateCommand(cmd string, ac Aircraft) string {
 		// E could be: EC (expedite climb), ED (expedite descent), or E{APPR} (expect approach)
 		if cmd == "EC" {
 			// Expedite climb - valid for departures, overflights
-			if ac.State == "arrival" || ac.State == "on approach" {
+			if ac.State == "arrival" || ac.State == "cleared approach" {
 				return "expedite climb unlikely for arrival/approach"
 			}
 			return ""
@@ -271,11 +271,11 @@ func validateClimbViaSID(ac Aircraft) string {
 }
 
 func validateCancelApproach(ac Aircraft) string {
-	// Cancel approach only for aircraft on approach
-	if ac.State != "on approach" {
-		return "cancel approach only valid for aircraft on approach"
+	// Cancel approach only valid for aircraft cleared for approach
+	if ac.State == "cleared approach" {
+		return ""
 	}
-	return ""
+	return "cancel approach only valid for aircraft cleared for approach"
 }
 
 func validateGoAhead(_ Aircraft) string {
@@ -391,8 +391,8 @@ func isCommandValidForState(cmd string, state string) bool {
 			return false
 		}
 
-	case "on approach":
-		// On approach: speed, TO, CAC
+	case "cleared approach":
+		// Cleared for approach: speed, TO, CAC
 		// Not typically: altitude, heading, navigation
 		// Allow all but with lower confidence handled elsewhere
 
