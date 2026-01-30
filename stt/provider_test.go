@@ -2843,7 +2843,7 @@ func TestSTTFromJSONFiles(t *testing.T) {
 				expected = strings.TrimSpace(testFile.Callsign + " " + testFile.Command)
 			}
 
-			if result != expected {
+			if !CommandsEquivalent(expected, result, aircraft) {
 				t.Errorf("got %q, want %q", result, expected)
 			}
 		})

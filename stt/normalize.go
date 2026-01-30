@@ -574,6 +574,7 @@ var phraseExpansions = map[string][]string{
 	"flighting":        {"fly", "heading"},      // "fly heading" -> "flighting"
 	"disundermaintain": {"descend", "maintain"}, // "descend and maintain" -> "disundermaintain"
 	"climbington":      {"climb", "maintain"},   // "climb and maintain" -> "climbington"
+	"climatane":        {"climb", "maintain"},   // STT error: "climb and maintain" garbled
 	"thunbright":       {"turn", "right"},       // STT error: "turn right" merged together
 	"leviting":         {"left", "heading"},     // STT error: "left heading" merged together
 	// Note: "cleared direct" merged forms are handled by trySplitMergedCommand
@@ -640,6 +641,7 @@ var fillerWords = map[string]bool{
 	"off":  true,               // STT noise in "turn off heading" → "turn heading"
 	"wing": true,               // STT error: "left-wing" for "left heading" becomes "left wing" after hyphen removal
 	"i":    true, "said": true, // Pilot interjections ("I said I maintained...")
+	"is":     true, // Prevents "is" from fuzzy matching fix names like "ISLAY" (Jaro-Winkler 0.84)
 	"having":  true, // Prevents "having" from fuzzy matching "heading" (Jaro-Winkler 0.86)
 	"leaving": true, // Prevents "leaving" from fuzzy matching "heading" (Jaro-Winkler 0.81)
 	// Note: "contact" and "radar" are NOT filler words - they're command keywords

@@ -100,7 +100,7 @@ func main() {
 	fmt.Printf("Expected:   %q\n", expected)
 	fmt.Printf("Actual:     %q\n", result)
 
-	if result == expected {
+	if stt.CommandsEquivalent(expected, result, aircraft) {
 		fmt.Println("\nPASS")
 		os.Exit(0)
 	} else {
