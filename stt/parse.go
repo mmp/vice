@@ -49,6 +49,14 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 			continue
 		}
 
+		// Skip "radar contact" phrase (informational, not a command)
+		if strings.ToLower(tokens[pos].Text) == "radar" && pos+1 < len(tokens) &&
+			strings.ToLower(tokens[pos+1].Text) == "contact" {
+			logLocalStt("  skipping 'radar contact' phrase at position %d", pos)
+			pos += 2
+			continue
+		}
+
 		// Check for "at {altitude}" pattern - implicit "then" trigger
 		if tokens[pos].Text == "at" && pos+1 < len(tokens) {
 			nextToken := tokens[pos+1]
@@ -162,9 +170,49 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 		return nil, 0
 	}
 
+	// Post-processing: if "knots" appears in the transcript, convert altitude commands to speed
+	commands = convertAltitudeToSpeedIfKnots(tokens, commands)
+
 	avgConf := totalConf / float64(len(commands))
 	logLocalStt("ParseCommands: result=%v (avgConf=%.2f)", commands, avgConf)
 	return commands, avgConf
+}
+
+// convertAltitudeToSpeedIfKnots checks if "knots" appears anywhere in the tokens.
+// If "knots" is present but no speed command was parsed, it means the altitude
+// command should actually be a speed command (the "knots" wasn't matched to anything).
+func convertAltitudeToSpeedIfKnots(tokens []Token, commands []string) []string {
+	// Check if "knots" appears anywhere in the transcript
+	hasKnots := false
+	for _, t := range tokens {
+		if strings.ToLower(t.Text) == "knots" {
+			hasKnots = true
+			break
+		}
+	}
+
+	if !hasKnots {
+		return commands
+	}
+
+	// Check if there's already a speed command - if so, "knots" was matched properly
+	for _, cmd := range commands {
+		if len(cmd) > 0 && cmd[0] == 'S' {
+			return commands
+		}
+	}
+
+	// Convert altitude commands to speed commands
+	result := make([]string, len(commands))
+	for i, cmd := range commands {
+		if len(cmd) > 1 && cmd[0] == 'A' && isAllDigits(cmd[1:]) {
+			result[i] = "S" + cmd[1:]
+			logLocalStt("  converted altitude to speed due to 'knots': %s -> %s", cmd, result[i])
+		} else {
+			result[i] = cmd
+		}
+	}
+	return result
 }
 
 // matchCommandNew tries to match tokens against registered commands.

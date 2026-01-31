@@ -63,7 +63,7 @@ func (p *Transcriber) DecodeCommandsForCallsign(
 func (p *Transcriber) decodeInternal(
 	aircraft map[string]Aircraft,
 	transcript string,
-	controllerRadioName string,
+	_ string, // controllerRadioName - currently unused
 	fallbackCallsign string,
 ) (string, error) {
 	start := time.Now()
@@ -236,15 +236,6 @@ func (p *Transcriber) decodeInternal(
 		logLocalStt("  token[%d]: Text=%q Type=%d Value=%d", i, t.Text, t.Type, t.Value)
 	}
 
-	// Check for position identification phrases (only for normal decode, not fallback)
-	if !isFallback && isPositionIdentification(commandTokens, controllerRadioName) {
-		logLocalStt("detected position identification, returning empty")
-		elapsed := time.Since(start)
-		logLocalStt("=== DecodeTranscript END: \"\" (position ID, time=%s) ===", elapsed)
-		p.logInfo("local STT: %q -> \"\" (position identification, time=%s)", transcript, elapsed)
-		return "", nil
-	}
-
 	// Check if remaining tokens are just acknowledgment filler words (roger, wilco, copy)
 	// These need no response - return empty
 	if isAcknowledgmentOnly(commandTokens) {
@@ -255,13 +246,19 @@ func (p *Transcriber) decodeInternal(
 		return "", nil
 	}
 
-	// Check if remaining tokens contain "radar contact" phrase (informational only)
-	// This can appear with facility names like "Miami Departure, radar contact"
-	if isRadarContactPhrase(commandTokens) {
-		logLocalStt("detected radar contact phrase, returning empty")
+	// Strip position identification prefix if present (e.g., "New York departure")
+	// This appears right after callsign when controller identifies themselves
+	commandTokens = stripPositionIDPrefix(commandTokens)
+
+	// Strip "radar contact" prefix if present (informational, not a command)
+	commandTokens = stripRadarContactPrefix(commandTokens)
+
+	// If no tokens remain after stripping, controller just identified themselves
+	if len(commandTokens) == 0 {
+		logLocalStt("no tokens after stripping prefixes, returning empty")
 		elapsed := time.Since(start)
-		logLocalStt("=== DecodeTranscript END: \"\" (radar contact, time=%s) ===", elapsed)
-		p.logInfo("local STT: %q -> \"\" (radar contact, time=%s)", transcript, elapsed)
+		logLocalStt("=== DecodeTranscript END: \"\" (position ID only, time=%s) ===", elapsed)
+		p.logInfo("local STT: %q -> \"\" (position ID only, time=%s)", transcript, elapsed)
 		return "", nil
 	}
 
@@ -736,189 +733,69 @@ func isAcknowledgmentOnly(tokens []Token) bool {
 	return hasAcknowledgment
 }
 
-// isRadarContactPhrase returns true if the tokens contain "radar contact" phrase,
-// possibly with facility words/names and position identification. This is an
-// informational phrase from controller to pilot that needs no action.
-// Examples: "radar contact", "Miami Departure radar contact", "departure radar contact"
-func isRadarContactPhrase(tokens []Token) bool {
-	if len(tokens) < 2 {
-		return false
+// stripPositionIDPrefix removes a controller position identification prefix
+// from the tokens (e.g., "New York departure", "Boston approach").
+// This appears right after the callsign when the controller identifies themselves.
+// Only strips if no command keyword appears before the position suffix.
+// Returns the remaining tokens after stripping the prefix.
+func stripPositionIDPrefix(tokens []Token) []Token {
+	if len(tokens) == 0 {
+		return tokens
 	}
 
-	// Facility type words that commonly appear with "radar contact"
-	// (only positions that use radar - not ground/clearance/delivery)
-	facilityTypes := map[string]bool{
-		"departure": true, "approach": true, "tower": true, "center": true,
+	// Position suffixes that indicate controller identification
+	positionSuffixes := map[string]bool{
+		"departure": true, "approach": true, "center": true,
 	}
 
-	// Command keywords that would indicate this is NOT just a radar contact phrase
+	// Command keywords that indicate actual commands (not position ID)
 	commandKeywords := map[string]bool{
-		"climb": true, "descend": true, "maintain": true, "turn": true,
-		"heading": true, "direct": true, "cleared": true, "expect": true,
-		"speed": true, "reduce": true, "increase": true, "squawk": true,
-		"fly": true, "cross": true, "hold": true, "intercept": true,
+		"climb": true, "climbing": true, "descend": true, "descending": true,
+		"maintain": true, "turn": true, "heading": true, "speed": true,
+		"direct": true, "proceed": true, "cleared": true, "expect": true,
+		"contact": true, "squawk": true, "ident": true, "cross": true,
+		"hold": true, "intercept": true, "fly": true, "reduce": true,
+		"increase": true, "expedite": true, "cancel": true, "canceled": true,
+		"resume": true, "vectors": true, "go": true,
 	}
 
-	hasRadar := false
-	hasContact := false
-	hasFacilityType := false
-
-	for _, t := range tokens {
+	// Find position suffix in the first few tokens (position ID is at the start)
+	for i, t := range tokens {
 		text := strings.ToLower(t.Text)
 
-		// Reject if we find a command keyword
+		// If we hit a command keyword, this isn't a position ID prefix
 		if commandKeywords[text] {
-			return false
+			return tokens
 		}
 
-		switch text {
-		case "radar":
-			hasRadar = true
-		case "contact":
-			hasContact = true
-		default:
-			if facilityTypes[text] {
-				hasFacilityType = true
+		if positionSuffixes[text] {
+			// Found position suffix with no command keyword before it - strip
+			remaining := tokens[i+1:]
+			if len(remaining) < len(tokens) {
+				logLocalStt("stripped position ID prefix: %d tokens", i+1)
 			}
-			// Allow other words (facility names like "miami", "kennedy", etc.)
+			return remaining
+		}
+
+		// Stop searching after a few tokens - position ID should be at the start
+		if i >= 4 {
+			break
 		}
 	}
 
-	// Must have both "radar" and "contact", and typically a facility type
-	// (to distinguish from other uses of these words)
-	return hasRadar && hasContact && hasFacilityType
+	return tokens
 }
 
-// isPositionIdentification detects controller position identification phrases
-// like "New York departure", "Kennedy approach", "Boston center", etc.
-// These are informational (controller identifying themselves) and need no response.
-//
-// controllerRadioName is the user's radio name (e.g., "New York Departure").
-// The function does fuzzy matching allowing "departure" and "approach" to be
-// interchangeable since controllers may say either depending on context.
-func isPositionIdentification(tokens []Token, controllerRadioName string) bool {
-	if len(tokens) == 0 || controllerRadioName == "" {
-		return false
+// stripRadarContactPrefix removes "radar contact" from the start of tokens.
+// This is informational and not a command.
+func stripRadarContactPrefix(tokens []Token) []Token {
+	if len(tokens) >= 2 &&
+		strings.ToLower(tokens[0].Text) == "radar" &&
+		strings.ToLower(tokens[1].Text) == "contact" {
+		logLocalStt("stripped 'radar contact' prefix")
+		return tokens[2:]
 	}
-
-	// Find "radar contact" anywhere in the tokens
-	radarContactIdx := -1
-	for i := range len(tokens) - 1 {
-		if strings.ToLower(tokens[i].Text) == "radar" &&
-			strings.ToLower(tokens[i+1].Text) == "contact" {
-			radarContactIdx = i
-			break
-		}
-	}
-
-	// If "radar contact" found and there are tokens after it, this isn't just position ID
-	if radarContactIdx >= 0 && radarContactIdx+2 < len(tokens) {
-		// There are tokens after "radar contact" - these are commands, not position ID
-		logLocalStt("  position ID: 'radar contact' at position %d with %d tokens after - not position ID",
-			radarContactIdx, len(tokens)-radarContactIdx-2)
-		return false
-	}
-
-	// Determine lastIdx for phrase building
-	lastIdx := len(tokens) - 1
-	if radarContactIdx >= 0 {
-		// "radar contact" is at the end, strip it
-		lastIdx = radarContactIdx - 1
-		if lastIdx < 0 {
-			// Just "radar contact" with no position - still informational
-			logLocalStt("  position ID: just 'radar contact' - informational")
-			return true
-		}
-	}
-
-	// Command keywords that indicate actual commands (not position identification).
-	// If any of these appear in the tokens, this isn't JUST a position ID - there are
-	// commands to process. Position-related words like "departure", "approach" are NOT in this set.
-	commandStopWords := map[string]bool{
-		"proceed": true, "direct": true, "climb": true, "descend": true,
-		"maintain": true, "turn": true, "heading": true, "speed": true,
-		"cleared": true, "expect": true, "vectors": true, "squawk": true,
-		"contact": true, "cross": true, "expedite": true, "reduce": true,
-		"increase": true, "fly": true, "intercept": true, "cancel": true,
-		"resume": true, "ident": true, "go": true,
-	}
-
-	// Check if any command keywords appear in the tokens.
-	// If so, this isn't just a position ID - there are commands to process.
-	for i := 0; i <= lastIdx; i++ {
-		word := strings.ToLower(tokens[i].Text)
-		if commandStopWords[word] {
-			logLocalStt("  position ID: found command keyword %q at position %d - not just position ID", word, i)
-			return false
-		}
-	}
-
-	// Build the phrase from remaining tokens (no command keywords present)
-	var parts []string
-	for i := 0; i <= lastIdx; i++ {
-		parts = append(parts, strings.ToLower(tokens[i].Text))
-	}
-	phrase := strings.Join(parts, " ")
-
-	// Normalize the controller radio name for comparison
-	radioName := strings.ToLower(controllerRadioName)
-
-	// Position suffixes that are interchangeable
-	positionSuffixes := []string{"departure", "approach", "center", "tower", "ground"}
-
-	// Check for exact or fuzzy match
-	if FuzzyMatch(phrase, radioName, 0.75) {
-		logLocalStt("  position ID: fuzzy match %q ~ %q", phrase, radioName)
-		return true
-	}
-
-	// Try swapping position suffixes (e.g., "new york approach" matches "New York Departure")
-	for _, suffix := range positionSuffixes {
-		if strings.HasSuffix(phrase, suffix) {
-			// Extract the facility part (everything before the suffix)
-			facilityPart := strings.TrimSuffix(phrase, suffix)
-			facilityPart = strings.TrimSpace(facilityPart)
-
-			// Try matching with each alternative suffix
-			for _, altSuffix := range positionSuffixes {
-				altPhrase := facilityPart + " " + altSuffix
-				if FuzzyMatch(altPhrase, radioName, 0.75) {
-					logLocalStt("  position ID: fuzzy match with suffix swap %q ~ %q (orig: %q)",
-						altPhrase, radioName, phrase)
-					return true
-				}
-			}
-			break // Only one suffix match is possible
-		}
-	}
-
-	// Check if the phrase ends with a position suffix and the facility part fuzzy matches
-	// the controller's facility (e.g., "mumble departure" where mumble ~ "new york")
-	for _, suffix := range positionSuffixes {
-		if strings.HasSuffix(phrase, suffix) {
-			spokenFacility := strings.TrimSuffix(phrase, suffix)
-			spokenFacility = strings.TrimSpace(spokenFacility)
-
-			// Extract facility from radio name
-			for _, radioSuffix := range positionSuffixes {
-				if strings.HasSuffix(radioName, radioSuffix) {
-					radioFacility := strings.TrimSuffix(radioName, radioSuffix)
-					radioFacility = strings.TrimSpace(radioFacility)
-
-					if spokenFacility != "" && radioFacility != "" &&
-						FuzzyMatch(spokenFacility, radioFacility, 0.70) {
-						logLocalStt("  position ID: facility fuzzy match %q ~ %q (suffix: %s)",
-							spokenFacility, radioFacility, suffix)
-						return true
-					}
-					break
-				}
-			}
-			break
-		}
-	}
-
-	return false
+	return tokens
 }
 
 // logging helpers

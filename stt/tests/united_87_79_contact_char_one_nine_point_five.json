@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce GTX 1650 (4151MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "UAL8779",
-  "command": "TO",
+  "command": "FC",
   "stt_aircraft": {
     "Southwest two 75": {
       "Callsign": "SWA275",

@@ -270,12 +270,10 @@ func validateClimbViaSID(ac Aircraft) string {
 	return ""
 }
 
-func validateCancelApproach(ac Aircraft) string {
-	// Cancel approach only valid for aircraft cleared for approach
-	if ac.State == "cleared approach" {
-		return ""
-	}
-	return "cancel approach only valid for aircraft cleared for approach"
+func validateCancelApproach(_ Aircraft) string {
+	// Don't validate - if the controller gave this instruction, pass it through.
+	// If invalid, the pilot will respond appropriately.
+	return ""
 }
 
 func validateGoAhead(_ Aircraft) string {
@@ -310,21 +308,38 @@ func filterIncompatibleCommands(commands []string) ([]string, []string) {
 		}
 	}
 
-	// If there's a direct-to-fix command, filter out heading commands
-	if hasDirectFix {
-		var filtered []string
-		for _, cmd := range commands {
-			// Heading commands start with L, R, or H followed by digits
+	// Check if there's a cleared approach command (C{approach} but not CVS or CAC)
+	hasApproachClearance := false
+	for _, cmd := range commands {
+		if len(cmd) > 1 && cmd[0] == 'C' && cmd != "CVS" && cmd != "CAC" && !isAllDigits(cmd[1:]) {
+			// Check it's not a cross-fix command (contains /)
+			if !strings.Contains(cmd, "/") {
+				hasApproachClearance = true
+				break
+			}
+		}
+	}
+
+	var filtered []string
+	for _, cmd := range commands {
+		// If there's a direct-to-fix command, filter out heading commands
+		if hasDirectFix {
 			if len(cmd) > 1 && (cmd[0] == 'L' || cmd[0] == 'R' || cmd[0] == 'H') && isAllDigits(cmd[1:]) {
 				errors = append(errors, "heading command incompatible with direct-to-fix")
 				continue
 			}
-			filtered = append(filtered, cmd)
 		}
-		return filtered, errors
+
+		// If there's an approach clearance, filter out standalone intercept localizer (I)
+		// The intercept is implicit in the approach clearance
+		if hasApproachClearance && cmd == "I" {
+			continue
+		}
+
+		filtered = append(filtered, cmd)
 	}
 
-	return commands, errors
+	return filtered, errors
 }
 
 // isAllDigits returns true if string contains only digits.

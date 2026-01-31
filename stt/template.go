@@ -145,6 +145,23 @@ func (m *optionalLiteralMatcher) match(tokens []Token, pos int, ac Aircraft, ski
 
 	// Try to match against any keyword
 	for _, kw := range m.keywords {
+		// For short keywords (2 chars or less like "to", "at"), require exact match
+		// to prevent false positives like "torch" matching "to".
+		if len(kw) <= 2 {
+			if text == kw {
+				return matchResult{consumed: pos + 1}
+			}
+			continue
+		}
+
+		// For longer keywords, use fuzzy matching but check length ratio.
+		// Don't match if lengths differ by more than 2x (e.g., "torch" vs "direct").
+		textLen := len(text)
+		kwLen := len(kw)
+		if textLen > 2*kwLen || kwLen > 2*textLen {
+			continue
+		}
+
 		if FuzzyMatch(text, kw, 0.8) {
 			return matchResult{consumed: pos + 1}
 		}

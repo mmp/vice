@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
   "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
   "callsign": "ENY6858",
-  "command": "DVS SAYAGAIN/APPROACH",
+  "command": "DVS EI7L",
   "stt_aircraft": {
     "American 29 46 heavy": {
       "Callsign": "AAL2946",

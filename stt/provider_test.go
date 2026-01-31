@@ -1178,14 +1178,14 @@ func TestPositionIdentification(t *testing.T) {
 			expectPositionID: false,
 		},
 		{
-			name:       "no position ID without radio name",
+			name:       "position ID without radio name",
 			transcript: "Encore 208 New York departure",
 			aircraft: map[string]Aircraft{
 				"Encore 208": {Callsign: "WEN208", State: "departure"},
 			},
-			radioName:        "", // No radio name - should not detect position ID
-			expected:         "WEN208 AGAIN",
-			expectPositionID: false,
+			radioName:        "", // No radio name - still detect position ID
+			expected:         "",
+			expectPositionID: true,
 		},
 		{
 			name:       "radar contact in middle with commands after",

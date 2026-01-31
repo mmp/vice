@@ -645,15 +645,18 @@ func (p *contactFrequencyParser) parse(tokens []Token, pos int, ac Aircraft) (an
 		return nil, 0, ""
 	}
 
-	// Look for the frequency pattern: number (10-999) + "point" + number (0-99)
+	// Look for the frequency pattern: number (10-9999) + "point" + number (0-99)
+	// We accept up to 9999 because spoken digit-by-digit frequencies like "one two four"
+	// can be combined with preceding garbled words (e.g., "seven one two four" where
+	// "seven" is mis-heard "center") resulting in numbers like 7124.
 	// Scan up to 10 tokens ahead looking for this pattern
 	maxLookahead := min(10, len(tokens)-pos)
 
 	for i := pos; i < pos+maxLookahead-2; i++ {
 		t := tokens[i]
 
-		// Check if this token is a number in valid frequency range (10-999)
-		if t.Type != TokenNumber || t.Value < 10 || t.Value > 999 {
+		// Check if this token is a number in valid frequency range (10-9999)
+		if t.Type != TokenNumber || t.Value < 10 || t.Value > 9999 {
 			continue
 		}
 

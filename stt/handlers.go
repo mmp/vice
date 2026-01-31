@@ -682,12 +682,12 @@ func registerAllCommands() {
 		WithPriority(16),
 	)
 
-	// "contact approach/departure/center/ground" produces FC
+	// "contact approach/departure/center" produces FC
 	// Requires a facility type word after "contact" to avoid matching phrases like
 	// "contact clerder" where "clerder" is garbled "cleared"
 	// The "radar contact" pattern has higher priority and produces ""
 	registerSTTCommand(
-		"contact approach|departure|center|ground",
+		"contact approach|departure|center",
 		func() string { return "FC" },
 		WithName("frequency_change"),
 		WithPriority(3), // Low priority - "radar contact" pattern (priority 20) wins when applicable
