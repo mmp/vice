@@ -1,0 +1,179 @@
+{
+  "time": "2026-01-30T15:58:05.73766063Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "and Springs 4461 interceptor on runway one niner left localizer",
+  "whisper_duration_ms": 363.407,
+  "audio_duration_ms": 4296,
+  "processor": "GPU: NVIDIA GeForce GTX 1650 (4151MB)",
+  "whisper_model": "ggml-base.en.bin",
+  "callsign": "NKS4461",
+  "command": "I",
+  "stt_aircraft": {
+    "American three 70": {
+      "Callsign": "AAL370",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Tampa": "KTPA",
+        "slop": "SCLOP"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "MAATY4",
+      "Altitude": 6324,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Spirit Wings 44 61": {
+      "Callsign": "NKS4461",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Bucks": "BUCCS",
+        "Pomse": "POMSE",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19L",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 4512,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"and Springs 4461 interceptor on runway one niner left localizer\"",
+    "[local-stt] normalized words: [and springs 4461 interceptor on runway 1 9 left localizer]",
+    "[local-stt] tokens: 9",
+    "[local-stt]   token[0]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"springs\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"4461\" Type=1 Value=4461",
+    "[local-stt]   token[3]: Text=\"interceptor\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"on\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"19\" Type=1 Value=19",
+    "[local-stt]   token[7]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 9 tokens, 2 aircraft",
+    "[local-stt]   candidate \"American three 70\" (ICAO=\"AAL370\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Spirit Wings 44 61\" (ICAO=\"NKS4461\"): score=0.80 consumed=3",
+    "[local-stt]   candidate \"Spirit Wings 44 61\" at pos 1: score=0.95 (adjusted=0.86) consumed=2",
+    "[local-stt]   candidate \"Spirit Wings 44 61\" at pos 2: score=0.80 (adjusted=0.64) consumed=1",
+    "[local-stt]   accepted: \"NKS4461\" (conf=0.86, consumed=3, startPos=1)",
+    "[local-stt] callsign match: Callsign=\"NKS4461\" SpokenKey=\"Spirit Wings 44 61\" Conf=0.86 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4512 Fixes=3 Approaches=4 AssignedApproach=\"ILS Runway 19L\" LAHSORunways=[10 28 10 28]",
+    "[local-stt]   fix: \"Tampa\" -\u003e \"KTPA\"",
+    "[local-stt]   fix: \"Bucks\" -\u003e \"BUCCS\"",
+    "[local-stt]   fix: \"Pomse\" -\u003e \"POMSE\"",
+    "[local-stt]   approach: \"I L S runway one niner left\" -\u003e \"I9L\"",
+    "[local-stt]   approach: \"r-nav runway one niner right\" -\u003e \"R9R\"",
+    "[local-stt]   approach: \"I L S runway one niner right\" -\u003e \"I9R\"",
+    "[local-stt]   approach: \"r-nav runway one niner left\" -\u003e \"R9L\"",
+    "[local-stt] command tokens after disregard: 6",
+    "[local-stt]   token[0]: Text=\"interceptor\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"on\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"19\" Type=1 Value=19",
+    "[local-stt]   token[4]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 6 tokens",
+    "[local-stt]   matched command: \"I\" (conf=1.00, consumed=6, isThen=false)",
+    "[local-stt] ParseCommands: result=[I] (avgConf=1.00)",
+    "[local-stt] parsed commands: [I] (conf=1.00)",
+    "[local-stt] validated commands: [I] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"NKS4461 I\" (conf=0.86, time=543.5µs) ==="
+  ]
+}
