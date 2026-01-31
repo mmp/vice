@@ -574,7 +574,7 @@ func render(screen tcell.Screen, state *AppState) {
 	} else {
 		title = fmt.Sprintf(" STT Review [%d/%d] ", state.selectedIndex+1, totalCount)
 	}
-	help := " [-]=Skip [⏎]=Save "
+	help := " [^K]=Skip [⏎]=Save "
 	drawText(screen, 0, 0, width, styleHeader, title+strings.Repeat(" ", max(0, width-len(title)-len(help)))+help)
 
 	// Search box row
@@ -967,7 +967,7 @@ func render(screen tcell.Screen, state *AppState) {
 		contextHint = "[`]=Hide "
 	}
 	focusHint := "[Tab]=Switch "
-	helpText := fmt.Sprintf(" %s%s[↑↓]=Select  [-]=Skip  [Enter]=Save  [Space]=Ignore  [Esc]=Clear/Quit ", contextHint, focusHint)
+	helpText := fmt.Sprintf(" %s%s[↑↓]=Select  [^K]=Skip  [Enter]=Save  [Space]=Ignore  [Esc]=Clear/Quit ", contextHint, focusHint)
 	drawText(screen, 0, helpY, width, styleHelp, helpText)
 }
 
@@ -1175,26 +1175,26 @@ func handleCorrectionInput(ev *tcell.EventKey, state *AppState) Action {
 		state.cursorPos = len(state.correction)
 		return ActionNone
 
+	case tcell.KeyCtrlK:
+		// Skip entry
+		// If previously saved, delete the file
+		if oldFile, ok := state.savedFiles[entryIdx]; ok {
+			os.Remove(oldFile)
+			delete(state.savedFiles, entryIdx)
+		}
+		state.disposition[entryIdx] = DispositionSkipped
+		// Move to next entry
+		if state.selectedIndex < len(state.filteredIdx)-1 {
+			state.selectedIndex++
+			state.initFromEntry(state.getSelectedEntryIndex())
+		}
+		return ActionNone
+
 	case tcell.KeyRune:
 		r := ev.Rune()
 		// Backtick toggles context regardless of focus
 		if r == '`' {
 			state.showContext = !state.showContext
-			return ActionNone
-		}
-		// Minus skips entry
-		if r == '-' {
-			// If previously saved, delete the file
-			if oldFile, ok := state.savedFiles[entryIdx]; ok {
-				os.Remove(oldFile)
-				delete(state.savedFiles, entryIdx)
-			}
-			state.disposition[entryIdx] = DispositionSkipped
-			// Move to next entry
-			if state.selectedIndex < len(state.filteredIdx)-1 {
-				state.selectedIndex++
-				state.initFromEntry(state.getSelectedEntryIndex())
-			}
 			return ActionNone
 		}
 		// Auto-uppercase
