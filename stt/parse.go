@@ -19,17 +19,31 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 	isThen := false
 
 	for pos < len(tokens) {
-		// Skip filler words
-		if IsFillerWord(tokens[pos].Text) {
-			logLocalStt("  skipping filler word: %q", tokens[pos].Text)
-			pos++
-			continue
-		}
-
 		// Check for "then" keyword
 		if tokens[pos].Text == "then" {
 			logLocalStt("  found 'then' keyword at position %d", pos)
 			isThen = true
+			pos++
+			continue
+		}
+
+		// Check for "the" followed by descent/climb keywords - STT often garbles "then" as "the"
+		// e.g., "speed 180 the descend maintain 3000" = "speed 180 then descend and maintain 3000"
+		// Only apply when we've already matched at least one command (so "then" makes sense).
+		// Must check BEFORE filler word skip since "the" is a filler word.
+		if len(commands) > 0 && tokens[pos].Text == "the" && pos+1 < len(tokens) {
+			nextText := strings.ToLower(tokens[pos+1].Text)
+			if nextText == "descend" || nextText == "climb" || nextText == "maintain" {
+				logLocalStt("  found 'the' + descent/climb keyword at position %d, treating as 'then'", pos)
+				isThen = true
+				pos++
+				continue
+			}
+		}
+
+		// Skip filler words
+		if IsFillerWord(tokens[pos].Text) {
+			logLocalStt("  skipping filler word: %q", tokens[pos].Text)
 			pos++
 			continue
 		}

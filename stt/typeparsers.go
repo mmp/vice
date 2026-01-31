@@ -248,8 +248,12 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 
 		if t.Type == TokenNumber {
 			// Normal speed range
+			// Round down to nearest 10 - ATC speeds are always multiples of 10,
+			// so trust the first two digits and discard the last (likely STT error).
+			// e.g., 182 → 180, 173 → 170
 			if t.Value >= 100 && t.Value <= 400 {
-				return t.Value, i - pos + 1, ""
+				rounded := (t.Value / 10) * 10
+				return rounded, i - pos + 1, ""
 			}
 
 			// 4-digit with extra digit

@@ -187,8 +187,15 @@ func extractSpeed(tokens []Token) (int, int) {
 		}
 		if t.Type == TokenNumber {
 			// Normal speed range (100-400 knots)
+			// Round down to nearest 10 - ATC speeds are always multiples of 10,
+			// so trust the first two digits and discard the last (likely STT error).
+			// e.g., 182 → 180, 173 → 170
 			if t.Value >= 100 && t.Value <= 400 {
-				return t.Value, i + 1
+				rounded := (t.Value / 10) * 10
+				if rounded != t.Value {
+					logLocalStt("  extractSpeed: rounded %d -> %d (to nearest 10)", t.Value, rounded)
+				}
+				return rounded, i + 1
 			}
 			// Handle 4-digit speeds with extra digit (e.g., "1709" → 170, "2101" → 210)
 			// STT sometimes appends an extra digit to speeds
@@ -587,8 +594,14 @@ func matchApproachByTypeAndNumberWithFallback(tokens []Token, approaches map[str
 		return "", 0, 0
 	}
 
-	// Look for runway number anywhere in the remaining tokens
+	// Look for approach variant letter (e.g., "zulu", "yankee") between type and runway
 	remainingTokens := tokens[typeConsumed:]
+	approachVariant, variantConsumed := extractApproachVariant(remainingTokens)
+	if variantConsumed > 0 {
+		remainingTokens = remainingTokens[variantConsumed:]
+	}
+
+	// Look for runway number anywhere in the remaining tokens
 	runwayNum, runwayDir, numPos := extractRunwayNumber(remainingTokens)
 	if runwayNum == "" {
 		return "", 0, 0
@@ -639,6 +652,12 @@ func matchApproachByTypeAndNumberWithFallback(tokens []Token, approaches map[str
 			continue
 		}
 
+		// If we extracted a variant letter (e.g., "zulu" → "z"), the candidate must match it.
+		// This distinguishes RNAV Z from RNAV Y approaches.
+		if approachVariant != "" && !approachVariantMatches(apprID, approachVariant) {
+			continue
+		}
+
 		// We have a type+number match - calculate confidence based on specificity
 		score := 0.95 // High confidence for type+number match
 
@@ -661,13 +680,13 @@ func matchApproachByTypeAndNumberWithFallback(tokens []Token, approaches map[str
 	}
 
 	if bestAppr != "" {
-		// Consumed = type tokens + position of number + 1 for number itself + 1 for direction if present
-		consumed := typeConsumed + numPos + 1
+		// Consumed = type tokens + variant tokens + position of number + 1 for number itself + 1 for direction if present
+		consumed := typeConsumed + variantConsumed + numPos + 1
 		if runwayDir != "" {
 			consumed++ // Account for direction word (left/right/center)
 		}
-		logLocalStt("  matchApproachByTypeAndNumber: type=%q runway=%q -> %q (consumed=%d)",
-			approachType, runwaySpoken, bestAppr, consumed)
+		logLocalStt("  matchApproachByTypeAndNumber: type=%q variant=%q runway=%q -> %q (consumed=%d)",
+			approachType, approachVariant, runwaySpoken, bestAppr, consumed)
 		return bestAppr, bestScore, consumed
 	}
 
@@ -761,6 +780,43 @@ func extractApproachType(tokens []Token) (string, int) {
 	}
 
 	return "", 0
+}
+
+// extractApproachVariant extracts an approach variant letter from tokens.
+// Looks for NATO phonetic letters like "zulu", "yankee", "alpha" that distinguish
+// approach variants (e.g., RNAV Z vs RNAV Y).
+// Returns the variant letter (lowercase) and number of tokens consumed.
+func extractApproachVariant(tokens []Token) (string, int) {
+	if len(tokens) == 0 {
+		return "", 0
+	}
+
+	// Check the first token for a NATO phonetic letter
+	text := strings.ToLower(tokens[0].Text)
+
+	// Use the natoAlphabet map from normalize.go to convert phonetic words to letters
+	if letter, ok := ConvertNATOLetter(text); ok {
+		return letter, 1
+	}
+
+	return "", 0
+}
+
+// approachVariantMatches checks if an approach ID contains the given variant letter.
+// For approach IDs like "RY7" (RNAV Yankee runway 7) or "RZ7" (RNAV Zulu runway 7),
+// the variant letter is the second character.
+func approachVariantMatches(approachID string, variant string) bool {
+	if len(approachID) < 2 || variant == "" {
+		return false
+	}
+
+	// The approach ID format is typically: TYPE + VARIANT + RUNWAY
+	// e.g., "RY7" = R(NAV) + Y(ankee) + runway 7
+	//       "RZ7" = R(NAV) + Z(ulu) + runway 7
+	//       "I9" = I(LS) + runway 9 (no variant)
+	// The variant letter is usually the second character for RNAV approaches
+	secondChar := strings.ToLower(string(approachID[1]))
+	return secondChar == variant
 }
 
 // extractRunwayNumber looks for a runway number in tokens.
@@ -1456,6 +1512,23 @@ func extractTraffic(tokens []Token) (int, int, int, int) {
 
 		// Check for altitude pattern (TokenAltitude from "N thousand" parsing)
 		if t.Type == TokenAltitude {
+			// Validate: altitudes > 600 (60,000 ft) are implausible.
+			// This handles cases like "Boeing 737 at 3 thousand" where STT produces
+			// a garbled token combining aircraft type (737) with altitude (30).
+			// Try to extract just the altitude portion (last 2 digits).
+			if t.Value > 600 {
+				// Extract last 2 digits as the altitude (e.g., 73730 → 30)
+				extracted := t.Value % 100
+				if extracted >= 10 && extracted <= 60 {
+					logLocalStt("  extractTraffic: extracted altitude %d from implausible %d", extracted, t.Value)
+					alt = extracted
+					consumed++
+					break
+				}
+				// If last 2 digits aren't valid, skip and keep looking
+				consumed++
+				continue
+			}
 			alt = t.Value
 			consumed++
 			break
@@ -1463,6 +1536,12 @@ func extractTraffic(tokens []Token) (int, int, int, int) {
 
 		// Check for number that might be altitude
 		if t.Type == TokenNumber {
+			// Skip aircraft type numbers (737, 787, A320, etc.) - these are not altitudes
+			if isAircraftTypeNumber(t.Value) {
+				consumed++
+				continue
+			}
+
 			// Look ahead for "thousand" pattern
 			if consumed+1 < len(tokens) {
 				nextText := strings.ToLower(tokens[consumed+1].Text)
@@ -1874,6 +1953,34 @@ func extractMileFinal(tokens []Token) (int, int) {
 	}
 
 	return 0, 0
+}
+
+// isAircraftTypeNumber returns true if the number matches a common aircraft type.
+// Used to filter out aircraft types from altitude extraction in traffic advisories.
+// Common types: Boeing 737/747/757/767/777/787, Airbus A319/A320/A321/A330/A340/A350/A380
+func isAircraftTypeNumber(n int) bool {
+	switch n {
+	// Boeing narrow-body
+	case 737, 738, 739, 757:
+		return true
+	// Boeing wide-body
+	case 747, 767, 777, 787:
+		return true
+	// Airbus narrow-body (A3xx)
+	case 319, 320, 321:
+		return true
+	// Airbus wide-body
+	case 330, 340, 350, 380:
+		return true
+	// Common variants with generation suffix (e.g., 738 for 737-800)
+	case 788, 789: // 787-8, 787-9
+		return true
+	case 748: // 747-8
+		return true
+	case 359: // A350-900
+		return true
+	}
+	return false
 }
 
 // Compile-time check that slices package is used

@@ -581,6 +581,7 @@ var phraseExpansions = map[string][]string{
 	"disundermaintain": {"descend", "maintain"}, // "descend and maintain" -> "disundermaintain"
 	"climbington":      {"climb", "maintain"},   // "climb and maintain" -> "climbington"
 	"climatane":        {"climb", "maintain"},   // STT error: "climb and maintain" garbled
+	"centimeter":       {"descend", "maintain"}, // STT error: "descend and maintain" garbled
 	"thunbright":       {"turn", "right"},       // STT error: "turn right" merged together
 	"leviting":         {"left", "heading"},     // STT error: "left heading" merged together
 	// Note: "cleared direct" merged forms are handled by trySplitMergedCommand
