@@ -24,7 +24,7 @@ var digitWords = map[string]string{
 	"fiv":   "5",
 	"sicks": "6", "seeks": "6", "sex": "6",
 	"ate": "8", "ait": "8", "eat": "8", "ada": "8",
-	"oh": "0", "zeri": "0",
+	"oh": "0", "zeri": "0", "year": "0", // "year" is STT error for "zero"
 	// Ordinals sometimes transcribed instead of cardinals
 	"first": "1", "second": "2", "third": "3", "fourth": "4", "fifth": "5",
 	"sixth": "6", "seventh": "7", "eighth": "8", "ninth": "9",
@@ -453,6 +453,7 @@ var commandKeywords = map[string]string{
 	"maximum":  "maximum",
 	"forward":  "forward",
 	"knots":    "knots",
+	"nots":     "knots", // STT error: "knots" garbled as "nots"
 	"normal":   "normal",
 
 	// Navigation
@@ -982,6 +983,42 @@ func postProcessNormalized(tokens []string) []string {
 						result = append(result, "heading", strconv.Itoa(combined))
 						skip = 1 + digitCount // Skip "to" and all digit tokens
 						continue
+					}
+				}
+			}
+		}
+
+		// Handle "turn [word] to N" where the word is garbage and "to" is garbled "two".
+		// e.g., "turn navigation to 70" → "turn heading 270"
+		// e.g., "turn navigation to 7 0" → "turn heading 270" (digits may be separate)
+		// The garbage word is likely a garbled direction (left/right) that we can ignore
+		// since we're extracting a heading anyway.
+		if tokens[i] == "turn" && i+3 < len(tokens) && tokens[i+2] == "to" {
+			// tokens[i+1] is the garbage word (e.g., "navigation")
+			// Check if it's not a known direction word (left/right) - if it is, let normal parsing handle it
+			garbageWord := tokens[i+1]
+			if garbageWord != "left" && garbageWord != "right" && garbageWord != "heading" {
+				// Count consecutive digit tokens starting at i+3
+				digitCount := 0
+				for j := i + 3; j < len(tokens) && IsNumber(tokens[j]); j++ {
+					digitCount++
+				}
+
+				if digitCount >= 1 {
+					var digitStr string
+					for j := i + 3; j < i+3+digitCount; j++ {
+						digitStr += tokens[j]
+					}
+					nextNum := ParseNumber(digitStr)
+
+					// "to N" where N is 2-digit (10-99) → "2N"
+					if nextNum >= 10 && nextNum <= 99 {
+						combined := 200 + nextNum
+						if combined <= 360 {
+							result = append(result, "turn", "heading", strconv.Itoa(combined))
+							skip = 2 + digitCount // Skip garbage word, "to", and digit tokens
+							continue
+						}
 					}
 				}
 			}

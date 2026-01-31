@@ -582,6 +582,77 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 	if bestAppr != "" {
 		return bestAppr, bestScore, bestLength
 	}
+
+	// Final fallback: when approach type is garbled but we have a direction that matches
+	// the assigned approach, use it. This handles cases like "at last turn two two left"
+	// where "at last turn" is garbled "ILS" and we have assigned approach "ILS Runway 22L".
+	if spokenDir != 0 && assignedApproach != "" {
+		// Extract direction from assigned approach
+		assignedUpper := strings.ToUpper(assignedApproach)
+		var assignedDir byte
+		if len(assignedUpper) > 0 {
+			lastChar := assignedUpper[len(assignedUpper)-1]
+			if lastChar == 'L' || lastChar == 'R' || lastChar == 'C' {
+				assignedDir = lastChar
+			}
+		}
+
+		if assignedDir != 0 && assignedDir == spokenDir {
+			// Extract approach type from assigned approach (e.g., "ILS Runway 13L" → "ils")
+			assignedLower := strings.ToLower(assignedApproach)
+			var assignedType string
+			if strings.Contains(assignedLower, "ils") {
+				assignedType = "ils"
+			} else if strings.Contains(assignedLower, "rnav") || strings.Contains(assignedLower, "r-nav") {
+				assignedType = "rnav"
+			} else if strings.Contains(assignedLower, "visual") {
+				assignedType = "visual"
+			} else if strings.Contains(assignedLower, "vor") {
+				assignedType = "vor"
+			} else if strings.Contains(assignedLower, "localizer") {
+				assignedType = "localizer"
+			}
+
+			// Find the approach ID that best matches the assigned approach.
+			// Prefer the approach whose type matches the assigned approach type.
+			var bestApprID string
+			var bestSpokenName string
+			for spokenName, apprID := range approaches {
+				if matchesAssignedRunway(apprID, assignedApproach) {
+					spokenLower := strings.ToLower(spokenName)
+					thisMatchesType := assignedType != "" && approachTypeMatches(spokenLower, assignedType)
+					bestMatchesType := assignedType != "" && approachTypeMatches(strings.ToLower(bestSpokenName), assignedType)
+
+					if bestApprID == "" {
+						bestApprID = apprID
+						bestSpokenName = spokenName
+					} else if thisMatchesType && !bestMatchesType {
+						bestApprID = apprID
+						bestSpokenName = spokenName
+					} else if thisMatchesType == bestMatchesType && apprID < bestApprID {
+						bestApprID = apprID // Alphabetical tiebreaker for determinism
+						bestSpokenName = spokenName
+					}
+				}
+			}
+			if bestApprID != "" {
+				// Find position of direction word to calculate consumed tokens
+				consumed := len(tokens)
+				for i, t := range tokens {
+					text := strings.ToLower(t.Text)
+					if text == "left" || text == "right" || text == "center" ||
+						text == "l" || text == "r" || text == "c" || text == "west" {
+						consumed = i + 1
+						break
+					}
+				}
+				logLocalStt("  extractApproach: no type match, falling back to assigned approach %q (dir=%c)",
+					bestApprID, spokenDir)
+				return bestApprID, 0.75, consumed
+			}
+		}
+	}
+
 	return "", 0, 0
 }
 
