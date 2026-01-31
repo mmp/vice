@@ -107,6 +107,17 @@ type Sim struct {
 
 	// Waypoint commands: commands to execute when aircraft pass specific fixes
 	waypointCommands map[TCP]map[string]string // tcp -> fix -> commands
+
+	// LastSTTCommand stores state needed to roll back a misheard STT command.
+	// Only the single most recent command is tracked.
+	LastSTTCommand *LastSTTCommand
+}
+
+// LastSTTCommand stores the nav snapshot from before the most recent STT command
+// was executed, allowing rollback if the controller says "negative, that was for {other callsign}".
+type LastSTTCommand struct {
+	Callsign    av.ADSBCallsign
+	NavSnapshot nav.NavSnapshot
 }
 
 type TTSProvider interface {

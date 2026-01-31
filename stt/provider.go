@@ -123,6 +123,56 @@ func (p *Transcriber) decodeInternal(
 		}
 		logLocalStt("found aircraft context for callsign %q", callsign)
 	} else {
+		// Check for "negative, that was for {callsign}" correction pattern BEFORE callsign matching
+		// e.g., "Negative that was for Delta 456. Delta 456, turn left heading 270"
+		// This triggers a ROLLBACK of the last command, then processes the rest for the correct aircraft
+		// The wrong aircraft's callsign should NOT be in the transcript (to avoid confusing them)
+		if tokensAfterNegative, found := detectNegativeThatWasFor(tokens); found {
+			logLocalStt("detected 'negative that was for' correction pattern at start")
+			// Match the correct callsign from the tokens after the correction phrase
+			correctMatch, correctRemaining := MatchCallsign(tokensAfterNegative, aircraft)
+			if correctMatch.Callsign != "" {
+				logLocalStt("correct callsign match: Callsign=%q SpokenKey=%q Conf=%.2f",
+					correctMatch.Callsign, correctMatch.SpokenKey, correctMatch.Confidence)
+
+				// Get aircraft context for the correct callsign
+				var correctAc Aircraft
+				if correctMatch.SpokenKey != "" {
+					correctAc = aircraft[correctMatch.SpokenKey]
+				}
+
+				// Parse and validate commands for the correct callsign
+				commands, cmdConf := ParseCommands(correctRemaining, correctAc)
+				logLocalStt("parsed commands for correct callsign: %v (conf=%.2f)", commands, cmdConf)
+				validation := ValidateCommands(commands, correctAc)
+				logLocalStt("validated commands: %v", validation.ValidCommands)
+
+				// Build output: ROLLBACK + commands for correct callsign
+				var output string
+				if len(validation.ValidCommands) > 0 {
+					// Encode addressing form in callsign if needed
+					correctCallsignWithForm := correctMatch.Callsign
+					if correctMatch.AddressingForm == sim.AddressingFormTypeTrailing3 {
+						correctCallsignWithForm += "/T"
+					}
+					output = "ROLLBACK " + correctCallsignWithForm + " " + strings.Join(validation.ValidCommands, " ")
+				} else {
+					// Just ROLLBACK if no valid commands were parsed
+					output = "ROLLBACK"
+				}
+
+				elapsed := time.Since(start)
+				logLocalStt("=== DecodeTranscript END: %q (negative correction, time=%s) ===", output, elapsed)
+				p.logInfo("local STT: %q -> %q (negative correction, time=%s)", transcript, output, elapsed)
+				return strings.TrimSpace(output), nil
+			}
+			// Couldn't match correct callsign, just return ROLLBACK
+			logLocalStt("couldn't match correct callsign after 'negative that was for', returning just ROLLBACK")
+			elapsed := time.Since(start)
+			p.logInfo("local STT: %q -> ROLLBACK (negative correction, no new callsign, time=%s)", transcript, elapsed)
+			return "ROLLBACK", nil
+		}
+
 		// Layer 3: Callsign matching
 		callsignMatch, remainingTokens := MatchCallsign(tokens, aircraft)
 		logLocalStt("callsign match: Callsign=%q SpokenKey=%q Conf=%.2f Consumed=%d",
@@ -508,6 +558,54 @@ func detectNotForYouCorrection(tokens []Token) ([]Token, bool) {
 				// Return tokens after "not for you"
 				return tokens[i+3:], true
 			}
+		}
+	}
+	return tokens, false
+}
+
+// detectNegativeThatWasFor detects correction phrases like "negative, that was for {callsign}"
+// which indicate the previous command went to the wrong aircraft due to STT callsign misinterpretation.
+// This is used to trigger a ROLLBACK of the previous command.
+//
+// Patterns detected:
+// - "negative that was for {callsign}..."
+// - "no that was for {callsign}..."
+// - "negative was for {callsign}..."
+//
+// Returns the tokens starting from the correct callsign and true if the pattern was found.
+// The caller should then match the callsign and process the rest as a normal command,
+// prepending ROLLBACK to undo the previous command.
+func detectNegativeThatWasFor(tokens []Token) ([]Token, bool) {
+	// Look for patterns starting with "negative" or "no" followed by "that was for" or "was for"
+	for i := range min(len(tokens), 3) {
+		w := strings.ToLower(tokens[i].Text)
+		if w != "negative" && w != "no" {
+			continue
+		}
+
+		// Found "negative" or "no" - check for "that was for" or "was for" following
+		remaining := tokens[i+1:]
+		if len(remaining) < 2 {
+			continue
+		}
+
+		// Pattern 1: "negative/no that was for"
+		if len(remaining) >= 3 {
+			t0 := strings.ToLower(remaining[0].Text)
+			t1 := strings.ToLower(remaining[1].Text)
+			t2 := strings.ToLower(remaining[2].Text)
+			if t0 == "that" && t1 == "was" && t2 == "for" {
+				// Return tokens after "that was for" (starting at the callsign)
+				return remaining[3:], true
+			}
+		}
+
+		// Pattern 2: "negative/no was for"
+		t0 := strings.ToLower(remaining[0].Text)
+		t1 := strings.ToLower(remaining[1].Text)
+		if t0 == "was" && t1 == "for" {
+			// Return tokens after "was for" (starting at the callsign)
+			return remaining[2:], true
 		}
 	}
 	return tokens, false

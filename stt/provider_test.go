@@ -3103,3 +3103,151 @@ func TestAssignedApproachPreference(t *testing.T) {
 		})
 	}
 }
+
+func TestDetectNegativeThatWasFor(t *testing.T) {
+	tests := []struct {
+		name           string
+		tokens         []Token
+		expectedFound  bool
+		expectedOffset int // number of tokens consumed (to get remaining)
+	}{
+		{
+			name: "negative that was for",
+			tokens: []Token{
+				{Text: "negative", Type: TokenWord},
+				{Text: "that", Type: TokenWord},
+				{Text: "was", Type: TokenWord},
+				{Text: "for", Type: TokenWord},
+				{Text: "delta", Type: TokenWord},
+				{Text: "456", Type: TokenNumber, Value: 456},
+			},
+			expectedFound:  true,
+			expectedOffset: 4, // after "negative that was for"
+		},
+		{
+			name: "no that was for",
+			tokens: []Token{
+				{Text: "no", Type: TokenWord},
+				{Text: "that", Type: TokenWord},
+				{Text: "was", Type: TokenWord},
+				{Text: "for", Type: TokenWord},
+				{Text: "united", Type: TokenWord},
+				{Text: "123", Type: TokenNumber, Value: 123},
+			},
+			expectedFound:  true,
+			expectedOffset: 4, // after "no that was for"
+		},
+		{
+			name: "negative was for (without that)",
+			tokens: []Token{
+				{Text: "negative", Type: TokenWord},
+				{Text: "was", Type: TokenWord},
+				{Text: "for", Type: TokenWord},
+				{Text: "american", Type: TokenWord},
+				{Text: "789", Type: TokenNumber, Value: 789},
+			},
+			expectedFound:  true,
+			expectedOffset: 3, // after "negative was for"
+		},
+		{
+			name: "just negative without correction pattern",
+			tokens: []Token{
+				{Text: "negative", Type: TokenWord},
+				{Text: "delta", Type: TokenWord},
+				{Text: "456", Type: TokenNumber, Value: 456},
+			},
+			expectedFound: false,
+		},
+		{
+			name: "regular command (no correction)",
+			tokens: []Token{
+				{Text: "turn", Type: TokenWord},
+				{Text: "left", Type: TokenWord},
+				{Text: "heading", Type: TokenWord},
+				{Text: "270", Type: TokenNumber, Value: 270},
+			},
+			expectedFound: false,
+		},
+		{
+			name:          "empty tokens",
+			tokens:        []Token{},
+			expectedFound: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			remaining, found := detectNegativeThatWasFor(tt.tokens)
+			if found != tt.expectedFound {
+				t.Errorf("found = %v, want %v", found, tt.expectedFound)
+			}
+			if tt.expectedFound {
+				expectedRemaining := len(tt.tokens) - tt.expectedOffset
+				if len(remaining) != expectedRemaining {
+					t.Errorf("remaining tokens = %d, want %d", len(remaining), expectedRemaining)
+				}
+			}
+		})
+	}
+}
+
+func TestNegativeThatWasForFullParse(t *testing.T) {
+	tests := []struct {
+		name       string
+		transcript string
+		aircraft   map[string]Aircraft
+		expected   string
+	}{
+		{
+			name:       "negative that was for with new command",
+			transcript: "Negative that was for United 123. United 123, turn left heading 270",
+			aircraft: map[string]Aircraft{
+				"Delta 456":  {Callsign: "DAL456", State: "arrival"},
+				"United 123": {Callsign: "UAL123", State: "arrival"},
+			},
+			expected: "ROLLBACK UAL123 L270",
+		},
+		{
+			name:       "no that was for with altitude",
+			transcript: "No that was for Southwest 221. Southwest 221, descend and maintain 8000",
+			aircraft: map[string]Aircraft{
+				"American 789":  {Callsign: "AAL789", Altitude: 12000, State: "arrival"},
+				"Southwest 221": {Callsign: "SWA221", Altitude: 12000, State: "arrival"},
+			},
+			expected: "ROLLBACK SWA221 D80",
+		},
+		{
+			name:       "negative was for (shorter form)",
+			transcript: "Negative was for Delta 88. Delta 88, climb and maintain niner thousand",
+			aircraft: map[string]Aircraft{
+				"JetBlue 100": {Callsign: "JBU100", Altitude: 5000, State: "departure"},
+				"Delta 88":    {Callsign: "DAL88", Altitude: 3000, State: "departure"},
+			},
+			expected: "ROLLBACK DAL88 C90",
+		},
+		{
+			name:       "negative that was for with multiple commands",
+			transcript: "Negative that was for Frontier 900. Frontier 900, turn right heading 180, descend and maintain 6000",
+			aircraft: map[string]Aircraft{
+				"United 452":   {Callsign: "UAL452", Altitude: 10000, State: "arrival"},
+				"Frontier 900": {Callsign: "FFT900", Altitude: 10000, State: "arrival"},
+			},
+			expected: "ROLLBACK FFT900 R180 D60",
+		},
+	}
+
+	provider := NewTranscriber(nil)
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := provider.DecodeTranscript(tt.aircraft, tt.transcript, "")
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if result != tt.expected {
+				t.Errorf("got %q, want %q", result, tt.expected)
+			}
+		})
+	}
+}

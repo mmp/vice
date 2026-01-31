@@ -18,6 +18,8 @@ import (
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
+
+	"github.com/brunoga/deep"
 )
 
 // Errors used by the nav package
@@ -77,6 +79,44 @@ type DeferredNavHeading struct {
 	Hold    *FlyHold
 	// For direct fix, this will be the updated set of waypoints.
 	Waypoints []av.Waypoint
+}
+
+// NavSnapshot captures all controller-modifiable state in Nav for rollback purposes.
+// It does NOT include FlightState (aircraft physical position/heading/altitude) -
+// only control assignments that can be rolled back.
+type NavSnapshot struct {
+	Altitude           NavAltitude
+	Speed              NavSpeed
+	Heading            NavHeading
+	Approach           NavApproach
+	Waypoints          av.WaypointArray
+	DeferredNavHeading *DeferredNavHeading
+	FixAssignments     map[string]NavFixAssignment
+}
+
+// TakeSnapshot captures the current controller-modifiable nav state for later rollback.
+func (nav *Nav) TakeSnapshot() NavSnapshot {
+	return deep.MustCopy(NavSnapshot{
+		Altitude:           nav.Altitude,
+		Speed:              nav.Speed,
+		Heading:            nav.Heading,
+		Approach:           nav.Approach,
+		Waypoints:          nav.Waypoints,
+		DeferredNavHeading: nav.DeferredNavHeading,
+		FixAssignments:     nav.FixAssignments,
+	})
+}
+
+// RestoreSnapshot restores nav state from a previously captured snapshot.
+// The aircraft's physical state (FlightState) is NOT restored - only control assignments.
+func (nav *Nav) RestoreSnapshot(snap NavSnapshot) {
+	nav.Altitude = snap.Altitude
+	nav.Speed = snap.Speed
+	nav.Heading = snap.Heading
+	nav.Approach = snap.Approach
+	nav.Waypoints = snap.Waypoints
+	nav.DeferredNavHeading = snap.DeferredNavHeading
+	nav.FixAssignments = snap.FixAssignments
 }
 
 type FlightState struct {
