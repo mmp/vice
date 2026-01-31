@@ -1211,8 +1211,19 @@ func extractSTAR(tokens []Token, star string) int {
 	starTelephony := av.GetSTARTelephony(star)
 	logLocalStt("  extractSTAR: looking for STAR=%q telephony=%q", star, starTelephony)
 
+	// Words that should not be consumed as part of a STAR name - these are
+	// command keywords that likely follow the STAR reference
+	excludeTrailing := map[string]bool{
+		"arrival": true, "approach": true, "departure": true,
+	}
+
 	// Build candidate phrases (1-4 words for STAR names)
 	for length := min(4, len(tokens)); length >= 1; length-- {
+		// Don't consume trailing command keywords as part of the STAR name
+		lastToken := strings.ToLower(tokens[length-1].Text)
+		if length > 1 && excludeTrailing[lastToken] {
+			continue
+		}
 		var parts []string
 		for i := range length {
 			// Expand numeric tokens to spoken form

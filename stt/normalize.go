@@ -598,7 +598,8 @@ var multiTokenReplacements = map[string][]string{
 	"fly level":   {"flight", "level"},     // STT error: "flight level" misheard as "fly level"
 	"eddie had":   {"etihad"},              // STT error: "Etihad" misheard as "eddie had"
 	"local line":  {"localizer"},           // STT error: "localizer" misheard as "local line"
-	"time riding": {"turn", "right"},       // STT error: "turn right" misheard as "time riding"
+	"time riding":  {"turn", "right"}, // STT error: "turn right" misheard as "time riding"
+	"time rioting": {"turn", "right"}, // STT error: "turn right" misheard as "time rioting"
 	"x ray":       {"expedite"},            // STT error: "expedite" misheard as "X-ray"
 }
 

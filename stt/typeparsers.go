@@ -107,6 +107,18 @@ func (p *altitudeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 				return t.Value / 100, i - pos + 1, ""
 			}
 
+			// Handle "repeated altitude" pattern: "one four fourteen" → 1414
+			// where the altitude is stated twice (shorthand + full form).
+			// Pattern: 4-digit number ABAB where AB is repeated (e.g., 1414, 2121).
+			if t.Value >= 1010 && t.Value <= 6060 {
+				firstHalf := t.Value / 100
+				secondHalf := t.Value % 100
+				if firstHalf == secondHalf && firstHalf >= 10 && firstHalf <= 60 {
+					logLocalStt("  repeated altitude pattern: %d -> %d (AB=%d repeated)", t.Value, firstHalf*10, firstHalf)
+					return firstHalf * 10, i - pos + 1, ""
+				}
+			}
+
 			// Handle 3-digit values that are likely thousands with decimal artifacts
 			// e.g., "9.00" → 900 means 9000 feet, "5.00" → 500 means 5000 feet
 			// These are outside the ambiguous speed range (100-400)
@@ -579,6 +591,87 @@ func (p *speedUntilParser) parse(tokens []Token, pos int, ac Aircraft) (any, int
 	return nil, 0, ""
 }
 
+// standaloneAltitudeParser only matches TokenAltitude tokens (created by "thousand").
+// This is stricter than altitudeParser - it won't match plain numbers.
+type standaloneAltitudeParser struct{}
+
+func (p *standaloneAltitudeParser) identifier() string {
+	return "standalone_altitude"
+}
+
+func (p *standaloneAltitudeParser) goType() reflect.Type {
+	return reflect.TypeOf(0)
+}
+
+func (p *standaloneAltitudeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
+	if pos >= len(tokens) {
+		return nil, 0, ""
+	}
+
+	// Only match TokenAltitude (created by "thousand" etc.), not plain numbers
+	if tokens[pos].Type == TokenAltitude {
+		return tokens[pos].Value, 1, ""
+	}
+
+	return nil, 0, ""
+}
+
+// contactFrequencyParser matches the pattern for "contact <facility> <frequency>".
+// It looks for tokens ending with a frequency pattern: 2-3 digit number + "point" + 1-2 digit number.
+// This handles garbled facility names like "contact for ersena one two seven point zero".
+type contactFrequencyParser struct{}
+
+func (p *contactFrequencyParser) identifier() string {
+	return "contact_frequency"
+}
+
+func (p *contactFrequencyParser) goType() reflect.Type {
+	return reflect.TypeOf("")
+}
+
+func (p *contactFrequencyParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, string) {
+	if pos >= len(tokens) {
+		return nil, 0, ""
+	}
+
+	// Look for the frequency pattern: number (10-999) + "point" + number (0-99)
+	// Scan up to 10 tokens ahead looking for this pattern
+	maxLookahead := min(10, len(tokens)-pos)
+
+	for i := pos; i < pos+maxLookahead-2; i++ {
+		t := tokens[i]
+
+		// Check if this token is a number in valid frequency range (10-999)
+		if t.Type != TokenNumber || t.Value < 10 || t.Value > 999 {
+			continue
+		}
+
+		// Check if next token is "point"
+		if i+1 >= len(tokens) {
+			continue
+		}
+		pointToken := tokens[i+1]
+		if pointToken.Type != TokenWord || strings.ToLower(pointToken.Text) != "point" {
+			continue
+		}
+
+		// Check if token after "point" is a number (0-99)
+		if i+2 >= len(tokens) {
+			continue
+		}
+		decimalToken := tokens[i+2]
+		if decimalToken.Type != TokenNumber || decimalToken.Value < 0 || decimalToken.Value > 99 {
+			continue
+		}
+
+		// Found a valid frequency pattern - consume all tokens up to and including it
+		consumed := (i + 3) - pos
+		return "frequency", consumed, ""
+	}
+
+	return nil, 0, ""
+}
+
 // getTypeParser returns the appropriate parser for a type identifier.
 func getTypeParser(typeID string) typeParser {
 	switch typeID {
@@ -610,6 +703,10 @@ func getTypeParser(typeID string) typeParser {
 		return &textParser{}
 	case "speed_until":
 		return &speedUntilParser{}
+	case "contact_frequency":
+		return &contactFrequencyParser{}
+	case "standalone_altitude":
+		return &standaloneAltitudeParser{}
 	default:
 		// Check for range pattern: num:min-max
 		if strings.HasPrefix(typeID, "num:") {

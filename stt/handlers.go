@@ -52,6 +52,17 @@ func registerAllCommands() {
 		WithPriority(3),
 	)
 
+	// Standalone altitude - catches cases where the command keyword is garbled
+	// but "thousand" or similar altitude indicator is heard.
+	// E.g., "decelerating three thousand" where "decelerating" is garbled "descend to"
+	// Uses standalone_altitude parser which only matches TokenAltitude (not plain numbers).
+	registerSTTCommand(
+		"{standalone_altitude}",
+		func(alt int) string { return fmt.Sprintf("A%d", alt) },
+		WithName("standalone_altitude"),
+		WithPriority(1), // Very low priority - only matches if nothing else does
+	)
+
 	registerSTTCommand(
 		"expedite descent|descend|your",
 		func() string { return "ED" },
@@ -92,6 +103,15 @@ func registerAllCommands() {
 		func() string { return "DVS" },
 		WithName("descend_via_star"),
 		WithPriority(16),
+	)
+
+	// Pattern for garbled "descend via STAR" - "via the {STAR} arrival" is strong
+	// enough context even without a clear "descend" (e.g., "to sin via the boo seven arrival")
+	registerSTTCommand(
+		"via [the] {star} arrival",
+		func(star string) string { return "DVS" },
+		WithName("descend_via_star_implicit"),
+		WithPriority(14),
 	)
 
 	registerSTTCommand(
@@ -655,6 +675,16 @@ func registerAllCommands() {
 		func() string { return "FC" },
 		WithName("frequency_change"),
 		WithPriority(3), // Low priority - "radar contact" pattern (priority 20) wins when applicable
+	)
+
+	// Pattern: "contact <garbled facility> <frequency>"
+	// Handles cases where the facility name is garbled but ends with a frequency.
+	// E.g., "contact for ersena one two seven point zero" (Fort Worth Center 127.0)
+	registerSTTCommand(
+		"contact {contact_frequency}",
+		func(_ string) string { return "FC" },
+		WithName("frequency_change_with_frequency"),
+		WithPriority(4), // Just above the basic "contact facility" pattern
 	)
 
 	registerSTTCommand(

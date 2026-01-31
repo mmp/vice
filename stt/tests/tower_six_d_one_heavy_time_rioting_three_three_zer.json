@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce RTX 5080 (15889MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "ITY61",
-  "command": "H330",
+  "command": "R330",
   "stt_aircraft": {
     "Itarrow 61 heavy": {
       "Callsign": "ITY61",

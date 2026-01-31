@@ -385,9 +385,11 @@ func PhoneticMatch(w1, w2 string) bool {
 		if strings.HasSuffix(p1, p2) || strings.HasSuffix(p2, p1) {
 			return true
 		}
-		// Also check if they share a common suffix of 3+ characters
+		// Also check if they share a common suffix of 4+ characters
+		// (3-char suffixes like "TNK" are too common and cause false positives
+		// like "decelerating" matching "heading")
 		minLen := min(len(p1), len(p2))
-		for suffixLen := minLen; suffixLen >= 3; suffixLen-- {
+		for suffixLen := minLen; suffixLen >= 4; suffixLen-- {
 			if p1[len(p1)-suffixLen:] == p2[len(p2)-suffixLen:] {
 				return true
 			}
