@@ -435,6 +435,21 @@ func (p *Transcriber) BuildAircraftContext(
 					}
 				}
 			}
+
+			// If there's an assigned approach, merge its fixes into the main Fixes map
+			// so they're available for matching "proceed direct" commands
+			if sttAc.AssignedApproach != "" {
+				if approachFixes, ok := sttAc.ApproachFixes[sttAc.AssignedApproach]; ok {
+					if sttAc.Fixes == nil {
+						sttAc.Fixes = make(map[string]string)
+					}
+					for spoken, fix := range approachFixes {
+						if _, exists := sttAc.Fixes[spoken]; !exists {
+							sttAc.Fixes[spoken] = fix
+						}
+					}
+				}
+			}
 		}
 
 		// Key by telephony (spoken callsign)
