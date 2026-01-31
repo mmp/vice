@@ -12,6 +12,7 @@ resources/models/.synced
 CLAUDE.md
 SDL2.dll
 Vice.App/
+cmd/vice/manifest.json
 __debug_*
 dump*.txt
 icon.icns

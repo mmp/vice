@@ -301,60 +301,7 @@ set STAMP=%MODELS_DIR%\.synced
 
 if not exist "%MANIFEST%" goto :eof
 
-REM Use PowerShell to parse JSON and sync models (with stamp file optimization)
-powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-    "$manifest = Get-Content '%MANIFEST%' | ConvertFrom-Json; ^
-    $manifestHash = (Get-FileHash -Path '%MANIFEST%' -Algorithm SHA256).Hash.ToLower(); ^
-    $stamp = '%STAMP%'; ^
-    $modelsDir = '%MODELS_DIR%'; ^
-    ^
-    # Fast path: check if already synced ^
-    if (Test-Path $stamp) { ^
-        $stampHash = Get-Content $stamp -Raw; ^
-        if ($stampHash.Trim() -eq $manifestHash) { ^
-            $allExist = $true; ^
-            $manifest.PSObject.Properties | ForEach-Object { ^
-                $modelPath = Join-Path $modelsDir $_.Name; ^
-                if (-not (Test-Path $modelPath)) { ^
-                    $allExist = $false; ^
-                } ^
-            }; ^
-            if ($allExist) { ^
-                exit 0; ^
-            } ^
-        } ^
-    } ^
-    ^
-    # Full sync path ^
-    $manifest.PSObject.Properties | ForEach-Object { ^
-        $model = $_.Name; ^
-        $expectedHash = $_.Value; ^
-        $modelPath = Join-Path $modelsDir $model; ^
-        $needDownload = $true; ^
-        if (Test-Path $modelPath) { ^
-            $actualHash = (Get-FileHash -Path $modelPath -Algorithm SHA256).Hash.ToLower(); ^
-            if ($actualHash -eq $expectedHash) { ^
-                $needDownload = $false; ^
-            } else { ^
-                Write-Host \"Model $model has wrong hash, re-downloading...\"; ^
-            } ^
-        } ^
-        if ($needDownload) { ^
-            Write-Host \"Downloading $model...\"; ^
-            $url = 'https://storage.googleapis.com/vice-resources/' + $expectedHash; ^
-            Invoke-WebRequest -Uri $url -OutFile $modelPath -UseBasicParsing; ^
-            $actualHash = (Get-FileHash -Path $modelPath -Algorithm SHA256).Hash.ToLower(); ^
-            if ($actualHash -ne $expectedHash) { ^
-                Write-Host \"Error: Downloaded file hash mismatch for $model\"; ^
-                Write-Host \"  Expected: $expectedHash\"; ^
-                Write-Host \"  Actual: $actualHash\"; ^
-                Remove-Item $modelPath -Force; ^
-                exit 1; ^
-            } ^
-        } ^
-    }; ^
-    ^
-    # Write stamp file ^
-    $manifestHash | Out-File -FilePath $stamp -NoNewline"
+REM Use PowerShell script to parse JSON and sync models
+powershell -NoProfile -ExecutionPolicy Bypass -File windows\sync-models.ps1 -ManifestPath "%MANIFEST%" -ModelsDir "%MODELS_DIR%" -StampPath "%STAMP%"
 if errorlevel 1 exit /b 1
 goto :eof
