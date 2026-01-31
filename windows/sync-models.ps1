@@ -7,12 +7,26 @@ param(
     [Parameter(Mandatory=$true)][string]$StampPath
 )
 
+# Use .NET directly for hashing - more reliable across PowerShell versions
+function Get-Sha256Hash($Path) {
+    $sha256 = [System.Security.Cryptography.SHA256]::Create()
+    $stream = [System.IO.File]::OpenRead($Path)
+    try {
+        $hash = $sha256.ComputeHash($stream)
+        return [System.BitConverter]::ToString($hash).Replace('-', '').ToLower()
+    }
+    finally {
+        $stream.Close()
+        $sha256.Dispose()
+    }
+}
+
 if (-not (Test-Path $ManifestPath)) {
     exit 0
 }
 
 $manifest = Get-Content $ManifestPath | ConvertFrom-Json
-$manifestHash = (Get-FileHash -Path $ManifestPath -Algorithm SHA256).Hash.ToLower()
+$manifestHash = Get-Sha256Hash $ManifestPath
 
 # Fast path: check if already synced
 if (Test-Path $StampPath) {
@@ -39,7 +53,7 @@ $manifest.PSObject.Properties | ForEach-Object {
     $needDownload = $true
 
     if (Test-Path $modelPath) {
-        $actualHash = (Get-FileHash -Path $modelPath -Algorithm SHA256).Hash.ToLower()
+        $actualHash = Get-Sha256Hash $modelPath
         if ($actualHash -eq $expectedHash) {
             $needDownload = $false
         } else {
@@ -51,7 +65,7 @@ $manifest.PSObject.Properties | ForEach-Object {
         Write-Host "Downloading $model..."
         $url = 'https://storage.googleapis.com/vice-resources/' + $expectedHash
         Invoke-WebRequest -Uri $url -OutFile $modelPath -UseBasicParsing
-        $actualHash = (Get-FileHash -Path $modelPath -Algorithm SHA256).Hash.ToLower()
+        $actualHash = Get-Sha256Hash $modelPath
         if ($actualHash -ne $expectedHash) {
             Write-Host "Error: Downloaded file hash mismatch for $model"
             Write-Host "  Expected: $expectedHash"
