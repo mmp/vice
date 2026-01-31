@@ -930,7 +930,6 @@ func benchmarkModel(modelName string) (latencyMs int64, model *whisper.Model, er
 
 // Model size tiers for progressive benchmarking (smallest to largest)
 var whisperModelTiers = []string{
-	"ggml-base.en.bin",
 	"ggml-base.en-jlvatc-q5_0.bin",
 	"ggml-small.en-jlvatc-q5_0.bin",
 	"ggml-medium.en-jlvatc-q5_0.bin",
