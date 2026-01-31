@@ -1,0 +1,610 @@
+{
+  "time": "2026-01-30T04:46:30.238173384Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Stey was 447 Bravo across Klomanad, or above 6000, Cleared, Arnav Zulu, or with 27 approach.",
+  "whisper_duration_ms": 709.833,
+  "audio_duration_ms": 7240,
+  "processor": "GPU: AMD Radeon RX 5600 XT (6128MB)",
+  "whisper_model": "ggml-base.en.bin",
+  "callsign": "SKW447B",
+  "command": "CKLOMN/A60+ CR7Z",
+  "stt_aircraft": {
+    "B E thirty-six one uniform brahvo": {
+      "Callsign": "N891UB",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Ayoda": "AYODA",
+        "Kijco": "KIJCO",
+        "Ramona": "KRNM"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two seven": "RB"
+      },
+      "ApproachFixes": {
+        "RB": {
+          "Julian": "JLI",
+          "Rice": "RICCE",
+          "enobe": "ENOBE",
+          "meddy": "MEDDI"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 9",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 3600,
+      "State": "on approach",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "B E thirty-six six one zulu": {
+      "Callsign": "N6161Z",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Barrett": "BARET",
+        "Debbie": "DEBEY",
+        "Gillespie": "KSEE",
+        "Samos": "SAMOS",
+        "Zirlu": "ZIRLU",
+        "wopos": "WOPOS"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven right": "LD"
+      },
+      "ApproachFixes": {
+        "LD": {
+          "Barrett": "BARET",
+          "Debbie": "DEBEY",
+          "Mission Bay": "MZB",
+          "Samos": "SAMOS",
+          "Zirlu": "ZIRLU",
+          "wopos": "WOPOS"
+        }
+      },
+      "AssignedApproach": "Localizer Runway 27R",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 9000,
+      "State": "arrival",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "Flexjet 38": {
+      "Callsign": "LXJ38",
+      "AircraftType": "GLEX",
+      "Fixes": {
+        "Brown Field Municipal": "KSDM",
+        "Finley": "FINLE",
+        "Haile": "HAILE",
+        "Mission Bay": "MZB",
+        "Ripple": "RIPPL",
+        "Topgun": "TOPGN",
+        "Zeklu": "ZEKLU",
+        "chaser": "CHASR"
+      },
+      "CandidateApproaches": {
+        "V O R runway two six right": "VORA"
+      },
+      "ApproachFixes": {
+        "VORA": {
+          "Finley": "FINLE",
+          "Haile": "HAILE",
+          "Mission Bay": "MZB",
+          "Zeklu": "ZEKLU"
+        }
+      },
+      "AssignedApproach": "VOR Runway 26R",
+      "SID": "",
+      "STAR": "CHASR2",
+      "Altitude": 10734,
+      "State": "arrival",
+      "ControllerFrequency": "5E",
+      "TrackingController": "5E",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "SkyWest four 47 brahvo": {
+      "Callsign": "SKW447B",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Carsner": "CRSNR",
+        "Catdog": "CATDG",
+        "Clomn": "KLOMN",
+        "Jade": "AJADE",
+        "San Diego": "KSAN",
+        "Sayae": "SAYAE",
+        "Sijhi": "CIJHI",
+        "Tokyo": "TOKOE"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ApproachFixes": {
+        "L27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RY7": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RZ7": {
+          "Carsner": "CRSNR",
+          "Catdog": "CATDG",
+          "Clomn": "KLOMN",
+          "Jade": "AJADE",
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sayae": "SAYAE",
+          "Sijhi": "CIJHI",
+          "Tokyo": "TOKOE",
+          "Vida": "VYDDA"
+        },
+        "V27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "reebo": "REEBO"
+        }
+      },
+      "AssignedApproach": "RNAV Z Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 8603,
+      "State": "arrival",
+      "ControllerFrequency": "5N",
+      "TrackingController": "5N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "bonanza one uniform brahvo": {
+      "Callsign": "N891UB",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Ayoda": "AYODA",
+        "Kijco": "KIJCO",
+        "Ramona": "KRNM"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two seven": "RB"
+      },
+      "ApproachFixes": {
+        "RB": {
+          "Julian": "JLI",
+          "Rice": "RICCE",
+          "enobe": "ENOBE",
+          "meddy": "MEDDI"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 9",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 3600,
+      "State": "on approach",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "bonanza six one zulu": {
+      "Callsign": "N6161Z",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Barrett": "BARET",
+        "Debbie": "DEBEY",
+        "Gillespie": "KSEE",
+        "Samos": "SAMOS",
+        "Zirlu": "ZIRLU",
+        "wopos": "WOPOS"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven right": "LD"
+      },
+      "ApproachFixes": {
+        "LD": {
+          "Barrett": "BARET",
+          "Debbie": "DEBEY",
+          "Mission Bay": "MZB",
+          "Samos": "SAMOS",
+          "Zirlu": "ZIRLU",
+          "wopos": "WOPOS"
+        }
+      },
+      "AssignedApproach": "Localizer Runway 27R",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 9000,
+      "State": "arrival",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "cessna one seventy-two niner kilo alpha": {
+      "Callsign": "N829KA",
+      "AircraftType": "C172",
+      "Fixes": {
+        "Barrett": "BARET",
+        "Debbie": "DEBEY",
+        "Gillespie": "KSEE",
+        "Julian": "JLI",
+        "Mission Bay": "MZB",
+        "Samos": "SAMOS",
+        "Zirlu": "ZIRLU",
+        "wopos": "WOPOS"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven right": "LD"
+      },
+      "ApproachFixes": {
+        "LD": {
+          "Barrett": "BARET",
+          "Debbie": "DEBEY",
+          "Mission Bay": "MZB",
+          "Samos": "SAMOS",
+          "Zirlu": "ZIRLU",
+          "wopos": "WOPOS"
+        }
+      },
+      "AssignedApproach": "Localizer Runway 27R",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "embraer legacy six one niner": {
+      "Callsign": "N5619",
+      "AircraftType": "E545",
+      "Fixes": {
+        "Bayji": "BAYJY",
+        "Dana": "DANAH",
+        "El Toro": "ELB",
+        "Jogit": "JOGIT",
+        "Kelps": "KELPS",
+        "Oceanside": "OCN",
+        "Pomona": "POM",
+        "Poxku": "POXKU",
+        "Prado": "PRADO",
+        "Randal": "RNDAL",
+        "San Gabriel Valley": "KEMT",
+        "Wokro": "WOKRO"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3000,
+      "State": "departure",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "legacy six hundred six one niner": {
+      "Callsign": "N5619",
+      "AircraftType": "E545",
+      "Fixes": {
+        "Bayji": "BAYJY",
+        "Dana": "DANAH",
+        "El Toro": "ELB",
+        "Jogit": "JOGIT",
+        "Kelps": "KELPS",
+        "Oceanside": "OCN",
+        "Pomona": "POM",
+        "Poxku": "POXKU",
+        "Prado": "PRADO",
+        "Randal": "RNDAL",
+        "San Gabriel Valley": "KEMT",
+        "Wokro": "WOKRO"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3000,
+      "State": "departure",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "november eight niner one uniform brahvo": {
+      "Callsign": "N891UB",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Ayoda": "AYODA",
+        "Kijco": "KIJCO",
+        "Ramona": "KRNM"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two seven": "RB"
+      },
+      "ApproachFixes": {
+        "RB": {
+          "Julian": "JLI",
+          "Rice": "RICCE",
+          "enobe": "ENOBE",
+          "meddy": "MEDDI"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 9",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 3600,
+      "State": "on approach",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november eight two niner kilo alpha": {
+      "Callsign": "N829KA",
+      "AircraftType": "C172",
+      "Fixes": {
+        "Barrett": "BARET",
+        "Debbie": "DEBEY",
+        "Gillespie": "KSEE",
+        "Julian": "JLI",
+        "Mission Bay": "MZB",
+        "Samos": "SAMOS",
+        "Zirlu": "ZIRLU",
+        "wopos": "WOPOS"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven right": "LD"
+      },
+      "ApproachFixes": {
+        "LD": {
+          "Barrett": "BARET",
+          "Debbie": "DEBEY",
+          "Mission Bay": "MZB",
+          "Samos": "SAMOS",
+          "Zirlu": "ZIRLU",
+          "wopos": "WOPOS"
+        }
+      },
+      "AssignedApproach": "Localizer Runway 27R",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "november five six one niner": {
+      "Callsign": "N5619",
+      "AircraftType": "E545",
+      "Fixes": {
+        "Bayji": "BAYJY",
+        "Dana": "DANAH",
+        "El Toro": "ELB",
+        "Jogit": "JOGIT",
+        "Kelps": "KELPS",
+        "Oceanside": "OCN",
+        "Pomona": "POM",
+        "Poxku": "POXKU",
+        "Prado": "PRADO",
+        "Randal": "RNDAL",
+        "San Gabriel Valley": "KEMT",
+        "Wokro": "WOKRO"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3000,
+      "State": "departure",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november six one six one zulu": {
+      "Callsign": "N6161Z",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Barrett": "BARET",
+        "Debbie": "DEBEY",
+        "Gillespie": "KSEE",
+        "Samos": "SAMOS",
+        "Zirlu": "ZIRLU",
+        "wopos": "WOPOS"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven right": "LD"
+      },
+      "ApproachFixes": {
+        "LD": {
+          "Barrett": "BARET",
+          "Debbie": "DEBEY",
+          "Mission Bay": "MZB",
+          "Samos": "SAMOS",
+          "Zirlu": "ZIRLU",
+          "wopos": "WOPOS"
+        }
+      },
+      "AssignedApproach": "Localizer Runway 27R",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 9000,
+      "State": "arrival",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "skyhawk niner kilo alpha": {
+      "Callsign": "N829KA",
+      "AircraftType": "C172",
+      "Fixes": {
+        "Barrett": "BARET",
+        "Debbie": "DEBEY",
+        "Gillespie": "KSEE",
+        "Julian": "JLI",
+        "Mission Bay": "MZB",
+        "Samos": "SAMOS",
+        "Zirlu": "ZIRLU",
+        "wopos": "WOPOS"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven right": "LD"
+      },
+      "ApproachFixes": {
+        "LD": {
+          "Barrett": "BARET",
+          "Debbie": "DEBEY",
+          "Mission Bay": "MZB",
+          "Samos": "SAMOS",
+          "Zirlu": "ZIRLU",
+          "wopos": "WOPOS"
+        }
+      },
+      "AssignedApproach": "Localizer Runway 27R",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Stey was 447 Bravo across Klomanad, or above 6000, Cleared, Arnav Zulu, or with 27 approach.\"",
+    "[local-stt] normalized words: [stey was 447 bravo across klomanad or above 6000 cleared arnav zulu or with 27 approach]",
+    "[local-stt] tokens: 16",
+    "[local-stt]   token[0]: Text=\"stey\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"was\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"447\" Type=1 Value=447",
+    "[local-stt]   token[3]: Text=\"bravo\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"across\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"klomanad\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"or\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"above\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"6000\" Type=1 Value=6000",
+    "[local-stt]   token[9]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"arnav\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"zulu\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"or\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"with\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"27\" Type=1 Value=27",
+    "[local-stt]   token[15]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 16 tokens, 14 aircraft",
+    "[local-stt]   candidate \"B E thirty-six one uniform brahvo\" (ICAO=\"N891UB\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"november five six one niner\" (ICAO=\"N5619\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"legacy six hundred six one niner\" (ICAO=\"N5619\"): score=0.49 consumed=1",
+    "[local-stt]   candidate \"skyhawk niner kilo alpha\" (ICAO=\"N829KA\"): score=0.51 consumed=1",
+    "[local-stt]   candidate \"cessna one seventy-two niner kilo alpha\" (ICAO=\"N829KA\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"november six one six one zulu\" (ICAO=\"N6161Z\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"bonanza six one zulu\" (ICAO=\"N6161Z\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"november eight niner one uniform brahvo\" (ICAO=\"N891UB\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"bonanza one uniform brahvo\" (ICAO=\"N891UB\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"embraer legacy six one niner\" (ICAO=\"N5619\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Flexjet 38\" (ICAO=\"LXJ38\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"november eight two niner kilo alpha\" (ICAO=\"N829KA\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SkyWest four 47 brahvo\" (ICAO=\"SKW447B\"): score=0.91 consumed=4",
+    "[local-stt]   candidate \"B E thirty-six six one zulu\" (ICAO=\"N6161Z\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"SkyWest four 47 brahvo\" at pos 1: score=0.80 (adjusted=0.72) consumed=3",
+    "[local-stt]   candidate \"SkyWest four 47 brahvo\" at pos 2: score=0.80 (adjusted=0.64) consumed=2",
+    "[local-stt]   accepted: \"SKW447B\" (conf=0.91, consumed=4, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"SKW447B\" SpokenKey=\"SkyWest four 47 brahvo\" Conf=0.91 Consumed=4",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=8603 Fixes=8 Approaches=4 AssignedApproach=\"RNAV Z Runway 27\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Carsner\" -\u003e \"CRSNR\"",
+    "[local-stt]   fix: \"Sayae\" -\u003e \"SAYAE\"",
+    "[local-stt]   fix: \"Sijhi\" -\u003e \"CIJHI\"",
+    "[local-stt]   fix: \"Tokyo\" -\u003e \"TOKOE\"",
+    "[local-stt]   fix: \"San Diego\" -\u003e \"KSAN\"",
+    "[local-stt]   fix: \"Clomn\" -\u003e \"KLOMN\"",
+    "[local-stt]   fix: \"Jade\" -\u003e \"AJADE\"",
+    "[local-stt]   fix: \"Catdog\" -\u003e \"CATDG\"",
+    "[local-stt]   approach: \"r-nav yankee runway two seven\" -\u003e \"RY7\"",
+    "[local-stt]   approach: \"r-nav zulu runway two seven\" -\u003e \"RZ7\"",
+    "[local-stt]   approach: \"Visual runway two seven\" -\u003e \"V27\"",
+    "[local-stt]   approach: \"Localizer runway two seven\" -\u003e \"L27\"",
+    "[local-stt] command tokens after disregard: 12",
+    "[local-stt]   token[0]: Text=\"across\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"klomanad\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"or\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"above\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"6000\" Type=1 Value=6000",
+    "[local-stt]   token[5]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"arnav\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"zulu\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"or\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"with\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"27\" Type=1 Value=27",
+    "[local-stt]   token[11]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"cleared\" at position 5 - not just position ID",
+    "[local-stt] ParseCommands: 12 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"klomanad\" against 8 fixes",
+    "[local-stt]   extractFix: no match found for \"klomanad\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"klomanad\" against 8 fixes",
+    "[local-stt]   extractFix: no match found for \"klomanad\"",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"klomanad\" against 8 fixes",
+    "[local-stt]   extractFix: no match found for \"klomanad\"",
+    "[local-stt]   no match at token[0]=\"across\", skipping",
+    "[local-stt]   no match at token[1]=\"klomanad\", skipping",
+    "[local-stt]   no match at token[2]=\"or\", skipping",
+    "[local-stt]   no match at token[3]=\"above\", skipping",
+    "[local-stt]   no match at token[4]=\"6000\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"arnav\" against 8 fixes",
+    "[local-stt]   extractFix: no match found for \"arnav\"",
+    "[local-stt]   matched command: \"SAYAGAIN/APPROACH\" (conf=0.50, consumed=1, isThen=false)",
+    "[local-stt]   no match at token[6]=\"arnav\", skipping",
+    "[local-stt]   matched command: \"S227\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   no match at token[11]=\"approach\", skipping",
+    "[local-stt] ParseCommands: result=[SAYAGAIN/APPROACH S227] (avgConf=0.75)",
+    "[local-stt] parsed commands: [SAYAGAIN/APPROACH S227] (conf=0.75)",
+    "[local-stt] validated commands: [SAYAGAIN/APPROACH S227] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"SKW447B SAYAGAIN/APPROACH S227\" (conf=0.68, time=1.0272ms) ==="
+  ]
+}

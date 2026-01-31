@@ -1,0 +1,330 @@
+{
+  "time": "2026-01-30T00:34:52.667680841Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Alaska Ninety Seven the arc approach decide to maintain three thousand speed two one zero expect ILS runway three one left",
+  "whisper_duration_ms": 155.486,
+  "audio_duration_ms": 7368,
+  "processor": "GPU: NVIDIA GeForce RTX 5070 (11943MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "ASA97",
+  "command": "D30 S210 EI1L",
+  "stt_aircraft": {
+    "Alaska 97": {
+      "Callsign": "ASA97",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Chant": "CHANT",
+        "Deer Park": "DPK",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Meals": "MEALS",
+        "Zachs": "ZACHS"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "All Nippon eight heavy": {
+      "Callsign": "ANA8",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Catod": "CATOD",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 3493,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "American 75": {
+      "Callsign": "AAL75",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 2097,
+      "State": "on approach",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "Jazz seven 64": {
+      "Callsign": "JZA764",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Chant": "CHANT",
+        "Deer Park": "DPK",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Meals": "MEALS",
+        "Zachs": "ZACHS"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31L",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Alaska Ninety Seven the arc approach decide to maintain three thousand speed two one zero expect ILS runway three one left\"",
+    "[local-stt] normalized words: [alaska 97 the arc approach decide to maintain 3 thousand speed 2 1 0 expect ils runway 3 1 left]",
+    "[local-stt] tokens: 16",
+    "[local-stt]   token[0]: Text=\"alaska\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"97\" Type=1 Value=97",
+    "[local-stt]   token[2]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"arc\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"decide\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"30\" Type=2 Value=30",
+    "[local-stt]   token[9]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"210\" Type=1 Value=210",
+    "[local-stt]   token[11]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"31\" Type=1 Value=31",
+    "[local-stt]   token[15]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 16 tokens, 4 aircraft",
+    "[local-stt]   exact match: \"alaska 97\" -\u003e \"ASA97\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"ASA97\" SpokenKey=\"Alaska 97\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4000 Fixes=2 Approaches=4 AssignedApproach=\"\" LAHSORunways=[4L 22R 4L 22R 4R 22L]",
+    "[local-stt]   fix: \"Kennedy\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"J F K\" -\u003e \"KJFK\"",
+    "[local-stt]   approach: \"I L S runway three one right\" -\u003e \"I1R\"",
+    "[local-stt]   approach: \"r-nav runway three one left\" -\u003e \"R1L\"",
+    "[local-stt]   approach: \"I L S runway three one left\" -\u003e \"I1L\"",
+    "[local-stt]   approach: \"r-nav runway three one right\" -\u003e \"R1R\"",
+    "[local-stt] command tokens after disregard: 14",
+    "[local-stt]   token[0]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"arc\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"decide\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"30\" Type=2 Value=30",
+    "[local-stt]   token[7]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"210\" Type=1 Value=210",
+    "[local-stt]   token[9]: Text=\"expect\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"31\" Type=1 Value=31",
+    "[local-stt]   token[13]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"maintain\" at position 5 - not just position ID",
+    "[local-stt] ParseCommands: 14 tokens",
+    "[local-stt]   skipping filler word: \"the\"",
+    "[local-stt]   no match at token[1]=\"arc\", skipping",
+    "[local-stt]   no match at token[2]=\"approach\", skipping",
+    "[local-stt]   matched command: \"D30\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   matched command: \"S210\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   matchApproachByTypeAndNumber: type=\"ils\" runway=\"three one left\" -\u003e \"I1L\" (consumed=4)",
+    "[local-stt]   matched command: \"EI1L\" (conf=1.00, consumed=5, isThen=false)",
+    "[local-stt]   adding 4 fixes from approach I1L to aircraft context",
+    "[local-stt] ParseCommands: result=[D30 S210 EI1L] (avgConf=1.00)",
+    "[local-stt] parsed commands: [D30 S210 EI1L] (conf=1.00)",
+    "[local-stt] validated commands: [D30 S210 EI1L] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"ASA97 D30 S210 EI1L\" (conf=1.00, time=529.2µs) ==="
+  ]
+}

@@ -1,0 +1,257 @@
+{
+  "time": "2026-01-29T11:26:08.246091051Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Singapore six seven seven heavy descend about age three thousand maintain one eight zero knots",
+  "whisper_duration_ms": 121.323,
+  "audio_duration_ms": 5448,
+  "processor": "GPU: NVIDIA GeForce RTX 5070 (11943MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "SVA677",
+  "command": "D30 S180",
+  "stt_aircraft": {
+    "JetBlue 32": {
+      "Callsign": "JBU32",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Catod": "CATOD",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "JetBlue 99": {
+      "Callsign": "JBU99",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Catod": "CATOD",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    },
+    "Saudia six 77 heavy": {
+      "Callsign": "SVA677",
+      "AircraftType": "B77W",
+      "Fixes": {
+        "Catod": "CATOD",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Maldey": "MALDE",
+        "Zulab": "ZULAB"
+      },
+      "CandidateApproaches": {
+        "I L S runway three one left": "I1L",
+        "I L S runway three one right": "I1R",
+        "r-nav runway three one left": "R1L",
+        "r-nav runway three one right": "R1R"
+      },
+      "ApproachFixes": {
+        "I1L": {
+          "Chant": "CHANT",
+          "Deer Park": "DPK",
+          "Meals": "MEALS",
+          "Zachs": "ZACHS"
+        },
+        "I1R": {
+          "Catod": "CATOD",
+          "Maldey": "MALDE",
+          "Zulab": "ZULAB"
+        },
+        "R1L": {
+          "Chant": "CHANT",
+          "Cuvku": "CUVKU",
+          "Deer Park": "DPK",
+          "Rissy": "RISSY",
+          "Seske": "SESKE",
+          "Zachs": "ZACHS"
+        },
+        "R1R": {
+          "Cameron": "CAMRN",
+          "Catod": "CATOD",
+          "Deer Park": "DPK",
+          "Eyeguide": "IGIDE",
+          "Puzulu": "PZULU",
+          "Video": "VIDIO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 31R",
+      "SID": "",
+      "STAR": "PARCH4",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4L",
+        "22R",
+        "4R",
+        "22L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Singapore six seven seven heavy descend about age three thousand maintain one eight zero knots\"",
+    "[local-stt] normalized words: [singapore 6 7 7 heavy descend about age 3 thousand maintain 1 8 0 knots]",
+    "[local-stt] tokens: 10",
+    "[local-stt]   token[0]: Text=\"singapore\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"677\" Type=1 Value=677",
+    "[local-stt]   token[2]: Text=\"heavy\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"about\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"age\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"30\" Type=2 Value=30",
+    "[local-stt]   token[7]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"180\" Type=1 Value=180",
+    "[local-stt]   token[9]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 10 tokens, 3 aircraft",
+    "[local-stt]   candidate \"Saudia six 77 heavy\" (ICAO=\"SVA677\"): score=0.80 consumed=3",
+    "[local-stt]   candidate \"JetBlue 32\" (ICAO=\"JBU32\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JetBlue 99\" (ICAO=\"JBU99\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Saudia six 77 heavy\" at pos 1: score=0.80 (adjusted=0.72) consumed=2",
+    "[local-stt]   accepted: \"SVA677\" (conf=0.80, consumed=3, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"SVA677\" SpokenKey=\"Saudia six 77 heavy\" Conf=0.80 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=5000 Fixes=5 Approaches=4 AssignedApproach=\"ILS Runway 31R\" LAHSORunways=[4L 22R 4L 22R 4R 22L]",
+    "[local-stt]   fix: \"J F K\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"Catod\" -\u003e \"CATOD\"",
+    "[local-stt]   fix: \"Maldey\" -\u003e \"MALDE\"",
+    "[local-stt]   fix: \"Zulab\" -\u003e \"ZULAB\"",
+    "[local-stt]   fix: \"Kennedy\" -\u003e \"KJFK\"",
+    "[local-stt]   approach: \"r-nav runway three one left\" -\u003e \"R1L\"",
+    "[local-stt]   approach: \"I L S runway three one left\" -\u003e \"I1L\"",
+    "[local-stt]   approach: \"I L S runway three one right\" -\u003e \"I1R\"",
+    "[local-stt]   approach: \"r-nav runway three one right\" -\u003e \"R1R\"",
+    "[local-stt] command tokens after disregard: 7",
+    "[local-stt]   token[0]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"about\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"age\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"30\" Type=2 Value=30",
+    "[local-stt]   token[4]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"180\" Type=1 Value=180",
+    "[local-stt]   token[6]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"descend\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 7 tokens",
+    "[local-stt]   matched command: \"D30\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   matched command: \"S180\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   no match at token[6]=\"knots\", skipping",
+    "[local-stt] ParseCommands: result=[D30 S180] (avgConf=1.00)",
+    "[local-stt] parsed commands: [D30 S180] (conf=1.00)",
+    "[local-stt] validated commands: [D30 S180] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"SVA677 D30 S180\" (conf=0.80, time=0s) ==="
+  ]
+}

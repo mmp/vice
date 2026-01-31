@@ -1,0 +1,456 @@
+{
+  "time": "2026-01-30T04:00:43.400473658Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "November 891 Uniformed Robert to Cinnamon Tain 4000",
+  "whisper_duration_ms": 513.771,
+  "audio_duration_ms": 4040,
+  "processor": "GPU: AMD Radeon RX 5600 XT (6128MB)",
+  "whisper_model": "ggml-base.en.bin",
+  "callsign": "N891UB",
+  "command": "C40",
+  "stt_aircraft": {
+    "Alaska four zero eight": {
+      "Callsign": "ASA408",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Carsner": "CRSNR",
+        "San Diego": "KSAN",
+        "Sayae": "SAYAE",
+        "Sijhi": "CIJHI",
+        "Tokyo": "TOKOE"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ApproachFixes": {
+        "L27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RY7": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RZ7": {
+          "Carsner": "CRSNR",
+          "Catdog": "CATDG",
+          "Clomn": "KLOMN",
+          "Jade": "AJADE",
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sayae": "SAYAE",
+          "Sijhi": "CIJHI",
+          "Tokyo": "TOKOE",
+          "Vida": "VYDDA"
+        },
+        "V27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "reebo": "REEBO"
+        }
+      },
+      "AssignedApproach": "RNAV Z Runway 27",
+      "SID": "",
+      "STAR": "COMIX2",
+      "Altitude": 4069,
+      "State": "on approach",
+      "ControllerFrequency": "5N",
+      "TrackingController": "5N",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "B E thirty-six one uniform brahvo": {
+      "Callsign": "N891UB",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Aqsoc": "AQSOC",
+        "Ayoda": "AYODA",
+        "Carif": "CARIF",
+        "Kijco": "KIJCO",
+        "Ramona": "KRNM",
+        "Robin": "ROBNN"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two seven": "RB"
+      },
+      "ApproachFixes": {
+        "RB": {
+          "Julian": "JLI",
+          "Rice": "RICCE",
+          "enobe": "ENOBE",
+          "meddy": "MEDDI"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 9",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 7602,
+      "State": "arrival",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "B E thirty-six six one zulu": {
+      "Callsign": "N6161Z",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Gillespie": "KSEE",
+        "Julian": "JLI"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven right": "LD"
+      },
+      "ApproachFixes": {
+        "LD": {
+          "Barrett": "BARET",
+          "Debbie": "DEBEY",
+          "Mission Bay": "MZB",
+          "Samos": "SAMOS",
+          "Zirlu": "ZIRLU",
+          "wopos": "WOPOS"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "JetBlue 81": {
+      "Callsign": "JBU81",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Lindy": "LYNDI",
+        "Lucky": "LUCKI",
+        "Okain": "OKAIN",
+        "San Diego": "KSAN",
+        "Sijhi": "CIJHI",
+        "Vida": "VYDDA",
+        "reebo": "REEBO"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ApproachFixes": {
+        "L27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RY7": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RZ7": {
+          "Carsner": "CRSNR",
+          "Catdog": "CATDG",
+          "Clomn": "KLOMN",
+          "Jade": "AJADE",
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sayae": "SAYAE",
+          "Sijhi": "CIJHI",
+          "Tokyo": "TOKOE",
+          "Vida": "VYDDA"
+        },
+        "V27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "reebo": "REEBO"
+        }
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6213,
+      "State": "on approach",
+      "ControllerFrequency": "5E",
+      "TrackingController": "5E",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "United one": {
+      "Callsign": "UAL1",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Aztec": "AZTEK",
+        "Jeeves": "JEEVS",
+        "Lindy": "LYNDI",
+        "Lucky": "LUCKI",
+        "Okain": "OKAIN",
+        "San Diego": "KSAN",
+        "Sijhi": "CIJHI",
+        "Vida": "VYDDA",
+        "reebo": "REEBO"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven": "L27",
+        "Visual runway two seven": "V27",
+        "r-nav yankee runway two seven": "RY7",
+        "r-nav zulu runway two seven": "RZ7"
+      },
+      "ApproachFixes": {
+        "L27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RY7": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "Vida": "VYDDA",
+          "reebo": "REEBO"
+        },
+        "RZ7": {
+          "Carsner": "CRSNR",
+          "Catdog": "CATDG",
+          "Clomn": "KLOMN",
+          "Jade": "AJADE",
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sayae": "SAYAE",
+          "Sijhi": "CIJHI",
+          "Tokyo": "TOKOE",
+          "Vida": "VYDDA"
+        },
+        "V27": {
+          "Lindy": "LYNDI",
+          "Okain": "OKAIN",
+          "Sijhi": "CIJHI",
+          "reebo": "REEBO"
+        }
+      },
+      "AssignedApproach": "Localizer Runway 27",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 8695,
+      "State": "arrival",
+      "ControllerFrequency": "5E",
+      "TrackingController": "5E",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "bonanza one uniform brahvo": {
+      "Callsign": "N891UB",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Aqsoc": "AQSOC",
+        "Ayoda": "AYODA",
+        "Carif": "CARIF",
+        "Kijco": "KIJCO",
+        "Ramona": "KRNM",
+        "Robin": "ROBNN"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two seven": "RB"
+      },
+      "ApproachFixes": {
+        "RB": {
+          "Julian": "JLI",
+          "Rice": "RICCE",
+          "enobe": "ENOBE",
+          "meddy": "MEDDI"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 9",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 7602,
+      "State": "arrival",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 1,
+      "LAHSORunways": null
+    },
+    "bonanza six one zulu": {
+      "Callsign": "N6161Z",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Gillespie": "KSEE",
+        "Julian": "JLI"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven right": "LD"
+      },
+      "ApproachFixes": {
+        "LD": {
+          "Barrett": "BARET",
+          "Debbie": "DEBEY",
+          "Mission Bay": "MZB",
+          "Samos": "SAMOS",
+          "Zirlu": "ZIRLU",
+          "wopos": "WOPOS"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    },
+    "november eight niner one uniform brahvo": {
+      "Callsign": "N891UB",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Aqsoc": "AQSOC",
+        "Ayoda": "AYODA",
+        "Carif": "CARIF",
+        "Kijco": "KIJCO",
+        "Ramona": "KRNM",
+        "Robin": "ROBNN"
+      },
+      "CandidateApproaches": {
+        "r-nav runway two seven": "RB"
+      },
+      "ApproachFixes": {
+        "RB": {
+          "Julian": "JLI",
+          "Rice": "RICCE",
+          "enobe": "ENOBE",
+          "meddy": "MEDDI"
+        }
+      },
+      "AssignedApproach": "RNAV Runway 9",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 7602,
+      "State": "arrival",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november six one six one zulu": {
+      "Callsign": "N6161Z",
+      "AircraftType": "BE36",
+      "Fixes": {
+        "Gillespie": "KSEE",
+        "Julian": "JLI"
+      },
+      "CandidateApproaches": {
+        "Localizer runway two seven right": "LD"
+      },
+      "ApproachFixes": {
+        "LD": {
+          "Barrett": "BARET",
+          "Debbie": "DEBEY",
+          "Mission Bay": "MZB",
+          "Samos": "SAMOS",
+          "Zirlu": "ZIRLU",
+          "wopos": "WOPOS"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "BOREN KARRO JLI",
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "5D",
+      "TrackingController": "5D",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "17",
+        "35"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"November 891 Uniformed Robert to Cinnamon Tain 4000\"",
+    "[local-stt] normalized words: [november 891 uniformed robert to cinnamon tain 4000]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"november\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"891\" Type=1 Value=891",
+    "[local-stt]   token[2]: Text=\"uniformed\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"robert\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"cinnamon\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"tain\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"4000\" Type=1 Value=4000",
+    "[local-stt] MatchCallsign: 8 tokens, 9 aircraft",
+    "[local-stt]   candidate \"B E thirty-six six one zulu\" (ICAO=\"N6161Z\"): score=0.75 consumed=1",
+    "[local-stt]   candidate \"november eight niner one uniform brahvo\" (ICAO=\"N891UB\"): score=1.05 consumed=2",
+    "[local-stt]   candidate \"JetBlue 81\" (ICAO=\"JBU81\"): score=0.48 consumed=2",
+    "[local-stt]   candidate \"bonanza one uniform brahvo\" (ICAO=\"N891UB\"): score=0.73 consumed=2",
+    "[local-stt]   candidate \"B E thirty-six one uniform brahvo\" (ICAO=\"N891UB\"): score=0.73 consumed=2",
+    "[local-stt]   candidate \"United one\" (ICAO=\"UAL1\"): score=0.64 consumed=2",
+    "[local-stt]   candidate \"Alaska four zero eight\" (ICAO=\"ASA408\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"november six one six one zulu\" (ICAO=\"N6161Z\"): score=0.80 consumed=2",
+    "[local-stt]   candidate \"bonanza six one zulu\" (ICAO=\"N6161Z\"): score=0.75 consumed=1",
+    "[local-stt]   accepted: \"N891UB\" (conf=1.05, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"N891UB\" SpokenKey=\"november eight niner one uniform brahvo\" Conf=1.05 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=7602 Fixes=6 Approaches=1 AssignedApproach=\"RNAV Runway 9\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Ayoda\" -\u003e \"AYODA\"",
+    "[local-stt]   fix: \"Robin\" -\u003e \"ROBNN\"",
+    "[local-stt]   fix: \"Ramona\" -\u003e \"KRNM\"",
+    "[local-stt]   fix: \"Carif\" -\u003e \"CARIF\"",
+    "[local-stt]   fix: \"Aqsoc\" -\u003e \"AQSOC\"",
+    "[local-stt]   fix: \"Kijco\" -\u003e \"KIJCO\"",
+    "[local-stt]   approach: \"r-nav runway two seven\" -\u003e \"RB\"",
+    "[local-stt] command tokens after disregard: 6",
+    "[local-stt]   token[0]: Text=\"uniformed\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"robert\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"cinnamon\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"tain\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"4000\" Type=1 Value=4000",
+    "[local-stt] ParseCommands: 6 tokens",
+    "[local-stt]   no match at token[0]=\"uniformed\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"cinnamon\" against 6 fixes",
+    "[local-stt]   extractFix: no match found for \"cinnamon\"",
+    "[local-stt]   no match at token[1]=\"robert\", skipping",
+    "[local-stt]   skipping filler word: \"to\"",
+    "[local-stt]   no match at token[3]=\"cinnamon\", skipping",
+    "[local-stt]   no match at token[4]=\"tain\", skipping",
+    "[local-stt]   no match at token[5]=\"4000\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"N891UB AGAIN\" (conf=1.05, time=1.0236ms) ==="
+  ]
+}
