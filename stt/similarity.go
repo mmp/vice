@@ -378,6 +378,19 @@ func PhoneticMatch(w1, w2 string) bool {
 		}
 	}
 
+	// Extended prefix matching for longer codes (3-6 chars)
+	// This handles STT errors like "klomanad" (KLMNT) matching "clomn" (KLMN)
+	// where the transcription adds extra syllables that produce extra consonants.
+	// Requires higher JW threshold and shorter prefix must be at least 3 chars.
+	minPLen := min(len(p1), len(p2))
+	if minPLen >= 3 && maxPLen <= 6 && maxPLen-minPLen <= 2 {
+		if strings.HasPrefix(p1, p2) || strings.HasPrefix(p2, p1) {
+			if JaroWinkler(w1, w2) >= 0.70 {
+				return true
+			}
+		}
+	}
+
 	// Also check suffix matching for longer codes
 	// This handles STT errors that drop leading sounds (e.g., "laser" for "localizer")
 	// Only apply when the shorter code is at least 3 chars (to avoid false positives)

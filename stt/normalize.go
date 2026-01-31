@@ -463,6 +463,7 @@ var commandKeywords = map[string]string{
 	"colonel":  "kernel", // English homophones: both pronounced /ˈkɜːrnəl/
 	"proceed":  "proceed",
 	"cross":    "cross",
+	"across":   "cross", // STT transcription of "cross" with leading "a"
 	"depart":   "depart",
 	"hold":     "hold",
 	"land":     "land",

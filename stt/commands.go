@@ -359,7 +359,15 @@ func extractFix(tokens []Token, fixes map[string]string) (string, float64, int) 
 		// Try fuzzy match - find the best one (with length ratio check to prevent over-matching)
 		// Use alphabetically earlier fixID as tie-breaker for determinism.
 		for spokenName, fixID := range fixes {
+			// PhoneticMatch check first - handles STT errors that add syllables (e.g., "klomanad" → "Clomn")
+			// This is checked regardless of length ratio since phonetic matching accounts for extra syllables.
+			if PhoneticMatch(phrase, spokenName) && (bestScore < 0.80 || (bestScore == 0.80 && fixID < bestFix)) {
+				bestFix = fixID
+				bestScore = 0.80
+				bestLength = length
+			}
 			// Reject if phrase is much longer than fix name (prevents "pucky heading 180" matching "Pucky")
+			// Only applies to non-phonetic JW matching below.
 			lenRatio := float64(len(phrase)) / float64(len(spokenName))
 			if lenRatio > 1.5 {
 				continue
@@ -368,11 +376,6 @@ func extractFix(tokens []Token, fixes map[string]string) (string, float64, int) 
 			if score >= 0.78 && (score > bestScore || (score == bestScore && fixID < bestFix)) {
 				bestFix = fixID
 				bestScore = score
-				bestLength = length
-			}
-			if PhoneticMatch(phrase, spokenName) && (bestScore < 0.80 || (bestScore == 0.80 && fixID < bestFix)) {
-				bestFix = fixID
-				bestScore = 0.80
 				bestLength = length
 			}
 			// Try vowel-normalized comparison for syllable contractions
@@ -961,7 +964,7 @@ func extractApproachType(tokens []Token) (string, int) {
 	switch text {
 	case "ils", "alice", "dallas", "als", "atlas", "dialogues", "dial": // STT errors for "ILS"
 		return "ils", 1
-	case "rnav":
+	case "rnav", "arnav": // "arnav" is STT error for "RNAV"
 		return "rnav", 1
 	case "visual":
 		return "visual", 1

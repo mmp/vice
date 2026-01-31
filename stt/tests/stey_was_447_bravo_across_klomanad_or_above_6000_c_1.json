@@ -15,7 +15,7 @@
   "processor": "GPU: AMD Radeon RX 5600 XT (6128MB)",
   "whisper_model": "ggml-base.en.bin",
   "callsign": "SKW447B",
-  "command": "CKLOMN/A60+ CR7Z",
+  "command": "CKLOMN/A60+ CRZ7",
   "stt_aircraft": {
     "B E thirty-six one uniform brahvo": {
       "Callsign": "N891UB",
