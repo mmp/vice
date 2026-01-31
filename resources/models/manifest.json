@@ -1,0 +1,5 @@
+{
+  "ggml-base.en-jlvatc-q5_0.bin": "5125f0232e2ad85e9101173a69691d10884899d881b636af7376a34aaf36b702",
+  "ggml-small.en-jlvatc-q5_0.bin": "b861692c042876ce3134e607292d8f90bed2bc1eb5a1e74500576e8ca89d85f1",
+  "ggml-medium.en-jlvatc-q5_0.bin": "c009de99eca9a979340e33a288528a491d5ecb79d007879685b1483957779367"
+}

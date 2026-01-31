@@ -53,6 +53,104 @@ check_whisper_submodule() {
 
 check_whisper_submodule
 
+# Sync models from GCS if needed
+sync_models() {
+    local manifest="resources/models/manifest.json"
+    local models_dir="resources/models"
+    local stamp="$models_dir/.synced"
+
+    if [ ! -f "$manifest" ]; then
+        return 0  # No manifest = no models to sync
+    fi
+
+    # Determine the sha256sum command (shasum -a 256 on macOS, sha256sum on Linux)
+    if command -v sha256sum &> /dev/null; then
+        SHA256CMD="sha256sum"
+    elif command -v shasum &> /dev/null; then
+        SHA256CMD="shasum -a 256"
+    else
+        echo "Error: No SHA256 command found (sha256sum or shasum)"
+        exit 1
+    fi
+
+    # Parse JSON - try jq first, fall back to python
+    if command -v jq &> /dev/null; then
+        JSON_PARSER="jq"
+    elif command -v python3 &> /dev/null; then
+        JSON_PARSER="python3"
+    elif command -v python &> /dev/null; then
+        JSON_PARSER="python"
+    else
+        echo "Error: No JSON parser found (jq, python3, or python)"
+        exit 1
+    fi
+
+    # Get list of models from manifest
+    if [ "$JSON_PARSER" = "jq" ]; then
+        models=$(jq -r 'keys[]' "$manifest")
+    else
+        models=$($JSON_PARSER -c "import json; [print(k) for k in json.load(open('$manifest')).keys()]" 2>/dev/null)
+    fi
+
+    # Compute manifest hash for stamp file comparison
+    local manifest_hash=$($SHA256CMD "$manifest" | cut -d' ' -f1)
+
+    # Fast path: check if already synced
+    if [ -f "$stamp" ] && [ "$(cat "$stamp")" = "$manifest_hash" ]; then
+        # Verify all files exist (don't hash, just existence)
+        local all_exist=true
+        for model in $models; do
+            if [ ! -f "$models_dir/$model" ]; then
+                all_exist=false
+                break
+            fi
+        done
+        if [ "$all_exist" = true ]; then
+            return 0  # Already synced
+        fi
+    fi
+
+    for model in $models; do
+        # Get expected hash
+        if [ "$JSON_PARSER" = "jq" ]; then
+            expected_hash=$(jq -r ".\"$model\"" "$manifest")
+        else
+            expected_hash=$($JSON_PARSER -c "import json; print(json.load(open('$manifest'))['$model'])")
+        fi
+
+        local model_path="$models_dir/$model"
+
+        # Check if file exists with correct hash
+        if [ -f "$model_path" ]; then
+            actual_hash=$($SHA256CMD "$model_path" | cut -d' ' -f1)
+            if [ "$actual_hash" = "$expected_hash" ]; then
+                continue  # File is up to date
+            fi
+            echo "Model $model has wrong hash, re-downloading..."
+        fi
+
+        # Download from GCS (public bucket, no auth needed)
+        echo "Downloading $model..."
+        curl -L --progress-bar -o "$model_path" \
+            "https://storage.googleapis.com/vice-resources/$expected_hash"
+
+        # Verify the download
+        actual_hash=$($SHA256CMD "$model_path" | cut -d' ' -f1)
+        if [ "$actual_hash" != "$expected_hash" ]; then
+            echo "Error: Downloaded file hash mismatch for $model"
+            echo "  Expected: $expected_hash"
+            echo "  Actual:   $actual_hash"
+            rm -f "$model_path"
+            exit 1
+        fi
+    done
+
+    # Write stamp file to skip verification on next build
+    echo "$manifest_hash" > "$stamp"
+}
+
+sync_models
+
 # Detect OS
 OS="$(uname -s)"
 case "$OS" in

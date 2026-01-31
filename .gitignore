@@ -1,6 +1,8 @@
 *~
 \#*#
 .DS_Store
+resources/models/*.bin
+resources/models/.synced
 *.pprof
 *.prof
 /cdocs
@@ -15,7 +17,7 @@ dump*.txt
 icon.icns
 icon.iconset/
 installer.wixobj
-manifest.json
+/manifest.json
 notarize.out
 osx/Vice*.dmg
 osx/Vice.app/

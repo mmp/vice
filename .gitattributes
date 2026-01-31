@@ -1,3 +1,2 @@
-resources/models/*.bin filter=lfs diff=lfs merge=lfs -text
 resources/wx/** filter=lfs diff=lfs merge=lfs -text
 resources/videomaps/** filter=lfs diff=lfs merge=lfs -text
