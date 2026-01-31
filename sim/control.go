@@ -1990,7 +1990,6 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		}
 		ac.ControllerFrequency = ControlPosition(pc.TCP)
 		rt = ac.Nav.DepartureMessage(pc.ReportDepartureHeading)
-		rt = s.addContactPrefixes(ac, pc.TCP, rt)
 
 		// Handle emergency activation for departures
 		humanAllocated := !s.isVirtualController(ac.ControllerFrequency)
@@ -2010,7 +2009,6 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		ac.ControllerFrequency = ControlPosition(pc.TCP)
 		rt = ac.ContactMessage(s.ReportingPoints)
 		rt.Type = av.RadioTransmissionContact
-		rt = s.addContactPrefixes(ac, pc.TCP, rt)
 
 		// Handle emergency activation for arrivals
 		humanAllocated := !s.isVirtualController(ac.ControllerFrequency)
@@ -2027,11 +2025,9 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 	case PendingTransmissionFlightFollowingReq:
 		rt = av.MakeContactTransmission("[VFR request|with a VFR request]")
 		rt.Type = av.RadioTransmissionContact
-		rt = s.addContactPrefixes(ac, pc.TCP, rt)
 
 	case PendingTransmissionFlightFollowingFull:
 		rt = s.generateFlightFollowingMessage(ac)
-		rt = s.addContactPrefixes(ac, pc.TCP, rt)
 
 	case PendingTransmissionGoAround:
 		rt = av.MakeContactTransmission("[going around|on the go]")
@@ -2043,7 +2039,6 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		}
 		rt = pc.PrebuiltTransmission
 		rt.Type = av.RadioTransmissionUnexpected // Mark as urgent for display
-		rt = s.addContactPrefixes(ac, pc.TCP, rt)
 
 	default:
 		return "", ""
@@ -2053,28 +2048,26 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		return "", ""
 	}
 
-	spokenText = rt.Spoken(s.Rand)
-	writtenText = rt.Written(s.Rand)
+	// Get the base (unprefixed) text for the event stream.
+	// prepareRadioTransmissions will add the prefix when delivering to clients.
+	baseSpoken := rt.Spoken(s.Rand)
+	baseWritten := rt.Written(s.Rand)
 
-	// Post the radio event
+	// Post the radio event with unprefixed text
 	s.eventStream.Post(Event{
 		Type:                  RadioTransmissionEvent,
 		ADSBCallsign:          pc.ADSBCallsign,
 		ToController:          pc.TCP,
 		DestinationTCW:        s.State.TCWForPosition(pc.TCP),
-		WrittenText:           writtenText,
-		SpokenText:            spokenText,
+		WrittenText:           baseWritten,
+		SpokenText:            baseSpoken,
 		RadioTransmissionType: rt.Type,
 	})
 
-	return spokenText, writtenText
-}
-
-// addContactPrefixes adds callsign and controller prefixes to a contact transmission.
-func (s *Sim) addContactPrefixes(ac *Aircraft, tcp TCP, rt *av.RadioTransmission) *av.RadioTransmission {
-	ctrl := s.State.Controllers[tcp]
+	// Generate prefixed text for the TTS return value (not going through event stream)
+	ctrl := s.State.Controllers[pc.TCP]
 	if ctrl == nil {
-		return rt
+		return baseSpoken, baseWritten
 	}
 
 	var heavySuper string
@@ -2104,10 +2097,9 @@ func (s *Sim) addContactPrefixes(ac *Aircraft, tcp TCP, rt *av.RadioTransmission
 		prefix = av.MakeContactTransmission("{actrl}, {callsign}"+heavySuper+". ", ctrl, csArg)
 	}
 
-	// Merge prefix with the main transmission
-	prefix.Merge(rt)
-	prefix.Type = rt.Type
-	return prefix
+	spokenText = prefix.Spoken(s.Rand) + baseSpoken
+	writtenText = prefix.Written(s.Rand) + baseWritten
+	return spokenText, writtenText
 }
 
 type FutureOnCourse struct {
