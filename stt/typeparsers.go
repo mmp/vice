@@ -246,6 +246,13 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 	for i := pos; i < len(tokens) && i < pos+4; i++ {
 		t := tokens[i]
 
+		// Stop at command boundary keywords - these indicate a new command context.
+		// For example, in "cross IZEKO at 30 cleared ILS 22 left", when looking for
+		// a speed after "at", we should stop at "cleared" rather than finding "22".
+		if t.Type == TokenWord && IsCommandKeyword(t.Text) {
+			break
+		}
+
 		if t.Type == TokenNumber {
 			// Normal speed range
 			// Round down to nearest 10 - ATC speeds are always multiples of 10,

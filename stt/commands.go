@@ -19,6 +19,82 @@ type CommandMatch struct {
 	IsSayAgain bool    // True if this is a partial match that needs say-again
 }
 
+// getCommandCategory returns the category of a command based on its prefix.
+// Categories are used to prevent duplicate commands of the same type in a single transmission.
+// For example, once an altitude command is matched, we shouldn't match another altitude command.
+func getCommandCategory(cmd string) string {
+	if cmd == "" {
+		return ""
+	}
+
+	// Handle "then" variants by stripping T prefix
+	if len(cmd) > 1 && cmd[0] == 'T' {
+		// Check if second char indicates a turn (TL, TR) vs then-command (TD, TC, TS, TH)
+		switch cmd[1] {
+		case 'L', 'R':
+			// TL20, TR20 are turn commands (heading category)
+			return "heading"
+		case 'D', 'C':
+			// TD40, TC40 are then-descend/climb (altitude category)
+			return "altitude"
+		case 'S':
+			// TS180 is then-speed (speed category)
+			return "speed"
+		case 'H':
+			// TH270 is then-heading (heading category)
+			return "heading"
+		}
+	}
+
+	switch cmd[0] {
+	case 'D', 'C', 'A':
+		// D40 (descend), C40 (climb), A40 (altitude assignment)
+		// But D can also be direct-to-fix like DFORPE, and C can be approach clearance like CI9L
+		// Check if followed by digit to determine if it's altitude vs navigation/approach
+		if len(cmd) > 1 && cmd[1] >= '0' && cmd[1] <= '9' {
+			return "altitude"
+		}
+		// D followed by letter is direct-to-fix (navigation), not altitude
+		if cmd[0] == 'D' {
+			return "navigation"
+		}
+		// A followed by letter could be approach-related (AFIX/C for "at fix cleared approach")
+		if cmd[0] == 'A' {
+			return "navigation"
+		}
+		// C followed by letter could be:
+		// - Crossing restriction: CNOLEY/A40 (contains '/') - categorize by suffix
+		// - Approach clearance: CI9L (no '/')
+		if strings.Contains(cmd, "/") {
+			// Crossing restriction - categorize by what follows the '/'
+			if strings.Contains(cmd, "/A") {
+				return "altitude"
+			}
+			if strings.Contains(cmd, "/S") {
+				return "speed"
+			}
+			return "navigation" // default for other crossing restrictions
+		}
+		// C followed by letter without '/' is approach clearance (CI9L)
+		return "cleared_approach"
+	case 'S':
+		// S180 (speed), but SAYAGAIN is not a speed command
+		if strings.HasPrefix(cmd, "SAYAGAIN") {
+			return ""
+		}
+		return "speed"
+	case 'H':
+		// H270 (heading)
+		return "heading"
+	case 'E':
+		// EI9L (expect approach)
+		// Use different category from cleared_approach so both can appear in same transmission
+		return "expect_approach"
+	}
+
+	return ""
+}
+
 // extractAltitude extracts an altitude value from tokens.
 func extractAltitude(tokens []Token) (int, int) {
 	if len(tokens) == 0 {

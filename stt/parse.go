@@ -17,6 +17,7 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 	var totalConf float64
 	pos := 0
 	isThen := false
+	excludeCategories := make(map[string]bool) // Track categories already matched
 
 	for pos < len(tokens) {
 		// Check for "then" keyword
@@ -105,13 +106,18 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 		}
 
 		// Try to match a command
-		match, newPos := matchCommandNew(tokens, pos, ac, isThen)
+		match, newPos := matchCommandNew(tokens, pos, ac, isThen, excludeCategories)
 		if newPos > pos {
 			logLocalStt("  matched command: %q (conf=%.2f, consumed=%d, isThen=%v)",
 				match.Command, match.Confidence, newPos-pos, isThen)
 			if match.Command != "" {
 				commands = append(commands, match.Command)
 				totalConf += match.Confidence
+
+				// Track this command's category to prevent duplicate types
+				if category := getCommandCategory(match.Command); category != "" {
+					excludeCategories[category] = true
+				}
 
 				// If this is an expect approach command, add the approach's fixes
 				// to the aircraft context for subsequent command parsing.
@@ -162,7 +168,9 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 }
 
 // matchCommandNew tries to match tokens against registered commands.
-func matchCommandNew(tokens []Token, startPos int, ac Aircraft, isThen bool) (CommandMatch, int) {
+// excludeCategories contains command categories that should not be matched
+// (because a command of that category was already matched in this transmission).
+func matchCommandNew(tokens []Token, startPos int, ac Aircraft, isThen bool, excludeCategories map[string]bool) (CommandMatch, int) {
 	var bestMatch CommandMatch
 	var bestPriority int
 	var bestSayAgain CommandMatch
@@ -172,6 +180,12 @@ func matchCommandNew(tokens []Token, startPos int, ac Aircraft, isThen bool) (Co
 		match, endPos := tryMatchCommand(tokens, startPos, cmd, ac, isThen)
 		consumed := endPos - startPos
 		if consumed > 0 {
+			// Check if this command's category is excluded
+			category := getCommandCategory(match.Command)
+			if category != "" && excludeCategories[category] {
+				continue
+			}
+
 			if match.IsSayAgain {
 				if cmd.priority > bestSayAgainPriority || (cmd.priority == bestSayAgainPriority && consumed > bestSayAgain.Consumed) {
 					bestSayAgain = match

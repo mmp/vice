@@ -197,8 +197,8 @@ func parseAltitudePattern(words []string) (int, int) {
 		return 0, 0
 	}
 
-	// Must have "thousand" next
-	if words[consumed] != "thousand" {
+	// Must have "thousand" next (fuzzy match to handle STT errors like "thousandth")
+	if !FuzzyMatch(words[consumed], "thousand", 0.90) {
 		return 0, 0
 	}
 	consumed++

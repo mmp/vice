@@ -236,6 +236,7 @@ func registerAllCommands() {
 		WithName("maintain_speed"),
 		WithPriority(2),
 		WithThenVariant("TS%d"),
+		WithSayAgainOnFail(),
 	)
 
 	registerSTTCommand(

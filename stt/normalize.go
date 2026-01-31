@@ -853,6 +853,35 @@ func combineTensAndUnits(tokens []string) []string {
 			// Current token must be a "tens" value (20, 30, 40, 50, 60, 70, 80, 90)
 			// Next token must be a single digit (1-9)
 			if isTensValue(curr) && IsSingleDigit19(next) {
+				// Before combining, check for aircraft type pattern:
+				// If prev + tens forms an aircraft type AND next is followed by "thousand",
+				// don't combine - the units digit belongs to the altitude, not the aircraft type.
+				// Example: "a 3 20 4 thousand" = A320 at 4000 feet, not "a 3 24 thousand"
+				skipCombine := false
+				if i > 0 && i+2 < len(tokens) {
+					prev := tokens[i-1]
+					afterUnits := strings.ToLower(tokens[i+2])
+
+					if IsNumber(prev) && (afterUnits == "thousand" || afterUnits == "thousandth") {
+						prevNum := ParseNumber(prev)
+						tens := ParseNumber(curr)
+						// Aircraft type pattern: single digit + tens = 3-digit type
+						// e.g., 3 + 20 = 320 (A320)
+						if prevNum >= 1 && prevNum <= 9 {
+							potentialType := prevNum*100 + tens
+							if isNormalizerAircraftType(potentialType) {
+								skipCombine = true
+							}
+						}
+					}
+				}
+
+				if skipCombine {
+					result = append(result, curr)
+					i++
+					continue
+				}
+
 				// Combine: "30" + "2" → "32"
 				tens := ParseNumber(curr)
 				units := ParseNumber(next)
@@ -868,6 +897,21 @@ func combineTensAndUnits(tokens []string) []string {
 	}
 
 	return result
+}
+
+// isNormalizerAircraftType returns true if the number is a common aircraft type.
+// Used during normalization to avoid combining tens+units when they're part of
+// an aircraft type followed by an altitude (e.g., "A320 four thousand").
+func isNormalizerAircraftType(n int) bool {
+	switch n {
+	// Airbus narrow-body
+	case 319, 320, 321:
+		return true
+	// Airbus wide-body
+	case 330, 340, 350, 380:
+		return true
+	}
+	return false
 }
 
 // isTensValue returns true if the string is a "tens" value (20, 30, 40, 50, 60, 70, 80, 90).

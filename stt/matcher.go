@@ -52,8 +52,17 @@ func (m *literalMatcher) match(tokens []Token, pos int, ac Aircraft, skipWords [
 
 	// Try to match against any keyword at the current position
 	text := strings.ToLower(tokens[pos].Text)
+
+	// If the next token is a TokenAltitude (high-confidence altitude from "thousand" pattern),
+	// require a higher fuzzy match threshold. This prevents weak matches like "claimed"→"climbed"
+	// from consuming altitude tokens that should be handled by standalone_altitude.
+	threshold := 0.80
+	if pos+1 < len(tokens) && tokens[pos+1].Type == TokenAltitude {
+		threshold = 0.95
+	}
+
 	for _, kw := range m.keywords {
-		if FuzzyMatch(text, kw, 0.8) {
+		if FuzzyMatch(text, kw, threshold) {
 			return matchResult{consumed: pos + 1}
 		}
 	}
