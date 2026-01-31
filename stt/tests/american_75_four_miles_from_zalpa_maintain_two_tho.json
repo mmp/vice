@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce RTX 5070 (11943MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "AAL75",
-  "command": "A20 EI1R",
+  "command": "A20 CI1R",
   "stt_aircraft": {
     "All Nippon eight heavy": {
       "Callsign": "ANA8",

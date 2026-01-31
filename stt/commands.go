@@ -619,6 +619,75 @@ func approachMatchesAssigned(approachID, assignedApproach string) bool {
 	return true
 }
 
+// matchesAssignedRunway checks if an approach ID matches the runway in the assigned approach.
+// For example, "I8R" should match "ILS Runway 18R" because both refer to runway 18 right.
+// The approach ID format is: type prefix + runway number (possibly compressed) + direction.
+// Examples: I8R (ILS 18R), I2L (ILS 22L), R1R (RNAV 31R)
+func matchesAssignedRunway(approachID, assignedApproach string) bool {
+	if assignedApproach == "" || approachID == "" {
+		return false
+	}
+
+	// Extract runway designator from assigned approach (e.g., "18R" from "ILS Runway 18R")
+	assignedUpper := strings.ToUpper(assignedApproach)
+	runwayIdx := strings.Index(assignedUpper, "RUNWAY")
+	if runwayIdx == -1 {
+		// No "RUNWAY" keyword, try matching just by direction
+		return approachMatchesAssigned(approachID, assignedApproach)
+	}
+
+	// Get everything after "RUNWAY " and trim
+	runwayPart := strings.TrimSpace(assignedUpper[runwayIdx+6:])
+	// runwayPart is now something like "18R" or "22L" or "9"
+
+	// Extract the numeric part and direction from the assigned runway
+	var assignedNum string
+	var assignedDir byte
+	for i, c := range runwayPart {
+		if c >= '0' && c <= '9' {
+			assignedNum += string(c)
+		} else if c == 'L' || c == 'R' || c == 'C' {
+			assignedDir = byte(c)
+			break
+		} else if c != ' ' {
+			// Stop at any non-digit, non-direction character
+			break
+		}
+		_ = i
+	}
+
+	if assignedNum == "" {
+		return false
+	}
+
+	// Extract runway info from approach ID (e.g., "8R" from "I8R")
+	// Skip the type prefix (first letter for ILS/RNAV, or first two for variants like "RY")
+	approachUpper := strings.ToUpper(approachID)
+	var idNum string
+	var idDir byte
+	for _, c := range approachUpper {
+		if c >= '0' && c <= '9' {
+			idNum += string(c)
+		} else if c == 'L' || c == 'R' || c == 'C' {
+			idDir = byte(c)
+		}
+	}
+
+	if idNum == "" {
+		return false
+	}
+
+	// Check if directions match (if both have directions)
+	if assignedDir != 0 && idDir != 0 && assignedDir != idDir {
+		return false
+	}
+
+	// Check if runway numbers match
+	// The approach ID may use a compressed format: "8R" for runway 18R, "2L" for 22L
+	// So we check if the assigned runway ends with the ID runway number
+	return strings.HasSuffix(assignedNum, idNum)
+}
+
 // extractSpokenDirection looks for a direction word (left/right/center) in the tokens.
 // Returns 'L', 'R', 'C', or 0 if no direction found.
 func extractSpokenDirection(tokens []Token) byte {
@@ -680,6 +749,65 @@ func matchApproachByTypeAndNumberWithFallback(tokens []Token, approaches map[str
 	// Look for runway number anywhere in the remaining tokens
 	runwayNum, runwayDir, numPos := extractRunwayNumber(remainingTokens)
 	if runwayNum == "" {
+		// No valid runway number found, but if we have an assigned approach with matching
+		// type and direction, use it. This handles cases like "ils turn 918 right" where
+		// the runway number is garbled but we can still infer from the assigned approach.
+		if allowFallback && assignedApproach != "" {
+			// Look for direction word anywhere in remaining tokens
+			spokenDir := extractSpokenDirection(remainingTokens)
+			if spokenDir != 0 {
+				assignedLower := strings.ToLower(assignedApproach)
+				if approachTypeMatches(assignedLower, approachType) {
+					// Extract direction from assigned approach
+					var assignedDir byte
+					if len(assignedApproach) > 0 {
+						lastChar := assignedApproach[len(assignedApproach)-1]
+						if lastChar == 'L' || lastChar == 'l' {
+							assignedDir = 'L'
+						} else if lastChar == 'R' || lastChar == 'r' {
+							assignedDir = 'R'
+						} else if lastChar == 'C' || lastChar == 'c' {
+							assignedDir = 'C'
+						}
+					}
+
+					if assignedDir != 0 && assignedDir == spokenDir {
+						// Find the approach ID that best matches the assigned approach.
+						// We need to match the full runway number, not just the direction,
+						// because multiple approaches may have the same direction (e.g., I3R, I8R).
+						var bestApprID string
+						for spokenName, apprID := range approaches {
+							spokenLower := strings.ToLower(spokenName)
+							if !approachTypeMatches(spokenLower, approachType) {
+								continue
+							}
+							// Check if this approach ID matches the assigned approach's runway
+							// by comparing the runway number portion (e.g., "8R" in "I8R" vs "18R" in assigned)
+							if matchesAssignedRunway(apprID, assignedApproach) {
+								bestApprID = apprID
+								break
+							}
+						}
+						if bestApprID != "" {
+							// Find position of direction word to calculate consumed tokens
+							dirPos := -1
+							for i, t := range remainingTokens {
+								text := strings.ToLower(t.Text)
+								if text == "left" || text == "right" || text == "center" ||
+									text == "l" || text == "r" || text == "c" || text == "west" {
+									dirPos = i
+									break
+								}
+							}
+							consumed := typeConsumed + variantConsumed + dirPos + 1
+							logLocalStt("  matchApproachByTypeAndNumber: no valid runway, falling back to assigned approach %q (type=%q dir=%c)",
+								bestApprID, approachType, spokenDir)
+							return bestApprID, 0.80, consumed
+						}
+					}
+				}
+			}
+		}
 		return "", 0, 0
 	}
 
@@ -956,7 +1084,9 @@ func approachTypeMatches(spokenLower, approachType string) bool {
 	case "vor":
 		return strings.Contains(spokenLower, "v o r") || strings.Contains(spokenLower, "vor")
 	case "localizer":
-		return strings.Contains(spokenLower, "localizer") || strings.Contains(spokenLower, "loc")
+		// Localizer is the lateral component of ILS, so "localizer" approach matches ILS approaches
+		return strings.Contains(spokenLower, "localizer") || strings.Contains(spokenLower, "loc") ||
+			strings.Contains(spokenLower, "i l s") || strings.Contains(spokenLower, "ils")
 	}
 	return false
 }

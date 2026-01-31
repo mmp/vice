@@ -14,7 +14,7 @@
   "audio_duration_ms": 4168,
   "processor": "GPU: AMD Radeon RX 5600 XT (6128MB)",
   "whisper_model": "ggml-base.en.bin",
-  "callsign": "N809HL",
+  "callsign": "N809HL/T",
   "command": "TO",
   "stt_aircraft": {
     "Alaska four zero eight": {

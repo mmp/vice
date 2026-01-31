@@ -123,6 +123,33 @@ func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch,
 		return CallsignMatch{}, tokens
 	}
 
+	// Require at least 2 tokens for a valid callsign match (airline + flight number),
+	// UNLESS:
+	// 1. The single token is a number (flight number match), OR
+	// 2. There are more tokens after the match that could be a flight number, OR
+	// 3. "correction" follows (callsign correction pattern handled elsewhere)
+	// A single word like "cross" with no following tokens matching "Chronos" is not valid,
+	// but "south" followed by "west 99" could be "Southwest 99" split across tokens.
+	if bestMatch.Consumed < 2 && len(tokens) > 0 && tokens[0].Type != TokenNumber {
+		// Check if there are any number tokens or "correction" following
+		hasFollowingNumber := false
+		hasCorrection := false
+		for i := bestMatch.Consumed; i < len(tokens) && i < bestMatch.Consumed+4; i++ {
+			if tokens[i].Type == TokenNumber {
+				hasFollowingNumber = true
+				break
+			}
+			if strings.ToLower(tokens[i].Text) == "correction" {
+				hasCorrection = true
+				break
+			}
+		}
+		if !hasFollowingNumber && !hasCorrection {
+			logLocalStt("  rejecting match: only consumed %d token(s) with no following flight number", bestMatch.Consumed)
+			return CallsignMatch{}, tokens
+		}
+	}
+
 	// Threshold for accepting a match
 	if bestMatch.Confidence < 0.5 {
 		logLocalStt("  best match conf=%.2f below threshold 0.5, trying flight-number-only fallback", bestMatch.Confidence)
@@ -490,8 +517,13 @@ func scoreGACallsign(tokens []Token, callsign string) (float64, int) {
 // Used as fallback when airline name is garbled/missing. Only succeeds if the number
 // uniquely identifies one aircraft.
 func tryFlightNumberOnlyMatch(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch, []Token) {
-	// Scan tokens for numbers
-	for i, t := range tokens {
+	// Scan tokens for numbers, but only in the first few tokens where a callsign would appear.
+	// Callsigns are at the start of transmissions and typically consume 2-4 tokens
+	// (airline + flight number, possibly with "heavy"/"super").
+	// Scanning further would incorrectly match numbers from commands (e.g., altitudes, headings).
+	maxScan := min(6, len(tokens))
+	for i := range maxScan {
+		t := tokens[i]
 		var numStr string
 		if t.Type == TokenNumber {
 			numStr = strconv.Itoa(t.Value)

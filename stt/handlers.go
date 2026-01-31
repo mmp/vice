@@ -105,6 +105,14 @@ func registerAllCommands() {
 		WithPriority(16),
 	)
 
+	// "arrival" is often used as a synonym for "star" in ATC phraseology
+	registerSTTCommand(
+		"descend via [the] arrival",
+		func() string { return "DVS" },
+		WithName("descend_via_arrival"),
+		WithPriority(16),
+	)
+
 	// Pattern for garbled "descend via STAR" - "via the {STAR} arrival" is strong
 	// enough context even without a clear "descend" (e.g., "to sin via the boo seven arrival")
 	registerSTTCommand(
@@ -657,6 +665,13 @@ func registerAllCommands() {
 		func() string { return "TO" },
 		WithName("contact_tower"),
 		WithPriority(15),
+	)
+	// "tower" alone (when "contact" is garbled), typically followed by a frequency
+	registerSTTCommand(
+		"tower",
+		func() string { return "TO" },
+		WithName("tower_alone"),
+		WithPriority(5), // Lower than "contact tower" to prefer full pattern
 	)
 	// Pattern: "contact Kennedy Tower" or "contact Lindbergh Tower"
 	// The {text} parameter consumes one token (the facility name)
