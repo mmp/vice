@@ -61,6 +61,11 @@ func (tm *TransmissionManager) EnqueueReadbackPCM(callsign av.ADSBCallsign, ty a
 	tm.mu.Lock()
 	defer tm.mu.Unlock()
 
+	// Readback arrived - release the hold that was set when command was sent
+	if tm.holdCount > 0 {
+		tm.holdCount--
+	}
+
 	if len(pcm) == 0 {
 		tm.lg.Warnf("Skipping readback for %s due to empty PCM", callsign)
 		return

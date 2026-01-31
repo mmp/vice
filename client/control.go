@@ -418,6 +418,13 @@ func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 	// Determine if TTS is enabled for this command
 	enableTTS := c.HaveTTS() && (c.disableTTSPtr == nil || !*c.disableTTSPtr) && req.Commands != "P" && req.Commands != "X"
 
+	// Hold transmissions BEFORE the async RPC to prevent contact requests
+	// between RPC call and callback. Released when readback arrives, or
+	// in callback if server didn't queue a readback.
+	if enableTTS {
+		c.transmissions.Hold()
+	}
+
 	// Get processor info for voice commands
 	var processorDesc string
 	if req.WhisperDuration > 0 {
@@ -446,6 +453,13 @@ func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 			if req.WhisperDuration > 0 {
 				c.lg.Infof("RPC round-trip: %v", rpcDuration)
 			}
+
+			// Release hold if server didn't actually queue a readback
+			// (if queued, hold is released when readback arrives via WebSocket)
+			if enableTTS && !result.ReadbackQueued {
+				c.transmissions.Unhold()
+			}
+
 			if handleResult != nil {
 				handleResult(result.ErrorMessage, result.RemainingInput)
 			}

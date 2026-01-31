@@ -613,7 +613,7 @@ type AircraftCommandsArgs struct {
 type AircraftCommandsResult struct {
 	ErrorMessage   string
 	RemainingInput string
-	Readback       *sim.PilotSpeech // Synthesized readback audio if EnableTTS was set
+	ReadbackQueued bool // True if a readback TTS was queued for delivery
 }
 
 const RunAircraftCommandsRPC = "Sim.RunAircraftCommands"
@@ -636,11 +636,14 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 		}
 	}
 
-	// Helper to queue async TTS for readback (delivered via WebSocket)
-	queueReadbackTTS := func(spokenText string) {
+	// Helper to queue async TTS for readback (delivered via WebSocket).
+	// Returns true if TTS was actually queued.
+	queueReadbackTTS := func(spokenText string) bool {
 		if cmds.EnableTTS && spokenText != "" {
 			c.session.QueueReadbackTTS(cmds.ControllerToken, sd.sm.tts, callsign, spokenText, simTime)
+			return true
 		}
+		return false
 	}
 
 	if cmds.Multiple {
@@ -648,14 +651,14 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 		if err != nil {
 			rewriteError(err)
 		}
-		queueReadbackTTS(spokenText)
+		result.ReadbackQueued = queueReadbackTTS(spokenText)
 		return nil // don't continue with the commands
 	} else if !cmds.ClickedTrack && c.sim.ShouldTriggerPilotMixUp(callsign) {
 		spokenText, err := c.sim.PilotMixUp(c.tcw, callsign)
 		if err != nil {
 			rewriteError(err)
 		}
-		queueReadbackTTS(spokenText)
+		result.ReadbackQueued = queueReadbackTTS(spokenText)
 		return nil // don't continue with the commands
 	}
 
@@ -664,7 +667,7 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	if execResult.Error != nil {
 		result.ErrorMessage = execResult.Error.Error()
 	}
-	queueReadbackTTS(execResult.ReadbackSpokenText)
+	result.ReadbackQueued = queueReadbackTTS(execResult.ReadbackSpokenText)
 
 	// Log whisper STT commands (WhisperDuration is non-zero for voice commands)
 	if cmds.WhisperDuration > 0 {
