@@ -1,5 +1,5 @@
 {
-  "time": "2026-01-30T00:59:14.959786961Z",
+  "time": "2026-01-30T00:56:44.367224843Z",
   "level": "INFO",
   "msg": "STT command",
   "callstack": [
@@ -9,21 +9,97 @@
     "server.go:383:net/rpc.(*service).call",
     "asm_amd64.s:1693:runtime.goexit"
   ],
-  "transcript": "Giant three seventy six cancel approach clearance turn left heading zero three zero",
-  "whisper_duration_ms": 514.341,
-  "audio_duration_ms": 3784,
+  "transcript": "Giant three seventy six cancel approach clearance turn left heading two seven zero",
+  "whisper_duration_ms": 513.79,
+  "audio_duration_ms": 3912,
   "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
   "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
   "callsign": "GTI376",
-  "command": "CAC L030",
+  "command": "CAC L270",
   "stt_aircraft": {
+    "American 29 46 heavy": {
+      "Callsign": "AAL2946",
+      "AircraftType": "B788",
+      "Fixes": {
+        "D F W": "KDFW",
+        "Dallas Fort Worth": "KDFW",
+        "Legree": "LEGRE",
+        "Nettie": "NETEE"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight right": "I8R",
+        "I L S runway one seven center": "I7C",
+        "I L S runway one seven left": "I7L",
+        "I L S runway one three right": "I3R"
+      },
+      "ApproachFixes": {
+        "I3R": {
+          "Hodax": "HODAX",
+          "Morry": "MORRY",
+          "Poppa": "POPPA"
+        },
+        "I7C": {
+          "Bossy": "BOSSI",
+          "Jiffy": "JIFFY",
+          "Penny": "PENNY",
+          "Zing": "ZINGG"
+        },
+        "I7L": {
+          "Drake": "DRAAK",
+          "G. Bush": "GBUSH",
+          "Inwood": "INWOD",
+          "Rivet": "RIVET"
+        },
+        "I8R": {
+          "Ickle": "ICKEL",
+          "Legree": "LEGRE",
+          "Nettie": "NETEE",
+          "Yohan": "YOHAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18R",
+      "SID": "",
+      "STAR": "VKTRY2",
+      "Altitude": 4822,
+      "State": "on approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R"
+      ]
+    },
+    "American eight 65": {
+      "Callsign": "AAL865",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Beamer": "BEMMR",
+        "Logan": "LOWGN"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "LOWGN8",
+      "STAR": "",
+      "Altitude": 6979,
+      "State": "departure",
+      "ControllerFrequency": "1Z",
+      "TrackingController": "1Z",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
     "American seven 25": {
       "Callsign": "AAL725",
       "AircraftType": "B738",
       "Fixes": {
+        "Bossy": "BOSSI",
         "D F W": "KDFW",
         "Dallas Fort Worth": "KDFW",
         "Jiffy": "JIFFY",
+        "Penny": "PENNY",
         "Zing": "ZINGG"
       },
       "CandidateApproaches": {
@@ -60,8 +136,8 @@
       "AssignedApproach": "ILS Runway 17C",
       "SID": "",
       "STAR": "SEEVR4",
-      "Altitude": 3942,
-      "State": "on approach",
+      "Altitude": 4000,
+      "State": "arrival",
       "ControllerFrequency": "1E",
       "TrackingController": "1E",
       "AddressingForm": 0,
@@ -76,6 +152,7 @@
       "Callsign": "DAL734",
       "AircraftType": "B739",
       "Fixes": {
+        "Bacher": "BACHR",
         "Dallas Love": "KDAL",
         "Love": "KDAL",
         "Love Field": "KDAL",
@@ -159,7 +236,7 @@
       "AssignedApproach": "ILS Runway 13L",
       "SID": "",
       "STAR": "MNNDO4",
-      "Altitude": 5042,
+      "Altitude": 7000,
       "State": "arrival",
       "ControllerFrequency": "1S",
       "TrackingController": "1S",
@@ -173,12 +250,68 @@
         "D F W": "KDFW",
         "Dallas Fort Worth": "KDFW",
         "Deetz": "DIETZ",
+        "Headman": "HEDMN",
+        "Tack": "TACKE",
+        "Wards": "WARDZ",
+        "Whoot": "WHOOT"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight right": "I8R",
+        "I L S runway one seven center": "I7C",
+        "I L S runway one seven left": "I7L",
+        "I L S runway one three right": "I3R"
+      },
+      "ApproachFixes": {
+        "I3R": {
+          "Hodax": "HODAX",
+          "Morry": "MORRY",
+          "Poppa": "POPPA"
+        },
+        "I7C": {
+          "Bossy": "BOSSI",
+          "Jiffy": "JIFFY",
+          "Penny": "PENNY",
+          "Zing": "ZINGG"
+        },
+        "I7L": {
+          "Drake": "DRAAK",
+          "G. Bush": "GBUSH",
+          "Inwood": "INWOD",
+          "Rivet": "RIVET"
+        },
+        "I8R": {
+          "Ickle": "ICKEL",
+          "Legree": "LEGRE",
+          "Nettie": "NETEE",
+          "Yohan": "YOHAN"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "BEREE3",
+      "Altitude": 16173,
+      "State": "arrival",
+      "ControllerFrequency": "1A",
+      "TrackingController": "1A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R"
+      ]
+    },
+    "Frontier Flight seven 84": {
+      "Callsign": "FFT784",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "D F W": "KDFW",
+        "Dallas Fort Worth": "KDFW",
         "Drake": "DRAAK",
         "G. Bush": "GBUSH",
         "Headman": "HEDMN",
         "Inwood": "INWOD",
-        "Rivet": "RIVET",
-        "Whoot": "WHOOT"
+        "Rivet": "RIVET"
       },
       "CandidateApproaches": {
         "I L S runway one eight right": "I8R",
@@ -214,7 +347,7 @@
       "AssignedApproach": "ILS Runway 17L",
       "SID": "",
       "STAR": "BEREE3",
-      "Altitude": 13313,
+      "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1A",
       "TrackingController": "1A",
@@ -265,8 +398,8 @@
       "AssignedApproach": "ILS Runway 16L",
       "SID": "",
       "STAR": "TRUUK2",
-      "Altitude": 2983,
-      "State": "cleared approach",
+      "Altitude": 2989,
+      "State": "on approach",
       "ControllerFrequency": "1N",
       "TrackingController": "C53",
       "AddressingForm": 0,
@@ -278,6 +411,7 @@
       "Fixes": {
         "Bacher": "BACHR",
         "Big Tex": "BGTEX",
+        "Breeze": "BREES",
         "Dallas Love": "KDAL",
         "Love": "KDAL",
         "Love Field": "KDAL",
@@ -365,7 +499,7 @@
       "AssignedApproach": "ILS Runway 13L",
       "SID": "",
       "STAR": "BACHR4",
-      "Altitude": 9159,
+      "Altitude": 9571,
       "State": "arrival",
       "ControllerFrequency": "1D",
       "TrackingController": "1D",
@@ -461,7 +595,7 @@
       "AssignedApproach": "ILS Runway 13L",
       "SID": "",
       "STAR": "HERBZ1",
-      "Altitude": 10639,
+      "Altitude": 11000,
       "State": "arrival",
       "ControllerFrequency": "1B",
       "TrackingController": "1B",
@@ -572,6 +706,7 @@
         "Dallas Fort Worth": "KDFW",
         "Ickle": "ICKEL",
         "Legree": "LEGRE",
+        "Lori": "LREEE",
         "Nettie": "NETEE",
         "Yohan": "YOHAN"
       },
@@ -609,7 +744,7 @@
       "AssignedApproach": "ILS Runway 18R",
       "SID": "",
       "STAR": "BOOVE7",
-      "Altitude": 4000,
+      "Altitude": 9257,
       "State": "arrival",
       "ControllerFrequency": "1Y",
       "TrackingController": "1Y",
@@ -663,7 +798,7 @@
       "AssignedApproach": "ILS Runway 16L",
       "SID": "",
       "STAR": "LIKES3",
-      "Altitude": 4000,
+      "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1P",
       "TrackingController": "1P",
@@ -712,7 +847,7 @@
       "AssignedApproach": "ILS Runway 16L",
       "SID": "",
       "STAR": "LIKES3",
-      "Altitude": 4000,
+      "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1P",
       "TrackingController": "1P",
@@ -761,7 +896,7 @@
       "AssignedApproach": "ILS Runway 16L",
       "SID": "",
       "STAR": "LIKES3",
-      "Altitude": 4000,
+      "Altitude": 5000,
       "State": "arrival",
       "ControllerFrequency": "1P",
       "TrackingController": "1P",
@@ -771,8 +906,8 @@
   },
   "logs": [
     "[local-stt] === DecodeTranscript START ===",
-    "[local-stt] input transcript: \"Giant three seventy six cancel approach clearance turn left heading zero three zero\"",
-    "[local-stt] normalized words: [giant 3 76 cancel approach clearance turn left heading 0 3 0]",
+    "[local-stt] input transcript: \"Giant three seventy six cancel approach clearance turn left heading two seven zero\"",
+    "[local-stt] normalized words: [giant 3 76 cancel approach clearance turn left heading 2 7 0]",
     "[local-stt] tokens: 9",
     "[local-stt]   token[0]: Text=\"giant\" Type=0 Value=-1",
     "[local-stt]   token[1]: Text=\"376\" Type=1 Value=376",
@@ -782,27 +917,30 @@
     "[local-stt]   token[5]: Text=\"turn\" Type=0 Value=-1",
     "[local-stt]   token[6]: Text=\"left\" Type=0 Value=-1",
     "[local-stt]   token[7]: Text=\"heading\" Type=0 Value=-1",
-    "[local-stt]   token[8]: Text=\"030\" Type=1 Value=30",
-    "[local-stt] MatchCallsign: 9 tokens, 11 aircraft",
-    "[local-stt]   candidate \"Volaris three 79\" (ICAO=\"VOI379\"): score=0.66 consumed=2",
-    "[local-stt]   candidate \"American seven 25\" (ICAO=\"AAL725\"): score=0.00 consumed=0",
-    "[local-stt]   candidate \"Giant three 76 heavy\" (ICAO=\"GTI376\"): score=1.10 consumed=2",
-    "[local-stt]   candidate \"Southwest niner 19\" (ICAO=\"SWA919\"): score=0.00 consumed=0",
+    "[local-stt]   token[8]: Text=\"270\" Type=1 Value=270",
+    "[local-stt] MatchCallsign: 9 tokens, 14 aircraft",
     "[local-stt]   candidate \"Delta seven 34\" (ICAO=\"DAL734\"): score=0.00 consumed=0",
-    "[local-stt]   candidate \"Southwest seven 95\" (ICAO=\"SWA795\"): score=0.00 consumed=0",
-    "[local-stt]   candidate \"Envoy 68 58\" (ICAO=\"ENY6858\"): score=0.00 consumed=0",
-    "[local-stt]   candidate \"Sun Country one 34\" (ICAO=\"SCX134\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Giant three 76 heavy\" (ICAO=\"GTI376\"): score=1.10 consumed=2",
     "[local-stt]   candidate \"november niner niner one zero zulu\" (ICAO=\"N9910Z\"): score=0.00 consumed=0",
-    "[local-stt]   candidate \"seneca one zero zulu\" (ICAO=\"N9910Z\"): score=0.00 consumed=0",
     "[local-stt]   candidate \"piper seneca one zero zulu\" (ICAO=\"N9910Z\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Envoy 68 58\" (ICAO=\"ENY6858\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American eight 65\" (ICAO=\"AAL865\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest seven 95\" (ICAO=\"SWA795\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Southwest niner 19\" (ICAO=\"SWA919\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"seneca one zero zulu\" (ICAO=\"N9910Z\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American 29 46 heavy\" (ICAO=\"AAL2946\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Frontier Flight seven 84\" (ICAO=\"FFT784\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American seven 25\" (ICAO=\"AAL725\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Sun Country one 34\" (ICAO=\"SCX134\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Volaris three 79\" (ICAO=\"VOI379\"): score=0.66 consumed=2",
     "[local-stt]   candidate \"Giant three 76 heavy\" at pos 1: score=0.80 (adjusted=0.72) consumed=1",
     "[local-stt]   accepted: \"GTI376\" (conf=1.10, consumed=2, startPos=0)",
     "[local-stt] callsign match: Callsign=\"GTI376\" SpokenKey=\"Giant three 76 heavy\" Conf=1.10 Consumed=2",
-    "[local-stt] aircraft context: State=\"arrival\" Altitude=2983 Fixes=2 Approaches=3 AssignedApproach=\"ILS Runway 16L\" LAHSORunways=[]",
+    "[local-stt] aircraft context: State=\"on approach\" Altitude=2989 Fixes=2 Approaches=3 AssignedApproach=\"ILS Runway 16L\" LAHSORunways=[]",
     "[local-stt]   fix: \"Alliance\" -\u003e \"KAFW\"",
     "[local-stt]   fix: \"Fort Worth Alliance\" -\u003e \"KAFW\"",
-    "[local-stt]   approach: \"r-nav runway one six left\" -\u003e \"R6L\"",
     "[local-stt]   approach: \"I L S runway one six left\" -\u003e \"I6L\"",
+    "[local-stt]   approach: \"r-nav runway one six left\" -\u003e \"R6L\"",
     "[local-stt]   approach: \"r-nav runway one six right\" -\u003e \"R6R\"",
     "[local-stt] command tokens after disregard: 7",
     "[local-stt]   token[0]: Text=\"cancel\" Type=0 Value=-1",
@@ -811,15 +949,14 @@
     "[local-stt]   token[3]: Text=\"turn\" Type=0 Value=-1",
     "[local-stt]   token[4]: Text=\"left\" Type=0 Value=-1",
     "[local-stt]   token[5]: Text=\"heading\" Type=0 Value=-1",
-    "[local-stt]   token[6]: Text=\"030\" Type=1 Value=30",
+    "[local-stt]   token[6]: Text=\"270\" Type=1 Value=270",
     "[local-stt]   position ID: found command keyword \"cancel\" at position 0 - not just position ID",
     "[local-stt] ParseCommands: 7 tokens",
     "[local-stt]   matched command: \"CAC\" (conf=1.00, consumed=3, isThen=false)",
-    "[local-stt]   matched command: \"L030\" (conf=1.00, consumed=4, isThen=false)",
-    "[local-stt] ParseCommands: result=[CAC L030] (avgConf=1.00)",
-    "[local-stt] parsed commands: [CAC L030] (conf=1.00)",
-    "[local-stt] validated commands: [L030] (conf=0.42)",
-    "[local-stt] validation errors: [cancel approach only valid for aircraft on approach]",
-    "[local-stt] === DecodeTranscript END: \"GTI376 L030\" (conf=0.47, time=0s) ==="
+    "[local-stt]   matched command: \"L270\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[CAC L270] (avgConf=1.00)",
+    "[local-stt] parsed commands: [CAC L270] (conf=1.00)",
+    "[local-stt] validated commands: [CAC L270] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"GTI376 CAC L270\" (conf=1.10, time=1.0086ms) ==="
   ]
 }
