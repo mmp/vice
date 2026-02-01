@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
   "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
   "callsign": "EJA2318",
-  "command": "AGAIN",
+  "command": "DTRRCH",
   "stt_aircraft": {
     "Air Transport niner zero six heavy": {
       "Callsign": "ATN906",
