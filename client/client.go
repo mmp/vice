@@ -431,11 +431,12 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 
 	c.updateSpeech(p)
 
-	// Check if we should request a contact transmission from the server
-	// Only do this if TTS is enabled. The actual request is made after
-	// releasing the lock since addCall also needs the lock.
-	ttsEnabled := c.haveTTS && (c.disableTTSPtr == nil || !*c.disableTTSPtr)
-	if ttsEnabled && c.transmissions.ShouldRequestContact() {
+	// Check if we should request a contact transmission from the server.
+	// We request contacts when the server has TTS capability, even if the user
+	// has disabled TTS locally. This ensures pilots still join the frequency
+	// and text transmissions appear. Audio playback is controlled separately.
+	// The actual request is made after releasing the lock since addCall needs it.
+	if c.haveTTS && c.transmissions.ShouldRequestContact() {
 		c.transmissions.SetContactRequested(true)
 		shouldRequestContact = true
 	}

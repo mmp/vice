@@ -485,6 +485,15 @@ func (c *ControlClient) RequestContactTransmission() {
 			}
 
 			if result.ContactSpeech != nil {
+				// Check if user has disabled TTS locally
+				ttsDisabled := c.disableTTSPtr != nil && *c.disableTTSPtr
+				if ttsDisabled {
+					// Contact was processed on server (pilot joins frequency, text event posted)
+					// but user doesn't want audio. Set a hold to maintain pacing.
+					c.transmissions.HoldAfterSilentContact(result.ContactSpeech.Callsign)
+					return
+				}
+
 				// Decode MP3 to PCM before enqueueing (off main render loop)
 				pcm, decodeErr := platform.DecodeSpeechMP3(result.ContactSpeech.MP3)
 				if decodeErr != nil {

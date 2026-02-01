@@ -179,6 +179,18 @@ func (tm *TransmissionManager) HoldAfterTransmission() {
 	tm.holdUntil = time.Now().Add(2 * time.Second)
 }
 
+// HoldAfterSilentContact sets a hold period after processing a contact without
+// audio playback (when TTS is disabled). This maintains proper pacing of contacts.
+func (tm *TransmissionManager) HoldAfterSilentContact(callsign av.ADSBCallsign) {
+	tm.mu.Lock()
+	defer tm.mu.Unlock()
+
+	tm.lastCallsign = callsign
+	tm.lastWasContact = true
+	// 8 seconds is the same hold time used after playing a contact transmission
+	tm.holdUntil = time.Now().Add(8 * time.Second)
+}
+
 // Hold increments the hold counter, preventing playback until Unhold is called.
 // Used during STT recording/processing to prevent speech playback.
 func (tm *TransmissionManager) Hold() {
