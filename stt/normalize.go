@@ -347,6 +347,7 @@ var phoneticCommandBlocklist = map[string][]string{
 	"red":       {"right"},         // "red" in garbled phrases (e.g., "Red or Collins") is not "right"
 	"redu":      {"right"},         // "redu-speed" is "reduce speed", not "right speed"
 	"redo":      {"right"},         // "redo speed" is "reduce speed", not "right speed"
+	"roto":      {"right"},         // "roto" is garbled airline name (Chronos), not "right"
 	"towards":   {"reduce"},        // "contact towards" is not "reduce"
 	"had":       {"heading"},       // "just had to" is not "heading"
 	// Speed-related words should match "speed" not "intercept" (suffix match on SPT)
