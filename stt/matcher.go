@@ -68,8 +68,7 @@ func (m *literalMatcher) match(tokens []Token, pos int, ac Aircraft, skipWords [
 	}
 
 	// Slack mechanism: try skipping up to 3 unrecognized tokens (STT garbage)
-	// This handles cases like "intercept the work gonna localizer" where
-	// garbage words appear between clear keywords.
+	// This handles cases where garbage words appear between clear keywords.
 	// Only enabled for internal matchers (not the first keyword in a template).
 	if allowSlack {
 		maxSlack := 3

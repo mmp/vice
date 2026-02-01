@@ -16,20 +16,13 @@ var digitWords = map[string]string{
 	"five": "5", "six": "6", "seven": "7", "eight": "8", "nine": "9",
 	// ATC phonetic
 	"niner": "9", "fower": "4", "fife": "5", "tree": "3",
-	// Common STT errors
-	"won": "1", "want": "1", "wun": "1",
-	"too": "2", "tu": "2", // "to" is intentionally excluded - it's a common word
-	"free": "3", "tee": "3",
-	"fore":  "4", // "for" is intentionally excluded - it's a common word
-	"fiv":   "5",
-	"sicks": "6", "seeks": "6", "sex": "6",
-	"ate": "8", "ait": "8", "eat": "8", "ada": "8",
-	"oh": "0", "zeri": "0", "year": "0", // "year" is STT error for "zero"
-	// Ordinals sometimes transcribed instead of cardinals
-	"first": "1", "second": "2", "third": "3", "fourth": "4", "fifth": "5",
-	"sixth": "6", "seventh": "7", "eighth": "8", "ninth": "9",
-	// Plural digits (sometimes used in readbacks)
-	"fives": "5", "nines": "9",
+	// Common homophones
+	"won": "1", "wun": "1",
+	"too":  "2",             // "to" is intentionally excluded - it's a common word
+	"fore": "4",             // "for" is intentionally excluded - it's a common word
+	"ate":  "8", "ait": "8", // Homophone for "eight"
+	"oh":   "0", // Common way to say zero
+	"zeri": "0", // Whisper STT transcription of "zero"
 }
 
 // numberWords maps multi-digit number words to values.
@@ -61,32 +54,32 @@ var numberWords = map[string]string{
 
 // natoAlphabet maps NATO phonetic alphabet to letters.
 var natoAlphabet = map[string]string{
-	"alpha": "a", "alfa": "a", "alfor": "a",
-	"bravo": "b", "brahvo": "b",
-	"charlie": "c", "charlee": "c",
-	"delta": "d", "deltta": "d",
-	"echo": "e", "eko": "e",
-	"foxtrot": "f", "foxrot": "f",
-	"golf": "g", "gulf": "g",
-	"hotel": "h", "hotell": "h",
-	"india": "i", "indea": "i",
-	"juliet": "j", "juliett": "j", "juliette": "j",
-	"kilo": "k", "keelo": "k",
-	"lima": "l", "leema": "l",
-	"mike": "m", "mic": "m",
-	"november": "n", "novemba": "n",
-	"oscar": "o", "oskar": "o",
-	"papa": "p", "pahpah": "p",
-	"quebec": "q", "kebeck": "q", "kebec": "q",
-	"romeo": "r", "romio": "r",
-	"sierra": "s", "seeara": "s", "seara": "s",
-	"tango": "t", "tanggo": "t",
-	"uniform": "u", "youniform": "u",
-	"victor": "v", "vikter": "v",
-	"whiskey": "w", "whisky": "w",
-	"xray": "x", "x-ray": "x", "exray": "x",
-	"yankee": "y", "yankey": "y",
-	"zulu": "z", "zoolu": "z",
+	"alpha": "a", "alfa": "a",
+	"bravo":   "b",
+	"charlie": "c",
+	"delta":   "d",
+	"echo":    "e",
+	"foxtrot": "f",
+	"golf":    "g",
+	"hotel":   "h",
+	"india":   "i",
+	"juliet":  "j", "juliett": "j", "juliette": "j", // Legitimate spelling variants
+	"kilo":     "k",
+	"lima":     "l",
+	"mike":     "m",
+	"november": "n",
+	"oscar":    "o",
+	"papa":     "p",
+	"quebec":   "q",
+	"romeo":    "r",
+	"sierra":   "s",
+	"tango":    "t",
+	"uniform":  "u",
+	"victor":   "v",
+	"whiskey":  "w", "whisky": "w", // Legitimate spelling variants
+	"xray": "x", "x-ray": "x",
+	"yankee": "y",
+	"zulu":   "z",
 }
 
 // ConvertNATOLetter converts a NATO phonetic word to its letter.
@@ -399,54 +392,34 @@ func tryPhoneticCommandMatch(word string) string {
 var commandKeywords = map[string]string{
 	// Altitude
 	"descend":    "descend",
-	"doesnt":     "descend",
-	"send":       "descend", // "send a maintain" = "descend and maintain"
-	"setup":      "descend", // STT garble of "descend to" or "set up to descend"
+	"setup":      "descend",
 	"climb":      "climb",
 	"climin":     "climb",
-	"klimin":     "climb",
-	"klim":       "climb", // STT error: dropped trailing sound
-	"clomman":    "climb",
-	"clementine": "climb",
-	"klein":      "climb", // STT error: "climb" misheard as "klein"
-	"klamathay":  "climb", // STT error: "climb and maintain" garbled together
 	"con":        "climb",
 	"maintain":   "maintain",
 	"maintained": "maintain",
-	"hamilton":   "maintain", // STT error: "maintain" misheard as "hamilton"
 	"altitude":   "altitude",
-	"aldo":       "altitude", // STT error: "altitude" misheard as "aldo"
 	"thousand":   "thousand",
-	"month":      "thousand", // STT error: "thousand" misheard as "month"
 	"hundred":    "hundred",
 	"flight":     "flight",
 	"fight":      "flight",
 	"level":      "level",
 	"expedite":   "expedite",
 
-	// Airline names (STT errors)
-	"double": "delta", // STT error: "Delta" misheard as "double"
-
 	// Heading
-	"heading":  "heading",
-	"eating":   "heading", // STT error: "heading" misheard as "eating" (phonetically similar)
-	"atting":   "heading", // STT error: "heading" misheard as "atting" (phonetically similar)
-	"waiting":  "wavey",   // STT error: "wavey" (fix) misheard as "waiting"
-	"turn":     "turn",
-	"lefthand": "left", // STT error: "left" with extra "hand" suffix
-	"turning":  "turn", // STT captures continuous tense
-	"turned":   "turn", // Past tense variant
-	"left":     "left",
-	"right":    "right",
-	"degrees":  "degrees",
-	"fly":      "fly",
-	"present":  "present",
+	"heading": "heading",
+	"turn":    "turn",
+	"turning": "turn",
+	"turned":  "turn",
+	"left":    "left",
+	"right":   "right",
+	"degrees": "degrees",
+	"fly":     "fly",
+	"present": "present",
 
 	// Speed
 	"speed":    "speed",
-	"dsp":      "speed",
 	"reduce":   "reduce",
-	"root":     "reduce",
 	"increase": "increase",
 	"slow":     "slow",
 	"slowest":  "slowest",
@@ -454,27 +427,21 @@ var commandKeywords = map[string]string{
 	"maximum":  "maximum",
 	"forward":  "forward",
 	"knots":    "knots",
-	"nots":     "knots", // STT error: "knots" garbled as "nots"
 	"normal":   "normal",
 
 	// Navigation
 	"direct":   "direct",
-	"directed": "direct", // Past tense variant
-	"rig":      "direct", // STT error: "direct" garbled as "rig"
-	"drag":     "direct", // STT error: "direct" garbled as "drag"
+	"directed": "direct",
 	"colonel":  "kernel", // English homophones: both pronounced /ˈkɜːrnəl/
 	"proceed":  "proceed",
 	"cross":    "cross",
-	"across":   "cross", // STT transcription of "cross" with leading "a"
+	"across":   "cross",
 	"depart":   "depart",
 	"hold":     "hold",
 	"land":     "land",
-	"landen":   "land",  // STT error: "land and" garbled as "landen"
 	"short":    "short", // For "hold short" LAHSO commands
 	"via":      "via",
-	"by":       "via",
 	"sid":      "sid",
-	"cid":      "sid",
 
 	// Hold-related
 	"radial":    "radial",
@@ -497,40 +464,20 @@ var commandKeywords = map[string]string{
 
 	// Approach
 	"cleared":     "cleared",
-	"cliud":       "cleared", // STT error: garbled "cleared"
 	"expect":      "expect",
-	"spectat":     "expect", // STT error: "expect" garbled
-	"select":      "expect", // "select the ILS" = "expect the ILS"
 	"vectors":     "vectors",
 	"approach":    "approach",
 	"cancel":      "cancel",
 	"localizer":   "localizer",
 	"localize":    "localizer", // STT drops trailing 'r'
 	"intercept":   "intercept",
-	"intercepted": "intercept", // Past tense
-	"nusselt":     "intercept",
+	"intercepted": "intercept",
 	"clearance":   "clearance",
 	"visual":      "visual",
 	"ils":         "ils",
-	"dallas":      "ils",
-	"alice":       "ils",
-	"als":         "ils",
-	"les":         "ils", // STT error: dropped leading sound
-	"dials":       "ils", // STT error: "d'ILS" or "the ILS" merged
-	"eyelash":     "ils", // STT error: "I L S" pronounced as "eye-ell-ess" -> "eyelash"
-	"eyelids":     "ils", // STT error: "I L S" garbled as "eyelids"
-	"atlas":       "ils", // STT error: "the ILS" garbled as "atlas"
-	"lash":        "ils", // STT error: "i-lash" split from "ILS"
-	"ilest":       "ils", // STT error: "ILS" garbled as "ilest"
 	"rnav":        "rnav",
-	"arnavie":     "rnav", // STT error: "rnav" garbled with extra syllables
-	"ironed":      "rnav", // STT error: "RNAV" misheard as "ironed"
 	"vor":         "vor",
 	"runway":      "runway",
-	"romn":        "runway", // STT error: garbled "runway"
-	"renoya":      "runway", // STT error: garbled "runway"
-	"renee":       "runway", // STT error: "runway" garbled as "renee"
-	"renoir":      "runway", // STT error: "runway" garbled as "renoir"
 
 	// Transponder
 	"squawk":      "squawk",
@@ -542,12 +489,7 @@ var commandKeywords = map[string]string{
 	// Handoff
 	"contact":   "contact",
 	"tower":     "tower",
-	"tar":       "tower",
-	"terror":    "tower",
-	"tarot":     "tower", // STT error: "tower" misheard as "tarot"
-	"error":     "tower", // STT error: "tower" misheard as "error"
-	"her":       "tower", // STT error: "tower" misheard as "her"
-	"hour":      "tower", // STT error: "tower" misheard as "hour"
+	"tarot":     "tower",
 	"frequency": "frequency",
 	"departure": "departure",
 	"center":    "center",
@@ -556,9 +498,6 @@ var commandKeywords = map[string]string{
 	"go":         "go",
 	"ahead":      "ahead",
 	"radar":      "radar",
-	"redder":     "radar", // STT error: "radar" garbled as "redder"
-	"redair":     "radar", // STT error: "radar" garbled as "redair"
-	"real":       "radar", // STT error: "radar" garbled as "real" (in "real contact")
 	"services":   "services",
 	"terminated": "terminated",
 	"resume":     "resume",
@@ -578,33 +517,18 @@ var commandKeywords = map[string]string{
 }
 
 // phraseExpansions maps single STT words to multiple normalized words.
-// These are common STT errors where words get merged together.
 var phraseExpansions = map[string][]string{
-	"flighting":        {"fly", "heading"},      // "fly heading" -> "flighting"
-	"disundermaintain": {"descend", "maintain"}, // "descend and maintain" -> "disundermaintain"
-	"climbington":      {"climb", "maintain"},   // "climb and maintain" -> "climbington"
-	"climatane":        {"climb", "maintain"},   // STT error: "climb and maintain" garbled
-	"centimeter":       {"descend", "maintain"}, // STT error: "descend and maintain" garbled
-	"thunbright":       {"turn", "right"},       // STT error: "turn right" merged together
-	"leviting":         {"left", "heading"},     // STT error: "left heading" merged together
-	// Note: "cleared direct" merged forms are handled by trySplitMergedCommand
-	"expectilis": {"expect", "ils"},   // STT error: "expect ILS" merged
-	"fl":         {"flight", "level"}, // STT converts "flight level" to "FL"
+	"flighting":  {"fly", "heading"},
+	"centimeter": {"descend", "maintain"},
+	"fl":         {"flight", "level"},
 }
 
 // multiTokenReplacements maps sequences of tokens (space-joined) to replacements.
-// These handle STT errors that span multiple tokens.
 var multiTokenReplacements = map[string][]string{
-	"december 18":  {"descend", "maintain"}, // STT error: "descend and maintain"
-	"i l s":        {"ils"},                 // Spelled out ILS
-	"r nav":        {"rnav"},                // R-NAV after hyphen removal
-	"r nov":        {"rnav"},                // STT error: "R-NAV" misheard as "R-NOV"
-	"fly level":    {"flight", "level"},     // STT error: "flight level" misheard as "fly level"
-	"eddie had":    {"etihad"},              // STT error: "Etihad" misheard as "eddie had"
-	"local line":   {"localizer"},           // STT error: "localizer" misheard as "local line"
-	"time riding":  {"turn", "right"},       // STT error: "turn right" misheard as "time riding"
-	"time rioting": {"turn", "right"},       // STT error: "turn right" misheard as "time rioting"
-	"x ray":        {"expedite"},            // STT error: "expedite" misheard as "X-ray"
+	"i l s":       {"ils"},
+	"r nav":       {"rnav"},
+	"fly level":   {"flight", "level"},
+	"time riding": {"turn", "right"},
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.
@@ -941,127 +865,30 @@ func postProcessNormalized(tokens []string) []string {
 			continue
 		}
 
-		// Handle "heading to N" where "to" is garbled "two" (2).
-		// e.g., "heading to 70" → "heading 270", "heading to 40" → "heading 240"
-		// Also handles "heading to N00" where STT added an extra trailing zero.
-		// e.g., "heading to 900" → "heading 290" (900 has extra 0, should be 90)
-		// IMPORTANT: Only apply when digits form a single token or 3+ consecutive digits.
-		// If digits are spelled out (e.g., "to 8 0" = two tokens), user likely intended
-		// the exact number, so don't transform. Spelled out numbers indicate intentionality.
-		if tokens[i] == "heading" && i+2 < len(tokens) && tokens[i+1] == "to" {
-			// Count consecutive digit tokens starting at i+2
-			digitCount := 0
-			for j := i + 2; j < len(tokens) && IsNumber(tokens[j]); j++ {
-				digitCount++
-			}
-
-			// Only proceed if we have exactly 1 token (already combined number like "70")
-			// or 3+ tokens (like "9 0 0" which is likely garbled with extra zero)
-			// Skip 2-token cases like "8 0" - user spelled it out intentionally as "080"
-			if digitCount == 1 || digitCount >= 3 {
-				// Join the digit tokens
-				var digitStr string
-				for j := i + 2; j < i+2+digitCount; j++ {
-					digitStr += tokens[j]
-				}
-				nextNum := ParseNumber(digitStr)
-
-				// Case 1: N is 2-digit (10-99)
-				if nextNum >= 10 && nextNum <= 99 {
-					combined := 200 + nextNum
-					if combined <= 360 {
-						result = append(result, "heading", strconv.Itoa(combined))
-						skip = 1 + digitCount // Skip "to" and all digit tokens
-						continue
-					}
-				}
-				// Case 2: N is 3-digit ending in 0 (100-990) - STT added extra trailing zero
-				// e.g., "to 900" should be "to 90" → "290"
-				if nextNum >= 100 && nextNum <= 990 && nextNum%10 == 0 {
-					actualNum := nextNum / 10 // Remove trailing zero
-					combined := 200 + actualNum
-					if combined <= 360 {
-						result = append(result, "heading", strconv.Itoa(combined))
-						skip = 1 + digitCount // Skip "to" and all digit tokens
-						continue
-					}
-				}
-			}
-		}
-
 		// Handle "turn [word] to N" where the word is garbage and "to" is garbled "two".
-		// e.g., "turn navigation to 70" → "turn heading 270"
-		// e.g., "turn navigation to 7 0" → "turn heading 270" (digits may be separate)
-		// The garbage word is likely a garbled direction (left/right) that we can ignore
-		// since we're extracting a heading anyway.
+		// e.g., "turn navigation to 7 0" → "turn heading 270"
 		if tokens[i] == "turn" && i+3 < len(tokens) && tokens[i+2] == "to" {
-			// tokens[i+1] is the garbage word (e.g., "navigation")
-			// Check if it's not a known direction word (left/right) - if it is, let normal parsing handle it
 			garbageWord := tokens[i+1]
 			if garbageWord != "left" && garbageWord != "right" && garbageWord != "heading" {
-				// Count consecutive digit tokens starting at i+3
 				digitCount := 0
 				for j := i + 3; j < len(tokens) && IsNumber(tokens[j]); j++ {
 					digitCount++
 				}
-
 				if digitCount >= 1 {
 					var digitStr string
 					for j := i + 3; j < i+3+digitCount; j++ {
 						digitStr += tokens[j]
 					}
 					nextNum := ParseNumber(digitStr)
-
-					// "to N" where N is 2-digit (10-99) → "2N"
 					if nextNum >= 10 && nextNum <= 99 {
 						combined := 200 + nextNum
 						if combined <= 360 {
 							result = append(result, "turn", "heading", strconv.Itoa(combined))
-							skip = 2 + digitCount // Skip garbage word, "to", and digit tokens
+							skip = 2 + digitCount
 							continue
 						}
 					}
 				}
-			}
-		}
-
-		// Handle "l s" → "ils" (2 letters, missing "i")
-		// Context-dependent: only when followed by "runway" or a number
-		if tokens[i] == "l" && i+1 < len(tokens) && tokens[i+1] == "s" {
-			if i+2 < len(tokens) {
-				next := tokens[i+2]
-				if next == "runway" || IsNumber(next) {
-					result = append(result, "ils")
-					skip = 1 // Skip the "s"
-					continue
-				}
-			}
-		}
-
-		// Handle "10 N [M] thousand" where "10" is garbled "to"
-		// e.g., "10 1 4 thousand" → "1 4 thousand" (14,000 ft)
-		// Only apply when followed by single digits then "thousand"
-		if tokens[i] == "10" && i+2 < len(tokens) {
-			// Look for pattern: 10 + single digits + thousand
-			j := i + 1
-			for j < len(tokens) && IsDigit(tokens[j]) {
-				j++
-			}
-			// Must have consumed at least one digit and next word is "thousand"
-			if j > i+1 && j < len(tokens) && tokens[j] == "thousand" {
-				// Skip the "10", keep the remaining digits and thousand
-				continue
-			}
-		}
-
-		// Handle "10XXX" headings where "10" is a garbled transcription of "heading"
-		// e.g., "10140" → ["heading", "140"], "10270" → ["heading", "270"]
-		if len(tokens[i]) == 5 && tokens[i][:2] == "10" && IsNumber(tokens[i]) {
-			possibleHeading := tokens[i][2:]
-			hdg := ParseNumber(possibleHeading)
-			if hdg >= 1 && hdg <= 360 {
-				result = append(result, "heading", possibleHeading)
-				continue
 			}
 		}
 
@@ -1084,14 +911,6 @@ func postProcessNormalized(tokens []string) []string {
 			}
 		}
 
-		// Handle abnormally large numbers that are likely altitude STT errors.
-		// e.g., "144000" → "14000" (doubled 4), "120000" → "12000" (extra zero)
-		// These occur when STT doubles a digit or adds extra zeros.
-		if correctedNum := fixLargeNumber(tokens[i]); correctedNum != "" {
-			result = append(result, correctedNum)
-			continue
-		}
-
 		// Handle "<number> degrees [to the] left/right" pattern without "turn" keyword.
 		// e.g., "20 degrees to the right" → "turn 20 degrees to the right"
 		// Only applies when number is a valid degree value (1-45) and followed by "degrees".
@@ -1110,20 +929,6 @@ func postProcessNormalized(tokens []string) []string {
 					result = append(result, "turn")
 					// Continue to add the number below
 				}
-			}
-		}
-
-		// Handle "for [a] thousand/hundred" → "4 thousand/hundred"
-		// "for" sounds like "four" in altitude contexts
-		if tokens[i] == "for" && i+1 < len(tokens) {
-			nextIdx := i + 1
-			// Skip optional "a" between "for" and "thousand/hundred"
-			if tokens[nextIdx] == "a" && nextIdx+1 < len(tokens) {
-				nextIdx++
-			}
-			if tokens[nextIdx] == "thousand" || tokens[nextIdx] == "hundred" {
-				result = append(result, "4")
-				continue
 			}
 		}
 
@@ -1199,51 +1004,6 @@ func ParseNumber(s string) int {
 		n = n*10 + int(c-'0')
 	}
 	return n
-}
-
-// fixLargeNumber corrects abnormally large numbers that are likely STT errors.
-// e.g., "144000" → "14000" (doubled digit), "120000" → "12000" (extra zero)
-// Returns the corrected number string, or empty string if no correction applies.
-func fixLargeNumber(s string) string {
-	if !IsNumber(s) {
-		return ""
-	}
-	n := ParseNumber(s)
-	// Numbers > 60000 are unlikely altitudes (max typical is FL600 = 60000 ft)
-	if n < 100000 || n > 1000000 {
-		return ""
-	}
-
-	// First try: remove spurious '0' after first digit (e.g., "104000" → "14000")
-	// This handles STT errors where "fourteen" becomes "one oh four" or similar.
-	// Check this first because it's more likely to be the intended altitude.
-	if len(s) >= 3 && s[1] == '0' && s[2] != '0' {
-		corrected := string(s[0]) + s[2:]
-		if cn := ParseNumber(corrected); cn >= 1000 && cn <= 60000 {
-			return corrected
-		}
-	}
-
-	// Second try: remove a doubled digit (e.g., "144000" → "14000")
-	for j := 1; j < len(s); j++ {
-		if s[j] == s[j-1] {
-			// Try removing the duplicate
-			corrected := s[:j] + s[j+1:]
-			if cn := ParseNumber(corrected); cn >= 1000 && cn <= 60000 {
-				return corrected
-			}
-		}
-	}
-
-	// Third try: remove trailing zero (e.g., "120000" → "12000")
-	if s[len(s)-1] == '0' {
-		corrected := n / 10
-		if corrected >= 1000 && corrected <= 60000 {
-			return strconv.Itoa(corrected)
-		}
-	}
-
-	return ""
 }
 
 // splitTextNumber splits a word that has text followed by digits (or vice versa).

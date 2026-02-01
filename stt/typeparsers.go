@@ -66,13 +66,6 @@ func (p *altitudeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 					return tokens[j].Value, j - pos + 1, ""
 				}
 			}
-			// Check for garbled altitude pattern
-			if i+1 < len(tokens) && tokens[i+1].Type == TokenNumber {
-				next := tokens[i+1]
-				if t.Value < 100 && next.Value >= 1000 && next.Value <= 60000 && next.Value%100 == 0 {
-					return next.Value / 100, i - pos + 2, ""
-				}
-			}
 
 			// Standard altitude encoding (10-99 means 1000-9900 ft, 100+ for higher)
 			// Exclude speed range 100-400 unless allowFlightLevel is set
@@ -94,43 +87,19 @@ func (p *altitudeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 				}
 			}
 
-			// Handle STT transcribing "ten thousand" as "1000" or "1,000"
-			// This specific error is common because "ten" sounds like "1" to STT.
-			// Only apply to 1000 specifically - other values like 3000, 8000 are
-			// more likely to mean actual 3,000 or 8,000 feet.
-			if t.Value == 1000 {
-				return 100, i - pos + 1, "" // 10,000 feet
-			}
-
 			// Large number in raw feet
 			if t.Value >= 1000 && t.Value <= 60000 && t.Value%100 == 0 {
 				return t.Value / 100, i - pos + 1, ""
 			}
 
-			// Handle "repeated altitude" pattern: "one four fourteen" → 1414
-			// where the altitude is stated twice (shorthand + full form).
-			// Pattern: 4-digit number ABAB where AB is repeated (e.g., 1414, 2121).
+			// Handle "repeated altitude" pattern: "one three thirteen" → 1313
+			// where the altitude is stated twice. Pattern: 4-digit ABAB.
 			if t.Value >= 1010 && t.Value <= 6060 {
 				firstHalf := t.Value / 100
 				secondHalf := t.Value % 100
 				if firstHalf == secondHalf && firstHalf >= 10 && firstHalf <= 60 {
-					logLocalStt("  repeated altitude pattern: %d -> %d (AB=%d repeated)", t.Value, firstHalf*10, firstHalf)
+					logLocalStt("  repeated altitude pattern: %d -> %d", t.Value, firstHalf*10)
 					return firstHalf * 10, i - pos + 1, ""
-				}
-			}
-
-			// Handle 3-digit values that are likely thousands with decimal artifacts
-			// e.g., "9.00" → 900 means 9000 feet, "5.00" → 500 means 5000 feet
-			// These are outside the ambiguous speed range (100-400)
-			if t.Value >= 500 && t.Value <= 900 && t.Value%100 == 0 {
-				return t.Value / 10, i - pos + 1, ""
-			}
-
-			// STT adds extra zeros
-			if t.Value >= 100000 && t.Value <= 6000000 && t.Value%10000 == 0 {
-				corrected := t.Value / 100
-				if corrected >= 1000 && corrected <= 60000 {
-					return corrected / 100, i - pos + 1, ""
 				}
 			}
 
@@ -164,23 +133,11 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 		t := tokens[i]
 
 		// Skip numbers that follow "speed" keyword - those are speed values, not headings.
-		// This prevents "left approach speed 180" from matching as heading 180.
 		if i > pos && strings.ToLower(tokens[i-1].Text) == "speed" {
 			continue
 		}
 
-		// Handle "to N" pattern where "to" is garbled "two" (2).
-		// E.g., "heading to 70" should be "heading 270".
-		if t.Type == TokenWord && strings.ToLower(t.Text) == "to" && i+1 < len(tokens) {
-			if next := tokens[i+1]; next.Type == TokenNumber && next.Value >= 10 && next.Value <= 99 {
-				hdg := 200 + next.Value
-				if hdg >= 1 && hdg <= 360 {
-					return hdg, i - pos + 2, ""
-				}
-			}
-		}
-
-		// Handle 4-digit values where first 3 digits form valid heading
+		// Handle 4-digit values where first 3 digits form valid heading (e.g., 1507 → 150)
 		if t.Type == TokenNumber && t.Value > 360 && t.Value < 10000 {
 			hdg := t.Value / 10
 			if hdg >= 1 && hdg <= 360 {
@@ -190,17 +147,6 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 
 		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 360 {
 			hdg := t.Value
-
-			// Check for "N to M" pattern (garbled)
-			if hdg < 100 && i+2 < len(tokens) {
-				nextText := strings.ToLower(tokens[i+1].Text)
-				if nextText == "to" && tokens[i+2].Type == TokenNumber {
-					largerHdg := tokens[i+2].Value
-					if largerHdg >= 100 && largerHdg <= 360 {
-						return largerHdg, i - pos + 3, ""
-					}
-				}
-			}
 
 			// Handle leading zero and dropped trailing zero patterns
 			text := t.Text
@@ -255,15 +201,13 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 
 		if t.Type == TokenNumber {
 			// Normal speed range
-			// Round down to nearest 10 - ATC speeds are always multiples of 10,
-			// so trust the first two digits and discard the last (likely STT error).
-			// e.g., 182 → 180, 173 → 170
+			// Round down to nearest 10 - ATC speeds are always multiples of 10.
 			if t.Value >= 100 && t.Value <= 400 {
 				rounded := (t.Value / 10) * 10
 				return rounded, i - pos + 1, ""
 			}
 
-			// 4-digit with extra digit
+			// 4-digit with extra digit (e.g., 1909 → 190)
 			if t.Value > 400 {
 				corrected := t.Value / 10
 				if corrected >= 100 && corrected <= 400 {
@@ -272,9 +216,7 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 			}
 
 			// Handle 2-digit speeds followed by a trailing zero token
-			// STT often splits "one niner zero" into separate tokens like "19" "00"
-			// When the next token is 0, combine them: 19 + 0 → 190
-			// Speeds are almost always multiples of 10 knots
+			// STT sometimes splits "two one zero" into "21" "0"
 			if t.Value >= 10 && t.Value <= 40 && i+1 < len(tokens) {
 				next := tokens[i+1]
 				if next.Type == TokenNumber && next.Value == 0 {
@@ -282,20 +224,6 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 					if combined >= 100 && combined <= 400 {
 						return combined, i - pos + 2, ""
 					}
-				}
-			}
-
-			// 2-digit with missing leading digit
-			if t.Value >= 10 && t.Value < 100 {
-				// Try prepending "2"
-				corrected := 200 + t.Value
-				if corrected >= 200 && corrected <= 290 {
-					return corrected, i - pos + 1, ""
-				}
-				// Try prepending "1"
-				corrected = 100 + t.Value
-				if corrected >= 140 && corrected <= 190 {
-					return corrected, i - pos + 1, ""
 				}
 			}
 		}

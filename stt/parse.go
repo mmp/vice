@@ -29,8 +29,6 @@ func ParseCommands(tokens []Token, ac Aircraft) ([]string, float64) {
 		}
 
 		// Check for "the" followed by descent/climb keywords - STT often garbles "then" as "the"
-		// e.g., "speed 180 the descend maintain 3000" = "speed 180 then descend and maintain 3000"
-		// Only apply when we've already matched at least one command (so "then" makes sense).
 		// Must check BEFORE filler word skip since "the" is a filler word.
 		if len(commands) > 0 && tokens[pos].Text == "the" && pos+1 < len(tokens) {
 			nextText := strings.ToLower(tokens[pos+1].Text)

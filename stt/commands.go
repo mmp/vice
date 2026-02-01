@@ -119,17 +119,6 @@ func extractAltitude(tokens []Token) (int, int) {
 			return t.Value, i + 1
 		}
 		if t.Type == TokenNumber {
-			// Check if there's a better altitude right after this one
-			// e.g., "10 11000" where "10" is garbled and "11000" is the real altitude
-			if i+1 < len(tokens) && tokens[i+1].Type == TokenNumber {
-				next := tokens[i+1]
-				// If current is small (< 100) and next is raw feet, prefer next
-				if t.Value < 100 && next.Value >= 1000 && next.Value <= 60000 && next.Value%100 == 0 {
-					logLocalStt("  extractAltitude: skipping garbled %d, using %d", t.Value, next.Value/100)
-					return next.Value / 100, i + 2
-				}
-			}
-
 			// Heuristic: if it looks like altitude encoding (2-3 digits, reasonable value).
 			// Exclude the speed range (100-400) since those are ambiguous and more likely
 			// to be speeds. Flight levels in that range are handled by the allowFlightLevel
@@ -148,15 +137,6 @@ func extractAltitude(tokens []Token) (int, int) {
 				encoded := t.Value / 10
 				logLocalStt("  extractAltitude: interpreted %d as %d000 ft (encoded %d)", t.Value, t.Value/100, encoded)
 				return encoded, i + 1
-			}
-			// STT sometimes adds extra zeros: "9,000" -> "900,000" or "12,000" -> "120,000"
-			// Detect values 100x too large and correct them
-			if t.Value >= 100000 && t.Value <= 6000000 && t.Value%10000 == 0 {
-				corrected := t.Value / 100
-				if corrected >= 1000 && corrected <= 60000 {
-					logLocalStt("  extractAltitude: corrected %d -> %d (extra zeros)", t.Value, corrected/100)
-					return corrected / 100, i + 1
-				}
 			}
 			// Single digit 1-9 in altitude context means thousands
 			// e.g., "descend and maintain niner" -> 9 means 9000 feet = 90 encoded
@@ -189,32 +169,8 @@ func extractHeading(tokens []Token) (int, int) {
 			continue
 		}
 
-		// Handle 4-digit values where first 3 digits form valid heading (e.g., 2801 → 280)
-		// STT sometimes appends trailing garbage to headings
-		if t.Type == TokenNumber && t.Value > 360 && t.Value < 10000 {
-			// Try dropping the last digit
-			hdg := t.Value / 10
-			if hdg >= 1 && hdg <= 360 {
-				logLocalStt("  extractHeading: corrected %d -> %d (dropped trailing digit)", t.Value, hdg)
-				return hdg, i + 1
-			}
-		}
 		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 360 {
 			hdg := t.Value
-
-			// Check for pattern: small_number + "to" + larger_number
-			// e.g., "10 to 130" where "10" is garbled and "130" is the real heading
-			// STT sometimes produces this when transcribing "one three zero"
-			if hdg < 100 && i+2 < len(tokens) {
-				nextText := strings.ToLower(tokens[i+1].Text)
-				if nextText == "to" && tokens[i+2].Type == TokenNumber {
-					largerHdg := tokens[i+2].Value
-					if largerHdg >= 100 && largerHdg <= 360 {
-						logLocalStt("  extractHeading: skipping garbled %d, using %d", hdg, largerHdg)
-						return largerHdg, i + 3
-					}
-				}
-			}
 
 			// Headings are always spoken as 3 digits and almost always multiples of 10.
 			// Use Token.Text to determine if user said leading zero:
@@ -263,55 +219,13 @@ func extractSpeed(tokens []Token) (int, int) {
 		}
 		if t.Type == TokenNumber {
 			// Normal speed range (100-400 knots)
-			// Round down to nearest 10 - ATC speeds are always multiples of 10,
-			// so trust the first two digits and discard the last (likely STT error).
-			// e.g., 182 → 180, 173 → 170
+			// Round down to nearest 10 - ATC speeds are always multiples of 10.
 			if t.Value >= 100 && t.Value <= 400 {
 				rounded := (t.Value / 10) * 10
 				if rounded != t.Value {
 					logLocalStt("  extractSpeed: rounded %d -> %d (to nearest 10)", t.Value, rounded)
 				}
 				return rounded, i + 1
-			}
-			// Handle 4-digit speeds with extra digit (e.g., "1709" → 170, "2101" → 210)
-			// STT sometimes appends an extra digit to speeds
-			if t.Value > 400 {
-				corrected := t.Value / 10
-				if corrected >= 100 && corrected <= 400 {
-					logLocalStt("  extractSpeed: corrected %d -> %d (extra digit)", t.Value, corrected)
-					return corrected, i + 1
-				}
-			}
-			// Handle 2-digit speeds followed by a trailing zero token
-			// STT often splits "one niner zero" into separate tokens like "19" "00" or "19" "0"
-			// When the next token is 0, combine them: 19 + 0 → 190
-			// Speeds are almost always multiples of 10 knots
-			if t.Value >= 10 && t.Value <= 40 && i+1 < len(tokens) {
-				next := tokens[i+1]
-				if next.Type == TokenNumber && next.Value == 0 {
-					combined := t.Value * 10
-					if combined >= 100 && combined <= 400 {
-						logLocalStt("  extractSpeed: combined %d + 0 -> %d (split digits)", t.Value, combined)
-						return combined, i + 2
-					}
-				}
-			}
-			// Handle 2-digit speeds with missing leading digit (e.g., "30" → 230, "70" → 170)
-			// STT sometimes drops the leading digit for speeds spoken as "two three zero"
-			// Try prepending "2" first (typical approach speeds are 200-250), then "1"
-			if t.Value >= 10 && t.Value < 100 {
-				// Try prepending "2" first - typical for "increase speed to X"
-				corrected := 200 + t.Value
-				if corrected >= 200 && corrected <= 290 {
-					logLocalStt("  extractSpeed: corrected %d -> %d (missing leading 2)", t.Value, corrected)
-					return corrected, i + 1
-				}
-				// Try prepending "1" - typical for slower speeds
-				corrected = 100 + t.Value
-				if corrected >= 140 && corrected <= 190 {
-					logLocalStt("  extractSpeed: corrected %d -> %d (missing leading 1)", t.Value, corrected)
-					return corrected, i + 1
-				}
 			}
 		}
 	}
@@ -1033,9 +947,9 @@ func extractApproachType(tokens []Token) (string, int) {
 
 	// Single-word approach types
 	switch text {
-	case "ils", "alice", "dallas", "als", "atlas", "dialogues", "dial": // STT errors for "ILS"
+	case "ils":
 		return "ils", 1
-	case "rnav", "arnav": // "arnav" is STT error for "RNAV"
+	case "rnav":
 		return "rnav", 1
 	case "visual":
 		return "visual", 1
