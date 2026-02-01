@@ -205,7 +205,7 @@ func convertAltitudeToSpeedIfKnots(tokens []Token, commands []string) []string {
 	// Convert altitude commands to speed commands
 	result := make([]string, len(commands))
 	for i, cmd := range commands {
-		if len(cmd) > 1 && cmd[0] == 'A' && isAllDigits(cmd[1:]) {
+		if len(cmd) > 1 && cmd[0] == 'A' && IsNumber(cmd[1:]) {
 			result[i] = "S" + cmd[1:]
 			logLocalStt("  converted altitude to speed due to 'knots': %s -> %s", cmd, result[i])
 		} else {

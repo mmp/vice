@@ -648,7 +648,7 @@ func applyDisregard(tokens []Token) []Token {
 				if (w == "left" || w == "right") && j > 0 && afterCorrection[j-1].Type == TokenNumber {
 					continue
 				}
-				if isCommandKeyword(w) {
+				if IsCommandKeyword(w) {
 					hasCommandKeyword = true
 					break
 				}
@@ -673,21 +673,6 @@ func applyDisregard(tokens []Token) []Token {
 		}
 	}
 	return tokens
-}
-
-// isCommandKeyword returns true if the word is a command keyword that indicates
-// a full command is being spoken (not just a number/frequency correction).
-func isCommandKeyword(w string) bool {
-	commandKeywords := map[string]bool{
-		"turn": true, "heading": true, "left": true, "right": true,
-		"climb": true, "descend": true, "maintain": true,
-		"speed": true, "reduce": true, "increase": true,
-		"expect": true, "cleared": true, "direct": true,
-		"contact": true, "squawk": true, "ident": true,
-		"hold": true, "intercept": true, "localizer": true,
-		"approach": true, "ils": true, "rnav": true, "visual": true,
-	}
-	return commandKeywords[w]
 }
 
 // isDisregardOnly returns true if the tokens consist only of "disregard"

@@ -76,7 +76,7 @@ func validateCommand(cmd string, ac Aircraft) string {
 		// D could be Descend (D{ALT}) or Direct (D{FIX})
 		if len(cmd) > 1 {
 			rest := cmd[1:]
-			if isAllDigits(rest) {
+			if IsNumber(rest) {
 				// Descend command - validate altitude
 				return validateDescend(rest, ac)
 			}
@@ -105,7 +105,7 @@ func validateCommand(cmd string, ac Aircraft) string {
 			}
 
 			// Check if all digits (altitude) or approach code
-			if isAllDigits(rest) {
+			if IsNumber(rest) {
 				return validateClimb(rest, ac)
 			}
 
@@ -302,7 +302,7 @@ func filterIncompatibleCommands(commands []string) ([]string, []string) {
 			hasDirectFix = true
 			break
 		}
-		if len(cmd) > 1 && cmd[0] == 'D' && !isAllDigits(cmd[1:]) {
+		if len(cmd) > 1 && cmd[0] == 'D' && !IsNumber(cmd[1:]) {
 			hasDirectFix = true
 			break
 		}
@@ -311,7 +311,7 @@ func filterIncompatibleCommands(commands []string) ([]string, []string) {
 	// Check if there's a cleared approach command (C{approach} but not CVS or CAC)
 	hasApproachClearance := false
 	for _, cmd := range commands {
-		if len(cmd) > 1 && cmd[0] == 'C' && cmd != "CVS" && cmd != "CAC" && !isAllDigits(cmd[1:]) {
+		if len(cmd) > 1 && cmd[0] == 'C' && cmd != "CVS" && cmd != "CAC" && !IsNumber(cmd[1:]) {
 			// Check it's not a cross-fix command (contains /)
 			if !strings.Contains(cmd, "/") {
 				hasApproachClearance = true
@@ -324,7 +324,7 @@ func filterIncompatibleCommands(commands []string) ([]string, []string) {
 	for _, cmd := range commands {
 		// If there's a direct-to-fix command, filter out heading commands
 		if hasDirectFix {
-			if len(cmd) > 1 && (cmd[0] == 'L' || cmd[0] == 'R' || cmd[0] == 'H') && isAllDigits(cmd[1:]) {
+			if len(cmd) > 1 && (cmd[0] == 'L' || cmd[0] == 'R' || cmd[0] == 'H') && IsNumber(cmd[1:]) {
 				errors = append(errors, "heading command incompatible with direct-to-fix")
 				continue
 			}
@@ -340,19 +340,6 @@ func filterIncompatibleCommands(commands []string) ([]string, []string) {
 	}
 
 	return filtered, errors
-}
-
-// isAllDigits returns true if string contains only digits.
-func isAllDigits(s string) bool {
-	if len(s) == 0 {
-		return false
-	}
-	for _, c := range s {
-		if c < '0' || c > '9' {
-			return false
-		}
-	}
-	return true
 }
 
 // isAltitudeError returns true if the error indicates an altitude-related issue.
@@ -386,20 +373,20 @@ func isCommandValidForState(cmd string, state string) bool {
 	case "departure":
 		// Departures: climbs, headings, direct, speed, FC, CVS
 		// Not: descend, approach clearances, TO
-		if cmd[0] == 'D' && len(cmd) > 1 && isAllDigits(cmd[1:]) {
+		if cmd[0] == 'D' && len(cmd) > 1 && IsNumber(cmd[1:]) {
 			return false // Descend
 		}
 		if cmd == "TO" {
 			return false
 		}
-		if cmd[0] == 'E' || (cmd[0] == 'C' && len(cmd) > 1 && !isAllDigits(cmd[1:])) {
+		if cmd[0] == 'E' || (cmd[0] == 'C' && len(cmd) > 1 && !IsNumber(cmd[1:])) {
 			return false // Approach commands
 		}
 
 	case "arrival":
 		// Arrivals: descend, headings, speed, approach expect/clear, DVS
 		// Not typically: climb
-		if cmd[0] == 'C' && len(cmd) > 1 && isAllDigits(cmd[1:]) {
+		if cmd[0] == 'C' && len(cmd) > 1 && IsNumber(cmd[1:]) {
 			return false // Climb
 		}
 		if cmd == "TO" {

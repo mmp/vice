@@ -72,7 +72,7 @@ func commandEquivalent(expected, actual string, ac Aircraft, hasAircraftContext 
 		}
 
 		// Check if they're altitude commands (A, D, or C followed by digits)
-		if !isAllDigits(expAlt) {
+		if !IsNumber(expAlt) {
 			return false
 		}
 
