@@ -1292,7 +1292,8 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	imgui.Text("Readback error interval:")
 	imgui.SameLine()
 	imgui.SetNextItemWidth(200)
-	imgui.SliderFloatV("##errorInterval", &c.PilotErrorInterval, 1, 30, "%.1f min", imgui.SliderFlagsNone)
+	imgui.SliderFloatV("##errorInterval", &c.PilotErrorInterval, 0, 30,
+		util.Select(c.PilotErrorInterval == 0, "never", "%.1f min"), imgui.SliderFlagsNone)
 	imgui.Spacing()
 
 	// WEATHER & TIME section
@@ -1374,7 +1375,8 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	imgui.Text("Emergency aircraft rate:")
 	imgui.SameLine()
 	imgui.SetNextItemWidth(150)
-	imgui.SliderFloatV("##emergencyRate", &lc.EmergencyAircraftRate, 0, 20, "%.1f /hr", imgui.SliderFlagsNone)
+	imgui.SliderFloatV("##emergencyRate", &lc.EmergencyAircraftRate, 0, 20,
+		util.Select(lc.EmergencyAircraftRate == 0, "never", "%.1f /hr"), imgui.SliderFlagsNone)
 
 	return false
 }
@@ -1703,7 +1705,7 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 
 func drawEmergencyAircraftUI(lc *sim.LaunchConfig, p platform.Platform) {
 	imgui.SliderFloatV("Emergency Aircraft Rate (per hour)", &lc.EmergencyAircraftRate,
-		0, 20, "%.1f", imgui.SliderFlagsNone)
+		0, 20, util.Select(lc.EmergencyAircraftRate == 0, "never", "%.1f"), imgui.SliderFlagsNone)
 }
 
 func controllerDisplayLabel(controllers map[av.ControlPosition]*av.Controller, pos av.ControlPosition) string {

@@ -120,7 +120,7 @@ func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vfrAirports m
 		InboundFlowRateScale:        1,
 		ArrivalPushFrequencyMinutes: 20,
 		ArrivalPushLengthMinutes:    10,
-		EmergencyAircraftRate:       2,
+		EmergencyAircraftRate:       0,
 	}
 
 	for icao, ap := range vfrAirports {

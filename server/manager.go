@@ -175,7 +175,7 @@ type NewSimRequest struct {
 func MakeNewSimRequest() NewSimRequest {
 	return NewSimRequest{
 		NewSimName:         rand.Make().AdjectiveNoun(),
-		PilotErrorInterval: 3,
+		PilotErrorInterval: 0,
 	}
 }
 
