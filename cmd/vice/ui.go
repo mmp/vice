@@ -52,10 +52,11 @@ var (
 		showLaunchControl bool
 
 		// STT state
-		pttRecording bool
-		pttGarbling  bool      // true if PTT pressed while audio was playing (no recording)
-		pttCapture   bool      // capturing new PTT key assignment
-		pttPressTime time.Time // for latency logging
+		pttRecording              bool
+		pttGarbling               bool      // true if PTT pressed while audio was playing (no recording)
+		pttCapture                bool      // capturing new PTT key assignment
+		pttPressTime              time.Time // for latency logging
+		audioCaptureWarningLogged bool      // only log audio capture failure once
 	}
 
 	//go:embed icons/tower-256x256.png
@@ -945,7 +946,10 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 	if !p.IsAudioCapturing() {
 		if err := p.StartAudioCaptureWithDevice(config.SelectedMicrophone); err != nil {
 			// Log but don't block - recording will still work, just without preroll
-			lg.Warnf("Failed to start background audio capture: %v", err)
+			if !ui.audioCaptureWarningLogged {
+				lg.Warnf("Failed to start background audio capture: %v", err)
+				ui.audioCaptureWarningLogged = true
+			}
 		}
 	}
 
