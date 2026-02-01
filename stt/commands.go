@@ -497,6 +497,113 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 		return bestAppr, bestScore, bestLength
 	}
 
+	// Fallback: match by runway number + direction, then disambiguate by approach type.
+	// This handles garbled approach types like "a less four right" → "ILS runway four right".
+	if runwayNum, runwayDir, numPos := extractRunwayNumber(tokens); runwayNum != "" {
+		runwaySpoken := runwayNum
+		if runwayDir != "" {
+			runwaySpoken += " " + runwayDir
+		}
+
+		// Filter approaches to those matching the runway
+		var matchingApproaches []struct {
+			spokenName string
+			apprID     string
+		}
+		for spokenName, apprID := range approaches {
+			if runwayMatches(strings.ToLower(spokenName), runwaySpoken) {
+				matchingApproaches = append(matchingApproaches, struct {
+					spokenName string
+					apprID     string
+				}{spokenName, apprID})
+			}
+		}
+
+		if len(matchingApproaches) == 1 {
+			// Only one approach matches the runway - use it
+			consumed := numPos + 1
+			if runwayDir != "" {
+				consumed++
+			}
+			logLocalStt("  extractApproach: unique runway match %q -> %q", runwaySpoken, matchingApproaches[0].apprID)
+			return matchingApproaches[0].apprID, 0.85, consumed
+		} else if len(matchingApproaches) > 1 {
+			// Multiple approaches match - disambiguate using prefix tokens
+			// Get tokens before the runway number, stopping at "runway" keyword
+			var prefixParts []string
+			for i := 0; i < numPos; i++ {
+				text := strings.ToLower(tokens[i].Text)
+				if text == "runway" {
+					break // Don't include "runway" in the prefix
+				}
+				if tokens[i].Type == TokenNumber {
+					prefixParts = append(prefixParts, spokenDigits(tokens[i].Value))
+				} else {
+					prefixParts = append(prefixParts, text)
+				}
+			}
+			prefixPhrase := strings.Join(prefixParts, " ")
+
+			// Find the best matching approach by comparing prefix to approach type portion
+			var bestMatch string
+			var bestMatchScore float64
+			for _, ma := range matchingApproaches {
+				// Extract the approach type portion (before "runway")
+				spokenLower := strings.ToLower(ma.spokenName)
+				typeEnd := strings.Index(spokenLower, "runway")
+				if typeEnd == -1 {
+					typeEnd = len(spokenLower)
+				}
+				approachTypePortion := strings.TrimSpace(spokenLower[:typeEnd])
+
+				// Compare using Jaro-Winkler
+				score := JaroWinkler(prefixPhrase, approachTypePortion)
+
+				// Also try phonetic matching for short garbled inputs
+				if PhoneticMatch(prefixPhrase, approachTypePortion) {
+					score = max(score, 0.85)
+				}
+
+				if score > bestMatchScore || (score == bestMatchScore && ma.apprID < bestMatch) {
+					bestMatchScore = score
+					bestMatch = ma.apprID
+				}
+			}
+
+			// When disambiguating between multiple runway matches, pick the best match.
+			// If scores are low (< 0.50), prefer the assigned approach when available.
+			if bestMatch != "" && bestMatchScore >= 0.30 {
+				// If the best score is weak and we have an assigned approach, check if one
+				// of the matching approaches matches the assigned approach's type
+				if bestMatchScore < 0.50 && assignedApproach != "" {
+					assignedLower := strings.ToLower(assignedApproach)
+					for _, ma := range matchingApproaches {
+						if matchesAssignedRunway(ma.apprID, assignedApproach) {
+							// Check if approach type matches assigned
+							spokenLower := strings.ToLower(ma.spokenName)
+							if (strings.Contains(assignedLower, "ils") &&
+								(strings.Contains(spokenLower, "i l s") || strings.Contains(spokenLower, "ils"))) ||
+								(strings.Contains(assignedLower, "rnav") &&
+									(strings.Contains(spokenLower, "r-nav") || strings.Contains(spokenLower, "rnav"))) {
+								bestMatch = ma.apprID
+								logLocalStt("  extractApproach: runway match, low score (%.2f), using assigned approach %q",
+									bestMatchScore, bestMatch)
+								break
+							}
+						}
+					}
+				}
+				consumed := numPos + 1
+				if runwayDir != "" {
+					consumed++
+				}
+				logLocalStt("  extractApproach: runway match with type disambiguation %q -> %q (score=%.2f)",
+					runwaySpoken, bestMatch, bestMatchScore)
+				return bestMatch, 0.80, consumed
+			}
+		}
+	}
+
 	// Final fallback: when approach type is garbled but we have a direction that matches
 	// the assigned approach, use it. This handles cases like "at last turn two two left"
 	// where "at last turn" is garbled "ILS" and we have assigned approach "ILS Runway 22L".

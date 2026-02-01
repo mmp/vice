@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
   "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
   "callsign": "AAL89",
-  "command": "DR160 CI8R",
+  "command": "R160 CI8R",
   "stt_aircraft": {
     "Alaska seven 22": {
       "Callsign": "ASA722",

@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce RTX 5070 (11943MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "JBU8821",
-  "command": "L340 I",
+  "command": "S180 L340 I",
   "stt_aircraft": {
     "American 75": {
       "Callsign": "AAL75",
