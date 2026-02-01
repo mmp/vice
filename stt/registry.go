@@ -3,7 +3,6 @@ package stt
 import (
 	"fmt"
 	"reflect"
-	"strings"
 )
 
 // sttCommand represents a registered command with its template and handler.
@@ -92,7 +91,7 @@ func registerSTTCommand(template string, handler any, opts ...CommandOption) {
 
 	// Generate name from template if not set
 	if cmd.name == "" {
-		cmd.name = generateCommandName(template)
+		cmd.name = generatePatternName(template)
 	}
 
 	// Parse the template into matchers
@@ -108,31 +107,6 @@ func registerSTTCommand(template string, handler any, opts ...CommandOption) {
 	}
 
 	sttCommands = append(sttCommands, cmd)
-}
-
-// generateCommandName creates a name from the template for debugging.
-func generateCommandName(template string) string {
-	// Extract first few significant words
-	words := strings.Fields(template)
-	var parts []string
-	for _, w := range words {
-		// Skip optional brackets and placeholders
-		if strings.HasPrefix(w, "[") || strings.HasPrefix(w, "{") {
-			continue
-		}
-		// Take first alternative if present
-		if idx := strings.Index(w, "|"); idx > 0 {
-			w = w[:idx]
-		}
-		parts = append(parts, w)
-		if len(parts) >= 3 {
-			break
-		}
-	}
-	if len(parts) == 0 {
-		return "unnamed"
-	}
-	return strings.Join(parts, "_")
 }
 
 // validateHandler checks that the handler function signature matches the template parameters.

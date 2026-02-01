@@ -15,97 +15,34 @@ import (
 //   - `{type}` - Typed parameter
 //   - `[word {type}]` - Optional section with typed param
 func parseTemplate(template string) ([]matcher, error) {
-	var matchers []matcher
-	pos := 0
-	template = strings.TrimSpace(template)
-
-	for pos < len(template) {
-		// Skip whitespace
-		for pos < len(template) && template[pos] == ' ' {
-			pos++
-		}
-		if pos >= len(template) {
-			break
-		}
-
-		switch template[pos] {
-		case '[':
-			// Optional section
-			end := findMatchingBracket(template, pos, '[', ']')
-			if end == -1 {
-				return nil, fmt.Errorf("unmatched '[' at position %d", pos)
-			}
-			inner := template[pos+1 : end]
-			innerMatchers, err := parseOptionalSection(inner)
-			if err != nil {
-				return nil, fmt.Errorf("error parsing optional section: %w", err)
-			}
-			matchers = append(matchers, innerMatchers...)
-			pos = end + 1
-
-		case '{':
-			// Typed parameter
-			end := strings.IndexByte(template[pos:], '}')
-			if end == -1 {
-				return nil, fmt.Errorf("unmatched '{' at position %d", pos)
-			}
-			typeID := template[pos+1 : pos+end]
-			parser := getTypeParser(typeID)
-			if parser == nil {
-				return nil, fmt.Errorf("unknown type: %s", typeID)
-			}
-			matchers = append(matchers, &typedMatcher{parser: parser})
-			pos = pos + end + 1
-
-		default:
-			// Literal word or alternatives
-			end := pos
-			for end < len(template) && template[end] != ' ' && template[end] != '[' && template[end] != '{' {
-				end++
-			}
-			word := template[pos:end]
-
-			// Check for alternatives
-			if strings.Contains(word, "|") {
-				alternatives := strings.Split(word, "|")
-				matchers = append(matchers, &literalMatcher{keywords: alternatives})
-			} else {
-				matchers = append(matchers, &literalMatcher{keywords: []string{word}})
-			}
-			pos = end
-		}
+	elements, err := parseTemplateElements(template)
+	if err != nil {
+		return nil, err
 	}
-
-	return matchers, nil
+	return elementsToCommandMatchers(elements)
 }
 
-// parseOptionalSection parses the content inside [...].
-func parseOptionalSection(content string) ([]matcher, error) {
-	content = strings.TrimSpace(content)
-	if content == "" {
-		return nil, nil
-	}
-
-	// Check if this contains a typed parameter
-	if strings.Contains(content, "{") {
-		// Parse inner content
-		innerMatchers, err := parseTemplate(content)
-		if err != nil {
-			return nil, err
-		}
-		// Wrap in optional group
-		return []matcher{&optionalGroupMatcher{matchers: innerMatchers}}, nil
-	}
-
-	// Just optional literal words
-	words := strings.Fields(content)
+// elementsToCommandMatchers converts template elements to command matchers.
+func elementsToCommandMatchers(elements []templateElement) ([]matcher, error) {
 	var matchers []matcher
-	for _, word := range words {
-		if strings.Contains(word, "|") {
-			alternatives := strings.Split(word, "|")
-			matchers = append(matchers, &optionalLiteralMatcher{keywords: alternatives})
-		} else {
-			matchers = append(matchers, &optionalLiteralMatcher{keywords: []string{word}})
+	for _, elem := range elements {
+		switch elem.Kind {
+		case elementLiteral:
+			matchers = append(matchers, &literalMatcher{keywords: elem.Keywords})
+		case elementTyped:
+			parser := getTypeParser(elem.TypeSpec)
+			if parser == nil {
+				return nil, fmt.Errorf("unknown type: %s", elem.TypeSpec)
+			}
+			matchers = append(matchers, &typedMatcher{parser: parser})
+		case elementOptionalLiteral:
+			matchers = append(matchers, &optionalLiteralMatcher{keywords: elem.Keywords})
+		case elementOptionalGroup:
+			inner, err := elementsToCommandMatchers(elem.Inner)
+			if err != nil {
+				return nil, err
+			}
+			matchers = append(matchers, &optionalGroupMatcher{matchers: inner})
 		}
 	}
 	return matchers, nil

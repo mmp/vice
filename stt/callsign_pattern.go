@@ -1,9 +1,6 @@
 package stt
 
-import (
-	"sort"
-	"strings"
-)
+import "sort"
 
 // CallsignPattern represents a declarative callsign matching rule.
 type CallsignPattern struct {
@@ -86,7 +83,7 @@ func RegisterCallsignPattern(template string, opts ...CallsignPatternOption) {
 
 	// Generate name from template if not set
 	if pattern.Name == "" {
-		pattern.Name = generateCallsignPatternName(template)
+		pattern.Name = generatePatternName(template)
 	}
 
 	// Parse the template into matchers
@@ -97,27 +94,6 @@ func RegisterCallsignPattern(template string, opts ...CallsignPatternOption) {
 	pattern.Matchers = matchers
 
 	callsignPatterns = append(callsignPatterns, pattern)
-}
-
-// generateCallsignPatternName creates a name from the template for debugging.
-func generateCallsignPatternName(template string) string {
-	// Extract significant parts from template
-	parts := strings.Fields(template)
-	var names []string
-	for _, p := range parts {
-		if strings.HasPrefix(p, "{") && strings.HasSuffix(p, "}") {
-			// Extract type name from {type} or {type:N}
-			inner := p[1 : len(p)-1]
-			if idx := strings.Index(inner, ":"); idx > 0 {
-				inner = inner[:idx]
-			}
-			names = append(names, inner)
-		}
-	}
-	if len(names) == 0 {
-		return "unnamed"
-	}
-	return strings.Join(names, "_")
 }
 
 // sortedCallsignPatterns returns patterns sorted by priority (highest first).

@@ -599,3 +599,103 @@ type airlineMatch struct {
 	airlineExact  bool    // true if exact match
 	airlineScore  float64 // JW similarity score for airline (1.0 for exact)
 }
+
+// callsignLiteralMatcher matches required literal keywords in callsign patterns.
+// This enables patterns like "november {flight_only}" where "november" is required.
+type callsignLiteralMatcher struct {
+	keywords []string
+}
+
+func (m *callsignLiteralMatcher) match(ctx *callsignMatchContext) []callsignMatchResult {
+	if ctx.TokenPos >= len(ctx.Tokens) {
+		return nil
+	}
+
+	text := strings.ToLower(ctx.Tokens[ctx.TokenPos].Text)
+	for _, kw := range m.keywords {
+		if FuzzyMatch(text, strings.ToLower(kw), 0.8) {
+			// Pass through existing candidates with position advanced
+			if len(ctx.Candidates) > 0 {
+				var results []callsignMatchResult
+				for _, cand := range ctx.Candidates {
+					result := cand
+					result.Consumed = ctx.TokenPos + 1
+					results = append(results, result)
+				}
+				return results
+			}
+			// No candidates yet - return placeholder to indicate match
+			return []callsignMatchResult{{Consumed: ctx.TokenPos + 1, Skip: ctx.Skip}}
+		}
+	}
+	return nil
+}
+
+// callsignOptionalLiteralMatcher matches optional keywords in callsign patterns.
+// This enables patterns like "{airline} [heavy|super] {flight}" for weight class.
+type callsignOptionalLiteralMatcher struct {
+	keywords []string
+}
+
+func (m *callsignOptionalLiteralMatcher) match(ctx *callsignMatchContext) []callsignMatchResult {
+	// Try to match
+	if ctx.TokenPos < len(ctx.Tokens) {
+		text := strings.ToLower(ctx.Tokens[ctx.TokenPos].Text)
+		for _, kw := range m.keywords {
+			if FuzzyMatch(text, strings.ToLower(kw), 0.8) {
+				// Matched - advance position
+				if len(ctx.Candidates) > 0 {
+					var results []callsignMatchResult
+					for _, cand := range ctx.Candidates {
+						result := cand
+						result.Consumed = ctx.TokenPos + 1
+						results = append(results, result)
+					}
+					return results
+				}
+				return []callsignMatchResult{{Consumed: ctx.TokenPos + 1, Skip: ctx.Skip}}
+			}
+		}
+	}
+
+	// Didn't match, but that's ok - it's optional
+	// Return candidates unchanged (or placeholder if no candidates)
+	if len(ctx.Candidates) > 0 {
+		return ctx.Candidates
+	}
+	return []callsignMatchResult{{Consumed: ctx.TokenPos, Skip: ctx.Skip}}
+}
+
+// callsignOptionalGroupMatcher matches optional groups containing multiple matchers.
+// This enables patterns like "[heavy|super {modifier}]" where the entire group is optional.
+type callsignOptionalGroupMatcher struct {
+	matchers []callsignMatcher
+}
+
+func (m *callsignOptionalGroupMatcher) match(ctx *callsignMatchContext) []callsignMatchResult {
+	// Try to match all inner matchers in sequence
+	results := ctx.Candidates
+	if len(results) == 0 {
+		results = []callsignMatchResult{{Consumed: ctx.TokenPos, Skip: ctx.Skip}}
+	}
+
+	for _, inner := range m.matchers {
+		innerCtx := &callsignMatchContext{
+			Tokens:     ctx.Tokens,
+			TokenPos:   results[0].Consumed, // Use position from previous matcher
+			Aircraft:   ctx.Aircraft,
+			Candidates: results,
+			Skip:       ctx.Skip,
+		}
+		results = inner.match(innerCtx)
+		if len(results) == 0 {
+			// Inner matcher failed - return original candidates (group is optional)
+			if len(ctx.Candidates) > 0 {
+				return ctx.Candidates
+			}
+			return []callsignMatchResult{{Consumed: ctx.TokenPos, Skip: ctx.Skip}}
+		}
+	}
+
+	return results
+}

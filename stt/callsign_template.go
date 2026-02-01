@@ -15,39 +15,41 @@ import (
 //   - {flight_only}   - Match flight number against all aircraft (standalone)
 //   - {exact_phrase}  - Match entire phrase exactly against aircraft map
 //   - {suffix_phrase} - Match phrase as suffix of GA callsign
+//   - word            - Match literal keyword (fuzzy matched)
+//   - word1|word2     - Match keyword alternatives
+//   - [word]          - Match optional literal keyword
+//   - [word {type}]   - Match optional group with typed param
 func parseCallsignTemplate(template string) ([]callsignMatcher, error) {
-	var matchers []callsignMatcher
-	pos := 0
-	template = strings.TrimSpace(template)
-
-	for pos < len(template) {
-		// Skip whitespace
-		for pos < len(template) && template[pos] == ' ' {
-			pos++
-		}
-		if pos >= len(template) {
-			break
-		}
-
-		if template[pos] != '{' {
-			return nil, fmt.Errorf("expected '{' at position %d, got %q", pos, template[pos])
-		}
-
-		// Find matching }
-		end := strings.IndexByte(template[pos:], '}')
-		if end == -1 {
-			return nil, fmt.Errorf("unmatched '{' at position %d", pos)
-		}
-		typeSpec := template[pos+1 : pos+end]
-
-		matcher, err := createCallsignMatcher(typeSpec)
-		if err != nil {
-			return nil, fmt.Errorf("error creating matcher for %q: %w", typeSpec, err)
-		}
-		matchers = append(matchers, matcher)
-		pos = pos + end + 1
+	elements, err := parseTemplateElements(template)
+	if err != nil {
+		return nil, err
 	}
+	return elementsToCallsignMatchers(elements)
+}
 
+// elementsToCallsignMatchers converts template elements to callsign matchers.
+func elementsToCallsignMatchers(elements []templateElement) ([]callsignMatcher, error) {
+	var matchers []callsignMatcher
+	for _, elem := range elements {
+		switch elem.Kind {
+		case elementTyped:
+			m, err := createCallsignMatcher(elem.TypeSpec)
+			if err != nil {
+				return nil, err
+			}
+			matchers = append(matchers, m)
+		case elementLiteral:
+			matchers = append(matchers, &callsignLiteralMatcher{keywords: elem.Keywords})
+		case elementOptionalLiteral:
+			matchers = append(matchers, &callsignOptionalLiteralMatcher{keywords: elem.Keywords})
+		case elementOptionalGroup:
+			inner, err := elementsToCallsignMatchers(elem.Inner)
+			if err != nil {
+				return nil, err
+			}
+			matchers = append(matchers, &callsignOptionalGroupMatcher{matchers: inner})
+		}
+	}
 	return matchers, nil
 }
 
