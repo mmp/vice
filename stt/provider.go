@@ -654,6 +654,20 @@ func applyDisregard(tokens []Token) []Token {
 				}
 			}
 			if hasCommandKeyword {
+				// Check if afterCorrection starts with a number or altitude - if so, we need to
+				// preserve the command type context from before "correction".
+				// e.g., "fly heading 270 correction 290 join localizer" - the "290"
+				// needs "heading" to be parsed correctly as H290.
+				// Note: altitude values like "four thousand" become TokenAltitude, not TokenNumber.
+				if len(afterCorrection) > 0 && (afterCorrection[0].Type == TokenNumber || afterCorrection[0].Type == TokenAltitude) {
+					// Look back to find what command type was being corrected
+					if keyword := findCommandTypeKeyword(tokens[:i]); keyword != "" {
+						logLocalStt("  correction: preserving command keyword %q for corrected value", keyword)
+						// Prepend the keyword to afterCorrection
+						keywordToken := Token{Text: keyword, Type: TokenWord}
+						return append([]Token{keywordToken}, afterCorrection...)
+					}
+				}
 				// Full command correction - discard everything before
 				return afterCorrection
 			}
@@ -673,6 +687,79 @@ func applyDisregard(tokens []Token) []Token {
 		}
 	}
 	return tokens
+}
+
+// findCommandTypeKeyword scans tokens backwards to find the most recent command
+// type keyword that indicates what kind of value (heading, speed, altitude) was
+// being specified. This is used when "correction <number>" needs to inherit the
+// command type from the corrected portion.
+// Returns the keyword to prepend (e.g., "heading", "speed", "descend") or empty string if none found.
+func findCommandTypeKeyword(tokens []Token) string {
+	// Scan backwards through tokens looking for command type indicators
+	// For altitude, we may find "maintain" first but should keep looking for "descend"/"climb"
+	// since those are more specific (e.g., "descend and maintain 5000" -> prefer "descend")
+	var altitudeKeyword string
+
+	for i := len(tokens) - 1; i >= 0; i-- {
+		w := strings.ToLower(tokens[i].Text)
+
+		// Heading indicators - return immediately
+		if w == "heading" || FuzzyMatch(w, "heading", 0.85) {
+			return "heading"
+		}
+		// "fly" before heading context implies heading
+		if w == "fly" || w == "flight" || FuzzyMatch(w, "fly", 0.80) || FuzzyMatch(w, "flight", 0.80) {
+			return "heading"
+		}
+		// "turn" with "left"/"right" implies heading
+		if w == "turn" {
+			return "heading"
+		}
+
+		// Speed indicators - return immediately
+		if w == "speed" || FuzzyMatch(w, "speed", 0.85) {
+			return "speed"
+		}
+		if w == "reduce" || w == "slow" || w == "increase" {
+			return "speed"
+		}
+		// "knots" indicates speed context
+		if w == "knots" || FuzzyMatch(w, "knots", 0.85) {
+			return "speed"
+		}
+
+		// Altitude indicators - "descend"/"climb" are preferred over "maintain"
+		if w == "descend" || FuzzyMatch(w, "descend", 0.85) {
+			return "descend"
+		}
+		if w == "climb" || FuzzyMatch(w, "climb", 0.85) {
+			return "climb"
+		}
+		if w == "altitude" {
+			return "maintain"
+		}
+		// "maintain" could be speed or altitude - check context, but keep looking for descend/climb
+		if w == "maintain" && altitudeKeyword == "" {
+			// Look ahead to see if there's altitude context (thousand, hundred, flight level)
+			for j := i + 1; j < len(tokens); j++ {
+				next := strings.ToLower(tokens[j].Text)
+				if next == "thousand" || next == "hundred" || next == "feet" || next == "level" {
+					altitudeKeyword = "maintain"
+					break
+				}
+				if next == "speed" || next == "knots" {
+					return "speed"
+				}
+			}
+			if altitudeKeyword == "" {
+				// Default to maintain (altitude) as it's more common
+				altitudeKeyword = "maintain"
+			}
+		}
+	}
+
+	// Return altitude keyword if found (maintain, but descend/climb would have returned early)
+	return altitudeKeyword
 }
 
 // isDisregardOnly returns true if the tokens consist only of "disregard"

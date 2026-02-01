@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"strings"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/util"
 )
 
@@ -38,6 +39,13 @@ func ValidateCommands(commands []string, ac Aircraft) ValidationResult {
 			// to 1000 when at 5000), it likely means the altitude was misheard.
 			if isAltitudeError(err) {
 				valid = append(valid, "SAYAGAIN/ALTITUDE")
+			}
+
+			// Convert invalid speed commands to SAYAGAIN/SPEED.
+			// When a speed is way below the aircraft's minimum (e.g., 20 kts for
+			// a jet), it likely means the speed was garbled in transcription.
+			if isSpeedError(err) {
+				valid = append(valid, "SAYAGAIN/SPEED")
 			}
 		}
 	}
@@ -167,7 +175,22 @@ func validateCommand(cmd string, ac Aircraft) string {
 			// Squawk commands - always valid
 			return ""
 		}
-		// S{SPD}, SMIN, SMAX - always valid
+		if strings.HasPrefix(cmd, "SAYAGAIN") {
+			// SAYAGAIN/* commands - mostly valid, but some need state validation.
+			// SAYAGAIN/APPROACH should not be issued for departures since they can't expect approaches.
+			if cmd == "SAYAGAIN/APPROACH" && ac.State == "departure" {
+				return "departure aircraft cannot expect approach"
+			}
+			return ""
+		}
+		if cmd == "S" || cmd == "SMIN" || cmd == "SMAX" || cmd == "SPRES" {
+			// Cancel speed restriction, slowest practical, max speed, present speed - always valid
+			return ""
+		}
+		// S{SPD} - validate against aircraft performance
+		if len(cmd) > 1 {
+			return validateSpeed(cmd[1:], ac)
+		}
 		return ""
 
 	case 'F':
@@ -233,6 +256,38 @@ func validateClimb(altStr string, ac Aircraft) string {
 	// maintain" commands are unambiguous. If the controller said it clearly,
 	// they meant it (e.g., traffic separation). State-based blocking is only
 	// appropriate for ambiguous commands that might be misrecognized.
+
+	return ""
+}
+
+func validateSpeed(spdStr string, ac Aircraft) string {
+	// Speed commands can be "180" or "180/U5DME" (speed until) - extract just the speed
+	if idx := strings.Index(spdStr, "/"); idx > 0 {
+		spdStr = spdStr[:idx]
+	}
+
+	// Handle speed constraint suffixes: "-" (do not exceed) and "+" (at or above)
+	spdStr = strings.TrimSuffix(spdStr, "-")
+	spdStr = strings.TrimSuffix(spdStr, "+")
+
+	spd, err := strconv.Atoi(spdStr)
+	if err != nil {
+		return "invalid speed format"
+	}
+
+	// Look up aircraft performance to get minimum speed
+	if ac.AircraftType != "" && av.DB != nil {
+		if perf, ok := av.DB.AircraftPerformance[ac.AircraftType]; ok {
+			if minSpeed := perf.Speed.Min; minSpeed > 0 {
+				// If speed is less than 75% of aircraft minimum, it's likely garbled.  Allow
+				// issuing speeds slightly below what's possible--in that case, pilots will read
+				// back "unable".
+				if float32(spd) < minSpeed*0.75 {
+					return "speed too low for aircraft type"
+				}
+			}
+		}
+	}
 
 	return ""
 }
@@ -347,6 +402,12 @@ func filterIncompatibleCommands(commands []string) ([]string, []string) {
 func isAltitudeError(err string) bool {
 	return strings.Contains(err, "climb target must be above") ||
 		strings.Contains(err, "descend target must be below")
+}
+
+// isSpeedError returns true if the error indicates a speed-related issue.
+// This helps determine when to convert a failed command to SAYAGAIN/SPEED.
+func isSpeedError(err string) bool {
+	return strings.Contains(err, "speed too low for aircraft type")
 }
 
 // ValidateCommandsForState filters commands based on aircraft state likelihood.

@@ -13,6 +13,7 @@ import (
 	"os"
 	"strings"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/stt"
 )
@@ -40,6 +41,9 @@ type STTTestFile struct {
 }
 
 func main() {
+	// Initialize the aviation database for aircraft performance lookups
+	av.InitDB()
+
 	if len(os.Args) != 2 {
 		fmt.Fprintf(os.Stderr, "Usage: %s <test.json>\n", os.Args[0])
 		os.Exit(1)

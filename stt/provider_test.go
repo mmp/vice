@@ -7,8 +7,15 @@ import (
 	"strings"
 	"testing"
 
+	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/sim"
 )
+
+// TestMain initializes the aviation database for all tests.
+func TestMain(m *testing.M) {
+	av.InitDB()
+	os.Exit(m.Run())
+}
 
 // Test cases from sttSystemPrompt.md
 
@@ -1049,6 +1056,39 @@ func TestDisregardHandling(t *testing.T) {
 				"American 100": {Callsign: "AAL100", State: "arrival"},
 			},
 			expected: "AAL100 R270",
+		},
+		// Correction with command type preservation tests
+		{
+			name:       "correction preserves heading context",
+			transcript: "American 100 fly heading two seven zero correction two niner zero join localizer",
+			aircraft: map[string]Aircraft{
+				"American 100": {Callsign: "AAL100", State: "arrival"},
+			},
+			expected: "AAL100 H290 I",
+		},
+		{
+			name:       "correction preserves speed context",
+			transcript: "American 100 reduce speed to two one zero correction one niner zero then descend and maintain four thousand",
+			aircraft: map[string]Aircraft{
+				"American 100": {Callsign: "AAL100", State: "arrival", Altitude: 5000},
+			},
+			expected: "AAL100 S190 TD40",
+		},
+		{
+			name:       "correction preserves altitude context",
+			transcript: "American 100 descend and maintain five thousand correction four thousand speed two one zero",
+			aircraft: map[string]Aircraft{
+				"American 100": {Callsign: "AAL100", State: "arrival", Altitude: 6000},
+			},
+			expected: "AAL100 D40 S210",
+		},
+		{
+			name:       "correction with turn left preserves heading",
+			transcript: "American 100 turn left heading one eight zero correction two zero zero speed one eight zero",
+			aircraft: map[string]Aircraft{
+				"American 100": {Callsign: "AAL100", State: "arrival"},
+			},
+			expected: "AAL100 H200 S180",
 		},
 	}
 
@@ -2213,6 +2253,30 @@ func TestValidateCommands(t *testing.T) {
 			ac:           Aircraft{State: "arrival"},
 			expectedLen:  0,
 			minConf:      0.0,
+			expectErrors: false,
+		},
+		{
+			name:         "speed with do not exceed suffix",
+			commands:     []string{"S250-"},
+			ac:           Aircraft{State: "arrival", AircraftType: "B738"},
+			expectedLen:  1,
+			minConf:      0.9,
+			expectErrors: false,
+		},
+		{
+			name:         "speed with at or above suffix",
+			commands:     []string{"S250+"},
+			ac:           Aircraft{State: "arrival", AircraftType: "B738"},
+			expectedLen:  1,
+			minConf:      0.9,
+			expectErrors: false,
+		},
+		{
+			name:         "speed until with suffix",
+			commands:     []string{"S180-/U5DME"},
+			ac:           Aircraft{State: "arrival", AircraftType: "B738"},
+			expectedLen:  1,
+			minConf:      0.9,
 			expectErrors: false,
 		},
 	}
