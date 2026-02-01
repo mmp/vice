@@ -572,7 +572,7 @@
     }
   },
   "default_scenario": "KACK Departing 6 Landing 6",
-  "name": "KACK",
+  "name": "Cape Area",
   "primary_airport": "KBOS",
   "scenarios": {
     "KACK Departing 6 Landing 6": {
@@ -683,6 +683,7 @@
         }
       }
     },
+
     "center": "KACK",
     "coordination_fixes": {
       "ROZZE": [
