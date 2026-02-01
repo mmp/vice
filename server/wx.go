@@ -117,8 +117,7 @@ type GCSProvider struct {
 	metar          wx.CompressedMETAR
 	metarFetchDone chan struct{}
 
-	precipManifest  *wx.Manifest
-	precipFetchDone chan struct{}
+	precipManifest *wx.Manifest
 
 	atmosManifest  *wx.Manifest
 	atmosFetchDone chan struct{}
@@ -129,9 +128,8 @@ type GCSProvider struct {
 
 func MakeGCSProvider(lg *log.Logger) (wx.Provider, error) {
 	g := &GCSProvider{
-		metarFetchDone:  make(chan struct{}),
-		precipFetchDone: make(chan struct{}),
-		atmosFetchDone:  make(chan struct{}),
+		metarFetchDone: make(chan struct{}),
+		atmosFetchDone: make(chan struct{}),
 
 		lg: lg,
 	}
@@ -148,18 +146,16 @@ func MakeGCSProvider(lg *log.Logger) (wx.Provider, error) {
 		return g, err
 	}
 
+	// We need to fetch something synchronously to see if we're online
+	var rawPrecipManifest wx.RawManifest
+	if err := g.getObject(wx.ManifestPath("precip"), &rawPrecipManifest); err != nil {
+		return nil, err
+	}
+	g.precipManifest = wx.MakeManifest(rawPrecipManifest)
+
 	go func() {
 		defer close(g.metarFetchDone)
 		err := g.fetchCached(wx.METARFilename, &g.metar)
-		if err != nil {
-			g.lg.Errorf("%v", err)
-		}
-	}()
-
-	go func() {
-		defer close(g.precipFetchDone)
-		var err error
-		g.precipManifest, err = g.fetchManifest("precip")
 		if err != nil {
 			g.lg.Errorf("%v", err)
 		}
@@ -218,8 +214,6 @@ func (g *GCSProvider) getObject(path string, obj any) error {
 }
 
 func (g *GCSProvider) GetPrecipURL(facility string, t time.Time) (string, time.Time, error) {
-	<-g.precipFetchDone
-
 	times, ok := g.precipManifest.GetTimestamps(facility)
 	if !ok {
 		return "", time.Time{}, errors.New(facility + ": unknown facility")

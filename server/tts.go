@@ -87,6 +87,7 @@ type VoiceAssigner struct {
 	voicePool           []sim.Voice
 	pendingVoicesFuture *sim.TTSVoicesFuture
 	aircraftVoices      map[av.ADSBCallsign]sim.Voice
+	failedInit          bool
 	rand                *rand.Rand
 }
 
@@ -103,6 +104,9 @@ func NewVoiceAssigner() *VoiceAssigner {
 func (va *VoiceAssigner) TryInit(tts sim.TTSProvider, lg *log.Logger) bool {
 	if tts == nil || len(va.voicePool) > 0 {
 		return len(va.voicePool) > 0
+	}
+	if va.failedInit {
+		return false
 	}
 
 	// Start an async request for voices if we haven't already
@@ -123,6 +127,7 @@ func (va *VoiceAssigner) TryInit(tts sim.TTSProvider, lg *log.Logger) bool {
 		if ok {
 			lg.Warnf("TTS GetAllVoices error: %v", err)
 		}
+		va.failedInit = true
 		va.pendingVoicesFuture = nil
 		return false
 	default:
