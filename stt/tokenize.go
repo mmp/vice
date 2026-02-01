@@ -24,7 +24,6 @@ type Token struct {
 	Text     string    // Normalized text
 	Type     TokenType // Token type
 	Value    int       // Numeric value if applicable (-1 if not)
-	Pos      int       // Position in original token sequence
 }
 
 // Tokenize converts normalized words into structured tokens.
@@ -48,7 +47,6 @@ func Tokenize(words []string) []Token {
 					Text:  "FL" + strconv.Itoa(fl),
 					Type:  TokenAltitude,
 					Value: fl,
-					Pos:   i,
 				})
 				i += 2 + consumed
 				continue
@@ -63,7 +61,6 @@ func Tokenize(words []string) []Token {
 					Text:  strconv.Itoa(alt),
 					Type:  TokenAltitude,
 					Value: alt,
-					Pos:   i,
 				})
 				i += consumed
 				continue
@@ -80,7 +77,6 @@ func Tokenize(words []string) []Token {
 					Text:  text, // Preserve original digit sequence (e.g., "020" vs "20")
 					Type:  TokenNumber,
 					Value: num,
-					Pos:   i,
 				})
 				i += consumed
 				continue
@@ -92,7 +88,6 @@ func Tokenize(words []string) []Token {
 			tokens = append(tokens, Token{
 				Text: strings.ToUpper(w),
 				Type: TokenICAO,
-				Pos:  i,
 			})
 			i++
 			continue
@@ -104,7 +99,6 @@ func Tokenize(words []string) []Token {
 				Text:  w,
 				Type:  TokenNumber,
 				Value: num,
-				Pos:   i,
 			}
 			// Large numbers might be malformed altitudes from STT
 			if num >= 1000 && num%1000 == 0 {
@@ -131,7 +125,6 @@ func Tokenize(words []string) []Token {
 			Text:  w,
 			Type:  TokenWord,
 			Value: -1,
-			Pos:   i,
 		})
 		i++
 	}

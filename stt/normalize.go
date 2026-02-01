@@ -592,16 +592,16 @@ var phraseExpansions = map[string][]string{
 // multiTokenReplacements maps sequences of tokens (space-joined) to replacements.
 // These handle STT errors that span multiple tokens.
 var multiTokenReplacements = map[string][]string{
-	"december 18": {"descend", "maintain"}, // STT error: "descend and maintain"
-	"i l s":       {"ils"},                 // Spelled out ILS
-	"r nav":       {"rnav"},                // R-NAV after hyphen removal
-	"r nov":       {"rnav"},                // STT error: "R-NAV" misheard as "R-NOV"
-	"fly level":   {"flight", "level"},     // STT error: "flight level" misheard as "fly level"
-	"eddie had":   {"etihad"},              // STT error: "Etihad" misheard as "eddie had"
-	"local line":  {"localizer"},           // STT error: "localizer" misheard as "local line"
-	"time riding":  {"turn", "right"}, // STT error: "turn right" misheard as "time riding"
-	"time rioting": {"turn", "right"}, // STT error: "turn right" misheard as "time rioting"
-	"x ray":       {"expedite"},            // STT error: "expedite" misheard as "X-ray"
+	"december 18":  {"descend", "maintain"}, // STT error: "descend and maintain"
+	"i l s":        {"ils"},                 // Spelled out ILS
+	"r nav":        {"rnav"},                // R-NAV after hyphen removal
+	"r nov":        {"rnav"},                // STT error: "R-NAV" misheard as "R-NOV"
+	"fly level":    {"flight", "level"},     // STT error: "flight level" misheard as "fly level"
+	"eddie had":    {"etihad"},              // STT error: "Etihad" misheard as "eddie had"
+	"local line":   {"localizer"},           // STT error: "localizer" misheard as "local line"
+	"time riding":  {"turn", "right"},       // STT error: "turn right" misheard as "time riding"
+	"time rioting": {"turn", "right"},       // STT error: "turn right" misheard as "time rioting"
+	"x ray":        {"expedite"},            // STT error: "expedite" misheard as "X-ray"
 }
 
 // matchMultiToken tries to match tokens against multiTokenReplacements.
@@ -699,14 +699,6 @@ func NormalizeTranscript(transcript string) []string {
 				continue
 			}
 		}
-
-		// Handle garbled "niner" transcriptions like "9r,000" -> "9r000" -> "9000"
-		// Whisper sometimes transcribes "niner" as "9r" when followed by digits.
-		w = fixGarbledNiner(w)
-
-		// Handle numbers with trailing 's' like "4s" → "40"
-		// STT sometimes transcribes "four zero" or "forty" as "4s"
-		w = fixTrailingS(w)
 
 		// Split concatenated callsigns like "alaska8383" → ["alaska", "8383"]
 		// This handles STT transcriptions that omit the space between airline and flight number
@@ -1258,73 +1250,4 @@ func splitTextNumber(w string) []string {
 		return []string{t, n}
 	}
 	return nil
-}
-
-// fixGarbledNiner fixes STT transcription errors where "niner" is garbled.
-// This handles patterns like:
-//   - "9r" -> "9" (just the garbled niner)
-//   - "9r000" -> "9000" (niner followed by more digits)
-//   - "99er" -> "9" (STT transcribed "niner" with doubled digit)
-func fixGarbledNiner(w string) string {
-	if len(w) < 2 {
-		return w
-	}
-
-	// Pattern 1: "99er" -> "9" (doubled digit + "er" from "niner")
-	// STT sometimes transcribes "niner" as "99er" where "nine" becomes "99"
-	if len(w) == 4 && w[0] == w[1] && w[0] >= '0' && w[0] <= '9' && w[2:] == "er" {
-		return string(w[0]) // "99er" -> "9"
-	}
-
-	// Pattern 2: single digit followed by 'r' followed by optional digits
-	// e.g., "9r", "9r000"
-	if w[0] >= '0' && w[0] <= '9' && w[1] == 'r' {
-		// Remove the 'r' - keep the leading digit and any trailing digits
-		if len(w) == 2 {
-			return string(w[0]) // "9r" -> "9"
-		}
-		// Check that everything after 'r' is digits
-		allDigits := true
-		for j := 2; j < len(w); j++ {
-			if w[j] < '0' || w[j] > '9' {
-				allDigits = false
-				break
-			}
-		}
-		if allDigits {
-			return string(w[0]) + w[2:] // "9r000" -> "9000"
-		}
-	}
-	return w
-}
-
-// fixTrailingS handles STT transcription errors where numbers are followed by 's'.
-// For single-digit numbers: "4s" likely means "40" (four zero / forty).
-// For multi-digit numbers: "23s" → "23" (just strip the noise 's').
-// This handles patterns like "2s" -> "20", "4s" -> "40", "23s" -> "23", etc.
-func fixTrailingS(w string) string {
-	if len(w) < 2 || w[len(w)-1] != 's' {
-		return w
-	}
-
-	// Check if everything before 's' is digits
-	base := w[:len(w)-1]
-	allDigits := true
-	for _, c := range base {
-		if c < '0' || c > '9' {
-			allDigits = false
-			break
-		}
-	}
-	if !allDigits {
-		return w
-	}
-
-	// Single digit + 's': "4s" -> "40" (STT transcribes "forty" as "4s")
-	if len(base) == 1 {
-		return base + "0"
-	}
-
-	// Multi-digit + 's': "23s" -> "23" (just strip the noise 's')
-	return base
 }

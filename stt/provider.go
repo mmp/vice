@@ -563,7 +563,7 @@ func detectNotForYouCorrection(tokens []Token) ([]Token, bool) {
 	// Look for patterns like:
 	// "that was not for you" or "not for you" at the start of tokens
 	// These phrases mean the controller is correcting a mistaken callsign
-	for i := 0; i < len(tokens) && i < 6; i++ {
+	for i := range min(len(tokens), 4) {
 		// Check for "not for you" pattern starting at position i
 		if i+2 < len(tokens) {
 			t0 := strings.ToLower(tokens[i].Text)
@@ -573,6 +573,9 @@ func detectNotForYouCorrection(tokens []Token) ([]Token, bool) {
 				// Return tokens after "not for you"
 				return tokens[i+3:], true
 			}
+		}
+		if tokens[i].Text == "correction" || JaroWinkler(tokens[i].Text, "correction") > 0.9 || PhoneticMatch(tokens[i].Text, "correction") {
+			return tokens[i+1:], true
 		}
 	}
 	return tokens, false

@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/util"
 )
 
 // CallsignMatch represents a matched callsign with confidence score.
@@ -27,36 +28,40 @@ func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch,
 
 	// Check for "heavy" or "super" in early tokens (within callsign region).
 	// If found, filter to only consider aircraft with matching weight class.
-	weightClass := detectWeightClass(tokens)
-	if weightClass != "" {
-		filtered := filterByWeightClass(aircraft, weightClass)
-		if len(filtered) > 0 {
+	if weightClassIdx := findWeightClassTokenIndex(tokens); weightClassIdx != -1 {
+		weightClass := tokens[weightClassIdx].Text
+		if filtered := filterByWeightClass(aircraft, weightClass); len(filtered) > 0 && len(filtered) < len(aircraft) {
 			logLocalStt("  detected %q in callsign region, filtering to %d aircraft", weightClass, len(filtered))
-			aircraft = filtered
+			// Only pass the tokens up to and including heavy/super
+			match, _ := MatchCallsign(tokens[:weightClassIdx+1], filtered)
+			// Return the tokens following heavy/super with the match
+			return match, tokens[weightClassIdx+1:]
 		}
 	}
 
-	// First, try exact match - if tokens exactly match a spoken name, use it immediately.
-	// Try different phrase lengths (longest first for more specific matches).
-	maxPhraseLen := min(len(tokens), 8) // Reasonable max for callsigns like GA N-numbers
-	for length := maxPhraseLen; length >= 1; length-- {
-		var parts []string
-		for i := 0; i < length; i++ {
-			parts = append(parts, tokens[i].Text)
-		}
-		phrase := strings.Join(parts, " ")
+	// First, try to find an exact match - if tokens exactly match a spoken name, use it immediately.
+	// Try different phrase lengths (longest first for more specific matches) and also try dropping
+	// 1 or 2 tokens from the start.
+	for start := range min(2, len(tokens)) {
+		maxPhraseLen := min(len(tokens)-start, 8) // Reasonable max for callsigns like GA N-numbers
+		parts := util.MapSlice(tokens[start:maxPhraseLen], func(t Token) string { return t.Text })
+		for len(parts) > 1 {
+			phrase := strings.Join(parts, " ")
 
-		for spokenName, ac := range aircraft {
-			if strings.EqualFold(phrase, spokenName) {
-				logLocalStt("  exact match: %q -> %q (consumed %d)", phrase, ac.Callsign, length)
-				return CallsignMatch{
-					Callsign:       string(ac.Callsign),
-					SpokenKey:      spokenName,
-					Confidence:     1.0,
-					Consumed:       length,
-					AddressingForm: ac.AddressingForm,
-				}, tokens[length:]
+			for spokenName, ac := range aircraft {
+				if strings.EqualFold(phrase, spokenName) {
+					logLocalStt("  exact match: %q -> %q (consumed %d)", phrase, ac.Callsign, len(parts))
+					return CallsignMatch{
+						Callsign:       string(ac.Callsign),
+						SpokenKey:      spokenName,
+						Confidence:     1.0,
+						Consumed:       len(parts),
+						AddressingForm: ac.AddressingForm,
+					}, tokens[len(parts):]
+				}
 			}
+
+			parts = parts[:len(parts)-1]
 		}
 	}
 
@@ -127,24 +132,18 @@ func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch,
 	// UNLESS:
 	// 1. The single token is a number (flight number match), OR
 	// 2. There are more tokens after the match that could be a flight number, OR
-	// 3. "correction" follows (callsign correction pattern handled elsewhere)
 	// A single word like "cross" with no following tokens matching "Chronos" is not valid,
 	// but "south" followed by "west 99" could be "Southwest 99" split across tokens.
 	if bestMatch.Consumed < 2 && len(tokens) > 0 && tokens[0].Type != TokenNumber {
-		// Check if there are any number tokens or "correction" following
+		// Check if there are any number tokens
 		hasFollowingNumber := false
-		hasCorrection := false
 		for i := bestMatch.Consumed; i < len(tokens) && i < bestMatch.Consumed+4; i++ {
 			if tokens[i].Type == TokenNumber {
 				hasFollowingNumber = true
 				break
 			}
-			if strings.ToLower(tokens[i].Text) == "correction" {
-				hasCorrection = true
-				break
-			}
 		}
-		if !hasFollowingNumber && !hasCorrection {
+		if !hasFollowingNumber {
 			logLocalStt("  rejecting match: only consumed %d token(s) with no following flight number", bestMatch.Consumed)
 			return CallsignMatch{}, tokens
 		}
@@ -186,9 +185,6 @@ func scoreCallsignMatch(tokens []Token, spokenName, callsign string) (float64, i
 		return 0, 0
 	}
 
-	// Split callsign into prefix and number: "AAL5936" -> "AAL", "5936"
-	prefix, number := splitCallsign(callsign)
-
 	// Figure out where the airline name ends in spoken parts
 	// The flight number starts at the first numeric part
 	airlineEndIdx := 0
@@ -213,31 +209,26 @@ func scoreCallsignMatch(tokens []Token, spokenName, callsign string) (float64, i
 	if len(tokens) > 0 && len(airlineParts) > 0 {
 		firstToken := strings.ToLower(tokens[0].Text)
 
-		// Check if first token is an ICAO code matching prefix
-		if tokens[0].Type == TokenICAO && strings.EqualFold(tokens[0].Text, prefix) {
-			totalScore += 1.0
-			consumed++
+		// Try to match tokens against airline name parts
+		airlineScore, airlineConsumed := scoreMultiWordAirline(tokens, airlineParts)
+		if airlineScore > 0.6 {
+			totalScore += airlineScore
+			consumed += airlineConsumed
 			matchCount++
 		} else {
-			// Try to match tokens against airline name parts
-			airlineScore, airlineConsumed := scoreMultiWordAirline(tokens, airlineParts)
-			if airlineScore > 0.6 {
-				totalScore += airlineScore
-				consumed += airlineConsumed
+			// Fallback: try single word match against first airline part
+			singleScore := scoreAirlineMatch(firstToken, airlineParts[0])
+			if singleScore > 0.6 {
+				totalScore += singleScore
+				consumed++
 				matchCount++
-			} else {
-				// Fallback: try single word match against first airline part
-				singleScore := scoreAirlineMatch(firstToken, airlineParts[0], prefix)
-				if singleScore > 0.6 {
-					totalScore += singleScore
-					consumed++
-					matchCount++
-				}
 			}
 		}
 	}
 
 	// Try to match flight number
+	// Split callsign into prefix and number: "AAL5936" -> "AAL", "5936"
+	number := flightNumber(callsign)
 	if number != "" {
 		bestNumScore := 0.0
 		bestNumConsumed := 0
@@ -299,6 +290,7 @@ func scoreCallsignMatch(tokens []Token, spokenName, callsign string) (float64, i
 	// When we matched airline but not the flight number, consume any trailing
 	// numeric tokens as "garbled callsign noise" rather than leaving them to be
 	// misinterpreted as commands. Skip "at" if it precedes numbers (common STT artifact).
+
 	if matchCount == 1 && number != "" && consumed < len(tokens) {
 		// Skip "at" if followed by numbers (STT often inserts "at" in garbled callsigns)
 		if strings.ToLower(tokens[consumed].Text) == "at" && consumed+1 < len(tokens) {
@@ -338,14 +330,9 @@ func scoreMultiWordAirline(tokens []Token, airlineParts []string) (float64, int)
 }
 
 // scoreAirlineMatch scores how well a spoken word matches an airline.
-func scoreAirlineMatch(spoken, expected, icao string) float64 {
+func scoreAirlineMatch(spoken, expected string) float64 {
 	// Exact match
 	if spoken == expected {
-		return 1.0
-	}
-
-	// Check if spoken matches the ICAO code directly (lowercased)
-	if strings.EqualFold(spoken, icao) {
 		return 1.0
 	}
 
@@ -546,8 +533,7 @@ func tryFlightNumberOnlyMatch(tokens []Token, aircraft map[string]Aircraft) (Cal
 		exactCount, fuzzyCount := 0, 0
 
 		for spokenName, ac := range aircraft {
-			_, flightNum := splitCallsign(string(ac.Callsign))
-			if flightNum == numStr {
+			if flightNum := flightNumber(string(ac.Callsign)); flightNum == numStr {
 				exactMatch = &struct {
 					spokenKey string
 					ac        Aircraft
@@ -595,16 +581,15 @@ func tryFlightNumberOnlyMatch(tokens []Token, aircraft map[string]Aircraft) (Cal
 	return CallsignMatch{}, nil
 }
 
-// splitCallsign splits an ICAO callsign into prefix and number.
-// "AAL5936" -> "AAL", "5936"
-// "N123AB" -> "N", "123AB"
-func splitCallsign(callsign string) (string, string) {
+// "AAL5936" -> "5936"
+// "N123AB" -> "123AB"
+func flightNumber(callsign string) string {
 	for i, c := range callsign {
 		if c >= '0' && c <= '9' {
-			return callsign[:i], callsign[i:]
+			return callsign[i:]
 		}
 	}
-	return callsign, ""
+	return ""
 }
 
 // isLetter checks if a single-character string is a letter.
@@ -654,25 +639,24 @@ type Aircraft struct {
 	LAHSORunways        []string                   // Runways that intersect the approach runway (for LAHSO matching)
 }
 
-// detectWeightClass checks the early tokens (callsign region) for "heavy" or "super".
-// Returns the weight class if found, empty string otherwise.
-func detectWeightClass(tokens []Token) string {
-	// Check first 5 tokens (reasonable callsign region)
-	limit := min(len(tokens), 5)
-	for i := 0; i < limit; i++ {
+// findWeightClassTokenIndex checks the early tokens (callsign region) for "heavy" or "super".
+// Returns the index of the corresponding token if found, -1 otherwise.
+func findWeightClassTokenIndex(tokens []Token) int {
+	// Check first 7 tokens (reasonable callsign region)
+	for i := range min(len(tokens), 7) {
 		text := strings.ToLower(tokens[i].Text)
 		if text == "heavy" || text == "super" {
-			return text
+			return i
 		}
 	}
-	return ""
+	return -1
 }
 
 // filterByWeightClass returns only aircraft whose spoken name contains the weight class.
 func filterByWeightClass(aircraft map[string]Aircraft, weightClass string) map[string]Aircraft {
 	filtered := make(map[string]Aircraft)
 	for spokenName, ac := range aircraft {
-		if strings.Contains(strings.ToLower(spokenName), weightClass) {
+		if strings.HasSuffix(strings.ToLower(spokenName), strings.ToLower(weightClass)) {
 			filtered[spokenName] = ac
 		}
 	}

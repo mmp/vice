@@ -100,14 +100,6 @@ func TestBasicAltitudeCommands(t *testing.T) {
 			expected: "RPA4583 C110",
 		},
 		{
-			name:       "garbled niner as 9r",
-			transcript: "Southwest 7343, descend and maintain, 9r,000",
-			aircraft: map[string]Aircraft{
-				"Southwest 7343": {Callsign: "SWA7343", Altitude: 12000, State: "arrival"},
-			},
-			expected: "SWA7343 D90",
-		},
-		{
 			name:       "niner thousand as 9 or 1000",
 			transcript: "American 17 descend and maintain, 9 or 1000",
 			aircraft: map[string]Aircraft{
@@ -1323,9 +1315,6 @@ func TestNormalizeTranscript(t *testing.T) {
 		{"two nine or zero", []string{"2", "9", "0"}},
 		{"heading two niner zero", []string{"heading", "2", "9", "0"}},
 		{"", nil},
-		// Garbled "niner" transcribed as "9r" (e.g., "9r,000" -> "9000")
-		{"descend and maintain, 9r,000", []string{"descend", "and", "maintain", "9000"}},
-		{"9r", []string{"9"}},
 		// "niner thousand" transcribed as "9 or 1000" - should convert 1000 to thousand
 		{"descend and maintain, 9 or 1000", []string{"descend", "and", "maintain", "9", "thousand"}},
 		// "fly heading" sometimes transcribed as "flighting"
@@ -2620,34 +2609,6 @@ func TestFlightNumberOnlyFallback(t *testing.T) {
 				if match.Callsign != "" {
 					t.Errorf("MatchCallsign() expected no match, got %q", match.Callsign)
 				}
-			}
-		})
-	}
-}
-
-func TestSplitCallsign(t *testing.T) {
-	tests := []struct {
-		callsign       string
-		expectedPrefix string
-		expectedNumber string
-	}{
-		{"AAL5936", "AAL", "5936"},
-		{"N123AB", "N", "123AB"},
-		{"DLH4WJ", "DLH", "4WJ"},
-		{"ABC", "ABC", ""},
-		{"123", "", "123"},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.callsign, func(t *testing.T) {
-			prefix, number := splitCallsign(tt.callsign)
-			if prefix != tt.expectedPrefix {
-				t.Errorf("splitCallsign(%q) prefix = %q, want %q",
-					tt.callsign, prefix, tt.expectedPrefix)
-			}
-			if number != tt.expectedNumber {
-				t.Errorf("splitCallsign(%q) number = %q, want %q",
-					tt.callsign, number, tt.expectedNumber)
 			}
 		})
 	}
