@@ -1,0 +1,206 @@
+{
+  "time": "2026-01-30T16:21:33.687444-08:00",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:671:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_arm64.s:1268:runtime.goexit"
+  ],
+  "transcript": "Delta Thirty New York Approach depart Cameron heading zero four zero vectors r-nav zulu runway one three Left",
+  "whisper_duration_ms": 472.952,
+  "audio_duration_ms": 5320,
+  "processor": "GPU: Apple M4 Pro, 14 CPU / 20 GPU cores, 48GB",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "DAL30",
+  "command": "DCAMRN/H040 ER3L",
+  "stt_aircraft": {
+    "Brickyard 98 71": {
+      "Callsign": "RPA9871",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Assault": "ASALT",
+        "Canarsie": "CNRSE",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lisa": "LEISA",
+        "Robje": "ROBJE",
+        "Silgy": "SILJY"
+      },
+      "CandidateApproaches": {
+        "I L S runway one three left": "I3L",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav zulu runway one three Left": "R3L",
+        "r-nav zulu runway one three Right": "R3R"
+      },
+      "ApproachFixes": {
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "R3R": {
+          "Assault": "ASALT",
+          "Mayma": "MAYMA",
+          "Nucry": "NUCRI",
+          "Pebo": "PEEBO"
+        }
+      },
+      "AssignedApproach": "RNAV Z Runway 13 Left",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 4152,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "4L",
+        "22R"
+      ]
+    },
+    "Delta 30": {
+      "Callsign": "DAL30",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Assault": "ASALT",
+        "Cameron": "CAMRN",
+        "Canarsie": "CNRSE",
+        "J F K": "KJFK",
+        "Kennedy": "KJFK",
+        "Lisa": "LEISA",
+        "Robje": "ROBJE",
+        "Silgy": "SILJY",
+        "cars": "KARRS"
+      },
+      "CandidateApproaches": {
+        "I L S runway one three left": "I3L",
+        "Parkway Visual runway one three Left": "PVA",
+        "r-nav zulu runway one three Left": "R3L",
+        "r-nav zulu runway one three Right": "R3R"
+      },
+      "ApproachFixes": {
+        "I3L": {
+          "Buzz-on": "BUZON",
+          "Caxun": "CAXUN",
+          "Covir": "COVIR",
+          "Kimchi": "KMCHI",
+          "Telex": "TELEX"
+        },
+        "PVA": {
+          "Canarsie": "CRI"
+        },
+        "R3L": {
+          "Assault": "ASALT",
+          "Canarsie": "CNRSE",
+          "Lisa": "LEISA",
+          "Robje": "ROBJE",
+          "Silgy": "SILJY"
+        },
+        "R3R": {
+          "Assault": "ASALT",
+          "Mayma": "MAYMA",
+          "Nucry": "NUCRI",
+          "Pebo": "PEEBO"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "CAMRN5",
+      "Altitude": 10540,
+      "State": "arrival",
+      "ControllerFrequency": "2A",
+      "TrackingController": "2A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4L",
+        "22R",
+        "4R",
+        "22L",
+        "4L",
+        "22R"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Delta Thirty New York Approach depart Cameron heading zero four zero vectors r-nav zulu runway one three Left\"",
+    "[local-stt] normalized words: [delta 30 new york approach depart cameron heading 0 4 0 vectors rnav zulu runway 1 3 left]",
+    "[local-stt] tokens: 15",
+    "[local-stt]   token[0]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"30\" Type=1 Value=30",
+    "[local-stt]   token[2]: Text=\"new\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"york\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"depart\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"cameron\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"040\" Type=1 Value=40",
+    "[local-stt]   token[9]: Text=\"vectors\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"rnav\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"zulu\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"13\" Type=1 Value=13",
+    "[local-stt]   token[14]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 15 tokens, 2 aircraft",
+    "[local-stt]   exact match: \"delta 30\" -\u003e \"DAL30\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"DAL30\" SpokenKey=\"Delta 30\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=10540 Fixes=4 Approaches=4 AssignedApproach=\"\" LAHSORunways=[4L 22R 4R 22L 4L 22R]",
+    "[local-stt]   fix: \"cars\" -\u003e \"KARRS\"",
+    "[local-stt]   fix: \"Cameron\" -\u003e \"CAMRN\"",
+    "[local-stt]   fix: \"Kennedy\" -\u003e \"KJFK\"",
+    "[local-stt]   fix: \"J F K\" -\u003e \"KJFK\"",
+    "[local-stt]   approach: \"r-nav zulu runway one three Left\" -\u003e \"R3L\"",
+    "[local-stt]   approach: \"r-nav zulu runway one three Right\" -\u003e \"R3R\"",
+    "[local-stt]   approach: \"I L S runway one three left\" -\u003e \"I3L\"",
+    "[local-stt]   approach: \"Parkway Visual runway one three Left\" -\u003e \"PVA\"",
+    "[local-stt] command tokens after disregard: 13",
+    "[local-stt]   token[0]: Text=\"new\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"york\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"depart\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"cameron\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"040\" Type=1 Value=40",
+    "[local-stt]   token[7]: Text=\"vectors\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"rnav\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"zulu\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"13\" Type=1 Value=13",
+    "[local-stt]   token[12]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"heading\" at position 5 - not just position ID",
+    "[local-stt] ParseCommands: 13 tokens",
+    "[local-stt]   no match at token[0]=\"new\", skipping",
+    "[local-stt]   no match at token[1]=\"york\", skipping",
+    "[local-stt]   no match at token[2]=\"approach\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"cameron\" against 4 fixes",
+    "[local-stt]   extractFix: matched \"cameron\" -\u003e \"CAMRN\" (exact)",
+    "[local-stt]   extractFix: matched \"cameron\" -\u003e \"CAMRN\" (fuzzy 1.00)",
+    "[local-stt]   matched command: \"DCAMRN/H040\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   matchApproachByTypeAndNumber: type=\"rnav\" runway=\"one three left\" -\u003e \"R3L\" (consumed=5)",
+    "[local-stt]   matched command: \"ER3L\" (conf=1.00, consumed=6, isThen=false)",
+    "[local-stt]   adding 5 fixes from approach R3L to aircraft context",
+    "[local-stt] ParseCommands: result=[DCAMRN/H040 ER3L] (avgConf=1.00)",
+    "[local-stt] parsed commands: [DCAMRN/H040 ER3L] (conf=1.00)",
+    "[local-stt] validated commands: [DCAMRN/H040 ER3L] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"DAL30 DCAMRN/H040 ER3L\" (conf=1.00, time=450.5µs) ==="
+  ]
+}

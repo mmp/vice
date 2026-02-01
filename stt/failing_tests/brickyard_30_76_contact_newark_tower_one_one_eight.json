@@ -1,0 +1,291 @@
+{
+  "time": "2026-01-31T20:24:25.710832702Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Brickyard 30 76 contact Newark tower one one eight point three maintain one eight zero knots or greater until five mile final",
+  "whisper_duration_ms": 258.002,
+  "audio_duration_ms": 6216,
+  "processor": "GPU: NVIDIA GeForce RTX 5060 Ti (16050MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "RPA3076",
+  "command": "TO S180/U5",
+  "stt_aircraft": {
+    "Brickyard 30 76": {
+      "Callsign": "RPA3076",
+      "AircraftType": "E75S",
+      "Fixes": {
+        "Doin'": "DOOIN",
+        "Newark": "KEWR"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Gritty": "GRITY",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 2000,
+      "State": "on approach",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "Brickyard 47 56": {
+      "Callsign": "RPA4756",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Doin'": "DOOIN",
+        "Gritty": "GRITY",
+        "Hokir": "HOKIR",
+        "Kilma": "KILMA",
+        "Newark": "KEWR"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Gritty": "GRITY",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "Spirit Wings 33 23": {
+      "Callsign": "NKS3323",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Dillon": "DYLIN",
+        "Doin'": "DOOIN",
+        "Gritty": "GRITY",
+        "Kilma": "KILMA",
+        "Mart": "MARRT",
+        "Merser": "MERSR",
+        "Metro": "METRO",
+        "Newark": "KEWR",
+        "Philbo": "PHLBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Gritty": "GRITY",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 8409,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "Spirit Wings 96 31": {
+      "Callsign": "NKS9631",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Doin'": "DOOIN",
+        "Gritty": "GRITY",
+        "Kilma": "KILMA",
+        "Mart": "MARRT",
+        "Metro": "METRO",
+        "Newark": "KEWR",
+        "Philbo": "PHLBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Gritty": "GRITY",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 2465,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "United five 64 heavy": {
+      "Callsign": "UAL564",
+      "AircraftType": "B763",
+      "Fixes": {
+        "Dillon": "DYLIN",
+        "Mart": "MARRT",
+        "Merser": "MERSR",
+        "Metro": "METRO",
+        "Newark": "KEWR",
+        "Philbo": "PHLBO",
+        "Somto": "SOMTO"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Gritty": "GRITY",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 11171,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "United four 20": {
+      "Callsign": "UAL420",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Doin'": "DOOIN",
+        "Gritty": "GRITY",
+        "Kilma": "KILMA",
+        "Mart": "MARRT",
+        "Metro": "METRO",
+        "Newark": "KEWR",
+        "Philbo": "PHLBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Gritty": "GRITY",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 7273,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Brickyard 30 76 contact Newark tower one one eight point three maintain one eight zero knots or greater until five mile final\"",
+    "[local-stt] normalized words: [brickyard 30 76 contact newark tower 1 1 8 point 3 maintain 1 8 0 knots or greater until 5 mile final]",
+    "[local-stt] tokens: 18",
+    "[local-stt]   token[0]: Text=\"brickyard\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"30\" Type=1 Value=30",
+    "[local-stt]   token[2]: Text=\"76\" Type=1 Value=76",
+    "[local-stt]   token[3]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"newark\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"tower\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"118\" Type=1 Value=118",
+    "[local-stt]   token[7]: Text=\"point\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"3\" Type=1 Value=3",
+    "[local-stt]   token[9]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"180\" Type=1 Value=180",
+    "[local-stt]   token[11]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"or\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"greater\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"until\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"5\" Type=1 Value=5",
+    "[local-stt]   token[16]: Text=\"mile\" Type=0 Value=-1",
+    "[local-stt]   token[17]: Text=\"final\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 18 tokens, 6 aircraft",
+    "[local-stt]   exact match: \"brickyard 30 76\" -\u003e \"RPA3076\" (consumed 3)",
+    "[local-stt] callsign match: Callsign=\"RPA3076\" SpokenKey=\"Brickyard 30 76\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"on approach\" Altitude=2000 Fixes=2 Approaches=1 AssignedApproach=\"ILS Runway 4R\" LAHSORunways=[11 29]",
+    "[local-stt]   fix: \"Doin'\" -\u003e \"DOOIN\"",
+    "[local-stt]   fix: \"Newark\" -\u003e \"KEWR\"",
+    "[local-stt]   approach: \"I L S runway four right\" -\u003e \"I4R\"",
+    "[local-stt] command tokens after disregard: 15",
+    "[local-stt]   token[0]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"newark\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"tower\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"118\" Type=1 Value=118",
+    "[local-stt]   token[4]: Text=\"point\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"3\" Type=1 Value=3",
+    "[local-stt]   token[6]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"180\" Type=1 Value=180",
+    "[local-stt]   token[8]: Text=\"knots\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"or\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"greater\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"until\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"5\" Type=1 Value=5",
+    "[local-stt]   token[13]: Text=\"mile\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"final\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"contact\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 15 tokens",
+    "[local-stt]   matched command: \"TO\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   no match at token[3]=\"118\", skipping",
+    "[local-stt]   no match at token[4]=\"point\", skipping",
+    "[local-stt]   no match at token[5]=\"3\", skipping",
+    "[local-stt]   matched command: \"S180\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   no match at token[8]=\"knots\", skipping",
+    "[local-stt]   no match at token[9]=\"or\", skipping",
+    "[local-stt]   no match at token[10]=\"greater\", skipping",
+    "[local-stt]   no match at token[11]=\"until\", skipping",
+    "[local-stt]   no match at token[12]=\"5\", skipping",
+    "[local-stt]   no match at token[13]=\"mile\", skipping",
+    "[local-stt]   no match at token[14]=\"final\", skipping",
+    "[local-stt] ParseCommands: result=[TO S180] (avgConf=1.00)",
+    "[local-stt] parsed commands: [TO S180] (conf=1.00)",
+    "[local-stt] validated commands: [TO S180] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"RPA3076 TO S180\" (conf=1.00, time=522.2µs) ==="
+  ]
+}

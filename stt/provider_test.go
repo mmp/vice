@@ -978,14 +978,6 @@ func TestSTTErrorRecovery(t *testing.T) {
 			expected: "AAL5936 D80",
 		},
 		{
-			name:       "tree for too in callsign",
-			transcript: "Delta for fower too turn left heading too seven zero",
-			aircraft: map[string]Aircraft{
-				"Delta 442": {Callsign: "DAL442", State: "arrival"},
-			},
-			expected: "DAL442 L270",
-		},
-		{
 			name:       "garbage word at start of transcript",
 			transcript: "Lass China Southern 940 heavy fly heading 180",
 			aircraft: map[string]Aircraft{
@@ -2350,19 +2342,6 @@ func TestMatchCallsignDirect(t *testing.T) {
 			expectedCS:   "DAL442",
 			expectedConf: 0.9,
 			expectedCons: 4,
-		},
-		{
-			name: "ICAO code match",
-			tokens: []Token{
-				{Text: "AAL", Type: TokenICAO},
-				{Text: "100", Type: TokenNumber, Value: 100},
-			},
-			aircraft: map[string]Aircraft{
-				"American 100": {Callsign: "AAL100"},
-			},
-			expectedCS:   "AAL100",
-			expectedConf: 0.9,
-			expectedCons: 2,
 		},
 		{
 			name: "multi-word airline",

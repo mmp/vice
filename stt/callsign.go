@@ -20,14 +20,20 @@ type CallsignMatch struct {
 // MatchCallsign attempts to match tokens to an aircraft callsign.
 // Tries starting at different positions to handle garbage words at the beginning.
 // Returns the best match and remaining tokens after the callsign.
+//
+// Matching proceeds in phases:
+//  1. Weight class filtering - if "heavy"/"super" found, filter aircraft first
+//  2. Exact phrase match - tokens exactly match a spoken name
+//  3. Fuzzy airline + flight number match - match airline then flight number
+//  4. Flight-number-only fallback - for garbled/missing airline names
 func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch, []Token) {
 	logLocalStt("MatchCallsign: %d tokens, %d aircraft", len(tokens), len(aircraft))
 	if len(tokens) == 0 || len(aircraft) == 0 {
 		return CallsignMatch{}, tokens
 	}
 
-	// Check for "heavy" or "super" in early tokens (within callsign region).
-	// If found, filter to only consider aircraft with matching weight class.
+	// Phase 1: Weight class filtering
+	// If "heavy" or "super" found in early tokens, filter to matching aircraft
 	if weightClassIdx := findWeightClassTokenIndex(tokens); weightClassIdx != -1 {
 		weightClass := tokens[weightClassIdx].Text
 		if filtered := filterByWeightClass(aircraft, weightClass); len(filtered) > 0 && len(filtered) < len(aircraft) {
@@ -39,25 +45,41 @@ func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch,
 		}
 	}
 
-	// First, try to find an exact match - if tokens exactly match a spoken name, use it immediately.
+	// Phase 2: Exact phrase match
+	// Try to find an exact match - if tokens exactly match a spoken name, use it immediately.
+	// Also try suffix matching (e.g., "2 victor romeo" matches end of "november 9 2 2 victor romeo").
 	// Try different phrase lengths (longest first for more specific matches) and also try dropping
 	// 1 or 2 tokens from the start.
-	for start := range min(2, len(tokens)) {
+	for start := range min(3, len(tokens)) {
 		maxPhraseLen := min(len(tokens)-start, 8) // Reasonable max for callsigns like GA N-numbers
-		parts := util.MapSlice(tokens[start:maxPhraseLen], func(t Token) string { return t.Text })
+		parts := util.MapSlice(tokens[start:start+maxPhraseLen], func(t Token) string { return t.Text })
 		for len(parts) > 1 {
 			phrase := strings.Join(parts, " ")
 
 			for spokenName, ac := range aircraft {
-				if strings.EqualFold(phrase, spokenName) {
-					logLocalStt("  exact match: %q -> %q (consumed %d)", phrase, ac.Callsign, len(parts))
+				// Normalize the spoken name the same way we normalize transcripts
+				// so "two" becomes "2", etc.
+				normalizedSpoken := strings.Join(NormalizeTranscript(spokenName), " ")
+				if strings.EqualFold(phrase, normalizedSpoken) {
+					logLocalStt("  exact match: %q -> %q (consumed %d)", phrase, ac.Callsign, start+len(parts))
 					return CallsignMatch{
 						Callsign:       string(ac.Callsign),
 						SpokenKey:      spokenName,
 						Confidence:     1.0,
-						Consumed:       len(parts),
+						Consumed:       start + len(parts),
 						AddressingForm: ac.AddressingForm,
-					}, tokens[len(parts):]
+					}, tokens[start+len(parts):]
+				}
+				// Also check if phrase matches a suffix of the spoken name (for abbreviated GA callsigns)
+				if len(parts) >= 3 && strings.HasPrefix(string(ac.Callsign), "N") && strings.HasSuffix(strings.ToLower(normalizedSpoken), strings.ToLower(phrase)) {
+					logLocalStt("  suffix match: %q -> %q (consumed %d)", phrase, ac.Callsign, start+len(parts))
+					return CallsignMatch{
+						Callsign:       string(ac.Callsign),
+						SpokenKey:      spokenName,
+						Confidence:     0.95,
+						Consumed:       start + len(parts),
+						AddressingForm: 0, // Default - we matched suffix but controller said more
+					}, tokens[start+len(parts):]
 				}
 			}
 
@@ -65,130 +87,189 @@ func MatchCallsign(tokens []Token, aircraft map[string]Aircraft) (CallsignMatch,
 		}
 	}
 
-	var bestMatch CallsignMatch
-	bestStartPos := 0
-	tieCount := 0 // Count of candidates with same best score and consumed tokens
+	// Phase 3: Fuzzy airline + flight number match
+	// Filter by airline name, then match flight number
+	for skip := range min(3, len(tokens)) {
+		toks := tokens[skip:]
+		if len(toks) == 0 {
+			break
+		}
 
-	// Try matching starting at different positions (to handle garbage at start)
-	maxStartPos := min(3, len(tokens)-1) // Don't skip more than 3 tokens
-	for startPos := 0; startPos <= maxStartPos; startPos++ {
-		for spokenName, ac := range aircraft {
-			score, consumed := scoreCallsignMatch(tokens[startPos:], spokenName, string(ac.Callsign))
-			if startPos == 0 {
-				logLocalStt("  candidate %q (ICAO=%q): score=%.2f consumed=%d",
-					spokenName, ac.Callsign, score, consumed)
+		// Step 1: Filter aircraft by airline telephony match (all words must match)
+		airlineMatches := filterByAirlineMatch(toks, aircraft)
+		if len(airlineMatches) == 0 {
+			continue // try skipping more tokens
+		}
+
+		// Step 2: For each airline match, try to match flight number
+		var exactMatches, fuzzyMatches []callsignCandidate
+		for _, am := range airlineMatches {
+			remaining := toks[am.airlineTokens:]
+			flightNum := flightNumber(string(am.ac.Callsign))
+			if flightNum == "" {
+				continue
 			}
-			// Penalty for skipping tokens at the start - require higher base score
-			adjustedScore := score
-			if startPos > 0 && score > 0 {
-				// Require higher base score when skipping (0.75 minimum)
-				if score < 0.75 {
+
+			exact, consumed, score := matchFlightNumber(remaining, flightNum)
+			if exact {
+				exactMatches = append(exactMatches, callsignCandidate{am, consumed, score, true})
+			} else if score > 0 {
+				fuzzyMatches = append(fuzzyMatches, callsignCandidate{am, consumed, score, false})
+			}
+		}
+
+		// Step 2b: Also check for exact flight number matches in ALL aircraft,
+		// regardless of airline match. An exact flight number is a strong signal.
+		// Scan first few positions for a number token.
+		for startPos := range min(3, len(toks)) {
+			t := toks[startPos]
+			if t.Type != TokenNumber && !IsDigit(t.Text) {
+				continue
+			}
+			builtNum, consumed := collectDigits(toks[startPos:], 4)
+			if builtNum == "" {
+				continue
+			}
+			for spokenName, ac := range aircraft {
+				flightNum := flightNumber(string(ac.Callsign))
+				if flightNum == builtNum {
+					// Check if we already have this as an exact match
+					alreadyHave := false
+					for _, em := range exactMatches {
+						if string(em.ac.Callsign) == string(ac.Callsign) {
+							alreadyHave = true
+							break
+						}
+					}
+					if !alreadyHave {
+						exactMatches = append(exactMatches, callsignCandidate{
+							airlineMatch: airlineMatch{
+								spokenKey:     spokenName,
+								ac:            ac,
+								airlineTokens: startPos, // tokens before the number
+								airlineExact:  false,
+								airlineScore:  0.5, // nominal score for flight-number-only
+							},
+							flightTokens: consumed,
+							flightScore:  1.0,
+							flightExact:  true,
+						})
+					}
+				}
+			}
+			break // Only try the first number position
+		}
+
+		// Step 3: Return based on what we found
+		if len(exactMatches) == 1 {
+			return makeCallsignMatch(exactMatches[0], skip, tokens), tokens[skip+exactMatches[0].totalConsumed():]
+		}
+		if len(exactMatches) > 1 {
+			// Multiple exact flight number matches - disambiguate by SpokenKey
+			if best := findExactSpokenKeyMatch(toks, exactMatches); best != nil {
+				return makeCallsignMatch(*best, skip, tokens), tokens[skip+best.totalConsumed():]
+			}
+			best := bestByScore(exactMatches)
+			return makeCallsignMatch(best, skip, tokens), tokens[skip+best.totalConsumed():]
+		}
+		if len(fuzzyMatches) == 1 {
+			return makeCallsignMatch(fuzzyMatches[0], skip, tokens), tokens[skip+fuzzyMatches[0].totalConsumed():]
+		}
+		if len(fuzzyMatches) > 1 {
+			if best := findExactSpokenKeyMatch(toks, fuzzyMatches); best != nil {
+				return makeCallsignMatch(*best, skip, tokens), tokens[skip+best.totalConsumed():]
+			}
+			best := bestByScore(fuzzyMatches)
+			return makeCallsignMatch(best, skip, tokens), tokens[skip+best.totalConsumed():]
+		}
+
+		// Step 4: Fallback to airline-only match if we have airline matches but no flight number
+		// This handles cases where STT splits an airline name (e.g., "south west" for "Southwest")
+		// and the remaining tokens don't contain the flight number.
+		// BUT: only do this if there's no better flight-number-only match available.
+		if len(airlineMatches) > 0 && len(exactMatches) == 0 && len(fuzzyMatches) == 0 {
+			// Check if flight-number-only match would find something better
+			if flightOnlyMatch, _ := tryFlightNumberOnlyMatch(toks, aircraft); flightOnlyMatch.Callsign != "" {
+				// If the flight-number-only match is for a different callsign,
+				// prefer it over the airline-only match
+				bestAirlineCallsign := ""
+				for _, am := range airlineMatches {
+					if bestAirlineCallsign == "" || string(am.ac.Callsign) < bestAirlineCallsign {
+						bestAirlineCallsign = string(am.ac.Callsign)
+					}
+				}
+				if flightOnlyMatch.Callsign != bestAirlineCallsign {
+					// Flight-number-only match found a different callsign, skip airline-only
 					continue
 				}
-				adjustedScore = score * (1.0 - 0.1*float64(startPos))
-				logLocalStt("  candidate %q at pos %d: score=%.2f (adjusted=%.2f) consumed=%d",
-					spokenName, startPos, score, adjustedScore, consumed)
-			}
-			totalConsumed := startPos + consumed
-
-			// Track ties: candidates with same score and consumed tokens
-			if adjustedScore == bestMatch.Confidence && totalConsumed == bestMatch.Consumed && adjustedScore > 0 {
-				tieCount++
 			}
 
-			// Prefer higher score, or more tokens consumed on tie (more specific match),
-			// or alphabetically earlier callsign as final tie-breaker for determinism.
-			isBetter := adjustedScore > bestMatch.Confidence ||
-				(adjustedScore == bestMatch.Confidence && totalConsumed > bestMatch.Consumed) ||
-				(adjustedScore == bestMatch.Confidence && totalConsumed == bestMatch.Consumed &&
-					string(ac.Callsign) < bestMatch.Callsign)
-			if isBetter {
-				if adjustedScore > bestMatch.Confidence || totalConsumed > bestMatch.Consumed {
-					tieCount = 0 // New best, reset tie count
+			// Pick the best airline-only match (by score, then callsign for determinism)
+			best := airlineMatches[0]
+			for _, am := range airlineMatches[1:] {
+				if am.airlineScore > best.airlineScore {
+					best = am
+				} else if am.airlineScore == best.airlineScore && string(am.ac.Callsign) < string(best.ac.Callsign) {
+					best = am
 				}
-				bestMatch = CallsignMatch{
-					Callsign:       string(ac.Callsign),
-					SpokenKey:      spokenName,
-					Confidence:     adjustedScore,
-					Consumed:       totalConsumed, // Include skipped tokens
-					AddressingForm: ac.AddressingForm,
-				}
-				bestStartPos = startPos
 			}
-		}
-	}
-
-	// If there are ties (multiple candidates with same best score/consumed) AND the entire
-	// input was just the airline name with no additional tokens, it's ambiguous.
-	// When there are additional tokens beyond the match, they could be a garbled flight
-	// number, so use the tie-breaker instead of rejecting.
-	if tieCount > 0 && bestMatch.Consumed == 1 && len(tokens) == 1 {
-		logLocalStt("  ambiguous: %d candidates tied with score=%.2f consumed=%d (airline only, no additional tokens), rejecting match",
-			tieCount+1, bestMatch.Confidence, bestMatch.Consumed)
-		return CallsignMatch{}, tokens
-	}
-
-	// Require at least 2 tokens for a valid callsign match (airline + flight number),
-	// UNLESS:
-	// 1. The single token is a number (flight number match), OR
-	// 2. There are more tokens after the match that could be a flight number, OR
-	// A single word like "cross" with no following tokens matching "Chronos" is not valid,
-	// but "south" followed by "west 99" could be "Southwest 99" split across tokens.
-	if bestMatch.Consumed < 2 && len(tokens) > 0 && tokens[0].Type != TokenNumber {
-		// Check if there are any number tokens
-		hasFollowingNumber := false
-		for i := bestMatch.Consumed; i < len(tokens) && i < bestMatch.Consumed+4; i++ {
-			if tokens[i].Type == TokenNumber {
-				hasFollowingNumber = true
-				break
+			// Only accept airline-only matches with reasonably high scores
+			if best.airlineScore < 0.7 {
+				continue
 			}
-		}
-		if !hasFollowingNumber {
-			logLocalStt("  rejecting match: only consumed %d token(s) with no following flight number", bestMatch.Consumed)
-			return CallsignMatch{}, tokens
-		}
-	}
-
-	// Threshold for accepting a match
-	if bestMatch.Confidence < 0.5 {
-		logLocalStt("  best match conf=%.2f below threshold 0.5, trying flight-number-only fallback", bestMatch.Confidence)
-		// Fallback: try to match just a flight number if it uniquely identifies an aircraft
-		if match, remaining := tryFlightNumberOnlyMatch(tokens, aircraft); match.Callsign != "" {
-			return match, remaining
-		}
-		return CallsignMatch{}, tokens
-	}
-
-	// Also try flight-number fallback for marginal matches - a clear flight number
-	// match may be better than a weak airline-name match
-	if bestMatch.Confidence < 0.7 {
-		if match, remaining := tryFlightNumberOnlyMatch(tokens, aircraft); match.Callsign != "" {
-			// Use the flight number match if it's at least as confident
-			if match.Confidence >= bestMatch.Confidence {
-				logLocalStt("  flight-number fallback %q (conf=%.2f) beats marginal match %q (conf=%.2f)",
-					match.Callsign, match.Confidence, bestMatch.Callsign, bestMatch.Confidence)
-				return match, remaining
-			}
+			// Create a candidate with no flight tokens consumed
+			candidate := callsignCandidate{best, 0, 0.5, false}
+			return makeCallsignMatch(candidate, skip, tokens), tokens[skip+candidate.totalConsumed():]
 		}
 	}
 
-	logLocalStt("  accepted: %q (conf=%.2f, consumed=%d, startPos=%d)",
-		bestMatch.Callsign, bestMatch.Confidence, bestMatch.Consumed, bestStartPos)
-	return bestMatch, tokens[bestMatch.Consumed:]
+	// Note: GA abbreviated forms ("3 alpha bravo", "skyhawk 3 alpha bravo") are
+	// handled naturally by the main matching logic since aircraft have multiple
+	// entries in the map (e.g., "november 1 2 3 alpha bravo" and "skyhawk 3 alpha bravo").
+
+	// Phase 4: Flight-number-only fallback
+	// Try to match using just the flight number when airline name is garbled/missing
+	if match, remaining := tryFlightNumberOnlyMatch(tokens, aircraft); match.Callsign != "" {
+		return match, remaining
+	}
+
+	return CallsignMatch{}, tokens
 }
 
-// scoreCallsignMatch computes how well tokens match a callsign.
-func scoreCallsignMatch(tokens []Token, spokenName, callsign string) (float64, int) {
-	// Parse the spoken name: "American 5936", "China Southern 940 heavy", "November 1 2 3 AB"
-	spokenParts := strings.Fields(strings.ToLower(spokenName))
-	if len(spokenParts) == 0 {
-		return 0, 0
+// airlineMatch represents an aircraft that matched on airline name.
+type airlineMatch struct {
+	spokenKey     string
+	ac            Aircraft
+	airlineTokens int     // tokens consumed for airline
+	airlineExact  bool    // true if exact match
+	airlineScore  float64 // JW similarity score for airline (1.0 for exact)
+}
+
+// callsignCandidate represents a potential callsign match.
+type callsignCandidate struct {
+	airlineMatch
+	flightTokens int
+	flightScore  float64
+	flightExact  bool
+}
+
+func (c callsignCandidate) totalConsumed() int {
+	return c.airlineTokens + c.flightTokens
+}
+
+// parseAirlineParts extracts airline word parts from a spoken name.
+// "American 5936" -> ["american"]
+// "China Southern 940" -> ["china", "southern"]
+// "November 123AB" -> ["november"]
+func parseAirlineParts(spokenName string) []string {
+	parts := strings.Fields(strings.ToLower(spokenName))
+	if len(parts) == 0 {
+		return nil
 	}
 
-	// Figure out where the airline name ends in spoken parts
-	// The flight number starts at the first numeric part
+	// Find where the airline name ends (first numeric part or heavy/super)
 	airlineEndIdx := 0
-	for i, part := range spokenParts {
+	for i, part := range parts {
 		if IsNumber(part) || (len(part) > 0 && part[0] >= '0' && part[0] <= '9') {
 			airlineEndIdx = i
 			break
@@ -199,166 +280,129 @@ func scoreCallsignMatch(tokens []Token, spokenName, callsign string) (float64, i
 		}
 		airlineEndIdx = i + 1
 	}
-	airlineParts := spokenParts[:airlineEndIdx]
 
-	totalScore := 0.0
-	consumed := 0
-	matchCount := 0
-
-	// Try to match airline/prefix part (may be multiple words)
-	if len(tokens) > 0 && len(airlineParts) > 0 {
-		firstToken := strings.ToLower(tokens[0].Text)
-
-		// Try to match tokens against airline name parts
-		airlineScore, airlineConsumed := scoreMultiWordAirline(tokens, airlineParts)
-		if airlineScore > 0.6 {
-			totalScore += airlineScore
-			consumed += airlineConsumed
-			matchCount++
-		} else {
-			// Fallback: try single word match against first airline part
-			singleScore := scoreAirlineMatch(firstToken, airlineParts[0])
-			if singleScore > 0.6 {
-				totalScore += singleScore
-				consumed++
-				matchCount++
-			}
-		}
-	}
-
-	// Try to match flight number
-	// Split callsign into prefix and number: "AAL5936" -> "AAL", "5936"
-	number := flightNumber(callsign)
-	if number != "" {
-		bestNumScore := 0.0
-		bestNumConsumed := 0
-		bestNumStart := consumed
-
-		// Search from current position (after airline if matched) to a few positions later.
-		// This handles cases where the airline didn't match but the flight number is in the tokens.
-		searchStart := 0
-		if matchCount > 0 {
-			searchStart = consumed // If airline matched, start searching after it
-		}
-		searchEnd := min(len(tokens), searchStart+3) // Don't search too far
-
-		for startIdx := searchStart; startIdx < searchEnd; startIdx++ {
-			numScore, numConsumed := scoreFlightNumberMatch(tokens[startIdx:], number)
-			if numScore > bestNumScore {
-				bestNumScore = numScore
-				bestNumConsumed = numConsumed
-				bestNumStart = startIdx
-			}
-		}
-
-		if bestNumScore > 0.5 {
-			totalScore += bestNumScore
-			consumed = bestNumStart + bestNumConsumed
-			matchCount++
-		}
-	}
-
-	// Handle GA callsigns (N-numbers)
-	if consumed == 0 && strings.HasPrefix(callsign, "N") {
-		gaScore, gaConsumed := scoreGACallsign(tokens, callsign)
-		if gaScore > 0.5 {
-			return gaScore, gaConsumed
-		}
-	}
-
-	if matchCount == 0 {
-		return 0, 0
-	}
-
-	// Consume callsign suffixes (heavy, super) if present
-	if consumed < len(tokens) {
-		suffix := strings.ToLower(tokens[consumed].Text)
-		if suffix == "heavy" || suffix == "super" {
-			consumed++
-		}
-	}
-
-	// Average the scores
-	avgScore := totalScore / float64(matchCount)
-
-	// Bonus for matching both airline and number.
-	// Don't cap at 1.0 so exact flight number matches rank higher than suffix matches.
-	if matchCount >= 2 {
-		avgScore *= 1.1
-	}
-
-	// When we matched airline but not the flight number, consume any trailing
-	// numeric tokens as "garbled callsign noise" rather than leaving them to be
-	// misinterpreted as commands. Skip "at" if it precedes numbers (common STT artifact).
-
-	if matchCount == 1 && number != "" && consumed < len(tokens) {
-		// Skip "at" if followed by numbers (STT often inserts "at" in garbled callsigns)
-		if strings.ToLower(tokens[consumed].Text) == "at" && consumed+1 < len(tokens) {
-			if tokens[consumed+1].Type == TokenNumber {
-				consumed++
-			}
-		}
-		// Consume consecutive numeric tokens as garbled flight number
-		for consumed < len(tokens) && tokens[consumed].Type == TokenNumber {
-			consumed++
-		}
-		// Penalize for not matching the flight number well
-		avgScore *= 0.8
-	}
-
-	return avgScore, consumed
+	return parts[:airlineEndIdx]
 }
 
-// scoreMultiWordAirline scores how well tokens match a multi-word airline name.
-func scoreMultiWordAirline(tokens []Token, airlineParts []string) (float64, int) {
-	if len(tokens) < len(airlineParts) {
-		return 0, 0
+// matchWord compares word to target with fuzzy matching.
+// Returns (exact, score) where exact is true if strings match case-insensitively,
+// and score is the similarity (1.0 for exact, JaroWinkler otherwise).
+// Phonetic matches get a minimum score of 0.85.
+func matchWord(word, target string) (exact bool, score float64) {
+	if strings.EqualFold(word, target) {
+		return true, 1.0
+	}
+	score = JaroWinkler(word, target)
+	if PhoneticMatch(word, target) && score < 0.85 {
+		score = 0.85
+	}
+	return false, score
+}
+
+// filterByAirlineMatch filters aircraft by airline telephony match.
+// Uses a tiered threshold: exact (1.0), high (>=0.85), and low (>=0.35-0.4).
+// Low-threshold matches are included to enable combined scoring with flight numbers.
+func filterByAirlineMatch(tokens []Token, aircraft map[string]Aircraft) []airlineMatch {
+	var matches []airlineMatch
+	for spokenName, ac := range aircraft {
+		if am, ok := tryMatchAirline(tokens, spokenName, ac); ok {
+			matches = append(matches, am)
+		}
+	}
+	return matches
+}
+
+// tryMatchAirline attempts to match tokens to a single aircraft's airline name.
+func tryMatchAirline(tokens []Token, spokenName string, ac Aircraft) (airlineMatch, bool) {
+	parts := parseAirlineParts(spokenName)
+	if len(parts) == 0 || len(tokens) == 0 {
+		return airlineMatch{}, false
+	}
+	tokenText := strings.ToLower(tokens[0].Text)
+
+	// Single-word airline
+	if len(parts) == 1 {
+		exact, score := matchWord(tokenText, parts[0])
+		if score >= 0.35 {
+			return airlineMatch{spokenName, ac, 1, exact, score}, true
+		}
+		return airlineMatch{}, false
 	}
 
+	// Multi-word: try matching all parts to consecutive tokens
+	if len(tokens) >= len(parts) {
+		if am, ok := matchMultiWordAirline(tokens, parts, spokenName, ac); ok {
+			return am, true
+		}
+	}
+
+	// Multi-word: try concatenated form (e.g., "airfrance")
+	concat := strings.Join(parts, "")
+	if exact, score := matchWord(tokenText, concat); score >= 0.85 {
+		return airlineMatch{spokenName, ac, 1, exact, score}, true
+	}
+
+	// Multi-word: try first word only (e.g., "southwest")
+	// Handles cases like "Southwest seven 95" where "seven" is part of flight number
+	exact, score := matchWord(tokenText, parts[0])
+	if score >= 0.4 {
+		return airlineMatch{spokenName, ac, 1, exact, score}, true
+	}
+
+	return airlineMatch{}, false
+}
+
+// matchMultiWordAirline tries to match each airline part to consecutive tokens.
+func matchMultiWordAirline(tokens []Token, parts []string, spokenName string, ac Aircraft) (airlineMatch, bool) {
+	allExact := true
 	totalScore := 0.0
-	for i, part := range airlineParts {
+	for i, part := range parts {
 		tokenText := strings.ToLower(tokens[i].Text)
-		score := JaroWinkler(tokenText, part)
-		if score < 0.75 && !PhoneticMatch(tokenText, part) {
-			return 0, 0 // One word doesn't match well enough
+		exact, score := matchWord(tokenText, part)
+		if score < 0.85 {
+			return airlineMatch{}, false
 		}
-		totalScore += max(score, 0.75)
+		if !exact {
+			allExact = false
+		}
+		totalScore += score
 	}
-
-	avgScore := totalScore / float64(len(airlineParts))
-	return avgScore, len(airlineParts)
+	return airlineMatch{spokenName, ac, len(parts), allExact, totalScore / float64(len(parts))}, true
 }
 
-// scoreAirlineMatch scores how well a spoken word matches an airline.
-func scoreAirlineMatch(spoken, expected string) float64 {
-	// Exact match
-	if spoken == expected {
-		return 1.0
-	}
-
-	// Fuzzy match
-	jwScore := JaroWinkler(spoken, expected)
-	if jwScore > 0.85 {
-		return jwScore
-	}
-
-	// Phonetic match
-	if PhoneticMatch(spoken, expected) {
-		return 0.85
-	}
-
-	return jwScore
-}
-
-// scoreFlightNumberMatch scores how well tokens match a flight number.
-func scoreFlightNumberMatch(tokens []Token, expectedNum string) (float64, int) {
-	if len(tokens) == 0 {
-		return 0, 0
-	}
-
-	// Build the number from consecutive digit tokens or a number token
-	var builtNum strings.Builder
+// collectDigits builds a digit string from consecutive number tokens.
+// Returns the string and number of tokens consumed.
+// If maxTokens > 0, stops after that many tokens are consumed.
+func collectDigits(tokens []Token, maxTokens int) (string, int) {
+	var numStr strings.Builder
 	consumed := 0
+	for _, t := range tokens {
+		if maxTokens > 0 && consumed >= maxTokens {
+			break
+		}
+		if t.Type == TokenNumber {
+			numStr.WriteString(strconv.Itoa(t.Value))
+			consumed++
+		} else if IsNumber(t.Text) || IsDigit(t.Text) {
+			numStr.WriteString(t.Text)
+			consumed++
+		} else {
+			break
+		}
+	}
+	return numStr.String(), consumed
+}
+
+// matchFlightNumber matches tokens against an expected flight number.
+// Returns (exact, consumed, score).
+func matchFlightNumber(tokens []Token, expectedNum string) (exact bool, consumed int, score float64) {
+	if len(tokens) == 0 || expectedNum == "" {
+		return false, 0, 0
+	}
+
+	// Build flight number from consecutive digit/letter tokens
+	var builtNum strings.Builder
+	consumed = 0
 
 	for consumed < len(tokens) {
 		t := tokens[consumed]
@@ -402,102 +446,130 @@ func scoreFlightNumberMatch(tokens []Token, expectedNum string) (float64, int) {
 	}
 
 	if consumed == 0 {
-		return 0, 0
+		return false, 0, 0
 	}
 
 	built := builtNum.String()
 
 	// Exact match
 	if built == expectedNum {
-		return 1.0, consumed
+		return true, consumed, 1.0
 	}
 
 	// Check if built number is a suffix of expected (partial match)
 	if strings.HasSuffix(expectedNum, built) {
-		// Partial match - slightly lower confidence
-		return 0.85, consumed
+		return false, consumed, 0.85
 	}
 
 	// Check if expected is a suffix of built (overshot)
 	if strings.HasSuffix(built, expectedNum) {
-		return 0.8, consumed
+		return false, consumed, 0.8
 	}
 
 	// Fuzzy match on the number
 	jwScore := JaroWinkler(built, expectedNum)
 	if jwScore >= 0.7 {
-		return jwScore, consumed
+		return false, consumed, jwScore
 	}
 
 	// For 2-digit numbers, if the trailing digit matches (like "91" vs "81"),
 	// give a reasonable score since ATC often uses trailing digits to disambiguate.
-	// STT commonly confuses similar-sounding digits (e.g., "eight" vs "nine").
 	if len(built) == 2 && len(expectedNum) == 2 && built[1] == expectedNum[1] {
-		return 0.7, consumed
+		return false, consumed, 0.7
 	}
 
-	return 0, 0
+	return false, 0, 0
 }
 
-// scoreGACallsign scores General Aviation N-number callsigns.
-func scoreGACallsign(tokens []Token, callsign string) (float64, int) {
-	// GA callsigns: N12345, N123AB
-	// May be spoken as "November 1 2 3 4 5" or "three four five" (last 3)
-	if len(tokens) == 0 {
-		return 0, 0
-	}
+// findExactSpokenKeyMatch checks if tokens exactly spell out one candidate's SpokenKey.
+func findExactSpokenKeyMatch(tokens []Token, candidates []callsignCandidate) *callsignCandidate {
+	var match *callsignCandidate
 
-	// Check for "november" or "n" at start
-	firstLower := strings.ToLower(tokens[0].Text)
-	consumed := 0
+	for i := range candidates {
+		c := &candidates[i]
+		totalTokens := c.totalConsumed()
+		if totalTokens > len(tokens) {
+			continue
+		}
 
-	if firstLower == "november" || firstLower == "n" {
-		consumed = 1
-	}
+		// Build the phrase from tokens
+		parts := make([]string, totalTokens)
+		for j := 0; j < totalTokens; j++ {
+			parts[j] = tokens[j].Text
+		}
+		phrase := strings.Join(parts, " ")
 
-	// Build the rest of the callsign from digits/letters
-	var built strings.Builder
-	built.WriteString("N")
-
-	for consumed < len(tokens) {
-		t := tokens[consumed]
-		text := strings.ToLower(t.Text)
-
-		if IsDigit(text) || (len(text) == 1 && isLetter(text)) {
-			built.WriteString(strings.ToUpper(text))
-			consumed++
-		} else if len(text) == 1 && text[0] >= 'a' && text[0] <= 'z' {
-			built.WriteString(strings.ToUpper(text))
-			consumed++
-		} else if letter, ok := ConvertNATOLetter(text); ok {
-			// Handle NATO phonetic letters: "alpha" -> "A", "bravo" -> "B", etc.
-			built.WriteString(strings.ToUpper(letter))
-			consumed++
-		} else {
-			break
+		if strings.EqualFold(phrase, c.spokenKey) {
+			if match != nil {
+				// Multiple matches, can't disambiguate
+				return nil
+			}
+			match = c
 		}
 	}
 
-	if consumed == 0 {
-		return 0, 0
+	return match
+}
+
+// bestByScore returns the candidate with the highest score.
+// Score = 2 for exact airline + 2 for exact flight + flightScore
+// Tie-breaks alphabetically by SpokenKey for determinism.
+func bestByScore(candidates []callsignCandidate) callsignCandidate {
+	if len(candidates) == 0 {
+		return callsignCandidate{}
 	}
 
-	builtCS := built.String()
+	best := candidates[0]
+	bestScore := candidateScore(best)
 
-	// Exact match
-	if builtCS == callsign {
-		return 1.0, consumed
-	}
-
-	// Check for suffix match (last 3 characters)
-	if len(builtCS) >= 3 && len(callsign) >= 3 {
-		if builtCS[len(builtCS)-3:] == callsign[len(callsign)-3:] {
-			return 0.85, consumed
+	for _, c := range candidates[1:] {
+		score := candidateScore(c)
+		if score > bestScore || (score == bestScore && c.spokenKey < best.spokenKey) {
+			best = c
+			bestScore = score
 		}
 	}
 
-	// Fuzzy match
-	return JaroWinkler(builtCS, callsign), consumed
+	return best
+}
+
+func candidateScore(c callsignCandidate) float64 {
+	// Combined scoring: airline score (0-1) + flight score (0-1)
+	// Weight them equally for a max score of 2.0
+	score := c.airlineScore + c.flightScore
+	return score
+}
+
+// makeCallsignMatch creates a CallsignMatch from a candidate.
+func makeCallsignMatch(c callsignCandidate, skip int, tokens []Token) CallsignMatch {
+	consumed := skip + c.totalConsumed()
+
+	// Consume heavy/super suffix if present
+	if consumed < len(tokens) {
+		suffix := strings.ToLower(tokens[consumed].Text)
+		if suffix == "heavy" || suffix == "super" {
+			consumed++
+		}
+	}
+
+	// Combined confidence from airline and flight scores
+	// Both scores are 0-1, so average them and scale to 0.6-1.0 range
+	combinedScore := (c.airlineScore + c.flightScore) / 2.0
+	conf := 0.6 + 0.4*combinedScore
+
+	if skip > 0 {
+		conf *= (1.0 - 0.1*float64(skip))
+	}
+
+	logLocalStt("  matched: %q (conf=%.2f, consumed=%d, skip=%d)", c.ac.Callsign, conf, consumed, skip)
+
+	return CallsignMatch{
+		Callsign:       string(c.ac.Callsign),
+		SpokenKey:      c.spokenKey,
+		Confidence:     conf,
+		Consumed:       consumed,
+		AddressingForm: c.ac.AddressingForm,
+	}
 }
 
 // tryFlightNumberOnlyMatch attempts to match a callsign using just the flight number.
@@ -509,72 +581,66 @@ func tryFlightNumberOnlyMatch(tokens []Token, aircraft map[string]Aircraft) (Cal
 	// (airline + flight number, possibly with "heavy"/"super").
 	// Scanning further would incorrectly match numbers from commands (e.g., altitudes, headings).
 	maxScan := min(6, len(tokens))
-	for i := range maxScan {
-		t := tokens[i]
-		var numStr string
-		if t.Type == TokenNumber {
-			numStr = strconv.Itoa(t.Value)
-		} else if IsNumber(t.Text) {
-			numStr = t.Text
-		} else {
+
+	for startIdx := range maxScan {
+		builtNum, numTokens := collectDigits(tokens[startIdx:maxScan], 0)
+		if builtNum == "" {
 			continue
 		}
+		endIdx := startIdx + numTokens
 
 		// Find aircraft whose flight number matches (exact or fuzzy)
-		var exactMatch *struct {
-			spokenKey string
-			ac        Aircraft
-		}
-		var fuzzyMatch *struct {
-			spokenKey string
-			ac        Aircraft
-			score     float64
-		}
+		var exactKey string
+		var exactAc Aircraft
+		var fuzzyKey string
+		var fuzzyAc Aircraft
+		var fuzzyScore float64
 		exactCount, fuzzyCount := 0, 0
 
 		for spokenName, ac := range aircraft {
-			if flightNum := flightNumber(string(ac.Callsign)); flightNum == numStr {
-				exactMatch = &struct {
-					spokenKey string
-					ac        Aircraft
-				}{spokenName, ac}
+			flightNum := flightNumber(string(ac.Callsign))
+			if flightNum == builtNum {
+				exactKey, exactAc = spokenName, ac
 				exactCount++
-			} else if len(numStr) >= 3 && len(flightNum) >= 3 {
+			} else if strings.HasSuffix(builtNum, flightNum) && len(flightNum) >= 2 {
+				// Suffix match: "922" contains "22" at end (garbled leading digit)
+				fuzzyKey, fuzzyAc, fuzzyScore = spokenName, ac, 0.75
+				fuzzyCount++
+			} else if strings.Contains(builtNum, flightNum) && len(flightNum) >= 2 {
+				// Substring match: "92210" contains "22" (digits merged by normalization)
+				fuzzyKey, fuzzyAc, fuzzyScore = spokenName, ac, 0.65
+				fuzzyCount++
+			} else if len(builtNum) >= 3 && len(flightNum) >= 3 {
 				// Try fuzzy match for longer flight numbers (3+ digits)
-				score := JaroWinkler(numStr, flightNum)
-				if score >= 0.8 {
-					fuzzyMatch = &struct {
-						spokenKey string
-						ac        Aircraft
-						score     float64
-					}{spokenName, ac, score}
+				if score := JaroWinkler(builtNum, flightNum); score >= 0.8 {
+					fuzzyKey, fuzzyAc, fuzzyScore = spokenName, ac, score
 					fuzzyCount++
 				}
 			}
 		}
 
 		// Prefer exact match if unique
-		if exactCount == 1 && exactMatch != nil {
+		if exactCount == 1 {
 			logLocalStt("  flight-number-only fallback: %q matches %q (ICAO=%q) exactly",
-				numStr, exactMatch.spokenKey, exactMatch.ac.Callsign)
+				builtNum, exactKey, exactAc.Callsign)
 			return CallsignMatch{
-				Callsign:   string(exactMatch.ac.Callsign),
-				SpokenKey:  exactMatch.spokenKey,
+				Callsign:   string(exactAc.Callsign),
+				SpokenKey:  exactKey,
 				Confidence: 0.7,
-				Consumed:   i + 1,
-			}, tokens[i+1:]
+				Consumed:   endIdx,
+			}, tokens[endIdx:]
 		}
 
 		// Use fuzzy match if unique and no exact matches
-		if exactCount == 0 && fuzzyCount == 1 && fuzzyMatch != nil {
+		if exactCount == 0 && fuzzyCount == 1 {
 			logLocalStt("  flight-number-only fallback: %q fuzzy matches %q (ICAO=%q, score=%.2f)",
-				numStr, fuzzyMatch.spokenKey, fuzzyMatch.ac.Callsign, fuzzyMatch.score)
+				builtNum, fuzzyKey, fuzzyAc.Callsign, fuzzyScore)
 			return CallsignMatch{
-				Callsign:   string(fuzzyMatch.ac.Callsign),
-				SpokenKey:  fuzzyMatch.spokenKey,
+				Callsign:   string(fuzzyAc.Callsign),
+				SpokenKey:  fuzzyKey,
 				Confidence: 0.65,
-				Consumed:   i + 1,
-			}, tokens[i+1:]
+				Consumed:   endIdx,
+			}, tokens[endIdx:]
 		}
 	}
 
