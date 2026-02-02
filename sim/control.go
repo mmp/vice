@@ -2295,6 +2295,10 @@ func (s *Sim) rollbackLastCommand() error {
 func (s *Sim) renderAndPostReadback(callsign av.ADSBCallsign, tcw TCW, intents []av.CommandIntent) string {
 	if rt := av.RenderIntents(intents, s.Rand); rt != nil {
 		s.postReadbackTransmission(callsign, *rt, tcw)
+		// MixUp transmissions already include the callsign in the message
+		if rt.Type == av.RadioTransmissionMixUp {
+			return rt.Spoken(s.Rand)
+		}
 		// Return spoken text with callsign suffix for TTS synthesis
 		return rt.Spoken(s.Rand) + s.readbackCallsignSuffix(callsign, tcw)
 	}
