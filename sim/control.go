@@ -1210,8 +1210,13 @@ func (s *Sim) ShouldTriggerPilotMixUp(callsign av.ADSBCallsign) bool {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
+	// If pilot errors are disabled (interval == 0), never trigger mix-ups
+	if s.PilotErrorInterval == 0 {
+		return false
+	}
+
 	// Check if enough time has passed since the last pilot error globally
-	if s.PilotErrorInterval > 0 && s.State.SimTime.Sub(s.LastPilotError) <= s.PilotErrorInterval {
+	if s.State.SimTime.Sub(s.LastPilotError) <= s.PilotErrorInterval {
 		return false
 	}
 
