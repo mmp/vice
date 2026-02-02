@@ -129,12 +129,33 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 		return nil, 0, "HEADING"
 	}
 
-	for i := pos; i < len(tokens) && i < pos+4; i++ {
+	// If the first token is a command keyword (like "contact"), this is not a heading
+	// command context - silently fail so we don't trigger SAYAGAIN.
+	// E.g., "heading contact boston center" - "contact" is a command keyword.
+	if IsCommandKeyword(tokens[pos].Text) {
+		return nil, 0, ""
+	}
+
+	// Headings should follow immediately (or with at most 1 intervening token for
+	// transcription errors). Looking 4 tokens ahead is too permissive and causes
+	// false matches like "heading contact boston center 128" being parsed as H128.
+	maxLookahead := min(2, len(tokens)-pos)
+
+	for i := pos; i < pos+maxLookahead; i++ {
 		t := tokens[i]
 
 		// Skip numbers that follow "speed" keyword - those are speed values, not headings.
 		if i > pos && strings.ToLower(tokens[i-1].Text) == "speed" {
 			continue
+		}
+
+		// Check if this number is followed by "point" - that indicates a frequency, not a heading.
+		// E.g., "heading contact boston center 128 point 75" - the 128.75 is a frequency.
+		if t.Type == TokenNumber && i+1 < len(tokens) {
+			nextText := strings.ToLower(tokens[i+1].Text)
+			if nextText == "point" {
+				continue
+			}
 		}
 
 		// Handle 4-digit values where first 3 digits form valid heading (e.g., 1507 → 150)
@@ -506,6 +527,29 @@ func (p *textParser) parse(tokens []Token, pos int, ac Aircraft) (value any, con
 	return nil, 0, ""
 }
 
+// garbledWordParser extracts a single word token that is NOT a command keyword.
+// Used for matching garbled facility names without accidentally consuming command keywords.
+type garbledWordParser struct{}
+
+func (p *garbledWordParser) identifier() string {
+	return "garbled_word"
+}
+
+func (p *garbledWordParser) goType() reflect.Type {
+	return reflect.TypeOf("")
+}
+
+func (p *garbledWordParser) parse(tokens []Token, pos int, ac Aircraft) (value any, consumed int, sayAgain string) {
+	if pos >= len(tokens) {
+		return nil, 0, ""
+	}
+	// Match a word token that is NOT a command keyword
+	if tokens[pos].Type == TokenWord && !IsCommandKeyword(tokens[pos].Text) {
+		return tokens[pos].Text, 1, ""
+	}
+	return nil, 0, ""
+}
+
 // speedUntilParser extracts a speed "until" specification (fix, DME, or mile final).
 type speedUntilParser struct{}
 
@@ -643,6 +687,8 @@ func getTypeParser(typeID string) typeParser {
 		return &holdParser{}
 	case "text":
 		return &textParser{}
+	case "garbled_word":
+		return &garbledWordParser{}
 	case "speed_until":
 		return &speedUntilParser{}
 	case "contact_frequency":

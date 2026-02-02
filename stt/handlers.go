@@ -703,6 +703,18 @@ func registerAllCommands() {
 		WithPriority(4), // Just above the basic "contact facility" pattern
 	)
 
+	// Fallback: "contact" + garbled word without frequency pattern → assume tower
+	// If we clearly heard "contact" but what follows is too short to be a frequency,
+	// it's most likely "contact tower" with a garbled "tower".
+	// Uses {garbled_word} to avoid matching command keywords like "climb".
+	// Lower priority than FC patterns so those match first when applicable.
+	registerSTTCommand(
+		"contact {garbled_word}",
+		func(_ string) string { return "TO" },
+		WithName("contact_garbled_tower"),
+		WithPriority(2),
+	)
+
 	registerSTTCommand(
 		"frequency change approved",
 		func() string { return "" }, // Ignored - informational only
