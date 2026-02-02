@@ -64,7 +64,11 @@ $manifest.PSObject.Properties | ForEach-Object {
     if ($needDownload) {
         Write-Host "Downloading $model..."
         $url = 'https://storage.googleapis.com/vice-resources/' + $expectedHash
-        Invoke-WebRequest -Uri $url -OutFile $modelPath -UseBasicParsing
+        curl.exe -L --progress-bar -o $modelPath $url
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "Error: curl failed to download $model (exit code $LASTEXITCODE)"
+            exit 1
+        }
         $actualHash = Get-Sha256Hash $modelPath
         if ($actualHash -ne $expectedHash) {
             Write-Host "Error: Downloaded file hash mismatch for $model"
