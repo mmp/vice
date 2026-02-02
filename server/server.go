@@ -65,7 +65,8 @@ import (
 // 55: STT logging
 // 56: STT iteration
 // 57: rework contact radio transmission management
-const ViceSerializeVersion = 57
+// 58: STT fin rev?
+const ViceSerializeVersion = 58
 
 const ViceServerAddress = "vice.pharr.org"
 const ViceServerPort = 8000 - 50 + ViceRPCVersion
