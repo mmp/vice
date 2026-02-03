@@ -262,6 +262,16 @@ func (p *Transcriber) decodeInternal(
 		return "", nil
 	}
 
+	// Check again for acknowledgment-only after stripping position ID and radar contact
+	// e.g., "Callsign Lone Star Approach roger" -> after stripping, just "roger" remains
+	if isAcknowledgmentOnly(commandTokens) {
+		logLocalStt("detected acknowledgment only after stripping prefixes, returning empty")
+		elapsed := time.Since(start)
+		logLocalStt("=== DecodeTranscript END: \"\" (acknowledgment, time=%s) ===", elapsed)
+		p.logInfo("local STT: %q -> \"\" (acknowledgment, time=%s)", transcript, elapsed)
+		return "", nil
+	}
+
 	// Layer 4: Command parsing
 	commands, cmdConf := ParseCommands(commandTokens, ac)
 	logLocalStt("parsed commands: %v (conf=%.2f)", commands, cmdConf)

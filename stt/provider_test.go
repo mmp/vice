@@ -1239,6 +1239,24 @@ func TestPositionIdentification(t *testing.T) {
 			expected:         "JBU25 DWAVEY C120",
 			expectPositionID: false,
 		},
+		{
+			name:       "roger only - no command",
+			transcript: "Delta 88 roger",
+			aircraft: map[string]Aircraft{
+				"Delta 88": {Callsign: "DAL88", Altitude: 3000, State: "departure"},
+			},
+			radioName: "New York Departure",
+			expected:  "",
+		},
+		{
+			name:       "roger followed by command",
+			transcript: "Delta 88 roger climb and maintain niner thousand",
+			aircraft: map[string]Aircraft{
+				"Delta 88": {Callsign: "DAL88", Altitude: 3000, State: "departure"},
+			},
+			radioName: "New York Departure",
+			expected:  "DAL88 C90",
+		},
 	}
 
 	provider := NewTranscriber(nil)
