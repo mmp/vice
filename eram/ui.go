@@ -22,14 +22,14 @@ func (ep *ERAMPane) DisplayName() string { return "ERAM" }
 
 func (ep *ERAMPane) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.Checkbox("Disable ERAM to Radio Commands", &ep.DisableERAMtoRadio)
+	if ep.prefSet == nil {
+		return
+	}
 	ps := ep.currentPrefs()
 	imgui.Checkbox("Use right click for primary button", &ps.UseRightClick)
 	tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
 		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
 	if imgui.CollapsingHeaderBoolPtr("Preferences", nil) {
-		if ep.prefSet == nil {
-			return
-		}
 		if imgui.BeginTableV("Saved Preferences", 4, tableFlags, imgui.Vec2{}, 0) {
 			imgui.TableSetupColumn("Name")
 			imgui.TableSetupColumn("Save ")
