@@ -1,0 +1,208 @@
+{
+  "time": "2026-02-04T20:29:58.745127736Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Jetcard Forty Ten Tampa departure hello",
+  "whisper_duration_ms": 322.639,
+  "audio_duration_ms": 5448,
+  "processor": "GPU: NVIDIA GeForce RTX 4090 (24138MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "",
+  "command": "",
+  "stt_aircraft": {
+    "American 87": {
+      "Callsign": "AAL87",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Dormer": "DORMR",
+        "sykes": "SYKES"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "DORMR3",
+      "STAR": "",
+      "Altitude": 1966,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 37": {
+      "Callsign": "DAL37",
+      "AircraftType": "BCS1",
+      "Fixes": {
+        "Baypo": "BAYPO",
+        "Ecake": "ECAKE",
+        "Finki": "FINKI"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BAYPO2",
+      "STAR": "",
+      "Altitude": 7562,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta one 92 heavy": {
+      "Callsign": "DAL192",
+      "AircraftType": "B764",
+      "Fixes": {
+        "Dormer": "DORMR",
+        "Pistol": "PSTOL",
+        "sykes": "SYKES"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "DORMR3",
+      "STAR": "",
+      "Altitude": 9318,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Jet Card 40 10": {
+      "Callsign": "DPJ4010",
+      "AircraftType": "C560",
+      "Fixes": {
+        "Clearwater": "KPIE",
+        "Cosar": "COSAR",
+        "Deside": "DSIDE"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight": "I18",
+        "r-nav runway one eight": "R18"
+      },
+      "ApproachFixes": {
+        "I18": {
+          "Capok": "CAPOK",
+          "Darbs": "DARBS",
+          "St Petersburg": "PIE",
+          "Zepum": "ZEPUM",
+          "wipso": "WIPSO"
+        },
+        "R18": {
+          "Detse": "DETSE",
+          "Donhu": "DONHU",
+          "Sound": "SAUND",
+          "St Petersburg": "PIE",
+          "Wigus": "WIGUS"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "BLFRG2",
+      "Altitude": 12836,
+      "State": "arrival",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    },
+    "United 61": {
+      "Callsign": "UAL61",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Ended": "ENDED",
+        "Lacen": "LACEN"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "ENDED2",
+      "STAR": "",
+      "Altitude": 5608,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "WestJet four 60": {
+      "Callsign": "WJA460",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Baypo": "BAYPO",
+        "Ecake": "ECAKE",
+        "Finki": "FINKI"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BAYPO2",
+      "STAR": "",
+      "Altitude": 9256,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Jetcard Forty Ten Tampa departure hello\"",
+    "[local-stt] normalized words: [jetcard 40 10 tampa departure hello]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"jetcard\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"40\" Type=1 Value=40",
+    "[local-stt]   token[2]: Text=\"10\" Type=1 Value=10",
+    "[local-stt]   token[3]: Text=\"tampa\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"departure\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"hello\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 6 tokens, 6 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 6 tokens, 6 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 2 results",
+    "[local-stt]     result 0: \"WestJet four 60\" (airline=0.524, flight=0.750, skip=0)",
+    "[local-stt]     result 1: \"Jet Card 40 10\" (airline=0.867, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Jet Card 40 10\" (airline=0.87, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 6 results",
+    "[local-stt]     result 0: \"Jet Card 40 10\" (airline=0.867, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Delta one 92 heavy\" (airline=0.676, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"American 87\" (airline=0.565, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"United 61\" (airline=0.540, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"Delta 37\" (airline=0.676, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Jet Card 40 10\" (airline=0.87, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Jet Card 40 10\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Jet Card 40 10\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"DPJ4010\" (conf=0.97, consumed=3, addressingForm=0, spokenKey=\"Jet Card 40 10\")",
+    "[local-stt] callsign match: Callsign=\"DPJ4010\" SpokenKey=\"Jet Card 40 10\" Conf=0.97 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=12836 Fixes=3 Approaches=2 AssignedApproach=\"\" LAHSORunways=[4 22]",
+    "[local-stt]   fix: \"Cosar\" -\u003e \"COSAR\"",
+    "[local-stt]   fix: \"Deside\" -\u003e \"DSIDE\"",
+    "[local-stt]   fix: \"Clearwater\" -\u003e \"KPIE\"",
+    "[local-stt]   approach: \"I L S runway one eight\" -\u003e \"I18\"",
+    "[local-stt]   approach: \"r-nav runway one eight\" -\u003e \"R18\"",
+    "[local-stt] command tokens after disregard: 3",
+    "[local-stt]   token[0]: Text=\"tampa\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"departure\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"hello\" Type=0 Value=-1",
+    "[local-stt] stripped position ID prefix: 2 tokens",
+    "[local-stt] ParseCommands: 1 tokens",
+    "[local-stt]   no match at token[0]=\"hello\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"DPJ4010 AGAIN\" (conf=0.97, time=543.5µs) ==="
+  ]
+}

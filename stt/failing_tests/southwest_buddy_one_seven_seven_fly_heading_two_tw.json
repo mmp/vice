@@ -1,0 +1,424 @@
+{
+  "time": "2026-02-04T20:26:28.470143073Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Southwest Buddy One Seven Seven fly heading two two zero intercept localizer one niner left",
+  "whisper_duration_ms": 128.037,
+  "audio_duration_ms": 6856,
+  "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11997MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "SWA3177",
+  "command": "H220 I",
+  "stt_aircraft": {
+    "E-R-J one thirty-five niner hotel foxtrot": {
+      "Callsign": "N329HF",
+      "AircraftType": "E135",
+      "Fixes": {
+        "Frugal": "FRUGL",
+        "Pasoy": "PASOE",
+        "Sarasota": "KSRQ"
+      },
+      "CandidateApproaches": {
+        "I L S runway one four": "I14",
+        "r-nav runway one four": "R14"
+      },
+      "ApproachFixes": {
+        "I14": {
+          "Frugal": "FRUGL",
+          "Pasoy": "PASOE",
+          "Sarasota": "SRQ",
+          "St Petersburg": "PIE"
+        },
+        "R14": {
+          "Etigy": "ETIGY",
+          "Frugal": "FRUGL",
+          "Pasoy": "PASOE",
+          "Sarasota": "SRQ",
+          "St Petersburg": "PIE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 14",
+      "SID": "",
+      "STAR": "BANGZ1",
+      "Altitude": 3000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    },
+    "Embraer E-R-J one thirty-five niner hotel foxtrot": {
+      "Callsign": "N329HF",
+      "AircraftType": "E135",
+      "Fixes": {
+        "Frugal": "FRUGL",
+        "Pasoy": "PASOE",
+        "Sarasota": "KSRQ"
+      },
+      "CandidateApproaches": {
+        "I L S runway one four": "I14",
+        "r-nav runway one four": "R14"
+      },
+      "ApproachFixes": {
+        "I14": {
+          "Frugal": "FRUGL",
+          "Pasoy": "PASOE",
+          "Sarasota": "SRQ",
+          "St Petersburg": "PIE"
+        },
+        "R14": {
+          "Etigy": "ETIGY",
+          "Frugal": "FRUGL",
+          "Pasoy": "PASOE",
+          "Sarasota": "SRQ",
+          "St Petersburg": "PIE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 14",
+      "SID": "",
+      "STAR": "BANGZ1",
+      "Altitude": 3000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 1,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    },
+    "Flexjet 35": {
+      "Callsign": "LXJ35",
+      "AircraftType": "E545",
+      "Fixes": {
+        "Capok": "CAPOK",
+        "Clearwater": "KPIE",
+        "Darbs": "DARBS",
+        "Piedra de Cal": "PIE",
+        "Zepum": "ZEPUM",
+        "wipso": "WIPSO"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight": "I18",
+        "r-nav runway one eight": "R18"
+      },
+      "ApproachFixes": {
+        "I18": {
+          "Capok": "CAPOK",
+          "Darbs": "DARBS",
+          "St Petersburg": "PIE",
+          "Zepum": "ZEPUM",
+          "wipso": "WIPSO"
+        },
+        "R18": {
+          "Detse": "DETSE",
+          "Donhu": "DONHU",
+          "Sound": "SAUND",
+          "St Petersburg": "PIE",
+          "Wigus": "WIGUS"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18",
+      "SID": "",
+      "STAR": "BLFRG2",
+      "Altitude": 10721,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    },
+    "Frontier Flight 36 83": {
+      "Callsign": "FFT3683",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Fadi": "FADDI",
+        "Jambob": "JMBOB",
+        "Mera": "MERRA",
+        "Piedra de Cal": "PIE",
+        "Tampa": "KTPA",
+        "slop": "SCLOP"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19R",
+      "SID": "",
+      "STAR": "MAATY4",
+      "Altitude": 3075,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Southwest 31 77": {
+      "Callsign": "SWA3177",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Bucks": "BUCCS",
+        "Pomse": "POMSE",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19L",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Spirit Wings 83 73": {
+      "Callsign": "NKS8373",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Fadi": "FADDI",
+        "Hidos": "HIDOS",
+        "Jambob": "JMBOB",
+        "Mera": "MERRA",
+        "Piedra de Cal": "PIE",
+        "Tampa": "KTPA",
+        "Venue": "VENNU",
+        "entah": "ENTAH"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19R",
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "november three two niner hotel foxtrot": {
+      "Callsign": "N329HF",
+      "AircraftType": "E135",
+      "Fixes": {
+        "Frugal": "FRUGL",
+        "Pasoy": "PASOE",
+        "Sarasota": "KSRQ"
+      },
+      "CandidateApproaches": {
+        "I L S runway one four": "I14",
+        "r-nav runway one four": "R14"
+      },
+      "ApproachFixes": {
+        "I14": {
+          "Frugal": "FRUGL",
+          "Pasoy": "PASOE",
+          "Sarasota": "SRQ",
+          "St Petersburg": "PIE"
+        },
+        "R14": {
+          "Etigy": "ETIGY",
+          "Frugal": "FRUGL",
+          "Pasoy": "PASOE",
+          "Sarasota": "SRQ",
+          "St Petersburg": "PIE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 14",
+      "SID": "",
+      "STAR": "BANGZ1",
+      "Altitude": 3000,
+      "State": "cleared approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Southwest Buddy One Seven Seven fly heading two two zero intercept localizer one niner left\"",
+    "[local-stt] normalized words: [southwest expedite 1 7 7 fly heading 2 2 0 intercept localizer 1 9 left]",
+    "[local-stt] tokens: 10",
+    "[local-stt]   token[0]: Text=\"southwest\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"expedite\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"177\" Type=1 Value=177",
+    "[local-stt]   token[3]: Text=\"fly\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"220\" Type=1 Value=220",
+    "[local-stt]   token[6]: Text=\"intercept\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"19\" Type=1 Value=19",
+    "[local-stt]   token[9]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 10 tokens, 7 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 10 tokens, 7 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": no results",
+    "[local-stt]   pattern \"airline_only\": 2 results",
+    "[local-stt]     result 0: \"Southwest 31 77\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Frontier Flight 36 83\" (airline=0.569, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Southwest 31 77\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Southwest 31 77\" (airline=0.500, flight=0.917, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Southwest 31 77\" (airline=0.50, flight=0.92, skip=0)",
+    "[local-stt]   pattern \"airline_only\" matched: \"SWA3177\" (conf=0.90, consumed=1, addressingForm=0, spokenKey=\"Southwest 31 77\")",
+    "[local-stt] callsign match: Callsign=\"SWA3177\" SpokenKey=\"Southwest 31 77\" Conf=0.90 Consumed=1",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=3000 Fixes=3 Approaches=4 AssignedApproach=\"ILS Runway 19L\" LAHSORunways=[10 28 10 28]",
+    "[local-stt]   fix: \"Tampa\" -\u003e \"KTPA\"",
+    "[local-stt]   fix: \"Bucks\" -\u003e \"BUCCS\"",
+    "[local-stt]   fix: \"Pomse\" -\u003e \"POMSE\"",
+    "[local-stt]   approach: \"r-nav runway one niner left\" -\u003e \"R9L\"",
+    "[local-stt]   approach: \"I L S runway one niner left\" -\u003e \"I9L\"",
+    "[local-stt]   approach: \"r-nav runway one niner right\" -\u003e \"R9R\"",
+    "[local-stt]   approach: \"I L S runway one niner right\" -\u003e \"I9R\"",
+    "[local-stt] command tokens after disregard: 9",
+    "[local-stt]   token[0]: Text=\"expedite\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"177\" Type=1 Value=177",
+    "[local-stt]   token[2]: Text=\"fly\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"220\" Type=1 Value=220",
+    "[local-stt]   token[5]: Text=\"intercept\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"19\" Type=1 Value=19",
+    "[local-stt]   token[8]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 9 tokens",
+    "[local-stt]   extractApproach: runway match with type disambiguation \"one niner left\" -\u003e \"I9L\" (score=0.53)",
+    "[local-stt]   matched command: \"EI9L\" (conf=1.00, consumed=9, isThen=false)",
+    "[local-stt]   adding 2 fixes from approach I9L to aircraft context",
+    "[local-stt] ParseCommands: result=[EI9L] (avgConf=1.00)",
+    "[local-stt] parsed commands: [EI9L] (conf=1.00)",
+    "[local-stt] validated commands: [EI9L] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"SWA3177 EI9L\" (conf=0.90, time=3.5132ms) ==="
+  ]
+}
