@@ -1449,26 +1449,33 @@ how it simulates aircraft or the STARS interface.
 
             <h3 id="release-0.14.0">0.14.0 (TBD)</h3>
             <ul>
-              <li>Added speech-to-text support (Michael Trokel)</li>
-              <li>New Scenarios: ZLC Area C (JY_SUPn't)</li>
-              <li>Scenario updates: BOS (radarcontacto)</li>
+              <li>Added speech-to-text support (Michael Trokel / Matt P)</li>
+              <li>New Scenarios: ZLC Area C (JY_SUPn't), ZJX 30 (Jake Magee), CVG (manaphy), ZDV Area 3 (Andrew S)</li>
+              <li>Scenario updates: BOS, ACK, MHT (radarcontacto), P50 (Ketan K), COS (Andrew S), BGR (Ryan G), M98 (Logan S), F11 (Jud Lopez), DAB, F11 (Michael Knight)</li>
               <li>Added search box to filter scenarios</li>
               <li>Improved pilot readbacks to be more natural / cohesive</li>
-              <li>VFRs are better about not flying into terrain</li>
+              <li>VFRs are better about not flying into terrain (and staying out of the flight levels)</li>
+              <li>Added "at fix, intercept the localizer" command: <code>AFIX/I</code></li>
+              <li>Fixed bug with multi-controller scenarios where controllers could be locked out of issuing aircraft commands.</li>
               <li>STARS:
                 <ul>
                   <li>Fixed bug where interfacility handoffs would get a FORMAT error</li>
                   <li>Fixed keyboard input for DCB button values (e.g. RANGE)</li>
                 </ul>
               </li>
-              <li>Bug fixes:
+              <li>ERAM:
                 <ul>
-                  <li>Fixed bug with multi-controller scenarios where controllers could be locked out of issuing aircraft commands.</li>
+                  <li>Added QF and QU commands</li>
+                  <li>Added tearoffs, cursors, and clock</li>
+                  <li>Added HSF data</li>
+                  <li>Switched tertiary/primary mouse clicks to primary/secondary</li>
                 </ul>
               </li>
               <li>Facility engineering:
                 <ul>
-                  <li>Headings leaving fixes in routes can be specified to be left or right turns: <code>PUCKY/l320</code>, <code>ROSLY/r250</code>, etc. (Xavier Caldwell).</li>
+                  <li>Headings leaving fixes in routes can be specified to be left or right turns: <code>PUCKY/L320</code>, <code>ROSLY/R250</code>, etc. (Xavier Caldwell)</li>
+                  <li>Specific routes (not just the entire airport) can be marked hold for release</li>
+                  <li>Departures' contact location can be defined in routes</li>
                 </ul>
               </li>
             </ul>
