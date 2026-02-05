@@ -43,6 +43,8 @@ func StopCapture() []string {
 // logLocalStt logs local STT processing details.
 // Also captures to buffer if capture is active.
 func logLocalStt(format string, args ...any) {
+	return
+
 	line := fmt.Sprintf("[local-stt] "+format, args...)
 	fmt.Println(line)
 

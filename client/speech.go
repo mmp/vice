@@ -5,6 +5,7 @@
 package client
 
 import (
+	"slices"
 	"sync"
 	"time"
 
@@ -70,6 +71,12 @@ func (tm *TransmissionManager) EnqueueReadbackPCM(callsign av.ADSBCallsign, ty a
 		tm.lg.Warnf("Skipping readback for %s due to empty PCM", callsign)
 		return
 	}
+
+	// Drop any pending initial contact for this aircraft; the controller
+	// has already talked to them so the check-in is stale.
+	tm.queue = slices.DeleteFunc(tm.queue, func(qt queuedTransmission) bool {
+		return qt.Callsign == callsign && qt.Type == av.RadioTransmissionContact
+	})
 
 	qt := queuedTransmission{
 		Callsign: callsign,
