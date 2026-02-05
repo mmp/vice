@@ -404,6 +404,10 @@ func main() {
 			config.WhisperRealtimeFactor = realtimeFactor
 		})
 
+		// Start loading the TTS model in the background so it's ready
+		// when pilot readbacks or contacts are needed.
+		client.PreloadTTSModel(lg)
+
 		// Check for whisper model errors asynchronously and show dialog if CPU not supported.
 		go func() {
 			if err := client.WhisperModelError(); err != nil {
@@ -493,13 +497,6 @@ func main() {
 			ShowErrorDialog(plat, lg, "Errors in additional scenario file (scenario will not be loaded):\n\n%s", extraScenarioErrors)
 		}
 
-		// Show warning if server is unreachable and TTS is unavailable
-		if mgr.LocalServer != nil && !mgr.LocalServer.HaveTTS {
-			ShowErrorDialog(plat, lg,
-				"Unable to connect to vice server.\n\n"+
-					"Running in local-only mode without text-to-speech support.")
-		}
-
 		// Wait for whisper benchmark to complete before loading saved sim.
 		// This shows a progress dialog if benchmarking is still in progress.
 		WaitForWhisperBenchmark(render, plat, lg)
@@ -570,6 +567,7 @@ func main() {
 		lg.Info("Starting main loop")
 
 		stats.startTime = time.Now()
+		ttsErrorShown := false
 
 		for {
 			plat.SetWindowTitle("vice: " + controlClient.Status())
@@ -592,6 +590,17 @@ func main() {
 
 			// Report whisper benchmark to server (only sends once, when benchmark done and server available)
 			client.ReportWhisperBenchmark(mgr.RemoteServer, lg)
+
+			// Check for TTS load error (only shows dialog once)
+			if !ttsErrorShown {
+				if err, done := client.CheckTTSLoadError(); done && err != nil {
+					ttsErrorShown = true
+					ShowErrorDialog(plat, lg, "Text-to-speech is unavailable: %v\n\n"+
+						"Pilot transmissions will still appear as text in the messages pane.", err)
+				} else if done {
+					ttsErrorShown = true // Loading succeeded, don't check again
+				}
+			}
 
 			// Inform imgui about input events from the user.
 			plat.ProcessEvents()

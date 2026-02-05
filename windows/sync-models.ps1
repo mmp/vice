@@ -63,6 +63,10 @@ $manifest.PSObject.Properties | ForEach-Object {
 
     if ($needDownload) {
         Write-Host "Downloading $model..."
+        $parentDir = Split-Path -Parent $modelPath
+        if (-not (Test-Path $parentDir)) {
+            New-Item -ItemType Directory -Path $parentDir -Force | Out-Null
+        }
         $url = 'https://storage.googleapis.com/vice-resources/' + $expectedHash
         curl.exe -L --progress-bar -o $modelPath $url
         if ($LASTEXITCODE -ne 0) {

@@ -104,36 +104,6 @@ func (a *audioEngine) AddMP3(mp3 []byte) (int, error) {
 	}
 }
 
-// DecodeSpeechMP3 decodes MP3 audio to PCM samples ready for playback.
-// This can be called from any goroutine to pre-decode audio.
-func DecodeSpeechMP3(mp3 []byte) ([]int16, error) {
-	if len(mp3) == 0 {
-		return nil, nil
-	}
-
-	_, pcm, err := minimp3.DecodeFull(mp3)
-	if err != nil {
-		return nil, err
-	}
-
-	// Poor man's resampling: repeat each sample rep times to get close
-	// to the standard rate.
-	pcm16 := pcm16FromBytes(pcm)
-	if len(pcm16) == 0 {
-		return nil, nil
-	}
-	rep := 2
-	pcmr := make([]int16, rep*len(pcm16))
-	for i := range len(pcm16) {
-		for j := range rep {
-			pcmr[rep*i+j] = pcm16[i]
-		}
-	}
-
-	addNoise(pcmr)
-	return pcmr, nil
-}
-
 func (a *audioEngine) TryEnqueueSpeechPCM(pcm []int16, finished func()) error {
 	a.mu.Lock()
 	defer a.mu.Unlock()
@@ -152,42 +122,6 @@ func (a *audioEngine) TryEnqueueSpeechPCM(pcm []int16, finished func()) error {
 	a.speechq = pcm
 	a.speechcb = finished
 	return nil
-}
-
-func addNoise(pcm []int16) {
-	r := rand.Make()
-	amp := 256 + r.Intn(512)
-	freqs := []int{10 + r.Intn(5), 18 + r.Intn(5)}
-	noises := []int{0, 0}
-	for i, v := range pcm {
-		n := 0
-		for j := range freqs {
-			if i%freqs[j] == 0 {
-				noises[j] = -amp + r.Intn(2*amp)
-			}
-			n += noises[j]
-		}
-
-		pcm[i] = int16(math.Clamp(n+int(v), -32768, 32767))
-	}
-
-	// Random squelch
-	if false && r.Float32() < 0.1 {
-		length := AudioSampleRate/2 + r.Intn(AudioSampleRate/4)
-		freqs := []int{100 + r.Intn(50), 500 + r.Intn(250), 1500 + r.Intn(500), 4000 + r.Intn(1000)}
-		start := r.Intn(4 * len(pcm) / 5)
-		const amp = 20000
-
-		n := min(len(pcm), start+length)
-		for i := start; i < n; i++ {
-			sq := -amp + r.Intn(2*amp)
-			for _, fr := range freqs {
-				sq += int(amp * math.Sin(float32(fr*i)*2*3.14159/AudioSampleRate))
-			}
-			sq /= 1 + len(freqs) // normalize
-			pcm[i] = int16(math.Clamp(int(pcm[i]/4)+sq, -32768, 32767))
-		}
-	}
 }
 
 func (a *audioEngine) SetAudioVolume(vol int) {

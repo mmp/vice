@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"log/slog"
 	"maps"
-	"net/http"
 	"slices"
 	"time"
 
@@ -16,9 +15,6 @@ import (
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
-
-	"github.com/gorilla/websocket"
-	"github.com/vmihailenco/msgpack/v5"
 )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -31,7 +27,6 @@ type simSession struct {
 	sim                *sim.Sim
 	password           string
 	connectionsByToken map[string]*connectionState
-	voiceAssigner      *VoiceAssigner
 
 	lg *log.Logger
 	mu util.LoggingMutex
@@ -49,7 +44,6 @@ func makeSimSession(name, scenarioGroup, scenario, password string, s *sim.Sim, 
 		password:           password,
 		lg:                 lg,
 		connectionsByToken: make(map[string]*connectionState),
-		voiceAssigner:      NewVoiceAssigner(),
 	}
 }
 
@@ -65,8 +59,6 @@ type connectionState struct {
 	lastUpdateCall      time.Time
 	warnedNoUpdateCalls bool
 	stateUpdateEventSub *sim.EventsSubscription
-	speechWs            *websocket.Conn // WebSocket for async speech delivery
-	pendingReadbacks    ttsRequestPool  // Pending readback TTS requests
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -176,9 +168,9 @@ func (ss *simSession) updateSimPauseState() {
 ///////////////////////////////////////////////////////////////////////////
 // State Updates and Controller Context
 
-// GetStateUpdate populates the update with session state and processes TTS.
+// GetStateUpdate populates the update with session state.
 // This is the main entry point for periodic state updates from a controller.
-func (ss *simSession) GetStateUpdate(token string, tts sim.TTSProvider) *SimStateUpdate {
+func (ss *simSession) GetStateUpdate(token string) *SimStateUpdate {
 	ss.mu.Lock(ss.lg)
 	conn, ok := ss.connectionsByToken[token]
 	if !ok {
@@ -274,17 +266,13 @@ func (ss *simSession) GetActiveTCWs() []sim.TCW {
 }
 
 // RequestContact pops the next pending contact for the TCW, generates the transmission
-// with current aircraft state, and synthesizes TTS. Returns nil if no contact is pending.
-func (ss *simSession) RequestContact(tcw sim.TCW, tts sim.TTSProvider) *sim.PilotSpeech {
-	if tts == nil {
-		return nil
-	}
-	ss.voiceAssigner.TryInit(tts, ss.lg)
-
+// with current aircraft state, and returns text + voice name for client-side synthesis.
+// Returns empty values if no contact is pending.
+func (ss *simSession) RequestContact(tcw sim.TCW) (text string, voiceName string, callsign av.ADSBCallsign, ty av.RadioTransmissionType) {
 	// Get all positions controlled by this TCW (primary + consolidated secondaries)
 	cons := ss.sim.State.CurrentConsolidation[tcw]
 	if cons == nil {
-		return nil
+		return "", "", "", 0
 	}
 	positions := cons.OwnedPositions()
 
@@ -292,7 +280,7 @@ func (ss *simSession) RequestContact(tcw sim.TCW, tts sim.TTSProvider) *sim.Pilo
 	for {
 		pc := ss.sim.PopReadyContact(positions)
 		if pc == nil {
-			return nil
+			return "", "", "", 0
 		}
 
 		// Generate the contact transmission with current aircraft state
@@ -302,113 +290,8 @@ func (ss *simSession) RequestContact(tcw sim.TCW, tts sim.TTSProvider) *sim.Pilo
 			continue
 		}
 
-		// Synthesize TTS with 4s timeout (longer than readback since client requests early)
-		speech := SynthesizeSpeechWithTimeout(
-			ss.voiceAssigner, tts, pc.ADSBCallsign,
-			av.RadioTransmissionContact, spokenText, ss.sim.SimTime(),
-			4*time.Second, ss.lg)
+		voiceName := ss.sim.VoiceAssigner.GetVoice(pc.ADSBCallsign, ss.sim.Rand)
 
-		return speech
+		return spokenText, voiceName, pc.ADSBCallsign, av.RadioTransmissionContact
 	}
-}
-
-///////////////////////////////////////////////////////////////////////////
-// WebSocket-based Speech Delivery
-
-// HandleSpeechWSConnection upgrades an HTTP connection to a WebSocket for speech delivery.
-func (ss *simSession) HandleSpeechWSConnection(token string, w http.ResponseWriter, r *http.Request) {
-	ss.mu.Lock(ss.lg)
-	defer ss.mu.Unlock(ss.lg)
-
-	conn, ok := ss.connectionsByToken[token]
-	if !ok {
-		ss.lg.Errorf("%s: unknown token for speech websocket", token)
-		return
-	}
-
-	// Close existing connection if any
-	if conn.speechWs != nil {
-		conn.speechWs.Close()
-	}
-
-	upgrader := websocket.Upgrader{EnableCompression: false}
-	ws, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		ss.lg.Errorf("Unable to upgrade speech websocket: %v", err)
-		return
-	}
-
-	conn.speechWs = ws
-	ss.lg.Infof("%s: speech websocket connected", token)
-}
-
-// QueueReadbackTTS queues an async TTS request for a readback.
-// The synthesized audio will be delivered via WebSocket when ready.
-func (ss *simSession) QueueReadbackTTS(token string, tts sim.TTSProvider, callsign av.ADSBCallsign,
-	spokenText string, simTime time.Time) {
-	if tts == nil || spokenText == "" {
-		return
-	}
-
-	ss.mu.Lock(ss.lg)
-	defer ss.mu.Unlock(ss.lg)
-
-	conn, ok := ss.connectionsByToken[token]
-	if !ok {
-		return
-	}
-
-	ss.voiceAssigner.TryInit(tts, ss.lg)
-
-	voice, ok := ss.voiceAssigner.GetVoice(callsign)
-	if !ok {
-		ss.lg.Warnf("No voice available for %s", callsign)
-		return
-	}
-
-	conn.pendingReadbacks.add(ttsRequest{
-		callsign:    callsign,
-		ty:          av.RadioTransmissionReadback,
-		text:        spokenText,
-		simTime:     simTime,
-		fut:         tts.TextToSpeech(voice, spokenText),
-		requestTime: time.Now(),
-	})
-}
-
-// SendPendingReadbacks sends completed readback TTS to clients via WebSocket.
-// Returns the number of bytes sent.
-func (ss *simSession) SendPendingReadbacks() int64 {
-	ss.mu.Lock(ss.lg)
-	defer ss.mu.Unlock(ss.lg)
-
-	var totalBytes int64
-	for _, conn := range ss.connectionsByToken {
-		if conn.speechWs == nil {
-			continue
-		}
-
-		for _, ps := range conn.pendingReadbacks.drainCompleted(ss.lg) {
-			totalBytes += int64(len(ps.MP3))
-
-			w, err := conn.speechWs.NextWriter(websocket.BinaryMessage)
-			if err != nil {
-				ss.lg.Errorf("speechWs NextWriter: %v", err)
-				continue
-			}
-
-			if err := msgpack.NewEncoder(w).Encode(ps); err != nil {
-				ss.lg.Errorf("speechWs encode: %v", err)
-				w.Close()
-				continue
-			}
-
-			if err := w.Close(); err != nil {
-				ss.lg.Errorf("speechWs close: %v", err)
-				continue
-			}
-		}
-	}
-
-	return totalBytes
 }

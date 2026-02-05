@@ -131,6 +131,7 @@ sync_models() {
 
         # Download from GCS (public bucket, no auth needed)
         echo "Downloading $model..."
+        mkdir -p "$(dirname "$model_path")"
         curl -L --progress-bar -o "$model_path" \
             "https://storage.googleapis.com/vice-resources/$expected_hash"
 

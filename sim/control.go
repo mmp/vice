@@ -183,6 +183,20 @@ func (s *Sim) deleteAircraft(ac *Aircraft) {
 	}
 	delete(s.Aircraft, ac.ADSBCallsign)
 
+	// Remove any pending transmissions from this aircraft
+	for tcp := range s.PendingContacts {
+		s.PendingContacts[tcp] = slices.DeleteFunc(s.PendingContacts[tcp],
+			func(pc PendingContact) bool { return pc.ADSBCallsign == ac.ADSBCallsign })
+	}
+
+	// Remove any scheduled future events for this aircraft
+	s.FutureOnCourse = slices.DeleteFunc(s.FutureOnCourse,
+		func(foc FutureOnCourse) bool { return foc.ADSBCallsign == ac.ADSBCallsign })
+	s.FutureSquawkChanges = slices.DeleteFunc(s.FutureSquawkChanges,
+		func(fcs FutureChangeSquawk) bool { return fcs.ADSBCallsign == ac.ADSBCallsign })
+	s.FutureEmergencyUpdates = slices.DeleteFunc(s.FutureEmergencyUpdates,
+		func(feu FutureEmergencyUpdate) bool { return feu.ADSBCallsign == ac.ADSBCallsign })
+
 	s.STARSComputer.HoldForRelease = slices.DeleteFunc(s.STARSComputer.HoldForRelease,
 		func(a *Aircraft) bool { return ac.ADSBCallsign == a.ADSBCallsign })
 

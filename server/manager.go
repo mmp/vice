@@ -8,15 +8,11 @@ import (
 	"context"
 	crand "crypto/rand"
 	"encoding/base64"
-	"fmt"
 	"log/slog"
-	"net/http"
 	"os"
 	"path/filepath"
 	"slices"
 	"strings"
-	"sync"
-	"sync/atomic"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
@@ -39,19 +35,16 @@ type SimManager struct {
 	sessionsByToken map[string]*simSession
 
 	// Helpers and such
-	tts            sim.TTSProvider
 	wxProvider     wx.Provider
 	providersReady chan struct{}
 	mapManifests   map[string]*sim.VideoMapManifest
 	lg             *log.Logger
 
 	// Stats and internal details
-	mu               util.LoggingMutex
-	startTime        time.Time
-	httpPort         int
-	websocketTXBytes atomic.Int64
-	ttsUsageByIP     map[string]*ttsUsageStats
-	local            bool
+	mu        util.LoggingMutex
+	startTime time.Time
+	httpPort  int
+	local     bool
 }
 
 // Client-side info about the available scenarios.
@@ -100,13 +93,12 @@ func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup, scenario
 		sessionsByToken:  make(map[string]*simSession),
 		mapManifests:     mapManifests,
 		startTime:        time.Now(),
-		ttsUsageByIP:     make(map[string]*ttsUsageStats),
 		local:            isLocal,
 		providersReady:   make(chan struct{}),
 		lg:               lg,
 	}
 
-	// Initialize TTS and WX providers asynchronously so the server can start
+	// Initialize WX provider asynchronously so the server can start
 	// accepting connections immediately. Callers that need providers will
 	// block in getProviders() until initialization completes or times out.
 	go sm.initRemoteProviders(serverAddress, lg)
@@ -124,26 +116,12 @@ func (sm *SimManager) initRemoteProviders(serverAddress string, lg *log.Logger) 
 	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
 	defer cancel()
 
-	// Initialize TTS and WX providers in parallel since they're independent
-	var wg sync.WaitGroup
-	wg.Add(2)
-
-	go func() {
-		defer wg.Done()
-		sm.tts = makeTTSProvider(ctx, serverAddress, lg)
-	}()
-
-	go func() {
-		defer wg.Done()
-		sm.wxProvider, _ = MakeWXProvider(ctx, serverAddress, lg)
-	}()
-
-	wg.Wait()
+	sm.wxProvider, _ = MakeWXProvider(ctx, serverAddress, lg)
 }
 
-func (sm *SimManager) getProviders() (sim.TTSProvider, wx.Provider) {
+func (sm *SimManager) getWXProvider() wx.Provider {
 	<-sm.providersReady
-	return sm.tts, sm.wxProvider
+	return sm.wxProvider
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -182,7 +160,6 @@ func MakeNewSimRequest() NewSimRequest {
 type NewSimResult struct {
 	SimState        *SimState
 	ControllerToken string
-	SpeechWSPort    int
 }
 
 // SimState wraps sim.UserState and adds server-specific fields.
@@ -240,7 +217,7 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *
 
 	description := util.Select(sm.local, " "+req.ScenarioName, "@"+req.NewSimName+": "+req.ScenarioName)
 
-	_, wxp := sm.getProviders()
+	wxp := sm.getWXProvider()
 
 	nsc := sim.NewSimConfiguration{
 		TFRs:                        req.TFRs,
@@ -375,7 +352,6 @@ func (sm *SimManager) buildNewSimResult(session *simSession, tcw sim.TCW, token 
 			UserIsPrivileged:                    session.sim.TCWIsPrivileged(tcw),
 		},
 		ControllerToken: token,
-		SpeechWSPort:    util.Select(sm.tts != nil, sm.httpPort, 0),
 	}
 }
 
@@ -391,7 +367,7 @@ func (sm *SimManager) AddLocal(s *sim.Sim, result *NewSimResult) error {
 
 func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP sim.ControlPosition, initials string, instructor bool,
 	prespawn bool) error {
-	_, wxp := sm.getProviders()
+	wxp := sm.getWXProvider()
 	session.sim.Activate(session.lg, wxp)
 
 	sm.mu.Lock(sm.lg)
@@ -447,9 +423,6 @@ func (sm *SimManager) runSimUpdateLoop(session *simSession) {
 		}
 
 		session.sim.Update()
-
-		// Send any completed async readback TTS via WebSocket
-		sm.websocketTXBytes.Add(session.SendPendingReadbacks())
 
 		time.Sleep(100 * time.Millisecond)
 	}
@@ -558,7 +531,6 @@ func (sm *SimManager) signOn(ss *simSession, req *JoinSimRequest) (string, *sim.
 type ConnectResult struct {
 	ScenarioCatalogs    map[string]map[string]*ScenarioCatalog
 	RunningSims         map[string]*RunningSim
-	HaveTTS             bool
 	AvailableWXByTRACON map[string][]util.TimeInterval
 }
 
@@ -574,8 +546,6 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 		return err
 	}
 
-	tts, _ := sm.getProviders()
-	result.HaveTTS = tts != nil
 	result.AvailableWXByTRACON = wx.GetTimeIntervals()
 
 	sm.mu.Lock(sm.lg)
@@ -655,7 +625,7 @@ func (sm *SimManager) GetStateUpdate(token string) (*SimStateUpdate, error) {
 	}
 	sm.mu.Unlock(sm.lg)
 
-	return session.GetStateUpdate(token, sm.tts), nil
+	return session.GetStateUpdate(token), nil
 }
 
 // SimStateUpdate wraps sim.StateUpdate and adds server-specific fields.
@@ -708,105 +678,6 @@ func (sm *SimManager) GetSerializeSim(token string, s *sim.Sim) error {
 
 	*s = c.sim.GetSerializeSim()
 	return nil
-}
-
-///////////////////////////////////////////////////////////////////////////
-// Text-to-Speech
-
-// HandleSpeechWSConnection handles WebSocket connections for async speech delivery.
-func (sm *SimManager) HandleSpeechWSConnection(w http.ResponseWriter, r *http.Request) {
-	authHeader := r.Header.Get("Authorization")
-	if !strings.HasPrefix(authHeader, "Bearer ") {
-		http.Error(w, "Missing or invalid Authorization header", http.StatusUnauthorized)
-		return
-	}
-	token := strings.TrimPrefix(authHeader, "Bearer ")
-
-	sm.mu.Lock(sm.lg)
-	session, ok := sm.sessionsByToken[token]
-	if !ok {
-		sm.mu.Unlock(sm.lg)
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		sm.lg.Errorf("Invalid token for speech websocket: %s", token)
-		return
-	}
-	sm.mu.Unlock(sm.lg)
-
-	session.HandleSpeechWSConnection(token, w, r)
-}
-
-///////////////////////////////////////////////////////////////////////////
-// Text-to-Speech (RPC interface for remote TTS provider)
-
-const GetAllVoicesRPC = "SimManager.GetAllVoices"
-
-// GetAllVoices returns all available voices for TTS
-func (sm *SimManager) GetAllVoices(_ struct{}, voices *[]sim.Voice) error {
-	if sm.tts == nil {
-		return fmt.Errorf("TTS not available")
-	}
-
-	fut := sm.tts.GetAllVoices()
-	// Note: TTS implementations guarantee exactly one channel will send a value
-	// before both channels are closed. If both close without sending, this loop
-	// would hang indefinitely.
-	for {
-		select {
-		case v, ok := <-fut.VoicesCh:
-			if ok {
-				*voices = v
-				return nil
-			}
-			fut.VoicesCh = nil // stop checking
-		case err, ok := <-fut.ErrCh:
-			if ok {
-				return err
-			}
-			fut.ErrCh = nil
-		}
-	}
-}
-
-const TextToSpeechRPC = "SimManager.TextToSpeech"
-
-// TextToSpeech converts text to speech and returns the audio data
-func (sm *SimManager) TextToSpeech(req *TTSRequest, speechMp3 *[]byte) error {
-	if sm.tts == nil {
-		return fmt.Errorf("TTS not available")
-	}
-
-	if len(strings.Fields(req.Text)) > 50 {
-		return fmt.Errorf("TTS capacity exceeded")
-	}
-
-	// Use ClientIP from the request (populated by LoggingServerCodec)
-	clientIP := req.ClientIP
-	if clientIP == "" {
-		clientIP = "unknown"
-	}
-
-	if err := sm.UpdateTTSUsage(clientIP, req.Text); err != nil {
-		return err
-	}
-
-	fut := sm.tts.TextToSpeech(req.Voice, req.Text)
-	// Note: Current TTS implementations guarantee that exactly one channel will send a value before
-	// both channels are closed. If both close without sending, this loop would hang indefinitely.
-	for {
-		select {
-		case mp3, ok := <-fut.Mp3Ch:
-			if ok {
-				*speechMp3 = mp3
-				return nil
-			}
-			fut.Mp3Ch = nil // stop checking
-		case err, ok := <-fut.ErrCh:
-			if ok {
-				return err
-			}
-			fut.ErrCh = nil // stop checking
-		}
-	}
 }
 
 ///////////////////////////////////////////////////////////////////////////

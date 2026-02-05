@@ -123,7 +123,6 @@ type Platform interface {
 	// TryEnqueueSpeechPCM queues pre-decoded PCM speech audio for playback.
 	// If speech is currently being played, ErrCurrentlyPlayingSpeech is returned.
 	// If non-nil, the provided callback function is called after the speech has finished.
-	// Use DecodeSpeechMP3 to decode MP3 to PCM ahead of time.
 	TryEnqueueSpeechPCM(pcm []int16, finished func()) error
 
 	// SetSpeechGarbled enables or disables garbling of speech audio.

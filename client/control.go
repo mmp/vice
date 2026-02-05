@@ -10,7 +10,6 @@ import (
 	whisper "github.com/mmp/vice/autowhisper"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
-	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/stt"
@@ -416,7 +415,7 @@ func (c *ControlClient) FlightPlanDirect(aircraft sim.ACID, fix string, callback
 func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 	handleResult func(message string, remainingInput string)) {
 	// Determine if TTS is enabled for this command
-	enableTTS := c.HaveTTS() && (c.disableTTSPtr == nil || !*c.disableTTSPtr) && req.Commands != "P" && req.Commands != "X"
+	enableTTS := !*c.disableTTSPtr && req.Commands != "P" && req.Commands != "X"
 
 	// Hold transmissions BEFORE the async RPC to prevent contact requests
 	// between RPC call and callback. Released when readback arrives, or
@@ -454,9 +453,11 @@ func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 				c.lg.Infof("RPC round-trip: %v", rpcDuration)
 			}
 
-			// Release hold if server didn't actually queue a readback
-			// (if queued, hold is released when readback arrives via WebSocket)
-			if enableTTS && !result.ReadbackQueued {
+			// Synthesize readback locally if text was returned
+			if enableTTS && result.ReadbackText != "" {
+				go c.synthesizeAndEnqueueReadback(result.ReadbackCallsign, result.ReadbackText, result.ReadbackVoiceName)
+			} else if enableTTS {
+				// No readback text - release hold
 				c.transmissions.Unhold()
 			}
 
@@ -470,7 +471,7 @@ func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 }
 
 // RequestContactTransmission requests the next pending contact transmission from the server.
-// The result (if any) will be delivered via GetStateUpdate and enqueued for playback.
+// The result (if any) will be synthesized locally and enqueued for playback.
 func (c *ControlClient) RequestContactTransmission() {
 	var result server.RequestContactResult
 	c.addCall(makeRPCCall(c.client.Go(server.RequestContactTransmissionRPC, &server.RequestContactArgs{
@@ -484,25 +485,16 @@ func (c *ControlClient) RequestContactTransmission() {
 				return
 			}
 
-			if result.ContactSpeech != nil {
-				// Check if user has disabled TTS locally
-				ttsDisabled := c.disableTTSPtr != nil && *c.disableTTSPtr
-				if ttsDisabled {
+			if result.ContactText != "" {
+				if *c.disableTTSPtr {
 					// Contact was processed on server (pilot joins frequency, text event posted)
 					// but user doesn't want audio. Set a hold to maintain pacing.
-					c.transmissions.HoldAfterSilentContact(result.ContactSpeech.Callsign)
+					c.transmissions.HoldAfterSilentContact(result.ContactCallsign)
 					return
 				}
 
-				// Decode MP3 to PCM before enqueueing (off main render loop)
-				pcm, decodeErr := platform.DecodeSpeechMP3(result.ContactSpeech.MP3)
-				if decodeErr != nil {
-					c.lg.Errorf("RequestContactTransmission MP3 decode error for %s: %v",
-						result.ContactSpeech.Callsign, decodeErr)
-					return
-				}
-				c.transmissions.EnqueueTransmissionPCM(result.ContactSpeech.Callsign,
-					result.ContactSpeech.Type, pcm)
+				go c.synthesizeAndEnqueueContact(result.ContactCallsign, result.ContactType,
+					result.ContactText, result.ContactVoiceName)
 			}
 		}))
 }

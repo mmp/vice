@@ -7,12 +7,14 @@ require (
 	github.com/AllenDang/cimgui-go v1.3.1
 	github.com/apenwarr/fixconsole v0.0.0-20191012055117-5a9f6489cc29
 	github.com/brunoga/deep v1.2.3
+	github.com/gdamore/tcell/v2 v2.13.7
 	github.com/go-gl/gl v0.0.0-20211210172815-726fda9656d6
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20250301202403-da16c1255728
 	github.com/goforj/godump v1.9.0
 	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/hugolgst/rich-go v0.0.0-20230917173849-4a4fb1d3c362
 	github.com/iancoleman/orderedmap v0.3.0
+	github.com/k2-fsa/sherpa-onnx-go v1.12.22
 	github.com/klauspost/compress v1.15.9
 	github.com/mmp/IconFontCppHeaders v0.0.0-20220907145128-86cc7607b455
 	github.com/mmp/earcut-go v0.0.0-20251026231138-15f3234fdcd1
@@ -52,7 +54,6 @@ require (
 	github.com/envoyproxy/protoc-gen-validate v1.2.1 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/gdamore/encoding v1.0.1 // indirect
-	github.com/gdamore/tcell/v2 v2.13.7 // indirect
 	github.com/go-jose/go-jose/v4 v4.0.5 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -61,8 +62,10 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.6 // indirect
 	github.com/googleapis/gax-go/v2 v2.14.2 // indirect
-	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/josephspurrier/goversioninfo v1.4.1 // indirect
+	github.com/k2-fsa/sherpa-onnx-go-linux v1.12.22 // indirect
+	github.com/k2-fsa/sherpa-onnx-go-macos v1.12.22 // indirect
+	github.com/k2-fsa/sherpa-onnx-go-windows v1.12.22 // indirect
 	github.com/lucasb-eyer/go-colorful v1.3.0 // indirect
 	github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0 // indirect
 	github.com/planetscale/vtprotobuf v0.6.1-0.20240319094008-0393e58bdf10 // indirect

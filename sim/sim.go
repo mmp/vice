@@ -98,6 +98,8 @@ type Sim struct {
 
 	Rand *rand.Rand
 
+	VoiceAssigner *VoiceAssigner
+
 	SquawkWarnedACIDs map[ACID]any // Warn once in CheckLeaks(); don't spam the logs
 
 	// No need to serialize these; they're caches anyway.
@@ -119,23 +121,6 @@ type LastSTTCommand struct {
 	Callsign    av.ADSBCallsign
 	NavSnapshot nav.NavSnapshot
 }
-
-type TTSProvider interface {
-	GetAllVoices() TTSVoicesFuture
-	TextToSpeech(voice Voice, text string) TTSSpeechFuture
-}
-
-type TTSVoicesFuture struct {
-	VoicesCh <-chan []Voice
-	ErrCh    <-chan error
-}
-
-type TTSSpeechFuture struct {
-	Mp3Ch <-chan []byte
-	ErrCh <-chan error
-}
-
-type Voice string
 
 type AircraftDisplayState struct {
 	Spew        string // for debugging
@@ -196,12 +181,10 @@ type PointOut struct {
 }
 
 type PilotSpeech struct {
-	Callsign       av.ADSBCallsign
-	Type           av.RadioTransmissionType
-	Text           string
-	MP3            []byte
-	SimTime        time.Time // Virtual simulation time when transmission was made
-	PTTReleaseTime time.Time // Wall clock time when PTT was released (for STT latency tracking)
+	Callsign av.ADSBCallsign
+	Type     av.RadioTransmissionType
+	Text     string
+	SimTime  time.Time // Virtual simulation time when transmission was made
 }
 
 // NewSimConfiguration collects all of the information required to create a new Sim
@@ -295,6 +278,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 		wxProvider: config.WXProvider,
 	}
+
+	s.VoiceAssigner = NewVoiceAssigner(s.Rand)
 
 	// Load METAR data from local resources
 	apmetar, err := wx.GetMETAR(slices.Collect(maps.Keys(config.Airports)))

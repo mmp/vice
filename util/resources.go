@@ -84,26 +84,46 @@ func WalkResources(root string, fn func(path string, d fs.DirEntry, filesystem f
 		})
 }
 
-func localResourcesFS() *fs.StatFS {
+// resourcesBasePath caches the base path to resources directory
+var resourcesBasePath string
+
+// findResourcesBasePath locates the resources directory by checking
+// CWD and up to two parent directories.
+func findResourcesBasePath() string {
+	if resourcesBasePath != "" {
+		return resourcesBasePath
+	}
+
 	dir, err := os.Getwd()
 	if err != nil {
 		panic(err)
 	}
 
-	// Try CWD as well the two directories above it.
+	// Try CWD as well as the two directories above it
 	for range 3 {
-		fsys, ok := os.DirFS(filepath.Join(dir, "resources")).(fs.StatFS)
-		if !ok {
-			panic("FS from DirFS is not a StatFS?")
+		candidate := filepath.Join(dir, "resources")
+		if _, err := os.Stat(filepath.Join(candidate, "videomaps")); err == nil {
+			resourcesBasePath = candidate
+			return resourcesBasePath
 		}
-
-		_, errv := fsys.Stat("videomaps")
-		_, errs := fsys.Stat("scenarios")
-		if errv == nil && errs == nil { // got it
-			return &fsys
-		}
-
 		dir = filepath.Join(dir, "..")
 	}
-	panic("unable to find videomaps in CWD; last try:" + dir)
+
+	panic("unable to find resources directory")
+}
+
+// GetResourcePath returns the absolute filesystem path to a resource.
+// This is needed for libraries that require file paths rather than embedded data.
+// Panics if the resources directory cannot be found.
+func GetResourcePath(path string) string {
+	return filepath.Join(findResourcesBasePath(), path)
+}
+
+func localResourcesFS() *fs.StatFS {
+	basePath := findResourcesBasePath()
+	fsys, ok := os.DirFS(basePath).(fs.StatFS)
+	if !ok {
+		panic("FS from DirFS is not a StatFS?")
+	}
+	return &fsys
 }

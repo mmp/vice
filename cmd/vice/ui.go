@@ -708,7 +708,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 	imgui.Checkbox("Update Discord activity status", &update)
 	config.InhibitDiscordActivity.Store(!update)
 
-	if c != nil && c.HaveTTS() {
+	if c != nil {
 		imgui.Checkbox("Disable text-to-speech", &config.DisableTextToSpeech)
 	}
 

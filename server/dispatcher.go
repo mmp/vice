@@ -611,9 +611,11 @@ type AircraftCommandsArgs struct {
 // If an RPC call returns an error, then the result argument is not returned(!?).
 // So we don't use the error type for syntax errors...
 type AircraftCommandsResult struct {
-	ErrorMessage   string
-	RemainingInput string
-	ReadbackQueued bool // True if a readback TTS was queued for delivery
+	ErrorMessage      string
+	RemainingInput    string
+	ReadbackText      string          // Text for client to synthesize
+	ReadbackVoiceName string          // Voice name for synthesis (e.g., "am_adam")
+	ReadbackCallsign  av.ADSBCallsign // Callsign for the readback
 }
 
 const RunAircraftCommandsRPC = "Sim.RunAircraftCommands"
@@ -627,7 +629,6 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	}
 
 	callsign := cmds.Callsign
-	simTime := c.sim.SimTime()
 
 	rewriteError := func(err error) {
 		result.RemainingInput = cmds.Commands
@@ -636,14 +637,13 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 		}
 	}
 
-	// Helper to queue async TTS for readback (delivered via WebSocket).
-	// Returns true if TTS was actually queued.
-	queueReadbackTTS := func(spokenText string) bool {
+	// Helper to populate readback fields for client-side TTS synthesis.
+	setReadback := func(spokenText string) {
 		if cmds.EnableTTS && spokenText != "" {
-			c.session.QueueReadbackTTS(cmds.ControllerToken, sd.sm.tts, callsign, spokenText, simTime)
-			return true
+			result.ReadbackText = spokenText
+			result.ReadbackVoiceName = c.sim.VoiceAssigner.GetVoice(callsign, c.sim.Rand)
+			result.ReadbackCallsign = callsign
 		}
-		return false
 	}
 
 	if cmds.Multiple {
@@ -651,14 +651,14 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 		if err != nil {
 			rewriteError(err)
 		}
-		result.ReadbackQueued = queueReadbackTTS(spokenText)
+		setReadback(spokenText)
 		return nil // don't continue with the commands
 	} else if !cmds.ClickedTrack && c.sim.ShouldTriggerPilotMixUp(callsign) {
 		spokenText, err := c.sim.PilotMixUp(c.tcw, callsign)
 		if err != nil {
 			rewriteError(err)
 		}
-		result.ReadbackQueued = queueReadbackTTS(spokenText)
+		setReadback(spokenText)
 		return nil // don't continue with the commands
 	}
 
@@ -667,7 +667,7 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	if execResult.Error != nil {
 		result.ErrorMessage = execResult.Error.Error()
 	}
-	result.ReadbackQueued = queueReadbackTTS(execResult.ReadbackSpokenText)
+	setReadback(execResult.ReadbackSpokenText)
 
 	// Log whisper STT commands (WhisperDuration is non-zero for voice commands)
 	if cmds.WhisperDuration > 0 {
@@ -983,7 +983,10 @@ type RequestContactArgs struct {
 }
 
 type RequestContactResult struct {
-	ContactSpeech *sim.PilotSpeech // Synthesized contact speech, or nil if none pending
+	ContactText      string          // Text to synthesize
+	ContactVoiceName string          // Voice name for synthesis (e.g., "am_adam")
+	ContactCallsign  av.ADSBCallsign // Callsign of the aircraft
+	ContactType      av.RadioTransmissionType
 }
 
 const RequestContactTransmissionRPC = "Sim.RequestContactTransmission"
@@ -996,8 +999,8 @@ func (sd *dispatcher) RequestContactTransmission(args *RequestContactArgs, resul
 		return ErrNoSimForControllerToken
 	}
 
-	// Request a contact from the session - this handles the async TTS synthesis
-	result.ContactSpeech = c.session.RequestContact(c.tcw, sd.sm.tts)
+	// Request a contact from the session - returns text and voice name for client-side synthesis
+	result.ContactText, result.ContactVoiceName, result.ContactCallsign, result.ContactType = c.session.RequestContact(c.tcw)
 	return nil
 }
 
