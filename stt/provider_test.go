@@ -593,6 +593,14 @@ func TestVFRCommands(t *testing.T) {
 			expected: "N345 GA",
 		},
 		{
+			name:       "say request",
+			transcript: "Cessna 345 uh say request",
+			aircraft: map[string]Aircraft{
+				"Cessna 345": {Callsign: "N345", State: "vfr flight following"},
+			},
+			expected: "N345 GA",
+		},
+		{
 			name:       "radar services terminated",
 			transcript: "November 123AB radar services terminated squawk VFR frequency change approved",
 			aircraft: map[string]Aircraft{
