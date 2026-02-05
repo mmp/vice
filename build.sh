@@ -85,11 +85,11 @@ sync_models() {
         exit 1
     fi
 
-    # Get list of models from manifest
+    # Get list of models from manifest (one per line to handle spaces in names)
     if [ "$JSON_PARSER" = "jq" ]; then
-        models=$(jq -r 'keys[]' "$manifest")
+        model_list=$(jq -r 'keys[]' "$manifest")
     else
-        models=$($JSON_PARSER -c "import json; [print(k) for k in json.load(open('$manifest')).keys()]" 2>/dev/null)
+        model_list=$($JSON_PARSER -c "import json; [print(k) for k in json.load(open('$manifest')).keys()]" 2>/dev/null)
     fi
 
     # Compute manifest hash for stamp file comparison
@@ -99,18 +99,18 @@ sync_models() {
     if [ -f "$stamp" ] && [ "$(cat "$stamp")" = "$manifest_hash" ]; then
         # Verify all files exist (don't hash, just existence)
         local all_exist=true
-        for model in $models; do
+        while IFS= read -r model; do
             if [ ! -f "$models_dir/$model" ]; then
                 all_exist=false
                 break
             fi
-        done
+        done <<< "$model_list"
         if [ "$all_exist" = true ]; then
             return 0  # Already synced
         fi
     fi
 
-    for model in $models; do
+    while IFS= read -r model; do
         # Get expected hash
         if [ "$JSON_PARSER" = "jq" ]; then
             expected_hash=$(jq -r ".\"$model\"" "$manifest")
@@ -144,7 +144,7 @@ sync_models() {
             rm -f "$model_path"
             exit 1
         fi
-    done
+    done <<< "$model_list"
 
     # Write stamp file to skip verification on next build
     echo "$manifest_hash" > "$stamp"
