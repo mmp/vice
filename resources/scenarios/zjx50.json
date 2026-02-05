@@ -1,10 +1,10 @@
 {
   "artcc": "ZJX",
-  "area": "East Area",
-  "name": "ZJX 50",
+  "area": "East",
+  "name": "Sector 50",
   "airports": {
     "KJAX": {
-      "departure_controller": "Jacksonville Approach",
+      "departure_controller": "JAX_N_APP",
       "approaches": {
         "IY8": {
           "cifp_id": "IY8"
@@ -114,7 +114,6 @@
       ]
     },
     "KTPA": {
-      "departure_controller": "Jacksonville Approach",
       "approaches": {
         "I9L": {
           "cifp_id": "I19L"
@@ -136,7 +135,7 @@
       }
     },
     "KSRQ": {
-      "departure_controller": "Jacksonville Approach",
+      "departure_controller": "JAX_N_APP",
       "approaches": {
         "R14": {
           "cifp_id": "R14"
@@ -144,7 +143,7 @@
       }
     },
     "KCHS": {
-      "departure_controller": "Jacksonville Approach",
+      "departure_controller": "CHS_W_APP",
       "approaches": {
         "I15": {
           "cifp_id": "I15"
@@ -152,7 +151,7 @@
       }
     },
     "KSAV": {
-      "departure_controller": "Savannah Approach",
+      "departure_controller": "SAV_N_APP",
       "departure_routes": {
         "28": {
           "BYYOU": {
@@ -187,10 +186,10 @@
     }
   },
   "inbound_flows": {
-    "OHDEA2": {
+    "50_OHDEA2": {
       "arrivals": [
         {
-          "waypoints": "N032.19.07.563,W083.17.36.088/ho DUCHY/a24000 ILTAC/a23000- FORMB OHDEA/a12000/d2 N030.26.23.198,W082.03.30.800 KJAX-8/d0/delete",
+          "waypoints": "N032.19.07.563,W083.17.36.088/ho DUCHY/a24000/d120 ILTAC/a23000- FORMB OHDEA/a12000/d2 N030.26.23.198,W082.03.30.800 KJAX-8/d0/delete",
           "star": "OHDEA2",
           "route": "/. OHDEA2",
           "initial_controller": "ZTL 22 Macon",
@@ -234,7 +233,7 @@
         }
       ]
     },
-    "GRNCH5": {
+    "50_GRNCH5": {
       "arrivals": [
         {
           "waypoints": "N032.53.39.873,W082.16.29.071/ho WHYYT ADLYN ELITE MAYYR/a24000+ COAXE/a26000- GRTNG/delete",
@@ -293,10 +292,243 @@
           "initial_controller": "ZTL 22 Macon",
           "initial_speed": 300,
           "waypoints": "N032.13.19.282,W083.41.01.486 ZJAYX ISSZZ/a29000 ELITE MAYYR/a24000+ COAXE/a26000- GRTNG/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KMCO",
+              "icao": "DAL"
+            }
+          ],
+          "initial_altitude": 37000,
+          "initial_controller": "ZTL 22 Macon",
+          "initial_speed": 300,
+          "waypoints": "N031.10.33.739,W084.30.03.076 LEEVP ISSZZ/a29000 ELITE MAYYR/a24000+ COAXE/a26000- GRTNG/delete"
+        },
+        {
+          "airlines": [
+            {
+              "departure_airport": "KATL",
+              "arrival_airport": "KMCO",
+              "icao": "DAL"
+            }
+          ],
+          "initial_altitude": 37000,
+          "initial_controller": "ZTL 22 Macon",
+          "initial_speed": 300,
+          "waypoints": "N031.37.46.664,W085.03.49.614 SEEJY ISSZZ/a29000 ELITE MAYYR/a24000+ COAXE/a26000- GRTNG/delete"
         }
       ]
     },
-    "TTHOR3": {
+    "50_68 Overflights": {
+      "overflights": [
+        {
+          "waypoints": "CAKET Q97 WOPNR/delete",
+          "initial_controller": "ZJX 76 Keystone",
+          "initial_altitude": 36000,
+          "assigned_altitude": 36000,
+          "initial_speed": 300,
+          "airlines": [
+            {
+              "departure_airport": "KTTN",
+              "arrival_airport": "KMCO",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KMIA",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KBOS",
+              "arrival_airport": "KMCO",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KMIA",
+              "icao": "FDX"
+            }
+          ]
+        },
+        {
+          "waypoints": "CAKET Q97 WOPNR/delete",
+          "initial_controller": "ZJX 68 States",
+          "initial_altitude": 34000,
+          "assigned_altitude": 34000,
+          "initial_speed": 300,
+          "airlines": [
+            {
+              "departure_airport": "KTTN",
+              "arrival_airport": "KMCO",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KMIA",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KBOS",
+              "arrival_airport": "KMCO",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KMIA",
+              "icao": "FDX"
+            }
+          ]
+        },
+        {
+          "waypoints": "CAKET Q97 WOPNR/delete",
+          "initial_controller": "ZJX 76 Keystone",
+          "initial_altitude": 38000,
+          "assigned_altitude": 38000,
+          "initial_speed": 300,
+          "airlines": [
+            {
+              "departure_airport": "KTTN",
+              "arrival_airport": "KMCO",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KMIA",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KBOS",
+              "arrival_airport": "KMCO",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KMIA",
+              "icao": "FDX"
+            }
+          ]
+        },
+        {
+          "waypoints": "FEMON Q87 JROSS/delete",
+          "initial_controller": "ZJX 76 Keystone",
+          "initial_altitude": 37000,
+          "assigned_altitude": 37000,
+          "initial_speed": 300,
+          "airlines": [
+            {
+              "departure_airport": "KTTN",
+              "arrival_airport": "KMCO",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KMIA",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KBOS",
+              "arrival_airport": "KMCO",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KMIA",
+              "icao": "FDX"
+            }
+          ]
+        },
+        {
+          "waypoints": "FEMON Q87 JROSS/delete",
+          "initial_controller": "ZJX 76 Keystone",
+          "initial_altitude": 35000,
+          "assigned_altitude": 35000,
+          "initial_speed": 300,
+          "airlines": [
+            {
+              "departure_airport": "KTTN",
+              "arrival_airport": "KMCO",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KMIA",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KBOS",
+              "arrival_airport": "KMCO",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KMIA",
+              "icao": "FDX"
+            }
+          ]
+        },
+        {
+          "waypoints": "FEMON Q87 JROSS/delete",
+          "initial_controller": "ZJX 76 Keystone",
+          "initial_altitude": 39000,
+          "assigned_altitude": 39000,
+          "initial_speed": 300,
+          "airlines": [
+            {
+              "departure_airport": "KTTN",
+              "arrival_airport": "KMCO",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KMIA",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KBOS",
+              "arrival_airport": "KMCO",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KJFK",
+              "arrival_airport": "KMIA",
+              "icao": "FDX"
+            }
+          ]
+        },
+        {
+          "waypoints": "N032.44.36.036,W081.09.53.371 WURFL Q83 JEVED N030.35.30.558,W080.59.23.058/delete",
+          "initial_controller": "ZJX 76 Keystone",
+          "initial_altitude": 32000,
+          "assigned_altitude": 32000,
+          "initial_speed": 300,
+          "airlines": [
+            {
+              "departure_airport": "KCLT",
+              "arrival_airport": "KMCO",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "CYYZ",
+              "arrival_airport": "KMIA",
+              "icao": "UAL"
+            },
+            {
+              "departure_airport": "KCLE",
+              "arrival_airport": "KMCO",
+              "icao": "DAL"
+            },
+            {
+              "departure_airport": "KDTW",
+              "arrival_airport": "KMIA",
+              "icao": "FDX"
+            }
+          ]
+        }
+      ]
+    },
+    "50_TTHOR3": {
       "arrivals": [
         {
           "waypoints": "N032.14.08.336,W083.13.11.262/ho KYLEG JAGGZ WEEEK/delete",
@@ -343,7 +575,7 @@
         }
       ]
     },
-    "DADES2": {
+    "50_DADES2": {
       "arrivals": [
         {
           "waypoints": "FISHO/ho Q75 TEUFL BAAMF CORYY/d270 CAPOH/delete",
@@ -394,7 +626,6 @@
           "route": "/. DADES2",
           "initial_controller": "ZJX 66 Aiken",
           "initial_altitude": 34000,
-          "assigned_altitude": 34000,
           "initial_speed": 300,
           "airlines": {
             "KTPA": [
@@ -433,7 +664,7 @@
         }
       ]
     },
-    "SHRKS": {
+    "50_SHRKS": {
       "overflights": [
         {
           "airlines": [
@@ -600,7 +831,7 @@
         }
       ]
     },
-    "CAMJO": {
+    "50_CAMJO": {
       "overflights": [
         {
           "airlines": [
@@ -640,8 +871,8 @@
               "icao": "UAL"
             }
           ],
-          "initial_altitude": 36000,
-          "assigned_altitude": 37000,
+          "initial_altitude": 35000,
+          "assigned_altitude": 35000,
           "initial_controller": "ZJX 75 Greencove",
           "initial_speed": 300,
           "waypoints": "SPRNG/ho CAMJO Q99 POLYY"
@@ -684,8 +915,8 @@
               "icao": "UAL"
             }
           ],
-          "initial_altitude": 34000,
-          "assigned_altitude": 34000,
+          "initial_altitude": 33000,
+          "assigned_altitude": 33000,
           "initial_controller": "ZJX 75 Greencove",
           "initial_speed": 300,
           "waypoints": "SPRNG/ho CAMJO Q99 POLYY"
@@ -736,7 +967,7 @@
         }
       ]
     },
-    "LUBBR3": {
+    "50_LUBBR3": {
       "arrivals": [
         {
           "waypoints": "FISHO/ho Q75 TEUFL KYYUU WNWUD/d270 SSPAZ/delete",
@@ -744,7 +975,6 @@
           "route": "/. LUBBR3",
           "initial_controller": "ZJX 66 Aiken",
           "initial_altitude": 34000,
-          "assigned_altitude": 34000,
           "initial_speed": 300,
           "airlines": {
             "KSRQ": [
@@ -783,15 +1013,15 @@
         }
       ]
     },
-    "BAGGY3": {
+    "50_BAGGY3": {
       "arrivals": [
         {
           "waypoints": "N031.03.56.940,W083.24.46.697/ho SAV DREWE/a11000 BAGGY/a7000+ DDENA/d0 KCHS-3/delete",
           "star": "BAGGY3",
           "route": "/. BAGGY3",
           "initial_controller": "ZJX 33 Geneva",
-          "initial_altitude": 32000,
-          "assigned_altitude": 32000,
+          "initial_altitude": 31000,
+          "assigned_altitude": 31000,
           "initial_speed": 300,
           "airlines": {
             "KCHS": [
@@ -821,134 +1051,404 @@
       "frequency": 127475,
       "eram_facility": true,
       "radio_name": "JAX Center",
+      "facility": "ZJX",
       "sector_id": "75"
     },
     "ZJX 33 Geneva": {
       "frequency": 125050,
       "eram_facility": true,
       "radio_name": "JAX Center",
+      "facility": "ZJX",
       "sector_id": "33"
     },
     "ZJX 66 Aiken": {
       "frequency": 127475,
       "eram_facility": true,
       "radio_name": "JAX Center",
+      "facility": "ZJX",
       "sector_id": "66"
     },
     "ZJX 78 Lake City": {
       "frequency": 133875,
       "eram_facility": true,
       "radio_name": "JAX Center",
+      "facility": "ZJX",
       "sector_id": "78"
     },
     "ZJX 50 Alma": {
       "frequency": 135975,
       "eram_facility": true,
       "radio_name": "JAX Center",
+      "facility": "ZJX",
       "sector_id": "50"
     },
     "ZJX 68 States": {
       "frequency": 126125,
       "eram_facility": true,
       "radio_name": "JAX Center",
+      "facility": "ZJX",
       "sector_id": "68"
-    },
-    "ZTL 20 Dublin": {
-      "frequency": 126425,
-      "eram_facility": true,
-      "radio_name": "Atlanta Center",
-      "sector_id": "T20"
-    },
-    "ZTL 23 Clark Hill": {
-      "frequency": 124325,
-      "eram_facility": true,
-      "radio_name": "Atlanta Center",
-      "sector_id": "T23"
-    },
-    "ZTL 22 Macon": {
-      "frequency": 119375,
-      "eram_facility": true,
-      "radio_name": "Atlanta Center",
-      "sector_id": "T22"
-    },
-    "ZTL 27 Hampton": {
-      "frequency": 125825,
-      "eram_facility": true,
-      "radio_name": "Atlanta Center",
-      "sector_id": "T27"
     },
     "ZJX 29 Waycross": {
       "frequency": 127575,
       "eram_facility": true,
       "radio_name": "JAX Center",
+      "facility": "ZJX",
       "sector_id": "29"
     },
     "ZJX 77 Taylor": {
       "frequency": 125375,
       "eram_facility": true,
       "radio_name": "JAX Center",
+      "facility": "ZJX",
       "sector_id": "77"
     },
     "ZJX 54 Jeckyl": {
       "frequency": 124675,
       "eram_facility": true,
       "radio_name": "JAX Center",
+      "facility": "ZJX",
       "sector_id": "54"
     },
     "ZJX 57 St. Johns": {
       "frequency": 134000,
       "eram_facility": true,
       "radio_name": "JAX Center",
+      "facility": "ZJX",
       "sector_id": "57"
-    },
-    "Jacksonville Approach": {
-      "frequency": 124900,
-      "radio_name": "JAX Approach",
-      "sector_id": "1S",
-      "facility": "JAX",
-      "facility_id": "J"
-    },
-    "Savannah Approach": {
-      "frequency": 125200,
-      "radio_name": "Savannah Approach",
-      "sector_id": "1N",
-      "facility": "SAV",
-      "facility_id": "S"
     },
     "ZJX 87 Lawtey": {
       "frequency": 132825,
       "eram_facility": true,
       "radio_name": "JAX Center",
+      "facility": "ZJX",
       "sector_id": "87"
     },
     "ZJX 49 Moultrie": {
       "frequency": 133300,
       "eram_facility": true,
       "radio_name": "JAX Center",
+      "facility": "ZJX",
       "sector_id": "49"
     },
     "ZJX 65 Ridgeway": {
       "frequency": 134975,
       "eram_facility": true,
       "radio_name": "JAX Center",
+      "facility": "ZJX",
       "sector_id": "65"
     },
     "ZJX 32 Ozark": {
       "frequency": 120325,
       "eram_facility": true,
       "radio_name": "JAX Center",
+      "facility": "ZJX",
       "sector_id": "32"
     },
     "ZJX 76 Keystone": {
       "frequency": 135450,
       "eram_facility": true,
       "radio_name": "JAX Center",
+      "facility": "ZJX",
       "sector_id": "76"
+    },
+    "ZJX 47 Summer": {
+      "frequency": 124075,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "facility": "ZJX",
+      "sector_id": "47"
+    },
+    "ZJX 52 Metta": {
+      "frequency": 135050,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "facility": "ZJX",
+      "sector_id": "52"
+    },
+    "ZJX 51 Knemo": {
+      "frequency": 120125,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "facility": "ZJX",
+      "sector_id": "51"
+    },
+    "ZJX 48 Georgetown": {
+      "frequency": 133625,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "facility": "ZJX",
+      "sector_id": "48"
+    },
+    "ZJX 73 Allendale": {
+      "frequency": 132925,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "facility": "ZJX",
+      "sector_id": "73"
+    },
+    "ZJX 74 Charleston": {
+      "frequency": 134375,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "facility": "ZJX",
+      "sector_id": "74"
+    },
+    "ZJX 71 Florence": {
+      "frequency": 133450,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "facility": "ZJX",
+      "sector_id": "71"
+    },
+    "ZJX 72 Columbia": {
+      "frequency": 124700,
+      "eram_facility": true,
+      "radio_name": "JAX Center",
+      "facility": "ZJX",
+      "sector_id": "72"
+    },
+    "JAX_S_APP": {
+      "frequency": 124900,
+      "radio_name": "JAX Approach",
+      "sector_id": "J1S",
+      "facility": "JAX"
+    },
+    "JAX_N_APP": {
+      "frequency": 127000,
+      "radio_name": "JAX Approach",
+      "sector_id": "J1N",
+      "facility": "JAX"
+    },
+    "JAX_W_APP": {
+      "frequency": 127775,
+      "radio_name": "JAX Approach",
+      "sector_id": "J1W",
+      "facility": "JAX"
+    },
+    "JAX_E_APP": {
+      "frequency": 132775,
+      "radio_name": "JAX Approach",
+      "sector_id": "J1E",
+      "facility": "JAX"
+    },
+    "JAX_A_APP": {
+      "frequency": 121300,
+      "radio_name": "JAX Approach",
+      "sector_id": "J1A",
+      "facility": "JAX"
+    },
+    "JAX_D_APP": {
+      "frequency": 128675,
+      "radio_name": "JAX Approach",
+      "sector_id": "J1D",
+      "facility": "JAX"
+    },
+    "SAV_N_APP": {
+      "frequency": 125200,
+      "radio_name": "Savannah Approach",
+      "sector_id": "S1N",
+      "facility": "SAV"
+    },
+    "SAV_W_APP": {
+      "frequency": 118400,
+      "radio_name": "Savannah Approach",
+      "sector_id": "S1W",
+      "facility": "SAV"
+    },
+    "SAV_S_APP": {
+      "frequency": 120400,
+      "radio_name": "Savannah Approach",
+      "sector_id": "S1S",
+      "facility": "SAV"
+    },
+    "CHS_W_APP": {
+      "frequency": 120700,
+      "radio_name": "Charleston Approach",
+      "facility": "CHS",
+      "sector_id": "C1W"
+    },
+    "CHS_E_APP": {
+      "frequency": 121275,
+      "radio_name": "Charleston Approach",
+      "facility": "CHS",
+      "sector_id": "C1E"
+    },
+    "NBC_APP": {
+      "frequency": 125125,
+      "radio_name": "Beaufort Approach",
+      "facility": "NBC",
+      "facility_id": "BBB",
+      "sector_id": "1B"
+    },
+    "CAE_N_APP": {
+      "frequency": 133400,
+      "radio_name": "ColUmbia Approach",
+      "facility": "CAE",
+      "sector_id": "A1N"
+    },
+    "CAE_S_APP": {
+      "frequency": 124150,
+      "radio_name": "ColUmbia Approach",
+      "facility": "CAE",
+      "sector_id": "A1S"
+    },
+    "SSC_APP": {
+      "frequency": 125400,
+      "radio_name": "Shaw Approach",
+      "facility": "SSC",
+      "sector_id": "Z1Z"
+    },
+    "FLO_APP": {
+      "frequency": 119400,
+      "radio_name": "Florence Approach",
+      "facility": "FLO",
+      "sector_id": "L1F"
+    },
+    "MYR_E_APP": {
+      "frequency": 119200,
+      "radio_name": "Myrtle Approach",
+      "facility": "MYR",
+      "sector_id": "M1E"
+    },
+    "MYR_W_APP": {
+      "frequency": 127400,
+      "radio_name": "Myrtle Approach",
+      "facility": "MYR",
+      "sector_id": "M1W"
+    },
+    "FAY_N_APP": {
+      "frequency": 125175,
+      "radio_name": "Fayetteville Approach",
+      "facility": "FAY",
+      "sector_id": "Y1N"
+    },
+    "FAY_W_APP": {
+      "frequency": 127800,
+      "radio_name": "Fayetteville Approach",
+      "facility": "FAY",
+      "sector_id": "Y1W"
+    },
+    "FAY_E_APP": {
+      "frequency": 133000,
+      "radio_name": "Fayetteville Approach",
+      "facility": "FAY",
+      "sector_id": "Y1E"
+    },
+    "ZTL 20 Dublin": {
+      "frequency": 126425,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "facility": "ZTL",
+      "sector_id": "T20"
+    },
+    "ZTL 23 Clark Hill": {
+      "frequency": 124325,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "facility": "ZTL",
+      "sector_id": "T23"
+    },
+    "ZTL 22 Macon": {
+      "frequency": 119375,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "facility": "ZTL",
+      "sector_id": "T22"
+    },
+    "ZTL 27 Hampton": {
+      "frequency": 125825,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "facility": "ZTL",
+      "sector_id": "T27"
+    },
+    "ZTL 32 Spartanburg": {
+      "frequency": 125625,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "facility": "ZTL",
+      "sector_id": "T32"
+    },
+    "ZTL 34 Georgia": {
+      "frequency": 120425,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "facility": "ZTL",
+      "sector_id": "T34"
+    },
+    "ZTL 28 High Rock": {
+      "frequency": 125025,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "facility": "ZTL",
+      "sector_id": "T28"
+    },
+    "ZTL 33 Charlotte": {
+      "frequency": 124425,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "facility": "ZTL",
+      "sector_id": "T33"
+    },
+    "ZTL 30 Locas": {
+      "frequency": 133150,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "facility": "ZTL",
+      "sector_id": "T30"
+    },
+    "ZTL 31 Unarm": {
+      "frequency": 135350,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "facility": "ZTL",
+      "sector_id": "T31"
+    },
+    "ZDC 09 Dixon": {
+      "frequency": 118825,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "facility": "ZDC",
+      "facility_id": "W",
+      "sector_id": "09"
+    },
+    "ZDC 36 Raleigh": {
+      "frequency": 118925,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "facility": "ZDC",
+      "facility_id": "W",
+      "sector_id": "36"
+    },
+    "AGS_APP": {
+      "frequency": 126800,
+      "radio_name": "Augusta Approach",
+      "facility": "AGS",
+      "sector_id": "B1R"
+    },
+    "CLT_W_APP": {
+      "frequency": 120500,
+      "radio_name": "Charlotte Approach",
+      "facility": "CLT",
+      "sector_id": "E1W"
+    },
+    "ILM_E_APP": {
+      "frequency": 121500,
+      "radio_name": "Wilmington Approach",
+      "facility": "ILM",
+      "sector_id": "I1E"
+    },
+    "ILM_W_APP": {
+      "frequency": 118250,
+      "radio_name": "Wilmington Approach",
+      "facility": "ILM",
+      "sector_id": "I1W"
     }
   },
-  "default_scenario": "49 Moultrie + 50 Alma + 29 Waycross",
+  "default_scenario": "49 Moultrie + 50 Alma",
   "scenarios": {
-    "49 Moultrie + 50 Alma + 29 Waycross": {
+    "49 Moultrie + 50 Alma": {
       "configuration": {
         "config_id": "STD",
         "default_consolidation": {
@@ -960,48 +1460,249 @@
         "ZJX 33 Geneva",
         "ZJX 66 Aiken",
         "ZJX 78 Lake City",
+        "ZJX 50 Alma",
         "ZJX 68 States",
-        "ZTL 20 Dublin",
-        "ZTL 23 Clark Hill",
-        "ZTL 22 Macon",
-        "ZTL 27 Hampton",
         "ZJX 29 Waycross",
         "ZJX 77 Taylor",
         "ZJX 54 Jeckyl",
         "ZJX 57 St. Johns",
-        "Jacksonville Approach",
-        "Savannah Approach",
         "ZJX 87 Lawtey",
         "ZJX 49 Moultrie",
         "ZJX 65 Ridgeway",
         "ZJX 32 Ozark",
-        "ZJX 76 Keystone"
+        "ZJX 76 Keystone",
+        "ZJX 47 Summer",
+        "ZJX 52 Metta",
+        "ZJX 51 Knemo",
+        "ZJX 48 Georgetown",
+        "ZJX 73 Allendale",
+        "ZJX 74 Charleston",
+        "ZJX 71 Florence",
+        "ZJX 72 Columbia",
+
+        "JAX_S_APP",
+        "JAX_N_APP",
+        "JAX_W_APP",
+        "JAX_E_APP",
+        "JAX_A_APP",
+        "JAX_D_APP",
+
+        "SAV_N_APP",
+        "SAV_W_APP",
+        "SAV_S_APP",
+
+        "CHS_W_APP",
+        "CHS_E_APP",
+        "NBC_APP",
+
+        "CAE_N_APP",
+        "CAE_S_APP",
+        "SSC_APP",
+        "FLO_APP",
+
+        "MYR_E_APP",
+        "MYR_W_APP",
+
+        "FAY_N_APP",
+        "FAY_W_APP",
+        "FAY_E_APP",
+
+        "ZTL 20 Dublin",
+        "ZTL 23 Clark Hill",
+        "ZTL 22 Macon",
+        "ZTL 27 Hampton",
+        "ZTL 32 Spartanburg",
+        "ZTL 34 Georgia",
+        "ZTL 28 High Rock",
+        "ZTL 33 Charlotte",
+        "ZTL 30 Locas",
+        "ZTL 31 Unarm",
+
+        "ZDC 09 Dixon",
+        "ZDC 36 Raleigh",
+
+        "AGS_APP",
+        "CLT_W_APP",
+        "ILM_E_APP",
+        "ILM_W_APP"
       ],
       "default_maps": ["ZJX HI"],
       "inbound_rates": {
-        "OHDEA2": {
+        "50_OHDEA2": {
           "KJAX": 10
         },
-        "TTHOR3": {
+        "50_TTHOR3": {
           "KDAB": 10
         },
-        "DADES2": {
+        "50_DADES2": {
           "KTPA": 15
         },
-        "GRNCH5": {
+        "50_GRNCH5": {
           "KMCO": 5,
-          "overflights": 15
+          "overflights": 30
         },
-        "SHRKS": {
+        "50_SHRKS": {
           "overflights": 20
         },
-        "CAMJO": {
+        "50_68 Overflights": {
+          "overflights": 30
+        },
+        "50_CAMJO": {
           "overflights": 20
         },
-        "LUBBR3": {
+        "50_LUBBR3": {
           "KSRQ": 8
         },
-        "BAGGY3": {
+        "50_BAGGY3": {
+          "KCHS": 8
+        }
+      },
+      "arrival_runways": [
+        {
+          "airport": "KJAX",
+          "runway": "8"
+        },
+        {
+          "airport": "KTPA",
+          "runway": "19L"
+        },
+        {
+          "airport": "KMCO",
+          "runway": "36L"
+        },
+        {
+          "airport": "KDAB",
+          "runway": "7L"
+        },
+        {
+          "airport": "KSRQ",
+          "runway": "14"
+        },
+        {
+          "airport": "KCHS",
+          "runway": "15"
+        }
+      ],
+      "default_map_group": "ZJX",
+      "departure_runways": [
+        {
+          "airport": "KJAX",
+          "rate": 15,
+          "runway": "8"
+        },
+        {
+          "airport": "KSAV",
+          "rate": 2,
+          "runway": "28"
+        }
+      ]
+    },
+    "65 Ridgeway + 66 Aiken": {
+      "configuration": {
+        "config_id": "STD",
+        "default_consolidation": {
+          "ZJX 50 Alma": []
+        }
+      },
+      "controllers": [
+        "ZJX 75 Greencove",
+        "ZJX 33 Geneva",
+        "ZJX 66 Aiken",
+        "ZJX 78 Lake City",
+        "ZJX 50 Alma",
+        "ZJX 68 States",
+        "ZJX 29 Waycross",
+        "ZJX 77 Taylor",
+        "ZJX 54 Jeckyl",
+        "ZJX 57 St. Johns",
+        "ZJX 87 Lawtey",
+        "ZJX 49 Moultrie",
+        "ZJX 65 Ridgeway",
+        "ZJX 32 Ozark",
+        "ZJX 76 Keystone",
+        "ZJX 47 Summer",
+        "ZJX 52 Metta",
+        "ZJX 51 Knemo",
+        "ZJX 48 Georgetown",
+        "ZJX 73 Allendale",
+        "ZJX 74 Charleston",
+        "ZJX 71 Florence",
+        "ZJX 72 Columbia",
+
+        "JAX_S_APP",
+        "JAX_N_APP",
+        "JAX_W_APP",
+        "JAX_E_APP",
+        "JAX_A_APP",
+        "JAX_D_APP",
+
+        "SAV_N_APP",
+        "SAV_W_APP",
+        "SAV_S_APP",
+
+        "CHS_W_APP",
+        "CHS_E_APP",
+        "NBC_APP",
+
+        "CAE_N_APP",
+        "CAE_S_APP",
+        "SSC_APP",
+        "FLO_APP",
+
+        "MYR_E_APP",
+        "MYR_W_APP",
+
+        "FAY_N_APP",
+        "FAY_W_APP",
+        "FAY_E_APP",
+
+        "ZTL 20 Dublin",
+        "ZTL 23 Clark Hill",
+        "ZTL 22 Macon",
+        "ZTL 27 Hampton",
+        "ZTL 32 Spartanburg",
+        "ZTL 34 Georgia",
+        "ZTL 28 High Rock",
+        "ZTL 33 Charlotte",
+        "ZTL 30 Locas",
+        "ZTL 31 Unarm",
+
+        "ZDC 09 Dixon",
+        "ZDC 36 Raleigh",
+
+        "AGS_APP",
+        "CLT_W_APP",
+        "ILM_E_APP",
+        "ILM_W_APP"
+      ],
+      "default_maps": ["ZJX HI"],
+      "inbound_rates": {
+        "50_OHDEA2": {
+          "KJAX": 10
+        },
+        "50_TTHOR3": {
+          "KDAB": 10
+        },
+        "50_DADES2": {
+          "KTPA": 15
+        },
+        "50_GRNCH5": {
+          "KMCO": 5,
+          "overflights": 30
+        },
+        "50_SHRKS": {
+          "overflights": 20
+        },
+        "50_68 Overflights": {
+          "overflights": 30
+        },
+        "50_CAMJO": {
+          "overflights": 20
+        },
+        "50_LUBBR3": {
+          "KSRQ": 8
+        },
+        "50_BAGGY3": {
           "KCHS": 8
         }
       },
@@ -1051,17 +1752,18 @@
     "configurations": {
       "STD": {
         "inbound_assignments": {
-          "BAGGY3": "ZJX 50 Alma",
-          "CAMJO": "ZJX 50 Alma",
-          "DADES2": "ZJX 50 Alma",
-          "GRNCH5": "ZJX 50 Alma",
-          "LUBBR3": "ZJX 50 Alma",
-          "OHDEA2": "ZJX 50 Alma",
-          "SHRKS": "ZJX 50 Alma",
-          "TTHOR3": "ZJX 50 Alma"
+          "50_BAGGY3": "ZJX 50 Alma",
+          "50_CAMJO": "ZJX 50 Alma",
+          "50_DADES2": "ZJX 50 Alma",
+          "50_GRNCH5": "ZJX 50 Alma",
+          "50_LUBBR3": "ZJX 50 Alma",
+          "50_OHDEA2": "ZJX 50 Alma",
+          "50_SHRKS": "ZJX 50 Alma",
+          "50_TTHOR3": "ZJX 50 Alma"
         }
       }
     },
+
     "center": "N031.30.29.772,W082.17.03.623",
     "range": 80,
     "stars_maps": [

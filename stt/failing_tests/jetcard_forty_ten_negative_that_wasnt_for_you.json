@@ -1,0 +1,727 @@
+{
+  "time": "2026-02-04T20:49:17.204800883Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Jetcard Forty Ten negative that wasnt for you",
+  "whisper_duration_ms": 105.501,
+  "audio_duration_ms": 4552,
+  "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11997MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "",
+  "command": "",
+  "stt_aircraft": {
+    "Allegiant 96 49": {
+      "Callsign": "AAY9649",
+      "AircraftType": "",
+      "Fixes": {},
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 1600,
+      "State": "",
+      "ControllerFrequency": "1P",
+      "TrackingController": "",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Allegiant two 91": {
+      "Callsign": "AAY291",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Ended": "ENDED",
+        "Inlet": "INLTT",
+        "Lacen": "LACEN",
+        "Largo": "LLRGO",
+        "Patoy": "PATOY"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "LLRGO1",
+      "STAR": "",
+      "Altitude": 1600,
+      "State": "departure",
+      "ControllerFrequency": "1P",
+      "TrackingController": "1P",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 63": {
+      "Callsign": "AAL63",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Fadi": "FADDI",
+        "Jambob": "JMBOB",
+        "Matty": "MAATY",
+        "Mera": "MERRA",
+        "Piedra de Cal": "PIE",
+        "Rooker": "ROOKR",
+        "Tampa": "KTPA",
+        "slop": "SCLOP"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19R",
+      "SID": "",
+      "STAR": "MAATY4",
+      "Altitude": 11578,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Brickyard 63 zero niner": {
+      "Callsign": "RPA6309",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Fins": "PHINS",
+        "Golty": "GOLTY",
+        "Thong": "THONG",
+        "Tides": "TIDES"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "TIDES1",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "departure",
+      "ControllerFrequency": "1S",
+      "TrackingController": "1S",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "ExecJet 48 21": {
+      "Callsign": "EJA4821",
+      "AircraftType": "C750",
+      "Fixes": {
+        "Capok": "CAPOK",
+        "Clearwater": "KPIE",
+        "Darbs": "DARBS",
+        "Deside": "DSIDE",
+        "Oxise": "OXISE",
+        "Piedra de Cal": "PIE",
+        "Zepum": "ZEPUM",
+        "wipso": "WIPSO"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight": "I18",
+        "r-nav runway one eight": "R18"
+      },
+      "ApproachFixes": {
+        "I18": {
+          "Capok": "CAPOK",
+          "Darbs": "DARBS",
+          "St Petersburg": "PIE",
+          "Zepum": "ZEPUM",
+          "wipso": "WIPSO"
+        },
+        "R18": {
+          "Detse": "DETSE",
+          "Donhu": "DONHU",
+          "Sound": "SAUND",
+          "St Petersburg": "PIE",
+          "Wigus": "WIGUS"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18",
+      "SID": "",
+      "STAR": "BLFRG2",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    },
+    "Jet Card 40 10": {
+      "Callsign": "DPJ4010",
+      "AircraftType": "C560",
+      "Fixes": {
+        "Capok": "CAPOK",
+        "Clearwater": "KPIE",
+        "Darbs": "DARBS",
+        "Zepum": "ZEPUM"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight": "I18",
+        "r-nav runway one eight": "R18"
+      },
+      "ApproachFixes": {
+        "I18": {
+          "Capok": "CAPOK",
+          "Darbs": "DARBS",
+          "St Petersburg": "PIE",
+          "Zepum": "ZEPUM",
+          "wipso": "WIPSO"
+        },
+        "R18": {
+          "Detse": "DETSE",
+          "Donhu": "DONHU",
+          "Sound": "SAUND",
+          "St Petersburg": "PIE",
+          "Wigus": "WIGUS"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18",
+      "SID": "",
+      "STAR": "BLFRG2",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    },
+    "JetBlue six 63": {
+      "Callsign": "JBU663",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Fadi": "FADDI",
+        "Jambob": "JMBOB",
+        "Mera": "MERRA",
+        "Piedra de Cal": "PIE",
+        "Tampa": "KTPA",
+        "slop": "SCLOP"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19R",
+      "SID": "",
+      "STAR": "MAATY4",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Moxy eight 27": {
+      "Callsign": "MXY827",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Frugal": "FRUGL",
+        "Lifie": "LYFIE",
+        "Pasoy": "PASOE",
+        "Piedra de Cal": "PIE",
+        "Ruthie": "RUTAE",
+        "Sarasota": "SRQ",
+        "woody": "WUDDY"
+      },
+      "CandidateApproaches": {
+        "I L S runway one four": "I14",
+        "r-nav runway one four": "R14"
+      },
+      "ApproachFixes": {
+        "I14": {
+          "Frugal": "FRUGL",
+          "Pasoy": "PASOE",
+          "Sarasota": "SRQ",
+          "St Petersburg": "PIE"
+        },
+        "R14": {
+          "Etigy": "ETIGY",
+          "Frugal": "FRUGL",
+          "Pasoy": "PASOE",
+          "Sarasota": "SRQ",
+          "St Petersburg": "PIE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 14",
+      "SID": "",
+      "STAR": "LUBBR3",
+      "Altitude": 5803,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    },
+    "Southwest 36 69": {
+      "Callsign": "SWA3669",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Fadi": "FADDI",
+        "Jambob": "JMBOB",
+        "Mera": "MERRA",
+        "Piedra de Cal": "PIE",
+        "Tampa": "KTPA",
+        "Venue": "VENNU",
+        "entah": "ENTAH"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19R",
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Southwest 54 35": {
+      "Callsign": "SWA5435",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19R",
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "Altitude": 568,
+      "State": "cleared approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Southwest 82 35": {
+      "Callsign": "SWA8235",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Bucks": "BUCCS",
+        "Lisa F": "LISAF",
+        "Pomse": "POMSE",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19L",
+      "SID": "",
+      "STAR": "BLFRG2",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Southwest two 20": {
+      "Callsign": "SWA220",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Dades": "DADES",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "DADES1",
+      "Altitude": 13000,
+      "State": "arrival",
+      "ControllerFrequency": "1E",
+      "TrackingController": "1E",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Spirit Wings 59 96": {
+      "Callsign": "NKS5996",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "RAYZZ2",
+      "Altitude": 10000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Sun Country eight 86": {
+      "Callsign": "SCX886",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Alroe": "ALROE",
+        "Frugal": "FRUGL",
+        "Mahar": "MAHAR",
+        "Pasoy": "PASOE",
+        "Piedra de Cal": "PIE",
+        "Sarasota": "SRQ"
+      },
+      "CandidateApproaches": {
+        "I L S runway one four": "I14",
+        "r-nav runway one four": "R14"
+      },
+      "ApproachFixes": {
+        "I14": {
+          "Frugal": "FRUGL",
+          "Pasoy": "PASOE",
+          "Sarasota": "SRQ",
+          "St Petersburg": "PIE"
+        },
+        "R14": {
+          "Etigy": "ETIGY",
+          "Frugal": "FRUGL",
+          "Pasoy": "PASOE",
+          "Sarasota": "SRQ",
+          "St Petersburg": "PIE"
+        }
+      },
+      "AssignedApproach": "ILS Runway 14",
+      "SID": "",
+      "STAR": "BANGZ1",
+      "Altitude": 5531,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Jetcard Forty Ten negative that wasnt for you\"",
+    "[local-stt] normalized words: [jetcard 40 10 negative that wasnt for you]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"jetcard\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"40\" Type=1 Value=40",
+    "[local-stt]   token[2]: Text=\"10\" Type=1 Value=10",
+    "[local-stt]   token[3]: Text=\"negative\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"that\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"wasnt\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"for\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"you\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 8 tokens, 14 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 8 tokens, 14 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 2 results",
+    "[local-stt]     result 0: \"Jet Card 40 10\" (airline=0.867, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"ExecJet 48 21\" (airline=0.524, flight=0.700, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Jet Card 40 10\" (airline=0.87, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 11 results",
+    "[local-stt]     result 0: \"Southwest 82 35\" (airline=0.418, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Allegiant 96 49\" (airline=0.503, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Brickyard 63 zero niner\" (airline=0.672, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Southwest two 20\" (airline=0.418, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"ExecJet 48 21\" (airline=0.524, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Jet Card 40 10\" (airline=0.87, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Jet Card 40 10\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Jet Card 40 10\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"DPJ4010\" (conf=0.97, consumed=3, addressingForm=0, spokenKey=\"Jet Card 40 10\")",
+    "[local-stt] callsign match: Callsign=\"DPJ4010\" SpokenKey=\"Jet Card 40 10\" Conf=0.97 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=3000 Fixes=4 Approaches=2 AssignedApproach=\"ILS Runway 18\" LAHSORunways=[4 22]",
+    "[local-stt]   fix: \"Darbs\" -\u003e \"DARBS\"",
+    "[local-stt]   fix: \"Zepum\" -\u003e \"ZEPUM\"",
+    "[local-stt]   fix: \"Capok\" -\u003e \"CAPOK\"",
+    "[local-stt]   fix: \"Clearwater\" -\u003e \"KPIE\"",
+    "[local-stt]   approach: \"I L S runway one eight\" -\u003e \"I18\"",
+    "[local-stt]   approach: \"r-nav runway one eight\" -\u003e \"R18\"",
+    "[local-stt] command tokens after disregard: 5",
+    "[local-stt]   token[0]: Text=\"negative\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"that\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"wasnt\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"for\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"you\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 5 tokens",
+    "[local-stt]   no match at token[0]=\"negative\", skipping",
+    "[local-stt]   no match at token[1]=\"that\", skipping",
+    "[local-stt]   no match at token[2]=\"wasnt\", skipping",
+    "[local-stt]   no match at token[3]=\"for\", skipping",
+    "[local-stt]   skipping filler word: \"you\"",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"DPJ4010 AGAIN\" (conf=0.97, time=2.9995ms) ==="
+  ]
+}

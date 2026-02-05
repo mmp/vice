@@ -473,6 +473,8 @@ func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 // RequestContactTransmission requests the next pending contact transmission from the server.
 // The result (if any) will be synthesized locally and enqueued for playback.
 func (c *ControlClient) RequestContactTransmission() {
+	c.transmissions.SetContactRequested(true)
+
 	var result server.RequestContactResult
 	c.addCall(makeRPCCall(c.client.Go(server.RequestContactTransmissionRPC, &server.RequestContactArgs{
 		ControllerToken: c.controllerToken,

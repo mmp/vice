@@ -731,6 +731,13 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
+		"say request",
+		func() string { return "GA" },
+		WithName("say_request"),
+		WithPriority(15),
+	)
+
+	registerSTTCommand(
 		"radar services terminated",
 		func() string { return "RST" },
 		WithName("radar_services_terminated"),

@@ -262,6 +262,16 @@ func (p *Transcriber) decodeInternal(
 		return "", nil
 	}
 
+	// Check again for acknowledgment-only after stripping position ID and radar contact
+	// e.g., "Callsign Lone Star Approach roger" -> after stripping, just "roger" remains
+	if isAcknowledgmentOnly(commandTokens) {
+		logLocalStt("detected acknowledgment only after stripping prefixes, returning empty")
+		elapsed := time.Since(start)
+		logLocalStt("=== DecodeTranscript END: \"\" (acknowledgment, time=%s) ===", elapsed)
+		p.logInfo("local STT: %q -> \"\" (acknowledgment, time=%s)", transcript, elapsed)
+		return "", nil
+	}
+
 	// Layer 4: Command parsing
 	commands, cmdConf := ParseCommands(commandTokens, ac)
 	logLocalStt("parsed commands: %v (conf=%.2f)", commands, cmdConf)
@@ -364,14 +374,19 @@ func (p *Transcriber) BuildAircraftContext(
 		// Build fixes map
 		sttAc.Fixes = make(map[string]string)
 		for _, fix := range trk.Fixes {
-			// For airports, add all telephony variants so STT can match any of them
-			if variants := av.GetAirportTelephonyVariants(fix); len(variants) > 0 {
-				for _, variant := range variants {
-					sttAc.Fixes[variant] = fix
+			// For 4-letter ICAO airports, add all telephony variants so STT can match any of them.
+			// For 3-letter identifiers, prefer navaid lookup (via GetFixTelephony) since these
+			// are typically VORs, not airports. This avoids collisions where a 3-letter VOR
+			// identifier matches a foreign airport ICAO code.
+			if len(fix) == 4 {
+				if variants := av.GetAirportTelephonyVariants(fix); len(variants) > 0 {
+					for _, variant := range variants {
+						sttAc.Fixes[variant] = fix
+					}
+					continue
 				}
-			} else {
-				sttAc.Fixes[av.GetFixTelephony(fix)] = fix
 			}
+			sttAc.Fixes[av.GetFixTelephony(fix)] = fix
 		}
 
 		// Determine state and set SID/STAR

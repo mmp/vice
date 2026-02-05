@@ -1,0 +1,156 @@
+{
+  "time": "2026-02-01T03:26:24.140329656Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:671:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Frontier Forty Four Forty Six turn right heading",
+  "whisper_duration_ms": 1577.217,
+  "audio_duration_ms": 4040,
+  "processor": "GPU: Apple M1, 8 CPU / 8 GPU cores, 8GB",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "FFT4446",
+  "command": "SAYAGAIN/HEADING",
+  "stt_aircraft": {
+    "Frontier Flight 15 70": {
+      "Callsign": "FFT1570",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "A jay": "AJAAY",
+        "Atlanta": "KATL",
+        "Bamboo": "BAMBU",
+        "Hainz": "HAINZ",
+        "Hartsfield": "KATL",
+        "Keavy": "KEAVY",
+        "Kimmy": "KYMMY",
+        "Zelow": "ZELOW"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": {
+        "I28": {
+          "Jubba": "JUBBA",
+          "Purrman": "PRMAN",
+          "Wonzer": "WONZR"
+        },
+        "I6R": {
+          "A jay": "AJAAY",
+          "Bamboo": "BAMBU",
+          "Hainz": "HAINZ",
+          "Zelow": "ZELOW"
+        },
+        "I7L": {
+          "Depot": "DEPOT",
+          "Grumpy": "GRMPI",
+          "Romm": "ROMMM",
+          "Sejay": "SEJAY",
+          "Slava": "SLVAA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 26R",
+      "SID": "",
+      "STAR": "GLAVN1",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1O",
+      "TrackingController": "1O",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Frontier Flight 44 46": {
+      "Callsign": "FFT4446",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "A jay": "AJAAY",
+        "Atlanta": "KATL",
+        "Bamboo": "BAMBU",
+        "Hainz": "HAINZ",
+        "Hartsfield": "KATL",
+        "Zelow": "ZELOW"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight": "I28",
+        "I L S runway two seven left": "I7L",
+        "I L S runway two six right": "I6R"
+      },
+      "ApproachFixes": {
+        "I28": {
+          "Jubba": "JUBBA",
+          "Purrman": "PRMAN",
+          "Wonzer": "WONZR"
+        },
+        "I6R": {
+          "A jay": "AJAAY",
+          "Bamboo": "BAMBU",
+          "Hainz": "HAINZ",
+          "Zelow": "ZELOW"
+        },
+        "I7L": {
+          "Depot": "DEPOT",
+          "Grumpy": "GRMPI",
+          "Romm": "ROMMM",
+          "Sejay": "SEJAY",
+          "Slava": "SLVAA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 26R",
+      "SID": "",
+      "STAR": "ONDRE1",
+      "Altitude": 4566,
+      "State": "arrival",
+      "ControllerFrequency": "1O",
+      "TrackingController": "1O",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Frontier Forty Four Forty Six turn right heading\"",
+    "[local-stt] normalized words: [frontier 44 46 turn right heading]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"frontier\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"44\" Type=1 Value=44",
+    "[local-stt]   token[2]: Text=\"46\" Type=1 Value=46",
+    "[local-stt]   token[3]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 6 tokens, 2 aircraft",
+    "[local-stt]   candidate \"Frontier Flight 44 46\" (ICAO=\"FFT4446\"): score=1.10 consumed=3",
+    "[local-stt]   candidate \"Frontier Flight 15 70\" (ICAO=\"FFT1570\"): score=0.80 consumed=3",
+    "[local-stt]   candidate \"Frontier Flight 44 46\" at pos 1: score=0.80 (adjusted=0.72) consumed=2",
+    "[local-stt]   accepted: \"FFT4446\" (conf=1.10, consumed=3, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"FFT4446\" SpokenKey=\"Frontier Flight 44 46\" Conf=1.10 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4566 Fixes=6 Approaches=3 AssignedApproach=\"ILS Runway 26R\" LAHSORunways=[]",
+    "[local-stt]   fix: \"A jay\" -\u003e \"AJAAY\"",
+    "[local-stt]   fix: \"Atlanta\" -\u003e \"KATL\"",
+    "[local-stt]   fix: \"Hartsfield\" -\u003e \"KATL\"",
+    "[local-stt]   fix: \"Zelow\" -\u003e \"ZELOW\"",
+    "[local-stt]   fix: \"Hainz\" -\u003e \"HAINZ\"",
+    "[local-stt]   fix: \"Bamboo\" -\u003e \"BAMBU\"",
+    "[local-stt]   approach: \"I L S runway two eight\" -\u003e \"I28\"",
+    "[local-stt]   approach: \"I L S runway two six right\" -\u003e \"I6R\"",
+    "[local-stt]   approach: \"I L S runway two seven left\" -\u003e \"I7L\"",
+    "[local-stt] command tokens after disregard: 3",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"turn\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 3 tokens",
+    "[local-stt]   no match at token[0]=\"turn\", skipping",
+    "[local-stt]   no match at token[1]=\"right\", skipping",
+    "[local-stt]   no match at token[2]=\"heading\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"FFT4446 AGAIN\" (conf=1.10, time=1.308959ms) ==="
+  ]
+}

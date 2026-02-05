@@ -72,10 +72,11 @@ type Sim struct {
 
 	EnforceUniqueCallsignSuffix bool
 
-	PendingContacts        map[TCP][]PendingContact
-	FutureOnCourse         []FutureOnCourse
-	FutureSquawkChanges    []FutureChangeSquawk
-	FutureEmergencyUpdates []FutureEmergencyUpdate
+	PendingContacts         map[TCP][]PendingContact
+	PendingFrequencyChanges []PendingFrequencyChange
+	FutureOnCourse          []FutureOnCourse
+	FutureSquawkChanges     []FutureChangeSquawk
+	FutureEmergencyUpdates  []FutureEmergencyUpdate
 
 	NextEmergencyTime time.Time
 
@@ -1145,7 +1146,7 @@ func (s *Sim) updateState() {
 							ctrl := s.State.ResolveController(sfp.InboundHandoffController)
 							// Make sure they've bought the handoff.
 							if ctrl != sfp.HandoffController {
-								s.enqueueControllerContact(ac.ADSBCallsign, ctrl, 0 /* no delay */)
+								s.enqueueControllerContact(ac.ADSBCallsign, TCP(ctrl))
 							}
 						}
 					}
@@ -1284,8 +1285,9 @@ func (s *Sim) updateState() {
 
 		s.possiblyRequestFlightFollowing()
 
-		// Handle assorted deferred radio calls.
-		s.processEnqueued()
+		s.processPendingFrequencySwitches()
+
+		s.processFutureEvents()
 
 		// Handle emergencies
 		s.updateEmergencies()

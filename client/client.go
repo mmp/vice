@@ -293,7 +293,6 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 	var callbackErr error
 	var completedCalls []*pendingCall
 	var updateCallFinished *pendingCall
-	var shouldRequestContact bool
 
 	c.mu.Lock()
 
@@ -313,12 +312,12 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 
 	c.updateSpeech(p)
 
-	// Allow the server to send us a contact transmission if we're not otherwise expecting a
-	// readback, etc.
-	if c.transmissions.ShouldRequestContact() {
-		c.transmissions.SetContactRequested(true)
-		shouldRequestContact = true
-	}
+	// Check if we should request a contact transmission from the server.
+	// We request contacts when the server has TTS capability, even if the user
+	// has disabled TTS locally. This ensures pilots still join the frequency
+	// and text transmissions appear. Audio playback is controlled separately.
+	// The actual request is made after releasing the lock.
+	shouldRequestContact := c.transmissions.ShouldRequestContact()
 
 	if callbackErr == nil {
 		completedCalls, callbackErr = c.checkPendingRPCs(eventStream)
@@ -329,37 +328,22 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 	if d := time.Since(c.lastUpdateRequest); d > time.Duration(rate*float32(time.Second)) {
 		if c.updateCall != nil && !util.DebuggerIsRunning() {
 			c.lg.Warnf("GetUpdates still waiting for %s on last update call", d)
-			c.mu.Unlock()
-			// Make RPC calls that need addCall after releasing the lock
-			if shouldRequestContact {
-				c.RequestContactTransmission()
-			}
-			// Invoke callbacks after releasing lock to avoid deadlock
-			if updateCallFinished != nil {
-				updateCallFinished.InvokeCallback(eventStream, &c.State)
-			}
-			for _, call := range completedCalls {
-				call.InvokeCallback(eventStream, &c.State)
-			}
-			if callbackErr != nil && onErr != nil {
-				onErr(callbackErr)
-			}
-			return
-		}
-		c.lastUpdateRequest = time.Now()
+		} else {
+			c.lastUpdateRequest = time.Now()
 
-		var update server.SimStateUpdate
-		issueTime := time.Now()
-		c.updateCall = makeStateUpdateRPCCall(c.client.Go(server.GetStateUpdateRPC, c.controllerToken, &update, nil), &update,
-			func(err error) {
-				d := time.Since(issueTime)
-				c.lastUpdateLatency = d
-				if d > 250*time.Millisecond {
-					c.lg.Warnf("Slow world update response %s", d)
-				} else {
-					c.lg.Debugf("World update response time %s", d)
-				}
-			})
+			var update server.SimStateUpdate
+			issueTime := time.Now()
+			c.updateCall = makeStateUpdateRPCCall(c.client.Go(server.GetStateUpdateRPC, c.controllerToken, &update, nil), &update,
+				func(err error) {
+					d := time.Since(issueTime)
+					c.lastUpdateLatency = d
+					if d > 250*time.Millisecond {
+						c.lg.Warnf("Slow world update response %s", d)
+					} else {
+						c.lg.Debugf("World update response time %s", d)
+					}
+				})
+		}
 	}
 
 	c.mu.Unlock()

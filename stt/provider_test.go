@@ -593,6 +593,14 @@ func TestVFRCommands(t *testing.T) {
 			expected: "N345 GA",
 		},
 		{
+			name:       "say request",
+			transcript: "Cessna 345 uh say request",
+			aircraft: map[string]Aircraft{
+				"Cessna 345": {Callsign: "N345", State: "vfr flight following"},
+			},
+			expected: "N345 GA",
+		},
+		{
 			name:       "radar services terminated",
 			transcript: "November 123AB radar services terminated squawk VFR frequency change approved",
 			aircraft: map[string]Aircraft{
@@ -1238,6 +1246,24 @@ func TestPositionIdentification(t *testing.T) {
 			radioName:        "New York Approach",
 			expected:         "JBU25 DWAVEY C120",
 			expectPositionID: false,
+		},
+		{
+			name:       "roger only - no command",
+			transcript: "Delta 88 roger",
+			aircraft: map[string]Aircraft{
+				"Delta 88": {Callsign: "DAL88", Altitude: 3000, State: "departure"},
+			},
+			radioName: "New York Departure",
+			expected:  "",
+		},
+		{
+			name:       "roger followed by command",
+			transcript: "Delta 88 roger climb and maintain niner thousand",
+			aircraft: map[string]Aircraft{
+				"Delta 88": {Callsign: "DAL88", Altitude: 3000, State: "departure"},
+			},
+			radioName: "New York Departure",
+			expected:  "DAL88 C90",
 		},
 	}
 

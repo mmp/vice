@@ -54,6 +54,7 @@ var (
 		// STT state
 		pttRecording              bool
 		pttGarbling               bool      // true if PTT pressed while audio was playing (no recording)
+		pttMicFailed              bool      // true if mic open failed this press; cleared on release
 		pttCapture                bool      // capturing new PTT key assignment
 		pttPressTime              time.Time // for latency logging
 		audioCaptureWarningLogged bool      // only log audio capture failure once
@@ -344,7 +345,7 @@ func showAboutDialog() {
 	credits := `Additional credits:
 - Software Development: Xavier Caldwell, Artem Dorofeev, Adam E, Dennis Graiani, Ethan Malimon, Neel P, Makoto Sakaguchi, Michael Trokel, radarcontacto, Rick R, Samuel Valencia, and Yi Zhang.
 - Timely feedback: radarcontacto.
-- Facility engineering: Connor Allen, anguse, Adam Bolek, Brody Carty, Lucas Chan, Aaron Flett, Mike Fries, Ryan G, Thomas Halpin, Jason Helkenberg, Trey Hensley, Elijah J, Austin Jenkins, Ketan K, Mike K, Allison L, Josh Lambert, Kayden Lambert, Mike LeGall, Jonah Lefkoff, Jud Lopez, Jake Magee, Ethan Malimon, manaphy, Jace Martin, Michael McConnell, Merry, Yahya Nazimuddin, Justin Nguyen, Giovanni, Andrew S, Logan S, Arya T, Nelson T, Tyler Temerowski, Eli Thompson, Michael Trokel, Samuel Valencia, Gavin Velicevic, and Jackson Verdoorn.
+- Facility engineering: Connor Allen, anguse, Adam Bolek, Brody Carty, Lucas Chan, Aaron Flett, Mike Fries, Ryan G, Gecko, Thomas Halpin, Jason Helkenberg, Trey Hensley, Elijah J, Austin Jenkins, Ketan K, Mike K, Allison L, Josh Lambert, Kayden Lambert, Mike LeGall, Jonah Lefkoff, Jud Lopez, Jake Magee, Ethan Malimon, manaphy, Jace Martin, Michael McConnell, Merry, Yahya Nazimuddin, Justin Nguyen, Giovanni, Andrew S, Logan S, Arya T, Nelson T, Tyler Temerowski, Eli Thompson, Michael Trokel, Samuel Valencia, Gavin Velicevic, and Jackson Verdoorn.
 - Video maps: thanks to the ZAU, ZBW, ZDC, ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB, ZSE, and ZTL VATSIM ARTCCs and to the FAA, from whence the original maps came.
 - Additionally: OpenScope for the aircraft performance and airline databases, ourairports.com for the airport database, and for the FAA for being awesome about providing the CIFP, MVA specifications, and other useful aviation data digitally.
 - One more thing: see the file CREDITS.txt in the vice source code distribution for third-party software, fonts, sounds, etc.`
@@ -954,7 +955,7 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 	}
 
 	// Start on initial press (ignore repeats by checking our own flags)
-	if imgui.IsKeyDown(pttKey) && !ui.pttRecording && !ui.pttGarbling {
+	if imgui.IsKeyDown(pttKey) && !ui.pttRecording && !ui.pttGarbling && !ui.pttMicFailed {
 		if p.IsPlayingSpeech() {
 			// Audio is playing - garble it instead of recording
 			p.SetSpeechGarbled(true)
@@ -978,6 +979,7 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 					hint = "Please check your system's audio settings and ensure microphone access is permitted."
 				}
 				ShowErrorDialog(p, lg, "Unable to access microphone: %v\n\n%s", err, hint)
+				ui.pttMicFailed = true
 			} else {
 				ui.pttRecording = true
 				if controlClient != nil {
@@ -1003,6 +1005,7 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 
 	// Detect release
 	if !imgui.IsKeyDown(pttKey) {
+		ui.pttMicFailed = false
 		if ui.pttGarbling {
 			// Was garbling - stop garbling
 			p.SetSpeechGarbled(false)

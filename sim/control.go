@@ -768,14 +768,12 @@ func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, t
 		ACID:           sfp.ACID,
 	})
 
-	// Take away the current controller's ability to issue control
-	// commands.
+	// Cancel any in-progress frequency switch and take away the
+	// current controller's ability to issue control commands.
+	s.cancelPendingFrequencyChange(ac.ADSBCallsign)
 	ac.ControllerFrequency = ""
 
-	// In 5-10 seconds, have the aircraft contact the new controller
-	// (and give them control only then).
-	wait := time.Duration(5+s.Rand.Intn(10)) * time.Second
-	s.enqueueControllerContact(ac.ADSBCallsign, toTCP, wait)
+	s.enqueueControllerContact(ac.ADSBCallsign, toTCP)
 
 	return intent
 }
@@ -830,8 +828,7 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 					// For a handoff from a virtual controller, cue up a delayed
 					// contact message unless there's a point later in the route when
 					// comms are to be transferred.
-					wait := time.Duration(5+s.Rand.Intn(10)) * time.Second
-					s.enqueueControllerContact(ac.ADSBCallsign, newTrackingController, wait)
+					s.enqueueControllerContact(ac.ADSBCallsign, TCP(newTrackingController))
 				}
 			}
 			return nil
@@ -1774,6 +1771,7 @@ func (s *Sim) RadarServicesTerminated(tcw TCW, callsign av.ADSBCallsign) (av.Com
 			s.enqueueTransponderChange(ac.ADSBCallsign, 0o1200, ac.Mode)
 
 			// Leave our frequency
+			s.cancelPendingFrequencyChange(ac.ADSBCallsign)
 			ac.ControllerFrequency = ""
 
 			return av.ContactIntent{
@@ -1872,10 +1870,16 @@ const (
 	PendingTransmissionEmergency                                          // Emergency stage transmission
 )
 
+// PendingFrequencyChange represents a pilot switching to a new frequency.
+// Once the Time passes, the aircraft's ControllerFrequency is set and
+// the entry is removed.
+type PendingFrequencyChange struct {
+	ADSBCallsign av.ADSBCallsign
+	TCP          TCP
+	Time         time.Time
+}
+
 // PendingContact represents a pilot-initiated transmission waiting to be played.
-// ReadyTime is when the pilot is ready to transmit (after switching frequencies, etc.)
-// The actual message is generated on-demand when the client requests it,
-// ensuring current aircraft state (altitude, etc.) is used.
 type PendingContact struct {
 	ADSBCallsign           av.ADSBCallsign
 	TCP                    TCP
@@ -1892,6 +1896,33 @@ func (s *Sim) addPendingContact(pc PendingContact) {
 		s.PendingContacts = make(map[TCP][]PendingContact)
 	}
 	s.PendingContacts[pc.TCP] = append(s.PendingContacts[pc.TCP], pc)
+}
+
+// cancelPendingFrequencyChange removes any pending frequency change for
+// the given aircraft. Called when the aircraft's frequency is being managed
+// directly (e.g., controller contact, radar services terminated) to prevent
+// a stale queued switch from overwriting the new state.
+func (s *Sim) cancelPendingFrequencyChange(callsign av.ADSBCallsign) {
+	s.PendingFrequencyChanges = slices.DeleteFunc(s.PendingFrequencyChanges,
+		func(pfc PendingFrequencyChange) bool {
+			return pfc.ADSBCallsign == callsign
+		})
+}
+
+// processPendingFrequencySwitches sets ControllerFrequency for aircraft whose
+// frequency-switch time has passed, then removes those entries.
+func (s *Sim) processPendingFrequencySwitches() {
+	now := s.State.SimTime
+	s.PendingFrequencyChanges = util.FilterSliceInPlace(s.PendingFrequencyChanges,
+		func(pfc PendingFrequencyChange) bool {
+			if now.After(pfc.Time) {
+				if ac, ok := s.Aircraft[pfc.ADSBCallsign]; ok {
+					ac.ControllerFrequency = pfc.TCP
+				}
+				return false
+			}
+			return true
+		})
 }
 
 // PopReadyContact removes and returns the first pending contact whose ReadyTime has passed
@@ -1913,7 +1944,7 @@ func (s *Sim) popReadyContact(positions []TCP) *PendingContact {
 	// Find the first contact that's ready (ReadyTime has passed) for any position
 	for _, tcp := range positions {
 		for i, pc := range s.PendingContacts[tcp] {
-			if !s.State.SimTime.Before(pc.ReadyTime) {
+			if s.State.SimTime.After(pc.ReadyTime) {
 				s.PendingContacts[tcp] = slices.Delete(s.PendingContacts[tcp], i, i+1)
 				return &pc
 			}
@@ -1925,12 +1956,16 @@ func (s *Sim) popReadyContact(positions []TCP) *PendingContact {
 
 // enqueueControllerContact adds an aircraft to the pending contacts queue.
 // Called when an aircraft should contact a controller (after handoff accepted, etc.)
-// The delay represents time for pilot to switch frequencies, etc.
-func (s *Sim) enqueueControllerContact(callsign av.ADSBCallsign, tcp TCP, delay time.Duration) {
+func (s *Sim) enqueueControllerContact(callsign av.ADSBCallsign, tcp TCP) {
+	// Aircraft will switch frequency (2-4 sec), then listen before transmitting (3-6 sec).
+	switchDelay := time.Duration(2+s.Rand.Intn(3)) * time.Second
+	listenDelay := time.Duration(3+s.Rand.Intn(4)) * time.Second
+	s.PendingFrequencyChanges = append(s.PendingFrequencyChanges,
+		PendingFrequencyChange{ADSBCallsign: callsign, TCP: tcp, Time: s.State.SimTime.Add(switchDelay)})
 	s.addPendingContact(PendingContact{
 		ADSBCallsign: callsign,
 		TCP:          tcp,
-		ReadyTime:    s.State.SimTime.Add(delay),
+		ReadyTime:    s.State.SimTime.Add(switchDelay + listenDelay),
 		Type:         PendingTransmissionArrival,
 	})
 }
@@ -1938,10 +1973,10 @@ func (s *Sim) enqueueControllerContact(callsign av.ADSBCallsign, tcp TCP, delay 
 // enqueueDepartureContact adds a departure to the pending contacts queue.
 // Departures are ready immediately (they're already on frequency).
 func (s *Sim) enqueueDepartureContact(ac *Aircraft, tcp TCP) {
+	ac.ControllerFrequency = ControlPosition(tcp)
 	s.addPendingContact(PendingContact{
 		ADSBCallsign:           ac.ADSBCallsign,
 		TCP:                    tcp,
-		ReadyTime:              s.State.SimTime, // Ready immediately
 		Type:                   PendingTransmissionDeparture,
 		ReportDepartureHeading: ac.ReportDepartureHeading,
 		HasQueuedEmergency:     ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1,
@@ -1953,7 +1988,6 @@ func (s *Sim) enqueuePilotTransmission(callsign av.ADSBCallsign, tcp TCP, txType
 	s.addPendingContact(PendingContact{
 		ADSBCallsign: callsign,
 		TCP:          tcp,
-		ReadyTime:    s.State.SimTime, // Ready immediately
 		Type:         txType,
 	})
 }
@@ -1964,7 +1998,6 @@ func (s *Sim) enqueueEmergencyTransmission(callsign av.ADSBCallsign, tcp TCP, rt
 	s.addPendingContact(PendingContact{
 		ADSBCallsign:         callsign,
 		TCP:                  tcp,
-		ReadyTime:            s.State.SimTime, // Ready immediately
 		Type:                 PendingTransmissionEmergency,
 		PrebuiltTransmission: rt,
 	})
@@ -2007,7 +2040,6 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		if !ac.IsAssociated() {
 			return "", ""
 		}
-		ac.ControllerFrequency = ControlPosition(pc.TCP)
 		rt = ac.Nav.DepartureMessage(pc.ReportDepartureHeading)
 
 		// Handle emergency activation for departures
@@ -2025,7 +2057,6 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		if !ac.IsAssociated() {
 			return "", ""
 		}
-		ac.ControllerFrequency = ControlPosition(pc.TCP)
 		rt = ac.ContactMessage(s.ReportingPoints)
 		rt.Type = av.RadioTransmissionContact
 
@@ -2145,7 +2176,7 @@ func (s *Sim) enqueueTransponderChange(callsign av.ADSBCallsign, code av.Squawk,
 		FutureChangeSquawk{ADSBCallsign: callsign, Code: code, Mode: mode, Time: s.State.SimTime.Add(wait)})
 }
 
-func (s *Sim) processEnqueued() {
+func (s *Sim) processFutureEvents() {
 	s.FutureOnCourse = util.FilterSliceInPlace(s.FutureOnCourse,
 		func(oc FutureOnCourse) bool {
 			if s.State.SimTime.After(oc.Time) {
