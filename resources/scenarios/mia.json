@@ -1446,6 +1446,26 @@
           "exit": "ETECK",
           "scratchpad": "FEA",
           "route": "ETECK PELCN Y309 FLRDA"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU",
+              "types": ["A320", "A321", "A21N", "BCS3"]
+            },
+            {
+              "icao": "SWA"
+            },
+            {
+              "icao": "NKS",
+              "types": ["A321"]
+            }
+          ],
+          "altitude": [32000, 36000],
+          "destination": "MMUN",
+          "exit": "GLADZ",
+          "scratchpad": "GLA",
+          "route": "GLADZ LULLS Y196 CANOA UB879 NOSAT"
         }
       ],
       "exit_categories": {
@@ -2675,11 +2695,15 @@
               "27": "BHHIA/a7000 CEMDI/a7000/h35",
               "31": "BHHIA/a7000 CEMDI/a7000/h35",
               "9": "BHHIA/a7000 CEMDI/a7000/h35"
+            },
+            "KOPF": {
+              "9L": "BHHIA/a7000 CEMDI/a7000/h81",
+              "12": "BHHIA/a7000 CEMDI/a7000/h81"
             }
           },
           "cruise_altitude": 33000,
           "star": "BHHIA3",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_05_CTR",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "speed_restriction": 250,
@@ -2749,7 +2773,7 @@
           },
           "cruise_altitude": 33000,
           "star": "BHHIA3",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_05_CTR",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "speed_restriction": 250,
@@ -2799,7 +2823,7 @@
           },
           "cruise_altitude": 33000,
           "star": "BHHIA3",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_05_CTR",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "speed_restriction": 250,
@@ -2838,7 +2862,7 @@
     "BNFSH3": {
       "arrivals": [
         {
-          "waypoints": "CIKEN/a22000+ N026.41.18.776,W079.38.32.814/ho GELDE/a17000+/s280 ENRGY/a16000- WOOSA CASTT/a12000/s250 BNFSH/a11000",
+          "waypoints": "CIKEN/a22000+ N026.41.18.776,W079.38.32.814/ho GELDE/a17000+/s280 ENRGY/a16000- WOOSA CASTT/a12000+/s250 BNFSH/a11000",
           "runway_waypoints": {
             "KMIA": {
               "12": "BNFSH/a11000 FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ KPONE/a4000 CHUUM/a4000/h274",
@@ -2859,7 +2883,7 @@
           },
           "cruise_altitude": 38000,
           "star": "BNFSH3",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_20_CTR",
           "initial_altitude": 23000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -2980,11 +3004,10 @@
           },
           "cruise_altitude": 38000,
           "star": "BNFSH3",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_20_CTR",
           "initial_altitude": 23000,
           "initial_speed": 300,
           "speed_restriction": 250,
-          "assigned_altitude": 16000,
           "expect_approach": "I12",
           "airlines": {
             "KMIA": [
@@ -3093,11 +3116,10 @@
           },
           "cruise_altitude": 38000,
           "star": "BNFSH3",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_20_CTR",
           "initial_altitude": 23000,
           "initial_speed": 300,
           "speed_restriction": 250,
-          "assigned_altitude": 14000,
           "expect_approach": "R6R",
           "airlines": {
             "KMIA": [
@@ -3212,7 +3234,7 @@
           },
           "cruise_altitude": 34000,
           "star": "CSTAL3",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_20_CTR",
           "initial_altitude": 18000,
           "initial_speed": 300,
           "expect_approach": null,
@@ -3333,7 +3355,7 @@
           },
           "cruise_altitude": 34000,
           "star": "CSTAL3",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_20_CTR",
           "initial_altitude": 18000,
           "initial_speed": 300,
           "speed_restriction": 250,
@@ -3445,7 +3467,7 @@
           },
           "cruise_altitude": 34000,
           "star": "CSTAL3",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_20_CTR",
           "initial_altitude": 18000,
           "initial_speed": 300,
           "speed_restriction": 250,
@@ -3559,7 +3581,7 @@
           },
           "cruise_altitude": 34000,
           "star": "CUUDA3",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_20_CTR",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "speed_restriction": 250,
@@ -3670,7 +3692,7 @@
           },
           "cruise_altitude": 34000,
           "star": "CUUDA3",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_20_CTR",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "speed_restriction": 250,
@@ -3771,7 +3793,7 @@
           },
           "cruise_altitude": 34000,
           "star": "CUUDA3",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_20_CTR",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "speed_restriction": 250,
@@ -3872,7 +3894,7 @@
           },
           "cruise_altitude": 37000,
           "star": "CUURT1",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_24_CTR",
           "initial_altitude": 23000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -3894,7 +3916,7 @@
     "FROGZ4": {
       "arrivals": [
         {
-          "waypoints": "KLEET/a21000/s280 BARBN/ho JAMAS/s280 N025.55.53.260,W081.04.45.205/a16000 FROGZ",
+          "waypoints": "KLEET/a21000-28000/s280 BARBN/a15000+/ho JAMAS/a11000+/s280 FROGZ",
           "runway_waypoints": {
             "KMIA": {
               "12": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92",
@@ -3915,7 +3937,7 @@
           },
           "cruise_altitude": 35000,
           "star": "FROGZ4",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_24_CTR",
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -3996,7 +4018,7 @@
     "FROGZ4 NOSATS EAST": {
       "arrivals": [
         {
-          "waypoints": "KLEET/a21000/s280 BARBN/ho JAMAS/s280 N025.55.53.260,W081.04.45.205/a16000 FROGZ",
+          "waypoints": "KLEET/a21000-28000/s280 BARBN/a15000+/ho JAMAS/a11000+/s280 FROGZ",
           "runway_waypoints": {
             "KMIA": {
               "12": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92",
@@ -4011,7 +4033,7 @@
           },
           "cruise_altitude": 35000,
           "star": "FROGZ4",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_24_CTR",
           "initial_altitude": 21000,
           "initial_speed": 280,
           "speed_restriction": 250,
@@ -4083,7 +4105,7 @@
     "FROGZ4 NOSATS WEST": {
       "arrivals": [
         {
-          "waypoints": "KLEET/a21000/s280 BARBN/ho JAMAS/s280 N025.55.53.260,W081.04.45.205/a16000 FROGZ",
+          "waypoints": "KLEET/a21000-28000/s280 BARBN/a15000+/ho JAMAS/a11000+/s280 FROGZ",
           "runway_waypoints": {
             "KMIA": {
               "12": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92",
@@ -4098,7 +4120,7 @@
           },
           "cruise_altitude": 35000,
           "star": "FROGZ4",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_24_CTR",
           "initial_altitude": 21000,
           "initial_speed": 280,
           "speed_restriction": 250,
@@ -4170,7 +4192,7 @@
     "OLAHS3": {
       "arrivals": [
         {
-          "waypoints": "N025.44.07.190,W079.05.38.873 DOPLY/a10000+/ho N025.47.59.894,W079.27.02.653/a8000 OLAHS",
+          "waypoints": "N025.44.07.190,W079.05.38.873 DOPLY/a10000+/ho OLAHS",
           "runway_waypoints": {
             "KFLL": {
               "10L": "OLAHS LATNN/a6000/s250 WAVUN KEVEY BEPAC/a6000 WANAR/a5000/h276",
@@ -4191,7 +4213,7 @@
           },
           "cruise_altitude": 36000,
           "star": "OLAHS3",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_42_CTR",
           "initial_altitude": 11000,
           "initial_speed": 270,
           "expect_approach": null,
@@ -4245,7 +4267,7 @@
     "OLAHS3 NOSATS EAST": {
       "arrivals": [
         {
-          "waypoints": "N025.44.07.190,W079.05.38.873 DOPLY/a10000+/ho N025.47.59.894,W079.27.02.653/a8000 OLAHS",
+          "waypoints": "N025.44.07.190,W079.05.38.873 DOPLY/a10000+/ho OLAHS",
           "runway_waypoints": {
             "KFLL": {
               "10L": "OLAHS LATNN/a6000/s250 WAVUN KEVEY BEPAC/a6000 WANAR/a5000/h276",
@@ -4266,7 +4288,7 @@
           },
           "cruise_altitude": 36000,
           "star": "OLAHS3",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_42_CTR",
           "initial_altitude": 11000,
           "initial_speed": 270,
           "speed_restriction": 250,
@@ -4301,7 +4323,7 @@
     "OLAHS3 NOSATS WEST": {
       "arrivals": [
         {
-          "waypoints": "N025.44.07.190,W079.05.38.873 DOPLY/a10000+/ho N025.47.59.894,W079.27.02.653/a8000 OLAHS",
+          "waypoints": "N025.44.07.190,W079.05.38.873 DOPLY/a10000+/ho OLAHS",
           "runway_waypoints": {
             "KFLL": {
               "10L": "OLAHS LATNN/a6000/s250 WAVUN KEVEY BEPAC/a6000 WANAR/a5000/h276",
@@ -4322,7 +4344,7 @@
           },
           "cruise_altitude": 36000,
           "star": "OLAHS3",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_42_CTR",
           "initial_altitude": 11000,
           "initial_speed": 270,
           "speed_restriction": 250,
@@ -4357,7 +4379,7 @@
     "SNDBR3": {
       "arrivals": [
         {
-          "waypoints": "PAMPR/s280 N25.09.22.045,W80.58.21.664/ho SNDBR",
+          "waypoints": "PAMPR/a23000/s280 N25.09.22.045,W80.58.21.664/ho SNDBR",
           "runway_waypoints": {
             "KMIA": {
               "12": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58",
@@ -4378,8 +4400,8 @@
           },
           "cruise_altitude": 33000,
           "star": "SNDBR3",
-          "initial_controller": "MIA_46_CTR",
-          "initial_altitude": 17000,
+          "initial_controller": "MIA_05_CTR",
+          "initial_altitude": 23000,
           "initial_speed": 280,
           "expect_approach": null,
           "airlines": {
@@ -4459,7 +4481,7 @@
     "SNDBR3 NOSATS EAST": {
       "arrivals": [
         {
-          "waypoints": "PAMPR/s280 N25.09.22.045,W80.58.21.664/ho SNDBR",
+          "waypoints": "PAMPR/a23000/s280 N25.09.22.045,W80.58.21.664/ho SNDBR",
           "runway_waypoints": {
             "KMIA": {
               "12": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58",
@@ -4474,8 +4496,8 @@
           },
           "cruise_altitude": 33000,
           "star": "SNDBR3",
-          "initial_controller": "MIA_46_CTR",
-          "initial_altitude": 17000,
+          "initial_controller": "MIA_05_CTR",
+          "initial_altitude": 23000,
           "initial_speed": 280,
           "speed_restriction": 250,
           "expect_approach": "I9",
@@ -4546,7 +4568,7 @@
     "SNDBR3 NOSATS WEST": {
       "arrivals": [
         {
-          "waypoints": "PAMPR/s280 N25.09.22.045,W80.58.21.664/ho SNDBR",
+          "waypoints": "PAMPR/a23000/s280 N25.09.22.045,W80.58.21.664/ho SNDBR",
           "runway_waypoints": {
             "KMIA": {
               "12": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58",
@@ -4561,8 +4583,8 @@
           },
           "cruise_altitude": 33000,
           "star": "SNDBR3",
-          "initial_controller": "MIA_46_CTR",
-          "initial_altitude": 17000,
+          "initial_controller": "MIA_05_CTR",
+          "initial_altitude": 23000,
           "initial_speed": 280,
           "speed_restriction": 250,
           "expect_approach": "I30",
@@ -4636,7 +4658,7 @@
           "waypoints": "N026.32.15.186,W081.31.03.610 PCOCK/ho TEEKY/a12000+",
           "runway_waypoints": {
             "KFLL": {
-              "10L": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 HOLID/a5000/h107",
+              "10L": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 HOLID/a5000/h105",
               "10R": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 BUNKR/a5000/h107",
               "28L": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 GOYLE/a7000 BEPAC/a6000 FAMBA/a6000/h96",
               "28R": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 GOYLE/a7000 BEPAC/a6000 FAMBA/a6000/h96"
@@ -4648,7 +4670,7 @@
           },
           "cruise_altitude": 33000,
           "star": "TEEKY3",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_24_CTR",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -4699,7 +4721,7 @@
           "waypoints": "N026.32.15.186,W081.31.03.610 PCOCK/ho TEEKY/a12000+",
           "runway_waypoints": {
             "KFLL": {
-              "10L": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 HOLID/a5000/h107",
+              "10L": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 HOLID/a5000/h105",
               "10R": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 BUNKR/a5000/h107",
               "28L": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 GOYLE/a7000 BEPAC/a6000 FAMBA/a6000/h96",
               "28R": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 GOYLE/a7000 BEPAC/a6000 FAMBA/a6000/h96"
@@ -4707,7 +4729,7 @@
           },
           "cruise_altitude": 33000,
           "star": "TEEKY3",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_24_CTR",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "speed_restriction": 250,
@@ -4749,7 +4771,7 @@
           "waypoints": "N026.32.15.186,W081.31.03.610 PCOCK/ho TEEKY/a12000+",
           "runway_waypoints": {
             "KFLL": {
-              "10L": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 HOLID/a5000/h107",
+              "10L": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 HOLID/a5000/h105",
               "10R": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 BUNKR/a5000/h107",
               "28L": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 GOYLE/a7000 BEPAC/a6000 FAMBA/a6000/h96",
               "28R": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 GOYLE/a7000 BEPAC/a6000 FAMBA/a6000/h96"
@@ -4757,7 +4779,7 @@
           },
           "cruise_altitude": 33000,
           "star": "TEEKY3",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_24_CTR",
           "initial_altitude": 15000,
           "initial_speed": 280,
           "speed_restriction": 250,
@@ -4807,11 +4829,15 @@
               "8L": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
               "8R": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
               "9": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272"
+            },
+            "KTMB": {
+              "9R": "VIICE/a16000- FRARI/a10000/s250/h314",
+              "27L": "VIICE/a16000- FRARI/a10000/s250/h314"
             }
           },
           "cruise_altitude": 36000,
           "star": "VIICE2",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_41_CTR",
           "initial_altitude": 21000,
           "initial_speed": 280,
           "expect_approach": null,
@@ -4900,7 +4926,7 @@
           },
           "cruise_altitude": 36000,
           "star": "VIICE2",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_41_CTR",
           "initial_altitude": 21000,
           "initial_speed": 280,
           "speed_restriction": 250,
@@ -4990,7 +5016,7 @@
           },
           "cruise_altitude": 36000,
           "star": "VIICE2",
-          "initial_controller": "MIA_46_CTR",
+          "initial_controller": "MIA_41_CTR",
           "initial_altitude": 21000,
           "initial_speed": 280,
           "speed_restriction": 250,
@@ -5071,6 +5097,62 @@
       "eram_facility": true,
       "sector_id": "C46"
     },
+    "MIA_47_CTR": {
+      "frequency": 132450,
+      "radio_name": "Miami Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "sector_id": "C47"
+    },
+    "MIA_21_CTR": {
+      "frequency": 133400,
+      "radio_name": "Miami Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "sector_id": "C21"
+    },
+    "MIA_20_CTR": {
+      "frequency": 132150,
+      "radio_name": "Miami Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "sector_id": "C20"
+    },
+    "MIA_42_CTR": {
+      "frequency": 135600,
+      "radio_name": "Miami Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "sector_id": "C42"
+    },
+    "MIA_41_CTR": {
+      "frequency": 133850,
+      "radio_name": "Miami Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "sector_id": "C41"
+    },
+    "MIA_26_CTR": {
+      "frequency": 124700,
+      "radio_name": "Miami Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "sector_id": "C26"
+    },
+    "MIA_05_CTR": {
+      "frequency": 128175,
+      "radio_name": "Miami Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "sector_id": "C05"
+    },
+    "MIA_24_CTR": {
+      "frequency": 132400,
+      "radio_name": "Miami Center",
+      "facility_id": "C",
+      "eram_facility": true,
+      "sector_id": "C24"
+    },
     "MIA_N_TWR": {
       "frequency": 118300,
       "radio_name": "Miami Tower",
@@ -5131,7 +5213,7 @@
       "default_airport": "KMIA"
     },
     "MIA_Q_APP": {
-      "frequency": 126850,
+      "frequency": 132025,
       "radio_name": "Miami Approach",
       "sector_id": "1Q",
       "default_airport": "KMIA"
@@ -5143,7 +5225,7 @@
       "default_airport": "KMIA"
     },
     "MIA_D_DEP": {
-      "frequency": 119450,
+      "frequency": 126850,
       "radio_name": "Miami Departure",
       "sector_id": "1D",
       "default_airport": "KMIA"
@@ -5167,13 +5249,13 @@
       "default_airport": "KMIA"
     },
     "MIA_J_APP": {
-      "frequency": 118100,
+      "frequency": 118650,
       "radio_name": "Miami Approach",
       "sector_id": "1J",
       "default_airport": "KMIA"
     },
     "MIA_F_APP": {
-      "frequency": 133720,
+      "frequency": 133725,
       "radio_name": "Miami Approach",
       "sector_id": "1F",
       "default_airport": "KMIA"
@@ -5247,7 +5329,21 @@
           "MIA_V_APP": ["MIA_N_APP", "MIA_S_APP"]
         }
       },
-      "controllers": ["MIA_46_CTR", "MIA_N_TWR", "MIA_S_TWR", "FLL_N_TWR", "FLL_S_TWR"],
+      "controllers": [
+        "MIA_46_CTR",
+        "MIA_47_CTR",
+        "MIA_21_CTR",
+        "MIA_20_CTR",
+        "MIA_42_CTR",
+        "MIA_41_CTR",
+        "MIA_26_CTR",
+        "MIA_05_CTR",
+        "MIA_24_CTR",
+        "MIA_N_TWR",
+        "MIA_S_TWR",
+        "FLL_N_TWR",
+        "FLL_S_TWR"
+      ],
       "default_maps": ["MIA-001S EAST OPERATIONS ARRIVAL", "MIA-003S MIA DEPARTURE EAST", "FLL-001S EAST OPERATIONS"],
       "departure_runways": [
         {
@@ -5339,7 +5435,21 @@
           "MIA_V_APP": ["MIA_N_APP", "MIA_S_APP"]
         }
       },
-      "controllers": ["MIA_46_CTR", "MIA_N_TWR", "MIA_S_TWR", "FLL_N_TWR", "FLL_S_TWR"],
+      "controllers": [
+        "MIA_46_CTR",
+        "MIA_47_CTR",
+        "MIA_21_CTR",
+        "MIA_20_CTR",
+        "MIA_42_CTR",
+        "MIA_41_CTR",
+        "MIA_26_CTR",
+        "MIA_05_CTR",
+        "MIA_24_CTR",
+        "MIA_N_TWR",
+        "MIA_S_TWR",
+        "FLL_N_TWR",
+        "FLL_S_TWR"
+      ],
       "default_maps": ["MIA-002S WEST OPERATIONS ARRIVAL", "MIA-036S MIA DEPARTURE WEST", "FLL-002S WEST OPERATIONS"],
       "departure_runways": [
         {
@@ -5463,13 +5573,18 @@
       },
       "controllers": [
         "MIA_46_CTR",
+        "MIA_47_CTR",
+        "MIA_21_CTR",
+        "MIA_20_CTR",
+        "MIA_42_CTR",
+        "MIA_41_CTR",
+        "MIA_26_CTR",
+        "MIA_05_CTR",
+        "MIA_24_CTR",
         "MIA_N_TWR",
         "MIA_S_TWR",
         "FLL_N_TWR",
-        "FLL_S_TWR",
-        "FXE_TWR",
-        "OPF_TWR",
-        "TMB_TWR"
+        "FLL_S_TWR"
       ],
       "default_maps": ["MIA-001S EAST OPERATIONS ARRIVAL", "MIA-003S MIA DEPARTURE EAST", "FLL-001S EAST OPERATIONS"],
       "departure_runways": [
@@ -5609,13 +5724,18 @@
       },
       "controllers": [
         "MIA_46_CTR",
+        "MIA_47_CTR",
+        "MIA_21_CTR",
+        "MIA_20_CTR",
+        "MIA_42_CTR",
+        "MIA_41_CTR",
+        "MIA_26_CTR",
+        "MIA_05_CTR",
+        "MIA_24_CTR",
         "MIA_N_TWR",
         "MIA_S_TWR",
         "FLL_N_TWR",
-        "FLL_S_TWR",
-        "FXE_TWR",
-        "OPF_TWR",
-        "TMB_TWR"
+        "FLL_S_TWR"
       ],
       "default_maps": ["MIA-002S WEST OPERATIONS ARRIVAL", "MIA-036S MIA DEPARTURE WEST", "FLL-002S WEST OPERATIONS"],
       "departure_runways": [
@@ -5670,15 +5790,33 @@
           "BNFSH3 NOSATS EAST": "MIA_N_APP",
           "CSTAL3 NOSATS EAST": "MIA_N_APP",
           "CUUDA3 NOSATS EAST": "MIA_R_APP",
-          "FROGZ4 NOSATS EAST": "MIA_N_APP",
+          "FROGZ4 NOSATS EAST": "MIA_S_APP",
           "OLAHS3 NOSATS EAST": "MIA_D_DEP",
           "SNDBR3 NOSATS EAST": "MIA_S_APP",
           "TEEKY3 NOSATS EAST": "MIA_J_APP",
           "VIICE2 NOSATS EAST": "MIA_S_APP"
         },
         "departure_assignments": {
-          "KFLL": "MIA_D_DEP",
-          "KMIA": "MIA_W_DEP"
+          "KFLL/AGERS1": "MIA_L_DEP",
+          "KFLL/BNICE2": "MIA_L_DEP",
+          "KFLL/DORRL2": "MIA_L_DEP",
+          "KFLL/FEALX2": "MIA_L_DEP",
+          "KFLL/FRSBE2": "MIA_L_DEP",
+          "KFLL/GLADZ4": "MIA_L_DEP",
+          "KFLL/HROCK2": "MIA_L_DEP",
+          "KFLL/LIFRR2": "MIA_L_DEP",
+          "KFLL/REGAE2": "MIA_D_DEP",
+          "KFLL/SNAPR2": "MIA_D_DEP",
+          "KFLL/MAYNR3": "MIA_D_DEP",
+          "KMIA/ALTNN2": "MIA_D_DEP",
+          "KMIA/BNGOS4": "MIA_D_DEP",
+          "KMIA/FLMGO2": "MIA_D_DEP",
+          "KMIA/FOLZZ3": "MIA_D_DEP",
+          "KMIA/GLADZ4": "MIA_D_DEP",
+          "KMIA/HURCN4": "MIA_D_DEP",
+          "KMIA/GWAVA2": "MIA_W_DEP",
+          "KMIA/KLADA2": "MIA_W_DEP",
+          "KMIA/MAYNR3": "MIA_W_DEP"
         }
       },
       "KM1": {
@@ -5687,16 +5825,34 @@
           "BNFSH3": "MIA_N_APP",
           "CSTAL3": "MIA_N_APP",
           "CUUDA3": "MIA_R_APP",
-          "FROGZ4": "MIA_N_APP",
+          "FROGZ4": "MIA_S_APP",
           "OLAHS3": "MIA_D_DEP",
           "SNDBR3": "MIA_S_APP",
           "TEEKY3": "MIA_J_APP",
           "VIICE2": "MIA_S_APP"
         },
         "departure_assignments": {
-          "KFLL": "MIA_L_DEP",
-          "KFXE": "MIA_Q_APP",
-          "KMIA": "MIA_D_DEP",
+          "KFLL/AGERS1": "MIA_L_DEP",
+          "KFLL/BNICE2": "MIA_L_DEP",
+          "KFLL/DORRL2": "MIA_L_DEP",
+          "KFLL/FEALX2": "MIA_L_DEP",
+          "KFLL/FRSBE2": "MIA_L_DEP",
+          "KFLL/GLADZ4": "MIA_L_DEP",
+          "KFLL/HROCK2": "MIA_L_DEP",
+          "KFLL/LIFRR2": "MIA_L_DEP",
+          "KFLL/REGAE2": "MIA_D_DEP",
+          "KFLL/SNAPR2": "MIA_D_DEP",
+          "KFLL/MAYNR3": "MIA_D_DEP",
+          "KMIA/ALTNN2": "MIA_D_DEP",
+          "KMIA/BNGOS4": "MIA_D_DEP",
+          "KMIA/FLMGO2": "MIA_D_DEP",
+          "KMIA/FOLZZ3": "MIA_D_DEP",
+          "KMIA/GLADZ4": "MIA_D_DEP",
+          "KMIA/HURCN4": "MIA_D_DEP",
+          "KMIA/GWAVA2": "MIA_W_DEP",
+          "KMIA/KLADA2": "MIA_W_DEP",
+          "KMIA/MAYNR3": "MIA_W_DEP",
+          "KFXE": "MIA_L_DEP",
           "KOPF": "MIA_Q_APP",
           "KTMB": "MIA_H_APP"
         }
@@ -5714,8 +5870,26 @@
           "VIICE2 NOSATS WEST": "MIA_S_APP"
         },
         "departure_assignments": {
-          "KFLL": "MIA_D_DEP",
-          "KMIA": "MIA_D_DEP"
+          "KFLL/AGERS1": "MIA_L_DEP",
+          "KFLL/BNICE2": "MIA_L_DEP",
+          "KFLL/DORRL2": "MIA_L_DEP",
+          "KFLL/FEALX2": "MIA_L_DEP",
+          "KFLL/FRSBE2": "MIA_L_DEP",
+          "KFLL/HROCK2": "MIA_L_DEP",
+          "KFLL/LIFRR2": "MIA_L_DEP",
+          "KFLL/REGAE2": "MIA_L_DEP",
+          "KFLL/SNAPR2": "MIA_L_DEP",
+          "KFLL/GLADZ4": "MIA_D_DEP",
+          "KFLL/MAYNR3": "MIA_D_DEP",
+          "KMIA/ALTNN2": "MIA_D_DEP",
+          "KMIA/BNGOS4": "MIA_D_DEP",
+          "KMIA/FLMGO2": "MIA_D_DEP",
+          "KMIA/FOLZZ3": "MIA_D_DEP",
+          "KMIA/HURCN4": "MIA_D_DEP",
+          "KMIA/GLADZ4": "MIA_W_DEP",
+          "KMIA/GWAVA2": "MIA_W_DEP",
+          "KMIA/KLADA2": "MIA_W_DEP",
+          "KMIA/MAYNR3": "MIA_W_DEP"
         }
       },
       "KM3": {
@@ -5731,9 +5905,27 @@
           "VIICE2": "MIA_S_APP"
         },
         "departure_assignments": {
-          "KFLL": "MIA_L_DEP",
-          "KFXE": "MIA_Q_APP",
-          "KMIA": "MIA_W_DEP",
+          "KFLL/AGERS1": "MIA_L_DEP",
+          "KFLL/BNICE2": "MIA_L_DEP",
+          "KFLL/DORRL2": "MIA_L_DEP",
+          "KFLL/FEALX2": "MIA_L_DEP",
+          "KFLL/FRSBE2": "MIA_L_DEP",
+          "KFLL/HROCK2": "MIA_L_DEP",
+          "KFLL/LIFRR2": "MIA_L_DEP",
+          "KFLL/REGAE2": "MIA_L_DEP",
+          "KFLL/SNAPR2": "MIA_L_DEP",
+          "KFLL/GLADZ4": "MIA_D_DEP",
+          "KFLL/MAYNR3": "MIA_D_DEP",
+          "KMIA/ALTNN2": "MIA_D_DEP",
+          "KMIA/BNGOS4": "MIA_D_DEP",
+          "KMIA/FLMGO2": "MIA_D_DEP",
+          "KMIA/FOLZZ3": "MIA_D_DEP",
+          "KMIA/HURCN4": "MIA_D_DEP",
+          "KMIA/GLADZ4": "MIA_W_DEP",
+          "KMIA/GWAVA2": "MIA_W_DEP",
+          "KMIA/KLADA2": "MIA_W_DEP",
+          "KMIA/MAYNR3": "MIA_W_DEP",
+          "KFXE": "MIA_L_DEP",
           "KOPF": "MIA_Q_APP",
           "KTMB": "MIA_H_APP"
         }
