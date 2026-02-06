@@ -942,7 +942,7 @@ func init() {
 			sp.updateQuicklookRegionTracks(ctx)
 			return nil
 		})
-	registerCommand(CommandModeMultiFunc, "Q[QL_REGION] E",
+	registerCommand(CommandModeMultiFunc, "Q[QL_REGION] I",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, regionID string) error {
 			if !ctx.FacilityAdaptation.Filters.Quicklook.HaveId(regionID) {
 				return ErrSTARSIllegalFunction
@@ -954,7 +954,7 @@ func init() {
 			sp.updateQuicklookRegionTracks(ctx)
 			return nil
 		})
-	registerCommand(CommandModeMultiFunc, "Q[QL_REGION] I",
+	registerCommand(CommandModeMultiFunc, "Q[QL_REGION] E",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, regionID string) error {
 			if !ctx.FacilityAdaptation.Filters.Quicklook.HaveId(regionID) {
 				return ErrSTARSIllegalFunction
