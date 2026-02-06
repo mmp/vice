@@ -1,0 +1,174 @@
+{
+  "time": "2026-01-29T17:36:41.243213585Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:671:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Nine Twenty Two One Zero Miles From Izeko cross Izeko at three thousand cleared ILS two two left",
+  "whisper_duration_ms": 447.901,
+  "audio_duration_ms": 5832,
+  "processor": "GPU: NVIDIA GeForce RTX 3060 (12113MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "UAL22",
+  "command": "CIZEKO/A30 CI2L",
+  "stt_aircraft": {
+    "Spirit Wings 99 50": {
+      "Callsign": "NKS9950",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Crank": "CRANK",
+        "Gimme": "GIMEE",
+        "Hokir": "HOKIR",
+        "Izeko": "IZEKO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Santa Cruz": "SAX",
+        "Shaff": "SHAFF",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "United 22": {
+      "Callsign": "UAL22",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Newark": "KEWR",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 4115,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "United 88 60 heavy": {
+      "Callsign": "UAL8860",
+      "AircraftType": "B772",
+      "Fixes": {
+        "Broadway": "BWZ",
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "FQM3",
+      "Altitude": 6876,
+      "State": "arrival",
+      "ControllerFrequency": "4A",
+      "TrackingController": "4A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Nine Twenty Two One Zero Miles From Izeko cross Izeko at three thousand cleared ILS two two left\"",
+    "[local-stt] normalized words: [9 22 1 0 miles from izeko cross izeko at 3 thousand cleared ils 2 2 left]",
+    "[local-stt] tokens: 12",
+    "[local-stt]   token[0]: Text=\"92210\" Type=1 Value=92210",
+    "[local-stt]   token[1]: Text=\"miles\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"from\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"izeko\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"cross\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"izeko\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"30\" Type=2 Value=30",
+    "[local-stt]   token[8]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"22\" Type=1 Value=22",
+    "[local-stt]   token[11]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 12 tokens, 3 aircraft",
+    "[local-stt]   candidate \"United 22\" (ICAO=\"UAL22\"): score=0.64 consumed=1",
+    "[local-stt]   candidate \"United 88 60 heavy\" (ICAO=\"UAL8860\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Spirit Wings 99 50\" (ICAO=\"NKS9950\"): score=0.00 consumed=0",
+    "[local-stt]   flight-number-only fallback: \"22\" matches \"United 22\" (ICAO=\"UAL22\") exactly",
+    "[local-stt]   flight-number fallback \"UAL22\" (conf=0.70) beats marginal match \"UAL22\" (conf=0.64)",
+    "[local-stt] callsign match: Callsign=\"UAL22\" SpokenKey=\"United 22\" Conf=0.70 Consumed=11",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4115 Fixes=5 Approaches=1 AssignedApproach=\"ILS Runway 22L\" LAHSORunways=[11 29]",
+    "[local-stt]   fix: \"Izeko\" -\u003e \"IZEKO\"",
+    "[local-stt]   fix: \"Gimme\" -\u003e \"GIMEE\"",
+    "[local-stt]   fix: \"Zavpi\" -\u003e \"ZAVPI\"",
+    "[local-stt]   fix: \"Buzzed\" -\u003e \"BUZZD\"",
+    "[local-stt]   fix: \"Newark\" -\u003e \"KEWR\"",
+    "[local-stt]   approach: \"I L S runway two two left\" -\u003e \"I2L\"",
+    "[local-stt] command tokens after disregard: 1",
+    "[local-stt]   token[0]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 1 tokens",
+    "[local-stt]   no match at token[0]=\"left\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"UAL22 AGAIN\" (conf=0.70, time=0s) ==="
+  ]
+}

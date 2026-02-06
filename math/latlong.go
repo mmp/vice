@@ -163,7 +163,7 @@ func tryParseWaypointNumbers(b []byte) (float32, int, bool) {
 		return len(b)
 	}
 
-	for i := 0; i < 4; i++ {
+	for i := range 4 {
 		end := scan(b)
 		if end == 0 {
 			return 0, 0, false

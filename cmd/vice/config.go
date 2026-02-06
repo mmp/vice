@@ -76,6 +76,15 @@ type ConfigNoSim struct {
 
 	ScenarioFile string
 	VideoMapFile string
+
+	UserPTTKey         imgui.Key
+	SelectedMicrophone string
+
+	// Cached whisper model selection from benchmarking
+	WhisperModelName      string  // Selected model filename (e.g., "ggml-small.en.bin")
+	WhisperDeviceID       string  // Device identifier used for benchmarking
+	WhisperBenchmarkIndex int     // Benchmark generation; rebenchmark if code's value is higher
+	WhisperRealtimeFactor float64 // Ratio of transcription time to audio duration (for quality tuning)
 }
 
 type ConfigSim struct {
@@ -182,6 +191,7 @@ func getDefaultConfig() *Config {
 			Version:               server.ViceSerializeVersion,
 			WhatsNewIndex:         len(whatsNew),
 			NotifiedTargetGenMode: true, // don't warn for new installs
+			UserPTTKey:            imgui.KeySemicolon,
 			STARSPane:             stars.NewSTARSPane(),
 			ERAMPane:              eram.NewERAMPane(),
 			MessagesPane:          panes.NewMessagesPane(),
@@ -221,6 +231,7 @@ func LoadOrMakeDefaultConfig(lg *log.Logger) (config *Config, configErr error) {
 		if config.Version < 5 {
 			config.UserWorkstation = ""
 		}
+
 		if config.Version < 29 {
 			config.TFRCache = av.MakeTFRCache()
 		}

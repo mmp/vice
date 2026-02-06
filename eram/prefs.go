@@ -38,8 +38,11 @@ type Preferences struct {
 	RDBSize     int // CRR datablocks
 	LDBSize     int
 	OutageSize  int
+	CursorSize  int
 
 	VideoMapBrightness map[string]int
+
+	UseRightClick bool
 
 	// CRR view preferences and configuration
 	CRR struct {
@@ -68,7 +71,7 @@ type PrefrenceSet struct {
 }
 
 type CommonPreferences struct {
-	ClockPosition        []int
+	clockPosition        [2]float32
 	commandBigPosition   [2]float32
 	commandSmallPosition [2]float32
 	CharSize             struct {
@@ -110,6 +113,9 @@ type CommonPreferences struct {
 	}
 
 	Line4Type int
+
+	TornOffButtons        map[string][2]float32 // button name -> screen position
+	MasterToolbarPosition [2]float32            // top-left position of the master toolbar button
 }
 
 const (
@@ -163,6 +169,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.commandBigPosition = [2]float32{2, 80}
 	prefs.commandSmallPosition = [2]float32{392, 80}
 	prefs.altitudeFilter = [2]int{0, 999}
+	prefs.TornOffButtons = make(map[string][2]float32)
 
 	prefs.Line4Size = 0
 	prefs.FDBSize = 1
@@ -171,6 +178,7 @@ func makeDefaultPreferences() *Preferences {
 	prefs.RDBSize = 1
 	prefs.LDBSize = 1
 	prefs.OutageSize = 1
+	prefs.CursorSize = 1
 
 	prefs.VideoMapVisible = make(map[string]interface{})
 	prefs.VideoMapBrightness = make(map[string]int)

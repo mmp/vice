@@ -2,7 +2,6 @@
   "tracon": "A90",
   "airports": {
     "KACK": {
-      "name": "Nantucket Airport",
       "approaches": {
         "I24": {
           "cifp_id": "I24"
@@ -188,7 +187,6 @@
       ]
     },
     "KMVY": {
-      "name": "Marthas Vineyard",
       "approaches": {
         "I24": {
           "cifp_id": "I24"
@@ -574,7 +572,7 @@
     }
   },
   "default_scenario": "KACK Departing 6 Landing 6",
-  "name": "KACK",
+  "name": "Cape Area",
   "primary_airport": "KBOS",
   "scenarios": {
     "KACK Departing 6 Landing 6": {

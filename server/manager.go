@@ -8,20 +8,18 @@ import (
 	"context"
 	crand "crypto/rand"
 	"encoding/base64"
-	"fmt"
 	"log/slog"
-	"net/http"
 	"os"
+	"path/filepath"
 	"slices"
 	"strings"
-	"sync"
-	"sync/atomic"
 	"time"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/stt"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -37,19 +35,16 @@ type SimManager struct {
 	sessionsByToken map[string]*simSession
 
 	// Helpers and such
-	tts            sim.TTSProvider
 	wxProvider     wx.Provider
 	providersReady chan struct{}
 	mapManifests   map[string]*sim.VideoMapManifest
 	lg             *log.Logger
 
 	// Stats and internal details
-	mu               util.LoggingMutex
-	startTime        time.Time
-	httpPort         int
-	websocketTXBytes atomic.Int64
-	ttsUsageByIP     map[string]*ttsUsageStats
-	local            bool
+	mu        util.LoggingMutex
+	startTime time.Time
+	httpPort  int
+	local     bool
 }
 
 // Client-side info about the available scenarios.
@@ -98,13 +93,12 @@ func NewSimManager(scenarioGroups map[string]map[string]*scenarioGroup, scenario
 		sessionsByToken:  make(map[string]*simSession),
 		mapManifests:     mapManifests,
 		startTime:        time.Now(),
-		ttsUsageByIP:     make(map[string]*ttsUsageStats),
 		local:            isLocal,
 		providersReady:   make(chan struct{}),
 		lg:               lg,
 	}
 
-	// Initialize TTS and WX providers asynchronously so the server can start
+	// Initialize WX provider asynchronously so the server can start
 	// accepting connections immediately. Callers that need providers will
 	// block in getProviders() until initialization completes or times out.
 	go sm.initRemoteProviders(serverAddress, lg)
@@ -122,26 +116,12 @@ func (sm *SimManager) initRemoteProviders(serverAddress string, lg *log.Logger) 
 	ctx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
 	defer cancel()
 
-	// Initialize TTS and WX providers in parallel since they're independent
-	var wg sync.WaitGroup
-	wg.Add(2)
-
-	go func() {
-		defer wg.Done()
-		sm.tts = makeTTSProvider(ctx, serverAddress, lg)
-	}()
-
-	go func() {
-		defer wg.Done()
-		sm.wxProvider, _ = MakeWXProvider(ctx, serverAddress, lg)
-	}()
-
-	wg.Wait()
+	sm.wxProvider, _ = MakeWXProvider(ctx, serverAddress, lg)
 }
 
-func (sm *SimManager) getProviders() (sim.TTSProvider, wx.Provider) {
+func (sm *SimManager) getWXProvider() wx.Provider {
 	<-sm.providersReady
-	return sm.tts, sm.wxProvider
+	return sm.wxProvider
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -166,22 +146,20 @@ type NewSimRequest struct {
 
 	PilotErrorInterval float32
 
-	Initials            string // Controller initials (e.g., "XX")
-	Privileged          bool
-	DisableTextToSpeech bool
+	Initials   string // Controller initials (e.g., "XX")
+	Privileged bool
 }
 
 func MakeNewSimRequest() NewSimRequest {
 	return NewSimRequest{
 		NewSimName:         rand.Make().AdjectiveNoun(),
-		PilotErrorInterval: 3,
+		PilotErrorInterval: 0,
 	}
 }
 
 type NewSimResult struct {
 	SimState        *SimState
 	ControllerToken string
-	SpeechWSPort    int
 }
 
 // SimState wraps sim.UserState and adds server-specific fields.
@@ -194,6 +172,14 @@ type SimState struct {
 	ControllerVideoMaps                 []string
 	ControllerDefaultVideoMaps          []string
 	ControllerMonitoredBeaconCodeBlocks []av.Squawk
+
+	UserIsPrivileged bool // Whether this user has elevated privileges (can control any aircraft)
+}
+
+// TCWIsPrivileged returns whether the given TCW has elevated privileges.
+// Note: only the current user's TCW should be passed; this is for API compatibility.
+func (ss *SimState) TCWIsPrivileged(tcw sim.TCW) bool {
+	return ss.UserIsPrivileged
 }
 
 const NewSimRPC = "SimManager.NewSim"
@@ -206,7 +192,7 @@ func (sm *SimManager) NewSim(req *NewSimRequest, result *NewSimResult) error {
 		s := sim.NewSim(*nsc, manifest, lg)
 		session := makeSimSession(req.NewSimName, req.GroupName, req.ScenarioName, req.Password, s, sm.lg)
 		pos := s.ScenarioRootPosition()
-		return sm.Add(session, result, pos, req.Initials, req.Privileged, true, req.DisableTextToSpeech)
+		return sm.Add(session, result, pos, req.Initials, req.Privileged, true)
 	} else {
 		return ErrInvalidSimConfiguration
 	}
@@ -231,7 +217,7 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *
 
 	description := util.Select(sm.local, " "+req.ScenarioName, "@"+req.NewSimName+": "+req.ScenarioName)
 
-	_, wxp := sm.getProviders()
+	wxp := sm.getWXProvider()
 
 	nsc := sim.NewSimConfiguration{
 		TFRs:                        req.TFRs,
@@ -270,14 +256,13 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *
 }
 
 type JoinSimRequest struct {
-	SimName             string
-	TCW                 sim.TCW   // Which TCW to sign into
-	SelectedTCPs        []sim.TCP // TCPs to consolidate (non-relief only)
-	Initials            string    // Controller initials (e.g., "MP")
-	Password            string
-	Privileged          bool
-	DisableTextToSpeech bool
-	JoiningAsRelief     bool
+	SimName         string
+	TCW             sim.TCW   // Which TCW to sign into
+	SelectedTCPs    []sim.TCP // TCPs to consolidate (non-relief only)
+	Initials        string    // Controller initials (e.g., "MP")
+	Password        string
+	Privileged      bool
+	JoiningAsRelief bool
 }
 
 const ConnectToSimRPC = "SimManager.ConnectToSim"
@@ -320,7 +305,7 @@ func (sm *SimManager) ConnectToSim(req *JoinSimRequest, result *NewSimResult) er
 		}
 	}
 
-	session.AddHumanController(token, tcw, req.Initials, req.DisableTextToSpeech, eventSub)
+	session.AddHumanController(token, tcw, req.Initials, eventSub)
 	sm.sessionsByToken[token] = session
 
 	*result = *sm.buildNewSimResult(session, tcw, token)
@@ -364,9 +349,9 @@ func (sm *SimManager) buildNewSimResult(session *simSession, tcw sim.TCW, token 
 			ControllerVideoMaps:                 videoMaps,
 			ControllerDefaultVideoMaps:          defaultMaps,
 			ControllerMonitoredBeaconCodeBlocks: beaconCodes,
+			UserIsPrivileged:                    session.sim.TCWIsPrivileged(tcw),
 		},
 		ControllerToken: token,
-		SpeechWSPort:    util.Select(sm.tts != nil, sm.httpPort, 0),
 	}
 }
 
@@ -377,12 +362,12 @@ func (sm *SimManager) AddLocal(s *sim.Sim, result *NewSimResult) error {
 	if !sm.local {
 		sm.lg.Errorf("Called AddLocal with sm.local == false")
 	}
-	return sm.Add(session, result, s.ScenarioRootPosition(), "", false, false, false)
+	return sm.Add(session, result, s.ScenarioRootPosition(), "", false, false)
 }
 
 func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP sim.ControlPosition, initials string, instructor bool,
-	prespawn bool, disableTextToSpeech bool) error {
-	_, wxp := sm.getProviders()
+	prespawn bool) error {
+	wxp := sm.getWXProvider()
 	session.sim.Activate(session.lg, wxp)
 
 	sm.mu.Lock(sm.lg)
@@ -398,9 +383,8 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 
 	tcw := sim.TCW(initialTCP)
 	joinReq := &JoinSimRequest{
-		TCW:                 tcw,
-		Privileged:          instructor,
-		DisableTextToSpeech: disableTextToSpeech,
+		TCW:        tcw,
+		Privileged: instructor,
 	}
 	token, eventSub, err := sm.signOn(session, joinReq)
 	if err != nil {
@@ -408,7 +392,7 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 		return err
 	}
 
-	session.AddHumanController(token, tcw, initials, disableTextToSpeech, eventSub)
+	session.AddHumanController(token, tcw, initials, eventSub)
 	sm.sessionsByToken[token] = session
 
 	sm.mu.Unlock(sm.lg)
@@ -439,8 +423,6 @@ func (sm *SimManager) runSimUpdateLoop(session *simSession) {
 		}
 
 		session.sim.Update()
-
-		sm.websocketTXBytes.Add(session.SendSpeechMP3s())
 
 		time.Sleep(100 * time.Millisecond)
 	}
@@ -549,7 +531,6 @@ func (sm *SimManager) signOn(ss *simSession, req *JoinSimRequest) (string, *sim.
 type ConnectResult struct {
 	ScenarioCatalogs    map[string]map[string]*ScenarioCatalog
 	RunningSims         map[string]*RunningSim
-	HaveTTS             bool
 	AvailableWXByTRACON map[string][]util.TimeInterval
 }
 
@@ -565,9 +546,7 @@ func (sm *SimManager) Connect(version int, result *ConnectResult) error {
 		return err
 	}
 
-	tts, wxp := sm.getProviders()
-	result.HaveTTS = tts != nil
-	result.AvailableWXByTRACON = wxp.GetAvailableTimeIntervals()
+	result.AvailableWXByTRACON = wx.GetTimeIntervals()
 
 	sm.mu.Lock(sm.lg)
 	defer sm.mu.Unlock(sm.lg)
@@ -646,7 +625,7 @@ func (sm *SimManager) GetStateUpdate(token string) (*SimStateUpdate, error) {
 	}
 	sm.mu.Unlock(sm.lg)
 
-	return session.GetStateUpdate(token, sm.tts), nil
+	return session.GetStateUpdate(token), nil
 }
 
 // SimStateUpdate wraps sim.StateUpdate and adds server-specific fields.
@@ -682,7 +661,7 @@ func (c *controllerContext) GetStateUpdate() SimStateUpdate {
 	return SimStateUpdate{
 		StateUpdate: c.sim.GetStateUpdate(),
 		ActiveTCWs:  c.session.GetActiveTCWs(),
-		Events:      c.sim.ConsolidateRadioEventsForTCW(c.tcw, c.eventSub.Get()),
+		Events:      c.sim.PrepareRadioTransmissionsForTCW(c.tcw, c.eventSub.Get()),
 	}
 }
 
@@ -702,130 +681,7 @@ func (sm *SimManager) GetSerializeSim(token string, s *sim.Sim) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Text-to-Speech
-
-func (sm *SimManager) HandleSpeechWSConnection(w http.ResponseWriter, r *http.Request) {
-	authHeader := r.Header.Get("Authorization")
-	if !strings.HasPrefix(authHeader, "Bearer ") {
-		http.Error(w, "Missing or invalid Authorization header", http.StatusUnauthorized)
-		return
-	}
-	token := strings.TrimPrefix(authHeader, "Bearer ")
-
-	sm.mu.Lock(sm.lg)
-
-	session, ok := sm.sessionsByToken[token]
-	if !ok {
-		sm.mu.Unlock(sm.lg)
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		sm.lg.Errorf("Invalid token for speech websocket: %s", token)
-		return
-	}
-	sm.mu.Unlock(sm.lg)
-
-	session.HandleSpeechWSConnection(token, w, r)
-}
-
-const GetAllVoicesRPC = "SimManager.GetAllVoices"
-
-// GetAllVoices returns all available voices for TTS
-func (sm *SimManager) GetAllVoices(_ struct{}, voices *[]sim.Voice) error {
-	if sm.tts == nil {
-		return fmt.Errorf("TTS not available")
-	}
-
-	fut := sm.tts.GetAllVoices()
-	// Note: TTS implementations guarantee exactly one channel will send a value
-	// before both channels are closed. If both close without sending, this loop
-	// would hang indefinitely.
-	for {
-		select {
-		case v, ok := <-fut.VoicesCh:
-			if ok {
-				*voices = v
-				return nil
-			}
-			fut.VoicesCh = nil // stop checking
-		case err, ok := <-fut.ErrCh:
-			if ok {
-				return err
-			}
-			fut.ErrCh = nil
-		}
-	}
-}
-
-const TextToSpeechRPC = "SimManager.TextToSpeech"
-
-// TextToSpeech converts text to speech and returns the audio data
-func (sm *SimManager) TextToSpeech(req *TTSRequest, speechMp3 *[]byte) error {
-	if sm.tts == nil {
-		return fmt.Errorf("TTS not available")
-	}
-
-	if len(strings.Fields(req.Text)) > 50 {
-		return fmt.Errorf("TTS capacity exceeded")
-	}
-
-	// Use ClientIP from the request (populated by LoggingServerCodec)
-	clientIP := req.ClientIP
-	if clientIP == "" {
-		clientIP = "unknown"
-	}
-
-	if err := sm.UpdateTTSUsage(clientIP, req.Text); err != nil {
-		return err
-	}
-
-	fut := sm.tts.TextToSpeech(req.Voice, req.Text)
-	// Note: Current TTS implementations guarantee that exactly one channel will send a value before
-	// both channels are closed. If both close without sending, this loop would hang indefinitely.
-	for {
-		select {
-		case mp3, ok := <-fut.Mp3Ch:
-			if ok {
-				*speechMp3 = mp3
-				return nil
-			}
-			fut.Mp3Ch = nil // stop checking
-		case err, ok := <-fut.ErrCh:
-			if ok {
-				return err
-			}
-			fut.ErrCh = nil // stop checking
-		}
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////
 // Weather
-
-const GetMETARRPC = "SimManager.GetMETAR"
-
-func (sm *SimManager) GetMETAR(airports []string, result *map[string]wx.METARSOA) error {
-	defer sm.lg.CatchAndReportCrash()
-
-	if sm.wxProvider == nil {
-		return ErrWeatherUnavailable
-	}
-
-	var err error
-	*result, err = sm.wxProvider.GetMETAR(airports)
-	return err
-}
-
-const GetTimeIntervalsRPC = "SimManager.GetTimeIntervals"
-
-func (sm *SimManager) GetTimeIntervals(_ struct{}, result *map[string][]util.TimeInterval) error {
-	defer sm.lg.CatchAndReportCrash()
-
-	if sm.wxProvider == nil {
-		return ErrWeatherUnavailable
-	}
-
-	*result = sm.wxProvider.GetAvailableTimeIntervals()
-	return nil
-}
 
 type PrecipURLArgs struct {
 	Facility string
@@ -914,5 +770,91 @@ func (sm *SimManager) Broadcast(m *BroadcastMessage, _ *struct{}) error {
 			WrittenText: m.Message,
 		})
 	}
+	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Crash Reporting
+
+// ReportCrash receives crash reports from clients and logs them.
+// This RPC does not require a controller token.
+func (sm *SimManager) ReportCrash(report *log.CrashReport, _ *struct{}) error {
+	defer sm.lg.CatchAndReportCrash()
+
+	sm.lg.Warn("Received crash report from client",
+		slog.String("cpu_model", report.System.CPUModel),
+		slog.String("gpu_renderer", report.System.GPURenderer),
+		slog.Time("crash_time", report.Timestamp))
+
+	// Save the crash report to disk
+	fn := filepath.Join(sm.lg.LogDir, "client-crash-"+report.Timestamp.Format(time.RFC3339)+".txt")
+	if err := os.WriteFile(fn, []byte(report.Report), 0o600); err != nil {
+		sm.lg.Errorf("Failed to write crash report: %v", err)
+	}
+
+	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Whisper Benchmark Reporting
+
+// WhisperBenchmarkResult contains benchmark results for a single model.
+type WhisperBenchmarkResult struct {
+	ModelName string
+	LatencyMs int64
+	Status    string // "selected", "acceptable", "too_slow", "failed", "skipped"
+}
+
+// WhisperBenchmarkReport contains the full benchmark results from a client.
+type WhisperBenchmarkReport struct {
+	DeviceName    string // GPU/device description from whisper.ProcessorDescription()
+	SelectedModel string
+	Results       []WhisperBenchmarkResult
+}
+
+const ReportWhisperBenchmarkRPC = "SimManager.ReportWhisperBenchmark"
+
+// ReportWhisperBenchmark receives whisper benchmark results from clients and logs them.
+func (sm *SimManager) ReportWhisperBenchmark(report *WhisperBenchmarkReport, _ *struct{}) error {
+	defer sm.lg.CatchAndReportCrash()
+
+	sm.lg.Info("Received whisper benchmark report", slog.Any("report", *report))
+
+	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// STT Log Reporting
+
+// STTLogArgs contains STT command data for logging (sent by local sim clients).
+type STTLogArgs struct {
+	Callsign          string
+	Commands          string
+	WhisperDuration   time.Duration
+	AudioDuration     time.Duration
+	WhisperTranscript string
+	WhisperProcessor  string
+	WhisperModel      string
+	AircraftContext   map[string]stt.Aircraft
+	STTDebugLogs      []string
+}
+
+const ReportSTTLogRPC = "SimManager.ReportSTTLog"
+
+// ReportSTTLog receives STT command data from local sim clients and logs it.
+func (sm *SimManager) ReportSTTLog(args *STTLogArgs, _ *struct{}) error {
+	defer sm.lg.CatchAndReportCrash()
+
+	sm.lg.Info("STT command",
+		slog.String("transcript", args.WhisperTranscript),
+		slog.Float64("whisper_duration_ms", float64(args.WhisperDuration.Microseconds())/1000.0),
+		slog.Float64("audio_duration_ms", float64(args.AudioDuration.Microseconds())/1000.0),
+		slog.String("processor", args.WhisperProcessor),
+		slog.String("whisper_model", args.WhisperModel),
+		slog.String("callsign", args.Callsign),
+		slog.String("command", args.Commands),
+		slog.Any("stt_aircraft", args.AircraftContext),
+		slog.Any("logs", args.STTDebugLogs))
+
 	return nil
 }

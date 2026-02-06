@@ -59,10 +59,17 @@ import (
 // 49: STARS consolidation
 // 50: rework State/StateUpdate management
 // 51: preemptive before v0.13.3 release
-const ViceSerializeVersion = 51
+// 52: STT
+// 53: local STT
+// 54: Move ControllerFrequency from NASFlightPlan to Aircraft
+// 55: STT logging
+// 56: STT iteration
+// 57: rework contact radio transmission management
+// 58: STT fin rev?
+const ViceSerializeVersion = 58
 
 const ViceServerAddress = "vice.pharr.org"
-const ViceServerPort = 8000 + ViceRPCVersion
+const ViceServerPort = 8000 - 50 + ViceRPCVersion
 const ViceRPCVersion = ViceSerializeVersion
 const ViceHTTPServerPort = 6502
 
@@ -120,7 +127,7 @@ func makeServer(config ServerLaunchConfig, lg *log.Logger) (int, func(), util.Er
 	}
 
 	scenarioGroups, scenarioCatalogs, mapManifests, extraScenarioErrors :=
-		LoadScenarioGroups(config.ExtraScenario, config.ExtraVideoMap, &errorLogger, lg)
+		LoadScenarioGroups(config.ExtraScenario, config.ExtraVideoMap, false /* skipVideoMaps */, &errorLogger, lg)
 	if errorLogger.HaveErrors() {
 		return 0, nil, errorLogger, ""
 	}

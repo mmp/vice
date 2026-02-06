@@ -251,7 +251,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 	}
 
 	// Look for duplicate beacon codes
-	sp.DuplicateBeacons = make(map[av.Squawk]interface{})
+	sp.DuplicateBeacons = make(map[av.Squawk]any)
 	beaconCount := make(map[av.Squawk]int)
 	for _, trk := range ctx.Client.State.Tracks {
 		// Don't count SPC or VFR as duplicates.
@@ -368,7 +368,7 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 
 		case sim.ForceQLEvent:
 			if sp.ForceQLACIDs == nil {
-				sp.ForceQLACIDs = make(map[sim.ACID]interface{})
+				sp.ForceQLACIDs = make(map[sim.ACID]any)
 			}
 			sp.ForceQLACIDs[event.ACID] = nil
 

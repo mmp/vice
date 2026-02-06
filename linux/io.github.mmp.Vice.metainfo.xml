@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.mmp.Vice</id>
+  
+  <name>Vice</name>
+  <summary>Air Traffic Control Simulator</summary>
+  
+  <metadata_license>MIT</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  
+  <description>
+    <p>Vice is an air traffic control simulator, focused on TRACON. It presents a STARS-like interface, but with simulated traffic and other controllers. It also supports multiple users, where each person controls a different position at a facility.</p>
+    <p>Vice supports departure and arrival control scenarios in numerous TRACONs and ATCT/TRACONs, currently: A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, BTV, BUF, C90, CHS, CID, CLE, CLT, COS, CPR, D01, D10, D21, DAB, EWR, F11, GSO, GSP, GTF, I90, IND, JAX, L30, M98, MCI, MDT, MIA, MKE, N90, NCT, OKC, P31, P50, P80, PCT, PHL, PIT, PVD, PWM, R90, RDU, S46, S56, SAV, SBA, SBN, SCT, SDF, SGF, SYR, TPA, and Y90. New scenarios are regularly added.</p>
+  </description>
+
+  <developer id="io.github.mmp">
+    <name>Matt Pharr</name>
+  </developer>
+
+  <launchable type="desktop-id">io.github.mmp.Vice.desktop</launchable>
+
+  <url type="homepage">https://pharr.org/vice/</url>
+  <url type="vcs-browser">https://github.com/mmp/vice</url>
+
+  <screenshots>
+    <screenshot type="default">
+      <image>https://i.imgur.com/ZeqnWqm.png</image>
+      <caption>Boston Approach Consolidated</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://i.imgur.com/r8mlorU.png</image>
+      <caption>New York Center Area C</caption>
+    </screenshot>
+    <screenshot>
+      <image>https://i.imgur.com/XfmZKcs.png</image>
+      <caption>Scenario Selection Menu</caption>
+    </screenshot>
+  </screenshots>
+  
+  <content_rating type="oars-1.0" />
+  
+  <branding>
+    <color type="primary" scheme_preference="light">#b9d6ed</color>
+    <color type="primary" scheme_preference="dark">#004b71</color>
+  </branding>
+
+  <releases>
+    <release version="0.13.3" date="2025-12-29">
+      <url type="details">https://pharr.org/vice/#release-0.13.3</url>
+      <description>
+	<p>Adds new scenarios, updates to STARS/ERAM, and bug fixes</p>
+	<ul>
+	  <li>New scenarios: PCT consolidated (Ketan K), MYR (Jud Lopez)</li>
+	  <li>Scenario updates: A80, C90, D01, D10, DAB, F11, JAX, MKE, ZJX (Jud Lopez), SAV (manaphy), DelRey, SNA, P50, L30 (Ketan K), ISP, ZNY Area D (Ryan G), P80 (Mike Fries), BOS (radarcontacto)</li>
+	</ul>
+	<p>STARS updates:</p>
+	  <ul>
+	    <li>Added support for changing position consolidation during the sim: [multifunc]1A1B+[enter], etc.</li>
+	    <li>ATPA improvements: added enable/disable commands, improved various details.</li>
+	    <li>Added support for middle-click-drag to move lists.</li>
+	    <li>Also, middle clicking anywhere that's not inside a list or on a track shows the bounds of all visible lists.</li>
+	    <li>Fixed bug with DCB spinners not disabling after a click.</li>
+	  </ul>
+	<p>ERAM updates:</p>
+	<ul>
+	  <li>Added CRR (continuous range readout).</li>
+	  <li>Added <code>.drawroute</code></li>
+	</ul>
+      </description>
+    </release>
+  </releases>
+
+
+</component>

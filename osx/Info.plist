@@ -12,5 +12,7 @@
 	<string>APPL</string>
 	<key>NSHighResolutionCapable</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Vice uses microphone access for speech-to-text so that you can issue control commands verbally.</string>
 </dict>
 </plist>

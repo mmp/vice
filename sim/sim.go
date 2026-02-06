@@ -66,14 +66,17 @@ type Sim struct {
 	Handoffs  map[ACID]Handoff
 	PointOuts map[ACID]PointOut
 
+	PrivilegedTCWs map[TCW]bool // TCWs with elevated privileges (can control any aircraft)
+
 	ReportingPoints []av.ReportingPoint
 
 	EnforceUniqueCallsignSuffix bool
 
-	FutureControllerContacts []FutureControllerContact
-	FutureOnCourse           []FutureOnCourse
-	FutureSquawkChanges      []FutureChangeSquawk
-	FutureEmergencyUpdates   []FutureEmergencyUpdate
+	PendingContacts         map[TCP][]PendingContact
+	PendingFrequencyChanges []PendingFrequencyChange
+	FutureOnCourse          []FutureOnCourse
+	FutureSquawkChanges     []FutureChangeSquawk
+	FutureEmergencyUpdates  []FutureEmergencyUpdate
 
 	NextEmergencyTime time.Time
 
@@ -96,32 +99,29 @@ type Sim struct {
 
 	Rand *rand.Rand
 
-	SquawkWarnedACIDs map[ACID]interface{} // Warn once in CheckLeaks(); don't spam the logs
+	VoiceAssigner *VoiceAssigner
+
+	SquawkWarnedACIDs map[ACID]any // Warn once in CheckLeaks(); don't spam the logs
 
 	// No need to serialize these; they're caches anyway.
 	bravoAirspace   *av.AirspaceGrid
 	charlieAirspace *av.AirspaceGrid
+	mvaGrid         *av.MVAGrid
 
 	// Waypoint commands: commands to execute when aircraft pass specific fixes
 	waypointCommands map[TCP]map[string]string // tcp -> fix -> commands
+
+	// LastSTTCommand stores state needed to roll back a misheard STT command.
+	// Only the single most recent command is tracked.
+	LastSTTCommand *LastSTTCommand
 }
 
-type TTSProvider interface {
-	GetAllVoices() TTSVoicesFuture
-	TextToSpeech(voice Voice, text string) TTSSpeechFuture
+// LastSTTCommand stores the nav snapshot from before the most recent STT command
+// was executed, allowing rollback if the controller says "negative, that was for {other callsign}".
+type LastSTTCommand struct {
+	Callsign    av.ADSBCallsign
+	NavSnapshot nav.NavSnapshot
 }
-
-type TTSVoicesFuture struct {
-	VoicesCh <-chan []Voice
-	ErrCh    <-chan error
-}
-
-type TTSSpeechFuture struct {
-	Mp3Ch <-chan []byte
-	ErrCh <-chan error
-}
-
-type Voice string
 
 type AircraftDisplayState struct {
 	Spew        string // for debugging
@@ -131,7 +131,8 @@ type AircraftDisplayState struct {
 type Track struct {
 	av.RadarTrack
 
-	FlightPlan *NASFlightPlan
+	FlightPlan          *NASFlightPlan
+	ControllerFrequency ControlPosition
 
 	// Sort of hacky to carry these along here but it's convenient...
 	DepartureAirport          string
@@ -144,6 +145,11 @@ type Track struct {
 	FiledAltitude             int
 	OnExtendedCenterline      bool
 	OnApproach                bool
+	ClearedForApproach        bool
+	Approach                  string   // Full name of assigned approach, if any
+	Fixes                     []string // Relevant fix names for STT
+	SID                       string
+	STAR                      string
 	ATPAVolume                *av.ATPAVolume
 	MVAsApply                 bool
 	HoldForRelease            bool
@@ -179,7 +185,7 @@ type PilotSpeech struct {
 	Callsign av.ADSBCallsign
 	Type     av.RadioTransmissionType
 	Text     string
-	MP3      []byte
+	SimTime  time.Time // Virtual simulation time when transmission was made
 }
 
 // NewSimConfiguration collects all of the information required to create a new Sim
@@ -263,33 +269,36 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		Handoffs:  make(map[ACID]Handoff),
 		PointOuts: make(map[ACID]PointOut),
 
+		PrivilegedTCWs: make(map[TCW]bool),
+
 		VirtualControllers: config.VirtualControllers,
 
 		Rand: rand.Make(),
 
-		SquawkWarnedACIDs: make(map[ACID]interface{}),
+		SquawkWarnedACIDs: make(map[ACID]any),
 
 		wxProvider: config.WXProvider,
 	}
 
-	if s.wxProvider != nil {
-		apmetar, err := s.wxProvider.GetMETAR(slices.Collect(maps.Keys(config.Airports)))
-		if err != nil {
-			lg.Errorf("%v", err)
-		} else {
-			for ap, msoa := range apmetar {
-				metar := msoa.Decode()
-				idx, ok := slices.BinarySearchFunc(metar, config.StartTime, func(m wx.METAR, t time.Time) int {
-					return m.Time.Compare(t)
-				})
-				if !ok && idx > 0 {
-					// METAR <= the start time
-					idx--
-				}
-				for idx < len(metar) && metar[idx].Time.Sub(config.StartTime) < 24*time.Hour {
-					s.METAR[ap] = append(s.METAR[ap], metar[idx])
-					idx++
-				}
+	s.VoiceAssigner = NewVoiceAssigner(s.Rand)
+
+	// Load METAR data from local resources
+	apmetar, err := wx.GetMETAR(slices.Collect(maps.Keys(config.Airports)))
+	if err != nil {
+		lg.Errorf("%v", err)
+	} else {
+		for ap, msoa := range apmetar {
+			metar := msoa.Decode()
+			idx, ok := slices.BinarySearchFunc(metar, config.StartTime, func(m wx.METAR, t time.Time) int {
+				return m.Time.Compare(t)
+			})
+			if !ok && idx > 0 {
+				// METAR <= the start time
+				idx--
+			}
+			for idx < len(metar) && metar[idx].Time.Sub(config.StartTime) < 24*time.Hour {
+				s.METAR[ap] = append(s.METAR[ap], metar[idx])
+				idx++
 			}
 		}
 	}
@@ -349,7 +358,7 @@ func (s *Sim) SetWaypointCommands(tcw TCW, commands string) error {
 	delete(s.waypointCommands, tcp)
 	s.waypointCommands[tcp] = make(map[string]string)
 	if len(commands) != 0 {
-		s.State.PrivilegedTCWs[tcw] = true
+		s.PrivilegedTCWs[tcw] = true
 	}
 
 	for cmd := range strings.SplitSeq(commands, ",") {
@@ -370,8 +379,8 @@ func (s *Sim) ReplayScenario(waypointCommands string, durationSpec string, lg *l
 	// Parse replay duration
 	var maxUpdates int
 	var untilCallsign av.ADSBCallsign
-	if strings.HasPrefix(durationSpec, "until:") {
-		untilCallsign = av.ADSBCallsign(strings.TrimPrefix(durationSpec, "until:"))
+	if after, ok := strings.CutPrefix(durationSpec, "until:"); ok {
+		untilCallsign = av.ADSBCallsign(after)
 		maxUpdates = 7200 // 2 hours max
 		fmt.Printf("Running until aircraft %s completes (max %d seconds)\n", untilCallsign, maxUpdates)
 	} else {
@@ -511,6 +520,14 @@ func (s *Sim) IdleTime() time.Duration {
 	defer s.mu.Unlock(s.lg)
 
 	return time.Since(s.lastUpdateTime)
+}
+
+// SimTime returns the current simulation time.
+func (s *Sim) SimTime() time.Time {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.State.SimTime
 }
 
 func (s *Sim) SetSimRate(tcw TCW, rate float32) error {
@@ -785,45 +802,17 @@ func (s *Sim) GetTrafficCounts() (ifr, vfr int) {
 	return s.TotalIFR, s.TotalVFR
 }
 
-// consolidateRadioEventsForTCW consolidates consecutive radio transmissions from the same
-// aircraft and adds callsign/controller prefixes to contact transmissions.
+// prepareRadioTransmissions adds callsign/controller prefixes to radio transmissions.
+// (Multi-command batching is now handled at intent generation time in RunAircraftControlCommands.)
 // This is called for both main event subscriptions and TTS event subscriptions.
 // Must be called with s.mu held.
-func (s *Sim) consolidateRadioEventsForTCW(tcw TCW, events []Event) []Event {
-	// Consolidate consecutive radio transmissions from the same aircraft
-	consolidateRadioTransmissions := func(events []Event) []Event {
-		canConsolidate := func(a, b Event) bool {
-			return a.Type == RadioTransmissionEvent && b.Type == RadioTransmissionEvent &&
-				a.RadioTransmissionType != av.RadioTransmissionMixUp && b.RadioTransmissionType != av.RadioTransmissionMixUp &&
-				a.ADSBCallsign == b.ADSBCallsign && a.Type == b.Type && a.ToController == b.ToController
-		}
-		lastRadio := -1
-		var c []Event
-		for _, e := range events {
-			if lastRadio != -1 && canConsolidate(e, c[lastRadio]) {
-				c[lastRadio].WrittenText += ", " + e.WrittenText
-				c[lastRadio].SpokenText += ", " + e.SpokenText
-				if e.RadioTransmissionType == av.RadioTransmissionUnexpected {
-					c[lastRadio].RadioTransmissionType = av.RadioTransmissionUnexpected
-				}
-			} else {
-				if e.Type == RadioTransmissionEvent {
-					lastRadio = len(c)
-				}
-				c = append(c, e)
-			}
-		}
-		return c
-	}
-
-	events = consolidateRadioTransmissions(events)
-
+func (s *Sim) prepareRadioTransmissions(tcw TCW, events []Event) []Event {
 	primaryTCP := s.State.PrimaryPositionForTCW(tcw)
 	ctrl := s.State.Controllers[primaryTCP]
 
-	// Add identifying info to radio transmissions
+	// Add identifying info to radio transmissions destined for this TCW
 	for i, e := range events {
-		if e.Type != RadioTransmissionEvent || !s.State.TCWControlsPosition(tcw, e.ToController) {
+		if e.Type != RadioTransmissionEvent || e.DestinationTCW != tcw {
 			continue
 		}
 
@@ -841,13 +830,13 @@ func (s *Sim) consolidateRadioEventsForTCW(tcw TCW, events []Event) []Event {
 			}
 		}
 
-		// For emergency aircraft, 50% of the time add "emergency aircraft" after heavy/super.
-		if ac.EmergencyState != nil && s.Rand.Bool() {
-			heavySuper += " emergency aircraft"
-		}
-
 		switch e.RadioTransmissionType {
 		case av.RadioTransmissionContact:
+			// For emergency aircraft, 50% of the time add "emergency aircraft" after heavy/super.
+			// Only on initial contact, not subsequent transmissions.
+			if ac.EmergencyState != nil && s.Rand.Bool() {
+				heavySuper += " emergency aircraft"
+			}
 			csArg := av.CallsignArg{
 				Callsign:           ac.ADSBCallsign,
 				IsEmergency:        ac.EmergencyState != nil,
@@ -863,6 +852,8 @@ func (s *Sim) consolidateRadioEventsForTCW(tcw TCW, events []Event) []Event {
 			events[i].SpokenText = tr.Spoken(s.Rand) + e.SpokenText
 		case av.RadioTransmissionMixUp:
 			// No additional formatting for mix-up transmissions; the callsign is already in there.
+		case av.RadioTransmissionNoId:
+			// No callsign formatting for NoId transmissions (e.g., "blocked").
 		default:
 			csArg := av.CallsignArg{
 				Callsign:    ac.ADSBCallsign,
@@ -877,14 +868,14 @@ func (s *Sim) consolidateRadioEventsForTCW(tcw TCW, events []Event) []Event {
 	return events
 }
 
-// ConsolidateRadioEventsForTCW processes events for TTS, consolidating radio transmissions
-// and adding callsign/controller prefixes. This is the public API for the server
-// to process TTS events from a separate subscription.
-func (s *Sim) ConsolidateRadioEventsForTCW(tcw TCW, events []Event) []Event {
+// PrepareRadioTransmissionsForTCW processes events for TTS, adding
+// callsign/controller prefixes to radio transmissions. This is the public API
+// for the server to process TTS events from a separate subscription.
+func (s *Sim) PrepareRadioTransmissionsForTCW(tcw TCW, events []Event) []Event {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
-	return s.consolidateRadioEventsForTCW(tcw, events)
+	return s.prepareRadioTransmissions(tcw, events)
 }
 
 func (s *Sim) GetStateUpdate() StateUpdate {
@@ -923,7 +914,13 @@ func (s *Sim) GetStateUpdate() StateUpdate {
 // Human-allocatable positions (from ControllerConfig) do NOT auto-accept,
 // regardless of whether a human is currently signed in.
 func (s *Sim) isVirtualController(pos ControlPosition) bool {
-	return slices.Contains(s.VirtualControllers, pos)
+	// A controller is virtual if it's a valid control position but NOT
+	// a human-allocatable position (i.e., not in the consolidation hierarchy).
+	if _, ok := s.ControlPositions[TCP(pos)]; !ok {
+		return false
+	}
+	humanPositions := s.ScenarioDefaultConsolidation.AllPositions()
+	return !slices.Contains(humanPositions, TCP(pos))
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1126,32 +1123,37 @@ func (s *Sim) updateState() {
 					}
 				}
 
+				if passedWaypoint.ClearApproach {
+					ac.ApproachTCP = TCP(ac.ControllerFrequency)
+				}
+
 				if ac.IsAssociated() {
 					// Things that only apply to associated aircraft
 					sfp := ac.NASFlightPlan
 
-					if passedWaypoint.ClearApproach {
-						ac.ApproachTCP = sfp.ControllingController
-					}
-
 					if passedWaypoint.TransferComms {
-						// We didn't enqueue this before since we knew an
-						// explicit comms handoff was coming so go ahead and
-						// send them to the controller's frequency. Note that
-						// we use InboundHandoffController and not
-						// ac.TrackingController, since the human controller
-						// may have already flashed the track to a virtual
-						// controller.
-						ctrl := s.State.ResolveController(sfp.InboundHandoffController)
-						// Make sure they've bought the handoff.
-						if ctrl != sfp.HandoffController {
-							s.enqueueControllerContact(ac.ADSBCallsign, ctrl, 0 /* no delay */)
+						// This is a departure that hasn't contacted the departure controller yet, do it here
+						if ac.IsDeparture() && ac.DepartureContactAltitude == 0 {
+							s.contactDeparture(ac, sfp)
+						} else {
+							// We didn't enqueue this before since we knew an
+							// explicit comms handoff was coming so go ahead and
+							// send them to the controller's frequency. Note that
+							// we use InboundHandoffController and not
+							// ac.TrackingController, since the human controller
+							// may have already flashed the track to a virtual
+							// controller.
+							ctrl := s.State.ResolveController(sfp.InboundHandoffController)
+							// Make sure they've bought the handoff.
+							if ctrl != sfp.HandoffController {
+								s.enqueueControllerContact(ac.ADSBCallsign, TCP(ctrl))
+							}
 						}
 					}
 
 					// Update scratchpads if the waypoint has scratchpad commands
 					// Only update if aircraft is controlled by a virtual controller
-					if s.isVirtualController(sfp.ControllingController) {
+					if s.isVirtualController(ac.ControllerFrequency) {
 						if passedWaypoint.PrimaryScratchpad != "" {
 							sfp.Scratchpad = passedWaypoint.PrimaryScratchpad
 						}
@@ -1169,8 +1171,8 @@ func (s *Sim) updateState() {
 					if passedWaypoint.PointOut != "" {
 						if ctrl, ok := s.State.Controllers[TCP(passedWaypoint.PointOut)]; ok {
 							// Only do automatic point outs for virtual controllers
-							if s.isVirtualController(sfp.ControllingController) {
-								fromCtrl := s.State.Controllers[sfp.ControllingController]
+							if s.isVirtualController(ac.ControllerFrequency) {
+								fromCtrl := s.State.Controllers[TCP(ac.ControllerFrequency)]
 								s.pointOut(sfp.ACID, fromCtrl, ctrl)
 								break
 							}
@@ -1229,8 +1231,25 @@ func (s *Sim) updateState() {
 				}
 			}
 
+			// Cull any departures withn ~5NM of their first /tc point
+			culled := false
+			if s.prespawnUncontrolledOnly && ac.IsDeparture() && ac.DepartureContactAltitude == 0 {
+				for _, wp := range ac.Nav.Waypoints {
+					if wp.TransferComms {
+						if math.NMDistance2LLFast(ac.Position(), wp.Location, ac.NmPerLongitude()) < 5 {
+							s.deleteAircraft(ac)
+							culled = true
+						}
+						break
+					}
+				}
+			}
+			if culled {
+				continue
+			}
+
 			// Possibly contact the departure controller
-			if ac.DepartureContactAltitude != 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude {
+			if ac.IsDeparture() && ((ac.DepartureContactAltitude > 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude) || (ac.DepartureContactAltitude == 0 && ac.EmergencyState != nil)) {
 				fp := ac.NASFlightPlan
 				if fp == nil {
 					fp = s.STARSComputer.lookupFlightPlanBySquawk(ac.Squawk)
@@ -1248,20 +1267,7 @@ func (s *Sim) updateState() {
 						// Use the original InboundHandoffController position for the radio event,
 						// not the resolved position. This ensures TCWControlsPosition checks
 						// correctly match when the user has that position consolidated.
-						tcp := fp.InboundHandoffController
-						s.lg.Debug("contacting departure controller", slog.String("tcp", string(tcp)))
-
-						rt := ac.Nav.DepartureMessage()
-						s.postRadioEvent(ac.ADSBCallsign, tcp, *rt)
-
-						// Clear this out so we only send one contact message
-						ac.DepartureContactAltitude = 0
-
-						// Only after we're on frequency can the controller start
-						// issuing control commands.. (Note that track may have
-						// already been handed off to the next controller at this
-						// point.)
-						fp.ControllingController = tcp
+						s.contactDeparture(ac, fp)
 					}
 				}
 			}
@@ -1272,12 +1278,16 @@ func (s *Sim) updateState() {
 				s.lg.Debug("culled far-away aircraft", slog.String("adsb_callsign", string(callsign)))
 				s.deleteAircraft(ac)
 			}
+
+			// Check for delayed "traffic in sight" call
+			s.checkDelayedTrafficInSight(ac)
 		}
 
 		s.possiblyRequestFlightFollowing()
 
-		// Handle assorted deferred radio calls.
-		s.processEnqueued()
+		s.processPendingFrequencySwitches()
+
+		s.processFutureEvents()
 
 		// Handle emergencies
 		s.updateEmergencies()
@@ -1384,22 +1394,21 @@ func (s *Sim) possiblyRequestFlightFollowing() {
 
 func (s *Sim) requestFlightFollowing(ac *Aircraft, tcp TCP) {
 	ac.RequestedFlightFollowing = true
+	ac.ControllerFrequency = ControlPosition(tcp)
 
-	// About 30% of the time, make an abbreviated request and wait for "go ahead"
-	if s.Rand.Float32() < 0.3 {
+	// About 90% of the time, make an abbreviated request and wait for "go ahead"
+	if s.Rand.Float32() < 0.9 {
 		ac.WaitingForGoAhead = true
-
-		rt := av.MakeContactTransmission("[VFR request|with a VFR request]")
-		rt.Type = av.RadioTransmissionContact
-
-		s.postRadioEvent(ac.ADSBCallsign, tcp, *rt)
+		s.enqueuePilotTransmission(ac.ADSBCallsign, tcp, PendingTransmissionFlightFollowingReq)
 	} else {
 		// Full flight following request
-		s.sendFullFlightFollowingRequest(ac, tcp)
+		s.enqueuePilotTransmission(ac.ADSBCallsign, tcp, PendingTransmissionFlightFollowingFull)
 	}
 }
 
-func (s *Sim) sendFullFlightFollowingRequest(ac *Aircraft, tcp TCP) {
+// generateFlightFollowingMessage creates the full flight following request message.
+// This is called on-demand to use current aircraft state.
+func (s *Sim) generateFlightFollowingMessage(ac *Aircraft) *av.RadioTransmission {
 	closestReportingPoint := func(ac *Aircraft) (string, string, float32, bool) {
 		var closest *av.VFRReportingPoint
 		dist := float32(1000000)
@@ -1487,8 +1496,18 @@ func (s *Sim) sendFullFlightFollowingRequest(ac *Aircraft, tcp TCP) {
 	}
 
 	rt.Type = av.RadioTransmissionContact
+	return rt
+}
 
-	s.postRadioEvent(ac.ADSBCallsign, tcp, *rt)
+func (s *Sim) contactDeparture(ac *Aircraft, fp *NASFlightPlan) {
+	tcp := fp.InboundHandoffController
+	s.lg.Debug("contacting departure controller", slog.String("tcp", string(tcp)))
+
+	// Mark as already contacted so we only send one contact message
+	ac.DepartureContactAltitude = -1
+
+	// Queue the contact (may be delayed due to radio activity)
+	s.enqueueDepartureContact(ac, tcp)
 }
 
 func (s *Sim) isRadarVisible(ac *Aircraft) bool {
@@ -1510,15 +1529,17 @@ func (s *Sim) goAround(ac *Aircraft) {
 
 	towerHadTrack := sfp.TrackingController != "" && sfp.TrackingController != ac.ApproachTCP
 
-	sfp.ControllingController = ac.ApproachTCP
+	ac.ControllerFrequency = ControlPosition(ac.ApproachTCP)
 
-	rt := ac.GoAround()
-	rt.Type = av.RadioTransmissionUnexpected
-	s.postRadioEvent(ac.ADSBCallsign, ac.ApproachTCP /* FIXME: issue #540 */, *rt)
+	// Initiate go-around immediately (changes aircraft state)
+	ac.GoAround()
+
+	// Queue the transmission for playback (timing controlled by client)
+	s.enqueuePilotTransmission(ac.ADSBCallsign, ac.ApproachTCP, PendingTransmissionGoAround)
 
 	// If it was handed off to tower, hand it back to us
 	if towerHadTrack {
-		sfp.HandoffController = sfp.ControllingController
+		sfp.HandoffController = ac.ControllerFrequency
 
 		s.eventStream.Post(Event{
 			Type:           OfferedHandoffEvent,
@@ -1529,21 +1550,23 @@ func (s *Sim) goAround(ac *Aircraft) {
 	}
 }
 
-func (s *Sim) postRadioEvent(from av.ADSBCallsign, defaultTCP TCP, tr av.RadioTransmission) {
+// postReadbackTransmission posts a radio event for a pilot responding to a command.
+// DestinationTCW is the specific TCW that issued the command.
+// Use this for readbacks, where the response must go to the issuing controller
+// regardless of any consolidation changes.
+func (s *Sim) postReadbackTransmission(from av.ADSBCallsign, tr av.RadioTransmission, tcw TCW) {
 	tr.Validate(s.lg)
-
-	if tr.Controller == "" {
-		tr.Controller = string(defaultTCP)
-	}
 
 	if ac, ok := s.Aircraft[from]; ok {
 		ac.LastRadioTransmission = s.State.SimTime
 	}
 
+	tcp := s.State.PrimaryPositionForTCW(tcw)
 	s.eventStream.Post(Event{
 		Type:                  RadioTransmissionEvent,
 		ADSBCallsign:          from,
-		ToController:          TCP(tr.Controller),
+		ToController:          tcp,
+		DestinationTCW:        tcw,
 		WrittenText:           tr.Written(s.Rand),
 		SpokenText:            tr.Spoken(s.Rand),
 		RadioTransmissionType: tr.Type,
@@ -1616,7 +1639,7 @@ func (s *Sim) tcwForPosition(pos ControlPosition) TCW {
 func (s *Sim) CheckLeaks() {
 	var usedIndices [100]bool // 1-99 are handed out
 	nUsedIndices := 0
-	seenSquawks := make(map[av.Squawk]interface{})
+	seenSquawks := make(map[av.Squawk]any)
 
 	check := func(fp *NASFlightPlan) {
 		if fp.ListIndex != UnsetSTARSListIndex {

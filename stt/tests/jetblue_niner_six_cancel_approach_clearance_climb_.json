@@ -1,0 +1,269 @@
+{
+  "time": "2026-01-31T15:37:03.942272823Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "JetBlue Niner Six cancel approach clearance climb and maintain three thousand turn left heading two seven zero",
+  "whisper_duration_ms": 113.74,
+  "audio_duration_ms": 4552,
+  "processor": "GPU: NVIDIA GeForce RTX 5080 (15977MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "JBU96",
+  "command": "CAC C30 L270",
+  "stt_aircraft": {
+    "American 66": {
+      "Callsign": "AAL66",
+      "AircraftType": "A320",
+      "Fixes": {
+        "LaGuardia": "KLGA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "American five 97": {
+      "Callsign": "AAL597",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA",
+        "Yoman": "YOMAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4308,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Brickyard 90 50": {
+      "Callsign": "RPA9050",
+      "AircraftType": "E75S",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3923,
+      "State": "on approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Brickyard 91 63": {
+      "Callsign": "RPA9163",
+      "AircraftType": "E75S",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA",
+        "Yoman": "YOMAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Endeavor 74 80": {
+      "Callsign": "EDV7480",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "LaGuardia": "KLGA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 1542,
+      "State": "on approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "JetBlue 96": {
+      "Callsign": "JBU96",
+      "AircraftType": "A320",
+      "Fixes": {
+        "LaGuardia": "KLGA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 1914,
+      "State": "on approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "JetBlue two 89": {
+      "Callsign": "JBU289",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3223,
+      "State": "on approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"JetBlue Niner Six cancel approach clearance climb and maintain three thousand turn left heading two seven zero\"",
+    "[local-stt] normalized words: [jetblue 9 6 cancel approach clearance climb and maintain 3 thousand turn left heading 2 7 0]",
+    "[local-stt] tokens: 13",
+    "[local-stt]   token[0]: Text=\"jetblue\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"96\" Type=1 Value=96",
+    "[local-stt]   token[2]: Text=\"cancel\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"clearance\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"30\" Type=2 Value=30",
+    "[local-stt]   token[9]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"270\" Type=1 Value=270",
+    "[local-stt] MatchCallsign: 13 tokens, 7 aircraft",
+    "[local-stt]   exact match: \"jetblue 96\" -\u003e \"JBU96\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"JBU96\" SpokenKey=\"JetBlue 96\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"on approach\" Altitude=1914 Fixes=1 Approaches=1 AssignedApproach=\"ILS Runway 22\" LAHSORunways=[13 31]",
+    "[local-stt]   fix: \"LaGuardia\" -\u003e \"KLGA\"",
+    "[local-stt]   approach: \"I L S runway two two\" -\u003e \"I22\"",
+    "[local-stt] command tokens after disregard: 11",
+    "[local-stt]   token[0]: Text=\"cancel\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"clearance\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"climb\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"30\" Type=2 Value=30",
+    "[local-stt]   token[7]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"270\" Type=1 Value=270",
+    "[local-stt]   position ID: found command keyword \"cancel\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 11 tokens",
+    "[local-stt]   matched command: \"CAC\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   matched command: \"C30\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   matched command: \"L270\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[CAC C30 L270] (avgConf=1.00)",
+    "[local-stt] parsed commands: [CAC C30 L270] (conf=1.00)",
+    "[local-stt] validated commands: [CAC C30 L270] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"JBU96 CAC C30 L270\" (conf=1.00, time=1.0025ms) ==="
+  ]
+}

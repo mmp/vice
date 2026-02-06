@@ -120,7 +120,7 @@ func MakeLaunchConfig(dep []DepartureRunway, vfrRateScale float32, vfrAirports m
 		InboundFlowRateScale:        1,
 		ArrivalPushFrequencyMinutes: 20,
 		ArrivalPushLengthMinutes:    10,
-		EmergencyAircraftRate:       2,
+		EmergencyAircraftRate:       0,
 	}
 
 	for icao, ap := range vfrAirports {
@@ -296,7 +296,8 @@ func (s *Sim) SetLaunchConfig(tcw TCW, lc LaunchConfig) error {
 
 	if lc.EmergencyAircraftRate != s.State.LaunchConfig.EmergencyAircraftRate {
 		if lc.EmergencyAircraftRate > 0 {
-			s.NextEmergencyTime = s.State.SimTime.Add(randomInitialWait(lc.EmergencyAircraftRate, s.Rand))
+			delay := max(5*time.Minute, randomInitialWait(lc.EmergencyAircraftRate, s.Rand))
+			s.NextEmergencyTime = s.State.SimTime.Add(delay)
 		} else {
 			s.NextEmergencyTime = time.Time{} // zero time = disabled
 		}
@@ -423,7 +424,7 @@ func (s *Sim) Prespawn() {
 
 	// Prime the pump before the user gets involved
 	s.prespawn = true
-	for i := 0; i < initialSimSeconds; i++ {
+	for i := range initialSimSeconds {
 		// Controlled only at the tail end.
 		s.prespawnUncontrolledOnly = i < initialSimSeconds-initialSimControlledSeconds
 
@@ -438,7 +439,8 @@ func (s *Sim) Prespawn() {
 	s.NextVFFRequest = s.State.SimTime.Add(randomInitialWait(float32(s.State.LaunchConfig.VFFRequestRate), s.Rand))
 
 	if s.State.LaunchConfig.EmergencyAircraftRate > 0 {
-		s.NextEmergencyTime = s.State.SimTime.Add(randomInitialWait(s.State.LaunchConfig.EmergencyAircraftRate, s.Rand))
+		delay := max(5*time.Minute, randomInitialWait(s.State.LaunchConfig.EmergencyAircraftRate, s.Rand))
+		s.NextEmergencyTime = s.State.SimTime.Add(delay)
 	}
 
 	s.lg.Info("finished aircraft prespawn")

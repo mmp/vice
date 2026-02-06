@@ -6,6 +6,7 @@ package platform
 
 // typedef unsigned char uint8;
 // void audioCallback(void *userdata, uint8 *stream, int len);
+// void audioInputCallback(void *userdata, uint8 *stream, int len);
 import "C"
 
 import (
@@ -23,14 +24,16 @@ import (
 )
 
 const AudioSampleRate = 44100
+const AudioInputSampleRate = 16000 // Whisper's native sample rate
 
 type audioEngine struct {
-	pinner   runtime.Pinner
-	effects  []audioEffect
-	speechq  []int16
-	speechcb func()
-	mu       sync.Mutex
-	volume   int
+	pinner        runtime.Pinner
+	effects       []audioEffect
+	speechq       []int16
+	speechcb      func()
+	speechGarbled bool
+	mu            sync.Mutex
+	volume        int
 }
 
 type audioEffect struct {
@@ -64,6 +67,12 @@ func (a *audioEngine) Initialize(lg *log.Logger) {
 	lg.Info("Finished initializing audio")
 }
 
+func (a *audioEngine) Close() {
+	sdl.PauseAudio(true)
+	sdl.CloseAudio()
+	a.pinner.Unpin()
+}
+
 func (a *audioEngine) AddPCM(pcm []byte, rate int) (int, error) {
 	a.mu.Lock()
 	defer a.mu.Unlock()
@@ -95,7 +104,7 @@ func (a *audioEngine) AddMP3(mp3 []byte) (int, error) {
 	}
 }
 
-func (a *audioEngine) TryEnqueueSpeechMP3(mp3 []byte, finished func()) error {
+func (a *audioEngine) TryEnqueueSpeechPCM(pcm []int16, finished func()) error {
 	a.mu.Lock()
 	defer a.mu.Unlock()
 
@@ -103,68 +112,16 @@ func (a *audioEngine) TryEnqueueSpeechMP3(mp3 []byte, finished func()) error {
 		return ErrCurrentlyPlayingSpeech
 	}
 
-	if len(mp3) == 0 {
-		finished()
+	if len(pcm) == 0 {
+		if finished != nil {
+			finished()
+		}
 		return nil
 	}
 
-	if _, pcm, err := minimp3.DecodeFull(mp3); err != nil {
-		return err
-	} else {
-		// Poor man's resampling: repeat each sample rep times to get close
-		// to the standard rate.
-		pcm16 := pcm16FromBytes(pcm)
-		rep := 2
-		pcmr := make([]int16, rep*len(pcm16))
-		for i := range len(pcm16) {
-			for j := range rep {
-				pcmr[rep*i+j] = pcm16[i]
-			}
-		}
-
-		addNoise(pcmr)
-
-		a.speechq = pcmr
-		a.speechcb = finished
-
-		return nil
-	}
-}
-
-func addNoise(pcm []int16) {
-	r := rand.Make()
-	amp := 256 + r.Intn(512)
-	freqs := []int{10 + r.Intn(5), 18 + r.Intn(5)}
-	noises := []int{0, 0}
-	for i, v := range pcm {
-		n := 0
-		for j := range freqs {
-			if i%freqs[j] == 0 {
-				noises[j] = -amp + r.Intn(2*amp)
-			}
-			n += noises[j]
-		}
-
-		pcm[i] = int16(math.Clamp(n+int(v), -32768, 32767))
-	}
-
-	// Random squelch
-	if false && r.Float32() < 0.1 {
-		length := AudioSampleRate/2 + r.Intn(AudioSampleRate/4)
-		freqs := []int{100 + r.Intn(50), 500 + r.Intn(250), 1500 + r.Intn(500), 4000 + r.Intn(1000)}
-		start := r.Intn(4 * len(pcm) / 5)
-		const amp = 20000
-
-		n := min(len(pcm), start+length)
-		for i := start; i < n; i++ {
-			sq := -amp + r.Intn(2*amp)
-			for _, fr := range freqs {
-				sq += int(amp * math.Sin(float32(fr*i)*2*3.14159/AudioSampleRate))
-			}
-			sq /= 1 + len(freqs) // normalize
-			pcm[i] = int16(math.Clamp(int(pcm[i]/4)+sq, -32768, 32767))
-		}
-	}
+	a.speechq = pcm
+	a.speechcb = finished
+	return nil
 }
 
 func (a *audioEngine) SetAudioVolume(vol int) {
@@ -210,6 +167,18 @@ func (a *audioEngine) StopPlayAudio(index int) {
 	a.mu.Unlock()
 }
 
+func (a *audioEngine) SetSpeechGarbled(garbled bool) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	a.speechGarbled = garbled
+}
+
+func (a *audioEngine) IsPlayingSpeech() bool {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	return len(a.speechq) > 0
+}
+
 //export audioCallback
 func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 	n := int(size)
@@ -217,19 +186,29 @@ func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 	a := (*audioEngine)(user)
 
 	accum := make([]int, n/2)
+	var cbToCall func() // Save callback to call after releasing the lock
 
 	a.mu.Lock()
-	defer a.mu.Unlock()
 
 	as := 0 // accum index for speech
+	var r *rand.Rand
+	if a.speechGarbled && len(a.speechq) > 0 {
+		r = rand.Make()
+	}
 	for len(a.speechq) > 0 && as < len(accum) {
-		accum[as] = int(a.speechq[0])
+		sample := int(a.speechq[0])
+		if a.speechGarbled {
+			// Audio ducking: reduce to 25% volume
+			sample = sample / 4
+			// Add loud static noise
+			sample += -4000 + r.Intn(8000)
+		}
+		accum[as] = sample
 		as++
 		a.speechq = a.speechq[1:]
 	}
 	if len(a.speechq) == 0 && as > 0 && a.speechcb != nil {
-		// We finished the speech; call the callback function
-		a.speechcb()
+		cbToCall = a.speechcb // Save callback, don't call yet
 		a.speechcb = nil
 	}
 
@@ -260,4 +239,26 @@ func audioCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
 		out[2*i] = C.uint8(v & 0xff)
 		out[2*i+1] = C.uint8((v >> 8) & 0xff)
 	}
+
+	a.mu.Unlock()
+
+	// Call callback outside lock to prevent deadlock with tm.mu
+	if cbToCall != nil {
+		cbToCall()
+	}
+}
+
+//export audioInputCallback
+func audioInputCallback(user unsafe.Pointer, ptr *C.uint8, size C.int) {
+	n := int(size)
+	in := unsafe.Slice(ptr, n)
+	ar := (*AudioRecorder)(user)
+
+	// Convert bytes to int16 samples
+	samples := make([]int16, n/2)
+	for i := 0; i < n/2; i++ {
+		samples[i] = int16(in[2*i]) | (int16(in[2*i+1]) << 8)
+	}
+
+	ar.addAudioData(samples)
 }

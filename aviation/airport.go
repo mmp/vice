@@ -20,8 +20,6 @@ type Airport struct {
 	Location       math.Point2LL
 	TowerListIndex int `json:"tower_list"`
 
-	Name string `json:"name"`
-
 	Approaches map[string]*Approach `json:"approaches,omitempty"`
 	Departures []Departure          `json:"departures,omitempty"`
 
@@ -342,7 +340,7 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 	splitDepartureRoutes := make(map[string]map[string]*ExitRoute)
 	for rwy, rwyRoutes := range ap.DepartureRoutes {
 		e.Push("Departure runway " + rwy)
-		seenExits := make(map[string]interface{})
+		seenExits := make(map[string]any)
 		splitDepartureRoutes[rwy] = make(map[string]*ExitRoute)
 
 		r, ok := LookupRunway(icao, rwy)
@@ -370,11 +368,15 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 			for i := range route.Waypoints {
 				route.Waypoints[i].OnSID = true
+
+				if route.Waypoints[i].TransferComms {
+					route.WaitToContactDeparture = true
+				}
 			}
 
 			route.Waypoints.CheckDeparture(e, controlPositions, checkScratchpad)
 
-			for _, exit := range strings.Split(exitList, ",") {
+			for exit := range strings.SplitSeq(exitList, ",") {
 				exit = strings.TrimSpace(exit)
 				if _, ok := seenExits[exit]; ok {
 					e.ErrorString("%s: exit repeatedly specified in routes", exit)
@@ -714,10 +716,24 @@ type ExitRoute struct {
 	Waypoints        WaypointArray `json:"waypoints"`
 	Description      string        `json:"description"`
 	IsRNAV           bool          `json:"is_rnav"`
+	HoldForRelease   bool          `json:"hold_for_release"`
 	// optional, control position to handoff to at a /ho
 	HandoffController ControlPosition `json:"handoff_controller"`
 	// optional, the initial tracking controller for the departure.
 	DepartureController ControlPosition `json:"departure_controller"`
+
+	WaitToContactDeparture bool // whether the aircraft waits until a /TC point to contact departure
+}
+
+// FinalHeading returns the final heading from the exit route's waypoints.
+// Returns 0 if no heading waypoint is found.
+func (er ExitRoute) FinalHeading() int {
+	for i := len(er.Waypoints) - 1; i >= 0; i-- {
+		if er.Waypoints[i].Heading != 0 {
+			return er.Waypoints[i].Heading
+		}
+	}
+	return 0
 }
 
 type Departure struct {

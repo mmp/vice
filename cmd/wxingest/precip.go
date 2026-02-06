@@ -118,12 +118,12 @@ func processPrecip(sb StorageBackend, path string) (int64, string, error) {
 		Longitude:  wxs.Longitude,
 	}
 
-	tracon, _, ok := strings.Cut(strings.TrimPrefix(path, "scrape/WX/"), "/")
+	facilityID, _, ok := strings.Cut(strings.TrimPrefix(path, "scrape/WX/"), "/")
 	if !ok {
-		return 0, "", fmt.Errorf("%s: unexpected format; can't find TRACON", path)
+		return 0, "", fmt.Errorf("%s: unexpected format; can't find facility ID", path)
 	}
 
-	objpath := fmt.Sprintf("precip/%s/%s.msgpack.zst", tracon, t.Format(time.RFC3339))
+	objpath := fmt.Sprintf("precip/%s/%s.msgpack.zst", facilityID, t.Format(time.RFC3339))
 
 	n, err := sb.StoreObject(objpath, wxp)
 	if err != nil {
@@ -149,12 +149,21 @@ func generateMonthlyManifests(sb StorageBackend, months map[string]bool) error {
 		sem := make(chan struct{}, 16)
 		eg := errgroup.Group{}
 
+		// Process both TRACONs and ARTCCs
+		var facilities []string
 		for tracon := range av.DB.TRACONs {
+			facilities = append(facilities, tracon)
+		}
+		for artcc := range av.DB.ARTCCs {
+			facilities = append(facilities, artcc)
+		}
+
+		for _, facilityID := range facilities {
 			eg.Go(func() error {
 				sem <- struct{}{}
 				defer func() { <-sem }()
 
-				prefix := fmt.Sprintf("precip/%s/%s-", tracon, month)
+				prefix := fmt.Sprintf("precip/%s/%s-", facilityID, month)
 				files, err := sb.List(prefix)
 				if err != nil {
 					return fmt.Errorf("failed to list files for %s: %w", prefix, err)
@@ -180,7 +189,7 @@ func generateMonthlyManifests(sb StorageBackend, months map[string]bool) error {
 				mu.Lock()
 				defer mu.Unlock()
 
-				if err := manifest.SetTRACONTimestamps(tracon, timestamps); err != nil {
+				if err := manifest.SetFacilityTimestamps(facilityID, timestamps); err != nil {
 					return err
 				}
 

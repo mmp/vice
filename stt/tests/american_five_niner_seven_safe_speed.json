@@ -1,0 +1,142 @@
+{
+  "time": "2026-01-31T15:42:00.252862985Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "American Five Niner Seven safe speed",
+  "whisper_duration_ms": 78.542,
+  "audio_duration_ms": 2120,
+  "processor": "GPU: NVIDIA GeForce RTX 5080 (15977MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "AAL597",
+  "command": "SS",
+  "stt_aircraft": {
+    "American 66": {
+      "Callsign": "AAL66",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 2951,
+      "State": "on approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "American five 97": {
+      "Callsign": "AAL597",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA",
+        "Yoman": "YOMAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Brickyard 67 47": {
+      "Callsign": "RPA6747",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA",
+        "Yoman": "YOMAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"American Five Niner Seven safe speed\"",
+    "[local-stt] normalized words: [american 5 9 7 safe speed]",
+    "[local-stt] tokens: 4",
+    "[local-stt]   token[0]: Text=\"american\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"597\" Type=1 Value=597",
+    "[local-stt]   token[2]: Text=\"safe\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 4 tokens, 3 aircraft",
+    "[local-stt]   candidate \"American 66\" (ICAO=\"AAL66\"): score=0.80 consumed=2",
+    "[local-stt]   candidate \"Brickyard 67 47\" (ICAO=\"RPA6747\"): score=0.52 consumed=2",
+    "[local-stt]   candidate \"American five 97\" (ICAO=\"AAL597\"): score=1.10 consumed=2",
+    "[local-stt]   candidate \"American five 97\" at pos 1: score=0.80 (adjusted=0.72) consumed=1",
+    "[local-stt]   accepted: \"AAL597\" (conf=1.10, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"AAL597\" SpokenKey=\"American five 97\" Conf=1.10 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=5000 Fixes=3 Approaches=1 AssignedApproach=\"ILS Runway 22\" LAHSORunways=[13 31]",
+    "[local-stt]   fix: \"Yoman\" -\u003e \"YOMAN\"",
+    "[local-stt]   fix: \"Greko\" -\u003e \"GREKO\"",
+    "[local-stt]   fix: \"LaGuardia\" -\u003e \"KLGA\"",
+    "[local-stt]   approach: \"I L S runway two two\" -\u003e \"I22\"",
+    "[local-stt] command tokens after disregard: 2",
+    "[local-stt]   token[0]: Text=\"safe\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"speed\" at position 1 - not just position ID",
+    "[local-stt] ParseCommands: 2 tokens",
+    "[local-stt]   matched command: \"SS\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[SS] (avgConf=1.00)",
+    "[local-stt] parsed commands: [SS] (conf=1.00)",
+    "[local-stt] validated commands: [SS] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"AAL597 SS\" (conf=1.10, time=0s) ==="
+  ]
+}

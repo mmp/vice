@@ -5,7 +5,6 @@
   "airports": {
     "KMCO": {
       "departure_controller": "Orlando Departure",
-      "name": "Orlando",
       "approaches": {
         "R6L": {
           "cifp_id": "R36L"
@@ -278,7 +277,6 @@
     },
     "KSFB": {
       "departure_controller": "Orlando Departure",
-      "name": "Sanford",
       "departure_routes": {
         "9L": {
           "WORMS": {
@@ -366,7 +364,6 @@
     },
     "KDAB": {
       "departure_controller": "Orlando Departure",
-      "name": "Daytona",
       "departure_routes": {
         "7L": {
           "CRG": {
@@ -423,7 +420,6 @@
     },
     "KJAX": {
       "departure_controller": "Orlando Departure",
-      "name": "Daytona",
       "approaches": {
         "IY8": {
           "cifp_id": "IY8"
@@ -1223,9 +1219,8 @@
         }
       }
     },
-
     "center": "28J",
-    "range": 50000,
+    "range": 80,
     "stars_maps": [
       "BOUND",
       "ZJX LO",

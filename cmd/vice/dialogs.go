@@ -128,6 +128,12 @@ type ModalDialogClient interface {
 	Draw() int /* returns index of equivalently-clicked button; out of range if none */
 }
 
+// FixedSizeDialogClient is an optional interface that dialog clients can implement
+// to specify a fixed window size instead of auto-resizing based on content.
+type FixedSizeDialogClient interface {
+	FixedSize() [2]float32 // Returns [width, height] in pixels (before DPI scaling)
+}
+
 func NewModalDialogBox(c ModalDialogClient, p platform.Platform) *ModalDialogBox {
 	return &ModalDialogBox{client: c, platform: p}
 }
@@ -140,11 +146,22 @@ func (m *ModalDialogBox) Draw() {
 	title := fmt.Sprintf("%s##%p", m.client.Title(), m)
 	imgui.OpenPopupStr(title)
 
-	flags := imgui.WindowFlagsNoResize | imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
 	dpiScale := util.Select(runtime.GOOS == "windows", m.platform.DPIScale(), float32(1))
 	windowSize := m.platform.WindowSize()
-	maxHeight := float32(windowSize[1]) * 19 / 20
-	imgui.SetNextWindowSizeConstraints(imgui.Vec2{dpiScale * 850, dpiScale * 100}, imgui.Vec2{-1, maxHeight})
+
+	// Check if client wants a fixed size window
+	var flags imgui.WindowFlags
+	if fixedSize, ok := m.client.(FixedSizeDialogClient); ok {
+		// Fixed size dialog - don't auto-resize
+		flags = imgui.WindowFlagsNoResize | imgui.WindowFlagsNoSavedSettings | imgui.WindowFlagsNoScrollbar
+		size := fixedSize.FixedSize()
+		imgui.SetNextWindowSize(imgui.Vec2{dpiScale * size[0], dpiScale * size[1]})
+	} else {
+		// Auto-resize dialog with constraints
+		flags = imgui.WindowFlagsNoResize | imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
+		maxHeight := float32(windowSize[1]) * 19 / 20
+		imgui.SetNextWindowSizeConstraints(imgui.Vec2{dpiScale * 850, dpiScale * 100}, imgui.Vec2{-1, maxHeight})
+	}
 
 	// Position the window near the top of the screen to ensure it doesn't extend below the bottom
 	// Use a small margin from the top (5% of screen height)
@@ -655,14 +672,14 @@ func (e *ErrorModalClient) Draw() int {
 	return -1
 }
 
-func ShowErrorDialog(p platform.Platform, lg *log.Logger, s string, args ...interface{}) {
+func ShowErrorDialog(p platform.Platform, lg *log.Logger, s string, args ...any) {
 	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)}, p)
 	uiShowModalDialog(d, true)
 
 	lg.Errorf(s, args...)
 }
 
-func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logger, s string, args ...interface{}) {
+func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logger, s string, args ...any) {
 	lg.Errorf(s, args...)
 
 	d := NewModalDialogBox(&ErrorModalClient{message: fmt.Sprintf(s, args...)}, p)
@@ -683,4 +700,162 @@ func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logg
 		p.PostRender()
 	}
 	os.Exit(1)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// WhisperBenchmarkModalClient - shows progress while whisper model benchmark runs
+
+type WhisperBenchmarkModalClient struct {
+	mgr         *client.ConnectionManager
+	lg          *log.Logger
+	allowCancel bool
+	platform    platform.Platform
+	config      *Config
+}
+
+func (w *WhisperBenchmarkModalClient) Title() string {
+	return "Initializing Speech Recognition"
+}
+
+func (w *WhisperBenchmarkModalClient) Opening() {}
+
+func (w *WhisperBenchmarkModalClient) Buttons() []ModalDialogButton {
+	// No buttons - dialog auto-closes when benchmark completes
+	return nil
+}
+
+func (w *WhisperBenchmarkModalClient) Draw() int {
+	imgui.Text("\nBenchmarking whisper models to find the best one for your system...\n\n")
+
+	status := client.GetWhisperBenchmarkStatus()
+	if status != "" {
+		imgui.Text("Status: ")
+		imgui.SameLine()
+		imgui.TextColored(imgui.Vec4{X: 0.5, Y: 0.8, Z: 0.5, W: 1}, status)
+	}
+
+	imgui.Text("\n")
+
+	// Check if benchmark is done
+	if !client.IsWhisperBenchmarking() {
+		// Show connect dialog now
+		uiShowConnectDialog(w.mgr, w.allowCancel, w.config, w.platform, w.lg)
+		return 0 // Close this dialog
+	}
+
+	return -1
+}
+
+// uiShowConnectOrBenchmarkDialog shows the benchmark progress dialog if actual benchmarking
+// is in progress, otherwise shows the normal connect dialog.
+func uiShowConnectOrBenchmarkDialog(mgr *client.ConnectionManager, allowCancel bool, config *Config, p platform.Platform, lg *log.Logger) {
+	if client.IsWhisperBenchmarking() {
+		// Show benchmark progress dialog first
+		benchClient := &WhisperBenchmarkModalClient{
+			mgr:         mgr,
+			lg:          lg,
+			allowCancel: allowCancel,
+			platform:    p,
+			config:      config,
+		}
+		uiShowModalDialog(NewModalDialogBox(benchClient, p), false)
+	} else {
+		// Not benchmarking, show connect dialog directly
+		uiShowConnectDialog(mgr, allowCancel, config, p, lg)
+	}
+}
+
+// WaitForWhisperBenchmark blocks with a progress dialog until whisper benchmark completes.
+// This runs its own mini event loop before the main loop starts, similar to ShowFatalErrorDialog.
+// Only shows dialog if actual benchmarking is in progress (not when loading a cached model).
+func WaitForWhisperBenchmark(r renderer.Renderer, p platform.Platform, lg *log.Logger) {
+	// Only show dialog if we're actually benchmarking, not just loading a cached model
+	if !client.IsWhisperBenchmarking() {
+		return
+	}
+
+	// Create a simple modal client that just shows benchmark progress
+	benchClient := &benchmarkWaitModalClient{}
+	d := NewModalDialogBox(benchClient, p)
+
+	for client.IsWhisperBenchmarking() {
+		p.ProcessEvents()
+		p.NewFrame()
+		imgui.NewFrame()
+		imgui.PushFont(&ui.font.Ifont)
+		d.Draw()
+		imgui.PopFont()
+
+		imgui.Render()
+		var cb renderer.CommandBuffer
+		renderer.GenerateImguiCommandBuffer(&cb, p.DisplaySize(), p.FramebufferSize(), lg)
+		r.RenderCommandBuffer(&cb)
+
+		p.PostRender()
+
+		// Small sleep to avoid busy-waiting
+		time.Sleep(16 * time.Millisecond)
+	}
+}
+
+// benchmarkWaitModalClient is a simple modal client for the blocking benchmark wait dialog
+type benchmarkWaitModalClient struct{}
+
+func (b *benchmarkWaitModalClient) Title() string {
+	return "Initializing Speech Recognition"
+}
+
+func (b *benchmarkWaitModalClient) Opening() {}
+
+func (b *benchmarkWaitModalClient) Buttons() []ModalDialogButton {
+	return nil
+}
+
+func (b *benchmarkWaitModalClient) Draw() int {
+	imgui.Text("\nBenchmarking whisper models to find the best one for your system...\n\n")
+
+	status := client.GetWhisperBenchmarkStatus()
+	if status != "" {
+		imgui.Text("Status: ")
+		imgui.SameLine()
+		imgui.TextColored(imgui.Vec4{X: 0.5, Y: 0.8, Z: 0.5, W: 1}, status)
+	}
+
+	imgui.Text("\n")
+	return -1
+}
+
+// rebenchmarkModalClient is used when the user triggers a re-benchmark from settings
+type rebenchmarkModalClient struct {
+	config *Config
+	lg     *log.Logger
+}
+
+func (r *rebenchmarkModalClient) Title() string {
+	return "Re-benchmarking Speech Recognition"
+}
+
+func (r *rebenchmarkModalClient) Opening() {}
+
+func (r *rebenchmarkModalClient) Buttons() []ModalDialogButton {
+	return nil
+}
+
+func (r *rebenchmarkModalClient) Draw() int {
+	imgui.Text("\nRe-benchmarking whisper models...\n\n")
+
+	status := client.GetWhisperBenchmarkStatus()
+	if status != "" {
+		imgui.Text("Status: ")
+		imgui.SameLine()
+		imgui.TextColored(imgui.Vec4{X: 0.5, Y: 0.8, Z: 0.5, W: 1}, status)
+	}
+
+	imgui.Text("\n")
+
+	// Close when benchmarking completes
+	if !client.IsWhisperBenchmarking() {
+		return 0
+	}
+	return -1
 }

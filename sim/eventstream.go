@@ -28,7 +28,7 @@ type EventSubscriberId int
 type EventStream struct {
 	mu            sync.Mutex
 	events        []Event
-	subscriptions map[*EventsSubscription]interface{}
+	subscriptions map[*EventsSubscription]any
 	lastPost      time.Time
 	warnedLong    bool
 	done          chan struct{}
@@ -58,7 +58,7 @@ func (e *EventsSubscription) PostEvent(event Event) {
 
 func NewEventStream(lg *log.Logger) *EventStream {
 	es := &EventStream{
-		subscriptions: make(map[*EventsSubscription]interface{}),
+		subscriptions: make(map[*EventsSubscription]any),
 		lastPost:      time.Now(),
 		done:          make(chan struct{}),
 		lg:            lg,
@@ -261,6 +261,9 @@ const (
 	RecalledPointOutEvent
 	FlightPlanAssociatedEvent
 	FixCoordinatesEvent
+	STTCommandEvent
+	FlightPlanDirectEvent
+	TTSPlaybackStartedEvent
 	NumEventTypes
 )
 
@@ -270,7 +273,8 @@ func (t EventType) String() string {
 		"RejectedHandoff", "RadioTransmission", "StatusMessage", "ErrorMessage",
 		"ServerBroadcastMessage", "GlobalMessage", "AcknowledgedPointOut", "RejectedPointOut",
 		"HandoffControl", "SetGlobalLeaderLine", "ForceQL", "TransferAccepted", "TransferRejected",
-		"RecalledPointOut", "FlightPlanAssociated"}[t]
+		"RecalledPointOut", "FlightPlanAssociated", "FixCoordinates", "STTCommand", "FlightPlanDirect",
+		"TTSPlaybackStarted"}[t]
 }
 
 type Event struct {
@@ -279,11 +283,17 @@ type Event struct {
 	ACID                  ACID
 	FromController        ControlPosition
 	ToController          ControlPosition // For radio transmissions, the controlling controller.
+	DestinationTCW        TCW             // The TCW that should receive this transmission's TTS
 	WrittenText           string
 	SpokenText            string
 	RadioTransmissionType av.RadioTransmissionType       // For radio transmissions only
 	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent
 	WaypointInfo          []math.Point2LL
+	STTTranscript         string
+	STTCommand            string
+	STTTimings            string
+	Route                 av.WaypointArray // For QU
+	TTSLatencyMs          int              // For TTSPlaybackStartedEvent: latency from PTT release to playback start
 }
 
 func (e *Event) String() string {

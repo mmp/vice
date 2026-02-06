@@ -104,7 +104,8 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#draw-routes">Drawing Routes</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#launches">Launching Aircraft</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#multi-controller">Multiple Controllers</a></li>
-	  <li class="nav-item"><a class="nav-link scrollto" href="#atc-commands">ATC Instructions</a></li>
+	  <li class="nav-item"><a class="nav-link scrollto" href="#atc-commands">ATC Instructions (Keyboard)</a></li>
+	  <li class="nav-item"><a class="nav-link scrollto" href="#atc-commands-spoken">ATC Instructions (Spoken)</a></li>
 
 	  <li class="nav-item section-title mt-3"><a class="nav-link scrollto" href="#section-installation"><span class="theme-icon-holder me-2"><i class="fas fa-arrow-down"></i></span>Installation</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#install-windows">Windows</a></li>
@@ -113,13 +114,11 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#bugs">Reporting Bugs</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#releases">Release History</a>
 	    <ul class="submenu">
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.0">0.14.0</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.3">0.13.3</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.2">0.13.2</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.1">0.13.1</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.0">0.13.0</a></li>
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.2">0.12.2</a></li>
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.1">0.12.1</a></li>
-	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.12.0">0.12.0</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-earlier">Earlier Releases</a></li>
 	    </ul>
 	  </li>
@@ -545,7 +544,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
           </section>
 
 	  <section class="docs-section" id="atc-commands">
-            <h2 class="section-heading">ATC Instructions</h2>
+            <h2 class="section-heading">ATC Instructions (Keyboard)</h2>
 
             <p>A variety of instructions can be issued to aircraft by an aircraft controller.
               To issue an instruction, first press the <code>[TAB]</code> key.
@@ -804,6 +803,21 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                     <td><code>SMAX</code></td>
                   </tr>
                   <tr>
+                    <td><code>SPRES</code></td>
+                    <td>Instructs the aircraft to maintain its present speed.</td>
+                    <td><code>SPRES</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>S</code><i>kts</i><code>+</code></td>
+                    <td>Assigns a speed floor: aircraft should fly at or above the specified speed. Currently treated as a standard speed assignment.</td>
+                    <td><code>S180+</code></td>
+                  </tr>
+                  <tr>
+                    <td><code>S</code><i>kts</i><code>-</code></td>
+                    <td>Assigns a speed ceiling: aircraft should not exceed the specified speed. Currently treated as a standard speed assignment.</td>
+                    <td><code>S180-</code></td>
+                  </tr>
+                  <tr>
                     <td><code>SS</code></td>
                     <td>Directs the aircraft to say its indicated airspeed.</td>
                     <td><code>SS</code></td>
@@ -919,6 +933,13 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                     <td><code>AROSLY/C</code></td>
                   </tr>
                   <tr>
+                    <td><code>A</code><i>fix</i><code>/I</code></td>
+                    <td>Directs the aircraft to intercept the localizer when
+                    it passes the given fix. The aircraft must have been told
+                    to expect an approach before this command is given.</td>
+                    <td><code>AROSLY/I</code></td>
+                  </tr>
+                  <tr>
                     <td><code>CAC</code></td>
                     <td>Cancels approach clearance for an aircraft.</td>
                     <td><code>CAC</code></td>
@@ -968,7 +989,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                   </tr>
                   <tr>
                     <td><code>GA</code></td>
-                    <td>"Go ahead" - respond to an abbreviated VFR flight following request.</td>
+                    <td>"Go ahead" - respond to a VFR request.</td>
                     <td><code>GA</code></td>
                   </tr>
                 </tbody>
@@ -1010,6 +1031,357 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
 
 	    </section><!--//docs-intro-->
 
+	  <section class="docs-section" id="atc-commands-spoken">
+            <h2 class="section-heading">ATC Instructions (Spoken)</h2>
+
+            <p>There is also support for issuing aircraft commands by speaking out loud (via
+              <i>speech to text</i>, or STT).
+              This is very much a work in progress but it is progressing quickly.
+            </p>
+            <p>STT works best if you have a decent microphone and are not in a noisy environment
+              (music or TV in the background, etc.)
+              Results will generally be better if you have a discrete GPU in your computer (or
+              a laptop with a powerful laptop GPU); parts of STT run on the GPU and in able to
+              have good response times on machines with slower (or no) GPUs, we're able to do
+              less processing on spoken text and thus have more inaccurate transcriptions in
+              that case.
+            </p>
+            <p>A few options related to STT may be controlled via the settings menu (<i class="fas fa-cog"></i> in the menubar):</p>
+<div class="text-center">
+<img src="stt-settings.png" srcset="stt-settings-2x.png 2x" width="380" height="166">
+</div><br>
+            <p>It's important to make sure that the correct microphone is selected, if you have more than one (e.g. a headset and the built-in microphone).
+              By default, the push-to-talk key is <code>;</code>, though this can be changed to another key.
+              The model allows selection of different speech-to-text transcription models; <i>vice</i> tries to choose one that gives
+              a reasonable balance of accuracy and speed for your system.
+              If you try a different model and are happier with the overall experience, please report your findings on the <i>vice</i> discord!
+            </p>
+            <p><i>vice</i>'s STT system expects that proper (US FAA) phraseology will be used
+              to issue aircraft instructions, specifically <a href="https://www.faa.gov/air_traffic/publications/atpubs/atc_html/chap2_section_4.html">Section 2-4: Radio and Interphone Communications</a> for the basics and then other instructions as specified in the 7110.65.
+              It tries to be flexible to allow minor deviations
+              as are used in practice (as well as to allow errors in the STT transcription of the
+              audio), but if your phraseology is highly non-standard, you will likely not have
+              a good experience.
+            </p>
+            <p>STT is also mostly limited to the control commands that <i>vice</i> supports in general
+              (i.e., those described in the <a href="#atc-commands">previous section</a>), though
+                there are a few commands that are STT-only. More details about expected phraseology
+                and supported commands in specific scenarios are in the following.
+            </p>
+            <p>The following instructions are currently supported:
+            </p>
+            <h3>Altitude</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width:20%">Type</th>
+                    <th>Phraseology</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Assign Altitude</td>
+                  <td>
+                    <i>Maintain (altitude)</i> /  <i>Descend and maintain (altitude)</i> /  <i>Climb and maintain (altitude)</i> / 
+                    <i>Altitude your discretion</i> (for VFRs).
+                  </td>
+                  </tr>
+                  <tr><td>Altitude at Fix</td>
+                  <td>
+                    <i>Cross (fix) at (altitude)</i> /  <i>Cross (fix) at or above (altitude)</i>
+                  </td>
+                  </tr>
+                  <tr><td>Altitude after Speed</td>
+                  <td>
+                    <i>...then climb and maintain (altitude)</i> /  <i>...then descend and maintain (altitude)</i>, after a speed assignment&mdash;the aircraft will climb/descend after reaching the speed.
+                  </td>
+                  </tr>
+                  <tr><td>Expedite Altitude</td>
+                  <td>
+                    <i>Expedite descent</i> /  <i>Expedite climb</i>
+                  </td>
+                  </tr>
+                  <tr><td>Say Altitude</td>
+                  <td>
+                    <i>Say altitude</i>
+                  </td>
+                  </tr>
+                </tbody>
+              </table>
+            <h3>SIDs and STARs</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width:20%">Type</th>
+                    <th>Phraseology</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Climb/Descend Via</td>
+                  <td>
+                    <i>Climb via the (SID)</i> /  <i>Climb via SID</i> /  <i>Descend via the (STAR)</i> /  <i>Descend via STAR</i>
+                  </td>
+                  </tr>
+                </tbody>
+              </table>
+            <h3>Lateral Navigation</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width:20%">Type</th>
+                    <th>Phraseology</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Heading</td>
+                  <td>
+                    <i>Turn left heading (heading)</i> /  <i>Turn right heading (heading)</i> / 
+                    <i>Fly heading (heading)</i>
+                  </td>
+                  </tr>
+                  <tr><td>Present Heading</td>
+                  <td>
+                    <i>Fly present heading</i>
+                  </td>
+                  </tr>
+                  <tr><td>Turn Degrees</td>
+                  <td>
+                    <i>Turn (number) degrees left</i> /  <i>Turn (number) degrees right</i>
+                  </td>
+                  </tr>
+                  <tr><td>Say Heading</td>
+                  <td>
+                    <i>Say heading</i>
+                  </td>
+                  </tr>
+                </tbody>
+              </table>
+            <h3>Speed</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width:20%">Type</th>
+                    <th>Phraseology</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Assign Speed</td>
+                  <td>
+                    <i>Reduce speed to (speed)</i> /  <i>Slow to (speed)</i> /  <i>Increase speed to (speed)</i> / 
+                    <i>Speed (speed)</i> /  <i>Maintain (speed) knots</i>
+                  </td>
+                  </tr>
+                  <tr><td>Speed at Fix</td>
+                  <td>
+                    <i>Cross (fix) at (speed) knots</i>
+                  </td>
+                  </tr>
+                  <tr><td>Speed after Altitude</td>
+                  <td>
+                    <i>...then reduce speed to (speed)</i> / <i>...then increase speed to (speed)</i> / <i>...then speed (speed)</i> /
+                    <i>at (altitude), increase/reduce speed to (speed)</i>:
+                    after an altitude assignment, then the speed adjustment will be made after the aircraft reaches the altitude.
+                  </td>
+                  </tr>
+                  <tr><td>Minimum/Maximum Speed</td>
+                  <td>
+                    <i>Slowest practical speed</i> /  <i>Slow to minimum practical speed</i> / 
+                    <i>Maximum forward speed</i> /  <i>Best forward speed</i> / 
+                    <i>Reduce to final approach speed</i>
+                  </td>
+                  </tr>
+                  <tr><td>Cancel Speed</td>
+                  <td>
+                    <i>Cancel speed restrictions</i> /  <i>Resume normal speed</i> / <i>Speed your discretion</i> /
+                    <i>Comply with speed restrictions</i> / <i>Delete speed restrictions</i> / <i>No speed restrictions</i>
+                  </td>
+                  </tr>
+                  <tr><td>Maintain Present Speed</td>
+                  <td>
+                    <i>Maintain present speed</i> / <i>Present speed</i>
+                  </td>
+                  </tr>
+                  <tr><td>Speed Or Greater</td>
+                  <td>
+                    <i>Maintain (speed) or greater</i> / <i>(speed) or better</i>
+                  </td>
+                  </tr>
+                  <tr><td>Do Not Exceed</td>
+                  <td>
+                    <i>Do not exceed (speed)</i>
+                  </td>
+                  </tr>
+                  <tr><td>Say Speed</td>
+                  <td>
+                    <i>Say speed</i> /  <i>Say airspeed</i>
+                  </td>
+                  </tr>
+                </tbody>
+              </table>
+            <h3>Altitude</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width:20%">Type</th>
+                    <th>Phraseology</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Direct to Fix</td>
+                  <td>
+                    <i>Direct (fix)</i> /  <i>Proceed direct (fix)</i> /  <i>Cleared direct (fix)</i>
+                  </td>
+                  </tr>
+                  <tr><td>Depart Fix</td>
+                  <td>
+                    <i>Depart (fix) heading (heading)</i>
+                  </td>
+                  </tr>
+                  <tr><td>Hold</td>
+                  <td>
+                    <i>Hold at (fix)</i> /  <i>Hold (direction) of (fix)</i> /  <i>Hold at (fix) as published</i>
+                  </td>
+                  </tr>
+                </tbody>
+              </table>
+            <h3>Approaches</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width:20%">Type</th>
+                    <th>Phraseology</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Expect Approach</td>
+                  <td>
+                    <i>Expect (approach)</i> /  <i>Vectors (approach)</i> /  <i>Vectors for (approach)</i>. The approach specified may include a LAHSO, e.g. "expect ILS runway 22 left approach, land and hold short runway 31 left".
+                  </td>
+                  </tr>
+                  <tr><td>Cleared Approach</td>
+                  <td>
+                    <i>Cleared (approach)</i> /  <i>Cleared straight in (approach)</i> /  <i>At (fix) cleared (approach)</i>. Note: a speed assignment after an approach clearance is interpreted as until 5 DME.
+                  </td>
+                  </tr>
+                  <tr><td>Intercept Localizer</td>
+                  <td>
+                    <i>Intercept the localizer</i> /  <i>Join the localizer</i> /  <i>At (fix) intercept the localizer</i>
+                  </td>
+                  </tr>
+                  <tr><td>Cancel Approach</td>
+                  <td>
+                    <i>Cancel approach clearance</i>
+                  </td>
+                </tbody>
+              </table>
+            <h3>VFR Aircraft</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width:20%">Type</th>
+                    <th>Phraseology</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Squawk Beacon Code</td>
+                  <td>
+                    <i>Squawk (code)</i>
+                  </td>
+                  </tr>
+                  <tr><td>Ident</td>
+                  <td>
+                    <i>Ident</i>
+                  </td>
+                  </tr>
+                  <tr><td>Transponder Mode</td>
+                  <td>
+                    <i>Squawk standby</i> /  <i>Squawk altitude</i> /  <i>Squawk normal</i>
+                  </td>
+                  </tr>
+                  <tr><td>Go Ahead / Say Request</td>
+                  <td>
+                    <i>Go ahead</i> / <i>Say request</i> (after a VFR request)
+                  </td>
+                  </tr>
+                  <tr><td>Resume Own Navigation</td>
+                  <td>
+                    <i>Resume own navigation</i>
+                  </td>
+                  </tr>
+                  <tr><td>Radar Services Terminated</td>
+                  <td>
+                    <i>Radar services terminated, frequency change approved</i>
+                  </td>
+                  </tr>
+                </tbody>
+              </table>
+            <h3>Handoffs</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width:20%">Type</th>
+                    <th>Phraseology</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Contact Tower</td>
+                  <td>
+                    <i>Contact tower</i> /  <i>Contact (facility) tower (frequency)</i>
+                  </td>
+                  </tr>
+                  <tr><td>Frequency Change</td>
+                  <td>
+                    <i>Contact (facility) (frequency)</i>
+                  </td>
+                  </tr>
+                </tbody>
+              </table>
+            <h3>Traffic Calls</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width:20%">Type</th>
+                    <th>Phraseology</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Traffic Advisory</td>
+                  <td>
+                    <i>Traffic (o'clock), (miles), (aircraft type), (altitude)</i> / <i>Traffic (o'clock), (miles), (aircraft type), (altitude), report in sight</i>
+                  </td>
+                  </tr>
+                  <tr><td>Visual Separation</td>
+                  <td>
+                    <i>Maintain visual separation from the traffic</i> (after traffic has been reported in sight).
+                  </td>
+                  </tr>
+                </tbody>
+              </table>
+            <h3>Corrections</h3>
+              <p>If STT misidentifies the callsign and sends a command to the wrong aircraft, you can
+                correct it by saying "negative, that was for (correct callsign)" followed by the
+                command for the correct aircraft. This will undo the command sent to the wrong aircraft
+                and apply the new command to the correct one. Do not repeat the wrong aircraft's callsign&mdash;this
+                avoids confusing them.
+              </p>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width:20%">Type</th>
+                    <th>Phraseology</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Callsign Correction</td>
+                  <td>
+                    <i>Negative, that was for (callsign). (Callsign), (command)</i>&mdash;e.g., "Negative, that was for Delta 456. Delta 456, turn left heading 270."
+                    This undoes the previous command (which went to the wrong aircraft) and issues the new command to the correct aircraft.
+                  </td>
+                  </tr>
+                </tbody>
+              </table>
+
+	  </section><!--//docs-intro-->
+
         </article>
 
         <article class="docs-article" id="section-installation">
@@ -1017,7 +1389,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
             <h1 class="docs-heading">Installation</h1>
 
             <section class="docs-intro">
-              <p>Installing <i>vice</i> is straightforward, at least on Windows and Macs; on Linux, you need to do a little more work.
+              <p>Installing <i>vice</i> is straightforward on Windows, Mac, and Linux!
               </p>
             </section><!--//docs-intro-->
           </header>
@@ -1051,10 +1423,12 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
 
           <section class="docs-section" id="install-linux">
             <h2 class="section-heading"><i class="fa-brands fa-linux"></i> Linux</h2>
-
-            <p>On Linux systems, it is necessary to install <i>vice</i> from source.
-              See the <a href="https://github.com/mmp/vice#building-vice">directions on building vice on Linux</a> in the source code distribution for details.
-              </p>
+            <p><i>Vice</i> is packaged as a flatpak and published to flathub.
+                Install it directly from GNOME Software/KDE Discover or follow the instructions from flathub.
+                Run it from your application launcher or by running <code>flatpak run io.github.mmp.Vice</code>.</p>
+            <a href='https://flathub.org/en/apps/io.github.mmp.Vice'>
+              <img width='240' alt='Get it on Flathub' src='https://flathub.org/api/badge?locale=en'>
+            </a>
           </section><!--//section-->
 
           <section class="docs-section" id="bugs">
@@ -1073,6 +1447,39 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
+            <h3 id="release-0.14.0">0.14.0 (TBD)</h3>
+            <ul>
+              <li>Added speech-to-text support (Michael Trokel / Matt P)</li>
+              <li>New Scenarios: ZLC Area C (JY_SUPn't), ZJX 30 (Jake Magee), CVG (manaphy), ZDV Area 3 (Andrew S)</li>
+              <li>Scenario updates: BOS, ACK, MHT (radarcontacto), P50 (Ketan K), COS (Andrew S), BGR (Ryan G), M98 (Logan S), F11, ZJX 50 (Jud Lopez), DAB, F11 (Michael Knight), MIA (Gecko)</li>
+              <li>Added search box to filter scenarios</li>
+              <li>Improved pilot readbacks to be more natural / cohesive</li>
+              <li>VFRs are better about not flying into terrain (and staying out of the flight levels)</li>
+              <li>Added "at fix, intercept the localizer" command: <code>AFIX/I</code></li>
+              <li>Fixed bug with multi-controller scenarios where controllers could be locked out of issuing aircraft commands.</li>
+              <li>STARS:
+                <ul>
+                  <li>Fixed bug where interfacility handoffs would get a FORMAT error</li>
+                  <li>Fixed keyboard input for DCB button values (e.g. RANGE)</li>
+                </ul>
+              </li>
+              <li>ERAM:
+                <ul>
+                  <li>Added QF and QU commands</li>
+                  <li>Added tearoffs, cursors, and clock</li>
+                  <li>Added HSF data</li>
+                  <li>Switched tertiary/primary mouse clicks to primary/secondary</li>
+                </ul>
+              </li>
+              <li>Facility engineering:
+                <ul>
+                  <li>Headings leaving fixes in routes can be specified to be left or right turns: <code>PUCKY/L320</code>, <code>ROSLY/R250</code>, etc. (Xavier Caldwell)</li>
+                  <li>Specific routes (not just the entire airport) can be marked hold for release</li>
+                  <li>Departures' contact location can be defined in routes</li>
+                </ul>
+              </li>
+            </ul>
+            
             <h3 id="release-0.13.3">0.13.3 (29 Dec 2025)</h3>
             <ul>
               <li>New scenarios: PCT consolidated (Ketan K), MYR (Jud Lopez)</li>
@@ -1213,10 +1620,14 @@ how it simulates aircraft or the STARS interface.
                   <li>Added crc2vice-eram command</li>
                 </ul>
               </li>
-                
-              
             </ul>
-
+                
+            <div id="release-earlier" class="container">
+              <button id="toggleButton">🔍 Show Earlier Releases</button>
+              <br>
+            <div id="hiddenText" style="display:none;">
+              <br>
+          
             <h3 id="release-0.12.2">0.12.2 (29 August 2025)</h3>
             <ul>
               <li>Scenario update: MIA (Connor Allen)</li>
@@ -1315,12 +1726,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </ul>
               </li>
             </ul>
-
-            <div id="release-earlier" class="container">
-              <button id="toggleButton">🔍 Show Earlier Releases</button>
-              <br>
-            <div id="hiddenText" style="display:none;">
-              <br>
 
             <h3 id="release-0.11.10">0.11.10 (15 April 2025)</h3>
             <ul>
@@ -4118,8 +4523,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </tbody>
             </table>
 
-            TODO create and make unsupported DB
-
             <h3 id="activating-flight-plans">Activating Existing Flight Plans</h3>
 
             <p>If an unassociated track is squawking the beacon code associated with a flight plan, the flight plan
@@ -4923,7 +5326,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </thead>
                 <tbody>
                   <tr>
-                    <th rowspan="10" style="text-align: center; vertical-align: middle; writing-mode: vertical-rl; ">Leading CWT Class</th>
+                    <th rowspan="7" style="text-align: center; vertical-align: middle; writing-mode: vertical-rl; ">Leading CWT Class</th>
                     <td><b>A</b></td>
                     <td>-</td><td>4.5</td><td>6</td><td>6</td><td>7</td><td>7</td><td>7</td><td>7</td><td>8</td><td>10</td>
                   </tr>
@@ -5841,7 +6244,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>Clear ATIS in given line
                     </td>
                   </tr>
-                  </tr>
                   <tr>
                     <td><code>[MULTIFUNC]S(#) * (TEXT)</code></td>
                     <td>Clear ATIS in given line and set GI text
@@ -6606,6 +7008,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </li>
               <li> <code>/delete</code>: the aircraft will be deleted when it reaches the fix</li>
               <li> <code>/h</code><i>heading</i>: depart the fix at specified heading</li>
+              <li> <code>/l</code><i>heading</i>: turn left to the specified heading at the fix</li>
+              <li> <code>/r</code><i>heading</i>: turn right to the specified heading at the fix</li>
               <li> <code>/iaf</code>: indicates that the fix is an IAF (initial approach fix)</li>
               <li> <code>/if</code>: indicates that the fix is the IF (intermediate fix)</li>
               <li> <code>/faf</code>: indicates that the fix is the FAF (final approach fix). This must be specified for one fix in each approach.</li>
@@ -6627,7 +7031,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </li>
               <li> <code>/tc</code>: "transfer comms": after passing a <code>/ho</code> fix, normally aircraft call in
                 a few seconds after the human controller accepts the handoff.  However, if <code>/tc</code> is specified
-                at a later fix in the route, they won't contact the controller until reaching that fix.</li>
+                at a later fix in the route, they won't contact the controller until reaching that fix. Additionally, this can be used in departure routes to signify a 
+                specific fix at which aircraft should contact the departure controller.</li>
               <li> <code>/po</code><i>TCP id</i>: when the aircraft passes the fix
                 and if it is under the control of a virtual controller,
                 issue a point out to the controller identified by the given TCP id (i.e., the
@@ -7028,11 +7433,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </td>
               </tr>
               <tr>
-                <td>"name"</td>
-                <td>String</td>
-                <td>(<i>Optional</i>) The name of the airport.</td>
-              </tr>
-              <tr>
                 <td>"omit_arrival_scratchpad"</td>
                 <td>Boolean</td>
                 <td>(<i>Optional</i>) If true, the arrival airport is not shown alternating with the altitude in full datablocks when the scratchpad is unset.</td>
@@ -7249,6 +7649,15 @@ Given the id, the approach can be specified with:</p>
                 <td>"is_rnav"</td>
                 <td>Boolean</td>
                 <td><i>(Optional)</i> If true, aircraft departing on this route will have the RNAV flag set in their flight plan.</td>
+              </tr>
+              <tr>
+                <td>"hold_for_release"</td>
+                <td>Boolean</td>
+                <td>(<i>Optional</i>) If true, departures on this route must be released by a controller.
+                  If the airport is listed in "coordination_lists" in <a href="#fe-stars-videomaps">"stars_config"</a>,
+                  then the release will be managed using STARS coordination lists; otherwise it will appear
+                  in the <i>Launch Control</i> window.
+                </td>
               </tr>
               <tr>
                 <td>"sid"</td>
@@ -8078,10 +8487,10 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                   The wind direction and speed are shown using arrows.
                   "WIND" and an altitude will be shown in the preview area; the altitude can be stepped up and down
                   using the up and down arrow keys. Pressing <code>[Escape]</code> clears the wind display.
+                  </p>
                   <div class="text-center">
                     <img src="wind-arrows.png" srcset="wind-arrows-2x.png 2x" width="204" height="170">
                   </div><br>
-                  </p>
                 </td>
               </tr>
             </tbody>

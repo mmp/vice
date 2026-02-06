@@ -9,28 +9,49 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
-	"net/http"
+	"net/rpc"
 	"os"
 	"path/filepath"
 	"runtime"
 	"runtime/debug"
 	"slices"
 	"strings"
+	"sync"
 	"time"
 
+	"github.com/shirou/gopsutil/cpu"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-const CrashReportServer = "localhost"
-const CrashReportPort = "6504"
-const CrashReportPath = "/crash"
-const CrashReportURL = "http://" + CrashReportServer + ":" + CrashReportPort + CrashReportPath
+// SystemInfo contains system information for crash reports.
+type SystemInfo struct {
+	CPUCores    int
+	CPUModel    string
+	CPUVendor   string
+	CPUFlags    []string
+	GPUVendor   string
+	GPURenderer string
+	GoVersion   string
+	OS          string
+	Arch        string
+}
+
+// CrashReport is sent via RPC when a crash occurs.
+type CrashReport struct {
+	Report    string
+	System    SystemInfo
+	Timestamp time.Time
+}
 
 type Logger struct {
 	*slog.Logger
 	LogFile string
 	LogDir  string
 	Start   time.Time
+
+	mu             sync.Mutex
+	crashRPCClient *rpc.Client
+	systemInfo     SystemInfo
 }
 
 func New(server bool, level string, dir string) *Logger {
@@ -89,6 +110,19 @@ func New(server bool, level string, dir string) *Logger {
 		Start:   time.Now(),
 	}
 
+	// Collect CPU info for crash reports
+	l.systemInfo = SystemInfo{
+		CPUCores:  runtime.NumCPU(),
+		GoVersion: runtime.Version(),
+		OS:        runtime.GOOS,
+		Arch:      runtime.GOARCH,
+	}
+	if cpuInfo, err := cpu.Info(); err == nil && len(cpuInfo) > 0 {
+		l.systemInfo.CPUModel = cpuInfo[0].ModelName
+		l.systemInfo.CPUVendor = cpuInfo[0].VendorID
+		l.systemInfo.CPUFlags = cpuInfo[0].Flags
+	}
+
 	// Start out the logs with some basic information about the system
 	// we're running on and the build of vice that's being used.
 	l.Info("Hello logging", slog.Time("start", time.Now()))
@@ -114,10 +148,6 @@ func New(server bool, level string, dir string) *Logger {
 			slog.String("Path", bi.Path),
 			slog.Group("Dependencies", deps...),
 			slog.Group("Settings", settings...))
-	}
-
-	if server {
-		go l.launchCrashServer()
 	}
 
 	return l
@@ -195,10 +225,30 @@ func (l *Logger) Errorf(msg string, args ...any) {
 
 func (l *Logger) With(args ...any) *Logger {
 	return &Logger{
-		Logger:  l.Logger.With(args...),
-		LogFile: l.LogFile,
-		Start:   l.Start,
+		Logger:         l.Logger.With(args...),
+		LogFile:        l.LogFile,
+		LogDir:         l.LogDir,
+		Start:          l.Start,
+		crashRPCClient: l.crashRPCClient,
+		systemInfo:     l.systemInfo,
 	}
+}
+
+// SetCrashReportClient sets the RPC client to use for sending crash reports
+// to the server. This should be called after connecting to the server.
+func (l *Logger) SetCrashReportClient(client *rpc.Client) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.crashRPCClient = client
+}
+
+// SetGPUInfo sets the GPU information for crash reports. This should be
+// called after OpenGL is initialized.
+func (l *Logger) SetGPUInfo(vendor, renderer string) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.systemInfo.GPUVendor = vendor
+	l.systemInfo.GPURenderer = renderer
 }
 
 func (l *Logger) CatchAndReportCrash() any {
@@ -221,85 +271,90 @@ func (l *Logger) CatchAndReportCrash() any {
 	return err
 }
 
+// ReportCrashRPC is the RPC method name for crash reports.
+const ReportCrashRPC = "SimManager.ReportCrash"
+
 func (l *Logger) ReportCrash(err any) {
 	l.Errorf("Crashed: %v", err)
 
+	now := time.Now()
+
+	// Get the system info with a lock
+	l.mu.Lock()
+	sysInfo := l.systemInfo
+	rpcClient := l.crashRPCClient
+	l.mu.Unlock()
+
 	// Format the report information
 	report := fmt.Sprintf("Crashed: %v\n", err)
-	report += "Sys: " + runtime.GOARCH + "/" + runtime.GOOS + "\n"
+	report += fmt.Sprintf("Time: %s\n\n", now.Format(time.RFC3339))
 
+	report += "== System Info ==\n"
+	report += fmt.Sprintf("CPU: %s (%d cores)\n", sysInfo.CPUModel, sysInfo.CPUCores)
+	report += fmt.Sprintf("CPU Vendor: %s\n", sysInfo.CPUVendor)
+	// Include just a few key CPU flags that are relevant for debugging
+	relevantFlags := filterRelevantCPUFlags(sysInfo.CPUFlags)
+	if len(relevantFlags) > 0 {
+		report += fmt.Sprintf("CPU Flags: %s\n", strings.Join(relevantFlags, ", "))
+	}
+	if sysInfo.GPURenderer != "" {
+		report += fmt.Sprintf("GPU: %s (%s)\n", sysInfo.GPURenderer, sysInfo.GPUVendor)
+	}
+	report += fmt.Sprintf("Go: %s\n", sysInfo.GoVersion)
+	report += fmt.Sprintf("OS/Arch: %s/%s\n\n", sysInfo.OS, sysInfo.Arch)
+
+	report += "== Build Info ==\n"
 	if bi, ok := debug.ReadBuildInfo(); ok {
 		for _, setting := range bi.Settings {
 			report += setting.Key + ": " + setting.Value + "\n"
 		}
 	}
+	report += "\n== Stack Trace ==\n"
 	report += string(debug.Stack())
 
 	// Print it to stdout
 	fmt.Println(report)
 
-	// Try to save it to disk locally
-	fn := filepath.Join(l.LogDir, "crash-"+time.Now().Format(time.RFC3339)+".txt")
+	// Try to save it to disk locally as a backup
+	fn := filepath.Join(l.LogDir, "crash-"+now.Format(time.RFC3339)+".txt")
 	_ = os.WriteFile(fn, []byte(report), 0o600)
 
-	// And pass it along to the crash report server.
-	l.postCrashReport(report)
-}
-
-func (l *Logger) postCrashReport(report string) {
-	req, err := http.NewRequest("POST", CrashReportURL, strings.NewReader(report))
-	if err != nil {
-		l.Errorf("Error creating request: %v", err)
-		return
-	}
-
-	client := &http.Client{Timeout: 5 * time.Second}
-	resp, err := client.Do(req)
-	if err != nil {
-		l.Errorf("Error sending request: %v", err)
-		return
-	}
-	defer resp.Body.Close()
-
-	// Handle the response
-	if responseBody, err := io.ReadAll(resp.Body); err != nil {
-		l.Errorf("Error reading response: %v", err)
-	} else {
-		l.Infof("Response: %s", responseBody)
+	// Send via RPC if we have a client
+	if rpcClient != nil {
+		crashReport := &CrashReport{
+			Report:    report,
+			System:    sysInfo,
+			Timestamp: now,
+		}
+		// Attempt to send, but don't block for long since we're crashing
+		done := make(chan *rpc.Call, 1)
+		rpcClient.Go(ReportCrashRPC, crashReport, &struct{}{}, done)
+		select {
+		case call := <-done:
+			if call.Error != nil {
+				l.Errorf("Error sending crash report via RPC: %v", call.Error)
+			} else {
+				l.Info("Crash report sent via RPC")
+			}
+		case <-time.After(2 * time.Second):
+			l.Warn("Timeout sending crash report via RPC")
+		}
 	}
 }
 
-func (l *Logger) launchCrashServer() {
-	mux := http.NewServeMux()
-	mux.HandleFunc(CrashReportPath, func(w http.ResponseWriter, r *http.Request) {
-		defer r.Body.Close()
-
-		if r.Method != http.MethodPost {
-			http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
-			return
+// filterRelevantCPUFlags returns a subset of CPU flags that are relevant for debugging.
+func filterRelevantCPUFlags(flags []string) []string {
+	relevant := []string{"avx", "avx2", "avx512f", "sse4_1", "sse4_2", "sse4a", "ssse3", "fma"}
+	var result []string
+	for _, flag := range flags {
+		for _, r := range relevant {
+			if flag == r {
+				result = append(result, flag)
+				break
+			}
 		}
-
-		lr := &io.LimitedReader{R: r.Body, N: 4 * 1024}
-		body, err := io.ReadAll(lr)
-		if err != nil {
-			http.Error(w, "Failed to read request body", http.StatusInternalServerError)
-			return
-		}
-
-		l.Info("Received crash report", slog.String("crash", string(body)))
-
-		fn := filepath.Join(l.LogDir, "crash-"+time.Now().Format(time.RFC3339)+".txt")
-		_ = os.WriteFile(fn, []byte(body), 0o600)
-	})
-
-	srv := &http.Server{
-		Addr:    ":" + CrashReportPort,
-		Handler: mux,
 	}
-
-	if err := srv.ListenAndServe(); err != nil {
-		l.Errorf("Failed to start HTTP server for crash reports: %v\n", err)
-	}
+	return result
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -7,6 +7,7 @@ package sim
 import (
 	"fmt"
 	"log/slog"
+	"maps"
 	"slices"
 	"strings"
 	"time"
@@ -18,6 +19,16 @@ import (
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
+)
+
+// CallsignAddressingForm indicates how a controller addressed an aircraft's callsign.
+type CallsignAddressingForm int
+
+const (
+	// AddressingFormFull is the full callsign form (e.g., "november 1 2 3 alpha bravo")
+	AddressingFormFull CallsignAddressingForm = iota
+	// AddressingFormTypeTrailing3 is the aircraft type + trailing 3 form (e.g., "skyhawk 3 alpha bravo")
+	AddressingFormTypeTrailing3
 )
 
 type Aircraft struct {
@@ -45,12 +56,21 @@ type Aircraft struct {
 	// State related to navigation.
 	Nav nav.Nav
 
+	// Departure-related state
+	SID string
+
 	// Arrival-related state
 	STAR                string
 	STARRunwayWaypoints map[string]av.WaypointArray
 	GotContactTower     bool
 
 	NASFlightPlan *NASFlightPlan
+
+	// ControllerFrequency is the controller position whose radio frequency
+	// this aircraft is tuned to. Only this controller can issue ATC commands
+	// to the aircraft. Empty means the aircraft is not on any controller's
+	// frequency.
+	ControllerFrequency ControlPosition
 
 	HoldForRelease    bool
 	Released          bool // only used for hold for release
@@ -61,13 +81,11 @@ type Aircraft struct {
 	GoAroundDistance *float32
 
 	// Departure related state
-	DepartureContactAltitude float32
+	DepartureContactAltitude float32 // 0 = waiting for /tc point, -1 = already contacted departure
+	ReportDepartureHeading   bool    // true if runway has multiple exit heading
 
 	// The controller who gave approach clearance
 	ApproachTCP TCP
-
-	// Who had control when the fp disassociated due to an arrival filter.
-	PreArrivalDropTCP TCP
 
 	FirstSeen time.Time
 
@@ -80,6 +98,15 @@ type Aircraft struct {
 	EmergencyState *EmergencyState
 
 	LastRadioTransmission time.Time
+
+	// LastAddressingForm tracks how the controller last addressed this aircraft.
+	// Used for readbacks to match the controller's style.
+	LastAddressingForm CallsignAddressingForm
+
+	// Traffic advisory state
+	TrafficInSight      bool      // True if aircraft has reported traffic in sight
+	TrafficInSightTime  time.Time // When traffic was reported in sight
+	TrafficLookingUntil time.Time // If non-zero, aircraft may report traffic in sight before this time
 }
 
 func (ac *Aircraft) GetRadarTrack(now time.Time) av.RadarTrack {
@@ -95,6 +122,45 @@ func (ac *Aircraft) GetRadarTrack(now time.Time) av.RadarTrack {
 		Groundspeed:         ac.GS(),
 		TypeOfFlight:        ac.TypeOfFlight,
 	}
+}
+
+// GetSTTFixes returns the raw fix names relevant for STT context.
+// This includes assigned waypoints within 75nm and approach waypoints if applicable.
+func (ac *Aircraft) GetSTTFixes() []string {
+	var fixes []string
+	p := ac.Nav.FlightState.Position
+
+	isValidFix := func(fix string) bool {
+		return len(fix) >= 3 && len(fix) <= 5 && fix[0] != '_'
+	}
+
+	for _, wp := range ac.Nav.AssignedWaypoints() {
+		if math.NMDistance2LL(p, wp.Location) > 75 {
+			break
+		}
+		if isValidFix(wp.Fix) {
+			fixes = append(fixes, wp.Fix)
+		}
+	}
+
+	if ac.Nav.Approach.Assigned != nil {
+		// Check if approach waypoints are already in the route
+		hasApproachWaypoints := slices.ContainsFunc(ac.Nav.AssignedWaypoints(),
+			func(wp av.Waypoint) bool { return wp.OnApproach })
+
+		// If not, add all approach waypoints (aircraft is being vectored to intercept)
+		if !hasApproachWaypoints {
+			for _, wps := range ac.Nav.Approach.Assigned.Waypoints {
+				for _, wp := range wps {
+					if isValidFix(wp.Fix) {
+						fixes = append(fixes, wp.Fix)
+					}
+				}
+			}
+		}
+	}
+
+	return fixes
 }
 
 func (ac *Aircraft) InitializeFlightPlan(r av.FlightRules, acType, dep, arr string) {
@@ -127,161 +193,179 @@ func (ac *Aircraft) Update(model *wx.Model, simTime time.Time, bravo *av.Airspac
 	return passedWaypoint
 }
 
-func (ac *Aircraft) PilotMixUp() *av.RadioTransmission {
-	csArg := av.CallsignArg{
-		Callsign:           ac.ADSBCallsign,
-		IsEmergency:        ac.EmergencyState != nil,
-		AlwaysFullCallsign: true,
+func (ac *Aircraft) PilotMixUp() av.CommandIntent {
+	return av.MixUpIntent{
+		Callsign:    ac.ADSBCallsign,
+		IsEmergency: ac.EmergencyState != nil,
 	}
-	return av.MakeMixedUpTransmission("sorry, was that for {callsign}?", csArg)
 }
 
-func (ac *Aircraft) GoAround() *av.RadioTransmission {
+func (ac *Aircraft) GoAround() {
 	ac.GotContactTower = false
-	return ac.Nav.GoAround()
+	ac.Nav.GoAround()
 }
 
-func (ac *Aircraft) Ident(now time.Time) *av.RadioTransmission {
+func (ac *Aircraft) Ident(now time.Time) av.CommandIntent {
 	ac.IdentStartTime = now.Add(time.Duration(2+ac.Nav.Rand.Intn(3)) * time.Second) // delay the start a bit
 	ac.IdentEndTime = ac.IdentStartTime.Add(10 * time.Second)
-	return av.MakeReadbackTransmission("ident")
+	return av.TransponderIntent{Ident: true}
 }
 
-func (ac *Aircraft) AssignAltitude(altitude int, afterSpeed bool) *av.RadioTransmission {
+func (ac *Aircraft) AssignAltitude(altitude int, afterSpeed bool) av.CommandIntent {
 	return ac.Nav.AssignAltitude(float32(altitude), afterSpeed)
 }
 
-func (ac *Aircraft) AssignSpeed(speed int, afterAltitude bool) *av.RadioTransmission {
+func (ac *Aircraft) AssignSpeed(speed int, afterAltitude bool) av.CommandIntent {
 	return ac.Nav.AssignSpeed(float32(speed), afterAltitude)
 }
 
-func (ac *Aircraft) MaintainSlowestPractical() *av.RadioTransmission {
+func (ac *Aircraft) AssignSpeedUntil(speed int, until *av.SpeedUntil) av.CommandIntent {
+	return ac.Nav.AssignSpeedUntil(float32(speed), until)
+}
+
+func (ac *Aircraft) MaintainSlowestPractical() av.CommandIntent {
 	return ac.Nav.MaintainSlowestPractical()
 }
 
-func (ac *Aircraft) MaintainMaximumForward() *av.RadioTransmission {
+func (ac *Aircraft) MaintainMaximumForward() av.CommandIntent {
 	return ac.Nav.MaintainMaximumForward()
 }
 
-func (ac *Aircraft) SaySpeed() *av.RadioTransmission {
+func (ac *Aircraft) MaintainPresentSpeed() av.CommandIntent {
+	return ac.Nav.MaintainPresentSpeed()
+}
+
+func (ac *Aircraft) SaySpeed() av.CommandIntent {
 	return ac.Nav.SaySpeed()
 }
 
-func (ac *Aircraft) SayHeading() *av.RadioTransmission {
+func (ac *Aircraft) SayHeading() av.CommandIntent {
 	return ac.Nav.SayHeading()
 }
 
-func (ac *Aircraft) SayAltitude() *av.RadioTransmission {
+func (ac *Aircraft) SayAltitude() av.CommandIntent {
 	return ac.Nav.SayAltitude()
 }
 
-func (ac *Aircraft) ExpediteDescent() *av.RadioTransmission {
+func (ac *Aircraft) ExpediteDescent() av.CommandIntent {
 	return ac.Nav.ExpediteDescent()
 }
 
-func (ac *Aircraft) ExpediteClimb() *av.RadioTransmission {
+func (ac *Aircraft) ExpediteClimb() av.CommandIntent {
 	return ac.Nav.ExpediteClimb()
 }
 
-func (ac *Aircraft) AssignHeading(heading int, turn nav.TurnMethod) *av.RadioTransmission {
+func (ac *Aircraft) AssignHeading(heading int, turn nav.TurnMethod) av.CommandIntent {
 	return ac.Nav.AssignHeading(float32(heading), turn)
 }
 
-func (ac *Aircraft) TurnLeft(deg int) *av.RadioTransmission {
+func (ac *Aircraft) TurnLeft(deg int) av.CommandIntent {
 	hdg := math.NormalizeHeading(ac.Nav.FlightState.Heading - float32(deg))
 	ac.Nav.AssignHeading(hdg, nav.TurnLeft)
-	return av.MakeReadbackTransmission("[turn {num} degrees left|{num} to the left|{num} left]", deg)
+	return av.HeadingIntent{
+		Type:    av.HeadingTurnLeft,
+		Heading: hdg,
+		Degrees: deg,
+	}
 }
 
-func (ac *Aircraft) TurnRight(deg int) *av.RadioTransmission {
+func (ac *Aircraft) TurnRight(deg int) av.CommandIntent {
 	hdg := math.NormalizeHeading(ac.Nav.FlightState.Heading + float32(deg))
 	ac.Nav.AssignHeading(hdg, nav.TurnRight)
-	return av.MakeReadbackTransmission("[turn {num} degrees right|{num} to the right|{num} right]", deg)
+	return av.HeadingIntent{
+		Type:    av.HeadingTurnRight,
+		Heading: hdg,
+		Degrees: deg,
+	}
 }
 
-func (ac *Aircraft) FlyPresentHeading() *av.RadioTransmission {
+func (ac *Aircraft) FlyPresentHeading() av.CommandIntent {
 	return ac.Nav.FlyPresentHeading()
 }
 
-func (ac *Aircraft) DirectFix(fix string) *av.RadioTransmission {
+func (ac *Aircraft) DirectFix(fix string) av.CommandIntent {
 	return ac.Nav.DirectFix(strings.ToUpper(fix))
 }
 
-func (ac *Aircraft) HoldAtFix(fix string, hold *av.Hold) *av.RadioTransmission {
+func (ac *Aircraft) HoldAtFix(fix string, hold *av.Hold) av.CommandIntent {
 	return ac.Nav.HoldAtFix(string(ac.ADSBCallsign), strings.ToUpper(fix), hold)
 }
 
-func (ac *Aircraft) DepartFixHeading(fix string, hdg int) *av.RadioTransmission {
+func (ac *Aircraft) DepartFixHeading(fix string, hdg int) av.CommandIntent {
 	return ac.Nav.DepartFixHeading(strings.ToUpper(fix), float32(hdg))
 }
 
-func (ac *Aircraft) DepartFixDirect(fixa, fixb string) *av.RadioTransmission {
+func (ac *Aircraft) DepartFixDirect(fixa, fixb string) av.CommandIntent {
 	return ac.Nav.DepartFixDirect(strings.ToUpper(fixa), strings.ToUpper(fixb))
 }
 
-func (ac *Aircraft) CrossFixAt(fix string, ar *av.AltitudeRestriction, speed int) *av.RadioTransmission {
+func (ac *Aircraft) CrossFixAt(fix string, ar *av.AltitudeRestriction, speed int) av.CommandIntent {
 	return ac.Nav.CrossFixAt(strings.ToUpper(fix), ar, speed)
 }
 
-func (ac *Aircraft) ExpectApproach(id string, ap *av.Airport, lg *log.Logger) *av.RadioTransmission {
-	return ac.Nav.ExpectApproach(ap, id, ac.STARRunwayWaypoints, lg)
+func (ac *Aircraft) ExpectApproach(id string, ap *av.Airport, lahsoRunway string, lg *log.Logger) av.CommandIntent {
+	return ac.Nav.ExpectApproach(ap, id, ac.STARRunwayWaypoints, lahsoRunway, lg)
 }
 
-func (ac *Aircraft) AtFixCleared(fix, approach string) *av.RadioTransmission {
+func (ac *Aircraft) AtFixCleared(fix, approach string) av.CommandIntent {
 	return ac.Nav.AtFixCleared(fix, approach)
 }
 
-func (ac *Aircraft) ClearedApproach(id string, lg *log.Logger) (*av.RadioTransmission, error) {
+func (ac *Aircraft) AtFixIntercept(fix string, lg *log.Logger) av.CommandIntent {
+	return ac.Nav.AtFixIntercept(fix, ac.FlightPlan.ArrivalAirport, lg)
+}
+
+func (ac *Aircraft) ClearedApproach(id string, lg *log.Logger) (av.CommandIntent, bool) {
 	return ac.Nav.ClearedApproach(ac.FlightPlan.ArrivalAirport, id, false)
 }
 
-func (ac *Aircraft) ClearedStraightInApproach(id string, lg *log.Logger) (*av.RadioTransmission, error) {
+func (ac *Aircraft) ClearedStraightInApproach(id string, lg *log.Logger) (av.CommandIntent, bool) {
 	return ac.Nav.ClearedApproach(ac.FlightPlan.ArrivalAirport, id, true)
 }
 
-func (ac *Aircraft) CancelApproachClearance() *av.RadioTransmission {
+func (ac *Aircraft) CancelApproachClearance() av.CommandIntent {
 	return ac.Nav.CancelApproachClearance()
 }
 
-func (ac *Aircraft) ClimbViaSID() *av.RadioTransmission {
+func (ac *Aircraft) ClimbViaSID() av.CommandIntent {
 	return ac.Nav.ClimbViaSID()
 }
 
-func (ac *Aircraft) DescendViaSTAR() *av.RadioTransmission {
+func (ac *Aircraft) DescendViaSTAR() av.CommandIntent {
 	return ac.Nav.DescendViaSTAR()
 }
 
-func (ac *Aircraft) ResumeOwnNavigation() *av.RadioTransmission {
+func (ac *Aircraft) ResumeOwnNavigation() av.CommandIntent {
 	if ac.FlightPlan.Rules == av.FlightRulesIFR {
-		return av.MakeUnexpectedTransmission("unable. We're IFR")
+		return av.MakeUnableIntent("unable. We're IFR")
 	} else {
 		return ac.Nav.ResumeOwnNavigation()
 	}
 }
 
-func (ac *Aircraft) AltitudeOurDiscretion() *av.RadioTransmission {
+func (ac *Aircraft) AltitudeOurDiscretion() av.CommandIntent {
 	if ac.FlightPlan.Rules == av.FlightRulesIFR {
-		return av.MakeUnexpectedTransmission("unable. We're IFR")
+		return av.MakeUnableIntent("unable. We're IFR")
 	} else {
 		return ac.Nav.AltitudeOurDiscretion()
 	}
 }
 
-func (ac *Aircraft) ContactTower(lg *log.Logger) *av.RadioTransmission {
+func (ac *Aircraft) ContactTower(lg *log.Logger) (av.CommandIntent, bool) {
 	if ac.GotContactTower {
 		// No response; they're not on our frequency any more.
-		return nil
+		return nil, false
 	} else if ac.Nav.Approach.Assigned == nil {
-		return av.MakeUnexpectedTransmission("unable. We haven't been given an approach.")
+		return av.MakeUnableIntent("unable. We haven't been given an approach."), false
 	} else if !ac.Nav.Approach.Cleared {
-		return av.MakeUnexpectedTransmission("unable. We haven't been cleared for the approach.")
+		return av.MakeUnableIntent("unable. We haven't been cleared for the approach."), false
 	} else {
 		ac.GotContactTower = true
-		return av.MakeReadbackTransmission("contact tower")
+		return av.ContactTowerIntent{}, true
 	}
 }
 
-func (ac *Aircraft) InterceptApproach(lg *log.Logger) *av.RadioTransmission {
+func (ac *Aircraft) InterceptApproach(lg *log.Logger) av.CommandIntent {
 	return ac.Nav.InterceptApproach(ac.FlightPlan.ArrivalAirport, lg)
 }
 
@@ -317,11 +401,11 @@ func (ac *Aircraft) InitializeArrival(ap *av.Airport, arr *av.Arrival, nmPerLong
 
 	if arr.ExpectApproach.A != nil {
 		lg = lg.With(slog.String("adsb_callsign", string(ac.ADSBCallsign)), slog.Any("aircraft", ac))
-		ac.ExpectApproach(*arr.ExpectApproach.A, ap, lg)
+		ac.ExpectApproach(*arr.ExpectApproach.A, ap, "", lg)
 	} else if arr.ExpectApproach.B != nil {
 		if app, ok := (*arr.ExpectApproach.B)[ac.FlightPlan.ArrivalAirport]; ok {
 			lg = lg.With(slog.String("adsb_callsign", string(ac.ADSBCallsign)), slog.Any("aircraft", ac))
-			ac.ExpectApproach(app, ap, lg)
+			ac.ExpectApproach(app, ap, "", lg)
 		}
 	}
 
@@ -336,6 +420,7 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport string,
 	wp = util.FilterSliceInPlace(wp, func(wp av.Waypoint) bool { return !wp.Location.IsZero() })
 
 	if exitRoute.SID != "" {
+		ac.SID = exitRoute.SID
 		ac.FlightPlan.Route = exitRoute.SID + " " + dep.Route
 	} else {
 		ac.FlightPlan.Route = dep.Route
@@ -348,6 +433,7 @@ func (ac *Aircraft) InitializeDeparture(ap *av.Airport, departureAirport string,
 	}
 
 	ac.FlightPlan.Exit = dep.Exit
+	ac.FlightPlan.DepartureRunway = runway
 
 	r := rand.Make()
 	idx := rand.SampleFiltered(r, dep.Altitudes, func(alt int) bool { return alt <= int(perf.Ceiling) })
@@ -430,7 +516,10 @@ func (ac *Aircraft) NavSummary(model *wx.Model, simTime time.Time, lg *log.Logge
 }
 
 func (ac *Aircraft) ContactMessage(reportingPoints []av.ReportingPoint) *av.RadioTransmission {
-	return ac.Nav.ContactMessage(reportingPoints, ac.STAR)
+	// For departures, only report heading if the runway has varied exit headings.
+	// For arrivals (and others), always report heading if assigned.
+	reportHeading := !ac.IsDeparture() || ac.ReportDepartureHeading
+	return ac.Nav.ContactMessage(reportingPoints, ac.STAR, reportHeading, ac.IsDeparture())
 }
 
 func (ac *Aircraft) DepartOnCourse(lg *log.Logger) {
@@ -641,7 +730,6 @@ func (ac *Aircraft) IsAssociated() bool {
 func (ac *Aircraft) AssociateFlightPlan(fp *NASFlightPlan) {
 	fp.Location = math.Point2LL{} // clear location in case it was an unsupported DB
 	ac.NASFlightPlan = fp
-	ac.PreArrivalDropTCP = ""
 }
 
 func (ac *Aircraft) DisassociateFlightPlan() *NASFlightPlan {
@@ -655,4 +743,99 @@ func (ac *Aircraft) DivertToAirport(ap string) {
 	ac.TypeOfFlight = av.FlightTypeArrival
 
 	ac.Nav.DivertToAirport(ap)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// VoiceAssigner
+
+// AirlineVoices maps airline ICAO codes (or comma-separated codes) to voice names.
+// "default" is used for callsigns that don't match any specific airline.
+// Edit this map to customize which voices are used for each airline.
+var AirlineVoices = map[string][]string{
+	"default": {
+		"af_alloy", "af_aoede", "af_bella", "af_heart", "af_jessica", "af_nova", "af_kore",
+		"af_river", "af_sarah", "af_sky", "am_adam", "am_echo", "am_eric", "am_fenrir", "am_liam",
+		"am_michael", "am_onyx", "am_puck",
+	},
+	"BAW,VIR,DLH,KQA": {
+		"bf_alice", "bf_emma", "bf_isabella", "bf_lily",
+		"bm_daniel", "bm_fable", "bm_george", "bm_lewis",
+	},
+	"AMX,IBE": {
+		"ef_dora", "em_alex",
+	},
+	"AFR": {
+		"ff_siwis",
+	},
+	"ITY,LOT": {
+		"if_sara", "im_nicola",
+	},
+	"TAP,TAM,ELY": {
+		"pf_dora", "pm_alex", "pm_santa",
+	},
+	"AIC": {
+		"hf_alpha", "hf_beta", "hm_omega", "hm_psi",
+	},
+	"JAL,ANA,KAL": {
+		"jf_alpha", "jf_gongitsune", "jf_nezumi", "jf_tebukuro", "jm_kumo",
+	},
+	"CAL,CCA,CES,CSN,CXA,SIA": {
+		"zf_xiaobei", "zf_xiaoni", "zf_xiaoxiao", "zm_yunjian", "zm_yunxi", "zm_yunxia", "zm_yunyang",
+	},
+}
+
+// VoiceAssigner manages the pool of available TTS voice names and assigns them
+// to aircraft callsigns. Each aircraft gets a consistent voice throughout
+// the session.
+type VoiceAssigner struct {
+	// Same keys as AirlineVoices, shuffled and consumed FIFO.
+	VoicePools map[string][]string
+	// Callsign -> voice name mapping
+	AircraftVoices map[av.ADSBCallsign]string
+}
+
+// NewVoiceAssigner creates a new VoiceAssigner with airline-based voice pools.
+func NewVoiceAssigner(r *rand.Rand) *VoiceAssigner {
+	va := &VoiceAssigner{
+		VoicePools:     maps.Clone(AirlineVoices),
+		AircraftVoices: make(map[av.ADSBCallsign]string),
+	}
+
+	for voices := range maps.Values(va.VoicePools) {
+		rand.ShuffleSlice(voices, r)
+	}
+
+	return va
+}
+
+// GetVoice returns the voice name assigned to an aircraft, assigning one if needed.
+func (va *VoiceAssigner) GetVoice(callsign av.ADSBCallsign, r *rand.Rand) string {
+	// Check if already assigned
+	if voiceName, ok := va.AircraftVoices[callsign]; ok {
+		return voiceName
+	}
+
+	getVoice := func(callsigns string) string {
+		voices := va.VoicePools[callsigns]
+		if len(voices) == 0 {
+			voices = slices.Clone(AirlineVoices[callsigns])
+			rand.ShuffleSlice(voices, r)
+		}
+
+		voice := voices[0]
+		va.VoicePools[callsigns] = voices[1:]
+		va.AircraftVoices[callsign] = voice
+		return voice
+	}
+
+	if len(callsign) > 3 {
+		icao := string(callsign[:3])
+		for callsigns := range va.VoicePools {
+			if util.SeqContains(strings.SplitSeq(callsigns, ","), icao) {
+				return getVoice(callsigns)
+			}
+		}
+	}
+
+	return getVoice("default")
 }

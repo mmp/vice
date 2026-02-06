@@ -182,12 +182,12 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		addController(sim.TCP(aa.ReceivingController))
 	}
 
-	airportExits := make(map[string]map[string]interface{}) // airport -> exit -> is it covered
+	airportExits := make(map[string]map[string]any) // airport -> exit -> is it covered
 	for _, rwy := range s.DepartureRunways {
 		e.Push("Departure runway " + rwy.Airport + " " + rwy.Runway)
 
 		if airportExits[rwy.Airport] == nil {
-			airportExits[rwy.Airport] = make(map[string]interface{})
+			airportExits[rwy.Airport] = make(map[string]any)
 		}
 
 		if ap, ok := sg.Airports[rwy.Airport]; !ok {
@@ -229,7 +229,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		return s.ArrivalRunways[i].Airport < s.ArrivalRunways[j].Airport
 	})
 
-	activeAirports := make(map[*av.Airport]interface{}) // all airports with departures or arrivals
+	activeAirports := make(map[*av.Airport]any) // all airports with departures or arrivals
 	for _, rwy := range s.ArrivalRunways {
 		e.Push("Arrival runway " + rwy.Airport + " " + rwy.Runway)
 
@@ -247,9 +247,9 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	}
 
 	// Figure out which airports/runways and airports/SIDs are used in the scenario.
-	activeAirportSIDs := make(map[string]map[string]interface{})
-	activeAirportRunways := make(map[string]map[string]interface{})
-	activeDepartureAirports := make(map[string]interface{})
+	activeAirportSIDs := make(map[string]map[string]any)
+	activeAirportRunways := make(map[string]map[string]any)
+	activeDepartureAirports := make(map[string]any)
 	for _, rwy := range s.DepartureRunways {
 		e.Push("departure runway " + rwy.Runway)
 
@@ -280,10 +280,10 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 					}
 					if rwy.Category == "" || fixCategory == rwy.Category {
 						if activeAirportSIDs[rwy.Airport] == nil {
-							activeAirportSIDs[rwy.Airport] = make(map[string]interface{})
+							activeAirportSIDs[rwy.Airport] = make(map[string]any)
 						}
 						if activeAirportRunways[rwy.Airport] == nil {
-							activeAirportRunways[rwy.Airport] = make(map[string]interface{})
+							activeAirportRunways[rwy.Airport] = make(map[string]any)
 						}
 						if route.DepartureController != "" {
 							routeDepCtrl := sim.TCP(route.DepartureController)
@@ -311,9 +311,9 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	if s.ControllerConfiguration != nil {
 		// Track per-airport: assigned SIDs, assigned runways, and whether there's a fallback
 		// Only track assignments that are relevant to THIS scenario's active airports/SIDs/runways
-		assignedSIDs := make(map[string]map[string]interface{})    // airport -> set of SIDs
-		assignedRunways := make(map[string]map[string]interface{}) // airport -> set of runways
-		hasAirportFallback := make(map[string]bool)                // airport -> has plain airport assignment
+		assignedSIDs := make(map[string]map[string]any)    // airport -> set of SIDs
+		assignedRunways := make(map[string]map[string]any) // airport -> set of runways
+		hasAirportFallback := make(map[string]bool)        // airport -> has plain airport assignment
 
 		for spec := range s.ControllerConfiguration.DepartureAssignments {
 			ap, sidRunway, haveSIDRunway := strings.Cut(spec, "/")
@@ -333,13 +333,13 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 
 				if okSID {
 					if assignedSIDs[ap] == nil {
-						assignedSIDs[ap] = make(map[string]interface{})
+						assignedSIDs[ap] = make(map[string]any)
 					}
 					assignedSIDs[ap][sidRunway] = nil
 				}
 				if okRunway {
 					if assignedRunways[ap] == nil {
-						assignedRunways[ap] = make(map[string]interface{})
+						assignedRunways[ap] = make(map[string]any)
 					}
 					assignedRunways[ap][sidRunway] = nil
 				}
@@ -389,13 +389,8 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	}
 
 	// Do any active airports have CRDA?
-	haveCRDA := false
-	for ap := range activeAirports {
-		if len(ap.ConvergingRunways) > 0 {
-			haveCRDA = true
-			break
-		}
-	}
+	haveCRDA := util.SeqContainsFunc(maps.Keys(activeAirports),
+		func(ap *av.Airport) bool { return len(ap.ConvergingRunways) > 0 })
 	if haveCRDA && s.ControllerConfiguration != nil {
 		// Make sure all of the controllers involved have a valid default airport
 		for _, pos := range s.ControllerConfiguration.AllPositions() {
@@ -494,17 +489,19 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		}
 	}
 
-	for _, dm := range s.DefaultMaps {
-		if !manifest.HasMap(dm) {
-			e.ErrorString("video map %q in \"default_maps\" not found. Use -listmaps "+
-				"<path to Zxx-videomaps.gob.zst> to show available video maps for an ARTCC.", dm)
+	if manifest != nil {
+		for _, dm := range s.DefaultMaps {
+			if !manifest.HasMap(dm) {
+				e.ErrorString("video map %q in \"default_maps\" not found. Use -listmaps "+
+					"<path to Zxx-videomaps.gob.zst> to show available video maps for an ARTCC.", dm)
+			}
 		}
-	}
 
-	if sg.ARTCC != "" {
-		if !manifest.HasMapGroup(s.DefaultMapGroup) {
-			e.ErrorString("video map group %q in \"default_map_group\" not found. Use -listmaps "+
-				"<path to Zxx-videomaps.gob.zst> to show available video map groups for an ARTCC.", s.DefaultMapGroup)
+		if sg.ARTCC != "" {
+			if !manifest.HasMapGroup(s.DefaultMapGroup) {
+				e.ErrorString("video map group %q in \"default_map_group\" not found. Use -listmaps "+
+					"<path to Zxx-videomaps.gob.zst> to show available video map groups for an ARTCC.", s.DefaultMapGroup)
+			}
 		}
 	}
 
@@ -1006,9 +1003,11 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 			e.ErrorString("video map %q in \"map_labels\" is not in \"stars_maps\"", m)
 		}
 	}
-	for _, m := range s.VideoMapNames {
-		if m != "" && !manifest.HasMap(m) {
-			e.ErrorString("video map %q in \"stars_maps\" is not a valid video map", m)
+	if manifest != nil {
+		for _, m := range s.VideoMapNames {
+			if m != "" && !manifest.HasMap(m) {
+				e.ErrorString("video map %q in \"stars_maps\" is not a valid video map", m)
+			}
 		}
 	}
 
@@ -1025,16 +1024,18 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		}
 
 		for tcp, config := range s.ControllerConfigs {
-			for _, name := range config.DefaultMaps {
-				if !manifest.HasMap(name) {
-					e.ErrorString("video map %q in \"default_maps\" for controller %q is not a valid video map",
-						name, tcp)
+			if manifest != nil {
+				for _, name := range config.DefaultMaps {
+					if !manifest.HasMap(name) {
+						e.ErrorString("video map %q in \"default_maps\" for controller %q is not a valid video map",
+							name, tcp)
+					}
 				}
-			}
-			for _, name := range config.VideoMapNames {
-				if name != "" && !manifest.HasMap(name) {
-					e.ErrorString("video map %q in \"video_maps\" for controller %q is not a valid video map",
-						name, tcp)
+				for _, name := range config.VideoMapNames {
+					if name != "" && !manifest.HasMap(name) {
+						e.ErrorString("video map %q in \"video_maps\" for controller %q is not a valid video map",
+							name, tcp)
+					}
 				}
 			}
 
@@ -1127,7 +1128,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		e.ErrorString("\"display_custom_spcs\" was set but none were defined in \"custom_spcs\".")
 	}
 
-	disp := make(map[string]interface{})
+	disp := make(map[string]any)
 	if s.Scratchpad1.DisplayExitFix {
 		disp["display_exit_fix"] = nil
 	}
@@ -1209,7 +1210,16 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 			}
 		}
 
-		if ap.HoldForRelease {
+		hfr := ap.HoldForRelease
+		for _, rwy := range ap.DepartureRoutes {
+			for _, exitRoute := range rwy {
+				if exitRoute.HoldForRelease {
+					hfr = true
+				}
+			}
+		}
+
+		if hfr {
 			// Make sure it's in either zero or one of the coordination lists.
 			if len(matches) > 1 {
 				e.ErrorString("Airport %q is in multiple entries in \"coordination_lists\": %s.", airport, strings.Join(matches, ", "))
@@ -1224,7 +1234,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 	if s.MonitoredBeaconCodeBlocksString == nil {
 		s.MonitoredBeaconCodeBlocks = []av.Squawk{0o12} // 12xx block by default
 	} else {
-		for _, bl := range strings.Split(*s.MonitoredBeaconCodeBlocksString, ",") {
+		for bl := range strings.SplitSeq(*s.MonitoredBeaconCodeBlocksString, ",") {
 			bl = strings.TrimSpace(bl)
 			if code, err := av.ParseSquawkOrBlock(bl); err != nil {
 				e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", bl, err)
@@ -1517,10 +1527,13 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *scen
 // the program will exit if there are any.  We'd rather force any errors
 // due to invalid scenario definitions to be fixed...
 //
+// If skipVideoMaps is true, video map manifests are not loaded and video map
+// validation is skipped. This is useful for CLI tools that don't need video maps.
+//
 // Returns: scenarioGroups, catalogs, mapManifests, extraScenarioErrors
 // If the extra scenario file has errors, they are returned in extraScenarioErrors
 // and that scenario is not loaded, but execution continues.
-func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename string,
+func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename string, skipVideoMaps bool,
 	e *util.ErrorLogger, lg *log.Logger) (map[string]map[string]*scenarioGroup, map[string]map[string]*ScenarioCatalog, map[string]*sim.VideoMapManifest, string) {
 	start := time.Now()
 
@@ -1607,39 +1620,41 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 		}
 	}
 
-	// Next load the video map manifests so we can validate the map references in scenarios.
+	// Load video map manifests if needed for validation.
 	mapManifests := make(map[string]*sim.VideoMapManifest)
-	err = util.WalkResources("videomaps", func(path string, d fs.DirEntry, fs fs.FS, err error) error {
+	if !skipVideoMaps {
+		err = util.WalkResources("videomaps", func(path string, d fs.DirEntry, fs fs.FS, err error) error {
+			if err != nil {
+				lg.Errorf("error walking videomaps: %v", err)
+				return nil
+			}
+
+			if d.IsDir() {
+				return nil
+			}
+
+			if strings.HasSuffix(path, "-videomaps.gob") || strings.HasSuffix(path, "-videomaps.gob.zst") {
+				mapManifests[path], err = sim.LoadVideoMapManifest(path)
+			}
+
+			return err
+		})
 		if err != nil {
-			lg.Errorf("error walking videomaps: %v", err)
-			return nil
+			lg.Errorf("error loading videomaps: %v", err)
+			os.Exit(1)
 		}
 
-		if d.IsDir() {
-			return nil
+		// Load the video map specified on the command line, if any.
+		if extraVideoMapFilename != "" {
+			mapManifests[extraVideoMapFilename], err = sim.LoadVideoMapManifest(extraVideoMapFilename)
+			if err != nil {
+				lg.Errorf("%s: %v", extraVideoMapFilename, err)
+				os.Exit(1)
+			}
 		}
-
-		if strings.HasSuffix(path, "-videomaps.gob") || strings.HasSuffix(path, "-videomaps.gob.zst") {
-			mapManifests[path], err = sim.LoadVideoMapManifest(path)
-		}
-
-		return err
-	})
-	if err != nil {
-		lg.Errorf("error loading videomaps: %v", err)
-		os.Exit(1)
 	}
 
 	lg.Infof("scenario/video map manifest load time: %s\n", time.Since(start))
-
-	// Load the video map specified on the command line, if any.
-	if extraVideoMapFilename != "" {
-		mapManifests[extraVideoMapFilename], err = sim.LoadVideoMapManifest(extraVideoMapFilename)
-		if err != nil {
-			lg.Errorf("%s: %v", extraVideoMapFilename, err)
-			os.Exit(1)
-		}
-	}
 
 	// Final tidying before we return the loaded scenarios.
 	for tname, tracon := range scenarioGroups {
@@ -1660,15 +1675,21 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 				scenarioNames[scenarioName] = groupName
 			}
 
-			// Make sure we have what we need in terms of video maps
-			fa := &sgroup.FacilityAdaptation
-			if vf := fa.VideoMapFile; vf == "" {
-				e.ErrorString("no \"video_map_file\" specified")
-			} else if manifest, ok := mapManifests[vf]; !ok {
-				e.ErrorString("no manifest for video map %q found. Options: %s", vf,
-					strings.Join(util.SortedMapKeys(mapManifests), ", "))
-			} else { // if tracon
-				sgroup.PostDeserialize(e, catalogs, manifest)
+			if skipVideoMaps {
+				// When skipping video maps, still call PostDeserialize but with nil manifest
+				// to initialize catalogs and set default values
+				sgroup.PostDeserialize(e, catalogs, nil)
+			} else {
+				// Make sure we have what we need in terms of video maps
+				fa := &sgroup.FacilityAdaptation
+				if vf := fa.VideoMapFile; vf == "" {
+					e.ErrorString("no \"video_map_file\" specified")
+				} else if manifest, ok := mapManifests[vf]; !ok {
+					e.ErrorString("no manifest for video map %q found. Options: %s", vf,
+						strings.Join(util.SortedMapKeys(mapManifests), ", "))
+				} else {
+					sgroup.PostDeserialize(e, catalogs, manifest)
+				}
 			}
 
 			e.Pop()
@@ -1678,33 +1699,43 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 
 	// Validate the extra scenario separately with its own error logger
 	if extraScenario != nil {
-		var extraE util.ErrorLogger
-		extraE.Push("TRACON " + extraScenarioFacility)
-		extraE.Push("Scenario group " + extraScenario.Name)
-
-		// Make sure we have what we need in terms of video maps
-		fa := &extraScenario.FacilityAdaptation
-		if vf := fa.VideoMapFile; vf == "" {
-			extraE.ErrorString("no \"video_map_file\" specified")
-		} else if manifest, ok := mapManifests[vf]; !ok {
-			extraE.ErrorString("no manifest for video map %q found. Options: %s", vf,
-				strings.Join(util.SortedMapKeys(mapManifests), ", "))
-		} else {
-			extraScenario.PostDeserialize(&extraE, catalogs, manifest)
-		}
-
-		extraE.Pop()
-		extraE.Pop()
-
-		if extraE.HaveErrors() {
-			extraScenarioErrors = extraE.String()
-			lg.Warnf("Extra scenario file has validation errors and will not be loaded: %s", extraScenarioFilename)
-		} else {
-			// Only add to scenarioGroups if validation succeeded
+		if skipVideoMaps {
+			// When skipping video maps, still call PostDeserialize but with nil manifest
+			var extraE util.ErrorLogger
+			extraScenario.PostDeserialize(&extraE, catalogs, nil)
 			if scenarioGroups[extraScenarioFacility] == nil {
 				scenarioGroups[extraScenarioFacility] = make(map[string]*scenarioGroup)
 			}
 			scenarioGroups[extraScenarioFacility][extraScenario.Name] = extraScenario
+		} else {
+			var extraE util.ErrorLogger
+			extraE.Push("TRACON " + extraScenarioFacility)
+			extraE.Push("Scenario group " + extraScenario.Name)
+
+			// Make sure we have what we need in terms of video maps
+			fa := &extraScenario.FacilityAdaptation
+			if vf := fa.VideoMapFile; vf == "" {
+				extraE.ErrorString("no \"video_map_file\" specified")
+			} else if manifest, ok := mapManifests[vf]; !ok {
+				extraE.ErrorString("no manifest for video map %q found. Options: %s", vf,
+					strings.Join(util.SortedMapKeys(mapManifests), ", "))
+			} else {
+				extraScenario.PostDeserialize(&extraE, catalogs, manifest)
+			}
+
+			extraE.Pop()
+			extraE.Pop()
+
+			if extraE.HaveErrors() {
+				extraScenarioErrors = extraE.String()
+				lg.Warnf("Extra scenario file has validation errors and will not be loaded: %s", extraScenarioFilename)
+			} else {
+				// Only add to scenarioGroups if validation succeeded
+				if scenarioGroups[extraScenarioFacility] == nil {
+					scenarioGroups[extraScenarioFacility] = make(map[string]*scenarioGroup)
+				}
+				scenarioGroups[extraScenarioFacility][extraScenario.Name] = extraScenario
+			}
 		}
 	}
 
@@ -1739,7 +1770,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 // ListAllScenarios returns a sorted list of all available scenarios in TRACON/scenario format
 func ListAllScenarios(scenarioFilename, videoMapFilename string, lg *log.Logger) ([]string, error) {
 	var e util.ErrorLogger
-	scenarioGroups, _, _, _ := LoadScenarioGroups(scenarioFilename, videoMapFilename, &e, lg)
+	scenarioGroups, _, _, _ := LoadScenarioGroups(scenarioFilename, videoMapFilename, true /* skipVideoMaps */, &e, lg)
 	if e.HaveErrors() {
 		return nil, fmt.Errorf("failed to load scenarios")
 	}
@@ -1786,13 +1817,8 @@ func CreateLaunchConfig(scenario *scenario, scenarioGroup *scenarioGroup) sim.La
 	}
 
 	// Check for VFR reporting regions
-	haveVFRReportingRegions := false
-	for _, cfg := range scenarioGroup.FacilityAdaptation.ControllerConfigs {
-		if cfg.FlightFollowingAirspace != nil {
-			haveVFRReportingRegions = true
-			break
-		}
-	}
+	haveVFRReportingRegions := util.SeqContainsFunc(maps.Values(scenarioGroup.FacilityAdaptation.ControllerConfigs),
+		func(cfg *sim.STARSControllerConfig) bool { return cfg.FlightFollowingAirspace != nil })
 
 	// Create proper LaunchConfig
 	return sim.MakeLaunchConfig(

@@ -45,7 +45,7 @@ func (g *glfwPlatform) GetMouse() *MouseState {
 		Wheel:    [2]float32{wx, wy},
 	}
 
-	for b := MouseButtonPrimary; b < MouseButtonCount; b++ {
+	for b := range MouseButtonCount {
 		m.Down[b] = imgui.IsMouseDown(b)
 		m.Released[b] = imgui.IsMouseReleased(b)
 		m.Clicked[b] = imgui.IsMouseClickedBool(b)
@@ -65,13 +65,13 @@ type KeyboardState struct {
 	Input string
 	// A key shows up here once each time it is pressed (though repeatedly
 	// if key repeat kicks in.)
-	Pressed   map[imgui.Key]interface{}
-	HeldFKeys map[imgui.Key]interface{}
+	Pressed   map[imgui.Key]any
+	HeldFKeys map[imgui.Key]any
 }
 
 func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 	keyboard := &KeyboardState{
-		Pressed:   make(map[imgui.Key]interface{}),
+		Pressed:   make(map[imgui.Key]any),
 		HeldFKeys: g.heldFKeys,
 	}
 
@@ -132,7 +132,48 @@ func (g *glfwPlatform) GetKeyboard() *KeyboardState {
 	if imgui.IsKeyPressedBool(imgui.KeyInsert) {
 		keyboard.Pressed[imgui.KeyInsert] = nil
 	}
-	for i := 0; i < 16; i++ { // 16 f-keys on the STARS keyboard
+	// For PTT
+	if imgui.IsKeyPressedBool(imgui.KeySemicolon) {
+		keyboard.Pressed[imgui.KeySemicolon] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyComma) {
+		keyboard.Pressed[imgui.KeyComma] = nil
+	}
+
+	// Shift, Super, Control, Alt
+	if imgui.IsKeyPressedBool(imgui.KeyLeftShift) {
+		keyboard.Pressed[imgui.KeyLeftShift] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyLeftSuper) {
+		keyboard.Pressed[imgui.KeyLeftSuper] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyLeftCtrl) {
+		keyboard.Pressed[imgui.KeyLeftCtrl] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyLeftAlt) {
+		keyboard.Pressed[imgui.KeyLeftAlt] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyRightShift) {
+		keyboard.Pressed[imgui.KeyRightShift] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyRightSuper) {
+		keyboard.Pressed[imgui.KeyRightSuper] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyRightCtrl) {
+		keyboard.Pressed[imgui.KeyRightCtrl] = nil
+	}
+	if imgui.IsKeyPressedBool(imgui.KeyRightAlt) {
+		keyboard.Pressed[imgui.KeyRightAlt] = nil
+	}
+
+	// F15-24
+	for k := imgui.KeyF15; k <= imgui.KeyF24; k++ {
+		if imgui.IsKeyPressedBool(k) {
+			keyboard.Pressed[k] = nil
+		}
+	}
+
+	for i := range 16 { // 16 f-keys on the STARS keyboard
 		k := imgui.KeyF1 + imgui.Key(i)
 		if imgui.IsKeyPressedBool(k) {
 			keyboard.Pressed[k] = nil

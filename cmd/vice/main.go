@@ -9,6 +9,7 @@ package main
 // exits.
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"net"
@@ -37,6 +38,7 @@ import (
 
 	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/apenwarr/fixconsole"
+	"github.com/shirou/gopsutil/cpu"
 )
 
 var (
@@ -65,6 +67,7 @@ var (
 	replayDuration    = flag.String("replay-duration", "3600", "replay duration in seconds or 'until:CALLSIGN'")
 	waypointCommands  = flag.String("waypoint-commands", "", "waypoint commands in format 'FIX:CMD CMD CMD, FIX:CMD ...,'")
 	starsRandoms      = flag.Bool("starsrandoms", false, "run STARS command fuzz testing with full UI (randomly picks a scenario)")
+	sttEval           = flag.Bool("stteval", false, "record audio and evaluate all whisper models with STT pipeline")
 )
 
 func setupSignalHandler(profiler *util.Profiler) {
@@ -122,6 +125,11 @@ func main() {
 	// Initialize the logging system first and foremost.
 	lg := log.New(*runServer, *logLevel, *logDir)
 
+	// Log CPU information for debugging hardware compatibility issues.
+	if cpuInfo, err := cpu.Info(); err == nil && len(cpuInfo) > 0 {
+		lg.Infof("CPU: %s", cpuInfo[0].ModelName)
+	}
+
 	profiler, err := util.CreateProfiler(*cpuprofile, *memprofile)
 	if err != nil {
 		lg.Errorf("%v", err)
@@ -158,12 +166,12 @@ func main() {
 		cliInit()
 
 		var e util.ErrorLogger
-		scenarioGroups, _, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, &e, lg)
+		scenarioGroups, _, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, false /* skipVideoMaps */, &e, lg)
 
 		// Check emergencies.json
 		loadEmergencies(&e)
 
-		videoMaps := make(map[string]interface{})
+		videoMaps := make(map[string]any)
 		for _, sgs := range scenarioGroups {
 			for _, sg := range sgs {
 				if sg.FacilityAdaptation.VideoMapFile != "" {
@@ -180,10 +188,10 @@ func main() {
 			os.Exit(1)
 		}
 
-		scenarioAirports := make(map[string]map[string]interface{})
+		scenarioAirports := make(map[string]map[string]any)
 		for tracon, scenarios := range scenarioGroups {
 			if scenarioAirports[tracon] == nil {
-				scenarioAirports[tracon] = make(map[string]interface{})
+				scenarioAirports[tracon] = make(map[string]any)
 			}
 			for _, sg := range scenarios {
 				for name := range sg.Airports {
@@ -219,7 +227,7 @@ func main() {
 		tracon, scenarioName := parts[0], parts[1]
 
 		var e util.ErrorLogger
-		scenarioGroups, configs, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, &e, lg)
+		scenarioGroups, configs, _, _ := server.LoadScenarioGroups(*scenarioFilename, *videoMapFilename, true /* skipVideoMaps */, &e, lg)
 		if e.HaveErrors() {
 			e.PrintErrors(lg)
 			os.Exit(1)
@@ -331,6 +339,11 @@ func main() {
 			e.PrintErrors(lg)
 		}
 	} else {
+		// Enable STT evaluation mode if requested
+		if *sttEval {
+			client.SetSTTEvalEnabled(true)
+			fmt.Println("STT evaluation mode enabled - voice commands will be evaluated against all models")
+		}
 		var stats Stats
 		var render renderer.Renderer
 		var plat platform.Platform
@@ -367,6 +380,11 @@ func main() {
 		}
 		renderer.FontsInit(render, plat)
 
+		// Capture GPU info for crash reports now that OpenGL is initialized
+		gpuVendor, gpuRenderer := plat.GetGPUInfo()
+		lg.SetGPUInfo(gpuVendor, gpuRenderer)
+		lg.Infof("GPU: %s (%s)", gpuRenderer, gpuVendor)
+
 		eventStream := sim.NewEventStream(lg)
 
 		uiInit(render, plat, config, eventStream, lg)
@@ -376,6 +394,33 @@ func main() {
 		}
 
 		av.InitDB()
+
+		// Start loading the whisper model in the background so it's ready
+		// when the user first presses PTT. Use cached model if same device and benchmark index.
+		client.PreloadWhisperModel(lg, config.WhisperModelName, config.WhisperDeviceID, config.WhisperBenchmarkIndex, config.WhisperRealtimeFactor, func(modelName, deviceID string, benchmarkIndex int, realtimeFactor float64) {
+			config.WhisperModelName = modelName
+			config.WhisperDeviceID = deviceID
+			config.WhisperBenchmarkIndex = benchmarkIndex
+			config.WhisperRealtimeFactor = realtimeFactor
+		})
+
+		// Start loading the TTS model in the background so it's ready
+		// when pilot readbacks or contacts are needed.
+		client.PreloadTTSModel(lg)
+
+		// Check for whisper model errors asynchronously and show dialog if CPU not supported.
+		go func() {
+			if err := client.WhisperModelError(); err != nil {
+				if errors.Is(err, client.ErrCPUNotSupported) {
+					ShowErrorDialog(plat, lg, "Speech-to-text is unavailable on this computer.\n\n"+
+						"Your CPU does not support the AVX instruction set, which is required "+
+						"for the speech recognition engine. You can still use vice, but the "+
+						"push-to-talk voice command feature will not work.\n\n"+
+						"CPUs manufactured since approximately 2011 (Intel Sandy Bridge / AMD Bulldozer) "+
+						"typically support AVX.")
+				}
+			}
+		}()
 
 		// Initialize navigation logging if requested
 		nav.InitNavLog(*navLog, *navLogCategories, *navLogCallsign)
@@ -390,7 +435,7 @@ func main() {
 		var mgr *client.ConnectionManager
 		var errorLogger util.ErrorLogger
 		var extraScenarioErrors string
-		mgr, errorLogger, extraScenarioErrors = client.MakeServerManager(*serverAddress, *scenarioFilename, *videoMapFilename, lg,
+		mgr, errorLogger, extraScenarioErrors = client.MakeServerManager(*serverAddress, *scenarioFilename, *videoMapFilename, &config.DisableTextToSpeech, lg,
 			func(c *client.ControlClient) { // updated client
 				if c != nil {
 					// Determine if this is a STARS or ERAM scenario
@@ -408,6 +453,17 @@ func main() {
 					if *waypointCommands != "" {
 						c.SetWaypointCommands(*waypointCommands)
 					}
+
+					// Set crash report RPC client - prefer remote server so crashes
+					// are reported to the public server even for local sims
+					if mgr.RemoteServer != nil && mgr.RemoteServer.RPCClient != nil {
+						lg.SetCrashReportClient(mgr.RemoteServer.RPCClient.Client)
+					} else if mgr.LocalServer != nil && mgr.LocalServer.RPCClient != nil {
+						lg.SetCrashReportClient(mgr.LocalServer.RPCClient.Client)
+					}
+				} else {
+					// Clear crash report client when disconnecting
+					lg.SetCrashReportClient(nil)
 				}
 				uiResetControlClient(c, plat, lg)
 				controlClient = c
@@ -424,7 +480,7 @@ func main() {
 
 				case server.ErrServerDisconnected:
 					ShowErrorDialog(plat, lg, "Lost connection to the vice server.")
-					uiShowConnectDialog(mgr, false, config, plat, lg)
+					uiShowConnectOrBenchmarkDialog(mgr, false, config, plat, lg)
 
 				default:
 					lg.Errorf("Server connection error: %v", err)
@@ -441,12 +497,9 @@ func main() {
 			ShowErrorDialog(plat, lg, "Errors in additional scenario file (scenario will not be loaded):\n\n%s", extraScenarioErrors)
 		}
 
-		// Show warning if server is unreachable and TTS is unavailable
-		if mgr.LocalServer != nil && !mgr.LocalServer.HaveTTS {
-			ShowErrorDialog(plat, lg,
-				"Unable to connect to vice server.\n\n"+
-					"Running in local-only mode without text-to-speech support.")
-		}
+		// Wait for whisper benchmark to complete before loading saved sim.
+		// This shows a progress dialog if benchmarking is still in progress.
+		WaitForWhisperBenchmark(render, plat, lg)
 
 		// After config.Activate(), if we have a loaded sim, get configured for it.
 		if config.Sim != nil && !*resetSim && !*starsRandoms {
@@ -506,7 +559,7 @@ func main() {
 		}
 
 		if !mgr.Connected() && !*starsRandoms {
-			uiShowConnectDialog(mgr, false, config, plat, lg)
+			uiShowConnectOrBenchmarkDialog(mgr, false, config, plat, lg)
 		}
 
 		///////////////////////////////////////////////////////////////////////////
@@ -514,6 +567,7 @@ func main() {
 		lg.Info("Starting main loop")
 
 		stats.startTime = time.Now()
+		ttsErrorShown := false
 
 		for {
 			plat.SetWindowTitle("vice: " + controlClient.Status())
@@ -533,6 +587,20 @@ func main() {
 			}
 
 			mgr.Update(eventStream, plat, lg)
+
+			// Report whisper benchmark to server (only sends once, when benchmark done and server available)
+			client.ReportWhisperBenchmark(mgr.RemoteServer, lg)
+
+			// Check for TTS load error (only shows dialog once)
+			if !ttsErrorShown {
+				if err, done := client.CheckTTSLoadError(); done && err != nil {
+					ttsErrorShown = true
+					ShowErrorDialog(plat, lg, "Text-to-speech is unavailable: %v\n\n"+
+						"Pilot transmissions will still appear as text in the messages pane.", err)
+				} else if done {
+					ttsErrorShown = true // Loading succeeded, don't check again
+				}
+			}
 
 			// Inform imgui about input events from the user.
 			plat.ProcessEvents()
@@ -579,6 +647,12 @@ func main() {
 				if fuzzController != nil {
 					fuzzController.PrintStatistics()
 				}
+
+				// Stop any active streaming STT session to prevent hanging on quit
+				if controlClient != nil {
+					controlClient.StopStreamingSTT(lg)
+				}
+
 				saveSim := mgr.ClientIsLocal() && fuzzController == nil // Don't save fuzz sims
 				config.SaveIfChanged(render, plat, controlClient, saveSim, lg)
 				mgr.Disconnect()

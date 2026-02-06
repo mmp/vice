@@ -18,6 +18,8 @@ import (
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
+
+	"github.com/brunoga/deep"
 )
 
 // Errors used by the nav package
@@ -77,6 +79,44 @@ type DeferredNavHeading struct {
 	Hold    *FlyHold
 	// For direct fix, this will be the updated set of waypoints.
 	Waypoints []av.Waypoint
+}
+
+// NavSnapshot captures all controller-modifiable state in Nav for rollback purposes.
+// It does NOT include FlightState (aircraft physical position/heading/altitude) -
+// only control assignments that can be rolled back.
+type NavSnapshot struct {
+	Altitude           NavAltitude
+	Speed              NavSpeed
+	Heading            NavHeading
+	Approach           NavApproach
+	Waypoints          av.WaypointArray
+	DeferredNavHeading *DeferredNavHeading
+	FixAssignments     map[string]NavFixAssignment
+}
+
+// TakeSnapshot captures the current controller-modifiable nav state for later rollback.
+func (nav *Nav) TakeSnapshot() NavSnapshot {
+	return deep.MustCopy(NavSnapshot{
+		Altitude:           nav.Altitude,
+		Speed:              nav.Speed,
+		Heading:            nav.Heading,
+		Approach:           nav.Approach,
+		Waypoints:          nav.Waypoints,
+		DeferredNavHeading: nav.DeferredNavHeading,
+		FixAssignments:     nav.FixAssignments,
+	})
+}
+
+// RestoreSnapshot restores nav state from a previously captured snapshot.
+// The aircraft's physical state (FlightState) is NOT restored - only control assignments.
+func (nav *Nav) RestoreSnapshot(snap NavSnapshot) {
+	nav.Altitude = snap.Altitude
+	nav.Speed = snap.Speed
+	nav.Heading = snap.Heading
+	nav.Approach = snap.Approach
+	nav.Waypoints = snap.Waypoints
+	nav.DeferredNavHeading = snap.DeferredNavHeading
+	nav.FixAssignments = snap.FixAssignments
 }
 
 type FlightState struct {
@@ -161,6 +201,7 @@ type NavApproach struct {
 	PassedFAF         bool
 	NoPT              bool
 	AtFixClearedRoute []av.Waypoint
+	AtFixInterceptFix string // fix where aircraft should intercept the localizer
 }
 
 type NavFixAssignment struct {
@@ -392,6 +433,35 @@ func (nav *Nav) AssignedHeading() (float32, bool) {
 		return *nav.Heading.Assigned, true
 	}
 	return 0, false
+}
+
+// DepartureHeadingState describes the state of a departure's heading assignment.
+type DepartureHeadingState int
+
+const (
+	// NoHeading indicates no heading is assigned or upcoming
+	NoHeading DepartureHeadingState = iota
+	// OnHeading indicates the aircraft is currently flying an assigned heading
+	OnHeading
+	// TurningToHeading indicates the aircraft is about to turn to a heading
+	TurningToHeading
+)
+
+// DepartureHeading returns the heading a departure will fly and its state.
+// Returns the heading and state based on:
+// - OnHeading: aircraft has an assigned heading
+// - TurningToHeading: first waypoint has a heading (about to turn)
+// - NoHeading: no assigned heading and first waypoint has no heading
+func (nav *Nav) DepartureHeading() (int, DepartureHeadingState) {
+	// If we have an assigned heading, we're flying it
+	if nav.Heading.Assigned != nil {
+		return int(*nav.Heading.Assigned), OnHeading
+	}
+	// If the first waypoint has a heading, we're about to turn to it
+	if len(nav.Waypoints) > 0 && nav.Waypoints[0].Heading != 0 {
+		return nav.Waypoints[0].Heading, TurningToHeading
+	}
+	return 0, NoHeading
 }
 
 // EnqueueHeading enqueues the given heading assignment to be followed a
@@ -673,20 +743,46 @@ func (nav *Nav) Summary(fp av.FlightPlan, model *wx.Model, simTime time.Time, lg
 	return strings.Join(lines, "\n")
 }
 
-func (nav *Nav) DepartureMessage() *av.RadioTransmission {
+func (nav *Nav) DepartureMessage(reportHeading bool) *av.RadioTransmission {
+	rt := &av.RadioTransmission{Type: av.RadioTransmissionContact}
+
+	// Altitude information
 	target := util.Select(nav.Altitude.Assigned != nil, nav.Altitude.Assigned, nav.Altitude.Cleared)
 	if target != nil && *target-nav.FlightState.Altitude > 100 {
 		// one of the two should be set, but just in case...
-		return av.MakeContactTransmission("[at|] {alt} climbing {alt}", nav.FlightState.Altitude, *target)
+		rt.Add("[at|] {alt} climbing {alt}", nav.FlightState.Altitude, *target)
 	} else {
-		return av.MakeContactTransmission("[at|] {alt}", nav.FlightState.Altitude)
+		rt.Add("[at|] {alt}", nav.FlightState.Altitude)
 	}
+
+	// Heading information for departures with varied exit headings
+	if reportHeading {
+		hdg, state := nav.DepartureHeading()
+		switch state {
+		case OnHeading:
+			rt.Add("[heading {hdg}|on a {hdg} heading]", hdg)
+		case TurningToHeading:
+			rt.Add("[turning to|about to turn to] [heading|] {hdg}", hdg)
+		}
+	}
+
+	return rt
 }
 
-func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string) *av.RadioTransmission {
+func (nav *Nav) ContactMessage(reportingPoints []av.ReportingPoint, star string, reportHeading bool, isDeparture bool) *av.RadioTransmission {
 	var resp av.RadioTransmission
 
-	if hdg, ok := nav.AssignedHeading(); ok {
+	if isDeparture && reportHeading {
+		// Departure with varied headings
+		hdg, state := nav.DepartureHeading()
+		switch state {
+		case OnHeading:
+			resp.Add("[heading {hdg}|on a {hdg} heading]", hdg)
+		case TurningToHeading:
+			resp.Add("[turning to|about to turn to] [heading|] {hdg}", hdg)
+		}
+	} else if hdg, ok := nav.AssignedHeading(); ok && reportHeading {
+		// Arrival being vectored
 		resp.Add("[heading {hdg}|on a {hdg} heading]", hdg)
 	} else if star != "" {
 		if nav.Altitude.Assigned == nil {

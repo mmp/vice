@@ -1,0 +1,68 @@
+{
+  "time": "2026-01-31T03:42:37.620173541Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:671:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "euro five two zero hotel mike go ahead",
+  "whisper_duration_ms": 244.627,
+  "audio_duration_ms": 2120,
+  "processor": "GPU: NVIDIA GeForce GTX 1060 3GB (3179MB)",
+  "whisper_model": "ggml-base.en-jlvatc-q5_0.bin",
+  "callsign": "N520HM",
+  "command": "GA",
+  "stt_aircraft": {
+    "november five two zero hotel mike": {
+      "Callsign": "N520HM",
+      "AircraftType": "",
+      "Fixes": {
+        "Danbury": "KDXR"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 1516,
+      "State": "",
+      "ControllerFrequency": "2G",
+      "TrackingController": "",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"euro five two zero hotel mike go ahead\"",
+    "[local-stt] normalized words: [euro 5 2 0 hotel mike go ahead]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"euro\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"520\" Type=1 Value=520",
+    "[local-stt]   token[2]: Text=\"hotel\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"mike\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"go\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"ahead\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 6 tokens, 1 aircraft",
+    "[local-stt]   candidate \"november five two zero hotel mike\" (ICAO=\"N520HM\"): score=0.80 consumed=4",
+    "[local-stt]   candidate \"november five two zero hotel mike\" at pos 1: score=0.80 (adjusted=0.72) consumed=3",
+    "[local-stt]   accepted: \"N520HM\" (conf=0.80, consumed=4, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"N520HM\" SpokenKey=\"november five two zero hotel mike\" Conf=0.80 Consumed=4",
+    "[local-stt] aircraft context: State=\"\" Altitude=1516 Fixes=1 Approaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Danbury\" -\u003e \"KDXR\"",
+    "[local-stt] command tokens after disregard: 2",
+    "[local-stt]   token[0]: Text=\"go\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"ahead\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"go\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 2 tokens",
+    "[local-stt]   matched command: \"GA\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[GA] (avgConf=1.00)",
+    "[local-stt] parsed commands: [GA] (conf=1.00)",
+    "[local-stt] validated commands: [GA] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"N520HM GA\" (conf=0.80, time=0s) ==="
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "time": "2026-01-29T17:40:30.422900919Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:671:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "UPS Four Fourteen heavy turn five degrees left",
+  "whisper_duration_ms": 416.17,
+  "audio_duration_ms": 2760,
+  "processor": "GPU: NVIDIA GeForce RTX 3090 (24326MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "UPS414",
+  "command": "T5L",
+  "stt_aircraft": {
+    "Brickyard 61 15": {
+      "Callsign": "RPA6115",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Dillon": "DYLIN",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Mart": "MARRT",
+        "Merser": "MERSR",
+        "Metro": "METRO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Philbo": "PHLBO",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 8141,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "U.P.S. four 14 heavy": {
+      "Callsign": "UPS414",
+      "AircraftType": "A306",
+      "Fixes": {
+        "Buzzed": "BUZZD",
+        "Gimme": "GIMEE",
+        "Izeko": "IZEKO",
+        "Newark": "KEWR",
+        "Pattern": "PATRN",
+        "Robbinsville": "RBV",
+        "Zavpi": "ZAVPI"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Buzzed": "BUZZD",
+          "Gimme": "GIMEE",
+          "Izeko": "IZEKO",
+          "Pattern": "PATRN",
+          "Zavpi": "ZAVPI"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4A",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"UPS Four Fourteen heavy turn five degrees left\"",
+    "[local-stt] normalized words: [ups 4 14 heavy turn turn 5 degrees left]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"ups\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"414\" Type=1 Value=414",
+    "[local-stt]   token[2]: Text=\"heavy\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"5\" Type=1 Value=5",
+    "[local-stt]   token[6]: Text=\"degrees\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 8 tokens, 2 aircraft",
+    "[local-stt]   candidate \"Brickyard 61 15\" (ICAO=\"RPA6115\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"U.P.S. four 14 heavy\" (ICAO=\"UPS414\"): score=1.10 consumed=3",
+    "[local-stt]   candidate \"U.P.S. four 14 heavy\" at pos 1: score=0.80 (adjusted=0.72) consumed=2",
+    "[local-stt]   accepted: \"UPS414\" (conf=1.10, consumed=3, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"UPS414\" SpokenKey=\"U.P.S. four 14 heavy\" Conf=1.10 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=6000 Fixes=7 Approaches=1 AssignedApproach=\"ILS Runway 22L\" LAHSORunways=[11 29]",
+    "[local-stt]   fix: \"Buzzed\" -\u003e \"BUZZD\"",
+    "[local-stt]   fix: \"Robbinsville\" -\u003e \"RBV\"",
+    "[local-stt]   fix: \"Newark\" -\u003e \"KEWR\"",
+    "[local-stt]   fix: \"Pattern\" -\u003e \"PATRN\"",
+    "[local-stt]   fix: \"Izeko\" -\u003e \"IZEKO\"",
+    "[local-stt]   fix: \"Gimme\" -\u003e \"GIMEE\"",
+    "[local-stt]   fix: \"Zavpi\" -\u003e \"ZAVPI\"",
+    "[local-stt]   approach: \"I L S runway two two left\" -\u003e \"I2L\"",
+    "[local-stt] command tokens after disregard: 5",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"5\" Type=1 Value=5",
+    "[local-stt]   token[3]: Text=\"degrees\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"turn\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 5 tokens",
+    "[local-stt]   matched command: \"T5L\" (conf=1.00, consumed=5, isThen=false)",
+    "[local-stt] ParseCommands: result=[T5L] (avgConf=1.00)",
+    "[local-stt] parsed commands: [T5L] (conf=1.00)",
+    "[local-stt] validated commands: [T5L] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"UPS414 T5L\" (conf=1.10, time=697.6µs) ==="
+  ]
+}

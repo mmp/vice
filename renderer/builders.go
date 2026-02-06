@@ -6,6 +6,7 @@ package renderer
 
 import (
 	gomath "math"
+	"slices"
 	"sync"
 
 	"github.com/mmp/vice/math"
@@ -93,13 +94,13 @@ func (l *LinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int) {
 	circle := math.CirclePoints(nsegs)
 
 	idx := int32(len(l.p))
-	for i := 0; i < nsegs; i++ {
+	for i := range nsegs {
 		// Translate the points to be centered around the point p with the
 		// given radius and add them to the vertex buffer.
 		pi := [2]float32{p[0] + radius*circle[i][0], p[1] + radius*circle[i][1]}
 		l.p = append(l.p, pi)
 	}
-	for i := 0; i < nsegs; i++ {
+	for i := range nsegs {
 		// Initialize the index buffer; note that the first vertex is
 		// reused as the endpoint of the last line segment.
 		l.indices = append(l.indices, idx+int32(i), idx+int32((i+1)%nsegs))
@@ -110,7 +111,7 @@ func (l *LinesDrawBuilder) AddLatLongCircle(p math.Point2LL, nmPerLongitude floa
 	// We want vertices in lat-long space but will draw the circle in
 	// nm space since distance is uniform there.
 	pc := math.LL2NM(p, nmPerLongitude)
-	for i := 0; i < nsegs; i++ {
+	for i := range nsegs {
 		pt := func(i int) [2]float32 {
 			a := float32(i) / float32(nsegs) * 2 * gomath.Pi
 			v := math.SinCos(a)
@@ -230,7 +231,7 @@ func (l *ColoredLinesDrawBuilder) AddLineLoop(color RGB, p [][2]float32) {
 func (l *ColoredLinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int, color RGB) {
 	l.LinesDrawBuilder.AddCircle(p, radius, nsegs)
 
-	for i := 0; i < nsegs; i++ {
+	for range nsegs {
 		l.color = append(l.color, color)
 	}
 }
@@ -241,27 +242,19 @@ func (l *ColoredLinesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs 
 // angles. If start > end, the gap is assumed to wrap around 360 degrees.
 func (l *ColoredLinesDrawBuilder) AddGappedCircle(p [2]float32, radius float32, nsegs int, gaps [][2]float32, color RGB) {
 	circle := math.CirclePoints(nsegs)
-	for i := 0; i < nsegs; i++ {
+	for i := range nsegs {
 		start := float32(i) / float32(nsegs) * 360
 		end := float32(i+1) / float32(nsegs) * 360
 		diff := math.Mod(end-start+360, 360)
 		mid := math.Mod(start+diff/2, 360)
 
-		inGap := false
-		for _, g := range gaps {
+		inGap := util.SeqContainsFunc(slices.Values(gaps), func(g [2]float32) bool {
 			gs, ge := g[0], g[1]
 			if gs <= ge {
-				if mid >= gs && mid <= ge {
-					inGap = true
-					break
-				}
-			} else {
-				if mid >= gs || mid <= ge {
-					inGap = true
-					break
-				}
+				return mid >= gs && mid <= ge
 			}
-		}
+			return mid >= gs || mid <= ge
+		})
 		if inGap {
 			continue
 		}
@@ -336,11 +329,11 @@ func (t *TrianglesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int
 
 	idx := int32(len(t.p))
 	t.p = append(t.p, p) // center point
-	for i := 0; i < nsegs; i++ {
+	for i := range nsegs {
 		pi := [2]float32{p[0] + radius*circle[i][0], p[1] + radius*circle[i][1]}
 		t.p = append(t.p, pi)
 	}
-	for i := 0; i < nsegs; i++ {
+	for i := range nsegs {
 		t.indices = append(t.indices, idx, idx+1+int32(i), idx+1+int32((i+1)%nsegs))
 	}
 }
@@ -348,7 +341,7 @@ func (t *TrianglesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int
 func (t *TrianglesDrawBuilder) AddLatLongCircle(p [2]float32, nmPerLongitude float32, r float32, nsegs int) {
 	// Like LinesDrawBuilder AddLatLongCircle, do the work in nm space
 	pc := math.LL2NM(p, nmPerLongitude)
-	for i := 0; i < nsegs; i++ {
+	for i := range nsegs {
 		pt := func(i int) [2]float32 {
 			a := float32(i) / float32(nsegs) * 2 * gomath.Pi
 			v := math.SinCos(a)
@@ -420,7 +413,7 @@ func (t *ColoredTrianglesDrawBuilder) AddQuad(p0, p1, p2, p3 [2]float32, rgb RGB
 // segments, nsegs, sets the tessellation rate for the circle.
 func (t *ColoredTrianglesDrawBuilder) AddCircle(p [2]float32, radius float32, nsegs int, rgb RGB) {
 	t.TrianglesDrawBuilder.AddCircle(p, radius, nsegs)
-	for i := 0; i < nsegs; i++ {
+	for range nsegs {
 		t.color = append(t.color, rgb)
 	}
 }

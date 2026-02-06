@@ -114,7 +114,7 @@ type Preferences struct {
 	QuickLookAll       bool
 	QuickLookAllIsPlus bool
 	QuickLookTCPs      map[string]bool // in map: is quicklooked; bool indicates QL+
-	DisabledQLRegions  map[string]interface{}
+	DisabledQLRegions  map[string]any
 
 	DisplayEmptyCoordinationLists bool
 
@@ -135,7 +135,7 @@ type Preferences struct {
 	DisableMCIWarnings bool
 	DisableMSAW        bool
 
-	VideoMapVisible map[int]interface{}
+	VideoMapVisible map[int]any
 
 	InhibitPositionSymOnUnassociatedPrimary bool // 4-29
 }
@@ -316,7 +316,7 @@ func (p *Preferences) Reset(ss client.SimState, sp *STARSPane) {
 	clear(p.RestrictionAreaSettings)
 
 	// Make the scenario's default video maps visible
-	p.VideoMapVisible = make(map[int]interface{})
+	p.VideoMapVisible = make(map[int]any)
 
 	for _, dm := range ss.ControllerDefaultVideoMaps {
 		if idx := slices.IndexFunc(sp.allVideoMaps, func(v radar.ClientVideoMap) bool { return v.Name == dm }); idx != -1 {
@@ -345,7 +345,7 @@ func makeDefaultPreferences() *Preferences {
 		prefs.AudioEffectEnabled[i] = false // These are all non-standard.
 	}
 
-	prefs.VideoMapVisible = make(map[int]interface{})
+	prefs.VideoMapVisible = make(map[int]any)
 
 	prefs.FusedRadarMode = true
 	prefs.LeaderLineDirection = math.North
@@ -450,7 +450,7 @@ func (p *Preferences) Activate(pl platform.Platform, sp *STARSPane) {
 	pl.SetAudioVolume(p.AudioVolume)
 
 	if p.VideoMapVisible == nil {
-		p.VideoMapVisible = make(map[int]interface{})
+		p.VideoMapVisible = make(map[int]any)
 	}
 	if p.RestrictionAreaSettings == nil {
 		p.RestrictionAreaSettings = make(map[int]*RestrictionAreaSettings)

@@ -190,10 +190,7 @@ func (s *Sim) triggerEmergency(idx int) bool {
 			return 0
 		}
 
-		humanAllocated := false
-		if fp := ac.NASFlightPlan; fp != nil {
-			humanAllocated = !s.isVirtualController(fp.ControllingController)
-		}
+		humanAllocated := !s.isVirtualController(ac.ControllerFrequency)
 		return util.Select(em.ApplicableTo.Applies(ac, humanAllocated), em.Weight, float32(0))
 	})
 	if !ok {
@@ -208,7 +205,7 @@ func (s *Sim) triggerEmergency(idx int) bool {
 
 	// Trigger the first stage immediately unless it's an external arrival that hasn't been handed
 	// off yet. Those trigger when controller contact happens in processEnququed.
-	if ac.IsAssociated() {
+	if ac.IsAssociated() && (!ac.IsDeparture() || ac.DepartureContactAltitude != 0) {
 		s.runEmergencyStage(ac)
 	} else {
 		// Mark as dormant until handoff; -1 signals the emergency should activate
@@ -461,11 +458,9 @@ func (s *Sim) runEmergencyStage(ac *Aircraft) {
 		transmit("[we'd like equipment standing by|request ARFF waiting for us|roll the trucks for us|we're gonna need the trucks by the runway]")
 	}
 
-	// Post the radio transmission
-	// Note: MakeContactTransmission automatically prepends controller position and callsign
+	// Queue the radio transmission (TTS will be synthesized when client requests it)
 	rt := av.MakeContactTransmission(strings.Join(transmission, ", "), args...)
-	controller := ac.NASFlightPlan.ControllingController
-	s.postRadioEvent(ac.ADSBCallsign, controller, *rt)
+	s.enqueueEmergencyTransmission(ac.ADSBCallsign, TCP(ac.ControllerFrequency), rt)
 
 	// Schedule next stage based on current stage's duration
 	es.CurrentStage++

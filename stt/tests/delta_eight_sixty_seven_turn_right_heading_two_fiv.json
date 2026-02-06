@@ -1,0 +1,317 @@
+{
+  "time": "2026-01-29T03:33:32.892593518Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:671:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Delta eight sixty seven turn right heading two five zero descend and maintain two thousand until established on the localizer cleared i l s runway two two left approach reduce speed one seven zero",
+  "whisper_duration_ms": 508.215,
+  "audio_duration_ms": 8520,
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "DAL867",
+  "command": "R250 D20 CI2L S170",
+  "stt_aircraft": {
+    "Delta eight 67": {
+      "Callsign": "DAL867",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Vocus": "VOCUS"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 3000,
+      "State": "on approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "JetBlue 83": {
+      "Callsign": "JBU83",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Harris": "HRRIS",
+        "Islay": "ISLAY",
+        "Lowland": "LWLND",
+        "Noley": "NOLEY",
+        "Vocus": "VOCUS",
+        "Wintah": "WINTA",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Looft-hansa 41 30 heavy": {
+      "Callsign": "DLH4130",
+      "AircraftType": "A346",
+      "Fixes": {
+        "Ada": "ADDDA",
+        "Boston": "KBOS",
+        "Leezi": "LEEZI",
+        "Noley": "NOLEY",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "OOSHN5",
+      "Altitude": 3392,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Provincial five 71": {
+      "Callsign": "PVL571",
+      "AircraftType": "DH8D",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Lawrence": "LWRNC"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Delta eight sixty seven turn right heading two five zero descend and maintain two thousand until established on the localizer cleared i l s runway two two left approach reduce speed one seven zero\"",
+    "[local-stt] normalized words: [delta 8 67 turn right heading 2 5 0 descend and maintain 2 thousand until established on the localizer cleared ils runway 2 2 left approach reduce speed 1 7 0]",
+    "[local-stt] tokens: 24",
+    "[local-stt]   token[0]: Text=\"delta\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"867\" Type=1 Value=867",
+    "[local-stt]   token[2]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"250\" Type=1 Value=250",
+    "[local-stt]   token[6]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"20\" Type=2 Value=20",
+    "[local-stt]   token[10]: Text=\"until\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"established\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"on\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[16]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[17]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[18]: Text=\"22\" Type=1 Value=22",
+    "[local-stt]   token[19]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[20]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[21]: Text=\"reduce\" Type=0 Value=-1",
+    "[local-stt]   token[22]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[23]: Text=\"170\" Type=1 Value=170",
+    "[local-stt] MatchCallsign: 24 tokens, 4 aircraft",
+    "[local-stt]   candidate \"Delta eight 67\" (ICAO=\"DAL867\"): score=1.10 consumed=2",
+    "[local-stt]   candidate \"Looft-hansa 41 30 heavy\" (ICAO=\"DLH4130\"): score=0.50 consumed=2",
+    "[local-stt]   candidate \"JetBlue 83\" (ICAO=\"JBU83\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Provincial five 71\" (ICAO=\"PVL571\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Delta eight 67\" at pos 1: score=0.80 (adjusted=0.72) consumed=1",
+    "[local-stt]   accepted: \"DAL867\" (conf=1.10, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"DAL867\" SpokenKey=\"Delta eight 67\" Conf=1.10 Consumed=2",
+    "[local-stt] aircraft context: State=\"on approach\" Altitude=3000 Fixes=2 Approaches=3 AssignedApproach=\"ILS Runway 22L\" LAHSORunways=[9 27 14 32 15L 33R 15R 33L]",
+    "[local-stt]   fix: \"Vocus\" -\u003e \"VOCUS\"",
+    "[local-stt]   fix: \"Boston\" -\u003e \"KBOS\"",
+    "[local-stt]   approach: \"I L S runway two two left\" -\u003e \"I2L\"",
+    "[local-stt]   approach: \"r-nav x-ray runway two two left\" -\u003e \"X2L\"",
+    "[local-stt]   approach: \"r-nav yankee runway two two left\" -\u003e \"Y2L\"",
+    "[local-stt] command tokens after disregard: 22",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"250\" Type=1 Value=250",
+    "[local-stt]   token[4]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"20\" Type=2 Value=20",
+    "[local-stt]   token[8]: Text=\"until\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"established\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"on\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"localizer\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[16]: Text=\"22\" Type=1 Value=22",
+    "[local-stt]   token[17]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[18]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[19]: Text=\"reduce\" Type=0 Value=-1",
+    "[local-stt]   token[20]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[21]: Text=\"170\" Type=1 Value=170",
+    "[local-stt]   position ID: found command keyword \"turn\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 22 tokens",
+    "[local-stt]   matched command: \"R250\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   matched command: \"D20\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   no match at token[8]=\"until\", skipping",
+    "[local-stt]   no match at token[9]=\"established\", skipping",
+    "[local-stt]   no match at token[10]=\"on\", skipping",
+    "[local-stt]   skipping filler word: \"the\"",
+    "[local-stt]   matched command: \"CI2L\" (conf=1.00, consumed=6, isThen=false)",
+    "[local-stt]   no match at token[18]=\"approach\", skipping",
+    "[local-stt]   matched command: \"S170\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt] ParseCommands: result=[R250 D20 CI2L S170] (avgConf=1.00)",
+    "[local-stt] parsed commands: [R250 D20 CI2L S170] (conf=1.00)",
+    "[local-stt] validated commands: [R250 D20 CI2L S170] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"DAL867 R250 D20 CI2L S170\" (conf=1.10, time=1.228917ms) ==="
+  ]
+}

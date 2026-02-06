@@ -26,6 +26,7 @@ var (
 	ErrServerDisconnected        = errors.New("Server disconnected")
 	ErrTCWAlreadyOccupied        = errors.New("TCW is already occupied")
 	ErrWeatherUnavailable        = errors.New("Unable to reach weather server")
+	ErrSTTUnavailable            = errors.New("STT service unavailable")
 )
 
 var errorStringToError = map[string]error{
@@ -108,6 +109,7 @@ var errorStringToError = map[string]error{
 	ErrRPCVersionMismatch.Error():        ErrRPCVersionMismatch,
 	ErrServerDisconnected.Error():        ErrServerDisconnected,
 	ErrTCWAlreadyOccupied.Error():        ErrTCWAlreadyOccupied,
+	ErrSTTUnavailable.Error():            ErrSTTUnavailable,
 }
 
 func TryDecodeError(e error) error {

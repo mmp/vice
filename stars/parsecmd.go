@@ -19,10 +19,6 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-func parserLog(format string, args ...any) {
-	// fmt.Printf(format, args...)
-}
-
 ///////////////////////////////////////////////////////////////////////////
 // Command Processing System
 //
@@ -264,8 +260,6 @@ func (sp *STARSPane) tryExecuteUserCommand(ctx *panes.Context, cmd string, click
 // It matches commands step-by-step, committing to the highest priority match at each step.
 // Returns (status, error, handled) where handled indicates if any command matched.
 func (sp *STARSPane) dispatchCommand(ctx *panes.Context, cmds []userCommand, input *CommandInput) (CommandStatus, error, bool) {
-	parserLog("\n[CMD] Input: %q, hasClick: %v\n", input.text, input.hasClick)
-
 	candidates := util.MapSlice(cmds, func(cmd userCommand) matchCandidate {
 		return matchCandidate{
 			cmd:       &cmd,
@@ -280,10 +274,8 @@ func (sp *STARSPane) dispatchCommand(ctx *panes.Context, cmds []userCommand, inp
 	} else if handled {
 		return status, nil, true
 	} else if firstErr != nil {
-		parserLog("[CMD] All matches failed, returning: %v\n", firstErr)
 		return CommandStatus{}, firstErr, true
 	} else {
-		parserLog("[CMD] No matches found\n")
 		return CommandStatus{}, nil, false
 	}
 }
@@ -297,7 +289,6 @@ func (sp *STARSPane) greedyMatchCommands(ctx *panes.Context, input *CommandInput
 		return len(mc.matchers) == 0 && mc.remaining == ""
 	}) {
 		if input.hasClick && !c.cmd.consumesClick {
-			parserLog("[CMD]   ✗ %s matched but didn't consume click\n", c.cmd.cmd)
 			continue
 		}
 
@@ -314,14 +305,11 @@ func (sp *STARSPane) greedyMatchCommands(ctx *panes.Context, input *CommandInput
 
 		// Bind args and call command function
 		boundArgs := c.cmd.bindArgs(sp, args)
-		parserLog("[CMD] Trying: %s\n", c.cmd.cmd)
 		status, err := c.cmd.call(sp, ctx, boundArgs)
 
 		if err == nil {
-			parserLog("[CMD] Success!\n")
 			return status, nil, true
 		}
-		parserLog("[CMD] Error from %s: %v\n", c.cmd.cmd, err)
 
 		if *firstErr == nil {
 			*firstErr = err
@@ -336,22 +324,14 @@ func (sp *STARSPane) greedyMatchCommands(ctx *panes.Context, input *CommandInput
 		if err != nil {
 			// Record the error but continue trying other candidates.
 			// matched=true with error means "looks like this type but invalid".
-			if c.advanced { // Don't log the first (massive) initial cull
-				parserLog("[CMD]   ✗ %s: matcher error at %q: %v\n", c.cmd.cmd, c.remaining, err)
-			}
 			if *firstErr == nil {
 				*firstErr = err
 			}
 			continue
 		}
 		if r != nil && r.matched {
-			if c.advanced {
-				parserLog("[CMD]   ✓ %s: matched %q, remaining: %q\n", c.cmd.cmd, c.remaining[:len(c.remaining)-len(r.remaining)], r.remaining)
-			}
 			next := c.advance(m, *r)
 			byPriority[r.priority] = append(byPriority[r.priority], next)
-		} else if c.advanced {
-			parserLog("[CMD]   ✗ %s: no match at %q\n", c.cmd.cmd, c.remaining)
 		}
 	}
 
@@ -967,10 +947,10 @@ func (gm greedyMatcher) Generator() matchGenerator {
 
 // Common reflect types used in function binding
 var (
-	trackType      = reflect.TypeOf((*sim.Track)(nil))
-	trackStateType = reflect.TypeOf((*TrackState)(nil))
-	statusType     = reflect.TypeOf(CommandStatus{})
-	errorInterface = reflect.TypeOf((*error)(nil)).Elem()
+	trackType      = reflect.TypeFor[*sim.Track]()
+	trackStateType = reflect.TypeFor[*TrackState]()
+	statusType     = reflect.TypeFor[CommandStatus]()
+	errorInterface = reflect.TypeFor[error]()
 )
 
 // normalizeType maps *TrackState to *sim.Track for type comparison.
@@ -1067,9 +1047,9 @@ func validateReturnTypes(funcType reflect.Type) error {
 
 // initialArgTypes lists the allowed initial argument types for command handlers.
 var initialArgTypes = []reflect.Type{
-	reflect.TypeOf((*STARSPane)(nil)),
-	reflect.TypeOf((*panes.Context)(nil)),
-	reflect.TypeOf((*Preferences)(nil)),
+	reflect.TypeFor[*STARSPane](),
+	reflect.TypeFor[*panes.Context](),
+	reflect.TypeFor[*Preferences](),
 }
 
 // countInitialArgs counts how many initial arguments a function expects.
@@ -1143,9 +1123,9 @@ func (cmd userCommand) bindArgs(sp *STARSPane, extractedArgs []any) []any {
 
 // initialArgProviders maps initial arg types to functions that provide their values.
 var initialArgProviders = map[reflect.Type]func(sp *STARSPane, ctx *panes.Context) reflect.Value{
-	reflect.TypeOf((*STARSPane)(nil)):     func(sp *STARSPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(sp) },
-	reflect.TypeOf((*panes.Context)(nil)): func(sp *STARSPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(ctx) },
-	reflect.TypeOf((*Preferences)(nil)):   func(sp *STARSPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(sp.currentPrefs()) },
+	reflect.TypeFor[*STARSPane]():     func(sp *STARSPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(sp) },
+	reflect.TypeFor[*panes.Context](): func(sp *STARSPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(ctx) },
+	reflect.TypeFor[*Preferences]():   func(sp *STARSPane, ctx *panes.Context) reflect.Value { return reflect.ValueOf(sp.currentPrefs()) },
 }
 
 // call invokes the command handler function with the provided arguments.

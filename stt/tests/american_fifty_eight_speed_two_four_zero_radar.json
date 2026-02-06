@@ -1,0 +1,184 @@
+{
+  "time": "2026-02-01T03:36:20.178213458Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:671:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "American Fifty Eight speed two four zero radar",
+  "whisper_duration_ms": 185.793,
+  "audio_duration_ms": 2888,
+  "processor": "GPU: NVIDIA GeForce RTX 4060 Laptop GPU (7956MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "AAL58",
+  "command": "S240",
+  "stt_aircraft": {
+    "American 58": {
+      "Callsign": "AAL58",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Budme": "BUDME",
+        "Conte": "KONTE",
+        "Finap": "FINAP",
+        "Gypsy": "GIPSE",
+        "Hamek": "HAMEK",
+        "Phoenix": "KPHX",
+        "Scade": "SCADE",
+        "Sky Harbor": "KPHX"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five left": "I5L",
+        "I L S runway two six": "I26",
+        "Visual runway two five left": "V5L",
+        "Visual runway two six": "V26"
+      },
+      "ApproachFixes": {
+        "I26": {
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS",
+          "Zerlo": "ZERLO"
+        },
+        "I5L": {
+          "Budme": "BUDME",
+          "Fixar": "FIXAR",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE",
+          "Zerlo": "ZERLO"
+        },
+        "V26": {
+          "Delsey": "DELSE",
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS"
+        },
+        "V5L": {
+          "Budme": "BUDME",
+          "Conte": "KONTE",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE"
+        }
+      },
+      "AssignedApproach": "Visual Runway 25L",
+      "SID": "",
+      "STAR": "PINNG1",
+      "Altitude": 8649,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "SpokenVariants": null,
+      "LAHSORunways": null
+    },
+    "Delta 76": {
+      "Callsign": "DAL76",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Budme": "BUDME",
+        "Conte": "KONTE",
+        "Gypsy": "GIPSE",
+        "Hamek": "HAMEK",
+        "Lemo": "LEMOE",
+        "Phoenix": "KPHX",
+        "Scade": "SCADE",
+        "Sky Harbor": "KPHX"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five left": "I5L",
+        "I L S runway two six": "I26",
+        "Visual runway two five left": "V5L",
+        "Visual runway two six": "V26"
+      },
+      "ApproachFixes": {
+        "I26": {
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS",
+          "Zerlo": "ZERLO"
+        },
+        "I5L": {
+          "Budme": "BUDME",
+          "Fixar": "FIXAR",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE",
+          "Zerlo": "ZERLO"
+        },
+        "V26": {
+          "Delsey": "DELSE",
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS"
+        },
+        "V5L": {
+          "Budme": "BUDME",
+          "Conte": "KONTE",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE"
+        }
+      },
+      "AssignedApproach": "Visual Runway 25L",
+      "SID": "",
+      "STAR": "HYDRR1",
+      "Altitude": 8019,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "SpokenVariants": null,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"American Fifty Eight speed two four zero radar\"",
+    "[local-stt] normalized words: [american 58 speed 2 4 0 radar]",
+    "[local-stt] tokens: 5",
+    "[local-stt]   token[0]: Text=\"american\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"58\" Type=1 Value=58",
+    "[local-stt]   token[2]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"240\" Type=1 Value=240",
+    "[local-stt]   token[4]: Text=\"radar\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 5 tokens, 2 aircraft",
+    "[local-stt]   exact match: \"american 58\" -\u003e \"AAL58\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"AAL58\" SpokenKey=\"American 58\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=8649 Fixes=8 Approaches=4 AssignedApproach=\"Visual Runway 25L\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Scade\" -\u003e \"SCADE\"",
+    "[local-stt]   fix: \"Conte\" -\u003e \"KONTE\"",
+    "[local-stt]   fix: \"Finap\" -\u003e \"FINAP\"",
+    "[local-stt]   fix: \"Gypsy\" -\u003e \"GIPSE\"",
+    "[local-stt]   fix: \"Phoenix\" -\u003e \"KPHX\"",
+    "[local-stt]   fix: \"Sky Harbor\" -\u003e \"KPHX\"",
+    "[local-stt]   fix: \"Budme\" -\u003e \"BUDME\"",
+    "[local-stt]   fix: \"Hamek\" -\u003e \"HAMEK\"",
+    "[local-stt]   approach: \"I L S runway two five left\" -\u003e \"I5L\"",
+    "[local-stt]   approach: \"Visual runway two five left\" -\u003e \"V5L\"",
+    "[local-stt]   approach: \"Visual runway two six\" -\u003e \"V26\"",
+    "[local-stt]   approach: \"I L S runway two six\" -\u003e \"I26\"",
+    "[local-stt] command tokens after disregard: 3",
+    "[local-stt]   token[0]: Text=\"speed\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"240\" Type=1 Value=240",
+    "[local-stt]   token[2]: Text=\"radar\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"speed\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 3 tokens",
+    "[local-stt]   matched command: \"S240\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   no match at token[2]=\"radar\", skipping",
+    "[local-stt] ParseCommands: result=[S240] (avgConf=1.00)",
+    "[local-stt] parsed commands: [S240] (conf=1.00)",
+    "[local-stt] validated commands: [S240] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"AAL58 S240\" (conf=1.00, time=0s) ==="
+  ]
+}

@@ -31,6 +31,7 @@ import (
 
 const bucketName = "vice-resources"
 const resourcesDir = "./resources"
+const modelsManifestPath = "./resources/models/manifest.json"
 const outFile = "manifest.json"
 
 type uploadResult struct {
@@ -191,6 +192,23 @@ func main() {
 		}
 
 		manifest[relPath] = result.hash
+	}
+
+	// Merge in the models manifest. The model files are stored directly in
+	// GCS (not in git) so they're not found when walking the resources
+	// directory. We have their hashes in resources/models/manifest.json,
+	// so we merge those entries with the appropriate path prefix.
+	if modelsJSON, err := os.ReadFile(modelsManifestPath); err == nil {
+		var modelsManifest map[string]string
+		if err := json.Unmarshal(modelsJSON, &modelsManifest); err != nil {
+			log.Fatalf("Failed to parse models manifest: %v", err)
+		}
+		for filename, hash := range modelsManifest {
+			manifest["models/"+filename] = hash
+		}
+		fmt.Printf("Merged %d entries from models manifest\n", len(modelsManifest))
+	} else if !os.IsNotExist(err) {
+		log.Fatalf("Failed to read models manifest: %v", err)
 	}
 
 	// Generate and write the manifest.

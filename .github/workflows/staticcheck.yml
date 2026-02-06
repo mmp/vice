@@ -29,6 +29,10 @@ jobs:
 
     - name: Checkout source
       uses: actions/checkout@v4
+      with:
+        submodules: true
+        fetch-depth: 0
+        lfs: false
 
     - name: Setup go
       uses: actions/setup-go@v5

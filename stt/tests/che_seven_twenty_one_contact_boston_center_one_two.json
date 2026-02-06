@@ -1,0 +1,227 @@
+{
+  "time": "2026-01-30T17:16:28.413709539Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "CHE seven twenty one contact Boston center one two eight point air correction one three four point seven",
+  "whisper_duration_ms": 477.442,
+  "audio_duration_ms": 6600,
+  "processor": "GPU: Apple M2, 8 CPU / 10 GPU cores, 8GB",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "CHH721",
+  "command": "FC",
+  "stt_aircraft": {
+    "Air Portugal four 93 alpha": {
+      "Callsign": "TAP493A",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Boat": "BOATT",
+        "Hear": "HEARR",
+        "Kennebunk": "ENE",
+        "Lobstah": "LBSTA",
+        "Shaun": "SHAUN"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "LBSTA8",
+      "STAR": "",
+      "Altitude": 3780,
+      "State": "departure",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 96 81": {
+      "Callsign": "AAL9681",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Harris": "HRRIS",
+        "Islay": "ISLAY",
+        "Lowland": "LWLND",
+        "Noley": "NOLEY",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 9560,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Hainan seven 21 heavy": {
+      "Callsign": "CHH721",
+      "AircraftType": "B789",
+      "Fixes": {
+        "Celtic": "CELTK",
+        "Frill": "FRILL",
+        "Score": "SCOAR"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "CELTK7",
+      "STAR": "",
+      "Altitude": 6977,
+      "State": "departure",
+      "ControllerFrequency": "1F",
+      "TrackingController": "C37",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "JetBlue 98": {
+      "Callsign": "JBU98",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Noley": "NOLEY",
+        "Patrick": "PTRIK",
+        "Tale": "TAALE",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 1733,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"CHE seven twenty one contact Boston center one two eight point air correction one three four point seven\"",
+    "[local-stt] normalized words: [che 7 21 contact boston center 1 2 8 point air correction 1 3 4 point 7]",
+    "[local-stt] tokens: 12",
+    "[local-stt]   token[0]: Text=\"che\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"721\" Type=1 Value=721",
+    "[local-stt]   token[2]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"boston\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"center\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"128\" Type=1 Value=128",
+    "[local-stt]   token[6]: Text=\"point\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"air\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"correction\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"134\" Type=1 Value=134",
+    "[local-stt]   token[10]: Text=\"point\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"7\" Type=1 Value=7",
+    "[local-stt] MatchCallsign: 12 tokens, 4 aircraft",
+    "[local-stt]   candidate \"Hainan seven 21 heavy\" (ICAO=\"CHH721\"): score=0.80 consumed=2",
+    "[local-stt]   candidate \"JetBlue 98\" (ICAO=\"JBU98\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Air Portugal four 93 alpha\" (ICAO=\"TAP493A\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American 96 81\" (ICAO=\"AAL9681\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Hainan seven 21 heavy\" at pos 1: score=0.80 (adjusted=0.72) consumed=1",
+    "[local-stt]   accepted: \"CHH721\" (conf=0.80, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"CHH721\" SpokenKey=\"Hainan seven 21 heavy\" Conf=0.80 Consumed=2",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=6977 Fixes=3 Approaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Score\" -\u003e \"SCOAR\"",
+    "[local-stt]   fix: \"Celtic\" -\u003e \"CELTK\"",
+    "[local-stt]   fix: \"Frill\" -\u003e \"FRILL\"",
+    "[local-stt] command tokens after disregard: 9",
+    "[local-stt]   token[0]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"boston\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"center\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"128\" Type=1 Value=128",
+    "[local-stt]   token[4]: Text=\"point\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"air\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"134\" Type=1 Value=134",
+    "[local-stt]   token[7]: Text=\"point\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"7\" Type=1 Value=7",
+    "[local-stt]   position ID: found command keyword \"contact\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 9 tokens",
+    "[local-stt]   matched command: \"FC\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   no match at token[3]=\"128\", skipping",
+    "[local-stt]   no match at token[4]=\"point\", skipping",
+    "[local-stt]   no match at token[5]=\"air\", skipping",
+    "[local-stt]   no match at token[6]=\"134\", skipping",
+    "[local-stt]   no match at token[7]=\"point\", skipping",
+    "[local-stt]   no match at token[8]=\"7\", skipping",
+    "[local-stt] ParseCommands: result=[FC] (avgConf=1.00)",
+    "[local-stt] parsed commands: [FC] (conf=1.00)",
+    "[local-stt] validated commands: [FC] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"CHH721 FC\" (conf=0.80, time=593.333µs) ==="
+  ]
+}

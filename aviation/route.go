@@ -29,6 +29,7 @@ type Waypoint struct {
 	AltitudeRestriction      *AltitudeRestriction `json:"altitude_restriction,omitempty"`
 	Speed                    int                  `json:"speed,omitempty"`
 	Heading                  int                  `json:"heading,omitempty"` // outbound heading after waypoint
+	Turn                     int                  `json:",omitempty"`        // 1 = left, 2= right
 	PresentHeading           bool                 `json:",omitempty"`
 	ProcedureTurn            *ProcedureTurn       `json:"pt,omitempty"`
 	NoPT                     bool                 `json:"nopt,omitempty"`
@@ -370,7 +371,6 @@ func (wa WaypointArray) CheckDeparture(e *util.ErrorLogger, controllers map[Cont
 func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[ControlPosition]*Controller, checkScratchpad func(string) bool) {
 	defer e.CheckDepth(e.CurrentDepth())
 
-	haveHO := false
 	for i, wp := range wa {
 		e.Push(wp.Fix)
 		if wp.Speed < 0 || wp.Speed > 300 {
@@ -406,8 +406,6 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[Control
 		}
 
 		if wp.HumanHandoff {
-			haveHO = true
-
 			// Check if any subsequent waypoints have a HandoffController
 			for _, wfut := range wa[i:] {
 				if wfut.HandoffController != "" {
@@ -415,10 +413,6 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[Control
 					break
 				}
 			}
-		}
-
-		if wp.TransferComms && !haveHO {
-			e.ErrorString("Must have /ho to handoff to a human controller at a waypoint prior to /tc")
 		}
 
 		if i == 0 && wp.Shift > 0 {
@@ -469,6 +463,7 @@ func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[ControlPositi
 
 	wa.checkBasics(e, ctrl, checkScratchpad)
 	wa.checkDescending(e)
+	haveHO := false
 
 	for _, wp := range wa {
 		e.Push(wp.Fix)
@@ -477,6 +472,12 @@ func (wa WaypointArray) CheckArrival(e *util.ErrorLogger, ctrl map[ControlPositi
 		}
 		if wp.ClearApproach && !approachAssigned {
 			e.ErrorString("/clearapp specified but no approach has been assigned")
+		}
+		if wp.HumanHandoff {
+			haveHO = true
+		}
+		if wp.TransferComms && !haveHO {
+			e.ErrorString("Must have /ho to handoff to a human controller at a waypoint prior to /tc")
 		}
 		e.Pop()
 	}
@@ -581,6 +582,11 @@ func RandomizeRoute(w []Waypoint, r *rand.Rand, randomizeAltitudeRange bool, per
 				if high == 0 {
 					high = low + 3000
 				}
+				// Cap at VFR max (17,500') since randomizeAltitudeRange is only true for VFR.
+				// This prevents VFR aircraft from being assigned altitudes in Class A airspace.
+				const maxVFRAltitude = 17500
+				high = min(high, maxVFRAltitude)
+				low = min(low, maxVFRAltitude)
 				alt := math.Lerp(ralt, low, high)
 
 				// Update the altitude restriction to just be the single altitude.
@@ -939,6 +945,24 @@ func parseWaypoints(str string) (WaypointArray, error) {
 						return nil, fmt.Errorf("%s: waypoint outbound heading must be between 0-360: %v", f[1:], err)
 					} else {
 						wp.Heading = hdg
+					}
+				} else if f[0] == 'l' {
+					if hdg, err := strconv.Atoi(f[1:]); err != nil {
+						return nil, fmt.Errorf("%s: invalid waypoint outbound heading: %v", f[1:], err)
+					} else if hdg < 0 || hdg > 360 {
+						return nil, fmt.Errorf("%s: waypoint outbound heading must be between 0-360: %v", f[1:], err)
+					} else {
+						wp.Heading = hdg
+						wp.Turn = 1
+					}
+				} else if f[0] == 'r' {
+					if hdg, err := strconv.Atoi(f[1:]); err != nil {
+						return nil, fmt.Errorf("%s: invalid waypoint outbound heading: %v", f[1:], err)
+					} else if hdg < 0 || hdg > 360 {
+						return nil, fmt.Errorf("%s: waypoint outbound heading must be between 0-360: %v", f[1:], err)
+					} else {
+						wp.Heading = hdg
+						wp.Turn = 2
 					}
 				} else if f[0] == 'c' {
 					alt, err := strconv.Atoi(f[1:])

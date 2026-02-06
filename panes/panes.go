@@ -223,10 +223,6 @@ func (ctx *Context) TCWIsPrivileged(tcw sim.TCW) bool {
 	return ctx.Client.State.TCWIsPrivileged(tcw)
 }
 
-func (ctx *Context) TCWIsObserver(tcw sim.TCW) bool {
-	return ctx.Client.State.TCWIsObserver(tcw)
-}
-
 // UserWasRedirector returns true if any of the user's controlled positions
 // are in the given redirector list.
 func (ctx *Context) UserWasRedirector(redirectors []sim.ControlPosition) bool {
@@ -270,12 +266,12 @@ func (ctx *Context) TracksFromACIDSuffix(suffix string) []*sim.Track {
 				return false
 			}
 
-			if ctx.UserControlsPosition(fp.ControllingController) || ctx.TCWIsPrivileged(ctx.UserTCW) {
+			if ctx.UserControlsPosition(trk.ControllerFrequency) || ctx.TCWIsPrivileged(ctx.UserTCW) {
 				return true
 			}
 
 			// Hold for release aircraft still in the list
-			if ctx.UserOwnsFlightPlan(trk.FlightPlan) && trk.FlightPlan.ControllingController == "" {
+			if ctx.UserOwnsFlightPlan(trk.FlightPlan) && trk.ControllerFrequency == "" {
 				return true
 			}
 			return false

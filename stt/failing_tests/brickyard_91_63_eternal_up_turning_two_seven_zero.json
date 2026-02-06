@@ -1,0 +1,205 @@
+{
+  "time": "2026-01-31T15:27:31.10203936Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Brickyard 91 63 eternal up turning two seven zero",
+  "whisper_duration_ms": 87.524,
+  "audio_duration_ms": 2760,
+  "processor": "GPU: NVIDIA GeForce RTX 5080 (15977MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "RPA9163",
+  "command": "H270",
+  "stt_aircraft": {
+    "American 66": {
+      "Callsign": "AAL66",
+      "AircraftType": "A320",
+      "Fixes": {
+        "LaGuardia": "KLGA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Brickyard 69 zero seven": {
+      "Callsign": "RPA6907",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3366,
+      "State": "on approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Brickyard 91 63": {
+      "Callsign": "RPA9163",
+      "AircraftType": "E75S",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA",
+        "Yoman": "YOMAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "JetBlue 85": {
+      "Callsign": "JBU85",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "LaGuardia": "KLGA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 895,
+      "State": "on approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "JetBlue two 89": {
+      "Callsign": "JBU289",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA",
+        "Yoman": "YOMAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Brickyard 91 63 eternal up turning two seven zero\"",
+    "[local-stt] normalized words: [brickyard 91 63 turn ils up turn 2 7 0]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"brickyard\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"91\" Type=1 Value=91",
+    "[local-stt]   token[2]: Text=\"63\" Type=1 Value=63",
+    "[local-stt]   token[3]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"up\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"270\" Type=1 Value=270",
+    "[local-stt] MatchCallsign: 8 tokens, 5 aircraft",
+    "[local-stt]   exact match: \"brickyard 91 63\" -\u003e \"RPA9163\" (consumed 3)",
+    "[local-stt] callsign match: Callsign=\"RPA9163\" SpokenKey=\"Brickyard 91 63\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4000 Fixes=3 Approaches=1 AssignedApproach=\"ILS Runway 22\" LAHSORunways=[13 31]",
+    "[local-stt]   fix: \"LaGuardia\" -\u003e \"KLGA\"",
+    "[local-stt]   fix: \"Yoman\" -\u003e \"YOMAN\"",
+    "[local-stt]   fix: \"Greko\" -\u003e \"GREKO\"",
+    "[local-stt]   approach: \"I L S runway two two\" -\u003e \"I22\"",
+    "[local-stt] command tokens after disregard: 5",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"up\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"270\" Type=1 Value=270",
+    "[local-stt]   position ID: found command keyword \"turn\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 5 tokens",
+    "[local-stt]   no match at token[0]=\"turn\", skipping",
+    "[local-stt]   no match at token[1]=\"ils\", skipping",
+    "[local-stt]   no match at token[2]=\"up\", skipping",
+    "[local-stt]   no match at token[3]=\"turn\", skipping",
+    "[local-stt]   no match at token[4]=\"270\", skipping",
+    "[local-stt] ParseCommands: no commands found",
+    "[local-stt] parsed commands: [] (conf=0.00)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] === DecodeTranscript END: \"RPA9163 AGAIN\" (conf=1.00, time=506.5µs) ==="
+  ]
+}

@@ -2,7 +2,6 @@
   "tracon": "AAC",
   "airports": {
     "KAAC": {
-      "name": "Academy",
       "approaches": {
         "I8R": {
           "runway": "28R",
@@ -650,7 +649,6 @@
       "tower_list": 1
     },
     "KBRT": {
-      "name": "Bartles",
       "approaches": {
         "I13": {
           "runway": "13",
@@ -1015,7 +1013,6 @@
       "tower_list": 3
     },
     "KJKE": {
-      "name": "Jeske",
       "approaches": {
         "I27": {
           "runway": "27",
@@ -2062,7 +2059,6 @@
       "tower_list": 2
     },
     "4Y3": {
-      "name": "James",
       "approaches": {
         "I30": {
           "runway": "30",
@@ -2372,7 +2368,6 @@
       "tower_list": 3
     },
     "4V4": {
-      "name": "Viney",
       "approaches": {
         "R34": {
           "runway": "34",
@@ -6814,7 +6809,6 @@
         }
       }
     },
-
     "force_ql_self": true,
     "center": "KAAC",
     "display_handoff_facility_only": true,

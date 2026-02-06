@@ -67,20 +67,26 @@ type FAAAirport struct {
 	ARTCC      string
 }
 
-type TRACON struct {
+// Facility represents a geographic facility with a center point and radius.
+// Both TRACONs and ARTCCs use this structure for weather data handling.
+type Facility struct {
 	Name      string
-	ARTCC     string
 	Latitude  float32
 	Longitude float32
 	Radius    float32
 }
 
-func (t TRACON) Center() math.Point2LL {
-	return math.Point2LL{t.Longitude, t.Latitude}
+func (f Facility) Center() math.Point2LL {
+	return math.Point2LL{f.Longitude, f.Latitude}
 }
 
-type ARTCC struct {
-	Name string
+// ARTCC is a type alias for Facility representing an Air Route Traffic Control Center.
+type ARTCC = Facility
+
+// TRACON represents a Terminal Radar Approach Control facility.
+type TRACON struct {
+	Facility
+	ARTCC string
 }
 
 type Navaid struct {
@@ -167,6 +173,28 @@ func (d StaticDatabase) LookupAirport(name string) (FAAAirport, bool) {
 	return FAAAirport{}, false
 }
 
+// LookupFacility returns a Facility for the given id, checking both
+// TRACONs and ARTCCs.
+func (d StaticDatabase) LookupFacility(id string) (Facility, bool) {
+	if tracon, ok := d.TRACONs[id]; ok {
+		return tracon.Facility, true
+	}
+	if artcc, ok := d.ARTCCs[id]; ok {
+		return artcc, true
+	}
+	return Facility{}, false
+}
+
+// IsFacility returns true if id is a known TRACON or ARTCC.
+func (d StaticDatabase) IsFacility(id string) bool {
+	_, ok := d.TRACONs[id]
+	if ok {
+		return true
+	}
+	_, ok = d.ARTCCs[id]
+	return ok
+}
+
 type AircraftPerformance struct {
 	Name string `json:"name"`
 	ICAO string `json:"icao"`
@@ -217,7 +245,7 @@ type Airline struct {
 		Name            string   `json:"name"`
 		CallsignFormats []string `json:"callsignFormats"`
 	} `json:"callsign"`
-	JSONFleets map[string][][2]interface{} `json:"fleets"`
+	JSONFleets map[string][][2]any `json:"fleets"`
 	Fleets     map[string][]FleetAircraft
 }
 
@@ -266,15 +294,11 @@ func InitDB() {
 
 	var wg sync.WaitGroup
 	var customAirports map[string]FAAAirport
-	wg.Add(1)
-	go func() { db.Airports, customAirports = parseAirports(); wg.Done() }()
-	wg.Add(1)
-	go func() { db.AircraftTypeAliases, db.AircraftPerformance = parseAircraft(); wg.Done() }()
-	wg.Add(1)
-	go func() { db.Airlines, db.Callsigns = parseAirlines(); wg.Done() }()
+	wg.Go(func() { db.Airports, customAirports = parseAirports() })
+	wg.Go(func() { db.AircraftTypeAliases, db.AircraftPerformance = parseAircraft() })
+	wg.Go(func() { db.Airlines, db.Callsigns = parseAirlines() })
 	var airports map[string]FAAAirport
-	wg.Add(1)
-	go func() {
+	wg.Go(func() {
 		r := parseCIFP()
 		airports = r.Airports
 		db.Navaids = r.Navaids
@@ -282,26 +306,18 @@ func InitDB() {
 		db.Airways = r.Airways
 		db.EnrouteHolds = r.EnrouteHolds
 		db.TerminalHolds = r.TerminalHolds
-		wg.Done()
-	}()
+	})
 	var hpfEnroute map[string][]Hold
-	wg.Add(1)
-	go func() { hpfEnroute = parseHPF(); wg.Done() }()
-	wg.Add(1)
-	go func() { db.MagneticGrid = parseMagneticGrid(); wg.Done() }()
-	wg.Add(1)
-	go func() { db.ARTCCs, db.TRACONs = parseARTCCsAndTRACONs(); wg.Done() }()
-	wg.Add(1)
-	go func() { db.MVAs = parseMVAs(); wg.Done() }()
-	wg.Add(1)
-	go func() { db.ERAMAdaptations = parseAdaptations(); wg.Done() }()
-	wg.Add(1)
-	go func() {
+	wg.Go(func() { hpfEnroute = parseHPF() })
+	wg.Go(func() { db.MagneticGrid = parseMagneticGrid() })
+	wg.Go(func() { db.ARTCCs, db.TRACONs = parseARTCCsAndTRACONs() })
+	wg.Go(func() { db.MVAs = parseMVAs() })
+	wg.Go(func() { db.ERAMAdaptations = parseAdaptations() })
+	wg.Go(func() {
 		db.BravoAirspace = parseAirspace("bravo-airspace.json.zst")
 		db.CharlieAirspace = parseAirspace("charlie-airspace.json.zst")
 		db.DeltaAirspace = parseAirspace("delta-airspace.json.zst")
-		wg.Done()
-	}()
+	})
 	wg.Wait()
 
 	// Merge HPF holds with CIFP holds
@@ -1210,7 +1226,7 @@ func allTFRUrls(lg *log.Logger) []string {
 // result on the provided chan when done.
 func fetchTFRs(tfrs map[string]TFR, ch chan<- map[string]TFR, lg *log.Logger) {
 	// Semaphore to limit to 4 concurrent requests.
-	sem := make(chan interface{}, 4)
+	sem := make(chan any, 4)
 	defer func() { close(sem) }()
 
 	type TFROrError struct {

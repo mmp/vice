@@ -55,7 +55,7 @@ type ERAMPane struct {
 	ERAMPreferenceSets map[string]*PrefrenceSet        `json:"PreferenceSets,omitempty"`
 	prefSet            *PrefrenceSet                   `json:"-"`
 	tempSavedNames     [numSavedPreferenceSets]string  `json:"-"`
-	TrackState         map[av.ADSBCallsign]*TrackState `json:"-"`
+	TrackState         map[av.ADSBCallsign]*TrackState `json:"TrackState,omitempty"`
 
 	DisableERAMtoRadio bool `json:"-"`
 
@@ -66,6 +66,15 @@ type ERAMPane struct {
 	allVideoMaps    []radar.ERAMVideoMap `json:"-"`
 	videoMapLabel   string               `json:"-"`
 	currentFacility string               `json:"-"`
+
+	eramCursorSelection string           `json:"-"`
+	eramCursorPath      string           `json:"-"`
+	eramCursor          *platform.Cursor `json:"-"`
+	eramCursorLoadErr   string           `json:"-"`
+
+	cursorOverrideSelection string    `json:"-"`
+	cursorOverrideUntil     time.Time `json:"-"`
+	cursorRollbackSelection string    `json:"-"` // Cursor to use after temporary cursor expires
 
 	InboundPointOuts  map[string]string `json:"-"`
 	OutboundPointOuts map[string]string `json:"-"`
@@ -85,9 +94,21 @@ type ERAMPane struct {
 
 	repositionLargeInput  bool      `json:"-"`
 	repositionSmallOutput bool      `json:"-"`
+	repositionClock       bool      `json:"-"`
 	timeSinceRepo         time.Time `json:"-"`
 
-	velocityTime int `json:"-"` // 0, 1, 4, or 8 minutes
+	tearoffInProgress        string                   `json:"-"` // Button name being torn off
+	tearoffIsReposition      bool                     `json:"-"` // Repositioning existing vs new tearoff
+	tearoffStart             time.Time                `json:"-"` // Debounce timer
+	tearoffDragOffset        [2]float32               `json:"-"` // Mouse offset from button corner
+	deleteTearoffMode        bool                     `json:"-"` // Delete mode active
+	tearoffMenus             map[string]int           `json:"-"` // torn-off menu button name -> menu state
+	tearoffMenuOpened        map[string]time.Time     `json:"-"` // debounce open clicks per menu
+	tearoffMenuLightToolbar  map[string][4][2]float32 `json:"-"` // cached menu backgrounds for tearoffs
+	tearoffMenuLightToolbar2 map[string][4][2]float32 `json:"-"` // cached secondary backgrounds (MAP BRIGHT)
+	tearoffMenuOrder         []string                 `json:"-"` // draw/input order for tearoff menus (oldest -> newest)
+
+	VelocityTime int // 0, 1, 4, or 8 minutes
 
 	dbLastAlternateTime time.Time `json:"-"` // Alternates every 6 seconds
 	dbAlternate         bool      `json:"-"`
@@ -115,7 +136,7 @@ type ERAMPane struct {
 	}
 
 	// CRR state (session)
-	crrGroups        map[string]*CRRGroup                         `json:"-"`
+	CRRGroups        map[string]*CRRGroup                         `json:"CRRGroups,omitempty"`
 	crrMenuOpen      bool                                         `json:"-"`
 	crrFixRects      map[string]math.Extent2D                     `json:"-"`
 	crrLabelRects    map[string]math.Extent2D                     `json:"-"`
@@ -149,8 +170,8 @@ func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.
 	if ep.aircraftFixCoordinates == nil {
 		ep.aircraftFixCoordinates = make(map[string]aircraftFixCoordinates)
 	}
-	if ep.crrGroups == nil {
-		ep.crrGroups = make(map[string]*CRRGroup)
+	if ep.CRRGroups == nil {
+		ep.CRRGroups = make(map[string]*CRRGroup)
 	}
 	if ep.crrFixRects == nil {
 		ep.crrFixRects = make(map[string]math.Extent2D)
@@ -205,8 +226,75 @@ func init() {
 
 func (ep *ERAMPane) CanTakeKeyboardFocus() bool { return true }
 
+func (ep *ERAMPane) updateCursorOverride(ctx *panes.Context) {
+	if ep.prefSet == nil {
+		return
+	}
+
+	desiredCursor := ""
+	if ep.cursorOverrideSelection != "" {
+		if !ep.cursorOverrideUntil.IsZero() && ctx.Now.After(ep.cursorOverrideUntil) {
+			// Temporary cursor is over. Check the rollback cursor (if it exists).
+			if ep.cursorRollbackSelection != "" { // If there is a rollback selected
+				ep.cursorOverrideSelection = ep.cursorRollbackSelection
+				ep.cursorOverrideUntil = time.Time{} // Keep indefinitely until changed
+				ep.cursorRollbackSelection = ""      // Clear rollback after using it
+				desiredCursor = ep.cursorOverrideSelection
+			} else { // No rollback cursor. Default to the cursor selected in the CURSOR menu.
+				ep.cursorOverrideSelection = ""
+				ep.cursorOverrideUntil = time.Time{}
+			}
+		} else {
+			desiredCursor = ep.cursorOverrideSelection
+		}
+	}
+
+	if desiredCursor == "" {
+		cursorSize := ep.currentPrefs().CursorSize
+		if cursorSize > 0 {
+			desiredCursor = fmt.Sprintf("Eram%d", cursorSize)
+		} else {
+			ep.eramCursorSelection = ""
+			ep.eramCursorPath = ""
+			ep.eramCursor = nil
+			ep.eramCursorLoadErr = ""
+			return
+		}
+	}
+
+	if desiredCursor != ep.eramCursorSelection {
+		ep.eramCursorSelection = desiredCursor
+		ep.eramCursorPath = ""
+		ep.eramCursor = nil
+		ep.eramCursorLoadErr = ""
+		resolvedPath, err := ep.resolveCursorPath(desiredCursor)
+		if err != nil {
+			ep.eramCursorLoadErr = err.Error()
+			if ctx.Lg != nil {
+				ctx.Lg.Warnf("ERAM cursor %q: %v", desiredCursor, err)
+			}
+			return
+		}
+		cursor, err := ctx.Platform.LoadCursorFromFile(resolvedPath)
+		if err != nil {
+			ep.eramCursorLoadErr = err.Error()
+			if ctx.Lg != nil {
+				ctx.Lg.Warnf("ERAM cursor %q: %v", resolvedPath, err)
+			}
+			return
+		}
+		ep.eramCursorPath = resolvedPath
+		ep.eramCursor = cursor
+	}
+
+	if ctx.Mouse != nil && ep.eramCursor != nil {
+		ctx.Platform.SetCursorOverride(ep.eramCursor)
+	}
+}
+
 func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.processEvents(ctx)
+	ep.updateCursorOverride(ctx)
 
 	ps := ep.currentPrefs()
 
@@ -226,8 +314,15 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.drawVideoMaps(ctx, transforms, cb)
 	ep.drawScenarioRoutes(ctx, transforms, renderer.GetDefaultFont(), cb)
 	ep.drawPlotPoints(ctx, transforms, cb)
-	ep.drawCRRFixes(ctx, transforms, cb)
-	scopeExtent := ep.drawtoolbar(ctx, transforms, cb)
+	// Handle button tearoff placement BEFORE drawing toolbar (so placement click isn't consumed)
+	ep.handleTearoffPlacement(ctx)
+	ep.handleTornOffButtonsInput(ctx)
+	scopeExtent := ctx.PaneExtent
+	if ps.DisplayToolbar {
+		scale := ep.toolbarButtonScale(ctx)
+		sz := buttonSize(buttonFull, scale)
+		scopeExtent.P1[1] -= sz[1]
+	}
 	cb.SetScissorBounds(scopeExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
 	ep.drawHistoryTracks(ctx, tracks, transforms, cb)
 	dbs := ep.getAllDatablocks(ctx, tracks)
@@ -236,13 +331,27 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	ep.drawTargets(ctx, tracks, transforms, cb)
 	ep.drawTracks(ctx, tracks, transforms, cb)
 	ep.drawDatablocks(tracks, dbs, ctx, transforms, cb)
+	ep.datablockInteractions(ctx, tracks, transforms, cb)
+	ep.drawCRRFixes(ctx, transforms, cb)
 	ep.drawCRRDistances(ctx, transforms, cb)
 	ep.drawJRings(ctx, tracks, transforms, cb)
 	ep.drawQULines(ctx, transforms, cb)
 	// Draw clock
+	ep.drawClock(ctx, transforms, cb)
 	// Draw views
 	ep.drawCRRView(ctx, transforms, cb)
+	// Draw toolbar and menus on top of the scope
+	cb.SetScissorBounds(ctx.PaneExtent, ctx.Platform.FramebufferSize()[1]/ctx.Platform.DisplaySize()[1])
+	ep.drawtoolbar(ctx, transforms, cb)
 	ep.drawCommandInput(ctx, transforms, cb)
+
+	// Draw torn-off buttons
+	ep.drawTornOffButtons(ctx, transforms, cb)
+	// Draw torn-off menus
+	ep.drawTearoffMenus(ctx, transforms, cb)
+	// Draw tearoff preview outline while dragging
+	ep.drawTearoffPreview(ctx, transforms, cb)
+
 	// The TOOLBAR tearoff is different from the toolbar (DCB). It overlaps the toolbar and tracks and everything else I've tried.
 	ep.drawMasterMenu(ctx, cb)
 	if ctx.Mouse != nil {
@@ -333,6 +442,12 @@ func (ep *ERAMPane) ensurePrefSetForSim(ss client.SimState) {
 	if ep.prefSet.Current.commandSmallPosition == ([2]float32{}) {
 		ep.prefSet.Current.commandSmallPosition = def.commandSmallPosition
 	}
+	if ep.prefSet.Current.clockPosition == ([2]float32{}) {
+		ep.prefSet.Current.clockPosition = def.clockPosition
+	}
+	if ep.prefSet.Current.CursorSize == 0 {
+		ep.prefSet.Current.CursorSize = def.CursorSize
+	}
 	// Fill in CRR defaults if this preference set was created before CRR existed
 	if ep.prefSet.Current.CRR.ColorBright == nil {
 		ep.prefSet.Current.CRR.ColorBright = def.CRR.ColorBright
@@ -409,8 +524,8 @@ func (inp *inputText) AddBasic(ps *Preferences, str string) {
 }
 
 func formatInput(str string) string {
-	output := strings.ReplaceAll(str, "`", "y")
-	output = strings.ReplaceAll(output, "~", "z")
+	output := strings.ReplaceAll(str, "`", circleClear)
+	output = strings.ReplaceAll(output, "~", circleFilled)
 	return output
 }
 
@@ -478,7 +593,7 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 	input := ep.Input.String()
 	for key := range ctx.Keyboard.Pressed {
 		switch key {
-		case imgui.KeyG:
+		case imgui.KeyG: // debugging
 			if ctx.Keyboard.KeyControl() && ctx.Keyboard.KeyShift() && ctx.Mouse != nil {
 				big := ctx.Mouse.Pos
 				big[1] -= 38
@@ -515,10 +630,24 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				ep.smallOutput.Set(ps, status.output)
 			}
 		case imgui.KeyEscape:
+			if ep.tearoffInProgress != "" || ep.deleteTearoffMode {
+				if ep.tearoffInProgress != "" {
+					ep.tearoffInProgress = ""
+					ep.tearoffIsReposition = false
+					ctx.Platform.EndCaptureMouse()
+				}
+				if ep.deleteTearoffMode {
+					ep.deleteTearoffMode = false
+					ep.ClearTemporaryCursor()
+				}
+				break
+			}
 			// Clear the input
-			if ep.repositionLargeInput || ep.repositionSmallOutput {
+			if ep.repositionLargeInput || ep.repositionSmallOutput || ep.repositionClock || ep.crrReposition {
 				ep.repositionLargeInput = false
 				ep.repositionSmallOutput = false
+				ep.repositionClock = false
+				ep.crrReposition = false
 			} else {
 				if ep.commandMode == CommandModeDrawRoute {
 					ep.commandMode = CommandModeNone
@@ -533,16 +662,16 @@ func (ep *ERAMPane) processKeyboardInput(ctx *panes.Context) {
 				ep.Input.Set(ps, "TG ")
 			}
 		case imgui.KeyPageUp: // velocity vector *2
-			if ep.velocityTime == 0 {
-				ep.velocityTime = 1
-			} else if ep.velocityTime < 8 {
-				ep.velocityTime *= 2
+			if ep.VelocityTime == 0 {
+				ep.VelocityTime = 1
+			} else if ep.VelocityTime < 8 {
+				ep.VelocityTime *= 2
 			}
 		case imgui.KeyPageDown: // velocity vector /2
-			if ep.velocityTime > 0 {
-				ep.velocityTime /= 2
+			if ep.VelocityTime > 0 {
+				ep.VelocityTime /= 2
 			} else {
-				ep.velocityTime = 0
+				ep.VelocityTime = 0
 			}
 		}
 	}
@@ -692,4 +821,90 @@ func combine(x, y string) string {
 	}
 	return x + " " + y
 
+}
+
+// Mouse button helpers:
+// When UseRightClick is set, logical primary = physical right button click, logical tertiary = physical left button click.
+func (ep *ERAMPane) mousePrimaryClicked(m *platform.MouseState) bool {
+	if m == nil {
+		return false
+	}
+	if ep.currentPrefs().UseRightClick {
+		return m.Clicked[platform.MouseButtonSecondary]
+	}
+	return m.Clicked[platform.MouseButtonPrimary]
+}
+
+func (ep *ERAMPane) mousePrimaryDown(m *platform.MouseState) bool {
+	if m == nil {
+		return false
+	}
+	if ep.currentPrefs().UseRightClick {
+		return m.Down[platform.MouseButtonSecondary]
+	}
+	return m.Down[platform.MouseButtonPrimary]
+}
+
+func (ep *ERAMPane) mousePrimaryReleased(m *platform.MouseState) bool {
+	if m == nil {
+		return false
+	}
+	if ep.currentPrefs().UseRightClick {
+		return m.Released[platform.MouseButtonSecondary]
+	}
+	return m.Released[platform.MouseButtonPrimary]
+}
+
+func (ep *ERAMPane) mouseTertiaryClicked(m *platform.MouseState) bool {
+	if m == nil {
+		return false
+	}
+	if ep.currentPrefs().UseRightClick {
+		return m.Clicked[platform.MouseButtonPrimary]
+	}
+	return m.Clicked[platform.MouseButtonTertiary]
+}
+
+func (ep *ERAMPane) mouseTertiaryDown(m *platform.MouseState) bool {
+	if m == nil {
+		return false
+	}
+	if ep.currentPrefs().UseRightClick {
+		return m.Down[platform.MouseButtonPrimary]
+	}
+	return m.Down[platform.MouseButtonTertiary]
+}
+
+func (ep *ERAMPane) mouseTertiaryReleased(m *platform.MouseState) bool {
+	if m == nil {
+		return false
+	}
+	if ep.currentPrefs().UseRightClick {
+		return m.Released[platform.MouseButtonPrimary]
+	}
+	return m.Released[platform.MouseButtonTertiary]
+}
+
+// clearMousePrimaryConsumed clears the physical button used for logical primary so the click is not processed again.
+func (ep *ERAMPane) clearMousePrimaryConsumed(m *platform.MouseState) {
+	if m == nil {
+		return
+	}
+	if ep.currentPrefs().UseRightClick {
+		m.Clicked[platform.MouseButtonSecondary] = false
+	} else {
+		m.Clicked[platform.MouseButtonPrimary] = false
+	}
+}
+
+// clearMouseTertiaryConsumed clears the physical button used for logical tertiary.
+func (ep *ERAMPane) clearMouseTertiaryConsumed(m *platform.MouseState) {
+	if m == nil {
+		return
+	}
+	if ep.currentPrefs().UseRightClick {
+		m.Clicked[platform.MouseButtonPrimary] = false
+	} else {
+		m.Clicked[platform.MouseButtonTertiary] = false
+	}
 }

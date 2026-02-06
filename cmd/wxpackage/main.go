@@ -23,6 +23,7 @@ import (
 	"cloud.google.com/go/storage"
 	"github.com/klauspost/compress/zstd"
 	"github.com/vmihailenco/msgpack/v5"
+	"google.golang.org/api/option"
 )
 
 var (
@@ -64,7 +65,7 @@ func main() {
 	// Load scenarios to find active airports/TRACONs
 	var e util.ErrorLogger
 	lg := log.New(false, "warn", "")
-	scenarioGroups, _, _, _ := server.LoadScenarioGroups("", "", &e, lg)
+	scenarioGroups, _, _, _ := server.LoadScenarioGroups("", "", true /* skipVideoMaps */, &e, lg)
 	if e.HaveErrors() {
 		e.PrintErrors(lg)
 		os.Exit(1)
@@ -72,14 +73,14 @@ func main() {
 
 	// Extract all active airports from scenarios
 	airports := make(map[string]bool)
-	tracons := make(map[string]bool)
+	facilities := make(map[string]bool) // TRACONs and ARTCCs
 
 	for tracon, scenarios := range scenarioGroups {
 		if tracon == "" { // ERAM scenario; ignore for now
 			continue
 		}
 
-		tracons[tracon] = true
+		facilities[tracon] = true
 		for _, sg := range scenarios {
 			for icao := range sg.Airports {
 				airports[icao] = true
@@ -87,11 +88,21 @@ func main() {
 		}
 	}
 
-	fmt.Printf("Found %d active airports across %d TRACONs\n", len(airports), len(tracons))
+	// Add all ARTCCs from AtmosARTCCs list
+	for _, artcc := range wx.AtmosARTCCs {
+		facilities[artcc] = true
+	}
+
+	fmt.Printf("Found %d active airports across %d facilities (TRACONs + ARTCCs)\n", len(airports), len(facilities))
 
 	// Initialize GCS client
 	ctx := context.Background()
-	client, err := storage.NewClient(ctx)
+	credsJSON := os.Getenv("VICE_GCS_CREDENTIALS")
+	if credsJSON == "" {
+		fmt.Fprintf(os.Stderr, "VICE_GCS_CREDENTIALS environment variable not set")
+		os.Exit(1)
+	}
+	client, err := storage.NewClient(ctx, option.WithCredentialsJSON([]byte(credsJSON)))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to create GCS client: %v", err)
 		os.Exit(1)
@@ -124,8 +135,8 @@ func main() {
 	}
 
 	// Process atmospheric data
-	fmt.Printf("Processing atmospheric data for %d TRACONs\n", len(tracons))
-	if err := processAtmos(ctx, bucket, tracons, startDate, endDate, atmosDir); err != nil {
+	fmt.Printf("Processing atmospheric data for %d facilities\n", len(facilities))
+	if err := processAtmos(ctx, bucket, facilities, startDate, endDate, atmosDir); err != nil {
 		fmt.Printf("Failed to process atmospheric data: %v\n", err)
 		os.Exit(1)
 	}
@@ -192,13 +203,13 @@ func processMETAR(ctx context.Context, bucket *storage.BucketHandle, airports ma
 	return nil
 }
 
-func processAtmos(ctx context.Context, bucket *storage.BucketHandle, tracons map[string]bool, startDate, endDate time.Time, outputDir string) error {
+func processAtmos(ctx context.Context, bucket *storage.BucketHandle, facilities map[string]bool, startDate, endDate time.Time, outputDir string) error {
 	var eg errgroup.Group
 
 	ch := make(chan string)
 	eg.Go(func() error {
-		for t := range tracons {
-			ch <- t
+		for fac := range facilities {
+			ch <- fac
 		}
 		close(ch)
 		return nil
@@ -206,8 +217,8 @@ func processAtmos(ctx context.Context, bucket *storage.BucketHandle, tracons map
 
 	for range 16 { // workers
 		eg.Go(func() error {
-			for tracon := range ch {
-				if err := processTraconAtmos(ctx, bucket, tracon, startDate, endDate, outputDir); err != nil {
+			for facilityID := range ch {
+				if err := processFacilityAtmos(ctx, bucket, facilityID, startDate, endDate, outputDir); err != nil {
 					return err
 				}
 			}
@@ -218,18 +229,18 @@ func processAtmos(ctx context.Context, bucket *storage.BucketHandle, tracons map
 	return eg.Wait()
 }
 
-func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, tracon string, startDate, endDate time.Time, outputDir string) error {
+func processFacilityAtmos(ctx context.Context, bucket *storage.BucketHandle, facilityID string, startDate, endDate time.Time, outputDir string) error {
 	// Load existing atmospheric data if it exists
-	traconAtmos := wx.AtmosByTime{
+	facilityAtmos := wx.AtmosByTime{
 		SampleStacks: make(map[time.Time]*wx.AtmosSampleStack),
 	}
 
-	outputPath := filepath.Join(outputDir, tracon+".msgpack.zst")
-	traconAtmos, err := loadExistingAtmosData(outputPath)
+	outputPath := filepath.Join(outputDir, facilityID+".msgpack.zst")
+	facilityAtmos, err := loadExistingAtmosData(outputPath)
 	if err == nil {
-		fmt.Printf("Loaded existing atmospheric data for %s with %d time entries\n", tracon, len(traconAtmos.SampleStacks))
+		fmt.Printf("Loaded existing atmospheric data for %s with %d time entries\n", facilityID, len(facilityAtmos.SampleStacks))
 	} else if os.IsNotExist(err) {
-		traconAtmos = wx.AtmosByTime{
+		facilityAtmos = wx.AtmosByTime{
 			SampleStacks: make(map[time.Time]*wx.AtmosSampleStack),
 		}
 	} else {
@@ -248,10 +259,10 @@ func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, traco
 		return fmt.Errorf("failed to load manifest: %w", err)
 	}
 
-	// Get timestamps for this TRACON from the manifest
-	allTimestamps, ok := manifest.GetTimestamps(tracon)
+	// Get timestamps for this facility from the manifest
+	allTimestamps, ok := manifest.GetTimestamps(facilityID)
 	if !ok {
-		fmt.Printf("%s: no data in manifest, skipping\n", tracon)
+		fmt.Printf("%s: no data in manifest, skipping\n", facilityID)
 		return nil
 	}
 
@@ -263,23 +274,23 @@ func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, traco
 			continue
 		}
 		// Skip if we already have data for this time
-		if _, ok := traconAtmos.SampleStacks[ts]; ok {
+		if _, ok := facilityAtmos.SampleStacks[ts]; ok {
 			continue
 		}
 		timestampsToDownload = append(timestampsToDownload, ts)
 	}
 
 	if len(timestampsToDownload) == 0 {
-		fmt.Printf("%s: no new data to download (have %d entries already)\n", tracon, len(traconAtmos.SampleStacks))
+		fmt.Printf("%s: no new data to download (have %d entries already)\n", facilityID, len(facilityAtmos.SampleStacks))
 		return nil
 	}
 
 	fmt.Printf("%s: downloading %d atmos objects (have %d already, manifest has %d total)\n",
-		tracon, len(timestampsToDownload), len(traconAtmos.SampleStacks), len(allTimestamps))
+		facilityID, len(timestampsToDownload), len(facilityAtmos.SampleStacks), len(allTimestamps))
 
 	// Download and process atmos data at each timestamp
 	for _, timestamp := range timestampsToDownload {
-		objectPath := wx.BuildObjectPath("atmos", tracon, timestamp)
+		objectPath := wx.BuildObjectPath("atmos", facilityID, timestamp)
 
 		// Download and process this atmos file
 		r, err := bucket.Object(objectPath).NewReader(ctx)
@@ -306,13 +317,13 @@ func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, traco
 		// Convert SOA to regular Atmos object and store the averaged stack
 		atmos := atmosSOA.ToAOS()
 		_, avgStack := atmos.Average()
-		traconAtmos.SampleStacks[timestamp] = avgStack
+		facilityAtmos.SampleStacks[timestamp] = avgStack
 	}
 
-	fmt.Printf("%s: processed %d entries\n", tracon, len(traconAtmos.SampleStacks))
+	fmt.Printf("%s: processed %d entries\n", facilityID, len(facilityAtmos.SampleStacks))
 
 	// Convert AtmosByTime to SOA format for storage
-	traconAtmosSOA, err := traconAtmos.ToSOA()
+	facilityAtmosSOA, err := facilityAtmos.ToSOA()
 	if err != nil {
 		return err
 	}
@@ -325,7 +336,7 @@ func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, traco
 	zw, err := zstd.NewWriter(f)
 	if err != nil {
 		return err
-	} else if err := msgpack.NewEncoder(zw).Encode(traconAtmosSOA); err != nil {
+	} else if err := msgpack.NewEncoder(zw).Encode(facilityAtmosSOA); err != nil {
 		return err
 	} else if err := zw.Close(); err != nil {
 		return err
@@ -333,7 +344,7 @@ func processTraconAtmos(ctx context.Context, bucket *storage.BucketHandle, traco
 		return err
 	}
 
-	fmt.Printf("Wrote atmospheric data for %s\n", tracon)
+	fmt.Printf("Wrote atmospheric data for %s\n", facilityID)
 
 	return nil
 }

@@ -1,0 +1,186 @@
+{
+  "time": "2026-02-01T03:46:14.398191119Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:671:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Frontier Flight Two 13 73 cleared visual runway two six",
+  "whisper_duration_ms": 1592.527,
+  "audio_duration_ms": 3400,
+  "processor": "GPU: Apple M1, 8 CPU / 8 GPU cores, 8GB",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "FFT1373",
+  "command": "CV26",
+  "stt_aircraft": {
+    "Frontier Flight 13 73": {
+      "Callsign": "FFT1373",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "Delsey": "DELSE",
+        "Jagal": "JAGAL",
+        "Phoenix": "KPHX",
+        "Prune": "PRUNN",
+        "Serun": "CERUN",
+        "Sky Harbor": "KPHX",
+        "Todre": "TODRE",
+        "Zemos": "ZEMOS"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five left": "I5L",
+        "I L S runway two six": "I26",
+        "Visual runway two five left": "V5L",
+        "Visual runway two six": "V26"
+      },
+      "ApproachFixes": {
+        "I26": {
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS",
+          "Zerlo": "ZERLO"
+        },
+        "I5L": {
+          "Budme": "BUDME",
+          "Fixar": "FIXAR",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE",
+          "Zerlo": "ZERLO"
+        },
+        "V26": {
+          "Delsey": "DELSE",
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS"
+        },
+        "V5L": {
+          "Budme": "BUDME",
+          "Conte": "KONTE",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE"
+        }
+      },
+      "AssignedApproach": "Visual Runway 26",
+      "SID": "",
+      "STAR": "EAGUL6",
+      "Altitude": 5530,
+      "State": "arrival",
+      "ControllerFrequency": "1V",
+      "TrackingController": "1V",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest two 47": {
+      "Callsign": "SWA247",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Phoenix": "KPHX",
+        "Sky Harbor": "KPHX"
+      },
+      "CandidateApproaches": {
+        "I L S runway two five left": "I5L",
+        "I L S runway two six": "I26",
+        "Visual runway two five left": "V5L",
+        "Visual runway two six": "V26"
+      },
+      "ApproachFixes": {
+        "I26": {
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS",
+          "Zerlo": "ZERLO"
+        },
+        "I5L": {
+          "Budme": "BUDME",
+          "Fixar": "FIXAR",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE",
+          "Zerlo": "ZERLO"
+        },
+        "V26": {
+          "Delsey": "DELSE",
+          "Jagal": "JAGAL",
+          "Prune": "PRUNN",
+          "Serun": "CERUN",
+          "Todre": "TODRE",
+          "Zemos": "ZEMOS"
+        },
+        "V5L": {
+          "Budme": "BUDME",
+          "Conte": "KONTE",
+          "Gypsy": "GIPSE",
+          "Hamek": "HAMEK",
+          "Scade": "SCADE"
+        }
+      },
+      "AssignedApproach": "Visual Runway 26",
+      "SID": "",
+      "STAR": "EAGUL6",
+      "Altitude": 1735,
+      "State": "on approach",
+      "ControllerFrequency": "1V",
+      "TrackingController": "1V",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Frontier Flight Two 13 73 cleared visual runway two six\"",
+    "[local-stt] normalized words: [frontier flight 2 13 73 cleared visual runway 2 6]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"frontier\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"flight\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"213\" Type=1 Value=213",
+    "[local-stt]   token[3]: Text=\"73\" Type=1 Value=73",
+    "[local-stt]   token[4]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"visual\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"26\" Type=1 Value=26",
+    "[local-stt] MatchCallsign: 8 tokens, 2 aircraft",
+    "[local-stt]   candidate \"Frontier Flight 13 73\" (ICAO=\"FFT1373\"): score=1.02 consumed=4",
+    "[local-stt]   candidate \"Southwest two 47\" (ICAO=\"SWA247\"): score=0.58 consumed=4",
+    "[local-stt]   accepted: \"FFT1373\" (conf=1.02, consumed=4, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"FFT1373\" SpokenKey=\"Frontier Flight 13 73\" Conf=1.02 Consumed=4",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=5530 Fixes=8 Approaches=4 AssignedApproach=\"Visual Runway 26\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Delsey\" -\u003e \"DELSE\"",
+    "[local-stt]   fix: \"Jagal\" -\u003e \"JAGAL\"",
+    "[local-stt]   fix: \"Phoenix\" -\u003e \"KPHX\"",
+    "[local-stt]   fix: \"Sky Harbor\" -\u003e \"KPHX\"",
+    "[local-stt]   fix: \"Serun\" -\u003e \"CERUN\"",
+    "[local-stt]   fix: \"Zemos\" -\u003e \"ZEMOS\"",
+    "[local-stt]   fix: \"Todre\" -\u003e \"TODRE\"",
+    "[local-stt]   fix: \"Prune\" -\u003e \"PRUNN\"",
+    "[local-stt]   approach: \"Visual runway two six\" -\u003e \"V26\"",
+    "[local-stt]   approach: \"I L S runway two five left\" -\u003e \"I5L\"",
+    "[local-stt]   approach: \"Visual runway two five left\" -\u003e \"V5L\"",
+    "[local-stt]   approach: \"I L S runway two six\" -\u003e \"I26\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"visual\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"26\" Type=1 Value=26",
+    "[local-stt]   position ID: found command keyword \"cleared\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"visual\" against 8 fixes",
+    "[local-stt]   extractFix: no match found for \"visual\"",
+    "[local-stt]   matchApproachByTypeAndNumber: type=\"visual\" runway=\"two six\" -\u003e \"V26\" (consumed=3)",
+    "[local-stt]   matched command: \"CV26\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[CV26] (avgConf=1.00)",
+    "[local-stt] parsed commands: [CV26] (conf=1.00)",
+    "[local-stt] validated commands: [CV26] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"FFT1373 CV26\" (conf=1.02, time=311µs) ==="
+  ]
+}

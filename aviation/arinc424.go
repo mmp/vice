@@ -20,12 +20,7 @@ import (
 const ARINC424LineLength = 134 // 132 chars + \r + \n
 
 func empty(s []byte) bool {
-	for _, b := range s {
-		if b != ' ' {
-			return false
-		}
-	}
-	return true
+	return util.SeqContainsAllFunc(slices.Values(s), func(b byte) bool { return b == ' ' })
 }
 
 func parseInt(s []byte) int {
@@ -44,7 +39,7 @@ func parseAltitude(s []byte) int {
 }
 
 func printColumnHeader() {
-	for i := 0; i < ARINC424LineLength/10; i++ {
+	for range ARINC424LineLength / 10 {
 		fmt.Printf("         |")
 	}
 	fmt.Printf("\n")

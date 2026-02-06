@@ -1,14 +1,16 @@
 {
   "tracon": "P50",
   "airports": {
-    "KDVT": { "vfr": { "random_routes": { "rate": 25 } } },
+    "KDVT": { "vfr": { "random_routes": { "rate": 20 } } },
     "KFFZ": { "vfr": { "random_routes": { "rate": 15 } } },
-    "KGYR": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KGEU": { "vfr": { "random_routes": { "rate": 10 } } },
-    "KCHD": { "vfr": { "random_routes": { "rate": 15 } } },
+    "KGYR": { "vfr": { "random_routes": { "rate": 8 } } },
+    "KGEU": { "vfr": { "random_routes": { "rate": 8 } } },
+    "KCHD": { "vfr": { "random_routes": { "rate": 12 } } },
     "KBKX": { "vfr": { "random_routes": { "rate": 5 } } },
+    "KGXF": { "vfr": { "random_routes": { "rate": 8 } } },
+    "KPAN": { "vfr": { "random_routes": { "rate": 8 } } },
+    "KCGZ": { "vfr": { "random_routes": { "rate": 8 } } },
     "KPHX": {
-      "name": "Phoenix Sky Harbor",
       "approaches": {
         "I7L": { "cifp_id": "I7L" },
         "I7R": { "cifp_id": "I7R" },
@@ -3489,7 +3491,6 @@
     "_PHX_25L": "N33.25.43.768,W112.00.05.488",
     "_PHX_25R": "N33.25.51.642,W111.59.36.050"
   },
-  "magnetic_adjustment": -2,
   "name": "KPHX",
   "primary_airport": "KPHX",
   "scenarios": {
@@ -4031,7 +4032,7 @@
       }
     },
 
-    "center": "CACTY",
+    "center": "KPHX",
     "controller_configs": {
       "1K": {
         "video_maps": [

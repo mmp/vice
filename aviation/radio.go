@@ -73,10 +73,9 @@ func loadPronunciationsIfNeeded() {
 // radio transmission by a pilot; they may be built up from multiple
 // instructions provided in a single controller command.
 type RadioTransmission struct {
-	Strings    []PhraseFormatString
-	Args       [][]any // each slice contains values passed to the corresponding PhraseFormatString
-	Controller string
-	Type       RadioTransmissionType
+	Strings []PhraseFormatString
+	Args    [][]any // each slice contains values passed to the corresponding PhraseFormatString
+	Type    RadioTransmissionType
 }
 
 // MakeContactRadioTransmission is a helper function to make a pilot
@@ -110,6 +109,14 @@ func MakeUnexpectedTransmission(s string, args ...any) *RadioTransmission {
 // confused about who is being addressed.
 func MakeMixedUpTransmission(s string, args ...any) *RadioTransmission {
 	rt := &RadioTransmission{Type: RadioTransmissionMixUp}
+	rt.Add(s, args...)
+	return rt
+}
+
+// MakeNoIdTransmission creates a pilot transmission where the pilot doesn't
+// identify themselves with their callsign (e.g., for saying "blocked").
+func MakeNoIdTransmission(s string, args ...any) *RadioTransmission {
+	rt := &RadioTransmission{Type: RadioTransmissionNoId}
 	rt.Add(s, args...)
 	return rt
 }
@@ -205,6 +212,7 @@ var (
 		"gf":       &GroupFormSnippetFormatter{},
 		"hdg":      &HeadingSnippetFormatter{},
 		"num":      &BasicNumberSnippetFormatter{},
+		"rwy":      &RunwaySnippetFormatter{},
 		"sid":      &SIDSnippetFormatter{},
 		"spd":      &SpeedSnippetFormatter{},
 		"star":     &STARSnippetFormatter{},
@@ -306,7 +314,7 @@ func allResolvedHelper(spre string, spost string, err func(string)) []PhraseForm
 		} else if ch == ']' {
 			inBrackets = false
 			var resolved []PhraseFormatString
-			for _, opt := range strings.Split(options.String(), "|") {
+			for opt := range strings.SplitSeq(options.String(), "|") {
 				resolved = append(resolved, allResolvedHelper(pre.String()+opt, spost[i+1:], err)...)
 			}
 			return resolved
@@ -469,9 +477,19 @@ func (ApproachSnippetFormatter) Written(arg any) string {
 func (ApproachSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	appr := arg.(string)
 
+	// Split on commas first, process each part, then rejoin with commas.
+	// This handles approach names like "ILS Runway 15R, then visual approach..."
+	var spokenParts []string
+	for part := range strings.SplitSeq(appr, ",") {
+		spokenParts = append(spokenParts, spokenApproachPart(r, strings.TrimSpace(part)))
+	}
+	return strings.Join(spokenParts, ", ")
+}
+
+func spokenApproachPart(r *rand.Rand, appr string) string {
 	var result []string
 	lastRunway := false
-	for _, word := range strings.Fields(appr) {
+	for word := range strings.FieldsSeq(appr) {
 		if lastRunway {
 			for _, ch := range strings.ToLower(word) {
 				switch ch {
@@ -559,6 +577,40 @@ func (AirportSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 }
 
 func (AirportSnippetFormatter) Validate(arg any) error {
+	if _, ok := arg.(string); !ok {
+		return fmt.Errorf("expected string arg, got %T", arg)
+	}
+	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// RunwaySnippetFormatter
+
+type RunwaySnippetFormatter struct{}
+
+func (RunwaySnippetFormatter) Written(arg any) string {
+	return arg.(string)
+}
+
+func (RunwaySnippetFormatter) Spoken(r *rand.Rand, arg any) string {
+	rwy := arg.(string)
+	var result []string
+	for _, ch := range rwy {
+		switch ch {
+		case 'L', 'l':
+			result = append(result, "left")
+		case 'R', 'r':
+			result = append(result, "right")
+		case 'C', 'c':
+			result = append(result, "center")
+		case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+			result = append(result, sayDigit(int(ch-'0')))
+		}
+	}
+	return strings.Join(result, " ")
+}
+
+func (RunwaySnippetFormatter) Validate(arg any) error {
 	if _, ok := arg.(string); !ok {
 		return fmt.Errorf("expected string arg, got %T", arg)
 	}
@@ -690,19 +742,7 @@ func (FixSnippetFormatter) Written(arg any) string {
 }
 
 func (f FixSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
-	loadPronunciationsIfNeeded()
-	fix := arg.(string)
-	// Cut off any trailing bits like COLIN.JT
-	fix, _, _ = strings.Cut(fix, ".")
-
-	if len(fix) == 3 || (len(fix) == 4 && fix[0] == 'K') { // VOR, airport, etc.
-		return f.Written(fix)
-	} else if say, ok := sayFixMap[fix]; ok {
-		return say
-	} else {
-		// All-caps tends to be read letter by letter, while this can sometimes be decent.
-		return util.StopShouting(fix) // #yolo
-	}
+	return GetFixTelephony(arg.(string))
 }
 
 func (FixSnippetFormatter) Validate(arg any) error {
@@ -778,6 +818,272 @@ func (BasicNumberSnippetFormatter) Validate(arg any) error {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+// Callsign utilities
+
+// GetACTypePronunciations returns all pronunciation variants for an aircraft type.
+// For example, "C172" might return ["skyhawk", "cessna one seventy-two"].
+// Returns nil if the type is not found in sayactype.json.
+func GetACTypePronunciations(acType string) []string {
+	loadPronunciationsIfNeeded()
+	if variants, ok := sayACTypeMap[acType]; ok {
+		return variants
+	}
+	return nil
+}
+
+// GetTrailing3Spoken returns the trailing 3 characters of a callsign as spoken phonetics.
+// For "N123AB", returns "3 alpha bravo".
+// For callsigns shorter than 3 chars (excluding N prefix), returns the whole number.
+func GetTrailing3Spoken(callsign string) string {
+	if len(callsign) < 2 {
+		return ""
+	}
+
+	// Get the part after N (or the whole callsign if no N prefix)
+	suffix := callsign
+	if strings.HasPrefix(callsign, "N") {
+		suffix = callsign[1:]
+	}
+
+	// Get trailing 3 characters
+	if len(suffix) > 3 {
+		suffix = suffix[len(suffix)-3:]
+	}
+
+	// Convert to spoken form
+	var parts []string
+	for _, ch := range strings.ToUpper(suffix) {
+		if ch >= '0' && ch <= '9' {
+			parts = append(parts, sayDigit(int(ch-'0')))
+		} else if sp, ok := spokenLetters[string(ch)]; ok {
+			parts = append(parts, strings.ToLower(sp))
+		}
+	}
+	return strings.Join(parts, " ")
+}
+
+// SplitCallsign splits a callsign into ICAO prefix and flight number.
+// For "UAL123" returns ("UAL", "123"). For "N12345" returns ("N", "12345").
+func SplitCallsign(callsign string) (prefix, number string) {
+	if idx := strings.IndexAny(callsign, "0123456789"); idx != -1 {
+		return callsign[:idx], callsign[idx:]
+	}
+	return callsign, ""
+}
+
+// GetTelephony returns the spoken telephony string for a callsign.
+// cwtCategory determines the heavy/super suffix: "A" = super, "B"/"C"/"D" = heavy.
+func GetTelephony(callsign string, cwtCategory string) string {
+	prefix, number := SplitCallsign(callsign)
+
+	var tele string
+	if prefix == "N" {
+		tele = "november"
+	} else if t, ok := DB.Callsigns[prefix]; ok {
+		tele = t
+	}
+
+	if number != "" {
+		tele += " " + number
+	}
+
+	if cwtCategory == "A" {
+		tele += " super"
+	} else if len(cwtCategory) > 0 && cwtCategory[0] <= 'D' {
+		tele += " heavy"
+	}
+
+	return tele
+}
+
+// GetCallsignSpoken returns the spoken telephony string for a callsign,
+// formatted as it would be pronounced (for Whisper prompts).
+// Example: "JBU520" → "jetblue five 20", "BAW22J" → "speedbird 22 juliet"
+func GetCallsignSpoken(callsign string, cwtCategory string) string {
+	loadPronunciationsIfNeeded()
+
+	prefix, fnum := SplitCallsign(callsign)
+
+	// GA N-numbers: spell out character by character
+	if prefix == "N" {
+		var s []string
+		for _, ch := range callsign {
+			if ch >= '0' && ch <= '9' {
+				s = append(s, sayDigit(int(ch-'0')))
+			} else {
+				s = append(s, strings.ToLower(spokenLetters[string(ch)]))
+			}
+		}
+		return strings.Join(s, " ")
+	}
+
+	// Extract trailing letters from flight number (e.g., "22J" → suffix=" juliet")
+	var suffix string
+	if suffixIdx := strings.IndexAny(fnum, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"); suffixIdx != -1 {
+		for _, ch := range fnum[suffixIdx:] {
+			suffix += " " + strings.ToLower(spokenLetters[string(ch)])
+		}
+		fnum = fnum[:suffixIdx]
+	}
+
+	// Get telephony with override
+	var tel string
+	if t, ok := DB.Callsigns[prefix]; ok {
+		tel = t
+	}
+	if tel2, ok := sayAirlineMap[tel]; ok {
+		tel = tel2
+	}
+
+	// Build result with spoken flight number
+	result := strings.TrimSpace(tel + " " + sayFlightNumber(fnum) + suffix)
+
+	// Add heavy/super suffix
+	if cwtCategory == "A" {
+		result += " super"
+	} else if len(cwtCategory) > 0 && cwtCategory[0] <= 'D' {
+		result += " heavy"
+	}
+
+	return result
+}
+
+// GetFixTelephony returns the spoken name for a fix (navaid, airport, or waypoint).
+// It uses pronunciations from sayfix.json when available, falls back to database
+// lookups for navaids/airports, and uses StopShouting for other fixes.
+func GetFixTelephony(fix string) string {
+	loadPronunciationsIfNeeded()
+
+	// Cut off any trailing bits like COLIN.JT
+	fix, _, _ = strings.Cut(fix, ".")
+
+	// For 3-char fixes or 4-char starting with K (VORs, airports), use the full name
+	if len(fix) == 3 || (len(fix) == 4 && fix[0] == 'K') {
+		if aid, ok := DB.Navaids[fix]; ok {
+			return util.StopShouting(aid.Name)
+		} else if ap, ok := DB.Airports[fix]; ok {
+			return ap.Name
+		}
+	}
+
+	// Check sayfix.json for pronunciation
+	if say, ok := sayFixMap[fix]; ok {
+		return say
+	}
+
+	// Fall back to StopShouting for readability
+	return util.StopShouting(fix)
+}
+
+// GetAirportTelephonyVariants returns all spoken name variants for an airport.
+// This is used by STT for matching spoken airport names to ICAO codes.
+// Returns all variants from sayairport.json if available, otherwise returns
+// a slice with just the database name (if available), or nil if not found.
+func GetAirportTelephonyVariants(icao string) []string {
+	loadPronunciationsIfNeeded()
+
+	// First check sayairport.json for custom variants
+	if variants, ok := sayAirportMap[icao]; ok && len(variants) > 0 {
+		return variants
+	}
+
+	// Fall back to database name
+	if ap, ok := DB.Airports[icao]; ok && ap.Name != "" {
+		// Strip common suffixes that wouldn't typically be said
+		name := ap.Name
+		for _, extra := range []string{"Airport", "Air Field", "Field", "Strip", "Airstrip", "International", "Regional"} {
+			name = strings.TrimSuffix(name, " "+extra)
+		}
+		if name != "" {
+			return []string{name}
+		}
+	}
+
+	return nil
+}
+
+// GetSIDTelephony returns the spoken form of a SID name.
+// For example, "MERIT5" becomes "merit five".
+func GetSIDTelephony(sid string) string {
+	loadPronunciationsIfNeeded()
+	name, num := trimNumber(sid)
+	if say, ok := saySIDMap[name]; ok {
+		name = say
+	}
+	if num > 0 {
+		return name + " " + sayDigit(num)
+	}
+	return name
+}
+
+// GetSTARTelephony returns the spoken form of a STAR name.
+// For example, "CAMRN4" becomes "cameron four".
+func GetSTARTelephony(star string) string {
+	loadPronunciationsIfNeeded()
+	name, num := trimNumber(star)
+	if say, ok := saySTARMap[name]; ok {
+		name = say
+	}
+	if num > 0 {
+		return name + " " + sayDigit(num)
+	}
+	return name
+}
+
+// GetApproachTelephony returns the spoken form of an approach name.
+// For example, "RNAV X Runway 22L" becomes "r-nav x-ray runway 2 2 left".
+func GetApproachTelephony(approach string) string {
+	var result []string
+	lastRunway := false
+
+	for word := range strings.FieldsSeq(approach) {
+		if lastRunway {
+			// Handle runway number and suffix (e.g., "22L")
+			for _, ch := range strings.ToLower(word) {
+				switch ch {
+				case 'l':
+					result = append(result, "left")
+				case 'r':
+					result = append(result, "right")
+				case 'c':
+					result = append(result, "center")
+				case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+					result = append(result, sayDigit(int(ch-'0')))
+				}
+			}
+			lastRunway = false
+		} else {
+			upper := strings.ToUpper(word)
+			lower := strings.ToLower(word)
+			if lower == "runway" {
+				lastRunway = true
+				result = append(result, "runway")
+			} else if upper == "ILS" {
+				result = append(result, "I L S")
+			} else if upper == "RNAV" {
+				result = append(result, "r-nav")
+			} else if upper == "VOR" {
+				result = append(result, "V O R")
+			} else if upper == "GPS" {
+				result = append(result, "G P S")
+			} else if upper == "LOC" {
+				result = append(result, "localizer")
+			} else if upper == "LDA" {
+				result = append(result, "L D A")
+			} else if upper == "NDB" {
+				result = append(result, "N D B")
+			} else if sp, ok := spokenLetters[upper]; ok {
+				result = append(result, sp)
+			} else {
+				result = append(result, word)
+			}
+		}
+	}
+
+	return strings.Join(result, " ")
+}
+
+///////////////////////////////////////////////////////////////////////////
 // CallsignSnippetFormatter
 
 type CallsignSnippetFormatter struct{}
@@ -789,19 +1095,60 @@ type CallsignArg struct {
 	AlwaysFullCallsign bool
 }
 
-func (CallsignSnippetFormatter) Written(arg any) string {
-	ca := arg.(CallsignArg)
-	callsign := string(ca.Callsign)
+// GACallsignArg provides context for formatting GA callsigns with type-based addressing.
+// When UseTypeForm is true, the callsign is spoken as "aircraft type + trailing 3"
+// (e.g., "skyhawk 3 alpha bravo" instead of "november 1 2 3 alpha bravo").
+type GACallsignArg struct {
+	Callsign     ADSBCallsign
+	AircraftType string // e.g., "C172"
+	UseTypeForm  bool   // If true, use type+trailing3 form
+	IsEmergency  bool
+}
 
-	idx := strings.IndexAny(callsign, "0123456789")
-	icao, fnum := callsign[:idx], callsign[idx:]
+func (CallsignSnippetFormatter) Written(arg any) string {
+	var callsign string
+	var isEmergency bool
+	var useTypeForm bool
+	var acType string
+
+	switch ca := arg.(type) {
+	case CallsignArg:
+		callsign = string(ca.Callsign)
+		isEmergency = ca.IsEmergency
+	case GACallsignArg:
+		callsign = string(ca.Callsign)
+		isEmergency = ca.IsEmergency
+		useTypeForm = ca.UseTypeForm
+		acType = ca.AircraftType
+	default:
+		return "???"
+	}
+
+	icao, fnum := SplitCallsign(callsign)
 	if icao == "N" {
+		// For GA callsigns with type form, show abbreviated version
+		if useTypeForm && acType != "" {
+			acAlias := DB.AircraftTypeAliases[acType]
+			if acAlias == "" {
+				acAlias = acType
+			}
+			// Get trailing 3
+			suffix := fnum
+			if len(suffix) > 3 {
+				suffix = suffix[len(suffix)-3:]
+			}
+			cs := acAlias + " " + suffix
+			if isEmergency {
+				cs += " (emergency)"
+			}
+			return cs
+		}
 		return callsign
 	}
 
 	cs := DB.Callsigns[icao] + " " + fnum
 
-	if ca.IsEmergency {
+	if isEmergency {
 		cs += " (emergency)"
 	}
 
@@ -811,13 +1158,51 @@ func (CallsignSnippetFormatter) Written(arg any) string {
 func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	loadPronunciationsIfNeeded()
 
-	ca := arg.(CallsignArg)
-	callsign := string(ca.Callsign)
+	var callsign string
+	var isEmergency bool
+	var alwaysFullCallsign bool
+	var useTypeForm bool
+	var acType string
 
-	idx := strings.IndexAny(callsign, "0123456789")
-	icao, fnum := callsign[:idx], callsign[idx:]
+	switch ca := arg.(type) {
+	case CallsignArg:
+		callsign = string(ca.Callsign)
+		isEmergency = ca.IsEmergency
+		alwaysFullCallsign = ca.AlwaysFullCallsign
+	case GACallsignArg:
+		callsign = string(ca.Callsign)
+		isEmergency = ca.IsEmergency
+		useTypeForm = ca.UseTypeForm
+		acType = ca.AircraftType
+		alwaysFullCallsign = true // GA always says full identifier in type form
+	default:
+		return "???"
+	}
+
+	icao, fnum := SplitCallsign(callsign)
 
 	if icao == "N" {
+		// For GA callsigns with type form, use aircraft type + trailing 3
+		if useTypeForm && acType != "" {
+			typeVariants := sayACTypeMap[acType]
+			if len(typeVariants) > 0 {
+				// Filter out variants with numbers to avoid callsign confusion
+				var filtered []string
+				for _, v := range typeVariants {
+					if !strings.ContainsAny(v, "0123456789") {
+						filtered = append(filtered, v)
+					}
+				}
+				if len(filtered) > 0 {
+					// Pick a random pronunciation variant
+					typeSpoken, _ := rand.SampleSeq(r, slices.Values(filtered))
+					trailing3 := GetTrailing3Spoken(callsign)
+					return typeSpoken + " " + trailing3
+				}
+			}
+		}
+
+		// Default: spell out the full N-number
 		var s []string
 		for _, ch := range callsign {
 			if ch >= '0' && ch <= '9' {
@@ -831,11 +1216,11 @@ func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 
 	// peel off any trailing letters
 	var suffix string
-	if idx = strings.IndexAny(fnum, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"); idx != -1 {
-		for _, ch := range fnum[idx:] {
+	if suffixIdx := strings.IndexAny(fnum, "ABCDEFGHIJKLMNOPQRSTUVWXYZ"); suffixIdx != -1 {
+		for _, ch := range fnum[suffixIdx:] {
 			suffix += " " + spokenLetters[string(ch)]
 		}
-		fnum = fnum[:idx]
+		fnum = fnum[:suffixIdx]
 	}
 
 	// figure out the telephony
@@ -844,9 +1229,10 @@ func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 		tel = tel2
 	}
 
-	// For non-emergency aircraft reading back instructions, 25% of the time
+	// For non-emergency aircraft reading back instructions, sometimes
 	// skip the ICAO identifier and just say the flight number.
-	if !ca.IsEmergency && !ca.AlwaysFullCallsign && r.Float32() < 0.25 {
+	// (Disabled: set to 0% to always include the full callsign.)
+	if !isEmergency && !alwaysFullCallsign && r.Float32() < 0 {
 		tel = ""
 	}
 
@@ -856,6 +1242,9 @@ func (CallsignSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 }
 
 func sayFlightNumber(id string) string {
+	if len(id) == 0 {
+		return ""
+	}
 	if id[0] != '0' {
 		// No leading zeros, just do regular group form.
 		n, _ := strconv.Atoi(id)
@@ -871,10 +1260,12 @@ func sayFlightNumber(id string) string {
 }
 
 func (CallsignSnippetFormatter) Validate(arg any) error {
-	if _, ok := arg.(CallsignArg); !ok {
-		return fmt.Errorf("expected CallsignArg, got %T", arg)
+	switch arg.(type) {
+	case CallsignArg, GACallsignArg:
+		return nil
+	default:
+		return fmt.Errorf("expected CallsignArg or GACallsignArg, got %T", arg)
 	}
-	return nil
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -976,16 +1367,24 @@ func (FrequencySnippetFormatter) Written(arg any) string {
 func (FrequencySnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	f := arg.(Frequency)
 	whole := (f / 1000) % 100
-	frac := (f % 1000) / 10
-	point := ""
-	if frac%10 == 0 { // e.g., 121.9 -> read as 21 point 9 not 21 90
-		frac /= 10
-		point = "point "
-	}
-	if r.Bool() {
-		return fmt.Sprintf("%d ", whole) + point + fmt.Sprintf("%d", frac)
-	} else {
+	frac := (f % 1000) / 10 // Two digits after decimal
+
+	switch r.Intn(3) {
+	case 0:
+		// Two digit pairs: "twenty-three forty-five" or "twenty-eight twenty"
+		return fmt.Sprintf("%d %d", whole, frac)
+	case 1:
+		// With "one" prefix: "one twenty-three point forty-five" or "one twenty-eight point two"
+		if frac%10 == 0 {
+			return fmt.Sprintf("one %d point %d", whole, frac/10)
+		}
 		return fmt.Sprintf("one %d point %d", whole, frac)
+	default:
+		// Without "one": "twenty-three point forty-five" or "twenty-eight point two"
+		if frac%10 == 0 {
+			return fmt.Sprintf("%d point %d", whole, frac/10)
+		}
+		return fmt.Sprintf("%d point %d", whole, frac)
 	}
 }
 

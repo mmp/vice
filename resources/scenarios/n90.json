@@ -2,7 +2,6 @@
   "tracon": "N90",
   "airports": {
     "KLGA": {
-      "name": "LaGuardia",
       "approaches": {
         "I4": {
           "full_name": "ILS Runway 4",
@@ -436,7 +435,6 @@
       "tower_list": 1
     },
     "KEWR": {
-      "name": "Newark",
       "approaches": {
         "I11": {
           "cifp_id": "I11"
@@ -1473,7 +1471,6 @@
       "tower_list": 2
     },
     "KJFK": {
-      "name": "Kennedy",
       "approaches": {
         "I1L": {
           "full_name": "ILS Runway 31 Left",
@@ -2384,7 +2381,6 @@
       "tower_list": 3
     },
     "KFRG": {
-      "name": "Republic",
       "approaches": {
         "I14": {
           "runway": "14",
@@ -2570,7 +2566,6 @@
       "tower_list": 2
     },
     "KHVN": {
-      "name": "New Haven",
       "approaches": {
         "I2": {
           "cifp_id": "I2"
@@ -2722,7 +2717,6 @@
       }
     },
     "KISP": {
-      "name": "MacArthur",
       "approaches": {
         "R5R": {
           "cifp_id": "R15R"
@@ -2960,7 +2954,6 @@
       "tower_list": 3
     },
     "KHPN": {
-      "name": "Westchester",
       "approaches": {
         "I16": {
           "cifp_id": "I16"
@@ -3117,7 +3110,6 @@
       "tower_list": 3
     },
     "KTEB": {
-      "name": "Teterboro",
       "approaches": {
         "I06": {
           "runway": "6",
@@ -3851,7 +3843,6 @@
       }
     },
     "KMMU": {
-      "name": "Morristown",
       "approaches": {
         "I23": {
           "runway": "23",
@@ -4515,7 +4506,6 @@
       }
     },
     "KDXR": {
-      "name": "Danbury",
       "approaches": {
         "R26": {
           "cifp_id": "R26"
@@ -5164,7 +5154,6 @@
       }
     },
     "KCDW": {
-      "name": "Caldwell",
       "approaches": {
         "R10": {
           "cifp_id": "R10"
@@ -5812,7 +5801,6 @@
       }
     },
     "KSWF": {
-      "name": "Stewart",
       "approaches": {
         "I27": {
           "cifp_id": "I27"
@@ -6104,7 +6092,6 @@
       }
     },
     "KPOU": {
-      "name": "Stewart",
       "approaches": {
         "I6": {
           "cifp_id": "I6"
@@ -6376,7 +6363,6 @@
       }
     },
     "KBDR": {
-      "name": "Bridgeport",
       "approaches": {
         "I6": {
           "full_name": "ILS Runway 6",
@@ -6536,7 +6522,6 @@
       }
     },
     "KFOK": {
-      "name": "Westhampton",
       "approaches": {
         "I24": {
           "cifp_id": "I24"
@@ -6694,7 +6679,6 @@
       }
     },
     "KJPX": {
-      "name": "East Hampton",
       "approaches": {
         "Z10": {
           "cifp_id": "RZ10"
@@ -6837,7 +6821,6 @@
       }
     },
     "KOXC": {
-      "name": "Waterbury",
       "approaches": {
         "R18": {
           "cifp_id": "R18"
@@ -9551,7 +9534,7 @@
           "COATE": "EWR_S_APP",
           "DENNA3": "SWF_APP",
           "FLOSI4": "EWR_A_APP",
-          "FQM3": "EWR_P_APP",
+          "FQM3": "EWR_W_APP",
           "HAARP3": "LGA_V_APP",
           "HUD4": "SWF_APP",
           "JAIKE4": "EWR_H_APP",
@@ -9589,7 +9572,6 @@
         }
       }
     },
-
     "center": "KLGA",
     "pdb": {
       "hide_gs": true
@@ -11278,6 +11260,12 @@
       "sector_id": "4S",
       "default_airport": "KJFK"
     },
+    "EWR_W_APP": {
+      "frequency": 120150,
+      "radio_name": "New York Approach",
+      "sector_id": "4W",
+      "default_airport": "KJFK"
+    },
     "EWR_TWR": {
       "frequency": 118300,
       "radio_name": "Newark tower",
@@ -11899,7 +11887,7 @@
       "configuration": {
         "config_id": "STD",
         "default_consolidation": {
-          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP"],
+          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP", "EWR_W_APP"],
           "EWR_U_APP": ["EWR_H_APP", "EWR_S_APP"],
           "ISP_H_APP": ["ISP_B_APP", "ISP_I_APP", "ISP_N_APP", "ISP_O_APP", "ISP_R_APP", "ISP_Z_APP", "SWF_APP"],
           "JFK_G_APP": [
@@ -12418,7 +12406,7 @@
       "configuration": {
         "config_id": "STD",
         "default_consolidation": {
-          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP"],
+          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP", "EWR_W_APP"],
           "EWR_U_APP": ["EWR_H_APP", "EWR_S_APP"],
           "ISP_H_APP": ["ISP_B_APP", "ISP_I_APP", "ISP_N_APP", "ISP_O_APP", "ISP_R_APP", "ISP_Z_APP", "SWF_APP"],
           "JFK_G_APP": [
@@ -12927,7 +12915,7 @@
       "configuration": {
         "config_id": "STD",
         "default_consolidation": {
-          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP"],
+          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP", "EWR_W_APP"],
           "EWR_U_APP": ["EWR_H_APP", "EWR_S_APP"],
           "ISP_H_APP": ["ISP_B_APP", "ISP_I_APP", "ISP_N_APP", "ISP_O_APP", "ISP_R_APP", "ISP_Z_APP", "SWF_APP"],
           "JFK_G_APP": [
@@ -13446,7 +13434,7 @@
       "configuration": {
         "config_id": "STD",
         "default_consolidation": {
-          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP"],
+          "EWR_P_APP": ["EWR_A_APP", "EWR_DEP", "EWR_M_APP", "EWR_Q_APP", "EWR_U_APP", "EWR_W_APP"],
           "EWR_U_APP": ["EWR_H_APP", "EWR_S_APP"],
           "ISP_H_APP": ["ISP_B_APP", "ISP_I_APP", "ISP_N_APP", "ISP_O_APP", "ISP_R_APP", "ISP_Z_APP", "SWF_APP"],
           "JFK_G_APP": [

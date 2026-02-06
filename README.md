@@ -1,21 +1,28 @@
 vice
 ====
 
-![dall-e 2 tower](https://github.com/mmp/vice/blob/master/icons/tower-rounded-inset-256x256.png?raw=true)
+![dall-e 2 tower](https://github.com/mmp/vice/blob/d7a85cf1388816b74f686e7eb231cf0077d01b10/cmd/vice/icons/tower-256x256.png?raw=true)
 
 *A fun folly writing an ATC simulator*. See the [vice
 website](https://pharr.org/vice) for more information and documentation
 about how to use vice.
 
-[<img src="https://github.com/mmp/vice/actions/workflows/ci-windows.yml/badge.svg">](https://github.com/mmp/vice/actions?query=workflow%3Aci-windows)
-[<img src="https://github.com/mmp/vice/actions/workflows/ci-mac.yml/badge.svg">](https://github.com/mmp/vice/actions?query=workflow%3Aci-mac)
-[<img src="https://github.com/mmp/vice/actions/workflows/ci-linux.yml/badge.svg">](https://github.com/mmp/vice/actions?query=workflow%3Aci-linux)
+[<img src="https://flathub.org/api/badge?locale=en">](https://flathub.org/en/apps/io.github.mmp.Vice)
+
+[<img src="https://github.com/mmp/vice/actions/workflows/ci.yml/badge.svg">](https://github.com/mmp/vice/actions/workflows/ci.yml)
 
 # Building vice
 
-To build *vice* from scratch, first make sure that you have a recent *go*
-compiler installed: ([go compiler downloads](https://go.dev/dl/)).
-Then clone the *vice* repository to a folder on your computer.
+To build *vice* from scratch:
+- First make sure that you have a recent *go* compiler installed: ([go compiler downloads](https://go.dev/dl/))
+- Make sure that you have [git lfs](https://git-lfs.com) installed and run `git lfs install`
+- Clone the *vice* repository to a folder on your computer. Note that you must use the `--recursive` flag so that you also check out submodules that *vice* requires:
+```bash
+$ git clone --recursive https://github.com/mmp/vice.git
+```
+
+If you accidentally clone *vice* without using ``--recursive`` (or to update the source tree after a new submodule has been added, 
+run `git submodule update --init --recursive`.
 
 ## Windows
 
@@ -33,23 +40,25 @@ in the following replaced with the directory where you installed `SDL2-devel`:
   * `CGO_CPPFLAGS`: `'-I INSTALL/SDL2-2.24.0/x86_64-w64-mingw32/include'`
   * `CGO_LDFLAGS`: `'-L INSTALL/SDL2-2.24.0/x86_64-w64-mingw32/lib'`
 
-To build *vice*, run the command `go build -ldflags -H=windowsgui -o ./vice.exe ./cmd/vice`
-from a command shell in the repository directory.
+To build *vice*, run the command `./build.bat` from a command shell in the repository directory.
 
 ## Mac OSX
 
 If you have [homebrew](https://brew.sh) installed, running `brew
-install sdl2` will install SDL2. Otherwise consult your package manager
+install sdl2` will install SDL2. Otherwise, consult your package manager
 documentation or install [SDL](https://www.libsdl.org) from source.
 
-From a command shell in the repositoiry directory `go build -o vice ./cmd/vice` to
-build a *vice* executable.
+From a command shell in the repository directory, run `./build.sh` to build a *vice* executable.
 
 ## Linux
 
 On Ubuntu, `sudo apt install xorg-dev libsdl2-dev` will install the necessary libraries.
-Then, from a command shell in the repositoiry directory `go build -o vice ./cmd/vice` to
+Then, from a command shell in the repository directory, run `./build.sh` to
 build a *vice* executable.
+
+### Vulkan
+For better speech to text performance, you can compile vice with vulkan support if you have a vulkan compatible gpu.
+On Ubuntu, in addition to the above dependencies, install `libvulkan-dev` and then run `./build.sh --vulkan`.
 
 ## Docker
 

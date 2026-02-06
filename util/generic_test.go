@@ -481,6 +481,37 @@ func TestSeqContainsFunc(t *testing.T) {
 	}
 }
 
+func TestSeqContainsAllFunc(t *testing.T) {
+	s := []int{2, 4, 6, 8, 10}
+
+	// Test all even - should pass
+	if !SeqContainsAllFunc(slices.Values(s), func(v int) bool { return v%2 == 0 }) {
+		t.Error("all numbers are even, should return true")
+	}
+
+	// Test all positive - should pass
+	if !SeqContainsAllFunc(slices.Values(s), func(v int) bool { return v > 0 }) {
+		t.Error("all numbers are positive, should return true")
+	}
+
+	// Test all less than 5 - should fail (6, 8, 10 are >= 5)
+	if SeqContainsAllFunc(slices.Values(s), func(v int) bool { return v < 5 }) {
+		t.Error("not all numbers are < 5, should return false")
+	}
+
+	// Test with mixed sequence
+	mixed := []int{1, 2, 3, 4, 5}
+	if SeqContainsAllFunc(slices.Values(mixed), func(v int) bool { return v%2 == 0 }) {
+		t.Error("not all numbers are even, should return false")
+	}
+
+	// Test empty sequence - vacuous truth, should return true
+	empty := []int{}
+	if !SeqContainsAllFunc(slices.Values(empty), func(v int) bool { return false }) {
+		t.Error("empty sequence should satisfy all predicates (vacuous truth)")
+	}
+}
+
 func TestSeqConcat(t *testing.T) {
 	s1 := []int{1, 2, 3}
 	s2 := []int{4, 5}

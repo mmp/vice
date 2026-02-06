@@ -100,6 +100,14 @@ type Platform interface {
 	// and which keys are currently down.
 	GetKeyboard() *KeyboardState
 
+	// Cursor overrides. LoadCursorFromFile parses a .cur file and creates a
+	// cursor handle that can be set as the active cursor via SetCursorOverride.
+	LoadCursorFromFile(path string) (*Cursor, error)
+	// SetCursorOverride replaces the OS cursor until cleared.
+	SetCursorOverride(cursor *Cursor)
+	// ClearCursorOverride removes any cursor override.
+	ClearCursorOverride()
+
 	// AddPCM registers an audio effect encoded via pulse code modulation.
 	// It is assumed to be one channel audio sampled at AudioSampleRate.
 	// The integer return value identifies the effect and can be passed to
@@ -112,11 +120,17 @@ type Platform interface {
 	// entrypoints.
 	AddMP3(mp3 []byte) (int, error)
 
-	// Possibly MP3 audio from speech synthesis; it will be played once and
-	// discarded. If speech is currently being played,
-	// ErrCurrentlyPlayingSpeech is returned. If non-nil, the provided
-	// callback function is called after the speech has finished.
-	TryEnqueueSpeechMP3(mp3 []byte, finished func()) error
+	// TryEnqueueSpeechPCM queues pre-decoded PCM speech audio for playback.
+	// If speech is currently being played, ErrCurrentlyPlayingSpeech is returned.
+	// If non-nil, the provided callback function is called after the speech has finished.
+	TryEnqueueSpeechPCM(pcm []int16, finished func()) error
+
+	// SetSpeechGarbled enables or disables garbling of speech audio.
+	// When enabled, speech is ducked and static noise is added.
+	SetSpeechGarbled(garbled bool)
+
+	// IsPlayingSpeech returns true if speech audio is currently playing.
+	IsPlayingSpeech() bool
 
 	// SetAudioVolume sets the volume for audio playback; the value passed
 	// should be between 0 and 10.
@@ -133,4 +147,31 @@ type Platform interface {
 	// StopPlayAudio stops playback of the audio effect specified
 	// by the given identifier.
 	StopPlayAudio(id int)
+
+	// Audio capture methods for continuous background capture with preroll buffer.
+	// StartAudioCapture begins capturing to the preroll buffer (200ms ring buffer).
+	// This allows recording to include audio from before PTT was pressed.
+	StartAudioCapture() error
+	StartAudioCaptureWithDevice(deviceName string) error
+	StopAudioCapture()
+	IsAudioCapturing() bool
+	// GetAudioPreroll returns the current preroll buffer (200ms of audio before now).
+	// Returns nil if not capturing.
+	GetAudioPreroll() []int16
+
+	// Audio recording methods. If capture is active, recording includes preroll.
+	StartAudioRecording() error
+	StartAudioRecordingWithDevice(deviceName string) error
+	StopAudioRecording() ([]int16, error)
+	IsAudioRecording() bool
+	GetAudioInputDevices() []string
+
+	// SetAudioStreamCallback sets a callback that receives audio samples
+	// as they are recorded. This enables streaming audio to a transcriber.
+	// Pass nil to disable the callback.
+	SetAudioStreamCallback(cb func([]int16))
+
+	// GetGPUInfo returns the GPU vendor and renderer strings from OpenGL.
+	// Should be called after OpenGL is initialized.
+	GetGPUInfo() (vendor, renderer string)
 }

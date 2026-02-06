@@ -81,7 +81,7 @@ func TestGetRandom(t *testing.T) {
 
 	seen := map[int]bool{}
 	r := rand.Make()
-	for i := 0; i < 21; i++ {
+	for range 21 {
 		v, err := s.GetRandom(r)
 		if err != nil {
 			t.Fatalf("unexpected error from GetRandom: %v", err)

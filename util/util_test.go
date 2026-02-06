@@ -12,7 +12,7 @@ func TestObjectArena(t *testing.T) {
 	var a ObjectArena[int]
 
 	for range 10 {
-		seen := make(map[*int]interface{})
+		seen := make(map[*int]any)
 		for i := range 100 {
 			p := a.AllocClear()
 			if _, ok := seen[p]; ok {

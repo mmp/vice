@@ -11,6 +11,7 @@ import (
 	"runtime"
 	"slices"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -55,12 +56,18 @@ type NewSimConfiguration struct {
 	// New UI state for improved flow
 	filterText string // search/filter for scenario selection
 
-	mu              util.LoggingMutex // protects airportMETAR/fetchingMETAR/availableWXIntervals
+	// Weather filter UI state
+	weatherFilter      wx.WeatherFilter
+	weatherFilterError string
+
+	mu              util.LoggingMutex // protects airportMETAR/availableWXIntervals
 	airportMETAR    map[string][]wx.METAR
 	metarAirports   []string
 	fetchMETARError error
-	fetchingMETAR   bool
-	metarGeneration int
+
+	// Winds aloft data for the current facility
+	atmosByTime        *wx.AtmosByTime
+	windsAloftAltitude float32
 
 	availableWXIntervals []util.TimeInterval
 }
@@ -207,17 +214,59 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	}
 	c.ScenarioName = scenarioName
 
+	// Initialize default wind direction from runways
+	c.initDefaultWindDirection()
+
 	c.fetchMETAR()
 
 	c.updateStartTimeForRunways()
+}
+
+// initDefaultWindDirection computes the default wind direction range from the scenario's runways.
+// It calculates the average runway heading and sets a ±30 degree range around it.
+func (c *NewSimConfiguration) initDefaultWindDirection() {
+	if c.ScenarioSpec == nil {
+		return
+	}
+
+	// Calculate average runway heading
+	var sumRunwayVecs [2]float32
+	ap := c.ScenarioSpec.PrimaryAirport
+	if dbap, ok := av.DB.Airports[ap]; ok {
+		for _, rwy := range dbap.Runways {
+			if slices.ContainsFunc(c.ScenarioSpec.DepartureRunways, func(r sim.DepartureRunway) bool {
+				return r.Airport == ap && r.Runway == rwy.Id
+			}) {
+				sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(rwy.Heading))
+			}
+			if slices.ContainsFunc(c.ScenarioSpec.ArrivalRunways, func(r sim.ArrivalRunway) bool {
+				return r.Airport == ap && r.Runway == rwy.Id
+			}) {
+				sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(rwy.Heading))
+			}
+		}
+	}
+
+	avgRwyHeading := math.VectorHeading(sumRunwayVecs)
+	avgRwyMagneticHeading := avgRwyHeading + c.ScenarioSpec.MagneticVariation
+
+	// Set default wind direction range to ±30 degrees from average runway heading
+	windDirMin := int(math.NormalizeHeading(avgRwyMagneticHeading - 30))
+	windDirMax := int(math.NormalizeHeading(avgRwyMagneticHeading + 30))
+
+	// Reset weather filter for the new scenario with default wind direction
+	c.weatherFilter = wx.WeatherFilter{
+		WindDirMin: &windDirMin,
+		WindDirMax: &windDirMax,
+	}
+	c.weatherFilterError = ""
 }
 
 func (c *NewSimConfiguration) fetchMETAR() {
 	c.mu.Lock(c.lg)
 	defer c.mu.Unlock(c.lg)
 
-	if c.ScenarioSpec == nil || c.selectedServer == nil {
-		c.fetchingMETAR = false
+	if c.ScenarioSpec == nil {
 		return
 	}
 
@@ -230,29 +279,53 @@ func (c *NewSimConfiguration) fetchMETAR() {
 	c.airportMETAR = nil
 	c.fetchMETARError = nil
 	c.availableWXIntervals = nil
-	c.fetchingMETAR = true
-	c.metarGeneration++
-	currentGeneration := c.metarGeneration
+	c.atmosByTime = nil
 
-	c.mgr.GetMETAR(c.selectedServer, airports, func(metars map[string][]wx.METAR, err error) {
-		c.mu.Lock(c.lg)
-		defer c.mu.Unlock(c.lg)
+	// Load METAR data from local resources
+	metarSOA, err := wx.GetMETAR(airports)
+	if err != nil {
+		c.fetchMETARError = err
+		return
+	}
 
-		if currentGeneration != c.metarGeneration {
-			return
-		}
+	// Decode SOA to regular METAR slices
+	metars := make(map[string][]wx.METAR)
+	for ap, soa := range metarSOA {
+		metars[ap] = soa.Decode()
+	}
 
-		c.fetchingMETAR = false
+	c.airportMETAR = metars
+	c.metarAirports = airports
 
-		if err != nil {
-			c.fetchMETARError = err
-		} else {
-			c.airportMETAR = metars
-			c.metarAirports = airports
-			c.computeAvailableWXIntervals()
-			c.updateStartTimeForRunways()
-		}
-	})
+	c.loadAtmosphericData()
+	c.computeAvailableWXIntervals()
+	c.updateStartTimeForRunways()
+}
+
+// loadAtmosphericData loads atmospheric data for the current facility and determines
+// the appropriate winds aloft altitude based on whether it's a TRACON or ARTCC.
+func (c *NewSimConfiguration) loadAtmosphericData() {
+	// Determine if this is a TRACON or ARTCC based on the facility
+	_, isTRACON := av.DB.TRACONs[c.Facility]
+
+	// Set altitude based on facility type:
+	// - TRACON: 5,000' - representative of terminal area traffic
+	// - Center/ERAM (ARTCC): FL280 (28,000') - representative of en route traffic
+	if isTRACON {
+		c.windsAloftAltitude = 5000
+	} else {
+		c.windsAloftAltitude = 28000
+	}
+
+	// Try to load atmospheric data for the facility
+	atmosByTime, err := wx.GetAtmosByTime(c.Facility)
+	if err != nil {
+		// We don't yet have data for center scenarios; don't treat this as an error.
+		c.atmosByTime = nil
+		return
+	}
+
+	c.atmosByTime = atmosByTime
 }
 
 func (c *NewSimConfiguration) computeAvailableWXIntervals() {
@@ -271,12 +344,11 @@ func (c *NewSimConfiguration) computeAvailableWXIntervals() {
 		metarIntervals = wx.METARIntervals(metarTimes)
 	}
 
-	// Get TRACON intervals from server
+	// Get TRACON intervals from local resources
+	traconIntervalsMap := wx.GetTimeIntervals()
 	var traconIntervals []util.TimeInterval
-	if c.selectedServer != nil && c.selectedServer.AvailableWXByTRACON != nil {
-		if intervals, ok := c.selectedServer.AvailableWXByTRACON[c.Facility]; ok {
-			traconIntervals = intervals
-		}
+	if intervals, ok := traconIntervalsMap[c.Facility]; ok {
+		traconIntervals = intervals
 	}
 
 	if len(traconIntervals) == 0 {
@@ -333,6 +405,60 @@ func (c *NewSimConfiguration) ConfigurationDisabled(config *Config) bool {
 		return true
 	}
 	return c.newSimType == NewSimCreateRemote && (c.NewSimName == "" || (c.RequirePassword && c.Password == ""))
+}
+
+// getARTCCForFacility returns the ARTCC code for a given facility.
+func getARTCCForFacility(facility string, catalog *server.ScenarioCatalog) string {
+	if catalog != nil && catalog.ARTCC != "" {
+		return catalog.ARTCC
+	}
+	if traconInfo, ok := av.DB.TRACONs[facility]; ok {
+		return traconInfo.ARTCC
+	}
+	return facility
+}
+
+// trimFacilityName removes common suffixes from facility names for cleaner display.
+func trimFacilityName(name, facilityType string) string {
+	name = strings.TrimSpace(name)
+	switch facilityType {
+	case "TRACON":
+		name = strings.TrimSuffix(name, " TRACON")
+		name = strings.TrimSuffix(name, " ATCT/TRACON")
+		name = strings.TrimSuffix(name, " Tower")
+	case "ARTCC", "Area":
+		name = strings.TrimSuffix(name, " ARTCC")
+		name = strings.TrimSuffix(name, " Center")
+	}
+	return strings.TrimSpace(name)
+}
+
+// formatFacilityLabel returns a display label for a facility, including its full name if available.
+func formatFacilityLabel(facility string) string {
+	if traconInfo, ok := av.DB.TRACONs[facility]; ok {
+		name := trimFacilityName(traconInfo.Name, "TRACON")
+		if name == "" {
+			return facility
+		}
+		return fmt.Sprintf("%s (%s)", facility, name)
+	}
+	if artccInfo, ok := av.DB.ARTCCs[facility]; ok {
+		name := trimFacilityName(artccInfo.Name, "ARTCC")
+		if name == "" {
+			return facility
+		}
+		return fmt.Sprintf("%s (%s)", facility, name)
+	}
+	return facility
+}
+
+// getAreaKey returns the area identifier for grouping scenarios.
+// For TRACONs, returns the groupName; for ARTCCs, returns the trimmed Area field.
+func getAreaKey(facility, groupName string, catalog *server.ScenarioCatalog) string {
+	if _, isTRACON := av.DB.TRACONs[facility]; isTRACON {
+		return groupName
+	}
+	return trimFacilityName(catalog.Area, "Area")
 }
 
 // DrawScenarioSelectionUI draws Screen 1: scenario selection, sim type choice, and join flow UI
@@ -421,53 +547,13 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 		spec         *server.ScenarioSpec
 	}
 
-	getARTCCForFacility := func(facility string, catalog *server.ScenarioCatalog) string {
-		if catalog != nil && catalog.ARTCC != "" {
-			return catalog.ARTCC
-		}
-		if traconInfo, ok := av.DB.TRACONs[facility]; ok {
-			return traconInfo.ARTCC
-		}
-		return facility
-	}
-
-	trimFacilityName := func(name, facilityType string) string {
-		name = strings.TrimSpace(name)
-		switch facilityType {
-		case "TRACON":
-			name = strings.TrimSuffix(name, " TRACON")
-			name = strings.TrimSuffix(name, " ATCT/TRACON")
-			name = strings.TrimSuffix(name, " Tower")
-		case "ARTCC", "Area":
-			name = strings.TrimSuffix(name, " ARTCC")
-			name = strings.TrimSuffix(name, " Center")
-		}
-		return strings.TrimSpace(name)
-	}
-
-	formatFacilityLabel := func(facility string, catalog *server.ScenarioCatalog) string {
-		if traconInfo, ok := av.DB.TRACONs[facility]; ok {
-			name := trimFacilityName(traconInfo.Name, "TRACON")
-			if name == "" {
-				return facility
-			}
-			return fmt.Sprintf("%s (%s)", facility, name)
-		}
-		if artccInfo, ok := av.DB.ARTCCs[facility]; ok {
-			name := trimFacilityName(artccInfo.Name, "ARTCC")
-			if name == "" {
-				return facility
-			}
-			return fmt.Sprintf("%s (%s)", facility, name)
-		}
-		return facility
-	}
-
 	if c.newSimType == NewSimCreateLocal || c.newSimType == NewSimCreateRemote {
 		tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
 
 		// Search/filter input
-		imgui.SetNextItemWidth(imgui.ContentRegionAvail().X - 60)
+		filterW := tableScale*700 - 60
+
+		imgui.SetNextItemWidth(filterW)
 		imgui.InputTextWithHint("##filter", "Search scenarios, TRACONs, ARTCCs...", &c.filterText, 0, nil)
 		imgui.SameLine()
 		if imgui.Button("Clear") {
@@ -475,31 +561,32 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 		}
 		imgui.Spacing()
 
+		// Precompute lowercased filter text once for all filter checks
+		filterLower := strings.ToLower(c.filterText)
+
 		// Helper to check if text matches filter
 		matchesFilter := func(text string) bool {
-			if c.filterText == "" {
+			if filterLower == "" {
 				return true
 			}
-			return strings.Contains(strings.ToLower(text), strings.ToLower(c.filterText))
+			return strings.Contains(strings.ToLower(text), filterLower)
 		}
 
 		// Helper to check if a catalog has matching airports
 		catalogHasMatchingAirport := func(catalog *server.ScenarioCatalog) bool {
-			if c.filterText == "" {
-				return true
-			}
-			filter := strings.ToLower(c.filterText)
-			for _, ap := range catalog.Airports {
-				if strings.Contains(strings.ToLower(ap), filter) {
-					return true
-				}
-			}
-			return false
+			return filterLower == "" || util.SeqContainsFunc(slices.Values(catalog.Airports),
+				func(ap string) bool { return strings.Contains(strings.ToLower(ap), filterLower) })
 		}
 
-		// Helper to check if a catalog matches the filter (name, facility, or airports)
+		// Helper to check if a catalog has matching scenario names
+		catalogHasMatchingScenario := func(catalog *server.ScenarioCatalog) bool {
+			return filterLower == "" || util.SeqContainsFunc(maps.Keys(catalog.Scenarios),
+				func(scenarioName string) bool { return strings.Contains(strings.ToLower(scenarioName), filterLower) })
+		}
+
+		// Helper to check if a catalog matches the filter (name, facility, airports, or scenarios)
 		catalogMatchesFilter := func(catalog *server.ScenarioCatalog) bool {
-			if c.filterText == "" {
+			if filterLower == "" {
 				return true
 			}
 			// Check airports in the catalog
@@ -510,21 +597,25 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 			if matchesFilter(catalog.Facility) {
 				return true
 			}
+			// Check scenario names
+			if catalogHasMatchingScenario(catalog) {
+				return true
+			}
 			return false
 		}
 
 		// Helper to check if any catalog in a facility matches
 		facilityMatchesFilter := func(facility string, catalogs map[string]*server.ScenarioCatalog) bool {
-			if c.filterText == "" {
+			if filterLower == "" {
 				return true
 			}
 			// Check facility name
 			if matchesFilter(facility) {
 				return true
 			}
-			// Check catalog airports
+			// Check catalogs (airports and scenario names)
 			for _, catalog := range catalogs {
-				if catalogHasMatchingAirport(catalog) {
+				if catalogHasMatchingAirport(catalog) || catalogHasMatchingScenario(catalog) {
 					return true
 				}
 			}
@@ -552,21 +643,53 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 			}
 
 			// Collect unique ARTCCs and track which ones match the filter
-			artccs := make(map[string]interface{})
-			matchingARTCCs := make(map[string]interface{})
-			matchingFacilities := make(map[string]interface{})
+			artccs := make(map[string]struct{})
+			matchingARTCCs := make(map[string]struct{})
+			matchingFacilities := make(map[string]struct{})
+			// Track groups that have matching scenarios specifically
+			type facilityGroup struct {
+				facility  string
+				groupName string
+			}
+			var matchingGroups []facilityGroup
+			// Helper to check if an ARTCC matches the filter
+			artccMatchesFilter := func(artcc string) bool {
+				if filterLower == "" {
+					return true
+				}
+				if matchesFilter(artcc) {
+					return true
+				}
+				// Also check the ARTCC's full name
+				if artccInfo, ok := av.DB.ARTCCs[artcc]; ok {
+					if matchesFilter(artccInfo.Name) {
+						return true
+					}
+				}
+				return false
+			}
+
 			for facility, catalogs := range catalogsByFacility {
 				info := facilityCatalogs[facility]
 				if info == nil {
 					continue
 				}
 				artcc := getARTCCForFacility(facility, info)
-				artccs[artcc] = nil
+				artccs[artcc] = struct{}{}
 
-				// Check if this facility matches the filter
-				if facilityMatchesFilter(facility, catalogs) {
-					matchingARTCCs[artcc] = nil
-					matchingFacilities[facility] = nil
+				// Check if this facility matches the filter (including ARTCC name)
+				if facilityMatchesFilter(facility, catalogs) || artccMatchesFilter(artcc) {
+					matchingARTCCs[artcc] = struct{}{}
+					matchingFacilities[facility] = struct{}{}
+				}
+
+				// Track groups with matching scenarios
+				if filterLower != "" {
+					for groupName, catalog := range catalogs {
+						if catalogHasMatchingScenario(catalog) {
+							matchingGroups = append(matchingGroups, facilityGroup{facility, groupName})
+						}
+					}
 				}
 			}
 
@@ -575,7 +698,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 			if c.Facility != "" {
 				selectedARTCC = getARTCCForFacility(c.Facility, facilityCatalogs[c.Facility])
 			}
-			if c.filterText != "" && len(matchingARTCCs) == 1 {
+			if filterLower != "" && len(matchingARTCCs) == 1 {
 				for artcc := range matchingARTCCs {
 					if artcc != selectedARTCC {
 						// Find first matching facility in this ARTCC and select it
@@ -592,7 +715,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 			}
 
 			// Auto-select facility if only one matches within the selected ARTCC
-			if c.filterText != "" && selectedARTCC != "" {
+			if filterLower != "" && selectedARTCC != "" {
 				var matchingInARTCC []string
 				for facility := range matchingFacilities {
 					if getARTCCForFacility(facility, facilityCatalogs[facility]) == selectedARTCC {
@@ -602,6 +725,23 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 				if len(matchingInARTCC) == 1 && matchingInARTCC[0] != c.Facility {
 					c.SetFacility(matchingInARTCC[0])
 				}
+			}
+
+			// Ensure we have a group with matching scenarios selected, but only if the
+			// current ARTCC doesn't have any matching facilities (respect user's ARTCC choice)
+			_, currentARTCCHasMatches := matchingARTCCs[selectedARTCC]
+			if filterLower != "" && len(matchingGroups) > 0 && !currentARTCCHasMatches {
+				// Sort for deterministic selection
+				sort.Slice(matchingGroups, func(i, j int) bool {
+					if matchingGroups[i].facility != matchingGroups[j].facility {
+						return matchingGroups[i].facility < matchingGroups[j].facility
+					}
+					return matchingGroups[i].groupName < matchingGroups[j].groupName
+				})
+				fg := matchingGroups[0]
+				c.SetFacility(fg.facility)
+				c.SetScenario(fg.groupName, c.selectedFacilityCatalogs[fg.groupName].DefaultScenario)
+				selectedARTCC = getARTCCForFacility(fg.facility, facilityCatalogs[fg.facility])
 			}
 
 			// Calculate proportional column widths: 25%, 25%, 50%
@@ -622,7 +762,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 					label := fmt.Sprintf("%s (%s)", artcc, name)
 					// Filter: show if name matches or if any facility in this ARTCC has matching airports
 					_, artccMatches := matchingARTCCs[artcc]
-					if c.filterText != "" && !artccMatches && !matchesFilter(artcc) && !matchesFilter(name) {
+					if filterLower != "" && !artccMatches && !matchesFilter(artcc) && !matchesFilter(name) {
 						continue
 					}
 					if imgui.SelectableBoolV(label, artcc == selectedARTCC, 0, imgui.Vec2{}) && artcc != selectedARTCC {
@@ -645,6 +785,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 						}
 						if facilityToSelect != "" {
 							c.SetFacility(facilityToSelect)
+							selectedARTCC = artcc // Update for this frame
 						}
 					}
 				}
@@ -670,15 +811,11 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 					areaToGroups := make(map[string]*areaInfo)
 
 					for groupName, gcfg := range catalogs {
-						// Skip catalogs that don't match the filter
-						if c.filterText != "" && !catalogMatchesFilter(gcfg) {
+						// Skip catalogs that don't match the filter (unless ARTCC matches)
+						if filterLower != "" && !catalogMatchesFilter(gcfg) && !artccMatchesFilter(artcc) {
 							continue
 						}
-						// For TRACONs, use groupName as area; for ARTCCs, use the Area field
-						area := groupName
-						if !isTRACON {
-							area = trimFacilityName(gcfg.Area, "Area")
-						}
+						area := getAreaKey(facility, groupName, gcfg)
 						if areaToGroups[area] == nil {
 							areaToGroups[area] = &areaInfo{area: area}
 						}
@@ -690,7 +827,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 					}
 
 					// Display facility label
-					label := formatFacilityLabel(facility, info)
+					label := formatFacilityLabel(facility)
 					if imgui.SelectableBoolV(label, facility == c.Facility, 0, imgui.Vec2{}) && facility != c.Facility {
 						c.SetFacility(facility)
 					}
@@ -725,26 +862,24 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 			if imgui.BeginChildStrV("scenarios", imgui.Vec2{scenarioWidth, columnHeight}, 0, 0) {
 				selectedCatalog := c.selectedFacilityCatalogs[c.GroupName]
 				if selectedCatalog != nil {
-					// Use same area logic as column 2: for TRACONs, use group name; for ARTCCs, use Area field
-					_, isTRACON := av.DB.TRACONs[c.Facility]
-					selectedArea := c.GroupName
-					if !isTRACON {
-						selectedArea = trimFacilityName(selectedCatalog.Area, "Area")
-					}
+					selectedArea := getAreaKey(c.Facility, c.GroupName, selectedCatalog)
 
 					// Collect all scenarios from groups with the same area
-					var allScenarios []scenarioInfo
+					type scenarioWithCatalog struct {
+						scenarioInfo
+						catalog *server.ScenarioCatalog
+					}
+					var allScenarios []scenarioWithCatalog
 					for groupName, group := range c.selectedFacilityCatalogs {
-						groupArea := groupName
-						if !isTRACON {
-							groupArea = trimFacilityName(group.Area, "Area")
-						}
-						if groupArea == selectedArea {
+						if getAreaKey(c.Facility, groupName, group) == selectedArea {
 							for name, spec := range group.Scenarios {
-								allScenarios = append(allScenarios, scenarioInfo{
-									groupName:    groupName,
-									scenarioName: name,
-									spec:         spec,
+								allScenarios = append(allScenarios, scenarioWithCatalog{
+									scenarioInfo: scenarioInfo{
+										groupName:    groupName,
+										scenarioName: name,
+										spec:         spec,
+									},
+									catalog: group,
 								})
 							}
 						}
@@ -755,6 +890,16 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 						return allScenarios[i].scenarioName < allScenarios[j].scenarioName
 					})
 					for _, s := range allScenarios {
+						// Filter scenarios: show if this specific scenario name matches, OR
+						// if the catalog has a matching airport/facility name (but NOT because
+						// another scenario in the catalog matches), OR if the ARTCC matches
+						if filterLower != "" &&
+							!matchesFilter(s.scenarioName) &&
+							!catalogHasMatchingAirport(s.catalog) &&
+							!matchesFilter(s.catalog.Facility) &&
+							!artccMatchesFilter(selectedARTCC) {
+							continue
+						}
 						selected := s.groupName == c.GroupName && s.scenarioName == c.ScenarioName
 						if imgui.SelectableBoolV(s.scenarioName, selected, 0, imgui.Vec2{}) {
 							c.SetScenario(s.groupName, s.scenarioName)
@@ -793,6 +938,7 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 		if !ok || c.joinRequest.SimName == "" {
 			c.joinRequest.SimName, rs = util.FirstSortedMapEntry(runningSims)
 		}
+		controllersForGroup := controlPositionsForGroup(c.selectedServer, rs.GroupName)
 
 		imgui.Text("Available simulations:")
 		flags := imgui.TableFlagsBordersH | imgui.TableFlagsBordersOuterV | imgui.TableFlagsRowBg |
@@ -835,7 +981,9 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 					total++
 					if state.IsOccupied() {
 						occupied++
-						occupiedTCWs = append(occupiedTCWs, string(tcw))
+						occupiedTCWs = append(occupiedTCWs,
+							controllerDisplayLabel(controllersForGroup, av.ControlPosition(tcw)),
+						)
 					}
 				}
 				controllers := fmt.Sprintf("%d / %d", occupied, total)
@@ -866,13 +1014,14 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 
 		// Format TCPs for display (SSA style: "primary *sec1 sec2")
 		fmtTCPs := func(cons server.TCPConsolidation) string {
-			result := string(cons.PrimaryTCP)
+			result := controllerDisplayLabel(controllersForGroup, av.ControlPosition(cons.PrimaryTCP))
 			for _, sec := range cons.SecondaryTCPs {
 				prefix := ""
 				if sec.Type == sim.ConsolidationBasic {
 					prefix = "*"
 				}
-				result += " " + prefix + string(sec.TCP)
+				result += " " + prefix +
+					controllerDisplayLabel(controllersForGroup, av.ControlPosition(sec.TCP))
 			}
 			return result
 		}
@@ -961,8 +1110,9 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 				}
 				first = false
 
+				label := controllerDisplayLabel(controllersForGroup, av.ControlPosition(tcw))
 				selected := tcw == c.selectedTCW
-				if imgui.RadioButtonBool(string(tcw)+"##tcw", selected) {
+				if imgui.RadioButtonBool(fmt.Sprintf("%s##tcw-%s", label, tcw), selected) {
 					c.selectedTCW = tcw
 					c.joinRequest.JoiningAsRelief = c.showReliefPositions
 					// Initialize selected TCPs from TCW's current positions
@@ -997,7 +1147,8 @@ func (c *NewSimConfiguration) DrawScenarioSelectionUI(p platform.Platform, confi
 					}
 
 					isSelected := c.selectedTCPs[tcp]
-					if imgui.Checkbox(string(tcp)+"##tcp", &isSelected) {
+					label := controllerDisplayLabel(controllersForGroup, av.ControlPosition(tcp))
+					if imgui.Checkbox(fmt.Sprintf("%s##tcp-%s", label, tcp), &isSelected) {
 						if c.selectedTCPs == nil {
 							c.selectedTCPs = make(map[sim.TCP]bool)
 						}
@@ -1068,8 +1219,6 @@ func drawSectionHeader(title string) {
 
 // DrawConfigurationUI draws Screen 2: configuration options and traffic rates (combined)
 func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *Config) bool {
-	tableScale := util.Select(runtime.GOOS == "windows", p.DPIScale(), float32(1))
-
 	if c.displayError != nil {
 		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
 		imgui.Text(c.displayError.Error())
@@ -1138,17 +1287,13 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	// SIMULATION SETTINGS section
 	drawSectionHeader("Simulation Settings")
 
-	if c.selectedServer.HaveTTS {
-		imgui.Checkbox("Disable text-to-speech", &config.DisableTextToSpeech)
-		c.NewSimRequest.DisableTextToSpeech = config.DisableTextToSpeech
-	}
-
 	imgui.Checkbox("Ensure unique callsign suffixes", &c.NewSimRequest.EnforceUniqueCallsignSuffix)
 
 	imgui.Text("Readback error interval:")
 	imgui.SameLine()
 	imgui.SetNextItemWidth(200)
-	imgui.SliderFloatV("##errorInterval", &c.PilotErrorInterval, 1, 30, "%.1f min", imgui.SliderFlagsNone)
+	imgui.SliderFloatV("##errorInterval", &c.PilotErrorInterval, 0, 30,
+		util.Select(c.PilotErrorInterval == 0, "never", "%.1f min"), imgui.SliderFlagsNone)
 	imgui.Spacing()
 
 	// WEATHER & TIME section
@@ -1157,61 +1302,12 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	c.mu.Lock(c.lg)
 	defer c.mu.Unlock(c.lg)
 
-	if c.fetchingMETAR {
-		imgui.Text("Fetching weather data...")
-	} else if c.fetchMETARError != nil {
+	if c.fetchMETARError != nil {
 		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
 		imgui.Text("Error: " + c.fetchMETARError.Error())
 		imgui.PopStyleColor()
 	} else if len(c.airportMETAR) > 0 {
-		metarAirports := slices.Collect(maps.Keys(c.airportMETAR))
-		slices.Sort(metarAirports)
-		if idx := slices.Index(metarAirports, c.ScenarioSpec.PrimaryAirport); idx > 0 {
-			metarAirports = slices.Delete(metarAirports, idx, idx+1)
-			metarAirports = slices.Insert(metarAirports, 0, c.ScenarioSpec.PrimaryAirport)
-		}
-
-		metar := c.airportMETAR[metarAirports[0]]
-		TimePicker("Start time", &c.NewSimRequest.StartTime,
-			c.availableWXIntervals, metar, &ui.fixedFont.Ifont)
-
-		imgui.SameLine()
-		if imgui.Button(renderer.FontAwesomeIconRedo + "##refreshTime") {
-			c.updateStartTimeForRunways()
-		}
-		if imgui.IsItemHovered() {
-			imgui.SetTooltip("Select optimal time for configured runways")
-		}
-
-		imgui.Spacing()
-		currentMetar := wx.METARForTime(c.airportMETAR[metarAirports[0]], c.NewSimRequest.StartTime)
-		imgui.Text("METAR:")
-		imgui.SameLine()
-		imgui.PushFont(&ui.fixedFont.Ifont)
-		imgui.Text(currentMetar.Raw)
-		imgui.PopFont()
-
-		if len(metarAirports) > 1 && !c.showAllMETAR {
-			if imgui.Button("Show all METAR") {
-				c.showAllMETAR = true
-			}
-		}
-		if c.showAllMETAR && len(metarAirports) > 1 {
-			if imgui.BeginTableV("allMetar", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{tableScale * 750, 0}, 0.) {
-				for i := 1; i < len(metarAirports); i++ {
-					ap := metarAirports[i]
-					imgui.TableNextRow()
-					imgui.TableNextColumn()
-					imgui.Text(ap + ":")
-					imgui.TableNextColumn()
-					imgui.PushFont(&ui.fixedFont.Ifont)
-					m := wx.METARForTime(c.airportMETAR[ap], c.NewSimRequest.StartTime)
-					imgui.Text(m.Raw)
-					imgui.PopFont()
-				}
-				imgui.EndTable()
-			}
-		}
+		c.drawWeatherFilterUI()
 	}
 	imgui.Spacing()
 
@@ -1279,7 +1375,8 @@ func (c *NewSimConfiguration) DrawConfigurationUI(p platform.Platform, config *C
 	imgui.Text("Emergency aircraft rate:")
 	imgui.SameLine()
 	imgui.SetNextItemWidth(150)
-	imgui.SliderFloatV("##emergencyRate", &lc.EmergencyAircraftRate, 0, 20, "%.1f /hr", imgui.SliderFlagsNone)
+	imgui.SliderFloatV("##emergencyRate", &lc.EmergencyAircraftRate, 0, 20,
+		util.Select(lc.EmergencyAircraftRate == 0, "never", "%.1f /hr"), imgui.SliderFlagsNone)
 
 	return false
 }
@@ -1555,7 +1652,7 @@ func drawArrivalUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 
 func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) {
 	// Sum up the overall overflight rate
-	overflightGroups := make(map[string]interface{})
+	overflightGroups := make(map[string]any)
 	for group, rates := range lc.InboundFlowRates {
 		if _, ok := rates["overflights"]; ok {
 			overflightGroups[group] = nil
@@ -1608,7 +1705,28 @@ func drawOverflightUI(lc *sim.LaunchConfig, p platform.Platform) (changed bool) 
 
 func drawEmergencyAircraftUI(lc *sim.LaunchConfig, p platform.Platform) {
 	imgui.SliderFloatV("Emergency Aircraft Rate (per hour)", &lc.EmergencyAircraftRate,
-		0, 20, "%.1f", imgui.SliderFlagsNone)
+		0, 20, util.Select(lc.EmergencyAircraftRate == 0, "never", "%.1f"), imgui.SliderFlagsNone)
+}
+
+func controllerDisplayLabel(controllers map[av.ControlPosition]*av.Controller, pos av.ControlPosition) string {
+	if ctrl, ok := controllers[pos]; ok && ctrl != nil {
+		if label := ctrl.ERAMID(); label != "" {
+			return label
+		}
+	}
+	return string(pos)
+}
+
+func controlPositionsForGroup(server *client.Server, groupName string) map[sim.TCP]*av.Controller {
+	if server == nil || groupName == "" {
+		return nil
+	}
+	for _, groups := range server.GetScenarioCatalogs() {
+		if catalog, ok := groups[groupName]; ok {
+			return catalog.ControlPositions
+		}
+	}
+	return nil
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1638,7 +1756,7 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.
 			for _, tcw := range tcws {
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
-				imgui.Text(string(tcw))
+				imgui.Text(controllerDisplayLabel(c.State.Controllers, av.ControlPosition(tcw)))
 
 				imgui.TableNextColumn()
 				sq := renderer.FontAwesomeIconCheckSquare
@@ -1656,7 +1774,11 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.
 					for _, pos := range cons.OwnedPositions() {
 						coveredPositions[pos] = struct{}{}
 						ctrl := c.State.Controllers[pos]
-						p = append(p, fmt.Sprintf("%s (%s, %s)", ctrl.PositionId(), ctrl.Position, ctrl.Frequency.String()))
+						p = append(p, fmt.Sprintf("%s (%s, %s)",
+							controllerDisplayLabel(c.State.Controllers, ctrl.PositionId()),
+							ctrl.Position,
+							ctrl.Frequency.String(),
+						))
 					}
 
 					s := ""
@@ -1689,10 +1811,14 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.
 				ctrl := c.State.Controllers[pos]
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
-				imgui.Text(string(ctrl.PositionId()))
+				imgui.Text(controllerDisplayLabel(c.State.Controllers, ctrl.PositionId()))
 				imgui.TableNextColumn()
 				imgui.TableNextColumn()
-				imgui.Text(fmt.Sprintf("%s (%s, %s)", ctrl.PositionId(), ctrl.Position, ctrl.Frequency.String()))
+				imgui.Text(fmt.Sprintf("%s (%s, %s)",
+					controllerDisplayLabel(c.State.Controllers, ctrl.PositionId()),
+					ctrl.Position,
+					ctrl.Frequency.String(),
+				))
 			}
 
 			imgui.EndTable()
@@ -1709,8 +1835,257 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.
 	return show
 }
 
+// drawWeatherFilterUI draws the weather filter controls organized into logical groups
+func (c *NewSimConfiguration) drawWeatherFilterUI() {
+	const inputWidth float32 = 50
+	changed := false
+
+	// Helper to convert *int to string for display
+	intPtrToStr := func(v *int) string {
+		if v == nil {
+			return ""
+		}
+		return strconv.Itoa(*v)
+	}
+
+	// Helper to parse string to *int
+	parseOptionalInt := func(s string) *int {
+		s = strings.TrimSpace(s)
+		if s == "" {
+			return nil
+		}
+		if v, err := strconv.Atoi(s); err == nil {
+			return &v
+		}
+		return nil
+	}
+
+	// Helper for optional int input fields, returns true if changed
+	optionalIntInput := func(label, hint string, value **int) bool {
+		s := intPtrToStr(*value)
+		imgui.SetNextItemWidth(inputWidth)
+		if imgui.InputTextWithHint(label, hint, &s, 0, nil) {
+			*value = parseOptionalInt(s)
+			return true
+		}
+		return false
+	}
+
+	// Flight Rules (always visible, most important filter)
+	imgui.Text("Flight Rules:")
+	imgui.SameLine()
+	flightRulesInt := int32(c.weatherFilter.FlightRules)
+	if imgui.RadioButtonIntPtr("Any##fr", &flightRulesInt, int32(wx.FlightRulesAny)) {
+		c.weatherFilter.FlightRules = wx.FlightRulesAny
+		changed = true
+	}
+	imgui.SameLine()
+	if imgui.RadioButtonIntPtr("VMC##fr", &flightRulesInt, int32(wx.FlightRulesVMC)) {
+		c.weatherFilter.FlightRules = wx.FlightRulesVMC
+		changed = true
+	}
+	imgui.SameLine()
+	if imgui.RadioButtonIntPtr("IMC##fr", &flightRulesInt, int32(wx.FlightRulesIMC)) {
+		c.weatherFilter.FlightRules = wx.FlightRulesIMC
+		changed = true
+	}
+
+	// Temperature
+	imgui.Text("Temperature (C):")
+	imgui.SameLine()
+	if optionalIntInput("##tempMin", "Min", &c.weatherFilter.TemperatureMin) {
+		changed = true
+	}
+	imgui.SameLine()
+	imgui.Text("-")
+	imgui.SameLine()
+	if optionalIntInput("##tempMax", "Max", &c.weatherFilter.TemperatureMax) {
+		changed = true
+	}
+
+	// Surface Wind group
+	imgui.SeparatorText("Surface Wind")
+	if imgui.BeginTableV("surfaceWind", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{}, 0) {
+		imgui.TableSetupColumnV("Label", imgui.TableColumnFlagsWidthFixed, 100, 0)
+		imgui.TableSetupColumnV("Value", imgui.TableColumnFlagsWidthStretch, 0, 0)
+
+		// Direction (most important for runway selection)
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text("Direction (mag):")
+		imgui.TableNextColumn()
+		if optionalIntInput("##windDirMin", "Min", &c.weatherFilter.WindDirMin) {
+			changed = true
+		}
+		imgui.SameLine()
+		imgui.Text("-")
+		imgui.SameLine()
+		if optionalIntInput("##windDirMax", "Max", &c.weatherFilter.WindDirMax) {
+			changed = true
+		}
+
+		// Speed
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text("Speed (kt):")
+		imgui.TableNextColumn()
+		if optionalIntInput("##windSpeedMin", "Min", &c.weatherFilter.WindSpeedMin) {
+			changed = true
+		}
+		imgui.SameLine()
+		imgui.Text("-")
+		imgui.SameLine()
+		if optionalIntInput("##windSpeedMax", "Max", &c.weatherFilter.WindSpeedMax) {
+			changed = true
+		}
+
+		// Gusting
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text("Gusting:")
+		imgui.TableNextColumn()
+		gustInt := int32(c.weatherFilter.Gusting)
+		if imgui.RadioButtonIntPtr("Any##gust", &gustInt, int32(wx.GustAny)) {
+			c.weatherFilter.Gusting = wx.GustAny
+			changed = true
+		}
+		imgui.SameLine()
+		if imgui.RadioButtonIntPtr("Yes##gust", &gustInt, int32(wx.GustYes)) {
+			c.weatherFilter.Gusting = wx.GustYes
+			changed = true
+		}
+		imgui.SameLine()
+		if imgui.RadioButtonIntPtr("No##gust", &gustInt, int32(wx.GustNo)) {
+			c.weatherFilter.Gusting = wx.GustNo
+			changed = true
+		}
+
+		imgui.EndTable()
+	}
+
+	// Winds Aloft group (only show if atmosByTime is available)
+	if c.atmosByTime != nil {
+		altLabel := fmt.Sprintf("Winds Aloft (%s)", av.FormatAltitude(c.windsAloftAltitude))
+		imgui.SeparatorText(altLabel)
+		if imgui.BeginTableV("windsAloft", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{}, 0) {
+			imgui.TableSetupColumnV("Label", imgui.TableColumnFlagsWidthFixed, 100, 0)
+			imgui.TableSetupColumnV("Value", imgui.TableColumnFlagsWidthStretch, 0, 0)
+
+			// Direction
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text("Direction (mag):")
+			imgui.TableNextColumn()
+			aloftDirChanged := optionalIntInput("##aloftDirMin", "Min", &c.weatherFilter.WindsAloftDirMin)
+			imgui.SameLine()
+			imgui.Text("-")
+			imgui.SameLine()
+			aloftDirChanged = optionalIntInput("##aloftDirMax", "Max", &c.weatherFilter.WindsAloftDirMax) || aloftDirChanged
+			// Only trigger update when both values are set or both are empty
+			if aloftDirChanged {
+				bothSet := c.weatherFilter.WindsAloftDirMin != nil && c.weatherFilter.WindsAloftDirMax != nil
+				bothEmpty := c.weatherFilter.WindsAloftDirMin == nil && c.weatherFilter.WindsAloftDirMax == nil
+				if bothSet || bothEmpty {
+					changed = true
+				}
+			}
+
+			// Speed
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text("Speed (kt):")
+			imgui.TableNextColumn()
+			if optionalIntInput("##aloftSpeedMin", "Min", &c.weatherFilter.WindsAloftSpeedMin) {
+				changed = true
+			}
+			imgui.SameLine()
+			imgui.Text("-")
+			imgui.SameLine()
+			if optionalIntInput("##aloftSpeedMax", "Max", &c.weatherFilter.WindsAloftSpeedMax) {
+				changed = true
+			}
+
+			imgui.EndTable()
+		}
+	}
+
+	// Filter error (if any)
+	if c.weatherFilterError != "" {
+		imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .5, .5, 1})
+		imgui.Text(renderer.FontAwesomeIconExclamationTriangle + " " + c.weatherFilterError)
+		imgui.PopStyleColor()
+	}
+
+	imgui.Separator()
+
+	// Start time and METAR section
+	metarAirports := slices.Collect(maps.Keys(c.airportMETAR))
+	slices.Sort(metarAirports)
+	if idx := slices.Index(metarAirports, c.ScenarioSpec.PrimaryAirport); idx > 0 {
+		metarAirports = slices.Delete(metarAirports, idx, idx+1)
+		metarAirports = slices.Insert(metarAirports, 0, c.ScenarioSpec.PrimaryAirport)
+	}
+
+	if imgui.BeginTableV("timeAndMetar", 2, imgui.TableFlagsSizingFixedFit, imgui.Vec2{}, 0) {
+		imgui.TableSetupColumnV("Label", imgui.TableColumnFlagsWidthFixed, 70, 0)
+		imgui.TableSetupColumnV("Value", imgui.TableColumnFlagsWidthStretch, 0, 0)
+
+		// Start time
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text("Start time:")
+		imgui.TableNextColumn()
+		metar := c.airportMETAR[metarAirports[0]]
+		TimePicker(&c.NewSimRequest.StartTime, c.availableWXIntervals, metar, &ui.fixedFont.Ifont)
+		imgui.SameLine()
+		if imgui.Button(renderer.FontAwesomeIconRedo + "##refreshTime") {
+			c.updateStartTimeForRunways()
+		}
+		if imgui.IsItemHovered() {
+			imgui.SetTooltip("Select random time matching weather filters")
+		}
+
+		// METAR
+		imgui.TableNextRow()
+		imgui.TableNextColumn()
+		imgui.Text("METAR:")
+		imgui.TableNextColumn()
+		currentMetar := wx.METARForTime(c.airportMETAR[metarAirports[0]], c.NewSimRequest.StartTime)
+		imgui.PushFont(&ui.fixedFont.Ifont)
+		imgui.Text(strings.TrimPrefix(currentMetar.Raw, "METAR "))
+		imgui.PopFont()
+
+		if c.showAllMETAR && len(metarAirports) > 1 {
+			for i := 1; i < len(metarAirports); i++ {
+				ap := metarAirports[i]
+				imgui.TableNextRow()
+				imgui.TableNextColumn()
+				imgui.TableNextColumn()
+				imgui.PushFont(&ui.fixedFont.Ifont)
+				m := wx.METARForTime(c.airportMETAR[ap], c.NewSimRequest.StartTime)
+				imgui.Text(strings.TrimPrefix(m.Raw, "METAR "))
+				imgui.PopFont()
+			}
+		}
+
+		imgui.EndTable()
+	}
+
+	if len(metarAirports) > 1 && !c.showAllMETAR {
+		if imgui.Button("Show all airport METAR") {
+			c.showAllMETAR = true
+		}
+	}
+
+	if changed {
+		c.updateStartTimeForRunways()
+	}
+}
+
 func (c *NewSimConfiguration) updateStartTimeForRunways() {
-	if c.ScenarioSpec == nil || c.selectedServer == nil || c.airportMETAR == nil {
+	c.weatherFilterError = ""
+
+	if c.ScenarioSpec == nil || c.airportMETAR == nil {
 		return
 	}
 
@@ -1725,36 +2100,15 @@ func (c *NewSimConfiguration) updateStartTimeForRunways() {
 		ap = airports[0]
 	}
 
-	// Use METAR sampling with wind specifier if available
 	if apMETAR, ok := c.airportMETAR[ap]; ok && len(apMETAR) > 0 {
-		var sampledMETAR *wx.METAR
-
-		if c.ScenarioSpec.WindSpecifier != nil {
-			// Use the scenario's wind specifier
-			sampledMETAR = wx.SampleMETARWithSpec(apMETAR, c.availableWXIntervals,
-				c.ScenarioSpec.WindSpecifier, c.ScenarioSpec.MagneticVariation)
-		} else {
-			// Fallback: calculate average runway heading and use that
-			var sumRunwayVecs [2]float32
-			if dbap, ok := av.DB.Airports[ap]; ok {
-				for _, rwy := range dbap.Runways {
-					if slices.ContainsFunc(c.ScenarioSpec.DepartureRunways, func(r sim.DepartureRunway) bool {
-						return r.Airport == ap && r.Runway == rwy.Id
-					}) {
-						sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(rwy.Heading))
-					}
-					if slices.ContainsFunc(c.ScenarioSpec.ArrivalRunways, func(r sim.ArrivalRunway) bool {
-						return r.Airport == ap && r.Runway == rwy.Id
-					}) {
-						sumRunwayVecs = math.Add2f(sumRunwayVecs, math.HeadingVector(rwy.Heading))
-					}
-				}
-			}
-			avgRwyHeading := math.VectorHeading(sumRunwayVecs)
-			avgRwyMagneticHeading := avgRwyHeading + c.ScenarioSpec.MagneticVariation
-
-			sampledMETAR = wx.SampleMETAR(apMETAR, c.availableWXIntervals, avgRwyMagneticHeading)
-		}
+		// Sample using the combined weather filter (ground winds + winds aloft)
+		sampledMETAR := wx.SampleWeatherWithFilter(
+			apMETAR,
+			c.atmosByTime,
+			c.availableWXIntervals,
+			&c.weatherFilter,
+			c.windsAloftAltitude,
+			c.ScenarioSpec.MagneticVariation)
 
 		if sampledMETAR != nil {
 			c.StartTime = sampledMETAR.Time.UTC()
@@ -1763,6 +2117,8 @@ func (c *NewSimConfiguration) updateStartTimeForRunways() {
 			if !sampledMETAR.IsVMC() {
 				c.ScenarioSpec.LaunchConfig.VFRDepartureRateScale = 0
 			}
+		} else {
+			c.weatherFilterError = "No weather matching filters found"
 		}
 	}
 }

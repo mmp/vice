@@ -6,6 +6,7 @@ package aviation
 
 import (
 	"fmt"
+	"slices"
 	"sort"
 	"strings"
 
@@ -77,12 +78,9 @@ func (a *AirspaceVolume) Inside(p math.Point2LL, alt int) bool {
 		if !math.PointInPolygon2LL(p, a.Vertices) {
 			return false
 		}
-		for _, hole := range a.Holes {
-			if math.PointInPolygon2LL(p, hole) {
-				return false
-			}
-		}
-		return true
+		return !util.SeqContainsFunc(slices.Values(a.Holes), func(hole []math.Point2LL) bool {
+			return math.PointInPolygon2LL(p, hole)
+		})
 	case AirspaceVolumeCircle:
 		return math.NMDistance2LL(p, a.Center) < a.Radius
 	default:
@@ -103,12 +101,9 @@ func (a *AirspaceVolume) Below(p math.Point2LL, alt int) bool {
 		if !math.PointInPolygon2LL(p, a.Vertices) {
 			return false
 		}
-		for _, hole := range a.Holes {
-			if math.PointInPolygon2LL(p, hole) {
-				return false
-			}
-		}
-		return true
+		return !util.SeqContainsFunc(slices.Values(a.Holes), func(hole []math.Point2LL) bool {
+			return math.PointInPolygon2LL(p, hole)
+		})
 	case AirspaceVolumeCircle:
 		return math.NMDistance2LL(p, a.Center) < a.Radius
 	default:
@@ -138,7 +133,7 @@ func (a *AirspaceVolume) PostDeserialize(loc Locator, e *util.ErrorLogger) {
 			var vstrs []string
 			if a.VerticesStr.A != nil { // single string provided
 				vstrs = strings.Fields(*a.VerticesStr.A)
-			} else {
+			} else if a.VerticesStr.B != nil {
 				vstrs = *a.VerticesStr.B
 			}
 			if len(vstrs) == 0 {

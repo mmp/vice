@@ -117,23 +117,32 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	}
 
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeArrival)
+	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = "" // TODO
 	nasFp.ExitFix = util.Select(len(ac.FlightPlan.ArrivalAirport) == 4, ac.FlightPlan.ArrivalAirport[1:], ac.FlightPlan.ArrivalAirport)
 	nasFp.TrackingController = arr.InitialController
-	nasFp.ControllingController = arr.InitialController
 	nasFp.OwningTCW = s.tcwForPosition(arr.InitialController)
+	ac.ControllerFrequency = arr.InitialController
 	nasFp.InboundHandoffController = s.InboundAssignments[group]
 	nasFp.Scratchpad = arr.Scratchpad
 	nasFp.SecondaryScratchpad = arr.SecondaryScratchpad
 	nasFp.RNAV = s.State.FacilityAdaptation.DisplayRNAVSymbol && arr.IsRNAV
 
 	// For ERAM, set AssignedAltitude and derive PerceivedAssigned from waypoint restrictions.
-	if _, isERAM := av.DB.ARTCCs[s.State.Facility]; isERAM && arr.AssignedAltitude == 0 {
-		nasFp.AssignedAltitude = int(arr.AssignedAltitude)
-		if alt, ok := findLowestWaypointAltitude(arr.Waypoints, arr.InitialAltitude); ok {
-			nasFp.PerceivedAssigned = alt
+	if _, isERAM := av.DB.ARTCCs[s.State.Facility]; isERAM {
+		if arr.AssignedAltitude > 0 {
+			nasFp.AssignedAltitude = int(arr.AssignedAltitude)
+			if alt, ok := findLowestWaypointAltitude(arr.Waypoints, arr.InitialAltitude); ok {
+				nasFp.PerceivedAssigned = alt
+			}
 		} else {
-			s.lg.Warnf("Warning: no altitude restriction found for arrival %v", ac.ADSBCallsign)
+			// Try to derive from waypoint restrictions
+			if alt, ok := findLowestWaypointAltitude(arr.Waypoints, arr.InitialAltitude); ok {
+				nasFp.AssignedAltitude = alt
+				nasFp.PerceivedAssigned = alt
+			} else {
+				nasFp.AssignedAltitude = int(arr.InitialAltitude)
+			}
 		}
 	}
 
@@ -264,11 +273,12 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 
 	_, isTRACON := av.DB.TRACONs[s.State.Facility]
 	nasFp := s.initNASFlightPlan(ac, av.FlightTypeOverflight)
+	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = "" // TODO
 	nasFp.ExitFix = ""  // TODO
 	nasFp.TrackingController = of.InitialController
-	nasFp.ControllingController = of.InitialController
 	nasFp.OwningTCW = s.tcwForPosition(of.InitialController)
+	ac.ControllerFrequency = of.InitialController
 	nasFp.InboundHandoffController = s.InboundAssignments[group]
 	nasFp.Scratchpad = of.Scratchpad
 	nasFp.SecondaryScratchpad = of.SecondaryScratchpad

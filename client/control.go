@@ -5,11 +5,33 @@
 package client
 
 import (
+	"time"
+
+	whisper "github.com/mmp/vice/autowhisper"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/stt"
 )
+
+// AircraftCommandRequest contains parameters for RunAircraftCommands.
+// For keyboard input, only Callsign, Commands, Multiple, and ClickedTrack need to be set;
+// all STT-related fields can be left as zero values.
+type AircraftCommandRequest struct {
+	Callsign     av.ADSBCallsign
+	Commands     string
+	Multiple     bool
+	ClickedTrack bool
+
+	// STT-related fields (zero values for keyboard input)
+	WhisperDuration   time.Duration
+	AudioDuration     time.Duration
+	WhisperTranscript string
+	WhisperModel      string
+	AircraftContext   map[string]stt.Aircraft
+	STTDebugLogs      []string
+}
 
 func (c *ControlClient) TakeOrReturnLaunchControl(eventStream *sim.EventStream) {
 	c.addCall(makeRPCCall(c.client.Go(server.TakeOrReturnLaunchControlRPC, c.controllerToken, nil, nil),
@@ -372,11 +394,12 @@ func (c *ControlClient) DeleteAircraft(aircraft []sim.Aircraft, callback func(er
 	}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) SendRouteCoordinates(aircraft sim.ACID, callback func(err error)) {
+func (c *ControlClient) SendRouteCoordinates(aircraft sim.ACID, minutes int, callback func(err error)) {
 	var update server.SimStateUpdate
 	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.SendRouteCoordinatesRPC, &server.SendRouteCoordinatesArgs{
 		ControllerToken: c.controllerToken,
 		ACID:            aircraft,
+		Minutes:         minutes,
 	}, &update, nil), &update, callback))
 }
 
@@ -389,34 +412,91 @@ func (c *ControlClient) FlightPlanDirect(aircraft sim.ACID, fix string, callback
 	}, &update, nil), &update, callback))
 }
 
-func (c *ControlClient) RunAircraftCommands(callsign av.ADSBCallsign, cmds string, multiple, clickedTrack bool,
+func (c *ControlClient) RunAircraftCommands(req AircraftCommandRequest,
 	handleResult func(message string, remainingInput string)) {
-	if c.HaveTTS() && cmds != "P" && cmds != "X" {
-		c.mu.Lock()
+	// Determine if TTS is enabled for this command
+	enableTTS := !*c.disableTTSPtr && req.Commands != "P" && req.Commands != "X"
 
-		if c.awaitReadbackCallsign != "" {
-			c.lg.Warnf("Already awaiting readback for %q, just got %q!", c.awaitReadbackCallsign, callsign)
-		}
-		c.awaitReadbackCallsign = callsign
-
-		c.mu.Unlock()
+	// Hold transmissions BEFORE the async RPC to prevent contact requests
+	// between RPC call and callback. Released when readback arrives, or
+	// in callback if server didn't queue a readback.
+	if enableTTS {
+		c.transmissions.Hold()
 	}
 
+	// Get processor info for voice commands
+	var processorDesc string
+	if req.WhisperDuration > 0 {
+		processorDesc = whisper.ProcessorDescription()
+	}
+
+	rpcStart := time.Now()
 	var result server.AircraftCommandsResult
 	c.addCall(makeRPCCall(c.client.Go(server.RunAircraftCommandsRPC, &server.AircraftCommandsArgs{
-		ControllerToken: c.controllerToken,
-		Callsign:        callsign,
-		Commands:        cmds,
-		Multiple:        multiple,
-		ClickedTrack:    clickedTrack,
+		ControllerToken:   c.controllerToken,
+		Callsign:          req.Callsign,
+		Commands:          req.Commands,
+		Multiple:          req.Multiple,
+		ClickedTrack:      req.ClickedTrack,
+		EnableTTS:         enableTTS,
+		WhisperDuration:   req.WhisperDuration,
+		AudioDuration:     req.AudioDuration,
+		WhisperTranscript: req.WhisperTranscript,
+		WhisperProcessor:  processorDesc,
+		WhisperModel:      req.WhisperModel,
+		AircraftContext:   req.AircraftContext,
+		STTDebugLogs:      req.STTDebugLogs,
 	}, &result, nil),
 		func(err error) {
-			if result.RemainingInput == cmds {
-				c.awaitReadbackCallsign = ""
+			rpcDuration := time.Since(rpcStart)
+			if req.WhisperDuration > 0 {
+				c.lg.Infof("RPC round-trip: %v", rpcDuration)
 			}
-			handleResult(result.ErrorMessage, result.RemainingInput)
+
+			// Synthesize readback locally if text was returned
+			if enableTTS && result.ReadbackText != "" {
+				go c.synthesizeAndEnqueueReadback(result.ReadbackCallsign, result.ReadbackText, result.ReadbackVoiceName)
+			} else if enableTTS {
+				// No readback text - release hold
+				c.transmissions.Unhold()
+			}
+
+			if handleResult != nil {
+				handleResult(result.ErrorMessage, result.RemainingInput)
+			}
 			if err != nil {
-				c.lg.Errorf("%s: %v", callsign, err)
+				c.lg.Errorf("%s: %v", req.Callsign, err)
+			}
+		}))
+}
+
+// RequestContactTransmission requests the next pending contact transmission from the server.
+// The result (if any) will be synthesized locally and enqueued for playback.
+func (c *ControlClient) RequestContactTransmission() {
+	c.transmissions.SetContactRequested(true)
+
+	var result server.RequestContactResult
+	c.addCall(makeRPCCall(c.client.Go(server.RequestContactTransmissionRPC, &server.RequestContactArgs{
+		ControllerToken: c.controllerToken,
+	}, &result, nil),
+		func(err error) {
+			c.transmissions.SetContactRequested(false)
+
+			if err != nil {
+				c.lg.Errorf("RequestContactTransmission: %v", err)
+				return
+			}
+
+			if result.ContactText != "" {
+				if *c.disableTTSPtr {
+					// Contact was processed on server (pilot joins frequency, text event posted)
+					// but user doesn't want audio. Set a hold to maintain pacing.
+					c.transmissions.HoldAfterSilentContact(result.ContactCallsign)
+					return
+				}
+
+				go c.synthesizeAndEnqueueContact(result.ContactCallsign, result.ContactType,
+					result.ContactText, result.ContactVoiceName)
 			}
 		}))
 }

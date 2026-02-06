@@ -121,7 +121,7 @@ func TestSampleQuantization(t *testing.T) {
 			gotPressure := s.Pressure()
 
 			// Check wind vector components
-			for i := 0; i < 2; i++ {
+			for i := range 2 {
 				err := math.Abs(float64(gotWindVec[i] - tc.windVec[i]))
 				if err > float64(tc.maxWindErr) {
 					t.Errorf("WindVec[%d]: got %f, want %f (error %f > %f)",

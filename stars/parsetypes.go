@@ -167,7 +167,7 @@ func (h *spcParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInput
 	}
 }
 
-func (h *spcParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *spcParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *spcParser) ConsumesClick() bool  { return false }
 
 type trackACIDParser struct{}
@@ -190,7 +190,7 @@ func (h *trackACIDParser) Parse(sp *STARSPane, ctx *panes.Context, input *Comman
 	return &sp.visibleTracks[idx], strings.TrimPrefix(text, acid), true, nil
 }
 
-func (h *trackACIDParser) GoType() reflect.Type { return reflect.TypeOf((*sim.Track)(nil)) }
+func (h *trackACIDParser) GoType() reflect.Type { return reflect.TypeFor[*sim.Track]() }
 func (h *trackACIDParser) ConsumesClick() bool  { return false }
 
 type trackBeaconParser struct{}
@@ -217,7 +217,7 @@ func (h *trackBeaconParser) Parse(sp *STARSPane, ctx *panes.Context, input *Comm
 	return &sp.visibleTracks[idx], text[4:], true, nil
 }
 
-func (h *trackBeaconParser) GoType() reflect.Type { return reflect.TypeOf((*sim.Track)(nil)) }
+func (h *trackBeaconParser) GoType() reflect.Type { return reflect.TypeFor[*sim.Track]() }
 func (h *trackBeaconParser) ConsumesClick() bool  { return false }
 
 type trackIndexParser struct{}
@@ -246,7 +246,7 @@ func (h *trackIndexParser) Parse(sp *STARSPane, ctx *panes.Context, input *Comma
 	return &trk, remainder, true, nil
 }
 
-func (h *trackIndexParser) GoType() reflect.Type { return reflect.TypeOf((*sim.Track)(nil)) }
+func (h *trackIndexParser) GoType() reflect.Type { return reflect.TypeFor[*sim.Track]() }
 func (h *trackIndexParser) ConsumesClick() bool  { return false }
 
 type trackSuspendedIndexParser struct{}
@@ -276,7 +276,7 @@ func (h *trackSuspendedIndexParser) Parse(sp *STARSPane, ctx *panes.Context, inp
 	return trk, remainder, true, nil
 }
 
-func (h *trackSuspendedIndexParser) GoType() reflect.Type { return reflect.TypeOf((*sim.Track)(nil)) }
+func (h *trackSuspendedIndexParser) GoType() reflect.Type { return reflect.TypeFor[*sim.Track]() }
 func (h *trackSuspendedIndexParser) ConsumesClick() bool  { return false }
 
 type slewParser struct{}
@@ -287,7 +287,7 @@ func (h *slewParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInpu
 	return input.clickedTrack, text, input.clickedTrack != nil, nil
 }
 
-func (h *slewParser) GoType() reflect.Type { return reflect.TypeOf((*sim.Track)(nil)) }
+func (h *slewParser) GoType() reflect.Type { return reflect.TypeFor[*sim.Track]() }
 func (h *slewParser) ConsumesClick() bool  { return true }
 
 type ghostSlewParser struct{}
@@ -298,7 +298,7 @@ func (h *ghostSlewParser) Parse(sp *STARSPane, ctx *panes.Context, input *Comman
 	return input.clickedGhost, text, input.clickedGhost != nil, nil
 }
 
-func (h *ghostSlewParser) GoType() reflect.Type { return reflect.TypeOf((*av.GhostTrack)(nil)) }
+func (h *ghostSlewParser) GoType() reflect.Type { return reflect.TypeFor[*av.GhostTrack]() }
 func (h *ghostSlewParser) ConsumesClick() bool  { return true }
 
 // unassociatedFPParser looks up an existing flight plan by ACID, beacon code, or list index
@@ -338,7 +338,7 @@ func (h *unassociatedFPParser) Parse(sp *STARSPane, ctx *panes.Context, input *C
 }
 
 func (h *unassociatedFPParser) GoType() reflect.Type {
-	return reflect.TypeOf((*sim.NASFlightPlan)(nil))
+	return reflect.TypeFor[*sim.NASFlightPlan]()
 }
 func (h *unassociatedFPParser) ConsumesClick() bool { return false }
 
@@ -357,7 +357,7 @@ func (h *acidParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInpu
 	return sim.ACID(text[:i]), text[i:], true, nil
 }
 
-func (h *acidParser) GoType() reflect.Type { return reflect.TypeOf(sim.ACID("")) }
+func (h *acidParser) GoType() reflect.Type { return reflect.TypeFor[sim.ACID]() }
 func (h *acidParser) ConsumesClick() bool  { return false }
 
 // beaconParser parses beacon codes.
@@ -377,7 +377,7 @@ func (h *beaconParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandIn
 	}
 }
 
-func (h *beaconParser) GoType() reflect.Type { return reflect.TypeOf(av.Squawk(0)) }
+func (h *beaconParser) GoType() reflect.Type { return reflect.TypeFor[av.Squawk]() }
 func (h *beaconParser) ConsumesClick() bool  { return false }
 
 // beaconBlockParser parses beacon blocks (2 octal digits).
@@ -397,7 +397,7 @@ func (h *beaconBlockParser) Parse(sp *STARSPane, ctx *panes.Context, input *Comm
 	}
 }
 
-func (h *beaconBlockParser) GoType() reflect.Type { return reflect.TypeOf(av.Squawk(0)) }
+func (h *beaconBlockParser) GoType() reflect.Type { return reflect.TypeFor[av.Squawk]() }
 func (h *beaconBlockParser) ConsumesClick() bool  { return false }
 
 // tcp1Parser parses single-character controller position IDs.
@@ -413,7 +413,7 @@ func (h *tcp1Parser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInpu
 	return text[:1], text[1:], true, nil
 }
 
-func (h *tcp1Parser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *tcp1Parser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *tcp1Parser) ConsumesClick() bool  { return false }
 
 // tcp2Parser parses two-character controller position IDs.
@@ -429,7 +429,7 @@ func (h *tcp2Parser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInpu
 	return text[:2], text[2:], true, nil
 }
 
-func (h *tcp2Parser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *tcp2Parser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *tcp2Parser) ConsumesClick() bool  { return false }
 
 // triTCPParser parses triangle-prefixed TCPs--always 3 characters
@@ -438,13 +438,20 @@ type triTCPParser struct{}
 func (h *triTCPParser) Identifier() string { return "TCP_TRI" }
 
 func (h *triTCPParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
-	if len(text) < 3 || text[:1] != STARSTriangleCharacter || !isNum(text[1]) || !isAlpha(text[2]) {
+	if !strings.HasPrefix(text, STARSTriangleCharacter) {
 		return nil, text, false, nil
 	}
-	return text[:3], text[3:], true, nil
+
+	tcp := strings.TrimPrefix(text, STARSTriangleCharacter)
+	// Should be a digit identifying the facility followed by a regular digit+character TCP identifier.
+	if len(tcp) < 3 || !isNum(tcp[0]) || !isNum(tcp[1]) || !isAlpha(tcp[2]) {
+		return nil, text, false, nil
+	}
+
+	return STARSTriangleCharacter + tcp[:3], tcp[3:], true, nil
 }
 
-func (h *triTCPParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *triTCPParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *triTCPParser) ConsumesClick() bool  { return false }
 
 // tcwParser parses two-character terminal display workstation IDs.
@@ -460,7 +467,7 @@ func (h *tcwParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInput
 	return sim.TCW(text[:2]), text[2:], true, nil
 }
 
-func (h *tcwParser) GoType() reflect.Type { return reflect.TypeOf(sim.TCW("")) }
+func (h *tcwParser) GoType() reflect.Type { return reflect.TypeFor[sim.TCW]() }
 func (h *tcwParser) ConsumesClick() bool  { return false }
 
 // artccParser parses ARTCC position identifiers (3 chars: letter + 2 digits, e.g., "Z90", or one letter, e.g. "C").
@@ -478,7 +485,7 @@ func (h *artccParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInp
 	}
 }
 
-func (h *artccParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *artccParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *artccParser) ConsumesClick() bool  { return false }
 
 // airportIdParser parses airport ids: 3 characters
@@ -496,7 +503,7 @@ func (h *airportIdParser) Parse(sp *STARSPane, ctx *panes.Context, input *Comman
 	return nil, text, false, nil
 }
 
-func (h *airportIdParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *airportIdParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *airportIdParser) ConsumesClick() bool  { return false }
 
 type crdaRunwayIdParser struct{}
@@ -575,7 +582,7 @@ func (h *crdaRunwayIdParser) Parse(sp *STARSPane, ctx *panes.Context, input *Com
 	return nil, text, false, nil
 }
 
-func (h *crdaRunwayIdParser) GoType() reflect.Type { return reflect.TypeOf((*CRDARunwayState)(nil)) }
+func (h *crdaRunwayIdParser) GoType() reflect.Type { return reflect.TypeFor[*CRDARunwayState]() }
 func (h *crdaRunwayIdParser) ConsumesClick() bool  { return false }
 
 // numberParser parses integer numbers.
@@ -608,7 +615,7 @@ func (h *numberParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandIn
 	return n, remainder, true, nil
 }
 
-func (h *numberParser) GoType() reflect.Type { return reflect.TypeOf(0) }
+func (h *numberParser) GoType() reflect.Type { return reflect.TypeFor[int]() }
 func (h *numberParser) ConsumesClick() bool  { return false }
 
 // floatParser parses floating point numbers.
@@ -642,7 +649,7 @@ func (h *floatParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInp
 	return float32(f), remainder, true, nil
 }
 
-func (h *floatParser) GoType() reflect.Type { return reflect.TypeOf(float32(0)) }
+func (h *floatParser) GoType() reflect.Type { return reflect.TypeFor[float32]() }
 func (h *floatParser) ConsumesClick() bool  { return false }
 
 // tpaFloatParser parses floating point numbers for the TPA commands (j-rings, etc.)
@@ -675,7 +682,7 @@ func (h *tpaFloatParser) Parse(sp *STARSPane, ctx *panes.Context, input *Command
 	return num, text[i:], true, nil
 }
 
-func (h *tpaFloatParser) GoType() reflect.Type { return reflect.TypeOf(float32(0)) }
+func (h *tpaFloatParser) GoType() reflect.Type { return reflect.TypeFor[float32]() }
 func (h *tpaFloatParser) ConsumesClick() bool  { return false }
 
 // fieldParser extracts a single space-delimited field (token).
@@ -691,7 +698,7 @@ func (h *fieldParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInp
 	return field, remaining, true, nil
 }
 
-func (h *fieldParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *fieldParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *fieldParser) ConsumesClick() bool  { return false }
 
 // allTextParser captures all remaining text from the current position.
@@ -707,7 +714,7 @@ func (h *allTextParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandI
 	return text, "", true, nil
 }
 
-func (h *allTextParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *allTextParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *allTextParser) ConsumesClick() bool  { return false }
 
 // timeParser parses 4-digit 24-hour time format (e.g., "0830", "1645", "2359").
@@ -730,7 +737,7 @@ func (h *timeParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInpu
 	return text[:4], text[4:], true, nil
 }
 
-func (h *timeParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *timeParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *timeParser) ConsumesClick() bool  { return false }
 
 // altFilter6Parser parses 6-digit altitude filter format (e.g., "010250" → low=1000ft, high=25000ft).
@@ -765,7 +772,7 @@ func (h *altFilter6Parser) Parse(sp *STARSPane, ctx *panes.Context, input *Comma
 	return [2]int{low * 100, high * 100}, text[6:], true, nil
 }
 
-func (h *altFilter6Parser) GoType() reflect.Type { return reflect.TypeOf([2]int{}) }
+func (h *altFilter6Parser) GoType() reflect.Type { return reflect.TypeFor[[2]int]() }
 func (h *altFilter6Parser) ConsumesClick() bool  { return false }
 
 // qlRegionParser validates and parses quicklook region IDs.
@@ -781,7 +788,7 @@ func (h *qlRegionParser) Parse(sp *STARSPane, ctx *panes.Context, input *Command
 	return field, remaining, true, nil
 }
 
-func (h *qlRegionParser) GoType() reflect.Type { return reflect.TypeOf("") }
+func (h *qlRegionParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *qlRegionParser) ConsumesClick() bool  { return false }
 
 // raIndexParser parses and validates restriction area indices and returns the associated RestrictionArea
@@ -808,7 +815,7 @@ func (h *raIndexParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandI
 	return text, "", true, ErrSTARSIllegalGeoId
 }
 
-func (h *raIndexParser) GoType() reflect.Type { return reflect.TypeOf(0) }
+func (h *raIndexParser) GoType() reflect.Type { return reflect.TypeFor[int]() }
 func (h *raIndexParser) ConsumesClick() bool  { return false }
 
 // raTextParser parses restriction area text with modifiers (△ blink, + shade, *N color).
@@ -926,7 +933,7 @@ func (h *raTextParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandIn
 	return parsed, strings.Join(fields, " "), true, nil
 }
 
-func (h *raTextParser) GoType() reflect.Type { return reflect.TypeOf(RAText{}) }
+func (h *raTextParser) GoType() reflect.Type { return reflect.TypeFor[RAText]() }
 func (h *raTextParser) ConsumesClick() bool  { return false }
 
 // raLocationParser parses restriction area locations (DMS, fix names, bearing/distance).
@@ -1027,7 +1034,7 @@ func parseRALocation(sp *STARSPane, ctx *panes.Context, text string) (math.Point
 	return p, remaining, true, nil
 }
 
-func (h *raLocationParser) GoType() reflect.Type { return reflect.TypeOf(math.Point2LL{}) }
+func (h *raLocationParser) GoType() reflect.Type { return reflect.TypeFor[math.Point2LL]() }
 func (h *raLocationParser) ConsumesClick() bool  { return false }
 
 // posParser handles click position as lat/long (math.Point2LL).
@@ -1044,7 +1051,7 @@ func (h *posParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInput
 	return p, text, true, nil
 }
 
-func (h *posParser) GoType() reflect.Type { return reflect.TypeOf(math.Point2LL{}) }
+func (h *posParser) GoType() reflect.Type { return reflect.TypeFor[math.Point2LL]() }
 func (h *posParser) ConsumesClick() bool  { return true }
 
 // posNormParser handles click position as normalized coordinates ([2]float32).
@@ -1060,7 +1067,7 @@ func (h *posNormParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandI
 	return input.transforms.NormalizedFromWindowP(input.mousePosition), text, true, nil
 }
 
-func (h *posNormParser) GoType() reflect.Type { return reflect.TypeOf([2]float32{}) }
+func (h *posNormParser) GoType() reflect.Type { return reflect.TypeFor[[2]float32]() }
 func (h *posNormParser) ConsumesClick() bool  { return true }
 
 // posRawParser handles click position as raw window coordinates ([2]float32).
@@ -1076,7 +1083,7 @@ func (h *posRawParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandIn
 	return input.mousePosition, text, true, nil
 }
 
-func (h *posRawParser) GoType() reflect.Type { return reflect.TypeOf([2]float32{}) }
+func (h *posRawParser) GoType() reflect.Type { return reflect.TypeFor[[2]float32]() }
 func (h *posRawParser) ConsumesClick() bool  { return true }
 
 // fixParser parses navigation fix names and returns their location.
@@ -1098,7 +1105,7 @@ func (h *fixParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInput
 	return nil, text, true, ErrSTARSIllegalFix
 }
 
-func (h *fixParser) GoType() reflect.Type { return reflect.TypeOf(math.Point2LL{}) }
+func (h *fixParser) GoType() reflect.Type { return reflect.TypeFor[math.Point2LL]() }
 func (h *fixParser) ConsumesClick() bool  { return false }
 
 // qlPositionsParser parses quicklook position updates (e.g., "1A+B ").
@@ -1158,7 +1165,7 @@ func (h *qlPositionsParser) Parse(sp *STARSPane, ctx *panes.Context, input *Comm
 	return tcps, text[i:], true, nil
 }
 
-func (h *qlPositionsParser) GoType() reflect.Type { return reflect.TypeOf([]string{}) }
+func (h *qlPositionsParser) GoType() reflect.Type { return reflect.TypeFor[[]string]() }
 func (h *qlPositionsParser) ConsumesClick() bool  { return false }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1168,7 +1175,7 @@ func (h *qlPositionsParser) ConsumesClick() bool  { return false }
 // Multiple FlightPlanSpecifiers are merged before being passed to command handlers.
 
 // fpSpecType is the Go type for FlightPlanSpecifier.
-var fpSpecType = reflect.TypeOf(sim.FlightPlanSpecifier{})
+var fpSpecType = reflect.TypeFor[sim.FlightPlanSpecifier]()
 
 type fpACIDParser struct{}
 

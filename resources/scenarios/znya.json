@@ -5,7 +5,6 @@
   "airports": {
     "KPHL": {
       "departure_controller": "Philadelphia North Departure",
-      "name": "Philadelphia",
       "departure_routes": {
         "27L": {
           "MXE": {
@@ -1747,7 +1746,6 @@
     "configurations": {
       "STD": {}
     },
-
     "center": "N039.47.39.800,W076.10.50.300",
     "range": 150,
     "stars_maps": [

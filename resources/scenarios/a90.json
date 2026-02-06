@@ -3385,7 +3385,6 @@
       "tower_list": 1
     },
     "KBED": {
-      "name": "Bedford Hanscom Field",
       "approaches": {
         "I11": {
           "cifp_id": "I11"
@@ -3903,7 +3902,6 @@
       "tower_list": 1
     },
     "KLWM": {
-      "name": "Lawrence",
       "approaches": {
         "I5": {
           "cifp_id": "I5"
@@ -4020,7 +4018,6 @@
       "tower_list": 2
     },
     "KOWD": {
-      "name": "Norwood",
       "approaches": {
         "R35": {
           "cifp_id": "R35"
@@ -4261,7 +4258,6 @@
       "tower_list": 3
     },
     "KBVY": {
-      "name": "Beverly",
       "approaches": {
         "R16": {
           "cifp_id": "R16"
@@ -4629,7 +4625,6 @@
       "tower_list": 2
     },
     "KACK": {
-      "name": "Nantucket Airport",
       "approaches": {
         "I24": {
           "cifp_id": "I24"
@@ -4779,7 +4774,6 @@
       ]
     },
     "KMVY": {
-      "name": "Marthas Vineyard",
       "approaches": {
         "I24": {
           "cifp_id": "I24"
@@ -8604,7 +8598,6 @@
         }
       }
     },
-
     "center": "KBOS",
     "allow_long_scratchpad": true,
     "airspace_awareness": [

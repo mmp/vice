@@ -1,0 +1,324 @@
+{
+  "time": "2026-01-29T03:37:08.386990089Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:671:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Provincial five seventy one three miles from Noley cross Noley at four thousand cleared i l s runway two two left to perch maintain one nine zero nine",
+  "whisper_duration_ms": 491.264,
+  "audio_duration_ms": 8264,
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "PVL571",
+  "command": "CNOLEY/A40 CI2L S190",
+  "stt_aircraft": {
+    "American 19 91": {
+      "Callsign": "AAL1991",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Noley": "NOLEY",
+        "Tale": "TAALE",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 4169,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Delta 93 75": {
+      "Callsign": "DAL9375",
+      "AircraftType": "BCS1",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Harris": "HRRIS",
+        "Islay": "ISLAY",
+        "Lowland": "LWLND",
+        "Noley": "NOLEY",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 10084,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "JetBlue 83": {
+      "Callsign": "JBU83",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Harris": "HRRIS",
+        "Islay": "ISLAY",
+        "Lowland": "LWLND",
+        "Noley": "NOLEY",
+        "Vocus": "VOCUS",
+        "Wintah": "WINTA",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Provincial five 71": {
+      "Callsign": "PVL571",
+      "AircraftType": "DH8D",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Noley": "NOLEY",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Provincial five seventy one three miles from Noley cross Noley at four thousand cleared i l s runway two two left to perch maintain one nine zero nine\"",
+    "[local-stt] normalized words: [provincial 5 71 3 miles from noley cross noley at 4 thousand cleared ils runway 2 2 left to approach maintain 1 9 0 9]",
+    "[local-stt] tokens: 18",
+    "[local-stt]   token[0]: Text=\"provincial\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"5713\" Type=1 Value=5713",
+    "[local-stt]   token[2]: Text=\"miles\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"from\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"noley\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"cross\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"noley\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"40\" Type=2 Value=40",
+    "[local-stt]   token[9]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"22\" Type=1 Value=22",
+    "[local-stt]   token[13]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[16]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[17]: Text=\"1909\" Type=1 Value=1909",
+    "[local-stt] MatchCallsign: 18 tokens, 4 aircraft",
+    "[local-stt]   candidate \"Provincial five 71\" (ICAO=\"PVL571\"): score=1.07 consumed=2",
+    "[local-stt]   candidate \"American 19 91\" (ICAO=\"AAL1991\"): score=0.49 consumed=2",
+    "[local-stt]   candidate \"JetBlue 83\" (ICAO=\"JBU83\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Delta 93 75\" (ICAO=\"DAL9375\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Provincial five 71\" at pos 1: score=0.75 (adjusted=0.68) consumed=1",
+    "[local-stt]   accepted: \"PVL571\" (conf=1.07, consumed=2, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"PVL571\" SpokenKey=\"Provincial five 71\" Conf=1.07 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4000 Fixes=4 Approaches=3 AssignedApproach=\"ILS Runway 22L\" LAHSORunways=[9 27 14 32 15L 33R 15R 33L]",
+    "[local-stt]   fix: \"Noley\" -\u003e \"NOLEY\"",
+    "[local-stt]   fix: \"Wyane\" -\u003e \"WYANE\"",
+    "[local-stt]   fix: \"Vocus\" -\u003e \"VOCUS\"",
+    "[local-stt]   fix: \"Boston\" -\u003e \"KBOS\"",
+    "[local-stt]   approach: \"I L S runway two two left\" -\u003e \"I2L\"",
+    "[local-stt]   approach: \"r-nav x-ray runway two two left\" -\u003e \"X2L\"",
+    "[local-stt]   approach: \"r-nav yankee runway two two left\" -\u003e \"Y2L\"",
+    "[local-stt] command tokens after disregard: 16",
+    "[local-stt]   token[0]: Text=\"miles\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"from\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"noley\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"cross\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"noley\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"at\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"40\" Type=2 Value=40",
+    "[local-stt]   token[7]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"ils\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"runway\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"22\" Type=1 Value=22",
+    "[local-stt]   token[11]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"1909\" Type=1 Value=1909",
+    "[local-stt]   position ID: found command keyword \"cross\" at position 3 - not just position ID",
+    "[local-stt] ParseCommands: 16 tokens",
+    "[local-stt]   no match at token[0]=\"miles\", skipping",
+    "[local-stt]   no match at token[1]=\"from\", skipping",
+    "[local-stt]   no match at token[2]=\"noley\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"noley\" against 4 fixes",
+    "[local-stt]   extractFix: matched \"noley\" -\u003e \"NOLEY\" (exact)",
+    "[local-stt]   extractFix: matched \"noley\" -\u003e \"NOLEY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"noley\" against 4 fixes",
+    "[local-stt]   extractFix: matched \"noley\" -\u003e \"NOLEY\" (exact)",
+    "[local-stt]   extractFix: matched \"noley\" -\u003e \"NOLEY\" (fuzzy 1.00)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"noley\" against 4 fixes",
+    "[local-stt]   extractFix: matched \"noley\" -\u003e \"NOLEY\" (exact)",
+    "[local-stt]   extractFix: matched \"noley\" -\u003e \"NOLEY\" (fuzzy 1.00)",
+    "[local-stt]   matched command: \"CNOLEY/A40\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"ils\" against 4 fixes",
+    "[local-stt]   extractFix: no match found for \"ils\"",
+    "[local-stt]   matchApproachByTypeAndNumber: type=\"ils\" runway=\"two two left\" -\u003e \"I2L\" (consumed=4)",
+    "[local-stt]   matched command: \"CI2L\" (conf=1.00, consumed=5, isThen=false)",
+    "[local-stt]   skipping filler word: \"to\"",
+    "[local-stt]   no match at token[13]=\"approach\", skipping",
+    "[local-stt]   matched command: \"S190\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[CNOLEY/A40 CI2L S190] (avgConf=1.00)",
+    "[local-stt] parsed commands: [CNOLEY/A40 CI2L S190] (conf=1.00)",
+    "[local-stt] validated commands: [CNOLEY/A40 CI2L S190] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"PVL571 CNOLEY/A40 CI2L S190\" (conf=1.07, time=864.916µs) ==="
+  ]
+}

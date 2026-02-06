@@ -111,7 +111,7 @@ func TestSquawkCodePoolBasics(t *testing.T) {
 
 func TestSquawkCodePoolRandoms(t *testing.T) {
 	p := MakeEnrouteSquawkCodePool(nil)
-	assigned := make(map[Squawk]interface{})
+	assigned := make(map[Squawk]any)
 
 	r := rand.Make()
 	for i := range 100000 {
@@ -234,7 +234,7 @@ func TestLocalSquawkCodePool(t *testing.T) {
 	pool := MakeLocalSquawkCodePool(spec)
 
 	r := rand.Make()
-	seen := make(map[Squawk]interface{})
+	seen := make(map[Squawk]any)
 	get := func(spec string, rules FlightRules) Squawk {
 		sq, _, err := pool.Get(spec, rules, r)
 		if err != nil {

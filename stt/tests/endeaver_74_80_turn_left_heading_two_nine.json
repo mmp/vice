@@ -1,0 +1,208 @@
+{
+  "time": "2026-01-31T15:32:42.356526733Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Endeaver 74 80 turn left heading two nine",
+  "whisper_duration_ms": 87.12,
+  "audio_duration_ms": 2504,
+  "processor": "GPU: NVIDIA GeForce RTX 5080 (15977MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "EDV7480",
+  "command": "L290",
+  "stt_aircraft": {
+    "American 66": {
+      "Callsign": "AAL66",
+      "AircraftType": "A320",
+      "Fixes": {
+        "LaGuardia": "KLGA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 3000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Brickyard 91 63": {
+      "Callsign": "RPA9163",
+      "AircraftType": "E75S",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA",
+        "Yoman": "YOMAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "Endeavor 74 80": {
+      "Callsign": "EDV7480",
+      "AircraftType": "CRJ9",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA",
+        "Yoman": "YOMAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "JetBlue 96": {
+      "Callsign": "JBU96",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA",
+        "Yoman": "YOMAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "on approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    },
+    "JetBlue two 89": {
+      "Callsign": "JBU289",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Greko": "GREKO",
+        "LaGuardia": "KLGA",
+        "Yoman": "YOMAN"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two": "I22"
+      },
+      "ApproachFixes": {
+        "I22": {
+          "Greko": "GREKO",
+          "Yoman": "YOMAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22",
+      "SID": "",
+      "STAR": "",
+      "Altitude": 4000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13",
+        "31"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Endeaver 74 80 turn left heading two nine\"",
+    "[local-stt] normalized words: [endeaver 74 80 turn left heading 2 9]",
+    "[local-stt] tokens: 7",
+    "[local-stt]   token[0]: Text=\"endeaver\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"74\" Type=1 Value=74",
+    "[local-stt]   token[2]: Text=\"80\" Type=1 Value=80",
+    "[local-stt]   token[3]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"29\" Type=1 Value=29",
+    "[local-stt] MatchCallsign: 7 tokens, 5 aircraft",
+    "[local-stt]   candidate \"JetBlue two 89\" (ICAO=\"JBU289\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JetBlue 96\" (ICAO=\"JBU96\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Brickyard 91 63\" (ICAO=\"RPA9163\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American 66\" (ICAO=\"AAL66\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Endeavor 74 80\" (ICAO=\"EDV7480\"): score=1.07 consumed=3",
+    "[local-stt]   candidate \"Endeavor 74 80\" at pos 1: score=0.80 (adjusted=0.72) consumed=2",
+    "[local-stt]   accepted: \"EDV7480\" (conf=1.07, consumed=3, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"EDV7480\" SpokenKey=\"Endeavor 74 80\" Conf=1.07 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=4000 Fixes=3 Approaches=1 AssignedApproach=\"ILS Runway 22\" LAHSORunways=[13 31]",
+    "[local-stt]   fix: \"LaGuardia\" -\u003e \"KLGA\"",
+    "[local-stt]   fix: \"Yoman\" -\u003e \"YOMAN\"",
+    "[local-stt]   fix: \"Greko\" -\u003e \"GREKO\"",
+    "[local-stt]   approach: \"I L S runway two two\" -\u003e \"I22\"",
+    "[local-stt] command tokens after disregard: 4",
+    "[local-stt]   token[0]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"29\" Type=1 Value=29",
+    "[local-stt]   position ID: found command keyword \"turn\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 4 tokens",
+    "[local-stt]   matched command: \"L290\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt] ParseCommands: result=[L290] (avgConf=1.00)",
+    "[local-stt] parsed commands: [L290] (conf=1.00)",
+    "[local-stt] validated commands: [L290] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"EDV7480 L290\" (conf=1.07, time=1.0026ms) ==="
+  ]
+}

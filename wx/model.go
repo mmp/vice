@@ -15,7 +15,7 @@ import (
 
 type Model struct {
 	provider       Provider
-	tracon         string
+	facility       string
 	primaryAirport string
 
 	grids     [2]*AtmosGrid
@@ -34,14 +34,14 @@ type AtmosResult struct {
 	Err             error
 }
 
-func MakeModel(provider Provider, tracon string, primaryAirport string, startTime time.Time, lg *log.Logger) *Model {
+func MakeModel(provider Provider, facility string, primaryAirport string, startTime time.Time, lg *log.Logger) *Model {
 	m := &Model{
 		provider:       provider,
-		tracon:         tracon,
+		facility:       facility,
 		primaryAirport: primaryAirport,
 		lg:             lg,
 	}
-	if _, ok := aviation.DB.TRACONs[tracon]; !ok {
+	if !aviation.DB.IsFacility(facility) {
 		return m
 	}
 
@@ -59,7 +59,7 @@ func (m *Model) fetchAtmos(t time.Time) <-chan AtmosResult {
 
 	go func() {
 		defer close(ch)
-		atmos, atmosTime, nextTime, err := m.provider.GetAtmosGrid(m.tracon, t, m.primaryAirport)
+		atmos, atmosTime, nextTime, err := m.provider.GetAtmosGrid(m.facility, t, m.primaryAirport)
 		ch <- AtmosResult{
 			AtmosByPointSOA: atmos,
 			Time:            atmosTime,
@@ -95,7 +95,7 @@ func (m *Model) Lookup(p math.Point2LL, alt float32, t time.Time) Sample {
 }
 
 func (m *Model) checkFetches(t time.Time) {
-	if _, ok := aviation.DB.TRACONs[m.tracon]; !ok {
+	if !aviation.DB.IsFacility(m.facility) {
 		return
 	}
 
@@ -116,7 +116,7 @@ func (m *Model) updateAtmos(ar AtmosResult) {
 		m.lg.Errorf("%v", ar.Err)
 		return
 	} else if ar.AtmosByPointSOA != nil {
-		if _, ok := aviation.DB.TRACONs[m.tracon]; !ok {
+		if !aviation.DB.IsFacility(m.facility) {
 			return
 		}
 

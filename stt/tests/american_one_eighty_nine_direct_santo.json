@@ -1,0 +1,149 @@
+{
+  "time": "2026-02-04T19:50:08.017826117Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:977:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "American one eighty nine direct Santo",
+  "whisper_duration_ms": 290.38,
+  "audio_duration_ms": 2376,
+  "processor": "GPU: Apple M5, 10 CPU / 10 GPU cores, 24GB",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "AAL199",
+  "command": "DSNTOE",
+  "stt_aircraft": {
+    "American one 99": {
+      "Callsign": "AAL199",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Chicago O'Hare": "KORD",
+        "Coen": "KOENN",
+        "Hazel": "HAZIL",
+        "Landuh": "LNDUH",
+        "Meemaw": "MEMAW",
+        "Ruzko": "RZUKO",
+        "Santoe": "SNTOE",
+        "Seika": "SEIKA"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight center": "I8C"
+      },
+      "ApproachFixes": {
+        "I8C": {
+          "Coen": "KOENN",
+          "Hazel": "HAZIL",
+          "Landuh": "LNDUH",
+          "Meemaw": "MEMAW",
+          "Ruzko": "RZUKO",
+          "Santoe": "SNTOE",
+          "Seika": "SEIKA",
+          "Vogler": "VOGLR"
+        }
+      },
+      "AssignedApproach": "ILS Runway 28C",
+      "SID": "",
+      "STAR": "VEECK5",
+      "Altitude": 9000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4R",
+        "22L"
+      ]
+    },
+    "United 14": {
+      "Callsign": "UAL14",
+      "AircraftType": "B39M",
+      "Fixes": {
+        "Chicago O'Hare": "KORD",
+        "Coen": "KOENN",
+        "Hazel": "HAZIL",
+        "Landuh": "LNDUH",
+        "Meemaw": "MEMAW",
+        "Ruzko": "RZUKO",
+        "Santoe": "SNTOE",
+        "Seika": "SEIKA",
+        "Tony": "TONIE",
+        "Vogler": "VOGLR"
+      },
+      "CandidateApproaches": {
+        "I L S runway two eight center": "I8C"
+      },
+      "ApproachFixes": {
+        "I8C": {
+          "Coen": "KOENN",
+          "Hazel": "HAZIL",
+          "Landuh": "LNDUH",
+          "Meemaw": "MEMAW",
+          "Ruzko": "RZUKO",
+          "Santoe": "SNTOE",
+          "Seika": "SEIKA",
+          "Vogler": "VOGLR"
+        }
+      },
+      "AssignedApproach": "ILS Runway 28C",
+      "SID": "",
+      "STAR": "BENKY6",
+      "Altitude": 7000,
+      "State": "arrival",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4R",
+        "22L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"American one eighty nine direct Santo\"",
+    "[local-stt] normalized words: [american 1 89 direct descend]",
+    "[local-stt] tokens: 4",
+    "[local-stt]   token[0]: Text=\"american\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"189\" Type=1 Value=189",
+    "[local-stt]   token[2]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 4 tokens, 2 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 4 tokens, 2 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"American one 99\" (airline=1.000, flight=0.800, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"American one 99\" (airline=1.00, flight=0.80, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 2 results",
+    "[local-stt]     result 0: \"United 14\" (airline=0.361, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"American one 99\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"American one 99\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"flight_only\": no results",
+    "[local-stt]   pattern \"airline_flight\" matched: \"AAL199\" (conf=0.96, consumed=2, addressingForm=0, spokenKey=\"American one 99\")",
+    "[local-stt] callsign match: Callsign=\"AAL199\" SpokenKey=\"American one 99\" Conf=0.96 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=9000 Fixes=8 Approaches=1 AssignedApproach=\"ILS Runway 28C\" LAHSORunways=[4R 22L]",
+    "[local-stt]   fix: \"Chicago O'Hare\" -\u003e \"KORD\"",
+    "[local-stt]   fix: \"Landuh\" -\u003e \"LNDUH\"",
+    "[local-stt]   fix: \"Santoe\" -\u003e \"SNTOE\"",
+    "[local-stt]   fix: \"Coen\" -\u003e \"KOENN\"",
+    "[local-stt]   fix: \"Meemaw\" -\u003e \"MEMAW\"",
+    "[local-stt]   fix: \"Ruzko\" -\u003e \"RZUKO\"",
+    "[local-stt]   fix: \"Hazel\" -\u003e \"HAZIL\"",
+    "[local-stt]   fix: \"Seika\" -\u003e \"SEIKA\"",
+    "[local-stt]   approach: \"I L S runway two eight center\" -\u003e \"I8C\"",
+    "[local-stt] command tokens after disregard: 2",
+    "[local-stt]   token[0]: Text=\"direct\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"descend\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 2 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"descend\" against 8 fixes",
+    "[local-stt]   extractFix: matched \"descend\" -\u003e \"SNTOE\" (fuzzy 0.80)",
+    "[local-stt]   matched command: \"DSNTOE\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt] ParseCommands: result=[DSNTOE] (avgConf=1.00)",
+    "[local-stt] parsed commands: [DSNTOE] (conf=1.00)",
+    "[local-stt] validated commands: [DSNTOE] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"AAL199 DSNTOE\" (conf=0.96, time=253.917µs) ==="
+  ]
+}

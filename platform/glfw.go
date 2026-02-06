@@ -13,10 +13,12 @@ import (
 	"fmt"
 	gomath "math"
 	"runtime"
+	"slices"
 	"strconv"
 
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
 	"github.com/go-gl/gl/v2.1/gl"
@@ -36,6 +38,7 @@ type glfwPlatform struct {
 	mouseJustPressed       [3]bool
 	mouseCursors           [imgui.MouseCursorCOUNT]*glfw.Cursor
 	currentCursor          *glfw.Cursor
+	cursorOverride         *glfw.Cursor
 	inputCharacters        string
 	anyEvents              bool
 	lastMouseX, lastMouseY float64
@@ -44,12 +47,14 @@ type glfwPlatform struct {
 	mouseCapture           math.Extent2D
 	// These are the keys that are actively held down; for now just the
 	// function keys, since all we currently need is F1 for beaconator.
-	heldFKeys map[imgui.Key]interface{}
+	heldFKeys map[imgui.Key]any
 
 	mouseDeltaMode         bool
 	mouseDeltaStartPos     [2]float32
 	mouseDeltaWindowCenter [2]float32
 	mouseDelta             [2]float32
+
+	audioRecorder *AudioRecorder
 }
 
 type Config struct {
@@ -65,6 +70,19 @@ type Config struct {
 // New returns a new instance of a Platform implemented with a window
 // of the specified size open at the specified position on the screen.
 func New(config *Config, lg *log.Logger) (Platform, error) {
+	// Request microphone permission early, before SDL audio is initialized.
+	// This avoids potential conflicts between AVFoundation and CoreAudio.
+	micStatus := GetMicrophoneAuthorizationStatus()
+	lg.Infof("Microphone authorization status: %s", micStatus)
+	if micStatus == MicAuthNotDetermined {
+		lg.Info("Requesting microphone permission (dialog will appear)...")
+		RequestMicrophoneAccess()
+	} else if micStatus == MicAuthDenied {
+		lg.Warn("Microphone access denied - enable in System Settings > Privacy & Security > Microphone")
+	} else if micStatus == MicAuthRestricted {
+		lg.Warn("Microphone access restricted by system policy")
+	}
+
 	lg.Info("Starting GLFW initialization")
 	err := glfw.Init()
 	if err != nil {
@@ -123,11 +141,12 @@ func New(config *Config, lg *log.Logger) (Platform, error) {
 	window.MakeContextCurrent()
 
 	platform := &glfwPlatform{
-		config:      config,
-		imguiIO:     io,
-		window:      window,
-		multisample: config.EnableMSAA,
-		heldFKeys:   make(map[imgui.Key]interface{}),
+		config:        config,
+		imguiIO:       io,
+		window:        window,
+		multisample:   config.EnableMSAA,
+		heldFKeys:     make(map[imgui.Key]any),
+		audioRecorder: NewAudioRecorder(lg),
 	}
 	platform.installCallbacks()
 	platform.createMouseCursors()
@@ -167,12 +186,10 @@ func (g *glfwPlatform) IsMacOSNativeFullScreen() bool {
 		monitors := glfw.GetMonitors()
 		windowSize := g.WindowSize()
 
-		for _, monitor := range monitors {
+		return util.SeqContainsFunc(slices.Values(monitors), func(monitor *glfw.Monitor) bool {
 			vm := monitor.GetVideoMode()
-			if windowSize[0] == vm.Width && windowSize[1] == vm.Height {
-				return true
-			}
-		}
+			return windowSize[0] == vm.Width && windowSize[1] == vm.Height
+		})
 	}
 	return false
 }
@@ -194,6 +211,12 @@ func (g *glfwPlatform) MonitorCallback(monitor *glfw.Monitor, event glfw.Periphe
 }
 
 func (g *glfwPlatform) Dispose() {
+	// Close audio devices before terminating
+	if g.audioRecorder != nil {
+		g.audioRecorder.Close()
+	}
+	g.audioEngine.Close()
+
 	g.window.Destroy()
 	glfw.Terminate()
 }
@@ -220,7 +243,7 @@ func (g *glfwPlatform) ProcessEvents() bool {
 		return true
 	}
 
-	for i := 0; i < len(g.mouseJustPressed); i++ {
+	for i := range len(g.mouseJustPressed) {
 		if g.window.GetMouseButton(glfwButtonIDByIndex[imgui.MouseButton(i)]) == glfw.Press {
 			return true
 		}
@@ -282,7 +305,7 @@ func (g *glfwPlatform) NewFrame() {
 		g.imguiIO.SetMousePos(imgui.Vec2{X: -gomath.MaxFloat32, Y: -gomath.MaxFloat32})
 	}
 
-	for i := 0; i < len(g.mouseJustPressed); i++ {
+	for i := range len(g.mouseJustPressed) {
 		down := g.mouseJustPressed[i] ||
 			(g.window.GetMouseButton(glfwButtonIDByIndex[imgui.MouseButton(i)]) == glfw.Press)
 		g.imguiIO.SetMouseButtonDown(i, down)
@@ -298,6 +321,9 @@ func (g *glfwPlatform) NewFrame() {
 	} else {
 		// Show OS mouse cursor
 		cursor := g.mouseCursors[imgui_cursor]
+		if g.cursorOverride != nil {
+			cursor = g.cursorOverride
+		}
 		if cursor == nil {
 			cursor = g.mouseCursors[imgui.MouseCursorArrow]
 		}
@@ -769,4 +795,54 @@ func glfwKeyToImguiKey(keycode glfw.Key) imgui.Key {
 	default:
 		return imgui.KeyNone
 	}
+}
+
+// Audio capture methods for continuous background capture with preroll buffer
+func (g *glfwPlatform) StartAudioCapture() error {
+	return g.audioRecorder.StartCapture()
+}
+
+func (g *glfwPlatform) StartAudioCaptureWithDevice(deviceName string) error {
+	return g.audioRecorder.StartCaptureWithDevice(deviceName)
+}
+
+func (g *glfwPlatform) StopAudioCapture() {
+	g.audioRecorder.StopCapture()
+}
+
+func (g *glfwPlatform) IsAudioCapturing() bool {
+	return g.audioRecorder.IsCapturing()
+}
+
+func (g *glfwPlatform) GetAudioPreroll() []int16 {
+	return g.audioRecorder.GetPreroll()
+}
+
+// Audio recording methods
+func (g *glfwPlatform) StartAudioRecording() error {
+	return g.audioRecorder.StartRecording()
+}
+
+func (g *glfwPlatform) StartAudioRecordingWithDevice(deviceName string) error {
+	return g.audioRecorder.StartRecordingWithDevice(deviceName)
+}
+
+func (g *glfwPlatform) StopAudioRecording() ([]int16, error) {
+	return g.audioRecorder.StopRecording()
+}
+
+func (g *glfwPlatform) IsAudioRecording() bool {
+	return g.audioRecorder.IsRecording()
+}
+
+func (g *glfwPlatform) GetAudioInputDevices() []string {
+	return GetAudioInputDevices()
+}
+
+func (g *glfwPlatform) SetAudioStreamCallback(cb func([]int16)) {
+	g.audioRecorder.SetStreamCallback(cb)
+}
+
+func (g *glfwPlatform) GetGPUInfo() (vendor, renderer string) {
+	return gl.GoStr(gl.GetString(gl.VENDOR)), gl.GoStr(gl.GetString(gl.RENDERER))
 }

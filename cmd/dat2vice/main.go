@@ -104,7 +104,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	names := make(map[string]interface{})
+	names := make(map[string]any)
 	for _, m := range vmf.Maps {
 		names[m.Name] = nil
 	}

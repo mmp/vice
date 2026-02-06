@@ -23,7 +23,6 @@
       }
     },
     "KPWM": {
-      "name": "PWM",
       "approaches": {
         "I29": {
           "cifp_id": "I29"
@@ -352,7 +351,6 @@
         }
       }
     },
-
     "center": "KPWM",
     "scratchpads": {},
     "stars_maps": [

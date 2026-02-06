@@ -6,10 +6,15 @@ package server
 
 import (
 	"fmt"
+	"log/slog"
+	"strings"
+	"time"
 
+	whisper "github.com/mmp/vice/autowhisper"
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/stt"
 	"github.com/mmp/vice/util"
 )
 
@@ -549,6 +554,7 @@ func (sd *dispatcher) DeleteAircraft(da *DeleteAircraftListArgs, update *SimStat
 type SendRouteCoordinatesArgs struct {
 	ControllerToken string
 	ACID            sim.ACID
+	Minutes         int
 }
 
 const SendRouteCoordinatesRPC = "Sim.SendRouteCoordinates"
@@ -560,7 +566,7 @@ func (sd *dispatcher) SendRouteCoordinates(rca *SendRouteCoordinatesArgs, update
 	if c == nil {
 		return ErrNoSimForControllerToken
 	}
-	err := c.sim.SendRouteCoordinates(c.tcw, rca.ACID)
+	err := c.sim.SendRouteCoordinates(c.tcw, rca.ACID, rca.Minutes)
 	*update = c.GetStateUpdate()
 	return err
 }
@@ -587,18 +593,29 @@ func (sd *dispatcher) FlightPlanDirect(da *FlightPlanDirectArgs, update *SimStat
 }
 
 type AircraftCommandsArgs struct {
-	ControllerToken string
-	Callsign        av.ADSBCallsign
-	Commands        string
-	Multiple        bool
-	ClickedTrack    bool
+	ControllerToken   string
+	Callsign          av.ADSBCallsign
+	Commands          string
+	Multiple          bool
+	ClickedTrack      bool
+	EnableTTS         bool          // Whether to synthesize readback audio
+	WhisperDuration   time.Duration // Time from PTT release to whisper completion (zero for keyboard input)
+	AudioDuration     time.Duration // Duration of the recorded audio (zero for keyboard input)
+	WhisperTranscript string        // Raw whisper transcript (empty for keyboard input)
+	WhisperProcessor  string        // Description of the processor running whisper (GPU model or CPU info)
+	WhisperModel      string
+	AircraftContext   map[string]stt.Aircraft // Aircraft context used for STT decoding (for logging)
+	STTDebugLogs      []string                // Local STT processing logs (for logging)
 }
 
 // If an RPC call returns an error, then the result argument is not returned(!?).
 // So we don't use the error type for syntax errors...
 type AircraftCommandsResult struct {
-	ErrorMessage   string
-	RemainingInput string
+	ErrorMessage      string
+	RemainingInput    string
+	ReadbackText      string          // Text for client to synthesize
+	ReadbackVoiceName string          // Voice name for synthesis (e.g., "am_adam")
+	ReadbackCallsign  av.ADSBCallsign // Callsign for the readback
 }
 
 const RunAircraftCommandsRPC = "Sim.RunAircraftCommands"
@@ -620,15 +637,28 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 		}
 	}
 
+	// Helper to populate readback fields for client-side TTS synthesis.
+	setReadback := func(spokenText string) {
+		if cmds.EnableTTS && spokenText != "" {
+			result.ReadbackText = spokenText
+			result.ReadbackVoiceName = c.sim.VoiceAssigner.GetVoice(callsign, c.sim.Rand)
+			result.ReadbackCallsign = callsign
+		}
+	}
+
 	if cmds.Multiple {
-		if err := c.sim.PilotMixUp(c.tcw, callsign); err != nil {
+		spokenText, err := c.sim.PilotMixUp(c.tcw, callsign)
+		if err != nil {
 			rewriteError(err)
 		}
+		setReadback(spokenText)
 		return nil // don't continue with the commands
 	} else if !cmds.ClickedTrack && c.sim.ShouldTriggerPilotMixUp(callsign) {
-		if err := c.sim.PilotMixUp(c.tcw, callsign); err != nil {
+		spokenText, err := c.sim.PilotMixUp(c.tcw, callsign)
+		if err != nil {
 			rewriteError(err)
 		}
+		setReadback(spokenText)
 		return nil // don't continue with the commands
 	}
 
@@ -636,6 +666,21 @@ func (sd *dispatcher) RunAircraftCommands(cmds *AircraftCommandsArgs, result *Ai
 	result.RemainingInput = execResult.RemainingInput
 	if execResult.Error != nil {
 		result.ErrorMessage = execResult.Error.Error()
+	}
+	setReadback(execResult.ReadbackSpokenText)
+
+	// Log whisper STT commands (WhisperDuration is non-zero for voice commands)
+	if cmds.WhisperDuration > 0 {
+		sd.sm.lg.Info("STT command",
+			slog.String("transcript", cmds.WhisperTranscript),
+			slog.Float64("whisper_duration_ms", float64(cmds.WhisperDuration.Microseconds())/1000.0),
+			slog.Float64("audio_duration_ms", float64(cmds.AudioDuration.Microseconds())/1000.0),
+			slog.String("processor", cmds.WhisperProcessor),
+			slog.String("whisper_model", cmds.WhisperModel),
+			slog.String("callsign", string(cmds.Callsign)),
+			slog.String("command", cmds.Commands),
+			slog.Any("stt_aircraft", cmds.AircraftContext),
+			slog.Any("logs", cmds.STTDebugLogs))
 	}
 
 	return nil
@@ -914,4 +959,96 @@ func (sd *dispatcher) ConfigureATPA(args *ATPAConfigArgs, result *ATPAConfigResu
 		result.SimStateUpdate = c.GetStateUpdate()
 	}
 	return err
+}
+
+// STTBugReportArgs contains data for an STT bug report.
+type STTBugReportArgs struct {
+	ControllerToken string
+	PrevTranscript  string                  // Transcript of the previous transmission
+	PrevCommand     string                  // Decoded command from previous transmission
+	AircraftContext map[string]stt.Aircraft // Aircraft context used for decoding
+	DebugLogs       []string                // Debug log lines from the decode
+	UserExplanation string                  // User's explanation of the issue
+	ReportTime      time.Time
+
+	// GPU and performance information
+	GPUInfo           whisper.GPUInfo // GPU acceleration status and devices
+	WhisperModelName  string          // Name of the whisper model being used
+	RecentDurations   []time.Duration // Recent whisper transcription durations
+	IsSlowPerformance bool            // True if this is an automatic slow performance report
+}
+
+type RequestContactArgs struct {
+	ControllerToken string
+}
+
+type RequestContactResult struct {
+	ContactText      string          // Text to synthesize
+	ContactVoiceName string          // Voice name for synthesis (e.g., "am_adam")
+	ContactCallsign  av.ADSBCallsign // Callsign of the aircraft
+	ContactType      av.RadioTransmissionType
+}
+
+const RequestContactTransmissionRPC = "Sim.RequestContactTransmission"
+
+func (sd *dispatcher) RequestContactTransmission(args *RequestContactArgs, result *RequestContactResult) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+
+	// Request a contact from the session - returns text and voice name for client-side synthesis
+	result.ContactText, result.ContactVoiceName, result.ContactCallsign, result.ContactType = c.session.RequestContact(c.tcw)
+	return nil
+}
+
+const ReportSTTBugRPC = "Sim.ReportSTTBug"
+
+func (sd *dispatcher) ReportSTTBug(args *STTBugReportArgs, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+
+	// Format GPU device info for logging
+	gpuDevices := util.MapSlice(args.GPUInfo.Devices, func(dev whisper.GPUDeviceInfo) string {
+		return fmt.Sprintf("%s (idx=%d, type=%s, mem=%dMB/%dMB)",
+			dev.Description, dev.Index, dev.DeviceType, dev.FreeMemory/(1024*1024), dev.TotalMemory/(1024*1024))
+	})
+
+	// Format recent durations for logging
+	durationsStr := util.MapSlice(args.RecentDurations, func(d time.Duration) string { return d.String() })
+
+	// Format aircraft context for logging
+	aircraftStr := util.MapSlice(util.SortedMapKeys(args.AircraftContext), func(telephony string) string {
+		ac := args.AircraftContext[telephony]
+		return fmt.Sprintf("%s: %s state=%s alt=%d", telephony, ac.Callsign, ac.State, ac.Altitude)
+	})
+
+	reportType := util.Select(args.IsSlowPerformance, "slow_performance", "user")
+	logFunc := util.Select(args.IsSlowPerformance, sd.sm.lg.Warn, sd.sm.lg.Info)
+
+	logFunc("STT Bug Report",
+		slog.String("type", reportType),
+		slog.String("tcw", string(c.tcw)),
+		slog.String("transcript", args.PrevTranscript),
+		slog.String("decoded_command", args.PrevCommand),
+		slog.String("user_explanation", args.UserExplanation),
+		slog.Time("report_time", args.ReportTime),
+		// GPU info
+		slog.String("whisper_model", args.WhisperModelName),
+		slog.Bool("gpu_enabled", args.GPUInfo.Enabled),
+		slog.Int("gpu_selected_idx", args.GPUInfo.SelectedIndex),
+		slog.String("gpu_devices", strings.Join(gpuDevices, "; ")),
+		slog.String("recent_durations", strings.Join(durationsStr, ", ")),
+		// STT context
+		slog.String("debug_logs", strings.Join(args.DebugLogs, "\n")),
+		slog.String("aircraft_context", strings.Join(aircraftStr, "; ")),
+	)
+
+	return nil
 }

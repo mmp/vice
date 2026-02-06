@@ -6,6 +6,7 @@ package panes
 
 import (
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"slices"
 	"strings"
@@ -184,13 +185,13 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 		case sim.RadioTransmissionEvent:
 			toUs := ctx.UserControlsPosition(event.ToController)
 
-			privObs := ctx.TCWIsPrivileged(ctx.UserTCW) || ctx.TCWIsObserver(ctx.UserTCW)
-			if !toUs && !privObs {
+			priv := ctx.TCWIsPrivileged(ctx.UserTCW)
+			if !toUs && !priv {
 				break
 			}
 
 			prefix := ""
-			if privObs {
+			if priv {
 				prefix = "[to " + string(event.ToController) + "] "
 			}
 
@@ -204,8 +205,9 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 				if len(event.WrittenText) > 0 {
 					event.WrittenText = strings.ToUpper(event.WrittenText[:1]) + event.WrittenText[1:]
 				}
-				msg = Message{contents: prefix + event.WrittenText,
-					error: event.RadioTransmissionType == av.RadioTransmissionUnexpected || event.RadioTransmissionType == av.RadioTransmissionMixUp,
+				msg = Message{
+					contents: prefix + event.WrittenText,
+					error:    event.RadioTransmissionType == av.RadioTransmissionUnexpected || event.RadioTransmissionType == av.RadioTransmissionMixUp,
 				}
 				if mp.ReadbackTransmissionsAlert {
 					ctx.Platform.PlayAudioOnce(mp.alertAudioIndex[mp.AudioAlertSelection])
@@ -237,6 +239,17 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 					contents: event.WrittenText,
 					error:    true,
 				})
+
+		case sim.STTCommandEvent:
+			// Display the controller's STT transcript and resulting command
+			if event.STTTranscript != "" || event.STTCommand != "" {
+				msg := fmt.Sprintf("STT: %q -> %s", event.STTTranscript, event.STTCommand)
+				mp.messages = append(mp.messages,
+					Message{
+						contents: msg,
+						system:   true,
+					})
+			}
 		}
 	}
 }

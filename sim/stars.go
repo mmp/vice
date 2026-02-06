@@ -106,7 +106,7 @@ type ERAMMapGroups map[string]ERAMMapGroup
 // VideoMapManifest stores which maps are available in a video map file and
 // is also able to provide the video map file's hash.
 type VideoMapManifest struct {
-	names      map[string]interface{}
+	names      map[string]any
 	filesystem fs.FS
 	filename   string
 }
@@ -156,7 +156,7 @@ func LoadVideoMapManifest(filename string) (*VideoMapManifest, error) {
 	}
 	defer fm.Close()
 
-	var names map[string]interface{}
+	var names map[string]any
 	dec := gob.NewDecoder(fm)
 	if err := dec.Decode(&names); err != nil {
 		return nil, err
@@ -510,11 +510,10 @@ type NASFlightPlan struct {
 
 	AssignedSquawk av.Squawk
 
-	TrackingController    ControlPosition // Who has the radar track
-	ControllingController ControlPosition // Who has control; not necessarily the same as TrackingController
-	HandoffController     ControlPosition // Handoff offered but not yet accepted
-	LastLocalController   ControlPosition // (May be the current controller.)
-	OwningTCW             TCW             // TCW that owns this track
+	TrackingController  ControlPosition // Who has the radar track
+	HandoffController   ControlPosition // Handoff offered but not yet accepted
+	LastLocalController ControlPosition // (May be the current controller.)
+	OwningTCW           TCW             // TCW that owns this track
 
 	AircraftCount   int
 	AircraftType    string
@@ -841,7 +840,10 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) 
 		fp.PilotReportedAltitude = spec.PilotReportedAltitude.Get()
 	}
 	if spec.Scratchpad.IsSet {
-		if fp.Scratchpad == spec.Scratchpad.Get() {
+		if spec.Scratchpad.Get() == "" {
+			fp.Scratchpad = ""
+			fp.PriorScratchpad = ""
+		} else if fp.Scratchpad == spec.Scratchpad.Get() {
 			fp.Scratchpad = fp.PriorScratchpad
 		} else {
 			fp.PriorScratchpad = fp.Scratchpad
@@ -849,7 +851,10 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) 
 		}
 	}
 	if spec.SecondaryScratchpad.IsSet {
-		if fp.SecondaryScratchpad == spec.SecondaryScratchpad.Get() {
+		if spec.SecondaryScratchpad.Get() == "" {
+			fp.SecondaryScratchpad = ""
+			fp.PriorSecondaryScratchpad = ""
+		} else if fp.SecondaryScratchpad == spec.SecondaryScratchpad.Get() {
 			fp.SecondaryScratchpad = fp.PriorSecondaryScratchpad
 		} else {
 			fp.PriorSecondaryScratchpad = fp.SecondaryScratchpad
@@ -962,7 +967,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 				// None specified: 12xx block by default
 				config.MonitoredBeaconCodeBlocks = append(config.MonitoredBeaconCodeBlocks, 0o12)
 			} else {
-				for _, s := range strings.Split(*config.MonitoredBeaconCodeBlocksString, ",") {
+				for s := range strings.SplitSeq(*config.MonitoredBeaconCodeBlocksString, ",") {
 					s = strings.TrimSpace(s)
 					if code, err := av.ParseSquawkOrBlock(s); err != nil {
 						e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", s, err)
@@ -1091,7 +1096,7 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 	}
 
 	checkFilter := func(f FilterRegions, name string) {
-		ids := make(map[string]interface{})
+		ids := make(map[string]any)
 		for i, filt := range f {
 			e.Push(filt.Description)
 			f[i].PostDeserialize(loc, e)

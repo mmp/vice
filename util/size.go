@@ -28,7 +28,7 @@ func sizeOfValue(v reflect.Value, w io.Writer, printMembers bool, threshold int6
 
 	// Handle pointers to avoid infinite recursion
 	vkind := v.Kind()
-	if vkind == reflect.Ptr || vkind == reflect.Map || vkind == reflect.Slice {
+	if vkind == reflect.Pointer || vkind == reflect.Map || vkind == reflect.Slice {
 		if !v.IsNil() {
 			ptr := v.Pointer()
 			if visited[ptr] {
@@ -43,7 +43,7 @@ func sizeOfValue(v reflect.Value, w io.Writer, printMembers bool, threshold int6
 	totalSize := baseSize
 
 	switch vkind {
-	case reflect.Ptr:
+	case reflect.Pointer:
 		if !v.IsNil() {
 			totalSize += sizeOfValue(v.Elem(), w, false, threshold, depth+1, visited,
 				func() string { return path() + ".*" })
@@ -67,7 +67,7 @@ func sizeOfValue(v reflect.Value, w io.Writer, printMembers bool, threshold int6
 			}
 
 			// For embedded fields, add their deep size
-			if fk := field.Kind(); fk == reflect.Ptr || fk == reflect.Slice || fk == reflect.Map {
+			if fk := field.Kind(); fk == reflect.Pointer || fk == reflect.Slice || fk == reflect.Map {
 				totalSize += fieldSize - int64(field.Type().Size())
 			}
 		}
@@ -79,7 +79,7 @@ func sizeOfValue(v reflect.Value, w io.Writer, printMembers bool, threshold int6
 			totalSize += sliceDataSize
 
 			// For slices of pointers or complex types, calculate deep size
-			if tek := t.Elem().Kind(); tek == reflect.Ptr || tek == reflect.Struct || tek == reflect.Slice || tek == reflect.Map {
+			if tek := t.Elem().Kind(); tek == reflect.Pointer || tek == reflect.Struct || tek == reflect.Slice || tek == reflect.Map {
 				for i := range v.Len() {
 					totalSize += sizeOfValue(v.Index(i), w, false, threshold, depth+1, visited,
 						func() string { return fmt.Sprintf("%s[%d]", path(), i) }) - elemSize
@@ -118,7 +118,7 @@ func sizeOfValue(v reflect.Value, w io.Writer, printMembers bool, threshold int6
 
 	case reflect.Array:
 		elemSize := int64(t.Elem().Size())
-		if tek := t.Elem().Kind(); tek == reflect.Ptr || tek == reflect.Struct || tek == reflect.Slice || tek == reflect.Map {
+		if tek := t.Elem().Kind(); tek == reflect.Pointer || tek == reflect.Struct || tek == reflect.Slice || tek == reflect.Map {
 			for i := range v.Len() {
 				totalSize += sizeOfValue(v.Index(i), w, false, threshold, depth+1, visited,
 					func() string { return fmt.Sprintf("%s[%d]", path(), i) }) - elemSize

@@ -1,0 +1,205 @@
+{
+  "time": "2026-01-29T03:29:36.013575778Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:671:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "JetBlue 83 Boston approach turn left heading one zero zero factor the final approach course is set to maintain four thousand",
+  "whisper_duration_ms": 445.827,
+  "audio_duration_ms": 6728,
+  "processor": "GPU: Apple M4, 10 CPU / 10 GPU cores, 24GB",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "JBU83",
+  "command": "L100 D40",
+  "stt_aircraft": {
+    "Delta eight 67": {
+      "Callsign": "DAL867",
+      "AircraftType": "B739",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Noley": "NOLEY",
+        "Patrick": "PTRIK",
+        "Tale": "TAALE",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 3212,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "JetBlue 83": {
+      "Callsign": "JBU83",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Harris": "HRRIS",
+        "Islay": "ISLAY",
+        "Lowland": "LWLND",
+        "Noley": "NOLEY",
+        "Vocus": "VOCUS",
+        "Wintah": "WINTA",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 11000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"JetBlue 83 Boston approach turn left heading one zero zero factor the final approach course is set to maintain four thousand\"",
+    "[local-stt] normalized words: [jetblue 83 boston approach turn left heading 1 0 0 factor the final approach course is set to maintain 4 thousand]",
+    "[local-stt] tokens: 18",
+    "[local-stt]   token[0]: Text=\"jetblue\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"83\" Type=1 Value=83",
+    "[local-stt]   token[2]: Text=\"boston\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"100\" Type=1 Value=100",
+    "[local-stt]   token[8]: Text=\"factor\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"final\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"course\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"is\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"set\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[16]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[17]: Text=\"40\" Type=2 Value=40",
+    "[local-stt] MatchCallsign: 18 tokens, 2 aircraft",
+    "[local-stt]   exact match: \"jetblue 83\" -\u003e \"JBU83\" (consumed 2)",
+    "[local-stt] callsign match: Callsign=\"JBU83\" SpokenKey=\"JetBlue 83\" Conf=1.00 Consumed=2",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=11000 Fixes=8 Approaches=3 AssignedApproach=\"ILS Runway 22L\" LAHSORunways=[9 27 14 32 15L 33R 15R 33L]",
+    "[local-stt]   fix: \"Noley\" -\u003e \"NOLEY\"",
+    "[local-stt]   fix: \"Wyane\" -\u003e \"WYANE\"",
+    "[local-stt]   fix: \"Vocus\" -\u003e \"VOCUS\"",
+    "[local-stt]   fix: \"Wintah\" -\u003e \"WINTA\"",
+    "[local-stt]   fix: \"Harris\" -\u003e \"HRRIS\"",
+    "[local-stt]   fix: \"Islay\" -\u003e \"ISLAY\"",
+    "[local-stt]   fix: \"Lowland\" -\u003e \"LWLND\"",
+    "[local-stt]   fix: \"Boston\" -\u003e \"KBOS\"",
+    "[local-stt]   approach: \"r-nav x-ray runway two two left\" -\u003e \"X2L\"",
+    "[local-stt]   approach: \"r-nav yankee runway two two left\" -\u003e \"Y2L\"",
+    "[local-stt]   approach: \"I L S runway two two left\" -\u003e \"I2L\"",
+    "[local-stt] command tokens after disregard: 16",
+    "[local-stt]   token[0]: Text=\"boston\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"turn\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"left\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"100\" Type=1 Value=100",
+    "[local-stt]   token[6]: Text=\"factor\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"final\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"approach\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"course\" Type=0 Value=-1",
+    "[local-stt]   token[11]: Text=\"is\" Type=0 Value=-1",
+    "[local-stt]   token[12]: Text=\"set\" Type=0 Value=-1",
+    "[local-stt]   token[13]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[14]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[15]: Text=\"40\" Type=2 Value=40",
+    "[local-stt]   position ID: found command keyword \"turn\" at position 2 - not just position ID",
+    "[local-stt] ParseCommands: 16 tokens",
+    "[local-stt]   matched command: \"L100\" (conf=1.00, consumed=6, isThen=false)",
+    "[local-stt]   matched command: \"\" (conf=1.00, consumed=3, isThen=false)",
+    "[local-stt]   no match at token[9]=\"approach\", skipping",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"is\" against 8 fixes",
+    "[local-stt]   extractFix: matched \"is\" -\u003e \"ISLAY\" (fuzzy 0.84)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"is\" against 8 fixes",
+    "[local-stt]   extractFix: matched \"is\" -\u003e \"ISLAY\" (fuzzy 0.84)",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"is\" against 8 fixes",
+    "[local-stt]   extractFix: matched \"is\" -\u003e \"ISLAY\" (fuzzy 0.84)",
+    "[local-stt]   matched command: \"CISLAY/A40\" (conf=1.00, consumed=6, isThen=false)",
+    "[local-stt] ParseCommands: result=[L100 CISLAY/A40] (avgConf=1.00)",
+    "[local-stt] parsed commands: [L100 CISLAY/A40] (conf=1.00)",
+    "[local-stt] validated commands: [L100 CISLAY/A40] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"JBU83 L100 CISLAY/A40\" (conf=1.00, time=752.417µs) ==="
+  ]
+}

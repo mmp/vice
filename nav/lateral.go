@@ -379,13 +379,21 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			}
 			nav.Waypoints = append(nav.Approach.AtFixClearedRoute, nav.FlightState.ArrivalAirport)
 		}
+		// Check if this is an "at fix intercept" fix
+		if nav.Approach.AtFixInterceptFix == wp.Fix && nav.Approach.Assigned != nil {
+			// Start intercepting the localizer. prepareForApproach handles
+			// both cases: if on a heading, it sets InterceptState = InitialHeading;
+			// if direct to approach fix, it splices the routes.
+			nav.prepareForApproach(false)
+			nav.Approach.AtFixInterceptFix = "" // Clear so we don't trigger again
+		}
 		if nav.Heading.Arc != nil {
 			nav.Heading = NavHeading{}
 		}
 
 		if wp.ClearApproach {
 			if fp != nil {
-				_, _ = nav.ClearedApproach(fp.ArrivalAirport, nav.Approach.AssignedId, false)
+				nav.ClearedApproach(fp.ArrivalAirport, nav.Approach.AssignedId, false)
 			}
 		}
 
@@ -435,7 +443,8 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 		} else if wp.Heading != 0 && !clearedAtFix {
 			// We have an outbound heading
 			hdg := float32(wp.Heading)
-			nav.Heading = NavHeading{Assigned: &hdg}
+			turn := TurnMethod(wp.Turn)
+			nav.Heading = NavHeading{Assigned: &hdg, Turn: &turn}
 		} else if wp.PresentHeading && !clearedAtFix {
 			// Round to nearest 5 degrees
 			hdg := float32(5 * int((nav.FlightState.Heading+2.5)/5))
@@ -484,6 +493,79 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 	return nil
 }
 
+// turnRateAndRadius calculates the steady-state turn rate and radius
+// based on aircraft performance and current state.
+// Returns turnRate in deg/s and radius in nm.
+func (nav *Nav) turnRateAndRadius() (turnRate, radius float32) {
+	TAS_ms := nav.TAS() * 0.514444
+	bankRad := math.Radians(nav.Perf.Turn.MaxBankAngle)
+	turnRate = min(math.Degrees(9.81*math.Tan(bankRad)/TAS_ms), 3.0)
+	// R = V / ω where V is in nm/s and ω is in rad/s
+	turnRateRad := math.Radians(turnRate)
+	if turnRateRad > 0 {
+		radius = (nav.FlightState.GS / 3600) / turnRateRad
+	}
+	return
+}
+
+// rollLeadDistance returns distance in nm the aircraft travels during roll-in
+func (nav *Nav) rollLeadDistance() float32 {
+	rollTime := nav.Perf.Turn.MaxBankAngle / nav.Perf.Turn.MaxBankRate
+	return (nav.FlightState.GS / 3600) * rollTime
+}
+
+// perpRight returns unit vector perpendicular right (clockwise 90°) to heading.
+// Uses vice convention: heading 0°=North, 90°=East, direction=[sin,cos]
+func perpRight(hdg float32) [2]float32 {
+	rad := math.Radians(hdg)
+	return [2]float32{math.Cos(rad), -math.Sin(rad)}
+}
+
+// perpLeft returns unit vector perpendicular left (counter-clockwise 90°)
+func perpLeft(hdg float32) [2]float32 {
+	rad := math.Radians(hdg)
+	return [2]float32{-math.Cos(rad), math.Sin(rad)}
+}
+
+// rolloutPosition calculates where aircraft would end up after completing
+// a turn from currentHdg to targetHdg, starting at currentPos.
+// All headings are true (not magnetic). Returns position in nm coordinates.
+func rolloutPosition(currentPos [2]float32, currentHdg, targetHdg float32,
+	radius float32, turnRight bool) [2]float32 {
+	var center, rollout [2]float32
+	if turnRight {
+		perp := perpRight(currentHdg)
+		center = math.Add2f(currentPos, math.Scale2f(perp, radius))
+		perp = perpLeft(targetHdg)
+		rollout = math.Add2f(center, math.Scale2f(perp, radius))
+	} else {
+		perp := perpLeft(currentHdg)
+		center = math.Add2f(currentPos, math.Scale2f(perp, radius))
+		perp = perpRight(targetHdg)
+		rollout = math.Add2f(center, math.Scale2f(perp, radius))
+	}
+	return rollout
+}
+
+// isTurnRight determines if the turn from currentHdg to targetHdg should
+// be a right turn, given the specified TurnMethod.
+func isTurnRight(currentHdg, targetHdg float32, turn TurnMethod) bool {
+	switch turn {
+	case TurnRight:
+		return true
+	case TurnLeft:
+		return false
+	default: // TurnClosest
+		diff := targetHdg - currentHdg
+		if diff > 180 {
+			diff -= 360
+		} else if diff < -180 {
+			diff += 360
+		}
+		return diff > 0
+	}
+}
+
 // Given a fix location and an outbound heading, returns true when the
 // aircraft should start the turn to outbound to intercept the outbound
 // radial.
@@ -520,7 +602,7 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMet
 
 	// Don't simulate the turn longer than it will take to do it.
 	n := int(1 + turnAngle/3)
-	for i := 0; i < n; i++ {
+	for range n {
 		nav2.UpdateWithWeather("", wxs, nil, time.Time{}, nil)
 		curDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position,
 			nav2.FlightState.NmPerLongitude),
@@ -559,16 +641,103 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMe
 	nav2.Approach.InterceptState = NotIntercepting // avoid recursive calls..
 
 	n := int(1 + turnAngle)
-	for i := 0; i < n; i++ {
+	for range n {
 		nav2.UpdateWithWeather("", wxs, nil, time.Time{}, nil)
 		curDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position, nav2.FlightState.NmPerLongitude), p0, p1)
-		//fmt.Printf("%d: curDist %f ", i, curDist)
 		if (math.Abs(curDist) < 0.02 || math.Sign(initialDist) != math.Sign(curDist)) && math.Abs(curDist) < .25 && math.HeadingDifference(hdg, nav2.FlightState.Heading) < 10 {
 			return true
 		}
 	}
 	return false
 }
+
+// Analytical version of shouldTurnForOutbound using geometry rather than
+// simulation. Currently unused - kept for future integration.
+func (nav *Nav) shouldTurnForOutboundAnalytical(p math.Point2LL, hdg float32, turn TurnMethod) bool {
+	eta := nav.ETA(p)
+	if eta < 2 {
+		return true
+	}
+
+	turnAngle := TurnAngle(nav.FlightState.Heading, hdg, turn)
+	if turnAngle/2 < eta {
+		return false
+	}
+
+	_, radius := nav.turnRateAndRadius()
+	if radius == 0 {
+		return false
+	}
+
+	currentPos := math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude)
+	currentHdg := nav.FlightState.Heading - nav.FlightState.MagneticVariation
+	targetHdg := hdg - nav.FlightState.MagneticVariation
+
+	turnRight := isTurnRight(currentHdg, targetHdg, turn)
+	rollout := rolloutPosition(currentPos, currentHdg, targetHdg, radius, turnRight)
+
+	fixPos := math.LL2NM(p, nav.FlightState.NmPerLongitude)
+	lineDir := math.SinCos(math.Radians(targetHdg))
+	lineEnd := math.Add2f(fixPos, lineDir)
+
+	dist := math.SignedPointLineDistance(rollout, fixPos, lineEnd)
+	threshold := max(nav.rollLeadDistance()*0.5, 0.1)
+
+	return math.Abs(dist) < threshold
+}
+
+// Analytical version of shouldTurnToIntercept using geometry rather than
+// simulation. Currently unused - kept for future integration.
+func (nav *Nav) shouldTurnToInterceptAnalytical(p0 math.Point2LL, hdg float32, turn TurnMethod) bool {
+	lineOrigin := math.LL2NM(p0, nav.FlightState.NmPerLongitude)
+	targetHdgTrue := hdg - nav.FlightState.MagneticVariation
+	lineDir := math.SinCos(math.Radians(targetHdgTrue))
+	lineEnd := math.Add2f(lineOrigin, lineDir)
+
+	currentPos := math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude)
+	initialDist := math.SignedPointLineDistance(currentPos, lineOrigin, lineEnd)
+
+	eta := math.Abs(initialDist) / nav.FlightState.GS * 3600
+	if eta < 2 {
+		return true
+	}
+
+	turnAngle := TurnAngle(nav.FlightState.Heading, hdg, turn)
+	if turnAngle < eta {
+		return false
+	}
+
+	_, radius := nav.turnRateAndRadius()
+	if radius == 0 {
+		return false
+	}
+
+	currentHdg := nav.FlightState.Heading - nav.FlightState.MagneticVariation
+	turnRight := isTurnRight(currentHdg, targetHdgTrue, turn)
+	rollout := rolloutPosition(currentPos, currentHdg, targetHdgTrue, radius, turnRight)
+	rolloutDist := math.SignedPointLineDistance(rollout, lineOrigin, lineEnd)
+
+	if math.Abs(rolloutDist) > 0.25 {
+		return false
+	}
+
+	threshold := max(nav.rollLeadDistance()*0.5, 0.02)
+	return math.Abs(rolloutDist) < threshold ||
+		(math.Sign(initialDist) != math.Sign(rolloutDist))
+}
+
+// Suppress staticcheck warnings for intentionally unused analytical functions.
+// These are kept for future integration testing.
+var (
+	_ = (*Nav).turnRateAndRadius
+	_ = (*Nav).rollLeadDistance
+	_ = perpRight
+	_ = perpLeft
+	_ = rolloutPosition
+	_ = isTurnRight
+	_ = (*Nav).shouldTurnForOutboundAnalytical
+	_ = (*Nav).shouldTurnToInterceptAnalytical
+)
 
 ///////////////////////////////////////////////////////////////////////////
 

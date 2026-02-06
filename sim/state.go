@@ -53,8 +53,8 @@ type CommonState struct {
 
 	Airports          map[string]*av.Airport
 	Controllers       map[ControlPosition]*av.Controller
-	DepartureAirports map[string]interface{}
-	ArrivalAirports   map[string]interface{}
+	DepartureAirports map[string]any
+	ArrivalAirports   map[string]any
 	Fixes             map[string]math.Point2LL
 	VFRRunways        map[string]av.Runway // assume just one runway per airport
 
@@ -80,9 +80,6 @@ type CommonState struct {
 	PrimaryAirport    string
 
 	SimDescription string
-
-	PrivilegedTCWs map[TCW]bool // TCWs with elevated privileges (can control any aircraft)
-	Observers      map[TCW]bool // TCWs connected as observers (no position)
 
 	VideoMapLibraryHash []byte
 }
@@ -155,9 +152,15 @@ func makeDerivedState(s *Sim) DerivedState {
 			continue
 		}
 
+		var approach string
+		if ac.Nav.Approach.Assigned != nil {
+			approach = ac.Nav.Approach.Assigned.FullName
+		}
+
 		rt := Track{
 			RadarTrack:                ac.GetRadarTrack(s.State.SimTime),
 			FlightPlan:                ac.NASFlightPlan,
+			ControllerFrequency:       ac.ControllerFrequency,
 			DepartureAirport:          ac.FlightPlan.DepartureAirport,
 			DepartureAirportElevation: ac.DepartureAirportElevation(),
 			DepartureAirportLocation:  ac.DepartureAirportLocation(),
@@ -168,6 +171,11 @@ func makeDerivedState(s *Sim) DerivedState {
 			FiledAltitude:             ac.FlightPlan.Altitude,
 			OnExtendedCenterline:      ac.OnExtendedCenterline(0.2),
 			OnApproach:                ac.OnApproach(false), /* don't check altitude */
+			ClearedForApproach:        ac.Nav.Approach.Cleared,
+			Approach:                  approach,
+			Fixes:                     ac.GetSTTFixes(),
+			SID:                       ac.SID,
+			STAR:                      ac.STAR,
 			MVAsApply:                 ac.MVAsApply(),
 			HoldForRelease:            ac.HoldForRelease,
 			MissingFlightPlan:         ac.MissingFlightPlan,
@@ -244,9 +252,6 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *V
 		NmPerLongitude:    config.NmPerLongitude,
 		PrimaryAirport:    config.PrimaryAirport,
 		SimDescription:    config.Description,
-
-		PrivilegedTCWs: make(map[TCW]bool),
-		Observers:      make(map[TCW]bool),
 	}
 
 	// Grab initial METAR for each airport
@@ -293,7 +298,7 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *V
 		}
 	}
 
-	ss.DepartureAirports = make(map[string]interface{})
+	ss.DepartureAirports = make(map[string]any)
 	for name := range ss.LaunchConfig.DepartureRates {
 		ss.DepartureAirports[name] = nil
 	}
@@ -311,7 +316,7 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *V
 		}
 	}
 
-	ss.ArrivalAirports = make(map[string]interface{})
+	ss.ArrivalAirports = make(map[string]any)
 	for _, airportRates := range ss.LaunchConfig.InboundFlowRates {
 		for name := range airportRates {
 			if name != "overflights" {
@@ -376,14 +381,6 @@ func (ss *CommonState) IsLocalController(pos ControlPosition) bool {
 	resolved := ss.ResolveController(pos)
 	ctrl, ok := ss.Controllers[resolved]
 	return ok && ctrl.FacilityIdentifier == ""
-}
-
-func (ss *CommonState) TCWIsPrivileged(tcw TCW) bool {
-	return ss.PrivilegedTCWs[tcw]
-}
-
-func (ss *CommonState) TCWIsObserver(tcw TCW) bool {
-	return ss.Observers[tcw]
 }
 
 func (ss *CommonState) ResolveController(pos ControlPosition) ControlPosition {

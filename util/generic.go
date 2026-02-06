@@ -5,6 +5,7 @@
 package util
 
 import (
+	"cmp"
 	"encoding/json"
 	"iter"
 	"maps"
@@ -12,7 +13,6 @@ import (
 	"time"
 
 	"github.com/iancoleman/orderedmap"
-	"golang.org/x/exp/constraints"
 )
 
 ///////////////////////////////////////////////////////////////////////////
@@ -69,8 +69,8 @@ type OrderedMap struct {
 	orderedmap.OrderedMap
 }
 
-func (o *OrderedMap) CheckJSON(json interface{}) bool {
-	_, ok := json.(map[string]interface{})
+func (o *OrderedMap) CheckJSON(json any) bool {
+	_, ok := json.(map[string]any)
 	return ok
 }
 
@@ -108,7 +108,7 @@ func (s *SingleOrArray[V]) UnmarshalJSON(b []byte) error {
 	}
 }
 
-func (s *SingleOrArray[V]) CheckJSON(json interface{}) bool {
+func (s *SingleOrArray[V]) CheckJSON(json any) bool {
 	return TypeCheckJSON[V](json) || TypeCheckJSON[[]V](json)
 }
 
@@ -150,7 +150,7 @@ func (o *OneOf[A, B]) UnmarshalJSON(j []byte) error {
 	return err
 }
 
-func (o OneOf[A, B]) CheckJSON(json interface{}) bool {
+func (o OneOf[A, B]) CheckJSON(json any) bool {
 	return TypeCheckJSON[A](json) || TypeCheckJSON[B](json)
 }
 
@@ -165,11 +165,11 @@ func Select[T any](sel bool, a, b T) T {
 }
 
 // SortedMapKeys returns the keys of the given map, sorted from low to high.
-func SortedMapKeys[K constraints.Ordered, V any](m map[K]V) []K {
+func SortedMapKeys[K cmp.Ordered, V any](m map[K]V) []K {
 	return slices.Sorted(maps.Keys(m))
 }
 
-func SortedMap[K constraints.Ordered, V any](m map[K]V) iter.Seq2[K, V] {
+func SortedMap[K cmp.Ordered, V any](m map[K]V) iter.Seq2[K, V] {
 	return func(yield func(k K, v V) bool) {
 		sk := SortedMapKeys(m)
 		for k := range slices.Values(sk) {
@@ -180,7 +180,7 @@ func SortedMap[K constraints.Ordered, V any](m map[K]V) iter.Seq2[K, V] {
 	}
 }
 
-func FirstSortedMapEntry[K constraints.Ordered, V any](m map[K]V) (K, V) {
+func FirstSortedMapEntry[K cmp.Ordered, V any](m map[K]V) (K, V) {
 	if len(m) == 0 {
 		panic("empty map")
 	}
@@ -400,6 +400,15 @@ func SeqContainsFunc[T any](seq iter.Seq[T], check func(T) bool) bool {
 	return false
 }
 
+func SeqContainsAllFunc[T any](seq iter.Seq[T], check func(T) bool) bool {
+	for s := range seq {
+		if !check(s) {
+			return false
+		}
+	}
+	return true
+}
+
 func SeqLookupFunc[T any](seq iter.Seq[T], check func(T) bool) (T, bool) {
 	for s := range seq {
 		if check(s) {
@@ -410,7 +419,7 @@ func SeqLookupFunc[T any](seq iter.Seq[T], check func(T) bool) (T, bool) {
 	return t, false
 }
 
-func SeqMaxIndexFunc[K, V any, W constraints.Ordered](seq iter.Seq2[K, V], weight func(K, V) W) (K, bool) {
+func SeqMaxIndexFunc[K, V any, W cmp.Ordered](seq iter.Seq2[K, V], weight func(K, V) W) (K, bool) {
 	var idx K
 	first := true
 	if seq != nil {
@@ -427,7 +436,7 @@ func SeqMaxIndexFunc[K, V any, W constraints.Ordered](seq iter.Seq2[K, V], weigh
 	return idx, !first
 }
 
-func SeqMinIndexFunc[K, V any, W constraints.Ordered](seq iter.Seq2[K, V], weight func(K, V) W) (K, bool) {
+func SeqMinIndexFunc[K, V any, W cmp.Ordered](seq iter.Seq2[K, V], weight func(K, V) W) (K, bool) {
 	var idx K
 	first := true
 	if seq != nil {

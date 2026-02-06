@@ -17,6 +17,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/platform"
@@ -36,8 +37,11 @@ var resourcesManifest string
 type ResourcesDownloadModalClient struct {
 	currentFile     int
 	totalFiles      int
-	downloadedBytes int64
+	completedBytes  int64            // Sum of fully downloaded files
+	inProgressBytes map[string]int64 // filename -> bytes downloaded so far
+	completedFiles  map[string]bool  // files that have completed (to ignore late progress updates)
 	totalBytes      int64
+	currentFileName string // Most recent filename for display
 	errors          []string
 }
 
@@ -46,6 +50,10 @@ func (r *ResourcesDownloadModalClient) Title() string {
 }
 
 func (r *ResourcesDownloadModalClient) Opening() {}
+
+func (r *ResourcesDownloadModalClient) FixedSize() [2]float32 {
+	return [2]float32{450, 150}
+}
 
 func (r *ResourcesDownloadModalClient) Buttons() []ModalDialogButton {
 	btext := util.Select(r.currentFile == r.totalFiles && len(r.errors) > 0, "Ok", "Cancel")
@@ -63,18 +71,27 @@ func (r *ResourcesDownloadModalClient) Draw() int {
 
 	imgui.Text(fmt.Sprintf("Downloaded file %d of %d", r.currentFile, r.totalFiles))
 
-	// Add some spacing
-	imgui.Spacing()
-
-	if r.totalBytes > 0 {
-		progress := float32(r.downloadedBytes) / float32(r.totalBytes)
-
-		// Use a fixed width progress bar to ensure minimum dialog width
-		imgui.ProgressBarV(progress, imgui.Vec2{350, 0}, fmt.Sprintf("%.1f MB / %.1f MB",
-			float64(r.downloadedBytes)/(1024*1024), float64(r.totalBytes)/(1024*1024)))
+	if r.currentFileName != "" {
+		imgui.Text(fmt.Sprintf("Downloading: %s", r.currentFileName))
+	} else {
+		imgui.Text("\n")
 	}
 
 	imgui.Spacing()
+
+	if r.totalBytes > 0 {
+		// Sum bytes from all files currently being downloaded
+		var inProgress int64
+		for _, bytes := range r.inProgressBytes {
+			inProgress += bytes
+		}
+		totalDownloaded := r.completedBytes + inProgress
+		progress := float32(totalDownloaded) / float32(r.totalBytes)
+
+		// Progress bar fills available width (-1 for width)
+		imgui.ProgressBarV(progress, imgui.Vec2{-1, 0}, fmt.Sprintf("%.1f MB / %.1f MB",
+			float64(totalDownloaded)/(1024*1024), float64(r.totalBytes)/(1024*1024)))
+	}
 
 	return -1
 }
@@ -105,6 +122,20 @@ func checkManifestUpToDate(manifestPath string) bool {
 	return false
 }
 
+// validateAllResourcesExist checks that all files in the manifest exist on disk.
+// This catches cases where a crash during download left some files missing,
+// or where files were deleted after the manifest was written.
+// Note: we only check existence, not content hashes, to preserve user edits.
+func validateAllResourcesExist(resourcesDir string, manifest map[string]string) bool {
+	for filename := range manifest {
+		fullPath := filepath.Join(resourcesDir, filename)
+		if _, err := os.Stat(fullPath); err != nil {
+			return false
+		}
+	}
+	return true
+}
+
 // Removes any resource files that are present on disk but are not listed in the manifest.
 func removeStaleResourcesFiles(resourcesDir string, manifest map[string]string) {
 	filepath.Walk(resourcesDir, func(path string, info os.FileInfo, err error) error {
@@ -121,7 +152,9 @@ func removeStaleResourcesFiles(resourcesDir string, manifest map[string]string) 
 			return nil
 		}
 
-		if _, ok := manifest[relPath]; !ok {
+		// Use forward slashes for lookup since manifest keys use forward slashes,
+		// but filepath.Rel returns OS-native separators (backslashes on Windows).
+		if _, ok := manifest[filepath.ToSlash(relPath)]; !ok {
 			os.Remove(path)
 		}
 
@@ -140,10 +173,47 @@ func writeManifestFile(manifestPath string) error {
 	return err
 }
 
+type downloadProgress struct {
+	filename     string
+	bytesWritten int64
+}
+
+type fileCompleted struct {
+	filename string
+	size     int64
+}
+
 type workerStatus struct {
-	doneCh            chan struct{}
-	bytesDownloadedCh chan int64
-	errorsCh          chan error
+	doneCh      chan struct{}
+	completedCh chan fileCompleted
+	progressCh  chan downloadProgress
+	errorsCh    chan error
+}
+
+// progressReader wraps an io.Reader and reports progress as data is read.
+type progressReader struct {
+	reader      io.Reader
+	filename    string
+	bytesRead   int64
+	progressCh  chan<- downloadProgress
+	lastReportN int64
+}
+
+func (pr *progressReader) Read(p []byte) (int, error) {
+	n, err := pr.reader.Read(p)
+	pr.bytesRead += int64(n)
+
+	// Report progress every 64KB to avoid flooding the channel
+	if pr.bytesRead-pr.lastReportN >= 64*1024 || err == io.EOF {
+		select {
+		case pr.progressCh <- downloadProgress{filename: pr.filename, bytesWritten: pr.bytesRead}:
+		default:
+			// Non-blocking send; skip if channel is full
+		}
+		pr.lastReportN = pr.bytesRead
+	}
+
+	return n, err
 }
 
 // launchWorkers launches goroutines to check each entry in the manifest
@@ -152,9 +222,10 @@ type workerStatus struct {
 // three chans that provide information about the workers' progress.
 func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatus, int64) {
 	status := workerStatus{
-		doneCh:            make(chan struct{}),
-		bytesDownloadedCh: make(chan int64),
-		errorsCh:          make(chan error),
+		doneCh:      make(chan struct{}),
+		completedCh: make(chan fileCompleted),
+		progressCh:  make(chan downloadProgress, 16), // Buffered to avoid blocking workers
+		errorsCh:    make(chan error),
 	}
 
 	gcs, err := util.MakeGCSClient("vice-resources", util.GCSClientConfig{})
@@ -187,13 +258,13 @@ func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatu
 		eg.Go(func() error {
 			sem <- struct{}{}
 			defer func() {
-				status.bytesDownloadedCh <- sizes[hash]
+				status.completedCh <- fileCompleted{filename: filename, size: sizes[hash]}
 				<-sem
 			}()
 
 			fullPath := filepath.Join(resourcesDir, filename)
 
-			return maybeDownload(gcs, filename, fullPath, hash)
+			return maybeDownload(gcs, filename, fullPath, hash, status.progressCh)
 		})
 	}
 
@@ -210,7 +281,7 @@ func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatu
 	return status, totalSize
 }
 
-func maybeDownload(gcs *util.GCSClient, filename, fullPath, hash string) error {
+func maybeDownload(gcs *util.GCSClient, filename, fullPath, hash string, progressCh chan<- downloadProgress) error {
 	// Check if file exists and has correct hash
 	if existingHash, err := calculateSHA256(fullPath); err == nil && existingHash == hash {
 		return nil
@@ -235,7 +306,14 @@ func maybeDownload(gcs *util.GCSClient, filename, fullPath, hash string) error {
 	}
 	defer f.Close()
 
-	_, err = io.Copy(f, reader)
+	// Wrap reader to report progress during download
+	pr := &progressReader{
+		reader:     reader,
+		filename:   filename,
+		progressCh: progressCh,
+	}
+
+	_, err = io.Copy(f, pr)
 	if err != nil {
 		return fmt.Errorf("%s: failed to write: %w", filename, err)
 	}
@@ -261,12 +339,12 @@ func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) 
 		return fmt.Errorf("failed to unmarshal resources manifest: %v", err)
 	}
 
-	// Check if manifest is up to date early
-	if checkManifestUpToDate(manifestPath) {
+	// Check if manifest is up to date and all files exist
+	if checkManifestUpToDate(manifestPath) && validateAllResourcesExist(resourcesDir, manifest) {
 		return nil
 	}
 
-	// Otherwise remove it immediately to reflect that the local resources
+	// Otherwise remove the manifest immediately to reflect that the local resources
 	// directory will be in flux and doesn't match any manifest.
 	if _, err := os.Stat(manifestPath); err == nil {
 		os.Remove(manifestPath)
@@ -276,7 +354,12 @@ func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) 
 
 	if plat != nil {
 		// Draw download progress dialog box
-		client := &ResourcesDownloadModalClient{totalFiles: len(manifest), totalBytes: totalBytes}
+		client := &ResourcesDownloadModalClient{
+			totalFiles:      len(manifest),
+			totalBytes:      totalBytes,
+			inProgressBytes: make(map[string]int64),
+			completedFiles:  make(map[string]bool),
+		}
 		dialog := NewModalDialogBox(client, plat)
 
 	loop:
@@ -302,13 +385,23 @@ func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) 
 					// called.
 					break loop
 				}
-			case nb := <-ws.bytesDownloadedCh:
+			case fc := <-ws.completedCh:
 				client.currentFile++
-				client.downloadedBytes += nb
+				client.completedBytes += fc.size
+				client.completedFiles[fc.filename] = true
+				delete(client.inProgressBytes, fc.filename)
+				if client.currentFileName == fc.filename {
+					client.currentFileName = ""
+				}
+			case p := <-ws.progressCh:
+				// Ignore late progress updates for files that have already completed
+				if !client.completedFiles[p.filename] {
+					client.currentFileName = p.filename
+					client.inProgressBytes[p.filename] = p.bytesWritten
+				}
 			case e := <-ws.errorsCh:
 				client.errors = append(client.errors, e.Error())
 			default:
-				break
 			}
 		}
 	} else {
@@ -319,14 +412,16 @@ func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) 
 			select {
 			case <-ws.doneCh:
 				break loopb
-			case nb := <-ws.bytesDownloadedCh:
+			case fc := <-ws.completedCh:
 				nfiles++
-				nbytes += nb
+				nbytes += fc.size
 				fmt.Printf("%d files (%d bytes) downloaded\n", nfiles, nbytes)
+			case <-ws.progressCh:
+				// In text mode, we don't need real-time progress updates
 			case e := <-ws.errorsCh:
 				fmt.Printf("Error: %v\n", e)
 			default:
-				break
+				time.Sleep(50 * time.Millisecond)
 			}
 		}
 	}

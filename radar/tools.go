@@ -172,7 +172,7 @@ func GenerateRouteDrawingCommands(cb *renderer.CommandBuffer, transforms ScopeTr
 	ldr.GenerateCommands(cb)
 }
 
-func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints map[string]interface{},
+func DrawWaypoints(ctx *panes.Context, waypoints []av.Waypoint, drawnWaypoints map[string]any,
 	transforms ScopeTransformations, td *renderer.TextDrawBuilder, style renderer.TextStyle,
 	ld *renderer.ColoredLinesDrawBuilder, pd *renderer.ColoredTrianglesDrawBuilder, ldr *renderer.ColoredLinesDrawBuilder, color renderer.RGB) {
 

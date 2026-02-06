@@ -238,7 +238,7 @@ func (sp *STARSPane) drawDCB(ctx *panes.Context, transforms radar.ScopeTransform
 		if selectButton(ctx, "MAPS", maybeDisable(buttonFull), buttonScale) {
 			sp.setCommandMode(ctx, CommandModeMaps)
 		}
-		for i := 0; i < 6; i++ {
+		for i := range 6 {
 			// Maps are given left->right, top->down, but we draw the
 			// buttons top->down, left->right, so the indexing is a little
 			// funny.

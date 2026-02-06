@@ -477,7 +477,7 @@ func init() {
 	// 4.14.7 Specify data block position for a specified owner (p. 4-107)
 	registerCommand(CommandModeMultiFunc, "L[TCP2][#]|L[TCP1] [#]",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, tcp string, direction int) error {
-			ctrl := sp.lookupControllerForId(ctx, tcp, "")
+			ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcp, ctx.UserController().SectorID)
 			if ctrl == nil {
 				return ErrSTARSIllegalPosition
 			}

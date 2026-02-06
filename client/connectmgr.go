@@ -10,7 +10,6 @@ import (
 	"net"
 	"net/rpc"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/mmp/vice/log"
@@ -18,7 +17,6 @@ import (
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
-	"github.com/mmp/vice/wx"
 )
 
 type ConnectionManager struct {
@@ -32,26 +30,25 @@ type ConnectionManager struct {
 	updateRunningSimsCall  *pendingCall
 	updateRunningSimsError error
 
-	// METAR fetch state
-	pendingMETARCall *pendingCall
-
 	LocalServer   *Server
 	RemoteServer  *Server
 	serverAddress string
 
 	client              *ControlClient
 	connectionStartTime time.Time
+	disableTTSPtr       *bool // Pointer to config's DisableTextToSpeech for runtime toggle
 
 	onNewClient func(*ControlClient)
 	onError     func(error)
 }
 
-func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap string, lg *log.Logger,
+func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap string, disableTTSPtr *bool, lg *log.Logger,
 	onNewClient func(*ControlClient), onError func(error)) (*ConnectionManager, util.ErrorLogger, string) {
 	cm := &ConnectionManager{
 		serverAddress:           serverAddress,
 		lastRemoteServerAttempt: time.Now(),
 		remoteSimServerChan:     TryConnectRemoteServer(serverAddress, lg),
+		disableTTSPtr:           disableTTSPtr,
 		onNewClient:             onNewClient,
 		onError:                 onError,
 	}
@@ -75,7 +72,6 @@ func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap str
 			} else {
 				cm.LocalServer = &Server{
 					RPCClient:           client,
-					HaveTTS:             cr.HaveTTS,
 					AvailableWXByTRACON: cr.AvailableWXByTRACON,
 					name:                "Local (Single controller)",
 					catalogs:            cr.ScenarioCatalogs,
@@ -98,9 +94,14 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, initials string, lg *log.L
 		return nil, err
 	}
 
-	wsAddress := "localhost:" + strconv.Itoa(result.SpeechWSPort)
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken, wsAddress, initials, cm.LocalServer.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.disableTTSPtr, initials,
+		cm.LocalServer.RPCClient, lg)
 	cm.connectionStartTime = time.Now()
+
+	// Set remote server for STT log reporting (local sims report to remote server)
+	if cm.RemoteServer != nil {
+		cm.client.SetRemoteServer(cm.RemoteServer.RPCClient)
+	}
 
 	return cm.client, nil
 }
@@ -117,7 +118,7 @@ func (cm *ConnectionManager) CreateNewSim(config server.NewSimRequest, initials 
 		}
 		return err
 	} else {
-		cm.handleSuccessfulConnection(result, srv, config.DisableTextToSpeech, initials, lg)
+		cm.handleSuccessfulConnection(result, srv, initials, lg)
 		return nil
 	}
 }
@@ -125,22 +126,13 @@ func (cm *ConnectionManager) CreateNewSim(config server.NewSimRequest, initials 
 // handleSuccessfulConnection handles the common logic for setting up a client
 // connection after a successful RPC call to create or join a sim
 func (cm *ConnectionManager) handleSuccessfulConnection(result server.NewSimResult, srv *Server,
-	disableTextToSpeech bool, initials string, lg *log.Logger) {
+	initials string, lg *log.Logger) {
 	if cm.client != nil {
 		cm.client.Disconnect()
 	}
 
-	var wsAddress string
-	// Only set websocket address if TTS is not disabled
-	if !disableTextToSpeech {
-		if srv == cm.LocalServer {
-			wsAddress = "localhost:" + strconv.Itoa(result.SpeechWSPort)
-		} else {
-			wsAddress, _, _ = strings.Cut(cm.serverAddress, ":")
-			wsAddress += ":" + strconv.Itoa(result.SpeechWSPort)
-		}
-	}
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken, wsAddress, initials, srv.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.disableTTSPtr, initials,
+		srv.RPCClient, lg)
 
 	cm.connectionStartTime = time.Now()
 
@@ -180,7 +172,8 @@ func (cm *ConnectionManager) Disconnect() {
 }
 
 func (cm *ConnectionManager) UpdateRunningSims() error {
-	if cm.updateRunningSimsCall != nil && cm.updateRunningSimsCall.CheckFinished(nil, nil) {
+	if cm.updateRunningSimsCall != nil && cm.updateRunningSimsCall.CheckFinished() {
+		cm.updateRunningSimsCall.InvokeCallback(nil, nil)
 		cm.updateRunningSimsCall = nil
 		err := cm.updateRunningSimsError
 		cm.updateRunningSimsError = nil
@@ -222,7 +215,7 @@ func (cm *ConnectionManager) ConnectToSim(config server.JoinSimRequest, initials
 		}
 		return err
 	} else {
-		cm.handleSuccessfulConnection(result, srv, config.DisableTextToSpeech, initials, lg)
+		cm.handleSuccessfulConnection(result, srv, initials, lg)
 		return nil
 	}
 }
@@ -246,6 +239,10 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg
 			cm.RemoteServer = nil
 		} else {
 			cm.RemoteServer = remoteServerConn.Server
+			// Update existing client with remote server for STT log reporting
+			if cm.client != nil && cm.ClientIsLocal() {
+				cm.client.SetRemoteServer(cm.RemoteServer.RPCClient)
+			}
 		}
 
 	default:
@@ -254,10 +251,6 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg
 	if cm.RemoteServer == nil && time.Since(cm.lastRemoteServerAttempt) > 10*time.Second && !cm.serverRPCVersionMismatch {
 		cm.lastRemoteServerAttempt = time.Now()
 		cm.remoteSimServerChan = TryConnectRemoteServer(cm.serverAddress, lg)
-	}
-
-	if cm.pendingMETARCall != nil && cm.pendingMETARCall.CheckFinished(nil, nil) {
-		cm.pendingMETARCall = nil
 	}
 
 	if cm.client != nil {
@@ -284,28 +277,4 @@ func (cm *ConnectionManager) Update(es *sim.EventStream, p platform.Platform, lg
 				}
 			})
 	}
-}
-
-func (cm *ConnectionManager) GetMETAR(srv *Server, airports []string, callback func(map[string][]wx.METAR, error)) {
-	if srv == nil || srv.RPCClient == nil {
-		callback(nil, errors.New("no server available"))
-		return
-	}
-
-	// Cancel any pending METAR call
-	cm.pendingMETARCall = nil
-
-	var soaMETAR map[string]wx.METARSOA
-	cm.pendingMETARCall = makeRPCCall(srv.Go(server.GetMETARRPC, airports, &soaMETAR, nil),
-		func(err error) {
-			if err != nil {
-				callback(nil, err)
-			} else {
-				m := make(map[string][]wx.METAR)
-				for ap, soa := range soaMETAR {
-					m[ap] = soa.Decode()
-				}
-				callback(m, nil)
-			}
-		})
 }

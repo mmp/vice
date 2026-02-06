@@ -1,0 +1,258 @@
+{
+  "time": "2026-01-30T17:17:19.157428768Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Tap four ninety three alfa contact fosse and center one three four point seven sierra",
+  "whisper_duration_ms": 474.819,
+  "audio_duration_ms": 4680,
+  "processor": "GPU: Apple M2, 8 CPU / 10 GPU cores, 8GB",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "TAP493A",
+  "command": "FC",
+  "stt_aircraft": {
+    "Air Portugal four 93 alpha": {
+      "Callsign": "TAP493A",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Boat": "BOATT",
+        "Hear": "HEARR",
+        "Kennebunk": "ENE",
+        "Lobstah": "LBSTA",
+        "Shaun": "SHAUN"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "LBSTA8",
+      "STAR": "",
+      "Altitude": 6020,
+      "State": "departure",
+      "ControllerFrequency": "1F",
+      "TrackingController": "C37",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 96 81": {
+      "Callsign": "AAL9681",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Harris": "HRRIS",
+        "Islay": "ISLAY",
+        "Lowland": "LWLND",
+        "Noley": "NOLEY",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "JFUND2",
+      "Altitude": 7751,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "Delta six 47": {
+      "Callsign": "DAL647",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Noley": "NOLEY",
+        "Patrick": "PTRIK",
+        "Tale": "TAALE",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1F",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    },
+    "JetBlue 98": {
+      "Callsign": "JBU98",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Boston": "KBOS",
+        "Noley": "NOLEY",
+        "Vocus": "VOCUS",
+        "Wyane": "WYANE"
+      },
+      "CandidateApproaches": {
+        "I L S runway two two left": "I2L",
+        "r-nav x-ray runway two two left": "X2L",
+        "r-nav yankee runway two two left": "Y2L"
+      },
+      "ApproachFixes": {
+        "I2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE"
+        },
+        "X2L": {
+          "Noley": "NOLEY",
+          "Vocus": "VOCUS",
+          "Wyane": "WYANE",
+          "Zumol": "ZUMOL"
+        },
+        "Y2L": {
+          "Chelc": "CHELC",
+          "Egg Roll": "EGGRL",
+          "Kelys": "KELYS",
+          "Sandbah": "SNDBA",
+          "Sirino": "SRINO"
+        }
+      },
+      "AssignedApproach": "ILS Runway 22L",
+      "SID": "",
+      "STAR": "ROBUC3",
+      "Altitude": 1700,
+      "State": "on approach",
+      "ControllerFrequency": "1F",
+      "TrackingController": "1T",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "9",
+        "27",
+        "14",
+        "32",
+        "15L",
+        "33R",
+        "15R",
+        "33L"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Tap four ninety three alfa contact fosse and center one three four point seven sierra\"",
+    "[local-stt] normalized words: [tap 4 93 alfa contact fosse and center 1 3 4 point 7 sierra]",
+    "[local-stt] tokens: 11",
+    "[local-stt]   token[0]: Text=\"tap\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"493\" Type=1 Value=493",
+    "[local-stt]   token[2]: Text=\"alfa\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"fosse\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"center\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"134\" Type=1 Value=134",
+    "[local-stt]   token[8]: Text=\"point\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"7\" Type=1 Value=7",
+    "[local-stt]   token[10]: Text=\"sierra\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 11 tokens, 4 aircraft",
+    "[local-stt]   candidate \"Delta six 47\" (ICAO=\"DAL647\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"American 96 81\" (ICAO=\"AAL9681\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"JetBlue 98\" (ICAO=\"JBU98\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Air Portugal four 93 alpha\" (ICAO=\"TAP493A\"): score=1.10 consumed=3",
+    "[local-stt]   candidate \"Air Portugal four 93 alpha\" at pos 1: score=0.80 (adjusted=0.72) consumed=2",
+    "[local-stt]   accepted: \"TAP493A\" (conf=1.10, consumed=3, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"TAP493A\" SpokenKey=\"Air Portugal four 93 alpha\" Conf=1.10 Consumed=3",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=6020 Fixes=5 Approaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Shaun\" -\u003e \"SHAUN\"",
+    "[local-stt]   fix: \"Lobstah\" -\u003e \"LBSTA\"",
+    "[local-stt]   fix: \"Kennebunk\" -\u003e \"ENE\"",
+    "[local-stt]   fix: \"Boat\" -\u003e \"BOATT\"",
+    "[local-stt]   fix: \"Hear\" -\u003e \"HEARR\"",
+    "[local-stt] command tokens after disregard: 8",
+    "[local-stt]   token[0]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"fosse\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"and\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"center\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"134\" Type=1 Value=134",
+    "[local-stt]   token[5]: Text=\"point\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"7\" Type=1 Value=7",
+    "[local-stt]   token[7]: Text=\"sierra\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"contact\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 8 tokens",
+    "[local-stt]   matched command: \"FC\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   no match at token[4]=\"134\", skipping",
+    "[local-stt]   no match at token[5]=\"point\", skipping",
+    "[local-stt]   no match at token[6]=\"7\", skipping",
+    "[local-stt]   no match at token[7]=\"sierra\", skipping",
+    "[local-stt] ParseCommands: result=[FC] (avgConf=1.00)",
+    "[local-stt] parsed commands: [FC] (conf=1.00)",
+    "[local-stt] validated commands: [FC] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"TAP493A FC\" (conf=1.10, time=433µs) ==="
+  ]
+}

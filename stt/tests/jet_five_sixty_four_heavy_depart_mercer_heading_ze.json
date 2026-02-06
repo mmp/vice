@@ -1,0 +1,282 @@
+{
+  "time": "2026-01-31T20:26:28.241079495Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Jet Five Sixty Four heavy depart Mercer heading zero eight zero back to the final",
+  "whisper_duration_ms": 232.928,
+  "audio_duration_ms": 3912,
+  "processor": "GPU: NVIDIA GeForce RTX 5060 Ti (16050MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "UAL564",
+  "command": "DMERSR/H080",
+  "stt_aircraft": {
+    "Brickyard 47 56": {
+      "Callsign": "RPA4756",
+      "AircraftType": "E75L",
+      "Fixes": {
+        "Doin'": "DOOIN",
+        "Gritty": "GRITY",
+        "Kilma": "KILMA",
+        "Newark": "KEWR"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Gritty": "GRITY",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "FLOSI4",
+      "Altitude": 5639,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "Spirit Wings 33 23": {
+      "Callsign": "NKS3323",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Doin'": "DOOIN",
+        "Gritty": "GRITY",
+        "Kilma": "KILMA",
+        "Mart": "MARRT",
+        "Metro": "METRO",
+        "Newark": "KEWR",
+        "Philbo": "PHLBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Gritty": "GRITY",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 7901,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "Spirit Wings 96 31": {
+      "Callsign": "NKS9631",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Doin'": "DOOIN",
+        "Newark": "KEWR"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Gritty": "GRITY",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 2000,
+      "State": "on approach",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "United five 64 heavy": {
+      "Callsign": "UAL564",
+      "AircraftType": "B763",
+      "Fixes": {
+        "Dillon": "DYLIN",
+        "Mart": "MARRT",
+        "Merser": "MERSR",
+        "Metro": "METRO",
+        "Newark": "KEWR",
+        "Philbo": "PHLBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Gritty": "GRITY",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 8712,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "United four 20": {
+      "Callsign": "UAL420",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Doin'": "DOOIN",
+        "Gritty": "GRITY",
+        "Kilma": "KILMA",
+        "Mart": "MARRT",
+        "Metro": "METRO",
+        "Newark": "KEWR",
+        "Philbo": "PHLBO"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Gritty": "GRITY",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 5346,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    },
+    "United niner 27": {
+      "Callsign": "UAL927",
+      "AircraftType": "A320",
+      "Fixes": {
+        "Dillon": "DYLIN",
+        "Doin'": "DOOIN",
+        "Gritty": "GRITY",
+        "Kilma": "KILMA",
+        "Mart": "MARRT",
+        "Merser": "MERSR",
+        "Metro": "METRO",
+        "Newark": "KEWR",
+        "Philbo": "PHLBO",
+        "Somto": "SOMTO"
+      },
+      "CandidateApproaches": {
+        "I L S runway four right": "I4R"
+      },
+      "ApproachFixes": {
+        "I4R": {
+          "Doin'": "DOOIN",
+          "Gritty": "GRITY",
+          "Kilma": "KILMA"
+        }
+      },
+      "AssignedApproach": "ILS Runway 4R",
+      "SID": "",
+      "STAR": "PHLBO4",
+      "Altitude": 11621,
+      "State": "arrival",
+      "ControllerFrequency": "4P",
+      "TrackingController": "4P",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "11",
+        "29"
+      ]
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Jet Five Sixty Four heavy depart Mercer heading zero eight zero back to the final\"",
+    "[local-stt] normalized words: [jet 5 64 heavy depart mercer heading 0 8 0 back to the final]",
+    "[local-stt] tokens: 11",
+    "[local-stt]   token[0]: Text=\"jet\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"564\" Type=1 Value=564",
+    "[local-stt]   token[2]: Text=\"heavy\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"depart\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"mercer\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"080\" Type=1 Value=80",
+    "[local-stt]   token[7]: Text=\"back\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[9]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[10]: Text=\"final\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 11 tokens, 6 aircraft",
+    "[local-stt]   candidate \"Spirit Wings 33 23\" (ICAO=\"NKS3323\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Brickyard 47 56\" (ICAO=\"RPA4756\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Spirit Wings 96 31\" (ICAO=\"NKS9631\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"United four 20\" (ICAO=\"UAL420\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"United niner 27\" (ICAO=\"UAL927\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"United five 64 heavy\" (ICAO=\"UAL564\"): score=0.80 consumed=3",
+    "[local-stt]   candidate \"United five 64 heavy\" at pos 1: score=0.80 (adjusted=0.72) consumed=2",
+    "[local-stt]   accepted: \"UAL564\" (conf=0.80, consumed=3, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"UAL564\" SpokenKey=\"United five 64 heavy\" Conf=0.80 Consumed=3",
+    "[local-stt] aircraft context: State=\"arrival\" Altitude=8712 Fixes=6 Approaches=1 AssignedApproach=\"\" LAHSORunways=[11 29]",
+    "[local-stt]   fix: \"Dillon\" -\u003e \"DYLIN\"",
+    "[local-stt]   fix: \"Merser\" -\u003e \"MERSR\"",
+    "[local-stt]   fix: \"Metro\" -\u003e \"METRO\"",
+    "[local-stt]   fix: \"Mart\" -\u003e \"MARRT\"",
+    "[local-stt]   fix: \"Philbo\" -\u003e \"PHLBO\"",
+    "[local-stt]   fix: \"Newark\" -\u003e \"KEWR\"",
+    "[local-stt]   approach: \"I L S runway four right\" -\u003e \"I4R\"",
+    "[local-stt] command tokens after disregard: 8",
+    "[local-stt]   token[0]: Text=\"depart\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"mercer\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"heading\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"080\" Type=1 Value=80",
+    "[local-stt]   token[4]: Text=\"back\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"the\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"final\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"heading\" at position 2 - not just position ID",
+    "[local-stt] ParseCommands: 8 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"mercer\" against 6 fixes",
+    "[local-stt]   extractFix: matched \"mercer\" -\u003e \"MERSR\" (fuzzy 0.92)",
+    "[local-stt]   matched command: \"DMERSR/H080\" (conf=1.00, consumed=4, isThen=false)",
+    "[local-stt]   no match at token[4]=\"back\", skipping",
+    "[local-stt]   skipping filler word: \"to\"",
+    "[local-stt]   skipping filler word: \"the\"",
+    "[local-stt]   no match at token[7]=\"final\", skipping",
+    "[local-stt] ParseCommands: result=[DMERSR/H080] (avgConf=1.00)",
+    "[local-stt] parsed commands: [DMERSR/H080] (conf=1.00)",
+    "[local-stt] validated commands: [DMERSR/H080] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"UAL564 DMERSR/H080\" (conf=0.80, time=504.8µs) ==="
+  ]
+}
