@@ -243,6 +243,30 @@ jobs:
         cp ext/mingw/mingw64/bin/libstdc++-6.dll windows/
         cp ext/SDL2-2.24.0/x86_64-w64-mingw32/bin/SDL2.dll windows/
 
+    - name: Generate sherpa-onnx import libraries
+      run: |
+        # The sherpa-onnx-go-windows module only ships DLLs, but the MinGW
+        # linker needs import libraries (.dll.a) to link against them.
+        go mod download github.com/k2-fsa/sherpa-onnx-go-windows
+        $modCache = (go env GOMODCACHE).Trim()
+        $sherpaVersion = (Select-String -Path go.mod -Pattern 'github.com/k2-fsa/sherpa-onnx-go (v[\d.]+)').Matches.Groups[1].Value
+        $sherpaLib = "$modCache/github.com/k2-fsa/sherpa-onnx-go-windows@$sherpaVersion/lib/x86_64-pc-windows-gnu"
+
+        Write-Host "Sherpa-onnx lib directory: $sherpaLib"
+
+        # Copy runtime DLLs for distribution
+        cp "$sherpaLib/sherpa-onnx-c-api.dll" windows/
+        cp "$sherpaLib/onnxruntime.dll" windows/
+
+        # Generate import libraries from the DLLs
+        Push-Location $sherpaLib
+        gendef sherpa-onnx-c-api.dll
+        gendef onnxruntime.dll
+        dlltool -d sherpa-onnx-c-api.def -l libsherpa-onnx-c-api.dll.a -D sherpa-onnx-c-api.dll
+        dlltool -d onnxruntime.def -l libonnxruntime.dll.a -D onnxruntime.dll
+        Pop-Location
+      shell: pwsh
+
     - name: Get whisper.cpp commit SHA
       id: whisper-sha
       run: echo "sha=$(git -C whisper.cpp rev-parse HEAD)" >> $env:GITHUB_OUTPUT

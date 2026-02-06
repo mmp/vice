@@ -140,6 +140,30 @@ if defined VULKAN_SDK (
     echo VULKAN_SDK environment variable not set
 )
 
+REM Generate sherpa-onnx import libraries if needed.
+REM The sherpa-onnx-go-windows module only ships DLLs, but the MinGW
+REM linker needs import libraries (.dll.a) to link against them.
+go mod download github.com/k2-fsa/sherpa-onnx-go-windows
+for /f "delims=" %%g in ('go env GOMODCACHE') do set GOMODCACHE=%%g
+for /f "tokens=2" %%v in ('findstr /c:"github.com/k2-fsa/sherpa-onnx-go " go.mod') do set SHERPA_VERSION=%%v
+set SHERPA_LIB=!GOMODCACHE!\github.com\k2-fsa\sherpa-onnx-go-windows@!SHERPA_VERSION!\lib\x86_64-pc-windows-gnu
+if exist "!SHERPA_LIB!\sherpa-onnx-c-api.dll" (
+    if not exist "!SHERPA_LIB!\libsherpa-onnx-c-api.dll.a" (
+        echo === Generating sherpa-onnx import libraries ===
+        pushd "!SHERPA_LIB!"
+        gendef sherpa-onnx-c-api.dll
+        gendef onnxruntime.dll
+        dlltool -d sherpa-onnx-c-api.def -l libsherpa-onnx-c-api.dll.a -D sherpa-onnx-c-api.dll
+        dlltool -d onnxruntime.def -l libonnxruntime.dll.a -D onnxruntime.dll
+        popd
+    )
+    if not exist "windows\sherpa-onnx-c-api.dll" (
+        echo Copying sherpa-onnx runtime DLLs to windows/
+        copy "!SHERPA_LIB!\sherpa-onnx-c-api.dll" windows\ >nul
+        copy "!SHERPA_LIB!\onnxruntime.dll" windows\ >nul
+    )
+)
+
 REM Build whisper-cpp if needed
 if not exist "whisper.cpp\build_go\src\libwhisper.a" (
     echo === Building whisper-cpp ===
