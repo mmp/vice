@@ -234,19 +234,18 @@ func (nav *Nav) InterceptApproach(airport string, lg *log.Logger) av.CommandInte
 
 	if intent := nav.prepareForApproach(false); intent != nil {
 		return intent
-	} else {
-		ap := nav.Approach.Assigned
-		if ap.Type == av.ILSApproach || ap.Type == av.LocalizerApproach {
-			return av.ApproachIntent{
-				Type:         av.ApproachIntercept,
-				ApproachName: ap.FullName,
-			}
-		} else {
-			return av.ApproachIntent{
-				Type:         av.ApproachJoin,
-				ApproachName: ap.FullName,
-			}
+	}
+
+	ap := nav.Approach.Assigned
+	if ap.Type == av.ILSApproach || ap.Type == av.LocalizerApproach {
+		return av.ApproachIntent{
+			Type:         av.ApproachIntercept,
+			ApproachName: ap.FullName,
 		}
+	}
+	return av.ApproachIntent{
+		Type:         av.ApproachJoin,
+		ApproachName: ap.FullName,
 	}
 }
 
@@ -451,6 +450,7 @@ func (nav *Nav) prepareForChartedVisual() av.CommandIntent {
 
 	return av.MakeUnableIntent("unable. We are not on course to intercept the approach")
 }
+
 func (nav *Nav) ClearedApproach(airport string, id string, straightIn bool) (av.CommandIntent, bool) {
 	ap := nav.Approach.Assigned
 	if ap == nil {
@@ -462,41 +462,41 @@ func (nav *Nav) ClearedApproach(airport string, id string, straightIn bool) (av.
 
 	if intent := nav.prepareForApproach(straightIn); intent != nil {
 		return intent, false
-	} else {
-		nav.Approach.Cleared = true
-		if nav.Approach.PassedApproachFix {
-			// We've already passed an approach fix, so allow it to start descending.
-			nav.Altitude = NavAltitude{}
-		} else if nav.Approach.InterceptState == OnApproachCourse || nav.Approach.PassedApproachFix {
-			// First intercepted then cleared or otherwise passed an
-			// approach fix, so allow it to start descending.
-			nav.Altitude = NavAltitude{}
-			// No procedure turn needed if we were vectored to intercept.
-			nav.Approach.NoPT = true
-		}
-		// Cleared approach also cancels speed restrictions.
-		nav.Speed = NavSpeed{}
-
-		// Follow LNAV instructions more quickly given an approach clearance;
-		// assume that at this point they are expecting them and ready to dial things in.
-		if dh := nav.DeferredNavHeading; dh != nil {
-			now := time.Now()
-			if dh.Time.Sub(now) > 6*time.Second {
-				dh.Time = now.Add(time.Duration((3 + 3*nav.Rand.Float32()) * float32(time.Second)))
-			}
-		}
-
-		nav.flyProcedureTurnIfNecessary()
-
-		cancelHold := nav.Heading.Hold != nil
-		if nav.Heading.Hold != nil {
-			nav.Heading.Hold.Cancel = true
-		}
-
-		return av.ClearedApproachIntent{
-			Approach:   ap.FullName,
-			StraightIn: straightIn,
-			CancelHold: cancelHold,
-		}, true
 	}
+
+	nav.Approach.Cleared = true
+	if nav.Approach.PassedApproachFix {
+		// We've already passed an approach fix, so allow it to start descending.
+		nav.Altitude = NavAltitude{}
+	} else if nav.Approach.InterceptState == OnApproachCourse || nav.Approach.PassedApproachFix {
+		// First intercepted then cleared or otherwise passed an
+		// approach fix, so allow it to start descending.
+		nav.Altitude = NavAltitude{}
+		// No procedure turn needed if we were vectored to intercept.
+		nav.Approach.NoPT = true
+	}
+	// Cleared approach also cancels speed restrictions.
+	nav.Speed = NavSpeed{}
+
+	// Follow LNAV instructions more quickly given an approach clearance;
+	// assume that at this point they are expecting them and ready to dial things in.
+	if dh := nav.DeferredNavHeading; dh != nil {
+		now := time.Now()
+		if dh.Time.Sub(now) > 6*time.Second {
+			dh.Time = now.Add(time.Duration((3 + 3*nav.Rand.Float32()) * float32(time.Second)))
+		}
+	}
+
+	nav.flyProcedureTurnIfNecessary()
+
+	cancelHold := nav.Heading.Hold != nil
+	if nav.Heading.Hold != nil {
+		nav.Heading.Hold.Cancel = true
+	}
+
+	return av.ClearedApproachIntent{
+		Approach:   ap.FullName,
+		StraightIn: straightIn,
+		CancelHold: cancelHold,
+	}, true
 }
