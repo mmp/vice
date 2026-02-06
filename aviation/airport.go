@@ -661,18 +661,21 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			vol.Id = rwy
 		}
 
-		if _, ok := LookupRunway(icao, rwy); !ok {
-			e.ErrorString("runway %q is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
-		}
-
-		if vol.Threshold.IsZero() { // the location is set directly for default volumes
-			if vol.ThresholdString == "" {
-				e.ErrorString("\"runway_threshold\" not specified.")
-			} else {
-				var ok bool
-				if vol.Threshold, ok = loc.Locate(vol.ThresholdString); !ok {
-					e.ErrorString("%q unknown for \"runway_threshold\".", vol.ThresholdString)
+		if rwy, ok := LookupRunway(icao, rwy); !ok {
+			e.ErrorString("runway %q is unknown. Options: %s", rwy.Id, DB.Airports[icao].ValidRunways())
+		} else {
+			if vol.Threshold.IsZero() {
+				if vol.ThresholdString != "" {
+					var ok bool
+					if vol.Threshold, ok = loc.Locate(vol.ThresholdString); !ok {
+						e.ErrorString("%q unknown for \"runway_threshold\".", vol.ThresholdString)
+					}
+				} else {
+					vol.Threshold = rwy.Threshold
 				}
+			}
+			if vol.Heading == 0 {
+				vol.Heading = rwy.Heading
 			}
 		}
 
