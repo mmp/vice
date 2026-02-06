@@ -3,6 +3,7 @@
 .DS_Store
 resources/models/*.bin
 resources/models/.synced
+resources/models/kokoro-multi-lang-v1_0/
 *.pprof
 *.prof
 /cdocs
