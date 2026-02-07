@@ -217,9 +217,7 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	// Initialize default wind direction from runways
 	c.initDefaultWindDirection()
 
-	c.fetchMETAR()
-
-	c.updateStartTimeForRunways()
+	go c.fetchMETAR()
 }
 
 // initDefaultWindDirection computes the default wind direction range from the scenario's runways.
@@ -272,7 +270,9 @@ func (c *NewSimConfiguration) fetchMETAR() {
 
 	airports := c.ScenarioSpec.AllAirports()
 	if slices.Equal(c.metarAirports, airports) {
-		// No need to refetch
+		// No need to refetch, but the scenario may have changed
+		// (different runways / weather filter), so resample the start time.
+		c.updateStartTimeForRunways()
 		return
 	}
 
