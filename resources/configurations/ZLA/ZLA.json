@@ -1,0 +1,290 @@
+{
+    "control_positions": {
+        "ZLA 00 Maintenance": {
+            "frequency": 118000,
+            "eram_facility": true,
+            "radio_name": "Maintenance",
+            "sector_id": "00"
+        },
+        "ZLA 03 Sector": {
+            "frequency": 127100,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "03"
+        },
+        "ZLA 04 Sector": {
+            "frequency": 125800,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "04"
+        },
+        "ZLA 06 Sector": {
+            "frequency": 134650,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "06"
+        },
+        "ZLA 07 Sector": {
+            "frequency": 124200,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "07"
+        },
+        "ZLA 08 Sector": {
+            "frequency": 124850,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "08"
+        },
+        "ZLA 09 Sector": {
+            "frequency": 128600,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "09"
+        },
+        "ZLA 10 Sector": {
+            "frequency": 128150,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "10"
+        },
+        "ZLA 12 Sector": {
+            "frequency": 125650,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "12"
+        },
+        "ZLA 13 Sector": {
+            "frequency": 132600,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "13"
+        },
+        "ZLA 14 Sector": {
+            "frequency": 135500,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "14"
+        },
+        "ZLA 15 Sector": {
+            "frequency": 119050,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "15"
+        },
+        "ZLA 16 Sector": {
+            "frequency": 124625,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "16"
+        },
+        "ZLA 17 Sector": {
+            "frequency": 132500,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "17"
+        },
+        "ZLA 18 Sector": {
+            "frequency": 125275,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "18"
+        },
+        "ZLA 19 Sector": {
+            "frequency": 126350,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "19"
+        },
+        "ZLA 20 Sector": {
+            "frequency": 133750,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "20"
+        },
+        "ZLA 21 Sector": {
+            "frequency": 132850,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "21"
+        },
+        "ZLA 22 Sector": {
+            "frequency": 134575,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "22"
+        },
+        "ZLA 25 Sector": {
+            "frequency": 126525,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "25"
+        },
+        "ZLA 26 Sector": {
+            "frequency": 135300,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "26"
+        },
+        "ZLA 27 Sector": {
+            "frequency": 128375,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "27"
+        },
+        "ZLA 28 Sector": {
+            "frequency": 132150,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "28"
+        },
+        "ZLA 30 Sector": {
+            "frequency": 119950,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "30"
+        },
+        "ZLA 31 Sector": {
+            "frequency": 126775,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "31"
+        },
+        "ZLA 34 Sector": {
+            "frequency": 132625,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "34"
+        },
+        "ZLA 35 Sector": {
+            "frequency": 128075,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "35"
+        },
+        "ZLA 36 Sector": {
+            "frequency": 127350,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "36"
+        },
+        "ZLA 37 Sector": {
+            "frequency": 133550,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "37"
+        },
+        "ZLA 38 Sector": {
+            "frequency": 125725,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "38"
+        },
+        "ZLA 39 Sector": {
+            "frequency": 133200,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "39"
+        },
+        "ZLA 40 Sector": {
+            "frequency": 127525,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "40"
+        },
+        "ZLA 53 Sector": {
+            "frequency": 118025,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "53"
+        },
+        "ZLA 54 Sector": {
+            "frequency": 135250,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "54"
+        },
+        "ZLA 55 Sector": {
+            "frequency": 135550,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "55"
+        },
+        "ZLA 60 Sector": {
+            "frequency": 134475,
+            "eram_facility": true,
+            "radio_name": "Los Angeles Center",
+            "sector_id": "60"
+        },
+        "ZLA 99 TMU": {
+            "frequency": 123450,
+            "eram_facility": true,
+            "radio_name": "Traffic Management",
+            "sector_id": "99"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "HUULL2": "ZLA 14 Sector",
+                    "RUKKI1/BAUBB3": "ZLA 14 Sector",
+                    "RYDRR2.ELKEY": "ZLA 14 Sector",
+                    "RYDRR2.SNAXX": "ZLA 14 Sector"
+                }
+            },
+            "ZLA": {
+                "inbound_assignments": {
+                    "SIZLR4": "ZLA 18 Sector",
+                    "ZIGGY8": "ZLA 18 Sector"
+                }
+            }
+        },
+        "center": "KWANG",
+        "range": 60,
+        "stars_maps": [
+            "LOW WEST",
+            "LOW EAST",
+            "APCH WEST",
+            "APCH EAST/OO",
+            "EMERG AIRPORT",
+            "MIA",
+            "AIRWAYS",
+            "JET ROUTES",
+            "SHORE LINE",
+            "",
+            "HIGH SECTORS",
+            "SECTOR BNDRYS",
+            "SPECIAL USE AIR",
+            "OVER OCEAN",
+            "SBA SUMZUM",
+            "B V S LEGOZ",
+            "LAX STAR",
+            "LGB SNA",
+            "SERFR ARC",
+            "LAX ARCS"
+        ],
+        "video_map_file": "videomaps/ZLA-eram-videomaps.gob.zst",
+        "controller_assignments": {
+            "STD": {
+                "inbound_assignments": {
+                    "HUULL2": "ZLA 14 Sector",
+                    "RUKKI1/BAUBB3": "ZLA 14 Sector",
+                    "RYDRR2.ELKEY": "ZLA 14 Sector",
+                    "RYDRR2.SNAXX": "ZLA 14 Sector"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [],
+        "neighboring_facilities": [
+            "FAT",
+            "NLC",
+            "ZAB",
+            "ZDV",
+            "ZLC",
+            "ZOA"
+        ]
+    }
+}

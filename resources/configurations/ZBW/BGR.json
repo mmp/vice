@@ -1,0 +1,100 @@
+{
+    "control_positions": {
+        "BGR_TWR": {
+            "frequency": 120700,
+            "radio_name": "Bangor Tower",
+            "sector_id": "1T"
+        },
+        "BGR_B_APP": {
+            "frequency": 118925,
+            "radio_name": "Bangor Approach",
+            "sector_id": "1B"
+        },
+        "BGR_S_APP": {
+            "frequency": 124500,
+            "radio_name": "Bangor Approach",
+            "sector_id": "1S"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "BOS": "BGR_B_APP",
+                    "ALB": "BGR_B_APP",
+                    "ENE": "BGR_B_APP",
+                    "HUL": "BGR_B_APP"
+                },
+                "departure_assignments": {
+                    "KBGR": "BGR_B_APP",
+                    "KBHB": "BGR_B_APP"
+                }
+            }
+        },
+        "coordination_lists": [
+            {
+                "name": "BHB",
+                "id": "A",
+                "airports": [
+                    "KBHB"
+                ]
+            }
+        ],
+        "center": "KBGR",
+        "controller_configs": {
+            "1B": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 10000,
+                        "vertices": "N044.14.25.942,W069.17.58.445 N044.25.49.896,W069.16.15.064 N044.38.41.424,W068.58.53.285 N044.47.51.043,W068.50.45.327 N044.59.42.092,W068.20.41.482 N044.42.09.821,W068.03.12.315 N044.26.22.223,W067.53.10.045 N044.16.48.819,W067.56.37.933 N044.08.51.683,W068.09.44.884 N043.52.16.871,W068.41.39.993 N043.48.47.568,W069.02.28.040 N043.55.54.071,W069.04.49.215 N044.14.44.413,W069.17.53.309"
+                    }
+                ]
+            },
+            "1S": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 10000,
+                        "vertices": "N044.28.10.383,W069.26.35.928 N044.48.50.355,W068.48.40.687 N045.07.06.475,W068.15.34.194 N045.23.33.816,W068.26.41.147 N045.19.45.781,W068.55.46.572 N045.07.26.182,W069.23.48.552 N044.57.35.996,W069.37.37.717 N044.50.14.112,W069.40.18.283 N044.27.26.177,W069.25.54.098"
+                    }
+                ]
+            }
+        },
+        "scratchpads": {},
+        "stars_maps": [
+            "BGR MAIN",
+            "BGR EOVM",
+            "BGR VFR",
+            "BGR MVA",
+            "BGR RVM"
+        ],
+        "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
+        "controller_assignments": {
+            "STD": {
+                "inbound_assignments": {
+                    "BOS": "BGR_B_APP",
+                    "ALB": "BGR_B_APP",
+                    "ENE": "BGR_B_APP",
+                    "HUL": "BGR_B_APP"
+                },
+                "departure_assignments": {
+                    "KBGR": "BGR_B_APP",
+                    "KBHB": "BGR_B_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "PWM",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "PWM",
+            "ZBW"
+        ]
+    }
+}

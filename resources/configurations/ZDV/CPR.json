@@ -1,0 +1,81 @@
+{
+    "control_positions": {
+        "CPR_APP": {
+            "frequency": 120650,
+            "radio_name": "Capser approach",
+            "sector_id": "1A"
+        },
+        "CPR_TWR": {
+            "frequency": 118300,
+            "radio_name": "Casper tower",
+            "scope_char": "1",
+            "sector_id": "1T"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "DEN": "CPR_APP",
+                    "JAC": "CPR_APP",
+                    "MEM": "CPR_APP",
+                    "NE-GA": "CPR_APP",
+                    "SE-GA": "CPR_APP",
+                    "SLC": "CPR_APP"
+                },
+                "departure_assignments": {
+                    "KCPR": "CPR_APP"
+                }
+            }
+        },
+        "center": "42.9058611,-106.4636389",
+        "range": 40,
+        "scratchpads": {
+            "CUSGA": "CUS",
+            "HIPEE": "DEN",
+            "KURSE": "KUR",
+            "LHO": "LHO"
+        },
+        "significant_points": {
+            "CUSGA": {},
+            "HIPEE": {},
+            "KURSE": {},
+            "LHO": {}
+        },
+        "stars_maps": [
+            "CPR BASE",
+            "CPR MVA",
+            "CPR ILS 3",
+            "CPR GPS 21",
+            "CPR GPS 26",
+            "CPR EOVM",
+            "CPR CLASS",
+            "CPR GPS 3",
+            "CPR GPS 8",
+            "CPR LCL",
+            "CPR VOR 21"
+        ],
+        "video_map_file": "videomaps/ZDV-videomaps.gob.zst",
+        "controller_assignments": {
+            "STD": {
+                "inbound_assignments": {
+                    "DEN": "CPR_APP",
+                    "JAC": "CPR_APP",
+                    "MEM": "CPR_APP",
+                    "NE-GA": "CPR_APP",
+                    "SE-GA": "CPR_APP",
+                    "SLC": "CPR_APP"
+                },
+                "departure_assignments": {
+                    "KCPR": "CPR_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [],
+        "neighboring_facilities": [
+            "ZDV"
+        ]
+    }
+}

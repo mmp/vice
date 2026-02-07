@@ -1,0 +1,220 @@
+{
+    "control_positions": {
+        "ZMA 01 PERMT": {
+            "frequency": 125325,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "01"
+        },
+        "ZMA 02 HOBEE": {
+            "frequency": 119825,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "02"
+        },
+        "ZMA 04 MELBOURNE LOW": {
+            "frequency": 132250,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "04"
+        },
+        "ZMA 05 MARATHON": {
+            "frequency": 132500,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "05"
+        },
+        "ZMA 06 KEY WEST": {
+            "frequency": 132200,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "06"
+        },
+        "ZMA 07 SARASOTA": {
+            "frequency": 132350,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "07"
+        },
+        "ZMA 08 CIGAR": {
+            "frequency": 133900,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "08"
+        },
+        "ZMA 17 APOLO": {
+            "frequency": 128650,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "17"
+        },
+        "ZMA 18 ADOOR": {
+            "frequency": 134350,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "18"
+        },
+        "ZMA 19 NUCAR": {
+            "frequency": 123675,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "19"
+        },
+        "ZMA 20 PALM BEACH LOW": {
+            "frequency": 132150,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "20"
+        },
+        "ZMA 21 FREEPORT LOW": {
+            "frequency": 133400,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "21"
+        },
+        "ZMA 22 BAIRN": {
+            "frequency": 133475,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "22"
+        },
+        "ZMA 23 STOOP": {
+            "frequency": 126950,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "23"
+        },
+        "ZMA 24 FORT MYERS LOW": {
+            "frequency": 132400,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "24"
+        },
+        "ZMA 25 FORT MYERS HIGH": {
+            "frequency": 128225,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "25"
+        },
+        "ZMA 40 BIMINI HIGH": {
+            "frequency": 126325,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "40"
+        },
+        "ZMA 41 VIICE": {
+            "frequency": 133850,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "41"
+        },
+        "ZMA 42 BIMINI LOW": {
+            "frequency": 135600,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "42"
+        },
+        "ZMA 43 GREAT INAGUA": {
+            "frequency": 123775,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "43"
+        },
+        "ZMA 44 ABACO LOW": {
+            "frequency": 134200,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "44"
+        },
+        "ZMA 46 ALUTO": {
+            "frequency": 135175,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "46"
+        },
+        "ZMA 47 LABELLE": {
+            "frequency": 132450,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "47"
+        },
+        "ZMA 58 MILLE": {
+            "frequency": 126275,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "58"
+        },
+        "ZMA 59 ABACO": {
+            "frequency": 134800,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "59"
+        },
+        "ZMA 60 GEORGE TOWN": {
+            "frequency": 127225,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "60"
+        },
+        "ZMA 61 NASSAU LOW": {
+            "frequency": 125700,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "61"
+        },
+        "ZMA 62 GRAND TURK": {
+            "frequency": 126450,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "62"
+        },
+        "ZMA 63 CERDA": {
+            "frequency": 135200,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "63"
+        },
+        "ZMA 64 AVON": {
+            "frequency": 126525,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "64"
+        },
+        "ZMA 65 BOYLE": {
+            "frequency": 125075,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "65"
+        },
+        "ZMA 66 LAKELAND LOW": {
+            "frequency": 134550,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "66"
+        },
+        "ZMA 67 LAKELAND HIGH": {
+            "frequency": 127200,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "67"
+        },
+        "ZMA 68 SEBRING ULTRA HIGH": {
+            "frequency": 133550,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "68"
+        },
+        "ZMA 89 FROSTY": {
+            "frequency": 124825,
+            "eram_facility": true,
+            "radio_name": "Miami Center",
+            "sector_id": "89"
+        },
+        "ZMA 99 ZMA TMU": {
+            "frequency": 121500,
+            "eram_facility": true,
+            "radio_name": "ZMA TMU",
+            "sector_id": "99"
+        }
+    }
+}

@@ -1,0 +1,37 @@
+TRACON NCT / Scenario group NCT Area B / stars_config / "coordination_lists" Palo Alto: Airport "KPAO" not defined in scenario group.
+TRACON NCT / Scenario group NCT Area B / stars_config / "coordination_lists" Salinas: Airport "KSNS" not defined in scenario group.
+TRACON NCT / Scenario group NCT Area E / stars_config / "coordination_lists" Palo Alto: Airport "KPAO" not defined in scenario group.
+TRACON NCT / Scenario group NCT Area E / stars_config / "coordination_lists" Salinas: Airport "KSNS" not defined in scenario group.
+TRACON D01 / Scenario group KCYS / stars_config / "coordination_lists" Centennial: Airport "KAPA" not defined in scenario group.
+TRACON D01 / Scenario group KCYS / stars_config / "coordination_lists" Metro: Airport "KBJC" not defined in scenario group.
+TRACON D01 / Scenario group KCYS / stars_config / "coordination_lists" NoCo: Airport "KFNL" not defined in scenario group.
+TRACON D01 / Scenario group KCYS / stars_config / "coordination_lists" Greely: Airport "KGXY" not defined in scenario group.
+TRACON D01 / Scenario group KGJT / stars_config / "coordination_lists" Centennial: Airport "KAPA" not defined in scenario group.
+TRACON D01 / Scenario group KGJT / stars_config / "coordination_lists" Metro: Airport "KBJC" not defined in scenario group.
+TRACON D01 / Scenario group KGJT / stars_config / "coordination_lists" NoCo: Airport "KFNL" not defined in scenario group.
+TRACON D01 / Scenario group KGJT / stars_config / "coordination_lists" Greely: Airport "KGXY" not defined in scenario group.
+TRACON A90 / Scenario group Manchester Area / stars_config / "coordination_lists" .     PBVY -: Airport "KBVY" not defined in scenario group.
+TRACON A90 / Scenario group Manchester Area / stars_config / "coordination_lists" .     PLWM -: Airport "KLWM" not defined in scenario group.
+TRACON A90 / Scenario group Manchester Area / stars_config / "coordination_lists" .     POWD -: Airport "KOWD" not defined in scenario group.
+TRACON A90 / Scenario group Cape Area / stars_config / "coordination_lists" .     PBVY -: Airport "KBVY" not defined in scenario group.
+TRACON A90 / Scenario group Cape Area / stars_config / "coordination_lists" .     PLWM -: Airport "KLWM" not defined in scenario group.
+TRACON A90 / Scenario group Cape Area / stars_config / "coordination_lists" .     POWD -: Airport "KOWD" not defined in scenario group.
+TRACON N90 / Scenario group KJFK / stars_config / "coordination_lists" OXC.: Airport "KOXC" not defined in scenario group.
+TRACON N90 / Scenario group KLGA / stars_config / "coordination_lists" HVN.: Airport "KHVN" not defined in scenario group.
+TRACON N90 / Scenario group KLGA / stars_config / "coordination_lists" FOK.: Airport "KFOK" not defined in scenario group.
+TRACON N90 / Scenario group LIB / stars_config / "coordination_lists" HVN.: Airport "KHVN" not defined in scenario group.
+TRACON N90 / Scenario group LIB / stars_config / "coordination_lists" OXC.: Airport "KOXC" not defined in scenario group.
+TRACON N90 / Scenario group KEWR / stars_config / "coordination_lists" HVN.: Airport "KHVN" not defined in scenario group.
+TRACON N90 / Scenario group KEWR / stars_config / "coordination_lists" BDR.: Airport "KBDR" not defined in scenario group.
+TRACON N90 / Scenario group KEWR / stars_config / "coordination_lists" FOK.: Airport "KFOK" not defined in scenario group.
+TRACON N90 / Scenario group KEWR / stars_config / "coordination_lists" OXC.: Airport "KOXC" not defined in scenario group.
+TRACON N90 / Scenario group HAARP / stars_config / "coordination_lists" HVN.: Airport "KHVN" not defined in scenario group.
+TRACON N90 / Scenario group HAARP / stars_config / "coordination_lists" FOK.: Airport "KFOK" not defined in scenario group.
+TRACON N90 / Scenario group HAARP / stars_config / "coordination_lists" OXC.: Airport "KOXC" not defined in scenario group.
+TRACON SCT / Scenario group Coast Area / stars_config / "coordination_lists" SANTA MONICA: Airport "KSMO" not defined in scenario group.
+TRACON SCT / Scenario group Coast Area / stars_config / "coordination_lists" HAWTHORNE: Airport "KHHR" not defined in scenario group.
+TRACON SCT / Scenario group Empire Area / stars_config / "coordination_lists" SANTA MONICA: Airport "KSMO" not defined in scenario group.
+TRACON SCT / Scenario group Empire Area / stars_config / "coordination_lists" HAWTHORNE: Airport "KHHR" not defined in scenario group.
+TRACON SCT / Scenario group San Diego Area / stars_config / "coordination_lists" SANTA MONICA: Airport "KSMO" not defined in scenario group.
+TRACON SCT / Scenario group San Diego Area / stars_config / "coordination_lists" LONG BEACH: Airport "KLGB" not defined in scenario group.
+TRACON SCT / Scenario group San Diego Area / stars_config / "coordination_lists" HAWTHORNE: Airport "KHHR" not defined in scenario group.

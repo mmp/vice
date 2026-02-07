@@ -1,0 +1,179 @@
+{
+    "control_positions": {
+        "PIT_TWR": {
+            "frequency": 120500,
+            "radio_name": "Pittsburgh Tower",
+            "sector_id": "1W"
+        },
+        "PIT_D_APP": {
+            "frequency": 123950,
+            "radio_name": "Pittsburgh Approach",
+            "sector_id": "1D"
+        },
+        "PIT_B_APP": {
+            "frequency": 124150,
+            "radio_name": "Pittsburgh Approach",
+            "sector_id": "1B"
+        },
+        "PIT_S_DEP": {
+            "frequency": 119350,
+            "radio_name": "Pittsburgh Departure",
+            "sector_id": "1S"
+        },
+        "PIT_N_DEP": {
+            "frequency": 124750,
+            "radio_name": "Pittsburgh Approach",
+            "sector_id": "1N"
+        },
+        "AGC_TWR": {
+            "frequency": 121100,
+            "radio_name": "Allegheny Tower",
+            "sector_id": "1T"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "DEMME5": "PIT_D_APP",
+                    "FEWGA7": "PIT_D_APP",
+                    "HAYNZ7": "PIT_B_APP",
+                    "HOMEE": "PIT_B_APP",
+                    "JESEY4": "PIT_B_APP",
+                    "NESTO": "PIT_D_APP",
+                    "WISKE": "PIT_D_APP"
+                },
+                "departure_assignments": {
+                    "KAGC": "PIT_S_DEP",
+                    "KPIT": "PIT_S_DEP"
+                }
+            }
+        },
+        "force_ql_self": true,
+        "allow_long_scratchpad": true,
+        "center": "KPIT",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "PITNOCA",
+                    "description": "PIT CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 4000,
+                    "center": "N040.29.37.491,W080.14.19.515",
+                    "radius": 6
+                },
+                {
+                    "id": "AGCNOCA",
+                    "description": "AGC CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 4000,
+                    "center": "N040.21.17.806,W079.55.36.575",
+                    "radius": 3
+                }
+            ]
+        },
+        "radar_sites": {
+            "PIT": {
+                "char": "A",
+                "position": "N040.29.37.491,W080.14.19.515",
+                "elevation": 1203,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.175
+            }
+        },
+        "range": 60,
+        "scratchpads": {
+            "EWC": "EWC",
+            "AIR": "AIR",
+            "TYROO": "TYRO",
+            "BSV": "BSV",
+            "JST": "JST",
+            "MGW": "MGW",
+            "CKB": "CKB",
+            "DILNE": "DILN",
+            "AHTIY": "AHTI",
+            "PARKE": "PARK",
+            "HAR": "HAR",
+            "AGARD": "AGAR",
+            "PSB": "ALL"
+        },
+        "significant_points": {
+            "AGARD": {},
+            "AHTIY": {},
+            "AIR": {},
+            "BSV": {},
+            "CKB": {},
+            "DILNE": {},
+            "EWC": {},
+            "HAR": {},
+            "JST": {},
+            "MGW": {},
+            "PARKE": {},
+            "PSB": {},
+            "TYROO": {}
+        },
+        "stars_maps": [
+            "PIT-001 (WEST FLOW)",
+            "PIT-002 (EAST FLOW)",
+            "PIT-003 (MVA)",
+            "PIT-005 (VFR)",
+            "PIT-006 (RNAV APPROACHES)",
+            "PIT-009 (CLASS B)",
+            "PIT-010 (LIFEFLIGHT APPROACHES)",
+            "PIT-013 (ADJACENT APPROACHES)",
+            "PIT-129 (DEMME)",
+            "PIT-131 (FEWGA)",
+            "PIT-133 (HAYNZ)",
+            "PIT-135 (JESEY)"
+        ],
+        "video_map_file": "videomaps/ZOB-videomaps.gob.zst",
+        "controller_assignments": {
+            "STD": {
+                "inbound_assignments": {
+                    "DEMME5": "PIT_D_APP",
+                    "FEWGA7": "PIT_D_APP",
+                    "HAYNZ7": "PIT_B_APP",
+                    "HOMEE": "PIT_B_APP",
+                    "JESEY4": "PIT_B_APP",
+                    "NESTO": "PIT_D_APP",
+                    "WISKE": "PIT_D_APP"
+                },
+                "departure_assignments": {
+                    "KAGC": "PIT_S_DEP",
+                    "KPIT": "PIT_S_DEP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "YNG",
+                "prefix": "1"
+            },
+            {
+                "id": "JST",
+                "prefix": "2"
+            },
+            {
+                "id": "CKB",
+                "prefix": "3"
+            },
+            {
+                "id": "CLE",
+                "prefix": "4"
+            }
+        ],
+        "neighboring_facilities": [
+            "CKB",
+            "CLE",
+            "JST",
+            "YNG",
+            "ZOB"
+        ]
+    }
+}

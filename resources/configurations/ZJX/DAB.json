@@ -1,0 +1,303 @@
+{
+    "control_positions": {
+        "DAB_H_APP": {
+            "frequency": 125725,
+            "radio_name": "Daytona Beach approach",
+            "sector_id": "1H"
+        },
+        "DAB_M_APP": {
+            "frequency": 118850,
+            "radio_name": "Daytona Beach approach",
+            "sector_id": "1M"
+        },
+        "DAB_L_APP": {
+            "frequency": 127075,
+            "radio_name": "Daytona Beach approach",
+            "sector_id": "1L"
+        },
+        "DAB_N_APP": {
+            "frequency": 125800,
+            "radio_name": "Daytona Beach approach",
+            "sector_id": "1N"
+        },
+        "DAB_S_APP": {
+            "frequency": 125350,
+            "radio_name": "Daytona Beach approach",
+            "sector_id": "1S"
+        },
+        "DAB_E_APP": {
+            "frequency": 123900,
+            "radio_name": "Daytona Beach approach",
+            "sector_id": "1E"
+        },
+        "DAB_W_APP": {
+            "frequency": 126550,
+            "radio_name": "Daytona Beach approach",
+            "sector_id": "1W"
+        },
+        "DAB_N_TWR": {
+            "frequency": 120700,
+            "radio_name": "Daytona Beach tower",
+            "sector_id": "1T"
+        },
+        "DAB_S_TWR": {
+            "frequency": 118100,
+            "radio_name": "Daytona Beach tower",
+            "sector_id": "1P"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "DAE": {
+                "inbound_assignments": {
+                    "TTHOR3": "DAB_H_APP",
+                    "WALEE": "DAB_M_APP",
+                    "WORMSE": "DAB_H_APP",
+                    "V267S": "DAB_M_APP",
+                    "V267N": "DAB_L_APP",
+                    "KIZER": "DAB_W_APP",
+                    "SMYRA": "DAB_S_APP",
+                    "ASTOR": "DAB_M_APP"
+                },
+                "departure_assignments": {
+                    "KDAB": "DAB_W_APP",
+                    "KOMN": "DAB_N_APP",
+                    "KFIN": "DAB_N_APP",
+                    "KEVB": "DAB_S_APP",
+                    "KDED": "DAB_W_APP"
+                }
+            },
+            "DAW": {
+                "inbound_assignments": {
+                    "TTHOR3": "DAB_H_APP",
+                    "WALEE": "DAB_M_APP",
+                    "WORMSW": "DAB_H_APP",
+                    "V267S": "DAB_M_APP",
+                    "V267N": "DAB_L_APP",
+                    "KIZER": "DAB_W_APP",
+                    "SMYRA": "DAB_S_APP",
+                    "ASTOR": "DAB_M_APP"
+                },
+                "departure_assignments": {
+                    "KDAB": "DAB_W_APP",
+                    "KOMN": "DAB_N_APP",
+                    "KFIN": "DAB_N_APP",
+                    "KEVB": "DAB_S_APP",
+                    "KDED": "DAB_W_APP"
+                }
+            }
+        },
+        "center": "KDAB",
+        "coordination_lists": [
+            {
+                "name": ".      OMN COORD",
+                "id": "O",
+                "airports": [
+                    "KOMN"
+                ]
+            },
+            {
+                "name": ".      EVB COORD",
+                "id": "B",
+                "airports": [
+                    "KEVB"
+                ]
+            }
+        ],
+        "radar_sites": {
+            "DAB": {
+                "char": "D",
+                "position": "29.17264, -81.19219",
+                "elevation": 38,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 15,
+                "slope_angle": 0.175
+            },
+            "JAX": {
+                "char": "J",
+                "position": "30.49333, -81.69267",
+                "elevation": 40,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 15,
+                "slope_angle": 0.175
+            },
+            "MCO": {
+                "char": "O",
+                "position": "28.37483, -81.30463",
+                "elevation": 100,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 15,
+                "slope_angle": 0.175
+            },
+            "GNV": {
+                "char": "G",
+                "position": "29.41538, -82.23232",
+                "elevation": 155,
+                "primary_range": 250,
+                "secondary_range": 250,
+                "silence_angle": 15,
+                "slope_angle": 0.175
+            },
+            "NEN": {
+                "char": "W",
+                "position": "30.34593, -81.87403",
+                "elevation": 95,
+                "primary_range": 250,
+                "secondary_range": 250,
+                "silence_angle": 15,
+                "slope_angle": 0.175
+            },
+            "MLB": {
+                "char": "M",
+                "position": "28.08427, -80.79808",
+                "elevation": 22,
+                "primary_range": 250,
+                "secondary_range": 250,
+                "silence_angle": 15,
+                "slope_angle": 0.175
+            }
+        },
+        "filters": {
+            "inhibit_ca": [],
+            "arrival_drop": [],
+            "inhibit_msaw": []
+        },
+        "scratchpads": {
+            "OCEAN": "OCN",
+            "SEBAG": "SBG",
+            "STARY": "STA",
+            "CRG": "ROY",
+            "MATEO": "MAT",
+            "ASTOR": "AST",
+            "BASSS": "BAS",
+            "BARBS": "BAR",
+            "KIZER": "KZR",
+            "LAMMA": "LMA",
+            "MALET": "MLT",
+            "ILIND": "ILD",
+            "SMYRA": "SMY",
+            "GTOUT": "GTO"
+        },
+        "significant_points": {
+            "CRG": {},
+            "MALET": {},
+            "SEBAG": {},
+            "STARY": {},
+            "MATEO": {},
+            "ASTOR": {},
+            "BASSS": {},
+            "KIZER": {},
+            "LAMMA": {},
+            "ILIND": {}
+        },
+        "stars_maps": [
+            "DAB APPROACH FIXES",
+            "DAB CLASS C",
+            "DAB CLASS D",
+            "DAB EAST FLOW",
+            "DAB East Ops High",
+            "DAB East Ops Low",
+            "DAB West Ops High",
+            "DAB West Ops Low",
+            "DAB EMERGENCY",
+            "DAB ILS ARC",
+            "DAB LOW AIRWAYS",
+            "DAB MLH MAP",
+            "DAB MULTI SECTOR",
+            "DAB MVA",
+            "DAB RNAV 16",
+            "DAB RNAV 34",
+            "DAB RNAV APPROACHES",
+            "DAB RWY 25R",
+            "DAB RWY 7L",
+            "DAB WARNING AREAS",
+            "DAB WEST FLOW",
+            "DAB West Ops High",
+            "DAB West Ops Low",
+            "DED APPROACHES",
+            "DED RNAV 05",
+            "DED RNAV 12",
+            "DED RNAV 24",
+            "DED RNAV 30",
+            "EVB RNAV 02",
+            "EVB RNAV 07",
+            "EVB RNAV 07",
+            "EVB RNAV 25",
+            "EVB RNAV 29",
+            "FIN RNAV 06",
+            "FIN RNAV 11",
+            "FIN RNAV 24",
+            "FIN RNAV 29",
+            "OMN RNAV 09",
+            "OMN RNAV 17",
+            "OMN RNAV 27",
+            "RNAV",
+            "SATELLITE APPROACHES",
+            "SECTOR BOUNDARY",
+            "SGJ/COI APPROACHES",
+            "X50/7FL6 APPROACHES",
+            "WARNING AREA 497"
+        ],
+        "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
+        "controller_assignments": {
+            "DAE": {
+                "inbound_assignments": {
+                    "TTHOR3": "DAB_H_APP",
+                    "WALEE": "DAB_M_APP",
+                    "WORMSE": "DAB_H_APP",
+                    "V267S": "DAB_M_APP",
+                    "V267N": "DAB_L_APP",
+                    "KIZER": "DAB_W_APP",
+                    "SMYRA": "DAB_S_APP",
+                    "ASTOR": "DAB_M_APP"
+                },
+                "departure_assignments": {
+                    "KDAB": "DAB_W_APP",
+                    "KOMN": "DAB_N_APP",
+                    "KFIN": "DAB_N_APP",
+                    "KEVB": "DAB_S_APP",
+                    "KDED": "DAB_W_APP"
+                }
+            },
+            "DAW": {
+                "inbound_assignments": {
+                    "TTHOR3": "DAB_H_APP",
+                    "WALEE": "DAB_M_APP",
+                    "WORMSW": "DAB_H_APP",
+                    "V267S": "DAB_M_APP",
+                    "V267N": "DAB_L_APP",
+                    "KIZER": "DAB_W_APP",
+                    "SMYRA": "DAB_S_APP",
+                    "ASTOR": "DAB_M_APP"
+                },
+                "departure_assignments": {
+                    "KDAB": "DAB_W_APP",
+                    "KOMN": "DAB_N_APP",
+                    "KFIN": "DAB_N_APP",
+                    "KEVB": "DAB_S_APP",
+                    "KDED": "DAB_W_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "F11",
+                "prefix": "2"
+            },
+            {
+                "id": "JAX",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "F11",
+            "JAX",
+            "ZJX"
+        ]
+    }
+}

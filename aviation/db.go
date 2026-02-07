@@ -47,7 +47,6 @@ type StaticDatabase struct {
 	Airlines            map[string]Airline
 	MagneticGrid        MagneticGrid
 	ARTCCs              map[string]ARTCC
-	ERAMAdaptations     map[string]ERAMAdaptation
 	TRACONs             map[string]TRACON
 	MVAs                map[string][]MVA // TRACON -> MVAs
 	BravoAirspace       map[string][]AirspaceVolume
@@ -100,26 +99,6 @@ type Fix struct {
 	Id       string
 	Location math.Point2LL
 }
-
-type ERAMAdaptation struct { // add more later
-	ARTCC             string                     // not in JSON
-	CoordinationFixes map[string]AdaptationFixes `json:"coordination_fixes"`
-}
-
-const (
-	RouteBasedFix = "route"
-	ZoneBasedFix  = "zone"
-)
-
-type AdaptationFix struct {
-	Name         string // not in JSON
-	Type         string `json:"type"`
-	ToFacility   string `json:"to"`   // controller to handoff to
-	FromFacility string `json:"from"` // controller to handoff from
-	Altitude     [2]int `json:"altitude"`
-}
-
-type AdaptationFixes []AdaptationFix
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -312,7 +291,6 @@ func InitDB() {
 	wg.Go(func() { db.MagneticGrid = parseMagneticGrid() })
 	wg.Go(func() { db.ARTCCs, db.TRACONs = parseARTCCsAndTRACONs() })
 	wg.Go(func() { db.MVAs = parseMVAs() })
-	wg.Go(func() { db.ERAMAdaptations = parseAdaptations() })
 	wg.Go(func() {
 		db.BravoAirspace = parseAirspace("bravo-airspace.json.zst")
 		db.CharlieAirspace = parseAirspace("charlie-airspace.json.zst")
@@ -750,32 +728,6 @@ func parseMagneticGrid() MagneticGrid {
 	}
 
 	return mg
-}
-
-func parseAdaptations() map[string]ERAMAdaptation {
-	adaptations := make(map[string]ERAMAdaptation)
-
-	r := util.LoadResource("adaptations.json")
-	defer r.Close()
-	if err := util.UnmarshalJSON(r, &adaptations); err != nil {
-		fmt.Fprintf(os.Stderr, "adaptations.json: %v\n", err)
-		os.Exit(1)
-	}
-
-	// Wire up names in the structs
-	for artcc, adapt := range adaptations {
-		adapt.ARTCC = artcc
-
-		for fix, fixes := range adapt.CoordinationFixes {
-			for i := range fixes {
-				fixes[i].Name = fix
-			}
-		}
-
-		adaptations[artcc] = adapt
-	}
-
-	return adaptations
 }
 
 func (mg *MagneticGrid) Lookup(p math.Point2LL) (float32, error) {

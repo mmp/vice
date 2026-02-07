@@ -1,0 +1,3 @@
+TRACON D01 / Scenario group KCYS / stars_config: Control position "DEN_D_APP" in "controller_configs" not defined in "control_positions"
+TRACON D01 / Scenario group KDEN / stars_config: Control position "DEN_D_APP" in "controller_configs" not defined in "control_positions"
+TRACON D01 / Scenario group KGJT / stars_config: Control position "DEN_D_APP" in "controller_configs" not defined in "control_positions"

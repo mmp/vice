@@ -71,25 +71,25 @@ func (tc *TCPConsolidation) OwnedPositions() []ControlPosition {
 ///////////////////////////////////////////////////////////////////////////
 // ControllerConfiguration
 
-// ControllerConfiguration defines the consolidation hierarchy for a scenario.
+// ControllerConfiguration defines which facility configuration to use for a scenario.
+// The scenario JSON only contains config_id; all other fields are populated at runtime
+// from the referenced configuration in the facility config file.
 type ControllerConfiguration struct {
-	// ConfigId references a configuration in stars_config.configurations that defines
-	// the inbound and departure assignments for this scenario.
+	// ConfigId references a configuration in stars_config.configurations in the
+	// facility config file. This is the only field from JSON.
 	ConfigId string `json:"config_id"`
 
-	// DefaultConsolidation defines the consolidation tree. Each key is a parent TCP, and its value is the list
-	// of TCPs consolidated into it.  Example: {"1A": ["1B", "1C"], "1C": ["1D"]} means 1B and 1C
-	// consolidated into 1A, and 1D consolidated into 1C (and transitively into 1A).
-	DefaultConsolidation PositionConsolidation `json:"default_consolidation"`
+	// DefaultConsolidation defines the consolidation tree. If set in the
+	// scenario JSON, it overrides the facility config's default. If not set,
+	// it is populated from the referenced configuration during post-deserialization.
+	DefaultConsolidation PositionConsolidation `json:"default_consolidation,omitempty"`
 
 	// InboundAssignments maps inbound flow names to the TCP that handles them.
-	// This is populated from the referenced configuration during post-deserialization.
+	// Populated from the referenced configuration during post-deserialization.
 	InboundAssignments map[string]TCP `json:"-"`
 
-	// DepartureAssignments maps departure specifiers to the TCP that handles them.  Keys can be:
-	// airport only ("KJFK"), airport/runway ("KJFK/22R"), or airport/SID ("KJFK/SKORR5"). It is not
-	// allowed to mix different specifier types for the same airport within a configuration.
-	// This is populated from the referenced configuration during post-deserialization.
+	// DepartureAssignments maps departure specifiers to the TCP that handles them.
+	// Populated from the referenced configuration during post-deserialization.
 	DepartureAssignments map[string]TCP `json:"-"`
 }
 

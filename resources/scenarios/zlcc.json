@@ -1,303 +1,129 @@
 {
-  "artcc": "ZLC",
-  "area": "Area C",
-  "name": "ZLC Area C",
-  "airports": {
-    "KSLC": {
-      "approaches": {
-        "I34L": {
-          "cifp_id": "I34L"
-        },
-        "I34R": {
-          "cifp_id": "I34R"
-        },
-        "X35": {
-          "cifp_id": "X35"
+    "artcc": "ZLC",
+    "area": "Area C",
+    "name": "ZLC Area C",
+    "airports": {
+        "KSLC": {
+            "approaches": {
+                "I34L": {
+                    "cifp_id": "I34L"
+                },
+                "I34R": {
+                    "cifp_id": "I34R"
+                },
+                "X35": {
+                    "cifp_id": "X35"
+                }
+            }
         }
-      }
-    }
-  },
-  "inbound_flows": {
-    "QWENN6.MLF": {
-      "arrivals": [
-        {
-          "waypoints": "BLIPP/ho Q842 WINEN MLF BEVRR DTA UINTA FRNZY/a14000/s250 QWENN/a11000/s230",
-          "cruise_altitude": 35000,
-          "star": "QWENN6",
-          "route": "QWENN6",
-          "initial_controller": "ZLA 16",
-          "initial_altitude": 35000,
-          "initial_speed": 300,
-          "airlines": {
-            "KSLC": [
-              {
-                "icao": "ASA",
-                "types": ["B39M"],
-                "airport": "KLAX"
-              },
-              {
-                "icao": "DAL",
-                "types": ["B38M", "B39M", "B737", "B738"],
-                "airport": "KLAX"
-              }
-            ]
-          }
-        }
-      ]
     },
-    "QWENN6.BCE": {
-      "arrivals": [
-        {
-          "waypoints": "N037.15.00.851,W111.57.07.542/ho BCE RRICH MARNN NEEBO/a14000/s250 QWENN/a11000/s230",
-          "cruise_altitude": 35000,
-          "star": "QWENN6",
-          "route": "QWENN6",
-          "initial_controller": "ZLA 16",
-          "initial_altitude": 35000,
-          "initial_speed": 300,
-          "airlines": {
-            "KSLC": [
-              {
-                "icao": "ASA",
-                "types": ["B39M"],
-                "airport": "KLAX"
-              },
-              {
-                "icao": "DAL",
-                "types": ["B38M", "B39M", "B737", "B738"],
-                "airport": "KLAX"
-              }
-            ]
-          }
-        }
-      ]
-    }
-  },
-  "control_positions": {
-    "ZLC 04": {
-      "frequency": 135775,
-      "eram_facility": true,
-      "radio_name": "Salt Lake Center",
-      "sector_id": "04"
-    },
-    "ZLC 11": {
-      "frequency": 127825,
-      "eram_facility": true,
-      "radio_name": "Salt Lake Center",
-      "sector_id": "11"
-    },
-    "ZLC 33": {
-      "frequency": 120275,
-      "eram_facility": true,
-      "radio_name": "Salt Lake Center",
-      "sector_id": "33"
-    },
-    "ZLC 34": {
-      "frequency": 127925,
-      "eram_facility": true,
-      "radio_name": "Salt Lake Center",
-      "sector_id": "34"
-    },
-    "ZLC 40": {
-      "frequency": 128550,
-      "eram_facility": true,
-      "radio_name": "Salt Lake Center",
-      "sector_id": "40"
-    },
-    "ZLC 42": {
-      "frequency": 120725,
-      "eram_facility": true,
-      "radio_name": "Salt Lake Center",
-      "sector_id": "42"
-    },
-    "ZLC 43": {
-      "frequency": 132250,
-      "eram_facility": true,
-      "radio_name": "Salt Lake Center",
-      "sector_id": "43"
-    },
-    "ZLC 44": {
-      "frequency": 125575,
-      "eram_facility": true,
-      "radio_name": "Salt Lake Center",
-      "sector_id": "44"
-    },
-    "ZLC 45": {
-      "frequency": 134525,
-      "eram_facility": true,
-      "radio_name": "Salt Lake Center",
-      "sector_id": "45"
-    },
-    "ZLC 46": {
-      "frequency": 133600,
-      "eram_facility": true,
-      "radio_name": "Salt Lake Center",
-      "sector_id": "46"
-    },
-    "ZLC 47": {
-      "frequency": 133450,
-      "eram_facility": true,
-      "radio_name": "Salt Lake Center",
-      "sector_id": "47"
-    },
-    "S56 STOCKTON": {
-      "frequency": 128100,
-      "radio_name": "Salt Lake Approach",
-      "sector_id": "1S",
-      "facility": "S56",
-      "facility_id": "S"
-    },
-    "S56 JORDAN": {
-      "frequency": 135500,
-      "radio_name": "Salt Lake Approach",
-      "sector_id": "1J",
-      "facility": "S56",
-      "facility_id": "S"
-    },
-    "S56 GUNNISON": {
-      "frequency": 126250,
-      "radio_name": "Salt Lake Approach",
-      "sector_id": "1G",
-      "facility": "S56",
-      "facility_id": "S"
-    },
-    "S56 LAKE": {
-      "frequency": 135500,
-      "radio_name": "Salt Lake Approach",
-      "sector_id": "1L",
-      "facility": "S56",
-      "facility_id": "S"
-    },
-    "S56 HART": {
-      "frequency": 121100,
-      "radio_name": "Salt Lake Approach",
-      "sector_id": "1H",
-      "facility": "S56",
-      "facility_id": "S"
-    },
-    "S56 BEAR": {
-      "frequency": 124900,
-      "radio_name": "Salt Lake Approach",
-      "sector_id": "1B",
-      "facility": "S56",
-      "facility_id": "S"
-    },
-    "S56 ALPINE": {
-      "frequency": 118850,
-      "radio_name": "Salt Lake Approach",
-      "sector_id": "1A",
-      "facility": "S56",
-      "facility_id": "S"
-    },
-    "ZLA 16": {
-      "frequency": 124625,
-      "radio_name": "Los Angeles Center",
-      "sector_id": "L16",
-      "facility_id": "L",
-      "eram_facility": true,
-      "facility": "ZLA"
-    },
-    "ZLA 34": {
-      "frequency": 132625,
-      "radio_name": "Los Angeles Center",
-      "sector_id": "L34",
-      "facility_id": "L",
-      "eram_facility": true,
-      "facility": "ZLA"
-    },
-    "ZLA 54": {
-      "frequency": 135250,
-      "radio_name": "Los Angeles Center",
-      "sector_id": "L54",
-      "facility_id": "L",
-      "eram_facility": true,
-      "facility": "ZLA"
-    }
-  },
-  "default_scenario": "ZLC C Comb 44",
-  "scenarios": {
-    "ZLC C Comb 44": {
-      "configuration": {
-        "config_id": "STD",
-        "default_consolidation": {
-          "ZLC 44": []
-        }
-      },
-      "controllers": [
-        "ZLC 04",
-        "ZLC 40",
-        "ZLC 42",
-        "ZLC 43",
-        "ZLC 44",
-        "S56 STOCKTON",
-        "S56 JORDAN",
-        "S56 GUNNISON",
-        "S56 LAKE",
-        "S56 HART",
-        "S56 BEAR",
-        "S56 ALPINE",
-        "ZLA 16",
-        "ZLA 34",
-        "ZLA 54"
-      ],
-      "default_maps": ["*SEC"],
-      "default_map_group": "MAIN",
-      "arrival_runways": [
-        { "airport": "KSLC", "runway": "34L" },
-        { "airport": "KSLC", "runway": "35" }
-      ],
-      "inbound_rates": {
+    "inbound_flows": {
         "QWENN6.MLF": {
-          "KSLC": 20
+            "arrivals": [
+                {
+                    "waypoints": "BLIPP/ho Q842 WINEN MLF BEVRR DTA UINTA FRNZY/a14000/s250 QWENN/a11000/s230",
+                    "cruise_altitude": 35000,
+                    "star": "QWENN6",
+                    "route": "QWENN6",
+                    "initial_controller": "ZLA 16 Sector",
+                    "initial_altitude": 35000,
+                    "initial_speed": 300,
+                    "airlines": {
+                        "KSLC": [
+                            {
+                                "icao": "ASA",
+                                "types": [
+                                    "B39M"
+                                ],
+                                "airport": "KLAX"
+                            },
+                            {
+                                "icao": "DAL",
+                                "types": [
+                                    "B38M",
+                                    "B39M",
+                                    "B737",
+                                    "B738"
+                                ],
+                                "airport": "KLAX"
+                            }
+                        ]
+                    },
+                    "initial_facility": "ZLA"
+                }
+            ]
         },
         "QWENN6.BCE": {
-          "KSLC": 20
+            "arrivals": [
+                {
+                    "waypoints": "N037.15.00.851,W111.57.07.542/ho BCE RRICH MARNN NEEBO/a14000/s250 QWENN/a11000/s230",
+                    "cruise_altitude": 35000,
+                    "star": "QWENN6",
+                    "route": "QWENN6",
+                    "initial_controller": "ZLA 16 Sector",
+                    "initial_altitude": 35000,
+                    "initial_speed": 300,
+                    "airlines": {
+                        "KSLC": [
+                            {
+                                "icao": "ASA",
+                                "types": [
+                                    "B39M"
+                                ],
+                                "airport": "KLAX"
+                            },
+                            {
+                                "icao": "DAL",
+                                "types": [
+                                    "B38M",
+                                    "B39M",
+                                    "B737",
+                                    "B738"
+                                ],
+                                "airport": "KLAX"
+                            }
+                        ]
+                    },
+                    "initial_facility": "ZLA"
+                }
+            ]
         }
-      },
-      "wind": { "direction": "210-230", "speed": "2+" }
+    },
+    "default_scenario": "ZLC C Comb 44",
+    "scenarios": {
+        "ZLC C Comb 44": {
+            "configuration": {
+                "config_id": "STD",
+                "default_consolidation": {
+                    "ZLC 44": []
+                }
+            },
+            "default_maps": [
+                "*SEC"
+            ],
+            "default_map_group": "MAIN",
+            "arrival_runways": [
+                {
+                    "airport": "KSLC",
+                    "runway": "34L"
+                },
+                {
+                    "airport": "KSLC",
+                    "runway": "35"
+                }
+            ],
+            "inbound_rates": {
+                "QWENN6.MLF": {
+                    "KSLC": 20
+                },
+                "QWENN6.BCE": {
+                    "KSLC": 20
+                }
+            },
+            "wind": {
+                "direction": "210-230",
+                "speed": "2+"
+            }
+        }
     }
-  },
-  "stars_config": {
-    "configurations": {
-      "STD": {
-        "inbound_assignments": {
-          "QWENN6.MLF": "ZLC 44",
-          "QWENN6.BCE": "ZLC 44"
-        }
-      }
-    },
-    "center": "N038.23.59.181,W113.02.36.719",
-    "range": 80,
-    "stars_maps": [""],
-    "radar_sites": {
-      "B": {
-        "char": "B",
-        "position": "BCE",
-        "elevation": 7000,
-        "primary_range": 80,
-        "secondary_range": 120,
-        "silence_angle": 30,
-        "slope_angle": 0.175
-      },
-      "M": {
-        "char": "M",
-        "position": "MLF",
-        "elevation": 7000,
-        "primary_range": 80,
-        "secondary_range": 120,
-        "silence_angle": 30,
-        "slope_angle": 0.175
-      },
-      "T": {
-        "char": "T",
-        "position": "KTMT",
-        "elevation": 7000,
-        "primary_range": 80,
-        "secondary_range": 120,
-        "silence_angle": 30,
-        "slope_angle": 0.175
-      }
-    },
-    "video_map_file": "videomaps/ZLC-eram-videomaps.gob.zst"
-  }
 }

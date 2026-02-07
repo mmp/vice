@@ -1,0 +1,247 @@
+{
+    "control_positions": {
+        "MDT_W_APP": {
+            "frequency": 124100,
+            "radio_name": "Harrisburg Approach",
+            "sector_id": "1H"
+        },
+        "MDT_TWR": {
+            "frequency": 124800,
+            "radio_name": "Harrisburg Tower",
+            "sector_id": "HL"
+        },
+        "CXY_TWR": {
+            "frequency": 119500,
+            "radio_name": "Capital City Tower",
+            "sector_id": "HH"
+        },
+        "LNS_TWR": {
+            "frequency": 120900,
+            "radio_name": "Lancaster Tower",
+            "sector_id": "HM"
+        },
+        "MDT_E_APP": {
+            "frequency": 126450,
+            "radio_name": "Harrisburg Approach",
+            "sector_id": "1L"
+        },
+        "MDT_N_APP": {
+            "frequency": 118250,
+            "radio_name": "Harrisburg Approach",
+            "sector_id": "1R"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "East": "MDT_E_APP",
+                    "North/NE": "MDT_N_APP",
+                    "West/South": "MDT_W_APP"
+                },
+                "departure_assignments": {
+                    "KCXY": "MDT_W_APP",
+                    "KLNS": "MDT_E_APP",
+                    "KMDT": "MDT_W_APP"
+                }
+            }
+        },
+        "center": "KMDT",
+        "range": 55,
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "MDTNOCA",
+                    "description": "MDT CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1300,
+                    "center": "N040.11.37.357,W076.45.01.483",
+                    "radius": 4
+                },
+                {
+                    "id": "CXYNOCA",
+                    "description": "CXY CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1300,
+                    "center": "N040.12.51.253,W076.50.48.403",
+                    "radius": 4
+                }
+            ]
+        },
+        "radar_sites": {
+            "MDT": {
+                "char": "M",
+                "position": "40.185833,-76.795",
+                "elevation": 230,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.175
+            },
+            "RDG": {
+                "char": "R",
+                "position": "40.374722,-75.970278",
+                "elevation": 230,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.175
+            }
+        },
+        "coordination_lists": [
+            {
+                "name": ".       CXY",
+                "id": "A",
+                "airports": [
+                    "KCXY"
+                ]
+            },
+            {
+                "name": ".       LNS",
+                "id": "B",
+                "airports": [
+                    "KLNS"
+                ]
+            }
+        ],
+        "scratchpads": {
+            "GAAPP": "GAA",
+            "SEG": "SEG",
+            "ETX": "ETX",
+            "LVZ": "LVZ",
+            "FJC": "FJC",
+            "LRP": "LRP",
+            "PTW": "PTW",
+            "ARD": "ARD",
+            "DQO": "DQO",
+            "HAR": "HAR",
+            "BRNAN": "BRN",
+            "JST": "JST",
+            "VINSE": "VIN",
+            "THS": "THS",
+            "SCAPE": "SCA",
+            "GRAMO": "GRA",
+            "MRB": "MRB",
+            "VINNY": "VNY",
+            "EMI": "EMI",
+            "MCMAN": "MCM",
+            "PSB": "PSB",
+            "WILSS": "WLS",
+            "KIACK": "KCK",
+            "HWANG": "HWG"
+        },
+        "significant_points": {
+            "KIACK": {
+                "short_name": "KCK"
+            },
+            "SEG": {},
+            "GAAPP": {
+                "short_name": "GAA"
+            },
+            "LVZ": {},
+            "ETX": {},
+            "FJC": {},
+            "LRP": {},
+            "PTW": {},
+            "ARD": {},
+            "DQO": {},
+            "HAR": {},
+            "BRNAN": {
+                "short_name": "BRN"
+            },
+            "JST": {},
+            "VINSE": {
+                "short_name": "VIN"
+            },
+            "THS": {},
+            "SCAPE": {
+                "short_name": "SCA"
+            },
+            "GRAMO": {
+                "short_name": "GRA"
+            },
+            "MRB": {},
+            "VINNY": {
+                "short_name": "VNY"
+            },
+            "EMI": {},
+            "MCMAN": {
+                "short_name": "MCM"
+            },
+            "PSB": {},
+            "WILSS": {
+                "short_name": "WLS"
+            },
+            "HWANG": {
+                "short_name": "HWG"
+            },
+            "DELRO": {
+                "short_name": "DLR"
+            },
+            "KATVE": {
+                "short_name": "KTV"
+            },
+            "COFAX": {}
+        },
+        "stars_maps": [
+            "MDT-002 (GPS EAST)",
+            "MDT-014 (CLASS C)",
+            "MDT-004 (MVA)",
+            "MDT-009 (GPS WEST)",
+            "MDT-012 (EOVM)",
+            "MDT-005 (EAST FLOW)",
+            "MDT-006 (WEST FLOW)"
+        ],
+        "video_map_file": "videomaps/ZNY-videomaps.gob.zst",
+        "controller_assignments": {
+            "STD": {
+                "inbound_assignments": {
+                    "East": "MDT_E_APP",
+                    "North/NE": "MDT_N_APP",
+                    "West/South": "MDT_W_APP"
+                },
+                "departure_assignments": {
+                    "KCXY": "MDT_W_APP",
+                    "KLNS": "MDT_E_APP",
+                    "KMDT": "MDT_W_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "PCT",
+                "prefix": "6"
+            },
+            {
+                "id": "PHL",
+                "prefix": "4"
+            },
+            {
+                "id": "ABE",
+                "prefix": "2"
+            },
+            {
+                "id": "AVP",
+                "prefix": "1"
+            },
+            {
+                "id": "JST",
+                "prefix": "7"
+            }
+        ],
+        "neighboring_facilities": [
+            "ABE",
+            "AVP",
+            "JST",
+            "PCT",
+            "PHL",
+            "ZDC",
+            "ZNY",
+            "ZOB"
+        ]
+    }
+}

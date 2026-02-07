@@ -1,0 +1,1526 @@
+{
+    "control_positions": {
+        "BUR_M_APP": {
+            "frequency": 128750,
+            "radio_name": "SoCal Approach",
+            "sector_id": "1M"
+        },
+        "BUR_F_APP": {
+            "frequency": 120400,
+            "radio_name": "SoCal Approach",
+            "sector_id": "1F"
+        },
+        "BUR_J_APP": {
+            "frequency": 119850,
+            "radio_name": "SoCal Approach",
+            "sector_id": "1J"
+        },
+        "BUR_V_APP": {
+            "frequency": 124600,
+            "radio_name": "SoCal Approach",
+            "sector_id": "1V"
+        },
+        "BUR_W_APP": {
+            "frequency": 134200,
+            "radio_name": "SoCal Approach",
+            "sector_id": "1W"
+        },
+        "ONT_P_APP": {
+            "frequency": 125500,
+            "radio_name": "SoCal Approach",
+            "sector_id": "3P"
+        },
+        "ONT_N_APP": {
+            "frequency": 127000,
+            "radio_name": "SoCal Approach",
+            "sector_id": "3N"
+        },
+        "LAX_D_APP": {
+            "frequency": 124900,
+            "radio_name": "SoCal Approach",
+            "sector_id": "2D"
+        },
+        "LAX_Z_APP": {
+            "frequency": 124500,
+            "radio_name": "SoCal Approach",
+            "sector_id": "2Z"
+        },
+        "LAX_U_APP": {
+            "frequency": 128500,
+            "radio_name": "SoCal Approach",
+            "sector_id": "2U"
+        },
+        "LAX_N_DEP": {
+            "frequency": 125200,
+            "radio_name": "SoCal Departure",
+            "sector_id": "6N"
+        },
+        "LAX_S_DEP": {
+            "frequency": 124300,
+            "radio_name": "SoCal Departure",
+            "sector_id": "6S"
+        },
+        "BUR_TWR": {
+            "frequency": 118700,
+            "radio_name": "Burbank Tower",
+            "sector_id": "1T"
+        },
+        "VNY_TWR": {
+            "frequency": 118300,
+            "radio_name": "Van Nuys Tower",
+            "sector_id": "1Y"
+        },
+        "WHP_TWR": {
+            "frequency": 135000,
+            "radio_name": "Whiteman Tower",
+            "sector_id": "1B"
+        },
+        "LAX_K_DEP": {
+            "frequency": 127400,
+            "radio_name": "SoCal Departure",
+            "sector_id": "6K"
+        },
+        "LAX_L_DEP": {
+            "frequency": 134900,
+            "radio_name": "SoCal Departure",
+            "sector_id": "6L"
+        },
+        "LAX_X_DEP": {
+            "frequency": 134350,
+            "radio_name": "SoCal Departure",
+            "sector_id": "6X"
+        },
+        "LAX_F_APP": {
+            "frequency": 124050,
+            "radio_name": "SoCal Approach",
+            "sector_id": "2F"
+        },
+        "LAX_N_TWR": {
+            "frequency": 133900,
+            "radio_name": "LA Tower",
+            "sector_id": "2T"
+        },
+        "SNA_Y_APP": {
+            "frequency": 128100,
+            "radio_name": "SoCal Approach",
+            "sector_id": "4Y"
+        },
+        "SNA_T_APP": {
+            "frequency": 121300,
+            "radio_name": "SoCal Approach",
+            "sector_id": "4T"
+        },
+        "SNA_B_APP": {
+            "frequency": 125350,
+            "radio_name": "Socal Approach",
+            "sector_id": "4B"
+        },
+        "SNA_R_APP": {
+            "frequency": 127200,
+            "radio_name": "Socal Approach",
+            "sector_id": "4R"
+        },
+        "HHR_TWR": {
+            "frequency": 121100,
+            "radio_name": "Hawthorne Tower",
+            "sector_id": "3T"
+        },
+        "ONT_TWR": {
+            "frequency": 120600,
+            "radio_name": "Ontario Tower",
+            "sector_id": "3O"
+        },
+        "SBD_TWR": {
+            "frequency": 119450,
+            "radio_name": "San Bernadino Tower",
+            "scope_char": "T",
+            "sector_id": "3T1"
+        },
+        "PSP_TWR": {
+            "frequency": 119700,
+            "radio_name": "Palm Springs Tower",
+            "sector_id": "3Z"
+        },
+        "SNA_TWR": {
+            "frequency": 126800,
+            "radio_name": "John Wayne Tower",
+            "scope_char": "W",
+            "sector_id": "4TJ"
+        },
+        "ONT_V_APP": {
+            "frequency": 134000,
+            "radio_name": "Socal Approach",
+            "sector_id": "3V"
+        },
+        "ONT_I_APP": {
+            "frequency": 135400,
+            "radio_name": "Socal Approach",
+            "sector_id": "3I"
+        },
+        "PSP_S_APP": {
+            "frequency": 126700,
+            "radio_name": "Socal Approach",
+            "sector_id": "3S"
+        },
+        "PSP_D_APP": {
+            "frequency": 135275,
+            "radio_name": "Socal Approach",
+            "sector_id": "3D"
+        },
+        "SNA_A_APP": {
+            "frequency": 133850,
+            "radio_name": "Socal Approach",
+            "sector_id": "4A"
+        },
+        "SNA_S_APP": {
+            "frequency": 124100,
+            "radio_name": "Socal Approach",
+            "sector_id": "4S"
+        },
+        "SAN_D_APP": {
+            "frequency": 127300,
+            "radio_name": "Socal Approach",
+            "sector_id": "5D"
+        },
+        "BUR_G_APP": {
+            "frequency": 135050,
+            "radio_name": "SoCal Approach",
+            "sector_id": "1X"
+        },
+        "SAN_W_APP": {
+            "frequency": 119600,
+            "radio_name": "SoCal Approach",
+            "sector_id": "5W"
+        },
+        "SAN_Z_APP": {
+            "frequency": 125150,
+            "radio_name": "SoCal Approach",
+            "sector_id": "5Z"
+        },
+        "SAN_E_APP": {
+            "frequency": 124350,
+            "radio_name": "SoCal Approach",
+            "sector_id": "5E"
+        },
+        "SAN_N_APP": {
+            "frequency": 125300,
+            "radio_name": "SoCal Approach",
+            "sector_id": "5N"
+        },
+        "SAN_M_APP": {
+            "frequency": 132200,
+            "radio_name": "SoCal Approach",
+            "sector_id": "5M"
+        },
+        "SAN_TWR": {
+            "frequency": 118300,
+            "radio_name": "Lindbergh Tower",
+            "sector_id": "5S"
+        },
+        "MYF_TWR": {
+            "frequency": 125700,
+            "radio_name": "Montgomery Tower",
+            "sector_id": "5Y"
+        },
+        "CRQ_TWR": {
+            "frequency": 118400,
+            "radio_name": "Palomar Tower",
+            "sector_id": "5U"
+        },
+        "SCT_APP": {
+            "frequency": 128050,
+            "radio_name": "SoCal Approach",
+            "sector_id": "6G"
+        },
+        "SCT_F_APP": {
+            "frequency": 120400,
+            "radio_name": "SoCal Approach",
+            "sector_id": "6F"
+        },
+        "LGB_TWR": {
+            "frequency": 119400,
+            "radio_name": "Long Beach Tower",
+            "sector_id": "4V"
+        },
+        "LAX_TWR": {
+            "frequency": 120950,
+            "radio_name": "Los Angeles Tower",
+            "sector_id": "2V"
+        },
+        "TOA_TWR": {
+            "frequency": 133075,
+            "radio_name": "Torrance Tower",
+            "sector_id": "4M"
+        },
+        "FUL_TWR": {
+            "frequency": 119100,
+            "radio_name": "Fullerton Tower",
+            "sector_id": "4F"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "01X": {
+                "inbound_assignments": {
+                    "EDWP4": "BUR_F_APP",
+                    "FERN7": "BUR_M_APP",
+                    "JANNY5/GUERA2": "BUR_F_APP",
+                    "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+                    "SBAP2": "BUR_W_APP",
+                    "THRNE4": "BUR_J_APP",
+                    "WEESL1": "BUR_F_APP"
+                },
+                "departure_assignments": {
+                    "KBUR": "BUR_V_APP",
+                    "KSMO": "BUR_X_APP",
+                    "KVNY": "BUR_M_APP",
+                    "KVNY/CANOG3": "BUR_W_APP",
+                    "KVNY/HARYS5": "BUR_V_APP",
+                    "KVNY/RSCO4": "BUR_V_APP",
+                    "KVNY/WLKKR5": "BUR_W_APP",
+                    "KWHP": "BUR_F_APP"
+                }
+            },
+            "BUR": {
+                "inbound_assignments": {
+                    "EDWP4": "BUR_F_APP",
+                    "FERN7": "BUR_M_APP",
+                    "JANNY5/GUERA2": "BUR_F_APP",
+                    "LADYJ4": "BUR_M_APP",
+                    "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+                    "SBAP2": "BUR_W_APP",
+                    "THRNE4": "BUR_X_APP",
+                    "WEESL1": "BUR_F_APP"
+                },
+                "departure_assignments": {
+                    "KBUR": "BUR_V_APP",
+                    "KVNY": "BUR_M_APP",
+                    "KVNY/CANOG3": "BUR_W_APP",
+                    "KVNY/HARYS5": "BUR_V_APP",
+                    "KVNY/RSCO4": "BUR_V_APP",
+                    "KVNY/WLKKR5": "BUR_W_APP",
+                    "KWHP": "BUR_F_APP"
+                }
+            },
+            "23X": {
+                "inbound_assignments": {
+                    "EDWP4": "BUR_F_APP",
+                    "FERN7": "BUR_M_APP",
+                    "JANNY5/GUERA2": "BUR_F_APP",
+                    "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+                    "SBAP2": "BUR_W_APP",
+                    "THRNE4": "BUR_J_APP",
+                    "WEESL1": "BUR_F_APP"
+                },
+                "departure_assignments": {
+                    "KBUR": "BUR_F_APP",
+                    "KSMO": "BUR_X_APP",
+                    "KVNY": "BUR_F_APP",
+                    "KWHP": "BUR_F_APP"
+                }
+            },
+            "BU1": {
+                "inbound_assignments": {
+                    "EDWP4": "BUR_F_APP",
+                    "FERN7": "BUR_M_APP",
+                    "JANNY5/GUERA2": "BUR_F_APP",
+                    "LADYJ4": "BUR_M_APP",
+                    "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+                    "SBAP2": "BUR_W_APP",
+                    "THRNE4": "BUR_X_APP",
+                    "WEESL1": "BUR_F_APP"
+                },
+                "departure_assignments": {
+                    "KBUR": "BUR_F_APP",
+                    "KVNY": "BUR_F_APP",
+                    "KWHP": "BUR_F_APP"
+                }
+            },
+            "DEL": {
+                "inbound_assignments": {
+                    "KARLB3/GOATZ2.E": "LAX_K_DEP",
+                    "LEGOZ4": "LAX_K_DEP",
+                    "OHSEA3/PCIFC3.N": "LAX_K_DEP",
+                    "OLAAA2.E": "LAX_K_DEP",
+                    "RUKKI1/BAUBB3.N": "LAX_K_DEP",
+                    "TOPMM5": "LAX_X_DEP",
+                    "ZOOMM3/FRITR3.N": "LAX_X_DEP"
+                },
+                "departure_assignments": {
+                    "KHHR": "LAX_S_DEP",
+                    "KLAX": "LAX_S_DEP"
+                }
+            },
+            "DE1": {
+                "inbound_assignments": {
+                    "KARLB3/GOATZ2.E": "LAX_K_DEP",
+                    "LEGOZ4": "LAX_K_DEP",
+                    "OHSEA3/PCIFC3.12": "LAX_K_DEP",
+                    "OLAAA2.E": "LAX_K_DEP",
+                    "RUKKI1/BAUBB3.12": "LAX_K_DEP",
+                    "TOPMM5": "LAX_X_DEP",
+                    "ZOOMM3/FRITR3.N": "LAX_X_DEP"
+                },
+                "departure_assignments": {
+                    "KHHR": "LAX_S_DEP",
+                    "KLAX": "LAX_S_DEP"
+                }
+            },
+            "DE2": {
+                "inbound_assignments": {
+                    "KARLB3/GOATZ2": "LAX_K_DEP",
+                    "LEGOZ4": "LAX_K_DEP",
+                    "OHSEA3/PCIFC3.N": "LAX_K_DEP",
+                    "RUKKI1/BAUBB3.N": "LAX_K_DEP",
+                    "TOPMM5": "LAX_L_DEP",
+                    "ZOOMM3/FRITR3.N": "LAX_X_DEP"
+                },
+                "departure_assignments": {
+                    "KHHR": "LAX_L_DEP",
+                    "KLAX/DOTSS2": "LAX_S_DEP",
+                    "KLAX/GMN7": "LAX_N_DEP",
+                    "KLAX/LADYJ4": "LAX_N_DEP",
+                    "KLAX/LAXX1": "LAX_S_DEP",
+                    "KLAX/MOOOS2": "LAX_N_DEP",
+                    "KLAX/MUELR4": "LAX_N_DEP",
+                    "KLAX/ORCKA5": "LAX_S_DEP",
+                    "KLAX/OSHNN1": "LAX_S_DEP",
+                    "KLAX/PNDAH2": "LAX_S_DEP",
+                    "KLAX/SUMMR2": "LAX_N_DEP",
+                    "KSMO": "LAX_N_DEP"
+                }
+            },
+            "DE3": {
+                "inbound_assignments": {
+                    "KARLB3/GOATZ2": "LAX_K_DEP",
+                    "LEGOZ4": "LAX_K_DEP",
+                    "OHSEA3/PCIFC3": "LAX_K_DEP",
+                    "RUKKI1/BAUBB3": "LAX_K_DEP",
+                    "ZOOMM3/FRITR3": "LAX_X_DEP"
+                },
+                "departure_assignments": {
+                    "KHHR": "LAX_L_DEP",
+                    "KLAX": "LAX_S_DEP",
+                    "KLGB": "LAX_S_DEP",
+                    "KSMO": "LAX_N_DEP"
+                }
+            },
+            "DE4": {
+                "departure_assignments": {
+                    "KLAX": "LAX_S_DEP"
+                }
+            },
+            "EMP": {
+                "inbound_assignments": {
+                    "JCKIE2.E": "ONT_N_APP",
+                    "KARLB3": "ONT_I_APP",
+                    "RDBUL1": "PSP_S_APP",
+                    "ROOBY3.DRTHI": "ONT_V_APP",
+                    "ROOBY3.LRSON": "ONT_V_APP",
+                    "SBD OCEANIC": "ONT_I_APP",
+                    "SCBBY2.DEWWW.E": "ONT_V_APP",
+                    "SCBBY2/THRNE4.SNSTT.E": "ONT_V_APP",
+                    "SIZLR4": "ONT_V_APP",
+                    "THRNE4": "ONT_V_APP",
+                    "ZIGGY8": "ONT_N_APP"
+                },
+                "departure_assignments": {
+                    "KONT": "ONT_I_APP",
+                    "KPSP": "PSP_D_APP",
+                    "KSBD": "ONT_N_APP"
+                }
+            },
+            "EM1": {
+                "inbound_assignments": {
+                    "DSNEE6.DRTHI": "ONT_V_APP",
+                    "DSNEE6.LRSON": "ONT_V_APP",
+                    "JCKIE2.E": "ONT_N_APP",
+                    "KARLB3": "ONT_I_APP",
+                    "RDBUL1": "PSP_S_APP",
+                    "SBD OCEANIC": "ONT_I_APP",
+                    "SCBBY2.DEWWW.E": "ONT_V_APP",
+                    "SCBBY2/THRNE4.SNSTT.E": "ONT_V_APP",
+                    "SIZLR4": "ONT_V_APP",
+                    "THRNE4": "ONT_V_APP",
+                    "ZIGGY8": "ONT_N_APP"
+                },
+                "departure_assignments": {
+                    "KONT": "ONT_I_APP",
+                    "KPSP": "PSP_D_APP",
+                    "KSBD": "ONT_N_APP"
+                }
+            },
+            "EM2": {
+                "inbound_assignments": {
+                    "JCKIE2": "ONT_N_APP",
+                    "KARLB3": "ONT_I_APP",
+                    "SBD OCEANIC": "ONT_I_APP",
+                    "SCBBY2.DEWWW": "ONT_V_APP",
+                    "SCBBY2/THRNE4.SNSTT": "ONT_V_APP",
+                    "ZIGGY8": "ONT_N_APP"
+                },
+                "departure_assignments": {
+                    "KONT": "ONT_I_APP",
+                    "KSBD": "ONT_N_APP"
+                }
+            },
+            "EM3": {
+                "inbound_assignments": {
+                    "JCKIE2": "ONT_N_APP",
+                    "KARLB3": "ONT_I_APP",
+                    "RDBUL1": "PSP_S_APP",
+                    "ROOBY3.DRTHI": "ONT_V_APP",
+                    "ROOBY3.LRSON": "ONT_V_APP",
+                    "SBD OCEANIC": "ONT_I_APP",
+                    "SCBBY2.DEWWW": "ONT_V_APP",
+                    "SCBBY2/THRNE4.SNSTT": "ONT_V_APP",
+                    "SIZLR4": "ONT_V_APP",
+                    "THRNE4": "ONT_V_APP",
+                    "ZIGGY8": "ONT_N_APP"
+                },
+                "departure_assignments": {
+                    "KONT": "ONT_P_APP",
+                    "KPSP": "PSP_D_APP",
+                    "KSBD": "ONT_N_APP"
+                }
+            },
+            "EM4": {
+                "inbound_assignments": {
+                    "DSNEE6.DRTHI": "ONT_V_APP",
+                    "DSNEE6.LRSON": "ONT_V_APP",
+                    "JCKIE2": "ONT_N_APP",
+                    "KARLB3": "ONT_I_APP",
+                    "RDBUL1": "PSP_S_APP",
+                    "SBD OCEANIC": "ONT_I_APP",
+                    "SCBBY2.DEWWW": "ONT_V_APP",
+                    "SCBBY2/THRNE4.SNSTT": "ONT_V_APP",
+                    "SIZLR4": "ONT_V_APP",
+                    "THRNE4": "ONT_V_APP",
+                    "ZIGGY8": "ONT_N_APP"
+                },
+                "departure_assignments": {
+                    "KONT": "ONT_I_APP",
+                    "KPSP": "PSP_D_APP",
+                    "KSBD": "ONT_N_APP"
+                }
+            },
+            "13R": {
+                "inbound_assignments": {
+                    "RDBUL1": "PSP_S_APP",
+                    "SIZLR4.SPRINGS": "PSP_S_APP"
+                },
+                "departure_assignments": {
+                    "KPSP": "PSP_D_APP"
+                }
+            },
+            "92X": {
+                "inbound_assignments": {
+                    "EAST SAT ARR": "SAN_D_APP",
+                    "LEGOZ4": "SAN_D_APP",
+                    "NORTH CRQ ARR": "SAN_D_APP",
+                    "PLYYA2": "SAN_W_APP",
+                    "TOPGN2.IPL": "SAN_E_APP",
+                    "TOPGN2.MOMAR": "SAN_E_APP",
+                    "W291 NZY ARR": "SAN_Z_APP"
+                },
+                "departure_assignments": {
+                    "KNZY": "SAN_Z_APP",
+                    "KSAN": "SAN_Z_APP"
+                }
+            },
+            "SAN": {
+                "inbound_assignments": {
+                    "EAST SAT ARR": "SAN_D_APP",
+                    "LEGOZ4": "SAN_D_APP",
+                    "NORTH CRQ ARR": "SAN_D_APP",
+                    "PLYYA2": "SAN_W_APP",
+                    "TOPGN2.IPL": "SAN_E_APP",
+                    "TOPGN2.MOMAR": "SAN_E_APP",
+                    "W291 NZY ARR": "SAN_Z_APP"
+                },
+                "departure_assignments": {
+                    "KNZY": "SAN_Z_APP",
+                    "KSAN": "SAN_E_APP"
+                }
+            },
+            "SA1": {
+                "inbound_assignments": {
+                    "COMIX2": "SAN_N_APP",
+                    "EAST SAT ARR": "SAN_D_APP",
+                    "LAXX1/V23 NORTH ARR(W)": "SAN_N_APP",
+                    "LEGOZ4": "SAN_D_APP",
+                    "LUCKI1.HEELX": "SAN_E_APP",
+                    "LUCKI1.MOMAR": "SAN_E_APP",
+                    "NORTH CRQ ARR": "SAN_D_APP",
+                    "SOUTHEAST MYF ARR": "SAN_E_APP",
+                    "W291 NZY ARR": "SAN_Z_APP"
+                },
+                "departure_assignments": {
+                    "KCRQ": "SAN_D_APP",
+                    "KMYF": "SAN_W_APP",
+                    "KNZY": "SAN_Z_APP",
+                    "KSAN": "SAN_W_APP"
+                }
+            },
+            "81X": {
+                "inbound_assignments": {
+                    "ANJLL4": "LAX_F_APP",
+                    "BOGET2": "BUR_V_APP",
+                    "CHASR2": "SAN_E_APP",
+                    "COMIX2": "SAN_N_APP",
+                    "DSNEE6.DRTHI": "ONT_N_APP",
+                    "DSNEE6.LRSON": "ONT_N_APP",
+                    "EAST SAN SAT ARR": "SAN_D_APP",
+                    "EDWP4": "BUR_M_APP",
+                    "EMMLN1": "ONT_N_APP",
+                    "FERN7": "BUR_M_APP",
+                    "HLYWD1": "LAX_F_APP",
+                    "IRNMN2": "LAX_Z_APP",
+                    "JANNY5/GUERA2": "BUR_M_APP",
+                    "JCKIE2": "ONT_N_APP",
+                    "KARLB3/GOATZ2": "LAX_X_DEP",
+                    "LEGOZ3": "LAX_X_DEP",
+                    "LUCKI1.HEELX": "SAN_E_APP",
+                    "LUCKI1.MOMAR": "SAN_E_APP",
+                    "OHSEA3/PCIFC3": "LAX_X_DEP",
+                    "OLAAA2": "SNA_Y_APP",
+                    "RDBUL1": "PSP_S_APP",
+                    "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+                    "RUKKI1/BAUBB3": "LAX_X_DEP",
+                    "RYDRR2": "LAX_Z_APP",
+                    "SBAP2": "BUR_W_APP",
+                    "SCBBY2.DEWWW": "ONT_N_APP",
+                    "SETER5": "ONT_N_APP",
+                    "SIZLR4": "ONT_N_APP",
+                    "THRNE4": "ONT_N_APP",
+                    "W291 NZY ARR": "SAN_W_APP",
+                    "WEESL1": "BUR_M_APP",
+                    "ZIGGY8.HEC": "ONT_N_APP",
+                    "ZIGGY8.LANDO": "ONT_N_APP"
+                },
+                "departure_assignments": {
+                    "KBUR": "BUR_V_APP",
+                    "KCRQ": "SAN_D_APP",
+                    "KLAX": "LAX_S_DEP",
+                    "KLGB": "SNA_Y_APP",
+                    "KMYF": "SAN_W_APP",
+                    "KNZY": "SAN_W_APP",
+                    "KONT": "ONT_P_APP",
+                    "KPSP": "PSP_S_APP",
+                    "KRNM": "SAN_D_APP",
+                    "KSAN": "SAN_W_APP",
+                    "KSBD": "ONT_N_APP",
+                    "KSDM": "SAN_W_APP",
+                    "KSEE": "SAN_E_APP",
+                    "KSMO": "LAX_N_DEP",
+                    "KSNA": "SNA_Y_APP",
+                    "KVNY": "BUR_M_APP",
+                    "KWHP": "BUR_M_APP"
+                }
+            },
+            "SCT": {
+                "inbound_assignments": {
+                    "CHASR2": "SAN_E_APP",
+                    "JANNY5/GUERA2": "BUR_M_APP",
+                    "JCKIE2": "ONT_N_APP",
+                    "KARLB3/GOATZ2": "LAX_X_DEP",
+                    "MDNYT2.ANJLL": "LAX_F_APP",
+                    "MDNYT2.HLYWD": "LAX_F_APP",
+                    "MDNYT2.SNSTT": "LAX_F_APP",
+                    "SCBBY2.DEWWW": "ONT_N_APP",
+                    "SETER5": "ONT_N_APP",
+                    "W291 NZY ARR": "SAN_E_APP",
+                    "ZIGGY8.HEC": "ONT_N_APP",
+                    "ZIGGY8.LANDO": "ONT_N_APP",
+                    "ZUUMA4": "LAX_U_APP"
+                },
+                "departure_assignments": {
+                    "KBUR": "BUR_M_APP",
+                    "KCRQ": "SAN_E_APP",
+                    "KLAX": "LAX_S_DEP",
+                    "KMYF": "SAN_E_APP",
+                    "KNZY": "SAN_E_APP",
+                    "KONT": "ONT_P_APP",
+                    "KSAN": "SAN_E_APP",
+                    "KSBD": "ONT_N_APP",
+                    "KSDM": "SAN_E_APP",
+                    "KSEE": "SAN_E_APP",
+                    "KSMO": "BUR_M_APP",
+                    "KVNY": "BUR_M_APP"
+                }
+            },
+            "LAX": {
+                "inbound_assignments": {
+                    "BIGBR3_FINAL": "LAX_D_APP",
+                    "BRUEN2_FINAL": "LAX_D_APP",
+                    "ZUUMA4_FINAL": "LAX_U_APP"
+                }
+            },
+            "LA1": {
+                "inbound_assignments": {
+                    "BIGBR3": "LAX_F_APP",
+                    "BRUEN2": "LAX_F_APP",
+                    "EMMLN1": "LAX_F_APP",
+                    "ZUUMA4": "LAX_Z_APP"
+                }
+            },
+            "LA2": {
+                "inbound_assignments": {
+                    "MDNYT2_FINAL": "LAX_U_APP",
+                    "ZUUMA4_FINAL": "LAX_U_APP"
+                }
+            },
+            "LA3": {
+                "inbound_assignments": {
+                    "EMMLN1": "LAX_F_APP",
+                    "MDNYT2.ANJLL": "LAX_F_APP",
+                    "MDNYT2.HLYWD": "LAX_F_APP",
+                    "MDNYT2.SNSTT": "LAX_F_APP",
+                    "ZUUMA4": "LAX_U_APP"
+                }
+            },
+            "LA4": {
+                "inbound_assignments": {
+                    "ANJLL4/HLYWD1.FINAL": "LAX_D_APP",
+                    "GOATZ2/OLAAA2_FINAL": "LAX_D_APP",
+                    "IRNMN2/RYDRR2_FINAL": "LAX_U_APP"
+                }
+            },
+            "LA5": {
+                "inbound_assignments": {
+                    "ANJLL4": "LAX_F_APP",
+                    "GOATZ2/OLAAA2": "LAX_D_APP",
+                    "HLYWD1": "LAX_F_APP",
+                    "IRNMN2": "LAX_Z_APP",
+                    "RYDRR2": "LAX_Z_APP"
+                }
+            },
+            "COA": {
+                "inbound_assignments": {
+                    "BAUBB3/RUKKI1/PCIFC3/OHSEA3 East": "SNA_R_APP",
+                    "GOATZ2/KALRB3": "SNA_Y_APP",
+                    "LEGOZ4": "SNA_Y_APP",
+                    "LGB OCEANIC ARR": "SNA_B_APP",
+                    "OLAAA2.E": "SNA_Y_APP",
+                    "ROOBY3": "SNA_S_APP",
+                    "SANP4R": "SNA_Y_APP"
+                },
+                "departure_assignments": {
+                    "KLGB": "SNA_R_APP",
+                    "KSNA": "SNA_A_APP"
+                }
+            },
+            "CO1": {
+                "inbound_assignments": {
+                    "BAUBB3/RUKKI1/PCIFC3/OHSEA3 East": "SNA_R_APP",
+                    "GOATZ2/KALRB3": "SNA_Y_APP",
+                    "LAXX1.MZB": "SNA_Y_APP",
+                    "LEGOZ4": "SNA_Y_APP",
+                    "LGB OCEANIC ARR": "SNA_B_APP",
+                    "OLAAA2": "SNA_Y_APP",
+                    "ROOBY3": "SNA_S_APP",
+                    "SANP4R": "SNA_Y_APP"
+                },
+                "departure_assignments": {
+                    "KLGB": "SNA_R_APP",
+                    "KSNA": "SNA_A_APP"
+                }
+            },
+            "CO2": {
+                "inbound_assignments": {
+                    "DSNEE6": "SNA_T_APP",
+                    "OHSEA3.FINAL": "SNA_T_APP"
+                }
+            },
+            "CO3": {
+                "inbound_assignments": {
+                    "BAUBB3/RUKKI1/PCIFC3/OHSEA3": "SNA_R_APP",
+                    "DSNEE6": "SNA_A_APP",
+                    "GOATZ2/KALRB3": "SNA_Y_APP",
+                    "LEGOZ4": "SNA_Y_APP",
+                    "LGB OCEANIC ARR": "SNA_B_APP",
+                    "OLAAA2.E": "SNA_Y_APP",
+                    "SANP4R": "SNA_S_APP"
+                },
+                "departure_assignments": {
+                    "KLGB": "SNA_R_APP",
+                    "KSNA": "SNA_Y_APP"
+                }
+            },
+            "CO4": {
+                "inbound_assignments": {
+                    "BAUBB3/RUKKI1/PCIFC3/OHSEA3": "SNA_R_APP",
+                    "DSNEE6": "SNA_A_APP",
+                    "GOATZ2/KALRB3": "SNA_Y_APP",
+                    "LAXX1.MZB": "SNA_Y_APP",
+                    "LEGOZ4": "SNA_Y_APP",
+                    "LGB OCEANIC ARR": "SNA_B_APP",
+                    "OLAAA2": "SNA_Y_APP",
+                    "SANP4R": "SNA_Y_APP"
+                },
+                "departure_assignments": {
+                    "KLGB": "SNA_R_APP",
+                    "KSNA": "SNA_Y_APP"
+                }
+            },
+            "SC2": {
+                "inbound_assignments": {
+                    "BIGBR3": "LAX_F_APP",
+                    "BOGET2": "BUR_V_APP",
+                    "BRUEN2": "LAX_F_APP",
+                    "CHASR2": "SAN_E_APP",
+                    "COMIX2": "SAN_N_APP",
+                    "EAST SAN SAT ARR": "SAN_D_APP",
+                    "EDWP4": "BUR_M_APP",
+                    "EMMLN1": "ONT_N_APP",
+                    "FERN7": "BUR_M_APP",
+                    "JANNY5/GUERA2": "BUR_M_APP",
+                    "JCKIE2": "ONT_N_APP",
+                    "KARLB3/GOATZ2": "LAX_X_DEP",
+                    "LEGOZ3": "LAX_X_DEP",
+                    "LUCKI1.HEELX": "SAN_E_APP",
+                    "LUCKI1.MOMAR": "SAN_E_APP",
+                    "OHSEA3/PCIFC3": "LAX_X_DEP",
+                    "OLAAA2": "SNA_Y_APP",
+                    "RDBUL1": "PSP_S_APP",
+                    "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+                    "ROOBY3.DRTHI": "ONT_N_APP",
+                    "ROOBY3.LRSON": "ONT_N_APP",
+                    "RUKKI1/BAUBB3": "LAX_X_DEP",
+                    "SBAP2": "BUR_W_APP",
+                    "SCBBY2.DEWWW": "ONT_N_APP",
+                    "SETER5": "ONT_N_APP",
+                    "SIZLR4": "ONT_N_APP",
+                    "THRNE4": "ONT_N_APP",
+                    "W291 NZY ARR": "SAN_W_APP",
+                    "WEESL1": "BUR_M_APP",
+                    "ZIGGY8.HEC": "ONT_N_APP",
+                    "ZIGGY8.LANDO": "ONT_N_APP",
+                    "ZUUMA4": "LAX_Z_APP"
+                },
+                "departure_assignments": {
+                    "KBUR": "BUR_V_APP",
+                    "KCRQ": "SAN_D_APP",
+                    "KHHR": "LAX_S_DEP",
+                    "KLAX": "LAX_S_DEP",
+                    "KLGB": "SNA_Y_APP",
+                    "KMYF": "SAN_W_APP",
+                    "KNZY": "SAN_W_APP",
+                    "KONT": "ONT_P_APP",
+                    "KPSP": "PSP_S_APP",
+                    "KRNM": "SAN_D_APP",
+                    "KSAN": "SAN_W_APP",
+                    "KSBD": "ONT_N_APP",
+                    "KSDM": "SAN_W_APP",
+                    "KSEE": "SAN_E_APP",
+                    "KSMO": "BUR_V_APP",
+                    "KSNA": "SNA_Y_APP",
+                    "KVNY": "BUR_M_APP",
+                    "KWHP": "BUR_M_APP"
+                }
+            }
+        },
+        "center": "JAZEE",
+        "altimeters": [
+            "KBUR",
+            "KVNY",
+            "KWHP",
+            "KSMO"
+        ],
+        "controller_configs": {
+            "1M": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 13000,
+                        "vertices": "N034.12.32.124,W118.48.57.551 N034.22.38.349,W118.59.38.961 N034.30.50.234,W119.06.17.023 N034.32.13.003,W118.51.13.809 N034.30.42.434,W118.49.56.987 N034.31.31.419,W118.37.57.108 N034.35.55.435,W118.25.53.686 N034.30.45.510,W118.21.41.275 N034.32.45.715,W118.15.39.852 N034.20.38.804,W118.06.28.366 N034.16.19.129,W118.09.09.206 N034.14.16.274,W118.05.57.604 N034.05.23.052,W118.06.06.723 N034.05.10.075,W118.32.32.572 N034.06.06.297,W118.31.55.164 N034.05.57.344,W118.41.03.217 N034.12.07.761,W118.43.08.378"
+                    }
+                ]
+            }
+        },
+        "radar_sites": {
+            "KBUR": {
+                "char": "S",
+                "position": "KBUR",
+                "elevation": 778,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "slope_angle": 0.175
+            },
+            "KVNY": {
+                "char": "S",
+                "position": "KVNY",
+                "elevation": 802,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "slope_angle": 0.175
+            },
+            "KWHP": {
+                "char": "S",
+                "position": "KWHP",
+                "elevation": 1003,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "slope_angle": 0.175
+            }
+        },
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "BURNOCA",
+                    "description": "BUR CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 3000,
+                    "radius": 12.4,
+                    "center": "KBUR"
+                }
+            ],
+            "auto_acquisition": [
+                {
+                    "id": "ACQ",
+                    "description": "SCT AUTO-ACQUISITION",
+                    "type": "polygon",
+                    "vertices": "N035.12.54.426,W119.40.23.556 N035.06.12.985,W116.32.10.242 N034.20.04.650,W115.35.53.622 N034.01.19.458,W114.34.09.746 N033.07.48.209,W114.43.52.928 N033.02.32.009,W115.55.56.954 N032.17.44.355,W115.58.14.174 N032.13.07.156,W117.48.36.101 N032.52.08.274,W118.42.27.839 N032.55.25.135,W119.25.36.328 N034.53.19.424,W119.43.41.832 N035.12.54.426,W119.40.23.556",
+                    "floor": 0,
+                    "ceiling": 23000
+                }
+            ]
+        },
+        "range": 25,
+        "scratchpads": {
+            "COREZ": "ORB",
+            "CSTRO": "ORH",
+            "HAILO": "SLP",
+            "LAS": "SLP",
+            "MISEN": "SLP",
+            "HEC": "SLP",
+            "BLH": "SLP",
+            "DAG": "VRA",
+            "LAX": "LAX",
+            "SLI": "SLI",
+            "GMN": "GMN"
+        },
+        "significant_points": {
+            "BLH": {},
+            "COREZ": {},
+            "CSTRO": {},
+            "DAG": {},
+            "GMN": {},
+            "HAILO": {},
+            "HEC": {},
+            "LAS": {},
+            "LAX": {},
+            "MISEN": {},
+            "SLI": {}
+        },
+        "stars_maps": [
+            "701S FUS 3NM MVA SCT",
+            "711S EOVM SCT",
+            "721S FREEWAY SCT",
+            "121S BUR GPS SCT",
+            "130S BUR B-C SCT",
+            "720S MEDFLY SCT",
+            "100S BURB LW SCT",
+            "102S BURB LO SCT",
+            "723S B-C A-S SCT",
+            "740S EMERGENCY SCT",
+            "325S RNAV VISUAL APPROACHES SCT",
+            "720S MEDFLY SCT",
+            "121S BUR GPS SCT",
+            "200S LAAB LW SCT",
+            "400S CB LWSS SCT",
+            "600S DB LW SCT",
+            "140S B8-15W SCT",
+            "141S B26-33W SCT",
+            "142S B8-15E SCT",
+            "143S B26-33E SCT",
+            "144S BOO SCT",
+            "",
+            "101S BURB LE SCT",
+            "701S FUS 3NM MVA SCT",
+            "722S D-E A-S SCT",
+            "",
+            "130S BUR B-C SCT",
+            "721S FREEWAY SCT",
+            "711S EOVM SCT",
+            "300S EMPB LW SCT",
+            "500S SB WEST SCT"
+        ],
+        "video_map_file": "videomaps/ZLA-videomaps.gob.zst",
+        "coordination_lists": [
+            {
+                "name": "SANTA MONICA",
+                "id": "O",
+                "airports": [
+                    "KSMO"
+                ]
+            },
+            {
+                "name": "LONG BEACH",
+                "id": "V",
+                "airports": [
+                    "KLGB"
+                ]
+            },
+            {
+                "name": "HAWTHORNE",
+                "id": "J",
+                "airports": [
+                    "KHHR"
+                ]
+            }
+        ],
+        "force_ql_self": true,
+        "controller_assignments": {
+            "01X": {
+                "inbound_assignments": {
+                    "EDWP4": "BUR_F_APP",
+                    "FERN7": "BUR_M_APP",
+                    "JANNY5/GUERA2": "BUR_F_APP",
+                    "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+                    "SBAP2": "BUR_W_APP",
+                    "THRNE4": "BUR_J_APP",
+                    "WEESL1": "BUR_F_APP"
+                },
+                "departure_assignments": {
+                    "KBUR": "BUR_V_APP",
+                    "KSMO": "BUR_X_APP",
+                    "KVNY": "BUR_M_APP",
+                    "KVNY/CANOG3": "BUR_W_APP",
+                    "KVNY/HARYS5": "BUR_V_APP",
+                    "KVNY/RSCO4": "BUR_V_APP",
+                    "KVNY/WLKKR5": "BUR_W_APP",
+                    "KWHP": "BUR_F_APP"
+                }
+            },
+            "23X": {
+                "inbound_assignments": {
+                    "EDWP4": "BUR_F_APP",
+                    "FERN7": "BUR_M_APP",
+                    "JANNY5/GUERA2": "BUR_F_APP",
+                    "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+                    "SBAP2": "BUR_W_APP",
+                    "THRNE4": "BUR_J_APP",
+                    "WEESL1": "BUR_F_APP"
+                },
+                "departure_assignments": {
+                    "KBUR": "BUR_F_APP",
+                    "KSMO": "BUR_X_APP",
+                    "KVNY": "BUR_F_APP",
+                    "KWHP": "BUR_F_APP"
+                }
+            },
+            "BU1": {
+                "inbound_assignments": {
+                    "EDWP4": "BUR_F_APP",
+                    "FERN7": "BUR_M_APP",
+                    "JANNY5/GUERA2": "BUR_F_APP",
+                    "LADYJ4": "BUR_M_APP",
+                    "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+                    "SBAP2": "BUR_W_APP",
+                    "THRNE4": "BUR_X_APP",
+                    "WEESL1": "BUR_F_APP"
+                },
+                "departure_assignments": {
+                    "KBUR": "BUR_F_APP",
+                    "KVNY": "BUR_F_APP",
+                    "KWHP": "BUR_F_APP"
+                }
+            },
+            "BUR": {
+                "inbound_assignments": {
+                    "EDWP4": "BUR_F_APP",
+                    "FERN7": "BUR_M_APP",
+                    "JANNY5/GUERA2": "BUR_F_APP",
+                    "LADYJ4": "BUR_M_APP",
+                    "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+                    "SBAP2": "BUR_W_APP",
+                    "THRNE4": "BUR_X_APP",
+                    "WEESL1": "BUR_F_APP"
+                },
+                "departure_assignments": {
+                    "KBUR": "BUR_V_APP",
+                    "KVNY": "BUR_M_APP",
+                    "KVNY/CANOG3": "BUR_W_APP",
+                    "KVNY/HARYS5": "BUR_V_APP",
+                    "KVNY/RSCO4": "BUR_V_APP",
+                    "KVNY/WLKKR5": "BUR_W_APP",
+                    "KWHP": "BUR_F_APP"
+                }
+            },
+            "DE1": {
+                "inbound_assignments": {
+                    "KARLB3/GOATZ2.E": "LAX_K_DEP",
+                    "LEGOZ4": "LAX_K_DEP",
+                    "OHSEA3/PCIFC3.12": "LAX_K_DEP",
+                    "OLAAA2.E": "LAX_K_DEP",
+                    "RUKKI1/BAUBB3.12": "LAX_K_DEP",
+                    "TOPMM5": "LAX_X_DEP",
+                    "ZOOMM3/FRITR3.N": "LAX_X_DEP"
+                },
+                "departure_assignments": {
+                    "KHHR": "LAX_S_DEP",
+                    "KLAX": "LAX_S_DEP"
+                }
+            },
+            "DE2": {
+                "inbound_assignments": {
+                    "KARLB3/GOATZ2": "LAX_K_DEP",
+                    "LEGOZ4": "LAX_K_DEP",
+                    "OHSEA3/PCIFC3.N": "LAX_K_DEP",
+                    "RUKKI1/BAUBB3.N": "LAX_K_DEP",
+                    "TOPMM5": "LAX_L_DEP",
+                    "ZOOMM3/FRITR3.N": "LAX_X_DEP"
+                },
+                "departure_assignments": {
+                    "KHHR": "LAX_L_DEP",
+                    "KLAX/DOTSS2": "LAX_S_DEP",
+                    "KLAX/GMN7": "LAX_N_DEP",
+                    "KLAX/LADYJ4": "LAX_N_DEP",
+                    "KLAX/LAXX1": "LAX_S_DEP",
+                    "KLAX/MOOOS2": "LAX_N_DEP",
+                    "KLAX/MUELR4": "LAX_N_DEP",
+                    "KLAX/ORCKA5": "LAX_S_DEP",
+                    "KLAX/OSHNN1": "LAX_S_DEP",
+                    "KLAX/PNDAH2": "LAX_S_DEP",
+                    "KLAX/SUMMR2": "LAX_N_DEP",
+                    "KSMO": "LAX_N_DEP"
+                }
+            },
+            "DE3": {
+                "inbound_assignments": {
+                    "KARLB3/GOATZ2": "LAX_K_DEP",
+                    "LEGOZ4": "LAX_K_DEP",
+                    "OHSEA3/PCIFC3": "LAX_K_DEP",
+                    "RUKKI1/BAUBB3": "LAX_K_DEP",
+                    "ZOOMM3/FRITR3": "LAX_X_DEP"
+                },
+                "departure_assignments": {
+                    "KHHR": "LAX_L_DEP",
+                    "KLAX": "LAX_S_DEP",
+                    "KLGB": "LAX_S_DEP",
+                    "KSMO": "LAX_N_DEP"
+                }
+            },
+            "DE4": {
+                "departure_assignments": {
+                    "KLAX": "LAX_S_DEP"
+                }
+            },
+            "DEL": {
+                "inbound_assignments": {
+                    "KARLB3/GOATZ2.E": "LAX_K_DEP",
+                    "LEGOZ4": "LAX_K_DEP",
+                    "OHSEA3/PCIFC3.N": "LAX_K_DEP",
+                    "OLAAA2.E": "LAX_K_DEP",
+                    "RUKKI1/BAUBB3.N": "LAX_K_DEP",
+                    "TOPMM5": "LAX_X_DEP",
+                    "ZOOMM3/FRITR3.N": "LAX_X_DEP"
+                },
+                "departure_assignments": {
+                    "KHHR": "LAX_S_DEP",
+                    "KLAX": "LAX_S_DEP"
+                }
+            },
+            "13R": {
+                "inbound_assignments": {
+                    "RDBUL1": "PSP_S_APP",
+                    "SIZLR4.SPRINGS": "PSP_S_APP"
+                },
+                "departure_assignments": {
+                    "KPSP": "PSP_D_APP"
+                }
+            },
+            "EM1": {
+                "inbound_assignments": {
+                    "DSNEE6.DRTHI": "ONT_V_APP",
+                    "DSNEE6.LRSON": "ONT_V_APP",
+                    "JCKIE2.E": "ONT_N_APP",
+                    "KARLB3": "ONT_I_APP",
+                    "RDBUL1": "PSP_S_APP",
+                    "SBD OCEANIC": "ONT_I_APP",
+                    "SCBBY2.DEWWW.E": "ONT_V_APP",
+                    "SCBBY2/THRNE4.SNSTT.E": "ONT_V_APP",
+                    "SIZLR4": "ONT_V_APP",
+                    "THRNE4": "ONT_V_APP",
+                    "ZIGGY8": "ONT_N_APP"
+                },
+                "departure_assignments": {
+                    "KONT": "ONT_I_APP",
+                    "KPSP": "PSP_D_APP",
+                    "KSBD": "ONT_N_APP"
+                }
+            },
+            "EM2": {
+                "inbound_assignments": {
+                    "JCKIE2": "ONT_N_APP",
+                    "KARLB3": "ONT_I_APP",
+                    "SBD OCEANIC": "ONT_I_APP",
+                    "SCBBY2.DEWWW": "ONT_V_APP",
+                    "SCBBY2/THRNE4.SNSTT": "ONT_V_APP",
+                    "ZIGGY8": "ONT_N_APP"
+                },
+                "departure_assignments": {
+                    "KONT": "ONT_I_APP",
+                    "KSBD": "ONT_N_APP"
+                }
+            },
+            "EM3": {
+                "inbound_assignments": {
+                    "JCKIE2": "ONT_N_APP",
+                    "KARLB3": "ONT_I_APP",
+                    "RDBUL1": "PSP_S_APP",
+                    "ROOBY3.DRTHI": "ONT_V_APP",
+                    "ROOBY3.LRSON": "ONT_V_APP",
+                    "SBD OCEANIC": "ONT_I_APP",
+                    "SCBBY2.DEWWW": "ONT_V_APP",
+                    "SCBBY2/THRNE4.SNSTT": "ONT_V_APP",
+                    "SIZLR4": "ONT_V_APP",
+                    "THRNE4": "ONT_V_APP",
+                    "ZIGGY8": "ONT_N_APP"
+                },
+                "departure_assignments": {
+                    "KONT": "ONT_P_APP",
+                    "KPSP": "PSP_D_APP",
+                    "KSBD": "ONT_N_APP"
+                }
+            },
+            "EM4": {
+                "inbound_assignments": {
+                    "DSNEE6.DRTHI": "ONT_V_APP",
+                    "DSNEE6.LRSON": "ONT_V_APP",
+                    "JCKIE2": "ONT_N_APP",
+                    "KARLB3": "ONT_I_APP",
+                    "RDBUL1": "PSP_S_APP",
+                    "SBD OCEANIC": "ONT_I_APP",
+                    "SCBBY2.DEWWW": "ONT_V_APP",
+                    "SCBBY2/THRNE4.SNSTT": "ONT_V_APP",
+                    "SIZLR4": "ONT_V_APP",
+                    "THRNE4": "ONT_V_APP",
+                    "ZIGGY8": "ONT_N_APP"
+                },
+                "departure_assignments": {
+                    "KONT": "ONT_I_APP",
+                    "KPSP": "PSP_D_APP",
+                    "KSBD": "ONT_N_APP"
+                }
+            },
+            "EMP": {
+                "inbound_assignments": {
+                    "JCKIE2.E": "ONT_N_APP",
+                    "KARLB3": "ONT_I_APP",
+                    "RDBUL1": "PSP_S_APP",
+                    "ROOBY3.DRTHI": "ONT_V_APP",
+                    "ROOBY3.LRSON": "ONT_V_APP",
+                    "SBD OCEANIC": "ONT_I_APP",
+                    "SCBBY2.DEWWW.E": "ONT_V_APP",
+                    "SCBBY2/THRNE4.SNSTT.E": "ONT_V_APP",
+                    "SIZLR4": "ONT_V_APP",
+                    "THRNE4": "ONT_V_APP",
+                    "ZIGGY8": "ONT_N_APP"
+                },
+                "departure_assignments": {
+                    "KONT": "ONT_I_APP",
+                    "KPSP": "PSP_D_APP",
+                    "KSBD": "ONT_N_APP"
+                }
+            },
+            "92X": {
+                "inbound_assignments": {
+                    "EAST SAT ARR": "SAN_D_APP",
+                    "LEGOZ4": "SAN_D_APP",
+                    "NORTH CRQ ARR": "SAN_D_APP",
+                    "PLYYA2": "SAN_W_APP",
+                    "TOPGN2.IPL": "SAN_E_APP",
+                    "TOPGN2.MOMAR": "SAN_E_APP",
+                    "W291 NZY ARR": "SAN_Z_APP"
+                },
+                "departure_assignments": {
+                    "KNZY": "SAN_Z_APP",
+                    "KSAN": "SAN_Z_APP"
+                }
+            },
+            "SA1": {
+                "inbound_assignments": {
+                    "COMIX2": "SAN_N_APP",
+                    "EAST SAT ARR": "SAN_D_APP",
+                    "LAXX1/V23 NORTH ARR(W)": "SAN_N_APP",
+                    "LEGOZ4": "SAN_D_APP",
+                    "LUCKI1.HEELX": "SAN_E_APP",
+                    "LUCKI1.MOMAR": "SAN_E_APP",
+                    "NORTH CRQ ARR": "SAN_D_APP",
+                    "SOUTHEAST MYF ARR": "SAN_E_APP",
+                    "W291 NZY ARR": "SAN_Z_APP"
+                },
+                "departure_assignments": {
+                    "KCRQ": "SAN_D_APP",
+                    "KMYF": "SAN_W_APP",
+                    "KNZY": "SAN_Z_APP",
+                    "KSAN": "SAN_W_APP"
+                }
+            },
+            "SAN": {
+                "inbound_assignments": {
+                    "EAST SAT ARR": "SAN_D_APP",
+                    "LEGOZ4": "SAN_D_APP",
+                    "NORTH CRQ ARR": "SAN_D_APP",
+                    "PLYYA2": "SAN_W_APP",
+                    "TOPGN2.IPL": "SAN_E_APP",
+                    "TOPGN2.MOMAR": "SAN_E_APP",
+                    "W291 NZY ARR": "SAN_Z_APP"
+                },
+                "departure_assignments": {
+                    "KNZY": "SAN_Z_APP",
+                    "KSAN": "SAN_E_APP"
+                }
+            },
+            "81X": {
+                "inbound_assignments": {
+                    "ANJLL4": "LAX_F_APP",
+                    "BOGET2": "BUR_V_APP",
+                    "CHASR2": "SAN_E_APP",
+                    "COMIX2": "SAN_N_APP",
+                    "DSNEE6.DRTHI": "ONT_N_APP",
+                    "DSNEE6.LRSON": "ONT_N_APP",
+                    "EAST SAN SAT ARR": "SAN_D_APP",
+                    "EDWP4": "BUR_M_APP",
+                    "EMMLN1": "ONT_N_APP",
+                    "FERN7": "BUR_M_APP",
+                    "HLYWD1": "LAX_F_APP",
+                    "IRNMN2": "LAX_Z_APP",
+                    "JANNY5/GUERA2": "BUR_M_APP",
+                    "JCKIE2": "ONT_N_APP",
+                    "KARLB3/GOATZ2": "LAX_X_DEP",
+                    "LEGOZ3": "LAX_X_DEP",
+                    "LUCKI1.HEELX": "SAN_E_APP",
+                    "LUCKI1.MOMAR": "SAN_E_APP",
+                    "OHSEA3/PCIFC3": "LAX_X_DEP",
+                    "OLAAA2": "SNA_Y_APP",
+                    "RDBUL1": "PSP_S_APP",
+                    "ROKKR3/IVINS2/BONJO3": "BUR_M_APP",
+                    "RUKKI1/BAUBB3": "LAX_X_DEP",
+                    "RYDRR2": "LAX_Z_APP",
+                    "SBAP2": "BUR_W_APP",
+                    "SCBBY2.DEWWW": "ONT_N_APP",
+                    "SETER5": "ONT_N_APP",
+                    "SIZLR4": "ONT_N_APP",
+                    "THRNE4": "ONT_N_APP",
+                    "W291 NZY ARR": "SAN_W_APP",
+                    "WEESL1": "BUR_M_APP",
+                    "ZIGGY8.HEC": "ONT_N_APP",
+                    "ZIGGY8.LANDO": "ONT_N_APP"
+                },
+                "departure_assignments": {
+                    "KBUR": "BUR_V_APP",
+                    "KCRQ": "SAN_D_APP",
+                    "KLAX": "LAX_S_DEP",
+                    "KLGB": "SNA_Y_APP",
+                    "KMYF": "SAN_W_APP",
+                    "KNZY": "SAN_W_APP",
+                    "KONT": "ONT_P_APP",
+                    "KPSP": "PSP_S_APP",
+                    "KRNM": "SAN_D_APP",
+                    "KSAN": "SAN_W_APP",
+                    "KSBD": "ONT_N_APP",
+                    "KSDM": "SAN_W_APP",
+                    "KSEE": "SAN_E_APP",
+                    "KSMO": "LAX_N_DEP",
+                    "KSNA": "SNA_Y_APP",
+                    "KVNY": "BUR_M_APP",
+                    "KWHP": "BUR_M_APP"
+                }
+            },
+            "SCT": {
+                "inbound_assignments": {
+                    "CHASR2": "SAN_E_APP",
+                    "JANNY5/GUERA2": "BUR_M_APP",
+                    "JCKIE2": "ONT_N_APP",
+                    "KARLB3/GOATZ2": "LAX_X_DEP",
+                    "MDNYT2.ANJLL": "LAX_F_APP",
+                    "MDNYT2.HLYWD": "LAX_F_APP",
+                    "MDNYT2.SNSTT": "LAX_F_APP",
+                    "SCBBY2.DEWWW": "ONT_N_APP",
+                    "SETER5": "ONT_N_APP",
+                    "W291 NZY ARR": "SAN_E_APP",
+                    "ZIGGY8.HEC": "ONT_N_APP",
+                    "ZIGGY8.LANDO": "ONT_N_APP",
+                    "ZUUMA4": "LAX_U_APP"
+                },
+                "departure_assignments": {
+                    "KBUR": "BUR_M_APP",
+                    "KCRQ": "SAN_E_APP",
+                    "KLAX": "LAX_S_DEP",
+                    "KMYF": "SAN_E_APP",
+                    "KNZY": "SAN_E_APP",
+                    "KONT": "ONT_P_APP",
+                    "KSAN": "SAN_E_APP",
+                    "KSBD": "ONT_N_APP",
+                    "KSDM": "SAN_E_APP",
+                    "KSEE": "SAN_E_APP",
+                    "KSMO": "BUR_M_APP",
+                    "KVNY": "BUR_M_APP"
+                }
+            },
+            "LA1": {
+                "inbound_assignments": {
+                    "BIGBR3": "LAX_F_APP",
+                    "BRUEN2": "LAX_F_APP",
+                    "EMMLN1": "LAX_F_APP",
+                    "ZUUMA4": "LAX_Z_APP"
+                }
+            },
+            "LA2": {
+                "inbound_assignments": {
+                    "MDNYT2_FINAL": "LAX_U_APP",
+                    "ZUUMA4_FINAL": "LAX_U_APP"
+                }
+            },
+            "LA3": {
+                "inbound_assignments": {
+                    "EMMLN1": "LAX_F_APP",
+                    "MDNYT2.ANJLL": "LAX_F_APP",
+                    "MDNYT2.HLYWD": "LAX_F_APP",
+                    "MDNYT2.SNSTT": "LAX_F_APP",
+                    "ZUUMA4": "LAX_U_APP"
+                }
+            },
+            "LA4": {
+                "inbound_assignments": {
+                    "ANJLL4/HLYWD1.FINAL": "LAX_D_APP",
+                    "GOATZ2/OLAAA2_FINAL": "LAX_D_APP",
+                    "IRNMN2/RYDRR2_FINAL": "LAX_U_APP"
+                }
+            },
+            "LA5": {
+                "inbound_assignments": {
+                    "ANJLL4": "LAX_F_APP",
+                    "GOATZ2/OLAAA2": "LAX_D_APP",
+                    "HLYWD1": "LAX_F_APP",
+                    "IRNMN2": "LAX_Z_APP",
+                    "RYDRR2": "LAX_Z_APP"
+                }
+            },
+            "LAX": {
+                "inbound_assignments": {
+                    "BIGBR3_FINAL": "LAX_D_APP",
+                    "BRUEN2_FINAL": "LAX_D_APP",
+                    "ZUUMA4_FINAL": "LAX_U_APP"
+                }
+            },
+            "CO1": {
+                "inbound_assignments": {
+                    "BAUBB3/RUKKI1/PCIFC3/OHSEA3 East": "SNA_R_APP",
+                    "GOATZ2/KALRB3": "SNA_Y_APP",
+                    "LAXX1.MZB": "SNA_Y_APP",
+                    "LEGOZ4": "SNA_Y_APP",
+                    "LGB OCEANIC ARR": "SNA_B_APP",
+                    "OLAAA2": "SNA_Y_APP",
+                    "ROOBY3": "SNA_S_APP",
+                    "SANP4R": "SNA_Y_APP"
+                },
+                "departure_assignments": {
+                    "KLGB": "SNA_R_APP",
+                    "KSNA": "SNA_A_APP"
+                }
+            },
+            "CO2": {
+                "inbound_assignments": {
+                    "DSNEE6": "SNA_T_APP",
+                    "OHSEA3.FINAL": "SNA_T_APP"
+                }
+            },
+            "CO3": {
+                "inbound_assignments": {
+                    "BAUBB3/RUKKI1/PCIFC3/OHSEA3": "SNA_R_APP",
+                    "DSNEE6": "SNA_A_APP",
+                    "GOATZ2/KALRB3": "SNA_Y_APP",
+                    "LEGOZ4": "SNA_Y_APP",
+                    "LGB OCEANIC ARR": "SNA_B_APP",
+                    "OLAAA2.E": "SNA_Y_APP",
+                    "SANP4R": "SNA_S_APP"
+                },
+                "departure_assignments": {
+                    "KLGB": "SNA_R_APP",
+                    "KSNA": "SNA_Y_APP"
+                }
+            },
+            "CO4": {
+                "inbound_assignments": {
+                    "BAUBB3/RUKKI1/PCIFC3/OHSEA3": "SNA_R_APP",
+                    "DSNEE6": "SNA_A_APP",
+                    "GOATZ2/KALRB3": "SNA_Y_APP",
+                    "LAXX1.MZB": "SNA_Y_APP",
+                    "LEGOZ4": "SNA_Y_APP",
+                    "LGB OCEANIC ARR": "SNA_B_APP",
+                    "OLAAA2": "SNA_Y_APP",
+                    "SANP4R": "SNA_Y_APP"
+                },
+                "departure_assignments": {
+                    "KLGB": "SNA_R_APP",
+                    "KSNA": "SNA_Y_APP"
+                }
+            },
+            "COA": {
+                "inbound_assignments": {
+                    "BAUBB3/RUKKI1/PCIFC3/OHSEA3 East": "SNA_R_APP",
+                    "GOATZ2/KALRB3": "SNA_Y_APP",
+                    "LEGOZ4": "SNA_Y_APP",
+                    "LGB OCEANIC ARR": "SNA_B_APP",
+                    "OLAAA2.E": "SNA_Y_APP",
+                    "ROOBY3": "SNA_S_APP",
+                    "SANP4R": "SNA_Y_APP"
+                },
+                "departure_assignments": {
+                    "KLGB": "SNA_R_APP",
+                    "KSNA": "SNA_A_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "JCF",
+                "prefix": "1"
+            },
+            {
+                "id": "RIV",
+                "prefix": "2"
+            },
+            {
+                "id": "NYL",
+                "prefix": "3"
+            },
+            {
+                "id": "NZY",
+                "prefix": "4"
+            },
+            {
+                "id": "NFG",
+                "prefix": "5"
+            },
+            {
+                "id": "NTD",
+                "prefix": "6"
+            },
+            {
+                "id": "NUC",
+                "prefix": "7"
+            }
+        ],
+        "neighboring_facilities": [
+            "EDW",
+            "JCF",
+            "NFG",
+            "NKX",
+            "NTD",
+            "NUC",
+            "NYL",
+            "NZY",
+            "PMD",
+            "RIV",
+            "ZLA"
+        ]
+    }
+}

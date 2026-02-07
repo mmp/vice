@@ -1,0 +1,40 @@
+{
+  "control_positions": {
+    "ZHN 02 Kauai": {
+      "frequency": 126500,
+      "eram_facility": true,
+      "radio_name": "HCF Center",
+      "sector_id": "02"
+    },
+    "ZHN 03 Molokai": {
+      "frequency": 124100,
+      "eram_facility": true,
+      "radio_name": "HCF Center",
+      "sector_id": "03"
+    },
+    "ZHN 04 Lanai": {
+      "frequency": 119300,
+      "eram_facility": true,
+      "radio_name": "HCF Center",
+      "sector_id": "04"
+    },
+    "ZHN 05 Big Island": {
+      "frequency": 118450,
+      "eram_facility": true,
+      "radio_name": "HCF Center",
+      "sector_id": "05"
+    },
+    "ZHN 06 West Sector": {
+      "frequency": 119900,
+      "eram_facility": true,
+      "radio_name": "HCF Center",
+      "sector_id": "06"
+    },
+    "ZHN 07 East": {
+      "frequency": 126600,
+      "eram_facility": true,
+      "radio_name": "HCF Center",
+      "sector_id": "07"
+    }
+  }
+}

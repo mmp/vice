@@ -1,0 +1,256 @@
+{
+  "control_positions": {
+    "ZFW 00 Guard": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "ZFW Guard",
+      "sector_id": "00"
+    },
+    "ZFW 20 MJR-UH": {
+      "frequency": 133550,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "20"
+    },
+    "ZFW 23 ARC-UH": {
+      "frequency": 135275,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "23"
+    },
+    "ZFW 24 ODS-UH": {
+      "frequency": 128525,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "24"
+    },
+    "ZFW 25 UNN-UH": {
+      "frequency": 133375,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "25"
+    },
+    "ZFW 26 KLB-UH": {
+      "frequency": 128125,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "26"
+    },
+    "ZFW 27 TXK-L": {
+      "frequency": 123925,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "27"
+    },
+    "ZFW 28 ELD-H": {
+      "frequency": 133550,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "28"
+    },
+    "ZFW 29 DON-L": {
+      "frequency": 135250,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "29"
+    },
+    "ZFW 30 MLU-L": {
+      "frequency": 126325,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "30"
+    },
+    "ZFW 32 POS-L": {
+      "frequency": 127000,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "32"
+    },
+    "ZFW 34 SPS-L": {
+      "frequency": 133500,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "34"
+    },
+    "ZFW 35 OKC-L": {
+      "frequency": 128400,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "35"
+    },
+    "ZFW 37 SEA-L": {
+      "frequency": 124875,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "37"
+    },
+    "ZFW 38 MLC-L": {
+      "frequency": 132200,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "38"
+    },
+    "ZFW 40 MAF-L": {
+      "frequency": 133100,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "40"
+    },
+    "ZFW 41 HGO-UH": {
+      "frequency": 128125,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "41"
+    },
+    "ZFW 42 DEC-H": {
+      "frequency": 134475,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "42"
+    },
+    "ZFW 43 CZR-UH": {
+      "frequency": 135275,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "43"
+    },
+    "ZFW 46 DAL-H": {
+      "frequency": 135750,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "46"
+    },
+    "ZFW 47 SPS-H": {
+      "frequency": 124525,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "47"
+    },
+    "ZFW 48 ADM-H": {
+      "frequency": 132975,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "48"
+    },
+    "ZFW 49 OKC-H": {
+      "frequency": 132450,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "49"
+    },
+    "ZFW 50 MLC-H": {
+      "frequency": 135450,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "50"
+    },
+    "ZFW 51 CHO-UH": {
+      "frequency": 135175,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "51"
+    },
+    "ZFW 53 FRI-L": {
+      "frequency": 124750,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "53"
+    },
+    "ZFW 55 RDR-UH": {
+      "frequency": 125225,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "55"
+    },
+    "ZFW 61 LEE-H": {
+      "frequency": 120275,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "61"
+    },
+    "ZFW 62 EDN-L": {
+      "frequency": 127150,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "62"
+    },
+    "ZFW 64 LBB-L": {
+      "frequency": 126450,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "64"
+    },
+    "ZFW 65 HIC-H": {
+      "frequency": 128325,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "65"
+    },
+    "ZFW 75 UKW-L": {
+      "frequency": 127950,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "75"
+    },
+    "ZFW 82 INK-H": {
+      "frequency": 132075,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "82"
+    },
+    "ZFW 83 UIM-L": {
+      "frequency": 132025,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "83"
+    },
+    "ZFW 86 PAX-H": {
+      "frequency": 132275,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "86"
+    },
+    "ZFW 89 FZT-H": {
+      "frequency": 134025,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "89"
+    },
+    "ZFW 90 TXK-H": {
+      "frequency": 126575,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "90"
+    },
+    "ZFW 93 TUR-H": {
+      "frequency": 120775,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "93"
+    },
+    "ZFW 94 WOV-H": {
+      "frequency": 132925,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "94"
+    },
+    "ZFW 96 ACT-L": {
+      "frequency": 133300,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "96"
+    },
+    "ZFW 97 BRZ-UH": {
+      "frequency": 132300,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "97"
+    },
+    "ZFW 99 ZFW TMU": {
+      "frequency": 118000,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "99"
+    }
+  }
+}

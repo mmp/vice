@@ -1,0 +1,130 @@
+{
+  "control_positions": {
+    "ZAU 25 PMM": {
+      "frequency": 126125,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "25"
+    },
+    "ZAU 26 KUBBS": {
+      "frequency": 133200,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "26"
+    },
+    "ZAU 35 BEARZ": {
+      "frequency": 134875,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "35"
+    },
+    "ZAU 36 FWA": {
+      "frequency": 126325,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "36"
+    },
+    "ZAU 44 EON": {
+      "frequency": 120125,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "44"
+    },
+    "ZAU 46 BVT": {
+      "frequency": 121275,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "46"
+    },
+    "ZAU 51 PLANO": {
+      "frequency": 135150,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "51"
+    },
+    "ZAU 52 BDF": {
+      "frequency": 132225,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "52"
+    },
+    "ZAU 55 BRL": {
+      "frequency": 118750,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "55"
+    },
+    "ZAU 60 BAE": {
+      "frequency": 126875,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "60"
+    },
+    "ZAU 62 HARLY": {
+      "frequency": 123825,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "62"
+    },
+    "ZAU 63 DBQ": {
+      "frequency": 133950,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "63"
+    },
+    "ZAU 64 LNR": {
+      "frequency": 133300,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "64"
+    },
+    "ZAU 74 FARMM": {
+      "frequency": 133350,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "74"
+    },
+    "ZAU 75 COTON": {
+      "frequency": 127775,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "75"
+    },
+    "ZAU 77 MALTA": {
+      "frequency": 134825,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "77"
+    },
+    "ZAU 81 CRIBB": {
+      "frequency": 120350,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "81"
+    },
+    "ZAU 89 GIJ": {
+      "frequency": 126475,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "89"
+    },
+    "ZAU 94 IOW": {
+      "frequency": 125575,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "94"
+    },
+    "ZAU 98 Guard": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "Guard",
+      "sector_id": "98"
+    },
+    "ZAU 99 TMU": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "Chicago TMU",
+      "sector_id": "99"
+    }
+  }
+}

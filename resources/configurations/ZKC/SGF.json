@@ -1,0 +1,111 @@
+{
+    "control_positions": {
+        "SGF_E_APP": {
+            "frequency": 124950,
+            "radio_name": "Springfield approach",
+            "sector_id": "1E"
+        },
+        "SGF_W_APP": {
+            "frequency": 121100,
+            "radio_name": "Springfield approach",
+            "sector_id": "1W"
+        },
+        "SGF_TWR": {
+            "frequency": 119900,
+            "radio_name": "Springfield tower",
+            "scope_char": "1",
+            "sector_id": "1T"
+        },
+        "MZU_APP": {
+            "frequency": 124375,
+            "radio_name": "Mizzu approach",
+            "sector_id": "2M"
+        },
+        "LBO_TWR": {
+            "frequency": 122800,
+            "radio_name": "Jones lebanon unicom",
+            "scope_char": "L",
+            "sector_id": "1M"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "DEN": "SGF_W_APP",
+                    "NE": "SGF_E_APP",
+                    "ORD": "SGF_E_APP",
+                    "SE": "SGF_E_APP",
+                    "SW": "SGF_W_APP"
+                },
+                "departure_assignments": {
+                    "KLBO": "SGF_E_APP",
+                    "KSGF": "SGF_E_APP"
+                }
+            }
+        },
+        "center": "37.2456614,-93.3886269",
+        "range": 40,
+        "scratchpads": {
+            "FSM": "FSM",
+            "CNU": "CNU",
+            "MEMFS": "MEM",
+            "ZAVEL": "ZAV",
+            "EOS": "EOS",
+            "SGF": "SGF",
+            "WHOLL": "WHO",
+            "YATGU": "YAT",
+            "CATIL": "CAT"
+        },
+        "stars_maps": [
+            "SGF Primary Map",
+            "SGF 3NM MVA MAP",
+            "SGF 5NM MVA MAP",
+            "SGF Geography"
+        ],
+        "video_map_file": "videomaps/ZKC-videomaps.gob.zst",
+        "controller_assignments": {
+            "STD": {
+                "inbound_assignments": {
+                    "DEN": "SGF_W_APP",
+                    "NE": "SGF_E_APP",
+                    "ORD": "SGF_E_APP",
+                    "SE": "SGF_E_APP",
+                    "SW": "SGF_W_APP"
+                },
+                "departure_assignments": {
+                    "KLBO": "SGF_E_APP",
+                    "KSGF": "SGF_E_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "SZL",
+                "prefix": "1"
+            },
+            {
+                "id": "T75",
+                "prefix": "2"
+            },
+            {
+                "id": "RZC",
+                "prefix": "3"
+            },
+            {
+                "id": "FSM",
+                "prefix": "4"
+            }
+        ],
+        "neighboring_facilities": [
+            "FSM",
+            "RZC",
+            "SZL",
+            "T75",
+            "ZKC",
+            "ZME"
+        ]
+    }
+}

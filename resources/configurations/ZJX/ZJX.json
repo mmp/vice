@@ -1,0 +1,362 @@
+{
+    "control_positions": {
+        "ZJX 10 Crestview": {
+            "frequency": 120200,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "10"
+        },
+        "ZJX 11 Brewton": {
+            "frequency": 124475,
+            "eram_facility": true,
+            "radio_name": "JAX Center",
+            "sector_id": "11"
+        },
+        "ZJX 12 Albany": {
+            "frequency": 125750,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "12"
+        },
+        "ZJX 14 Cedar Key": {
+            "frequency": 135750,
+            "eram_facility": true,
+            "radio_name": "JAX Center",
+            "sector_id": "14"
+        },
+        "ZJX 15 Ocala": {
+            "frequency": 133325,
+            "eram_facility": true,
+            "radio_name": "JAX Center",
+            "sector_id": "15"
+        },
+        "ZJX 16 Mayo": {
+            "frequency": 125175,
+            "eram_facility": true,
+            "radio_name": "JAX Center",
+            "sector_id": "16"
+        },
+        "ZJX 17 Perry": {
+            "frequency": 135625,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "17"
+        },
+        "ZJX 21 Enterprise": {
+            "frequency": 135125,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "21"
+        },
+        "ZJX 28 Tallahassee": {
+            "frequency": 127800,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "28"
+        },
+        "ZJX 29 Waycross": {
+            "frequency": 127575,
+            "eram_facility": true,
+            "radio_name": "JAX Center",
+            "sector_id": "29"
+        },
+        "ZJX 30 Nepta": {
+            "frequency": 135925,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "30"
+        },
+        "ZJX 31 St. George": {
+            "frequency": 134175,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "31"
+        },
+        "ZJX 32 Ozark": {
+            "frequency": 120325,
+            "eram_facility": true,
+            "radio_name": "JAX Center",
+            "sector_id": "32"
+        },
+        "ZJX 33 Geneva": {
+            "frequency": 125050,
+            "eram_facility": true,
+            "radio_name": "JAX Center",
+            "sector_id": "33"
+        },
+        "ZJX 34 Seminole": {
+            "frequency": 128075,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "34"
+        },
+        "ZJX 35 Torry": {
+            "frequency": 134850,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "35"
+        },
+        "ZJX 47 Summer": {
+            "frequency": 124075,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "47"
+        },
+        "ZJX 48 Georgetown": {
+            "frequency": 133625,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "48"
+        },
+        "ZJX 49 Central": {
+            "frequency": 133300,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "49"
+        },
+        "ZJX 50 Alma": {
+            "frequency": 135975,
+            "eram_facility": true,
+            "radio_name": "JAX Center",
+            "sector_id": "50"
+        },
+        "ZJX 51 Knemo": {
+            "frequency": 120125,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "51"
+        },
+        "ZJX 52 Metta": {
+            "frequency": 135050,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "52"
+        },
+        "ZJX 53 Brunswick": {
+            "frequency": 126750,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "53"
+        },
+        "ZJX 54 Jekyl": {
+            "frequency": 124675,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "54"
+        },
+        "ZJX 57 St Johns": {
+            "frequency": 134000,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "57"
+        },
+        "ZJX 58 St Augustine": {
+            "frequency": 126350,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "58"
+        },
+        "ZJX 65 Ridgeway": {
+            "frequency": 134975,
+            "eram_facility": true,
+            "radio_name": "JAX Center",
+            "sector_id": "65"
+        },
+        "ZJX 66 Aiken": {
+            "frequency": 127475,
+            "eram_facility": true,
+            "radio_name": "JAX Center",
+            "sector_id": "66"
+        },
+        "ZJX 67 Hunter": {
+            "frequency": 132425,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "67"
+        },
+        "ZJX 68 States": {
+            "frequency": 126125,
+            "eram_facility": true,
+            "radio_name": "JAX Center",
+            "sector_id": "68"
+        },
+        "ZJX 71 Florence": {
+            "frequency": 133450,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "71"
+        },
+        "ZJX 72 Columbia": {
+            "frequency": 124700,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "72"
+        },
+        "ZJX 73 Allendale": {
+            "frequency": 132925,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "73"
+        },
+        "ZJX 74 Charleston ": {
+            "frequency": 134375,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "74"
+        },
+        "ZJX 75 Greencove": {
+            "frequency": 127475,
+            "eram_facility": true,
+            "radio_name": "JAX Center",
+            "sector_id": "75"
+        },
+        "ZJX 76 Keystone": {
+            "frequency": 135450,
+            "eram_facility": true,
+            "radio_name": "JAX Center",
+            "sector_id": "76"
+        },
+        "ZJX 77 Talyor": {
+            "frequency": 125375,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "77"
+        },
+        "ZJX 78 Lake City": {
+            "frequency": 133875,
+            "eram_facility": true,
+            "radio_name": "JAX Center",
+            "sector_id": "78"
+        },
+        "ZJX 85 Micanopy": {
+            "frequency": 128625,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "85"
+        },
+        "ZJX 86 Zephyr": {
+            "frequency": 128425,
+            "eram_facility": true,
+            "radio_name": "JAX Center",
+            "sector_id": "86"
+        },
+        "ZJX 87 Lawtey": {
+            "frequency": 132825,
+            "eram_facility": true,
+            "radio_name": "JAX Center",
+            "sector_id": "87"
+        },
+        "ZJX 88 Darbs": {
+            "frequency": 128050,
+            "eram_facility": true,
+            "radio_name": "JAX Center",
+            "sector_id": "88"
+        },
+        "ZJX 96 ZJX Guard": {
+            "frequency": 121500,
+            "eram_facility": true,
+            "radio_name": "ZJX GUARD",
+            "sector_id": "96"
+        },
+        "ZJX 98 Landline": {
+            "frequency": 132650,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "98"
+        },
+        "ZJX 99 TMU": {
+            "frequency": 136975,
+            "eram_facility": true,
+            "radio_name": "Jacksonville Center",
+            "sector_id": "99"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "Overflights": "ZJX 30 Nepata",
+                    "PRICY4": "ZJX 30 Nepata"
+                }
+            },
+            "ZJX": {
+                "inbound_assignments": {
+                    "BAGGY3": "ZJX 50 Alma",
+                    "CAMJO": "ZJX 50 Alma",
+                    "DADES2": "ZJX 50 Alma",
+                    "GRNCH5": "ZJX 50 Alma",
+                    "LUBBR3": "ZJX 50 Alma",
+                    "OHDEA2": "ZJX 50 Alma",
+                    "SHRKS": "ZJX 50 Alma",
+                    "TTHOR3": "ZJX 50 Alma"
+                }
+            },
+            "ZJS": {
+                "inbound_assignments": {
+                    "Overflights": "ZJX 58 St. Augustine",
+                    "SNFLD3": "ZJX 58 St. Augustine",
+                    "TTHOR3": "ZJX 58 St. Augustine"
+                }
+            },
+            "ZST": {
+                "inbound_assignments": {
+                    "Northbound Overflights": "ZJX 75 Greencove",
+                    "Northbound Overflights (UH)": "ZJX 75 Greencove",
+                    "QUBEN2": "ZJX 75 Greencove",
+                    "Southbound Overflights": "ZJX 75 Greencove",
+                    "TTHOR3": "ZJX 75 Greencove"
+                }
+            }
+        },
+        "center": "N029.0.0.0,W085.20.16.982",
+        "range": 300,
+        "max_distance": 350,
+        "stars_maps": [
+            "BOUND",
+            "ZJX LO",
+            "ZJX UH",
+            "HIGH AWAYS",
+            "FIN APP CRS",
+            "MOA",
+            "Y M L ROUTES",
+            "AR ROUTES",
+            "ATCT",
+            "ZJX HI",
+            "HI 2-WAY",
+            "LOW AWAYS",
+            "CLASS ASPACE",
+            "WARNING",
+            "MIA",
+            "T ROUTES",
+            "CAMAN",
+            "GEO"
+        ],
+        "video_map_file": "videomaps/ZJX-eram-videomaps.gob.zst",
+        "controller_assignments": {
+            "STD": {
+                "inbound_assignments": {
+                    "Overflights": "ZJX 30 Nepata",
+                    "PRICY4": "ZJX 30 Nepata"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [],
+        "neighboring_facilities": [
+            "A80",
+            "AGS",
+            "CLT",
+            "FAY",
+            "ILM",
+            "MOB",
+            "PBI",
+            "TPA",
+            "ZDC",
+            "ZHU",
+            "ZMA",
+            "ZNY",
+            "ZTL"
+        ]
+    }
+}

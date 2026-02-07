@@ -1,0 +1,178 @@
+{
+    "control_positions": {
+        "ZSE 01 Sector": {
+            "frequency": 120300,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "01"
+        },
+        "ZSE 02 Sector": {
+            "frequency": 128300,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "02"
+        },
+        "ZSE 03 Sector": {
+            "frequency": 125100,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "03"
+        },
+        "ZSE 04 Sector": {
+            "frequency": 124200,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "04"
+        },
+        "ZSE 05 Sector": {
+            "frequency": 128150,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "05"
+        },
+        "ZSE 06 Sector": {
+            "frequency": 125800,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "06"
+        },
+        "ZSE 07 Sector": {
+            "frequency": 128450,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "07"
+        },
+        "ZSE 08 Sector": {
+            "frequency": 123950,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "08"
+        },
+        "ZSE 09 Sector": {
+            "frequency": 132600,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "09"
+        },
+        "ZSE 10 Sector": {
+            "frequency": 127600,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "10"
+        },
+        "ZSE 11 Sector": {
+            "frequency": 119225,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "11"
+        },
+        "ZSE 12 Sector": {
+            "frequency": 134950,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "12"
+        },
+        "ZSE 13 Sector": {
+            "frequency": 135350,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "13"
+        },
+        "ZSE 14 Sector": {
+            "frequency": 134900,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "14"
+        },
+        "ZSE 15 Sector": {
+            "frequency": 135150,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "15"
+        },
+        "ZSE 16 Sector": {
+            "frequency": 135450,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "16"
+        },
+        "ZSE 18 Sector": {
+            "frequency": 126100,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "18"
+        },
+        "ZSE 30 Sector": {
+            "frequency": 124850,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "30"
+        },
+        "ZSE 31 Sector": {
+            "frequency": 127050,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "31"
+        },
+        "ZSE 32 Sector": {
+            "frequency": 126600,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "32"
+        },
+        "ZSE 34 Sector": {
+            "frequency": 119650,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "34"
+        },
+        "ZSE 35 Sector": {
+            "frequency": 126150,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "35"
+        },
+        "ZSE 36 Sector": {
+            "frequency": 127550,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "36"
+        },
+        "ZSE 42 Sector": {
+            "frequency": 132075,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "42"
+        },
+        "ZSE 46 Sector": {
+            "frequency": 121350,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "46"
+        },
+        "ZSE 47 Sector": {
+            "frequency": 118550,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "47"
+        },
+        "ZSE 48 Sector": {
+            "frequency": 118625,
+            "eram_facility": true,
+            "radio_name": "Seattle Center",
+            "sector_id": "48"
+        },
+        "ZSE 69 TMU": {
+            "frequency": 123450,
+            "eram_facility": true,
+            "radio_name": "Don't Talk to Me",
+            "sector_id": "69"
+        },
+        "ZSE 99 ZSE_ZOA": {
+            "frequency": 118025,
+            "eram_facility": true,
+            "radio_name": "ZSE_ZOA Hotline",
+            "sector_id": "99"
+        }
+    }
+}

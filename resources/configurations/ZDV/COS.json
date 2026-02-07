@@ -1,0 +1,140 @@
+{
+    "control_positions": {
+        "COS_APP": {
+            "frequency": 124000,
+            "radio_name": "Springs approach",
+            "sector_id": "1A"
+        },
+        "COS_V_APP": {
+            "frequency": 120600,
+            "radio_name": "Springs approach",
+            "sector_id": "1V"
+        },
+        "COS_W_TWR": {
+            "frequency": 119900,
+            "radio_name": "Springs tower",
+            "sector_id": "1W"
+        },
+        "COS_E_TWR": {
+            "frequency": 135150,
+            "radio_name": "Springs tower",
+            "sector_id": "E"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "DEBERRY5": "COS_APP",
+                    "DEN": "COS_APP",
+                    "DEN.NW": "COS_APP",
+                    "OZZZY5": "COS_APP"
+                },
+                "departure_assignments": {
+                    "KCOS": "COS_APP",
+                    "KFLY": "COS_APP"
+                }
+            }
+        },
+        "center": "N038.47.36.733,W104.35.10.501",
+        "coordination_lists": [
+            {
+                "name": "Meadow Lake",
+                "id": "A",
+                "airports": [
+                    "KFLY"
+                ]
+            }
+        ],
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "COSNOCA",
+                    "description": "COS CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 9500,
+                    "radius": 10,
+                    "center": "N038.47.52.142,W104.42.03.065"
+                }
+            ]
+        },
+        "radar_sites": {
+            "COS": {
+                "char": "A",
+                "position": "N038.47.36.733,W104.35.10.501",
+                "elevation": 6075,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            }
+        },
+        "range": 30,
+        "scratchpads": {
+            "LUFSE": "LUF",
+            "BYEBI": "APA",
+            "DRAKE": "83S",
+            "JEWLS": "JEW",
+            "PUB": "83S",
+            "BRK": "BRK",
+            "HBU": "HBU",
+            "LAA": "LAA",
+            "BRESH": "BRE",
+            "ALS": "ALS",
+            "DVV": "DVV",
+            "FQF": "FQF"
+        },
+        "stars_maps": [
+            "COS NORTH",
+            "COS SOUTH",
+            "COS MVA",
+            "COS ODO",
+            "COS EOVM",
+            "COS AFF RTE",
+            "COS AFF TFR",
+            "COS CLASS C",
+            "COS DEN FIX",
+            "COS DME ARC",
+            "COS GPS",
+            "COS MID",
+            "COS RNPZ N",
+            "COS RNPZ S",
+            "COS RNV STR",
+            "COS STDMS",
+            "COS TOWER",
+            "COS VR",
+            "COS Z 17L",
+            "COS Z 17R",
+            "COS Z 35L",
+            "COS Z 35R"
+        ],
+        "video_map_file": "videomaps/ZDV-videomaps.gob.zst",
+        "controller_assignments": {
+            "STD": {
+                "inbound_assignments": {
+                    "DEBERRY5": "COS_APP",
+                    "DEN": "COS_APP",
+                    "DEN.NW": "COS_APP",
+                    "OZZZY5": "COS_APP"
+                },
+                "departure_assignments": {
+                    "KCOS": "COS_APP",
+                    "KFLY": "COS_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "D01",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "D01",
+            "ZDV"
+        ]
+    }
+}

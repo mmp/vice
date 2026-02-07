@@ -59,7 +59,7 @@
         "Kilma": "KILMA",
         "Mart": "MARRT",
         "Merser": "MERSR",
-        "Metro": "METRO",
+        "Metro": "EWR_H_APP",
         "Newark": "KEWR",
         "Philbo": "PHLBO"
       },
@@ -94,7 +94,7 @@
         "Gritty": "GRITY",
         "Kilma": "KILMA",
         "Mart": "MARRT",
-        "Metro": "METRO",
+        "Metro": "EWR_H_APP",
         "Newark": "KEWR",
         "Philbo": "PHLBO"
       },
@@ -128,7 +128,7 @@
         "Dillon": "DYLIN",
         "Mart": "MARRT",
         "Merser": "MERSR",
-        "Metro": "METRO",
+        "Metro": "EWR_H_APP",
         "Newark": "KEWR",
         "Philbo": "PHLBO"
       },
@@ -163,7 +163,7 @@
         "Gritty": "GRITY",
         "Kilma": "KILMA",
         "Mart": "MARRT",
-        "Metro": "METRO",
+        "Metro": "EWR_H_APP",
         "Newark": "KEWR",
         "Philbo": "PHLBO"
       },

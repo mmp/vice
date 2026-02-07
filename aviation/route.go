@@ -1689,6 +1689,7 @@ type Overflight struct {
 	AssignedSpeed       float32                 `json:"assigned_speed"`
 	SpeedRestriction    float32                 `json:"speed_restriction"`
 	InitialController   ControlPosition         `json:"initial_controller"`
+	InitialFacility     string                  `json:"initial_facility,omitempty"`
 	Scratchpad          string                  `json:"scratchpad"`
 	SecondaryScratchpad string                  `json:"secondary_scratchpad"`
 	Description         string                  `json:"description"`
@@ -1750,8 +1751,12 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 
 	if of.InitialController == "" {
 		e.ErrorString("Must specify \"initial_controller\".")
-	} else if _, ok := controlPositions[of.InitialController]; !ok {
-		e.ErrorString("controller %q not found for \"initial_controller\"", of.InitialController)
+	} else if of.InitialFacility == "" {
+		// Only validate against local control positions if no initial_facility is specified.
+		// Cross-facility validation is done in server/scenario.go where facility configs are available.
+		if _, ok := controlPositions[of.InitialController]; !ok {
+			e.ErrorString("controller %q not found for \"initial_controller\"", of.InitialController)
+		}
 	}
 
 	if !checkScratchpad(of.Scratchpad) {

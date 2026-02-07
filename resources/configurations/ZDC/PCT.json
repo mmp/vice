@@ -1,0 +1,1060 @@
+{
+    "control_positions": {
+        "BWI_B_APP": {
+            "frequency": 125525,
+            "radio_name": "Potomac Approach",
+            "sector_id": "1B"
+        },
+        "BWI_H_APP": {
+            "frequency": 133850,
+            "radio_name": "Potomac Approach",
+            "sector_id": "1H"
+        },
+        "BWI_W_APP": {
+            "frequency": 128700,
+            "radio_name": "Potomac Approach",
+            "sector_id": "1W"
+        },
+        "BWI_G_APP": {
+            "frequency": 124550,
+            "radio_name": "Potomac Approach",
+            "sector_id": "1G"
+        },
+        "BWI_P_APP": {
+            "frequency": 133750,
+            "radio_name": "Potomac Approach",
+            "sector_id": "1P"
+        },
+        "BWI_N_APP": {
+            "frequency": 119000,
+            "radio_name": "Potomac Approach",
+            "sector_id": "1N"
+        },
+        "BWI_S_APP": {
+            "frequency": 119700,
+            "radio_name": "Potomac Approach",
+            "sector_id": "1S"
+        },
+        "BWI_Z_APP": {
+            "frequency": 132770,
+            "radio_name": "Potomac Approach",
+            "sector_id": "1Z"
+        },
+        "DCA_E_APP": {
+            "frequency": 124200,
+            "radio_name": "Potomac Approach",
+            "sector_id": "1E"
+        },
+        "DCA_D_APP": {
+            "frequency": 128350,
+            "radio_name": "Potomac Approach",
+            "sector_id": "1D"
+        },
+        "DCA_F_APP": {
+            "frequency": 121050,
+            "radio_name": "Potomac Approach",
+            "sector_id": "1F"
+        },
+        "DCA_K_DEP": {
+            "frequency": 125650,
+            "radio_name": "Potomac Departure",
+            "sector_id": "1K"
+        },
+        "DCA_Y_DEP": {
+            "frequency": 118950,
+            "radio_name": "Potomac Departure",
+            "sector_id": "1Y"
+        },
+        "IAD_A_DEP": {
+            "frequency": 120505,
+            "radio_name": "Potomac Departure",
+            "sector_id": "3A"
+        },
+        "IAD_N_APP": {
+            "frequency": 120450,
+            "radio_name": "Potomac Approach",
+            "sector_id": "3N"
+        },
+        "IAD_M_APP": {
+            "frequency": 126100,
+            "radio_name": "Potomac Approach",
+            "sector_id": "3M"
+        },
+        "BWI_E_TWR": {
+            "frequency": 123750,
+            "radio_name": "Baltimore Tower",
+            "sector_id": "12"
+        },
+        "MTN_TWR": {
+            "frequency": 121300,
+            "radio_name": "Martin Tower",
+            "sector_id": "13"
+        },
+        "IAD_T_DEP": {
+            "frequency": 126650,
+            "radio_name": "Potomac Departure",
+            "sector_id": "3T"
+        },
+        "DCA_J_APP": {
+            "frequency": 119850,
+            "radio_name": "Potomac Approach",
+            "sector_id": "1J"
+        },
+        "DCA_L_APP": {
+            "frequency": 118675,
+            "radio_name": "Potomac Approach",
+            "sector_id": "1L"
+        },
+        "DCA_V_APP": {
+            "frequency": 124700,
+            "radio_name": "Potomac Approach",
+            "sector_id": "1V"
+        },
+        "DCA_A_APP": {
+            "frequency": 128000,
+            "radio_name": "Potomac Approach",
+            "sector_id": "1A"
+        },
+        "DCA_R_APP": {
+            "frequency": 125120,
+            "radio_name": "Potomac Approach",
+            "sector_id": "1R"
+        },
+        "BWI_TWR": {
+            "frequency": 119400,
+            "radio_name": "Baltimore Tower",
+            "sector_id": "11"
+        },
+        "DCA_TWR": {
+            "frequency": 119100,
+            "radio_name": "Washington Tower",
+            "sector_id": "14"
+        },
+        "DAA_TWR": {
+            "frequency": 124275,
+            "radio_name": "Davison Tower",
+            "sector_id": "19"
+        },
+        "ADW_TWR": {
+            "frequency": 118400,
+            "radio_name": "Andrews Tower",
+            "sector_id": "17"
+        },
+        "IAD_B_APP": {
+            "frequency": 128525,
+            "radio_name": "Potomac Approach",
+            "sector_id": "3B"
+        },
+        "IAD_V_APP": {
+            "frequency": 133000,
+            "radio_name": "Potomac Approach",
+            "sector_id": "3V"
+        },
+        "IAD_O_APP": {
+            "frequency": 120825,
+            "radio_name": "Potomac Approach",
+            "sector_id": "3O"
+        },
+        "IAD_X_APP": {
+            "frequency": 125800,
+            "radio_name": "Potomac Approach",
+            "sector_id": "3X"
+        },
+        "IAD_S_APP": {
+            "frequency": 134200,
+            "radio_name": "Potomac Approach",
+            "sector_id": "3S"
+        },
+        "IAD_U_APP": {
+            "frequency": 135770,
+            "radio_name": "Potomac Approach",
+            "sector_id": "3U"
+        },
+        "IAD_E_APP": {
+            "frequency": 126825,
+            "radio_name": "Potomac Approach",
+            "sector_id": "3E"
+        },
+        "IAD_G_APP": {
+            "frequency": 127325,
+            "radio_name": "Potomac Approach",
+            "sector_id": "3G"
+        },
+        "IAD_W_TWR": {
+            "frequency": 120250,
+            "radio_name": "Dulles Tower",
+            "sector_id": "31"
+        },
+        "IAD_N_TWR": {
+            "frequency": 134420,
+            "radio_name": "Dulles Tower",
+            "sector_id": "33"
+        },
+        "IAD_E_TWR": {
+            "frequency": 120100,
+            "radio_name": "Dulles Tower",
+            "sector_id": "32"
+        },
+        "MRB_TWR": {
+            "frequency": 124300,
+            "radio_name": "Martinsburg Tower",
+            "sector_id": "38"
+        },
+        "RIC_L_APP": {
+            "frequency": 126750,
+            "radio_name": "Potomac Approach",
+            "sector_id": "2L"
+        },
+        "RIC_P_APP": {
+            "frequency": 126400,
+            "radio_name": "Potomac Approach",
+            "sector_id": "2P"
+        },
+        "RIC_F_APP": {
+            "frequency": 118200,
+            "radio_name": "Potomac Approach",
+            "sector_id": "2F"
+        },
+        "RIC_E_APP": {
+            "frequency": 127200,
+            "radio_name": "Potomac Approach",
+            "sector_id": "2X"
+        },
+        "RIC_W_APP": {
+            "frequency": 135625,
+            "radio_name": "Potomac Approach",
+            "sector_id": "2M"
+        },
+        "CHO_E_APP": {
+            "frequency": 120525,
+            "radio_name": "Potomac Approach",
+            "sector_id": "2E"
+        },
+        "CHO_W_APP": {
+            "frequency": 132850,
+            "radio_name": "Potomac Approach",
+            "sector_id": "2W"
+        },
+        "RIC_TWR": {
+            "frequency": 121100,
+            "radio_name": "Richmond Tower",
+            "sector_id": "21"
+        },
+        "CHO_TWR": {
+            "frequency": 124500,
+            "radio_name": "Charlottesville Tower",
+            "sector_id": "25"
+        },
+        "SBY_TWR": {
+            "frequency": 119425,
+            "radio_name": "Salisbury Tower",
+            "sector_id": "23"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "ANTHM5": "BWI_H_APP",
+                    "ARLFT2": "BWI_H_APP",
+                    "CLIPR3": "BWI_B_APP",
+                    "DEALE3/MIIDY3": "BWI_P_APP",
+                    "JERES2/MCRAY2": "BWI_H_APP",
+                    "RAVNN8.10": "BWI_S_APP",
+                    "RAVNN8.28": "BWI_S_APP",
+                    "RAVNN8.33L": "BWI_S_APP",
+                    "SKILS5": "BWI_B_APP",
+                    "TRISH4.DRRES": "BWI_B_APP",
+                    "TRISH4.NUGGY": "BWI_B_APP"
+                },
+                "departure_assignments": {
+                    "KBWI": "BWI_S_APP",
+                    "KBWI/CONLE5": "BWI_G_APP",
+                    "KBWI/DUKPN1": "BWI_G_APP",
+                    "KBWI/FOXHL1": "BWI_W_APP",
+                    "KBWI/LINSE2": "BWI_W_APP",
+                    "KBWI/TERPZ8": "BWI_W_APP"
+                }
+            },
+            "MTV": {
+                "inbound_assignments": {
+                    "FINAL_ND": "DCA_V_APP",
+                    "FINAL_NNW": "DCA_V_APP",
+                    "FINAL_NS": "DCA_V_APP"
+                }
+            },
+            "MT1": {
+                "inbound_assignments": {
+                    "BUNZZ3/RNLDI4": "DCA_L_APP",
+                    "CAPSS3": "DCA_J_APP",
+                    "CLIPR3/SKILS5": "DCA_E_APP",
+                    "DEALE3.N": "DCA_E_APP",
+                    "FRDMM6": "DCA_L_APP",
+                    "RAVNN8": "DCA_D_APP",
+                    "TRUPS5": "DCA_L_APP"
+                },
+                "departure_assignments": {
+                    "KDCA": "DCA_K_DEP"
+                }
+            },
+            "MT2": {
+                "inbound_assignments": {
+                    "FINAL_SE": "DCA_V_APP",
+                    "FINAL_SNW": "DCA_V_APP",
+                    "FINAL_SS": "DCA_V_APP"
+                }
+            },
+            "MT3": {
+                "inbound_assignments": {
+                    "CAPSS3": "DCA_J_APP",
+                    "CLIPR3/SKILS5": "DCA_E_APP",
+                    "DEALE3.S": "DCA_E_APP",
+                    "FRDMM6": "DCA_L_APP",
+                    "RAVNN8": "DCA_D_APP",
+                    "TRUPS5": "DCA_L_APP"
+                },
+                "departure_assignments": {
+                    "KDCA": "DCA_K_DEP"
+                }
+            },
+            "MT4": {
+                "inbound_assignments": {
+                    "CLTCH3/JDUBB4/SCRAM6.IAD": "DCA_F_APP",
+                    "FLUKY DEPARTURES.DCAN": "DCA_F_APP",
+                    "FLUKY DEPARTURES.DCAS": "DCA_F_APP",
+                    "FOXHL1/TERPZ8": "DCA_F_APP"
+                }
+            },
+            "MT6": {
+                "inbound_assignments": {
+                    "CONLE5.N": "DCA_K_DEP",
+                    "CONLE5.S": "DCA_K_DEP",
+                    "JCOBY4": "DCA_K_DEP"
+                },
+                "departure_assignments": {
+                    "KDCA": "DCA_K_DEP"
+                }
+            },
+            "MT8": {
+                "inbound_assignments": {
+                    "BUNZZ3/RNLDI4": "DCA_L_APP",
+                    "FRDMM6.LN": "DCA_L_APP",
+                    "FRDMM6.LS": "DCA_L_APP",
+                    "LURAY DEPARTURES.DCAN": "DCA_L_APP",
+                    "LURAY DEPARTURES.DCAS": "DCA_L_APP",
+                    "TRUPS5.LN": "DCA_L_APP",
+                    "TRUPS5.LS": "DCA_L_APP"
+                }
+            },
+            "13X": {
+                "inbound_assignments": {
+                    "IADFC.S DUALS": "IAD_S_APP",
+                    "IADFE.S DUALS": "IAD_X_APP",
+                    "IADFW.S DUALS": "IAD_U_APP"
+                }
+            },
+            "SHD": {
+                "inbound_assignments": {
+                    "IADFC.S TRIPS": "IAD_S_APP",
+                    "IADFE.S TRIPS": "IAD_X_APP",
+                    "IADFW.S TRIPS": "IAD_U_APP"
+                }
+            },
+            "SH1": {
+                "inbound_assignments": {
+                    "CAVLR6": "IAD_B_APP",
+                    "GIBBZ5.BURTT": "IAD_N_APP",
+                    "GIBBZ5.MGW": "IAD_N_APP",
+                    "HYPER9": "IAD_V_APP",
+                    "PRTZL1": "IAD_V_APP",
+                    "TIKEE4": "IAD_N_APP",
+                    "TRSTN4": "IAD_O_APP",
+                    "WAYNZ1.N": "IAD_V_APP"
+                },
+                "departure_assignments": {
+                    "KHEF": "IAD_O_APP",
+                    "KIAD": "IAD_T_DEP"
+                }
+            },
+            "SH2": {
+                "inbound_assignments": {
+                    "IADFC.N DUALS": "IAD_S_APP",
+                    "IADFE.N DUALS": "IAD_X_APP",
+                    "IADFW.N DUALS": "IAD_U_APP"
+                }
+            },
+            "SH3": {
+                "inbound_assignments": {
+                    "IADFC.N TRIPS": "IAD_S_APP",
+                    "IADFE.N TRIPS": "IAD_X_APP",
+                    "IADFW.N TRIPS": "IAD_U_APP"
+                }
+            },
+            "30X": {
+                "inbound_assignments": {
+                    "CAVLR6": "IAD_B_APP",
+                    "GIBBZ5.BURTT": "IAD_N_APP",
+                    "GIBBZ5.MGW": "IAD_N_APP",
+                    "HYPER9": "IAD_V_APP",
+                    "PRTZL1": "IAD_V_APP",
+                    "TIKEE4": "IAD_N_APP",
+                    "TRSTN4": "IAD_O_APP",
+                    "WAYNZ1.N": "IAD_V_APP"
+                },
+                "departure_assignments": {
+                    "KHEF": "IAD_O_APP",
+                    "KIAD": "IAD_A_DEP"
+                }
+            },
+            "SH4": {
+                "inbound_assignments": {
+                    "CAVLR6": "IAD_B_APP",
+                    "GIBBZ5.BURTT": "IAD_N_APP",
+                    "GIBBZ5.MGW": "IAD_N_APP",
+                    "HYPER9": "IAD_V_APP",
+                    "PRTZL1": "IAD_V_APP",
+                    "TIKEE4": "IAD_N_APP",
+                    "TRSTN4": "IAD_O_APP",
+                    "WAYNZ1.S": "IAD_V_APP"
+                },
+                "departure_assignments": {
+                    "KHEF": "IAD_O_APP",
+                    "KIAD": "IAD_A_DEP"
+                }
+            },
+            "12X": {
+                "inbound_assignments": {
+                    "CAVLR6": "IAD_B_APP",
+                    "GIBBZ5.BURTT": "IAD_N_APP",
+                    "GIBBZ5.MGW": "IAD_N_APP",
+                    "HYPER9": "IAD_V_APP",
+                    "PRTZL1": "IAD_V_APP",
+                    "TIKEE4": "IAD_N_APP",
+                    "TRSTN4": "IAD_O_APP",
+                    "WAYNZ1.S": "IAD_V_APP"
+                },
+                "departure_assignments": {
+                    "KHEF": "IAD_O_APP",
+                    "KIAD": "IAD_T_DEP"
+                }
+            },
+            "JRV": {
+                "inbound_assignments": {
+                    "BNTLY RIC": "RIC_L_APP",
+                    "CHO NORTH ARR N": "CHO_E_APP",
+                    "DUCXS5.KELCE": "RIC_L_APP",
+                    "DUCXS5.NEAVL": "RIC_L_APP",
+                    "JAMIE RIC": "RIC_P_APP",
+                    "POWTN5": "RIC_L_APP",
+                    "SPIDR5": "RIC_L_APP"
+                },
+                "departure_assignments": {
+                    "KCHO": "CHO_W_APP",
+                    "KRIC": "RIC_L_APP"
+                }
+            },
+            "JR1": {
+                "inbound_assignments": {
+                    "BNTLY RIC": "RIC_L_APP",
+                    "CHO NORTH ARR S": "CHO_E_APP",
+                    "DUCXS5.KELCE": "RIC_L_APP",
+                    "DUCXS5.NEAVL": "RIC_L_APP",
+                    "JAMIE RIC": "RIC_P_APP",
+                    "POWTN5": "RIC_L_APP",
+                    "SPIDR5": "RIC_L_APP"
+                },
+                "departure_assignments": {
+                    "KCHO": "CHO_W_APP",
+                    "KRIC": "RIC_P_APP"
+                }
+            },
+            "PCT": {
+                "inbound_assignments": {
+                    "ANTHM5": "BWI_H_APP",
+                    "ARLFT2": "BWI_H_APP",
+                    "CAPSS3": "DCA_J_APP",
+                    "CAVLR6": "IAD_B_APP",
+                    "CHO NORTH ARR N": "DCA_L_APP",
+                    "CHO NORTH ARR S": "DCA_L_APP",
+                    "CLIPR3": "BWI_B_APP",
+                    "DEALE3/MIIDY3": "BWI_P_APP",
+                    "DUCXS5.KELCE": "RIC_L_APP",
+                    "DUCXS5.NEAVL": "RIC_L_APP",
+                    "FRDMM6": "DCA_L_APP",
+                    "GIBBZ5.BURTT": "IAD_N_APP",
+                    "GIBBZ5.MGW": "IAD_N_APP",
+                    "HYPER9": "IAD_V_APP",
+                    "JAMIE RIC": "RIC_P_APP",
+                    "POWTN5": "RIC_L_APP",
+                    "PRTZL1": "IAD_V_APP",
+                    "RAVNN8": "DCA_D_APP",
+                    "SKILS5": "BWI_B_APP",
+                    "SPIDR5": "RIC_L_APP",
+                    "TIKEE4": "IAD_N_APP",
+                    "TRISH4.DRRES": "BWI_B_APP",
+                    "TRISH4.NUGGY": "BWI_B_APP",
+                    "TRSTN4": "IAD_O_APP",
+                    "TRUPS5": "DCA_L_APP",
+                    "WAYNZ1.N": "IAD_V_APP",
+                    "WAYNZ1.S": "IAD_V_APP"
+                },
+                "departure_assignments": {
+                    "KBWI/CONLE5": "BWI_G_APP",
+                    "KBWI/DUKPN1": "BWI_G_APP",
+                    "KBWI/FOXHL1": "BWI_W_APP",
+                    "KBWI/LINSE2": "BWI_W_APP",
+                    "KBWI/TERPZ8": "BWI_W_APP",
+                    "KCHO": "CHO_W_APP",
+                    "KDCA/AMEEE1": "DCA_K_DEP",
+                    "KDCA/CLTCH3": "DCA_Y_DEP",
+                    "KDCA/DOCTR5": "DCA_K_DEP",
+                    "KDCA/HORTO4": "DCA_Y_DEP",
+                    "KDCA/JDUBB4": "DCA_Y_DEP",
+                    "KDCA/REBLL5": "DCA_Y_DEP",
+                    "KDCA/SCRAM6": "DCA_Y_DEP",
+                    "KDCA/SOOKI5": "DCA_K_DEP",
+                    "KDCA/WYNGS5": "DCA_Y_DEP",
+                    "KHEF": "IAD_O_APP",
+                    "KIAD/BUNZZ3": "IAD_T_DEP",
+                    "KIAD/CLTCH3": "IAD_T_DEP",
+                    "KIAD/JCOBY4": "IAD_A_DEP",
+                    "KIAD/JDUBB4": "IAD_T_DEP",
+                    "KIAD/JERES2": "IAD_A_DEP",
+                    "KIAD/MCRAY2": "IAD_A_DEP",
+                    "KIAD/RNLDI4": "IAD_T_DEP",
+                    "KIAD/SCRAM6": "IAD_T_DEP",
+                    "KIAD/WOOLY2": "IAD_A_DEP",
+                    "KRIC/COLIN8": "RIC_P_APP",
+                    "KRIC/KALLI7": "RIC_L_APP",
+                    "KRIC/LUCYL6": "RIC_P_APP",
+                    "KRIC/RVN": "RIC_L_APP",
+                    "KRIC/RVS": "RIC_P_APP"
+                }
+            }
+        },
+        "center": "KBWI",
+        "controller_configs": {
+            "1S": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 17000,
+                        "vertices": "N039.02.31.707,W076.48.36.183 N039.08.37.401,W077.12.30.805 N039.11.54.468,W077.14.27.480 N039.09.03.795,W077.20.02.920 N039.15.33.645,W077.16.16.190 N039.22.29.546,W077.15.24.719 N039.22.43.265,W076.43.04.011 N039.08.43.168,W076.43.57.625 N039.07.51.450,W076.49.42.485"
+                    },
+                    {
+                        "type": "polygon",
+                        "ceiling": 14000,
+                        "vertices": "N039.09.01.873,W076.38.58.522 N039.03.38.421,W076.49.19.826 N038.47.32.160,W076.32.15.626 N038.35.24.508,W076.31.42.529 N038.38.48.414,W075.51.36.249 N038.41.25.409,W075.44.02.651 N038.42.03.477,W075.39.48.867 N038.51.50.737,W075.49.34.218 N038.58.14.435,W075.52.17.503 N039.07.03.069,W075.44.08.391 N039.12.08.819,W075.45.38.177 N039.16.18.112,W075.50.29.919 N039.20.38.461,W075.51.48.389 N039.29.50.565,W075.58.29.472"
+                    },
+                    {
+                        "type": "polygon",
+                        "ceiling": 11000,
+                        "vertices": "N039.22.37.841,W077.16.14.047 N039.29.00.550,W077.15.34.552 N039.33.21.365,W077.11.35.874 N039.52.30.453,W077.09.30.877 N039.53.20.125,W076.32.35.621 N039.48.59.556,W076.13.17.003 N039.41.25.176,W075.52.49.775 N039.34.17.423,W075.57.54.810 N039.33.00.793,W076.01.11.685 N039.28.40.925,W075.58.05.330 N039.09.38.471,W076.36.39.133 N039.15.34.030,W076.43.04.890 N039.22.17.063,W076.43.04.231"
+                    }
+                ]
+            },
+            "1H": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 17000,
+                        "vertices": "N039.17.14.197,W077.15.33.782 N039.06.07.575,W077.20.26.431 N039.04.08.867,W077.45.15.682 N039.07.45.628,W077.49.05.269 N039.13.16.289,W078.00.01.593 N039.14.36.708,W078.09.41.945 N039.30.16.204,W078.04.09.389 N039.32.05.862,W078.00.06.756 N039.34.49.324,W077.40.12.213 N039.41.30.847,W077.21.10.321 N039.32.13.840,W077.11.32.523 N039.29.02.500,W077.15.21.533"
+                    }
+                ]
+            }
+        },
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "BWINOCA",
+                    "description": "BWI CONFLICT SUPPRESS",
+                    "center": "KBWI",
+                    "type": "circle",
+                    "radius": 5,
+                    "floor": 0,
+                    "ceiling": 5000
+                }
+            ],
+            "inhibit_msaw": [
+                {
+                    "id": "IADMSAW",
+                    "description": "IAD MSAW SUPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 2500,
+                    "vertices": "N038.53.00.267,W077.26.31.864 N038.55.08.203,W077.33.55.656 N038.59.32.135,W077.32.44.245 N039.00.42.860,W077.25.41.629 N039.00.35.774,W077.23.13.121 N038.52.25.578,W077.23.51.710"
+                },
+                {
+                    "id": "BWIMSAW",
+                    "description": "BWI MSAW SUPRESS",
+                    "type": "circle",
+                    "center": "KBWI",
+                    "radius": 5,
+                    "floor": 0,
+                    "ceiling": 2500
+                },
+                {
+                    "id": "DCAMSAW",
+                    "description": "DCA MSAW SUPRESS",
+                    "type": "circle",
+                    "center": "KDCA",
+                    "radius": 5,
+                    "floor": 0,
+                    "ceiling": 2500
+                }
+            ],
+            "auto_acquisition": [
+                {
+                    "id": "ACQ",
+                    "description": "CHP AUTO-ACQUISITION",
+                    "type": "polygon",
+                    "vertices": "N038.27.11.771,W075.50.51.315 N038.20.32.926,W078.20.06.298 N039.44.06.194,W078.28.44.963 N040.00.59.051,W077.34.53.939 N040.22.26.978,W077.13.46.885 N040.27.27.729,W075.58.19.255 N040.00.37.394,W075.17.10.435 N039.35.59.033,W074.42.47.752 N038.45.55.755,W075.04.06.835 N038.31.27.863,W075.20.35.934",
+                    "floor": 0,
+                    "ceiling": 23000
+                }
+            ]
+        },
+        "range": 63,
+        "scratchpads": {
+            "COLIN": "AME",
+            "SCOOB": "AME",
+            "RAMAY": "FXR",
+            "RRSIN": "JDB",
+            "MELTN": "JDB",
+            "FLASK": "CLH",
+            "JERES.N": "JS2",
+            "BUFFR.N": "BFR",
+            "JERES.S": "JS2",
+            "BUFFR.S": "BFR",
+            "MAULS": "CLH",
+            "OTTTO": "FXO",
+            "MCRAY": "MCR",
+            "GLANC": "SCR",
+            "SWANN": "SWN",
+            "AGARD": "DKA"
+        },
+        "significant_points": {
+            "AGARD": {},
+            "BUFFR": {
+                "short_name": "BFR"
+            },
+            "DQO": {},
+            "FLASK": {},
+            "GLANC": {},
+            "JERES": {},
+            "MAULS": {},
+            "MELTN": {},
+            "OTTTO": {
+                "short_name": "FXO"
+            },
+            "RAMAY": {},
+            "RRSIN": {},
+            "SCOOB": {},
+            "SWANN": {}
+        },
+        "stars_maps": [
+            "CHP Approaches",
+            "PCT MVA",
+            "CHP SIDSTAR",
+            "CHP Approaches"
+        ],
+        "video_map_file": "videomaps/ZDC-videomaps.gob.zst",
+        "pdb": {
+            "hide_gs": true,
+            "show_scratchpad2": true
+        },
+        "radar_sites": {
+            "DCA": {
+                "char": "D",
+                "position": "38.8451920,-77.0331090",
+                "elevation": 88,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 54.7,
+                "slope_angle": 0.3
+            },
+            "ADW": {
+                "char": "A",
+                "position": "38.8122660,-76.8670090",
+                "elevation": 338,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 54.7,
+                "slope_angle": 0.3
+            },
+            "BAL": {
+                "char": "B",
+                "position": "39.1794850,-76.6838430",
+                "elevation": 325,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 54.7,
+                "slope_angle": 0.3
+            },
+            "CHO": {
+                "char": "C",
+                "position": "38.1800000,-78.4193610",
+                "elevation": 1599,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 54.7,
+                "slope_angle": 0.3
+            },
+            "IAD": {
+                "char": "I",
+                "position": "38.9565300,-77.4633900",
+                "elevation": 425,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 54.7,
+                "slope_angle": 0.3
+            },
+            "MDT": {
+                "char": "T",
+                "position": "40.1857740,-76.7950640",
+                "elevation": 1007,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 54.7,
+                "slope_angle": 0.3
+            },
+            "MRB": {
+                "char": "M",
+                "position": "39.3952650,-77.9946880",
+                "elevation": 883,
+                "primary_range": 70,
+                "secondary_range": 120,
+                "silence_angle": 49.7,
+                "slope_angle": 0.3
+            },
+            "NHK": {
+                "char": "N",
+                "position": "38.2987080,-76.4120690",
+                "elevation": 88,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 59.7,
+                "slope_angle": 0.3
+            },
+            "PHL": {
+                "char": "P",
+                "position": "39.8591750,-75.2667470",
+                "elevation": 123,
+                "primary_range": 70,
+                "secondary_range": 120,
+                "silence_angle": 49.7,
+                "slope_angle": 0.3
+            },
+            "RIC": {
+                "char": "R",
+                "position": "37.5053410,-77.3242350",
+                "elevation": 259,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 54.7,
+                "slope_angle": 0.3
+            },
+            "QBE": {
+                "char": "E",
+                "position": "37.5173130,-79.5101010",
+                "elevation": 4353,
+                "primary_range": 200,
+                "secondary_range": 250,
+                "silence_angle": 59.7,
+                "slope_angle": 0.3
+            },
+            "QBN": {
+                "char": "Q",
+                "position": "37.3828590,-76.9987510",
+                "elevation": 303,
+                "primary_range": 200,
+                "secondary_range": 250,
+                "silence_angle": 59.7,
+                "slope_angle": 0.3
+            },
+            "QIE": {
+                "char": "Z",
+                "position": "39.8247290,-74.9541500",
+                "elevation": 371,
+                "primary_range": 200,
+                "secondary_range": 250,
+                "silence_angle": 59.7,
+                "slope_angle": 0.3
+            },
+            "QPL": {
+                "char": "L",
+                "position": "38.8823130,-77.7030850",
+                "elevation": 1943,
+                "primary_range": 200,
+                "secondary_range": 250,
+                "silence_angle": 59.7,
+                "slope_angle": 0.3
+            }
+        },
+        "controller_assignments": {
+            "STD": {
+                "inbound_assignments": {
+                    "ANTHM5": "BWI_H_APP",
+                    "ARLFT2": "BWI_H_APP",
+                    "CLIPR3": "BWI_B_APP",
+                    "DEALE3/MIIDY3": "BWI_P_APP",
+                    "JERES2/MCRAY2": "BWI_H_APP",
+                    "RAVNN8.10": "BWI_S_APP",
+                    "RAVNN8.28": "BWI_S_APP",
+                    "RAVNN8.33L": "BWI_S_APP",
+                    "SKILS5": "BWI_B_APP",
+                    "TRISH4.DRRES": "BWI_B_APP",
+                    "TRISH4.NUGGY": "BWI_B_APP"
+                },
+                "departure_assignments": {
+                    "KBWI": "BWI_S_APP",
+                    "KBWI/CONLE5": "BWI_G_APP",
+                    "KBWI/DUKPN1": "BWI_G_APP",
+                    "KBWI/FOXHL1": "BWI_W_APP",
+                    "KBWI/LINSE2": "BWI_W_APP",
+                    "KBWI/TERPZ8": "BWI_W_APP"
+                }
+            },
+            "MT1": {
+                "inbound_assignments": {
+                    "BUNZZ3/RNLDI4": "DCA_L_APP",
+                    "CAPSS3": "DCA_J_APP",
+                    "CLIPR3/SKILS5": "DCA_E_APP",
+                    "DEALE3.N": "DCA_E_APP",
+                    "FRDMM6": "DCA_L_APP",
+                    "RAVNN8": "DCA_D_APP",
+                    "TRUPS5": "DCA_L_APP"
+                },
+                "departure_assignments": {
+                    "KDCA": "DCA_K_DEP"
+                }
+            },
+            "MT2": {
+                "inbound_assignments": {
+                    "FINAL_SE": "DCA_V_APP",
+                    "FINAL_SNW": "DCA_V_APP",
+                    "FINAL_SS": "DCA_V_APP"
+                }
+            },
+            "MT3": {
+                "inbound_assignments": {
+                    "CAPSS3": "DCA_J_APP",
+                    "CLIPR3/SKILS5": "DCA_E_APP",
+                    "DEALE3.S": "DCA_E_APP",
+                    "FRDMM6": "DCA_L_APP",
+                    "RAVNN8": "DCA_D_APP",
+                    "TRUPS5": "DCA_L_APP"
+                },
+                "departure_assignments": {
+                    "KDCA": "DCA_K_DEP"
+                }
+            },
+            "MT4": {
+                "inbound_assignments": {
+                    "CLTCH3/JDUBB4/SCRAM6.IAD": "DCA_F_APP",
+                    "FLUKY DEPARTURES.DCAN": "DCA_F_APP",
+                    "FLUKY DEPARTURES.DCAS": "DCA_F_APP",
+                    "FOXHL1/TERPZ8": "DCA_F_APP"
+                }
+            },
+            "MT6": {
+                "inbound_assignments": {
+                    "CONLE5.N": "DCA_K_DEP",
+                    "CONLE5.S": "DCA_K_DEP",
+                    "JCOBY4": "DCA_K_DEP"
+                },
+                "departure_assignments": {
+                    "KDCA": "DCA_K_DEP"
+                }
+            },
+            "MT8": {
+                "inbound_assignments": {
+                    "BUNZZ3/RNLDI4": "DCA_L_APP",
+                    "FRDMM6.LN": "DCA_L_APP",
+                    "FRDMM6.LS": "DCA_L_APP",
+                    "LURAY DEPARTURES.DCAN": "DCA_L_APP",
+                    "LURAY DEPARTURES.DCAS": "DCA_L_APP",
+                    "TRUPS5.LN": "DCA_L_APP",
+                    "TRUPS5.LS": "DCA_L_APP"
+                }
+            },
+            "MTV": {
+                "inbound_assignments": {
+                    "FINAL_ND": "DCA_V_APP",
+                    "FINAL_NNW": "DCA_V_APP",
+                    "FINAL_NS": "DCA_V_APP"
+                }
+            },
+            "12X": {
+                "inbound_assignments": {
+                    "CAVLR6": "IAD_B_APP",
+                    "GIBBZ5.BURTT": "IAD_N_APP",
+                    "GIBBZ5.MGW": "IAD_N_APP",
+                    "HYPER9": "IAD_V_APP",
+                    "PRTZL1": "IAD_V_APP",
+                    "TIKEE4": "IAD_N_APP",
+                    "TRSTN4": "IAD_O_APP",
+                    "WAYNZ1.S": "IAD_V_APP"
+                },
+                "departure_assignments": {
+                    "KHEF": "IAD_O_APP",
+                    "KIAD": "IAD_T_DEP"
+                }
+            },
+            "13X": {
+                "inbound_assignments": {
+                    "IADFC.S DUALS": "IAD_S_APP",
+                    "IADFE.S DUALS": "IAD_X_APP",
+                    "IADFW.S DUALS": "IAD_U_APP"
+                }
+            },
+            "30X": {
+                "inbound_assignments": {
+                    "CAVLR6": "IAD_B_APP",
+                    "GIBBZ5.BURTT": "IAD_N_APP",
+                    "GIBBZ5.MGW": "IAD_N_APP",
+                    "HYPER9": "IAD_V_APP",
+                    "PRTZL1": "IAD_V_APP",
+                    "TIKEE4": "IAD_N_APP",
+                    "TRSTN4": "IAD_O_APP",
+                    "WAYNZ1.N": "IAD_V_APP"
+                },
+                "departure_assignments": {
+                    "KHEF": "IAD_O_APP",
+                    "KIAD": "IAD_A_DEP"
+                }
+            },
+            "SH1": {
+                "inbound_assignments": {
+                    "CAVLR6": "IAD_B_APP",
+                    "GIBBZ5.BURTT": "IAD_N_APP",
+                    "GIBBZ5.MGW": "IAD_N_APP",
+                    "HYPER9": "IAD_V_APP",
+                    "PRTZL1": "IAD_V_APP",
+                    "TIKEE4": "IAD_N_APP",
+                    "TRSTN4": "IAD_O_APP",
+                    "WAYNZ1.N": "IAD_V_APP"
+                },
+                "departure_assignments": {
+                    "KHEF": "IAD_O_APP",
+                    "KIAD": "IAD_T_DEP"
+                }
+            },
+            "SH2": {
+                "inbound_assignments": {
+                    "IADFC.N DUALS": "IAD_S_APP",
+                    "IADFE.N DUALS": "IAD_X_APP",
+                    "IADFW.N DUALS": "IAD_U_APP"
+                }
+            },
+            "SH3": {
+                "inbound_assignments": {
+                    "IADFC.N TRIPS": "IAD_S_APP",
+                    "IADFE.N TRIPS": "IAD_X_APP",
+                    "IADFW.N TRIPS": "IAD_U_APP"
+                }
+            },
+            "SH4": {
+                "inbound_assignments": {
+                    "CAVLR6": "IAD_B_APP",
+                    "GIBBZ5.BURTT": "IAD_N_APP",
+                    "GIBBZ5.MGW": "IAD_N_APP",
+                    "HYPER9": "IAD_V_APP",
+                    "PRTZL1": "IAD_V_APP",
+                    "TIKEE4": "IAD_N_APP",
+                    "TRSTN4": "IAD_O_APP",
+                    "WAYNZ1.S": "IAD_V_APP"
+                },
+                "departure_assignments": {
+                    "KHEF": "IAD_O_APP",
+                    "KIAD": "IAD_A_DEP"
+                }
+            },
+            "SHD": {
+                "inbound_assignments": {
+                    "IADFC.S TRIPS": "IAD_S_APP",
+                    "IADFE.S TRIPS": "IAD_X_APP",
+                    "IADFW.S TRIPS": "IAD_U_APP"
+                }
+            },
+            "JR1": {
+                "inbound_assignments": {
+                    "BNTLY RIC": "RIC_L_APP",
+                    "CHO NORTH ARR S": "CHO_E_APP",
+                    "DUCXS5.KELCE": "RIC_L_APP",
+                    "DUCXS5.NEAVL": "RIC_L_APP",
+                    "JAMIE RIC": "RIC_P_APP",
+                    "POWTN5": "RIC_L_APP",
+                    "SPIDR5": "RIC_L_APP"
+                },
+                "departure_assignments": {
+                    "KCHO": "CHO_W_APP",
+                    "KRIC": "RIC_P_APP"
+                }
+            },
+            "JRV": {
+                "inbound_assignments": {
+                    "BNTLY RIC": "RIC_L_APP",
+                    "CHO NORTH ARR N": "CHO_E_APP",
+                    "DUCXS5.KELCE": "RIC_L_APP",
+                    "DUCXS5.NEAVL": "RIC_L_APP",
+                    "JAMIE RIC": "RIC_P_APP",
+                    "POWTN5": "RIC_L_APP",
+                    "SPIDR5": "RIC_L_APP"
+                },
+                "departure_assignments": {
+                    "KCHO": "CHO_W_APP",
+                    "KRIC": "RIC_L_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "PHL",
+                "prefix": "5"
+            },
+            {
+                "id": "ORF",
+                "prefix": "1"
+            },
+            {
+                "id": "NHK",
+                "prefix": "2"
+            },
+            {
+                "id": "MDT",
+                "prefix": "6"
+            },
+            {
+                "id": "ROA",
+                "prefix": "3"
+            },
+            {
+                "id": "DOV",
+                "prefix": "4"
+            },
+            {
+                "id": "JST",
+                "prefix": "7"
+            },
+            {
+                "id": "ZDC",
+                "prefix": "W"
+            }
+        ],
+        "neighboring_facilities": [
+            "DOV",
+            "JST",
+            "MDT",
+            "NHK",
+            "ORF",
+            "PHL",
+            "ROA",
+            "ZDC",
+            "ZNY",
+            "ZOB"
+        ]
+    }
+}

@@ -1,0 +1,218 @@
+{
+    "control_positions": {
+        "OKC_TWR": {
+            "frequency": 119350,
+            "radio_name": "International Tower",
+            "sector_id": "1T"
+        },
+        "OKC_W_APP": {
+            "frequency": 124600,
+            "radio_name": "Oklahoma City Approach",
+            "sector_id": "1W"
+        },
+        "OKC_F_APP": {
+            "frequency": 133600,
+            "radio_name": "Oklahoma City Approach",
+            "sector_id": "1F"
+        },
+        "OKC_E_APP": {
+            "frequency": 124200,
+            "radio_name": "Oklahoma City Approach",
+            "sector_id": "1E"
+        },
+        "OKC_D_APP": {
+            "frequency": 120450,
+            "radio_name": "Oklahoma City Approach",
+            "sector_id": "1D"
+        },
+        "OKC_S_APP": {
+            "frequency": 126650,
+            "radio_name": "Oklahoma City Approach",
+            "sector_id": "1S"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "KOK": {
+                "inbound_assignments": {
+                    "CAMET3": "OKC_W_APP",
+                    "GHOST3": "OKC_S_APP",
+                    "MURAH3": "OKC_E_APP",
+                    "TSDEL3": "OKC_D_APP",
+                    "YUCKS3": "OKC_S_APP"
+                },
+                "departure_assignments": {
+                    "KOKC": "OKC_W_APP"
+                }
+            },
+            "KO1": {
+                "inbound_assignments": {
+                    "CAMET3": "OKC_W_APP",
+                    "GHOST3": "OKC_S_APP",
+                    "MURAH3": "OKC_E_APP",
+                    "TSDEL3": "OKC_D_APP",
+                    "YUCKS3": "OKC_S_APP"
+                },
+                "departure_assignments": {
+                    "KOKC": "OKC_S_APP"
+                }
+            }
+        },
+        "center": "KOKC",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "OKCNOCA",
+                    "description": "OKC CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 5000,
+                    "vertices": [
+                        "N035.36.52.893,W097.38.44.569",
+                        "N035.36.59.458,W097.32.38.065",
+                        "N035.13.02.597,W097.33.13.716",
+                        "N035.13.33.331,W097.38.58.934"
+                    ]
+                }
+            ]
+        },
+        "scratchpads": {
+            "PHARA": "FUN",
+            "FUNNL": "FUN",
+            "WICKS": "KRM",
+            "KRMSN": "KRM",
+            "OLFRD": "MUD",
+            "MOOSE": "MUD",
+            "MUDDE": "MUD",
+            "YOUSE": "OLG",
+            "GRUVN": "OLG",
+            "OLGUY": "OLG",
+            "HOLLE": "RDH",
+            "RDHWK": "RDH",
+            "KAYOS": "SSY",
+            "SSYKO": "SSY",
+            "ZEEWE": "STP",
+            "BFFFY": "STP",
+            "STPHN": "STP",
+            "ATOKA": "TEB",
+            "TEBRD": "TEB",
+            "FLECH": "THR",
+            "GGOLD": "THR",
+            "THRPE": "THR",
+            "COORT": "TRU",
+            "DRLER": "TRU",
+            "GTYER": "TRU",
+            "TRUPR": "TRU",
+            "BELMN": "WEN",
+            "HNGER": "WEN",
+            "LARKO": "WEN",
+            "WENDY": "WEN"
+        },
+        "significant_points": {
+            "ATOKA": {},
+            "BELMN": {},
+            "BFFFY": {},
+            "COORT": {},
+            "DRLER": {},
+            "FLECH": {},
+            "FUNNL": {},
+            "GGOLD": {},
+            "GRUVN": {},
+            "GTYER": {},
+            "HNGER": {},
+            "HOLLE": {},
+            "KAYOS": {},
+            "KRMSN": {},
+            "LARKO": {},
+            "MOOSE": {},
+            "MUDDE": {},
+            "OLFRD": {},
+            "OLGUY": {},
+            "PHARA": {},
+            "RDHWK": {},
+            "SSYKO": {},
+            "STPHN": {},
+            "TEBRD": {},
+            "THRPE": {},
+            "TRUPR": {},
+            "WENDY": {},
+            "WICKS": {},
+            "YOUSE": {},
+            "ZEEWE": {}
+        },
+        "stars_maps": [
+            "OKC010S ZFW ATCO",
+            "OKC011S LOW SECTORS",
+            "OKC012S SOUTH FLOW",
+            "OKC013S NORTH FLOW",
+            "OKC014S VFR",
+            "OKC015S 3NM MVA",
+            "OKC016S END SOUTH FLOW",
+            "OKC017S END NORTH FLOW",
+            "OKC018S TIK_LOC",
+            "OKC021S FINAL APPROACH FIXES",
+            "OKC025S 5NM MVA",
+            "OKC110S OUN ILS",
+            "OKC130S RWY 17L GPS",
+            "OKC134S VOR_13",
+            "OKC151S STADIUMS",
+            "OKC137S RNAV (RNP) Z RWY 17L",
+            "OKC138S RNAV (RNP) Z RWY 17R",
+            "OKC140S RNAV (RNP) Z RWY 35R",
+            "OKC139S RNAV (RNP) Z RWY 35L",
+            "OKC141S OUN_SFC",
+            "OKC143S APCH_GT",
+            "OKC145S OKC_S",
+            "OKC144S OKC_N",
+            "OKC147S STARS_S",
+            "OKC146S STARS_N",
+            "OKC152S ODO",
+            "OKC MTRs"
+        ],
+        "video_map_file": "videomaps/ZFW-videomaps.gob.zst",
+        "controller_assignments": {
+            "KO1": {
+                "inbound_assignments": {
+                    "CAMET3": "OKC_W_APP",
+                    "GHOST3": "OKC_S_APP",
+                    "MURAH3": "OKC_E_APP",
+                    "TSDEL3": "OKC_D_APP",
+                    "YUCKS3": "OKC_S_APP"
+                },
+                "departure_assignments": {
+                    "KOKC": "OKC_S_APP"
+                }
+            },
+            "KOK": {
+                "inbound_assignments": {
+                    "CAMET3": "OKC_W_APP",
+                    "GHOST3": "OKC_S_APP",
+                    "MURAH3": "OKC_E_APP",
+                    "TSDEL3": "OKC_D_APP",
+                    "YUCKS3": "OKC_S_APP"
+                },
+                "departure_assignments": {
+                    "KOKC": "OKC_W_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "FSI",
+                "prefix": "1"
+            },
+            {
+                "id": "END",
+                "prefix": "2"
+            }
+        ],
+        "neighboring_facilities": [
+            "END",
+            "FSI",
+            "ZFW",
+            "ZKC"
+        ]
+    }
+}

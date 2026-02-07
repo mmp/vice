@@ -1,0 +1,143 @@
+{
+    "control_positions": {
+        "ALB_TWR": {
+            "frequency": 119500,
+            "radio_name": "Albany Tower",
+            "sector_id": "1T"
+        },
+        "SCH_TWR": {
+            "frequency": 121300,
+            "radio_name": "Schenectady Tower",
+            "sector_id": "1S"
+        },
+        "ALB_W_APP": {
+            "frequency": 118050,
+            "radio_name": "Albany Approach",
+            "sector_id": "1W"
+        },
+        "ALB_F_APP": {
+            "frequency": 127150,
+            "radio_name": "Albany Approach",
+            "sector_id": "1F"
+        },
+        "ALB_E_APP": {
+            "frequency": 132825,
+            "radio_name": "Albany Approach",
+            "sector_id": "1E"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "EAS": {
+                "inbound_assignments": {
+                    "CANAN": "ALB_E_APP",
+                    "HANAA": "ALB_E_APP",
+                    "SYR": "ALB_W_APP"
+                },
+                "departure_assignments": {
+                    "KALB": "ALB_W_APP",
+                    "KSCH": "ALB_W_APP"
+                }
+            },
+            "EA1": {
+                "inbound_assignments": {
+                    "CANAN_FINAL_EAST": "ALB_F_APP",
+                    "SYR_FINAL_EAST": "ALB_F_APP"
+                }
+            },
+            "NOR": {
+                "inbound_assignments": {
+                    "CANAN_FINAL_NORTH": "ALB_F_APP",
+                    "SYR_NORTH_FINALS": "ALB_F_APP"
+                }
+            },
+            "SOU": {
+                "inbound_assignments": {
+                    "CANAN_FINAL_SOUTH": "ALB_F_APP",
+                    "SYR_FINAL_SOUTH": "ALB_F_APP"
+                }
+            },
+            "WES": {
+                "inbound_assignments": {
+                    "CANAN_FINAL_WEST": "ALB_F_APP",
+                    "SYR_FINAL_WEST": "ALB_F_APP"
+                }
+            }
+        },
+        "center": "KALB",
+        "scratchpads": {},
+        "stars_maps": [
+            "ALB MAIN",
+            "ALB MVA",
+            "ALB SAT FINALS",
+            "ALB RVM",
+            "ALB GPS RWY 19",
+            "ALB EOVM",
+            "ALB GPS RWY 10",
+            "ALB Cab",
+            "ALB GPS RWY 1",
+            "ALB GPS RWY 28"
+        ],
+        "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
+        "controller_assignments": {
+            "EA1": {
+                "inbound_assignments": {
+                    "CANAN_FINAL_EAST": "ALB_F_APP",
+                    "SYR_FINAL_EAST": "ALB_F_APP"
+                }
+            },
+            "EAS": {
+                "inbound_assignments": {
+                    "CANAN": "ALB_E_APP",
+                    "HANAA": "ALB_E_APP",
+                    "SYR": "ALB_W_APP"
+                },
+                "departure_assignments": {
+                    "KALB": "ALB_W_APP",
+                    "KSCH": "ALB_W_APP"
+                }
+            },
+            "NOR": {
+                "inbound_assignments": {
+                    "CANAN_FINAL_NORTH": "ALB_F_APP",
+                    "SYR_NORTH_FINALS": "ALB_F_APP"
+                }
+            },
+            "SOU": {
+                "inbound_assignments": {
+                    "CANAN_FINAL_SOUTH": "ALB_F_APP",
+                    "SYR_FINAL_SOUTH": "ALB_F_APP"
+                }
+            },
+            "WES": {
+                "inbound_assignments": {
+                    "CANAN_FINAL_WEST": "ALB_F_APP",
+                    "SYR_FINAL_WEST": "ALB_F_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "Y90",
+                "prefix": "1"
+            },
+            {
+                "id": "SYR",
+                "prefix": "2"
+            },
+            {
+                "id": "N90",
+                "prefix": "3"
+            }
+        ],
+        "neighboring_facilities": [
+            "N90",
+            "SYR",
+            "Y90",
+            "ZBW",
+            "ZNY"
+        ]
+    }
+}

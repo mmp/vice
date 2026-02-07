@@ -1,0 +1,164 @@
+{
+    "control_positions": {
+        "ABE_APP": {
+            "frequency": 119650,
+            "radio_name": "Allentown approach",
+            "sector_id": "1A"
+        },
+        "ABE_DEP": {
+            "frequency": 124450,
+            "radio_name": "Allentown departure",
+            "sector_id": "1D"
+        },
+        "ABE_TWR": {
+            "frequency": 120500,
+            "radio_name": "Lehigh Valley tower",
+            "sector_id": "1L"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "EWR": "ABE_DEP",
+                    "MDT/RDG": "ABE_DEP",
+                    "PHL": "ABE_DEP",
+                    "ZNY Northwest": "ABE_DEP",
+                    "ZNY Southwest": "ABE_DEP"
+                },
+                "departure_assignments": {
+                    "KABE": "ABE_DEP"
+                }
+            }
+        },
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "ABENOCA",
+                    "description": "ABE CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "radius": 7,
+                    "center": "40.65236,-75.4404"
+                }
+            ]
+        },
+        "center": "KABE",
+        "radar_sites": {
+            "ABE": {
+                "char": "A",
+                "position": "40.673611,-75.453333",
+                "elevation": 413,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            },
+            "NXX": {
+                "char": "N",
+                "position": "40.19980, -75.14820",
+                "elevation": 408,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 50.4,
+                "slope_angle": 0.175
+            }
+        },
+        "scratchpads": {
+            "ARD": "ARD",
+            "ETX": "ETX",
+            "FJC": "FJC",
+            "PTW": "PTW",
+            "RBV": "RBV",
+            "SAX": "SAX"
+        },
+        "significant_points": {
+            "ARD": {},
+            "ETX": {},
+            "FJC": {},
+            "PTW": {},
+            "RBV": {},
+            "SAX": {}
+        },
+        "stars_maps": [
+            "ABE-103 (MAP 1)",
+            "ABE-105 (VFR)",
+            "ABE-101 (MAP 5)",
+            "ABE-102 (MVA)",
+            "ABE-106 (EOVM)",
+            "ABE-112 (SAT)",
+            "ABE-113 (RNAV)",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "ABE-114 (WAYPT NAMES)",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        ],
+        "video_map_file": "videomaps/ZNY-videomaps.gob.zst",
+        "controller_assignments": {
+            "STD": {
+                "inbound_assignments": {
+                    "EWR": "ABE_DEP",
+                    "MDT/RDG": "ABE_DEP",
+                    "PHL": "ABE_DEP",
+                    "ZNY Northwest": "ABE_DEP",
+                    "ZNY Southwest": "ABE_DEP"
+                },
+                "departure_assignments": {
+                    "KABE": "ABE_DEP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "PHL",
+                "prefix": "3"
+            },
+            {
+                "id": "N90",
+                "prefix": "2"
+            },
+            {
+                "id": "AVP",
+                "prefix": "1"
+            },
+            {
+                "id": "MDT",
+                "prefix": "5"
+            }
+        ],
+        "neighboring_facilities": [
+            "AVP",
+            "MDT",
+            "N90",
+            "PHL",
+            "RDG",
+            "ZNY"
+        ]
+    }
+}

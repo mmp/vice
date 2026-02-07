@@ -1,0 +1,155 @@
+{
+    "control_positions": {
+        "CID_S_APP": {
+            "frequency": 119700,
+            "radio_name": "Cedar Rapids approach",
+            "sector_id": "1A"
+        },
+        "CID_N_APP": {
+            "frequency": 134050,
+            "radio_name": "Cedar Rapids approach",
+            "sector_id": "1D"
+        },
+        "CID_TWR": {
+            "frequency": 118700,
+            "radio_name": "Eastern Iowa tower",
+            "scope_char": "1",
+            "sector_id": "1T"
+        },
+        "IOW_TWR": {
+            "frequency": 122800,
+            "radio_name": "Iowa city traffic",
+            "sector_id": "2T"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "27X": {
+                "inbound_assignments": {
+                    "EAST CID ARR": "CID_N_APP",
+                    "NORTH CID ARR": "CID_N_APP",
+                    "SOUTHEAST CID ARR": "CID_S_APP",
+                    "WEST CID ARR": "CID_S_APP",
+                    "WEST IOW ARR": "CID_S_APP"
+                },
+                "departure_assignments": {
+                    "KCID": "CID_N_APP",
+                    "KIOW": "CID_S_APP"
+                }
+            },
+            "9XX": {
+                "inbound_assignments": {
+                    "EAST CID ARR": "CID_N_APP",
+                    "NORTH CID ARR": "CID_N_APP",
+                    "SOUTHEAST CID ARR": "CID_S_APP",
+                    "WEST CID ARR": "CID_S_APP",
+                    "WEST IOW ARR": "CID_S_APP"
+                },
+                "departure_assignments": {
+                    "KCID": "CID_S_APP",
+                    "KIOW": "CID_S_APP"
+                }
+            }
+        },
+        "center": "N041.53.04.016,W091.42.23.115",
+        "radar_sites": {
+            "CID": {
+                "char": "S",
+                "position": "N041.53.04.936,W091.42.20.972",
+                "elevation": 3622,
+                "primary_range": 55,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            }
+        },
+        "range": 60,
+        "scratchpads": {
+            "IOW": "IOW",
+            "CID": "CID",
+            "WAVUM": "WAV",
+            "TNU": "NEW",
+            "KOOOP": "KOO",
+            "OBH": "OBH",
+            "MNOSO": "MNO",
+            "SGF": "SGF",
+            "BENNR": "BEN",
+            "BDF": "BDF",
+            "DBQ": "DBQ",
+            "GBG": "GBG",
+            "OVR": "OVR",
+            "DSM": "DSM",
+            "ALO": "ALO",
+            "MAPPS": "MAP"
+        },
+        "significant_points": {
+            "ALO": {},
+            "BDF": {},
+            "BENNR": {},
+            "CID": {},
+            "DBQ": {},
+            "DSM": {},
+            "GBG": {},
+            "IOW": {},
+            "KOOOP": {},
+            "MAPPS": {},
+            "MNOSO": {},
+            "OBH": {},
+            "OVR": {},
+            "SGF": {},
+            "TNU": {},
+            "WAVUM": {}
+        },
+        "stars_maps": [
+            "CID RVM",
+            "CID MVA",
+            "CID VFR"
+        ],
+        "video_map_file": "videomaps/ZAU-videomaps.gob.zst",
+        "controller_assignments": {
+            "27X": {
+                "inbound_assignments": {
+                    "EAST CID ARR": "CID_N_APP",
+                    "NORTH CID ARR": "CID_N_APP",
+                    "SOUTHEAST CID ARR": "CID_S_APP",
+                    "WEST CID ARR": "CID_S_APP",
+                    "WEST IOW ARR": "CID_S_APP"
+                },
+                "departure_assignments": {
+                    "KCID": "CID_N_APP",
+                    "KIOW": "CID_S_APP"
+                }
+            },
+            "9XX": {
+                "inbound_assignments": {
+                    "EAST CID ARR": "CID_N_APP",
+                    "NORTH CID ARR": "CID_N_APP",
+                    "SOUTHEAST CID ARR": "CID_S_APP",
+                    "WEST CID ARR": "CID_S_APP",
+                    "WEST IOW ARR": "CID_S_APP"
+                },
+                "departure_assignments": {
+                    "KCID": "CID_S_APP",
+                    "KIOW": "CID_S_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ALO",
+                "prefix": "1"
+            },
+            {
+                "id": "MLI",
+                "prefix": "2"
+            }
+        ],
+        "neighboring_facilities": [
+            "ALO",
+            "MLI",
+            "ZAU"
+        ]
+    }
+}

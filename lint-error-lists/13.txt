@@ -1,0 +1,2 @@
+TRACON C90 / Scenario group KORD / Controller 221E: "scope_char" is redundant since it matches "facility_id"
+TRACON COS / Scenario group KCOS / Controller 111ET: "scope_char" is redundant since it matches "facility_id"

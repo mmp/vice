@@ -19,7 +19,7 @@ type Controller struct {
 	FacilityIdentifier string    `json:"facility_id"`     // For example the "N" in "N4P" showing the N90 TRACON
 	ERAMFacility       bool      `json:"eram_facility"`   // To weed out N56 and N4P being the same fac
 	Facility           string    `json:"facility"`        // So we can get the STARS facility from a controller
-	DefaultAirport     string    `json:"default_airport"` // only required if CRDA is a thing
+	Area               int       `json:"area,omitempty"`  // TRACON area number (e.g., 1=LaGuardia, 2=Kennedy in N90)
 }
 
 func (c Controller) IsExternal() bool {

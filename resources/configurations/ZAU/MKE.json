@@ -1,0 +1,353 @@
+{
+    "control_positions": {
+        "ORD_TWR": {
+            "frequency": 120750,
+            "radio_name": "O'Hare Tower",
+            "sector_id": "OT"
+        },
+        "MWC_TWR": {
+            "frequency": 119500,
+            "radio_name": "Timmerman Tower",
+            "sector_id": "RT"
+        },
+        "MKE_E_APP": {
+            "frequency": 118000,
+            "radio_name": "Milwaukee Approach",
+            "sector_id": "1E"
+        },
+        "MKE_W_APP": {
+            "frequency": 126500,
+            "radio_name": "Milwaukee Approach",
+            "sector_id": "1W"
+        },
+        "MKE_F_APP": {
+            "frequency": 118475,
+            "radio_name": "Milwaukee Approach",
+            "sector_id": "1F"
+        },
+        "MKE_M_DEP": {
+            "frequency": 135875,
+            "radio_name": "Milwaukee Departure",
+            "sector_id": "1M"
+        },
+        "MKE_B_DEP": {
+            "frequency": 125350,
+            "radio_name": "Milwaukee Departure",
+            "sector_id": "1B"
+        },
+        "MKE_H_APP": {
+            "frequency": 127375,
+            "radio_name": "Milwaukee Approach",
+            "sector_id": "1H"
+        },
+        "MKE_L_APP": {
+            "frequency": 127000,
+            "radio_name": "Milwaukee Approach",
+            "sector_id": "1L"
+        },
+        "MKE_TWR": {
+            "frequency": 124575,
+            "radio_name": "Milwaukee Tower",
+            "sector_id": "1T"
+        },
+        "OSH_TWR": {
+            "frequency": 118500,
+            "radio_name": "Osh Kosh Tower",
+            "sector_id": "1V"
+        },
+        "UES_TWR": {
+            "frequency": 123700,
+            "radio_name": "Wakeshua Tower",
+            "sector_id": "6W"
+        },
+        "ENW_TWR": {
+            "frequency": 118600,
+            "radio_name": "Kenosha Tower",
+            "sector_id": "7K"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "19R": {
+                "inbound_assignments": {
+                    "19R_Final_East": "MKE_F_APP",
+                    "19R_Final_SouthEast": "MKE_F_APP",
+                    "19R_Final_SouthWest": "MKE_F_APP",
+                    "19R_Final_West": "MKE_F_APP"
+                }
+            },
+            "1LX": {
+                "inbound_assignments": {
+                    "1L_Final_East": "MKE_F_APP",
+                    "1L_Final_NorthEast": "MKE_F_APP",
+                    "1L_Final_NorthWest": "MKE_F_APP",
+                    "1L_Final_South": "MKE_F_APP",
+                    "1L_Final_West": "MKE_F_APP"
+                }
+            },
+            "MIL": {
+                "inbound_assignments": {
+                    "BAE": "MKE_W_APP",
+                    "BRAVE": "MKE_E_APP",
+                    "ERNNY8": "MKE_M_DEP",
+                    "GOPAC3": "MKE_W_APP",
+                    "RAYNR": "MKE_F_APP",
+                    "SUDDS": "MKE_E_APP"
+                },
+                "departure_assignments": {
+                    "KENW": "MKE_M_DEP",
+                    "KMKE": "MKE_M_DEP",
+                    "KMWC": "MKE_M_DEP",
+                    "KOSH": "MKE_L_APP",
+                    "KUES": "MKE_M_DEP"
+                }
+            },
+            "MI1": {
+                "inbound_assignments": {
+                    "BAE": "MKE_W_APP",
+                    "BRAVE": "MKE_E_APP",
+                    "GOPAC3": "MKE_W_APP",
+                    "MADII7": "MKE_M_DEP",
+                    "RAYNR": "MKE_F_APP",
+                    "SUDDS": "MKE_E_APP"
+                },
+                "departure_assignments": {
+                    "KENW": "MKE_B_DEP",
+                    "KMKE": "MKE_B_DEP",
+                    "KMKE/MKE9EAST": "MKE_M_DEP",
+                    "KMKE/ACCRA5": "MKE_M_DEP",
+                    "KMKE/UECKR6": "MKE_M_DEP",
+                    "KMKE/MKE9": "MKE_B_DEP",
+                    "KMWC": "MKE_B_DEP",
+                    "KOSH": "MKE_L_APP",
+                    "KUES": "MKE_B_DEP"
+                }
+            },
+            "MI2": {
+                "inbound_assignments": {
+                    "BAE": "MKE_W_APP",
+                    "BRAVE": "MKE_E_APP",
+                    "GOPAC3": "MKE_W_APP",
+                    "MADII7": "MKE_M_DEP",
+                    "RAYNR": "MKE_F_APP",
+                    "SUDDS": "MKE_E_APP"
+                },
+                "departure_assignments": {
+                    "KENW": "MKE_M_DEP",
+                    "KMKE/MKE9EAST": "MKE_M_DEP",
+                    "KMKE/ACCRA5": "MKE_M_DEP",
+                    "KMKE/UECKR6": "MKE_M_DEP",
+                    "KMKE/MKE9": "MKE_B_DEP",
+                    "KMWC": "MKE_M_DEP",
+                    "KOSH": "MKE_L_APP",
+                    "KUES": "MKE_M_DEP"
+                }
+            }
+        },
+        "center": "KMKE",
+        "coordination_lists": [
+            {
+                "name": "OSH",
+                "id": "A",
+                "airports": [
+                    "KOSH"
+                ]
+            },
+            {
+                "name": "MWC",
+                "id": "B",
+                "airports": [
+                    "KMWC"
+                ]
+            },
+            {
+                "name": "UES",
+                "id": "C",
+                "airports": [
+                    "KUES"
+                ]
+            },
+            {
+                "name": "ENW",
+                "id": "D",
+                "airports": [
+                    "KENW"
+                ]
+            }
+        ],
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "19RNOCA",
+                    "description": "MKE 19R CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 7000,
+                    "vertices": [
+                        "N043.16.33.164,W088.05.53.375",
+                        "N043.15.16.520,W087.38.30.671",
+                        "N042.57.14.449,W088.01.27.149",
+                        "N042.56.48.686,W087.42.51.5697"
+                    ]
+                },
+                {
+                    "id": "1LNOCA",
+                    "description": "MKE 1L CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 7000,
+                    "vertices": [
+                        "N042.56.39.650,W088.03.59.254",
+                        "N042.54.27.443,W087.43.54.164",
+                        "N042.30.04.655,W087.44.59.505",
+                        "N042.30.03.240,W088.08.32.127"
+                    ]
+                }
+            ]
+        },
+        "radar_sites": {
+            "MKE": {
+                "char": "A",
+                "position": "KMKE",
+                "elevation": 728,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.3
+            }
+        },
+        "scratchpads": {
+            "ACCRA": "ACR",
+            "DELHI": "UEC",
+            "SAMPL": "UEC",
+            "HAWKN": "HAW",
+            "BRAVE": "BRA",
+            "GREAS": "GRE",
+            "SQUIB": "SQU",
+            "LYNNI": "LYN"
+        },
+        "stars_maps": [
+            "MKE RWY 1L",
+            "MKE MVA",
+            "MKE RWY 19R",
+            "MKE RWY 7R",
+            "MKE RWY 25L"
+        ],
+        "video_map_file": "videomaps/ZAU-videomaps.gob.zst",
+        "controller_assignments": {
+            "19R": {
+                "inbound_assignments": {
+                    "19R_Final_East": "MKE_F_APP",
+                    "19R_Final_SouthEast": "MKE_F_APP",
+                    "19R_Final_SouthWest": "MKE_F_APP",
+                    "19R_Final_West": "MKE_F_APP"
+                }
+            },
+            "1LX": {
+                "inbound_assignments": {
+                    "1L_Final_East": "MKE_F_APP",
+                    "1L_Final_NorthEast": "MKE_F_APP",
+                    "1L_Final_NorthWest": "MKE_F_APP",
+                    "1L_Final_South": "MKE_F_APP",
+                    "1L_Final_West": "MKE_F_APP"
+                }
+            },
+            "MI1": {
+                "inbound_assignments": {
+                    "BAE": "MKE_W_APP",
+                    "BRAVE": "MKE_E_APP",
+                    "GOPAC3": "MKE_W_APP",
+                    "MADII7": "MKE_M_DEP",
+                    "RAYNR": "MKE_F_APP",
+                    "SUDDS": "MKE_E_APP"
+                },
+                "departure_assignments": {
+                    "KENW": "MKE_B_DEP",
+                    "KMKE": "MKE_B_DEP",
+                    "KMKE/MKE9EAST": "MKE_M_DEP",
+                    "KMKE/ACCRA5": "MKE_M_DEP",
+                    "KMKE/UECKR6": "MKE_M_DEP",
+                    "KMKE/MKE9": "MKE_B_DEP",
+                    "KMWC": "MKE_B_DEP",
+                    "KOSH": "MKE_L_APP",
+                    "KUES": "MKE_B_DEP"
+                }
+            },
+            "MI2": {
+                "inbound_assignments": {
+                    "BAE": "MKE_W_APP",
+                    "BRAVE": "MKE_E_APP",
+                    "GOPAC3": "MKE_W_APP",
+                    "MADII7": "MKE_M_DEP",
+                    "RAYNR": "MKE_F_APP",
+                    "SUDDS": "MKE_E_APP"
+                },
+                "departure_assignments": {
+                    "KENW": "MKE_M_DEP",
+                    "KMKE/MKE9EAST": "MKE_M_DEP",
+                    "KMKE/ACCRA5": "MKE_M_DEP",
+                    "KMKE/UECKR6": "MKE_M_DEP",
+                    "KMKE/MKE9": "MKE_B_DEP",
+                    "KMWC": "MKE_M_DEP",
+                    "KOSH": "MKE_L_APP",
+                    "KUES": "MKE_M_DEP"
+                }
+            },
+            "MIL": {
+                "inbound_assignments": {
+                    "BAE": "MKE_W_APP",
+                    "BRAVE": "MKE_E_APP",
+                    "ERNNY8": "MKE_M_DEP",
+                    "GOPAC3": "MKE_W_APP",
+                    "RAYNR": "MKE_F_APP",
+                    "SUDDS": "MKE_E_APP"
+                },
+                "departure_assignments": {
+                    "KENW": "MKE_M_DEP",
+                    "KMKE": "MKE_M_DEP",
+                    "KMWC": "MKE_M_DEP",
+                    "KOSH": "MKE_L_APP",
+                    "KUES": "MKE_M_DEP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "GRB",
+                "prefix": "5"
+            },
+            {
+                "id": "AZO",
+                "prefix": "6"
+            },
+            {
+                "id": "C90",
+                "prefix": "1"
+            },
+            {
+                "id": "RFD",
+                "prefix": "2"
+            },
+            {
+                "id": "MSN",
+                "prefix": "3"
+            },
+            {
+                "id": "VOK",
+                "prefix": "4"
+            }
+        ],
+        "neighboring_facilities": [
+            "AZO",
+            "C90",
+            "GRB",
+            "MSN",
+            "RFD",
+            "VOK",
+            "ZAU",
+            "ZMP"
+        ]
+    }
+}

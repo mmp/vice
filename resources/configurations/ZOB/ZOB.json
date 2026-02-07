@@ -1,0 +1,286 @@
+{
+  "control_positions": {
+    "ZOB 00 ZOB GUARD": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "00"
+    },
+    "ZOB 02 Pandora": {
+      "frequency": 128625,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "02"
+    },
+    "ZOB 03 Marion": {
+      "frequency": 135100,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "03"
+    },
+    "ZOB 04 Mansfield": {
+      "frequency": 134900,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "04"
+    },
+    "ZOB 06 Briggs": {
+      "frequency": 120600,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "06"
+    },
+    "ZOB 07 Sandusky": {
+      "frequency": 127675,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "07"
+    },
+    "ZOB 08 Carleton": {
+      "frequency": 127900,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "08"
+    },
+    "ZOB 12 Lansing": {
+      "frequency": 126750,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "12"
+    },
+    "ZOB 14 Jackson": {
+      "frequency": 120450,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "14"
+    },
+    "ZOB 15 Litchfield": {
+      "frequency": 134650,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "15"
+    },
+    "ZOB 16 Flint": {
+      "frequency": 127700,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "16"
+    },
+    "ZOB 18 Peck": {
+      "frequency": 133875,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "18"
+    },
+    "ZOB 19 Gamble": {
+      "frequency": 126525,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "19"
+    },
+    "ZOB 20 Dresden": {
+      "frequency": 132250,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "20"
+    },
+    "ZOB 21 Windsor": {
+      "frequency": 132450,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "21"
+    },
+    "ZOB 26 Lake": {
+      "frequency": 120075,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "26"
+    },
+    "ZOB 27 Hudson": {
+      "frequency": 134775,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "27"
+    },
+    "ZOB 28 Detroit": {
+      "frequency": 135725,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "28"
+    },
+    "ZOB 29 Wayne": {
+      "frequency": 133525,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "29"
+    },
+    "ZOB 31 Rochester": {
+      "frequency": 127475,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "31"
+    },
+    "ZOB 33 Buffalo": {
+      "frequency": 125200,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "33"
+    },
+    "ZOB 36 Dansville": {
+      "frequency": 118625,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "36"
+    },
+    "ZOB 37 Geneseo": {
+      "frequency": 128025,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "37"
+    },
+    "ZOB 38 Niagara": {
+      "frequency": 120625,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "38"
+    },
+    "ZOB 39 Steuben": {
+      "frequency": 119375,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "39"
+    },
+    "ZOB 45 Geauga": {
+      "frequency": 120325,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "45"
+    },
+    "ZOB 46 Marblehead": {
+      "frequency": 135375,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "46"
+    },
+    "ZOB 47 Bluffton": {
+      "frequency": 119325,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "47"
+    },
+    "ZOB 48 Ravenna": {
+      "frequency": 119875,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "48"
+    },
+    "ZOB 49 Lorain": {
+      "frequency": 133375,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "49"
+    },
+    "ZOB 50 Clarion": {
+      "frequency": 126725,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "50"
+    },
+    "ZOB 53 Indian Head": {
+      "frequency": 124400,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "53"
+    },
+    "ZOB 55 Morgantown": {
+      "frequency": 126950,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "55"
+    },
+    "ZOB 57 Brecksville": {
+      "frequency": 125875,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "57"
+    },
+    "ZOB 58 Palmer": {
+      "frequency": 121075,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "58"
+    },
+    "ZOB 59 Franklin": {
+      "frequency": 119725,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "59"
+    },
+    "ZOB 64 Keystone": {
+      "frequency": 134475,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "64"
+    },
+    "ZOB 66 Bellaire": {
+      "frequency": 125425,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "66"
+    },
+    "ZOB 67 Imperial": {
+      "frequency": 132125,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "67"
+    },
+    "ZOB 68 Allegheny": {
+      "frequency": 133075,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "68"
+    },
+    "ZOB 69 Clarksburg": {
+      "frequency": 135175,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "69"
+    },
+    "ZOB 70 Dunkirk": {
+      "frequency": 127075,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "70"
+    },
+    "ZOB 73 Bradford": {
+      "frequency": 124325,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "73"
+    },
+    "ZOB 75 Youngstown": {
+      "frequency": 120775,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "75"
+    },
+    "ZOB 77 Warren": {
+      "frequency": 134125,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "77"
+    },
+    "ZOB 79 Jamestown": {
+      "frequency": 132925,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "79"
+    },
+    "ZOB 99 TMU": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "99"
+    }
+  }
+}

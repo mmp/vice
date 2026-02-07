@@ -1,0 +1,257 @@
+{
+    "control_positions": {
+        "MCI_E_APP": {
+            "frequency": 123950,
+            "radio_name": "Kansas City Approach",
+            "sector_id": "1E"
+        },
+        "MCI_A_APP": {
+            "frequency": 120950,
+            "radio_name": "Kansas City Approach",
+            "sector_id": "1A"
+        },
+        "MCI_B_APP": {
+            "frequency": 135375,
+            "radio_name": "Kansas City Approach",
+            "sector_id": "1B"
+        },
+        "MCI_W_APP": {
+            "frequency": 124700,
+            "radio_name": "Kansas City Approach",
+            "sector_id": "1W"
+        },
+        "MCI_F_APP": {
+            "frequency": 119825,
+            "radio_name": "Kansas City Approach",
+            "sector_id": "1F"
+        },
+        "MCI_N_APP": {
+            "frequency": 118400,
+            "radio_name": "Kansas City Approach",
+            "sector_id": "1N"
+        },
+        "MCI_S_APP": {
+            "frequency": 118900,
+            "radio_name": "Kansas City Approach",
+            "sector_id": "1S"
+        },
+        "MCI_P_APP": {
+            "frequency": 119825,
+            "radio_name": "Kansas City Approach",
+            "sector_id": "1P"
+        },
+        "MCI_TWR": {
+            "frequency": 128200,
+            "radio_name": "International Tower",
+            "sector_id": "1T"
+        },
+        "STJ_TWR": {
+            "frequency": 126900,
+            "radio_name": "St. Joseph Tower",
+            "sector_id": "5J"
+        },
+        "IXD_TWR": {
+            "frequency": 133000,
+            "radio_name": "New Century Tower",
+            "sector_id": "2C"
+        },
+        "OJC_TWR": {
+            "frequency": 126000,
+            "radio_name": "Johnson County Tower",
+            "sector_id": "2R"
+        },
+        "MKC_TWR": {
+            "frequency": 133300,
+            "radio_name": "Wheeler Tower",
+            "sector_id": "4W"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "KMC": {
+                "inbound_assignments": {
+                    "JSONN4": "MCI_B_APP",
+                    "MHOMS3": "MCI_A_APP",
+                    "RUDDH3": "MCI_A_APP",
+                    "WUTNG3": "MCI_B_APP"
+                },
+                "departure_assignments": {
+                    "KIXD": "MCI_S_APP",
+                    "KMCI": "MCI_W_APP",
+                    "KMKC": "MCI_S_APP",
+                    "KOJC": "MCI_S_APP",
+                    "KSTJ": "MCI_N_APP"
+                }
+            },
+            "KM1": {
+                "inbound_assignments": {
+                    "JSONN4": "MCI_B_APP",
+                    "MHOMS3": "MCI_A_APP",
+                    "RUDDH3": "MCI_A_APP",
+                    "WUTNG3": "MCI_B_APP"
+                },
+                "departure_assignments": {
+                    "KIXD": "MCI_S_APP",
+                    "KMCI": "MCI_E_APP",
+                    "KMKC": "MCI_S_APP",
+                    "KOJC": "MCI_S_APP",
+                    "KSTJ": "MCI_N_APP"
+                }
+            }
+        },
+        "center": "KMCI",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "MCINOCA",
+                    "description": "MCI CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 1000,
+                    "ceiling": 3000,
+                    "radius": 3,
+                    "center": "KMCI"
+                }
+            ]
+        },
+        "scratchpads": {
+            "SIFER": "SIF",
+            "ARENZ": "ARE",
+            "BODYN": "BOD",
+            "EXCEL": "EXC",
+            "TWAIN": "TWN",
+            "SPI": "SPI",
+            "OCTAM": "OCT",
+            "WHITE": "SZL",
+            "COU": "COU",
+            "FRANC": "FRA",
+            "CENDI": "CEN",
+            "BUM": "BUM",
+            "SGF": "SGF",
+            "PAOLA": "PAY",
+            "DOSOA": "DOS",
+            "TOPEK": "TPK",
+            "ICT": "ICT",
+            "SLN": "SLN",
+            "KENTN": "KEN",
+            "CATTS": "CAT",
+            "BOWLR": "BOW",
+            "TIFTO": "TIF",
+            "PEGGI": "PEG",
+            "STJ": "JOE",
+            "TONCE": "TON"
+        },
+        "significant_points": {
+            "ARENZ": {},
+            "BODYN": {},
+            "BOWLR": {},
+            "BUM": {},
+            "CATTS": {},
+            "COU": {},
+            "DOSOA": {},
+            "EXCEL": {},
+            "FRANC": {},
+            "ICT": {},
+            "KENTN": {},
+            "OCTAM": {},
+            "PAOLA": {
+                "short_name": "PAY"
+            },
+            "SGF": {},
+            "SLN": {},
+            "SPI": {},
+            "STJ": {},
+            "TIFTO": {},
+            "TONCE": {},
+            "TWAIN": {
+                "short_name": "TWN"
+            },
+            "WHITE": {}
+        },
+        "stars_maps": [
+            "KC North Flow",
+            "KC South Flow",
+            "KC East Flow",
+            "KC West Flow",
+            "KC Class B",
+            "KC MVA",
+            "KC SAT FIN",
+            "KC ILS LOC North",
+            "KC RWY 9 DEP",
+            "KC ILS LOC South",
+            "KC SKE MAP",
+            "KC GPS RNAV North",
+            "KC GPS RNAV Other",
+            "KC GPS RNAV South",
+            "KC MKC Map",
+            "KC MKC TCP",
+            "KC OJC Map",
+            "KC VOR North",
+            "KC VOR Other",
+            "KC VOR South",
+            "KC VFR/EMERG",
+            "KC VICTOR",
+            "KC Class D",
+            "KC Sectors",
+            "KC SID STAR",
+            "KC Counties",
+            "KC 5NM MVA",
+            "KC Stadiums",
+            "KC RNAV Z RWY 01L",
+            "KC RNAV Z RWY 01R",
+            "KC RNAV Z RWY 19L",
+            "KC RNAV Z RWY 19R",
+            "KC RNAV Z RWY 27",
+            "KC RNAV Z RWY 9",
+            "KC MKC APD",
+            "KC OJC APD",
+            "KC IXD APD",
+            "KC STJ APD"
+        ],
+        "video_map_file": "videomaps/ZKC-videomaps.gob.zst",
+        "controller_assignments": {
+            "KM1": {
+                "inbound_assignments": {
+                    "JSONN4": "MCI_B_APP",
+                    "MHOMS3": "MCI_A_APP",
+                    "RUDDH3": "MCI_A_APP",
+                    "WUTNG3": "MCI_B_APP"
+                },
+                "departure_assignments": {
+                    "KIXD": "MCI_S_APP",
+                    "KMCI": "MCI_E_APP",
+                    "KMKC": "MCI_S_APP",
+                    "KOJC": "MCI_S_APP",
+                    "KSTJ": "MCI_N_APP"
+                }
+            },
+            "KMC": {
+                "inbound_assignments": {
+                    "JSONN4": "MCI_B_APP",
+                    "MHOMS3": "MCI_A_APP",
+                    "RUDDH3": "MCI_A_APP",
+                    "WUTNG3": "MCI_B_APP"
+                },
+                "departure_assignments": {
+                    "KIXD": "MCI_S_APP",
+                    "KMCI": "MCI_W_APP",
+                    "KMKC": "MCI_S_APP",
+                    "KOJC": "MCI_S_APP",
+                    "KSTJ": "MCI_N_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "SZL",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "STJ",
+            "SZL",
+            "ZKC"
+        ]
+    }
+}

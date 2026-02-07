@@ -1,0 +1,310 @@
+{
+    "control_positions": {
+        "ZDC 01 Elkins": {
+            "frequency": 128600,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "01"
+        },
+        "ZDC 02 Casanova": {
+            "frequency": 133200,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "02"
+        },
+        "ZDC 03 Moorefield": {
+            "frequency": 133275,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "03"
+        },
+        "ZDC 04 Pinion": {
+            "frequency": 133975,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "04"
+        },
+        "ZDC 05 Linden": {
+            "frequency": 133550,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "05"
+        },
+        "ZDC 06 Hagerstown": {
+            "frequency": 134150,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "06"
+        },
+        "ZDC 07 Wahoo": {
+            "frequency": 121925,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "07"
+        },
+        "ZDC 09 Dixon": {
+            "frequency": 118825,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "09"
+        },
+        "ZDC 10 Bay": {
+            "frequency": 132275,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "10"
+        },
+        "ZDC 11 Calvert": {
+            "frequency": 133900,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "11"
+        },
+        "ZDC 12 Brooke": {
+            "frequency": 126875,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "12"
+        },
+        "ZDC 14 Irons": {
+            "frequency": 132950,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "14"
+        },
+        "ZDC 15 Blue Ridge": {
+            "frequency": 133650,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "15"
+        },
+        "ZDC 16 Hopewell": {
+            "frequency": 121875,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "16"
+        },
+        "ZDC 17 Swann": {
+            "frequency": 134500,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "17"
+        },
+        "ZDC 18 DuPont": {
+            "frequency": 132525,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "18"
+        },
+        "ZDC 19 Woodstown": {
+            "frequency": 125450,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "19"
+        },
+        "ZDC 20 Blackstone": {
+            "frequency": 127750,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "20"
+        },
+        "ZDC 21 Dominion": {
+            "frequency": 118750,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "21"
+        },
+        "ZDC 22 South Boston": {
+            "frequency": 124050,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "22"
+        },
+        "ZDC 23 Cape Charles": {
+            "frequency": 132550,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "23"
+        },
+        "ZDC 24 Cofield": {
+            "frequency": 123850,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "24"
+        },
+        "ZDC 25 New Bern": {
+            "frequency": 135500,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "25"
+        },
+        "ZDC 26 Sampson": {
+            "frequency": 135300,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "26"
+        },
+        "ZDC 27 Liberty": {
+            "frequency": 135200,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "27"
+        },
+        "ZDC 28 Rocky Mount": {
+            "frequency": 118475,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "28"
+        },
+        "ZDC 29 Valley": {
+            "frequency": 134400,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "29"
+        },
+        "ZDC 31 Azalea": {
+            "frequency": 135400,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "31"
+        },
+        "ZDC 32 Gordonsville": {
+            "frequency": 133725,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "32"
+        },
+        "ZDC 33 Franklin": {
+            "frequency": 132025,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "33"
+        },
+        "ZDC 34 Norfolk": {
+            "frequency": 133825,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "34"
+        },
+        "ZDC 35 Wilmington": {
+            "frequency": 124025,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "35"
+        },
+        "ZDC 36 Raleigh": {
+            "frequency": 118925,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "36"
+        },
+        "ZDC 37 Marlington": {
+            "frequency": 133025,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "37"
+        },
+        "ZDC 38 Tar River": {
+            "frequency": 132225,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "38"
+        },
+        "ZDC 39 Snow Hill": {
+            "frequency": 121375,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "39"
+        },
+        "ZDC 42 Bryce": {
+            "frequency": 118025,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "42"
+        },
+        "ZDC 50 Yorktown": {
+            "frequency": 120750,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "50"
+        },
+        "ZDC 51 Casino": {
+            "frequency": 127700,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "51"
+        },
+        "ZDC 52 Tech": {
+            "frequency": 133575,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "52"
+        },
+        "ZDC 53 Kenton": {
+            "frequency": 132050,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "53"
+        },
+        "ZDC 54 Salisbury": {
+            "frequency": 120975,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "54"
+        },
+        "ZDC 58 Coyle": {
+            "frequency": 121025,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "58"
+        },
+        "ZDC 59 Sea Isle": {
+            "frequency": 133125,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "59"
+        },
+        "ZDC 60 Montebello": {
+            "frequency": 121675,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "60"
+        },
+        "ZDC 72 Shenandoah": {
+            "frequency": 127925,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "72"
+        },
+        "ZDC 90 Warn 107": {
+            "frequency": 135725,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "90"
+        },
+        "ZDC 92 Warn 122": {
+            "frequency": 135875,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "92"
+        },
+        "ZDC 97 Warn 72": {
+            "frequency": 118125,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "97"
+        },
+        "ZDC 98 Warn 386": {
+            "frequency": 132150,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "98"
+        },
+        "ZDC 99 TMU": {
+            "frequency": 132050,
+            "eram_facility": true,
+            "radio_name": "Washington Center",
+            "sector_id": "99"
+        }
+    }
+}

@@ -1,0 +1,316 @@
+{
+    "control_positions": {
+        "1A": {
+            "frequency": 127900,
+            "radio_name": "Providence Approach",
+            "sector_id": "1A"
+        },
+        "1D": {
+            "frequency": 123675,
+            "radio_name": "Providence Approach",
+            "sector_id": "1D"
+        },
+        "1H": {
+            "frequency": 119450,
+            "radio_name": "Providence Approach",
+            "sector_id": "1H"
+        },
+        "1J": {
+            "frequency": 125750,
+            "radio_name": "Providence Approach",
+            "sector_id": "1J"
+        },
+        "1N": {
+            "frequency": 128700,
+            "radio_name": "Providence Approach",
+            "sector_id": "1N"
+        },
+        "PVD_TWR": {
+            "frequency": 120700,
+            "radio_name": "Providence Tower",
+            "sector_id": "1T"
+        },
+        "OQU_TWR": {
+            "frequency": 125650,
+            "radio_name": "Quonset Tower",
+            "sector_id": "1Q"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "05X": {
+                "inbound_assignments": {
+                    "GON": "1A",
+                    "JORDN": "1A",
+                    "WIPOR": "1A"
+                },
+                "departure_assignments": {
+                    "KPVD": "1A"
+                }
+            },
+            "23X": {
+                "inbound_assignments": {
+                    "GON": "1D",
+                    "JORDN": "1D",
+                    "JUMPR": "1D",
+                    "PEAKE": "1D",
+                    "WIPOR": "1D"
+                },
+                "departure_assignments": {
+                    "KEWB": "1A",
+                    "KOQU": "1A",
+                    "KPVD": "1A"
+                }
+            },
+            "21X": {
+                "inbound_assignments": {
+                    "PQ_OQU_2316_COMBINED": "1D",
+                    "PQ_PVD_2316_COMBINED": "1D"
+                },
+                "departure_assignments": {
+                    "KOQU": "1D",
+                    "KPVD": "1D"
+                }
+            },
+            "PVD": {
+                "inbound_assignments": {
+                    "PQ_OQU_2316": "1D",
+                    "PQ_PVD_2316": "1A"
+                },
+                "departure_assignments": {
+                    "KOQU": "1D",
+                    "KPVD": "1D"
+                }
+            },
+            "51X": {
+                "inbound_assignments": {
+                    "PQ_OQU_0516": "1D",
+                    "PQ_PVD_0516": "1D"
+                },
+                "departure_assignments": {
+                    "KOQU": "1A",
+                    "KPVD": "1D"
+                }
+            },
+            "53X": {
+                "inbound_assignments": {
+                    "PQ_OQU_0534": "1A",
+                    "PQ_PVD_0534": "1A"
+                },
+                "departure_assignments": {
+                    "KOQU": "1A",
+                    "KPVD": "1D"
+                }
+            }
+        },
+        "altimeters": [
+            "KPVD"
+        ],
+        "center": "N041.43.29.033,W071.25.35.559",
+        "radar_sites": {
+            "PVD": {
+                "char": "P",
+                "position": "PVD",
+                "elevation": 50,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "slope_angle": 0.175
+            }
+        },
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "BOSNOCA",
+                    "description": "BOS CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 2000,
+                    "radius": 7,
+                    "center": "N042.23.05.581,W071.00.43.615"
+                }
+            ],
+            "auto_acquisition": [
+                {
+                    "id": "ACQ",
+                    "description": "AUTO ACQUISITION",
+                    "type": "polygon",
+                    "vertices": "N041.29.44.632,W072.58.54.494 N041.48.38.298,W072.35.01.519 N042.14.34.429,W072.13.04.671 N042.26.17.911,W071.23.30.589 N042.17.51.043,W071.05.33.847 N042.11.06.307,W070.45.27.603 N042.03.55.285,W070.27.44.236 N041.34.18.000,W070.23.59.016 N041.21.26.842,W070.33.08.964 N040.58.09.202,W070.32.50.645 N040.32.16.683,W071.58.21.260 N041.16.46.910,W072.52.06.214",
+                    "floor": 0,
+                    "ceiling": 23000
+                }
+            ]
+        },
+        "allow_long_scratchpad": true,
+        "pdb": {
+            "hide_gs": true
+        },
+        "force_ql_self": true,
+        "display_handoff_facility_only": false,
+        "handoff_sector_display_duration": 5,
+        "scratchpads": {
+            "PUT": "PUT",
+            "PVD_PUT": "PUT",
+            "JUMPR": "7TN"
+        },
+        "coordination_lists": [
+            {
+                "name": ".     PVD D DEP",
+                "id": "D",
+                "airports": [
+                    "KPVD"
+                ]
+            },
+            {
+                "name": ".     EWB DEP",
+                "id": "N",
+                "airports": [
+                    "KEWB"
+                ]
+            },
+            {
+                "name": ".     OQU DEP",
+                "id": "Q",
+                "airports": [
+                    "KOQU"
+                ]
+            }
+        ],
+        "significant_points": {
+            "PUT": {},
+            "JUMPR": {
+                "short_name": "7TN"
+            },
+            "PEAKE": {
+                "short_name": "DNE"
+            }
+        },
+        "stars_maps": [
+            "RVMPVD005S",
+            "RVMPVD113S",
+            "RVMPVD019S",
+            "RVMPVD011S",
+            "RVMPVD110S",
+            "RVMPVD006S",
+            "RVMPVD005S",
+            "RVMPVD113S",
+            "RVMPVD019S",
+            "RVMPVD002S",
+            "RVMPVD001S",
+            "RVMPVDCIR1",
+            "RVMPVD020S",
+            "RVMPVD014S",
+            "RVMPVD016S",
+            "RVMPVD007S",
+            "RVMPVD009S",
+            "ALL RADARS 40 MILE MAP",
+            "RVMPVD023S",
+            "RVMPVD025S",
+            "AREA4RSHADED",
+            "",
+            "RVMPVD011S",
+            "RVMPVD110S",
+            "RVMPVD006S",
+            "RVMPVD004S",
+            "RVMPVD003S",
+            "RVMFIXTGTS",
+            "RVMPVD018S",
+            "RVMPVD021S",
+            "RVMPVD017S",
+            "RVMPVD008S",
+            "RVMPVD010S",
+            "RVMPVD012S",
+            "RVMPVD024S",
+            "RVMPVD028S"
+        ],
+        "video_map_file": "videomaps/PVD-videomaps.gob.zst",
+        "controller_assignments": {
+            "05X": {
+                "inbound_assignments": {
+                    "GON": "1A",
+                    "JORDN": "1A",
+                    "WIPOR": "1A"
+                },
+                "departure_assignments": {
+                    "KPVD": "1A"
+                }
+            },
+            "21X": {
+                "inbound_assignments": {
+                    "PQ_OQU_2316_COMBINED": "1D",
+                    "PQ_PVD_2316_COMBINED": "1D"
+                },
+                "departure_assignments": {
+                    "KOQU": "1D",
+                    "KPVD": "1D"
+                }
+            },
+            "23X": {
+                "inbound_assignments": {
+                    "GON": "1D",
+                    "JORDN": "1D",
+                    "JUMPR": "1D",
+                    "PEAKE": "1D",
+                    "WIPOR": "1D"
+                },
+                "departure_assignments": {
+                    "KEWB": "1A",
+                    "KOQU": "1A",
+                    "KPVD": "1A"
+                }
+            },
+            "51X": {
+                "inbound_assignments": {
+                    "PQ_OQU_0516": "1D",
+                    "PQ_PVD_0516": "1D"
+                },
+                "departure_assignments": {
+                    "KOQU": "1A",
+                    "KPVD": "1D"
+                }
+            },
+            "53X": {
+                "inbound_assignments": {
+                    "PQ_OQU_0534": "1A",
+                    "PQ_PVD_0534": "1A"
+                },
+                "departure_assignments": {
+                    "KOQU": "1A",
+                    "KPVD": "1D"
+                }
+            },
+            "PVD": {
+                "inbound_assignments": {
+                    "PQ_OQU_2316": "1D",
+                    "PQ_PVD_2316": "1A"
+                },
+                "departure_assignments": {
+                    "KOQU": "1D",
+                    "KPVD": "1D"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "A90",
+                "prefix": "2"
+            },
+            {
+                "id": "Y90",
+                "prefix": "1"
+            },
+            {
+                "id": "N90",
+                "prefix": "4"
+            }
+        ],
+        "neighboring_facilities": [
+            "A90",
+            "N90",
+            "Y90",
+            "ZBW",
+            "ZNY"
+        ]
+    }
+}

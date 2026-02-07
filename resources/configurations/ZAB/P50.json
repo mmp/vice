@@ -1,0 +1,597 @@
+{
+    "control_positions": {
+        "PHX_A_APP": {
+            "frequency": 128650,
+            "radio_name": "Phoenix Approach",
+            "sector_id": "1A"
+        },
+        "PHX_Q_APP": {
+            "frequency": 124100,
+            "radio_name": "Phoenix Approach",
+            "sector_id": "1Q"
+        },
+        "PHX_B_APP": {
+            "frequency": 120700,
+            "radio_name": "Phoenix Approach",
+            "sector_id": "1B"
+        },
+        "PHX_W_APP": {
+            "frequency": 124900,
+            "radio_name": "Phoenix Approach",
+            "sector_id": "1W"
+        },
+        "PHX_P_APP": {
+            "frequency": 123700,
+            "radio_name": "Phoenix Approach",
+            "sector_id": "1P"
+        },
+        "PHX_N_DEP": {
+            "frequency": 119200,
+            "radio_name": "Phoenix Departure",
+            "sector_id": "1N"
+        },
+        "PHX_S_DEP": {
+            "frequency": 126800,
+            "radio_name": "Phoenix Departure",
+            "sector_id": "1S"
+        },
+        "PHX_F_APP": {
+            "frequency": 126600,
+            "radio_name": "Phoenix Approach",
+            "sector_id": "1F"
+        },
+        "PHX_V_APP": {
+            "frequency": 120400,
+            "radio_name": "Phoenix Approach",
+            "sector_id": "1V"
+        },
+        "PHX_J_APP": {
+            "frequency": 133570,
+            "radio_name": "Phoenix Approach",
+            "sector_id": "1J"
+        },
+        "PHX_R_APP": {
+            "frequency": 119520,
+            "radio_name": "Phoenix Approach",
+            "sector_id": "1R"
+        },
+        "PHX_K_APP": {
+            "frequency": 126370,
+            "radio_name": "Phoenix Approach",
+            "sector_id": "1K"
+        },
+        "PHX_T_TWR": {
+            "frequency": 120900,
+            "radio_name": "Phoenix Tower",
+            "sector_id": "PT"
+        },
+        "PHX_E_TWR": {
+            "frequency": 118700,
+            "radio_name": "Phoenix Tower",
+            "sector_id": "PE"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "50X": {
+                "inbound_assignments": {
+                    "BRUSR1.E": "PHX_A_APP",
+                    "DSERT2": "PHX_B_APP",
+                    "EAGUL6.E": "PHX_A_APP",
+                    "HUUTY1": "PHX_W_APP",
+                    "HYDRR1.E": "PHX_Q_APP",
+                    "PINNG1.E": "PHX_Q_APP"
+                },
+                "departure_assignments": {
+                    "KIWA": "PHX_W_APP",
+                    "KPHX": "PHX_S_DEP",
+                    "KSDL": "PHX_B_APP"
+                }
+            },
+            "P50": {
+                "inbound_assignments": {
+                    "NAA EAST ARR": "PHX_K_APP",
+                    "NAA SOUTH ARR": "PHX_K_APP",
+                    "NAA WEST ARR": "PHX_J_APP"
+                },
+                "departure_assignments": {
+                    "KFLG": "PHX_K_APP",
+                    "KPRC": "PHX_J_APP",
+                    "KSEZ": "PHX_K_APP"
+                }
+            },
+            "P51": {
+                "inbound_assignments": {
+                    "BRUSR1.W": "PHX_A_APP",
+                    "DSERT2": "PHX_B_APP",
+                    "EAGUL6.W": "PHX_A_APP",
+                    "HUUTY1": "PHX_W_APP",
+                    "HYDRR1.W": "PHX_Q_APP",
+                    "PINNG1.W": "PHX_Q_APP"
+                },
+                "departure_assignments": {
+                    "KIWA": "PHX_W_APP",
+                    "KPHX": "PHX_S_DEP",
+                    "KSDL": "PHX_B_APP"
+                }
+            },
+            "PHX": {
+                "inbound_assignments": {
+                    "BRUSR1_FE": "PHX_V_APP",
+                    "EAGUL6_FE": "PHX_V_APP",
+                    "HYDRR1_FE": "PHX_F_APP",
+                    "PINNG1_FE": "PHX_F_APP"
+                }
+            },
+            "PH1": {
+                "inbound_assignments": {
+                    "BRUSR1_FW": "PHX_V_APP",
+                    "EAGUL6_FW": "PHX_V_APP",
+                    "HYDRR1_FW": "PHX_F_APP",
+                    "PINNG1_FW": "PHX_F_APP"
+                }
+            }
+        },
+        "center": "KPHX",
+        "controller_configs": {
+            "1K": {
+                "video_maps": [
+                    "PRC414 NAZ_ASP",
+                    "PHX003 PHX003",
+                    "",
+                    "PHX317 V_AIRWY",
+                    "PRC410 PRCFLGD",
+                    "PHX307 EOVM",
+                    "PHX308 HWY_RWY",
+                    "PRC416 VRROUTE",
+                    "PRC418 SUNNY",
+                    "",
+                    "PRC402 FINALS",
+                    "PRC404 NAA_VOR",
+                    "PHX302 ZABSCT",
+                    "PRC411 NAARNAV",
+                    "PRC409 PRC-RPT",
+                    "PRC408 PRC_HWY",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "PRC415 IRROUTE",
+                    "PRC417 R2302",
+                    "",
+                    "PRC430 NAA_ILS",
+                    "PRC403 RNAV",
+                    "PRC414 NAZ_ASP",
+                    "PRC410 PRCFLGD",
+                    "PRC412 PRC-VFR",
+                    "PRC413 GLADBAG"
+                ],
+                "default_maps": [
+                    "PRC414 NAZ_ASP"
+                ],
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 13000,
+                        "vertices": "N034.59.28.565,W111.54.00.747 N034.43.20.642,W112.05.37.609 N034.30.15.422,W112.03.35.991 N034.31.17.467,W111.50.21.624 N034.27.08.338,W111.25.55.993 N034.54.04.345,W111.11.19.449 N034.51.57.727,W111.21.14.221"
+                    },
+                    {
+                        "type": "polygon",
+                        "ceiling": 15000,
+                        "vertices": "N035.03.11.340,W112.07.15.937 N035.21.04.169,W112.09.05.690 N035.23.51.175,W111.39.32.497 N035.24.10.209,W111.09.12.365 N035.19.54.763,W111.05.46.508 N034.54.13.106,W111.11.41.229 N034.51.55.310,W111.22.26.731"
+                    }
+                ],
+                "center": "KPRC",
+                "range": 60
+            },
+            "1J": {
+                "video_maps": [
+                    "PRC414 NAZ_ASP",
+                    "PHX003 PHX003",
+                    "",
+                    "PHX317 V_AIRWY",
+                    "PRC410 PRCFLGD",
+                    "PHX307 EOVM",
+                    "PHX308 HWY_RWY",
+                    "PRC416 VRROUTE",
+                    "PRC418 SUNNY",
+                    "",
+                    "PRC402 FINALS",
+                    "PRC404 NAA_VOR",
+                    "PHX302 ZABSCT",
+                    "PRC411 NAARNAV",
+                    "PRC409 PRC-RPT",
+                    "PRC408 PRC_HWY",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "PRC415 IRROUTE",
+                    "PRC417 R2302",
+                    "",
+                    "PRC430 NAA_ILS",
+                    "PRC403 RNAV",
+                    "PRC414 NAZ_ASP",
+                    "PRC410 PRCFLGD",
+                    "PRC412 PRC-VFR",
+                    "PRC413 GLADBAG"
+                ],
+                "default_maps": [
+                    "PRC414 NAZ_ASP"
+                ],
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 13000,
+                        "vertices": "N034.30.26.188,W112.04.09.252 N034.28.40.596,W112.21.22.159 N034.22.14.220,W112.24.04.482 N034.15.07.937,W112.40.13.586 N034.39.36.713,W113.04.16.475 N034.56.18.337,W112.53.01.173 N035.00.59.820,W112.49.21.145 N035.05.04.664,W112.42.38.551 N035.07.06.640,W112.35.38.681 N035.07.12.765,W112.26.37.906 N034.59.52.886,W111.54.54.580 N034.43.13.048,W112.05.51.480"
+                    }
+                ],
+                "center": "KPRC",
+                "range": 60
+            },
+            "1R": {
+                "video_maps": [
+                    "PRC414 NAZ_ASP",
+                    "PHX003 PHX003",
+                    "",
+                    "PHX317 V_AIRWY",
+                    "PRC410 PRCFLGD",
+                    "PHX307 EOVM",
+                    "PHX308 HWY_RWY",
+                    "PRC416 VRROUTE",
+                    "PRC418 SUNNY",
+                    "",
+                    "PRC402 FINALS",
+                    "PRC404 NAA_VOR",
+                    "PHX302 ZABSCT",
+                    "PRC411 NAARNAV",
+                    "PRC409 PRC-RPT",
+                    "PRC408 PRC_HWY",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "PRC415 IRROUTE",
+                    "PRC417 R2302",
+                    "",
+                    "PRC430 NAA_ILS",
+                    "PRC403 RNAV",
+                    "PRC414 NAZ_ASP",
+                    "PRC410 PRCFLGD",
+                    "PRC412 PRC-VFR",
+                    "PRC413 GLADBAG"
+                ],
+                "default_maps": [
+                    "PRC414 NAZ_ASP"
+                ],
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 10000,
+                        "vertices": "N034.28.46.377,W112.21.26.691 N034.31.31.639,W111.49.48.143 N034.27.53.616,W111.26.26.645 N034.02.27.189,W111.39.34.942 N034.05.00.187,W111.50.55.737 N034.05.26.046,W111.55.48.852 N034.05.46.028,W112.05.25.030 N034.03.50.410,W112.13.59.163 N034.22.15.827,W112.23.16.142"
+                    },
+                    {
+                        "type": "polygon",
+                        "ceiling": 11000,
+                        "vertices": "N034.03.30.456,W112.14.28.112 N033.59.01.992,W112.27.04.108 N034.15.24.472,W112.40.51.406 N034.19.48.693,W112.32.10.133 N034.22.43.554,W112.23.03.233"
+                    }
+                ],
+                "center": "KPRC",
+                "range": 60
+            },
+            "1A": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "ceiling": 21000,
+                        "vertices": "N033.04.04.308,W112.38.17.021 N033.17.15.035,W112.44.01.250 N033.30.36.213,W112.45.00.109 N033.42.32.151,W112.39.42.495 N033.53.11.253,W112.30.06.097 N033.56.45.130,W112.23.46.849 N034.00.39.358,W112.12.30.173 N034.03.03.636,W111.58.43.425 N034.00.36.447,W111.44.57.528 N033.55.33.361,W111.32.43.256 N033.49.31.952,W111.26.23.789 N033.44.36.063,W111.22.54.884 N033.38.12.901,W111.19.52.510 N033.31.12.550,W111.17.52.183 N033.25.56.996,W111.17.06.315 N033.20.41.111,W111.17.27.628 N033.16.09.543,W111.19.23.314 N033.03.42.308,W111.27.02.927 N033.00.09.255,W111.31.31.735"
+                    }
+                ]
+            }
+        },
+        "radar_sites": {
+            "PHX": {
+                "char": "P",
+                "position": "33.42699, -112.00649",
+                "elevation": 1312,
+                "primary_range": 50,
+                "secondary_range": 70,
+                "silence_angle": 15,
+                "slope_angle": 0.3
+            },
+            "QXP": {
+                "char": "N",
+                "position": "35.3527778, -112.94972",
+                "elevation": 46491,
+                "primary_range": 60,
+                "secondary_range": 100,
+                "silence_angle": 15,
+                "slope_angle": 0.3
+            },
+            "PHA": {
+                "char": "A",
+                "position": "33.98139,-111.79806",
+                "elevation": 5423,
+                "primary_range": 200,
+                "secondary_range": 200,
+                "silence_angle": 15,
+                "slope_angle": 0.3
+            }
+        },
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "PHXNOCA",
+                    "description": "PHX CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 4000,
+                    "vertices": [
+                        "N033.26.38.139,W112.00.53.833",
+                        "N033.27.23.252,W111.56.47.409",
+                        "N033.27.53.918,W111.32.08.677",
+                        "N033.24.52.135,W111.32.07.276",
+                        "N033.25.10.784,W111.56.50.925",
+                        "N033.25.39.198,W112.00.44.686",
+                        "N033.25.16.374,W112.04.09.526",
+                        "N033.25.00.155,W112.21.27.268",
+                        "N033.27.14.010,W112.21.23.312",
+                        "N033.26.55.992,W112.04.24.276",
+                        "N033.26.38.139,W112.00.53.833"
+                    ]
+                }
+            ],
+            "inhibit_msaw": [
+                {
+                    "id": "FLGMSAW",
+                    "description": "FLG MSAW SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 10600,
+                    "radius": 5,
+                    "center": "KFLG"
+                },
+                {
+                    "id": "SDLMSAW",
+                    "description": "SDL MSAW SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 5300,
+                    "radius": 5,
+                    "center": "KSDL"
+                },
+                {
+                    "id": "PHXMSAW",
+                    "description": "PHX MSAW SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 3000,
+                    "radius": 5,
+                    "center": "KPHX"
+                },
+                {
+                    "id": "IWAMSAW",
+                    "description": "IWA MSAW SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 3200,
+                    "vertices": [
+                        "N033.14.41.748,W111.37.19.453",
+                        "N033.19.40.783,W111.43.01.787",
+                        "N033.22.48.786,W111.39.12.749",
+                        "N033.17.16.161,W111.32.58.088",
+                        "N033.14.09.627,W111.35.34.863"
+                    ]
+                },
+                {
+                    "id": "PRCMSAW",
+                    "description": "PRC MSAW SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 9000,
+                    "radius": 5,
+                    "center": "KPRC"
+                }
+            ],
+            "auto_acquisition": [
+                {
+                    "id": "ACQ",
+                    "description": "P50 AUTO-ACQUISITION",
+                    "type": "polygon",
+                    "vertices": "N033.16.26.132,W113.23.04.634 N034.00.38.603,W112.48.48.021 N034.36.38.680,W113.21.16.666 N035.30.20.379,W112.41.52.353 N035.40.18.708,W111.05.25.909 N035.20.50.436,W110.38.30.369 N034.49.41.181,W110.48.20.610 N034.19.43.007,W110.47.17.576 N033.33.18.962,W110.44.34.841 N032.44.03.667,W110.11.01.871 N032.06.25.620,W110.28.55.894 N032.41.25.656,W113.36.10.706",
+                    "floor": 0,
+                    "ceiling": 25000
+                }
+            ],
+            "secondary_drop": [
+                {
+                    "id": "SDP50",
+                    "description": "P50 Drop Region",
+                    "type": "polygon",
+                    "vertices": "N033.16.26.132,W113.23.04.634 N034.00.38.603,W112.48.48.021 N034.36.38.680,W113.21.16.666 N035.30.20.379,W112.41.52.353 N035.40.18.708,W111.05.25.909 N035.20.50.436,W110.38.30.369 N034.49.41.181,W110.48.20.610 N034.19.43.007,W110.47.17.576 N033.33.18.962,W110.44.34.841 N032.44.03.667,W110.11.01.871 N032.06.25.620,W110.28.55.894 N032.41.25.656,W113.36.10.706",
+                    "floor": 0,
+                    "ceiling": 40000
+                }
+            ]
+        },
+        "coordination_lists": [
+            {
+                "name": "SDL",
+                "id": "D",
+                "airports": [
+                    "KSDL"
+                ]
+            },
+            {
+                "name": "IWA",
+                "id": "W",
+                "airports": [
+                    "KIWA"
+                ]
+            },
+            {
+                "name": "FLG",
+                "id": "F",
+                "airports": [
+                    "KFLG"
+                ]
+            },
+            {
+                "name": "PRC",
+                "id": "P",
+                "airports": [
+                    "KPRC"
+                ]
+            }
+        ],
+        "range": 45,
+        "scratchpads": {
+            "BROAK": "BRK",
+            "FORPE": "FOR",
+            "ECLPS": "ECL",
+            "FYRBD": "FYR",
+            "IZZZO": "KEE",
+            "QUAKY": "QUA",
+            "MRBIL": "MRB",
+            "BNYRD": "BNY",
+            "ZEPER": "ZEP"
+        },
+        "significant_points": {
+            "BROAK": {
+                "short_name": "BRK"
+            },
+            "FORPE": {
+                "short_name": "FOR"
+            },
+            "ECLPS": {
+                "short_name": "ECL"
+            },
+            "FYRBD": {
+                "short_name": "FYR"
+            },
+            "IZZZO": {
+                "short_name": "KEE"
+            },
+            "QUAKY": {
+                "short_name": "QUA"
+            },
+            "MRBIL": {
+                "short_name": "MRB"
+            },
+            "ZEPER": {
+                "short_name": "ZEP"
+            },
+            "BNYRD": {
+                "short_name": "BNY"
+            }
+        },
+        "stars_maps": [
+            "PHX667 RWY7R_8",
+            "PHX101 CLASS_B",
+            "",
+            "PHX668 RWY2526",
+            "PHX165 PTACWRD",
+            "PHX003 PHX003",
+            "PHX667 RWY7R_8",
+            "PHX310 TWEAST",
+            "PHX101 CLASS_B",
+            "PHX307 EOVM",
+            "PHX166 E_ARR",
+            "PHX168 E_DEP",
+            "PHX170 EFINSAT",
+            "PHX305 HIGHWAY",
+            "PHX317 V_AIRWY",
+            "PHX315 CITY",
+            "PHX322 Y7L_25R",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "PHX668 RWY2526",
+            "PHX311 TWWEST",
+            "PHX165 PTACWRD",
+            "PHX003 PHX003",
+            "PHX167 W_ARR",
+            "PHX169 W_DEP",
+            "PHX171 WFINSAT",
+            "PHX302 ZABSCT",
+            "PHX318 J_AIRWY",
+            "PHX308 HWY_RWY",
+            "PHX366 LUFOPEN"
+        ],
+        "video_map_file": "videomaps/ZAB-videomaps.gob.zst",
+        "controller_assignments": {
+            "50X": {
+                "inbound_assignments": {
+                    "BRUSR1.E": "PHX_A_APP",
+                    "DSERT2": "PHX_B_APP",
+                    "EAGUL6.E": "PHX_A_APP",
+                    "HUUTY1": "PHX_W_APP",
+                    "HYDRR1.E": "PHX_Q_APP",
+                    "PINNG1.E": "PHX_Q_APP"
+                },
+                "departure_assignments": {
+                    "KIWA": "PHX_W_APP",
+                    "KPHX": "PHX_S_DEP",
+                    "KSDL": "PHX_B_APP"
+                }
+            },
+            "P50": {
+                "inbound_assignments": {
+                    "NAA EAST ARR": "PHX_K_APP",
+                    "NAA SOUTH ARR": "PHX_K_APP",
+                    "NAA WEST ARR": "PHX_J_APP"
+                },
+                "departure_assignments": {
+                    "KFLG": "PHX_K_APP",
+                    "KPRC": "PHX_J_APP",
+                    "KSEZ": "PHX_K_APP"
+                }
+            },
+            "P51": {
+                "inbound_assignments": {
+                    "BRUSR1.W": "PHX_A_APP",
+                    "DSERT2": "PHX_B_APP",
+                    "EAGUL6.W": "PHX_A_APP",
+                    "HUUTY1": "PHX_W_APP",
+                    "HYDRR1.W": "PHX_Q_APP",
+                    "PINNG1.W": "PHX_Q_APP"
+                },
+                "departure_assignments": {
+                    "KIWA": "PHX_W_APP",
+                    "KPHX": "PHX_S_DEP",
+                    "KSDL": "PHX_B_APP"
+                }
+            },
+            "PH1": {
+                "inbound_assignments": {
+                    "BRUSR1_FW": "PHX_V_APP",
+                    "EAGUL6_FW": "PHX_V_APP",
+                    "HYDRR1_FW": "PHX_F_APP",
+                    "PINNG1_FW": "PHX_F_APP"
+                }
+            },
+            "PHX": {
+                "inbound_assignments": {
+                    "BRUSR1_FE": "PHX_V_APP",
+                    "EAGUL6_FE": "PHX_V_APP",
+                    "HYDRR1_FE": "PHX_F_APP",
+                    "PINNG1_FE": "PHX_F_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "LUF",
+                "prefix": "8"
+            }
+        ],
+        "neighboring_facilities": [
+            "LUF",
+            "ZAB"
+        ]
+    }
+}

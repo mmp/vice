@@ -1,0 +1,184 @@
+{
+    "control_positions": {
+        "BNA_TWR": {
+            "frequency": 118600,
+            "radio_name": "Nashville Tower",
+            "sector_id": "1T"
+        },
+        "BNA_X_DEP": {
+            "frequency": 119350,
+            "radio_name": "Nashville Departure",
+            "sector_id": "1X"
+        },
+        "BNA_Y_DEP": {
+            "frequency": 118400,
+            "radio_name": "Nashville Departure",
+            "sector_id": "1Y"
+        },
+        "BNA_W_APP": {
+            "frequency": 120600,
+            "radio_name": "Nashville Approach",
+            "sector_id": "1W"
+        },
+        "BNA_E_APP": {
+            "frequency": 127175,
+            "radio_name": "Nashville Approach",
+            "sector_id": "1E"
+        },
+        "BNA_F_APP": {
+            "frequency": 124750,
+            "radio_name": "Nashville Approach",
+            "sector_id": "1F"
+        },
+        "BNA_B_APP": {
+            "frequency": 133000,
+            "radio_name": "Nashville Approach",
+            "sector_id": "1B"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "CHSNE3": "BNA_W_APP",
+                    "PASLY5": "BNA_E_APP",
+                    "RYYMN3": "BNA_W_APP",
+                    "SWFFT3": "BNA_E_APP"
+                },
+                "departure_assignments": {
+                    "KBNA": "BNA_X_DEP",
+                    "KBNA/CHADM3": "BNA_Y_DEP",
+                    "KBNA/DANLS3": "BNA_X_DEP",
+                    "KBNA/DRURY3": "BNA_X_DEP",
+                    "KBNA/EVVAN3": "BNA_Y_DEP",
+                    "KBNA/FLAME3": "BNA_X_DEP",
+                    "KBNA/GDOGG3": "BNA_X_DEP",
+                    "KBNA/HGGRD3": "BNA_X_DEP",
+                    "KBNA/KRSTA3": "BNA_Y_DEP",
+                    "KBNA/PARDN3": "BNA_X_DEP",
+                    "KBNA/TAZMO3": "BNA_Y_DEP",
+                    "KBNA/TIPPN3": "BNA_Y_DEP"
+                }
+            }
+        },
+        "center": "KBNA",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "BNANOCA",
+                    "description": "BNA FINAL CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 5000,
+                    "vertices": [
+                        "N036.29.08.240,W086.27.15.479",
+                        "N035.44.51.142,W086.45.31.503",
+                        "N035.46.18.277,W086.52.55.570",
+                        "N036.30.24.060,W086.34.05.599"
+                    ]
+                }
+            ]
+        },
+        "scratchpads": {
+            "CHADM": "OZC",
+            "SWAPP": "OZC",
+            "SPKER": "BGD",
+            "DANLS": "BGD",
+            "HAGIE": "GRC",
+            "JALAR": "GRC",
+            "ACKEE": "GRC",
+            "DRURY": "GRC",
+            "EVVAN": "CHP",
+            "GENDE": "COO",
+            "FLAME": "COO",
+            "FAPER": "KNN",
+            "GDOGG": "KNN",
+            "TINGS": "MER",
+            "HGGRD": "MER",
+            "OLSIE": "CER",
+            "KRSTA": "CER",
+            "JJEFF": "KEL",
+            "HODJS": "KEL",
+            "NAKIY": "KEL",
+            "PARDN": "KEL",
+            "BURME": "SAA",
+            "TAZMO": "SAA",
+            "BRXTN": "ROR",
+            "TIPPN": "ROR"
+        },
+        "significant_points": {
+            "ACKEE": {},
+            "BRXTN": {},
+            "BURME": {},
+            "CHADM": {},
+            "DANLS": {},
+            "DRURY": {},
+            "EVVAN": {},
+            "FAPER": {},
+            "FLAME": {},
+            "GDOGG": {},
+            "GENDE": {},
+            "HAGIE": {},
+            "HGGRD": {},
+            "HODJS": {},
+            "JALAR": {},
+            "JJEFF": {},
+            "KRSTA": {},
+            "NAKIY": {},
+            "OLSIE": {},
+            "PARDN": {},
+            "SPKER": {},
+            "SWAPP": {},
+            "TAZMO": {},
+            "TINGS": {},
+            "TIPPN": {}
+        },
+        "stars_maps": [
+            "BNA_NORTH FLOW",
+            "BNA_SOUTH FLOW",
+            "BNA_CLASS C",
+            "BNA_EOVM",
+            "BNA_EW NORTH SPLIT",
+            "BNA_EW SOUTH SPLIT",
+            "BNA_SID EXIT GATES",
+            "BNA_SID EXIT"
+        ],
+        "video_map_file": "videomaps/ZME-videomaps.gob.zst",
+        "controller_assignments": {
+            "STD": {
+                "inbound_assignments": {
+                    "CHSNE3": "BNA_W_APP",
+                    "PASLY5": "BNA_E_APP",
+                    "RYYMN3": "BNA_W_APP",
+                    "SWFFT3": "BNA_E_APP"
+                },
+                "departure_assignments": {
+                    "KBNA": "BNA_X_DEP",
+                    "KBNA/CHADM3": "BNA_Y_DEP",
+                    "KBNA/DANLS3": "BNA_X_DEP",
+                    "KBNA/DRURY3": "BNA_X_DEP",
+                    "KBNA/EVVAN3": "BNA_Y_DEP",
+                    "KBNA/FLAME3": "BNA_X_DEP",
+                    "KBNA/GDOGG3": "BNA_X_DEP",
+                    "KBNA/HGGRD3": "BNA_X_DEP",
+                    "KBNA/KRSTA3": "BNA_Y_DEP",
+                    "KBNA/PARDN3": "BNA_X_DEP",
+                    "KBNA/TAZMO3": "BNA_Y_DEP",
+                    "KBNA/TIPPN3": "BNA_Y_DEP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "HOP",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "HOP",
+            "ZME"
+        ]
+    }
+}

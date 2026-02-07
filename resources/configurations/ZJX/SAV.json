@@ -1,0 +1,156 @@
+{
+    "control_positions": {
+        "SAV_N_APP": {
+            "frequency": 125300,
+            "radio_name": "Savannah Approach",
+            "sector_id": "6N"
+        },
+        "SAV_W_APP": {
+            "frequency": 118400,
+            "radio_name": "Savannah Approach",
+            "sector_id": "6W"
+        },
+        "SAV_S_APP": {
+            "frequency": 120400,
+            "radio_name": "Savannah Approach",
+            "sector_id": "6S"
+        },
+        "NBC_APP": {
+            "frequency": 125125,
+            "radio_name": "Beaufort Approach",
+            "sector_id": "71B"
+        },
+        "SAV_TWR": {
+            "frequency": 125975,
+            "radio_name": "Savannah Tower",
+            "sector_id": "61T"
+        },
+        "HXD_TWR": {
+            "frequency": 118975,
+            "radio_name": "Hilton Head Tower",
+            "sector_id": "62T"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "10X": {
+                "inbound_assignments": {
+                    "LOTTS": "SAV_W_APP",
+                    "PLZZZ": "SAV_N_APP",
+                    "SOOOP": "SAV_N_APP",
+                    "VIYAP": "SAV_S_APP"
+                },
+                "departure_assignments": {
+                    "KHXD": "SAV_N_APP",
+                    "KSAV": "SAV_N_APP",
+                    "KTBR": "SAV_W_APP"
+                }
+            },
+            "28X": {
+                "inbound_assignments": {
+                    "LOTTS": "SAV_W_APP",
+                    "PLZZZ": "SAV_N_APP",
+                    "SOOOP": "SAV_N_APP",
+                    "VIYAP": "SAV_S_APP"
+                },
+                "departure_assignments": {
+                    "KHXD": "SAV_N_APP",
+                    "KSAV": "SAV_W_APP",
+                    "KTBR": "SAV_W_APP"
+                }
+            }
+        },
+        "center": "KSAV",
+        "radar_sites": {
+            "SAV": {
+                "char": "S",
+                "position": "32.13347,-81.21328",
+                "elevation": 35,
+                "primary_range": 60,
+                "secondary_range": 60,
+                "silence_angle": 15,
+                "slope_angle": 0.175
+            }
+        },
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "SAVNOCA",
+                    "description": "SAV CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 2000,
+                    "radius": 7,
+                    "center": "N32.07.39.009,W81.12.07.892"
+                }
+            ]
+        },
+        "scratchpads": {
+            "GIPPL": "GIP",
+            "JROSS": "JRO",
+            "SMALZ": "SMA"
+        },
+        "significant_points": {
+            "GIPPL": {},
+            "JROSS": {},
+            "SMALZ": {}
+        },
+        "stars_maps": [
+            "RADAR MAP",
+            "MVA",
+            "CLASS C D AIRSPACE",
+            "LOW AIRWAYS SAV",
+            "COASTLINE",
+            "RNAV Z - 28",
+            "RNAV-10",
+            "RNAV-19",
+            "RNAV - 01"
+        ],
+        "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
+        "controller_assignments": {
+            "10X": {
+                "inbound_assignments": {
+                    "LOTTS": "SAV_W_APP",
+                    "PLZZZ": "SAV_N_APP",
+                    "SOOOP": "SAV_N_APP",
+                    "VIYAP": "SAV_S_APP"
+                },
+                "departure_assignments": {
+                    "KHXD": "SAV_N_APP",
+                    "KSAV": "SAV_N_APP",
+                    "KTBR": "SAV_W_APP"
+                }
+            },
+            "28X": {
+                "inbound_assignments": {
+                    "LOTTS": "SAV_W_APP",
+                    "PLZZZ": "SAV_N_APP",
+                    "SOOOP": "SAV_N_APP",
+                    "VIYAP": "SAV_S_APP"
+                },
+                "departure_assignments": {
+                    "KHXD": "SAV_N_APP",
+                    "KSAV": "SAV_W_APP",
+                    "KTBR": "SAV_W_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "NBC",
+                "prefix": "1"
+            },
+            {
+                "id": "CHS",
+                "prefix": "2"
+            }
+        ],
+        "neighboring_facilities": [
+            "CHS",
+            "NBC",
+            "ZJX"
+        ]
+    }
+}

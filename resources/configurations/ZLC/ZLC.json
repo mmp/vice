@@ -1,0 +1,271 @@
+{
+    "control_positions": {
+        "ZLC 01 Salt Lake TMAC": {
+            "frequency": 123450,
+            "eram_facility": true,
+            "radio_name": "Salt Lake Center",
+            "sector_id": "01"
+        },
+        "ZLC 02 Salt Lake TMEC": {
+            "frequency": 123450,
+            "eram_facility": true,
+            "radio_name": "Salt Lake Center",
+            "sector_id": "02"
+        },
+        "ZLC 03 Salt Lake 3": {
+            "frequency": 119950,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "03"
+        },
+        "ZLC 04": {
+            "frequency": 135775,
+            "eram_facility": true,
+            "radio_name": "Salt Lake Center",
+            "sector_id": "04"
+        },
+        "ZLC 05 Salt Lake 5": {
+            "frequency": 124350,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "05"
+        },
+        "ZLC 06 Salt Lake 6": {
+            "frequency": 132400,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "06"
+        },
+        "ZLC 07 Salt Lake 7": {
+            "frequency": 127700,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "07"
+        },
+        "ZLC 08 Salt Lake 8": {
+            "frequency": 128350,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "08"
+        },
+        "ZLC 11": {
+            "frequency": 127825,
+            "eram_facility": true,
+            "radio_name": "Salt Lake Center",
+            "sector_id": "11"
+        },
+        "ZLC 12 Salt Lake": {
+            "frequency": 127075,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "12"
+        },
+        "ZLC 14 Salt Lake": {
+            "frequency": 127675,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "14"
+        },
+        "ZLC 15 Salt Lake": {
+            "frequency": 127750,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "15"
+        },
+        "ZLC 16 Salt Lake": {
+            "frequency": 133250,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "16"
+        },
+        "ZLC 17 Salt Lake": {
+            "frequency": 126850,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "17"
+        },
+        "ZLC 18 Salt Lake": {
+            "frequency": 125925,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "18"
+        },
+        "ZLC 19 Salt Lake": {
+            "frequency": 133400,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "19"
+        },
+        "ZLC 20 Salt Lake": {
+            "frequency": 119750,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "20"
+        },
+        "ZLC 26 Salt Lake": {
+            "frequency": 120975,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "26"
+        },
+        "ZLC 30 Salt Lake": {
+            "frequency": 128050,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "30"
+        },
+        "ZLC 31 Salt Lake": {
+            "frequency": 118050,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "31"
+        },
+        "ZLC 32 Salt Lake": {
+            "frequency": 133900,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "32"
+        },
+        "ZLC 33": {
+            "frequency": 120275,
+            "eram_facility": true,
+            "radio_name": "Salt Lake Center",
+            "sector_id": "33"
+        },
+        "ZLC 34": {
+            "frequency": 127925,
+            "eram_facility": true,
+            "radio_name": "Salt Lake Center",
+            "sector_id": "34"
+        },
+        "ZLC 39 Salt Lake": {
+            "frequency": 132425,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "39"
+        },
+        "ZLC 40": {
+            "frequency": 128550,
+            "eram_facility": true,
+            "radio_name": "Salt Lake Center",
+            "sector_id": "40"
+        },
+        "ZLC 41 Salt Lake": {
+            "frequency": 121150,
+            "eram_facility": true,
+            "radio_name": "Salt Lake City Center",
+            "sector_id": "41"
+        },
+        "ZLC 42": {
+            "frequency": 120725,
+            "eram_facility": true,
+            "radio_name": "Salt Lake Center",
+            "sector_id": "42"
+        },
+        "ZLC 43": {
+            "frequency": 132250,
+            "eram_facility": true,
+            "radio_name": "Salt Lake Center",
+            "sector_id": "43"
+        },
+        "ZLC 44": {
+            "frequency": 125575,
+            "eram_facility": true,
+            "radio_name": "Salt Lake Center",
+            "sector_id": "44"
+        },
+        "ZLC 45": {
+            "frequency": 134525,
+            "eram_facility": true,
+            "radio_name": "Salt Lake Center",
+            "sector_id": "45"
+        },
+        "ZLC 46": {
+            "frequency": 133600,
+            "eram_facility": true,
+            "radio_name": "Salt Lake Center",
+            "sector_id": "46"
+        },
+        "ZLC 47": {
+            "frequency": 133450,
+            "eram_facility": true,
+            "radio_name": "Salt Lake Center",
+            "sector_id": "47"
+        },
+        "ZLC 48 Salt Lake OMIC": {
+            "frequency": 121500,
+            "eram_facility": true,
+            "radio_name": "Salt Lake Center",
+            "sector_id": "48"
+        },
+        "ZLC 71 Salt Lake TMWC": {
+            "frequency": 123450,
+            "eram_facility": true,
+            "radio_name": "Salt Lake Center",
+            "sector_id": "71"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "QWENN6.MLF": "ZLC 44",
+                    "QWENN6.BCE": "ZLC 44"
+                }
+            }
+        },
+        "center": "N038.23.59.181,W113.02.36.719",
+        "range": 80,
+        "stars_maps": [
+            ""
+        ],
+        "radar_sites": {
+            "B": {
+                "char": "B",
+                "position": "BCE",
+                "elevation": 7000,
+                "primary_range": 80,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.175
+            },
+            "M": {
+                "char": "M",
+                "position": "MLF",
+                "elevation": 7000,
+                "primary_range": 80,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.175
+            },
+            "T": {
+                "char": "T",
+                "position": "KTMT",
+                "elevation": 7000,
+                "primary_range": 80,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.175
+            }
+        },
+        "video_map_file": "videomaps/ZLC-eram-videomaps.gob.zst",
+        "controller_assignments": {
+            "STD": {
+                "inbound_assignments": {
+                    "QWENN6.MLF": "ZLC 44",
+                    "QWENN6.BCE": "ZLC 44"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [],
+        "neighboring_facilities": [
+            "ZDV",
+            "ZLA",
+            "ZMP",
+            "ZOA",
+            "ZSE"
+        ]
+    }
+}

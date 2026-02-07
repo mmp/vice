@@ -1,0 +1,326 @@
+{
+    "control_positions": {
+        "CLT_W_DEP": {
+            "frequency": 119500,
+            "radio_name": "Charlotte Departure",
+            "sector_id": "1W"
+        },
+        "CLT_E_DEP": {
+            "frequency": 124000,
+            "radio_name": "Charlotte Departure",
+            "sector_id": "1E"
+        },
+        "CLT_N_APP": {
+            "frequency": 134750,
+            "radio_name": "Charlotte Approach",
+            "sector_id": "1N"
+        },
+        "CLT_S_APP": {
+            "frequency": 120050,
+            "radio_name": "Charlotte Approach",
+            "sector_id": "1S"
+        },
+        "CLT_Q_APP": {
+            "frequency": 128320,
+            "radio_name": "Charlotte Approach",
+            "sector_id": "1Q"
+        },
+        "CLT_H_APP": {
+            "frequency": 126150,
+            "radio_name": "Charlotte Approach",
+            "sector_id": "1H"
+        },
+        "CLT_U_APP": {
+            "frequency": 125350,
+            "radio_name": "Charlotte Approach",
+            "sector_id": "1U"
+        },
+        "CLT_D_APP": {
+            "frequency": 135600,
+            "radio_name": "Charlotte Approach",
+            "sector_id": "1D"
+        },
+        "CLT_A_APP": {
+            "frequency": 127700,
+            "radio_name": "Charlotte Approach",
+            "sector_id": "1A"
+        },
+        "CLT_M_APP": {
+            "frequency": 119000,
+            "radio_name": "Charlotte Approach",
+            "sector_id": "1M"
+        },
+        "CLT_F_APP": {
+            "frequency": 132700,
+            "radio_name": "Charlotte Approach",
+            "sector_id": "1F"
+        },
+        "CLT_TWR": {
+            "frequency": 118100,
+            "radio_name": "Charlotte Tower",
+            "sector_id": "CT"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "18L": {
+                "inbound_assignments": {
+                    "CHSLY6_18LFINAL": "CLT_A_APP",
+                    "STOCR4_18LFINAL": "CLT_A_APP"
+                }
+            },
+            "36R": {
+                "inbound_assignments": {
+                    "CHSLY6_NORTHEAST_36RFINAL": "CLT_A_APP",
+                    "STOCR4_NORTHEAST_36RFINAL": "CLT_A_APP"
+                },
+                "departure_assignments": {
+                    "KCLT": "CLT_A_APP"
+                }
+            },
+            "KCL": {
+                "inbound_assignments": {
+                    "BANKR5": "CLT_D_APP",
+                    "CHSLY6": "CLT_H_APP",
+                    "FLIPZ4": "CLT_U_APP",
+                    "JONZE5": "CLT_D_APP",
+                    "PARQR4": "CLT_U_APP",
+                    "STOCR4": "CLT_H_APP"
+                },
+                "departure_assignments": {
+                    "KCLT": "CLT_W_DEP"
+                }
+            },
+            "KC1": {
+                "inbound_assignments": {
+                    "BANKR5_NORTHWEST_36LFINAL": "CLT_F_APP",
+                    "CHSLY6_NORTHEAST_36RFINAL": "CLT_F_APP",
+                    "JONZE5_NORTHWEST_36LFINAL": "CLT_F_APP",
+                    "NORTHWEST_36LFINAL": "CLT_F_APP",
+                    "STOCR4_NORTHEAST_36RFINAL": "CLT_F_APP"
+                },
+                "departure_assignments": {
+                    "KCLT": "CLT_F_APP"
+                }
+            },
+            "KC2": {
+                "inbound_assignments": {
+                    "CHSLY6_18LFINAL": "CLT_F_APP",
+                    "FLIPZ4_18RFINAL": "CLT_F_APP",
+                    "PARQR4_18RFINAL": "CLT_F_APP",
+                    "SOUTHWEST_18RFINAL": "CLT_F_APP",
+                    "STOCR4_18LFINAL": "CLT_F_APP"
+                }
+            }
+        },
+        "center": "KCLT",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "CLTNOCA",
+                    "description": "CLT CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 7000,
+                    "vertices": [
+                        "N035.40.57.861,W080.55.23.748",
+                        "N035.40.57.861,W081.02.11.671",
+                        "N034.42.27.537,W080.59.16.933",
+                        "N034.42.46.598,W080.47.34.467"
+                    ]
+                }
+            ]
+        },
+        "radar_sites": {
+            "CLT": {
+                "char": "C",
+                "position": "KCLT",
+                "elevation": 850,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 10,
+                "slope_angle": 0.5
+            }
+        },
+        "scratchpads": {
+            "RDU": "BAR",
+            "TYI": "BAR",
+            "BARMY": "BAR",
+            "NUTZE": "BAR",
+            "AUDII": "KIL",
+            "KILNS": "KIL",
+            "LILLS": "LIL",
+            "ICONS": "ICO",
+            "NOOKS": "ICO",
+            "KWEEN": "KWE",
+            "PITRW": "KWE",
+            "UNJAM": "KWE",
+            "BEAVY": "BEA",
+            "JENDO": "BEA",
+            "GANDT": "BEA",
+            "BOBZY": "BOB",
+            "TNSLY": "BOB",
+            "BNA": "BOB",
+            "ESTRR": "EST",
+            "IPTAY": "EST",
+            "CUBIM": "JOJ",
+            "DOOGE": "JOJ",
+            "JOJJO": "JOJ",
+            "NOOMN": "JOJ",
+            "FILDS": "KRI",
+            "KRITR": "KRI",
+            "SMIAM": "KRI",
+            "CLAWD": "WEA",
+            "WEAZL": "WEA"
+        },
+        "significant_points": {
+            "AUDII": {},
+            "BNA": {},
+            "CLAWD": {},
+            "CUBIM": {},
+            "DOOGE": {},
+            "FILDS": {},
+            "GANDT": {},
+            "IPTAY": {},
+            "JENDO": {},
+            "LILLS": {},
+            "NOOKS": {
+                "short_name": "NKS"
+            },
+            "NOOMN": {},
+            "NUTZE": {},
+            "PITRW": {},
+            "RDU": {},
+            "SMIAM": {},
+            "TNSLY": {},
+            "TYI": {}
+        },
+        "stars_maps": [
+            "CLT NORTH",
+            "CLT SOUTH",
+            "CHARLOTTE AIRPORT RUNWAYS",
+            "ARRIVAL RADAR NORTH",
+            "ARRIVAL RADAR SOUTH",
+            "CLT TRACON EXTERNAL BOUNDARY",
+            "CLT MINIMUM VECTORING ALTITUDE",
+            "CLT CLASS B",
+            "CLT AIRPORT RNAV (GPS) APPROACHES",
+            "DEPARTURE RADAR NORTH",
+            "DEPARTURE RADAR SOUTH",
+            "SATELLITE RADAR NORTH",
+            "SATELLITE RADAR SOUTH",
+            "RNAV DEPARTURES",
+            "NORTH RNAV STARS",
+            "SOUTH RNAV STARS",
+            "ADJACENT AIRSPACE",
+            "ZTL/ZJX/ZDC AIRSPACE",
+            "NAVAIDS WITHIN 250 MILES",
+            "CLT RNAV STAR FIXES",
+            "CLT FINAL APPROACH COURSES NORTH",
+            "CLT FINAL APPROACH COURSES SOUTH",
+            "NOISE 2NM/4NM LINES (SOUTH)",
+            "CAPTURES POINTS (18R/18L)",
+            "CLT LOCAL AIRSPACE",
+            "DEPARTURE RADAR SOUTH TRANSFER AREA",
+            "CAPTURE POINTS (36L/36R)",
+            "TRIPS CAPTURE POINTS (SOUTH)",
+            "TRIPS CAPTURE POINTS (NORTH)"
+        ],
+        "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
+        "controller_assignments": {
+            "18L": {
+                "inbound_assignments": {
+                    "CHSLY6_18LFINAL": "CLT_A_APP",
+                    "STOCR4_18LFINAL": "CLT_A_APP"
+                }
+            },
+            "36R": {
+                "inbound_assignments": {
+                    "CHSLY6_NORTHEAST_36RFINAL": "CLT_A_APP",
+                    "STOCR4_NORTHEAST_36RFINAL": "CLT_A_APP"
+                },
+                "departure_assignments": {
+                    "KCLT": "CLT_A_APP"
+                }
+            },
+            "KC1": {
+                "inbound_assignments": {
+                    "BANKR5_NORTHWEST_36LFINAL": "CLT_F_APP",
+                    "CHSLY6_NORTHEAST_36RFINAL": "CLT_F_APP",
+                    "JONZE5_NORTHWEST_36LFINAL": "CLT_F_APP",
+                    "NORTHWEST_36LFINAL": "CLT_F_APP",
+                    "STOCR4_NORTHEAST_36RFINAL": "CLT_F_APP"
+                },
+                "departure_assignments": {
+                    "KCLT": "CLT_F_APP"
+                }
+            },
+            "KC2": {
+                "inbound_assignments": {
+                    "CHSLY6_18LFINAL": "CLT_F_APP",
+                    "FLIPZ4_18RFINAL": "CLT_F_APP",
+                    "PARQR4_18RFINAL": "CLT_F_APP",
+                    "SOUTHWEST_18RFINAL": "CLT_F_APP",
+                    "STOCR4_18LFINAL": "CLT_F_APP"
+                }
+            },
+            "KCL": {
+                "inbound_assignments": {
+                    "BANKR5": "CLT_D_APP",
+                    "CHSLY6": "CLT_H_APP",
+                    "FLIPZ4": "CLT_U_APP",
+                    "JONZE5": "CLT_D_APP",
+                    "PARQR4": "CLT_U_APP",
+                    "STOCR4": "CLT_H_APP"
+                },
+                "departure_assignments": {
+                    "KCLT": "CLT_W_DEP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "GSO",
+                "prefix": "1"
+            },
+            {
+                "id": "GSP",
+                "prefix": "2"
+            },
+            {
+                "id": "CAE",
+                "prefix": "4"
+            },
+            {
+                "id": "SSC",
+                "prefix": "5"
+            },
+            {
+                "id": "FLO",
+                "prefix": "6"
+            },
+            {
+                "id": "FAY",
+                "prefix": "8"
+            },
+            {
+                "id": "ZDC",
+                "prefix": "W"
+            }
+        ],
+        "neighboring_facilities": [
+            "CAE",
+            "FAY",
+            "FLO",
+            "GSO",
+            "GSP",
+            "RDU",
+            "SSC",
+            "ZDC",
+            "ZJX",
+            "ZTL"
+        ]
+    }
+}

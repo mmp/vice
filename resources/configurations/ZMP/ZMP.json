@@ -1,0 +1,292 @@
+{
+    "control_positions": {
+        "ZMP 01 PLN LO": {
+            "frequency": 134600,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "01"
+        },
+        "ZMP 02 TVC LO": {
+            "frequency": 132900,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "02"
+        },
+        "ZMP 03 SAW LO": {
+            "frequency": 133550,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "03"
+        },
+        "ZMP 04 AUW LO": {
+            "frequency": 124400,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "04"
+        },
+        "ZMP 05 ODI LO": {
+            "frequency": 125300,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "05"
+        },
+        "ZMP 06 TWINZ LO": {
+            "frequency": 134300,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "06"
+        },
+        "ZMP 07 FGT LO": {
+            "frequency": 132350,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "07"
+        },
+        "ZMP 08 MKT LO": {
+            "frequency": 135000,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "08"
+        },
+        "ZMP 09 RWF LO": {
+            "frequency": 125500,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "09"
+        },
+        "ZMP 10 GEP LO": {
+            "frequency": 121050,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "10"
+        },
+        "ZMP 11 AXN HI": {
+            "frequency": 133400,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "11"
+        },
+        "ZMP 12 TVC HI": {
+            "frequency": 132425,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "12"
+        },
+        "ZMP 13 TKV HI": {
+            "frequency": 133175,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "13"
+        },
+        "ZMP 14 APN HI": {
+            "frequency": 127125,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "14"
+        },
+        "ZMP 15 ODI HI": {
+            "frequency": 135700,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "15"
+        },
+        "ZMP 16 EAU HI": {
+            "frequency": 133750,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "16"
+        },
+        "ZMP 17 MCW HI": {
+            "frequency": 134250,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "17"
+        },
+        "ZMP 18 OTG HI": {
+            "frequency": 128675,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "18"
+        },
+        "ZMP 19 FSD HI": {
+            "frequency": 119875,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "19"
+        },
+        "ZMP 20 PIR HI": {
+            "frequency": 128425,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "20"
+        },
+        "ZMP 21 RGK LO": {
+            "frequency": 134850,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "21"
+        },
+        "ZMP 22 FAR HI": {
+            "frequency": 134750,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "22"
+        },
+        "ZMP 23 DIK HI/LO": {
+            "frequency": 127600,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "23"
+        },
+        "ZMP 24 FAR HI/LO": {
+            "frequency": 132150,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "24"
+        },
+        "ZMP 25 DLH HI/LO": {
+            "frequency": 134550,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "25"
+        },
+        "ZMP 26 GRI LO": {
+            "frequency": 119400,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "26"
+        },
+        "ZMP 27 OMA LO": {
+            "frequency": 119600,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "27"
+        },
+        "ZMP 28 POLAR SUPER HI": {
+            "frequency": 119725,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "28"
+        },
+        "ZMP 29 ONL HI": {
+            "frequency": 124875,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "29"
+        },
+        "ZMP 30 FOD HI": {
+            "frequency": 135775,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "30"
+        },
+        "ZMP 32 VIKING SUPER HI": {
+            "frequency": 133075,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "32"
+        },
+        "ZMP 33 PIR LO": {
+            "frequency": 125100,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "33"
+        },
+        "ZMP 34 SAW HI": {
+            "frequency": 132725,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "34"
+        },
+        "ZMP 36 FOD LO": {
+            "frequency": 134000,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "36"
+        },
+        "ZMP 37 ONL LO": {
+            "frequency": 128000,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "37"
+        },
+        "ZMP 38 DSM HI": {
+            "frequency": 123975,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "38"
+        },
+        "ZMP 39 LNK HI": {
+            "frequency": 135100,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "39"
+        },
+        "ZMP 40 ARCTIC SUPER HI": {
+            "frequency": 134225,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "40"
+        },
+        "ZMP 42 WILD HI": {
+            "frequency": 119525,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "42"
+        },
+        "ZMP 43 HAWKEYE HI": {
+            "frequency": 118825,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "43"
+        },
+        "ZMP 44 MILLER SUPER HI": {
+            "frequency": 120050,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "44"
+        },
+        "ZMP 46 MCD SUPER HI": {
+            "frequency": 125825,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "46"
+        },
+        "ZMP 61 ZMP TMU MSP": {
+            "frequency": 123450,
+            "eram_facility": true,
+            "radio_name": "Minneapolis TMU",
+            "sector_id": "61"
+        },
+        "ZMP 62 ZMP TMU NY": {
+            "frequency": 123450,
+            "eram_facility": true,
+            "radio_name": "Minneapolis TMU",
+            "sector_id": "62"
+        },
+        "ZMP 63 ZMP TMU DEN/MDW": {
+            "frequency": 123450,
+            "eram_facility": true,
+            "radio_name": "Minneapolis TMU",
+            "sector_id": "63"
+        },
+        "ZMP 64 ZMP TMU ORD": {
+            "frequency": 123450,
+            "eram_facility": true,
+            "radio_name": "Minneapolis TMU",
+            "sector_id": "64"
+        },
+        "ZMP 83 TVC LO W": {
+            "frequency": 125550,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "83"
+        },
+        "ZMP 99 ZMP GUARD": {
+            "frequency": 121500,
+            "eram_facility": true,
+            "radio_name": "Minneapolis Center",
+            "sector_id": "99"
+        }
+    }
+}

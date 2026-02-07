@@ -1,0 +1,94 @@
+{
+    "control_positions": {
+        "BTV_TWR": {
+            "frequency": 118300,
+            "radio_name": "Burlington Tower",
+            "sector_id": "1T"
+        },
+        "BTV_W_APP": {
+            "frequency": 124550,
+            "radio_name": "Burlington Approach",
+            "sector_id": "1W"
+        },
+        "BTV_E_APP": {
+            "frequency": 121100,
+            "radio_name": "Burlington Approach",
+            "sector_id": "1E"
+        },
+        "BTV_F_APP": {
+            "frequency": 120350,
+            "radio_name": "Burlington Approach",
+            "sector_id": "1F"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "15X": {
+                "inbound_assignments": {
+                    "LBNON Arrival Land 15": "BTV_W_APP",
+                    "LBNON Arrival Land 33": "BTV_W_APP",
+                    "RUT Arrival Land 15": "BTV_W_APP",
+                    "RUT Arrival Land 33": "BTV_W_APP"
+                },
+                "departure_assignments": {
+                    "KBTV": "BTV_W_APP",
+                    "KPBG": "BTV_W_APP"
+                }
+            },
+            "33X": {
+                "inbound_assignments": {
+                    "LBNON Arrival Land 15": "BTV_E_APP",
+                    "LBNON Arrival Land 33": "BTV_E_APP",
+                    "RUT Arrival Land 15": "BTV_W_APP",
+                    "RUT Arrival Land 33": "BTV_W_APP"
+                },
+                "departure_assignments": {
+                    "KBTV": "BTV_E_APP",
+                    "KPBG": "BTV_W_APP"
+                }
+            }
+        },
+        "center": "KBTV",
+        "scratchpads": {},
+        "stars_maps": [
+            "BTV RVM",
+            "BTV MAIN",
+            "BTV MVA",
+            "BTV VFR",
+            "BTV SATS"
+        ],
+        "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
+        "controller_assignments": {
+            "15X": {
+                "inbound_assignments": {
+                    "LBNON Arrival Land 15": "BTV_W_APP",
+                    "LBNON Arrival Land 33": "BTV_W_APP",
+                    "RUT Arrival Land 15": "BTV_W_APP",
+                    "RUT Arrival Land 33": "BTV_W_APP"
+                },
+                "departure_assignments": {
+                    "KBTV": "BTV_W_APP",
+                    "KPBG": "BTV_W_APP"
+                }
+            },
+            "33X": {
+                "inbound_assignments": {
+                    "LBNON Arrival Land 15": "BTV_E_APP",
+                    "LBNON Arrival Land 33": "BTV_E_APP",
+                    "RUT Arrival Land 15": "BTV_W_APP",
+                    "RUT Arrival Land 33": "BTV_W_APP"
+                },
+                "departure_assignments": {
+                    "KBTV": "BTV_E_APP",
+                    "KPBG": "BTV_W_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [],
+        "neighboring_facilities": [
+            "ZBW"
+        ]
+    }
+}

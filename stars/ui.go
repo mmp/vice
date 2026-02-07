@@ -413,44 +413,6 @@ func (sp *STARSPane) DrawInfo(c *client.ControlClient, p platform.Platform, lg *
 		}
 	}
 
-	if aa := c.State.FacilityAdaptation.AirspaceAwareness; len(aa) > 0 {
-		if imgui.CollapsingHeaderBoolPtr("Airspace Awareness", nil) {
-			if imgui.BeginTableV("awareness", 4, tableFlags, imgui.Vec2{}, 0) {
-				imgui.TableSetupColumn("Fix")
-				imgui.TableSetupColumn("Altitude")
-				imgui.TableSetupColumn("A/C Type")
-				imgui.TableSetupColumn("Controller")
-				imgui.TableHeadersRow()
-
-				for _, aware := range aa {
-					for _, fix := range aware.Fix {
-						imgui.TableNextRow()
-						imgui.TableNextColumn()
-						imgui.Text(fix)
-						imgui.TableNextColumn()
-						alt := ""
-						if aware.AltitudeRange[0] > 0 {
-							if aware.AltitudeRange[1] < 60000 {
-								alt = av.FormatAltitude(float32(aware.AltitudeRange[0])) + " - " +
-									av.FormatAltitude(float32(aware.AltitudeRange[1]))
-							} else {
-								alt = av.FormatAltitude(float32(aware.AltitudeRange[0])) + "+"
-							}
-						} else if aware.AltitudeRange[1] < 60000 {
-							alt = av.FormatAltitude(float32(aware.AltitudeRange[1])) + "-"
-						}
-						imgui.Text(alt)
-						imgui.TableNextColumn()
-						imgui.Text(strings.Join(aware.AircraftType, ", "))
-						imgui.TableNextColumn()
-						imgui.Text(aware.ReceivingController)
-					}
-				}
-
-				imgui.EndTable()
-			}
-		}
-	}
 
 	// Holds section - show enroute and unassociated holds within 75nm
 	if imgui.CollapsingHeaderBoolPtr("Holds", nil) {

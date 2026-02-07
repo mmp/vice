@@ -93,14 +93,14 @@ func init() {
 	registerCommand(CommandModeMultiFunc, "NP[AIRPORT_ID] [NUM]", toggleCRDAGhostsForRunwayPair)
 	registerCommand(CommandModeMultiFunc, "NP[NUM]",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, idx int) error {
-			// Use default airport
-			ctrl := ctx.UserController()
-			if len(ctrl.DefaultAirport) == 0 {
+			// Use default airport from area config
+			defaultAirport := ctx.FacilityAdaptation.DefaultAirportForController(ctx.UserController())
+			if len(defaultAirport) == 0 {
 				return ErrSTARSIllegalFunction
 			}
-			ap := ctrl.DefaultAirport[1:]
+			ap := defaultAirport[1:]
 			if _, ok := av.DB.LookupAirport(ap); !ok {
-				panic(ctrl.DefaultAirport)
+				panic(defaultAirport)
 			}
 			return toggleCRDAGhostsForRunwayPair(sp, ctx, ps, ap, idx)
 		})

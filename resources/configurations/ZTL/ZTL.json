@@ -1,0 +1,280 @@
+{
+    "control_positions": {
+        "ZTL 01 Rome Ultra Low": {
+            "frequency": 124500,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "01"
+        },
+        "ZTL 02 Gunter Ultra High": {
+            "frequency": 126825,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "02"
+        },
+        "ZTL 03 Gadsden High": {
+            "frequency": 128725,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "03"
+        },
+        "ZTL 04 West Departure Low": {
+            "frequency": 134950,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "04"
+        },
+        "ZTL 05 Dalas Low": {
+            "frequency": 132050,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "05"
+        },
+        "ZTL 06 Rocket High": {
+            "frequency": 133175,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "06"
+        },
+        "ZTL 08 Martin Lake Ultra High": {
+            "frequency": 125875,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "08"
+        },
+        "ZTL 09 Tiroe Low": {
+            "frequency": 120450,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "09"
+        },
+        "ZTL 10 LaGrange High": {
+            "frequency": 125575,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "10"
+        },
+        "ZTL 11 Monroeville High": {
+            "frequency": 128025,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "11"
+        },
+        "ZTL 12 Birmingham Low": {
+            "frequency": 127300,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "12"
+        },
+        "ZTL 13 Montgomery Low": {
+            "frequency": 120550,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "13"
+        },
+        "ZTL 14 Maxwell Low": {
+            "frequency": 132250,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "14"
+        },
+        "ZTL 15 Baden Ultra-High": {
+            "frequency": 126775,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "15"
+        },
+        "ZTL 16 East Departure Low": {
+            "frequency": 134200,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "16"
+        },
+        "ZTL 18 Commerce Ultra Low": {
+            "frequency": 134800,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "18"
+        },
+        "ZTL 19 Sinca Low": {
+            "frequency": 123950,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "19"
+        },
+        "ZTL 20 Dublin High": {
+            "frequency": 126425,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "20"
+        },
+        "ZTL 21 South Departure Low": {
+            "frequency": 134500,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "21"
+        },
+        "ZTL 22 Macon High": {
+            "frequency": 119375,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "22"
+        },
+        "ZTL 23 Clark Hill Ultra High": {
+            "frequency": 124325,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "23"
+        },
+        "ZTL 24 Augusta Low": {
+            "frequency": 128100,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "24"
+        },
+        "ZTL 27 Hampton Ultra High": {
+            "frequency": 125825,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "27"
+        },
+        "ZTL 28 High Rock Ultra High": {
+            "frequency": 125025,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "28"
+        },
+        "ZTL 29 Leeon Low": {
+            "frequency": 128800,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "29"
+        },
+        "ZTL 30 Locas Low": {
+            "frequency": 133150,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "30"
+        },
+        "ZTL 31 Unarm Low": {
+            "frequency": 135350,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "31"
+        },
+        "ZTL 32 Spartanburg High": {
+            "frequency": 125625,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "32"
+        },
+        "ZTL 33 Charlotte High": {
+            "frequency": 124425,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "33"
+        },
+        "ZTL 34 Georgia High": {
+            "frequency": 120425,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "34"
+        },
+        "ZTL 36 Allatoona Ultra High": {
+            "frequency": 124875,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "36"
+        },
+        "ZTL 37 Crossville High": {
+            "frequency": 126675,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "37"
+        },
+        "ZTL 38 North Departure Low": {
+            "frequency": 133100,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "38"
+        },
+        "ZTL 39 Burne High": {
+            "frequency": 125925,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "39"
+        },
+        "ZTL 40 Blue Ridge Ultra-High": {
+            "frequency": 134075,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "40"
+        },
+        "ZTL 41 Hinch Mountain Low": {
+            "frequency": 133600,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "41"
+        },
+        "ZTL 42 Salem High": {
+            "frequency": 120725,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "42"
+        },
+        "ZTL 43 Pulaski High": {
+            "frequency": 132975,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "43"
+        },
+        "ZTL 44 Shine Low": {
+            "frequency": 132625,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "44"
+        },
+        "ZTL 45 Bristol Low": {
+            "frequency": 127850,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "45"
+        },
+        "ZTL 47 Moped Low": {
+            "frequency": 134550,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "47"
+        },
+        "ZTL 48 Wilkes Ultra Low": {
+            "frequency": 125150,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "48"
+        },
+        "ZTL 49 Logen Low": {
+            "frequency": 121350,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "49"
+        },
+        "ZTL 50 Lanier High": {
+            "frequency": 124375,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "50"
+        },
+        "ZTL 98 TMEC": {
+            "frequency": 125550,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center ",
+            "sector_id": "98"
+        },
+        "ZTL 99 TMAC": {
+            "frequency": 125550,
+            "eram_facility": true,
+            "radio_name": "Atlanta Center",
+            "sector_id": "99"
+        }
+    }
+}

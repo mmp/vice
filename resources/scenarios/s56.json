@@ -1,1454 +1,1250 @@
 {
-  "tracon": "S56",
-  "airports": {
-    "KSLC": {
-      "approaches": {
-        "I6L": {
-          "cifp_id": "I16L"
-        },
-        "R6L": {
-          "cifp_id": "RZ16L"
-        },
-        "I6R": {
-          "cifp_id": "I16R"
-        },
-        "R6R": {
-          "cifp_id": "RZ16R"
-        },
-        "I17": {
-          "cifp_id": "I17"
-        },
-        "RZ7": {
-          "cifp_id": "RZ17"
-        },
-        "I4L": {
-          "cifp_id": "I34L"
-        },
-        "R4L": {
-          "cifp_id": "RZ34L"
-        },
-        "I4R": {
-          "cifp_id": "I34R"
-        },
-        "R4R": {
-          "cifp_id": "RY34R"
-        },
-        "X35": {
-          "full_name": "LDA Runway 35",
-          "cifp_id": "X35"
-        },
-        "RZ5": {
-          "cifp_id": "RZ35"
-        }
-      },
-      "departure_routes": {
-        "34L": {
-          "TWF": {
-            "assigned_altitude": 9000,
-            "sid": "CGULL1",
-            "waypoints": "KSLC-16R/h310 CORVR/a13000+ CGULL/a15000+ MOFER SCOVL DRYAD",
-            "description": "CGULL1"
-          },
-          "MLF,WINEN,KROST": {
-            "assigned_altitude": 9000,
-            "sid": "ARCHZ1",
-            "waypoints": "KSLC-16R/h260 SCANT/a10000+ ARCHZ/a13000+ TRILA/a19000+",
-            "description": "ARCHZ1"
-          },
-          "BAM,MVA": {
-            "assigned_altitude": 9000,
-            "sid": "DEZRT2",
-            "waypoints": "KSLC-16R/h280 DURCH/a12000+ BONNE/a14000+ DEZRT/a15000+",
-            "description": "DEZRT2"
-          }
-        },
-        "34R": {
-          "HOLTR": {
-            "assigned_altitude": 9000,
-            "sid": "RUGGD3",
-            "waypoints": "KSLC-16L/h340 BUBBY/a11000+ RUGGD/a12000+ KLOUD SAWGI",
-            "description": "RUGGD3"
-          },
-          "OCS": {
-            "assigned_altitude": 9000,
-            "sid": "RUGGD3",
-            "waypoints": "KSLC-16L/h340 BUBBY/a11000+ RUGGD/a12000+ SPINE SKIII POPLE",
-            "description": "RUGGD3"
-          },
-          "PERTY": {
-            "assigned_altitude": 9000,
-            "sid": "RUGGD3",
-            "waypoints": "KSLC-16L/h340 BUBBY/a11000+ RUGGD/a12000+ HERTS PERTY",
-            "description": "RUGGD3"
-          },
-          "EKR": {
-            "assigned_altitude": 9000,
-            "sid": "RUGGD3",
-            "waypoints": "KSLC-16L/h340 BUBBY/a11000+ RUGGD/a12000+ UPJAR BORZI",
-            "description": "RUGGD3"
-          },
-          "KIERA": {
-            "assigned_altitude": 9000,
-            "sid": "RUGGD3",
-            "waypoints": "KSLC-16L/h340 BUBBY/a11000+ RUGGD/a12000+ LOFOG LEGBE",
-            "description": "RUGGD3"
-          }
-        },
-        "16L": {
-          "KIMMR, EYELO": {
-            "assigned_altitude": 9000,
-            "sid": "ZIONZ1",
-            "waypoints": "KSLC-34R/h160 HOPTO/a9000+ ZIONZ KOOGR/a13000+ ROMMN/a19000-",
-            "description": "ZIONZ1"
-          },
-          "KROST,BCE,EHK": {
-            "assigned_altitude": 9000,
-            "sid": "ZIONZ1",
-            "waypoints": "KSLC-34R/h160 HOPTO/a9000+ ZIONZ GITLN LODUY/a14000+",
-            "description": "ZIONZ1"
-          }
-        },
-        "16R": {
-          "TWF": {
-            "assigned_altitude": 9000,
-            "sid": "CGULL1",
-            "waypoints": "KSLC-34L/h295 CORVR/a13000+ CGULL/a15000+ MOFER SCOVL DRYAD",
-            "description": "CGULL1"
-          },
-          "HOLTR": {
-            "assigned_altitude": 9000,
-            "sid": "RUGGD3",
-            "waypoints": "KSLC-34L/h295 BUBBY/a11000+ RUGGD/a12000+ KLOUD SAWGI",
-            "description": "RUGGD3"
-          },
-          "OCS": {
-            "assigned_altitude": 9000,
-            "sid": "RUGGD3",
-            "waypoints": "KSLC-34L/h295 BUBBY/a11000+ RUGGD/a12000+ SPINE SKIII POPLE",
-            "description": "RUGGD3"
-          },
-          "PERTY": {
-            "assigned_altitude": 9000,
-            "sid": "RUGGD3",
-            "waypoints": "KSLC-34L/h295 BUBBY/a11000+ RUGGD/a12000+ HERTS PERTY",
-            "description": "RUGGD3"
-          },
-          "EKR": {
-            "assigned_altitude": 9000,
-            "sid": "RUGGD3",
-            "waypoints": "KSLC-34L/h295 BUBBY/a11000+ RUGGD/a12000+ UPJAR BORZI",
-            "description": "RUGGD3"
-          },
-          "KIERA": {
-            "assigned_altitude": 9000,
-            "sid": "RUGGD3",
-            "waypoints": "KSLC-34L/h295 BUBBY/a11000+ RUGGD/a12000+ LOFOG LEGBE",
-            "description": "RUGGD3"
-          },
-          "DEZRT": {
-            "assigned_altitude": 9000,
-            "sid": "DEZRT2",
-            "waypoints": "KSLC-34L/h280 DURCH/a12000+ BONNE/a14000+ DEZRT/a15000+",
-            "description": "DEZRT2"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "UAL",
-              "fleet": "short"
-            }
-          ],
-          "destination": "KDEN",
-          "exit": "PERTY",
-          "route": "PERTY KAMPR LONGZ2",
-          "scratchpad": "RHE"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "DAL",
-              "fleet": "short"
+    "tracon": "S56",
+    "airports": {
+        "KSLC": {
+            "approaches": {
+                "I6L": {
+                    "cifp_id": "I16L"
+                },
+                "R6L": {
+                    "cifp_id": "RZ16L"
+                },
+                "I6R": {
+                    "cifp_id": "I16R"
+                },
+                "R6R": {
+                    "cifp_id": "RZ16R"
+                },
+                "I17": {
+                    "cifp_id": "I17"
+                },
+                "RZ7": {
+                    "cifp_id": "RZ17"
+                },
+                "I4L": {
+                    "cifp_id": "I34L"
+                },
+                "R4L": {
+                    "cifp_id": "RZ34L"
+                },
+                "I4R": {
+                    "cifp_id": "I34R"
+                },
+                "R4R": {
+                    "cifp_id": "RY34R"
+                },
+                "X35": {
+                    "full_name": "LDA Runway 35",
+                    "cifp_id": "X35"
+                },
+                "RZ5": {
+                    "cifp_id": "RZ35"
+                }
             },
-            {
-              "icao": "SKW"
+            "departure_routes": {
+                "34L": {
+                    "TWF": {
+                        "assigned_altitude": 9000,
+                        "sid": "CGULL1",
+                        "waypoints": "KSLC-16R/h310 CORVR/a13000+ CGULL/a15000+ MOFER SCOVL DRYAD",
+                        "description": "CGULL1"
+                    },
+                    "MLF,WINEN,KROST": {
+                        "assigned_altitude": 9000,
+                        "sid": "ARCHZ1",
+                        "waypoints": "KSLC-16R/h260 SCANT/a10000+ ARCHZ/a13000+ TRILA/a19000+",
+                        "description": "ARCHZ1"
+                    },
+                    "BAM,MVA": {
+                        "assigned_altitude": 9000,
+                        "sid": "DEZRT2",
+                        "waypoints": "KSLC-16R/h280 DURCH/a12000+ BONNE/a14000+ DEZRT/a15000+",
+                        "description": "DEZRT2"
+                    }
+                },
+                "34R": {
+                    "HOLTR": {
+                        "assigned_altitude": 9000,
+                        "sid": "RUGGD3",
+                        "waypoints": "KSLC-16L/h340 BUBBY/a11000+ RUGGD/a12000+ KLOUD SAWGI",
+                        "description": "RUGGD3"
+                    },
+                    "OCS": {
+                        "assigned_altitude": 9000,
+                        "sid": "RUGGD3",
+                        "waypoints": "KSLC-16L/h340 BUBBY/a11000+ RUGGD/a12000+ SPINE SKIII POPLE",
+                        "description": "RUGGD3"
+                    },
+                    "PERTY": {
+                        "assigned_altitude": 9000,
+                        "sid": "RUGGD3",
+                        "waypoints": "KSLC-16L/h340 BUBBY/a11000+ RUGGD/a12000+ HERTS PERTY",
+                        "description": "RUGGD3"
+                    },
+                    "EKR": {
+                        "assigned_altitude": 9000,
+                        "sid": "RUGGD3",
+                        "waypoints": "KSLC-16L/h340 BUBBY/a11000+ RUGGD/a12000+ UPJAR BORZI",
+                        "description": "RUGGD3"
+                    },
+                    "KIERA": {
+                        "assigned_altitude": 9000,
+                        "sid": "RUGGD3",
+                        "waypoints": "KSLC-16L/h340 BUBBY/a11000+ RUGGD/a12000+ LOFOG LEGBE",
+                        "description": "RUGGD3"
+                    }
+                },
+                "16L": {
+                    "KIMMR, EYELO": {
+                        "assigned_altitude": 9000,
+                        "sid": "ZIONZ1",
+                        "waypoints": "KSLC-34R/h160 HOPTO/a9000+ ZIONZ KOOGR/a13000+ ROMMN/a19000-",
+                        "description": "ZIONZ1"
+                    },
+                    "KROST,BCE,EHK": {
+                        "assigned_altitude": 9000,
+                        "sid": "ZIONZ1",
+                        "waypoints": "KSLC-34R/h160 HOPTO/a9000+ ZIONZ GITLN LODUY/a14000+",
+                        "description": "ZIONZ1"
+                    }
+                },
+                "16R": {
+                    "TWF": {
+                        "assigned_altitude": 9000,
+                        "sid": "CGULL1",
+                        "waypoints": "KSLC-34L/h295 CORVR/a13000+ CGULL/a15000+ MOFER SCOVL DRYAD",
+                        "description": "CGULL1"
+                    },
+                    "HOLTR": {
+                        "assigned_altitude": 9000,
+                        "sid": "RUGGD3",
+                        "waypoints": "KSLC-34L/h295 BUBBY/a11000+ RUGGD/a12000+ KLOUD SAWGI",
+                        "description": "RUGGD3"
+                    },
+                    "OCS": {
+                        "assigned_altitude": 9000,
+                        "sid": "RUGGD3",
+                        "waypoints": "KSLC-34L/h295 BUBBY/a11000+ RUGGD/a12000+ SPINE SKIII POPLE",
+                        "description": "RUGGD3"
+                    },
+                    "PERTY": {
+                        "assigned_altitude": 9000,
+                        "sid": "RUGGD3",
+                        "waypoints": "KSLC-34L/h295 BUBBY/a11000+ RUGGD/a12000+ HERTS PERTY",
+                        "description": "RUGGD3"
+                    },
+                    "EKR": {
+                        "assigned_altitude": 9000,
+                        "sid": "RUGGD3",
+                        "waypoints": "KSLC-34L/h295 BUBBY/a11000+ RUGGD/a12000+ UPJAR BORZI",
+                        "description": "RUGGD3"
+                    },
+                    "KIERA": {
+                        "assigned_altitude": 9000,
+                        "sid": "RUGGD3",
+                        "waypoints": "KSLC-34L/h295 BUBBY/a11000+ RUGGD/a12000+ LOFOG LEGBE",
+                        "description": "RUGGD3"
+                    },
+                    "DEZRT": {
+                        "assigned_altitude": 9000,
+                        "sid": "DEZRT2",
+                        "waypoints": "KSLC-34L/h280 DURCH/a12000+ BONNE/a14000+ DEZRT/a15000+",
+                        "description": "DEZRT2"
+                    }
+                }
             },
-            {
-              "icao": "UAL",
-              "fleet": "default"
-            }
-          ],
-          "destination": "KORD",
-          "exit": "OCS",
-          "route": "OCS KURSE Q122 VIGGR MYRRS FYTTE7",
-          "scratchpad": "RSP"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "DAL",
-              "fleet": "short"
-            }
-          ],
-          "destination": "KATL",
-          "exit": "OCS",
-          "route": "OCS KURSE Q122 VIGGR JACCC JACCC1",
-          "scratchpad": "RSP"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "DAL",
-              "fleet": "short"
-            }
-          ],
-          "destination": "KLAS",
-          "exit": "MLF",
-          "route": "MLF STEWW CHOWW2"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "SKW"
-            }
-          ],
-          "destination": "KPSC",
-          "exit": "TWF",
-          "route": "TWF J15 BOI",
-          "scratchpad": "COR"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "SKW"
-            }
-          ],
-          "destination": "KSEA",
-          "exit": "TWF",
-          "route": "TWF PDT CHINS5",
-          "scratchpad": "COR"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "DAL",
-              "fleet": "short"
-            }
-          ],
-          "destination": "KGEG",
-          "exit": "TWF",
-          "route": "TWF J12 DNJ GEG",
-          "scratchpad": "COR"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "DAL",
-              "fleet": "short"
-            }
-          ],
-          "destination": "KBOI",
-          "exit": "TWF",
-          "route": "TWF BROPH SPUUD4",
-          "scratchpad": "COR"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "DAL",
-              "fleet": "long"
-            }
-          ],
-          "destination": "PHNL",
-          "exit": "DEZRT",
-          "route": "DEZRT BAM FMG PYE BEBOP R464 BITTA MAGGI3",
-          "scratchpad": "DUR"
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "UAL",
+                            "fleet": "short"
+                        }
+                    ],
+                    "destination": "KDEN",
+                    "exit": "PERTY",
+                    "route": "PERTY KAMPR LONGZ2",
+                    "scratchpad": "RHE"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "fleet": "short"
+                        },
+                        {
+                            "icao": "SKW"
+                        },
+                        {
+                            "icao": "UAL",
+                            "fleet": "default"
+                        }
+                    ],
+                    "destination": "KORD",
+                    "exit": "OCS",
+                    "route": "OCS KURSE Q122 VIGGR MYRRS FYTTE7",
+                    "scratchpad": "RSP"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "fleet": "short"
+                        }
+                    ],
+                    "destination": "KATL",
+                    "exit": "OCS",
+                    "route": "OCS KURSE Q122 VIGGR JACCC JACCC1",
+                    "scratchpad": "RSP"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "fleet": "short"
+                        }
+                    ],
+                    "destination": "KLAS",
+                    "exit": "MLF",
+                    "route": "MLF STEWW CHOWW2"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SKW"
+                        }
+                    ],
+                    "destination": "KPSC",
+                    "exit": "TWF",
+                    "route": "TWF J15 BOI",
+                    "scratchpad": "COR"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SKW"
+                        }
+                    ],
+                    "destination": "KSEA",
+                    "exit": "TWF",
+                    "route": "TWF PDT CHINS5",
+                    "scratchpad": "COR"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "fleet": "short"
+                        }
+                    ],
+                    "destination": "KGEG",
+                    "exit": "TWF",
+                    "route": "TWF J12 DNJ GEG",
+                    "scratchpad": "COR"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "fleet": "short"
+                        }
+                    ],
+                    "destination": "KBOI",
+                    "exit": "TWF",
+                    "route": "TWF BROPH SPUUD4",
+                    "scratchpad": "COR"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "fleet": "long"
+                        }
+                    ],
+                    "destination": "PHNL",
+                    "exit": "DEZRT",
+                    "route": "DEZRT BAM FMG PYE BEBOP R464 BITTA MAGGI3",
+                    "scratchpad": "DUR"
+                }
+            ],
+            "tower_list": 1
         }
-      ],
-      "tower_list": 1
-    }
-  },
-  "inbound_flows": {
-    "CARTR1.N": {
-      "arrivals": [
-        {
-          "waypoints": "LHO/a14000+/ho CARTR SETTT/a14000+ DYANN/a11000+ ANNTY/a11000 SURYP/a11000/h164",
-          "star": "CARTR1",
-          "initial_controller": "SLC_07_CTR",
-          "initial_altitude": 16000,
-          "initial_speed": 300,
-          "description": "CARTR1",
-          "expect_approach": null,
-          "airlines": {
-            "KSLC": [
-              {
-                "icao": "DAL",
-                "airport": "KIAD"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KMSP"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KBIS"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KDTW"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KORD"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KEWR"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KSUX"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KJAC"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KFAR"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KJFK"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KBOS"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KORD"
-              },
-              {
-                "icao": "UAL",
-                "airport": "KEWR"
-              },
-              {
-                "icao": "UAL",
-                "airport": "KORD"
-              }
-            ]
-          }
-        }
-      ]
     },
-    "CARTR1.S": {
-      "arrivals": [
-        {
-          "waypoints": "LHO/a14000+/ho CARTR WEBER/a12000+/h165",
-          "star": "CARTR1",
-          "initial_controller": "SLC_07_CTR",
-          "initial_altitude": 16000,
-          "initial_speed": 300,
-          "description": "CARTR1",
-          "expect_approach": null,
-          "airlines": {
-            "KSLC": [
-              {
-                "icao": "DAL",
-                "airport": "KIAD"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KMSP"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KBIS"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KDTW"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KORD"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KEWR"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KSUX"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KJAC"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KFAR"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KJFK"
-              },
-              {
-                "icao": "JBU",
-                "airport": "KBOS"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KORD"
-              },
-              {
-                "icao": "UAL",
-                "airport": "KEWR"
-              },
-              {
-                "icao": "UAL",
-                "airport": "KORD"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "JAZZZ1": {
-      "arrivals": [
-        {
-          "waypoints": "SPANE/a15000/s250/ho RUSHN/a13000+ JAZZZ/a12000+/s250/h325",
-          "star": "JAZZZ1",
-          "initial_controller": "SLC_32_CTR",
-          "initial_altitude": 15000,
-          "initial_speed": 300,
-          "description": "JAZZZ1",
-          "expect_approach": null,
-          "airlines": {
-            "KSLC": [
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KATL"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KATL"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KAUS"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KABQ"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KSAT"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KIAH"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KABQ"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "FFT",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KHOU"
-              },
-              {
-                "icao": "UAL",
-                "fleet": "short",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "UAL",
-                "fleet": "short",
-                "airport": "KIAH"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "PITTT1.E": {
-      "arrivals": [
-        {
-          "waypoints": "SPANE/a19000/s280/ho LEEHY  FFU/a17000+ DRYVE/a15000+ PITTT/a12000 MAGNE QUIPA LAWVA/a11000/h344",
-          "star": "PITTT1",
-          "initial_controller": "SLC_32_CTR",
-          "initial_altitude": 19000,
-          "initial_speed": 280,
-          "description": "PITTT1",
-          "expect_approach": null,
-          "airlines": {
-            "KSLC": [
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KATL"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KATL"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KAUS"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KABQ"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KSAT"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KIAH"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KABQ"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "FFT",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KHOU"
-              },
-              {
-                "icao": "UAL",
-                "fleet": "short",
-                "airport": "KDEN"
-              },
-              {
-                "icao": "UAL",
-                "fleet": "short",
-                "airport": "KIAH"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "PITTT1.S": {
-      "arrivals": [
-        {
-          "waypoints": "JAMMN/a17000/s250/ho DRAPR/a14000-15000 SPIEK/a13000-14000 HEIRY PITTT/a12000 MAGNE QUIPA LAWVA/a11000/h344",
-          "star": "PITTT1",
-          "initial_controller": "SLC_11_CTR",
-          "initial_altitude": 17000,
-          "initial_speed": 300,
-          "description": "PITTT1",
-          "expect_approach": null,
-          "airlines": {
-            "KSLC": [
-              {
-                "icao": "DAL",
-                "airport": "KLAX"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KLAS"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KSAN"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KONT"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KPSP"
-              },
-              {
-                "icao": "SKW",
-                "airport": "KLAS"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KLAS"
-              },
-              {
-                "icao": "AAL",
-                "airport": "KLAX"
-              },
-              {
-                "icao": "UAL",
-                "airport": "KLAX"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KPHX"
-              },
-              {
-                "icao": "DAL",
-                "airport": "MMSD"
-              },
-              {
-                "icao": "DAL",
-                "airport": "MMPR"
-              },
-              {
-                "icao": "DAL",
-                "airport": "MMMX"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KTUS"
-              },
-              {
-                "icao": "SKW",
-                "airport": "KPHX"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KPHX"
-              },
-              {
-                "icao": "AAL",
-                "airport": "KPHX"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "QWENN6.BCE": {
-      "arrivals": [
-        {
-          "waypoints": "NEEBO/a14000/s250/ho QWENN/a11000/s250/h344",
-          "star": "QWENN6",
-          "initial_controller": "SLC_11_CTR",
-          "initial_altitude": 14000,
-          "initial_speed": 300,
-          "description": "QWENN6",
-          "expect_approach": null,
-          "airlines": {
-            "KSLC": [
-              {
-                "icao": "DAL",
-                "airport": "KPHX"
-              },
-              {
-                "icao": "DAL",
-                "airport": "MMSD"
-              },
-              {
-                "icao": "DAL",
-                "airport": "MMPR"
-              },
-              {
-                "icao": "DAL",
-                "airport": "MMMX"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KTUS"
-              },
-              {
-                "icao": "SKW",
-                "airport": "KPHX"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KPHX"
-              },
-              {
-                "icao": "AAL",
-                "airport": "KPHX"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "QWENN6.MLF": {
-      "arrivals": [
-        {
-          "waypoints": "FRNZY/a14000/s250/ho QWENN/a11000/s250/h344",
-          "star": "QWENN6",
-          "initial_controller": "SLC_11_CTR",
-          "initial_altitude": 14000,
-          "initial_speed": 300,
-          "description": "QWENN6",
-          "expect_approach": null,
-          "airlines": {
-            "KSLC": [
-              {
-                "icao": "DAL",
-                "airport": "KLAX"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KLAS"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KSAN"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KONT"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KPSP"
-              },
-              {
-                "icao": "SKW",
-                "airport": "KLAS"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KLAS"
-              },
-              {
-                "icao": "AAL",
-                "airport": "KLAX"
-              },
-              {
-                "icao": "UAL",
-                "airport": "KLAX"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "SKEES6.N": {
-      "arrivals": [
-        {
-          "waypoints": "BEARR/ho SKEES HUUPR/a13000- DYANN/a11000+ ANNTY/a11000 SURYP/a11000/h164",
-          "star": "SKEES6",
-          "initial_controller": "SLC_14_CTR",
-          "initial_altitude": 16000,
-          "initial_speed": 300,
-          "description": "SKEES6",
-          "expect_approach": null,
-          "airlines": {
-            "KSLC": [
-              {
-                "icao": "DAL",
-                "airport": "KSEA"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KPDX"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KGPI"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KBIL"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KMSO"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "CYVR"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KTWF"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KPIH"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KHLN"
-              },
-              {
-                "icao": "ASA",
-                "airport": "KSEA"
-              },
-              {
-                "icao": "ASA",
-                "airport": "KPDX"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "SKEES6.S": {
-      "arrivals": [
-        {
-          "waypoints": "BEARR/ho SKEES EKKHO/a11000/s250/h139",
-          "star": "SKEES6",
-          "initial_controller": "SLC_14_CTR",
-          "initial_altitude": 16000,
-          "initial_speed": 300,
-          "description": "SKEES6",
-          "expect_approach": null,
-          "airlines": {
-            "KSLC": [
-              {
-                "icao": "DAL",
-                "airport": "KSEA"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KPDX"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KGPI"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KBIL"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KMSO"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "CYVR"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KTWF"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KPIH"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KHLN"
-              },
-              {
-                "icao": "ASA",
-                "airport": "KSEA"
-              },
-              {
-                "icao": "ASA",
-                "airport": "KPDX"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "YUTES1.N": {
-      "arrivals": [
-        {
-          "waypoints": "BVL KNOLE/a17000/s250/ho SKWAH/a14000+ YUTES GOGGL BUSHH/a12000+ SURYP/a11000/h164",
-          "star": "YUTES1",
-          "initial_controller": "SLC_40_CTR",
-          "initial_altitude": 24000,
-          "initial_speed": 300,
-          "description": "YUTES1",
-          "expect_approach": null,
-          "airlines": {
-            "KSLC": [
-              {
-                "icao": "DAL",
-                "airport": "KSFO"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KRNO"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KSMF"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KBIL"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KOAK"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KSJC"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KRNO"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KOAK"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KSFO"
-              },
-              {
-                "icao": "SKW",
-                "airport": "KSFO"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KSJC"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KOAK"
-              },
-              {
-                "icao": "FDX",
-                "fleet": "long",
-                "airport": "KOAK"
-              },
-              {
-                "icao": "ASA",
-                "airport": "KSEA"
-              },
-              {
-                "icao": "ASA",
-                "airport": "KPDX"
-              },
-              {
-                "icao": "VXP",
-                "airport": "KSTS"
-              },
-              {
-                "icao": "UAL",
-                "airport": "KSFO"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "YUTES1.S": {
-      "arrivals": [
-        {
-          "waypoints": "BVL KNOLE/a17000/s250/ho SKWAH/a14000+ YUTES DUGGY JAXXX/a12000+ RIBSS LAWVA/a11000/h347",
-          "star": "YUTES1",
-          "initial_controller": "SLC_40_CTR",
-          "initial_altitude": 24000,
-          "initial_speed": 300,
-          "description": "YUTES1",
-          "expect_approach": null,
-          "airlines": {
-            "KSLC": [
-              {
-                "icao": "DAL",
-                "airport": "KSFO"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KRNO"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KSMF"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KBIL"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KOAK"
-              },
-              {
-                "icao": "DAL",
-                "airport": "KSJC"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KRNO"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KOAK"
-              },
-              {
-                "icao": "SKW",
-                "fleet": "long",
-                "airport": "KSFO"
-              },
-              {
-                "icao": "SKW",
-                "airport": "KSFO"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KSJC"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KOAK"
-              },
-              {
-                "icao": "FDX",
-                "fleet": "long",
-                "airport": "KOAK"
-              },
-              {
-                "icao": "ASA",
-                "airport": "KSEA"
-              },
-              {
-                "icao": "ASA",
-                "airport": "KPDX"
-              },
-              {
-                "icao": "VXP",
-                "airport": "KSTS"
-              },
-              {
-                "icao": "UAL",
-                "airport": "KSFO"
-              }
-            ]
-          }
-        }
-      ]
-    }
-  },
-  "control_positions": {
-    "SLC_W_TWR": {
-      "frequency": 132650,
-      "radio_name": "Salt Lake City Tower",
-      "sector_id": "1W"
-    },
-    "SLC_C_TWR": {
-      "frequency": 119050,
-      "radio_name": "Salt Lake City Tower",
-      "sector_id": "1L"
-    },
-    "SLC_E_TWR": {
-      "frequency": 118300,
-      "radio_name": "Salt Lake City Tower",
-      "sector_id": "1E"
-    },
-    "SLC_A_APP": {
-      "frequency": 118850,
-      "radio_name": "Salt Lake City Approach",
-      "sector_id": "1A"
-    },
-    "SLC_B_APP": {
-      "frequency": 124900,
-      "radio_name": "Salt Lake City Approach",
-      "sector_id": "1B"
-    },
-    "SLC_F_APP": {
-      "frequency": 125700,
-      "radio_name": "Salt Lake City Approach",
-      "sector_id": "1F"
-    },
-    "SLC_G_APP": {
-      "frequency": 126250,
-      "radio_name": "Salt Lake City Approach",
-      "sector_id": "1G"
-    },
-    "SLC_H_APP": {
-      "frequency": 121100,
-      "radio_name": "Salt Lake City Approach",
-      "sector_id": "1H"
-    },
-    "SLC_J_APP": {
-      "frequency": 128600,
-      "radio_name": "Salt Lake City Approach",
-      "sector_id": "1J"
-    },
-    "SLC_K_APP": {
-      "frequency": 135500,
-      "radio_name": "Salt Lake City Approach",
-      "sector_id": "1K"
-    },
-    "SLC_S_APP": {
-      "frequency": 128100,
-      "radio_name": "Salt Lake City Approach",
-      "sector_id": "1S"
-    },
-    "SLC_V_APP": {
-      "frequency": 127400,
-      "radio_name": "Salt Lake City Approach",
-      "sector_id": "1V"
-    },
-    "SLC_03_CTR": {
-      "frequency": 119950,
-      "radio_name": "Salt Lake City Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C03"
-    },
-    "SLC_07_CTR": {
-      "frequency": 127700,
-      "radio_name": "Salt Lake City Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C07"
-    },
-    "SLC_11_CTR": {
-      "frequency": 127850,
-      "radio_name": "Salt Lake City Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C11"
-    },
-    "SLC_14_CTR": {
-      "frequency": 133800,
-      "radio_name": "Salt Lake City Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C14"
-    },
-    "SLC_32_CTR": {
-      "frequency": 133900,
-      "radio_name": "Salt Lake City Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C32"
-    },
-    "SLC_40_CTR": {
-      "frequency": 120275,
-      "radio_name": "Salt Lake City Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C40"
-    }
-  },
-  "default_scenario": "North Flow SIMULs",
-  "name": "S56",
-  "primary_airport": "KSLC",
-  "scenarios": {
-    "North Flow SIMULs": {
-      "arrival_runways": [
-        {
-          "airport": "KSLC",
-          "runway": "34L"
-        },
-        {
-          "airport": "KSLC",
-          "runway": "34R"
-        },
-        {
-          "airport": "KSLC",
-          "runway": "35"
-        }
-      ],
-      "inbound_rates": {
-        "JAZZZ1": {
-          "KSLC": 10
-        },
-        "QWENN6.BCE": {
-          "KSLC": 5
-        },
-        "QWENN6.MLF": {
-          "KSLC": 5
-        },
-        "YUTES1.N": {
-          "KSLC": 10
-        },
+    "inbound_flows": {
         "CARTR1.N": {
-          "KSLC": 10
-        }
-      },
-      "configuration": {
-        "config_id": "STD",
-        "default_consolidation": {
-          "SLC_K_APP": []
-        }
-      },
-      "controllers": [
-        "SLC_C_TWR",
-        "SLC_E_TWR",
-        "SLC_03_CTR",
-        "SLC_07_CTR",
-        "SLC_11_CTR",
-        "SLC_14_CTR",
-        "SLC_32_CTR",
-        "SLC_40_CTR"
-      ],
-      "departure_runways": [
-        {
-          "airport": "KSLC",
-          "rate": 15,
-          "runway": "34L"
-        },
-        {
-          "airport": "KSLC",
-          "rate": 15,
-          "runway": "34R"
-        }
-      ],
-      "wind": {
-        "direction": "310-10"
-      },
-      "default_maps": ["S56 107 N Flow Base Map", "S56 141 North Final Lines"]
-    },
-    "South Flow SIMULs": {
-      "arrival_runways": [
-        {
-          "airport": "KSLC",
-          "runway": "16L"
-        },
-        {
-          "airport": "KSLC",
-          "runway": "16R"
-        },
-        {
-          "airport": "KSLC",
-          "runway": "17"
-        }
-      ],
-      "inbound_rates": {
-        "PITTT1.E": {
-          "KSLC": 10
-        },
-        "PITTT1.S": {
-          "KSLC": 10
-        },
-        "YUTES1.S": {
-          "KSLC": 10
+            "arrivals": [
+                {
+                    "waypoints": "LHO/a14000+/ho CARTR SETTT/a14000+ DYANN/a11000+ ANNTY/a11000 SURYP/a11000/h164",
+                    "star": "CARTR1",
+                    "initial_controller": "ZLC 07 Salt Lake 7",
+                    "initial_altitude": 16000,
+                    "initial_speed": 300,
+                    "description": "CARTR1",
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSLC": [
+                            {
+                                "icao": "DAL",
+                                "airport": "KIAD"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KMSP"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KBIS"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KDTW"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KORD"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KEWR"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KSUX"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KJAC"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KFAR"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KDEN"
+                            },
+                            {
+                                "icao": "JBU",
+                                "airport": "KJFK"
+                            },
+                            {
+                                "icao": "JBU",
+                                "airport": "KBOS"
+                            },
+                            {
+                                "icao": "AAL",
+                                "fleet": "short",
+                                "airport": "KORD"
+                            },
+                            {
+                                "icao": "UAL",
+                                "airport": "KEWR"
+                            },
+                            {
+                                "icao": "UAL",
+                                "airport": "KORD"
+                            }
+                        ]
+                    },
+                    "initial_facility": "ZLC"
+                }
+            ]
         },
         "CARTR1.S": {
-          "KSLC": 10
-        }
-      },
-      "configuration": {
-        "config_id": "STD",
-        "default_consolidation": {
-          "SLC_K_APP": []
-        }
-      },
-      "controllers": [
-        "SLC_C_TWR",
-        "SLC_E_TWR",
-        "SLC_03_CTR",
-        "SLC_07_CTR",
-        "SLC_11_CTR",
-        "SLC_14_CTR",
-        "SLC_32_CTR",
-        "SLC_40_CTR"
-      ],
-      "departure_runways": [
-        {
-          "airport": "KSLC",
-          "rate": 15,
-          "runway": "16R"
+            "arrivals": [
+                {
+                    "waypoints": "LHO/a14000+/ho CARTR WEBER/a12000+/h165",
+                    "star": "CARTR1",
+                    "initial_controller": "ZLC 07 Salt Lake 7",
+                    "initial_altitude": 16000,
+                    "initial_speed": 300,
+                    "description": "CARTR1",
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSLC": [
+                            {
+                                "icao": "DAL",
+                                "airport": "KIAD"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KMSP"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KBIS"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KDTW"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KORD"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KEWR"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KSUX"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KJAC"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KFAR"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KDEN"
+                            },
+                            {
+                                "icao": "JBU",
+                                "airport": "KJFK"
+                            },
+                            {
+                                "icao": "JBU",
+                                "airport": "KBOS"
+                            },
+                            {
+                                "icao": "AAL",
+                                "fleet": "short",
+                                "airport": "KORD"
+                            },
+                            {
+                                "icao": "UAL",
+                                "airport": "KEWR"
+                            },
+                            {
+                                "icao": "UAL",
+                                "airport": "KORD"
+                            }
+                        ]
+                    },
+                    "initial_facility": "ZLC"
+                }
+            ]
         },
-        {
-          "airport": "KSLC",
-          "rate": 15,
-          "runway": "16L"
+        "JAZZZ1": {
+            "arrivals": [
+                {
+                    "waypoints": "SPANE/a15000/s250/ho RUSHN/a13000+ JAZZZ/a12000+/s250/h325",
+                    "star": "JAZZZ1",
+                    "initial_controller": "ZLC 32 Salt Lake",
+                    "initial_altitude": 15000,
+                    "initial_speed": 300,
+                    "description": "JAZZZ1",
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSLC": [
+                            {
+                                "icao": "DAL",
+                                "fleet": "short",
+                                "airport": "KATL"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KATL"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KDFW"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KAUS"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KABQ"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KSAT"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KIAH"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KDEN"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KDEN"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KABQ"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KDEN"
+                            },
+                            {
+                                "icao": "AAL",
+                                "fleet": "short",
+                                "airport": "KDFW"
+                            },
+                            {
+                                "icao": "FFT",
+                                "airport": "KDEN"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KDEN"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KHOU"
+                            },
+                            {
+                                "icao": "UAL",
+                                "fleet": "short",
+                                "airport": "KDEN"
+                            },
+                            {
+                                "icao": "UAL",
+                                "fleet": "short",
+                                "airport": "KIAH"
+                            }
+                        ]
+                    },
+                    "initial_facility": "ZLC"
+                }
+            ]
+        },
+        "PITTT1.E": {
+            "arrivals": [
+                {
+                    "waypoints": "SPANE/a19000/s280/ho LEEHY  FFU/a17000+ DRYVE/a15000+ PITTT/a12000 MAGNE QUIPA LAWVA/a11000/h344",
+                    "star": "PITTT1",
+                    "initial_controller": "ZLC 32 Salt Lake",
+                    "initial_altitude": 19000,
+                    "initial_speed": 280,
+                    "description": "PITTT1",
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSLC": [
+                            {
+                                "icao": "DAL",
+                                "fleet": "short",
+                                "airport": "KATL"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KATL"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KDFW"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KAUS"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KABQ"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KSAT"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KIAH"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KDEN"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KDEN"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KABQ"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KDEN"
+                            },
+                            {
+                                "icao": "AAL",
+                                "fleet": "short",
+                                "airport": "KDFW"
+                            },
+                            {
+                                "icao": "FFT",
+                                "airport": "KDEN"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KDEN"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KHOU"
+                            },
+                            {
+                                "icao": "UAL",
+                                "fleet": "short",
+                                "airport": "KDEN"
+                            },
+                            {
+                                "icao": "UAL",
+                                "fleet": "short",
+                                "airport": "KIAH"
+                            }
+                        ]
+                    },
+                    "initial_facility": "ZLC"
+                }
+            ]
+        },
+        "PITTT1.S": {
+            "arrivals": [
+                {
+                    "waypoints": "JAMMN/a17000/s250/ho DRAPR/a14000-15000 SPIEK/a13000-14000 HEIRY PITTT/a12000 MAGNE QUIPA LAWVA/a11000/h344",
+                    "star": "PITTT1",
+                    "initial_controller": "ZLC 11",
+                    "initial_altitude": 17000,
+                    "initial_speed": 300,
+                    "description": "PITTT1",
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSLC": [
+                            {
+                                "icao": "DAL",
+                                "airport": "KLAX"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KLAS"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KSAN"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KONT"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KPSP"
+                            },
+                            {
+                                "icao": "SKW",
+                                "airport": "KLAS"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KLAS"
+                            },
+                            {
+                                "icao": "AAL",
+                                "airport": "KLAX"
+                            },
+                            {
+                                "icao": "UAL",
+                                "airport": "KLAX"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KPHX"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "MMSD"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "MMPR"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "MMMX"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KTUS"
+                            },
+                            {
+                                "icao": "SKW",
+                                "airport": "KPHX"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KPHX"
+                            },
+                            {
+                                "icao": "AAL",
+                                "airport": "KPHX"
+                            }
+                        ]
+                    },
+                    "initial_facility": "ZLC"
+                }
+            ]
+        },
+        "QWENN6.BCE": {
+            "arrivals": [
+                {
+                    "waypoints": "NEEBO/a14000/s250/ho QWENN/a11000/s250/h344",
+                    "star": "QWENN6",
+                    "initial_controller": "ZLC 11",
+                    "initial_altitude": 14000,
+                    "initial_speed": 300,
+                    "description": "QWENN6",
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSLC": [
+                            {
+                                "icao": "DAL",
+                                "airport": "KPHX"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "MMSD"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "MMPR"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "MMMX"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KTUS"
+                            },
+                            {
+                                "icao": "SKW",
+                                "airport": "KPHX"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KPHX"
+                            },
+                            {
+                                "icao": "AAL",
+                                "airport": "KPHX"
+                            }
+                        ]
+                    },
+                    "initial_facility": "ZLC"
+                }
+            ]
+        },
+        "QWENN6.MLF": {
+            "arrivals": [
+                {
+                    "waypoints": "FRNZY/a14000/s250/ho QWENN/a11000/s250/h344",
+                    "star": "QWENN6",
+                    "initial_controller": "ZLC 11",
+                    "initial_altitude": 14000,
+                    "initial_speed": 300,
+                    "description": "QWENN6",
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSLC": [
+                            {
+                                "icao": "DAL",
+                                "airport": "KLAX"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KLAS"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KSAN"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KONT"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KPSP"
+                            },
+                            {
+                                "icao": "SKW",
+                                "airport": "KLAS"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KLAS"
+                            },
+                            {
+                                "icao": "AAL",
+                                "airport": "KLAX"
+                            },
+                            {
+                                "icao": "UAL",
+                                "airport": "KLAX"
+                            }
+                        ]
+                    },
+                    "initial_facility": "ZLC"
+                }
+            ]
+        },
+        "SKEES6.N": {
+            "arrivals": [
+                {
+                    "waypoints": "BEARR/ho SKEES HUUPR/a13000- DYANN/a11000+ ANNTY/a11000 SURYP/a11000/h164",
+                    "star": "SKEES6",
+                    "initial_controller": "ZLC 14 Salt Lake",
+                    "initial_altitude": 16000,
+                    "initial_speed": 300,
+                    "description": "SKEES6",
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSLC": [
+                            {
+                                "icao": "DAL",
+                                "airport": "KSEA"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KPDX"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KGPI"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KBIL"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KMSO"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "CYVR"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KTWF"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KPIH"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KHLN"
+                            },
+                            {
+                                "icao": "ASA",
+                                "airport": "KSEA"
+                            },
+                            {
+                                "icao": "ASA",
+                                "airport": "KPDX"
+                            }
+                        ]
+                    },
+                    "initial_facility": "ZLC"
+                }
+            ]
+        },
+        "SKEES6.S": {
+            "arrivals": [
+                {
+                    "waypoints": "BEARR/ho SKEES EKKHO/a11000/s250/h139",
+                    "star": "SKEES6",
+                    "initial_controller": "ZLC 14 Salt Lake",
+                    "initial_altitude": 16000,
+                    "initial_speed": 300,
+                    "description": "SKEES6",
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSLC": [
+                            {
+                                "icao": "DAL",
+                                "airport": "KSEA"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KPDX"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KGPI"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KBIL"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KMSO"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "CYVR"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KTWF"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KPIH"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KHLN"
+                            },
+                            {
+                                "icao": "ASA",
+                                "airport": "KSEA"
+                            },
+                            {
+                                "icao": "ASA",
+                                "airport": "KPDX"
+                            }
+                        ]
+                    },
+                    "initial_facility": "ZLC"
+                }
+            ]
+        },
+        "YUTES1.N": {
+            "arrivals": [
+                {
+                    "waypoints": "BVL KNOLE/a17000/s250/ho SKWAH/a14000+ YUTES GOGGL BUSHH/a12000+ SURYP/a11000/h164",
+                    "star": "YUTES1",
+                    "initial_controller": "ZLC 40",
+                    "initial_altitude": 24000,
+                    "initial_speed": 300,
+                    "description": "YUTES1",
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSLC": [
+                            {
+                                "icao": "DAL",
+                                "airport": "KSFO"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KRNO"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KSMF"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KBIL"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KOAK"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KSJC"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KRNO"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KOAK"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KSFO"
+                            },
+                            {
+                                "icao": "SKW",
+                                "airport": "KSFO"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KSJC"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KOAK"
+                            },
+                            {
+                                "icao": "FDX",
+                                "fleet": "long",
+                                "airport": "KOAK"
+                            },
+                            {
+                                "icao": "ASA",
+                                "airport": "KSEA"
+                            },
+                            {
+                                "icao": "ASA",
+                                "airport": "KPDX"
+                            },
+                            {
+                                "icao": "VXP",
+                                "airport": "KSTS"
+                            },
+                            {
+                                "icao": "UAL",
+                                "airport": "KSFO"
+                            }
+                        ]
+                    },
+                    "initial_facility": "ZLC"
+                }
+            ]
+        },
+        "YUTES1.S": {
+            "arrivals": [
+                {
+                    "waypoints": "BVL KNOLE/a17000/s250/ho SKWAH/a14000+ YUTES DUGGY JAXXX/a12000+ RIBSS LAWVA/a11000/h347",
+                    "star": "YUTES1",
+                    "initial_controller": "ZLC 40",
+                    "initial_altitude": 24000,
+                    "initial_speed": 300,
+                    "description": "YUTES1",
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSLC": [
+                            {
+                                "icao": "DAL",
+                                "airport": "KSFO"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KRNO"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KSMF"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KBIL"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KOAK"
+                            },
+                            {
+                                "icao": "DAL",
+                                "airport": "KSJC"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KRNO"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KOAK"
+                            },
+                            {
+                                "icao": "SKW",
+                                "fleet": "long",
+                                "airport": "KSFO"
+                            },
+                            {
+                                "icao": "SKW",
+                                "airport": "KSFO"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KSJC"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KOAK"
+                            },
+                            {
+                                "icao": "FDX",
+                                "fleet": "long",
+                                "airport": "KOAK"
+                            },
+                            {
+                                "icao": "ASA",
+                                "airport": "KSEA"
+                            },
+                            {
+                                "icao": "ASA",
+                                "airport": "KPDX"
+                            },
+                            {
+                                "icao": "VXP",
+                                "airport": "KSTS"
+                            },
+                            {
+                                "icao": "UAL",
+                                "airport": "KSFO"
+                            }
+                        ]
+                    },
+                    "initial_facility": "ZLC"
+                }
+            ]
         }
-      ],
-      "wind": {
-        "direction": "130-190"
-      },
-      "default_maps": ["S56 109 South Flow Base Map", "S56 142 South Final Lines", "S56 167 Widely Spaced Simuls Map"]
+    },
+    "default_scenario": "North Flow SIMULs",
+    "name": "S56",
+    "primary_airport": "KSLC",
+    "scenarios": {
+        "North Flow SIMULs": {
+            "arrival_runways": [
+                {
+                    "airport": "KSLC",
+                    "runway": "34L"
+                },
+                {
+                    "airport": "KSLC",
+                    "runway": "34R"
+                },
+                {
+                    "airport": "KSLC",
+                    "runway": "35"
+                }
+            ],
+            "inbound_rates": {
+                "JAZZZ1": {
+                    "KSLC": 10
+                },
+                "QWENN6.BCE": {
+                    "KSLC": 5
+                },
+                "QWENN6.MLF": {
+                    "KSLC": 5
+                },
+                "YUTES1.N": {
+                    "KSLC": 10
+                },
+                "CARTR1.N": {
+                    "KSLC": 10
+                }
+            },
+            "configuration": {
+                "config_id": "STD",
+                "default_consolidation": {
+                    "SLC_K_APP": []
+                }
+            },
+            "departure_runways": [
+                {
+                    "airport": "KSLC",
+                    "rate": 15,
+                    "runway": "34L"
+                },
+                {
+                    "airport": "KSLC",
+                    "rate": 15,
+                    "runway": "34R"
+                }
+            ],
+            "wind": {
+                "direction": "310-10"
+            },
+            "default_maps": [
+                "S56 107 N Flow Base Map",
+                "S56 141 North Final Lines"
+            ]
+        },
+        "South Flow SIMULs": {
+            "arrival_runways": [
+                {
+                    "airport": "KSLC",
+                    "runway": "16L"
+                },
+                {
+                    "airport": "KSLC",
+                    "runway": "16R"
+                },
+                {
+                    "airport": "KSLC",
+                    "runway": "17"
+                }
+            ],
+            "inbound_rates": {
+                "PITTT1.E": {
+                    "KSLC": 10
+                },
+                "PITTT1.S": {
+                    "KSLC": 10
+                },
+                "YUTES1.S": {
+                    "KSLC": 10
+                },
+                "CARTR1.S": {
+                    "KSLC": 10
+                }
+            },
+            "configuration": {
+                "config_id": "STD",
+                "default_consolidation": {
+                    "SLC_K_APP": []
+                }
+            },
+            "departure_runways": [
+                {
+                    "airport": "KSLC",
+                    "rate": 15,
+                    "runway": "16R"
+                },
+                {
+                    "airport": "KSLC",
+                    "rate": 15,
+                    "runway": "16L"
+                }
+            ],
+            "wind": {
+                "direction": "130-190"
+            },
+            "default_maps": [
+                "S56 109 South Flow Base Map",
+                "S56 142 South Final Lines",
+                "S56 167 Widely Spaced Simuls Map"
+            ]
+        }
     }
-  },
-  "stars_config": {
-    "configurations": {
-      "STD": {
-        "inbound_assignments": {
-          "CARTR1.N": "SLC_K_APP",
-          "CARTR1.S": "SLC_K_APP",
-          "JAZZZ1": "SLC_K_APP",
-          "PITTT1.E": "SLC_K_APP",
-          "PITTT1.S": "SLC_K_APP",
-          "QWENN6.BCE": "SLC_K_APP",
-          "QWENN6.MLF": "SLC_K_APP",
-          "YUTES1.N": "SLC_K_APP",
-          "YUTES1.S": "SLC_K_APP"
-        },
-        "departure_assignments": {
-          "KSLC": "SLC_K_APP"
-        }
-      }
-    },
-
-    "center": "KSLC",
-    "coordination_fixes": {
-      "CARTR": [
-        {
-          "type": "route",
-          "to": "S56",
-          "from": "ZLC"
-        }
-      ],
-      "SKEES": [
-        {
-          "type": "route",
-          "to": "S56",
-          "from": "ZLC"
-        }
-      ],
-      "NORDK": [
-        {
-          "type": "route",
-          "to": "S56",
-          "from": "ZLC"
-        }
-      ],
-      "LEEHY": [
-        {
-          "type": "route",
-          "to": "S56",
-          "from": "ZLC"
-        }
-      ],
-      "QWENN": [
-        {
-          "type": "route",
-          "to": "S56",
-          "from": "ZLC"
-        }
-      ],
-      "WAATS": [
-        {
-          "type": "route",
-          "to": "S56",
-          "from": "ZLC"
-        }
-      ]
-    },
-    "scratchpads": {
-      "STEWW": "SCA"
-    },
-    "significant_points": {
-      "STEWW": {}
-    },
-    "stars_maps": [
-      "S56 107 N Flow Base Map",
-      "S56 109 South Flow Base Map",
-      "S56 141 North Final Lines",
-      "S56 142 South Final Lines",
-      "S56 203 3NM Separation MVA",
-      "S56 119 Emergency Obstacle Map",
-      "S56 147 North Finals Extended",
-      "S56 146 South Finals Extended",
-      "S56 162 North Flow SID Lines",
-      "S56 159 South Flow SID Lines",
-      "S56 160 North Flow SID Waypoint Symbols",
-      "S56 157 South Flow SID Waypoints Symbols",
-      "S56 161 North Flow SID Names",
-      "S56 158 South Flow SID Waypoint Names",
-      "S56 137 Tower Airspace",
-      "S56 176 Roads",
-      "S56 102 Satellite Approaches",
-      "S56 167 Widely Spaced Simuls Map",
-      "S56 120 GPS Approach Centerlines",
-      "S56 150 GPS Approaches Text",
-      "S56 190 OGD VOR-A Approach",
-      "S56 169 PVU VOR Approach",
-      "S56 104 ZLC Split Map"
-    ],
-    "video_map_file": "videomaps/ZLC-videomaps.gob.zst"
-  }
 }

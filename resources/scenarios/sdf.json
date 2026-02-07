@@ -1,916 +1,776 @@
 {
-  "tracon": "SDF",
-  "airports": {
-    "KSDF": {
-      "approaches": {
-        "I7L": {
-          "cifp_id": "I17L"
-        },
-        "I7R": {
-          "cifp_id": "I17R"
-        },
-        "I5L": {
-          "cifp_id": "I35L"
-        },
-        "I5R": {
-          "cifp_id": "I35R"
-        },
-        "R29": {
-          "cifp_id": "RZ29"
+    "tracon": "SDF",
+    "airports": {
+        "KSDF": {
+            "approaches": {
+                "I7L": {
+                    "cifp_id": "I17L"
+                },
+                "I7R": {
+                    "cifp_id": "I17R"
+                },
+                "I5L": {
+                    "cifp_id": "I35L"
+                },
+                "I5R": {
+                    "cifp_id": "I35R"
+                },
+                "R29": {
+                    "cifp_id": "RZ29"
+                }
+            },
+            "approach_regions": {
+                "35R": {
+                    "heading_tolerance": 90,
+                    "near_distance": 5,
+                    "near_half_width": 3,
+                    "far_half_width": 6,
+                    "region_length": 30,
+                    "descent_distance": 10,
+                    "descent_altitude": 3000,
+                    "above_altitude_tolerance": 3000,
+                    "below_altitude_tolerance": 1000,
+                    "reference_point": "38.166052,-85.724056",
+                    "reference_heading": 349,
+                    "reference_length": 30,
+                    "reference_altitude": 0
+                },
+                "35L": {
+                    "heading_tolerance": 90,
+                    "near_distance": 5,
+                    "near_half_width": 3,
+                    "far_half_width": 6,
+                    "region_length": 30,
+                    "descent_distance": 10,
+                    "descent_altitude": 3000,
+                    "above_altitude_tolerance": 3000,
+                    "below_altitude_tolerance": 1000,
+                    "reference_point": "38.15846,-85.739345",
+                    "reference_heading": 294,
+                    "reference_length": 30,
+                    "reference_altitude": 0
+                },
+                "17R": {
+                    "heading_tolerance": 90,
+                    "near_distance": 5,
+                    "near_half_width": 3,
+                    "far_half_width": 6,
+                    "region_length": 30,
+                    "descent_distance": 10,
+                    "descent_altitude": 3000,
+                    "above_altitude_tolerance": 3000,
+                    "below_altitude_tolerance": 1000,
+                    "reference_point": "38.184472,-85.747917",
+                    "reference_heading": 169,
+                    "reference_length": 30,
+                    "reference_altitude": 0
+                },
+                "17L": {
+                    "heading_tolerance": 90,
+                    "near_distance": 5,
+                    "near_half_width": 3,
+                    "far_half_width": 6,
+                    "region_length": 30,
+                    "descent_distance": 10,
+                    "descent_altitude": 3000,
+                    "above_altitude_tolerance": 3000,
+                    "below_altitude_tolerance": 1000,
+                    "reference_point": "38.186125,-85.730944",
+                    "reference_heading": 169,
+                    "reference_length": 30,
+                    "reference_altitude": 0
+                },
+                "29": {
+                    "heading_tolerance": 90,
+                    "near_distance": 5,
+                    "near_half_width": 3,
+                    "far_half_width": 6,
+                    "region_length": 30,
+                    "descent_distance": 10,
+                    "descent_altitude": 3000,
+                    "above_altitude_tolerance": 3000,
+                    "below_altitude_tolerance": 1000,
+                    "reference_point": "38.173154,-85.72411",
+                    "reference_heading": 294,
+                    "reference_length": 30,
+                    "reference_altitude": 0
+                }
+            },
+            "converging_runways": [
+                {
+                    "runways": [
+                        "35R",
+                        "29"
+                    ],
+                    "leader_directions": [
+                        "S",
+                        "N"
+                    ],
+                    "tie_symbol": "*",
+                    "stagger_symbol": "-",
+                    "tie_offset": 3
+                },
+                {
+                    "runways": [
+                        "35L",
+                        "29"
+                    ],
+                    "leader_directions": [
+                        "W",
+                        "N"
+                    ],
+                    "tie_symbol": "*",
+                    "stagger_symbol": "-",
+                    "tie_offset": 3
+                },
+                {
+                    "runways": [
+                        "17R",
+                        "29"
+                    ],
+                    "leader_directions": [
+                        "W",
+                        "S"
+                    ],
+                    "tie_symbol": "*",
+                    "stagger_symbol": "-",
+                    "tie_offset": 3
+                },
+                {
+                    "runways": [
+                        "17L",
+                        "29"
+                    ],
+                    "leader_directions": [
+                        "E",
+                        "S"
+                    ],
+                    "tie_symbol": "*",
+                    "stagger_symbol": "-",
+                    "tie_offset": 3
+                }
+            ],
+            "departure_routes": {
+                "17L": {
+                    "APALO": {
+                        "cleared_altitude": 5000,
+                        "sid": "APALO6",
+                        "waypoints": "DROPA _DIIME ONMEE DOWNS"
+                    },
+                    "CRRGO": {
+                        "cleared_altitude": 5000,
+                        "sid": "CRRGO4",
+                        "waypoints": "DROPA _DIIME ONMEE _DOCKE"
+                    },
+                    "SHIPR,OHAGI": {
+                        "cleared_altitude": 5000,
+                        "sid": "FEDRA5",
+                        "waypoints": "DROPA _FRATE FEDRA"
+                    },
+                    "STREP": {
+                        "cleared_altitude": 5000,
+                        "sid": "STREP5",
+                        "waypoints": "DROPA _DIIME ONMEE CANBE"
+                    }
+                },
+                "17R": {
+                    "APALO": {
+                        "cleared_altitude": 5000,
+                        "sid": "APALO6",
+                        "waypoints": "_LEENE ONMEE DOWNS"
+                    },
+                    "CRRGO": {
+                        "cleared_altitude": 5000,
+                        "sid": "CRRGO4",
+                        "waypoints": "_LEENE ONMEE _DOCKE"
+                    },
+                    "SHIPR,OHAGI": {
+                        "cleared_altitude": 5000,
+                        "sid": "FEDRA5",
+                        "waypoints": "_LEENE _PKAGE _FRATE FEDRA"
+                    },
+                    "STREP": {
+                        "cleared_altitude": 5000,
+                        "sid": "STREP5",
+                        "waypoints": "_LEENE ONMEE CANBE"
+                    }
+                },
+                "29": {
+                    "APALO": {
+                        "cleared_altitude": 5000,
+                        "sid": "APALO6",
+                        "waypoints": "GADSN LUUKE _ALOMY DOWNS"
+                    },
+                    "CRRGO": {
+                        "cleared_altitude": 5000,
+                        "sid": "CRRGO4",
+                        "waypoints": "GADSN LUUKE"
+                    },
+                    "SHIPR,OHAGI": {
+                        "cleared_altitude": 5000,
+                        "sid": "FEDRA5",
+                        "waypoints": "GADSN LUUKE _IAMUR _FADDR _FRATE FEDRA"
+                    },
+                    "STREP": {
+                        "cleared_altitude": 5000,
+                        "sid": "STREP5",
+                        "waypoints": "GADSN CANBE"
+                    }
+                },
+                "35L": {
+                    "APALO": {
+                        "cleared_altitude": 5000,
+                        "sid": "APALO6",
+                        "waypoints": "RRROE BUHBA _ALOMY DOWNS"
+                    },
+                    "CRRGO": {
+                        "cleared_altitude": 5000,
+                        "sid": "CRRGO4",
+                        "waypoints": "RRROE BUHBA"
+                    },
+                    "SHIPR,OHAGI": {
+                        "cleared_altitude": 5000,
+                        "sid": "FEDRA5",
+                        "waypoints": "RRROE _LLAWS _GLDIE _FRATE FEDRA"
+                    },
+                    "STREP": {
+                        "cleared_altitude": 5000,
+                        "sid": "STREP5",
+                        "waypoints": "RRROE"
+                    }
+                },
+                "35R": {
+                    "APALO": {
+                        "cleared_altitude": 5000,
+                        "sid": "APALO6",
+                        "waypoints": "SLATY BUHBA _ALOMY DOWNS"
+                    },
+                    "CRRGO": {
+                        "cleared_altitude": 5000,
+                        "sid": "CRRGO4",
+                        "waypoints": "SLATY BUHBA"
+                    },
+                    "SHIPR,OHAGI": {
+                        "cleared_altitude": 5000,
+                        "sid": "FEDRA5",
+                        "waypoints": "_GRIPZ BAALK SIXMI _GLDIE _FRATE FEDRA"
+                    },
+                    "STREP": {
+                        "cleared_altitude": 5000,
+                        "sid": "STREP5",
+                        "waypoints": "_GRIPZ _YAGRR"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "UPS"
+                        },
+                        {
+                            "icao": "JIA"
+                        },
+                        {
+                            "icao": "AAL"
+                        }
+                    ],
+                    "destination": "KCLT",
+                    "exit": "SHIPR",
+                    "route": "SHIPR TAFTT PARQR3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "UPS"
+                        },
+                        {
+                            "fleet": "short",
+                            "icao": "AAL"
+                        },
+                        {
+                            "icao": "ENY"
+                        }
+                    ],
+                    "destination": "KDFW",
+                    "exit": "APALO",
+                    "route": "APALO PXV J131 LIT MEEOW FEWWW SEEVR4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SKW"
+                        },
+                        {
+                            "icao": "RPA"
+                        }
+                    ],
+                    "destination": "KLGA",
+                    "exit": "STREP",
+                    "route": "STREP KLYNE WWSHR TEESY J146 ETG MIP4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SKW"
+                        },
+                        {
+                            "icao": "JIA"
+                        }
+                    ],
+                    "destination": "KDCA",
+                    "exit": "SHIPR",
+                    "route": "SHIPR BKW TRUPS4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "UPS"
+                        },
+                        {
+                            "icao": "RPA"
+                        }
+                    ],
+                    "destination": "KBOS",
+                    "exit": "SHIPR",
+                    "route": "SHIPR HNN GVE GRACO BROSS Q419 JFK ROBUC3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "UPS"
+                        },
+                        {
+                            "icao": "SKW"
+                        },
+                        {
+                            "fleet": "short",
+                            "icao": "UAL"
+                        },
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
+                    "destination": "KDEN",
+                    "exit": "APALO",
+                    "route": "APALO BUM HYS J24 OATHE CLASH4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "UPS"
+                        },
+                        {
+                            "icao": "SWA"
+                        }
+                    ],
+                    "destination": "KBWI",
+                    "exit": "SHIPR",
+                    "route": "SHIPR BKW RAVNN6"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "UPS"
+                        },
+                        {
+                            "icao": "EDV"
+                        }
+                    ],
+                    "destination": "KDTW",
+                    "exit": "STREP",
+                    "route": "STREP DQN TORRR LECTR3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "UPS"
+                        },
+                        {
+                            "icao": "SKW"
+                        }
+                    ],
+                    "destination": "KEWR",
+                    "exit": "STREP",
+                    "route": "STREP KYLNE WWSHR Q29 DORET J584 SLT FQM3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "UPS"
+                        },
+                        {
+                            "icao": "ASH"
+                        }
+                    ],
+                    "destination": "KIAH",
+                    "exit": "CRRGO",
+                    "route": "CRRGO DHART SWB ZEEKK2"
+                }
+            ],
+            "exit_categories": {
+                "APALO": "ALL",
+                "CRRGO": "ALL",
+                "SHIPR": "ALL",
+                "STREP": "ALL",
+                "OHAGI": "AAL"
+            },
+            "tower_list": 2
         }
-      },
-      "approach_regions": {
-        "35R": {
-          "heading_tolerance": 90,
-          "near_distance": 5,
-          "near_half_width": 3,
-          "far_half_width": 6,
-          "region_length": 30,
-          "descent_distance": 10,
-          "descent_altitude": 3000,
-          "above_altitude_tolerance": 3000,
-          "below_altitude_tolerance": 1000,
-          "reference_point": "38.166052,-85.724056",
-          "reference_heading": 349,
-          "reference_length": 30,
-          "reference_altitude": 0
-        },
-        "35L": {
-          "heading_tolerance": 90,
-          "near_distance": 5,
-          "near_half_width": 3,
-          "far_half_width": 6,
-          "region_length": 30,
-          "descent_distance": 10,
-          "descent_altitude": 3000,
-          "above_altitude_tolerance": 3000,
-          "below_altitude_tolerance": 1000,
-          "reference_point": "38.15846,-85.739345",
-          "reference_heading": 294,
-          "reference_length": 30,
-          "reference_altitude": 0
-        },
-        "17R": {
-          "heading_tolerance": 90,
-          "near_distance": 5,
-          "near_half_width": 3,
-          "far_half_width": 6,
-          "region_length": 30,
-          "descent_distance": 10,
-          "descent_altitude": 3000,
-          "above_altitude_tolerance": 3000,
-          "below_altitude_tolerance": 1000,
-          "reference_point": "38.184472,-85.747917",
-          "reference_heading": 169,
-          "reference_length": 30,
-          "reference_altitude": 0
-        },
-        "17L": {
-          "heading_tolerance": 90,
-          "near_distance": 5,
-          "near_half_width": 3,
-          "far_half_width": 6,
-          "region_length": 30,
-          "descent_distance": 10,
-          "descent_altitude": 3000,
-          "above_altitude_tolerance": 3000,
-          "below_altitude_tolerance": 1000,
-          "reference_point": "38.186125,-85.730944",
-          "reference_heading": 169,
-          "reference_length": 30,
-          "reference_altitude": 0
-        },
-        "29": {
-          "heading_tolerance": 90,
-          "near_distance": 5,
-          "near_half_width": 3,
-          "far_half_width": 6,
-          "region_length": 30,
-          "descent_distance": 10,
-          "descent_altitude": 3000,
-          "above_altitude_tolerance": 3000,
-          "below_altitude_tolerance": 1000,
-          "reference_point": "38.173154,-85.72411",
-          "reference_heading": 294,
-          "reference_length": 30,
-          "reference_altitude": 0
-        }
-      },
-      "converging_runways": [
-        {
-          "runways": ["35R", "29"],
-          "leader_directions": ["S", "N"],
-          "tie_symbol": "*",
-          "stagger_symbol": "-",
-          "tie_offset": 3
-        },
-        {
-          "runways": ["35L", "29"],
-          "leader_directions": ["W", "N"],
-          "tie_symbol": "*",
-          "stagger_symbol": "-",
-          "tie_offset": 3
-        },
-        {
-          "runways": ["17R", "29"],
-          "leader_directions": ["W", "S"],
-          "tie_symbol": "*",
-          "stagger_symbol": "-",
-          "tie_offset": 3
-        },
-        {
-          "runways": ["17L", "29"],
-          "leader_directions": ["E", "S"],
-          "tie_symbol": "*",
-          "stagger_symbol": "-",
-          "tie_offset": 3
-        }
-      ],
-      "departure_routes": {
-        "17L": {
-          "APALO": {
-            "cleared_altitude": 5000,
-            "sid": "APALO6",
-            "waypoints": "DROPA _DIIME ONMEE DOWNS"
-          },
-          "CRRGO": {
-            "cleared_altitude": 5000,
-            "sid": "CRRGO4",
-            "waypoints": "DROPA _DIIME ONMEE _DOCKE"
-          },
-          "SHIPR,OHAGI": {
-            "cleared_altitude": 5000,
-            "sid": "FEDRA5",
-            "waypoints": "DROPA _FRATE FEDRA"
-          },
-          "STREP": {
-            "cleared_altitude": 5000,
-            "sid": "STREP5",
-            "waypoints": "DROPA _DIIME ONMEE CANBE"
-          }
-        },
-        "17R": {
-          "APALO": {
-            "cleared_altitude": 5000,
-            "sid": "APALO6",
-            "waypoints": "_LEENE ONMEE DOWNS"
-          },
-          "CRRGO": {
-            "cleared_altitude": 5000,
-            "sid": "CRRGO4",
-            "waypoints": "_LEENE ONMEE _DOCKE"
-          },
-          "SHIPR,OHAGI": {
-            "cleared_altitude": 5000,
-            "sid": "FEDRA5",
-            "waypoints": "_LEENE _PKAGE _FRATE FEDRA"
-          },
-          "STREP": {
-            "cleared_altitude": 5000,
-            "sid": "STREP5",
-            "waypoints": "_LEENE ONMEE CANBE"
-          }
-        },
-        "29": {
-          "APALO": {
-            "cleared_altitude": 5000,
-            "sid": "APALO6",
-            "waypoints": "GADSN LUUKE _ALOMY DOWNS"
-          },
-          "CRRGO": {
-            "cleared_altitude": 5000,
-            "sid": "CRRGO4",
-            "waypoints": "GADSN LUUKE"
-          },
-          "SHIPR,OHAGI": {
-            "cleared_altitude": 5000,
-            "sid": "FEDRA5",
-            "waypoints": "GADSN LUUKE _IAMUR _FADDR _FRATE FEDRA"
-          },
-          "STREP": {
-            "cleared_altitude": 5000,
-            "sid": "STREP5",
-            "waypoints": "GADSN CANBE"
-          }
-        },
-        "35L": {
-          "APALO": {
-            "cleared_altitude": 5000,
-            "sid": "APALO6",
-            "waypoints": "RRROE BUHBA _ALOMY DOWNS"
-          },
-          "CRRGO": {
-            "cleared_altitude": 5000,
-            "sid": "CRRGO4",
-            "waypoints": "RRROE BUHBA"
-          },
-          "SHIPR,OHAGI": {
-            "cleared_altitude": 5000,
-            "sid": "FEDRA5",
-            "waypoints": "RRROE _LLAWS _GLDIE _FRATE FEDRA"
-          },
-          "STREP": {
-            "cleared_altitude": 5000,
-            "sid": "STREP5",
-            "waypoints": "RRROE"
-          }
-        },
-        "35R": {
-          "APALO": {
-            "cleared_altitude": 5000,
-            "sid": "APALO6",
-            "waypoints": "SLATY BUHBA _ALOMY DOWNS"
-          },
-          "CRRGO": {
-            "cleared_altitude": 5000,
-            "sid": "CRRGO4",
-            "waypoints": "SLATY BUHBA"
-          },
-          "SHIPR,OHAGI": {
-            "cleared_altitude": 5000,
-            "sid": "FEDRA5",
-            "waypoints": "_GRIPZ BAALK SIXMI _GLDIE _FRATE FEDRA"
-          },
-          "STREP": {
-            "cleared_altitude": 5000,
-            "sid": "STREP5",
-            "waypoints": "_GRIPZ _YAGRR"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "UPS"
-            },
-            {
-              "icao": "JIA"
-            },
-            {
-              "icao": "AAL"
-            }
-          ],
-          "destination": "KCLT",
-          "exit": "SHIPR",
-          "route": "SHIPR TAFTT PARQR3"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "UPS"
-            },
-            {
-              "fleet": "short",
-              "icao": "AAL"
-            },
-            {
-              "icao": "ENY"
-            }
-          ],
-          "destination": "KDFW",
-          "exit": "APALO",
-          "route": "APALO PXV J131 LIT MEEOW FEWWW SEEVR4"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "SKW"
-            },
-            {
-              "icao": "RPA"
-            }
-          ],
-          "destination": "KLGA",
-          "exit": "STREP",
-          "route": "STREP KLYNE WWSHR TEESY J146 ETG MIP4"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "SKW"
-            },
-            {
-              "icao": "JIA"
-            }
-          ],
-          "destination": "KDCA",
-          "exit": "SHIPR",
-          "route": "SHIPR BKW TRUPS4"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "UPS"
-            },
-            {
-              "icao": "RPA"
-            }
-          ],
-          "destination": "KBOS",
-          "exit": "SHIPR",
-          "route": "SHIPR HNN GVE GRACO BROSS Q419 JFK ROBUC3"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "UPS"
-            },
-            {
-              "icao": "SKW"
-            },
-            {
-              "fleet": "short",
-              "icao": "UAL"
-            },
-            {
-              "icao": "SWA"
-            }
-          ],
-          "destination": "KDEN",
-          "exit": "APALO",
-          "route": "APALO BUM HYS J24 OATHE CLASH4"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "UPS"
-            },
-            {
-              "icao": "SWA"
-            }
-          ],
-          "destination": "KBWI",
-          "exit": "SHIPR",
-          "route": "SHIPR BKW RAVNN6"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "UPS"
-            },
-            {
-              "icao": "EDV"
-            }
-          ],
-          "destination": "KDTW",
-          "exit": "STREP",
-          "route": "STREP DQN TORRR LECTR3"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "UPS"
-            },
-            {
-              "icao": "SKW"
-            }
-          ],
-          "destination": "KEWR",
-          "exit": "STREP",
-          "route": "STREP KYLNE WWSHR Q29 DORET J584 SLT FQM3"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "UPS"
-            },
-            {
-              "icao": "ASH"
-            }
-          ],
-          "destination": "KIAH",
-          "exit": "CRRGO",
-          "route": "CRRGO DHART SWB ZEEKK2"
-        }
-      ],
-      "exit_categories": {
-        "APALO": "ALL",
-        "CRRGO": "ALL",
-        "SHIPR": "ALL",
-        "STREP": "ALL",
-        "OHAGI": "AAL"
-      },
-      "tower_list": 2
-    }
-  },
-  "airspace": {
-    "boundaries": {
-      "SDF060": [
-        "N38.50.23.474,W85.19.59.089",
-        "N38.49.59.053,W85.23.57.397",
-        "N38.40.05.852,W85.27.43.036",
-        "N38.28.25.190,W84.58.17.224",
-        "N38.39.12.311,W85.17.57.960",
-        "N38.50.23.474,W85.19.59.089"
-      ],
-      "SDF40100": [
-        "N37.50.09.031,W86.35.02.363",
-        "N37.51.28.903,W86.25.03.484",
-        "N38.07.57.852,W86.26.16.003",
-        "N38.08.55.736,W86.37.22.552",
-        "N37.50.09.031,W86.35.02.363"
-      ],
-      "SDF0100": [
-        "N38.49.59.053,W85.23.57.397",
-        "N38.40.05.852,W85.27.43.036",
-        "N38.28.25.190,W84.58.17.224",
-        "N38.09.57.715,W85.07.05.786",
-        "N37.52.11.352,W85.07.18.582",
-        "N37.42.18.724,W85.10.02.661",
-        "N37.35.02.192,W85.34.24.309",
-        "N37.29.52.697,W85.52.25.179",
-        "N37.39.26.226,W86.33.50.404",
-        "N37.50.09.031,W86.35.02.363",
-        "N37.51.28.903,W86.25.03.484",
-        "N38.07.57.852,W86.26.16.003",
-        "N38.08.55.736,W86.37.22.552",
-        "N38.21.06.110,W86.38.56.942",
-        "N38.22.07.783,W86.39.11.555",
-        "N38.36.29.790,W86.42.43.536",
-        "N38.49.59.053,W85.23.57.397"
-      ]
     },
-    "volumes": {
-      "sdfapp": [
-        {
-          "boundaries": ["SDF060"],
-          "lower": 0,
-          "upper": 6000
-        },
-        {
-          "boundaries": ["SDF40100"],
-          "lower": 4000,
-          "upper": 10000
-        },
-        {
-          "boundaries": ["SDF0100"],
-          "lower": 0,
-          "upper": 10000
-        }
-      ]
-    }
-  },
-  "inbound_flows": {
-    "DLAMP8": {
-      "arrivals": [
-        {
-          "spawn": "ANCHR@0.5",
-          "cruise_altitude": 32000,
-          "star": "DLAMP8",
-          "initial_controller": "CVG_APP",
-          "initial_altitude": 17000,
-          "initial_speed": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KSDF": [
-              {
-                "icao": "UPS",
-                "airport": "KBOS"
-              },
-              {
-                "icao": "SKW",
-                "airport": "KJFK"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KJFK"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KJFK"
-              },
-              {
-                "icao": "UAL",
-                "fleet": "short",
-                "airport": "KEWR"
-              }
+    "airspace": {
+        "boundaries": {
+            "SDF060": [
+                "N38.50.23.474,W85.19.59.089",
+                "N38.49.59.053,W85.23.57.397",
+                "N38.40.05.852,W85.27.43.036",
+                "N38.28.25.190,W84.58.17.224",
+                "N38.39.12.311,W85.17.57.960",
+                "N38.50.23.474,W85.19.59.089"
+            ],
+            "SDF40100": [
+                "N37.50.09.031,W86.35.02.363",
+                "N37.51.28.903,W86.25.03.484",
+                "N38.07.57.852,W86.26.16.003",
+                "N38.08.55.736,W86.37.22.552",
+                "N37.50.09.031,W86.35.02.363"
+            ],
+            "SDF0100": [
+                "N38.49.59.053,W85.23.57.397",
+                "N38.40.05.852,W85.27.43.036",
+                "N38.28.25.190,W84.58.17.224",
+                "N38.09.57.715,W85.07.05.786",
+                "N37.52.11.352,W85.07.18.582",
+                "N37.42.18.724,W85.10.02.661",
+                "N37.35.02.192,W85.34.24.309",
+                "N37.29.52.697,W85.52.25.179",
+                "N37.39.26.226,W86.33.50.404",
+                "N37.50.09.031,W86.35.02.363",
+                "N37.51.28.903,W86.25.03.484",
+                "N38.07.57.852,W86.26.16.003",
+                "N38.08.55.736,W86.37.22.552",
+                "N38.21.06.110,W86.38.56.942",
+                "N38.22.07.783,W86.39.11.555",
+                "N38.36.29.790,W86.42.43.536",
+                "N38.49.59.053,W85.23.57.397"
             ]
-          }
-        }
-      ]
-    },
-    "LEDDL1": {
-      "arrivals": [
-        {
-          "spawn": "COBBZ",
-          "cruise_altitude": 36000,
-          "star": "LEDDL1",
-          "initial_controller": "IND_CTR",
-          "initial_altitude": 16000,
-          "initial_speed": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KSDF": [
-              {
-                "icao": "JIA",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KMCO"
-              },
-              {
-                "icao": "JIA",
-                "airport": "KMIA"
-              },
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KATL"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KATL"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "MBELL5": {
-      "arrivals": [
-        {
-          "spawn": "XXTRA@0.5",
-          "cruise_altitude": 37000,
-          "star": "MBELL5",
-          "initial_controller": "IND_CTR",
-          "initial_altitude": 14000,
-          "initial_speed": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KSDF": [
-              {
-                "icao": "UAL",
-                "fleet": "short",
-                "airport": "KIAH"
-              },
-              {
-                "icao": "ASH",
-                "airport": "KIAH"
-              },
-              {
-                "icao": "JIA",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "SWA",
-                "airport": "KBHM"
-              }
-            ]
-          }
-        }
-      ]
-    }
-  },
-  "control_positions": {
-    "IND_CTR": {
-      "frequency": 119550,
-      "radio_name": "Indianapolis Center",
-      "facility_id": "C",
-      "eram_facility": true,
-      "sector_id": "C34"
-    },
-    "CVG_APP": {
-      "frequency": 123875,
-      "radio_name": "Cincinnati Approach",
-      "facility_id": "1",
-      "scope_char": "N",
-      "sector_id": "1N"
-    },
-    "SDF_E_TWR": {
-      "frequency": 124200,
-      "radio_name": "Louisville Tower",
-      "sector_id": "4T"
-    },
-    "SDF_W_TWR": {
-      "frequency": 135200,
-      "radio_name": "Louisville Tower",
-      "sector_id": "4L"
-    },
-    "SDF_A_APP": {
-      "frequency": 134150,
-      "radio_name": "Louisville Approach",
-      "sector_id": "4A",
-      "default_airport": "KSDF"
-    },
-    "SDF_I_APP": {
-      "frequency": 132325,
-      "radio_name": "Louisville Approach",
-      "default_airport": "KSDF",
-      "sector_id": "4I"
-    },
-    "SDF_E_APP": {
-      "frequency": 135775,
-      "radio_name": "Louisville Approach",
-      "sector_id": "4E",
-      "default_airport": "KSDF"
-    },
-    "SDF_W_APP": {
-      "frequency": 120300,
-      "radio_name": "Louisville Approach",
-      "sector_id": "4W",
-      "default_airport": "KSDF"
-    },
-    "SDF_D_DEP": {
-      "frequency": 132075,
-      "radio_name": "Louisville Departure",
-      "sector_id": "4D",
-      "default_airport": "KSDF"
-    },
-    "SDF_B_DEP": {
-      "frequency": 123675,
-      "radio_name": "Louisville Departure",
-      "sector_id": "4B",
-      "default_airport": "KSDF"
-    }
-  },
-  "default_scenario": "KSDF South",
-  "fixes": {
-    "KSDF": "N38.10.26.768,W85.44.10.373",
-    "SDF": "N38.10.26.768,W85.44.10.373",
-    "_SDF_17L": "N38.11.11.221,W85.43.51.680",
-    "_SDF_17R": "N38.11.05.154,W85.44.52.905",
-    "_SDF_11": "N38.10.48.710,W85.44.50.394",
-    "_SDF_29": "N38.10.23.028,W85.43.25.704",
-    "_SDF_35L": "N38.09.29.311,W85.44.21.201",
-    "_SDF_35R": "N38.09.56.531,W85.43.26.158",
-    "_LEENE": "N038.04.40.316,W085.43.53.642",
-    "_PKAGE": "N038.04.26.075,W085.34.36.690",
-    "_GLDIE": "N038.05.29.383,W085.26.11.237",
-    "_DIIME": "N038.04.00.463,W085.46.43.573",
-    "_YAGRR": "N038.19.16.077,W085.46.36.762",
-    "_DOCKE": "N038.04.26.130,W085.56.37.439",
-    "_FRATE": "N038.04.14.100,W085.17.26.530",
-    "_IAMUR": "N038.03.57.126,W085.54.11.760",
-    "_FADDR": "N038.03.27.504,W085.42.34.211",
-    "_ALOMY": "N038.05.04.623,W086.06.07.822",
-    "_LLAWS": "N038.20.10.377,W085.41.40.296",
-    "_GRIPZ": "N038.13.20.779,W085.44.34.703",
-    "CRRGO": "N037.54.22.046,W086.13.52.708"
-  },
-  "name": "KSDF",
-  "primary_airport": "KSDF",
-  "reporting_points": ["CHERI", "NERVE", "FRIZN", "MAUDD", "MBELL"],
-  "scenarios": {
-    "KSDF South": {
-      "airspace": {
-        "SDF_I_APP": ["sdfapp"],
-        "SDF_B_DEP": ["sdfapp"],
-        "SDF_W_APP": ["sdfapp"],
-        "SDF_A_APP": ["sdfapp"],
-        "SDF_E_APP": ["sdfapp"],
-        "SDF_D_DEP": ["sdfapp"]
-      },
-      "arrival_runways": [
-        {
-          "airport": "KSDF",
-          "runway": "17L"
         },
-        {
-          "airport": "KSDF",
-          "runway": "17R"
+        "volumes": {
+            "sdfapp": [
+                {
+                    "boundaries": [
+                        "SDF060"
+                    ],
+                    "lower": 0,
+                    "upper": 6000
+                },
+                {
+                    "boundaries": [
+                        "SDF40100"
+                    ],
+                    "lower": 4000,
+                    "upper": 10000
+                },
+                {
+                    "boundaries": [
+                        "SDF0100"
+                    ],
+                    "lower": 0,
+                    "upper": 10000
+                }
+            ]
         }
-      ],
-      "inbound_rates": {
+    },
+    "inbound_flows": {
         "DLAMP8": {
-          "KSDF": 5
+            "arrivals": [
+                {
+                    "spawn": "ANCHR@0.5",
+                    "cruise_altitude": 32000,
+                    "star": "DLAMP8",
+                    "initial_controller": "CVG_APP",
+                    "initial_altitude": 17000,
+                    "initial_speed": 250,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSDF": [
+                            {
+                                "icao": "UPS",
+                                "airport": "KBOS"
+                            },
+                            {
+                                "icao": "SKW",
+                                "airport": "KJFK"
+                            },
+                            {
+                                "icao": "RPA",
+                                "airport": "KJFK"
+                            },
+                            {
+                                "icao": "AAL",
+                                "fleet": "short",
+                                "airport": "KJFK"
+                            },
+                            {
+                                "icao": "UAL",
+                                "fleet": "short",
+                                "airport": "KEWR"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "LEDDL1": {
-          "KSDF": 10
+            "arrivals": [
+                {
+                    "spawn": "COBBZ",
+                    "cruise_altitude": 36000,
+                    "star": "LEDDL1",
+                    "initial_controller": "IND_CTR",
+                    "initial_altitude": 16000,
+                    "initial_speed": 250,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSDF": [
+                            {
+                                "icao": "JIA",
+                                "airport": "KCLT"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KMCO"
+                            },
+                            {
+                                "icao": "JIA",
+                                "airport": "KMIA"
+                            },
+                            {
+                                "icao": "DAL",
+                                "fleet": "short",
+                                "airport": "KATL"
+                            },
+                            {
+                                "icao": "EDV",
+                                "airport": "KATL"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "MBELL5": {
-          "KSDF": 10
+            "arrivals": [
+                {
+                    "spawn": "XXTRA@0.5",
+                    "cruise_altitude": 37000,
+                    "star": "MBELL5",
+                    "initial_controller": "IND_CTR",
+                    "initial_altitude": 14000,
+                    "initial_speed": 250,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KSDF": [
+                            {
+                                "icao": "UAL",
+                                "fleet": "short",
+                                "airport": "KIAH"
+                            },
+                            {
+                                "icao": "ASH",
+                                "airport": "KIAH"
+                            },
+                            {
+                                "icao": "JIA",
+                                "airport": "KDFW"
+                            },
+                            {
+                                "icao": "SWA",
+                                "airport": "KBHM"
+                            }
+                        ]
+                    }
+                }
+            ]
         }
-      },
-      "configuration": {
-        "config_id": "STD",
-        "default_consolidation": {
-          "SDF_B_DEP": ["SDF_D_DEP"],
-          "SDF_I_APP": ["SDF_A_APP", "SDF_B_DEP", "SDF_W_APP"],
-          "SDF_W_APP": ["SDF_E_APP"]
-        }
-      },
-      "controllers": ["IND_CTR", "CVG_APP", "SDF_E_TWR", "SDF_W_TWR"],
-      "default_maps": ["RWY 17s BASE"],
-      "departure_runways": [
-        {
-          "airport": "KSDF",
-          "runway": "17L",
-          "rate": 40
-        }
-      ],
-      "wind": {
-        "direction": "140-200"
-      }
     },
-    "KSDF North": {
-      "airspace": {
-        "SDF_I_APP": ["sdfapp"],
-        "SDF_B_DEP": ["sdfapp"],
-        "SDF_W_APP": ["sdfapp"],
-        "SDF_A_APP": ["sdfapp"],
-        "SDF_E_APP": ["sdfapp"],
-        "SDF_D_DEP": ["sdfapp"]
-      },
-      "arrival_runways": [
-        {
-          "airport": "KSDF",
-          "runway": "35L"
-        },
-        {
-          "airport": "KSDF",
-          "runway": "35R"
-        }
-      ],
-      "inbound_rates": {
-        "DLAMP8": {
-          "KSDF": 5
-        },
-        "LEDDL1": {
-          "KSDF": 10
-        },
-        "MBELL5": {
-          "KSDF": 10
-        }
-      },
-      "configuration": {
-        "config_id": "STD",
-        "default_consolidation": {
-          "SDF_B_DEP": ["SDF_D_DEP"],
-          "SDF_I_APP": ["SDF_A_APP", "SDF_B_DEP", "SDF_W_APP"],
-          "SDF_W_APP": ["SDF_E_APP"]
-        }
-      },
-      "controllers": ["IND_CTR", "CVG_APP", "SDF_E_TWR", "SDF_W_TWR"],
-      "default_maps": ["RWY 35s BASE"],
-      "departure_runways": [
-        {
-          "airport": "KSDF",
-          "runway": "35R",
-          "rate": 40
-        }
-      ],
-      "wind": {
-        "direction": "320-20"
-      }
-    }
-  },
-  "stars_config": {
-    "configurations": {
-      "STD": {
-        "inbound_assignments": {
-          "DLAMP8": "SDF_A_APP",
-          "LEDDL1": "SDF_A_APP",
-          "MBELL5": "SDF_I_APP"
-        },
-        "departure_assignments": {
-          "KSDF": "SDF_B_DEP"
-        }
-      }
+    "default_scenario": "KSDF South",
+    "fixes": {
+        "KSDF": "N38.10.26.768,W85.44.10.373",
+        "SDF": "N38.10.26.768,W85.44.10.373",
+        "_SDF_17L": "N38.11.11.221,W85.43.51.680",
+        "_SDF_17R": "N38.11.05.154,W85.44.52.905",
+        "_SDF_11": "N38.10.48.710,W85.44.50.394",
+        "_SDF_29": "N38.10.23.028,W85.43.25.704",
+        "_SDF_35L": "N38.09.29.311,W85.44.21.201",
+        "_SDF_35R": "N38.09.56.531,W85.43.26.158",
+        "_LEENE": "N038.04.40.316,W085.43.53.642",
+        "_PKAGE": "N038.04.26.075,W085.34.36.690",
+        "_GLDIE": "N038.05.29.383,W085.26.11.237",
+        "_DIIME": "N038.04.00.463,W085.46.43.573",
+        "_YAGRR": "N038.19.16.077,W085.46.36.762",
+        "_DOCKE": "N038.04.26.130,W085.56.37.439",
+        "_FRATE": "N038.04.14.100,W085.17.26.530",
+        "_IAMUR": "N038.03.57.126,W085.54.11.760",
+        "_FADDR": "N038.03.27.504,W085.42.34.211",
+        "_ALOMY": "N038.05.04.623,W086.06.07.822",
+        "_LLAWS": "N038.20.10.377,W085.41.40.296",
+        "_GRIPZ": "N038.13.20.779,W085.44.34.703",
+        "CRRGO": "N037.54.22.046,W086.13.52.708"
     },
-
-    "center": "KSDF",
-    "coordination_fixes": {
-      "CHERI": [
-        {
-          "type": "route",
-          "to": "SDF",
-          "from": "ZID"
-        }
-      ],
-      "NERVE": [
-        {
-          "type": "route",
-          "to": "SDF",
-          "from": "CVG"
-        }
-      ],
-      "FRIZN": [
-        {
-          "type": "route",
-          "to": "SDF",
-          "from": "ZID"
-        }
-      ],
-      "MAUDD": [
-        {
-          "type": "route",
-          "to": "SDF",
-          "from": "ZID"
-        }
-      ],
-      "MBELL": [
-        {
-          "type": "route",
-          "to": "SDF",
-          "from": "ZID"
-        }
-      ]
-    },
-    "filters": {
-      "inhibit_ca": [
-        {
-          "id": "SDFNOCA",
-          "description": "SDF CONFLICT SUPPRESS",
-          "type": "polygon",
-          "floor": 0,
-          "ceiling": 4000,
-          "vertices": [
-            "N038.37.17.709,W085.56.13.818",
-            "N038.39.24.518,W085.49.26.143",
-            "N037.43.21.933,W085.31.09.131",
-            "N037.43.08.282,W085.36.38.226"
-          ]
-        }
-      ]
-    },
-    "radar_sites": {
-      "SDF": {
-        "char": "A",
-        "position": "38.18611,-85.72694",
-        "elevation": 564,
-        "primary_range": 60,
-        "secondary_range": 120,
-        "silence_angle": 50.4,
-        "slope_angle": 0.3
-      },
-      "CVG": {
-        "char": "B",
-        "position": "39.04121,-84.65238",
-        "elevation": 961,
-        "primary_range": 60,
-        "secondary_range": 120,
-        "silence_angle": 50.4,
-        "slope_angle": 0.3
-      },
-      "LEX": {
-        "char": "D",
-        "position": "38.03675,-84.60864",
-        "elevation": 1040,
-        "primary_range": 60,
-        "secondary_range": 120,
-        "silence_angle": 50.4,
-        "slope_angle": 0.3
-      },
-      "HNB": {
-        "char": "E",
-        "position": "38.31398,-87.070681",
-        "elevation": 667,
-        "primary_range": 60,
-        "secondary_range": 120,
-        "silence_angle": 50.4,
-        "slope_angle": 0.3
-      }
-    },
-    "scratchpads": {
-      "APALO": "APA",
-      "CRRGO": "CRG",
-      "SHIPR": "FED",
-      "OHAGI": "FED",
-      "STREP": "STR"
-    },
-    "significant_points": {
-      "APALO": {},
-      "CRRGO": {
-        "short_name": "CRG"
-      },
-      "SHIPR": {},
-      "STREP": {}
-    },
-    "stars_maps": [
-      "RWY 17s BASE",
-      "RWY 35s BASE",
-      "RWY 29 BASE",
-      "SDF 3 NM MVA",
-      "SDF Class C",
-      "FRIZN STAR",
-      "CHERI STAR",
-      "DAMEN STAR",
-      "DARBY STAR",
-      "MAUDD STAR",
-      "RDSTN STAR",
-      "DLAMP STAR",
-      "MBELL STAR",
-      "APALO SID",
-      "CRRGO SID",
-      "FEDRA  SID",
-      "STREP SID",
-      "LOU RNAV 24/33",
-      "FTK RNAV 15/18/36",
-      "JVY RNAV 18/36",
-      "BRY RNAV 3/21",
-      "EKX RNAV 5/23",
-      "IMS RNAV 3/21",
-      "FRH RNAV 8/26",
-      "6I2 RNAV 11/29",
-      "I93 RNAV RWY 10-28",
-      "SDF VFR",
-      "IR618 Training Route",
-      "Rivers",
-      "Stadiums"
+    "name": "KSDF",
+    "primary_airport": "KSDF",
+    "reporting_points": [
+        "CHERI",
+        "NERVE",
+        "FRIZN",
+        "MAUDD",
+        "MBELL"
     ],
-    "video_map_file": "videomaps/ZID-videomaps.gob.zst"
-  }
+    "scenarios": {
+        "KSDF South": {
+            "airspace": {
+                "SDF_I_APP": [
+                    "sdfapp"
+                ],
+                "SDF_B_DEP": [
+                    "sdfapp"
+                ],
+                "SDF_W_APP": [
+                    "sdfapp"
+                ],
+                "SDF_A_APP": [
+                    "sdfapp"
+                ],
+                "SDF_E_APP": [
+                    "sdfapp"
+                ],
+                "SDF_D_DEP": [
+                    "sdfapp"
+                ]
+            },
+            "arrival_runways": [
+                {
+                    "airport": "KSDF",
+                    "runway": "17L"
+                },
+                {
+                    "airport": "KSDF",
+                    "runway": "17R"
+                }
+            ],
+            "inbound_rates": {
+                "DLAMP8": {
+                    "KSDF": 5
+                },
+                "LEDDL1": {
+                    "KSDF": 10
+                },
+                "MBELL5": {
+                    "KSDF": 10
+                }
+            },
+            "configuration": {
+                "config_id": "STD",
+                "default_consolidation": {
+                    "SDF_B_DEP": [
+                        "SDF_D_DEP"
+                    ],
+                    "SDF_I_APP": [
+                        "SDF_A_APP",
+                        "SDF_B_DEP",
+                        "SDF_W_APP"
+                    ],
+                    "SDF_W_APP": [
+                        "SDF_E_APP"
+                    ]
+                }
+            },
+            "default_maps": [
+                "RWY 17s BASE"
+            ],
+            "departure_runways": [
+                {
+                    "airport": "KSDF",
+                    "runway": "17L",
+                    "rate": 40
+                }
+            ],
+            "wind": {
+                "direction": "140-200"
+            }
+        },
+        "KSDF North": {
+            "airspace": {
+                "SDF_I_APP": [
+                    "sdfapp"
+                ],
+                "SDF_B_DEP": [
+                    "sdfapp"
+                ],
+                "SDF_W_APP": [
+                    "sdfapp"
+                ],
+                "SDF_A_APP": [
+                    "sdfapp"
+                ],
+                "SDF_E_APP": [
+                    "sdfapp"
+                ],
+                "SDF_D_DEP": [
+                    "sdfapp"
+                ]
+            },
+            "arrival_runways": [
+                {
+                    "airport": "KSDF",
+                    "runway": "35L"
+                },
+                {
+                    "airport": "KSDF",
+                    "runway": "35R"
+                }
+            ],
+            "inbound_rates": {
+                "DLAMP8": {
+                    "KSDF": 5
+                },
+                "LEDDL1": {
+                    "KSDF": 10
+                },
+                "MBELL5": {
+                    "KSDF": 10
+                }
+            },
+            "configuration": {
+                "config_id": "STD",
+                "default_consolidation": {
+                    "SDF_B_DEP": [
+                        "SDF_D_DEP"
+                    ],
+                    "SDF_I_APP": [
+                        "SDF_A_APP",
+                        "SDF_B_DEP",
+                        "SDF_W_APP"
+                    ],
+                    "SDF_W_APP": [
+                        "SDF_E_APP"
+                    ]
+                }
+            },
+            "default_maps": [
+                "RWY 35s BASE"
+            ],
+            "departure_runways": [
+                {
+                    "airport": "KSDF",
+                    "runway": "35R",
+                    "rate": 40
+                }
+            ],
+            "wind": {
+                "direction": "320-20"
+            }
+        }
+    }
 }

@@ -1,0 +1,191 @@
+{
+    "control_positions": {
+        "BDL_B_APP": {
+            "frequency": 123950,
+            "radio_name": "Bradley Approach",
+            "sector_id": "1B"
+        },
+        "BDL_F_APP": {
+            "frequency": 127225,
+            "radio_name": "Bradley Approach",
+            "sector_id": "1F"
+        },
+        "BDL_H_APP": {
+            "frequency": 127800,
+            "radio_name": "Bradley Approach",
+            "sector_id": "1H"
+        },
+        "BDL_W_APP": {
+            "frequency": 125350,
+            "radio_name": "Bradley Approach",
+            "sector_id": "1W"
+        },
+        "BDL_E_APP": {
+            "frequency": 119000,
+            "radio_name": "Bradley Approach",
+            "sector_id": "1E"
+        },
+        "BDL_TWR": {
+            "frequency": 120300,
+            "radio_name": "Bradley Tower",
+            "sector_id": "1T"
+        },
+        "HFD_TWR": {
+            "frequency": 119600,
+            "radio_name": "Brainard Tower",
+            "scope_char": "H",
+            "sector_id": "1S"
+        },
+        "ORH_TWR": {
+            "frequency": 120500,
+            "radio_name": "Worcester Tower",
+            "scope_char": "W",
+            "sector_id": "1U"
+        },
+        "CEF_TWR": {
+            "frequency": 118900,
+            "radio_name": "Westover Tower",
+            "sector_id": "1C"
+        },
+        "BAF_TWR": {
+            "frequency": 134850,
+            "radio_name": "Westfield Tower",
+            "scope_char": "F",
+            "sector_id": "1X"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "CNW": {
+                "inbound_assignments": {
+                    "DPK3": "BDL_H_APP",
+                    "STELA1.Ga": "BDL_W_APP",
+                    "STELA1.Jets": "BDL_W_APP"
+                },
+                "departure_assignments": {
+                    "KBAF": "BDL_W_APP",
+                    "KBDL": "BDL_B_APP",
+                    "KCEF": "BDL_W_APP",
+                    "KHFD": "BDL_H_APP",
+                    "KORH": "BDL_E_APP"
+                }
+            },
+            "STD": {
+                "inbound_assignments": {
+                    "DPK3": "BDL_B_APP",
+                    "STELA1.Ga": "BDL_W_APP",
+                    "STELA1.Jets": "BDL_W_APP"
+                },
+                "departure_assignments": {
+                    "KBAF": "BDL_W_APP",
+                    "KBDL": "BDL_B_APP",
+                    "KCEF": "BDL_W_APP",
+                    "KHFD": "BDL_H_APP",
+                    "KORH": "BDL_E_APP"
+                }
+            }
+        },
+        "center": "41.935711707565986, -72.6940381965002",
+        "radar_sites": {
+            "KBDL": {
+                "char": "Y",
+                "position": "KBDL",
+                "elevation": 173,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "slope_angle": 0.175
+            }
+        },
+        "scratchpads": {
+            "HFD": "HFD",
+            "CTR": "CTR",
+            "GDM": "GDM",
+            "BAF": "BAF",
+            "PVD": "PVD",
+            "GON": "GON",
+            "MAD": "MAD",
+            "VEERS": "VEE",
+            "CCC": "CCC",
+            "THUMB": "THU"
+        },
+        "significant_points": {
+            "BAF": {},
+            "CCC": {},
+            "CTR": {},
+            "GDM": {},
+            "GON": {},
+            "HFD": {},
+            "MAD": {},
+            "PVD": {},
+            "THUMB": {},
+            "VEERS": {}
+        },
+        "stars_maps": [
+            "Y90 RWY 6/33",
+            "Y90 SATS FAC",
+            "Y90 COASTLINE",
+            "BDL_TWR 6/33",
+            "BDL_TWR 24/33",
+            "Y90 RWY 24/33"
+        ],
+        "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
+        "controller_assignments": {
+            "CNW": {
+                "inbound_assignments": {
+                    "DPK3": "BDL_H_APP",
+                    "STELA1.Ga": "BDL_W_APP",
+                    "STELA1.Jets": "BDL_W_APP"
+                },
+                "departure_assignments": {
+                    "KBAF": "BDL_W_APP",
+                    "KBDL": "BDL_B_APP",
+                    "KCEF": "BDL_W_APP",
+                    "KHFD": "BDL_H_APP",
+                    "KORH": "BDL_E_APP"
+                }
+            },
+            "STD": {
+                "inbound_assignments": {
+                    "DPK3": "BDL_B_APP",
+                    "STELA1.Ga": "BDL_W_APP",
+                    "STELA1.Jets": "BDL_W_APP"
+                },
+                "departure_assignments": {
+                    "KBAF": "BDL_W_APP",
+                    "KBDL": "BDL_B_APP",
+                    "KCEF": "BDL_W_APP",
+                    "KHFD": "BDL_H_APP",
+                    "KORH": "BDL_E_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "PVD",
+                "prefix": "1"
+            },
+            {
+                "id": "A90",
+                "prefix": "2"
+            },
+            {
+                "id": "ALB",
+                "prefix": "3"
+            },
+            {
+                "id": "N90",
+                "prefix": "4"
+            }
+        ],
+        "neighboring_facilities": [
+            "A90",
+            "ALB",
+            "N90",
+            "PVD",
+            "ZBW",
+            "ZNY"
+        ]
+    }
+}

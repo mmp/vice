@@ -1,0 +1,349 @@
+{
+    "control_positions": {
+        "AAC_N_APP": {
+            "frequency": 120200,
+            "radio_name": "Academy Approach",
+            "sector_id": "1N"
+        },
+        "AAC_S_APP": {
+            "frequency": 119500,
+            "radio_name": "Academy Approach",
+            "sector_id": "1S"
+        },
+        "AAC_D_APP": {
+            "frequency": 126600,
+            "radio_name": "Academy Departure",
+            "sector_id": "1D"
+        },
+        "AAC_K_APP": {
+            "frequency": 127700,
+            "radio_name": "Academy Departure",
+            "sector_id": "1K"
+        },
+        "AAC_F_APP": {
+            "frequency": 128400,
+            "radio_name": "Academy Approach",
+            "sector_id": "1F"
+        },
+        "AAC_B_APP": {
+            "frequency": 123800,
+            "radio_name": "Academy Approach",
+            "sector_id": "1B"
+        },
+        "AAC_J_APP": {
+            "frequency": 125400,
+            "radio_name": "Academy Approach",
+            "sector_id": "1J"
+        },
+        "AAC_S_TWR": {
+            "frequency": 121200,
+            "radio_name": "Academy Tower",
+            "sector_id": "2T"
+        },
+        "BRT_TWR": {
+            "frequency": 122950,
+            "radio_name": "Bartles UNICOM",
+            "sector_id": "9T"
+        },
+        "JKE_TWR": {
+            "frequency": 126200,
+            "radio_name": "Jeske Tower",
+            "sector_id": "4T"
+        },
+        "4Y3_TWR": {
+            "frequency": 118900,
+            "radio_name": "James Tower",
+            "sector_id": "3T"
+        },
+        "4V4_TWR": {
+            "frequency": 122800,
+            "radio_name": "Viney UNICOM",
+            "sector_id": "8T"
+        },
+        "AAC_TWR": {
+            "frequency": 119200,
+            "radio_name": "Academy Tower",
+            "sector_id": "1T"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "OVERFLIGHTS": "AAC_D_APP"
+                },
+                "departure_assignments": {
+                    "KAAC": "AAC_D_APP"
+                }
+            },
+            "6XX": {
+                "inbound_assignments": {
+                    "ATOKA_FINAL_6NM": "AAC_F_APP",
+                    "MAYES": "AAC_F_APP",
+                    "REELI_FINAL": "AAC_F_APP"
+                }
+            },
+            "CTO": {
+                "inbound_assignments": {
+                    "BARTS_FINAL": "AAC_F_APP",
+                    "MAYES": "AAC_F_APP",
+                    "REELI_FINAL": "AAC_F_APP"
+                }
+            },
+            "CWT": {
+                "inbound_assignments": {
+                    "ATOKA_FINAL": "AAC_F_APP",
+                    "BARTS_CWT_A": "AAC_F_APP",
+                    "BARTS_CWT_B": "AAC_F_APP",
+                    "BARTS_CWT_C": "AAC_F_APP",
+                    "BARTS_CWT_D": "AAC_F_APP",
+                    "BARTS_CWT_E_F_G": "AAC_F_APP",
+                    "BARTS_CWT_H_I": "AAC_F_APP",
+                    "BARTS_FINAL": "AAC_F_APP",
+                    "MAYES_CWT_A": "AAC_F_APP",
+                    "MAYES_CWT_B": "AAC_F_APP",
+                    "MAYES_CWT_C": "AAC_F_APP",
+                    "MAYES_CWT_D": "AAC_F_APP",
+                    "MAYES_CWT_E_F_G": "AAC_F_APP",
+                    "MAYES_CWT_H_I": "AAC_F_APP",
+                    "REELI_FINAL": "AAC_F_APP"
+                }
+            },
+            "3XX": {
+                "inbound_assignments": {
+                    "ATOKA_FINAL": "AAC_F_APP",
+                    "BARTS_FINAL": "AAC_F_APP",
+                    "REELI_FINAL": "AAC_F_APP"
+                }
+            },
+            "4XX": {
+                "inbound_assignments": {
+                    "ATOKA_FINAL": "AAC_F_APP",
+                    "BARTS_FINAL": "AAC_F_APP",
+                    "INTERNAL_FINAL": "AAC_F_APP",
+                    "REELI_FINAL": "AAC_F_APP"
+                }
+            },
+            "NOR": {
+                "inbound_assignments": {
+                    "BARTS_STAGGER": "AAC_F_APP",
+                    "REELI_FINAL": "AAC_F_APP"
+                }
+            },
+            "SCA": {
+                "inbound_assignments": {
+                    "SCAN": "AAC_N_APP"
+                }
+            },
+            "WES": {
+                "inbound_assignments": {
+                    "ATOKA": "AAC_S_APP",
+                    "ATOKA_LO": "AAC_J_APP",
+                    "BARTS": "AAC_N_APP",
+                    "BARTS_LO": "AAC_B_APP",
+                    "INTERNAL_FINAL": "AAC_B_APP",
+                    "KILLR": "AAC_S_APP",
+                    "KILLR_LO": "AAC_J_APP",
+                    "MAYES": "AAC_F_APP",
+                    "REELI": "AAC_N_APP",
+                    "SGF.6": "AAC_N_APP",
+                    "SGF.8": "AAC_N_APP"
+                },
+                "departure_assignments": {
+                    "4V4": "AAC_J_APP",
+                    "4Y3": "AAC_B_APP",
+                    "KAAC": "AAC_N_APP",
+                    "KAAC/28R.NE.J": "AAC_D_APP",
+                    "KAAC/28R.NE.P": "AAC_B_APP",
+                    "KAAC/28R.SW.J": "AAC_D_APP",
+                    "KAAC/28R.SW.P": "AAC_J_APP",
+                    "KJKE": "AAC_J_APP"
+                }
+            }
+        },
+        "force_ql_self": true,
+        "center": "KAAC",
+        "display_handoff_facility_only": true,
+        "handoff_sector_display_duration": 5,
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "AACNOCA",
+                    "description": "KAAC NO CA",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 1200,
+                    "radius": 4,
+                    "center": "KAAC"
+                },
+                {
+                    "id": "APPNOCA",
+                    "description": "KAAC APPR NO CA",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 2000,
+                    "vertices": [
+                        "N036.13.41.447,W095.57.41.462",
+                        "N036.11.51.886,W095.58.16.096",
+                        "N036.08.18.188,W095.33.24.647",
+                        "N036.10.22.608,W095.32.50.755"
+                    ]
+                }
+            ]
+        },
+        "radar_sites": {
+            "AAC": {
+                "char": "A",
+                "position": "KAAC",
+                "elevation": 820,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.175
+            },
+            "JKE": {
+                "char": "J",
+                "position": "KJKE",
+                "elevation": 658,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 30,
+                "slope_angle": 0.175
+            }
+        },
+        "scratchpads": {
+            "COLIN.RNAV": "RCO",
+            "MAYES.RNAV": "RMA",
+            "NOBLE.RNAV": "RNO",
+            "SHAWN.RNAV": "RSH"
+        },
+        "scratchpad1": {
+            "display_exit_gate": true
+        },
+        "significant_points": {
+            "COLIN": {
+                "short_name": "COL",
+                "abbreviation": "C"
+            },
+            "MAYES": {
+                "short_name": "MAY",
+                "abbreviation": "M"
+            },
+            "NOBLE": {
+                "short_name": "NOB",
+                "abbreviation": "N"
+            },
+            "SHAWN": {
+                "short_name": "SHA",
+                "abbreviation": "S"
+            },
+            "SGF": {
+                "abbreviation": "G"
+            }
+        },
+        "stars_maps": [
+            "MVA",
+            "BASE",
+            "EAST",
+            "ARSPC",
+            "STARS",
+            "TAA",
+            "SID"
+        ],
+        "video_map_file": "videomaps/aac-videomaps.gob.zst",
+        "controller_assignments": {
+            "STD": {
+                "inbound_assignments": {
+                    "OVERFLIGHTS": "AAC_D_APP"
+                },
+                "departure_assignments": {
+                    "KAAC": "AAC_D_APP"
+                }
+            },
+            "3XX": {
+                "inbound_assignments": {
+                    "ATOKA_FINAL": "AAC_F_APP",
+                    "BARTS_FINAL": "AAC_F_APP",
+                    "REELI_FINAL": "AAC_F_APP"
+                }
+            },
+            "4XX": {
+                "inbound_assignments": {
+                    "ATOKA_FINAL": "AAC_F_APP",
+                    "BARTS_FINAL": "AAC_F_APP",
+                    "INTERNAL_FINAL": "AAC_F_APP",
+                    "REELI_FINAL": "AAC_F_APP"
+                }
+            },
+            "6XX": {
+                "inbound_assignments": {
+                    "ATOKA_FINAL_6NM": "AAC_F_APP",
+                    "MAYES": "AAC_F_APP",
+                    "REELI_FINAL": "AAC_F_APP"
+                }
+            },
+            "CTO": {
+                "inbound_assignments": {
+                    "BARTS_FINAL": "AAC_F_APP",
+                    "MAYES": "AAC_F_APP",
+                    "REELI_FINAL": "AAC_F_APP"
+                }
+            },
+            "CWT": {
+                "inbound_assignments": {
+                    "ATOKA_FINAL": "AAC_F_APP",
+                    "BARTS_CWT_A": "AAC_F_APP",
+                    "BARTS_CWT_B": "AAC_F_APP",
+                    "BARTS_CWT_C": "AAC_F_APP",
+                    "BARTS_CWT_D": "AAC_F_APP",
+                    "BARTS_CWT_E_F_G": "AAC_F_APP",
+                    "BARTS_CWT_H_I": "AAC_F_APP",
+                    "BARTS_FINAL": "AAC_F_APP",
+                    "MAYES_CWT_A": "AAC_F_APP",
+                    "MAYES_CWT_B": "AAC_F_APP",
+                    "MAYES_CWT_C": "AAC_F_APP",
+                    "MAYES_CWT_D": "AAC_F_APP",
+                    "MAYES_CWT_E_F_G": "AAC_F_APP",
+                    "MAYES_CWT_H_I": "AAC_F_APP",
+                    "REELI_FINAL": "AAC_F_APP"
+                }
+            },
+            "NOR": {
+                "inbound_assignments": {
+                    "BARTS_STAGGER": "AAC_F_APP",
+                    "REELI_FINAL": "AAC_F_APP"
+                }
+            },
+            "SCA": {
+                "inbound_assignments": {
+                    "SCAN": "AAC_N_APP"
+                }
+            },
+            "WES": {
+                "inbound_assignments": {
+                    "ATOKA": "AAC_S_APP",
+                    "ATOKA_LO": "AAC_J_APP",
+                    "BARTS": "AAC_N_APP",
+                    "BARTS_LO": "AAC_B_APP",
+                    "INTERNAL_FINAL": "AAC_B_APP",
+                    "KILLR": "AAC_S_APP",
+                    "KILLR_LO": "AAC_J_APP",
+                    "MAYES": "AAC_F_APP",
+                    "REELI": "AAC_N_APP",
+                    "SGF.6": "AAC_N_APP",
+                    "SGF.8": "AAC_N_APP"
+                },
+                "departure_assignments": {
+                    "4V4": "AAC_J_APP",
+                    "4Y3": "AAC_B_APP",
+                    "KAAC": "AAC_N_APP",
+                    "KAAC/28R.NE.J": "AAC_D_APP",
+                    "KAAC/28R.NE.P": "AAC_B_APP",
+                    "KAAC/28R.SW.J": "AAC_D_APP",
+                    "KAAC/28R.SW.P": "AAC_J_APP",
+                    "KJKE": "AAC_J_APP"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,75 @@
+{
+    "control_positions": {
+        "PWM_TWR": {
+            "frequency": 120900,
+            "radio_name": "Portland Tower",
+            "sector_id": "1T"
+        },
+        "PWM_S_APP": {
+            "frequency": 119750,
+            "radio_name": "Portland Approach",
+            "sector_id": "1S"
+        },
+        "PWM_L_APP": {
+            "frequency": 125500,
+            "radio_name": "Portland Approach",
+            "sector_id": "1L"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "East": "PWM_S_APP",
+                    "West": "PWM_S_APP"
+                },
+                "departure_assignments": {
+                    "KPWM": "PWM_S_APP"
+                }
+            }
+        },
+        "center": "KPWM",
+        "scratchpads": {},
+        "stars_maps": [
+            "PWM MAIN",
+            "PWM EVENT RWY 29",
+            "PWM EOVM",
+            "PWM EVENT RWY 11",
+            "PWM IAF",
+            "PWM MVA",
+            "PWM LOW AIRWAYS",
+            "ZBW_PWM SCOGS STAR (RNAV)",
+            "ZBW_PWM CDOGG STAR (RNAV)",
+            "PWM RVM"
+        ],
+        "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
+        "controller_assignments": {
+            "STD": {
+                "inbound_assignments": {
+                    "East": "PWM_S_APP",
+                    "West": "PWM_S_APP"
+                },
+                "departure_assignments": {
+                    "KPWM": "PWM_S_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "A90",
+                "prefix": "1"
+            },
+            {
+                "id": "BGR",
+                "prefix": "2"
+            }
+        ],
+        "neighboring_facilities": [
+            "A90",
+            "BGR",
+            "ZBW"
+        ]
+    }
+}

@@ -1,0 +1,249 @@
+{
+    "control_positions": {
+        "HIO Tower": {
+            "frequency": 119300,
+            "radio_name": "Hillsboro Tower",
+            "sector_id": "1H"
+        },
+        "PDX Tower North": {
+            "frequency": 118700,
+            "radio_name": "Portland Tower",
+            "sector_id": "1W"
+        },
+        "PDX Tower South": {
+            "frequency": 123775,
+            "radio_name": "Portland Tower",
+            "sector_id": "1O"
+        },
+        "TTD_TWR": {
+            "frequency": 120900,
+            "radio_name": "Troutdale Tower",
+            "sector_id": "1Y"
+        },
+        "North (1N)": {
+            "frequency": 124350,
+            "radio_name": "Portland Approach",
+            "sector_id": "1N"
+        },
+        "Hood (1D)": {
+            "frequency": 118100,
+            "radio_name": "Portland Approach",
+            "sector_id": "1D"
+        },
+        "Final (1F)": {
+            "frequency": 126900,
+            "radio_name": "Portland Approach",
+            "sector_id": "1F"
+        },
+        "Newburg (1V)": {
+            "frequency": 126000,
+            "radio_name": "Portland Approach",
+            "sector_id": "1V"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "KPD": {
+                "inbound_assignments": {
+                    "HELNS": "North (1N)",
+                    "HHOOD5East": "North (1N)",
+                    "Hawaii": "Hood (1D)",
+                    "KRATR2East": "North (1N)",
+                    "OCITY3East": "Hood (1D)",
+                    "TMBERS3East": "Hood (1D)",
+                    "TOU": "North (1N)",
+                    "V112.W": "North (1N)",
+                    "V165.S": "North (1N)"
+                },
+                "departure_assignments": {
+                    "KHIO": "Newburg (1V)",
+                    "KPDX": "North (1N)",
+                    "KSLE": "Hood (1D)"
+                }
+            },
+            "KP1": {
+                "inbound_assignments": {
+                    "HHOOD5East_Final": "Final (1F)",
+                    "KRATR2East_Final": "Final (1F)",
+                    "TMBERS3East_Final": "Final (1F)"
+                }
+            },
+            "KP2": {
+                "inbound_assignments": {
+                    "HHOOD5West_Final": "Final (1F)",
+                    "KRATR2West_Final": "Final (1F)",
+                    "TMBERS3West_Final": "Final (1F)"
+                }
+            },
+            "KP3": {
+                "inbound_assignments": {
+                    "HELNS": "North (1N)",
+                    "HHOOD5West": "North (1N)",
+                    "Hawaii": "Hood (1D)",
+                    "KRATR2West": "North (1N)",
+                    "OCITY3West": "Hood (1D)",
+                    "TMBERS3West": "Hood (1D)",
+                    "TOU": "North (1N)",
+                    "V112.W": "North (1N)",
+                    "V165.S": "North (1N)"
+                },
+                "departure_assignments": {
+                    "KHIO": "Newburg (1V)",
+                    "KPDX": "North (1N)",
+                    "KSLE": "Hood (1D)"
+                }
+            }
+        },
+        "altimeters": [
+            "KPDX",
+            "KHIO",
+            "KUAO"
+        ],
+        "center": "KPDX",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "P80NOCA",
+                    "description": "P80 INHIBIT CA",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 6000,
+                    "vertices": [
+                        "N045.38.23.132,W122.51.08.289",
+                        "N045.42.19.736,W122.44.24.761",
+                        "N045.29.11.632,W122.13.18.788",
+                        "N045.25.43.331,W122.16.25.693",
+                        "N045.38.23.132,W122.51.08.289"
+                    ]
+                }
+            ]
+        },
+        "radar_sites": {
+            "PDX": {
+                "char": "W",
+                "position": "KPDX",
+                "elevation": 161,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 50.4,
+                "slope_angle": 0.3
+            }
+        },
+        "scratchpads": {
+            "TOU": "TOU",
+            "SEA": "SEA",
+            "OLM": "OLM",
+            "YKM": "YKM",
+            "PDT": "LVA",
+            "LTJ": "LTJ",
+            "DSD": "CSM",
+            "EUG": "EUG",
+            "ONP": "ONP",
+            "UBG": "UBG",
+            "AST": "AST",
+            "OTH": "OTH",
+            "OED": "OED",
+            "LMT": "LMT",
+            "IMB": "WMY",
+            "KOATA": "WMY",
+            "SUNED": "LVA",
+            "ARRIE": "ARI",
+            "LAVAA": "LVA",
+            "COUGA": "COU",
+            "WHAMY": "WMY",
+            "CHISM": "CSM",
+            "PUHTS": "CSM",
+            "SYNKR": "CSM",
+            "JUDAH": "CSM",
+            "HRMNS": "HRM",
+            "HYJOE": "HRM",
+            "MINNE": "MNE",
+            "EASON": "MNE",
+            "FAMUK": "MNE",
+            "HISKU": "MNE",
+            "EASON.H": "BER",
+            "EUG.H": "BER",
+            "FAMUK.H": "BER",
+            "HARPR": "BER"
+        },
+        "stars_maps": [
+            "RWY 10",
+            "RWY 28",
+            "3 NM BUFFER MVA",
+            "RWY 28 FIXES",
+            "RWY 10 FIXES",
+            "VFRLABL",
+            "PDX Class-C",
+            "CASCADE RNAV SID",
+            "WHAMY RNAV SID",
+            "PDX HRMNS SID",
+            "PDX LAVAA/MINNE SIDS",
+            "RNP RWY 10R",
+            "RNP RWY 28L",
+            "RNP RWY 28R",
+            "DELTA AIRSPACES",
+            "SATFNLS",
+            "FINAL 10",
+            "FINAL 28"
+        ],
+        "video_map_file": "videomaps/ZSE-videomaps.gob.zst",
+        "controller_assignments": {
+            "KP1": {
+                "inbound_assignments": {
+                    "HHOOD5East_Final": "Final (1F)",
+                    "KRATR2East_Final": "Final (1F)",
+                    "TMBERS3East_Final": "Final (1F)"
+                }
+            },
+            "KP2": {
+                "inbound_assignments": {
+                    "HHOOD5West_Final": "Final (1F)",
+                    "KRATR2West_Final": "Final (1F)",
+                    "TMBERS3West_Final": "Final (1F)"
+                }
+            },
+            "KP3": {
+                "inbound_assignments": {
+                    "HELNS": "North (1N)",
+                    "HHOOD5West": "North (1N)",
+                    "Hawaii": "Hood (1D)",
+                    "KRATR2West": "North (1N)",
+                    "OCITY3West": "Hood (1D)",
+                    "TMBERS3West": "Hood (1D)",
+                    "TOU": "North (1N)",
+                    "V112.W": "North (1N)",
+                    "V165.S": "North (1N)"
+                },
+                "departure_assignments": {
+                    "KHIO": "Newburg (1V)",
+                    "KPDX": "North (1N)",
+                    "KSLE": "Hood (1D)"
+                }
+            },
+            "KPD": {
+                "inbound_assignments": {
+                    "HELNS": "North (1N)",
+                    "HHOOD5East": "North (1N)",
+                    "Hawaii": "Hood (1D)",
+                    "KRATR2East": "North (1N)",
+                    "OCITY3East": "Hood (1D)",
+                    "TMBERS3East": "Hood (1D)",
+                    "TOU": "North (1N)",
+                    "V112.W": "North (1N)",
+                    "V165.S": "North (1N)"
+                },
+                "departure_assignments": {
+                    "KHIO": "Newburg (1V)",
+                    "KPDX": "North (1N)",
+                    "KSLE": "Hood (1D)"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [],
+        "neighboring_facilities": [
+            "ZSE"
+        ]
+    }
+}

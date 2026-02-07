@@ -1,0 +1,246 @@
+{
+    "control_positions": {
+        "AUS_W_APP": {
+            "frequency": 119000,
+            "radio_name": "Austin Approach",
+            "sector_id": "1W"
+        },
+        "AUS_E_APP": {
+            "frequency": 127225,
+            "radio_name": "Austin Approach",
+            "sector_id": "1E"
+        },
+        "AUS_F_APP": {
+            "frequency": 125325,
+            "radio_name": "Austin Approach",
+            "sector_id": "1F"
+        },
+        "AUS_E_TWR": {
+            "frequency": 121000,
+            "radio_name": "Austin Tower",
+            "sector_id": "1T"
+        },
+        "AUS_W_TWR": {
+            "frequency": 118225,
+            "radio_name": "Austin Tower",
+            "sector_id": "1X"
+        },
+        "HYI_TWR": {
+            "frequency": 126825,
+            "radio_name": "San Marcos Tower",
+            "scope_char": "T",
+            "sector_id": "1H"
+        },
+        "GTU_TWR": {
+            "frequency": 120225,
+            "radio_name": "Georgetown Tower",
+            "scope_char": "T",
+            "sector_id": "1G"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "DXEEE3N": "AUS_W_APP",
+                    "DXEEE3S": "AUS_W_APP",
+                    "GABOO1": "AUS_E_APP",
+                    "LAIKS3N": "AUS_W_APP",
+                    "LAIKS3S": "AUS_W_APP",
+                    "OVERFLIGHTSE": "AUS_E_APP",
+                    "OVERFLIGHTSW": "AUS_W_APP",
+                    "SEWZY6N": "AUS_E_APP",
+                    "SEWZY6S": "AUS_E_APP",
+                    "TOAMY": "AUS_E_APP",
+                    "WLEEE7N": "AUS_E_APP",
+                    "WLEEE7S": "AUS_E_APP"
+                },
+                "departure_assignments": {
+                    "KAUS": "AUS_W_APP",
+                    "KAUS/18L": "AUS_E_APP",
+                    "KAUS/18R": "AUS_W_APP",
+                    "KAUS/36L": "AUS_W_APP",
+                    "KAUS/36R": "AUS_E_APP",
+                    "KGTU": "AUS_W_APP",
+                    "KGTU/11": "AUS_E_APP",
+                    "KGTU/29": "AUS_W_APP",
+                    "KHYI": "AUS_W_APP",
+                    "KHYI/13": "AUS_W_APP",
+                    "KHYI/31": "AUS_W_APP"
+                }
+            }
+        },
+        "center": "KAUS",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "AUSNOCA",
+                    "description": "AUS CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 7000,
+                    "vertices": [
+                        "N30.32.34.436,W97.48.10.531",
+                        "N29.50.29.042,W97.46.59.802",
+                        "N29.50.48.312,W97.31.59.718",
+                        "N30.32.53.861,W97.33.04.560",
+                        "N30.32.34.436,W97.48.10.531"
+                    ]
+                }
+            ]
+        },
+        "controller_configs": {
+            "1W": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "floor": 0,
+                        "ceiling": 12000,
+                        "vertices": "N029.31.23.338,W097.32.32.050 N029.31.37.702,W097.49.19.936 N029.48.19.614,W097.48.21.406 N029.48.00.876,W097.51.49.735 N029.53.32.656,W098.04.36.498 N030.07.02.458,W098.14.58.571 N030.48.01.713,W098.04.50.863 N030.47.50.301,W097.41.08.572 N029.43.22.530,W097.39.32.937 N029.31.23.681,W097.32.38.752"
+                    }
+                ]
+            },
+            "1E": {
+                "flight_following_airspace": [
+                    {
+                        "type": "polygon",
+                        "floor": 0,
+                        "ceiling": 12000,
+                        "vertices": "N029.31.33.253,W097.31.58.048 N029.43.20.917,W097.38.59.648 N030.48.05.620,W097.40.27.401 N030.48.03.732,W097.06.09.799 N030.39.25.342,W097.06.36.853 N030.20.22.036,W096.48.48.845 N029.44.11.522,W096.49.03.237 N029.30.33.700,W096.55.43.881 N029.31.32.573,W097.31.44.672"
+                    }
+                ]
+            }
+        },
+        "radar_sites": {
+            "AUS": {
+                "char": "A",
+                "position": "KAUS",
+                "elevation": 542,
+                "primary_range": 60,
+                "secondary_range": 120,
+                "silence_angle": 10,
+                "slope_angle": 0.5
+            }
+        },
+        "scratchpads": {
+            "ZENZI": "HOO",
+            "SAYBR": "MUN",
+            "SJT": "AMU",
+            "ABI": "WLM",
+            "BNDIA": "GAR",
+            "MUCKY": "PAY",
+            "KLNGR": "WLM",
+            "AMUSE": "AMU",
+            "CLL": "CLL",
+            "KHYI": ""
+        },
+        "significant_points": {
+            "ABI": {},
+            "AMUSE": {},
+            "BNDIA": {},
+            "CLL": {},
+            "KHYI": {},
+            "KLNGR": {},
+            "MUCKY": {},
+            "SAYBR": {},
+            "SJT": {},
+            "ZENZI": {}
+        },
+        "coordination_lists": [
+            {
+                "name": "SAN MARCOS",
+                "id": "A",
+                "airports": [
+                    "KHYI"
+                ]
+            },
+            {
+                "name": "GEORGETOWN",
+                "id": "B",
+                "airports": [
+                    "KGTU"
+                ]
+            }
+        ],
+        "force_ql_self": true,
+        "stars_maps": [
+            "AUS BASE",
+            "AUS 3NM MVA",
+            "AUS CLASS C",
+            "SF FINAL APP COURSE",
+            "NF FINAL APP COURSE",
+            "AUS SF STARS",
+            "AUS NF STARS",
+            "AUS NTZ",
+            "NORTH FLOW SOUTH APP CLSD",
+            "SOUTH FLOW SOUTH APP CLSD",
+            "AUS ZHU SECTORS",
+            "SOUTH FLOW FINAL AIRSPACE",
+            "NORTH FLOW FINAL AIRSPACE",
+            "EDC FINALS",
+            "EDC CLASS D",
+            "HYI FINALS",
+            "HYI FINALS LABELS",
+            "GTU FINALS",
+            "AUS VFR"
+        ],
+        "video_map_file": "videomaps/ZHU-videomaps.gob.zst",
+        "controller_assignments": {
+            "STD": {
+                "inbound_assignments": {
+                    "DXEEE3N": "AUS_W_APP",
+                    "DXEEE3S": "AUS_W_APP",
+                    "GABOO1": "AUS_E_APP",
+                    "LAIKS3N": "AUS_W_APP",
+                    "LAIKS3S": "AUS_W_APP",
+                    "OVERFLIGHTSE": "AUS_E_APP",
+                    "OVERFLIGHTSW": "AUS_W_APP",
+                    "SEWZY6N": "AUS_E_APP",
+                    "SEWZY6S": "AUS_E_APP",
+                    "TOAMY": "AUS_E_APP",
+                    "WLEEE7N": "AUS_E_APP",
+                    "WLEEE7S": "AUS_E_APP"
+                },
+                "departure_assignments": {
+                    "KAUS": "AUS_W_APP",
+                    "KAUS/18L": "AUS_E_APP",
+                    "KAUS/18R": "AUS_W_APP",
+                    "KAUS/36L": "AUS_W_APP",
+                    "KAUS/36R": "AUS_E_APP",
+                    "KGTU": "AUS_W_APP",
+                    "KGTU/11": "AUS_E_APP",
+                    "KGTU/29": "AUS_W_APP",
+                    "KHYI": "AUS_W_APP",
+                    "KHYI/13": "AUS_W_APP",
+                    "KHYI/31": "AUS_W_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "SAT",
+                "prefix": "1"
+            },
+            {
+                "id": "GRK",
+                "prefix": "2"
+            },
+            {
+                "id": "I90",
+                "prefix": "3"
+            }
+        ],
+        "neighboring_facilities": [
+            "BAZ",
+            "GRK",
+            "GTU",
+            "HYI",
+            "I90",
+            "SAT",
+            "ZFW",
+            "ZHU"
+        ]
+    }
+}

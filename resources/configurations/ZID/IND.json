@@ -1,0 +1,351 @@
+{
+    "control_positions": {
+        "IND_E_APP": {
+            "frequency": 124950,
+            "radio_name": "Indianapolis Approach",
+            "sector_id": "1E"
+        },
+        "IND_W_APP": {
+            "frequency": 119050,
+            "radio_name": "Indianapolis Approach",
+            "sector_id": "1W"
+        },
+        "IND_B_APP": {
+            "frequency": 121100,
+            "radio_name": "Indianapolis Approach",
+            "sector_id": "1B"
+        },
+        "IND_D_APP": {
+            "frequency": 128175,
+            "radio_name": "Indianapolis Approach",
+            "sector_id": "1D"
+        },
+        "IND_F_APP": {
+            "frequency": 123950,
+            "radio_name": "Indianapolis Approach",
+            "sector_id": "1F"
+        },
+        "IND_I_APP": {
+            "frequency": 120525,
+            "radio_name": "Indianapolis Approach",
+            "sector_id": "1I"
+        },
+        "IND_S_APP": {
+            "frequency": 127150,
+            "radio_name": "Indianapolis Approach",
+            "sector_id": "1S"
+        },
+        "IND_N_APP": {
+            "frequency": 124650,
+            "radio_name": "Indianapolis Approach",
+            "sector_id": "1N"
+        },
+        "IND_E_TWR": {
+            "frequency": 120900,
+            "radio_name": "Indianapolis Tower",
+            "sector_id": "1Y"
+        },
+        "IND_W_TWR": {
+            "frequency": 127825,
+            "radio_name": "Indianapolis Tower",
+            "sector_id": "1X"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "KIN": {
+                "inbound_assignments": {
+                    "GIIBS3": "IND_D_APP",
+                    "JAKKS2": "IND_B_APP",
+                    "KOLTS2": "IND_B_APP",
+                    "SMUKE2": "IND_B_APP",
+                    "SNKPT2": "IND_D_APP"
+                },
+                "departure_assignments": {
+                    "KIND": "IND_W_APP"
+                }
+            },
+            "KI1": {
+                "inbound_assignments": {
+                    "GIIBS3": "IND_D_APP",
+                    "JAKKS2": "IND_B_APP",
+                    "KOLTS2": "IND_B_APP",
+                    "SMUKE2": "IND_B_APP",
+                    "SNKPT2": "IND_D_APP"
+                },
+                "departure_assignments": {
+                    "KIND": "IND_E_APP"
+                }
+            }
+        },
+        "center": "KIND",
+        "allow_long_scratchpad": true,
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "INDNOCA",
+                    "description": "IND CA SUPPRESSION",
+                    "type": "circle",
+                    "floor": 0,
+                    "ceiling": 3000,
+                    "center": "39.71731,-86.29464",
+                    "radius": 3
+                },
+                {
+                    "id": "23S2-CA",
+                    "description": "RWY23 SFC-2400 CA SUPPRESSION",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 2400,
+                    "vertices": [
+                        "39.75147,-86.29204",
+                        "39.80410,-86.22184",
+                        "39.77208,-86.17887",
+                        "39.71974,-86.24897"
+                    ]
+                },
+                {
+                    "id": "2324-CA",
+                    "description": "RWY23 2400-4K CA SUPPRESSION",
+                    "type": "polygon",
+                    "floor": 2400,
+                    "ceiling": 4000,
+                    "vertices": [
+                        "39.85731,-86.15501",
+                        "39.82425,-86.11205",
+                        "39.77208,-86.17887",
+                        "39.80410,-86.22184"
+                    ]
+                },
+                {
+                    "id": "2345-CA",
+                    "description": "RWY23 4K-5K CA SUPPRESSION",
+                    "type": "polygon",
+                    "floor": 3750,
+                    "ceiling": 5000,
+                    "vertices": [
+                        "39.89494,-86.10559",
+                        "39.86096,-86.06413",
+                        "39.77208,-86.17887",
+                        "39.80410,-86.22184"
+                    ]
+                },
+                {
+                    "id": "2356-CA",
+                    "description": "RWY23 5K-6K CA SUPPRESSION",
+                    "type": "polygon",
+                    "floor": 5750,
+                    "ceiling": 6000,
+                    "vertices": [
+                        "39.94419,-86.03767",
+                        "39.91097,-85.99879",
+                        "39.86096,-86.06413",
+                        "39.89494,-86.10559"
+                    ]
+                },
+                {
+                    "id": "5-S2-CA",
+                    "description": "RWY5 SFC-2100 CA SUPPRESSION",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 2100,
+                    "vertices": [
+                        "39.67487,-86.30389",
+                        "39.70815,-86.34487",
+                        "39.66897,-86.39707",
+                        "39.63640,-86.35639"
+                    ]
+                },
+                {
+                    "id": "5-23-CA",
+                    "description": "RWY5 2100-3K CA SUPPRESSION",
+                    "type": "polygon",
+                    "floor": 1850,
+                    "ceiling": 3000,
+                    "vertices": [
+                        "39.60307,-86.39777",
+                        "39.63803,-86.43696",
+                        "39.66897,-86.39707",
+                        "39.63640,-86.35639"
+                    ]
+                },
+                {
+                    "id": "5-34-CA",
+                    "description": "RWY5 3K-4K CA SUPPRESSION",
+                    "type": "polygon",
+                    "floor": 2750,
+                    "ceiling": 4000,
+                    "vertices": [
+                        "39.56687,-86.44149",
+                        "39.59982,-86.48368",
+                        "39.63803,-86.43696",
+                        "39.60307,-86.39777"
+                    ]
+                },
+                {
+                    "id": "5-45-CA",
+                    "description": "RWY5 4K-5K CA SUPPRESSION",
+                    "type": "polygon",
+                    "floor": 3750,
+                    "ceiling": 5000,
+                    "vertices": [
+                        "39.53015,-86.49041",
+                        "39.56262,-86.53158",
+                        "39.59982,-86.48368",
+                        "39.56687,-86.44149"
+                    ]
+                },
+                {
+                    "id": "5-56-CA",
+                    "description": "RWY5 5K-6K CA SUPPRESSION",
+                    "type": "polygon",
+                    "floor": 4750,
+                    "ceiling": 6000,
+                    "vertices": [
+                        "39.49209,-86.53979",
+                        "39.52350,-86.58263",
+                        "39.59982,-86.48368",
+                        "39.56687,-86.44149"
+                    ]
+                }
+            ]
+        },
+        "radar_sites": {
+            "INDA": {
+                "char": "I",
+                "position": "39.70244,-86.2883",
+                "elevation": 795,
+                "primary_range": 70,
+                "secondary_range": 70,
+                "slope_angle": 0.175
+            }
+        },
+        "scratchpads": {
+            "DAWNN": "FOY",
+            "MYS": "FOY",
+            "IIU": "FOY",
+            "WEGEE": "OOM",
+            "OOM": "OOM",
+            "PXV": "OOM",
+            "MAREO": "MREO",
+            "BDOCK": "MREO",
+            "MEARZ": "MEAR",
+            "BRATN": "BRTN",
+            "MZZ": "BRTN",
+            "BVT": "SACH",
+            "ROCKY": "TTH",
+            "SPI": "TTH",
+            "STL": "TTH"
+        },
+        "significant_points": {
+            "BDOCK": {},
+            "BRATN": {},
+            "BVT": {},
+            "DAWNN": {},
+            "IIU": {},
+            "MAREO": {},
+            "MEARZ": {},
+            "MYS": {},
+            "MZZ": {},
+            "OOM": {},
+            "PXV": {},
+            "ROCKY": {},
+            "SPI": {},
+            "STL": {},
+            "WEGEE": {}
+        },
+        "stars_maps": [
+            "RWY 23s",
+            "RWY 5s",
+            "RWY 14",
+            "RWY 32",
+            "IND 3 NM MVA",
+            "Departures (Fixes Only)",
+            "Class C/D",
+            "CLANG STAR",
+            "GIIBS STAR",
+            "JAKKS STAR",
+            "KOLTS STAR",
+            "RACYR STAR",
+            "SMUKE STAR",
+            "SNKPT STAR",
+            "DAWNN SID",
+            "MARIO SID",
+            "MEARZ SID",
+            "ROCKY SID",
+            "RWY 23s Composite Training",
+            "RWY 5s Composite Training",
+            "RWY 14 Composite Training",
+            "RWY 32 Composite Training",
+            "RNP FIXES RWY 23",
+            "RNP FIXES RWY 5",
+            "RNP FIXES RWY 14",
+            "RNP FIXES RWY 32"
+        ],
+        "video_map_file": "videomaps/ZID-videomaps.gob.zst",
+        "controller_assignments": {
+            "KI1": {
+                "inbound_assignments": {
+                    "GIIBS3": "IND_D_APP",
+                    "JAKKS2": "IND_B_APP",
+                    "KOLTS2": "IND_B_APP",
+                    "SMUKE2": "IND_B_APP",
+                    "SNKPT2": "IND_D_APP"
+                },
+                "departure_assignments": {
+                    "KIND": "IND_E_APP"
+                }
+            },
+            "KIN": {
+                "inbound_assignments": {
+                    "GIIBS3": "IND_D_APP",
+                    "JAKKS2": "IND_B_APP",
+                    "KOLTS2": "IND_B_APP",
+                    "SMUKE2": "IND_B_APP",
+                    "SNKPT2": "IND_D_APP"
+                },
+                "departure_assignments": {
+                    "KIND": "IND_W_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "CVG",
+                "prefix": "2"
+            },
+            {
+                "id": "CMH",
+                "prefix": "1"
+            },
+            {
+                "id": "HUF",
+                "prefix": "3"
+            },
+            {
+                "id": "GUS",
+                "prefix": "4"
+            },
+            {
+                "id": "FWA",
+                "prefix": "5"
+            },
+            {
+                "id": "SDF",
+                "prefix": "6"
+            }
+        ],
+        "neighboring_facilities": [
+            "CMH",
+            "CVG",
+            "FWA",
+            "GUS",
+            "HUF",
+            "SDF",
+            "ZAU",
+            "ZID"
+        ]
+    }
+}

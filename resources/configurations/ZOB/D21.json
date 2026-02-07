@@ -1,0 +1,510 @@
+{
+    "control_positions": {
+        "DTW_R_APP": {
+            "frequency": 126850,
+            "radio_name": "Detroit Approach",
+            "sector_id": "1R"
+        },
+        "DTW_V_APP": {
+            "frequency": 124975,
+            "radio_name": "Detroit Approach",
+            "sector_id": "1V"
+        },
+        "DTW_F_APP": {
+            "frequency": 126225,
+            "radio_name": "Detroit Approach",
+            "sector_id": "1F"
+        },
+        "DTW_H_APP": {
+            "frequency": 124250,
+            "radio_name": "Detroit Approach",
+            "sector_id": "1H"
+        },
+        "DTW_A_APP": {
+            "frequency": 124050,
+            "radio_name": "Detroit Approach",
+            "sector_id": "1A"
+        },
+        "DTW_B_APP": {
+            "frequency": 125150,
+            "radio_name": "Detroit Approach",
+            "sector_id": "1B"
+        },
+        "DTW_Z_APP": {
+            "frequency": 123900,
+            "radio_name": "Detroit Approach",
+            "sector_id": "1Z"
+        },
+        "DTW_E_DEP": {
+            "frequency": 132025,
+            "radio_name": "Detroit Departure",
+            "sector_id": "1E"
+        },
+        "DTW_W_DEP": {
+            "frequency": 125525,
+            "radio_name": "Detroit Departure",
+            "sector_id": "1W"
+        },
+        "DTW_Y_APP": {
+            "frequency": 118950,
+            "radio_name": "Detroit Approach",
+            "sector_id": "1Y"
+        },
+        "DTW_D_APP": {
+            "frequency": 134300,
+            "radio_name": "Detroit Approach",
+            "sector_id": "1D"
+        },
+        "DTW_P_APP": {
+            "frequency": 132350,
+            "radio_name": "Detroit Approach",
+            "sector_id": "1P"
+        },
+        "DTW_SW_TWR": {
+            "frequency": 135000,
+            "radio_name": "Detroit Tower",
+            "sector_id": "1N"
+        },
+        "DTW_NE_TWR": {
+            "frequency": 128750,
+            "radio_name": "Detroit Tower",
+            "sector_id": "1M"
+        },
+        "DTW_NW_TWR": {
+            "frequency": 128125,
+            "radio_name": "Detroit Tower",
+            "sector_id": "1L"
+        },
+        "PTK_TWR": {
+            "frequency": 120500,
+            "radio_name": "Pontiac Tower",
+            "sector_id": "4P"
+        },
+        "DET_TWR": {
+            "frequency": 121300,
+            "radio_name": "Detroit Tower",
+            "sector_id": "6Y"
+        },
+        "YIP_TWR": {
+            "frequency": 125275,
+            "radio_name": "Willow Run Tower",
+            "sector_id": "8W"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "43X": {
+                "inbound_assignments": {
+                    "CRAKN2": "DTW_H_APP",
+                    "CUUGR2": "DTW_F_APP",
+                    "FOREY2": "DTW_D_APP",
+                    "GIGGY2": "DTW_D_APP",
+                    "GRAYT2": "DTW_R_APP",
+                    "HAYLL3": "DTW_V_APP",
+                    "KKISS2": "DTW_R_APP",
+                    "KLYNK3": "DTW_H_APP",
+                    "LECTR3": "DTW_V_APP",
+                    "OKLND1": "DTW_P_APP",
+                    "PETTE2": "DTW_Y_APP",
+                    "RRALF3": "DTW_P_APP",
+                    "WNGNT2": "DTW_F_APP"
+                },
+                "departure_assignments": {
+                    "KDET": "DTW_D_APP",
+                    "KDTW": "DTW_E_DEP",
+                    "KPTK": "DTW_P_APP",
+                    "KYIP": "DTW_Y_APP"
+                }
+            },
+            "NOR": {
+                "inbound_assignments": {
+                    "CRAKN2_FINALN": "DTW_A_APP",
+                    "CUUGR2_FINALN": "DTW_A_APP",
+                    "GRAYT2_FINALN": "DTW_A_APP",
+                    "KKISS2_FINALN": "DTW_A_APP",
+                    "KLYNK3_FINALN": "DTW_A_APP",
+                    "LECTR3_FINALN": "DTW_A_APP",
+                    "WNGNT2_FINALN": "DTW_A_APP"
+                }
+            },
+            "22X": {
+                "inbound_assignments": {
+                    "BONZZ2": "DTW_H_APP",
+                    "FERRL2": "DTW_F_APP",
+                    "FOREY2": "DTW_D_APP",
+                    "GIGGY2": "DTW_D_APP",
+                    "HANBL3": "DTW_V_APP",
+                    "HTROD2": "DTW_H_APP",
+                    "LAYKS2": "DTW_R_APP",
+                    "OKLND1": "DTW_P_APP",
+                    "PETTE2": "DTW_Y_APP",
+                    "RKCTY2": "DTW_R_APP",
+                    "RRALF3": "DTW_P_APP",
+                    "TPGUN2": "DTW_F_APP",
+                    "VCTRZ2": "DTW_V_APP"
+                },
+                "departure_assignments": {
+                    "KDET": "DTW_D_APP",
+                    "KDTW": "DTW_W_DEP",
+                    "KPTK": "DTW_P_APP",
+                    "KYIP": "DTW_Y_APP"
+                }
+            },
+            "SOU": {
+                "inbound_assignments": {
+                    "BONZZ2": "DTW_H_APP",
+                    "FERRL2": "DTW_F_APP",
+                    "FOREY2": "DTW_D_APP",
+                    "GIGGY2": "DTW_D_APP",
+                    "HANBL3": "DTW_V_APP",
+                    "HTROD2": "DTW_H_APP",
+                    "LAYKS2": "DTW_R_APP",
+                    "OKLND1": "DTW_P_APP",
+                    "PETTE2": "DTW_Y_APP",
+                    "RKCTY2": "DTW_R_APP",
+                    "RRALF3": "DTW_P_APP",
+                    "TPGUN2": "DTW_F_APP",
+                    "VCTRZ2": "DTW_V_APP"
+                },
+                "departure_assignments": {
+                    "KDET": "DTW_D_APP",
+                    "KDTW": "DTW_E_DEP",
+                    "KPTK": "DTW_P_APP",
+                    "KYIP": "DTW_Y_APP"
+                }
+            },
+            "SO1": {
+                "inbound_assignments": {
+                    "BONZZ2_FINALS": "DTW_A_APP",
+                    "FERRL2_FINALS": "DTW_A_APP",
+                    "HANBL3_FINALS": "DTW_A_APP",
+                    "HTROD2_FINALS": "DTW_A_APP",
+                    "LAYKS2_FINALS": "DTW_A_APP",
+                    "RKCTY2_FINALS": "DTW_A_APP",
+                    "TPGUN2_FINALS": "DTW_A_APP",
+                    "VCTRZ2_FINALS": "DTW_A_APP"
+                }
+            },
+            "WES": {
+                "inbound_assignments": {
+                    "CRAKN2": "DTW_H_APP",
+                    "FERRL2": "DTW_F_APP",
+                    "FOREY2": "DTW_D_APP",
+                    "GIGGY2": "DTW_D_APP",
+                    "GRAYT2": "DTW_R_APP",
+                    "HANBL3": "DTW_V_APP",
+                    "KKISS2": "DTW_R_APP",
+                    "KLYNK3": "DTW_H_APP",
+                    "OKLND1": "DTW_P_APP",
+                    "PETTE2": "DTW_Y_APP",
+                    "RRALF3": "DTW_P_APP",
+                    "TPGUN2": "DTW_F_APP",
+                    "VCTRZ2": "DTW_V_APP"
+                },
+                "departure_assignments": {
+                    "KDET": "DTW_D_APP",
+                    "KDTW": "DTW_E_DEP",
+                    "KPTK": "DTW_P_APP",
+                    "KYIP": "DTW_Y_APP"
+                }
+            },
+            "WE1": {
+                "inbound_assignments": {
+                    "CRAKN2_FINALW": "DTW_A_APP",
+                    "FERRL2_FINALW": "DTW_A_APP",
+                    "GRAYT2_FINALW": "DTW_A_APP",
+                    "HANBL3_FINALW": "DTW_A_APP",
+                    "KKISS2_FINALW": "DTW_A_APP",
+                    "KLYNK3_FINALW": "DTW_A_APP",
+                    "TPGUN2_FINALW": "DTW_A_APP",
+                    "VCTRZ2_FINALW": "DTW_A_APP"
+                }
+            }
+        },
+        "center": "KDTW",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "S NOCA",
+                    "description": "DTW South CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 6000,
+                    "vertices": [
+                        "N042.13.55.716,W083.24.08.245",
+                        "N042.35.57.275,W083.09.27.333",
+                        "N042.30.15.902,W083.00.37.078",
+                        "N042.13.00.839,W083.17.38.505"
+                    ]
+                },
+                {
+                    "id": "N NOCA",
+                    "description": "DTW North CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 6000,
+                    "vertices": [
+                        "N042.13.32.013,W083.26.15.027",
+                        "N042.11.26.755,W083.18.21.324",
+                        "N041.45.06.674,W083.33.50.438",
+                        "N041.49.48.940,W083.45.43.533"
+                    ]
+                },
+                {
+                    "id": "W NOCA",
+                    "description": "DTW West CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 6000,
+                    "vertices": [
+                        "N042.14.04.807,W083.20.09.924",
+                        "N042.10.27.635,W083.20.12.396",
+                        "N042.16.22.356,W082.43.29.335",
+                        "N042.16.22.356,W082.43.29.335"
+                    ]
+                }
+            ]
+        },
+        "scratchpads": {
+            "SINKR": "SIN",
+            "ZEGBI": "ZEG",
+            "STAZE": "STA",
+            "BROKK": "BRO",
+            "LNCON": "LNC",
+            "SMUUV": "SMU",
+            "WINNZ": "WIN",
+            "GRIVY": "GRI",
+            "MONEE": "MON",
+            "MRDOC": "MRD",
+            "ESSBE": "ESS",
+            "TORRR": "TOR",
+            "BGHRT": "BGH",
+            "GNZOE": "GNZ",
+            "ZETTR": "ZET",
+            "SNDRS": "SND",
+            "KAYLN": "KAY",
+            "DUNKS": "DUN",
+            "SLLAP": "SLL",
+            "CLVIN": "CLV"
+        },
+        "significant_points": {
+            "BGHRT": {},
+            "BROKK": {},
+            "CLVIN": {},
+            "DUNKS": {},
+            "ESSBE": {},
+            "GNZOE": {},
+            "GRIVY": {},
+            "KAYLN": {},
+            "LNCON": {},
+            "MONEE": {},
+            "MRDOC": {},
+            "SINKR": {},
+            "SLLAP": {},
+            "SMUUV": {},
+            "SNDRS": {},
+            "STAZE": {},
+            "TORRR": {},
+            "WINNZ": {},
+            "ZEGBI": {},
+            "ZETTR": {}
+        },
+        "stars_maps": [
+            "DTW-023 (SAT APCH)",
+            "DTW-007 (SF-ARR FEEDER)",
+            "DTW-008 (SF-DEP SAT)",
+            "DTW-009 (NF-ARR FEEDER)",
+            "DTW-011 (WF-ARR FEEDER)",
+            "DTW-012 (WF-DEP SAT)",
+            "DTW-013 (22R Z)",
+            "DTW-014 (4L Z)",
+            "DTW-015 (22L)",
+            "DTW-016 (4R)",
+            "DTW-017 (21L)",
+            "DTW-018 (3R)",
+            "DTW-019 (27R)",
+            "DTW-020 (27L)",
+            "DTW-124 (4L Y)",
+            "DTW-125 (22R Y)",
+            "DTW-118 (NORTH FLOW CAGE)",
+            "DTW-119 (SOUTH FLOW CAGE)",
+            "DTW-201 (NORTH FLOW SIDS)",
+            "DTW-202 (SOUTH FLOW SIDS)",
+            "DTW-203 (METRO SID)",
+            "DTW-211 (NORTH FLOW STARS)",
+            "DTW-214 (WEST FLOW STARS)",
+            "DTW-216 (SOUTH FLOW STARS)",
+            "DTW-220 (SATELLITE STARS)",
+            "DTW-010 (NF-DEP SAT)",
+            "DTW-001 (MVA)",
+            "DTW-133 (NORTH FLOW INITIAL SIDS)",
+            "DTW-134 (SOUTH FLOW INITIAL SIDS)",
+            "DTW-600 (NF DEP DELEGATIONS)",
+            "DTW-601 (NF SAT DELEGATIONS)",
+            "DTW-602 (NF ARR FEEDER DELEGATIONS)",
+            "DTW-604 (SF DEP DELEGATIONS)",
+            "DTW-605 (SF SAT DELEGATIONS)",
+            "DTW-606 (SF ARR FEEDER DELEGATIONS)",
+            "DTW-608 (WF DEP DELEGATIONS)",
+            "DTW-609 (WF SAT DELEGATIONS)",
+            "DTW-610 (WF ARR FEEDER DELEGATIONS)"
+        ],
+        "video_map_file": "videomaps/ZOB-videomaps.gob.zst",
+        "controller_assignments": {
+            "22X": {
+                "inbound_assignments": {
+                    "BONZZ2": "DTW_H_APP",
+                    "FERRL2": "DTW_F_APP",
+                    "FOREY2": "DTW_D_APP",
+                    "GIGGY2": "DTW_D_APP",
+                    "HANBL3": "DTW_V_APP",
+                    "HTROD2": "DTW_H_APP",
+                    "LAYKS2": "DTW_R_APP",
+                    "OKLND1": "DTW_P_APP",
+                    "PETTE2": "DTW_Y_APP",
+                    "RKCTY2": "DTW_R_APP",
+                    "RRALF3": "DTW_P_APP",
+                    "TPGUN2": "DTW_F_APP",
+                    "VCTRZ2": "DTW_V_APP"
+                },
+                "departure_assignments": {
+                    "KDET": "DTW_D_APP",
+                    "KDTW": "DTW_W_DEP",
+                    "KPTK": "DTW_P_APP",
+                    "KYIP": "DTW_Y_APP"
+                }
+            },
+            "43X": {
+                "inbound_assignments": {
+                    "CRAKN2": "DTW_H_APP",
+                    "CUUGR2": "DTW_F_APP",
+                    "FOREY2": "DTW_D_APP",
+                    "GIGGY2": "DTW_D_APP",
+                    "GRAYT2": "DTW_R_APP",
+                    "HAYLL3": "DTW_V_APP",
+                    "KKISS2": "DTW_R_APP",
+                    "KLYNK3": "DTW_H_APP",
+                    "LECTR3": "DTW_V_APP",
+                    "OKLND1": "DTW_P_APP",
+                    "PETTE2": "DTW_Y_APP",
+                    "RRALF3": "DTW_P_APP",
+                    "WNGNT2": "DTW_F_APP"
+                },
+                "departure_assignments": {
+                    "KDET": "DTW_D_APP",
+                    "KDTW": "DTW_E_DEP",
+                    "KPTK": "DTW_P_APP",
+                    "KYIP": "DTW_Y_APP"
+                }
+            },
+            "NOR": {
+                "inbound_assignments": {
+                    "CRAKN2_FINALN": "DTW_A_APP",
+                    "CUUGR2_FINALN": "DTW_A_APP",
+                    "GRAYT2_FINALN": "DTW_A_APP",
+                    "KKISS2_FINALN": "DTW_A_APP",
+                    "KLYNK3_FINALN": "DTW_A_APP",
+                    "LECTR3_FINALN": "DTW_A_APP",
+                    "WNGNT2_FINALN": "DTW_A_APP"
+                }
+            },
+            "SO1": {
+                "inbound_assignments": {
+                    "BONZZ2_FINALS": "DTW_A_APP",
+                    "FERRL2_FINALS": "DTW_A_APP",
+                    "HANBL3_FINALS": "DTW_A_APP",
+                    "HTROD2_FINALS": "DTW_A_APP",
+                    "LAYKS2_FINALS": "DTW_A_APP",
+                    "RKCTY2_FINALS": "DTW_A_APP",
+                    "TPGUN2_FINALS": "DTW_A_APP",
+                    "VCTRZ2_FINALS": "DTW_A_APP"
+                }
+            },
+            "SOU": {
+                "inbound_assignments": {
+                    "BONZZ2": "DTW_H_APP",
+                    "FERRL2": "DTW_F_APP",
+                    "FOREY2": "DTW_D_APP",
+                    "GIGGY2": "DTW_D_APP",
+                    "HANBL3": "DTW_V_APP",
+                    "HTROD2": "DTW_H_APP",
+                    "LAYKS2": "DTW_R_APP",
+                    "OKLND1": "DTW_P_APP",
+                    "PETTE2": "DTW_Y_APP",
+                    "RKCTY2": "DTW_R_APP",
+                    "RRALF3": "DTW_P_APP",
+                    "TPGUN2": "DTW_F_APP",
+                    "VCTRZ2": "DTW_V_APP"
+                },
+                "departure_assignments": {
+                    "KDET": "DTW_D_APP",
+                    "KDTW": "DTW_E_DEP",
+                    "KPTK": "DTW_P_APP",
+                    "KYIP": "DTW_Y_APP"
+                }
+            },
+            "WE1": {
+                "inbound_assignments": {
+                    "CRAKN2_FINALW": "DTW_A_APP",
+                    "FERRL2_FINALW": "DTW_A_APP",
+                    "GRAYT2_FINALW": "DTW_A_APP",
+                    "HANBL3_FINALW": "DTW_A_APP",
+                    "KKISS2_FINALW": "DTW_A_APP",
+                    "KLYNK3_FINALW": "DTW_A_APP",
+                    "TPGUN2_FINALW": "DTW_A_APP",
+                    "VCTRZ2_FINALW": "DTW_A_APP"
+                }
+            },
+            "WES": {
+                "inbound_assignments": {
+                    "CRAKN2": "DTW_H_APP",
+                    "FERRL2": "DTW_F_APP",
+                    "FOREY2": "DTW_D_APP",
+                    "GIGGY2": "DTW_D_APP",
+                    "GRAYT2": "DTW_R_APP",
+                    "HANBL3": "DTW_V_APP",
+                    "KKISS2": "DTW_R_APP",
+                    "KLYNK3": "DTW_H_APP",
+                    "OKLND1": "DTW_P_APP",
+                    "PETTE2": "DTW_Y_APP",
+                    "RRALF3": "DTW_P_APP",
+                    "TPGUN2": "DTW_F_APP",
+                    "VCTRZ2": "DTW_V_APP"
+                },
+                "departure_assignments": {
+                    "KDET": "DTW_D_APP",
+                    "KDTW": "DTW_E_DEP",
+                    "KPTK": "DTW_P_APP",
+                    "KYIP": "DTW_Y_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "LAN",
+                "prefix": "1"
+            },
+            {
+                "id": "CLE",
+                "prefix": "2"
+            },
+            {
+                "id": "TOL",
+                "prefix": "3"
+            },
+            {
+                "id": "MTC",
+                "prefix": "4"
+            }
+        ],
+        "neighboring_facilities": [
+            "CLE",
+            "LAN",
+            "MTC",
+            "TOL",
+            "ZOB"
+        ]
+    }
+}

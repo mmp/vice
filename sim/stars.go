@@ -313,11 +313,13 @@ func PrintVideoMaps(path string, e *util.ErrorLogger) {
 	}
 }
 
-// ControllerAssignments defines which controller handles each inbound/departure flow.
-// This is separate from the consolidation hierarchy (PositionConsolidation).
+// ControllerAssignments defines which controller handles each inbound/departure flow,
+// the default consolidation hierarchy for the configuration, and optional fix pair assignments.
 type ControllerAssignments struct {
-	InboundAssignments   map[string]TCP `json:"inbound_assignments"`
-	DepartureAssignments map[string]TCP `json:"departure_assignments"`
+	InboundAssignments   map[string]TCP        `json:"inbound_assignments"`
+	DepartureAssignments map[string]TCP        `json:"departure_assignments"`
+	DefaultConsolidation PositionConsolidation `json:"default_consolidation"`
+	FixPairAssignments   []FixPairAssignment   `json:"fix_pair_assignments,omitempty"`
 }
 
 type FacilityAdaptation struct {
@@ -325,13 +327,13 @@ type FacilityAdaptation struct {
 	// These define which TCP handles each inbound flow and departure airport/runway/SID.
 	Configurations map[string]*ControllerAssignments `json:"configurations"`
 
-	AirspaceAwareness   []AirspaceAwareness                        `json:"airspace_awareness" scope:"stars"`
 	ForceQLToSelf       bool                                       `json:"force_ql_self" scope:"stars"`
 	AllowLongScratchpad bool                                       `json:"allow_long_scratchpad" scope:"stars"`
 	VideoMapNames       []string                                   `json:"stars_maps" scope:"stars"`
 	ERAMMapNames        map[string][]string                        `json:"eram_maps" scope:"eram"`
 	VideoMapLabels      map[string]string                          `json:"map_labels"`
 	ControllerConfigs   map[ControlPosition]*STARSControllerConfig `json:"controller_configs"`
+	AreaConfigs         map[int]*STARSAreaConfig                  `json:"area_configs,omitempty"`
 	RadarSites          map[string]*av.RadarSite                   `json:"radar_sites" scope:"stars"`
 	Center              math.Point2LL                              `json:"-"`
 	CenterString        string                                     `json:"center"`
@@ -363,7 +365,6 @@ type FacilityAdaptation struct {
 	} `json:"untracked_position_symbol_overrides" scope:"stars"`
 
 	VideoMapFile      string                        `json:"video_map_file"`
-	CoordinationFixes map[string]av.AdaptationFixes `json:"coordination_fixes" scope:"stars"`
 	SingleCharAIDs    map[string]string             `json:"single_char_aids" scope:"stars"` // Char to airport. TODO: Check if this is for ERAM as well.
 	KeepLDB           bool                          `json:"keep_ldb" scope:"stars"`
 	FullLDBSeconds    int                           `json:"full_ldb_seconds" scope:"stars"`
@@ -443,6 +444,36 @@ type STARSControllerConfig struct {
 	FlightFollowingAirspace         []av.AirspaceVolume `json:"flight_following_airspace"`
 }
 
+// STARSAreaConfig provides default configuration for all controllers
+// within a TRACON area. Controller-specific configs in ControllerConfigs
+// override or append these defaults.
+type STARSAreaConfig struct {
+	DefaultAirport                  string              `json:"default_airport,omitempty"` // CRDA default airport for this area
+	VideoMapNames                   []string            `json:"video_maps,omitempty"`
+	DefaultMaps                     []string            `json:"default_maps,omitempty"`
+	Center                          math.Point2LL       `json:"-"`
+	CenterString                    string              `json:"center,omitempty"`
+	Range                           float32             `json:"range,omitempty"`
+	MonitoredBeaconCodeBlocksString *string             `json:"beacon_code_blocks,omitempty"`
+	MonitoredBeaconCodeBlocks       []av.Squawk         `json:"-"`
+	FlightFollowingAirspace         []av.AirspaceVolume `json:"flight_following_airspace,omitempty"`
+	CoordinationLists               []CoordinationList  `json:"coordination_lists,omitempty"`
+	Airspace                        map[string][]av.AirspaceVolume `json:"airspace,omitempty"`
+}
+
+// DefaultAirportForController returns the CRDA default airport for a
+// controller based on its area assignment. Returns empty string if no
+// area config or default airport is defined.
+func (fa *FacilityAdaptation) DefaultAirportForController(ctrl *av.Controller) string {
+	if ctrl == nil || ctrl.Area == 0 {
+		return ""
+	}
+	if ac, ok := fa.AreaConfigs[ctrl.Area]; ok {
+		return ac.DefaultAirport
+	}
+	return ""
+}
+
 type CoordinationList struct {
 	Name          string   `json:"name"`
 	Id            string   `json:"id"`
@@ -488,13 +519,6 @@ type SignificantPoint struct {
 	Abbreviation string        `json:"abbreviation"`
 	Description  string        `json:"description"`
 	Location     math.Point2LL `json:"location"`
-}
-
-type AirspaceAwareness struct {
-	Fix                 []string `json:"fixes"`
-	AltitudeRange       [2]int   `json:"altitude_range"`
-	ReceivingController string   `json:"receiving_controller"`
-	AircraftType        []string `json:"aircraft_type"`
 }
 
 type NASFlightPlan struct {
@@ -977,6 +1001,52 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 				}
 			}
 		}
+	}
+
+	// Process area configs similarly to controller configs.
+	for areaNum, ac := range fa.AreaConfigs {
+		e.Push(fmt.Sprintf("area_configs[%d]", areaNum))
+
+		for i := range ac.FlightFollowingAirspace {
+			if ac.FlightFollowingAirspace[i].Id == "" {
+				ac.FlightFollowingAirspace[i].Id = fmt.Sprintf("FFA%d-%d", areaNum, i+1)
+			}
+			if ac.FlightFollowingAirspace[i].Description == "" {
+				ac.FlightFollowingAirspace[i].Description = fmt.Sprintf("FLIGHT FOLLOWING AREA %d %d", areaNum, i+1)
+			}
+			ac.FlightFollowingAirspace[i].PostDeserialize(loc, e)
+		}
+
+		if ac.MonitoredBeaconCodeBlocksString != nil {
+			for s := range strings.SplitSeq(*ac.MonitoredBeaconCodeBlocksString, ",") {
+				s = strings.TrimSpace(s)
+				if code, err := av.ParseSquawkOrBlock(s); err != nil {
+					e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", s, err)
+				} else {
+					ac.MonitoredBeaconCodeBlocks = append(ac.MonitoredBeaconCodeBlocks, code)
+				}
+			}
+		}
+
+		if ac.CenterString != "" {
+			if pos, ok := loc.Locate(ac.CenterString); ok {
+				ac.Center = pos
+			} else {
+				e.ErrorString("unknown location %q specified for area center", ac.CenterString)
+			}
+		}
+
+		for name, volumes := range ac.Airspace {
+			for i := range volumes {
+				volumes[i].PostDeserialize(loc, e)
+				if volumes[i].Id == "" {
+					volumes[i].Id = fmt.Sprintf("A%d-%s-%d", areaNum, name, i+1)
+				}
+			}
+			ac.Airspace[name] = volumes
+		}
+
+		e.Pop()
 	}
 
 	for _, sp := range fa.Scratchpads {

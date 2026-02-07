@@ -1,0 +1,149 @@
+{
+    "control_positions": {
+        "RDU_W_TWR": {
+            "frequency": 119300,
+            "sector_id": "1Z",
+            "radio_name": "Raleigh Tower"
+        },
+        "RDU_E_TWR": {
+            "frequency": 127450,
+            "sector_id": "1T",
+            "radio_name": "Raleigh Tower"
+        },
+        "RDU_N_DEP": {
+            "frequency": 132350,
+            "sector_id": "1N",
+            "radio_name": "Raleigh Departure"
+        },
+        "RDU_S_DEP": {
+            "frequency": 125300,
+            "sector_id": "1S",
+            "radio_name": "Raleigh Departure"
+        },
+        "RDU_E_APP": {
+            "frequency": 124950,
+            "sector_id": "1E",
+            "radio_name": "Raleigh Approach"
+        },
+        "RDU_W_APP": {
+            "frequency": 128300,
+            "sector_id": "1W",
+            "radio_name": "Raleigh Approach"
+        },
+        "RDU_U_APP": {
+            "frequency": 124800,
+            "sector_id": "1U",
+            "radio_name": "Raleigh Approach"
+        },
+        "RDU_Y_APP": {
+            "frequency": 135150,
+            "sector_id": "1Y",
+            "radio_name": "Raleigh Approach"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "ALDAN4": "RDU_W_APP",
+                    "BLOGS3": "RDU_E_APP",
+                    "DMSTR2": "RDU_W_APP",
+                    "TAQLE2": "RDU_E_APP"
+                },
+                "departure_assignments": {
+                    "KRDU": "RDU_N_DEP"
+                }
+            }
+        },
+        "center": "KRDU",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "RDUNOCA",
+                    "description": "RDU CONFLICT SUPPRESS",
+                    "type": "polygon",
+                    "floor": 0,
+                    "ceiling": 5000,
+                    "vertices": [
+                        "N035.42.46.007,W079.11.12.637",
+                        "N035.35.44.146,W079.02.38.999",
+                        "N036.05.24.893,W078.25.34.487",
+                        "N036.09.55.596,W078.31.03.363"
+                    ]
+                }
+            ]
+        },
+        "scratchpads": {
+            "BOUSY": "BEX",
+            "BEXGO": "BEX",
+            "DAWTS": "HKZ",
+            "HOOKZ": "HKZ",
+            "FEBEL": "HRC",
+            "HURIC": "HRC",
+            "DBRAH": "LWD",
+            "DANCO": "LWD",
+            "LWOOD": "LWD",
+            "CARML": "OXF",
+            "OXFRD": "OXF",
+            "ROZBO": "ROZ",
+            "SHPRD": "SHP"
+        },
+        "significant_points": {
+            "BEXGO": {},
+            "BOUSY": {},
+            "CARML": {},
+            "DANCO": {},
+            "DAWTS": {},
+            "DBRAH": {},
+            "FEBEL": {},
+            "HOOKZ": {},
+            "HURIC": {},
+            "LWOOD": {},
+            "OXFRD": {},
+            "ROZBO": {},
+            "SHPRD": {}
+        },
+        "stars_maps": [
+            "RDU NE RVM",
+            "RDU SW RVM",
+            "RDU MVA"
+        ],
+        "video_map_file": "videomaps/ZDC-videomaps.gob.zst",
+        "controller_assignments": {
+            "STD": {
+                "inbound_assignments": {
+                    "ALDAN4": "RDU_W_APP",
+                    "BLOGS3": "RDU_E_APP",
+                    "DMSTR2": "RDU_W_APP",
+                    "TAQLE2": "RDU_E_APP"
+                },
+                "departure_assignments": {
+                    "KRDU": "RDU_N_DEP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "GSO",
+                "prefix": "3"
+            },
+            {
+                "id": "FAY",
+                "prefix": "2"
+            },
+            {
+                "id": "GSB",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "FAY",
+            "GSB",
+            "GSO",
+            "ZDC",
+            "ZTL"
+        ]
+    }
+}

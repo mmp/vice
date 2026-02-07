@@ -1,0 +1,192 @@
+{
+    "control_positions": {
+        "SBN_TWR": {
+            "frequency": 135675,
+            "radio_name": "South Bend Tower",
+            "sector_id": "1T"
+        },
+        "SBN_S_APP": {
+            "frequency": 132050,
+            "radio_name": "South Bend Approach",
+            "sector_id": "1S"
+        },
+        "SBN_N_APP": {
+            "frequency": 118550,
+            "radio_name": "South Bend Approach",
+            "sector_id": "1N"
+        },
+        "AZO_E_APP": {
+            "frequency": 119200,
+            "radio_name": "Great Lakes Approach",
+            "sector_id": "1E",
+            "scope_char": "2"
+        },
+        "FWA_W_APP": {
+            "frequency": 127200,
+            "radio_name": "Fort Wayne Approach",
+            "sector_id": "1W",
+            "scope_char": "3"
+        },
+        "GUS_E_APP": {
+            "frequency": 121050,
+            "radio_name": "Grissom Approach",
+            "sector_id": "1G",
+            "scope_char": "4"
+        },
+        "CHI_Z_APP": {
+            "frequency": 119000,
+            "radio_name": "Chicago Approach",
+            "sector_id": "1Z",
+            "scope_char": "1"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "SBN": {
+                "inbound_assignments": {
+                    "EAST": "SBN_S_APP",
+                    "SOUTH": "SBN_S_APP",
+                    "WEST": "SBN_N_APP",
+                    "WEST.ord": "SBN_N_APP"
+                },
+                "departure_assignments": {
+                    "KSBN": "SBN_N_APP"
+                }
+            },
+            "SB1": {
+                "inbound_assignments": {
+                    "EAST": "SBN_S_APP",
+                    "SOUTH": "SBN_S_APP",
+                    "WEST": "SBN_N_APP",
+                    "WEST.ord": "SBN_N_APP"
+                },
+                "departure_assignments": {
+                    "KSBN": "SBN_S_APP"
+                }
+            }
+        },
+        "center": "KSBN",
+        "filters": {
+            "inhibit_ca": [
+                {
+                    "id": "SBNNOCA",
+                    "description": "SBN CONFLICT SUPPRESS",
+                    "type": "circle",
+                    "floor": 0,
+                    "radius": 4,
+                    "ceiling": 3000,
+                    "center": "KSBN"
+                }
+            ]
+        },
+        "scratchpads": {
+            "OXI": "OXI",
+            "HYK": "HYK",
+            "GSH": "GSH",
+            "HOSSA": "HOS",
+            "STL": "STL",
+            "IIU": "IIU",
+            "PMM": "PMM",
+            "VHP": "VHP",
+            "PRADY": "PRA",
+            "NEWEL": "NEW",
+            "GIJ": "GIJ",
+            "KAMMA": "KAM",
+            "BDF": "BDF",
+            "GOTNE": "GOT",
+            "REVSS": "REV",
+            "PIA": "PIA",
+            "DVV": "DVV",
+            "OTENS": "OTE",
+            "APE": "APE",
+            "DAYVS": "DAY",
+            "MLP": "MLP",
+            "GLANC": "GLA"
+        },
+        "significant_points": {
+            "OXI": {},
+            "HYK": {},
+            "GSH": {},
+            "HOSSA": {},
+            "STL": {},
+            "IIU": {},
+            "PMM": {},
+            "VHP": {},
+            "PRADY": {},
+            "NEWEL": {},
+            "GIJ": {},
+            "KAMMA": {},
+            "BDF": {},
+            "GOTNE": {},
+            "REVSS": {},
+            "PIA": {},
+            "DVV": {},
+            "OTENS": {},
+            "APE": {},
+            "DAYVS": {},
+            "MLP": {},
+            "GLANC": {}
+        },
+        "stars_maps": [
+            "SBN MVA",
+            "SBN RVM",
+            "SBN AIRWAYS",
+            "AZO SECTORS AND SBN AREA Y",
+            "SBN CAB",
+            "C90 ZAU LOW SECTORS",
+            "C90 VFR"
+        ],
+        "video_map_file": "videomaps/ZAU-videomaps.gob.zst",
+        "controller_assignments": {
+            "SB1": {
+                "inbound_assignments": {
+                    "EAST": "SBN_S_APP",
+                    "SOUTH": "SBN_S_APP",
+                    "WEST": "SBN_N_APP",
+                    "WEST.ord": "SBN_N_APP"
+                },
+                "departure_assignments": {
+                    "KSBN": "SBN_S_APP"
+                }
+            },
+            "SBN": {
+                "inbound_assignments": {
+                    "EAST": "SBN_S_APP",
+                    "SOUTH": "SBN_S_APP",
+                    "WEST": "SBN_N_APP",
+                    "WEST.ord": "SBN_N_APP"
+                },
+                "departure_assignments": {
+                    "KSBN": "SBN_N_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "AZO",
+                "prefix": "2"
+            },
+            {
+                "id": "FWA",
+                "prefix": "3"
+            },
+            {
+                "id": "GUS",
+                "prefix": "4"
+            },
+            {
+                "id": "C90",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "AZO",
+            "C90",
+            "FWA",
+            "GUS",
+            "ZAU"
+        ]
+    }
+}

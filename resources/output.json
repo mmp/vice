@@ -1,0 +1,4906 @@
+{
+  "control_positions": {
+    "ZAB 00 P50 Satellite Clearance": {
+      "frequency": 127450,
+      "eram_facility": true,
+      "radio_name": "PHX Satellite Clearance",
+      "sector_id": "00"
+    },
+    "ZAB 15 E Borger Low": {
+      "frequency": 127850,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "15"
+    },
+    "ZAB 16 N Sandia Low": {
+      "frequency": 132800,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "16"
+    },
+    "ZAB 17 N Lavan Low": {
+      "frequency": 124325,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "17"
+    },
+    "ZAB 19 SE Deming Low": {
+      "frequency": 128200,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "19"
+    },
+    "ZAB 20 SE Salt Flat Low": {
+      "frequency": 135875,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "20"
+    },
+    "ZAB 21 SE Cannon Low": {
+      "frequency": 126850,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "21"
+    },
+    "ZAB 23 SE Roswell Low/Hi": {
+      "frequency": 132650,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "23"
+    },
+    "ZAB 37 NW Hippi Hi": {
+      "frequency": 134325,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "37"
+    },
+    "ZAB 38 NW Miami Low/Hi": {
+      "frequency": 132900,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "38"
+    },
+    "ZAB 39 NW Fosil Low/Hi": {
+      "frequency": 135725,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "39"
+    },
+    "ZAB 41 TMU": {
+      "frequency": 122200,
+      "eram_facility": true,
+      "radio_name": "ZAB Traffic Management",
+      "sector_id": "41"
+    },
+    "ZAB 42 SW Gila Bend Low": {
+      "frequency": 126450,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "42"
+    },
+    "ZAB 43 NW Drake Low": {
+      "frequency": 128450,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "43"
+    },
+    "ZAB 45 NW Winslow Low": {
+      "frequency": 127675,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "45"
+    },
+    "ZAB 46 SW Tucson Low": {
+      "frequency": 125400,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "46"
+    },
+    "ZAB 47 SW Silver City Low": {
+      "frequency": 134450,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "47"
+    },
+    "ZAB 49 SW Stanfield Low": {
+      "frequency": 125250,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "49"
+    },
+    "ZAB 50 NW Payson Hi": {
+      "frequency": 128125,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "50"
+    },
+    "ZAB 58 N Black Rock Ultra Hi": {
+      "frequency": 126925,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "58"
+    },
+    "ZAB 63 SE El Paso Hi": {
+      "frequency": 120975,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "63"
+    },
+    "ZAB 65 SW Phoenix Ultra Hi": {
+      "frequency": 132450,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "65"
+    },
+    "ZAB 67 NW Winslow Hi": {
+      "frequency": 133925,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "67"
+    },
+    "ZAB 68 N Albuquerque Hi": {
+      "frequency": 134600,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "68"
+    },
+    "ZAB 70 E Espan Hi": {
+      "frequency": 120950,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "70"
+    },
+    "ZAB 71 E Kento Hi": {
+      "frequency": 133050,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "71"
+    },
+    "ZAB 72 E Cimarron Ultra Hi": {
+      "frequency": 128225,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "72"
+    },
+    "ZAB 78 SE Fort Stockton Ultra Hi": {
+      "frequency": 133225,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "78"
+    },
+    "ZAB 79 N Otto Hi": {
+      "frequency": 118650,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "79"
+    },
+    "ZAB 80 SW Cochise Ultra Hi": {
+      "frequency": 126225,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "80"
+    },
+    "ZAB 86 TMU": {
+      "frequency": 122200,
+      "eram_facility": true,
+      "radio_name": "TMU 86",
+      "sector_id": "86"
+    },
+    "ZAB 87 SE Texico Hi": {
+      "frequency": 132325,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "87"
+    },
+    "ZAB 89 SE Sunland Hi": {
+      "frequency": 125525,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "89"
+    },
+    "ZAB 90 SW San Simon Hi": {
+      "frequency": 133000,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "90"
+    },
+    "ZAB 91 SW Gila Bend Hi": {
+      "frequency": 135150,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "91"
+    },
+    "ZAB 92 NW Prescott Ultra Hi": {
+      "frequency": 135325,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "92"
+    },
+    "ZAB 93 N Gallup Hi": {
+      "frequency": 120550,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "93"
+    },
+    "ZAB 94 N Corona Low/Hi": {
+      "frequency": 133650,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "94"
+    },
+    "ZAB 95 E Las Vegas Hi": {
+      "frequency": 125075,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "95"
+    },
+    "ZAB 96 E Tucumcari Ultra Hi": {
+      "frequency": 128675,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "96"
+    },
+    "ZAB 97 E Amarillo Hi": {
+      "frequency": 134750,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "97"
+    },
+    "ZAB 98 E Dalhart Ultra Hi": {
+      "frequency": 132125,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "98"
+    },
+    "ZAN 03 ": {
+      "frequency": 133300,
+      "eram_facility": true,
+      "radio_name": "Anchorage Center",
+      "sector_id": "03"
+    },
+    "ZAN 04 ": {
+      "frequency": 135300,
+      "eram_facility": true,
+      "radio_name": "Anchorage Center",
+      "sector_id": "04"
+    },
+    "ZAN 05 ": {
+      "frequency": 125700,
+      "eram_facility": true,
+      "radio_name": "Anchorage Center",
+      "sector_id": "05"
+    },
+    "ZAN 06 ": {
+      "frequency": 132300,
+      "eram_facility": true,
+      "radio_name": "Anchorage Center",
+      "sector_id": "06"
+    },
+    "ZAN 07 ": {
+      "frequency": 119500,
+      "eram_facility": true,
+      "radio_name": "Anchorage Center",
+      "sector_id": "07"
+    },
+    "ZAN 08 ": {
+      "frequency": 126100,
+      "eram_facility": true,
+      "radio_name": "Anchorage Center",
+      "sector_id": "08"
+    },
+    "ZAN 09 ": {
+      "frequency": 124800,
+      "eram_facility": true,
+      "radio_name": "Anchorage Center",
+      "sector_id": "09"
+    },
+    "ZAN 13 ": {
+      "frequency": 125200,
+      "eram_facility": true,
+      "radio_name": "Anchorage Center",
+      "sector_id": "13"
+    },
+    "ZAN 14 ": {
+      "frequency": 119300,
+      "eram_facility": true,
+      "radio_name": "Anchorage Center",
+      "sector_id": "14"
+    },
+    "ZAN 15 ": {
+      "frequency": 120900,
+      "eram_facility": true,
+      "radio_name": "Anchorage Center",
+      "sector_id": "15"
+    },
+    "ZAN 16 ": {
+      "frequency": 132700,
+      "eram_facility": true,
+      "radio_name": "Anchorage Center",
+      "sector_id": "16"
+    },
+    "ZAN 63 ": {
+      "frequency": 126950,
+      "eram_facility": true,
+      "radio_name": "Anchorage Center",
+      "sector_id": "63"
+    },
+    "ZAN 68 ": {
+      "frequency": 127300,
+      "eram_facility": true,
+      "radio_name": "Anchorage Center",
+      "sector_id": "68"
+    },
+    "ZAN 69 ": {
+      "frequency": 133800,
+      "eram_facility": true,
+      "radio_name": "Anchorage Center",
+      "sector_id": "69"
+    },
+    "ZAN 90 - Kenai AFSS": {
+      "frequency": 122650,
+      "eram_facility": true,
+      "radio_name": "Kenai Radio",
+      "sector_id": "90"
+    },
+    "ZAN 91 - Fairbanks AFSS": {
+      "frequency": 122300,
+      "eram_facility": true,
+      "radio_name": "Fairbanks Radio",
+      "sector_id": "91"
+    },
+    "ZAN 92 - Juneau AFSS": {
+      "frequency": 122250,
+      "eram_facility": true,
+      "radio_name": "Juneau Radio",
+      "sector_id": "92"
+    },
+    "ZAU 25 PMM": {
+      "frequency": 126125,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "25"
+    },
+    "ZAU 26 KUBBS": {
+      "frequency": 133200,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "26"
+    },
+    "ZAU 35 BEARZ": {
+      "frequency": 134875,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "35"
+    },
+    "ZAU 36 FWA": {
+      "frequency": 126325,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "36"
+    },
+    "ZAU 44 EON": {
+      "frequency": 120125,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "44"
+    },
+    "ZAU 46 BVT": {
+      "frequency": 121275,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "46"
+    },
+    "ZAU 51 PLANO": {
+      "frequency": 135150,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "51"
+    },
+    "ZAU 52 BDF": {
+      "frequency": 132225,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "52"
+    },
+    "ZAU 55 BRL": {
+      "frequency": 118750,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "55"
+    },
+    "ZAU 60 BAE": {
+      "frequency": 126875,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "60"
+    },
+    "ZAU 62 HARLY": {
+      "frequency": 123825,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "62"
+    },
+    "ZAU 63 DBQ": {
+      "frequency": 133950,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "63"
+    },
+    "ZAU 64 LNR": {
+      "frequency": 133300,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "64"
+    },
+    "ZAU 74 FARMM": {
+      "frequency": 133350,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "74"
+    },
+    "ZAU 75 COTON": {
+      "frequency": 127775,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "75"
+    },
+    "ZAU 77 MALTA": {
+      "frequency": 134825,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "77"
+    },
+    "ZAU 81 CRIBB": {
+      "frequency": 120350,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "81"
+    },
+    "ZAU 89 GIJ": {
+      "frequency": 126475,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "89"
+    },
+    "ZAU 94 IOW": {
+      "frequency": 125575,
+      "eram_facility": true,
+      "radio_name": "Chicago Center",
+      "sector_id": "94"
+    },
+    "ZAU 98 Guard": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "Guard",
+      "sector_id": "98"
+    },
+    "ZAU 99 TMU": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "Chicago TMU",
+      "sector_id": "99"
+    },
+    "ZBW 01 Millinocket": {
+      "frequency": 128050,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "01"
+    },
+    "ZBW 02 Augusta": {
+      "frequency": 134950,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "02"
+    },
+    "ZBW 05 Stewart": {
+      "frequency": 134300,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "05"
+    },
+    "ZBW 06 Pawling": {
+      "frequency": 128100,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "06"
+    },
+    "ZBW 07 Chester": {
+      "frequency": 127650,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "07"
+    },
+    "ZBW 08 Watertown": {
+      "frequency": 135250,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "08"
+    },
+    "ZBW 09 Utica": {
+      "frequency": 123875,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "09"
+    },
+    "ZBW 10 Rockdale": {
+      "frequency": 124125,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "10"
+    },
+    "ZBW 15 SURRY": {
+      "frequency": 124250,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "15"
+    },
+    "ZBW 16 PARSO": {
+      "frequency": 128200,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "16"
+    },
+    "ZBW 17 Nantucket": {
+      "frequency": 133450,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "17"
+    },
+    "ZBW 18 Cape": {
+      "frequency": 128750,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "18"
+    },
+    "ZBW 19 Danbury": {
+      "frequency": 134000,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "19"
+    },
+    "ZBW 20 Kingston": {
+      "frequency": 125575,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "20"
+    },
+    "ZBW 21 CANAN": {
+      "frequency": 132650,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "21"
+    },
+    "ZBW 22 Albany": {
+      "frequency": 121350,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "22"
+    },
+    "ZBW 23 Hancock": {
+      "frequency": 133250,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "23"
+    },
+    "ZBW 24 Delancey": {
+      "frequency": 127375,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "24"
+    },
+    "ZBW 31 Hampton": {
+      "frequency": 124525,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "31"
+    },
+    "ZBW 32 Clipper": {
+      "frequency": 135800,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "32"
+    },
+    "ZBW 34 Providence": {
+      "frequency": 124850,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "34"
+    },
+    "ZBW 36 Gardner": {
+      "frequency": 123750,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "36"
+    },
+    "ZBW 37 Concord": {
+      "frequency": 134700,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "37"
+    },
+    "ZBW 38 Athens": {
+      "frequency": 135325,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "38"
+    },
+    "ZBW 39 Cambridge": {
+      "frequency": 128325,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "39"
+    },
+    "ZBW 46 Boston": {
+      "frequency": 126225,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "46"
+    },
+    "ZBW 47 BOSOX": {
+      "frequency": 133425,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "47"
+    },
+    "ZBW 49 Southie": {
+      "frequency": 132300,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "49"
+    },
+    "ZBW 52 Montpelier": {
+      "frequency": 135700,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "52"
+    },
+    "ZBW 53 Plattsburgh": {
+      "frequency": 118825,
+      "eram_facility": true,
+      "radio_name": "Boston Center",
+      "sector_id": "53"
+    },
+    "ZBW 97 ZBW Guard": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "Guard",
+      "sector_id": "97"
+    },
+    "ZBW 98 Poker Center": {
+      "frequency": 122400,
+      "eram_facility": true,
+      "radio_name": "Boston Poker Center",
+      "sector_id": "98"
+    },
+    "ZBW 99 TMU": {
+      "frequency": 127650,
+      "eram_facility": true,
+      "radio_name": "Boston Center TMU",
+      "sector_id": "99"
+    },
+    "ZDC 01 Elkins": {
+      "frequency": 128600,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "01"
+    },
+    "ZDC 02 Casanova": {
+      "frequency": 133200,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "02"
+    },
+    "ZDC 03 Moorefield": {
+      "frequency": 133275,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "03"
+    },
+    "ZDC 04 Pinion": {
+      "frequency": 133975,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "04"
+    },
+    "ZDC 05 Linden": {
+      "frequency": 133550,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "05"
+    },
+    "ZDC 06 Hagerstown": {
+      "frequency": 134150,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "06"
+    },
+    "ZDC 07 Wahoo": {
+      "frequency": 121925,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "07"
+    },
+    "ZDC 09 Dixon": {
+      "frequency": 118825,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "09"
+    },
+    "ZDC 10 Bay": {
+      "frequency": 132275,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "10"
+    },
+    "ZDC 11 Calvert": {
+      "frequency": 133900,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "11"
+    },
+    "ZDC 12 Brooke": {
+      "frequency": 126875,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "12"
+    },
+    "ZDC 14 Irons": {
+      "frequency": 132950,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "14"
+    },
+    "ZDC 15 Blue Ridge": {
+      "frequency": 133650,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "15"
+    },
+    "ZDC 16 Hopewell": {
+      "frequency": 121875,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "16"
+    },
+    "ZDC 17 Swann": {
+      "frequency": 134500,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "17"
+    },
+    "ZDC 18 DuPont": {
+      "frequency": 132525,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "18"
+    },
+    "ZDC 19 Woodstown": {
+      "frequency": 125450,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "19"
+    },
+    "ZDC 20 Blackstone": {
+      "frequency": 127750,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "20"
+    },
+    "ZDC 21 Dominion": {
+      "frequency": 118750,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "21"
+    },
+    "ZDC 22 South Boston": {
+      "frequency": 124050,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "22"
+    },
+    "ZDC 23 Cape Charles": {
+      "frequency": 132550,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "23"
+    },
+    "ZDC 24 Cofield": {
+      "frequency": 123850,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "24"
+    },
+    "ZDC 25 New Bern": {
+      "frequency": 135500,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "25"
+    },
+    "ZDC 26 Sampson": {
+      "frequency": 135300,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "26"
+    },
+    "ZDC 27 Liberty": {
+      "frequency": 135200,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "27"
+    },
+    "ZDC 28 Rocky Mount": {
+      "frequency": 118475,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "28"
+    },
+    "ZDC 29 Valley": {
+      "frequency": 134400,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "29"
+    },
+    "ZDC 31 Azalea": {
+      "frequency": 135400,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "31"
+    },
+    "ZDC 32 Gordonsville": {
+      "frequency": 133725,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "32"
+    },
+    "ZDC 33 Franklin": {
+      "frequency": 132025,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "33"
+    },
+    "ZDC 34 Norfolk": {
+      "frequency": 133825,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "34"
+    },
+    "ZDC 35 Wilmington": {
+      "frequency": 124025,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "35"
+    },
+    "ZDC 36 Raleigh": {
+      "frequency": 118925,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "36"
+    },
+    "ZDC 37 Marlington": {
+      "frequency": 133025,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "37"
+    },
+    "ZDC 38 Tar River": {
+      "frequency": 132225,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "38"
+    },
+    "ZDC 39 Snow Hill": {
+      "frequency": 121375,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "39"
+    },
+    "ZDC 42 Bryce": {
+      "frequency": 118025,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "42"
+    },
+    "ZDC 50 Yorktown": {
+      "frequency": 120750,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "50"
+    },
+    "ZDC 51 Casino": {
+      "frequency": 127700,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "51"
+    },
+    "ZDC 52 Tech": {
+      "frequency": 133575,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "52"
+    },
+    "ZDC 53 Kenton": {
+      "frequency": 132050,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "53"
+    },
+    "ZDC 54 Salisbury": {
+      "frequency": 120975,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "54"
+    },
+    "ZDC 58 Coyle": {
+      "frequency": 121025,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "58"
+    },
+    "ZDC 59 Sea Isle": {
+      "frequency": 133125,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "59"
+    },
+    "ZDC 60 Montebello": {
+      "frequency": 121675,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "60"
+    },
+    "ZDC 72 Shenandoah": {
+      "frequency": 127925,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "72"
+    },
+    "ZDC 90 Warn 107": {
+      "frequency": 135725,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "90"
+    },
+    "ZDC 92 Warn 122": {
+      "frequency": 135875,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "92"
+    },
+    "ZDC 97 Warn 72": {
+      "frequency": 118125,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "97"
+    },
+    "ZDC 98 121.500 GUARD": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "VHF Guard",
+      "sector_id": "98"
+    },
+    "ZDC 98 Warn 386": {
+      "frequency": 132150,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "98"
+    },
+    "ZDC 99 TMU": {
+      "frequency": 132050,
+      "eram_facility": true,
+      "radio_name": "Washington Center",
+      "sector_id": "99"
+    },
+    "ZDV 00 GUARD": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "00"
+    },
+    "ZDV 03 - Meeker High": {
+      "frequency": 126725,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "03"
+    },
+    "ZDV 04 - Grand Junction High": {
+      "frequency": 135125,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "04"
+    },
+    "ZDV 05 - Kremmling High": {
+      "frequency": 132850,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "05"
+    },
+    "ZDV 06 - Kremmling Low": {
+      "frequency": 128650,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "06"
+    },
+    "ZDV 07 - Thurman Low": {
+      "frequency": 133950,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "07"
+    },
+    "ZDV 08 - Hayes Center High": {
+      "frequency": 127025,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "08"
+    },
+    "ZDV 09 - North Platte High": {
+      "frequency": 126325,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "09"
+    },
+    "ZDV 11 - Junction Low": {
+      "frequency": 120475,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "11"
+    },
+    "ZDV 12 - Gunnison Low": {
+      "frequency": 125350,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "12"
+    },
+    "ZDV 13 - TOMSN Low": {
+      "frequency": 126500,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "13"
+    },
+    "ZDV 14 - Hayden High": {
+      "frequency": 128325,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "14"
+    },
+    "ZDV 15 - Sidney Low": {
+      "frequency": 118475,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "15"
+    },
+    "ZDV 16 - Denver High": {
+      "frequency": 120575,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "16"
+    },
+    "ZDV 17 - Hill City High": {
+      "frequency": 127650,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "17"
+    },
+    "ZDV 19 - North Platte Low": {
+      "frequency": 132700,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "19"
+    },
+    "ZDV 21 - Cheyenne Low": {
+      "frequency": 125900,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "21"
+    },
+    "ZDV 22 - Casper Low": {
+      "frequency": 135600,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "22"
+    },
+    "ZDV 23 - Tuba City High": {
+      "frequency": 118225,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "23"
+    },
+    "ZDV 25 - Blue Mesa High": {
+      "frequency": 133525,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "25"
+    },
+    "ZDV 26 - POWDR Low": {
+      "frequency": 119850,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "26"
+    },
+    "ZDV 27 - La Junta Low": {
+      "frequency": 134125,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "27"
+    },
+    "ZDV 28 - Lamar High": {
+      "frequency": 134125,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "28"
+    },
+    "ZDV 29 - Pueblo High": {
+      "frequency": 132225,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "29"
+    },
+    "ZDV 31 - Rapid City High": {
+      "frequency": 127950,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "31"
+    },
+    "ZDV 31 - Rapid City Low": {
+      "frequency": 127950,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "31"
+    },
+    "ZDV 33 - ScottBluff High": {
+      "frequency": 134575,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "33"
+    },
+    "ZDV 34 - Medicine Bow High": {
+      "frequency": 133175,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "34"
+    },
+    "ZDV 35 - BRUIT High": {
+      "frequency": 135025,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "35"
+    },
+    "ZDV 36 - Farmington Low": {
+      "frequency": 118575,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "36"
+    },
+    "ZDV 37 - Farmington High": {
+      "frequency": 125675,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "37"
+    },
+    "ZDV 41 - Pueblo Low": {
+      "frequency": 128375,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "41"
+    },
+    "ZDV 61 - Falcon High": {
+      "frequency": 126875,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "61"
+    },
+    "ZDV 68 - Tuba City Low": {
+      "frequency": 127550,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "68"
+    },
+    "ZDV 77 - Hayden Low": {
+      "frequency": 120475,
+      "eram_facility": true,
+      "radio_name": "Denver Center",
+      "sector_id": "77"
+    },
+    "ZDV 99 Denver TMU": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "Denver TMU",
+      "sector_id": "99"
+    },
+    "ZFW 00 Guard": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "ZFW Guard",
+      "sector_id": "00"
+    },
+    "ZFW 20 MJR-UH": {
+      "frequency": 133550,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "20"
+    },
+    "ZFW 23 ARC-UH": {
+      "frequency": 135275,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "23"
+    },
+    "ZFW 24 ODS-UH": {
+      "frequency": 128525,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "24"
+    },
+    "ZFW 25 UNN-UH": {
+      "frequency": 133375,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "25"
+    },
+    "ZFW 26 KLB-UH": {
+      "frequency": 128125,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "26"
+    },
+    "ZFW 27 TXK-L": {
+      "frequency": 123925,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "27"
+    },
+    "ZFW 28 ELD-H": {
+      "frequency": 133550,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "28"
+    },
+    "ZFW 29 DON-L": {
+      "frequency": 135250,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "29"
+    },
+    "ZFW 30 MLU-L": {
+      "frequency": 126325,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "30"
+    },
+    "ZFW 32 POS-L": {
+      "frequency": 127000,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "32"
+    },
+    "ZFW 34 SPS-L": {
+      "frequency": 133500,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "34"
+    },
+    "ZFW 35 OKC-L": {
+      "frequency": 128400,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "35"
+    },
+    "ZFW 37 SEA-L": {
+      "frequency": 124875,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "37"
+    },
+    "ZFW 38 MLC-L": {
+      "frequency": 132200,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "38"
+    },
+    "ZFW 40 MAF-L": {
+      "frequency": 133100,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "40"
+    },
+    "ZFW 41 HGO-UH": {
+      "frequency": 128125,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "41"
+    },
+    "ZFW 42 DEC-H": {
+      "frequency": 134475,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "42"
+    },
+    "ZFW 43 CZR-UH": {
+      "frequency": 135275,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "43"
+    },
+    "ZFW 46 DAL-H": {
+      "frequency": 135750,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "46"
+    },
+    "ZFW 47 SPS-H": {
+      "frequency": 124525,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "47"
+    },
+    "ZFW 48 ADM-H": {
+      "frequency": 132975,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "48"
+    },
+    "ZFW 49 OKC-H": {
+      "frequency": 132450,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "49"
+    },
+    "ZFW 50 MLC-H": {
+      "frequency": 135450,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "50"
+    },
+    "ZFW 51 CHO-UH": {
+      "frequency": 135175,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "51"
+    },
+    "ZFW 53 FRI-L": {
+      "frequency": 124750,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "53"
+    },
+    "ZFW 55 RDR-UH": {
+      "frequency": 125225,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "55"
+    },
+    "ZFW 61 LEE-H": {
+      "frequency": 120275,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "61"
+    },
+    "ZFW 62 EDN-L": {
+      "frequency": 127150,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "62"
+    },
+    "ZFW 64 LBB-L": {
+      "frequency": 126450,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "64"
+    },
+    "ZFW 65 HIC-H": {
+      "frequency": 128325,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "65"
+    },
+    "ZFW 75 UKW-L": {
+      "frequency": 127950,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "75"
+    },
+    "ZFW 82 INK-H": {
+      "frequency": 132075,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "82"
+    },
+    "ZFW 83 UIM-L": {
+      "frequency": 132025,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "83"
+    },
+    "ZFW 86 PAX-H": {
+      "frequency": 132275,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "86"
+    },
+    "ZFW 89 FZT-H": {
+      "frequency": 134025,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "89"
+    },
+    "ZFW 90 TXK-H": {
+      "frequency": 126575,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "90"
+    },
+    "ZFW 93 TUR-H": {
+      "frequency": 120775,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "93"
+    },
+    "ZFW 94 WOV-H": {
+      "frequency": 132925,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "94"
+    },
+    "ZFW 96 ACT-L": {
+      "frequency": 133300,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "96"
+    },
+    "ZFW 97 BRZ-UH": {
+      "frequency": 132300,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "97"
+    },
+    "ZFW 99 ZFW TMU": {
+      "frequency": 118000,
+      "eram_facility": true,
+      "radio_name": "Fort Worth Center",
+      "sector_id": "99"
+    },
+    "ZHN 02 Kauai": {
+      "frequency": 126500,
+      "eram_facility": true,
+      "radio_name": "HCF Center",
+      "sector_id": "02"
+    },
+    "ZHN 03 Molokai": {
+      "frequency": 124100,
+      "eram_facility": true,
+      "radio_name": "HCF Center",
+      "sector_id": "03"
+    },
+    "ZHN 04 Lanai": {
+      "frequency": 119300,
+      "eram_facility": true,
+      "radio_name": "HCF Center",
+      "sector_id": "04"
+    },
+    "ZHN 05 Big Island": {
+      "frequency": 118450,
+      "eram_facility": true,
+      "radio_name": "HCF Center",
+      "sector_id": "05"
+    },
+    "ZHN 06 West Sector": {
+      "frequency": 119900,
+      "eram_facility": true,
+      "radio_name": "HCF Center",
+      "sector_id": "06"
+    },
+    "ZHN 07 East": {
+      "frequency": 126600,
+      "eram_facility": true,
+      "radio_name": "HCF Center",
+      "sector_id": "07"
+    },
+    "ZHU 01 ZHU TMU": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "Houston TMU",
+      "sector_id": "01"
+    },
+    "ZHU 02 GUARD": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "Houston Guard",
+      "sector_id": "02"
+    },
+    "ZHU 23 White Lake": {
+      "frequency": 132950,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "23"
+    },
+    "ZHU 24 Leeville": {
+      "frequency": 132175,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "24"
+    },
+    "ZHU 25 Brookley": {
+      "frequency": 127650,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "25"
+    },
+    "ZHU 26 Woodville": {
+      "frequency": 128175,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "26"
+    },
+    "ZHU 27 Picayune": {
+      "frequency": 126800,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "27"
+    },
+    "ZHU 28 Offshore West": {
+      "frequency": 127850,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "28"
+    },
+    "ZHU 30 Offshore East": {
+      "frequency": 134900,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "30"
+    },
+    "ZHU 34 Baton Rouge": {
+      "frequency": 126350,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "34"
+    },
+    "ZHU 36 Liberty": {
+      "frequency": 124700,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "36"
+    },
+    "ZHU 37 Hattiesburg": {
+      "frequency": 126875,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "37"
+    },
+    "ZHU 38 Daisetta": {
+      "frequency": 126950,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "38"
+    },
+    "ZHU 40 Polk": {
+      "frequency": 120975,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "40"
+    },
+    "ZHU 42 Alexandria": {
+      "frequency": 132700,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "42"
+    },
+    "ZHU 43 Trinity": {
+      "frequency": 133800,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "43"
+    },
+    "ZHU 46 Houston": {
+      "frequency": 132775,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "46"
+    },
+    "ZHU 49 Lufkin": {
+      "frequency": 125175,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "49"
+    },
+    "ZHU 50 Stonewall": {
+      "frequency": 134200,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "50"
+    },
+    "ZHU 53 Offshore Central": {
+      "frequency": 120350,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "53"
+    },
+    "ZHU 56 Shiner": {
+      "frequency": 134600,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "56"
+    },
+    "ZHU 58 Brownsville": {
+      "frequency": 128150,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "58"
+    },
+    "ZHU 59 Corpus Christi": {
+      "frequency": 133750,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "59"
+    },
+    "ZHU 63 Mobile": {
+      "frequency": 125775,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "63"
+    },
+    "ZHU 65 McComb": {
+      "frequency": 119725,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "65"
+    },
+    "ZHU 68 Galveston": {
+      "frequency": 123825,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "68"
+    },
+    "ZHU 70 Tibby": {
+      "frequency": 134925,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "70"
+    },
+    "ZHU 72 Ocean East": {
+      "frequency": 135775,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "72"
+    },
+    "ZHU 74 Alamo": {
+      "frequency": 128650,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "74"
+    },
+    "ZHU 76 Slimm": {
+      "frequency": 125625,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "76"
+    },
+    "ZHU 78 Austin": {
+      "frequency": 126425,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "78"
+    },
+    "ZHU 79 Ocean West": {
+      "frequency": 132650,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "79"
+    },
+    "ZHU 80 Industry": {
+      "frequency": 132150,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "80"
+    },
+    "ZHU 81 Esler": {
+      "frequency": 134425,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "81"
+    },
+    "ZHU 82 Bilee": {
+      "frequency": 123725,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "82"
+    },
+    "ZHU 83 Cugar": {
+      "frequency": 128075,
+      "eram_facility": true,
+      "radio_name": "128.075",
+      "sector_id": "83"
+    },
+    "ZHU 84 Sotex": {
+      "frequency": 135425,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "84"
+    },
+    "ZHU 85 Kelly": {
+      "frequency": 134950,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "85"
+    },
+    "ZHU 87 Eagle Lake": {
+      "frequency": 128600,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "87"
+    },
+    "ZHU 88 Frio": {
+      "frequency": 127025,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "88"
+    },
+    "ZHU 92 Voodo": {
+      "frequency": 132600,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "92"
+    },
+    "ZHU 93 Laredo": {
+      "frequency": 127800,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "93"
+    },
+    "ZHU 95 Palacios": {
+      "frequency": 123600,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "95"
+    },
+    "ZHU 96 Bergstrom": {
+      "frequency": 125650,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "96"
+    },
+    "ZHU 97 Junction": {
+      "frequency": 132400,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "97"
+    },
+    "ZHU 98 Rocksprings": {
+      "frequency": 125750,
+      "eram_facility": true,
+      "radio_name": "Houston Center",
+      "sector_id": "98"
+    },
+    "ZID 00 ZID GUARD": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "Indianapolis Center",
+      "sector_id": "00"
+    },
+    "ZID 01 ZID TMU": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "ZID TMU",
+      "sector_id": "01"
+    },
+    "ZID 17 Evansville": {
+      "frequency": 128300,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "17"
+    },
+    "ZID 18 Nabb": {
+      "frequency": 124775,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "18"
+    },
+    "ZID 19 New Hope": {
+      "frequency": 121175,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "19"
+    },
+    "ZID 20 Lexington": {
+      "frequency": 126375,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "20"
+    },
+    "ZID 21 London": {
+      "frequency": 124625,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "21"
+    },
+    "ZID 22 Covington": {
+      "frequency": 123925,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "22"
+    },
+    "ZID 24 Parkersburg": {
+      "frequency": 125550,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "24"
+    },
+    "ZID 25 Hazard": {
+      "frequency": 126575,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "25"
+    },
+    "ZID 26 River": {
+      "frequency": 124225,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "26"
+    },
+    "ZID 30 Columbus": {
+      "frequency": 124450,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "30"
+    },
+    "ZID 31 Lytle": {
+      "frequency": 120475,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "31"
+    },
+    "ZID 32 Rosewood": {
+      "frequency": 128075,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "32"
+    },
+    "ZID 33 Muncie": {
+      "frequency": 124525,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "33"
+    },
+    "ZID 34 Shelbyville": {
+      "frequency": 119550,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "34"
+    },
+    "ZID 35 Terre Haute": {
+      "frequency": 132200,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "35"
+    },
+    "ZID 66 Madison": {
+      "frequency": 128375,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "66"
+    },
+    "ZID 69 Pike": {
+      "frequency": 135575,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "69"
+    },
+    "ZID 74 Yeager": {
+      "frequency": 135425,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "74"
+    },
+    "ZID 75 Rushville": {
+      "frequency": 125125,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "75"
+    },
+    "ZID 77 University": {
+      "frequency": 125075,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "77"
+    },
+    "ZID 80 King": {
+      "frequency": 134175,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "80"
+    },
+    "ZID 81 Pocket City": {
+      "frequency": 132525,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "81"
+    },
+    "ZID 82 Louisville": {
+      "frequency": 133050,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "82"
+    },
+    "ZID 83 Falmouth": {
+      "frequency": 128225,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "83"
+    },
+    "ZID 84 Rebel": {
+      "frequency": 134675,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "84"
+    },
+    "ZID 85 Charleston": {
+      "frequency": 119525,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "85"
+    },
+    "ZID 86 Beckley": {
+      "frequency": 124575,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "86"
+    },
+    "ZID 87 Appleton": {
+      "frequency": 132825,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "87"
+    },
+    "ZID 88 Dayton": {
+      "frequency": 120575,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "88"
+    },
+    "ZID 89 Indy": {
+      "frequency": 133425,
+      "eram_facility": true,
+      "radio_name": "Indy Center",
+      "sector_id": "89"
+    },
+    "ZJX 10 Crestview": {
+      "frequency": 120200,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "10"
+    },
+    "ZJX 11 Brewton": {
+      "frequency": 124475,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "11"
+    },
+    "ZJX 12 Albany": {
+      "frequency": 125750,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "12"
+    },
+    "ZJX 14 Cedar Key": {
+      "frequency": 135750,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "14"
+    },
+    "ZJX 15 Ocala": {
+      "frequency": 133325,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "15"
+    },
+    "ZJX 16 Mayo": {
+      "frequency": 125175,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "16"
+    },
+    "ZJX 17 Perry": {
+      "frequency": 135625,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "17"
+    },
+    "ZJX 21 Enterprise": {
+      "frequency": 135125,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "21"
+    },
+    "ZJX 28 Tallahassee": {
+      "frequency": 127800,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "28"
+    },
+    "ZJX 29 Waycross": {
+      "frequency": 127575,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "29"
+    },
+    "ZJX 30 Nepta": {
+      "frequency": 135925,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "30"
+    },
+    "ZJX 31 St. George": {
+      "frequency": 134175,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "31"
+    },
+    "ZJX 32 Ozark": {
+      "frequency": 120325,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "32"
+    },
+    "ZJX 33 Geneva": {
+      "frequency": 125050,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "33"
+    },
+    "ZJX 34 Seminole": {
+      "frequency": 128075,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "34"
+    },
+    "ZJX 35 Torry": {
+      "frequency": 134850,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "35"
+    },
+    "ZJX 47 Summer": {
+      "frequency": 124075,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "47"
+    },
+    "ZJX 48 Georgetown": {
+      "frequency": 133625,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "48"
+    },
+    "ZJX 49 Central": {
+      "frequency": 133300,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "49"
+    },
+    "ZJX 49 Moultrie": {
+      "frequency": 133300,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "49"
+    },
+    "ZJX 50 Alma": {
+      "frequency": 135975,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "50"
+    },
+    "ZJX 51 Atlantic": {
+      "frequency": 120125,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "51"
+    },
+    "ZJX 51 Knemo": {
+      "frequency": 120125,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "51"
+    },
+    "ZJX 52 Metta": {
+      "frequency": 135050,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "52"
+    },
+    "ZJX 53 Brunswick": {
+      "frequency": 126750,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "53"
+    },
+    "ZJX 54 Jekyl": {
+      "frequency": 124675,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "54"
+    },
+    "ZJX 57 St Johns": {
+      "frequency": 134000,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "57"
+    },
+    "ZJX 58 St Augustine": {
+      "frequency": 126350,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "58"
+    },
+    "ZJX 65 Ridgeway": {
+      "frequency": 134975,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "65"
+    },
+    "ZJX 66 Aiken": {
+      "frequency": 127875,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "66"
+    },
+    "ZJX 67 Hunter": {
+      "frequency": 132425,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "67"
+    },
+    "ZJX 68 States": {
+      "frequency": 126125,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "68"
+    },
+    "ZJX 71 Florence": {
+      "frequency": 133450,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "71"
+    },
+    "ZJX 72 Columbia": {
+      "frequency": 124700,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "72"
+    },
+    "ZJX 73 Allendale": {
+      "frequency": 132925,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "73"
+    },
+    "ZJX 74 Charleston ": {
+      "frequency": 134375,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "74"
+    },
+    "ZJX 75 Green Cove": {
+      "frequency": 127475,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "75"
+    },
+    "ZJX 76 Keystone": {
+      "frequency": 135450,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "76"
+    },
+    "ZJX 77 Talyor": {
+      "frequency": 125375,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "77"
+    },
+    "ZJX 78 Lake City": {
+      "frequency": 133875,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "78"
+    },
+    "ZJX 85 Micanopy": {
+      "frequency": 128625,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "85"
+    },
+    "ZJX 85 Panhandle": {
+      "frequency": 128625,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "85"
+    },
+    "ZJX 86 Zephyr": {
+      "frequency": 128425,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "86"
+    },
+    "ZJX 87 Lawtey": {
+      "frequency": 132825,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "87"
+    },
+    "ZJX 88 Darbs": {
+      "frequency": 128050,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "88"
+    },
+    "ZJX 95 ZTL Landline": {
+      "frequency": 133300,
+      "eram_facility": true,
+      "radio_name": "LANDLINE",
+      "sector_id": "95"
+    },
+    "ZJX 96 ZJX Guard": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "ZJX GUARD",
+      "sector_id": "96"
+    },
+    "ZJX 98 Landline": {
+      "frequency": 132650,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "98"
+    },
+    "ZJX 99 TMU": {
+      "frequency": 136975,
+      "eram_facility": true,
+      "radio_name": "Jacksonville Center",
+      "sector_id": "99"
+    },
+    "ZKC 01 TMU": {
+      "frequency": 125725,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "01"
+    },
+    "ZKC 02 (02) WICHITA HI": {
+      "frequency": 132250,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "02"
+    },
+    "ZKC 03 (03) EMPORIA SH": {
+      "frequency": 124975,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "03"
+    },
+    "ZKC 06 (06) ANTHONY HI": {
+      "frequency": 133200,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "06"
+    },
+    "ZKC 07 (07) HUTCHINSON SH": {
+      "frequency": 132825,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "07"
+    },
+    "ZKC 12 (12) COWES HI": {
+      "frequency": 135050,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "12"
+    },
+    "ZKC 14 (14) FARMINGTON HI": {
+      "frequency": 120825,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "14"
+    },
+    "ZKC 20 (20) HAYS HI": {
+      "frequency": 134300,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "20"
+    },
+    "ZKC 21 (21) DODGE CITY SH": {
+      "frequency": 120725,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "21"
+    },
+    "ZKC 22 (22) GARDEN CITY HI": {
+      "frequency": 133450,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "22"
+    },
+    "ZKC 23 (23) LIBERAL HI": {
+      "frequency": 134675,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "23"
+    },
+    "ZKC 24 (24) SALINA HI": {
+      "frequency": 125175,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "24"
+    },
+    "ZKC 26 (26) KANSAS CITY HI": {
+      "frequency": 133800,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "26"
+    },
+    "ZKC 27 (27) TULSA HI": {
+      "frequency": 127625,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "27"
+    },
+    "ZKC 28 (28) SPRINGFIELD HI": {
+      "frequency": 133475,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "28"
+    },
+    "ZKC 29 (29) VICHY HI": {
+      "frequency": 132650,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "29"
+    },
+    "ZKC 30 (30) HALLSVILLE HI": {
+      "frequency": 119475,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "30"
+    },
+    "ZKC 31 (31) SWISS SH": {
+      "frequency": 125675,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "31"
+    },
+    "ZKC 32 (32) TRIX HI": {
+      "frequency": 134625,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "32"
+    },
+    "ZKC 33 (33) MITBY SH": {
+      "frequency": 126975,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "33"
+    },
+    "ZKC 40 (40) KIRKSVILLE LO": {
+      "frequency": 125250,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "40"
+    },
+    "ZKC 41 (41) CHIEF SH": {
+      "frequency": 134725,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "41"
+    },
+    "ZKC 42 (42) NAPOLEAN LO": {
+      "frequency": 125550,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "42"
+    },
+    "ZKC 44 (44) TOPEKA LO": {
+      "frequency": 123800,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "44"
+    },
+    "ZKC 46 (46) ST. JOESPH LO": {
+      "frequency": 127900,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "46"
+    },
+    "ZKC 47 (47) TRAPR SH": {
+      "frequency": 125425,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "47"
+    },
+    "ZKC 48 (48) EMPORIA LO": {
+      "frequency": 127725,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "48"
+    },
+    "ZKC 50 (50) QUINCY LO": {
+      "frequency": 126225,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "50"
+    },
+    "ZKC 52 (52) COLUMBIA LO": {
+      "frequency": 134500,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "52"
+    },
+    "ZKC 53 (53) VICHY LO": {
+      "frequency": 128350,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "53"
+    },
+    "ZKC 54 (54) JAZZ LO": {
+      "frequency": 127475,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "54"
+    },
+    "ZKC 58 (58) VANDALIA LO": {
+      "frequency": 124300,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "58"
+    },
+    "ZKC 59 (59) CAPITOL LO": {
+      "frequency": 127275,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "59"
+    },
+    "ZKC 62 (62) STILLWATER LO": {
+      "frequency": 127800,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "62"
+    },
+    "ZKC 66 (66) SALINA LO": {
+      "frequency": 120200,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "66"
+    },
+    "ZKC 67 (67) RUSSELL LO": {
+      "frequency": 124200,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "67"
+    },
+    "ZKC 68 (68) GARDEN CITY LO": {
+      "frequency": 125200,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "68"
+    },
+    "ZKC 72 (72) VINTA LO": {
+      "frequency": 128600,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "72"
+    },
+    "ZKC 84 (84) ST. LOUIS HI": {
+      "frequency": 133150,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "84"
+    },
+    "ZKC 90 (90) BLUES SH": {
+      "frequency": 132875,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "90"
+    },
+    "ZKC 92 (92) COLIE SH": {
+      "frequency": 133725,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "92"
+    },
+    "ZKC 94 (94) FARGO SH": {
+      "frequency": 125725,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "94"
+    },
+    "ZKC 97 (97) CHANNUTE SH": {
+      "frequency": 118125,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "97"
+    },
+    "ZKC 98 (98) ROCK SH": {
+      "frequency": 133225,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "98"
+    },
+    "ZKC 99 ZKC GUARD": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "Kansas City Center",
+      "sector_id": "99"
+    },
+    "ZLA 00 Maintenance": {
+      "frequency": 118000,
+      "eram_facility": true,
+      "radio_name": "Maintenance",
+      "sector_id": "00"
+    },
+    "ZLA 03 Sector": {
+      "frequency": 127100,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "03"
+    },
+    "ZLA 04 Sector": {
+      "frequency": 125800,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "04"
+    },
+    "ZLA 06 Sector": {
+      "frequency": 134650,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "06"
+    },
+    "ZLA 07 Sector": {
+      "frequency": 124200,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "07"
+    },
+    "ZLA 08 Sector": {
+      "frequency": 124850,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "08"
+    },
+    "ZLA 09 Sector": {
+      "frequency": 128600,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "09"
+    },
+    "ZLA 10 Sector": {
+      "frequency": 128150,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "10"
+    },
+    "ZLA 12 Sector": {
+      "frequency": 125650,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "12"
+    },
+    "ZLA 13 Sector": {
+      "frequency": 132600,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "13"
+    },
+    "ZLA 14 Sector": {
+      "frequency": 135500,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "14"
+    },
+    "ZLA 15 Sector": {
+      "frequency": 119050,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "15"
+    },
+    "ZLA 16 Sector": {
+      "frequency": 124625,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "16"
+    },
+    "ZLA 17 Sector": {
+      "frequency": 132500,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "17"
+    },
+    "ZLA 18 Sector": {
+      "frequency": 125275,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "18"
+    },
+    "ZLA 19 Sector": {
+      "frequency": 126350,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "19"
+    },
+    "ZLA 20 Sector": {
+      "frequency": 133750,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "20"
+    },
+    "ZLA 21 Sector": {
+      "frequency": 132850,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "21"
+    },
+    "ZLA 22 Sector": {
+      "frequency": 134575,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "22"
+    },
+    "ZLA 25 Sector": {
+      "frequency": 126525,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "25"
+    },
+    "ZLA 26 Sector": {
+      "frequency": 135300,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "26"
+    },
+    "ZLA 27 Sector": {
+      "frequency": 128375,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "27"
+    },
+    "ZLA 28 Sector": {
+      "frequency": 132150,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "28"
+    },
+    "ZLA 30 Sector": {
+      "frequency": 119950,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "30"
+    },
+    "ZLA 31 Sector": {
+      "frequency": 126775,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "31"
+    },
+    "ZLA 34 Sector": {
+      "frequency": 132625,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "34"
+    },
+    "ZLA 35 Sector": {
+      "frequency": 128075,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "35"
+    },
+    "ZLA 36 Sector": {
+      "frequency": 127350,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "36"
+    },
+    "ZLA 37 Sector": {
+      "frequency": 133550,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "37"
+    },
+    "ZLA 38 Sector": {
+      "frequency": 125725,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "38"
+    },
+    "ZLA 39 Sector": {
+      "frequency": 133200,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "39"
+    },
+    "ZLA 40 Sector": {
+      "frequency": 127525,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "40"
+    },
+    "ZLA 53 Sector": {
+      "frequency": 118025,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "53"
+    },
+    "ZLA 54 Sector": {
+      "frequency": 135250,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "54"
+    },
+    "ZLA 55 Sector": {
+      "frequency": 135550,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "55"
+    },
+    "ZLA 60 Sector": {
+      "frequency": 134475,
+      "eram_facility": true,
+      "radio_name": "Los Angeles Center",
+      "sector_id": "60"
+    },
+    "ZLA 99 TMU": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "Traffic Management",
+      "sector_id": "99"
+    },
+    "ZLC 01 Salt Lake TMAC": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "Salt Lake Center",
+      "sector_id": "01"
+    },
+    "ZLC 02 Salt Lake TMEC": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "Salt Lake Center",
+      "sector_id": "02"
+    },
+    "ZLC 03 Salt Lake 3": {
+      "frequency": 119950,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "03"
+    },
+    "ZLC 04 Salt Lake 4": {
+      "frequency": 135775,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "04"
+    },
+    "ZLC 05 Salt Lake 5": {
+      "frequency": 124350,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "05"
+    },
+    "ZLC 06 Salt Lake 6": {
+      "frequency": 132400,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "06"
+    },
+    "ZLC 07 Salt Lake 7": {
+      "frequency": 127700,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "07"
+    },
+    "ZLC 08 Salt Lake 8": {
+      "frequency": 128350,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "08"
+    },
+    "ZLC 11 Salt Lake": {
+      "frequency": 127825,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "11"
+    },
+    "ZLC 12 Salt Lake": {
+      "frequency": 127075,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "12"
+    },
+    "ZLC 14 Salt Lake": {
+      "frequency": 127675,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "14"
+    },
+    "ZLC 15 Salt Lake": {
+      "frequency": 127750,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "15"
+    },
+    "ZLC 16 Salt Lake": {
+      "frequency": 133250,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "16"
+    },
+    "ZLC 17 Salt Lake": {
+      "frequency": 126850,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "17"
+    },
+    "ZLC 18 Salt Lake": {
+      "frequency": 125925,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "18"
+    },
+    "ZLC 19 Salt Lake": {
+      "frequency": 133400,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "19"
+    },
+    "ZLC 20 Salt Lake": {
+      "frequency": 119750,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "20"
+    },
+    "ZLC 26 Salt Lake": {
+      "frequency": 120975,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "26"
+    },
+    "ZLC 30 Salt Lake": {
+      "frequency": 128050,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "30"
+    },
+    "ZLC 31 Salt Lake": {
+      "frequency": 118050,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "31"
+    },
+    "ZLC 32 Salt Lake": {
+      "frequency": 133900,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "32"
+    },
+    "ZLC 33 Salt Lake": {
+      "frequency": 120275,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "33"
+    },
+    "ZLC 34 Salt Lake": {
+      "frequency": 127925,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "34"
+    },
+    "ZLC 39 Salt Lake": {
+      "frequency": 132425,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "39"
+    },
+    "ZLC 40 Salt Lake": {
+      "frequency": 128550,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "40"
+    },
+    "ZLC 41 Salt Lake": {
+      "frequency": 121150,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "41"
+    },
+    "ZLC 42 Salt Lake": {
+      "frequency": 120725,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "42"
+    },
+    "ZLC 43 Salt Lake": {
+      "frequency": 132250,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "43"
+    },
+    "ZLC 44 Salt Lake": {
+      "frequency": 125575,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "44"
+    },
+    "ZLC 45 Salt Lake": {
+      "frequency": 134525,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "45"
+    },
+    "ZLC 46 Salt Lake": {
+      "frequency": 133600,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "46"
+    },
+    "ZLC 47 Salt Lake": {
+      "frequency": 133450,
+      "eram_facility": true,
+      "radio_name": "Salt Lake City Center",
+      "sector_id": "47"
+    },
+    "ZLC 48 Salt Lake OMIC": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "Salt Lake Center",
+      "sector_id": "48"
+    },
+    "ZLC 71 Salt Lake TMWC": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "Salt Lake Center",
+      "sector_id": "71"
+    },
+    "ZMA 01 PERMT": {
+      "frequency": 125325,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "01"
+    },
+    "ZMA 02 HOBEE": {
+      "frequency": 119825,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "02"
+    },
+    "ZMA 04 MELBOURNE LOW": {
+      "frequency": 132250,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "04"
+    },
+    "ZMA 04 ZMA NON-OCN MELBOURNE LOW": {
+      "frequency": 132250,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "04"
+    },
+    "ZMA 05 MARATHON": {
+      "frequency": 132500,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "05"
+    },
+    "ZMA 06 KEY WEST": {
+      "frequency": 132200,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "06"
+    },
+    "ZMA 06 ZMA NON-OCN KEY WEST": {
+      "frequency": 132200,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "06"
+    },
+    "ZMA 07 SARASOTA": {
+      "frequency": 132350,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "07"
+    },
+    "ZMA 08 CIGAR": {
+      "frequency": 133900,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "08"
+    },
+    "ZMA 17 APOLO": {
+      "frequency": 128650,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "17"
+    },
+    "ZMA 18 ADOOR": {
+      "frequency": 134350,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "18"
+    },
+    "ZMA 19 NUCAR": {
+      "frequency": 123675,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "19"
+    },
+    "ZMA 20 PALM BEACH LOW": {
+      "frequency": 132150,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "20"
+    },
+    "ZMA 21 FREEPORT LOW": {
+      "frequency": 133400,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "21"
+    },
+    "ZMA 21 ZMA NON-OCN FREEPORT LOW": {
+      "frequency": 133400,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "21"
+    },
+    "ZMA 22 BAIRN": {
+      "frequency": 133475,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "22"
+    },
+    "ZMA 23 STOOP": {
+      "frequency": 126950,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "23"
+    },
+    "ZMA 24 FORT MYERS LOW": {
+      "frequency": 132400,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "24"
+    },
+    "ZMA 25 FORT MYERS HIGH": {
+      "frequency": 128225,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "25"
+    },
+    "ZMA 40 BIMINI HIGH": {
+      "frequency": 126325,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "40"
+    },
+    "ZMA 41 VIICE": {
+      "frequency": 133850,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "41"
+    },
+    "ZMA 41 ZMA NON-OCN VIICE": {
+      "frequency": 133850,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "41"
+    },
+    "ZMA 42 BIMINI LOW": {
+      "frequency": 135600,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "42"
+    },
+    "ZMA 43 GREAT INAGUA": {
+      "frequency": 123775,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "43"
+    },
+    "ZMA 44 ABACO LOW": {
+      "frequency": 134200,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "44"
+    },
+    "ZMA 46 ALUTO": {
+      "frequency": 135175,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "46"
+    },
+    "ZMA 46 ZMA NON-OCN ALUTO": {
+      "frequency": 135175,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "46"
+    },
+    "ZMA 47 LABELLE": {
+      "frequency": 132450,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "47"
+    },
+    "ZMA 58 MILLE": {
+      "frequency": 126275,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "58"
+    },
+    "ZMA 59 ABACO": {
+      "frequency": 134800,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "59"
+    },
+    "ZMA 60 GEORGE TOWN": {
+      "frequency": 127225,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "60"
+    },
+    "ZMA 61 NASSAU LOW": {
+      "frequency": 125700,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "61"
+    },
+    "ZMA 62 GRAND TURK": {
+      "frequency": 126450,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "62"
+    },
+    "ZMA 63 CERDA": {
+      "frequency": 135200,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "63"
+    },
+    "ZMA 64 AVON": {
+      "frequency": 126525,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "64"
+    },
+    "ZMA 65 BOYLE": {
+      "frequency": 125075,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "65"
+    },
+    "ZMA 66 LAKELAND LOW": {
+      "frequency": 134550,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "66"
+    },
+    "ZMA 67 LAKELAND HIGH": {
+      "frequency": 127200,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "67"
+    },
+    "ZMA 68 SEBRING ULTRA HIGH": {
+      "frequency": 133550,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "68"
+    },
+    "ZMA 89 FROSTY": {
+      "frequency": 124825,
+      "eram_facility": true,
+      "radio_name": "Miami Center",
+      "sector_id": "89"
+    },
+    "ZMA 99 ZMA MIAMI RADIO": {
+      "frequency": 118400,
+      "eram_facility": true,
+      "radio_name": "Miami Radio",
+      "sector_id": "99"
+    },
+    "ZMA 99 ZMA TMU": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "ZMA TMU",
+      "sector_id": "99"
+    },
+    "ZME 01 Hot Springs": {
+      "frequency": 128475,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "01"
+    },
+    "ZME 02 Fayetteville": {
+      "frequency": 126100,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "02"
+    },
+    "ZME 03 Harrison": {
+      "frequency": 126850,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "03"
+    },
+    "ZME 04 Jonesboro": {
+      "frequency": 120075,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "04"
+    },
+    "ZME 05 Paducah": {
+      "frequency": 133650,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "05"
+    },
+    "ZME 07 McKeller": {
+      "frequency": 134650,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "07"
+    },
+    "ZME 12 Columbus": {
+      "frequency": 128500,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "12"
+    },
+    "ZME 13 Hamilton": {
+      "frequency": 120800,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "13"
+    },
+    "ZME 14 Holly Springs": {
+      "frequency": 124350,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "14"
+    },
+    "ZME 15 Helena": {
+      "frequency": 135300,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "15"
+    },
+    "ZME 19 Drake": {
+      "frequency": 133025,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "19"
+    },
+    "ZME 20 Little Rock": {
+      "frequency": 125475,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "20"
+    },
+    "ZME 21 Conway": {
+      "frequency": 132425,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "21"
+    },
+    "ZME 22 Razorback": {
+      "frequency": 132550,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "22"
+    },
+    "ZME 25 Tings": {
+      "frequency": 135500,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "25"
+    },
+    "ZME 26 Jacks Creek": {
+      "frequency": 126450,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "26"
+    },
+    "ZME 27 Calico": {
+      "frequency": 132375,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "27"
+    },
+    "ZME 28 Memphis": {
+      "frequency": 118625,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "28"
+    },
+    "ZME 30 Columbus": {
+      "frequency": 134775,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "30"
+    },
+    "ZME 31 Muscle Shoals": {
+      "frequency": 127375,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "31"
+    },
+    "ZME 32 Tupelo": {
+      "frequency": 135650,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "32"
+    },
+    "ZME 33 Elvis": {
+      "frequency": 127975,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "33"
+    },
+    "ZME 34 Sikeston": {
+      "frequency": 133125,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "34"
+    },
+    "ZME 35 Walnut Ridge": {
+      "frequency": 135225,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "35"
+    },
+    "ZME 40 Sparta": {
+      "frequency": 132900,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "40"
+    },
+    "ZME 41 Bowling Green": {
+      "frequency": 133850,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "41"
+    },
+    "ZME 42 Graham": {
+      "frequency": 125850,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "42"
+    },
+    "ZME 43 Greenwood": {
+      "frequency": 127425,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "43"
+    },
+    "ZME 44 Pine Bluff": {
+      "frequency": 124925,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "44"
+    },
+    "ZME 45 Vicksburg": {
+      "frequency": 133075,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "45"
+    },
+    "ZME 46 Meridian": {
+      "frequency": 128275,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "46"
+    },
+    "ZME 60 Shelbyville": {
+      "frequency": 128150,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "60"
+    },
+    "ZME 61 Clarksville": {
+      "frequency": 124125,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "61"
+    },
+    "ZME 62 Smyrna": {
+      "frequency": 118875,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "62"
+    },
+    "ZME 63 Campbell": {
+      "frequency": 124275,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "63"
+    },
+    "ZME 65 Kewanee": {
+      "frequency": 125975,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "65"
+    },
+    "ZME 66 Jackson": {
+      "frequency": 132500,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "66"
+    },
+    "ZME 67 Greenville": {
+      "frequency": 135875,
+      "eram_facility": true,
+      "radio_name": "Memphis Center",
+      "sector_id": "67"
+    },
+    "ZME 70 TMU (DFW SDF)": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "ZME Flow 70",
+      "sector_id": "70"
+    },
+    "ZME 71 TMU (ATL)": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "ZME Flow 71",
+      "sector_id": "71"
+    },
+    "ZME 72 TMU (CLT IAH)": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "ZME Flow 72",
+      "sector_id": "72"
+    },
+    "ZME 77 OMIC": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "Operations Manager",
+      "sector_id": "77"
+    },
+    "ZME 80 TMU (MEM)": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "ZME Flow 80",
+      "sector_id": "80"
+    },
+    "ZMP 01 PLN LO": {
+      "frequency": 134600,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "01"
+    },
+    "ZMP 02 TVC LO": {
+      "frequency": 132900,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "02"
+    },
+    "ZMP 03 SAW LO": {
+      "frequency": 133550,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "03"
+    },
+    "ZMP 04 AUW LO": {
+      "frequency": 124400,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "04"
+    },
+    "ZMP 05 ODI LO": {
+      "frequency": 125300,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "05"
+    },
+    "ZMP 06 TWINZ LO": {
+      "frequency": 134300,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "06"
+    },
+    "ZMP 07 FGT LO": {
+      "frequency": 132350,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "07"
+    },
+    "ZMP 08 MKT LO": {
+      "frequency": 135000,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "08"
+    },
+    "ZMP 09 RWF LO": {
+      "frequency": 125500,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "09"
+    },
+    "ZMP 10 GEP LO": {
+      "frequency": 121050,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "10"
+    },
+    "ZMP 11 AXN HI": {
+      "frequency": 133400,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "11"
+    },
+    "ZMP 11 COMBINED": {
+      "frequency": 133400,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "11"
+    },
+    "ZMP 12 TVC HI": {
+      "frequency": 132425,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "12"
+    },
+    "ZMP 13 TKV HI": {
+      "frequency": 133175,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "13"
+    },
+    "ZMP 14 APN HI": {
+      "frequency": 127125,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "14"
+    },
+    "ZMP 15 ODI HI": {
+      "frequency": 135700,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "15"
+    },
+    "ZMP 16 EAU HI": {
+      "frequency": 133750,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "16"
+    },
+    "ZMP 17 MCW HI": {
+      "frequency": 134250,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "17"
+    },
+    "ZMP 18 OTG HI": {
+      "frequency": 128675,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "18"
+    },
+    "ZMP 19 FSD HI": {
+      "frequency": 119875,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "19"
+    },
+    "ZMP 20 PIR HI": {
+      "frequency": 128425,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "20"
+    },
+    "ZMP 21 RGK LO": {
+      "frequency": 134850,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "21"
+    },
+    "ZMP 22 FAR HI": {
+      "frequency": 134750,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "22"
+    },
+    "ZMP 23 DIK HI/LO": {
+      "frequency": 127600,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "23"
+    },
+    "ZMP 24 FAR HI/LO": {
+      "frequency": 132150,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "24"
+    },
+    "ZMP 25 DLH HI/LO": {
+      "frequency": 134550,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "25"
+    },
+    "ZMP 26 GRI LO": {
+      "frequency": 119400,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "26"
+    },
+    "ZMP 27 OMA LO": {
+      "frequency": 119600,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "27"
+    },
+    "ZMP 28 POLAR SUPER HI": {
+      "frequency": 119725,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "28"
+    },
+    "ZMP 29 ONL HI": {
+      "frequency": 124875,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "29"
+    },
+    "ZMP 30 FOD HI": {
+      "frequency": 135775,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "30"
+    },
+    "ZMP 32 VIKING SUPER HI": {
+      "frequency": 133075,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "32"
+    },
+    "ZMP 33 PIR LO": {
+      "frequency": 125100,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "33"
+    },
+    "ZMP 34 SAW HI": {
+      "frequency": 132725,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "34"
+    },
+    "ZMP 36 FOD LO": {
+      "frequency": 134000,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "36"
+    },
+    "ZMP 37 ONL LO": {
+      "frequency": 128000,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "37"
+    },
+    "ZMP 38 DSM HI": {
+      "frequency": 123975,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "38"
+    },
+    "ZMP 39 LNK HI": {
+      "frequency": 135100,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "39"
+    },
+    "ZMP 40 ARCTIC SUPER HI": {
+      "frequency": 134225,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "40"
+    },
+    "ZMP 42 WILD HI": {
+      "frequency": 119525,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "42"
+    },
+    "ZMP 43 HAWKEYE HI": {
+      "frequency": 118825,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "43"
+    },
+    "ZMP 44 MILLER SUPER HI": {
+      "frequency": 120050,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "44"
+    },
+    "ZMP 46 MCD SUPER HI": {
+      "frequency": 125825,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "46"
+    },
+    "ZMP 61 ZMP TMU MSP": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "Minneapolis TMU",
+      "sector_id": "61"
+    },
+    "ZMP 62 ZMP TMU NY": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "Minneapolis TMU",
+      "sector_id": "62"
+    },
+    "ZMP 63 ZMP TMU DEN/MDW": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "Minneapolis TMU",
+      "sector_id": "63"
+    },
+    "ZMP 64 ZMP TMU ORD": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "Minneapolis TMU",
+      "sector_id": "64"
+    },
+    "ZMP 83 TVC LO W": {
+      "frequency": 125550,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "83"
+    },
+    "ZMP 99 ZMP GUARD": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "Minneapolis Center",
+      "sector_id": "99"
+    },
+    "ZNY 08 BRNAN": {
+      "frequency": 124775,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "08"
+    },
+    "ZNY 09 Westminster": {
+      "frequency": 134325,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "09"
+    },
+    "ZNY 10 Harrisburg": {
+      "frequency": 133475,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "10"
+    },
+    "ZNY 25 Modena": {
+      "frequency": 135450,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "25"
+    },
+    "ZNY 26 Lancaster": {
+      "frequency": 120025,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "26"
+    },
+    "ZNY 27 Middletown": {
+      "frequency": 132200,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "27"
+    },
+    "ZNY 34 Elmira": {
+      "frequency": 132175,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "34"
+    },
+    "ZNY 35 Huguenot": {
+      "frequency": 132600,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "35"
+    },
+    "ZNY 36 Sparta": {
+      "frequency": 133150,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "36"
+    },
+    "ZNY 39 PARKE": {
+      "frequency": 132100,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "39"
+    },
+    "ZNY 42 East Texas": {
+      "frequency": 127175,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "42"
+    },
+    "ZNY 49 Stony Fork": {
+      "frequency": 121325,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "49"
+    },
+    "ZNY 50 Binghamton": {
+      "frequency": 133350,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "50"
+    },
+    "ZNY 51 Lake Henry": {
+      "frequency": 134450,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "51"
+    },
+    "ZNY 55 Yardley": {
+      "frequency": 134600,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "55"
+    },
+    "ZNY 56 Kennedy": {
+      "frequency": 125325,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "56"
+    },
+    "ZNY 57 TMU": {
+      "frequency": 136500,
+      "eram_facility": true,
+      "radio_name": "ZNY TMU",
+      "sector_id": "57"
+    },
+    "ZNY 65 JOBOC": {
+      "frequency": 125925,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "65"
+    },
+    "ZNY 66 MANTA": {
+      "frequency": 128300,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "66"
+    },
+    "ZNY 68 DIXIE": {
+      "frequency": 118975,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "68"
+    },
+    "ZNY 72 Selinsgrove": {
+      "frequency": 127725,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "72"
+    },
+    "ZNY 73 Philipsburg": {
+      "frequency": 132875,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "73"
+    },
+    "ZNY 74 Broadway": {
+      "frequency": 132150,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "74"
+    },
+    "ZNY 75 Milton": {
+      "frequency": 128575,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "75"
+    },
+    "ZNY 80 COCOA": {
+      "frequency": 119100,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "80"
+    },
+    "ZNY 81 HILDY": {
+      "frequency": 128500,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "81"
+    },
+    "ZNY 82 PAEPR": {
+      "frequency": 126025,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "82"
+    },
+    "ZNY 83 HANRI": {
+      "frequency": 133525,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "83"
+    },
+    "ZNY 85 OHRYN": {
+      "frequency": 121125,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "85"
+    },
+    "ZNY 86 Atlantic": {
+      "frequency": 133500,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "86"
+    },
+    "ZNY 91 Williamsport": {
+      "frequency": 134800,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "91"
+    },
+    "ZNY 92 Pottstown": {
+      "frequency": 124625,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "92"
+    },
+    "ZNY 93 Swissdale": {
+      "frequency": 123625,
+      "eram_facility": true,
+      "radio_name": "New York Center",
+      "sector_id": "93"
+    },
+    "ZNY 99 Guard": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "ZNY Guard",
+      "sector_id": "99"
+    },
+    "ZNY 99 N90 (Hidden)": {
+      "frequency": 125700,
+      "eram_facility": true,
+      "radio_name": "New York Approach",
+      "sector_id": "99"
+    },
+    "ZOA 01 ZOA_ZLA": {
+      "frequency": 118000,
+      "eram_facility": true,
+      "radio_name": "ONE",
+      "sector_id": "01"
+    },
+    "ZOA 10 Sector": {
+      "frequency": 128700,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "10"
+    },
+    "ZOA 11 Sector": {
+      "frequency": 133700,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "11"
+    },
+    "ZOA 13 Sector": {
+      "frequency": 127450,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "13"
+    },
+    "ZOA 14 Sector": {
+      "frequency": 134550,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "14"
+    },
+    "ZOA 15 Sector": {
+      "frequency": 132800,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "15"
+    },
+    "ZOA 16 Sector": {
+      "frequency": 123800,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "16"
+    },
+    "ZOA 22 Sector": {
+      "frequency": 121250,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "22"
+    },
+    "ZOA 29 Sector": {
+      "frequency": 119750,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "29"
+    },
+    "ZOA 30 Sector": {
+      "frequency": 127175,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "30"
+    },
+    "ZOA 31 Sector": {
+      "frequency": 134975,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "31"
+    },
+    "ZOA 32 Sector": {
+      "frequency": 132950,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "32"
+    },
+    "ZOA 33 Sector": {
+      "frequency": 132050,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "33"
+    },
+    "ZOA 34 Sector": {
+      "frequency": 134375,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "34"
+    },
+    "ZOA 35 Sector": {
+      "frequency": 134150,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "35"
+    },
+    "ZOA 36 Sector": {
+      "frequency": 119975,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "36"
+    },
+    "ZOA 40 Sector": {
+      "frequency": 127800,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "40"
+    },
+    "ZOA 41 Sector": {
+      "frequency": 125850,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "41"
+    },
+    "ZOA 42 Sector": {
+      "frequency": 132200,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "42"
+    },
+    "ZOA 43 Sector": {
+      "frequency": 134450,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "43"
+    },
+    "ZOA 44 Sector": {
+      "frequency": 127950,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "44"
+    },
+    "ZOA 44 Tahoe Clearance": {
+      "frequency": 134300,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "44"
+    },
+    "ZOA 45 Sector": {
+      "frequency": 128800,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "45"
+    },
+    "ZOA 46 Sector": {
+      "frequency": 125750,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "46"
+    },
+    "ZOA 62 Sector": {
+      "frequency": 132200,
+      "eram_facility": true,
+      "radio_name": "Oakland Center",
+      "sector_id": "62"
+    },
+    "ZOA 97 ZOA Guard": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "Guard",
+      "sector_id": "97"
+    },
+    "ZOA 99 TMU FD": {
+      "frequency": 133800,
+      "eram_facility": true,
+      "radio_name": "Oakland Center Flight Data",
+      "sector_id": "99"
+    },
+    "ZOA 99 ZOA_ZLC": {
+      "frequency": 118100,
+      "eram_facility": true,
+      "radio_name": "HIGH",
+      "sector_id": "99"
+    },
+    "ZOA 99 ZOA_ZSE": {
+      "frequency": 118025,
+      "eram_facility": true,
+      "radio_name": "HIGH",
+      "sector_id": "99"
+    },
+    "ZOB 00 ZOB GUARD": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "00"
+    },
+    "ZOB 02 Pandora": {
+      "frequency": 128625,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "02"
+    },
+    "ZOB 03 Marion": {
+      "frequency": 135100,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "03"
+    },
+    "ZOB 04 Mansfield": {
+      "frequency": 134900,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "04"
+    },
+    "ZOB 06 Briggs": {
+      "frequency": 120600,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "06"
+    },
+    "ZOB 07 Sandusky": {
+      "frequency": 127675,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "07"
+    },
+    "ZOB 08 Carleton": {
+      "frequency": 127900,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "08"
+    },
+    "ZOB 12 Lansing": {
+      "frequency": 126750,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "12"
+    },
+    "ZOB 14 Jackson": {
+      "frequency": 120450,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "14"
+    },
+    "ZOB 15 Litchfield": {
+      "frequency": 134650,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "15"
+    },
+    "ZOB 16 Flint": {
+      "frequency": 127700,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "16"
+    },
+    "ZOB 18 Peck": {
+      "frequency": 133875,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "18"
+    },
+    "ZOB 19 Gamble": {
+      "frequency": 126525,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "19"
+    },
+    "ZOB 20 Dresden": {
+      "frequency": 132250,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "20"
+    },
+    "ZOB 21 Windsor": {
+      "frequency": 132450,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "21"
+    },
+    "ZOB 26 Lake": {
+      "frequency": 120075,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "26"
+    },
+    "ZOB 27 Hudson": {
+      "frequency": 134775,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "27"
+    },
+    "ZOB 28 Detroit": {
+      "frequency": 135725,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "28"
+    },
+    "ZOB 29 Wayne": {
+      "frequency": 133525,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "29"
+    },
+    "ZOB 31 Rochester": {
+      "frequency": 127475,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "31"
+    },
+    "ZOB 33 Buffalo": {
+      "frequency": 125200,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "33"
+    },
+    "ZOB 36 Dansville": {
+      "frequency": 118625,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "36"
+    },
+    "ZOB 37 Geneseo": {
+      "frequency": 128025,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "37"
+    },
+    "ZOB 38 Niagara": {
+      "frequency": 120625,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "38"
+    },
+    "ZOB 39 Steuben": {
+      "frequency": 119375,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "39"
+    },
+    "ZOB 45 Geauga": {
+      "frequency": 120325,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "45"
+    },
+    "ZOB 46 Marblehead": {
+      "frequency": 135375,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "46"
+    },
+    "ZOB 47 Bluffton": {
+      "frequency": 119325,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "47"
+    },
+    "ZOB 48 Ravenna": {
+      "frequency": 119875,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "48"
+    },
+    "ZOB 49 Lorain": {
+      "frequency": 133375,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "49"
+    },
+    "ZOB 50 Clarion": {
+      "frequency": 126725,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "50"
+    },
+    "ZOB 53 Indian Head": {
+      "frequency": 124400,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "53"
+    },
+    "ZOB 55 Morgantown": {
+      "frequency": 126950,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "55"
+    },
+    "ZOB 57 Brecksville": {
+      "frequency": 125875,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "57"
+    },
+    "ZOB 58 Palmer": {
+      "frequency": 121075,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "58"
+    },
+    "ZOB 59 Franklin": {
+      "frequency": 119725,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "59"
+    },
+    "ZOB 64 Keystone": {
+      "frequency": 134475,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "64"
+    },
+    "ZOB 66 Bellaire": {
+      "frequency": 125425,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "66"
+    },
+    "ZOB 67 Imperial": {
+      "frequency": 132125,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "67"
+    },
+    "ZOB 68 Allegheny": {
+      "frequency": 133075,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "68"
+    },
+    "ZOB 69 Clarksburg": {
+      "frequency": 135175,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "69"
+    },
+    "ZOB 70 Dunkirk": {
+      "frequency": 127075,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "70"
+    },
+    "ZOB 73 Bradford": {
+      "frequency": 124325,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "73"
+    },
+    "ZOB 75 Youngstown": {
+      "frequency": 120775,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "75"
+    },
+    "ZOB 77 Warren": {
+      "frequency": 134125,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "77"
+    },
+    "ZOB 79 Jamestown": {
+      "frequency": 132925,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "79"
+    },
+    "ZOB 99 TMU": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "Cleveland Center",
+      "sector_id": "99"
+    },
+    "ZSE 01 Sector": {
+      "frequency": 120300,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "01"
+    },
+    "ZSE 02 Sector": {
+      "frequency": 128300,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "02"
+    },
+    "ZSE 03 Sector": {
+      "frequency": 125100,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "03"
+    },
+    "ZSE 04 Sector": {
+      "frequency": 124200,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "04"
+    },
+    "ZSE 05 Sector": {
+      "frequency": 128150,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "05"
+    },
+    "ZSE 06 Sector": {
+      "frequency": 125800,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "06"
+    },
+    "ZSE 07 Sector": {
+      "frequency": 128450,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "07"
+    },
+    "ZSE 08 Sector": {
+      "frequency": 123950,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "08"
+    },
+    "ZSE 09 Sector": {
+      "frequency": 132600,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "09"
+    },
+    "ZSE 10 Sector": {
+      "frequency": 127600,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "10"
+    },
+    "ZSE 11 Sector": {
+      "frequency": 119225,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "11"
+    },
+    "ZSE 12 Sector": {
+      "frequency": 134950,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "12"
+    },
+    "ZSE 13 Sector": {
+      "frequency": 135350,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "13"
+    },
+    "ZSE 14 Sector": {
+      "frequency": 134900,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "14"
+    },
+    "ZSE 15 Sector": {
+      "frequency": 135150,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "15"
+    },
+    "ZSE 16 Sector": {
+      "frequency": 135450,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "16"
+    },
+    "ZSE 18 Sector": {
+      "frequency": 126100,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "18"
+    },
+    "ZSE 30 Sector": {
+      "frequency": 124850,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "30"
+    },
+    "ZSE 31 Sector": {
+      "frequency": 127050,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "31"
+    },
+    "ZSE 32 Sector": {
+      "frequency": 126600,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "32"
+    },
+    "ZSE 34 Sector": {
+      "frequency": 119650,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "34"
+    },
+    "ZSE 35 Sector": {
+      "frequency": 126150,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "35"
+    },
+    "ZSE 36 Sector": {
+      "frequency": 127550,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "36"
+    },
+    "ZSE 42 Sector": {
+      "frequency": 132075,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "42"
+    },
+    "ZSE 46 Sector": {
+      "frequency": 121350,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "46"
+    },
+    "ZSE 47 Sector": {
+      "frequency": 118550,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "47"
+    },
+    "ZSE 48 Sector": {
+      "frequency": 118625,
+      "eram_facility": true,
+      "radio_name": "Seattle Center",
+      "sector_id": "48"
+    },
+    "ZSE 69 TMU": {
+      "frequency": 123450,
+      "eram_facility": true,
+      "radio_name": "Don't Talk to Me",
+      "sector_id": "69"
+    },
+    "ZSE 69 ZSE Guard": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "ZSE Guard",
+      "sector_id": "69"
+    },
+    "ZSE 99 ZSE_ZOA": {
+      "frequency": 118025,
+      "eram_facility": true,
+      "radio_name": "ZSE_ZOA Hotline",
+      "sector_id": "99"
+    },
+    "ZTL 01 Rome Ultra Low": {
+      "frequency": 124500,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "01"
+    },
+    "ZTL 02 Gunter Ultra High": {
+      "frequency": 126825,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "02"
+    },
+    "ZTL 03 Gadsden High": {
+      "frequency": 128725,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "03"
+    },
+    "ZTL 04 West Departure Low": {
+      "frequency": 134950,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "04"
+    },
+    "ZTL 05 Dalas Low": {
+      "frequency": 132050,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "05"
+    },
+    "ZTL 06 Rocket High": {
+      "frequency": 133175,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "06"
+    },
+    "ZTL 08 Martin Lake Ultra High": {
+      "frequency": 125875,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "08"
+    },
+    "ZTL 09 Tiroe Low": {
+      "frequency": 120450,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "09"
+    },
+    "ZTL 10 LaGrange High": {
+      "frequency": 125575,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "10"
+    },
+    "ZTL 11 Monroeville High": {
+      "frequency": 128025,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "11"
+    },
+    "ZTL 12 Birmingham Low": {
+      "frequency": 127300,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "12"
+    },
+    "ZTL 13 Montgomery Low": {
+      "frequency": 120550,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "13"
+    },
+    "ZTL 14 Maxwell Low": {
+      "frequency": 132250,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "14"
+    },
+    "ZTL 15 Baden Ultra-High": {
+      "frequency": 126775,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "15"
+    },
+    "ZTL 16 East Departure Low": {
+      "frequency": 134200,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "16"
+    },
+    "ZTL 18 Commerce Ultra Low": {
+      "frequency": 134800,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "18"
+    },
+    "ZTL 19 Sinca Low": {
+      "frequency": 123950,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "19"
+    },
+    "ZTL 20 Dublin High": {
+      "frequency": 126425,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "20"
+    },
+    "ZTL 21 South Departure Low": {
+      "frequency": 134500,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "21"
+    },
+    "ZTL 22 Macon High": {
+      "frequency": 119375,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "22"
+    },
+    "ZTL 23 Clark Hill Ultra High": {
+      "frequency": 124325,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "23"
+    },
+    "ZTL 24 Augusta Low": {
+      "frequency": 128100,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "24"
+    },
+    "ZTL 27 Hampton Ultra High": {
+      "frequency": 125825,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "27"
+    },
+    "ZTL 28 High Rock Ultra High": {
+      "frequency": 125025,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "28"
+    },
+    "ZTL 29 Leeon Low": {
+      "frequency": 128800,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "29"
+    },
+    "ZTL 30 Locas Low": {
+      "frequency": 133150,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "30"
+    },
+    "ZTL 31 Unarm Low": {
+      "frequency": 135350,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "31"
+    },
+    "ZTL 32 Spartanburg High": {
+      "frequency": 125625,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "32"
+    },
+    "ZTL 33 Charlotte High": {
+      "frequency": 124425,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "33"
+    },
+    "ZTL 34 Georgia High": {
+      "frequency": 120425,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "34"
+    },
+    "ZTL 36 Allatoona Ultra High": {
+      "frequency": 124875,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "36"
+    },
+    "ZTL 37 Crossville High": {
+      "frequency": 126675,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "37"
+    },
+    "ZTL 38 North Departure Low": {
+      "frequency": 133100,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "38"
+    },
+    "ZTL 39 Burne High": {
+      "frequency": 125925,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "39"
+    },
+    "ZTL 40 Blue Ridge Ultra-High": {
+      "frequency": 134075,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "40"
+    },
+    "ZTL 41 Hinch Mountain Low": {
+      "frequency": 133600,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "41"
+    },
+    "ZTL 42 Salem High": {
+      "frequency": 120725,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "42"
+    },
+    "ZTL 43 Pulaski High": {
+      "frequency": 132975,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "43"
+    },
+    "ZTL 44 Shine Low": {
+      "frequency": 132625,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "44"
+    },
+    "ZTL 45 Bristol Low": {
+      "frequency": 127850,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "45"
+    },
+    "ZTL 47 Moped Low": {
+      "frequency": 134550,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "47"
+    },
+    "ZTL 48 Wilkes Ultra Low": {
+      "frequency": 125150,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "48"
+    },
+    "ZTL 49 Logen Low": {
+      "frequency": 121350,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "49"
+    },
+    "ZTL 50 Lanier High": {
+      "frequency": 124375,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "50"
+    },
+    "ZTL 69 ZTL GUARD Combined": {
+      "frequency": 121500,
+      "eram_facility": true,
+      "radio_name": "Atlanta Guard",
+      "sector_id": "69"
+    },
+    "ZTL 69 ZTL HKY Clearance": {
+      "frequency": 124250,
+      "eram_facility": true,
+      "radio_name": "ZTL HKY Clearance",
+      "sector_id": "69"
+    },
+    "ZTL 69 ZTL/A80 Line": {
+      "frequency": 133305,
+      "eram_facility": true,
+      "radio_name": "Shoutline",
+      "sector_id": "69"
+    },
+    "ZTL 69 ZTL/ZJX Line": {
+      "frequency": 133300,
+      "eram_facility": true,
+      "radio_name": "ZTL",
+      "sector_id": "69"
+    },
+    "ZTL 98 TMEC": {
+      "frequency": 125550,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center ",
+      "sector_id": "98"
+    },
+    "ZTL 99 TMAC": {
+      "frequency": 125550,
+      "eram_facility": true,
+      "radio_name": "Atlanta Center",
+      "sector_id": "99"
+    }
+  }
+}

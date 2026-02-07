@@ -1,0 +1,148 @@
+{
+    "control_positions": {
+        "GSP_TWR": {
+            "frequency": 119900,
+            "radio_name": "Birmingham Tower",
+            "sector_id": "1T"
+        },
+        "GSP_W_APP": {
+            "frequency": 118800,
+            "radio_name": "Radar West",
+            "sector_id": "1W"
+        },
+        "GSP_E_APP": {
+            "frequency": 119400,
+            "radio_name": "Radar East",
+            "sector_id": "1E"
+        },
+        "GSP_S_APP": {
+            "frequency": 120600,
+            "radio_name": "Radar South",
+            "sector_id": "1S"
+        }
+    },
+    "stars_config": {
+        "configurations": {
+            "STD": {
+                "inbound_assignments": {
+                    "JUNNR3": "GSP_E_APP",
+                    "MCHLN2": "GSP_S_APP",
+                    "RCTOR2": "GSP_W_APP",
+                    "WORXS2": "GSP_W_APP"
+                },
+                "departure_assignments": {
+                    "KGSP": "GSP_W_APP"
+                }
+            }
+        },
+        "center": "KGSP",
+        "radar_sites": {
+            "GSP": {
+                "char": "G",
+                "position": "34.88823,-82.20683",
+                "elevation": 1010,
+                "primary_range": 100,
+                "secondary_range": 150,
+                "silence_angle": 30.0,
+                "slope_angle": 0.3
+            },
+            "QRM": {
+                "char": "Q",
+                "position": "35.61081,-81.23825",
+                "elevation": 1324,
+                "primary_range": 200,
+                "secondary_range": 200,
+                "silence_angle": 29.7,
+                "slope_angle": 0.3
+            },
+            "QNK": {
+                "char": "K",
+                "position": "33.75978,-82.467",
+                "elevation": 808,
+                "primary_range": 200,
+                "secondary_range": 200,
+                "silence_angle": 29.7,
+                "slope_angle": 0.3
+            }
+        },
+        "scratchpads": {
+            "DRIVN": "DRI",
+            "ACERB": "ACE",
+            "JLENA": "JLE",
+            "DGESS": "DGE",
+            "SOTHH": "SOT",
+            "SPA": "SPA",
+            "HRS": "HRS",
+            "GQO": "GQO"
+        },
+        "significant_points": {
+            "ACERB": {},
+            "DGESS": {},
+            "DRIVN": {},
+            "GQO": {},
+            "HRS": {},
+            "JLENA": {},
+            "SOTHH": {},
+            "SPA": {}
+        },
+        "stars_maps": [
+            "GSP MINIMUM VECTORING ALTITUDE",
+            "COUNTY JURISDICTIONS",
+            "RNAV APPROACHES (AND17, 18A26, EOE04, EOE22, EHO05, AVL35)",
+            "SIDS/STARS/EXTENDED FINAL APPROACH COURSES",
+            "RNAV APPROACHES (FQD01, SPA05, 35A05, LUX08, GRD09, GMU01, GMU10, GYH05, LQK05, AND05, CEU07)",
+            "NORTH FLOW",
+            "VPLOW WAYPOINT",
+            "RNAV APPROACHES (FQD19, SPA23, 35A23, LUX26, GRD27, GMU19, GMU28, GYH23, LQK23, AND23, AND35, CEU25)",
+            "SOUTH FLOW",
+            "GSP EMERGENCY OBSTRUCTION VIDEO MAP",
+            "EMERGENCY LOCATIONS",
+            "GYH RNAV 23",
+            "GMU RNAV 19",
+            "GMU RNAV 10",
+            "GMU RNAV 28"
+        ],
+        "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
+        "controller_assignments": {
+            "STD": {
+                "inbound_assignments": {
+                    "JUNNR3": "GSP_E_APP",
+                    "MCHLN2": "GSP_S_APP",
+                    "RCTOR2": "GSP_W_APP",
+                    "WORXS2": "GSP_W_APP"
+                },
+                "departure_assignments": {
+                    "KGSP": "GSP_W_APP"
+                }
+            }
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "CLT",
+                "prefix": "1"
+            },
+            {
+                "id": "CAE",
+                "prefix": "2"
+            },
+            {
+                "id": "AGS",
+                "prefix": "3"
+            },
+            {
+                "id": "AVL",
+                "prefix": "4"
+            }
+        ],
+        "neighboring_facilities": [
+            "AGS",
+            "AVL",
+            "CAE",
+            "CLT",
+            "ZJX",
+            "ZTL"
+        ]
+    }
+}

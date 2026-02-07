@@ -1,0 +1,256 @@
+{
+  "control_positions": {
+    "ZAB 00 P50 Satellite Clearance": {
+      "frequency": 127450,
+      "eram_facility": true,
+      "radio_name": "PHX Satellite Clearance",
+      "sector_id": "00"
+    },
+    "ZAB 15 E Borger Low": {
+      "frequency": 127850,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "15"
+    },
+    "ZAB 16 N Sandia Low": {
+      "frequency": 132800,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "16"
+    },
+    "ZAB 17 N Lavan Low": {
+      "frequency": 124325,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "17"
+    },
+    "ZAB 19 SE Deming Low": {
+      "frequency": 128200,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "19"
+    },
+    "ZAB 20 SE Salt Flat Low": {
+      "frequency": 135875,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "20"
+    },
+    "ZAB 21 SE Cannon Low": {
+      "frequency": 126850,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "21"
+    },
+    "ZAB 23 SE Roswell Low/Hi": {
+      "frequency": 132650,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "23"
+    },
+    "ZAB 37 NW Hippi Hi": {
+      "frequency": 134325,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "37"
+    },
+    "ZAB 38 NW Miami Low/Hi": {
+      "frequency": 132900,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "38"
+    },
+    "ZAB 39 NW Fosil Low/Hi": {
+      "frequency": 135725,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "39"
+    },
+    "ZAB 41 TMU": {
+      "frequency": 122200,
+      "eram_facility": true,
+      "radio_name": "ZAB Traffic Management",
+      "sector_id": "41"
+    },
+    "ZAB 42 SW Gila Bend Low": {
+      "frequency": 126450,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "42"
+    },
+    "ZAB 43 NW Drake Low": {
+      "frequency": 128450,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "43"
+    },
+    "ZAB 45 NW Winslow Low": {
+      "frequency": 127675,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "45"
+    },
+    "ZAB 46 SW Tucson Low": {
+      "frequency": 125400,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "46"
+    },
+    "ZAB 47 SW Silver City Low": {
+      "frequency": 134450,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "47"
+    },
+    "ZAB 49 SW Stanfield Low": {
+      "frequency": 125250,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "49"
+    },
+    "ZAB 50 NW Payson Hi": {
+      "frequency": 128125,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "50"
+    },
+    "ZAB 58 N Black Rock Ultra Hi": {
+      "frequency": 126925,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "58"
+    },
+    "ZAB 63 SE El Paso Hi": {
+      "frequency": 120975,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "63"
+    },
+    "ZAB 65 SW Phoenix Ultra Hi": {
+      "frequency": 132450,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "65"
+    },
+    "ZAB 67 NW Winslow Hi": {
+      "frequency": 133925,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "67"
+    },
+    "ZAB 68 N Albuquerque Hi": {
+      "frequency": 134600,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "68"
+    },
+    "ZAB 70 E Espan Hi": {
+      "frequency": 120950,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "70"
+    },
+    "ZAB 71 E Kento Hi": {
+      "frequency": 133050,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "71"
+    },
+    "ZAB 72 E Cimarron Ultra Hi": {
+      "frequency": 128225,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "72"
+    },
+    "ZAB 78 SE Fort Stockton Ultra Hi": {
+      "frequency": 133225,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "78"
+    },
+    "ZAB 79 N Otto Hi": {
+      "frequency": 118650,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "79"
+    },
+    "ZAB 80 SW Cochise Ultra Hi": {
+      "frequency": 126225,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "80"
+    },
+    "ZAB 86 TMU": {
+      "frequency": 122200,
+      "eram_facility": true,
+      "radio_name": "TMU 86",
+      "sector_id": "86"
+    },
+    "ZAB 87 SE Texico Hi": {
+      "frequency": 132325,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "87"
+    },
+    "ZAB 89 SE Sunland Hi": {
+      "frequency": 125525,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "89"
+    },
+    "ZAB 90 SW San Simon Hi": {
+      "frequency": 133000,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "90"
+    },
+    "ZAB 91 SW Gila Bend Hi": {
+      "frequency": 135150,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "91"
+    },
+    "ZAB 92 NW Prescott Ultra Hi": {
+      "frequency": 135325,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "92"
+    },
+    "ZAB 93 N Gallup Hi": {
+      "frequency": 120550,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "93"
+    },
+    "ZAB 94 N Corona Low/Hi": {
+      "frequency": 133650,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "94"
+    },
+    "ZAB 95 E Las Vegas Hi": {
+      "frequency": 125075,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "95"
+    },
+    "ZAB 96 E Tucumcari Ultra Hi": {
+      "frequency": 128675,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "96"
+    },
+    "ZAB 97 E Amarillo Hi": {
+      "frequency": 134750,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "97"
+    },
+    "ZAB 98 E Dalhart Ultra Hi": {
+      "frequency": 132125,
+      "eram_facility": true,
+      "radio_name": "Albuquerque Center",
+      "sector_id": "98"
+    }
+  }
+}
