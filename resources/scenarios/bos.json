@@ -109,13 +109,6 @@
         }
       }
     },
-    "3B4": {
-      "vfr": {
-        "random_routes": {
-          "rate": 1
-        }
-      }
-    },
     "KSFM": {
       "vfr": {
         "random_routes": {
@@ -36136,17 +36129,14 @@
         "R23": {
           "cifp_id": "R23"
         },
-        "Y11": {
-          "cifp_id": "RY11"
+        "R11": {
+          "cifp_id": "R11"
         },
         "Y29": {
           "cifp_id": "RY29"
         },
-        "Z11": {
-          "cifp_id": "RZ11"
-        },
-        "Z29": {
-          "cifp_id": "RZ29"
+        "R29": {
+          "cifp_id": "R29"
         }
       },
       "departure_routes": {
@@ -53751,7 +53741,7 @@
         }
       ]
     },
-    "DREEM2": {
+    "DREEM3": {
       "arrivals": [
         {
           "airlines": {
@@ -53822,7 +53812,7 @@
           "initial_altitude": 10000,
           "initial_controller": "BDL_APP",
           "initial_speed": 250,
-          "star": "DREEM2",
+          "star": "DREEM3",
           "scratchpad": "RBED",
           "runway_waypoints": {
             "KBED": {
@@ -53874,7 +53864,7 @@
           "initial_altitude": 10000,
           "initial_controller": "BDL_APP",
           "initial_speed": 250,
-          "star": "DREEM2",
+          "star": "DREEM3",
           "scratchpad": "RLWM",
           "waypoints": "DVANY GRAYM/ho GASSE/a5000 DREEM WANLA ZELKA RIKAH/h076"
         },
@@ -53919,7 +53909,7 @@
           "initial_altitude": 10000,
           "initial_controller": "BDL_APP",
           "initial_speed": 250,
-          "star": "DREEM2",
+          "star": "DREEM3",
           "scratchpad": "RBVY",
           "waypoints": "DVANY GRAYM/ho GASSE/a5000 DREEM WANLA ZELKA RIKAH EXXRO/h097"
         }
@@ -60737,7 +60727,7 @@
         "OOSHN5.4R": {
           "KBOS": 0
         },
-        "DREEM2": {
+        "DREEM3": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -60942,7 +60932,7 @@
         "OOSHN5.4R": {
           "KBOS": 0
         },
-        "DREEM2": {
+        "DREEM3": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -61165,7 +61155,7 @@
         "OOSHN5.4R": {
           "KBOS": 0
         },
-        "DREEM2": {
+        "DREEM3": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -61366,7 +61356,7 @@
         "OOSHN5.15R": {
           "KBOS": 0
         },
-        "DREEM2": {
+        "DREEM3": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -61551,7 +61541,7 @@
         "OOSHN5.27": {
           "KBOS": 0
         },
-        "DREEM2": {
+        "DREEM3": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -61731,7 +61721,7 @@
         "OOSHN5.33L": {
           "KBOS": 0
         },
-        "DREEM2": {
+        "DREEM3": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -61923,7 +61913,7 @@
         "OOSHN5.22L": {
           "KBOS": 0
         },
-        "DREEM2": {
+        "DREEM3": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -62103,7 +62093,7 @@
         "OOSHN5.22L": {
           "KBOS": 0
         },
-        "DREEM2": {
+        "DREEM3": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -62283,7 +62273,7 @@
         "OOSHN5.22L": {
           "KBOS": 0
         },
-        "DREEM2": {
+        "DREEM3": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -62463,7 +62453,7 @@
         "OOSHN5.27": {
           "KBOS": 0
         },
-        "DREEM2": {
+        "DREEM3": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -62643,7 +62633,7 @@
         "OOSHN5.27": {
           "KBOS": 0
         },
-        "DREEM2": {
+        "DREEM3": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -62833,7 +62823,7 @@
         "OOSHN5.33L": {
           "KBOS": 0
         },
-        "DREEM2": {
+        "DREEM3": {
           "KBED": 0,
           "KBVY": 0,
           "KLWM": 0
@@ -63106,7 +63096,7 @@
     "configurations": {
       "CNE": {
         "inbound_assignments": {
-          "DREEM2": "BOS_B_APP",
+          "DREEM3": "BOS_B_APP",
           "FREDO": "BOS_M_APP",
           "GDM": "BOS_R_APP",
           "GDM.15R": "BOS_R_APP",
@@ -63142,7 +63132,7 @@
       },
       "CNW": {
         "inbound_assignments": {
-          "DREEM2": "BOS_B_APP",
+          "DREEM3": "BOS_B_APP",
           "FREDO": "BOS_M_APP",
           "GDM": "BOS_R_APP",
           "GDM.15R": "BOS_R_APP",
@@ -63178,7 +63168,7 @@
       },
       "CSE": {
         "inbound_assignments": {
-          "DREEM2": "BOS_B_APP",
+          "DREEM3": "BOS_B_APP",
           "FREDO": "BOS_M_APP",
           "GDM": "BOS_R_APP",
           "GDM.15R": "BOS_R_APP",
@@ -63214,7 +63204,7 @@
       },
       "CSW": {
         "inbound_assignments": {
-          "DREEM2": "BOS_B_APP",
+          "DREEM3": "BOS_B_APP",
           "FREDO": "BOS_M_APP",
           "GDM": "BOS_R_APP",
           "GDM.15R": "BOS_R_APP",
