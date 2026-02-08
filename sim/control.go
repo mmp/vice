@@ -189,6 +189,8 @@ func (s *Sim) deleteAircraft(ac *Aircraft) {
 			func(pc PendingContact) bool { return pc.ADSBCallsign == ac.ADSBCallsign })
 	}
 
+	delete(s.DeferredContacts, ac.ADSBCallsign)
+
 	// Remove any scheduled future events for this aircraft
 	s.FutureOnCourse = slices.DeleteFunc(s.FutureOnCourse,
 		func(foc FutureOnCourse) bool { return foc.ADSBCallsign == ac.ADSBCallsign })
@@ -783,6 +785,10 @@ func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, t
 	s.cancelPendingFrequencyChange(ac.ADSBCallsign)
 	ac.ControllerFrequency = ""
 
+	// A human explicitly directing the pilot supersedes any virtual
+	// controller deferred contact chain.
+	delete(s.DeferredContacts, ac.ADSBCallsign)
+
 	s.enqueueControllerContact(ac.ADSBCallsign, toTCP)
 
 	return intent
@@ -835,10 +841,10 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 				haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
 					func(wp av.Waypoint) bool { return wp.TransferComms })
 				if !haveTransferComms && s.isVirtualController(previousTrackingController) {
-					// For a handoff from a virtual controller, cue up a delayed
-					// contact message unless there's a point later in the route when
-					// comms are to be transferred.
-					s.enqueueControllerContact(ac.ADSBCallsign, TCP(newTrackingController))
+					// For a handoff from a virtual controller, transfer
+					// comms only if the pilot is on the virtual's
+					// frequency; otherwise defer until they arrive.
+					s.virtualControllerTransferComms(ac, TCP(previousTrackingController), TCP(newTrackingController))
 				}
 			}
 			return nil
@@ -1923,16 +1929,21 @@ func (s *Sim) cancelPendingFrequencyChange(callsign av.ADSBCallsign) {
 // frequency-switch time has passed, then removes those entries.
 func (s *Sim) processPendingFrequencySwitches() {
 	now := s.State.SimTime
+	var switched []*Aircraft
 	s.PendingFrequencyChanges = util.FilterSliceInPlace(s.PendingFrequencyChanges,
 		func(pfc PendingFrequencyChange) bool {
 			if now.After(pfc.Time) {
 				if ac, ok := s.Aircraft[pfc.ADSBCallsign]; ok {
 					ac.ControllerFrequency = pfc.TCP
+					switched = append(switched, ac)
 				}
 				return false
 			}
 			return true
 		})
+	for _, ac := range switched {
+		s.processDeferredContact(ac)
+	}
 }
 
 // PopReadyContact removes and returns the first pending contact whose ReadyTime has passed
@@ -1978,6 +1989,74 @@ func (s *Sim) enqueueControllerContact(callsign av.ADSBCallsign, tcp TCP) {
 		ReadyTime:    s.State.SimTime.Add(switchDelay + listenDelay),
 		Type:         PendingTransmissionArrival,
 	})
+}
+
+// virtualControllerTransferComms handles the comms transfer when a handoff
+// from a virtual controller is accepted. If the pilot is currently on the
+// virtual's frequency, the transfer happens immediately; otherwise it is
+// deferred until the pilot arrives on the virtual's frequency.
+func (s *Sim) virtualControllerTransferComms(ac *Aircraft, virtualTCP TCP, targetTCP TCP) {
+	if ac.ControllerFrequency == ControlPosition(virtualTCP) {
+		// Pilot is on the virtual's frequency right now.
+		if s.isVirtualController(targetTCP) {
+			// Virtual-to-virtual: instant frequency change, then check
+			// for further deferred contacts on the new position.
+			ac.ControllerFrequency = ControlPosition(targetTCP)
+			s.processDeferredContact(ac)
+		} else {
+			// Virtual-to-human: realistic switch/listen delay.
+			s.enqueueControllerContact(ac.ADSBCallsign, targetTCP)
+		}
+	} else {
+		// Pilot hasn't reached the virtual's frequency yet. Store a
+		// deferred contact so that when the pilot does arrive, we send
+		// them onward to targetTCP.
+		if s.DeferredContacts == nil {
+			s.DeferredContacts = make(map[av.ADSBCallsign]map[ControlPosition]TCP)
+		}
+		if s.DeferredContacts[ac.ADSBCallsign] == nil {
+			s.DeferredContacts[ac.ADSBCallsign] = make(map[ControlPosition]TCP)
+		}
+		s.DeferredContacts[ac.ADSBCallsign][ControlPosition(virtualTCP)] = targetTCP
+	}
+}
+
+// processDeferredContact checks whether the aircraft's current frequency
+// matches a deferred contact entry. If so, it triggers the transfer (instant
+// for virtual targets, enqueued for human targets) and removes the entry.
+func (s *Sim) processDeferredContact(ac *Aircraft) {
+	if s.DeferredContacts == nil {
+		return
+	}
+	m, ok := s.DeferredContacts[ac.ADSBCallsign]
+	if !ok {
+		return
+	}
+	targetTCP, ok := m[ac.ControllerFrequency]
+	if !ok {
+		return
+	}
+	delete(m, ac.ControllerFrequency)
+	if len(m) == 0 {
+		delete(s.DeferredContacts, ac.ADSBCallsign)
+	}
+
+	// Cancel the orphaned PendingContact for the virtual position that
+	// directed the pilot here (it was created by contactController).
+	virtualTCP := TCP(ac.ControllerFrequency)
+	if pcs, ok := s.PendingContacts[virtualTCP]; ok {
+		s.PendingContacts[virtualTCP] = slices.DeleteFunc(pcs,
+			func(pc PendingContact) bool { return pc.ADSBCallsign == ac.ADSBCallsign })
+	}
+
+	if s.isVirtualController(targetTCP) {
+		// Virtual-to-virtual: instant, then recurse.
+		ac.ControllerFrequency = ControlPosition(targetTCP)
+		s.processDeferredContact(ac)
+	} else {
+		// Virtual-to-human: realistic delay.
+		s.enqueueControllerContact(ac.ADSBCallsign, targetTCP)
+	}
 }
 
 // enqueueDepartureContact adds a departure to the pending contacts queue.

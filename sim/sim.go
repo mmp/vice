@@ -74,6 +74,7 @@ type Sim struct {
 
 	PendingContacts         map[TCP][]PendingContact
 	PendingFrequencyChanges []PendingFrequencyChange
+	DeferredContacts        map[av.ADSBCallsign]map[ControlPosition]TCP
 	FutureOnCourse          []FutureOnCourse
 	FutureSquawkChanges     []FutureChangeSquawk
 	FutureEmergencyUpdates  []FutureEmergencyUpdate
@@ -1014,7 +1015,7 @@ func (s *Sim) updateState() {
 			continue
 		}
 
-		if fp, _, _ := s.getFlightPlanForACID(acid); fp != nil {
+		if fp, ac, _ := s.getFlightPlanForACID(acid); fp != nil {
 			if fp.HandoffController != "" && s.isVirtualController(fp.HandoffController) {
 				// Automated accept
 				s.eventStream.Post(Event{
@@ -1027,12 +1028,23 @@ func (s *Sim) updateState() {
 					slog.String("from", string(fp.TrackingController)),
 					slog.String("to", string(fp.HandoffController)))
 
-				fp.TrackingController = fp.HandoffController
+				previousTrackingController := fp.TrackingController
+				newTrackingController := fp.HandoffController
+
+				fp.TrackingController = newTrackingController
 				if s.State.IsLocalController(fp.TrackingController) {
 					fp.LastLocalController = fp.TrackingController
 				}
 				fp.OwningTCW = s.tcwForPosition(fp.TrackingController)
 				fp.HandoffController = ""
+
+				if ac != nil {
+					haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
+						func(wp av.Waypoint) bool { return wp.TransferComms })
+					if !haveTransferComms && s.isVirtualController(previousTrackingController) {
+						s.virtualControllerTransferComms(ac, TCP(previousTrackingController), TCP(newTrackingController))
+					}
+				}
 			}
 		}
 		delete(s.Handoffs, acid)
