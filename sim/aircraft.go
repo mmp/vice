@@ -51,8 +51,6 @@ type Aircraft struct {
 	// actually acquire to simulate the delay in that.
 	DepartureFPAcquisitionTime time.Time
 
-	Strip av.FlightStrip
-
 	// State related to navigation.
 	Nav nav.Nav
 

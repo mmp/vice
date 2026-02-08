@@ -1052,3 +1052,39 @@ func (sd *dispatcher) ReportSTTBug(args *STTBugReportArgs, _ *struct{}) error {
 
 	return nil
 }
+
+type PushFlightStripArgs struct {
+	ControllerToken string
+	ACID            sim.ACID
+	ToTCP           sim.TCP
+}
+
+const PushFlightStripRPC = "Sim.PushFlightStrip"
+
+func (sd *dispatcher) PushFlightStrip(args *PushFlightStripArgs, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	return c.sim.PushFlightStrip(c.tcw, args.ACID, args.ToTCP)
+}
+
+type AnnotateFlightStripArgs struct {
+	ControllerToken string
+	ACID            sim.ACID
+	Annotations     [9]string
+}
+
+const AnnotateFlightStripRPC = "Sim.AnnotateFlightStrip"
+
+func (sd *dispatcher) AnnotateFlightStrip(args *AnnotateFlightStripArgs, _ *struct{}) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+	return c.sim.AnnotateFlightStrip(c.tcw, args.ACID, args.Annotations)
+}

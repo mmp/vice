@@ -174,6 +174,8 @@ type SimState struct {
 	ControllerMonitoredBeaconCodeBlocks []av.Squawk
 
 	UserIsPrivileged bool // Whether this user has elevated privileges (can control any aircraft)
+
+	FlightStripACIDs []sim.ACID
 }
 
 // TCWIsPrivileged returns whether the given TCW has elevated privileges.
@@ -647,6 +649,7 @@ func (su *SimStateUpdate) Apply(state *SimState, eventStream *sim.EventStream) {
 	}
 
 	state.ActiveTCWs = su.ActiveTCWs
+	state.FlightStripACIDs = su.FlightStripACIDs
 
 	// Post events after updating state so they reflect current state.
 	if eventStream != nil {
@@ -659,7 +662,7 @@ func (su *SimStateUpdate) Apply(state *SimState, eventStream *sim.EventStream) {
 // GetStateUpdate fills in a server.SimStateUpdate with both sim state and human controllers.
 func (c *controllerContext) GetStateUpdate() SimStateUpdate {
 	return SimStateUpdate{
-		StateUpdate: c.sim.GetStateUpdate(),
+		StateUpdate: c.sim.GetStateUpdate(c.tcw),
 		ActiveTCWs:  c.session.GetActiveTCWs(),
 		Events:      c.sim.PrepareRadioTransmissionsForTCW(c.tcw, c.eventSub.Get()),
 	}

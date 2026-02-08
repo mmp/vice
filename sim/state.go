@@ -113,6 +113,7 @@ type UserState struct {
 type StateUpdate struct {
 	DynamicState
 	DerivedState
+	FlightStripACIDs []ACID
 }
 
 ///////////////////////////////////////////////////////////////////////////

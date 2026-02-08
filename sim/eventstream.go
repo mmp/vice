@@ -239,8 +239,7 @@ func (e *EventStream) LogValue() slog.Value {
 type EventType int
 
 const (
-	PushedFlightStripEvent EventType = iota
-	PointOutEvent
+	PointOutEvent EventType = iota
 	OfferedHandoffEvent
 	AcceptedHandoffEvent
 	AcceptedRedirectedHandoffEvent
@@ -268,9 +267,8 @@ const (
 )
 
 func (t EventType) String() string {
-	return []string{"PushedFlightStrip", "PointOut",
-		"OfferedHandoff", "AcceptedHandoff", "AcceptedRedirectedHandoffEvent", "CanceledHandoff",
-		"RejectedHandoff", "RadioTransmission", "StatusMessage", "ErrorMessage",
+	return []string{"PointOut", "OfferedHandoff", "AcceptedHandoff", "AcceptedRedirectedHandoffEvent",
+		"CanceledHandoff", "RejectedHandoff", "RadioTransmission", "StatusMessage", "ErrorMessage",
 		"ServerBroadcastMessage", "GlobalMessage", "AcknowledgedPointOut", "RejectedPointOut",
 		"HandoffControl", "SetGlobalLeaderLine", "ForceQL", "TransferAccepted", "TransferRejected",
 		"RecalledPointOut", "FlightPlanAssociated", "FixCoordinates", "STTCommand", "FlightPlanDirect",

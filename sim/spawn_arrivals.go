@@ -152,6 +152,11 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		return nil, err
 	}
 
+	// Create a flight strip at the inbound handoff controller if it's a human position
+	if shouldCreateFlightStrip(&nasFp) && !s.isVirtualController(nasFp.InboundHandoffController) {
+		s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
+	}
+
 	_, err = s.STARSComputer.CreateFlightPlan(nasFp)
 
 	return ac, err
@@ -289,6 +294,12 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		return nil, err
 	}
 
+	// Create a flight strip at the inbound handoff controller if it's a human position
+	if shouldCreateFlightStrip(&nasFp) && !s.isVirtualController(nasFp.InboundHandoffController) {
+		s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
+	}
+
 	_, err := s.STARSComputer.CreateFlightPlan(nasFp)
+
 	return ac, err
 }

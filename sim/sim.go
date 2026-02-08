@@ -114,6 +114,8 @@ type Sim struct {
 	// LastSTTCommand stores state needed to roll back a misheard STT command.
 	// Only the single most recent command is tracked.
 	LastSTTCommand *LastSTTCommand
+
+	AvailableStripCIDs []int
 }
 
 // LastSTTCommand stores the nav snapshot from before the most recent STT command
@@ -278,6 +280,15 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		SquawkWarnedACIDs: make(map[ACID]any),
 
 		wxProvider: config.WXProvider,
+
+		AvailableStripCIDs: func() []int {
+			cids := make([]int, 1000)
+			for i := range cids {
+				cids[i] = i
+			}
+			rand.ShuffleSlice(cids, rand.Make())
+			return cids
+		}(),
 	}
 
 	s.VoiceAssigner = NewVoiceAssigner(s.Rand)
@@ -878,15 +889,16 @@ func (s *Sim) PrepareRadioTransmissionsForTCW(tcw TCW, events []Event) []Event {
 	return s.prepareRadioTransmissions(tcw, events)
 }
 
-func (s *Sim) GetStateUpdate() StateUpdate {
+func (s *Sim) GetStateUpdate(tcw TCW) StateUpdate {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	s.State.GenerationIndex++
 
 	update := StateUpdate{
-		DynamicState: s.State.DynamicState,
-		DerivedState: makeDerivedState(s),
+		DynamicState:     s.State.DynamicState,
+		DerivedState:     makeDerivedState(s),
+		FlightStripACIDs: s.flightStripACIDsForTCW(tcw),
 	}
 
 	if util.SizeOf(update, os.Stderr, false, 1024*1024) > 256*1024*1024 {
@@ -1749,4 +1761,82 @@ func (t *Track) IsArrival() bool {
 
 func (t *Track) IsOverflight() bool {
 	return t.IsAssociated() && t.FlightPlan.TypeOfFlight == av.FlightTypeOverflight
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Flight Strips
+
+// allocateStripCID picks a random free CID in 000-999 and marks it used.
+func (s *Sim) allocateStripCID() int {
+	if len(s.AvailableStripCIDs) > 0 {
+		cid := s.AvailableStripCIDs[0]
+		s.AvailableStripCIDs = s.AvailableStripCIDs[1:]
+		return cid
+	}
+	return s.Rand.Intn(1000)
+}
+
+// freeStripCID releases a CID back to the pool.
+func (s *Sim) freeStripCID(cid int) {
+	s.AvailableStripCIDs = append(s.AvailableStripCIDs, cid)
+}
+
+// initFlightStrip assigns a strip CID and owner on the flight plan.
+// No-op if the flight plan already has a strip.
+func (s *Sim) initFlightStrip(fp *NASFlightPlan, owner ControlPosition) {
+	if fp.StripOwner != "" {
+		return
+	}
+	fp.StripCID = s.allocateStripCID()
+	fp.StripOwner = owner
+	s.lg.Debug("created flight strip", slog.String("acid", string(fp.ACID)), slog.String("owner", string(owner)))
+}
+
+func shouldCreateFlightStrip(fp *NASFlightPlan) bool {
+	return fp.Rules == av.FlightRulesIFR || (fp.PlanType != LocalNonEnroute && fp.TypeOfFlight == av.FlightTypeDeparture)
+}
+
+// flightStripACIDsForTCW returns the ACIDs of all flight plans with strips
+// owned by TCPs controlled by the given TCW. Caller must hold the mutex.
+func (s *Sim) flightStripACIDsForTCW(tcw TCW) []ACID {
+	var result []ACID
+	for _, ac := range s.Aircraft {
+		if ac.IsAssociated() && s.State.TCWControlsPosition(tcw, ac.NASFlightPlan.StripOwner) {
+			result = append(result, ac.NASFlightPlan.ACID)
+		}
+	}
+	for _, fp := range s.STARSComputer.FlightPlans {
+		if s.State.TCWControlsPosition(tcw, fp.StripOwner) {
+			result = append(result, fp.ACID)
+		}
+	}
+	return result
+}
+
+// PushFlightStrip moves a flight strip to the given TCP.
+func (s *Sim) PushFlightStrip(tcw TCW, acid ACID, toTCP TCP) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	fp, _, _ := s.getFlightPlanForACID(acid)
+	if fp == nil || !s.State.TCWControlsPosition(tcw, fp.StripOwner) {
+		return ErrNoMatchingFlight
+	}
+
+	fp.StripOwner = ControlPosition(toTCP)
+	return nil
+}
+
+// AnnotateFlightStrip updates the annotations on a flight strip.
+func (s *Sim) AnnotateFlightStrip(tcw TCW, acid ACID, annotations [9]string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	fp, _, _ := s.getFlightPlanForACID(acid)
+	if fp == nil || !s.State.TCWControlsPosition(tcw, fp.StripOwner) {
+		return ErrNoMatchingFlight
+	}
+
+	fp.StripAnnotations = annotations
+	return nil
 }

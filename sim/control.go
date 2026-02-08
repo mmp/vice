@@ -476,6 +476,17 @@ func (s *Sim) AssociateFlightPlan(tcw TCW, callsign av.ADSBCallsign, spec Flight
 
 			ac.AssociateFlightPlan(fp)
 
+			// Create a flight strip if one doesn't already exist.
+			// Assign to TrackingController so the strip follows
+			// the position if consolidation changes.
+			if shouldCreateFlightStrip(fp) {
+				owner := fp.TrackingController
+				if owner == "" {
+					owner = s.State.PrimaryPositionForTCW(tcw)
+				}
+				s.initFlightStrip(fp, owner)
+			}
+
 			s.eventStream.Post(Event{
 				Type: FlightPlanAssociatedEvent,
 				ACID: fp.ACID,
@@ -549,6 +560,9 @@ func (s *Sim) DeleteFlightPlan(tcw TCW, acid ACID) error {
 }
 
 func (s *Sim) deleteFlightPlan(fp *NASFlightPlan) {
+	if fp.StripOwner != "" {
+		s.freeStripCID(fp.StripCID)
+	}
 	s.STARSComputer.returnListIndex(fp.ListIndex)
 	if fp.PlanType == LocalNonEnroute {
 		s.LocalCodePool.Return(fp.AssignedSquawk)
@@ -767,6 +781,9 @@ func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, t
 		ToController:   toTCP,
 		ACID:           sfp.ACID,
 	})
+
+	// Move the flight strip to the destination TCP.
+	sfp.StripOwner = toTCP
 
 	// Cancel any in-progress frequency switch and take away the
 	// current controller's ability to issue control commands.

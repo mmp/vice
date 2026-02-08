@@ -431,10 +431,6 @@ type FlightPlan struct {
 	Remarks          string
 }
 
-type FlightStrip struct {
-	Callsign string
-}
-
 /////////////////////////////////////////////////////////////////////////
 // Squawk Codes and SPCs
 

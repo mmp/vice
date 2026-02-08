@@ -578,6 +578,11 @@ type NASFlightPlan struct {
 
 	// Used so that such FPs can associate regardless of acquisition filters.
 	ManuallyCreated bool
+
+	// Flight strip fields
+	StripCID         int             // numeric 000-999, allocated server-side
+	StripAnnotations [9]string       // 3x3 annotation grid
+	StripOwner       ControlPosition // which TCP position has this strip (empty = no strip)
 }
 
 type ACID string

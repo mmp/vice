@@ -195,7 +195,7 @@ func (ss *simSession) GetStateUpdate(token string) *SimStateUpdate {
 	ss.mu.Unlock(ss.lg)
 
 	return &SimStateUpdate{
-		StateUpdate: ss.sim.GetStateUpdate(),
+		StateUpdate: ss.sim.GetStateUpdate(tcw),
 		ActiveTCWs:  ss.GetActiveTCWs(),
 		Events:      ss.sim.PrepareRadioTransmissionsForTCW(tcw, eventSub.Get()),
 	}

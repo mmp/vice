@@ -537,3 +537,19 @@ func (c *ControlClient) DeconsolidateTCP(tcp sim.TCP, callback func(error)) {
 		TCP:             tcp,
 	}, &update, nil), &update, callback))
 }
+
+func (c *ControlClient) PushFlightStrip(acid sim.ACID, toTCP sim.TCP) {
+	c.addCall(makeRPCCall(c.client.Go(server.PushFlightStripRPC, &server.PushFlightStripArgs{
+		ControllerToken: c.controllerToken,
+		ACID:            acid,
+		ToTCP:           toTCP,
+	}, nil, nil), nil))
+}
+
+func (c *ControlClient) AnnotateFlightStrip(acid sim.ACID, annotations [9]string) {
+	c.addCall(makeRPCCall(c.client.Go(server.AnnotateFlightStripRPC, &server.AnnotateFlightStripArgs{
+		ControllerToken: c.controllerToken,
+		ACID:            acid,
+		Annotations:     annotations,
+	}, nil, nil), nil))
+}
