@@ -143,20 +143,31 @@ if defined VULKAN_SDK (
 REM Generate sherpa-onnx import libraries if needed.
 REM The sherpa-onnx-go-windows module only ships DLLs, but the MinGW
 REM linker needs import libraries (.dll.a) to link against them.
+REM We generate them in a local writable directory since the Go module
+REM cache is read-only.
+set SHERPA_IMPORT_DIR=%CD%\ext\sherpa-import-libs
 go mod download github.com/k2-fsa/sherpa-onnx-go-windows
 for /f "delims=" %%g in ('go env GOMODCACHE') do set GOMODCACHE=%%g
 for /f "tokens=2" %%v in ('findstr /c:"github.com/k2-fsa/sherpa-onnx-go " go.mod') do set SHERPA_VERSION=%%v
 set SHERPA_LIB=!GOMODCACHE!\github.com\k2-fsa\sherpa-onnx-go-windows@!SHERPA_VERSION!\lib\x86_64-pc-windows-gnu
 if exist "!SHERPA_LIB!\sherpa-onnx-c-api.dll" (
-    if not exist "!SHERPA_LIB!\libsherpa-onnx-c-api.dll.a" (
+    if not exist "!SHERPA_IMPORT_DIR!\libsherpa-onnx-c-api.dll.a" (
         echo === Generating sherpa-onnx import libraries ===
-        pushd "!SHERPA_LIB!"
+        if not exist "!SHERPA_IMPORT_DIR!" mkdir "!SHERPA_IMPORT_DIR!"
+        copy "!SHERPA_LIB!\sherpa-onnx-c-api.dll" "!SHERPA_IMPORT_DIR!\" >nul
+        copy "!SHERPA_LIB!\onnxruntime.dll" "!SHERPA_IMPORT_DIR!\" >nul
+        pushd "!SHERPA_IMPORT_DIR!"
         gendef sherpa-onnx-c-api.dll
+        if errorlevel 1 exit /b 1
         gendef onnxruntime.dll
+        if errorlevel 1 exit /b 1
         dlltool -d sherpa-onnx-c-api.def -l libsherpa-onnx-c-api.dll.a -D sherpa-onnx-c-api.dll
+        if errorlevel 1 exit /b 1
         dlltool -d onnxruntime.def -l libonnxruntime.dll.a -D onnxruntime.dll
+        if errorlevel 1 exit /b 1
         popd
     )
+    set CGO_LDFLAGS=!CGO_LDFLAGS! -L !SHERPA_IMPORT_DIR!
     if not exist "windows\sherpa-onnx-c-api.dll" (
         echo Copying sherpa-onnx runtime DLLs to windows/
         copy "!SHERPA_LIB!\sherpa-onnx-c-api.dll" windows\ >nul
