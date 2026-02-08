@@ -521,20 +521,28 @@ func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context) {
 	fa := ctx.Client.State.FacilityAdaptation
 
 	qlfilt := util.FilterSlice(fa.Filters.Quicklook,
-		func(f sim.FilterRegion) bool {
+		func(f sim.QuicklookRegion) bool {
 			_, disabled := ps.DisabledQLRegions[f.Id]
 			return !disabled
 		})
+	userPositions := ctx.Client.State.GetPositionsForTCW(ctx.UserTCW)
 	for _, trk := range sp.visibleTracks {
 		state := sp.TrackState[trk.ADSBCallsign]
 
 		if trk.IsUnassociated() || state.DisplayFDB {
 			continue
 		} else {
+			fp := trk.FlightPlan
+			acType := ""
+			if fp != nil {
+				acType = fp.AircraftType
+			}
 			state.DisplayFDB = slices.ContainsFunc(qlfilt,
-				func(f sim.FilterRegion) bool {
-					return f.Inside(state.track.Location, int(state.track.TransponderAltitude)) &&
-						!f.Inside(state.previousTrack.Location, int(state.previousTrack.TransponderAltitude))
+				func(f sim.QuicklookRegion) bool {
+					return f.Match(state.track.Location, int(state.track.TransponderAltitude),
+						fp, userPositions, acType) &&
+						!f.Match(state.previousTrack.Location, int(state.previousTrack.TransponderAltitude),
+							fp, userPositions, acType)
 				})
 		}
 	}

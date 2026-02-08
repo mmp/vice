@@ -9295,6 +9295,47 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             it's not necessary to close the polygon yourself.
             </p>
 
+            <p>Quicklook and FDAM filter regions may include optional qualifying
+              attributes that constrain which aircraft are affected (per DMS Table
+              4-109). When any of these fields are specified, an aircraft must satisfy
+              all of them (as well as being inside the volume) to match the filter.
+              If a field is omitted or empty, that constraint is not applied.
+            </p>
+            <p>The following attributes apply to both quicklook and FDAM filters:</p>
+            <ul>
+              <li>"tcps": comma-delimited list of TCP identifiers (local positions only),
+                or "ALL" for all local positions. The filter only applies if the user is
+                signed in to one of the listed positions.</li>
+              <li>"scratchpad": comma-delimited list of scratchpad values. The aircraft's
+                scratchpad must match one of them.</li>
+              <li>"secondary_scratchpad": comma-delimited list of secondary scratchpad values.
+                The aircraft's secondary scratchpad must match one of them.</li>
+              <li>"owning_tcp": comma-delimited list of TCP identifiers. The aircraft's
+                tracking controller must be one of them.</li>
+              <li>"entry_fix": comma-delimited list of fix names. The aircraft's entry fix
+                must be one of them (aircraft with no entry fix set are not excluded).</li>
+              <li>"exit_fix": comma-delimited list of fix names. The aircraft's exit fix
+                must be one of them (aircraft with no exit fix set are not excluded).</li>
+              <li>"flight_type": one of "arrival", "departure", or "overflight". If set,
+                only aircraft of that flight type match.</li>
+              <li>"cwt_category": a single letter from "A" through "I" matching the
+                aircraft's CWT category, where "A" is the heaviest (e.g. A380) and "I"
+                is the lightest (small aircraft).</li>
+            </ul>
+            <p>The following attributes apply to quicklook filters only:</p>
+            <ul>
+              <li>"flight_rules": "V" for VFR only, "I" for IFR only, or "B" (or empty)
+                for both.</li>
+              <li>"ssr_codes": comma-delimited list of SSR codes or ranges. Each element is
+                either a single four-digit octal code (e.g. "1200") or a range
+                ("1300-1377"). The aircraft's assigned squawk must fall in one of the
+                specified codes or ranges.</li>
+              <li>"requested_altitude": comma-delimited list of altitudes or ranges, in
+                hundreds of feet. Each element is either a single value (e.g. "40" for
+                4,000') or a range ("100-180" for FL100&ndash;FL180). The aircraft's requested
+                altitude must fall in one of the specified values or ranges.</li>
+            </ul>
+
 
             <h3 id="fe-video-maps">Video Maps</h3>
 

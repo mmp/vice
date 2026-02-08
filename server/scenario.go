@@ -571,7 +571,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 			})))
 	allAirports := slices.Collect(maps.Keys(sg.Airports))
 
-	sg.FacilityAdaptation.PostDeserialize(sg, controlledAirports, allAirports, e)
+	sg.FacilityAdaptation.PostDeserialize(sg, controlledAirports, allAirports, sg.ControlPositions, e)
 
 	sg.NmPerLatitude = 60
 	sg.NmPerLongitude = math.NMPerLongitudeAt(sg.FacilityAdaptation.Center)

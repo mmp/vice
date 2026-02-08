@@ -619,7 +619,36 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	addAirspaceVolumes("DEP", "DEPARTURE AREA ALL", ss.FacilityAdaptation.Filters.Departure)
 	addAirspaceVolumes("SECDROP", "SECONDARY DROP AREA ALL", ss.FacilityAdaptation.Filters.SecondaryDrop)
 	addAirspaceVolumes("SURFTRK", "SURFACE TRACKING AREA ALL", ss.FacilityAdaptation.Filters.SurfaceTracking)
-	addAirspaceVolumes("QLRGNS", "QUICKLOOK REGIONS ALL", ss.FacilityAdaptation.Filters.Quicklook)
+	// Quicklook regions have a different type; extract their airspace volumes.
+	if ql := ss.FacilityAdaptation.Filters.Quicklook; len(ql) > 0 {
+		vm := radar.ClientVideoMap{
+			VideoMap: sim.VideoMap{
+				Label:    "QLRGNS",
+				Name:     "QUICKLOOK REGIONS ALL",
+				Id:       asIdx,
+				Category: VideoMapProcessingAreas,
+			},
+		}
+		asIdx++
+		for _, f := range ql {
+			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
+		}
+		addMap(vm)
+
+		for _, f := range ql {
+			vm := radar.ClientVideoMap{
+				VideoMap: sim.VideoMap{
+					Label:    strings.ToUpper(f.Id),
+					Name:     strings.ToUpper(f.Description),
+					Id:       asIdx,
+					Category: VideoMapProcessingAreas,
+				},
+			}
+			asIdx++
+			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
+			addMap(vm)
+		}
+	}
 
 	// MVAs
 	mvas := radar.ClientVideoMap{
