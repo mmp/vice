@@ -110,29 +110,34 @@ type SessionStats struct {
 	SignOnTime time.Time
 	Initials   string
 
+	initialized   bool
 	seenCallsigns map[av.ADSBCallsign]any
 }
 
 func (s *SessionStats) Update(ss *SimState) {
-	for i, trk := range ss.Tracks {
-		if fp := trk.FlightPlan; fp != nil {
-			// Use track ownership check (via OwningTCW).
-			if !ss.UserControlsTrack(ss.Tracks[i]) {
-				continue // not ours
-			}
-			if _, ok := s.seenCallsigns[trk.ADSBCallsign]; ok {
-				continue // seen it already
-			}
-			s.seenCallsigns[trk.ADSBCallsign] = nil
-			if trk.IsDeparture() {
-				s.Departures++
-			} else if trk.IsArrival() {
-				s.Arrivals++
-			} else if trk.IsOverflight() {
-				s.Overflights++
-			}
+	for _, trk := range ss.Tracks {
+		if trk.FlightPlan == nil || !ss.UserControlsTrack(trk) {
+			continue
+		}
+		if _, ok := s.seenCallsigns[trk.ADSBCallsign]; ok {
+			continue
+		}
+		s.seenCallsigns[trk.ADSBCallsign] = nil
+
+		// Don't count pre-existing aircraft from before sign-on.
+		if !s.initialized {
+			continue
+		}
+
+		if trk.IsDeparture() {
+			s.Departures++
+		} else if trk.IsArrival() {
+			s.Arrivals++
+		} else if trk.IsOverflight() {
+			s.Overflights++
 		}
 	}
+	s.initialized = true
 }
 
 func (c *ControlClient) RPCClient() *RPCClient {
