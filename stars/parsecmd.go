@@ -703,6 +703,8 @@ func typeNameToGenerator(typeName string) matchGenerator {
 	// Restriction areas
 	case "QL_REGION":
 		return &qlRegionMatchGenerator{}
+	case "FDAM_REGION":
+		return &fdamRegionMatchGenerator{}
 	case "RA_INDEX":
 		return &raIndexMatchGenerator{UserOnly: false}
 	case "USER_RA_INDEX":

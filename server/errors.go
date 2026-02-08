@@ -62,6 +62,9 @@ var errorStringToError = map[string]error{
 	nav.ErrUnknownApproach.Error():              nav.ErrUnknownApproach,
 
 	sim.ErrATPADisabled.Error():                    sim.ErrATPADisabled,
+	sim.ErrFDAMIllegalArea.Error():                 sim.ErrFDAMIllegalArea,
+	sim.ErrFDAMNoRegions.Error():                   sim.ErrFDAMNoRegions,
+	sim.ErrFDAMProcessingOff.Error():               sim.ErrFDAMProcessingOff,
 	sim.ErrAircraftAlreadyReleased.Error():         sim.ErrAircraftAlreadyReleased,
 	sim.ErrBeaconMismatch.Error():                  sim.ErrBeaconMismatch,
 	sim.ErrControllerAlreadySignedIn.Error():       sim.ErrControllerAlreadySignedIn,

@@ -75,8 +75,9 @@ type TrackState struct {
 
 	// These are only set if a leader line direction was specified for this
 	// aircraft individually:
-	LeaderLineDirection *math.CardinalOrdinalDirection
-	UseGlobalLeaderLine bool
+	LeaderLineDirection     *math.CardinalOrdinalDirection
+	FDAMLeaderLineDirection *math.CardinalOrdinalDirection
+	UseGlobalLeaderLine     bool
 
 	Ghost struct {
 		PartialDatablock bool
@@ -366,6 +367,13 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 				}
 			}
 
+		case sim.FDAMLeaderLineEvent:
+			if ctx.UserControlsPosition(event.ToController) {
+				if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {
+					state.FDAMLeaderLineDirection = event.LeaderLineDirection
+				}
+			}
+
 		case sim.ForceQLEvent:
 			if ctx.UserControlsPosition(event.ToController) {
 				if sp.ForceQLACIDs == nil {
@@ -540,9 +548,9 @@ func (sp *STARSPane) updateQuicklookRegionTracks(ctx *panes.Context) {
 			state.DisplayFDB = slices.ContainsFunc(qlfilt,
 				func(f sim.QuicklookRegion) bool {
 					return f.Match(state.track.Location, int(state.track.TransponderAltitude),
-						fp, userPositions, acType) &&
+						fp, userPositions, acType, fa.SignificantPoints) &&
 						!f.Match(state.previousTrack.Location, int(state.previousTrack.TransponderAltitude),
-							fp, userPositions, acType)
+							fp, userPositions, acType, fa.SignificantPoints)
 				})
 		}
 	}
@@ -1447,6 +1455,8 @@ func (sp *STARSPane) getLeaderLineDirection(ctx *panes.Context, trk sim.Track) m
 		} else if state.LeaderLineDirection != nil {
 			// The direction was specified for the aircraft specifically
 			return *state.LeaderLineDirection
+		} else if state.FDAMLeaderLineDirection != nil {
+			return *state.FDAMLeaderLineDirection
 		} else if ctx.UserOwnsFlightPlan(sfp) {
 			// Tracked by us
 			return ps.LeaderLineDirection

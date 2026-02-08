@@ -979,6 +979,15 @@ func (g *qlRegionMatchGenerator) Generate(r *rand.Rand, ctx *GeneratorContext) G
 	return GeneratorResult{Text: randomField(r, length)}
 }
 
+// fdamRegionMatchGenerator generates FDAM region IDs.
+type fdamRegionMatchGenerator struct{}
+
+func (g *fdamRegionMatchGenerator) Generate(r *rand.Rand, ctx *GeneratorContext) GeneratorResult {
+	// Generate 1-5 character region ID
+	length := 1 + r.Intn(5)
+	return GeneratorResult{Text: randomField(r, length)}
+}
+
 // qlPositionsMatchGenerator generates quicklook position lists.
 type qlPositionsMatchGenerator struct{}
 

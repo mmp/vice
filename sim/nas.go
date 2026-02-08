@@ -212,7 +212,161 @@ func (sc *STARSComputer) Update(s *Sim) {
 				ac.MissingFlightPlan = true
 			}
 		}
+
+		// FDAM processing: apply entry/exit actions for associated tracks.
+		if ac.IsAssociated() && !s.FDAMSystemInhibited {
+			s.processFDAMRegions(ac)
+		}
 	}
+}
+
+func (s *Sim) processFDAMRegions(ac *Aircraft) {
+	fp := ac.NASFlightPlan
+	if fp == nil {
+		return
+	}
+	if fp.FDAMState == nil {
+		fp.FDAMState = make(map[string]*FDAMTrackState)
+	}
+
+	acType := fp.AircraftType
+
+	for i := range s.State.FacilityAdaptation.Filters.FDAM {
+		region := &s.State.FacilityAdaptation.Filters.FDAM[i]
+		if _, disabled := s.DisabledFDAMRegions[region.Id]; disabled {
+			continue
+		}
+		state, exists := fp.FDAMState[region.Id]
+		if !exists {
+			state = &FDAMTrackState{}
+			fp.FDAMState[region.Id] = state
+		}
+
+		wasInside := state.Inside
+		// For initial entry, both the airspace volume and filter qualifiers
+		// must match. Once inside, only the airspace volume determines
+		// continued presence; entry actions (e.g. handoff) may change
+		// flight plan fields that the qualifiers check against.
+		var nowInside bool
+		if wasInside {
+			nowInside = region.AirspaceVolume.Inside(ac.Position(), int(ac.Altitude()))
+		} else {
+			nowInside = region.Match(ac.Position(), int(ac.Altitude()), fp, acType,
+				s.State.FacilityAdaptation.SignificantPoints)
+		}
+		state.Inside = nowInside
+
+		if nowInside && !wasInside {
+			s.applyFDAMEntryActions(region, fp, state)
+		} else if !nowInside && wasInside {
+			s.applyFDAMExitActions(region, fp, state)
+		}
+	}
+}
+
+func (s *Sim) applyFDAMEntryActions(region *FDAMRegion, fp *NASFlightPlan, state *FDAMTrackState) {
+	// Save pre-entry state for potential revert on exit.
+	state.PreEntryOwnerLeaderDirection = fp.GlobalLeaderLineDirection
+
+	// Scratchpad 1
+	if region.NewScratchpad1 != "" {
+		if region.AllowScratchpad1Override || fp.Scratchpad == "" {
+			if region.NewScratchpad1 == "-" {
+				fp.Scratchpad = ""
+			} else {
+				fp.Scratchpad = region.NewScratchpad1
+			}
+		}
+	}
+
+	// Scratchpad 2
+	if region.NewScratchpad2 != "" {
+		if region.AllowScratchpad2Override || fp.SecondaryScratchpad == "" {
+			if region.NewScratchpad2 == "-" {
+				fp.SecondaryScratchpad = ""
+			} else {
+				fp.SecondaryScratchpad = region.NewScratchpad2
+			}
+		}
+	}
+
+	// Owner leader direction
+	if region.NewOwnerLeaderDirection != nil {
+		fp.GlobalLeaderLineDirection = region.NewOwnerLeaderDirection
+		s.eventStream.Post(Event{
+			Type: SetGlobalLeaderLineEvent,
+			ACID: fp.ACID,
+		})
+	}
+
+	// TCP-specific leader direction: set via event for each pointout TCP
+	if region.NewTCPSpecificLeaderDirection != nil && len(region.PointoutTCPs) > 0 {
+		for _, tcp := range region.PointoutTCPs {
+			s.eventStream.Post(Event{
+				Type:                FDAMLeaderLineEvent,
+				ACID:                fp.ACID,
+				ToController:        tcp,
+				LeaderLineDirection: region.NewTCPSpecificLeaderDirection,
+			})
+		}
+	}
+
+	// Handoff or transfer
+	switch region.HandoffInitiateTransfer {
+	case "I":
+		if region.NewOwnerTCP != "" {
+			s.handoffTrack(fp, region.NewOwnerTCP)
+		}
+	case "T":
+		if region.NewOwnerTCP != "" {
+			s.eventStream.Post(Event{
+				Type:           TransferAcceptedEvent,
+				FromController: fp.TrackingController,
+				ToController:   region.NewOwnerTCP,
+				ACID:           fp.ACID,
+			})
+			fp.TrackingController = region.NewOwnerTCP
+			fp.OwningTCW = s.tcwForPosition(region.NewOwnerTCP)
+		}
+	}
+
+	// Immediate pointout (force quicklook)
+	if region.ImmediatePointout {
+		for _, tcp := range region.PointoutTCPs {
+			s.eventStream.Post(Event{
+				Type:           ForceQLEvent,
+				FromController: fp.TrackingController,
+				ToController:   tcp,
+				ACID:           fp.ACID,
+			})
+		}
+	}
+}
+
+func (s *Sim) applyFDAMExitActions(region *FDAMRegion, fp *NASFlightPlan, state *FDAMTrackState) {
+	// Revert owner leader direction if not retained
+	if !region.RetainOwnerLeaderDirection && region.NewOwnerLeaderDirection != nil {
+		fp.GlobalLeaderLineDirection = state.PreEntryOwnerLeaderDirection
+		s.eventStream.Post(Event{
+			Type: SetGlobalLeaderLineEvent,
+			ACID: fp.ACID,
+		})
+	}
+
+	// Revert TCP-specific leader directions if not retained
+	if !region.RetainTCPSpecificLeaderDirection && region.NewTCPSpecificLeaderDirection != nil {
+		for _, tcp := range region.PointoutTCPs {
+			s.eventStream.Post(Event{
+				Type:         FDAMLeaderLineEvent,
+				ACID:         fp.ACID,
+				ToController: tcp,
+				// nil LeaderLineDirection signals revert
+			})
+		}
+	}
+
+	// Clear saved state
+	state.PreEntryOwnerLeaderDirection = nil
 }
 
 func (sc *STARSComputer) lookupFlightPlanByACID(acid ACID) *NASFlightPlan {

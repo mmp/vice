@@ -190,9 +190,29 @@ func init() {
 	// registerCommand(CommandModeMultiFunc, "2T[TEXT] D", ...)
 
 	// 8.37 Enable / inhibit flight data auto-modify (FDAM) system-wide
-	// registerCommand(CommandModeMultiFunc, "2X", ...)
-	// registerCommand(CommandModeMultiFunc, "2XE", ...)
-	// registerCommand(CommandModeMultiFunc, "2XI", ...)
+	configureFDAM := func(sp *STARSPane, ctx *panes.Context, op sim.FDAMConfigOp, regionId string) error {
+		ctx.Client.ConfigureFDAM(op, regionId,
+			func(output string, err error) {
+				if err != nil {
+					sp.displayError(err, ctx, "")
+				} else {
+					sp.previewAreaOutput = output
+				}
+			})
+		return nil
+	}
+	registerCommand(CommandModeMultiFunc, "2X",
+		func(sp *STARSPane, ctx *panes.Context) error {
+			return configureFDAM(sp, ctx, sim.FDAMToggleSystem, "")
+		})
+	registerCommand(CommandModeMultiFunc, "2XE",
+		func(sp *STARSPane, ctx *panes.Context) error {
+			return configureFDAM(sp, ctx, sim.FDAMEnableSystem, "")
+		})
+	registerCommand(CommandModeMultiFunc, "2XI",
+		func(sp *STARSPane, ctx *panes.Context) error {
+			return configureFDAM(sp, ctx, sim.FDAMInhibitSystem, "")
+		})
 
 	// 8.38 Enable / disable ATPA system-wide
 	hasATPAVolumes := func(ctx *panes.Context) bool {

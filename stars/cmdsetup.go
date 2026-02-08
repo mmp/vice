@@ -15,6 +15,7 @@ import (
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/panes"
 	"github.com/mmp/vice/radar"
+	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
 )
 
@@ -560,12 +561,35 @@ func init() {
 	// registerCommand(CommandModeRestrictionArea, "[FIELD:1]I", unimplemented)
 
 	// 4.19 Enable / inhibit Flight data auto-modify (FDAM) region (p. 4-123)
-	//(CommandModeMultiFunc, "2X[TEXT]", unimplementedCommand),
-	//(CommandModeMultiFunc, "2X[TEXT] E", unimplementedCommand),
-	//(CommandModeMultiFunc, "2X[TEXT] I", unimplementedCommand),
+	configureFDAM := func(sp *STARSPane, ctx *panes.Context, op sim.FDAMConfigOp, regionId string) error {
+		ctx.Client.ConfigureFDAM(op, regionId,
+			func(output string, err error) {
+				if err != nil {
+					sp.displayError(err, ctx, "")
+				} else {
+					sp.previewAreaOutput = output
+				}
+			})
+		return nil
+	}
+	registerCommand(CommandModeMultiFunc, "2X[FDAM_REGION]",
+		func(sp *STARSPane, ctx *panes.Context, regionID string) error {
+			return configureFDAM(sp, ctx, sim.FDAMToggleRegion, regionID)
+		})
+	registerCommand(CommandModeMultiFunc, "2X[FDAM_REGION] I",
+		func(sp *STARSPane, ctx *panes.Context, regionID string) error {
+			return configureFDAM(sp, ctx, sim.FDAMInhibitRegion, regionID)
+		})
+	registerCommand(CommandModeMultiFunc, "2X[FDAM_REGION] E",
+		func(sp *STARSPane, ctx *panes.Context, regionID string) error {
+			return configureFDAM(sp, ctx, sim.FDAMEnableRegion, regionID)
+		})
 
 	// 4.20 Display status of all Flight data auto-modify (FDAM) regions (p. 4-125)
-	//(CommandModeMultiFunc, "2XS", unimplementedCommand),
+	registerCommand(CommandModeMultiFunc, "2XS",
+		func(sp *STARSPane, ctx *panes.Context) error {
+			return configureFDAM(sp, ctx, sim.FDAMQueryStatus, "")
+		})
 }
 
 // savePreferences saves current preferences with the given name.

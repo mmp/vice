@@ -259,6 +259,7 @@ const (
 	FixCoordinatesEvent
 	STTCommandEvent
 	FlightPlanDirectEvent
+	FDAMLeaderLineEvent
 )
 
 func (t EventType) String() string {
@@ -266,7 +267,8 @@ func (t EventType) String() string {
 		"RadioTransmission", "StatusMessage", "ErrorMessage",
 		"ServerBroadcastMessage", "GlobalMessage", "AcknowledgedPointOut", "RejectedPointOut",
 		"SetGlobalLeaderLine", "ForceQL", "TransferAccepted", "TransferRejected",
-		"RecalledPointOut", "FlightPlanAssociated", "FixCoordinates", "STTCommand", "FlightPlanDirect"}[t]
+		"RecalledPointOut", "FlightPlanAssociated", "FixCoordinates", "STTCommand", "FlightPlanDirect",
+		"FDAMLeaderLine"}[t]
 }
 
 type Event struct {
@@ -279,7 +281,7 @@ type Event struct {
 	WrittenText           string
 	SpokenText            string
 	RadioTransmissionType av.RadioTransmissionType       // For radio transmissions only
-	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent
+	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent, FDAMLeaderLineEvent
 	WaypointInfo          []math.Point2LL
 	STTTranscript         string
 	STTCommand            string

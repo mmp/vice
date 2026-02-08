@@ -349,6 +349,7 @@ type FacilityAdaptation struct {
 		InhibitCA       FilterRegions    `json:"inhibit_ca"`
 		InhibitMSAW     FilterRegions    `json:"inhibit_msaw"`
 		Quicklook       QuicklookRegions `json:"quicklook"`
+		FDAM            FDAMRegions      `json:"fdam"`
 		SecondaryDrop   FilterRegions    `json:"secondary_drop"`
 		SurfaceTracking FilterRegions    `json:"surface_tracking"`
 		VFRInhibit      FilterRegions    `json:"vfr_inhibit"`
@@ -432,10 +433,9 @@ type FilterRegion struct {
 
 type FilterRegions []FilterRegion
 
-// QuicklookRegion extends an airspace volume with qualifying attributes
-// (DMS Table 4-109) that constrain which aircraft match.
-type QuicklookRegion struct {
-	av.AirspaceVolume
+// FilterQualifiers holds qualifying attributes (DMS Table 4-109) shared
+// by quicklook and FDAM filter regions.
+type FilterQualifiers struct {
 	// JSON input fields (comma-delimited strings)
 	TCPsString                string `json:"tcps"`
 	ScratchpadString          string `json:"scratchpad"`
@@ -460,10 +460,7 @@ type QuicklookRegion struct {
 	RequestedAltitudes   [][2]int          `json:"-"`
 }
 
-type QuicklookRegions []QuicklookRegion
-
-func (r *QuicklookRegion) PostDeserialize(controlPositions map[TCP]*av.Controller, loc av.Locator, e *util.ErrorLogger) {
-	r.AirspaceVolume.PostDeserialize(loc, e)
+func (r *FilterQualifiers) PostDeserialize(controlPositions map[TCP]*av.Controller, e *util.ErrorLogger) {
 	parseCSV := func(s string) []string {
 		if s == "" {
 			return nil
@@ -593,12 +590,8 @@ func (r *QuicklookRegion) PostDeserialize(controlPositions map[TCP]*av.Controlle
 	}
 }
 
-func (r QuicklookRegion) Match(p math.Point2LL, alt int, fp *NASFlightPlan,
-	userPositions []ControlPosition, aircraftType string) bool {
-	if !r.AirspaceVolume.Inside(p, alt) {
-		return false
-	}
-
+func (r FilterQualifiers) Match(fp *NASFlightPlan, userPositions []ControlPosition,
+	aircraftType string, significantPoints map[string]SignificantPoint) bool {
 	if len(r.TCPs) > 0 {
 		if !slices.ContainsFunc(userPositions, func(pos ControlPosition) bool {
 			return slices.Contains(r.TCPs, pos)
@@ -609,8 +602,17 @@ func (r QuicklookRegion) Match(p math.Point2LL, alt int, fp *NASFlightPlan,
 
 	// Flight plan-dependent checks: if fp is nil, skip them (pass).
 	if fp != nil {
-		if len(r.Scratchpads) > 0 && !slices.Contains(r.Scratchpads, fp.Scratchpad) {
-			return false
+		if len(r.Scratchpads) > 0 {
+			// When fp.Scratchpad is empty, the displayed scratchpad is
+			// derived from the exit fix (possibly via its significant
+			// point short name), so check that as well.
+			sp := fp.Scratchpad
+			if sp == "" {
+				sp = exitFixDisplayName(fp.ExitFix, significantPoints)
+			}
+			if !slices.Contains(r.Scratchpads, sp) {
+				return false
+			}
 		}
 		if len(r.SecondaryScratchpads) > 0 && !slices.Contains(r.SecondaryScratchpads, fp.SecondaryScratchpad) {
 			return false
@@ -675,15 +677,179 @@ func (r QuicklookRegion) Match(p math.Point2LL, alt int, fp *NASFlightPlan,
 	return true
 }
 
+type QuicklookRegion struct {
+	av.AirspaceVolume
+	FilterQualifiers
+}
+
+type QuicklookRegions []QuicklookRegion
+
+func (r *QuicklookRegion) PostDeserialize(controlPositions map[TCP]*av.Controller, loc av.Locator, e *util.ErrorLogger) {
+	r.AirspaceVolume.PostDeserialize(loc, e)
+	r.FilterQualifiers.PostDeserialize(controlPositions, e)
+}
+
+// exitFixDisplayName returns the name that would be displayed as the
+// scratchpad for the given exit fix, accounting for significant point
+// short names. This mirrors the datablock rendering logic.
+func exitFixDisplayName(exitFix string, significantPoints map[string]SignificantPoint) string {
+	if exitFix == "" {
+		return ""
+	}
+	fix, _, _ := strings.Cut(exitFix, ".")
+	if sp, ok := significantPoints[fix]; ok {
+		if sp.ShortName != "" {
+			return sp.ShortName
+		} else if len(fix) > 3 {
+			return fix[:3]
+		}
+		return fix
+	}
+	return ""
+}
+
+func (r QuicklookRegion) Match(p math.Point2LL, alt int, fp *NASFlightPlan,
+	userPositions []ControlPosition, aircraftType string,
+	significantPoints map[string]SignificantPoint) bool {
+	return r.AirspaceVolume.Inside(p, alt) &&
+		r.FilterQualifiers.Match(fp, userPositions, aircraftType, significantPoints)
+}
+
 func (r QuicklookRegions) Match(p math.Point2LL, alt int, fp *NASFlightPlan,
-	userPositions []ControlPosition, aircraftType string) bool {
+	userPositions []ControlPosition, aircraftType string,
+	significantPoints map[string]SignificantPoint) bool {
 	return slices.ContainsFunc(r, func(r QuicklookRegion) bool {
-		return r.Match(p, alt, fp, userPositions, aircraftType)
+		return r.Match(p, alt, fp, userPositions, aircraftType, significantPoints)
 	})
 }
 
 func (r QuicklookRegions) HaveId(s string) bool {
 	return slices.ContainsFunc(r, func(r QuicklookRegion) bool { return s == r.Id })
+}
+
+// FDAMRegion defines a Flight Data Auto-Modify filter region. When a
+// qualifying track enters the region, entry actions are applied; when it
+// exits, exit actions may revert changes.
+type FDAMRegion struct {
+	av.AirspaceVolume
+	FilterQualifiers
+
+	// Entry actions
+	NewScratchpad1           string `json:"new_scratchpad_1"`
+	AllowScratchpad1Override bool   `json:"allow_scratchpad_1_override"`
+	NewScratchpad2           string `json:"new_scratchpad_2"`
+	AllowScratchpad2Override bool   `json:"allow_scratchpad_2_override"`
+
+	NewOwnerLeaderDirectionString string `json:"new_owner_leader_direction"`
+	NewOwnerLeaderDirection       *math.CardinalOrdinalDirection
+
+	HandoffInitiateTransfer string `json:"handoff_initiate_transfer"` // "I", "T", or "N"
+	NewOwnerTCPString       string `json:"new_owner_tcp"`
+	NewOwnerTCP             ControlPosition
+
+	NewTCPSpecificLeaderDirectionString string `json:"new_tcp_specific_leader_direction"`
+	NewTCPSpecificLeaderDirection       *math.CardinalOrdinalDirection
+
+	ImmediatePointout  bool   `json:"immediate_pointout"`
+	PointoutTCPsString string `json:"pointout_tcps"`
+	PointoutTCPs       []ControlPosition
+
+	// Exit actions
+	RetainOwnerLeaderDirection       bool `json:"retain_owner_leader_direction"`
+	RetainTCPSpecificLeaderDirection bool `json:"retain_tcp_specific_leader_direction"`
+}
+
+type FDAMRegions []FDAMRegion
+
+// FDAMTrackState tracks per-aircraft state for a single FDAM region so
+// that entry/exit transitions and revert-on-exit can be handled.
+type FDAMTrackState struct {
+	Inside                       bool
+	PreEntryOwnerLeaderDirection *math.CardinalOrdinalDirection
+}
+
+func (r *FDAMRegion) PostDeserialize(controlPositions map[TCP]*av.Controller, loc av.Locator, e *util.ErrorLogger) {
+	r.AirspaceVolume.PostDeserialize(loc, e)
+	r.FilterQualifiers.PostDeserialize(controlPositions, e)
+
+	if r.TCPsString != "" {
+		e.ErrorString("\"tcps\" is not supported for FDAM regions")
+	}
+	r.TCPs = nil // FDAM regions don't filter by user position
+
+	parseDirection := func(s, field string) *math.CardinalOrdinalDirection {
+		s = strings.ToUpper(strings.TrimSpace(s))
+		if s == "" {
+			return nil
+		}
+		dir, err := math.ParseCardinalOrdinalDirection(s)
+		if err != nil {
+			e.ErrorString("invalid %q: %v", field, err)
+			return nil
+		}
+		return &dir
+	}
+
+	r.NewOwnerLeaderDirection = parseDirection(r.NewOwnerLeaderDirectionString, "new_owner_leader_direction")
+	r.NewTCPSpecificLeaderDirection = parseDirection(r.NewTCPSpecificLeaderDirectionString, "new_tcp_specific_leader_direction")
+
+	r.HandoffInitiateTransfer = strings.ToUpper(strings.TrimSpace(r.HandoffInitiateTransfer))
+	if r.HandoffInitiateTransfer == "" {
+		r.HandoffInitiateTransfer = "N"
+	}
+	if r.HandoffInitiateTransfer != "I" && r.HandoffInitiateTransfer != "T" && r.HandoffInitiateTransfer != "N" {
+		e.ErrorString("invalid \"handoff_initiate_transfer\" %q: must be \"I\", \"T\", or \"N\"", r.HandoffInitiateTransfer)
+	}
+
+	r.NewOwnerTCPString = strings.ToUpper(strings.TrimSpace(r.NewOwnerTCPString))
+	if r.NewOwnerTCPString != "" {
+		tcp := ControlPosition(r.NewOwnerTCPString)
+		if _, ok := controlPositions[tcp]; !ok {
+			e.ErrorString("unknown TCP %q in \"new_owner_tcp\"", r.NewOwnerTCPString)
+		} else {
+			r.NewOwnerTCP = tcp
+		}
+	}
+	if r.HandoffInitiateTransfer != "N" && r.NewOwnerTCP == "" {
+		e.ErrorString("\"new_owner_tcp\" must be specified when \"handoff_initiate_transfer\" is %q", r.HandoffInitiateTransfer)
+	}
+
+	// Parse pointout TCPs
+	if r.PointoutTCPsString != "" {
+		for v := range strings.SplitSeq(r.PointoutTCPsString, ",") {
+			v = strings.ToUpper(strings.TrimSpace(v))
+			if v == "" {
+				continue
+			}
+			tcp := ControlPosition(v)
+			if _, ok := controlPositions[tcp]; !ok {
+				e.ErrorString("unknown TCP %q in \"pointout_tcps\"", v)
+			} else {
+				r.PointoutTCPs = append(r.PointoutTCPs, tcp)
+			}
+		}
+	}
+	if r.ImmediatePointout && len(r.PointoutTCPs) == 0 {
+		e.ErrorString("\"pointout_tcps\" must be specified when \"immediate_pointout\" is true")
+	}
+
+	if r.RetainOwnerLeaderDirection && r.NewOwnerLeaderDirection == nil {
+		e.ErrorString("\"retain_owner_leader_direction\" requires \"new_owner_leader_direction\"")
+	}
+	if r.RetainTCPSpecificLeaderDirection && r.NewTCPSpecificLeaderDirection == nil {
+		e.ErrorString("\"retain_tcp_specific_leader_direction\" requires \"new_tcp_specific_leader_direction\"")
+	}
+}
+
+func (r FDAMRegion) Match(p math.Point2LL, alt int, fp *NASFlightPlan, aircraftType string,
+	significantPoints map[string]SignificantPoint) bool {
+	// FDAM uses TCPs="ALL" per the DMS manual, so no userPositions filtering
+	return r.AirspaceVolume.Inside(p, alt) &&
+		r.FilterQualifiers.Match(fp, nil, aircraftType, significantPoints)
+}
+
+func (r FDAMRegions) HaveId(s string) bool {
+	return slices.ContainsFunc(r, func(r FDAMRegion) bool { return s == r.Id })
 }
 
 type STARSControllerConfig struct {
@@ -832,6 +998,9 @@ type NASFlightPlan struct {
 
 	// Used so that such FPs can associate regardless of acquisition filters.
 	ManuallyCreated bool
+
+	// FDAM region membership state, keyed by region ID.
+	FDAMState map[string]*FDAMTrackState `json:"-"`
 
 	// Flight strip fields
 	StripCID         int             // numeric 000-999, allocated server-side
@@ -1385,6 +1554,21 @@ func (fa *FacilityAdaptation) PostDeserialize(loc av.Locator, controlledAirports
 
 			if _, ok := ids[filt.Id]; ok {
 				e.ErrorString("quicklook filter \"id\"s must be unique: %q was repeated", filt.Id)
+			}
+			ids[filt.Id] = nil
+
+			e.Pop()
+		}
+	}
+
+	{
+		ids := make(map[string]any)
+		for i, filt := range fa.Filters.FDAM {
+			e.Push(filt.Description)
+			fa.Filters.FDAM[i].PostDeserialize(controlPositions, loc, e)
+
+			if _, ok := ids[filt.Id]; ok {
+				e.ErrorString("FDAM filter \"id\"s must be unique: %q was repeated", filt.Id)
 			}
 			ids[filt.Id] = nil
 

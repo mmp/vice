@@ -70,6 +70,8 @@ type Sim struct {
 
 	ReportingPoints []av.ReportingPoint
 
+	FDAMSystemInhibited         bool
+	DisabledFDAMRegions         map[string]struct{} // keyed by region ID
 	EnforceUniqueCallsignSuffix bool
 
 	PendingContacts         map[TCP][]PendingContact
@@ -719,6 +721,106 @@ func (s *Sim) ConfigureATPA(op ATPAConfigOp, volumeId string) (string, error) {
 
 	// Should not get here...
 	return "", nil
+}
+
+type FDAMConfigOp int
+
+const (
+	FDAMToggleSystem FDAMConfigOp = iota
+	FDAMEnableSystem
+	FDAMInhibitSystem
+	FDAMToggleRegion
+	FDAMEnableRegion
+	FDAMInhibitRegion
+	FDAMQueryStatus
+)
+
+func (s *Sim) ConfigureFDAM(op FDAMConfigOp, regionId string) (string, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	if len(s.State.FacilityAdaptation.Filters.FDAM) == 0 {
+		return "", ErrFDAMNoRegions
+	}
+
+	switch op {
+	case FDAMToggleSystem:
+		s.FDAMSystemInhibited = !s.FDAMSystemInhibited
+		return util.Select(s.FDAMSystemInhibited, "FLIGHT-DATA AUTO-MOD PROC OFF", "FLIGHT-DATA AUTO-MOD PROC ON"), nil
+	case FDAMEnableSystem:
+		s.FDAMSystemInhibited = false
+		return "FLIGHT-DATA AUTO-MOD PROC ON", nil
+	case FDAMInhibitSystem:
+		s.FDAMSystemInhibited = true
+		return "FLIGHT-DATA AUTO-MOD PROC OFF", nil
+	}
+
+	if s.FDAMSystemInhibited {
+		return "", ErrFDAMProcessingOff
+	}
+
+	if op == FDAMQueryStatus {
+		return s.fdamStatusString(), nil
+	}
+
+	if !s.State.FacilityAdaptation.Filters.FDAM.HaveId(regionId) {
+		return "", ErrFDAMIllegalArea
+	}
+
+	if s.DisabledFDAMRegions == nil {
+		s.DisabledFDAMRegions = make(map[string]struct{})
+	}
+
+	switch op {
+	case FDAMToggleRegion:
+		if _, ok := s.DisabledFDAMRegions[regionId]; ok {
+			delete(s.DisabledFDAMRegions, regionId)
+			return "REGION " + regionId + " ON", nil
+		}
+		s.DisabledFDAMRegions[regionId] = struct{}{}
+		return "REGION " + regionId + " OFF", nil
+	case FDAMEnableRegion:
+		delete(s.DisabledFDAMRegions, regionId)
+		return "REGION " + regionId + " ON", nil
+	case FDAMInhibitRegion:
+		s.DisabledFDAMRegions[regionId] = struct{}{}
+		return "REGION " + regionId + " OFF", nil
+	}
+	return "", nil
+}
+
+func (s *Sim) fdamStatusString() string {
+	var enabled, disabled []string
+	for _, f := range s.State.FacilityAdaptation.Filters.FDAM {
+		if _, ok := s.DisabledFDAMRegions[f.Id]; ok {
+			disabled = append(disabled, f.Id)
+		} else {
+			enabled = append(enabled, f.Id)
+		}
+	}
+
+	var output string
+	appendRegions := func(regions []string, header string) {
+		if len(regions) == 0 {
+			return
+		}
+		if output != "" {
+			output += "\n"
+		}
+		output += header + "\n"
+		slices.Sort(regions)
+		for i, id := range regions {
+			if i > 0 && i%5 == 0 {
+				output += "\n"
+			} else if i > 0 {
+				output += " "
+			}
+			output += id
+		}
+	}
+	appendRegions(enabled, "ENAB FLIGHT-DATA AUTO-MOD FLTRS")
+	appendRegions(disabled, "DISAB FLIGHT-DATA AUTO-MOD FLTRS")
+	return output
 }
 
 func (s *Sim) PostEvent(e Event) {

@@ -65,6 +65,7 @@ var typeParsers = []typeParser{
 	&timeParser{},
 	&altFilter6Parser{},
 	&qlRegionParser{},
+	&fdamRegionParser{},
 	&raIndexParser{userOnly: false},
 	&raIndexParser{userOnly: true},
 	&fixParser{},
@@ -800,6 +801,22 @@ func (h *qlRegionParser) Parse(sp *STARSPane, ctx *panes.Context, input *Command
 
 func (h *qlRegionParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *qlRegionParser) ConsumesClick() bool  { return false }
+
+// fdamRegionParser validates and parses FDAM region IDs.
+type fdamRegionParser struct{}
+
+func (h *fdamRegionParser) Identifier() string { return "FDAM_REGION" }
+
+func (h *fdamRegionParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
+	field, remaining := util.CutAtSpace(text)
+	if field == "" || !ctx.FacilityAdaptation.Filters.FDAM.HaveId(field) {
+		return nil, text, false, nil
+	}
+	return field, remaining, true, nil
+}
+
+func (h *fdamRegionParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
+func (h *fdamRegionParser) ConsumesClick() bool  { return false }
 
 // raIndexParser parses and validates restriction area indices and returns the associated RestrictionArea
 type raIndexParser struct {

@@ -197,6 +197,7 @@
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#stars-radar-site">RADAR Sites</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#audio-alerts">Audio</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#stars-preferences">Preferences</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#stars-fdam">FDAMs</a></li>
 	    </ul>
 	  </li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#stars-display-elements">Display Elements</a>
@@ -232,6 +233,7 @@
 	    <ul class="submenu">
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-list-format">List Formatting</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-filters">Filter Regions</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-fdam">FDAM Regions</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-video-maps">Video Maps</a></li>
 	    </ul>
 	  </li>
@@ -6140,10 +6142,64 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </tbody>
               </table>
 
+            <h3 id="stars-fdam">FDAMs</h3>
 
+            <p>Flight Data Auto-Modify (FDAM) regions automatically modify
+              flight data when an associated track enters an adapted
+              airspace volume. Entry actions may include changing
+              scratchpads, setting leader line directions, initiating
+              handoffs or ownership transfers, and issuing force quicklooks.
+              Some of these changes can be automatically reverted when the
+              track exits the region. FDAM regions are defined in scenario
+              configuration files; see the
+              <a href="#fe-stars-fdam">Facility Engineering</a> section for
+              details on their configuration.</p>
+
+            <p>The lateral extent of FDAM regions can be shown on the scope
+              via "SYS PROC" from the DCB "MAPS" menu.</p>
+
+            <p>The following supervisor commands control FDAM processing.</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 25%;">Command</th>
+                    <th style="width: 75%;">Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[MULTIFUNC]2X</code></td>
+                    <td>Toggles FDAM processing system-wide.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2XE</code></td>
+                    <td>Enables FDAM processing system-wide.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2XI</code></td>
+                    <td>Inhibits FDAM processing system-wide.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2X(REGION)</code></td>
+                    <td>Toggles FDAM processing for a single region.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2X(REGION) E</code></td>
+                    <td>Enables FDAM processing for a single region.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2X(REGION) I</code></td>
+                    <td>Inhibits FDAM processing for a single region.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2XS</code></td>
+                    <td>Displays the status of all FDAM regions.</td>
+                  </tr>
+                </tbody>
+              </table>
 
           </section>
-          
+
 
 	  <section class="docs-section" id="stars-display-elements">
             <h2 class="section-heading">Display Elements</h2>
@@ -8908,6 +8964,14 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                     <li>"surface_tracking": defines a region of airspace off the ground at airports where
                       radar tracks are not shown. By default, up to 250' AGL 1.5nm around each airport.</li>
                     <li>"vfr_inhibit": random VFR routes will not be generated through this filter's airspace.</li>
+                    <li>"fdam": Flight Data Auto-Modify regions. When an associated
+                      track enters an enabled FDAM region and matches its qualifying
+                      attributes, adapted entry actions are automatically applied
+                      (scratchpad changes, leader direction changes, handoff initiation,
+                      ownership transfer, or force quicklook). When the track exits,
+                      selected changes can be reverted. See the
+                      <a href="#fe-stars-fdam">FDAM section</a> below for the full list
+                      of fields.</li>
                   </ul>
                 </td>
               </tr>
@@ -9322,7 +9386,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 aircraft's CWT category, where "A" is the heaviest (e.g. A380) and "I"
                 is the lightest (small aircraft).</li>
             </ul>
-            <p>The following attributes apply to quicklook filters only:</p>
+            <p>The following additional attributes also apply to both quicklook and FDAM filters:</p>
             <ul>
               <li>"flight_rules": "V" for VFR only, "I" for IFR only, or "B" (or empty)
                 for both.</li>
@@ -9336,6 +9400,88 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                 altitude must fall in one of the specified values or ranges.</li>
             </ul>
 
+            <h3 id="fe-stars-fdam">FDAM Regions</h3>
+
+            <p>Flight Data Auto-Modify (FDAM) regions automatically modify
+              flight data and initiate flight operations when an associated
+              track enters an adapted region. FDAM regions are defined under
+              "fdam" in the "filters" object. Each FDAM region includes an
+              airspace volume, optional qualifying attributes (documented
+              above), and a set of entry/exit actions. See the
+              <a href="#stars-fdam">FDAMs</a> section under STARS
+              Configuration for the supervisor commands that control FDAM
+              processing.
+            </p>
+
+            <p>Each FDAM region object includes the standard volume fields
+              ("id", "description", "type", "floor", "ceiling", etc.) and
+              the shared qualifying attributes described above. In addition,
+              the following entry-action fields control what happens when a
+              matching track enters the region:</p>
+            <ul>
+              <li>"new_scratchpad_1": string to assign to the track's
+                primary scratchpad on entry. Use "-" to clear an existing
+                scratchpad.</li>
+              <li>"allow_scratchpad_1_override": boolean. If true, the
+                adapted scratchpad replaces any existing value. If false
+                (the default), the scratchpad is only set if the track's
+                current scratchpad is empty.</li>
+              <li>"new_scratchpad_2": string to assign to the track's
+                secondary scratchpad on entry. Use "-" to clear.</li>
+              <li>"allow_scratchpad_2_override": boolean. Same override
+                behavior as above, for the secondary scratchpad.</li>
+              <li>"new_owner_leader_direction": string giving the cardinal
+                or ordinal direction for the owning controller's leader
+                line (e.g. "N", "NE", "S", "SW"). The direction is set on
+                entry for all TCWs displaying the track.</li>
+              <li>"new_tcp_specific_leader_direction": string giving the
+                leader line direction to set for the TCPs listed in
+                "pointout_tcps" (see below).</li>
+              <li>"handoff_initiate_transfer": one of "I" (initiate
+                handoff), "T" (transfer ownership immediately), or "N"/""
+                (no action). Used together with "new_owner_tcp".</li>
+              <li>"new_owner_tcp": TCP identifier. When
+                "handoff_initiate_transfer" is "I", a handoff is initiated
+                to this TCP. When it is "T", ownership is transferred
+                directly.</li>
+              <li>"immediate_pointout": boolean. If true, a force quicklook
+                (immediate pointout) is sent to each TCP listed in
+                "pointout_tcps" when the track enters the region.</li>
+              <li>"pointout_tcps": comma-delimited list of TCP identifiers
+                that receive force quicklook events and/or TCP-specific
+                leader direction changes on entry.</li>
+            </ul>
+
+            <p>The following fields control what happens when a track exits
+              the region:</p>
+            <ul>
+              <li>"retain_owner_leader_direction": boolean. If false (the
+                default), the owning controller's leader line direction
+                reverts to its pre-entry value when the track exits. If
+                true, the direction set on entry is kept.</li>
+              <li>"retain_tcp_specific_leader_direction": boolean. Same
+                retain/revert behavior for the TCP-specific leader
+                directions set via "pointout_tcps".</li>
+            </ul>
+
+            <p>Example FDAM region:</p>
+            <pre><code>{
+  "id": "FD001",
+  "description": "Departure handoff region",
+  "type": "polygon",
+  "floor": 0,
+  "ceiling": 10000,
+  "vertices": "MERIT,HAAYS,SAAME,GREKI",
+  "flight_type": "departure",
+  "new_scratchpad_1": "DEP",
+  "allow_scratchpad_1_override": false,
+  "handoff_initiate_transfer": "I",
+  "new_owner_tcp": "D21",
+  "immediate_pointout": true,
+  "pointout_tcps": "F31,D21",
+  "new_tcp_specific_leader_direction": "NE",
+  "retain_tcp_specific_leader_direction": false
+}</code></pre>
 
             <h3 id="fe-video-maps">Video Maps</h3>
 

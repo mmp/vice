@@ -650,6 +650,37 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 		}
 	}
 
+	// FDAM regions
+	if fdam := ss.FacilityAdaptation.Filters.FDAM; len(fdam) > 0 {
+		vm := radar.ClientVideoMap{
+			VideoMap: sim.VideoMap{
+				Label:    "FDAMRGNS",
+				Name:     "FDAM REGIONS ALL",
+				Id:       asIdx,
+				Category: VideoMapProcessingAreas,
+			},
+		}
+		asIdx++
+		for _, f := range fdam {
+			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
+		}
+		addMap(vm)
+
+		for _, f := range fdam {
+			vm := radar.ClientVideoMap{
+				VideoMap: sim.VideoMap{
+					Label:    strings.ToUpper(f.Id),
+					Name:     strings.ToUpper(f.Description),
+					Id:       asIdx,
+					Category: VideoMapProcessingAreas,
+				},
+			}
+			asIdx++
+			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
+			addMap(vm)
+		}
+	}
+
 	// MVAs
 	mvas := radar.ClientVideoMap{
 		VideoMap: sim.VideoMap{

@@ -515,6 +515,20 @@ func (c *ControlClient) ConfigureATPA(op sim.ATPAConfigOp, volumeId string, call
 		}))
 }
 
+func (c *ControlClient) ConfigureFDAM(op sim.FDAMConfigOp, regionId string, callback func(output string, err error)) {
+	var result server.FDAMConfigResult
+	c.addCall(makeStateUpdateRPCCall(c.client.Go(server.ConfigureFDAMRPC, &server.FDAMConfigArgs{
+		ControllerToken: c.controllerToken,
+		Op:              op,
+		RegionId:        regionId,
+	}, &result, nil), &result.SimStateUpdate,
+		func(err error) {
+			if callback != nil {
+				callback(result.Output, err)
+			}
+		}))
+}
+
 // ConsolidateTCP consolidates the sendingTCP to the receivingTCW's keyboard.
 // sim.ConsolidationFull transfers active tracks; sim.ConsolidationBasic only inactive/future flights.
 func (c *ControlClient) ConsolidateTCP(receivingTCW sim.TCW, sendingTCP sim.TCP, consType sim.ConsolidationType, callback func(error)) {

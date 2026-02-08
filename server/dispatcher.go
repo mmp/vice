@@ -961,6 +961,35 @@ func (sd *dispatcher) ConfigureATPA(args *ATPAConfigArgs, result *ATPAConfigResu
 	return err
 }
 
+type FDAMConfigArgs struct {
+	ControllerToken string
+	Op              sim.FDAMConfigOp
+	RegionId        string
+}
+
+type FDAMConfigResult struct {
+	SimStateUpdate
+	Output string
+}
+
+const ConfigureFDAMRPC = "Sim.ConfigureFDAM"
+
+func (sd *dispatcher) ConfigureFDAM(args *FDAMConfigArgs, result *FDAMConfigResult) error {
+	defer sd.sm.lg.CatchAndReportCrash()
+
+	c := sd.sm.LookupController(args.ControllerToken)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+
+	var err error
+	result.Output, err = c.sim.ConfigureFDAM(args.Op, args.RegionId)
+	if err == nil {
+		result.SimStateUpdate = c.GetStateUpdate()
+	}
+	return err
+}
+
 // STTBugReportArgs contains data for an STT bug report.
 type STTBugReportArgs struct {
 	ControllerToken string
