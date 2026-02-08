@@ -547,7 +547,9 @@ func (s *Sim) DeleteFlightPlan(tcw TCW, acid ACID) error {
 	for _, ac := range s.Aircraft {
 		if ac.IsAssociated() && ac.NASFlightPlan.ACID == acid {
 			if s.TCWCanModifyTrack(tcw, ac.NASFlightPlan) {
-				s.deleteFlightPlan(ac.DisassociateFlightPlan())
+				fp := ac.DisassociateFlightPlan()
+				fp.DeleteTime = s.State.SimTime.Add(2 * time.Minute)
+				s.STARSComputer.FlightPlans = append(s.STARSComputer.FlightPlans, fp)
 				return nil
 			}
 		}
@@ -562,6 +564,9 @@ func (s *Sim) DeleteFlightPlan(tcw TCW, acid ACID) error {
 }
 
 func (s *Sim) deleteFlightPlan(fp *NASFlightPlan) {
+	if s.CIDAllocator != nil && fp.CID != "" {
+		s.CIDAllocator.Release(fp.CID)
+	}
 	if fp.StripOwner != "" {
 		s.freeStripCID(fp.StripCID)
 	}

@@ -139,6 +139,11 @@ func (sc *STARSComputer) Update(s *Sim) {
 					return false
 				}
 
+				if !fp.DeleteTime.IsZero() {
+					// Don't auto-associate flight plans that have been dropped.
+					return false
+				}
+
 				if inVolumes(filters.SurfaceTracking) {
 					// Still on the ground and not yet radar visible
 					return false
