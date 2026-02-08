@@ -775,13 +775,6 @@ func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, t
 		}
 	}
 
-	s.eventStream.Post(Event{
-		Type:           HandoffControlEvent,
-		FromController: ac.ControllerFrequency,
-		ToController:   toTCP,
-		ACID:           sfp.ACID,
-	})
-
 	// Move the flight strip to the destination TCP.
 	sfp.StripOwner = toTCP
 

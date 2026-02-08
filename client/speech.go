@@ -421,18 +421,6 @@ func (tm *TransmissionManager) Update(p platform.Platform, paused, sttActive boo
 	// Enqueue pre-decoded PCM for playback
 	if err := p.TryEnqueueSpeechPCM(qt.PCM, finishedCallback); err == nil {
 		tm.playing = true
-
-		// Post latency event if this is from an STT command (PTTReleaseTime is set)
-		if !qt.PTTReleaseTime.IsZero() {
-			latencyMs := int(time.Since(qt.PTTReleaseTime).Milliseconds())
-			if tm.eventStream != nil {
-				tm.eventStream.Post(sim.Event{
-					Type:         sim.TTSPlaybackStartedEvent,
-					ADSBCallsign: qt.Callsign,
-					TTSLatencyMs: latencyMs,
-				})
-			}
-		}
 	}
 }
 
