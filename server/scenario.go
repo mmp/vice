@@ -52,6 +52,8 @@ type scenarioGroup struct {
 	MagneticVariation  float32
 	MagneticAdjustment float32                `json:"magnetic_adjustment"`
 	FacilityAdaptation sim.FacilityAdaptation `json:"stars_config"`
+
+	SourceFile string // path of the JSON file this was loaded from
 }
 
 type scenario struct {
@@ -1516,6 +1518,7 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *scen
 		e.ErrorString("scenario group is missing \"tracon\" or \"artcc\"")
 		return nil
 	}
+	s.SourceFile = path
 	return &s
 }
 
@@ -1663,6 +1666,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 		scenarioNames := make(map[string]string)
 
 		for groupName, sgroup := range tracon {
+			e.Push(sgroup.SourceFile)
 			e.Push("Scenario group " + groupName)
 
 			// Make sure the same scenario name isn't used in multiple
@@ -1692,9 +1696,10 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 				}
 			}
 
-			e.Pop()
+			e.Pop() // Scenario group
+			e.Pop() // SourceFile
 		}
-		e.Pop()
+		e.Pop() // TRACON
 	}
 
 	// Validate the extra scenario separately with its own error logger
@@ -1709,6 +1714,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			scenarioGroups[extraScenarioFacility][extraScenario.Name] = extraScenario
 		} else {
 			var extraE util.ErrorLogger
+			extraE.Push(extraScenario.SourceFile)
 			extraE.Push("TRACON " + extraScenarioFacility)
 			extraE.Push("Scenario group " + extraScenario.Name)
 
@@ -1723,8 +1729,9 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 				extraScenario.PostDeserialize(&extraE, catalogs, manifest)
 			}
 
-			extraE.Pop()
-			extraE.Pop()
+			extraE.Pop() // Scenario group
+			extraE.Pop() // TRACON
+			extraE.Pop() // SourceFile
 
 			if extraE.HaveErrors() {
 				extraScenarioErrors = extraE.String()
