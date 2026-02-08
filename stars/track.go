@@ -367,10 +367,12 @@ func (sp *STARSPane) processEvents(ctx *panes.Context) {
 			}
 
 		case sim.ForceQLEvent:
-			if sp.ForceQLACIDs == nil {
-				sp.ForceQLACIDs = make(map[sim.ACID]any)
+			if ctx.UserControlsPosition(event.ToController) {
+				if sp.ForceQLACIDs == nil {
+					sp.ForceQLACIDs = make(map[sim.ACID]any)
+				}
+				sp.ForceQLACIDs[event.ACID] = nil
 			}
-			sp.ForceQLACIDs[event.ACID] = nil
 
 		case sim.TransferRejectedEvent:
 			if state, ok := sp.trackStateForACID(ctx, event.ACID); ok {

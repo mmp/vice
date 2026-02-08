@@ -958,6 +958,13 @@ func (s *Sim) ForceQL(tcw TCW, acid ACID, controller TCP) error {
 			if _, ok := s.State.Controllers[controller]; !ok {
 				return av.ErrNoController
 			}
+			// Per 6.12.6: force QL to the owning TCW's display requires
+			// that the entering TCW owns the flight and ForceQLToSelf is adapted.
+			if s.State.TCWControlsPosition(fp.OwningTCW, ControlPosition(controller)) {
+				if !s.State.FacilityAdaptation.ForceQLToSelf || fp.OwningTCW != tcw {
+					return ErrIllegalPosition
+				}
+			}
 			return nil
 		},
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) av.CommandIntent {

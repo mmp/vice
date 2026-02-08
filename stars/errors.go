@@ -107,6 +107,7 @@ var starsErrorRemap = map[error]*STARSError{
 	sim.ErrIllegalACType:                   ErrSTARSIllegalACType,
 	sim.ErrIllegalBeaconCode:               ErrSTARSIllegalCode,
 	sim.ErrIllegalFunction:                 ErrSTARSIllegalFunction,
+	sim.ErrIllegalPosition:                 ErrSTARSIllegalPosition,
 	sim.ErrIllegalScratchpad:               ErrSTARSIllegalScratchpad,
 	sim.ErrInvalidAbbreviatedFP:            ErrSTARSCommandFormat,
 	sim.ErrInvalidDepartureController:      ErrSTARSIllegalFunction,

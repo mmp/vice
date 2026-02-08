@@ -603,9 +603,11 @@ func init() {
 
 		for len(tcps) > 0 {
 			if strings.HasPrefix(tcps, "ALL") {
+				// Per 6.12.6: ALL silently skips the owning TCP's positions.
 				fac := ctx.UserController().FacilityIdentifier
 				for _, ctrl := range ctx.Client.State.Controllers {
-					if !ctrl.ERAMFacility && ctrl.FacilityIdentifier == fac {
+					if !ctrl.ERAMFacility && ctrl.FacilityIdentifier == fac &&
+						!ctx.Client.State.TCWControlsPosition(trk.FlightPlan.OwningTCW, sim.ControlPosition(ctrl.PositionId())) {
 						ctx.Client.ForceQL(trk.FlightPlan.ACID, sim.TCP(ctrl.PositionId()), func(err error) { sp.displayError(err, ctx, "") })
 					}
 				}
@@ -649,7 +651,7 @@ func init() {
 		if trk.IsUnassociated() {
 			return ErrSTARSIllegalTrack
 		}
-		if !ctx.FacilityAdaptation.ForceQLToSelf && !ctx.UserOwnsFlightPlan(trk.FlightPlan) {
+		if !ctx.FacilityAdaptation.ForceQLToSelf || !ctx.UserOwnsFlightPlan(trk.FlightPlan) {
 			return ErrSTARSIllegalPosition
 		}
 		state := sp.TrackState[trk.ADSBCallsign]
