@@ -402,12 +402,20 @@ func mungeCSV(filename string, r io.Reader, fields []string, callback func([]str
 func parseAirports() (map[string]FAAAirport, map[string]FAAAirport) {
 	airports := make(map[string]FAAAirport)
 
-	// FAA database
-	r := util.LoadResource("airports.csv.zst") // https://ourairports.com/data/
+	// https://ourairports.com/data/
+	// Only load airports that have ICAO gps_codes so that we don't
+	// pick up minor foreign airports with local_codes that conflict
+	// with US fix/VOR names.
+	r := util.LoadResource("airports.csv.zst")
 	defer r.Close()
 	mungeCSV("airports", r,
-		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "gps_code", "local_code", "name", "iso_country", "type"},
+		[]string{"latitude_deg", "longitude_deg", "elevation_ft", "gps_code", "name", "iso_country", "type"},
 		func(s []string) {
+			id := s[3] // gps_code
+			if id == "" || s[6] == "closed" {
+				return
+			}
+
 			atof := func(s string) float64 {
 				v, err := util.Atof(s)
 				if err != nil {
@@ -416,29 +424,14 @@ func parseAirports() (map[string]FAAAirport, map[string]FAAAirport) {
 				return v
 			}
 
-			if s[7] == "closed" { // type == closed
-				return
-			}
-
 			elevation := float64(0)
 			if s[2] != "" && s[2] != "NA" {
 				elevation = atof(s[2])
 			}
-			loc := math.Point2LL{float32(atof(s[1])), float32(atof(s[0]))}
-			id := util.Select(s[3] != "", s[3], s[4])
 
-			// There are some foreign airports with 5-character ids; make
-			// sure not to include them since they can conflict with US fix
-			// names.
-			if (len(id) == 3 || len(id) == 4) && id != "4V4" { // Memory hole the rw 4V4 to make way for AAC
-				ap := FAAAirport{Id: id, Name: s[5], Country: s[6], Location: loc, Elevation: int(elevation)}
-				// US-based takes priority in case of a conflict. When
-				// there are multiple US-based airports with the same id
-				// (e.g. 5MO), then the last one we see takes precedence.
-				if _, ok := airports[id]; !ok || ap.Country == "US" {
-					airports[id] = ap
-				}
-			}
+			loc := math.Point2LL{float32(atof(s[1])), float32(atof(s[0]))}
+			ap := FAAAirport{Id: id, Name: s[4], Country: s[5], Location: loc, Elevation: int(elevation)}
+			airports[id] = ap
 		})
 
 	// Custom airports/runways

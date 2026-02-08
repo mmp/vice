@@ -107,10 +107,10 @@
       "departure_controller": "New York Departure (JFK)",
       "departure_routes": {
         "22R": {
-          "MERIT, GREKI, BAYYS, BDR, BETTE": {
-            "cleared_altitude": 17000,
+          "BETTE": {
+            "cleared_altitude": 11000,
             "sid": "JFK5",
-            "waypoints": "CPF/hoN5W BOUNO ROBER/ho",
+            "waypoints": "KJFK-4L N040.31.58.130,W073.46.58.624/ho",
             "handoff_controller": "ZBW Nantucket 17"
           }
         }
@@ -119,13 +119,12 @@
         {
           "airlines": [
             {
-              "icao": "POE"
+              "icao": "BAW"
             }
           ],
-          "altitude": 28000,
-          "destination": "CYTZ",
-          "exit": "HYLND",
-          "route": "HYLND7 HYLND WAYGO ALVID ILIXU ILIXU1"
+          "destination": "EGLL",
+          "exit": "BETTE",
+          "route": "BETTE ACK KANNI N171E PORTI NATT XETBO EVRIN JETZI AMFUL ORZEB P2 SIRIC SIRI1H"
         }
       ]
     }
