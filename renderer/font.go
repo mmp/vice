@@ -58,6 +58,12 @@ type Font struct {
 	isBitmapFont bool
 }
 
+// Push pushes this font onto imgui's font stack at its baked pixel size.
+// Call imgui.PopFont() when done.
+func (f *Font) ImguiPush() {
+	imgui.PushFont(&f.Ifont, float32(f.Size))
+}
+
 func MakeFont(size int, id FontIdentifier, ifont *imgui.Font) *Font {
 	f := &Font{
 		glyphs:       make(map[rune]*Glyph),
@@ -304,7 +310,6 @@ func FontsInit(r Renderer, p platform.Platform) {
 	faGlyphRange := glyphRangeForIcons(faUsedIcons)
 	faBrandsGlyphRange := glyphRangeForIcons(faBrandsUsedIcons)
 
-	// Helper to calculate scaled pixel size for a given point size
 	calcPixelSize := func(size int) float32 {
 		sp := float32(size)
 		if runtime.GOOS == "windows" {
@@ -411,6 +416,26 @@ func FontsInit(r Renderer, p platform.Platform) {
 	}
 
 	lg.Info("Finished initializing fonts")
+}
+
+// SyncFontAtlasTexID updates all Font.TexId values to match the current
+// imgui font atlas texture. The OGL3 backend may recreate the atlas
+// texture (e.g., when viewports trigger a rebuild); this keeps our scope
+// text rendering (which uses Font.TexId) in sync.
+func SyncFontAtlasTexID() {
+	atlasId := uint32(imgui.CurrentIO().Fonts().TexData().TexID())
+	for _, font := range fonts {
+		if font.TexId != atlasId {
+			font.TexId = atlasId
+			// The OGL3 backend rebuilt the atlas with a new glyph
+			// layout, so cached UV coordinates are stale. Clear the
+			// glyph caches so they are re-fetched on next use.
+			if !font.isBitmapFont {
+				font.lowGlyphs = [128]*Glyph{}
+				font.glyphs = make(map[rune]*Glyph)
+			}
+		}
+	}
 }
 
 // getAllFonts returns a FontIdentifier slice that gives identifiers for

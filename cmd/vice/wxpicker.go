@@ -396,7 +396,7 @@ func drawWindAndWeatherIcons(metar wx.METAR, largeFont *renderer.Font) {
 	iconY := startY + 28
 	startX := imgui.CursorPosX()
 
-	imgui.PushFont(&largeFont.Ifont, 0)
+	largeFont.ImguiPush()
 	for _, cond := range parseWeatherConditions(metar.Raw) {
 		imgui.SetCursorPos(imgui.Vec2{X: startX, Y: iconY})
 
@@ -407,7 +407,7 @@ func drawWindAndWeatherIcons(metar wx.METAR, largeFont *renderer.Font) {
 		if imgui.IsItemHovered() {
 			imgui.PopFont()
 			imgui.SetTooltip(cond.description)
-			imgui.PushFont(&largeFont.Ifont, 0)
+			largeFont.ImguiPush()
 		}
 
 		iconWidth, _ := largeFont.BoundText(cond.icon, 0)
@@ -419,8 +419,8 @@ func drawWindAndWeatherIcons(metar wx.METAR, largeFont *renderer.Font) {
 }
 
 // drawMETARDisplay renders the METAR information panel
-func drawMETARDisplay(metar wx.METAR, monospaceFont *imgui.Font, largeFont *renderer.Font) {
-	imgui.PushFont(monospaceFont, 0)
+func drawMETARDisplay(metar wx.METAR, monospaceFont *renderer.Font, largeFont *renderer.Font) {
+	monospaceFont.ImguiPush()
 	imgui.TextWrapped(formatRawMETAR(metar.Raw))
 	imgui.PopFont()
 
@@ -705,7 +705,7 @@ func validateAndAdjustDate(date *time.Time, validDays []time.Time) bool {
 
 // drawTimePickerPopup renders the popup with date picker and METAR display
 // Returns true if the time was changed
-func drawTimePickerPopup(date *time.Time, intervals []util.TimeInterval, metars []wx.METAR, metarIdx int, monospaceFont *imgui.Font) bool {
+func drawTimePickerPopup(date *time.Time, intervals []util.TimeInterval, metars []wx.METAR, metarIdx int, monospaceFont *renderer.Font) bool {
 	changed := false
 
 	// Compute valid days from intervals
@@ -754,7 +754,7 @@ func drawTimePickerPopup(date *time.Time, intervals []util.TimeInterval, metars 
 
 // TimePicker displays a calendar widget for time selection and displays
 // the METAR for the selected time.  Returns true if the time was changed.
-func TimePicker(date *time.Time, intervals []util.TimeInterval, metars []wx.METAR, monospaceFont *imgui.Font) bool {
+func TimePicker(date *time.Time, intervals []util.TimeInterval, metars []wx.METAR, monospaceFont *renderer.Font) bool {
 	// We lose the timezone when the times come through RPC from the
 	// server, so reestablish that here since we'd like to work in UTC
 	// throughout.

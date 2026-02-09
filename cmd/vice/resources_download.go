@@ -26,6 +26,7 @@ import (
 	"golang.org/x/sync/errgroup"
 
 	"github.com/AllenDang/cimgui-go/imgui"
+	implogl3 "github.com/AllenDang/cimgui-go/impl/opengl3"
 )
 
 // resourcesManifest holds the filenames and SHA256 hashes of all the resource files this build
@@ -367,14 +368,12 @@ func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) 
 			plat.ProcessEvents()
 			plat.NewFrame()
 			imgui.NewFrame()
-			imgui.PushFont(&ui.font.Ifont, 0)
+			ui.font.ImguiPush()
 			dialog.Draw()
 			imgui.PopFont()
 
 			imgui.Render()
-			var cb renderer.CommandBuffer
-			renderer.GenerateImguiCommandBuffer(&cb, plat.DisplaySize(), plat.FramebufferSize(), lg)
-			r.RenderCommandBuffer(&cb)
+			implogl3.RenderDrawData(imgui.CurrentDrawData())
 			plat.PostRender()
 
 			select {

@@ -11,16 +11,18 @@ package platform
 
 import (
 	"fmt"
-	gomath "math"
 	"runtime"
 	"slices"
 	"strconv"
+	"unsafe"
 
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
+	implglfw "github.com/AllenDang/cimgui-go/impl/glfw"
+	implogl3 "github.com/AllenDang/cimgui-go/impl/opengl3"
 	"github.com/go-gl/gl/v2.1/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
@@ -34,7 +36,6 @@ type glfwPlatform struct {
 	window *glfw.Window
 	config *Config
 
-	time                   float64
 	mouseJustPressed       [3]bool
 	mouseCursors           [imgui.MouseCursorCOUNT]*glfw.Cursor
 	currentCursor          *glfw.Cursor
@@ -217,6 +218,11 @@ func (g *glfwPlatform) Dispose() {
 	}
 	g.audioEngine.Close()
 
+	// Shut down viewport backends before destroying the window.
+	imgui.DestroyPlatformWindows()
+	implogl3.Shutdown()
+	implglfw.Shutdown()
+
 	g.window.Destroy()
 	glfw.Terminate()
 }
@@ -279,36 +285,23 @@ func (g *glfwPlatform) FramebufferSize() [2]float32 {
 }
 
 func (g *glfwPlatform) NewFrame() {
+	// Let the imgui backends update their internal state for viewport management.
+	implogl3.NewFrame()
+	implglfw.NewFrame()
+
 	if g.multisample {
 		gl.Enable(gl.MULTISAMPLE)
 	}
 
-	// Setup display size (every frame to accommodate for window resizing)
-	displaySize := g.DisplaySize()
-	g.imguiIO.SetDisplaySize(imgui.Vec2{X: displaySize[0], Y: displaySize[1]})
+	// implglfw.NewFrame() sets io.DisplaySize (window size in screen coords)
+	// and io.DisplayFramebufferScale (framebuffer/window ratio) correctly.
+	// We don't override them; our renderer reads display size and scale
+	// from the draw data.
 
-	// Setup time step
-	currentTime := glfw.GetTime()
-	if g.time > 0 {
-		g.imguiIO.SetDeltaTime(float32(currentTime - g.time))
-	}
-	g.time = currentTime
-
-	// Setup inputs
-	if g.window.GetAttrib(glfw.Focused) != 0 {
-		pc := g.getCursorPos()
-		if g.mouseCapture.Width() > 0 && g.mouseCapture.Height() > 0 && !g.mouseCapture.Inside(pc) {
-			pc = g.mouseCapture.ClosestPointInBox(pc)
-		}
-		g.imguiIO.SetMousePos(imgui.Vec2{X: pc[0], Y: pc[1]})
-	} else {
-		g.imguiIO.SetMousePos(imgui.Vec2{X: -gomath.MaxFloat32, Y: -gomath.MaxFloat32})
-	}
-
+	// Clear stale mouseJustPressed flags. The imgui GLFW backend now
+	// handles mouse button and position tracking for all windows (main
+	// and secondary viewports) via its installed callbacks.
 	for i := range len(g.mouseJustPressed) {
-		down := g.mouseJustPressed[i] ||
-			(g.window.GetMouseButton(glfwButtonIDByIndex[imgui.MouseButton(i)]) == glfw.Press)
-		g.imguiIO.SetMouseButtonDown(i, down)
 		g.mouseJustPressed[i] = false
 	}
 
@@ -357,6 +350,32 @@ func (g *glfwPlatform) getCursorPos() [2]float32 {
 
 func (g *glfwPlatform) PostRender() {
 	g.window.SwapBuffers()
+}
+
+func (g *glfwPlatform) MakeContextCurrent() {
+	g.window.MakeContextCurrent()
+}
+
+// InitViewportBackends initializes the imgui GLFW and OpenGL3 backends
+// for multi-viewport support. Must be called after OpenGL is initialized
+// (i.e., after gl.Init() in NewOpenGL2Renderer).
+func (g *glfwPlatform) InitViewportBackends() {
+	// Extract the raw *C.GLFWwindow pointer from go-gl/glfw's Window.
+	// Window.data (*C.GLFWwindow) is the first field of the struct.
+	rawPtr := *(*unsafe.Pointer)(unsafe.Pointer(g.window))
+	implWindow := implglfw.NewGLFWwindowFromC(rawPtr)
+
+	// Initialize the GLFW backend WITHOUT installing callbacks yet.
+	implglfw.InitForOpenGL(implWindow, false)
+	// Install callbacks on the main window. The default chaining behavior
+	// chains only for the main window (window == bd->Window), which ensures
+	// go-gl/glfw's callbacks fire for the main window but not for secondary
+	// viewport windows (which go-gl/glfw doesn't know about).
+	implglfw.InstallCallbacks(implWindow)
+
+	// Initialize the OpenGL3 backend with GLSL 1.20 for OpenGL 2.1 compatibility.
+	implogl3.InitV("#version 120")
+
 }
 
 func (g *glfwPlatform) installCallbacks() {

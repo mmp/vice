@@ -27,6 +27,14 @@ type Platform interface {
 	// PostRender performs the buffer swap.
 	PostRender()
 
+	// MakeContextCurrent makes the main window's OpenGL context current.
+	// Used to restore state after rendering secondary viewport windows.
+	MakeContextCurrent()
+
+	// InitViewportBackends initializes the imgui GLFW and OpenGL3 backends
+	// for multi-viewport support. Must be called after OpenGL is initialized.
+	InitViewportBackends()
+
 	// Dispose is called when the application is shutting down and is when
 	// resources are be freed.
 	Dispose()

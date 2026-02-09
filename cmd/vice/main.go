@@ -380,6 +380,9 @@ func main() {
 		}
 		renderer.FontsInit(render, plat)
 
+		// Initialize viewport backends now that OpenGL is ready.
+		plat.InitViewportBackends()
+
 		// Capture GPU info for crash reports now that OpenGL is initialized
 		gpuVendor, gpuRenderer := plat.GetGPUInfo()
 		lg.SetGPUInfo(gpuVendor, gpuRenderer)

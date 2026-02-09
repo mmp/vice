@@ -23,6 +23,7 @@ import (
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
+	implogl3 "github.com/AllenDang/cimgui-go/impl/opengl3"
 	"github.com/ncruces/zenity"
 	"github.com/pkg/browser"
 )
@@ -67,6 +68,10 @@ var (
 func imguiInit() *imgui.Context {
 	context := imgui.CreateContext()
 	imgui.CurrentIO().SetIniFilename("")
+
+	// Enable multi-viewport support so imgui windows can float outside the main window.
+	io := imgui.CurrentIO()
+	io.SetConfigFlags(io.ConfigFlags() | imgui.ConfigFlagsViewportsEnable)
 
 	// Disable the nav windowing popup (Ctrl+Tab/Cmd+Tab window switcher) by
 	// clearing the shortcut keys that trigger it.
@@ -136,7 +141,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		}
 	}
 
-	imgui.PushFont(&ui.font.Ifont, 0)
+	ui.font.ImguiPush()
 	if imgui.BeginMainMenuBar() {
 		imgui.PushStyleColorVec4(imgui.ColButton, imgui.CurrentStyle().Colors()[imgui.ColMenuBarBg])
 
@@ -232,7 +237,8 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		if ui.pttRecording || ui.pttGarbling {
 			numIcons = 7
 		}
-		imgui.SetCursorPos(imgui.Vec2{p.DisplaySize()[0] - float32(numIcons*width+15), 0})
+		displaySize := imgui.CurrentIO().DisplaySize()
+		imgui.SetCursorPos(imgui.Vec2{X: displaySize.X - float32(numIcons*width+15), Y: 0})
 
 		// Show microphone icon while recording (red) or garbling (yellow)
 		if ui.pttRecording {
@@ -299,10 +305,22 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 
 	// Finalize and submit the imgui draw lists
 	imgui.Render()
-	cb := renderer.GetCommandBuffer()
-	defer renderer.ReturnCommandBuffer(cb)
-	renderer.GenerateImguiCommandBuffer(cb, p.DisplaySize(), p.FramebufferSize(), lg)
-	return r.RenderCommandBuffer(cb)
+
+	// Use the OpenGL 3 backend for all imgui rendering. Both main and
+	// secondary viewports use the same code path, eliminating DPI
+	// discrepancies between our custom OGL2 renderer and imgui's OGL3 backend.
+	implogl3.RenderDrawData(imgui.CurrentDrawData())
+	renderer.SyncFontAtlasTexID()
+
+	// Update and render secondary viewport windows (floating OS windows).
+	io := imgui.CurrentIO()
+	if io.ConfigFlags()&imgui.ConfigFlagsViewportsEnable != 0 {
+		imgui.UpdatePlatformWindows()
+		imgui.RenderPlatformWindowsDefault()
+		p.MakeContextCurrent()
+	}
+
+	return renderer.RendererStats{}
 }
 
 func uiResetControlClient(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
@@ -326,7 +344,7 @@ func showAboutDialog() {
 		imgui.Text(s)
 	}
 
-	imgui.PushFont(&ui.aboutFont.Ifont, 0)
+	ui.aboutFont.ImguiPush()
 	center("vice")
 	center(renderer.FontAwesomeIconCopyright + "2023-2025 Matt Pharr")
 	center("Licensed under the GPL, Version 3")
@@ -341,7 +359,7 @@ func showAboutDialog() {
 
 	imgui.Separator()
 
-	imgui.PushFont(&ui.aboutFontSmall.Ifont, 0)
+	ui.aboutFontSmall.ImguiPush()
 	credits := `Additional credits:
 - Software Development: Xavier Caldwell, Artem Dorofeev, Adam E, Dennis Graiani, Ethan Malimon, Neel P, Makoto Sakaguchi, Michael Trokel, radarcontacto, Rick R, Samuel Valencia, and Yi Zhang.
 - Timely feedback: radarcontacto.
@@ -602,14 +620,14 @@ control positions in the controller list on the upper right side of the scope (u
 // necessary to write "*D*_alt_".
 func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, italicFont *renderer.Font, str string) {
 	// regularFont is the default and starting point
-	imgui.PushFont(&regularFont.Ifont, 0)
+	regularFont.ImguiPush()
 
 	// textWidth approximates the width of the given string in pixels; it
 	// may slightly over-estimate the width, but that's fine since we use
 	// it to decide when to wrap lines of text.
 	textWidth := func(s string) float32 {
 		s = strings.Trim(s, `_*\`) // remove markup characters
-		imgui.PushFont(&fixedFont.Ifont, 0)
+		fixedFont.ImguiPush()
 		sz := imgui.CalcTextSize(s)
 		imgui.PopFont()
 		return sz.X
@@ -661,7 +679,7 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 						imgui.PopFont()
 					}
 					fixed, italic = true, false
-					imgui.PushFont(&fixedFont.Ifont, 0)
+					fixedFont.ImguiPush()
 				}
 
 			case '_':
@@ -676,7 +694,7 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 						imgui.PopFont()
 					}
 					fixed, italic = false, true
-					imgui.PushFont(&italicFont.Ifont, 0)
+					italicFont.ImguiPush()
 				}
 
 			default:

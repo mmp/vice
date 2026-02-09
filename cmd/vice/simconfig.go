@@ -2036,7 +2036,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		imgui.Text("Start time:")
 		imgui.TableNextColumn()
 		metar := c.airportMETAR[metarAirports[0]]
-		TimePicker(&c.NewSimRequest.StartTime, c.availableWXIntervals, metar, &ui.fixedFont.Ifont)
+		TimePicker(&c.NewSimRequest.StartTime, c.availableWXIntervals, metar, ui.fixedFont)
 		imgui.SameLine()
 		if imgui.Button(renderer.FontAwesomeIconRedo + "##refreshTime") {
 			c.updateStartTimeForRunways()
@@ -2051,7 +2051,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		imgui.Text("METAR:")
 		imgui.TableNextColumn()
 		currentMetar := wx.METARForTime(c.airportMETAR[metarAirports[0]], c.NewSimRequest.StartTime)
-		imgui.PushFont(&ui.fixedFont.Ifont, 0)
+		ui.fixedFont.ImguiPush()
 		imgui.Text(strings.TrimPrefix(currentMetar.Raw, "METAR "))
 		imgui.PopFont()
 
@@ -2061,7 +2061,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
 				imgui.TableNextColumn()
-				imgui.PushFont(&ui.fixedFont.Ifont, 0)
+				ui.fixedFont.ImguiPush()
 				m := wx.METARForTime(c.airportMETAR[ap], c.NewSimRequest.StartTime)
 				imgui.Text(strings.TrimPrefix(m.Raw, "METAR "))
 				imgui.PopFont()

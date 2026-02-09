@@ -137,6 +137,13 @@ func (ogl2 *OpenGL2Renderer) ReadPixelRGBAs(x, y, width, height int) []uint8 {
 }
 
 func (ogl2 *OpenGL2Renderer) RenderCommandBuffer(cb *CommandBuffer) RendererStats {
+	// Unbind any VBOs/EBOs that may have been left by external renderers
+	// (e.g. the imgui OGL3 backend). Our renderer uses client-side arrays;
+	// if a buffer object is still bound, glDrawElements interprets its
+	// pointer argument as a buffer offset instead of a memory address.
+	gl.BindBuffer(gl.ARRAY_BUFFER, 0)
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, 0)
+
 	var stats RendererStats
 	stats.nBuffers++
 	stats.bufferBytes += 4 * len(cb.Buf)
