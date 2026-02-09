@@ -115,7 +115,7 @@
           "waypoints": ["KATRN/a2500+/if NADSE/a1700/faf IDTEK/a490"]
         }
       },
-      "approach_regions": {
+      "crda_regions": {
         "1": {
           "heading_tolerance": 90,
           "near_distance": 1,
@@ -147,9 +147,9 @@
           "reference_altitude": 0
         }
       },
-      "converging_runways": [
+      "crda_pairs": [
         {
-          "runways": ["1", "33"],
+          "crda_regions": ["1", "33"],
           "leader_directions": ["W", "E"],
           "tie_symbol": "/",
           "stagger_symbol": "0",

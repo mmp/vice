@@ -61,7 +61,7 @@ var typeParsers = []typeParser{
 	&triTCPParser{},
 	&artccParser{},
 	&airportIdParser{},
-	&crdaRunwayIdParser{},
+	&crdaRegionIdParser{},
 	&timeParser{},
 	&altFilter6Parser{},
 	&qlRegionParser{},
@@ -506,84 +506,79 @@ func (h *airportIdParser) Parse(sp *STARSPane, ctx *panes.Context, input *Comman
 func (h *airportIdParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *airportIdParser) ConsumesClick() bool  { return false }
 
-type crdaRunwayIdParser struct{}
+type crdaRegionIdParser struct{}
 
-func (h *crdaRunwayIdParser) Identifier() string { return "CRDA_RUNWAY_ID" }
+func (h *crdaRegionIdParser) Identifier() string { return "CRDA_REGION_ID" }
 
-func (h *crdaRunwayIdParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
-	if len(text) < 2 {
+func (h *crdaRegionIdParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
+	if len(text) < 1 {
 		return nil, text, false, nil
 	}
 
 	ps := sp.currentPrefs()
-	if isAlpha(text[0]) {
-		// Looking for airport and runway
-		if len(text) < 6 || text[3] != ' ' { // e.g., "HPN 16" at minimum at this point
-			return nil, text, false, nil
-		}
 
+	// Try matching with an airport prefix: "APT REGION"
+	if isAlpha(text[0]) && len(text) >= 5 && text[3] == ' ' {
 		ap := text[:3]
-		var rwy, remainder string
-		if len(text) > 6 && (text[6] == 'L' || text[6] == 'R' || text[6] == 'C') {
-			rwy = text[4:7]
-			remainder = text[7:]
-		} else {
-			rwy = text[4:6]
-			remainder = text[6:]
-		}
+		rest := text[4:]
 
-		for i, pair := range sp.ConvergingRunways {
+		var bestMatch *CRDARunwayState
+		bestLen := 0
+		for i, pair := range sp.CRDAPairs {
 			if pair.Airport != ap {
 				continue
 			}
-
 			pairState := &ps.CRDA.RunwayPairState[i]
 			if !pairState.Enabled {
 				continue
 			}
-
-			for j, pairRunway := range pair.Runways {
-				if rwy == pairRunway {
-					return &pairState.RunwayState[j], remainder, true, nil
+			for j, regionName := range pair.Regions {
+				if strings.HasPrefix(rest, regionName) && len(regionName) > bestLen {
+					bestMatch = &pairState.RunwayState[j]
+					bestLen = len(regionName)
 				}
 			}
+		}
+		if bestMatch != nil {
+			return bestMatch, rest[bestLen:], true, nil
 		}
 		return nil, text, false, nil
-	} else {
-		// Airport omitted; the runway should uniquely identify a runway from an active RPC.
-		runway, remainder := text[:2], text[2:]
-		if len(text) >= 3 && (text[2] == 'L' || text[2] == 'R' || text[2] == 'C') {
-			runway, remainder = text[:3], text[3:]
-		}
+	}
 
-		var match *CRDARunwayState
-		for i, pair := range sp.ConvergingRunways {
-			pairState := &ps.CRDA.RunwayPairState[i]
-			if !pairState.Enabled {
+	// No airport prefix: longest match against all enabled pairs.
+	var bestMatch *CRDARunwayState
+	bestLen := 0
+	ambiguous := false
+	for i, pair := range sp.CRDAPairs {
+		pairState := &ps.CRDA.RunwayPairState[i]
+		if !pairState.Enabled {
+			continue
+		}
+		for j, regionName := range pair.Regions {
+			if !strings.HasPrefix(text, regionName) {
 				continue
 			}
-			for j, pairRunway := range pair.Runways {
-				if runway != pairRunway {
-					continue
-				}
-				if match != nil {
-					// ambiguous
-					return nil, text, true, ErrSTARSIllegalParam
-				}
-				match = &pairState.RunwayState[j]
+			if len(regionName) > bestLen {
+				bestMatch = &pairState.RunwayState[j]
+				bestLen = len(regionName)
+				ambiguous = false
+			} else if len(regionName) == bestLen {
+				ambiguous = true
 			}
 		}
-
-		if match != nil {
-			return match, remainder, true, nil
-		}
+	}
+	if ambiguous {
+		return nil, text, true, ErrSTARSIllegalParam
+	}
+	if bestMatch != nil {
+		return bestMatch, text[bestLen:], true, nil
 	}
 
 	return nil, text, false, nil
 }
 
-func (h *crdaRunwayIdParser) GoType() reflect.Type { return reflect.TypeFor[*CRDARunwayState]() }
-func (h *crdaRunwayIdParser) ConsumesClick() bool  { return false }
+func (h *crdaRegionIdParser) GoType() reflect.Type { return reflect.TypeFor[*CRDARunwayState]() }
+func (h *crdaRegionIdParser) ConsumesClick() bool  { return false }
 
 // numberParser parses integer numbers.
 type numberParser struct {

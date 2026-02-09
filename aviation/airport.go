@@ -38,8 +38,8 @@ type Airport struct {
 	// runway -> (exit -> route)
 	DepartureRoutes map[string]map[string]*ExitRoute `json:"departure_routes"`
 
-	ApproachRegions   map[string]*ApproachRegion `json:"approach_regions"`
-	ConvergingRunways []ConvergingRunways        `json:"converging_runways"`
+	CRDARegions map[string]*CRDARegion `json:"crda_regions"`
+	CRDAPairs   []CRDAPair             `json:"crda_pairs"`
 
 	ATPAVolumes           map[string]*ATPAVolume `json:"atpa_volumes"`
 	OmitArrivalScratchpad bool                   `json:"omit_arrival_scratchpad"`
@@ -60,14 +60,14 @@ type VFRRouteSpec struct {
 	Description string        `json:"description"`
 }
 
-type ConvergingRunways struct {
-	Runways                [2]string                        `json:"runways"`
+type CRDAPair struct {
+	Regions                [2]string                        `json:"crda_regions"`
 	TieSymbol              string                           `json:"tie_symbol"`
 	StaggerSymbol          string                           `json:"stagger_symbol"`
 	TieOffset              float32                          `json:"tie_offset"`
 	LeaderDirectionStrings [2]string                        `json:"leader_directions"`
 	LeaderDirections       [2]math.CardinalOrdinalDirection // not in JSON, set during deserialize
-	RunwayIntersection     math.Point2LL                    // not in JSON, set during deserialize
+	ConvergencePoint       math.Point2LL                    // not in JSON, set during deserialize
 }
 
 type GhostTrack struct {
@@ -78,7 +78,7 @@ type GhostTrack struct {
 	TrackId             string
 }
 
-func (ar *ApproachRegion) Inside(p math.Point2LL, alt float32, nmPerLongitude, magneticVariation float32) (lateral, vertical bool) {
+func (ar *CRDARegion) Inside(p math.Point2LL, alt float32, nmPerLongitude, magneticVariation float32) (lateral, vertical bool) {
 	line, quad := ar.GetLateralGeometry(nmPerLongitude, magneticVariation)
 	lateral = math.PointInPolygon2LL(p, quad[:])
 
@@ -98,9 +98,9 @@ func (ar *ApproachRegion) Inside(p math.Point2LL, alt float32, nmPerLongitude, m
 	return
 }
 
-func (ar *ApproachRegion) TryMakeGhost(trk RadarTrack, heading float32,
+func (ar *CRDARegion) TryMakeGhost(trk RadarTrack, heading float32,
 	scratchpad string, forceGhost bool, offset float32, leaderDirection math.CardinalOrdinalDirection,
-	runwayIntersection [2]float32, nmPerLongitude float32, magneticVariation float32, other *ApproachRegion) *GhostTrack {
+	runwayIntersection [2]float32, nmPerLongitude float32, magneticVariation float32, other *CRDARegion) *GhostTrack {
 	// Start with lateral extent since even if it's forced, the aircraft still must be inside it.
 	lat, vert := ar.Inside(trk.Location, float32(trk.TrueAltitude), nmPerLongitude, magneticVariation)
 	if !lat {
@@ -574,36 +574,30 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		e.Pop()
 	}
 
-	for rwy, def := range ap.ApproachRegions {
-		e.Push(rwy + " region")
-		def.Runway = rwy
+	for name, def := range ap.CRDARegions {
+		e.Push(name + " CRDA region")
+		def.Name = name
 
-		if _, ok := LookupRunway(icao, rwy); !ok {
-			e.ErrorString("runway %q is unknown. Options: %s", rwy,
-				DB.Airports[icao].ValidRunways())
-		}
-
-		if !slices.ContainsFunc(ap.ConvergingRunways,
-			func(c ConvergingRunways) bool { return c.Runways[0] == rwy || c.Runways[1] == rwy }) {
-			e.ErrorString("runway not used in \"converging_runways\"")
+		if !slices.ContainsFunc(ap.CRDAPairs,
+			func(c CRDAPair) bool { return c.Regions[0] == name || c.Regions[1] == name }) {
+			e.ErrorString("region not used in \"crda_pairs\"")
 		}
 
 		e.Pop()
 	}
 
-	for i, pair := range ap.ConvergingRunways {
-		e.Push("Converging runways " + pair.Runways[0] + "/" + pair.Runways[1])
+	for i, pair := range ap.CRDAPairs {
+		e.Push("CRDA pair " + pair.Regions[0] + "/" + pair.Regions[1])
 
-		for _, rwy := range pair.Runways {
-			if _, ok := LookupRunway(icao, rwy); !ok {
-				e.ErrorString("runway %q is unknown. Options: %s", rwy, DB.Airports[icao].ValidRunways())
+		for _, name := range pair.Regions {
+			if _, ok := ap.CRDARegions[name]; !ok {
+				e.ErrorString("region %q not defined in \"crda_regions\"", name)
 			}
 		}
 
-		// Find the runway intersection point
-		reg0, reg1 := ap.ApproachRegions[pair.Runways[0]], ap.ApproachRegions[pair.Runways[1]]
+		// Find the convergence point
+		reg0, reg1 := ap.CRDARegions[pair.Regions[0]], ap.CRDARegions[pair.Regions[1]]
 		if reg0 != nil && reg1 != nil {
-			// If either is nil, we'll flag the error below, so it's fine to ignore that here.
 			r0n := reg0.NearPoint(nmPerLongitude, magneticVariation)
 			r0f := reg0.FarPoint(nmPerLongitude, magneticVariation)
 			r1n := reg1.NearPoint(nmPerLongitude, magneticVariation)
@@ -611,27 +605,23 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 
 			p, ok := math.LineLineIntersect(r0n, r0f, r1n, r1f)
 			if ok && math.Distance2f(p, r0n) < 10 && math.Distance2f(p, r1n) < 10 {
-				ap.ConvergingRunways[i].RunwayIntersection = math.NM2LL(p, nmPerLongitude)
+				ap.CRDAPairs[i].ConvergencePoint = math.NM2LL(p, nmPerLongitude)
 			} else {
 				mid := math.Scale2f(math.Add2f(math.LL2NM(reg0.ReferencePoint, nmPerLongitude),
 					math.LL2NM(reg1.ReferencePoint, nmPerLongitude)),
 					0.5)
 
-				ap.ConvergingRunways[i].RunwayIntersection = math.NM2LL(mid, nmPerLongitude)
+				ap.CRDAPairs[i].ConvergencePoint = math.NM2LL(mid, nmPerLongitude)
 			}
 		}
 
-		for j, rwy := range pair.Runways {
-			e.Push(rwy)
+		for j, name := range pair.Regions {
+			e.Push(name)
 			var err error
-			ap.ConvergingRunways[i].LeaderDirections[j], err =
+			ap.CRDAPairs[i].LeaderDirections[j], err =
 				math.ParseCardinalOrdinalDirection(pair.LeaderDirectionStrings[j])
 			if err != nil {
 				e.Error(err)
-			}
-
-			if _, ok := ap.ApproachRegions[rwy]; !ok {
-				e.ErrorString("runway not defined in \"approach_regions\"")
 			}
 			e.Pop()
 		}

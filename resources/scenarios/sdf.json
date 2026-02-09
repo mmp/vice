@@ -19,7 +19,7 @@
           "cifp_id": "RZ29"
         }
       },
-      "approach_regions": {
+      "crda_regions": {
         "35R": {
           "heading_tolerance": 90,
           "near_distance": 5,
@@ -96,30 +96,30 @@
           "reference_altitude": 0
         }
       },
-      "converging_runways": [
+      "crda_pairs": [
         {
-          "runways": ["35R", "29"],
+          "crda_regions": ["35R", "29"],
           "leader_directions": ["S", "N"],
           "tie_symbol": "*",
           "stagger_symbol": "-",
           "tie_offset": 3
         },
         {
-          "runways": ["35L", "29"],
+          "crda_regions": ["35L", "29"],
           "leader_directions": ["W", "N"],
           "tie_symbol": "*",
           "stagger_symbol": "-",
           "tie_offset": 3
         },
         {
-          "runways": ["17R", "29"],
+          "crda_regions": ["17R", "29"],
           "leader_directions": ["W", "S"],
           "tie_symbol": "*",
           "stagger_symbol": "-",
           "tie_offset": 3
         },
         {
-          "runways": ["17L", "29"],
+          "crda_regions": ["17L", "29"],
           "leader_directions": ["E", "S"],
           "tie_symbol": "*",
           "stagger_symbol": "-",

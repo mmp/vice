@@ -280,7 +280,7 @@
           "waypoints": ["FATES/a4000+/if JALUN/a2600+/faf"]
         }
       },
-      "approach_regions": {
+      "crda_regions": {
         "30L": {
           "heading_tolerance": 90,
           "near_distance": 5,
@@ -312,9 +312,9 @@
           "reference_altitude": 0
         }
       },
-      "converging_runways": [
+      "crda_pairs": [
         {
-          "runways": ["30L", "35"],
+          "crda_regions": ["30L", "35"],
           "leader_directions": ["NE", "NW"],
           "tie_symbol": "/",
           "stagger_symbol": "0",

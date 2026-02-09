@@ -121,7 +121,7 @@ type Preferences struct {
 	CRDA struct {
 		Disabled bool
 		// RunwayPairState has the same size and indexing as corresponding
-		// the STARSPane STARSConvergingRunways member.
+		// the STARSPane STARSCRDAPair member.
 		RunwayPairState []CRDARunwayPairState
 		ForceAllGhosts  bool
 	}
@@ -302,14 +302,14 @@ func (p *Preferences) Reset(ss client.SimState, sp *STARSPane) {
 
 	// Reset CRDA state
 	p.CRDA.RunwayPairState = nil
-	for _, pair := range sp.ConvergingRunways {
+	for _, pair := range sp.CRDAPairs {
 		state := CRDARunwayPairState{}
 		// The first runway is enabled by default
 		state.RunwayState[0].Enabled = true
 		state.RunwayState[0].Airport = pair.Airport
-		state.RunwayState[0].Runway = pair.Runways[0]
+		state.RunwayState[0].Region = pair.Regions[0]
 		state.RunwayState[1].Airport = pair.Airport
-		state.RunwayState[1].Runway = pair.Runways[1]
+		state.RunwayState[1].Region = pair.Regions[1]
 		p.CRDA.RunwayPairState = append(p.CRDA.RunwayPairState, state)
 	}
 

@@ -392,7 +392,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 
 	// Do any active airports have CRDA?
 	haveCRDA := util.SeqContainsFunc(maps.Keys(activeAirports),
-		func(ap *av.Airport) bool { return len(ap.ConvergingRunways) > 0 })
+		func(ap *av.Airport) bool { return len(ap.CRDAPairs) > 0 })
 	if haveCRDA && s.ControllerConfiguration != nil {
 		// Make sure all of the controllers involved have a valid default airport
 		for _, pos := range s.ControllerConfiguration.AllPositions() {
@@ -703,7 +703,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 	var crdaAirport string
 	crdaCount := 0
 	for name, ap := range sg.Airports {
-		if len(ap.ConvergingRunways) > 0 {
+		if len(ap.CRDAPairs) > 0 {
 			crdaAirport = name
 			crdaCount++
 		}

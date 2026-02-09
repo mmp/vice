@@ -461,7 +461,7 @@
           "cifp_id": "RZ29"
         }
       },
-      "approach_regions": {
+      "crda_regions": {
         "22L": {
           "heading_tolerance": 90,
           "near_distance": 1,
@@ -543,30 +543,30 @@
           "scratchpad_patterns": ["4R"]
         }
       },
-      "converging_runways": [
+      "crda_pairs": [
         {
-          "runways": ["22L", "11"],
+          "crda_regions": ["22L", "11"],
           "leader_directions": ["S", "E"],
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2
         },
         {
-          "runways": ["4R", "11"],
+          "crda_regions": ["4R", "11"],
           "leader_directions": ["S", "E"],
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2
         },
         {
-          "runways": ["22R", "11"],
+          "crda_regions": ["22R", "11"],
           "leader_directions": ["S", "E"],
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2
         },
         {
-          "runways": ["4L", "11"],
+          "crda_regions": ["4L", "11"],
           "leader_directions": ["S", "E"],
           "tie_symbol": "/",
           "stagger_symbol": "0",

@@ -115,7 +115,7 @@
           "cifp_id": "I9L"
         }
       },
-      "approach_regions": {
+      "crda_regions": {
         "9L": {
           "heading_tolerance": 90,
           "near_distance": 0.01,
@@ -192,37 +192,37 @@
           "reference_altitude": 3
         }
       },
-      "converging_runways": [
+      "crda_pairs": [
         {
-          "runways": ["27R", "35"],
+          "crda_regions": ["27R", "35"],
           "leader_directions": ["W", "N"],
           "tie_symbol": "/",
           "stagger_symbol": "7",
           "tie_offset": 0.88
         },
         {
-          "runways": ["27R", "17"],
+          "crda_regions": ["27R", "17"],
           "leader_directions": ["W", "N"],
           "tie_symbol": "/",
           "stagger_symbol": "7",
           "tie_offset": 1.15
         },
         {
-          "runways": ["9L", "17"],
+          "crda_regions": ["9L", "17"],
           "leader_directions": ["E", "N"],
           "tie_symbol": "/",
           "stagger_symbol": "7",
           "tie_offset": 0.01
         },
         {
-          "runways": ["27R", "27L"],
+          "crda_regions": ["27R", "27L"],
           "leader_directions": ["S", "N"],
           "tie_symbol": "/",
           "stagger_symbol": "7",
           "tie_offset": 5
         },
         {
-          "runways": ["27L", "35"],
+          "crda_regions": ["27L", "35"],
           "leader_directions": ["W", "N"],
           "tie_symbol": "/",
           "stagger_symbol": "7",

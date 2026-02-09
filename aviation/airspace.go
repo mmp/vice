@@ -164,8 +164,8 @@ func (a *AirspaceVolume) PostDeserialize(loc Locator, e *util.ErrorLogger) {
 	}
 }
 
-type ApproachRegion struct {
-	Runway           string  // set during deserialization
+type CRDARegion struct {
+	Name             string  // set during deserialization from map key
 	HeadingTolerance float32 `json:"heading_tolerance"`
 
 	ReferenceLineHeading   float32       `json:"reference_heading"`
@@ -207,22 +207,22 @@ type ATPAVolume struct {
 
 // returns a point along the reference line with given distance from the
 // reference point, in nm coordinates.
-func (ar *ApproachRegion) referenceLinePoint(dist, nmPerLongitude, magneticVariation float32) [2]float32 {
+func (ar *CRDARegion) referenceLinePoint(dist, nmPerLongitude, magneticVariation float32) [2]float32 {
 	hdg := math.Radians(ar.ReferenceLineHeading + 180 - magneticVariation)
 	v := math.SinCos(hdg)
 	pref := math.LL2NM(ar.ReferencePoint, nmPerLongitude)
 	return math.Add2f(pref, math.Scale2f(v, dist))
 }
 
-func (ar *ApproachRegion) NearPoint(nmPerLongitude, magneticVariation float32) [2]float32 {
+func (ar *CRDARegion) NearPoint(nmPerLongitude, magneticVariation float32) [2]float32 {
 	return ar.referenceLinePoint(ar.NearDistance, nmPerLongitude, magneticVariation)
 }
 
-func (ar *ApproachRegion) FarPoint(nmPerLongitude, magneticVariation float32) [2]float32 {
+func (ar *CRDARegion) FarPoint(nmPerLongitude, magneticVariation float32) [2]float32 {
 	return ar.referenceLinePoint(ar.NearDistance+ar.RegionLength, nmPerLongitude, magneticVariation)
 }
 
-func (ar *ApproachRegion) GetLateralGeometry(nmPerLongitude, magneticVariation float32) (line [2]math.Point2LL, quad [4]math.Point2LL) {
+func (ar *CRDARegion) GetLateralGeometry(nmPerLongitude, magneticVariation float32) (line [2]math.Point2LL, quad [4]math.Point2LL) {
 	// Start with the reference line
 	p0 := ar.referenceLinePoint(0, nmPerLongitude, magneticVariation)
 	p1 := ar.referenceLinePoint(ar.ReferenceLineLength, nmPerLongitude, magneticVariation)

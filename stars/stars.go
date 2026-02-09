@@ -145,7 +145,7 @@ type STARSPane struct {
 	MCIAircraft []CAAircraft
 
 	// For CRDA
-	ConvergingRunways []STARSConvergingRunways
+	CRDAPairs []STARSCRDAPair
 
 	// Various UI state
 	FlipNumericKeypad bool
@@ -318,31 +318,31 @@ const (
 )
 
 // this is read-only, stored in STARSPane for convenience
-type STARSConvergingRunways struct {
-	av.ConvergingRunways
-	ApproachRegions [2]*av.ApproachRegion
-	Airport         string
-	Index           int
+type STARSCRDAPair struct {
+	av.CRDAPair
+	CRDARegions [2]*av.CRDARegion
+	Airport     string
+	Index       int
 }
 
 type CRDARunwayState struct {
 	Enabled                 bool
 	Airport                 string
-	Runway                  string
+	Region                  string
 	LeaderLineDirection     *math.CardinalOrdinalDirection // nil -> unset
 	DrawCourseLines         bool
 	DrawQualificationRegion bool
 }
 
-// stores the per-preference set state for each STARSConvergingRunways
+// stores the per-preference set state for each STARSCRDAPair
 type CRDARunwayPairState struct {
 	Enabled     bool
 	Mode        CRDAMode
 	RunwayState [2]CRDARunwayState
 }
 
-func (c *STARSConvergingRunways) getRunwaysString() string {
-	return c.Runways[0] + "/" + c.Runways[1]
+func (c *STARSCRDAPair) getRegionsString() string {
+	return c.Regions[0] + "/" + c.Regions[1]
 }
 
 type VideoMapsGroup int
@@ -469,13 +469,13 @@ func (sp *STARSPane) LoadedSim(client *client.ControlClient, pl platform.Platfor
 }
 
 func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
-	sp.ConvergingRunways = nil
+	sp.CRDAPairs = nil
 	for name, ap := range util.SortedMap(client.State.Airports) {
-		for idx, pair := range ap.ConvergingRunways {
-			sp.ConvergingRunways = append(sp.ConvergingRunways, STARSConvergingRunways{
-				ConvergingRunways: pair,
-				ApproachRegions: [2]*av.ApproachRegion{ap.ApproachRegions[pair.Runways[0]],
-					ap.ApproachRegions[pair.Runways[1]]},
+		for idx, pair := range ap.CRDAPairs {
+			sp.CRDAPairs = append(sp.CRDAPairs, STARSCRDAPair{
+				CRDAPair: pair,
+				CRDARegions: [2]*av.CRDARegion{ap.CRDARegions[pair.Regions[0]],
+					ap.CRDARegions[pair.Regions[1]]},
 				Airport: name[1:], // drop the leading "K" (or "P")
 				Index:   idx + 1,  // 1-based
 			})
@@ -1269,7 +1269,7 @@ func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms radar.ScopeT
 	for i, state := range ps.CRDA.RunwayPairState {
 		for j, rwyState := range state.RunwayState {
 			if rwyState.DrawCourseLines {
-				region := sp.ConvergingRunways[i].ApproachRegions[j]
+				region := sp.CRDAPairs[i].CRDARegions[j]
 				line, _ := region.GetLateralGeometry(ctx.NmPerLongitude, ctx.MagneticVariation)
 
 				ld := renderer.GetLinesDrawBuilder()
@@ -1281,7 +1281,7 @@ func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms radar.ScopeT
 			}
 
 			if rwyState.DrawQualificationRegion {
-				region := sp.ConvergingRunways[i].ApproachRegions[j]
+				region := sp.CRDAPairs[i].CRDARegions[j]
 				_, quad := region.GetLateralGeometry(ctx.NmPerLongitude, ctx.MagneticVariation)
 
 				ld := renderer.GetLinesDrawBuilder()

@@ -758,8 +758,8 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 
 			text := "*"
 			text += util.Select(crda.Mode == CRDAModeStagger, "S ", "T ")
-			text += sp.ConvergingRunways[i].Airport + " "
-			text += sp.ConvergingRunways[i].getRunwaysString()
+			text += sp.CRDAPairs[i].Airport + " "
+			text += sp.CRDAPairs[i].getRegionsString()
 
 			pw = td.AddText(text, pw, listStyle)
 			newline()
@@ -1182,11 +1182,11 @@ func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, paneExtent math.Exte
 			line.WriteString(util.Select(crda.Mode == CRDAModeStagger, "S", "T"))
 		}
 
-		pair := sp.ConvergingRunways[i]
+		pair := sp.CRDAPairs[i]
 		line.WriteString(strconv.Itoa(pair.Index))
 		line.WriteByte(' ')
 		line.WriteString(pair.Airport + " ")
-		line.WriteString(pair.getRunwaysString())
+		line.WriteString(pair.getRegionsString())
 		if crda.Enabled {
 			for line.Len() < 16 {
 				line.WriteByte(' ')

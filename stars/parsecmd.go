@@ -695,8 +695,8 @@ func typeNameToGenerator(typeName string) matchGenerator {
 		return &timeMatchGenerator{}
 	case "ALT_FILTER_6":
 		return &altFilter6MatchGenerator{}
-	case "CRDA_RUNWAY_ID":
-		return &crdaRunwayMatchGenerator{}
+	case "CRDA_REGION_ID":
+		return &crdaRegionMatchGenerator{}
 	case "UNASSOC_FP":
 		return &unassocFPMatchGenerator{}
 

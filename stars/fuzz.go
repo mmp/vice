@@ -1010,11 +1010,11 @@ func (g *altFilter6MatchGenerator) Generate(r *rand.Rand, ctx *GeneratorContext)
 	return GeneratorResult{Text: fmt.Sprintf("%03d%03d", low, high)}
 }
 
-// crdaRunwayMatchGenerator generates CRDA runway IDs.
-type crdaRunwayMatchGenerator struct{}
+// crdaRegionMatchGenerator generates CRDA region IDs.
+type crdaRegionMatchGenerator struct{}
 
-func (g *crdaRunwayMatchGenerator) Generate(r *rand.Rand, ctx *GeneratorContext) GeneratorResult {
-	// Generate runway like "13L" or "22R"
+func (g *crdaRegionMatchGenerator) Generate(r *rand.Rand, ctx *GeneratorContext) GeneratorResult {
+	// Generate runway-style names for now; region names can be arbitrary.
 	num := 1 + r.Intn(36)
 	suffixes := []string{"", "L", "R", "C"}
 	return GeneratorResult{Text: fmt.Sprintf("%02d%s", num, suffixes[r.Intn(len(suffixes))])}

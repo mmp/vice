@@ -65,26 +65,26 @@ func init() {
 
 	// 8.7 Enable / inhibit runway pair configuration system-wide
 	enableInhibitRunwayPair := func(sp *STARSPane, ctx *panes.Context, ps *Preferences, ap string, idx int, mode string) (CommandStatus, error) {
-		if len(sp.ConvergingRunways) == 0 {
+		if len(sp.CRDAPairs) == 0 {
 			return CommandStatus{}, ErrSTARSIllegalFunction
 		}
-		for i, pair := range sp.ConvergingRunways {
+		for i, pair := range sp.CRDAPairs {
 			if pair.Airport == ap && pair.Index == idx {
 				ps.CRDAStatusList.Visible = true
 
 				if mode == "D" {
 					ps.CRDA.RunwayPairState[i].Enabled = false
-					return CommandStatus{Output: ap + " " + pair.getRunwaysString() + " INHIBITED"}, nil
+					return CommandStatus{Output: ap + " " + pair.getRegionsString() + " INHIBITED"}, nil
 				} else {
 					// Check that neither runway is already enabled in another pair
 					for j, pairState := range ps.CRDA.RunwayPairState {
 						if !pairState.Enabled {
 							continue
 						}
-						if sp.ConvergingRunways[j].Runways[0] == pair.Runways[0] ||
-							sp.ConvergingRunways[j].Runways[0] == pair.Runways[1] ||
-							sp.ConvergingRunways[j].Runways[1] == pair.Runways[0] ||
-							sp.ConvergingRunways[j].Runways[1] == pair.Runways[1] {
+						if sp.CRDAPairs[j].Regions[0] == pair.Regions[0] ||
+							sp.CRDAPairs[j].Regions[0] == pair.Regions[1] ||
+							sp.CRDAPairs[j].Regions[1] == pair.Regions[0] ||
+							sp.CRDAPairs[j].Regions[1] == pair.Regions[1] {
 							return CommandStatus{}, ErrSTARSIllegalRunway
 						}
 					}
@@ -95,7 +95,7 @@ func init() {
 						ps.CRDA.RunwayPairState[i].Mode = CRDAModeStagger
 					}
 					ps.CRDA.RunwayPairState[i].Enabled = true
-					return CommandStatus{Output: ap + " " + pair.getRunwaysString() + " ENABLED"}, nil
+					return CommandStatus{Output: ap + " " + pair.getRegionsString() + " ENABLED"}, nil
 				}
 			}
 		}

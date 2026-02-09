@@ -54,7 +54,7 @@
           "waypoints": ["SHANN/a5000/if OLDDE/a3000 BIRDD/a1600/faf"]
         }
       },
-      "approach_regions": {
+      "crda_regions": {
         "12": {
           "heading_tolerance": 90,
           "near_distance": 4.5,
@@ -116,16 +116,16 @@
           "reference_altitude": 0
         }
       },
-      "converging_runways": [
+      "crda_pairs": [
         {
-          "runways": ["12", "8R"],
+          "crda_regions": ["12", "8R"],
           "leader_directions": ["N", "N"],
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 4
         },
         {
-          "runways": ["30", "27"],
+          "crda_regions": ["30", "27"],
           "leader_directions": ["W", "N"],
           "tie_symbol": "/",
           "stagger_symbol": "0",

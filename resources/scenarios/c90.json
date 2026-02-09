@@ -683,7 +683,7 @@
         "Z1R": { "cifp_id": "RZ31R" },
         "Y1R": { "cifp_id": "RY31R" }
       },
-      "approach_regions": {
+      "crda_regions": {
         "4R": {
           "heading_tolerance": 90,
 
@@ -799,23 +799,23 @@
           "scratchpad_patterns": ["I1C", "Z1C"]
         }
       },
-      "converging_runways": [
+      "crda_pairs": [
         {
-          "runways": ["4R", "4L"],
+          "crda_regions": ["4R", "4L"],
           "leader_directions": ["N", "W"],
           "tie_symbol": "/",
           "stagger_symbol": "O",
           "tie_offset": 5
         },
         {
-          "runways": ["22L", "22R"],
+          "crda_regions": ["22L", "22R"],
           "leader_directions": ["N", "N"],
           "tie_symbol": "/",
           "stagger_symbol": "O",
           "tie_offset": 4
         },
         {
-          "runways": ["31R", "31L"],
+          "crda_regions": ["31R", "31L"],
           "leader_directions": ["N", "N"],
           "tie_symbol": "/",
           "stagger_symbol": "O",

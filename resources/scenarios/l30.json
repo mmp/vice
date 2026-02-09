@@ -27,7 +27,7 @@
         "Y6R": { "cifp_id": "IZ26R" },
         "Z6R": { "cifp_id": "IY26R" }
       },
-      "approach_regions": {
+      "crda_regions": {
         "1L": {
           "heading_tolerance": 90,
           "near_distance": 5,
@@ -104,23 +104,23 @@
           "reference_altitude": 0
         }
       },
-      "converging_runways": [
+      "crda_pairs": [
         {
-          "runways": ["26L", "19R"],
+          "crda_regions": ["26L", "19R"],
           "leader_directions": ["NE", "NW"],
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2.5
         },
         {
-          "runways": ["26L", "1L"],
+          "crda_regions": ["26L", "1L"],
           "leader_directions": ["NE", "E"],
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2.5
         },
         {
-          "runways": ["19L", "8R"],
+          "crda_regions": ["19L", "8R"],
           "leader_directions": ["NW", "S"],
           "tie_symbol": "/",
           "stagger_symbol": "0",

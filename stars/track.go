@@ -690,19 +690,19 @@ func (sp *STARSPane) getGhostTracks(ctx *panes.Context) []*av.GhostTrack {
 
 			// Leader line direction comes from the scenario configuration, unless it
 			// has been overridden for the runway via <multifunc>NL.
-			leaderDirection := sp.ConvergingRunways[i].LeaderDirections[j]
+			leaderDirection := sp.CRDAPairs[i].LeaderDirections[j]
 			if rwyState.LeaderLineDirection != nil {
 				leaderDirection = *rwyState.LeaderLineDirection
 			}
 
-			runwayIntersection := sp.ConvergingRunways[i].RunwayIntersection
-			region := sp.ConvergingRunways[i].ApproachRegions[j]
-			otherRegion := sp.ConvergingRunways[i].ApproachRegions[(j+1)%2]
+			convergencePoint := sp.CRDAPairs[i].ConvergencePoint
+			region := sp.CRDAPairs[i].CRDARegions[j]
+			otherRegion := sp.CRDAPairs[i].CRDARegions[(j+1)%2]
 
-			trackId := util.Select(pairState.Mode == CRDAModeStagger, sp.ConvergingRunways[i].StaggerSymbol,
-				sp.ConvergingRunways[i].TieSymbol)
+			trackId := util.Select(pairState.Mode == CRDAModeStagger, sp.CRDAPairs[i].StaggerSymbol,
+				sp.CRDAPairs[i].TieSymbol)
 
-			offset := util.Select(pairState.Mode == CRDAModeTie, sp.ConvergingRunways[i].TieOffset, float32(0))
+			offset := util.Select(pairState.Mode == CRDAModeTie, sp.CRDAPairs[i].TieOffset, float32(0))
 
 			nmPerLongitude := ctx.NmPerLongitude
 			magneticVariation := ctx.MagneticVariation
@@ -718,7 +718,7 @@ func (sp *STARSPane) getGhostTracks(ctx *panes.Context) []*av.GhostTrack {
 				heading := util.Select(state.HaveHeading(), state.TrackHeading(nmPerLongitude), trk.Heading)
 
 				ghost := region.TryMakeGhost(trk.RadarTrack, heading, trk.FlightPlan.Scratchpad, force, offset,
-					leaderDirection, runwayIntersection, nmPerLongitude, magneticVariation, otherRegion)
+					leaderDirection, convergencePoint, nmPerLongitude, magneticVariation, otherRegion)
 				if ghost != nil {
 					ghost.TrackId = trackId
 					ghosts = append(ghosts, ghost)

@@ -47,7 +47,7 @@
           "cifp_id": "I36R"
         }
       },
-      "approach_regions": {
+      "crda_regions": {
         "13R": {
           "heading_tolerance": 90,
           "near_distance": 5,
@@ -124,23 +124,23 @@
           "reference_altitude": 6
         }
       },
-      "converging_runways": [
+      "crda_pairs": [
         {
-          "runways": ["13R", "18R"],
+          "crda_regions": ["13R", "18R"],
           "leader_directions": ["W", "N"],
           "tie_symbol": "0",
           "stagger_symbol": "/",
           "tie_offset": 2
         },
         {
-          "runways": ["13R", "17C"],
+          "crda_regions": ["13R", "17C"],
           "leader_directions": ["N", "N"],
           "tie_symbol": "0",
           "stagger_symbol": "/",
           "tie_offset": 2
         },
         {
-          "runways": ["35R", "31R"],
+          "crda_regions": ["35R", "31R"],
           "leader_directions": ["N", "N"],
           "tie_symbol": "0",
           "stagger_symbol": "/",

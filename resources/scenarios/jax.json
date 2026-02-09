@@ -193,7 +193,7 @@
           "cifp_id": "RZ32"
         }
       },
-      "approach_regions": {
+      "crda_regions": {
         "8": {
           "heading_tolerance": 90,
           "near_distance": 5,
@@ -255,16 +255,16 @@
           "reference_altitude": 0
         }
       },
-      "converging_runways": [
+      "crda_pairs": [
         {
-          "runways": ["8", "14"],
+          "crda_regions": ["8", "14"],
           "leader_directions": ["N", "N"],
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2.5
         },
         {
-          "runways": ["26", "32"],
+          "crda_regions": ["26", "32"],
           "leader_directions": ["N", "N"],
           "tie_symbol": "/",
           "stagger_symbol": "0",

@@ -19,7 +19,7 @@
           "cifp_id": "I32"
         }
       },
-      "approach_regions": {
+      "crda_regions": {
         "28C": {
           "heading_tolerance": 90,
           "near_distance": 3,
@@ -69,16 +69,16 @@
           "scratchpad_patterns": ["32"]
         }
       },
-      "converging_runways": [
+      "crda_pairs": [
         {
-          "runways": ["28L", "32"],
+          "crda_regions": ["28L", "32"],
           "leader_directions": ["W", "NW"],
           "tie_symbol": "/",
           "stagger_symbol": "0",
           "tie_offset": 2.5
         },
         {
-          "runways": ["28C", "32"],
+          "crda_regions": ["28C", "32"],
           "leader_directions": ["W", "NW"],
           "tie_symbol": "/",
           "stagger_symbol": "0",

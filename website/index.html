@@ -5558,9 +5558,10 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     leading "K" from ICAO airport identifiers should not be included: "BOS", not "KBOS".</td>
                   </tr>
                   <tr>
-                    <td><code>(RUNWAY)</code></td>
-                    <td><i>Runway identifier</i>: one or two digits followed optionally by "L", "C", or "R", as
-                    appropriate. Runways numbered 9 or less should not have a leading zero.</td>
+                    <td><code>(REGION)</code></td>
+                    <td><i>CRDA region identifier</i>: the name of a CRDA region as defined in the
+                    scenario's "crda_regions". Region names can be runway identifiers (e.g., "22L")
+                    or any other short identifier.</td>
                   </tr>
                 </tbody>
               </table>
@@ -5602,16 +5603,16 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                       If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]NL(AIRPORT)&nbsp;(RWY)(#)</code>/<br> <code>[MULTIFUNC]NL(RWY)(#)</code></td>
-                    <td>Set the leader line direction for ghost aircraft at the specified airport and given runway
+                    <td><code>[MULTIFUNC]NL(AIRPORT)&nbsp;(REGION)(#)</code>/<br> <code>[MULTIFUNC]NL(REGION)(#)</code></td>
+                    <td>Set the leader line direction for ghost aircraft at the specified airport and given region
                       according to the given number. Clears the assigned leader line direction if '5' is given.
-                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                      The airport may be omitted if the region name uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]N*ALL</code></td>
                     <td>Force ghost tracks for all aircraft. (Aircraft still must be within the lateral boundary of
-                    their runway's approach region for a ghost to be displayed, however.)</td>
+                    their region's qualification area for a ghost to be displayed, however.)</td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]N[SLEW]</code></td>
@@ -5623,38 +5624,38 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>If a ghost track as slewed, display the aircraft's flight plan in the preview area.
                       If a primary track was slewed, toggle whether display of its ghost is forced (i.e., always
                       displayed regardless of heading, altitude, etc., so long as it is within the lateral
-                      boundary of its runway's approach region.)</td>
+                      boundary of its region's qualification area.)</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)</code> / <code>[MULTIFUNC]N(RWY)</code></td>
-                    <td>Toggles whether ghosts are generated for the specified runway.
-                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)</code> / <code>[MULTIFUNC]N(REGION)</code></td>
+                    <td>Toggles whether ghosts are generated for the specified region.
+                      The airport may be omitted if the region name uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)E</code> / <code>[MULTIFUNC]N(RWY)E</code></td>
-                    <td>Enable ghosts for the specified runway.
-                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)E</code> / <code>[MULTIFUNC]N(REGION)E</code></td>
+                    <td>Enable ghosts for the specified region.
+                      The airport may be omitted if the region name uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)I</code> / <code>[MULTIFUNC]N(RWY)I</code></td>
-                    <td>Inhibit ghosts for the specified runway.
-                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)I</code> / <code>[MULTIFUNC]N(REGION)I</code></td>
+                    <td>Inhibit ghosts for the specified region.
+                      The airport may be omitted if the region name uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)&nbsp;B</code> / <code>[MULTIFUNC]N(RWY)&nbsp;B</code></td>
-                    <td>Toggle whether the <i>qualification region</i> for the runway is drawn;
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)&nbsp;B</code> / <code>[MULTIFUNC]N(REGION)&nbsp;B</code></td>
+                    <td>Toggle whether the <i>qualification region</i> for the region is drawn;
                       this is the lateral region of space aircraft must be inside for a ghost to be generated.
-                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                      The airport may be omitted if the region name uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)&nbsp;L</code> / <code>[MULTIFUNC]N(RWY)&nbsp;L</code></td>
-                    <td>Toggle whether the <i>course lines</i> for the runway are drawn;
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)&nbsp;L</code> / <code>[MULTIFUNC]N(REGION)&nbsp;L</code></td>
+                    <td>Toggle whether the <i>course lines</i> for the region are drawn;
                       these show the final approach course that CRDA is defined with respect to.
-                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                      The airport may be omitted if the region name uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
@@ -6163,7 +6164,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </div>
             <br>
             <p>The red triangle indicates that STARS is functioning correctly; in <i>vice</i> it will always be there. The first line of text shows the current zulu time 03:07:27 and the altimeter at the primary airport for the current scenario, PHL. The following line shows the network status (always "OK/OK/NA" in <i>vice</i>) as well as the current radar mode, FUSED. Next is the current range shown from the scope's center, 17nm, and the length of predicted track lines (PTLs), 0.5 minutes. Next are the altitude filters, first for unassociated tracks and then for associated tracks (both in hundreds of feet.) The next few line again shows the altimeter at PHL and contains the altimeters at nearby airports in multi-airport scenarios.</p>
-            <p>A few lines are only shown when corresponding features are enabled. Here, "QL: 6S" indicates that TCP 6S has been <a href="#quicklook">quicklooked</a> and "TW OFF: MSAW" indicates that <a href="#stars-msaw">MSAW</a> has been disabled system-wide.  Finally, we can see that <a href="#crda">CRDA</a> has been enabled for the runway pair 27R/17, with the "S" indicating "stagger" mode.</p>
+            <p>A few lines are only shown when corresponding features are enabled. Here, "QL: 6S" indicates that TCP 6S has been <a href="#quicklook">quicklooked</a> and "TW OFF: MSAW" indicates that <a href="#stars-msaw">MSAW</a> has been disabled system-wide.  Finally, we can see that <a href="#crda">CRDA</a> has been enabled for the region pair 27R/17, with the "S" indicating "stagger" mode.</p>
             <p>The SSA list is always visible; a keyboard command is
             available to position it:</p>
               <table class="table table-bordered">
@@ -7313,12 +7314,14 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     See <a href="#fe-approaches">below for documentation about how approaches are specified</a>.</td>
               </tr>
               <tr>
-                <td>"approach_regions"</td>
+                <td>"crda_regions"</td>
                 <td>Object</td>
                 <td>
-                  <p>Each member name specifies information about the region of space associated with a runway
-                  when CRDA is used and it is one of the converging
-                  runways.  First, the following members specify the lateral extent that
+                  <p>Each member name specifies information about a CRDA region:
+                  a region of space associated with a converging approach path
+                  used by CRDA for ghost generation. Region names can be any
+                  short identifier (runway names, fix names, etc.).
+                  First, the following members specify the lateral extent that
                     an aircraft must be inside for a ghost aircraft to be generated for it:
                     </p>
                   <ul>
@@ -7347,7 +7350,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>"atpa_volumes"</td>
                 <td>Object</td>
               <td>Each member is a string with a runway name and an associated object that  specifies the region of space where
-                the STARS automated terminal proximity alert (ATPA) feature is active for the runway.  (If not specified, a default
+                the STARS automated terminal proximity alert (ATPA) feature is active for the region.  (If not specified, a default
                 volume is generated along the runway's extended centerline.) The following members define the region of space:
                 <ul>
                   <li>"id": an optional string naming the volume. If not specified, the runway is used.</li>
@@ -7373,14 +7376,14 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </td>
               </tr>
               <tr>
-                <td>"converging_runways"</td>
+                <td>"crda_pairs"</td>
                 <td>Array of objects</td>
-                <td>Each object specifies a pair of converging runways that
+                <td>Each object specifies a pair of converging CRDA regions that
                   will be included in the STARS CRDA list. Each object has
                   the following members:
                   <ul>
-                    <li>"runways": array of two strings referencing two runways
-                      specified in "approach_regions".</li>
+                    <li>"crda_regions": array of two strings referencing two regions
+                      specified in "crda_regions".</li>
                     <li>"leader_directions": array of two strings
                       specifying the compass direction ("N", "NE", "E",
                       ...) that will be used for leader lines for ghost
