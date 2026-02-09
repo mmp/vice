@@ -123,6 +123,12 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, es *sim.Ev
 	if !config.NotifiedTargetGenMode {
 		uiShowTargetGenCommandModeDialog(p, config)
 	}
+
+	// Restore which child windows were open in the previous session.
+	ui.showSettings = config.ShowSettings
+	ui.showLaunchControl = config.ShowLaunchCtrl
+	ui.showScenarioInfo = config.ShowScenarioInfo
+	keyboardWindowVisible = config.ShowKeyboardRef
 }
 
 func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,

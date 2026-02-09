@@ -1737,7 +1737,7 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{sz.X + 50, 0}, imgui.Vec2{100000, 100000})
 
 	show := true
-	imgui.BeginV(c.State.SimDescription, &show, imgui.WindowFlagsAlwaysAutoResize)
+	imgui.BeginV(c.State.SimDescription+"###ScenarioInfo", &show, imgui.WindowFlagsAlwaysAutoResize)
 
 	if imgui.CollapsingHeaderBoolPtr("Controllers", nil) {
 		// Make big(ish) tables somewhat more legible

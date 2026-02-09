@@ -77,6 +77,12 @@ type ConfigNoSim struct {
 	ScenarioFile string
 	VideoMapFile string
 
+	// Which child windows are open (persisted across sessions)
+	ShowSettings     bool
+	ShowLaunchCtrl   bool
+	ShowScenarioInfo bool
+	ShowKeyboardRef  bool
+
 	UserPTTKey         imgui.Key
 	SelectedMicrophone string
 

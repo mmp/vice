@@ -605,6 +605,14 @@ func main() {
 				}
 			}
 
+			// Snapshot which child windows are open before ProcessEvents
+			// and imgui frame processing, which may reset them during
+			// shutdown (e.g., when secondary viewports are destroyed).
+			config.ShowSettings = ui.showSettings
+			config.ShowLaunchCtrl = ui.showLaunchControl
+			config.ShowScenarioInfo = ui.showScenarioInfo
+			config.ShowKeyboardRef = keyboardWindowVisible
+
 			// Inform imgui about input events from the user.
 			plat.ProcessEvents()
 
