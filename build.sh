@@ -307,7 +307,20 @@ build_vice() {
         if [ "$DO_VULKAN" = true ]; then
             BUILD_TAGS="$BUILD_TAGS,vulkan"
         fi
+
+        # Add $ORIGIN rpath so the binary finds sherpa-onnx .so files
+        # next to itself rather than requiring the Go module cache at runtime.
+        export CGO_LDFLAGS='-Wl,-rpath,$ORIGIN'
         go build -tags "$BUILD_TAGS" -o vice ./cmd/vice
+
+        # Copy sherpa-onnx shared libraries alongside the binary.
+        GOMODCACHE=$(go env GOMODCACHE)
+        SHERPA_VERSION=$(grep 'github.com/k2-fsa/sherpa-onnx-go ' go.mod | awk '{print $2}')
+        SHERPA_LIB="$GOMODCACHE/github.com/k2-fsa/sherpa-onnx-go-linux@$SHERPA_VERSION/lib/x86_64-unknown-linux-gnu"
+        cp "$SHERPA_LIB/libsherpa-onnx-c-api.so" .
+        cp "$SHERPA_LIB/libsherpa-onnx-cxx-api.so" .
+        cp "$SHERPA_LIB/libonnxruntime.so" .
+        echo "Copied sherpa-onnx shared libraries to build directory."
     fi
 
     echo "Build complete: ./vice"
