@@ -367,7 +367,7 @@ func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) 
 			plat.ProcessEvents()
 			plat.NewFrame()
 			imgui.NewFrame()
-			imgui.PushFont(&ui.font.Ifont)
+			imgui.PushFont(&ui.font.Ifont, 0)
 			dialog.Draw()
 			imgui.PopFont()
 

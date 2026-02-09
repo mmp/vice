@@ -658,7 +658,7 @@ func (e *ErrorModalClient) Draw() int {
 
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
-		imgui.Image(imgui.TextureID(sadTowerTextureID), imgui.Vec2{128, 128})
+		imgui.Image(*imgui.NewTextureRefTextureID(imgui.TextureID(sadTowerTextureID)), imgui.Vec2{128, 128})
 
 		imgui.TableNextColumn()
 		text, _ := util.TextWrapConfig{
@@ -688,7 +688,7 @@ func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logg
 		p.ProcessEvents()
 		p.NewFrame()
 		imgui.NewFrame()
-		imgui.PushFont(&ui.font.Ifont)
+		imgui.PushFont(&ui.font.Ifont, 0)
 		d.Draw()
 		imgui.PopFont()
 
@@ -782,7 +782,7 @@ func WaitForWhisperBenchmark(r renderer.Renderer, p platform.Platform, lg *log.L
 		p.ProcessEvents()
 		p.NewFrame()
 		imgui.NewFrame()
-		imgui.PushFont(&ui.font.Ifont)
+		imgui.PushFont(&ui.font.Ifont, 0)
 		d.Draw()
 		imgui.PopFont()
 

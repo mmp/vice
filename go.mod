@@ -4,14 +4,13 @@ go 1.25.0
 
 require (
 	cloud.google.com/go/storage v1.50.0
-	github.com/AllenDang/cimgui-go v1.3.1
+	github.com/AllenDang/cimgui-go v1.4.0
 	github.com/apenwarr/fixconsole v0.0.0-20191012055117-5a9f6489cc29
 	github.com/brunoga/deep v1.2.3
 	github.com/gdamore/tcell/v2 v2.13.7
 	github.com/go-gl/gl v0.0.0-20211210172815-726fda9656d6
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20250301202403-da16c1255728
 	github.com/goforj/godump v1.9.0
-	github.com/gorilla/websocket v1.5.3
 	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/hugolgst/rich-go v0.0.0-20230917173849-4a4fb1d3c362
 	github.com/iancoleman/orderedmap v0.3.0

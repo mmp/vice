@@ -22,26 +22,23 @@ func GenerateImguiCommandBuffer(cb *CommandBuffer, displaySize, framebufferSize 
 	drawData := imgui.CurrentDrawData()
 
 	// Avoid rendering when minimized.
-	displayWidth, displayHeight := displaySize[0], displaySize[1]
 	fbWidth, fbHeight := framebufferSize[0], framebufferSize[1]
 	if fbWidth <= 0 || fbHeight <= 0 {
 		return
 	}
 
-	// Scale coordinates for retina displays (screen coordinates !=
-	// framebuffer coordinates)
-	drawData.ScaleClipRects(imgui.Vec2{
-		X: fbWidth / displayWidth,
-		Y: fbHeight / displayHeight,
-	})
+	// Use DisplayPos and DisplaySize from the draw data for viewport correctness.
+	clipOff := drawData.DisplayPos()
+	clipScale := [2]float32{
+		fbWidth / displaySize[0],
+		fbHeight / displaySize[1],
+	}
 
 	cb.ResetState()
 
-	// Setup viewport, orthographic projection matrix.  Our visible imgui
-	// space lies from draw_data->DisplayPos (top left) to
-	// draw_data->DisplayPos+data_data->DisplaySize (bottom right).
-	// DisplayMin is typically (0,0) for single viewport apps.
-	cb.LoadProjectionMatrix(math.Identity3x3().Ortho(0, float32(displayWidth), float32(displayHeight), 0))
+	cb.LoadProjectionMatrix(math.Identity3x3().Ortho(
+		clipOff.X, clipOff.X+displaySize[0],
+		clipOff.Y+displaySize[1], clipOff.Y))
 	cb.LoadModelViewMatrix(math.Identity3x3())
 	cb.Viewport(0, 0, int(fbWidth), int(fbHeight))
 	cb.Blend()
@@ -82,11 +79,18 @@ func GenerateImguiCommandBuffer(cb *CommandBuffer, displaySize, framebufferSize 
 			if command.HasUserCallback() {
 				lg.Error("Unexpected user callback in imgui draw list")
 			} else {
-				clipRect := command.ClipRect()
-				clipRect.X = max(clipRect.X, 0)
-				clipRect.Y = max(clipRect.Y, 0)
-				cb.Scissor(int(clipRect.X), max(int(fbHeight)-int(clipRect.W), 0),
-					int(clipRect.Z-clipRect.X), int(clipRect.W-clipRect.Y))
+				cr := command.ClipRect()
+				clipX := (cr.X - clipOff.X) * clipScale[0]
+				clipY := (cr.Y - clipOff.Y) * clipScale[1]
+				clipZ := (cr.Z - clipOff.X) * clipScale[0]
+				clipW := (cr.W - clipOff.Y) * clipScale[1]
+
+				if clipZ <= clipX || clipW <= clipY {
+					continue
+				}
+
+				cb.Scissor(int(clipX), max(int(fbHeight-clipW), 0),
+					int(clipZ-clipX), int(clipW-clipY))
 				cb.EnableTexture(uint32(command.TexID()))
 				cb.DrawTriangles(indexOffset+int(command.IdxOffset()*4), int(command.ElemCount()))
 			}

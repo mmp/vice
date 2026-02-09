@@ -136,7 +136,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		}
 	}
 
-	imgui.PushFont(&ui.font.Ifont)
+	imgui.PushFont(&ui.font.Ifont, 0)
 	if imgui.BeginMainMenuBar() {
 		imgui.PushStyleColorVec4(imgui.ColButton, imgui.CurrentStyle().Colors()[imgui.ColMenuBarBg])
 
@@ -316,7 +316,7 @@ func showAboutDialog() {
 	flags := imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
 	imgui.BeginV("About vice...", &ui.showAboutDialog, flags)
 
-	imgui.Image(imgui.TextureID(ui.iconTextureID), imgui.Vec2{256, 256})
+	imgui.Image(*imgui.NewTextureRefTextureID(imgui.TextureID(ui.iconTextureID)), imgui.Vec2{256, 256})
 
 	center := func(s string) {
 		// https://stackoverflow.com/a/67855985
@@ -326,7 +326,7 @@ func showAboutDialog() {
 		imgui.Text(s)
 	}
 
-	imgui.PushFont(&ui.aboutFont.Ifont)
+	imgui.PushFont(&ui.aboutFont.Ifont, 0)
 	center("vice")
 	center(renderer.FontAwesomeIconCopyright + "2023-2025 Matt Pharr")
 	center("Licensed under the GPL, Version 3")
@@ -341,7 +341,7 @@ func showAboutDialog() {
 
 	imgui.Separator()
 
-	imgui.PushFont(&ui.aboutFontSmall.Ifont)
+	imgui.PushFont(&ui.aboutFontSmall.Ifont, 0)
 	credits := `Additional credits:
 - Software Development: Xavier Caldwell, Artem Dorofeev, Adam E, Dennis Graiani, Ethan Malimon, Neel P, Makoto Sakaguchi, Michael Trokel, radarcontacto, Rick R, Samuel Valencia, and Yi Zhang.
 - Timely feedback: radarcontacto.
@@ -602,14 +602,14 @@ control positions in the controller list on the upper right side of the scope (u
 // necessary to write "*D*_alt_".
 func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, italicFont *renderer.Font, str string) {
 	// regularFont is the default and starting point
-	imgui.PushFont(&regularFont.Ifont)
+	imgui.PushFont(&regularFont.Ifont, 0)
 
 	// textWidth approximates the width of the given string in pixels; it
 	// may slightly over-estimate the width, but that's fine since we use
 	// it to decide when to wrap lines of text.
 	textWidth := func(s string) float32 {
 		s = strings.Trim(s, `_*\`) // remove markup characters
-		imgui.PushFont(&fixedFont.Ifont)
+		imgui.PushFont(&fixedFont.Ifont, 0)
 		sz := imgui.CalcTextSize(s)
 		imgui.PopFont()
 		return sz.X
@@ -661,7 +661,7 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 						imgui.PopFont()
 					}
 					fixed, italic = true, false
-					imgui.PushFont(&fixedFont.Ifont)
+					imgui.PushFont(&fixedFont.Ifont, 0)
 				}
 
 			case '_':
@@ -676,7 +676,7 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 						imgui.PopFont()
 					}
 					fixed, italic = false, true
-					imgui.PushFont(&italicFont.Ifont)
+					imgui.PushFont(&italicFont.Ifont, 0)
 				}
 
 			default:
