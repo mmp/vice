@@ -304,7 +304,7 @@ func (p *Preferences) Reset(ss client.SimState, sp *STARSPane) {
 	p.CRDA.RunwayPairState = nil
 	for _, pair := range sp.CRDAPairs {
 		state := CRDARunwayPairState{}
-		// The first runway is enabled by default
+		// The first region is enabled by default
 		state.RunwayState[0].Enabled = true
 		state.RunwayState[0].Airport = pair.Airport
 		state.RunwayState[0].Region = pair.Regions[0]

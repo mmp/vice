@@ -1302,7 +1302,7 @@ func trackInCRDARegion(sp *STARSPane, ctx *panes.Context, trk *sim.Track) bool {
 			}
 			region := sp.CRDAPairs[i].CRDARegions[j]
 			if lat, _ := region.Inside(state.track.Location, trk.TrueAltitude,
-				ctx.NmPerLongitude, ctx.MagneticVariation); lat {
+				ctx.NmPerLongitude); lat {
 				return true
 			}
 		}

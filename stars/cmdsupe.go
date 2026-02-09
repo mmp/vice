@@ -76,7 +76,7 @@ func init() {
 					ps.CRDA.RunwayPairState[i].Enabled = false
 					return CommandStatus{Output: ap + " " + pair.getRegionsString() + " INHIBITED"}, nil
 				} else {
-					// Check that neither runway is already enabled in another pair
+					// Check that neither region is already enabled in another pair
 					for j, pairState := range ps.CRDA.RunwayPairState {
 						if !pairState.Enabled {
 							continue

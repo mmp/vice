@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"slices"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/mmp/vice/math"
@@ -168,10 +169,14 @@ type CRDARegion struct {
 	Name             string  // set during deserialization from map key
 	HeadingTolerance float32 `json:"heading_tolerance"`
 
+	// Straight-line reference (mutually exclusive with ReferenceRoute)
 	ReferenceLineHeading   float32       `json:"reference_heading"`
 	ReferenceLineLength    float32       `json:"reference_length"`
 	ReferencePointAltitude float32       `json:"reference_altitude"`
 	ReferencePoint         math.Point2LL `json:"reference_point"`
+
+	// Route-based reference (mutually exclusive with straight-line fields)
+	ReferenceRoute string `json:"reference_route"`
 
 	// lateral qualification region
 	NearDistance  float32 `json:"near_distance"`
@@ -186,6 +191,139 @@ type CRDARegion struct {
 	BelowAltitudeTolerance float32 `json:"below_altitude_tolerance"`
 
 	ScratchpadPatterns []string `json:"scratchpad_patterns"`
+
+	// Computed during PostDeserialize
+	Path              Path
+	DistToConvergence float32 // distance from path end to convergence point
+}
+
+// CRDARoutePoint represents a single point in a CRDA reference route.
+// Only fix names and /arc qualifiers are supported.
+type CRDARoutePoint struct {
+	Fix      string
+	Location math.Point2LL
+	Arc      *DMEArc
+}
+
+// parseCRDARoute parses a CRDA reference route string into route points.
+// Only fix names (resolved via loc) and /arc qualifiers are supported;
+// all other waypoint qualifiers are rejected.
+func parseCRDARoute(s string, loc Locator, nmPerLongitude, magneticVariation float32, e *util.ErrorLogger) []CRDARoutePoint {
+	fields := strings.Fields(s)
+	if len(fields) < 2 {
+		e.ErrorString("reference route must have at least 2 waypoints")
+		return nil
+	}
+
+	var points []CRDARoutePoint
+	for _, field := range fields {
+		components := strings.Split(field, "/")
+
+		// Handle lat-long format like 4900N/05000W where "/" is part of the fix name
+		if len(components) >= 2 {
+			c0, c1 := components[0], components[1]
+			allNumbers := func(s string) bool {
+				for _, ch := range s {
+					if ch < '0' || ch > '9' {
+						return false
+					}
+				}
+				return true
+			}
+			if len(c0) == 5 && (c0[4] == 'N' || c0[4] == 'S') &&
+				len(c1) == 6 && (c1[5] == 'E' || c1[5] == 'W') &&
+				allNumbers(c0[:4]) && allNumbers(c1[:5]) {
+				components[0] += "/" + c1
+				components = append(components[:1], components[2:]...)
+			}
+		}
+
+		pt := CRDARoutePoint{Fix: components[0]}
+
+		for _, mod := range components[1:] {
+			if len(mod) == 0 {
+				e.ErrorString("no modifier found after / in %q", field)
+				continue
+			}
+			if len(mod) >= 4 && mod[:3] == "arc" {
+				spec := mod[3:]
+				rend := 0
+				for rend < len(spec) &&
+					((spec[rend] >= '0' && spec[rend] <= '9') || spec[rend] == '.') {
+					rend++
+				}
+				if rend == 0 {
+					e.ErrorString("%s: radius not found after /arc", mod)
+					continue
+				}
+				v, err := strconv.ParseFloat(spec[:rend], 32)
+				if err != nil {
+					e.ErrorString("%s: invalid arc radius/length: %v", mod, err)
+					continue
+				}
+				if rend == len(spec) {
+					pt.Arc = &DMEArc{Length: float32(v)}
+				} else {
+					pt.Arc = &DMEArc{Fix: spec[rend:], Radius: float32(v)}
+				}
+			} else {
+				e.ErrorString("%q: unsupported modifier in reference route (only /arc is allowed)", mod)
+			}
+		}
+
+		e.Push("Fix " + pt.Fix)
+		if pos, ok := loc.Locate(pt.Fix); !ok {
+			e.ErrorString("unable to locate waypoint")
+		} else {
+			pt.Location = pos
+		}
+		e.Pop()
+
+		points = append(points, pt)
+	}
+
+	// Initialize arcs: determine clockwise direction and resolve geometry
+	for i := range points {
+		if points[i].Arc == nil {
+			continue
+		}
+
+		e.Push("Fix " + points[i].Fix)
+
+		if i+1 == len(points) {
+			e.ErrorString("can't have arc starting at the final waypoint")
+			e.Pop()
+			break
+		}
+
+		// Which way are we turning? Use previous or next-after-arc
+		// waypoint to determine clockwise/counterclockwise.
+		var v0, v1 [2]float32
+		p0 := math.LL2NM(points[i].Location, nmPerLongitude)
+		p1 := math.LL2NM(points[i+1].Location, nmPerLongitude)
+		if i > 0 {
+			v0 = math.Sub2f(p0, math.LL2NM(points[i-1].Location, nmPerLongitude))
+			v1 = math.Sub2f(p1, p0)
+		} else {
+			if i+2 == len(points) {
+				e.ErrorString("must have at least one waypoint before or after arc to determine its orientation")
+				e.Pop()
+				continue
+			}
+			v0 = math.Sub2f(p1, p0)
+			v1 = math.Sub2f(math.LL2NM(points[i+2].Location, nmPerLongitude), p1)
+		}
+		x := v0[0]*v1[1] - v0[1]*v1[0]
+		points[i].Arc.Clockwise = x < 0
+
+		if !points[i].Arc.Initialize(loc, points[i].Location, points[i+1].Location, nmPerLongitude, magneticVariation, e) {
+			points[i].Arc = nil
+		}
+
+		e.Pop()
+	}
+
+	return points
 }
 
 type ATPAVolume struct {
@@ -205,43 +343,48 @@ type ATPAVolume struct {
 	Dist25nmApproach    float32  `json:"2.5nm_distance"`
 }
 
-// returns a point along the reference line with given distance from the
-// reference point, in nm coordinates.
-func (ar *CRDARegion) referenceLinePoint(dist, nmPerLongitude, magneticVariation float32) [2]float32 {
-	hdg := math.Radians(ar.ReferenceLineHeading + 180 - magneticVariation)
-	v := math.SinCos(hdg)
-	pref := math.LL2NM(ar.ReferencePoint, nmPerLongitude)
-	return math.Add2f(pref, math.Scale2f(v, dist))
+// CourseLine returns a polyline for drawing the course line of this CRDA region.
+func (ar *CRDARegion) CourseLine(nmPerLongitude float32) []math.Point2LL {
+	polyNM := ar.Path.Polyline()
+	pts := make([]math.Point2LL, len(polyNM))
+	for i, p := range polyNM {
+		pts[i] = math.NM2LL(p, nmPerLongitude)
+	}
+	return pts
 }
 
-func (ar *CRDARegion) NearPoint(nmPerLongitude, magneticVariation float32) [2]float32 {
-	return ar.referenceLinePoint(ar.NearDistance, nmPerLongitude, magneticVariation)
-}
+// QualificationPolygon returns the polygon outline of the qualification
+// region for drawing.
+func (ar *CRDARegion) QualificationPolygon(nmPerLongitude float32) []math.Point2LL {
+	// Sample points along the path within the qualification region
+	// [NearDistance, NearDistance+RegionLength], building left and right edges
+	steps := max(2, int(ar.RegionLength*2)) // ~0.5nm resolution
+	left := make([][2]float32, steps+1)
+	right := make([][2]float32, steps+1)
 
-func (ar *CRDARegion) FarPoint(nmPerLongitude, magneticVariation float32) [2]float32 {
-	return ar.referenceLinePoint(ar.NearDistance+ar.RegionLength, nmPerLongitude, magneticVariation)
-}
+	for i := range steps + 1 {
+		t := float32(i) / float32(steps)
+		d := ar.NearDistance + t*ar.RegionLength
+		halfWidth := math.Lerp(t, ar.NearHalfWidth, ar.FarHalfWidth)
 
-func (ar *CRDARegion) GetLateralGeometry(nmPerLongitude, magneticVariation float32) (line [2]math.Point2LL, quad [4]math.Point2LL) {
-	// Start with the reference line
-	p0 := ar.referenceLinePoint(0, nmPerLongitude, magneticVariation)
-	p1 := ar.referenceLinePoint(ar.ReferenceLineLength, nmPerLongitude, magneticVariation)
-	line = [2]math.Point2LL{math.NM2LL(p0, nmPerLongitude), math.NM2LL(p1, nmPerLongitude)}
+		pt, hdg := ar.Path.PointAtDistance(d)
+		// Perpendicular: left of heading
+		perpRad := math.Radians(hdg - 90)
+		perpVec := math.SinCos(perpRad)
 
-	// Get the unit vector perpendicular to the reference line
-	v := math.Normalize2f(math.Sub2f(p1, p0))
-	vperp := [2]float32{-v[1], v[0]}
+		left[i] = math.Add2f(pt, math.Scale2f(perpVec, halfWidth))
+		right[i] = math.Add2f(pt, math.Scale2f(perpVec, -halfWidth))
+	}
 
-	pNear := ar.referenceLinePoint(ar.NearDistance, nmPerLongitude, magneticVariation)
-	pFar := ar.referenceLinePoint(ar.NearDistance+ar.RegionLength, nmPerLongitude, magneticVariation)
-	q0 := math.Add2f(pNear, math.Scale2f(vperp, ar.NearHalfWidth))
-	q1 := math.Add2f(pFar, math.Scale2f(vperp, ar.FarHalfWidth))
-	q2 := math.Add2f(pFar, math.Scale2f(vperp, -ar.FarHalfWidth))
-	q3 := math.Add2f(pNear, math.Scale2f(vperp, -ar.NearHalfWidth))
-	quad = [4]math.Point2LL{math.NM2LL(q0, nmPerLongitude), math.NM2LL(q1, nmPerLongitude),
-		math.NM2LL(q2, nmPerLongitude), math.NM2LL(q3, nmPerLongitude)}
-
-	return
+	// Build polygon: left edge forward, right edge backward
+	var poly []math.Point2LL
+	for _, p := range left {
+		poly = append(poly, math.NM2LL(p, nmPerLongitude))
+	}
+	for i := len(right) - 1; i >= 0; i-- {
+		poly = append(poly, math.NM2LL(right[i], nmPerLongitude))
+	}
+	return poly
 }
 
 type ControllerAirspaceVolume struct {

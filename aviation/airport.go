@@ -78,38 +78,49 @@ type GhostTrack struct {
 	TrackId             string
 }
 
-func (ar *CRDARegion) Inside(p math.Point2LL, alt float32, nmPerLongitude, magneticVariation float32) (lateral, vertical bool) {
-	line, quad := ar.GetLateralGeometry(nmPerLongitude, magneticVariation)
-	lateral = math.PointInPolygon2LL(p, quad[:])
+func (ar *CRDARegion) Inside(p math.Point2LL, alt float32, nmPerLongitude float32) (lateral, vertical bool) {
+	pNM := math.LL2NM(p, nmPerLongitude)
+	dist, perpOffset, _ := ar.Path.Project(pNM)
 
-	// Work in nm here...
-	l := [2][2]float32{math.LL2NM(line[0], nmPerLongitude), math.LL2NM(line[1], nmPerLongitude)}
-	pc := math.ClosestPointOnLine(l, math.LL2NM(p, nmPerLongitude))
-	d := math.Distance2f(pc, l[0])
-	if d > ar.DescentPointDistance {
+	// Lateral check: must be within [NearDistance, NearDistance+RegionLength]
+	// and within interpolated half-width at that distance
+	if dist < ar.NearDistance || dist > ar.NearDistance+ar.RegionLength {
+		return
+	}
+	t := (dist - ar.NearDistance) / ar.RegionLength
+	halfWidth := math.Lerp(t, ar.NearHalfWidth, ar.FarHalfWidth)
+	if math.Abs(perpOffset) > halfWidth {
+		return
+	}
+	lateral = true
+
+	// Vertical check
+	if dist > ar.DescentPointDistance {
 		vertical = alt <= ar.DescentPointAltitude+ar.AboveAltitudeTolerance &&
 			alt >= ar.DescentPointAltitude-ar.BelowAltitudeTolerance
-	} else {
-		t := (d - ar.NearDistance) / (ar.DescentPointDistance - ar.NearDistance)
-		approachAlt := math.Lerp(t, ar.ReferencePointAltitude, ar.DescentPointAltitude)
+	} else if ar.DescentPointDistance > ar.NearDistance {
+		vt := (dist - ar.NearDistance) / (ar.DescentPointDistance - ar.NearDistance)
+		approachAlt := math.Lerp(vt, ar.ReferencePointAltitude, ar.DescentPointAltitude)
 		vertical = alt <= approachAlt+ar.AboveAltitudeTolerance &&
-			alt >= alt-ar.BelowAltitudeTolerance
+			alt >= approachAlt-ar.BelowAltitudeTolerance
 	}
 	return
 }
 
 func (ar *CRDARegion) TryMakeGhost(trk RadarTrack, heading float32,
 	scratchpad string, forceGhost bool, offset float32, leaderDirection math.CardinalOrdinalDirection,
-	runwayIntersection [2]float32, nmPerLongitude float32, magneticVariation float32, other *CRDARegion) *GhostTrack {
+	nmPerLongitude float32, other *CRDARegion) *GhostTrack {
 	// Start with lateral extent since even if it's forced, the aircraft still must be inside it.
-	lat, vert := ar.Inside(trk.Location, float32(trk.TrueAltitude), nmPerLongitude, magneticVariation)
+	lat, vert := ar.Inside(trk.Location, float32(trk.TrueAltitude), nmPerLongitude)
 	if !lat {
 		return nil
 	}
 
 	if !forceGhost {
 		// Heading must be in range
-		if math.HeadingDifference(heading, ar.ReferenceLineHeading) > ar.HeadingTolerance {
+		pNM := math.LL2NM(trk.Location, nmPerLongitude)
+		_, _, pathHeading := ar.Path.Project(pNM)
+		if math.HeadingDifference(heading, pathHeading) > ar.HeadingTolerance {
 			return nil
 		}
 
@@ -126,30 +137,35 @@ func (ar *CRDARegion) TryMakeGhost(trk RadarTrack, heading float32,
 		}
 	}
 
-	isectNm := math.LL2NM(runwayIntersection, nmPerLongitude)
-	remap := func(pll math.Point2LL) math.Point2LL {
-		// Switch to nm for transformations to compute ghost position
-		p := math.LL2NM(pll, nmPerLongitude)
-		// Vector to reference point
-		v := math.Sub2f(p, isectNm)
-		// Rotate it to be oriented with respect to the other runway's reference point
-		v = math.Rotator2f(other.ReferenceLineHeading - ar.ReferenceLineHeading)(v)
-		// Offset as appropriate
-		v = math.Add2f(v, math.Scale2f(math.Normalize2f(v), offset))
-		// Back to a nm point with regards to the other reference point
-		p = math.Add2f(isectNm, v)
-		// And lat-long for the final result
-		return math.NM2LL(p, nmPerLongitude)
+	// Project aircraft onto source path
+	pNM := math.LL2NM(trk.Location, nmPerLongitude)
+	pathDist, perpOffset, _ := ar.Path.Project(pNM)
+
+	// Compute distance from convergence point
+	convDist := ar.DistToConvergence + (ar.Path.Length - pathDist)
+
+	// Map to target path: find the point at the same convergence distance
+	targetDist := other.Path.Length - convDist + other.DistToConvergence
+	ghostPt, ghostHeading := other.Path.PointAtDistance(targetDist)
+
+	// Apply perpendicular offset (preserve aircraft's offset from centerline)
+	perpRad := math.Radians(ghostHeading - 90)
+	perpVec := math.SinCos(perpRad)
+	ghostPt = math.Add2f(ghostPt, math.Scale2f(perpVec, perpOffset))
+
+	// Apply tie offset along forward direction
+	if offset != 0 {
+		fwdRad := math.Radians(ghostHeading)
+		fwdVec := math.SinCos(fwdRad)
+		ghostPt = math.Add2f(ghostPt, math.Scale2f(fwdVec, offset))
 	}
 
-	ghost := &GhostTrack{
+	return &GhostTrack{
 		ADSBCallsign:        trk.ADSBCallsign,
-		Position:            remap(trk.Location),
+		Position:            math.NM2LL(ghostPt, nmPerLongitude),
 		Groundspeed:         int(trk.Groundspeed),
 		LeaderLineDirection: leaderDirection,
 	}
-
-	return ghost
 }
 
 func (a *ATPAVolume) Inside(p math.Point2LL, alt, hdg, nmPerLongitude, magneticVariation float32) bool {
@@ -578,6 +594,24 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		e.Push(name + " CRDA region")
 		def.Name = name
 
+		hasRefLine := !def.ReferencePoint.IsZero() || def.ReferenceLineHeading != 0 || def.ReferenceLineLength != 0
+		hasRefRoute := def.ReferenceRoute != ""
+
+		if hasRefLine && hasRefRoute {
+			e.ErrorString("cannot specify both reference line fields and \"reference_route\"")
+		} else if !hasRefLine && !hasRefRoute {
+			e.ErrorString("must specify either reference line fields or \"reference_route\"")
+		} else if hasRefRoute {
+			if def.RegionLength != 0 {
+				e.ErrorString("\"region_length\" must not be specified with \"reference_route\"")
+			}
+			routePoints := parseCRDARoute(def.ReferenceRoute, loc, nmPerLongitude, magneticVariation, e)
+			def.Path = PathFromRoutePoints(routePoints, nmPerLongitude)
+			def.RegionLength = def.Path.Length - def.NearDistance
+		} else {
+			def.Path = PathFromReferenceLine(def.ReferencePoint, def.ReferenceLineHeading,
+				def.ReferenceLineLength, nmPerLongitude, magneticVariation)
+		}
 		if !slices.ContainsFunc(ap.CRDAPairs,
 			func(c CRDAPair) bool { return c.Regions[0] == name || c.Regions[1] == name }) {
 			e.ErrorString("region not used in \"crda_pairs\"")
@@ -595,24 +629,32 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 			}
 		}
 
-		// Find the convergence point
+		// Find the convergence point by extending each path's final
+		// segment as a straight line and computing line-line intersection.
 		reg0, reg1 := ap.CRDARegions[pair.Regions[0]], ap.CRDARegions[pair.Regions[1]]
 		if reg0 != nil && reg1 != nil {
-			r0n := reg0.NearPoint(nmPerLongitude, magneticVariation)
-			r0f := reg0.FarPoint(nmPerLongitude, magneticVariation)
-			r1n := reg1.NearPoint(nmPerLongitude, magneticVariation)
-			r1f := reg1.FarPoint(nmPerLongitude, magneticVariation)
+			// Get final points and headings for both paths
+			p0, h0 := reg0.Path.PointAtDistance(reg0.Path.Length)
+			p1, h1 := reg1.Path.PointAtDistance(reg1.Path.Length)
 
-			p, ok := math.LineLineIntersect(r0n, r0f, r1n, r1f)
-			if ok && math.Distance2f(p, r0n) < 10 && math.Distance2f(p, r1n) < 10 {
+			// Extend lines along final headings
+			v0 := math.SinCos(math.Radians(h0))
+			v1 := math.SinCos(math.Radians(h1))
+			p0far := math.Add2f(p0, math.Scale2f(v0, 20))
+			p1far := math.Add2f(p1, math.Scale2f(v1, 20))
+
+			p, ok := math.LineLineIntersect(p0, p0far, p1, p1far)
+			if ok && math.Distance2f(p, p0) < 20 && math.Distance2f(p, p1) < 20 {
 				ap.CRDAPairs[i].ConvergencePoint = math.NM2LL(p, nmPerLongitude)
 			} else {
-				mid := math.Scale2f(math.Add2f(math.LL2NM(reg0.ReferencePoint, nmPerLongitude),
-					math.LL2NM(reg1.ReferencePoint, nmPerLongitude)),
-					0.5)
-
+				mid := math.Scale2f(math.Add2f(p0, p1), 0.5)
 				ap.CRDAPairs[i].ConvergencePoint = math.NM2LL(mid, nmPerLongitude)
 			}
+
+			// Compute distToConvergence for each region
+			convNM := math.LL2NM(ap.CRDAPairs[i].ConvergencePoint, nmPerLongitude)
+			reg0.DistToConvergence = math.Distance2f(p0, convNM)
+			reg1.DistToConvergence = math.Distance2f(p1, convNM)
 		}
 
 		for j, name := range pair.Regions {

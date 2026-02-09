@@ -695,7 +695,6 @@ func (sp *STARSPane) getGhostTracks(ctx *panes.Context) []*av.GhostTrack {
 				leaderDirection = *rwyState.LeaderLineDirection
 			}
 
-			convergencePoint := sp.CRDAPairs[i].ConvergencePoint
 			region := sp.CRDAPairs[i].CRDARegions[j]
 			otherRegion := sp.CRDAPairs[i].CRDARegions[(j+1)%2]
 
@@ -705,7 +704,6 @@ func (sp *STARSPane) getGhostTracks(ctx *panes.Context) []*av.GhostTrack {
 			offset := util.Select(pairState.Mode == CRDAModeTie, sp.CRDAPairs[i].TieOffset, float32(0))
 
 			nmPerLongitude := ctx.NmPerLongitude
-			magneticVariation := ctx.MagneticVariation
 			for _, trk := range sp.visibleTracks {
 				if trk.IsUnassociated() {
 					continue
@@ -718,7 +716,7 @@ func (sp *STARSPane) getGhostTracks(ctx *panes.Context) []*av.GhostTrack {
 				heading := util.Select(state.HaveHeading(), state.TrackHeading(nmPerLongitude), trk.Heading)
 
 				ghost := region.TryMakeGhost(trk.RadarTrack, heading, trk.FlightPlan.Scratchpad, force, offset,
-					leaderDirection, convergencePoint, nmPerLongitude, magneticVariation, otherRegion)
+					leaderDirection, nmPerLongitude, otherRegion)
 				if ghost != nil {
 					ghost.TrackId = trackId
 					ghosts = append(ghosts, ghost)

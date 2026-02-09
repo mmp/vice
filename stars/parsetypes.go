@@ -516,37 +516,47 @@ func (h *crdaRegionIdParser) Parse(sp *STARSPane, ctx *panes.Context, input *Com
 	}
 
 	ps := sp.currentPrefs()
+	if isAlpha(text[0]) {
+		// Could be "APT REGION_NAME" — try to match airport prefix first
+		if len(text) >= 5 && text[3] == ' ' {
+			if _, ok := av.DB.LookupAirport(text[:3]); ok {
+				ap := text[:3]
+				rest := text[4:]
 
-	// Try matching with an airport prefix: "APT REGION"
-	if isAlpha(text[0]) && len(text) >= 5 && text[3] == ' ' {
-		ap := text[:3]
-		rest := text[4:]
-
-		var bestMatch *CRDARunwayState
-		bestLen := 0
-		for i, pair := range sp.CRDAPairs {
-			if pair.Airport != ap {
-				continue
-			}
-			pairState := &ps.CRDA.RunwayPairState[i]
-			if !pairState.Enabled {
-				continue
-			}
-			for j, regionName := range pair.Regions {
-				if strings.HasPrefix(rest, regionName) && len(regionName) > bestLen {
-					bestMatch = &pairState.RunwayState[j]
-					bestLen = len(regionName)
+				// Longest-match against region names from enabled pairs at this airport
+				var bestMatch *CRDARunwayState
+				bestLen := 0
+				for i, pair := range sp.CRDAPairs {
+					if pair.Airport != ap {
+						continue
+					}
+					pairState := &ps.CRDA.RunwayPairState[i]
+					if !pairState.Enabled {
+						continue
+					}
+					for j, regionName := range pair.Regions {
+						if len(regionName) > len(rest) {
+							continue
+						}
+						if rest[:len(regionName)] == regionName && len(regionName) > bestLen {
+							bestMatch = &pairState.RunwayState[j]
+							bestLen = len(regionName)
+						}
+					}
 				}
+				if bestMatch != nil {
+					return bestMatch, rest[bestLen:], true, nil
+				}
+				return nil, text, false, nil
 			}
 		}
-		if bestMatch != nil {
-			return bestMatch, rest[bestLen:], true, nil
-		}
-		return nil, text, false, nil
+
+		// No airport prefix: fall through to no-prefix matching below
 	}
 
-	// No airport prefix: longest match against all enabled pairs.
+	// No airport prefix: longest-match region name against all enabled pairs.
 	var bestMatch *CRDARunwayState
+	var bestRemainder string
 	bestLen := 0
 	ambiguous := false
 	for i, pair := range sp.CRDAPairs {
@@ -555,23 +565,28 @@ func (h *crdaRegionIdParser) Parse(sp *STARSPane, ctx *panes.Context, input *Com
 			continue
 		}
 		for j, regionName := range pair.Regions {
-			if !strings.HasPrefix(text, regionName) {
+			if len(regionName) > len(text) {
+				continue
+			}
+			if text[:len(regionName)] != regionName {
 				continue
 			}
 			if len(regionName) > bestLen {
 				bestMatch = &pairState.RunwayState[j]
+				bestRemainder = text[len(regionName):]
 				bestLen = len(regionName)
 				ambiguous = false
-			} else if len(regionName) == bestLen {
+			} else if len(regionName) == bestLen && bestMatch != &pairState.RunwayState[j] {
 				ambiguous = true
 			}
 		}
 	}
+
 	if ambiguous {
 		return nil, text, true, ErrSTARSIllegalParam
 	}
 	if bestMatch != nil {
-		return bestMatch, text[bestLen:], true, nil
+		return bestMatch, bestRemainder, true, nil
 	}
 
 	return nil, text, false, nil

@@ -1270,11 +1270,12 @@ func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms radar.ScopeT
 		for j, rwyState := range state.RunwayState {
 			if rwyState.DrawCourseLines {
 				region := sp.CRDAPairs[i].CRDARegions[j]
-				line, _ := region.GetLateralGeometry(ctx.NmPerLongitude, ctx.MagneticVariation)
-
+				courseLine := region.CourseLine(ctx.NmPerLongitude)
 				ld := renderer.GetLinesDrawBuilder()
 				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor))
-				ld.AddLine(line[0], line[1])
+				for k := 0; k+1 < len(courseLine); k++ {
+					ld.AddLine(courseLine[k], courseLine[k+1])
+				}
 
 				ld.GenerateCommands(cb)
 				renderer.ReturnLinesDrawBuilder(ld)
@@ -1282,11 +1283,15 @@ func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms radar.ScopeT
 
 			if rwyState.DrawQualificationRegion {
 				region := sp.CRDAPairs[i].CRDARegions[j]
-				_, quad := region.GetLateralGeometry(ctx.NmPerLongitude, ctx.MagneticVariation)
+				poly := region.QualificationPolygon(ctx.NmPerLongitude)
 
 				ld := renderer.GetLinesDrawBuilder()
 				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor))
-				ld.AddLineLoop([][2]float32{quad[0], quad[1], quad[2], quad[3]})
+				polyF32 := make([][2]float32, len(poly))
+				for k, p := range poly {
+					polyF32[k] = p
+				}
+				ld.AddLineLoop(polyF32)
 
 				ld.GenerateCommands(cb)
 				renderer.ReturnLinesDrawBuilder(ld)

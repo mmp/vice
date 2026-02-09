@@ -1157,13 +1157,13 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 	}
 
 	// Do (DME) arcs after wp.Locations have been initialized
-	for i, wp := range wa {
-		if wp.Arc == nil {
+	for i := range wa {
+		if wa[i].Arc == nil {
 			continue
 		}
 
 		if e != nil {
-			e.Push("Fix " + wp.Fix)
+			e.Push("Fix " + wa[i].Fix)
 		}
 
 		if i+1 == len(wa) {
@@ -1178,7 +1178,8 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 		// previous waypoint or the next one after the end of the arc
 		// to figure it out.
 		var v0, v1 [2]float32
-		p0, p1 := math.LL2NM(wp.Location, nmPerLongitude), math.LL2NM(wa[i+1].Location, nmPerLongitude)
+		p0 := math.LL2NM(wa[i].Location, nmPerLongitude)
+		p1 := math.LL2NM(wa[i+1].Location, nmPerLongitude)
 		if i > 0 {
 			v0 = math.Sub2f(p0, math.LL2NM(wa[i-1].Location, nmPerLongitude))
 			v1 = math.Sub2f(p1, p0)
@@ -1195,94 +1196,11 @@ func (wa WaypointArray) InitializeLocations(loc Locator, nmPerLongitude float32,
 		}
 		// cross product
 		x := v0[0]*v1[1] - v0[1]*v1[0]
-		wp.Arc.Clockwise = x < 0
+		wa[i].Arc.Clockwise = x < 0
 
-		if wp.Arc.Fix != "" {
-			// Center point was specified
-			var ok bool
-			if wp.Arc.Center, ok = loc.Locate(wp.Arc.Fix); !ok {
-				if e != nil {
-					e.ErrorString("unable to locate arc center %q", wp.Arc.Fix)
-					e.Pop()
-				}
-				continue
-			}
-		} else {
-			// Just the arc length was specified; need to figure out the
-			// center and radius of the circle that gives that.
-			d := math.Distance2f(p0, p1)
-			if wp.Arc.Length < d { // no bueno
-				if math.Abs(wp.Arc.Length-d) < float32(0.1) { // allow some slop and just make it linear if it's close
-					wp.Arc = nil
-				} else if e != nil {
-					e.ErrorString("distance between waypoints %.2fnm is greater than specified arc length %.2fnm",
-						d, wp.Arc.Length)
-				}
-				if e != nil {
-					e.Pop()
-				}
-				continue
-			}
-			if wp.Arc.Length > d*3.14159 {
-				// No circle is possible to give an arc that long
-				if e != nil {
-					e.ErrorString("no valid circle will give a distance between waypoints %.2fnm", wp.Arc.Length)
-					e.Pop()
-				}
-				continue
-			}
-
-			// Now search for a center point of a circle that goes through
-			// p0 and p1 and has the desired arc length.  We will search
-			// along the line perpendicular to the vector p1-p0 that goes
-			// through its center point.
-
-			// There are two possible center points for the circle, one on
-			// each side of the line p0-p1.  We will take positive or
-			// negative steps in parametric t along the perpendicular line
-			// so that we're searching in the right direction to get the
-			// clockwise/counter clockwise route we want.
-			delta := float32(util.Select(wp.Arc.Clockwise, -.01, .01))
-
-			// We will search with uniform small steps along the line. Some
-			// sort of bisection search would probably be better, but...
-			t := delta
-			limit := 100 * math.Distance2f(p0, p1) // ad-hoc
-			v := math.Normalize2f(math.Sub2f(p1, p0))
-			v[0], v[1] = -v[1], v[0] // perp!
-			for t < limit {
-				center := math.Add2f(math.Mid2f(p0, p1), math.Scale2f(v, t))
-				radius := math.Distance2f(center, p0)
-
-				// Angle subtended by p0 and p1 w.r.t. center
-				cosTheta := math.Dot(math.Sub2f(p0, center), math.Sub2f(p1, center)) / math.Sqr(radius)
-				theta := math.SafeACos(cosTheta)
-
-				arcLength := theta * radius
-
-				if arcLength < wp.Arc.Length {
-					wp.Arc.Center = math.NM2LL(center, nmPerLongitude)
-					wp.Arc.Radius = radius
-					break
-				}
-
-				t += delta
-			}
-
-			if t >= limit {
-				if e != nil {
-					e.ErrorString("unable to find valid circle radius for arc")
-					e.Pop()
-				}
-				continue
-			}
+		if !wa[i].Arc.Initialize(loc, wa[i].Location, wa[i+1].Location, nmPerLongitude, magneticVariation, e) {
+			wa[i].Arc = nil
 		}
-
-		// Heading from the center of the arc to the current fix
-		hfix := math.Heading2LL(wp.Arc.Center, wp.Location, nmPerLongitude, magneticVariation)
-
-		// Then perpendicular to that, depending on the arc's direction
-		wp.Arc.InitialHeading = math.NormalizeHeading(hfix + float32(util.Select(wp.Arc.Clockwise, 90, -90)))
 
 		if e != nil {
 			e.Pop()
@@ -1527,6 +1445,92 @@ type DMEArc struct {
 	Length         float32
 	InitialHeading float32
 	Clockwise      bool
+}
+
+// Initialize resolves the arc's center, radius, and initial heading from
+// its specification. Clockwise must be set before calling. startLoc and
+// endLoc are the waypoint positions at each end of the arc. Returns true
+// on success; returns false if the arc should be dropped (either due to
+// error or because it's approximately linear).
+func (arc *DMEArc) Initialize(loc Locator, startLoc, endLoc math.Point2LL, nmPerLongitude, magneticVariation float32, e *util.ErrorLogger) bool {
+	p0 := math.LL2NM(startLoc, nmPerLongitude)
+	p1 := math.LL2NM(endLoc, nmPerLongitude)
+
+	if arc.Fix != "" {
+		// Center point was specified
+		var ok bool
+		if arc.Center, ok = loc.Locate(arc.Fix); !ok {
+			e.ErrorString("unable to locate arc center %q", arc.Fix)
+			return false
+		}
+	} else {
+		// Just the arc length was specified; need to figure out the
+		// center and radius of the circle that gives that.
+		d := math.Distance2f(p0, p1)
+		if arc.Length < d {
+			if math.Abs(arc.Length-d) < float32(0.1) {
+				// Close enough to linear
+				return false
+			}
+			e.ErrorString("distance between waypoints %.2fnm is greater than specified arc length %.2fnm",
+				d, arc.Length)
+			return false
+		}
+		if arc.Length > d*3.14159 {
+			e.ErrorString("no valid circle will give a distance between waypoints %.2fnm", arc.Length)
+			return false
+		}
+
+		// Search for a center point of a circle that goes through p0
+		// and p1 and has the desired arc length, searching along the
+		// line perpendicular to p1-p0 that goes through its center
+		// point.
+		//
+		// There are two possible center points for the circle, one on
+		// each side of the line p0-p1. We will take positive or
+		// negative steps in parametric t along the perpendicular line
+		// so that we're searching in the right direction to get the
+		// clockwise/counter clockwise route we want.
+		delta := float32(util.Select(arc.Clockwise, -.01, .01))
+
+		// We will search with uniform small steps along the line. Some
+		// sort of bisection search would probably be better, but...
+		t := delta
+		limit := 100 * math.Distance2f(p0, p1) // ad-hoc
+		v := math.Normalize2f(math.Sub2f(p1, p0))
+		v[0], v[1] = -v[1], v[0] // perp!
+		for t < limit {
+			center := math.Add2f(math.Mid2f(p0, p1), math.Scale2f(v, t))
+			radius := math.Distance2f(center, p0)
+
+			// Angle subtended by p0 and p1 w.r.t. center
+			cosTheta := math.Dot(math.Sub2f(p0, center), math.Sub2f(p1, center)) / math.Sqr(radius)
+			theta := math.SafeACos(cosTheta)
+
+			arcLength := theta * radius
+
+			if arcLength < arc.Length {
+				arc.Center = math.NM2LL(center, nmPerLongitude)
+				arc.Radius = radius
+				break
+			}
+
+			t += delta
+		}
+
+		if t >= limit {
+			e.ErrorString("unable to find valid circle radius for arc")
+			return false
+		}
+	}
+
+	// Heading from the center of the arc to the start fix
+	hfix := math.Heading2LL(arc.Center, startLoc, nmPerLongitude, magneticVariation)
+
+	// Then perpendicular to that, depending on the arc's direction
+	arc.InitialHeading = math.NormalizeHeading(hfix + float32(util.Select(arc.Clockwise, 90, -90)))
+
+	return true
 }
 
 ///////////////////////////////////////////////////////////////////////////

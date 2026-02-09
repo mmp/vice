@@ -5508,12 +5508,14 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <p>The brightness of range rings can be controlled with the "RR" spinner in the "BRITE" menu of the main DCB.
               If the brightness is set to 0, range rings are not drawn. </p>
             
-              <h3 id="crda">CRDA</h3>
+            <h3 id="crda">CRDA</h3>
 
-            <p>The Converging Runways Display Aid (CRDA) helps ensure separation between aircraft approaching
-              intersecting runways. It does so by drawing
-              "ghost" aircraft on one course that correspond to aircraft on another course. The idea is perhaps
-              best understood with an example:</p>
+            <p>The Converging Runway Display Aid (CRDA) helps ensure separation between aircraft on
+              intersecting paths. It does so by drawing
+              "ghost" aircraft on one course that correspond to aircraft on another course.
+              Although originally designed for converging runways, CRDA regions can be defined for
+              any pair of converging paths, including those based on fixes or curved routes.
+              The idea is perhaps best understood with an example:</p>
             <div class="text-center">
               <img src="crda.png" srcset="crda-2x.png 2x" width="473" height="298">
             </div>
@@ -5559,9 +5561,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   </tr>
                   <tr>
                     <td><code>(REGION)</code></td>
-                    <td><i>CRDA region identifier</i>: the name of a CRDA region as defined in the
-                    scenario's "crda_regions". Region names can be runway identifiers (e.g., "22L")
-                    or any other short identifier.</td>
+                    <td><i>CRDA region identifier</i>: the name of a CRDA region from an enabled pair.
+                    This may be a runway name (e.g., "22L") or any other identifier used in the
+                    scenario's CRDA region definitions. The name must uniquely
+                    identify a region among all enabled CRDA pairs (or be preceded by an airport
+                    identifier to disambiguate).</td>
                   </tr>
                 </tbody>
               </table>
@@ -5581,38 +5585,38 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <tr>
                     <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)</code>/<br> <code>[MULTIFUNC]NP(#)</code></td>
                     <td>Toggles whether ghost tracks are enabled for the CRDA runway pair at the specified airport.
-                      The number is an index into the list of CRDA runway pairs for the airport in the CRDA system list.
+                      The number is an index into the list of CRDA pairs for the airport in the CRDA system list.
                       If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)S</code>/<br> <code>[MULTIFUNC]NP(#)S</code></td>
                     <td>Toggles stagger mode for the CRDA runway pair at the specified airport.
-                      The number is an index into the list of CRDA runway pairs for the airport in the CRDA system list.
+                      The number is an index into the list of CRDA pairs for the airport in the CRDA system list.
                       If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)T</code>/<br> <code>[MULTIFUNC]NP(#)T</code></td>
                     <td>Toggles tie mode for the given CRDA runway pair at the specified airport.
-                      The number is an index into the list of CRDA runway pairs for the airport in the CRDA system list.
+                      The number is an index into the list of CRDA pairs for the airport in the CRDA system list.
                       If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)D</code>/<br> <code>[MULTIFUNC]NP(#)D</code></td>
                     <td>Disables CRDA for the given runway pair at the specified airport.
-                      The number is an index into the list of CRDA runway pairs for the airport in the CRDA system list.
+                      The number is an index into the list of CRDA pairs for the airport in the CRDA system list.
                       If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]NL(AIRPORT)&nbsp;(REGION)(#)</code>/<br> <code>[MULTIFUNC]NL(REGION)(#)</code></td>
                     <td>Set the leader line direction for ghost aircraft at the specified airport and given region
                       according to the given number. Clears the assigned leader line direction if '5' is given.
-                      The airport may be omitted if the region name uniquely identifies the corresponding airport.
+                      The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]N*ALL</code></td>
                     <td>Force ghost tracks for all aircraft. (Aircraft still must be within the lateral boundary of
-                    their region's qualification area for a ghost to be displayed, however.)</td>
+                    their CRDA region for a ghost to be displayed, however.)</td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]N[SLEW]</code></td>
@@ -5624,38 +5628,38 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>If a ghost track as slewed, display the aircraft's flight plan in the preview area.
                       If a primary track was slewed, toggle whether display of its ghost is forced (i.e., always
                       displayed regardless of heading, altitude, etc., so long as it is within the lateral
-                      boundary of its region's qualification area.)</td>
+                      boundary of its CRDA region.)</td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)</code> / <code>[MULTIFUNC]N(REGION)</code></td>
                     <td>Toggles whether ghosts are generated for the specified region.
-                      The airport may be omitted if the region name uniquely identifies the corresponding airport.
+                      The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)E</code> / <code>[MULTIFUNC]N(REGION)E</code></td>
                     <td>Enable ghosts for the specified region.
-                      The airport may be omitted if the region name uniquely identifies the corresponding airport.
+                      The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)I</code> / <code>[MULTIFUNC]N(REGION)I</code></td>
                     <td>Inhibit ghosts for the specified region.
-                      The airport may be omitted if the region name uniquely identifies the corresponding airport.
+                      The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)&nbsp;B</code> / <code>[MULTIFUNC]N(REGION)&nbsp;B</code></td>
-                    <td>Toggle whether the <i>qualification region</i> for the region is drawn;
+                    <td>Toggle whether the <i>qualification region</i> for the CRDA region is drawn;
                       this is the lateral region of space aircraft must be inside for a ghost to be generated.
-                      The airport may be omitted if the region name uniquely identifies the corresponding airport.
+                      The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)&nbsp;L</code> / <code>[MULTIFUNC]N(REGION)&nbsp;L</code></td>
-                    <td>Toggle whether the <i>course lines</i> for the region are drawn;
-                      these show the final approach course that CRDA is defined with respect to.
-                      The airport may be omitted if the region name uniquely identifies the corresponding airport.
+                    <td>Toggle whether the <i>course lines</i> for the CRDA region are drawn;
+                      these show the approach course that CRDA is defined with respect to.
+                      The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
@@ -6164,7 +6168,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </div>
             <br>
             <p>The red triangle indicates that STARS is functioning correctly; in <i>vice</i> it will always be there. The first line of text shows the current zulu time 03:07:27 and the altimeter at the primary airport for the current scenario, PHL. The following line shows the network status (always "OK/OK/NA" in <i>vice</i>) as well as the current radar mode, FUSED. Next is the current range shown from the scope's center, 17nm, and the length of predicted track lines (PTLs), 0.5 minutes. Next are the altitude filters, first for unassociated tracks and then for associated tracks (both in hundreds of feet.) The next few line again shows the altimeter at PHL and contains the altimeters at nearby airports in multi-airport scenarios.</p>
-            <p>A few lines are only shown when corresponding features are enabled. Here, "QL: 6S" indicates that TCP 6S has been <a href="#quicklook">quicklooked</a> and "TW OFF: MSAW" indicates that <a href="#stars-msaw">MSAW</a> has been disabled system-wide.  Finally, we can see that <a href="#crda">CRDA</a> has been enabled for the region pair 27R/17, with the "S" indicating "stagger" mode.</p>
+            <p>A few lines are only shown when corresponding features are enabled. Here, "QL: 6S" indicates that TCP 6S has been <a href="#quicklook">quicklooked</a> and "TW OFF: MSAW" indicates that <a href="#stars-msaw">MSAW</a> has been disabled system-wide.  Finally, we can see that <a href="#crda">CRDA</a> has been enabled for the runway pair 27R/17, with the "S" indicating "stagger" mode.</p>
             <p>The SSA list is always visible; a keyboard command is
             available to position it:</p>
               <table class="table table-bordered">
@@ -6269,7 +6273,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li>ALT FIL: altitude filters</li>
               <li>AIRPORT: altimeter at nearby airports</li>
               <li>QL: quick looked sectors</li>
-              <li>CRDA: active CRDA runway pairs</li>
+              <li>CRDA: active CRDA pairs</li>
               <li>WX: available and displayed weather precipitation levels</li>
               <li>ALTSTG: show altimeter at primary airport</li>
               <li>CODES: show selected beacon codes</li>
@@ -7317,40 +7321,82 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>"crda_regions"</td>
                 <td>Object</td>
                 <td>
-                  <p>Each member name specifies information about a CRDA region:
-                  a region of space associated with a converging approach path
-                  used by CRDA for ghost generation. Region names can be any
-                  short identifier (runway names, fix names, etc.).
-                  First, the following members specify the lateral extent that
-                    an aircraft must be inside for a ghost aircraft to be generated for it:
-                    </p>
+                  <p>Each member defines a CRDA region&mdash;a volume of space associated with an
+                  approach path used for CRDA ghost generation. Region names (the object keys)
+                  can be any short identifier: a runway name like "22L", procedure name like "PUCKY1",
+                  or any other descriptive name.</p>
+
+                  <p>The approach path can be defined in one of two ways (mutually exclusive):</p>
+
+                  <p><b>Straight-line reference</b> (for simple runway-aligned paths):</p>
                   <ul>
                     <li>"reference_point": position with respect to which the lateral and vertical extents are defined. (Often, the threshold
                       of the runway.)</li>
-                    <li>"reference_heading": heading that is opposite to the runway heading.</li>
+                    <li>"reference_heading": heading that is opposite to the approach heading.</li>
                     <li>"reference_length": length in nm of the reference line.</li>
-                    <li>"heading_tolerance": maximum difference between an aircraft's heading and the runway's heading for a ghost aircraft to be displayed.</li>
-                    <li>"near_distance": distance from the reference point along the reference heading where the lateral volume begins.</li>
-                    <li>"near_half_width": half of the width of the reference volume at the near distance.</li>
-                    <li>"region_length": length of the lateral volume along the reference heading, starting from the near distance point.</li>
-                    <li>"far_half_width": half of the width of the reference volume at the far distance.</li>
                   </ul>
-                  <p>These members specify the vertical extent that an aircraft must be inside to have a ghost aircraft:
-                  </p>
+
+                  <p><b>Route-based reference</b> (for curved approaches, converging fixes, etc.):</p>
                   <ul>
-                    <li>"descent_distance": distance from the reference point in nm where aircraft are expected to start its final descent.</li>
-                    <li>"reference_altitude": altitude of the reference point.</li>
-                    <li>"descent_altitude": expected aircraft altitude when it's at the descent distance.</li>
-                    <li>"above_altitude_tolerance": maximum distance in feet an aircraft may be above its expected altitude and still have a ghost be drawn for it.</li>
-                    <li>"below_altitude_tolerance": maximum distance in feet an aircraft may be below its expected altitude and still have a ghost be drawn for it.</li>
+                    <li>"reference_route": a string specifying the path as a series of fix names (or lat-long
+                      positions), optionally with <code>/arc</code> qualifiers for curved segments.
+                      Unlike approach/departure routes, only fix names and <code>/arc</code> are supported;
+                      other waypoint qualifiers (altitude restrictions, speed, handoff, etc.) are not allowed.
+                      Example: <code>"MERIT ROSLY/arc5.0JFK CATOD"</code>.
+                      When this is specified, "reference_point", "reference_heading", and "reference_length" must not be given.</li>
                   </ul>
+
+                  <p>The following members apply to both path types and specify the lateral
+                    qualification region&mdash;the volume an aircraft must be inside for a ghost to be generated:</p>
+                  <ul>
+                    <li>"heading_tolerance": maximum difference between an aircraft's heading and the local path heading for a ghost aircraft to be displayed.</li>
+                    <li>"near_distance": distance along the path from the start where the lateral volume begins.</li>
+                    <li>"near_half_width": half of the width of the region at the near distance.</li>
+                    <li>"region_length": length of the lateral volume along the path, starting from the near distance.
+                      Must not be specified with "reference_route" (the route length is used automatically).</li>
+                    <li>"far_half_width": half of the width of the region at the far distance.</li>
+                  </ul>
+                  <p>These members specify the vertical qualification region&mdash;the
+                    altitude envelope an aircraft must be inside for a ghost to be
+                    generated. There are two modes:</p>
+
+                  <p><b>Fixed altitude range</b> (no descent profile): set
+                    "descent_distance" to 0 (or omit it). The vertical
+                    qualification region is a flat band over the entire region,
+                    centered on "descent_altitude" with "above_altitude_tolerance"
+                    and "below_altitude_tolerance" defining the upper and lower
+                    bounds. For example, to qualify aircraft between 1000 and 5000
+                    feet:</p>
+                  <pre>
+    "descent_distance": 0,
+    "descent_altitude": 3000,
+    "above_altitude_tolerance": 2000,
+    "below_altitude_tolerance": 2000</pre>
+
+                  <p><b>Descent profile</b> (for approach paths with a glideslope):
+                    set "descent_distance" to a nonzero value. The expected altitude
+                    slopes linearly from "reference_altitude" at the path origin
+                    (the near end) to "descent_altitude" at "descent_distance" along
+                    the path, then remains flat at "descent_altitude" beyond that
+                    point. The tolerances define a band around this sloping
+                    profile.</p>
+
+                  <ul>
+                    <li>"descent_distance": distance along the path where the descent profile levels off. Set to 0 for a fixed altitude range.</li>
+                    <li>"descent_altitude": expected altitude at the descent distance (or the center of the fixed band when "descent_distance" is 0).</li>
+                    <li>"reference_altitude": expected altitude at the path origin. Only used when "descent_distance" is nonzero.</li>
+                    <li>"above_altitude_tolerance": maximum feet above the expected altitude at any point along the path for an aircraft to still qualify.</li>
+                    <li>"below_altitude_tolerance": maximum feet below the expected altitude at any point along the path for an aircraft to still qualify.</li>
+                  </ul>
+                  <p>Optionally, "scratchpad_patterns" may be specified as an array of strings; if present, only
+                    aircraft whose scratchpad contains one of the given patterns will generate ghosts.</p>
                 </td>
               </tr>
               <tr>
                 <td>"atpa_volumes"</td>
                 <td>Object</td>
               <td>Each member is a string with a runway name and an associated object that  specifies the region of space where
-                the STARS automated terminal proximity alert (ATPA) feature is active for the region.  (If not specified, a default
+                the STARS automated terminal proximity alert (ATPA) feature is active for the runway.  (If not specified, a default
                 volume is generated along the runway's extended centerline.) The following members define the region of space:
                 <ul>
                   <li>"id": an optional string naming the volume. If not specified, the runway is used.</li>
@@ -7383,11 +7429,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   the following members:
                   <ul>
                     <li>"crda_regions": array of two strings referencing two regions
-                      specified in "crda_regions".</li>
+                      defined in "crda_regions".</li>
                     <li>"leader_directions": array of two strings
                       specifying the compass direction ("N", "NE", "E",
                       ...) that will be used for leader lines for ghost
-                      aircraft from the two respective runways.</li>
+                      aircraft from the two respective regions.</li>
                     <li>"tie_symbol": A single-character string giving the
                     symbol to use on the STARS display for ghost aircraft
                     when CRDA "tie" mode is used.</li>
@@ -7395,7 +7441,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     symbol to use on the STARS display for ghost aircraft
                     when CRDA "stagger" mode is used.</li>
                     <li>"tie_offset": number giving an offset in nautical
-                      miles to add to ghost aircraft's distance from the airport when
+                      miles to add to ghost aircraft's distance from the convergence point when
                       "tie" mode is used.</li>
                   </ul>
                 </td>
