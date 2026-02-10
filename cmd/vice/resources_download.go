@@ -367,6 +367,13 @@ func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) 
 
 			imgui.Render()
 			implogl3.RenderDrawData(imgui.CurrentDrawData())
+
+			if imgui.CurrentIO().ConfigFlags()&imgui.ConfigFlagsViewportsEnable != 0 {
+				imgui.UpdatePlatformWindows()
+				imgui.RenderPlatformWindowsDefault()
+				plat.MakeContextCurrent()
+			}
+
 			plat.PostRender()
 
 			select {
