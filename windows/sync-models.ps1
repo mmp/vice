@@ -28,15 +28,38 @@ if (-not (Test-Path $ManifestPath)) {
 $manifest = Get-Content $ManifestPath | ConvertFrom-Json
 $manifestHash = Get-Sha256Hash $ManifestPath
 
+# Separate kokoro zip/file entries from individual download entries
+$kokoroZipHash = $null
+$kokoroFiles = @()
+$individualFiles = @()
+
+$manifest.PSObject.Properties | ForEach-Object {
+    if ($_.Name -eq 'kokoro-multi-lang-v1_0.zip') {
+        $script:kokoroZipHash = $_.Value
+    } elseif ($_.Name -like 'kokoro-multi-lang-v1_0/*') {
+        $script:kokoroFiles += $_.Name
+    } else {
+        $script:individualFiles += $_.Name
+    }
+}
+
 # Fast path: check if already synced
 if (Test-Path $StampPath) {
     $stampHash = Get-Content $StampPath -Raw
     if ($stampHash.Trim() -eq $manifestHash) {
         $allExist = $true
-        $manifest.PSObject.Properties | ForEach-Object {
-            $modelPath = Join-Path $ModelsDir $_.Name
-            if (-not (Test-Path $modelPath)) {
+        foreach ($model in $individualFiles) {
+            if (-not (Test-Path (Join-Path $ModelsDir $model))) {
                 $allExist = $false
+                break
+            }
+        }
+        if ($allExist) {
+            foreach ($model in $kokoroFiles) {
+                if (-not (Test-Path (Join-Path $ModelsDir $model))) {
+                    $allExist = $false
+                    break
+                }
             }
         }
         if ($allExist) {
@@ -45,10 +68,44 @@ if (Test-Path $StampPath) {
     }
 }
 
-# Full sync path
-$manifest.PSObject.Properties | ForEach-Object {
-    $model = $_.Name
-    $expectedHash = $_.Value
+# Check if any kokoro files are missing; download and extract zip if so
+if ($kokoroFiles.Count -gt 0) {
+    $kokoroMissing = $false
+    foreach ($model in $kokoroFiles) {
+        if (-not (Test-Path (Join-Path $ModelsDir $model))) {
+            $kokoroMissing = $true
+            break
+        }
+    }
+
+    if ($kokoroMissing) {
+        Write-Host "Downloading kokoro-multi-lang-v1_0.zip..."
+        $zipPath = Join-Path $ModelsDir 'kokoro-multi-lang-v1_0.zip'
+        $url = 'https://storage.googleapis.com/vice-resources/' + $kokoroZipHash
+        curl.exe -L --progress-bar -o $zipPath $url
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "Error: curl failed to download kokoro-multi-lang-v1_0.zip (exit code $LASTEXITCODE)"
+            exit 1
+        }
+
+        $actualHash = Get-Sha256Hash $zipPath
+        if ($actualHash -ne $kokoroZipHash) {
+            Write-Host "Error: Downloaded file hash mismatch for kokoro-multi-lang-v1_0.zip"
+            Write-Host "  Expected: $kokoroZipHash"
+            Write-Host "  Actual: $actualHash"
+            Remove-Item $zipPath -Force
+            exit 1
+        }
+
+        Write-Host "Extracting kokoro-multi-lang-v1_0.zip..."
+        Expand-Archive -Path $zipPath -DestinationPath $ModelsDir -Force
+        Remove-Item $zipPath -Force
+    }
+}
+
+# Download individual files (whisper models)
+foreach ($model in $individualFiles) {
+    $expectedHash = $manifest.$model
     $modelPath = Join-Path $ModelsDir $model
     $needDownload = $true
 

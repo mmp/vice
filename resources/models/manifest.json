@@ -2,6 +2,7 @@
   "ggml-base.en-jlvatc-q5_0.bin": "5125f0232e2ad85e9101173a69691d10884899d881b636af7376a34aaf36b702",
   "ggml-small.en-jlvatc-q5_0.bin": "b861692c042876ce3134e607292d8f90bed2bc1eb5a1e74500576e8ca89d85f1",
   "ggml-medium.en-jlvatc-q5_0.bin": "c009de99eca9a979340e33a288528a491d5ecb79d007879685b1483957779367",
+  "kokoro-multi-lang-v1_0.zip": "7b707d8cbac62846e829f32fae31ba02eeedeabfa0ab387a553daaf064a35b73",
   "kokoro-multi-lang-v1_0/LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
   "kokoro-multi-lang-v1_0/README.md": "eb4e6cd1c8a189b314703b3b04752fa8842e3222c798142217ffb6b40dc82a95",
   "kokoro-multi-lang-v1_0/date-zh.fst": "eb8aa079ae3cb81d8f4404992f39d61a0cb990947512b5b8d1e54d1f6980e718",
