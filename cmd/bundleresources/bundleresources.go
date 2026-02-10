@@ -13,11 +13,13 @@ package main
 import (
 	"context"
 	"crypto/sha256"
+	"crypto/tls"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -120,10 +122,19 @@ func main() {
 	ctx := context.Background()
 
 	// Create S3-compatible client for Cloudflare R2.
+	// Force TLS 1.2 to work around TLS 1.3 handshake failures with R2 endpoints.
 	r2Endpoint := fmt.Sprintf("https://%s.r2.cloudflarestorage.com", accountID)
+	httpClient := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				MaxVersion: tls.VersionTLS12,
+			},
+		},
+	}
 	cfg, err := config.LoadDefaultConfig(ctx,
 		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(accessKeyID, secretAccessKey, "")),
 		config.WithRegion("auto"),
+		config.WithHTTPClient(httpClient),
 	)
 	if err != nil {
 		log.Fatalf("Failed to load AWS config: %v", err)
