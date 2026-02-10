@@ -317,9 +317,9 @@ build_vice() {
         GOMODCACHE=$(go env GOMODCACHE)
         SHERPA_VERSION=$(grep 'github.com/k2-fsa/sherpa-onnx-go ' go.mod | awk '{print $2}')
         SHERPA_LIB="$GOMODCACHE/github.com/k2-fsa/sherpa-onnx-go-linux@$SHERPA_VERSION/lib/x86_64-unknown-linux-gnu"
-        cp "$SHERPA_LIB/libsherpa-onnx-c-api.so" .
-        cp "$SHERPA_LIB/libsherpa-onnx-cxx-api.so" .
-        cp "$SHERPA_LIB/libonnxruntime.so" .
+        cp -f "$SHERPA_LIB/libsherpa-onnx-c-api.so" .
+        cp -f "$SHERPA_LIB/libsherpa-onnx-cxx-api.so" .
+        cp -f "$SHERPA_LIB/libonnxruntime.so" .
         echo "Copied sherpa-onnx shared libraries to build directory."
     fi
 
