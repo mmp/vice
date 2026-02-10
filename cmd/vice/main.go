@@ -444,13 +444,10 @@ func main() {
 					// Determine if this is a STARS or ERAM scenario
 					_, isSTARSSim := av.DB.TRACONs[c.State.Facility]
 
-					// Rebuild the display hierarchy with the appropriate pane
-					config.RebuildDisplayRootForSim(isSTARSSim)
-
-					// Reactivate the display hierarchy
-					panes.Activate(config.DisplayRoot, render, plat, eventStream, lg)
-
-					panes.ResetSim(config.DisplayRoot, c, plat, lg)
+					// Reset each pane for the new sim
+					config.ActiveRadarPane(isSTARSSim).ResetSim(c, plat, lg)
+					config.MessagesPane.ResetSim(c, plat, lg)
+					config.FlightStripPane.ResetSim(c, plat, lg)
 
 					// Apply waypoint commands if specified via command line (only for new clients)
 					if *waypointCommands != "" {
@@ -509,7 +506,8 @@ func main() {
 			if client, err := mgr.LoadLocalSim(config.Sim, config.ControllerInitials, lg); err != nil {
 				lg.Errorf("Error loading local sim: %v", err)
 			} else {
-				panes.LoadedSim(config.DisplayRoot, client, plat, lg)
+				// Notify the active radar pane about the loaded sim
+				config.ActiveRadarPane(config.IsSTARSSim()).LoadedSim(client, plat, lg)
 				uiResetControlClient(client, plat, lg)
 				controlClient = client
 				// Apply waypoint commands if specified via command line
@@ -611,6 +609,8 @@ func main() {
 			config.ShowSettings = ui.showSettings
 			config.ShowLaunchCtrl = ui.showLaunchControl
 			config.ShowScenarioInfo = ui.showScenarioInfo
+			config.ShowMessages = ui.showMessages
+			config.ShowFlightStrips = ui.showFlightStrips
 			config.ShowKeyboardRef = keyboardWindowVisible
 
 			// Inform imgui about input events from the user.
@@ -622,8 +622,8 @@ func main() {
 			imgui.NewFrame()
 
 			// Generate and render vice draw lists
-			stats.drawPanes = panes.DrawPanes(config.DisplayRoot, plat, render, controlClient,
-				ui.menuBarHeight, lg)
+			stats.drawPanes = panes.DrawPanes(config.ActiveRadarPane(config.IsSTARSSim()),
+				plat, render, controlClient, ui.menuBarHeight, lg)
 
 			// Execute fuzz commands if in fuzz testing mode
 			if fuzzController != nil && controlClient != nil {

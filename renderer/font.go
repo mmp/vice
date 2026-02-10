@@ -192,11 +192,13 @@ var (
 	FontAwesomeIconCaretDown           = faUsedIcons["CaretDown"]
 	FontAwesomeIconCaretRight          = faUsedIcons["CaretRight"]
 	FontAwesomeIconCheckSquare         = faUsedIcons["CheckSquare"]
+	FontAwesomeIconClipboardList       = faUsedIcons["ClipboardList"]
 	FontAwesomeIconCloud               = faUsedIcons["Cloud"]
 	FontAwesomeIconCloudRain           = faUsedIcons["CloudRain"]
 	FontAwesomeIconCloudShowersHeavy   = faUsedIcons["CloudShowersHeavy"]
 	FontAwesomeIconCloudSun            = faUsedIcons["CloudSun"]
 	FontAwesomeIconCog                 = faUsedIcons["Cog"]
+	FontAwesomeIconComment             = faUsedIcons["Comment"]
 	FontAwesomeIconCompressAlt         = faUsedIcons["CompressAlt"]
 	FontAwesomeIconCopyright           = faUsedIcons["Copyright"]
 	FontAwesomeIconDiscord             = faBrandsUsedIcons["Discord"]
@@ -245,10 +247,12 @@ var (
 		"CaretDown":           FontAwesomeString("CaretDown"),
 		"CaretRight":          FontAwesomeString("CaretRight"),
 		"CheckSquare":         FontAwesomeString("CheckSquare"),
+		"ClipboardList":       FontAwesomeString("ClipboardList"),
 		"Cloud":               FontAwesomeString("Cloud"),
 		"CloudRain":           FontAwesomeString("CloudRain"),
 		"CloudShowersHeavy":   FontAwesomeString("CloudShowersHeavy"),
 		"CloudSun":            FontAwesomeString("CloudSun"),
+		"Comment":             FontAwesomeString("Comment"),
 		"CompressAlt":         FontAwesomeString("CompressAlt"),
 		"Cog":                 FontAwesomeString("Cog"),
 		"Copyright":           FontAwesomeString("Copyright"),

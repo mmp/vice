@@ -51,6 +51,8 @@ var (
 		showSettings      bool
 		showScenarioInfo  bool
 		showLaunchControl bool
+		showMessages      bool
+		showFlightStrips  bool
 
 		// STT state
 		pttRecording              bool
@@ -77,6 +79,9 @@ func imguiInit() *imgui.Context {
 	// clearing the shortcut keys that trigger it.
 	context.SetConfigNavWindowingKeyNext(imgui.KeyChord(imgui.KeyNone))
 	context.SetConfigNavWindowingKeyPrev(imgui.KeyChord(imgui.KeyNone))
+
+	// Only allow dragging windows by their title bars, not by clicking content.
+	io.SetConfigWindowsMoveFromTitleBarOnly(true)
 
 	// General imgui styling
 	style := imgui.CurrentStyle()
@@ -128,6 +133,8 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, es *sim.Ev
 	ui.showSettings = config.ShowSettings
 	ui.showLaunchControl = config.ShowLaunchCtrl
 	ui.showScenarioInfo = config.ShowScenarioInfo
+	ui.showMessages = config.ShowMessages
+	ui.showFlightStrips = config.ShowFlightStrips
 	keyboardWindowVisible = config.ShowKeyboardRef
 }
 
@@ -227,6 +234,22 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			imgui.SetTooltip("Control spawning new aircraft and grant departure releases")
 		}
 
+		if controlClient != nil && controlClient.Connected() {
+			if imgui.Button(renderer.FontAwesomeIconComment) {
+				ui.showMessages = !ui.showMessages
+			}
+			if imgui.IsItemHovered() {
+				imgui.SetTooltip("Toggle messages window")
+			}
+
+			if imgui.Button(renderer.FontAwesomeIconClipboardList) {
+				ui.showFlightStrips = !ui.showFlightStrips
+			}
+			if imgui.IsItemHovered() {
+				imgui.SetTooltip("Toggle flight strips window")
+			}
+		}
+
 		if imgui.Button(renderer.FontAwesomeIconBook) {
 			browser.OpenURL("https://pharr.org/vice/index.html")
 		}
@@ -294,6 +317,13 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 				ui.launchControlWindow = MakeLaunchControlWindow(controlClient, lg)
 			}
 			ui.launchControlWindow.Draw(eventStream, p)
+		}
+
+		if ui.showMessages {
+			config.MessagesPane.DrawWindow(&ui.showMessages, controlClient, p, lg)
+		}
+		if ui.showFlightStrips {
+			config.FlightStripPane.DrawWindow(&ui.showFlightStrips, controlClient, p, lg)
 		}
 	}
 
@@ -948,11 +978,15 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 		imgui.EndGroup()
 	}
 
-	for pane := range config.AllPanes() {
-		if draw, ok := pane.(panes.UIDrawer); ok {
-			if imgui.CollapsingHeaderBoolPtr(draw.DisplayName(), nil) {
-				draw.DrawUI(p, &config.Config)
-			}
+	if imgui.CollapsingHeaderBoolPtr(config.MessagesPane.DisplayName(), nil) {
+		config.MessagesPane.DrawUI(p, &config.Config)
+	}
+	if imgui.CollapsingHeaderBoolPtr(config.FlightStripPane.DisplayName(), nil) {
+		config.FlightStripPane.DrawUI(p, &config.Config)
+	}
+	if draw, ok := config.ActiveRadarPane(config.IsSTARSSim()).(panes.UIDrawer); ok {
+		if imgui.CollapsingHeaderBoolPtr(draw.DisplayName(), nil) {
+			draw.DrawUI(p, &config.Config)
 		}
 	}
 

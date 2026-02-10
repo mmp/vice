@@ -39,8 +39,11 @@ func (g *glfwPlatform) GetMouse() *MouseState {
 	pos := imgui.MousePos()
 	wx, wy := io.MouseWheelH(), io.MouseWheel()
 
+	// With multi-viewport enabled, imgui.MousePos() returns OS screen
+	// coordinates. Convert to main-window-relative coordinates.
+	mainViewportPos := imgui.MainViewport().Pos()
 	m := &MouseState{
-		Pos:      [2]float32{pos.X, pos.Y},
+		Pos:      [2]float32{pos.X - mainViewportPos.X, pos.Y - mainViewportPos.Y},
 		DeltaPos: util.Select(g.mouseDeltaMode, g.mouseDelta, [2]float32{}),
 		Wheel:    [2]float32{wx, wy},
 	}

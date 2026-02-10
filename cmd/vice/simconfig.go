@@ -1825,11 +1825,9 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.
 		}
 	}
 
-	config.DisplayRoot.VisitPanes(func(pane panes.Pane) {
-		if draw, ok := pane.(panes.InfoWindowDrawer); ok {
-			draw.DrawInfo(c, p, lg)
-		}
-	})
+	if draw, ok := config.ActiveRadarPane(config.IsSTARSSim()).(panes.InfoWindowDrawer); ok {
+		draw.DrawInfo(c, p, lg)
+	}
 	imgui.End()
 
 	return show

@@ -5,7 +5,6 @@
 package stars
 
 import (
-	"encoding/json"
 	"fmt"
 	"image"
 	"image/color"
@@ -266,14 +265,6 @@ const (
 	fontARTS
 )
 
-func init() {
-	panes.RegisterUnmarshalPane("STARSPane", func(d []byte) (panes.Pane, error) {
-		var p STARSPane
-		err := json.Unmarshal(d, &p)
-		return &p, err
-	})
-}
-
 type AudioType int
 
 // The types of events we may play audio for.
@@ -394,8 +385,6 @@ func (d DwellMode) String() string {
 func NewSTARSPane() *STARSPane {
 	return &STARSPane{}
 }
-
-func (sp *STARSPane) Hide() bool { return false }
 
 func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
 	if sp.PointOuts == nil {

@@ -1,7 +1,6 @@
 package eram
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -216,14 +215,6 @@ func (ep *ERAMPane) Activate(r renderer.Renderer, pl platform.Platform, es *sim.
 	}
 }
 
-func init() {
-	panes.RegisterUnmarshalPane("ERAMPane", func(d []byte) (panes.Pane, error) {
-		var p ERAMPane
-		err := json.Unmarshal(d, &p)
-		return &p, err
-	})
-}
-
 func (ep *ERAMPane) CanTakeKeyboardFocus() bool { return true }
 
 func (ep *ERAMPane) updateCursorOverride(ctx *panes.Context) {
@@ -364,10 +355,6 @@ func (ep *ERAMPane) Draw(ctx *panes.Context, cb *renderer.CommandBuffer) {
 	// handleCapture
 	// updateAudio
 	ep.drawPauseOverlay(ctx, cb)
-}
-
-func (ep *ERAMPane) Hide() bool {
-	return false
 }
 
 func (ep *ERAMPane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
