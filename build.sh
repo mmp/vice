@@ -53,7 +53,7 @@ check_whisper_submodule() {
 
 check_whisper_submodule
 
-# Sync models from GCS if needed
+# Sync models from R2 if needed
 sync_models() {
     local manifest="resources/models/manifest.json"
     local models_dir="resources/models"
@@ -99,9 +99,9 @@ sync_models() {
     while IFS= read -r model; do
         if [ "$model" = "kokoro-multi-lang-v1_0.zip" ]; then
             if [ "$JSON_PARSER" = "jq" ]; then
-                kokoro_zip_hash=$(jq -r '."kokoro-multi-lang-v1_0.zip"' "$manifest")
+                kokoro_zip_hash=$(jq -r '."kokoro-multi-lang-v1_0.zip".hash' "$manifest")
             else
-                kokoro_zip_hash=$($JSON_PARSER -c "import json; print(json.load(open('$manifest'))['kokoro-multi-lang-v1_0.zip'])")
+                kokoro_zip_hash=$($JSON_PARSER -c "import json; print(json.load(open('$manifest'))['kokoro-multi-lang-v1_0.zip']['hash'])")
             fi
         elif [[ "$model" == kokoro-multi-lang-v1_0/* ]]; then
             if [ -z "$kokoro_files" ]; then
@@ -160,7 +160,7 @@ sync_models() {
             local zip_path="$models_dir/kokoro-multi-lang-v1_0.zip"
             echo "Downloading kokoro-multi-lang-v1_0.zip..."
             curl -L --progress-bar -o "$zip_path" \
-                "https://storage.googleapis.com/vice-resources/$kokoro_zip_hash"
+                "https://vice-resources.pharr.org/$kokoro_zip_hash"
 
             local actual_hash=$($SHA256CMD "$zip_path" | cut -d' ' -f1)
             if [ "$actual_hash" != "$kokoro_zip_hash" ]; then
@@ -183,9 +183,9 @@ sync_models() {
             [ -z "$model" ] && continue
 
             if [ "$JSON_PARSER" = "jq" ]; then
-                expected_hash=$(jq -r ".\"$model\"" "$manifest")
+                expected_hash=$(jq -r ".\"$model\".hash" "$manifest")
             else
-                expected_hash=$($JSON_PARSER -c "import json; print(json.load(open('$manifest'))['$model'])")
+                expected_hash=$($JSON_PARSER -c "import json; print(json.load(open('$manifest'))['$model']['hash'])")
             fi
 
             local model_path="$models_dir/$model"
@@ -199,11 +199,10 @@ sync_models() {
                 echo "Model $model has wrong hash, re-downloading..."
             fi
 
-            # Download from GCS (public bucket, no auth needed)
             echo "Downloading $model..."
             mkdir -p "$(dirname "$model_path")"
             curl -L --progress-bar -o "$model_path" \
-                "https://storage.googleapis.com/vice-resources/$expected_hash"
+                "https://vice-resources.pharr.org/$expected_hash"
 
             # Verify the download
             actual_hash=$($SHA256CMD "$model_path" | cut -d' ' -f1)

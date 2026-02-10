@@ -56,7 +56,7 @@ if not "!WHISPER_ACTUAL_SHA!"=="!WHISPER_EXPECTED_SHA!" (
     exit /b 1
 )
 
-REM Sync models from GCS if needed
+REM Sync models from R2 if needed
 call :sync_models
 if errorlevel 1 exit /b 1
 

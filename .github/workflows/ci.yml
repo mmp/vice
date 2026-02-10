@@ -38,7 +38,9 @@ jobs:
     - name: Fetch LFS and generate manifest
       if: steps.cache.outputs.cache-hit != 'true' && github.event_name != 'pull_request'
       env:
-        VICE_GCS_CREDENTIALS: ${{ secrets.GCS_UPLOAD_CREDENTIALS }}
+        R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+        R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+        R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
       run: |
         git lfs install
         git lfs pull

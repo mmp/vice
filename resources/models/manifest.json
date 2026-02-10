@@ -1,383 +1,1526 @@
 {
-  "ggml-base.en-jlvatc-q5_0.bin": "5125f0232e2ad85e9101173a69691d10884899d881b636af7376a34aaf36b702",
-  "ggml-small.en-jlvatc-q5_0.bin": "b861692c042876ce3134e607292d8f90bed2bc1eb5a1e74500576e8ca89d85f1",
-  "ggml-medium.en-jlvatc-q5_0.bin": "c009de99eca9a979340e33a288528a491d5ecb79d007879685b1483957779367",
-  "kokoro-multi-lang-v1_0.zip": "7b707d8cbac62846e829f32fae31ba02eeedeabfa0ab387a553daaf064a35b73",
-  "kokoro-multi-lang-v1_0/LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
-  "kokoro-multi-lang-v1_0/README.md": "eb4e6cd1c8a189b314703b3b04752fa8842e3222c798142217ffb6b40dc82a95",
-  "kokoro-multi-lang-v1_0/date-zh.fst": "eb8aa079ae3cb81d8f4404992f39d61a0cb990947512b5b8d1e54d1f6980e718",
-  "kokoro-multi-lang-v1_0/dict/README.md": "8bcc7c2ed7dff082d9a99c09de0bfd72249bf3b5c4298a3af328da40cbd8cfd1",
-  "kokoro-multi-lang-v1_0/dict/generate_user_dict.py": "24541017b4b60d8e1ad94a5165f7097d2fd107d4ceecbf13583dd37682fdd2a7",
-  "kokoro-multi-lang-v1_0/dict/hmm_model.utf8": "f17790586ac86dd048c8adffed052c4bd2b28ed0682972c1275e59040c0589a7",
-  "kokoro-multi-lang-v1_0/dict/idf.utf8": "dbd1e03d72b2263cc8d84a4304ed77677eed9e7deaf43a1a5133bbba9733b535",
-  "kokoro-multi-lang-v1_0/dict/jieba.dict.utf8": "3043b77068e09c9904f27cad82f12b6ebe9dbdb5aeff3b25e45ab7f9c1122b55",
-  "kokoro-multi-lang-v1_0/dict/pos_dict/char_state_tab.utf8": "28b7be1dd7369766a51445af4d42e9a2ba4bf374c13be5bc1ca7721e27271dbb",
-  "kokoro-multi-lang-v1_0/dict/pos_dict/prob_emit.utf8": "c33c4cb7edf3b3a5947df7209b6e9f267eae1f21335d9e2bd2521ea07105457a",
-  "kokoro-multi-lang-v1_0/dict/pos_dict/prob_start.utf8": "13623ea0e9300bdb597cb2da28770b7b385d6c0098d66e516083fb01b6bd5d96",
-  "kokoro-multi-lang-v1_0/dict/pos_dict/prob_trans.utf8": "f22363e2307408293d180c6f9f6b5cb75879d52f722f7764fa2d3d0ae2400236",
-  "kokoro-multi-lang-v1_0/dict/stop_words.utf8": "b788b8a939d2e2fe079abd579ea98f12f9fb84370bfd0dddd81bb9381f7ab42c",
-  "kokoro-multi-lang-v1_0/dict/user.dict.utf8": "5faabcd0c52adf512de77fd7eee3d556da8c98b50f493b47c66a981b3a24959c",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/af_dict": "25729d3bf4c4a0f08da60aea9eb5a0cf352630f83fab1ab0c3955b7740da1776",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/am_dict": "9954365860682c756c8c4459577d3aa0ab77ad0cba6798b746033ada5c3d4bea",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/an_dict": "6cf38cedb6693aade49e5a5d27a3c92516a5335125bf85fcae58282e66fb82fd",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ar_dict": "72316426e797777fe4df9420935a3b6a79b37d7e3f3948537ba71cd7b21b2541",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/as_dict": "5bcb74ff4558a60c5ba1a48a2a92c01513ee2d29fe30c5a38dc5308c54f1cf49",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/az_dict": "e352b2dcf811662d79f4beaaa0c7750706cf669c0409fd815a9bd0244b1adfc7",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ba_dict": "246c8c655ceed43d9ff44a65de5f933f16255489d0b181b1a46a83e1fd5a0354",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/be_dict": "232fb0debfc8fdca9b8f2494770ff23535f7f887bbebb0178abffc243490e798",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/bg_dict": "8fa3adec8e18a3e695b2bbea1d4780182e17222d8b9f8da9908a237828f6b063",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/bn_dict": "2b59ec34c07955ca5b7814fa5152c33fa357880590703eefab1f3081f031fdef",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/bpy_dict": "a4321d9ba80bd60f49e0bee5aae57f1ae9c49b7a1c3d4ba384338fe9bf3b6a92",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/bs_dict": "d5df564f511af082884719685db86ec4df23467cf012ce25e898540baf9de65b",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ca_dict": "1be203855ecb0bdfe66578ef5552f83289e39972d78c52714d061b7f7493df4a",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/chr_dict": "1853980c673015327bed3d4e5f7e88c2ee3bd8a922bcdd232a6497277e903bce",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/cmn_dict": "109aaa7708d3727382acb3ae41d8e2094a7e2bb9f651a81835be22a6f08071fe",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/cs_dict": "5ec02aba90465007f20a5c8aeb889275834cfa8c8f621c3d9bee1ca90d21788d",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/cv_dict": "8260837c8f18fbe5870905ebb2850dfd18e252150ad6c868b96d9d2c6398ea8a",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/cy_dict": "31d74ccad218ab80b79566caeb8d21bcf0fe43326ed7c437fa736d39b85e603e",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/da_dict": "fe0c21895b4844868612f9ea846bc6010e30b5dd1f4cb1567459d73d2792a8ac",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/de_dict": "e9ac048df5cde03b74907d591c7b29b45ee9ec5fcd4592b0b894f0083572fcfd",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/el_dict": "5d9f759750131da777d2fd4f06aa602ed746d38f27b84dd9a2d4a550f2cd452e",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/en_dict": "71bd330ba8a2e3e8076e631508208ef49449d6147c17b7bd2b4b1e1468292e35",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/eo_dict": "849f061abddd5388bac112b32e6f7bf747e15e1b3ae53fe91079381effff4cc9",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/es_dict": "3fa93e251eab80838a2d6207ee58c9c847270a65fe3fae98850e0185b5a2186c",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/et_dict": "1a6734b4e6bc9de9a4c94cfb434873e0a7f4ae4ec89549b3137ae5491cf655da",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/eu_dict": "762a6eff63552ef72cd88bf1e92dc5a823eb378d50cb85c7917e8c5bba079137",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/fa_dict": "f92f35ce7eb1d97360016617d97786412a94af55b776a18f1c280dab4f43befd",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/fi_dict": "dda999437bd4b37a7f7400a2230aace1200a52906ab0b1ff3507d44ab19d64b1",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/fr_dict": "e399ab924c4d10beef1fc310b30ea56e4ddfd8b4b64b8ed978e9c65394d49b2d",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ga_dict": "b2db03d21f7900b697d7dbb8bec855cd1117e9867f19884faf11c4df626659f5",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/gd_dict": "e92b47dcf9a001363ffee1e62863faf264ff5f16e10cd9cf1f1e83ca89ca14aa",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/gn_dict": "7640df272b192a68ba401294bf9197ab46d0b141da7a358ad1986e7f77e7f29a",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/grc_dict": "488779493993d221b09e713e104a221ac1bb35765f826acc26d3d3c1aa3a35ed",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/gu_dict": "cb1fbfb53bab2ec6d9e44cd9d12ccb9b80de49f274d772314389c477eef530fd",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/hak_dict": "e3075c7d281f95a2ce2264c01edbd09e962cb3ed29400766c5d2116a08a185c8",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/haw_dict": "2b4e77b61cadfc5ee622aa8b1d23941e36101d9bdbf8d809e0fa1b442d2c3f74",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/he_dict": "a8bf0d939d630e9e5097ad361a7765297baf297fd7d06e89f48a79ead980869e",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/hi_dict": "5a68c9532624e57ac845b26ce1e2e5034c4f6353bede46ecbe57e583ec8effd6",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/hr_dict": "5f98fcf05f97335a5436a8a9643677da6f158f2a9ee1d41bdda1725b1bb3527e",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ht_dict": "d577219d15c29396db254aed958358456ec1501cdf62cb4ca5413752f2ee7cc1",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/hu_dict": "055d563b839d599db40be5b1cc2af9d31793795b328eb8d4f389ec7d38fe7e81",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/hy_dict": "8b808ad8f1d4cae32b3b785b96d1e27b3af28e32f4dddfed7c93e129d63b2587",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ia_dict": "1c665603a82beb81e0cef2878c9b44642ae6d519e301fbbd06326e03325febf3",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/id_dict": "8fb3f23f80f71f023219cee7032223f3f6886cc5040eb4c8c507f79d1b84e98d",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/intonations": "3f8af65fd3eda9759a10f021d61361c120871f463515229c925995c7f90918cc",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/io_dict": "0d9d6995fead1ccdd5512f7909ec8f9efc8ccc97f5c9d23ecae6b3ba77ffadbf",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/is_dict": "8eeab5b1ca3f75362881fae3de3316fcaff281179a4c51fceb0098f11ead96e0",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/it_dict": "111f968359c9ebe36b107a2565ba9f258bab337d3cbe37e44871980a8f21ce6b",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ja_dict": "0d1135d3cdfed811d3eac7c90a2e277329fa6f060cdd23af287db161982cab44",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/jbo_dict": "71298417de1e5fd07df275270a5d47ca8820cb8c9f5dc2156c070b7a3ae7999c",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ka_dict": "c8624947110a13bee72d4fc15b06026004df3f40c16c7b917d27e369ca122a32",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/kk_dict": "88dc0106629a57d0aca5073afb11db1a044799185355088a7ad4331c836affd3",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/kl_dict": "ec441964d7fbd4622bb628327903d5c6c999c95d539b2e061884decf95ac30e3",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/kn_dict": "c51e0385937b407b36c02fd2c85dfecdc5cac411398ee8a74eca15b35617af64",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ko_dict": "f629060f27d597e0fd52d8010609f41c8a0ec28f5c2bb0016850e00244950681",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/kok_dict": "52659dec01d1b119bfef56b622430f5525c50af0144c9f9688cb3c22cc02ed31",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ku_dict": "65de1c5429e8d193775b36fcf169a60fbbb9964ef13a4a1bab7ff0ce855cad20",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ky_dict": "def4427fd4070673c073b892c7b229f8c3f17eb1df36bea2ec7188ddcfb4d0ea",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/la_dict": "17818dd567936fde032404fbbd6177844b9f5fc5a915480f567272147936f917",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/aav/vi": "3199c980f9e23a88a2aa693cd631bf4fcb0f3408c4272bc01b7ac0ff8e79d778",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/aav/vi-VN-x-central": "b351f13c6ed0da37561df25f45579872ff9863920ad66b94e27327a2c611755b",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/aav/vi-VN-x-south": "c0a0a2c894cd57b0bbacf9ef4efb8d89bfaf9feb164830e1539f599e7cc4e021",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/eo": "0254b93c8af79d9666a7667ca8b33b21a5453012da4ea0acd79660a9695f89d4",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/ia": "8fb11718030f8b29146f773ca462b838a6c660f166933eb6f1498c361f2e958b",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/io": "8e8391c7f40b7f9d2307faff8018a40dd2b448df4bd581a2950ee8393a00cebf",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/jbo": "d9529de82dccbd95f83c1de401f4ea661609bde644546e9ef421241b7043c00e",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/lfn": "394874fd9022e37cdc307c3386e81f1c0c133a8e9c5fdff74888b519f2c6d648",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/piqd": "d1a559b714cd8dd0ea9e46c4574e06c4f451957fb17bf39b945a89b9586f8b97",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/py": "59e54b95e8571417f43db37a7fd7e351af4e22a8c250cfb66af394f8ed6c4e9c",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/qdb": "52b83fc4f294580ebabd71df641ab5beec6b308758a3458b497124737589a7d8",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/qya": "78ae3f4d70208a9f69e2c26a6a3b5db28d7e6a58740fae937f51dd7fc9faeb1b",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/sjn": "61d85974b6841dfbfcc8cb92ad0742696cb87a6a85d5a28fe99895e46ef9de6f",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/azc/nci": "7bf70cb18e969398f74428b91c694a4483eaebd6733ecc437eb8714bbf7fff76",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/bat/lt": "7691c7ca1e79fc9728c70a0d22830eb113a0124bf96807e2a1ace3c6bf0c2f89",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/bat/ltg": "be716cbbdcb5fe319eed88abd4a44c3329a06e1dc468c8363d3f43cca2683a11",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/bat/lv": "f08a801dacccace62f5b90166428e90e088818d92dd5f9333ebbe834b0f21c16",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/bnt/sw": "271dd28b3ec41adeea53f1146249ba6cab61572963ab2743041114d95784e368",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/bnt/tn": "2243a1fc208dfdc37e154e837c0e782afc325d4acfbacc22718b7f05583ace92",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/ccs/ka": "68788b99dba7b82cdf8fc9dd05134bd72cf21f0b4c07b13b67b6f036e6294cba",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/cel/cy": "67bc33b4a66041e6343dfb98e1950d1089eecb68731f346fcc4f47cd07e79970",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/cel/ga": "29c2cc5736ceb2bd9ef745694d4abf7ed363a33569dfbe745811d4703b7b6cce",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/cel/gd": "7da0ba464579c367089109826ec15c2584a17417cca4a2c66dae0318d33e3128",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/cus/om": "b7c563f1effd83c08f3d229fb5a13d074513b85165ce4359a674ef30ca71786b",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/dra/kn": "c988a5226fa27ee6768b45566ce999ced9a4b68f8e79232b323d5903f4bb2258",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/dra/ml": "aa7e1f1f239ba55a8a79ed1f3544e9a51b94efe53925de60d4ff737273660b5c",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/dra/ta": "5bc213eb163bbf069cbfe4f2e9f7e7db71a719d8c0a96e95401d94c992960ed7",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/dra/te": "176ca4a81feb2181393edff3e2d5c0253cb52239392c4b809c61501d60c69811",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/esx/kl": "d08cf6ff60b99e6c2ceda549bcbb1a57580915d6a4d50c7f0f5d75289d9fb45a",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/eu": "a16e4e4d9b910a6e25a2a55913c812badc4fc3cbece0b8d49a64af112782d5a5",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmq/da": "e8dd5e0d30ff0694a7ee839faa8ed35c015eb927a737aba1f120c00005692eaf",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmq/is": "16c077e6222acfc7702046fa3579bb5d6b57ece98646229e13be2233f9fdcbd7",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmq/nb": "d47966621312fb95570539f446982f6deb98fd46d9b71fec4a0005a6bace8f46",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmq/sv": "02727d3b25fc82409bd2cd1ebb444fdb2d5d3f3de7f76b95fc9ed9164c3e59c3",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/af": "fb8ccc05f5eae1754b5aa7e92cb919defdd0810b70eec19f7c77cf836e51db09",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/de": "f3cca92f94b70f8c25a29ee0a4c9ce4c7f1022241532e0647fa2b7f698bf104e",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/en": "4605d5330801de3641c6e366d15f129ea1f5ffbce8722642aba01ace07ab9c83",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/en-029": "faeb8cb201056775f733acbd908c66555fe57bf01cb063920f178f389cbf85d3",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/en-GB-scotland": "1ce4282c1f4385dbaf0035e799b2ab1ee9e9a3ab4829100594a3047727b52353",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/en-GB-x-gbclan": "2040e176f1f7f27bdce81c32d7e2b1662449d54d264afd3c0ed871b8e42b6e46",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/en-GB-x-gbcwmd": "927a5ab891c65b30b4426b151d1623a01024f6b773a38497ba1c90cd77a95747",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/en-GB-x-rp": "d0625af7f58561b1b8cf96fd7f93eee6553bcb3eadb9020ae0757bf96e5115e5",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/en-US": "41534c2a22df5dd4f1052ff9e1a33a3ea7bff5a26b5c02bdad5ba8ddb7524704",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/en-US-nyc": "e8ee9168376d1f7d9e7dcda7c4644c36c529a8bea816e6380895364db46ea2e3",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/lb": "071beb0e769afeba32177796fc0f1386bdc89a3234bed2bf720e76cbf73f5b99",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/nl": "56ae04fae28ae9371ed6db28193189e4ee962ba8236f0bcdeef6a06ea4dee374",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/grk/el": "0b529c998af07c72bf516b5750709464f6258c56c6916b8b8f0c843be9836fca",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/grk/grc": "319f950b1ad7b1f37efaa390540bf957bddac16d0557a6c3adaff27e0c64e12e",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/as": "3f58f5628f792b00a5ae6e8fe3bf8696f64af2838e5723799ddbab6027a0b378",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/bn": "bc3ce23384b9d0bb3bac06a09d90f690fae32a492dcbb030f0e56ba67b5d656c",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/bpy": "e528d1189b995b94966cef4cc182469cc54f7da8efc5860375c4ecf186ce6146",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/gu": "f938a755d270745188c2cf2aacba06642a96bb73ba2a0325384121b9d5ec5407",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/hi": "3c1c3f916f57f2d6d6cbf7923c0f39a36ac2140e2a69ddffce917d7b8bf3ccab",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/kok": "810ee23fbbe9c186a036bc12f4e5c0de674a132e2e099c9b3dece2a1c9cdb28a",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/mr": "29063ff3a5257d0d3d7c215dfd4c14deed39e1d48f15894202e6712459720efd",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/ne": "d53fda082ec174ef33ed3c3468fc973c43b4ef71aca8c1a28cb344668f4838dc",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/or": "9b52ede7d19659f884854de3dff12597a96f4d6ec7cb4146d2f8dad1453c742f",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/pa": "eed3cf477f81d13559dbb367256f9532b20dad1432c15b206c777217b8f570ca",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/sd": "65bfe0e37799029d42a370eb627cca5aa4108b967fba6c8141878d693c903619",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/si": "8f0993b35ba5b075c38ae76640971256e560abfbd721b608d16a48588932596d",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/ur": "5b7af7474fac265c7bd7d269111994a09610f954690698f55a8613f3fa973318",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/ine/hy": "b6ad6129079c49ca915c3005ecb74a02bf5d69cbbc8ec3f8e0f6b949cb3a768f",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/ine/hyw": "26f8a863c74b3d19c9c42fcf16ae5151c12ac52ef8fab36cae1e5f0d4ad30e6a",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/ine/sq": "865fde9017b5af82acb844e5f9793998fed422a208ad8aaf9dedacad3bf27af1",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/ira/fa": "0dc7e93be4d1fbdf7ff52de2fe8bcdc23304e6d86e012b4ab8276d626b5d980c",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/ira/fa-Latn": "a04cf8efed8db1ac33b306f1f8c6f42733dace87c9fc9f34a2d227b3bb291e28",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/ira/ku": "57db3a210d73412a49e961dbed9b27077f5c7b967a19a0eb9f9363ea4b16cea5",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/iro/chr": "f0e2fb8549306c07f571d3e77c89b1d3e9022d448d58e5d424441e01ccce88be",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/itc/la": "b70d13a264352eba2d22a5d0ef21730849509d18f7277320b008a56decc6efc2",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/jpx/ja": "6fd980445bc52e0f593062929f5b62831448abaae2a92739beba49df27a79743",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/ko": "c2dfbf88d9aa2ac9bf2f30e92e260120e4f2c21123a02265014ae98d59d5774e",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/map/haw": "b19f22efb6714354d8d1360f449e05f0f84d50d6fa3c98fcfd619ea1b4ba8996",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/miz/mto": "e33aba5e8159730f62004b22518d627c796f7d039431e5d9217b498f10341976",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/myn/quc": "76a75b77c672c432b56b84d517310d6aa75c4b3f9de580e290199804366174ea",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/poz/id": "ce1fcddab3e756a7cdba3dd009ad24cd57e1fde29ce395698355da24e32a6075",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/poz/mi": "2146cf3868c79b853bb5e41ddbf611d51b4b0a14087199f16194313562b98987",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/poz/ms": "8a965182ee0c5a41357197c05cf047d21b96744775a57a344d831a961e30351b",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/qu": "3069e443ecf3421bcb3b35b864e1a89fa9465af072f86eedd46a415990aba6e6",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/an": "ff8aa97c55286cc90531cad5df3cd36165abba11502a84d53b0fcd923f965f23",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/ca": "787df034320467236292bb46f1f8781a2998a185f117d350c018b6cfcf360854",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/es": "966aa015ea5646d79f0ca4807cf5da7339aabd3782b55cfa5eb0d8c3fc8fc588",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/es-419": "ff0f84457ac40e3bcf61d6de58028312be74e0e6cbc3b742f31b3ce729c2aa0c",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/fr": "95f44834b48c075dad13eace54d2c98ff79b81aa0074dd67eebaf66c2909eef8",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/fr-BE": "72496a316e47b997f893500b8953dc01a10b86a2d4238e13c1260f50b47d792a",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/fr-CH": "b449b0fd99d9cd93261fe1c6b816448b99b4a10420bee3f301e669568ad0de55",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/ht": "389bdf3e984a2f93b7060baad82452dac65b83bf4482d3884525a176ae0e0524",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/it": "0d9069eb9a96db1c55c131b2bb7d1f5255c68fbddc2199ffd3295b52519a3256",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/pap": "41a5b5e91482a5498a66711c05873a634bbd418786b0ba037032df846344cfc1",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/pt": "a44060072f790e41912c57b7d52f7b6438c4383e0dabdb052f6fdb7aacc23493",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/pt-BR": "84dd4e34c970fadbe32211eadecfdfaab52432479c0911e43300da88a33398ba",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/ro": "b12af10ffc3f89cb87767ca701c6fea0def8a712de63426a9c3d0bf2432467f8",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sai/gn": "ff82d2d163d3e06adb580254d89012e689b2615c46579883562838ab401fb5d5",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sem/am": "5970b16bf865528ee96a78c08498244bc8f54218fc2add499716b0e0c09969fb",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sem/ar": "43f418f8140e5a7bd7096963da20ccba9247f6be1fcdb08cb53dd7967dd72eee",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sem/he": "de9195e743b91fb7fbef7493bd5ddccad14c380a58d5aeb7c1d11d3419ef3b86",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sem/mt": "d23f38fae3253b6fb42e3336760ab482e676893692455465448bc9fbc0ac3e83",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sit/cmn": "a130a38e3b622735c2401cb37f6719f46995e84a133729185cef9a543ec0b072",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sit/cmn-Latn-pinyin": "14c2fc097db280416b688c2bf97de2e5da532c279754020fde7bf6cd624cdd10",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sit/hak": "c03c30b43e0b0abdfa689445baf9f442664a0373154a5d0ca75a33d30f46aeed",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sit/my": "4b5ae2566cbf30aa59207020469e09832e66a7883818788f253996c534303dca",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sit/yue": "83f3dac92af5b4aaecc119515698a6979524be236b28ea8f1024ec707d99ea5b",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sit/yue-Latn-jyutping": "c56d45bb9a9cd97efb38edabe31c7dd3feb0518cc900aac6a891dcb6bd8eb428",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/tai/shn": "f16bf2de219d3ae9a6aec263ce9c684d9cd3e61258d04c7948db0757c67e2c96",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/tai/th": "6c8ac809868de659e06673f1fc2b56dbf4637ff9980da7a4726b846478b4cfe6",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/az": "52b424332de4c443f3e9c5ce4de5aed6fbfd421269fc825756dfc6bcbd7e1ad8",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/ba": "a0cc3a06293962093c66533f9c1cffbccf083a2eb666751f2778a02a5316d98c",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/cv": "94baf6bacf581cc20337471c599f85ecbbe211f0b8476351ff19450c6541ea92",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/kk": "2219f4d6de0fbb1dc9982157c6f3cc5f4c8abe5fcb605908a9d1054b9880cd51",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/ky": "8239dfe8bdc6d4725880f5192b4eaf645f839e40cadfd145a4409c8387ac2d59",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/nog": "e0e27fe61d406b6f4a4879fb8f81a14bc65997106666933991b818c7d79fabc1",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/tk": "d78263398c135119909ad63a3ecb6ffe3aff08383212934dd03695222a9786d0",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/tr": "490eb5a2f777a2f3396f3a824ed8021bd77a94be801214411461bde6689738c9",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/tt": "8b9617a9b6c56f4a2fe2f59d9ce55426837196567962716f9330f70948f8f9b0",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/ug": "65d0cdbc96efab4d9e3cd0095440752a31dc7f425edd3ba0a53c4dd33eac5d63",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/uz": "04fd711dfda1e00d17dc8b1b250c24d70cc3c498b27e35d31065ac47441a6759",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/urj/et": "59c77747c4774e54a63ab74d2c6a95bc3c5b5b0a50d3781f187bd1fc3a613de5",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/urj/fi": "61f58ec3bba5b55a392aff7ecf8a84d024200aeaa404b5553fcfb47770936928",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/urj/hu": "c575421d2ae397065d35af0eb4f79dff4e85f3435ccf45da874f46b3fee1338b",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/urj/smj": "3d709dec77bb633af0d57b89668dbaaa72d9be8688118d6909f7d457bec12a50",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zle/be": "5beb002d15a36bf3d0d764ed0d483c75a1df6909eaa3b10fe5f6546700c9bfec",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zle/ru": "9f52d00a279aaeaa45a786b4fd3a98b34e95fedbf823f8cdb9fecc1339751d3a",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zle/ru-LV": "980e379667ccb94abe33b9c9c660c08800e3f31e36fe4a939551398ab98457ae",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zle/ru-cl": "200ea345b505ec9e7b8838490aeaf1822af41033429aeae4ea68159047f59f90",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zle/uk": "df3d1a9f77bac0531e72f87be398d9eb1e903bd6f839d4f04ffec5abb4e34634",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zls/bg": "9b91accccb0d53bb2a7bf21922846ba58c74bc082ba71ae32bf12cb0d092f853",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zls/bs": "0820e7c78b68fbdaf86d83c782cdde1901b642d1cdbeae4181c6f5f5e21e5e89",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zls/hr": "cef3ef0411c66f154e6c82f7decd95beffa8cbfbe953335658df9f125bdd6096",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zls/mk": "6dbc2cfb8999141bd0782cd463d4880468161088190c6b4c9412f43552dc39e2",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zls/sl": "e1c2bd1f75c0eeb86f64182472d5f597ce23e64ad7478c248c2f75b694655942",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zls/sr": "0e076528d3566f6e59b807e16e274dee505e88a6d477da188ab8ec442eae44f4",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zlw/cs": "1477cdba5ba3bce85db559accbbd8a24b86b3f6d9d9988bc587e89357c1c4431",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zlw/pl": "83c586a2b724b24b9f98d21ade5022112c465ac446ca09930286980ceae1c781",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zlw/sk": "f46ff673c7d58c1646096c174d58da34047d893d0d2993dbca260ce54abe77ef",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lb_dict": "d819a062b9722334f187540d3530fac1de365cd200d4a466f5ecccd7e3c05772",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lfn_dict": "10281bc404f429165a330b800eb64674e37a135d1b4c689e57fb1d9e827d6924",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lt_dict": "68ef55aba9545d27ce73e7d4aca1c2fa51d2c3d3d626152fbc22bf5a90fbff11",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/lv_dict": "3e246c76b7da924235ffb75925070865e669da2ce3e41e98395e99be1f8db9f7",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/mi_dict": "401621fdf61da47d0513e80279134a3515ced898aaadd5205b82cced0f2df042",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/mk_dict": "e4960ff4e74e1096ff1c3bccab62ce0429fa4faa725e546cd5d33e43f45225be",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ml_dict": "b12687557c38f9bcd17417854253ddde3781e3b0c16f9470d732205818e7cd38",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/mr_dict": "f712a7525db108ef9769aee53fdd1cd141f0df372778924691b89623aa6fc22f",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ms_dict": "74b01897385ba1f018de44c0268048fa5be588bbbb702a900bb35c691a466707",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/mt_dict": "1f76761bdfd481a984b15d07522df23c9444f4ac21ea9671917e08bbffa7f8d3",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/mto_dict": "6d51cb6be959dba045d41d3d63ff662a7363e1287cce2c633b071295ce55d560",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/my_dict": "e7f9c2dc672e1388f6941ac6def956b8ab2d622adb00d0ed6640dee4b7acc96b",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/nci_dict": "38c7201e7726c8d508f8f8611349cbc44fcc4684a0fee4db7285d83e808a5b69",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ne_dict": "43831c3f53ea6e939cac37b5ae5bd7a2ea8237aa46f0e7f2441ab772a3c51dba",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/nl_dict": "d28641049f98c76b460c3dddde3e2edecb7782c4eb9a3f242391301ff526c83f",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/no_dict": "43b828f8c1709e7abb23a0cc6416fb32e4814e3f1ff1db4baf2935bf7c77c9ff",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/nog_dict": "8b921398a2f1907b43c07b96a72277d8d3d8545e385955eebae5f340aae33bd2",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/om_dict": "3624e67ef8d9c20d894db0adccaccc61ee852977cb77d5fe5801e7b4a528fcf5",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/or_dict": "e0dd737e9104da63a27d86cd464cf7764837625b1513169b8d28fca1bd3c8c3b",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/pa_dict": "cee0e2a2bfb166e602ff84e185351a8ac311571ccdf46e1831c7a25245563c10",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/pap_dict": "770039bbf4ea8c5a3ffddd98c4831ca02c9f39e1ff6b3de7729fa71a8f3bc0f1",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/phondata": "4e0288957874029a8c3c9f41a8f517ad4bf18127046decbdd4b9d1d6807ce3a3",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/phondata-manifest": "7b387af0702c7cf0b61f0bead68feded0bd8e1620729b0b252e76acbc30d3813",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/phonindex": "3ca7b8fa3b42624e4b0f152707e7a39245fce569aa99ea47c055d9e622fcf0c4",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/phontab": "886f3fa402cb0ba73d483aa8ad000af47a6b7cc06293c75a97913fba68a530f6",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/piqd_dict": "33004a36210c33291aef8a838d477667eed7af52ff5093152891379b1774188d",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/pl_dict": "0e0ce6cfe4eba41a1223362a046390dca359a3e597af8243adaac84d624ef18f",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/pt_dict": "7e8398f15fa4a21db39a213381f28ec0d302b22663c644e865abb61a09c1b004",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/py_dict": "2255348879547940e8b49e0ca1b80452748f142cb6e267e49cab0560c720129a",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/qdb_dict": "c9b7f307ffe54f4aaf323290eca1c620572919035b0eb268e5c94f5d7a430058",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/qu_dict": "d50659c2a14f43e01fdef0b668eb083025a00cac481b49dfb068e0220e0ed945",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/quc_dict": "458c1ca6dcfa288ea2584915d206c5127512501174d82655de2cf031378e6dfd",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/qya_dict": "e56ae297ebac26ed6c77a9718812e087f0bd198241dac3c0d964f36510984783",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ro_dict": "b14f68866b0440c4b0d95fb7da3b7ffd3c59b693e8593d188474fabfc9a1117d",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ru_dict": "f0f6181bbbf9e53cd1e8f9d26bde8fc62119c4f78181948f961cb29866e5e585",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/sd_dict": "398c876b52213a6e7dd54c68d0560d2a1c164c6bfb23b9ec1c044266cdcf2217",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/shn_dict": "121b6682a9b49700232b3a05cc2289d8d4b9c1027e6c2db5c3f552804ad3d04a",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/si_dict": "a241437d4b64fd328ac4a3e786c9465c60488f6fa31cbba04153f628cdc61f27",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/sjn_dict": "eb70510144230f6791574d86bae0918b4191b076dd66c555e6ae3d5637daadf7",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/sk_dict": "58b9bc11c9a95d81e96966242367009f8d02ab7a3f8f4fd77e3581ed4159f0a8",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/sl_dict": "9cb2bcbf616a5e7dd7ca769e7d222a48c613299ef1d76e44c08b002f8c22861a",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/smj_dict": "815270ce38a59c192ef5aa8801119d9b3ed973d9e23dfa6da8d5d27ded5a9cd6",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/sq_dict": "6b74bef94c3319407c27e44d944e765d036a88b30b4c17f30bbc182dbffcc4ce",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/sr_dict": "770cae9c516e48af7896629faf4abefaf041e1fd4ae184011aad07b97196f613",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/sv_dict": "565f058b14f1c89c6bfa44fc3700793886a39c7818f1037ad1f4961fa7517509",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/sw_dict": "375fab2ccd0d669177ad406b20b0cdb5851a1e86f093672f24f72c29fec8a815",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ta_dict": "8f3d855c8d7a35ad0e2b22bc7c15a8830e5fc235492894e5db40458655076ecd",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/te_dict": "640407c66a5bb975671243325de616c221f90bb2842d3a36278facb68c0772f8",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/th_dict": "dd5d3e6268a381920f21c769f52daf3a8e610ae83f7995e56f15e9d4de18d653",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/tk_dict": "b3cd4a246f014f0564ec9efae79731c0fe73ffe1cd1617359dd8d5344ee3f9c8",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/tn_dict": "67f68dc336e7c65b946c95414cc8ae96cd10d241783bf857b3f990ac73221b2b",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/tr_dict": "311b0557059f2dab5ee2faabb51361f5033368f0e2a54c4bdfe45e730674f26e",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/tt_dict": "60d138d38330e44a78b4224cbea452bfca22bce6734c8ce3f640c0216ce14001",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ug_dict": "7c4567ffe6bd8d5224b6b3fd8fab65b1343254636e6228d738ae3a708428e8e7",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/uk_dict": "a779bb0f51ce5cebb650a4e2282162fc8c44609210a2baa700f81f3e83e6e10c",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/ur_dict": "74b60e4331f532810ccfc70751ad07ab440647550a2d25823f44663a0dfa86fb",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/uz_dict": "790d42ac417b26dd7b1bbfed4be72329c16ed1839dd75f55f7c962eb7bd5857a",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/vi_dict": "bbf7cab4ba733b2f5d9d3b61eb1194ef745232fa3adebb4bc92456e948cb3722",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Alex": "1cf9874567f4fa8109329f084e9ad9ed788fb2362298921d0a04a57b24f1141f",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Alicia": "6d3f60ec866706e9d4ab7da2a79eedb8c11b50f63620f87e58317f316ea3d58e",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Andrea": "6ca52734ec2cf7c419d2d3ad7c3449cd1a1776342c4d152ea12c5b1e72801e89",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Andy": "0e13ba1a940cd9df7e65358c36445c9740f3d75f1360c7f7c71ab9f74b45edca",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Annie": "40f0f829c5c6e7abf4a02a21f128a572756d6f6693014c26d09a5c29ede5ec33",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/AnxiousAndy": "7dfe126f517b76cc78269618dbee2c30d324bea9460b400938756ec93995eaf8",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Demonic": "241b0e78362bd3208bb586b65bdf52330e1e8322f8f226c4790c4abeb47cfb09",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Denis": "a09fe9f7a4e478d2ba1e139c2995633e2b99de9abdaaa82307954599b0e3d6fd",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Diogo": "a4a17c453d13242b48783c247816bff8d2cf7bc8931c3f8237887d88a2881b18",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Gene": "06258dae680cde2122a4939dbd4f23ed4ea145b7475068bf7dd4d466090afd2a",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Gene2": "bcdb3039296eea37398e4423dc9bb6849cda9c5c812b83702ebc49682c649f57",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Henrique": "5c6bf1cf5b6bc7c7d48f2a8368ae348c6ff64232c047f40f9d9a6e6824b4ce6a",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Hugo": "906acbef890dc4da67cb54b5b0ddc2cab7ee308a95d350c899f0b0cb6a83dd5f",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Jacky": "41884ed9b66160aeb5a0dc418370a59fe39ead0013d93e023e6d607ef01c1a6e",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Lee": "a1584887cddb40c10e04992fb770025b52e66b70504656094f80975f1d6bbf6b",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Marco": "04025677360c0270f094bbb6716b83c8284902f6da9b496bedbbf590963835fb",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Mario": "a94ac65d132030df496e8aa364d5cde5f2eafa4b6b3ae361a2901d512c6029d8",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Michael": "4409be23ef5fedf4c8bffbfaa8a802a342824d7e97f1d92938336a25f92f0ebe",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Mike": "8999b264606c0af23d346a877e10ca05aa757f7ea433e6cfcb3bef50a56ba2cf",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Mr serious": "794abd78deb07ce9b03419d20f7744df4c0151d5abff7981217e9d0926a2f240",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Nguyen": "4f3d557d9c045080f56022a96e5b3659c4d1caa5fa1d702e12d3ef6bec2e3a45",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Reed": "727dbc3f6bff0be4dd7d0438f66d3bb82cff68ed148cf52cb58e73314aaec1e4",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/RicishayMax": "7ddc7a57711ccd7a736540f14271adadf1e2e0422941ecaa7cc43ab87f8e2017",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/RicishayMax2": "3de5e414d4b2ef082a7b974bb7ede94937e93b5b873d2b2f7928b19d30745180",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/RicishayMax3": "36d20550b68a8c229d34d956657b7d642929962f7e5d4fddd6396af9e5378b56",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Storm": "e817c7d1ce10de527ebc19c0835f580cb584c3ae7d36d30a4f414482602e7b89",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Tweaky": "c34d1c1d8b7922ceb886b95ad6ab534ca048f9c47e19698ec2aae5cf0c32cdbc",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/UniRobot": "23dba52c2d1cb332db6225304818d85488f110a668ddcdbfd7f0438afe37794b",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/adam": "b21efbf56fd7d58470e7ce4759c6ef9f23949706b269f2d777832204658ee0dd",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/anika": "228771ce84cad16a089e0b23efe2e69edf25f1ab7c0cb3a50d366ac70e82fbbd",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/anikaRobot": "3ba724be6aab2fc1a084b25cdb16f469250eb9de4c6c0924a18788d0246fc32f",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/announcer": "4af6a6748c720cbbaac1e3dcac17bb3bc7a4c553499ec7ee69e054db51a50de3",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/antonio": "c90477080cd9aa9c384770c0ec18901d01e9851f1bc7d15526a2565a3b0c4da5",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/aunty": "0aede4d1ca614f32c348f3d728eab58322ccd016e8531234fdc3dfcf00e32bf1",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/belinda": "9bd791b7115820e25ada82b4911134d5116e8238b4fd4d214dfccf162576141c",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/benjamin": "3fa10b0d865fc751fd9c8ed1dabac4bb9b011ea2b95064d4d25a8c719f7785d8",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/boris": "f23d0a6ee2eeb7e3340506d61d422b691fb04f4e98977ea15c1e0ee5715846d5",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/caleb": "bcde145ec713eae6d3451a6f25dbbdc0b6756fd44e9e092b7aef89f2cff25be8",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/croak": "2906a2c6f7b7687db2f1c862164a9b80435d5afc3ba16d74619728bf8c3a8ca7",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/david": "50b5cb5f61a50f5ff5299dd22e5d645446746dbc36909595f6ae47bac0bda9c3",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/ed": "12ddb6355b40a2e39a3b6cef66a2bf4db15a25045769b330a9a3b344a608026d",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/edward": "b7a12bcb2af280c40e4be4280b675001024619ed529262dbf3e819db53b5b310",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/edward2": "59d166f7adfee4515a492993405e95432889050aaa47b6cd7eaeeb457fbca227",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/f1": "7cdef453c6b0391d50a02b8f35392e6f41249cea65df1021affd68a64917b85f",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/f2": "62b17f6c8f94add0310db032f5e463c13510c5ff83ef1f21e8894ccbf00b00e3",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/f3": "d0342ee8ceebe3047831774634d234e90281ec73ce2aed8dd0bdd915ccf500fc",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/f4": "ff9e2907a818920e3b976232c90eabaf270fff0de0b8a479af9a3633e9b7921f",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/f5": "6c76406d94540d59dee16de11520c37124a1f6dfc236981e483877075f0271b3",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/fast": "fa2f9c2918f351499037f6bffb25294d9b781b2785d9772a8ae3293c0c0037fe",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/grandma": "e033d57ba9b098971fdb995c13830f9c709206add081c586daaec323ff69a392",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/grandpa": "f25627887b95e8bccac5e6ce99cb97c6e34290ff0bf919febe64a9987138796d",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/gustave": "5fa89cf8625cd460b9309748eca019ab5b325a04dccbd29f1a9b2a00caa2e848",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/ian": "c0722c7954d3e6582e3f5b3f584140675ab060ac3c6cac5dd11a74592db5550a",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/iven": "10ab9de8365ff7bf5a20621d08f1a2019d4bf5521f3c6f65447c9256057406c8",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/iven2": "f94830e5abe118dc4c0909630d66637ba2a7c94957279c31fd78e313374054cd",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/iven3": "27ccf2d2f7bb8f1ff28c705c39cf6ff575eb2458c39a518ed33741ad9c1af252",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/iven4": "11b3d46c01d4307eedcb60bd8dbcc73a40f3eb86c289176d6fd5bb418223b92f",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/john": "bfbcc1cec33ef0581fdeb4955fbcd0d824a5d4be5493d731e4a2ef7f8f3ba670",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/kaukovalta": "b9f6016145835c3999bcd5872b8a53442729bd903591781ea3340746b3b4956b",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/klatt": "9abb6d05d0ca354831c570e14323dd4e821459b53166d96395875a48bacdbde2",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/klatt2": "afab662a55953532ff8d6f9c615b824ecec87f7aef6790a58c4ccbc4505a742a",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/klatt3": "f1c0cd147bd656f6c4830b3341c9694483438c43aea15c982dcc1945dbb334b9",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/klatt4": "3459c15aa8fa7d7218ac34388dfc0833c850ffc923013949308c2f643f3daad2",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/klatt5": "44397d8282454a2974078d25509caa470bceb093e484e727843a5147b4193e60",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/klatt6": "7d3930cd97ef7a0732f2e19f53f84e480f2d441d263390647b92bb0b4c645d05",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/linda": "df06b4c29f5953034e7815ea7062e356917266f8fab576f76c036045525c8e28",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/m1": "7f2de023bdfe18651d2d0453d2e7ff5e8ade9f094912a79247336ddc90fd7783",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/m2": "6eb925eb6691621a6de66c87596c6ed879c80a04215a9a8437dffc28fcfa14dd",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/m3": "7a4ac872387439814ddd65f5e1ff73017122975911df6b5dc62c5709e6fdb611",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/m4": "6bef82cea3538da1246b7a2c203206e90155cbb4af86faa8ef03366c3119ceee",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/m5": "08590ef7ce37630a6875d9cbe200dc473a9054b4184287808a4fd1c8e27dd02a",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/m6": "fc0e01af458a96d43f55878010d3abcbbda85e846922b25361a78d27c3a9ca00",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/m7": "bdfc54a3558ca98f9ca082479c5211034a824d8721db91804f9d77867db6fab3",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/m8": "060130540e2fae5f8acfb19bcd4ef3dc5dc8f8d2134c502bb57af277fd4cc491",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/marcelo": "3238a933a17c40c61cdd385c0e742bf54c42c008f4110d4b0353a6ae72a5d1a0",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/max": "c88f70a60a19e76a6774dfbd7664be639b9aa8aa587c680834c305ffa434aaaf",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/michel": "c0068ad9cb792dfb78aedbdff9c3cec68e5083736bae0c33bf19088186101087",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/miguel": "9c8c2bbe9fba6d1f06eb63ee67d98d7ebb8846b2bf13847a9b359c90ba9fa8fe",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/mike2": "274ebc5df252b3258e8996f1276137b2cf9d6e5006e1145a5172997284f1dba0",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/norbert": "35b9923e15caf36280542270282bd2392c6d86ef5db9a8be7be92ce2241a46cb",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/pablo": "053a85c8a6d7e7a0f6432a3158fe73fa9accf06202e5d69c273d4e5bae8bafc8",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/paul": "75fb8098bea28859513de6ce033092307382d6f20455e71b051193dfc0793d5e",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/pedro": "7429792ba833fa2446bec6db790068f5862b9ed099392002cd0e724ec6ab2a66",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/quincy": "e9945bee7b4f3240221866f497bf2511a886ed7702d8389688a03c2ea120caf0",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/rob": "fbfffcdb0afb2e3b70f886c02282feae22509d77fe6e7103daf907f7a356595d",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/robert": "72604f85afe5bb52a5ce7e3427b196e1e3e426a14a64e2d93b6617e248a46417",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/robosoft": "ce2820edd349f3fbc734bfe94095518f10ecbefdb304560109f37106f9f4d2fa",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/robosoft2": "249a44f4069b323640e6b532ff6a9bc30dca35f5f9a5f666b647937cbc58c685",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/robosoft3": "f8543efe18019c735ebad99d1cab4e06e0efd565ac269a895415dfebf342c383",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/robosoft4": "d5f728e0d0a9d27f604f34e835e059590fd01411fd467c91328b573c7597bb2d",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/robosoft5": "39da0efe1768e14eefe05a7019fab416795bbffb222fce23ad7f963991447f7b",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/robosoft6": "46426971d76c34266580133fad2c26ab829395a71c1713e6205d9d46b0871672",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/robosoft7": "e19c1045259d9cfb078c229d5d1372f7c5af971d0e2536a41b89c40ca3e23ede",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/robosoft8": "389230461647836c1b66c51939c0a493e3fbc81e2b7afc01c6f88b8f9da21e2b",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/sandro": "1b8c36a3ce35a27cbbabf4679df0264cd37f4c79b66aa1f4c310eb31b9c80490",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/shelby": "5e96565045bcdd5b42e7ad0eab2bbd670c67cf5c9e3f2ac6b50b30580fb92be4",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/steph": "78186aeddce4c449348f368046b2665375b1a492e948d739249b0c964f082861",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/steph2": "ca88414b48553fed1fd409389548a94ea90cf282d6340e3cb968c8538a2ac2ec",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/steph3": "a7d796211b6969ba92213f89de54b053890306af774424ee38fb02ace45e852d",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/travis": "7d5a34be05778ee850d97b0491a62db7683c058d660ff2afc71c08c87360f30d",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/victor": "a880a8083ac5eaadf94f71c63b51f34c1426d4bfe0a26f6761ddec5c6e9a5c76",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/whisper": "1e3534c843768898cea47a3f83b2fd91720c0775b438ea5c0134676940a66e96",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/whisperf": "7fea42b10114f1bfd2004181e6b0eb626997cca987893e23d24b5c616aac89d7",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/zac": "edaf508b2cfbfd6088a163dcc78d5f6a26850a7d39a5a0e5128b09526f56b6db",
-  "kokoro-multi-lang-v1_0/espeak-ng-data/yue_dict": "1d26afa203034698772107abfff1b53acbee30434700a4d2b75dee98951588f8",
-  "kokoro-multi-lang-v1_0/lexicon-gb-en.txt": "c4cbb37316f62210dff52718a7afcaae24f50c032cc75ab47ae67b831d1049e7",
-  "kokoro-multi-lang-v1_0/lexicon-us-en.txt": "7daaab53a181be9885b853a8582bf1838186317e5dadacbcef9c426d6fa0da14",
-  "kokoro-multi-lang-v1_0/lexicon-zh.txt": "509a1f55bf9c62e3f7e598e7544b114eadef1e00266f2badff4f281153f9f327",
-  "kokoro-multi-lang-v1_0/model.onnx": "c436dc6a842b62aba06af67e40bafcfb9c60ac3af895358f1974ad9a7f7c026b",
-  "kokoro-multi-lang-v1_0/number-zh.fst": "743f402181fcfebf76cc2f0546b71fa26476e626fbe4e460fb7b4c3a7a8bd5bd",
-  "kokoro-multi-lang-v1_0/phone-zh.fst": "1ac2b6fa56b1442320c4de7db08353bab8963a2b57f365eebcdd3a2d3562f8d7",
-  "kokoro-multi-lang-v1_0/tokens.txt": "6ebb6bb288f20f3ae8d004d3c2ca27697da27c037d75e81a60e2a6a663f95425",
-  "kokoro-multi-lang-v1_0/voices.bin": "8a77c0d397026208d22211f37670b5b3b11e03f190756b25a1d24041fced82a9"
+  "ggml-base.en-jlvatc-q5_0.bin": {
+    "hash": "5125f0232e2ad85e9101173a69691d10884899d881b636af7376a34aaf36b702",
+    "size": 55308851
+  },
+  "ggml-small.en-jlvatc-q5_0.bin": {
+    "hash": "b861692c042876ce3134e607292d8f90bed2bc1eb5a1e74500576e8ca89d85f1",
+    "size": 175222905
+  },
+  "ggml-medium.en-jlvatc-q5_0.bin": {
+    "hash": "c009de99eca9a979340e33a288528a491d5ecb79d007879685b1483957779367",
+    "size": 539225533
+  },
+  "kokoro-multi-lang-v1_0.zip": {
+    "hash": "7b707d8cbac62846e829f32fae31ba02eeedeabfa0ab387a553daaf064a35b73",
+    "size": 0
+  },
+  "kokoro-multi-lang-v1_0/LICENSE": {
+    "hash": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "size": 11358
+  },
+  "kokoro-multi-lang-v1_0/README.md": {
+    "hash": "eb4e6cd1c8a189b314703b3b04752fa8842e3222c798142217ffb6b40dc82a95",
+    "size": 50
+  },
+  "kokoro-multi-lang-v1_0/date-zh.fst": {
+    "hash": "eb8aa079ae3cb81d8f4404992f39d61a0cb990947512b5b8d1e54d1f6980e718",
+    "size": 59154
+  },
+  "kokoro-multi-lang-v1_0/dict/README.md": {
+    "hash": "8bcc7c2ed7dff082d9a99c09de0bfd72249bf3b5c4298a3af328da40cbd8cfd1",
+    "size": 683
+  },
+  "kokoro-multi-lang-v1_0/dict/generate_user_dict.py": {
+    "hash": "24541017b4b60d8e1ad94a5165f7097d2fd107d4ceecbf13583dd37682fdd2a7",
+    "size": 545
+  },
+  "kokoro-multi-lang-v1_0/dict/hmm_model.utf8": {
+    "hash": "f17790586ac86dd048c8adffed052c4bd2b28ed0682972c1275e59040c0589a7",
+    "size": 519739
+  },
+  "kokoro-multi-lang-v1_0/dict/idf.utf8": {
+    "hash": "dbd1e03d72b2263cc8d84a4304ed77677eed9e7deaf43a1a5133bbba9733b535",
+    "size": 5998717
+  },
+  "kokoro-multi-lang-v1_0/dict/jieba.dict.utf8": {
+    "hash": "3043b77068e09c9904f27cad82f12b6ebe9dbdb5aeff3b25e45ab7f9c1122b55",
+    "size": 5071204
+  },
+  "kokoro-multi-lang-v1_0/dict/pos_dict/char_state_tab.utf8": {
+    "hash": "28b7be1dd7369766a51445af4d42e9a2ba4bf374c13be5bc1ca7721e27271dbb",
+    "size": 327139
+  },
+  "kokoro-multi-lang-v1_0/dict/pos_dict/prob_emit.utf8": {
+    "hash": "c33c4cb7edf3b3a5947df7209b6e9f267eae1f21335d9e2bd2521ea07105457a",
+    "size": 1687686
+  },
+  "kokoro-multi-lang-v1_0/dict/pos_dict/prob_start.utf8": {
+    "hash": "13623ea0e9300bdb597cb2da28770b7b385d6c0098d66e516083fb01b6bd5d96",
+    "size": 4347
+  },
+  "kokoro-multi-lang-v1_0/dict/pos_dict/prob_trans.utf8": {
+    "hash": "f22363e2307408293d180c6f9f6b5cb75879d52f722f7764fa2d3d0ae2400236",
+    "size": 124159
+  },
+  "kokoro-multi-lang-v1_0/dict/stop_words.utf8": {
+    "hash": "b788b8a939d2e2fe079abd579ea98f12f9fb84370bfd0dddd81bb9381f7ab42c",
+    "size": 8974
+  },
+  "kokoro-multi-lang-v1_0/dict/user.dict.utf8": {
+    "hash": "5faabcd0c52adf512de77fd7eee3d556da8c98b50f493b47c66a981b3a24959c",
+    "size": 829194
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/af_dict": {
+    "hash": "25729d3bf4c4a0f08da60aea9eb5a0cf352630f83fab1ab0c3955b7740da1776",
+    "size": 121473
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/am_dict": {
+    "hash": "9954365860682c756c8c4459577d3aa0ab77ad0cba6798b746033ada5c3d4bea",
+    "size": 63878
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/an_dict": {
+    "hash": "6cf38cedb6693aade49e5a5d27a3c92516a5335125bf85fcae58282e66fb82fd",
+    "size": 6691
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ar_dict": {
+    "hash": "72316426e797777fe4df9420935a3b6a79b37d7e3f3948537ba71cd7b21b2541",
+    "size": 478165
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/as_dict": {
+    "hash": "5bcb74ff4558a60c5ba1a48a2a92c01513ee2d29fe30c5a38dc5308c54f1cf49",
+    "size": 5005
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/az_dict": {
+    "hash": "e352b2dcf811662d79f4beaaa0c7750706cf669c0409fd815a9bd0244b1adfc7",
+    "size": 43773
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ba_dict": {
+    "hash": "246c8c655ceed43d9ff44a65de5f933f16255489d0b181b1a46a83e1fd5a0354",
+    "size": 2098
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/be_dict": {
+    "hash": "232fb0debfc8fdca9b8f2494770ff23535f7f887bbebb0178abffc243490e798",
+    "size": 2652
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/bg_dict": {
+    "hash": "8fa3adec8e18a3e695b2bbea1d4780182e17222d8b9f8da9908a237828f6b063",
+    "size": 87051
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/bn_dict": {
+    "hash": "2b59ec34c07955ca5b7814fa5152c33fa357880590703eefab1f3081f031fdef",
+    "size": 89979
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/bpy_dict": {
+    "hash": "a4321d9ba80bd60f49e0bee5aae57f1ae9c49b7a1c3d4ba384338fe9bf3b6a92",
+    "size": 5226
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/bs_dict": {
+    "hash": "d5df564f511af082884719685db86ec4df23467cf012ce25e898540baf9de65b",
+    "size": 47068
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ca_dict": {
+    "hash": "1be203855ecb0bdfe66578ef5552f83289e39972d78c52714d061b7f7493df4a",
+    "size": 45566
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/chr_dict": {
+    "hash": "1853980c673015327bed3d4e5f7e88c2ee3bd8a922bcdd232a6497277e903bce",
+    "size": 2859
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/cmn_dict": {
+    "hash": "109aaa7708d3727382acb3ae41d8e2094a7e2bb9f651a81835be22a6f08071fe",
+    "size": 1566335
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/cs_dict": {
+    "hash": "5ec02aba90465007f20a5c8aeb889275834cfa8c8f621c3d9bee1ca90d21788d",
+    "size": 49645
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/cv_dict": {
+    "hash": "8260837c8f18fbe5870905ebb2850dfd18e252150ad6c868b96d9d2c6398ea8a",
+    "size": 1344
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/cy_dict": {
+    "hash": "31d74ccad218ab80b79566caeb8d21bcf0fe43326ed7c437fa736d39b85e603e",
+    "size": 43130
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/da_dict": {
+    "hash": "fe0c21895b4844868612f9ea846bc6010e30b5dd1f4cb1567459d73d2792a8ac",
+    "size": 245287
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/de_dict": {
+    "hash": "e9ac048df5cde03b74907d591c7b29b45ee9ec5fcd4592b0b894f0083572fcfd",
+    "size": 68276
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/el_dict": {
+    "hash": "5d9f759750131da777d2fd4f06aa602ed746d38f27b84dd9a2d4a550f2cd452e",
+    "size": 72841
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/en_dict": {
+    "hash": "71bd330ba8a2e3e8076e631508208ef49449d6147c17b7bd2b4b1e1468292e35",
+    "size": 166944
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/eo_dict": {
+    "hash": "849f061abddd5388bac112b32e6f7bf747e15e1b3ae53fe91079381effff4cc9",
+    "size": 4666
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/es_dict": {
+    "hash": "3fa93e251eab80838a2d6207ee58c9c847270a65fe3fae98850e0185b5a2186c",
+    "size": 49252
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/et_dict": {
+    "hash": "1a6734b4e6bc9de9a4c94cfb434873e0a7f4ae4ec89549b3137ae5491cf655da",
+    "size": 44263
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/eu_dict": {
+    "hash": "762a6eff63552ef72cd88bf1e92dc5a823eb378d50cb85c7917e8c5bba079137",
+    "size": 48841
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/fa_dict": {
+    "hash": "f92f35ce7eb1d97360016617d97786412a94af55b776a18f1c280dab4f43befd",
+    "size": 292423
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/fi_dict": {
+    "hash": "dda999437bd4b37a7f7400a2230aace1200a52906ab0b1ff3507d44ab19d64b1",
+    "size": 43928
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/fr_dict": {
+    "hash": "e399ab924c4d10beef1fc310b30ea56e4ddfd8b4b64b8ed978e9c65394d49b2d",
+    "size": 63727
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ga_dict": {
+    "hash": "b2db03d21f7900b697d7dbb8bec855cd1117e9867f19884faf11c4df626659f5",
+    "size": 52673
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/gd_dict": {
+    "hash": "e92b47dcf9a001363ffee1e62863faf264ff5f16e10cd9cf1f1e83ca89ca14aa",
+    "size": 49121
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/gn_dict": {
+    "hash": "7640df272b192a68ba401294bf9197ab46d0b141da7a358ad1986e7f77e7f29a",
+    "size": 3248
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/grc_dict": {
+    "hash": "488779493993d221b09e713e104a221ac1bb35765f826acc26d3d3c1aa3a35ed",
+    "size": 3433
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/gu_dict": {
+    "hash": "cb1fbfb53bab2ec6d9e44cd9d12ccb9b80de49f274d772314389c477eef530fd",
+    "size": 82480
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/hak_dict": {
+    "hash": "e3075c7d281f95a2ce2264c01edbd09e962cb3ed29400766c5d2116a08a185c8",
+    "size": 3335
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/haw_dict": {
+    "hash": "2b4e77b61cadfc5ee622aa8b1d23941e36101d9bdbf8d809e0fa1b442d2c3f74",
+    "size": 2443
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/he_dict": {
+    "hash": "a8bf0d939d630e9e5097ad361a7765297baf297fd7d06e89f48a79ead980869e",
+    "size": 6963
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/hi_dict": {
+    "hash": "5a68c9532624e57ac845b26ce1e2e5034c4f6353bede46ecbe57e583ec8effd6",
+    "size": 92143
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/hr_dict": {
+    "hash": "5f98fcf05f97335a5436a8a9643677da6f158f2a9ee1d41bdda1725b1bb3527e",
+    "size": 49388
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ht_dict": {
+    "hash": "d577219d15c29396db254aed958358456ec1501cdf62cb4ca5413752f2ee7cc1",
+    "size": 1803
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/hu_dict": {
+    "hash": "055d563b839d599db40be5b1cc2af9d31793795b328eb8d4f389ec7d38fe7e81",
+    "size": 153785
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/hy_dict": {
+    "hash": "8b808ad8f1d4cae32b3b785b96d1e27b3af28e32f4dddfed7c93e129d63b2587",
+    "size": 62263
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ia_dict": {
+    "hash": "1c665603a82beb81e0cef2878c9b44642ae6d519e301fbbd06326e03325febf3",
+    "size": 331275
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/id_dict": {
+    "hash": "8fb3f23f80f71f023219cee7032223f3f6886cc5040eb4c8c507f79d1b84e98d",
+    "size": 43458
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/intonations": {
+    "hash": "3f8af65fd3eda9759a10f021d61361c120871f463515229c925995c7f90918cc",
+    "size": 2040
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/io_dict": {
+    "hash": "0d9d6995fead1ccdd5512f7909ec8f9efc8ccc97f5c9d23ecae6b3ba77ffadbf",
+    "size": 2165
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/is_dict": {
+    "hash": "8eeab5b1ca3f75362881fae3de3316fcaff281179a4c51fceb0098f11ead96e0",
+    "size": 44354
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/it_dict": {
+    "hash": "111f968359c9ebe36b107a2565ba9f258bab337d3cbe37e44871980a8f21ce6b",
+    "size": 152889
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ja_dict": {
+    "hash": "0d1135d3cdfed811d3eac7c90a2e277329fa6f060cdd23af287db161982cab44",
+    "size": 47652
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/jbo_dict": {
+    "hash": "71298417de1e5fd07df275270a5d47ca8820cb8c9f5dc2156c070b7a3ae7999c",
+    "size": 2243
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ka_dict": {
+    "hash": "c8624947110a13bee72d4fc15b06026004df3f40c16c7b917d27e369ca122a32",
+    "size": 87775
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/kk_dict": {
+    "hash": "88dc0106629a57d0aca5073afb11db1a044799185355088a7ad4331c836affd3",
+    "size": 1859
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/kl_dict": {
+    "hash": "ec441964d7fbd4622bb628327903d5c6c999c95d539b2e061884decf95ac30e3",
+    "size": 2838
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/kn_dict": {
+    "hash": "c51e0385937b407b36c02fd2c85dfecdc5cac411398ee8a74eca15b35617af64",
+    "size": 87828
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ko_dict": {
+    "hash": "f629060f27d597e0fd52d8010609f41c8a0ec28f5c2bb0016850e00244950681",
+    "size": 47523
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/kok_dict": {
+    "hash": "52659dec01d1b119bfef56b622430f5525c50af0144c9f9688cb3c22cc02ed31",
+    "size": 6394
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ku_dict": {
+    "hash": "65de1c5429e8d193775b36fcf169a60fbbb9964ef13a4a1bab7ff0ce855cad20",
+    "size": 2265
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ky_dict": {
+    "hash": "def4427fd4070673c073b892c7b229f8c3f17eb1df36bea2ec7188ddcfb4d0ea",
+    "size": 64977
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/la_dict": {
+    "hash": "17818dd567936fde032404fbbd6177844b9f5fc5a915480f567272147936f917",
+    "size": 3806
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/aav/vi": {
+    "hash": "3199c980f9e23a88a2aa693cd631bf4fcb0f3408c4272bc01b7ac0ff8e79d778",
+    "size": 111
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/aav/vi-VN-x-central": {
+    "hash": "b351f13c6ed0da37561df25f45579872ff9863920ad66b94e27327a2c611755b",
+    "size": 143
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/aav/vi-VN-x-south": {
+    "hash": "c0a0a2c894cd57b0bbacf9ef4efb8d89bfaf9feb164830e1539f599e7cc4e021",
+    "size": 142
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/eo": {
+    "hash": "0254b93c8af79d9666a7667ca8b33b21a5453012da4ea0acd79660a9695f89d4",
+    "size": 41
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/ia": {
+    "hash": "8fb11718030f8b29146f773ca462b838a6c660f166933eb6f1498c361f2e958b",
+    "size": 29
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/io": {
+    "hash": "8e8391c7f40b7f9d2307faff8018a40dd2b448df4bd581a2950ee8393a00cebf",
+    "size": 50
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/jbo": {
+    "hash": "d9529de82dccbd95f83c1de401f4ea661609bde644546e9ef421241b7043c00e",
+    "size": 69
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/lfn": {
+    "hash": "394874fd9022e37cdc307c3386e81f1c0c133a8e9c5fdff74888b519f2c6d648",
+    "size": 135
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/piqd": {
+    "hash": "d1a559b714cd8dd0ea9e46c4574e06c4f451957fb17bf39b945a89b9586f8b97",
+    "size": 56
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/py": {
+    "hash": "59e54b95e8571417f43db37a7fd7e351af4e22a8c250cfb66af394f8ed6c4e9c",
+    "size": 140
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/qdb": {
+    "hash": "52b83fc4f294580ebabd71df641ab5beec6b308758a3458b497124737589a7d8",
+    "size": 57
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/qya": {
+    "hash": "78ae3f4d70208a9f69e2c26a6a3b5db28d7e6a58740fae937f51dd7fc9faeb1b",
+    "size": 173
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/art/sjn": {
+    "hash": "61d85974b6841dfbfcc8cb92ad0742696cb87a6a85d5a28fe99895e46ef9de6f",
+    "size": 175
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/azc/nci": {
+    "hash": "7bf70cb18e969398f74428b91c694a4483eaebd6733ecc437eb8714bbf7fff76",
+    "size": 114
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/bat/lt": {
+    "hash": "7691c7ca1e79fc9728c70a0d22830eb113a0124bf96807e2a1ace3c6bf0c2f89",
+    "size": 28
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/bat/ltg": {
+    "hash": "be716cbbdcb5fe319eed88abd4a44c3329a06e1dc468c8363d3f43cca2683a11",
+    "size": 312
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/bat/lv": {
+    "hash": "f08a801dacccace62f5b90166428e90e088818d92dd5f9333ebbe834b0f21c16",
+    "size": 229
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/bnt/sw": {
+    "hash": "271dd28b3ec41adeea53f1146249ba6cab61572963ab2743041114d95784e368",
+    "size": 41
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/bnt/tn": {
+    "hash": "2243a1fc208dfdc37e154e837c0e782afc325d4acfbacc22718b7f05583ace92",
+    "size": 42
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/ccs/ka": {
+    "hash": "68788b99dba7b82cdf8fc9dd05134bd72cf21f0b4c07b13b67b6f036e6294cba",
+    "size": 124
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/cel/cy": {
+    "hash": "67bc33b4a66041e6343dfb98e1950d1089eecb68731f346fcc4f47cd07e79970",
+    "size": 37
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/cel/ga": {
+    "hash": "29c2cc5736ceb2bd9ef745694d4abf7ed363a33569dfbe745811d4703b7b6cce",
+    "size": 66
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/cel/gd": {
+    "hash": "7da0ba464579c367089109826ec15c2584a17417cca4a2c66dae0318d33e3128",
+    "size": 51
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/cus/om": {
+    "hash": "b7c563f1effd83c08f3d229fb5a13d074513b85165ce4359a674ef30ca71786b",
+    "size": 39
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/dra/kn": {
+    "hash": "c988a5226fa27ee6768b45566ce999ced9a4b68f8e79232b323d5903f4bb2258",
+    "size": 55
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/dra/ml": {
+    "hash": "aa7e1f1f239ba55a8a79ed1f3544e9a51b94efe53925de60d4ff737273660b5c",
+    "size": 57
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/dra/ta": {
+    "hash": "5bc213eb163bbf069cbfe4f2e9f7e7db71a719d8c0a96e95401d94c992960ed7",
+    "size": 51
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/dra/te": {
+    "hash": "176ca4a81feb2181393edff3e2d5c0253cb52239392c4b809c61501d60c69811",
+    "size": 70
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/esx/kl": {
+    "hash": "d08cf6ff60b99e6c2ceda549bcbb1a57580915d6a4d50c7f0f5d75289d9fb45a",
+    "size": 30
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/eu": {
+    "hash": "a16e4e4d9b910a6e25a2a55913c812badc4fc3cbece0b8d49a64af112782d5a5",
+    "size": 54
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmq/da": {
+    "hash": "e8dd5e0d30ff0694a7ee839faa8ed35c015eb927a737aba1f120c00005692eaf",
+    "size": 43
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmq/is": {
+    "hash": "16c077e6222acfc7702046fa3579bb5d6b57ece98646229e13be2233f9fdcbd7",
+    "size": 27
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmq/nb": {
+    "hash": "d47966621312fb95570539f446982f6deb98fd46d9b71fec4a0005a6bace8f46",
+    "size": 87
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmq/sv": {
+    "hash": "02727d3b25fc82409bd2cd1ebb444fdb2d5d3f3de7f76b95fc9ed9164c3e59c3",
+    "size": 25
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/af": {
+    "hash": "fb8ccc05f5eae1754b5aa7e92cb919defdd0810b70eec19f7c77cf836e51db09",
+    "size": 123
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/de": {
+    "hash": "f3cca92f94b70f8c25a29ee0a4c9ce4c7f1022241532e0647fa2b7f698bf104e",
+    "size": 42
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/en": {
+    "hash": "4605d5330801de3641c6e366d15f129ea1f5ffbce8722642aba01ace07ab9c83",
+    "size": 140
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/en-029": {
+    "hash": "faeb8cb201056775f733acbd908c66555fe57bf01cb063920f178f389cbf85d3",
+    "size": 335
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/en-GB-scotland": {
+    "hash": "1ce4282c1f4385dbaf0035e799b2ab1ee9e9a3ab4829100594a3047727b52353",
+    "size": 295
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/en-GB-x-gbclan": {
+    "hash": "2040e176f1f7f27bdce81c32d7e2b1662449d54d264afd3c0ed871b8e42b6e46",
+    "size": 238
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/en-GB-x-gbcwmd": {
+    "hash": "927a5ab891c65b30b4426b151d1623a01024f6b773a38497ba1c90cd77a95747",
+    "size": 188
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/en-GB-x-rp": {
+    "hash": "d0625af7f58561b1b8cf96fd7f93eee6553bcb3eadb9020ae0757bf96e5115e5",
+    "size": 249
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/en-US": {
+    "hash": "41534c2a22df5dd4f1052ff9e1a33a3ea7bff5a26b5c02bdad5ba8ddb7524704",
+    "size": 257
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/en-US-nyc": {
+    "hash": "e8ee9168376d1f7d9e7dcda7c4644c36c529a8bea816e6380895364db46ea2e3",
+    "size": 271
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/lb": {
+    "hash": "071beb0e769afeba32177796fc0f1386bdc89a3234bed2bf720e76cbf73f5b99",
+    "size": 31
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/gmw/nl": {
+    "hash": "56ae04fae28ae9371ed6db28193189e4ee962ba8236f0bcdeef6a06ea4dee374",
+    "size": 23
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/grk/el": {
+    "hash": "0b529c998af07c72bf516b5750709464f6258c56c6916b8b8f0c843be9836fca",
+    "size": 23
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/grk/grc": {
+    "hash": "319f950b1ad7b1f37efaa390540bf957bddac16d0557a6c3adaff27e0c64e12e",
+    "size": 99
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/as": {
+    "hash": "3f58f5628f792b00a5ae6e8fe3bf8696f64af2838e5723799ddbab6027a0b378",
+    "size": 42
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/bn": {
+    "hash": "bc3ce23384b9d0bb3bac06a09d90f690fae32a492dcbb030f0e56ba67b5d656c",
+    "size": 25
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/bpy": {
+    "hash": "e528d1189b995b94966cef4cc182469cc54f7da8efc5860375c4ecf186ce6146",
+    "size": 39
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/gu": {
+    "hash": "f938a755d270745188c2cf2aacba06642a96bb73ba2a0325384121b9d5ec5407",
+    "size": 42
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/hi": {
+    "hash": "3c1c3f916f57f2d6d6cbf7923c0f39a36ac2140e2a69ddffce917d7b8bf3ccab",
+    "size": 23
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/kok": {
+    "hash": "810ee23fbbe9c186a036bc12f4e5c0de674a132e2e099c9b3dece2a1c9cdb28a",
+    "size": 26
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/mr": {
+    "hash": "29063ff3a5257d0d3d7c215dfd4c14deed39e1d48f15894202e6712459720efd",
+    "size": 41
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/ne": {
+    "hash": "d53fda082ec174ef33ed3c3468fc973c43b4ef71aca8c1a28cb344668f4838dc",
+    "size": 37
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/or": {
+    "hash": "9b52ede7d19659f884854de3dff12597a96f4d6ec7cb4146d2f8dad1453c742f",
+    "size": 39
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/pa": {
+    "hash": "eed3cf477f81d13559dbb367256f9532b20dad1432c15b206c777217b8f570ca",
+    "size": 25
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/sd": {
+    "hash": "65bfe0e37799029d42a370eb627cca5aa4108b967fba6c8141878d693c903619",
+    "size": 66
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/si": {
+    "hash": "8f0993b35ba5b075c38ae76640971256e560abfbd721b608d16a48588932596d",
+    "size": 55
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/inc/ur": {
+    "hash": "5b7af7474fac265c7bd7d269111994a09610f954690698f55a8613f3fa973318",
+    "size": 94
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/ine/hy": {
+    "hash": "b6ad6129079c49ca915c3005ecb74a02bf5d69cbbc8ec3f8e0f6b949cb3a768f",
+    "size": 61
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/ine/hyw": {
+    "hash": "26f8a863c74b3d19c9c42fcf16ae5151c12ac52ef8fab36cae1e5f0d4ad30e6a",
+    "size": 365
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/ine/sq": {
+    "hash": "865fde9017b5af82acb844e5f9793998fed422a208ad8aaf9dedacad3bf27af1",
+    "size": 103
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/ira/fa": {
+    "hash": "0dc7e93be4d1fbdf7ff52de2fe8bcdc23304e6d86e012b4ab8276d626b5d980c",
+    "size": 90
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/ira/fa-Latn": {
+    "hash": "a04cf8efed8db1ac33b306f1f8c6f42733dace87c9fc9f34a2d227b3bb291e28",
+    "size": 269
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/ira/ku": {
+    "hash": "57db3a210d73412a49e961dbed9b27077f5c7b967a19a0eb9f9363ea4b16cea5",
+    "size": 40
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/iro/chr": {
+    "hash": "f0e2fb8549306c07f571d3e77c89b1d3e9022d448d58e5d424441e01ccce88be",
+    "size": 569
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/itc/la": {
+    "hash": "b70d13a264352eba2d22a5d0ef21730849509d18f7277320b008a56decc6efc2",
+    "size": 297
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/jpx/ja": {
+    "hash": "6fd980445bc52e0f593062929f5b62831448abaae2a92739beba49df27a79743",
+    "size": 52
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/ko": {
+    "hash": "c2dfbf88d9aa2ac9bf2f30e92e260120e4f2c21123a02265014ae98d59d5774e",
+    "size": 51
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/map/haw": {
+    "hash": "b19f22efb6714354d8d1360f449e05f0f84d50d6fa3c98fcfd619ea1b4ba8996",
+    "size": 42
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/miz/mto": {
+    "hash": "e33aba5e8159730f62004b22518d627c796f7d039431e5d9217b498f10341976",
+    "size": 183
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/myn/quc": {
+    "hash": "76a75b77c672c432b56b84d517310d6aa75c4b3f9de580e290199804366174ea",
+    "size": 210
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/poz/id": {
+    "hash": "ce1fcddab3e756a7cdba3dd009ad24cd57e1fde29ce395698355da24e32a6075",
+    "size": 134
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/poz/mi": {
+    "hash": "2146cf3868c79b853bb5e41ddbf611d51b4b0a14087199f16194313562b98987",
+    "size": 367
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/poz/ms": {
+    "hash": "8a965182ee0c5a41357197c05cf047d21b96744775a57a344d831a961e30351b",
+    "size": 430
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/qu": {
+    "hash": "3069e443ecf3421bcb3b35b864e1a89fa9465af072f86eedd46a415990aba6e6",
+    "size": 88
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/an": {
+    "hash": "ff8aa97c55286cc90531cad5df3cd36165abba11502a84d53b0fcd923f965f23",
+    "size": 27
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/ca": {
+    "hash": "787df034320467236292bb46f1f8781a2998a185f117d350c018b6cfcf360854",
+    "size": 25
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/es": {
+    "hash": "966aa015ea5646d79f0ca4807cf5da7339aabd3782b55cfa5eb0d8c3fc8fc588",
+    "size": 63
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/es-419": {
+    "hash": "ff0f84457ac40e3bcf61d6de58028312be74e0e6cbc3b742f31b3ce729c2aa0c",
+    "size": 167
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/fr": {
+    "hash": "95f44834b48c075dad13eace54d2c98ff79b81aa0074dd67eebaf66c2909eef8",
+    "size": 79
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/fr-BE": {
+    "hash": "72496a316e47b997f893500b8953dc01a10b86a2d4238e13c1260f50b47d792a",
+    "size": 84
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/fr-CH": {
+    "hash": "b449b0fd99d9cd93261fe1c6b816448b99b4a10420bee3f301e669568ad0de55",
+    "size": 86
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/ht": {
+    "hash": "389bdf3e984a2f93b7060baad82452dac65b83bf4482d3884525a176ae0e0524",
+    "size": 140
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/it": {
+    "hash": "0d9069eb9a96db1c55c131b2bb7d1f5255c68fbddc2199ffd3295b52519a3256",
+    "size": 109
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/pap": {
+    "hash": "41a5b5e91482a5498a66711c05873a634bbd418786b0ba037032df846344cfc1",
+    "size": 62
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/pt": {
+    "hash": "a44060072f790e41912c57b7d52f7b6438c4383e0dabdb052f6fdb7aacc23493",
+    "size": 95
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/pt-BR": {
+    "hash": "84dd4e34c970fadbe32211eadecfdfaab52432479c0911e43300da88a33398ba",
+    "size": 109
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/roa/ro": {
+    "hash": "b12af10ffc3f89cb87767ca701c6fea0def8a712de63426a9c3d0bf2432467f8",
+    "size": 26
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sai/gn": {
+    "hash": "ff82d2d163d3e06adb580254d89012e689b2615c46579883562838ab401fb5d5",
+    "size": 47
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sem/am": {
+    "hash": "5970b16bf865528ee96a78c08498244bc8f54218fc2add499716b0e0c09969fb",
+    "size": 41
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sem/ar": {
+    "hash": "43f418f8140e5a7bd7096963da20ccba9247f6be1fcdb08cb53dd7967dd72eee",
+    "size": 50
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sem/he": {
+    "hash": "de9195e743b91fb7fbef7493bd5ddccad14c380a58d5aeb7c1d11d3419ef3b86",
+    "size": 40
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sem/mt": {
+    "hash": "d23f38fae3253b6fb42e3336760ab482e676893692455465448bc9fbc0ac3e83",
+    "size": 41
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sit/cmn": {
+    "hash": "a130a38e3b622735c2401cb37f6719f46995e84a133729185cef9a543ec0b072",
+    "size": 686
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sit/cmn-Latn-pinyin": {
+    "hash": "14c2fc097db280416b688c2bf97de2e5da532c279754020fde7bf6cd624cdd10",
+    "size": 161
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sit/hak": {
+    "hash": "c03c30b43e0b0abdfa689445baf9f442664a0373154a5d0ca75a33d30f46aeed",
+    "size": 128
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sit/my": {
+    "hash": "4b5ae2566cbf30aa59207020469e09832e66a7883818788f253996c534303dca",
+    "size": 56
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sit/yue": {
+    "hash": "83f3dac92af5b4aaecc119515698a6979524be236b28ea8f1024ec707d99ea5b",
+    "size": 194
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/sit/yue-Latn-jyutping": {
+    "hash": "c56d45bb9a9cd97efb38edabe31c7dd3feb0518cc900aac6a891dcb6bd8eb428",
+    "size": 213
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/tai/shn": {
+    "hash": "f16bf2de219d3ae9a6aec263ce9c684d9cd3e61258d04c7948db0757c67e2c96",
+    "size": 92
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/tai/th": {
+    "hash": "6c8ac809868de659e06673f1fc2b56dbf4637ff9980da7a4726b846478b4cfe6",
+    "size": 37
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/az": {
+    "hash": "52b424332de4c443f3e9c5ce4de5aed6fbfd421269fc825756dfc6bcbd7e1ad8",
+    "size": 45
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/ba": {
+    "hash": "a0cc3a06293962093c66533f9c1cffbccf083a2eb666751f2778a02a5316d98c",
+    "size": 25
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/cv": {
+    "hash": "94baf6bacf581cc20337471c599f85ecbbe211f0b8476351ff19450c6541ea92",
+    "size": 40
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/kk": {
+    "hash": "2219f4d6de0fbb1dc9982157c6f3cc5f4c8abe5fcb605908a9d1054b9880cd51",
+    "size": 40
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/ky": {
+    "hash": "8239dfe8bdc6d4725880f5192b4eaf645f839e40cadfd145a4409c8387ac2d59",
+    "size": 43
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/nog": {
+    "hash": "e0e27fe61d406b6f4a4879fb8f81a14bc65997106666933991b818c7d79fabc1",
+    "size": 39
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/tk": {
+    "hash": "d78263398c135119909ad63a3ecb6ffe3aff08383212934dd03695222a9786d0",
+    "size": 25
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/tr": {
+    "hash": "490eb5a2f777a2f3396f3a824ed8021bd77a94be801214411461bde6689738c9",
+    "size": 25
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/tt": {
+    "hash": "8b9617a9b6c56f4a2fe2f59d9ce55426837196567962716f9330f70948f8f9b0",
+    "size": 23
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/ug": {
+    "hash": "65d0cdbc96efab4d9e3cd0095440752a31dc7f425edd3ba0a53c4dd33eac5d63",
+    "size": 24
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/trk/uz": {
+    "hash": "04fd711dfda1e00d17dc8b1b250c24d70cc3c498b27e35d31065ac47441a6759",
+    "size": 39
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/urj/et": {
+    "hash": "59c77747c4774e54a63ab74d2c6a95bc3c5b5b0a50d3781f187bd1fc3a613de5",
+    "size": 237
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/urj/fi": {
+    "hash": "61f58ec3bba5b55a392aff7ecf8a84d024200aeaa404b5553fcfb47770936928",
+    "size": 237
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/urj/hu": {
+    "hash": "c575421d2ae397065d35af0eb4f79dff4e85f3435ccf45da874f46b3fee1338b",
+    "size": 73
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/urj/smj": {
+    "hash": "3d709dec77bb633af0d57b89668dbaaa72d9be8688118d6909f7d457bec12a50",
+    "size": 45
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zle/be": {
+    "hash": "5beb002d15a36bf3d0d764ed0d483c75a1df6909eaa3b10fe5f6546700c9bfec",
+    "size": 52
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zle/ru": {
+    "hash": "9f52d00a279aaeaa45a786b4fd3a98b34e95fedbf823f8cdb9fecc1339751d3a",
+    "size": 57
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zle/ru-LV": {
+    "hash": "980e379667ccb94abe33b9c9c660c08800e3f31e36fe4a939551398ab98457ae",
+    "size": 280
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zle/ru-cl": {
+    "hash": "200ea345b505ec9e7b8838490aeaf1822af41033429aeae4ea68159047f59f90",
+    "size": 91
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zle/uk": {
+    "hash": "df3d1a9f77bac0531e72f87be398d9eb1e903bd6f839d4f04ffec5abb4e34634",
+    "size": 97
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zls/bg": {
+    "hash": "9b91accccb0d53bb2a7bf21922846ba58c74bc082ba71ae32bf12cb0d092f853",
+    "size": 111
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zls/bs": {
+    "hash": "0820e7c78b68fbdaf86d83c782cdde1901b642d1cdbeae4181c6f5f5e21e5e89",
+    "size": 230
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zls/hr": {
+    "hash": "cef3ef0411c66f154e6c82f7decd95beffa8cbfbe953335658df9f125bdd6096",
+    "size": 262
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zls/mk": {
+    "hash": "6dbc2cfb8999141bd0782cd463d4880468161088190c6b4c9412f43552dc39e2",
+    "size": 28
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zls/sl": {
+    "hash": "e1c2bd1f75c0eeb86f64182472d5f597ce23e64ad7478c248c2f75b694655942",
+    "size": 43
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zls/sr": {
+    "hash": "0e076528d3566f6e59b807e16e274dee505e88a6d477da188ab8ec442eae44f4",
+    "size": 250
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zlw/cs": {
+    "hash": "1477cdba5ba3bce85db559accbbd8a24b86b3f6d9d9988bc587e89357c1c4431",
+    "size": 23
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zlw/pl": {
+    "hash": "83c586a2b724b24b9f98d21ade5022112c465ac446ca09930286980ceae1c781",
+    "size": 38
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lang/zlw/sk": {
+    "hash": "f46ff673c7d58c1646096c174d58da34047d893d0d2993dbca260ce54abe77ef",
+    "size": 24
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lb_dict": {
+    "hash": "d819a062b9722334f187540d3530fac1de365cd200d4a466f5ecccd7e3c05772",
+    "size": 687931
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lfn_dict": {
+    "hash": "10281bc404f429165a330b800eb64674e37a135d1b4c689e57fb1d9e827d6924",
+    "size": 2793
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lt_dict": {
+    "hash": "68ef55aba9545d27ce73e7d4aca1c2fa51d2c3d3d626152fbc22bf5a90fbff11",
+    "size": 49890
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/lv_dict": {
+    "hash": "3e246c76b7da924235ffb75925070865e669da2ce3e41e98395e99be1f8db9f7",
+    "size": 66337
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/mi_dict": {
+    "hash": "401621fdf61da47d0513e80279134a3515ced898aaadd5205b82cced0f2df042",
+    "size": 1346
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/mk_dict": {
+    "hash": "e4960ff4e74e1096ff1c3bccab62ce0429fa4faa725e546cd5d33e43f45225be",
+    "size": 63859
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ml_dict": {
+    "hash": "b12687557c38f9bcd17417854253ddde3781e3b0c16f9470d732205818e7cd38",
+    "size": 92345
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/mr_dict": {
+    "hash": "f712a7525db108ef9769aee53fdd1cd141f0df372778924691b89623aa6fc22f",
+    "size": 87391
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ms_dict": {
+    "hash": "74b01897385ba1f018de44c0268048fa5be588bbbb702a900bb35c691a466707",
+    "size": 53541
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/mt_dict": {
+    "hash": "1f76761bdfd481a984b15d07522df23c9444f4ac21ea9671917e08bbffa7f8d3",
+    "size": 4384
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/mto_dict": {
+    "hash": "6d51cb6be959dba045d41d3d63ff662a7363e1287cce2c633b071295ce55d560",
+    "size": 3960
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/my_dict": {
+    "hash": "e7f9c2dc672e1388f6941ac6def956b8ab2d622adb00d0ed6640dee4b7acc96b",
+    "size": 95948
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/nci_dict": {
+    "hash": "38c7201e7726c8d508f8f8611349cbc44fcc4684a0fee4db7285d83e808a5b69",
+    "size": 1534
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ne_dict": {
+    "hash": "43831c3f53ea6e939cac37b5ae5bd7a2ea8237aa46f0e7f2441ab772a3c51dba",
+    "size": 95377
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/nl_dict": {
+    "hash": "d28641049f98c76b460c3dddde3e2edecb7782c4eb9a3f242391301ff526c83f",
+    "size": 65979
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/no_dict": {
+    "hash": "43b828f8c1709e7abb23a0cc6416fb32e4814e3f1ff1db4baf2935bf7c77c9ff",
+    "size": 4178
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/nog_dict": {
+    "hash": "8b921398a2f1907b43c07b96a72277d8d3d8545e385955eebae5f340aae33bd2",
+    "size": 3294
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/om_dict": {
+    "hash": "3624e67ef8d9c20d894db0adccaccc61ee852977cb77d5fe5801e7b4a528fcf5",
+    "size": 2302
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/or_dict": {
+    "hash": "e0dd737e9104da63a27d86cd464cf7764837625b1513169b8d28fca1bd3c8c3b",
+    "size": 89246
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/pa_dict": {
+    "hash": "cee0e2a2bfb166e602ff84e185351a8ac311571ccdf46e1831c7a25245563c10",
+    "size": 79953
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/pap_dict": {
+    "hash": "770039bbf4ea8c5a3ffddd98c4831ca02c9f39e1ff6b3de7729fa71a8f3bc0f1",
+    "size": 2128
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/phondata": {
+    "hash": "4e0288957874029a8c3c9f41a8f517ad4bf18127046decbdd4b9d1d6807ce3a3",
+    "size": 550424
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/phondata-manifest": {
+    "hash": "7b387af0702c7cf0b61f0bead68feded0bd8e1620729b0b252e76acbc30d3813",
+    "size": 21821
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/phonindex": {
+    "hash": "3ca7b8fa3b42624e4b0f152707e7a39245fce569aa99ea47c055d9e622fcf0c4",
+    "size": 39074
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/phontab": {
+    "hash": "886f3fa402cb0ba73d483aa8ad000af47a6b7cc06293c75a97913fba68a530f6",
+    "size": 55796
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/piqd_dict": {
+    "hash": "33004a36210c33291aef8a838d477667eed7af52ff5093152891379b1774188d",
+    "size": 1710
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/pl_dict": {
+    "hash": "0e0ce6cfe4eba41a1223362a046390dca359a3e597af8243adaac84d624ef18f",
+    "size": 76730
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/pt_dict": {
+    "hash": "7e8398f15fa4a21db39a213381f28ec0d302b22663c644e865abb61a09c1b004",
+    "size": 67817
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/py_dict": {
+    "hash": "2255348879547940e8b49e0ca1b80452748f142cb6e267e49cab0560c720129a",
+    "size": 2409
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/qdb_dict": {
+    "hash": "c9b7f307ffe54f4aaf323290eca1c620572919035b0eb268e5c94f5d7a430058",
+    "size": 3028
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/qu_dict": {
+    "hash": "d50659c2a14f43e01fdef0b668eb083025a00cac481b49dfb068e0220e0ed945",
+    "size": 1919
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/quc_dict": {
+    "hash": "458c1ca6dcfa288ea2584915d206c5127512501174d82655de2cf031378e6dfd",
+    "size": 1450
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/qya_dict": {
+    "hash": "e56ae297ebac26ed6c77a9718812e087f0bd198241dac3c0d964f36510984783",
+    "size": 1939
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ro_dict": {
+    "hash": "b14f68866b0440c4b0d95fb7da3b7ffd3c59b693e8593d188474fabfc9a1117d",
+    "size": 68538
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ru_dict": {
+    "hash": "f0f6181bbbf9e53cd1e8f9d26bde8fc62119c4f78181948f961cb29866e5e585",
+    "size": 8532392
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/sd_dict": {
+    "hash": "398c876b52213a6e7dd54c68d0560d2a1c164c6bfb23b9ec1c044266cdcf2217",
+    "size": 59928
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/shn_dict": {
+    "hash": "121b6682a9b49700232b3a05cc2289d8d4b9c1027e6c2db5c3f552804ad3d04a",
+    "size": 88172
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/si_dict": {
+    "hash": "a241437d4b64fd328ac4a3e786c9465c60488f6fa31cbba04153f628cdc61f27",
+    "size": 85384
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/sjn_dict": {
+    "hash": "eb70510144230f6791574d86bae0918b4191b076dd66c555e6ae3d5637daadf7",
+    "size": 1783
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/sk_dict": {
+    "hash": "58b9bc11c9a95d81e96966242367009f8d02ab7a3f8f4fd77e3581ed4159f0a8",
+    "size": 50002
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/sl_dict": {
+    "hash": "9cb2bcbf616a5e7dd7ca769e7d222a48c613299ef1d76e44c08b002f8c22861a",
+    "size": 45047
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/smj_dict": {
+    "hash": "815270ce38a59c192ef5aa8801119d9b3ed973d9e23dfa6da8d5d27ded5a9cd6",
+    "size": 35095
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/sq_dict": {
+    "hash": "6b74bef94c3319407c27e44d944e765d036a88b30b4c17f30bbc182dbffcc4ce",
+    "size": 45003
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/sr_dict": {
+    "hash": "770cae9c516e48af7896629faf4abefaf041e1fd4ae184011aad07b97196f613",
+    "size": 46832
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/sv_dict": {
+    "hash": "565f058b14f1c89c6bfa44fc3700793886a39c7818f1037ad1f4961fa7517509",
+    "size": 47836
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/sw_dict": {
+    "hash": "375fab2ccd0d669177ad406b20b0cdb5851a1e86f093672f24f72c29fec8a815",
+    "size": 47804
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ta_dict": {
+    "hash": "8f3d855c8d7a35ad0e2b22bc7c15a8830e5fc235492894e5db40458655076ecd",
+    "size": 209553
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/te_dict": {
+    "hash": "640407c66a5bb975671243325de616c221f90bb2842d3a36278facb68c0772f8",
+    "size": 94837
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/th_dict": {
+    "hash": "dd5d3e6268a381920f21c769f52daf3a8e610ae83f7995e56f15e9d4de18d653",
+    "size": 2301
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/tk_dict": {
+    "hash": "b3cd4a246f014f0564ec9efae79731c0fe73ffe1cd1617359dd8d5344ee3f9c8",
+    "size": 20868
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/tn_dict": {
+    "hash": "67f68dc336e7c65b946c95414cc8ae96cd10d241783bf857b3f990ac73221b2b",
+    "size": 3072
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/tr_dict": {
+    "hash": "311b0557059f2dab5ee2faabb51361f5033368f0e2a54c4bdfe45e730674f26e",
+    "size": 46793
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/tt_dict": {
+    "hash": "60d138d38330e44a78b4224cbea452bfca22bce6734c8ce3f640c0216ce14001",
+    "size": 2121
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ug_dict": {
+    "hash": "7c4567ffe6bd8d5224b6b3fd8fab65b1343254636e6228d738ae3a708428e8e7",
+    "size": 2070
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/uk_dict": {
+    "hash": "a779bb0f51ce5cebb650a4e2282162fc8c44609210a2baa700f81f3e83e6e10c",
+    "size": 3492
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/ur_dict": {
+    "hash": "74b60e4331f532810ccfc70751ad07ab440647550a2d25823f44663a0dfa86fb",
+    "size": 133556
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/uz_dict": {
+    "hash": "790d42ac417b26dd7b1bbfed4be72329c16ed1839dd75f55f7c962eb7bd5857a",
+    "size": 2540
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/vi_dict": {
+    "hash": "bbf7cab4ba733b2f5d9d3b61eb1194ef745232fa3adebb4bc92456e948cb3722",
+    "size": 52608
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Alex": {
+    "hash": "1cf9874567f4fa8109329f084e9ad9ed788fb2362298921d0a04a57b24f1141f",
+    "size": 128
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Alicia": {
+    "hash": "6d3f60ec866706e9d4ab7da2a79eedb8c11b50f63620f87e58317f316ea3d58e",
+    "size": 474
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Andrea": {
+    "hash": "6ca52734ec2cf7c419d2d3ad7c3449cd1a1776342c4d152ea12c5b1e72801e89",
+    "size": 357
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Andy": {
+    "hash": "0e13ba1a940cd9df7e65358c36445c9740f3d75f1360c7f7c71ab9f74b45edca",
+    "size": 320
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Annie": {
+    "hash": "40f0f829c5c6e7abf4a02a21f128a572756d6f6693014c26d09a5c29ede5ec33",
+    "size": 315
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/AnxiousAndy": {
+    "hash": "7dfe126f517b76cc78269618dbee2c30d324bea9460b400938756ec93995eaf8",
+    "size": 361
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Demonic": {
+    "hash": "241b0e78362bd3208bb586b65bdf52330e1e8322f8f226c4790c4abeb47cfb09",
+    "size": 3858
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Denis": {
+    "hash": "a09fe9f7a4e478d2ba1e139c2995633e2b99de9abdaaa82307954599b0e3d6fd",
+    "size": 305
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Diogo": {
+    "hash": "a4a17c453d13242b48783c247816bff8d2cf7bc8931c3f8237887d88a2881b18",
+    "size": 379
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Gene": {
+    "hash": "06258dae680cde2122a4939dbd4f23ed4ea145b7475068bf7dd4d466090afd2a",
+    "size": 281
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Gene2": {
+    "hash": "bcdb3039296eea37398e4423dc9bb6849cda9c5c812b83702ebc49682c649f57",
+    "size": 283
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Henrique": {
+    "hash": "5c6bf1cf5b6bc7c7d48f2a8368ae348c6ff64232c047f40f9d9a6e6824b4ce6a",
+    "size": 381
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Hugo": {
+    "hash": "906acbef890dc4da67cb54b5b0ddc2cab7ee308a95d350c899f0b0cb6a83dd5f",
+    "size": 378
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Jacky": {
+    "hash": "41884ed9b66160aeb5a0dc418370a59fe39ead0013d93e023e6d607ef01c1a6e",
+    "size": 267
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Lee": {
+    "hash": "a1584887cddb40c10e04992fb770025b52e66b70504656094f80975f1d6bbf6b",
+    "size": 338
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Marco": {
+    "hash": "04025677360c0270f094bbb6716b83c8284902f6da9b496bedbbf590963835fb",
+    "size": 467
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Mario": {
+    "hash": "a94ac65d132030df496e8aa364d5cde5f2eafa4b6b3ae361a2901d512c6029d8",
+    "size": 270
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Michael": {
+    "hash": "4409be23ef5fedf4c8bffbfaa8a802a342824d7e97f1d92938336a25f92f0ebe",
+    "size": 270
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Mike": {
+    "hash": "8999b264606c0af23d346a877e10ca05aa757f7ea433e6cfcb3bef50a56ba2cf",
+    "size": 112
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Mr serious": {
+    "hash": "794abd78deb07ce9b03419d20f7744df4c0151d5abff7981217e9d0926a2f240",
+    "size": 3193
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Nguyen": {
+    "hash": "4f3d557d9c045080f56022a96e5b3659c4d1caa5fa1d702e12d3ef6bec2e3a45",
+    "size": 280
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Reed": {
+    "hash": "727dbc3f6bff0be4dd7d0438f66d3bb82cff68ed148cf52cb58e73314aaec1e4",
+    "size": 202
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/RicishayMax": {
+    "hash": "7ddc7a57711ccd7a736540f14271adadf1e2e0422941ecaa7cc43ab87f8e2017",
+    "size": 233
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/RicishayMax2": {
+    "hash": "3de5e414d4b2ef082a7b974bb7ede94937e93b5b873d2b2f7928b19d30745180",
+    "size": 435
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/RicishayMax3": {
+    "hash": "36d20550b68a8c229d34d956657b7d642929962f7e5d4fddd6396af9e5378b56",
+    "size": 435
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Storm": {
+    "hash": "e817c7d1ce10de527ebc19c0835f580cb584c3ae7d36d30a4f414482602e7b89",
+    "size": 420
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/Tweaky": {
+    "hash": "c34d1c1d8b7922ceb886b95ad6ab534ca048f9c47e19698ec2aae5cf0c32cdbc",
+    "size": 3189
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/UniRobot": {
+    "hash": "23dba52c2d1cb332db6225304818d85488f110a668ddcdbfd7f0438afe37794b",
+    "size": 417
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/adam": {
+    "hash": "b21efbf56fd7d58470e7ce4759c6ef9f23949706b269f2d777832204658ee0dd",
+    "size": 75
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/anika": {
+    "hash": "228771ce84cad16a089e0b23efe2e69edf25f1ab7c0cb3a50d366ac70e82fbbd",
+    "size": 493
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/anikaRobot": {
+    "hash": "3ba724be6aab2fc1a084b25cdb16f469250eb9de4c6c0924a18788d0246fc32f",
+    "size": 512
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/announcer": {
+    "hash": "4af6a6748c720cbbaac1e3dcac17bb3bc7a4c553499ec7ee69e054db51a50de3",
+    "size": 300
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/antonio": {
+    "hash": "c90477080cd9aa9c384770c0ec18901d01e9851f1bc7d15526a2565a3b0c4da5",
+    "size": 381
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/aunty": {
+    "hash": "0aede4d1ca614f32c348f3d728eab58322ccd016e8531234fdc3dfcf00e32bf1",
+    "size": 358
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/belinda": {
+    "hash": "9bd791b7115820e25ada82b4911134d5116e8238b4fd4d214dfccf162576141c",
+    "size": 340
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/benjamin": {
+    "hash": "3fa10b0d865fc751fd9c8ed1dabac4bb9b011ea2b95064d4d25a8c719f7785d8",
+    "size": 201
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/boris": {
+    "hash": "f23d0a6ee2eeb7e3340506d61d422b691fb04f4e98977ea15c1e0ee5715846d5",
+    "size": 224
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/caleb": {
+    "hash": "bcde145ec713eae6d3451a6f25dbbdc0b6756fd44e9e092b7aef89f2cff25be8",
+    "size": 57
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/croak": {
+    "hash": "2906a2c6f7b7687db2f1c862164a9b80435d5afc3ba16d74619728bf8c3a8ca7",
+    "size": 93
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/david": {
+    "hash": "50b5cb5f61a50f5ff5299dd22e5d645446746dbc36909595f6ae47bac0bda9c3",
+    "size": 112
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/ed": {
+    "hash": "12ddb6355b40a2e39a3b6cef66a2bf4db15a25045769b330a9a3b344a608026d",
+    "size": 287
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/edward": {
+    "hash": "b7a12bcb2af280c40e4be4280b675001024619ed529262dbf3e819db53b5b310",
+    "size": 151
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/edward2": {
+    "hash": "59d166f7adfee4515a492993405e95432889050aaa47b6cd7eaeeb457fbca227",
+    "size": 152
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/f1": {
+    "hash": "7cdef453c6b0391d50a02b8f35392e6f41249cea65df1021affd68a64917b85f",
+    "size": 324
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/f2": {
+    "hash": "62b17f6c8f94add0310db032f5e463c13510c5ff83ef1f21e8894ccbf00b00e3",
+    "size": 357
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/f3": {
+    "hash": "d0342ee8ceebe3047831774634d234e90281ec73ce2aed8dd0bdd915ccf500fc",
+    "size": 375
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/f4": {
+    "hash": "ff9e2907a818920e3b976232c90eabaf270fff0de0b8a479af9a3633e9b7921f",
+    "size": 350
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/f5": {
+    "hash": "6c76406d94540d59dee16de11520c37124a1f6dfc236981e483877075f0271b3",
+    "size": 432
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/fast": {
+    "hash": "fa2f9c2918f351499037f6bffb25294d9b781b2785d9772a8ae3293c0c0037fe",
+    "size": 149
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/grandma": {
+    "hash": "e033d57ba9b098971fdb995c13830f9c709206add081c586daaec323ff69a392",
+    "size": 263
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/grandpa": {
+    "hash": "f25627887b95e8bccac5e6ce99cb97c6e34290ff0bf919febe64a9987138796d",
+    "size": 256
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/gustave": {
+    "hash": "5fa89cf8625cd460b9309748eca019ab5b325a04dccbd29f1a9b2a00caa2e848",
+    "size": 253
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/ian": {
+    "hash": "c0722c7954d3e6582e3f5b3f584140675ab060ac3c6cac5dd11a74592db5550a",
+    "size": 3168
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/iven": {
+    "hash": "10ab9de8365ff7bf5a20621d08f1a2019d4bf5521f3c6f65447c9256057406c8",
+    "size": 261
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/iven2": {
+    "hash": "f94830e5abe118dc4c0909630d66637ba2a7c94957279c31fd78e313374054cd",
+    "size": 279
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/iven3": {
+    "hash": "27ccf2d2f7bb8f1ff28c705c39cf6ff575eb2458c39a518ed33741ad9c1af252",
+    "size": 262
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/iven4": {
+    "hash": "11b3d46c01d4307eedcb60bd8dbcc73a40f3eb86c289176d6fd5bb418223b92f",
+    "size": 261
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/john": {
+    "hash": "bfbcc1cec33ef0581fdeb4955fbcd0d824a5d4be5493d731e4a2ef7f8f3ba670",
+    "size": 3186
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/kaukovalta": {
+    "hash": "b9f6016145835c3999bcd5872b8a53442729bd903591781ea3340746b3b4956b",
+    "size": 361
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/klatt": {
+    "hash": "9abb6d05d0ca354831c570e14323dd4e821459b53166d96395875a48bacdbde2",
+    "size": 38
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/klatt2": {
+    "hash": "afab662a55953532ff8d6f9c615b824ecec87f7aef6790a58c4ccbc4505a742a",
+    "size": 38
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/klatt3": {
+    "hash": "f1c0cd147bd656f6c4830b3341c9694483438c43aea15c982dcc1945dbb334b9",
+    "size": 39
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/klatt4": {
+    "hash": "3459c15aa8fa7d7218ac34388dfc0833c850ffc923013949308c2f643f3daad2",
+    "size": 39
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/klatt5": {
+    "hash": "44397d8282454a2974078d25509caa470bceb093e484e727843a5147b4193e60",
+    "size": 39
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/klatt6": {
+    "hash": "7d3930cd97ef7a0732f2e19f53f84e480f2d441d263390647b92bb0b4c645d05",
+    "size": 39
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/linda": {
+    "hash": "df06b4c29f5953034e7815ea7062e356917266f8fab576f76c036045525c8e28",
+    "size": 350
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/m1": {
+    "hash": "7f2de023bdfe18651d2d0453d2e7ff5e8ade9f094912a79247336ddc90fd7783",
+    "size": 335
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/m2": {
+    "hash": "6eb925eb6691621a6de66c87596c6ed879c80a04215a9a8437dffc28fcfa14dd",
+    "size": 264
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/m3": {
+    "hash": "7a4ac872387439814ddd65f5e1ff73017122975911df6b5dc62c5709e6fdb611",
+    "size": 300
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/m4": {
+    "hash": "6bef82cea3538da1246b7a2c203206e90155cbb4af86faa8ef03366c3119ceee",
+    "size": 290
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/m5": {
+    "hash": "08590ef7ce37630a6875d9cbe200dc473a9054b4184287808a4fd1c8e27dd02a",
+    "size": 262
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/m6": {
+    "hash": "fc0e01af458a96d43f55878010d3abcbbda85e846922b25361a78d27c3a9ca00",
+    "size": 188
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/m7": {
+    "hash": "bdfc54a3558ca98f9ca082479c5211034a824d8721db91804f9d77867db6fab3",
+    "size": 254
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/m8": {
+    "hash": "060130540e2fae5f8acfb19bcd4ef3dc5dc8f8d2134c502bb57af277fd4cc491",
+    "size": 284
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/marcelo": {
+    "hash": "3238a933a17c40c61cdd385c0e742bf54c42c008f4110d4b0353a6ae72a5d1a0",
+    "size": 251
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/max": {
+    "hash": "c88f70a60a19e76a6774dfbd7664be639b9aa8aa587c680834c305ffa434aaaf",
+    "size": 225
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/michel": {
+    "hash": "c0068ad9cb792dfb78aedbdff9c3cec68e5083736bae0c33bf19088186101087",
+    "size": 404
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/miguel": {
+    "hash": "9c8c2bbe9fba6d1f06eb63ee67d98d7ebb8846b2bf13847a9b359c90ba9fa8fe",
+    "size": 382
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/mike2": {
+    "hash": "274ebc5df252b3258e8996f1276137b2cf9d6e5006e1145a5172997284f1dba0",
+    "size": 188
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/norbert": {
+    "hash": "35b9923e15caf36280542270282bd2392c6d86ef5db9a8be7be92ce2241a46cb",
+    "size": 3189
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/pablo": {
+    "hash": "053a85c8a6d7e7a0f6432a3158fe73fa9accf06202e5d69c273d4e5bae8bafc8",
+    "size": 3142
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/paul": {
+    "hash": "75fb8098bea28859513de6ce033092307382d6f20455e71b051193dfc0793d5e",
+    "size": 284
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/pedro": {
+    "hash": "7429792ba833fa2446bec6db790068f5862b9ed099392002cd0e724ec6ab2a66",
+    "size": 352
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/quincy": {
+    "hash": "e9945bee7b4f3240221866f497bf2511a886ed7702d8389688a03c2ea120caf0",
+    "size": 354
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/rob": {
+    "hash": "fbfffcdb0afb2e3b70f886c02282feae22509d77fe6e7103daf907f7a356595d",
+    "size": 265
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/robert": {
+    "hash": "72604f85afe5bb52a5ce7e3427b196e1e3e426a14a64e2d93b6617e248a46417",
+    "size": 274
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/robosoft": {
+    "hash": "ce2820edd349f3fbc734bfe94095518f10ecbefdb304560109f37106f9f4d2fa",
+    "size": 451
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/robosoft2": {
+    "hash": "249a44f4069b323640e6b532ff6a9bc30dca35f5f9a5f666b647937cbc58c685",
+    "size": 454
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/robosoft3": {
+    "hash": "f8543efe18019c735ebad99d1cab4e06e0efd565ac269a895415dfebf342c383",
+    "size": 455
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/robosoft4": {
+    "hash": "d5f728e0d0a9d27f604f34e835e059590fd01411fd467c91328b573c7597bb2d",
+    "size": 447
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/robosoft5": {
+    "hash": "39da0efe1768e14eefe05a7019fab416795bbffb222fce23ad7f963991447f7b",
+    "size": 445
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/robosoft6": {
+    "hash": "46426971d76c34266580133fad2c26ab829395a71c1713e6205d9d46b0871672",
+    "size": 287
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/robosoft7": {
+    "hash": "e19c1045259d9cfb078c229d5d1372f7c5af971d0e2536a41b89c40ca3e23ede",
+    "size": 410
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/robosoft8": {
+    "hash": "389230461647836c1b66c51939c0a493e3fbc81e2b7afc01c6f88b8f9da21e2b",
+    "size": 243
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/sandro": {
+    "hash": "1b8c36a3ce35a27cbbabf4679df0264cd37f4c79b66aa1f4c310eb31b9c80490",
+    "size": 530
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/shelby": {
+    "hash": "5e96565045bcdd5b42e7ad0eab2bbd670c67cf5c9e3f2ac6b50b30580fb92be4",
+    "size": 280
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/steph": {
+    "hash": "78186aeddce4c449348f368046b2665375b1a492e948d739249b0c964f082861",
+    "size": 364
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/steph2": {
+    "hash": "ca88414b48553fed1fd409389548a94ea90cf282d6340e3cb968c8538a2ac2ec",
+    "size": 367
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/steph3": {
+    "hash": "a7d796211b6969ba92213f89de54b053890306af774424ee38fb02ace45e852d",
+    "size": 377
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/travis": {
+    "hash": "7d5a34be05778ee850d97b0491a62db7683c058d660ff2afc71c08c87360f30d",
+    "size": 383
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/victor": {
+    "hash": "a880a8083ac5eaadf94f71c63b51f34c1426d4bfe0a26f6761ddec5c6e9a5c76",
+    "size": 253
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/whisper": {
+    "hash": "1e3534c843768898cea47a3f83b2fd91720c0775b438ea5c0134676940a66e96",
+    "size": 186
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/whisperf": {
+    "hash": "7fea42b10114f1bfd2004181e6b0eb626997cca987893e23d24b5c616aac89d7",
+    "size": 392
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/voices/!v/zac": {
+    "hash": "edaf508b2cfbfd6088a163dcc78d5f6a26850a7d39a5a0e5128b09526f56b6db",
+    "size": 275
+  },
+  "kokoro-multi-lang-v1_0/espeak-ng-data/yue_dict": {
+    "hash": "1d26afa203034698772107abfff1b53acbee30434700a4d2b75dee98951588f8",
+    "size": 563571
+  },
+  "kokoro-multi-lang-v1_0/lexicon-gb-en.txt": {
+    "hash": "c4cbb37316f62210dff52718a7afcaae24f50c032cc75ab47ae67b831d1049e7",
+    "size": 6366635
+  },
+  "kokoro-multi-lang-v1_0/lexicon-us-en.txt": {
+    "hash": "7daaab53a181be9885b853a8582bf1838186317e5dadacbcef9c426d6fa0da14",
+    "size": 5956885
+  },
+  "kokoro-multi-lang-v1_0/lexicon-zh.txt": {
+    "hash": "509a1f55bf9c62e3f7e598e7544b114eadef1e00266f2badff4f281153f9f327",
+    "size": 2364621
+  },
+  "kokoro-multi-lang-v1_0/model.onnx": {
+    "hash": "c436dc6a842b62aba06af67e40bafcfb9c60ac3af895358f1974ad9a7f7c026b",
+    "size": 325630829
+  },
+  "kokoro-multi-lang-v1_0/number-zh.fst": {
+    "hash": "743f402181fcfebf76cc2f0546b71fa26476e626fbe4e460fb7b4c3a7a8bd5bd",
+    "size": 64482
+  },
+  "kokoro-multi-lang-v1_0/phone-zh.fst": {
+    "hash": "1ac2b6fa56b1442320c4de7db08353bab8963a2b57f365eebcdd3a2d3562f8d7",
+    "size": 88630
+  },
+  "kokoro-multi-lang-v1_0/tokens.txt": {
+    "hash": "6ebb6bb288f20f3ae8d004d3c2ca27697da27c037d75e81a60e2a6a663f95425",
+    "size": 687
+  },
+  "kokoro-multi-lang-v1_0/voices.bin": {
+    "hash": "8a77c0d397026208d22211f37670b5b3b11e03f190756b25a1d24041fced82a9",
+    "size": 27678720
+  }
 }

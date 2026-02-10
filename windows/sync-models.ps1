@@ -1,4 +1,4 @@
-# Sync models from GCS based on manifest.json
+# Sync models from R2 based on manifest.json
 # Usage: sync-models.ps1 <manifest-path> <models-dir> <stamp-path>
 
 param(
@@ -35,7 +35,7 @@ $individualFiles = @()
 
 $manifest.PSObject.Properties | ForEach-Object {
     if ($_.Name -eq 'kokoro-multi-lang-v1_0.zip') {
-        $script:kokoroZipHash = $_.Value
+        $script:kokoroZipHash = $_.Value.hash
     } elseif ($_.Name -like 'kokoro-multi-lang-v1_0/*') {
         $script:kokoroFiles += $_.Name
     } else {
@@ -81,7 +81,7 @@ if ($kokoroFiles.Count -gt 0) {
     if ($kokoroMissing) {
         Write-Host "Downloading kokoro-multi-lang-v1_0.zip..."
         $zipPath = Join-Path $ModelsDir 'kokoro-multi-lang-v1_0.zip'
-        $url = 'https://storage.googleapis.com/vice-resources/' + $kokoroZipHash
+        $url = 'https://vice-resources.pharr.org/' + $kokoroZipHash
         curl.exe -L --progress-bar -o $zipPath $url
         if ($LASTEXITCODE -ne 0) {
             Write-Host "Error: curl failed to download kokoro-multi-lang-v1_0.zip (exit code $LASTEXITCODE)"
@@ -105,7 +105,7 @@ if ($kokoroFiles.Count -gt 0) {
 
 # Download individual files (whisper models)
 foreach ($model in $individualFiles) {
-    $expectedHash = $manifest.$model
+    $expectedHash = $manifest.$model.hash
     $modelPath = Join-Path $ModelsDir $model
     $needDownload = $true
 
@@ -124,7 +124,7 @@ foreach ($model in $individualFiles) {
         if (-not (Test-Path $parentDir)) {
             New-Item -ItemType Directory -Path $parentDir -Force | Out-Null
         }
-        $url = 'https://storage.googleapis.com/vice-resources/' + $expectedHash
+        $url = 'https://vice-resources.pharr.org/' + $expectedHash
         curl.exe -L --progress-bar -o $modelPath $url
         if ($LASTEXITCODE -ne 0) {
             Write-Host "Error: curl failed to download $model (exit code $LASTEXITCODE)"
