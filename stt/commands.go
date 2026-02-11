@@ -1847,8 +1847,23 @@ func extractTraffic(tokens []Token) (int, int, int, int) {
 			if consumed+1 < len(tokens) {
 				nextText := strings.ToLower(tokens[consumed+1].Text)
 				if FuzzyMatch(nextText, "thousand", 0.8) {
-					// "N thousand" pattern - multiply by 10 to get encoded altitude
-					alt = t.Value * 10
+					// "N thousand" pattern - multiply by 10 to get encoded altitude.
+					// Max valid altitude with "thousand" is 17,000 ft (N=17);
+					// above that it's "flight level". When N is too large,
+					// preceding noise digits were merged in by the tokenizer;
+					// extract the trailing 1-2 digits as the real value.
+					n := t.Value
+					if n > 17 {
+						if last2 := n % 100; last2 >= 1 && last2 <= 17 {
+							n = last2
+						} else if last1 := n % 10; last1 >= 1 && last1 <= 17 {
+							n = last1
+						} else {
+							consumed++
+							continue
+						}
+					}
+					alt = n * 10
 					consumed += 2
 					// Check for "N hundred" after thousand
 					if consumed+1 < len(tokens) {

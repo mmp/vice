@@ -15,7 +15,7 @@
   "processor": "GPU: AMD Radeon RX 7800 XT (16368MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "JBU4194",
-  "command": "S210",
+  "command": "S170",
   "stt_aircraft": {
     "Air Canada 11": {
       "Callsign": "ACA11",

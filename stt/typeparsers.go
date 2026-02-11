@@ -228,6 +228,16 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 				return rounded, i - pos + 1, ""
 			}
 
+			// 4-digit starting with 2 and ending in 0: the leading "2"
+			// is likely "to" misheard as "two" (e.g., "speed to one seven
+			// zero" → "speed 2170" → 170).
+			if t.Value >= 2000 && t.Value < 3000 && t.Value%10 == 0 {
+				last3 := t.Value % 1000
+				if last3 >= 100 && last3 <= 400 {
+					return last3, i - pos + 1, ""
+				}
+			}
+
 			// 4-digit with extra digit (e.g., 1909 → 190)
 			if t.Value > 400 {
 				corrected := t.Value / 10

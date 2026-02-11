@@ -147,14 +147,35 @@ func (m *typedMatcher) match(tokens []Token, pos int, ac Aircraft, skipWords []s
 	}
 
 	value, consumed, sayAgain := m.parser.parse(tokens, pos, ac)
-	if consumed == 0 {
-		return matchResult{sayAgain: sayAgain}
+	if consumed > 0 {
+		return matchResult{
+			value:    value,
+			consumed: pos + consumed,
+		}
 	}
 
-	return matchResult{
-		value:    value,
-		consumed: pos + consumed,
+	// Slack: skip up to 2 unrecognized tokens to find a match.
+	if allowSlack {
+		for slack := 1; slack <= 2 && pos+slack < len(tokens); slack++ {
+			checkText := strings.ToLower(tokens[pos+slack].Text)
+			if IsFillerWord(checkText) {
+				continue
+			}
+			if IsCommandKeyword(checkText) {
+				break
+			}
+
+			value, consumed, _ = m.parser.parse(tokens, pos+slack, ac)
+			if consumed > 0 {
+				return matchResult{
+					value:    value,
+					consumed: pos + slack + consumed,
+				}
+			}
+		}
 	}
+
+	return matchResult{sayAgain: sayAgain}
 }
 
 func (m *typedMatcher) goType() reflect.Type {
