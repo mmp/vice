@@ -2109,7 +2109,16 @@ func (c *NewSimConfiguration) updateStartTimeForRunways() {
 			c.ScenarioSpec.MagneticVariation)
 
 		if sampledMETAR != nil {
-			c.StartTime = sampledMETAR.Time.UTC()
+			// Start at a random time between the sampled METAR and the next one
+			startTime := sampledMETAR.Time.UTC()
+			idx, _ := slices.BinarySearchFunc(apMETAR, sampledMETAR.Time, func(m wx.METAR, t time.Time) int {
+				return m.Time.Compare(t)
+			})
+			if idx+1 < len(apMETAR) {
+				validDuration := apMETAR[idx+1].Time.Sub(sampledMETAR.Time)
+				startTime = startTime.Add(time.Duration(float64(validDuration) * float64(rand.Make().Float32())))
+			}
+			c.StartTime = startTime
 
 			// Set VFR launch rate to zero if selected weather is IMC
 			if !sampledMETAR.IsVMC() {
