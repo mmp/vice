@@ -1315,31 +1315,12 @@ func (sp *STARSPane) checkInTrailCwtSeparation(ctx *panes.Context, back, front s
 	state := sp.TrackState[back.ADSBCallsign]
 	vol := back.ATPAVolume
 
-	cwtSeparation := av.CWTApproachSeparation(front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory)
-	if cwtSeparation == 0 {
-		// No CWT requirement; 3nm baseline
-		cwtSeparation = 3
-	}
-
-	if vol.Enable25nmApproach && ctx.Client.State.IsATPAVolume25nmEnabled(vol.Id) {
-		// Reduced separation allowed if:
-		// 1. Volume is adapted for 2.5nm (vol.Enable25nmApproach)
-		// 2. 2.5nm is enabled for this volume (via 2.5[volume]E command)
-		// 3. Aircraft is within the distance threshold for 2.5nm separation
-		// 4. Both aircraft are on extended centerline
-		if math.NMDistance2LL(vol.Threshold, back.Location) < vol.Dist25nmApproach &&
-			back.OnExtendedCenterline && front.OnExtendedCenterline {
-			// ... and 7110.65 5-5-4(i):
-			// 1. The leading aircraft's weight class is the same or less than the trailing aircraft;
-			// 2. Super and heavy aircraft are permitted to participate in the separation reduction as the trailing aircraft only;
-			fcat, bcat := front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory
-			if len(fcat) == 1 && fcat[0] >= 'E' && fcat[0] <= 'I' && // no heavy / super
-				len(bcat) == 1 && bcat[0] >= 'A' && bcat[0] <= 'I' &&
-				fcat[0] >= bcat[0] { // swap test since lower weight is higher letter
-				cwtSeparation = 2.5
-			}
-		}
-	}
+	eligible25nm := vol.Enable25nmApproach &&
+		ctx.Client.State.IsATPAVolume25nmEnabled(vol.Id) &&
+		math.NMDistance2LL(vol.Threshold, back.Location) < vol.Dist25nmApproach &&
+		back.OnExtendedCenterline && front.OnExtendedCenterline
+	cwtSeparation := av.CWTRequiredApproachSeparation(
+		front.FlightPlan.CWTCategory, back.FlightPlan.CWTCategory, eligible25nm)
 
 	state.MinimumMIT = cwtSeparation
 	state.ATPALeadAircraftCallsign = front.ADSBCallsign
