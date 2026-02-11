@@ -1408,61 +1408,6 @@ func decodeTFRXML(url string, r io.Reader, lg *log.Logger) (TFR, error) {
 
 ///////////////////////////////////////////////////////////////////////////
 
-// CWTApproachSeparation returns the required separation between aircraft of the two
-// given CWT categories. If 0 is returned, minimum radar separation should be used.
-func CWTApproachSeparation(front, back string) float32 {
-	if len(front) != 1 || (front[0] < 'A' && front[0] > 'I') {
-		return 10
-	}
-	if len(back) != 1 || (back[0] < 'A' && back[0] > 'I') {
-		return 10
-	}
-
-	f, b := front[0]-'A', back[0]-'A'
-
-	// 7110.126B TBL 5-5-2
-	cwtOnApproachLookUp := [9][9]float32{ // [front][back]
-		{0, 5, 6, 6, 7, 7, 7, 8, 8},       // Behind A
-		{0, 3, 4, 4, 5, 5, 5, 5, 6},       // Behind B
-		{0, 0, 0, 0, 3.5, 3.5, 3.5, 5, 6}, // Behind C
-		{0, 3, 4, 4, 5, 5, 5, 6, 6},       // Behind D
-		{0, 0, 0, 0, 0, 0, 0, 0, 4},       // Behind E
-		{0, 0, 0, 0, 0, 0, 0, 0, 4},       // Behind F
-		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind G
-		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind H
-		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind I
-	}
-	return cwtOnApproachLookUp[f][b]
-}
-
-// CWTDirectlyBehindSeparation returns the required separation between
-// aircraft of the two given CWT categories. If 0 is returned, minimum
-// radar separation should be used.
-func CWTDirectlyBehindSeparation(front, back string) float32 {
-	if len(front) != 1 || (front[0] < 'A' && front[0] > 'I') {
-		return 10
-	}
-	if len(back) != 1 || (back[0] < 'A' && back[0] > 'I') {
-		return 10
-	}
-
-	f, b := front[0]-'A', back[0]-'A'
-
-	// 7110.126B TBL 5-5-1
-	cwtBehindLookup := [9][9]float32{ // [front][back]
-		{0, 5, 6, 6, 7, 7, 7, 8, 8},       // Behind A
-		{0, 3, 4, 4, 5, 5, 5, 5, 5},       // Behind B
-		{0, 0, 0, 0, 3.5, 3.5, 3.5, 5, 5}, // Behind C
-		{0, 3, 4, 4, 5, 5, 5, 5, 5},       // Behind D
-		{0, 0, 0, 0, 0, 0, 0, 0, 4},       // Behind E
-		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind F
-		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind G
-		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind H
-		{0, 0, 0, 0, 0, 0, 0, 0, 0},       // Behind I
-	}
-	return cwtBehindLookup[f][b]
-}
-
 func inAirspace(airspace map[string][]AirspaceVolume, p math.Point2LL, alt int) bool {
 	for _, vols := range airspace {
 		if slices.ContainsFunc(vols, func(vol AirspaceVolume) bool {
