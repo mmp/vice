@@ -885,7 +885,7 @@ func stripPositionIDPrefix(tokens []Token) []Token {
 		"direct": true, "proceed": true, "cleared": true, "expect": true,
 		"contact": true, "squawk": true, "ident": true, "cross": true,
 		"hold": true, "intercept": true, "fly": true, "reduce": true,
-		"increase": true, "expedite": true, "cancel": true, "canceled": true,
+		"increase": true, "expedite": true, "cancel": true, "canceled": true, "cancelled": true,
 		"resume": true, "vectors": true, "go": true,
 	}
 

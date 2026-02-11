@@ -54,8 +54,11 @@ func getCommandCategory(cmd string) string {
 		if len(cmd) > 1 && cmd[1] >= '0' && cmd[1] <= '9' {
 			return "altitude"
 		}
-		// D followed by letter is direct-to-fix (navigation), not altitude
+		// D followed by letter is direct-to-fix or depart-fix-heading
 		if cmd[0] == 'D' {
+			if strings.Contains(cmd, "/H") {
+				return "depart_heading"
+			}
 			return "navigation"
 		}
 		// A followed by letter could be approach-related (AFIX/C for "at fix cleared approach")
@@ -672,6 +675,20 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 				return bestApprID, 0.75, consumed
 			}
 		}
+	}
+
+	// Fallback: when the approach type and runway are garbled beyond recognition
+	// but the word "approach" is present, confirming approach context. If there's
+	// only one candidate, match it.
+	if slices.ContainsFunc(tokens, func(t Token) bool {
+		return t.Type == TokenWord && strings.ToLower(t.Text) == "approach"
+	}) && len(approaches) == 1 {
+		var apprID string
+		for _, id := range approaches {
+			apprID = id
+		}
+		logLocalStt("  extractApproach: single candidate with 'approach' keyword -> %q", apprID)
+		return apprID, 0.70, len(tokens)
 	}
 
 	return "", 0, 0
