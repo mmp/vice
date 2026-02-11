@@ -120,21 +120,24 @@ func (msg *Message) ImguiColor() imgui.Vec4 {
 func (mp *MessagesPane) DrawWindow(show *bool, c *client.ControlClient, p platform.Platform, lg *log.Logger) {
 	mp.processEvents(c, p, lg)
 
-	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{-1, -1})
+	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{4096, 4096})
 	if mp.font != nil {
 		mp.font.ImguiPush()
 	}
 	imgui.BeginV("Messages", show, 0)
-	for _, msg := range mp.messages {
-		color := msg.ImguiColor()
-		imgui.PushStyleColorVec4(imgui.ColText, color)
-		imgui.TextUnformatted(msg.contents)
-		imgui.PopStyleColor()
-	}
-	// Auto-scroll when new messages arrive
-	if mp.shouldAutoScroll {
-		imgui.SetScrollHereYV(1.0)
-		mp.shouldAutoScroll = false
+	if imgui.BeginChildStrV("##messages_scroll", imgui.Vec2{}, 0, imgui.WindowFlagsHorizontalScrollbar) {
+		for _, msg := range mp.messages {
+			color := msg.ImguiColor()
+			imgui.PushStyleColorVec4(imgui.ColText, color)
+			imgui.TextUnformatted(msg.contents)
+			imgui.PopStyleColor()
+		}
+		// Auto-scroll when new messages arrive
+		if mp.shouldAutoScroll {
+			imgui.SetScrollHereYV(1.0)
+			mp.shouldAutoScroll = false
+		}
+		imgui.EndChild()
 	}
 	imgui.End()
 	if mp.font != nil {
