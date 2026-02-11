@@ -464,12 +464,10 @@ func (p *Transcriber) BuildAircraftContext(
 			}
 		}
 
-		// Key by telephony (spoken callsign)
-		var cwt string
-		if trk.FlightPlan != nil {
-			cwt = trk.FlightPlan.CWTCategory
-		}
-		telephony := av.GetCallsignSpoken(string(trk.ADSBCallsign), cwt)
+		// Key by telephony (spoken callsign). Use the true CWT category
+		// from the aircraft performance DB rather than the NAS flight plan,
+		// since the user may have changed the flight plan's aircraft type.
+		telephony := av.GetCallsignSpoken(string(trk.ADSBCallsign), trk.CWTCategory)
 
 		// Default addressing form is full callsign
 		sttAc.AddressingForm = sim.AddressingFormFull

@@ -1082,7 +1082,7 @@ func makeWhisperPrompt(state SimState) string {
 	for _, trk := range state.Tracks {
 		if state.UserControlsTrack(trk) && trk.IsAssociated() {
 			callsign := string(trk.ADSBCallsign)
-			tele := av.GetCallsignSpoken(callsign, trk.FlightPlan.CWTCategory)
+			tele := av.GetCallsignSpoken(callsign, trk.CWTCategory)
 			promptParts = append(promptParts, tele)
 
 			// For GA callsigns (N-prefix), also add type+trailing3 variants

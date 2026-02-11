@@ -186,6 +186,10 @@ func makeDerivedState(s *Sim) DerivedState {
 			IsTentative:               s.State.SimTime.Sub(ac.FirstSeen) < 5*time.Second,
 		}
 
+		if perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok {
+			rt.CWTCategory = perf.Category.CWT
+		}
+
 		for _, wp := range ac.Nav.Waypoints {
 			rt.Route = append(rt.Route, wp.Location)
 		}
