@@ -137,7 +137,7 @@ func (ac *Aircraft) GetSTTFixes() []string {
 	}
 
 	for _, wp := range ac.Nav.AssignedWaypoints() {
-		if math.NMDistance2LL(p, wp.Location) > 75 {
+		if math.NMDistance2LL(p, wp.Location) > 75 && len(fixes) > 0 {
 			break
 		}
 		if isValidFix(wp.Fix) {
