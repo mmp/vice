@@ -3,6 +3,7 @@ package main
 import (
 	"archive/zip"
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -75,7 +76,7 @@ func loadAllMETAR(sb StorageBackend) (map[string][]FileMETAR, []toArchive, error
 
 	eg.Go(func() error {
 		defer close(scrapedCh)
-		return sb.ChanList("scrape/metar", scrapedCh)
+		return sb.ChanList(context.Background(), "scrape/metar", scrapedCh)
 	})
 
 	archivedPathCh := make(chan string)
@@ -103,7 +104,7 @@ func loadAllMETAR(sb StorageBackend) (map[string][]FileMETAR, []toArchive, error
 
 	eg.Go(func() error {
 		defer close(archivedPathCh)
-		return sb.ChanList("archive/metar", archivedPathCh)
+		return sb.ChanList(context.Background(), "archive/metar", archivedPathCh)
 	})
 
 	err := eg.Wait()

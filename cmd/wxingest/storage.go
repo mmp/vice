@@ -22,7 +22,7 @@ import (
 
 type StorageBackend interface {
 	List(path string) (map[string]int64, error)
-	ChanList(path string, ch chan<- string) error
+	ChanList(ctx context.Context, path string, ch chan<- string) error
 	OpenRead(path string) (io.ReadCloser, error)
 	ReadObject(path string, result any) error
 	Store(path string, r io.Reader) (int64, error)
@@ -60,8 +60,8 @@ func (d DryRunBackend) List(path string) (map[string]int64, error) {
 	return d.g.List(path)
 }
 
-func (d DryRunBackend) ChanList(path string, ch chan<- string) error {
-	return d.g.ChanList(path, ch)
+func (d DryRunBackend) ChanList(ctx context.Context, path string, ch chan<- string) error {
+	return d.g.ChanList(ctx, path, ch)
 }
 
 func (d DryRunBackend) OpenRead(path string) (io.ReadCloser, error) {
@@ -157,14 +157,14 @@ func (g *GCSBackend) List(path string) (map[string]int64, error) {
 	return m, nil
 }
 
-func (g *GCSBackend) ChanList(path string, ch chan<- string) error {
+func (g *GCSBackend) ChanList(ctx context.Context, path string, ch chan<- string) error {
 	path = fpath.Clean(path)
 	query := storage.Query{
 		Projection: storage.ProjectionNoACL,
 		Prefix:     path,
 	}
 
-	it := g.bucket.Objects(g.ctx, &query)
+	it := g.bucket.Objects(ctx, &query)
 	pager := iterator.NewPager(it, 1000, "")
 
 	for {
@@ -179,8 +179,8 @@ func (g *GCSBackend) ChanList(path string, ch chan<- string) error {
 		for _, obj := range objects {
 			if fpath.Clean(obj.Name) != path { // don't return the root ~folder
 				select {
-				case <-g.ctx.Done():
-					return g.ctx.Err()
+				case <-ctx.Done():
+					return ctx.Err()
 				case ch <- obj.Name:
 				}
 			}
@@ -279,8 +279,8 @@ func (t *TrackingBackend) List(path string) (map[string]int64, error) {
 	return t.sb.List(path)
 }
 
-func (t *TrackingBackend) ChanList(path string, ch chan<- string) error {
-	return t.sb.ChanList(path, ch)
+func (t *TrackingBackend) ChanList(ctx context.Context, path string, ch chan<- string) error {
+	return t.sb.ChanList(ctx, path, ch)
 }
 
 func (t *TrackingBackend) OpenRead(path string) (io.ReadCloser, error) {
@@ -390,8 +390,8 @@ func (l *LocalBackend) List(path string) (map[string]int64, error) {
 	return l.gcsForReads.List(path)
 }
 
-func (l *LocalBackend) ChanList(path string, ch chan<- string) error {
-	return l.gcsForReads.ChanList(path, ch)
+func (l *LocalBackend) ChanList(ctx context.Context, path string, ch chan<- string) error {
+	return l.gcsForReads.ChanList(ctx, path, ch)
 }
 
 func (l *LocalBackend) OpenRead(path string) (io.ReadCloser, error) {
