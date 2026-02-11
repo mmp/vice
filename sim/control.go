@@ -794,7 +794,7 @@ func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, t
 	// controller deferred contact chain.
 	delete(s.DeferredContacts, ac.ADSBCallsign)
 
-	s.enqueueControllerContact(ac.ADSBCallsign, toTCP)
+	s.enqueueControllerContact(ac.ADSBCallsign, toTCP, ControlPosition(fromTCP))
 
 	return intent
 }
@@ -1590,6 +1590,23 @@ func (s *Sim) ContactTower(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent,
 		})
 }
 
+// ATISCommand handles the controller telling a pilot the current ATIS letter.
+// If the aircraft already reported the correct ATIS, no readback is needed.
+// Otherwise the pilot responds with "we'll pick up (letter)".
+func (s *Sim) ATISCommand(tcw TCW, callsign av.ADSBCallsign, letter string) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			if ac.ReportedATIS == letter {
+				return nil
+			}
+			ac.ReportedATIS = letter
+			return av.ATISIntent{Letter: letter}
+		})
+}
+
 // TrafficAdvisory handles controller-issued traffic advisories.
 // Command format: TRAFFIC/oclock/miles/altitude (e.g., TRAFFIC/10/4/30 for 10 o'clock, 4 miles, 3000 ft)
 func (s *Sim) TrafficAdvisory(tcw TCW, callsign av.ADSBCallsign, command string) (av.CommandIntent, error) {
@@ -1916,6 +1933,7 @@ type PendingContact struct {
 	ReportDepartureHeading bool                    // For departures: include assigned heading
 	HasQueuedEmergency     bool                    // For departures: trigger emergency after contact
 	PrebuiltTransmission   *av.RadioTransmission   // For emergency transmissions: pre-built message
+	FirstInFacility        bool                    // For arrivals: first contact in this TRACON facility
 }
 
 // addPendingContact adds an aircraft to the pending contacts queue for a controller.
@@ -1989,18 +2007,41 @@ func (s *Sim) popReadyContact(positions []TCP) *PendingContact {
 
 // enqueueControllerContact adds an aircraft to the pending contacts queue.
 // Called when an aircraft should contact a controller (after handoff accepted, etc.)
-func (s *Sim) enqueueControllerContact(callsign av.ADSBCallsign, tcp TCP) {
+// fromPos is the controller position the aircraft is coming from, used to
+// determine whether this is the first contact in a TRACON facility (for ATIS reporting).
+func (s *Sim) enqueueControllerContact(callsign av.ADSBCallsign, tcp TCP, fromPos ControlPosition) {
 	// Aircraft will switch frequency (2-4 sec), then listen before transmitting (3-6 sec).
 	switchDelay := time.Duration(2+s.Rand.Intn(3)) * time.Second
 	listenDelay := time.Duration(3+s.Rand.Intn(4)) * time.Second
 	s.PendingFrequencyChanges = append(s.PendingFrequencyChanges,
 		PendingFrequencyChange{ADSBCallsign: callsign, TCP: tcp, Time: s.State.SimTime.Add(switchDelay)})
 	s.addPendingContact(PendingContact{
-		ADSBCallsign: callsign,
-		TCP:          tcp,
-		ReadyTime:    s.State.SimTime.Add(switchDelay + listenDelay),
-		Type:         PendingTransmissionArrival,
+		ADSBCallsign:    callsign,
+		TCP:             tcp,
+		ReadyTime:       s.State.SimTime.Add(switchDelay + listenDelay),
+		Type:            PendingTransmissionArrival,
+		FirstInFacility: s.isFirstFacilityContact(fromPos, tcp),
 	})
+}
+
+// isFirstFacilityContact returns true if transitioning from fromPos to
+// toTCP represents the aircraft's first contact in a TRACON facility.
+// This is true when the target is a local TRACON controller and the
+// source is external (ERAM center or a different TRACON).
+func (s *Sim) isFirstFacilityContact(fromPos ControlPosition, toTCP TCP) bool {
+	toCtrl, ok := s.State.Controllers[ControlPosition(toTCP)]
+	if !ok || toCtrl.ERAMFacility {
+		return false // Target is not a TRACON controller
+	}
+
+	fromCtrl, ok := s.State.Controllers[fromPos]
+	if !ok {
+		return true // Unknown source, assume new facility
+	}
+
+	// If the source is external (ERAM or different TRACON), this is the
+	// first contact in the local TRACON facility.
+	return fromCtrl.IsExternal()
 }
 
 // virtualControllerTransferComms handles the comms transfer when a handoff
@@ -2017,7 +2058,7 @@ func (s *Sim) virtualControllerTransferComms(ac *Aircraft, virtualTCP TCP, targe
 			s.processDeferredContact(ac)
 		} else {
 			// Virtual-to-human: realistic switch/listen delay.
-			s.enqueueControllerContact(ac.ADSBCallsign, targetTCP)
+			s.enqueueControllerContact(ac.ADSBCallsign, targetTCP, ControlPosition(virtualTCP))
 		}
 	} else {
 		// Pilot hasn't reached the virtual's frequency yet. Store a
@@ -2067,7 +2108,7 @@ func (s *Sim) processDeferredContact(ac *Aircraft) {
 		s.processDeferredContact(ac)
 	} else {
 		// Virtual-to-human: realistic delay.
-		s.enqueueControllerContact(ac.ADSBCallsign, targetTCP)
+		s.enqueueControllerContact(ac.ADSBCallsign, targetTCP, ac.ControllerFrequency)
 	}
 }
 
@@ -2160,6 +2201,25 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		}
 		rt = ac.ContactMessage(s.ReportingPoints)
 		rt.Type = av.RadioTransmissionContact
+
+		// Append ATIS information only when this is the first contact
+		// in a TRACON facility (not when transferring between
+		// controllers in the same facility, and not for ERAM controllers).
+		if pc.FirstInFacility {
+			arrivalAirport := ac.FlightPlan.ArrivalAirport
+			if letter, ok := s.State.ATISLetter[arrivalAirport]; ok && letter != "" {
+				if s.Rand.Float32() < 0.85 {
+					reportLetter := letter
+					if ct, ok := s.ATISChangedTime[arrivalAirport]; ok && !ct.IsZero() {
+						if s.State.SimTime.Sub(ct) < 5*time.Minute && s.Rand.Float32() < 0.3 {
+							reportLetter = string(rune((letter[0]-'A'+25)%26 + 'A'))
+						}
+					}
+					ac.ReportedATIS = reportLetter
+					rt.Add("[we have information {ch}|information {ch}|we have {ch}]", reportLetter)
+				}
+			}
+		}
 
 		// Handle emergency activation for arrivals
 		humanAllocated := !s.isVirtualController(ac.ControllerFrequency)
@@ -2640,6 +2700,8 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 		} else if command == "AGAIN" {
 			// AGAIN is handled specially in RunAircraftControlCommands for TTS synthesis
 			return nil, nil
+		} else if strings.HasPrefix(command, "ATIS/") {
+			return s.ATISCommand(tcw, callsign, command[5:])
 		} else {
 			components := strings.Split(command, "/")
 			if len(components) != 2 || len(components[1]) == 0 {

@@ -1174,6 +1174,13 @@ func makeWhisperPrompt(state SimState) string {
 		promptParts = append(promptParts, av.GetSTARTelephony(star))
 	}
 
+	// Add current ATIS letters so whisper recognizes "information <letter>"
+	for _, letter := range state.ATISLetter {
+		if nato, ok := av.NATOPhonetic[letter]; ok {
+			promptParts = append(promptParts, "information "+nato)
+		}
+	}
+
 	// Add fixes (lower priority, may get truncated by token limit)
 	for fix := range fixes {
 		promptParts = append(promptParts, av.GetFixTelephony(fix))

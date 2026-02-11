@@ -54,6 +54,8 @@ type Sim struct {
 	wxProvider wx.Provider
 	METAR      map[string][]wx.METAR
 
+	ATISChangedTime map[string]time.Time
+
 	eventStream *EventStream
 	lg          *log.Logger
 
@@ -257,6 +259,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		wxModel: wx.MakeModel(config.WXProvider, config.Facility, config.PrimaryAirport, config.StartTime.UTC(), lg),
 		METAR:   make(map[string][]wx.METAR),
 
+		ATISChangedTime: make(map[string]time.Time),
+
 		eventStream: NewEventStream(lg),
 		lg:          lg,
 
@@ -355,7 +359,7 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 	s.ERAMComputer = makeERAMComputer(av.DB.TRACONs[config.Facility].ARTCC, s.LocalCodePool)
 
-	s.State = newCommonState(config, config.StartTime.UTC(), manifest, s.wxModel, s.METAR, lg)
+	s.State = newCommonState(config, config.StartTime.UTC(), manifest, s.wxModel, s.METAR, s.Rand, lg)
 	s.ScenarioDefaultConsolidation = config.ControllerConfiguration.DefaultConsolidation
 
 	return s
@@ -1272,7 +1276,7 @@ func (s *Sim) updateState() {
 							ctrl := s.State.ResolveController(sfp.InboundHandoffController)
 							// Make sure they've bought the handoff.
 							if ctrl != sfp.HandoffController {
-								s.enqueueControllerContact(ac.ADSBCallsign, TCP(ctrl))
+								s.enqueueControllerContact(ac.ADSBCallsign, TCP(ctrl), ac.ControllerFrequency)
 							}
 						}
 					}
@@ -1432,6 +1436,13 @@ func (s *Sim) updateState() {
 			if len(metar) > 0 {
 				if s.State.METAR == nil {
 					s.State.METAR = make(map[string]wx.METAR)
+				}
+				old := s.State.METAR[ap]
+				if old.Raw != "" && old.Raw != metar[0].Raw {
+					if cur, ok := s.State.ATISLetter[ap]; ok {
+						s.State.ATISLetter[ap] = string(rune((cur[0]-'A'+1)%26 + 'A'))
+						s.ATISChangedTime[ap] = s.State.SimTime
+					}
 				}
 				s.State.METAR[ap] = metar[0]
 			}

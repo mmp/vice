@@ -391,13 +391,6 @@ func TidyRunway(r string) string {
 	return strings.TrimSpace(r)
 }
 
-type ATIS struct {
-	Airport  string
-	AppDep   string
-	Code     string
-	Contents string
-}
-
 ///////////////////////////////////////////////////////////////////////////
 
 type FlightRules int

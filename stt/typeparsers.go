@@ -527,6 +527,64 @@ func (p *textParser) parse(tokens []Token, pos int, ac Aircraft) (value any, con
 	return nil, 0, ""
 }
 
+// atisLetterParser extracts a NATO phonetic letter for ATIS information.
+// It handles exact matches, fuzzy matches against NATO words, and
+// multi-word garbles (e.g., "pop up" for "papa").
+type atisLetterParser struct{}
+
+func (p *atisLetterParser) identifier() string {
+	return "atis_letter"
+}
+
+func (p *atisLetterParser) goType() reflect.Type {
+	return reflect.TypeOf("")
+}
+
+func (p *atisLetterParser) parse(tokens []Token, pos int, ac Aircraft) (value any, consumed int, sayAgain string) {
+	if pos >= len(tokens) || tokens[pos].Type != TokenWord {
+		return nil, 0, ""
+	}
+
+	word := strings.ToLower(tokens[pos].Text)
+
+	// Exact NATO match.
+	if letter, ok := ConvertNATOLetter(word); ok {
+		return strings.ToUpper(letter), 1, ""
+	}
+
+	// Try combining with the next token for garbled multi-word NATO
+	// (e.g., "pop up" → "papa").
+	if pos+1 < len(tokens) && tokens[pos+1].Type == TokenWord {
+		combined := word + tokens[pos+1].Text
+		if letter, ok := ConvertNATOLetter(combined); ok {
+			return strings.ToUpper(letter), 2, ""
+		}
+		// Fuzzy match combined form.
+		if letter, ok := fuzzyNATOLetter(combined, 0.8); ok {
+			return strings.ToUpper(letter), 2, ""
+		}
+	}
+
+	// Fuzzy match single word.
+	if letter, ok := fuzzyNATOLetter(word, 0.8); ok {
+		return strings.ToUpper(letter), 1, ""
+	}
+
+	return nil, 0, ""
+}
+
+// fuzzyNATOLetter fuzzy-matches a word against all NATO phonetic words
+// using FuzzyMatch (Jaro-Winkler + phonetic matching).
+// Returns the corresponding letter if a match is found.
+func fuzzyNATOLetter(word string, threshold float64) (string, bool) {
+	for natoWord, letter := range natoAlphabet {
+		if FuzzyMatch(word, natoWord, threshold) {
+			return letter, true
+		}
+	}
+	return "", false
+}
+
 // garbledWordParser extracts a single word token that is NOT a command keyword.
 // Used for matching garbled facility names without accidentally consuming command keywords.
 type garbledWordParser struct{}
@@ -687,6 +745,8 @@ func getTypeParser(typeID string) typeParser {
 		return &holdParser{}
 	case "text":
 		return &textParser{}
+	case "atis_letter":
+		return &atisLetterParser{}
 	case "garbled_word":
 		return &garbledWordParser{}
 	case "speed_until":

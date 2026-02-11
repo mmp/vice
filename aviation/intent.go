@@ -614,6 +614,15 @@ func (c ContactTowerIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 	rt.Add("[contact|over to|] tower")
 }
 
+// ATISIntent represents the pilot's acknowledgment of the ATIS letter.
+type ATISIntent struct {
+	Letter string
+}
+
+func (a ATISIntent) Render(rt *RadioTransmission, r *rand.Rand) {
+	rt.Add("[we'll pick up {ch}|we'll get {ch}]", a.Letter)
+}
+
 ///////////////////////////////////////////////////////////////////////////
 // Traffic Advisory Intent
 

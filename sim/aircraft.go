@@ -101,6 +101,10 @@ type Aircraft struct {
 	// Used for readbacks to match the controller's style.
 	LastAddressingForm CallsignAddressingForm
 
+	// ATIS letter the aircraft reported during initial contact (e.g., "B").
+	// Empty if the pilot did not report having ATIS.
+	ReportedATIS string
+
 	// Traffic advisory state
 	TrafficInSight      bool      // True if aircraft has reported traffic in sight
 	TrafficInSightTime  time.Time // When traffic was reported in sight

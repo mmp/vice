@@ -1286,6 +1286,17 @@ var spokenLetters = map[string]string{
 	"Y": "yankee", "Z": "zulu",
 }
 
+// NATOPhonetic maps uppercase letters to their standard NATO phonetic alphabet words.
+var NATOPhonetic = map[string]string{
+	"A": "alpha", "B": "bravo", "C": "charlie", "D": "delta",
+	"E": "echo", "F": "foxtrot", "G": "golf", "H": "hotel",
+	"I": "india", "J": "juliet", "K": "kilo", "L": "lima",
+	"M": "mike", "N": "november", "O": "oscar", "P": "papa",
+	"Q": "quebec", "R": "romeo", "S": "sierra", "T": "tango",
+	"U": "uniform", "V": "victor", "W": "whiskey", "X": "x-ray",
+	"Y": "yankee", "Z": "zulu",
+}
+
 func (LetterSnippetFormatter) Spoken(r *rand.Rand, arg any) string {
 	return spokenLetters[arg.(string)]
 }

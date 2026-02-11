@@ -361,6 +361,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 
 func uiResetControlClient(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
 	ui.launchControlWindow = nil
+	clear(acknowledgedATIS)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -480,6 +481,7 @@ var secondaryAcCommands = [][3]string{
 	[3]string{"*RON*", `"Resume own navigation" (VFR)`, "*RON*"},
 	[3]string{"*A*", `"Altitude your discretion, maintain VFR" (VFR)`, "*A*"},
 	[3]string{"*A_alt*", `"Maintain _alt_`, "*A120*"},
+	[3]string{"*ATIS/_ltr*", `"Advise you have information _ltr_." If the pilot already reported the correct ATIS, no readback.`, "*ATIS/B*"},
 	[3]string{"*RST*", `"Radar services terminated, squawk VFR, frequency change approved" (VFR)`, "*RST*"},
 	[3]string{"*GA*", `"Go ahead" (VFR) - respond to abbreviated VFR request`, "*GA*"},
 	[3]string{"*P*", `Pauses/unpauses the sim`, "*P*"},

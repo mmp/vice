@@ -774,4 +774,19 @@ func registerAllCommands() {
 		WithName("visual_separation"),
 		WithPriority(15),
 	)
+
+	// === ATIS INFORMATION ===
+	registerSTTCommand(
+		"information {atis_letter} [is] [current]",
+		func(letter string) string { return "ATIS/" + letter },
+		WithName("atis_information"),
+		WithPriority(15),
+	)
+
+	registerSTTCommand(
+		"advise [you] have information {atis_letter}",
+		func(letter string) string { return "ATIS/" + letter },
+		WithName("advise_have_information"),
+		WithPriority(15),
+	)
 }
