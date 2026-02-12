@@ -90,7 +90,8 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, initials string, lg *log.L
 	}
 
 	var result server.NewSimResult
-	if err := cm.LocalServer.Call(server.AddLocalRPC, s, &result); err != nil {
+	req := server.AddLocalRequest{Sim: s, Initials: initials}
+	if err := cm.LocalServer.Call(server.AddLocalRPC, &req, &result); err != nil {
 		return nil, err
 	}
 

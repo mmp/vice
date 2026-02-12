@@ -359,12 +359,17 @@ func (sm *SimManager) buildNewSimResult(session *simSession, tcw sim.TCW, token 
 
 const AddLocalRPC = "SimManager.AddLocal"
 
-func (sm *SimManager) AddLocal(s *sim.Sim, result *NewSimResult) error {
-	session := makeLocalSimSession(s, sm.lg)
+type AddLocalRequest struct {
+	Sim      *sim.Sim
+	Initials string
+}
+
+func (sm *SimManager) AddLocal(req *AddLocalRequest, result *NewSimResult) error {
+	session := makeLocalSimSession(req.Sim, sm.lg)
 	if !sm.local {
 		sm.lg.Errorf("Called AddLocal with sm.local == false")
 	}
-	return sm.Add(session, result, s.ScenarioRootPosition(), "", false, false)
+	return sm.Add(session, result, req.Sim.ScenarioRootPosition(), req.Initials, false, false)
 }
 
 func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP sim.ControlPosition, initials string, instructor bool,
@@ -386,6 +391,7 @@ func (sm *SimManager) Add(session *simSession, result *NewSimResult, initialTCP 
 	tcw := sim.TCW(initialTCP)
 	joinReq := &JoinSimRequest{
 		TCW:        tcw,
+		Initials:   initials,
 		Privileged: instructor,
 	}
 	token, eventSub, err := sm.signOn(session, joinReq)
