@@ -2,6 +2,7 @@ package stt
 
 import (
 	"reflect"
+	"slices"
 	"strings"
 )
 
@@ -71,6 +72,17 @@ func (m *literalMatcher) match(tokens []Token, pos int, ac Aircraft, skipWords [
 	// This handles cases where garbage words appear between clear keywords.
 	// Only enabled for internal matchers (not the first keyword in a template).
 	if allowSlack {
+		// If the current position is a command boundary keyword that isn't
+		// one of this template's skip words, don't try slack. We're at the
+		// start of a different command and shouldn't skip past it.
+		// E.g., looking for "localizer" at "maintain 20 join localizer" —
+		// "maintain" is a boundary keyword, so stop immediately.
+		// But "turn" in "[turn] left heading" is a skip word for the heading
+		// template, so allow slack past it.
+		if IsCommandKeyword(text) && !slices.Contains(skipWords, text) {
+			return matchResult{}
+		}
+
 		maxSlack := 3
 		for slack := 1; slack <= maxSlack && pos+slack < len(tokens); slack++ {
 			checkPos := pos + slack

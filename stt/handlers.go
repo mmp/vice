@@ -554,7 +554,7 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
-		"cancel approach clearance",
+		"cancel [approach] clearance",
 		func() string { return "CAC" },
 		WithName("cancel_approach"),
 		WithPriority(15),

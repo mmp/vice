@@ -804,6 +804,7 @@ func isAcknowledgmentOnly(tokens []Token) bool {
 
 	acknowledgmentWords := map[string]bool{
 		"roger": true, "wilco": true, "copy": true, "affirm": true, "affirmative": true,
+		"hello": true, "hey": true, "hi": true, "howdy": true,
 	}
 
 	hasAcknowledgment := false

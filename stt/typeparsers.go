@@ -162,6 +162,15 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 		if t.Type == TokenNumber && t.Value > 360 && t.Value < 10000 {
 			hdg := t.Value / 10
 			if hdg >= 1 && hdg <= 360 {
+				// If truncating gives a non-multiple-of-5 heading, check for
+				// a duplicate digit caused by STT stutter (e.g., "0990" where
+				// "zero nine nine zero" should be "zero nine zero" = 090).
+				// Removing one duplicate digit may yield a cleaner heading.
+				if hdg%5 != 0 {
+					if better, ok := headingByRemovingDuplicateDigit(t.Text); ok {
+						hdg = better
+					}
+				}
 				return hdg, i - pos + 1, ""
 			}
 		}
@@ -192,6 +201,26 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 	}
 
 	return nil, 0, "HEADING"
+}
+
+// headingByRemovingDuplicateDigit tries to fix STT stutter where a digit is
+// spoken twice (e.g., "zero nine nine zero" → "0990" instead of "090").
+// It removes each pair of duplicate adjacent digits and returns the first
+// result that is a valid heading (1-360) and a multiple of 5 or 10.
+func headingByRemovingDuplicateDigit(text string) (int, bool) {
+	for i := 0; i+1 < len(text); i++ {
+		if text[i] == text[i+1] {
+			candidate := text[:i] + text[i+1:]
+			val, err := strconv.Atoi(candidate)
+			if err != nil {
+				continue
+			}
+			if val >= 1 && val <= 360 && val%5 == 0 {
+				return val, true
+			}
+		}
+	}
+	return 0, false
 }
 
 // speedParser extracts speed values (100-400 knots).
