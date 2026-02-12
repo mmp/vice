@@ -295,6 +295,17 @@ func (p *Transcriber) decodeInternal(
 		confidence *= cmdConf * validation.Confidence
 	}
 
+	// If no valid commands were found but the tokens contain a greeting word
+	// (hello, hi, hey), this is likely a check-in, not a garbled command.
+	// Return empty instead of AGAIN.
+	if len(validation.ValidCommands) == 0 && containsGreeting(commandTokens) {
+		logLocalStt("no commands but greeting detected, returning empty")
+		elapsed := time.Since(start)
+		logLocalStt("=== DecodeTranscript END: \"\" (greeting, time=%s) ===", elapsed)
+		p.logInfo("local STT: %q -> \"\" (greeting, time=%s)", transcript, elapsed)
+		return "", nil
+	}
+
 	// Generate output
 	var output string
 	if isFallback {
@@ -586,7 +597,9 @@ func detectNotForYouCorrection(tokens []Token) ([]Token, bool) {
 				return tokens[i+3:], true
 			}
 		}
-		if tokens[i].Text == "correction" || JaroWinkler(tokens[i].Text, "correction") > 0.9 || PhoneticMatch(tokens[i].Text, "correction") {
+
+		// Check for bare "correction" keyword
+		if strings.ToLower(tokens[i].Text) == "correction" {
 			return tokens[i+1:], true
 		}
 	}
@@ -792,6 +805,18 @@ func isDisregardOnly(tokens []Token) bool {
 		}
 	}
 	return hasDisregard
+}
+
+// containsGreeting returns true if any token is a greeting word.
+// Used to detect check-in transmissions that have no actionable commands.
+func containsGreeting(tokens []Token) bool {
+	for _, t := range tokens {
+		text := strings.ToLower(t.Text)
+		if text == "hello" || text == "hi" || text == "hey" || text == "howdy" {
+			return true
+		}
+	}
+	return false
 }
 
 // isAcknowledgmentOnly returns true if the tokens contain only acknowledgment

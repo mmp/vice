@@ -15,7 +15,7 @@
   "processor": "GPU: NVIDIA GeForce RTX 4070 SUPER (11997MB)",
   "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
   "callsign": "",
-  "command": "",
+  "command": "ROLLBACK",
   "stt_aircraft": {
     "Allegiant 96 49": {
       "Callsign": "AAY9649",

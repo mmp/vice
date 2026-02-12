@@ -486,6 +486,13 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 						score += 0.05
 					}
 
+					// Bonus for matching the assigned/expected approach: prefer the
+					// approach the aircraft was told to expect. This helps when the
+					// approach type is garbled but the runway matches.
+					if approachMatchesAssigned(apprID, assignedApproach) {
+						score += 0.03
+					}
+
 					isBetter := score > bestScore
 					if !isBetter && score == bestScore {
 						// Tie-breaker: prefer assigned approach, then alphabetically earlier
@@ -595,26 +602,54 @@ func extractApproach(tokens []Token, approaches map[string]string, assignedAppro
 			}
 
 			// When disambiguating between multiple runway matches, pick the best match.
-			// If scores are low (< 0.50), prefer the assigned approach when available.
+			// When the prefix is garbled, prefer the assigned approach when available.
 			if bestMatch != "" && bestMatchScore >= 0.30 {
-				// If the best score is weak and we have an assigned approach, check if one
-				// of the matching approaches matches the assigned approach's type
-				if bestMatchScore < 0.50 && assignedApproach != "" {
+				// If we have an assigned approach, check if one of the matching
+				// approaches matches the assigned approach's type. This handles
+				// garbled prefixes like "off" for "ILS".
+				if bestMatchScore < 0.80 && assignedApproach != "" {
 					assignedLower := strings.ToLower(assignedApproach)
+					// Extract RNAV variant from assigned approach (e.g., "z" from "rnav z runway 27")
+					assignedVariant := extractRnavVariant(assignedLower)
+
+					var typeMatch string // best type-only match
 					for _, ma := range matchingApproaches {
 						if matchesAssignedRunway(ma.apprID, assignedApproach) {
 							// Check if approach type matches assigned
 							spokenLower := strings.ToLower(ma.spokenName)
-							if (strings.Contains(assignedLower, "ils") &&
-								(strings.Contains(spokenLower, "i l s") || strings.Contains(spokenLower, "ils"))) ||
-								(strings.Contains(assignedLower, "rnav") &&
-									(strings.Contains(spokenLower, "r-nav") || strings.Contains(spokenLower, "rnav"))) {
+							isILS := strings.Contains(assignedLower, "ils") &&
+								(strings.Contains(spokenLower, "i l s") || strings.Contains(spokenLower, "ils"))
+							isRNAV := strings.Contains(assignedLower, "rnav") &&
+								(strings.Contains(spokenLower, "r-nav") || strings.Contains(spokenLower, "rnav"))
+							if isILS || isRNAV {
+								// For RNAV variants, also check variant letter (Z/Y/W/X)
+								if isRNAV && assignedVariant != "" {
+									idVariant := extractApproachIDVariant(ma.apprID)
+									if idVariant == assignedVariant {
+										bestMatch = ma.apprID
+										logLocalStt("  extractApproach: runway match, low score (%.2f), using assigned approach %q (variant %q)",
+											bestMatchScore, bestMatch, assignedVariant)
+										typeMatch = "" // exact match found, skip fallback
+										break
+									}
+									if typeMatch == "" {
+										typeMatch = ma.apprID
+									}
+									continue
+								}
 								bestMatch = ma.apprID
 								logLocalStt("  extractApproach: runway match, low score (%.2f), using assigned approach %q",
 									bestMatchScore, bestMatch)
+								typeMatch = "" // exact match found
 								break
 							}
 						}
+					}
+					if typeMatch != "" {
+						// Fallback: type matched but variant didn't — use first type match
+						bestMatch = typeMatch
+						logLocalStt("  extractApproach: runway match, low score (%.2f), using assigned approach %q (variant fallback)",
+							bestMatchScore, bestMatch)
 					}
 				}
 				consumed := numPos + 1
@@ -821,6 +856,52 @@ func matchesAssignedRunway(approachID, assignedApproach string) bool {
 	// The approach ID may use a compressed format: "8R" for runway 18R, "2L" for 22L
 	// So we check if the assigned runway ends with the ID runway number
 	return strings.HasSuffix(assignedNum, idNum)
+}
+
+// extractRnavVariant extracts the RNAV variant letter from an assigned approach string.
+// E.g., "rnav z runway 27" → "z", "rnav yankee runway 13l" → "y".
+func extractRnavVariant(assignedLower string) string {
+	idx := strings.Index(assignedLower, "rnav")
+	if idx == -1 {
+		return ""
+	}
+	rest := strings.TrimSpace(assignedLower[idx+4:])
+	if rest == "" {
+		return ""
+	}
+	// The variant is the first word after "rnav": "z", "y", "x", "w", "zulu", "yankee", etc.
+	word := strings.Fields(rest)[0]
+	switch word {
+	case "z", "zulu":
+		return "z"
+	case "y", "yankee":
+		return "y"
+	case "x", "x-ray", "xray":
+		return "x"
+	case "w", "whiskey":
+		return "w"
+	}
+	return ""
+}
+
+// extractApproachIDVariant extracts the RNAV variant from an approach ID.
+// E.g., "RZ7" → "z", "RY1L" → "y", "I3R" → "".
+func extractApproachIDVariant(approachID string) string {
+	upper := strings.ToUpper(approachID)
+	if len(upper) < 2 || upper[0] != 'R' {
+		return ""
+	}
+	switch upper[1] {
+	case 'Z':
+		return "z"
+	case 'Y':
+		return "y"
+	case 'X':
+		return "x"
+	case 'W':
+		return "w"
+	}
+	return ""
 }
 
 // extractSpokenDirection looks for a direction word (left/right/center) in the tokens.
@@ -2271,9 +2352,13 @@ func isUntilKeyword(text string) bool {
 }
 
 // isSpeedFillerWord checks if a word commonly appears between a speed and "until".
-// For example: "maintain 180 knots until 5 mile final" - "knots" should be skipped.
+// For example: "maintain 180 knots or greater until 5 mile final" - skip "knots", "or", "greater".
 func isSpeedFillerWord(text string) bool {
-	return text == "knots" || text == "kts" || text == "knot"
+	switch text {
+	case "knots", "kts", "knot", "or", "greater", "better":
+		return true
+	}
+	return false
 }
 
 // extractDME extracts a DME distance from tokens.

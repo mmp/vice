@@ -45,10 +45,10 @@ func (p *altitudeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 	for i := pos; i < len(tokens) && i < pos+4; i++ {
 		t := tokens[i]
 
-		// Skip numbers followed by "mile" or "miles" - those are distances
+		// Skip numbers followed by "mile"/"miles" (distances) or "knots" (speeds)
 		if i+1 < len(tokens) {
 			nextText := strings.ToLower(tokens[i+1].Text)
-			if nextText == "mile" || nextText == "miles" {
+			if nextText == "mile" || nextText == "miles" || nextText == "knots" {
 				continue
 			}
 		}
@@ -72,6 +72,19 @@ func (p *altitudeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 			if t.Value >= 10 && t.Value <= 600 {
 				if t.Value < 100 || t.Value > 400 || p.allowFlightLevel {
 					alt := t.Value
+
+					// In climb/descend context, 3-digit values that aren't multiples
+					// of 10 likely have a garbled "thousand" merged into the digit
+					// sequence. E.g., "one one five" -> 115 where "five" is garbled
+					// "thousand"; the intended altitude is 11,000 ft = encoded 110.
+					// Standard ATC altitudes are always in thousands (multiples of
+					// 10 in encoded form); x,500 altitudes use explicit "thousand
+					// five hundred" which tokenizes correctly as TokenAltitude.
+					if p.allowFlightLevel && alt >= 100 && alt%10 != 0 {
+						corrected := (alt / 10) * 10
+						logLocalStt("  altitude correction: %d -> %d (garbled thousand in digit sequence)", alt, corrected)
+						alt = corrected
+					}
 
 					// Context-aware altitude correction: if the parsed altitude is below
 					// the aircraft's current altitude and multiplying by 10 gives a valid
@@ -149,6 +162,23 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 			continue
 		}
 
+		// Check if "to"/"too"/"tu" should be interpreted as digit "2" and combined
+		// with the following number to form a heading. E.g., "heading to nine zero"
+		// where "to" is STT mishearing of "two" → heading 290.
+		if t.Type == TokenWord && i+1 < len(tokens) && tokens[i+1].Type == TokenNumber {
+			text := strings.ToLower(t.Text)
+			if text == "to" || text == "too" || text == "tu" {
+				nextVal := tokens[i+1].Value
+				// Try prepending 2: "to 90" → 290, "to 70" → 270
+				if nextVal >= 0 && nextVal <= 160 {
+					combined := 200 + nextVal
+					if combined >= 200 && combined <= 360 {
+						return combined, i + 2 - pos, ""
+					}
+				}
+			}
+		}
+
 		// Check if this number is followed by "point" - that indicates a frequency, not a heading.
 		// E.g., "heading contact boston center 128 point 75" - the 128.75 is a frequency.
 		if t.Type == TokenNumber && i+1 < len(tokens) {
@@ -177,6 +207,21 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 
 		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 360 {
 			hdg := t.Value
+
+			// Check for garbled word between heading digits: "3 [garbled] 40" → 340.
+			// STT sometimes inserts a garbled word between digit groups.
+			// Only try when the first token is a single digit 1-3 (valid hundreds digit).
+			if hdg >= 1 && hdg <= 3 && i+2 < len(tokens) &&
+				tokens[i+1].Type == TokenWord && !IsCommandKeyword(tokens[i+1].Text) &&
+				tokens[i+2].Type == TokenNumber && tokens[i+2].Value >= 10 {
+				remainder := tokens[i+2].Value
+				combined := hdg*100 + remainder
+				if combined >= 100 && combined <= 360 {
+					logLocalStt("  heading: skipping garbled %q between digits: %d + %d -> %d",
+						tokens[i+1].Text, hdg, remainder, combined)
+					return combined, i + 3 - pos, ""
+				}
+			}
 
 			// Handle leading zero and dropped trailing zero patterns
 			text := t.Text
@@ -286,6 +331,7 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 					}
 				}
 			}
+
 		}
 	}
 
@@ -760,6 +806,8 @@ func getTypeParser(typeID string) typeParser {
 	switch typeID {
 	case "altitude":
 		return &altitudeParser{}
+	case "altitude_fl":
+		return &altitudeParser{allowFlightLevel: true}
 	case "heading":
 		return &headingParser{}
 	case "speed":
