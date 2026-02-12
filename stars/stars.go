@@ -1644,7 +1644,7 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context) {
 					return false
 				}
 				trk0, ok0 := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
-				trk1, ok1 := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
+				trk1, ok1 := ctx.GetTrackByCallsign(ca.ADSBCallsigns[1])
 				if !ok0 || !ok1 {
 					return false
 				}
