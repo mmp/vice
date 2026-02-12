@@ -2253,6 +2253,11 @@ func extractSpeedUntil(tokens []Token, ac Aircraft) (speedUntilResult, int) {
 		return speedUntilResult{suffix: fix}, consumed + fixConsumed
 	}
 
+	// 4. Bare number after "until" — commonly shortened "until N mile final"
+	if tokens[consumed].Type == TokenNumber && tokens[consumed].Value >= 1 && tokens[consumed].Value <= 20 {
+		return speedUntilResult{suffix: fmt.Sprintf("%d", tokens[consumed].Value)}, consumed + 1
+	}
+
 	return speedUntilResult{}, 0
 }
 

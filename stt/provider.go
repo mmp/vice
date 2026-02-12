@@ -103,7 +103,6 @@ func (p *Transcriber) decodeInternal(
 	}
 
 	var callsign string
-	var addressingForm sim.CallsignAddressingForm
 	var ac Aircraft
 	var commandTokens []Token
 	var callsignConfidence = 1.0
@@ -150,12 +149,7 @@ func (p *Transcriber) decodeInternal(
 				// Build output: ROLLBACK + commands for correct callsign
 				var output string
 				if len(validation.ValidCommands) > 0 {
-					// Encode addressing form in callsign if needed
-					correctCallsignWithForm := correctMatch.Callsign
-					if correctMatch.AddressingForm == sim.AddressingFormTypeTrailing3 {
-						correctCallsignWithForm += "/T"
-					}
-					output = "ROLLBACK " + correctCallsignWithForm + " " + strings.Join(validation.ValidCommands, " ")
+					output = "ROLLBACK " + correctMatch.Callsign + " " + strings.Join(validation.ValidCommands, " ")
 				} else {
 					// Just ROLLBACK if no valid commands were parsed
 					output = "ROLLBACK"
@@ -199,7 +193,6 @@ func (p *Transcriber) decodeInternal(
 		}
 
 		callsign = callsignMatch.Callsign
-		addressingForm = callsignMatch.AddressingForm
 		callsignConfidence = callsignMatch.Confidence
 		commandTokens = remainingTokens
 
@@ -312,17 +305,11 @@ func (p *Transcriber) decodeInternal(
 			output = strings.Join(validation.ValidCommands, " ")
 		}
 	} else {
-		// Encode addressing form in callsign: append /T for type-based addressing (GA aircraft)
-		callsignWithForm := callsign
-		if addressingForm == sim.AddressingFormTypeTrailing3 {
-			callsignWithForm += "/T"
-		}
-
 		if len(validation.ValidCommands) == 0 {
 			// Callsign matched but couldn't parse commands - ask for say again
-			output = callsignWithForm + " AGAIN"
+			output = callsign + " AGAIN"
 		} else {
-			output = callsignWithForm + " " + strings.Join(validation.ValidCommands, " ")
+			output = callsign + " " + strings.Join(validation.ValidCommands, " ")
 		}
 	}
 
@@ -493,8 +480,10 @@ func (p *Transcriber) BuildAircraftContext(
 			if len(typePronunciations) > 0 {
 				trailing3 := av.GetTrailing3Spoken(callsign)
 				if trailing3 != "" {
-					// Create a copy with TypeTrailing3 addressing form
+					// Create a copy with TypeTrailing3 addressing form.
+					// Bake /T into the callsign so downstream code gets it automatically.
 					typeAc := sttAc
+					typeAc.Callsign += "/T"
 					typeAc.AddressingForm = sim.AddressingFormTypeTrailing3
 
 					// Add entry for each pronunciation variant that doesn't contain numbers

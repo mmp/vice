@@ -129,7 +129,10 @@ type typedMatcher struct {
 
 func (m *typedMatcher) match(tokens []Token, pos int, ac Aircraft, skipWords []string, allowSlack bool) matchResult {
 	if pos >= len(tokens) {
-		return matchResult{}
+		// Still call the parser to get its sayAgain hint for incomplete commands
+		// (e.g., "climb maintain" with no altitude triggers SAYAGAIN/ALTITUDE)
+		_, _, sayAgain := m.parser.parse(tokens, pos, ac)
+		return matchResult{sayAgain: sayAgain}
 	}
 
 	// Skip only filler words (not skipWords - those are for optional sections)
@@ -143,7 +146,8 @@ func (m *typedMatcher) match(tokens []Token, pos int, ac Aircraft, skipWords []s
 	}
 
 	if pos >= len(tokens) {
-		return matchResult{}
+		_, _, sayAgain := m.parser.parse(tokens, pos, ac)
+		return matchResult{sayAgain: sayAgain}
 	}
 
 	value, consumed, sayAgain := m.parser.parse(tokens, pos, ac)

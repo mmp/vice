@@ -2838,11 +2838,18 @@ func TestSTTFromJSONFiles(t *testing.T) {
 				t.Fatalf("failed to parse %s: %v", file, err)
 			}
 
-			// Convert JSON aircraft to STT Aircraft map
+			// Convert JSON aircraft to STT Aircraft map.
+			// Bake /T into the callsign for type-based addressing entries,
+			// mirroring the production context initialization in provider.go.
 			aircraft := make(map[string]Aircraft)
 			for key, ac := range testFile.STTAircraft {
+				callsign := ac.Callsign
+				form := sim.CallsignAddressingForm(ac.AddressingForm)
+				if form == sim.AddressingFormTypeTrailing3 && !strings.HasSuffix(callsign, "/T") {
+					callsign += "/T"
+				}
 				aircraft[key] = Aircraft{
-					Callsign:            ac.Callsign,
+					Callsign:            callsign,
 					AircraftType:        ac.AircraftType,
 					Fixes:               ac.Fixes,
 					CandidateApproaches: ac.CandidateApproaches,
@@ -2853,7 +2860,7 @@ func TestSTTFromJSONFiles(t *testing.T) {
 					State:               ac.State,
 					ControllerFrequency: ac.ControllerFrequency,
 					TrackingController:  ac.TrackingController,
-					AddressingForm:      sim.CallsignAddressingForm(ac.AddressingForm),
+					AddressingForm:      form,
 					LAHSORunways:        ac.LAHSORunways,
 				}
 			}

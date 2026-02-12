@@ -270,9 +270,13 @@ func tryMatchCommand(tokens []Token, startPos int, cmd sttCommand, ac Aircraft, 
 		if res.consumed == 0 {
 			// Non-optional matcher failed
 			if !m.isOptional() {
-				// Return SAYAGAIN if we've matched at least one element (i > 0) and
-				// this command is marked as requiring clarification on type parser failure.
-				if res.sayAgain != "" && i > 0 && cmd.sayAgainOnFail {
+				// Return SAYAGAIN if we've matched enough context and this command
+				// is marked for clarification on type parser failure.
+				// When the parser has tokens but can't match them, i > 0 suffices.
+				// When at end of tokens, require >1 consumed token to avoid false
+				// triggers from single stray keywords (e.g., "cleared" alone).
+				enoughContext := (pos < len(tokens) && i > 0) || pos-startPos > 1
+				if res.sayAgain != "" && enoughContext && cmd.sayAgainOnFail {
 					return CommandMatch{
 						Command:    "SAYAGAIN/" + res.sayAgain,
 						Confidence: 0.5,
