@@ -130,7 +130,9 @@ func NewFuzzContext(p platform.Platform, r renderer.Renderer, c *client.ControlC
 }
 
 func (ctx *Context) SetMousePosition(p [2]float32) {
-	ctx.Mouse.Pos = p
+	if ctx.Mouse != nil {
+		ctx.Mouse.Pos = p
+	}
 	ctx.Platform.SetMousePosition(ctx.PaneToWindow(p))
 }
 
