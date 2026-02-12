@@ -455,6 +455,9 @@ func (p *Preferences) Activate(pl platform.Platform, sp *STARSPane) {
 	if p.RestrictionAreaSettings == nil {
 		p.RestrictionAreaSettings = make(map[int]*RestrictionAreaSettings)
 	}
+	for len(p.AudioEffectEnabled) < AudioNumTypes {
+		p.AudioEffectEnabled = append(p.AudioEffectEnabled, false)
+	}
 }
 
 func (p *Preferences) Upgrade(from, to int) {
