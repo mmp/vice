@@ -365,6 +365,7 @@ func main() {
 		// inter-dependencies in the following; the order is carefully crafted.
 
 		var controlClient *client.ControlClient
+		var activeRadarPane panes.Pane
 		var err error
 
 		plat, err = platform.New(&config.Config, lg)
@@ -443,9 +444,10 @@ func main() {
 				if c != nil {
 					// Determine if this is a STARS or ERAM scenario
 					_, isSTARSSim := av.DB.TRACONs[c.State.Facility]
+					activeRadarPane = config.ActiveRadarPane(isSTARSSim)
 
 					// Reset each pane for the new sim
-					config.ActiveRadarPane(isSTARSSim).ResetSim(c, plat, lg)
+					activeRadarPane.ResetSim(c, plat, lg)
 					config.MessagesPane.ResetSim(c, plat, lg)
 					config.FlightStripPane.ResetSim(c, plat, lg)
 
@@ -507,7 +509,9 @@ func main() {
 				lg.Errorf("Error loading local sim: %v", err)
 			} else {
 				// Notify the active radar pane about the loaded sim
-				config.ActiveRadarPane(config.IsSTARSSim()).LoadedSim(client, plat, lg)
+				_, isSTARSSim := av.DB.TRACONs[client.State.Facility]
+				activeRadarPane = config.ActiveRadarPane(isSTARSSim)
+				activeRadarPane.LoadedSim(client, plat, lg)
 				uiResetControlClient(client, plat, lg)
 				controlClient = client
 				// Apply waypoint commands if specified via command line
@@ -622,8 +626,8 @@ func main() {
 			imgui.NewFrame()
 
 			// Generate and render vice draw lists
-			stats.drawPanes = panes.DrawPanes(config.ActiveRadarPane(config.IsSTARSSim()),
-				plat, render, controlClient, ui.menuBarHeight, lg)
+			stats.drawPanes = panes.DrawPanes(activeRadarPane, plat, render, controlClient,
+				ui.menuBarHeight, lg)
 
 			// Execute fuzz commands if in fuzz testing mode
 			if fuzzController != nil && controlClient != nil {
@@ -632,7 +636,7 @@ func main() {
 			}
 
 			// Draw the user interface
-			stats.drawUI = uiDraw(mgr, config, plat, render, controlClient, eventStream, lg)
+			stats.drawUI = uiDraw(mgr, config, plat, render, controlClient, activeRadarPane, eventStream, lg)
 
 			// Wait for vsync
 			plat.PostRender()

@@ -282,15 +282,3 @@ func (c *Config) Activate(r renderer.Renderer, p platform.Platform, eventStream 
 	c.MessagesPane.Activate(r, p, eventStream, lg)
 	c.FlightStripPane.Activate(r, p, eventStream, lg)
 }
-
-func (c *Config) IsSTARSSim() bool {
-	switch {
-	case c.Sim != nil:
-		return c.Sim.State.PrimaryAirport != ""
-	case c.LastTRACON != "":
-		_, isSTARSSim := av.DB.TRACONs[c.LastTRACON]
-		return isSTARSSim
-	default:
-		return true
-	}
-}

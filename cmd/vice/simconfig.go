@@ -1733,7 +1733,7 @@ func controlPositionsForGroup(server *client.Server, groupName string) map[sim.T
 
 var acknowledgedATIS = make(map[string]string)
 
-func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.Platform, lg *log.Logger) bool {
+func drawScenarioInfoWindow(config *Config, c *client.ControlClient, activeRadarPane panes.Pane, p platform.Platform, lg *log.Logger) bool {
 	// Ensure that the window is wide enough to show the description
 	sz := imgui.CalcTextSize(c.State.SimDescription)
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{sz.X + 50, 0}, imgui.Vec2{100000, 100000})
@@ -1893,7 +1893,7 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.
 		}
 	}
 
-	if draw, ok := config.ActiveRadarPane(config.IsSTARSSim()).(panes.InfoWindowDrawer); ok {
+	if draw, ok := activeRadarPane.(panes.InfoWindowDrawer); ok {
 		draw.DrawInfo(c, p, lg)
 	}
 	imgui.End()

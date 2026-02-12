@@ -139,7 +139,7 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, es *sim.Ev
 }
 
 func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,
-	controlClient *client.ControlClient, eventStream *sim.EventStream, lg *log.Logger) renderer.RendererStats {
+	controlClient *client.ControlClient, activeRadarPane panes.Pane, eventStream *sim.EventStream, lg *log.Logger) renderer.RendererStats {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -306,10 +306,10 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 	ui.menuBarHeight = imgui.CursorPos().Y - 1
 
 	if controlClient != nil {
-		uiDrawSettingsWindow(controlClient, config, p, lg)
+		uiDrawSettingsWindow(controlClient, config, activeRadarPane, p, lg)
 
 		if ui.showScenarioInfo {
-			ui.showScenarioInfo = drawScenarioInfoWindow(config, controlClient, p, lg)
+			ui.showScenarioInfo = drawScenarioInfoWindow(config, controlClient, activeRadarPane, p, lg)
 		}
 
 		if ui.showLaunchControl {
@@ -750,7 +750,7 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 	imgui.PopFont() // regular font
 }
 
-func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Platform, lg *log.Logger) {
+func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPane panes.Pane, p platform.Platform, lg *log.Logger) {
 	if !ui.showSettings {
 		return
 	}
@@ -987,7 +987,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 	if imgui.CollapsingHeaderBoolPtr(config.FlightStripPane.DisplayName(), nil) {
 		config.FlightStripPane.DrawUI(p, &config.Config)
 	}
-	if draw, ok := config.ActiveRadarPane(config.IsSTARSSim()).(panes.UIDrawer); ok {
+	if draw, ok := activeRadarPane.(panes.UIDrawer); ok {
 		if imgui.CollapsingHeaderBoolPtr(draw.DisplayName(), nil) {
 			draw.DrawUI(p, &config.Config)
 		}
