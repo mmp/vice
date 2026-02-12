@@ -392,8 +392,10 @@ func tryPhoneticCommandMatch(word string) string {
 var commandKeywords = map[string]string{
 	// Altitude
 	"descend":    "descend",
+	"descending": "descend",
 	"setup":      "descend",
 	"climb":      "climb",
+	"climbing":   "climb",
 	"climin":     "climb",
 	"con":        "climb",
 	"maintain":   "maintain",
@@ -579,6 +581,7 @@ var fillerWords = map[string]bool{
 	"is":      true, // Prevents "is" from fuzzy matching fix names like "ISLAY" (Jaro-Winkler 0.84)
 	"having":  true, // Prevents "having" from fuzzy matching "heading" (Jaro-Winkler 0.86)
 	"leaving": true, // Prevents "leaving" from fuzzy matching "heading" (Jaro-Winkler 0.81)
+	"cetera":  true, // Prevents "cetera" from fuzzy matching "cleared" (Jaro-Winkler 0.80)
 	// Note: "contact" and "radar" are NOT filler words - they're command keywords
 }
 

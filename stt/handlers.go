@@ -600,6 +600,27 @@ func registerAllCommands() {
 		WithName("intercept_localizer"),
 		WithPriority(10),
 	)
+	// Pattern: standalone "localizer" without "intercept" keyword.
+	// When "localizer" appears alone (e.g., after a heading command), it means
+	// intercept the localizer. The word "localizer" is never part of an approach
+	// clearance, so this is unambiguous.
+	registerSTTCommand(
+		"localizer",
+		func() string { return "I" },
+		WithName("standalone_localizer"),
+		WithPriority(5),
+	)
+
+	// Absorb "vectors to the localizer" phrasing so the standalone "localizer"
+	// template above doesn't fire on it. "Vectors to the localizer" is
+	// informational context (e.g., "heading 040 vectors to the localizer"),
+	// not an intercept command.
+	registerSTTCommand(
+		"vectors|vector [to] [the] [for] [through] localizer",
+		func() string { return "" },
+		WithName("vectors_localizer_absorb"),
+		WithPriority(6),
+	)
 
 	// === TRANSPONDER COMMANDS ===
 	registerSTTCommand(
