@@ -366,7 +366,7 @@ func (fsp *FlightStripPane) drawStripImgui(acid sim.ACID, sfp *sim.NASFlightPlan
 
 		// Column 0: selectable used as a drag handle for reordering.
 		imgui.TableSetColumnIndex(0)
-		imgui.SelectableBoolV(cells[row][0], false, imgui.SelectableFlagsSpanAllColumns|imgui.SelectableFlagsAllowOverlap, imgui.Vec2{})
+		imgui.SelectableBoolV(fmt.Sprintf("%s##row%d", cells[row][0], row), false, imgui.SelectableFlagsSpanAllColumns|imgui.SelectableFlagsAllowOverlap, imgui.Vec2{})
 
 		// Initiate drag when column 0 is clicked and dragged. The
 		// Selectable stays "active" while the mouse button is held,

@@ -799,7 +799,8 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 		monitorNames := p.GetAllMonitorNames()
 		if imgui.BeginComboV("Monitor", monitorNames[config.FullScreenMonitor], imgui.ComboFlagsHeightLarge) {
 			for index, monitor := range monitorNames {
-				if imgui.SelectableBoolV(monitor, monitor == monitorNames[config.FullScreenMonitor], 0, imgui.Vec2{}) {
+				label := fmt.Sprintf("%s##monitor%d", monitor, index)
+				if imgui.SelectableBoolV(label, monitor == monitorNames[config.FullScreenMonitor], 0, imgui.Vec2{}) {
 					config.FullScreenMonitor = index
 
 					p.EnableFullScreen(p.IsFullScreen())
@@ -860,8 +861,8 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 				config.SelectedMicrophone = ""
 			}
 			mics := p.GetAudioInputDevices()
-			for _, mic := range mics {
-				micFormatted := strings.Map(cleanMic, mic)
+			for i, mic := range mics {
+				micFormatted := fmt.Sprintf("%s##mic%d", strings.Map(cleanMic, mic), i)
 				if imgui.SelectableBoolV(micFormatted, mic == config.SelectedMicrophone, 0, imgui.Vec2{}) {
 					config.SelectedMicrophone = mic
 				}
