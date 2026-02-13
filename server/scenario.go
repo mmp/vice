@@ -529,7 +529,7 @@ func (sg *scenarioGroup) Locate(s string) (math.Point2LL, bool) {
 		return f.Location, ok
 	} else if p, err := math.ParseLatLong([]byte(s)); err == nil {
 		return p, true
-	} else if len(s) > 5 && s[0] == 'K' && s[4] == '-' {
+	} else if len(s) > 5 && s[4] == '-' {
 		if rwy, ok := av.LookupRunway(s[:4], s[5:]); ok {
 			return rwy.Threshold, true
 		}

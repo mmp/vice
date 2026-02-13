@@ -957,8 +957,8 @@ func GetFixTelephony(fix string) string {
 	// Cut off any trailing bits like COLIN.JT
 	fix, _, _ = strings.Cut(fix, ".")
 
-	// For 3-char fixes or 4-char starting with K (VORs, airports), use the full name
-	if len(fix) == 3 || (len(fix) == 4 && fix[0] == 'K') {
+	// For 3-char fixes or 4-char ICAO codes (VORs, airports), use the full name
+	if len(fix) == 3 || len(fix) == 4 {
 		if aid, ok := DB.Navaids[fix]; ok {
 			return util.StopShouting(aid.Name)
 		} else if ap, ok := DB.Airports[fix]; ok {

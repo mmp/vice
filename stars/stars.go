@@ -1425,7 +1425,7 @@ func (sp *STARSPane) makeSignificantPoints(ss client.SimState) {
 	center := ss.GetInitialCenter()
 	for name, ap := range av.DB.Airports {
 		if math.NMDistance2LL(ap.Location, center) < 250 {
-			if len(name) == 4 && name[0] == 'K' {
+			if len(name) == 4 {
 				name = name[1:]
 			}
 			tryAdd(name, name+" AIRPORT", ap.Location)
