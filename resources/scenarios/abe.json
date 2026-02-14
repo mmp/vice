@@ -1,834 +1,833 @@
 {
-    "tracon": "ABE",
-    "airports": {
-        "KXLL": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 6
-                }
-            }
-        },
-        "KTTN": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 6
-                }
-            }
-        },
-        "N40": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 6
-                }
-            }
-        },
-        "N43": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 6
-                }
-            }
-        },
-        "KZER": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 6
-                }
-            }
-        },
-        "KHZL": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 6
-                }
-            }
-        },
-        "22N": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 6
-                }
-            }
-        },
-        "KMPO": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 6
-                }
-            }
-        },
-        "KCKZ": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 6
-                }
-            }
-        },
-        "1N7": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 6
-                }
-            }
-        },
-        "KCDW": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 6
-                }
-            }
-        },
-        "KRDG": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 6
-                }
-            }
-        },
-        "KCXY": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 6
-                }
-            }
-        },
-        "KLNS": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 6
-                }
-            }
-        },
-        "39N": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 6
-                }
-            }
-        },
-        "KABE": {
-            "approaches": {
-                "I13": {
-                    "cifp_id": "I13"
-                },
-                "I24": {
-                    "cifp_id": "I24"
-                },
-                "I6": {
-                    "cifp_id": "L6"
-                },
-                "R13": {
-                    "cifp_id": "R13"
-                },
-                "R31": {
-                    "cifp_id": "R31"
-                },
-                "R6": {
-                    "cifp_id": "R6"
-                }
-            },
-            "departure_routes": {
-                "24": {
-                    "FJC,SAX,ARD,RBV,PTW,ETX": {
-                        "cleared_altitude": 3000,
-                        "waypoints": "KABE-6/h240"
-                    }
-                },
-                "6": {
-                    "FJC,SAX,ARD,RBV,PTW,ETX": {
-                        "cleared_altitude": 3000,
-                        "waypoints": "KABE-24/h060"
-                    }
-                }
-            },
-            "departures": [
-                {
-                    "airlines": [
-                        {
-                            "icao": "AAY"
-                        }
-                    ],
-                    "altitude": 38000,
-                    "destination": "KPIE",
-                    "exit": "ETX",
-                    "route": "ETX LRP EMI GVE Q75 TEUFL BAAMF DADES1"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "ATN"
-                        }
-                    ],
-                    "altitude": 34000,
-                    "destination": "KILN",
-                    "exit": "ETX",
-                    "route": "ETX V30 PSB APE LIMPS"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "JBU"
-                        }
-                    ],
-                    "altitude": 38000,
-                    "destination": "KMCO",
-                    "exit": "ETX",
-                    "route": "ETX LRP EMI CHS JAWSS OMN BITHO7"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SKW"
-                        }
-                    ],
-                    "altitude": 38000,
-                    "destination": "KORD",
-                    "exit": "ETX",
-                    "route": "ETX RAV Q62 WATSN WATSN4"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "JIA"
-                        }
-                    ],
-                    "altitude": 38000,
-                    "destination": "KCLT",
-                    "exit": "ETX",
-                    "route": "ETX LRP EMI J48 MOL LYH CHSLY5"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "JBU"
-                        }
-                    ],
-                    "altitude": 39000,
-                    "destination": "KBOS",
-                    "exit": "FJC",
-                    "route": "FJC T221 LAAYK HNK PONCT JFUND2"
-                },
-                {
-                    "airlines": [
-                        {
-                            "fleet": "fastGA",
-                            "icao": "N"
-                        }
-                    ],
-                    "altitude": 5000,
-                    "destination": "KJFK",
-                    "exit": "FJC",
-                    "route": "FJC V6 SBJ V232 COL"
-                },
-                {
-                    "airlines": [
-                        {
-                            "fleet": "fastGA",
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KPHL",
-                    "altitude": 5000,
-                    "exit": "PTW",
-                    "route": "BUSKY PTW PHL"
-                },
-                {
-                    "airlines": [
-                        {
-                            "fleet": "fastGA",
-                            "icao": "N"
-                        }
-                    ],
-                    "altitude": 5000,
-                    "destination": "KPNE",
-                    "exit": "FJC",
-                    "route": "FJC ARD PNE"
-                },
-                {
-                    "airlines": [
-                        {
-                            "fleet": "fastGA",
-                            "icao": "N"
-                        }
-                    ],
-                    "altitude": 5000,
-                    "destination": "KTEB",
-                    "exit": "FJC",
-                    "route": "FJC STW TEB"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SKW"
-                        }
-                    ],
-                    "destination": "KDCA",
-                    "altitude": 14000,
-                    "exit": "PTW",
-                    "route": "PTW MXE BAL DCA"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "JIA"
-                        }
-                    ],
-                    "altitude": 14000,
-                    "destination": "KBWI",
-                    "exit": "PTW",
-                    "route": "PTW MXE BAL DCA"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SKW"
-                        }
-                    ],
-                    "altitude": 7000,
-                    "destination": "KCDW",
-                    "exit": "SAX",
-                    "route": "SAX CDW"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "SKW"
-                        }
-                    ],
-                    "altitude": 6000,
-                    "destination": "KMDT",
-                    "exit": "ETX",
-                    "route": "ETX V162 HWANG"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "LXJ"
-                        }
-                    ],
-                    "altitude": 8000,
-                    "destination": "KAVP",
-                    "exit": "FJC",
-                    "route": "FJC T221 RITTY"
-                }
-            ],
-            "exit_categories": {
-                "ARD": "Southeast",
-                "ETX": "West",
-                "FJC": "North",
-                "PTW": "South",
-                "RBV": "Southeast",
-                "SAX": "Northeast"
-            },
-            "tower_list": 1
+  "tracon": "ABE",
+  "airports": {
+    "KXLL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
         }
+      }
     },
-    "inbound_flows": {
-        "EWR": {
-            "arrivals": [
-                {
-                    "waypoints": "N040.34.21.392,W074.40.37.976 SBJ/ho FJC",
-                    "cruise_altitude": 10000,
-                    "route": "/. FJC",
-                    "initial_controller": "EWR_APP",
-                    "initial_altitude": 6000,
-                    "assigned_altitude": 6000,
-                    "initial_speed": 250,
-                    "description": "EWR S sats",
-                    "expect_approach": null,
-                    "airlines": {
-                        "KABE": [
-                            {
-                                "icao": "DPJ",
-                                "airport": "KLDJ"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "waypoints": "N040.48.51.729,W074.41.06.897 BWZ/ho FJC",
-                    "cruise_altitude": 8000,
-                    "route": "/. FJC",
-                    "initial_controller": "EWR_APP",
-                    "initial_altitude": 4000,
-                    "assigned_altitude": 4000,
-                    "initial_speed": 250,
-                    "description": "EWR via BWZ",
-                    "expect_approach": null,
-                    "airlines": {
-                        "KABE": [
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KCDW"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "waypoints": "HUO N041.20.10.803,W074.41.14.423/ho N041.03.09.610,W075.02.14.170 FJC",
-                    "cruise_altitude": 18000,
-                    "route": "/. FJC",
-                    "initial_controller": "EWR_APP",
-                    "initial_altitude": 4000,
-                    "assigned_altitude": 4000,
-                    "initial_speed": 250,
-                    "description": "EWR N sats",
-                    "expect_approach": null,
-                    "airlines": {
-                        "KABE": [
-                            {
-                                "icao": "JIA",
-                                "airport": "KHVN"
-                            }
-                        ]
-                    }
-                }
+    "KTTN": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "N40": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "N43": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KZER": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KHZL": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "22N": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KMPO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KCKZ": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "1N7": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KCDW": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KRDG": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KCXY": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KLNS": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "39N": {
+      "vfr": {
+        "random_routes": {
+          "rate": 6
+        }
+      }
+    },
+    "KABE": {
+      "approaches": {
+        "I13": {
+          "cifp_id": "I13"
+        },
+        "I24": {
+          "cifp_id": "I24"
+        },
+        "I6": {
+          "cifp_id": "L6"
+        },
+        "R13": {
+          "cifp_id": "R13"
+        },
+        "R31": {
+          "cifp_id": "R31"
+        },
+        "R6": {
+          "cifp_id": "R6"
+        }
+      },
+      "departure_routes": {
+        "24": {
+          "FJC,SAX,ARD,RBV,PTW,ETX": {
+            "cleared_altitude": 3000,
+            "waypoints": "KABE-6/h240"
+          }
+        },
+        "6": {
+          "FJC,SAX,ARD,RBV,PTW,ETX": {
+            "cleared_altitude": 3000,
+            "waypoints": "KABE-24/h060"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "AAY"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KPIE",
+          "exit": "ETX",
+          "route": "ETX LRP EMI GVE Q75 TEUFL BAAMF DADES1"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "ATN"
+            }
+          ],
+          "altitude": 34000,
+          "destination": "KILN",
+          "exit": "ETX",
+          "route": "ETX V30 PSB APE LIMPS"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KMCO",
+          "exit": "ETX",
+          "route": "ETX LRP EMI CHS JAWSS OMN BITHO7"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SKW"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KORD",
+          "exit": "ETX",
+          "route": "ETX RAV Q62 WATSN WATSN4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JIA"
+            }
+          ],
+          "altitude": 38000,
+          "destination": "KCLT",
+          "exit": "ETX",
+          "route": "ETX LRP EMI J48 MOL LYH CHSLY5"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JBU"
+            }
+          ],
+          "altitude": 39000,
+          "destination": "KBOS",
+          "exit": "FJC",
+          "route": "FJC T221 LAAYK HNK PONCT JFUND2"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "fastGA",
+              "icao": "N"
+            }
+          ],
+          "altitude": 5000,
+          "destination": "KJFK",
+          "exit": "FJC",
+          "route": "FJC V6 SBJ V232 COL"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "fastGA",
+              "icao": "N"
+            }
+          ],
+          "destination": "KPHL",
+          "altitude": 5000,
+          "exit": "PTW",
+          "route": "BUSKY PTW PHL"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "fastGA",
+              "icao": "N"
+            }
+          ],
+          "altitude": 5000,
+          "destination": "KPNE",
+          "exit": "FJC",
+          "route": "FJC ARD PNE"
+        },
+        {
+          "airlines": [
+            {
+              "fleet": "fastGA",
+              "icao": "N"
+            }
+          ],
+          "altitude": 5000,
+          "destination": "KTEB",
+          "exit": "FJC",
+          "route": "FJC STW TEB"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SKW"
+            }
+          ],
+          "destination": "KDCA",
+          "altitude": 14000,
+          "exit": "PTW",
+          "route": "PTW MXE BAL DCA"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "JIA"
+            }
+          ],
+          "altitude": 14000,
+          "destination": "KBWI",
+          "exit": "PTW",
+          "route": "PTW MXE BAL DCA"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SKW"
+            }
+          ],
+          "altitude": 7000,
+          "destination": "KCDW",
+          "exit": "SAX",
+          "route": "SAX CDW"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "SKW"
+            }
+          ],
+          "altitude": 6000,
+          "destination": "KMDT",
+          "exit": "ETX",
+          "route": "ETX V162 HWANG"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "LXJ"
+            }
+          ],
+          "altitude": 8000,
+          "destination": "KAVP",
+          "exit": "FJC",
+          "route": "FJC T221 RITTY"
+        }
+      ],
+      "exit_categories": {
+        "ARD": "Southeast",
+        "ETX": "West",
+        "FJC": "North",
+        "PTW": "South",
+        "RBV": "Southeast",
+        "SAX": "Northeast"
+      },
+      "tower_list": 1
+    }
+  },
+  "inbound_flows": {
+    "EWR": {
+      "arrivals": [
+        {
+          "waypoints": "N040.34.21.392,W074.40.37.976 SBJ/ho FJC",
+          "cruise_altitude": 10000,
+          "route": "/. FJC",
+          "initial_controller": "EWR_P_APP",
+          "initial_facility": "N90",
+          "initial_altitude": 6000,
+          "assigned_altitude": 6000,
+          "initial_speed": 250,
+          "description": "EWR S sats",
+          "expect_approach": null,
+          "airlines": {
+            "KABE": [
+              {
+                "icao": "DPJ",
+                "airport": "KLDJ"
+              }
             ]
+          }
+        },
+        {
+          "waypoints": "N040.48.51.729,W074.41.06.897 BWZ/ho FJC",
+          "cruise_altitude": 8000,
+          "route": "/. FJC",
+          "initial_controller": "EWR_P_APP",
+          "initial_facility": "N90",
+          "initial_altitude": 4000,
+          "assigned_altitude": 4000,
+          "initial_speed": 250,
+          "description": "EWR via BWZ",
+          "expect_approach": null,
+          "airlines": {
+            "KABE": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KCDW"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "HUO N041.20.10.803,W074.41.14.423/ho N041.03.09.610,W075.02.14.170 FJC",
+          "cruise_altitude": 18000,
+          "route": "/. FJC",
+          "initial_controller": "EWR_P_APP",
+          "initial_facility": "N90",
+          "initial_altitude": 4000,
+          "assigned_altitude": 4000,
+          "initial_speed": 250,
+          "description": "EWR N sats",
+          "expect_approach": null,
+          "airlines": {
+            "KABE": [
+              {
+                "icao": "JIA",
+                "airport": "KHVN"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "MDT/RDG": {
+      "arrivals": [
+        {
+          "waypoints": "N040.13.18.884,W076.09.35.958 BOYER/ho FLOAT",
+          "runway_waypoints": {
+            "KABE": {
+              "24": [
+                {
+                  "fix": "FLOAT"
+                },
+                {
+                  "fix": "FJC"
+                }
+              ],
+              "6": [
+                {
+                  "fix": "FLOAT"
+                },
+                {
+                  "fix": "ETX"
+                }
+              ]
+            }
+          },
+          "cruise_altitude": 9000,
+          "route": "/. KRAZE FJC",
+          "initial_controller": "ABE_TWR",
+          "initial_altitude": 7000,
+          "assigned_altitude": 7000,
+          "initial_speed": 250,
+          "description": "MDT departures",
+          "expect_approach": null,
+          "airlines": {
+            "KABE": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KMDT"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "KRDG N040.23.52.301,W075.55.26.797/ho ETX",
+          "cruise_altitude": 4000,
+          "route": "/. ETX",
+          "initial_controller": "ABE_TWR",
+          "initial_altitude": 300,
+          "assigned_altitude": 4000,
+          "initial_speed": 250,
+          "description": "RDG departures",
+          "expect_approach": null,
+          "airlines": {
+            "KABE": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KRDG"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "PHL": {
+      "arrivals": [
+        {
+          "waypoints": "N040.13.33.015,W075.17.45.151 N040.20.16.955,W075.20.02.838/ho FJC",
+          "cruise_altitude": 4000,
+          "route": "/. FJC",
+          "initial_controller": "PHL_NA_APP",
+          "initial_facility": "PHL",
+          "initial_altitude": 4000,
+          "assigned_altitude": 4000,
+          "initial_speed": 250,
+          "expect_approach": null,
+          "airlines": {
+            "KABE": [
+              {
+                "icao": "LXJ",
+                "airport": "KPHL"
+              },
+              {
+                "icao": "DPJ",
+                "airport": "KTTN"
+              },
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KTTN"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "ZNY Northwest": {
+      "arrivals": [
+        {
+          "waypoints": "MARRC N040.53.30.177,W076.08.25.233/ho KRAZE",
+          "runway_waypoints": {
+            "KABE": {
+              "24": [
+                {
+                  "fix": "KRAZE"
+                },
+                {
+                  "fix": "FJC"
+                }
+              ],
+              "6": [
+                {
+                  "fix": "KRAZE"
+                },
+                {
+                  "fix": "ETX"
+                }
+              ]
+            }
+          },
+          "cruise_altitude": 27000,
+          "route": "/. KRAZE",
+          "initial_controller": "ZNY 72 Selinsgrove",
+          "initial_facility": "ZNY",
+          "initial_altitude": 10000,
+          "assigned_altitude": 9000,
+          "initial_speed": 250,
+          "description": "via KRAZE",
+          "expect_approach": null,
+          "airlines": {
+            "KABE": [
+              {
+                "icao": "JIA",
+                "airport": "KBUF"
+              },
+              {
+                "icao": "ATN",
+                "airport": "KDTW"
+              },
+              {
+                "icao": "SKW",
+                "airport": "KORD"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N040.45.40.100,W076.28.27.028 N040.45.12.359,W076.18.36.760/ho SNOWY SLATT",
+          "runway_waypoints": {
+            "KABE": {
+              "24": [
+                {
+                  "fix": "SLATT"
+                },
+                {
+                  "fix": "FJC"
+                }
+              ],
+              "6": [
+                {
+                  "fix": "SLATT"
+                },
+                {
+                  "fix": "ETX"
+                }
+              ]
+            }
+          },
+          "cruise_altitude": 33000,
+          "route": "/. SLATT",
+          "initial_controller": "ZNY 72 Selinsgrove",
+          "initial_facility": "ZNY",
+          "initial_altitude": 10000,
+          "assigned_altitude": 9000,
+          "initial_speed": 250,
+          "description": "via SNOWY",
+          "expect_approach": null,
+          "airlines": {
+            "KABE": [
+              {
+                "icao": "LXJ",
+                "airport": "KPIT"
+              },
+              {
+                "icao": "FFT",
+                "airport": "KIND"
+              },
+              {
+                "icao": "JIA",
+                "airport": "KCMH"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N041.09.29.229,W075.41.57.572 WHITT/ho SLATT",
+          "runway_waypoints": {
+            "KABE": {
+              "24": [
+                {
+                  "fix": "SLATT"
+                },
+                {
+                  "fix": "FJC"
+                }
+              ],
+              "6": [
+                {
+                  "fix": "SLATT"
+                },
+                {
+                  "fix": "ETX"
+                }
+              ]
+            }
+          },
+          "cruise_altitude": 22000,
+          "route": "/. SLATT",
+          "initial_controller": "ZNY 72 Selinsgrove",
+          "initial_facility": "ZNY",
+          "initial_altitude": 10000,
+          "assigned_altitude": 9000,
+          "initial_speed": 250,
+          "description": "via SLATT",
+          "expect_approach": null,
+          "airlines": {
+            "KABE": [
+              {
+                "icao": "DPJ",
+                "airport": "KSYR"
+              },
+              {
+                "icao": "ACA",
+                "fleet": "short",
+                "airport": "CYOW"
+              },
+              {
+                "icao": "LXJ",
+                "airport": "KALB"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "ZNY Southwest": {
+      "arrivals": [
+        {
+          "waypoints": "N040.20.24.385,W076.33.17.726 HWANG/ho DUMMR",
+          "runway_waypoints": {
+            "KABE": {
+              "24": [
+                {
+                  "fix": "DUMMR"
+                },
+                {
+                  "fix": "FJC"
+                }
+              ],
+              "6": [
+                {
+                  "fix": "DUMMR"
+                },
+                {
+                  "fix": "ETX"
+                }
+              ]
+            }
+          },
+          "cruise_altitude": 35000,
+          "route": "/. DUMMR",
+          "initial_controller": "ZNY 72 Selinsgrove",
+          "initial_facility": "ZNY",
+          "initial_altitude": 10000,
+          "assigned_altitude": 9000,
+          "initial_speed": 250,
+          "description": "via V162 DUMMR",
+          "expect_approach": null,
+          "airlines": {
+            "KABE": [
+              {
+                "icao": "SKW",
+                "airport": "KLEX"
+              },
+              {
+                "icao": "AAY",
+                "airport": "KBNA"
+              }
+            ]
+          }
+        },
+        {
+          "waypoints": "N040.13.06.016,W076.13.47.957 N040.15.40.223,W076.12.25.120/ho DUMMR",
+          "runway_waypoints": {
+            "KABE": {
+              "24": [
+                {
+                  "fix": "DUMMR"
+                },
+                {
+                  "fix": "FJC"
+                }
+              ],
+              "6": [
+                {
+                  "fix": "DUMMR"
+                },
+                {
+                  "fix": "ETX"
+                }
+              ]
+            }
+          },
+          "cruise_altitude": 12000,
+          "route": "/. DUMMR",
+          "initial_controller": "ZNY 72 Selinsgrove",
+          "initial_facility": "ZNY",
+          "initial_altitude": 10000,
+          "assigned_altitude": 9000,
+          "initial_speed": 250,
+          "description": "via V93 DUMMR",
+          "expect_approach": null,
+          "airlines": {
+            "KABE": [
+              {
+                "icao": "LXJ",
+                "airport": "KORF"
+              },
+              {
+                "icao": "FDX",
+                "fleet": "short",
+                "airport": "KACY"
+              },
+              {
+                "icao": "SKW",
+                "airport": "KBWI"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "default_scenario": "KABE Depart 6 Land 6",
+  "name": "KABE",
+  "primary_airport": "KABE",
+  "reporting_points": [
+    "BWZ",
+    "DUMMR",
+    "ETX",
+    "FJC",
+    "FLOAT",
+    "HUO",
+    "KRAZE",
+    "SLATT",
+    "SNOWY"
+  ],
+  "scenarios": {
+    "KABE Depart 24 Land 24": {
+      "arrival_runways": [
+        {
+          "airport": "KABE",
+          "runway": "24"
+        }
+      ],
+      "inbound_rates": {
+        "EWR": {
+          "KABE": 3
         },
         "MDT/RDG": {
-            "arrivals": [
-                {
-                    "waypoints": "N040.13.18.884,W076.09.35.958 BOYER/ho FLOAT",
-                    "runway_waypoints": {
-                        "KABE": {
-                            "24": [
-                                {
-                                    "fix": "FLOAT"
-                                },
-                                {
-                                    "fix": "FJC"
-                                }
-                            ],
-                            "6": [
-                                {
-                                    "fix": "FLOAT"
-                                },
-                                {
-                                    "fix": "ETX"
-                                }
-                            ]
-                        }
-                    },
-                    "cruise_altitude": 9000,
-                    "route": "/. KRAZE FJC",
-                    "initial_controller": "ABE_TWR",
-                    "initial_altitude": 7000,
-                    "assigned_altitude": 7000,
-                    "initial_speed": 250,
-                    "description": "MDT departures",
-                    "expect_approach": null,
-                    "airlines": {
-                        "KABE": [
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KMDT"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "waypoints": "KRDG N040.23.52.301,W075.55.26.797/ho ETX",
-                    "cruise_altitude": 4000,
-                    "route": "/. ETX",
-                    "initial_controller": "ABE_TWR",
-                    "initial_altitude": 300,
-                    "assigned_altitude": 4000,
-                    "initial_speed": 250,
-                    "description": "RDG departures",
-                    "expect_approach": null,
-                    "airlines": {
-                        "KABE": [
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KRDG"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "KABE": 3
         },
         "PHL": {
-            "arrivals": [
-                {
-                    "waypoints": "N040.13.33.015,W075.17.45.151 N040.20.16.955,W075.20.02.838/ho FJC",
-                    "cruise_altitude": 4000,
-                    "route": "/. FJC",
-                    "initial_controller": "PHL_NA_APP",
-                    "initial_altitude": 4000,
-                    "assigned_altitude": 4000,
-                    "initial_speed": 250,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KABE": [
-                            {
-                                "icao": "LXJ",
-                                "airport": "KPHL"
-                            },
-                            {
-                                "icao": "DPJ",
-                                "airport": "KTTN"
-                            },
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KTTN"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "KABE": 4
         },
         "ZNY Northwest": {
-            "arrivals": [
-                {
-                    "waypoints": "MARRC N040.53.30.177,W076.08.25.233/ho KRAZE",
-                    "runway_waypoints": {
-                        "KABE": {
-                            "24": [
-                                {
-                                    "fix": "KRAZE"
-                                },
-                                {
-                                    "fix": "FJC"
-                                }
-                            ],
-                            "6": [
-                                {
-                                    "fix": "KRAZE"
-                                },
-                                {
-                                    "fix": "ETX"
-                                }
-                            ]
-                        }
-                    },
-                    "cruise_altitude": 27000,
-                    "route": "/. KRAZE",
-                    "initial_controller": "NY_D_CTR",
-                    "initial_altitude": 10000,
-                    "assigned_altitude": 9000,
-                    "initial_speed": 250,
-                    "description": "via KRAZE",
-                    "expect_approach": null,
-                    "airlines": {
-                        "KABE": [
-                            {
-                                "icao": "JIA",
-                                "airport": "KBUF"
-                            },
-                            {
-                                "icao": "ATN",
-                                "airport": "KDTW"
-                            },
-                            {
-                                "icao": "SKW",
-                                "airport": "KORD"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "waypoints": "N040.45.40.100,W076.28.27.028 N040.45.12.359,W076.18.36.760/ho SNOWY SLATT",
-                    "runway_waypoints": {
-                        "KABE": {
-                            "24": [
-                                {
-                                    "fix": "SLATT"
-                                },
-                                {
-                                    "fix": "FJC"
-                                }
-                            ],
-                            "6": [
-                                {
-                                    "fix": "SLATT"
-                                },
-                                {
-                                    "fix": "ETX"
-                                }
-                            ]
-                        }
-                    },
-                    "cruise_altitude": 33000,
-                    "route": "/. SLATT",
-                    "initial_controller": "NY_D_CTR",
-                    "initial_altitude": 10000,
-                    "assigned_altitude": 9000,
-                    "initial_speed": 250,
-                    "description": "via SNOWY",
-                    "expect_approach": null,
-                    "airlines": {
-                        "KABE": [
-                            {
-                                "icao": "LXJ",
-                                "airport": "KPIT"
-                            },
-                            {
-                                "icao": "FFT",
-                                "airport": "KIND"
-                            },
-                            {
-                                "icao": "JIA",
-                                "airport": "KCMH"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "waypoints": "N041.09.29.229,W075.41.57.572 WHITT/ho SLATT",
-                    "runway_waypoints": {
-                        "KABE": {
-                            "24": [
-                                {
-                                    "fix": "SLATT"
-                                },
-                                {
-                                    "fix": "FJC"
-                                }
-                            ],
-                            "6": [
-                                {
-                                    "fix": "SLATT"
-                                },
-                                {
-                                    "fix": "ETX"
-                                }
-                            ]
-                        }
-                    },
-                    "cruise_altitude": 22000,
-                    "route": "/. SLATT",
-                    "initial_controller": "NY_D_CTR",
-                    "initial_altitude": 10000,
-                    "assigned_altitude": 9000,
-                    "initial_speed": 250,
-                    "description": "via SLATT",
-                    "expect_approach": null,
-                    "airlines": {
-                        "KABE": [
-                            {
-                                "icao": "DPJ",
-                                "airport": "KSYR"
-                            },
-                            {
-                                "icao": "ACA",
-                                "fleet": "short",
-                                "airport": "CYOW"
-                            },
-                            {
-                                "icao": "LXJ",
-                                "airport": "KALB"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "KABE": 14
         },
         "ZNY Southwest": {
-            "arrivals": [
-                {
-                    "waypoints": "N040.20.24.385,W076.33.17.726 HWANG/ho DUMMR",
-                    "runway_waypoints": {
-                        "KABE": {
-                            "24": [
-                                {
-                                    "fix": "DUMMR"
-                                },
-                                {
-                                    "fix": "FJC"
-                                }
-                            ],
-                            "6": [
-                                {
-                                    "fix": "DUMMR"
-                                },
-                                {
-                                    "fix": "ETX"
-                                }
-                            ]
-                        }
-                    },
-                    "cruise_altitude": 35000,
-                    "route": "/. DUMMR",
-                    "initial_controller": "NY_D_CTR",
-                    "initial_altitude": 10000,
-                    "assigned_altitude": 9000,
-                    "initial_speed": 250,
-                    "description": "via V162 DUMMR",
-                    "expect_approach": null,
-                    "airlines": {
-                        "KABE": [
-                            {
-                                "icao": "SKW",
-                                "airport": "KLEX"
-                            },
-                            {
-                                "icao": "AAY",
-                                "airport": "KBNA"
-                            }
-                        ]
-                    }
-                },
-                {
-                    "waypoints": "N040.13.06.016,W076.13.47.957 N040.15.40.223,W076.12.25.120/ho DUMMR",
-                    "runway_waypoints": {
-                        "KABE": {
-                            "24": [
-                                {
-                                    "fix": "DUMMR"
-                                },
-                                {
-                                    "fix": "FJC"
-                                }
-                            ],
-                            "6": [
-                                {
-                                    "fix": "DUMMR"
-                                },
-                                {
-                                    "fix": "ETX"
-                                }
-                            ]
-                        }
-                    },
-                    "cruise_altitude": 12000,
-                    "route": "/. DUMMR",
-                    "initial_controller": "NY_D_CTR",
-                    "initial_altitude": 10000,
-                    "assigned_altitude": 9000,
-                    "initial_speed": 250,
-                    "description": "via V93 DUMMR",
-                    "expect_approach": null,
-                    "airlines": {
-                        "KABE": [
-                            {
-                                "icao": "LXJ",
-                                "airport": "KORF"
-                            },
-                            {
-                                "icao": "FDX",
-                                "fleet": "short",
-                                "airport": "KACY"
-                            },
-                            {
-                                "icao": "SKW",
-                                "airport": "KBWI"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "KABE": 14
         }
+      },
+      "configuration": {
+        "config_id": "STD"
+      },
+      "default_maps": [
+        "ABE-101 (MAP 5)"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KABE",
+          "rate": 30,
+          "runway": "24"
+        }
+      ],
+      "wind": {
+        "direction": "210-270"
+      }
     },
-    "default_scenario": "KABE Depart 6 Land 6",
-    "name": "KABE",
-    "primary_airport": "KABE",
-    "reporting_points": [
-        "BWZ",
-        "DUMMR",
-        "ETX",
-        "FJC",
-        "FLOAT",
-        "HUO",
-        "KRAZE",
-        "SLATT",
-        "SNOWY"
-    ],
-    "scenarios": {
-        "KABE Depart 24 Land 24": {
-            "arrival_runways": [
-                {
-                    "airport": "KABE",
-                    "runway": "24"
-                }
-            ],
-            "inbound_rates": {
-                "EWR": {
-                    "KABE": 3
-                },
-                "MDT/RDG": {
-                    "KABE": 3
-                },
-                "PHL": {
-                    "KABE": 4
-                },
-                "ZNY Northwest": {
-                    "KABE": 14
-                },
-                "ZNY Southwest": {
-                    "KABE": 14
-                }
-            },
-            "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "ABE_APP": [
-                        "ABE_DEP"
-                    ]
-                }
-            },
-            "default_maps": [
-                "ABE-101 (MAP 5)"
-            ],
-            "departure_runways": [
-                {
-                    "airport": "KABE",
-                    "rate": 30,
-                    "runway": "24"
-                }
-            ],
-            "wind": {
-                "direction": "210-270"
-            }
-        },
-        "KABE Depart 6 Land 6": {
-            "arrival_runways": [
-                {
-                    "airport": "KABE",
-                    "runway": "6"
-                }
-            ],
-            "inbound_rates": {
-                "EWR": {
-                    "KABE": 3
-                },
-                "MDT/RDG": {
-                    "KABE": 3
-                },
-                "PHL": {
-                    "KABE": 4
-                },
-                "ZNY Northwest": {
-                    "KABE": 14
-                },
-                "ZNY Southwest": {
-                    "KABE": 14
-                }
-            },
-            "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "ABE_APP": [
-                        "ABE_DEP"
-                    ]
-                }
-            },
-            "default_maps": [
-                "ABE-101 (MAP 5)"
-            ],
-            "departure_runways": [
-                {
-                    "airport": "KABE",
-                    "rate": 30,
-                    "runway": "6"
-                }
-            ],
-            "wind": {
-                "direction": "30-90"
-            }
+    "KABE Depart 6 Land 6": {
+      "arrival_runways": [
+        {
+          "airport": "KABE",
+          "runway": "6"
         }
+      ],
+      "inbound_rates": {
+        "EWR": {
+          "KABE": 3
+        },
+        "MDT/RDG": {
+          "KABE": 3
+        },
+        "PHL": {
+          "KABE": 4
+        },
+        "ZNY Northwest": {
+          "KABE": 14
+        },
+        "ZNY Southwest": {
+          "KABE": 14
+        }
+      },
+      "configuration": {
+        "config_id": "STD"
+      },
+      "default_maps": [
+        "ABE-101 (MAP 5)"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KABE",
+          "rate": 30,
+          "runway": "6"
+        }
+      ],
+      "wind": {
+        "direction": "30-90"
+      }
     }
+  }
 }

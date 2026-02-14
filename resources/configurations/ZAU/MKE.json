@@ -74,6 +74,9 @@
                     "19R_Final_SouthEast": "MKE_F_APP",
                     "19R_Final_SouthWest": "MKE_F_APP",
                     "19R_Final_West": "MKE_F_APP"
+                },
+                "default_consolidation": {
+                    "MKE_F_APP": []
                 }
             },
             "1LX": {
@@ -83,6 +86,9 @@
                     "1L_Final_NorthWest": "MKE_F_APP",
                     "1L_Final_South": "MKE_F_APP",
                     "1L_Final_West": "MKE_F_APP"
+                },
+                "default_consolidation": {
+                    "MKE_F_APP": []
                 }
             },
             "MIL": {
@@ -100,6 +106,14 @@
                     "KMWC": "MKE_M_DEP",
                     "KOSH": "MKE_L_APP",
                     "KUES": "MKE_M_DEP"
+                },
+                "default_consolidation": {
+                    "MKE_E_APP": [
+                        "MKE_F_APP",
+                        "MKE_L_APP",
+                        "MKE_M_DEP",
+                        "MKE_W_APP"
+                    ]
                 }
             },
             "MI1": {
@@ -121,6 +135,15 @@
                     "KMWC": "MKE_B_DEP",
                     "KOSH": "MKE_L_APP",
                     "KUES": "MKE_B_DEP"
+                },
+                "default_consolidation": {
+                    "MKE_B_DEP": [
+                        "MKE_E_APP",
+                        "MKE_F_APP",
+                        "MKE_L_APP",
+                        "MKE_M_DEP",
+                        "MKE_W_APP"
+                    ]
                 }
             },
             "MI2": {
@@ -141,6 +164,15 @@
                     "KMWC": "MKE_M_DEP",
                     "KOSH": "MKE_L_APP",
                     "KUES": "MKE_M_DEP"
+                },
+                "default_consolidation": {
+                    "MKE_B_DEP": [
+                        "MKE_E_APP",
+                        "MKE_F_APP",
+                        "MKE_L_APP",
+                        "MKE_M_DEP",
+                        "MKE_W_APP"
+                    ]
                 }
             }
         },
@@ -233,91 +265,10 @@
             "MKE RWY 7R",
             "MKE RWY 25L"
         ],
-        "video_map_file": "videomaps/ZAU-videomaps.gob.zst",
-        "controller_assignments": {
-            "19R": {
-                "inbound_assignments": {
-                    "19R_Final_East": "MKE_F_APP",
-                    "19R_Final_SouthEast": "MKE_F_APP",
-                    "19R_Final_SouthWest": "MKE_F_APP",
-                    "19R_Final_West": "MKE_F_APP"
-                }
-            },
-            "1LX": {
-                "inbound_assignments": {
-                    "1L_Final_East": "MKE_F_APP",
-                    "1L_Final_NorthEast": "MKE_F_APP",
-                    "1L_Final_NorthWest": "MKE_F_APP",
-                    "1L_Final_South": "MKE_F_APP",
-                    "1L_Final_West": "MKE_F_APP"
-                }
-            },
-            "MI1": {
-                "inbound_assignments": {
-                    "BAE": "MKE_W_APP",
-                    "BRAVE": "MKE_E_APP",
-                    "GOPAC3": "MKE_W_APP",
-                    "MADII7": "MKE_M_DEP",
-                    "RAYNR": "MKE_F_APP",
-                    "SUDDS": "MKE_E_APP"
-                },
-                "departure_assignments": {
-                    "KENW": "MKE_B_DEP",
-                    "KMKE": "MKE_B_DEP",
-                    "KMKE/MKE9EAST": "MKE_M_DEP",
-                    "KMKE/ACCRA5": "MKE_M_DEP",
-                    "KMKE/UECKR6": "MKE_M_DEP",
-                    "KMKE/MKE9": "MKE_B_DEP",
-                    "KMWC": "MKE_B_DEP",
-                    "KOSH": "MKE_L_APP",
-                    "KUES": "MKE_B_DEP"
-                }
-            },
-            "MI2": {
-                "inbound_assignments": {
-                    "BAE": "MKE_W_APP",
-                    "BRAVE": "MKE_E_APP",
-                    "GOPAC3": "MKE_W_APP",
-                    "MADII7": "MKE_M_DEP",
-                    "RAYNR": "MKE_F_APP",
-                    "SUDDS": "MKE_E_APP"
-                },
-                "departure_assignments": {
-                    "KENW": "MKE_M_DEP",
-                    "KMKE/MKE9EAST": "MKE_M_DEP",
-                    "KMKE/ACCRA5": "MKE_M_DEP",
-                    "KMKE/UECKR6": "MKE_M_DEP",
-                    "KMKE/MKE9": "MKE_B_DEP",
-                    "KMWC": "MKE_M_DEP",
-                    "KOSH": "MKE_L_APP",
-                    "KUES": "MKE_M_DEP"
-                }
-            },
-            "MIL": {
-                "inbound_assignments": {
-                    "BAE": "MKE_W_APP",
-                    "BRAVE": "MKE_E_APP",
-                    "ERNNY8": "MKE_M_DEP",
-                    "GOPAC3": "MKE_W_APP",
-                    "RAYNR": "MKE_F_APP",
-                    "SUDDS": "MKE_E_APP"
-                },
-                "departure_assignments": {
-                    "KENW": "MKE_M_DEP",
-                    "KMKE": "MKE_M_DEP",
-                    "KMWC": "MKE_M_DEP",
-                    "KOSH": "MKE_L_APP",
-                    "KUES": "MKE_M_DEP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZAU-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
-            {
-                "id": "GRB",
-                "prefix": "5"
-            },
             {
                 "id": "AZO",
                 "prefix": "6"
@@ -327,16 +278,28 @@
                 "prefix": "1"
             },
             {
-                "id": "RFD",
-                "prefix": "2"
+                "id": "GRB",
+                "prefix": "5"
             },
             {
                 "id": "MSN",
                 "prefix": "3"
             },
             {
+                "id": "RFD",
+                "prefix": "2"
+            },
+            {
                 "id": "VOK",
                 "prefix": "4"
+            },
+            {
+                "id": "ZAU",
+                "eram_prefix": "G"
+            },
+            {
+                "id": "ZMP",
+                "eram_prefix": "P"
             }
         ],
         "neighboring_facilities": [

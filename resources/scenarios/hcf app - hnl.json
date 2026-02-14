@@ -2748,7 +2748,7 @@
         "KAENA3": {
             "arrivals": [
                 {
-                    "waypoints": "HAWYN/a17000-19000/hoJ02 OPAHH/a8000+/ho KAENA/a6000-8000 SELIC/a4000/s220",
+                    "waypoints": "HAWYN/a17000-19000/ho02 OPAHH/a8000+/ho KAENA/a6000-8000 SELIC/a4000/s220",
                     "cruise_altitude": 30000,
                     "star": "KAENA3",
                     "initial_controller": "ZHN 02 Kauai",
@@ -3803,15 +3803,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "HCF_H_APP": [
-                        "HCF_L_APP"
-                    ],
-                    "HCF_L_APP": [
-                        "HCF_V_APP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "COAST__COASTLINES",
@@ -3874,15 +3866,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "HCF_H_APP": [
-                        "HCF_L_APP"
-                    ],
-                    "HCF_L_APP": [
-                        "HCF_V_APP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "COAST__COASTLINES",

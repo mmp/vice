@@ -31,6 +31,7 @@ type Airport struct {
 	// Optional: initial tracking controller, for cases where a virtual
 	// controller has the initial track.
 	DepartureController ControlPosition `json:"departure_controller"`
+	DepartureFacility   string          `json:"departure_facility,omitempty"`
 	HoldForRelease      bool            `json:"hold_for_release"`
 
 	ExitCategories map[string]string `json:"exit_categories"`
@@ -330,8 +331,12 @@ func (ap *Airport) PostDeserialize(icao string, loc Locator, nmPerLongitude floa
 		e.Pop()
 	}
 
-	if _, ok := controlPositions[ap.DepartureController]; !ok && ap.DepartureController != "" {
-		e.ErrorString("departure_controller %q unknown", ap.DepartureController)
+	if ap.DepartureController != "" && ap.DepartureFacility == "" {
+		// Only validate against local control positions if no departure_facility is specified.
+		// Cross-facility validation is done in server/scenario.go where facility configs are available.
+		if _, ok := controlPositions[ap.DepartureController]; !ok {
+			e.ErrorString("departure_controller %q unknown", ap.DepartureController)
+		}
 	}
 
 	// Departure routes are specified in the JSON as comma-separated lists
@@ -721,6 +726,7 @@ type ExitRoute struct {
 	HandoffController ControlPosition `json:"handoff_controller"`
 	// optional, the initial tracking controller for the departure.
 	DepartureController ControlPosition `json:"departure_controller"`
+	DepartureFacility   string          `json:"departure_facility,omitempty"`
 
 	WaitToContactDeparture bool // whether the aircraft waits until a /TC point to contact departure
 }

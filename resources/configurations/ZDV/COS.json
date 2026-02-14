@@ -33,6 +33,9 @@
                 "departure_assignments": {
                     "KCOS": "COS_APP",
                     "KFLY": "COS_APP"
+                },
+                "default_consolidation": {
+                    "COS_APP": []
                 }
             }
         },
@@ -109,27 +112,17 @@
             "COS Z 35L",
             "COS Z 35R"
         ],
-        "video_map_file": "videomaps/ZDV-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "DEBERRY5": "COS_APP",
-                    "DEN": "COS_APP",
-                    "DEN.NW": "COS_APP",
-                    "OZZZY5": "COS_APP"
-                },
-                "departure_assignments": {
-                    "KCOS": "COS_APP",
-                    "KFLY": "COS_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZDV-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
             {
                 "id": "D01",
                 "prefix": "1"
+            },
+            {
+                "id": "ZDV",
+                "eram_prefix": "D"
             }
         ],
         "neighboring_facilities": [

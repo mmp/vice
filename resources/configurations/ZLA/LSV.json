@@ -1,10 +1,56 @@
 {
-  "control_positions": {},
-  "stars_config": {},
-  "handoff_topology": {
-    "handoff_ids": [],
-    "neighboring_facilities": [
-      "ZLA"
-    ]
-  }
+    "control_positions": {
+        "LSV_B_APP": {
+            "frequency": 123550,
+            "radio_name": "Blackjack",
+            "sector_id": "1B"
+        },
+        "LSV_F_APP": {
+            "frequency": 124950,
+            "radio_name": "Nellis Approach",
+            "sector_id": "1F"
+        },
+        "LSV_G_APP": {
+            "frequency": 118125,
+            "radio_name": "Nellis Approach",
+            "sector_id": "1G"
+        },
+        "LSV_L_APP": {
+            "frequency": 119350,
+            "radio_name": "Nellis Control",
+            "sector_id": "1L"
+        },
+        "LSV_M_APP": {
+            "frequency": 126150,
+            "radio_name": "Dreamland Approach",
+            "sector_id": "1M"
+        },
+        "LSV_S_APP": {
+            "frequency": 126650,
+            "radio_name": "Nellis Control",
+            "sector_id": "1S"
+        },
+        "LSV_TWR": {
+            "frequency": 132550,
+            "radio_name": "Nellis Tower",
+            "sector_id": "1T"
+        },
+        "LSV_W_DEP": {
+            "frequency": 135100,
+            "radio_name": "Nellis Departure",
+            "sector_id": "1W"
+        }
+    },
+    "stars_config": {},
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZLA",
+                "eram_prefix": "L"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZLA"
+        ]
+    }
 }

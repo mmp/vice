@@ -1,0 +1,59 @@
+{
+    "control_positions": {
+        "SCK_J_APP": {
+            "frequency": 123850,
+            "radio_name": "Stockton Approach",
+            "sector_id": "1J"
+        },
+        "SCK_K_APP": {
+            "frequency": 120950,
+            "radio_name": "Stockton Approach",
+            "sector_id": "1K"
+        },
+        "LVK_TWR": {
+            "frequency": 118100,
+            "radio_name": "Livermore Tower",
+            "sector_id": "1L"
+        },
+        "MOD_TWR": {
+            "frequency": 125300,
+            "radio_name": "Modesto Tower",
+            "sector_id": "1P"
+        },
+        "SCK_Y_APP": {
+            "frequency": 125100,
+            "radio_name": "Stockton Approach",
+            "sector_id": "1Y"
+        },
+        "SCK_TWR": {
+            "frequency": 120300,
+            "radio_name": "Stockton Tower",
+            "sector_id": "1Z"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "FAT",
+                "prefix": "3"
+            },
+            {
+                "id": "NLC",
+                "prefix": "4"
+            },
+            {
+                "id": "O90",
+                "prefix": "1"
+            },
+            {
+                "id": "SUU",
+                "prefix": "2"
+            }
+        ],
+        "neighboring_facilities": [
+            "NLC",
+            "O90",
+            "SUU"
+        ]
+    }
+}

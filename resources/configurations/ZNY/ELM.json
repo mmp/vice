@@ -1,10 +1,31 @@
 {
-  "control_positions": {},
-  "stars_config": {},
-  "handoff_topology": {
-    "handoff_ids": [],
-    "neighboring_facilities": [
-      "ZNY"
-    ]
-  }
+    "control_positions": {
+        "ELM_S_APP": {
+            "frequency": 128425,
+            "radio_name": "Elmira Approach",
+            "sector_id": "1E"
+        },
+        "ELM_N_APP": {
+            "frequency": 124300,
+            "radio_name": "Elmira Approach",
+            "sector_id": "1I"
+        },
+        "ELM_TWR": {
+            "frequency": 121100,
+            "radio_name": "Elmira Tower",
+            "sector_id": "1T"
+        }
+    },
+    "stars_config": {},
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZNY",
+                "eram_prefix": "N"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZNY"
+        ]
+    }
 }

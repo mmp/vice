@@ -1,10 +1,31 @@
 {
-  "control_positions": {},
-  "stars_config": {},
-  "handoff_topology": {
-    "handoff_ids": [],
-    "neighboring_facilities": [
-      "ZBW"
-    ]
-  }
+    "control_positions": {
+        "GTB_APP": {
+            "frequency": 124875,
+            "radio_name": "Wheeler-Sack Approach",
+            "sector_id": "1A"
+        },
+        "GTB_F_APP": {
+            "frequency": 128250,
+            "radio_name": "Wheeler-Sack Approach",
+            "sector_id": "1F"
+        },
+        "GTB_TWR": {
+            "frequency": 118750,
+            "radio_name": "Wheeler-Sack Tower",
+            "sector_id": "1L"
+        }
+    },
+    "stars_config": {},
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZBW",
+                "eram_prefix": "B"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZBW"
+        ]
+    }
 }

@@ -67,6 +67,9 @@
                 "inbound_assignments": {
                     "CHSLY6_18LFINAL": "CLT_A_APP",
                     "STOCR4_18LFINAL": "CLT_A_APP"
+                },
+                "default_consolidation": {
+                    "CLT_A_APP": []
                 }
             },
             "36R": {
@@ -76,6 +79,9 @@
                 },
                 "departure_assignments": {
                     "KCLT": "CLT_A_APP"
+                },
+                "default_consolidation": {
+                    "CLT_A_APP": []
                 }
             },
             "KCL": {
@@ -89,6 +95,13 @@
                 },
                 "departure_assignments": {
                     "KCLT": "CLT_W_DEP"
+                },
+                "default_consolidation": {
+                    "CLT_D_APP": [
+                        "CLT_H_APP",
+                        "CLT_U_APP",
+                        "CLT_W_DEP"
+                    ]
                 }
             },
             "KC1": {
@@ -101,6 +114,9 @@
                 },
                 "departure_assignments": {
                     "KCLT": "CLT_F_APP"
+                },
+                "default_consolidation": {
+                    "CLT_F_APP": []
                 }
             },
             "KC2": {
@@ -110,6 +126,9 @@
                     "PARQR4_18RFINAL": "CLT_F_APP",
                     "SOUTHWEST_18RFINAL": "CLT_F_APP",
                     "STOCR4_18LFINAL": "CLT_F_APP"
+                },
+                "default_consolidation": {
+                    "CLT_F_APP": []
                 }
             }
         },
@@ -226,61 +245,22 @@
             "TRIPS CAPTURE POINTS (SOUTH)",
             "TRIPS CAPTURE POINTS (NORTH)"
         ],
-        "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
-        "controller_assignments": {
-            "18L": {
-                "inbound_assignments": {
-                    "CHSLY6_18LFINAL": "CLT_A_APP",
-                    "STOCR4_18LFINAL": "CLT_A_APP"
-                }
-            },
-            "36R": {
-                "inbound_assignments": {
-                    "CHSLY6_NORTHEAST_36RFINAL": "CLT_A_APP",
-                    "STOCR4_NORTHEAST_36RFINAL": "CLT_A_APP"
-                },
-                "departure_assignments": {
-                    "KCLT": "CLT_A_APP"
-                }
-            },
-            "KC1": {
-                "inbound_assignments": {
-                    "BANKR5_NORTHWEST_36LFINAL": "CLT_F_APP",
-                    "CHSLY6_NORTHEAST_36RFINAL": "CLT_F_APP",
-                    "JONZE5_NORTHWEST_36LFINAL": "CLT_F_APP",
-                    "NORTHWEST_36LFINAL": "CLT_F_APP",
-                    "STOCR4_NORTHEAST_36RFINAL": "CLT_F_APP"
-                },
-                "departure_assignments": {
-                    "KCLT": "CLT_F_APP"
-                }
-            },
-            "KC2": {
-                "inbound_assignments": {
-                    "CHSLY6_18LFINAL": "CLT_F_APP",
-                    "FLIPZ4_18RFINAL": "CLT_F_APP",
-                    "PARQR4_18RFINAL": "CLT_F_APP",
-                    "SOUTHWEST_18RFINAL": "CLT_F_APP",
-                    "STOCR4_18LFINAL": "CLT_F_APP"
-                }
-            },
-            "KCL": {
-                "inbound_assignments": {
-                    "BANKR5": "CLT_D_APP",
-                    "CHSLY6": "CLT_H_APP",
-                    "FLIPZ4": "CLT_U_APP",
-                    "JONZE5": "CLT_D_APP",
-                    "PARQR4": "CLT_U_APP",
-                    "STOCR4": "CLT_H_APP"
-                },
-                "departure_assignments": {
-                    "KCLT": "CLT_W_DEP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZTL-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
+            {
+                "id": "CAE",
+                "prefix": "4"
+            },
+            {
+                "id": "FAY",
+                "prefix": "8"
+            },
+            {
+                "id": "FLO",
+                "prefix": "6"
+            },
             {
                 "id": "GSO",
                 "prefix": "1"
@@ -290,24 +270,20 @@
                 "prefix": "2"
             },
             {
-                "id": "CAE",
-                "prefix": "4"
-            },
-            {
                 "id": "SSC",
                 "prefix": "5"
             },
             {
-                "id": "FLO",
-                "prefix": "6"
-            },
-            {
-                "id": "FAY",
-                "prefix": "8"
-            },
-            {
                 "id": "ZDC",
-                "prefix": "W"
+                "eram_prefix": "W"
+            },
+            {
+                "id": "ZJX",
+                "eram_prefix": "J"
+            },
+            {
+                "id": "ZTL",
+                "eram_prefix": "T"
             }
         ],
         "neighboring_facilities": [

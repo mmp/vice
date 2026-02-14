@@ -81,6 +81,14 @@
                     "KMKC": "MCI_S_APP",
                     "KOJC": "MCI_S_APP",
                     "KSTJ": "MCI_N_APP"
+                },
+                "default_consolidation": {
+                    "MCI_A_APP": [
+                        "MCI_B_APP",
+                        "MCI_N_APP",
+                        "MCI_S_APP",
+                        "MCI_W_APP"
+                    ]
                 }
             },
             "KM1": {
@@ -96,6 +104,14 @@
                     "KMKC": "MCI_S_APP",
                     "KOJC": "MCI_S_APP",
                     "KSTJ": "MCI_N_APP"
+                },
+                "default_consolidation": {
+                    "MCI_A_APP": [
+                        "MCI_B_APP",
+                        "MCI_E_APP",
+                        "MCI_N_APP",
+                        "MCI_S_APP"
+                    ]
                 }
             }
         },
@@ -207,45 +223,17 @@
             "KC IXD APD",
             "KC STJ APD"
         ],
-        "video_map_file": "videomaps/ZKC-videomaps.gob.zst",
-        "controller_assignments": {
-            "KM1": {
-                "inbound_assignments": {
-                    "JSONN4": "MCI_B_APP",
-                    "MHOMS3": "MCI_A_APP",
-                    "RUDDH3": "MCI_A_APP",
-                    "WUTNG3": "MCI_B_APP"
-                },
-                "departure_assignments": {
-                    "KIXD": "MCI_S_APP",
-                    "KMCI": "MCI_E_APP",
-                    "KMKC": "MCI_S_APP",
-                    "KOJC": "MCI_S_APP",
-                    "KSTJ": "MCI_N_APP"
-                }
-            },
-            "KMC": {
-                "inbound_assignments": {
-                    "JSONN4": "MCI_B_APP",
-                    "MHOMS3": "MCI_A_APP",
-                    "RUDDH3": "MCI_A_APP",
-                    "WUTNG3": "MCI_B_APP"
-                },
-                "departure_assignments": {
-                    "KIXD": "MCI_S_APP",
-                    "KMCI": "MCI_W_APP",
-                    "KMKC": "MCI_S_APP",
-                    "KOJC": "MCI_S_APP",
-                    "KSTJ": "MCI_N_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZKC-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
             {
                 "id": "SZL",
                 "prefix": "1"
+            },
+            {
+                "id": "ZKC",
+                "eram_prefix": "K"
             }
         ],
         "neighboring_facilities": [

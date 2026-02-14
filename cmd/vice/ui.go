@@ -50,6 +50,10 @@ var (
 		showSettings      bool
 		showScenarioInfo  bool
 		showLaunchControl bool
+		showNASDebug      bool
+		nasDebugData      *sim.NASDebugData
+		nasDebugLastFetch time.Time
+		nasDebugSearch    string
 
 		// STT state
 		pttRecording              bool
@@ -222,6 +226,13 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			imgui.SetTooltip("Display online vice documentation")
 		}
 
+		if imgui.Button(renderer.FontAwesomeIconBug) {
+			ui.showNASDebug = !ui.showNASDebug
+		}
+		if imgui.IsItemHovered() {
+			imgui.SetTooltip("NAS Computer Debug")
+		}
+
 		// Handle PTT key for STT recording
 		uiHandlePTTKey(p, controlClient, config, lg)
 
@@ -281,6 +292,10 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 				ui.launchControlWindow = MakeLaunchControlWindow(controlClient, lg)
 			}
 			ui.launchControlWindow.Draw(eventStream, p)
+		}
+
+		if ui.showNASDebug {
+			uiDrawNASDebugWindow(controlClient)
 		}
 	}
 
@@ -1027,5 +1042,246 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 			ui.pttRecording = false
 			lg.Infof("Push-to-talk: Stopped recording, processing streaming result...")
 		}
+	}
+}
+
+func uiDrawNASDebugWindow(controlClient *client.ControlClient) {
+	// Rate-limit data fetching to once per second
+	if ui.nasDebugData == nil || time.Since(ui.nasDebugLastFetch) > 1*time.Second {
+		if data, err := controlClient.GetNASDebugData(); err == nil {
+			ui.nasDebugData = data
+			ui.nasDebugLastFetch = time.Now()
+		}
+	}
+
+	if ui.nasDebugData == nil {
+		return
+	}
+
+	imgui.SetNextWindowSizeV(imgui.Vec2{800, 600}, imgui.CondFirstUseEver)
+	imgui.BeginV("NAS Computer Debug", &ui.showNASDebug, 0)
+
+	data := ui.nasDebugData
+
+	// Search/filter bar
+	imgui.Text("Filter:")
+	imgui.SameLine()
+	imgui.InputTextWithHint("##nas_search", "Search by callsign...", &ui.nasDebugSearch, 0, nil)
+	imgui.Separator()
+
+	filter := ui.nasDebugSearch
+
+	// Build a map of parent ERAM -> child STARS facilities for nested tabs
+	childSTARS := make(map[string][]sim.STARSDebugInfo)
+	for _, sc := range data.STARSFacilities {
+		if sc.ParentERAM != "" {
+			childSTARS[sc.ParentERAM] = append(childSTARS[sc.ParentERAM], sc)
+		}
+	}
+
+	if imgui.BeginTabBar("NASFacilities") {
+		// One tab per ARTCC, with child TRACONs nested inside
+		for _, ec := range data.ERAMFacilities {
+			if imgui.BeginTabItem(ec.Identifier) {
+				drawERAMFacilityDebug(ec, filter)
+
+				// Child TRACON tabs
+				children := childSTARS[ec.Identifier]
+				if len(children) > 0 {
+					imgui.Separator()
+					imgui.Text("Child TRACONs:")
+					if imgui.BeginTabBar("STARS_" + ec.Identifier) {
+						for _, sc := range children {
+							if imgui.BeginTabItem(sc.Identifier) {
+								drawSTARSFacilityDebug(sc, filter)
+								imgui.EndTabItem()
+							}
+						}
+						imgui.EndTabBar()
+					}
+				}
+
+				imgui.EndTabItem()
+			}
+		}
+
+		// Orphan TRACONs (no parent ERAM in the data) - shouldn't normally happen
+		for _, sc := range data.STARSFacilities {
+			if sc.ParentERAM == "" {
+				if imgui.BeginTabItem(sc.Identifier + " (STARS)") {
+					drawSTARSFacilityDebug(sc, filter)
+					imgui.EndTabItem()
+				}
+			}
+		}
+
+		imgui.EndTabBar()
+	}
+
+	imgui.End()
+}
+
+func drawERAMFacilityDebug(ec sim.ERAMDebugInfo, filter string) {
+	imgui.Text(fmt.Sprintf("FPs: %d    Tracks: %d    Recent Msgs: %d",
+		len(ec.FlightPlans), len(ec.Tracks), len(ec.RecentMessages)))
+	imgui.Text("Children: " + strings.Join(ec.Children, ", "))
+	imgui.Text("Peers: " + strings.Join(ec.Peers, ", "))
+
+	imgui.Separator()
+	drawNASFPTable("eram_fp_"+ec.Identifier, ec.FlightPlans, filter)
+	drawNASTrackTable("eram_trk_"+ec.Identifier, ec.Tracks, filter)
+	drawNASInboxTable("eram_inbox_"+ec.Identifier, ec.RecentMessages, filter)
+}
+
+func drawSTARSFacilityDebug(sc sim.STARSDebugInfo, filter string) {
+	imgui.Text(fmt.Sprintf("FPs: %d    Tracks: %d    Recent Msgs: %d",
+		len(sc.FlightPlans), len(sc.Tracks), len(sc.RecentMessages)))
+	imgui.Text("Parent ERAM: " + sc.ParentERAM)
+
+	// Only show 4-char ICAO airports
+	var airports4 []string
+	for _, a := range sc.Airports {
+		if len(a) == 4 {
+			airports4 = append(airports4, a)
+		}
+	}
+	imgui.Text(fmt.Sprintf("Airports: %s    Fix Pairs: %d",
+		strings.Join(airports4, ", "), sc.FixPairCount))
+
+	imgui.Separator()
+	drawNASFPTable("stars_fp_"+sc.Identifier, sc.FlightPlans, filter)
+	drawNASTrackTable("stars_trk_"+sc.Identifier, sc.Tracks, filter)
+	drawNASInboxTable("stars_inbox_"+sc.Identifier, sc.RecentMessages, filter)
+}
+
+func drawNASFPTable(id string, fps []sim.FPDebugInfo, filter string) {
+	imgui.Text("Flight Plans:")
+	if len(fps) == 0 {
+		imgui.Text("  (none)")
+		return
+	}
+
+	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
+		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+	if imgui.BeginTableV(id, 8, flags, imgui.Vec2{0, 0}, 0) {
+		imgui.TableSetupColumn("ACID")
+		imgui.TableSetupColumn("Sq")
+		imgui.TableSetupColumn("Type")
+		imgui.TableSetupColumn("Alt")
+		imgui.TableSetupColumn("Route")
+		imgui.TableSetupColumn("Arr")
+		imgui.TableSetupColumn("PlanType")
+		imgui.TableSetupColumn("From")
+		imgui.TableHeadersRow()
+
+		for _, fp := range fps {
+			if filter != "" && !strings.Contains(strings.ToUpper(fp.ACID), strings.ToUpper(filter)) {
+				continue
+			}
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text(fp.ACID)
+			imgui.TableNextColumn()
+			imgui.Text(fp.Squawk)
+			imgui.TableNextColumn()
+			imgui.Text(fp.AircraftType)
+			imgui.TableNextColumn()
+			imgui.Text(fp.Altitude)
+			imgui.TableNextColumn()
+			imgui.Text(fp.Route)
+			imgui.TableNextColumn()
+			imgui.Text(fp.ArrivalAirport)
+			imgui.TableNextColumn()
+			imgui.Text(fp.PlanType)
+			imgui.TableNextColumn()
+			imgui.Text(fp.ReceivedFrom)
+		}
+		imgui.EndTable()
+	}
+}
+
+func drawNASTrackTable(id string, tracks []sim.TrackDebugInfo, filter string) {
+	imgui.Text("Tracks:")
+	if len(tracks) == 0 {
+		imgui.Text("  (none)")
+		return
+	}
+
+	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
+		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+	if imgui.BeginTableV(id, 9, flags, imgui.Vec2{0, 0}, 0) {
+		imgui.TableSetupColumn("ACID")
+		imgui.TableSetupColumn("Sq")
+		imgui.TableSetupColumn("Type")
+		imgui.TableSetupColumn("Owner")
+		imgui.TableSetupColumn("Facility")
+		imgui.TableSetupColumn("Tracking")
+		imgui.TableSetupColumn("TCW")
+		imgui.TableSetupColumn("Handoff Ctrl")
+		imgui.TableSetupColumn("HO State")
+		imgui.TableHeadersRow()
+
+		for _, t := range tracks {
+			if filter != "" && !strings.Contains(strings.ToUpper(t.ACID), strings.ToUpper(filter)) {
+				continue
+			}
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text(t.ACID)
+			imgui.TableNextColumn()
+			imgui.Text(t.Squawk)
+			imgui.TableNextColumn()
+			imgui.Text(t.AircraftType)
+			imgui.TableNextColumn()
+			imgui.Text(t.Owner)
+			imgui.TableNextColumn()
+			imgui.Text(t.OwnerFacility)
+			imgui.TableNextColumn()
+			imgui.Text(t.TrackingController)
+			imgui.TableNextColumn()
+			imgui.Text(t.OwningTCW)
+			imgui.TableNextColumn()
+			imgui.Text(t.HandoffController)
+			imgui.TableNextColumn()
+			imgui.Text(t.HandoffState)
+		}
+		imgui.EndTable()
+	}
+}
+
+func drawNASInboxTable(id string, msgs []sim.InboxDebugInfo, filter string) {
+	imgui.Text("Recent Messages:")
+	if len(msgs) == 0 {
+		imgui.Text("  (none)")
+		return
+	}
+
+	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
+		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+	if imgui.BeginTableV(id, 5, flags, imgui.Vec2{0, 0}, 0) {
+		imgui.TableSetupColumn("Type")
+		imgui.TableSetupColumn("ACID")
+		imgui.TableSetupColumn("From")
+		imgui.TableSetupColumn("To")
+		imgui.TableSetupColumn("Age")
+		imgui.TableHeadersRow()
+
+		for _, m := range msgs {
+			if filter != "" && !strings.Contains(strings.ToUpper(m.ACID), strings.ToUpper(filter)) {
+				continue
+			}
+			imgui.TableNextRow()
+			imgui.TableNextColumn()
+			imgui.Text(m.Type)
+			imgui.TableNextColumn()
+			imgui.Text(m.ACID)
+			imgui.TableNextColumn()
+			imgui.Text(m.FromFacility)
+			imgui.TableNextColumn()
+			imgui.Text(m.ToFacility)
+			imgui.TableNextColumn()
+			imgui.Text(m.Age)
+		}
+		imgui.EndTable()
 	}
 }

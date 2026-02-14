@@ -262,10 +262,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "BIL_APP": []
-                }
+                "config_id": "STD"
             },
             "departure_runways": [
                 {
@@ -304,10 +301,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "BIL_APP": []
-                }
+                "config_id": "STD"
             },
             "departure_runways": [
                 {

@@ -1,0 +1,40 @@
+{
+    "control_positions": {
+        "BTR_E_APP": {
+            "frequency": 126500,
+            "radio_name": "Batton Rouge Approach",
+            "sector_id": "1E"
+        },
+        "BTR_TWR": {
+            "frequency": 118450,
+            "radio_name": "Ryan Tower",
+            "sector_id": "1L"
+        },
+        "BTR_W_APP": {
+            "frequency": 120300,
+            "radio_name": "Baton Rouge Approach",
+            "sector_id": "1W"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "LFT",
+                "prefix": "2"
+            },
+            {
+                "id": "MSY",
+                "prefix": "1"
+            },
+            {
+                "id": "POE",
+                "prefix": "3"
+            }
+        ],
+        "neighboring_facilities": [
+            "LFT",
+            "MSY",
+            "POE"
+        ]
+    }
+}

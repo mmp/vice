@@ -1,0 +1,18 @@
+{
+    "control_positions": {
+        "MIB_APP": {
+            "frequency": 119600,
+            "radio_name": "Minot Approach",
+            "sector_id": "1B"
+        },
+        "MIB_TWR": {
+            "frequency": 120650,
+            "radio_name": "Minot",
+            "sector_id": "1M"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [],
+        "neighboring_facilities": []
+    }
+}

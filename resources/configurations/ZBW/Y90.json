@@ -68,6 +68,13 @@
                     "KCEF": "BDL_W_APP",
                     "KHFD": "BDL_H_APP",
                     "KORH": "BDL_E_APP"
+                },
+                "default_consolidation": {
+                    "BDL_B_APP": [
+                        "BDL_E_APP",
+                        "BDL_H_APP",
+                        "BDL_W_APP"
+                    ]
                 }
             },
             "STD": {
@@ -82,6 +89,13 @@
                     "KCEF": "BDL_W_APP",
                     "KHFD": "BDL_H_APP",
                     "KORH": "BDL_E_APP"
+                },
+                "default_consolidation": {
+                    "BDL_B_APP": [
+                        "BDL_E_APP",
+                        "BDL_H_APP",
+                        "BDL_W_APP"
+                    ]
                 }
             }
         },
@@ -128,44 +142,10 @@
             "BDL_TWR 24/33",
             "Y90 RWY 24/33"
         ],
-        "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
-        "controller_assignments": {
-            "CNW": {
-                "inbound_assignments": {
-                    "DPK3": "BDL_H_APP",
-                    "STELA1.Ga": "BDL_W_APP",
-                    "STELA1.Jets": "BDL_W_APP"
-                },
-                "departure_assignments": {
-                    "KBAF": "BDL_W_APP",
-                    "KBDL": "BDL_B_APP",
-                    "KCEF": "BDL_W_APP",
-                    "KHFD": "BDL_H_APP",
-                    "KORH": "BDL_E_APP"
-                }
-            },
-            "STD": {
-                "inbound_assignments": {
-                    "DPK3": "BDL_B_APP",
-                    "STELA1.Ga": "BDL_W_APP",
-                    "STELA1.Jets": "BDL_W_APP"
-                },
-                "departure_assignments": {
-                    "KBAF": "BDL_W_APP",
-                    "KBDL": "BDL_B_APP",
-                    "KCEF": "BDL_W_APP",
-                    "KHFD": "BDL_H_APP",
-                    "KORH": "BDL_E_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
-            {
-                "id": "PVD",
-                "prefix": "1"
-            },
             {
                 "id": "A90",
                 "prefix": "2"
@@ -177,6 +157,18 @@
             {
                 "id": "N90",
                 "prefix": "4"
+            },
+            {
+                "id": "PVD",
+                "prefix": "1"
+            },
+            {
+                "id": "ZBW",
+                "eram_prefix": "B"
+            },
+            {
+                "id": "ZNY",
+                "eram_prefix": "N"
             }
         ],
         "neighboring_facilities": [

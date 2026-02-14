@@ -1,0 +1,30 @@
+{
+    "control_positions": {
+        "SUX_APP": {
+            "frequency": 124600,
+            "radio_name": "Sioux City Approach",
+            "sector_id": "1R"
+        },
+        "SUX_TWR": {
+            "frequency": 118700,
+            "radio_name": "Sioux City Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "FSD",
+                "prefix": "2"
+            },
+            {
+                "id": "R90",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "FSD",
+            "R90"
+        ]
+    }
+}

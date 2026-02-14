@@ -1,0 +1,55 @@
+{
+    "control_positions": {
+        "GUS_E_APP": {
+            "frequency": 121050,
+            "radio_name": "Grissom Approach",
+            "sector_id": "1E"
+        },
+        "GUS_W_APP": {
+            "frequency": 123850,
+            "radio_name": "Grissom Approach",
+            "sector_id": "1W"
+        },
+        "GUS_TWR": {
+            "frequency": 133700,
+            "radio_name": "Grissom Tower",
+            "sector_id": "1Z"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "CMI",
+                "prefix": "5"
+            },
+            {
+                "id": "FWA",
+                "prefix": "2"
+            },
+            {
+                "id": "HUF",
+                "prefix": "4"
+            },
+            {
+                "id": "IND",
+                "prefix": "3"
+            },
+            {
+                "id": "SBN",
+                "prefix": "1"
+            },
+            {
+                "id": "ZID",
+                "eram_prefix": "I"
+            }
+        ],
+        "neighboring_facilities": [
+            "CMI",
+            "FWA",
+            "HUF",
+            "IND",
+            "SBN",
+            "ZID"
+        ]
+    }
+}

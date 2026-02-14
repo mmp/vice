@@ -1,0 +1,35 @@
+{
+    "control_positions": {
+        "GGG_E_APP": {
+            "frequency": 127325,
+            "radio_name": "Longview Approach",
+            "sector_id": "1E"
+        },
+        "GGG_L_APP": {
+            "frequency": 124275,
+            "radio_name": "Longview Approach",
+            "sector_id": "1L"
+        },
+        "GGG_TWR": {
+            "frequency": 119200,
+            "radio_name": "Eastex Tower",
+            "sector_id": "1T"
+        },
+        "GGG_W_APP": {
+            "frequency": 128750,
+            "radio_name": "Longview Approach",
+            "sector_id": "1W"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "SHV",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "SHV"
+        ]
+    }
+}

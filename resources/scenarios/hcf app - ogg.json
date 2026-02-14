@@ -2677,12 +2677,7 @@
                 }
             },
             "configuration": {
-                "config_id": "OGG",
-                "default_consolidation": {
-                    "HCF_S_APP": [
-                        "HCF_N_APP"
-                    ]
-                }
+                "config_id": "OGG"
             },
             "default_maps": [
                 "COAST__COASTLINES",
@@ -2734,12 +2729,7 @@
                 }
             },
             "configuration": {
-                "config_id": "OG1",
-                "default_consolidation": {
-                    "HCF_S_APP": [
-                        "HCF_N_APP"
-                    ]
-                }
+                "config_id": "OG1"
             },
             "default_maps": [
                 "COAST__COASTLINES",

@@ -1102,18 +1102,7 @@
                 }
             },
             "configuration": {
-                "config_id": "13R",
-                "default_consolidation": {
-                    "SAT_N_APP": [
-                        "SAT_Q_APP",
-                        "SAT_S_APP",
-                        "SAT_W_APP"
-                    ],
-                    "SAT_S_APP": [
-                        "SAT_K_APP",
-                        "SAT_R_APP"
-                    ]
-                }
+                "config_id": "13R"
             },
             "default_maps": [
                 "SAT BASE",
@@ -1225,18 +1214,7 @@
                 }
             },
             "configuration": {
-                "config_id": "31L",
-                "default_consolidation": {
-                    "SAT_N_APP": [
-                        "SAT_S_APP",
-                        "SAT_W_APP"
-                    ],
-                    "SAT_S_APP": [
-                        "SAT_K_APP",
-                        "SAT_L_APP",
-                        "SAT_R_APP"
-                    ]
-                }
+                "config_id": "31L"
             },
             "default_maps": [
                 "SAT BASE",
@@ -1340,18 +1318,7 @@
                 }
             },
             "configuration": {
-                "config_id": "13R",
-                "default_consolidation": {
-                    "SAT_N_APP": [
-                        "SAT_Q_APP",
-                        "SAT_S_APP",
-                        "SAT_W_APP"
-                    ],
-                    "SAT_S_APP": [
-                        "SAT_K_APP",
-                        "SAT_R_APP"
-                    ]
-                }
+                "config_id": "13R"
             },
             "default_maps": [
                 "SAT BASE",
@@ -1459,18 +1426,7 @@
                 }
             },
             "configuration": {
-                "config_id": "31L",
-                "default_consolidation": {
-                    "SAT_N_APP": [
-                        "SAT_S_APP",
-                        "SAT_W_APP"
-                    ],
-                    "SAT_S_APP": [
-                        "SAT_K_APP",
-                        "SAT_L_APP",
-                        "SAT_R_APP"
-                    ]
-                }
+                "config_id": "31L"
             },
             "default_maps": [
                 "SAT BASE",

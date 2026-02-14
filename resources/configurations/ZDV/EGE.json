@@ -1,0 +1,20 @@
+{
+    "control_positions": {
+        "EGE_TWR": {
+            "frequency": 119800,
+            "radio_name": "Eagle Tower",
+            "sector_id": "4T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZDV",
+                "eram_prefix": "D"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZDV"
+        ]
+    }
+}

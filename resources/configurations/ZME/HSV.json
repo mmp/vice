@@ -1,0 +1,45 @@
+{
+    "control_positions": {
+        "HSV_E_APP": {
+            "frequency": 125600,
+            "radio_name": "Huntsville Approach",
+            "sector_id": "1E"
+        },
+        "HSV_F_APP": {
+            "frequency": 118750,
+            "radio_name": "Huntsville Approach",
+            "sector_id": "1F"
+        },
+        "HSV_TWR": {
+            "frequency": 127600,
+            "radio_name": "Huntsville Tower",
+            "sector_id": "1T"
+        },
+        "HSV_W_APP": {
+            "frequency": 118050,
+            "radio_name": "Huntsville Approach",
+            "sector_id": "1W"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "BHM",
+                "prefix": "1"
+            },
+            {
+                "id": "CHA",
+                "prefix": "2"
+            },
+            {
+                "id": "ZTL",
+                "eram_prefix": "T"
+            }
+        ],
+        "neighboring_facilities": [
+            "BHM",
+            "CHA",
+            "ZTL"
+        ]
+    }
+}

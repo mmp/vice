@@ -1,0 +1,45 @@
+{
+    "control_positions": {
+        "LFT_E_APP": {
+            "frequency": 121100,
+            "radio_name": "Lafayette Approach",
+            "sector_id": "1E"
+        },
+        "LFT_TWR": {
+            "frequency": 118500,
+            "radio_name": "Lafayette Tower",
+            "sector_id": "1T"
+        },
+        "LFT_W_APP": {
+            "frequency": 128700,
+            "radio_name": "Lafayette Approach",
+            "sector_id": "1W"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "BTR",
+                "prefix": "3"
+            },
+            {
+                "id": "LCH",
+                "prefix": "1"
+            },
+            {
+                "id": "MSY",
+                "prefix": "4"
+            },
+            {
+                "id": "POE",
+                "prefix": "2"
+            }
+        ],
+        "neighboring_facilities": [
+            "BTR",
+            "LCH",
+            "MSY",
+            "POE"
+        ]
+    }
+}

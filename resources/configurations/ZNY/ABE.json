@@ -28,6 +28,9 @@
                 },
                 "departure_assignments": {
                     "KABE": "ABE_DEP"
+                },
+                "default_consolidation": {
+                    "ABE_DEP": []
                 }
             }
         },
@@ -117,32 +120,10 @@
             "",
             ""
         ],
-        "video_map_file": "videomaps/ZNY-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "EWR": "ABE_DEP",
-                    "MDT/RDG": "ABE_DEP",
-                    "PHL": "ABE_DEP",
-                    "ZNY Northwest": "ABE_DEP",
-                    "ZNY Southwest": "ABE_DEP"
-                },
-                "departure_assignments": {
-                    "KABE": "ABE_DEP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
-            {
-                "id": "PHL",
-                "prefix": "3"
-            },
-            {
-                "id": "N90",
-                "prefix": "2"
-            },
             {
                 "id": "AVP",
                 "prefix": "1"
@@ -150,6 +131,18 @@
             {
                 "id": "MDT",
                 "prefix": "5"
+            },
+            {
+                "id": "N90",
+                "prefix": "2"
+            },
+            {
+                "id": "PHL",
+                "prefix": "3"
+            },
+            {
+                "id": "ZNY",
+                "eram_prefix": "N"
             }
         ],
         "neighboring_facilities": [
@@ -157,7 +150,6 @@
             "MDT",
             "N90",
             "PHL",
-            "RDG",
             "ZNY"
         ]
     }

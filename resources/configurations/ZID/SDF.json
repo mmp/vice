@@ -51,6 +51,12 @@
                 },
                 "departure_assignments": {
                     "KSDF": "SDF_B_DEP"
+                },
+                "default_consolidation": {
+                    "SDF_A_APP": [
+                        "SDF_B_DEP",
+                        "SDF_I_APP"
+                    ]
                 }
             }
         },
@@ -157,29 +163,13 @@
             "Rivers",
             "Stadiums"
         ],
-        "video_map_file": "videomaps/ZID-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "DLAMP8": "SDF_A_APP",
-                    "LEDDL1": "SDF_A_APP",
-                    "MBELL5": "SDF_I_APP"
-                },
-                "departure_assignments": {
-                    "KSDF": "SDF_B_DEP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZID-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
             {
                 "id": "CVG",
                 "prefix": "1"
-            },
-            {
-                "id": "LEX",
-                "prefix": "2"
             },
             {
                 "id": "EVV",
@@ -192,6 +182,14 @@
             {
                 "id": "IND",
                 "prefix": "5"
+            },
+            {
+                "id": "LEX",
+                "prefix": "2"
+            },
+            {
+                "id": "ZID",
+                "eram_prefix": "I"
             }
         ],
         "neighboring_facilities": [

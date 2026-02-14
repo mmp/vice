@@ -1,0 +1,18 @@
+{
+    "control_positions": {
+        "ITO_APP": {
+            "frequency": 119700,
+            "radio_name": "HCF Approach",
+            "sector_id": "1A"
+        },
+        "ITO_TWR": {
+            "frequency": 118100,
+            "radio_name": "Hilo Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [],
+        "neighboring_facilities": []
+    }
+}

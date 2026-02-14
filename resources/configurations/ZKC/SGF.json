@@ -41,6 +41,11 @@
                 "departure_assignments": {
                     "KLBO": "SGF_E_APP",
                     "KSGF": "SGF_E_APP"
+                },
+                "default_consolidation": {
+                    "SGF_E_APP": [
+                        "SGF_W_APP"
+                    ]
                 }
             }
         },
@@ -63,25 +68,18 @@
             "SGF 5NM MVA MAP",
             "SGF Geography"
         ],
-        "video_map_file": "videomaps/ZKC-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "DEN": "SGF_W_APP",
-                    "NE": "SGF_E_APP",
-                    "ORD": "SGF_E_APP",
-                    "SE": "SGF_E_APP",
-                    "SW": "SGF_W_APP"
-                },
-                "departure_assignments": {
-                    "KLBO": "SGF_E_APP",
-                    "KSGF": "SGF_E_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZKC-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
+            {
+                "id": "FSM",
+                "prefix": "4"
+            },
+            {
+                "id": "RZC",
+                "prefix": "3"
+            },
             {
                 "id": "SZL",
                 "prefix": "1"
@@ -91,12 +89,12 @@
                 "prefix": "2"
             },
             {
-                "id": "RZC",
-                "prefix": "3"
+                "id": "ZKC",
+                "eram_prefix": "K"
             },
             {
-                "id": "FSM",
-                "prefix": "4"
+                "id": "ZME",
+                "eram_prefix": "M"
             }
         ],
         "neighboring_facilities": [

@@ -29,6 +29,16 @@
             "frequency": 118250,
             "radio_name": "Harrisburg Approach",
             "sector_id": "1R"
+        },
+        "RDG_APP": {
+            "frequency": 125150,
+            "radio_name": "Reading Approach",
+            "sector_id": "1X"
+        },
+        "RDG_TWR": {
+            "frequency": 119900,
+            "radio_name": "Reading Tower",
+            "sector_id": "RR"
         }
     },
     "stars_config": {
@@ -43,6 +53,12 @@
                     "KCXY": "MDT_W_APP",
                     "KLNS": "MDT_E_APP",
                     "KMDT": "MDT_W_APP"
+                },
+                "default_consolidation": {
+                    "MDT_E_APP": [
+                        "MDT_N_APP",
+                        "MDT_W_APP"
+                    ]
                 }
             }
         },
@@ -194,32 +210,10 @@
             "MDT-005 (EAST FLOW)",
             "MDT-006 (WEST FLOW)"
         ],
-        "video_map_file": "videomaps/ZNY-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "East": "MDT_E_APP",
-                    "North/NE": "MDT_N_APP",
-                    "West/South": "MDT_W_APP"
-                },
-                "departure_assignments": {
-                    "KCXY": "MDT_W_APP",
-                    "KLNS": "MDT_E_APP",
-                    "KMDT": "MDT_W_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
-            {
-                "id": "PCT",
-                "prefix": "6"
-            },
-            {
-                "id": "PHL",
-                "prefix": "4"
-            },
             {
                 "id": "ABE",
                 "prefix": "2"
@@ -231,6 +225,26 @@
             {
                 "id": "JST",
                 "prefix": "7"
+            },
+            {
+                "id": "PCT",
+                "prefix": "6"
+            },
+            {
+                "id": "PHL",
+                "prefix": "4"
+            },
+            {
+                "id": "ZDC",
+                "eram_prefix": "W"
+            },
+            {
+                "id": "ZNY",
+                "eram_prefix": "N"
+            },
+            {
+                "id": "ZOB",
+                "eram_prefix": "C"
             }
         ],
         "neighboring_facilities": [

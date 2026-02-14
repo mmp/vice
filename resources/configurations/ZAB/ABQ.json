@@ -33,12 +33,17 @@
                 },
                 "departure_assignments": {
                     "KABQ": "ABQ_N_APP"
+                },
+                "default_consolidation": {
+                    "ABQ_N_APP": [
+                        "ABQ_S_APP"
+                    ]
                 }
             }
         },
         "center": "KABQ",
         "controller_configs": {
-            "1N": {
+            "ABQ_N_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -47,7 +52,7 @@
                     }
                 ]
             },
-            "1S": {
+            "ABQ_S_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -102,24 +107,15 @@
             "A011 ABQ MVA",
             "A041 Class C"
         ],
-        "video_map_file": "videomaps/ZAB-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "BRRTO1": "ABQ_S_APP",
-                    "COLTR4": "ABQ_S_APP",
-                    "LOWBO3": "ABQ_N_APP",
-                    "LZZRD4": "ABQ_S_APP",
-                    "SNDIA4": "ABQ_N_APP"
-                },
-                "departure_assignments": {
-                    "KABQ": "ABQ_N_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZAB-videomaps.gob.zst"
     },
     "handoff_topology": {
-        "handoff_ids": [],
+        "handoff_ids": [
+            {
+                "id": "ZAB",
+                "eram_prefix": "A"
+            }
+        ],
         "neighboring_facilities": [
             "ZAB"
         ]

@@ -74,6 +74,9 @@
                 },
                 "departure_assignments": {
                     "KAAC": "AAC_D_APP"
+                },
+                "default_consolidation": {
+                    "AAC_D_APP": []
                 }
             },
             "6XX": {
@@ -81,6 +84,9 @@
                     "ATOKA_FINAL_6NM": "AAC_F_APP",
                     "MAYES": "AAC_F_APP",
                     "REELI_FINAL": "AAC_F_APP"
+                },
+                "default_consolidation": {
+                    "AAC_F_APP": []
                 }
             },
             "CTO": {
@@ -88,6 +94,9 @@
                     "BARTS_FINAL": "AAC_F_APP",
                     "MAYES": "AAC_F_APP",
                     "REELI_FINAL": "AAC_F_APP"
+                },
+                "default_consolidation": {
+                    "AAC_F_APP": []
                 }
             },
             "CWT": {
@@ -107,6 +116,9 @@
                     "MAYES_CWT_E_F_G": "AAC_F_APP",
                     "MAYES_CWT_H_I": "AAC_F_APP",
                     "REELI_FINAL": "AAC_F_APP"
+                },
+                "default_consolidation": {
+                    "AAC_F_APP": []
                 }
             },
             "3XX": {
@@ -114,6 +126,9 @@
                     "ATOKA_FINAL": "AAC_F_APP",
                     "BARTS_FINAL": "AAC_F_APP",
                     "REELI_FINAL": "AAC_F_APP"
+                },
+                "default_consolidation": {
+                    "AAC_F_APP": []
                 }
             },
             "4XX": {
@@ -122,17 +137,26 @@
                     "BARTS_FINAL": "AAC_F_APP",
                     "INTERNAL_FINAL": "AAC_F_APP",
                     "REELI_FINAL": "AAC_F_APP"
+                },
+                "default_consolidation": {
+                    "AAC_F_APP": []
                 }
             },
             "NOR": {
                 "inbound_assignments": {
                     "BARTS_STAGGER": "AAC_F_APP",
                     "REELI_FINAL": "AAC_F_APP"
+                },
+                "default_consolidation": {
+                    "AAC_F_APP": []
                 }
             },
             "SCA": {
                 "inbound_assignments": {
                     "SCAN": "AAC_N_APP"
+                },
+                "default_consolidation": {
+                    "AAC_N_APP": []
                 }
             },
             "WES": {
@@ -158,6 +182,15 @@
                     "KAAC/28R.SW.J": "AAC_D_APP",
                     "KAAC/28R.SW.P": "AAC_J_APP",
                     "KJKE": "AAC_J_APP"
+                },
+                "default_consolidation": {
+                    "AAC_B_APP": [
+                        "AAC_D_APP",
+                        "AAC_F_APP",
+                        "AAC_J_APP",
+                        "AAC_N_APP",
+                        "AAC_S_APP"
+                    ]
                 }
             }
         },
@@ -250,100 +283,6 @@
             "TAA",
             "SID"
         ],
-        "video_map_file": "videomaps/aac-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "OVERFLIGHTS": "AAC_D_APP"
-                },
-                "departure_assignments": {
-                    "KAAC": "AAC_D_APP"
-                }
-            },
-            "3XX": {
-                "inbound_assignments": {
-                    "ATOKA_FINAL": "AAC_F_APP",
-                    "BARTS_FINAL": "AAC_F_APP",
-                    "REELI_FINAL": "AAC_F_APP"
-                }
-            },
-            "4XX": {
-                "inbound_assignments": {
-                    "ATOKA_FINAL": "AAC_F_APP",
-                    "BARTS_FINAL": "AAC_F_APP",
-                    "INTERNAL_FINAL": "AAC_F_APP",
-                    "REELI_FINAL": "AAC_F_APP"
-                }
-            },
-            "6XX": {
-                "inbound_assignments": {
-                    "ATOKA_FINAL_6NM": "AAC_F_APP",
-                    "MAYES": "AAC_F_APP",
-                    "REELI_FINAL": "AAC_F_APP"
-                }
-            },
-            "CTO": {
-                "inbound_assignments": {
-                    "BARTS_FINAL": "AAC_F_APP",
-                    "MAYES": "AAC_F_APP",
-                    "REELI_FINAL": "AAC_F_APP"
-                }
-            },
-            "CWT": {
-                "inbound_assignments": {
-                    "ATOKA_FINAL": "AAC_F_APP",
-                    "BARTS_CWT_A": "AAC_F_APP",
-                    "BARTS_CWT_B": "AAC_F_APP",
-                    "BARTS_CWT_C": "AAC_F_APP",
-                    "BARTS_CWT_D": "AAC_F_APP",
-                    "BARTS_CWT_E_F_G": "AAC_F_APP",
-                    "BARTS_CWT_H_I": "AAC_F_APP",
-                    "BARTS_FINAL": "AAC_F_APP",
-                    "MAYES_CWT_A": "AAC_F_APP",
-                    "MAYES_CWT_B": "AAC_F_APP",
-                    "MAYES_CWT_C": "AAC_F_APP",
-                    "MAYES_CWT_D": "AAC_F_APP",
-                    "MAYES_CWT_E_F_G": "AAC_F_APP",
-                    "MAYES_CWT_H_I": "AAC_F_APP",
-                    "REELI_FINAL": "AAC_F_APP"
-                }
-            },
-            "NOR": {
-                "inbound_assignments": {
-                    "BARTS_STAGGER": "AAC_F_APP",
-                    "REELI_FINAL": "AAC_F_APP"
-                }
-            },
-            "SCA": {
-                "inbound_assignments": {
-                    "SCAN": "AAC_N_APP"
-                }
-            },
-            "WES": {
-                "inbound_assignments": {
-                    "ATOKA": "AAC_S_APP",
-                    "ATOKA_LO": "AAC_J_APP",
-                    "BARTS": "AAC_N_APP",
-                    "BARTS_LO": "AAC_B_APP",
-                    "INTERNAL_FINAL": "AAC_B_APP",
-                    "KILLR": "AAC_S_APP",
-                    "KILLR_LO": "AAC_J_APP",
-                    "MAYES": "AAC_F_APP",
-                    "REELI": "AAC_N_APP",
-                    "SGF.6": "AAC_N_APP",
-                    "SGF.8": "AAC_N_APP"
-                },
-                "departure_assignments": {
-                    "4V4": "AAC_J_APP",
-                    "4Y3": "AAC_B_APP",
-                    "KAAC": "AAC_N_APP",
-                    "KAAC/28R.NE.J": "AAC_D_APP",
-                    "KAAC/28R.NE.P": "AAC_B_APP",
-                    "KAAC/28R.SW.J": "AAC_D_APP",
-                    "KAAC/28R.SW.P": "AAC_J_APP",
-                    "KJKE": "AAC_J_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/aac-videomaps.gob.zst"
     }
 }

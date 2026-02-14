@@ -329,6 +329,12 @@ func (c *ControlClient) GetSerializeSim() (*sim.Sim, error) {
 	return &s, err
 }
 
+func (c *ControlClient) GetNASDebugData() (*sim.NASDebugData, error) {
+	var data sim.NASDebugData
+	err := c.client.callWithTimeout(server.GetNASDebugDataRPC, c.controllerToken, &data)
+	return &data, err
+}
+
 func (c *ControlClient) ToggleSimPause() {
 	c.addCall(makeRPCCall(c.client.Go(server.TogglePauseRPC, c.controllerToken, nil, nil), nil))
 

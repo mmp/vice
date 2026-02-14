@@ -57,12 +57,17 @@
                 },
                 "departure_assignments": {
                     "PHNL": "HCF_L_APP"
+                },
+                "default_consolidation": {
+                    "HCF_H_APP": [
+                        "HCF_L_APP"
+                    ]
                 }
             }
         },
         "center": "PHNL",
         "controller_configs": {
-            "1H": {
+            "HCF_H_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -324,30 +329,7 @@
             "HNL_FIX_4R",
             "HNL_FIX_26L"
         ],
-        "video_map_file": "videomaps/ZHN-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "BOOKE8.E": "HCF_H_APP",
-                    "BOOKE8.W": "HCF_H_APP",
-                    "INOYI1": "HCF_H_APP",
-                    "JULLE5": "HCF_H_APP",
-                    "KAENA3": "HCF_H_APP",
-                    "KLANI4": "HCF_H_APP",
-                    "MAGGI3.E": "HCF_H_APP",
-                    "MAGGI3.W": "HCF_H_APP",
-                    "OPACA4.E": "HCF_H_APP",
-                    "OPACA4.W": "HCF_H_APP",
-                    "SAKKI5": "HCF_H_APP",
-                    "SYMIN1": "HCF_H_APP",
-                    "V12 ARR": "HCF_H_APP",
-                    "V15 ARR": "HCF_H_APP"
-                },
-                "departure_assignments": {
-                    "PHNL": "HCF_L_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZHN-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [

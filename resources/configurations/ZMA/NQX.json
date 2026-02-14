@@ -1,0 +1,30 @@
+{
+    "control_positions": {
+        "NQX_A_APP": {
+            "frequency": 126575,
+            "radio_name": "Key West Approach",
+            "sector_id": "1A"
+        },
+        "NQX_B_APP": {
+            "frequency": 124025,
+            "radio_name": "Key West Approach",
+            "sector_id": "1B"
+        },
+        "NQX_TWR": {
+            "frequency": 118575,
+            "radio_name": "Navy Key West Tower",
+            "sector_id": "1Z"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZMA",
+                "eram_prefix": "R"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZMA"
+        ]
+    }
+}

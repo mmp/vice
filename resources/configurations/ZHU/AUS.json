@@ -67,6 +67,11 @@
                     "KHYI": "AUS_W_APP",
                     "KHYI/13": "AUS_W_APP",
                     "KHYI/31": "AUS_W_APP"
+                },
+                "default_consolidation": {
+                    "AUS_E_APP": [
+                        "AUS_W_APP"
+                    ]
                 }
             }
         },
@@ -90,7 +95,7 @@
             ]
         },
         "controller_configs": {
-            "1W": {
+            "AUS_W_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -100,7 +105,7 @@
                     }
                 ]
             },
-            "1E": {
+            "AUS_E_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -184,45 +189,10 @@
             "GTU FINALS",
             "AUS VFR"
         ],
-        "video_map_file": "videomaps/ZHU-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "DXEEE3N": "AUS_W_APP",
-                    "DXEEE3S": "AUS_W_APP",
-                    "GABOO1": "AUS_E_APP",
-                    "LAIKS3N": "AUS_W_APP",
-                    "LAIKS3S": "AUS_W_APP",
-                    "OVERFLIGHTSE": "AUS_E_APP",
-                    "OVERFLIGHTSW": "AUS_W_APP",
-                    "SEWZY6N": "AUS_E_APP",
-                    "SEWZY6S": "AUS_E_APP",
-                    "TOAMY": "AUS_E_APP",
-                    "WLEEE7N": "AUS_E_APP",
-                    "WLEEE7S": "AUS_E_APP"
-                },
-                "departure_assignments": {
-                    "KAUS": "AUS_W_APP",
-                    "KAUS/18L": "AUS_E_APP",
-                    "KAUS/18R": "AUS_W_APP",
-                    "KAUS/36L": "AUS_W_APP",
-                    "KAUS/36R": "AUS_E_APP",
-                    "KGTU": "AUS_W_APP",
-                    "KGTU/11": "AUS_E_APP",
-                    "KGTU/29": "AUS_W_APP",
-                    "KHYI": "AUS_W_APP",
-                    "KHYI/13": "AUS_W_APP",
-                    "KHYI/31": "AUS_W_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZHU-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
-            {
-                "id": "SAT",
-                "prefix": "1"
-            },
             {
                 "id": "GRK",
                 "prefix": "2"
@@ -230,6 +200,18 @@
             {
                 "id": "I90",
                 "prefix": "3"
+            },
+            {
+                "id": "SAT",
+                "prefix": "1"
+            },
+            {
+                "id": "ZFW",
+                "eram_prefix": "F"
+            },
+            {
+                "id": "ZHU",
+                "eram_prefix": "H"
             }
         ],
         "neighboring_facilities": [

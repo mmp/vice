@@ -1,0 +1,55 @@
+{
+    "control_positions": {
+        "NKT_E_APP": {
+            "frequency": 119750,
+            "radio_name": "Cherry Point Approach",
+            "sector_id": "1E"
+        },
+        "NKT_F_APP": {
+            "frequency": 132575,
+            "radio_name": "Cherry Point Approach",
+            "sector_id": "1F"
+        },
+        "NKT_H_APP": {
+            "frequency": 124100,
+            "radio_name": "Cherry Point High",
+            "sector_id": "1N"
+        },
+        "NKT_W_APP": {
+            "frequency": 119350,
+            "radio_name": "Cherry Point Approach",
+            "sector_id": "1W"
+        },
+        "NKT_TWR": {
+            "frequency": 121300,
+            "radio_name": "Cherry Point Tower",
+            "sector_id": "1Z"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "GSB",
+                "prefix": "2"
+            },
+            {
+                "id": "ILM",
+                "prefix": "1"
+            },
+            {
+                "id": "NTU",
+                "prefix": "6"
+            },
+            {
+                "id": "ORF",
+                "prefix": "5"
+            }
+        ],
+        "neighboring_facilities": [
+            "GSB",
+            "ILM",
+            "NTU",
+            "ORF"
+        ]
+    }
+}

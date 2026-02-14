@@ -378,7 +378,7 @@ func (s *Sim) addAircraftNoLock(ac Aircraft) {
 	if s.CIDAllocator != nil {
 		fp := ac.NASFlightPlan
 		if fp == nil {
-			fp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+			fp = s.starsComputer().lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 		}
 		if fp != nil && fp.CID == "" {
 			if cid, err := s.CIDAllocator.Allocate(); err == nil {

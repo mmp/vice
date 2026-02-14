@@ -63,6 +63,11 @@
                 },
                 "departure_assignments": {
                     "KSEA": "SEA_W_APP"
+                },
+                "default_consolidation": {
+                    "SEA_E_APP": [
+                        "SEA_W_APP"
+                    ]
                 }
             }
         },
@@ -199,30 +204,7 @@
             "NORTH SHORELINE",
             "SOUTH SHORELINE"
         ],
-        "video_map_file": "videomaps/ZSE-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "CHINS5North": "SEA_W_APP",
-                    "CHINS5South": "SEA_W_APP",
-                    "GLASR2North": "SEA_W_APP",
-                    "GLASR2South": "SEA_W_APP",
-                    "HAWKZ7North": "SEA_E_APP",
-                    "HAWKZ7South": "SEA_E_APP",
-                    "JAWBN6North": "SEA_E_APP",
-                    "JAWBN6South": "SEA_E_APP",
-                    "MARNR7North": "SEA_E_APP",
-                    "MARNR7South": "SEA_E_APP",
-                    "OLM2North": "SEA_E_APP",
-                    "OLM2South": "SEA_E_APP",
-                    "SKYKO1North": "SEA_W_APP",
-                    "SKYKO1South": "SEA_W_APP"
-                },
-                "departure_assignments": {
-                    "KSEA": "SEA_W_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZSE-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [

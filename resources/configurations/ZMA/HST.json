@@ -1,0 +1,25 @@
+{
+    "control_positions": {
+        "HST_APP": {
+            "frequency": 123800,
+            "radio_name": "Homestead Approach",
+            "sector_id": "1H"
+        },
+        "HST_TWR": {
+            "frequency": 133450,
+            "radio_name": "Homestead Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "MIA",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "MIA"
+        ]
+    }
+}

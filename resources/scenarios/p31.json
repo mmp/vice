@@ -839,18 +839,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "PNS_E_APP": [
-                        "PNS_A_APP",
-                        "PNS_F_APP",
-                        "PNS_K_APP",
-                        "PNS_P_APP",
-                        "PNS_S_APP",
-                        "PNS_W_APP",
-                        "PNS_Z_APP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "NPA07/PNS & NSE"
@@ -885,18 +874,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "PNS_E_APP": [
-                        "PNS_A_APP",
-                        "PNS_F_APP",
-                        "PNS_K_APP",
-                        "PNS_P_APP",
-                        "PNS_S_APP",
-                        "PNS_W_APP",
-                        "PNS_Z_APP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "NPA25/PNS & NSE"

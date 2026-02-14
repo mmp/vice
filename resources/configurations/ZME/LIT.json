@@ -1,0 +1,38 @@
+{
+    "control_positions": {
+        "LIT_E_APP": {
+            "frequency": 135400,
+            "radio_name": "Little Rock Approach",
+            "sector_id": "1E"
+        },
+        "LIT_F_APP": {
+            "frequency": 135350,
+            "radio_name": "Little Rock Approach",
+            "sector_id": "1F"
+        },
+        "LIT_H_APP": {
+            "frequency": 119850,
+            "radio_name": "Little Rock Approach",
+            "sector_id": "1H"
+        },
+        "LIT_N_APP": {
+            "frequency": 119750,
+            "radio_name": "Little Rock Approach",
+            "sector_id": "1N"
+        },
+        "LIT_TWR": {
+            "frequency": 118700,
+            "radio_name": "Adams Tower",
+            "sector_id": "1T"
+        },
+        "LIT_W_APP": {
+            "frequency": 119500,
+            "radio_name": "Little Rock Approach",
+            "sector_id": "1W"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [],
+        "neighboring_facilities": []
+    }
+}

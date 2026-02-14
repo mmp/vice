@@ -1,0 +1,30 @@
+{
+    "control_positions": {
+        "MUO_N_APP": {
+            "frequency": 124800,
+            "radio_name": "Mountain Home Approach",
+            "sector_id": "1N"
+        },
+        "MUO_S_APP": {
+            "frequency": 134100,
+            "radio_name": "Cowboy Control",
+            "sector_id": "1S"
+        },
+        "MUO_TWR": {
+            "frequency": 133850,
+            "radio_name": "Mountain Home Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "BOI",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "BOI"
+        ]
+    }
+}

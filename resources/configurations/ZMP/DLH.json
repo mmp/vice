@@ -1,0 +1,28 @@
+{
+    "control_positions": {
+        "DLH_APP": {
+            "frequency": 125450,
+            "radio_name": "Duluth Approach",
+            "sector_id": "1L"
+        },
+        "DLH_N_APP": {
+            "frequency": 119500,
+            "radio_name": "Duluth Approach",
+            "sector_id": "1N"
+        },
+        "DLH_S_APP": {
+            "frequency": 125450,
+            "radio_name": "Duluth Approach",
+            "sector_id": "1S"
+        },
+        "DLH_TWR": {
+            "frequency": 118300,
+            "radio_name": "Duluth Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [],
+        "neighboring_facilities": []
+    }
+}

@@ -2631,20 +2631,7 @@
                 }
             },
             "configuration": {
-                "config_id": "OMA",
-                "default_consolidation": {
-                    "LNK_L_APP": [
-                        "LNK_F_APP"
-                    ],
-                    "OMA_W_APP": [
-                        "LNK_L_APP",
-                        "OMA_O_APP",
-                        "OMA_X_APP"
-                    ],
-                    "OMA_X_APP": [
-                        "OMA_V_APP"
-                    ]
-                }
+                "config_id": "OMA"
             },
             "default_maps": [
                 "R90 001 MAIN",
@@ -2859,20 +2846,7 @@
                 }
             },
             "configuration": {
-                "config_id": "OM1",
-                "default_consolidation": {
-                    "LNK_L_APP": [
-                        "LNK_F_APP"
-                    ],
-                    "OMA_W_APP": [
-                        "LNK_L_APP",
-                        "OMA_O_APP",
-                        "OMA_X_APP"
-                    ],
-                    "OMA_X_APP": [
-                        "OMA_V_APP"
-                    ]
-                }
+                "config_id": "OM1"
             },
             "default_maps": [
                 "R90 001 MAIN",
@@ -3073,12 +3047,7 @@
                 }
             },
             "configuration": {
-                "config_id": "LNK",
-                "default_consolidation": {
-                    "LNK_L_APP": [
-                        "LNK_F_APP"
-                    ]
-                }
+                "config_id": "LNK"
             },
             "default_maps": [
                 "R90 001 MAIN",
@@ -3195,12 +3164,7 @@
                 }
             },
             "configuration": {
-                "config_id": "LNK",
-                "default_consolidation": {
-                    "LNK_L_APP": [
-                        "LNK_F_APP"
-                    ]
-                }
+                "config_id": "LNK"
             },
             "default_maps": [
                 "R90 001 MAIN",
@@ -3390,20 +3354,7 @@
                 }
             },
             "configuration": {
-                "config_id": "90X",
-                "default_consolidation": {
-                    "LNK_L_APP": [
-                        "LNK_F_APP"
-                    ],
-                    "OMA_W_APP": [
-                        "LNK_L_APP",
-                        "OMA_O_APP",
-                        "OMA_X_APP"
-                    ],
-                    "OMA_X_APP": [
-                        "OMA_V_APP"
-                    ]
-                }
+                "config_id": "90X"
             },
             "default_maps": [
                 "R90 001 MAIN",
@@ -3815,20 +3766,7 @@
                 }
             },
             "configuration": {
-                "config_id": "R90",
-                "default_consolidation": {
-                    "LNK_L_APP": [
-                        "LNK_F_APP"
-                    ],
-                    "OMA_W_APP": [
-                        "LNK_L_APP",
-                        "OMA_O_APP",
-                        "OMA_X_APP"
-                    ],
-                    "OMA_X_APP": [
-                        "OMA_V_APP"
-                    ]
-                }
+                "config_id": "R90"
             },
             "default_maps": [
                 "R90 001 MAIN",
@@ -4182,10 +4120,7 @@
                 }
             },
             "configuration": {
-                "config_id": "OFF",
-                "default_consolidation": {
-                    "OMA_O_APP": []
-                }
+                "config_id": "OFF"
             },
             "default_maps": [
                 "R90 001 MAIN",
@@ -4311,10 +4246,7 @@
                 }
             },
             "configuration": {
-                "config_id": "OFF",
-                "default_consolidation": {
-                    "OMA_O_APP": []
-                }
+                "config_id": "OFF"
             },
             "default_maps": [
                 "R90 001 MAIN",

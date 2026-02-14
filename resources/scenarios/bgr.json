@@ -373,12 +373,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "BGR_B_APP": [
-                        "BGR_S_APP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "departure_runways": [
                 {
@@ -426,12 +421,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "BGR_B_APP": [
-                        "BGR_S_APP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "departure_runways": [
                 {

@@ -306,5 +306,171 @@
             "radio_name": "Washington Center",
             "sector_id": "99"
         }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ACY",
+                "single_char_stars_id": "A",
+                "stars_id": "ACY"
+            },
+            {
+                "id": "CKB",
+                "stars_id": "CCC"
+            },
+            {
+                "id": "CLT",
+                "single_char_stars_id": "L",
+                "stars_id": "CLT"
+            },
+            {
+                "id": "CRW",
+                "single_char_stars_id": "W",
+                "stars_id": "CRW"
+            },
+            {
+                "id": "DOV",
+                "single_char_stars_id": "V",
+                "stars_id": "DOV"
+            },
+            {
+                "id": "FAY",
+                "single_char_stars_id": "F",
+                "stars_id": "FAY"
+            },
+            {
+                "id": "FLO",
+                "single_char_stars_id": "Q",
+                "stars_id": "FLO"
+            },
+            {
+                "id": "GSB",
+                "single_char_stars_id": "X",
+                "stars_id": "GSB"
+            },
+            {
+                "id": "GSO",
+                "single_char_stars_id": "G",
+                "stars_id": "GSO"
+            },
+            {
+                "id": "ILM",
+                "single_char_stars_id": "M",
+                "stars_id": "ILM"
+            },
+            {
+                "id": "MDT",
+                "single_char_stars_id": "D",
+                "stars_id": "MDT"
+            },
+            {
+                "id": "MYR",
+                "single_char_stars_id": "H",
+                "stars_id": "MYR"
+            },
+            {
+                "id": "N90",
+                "single_char_stars_id": "Y",
+                "stars_id": "N90"
+            },
+            {
+                "id": "NHK",
+                "stars_id": "KKK"
+            },
+            {
+                "id": "NKT",
+                "single_char_stars_id": "S",
+                "stars_id": "NKT"
+            },
+            {
+                "id": "NTU",
+                "single_char_stars_id": "U",
+                "stars_id": "NTU"
+            },
+            {
+                "id": "ORF",
+                "single_char_stars_id": "O",
+                "stars_id": "ORF"
+            },
+            {
+                "id": "PCT",
+                "single_char_stars_id": "E",
+                "stars_id": "PCT"
+            },
+            {
+                "id": "PHL",
+                "single_char_stars_id": "P",
+                "stars_id": "PHL"
+            },
+            {
+                "id": "RDU",
+                "single_char_stars_id": "R",
+                "stars_id": "RDU"
+            },
+            {
+                "id": "ROA",
+                "single_char_stars_id": "K",
+                "stars_id": "ROA"
+            },
+            {
+                "id": "WRI",
+                "single_char_stars_id": "Z",
+                "stars_id": "WRI"
+            },
+            {
+                "id": "ZBW",
+                "eram_prefix": "B"
+            },
+            {
+                "id": "ZID",
+                "eram_prefix": "I"
+            },
+            {
+                "id": "ZJX",
+                "eram_prefix": "J"
+            },
+            {
+                "id": "ZNY",
+                "eram_prefix": "N"
+            },
+            {
+                "id": "ZOB",
+                "eram_prefix": "C"
+            },
+            {
+                "id": "ZTL",
+                "eram_prefix": "T"
+            }
+        ],
+        "neighboring_facilities": [
+            "ACY",
+            "CKB",
+            "CLT",
+            "CRW",
+            "DOV",
+            "FAY",
+            "FLO",
+            "GSB",
+            "GSO",
+            "ILM",
+            "MDT",
+            "MYR",
+            "N90",
+            "NHK",
+            "NKT",
+            "NTU",
+            "ORF",
+            "PCT",
+            "PHL",
+            "RDU",
+            "ROA",
+            "WRI",
+            "ZBW",
+            "ZID",
+            "ZJX",
+            "ZNY",
+            "ZOB",
+            "ZTL"
+        ]
     }
 }

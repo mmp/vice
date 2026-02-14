@@ -1,0 +1,75 @@
+{
+    "control_positions": {
+        "PBI_A_APP": {
+            "frequency": 125000,
+            "radio_name": "Palm Beach Approach",
+            "sector_id": "1A"
+        },
+        "PBI_B_DEP": {
+            "frequency": 128300,
+            "radio_name": "Palm Beach Approach",
+            "sector_id": "1B"
+        },
+        "PBI_F_APP": {
+            "frequency": 125200,
+            "radio_name": "Palm Beach Approach",
+            "sector_id": "1F"
+        },
+        "PBI_H_APP": {
+            "frequency": 125925,
+            "radio_name": "Palm Beach Approach",
+            "sector_id": "1H"
+        },
+        "PBI_I_APP": {
+            "frequency": 124600,
+            "radio_name": "Palm Beach Approach",
+            "sector_id": "1I"
+        },
+        "PBI_N_APP": {
+            "frequency": 123625,
+            "radio_name": "Palm Beach Approach",
+            "sector_id": "1N"
+        },
+        "PBI_P_APP": {
+            "frequency": 127350,
+            "radio_name": "Palm Beach Approach",
+            "sector_id": "1P"
+        },
+        "PBI_S_APP": {
+            "frequency": 132800,
+            "radio_name": "Palm Beach Approach",
+            "sector_id": "1S"
+        },
+        "PBI_TWR": {
+            "frequency": 119100,
+            "radio_name": "Palm Beach Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "F11",
+                "prefix": "4"
+            },
+            {
+                "id": "MIA",
+                "prefix": "2"
+            },
+            {
+                "id": "ZJX",
+                "eram_prefix": "J"
+            },
+            {
+                "id": "ZMA",
+                "eram_prefix": "R"
+            }
+        ],
+        "neighboring_facilities": [
+            "F11",
+            "MIA",
+            "ZJX",
+            "ZMA"
+        ]
+    }
+}

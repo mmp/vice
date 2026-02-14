@@ -1,0 +1,30 @@
+{
+    "control_positions": {
+        "HTS_N_APP": {
+            "frequency": 128400,
+            "radio_name": "Huntington Approach",
+            "sector_id": "1N"
+        },
+        "HTS_S_APP": {
+            "frequency": 119750,
+            "radio_name": "Huntington Approach",
+            "sector_id": "1S"
+        },
+        "HTS_TWR": {
+            "frequency": 118500,
+            "radio_name": "Huntington Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "CRW",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "CRW"
+        ]
+    }
+}

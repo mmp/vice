@@ -211,6 +211,9 @@
                 "inbound_assignments": {
                     "QWENN6.MLF": "ZLC 44",
                     "QWENN6.BCE": "ZLC 44"
+                },
+                "default_consolidation": {
+                    "ZLC 44": []
                 }
             }
         },
@@ -248,19 +251,70 @@
                 "slope_angle": 0.175
             }
         },
-        "video_map_file": "videomaps/ZLC-eram-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "QWENN6.MLF": "ZLC 44",
-                    "QWENN6.BCE": "ZLC 44"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZLC-eram-videomaps.gob.zst"
     },
     "handoff_topology": {
-        "handoff_ids": [],
+        "handoff_ids": [
+            {
+                "id": "BIL",
+                "single_char_stars_id": "I",
+                "stars_id": "III"
+            },
+            {
+                "id": "BOI",
+                "single_char_stars_id": "B",
+                "stars_id": "BBB"
+            },
+            {
+                "id": "BZN",
+                "single_char_stars_id": "N",
+                "stars_id": "NNN"
+            },
+            {
+                "id": "GTF",
+                "single_char_stars_id": "G",
+                "stars_id": "GGG"
+            },
+            {
+                "id": "MSO",
+                "single_char_stars_id": "U",
+                "stars_id": "UUU"
+            },
+            {
+                "id": "MUO",
+                "single_char_stars_id": "M",
+                "stars_id": "MMM"
+            },
+            {
+                "id": "S56",
+                "single_char_stars_id": "Q",
+                "stars_id": "QQQ"
+            },
+            {
+                "id": "ZDV",
+                "eram_prefix": "D"
+            },
+            {
+                "id": "ZLA",
+                "eram_prefix": "L"
+            },
+            {
+                "id": "ZMP",
+                "eram_prefix": "P"
+            },
+            {
+                "id": "ZOA",
+                "eram_prefix": "O"
+            }
+        ],
         "neighboring_facilities": [
+            "BIL",
+            "BOI",
+            "BZN",
+            "GTF",
+            "MSO",
+            "MUO",
+            "S56",
             "ZDV",
             "ZLA",
             "ZMP",

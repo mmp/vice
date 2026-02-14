@@ -44,6 +44,12 @@
                     "KHXD": "SAV_N_APP",
                     "KSAV": "SAV_N_APP",
                     "KTBR": "SAV_W_APP"
+                },
+                "default_consolidation": {
+                    "SAV_N_APP": [
+                        "SAV_S_APP",
+                        "SAV_W_APP"
+                    ]
                 }
             },
             "28X": {
@@ -57,6 +63,12 @@
                     "KHXD": "SAV_N_APP",
                     "KSAV": "SAV_W_APP",
                     "KTBR": "SAV_W_APP"
+                },
+                "default_consolidation": {
+                    "SAV_N_APP": [
+                        "SAV_S_APP",
+                        "SAV_W_APP"
+                    ]
                 }
             }
         },
@@ -106,45 +118,21 @@
             "RNAV-19",
             "RNAV - 01"
         ],
-        "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
-        "controller_assignments": {
-            "10X": {
-                "inbound_assignments": {
-                    "LOTTS": "SAV_W_APP",
-                    "PLZZZ": "SAV_N_APP",
-                    "SOOOP": "SAV_N_APP",
-                    "VIYAP": "SAV_S_APP"
-                },
-                "departure_assignments": {
-                    "KHXD": "SAV_N_APP",
-                    "KSAV": "SAV_N_APP",
-                    "KTBR": "SAV_W_APP"
-                }
-            },
-            "28X": {
-                "inbound_assignments": {
-                    "LOTTS": "SAV_W_APP",
-                    "PLZZZ": "SAV_N_APP",
-                    "SOOOP": "SAV_N_APP",
-                    "VIYAP": "SAV_S_APP"
-                },
-                "departure_assignments": {
-                    "KHXD": "SAV_N_APP",
-                    "KSAV": "SAV_W_APP",
-                    "KTBR": "SAV_W_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
+            {
+                "id": "CHS",
+                "prefix": "2"
+            },
             {
                 "id": "NBC",
                 "prefix": "1"
             },
             {
-                "id": "CHS",
-                "prefix": "2"
+                "id": "ZJX",
+                "eram_prefix": "J"
             }
         ],
         "neighboring_facilities": [

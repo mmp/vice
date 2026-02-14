@@ -1,0 +1,40 @@
+{
+    "control_positions": {
+        "RDR_A_APP": {
+            "frequency": 121100,
+            "radio_name": "Grand Forks Arrival",
+            "sector_id": "1A"
+        },
+        "RDR_E_APP": {
+            "frequency": 118100,
+            "radio_name": "Grand Forks Approach",
+            "sector_id": "1E"
+        },
+        "RDR_R_APP": {
+            "frequency": 124400,
+            "radio_name": "Red River Arrival",
+            "sector_id": "1R"
+        },
+        "RDR_W_APP": {
+            "frequency": 132300,
+            "radio_name": "Grand Forks Approach",
+            "sector_id": "1W"
+        },
+        "RDR_TWR": {
+            "frequency": 124900,
+            "radio_name": "Red River Tower",
+            "sector_id": "1Z"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "FAR",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "FAR"
+        ]
+    }
+}

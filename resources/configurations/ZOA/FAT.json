@@ -1,0 +1,50 @@
+{
+    "control_positions": {
+        "FAT_F_APP": {
+            "frequency": 119600,
+            "radio_name": "Fresno Approach",
+            "sector_id": "1F"
+        },
+        "FAT_H_APP": {
+            "frequency": 132350,
+            "radio_name": "Fresno Approach",
+            "sector_id": "1H"
+        },
+        "FAT_S_APP": {
+            "frequency": 118500,
+            "radio_name": "Fresno Approach",
+            "sector_id": "1S"
+        },
+        "FAT_TWR": {
+            "frequency": 118200,
+            "radio_name": "Fresno Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "BFL",
+                "prefix": "2"
+            },
+            {
+                "id": "NCT",
+                "prefix": "1"
+            },
+            {
+                "id": "NLC",
+                "prefix": "3"
+            },
+            {
+                "id": "ZLA",
+                "eram_prefix": "L"
+            }
+        ],
+        "neighboring_facilities": [
+            "BFL",
+            "NCT",
+            "NLC",
+            "ZLA"
+        ]
+    }
+}

@@ -1,986 +1,979 @@
 {
-    "tracon": "MYR",
-    "airports": {
-        "KMYR": {
-            "atpa_volumes": {
-                "18": {
-                    "runway_threshold": "KMYR-18",
-                    "heading": 177,
-                    "max_heading_deviation": 90,
-                    "floor": 100,
-                    "ceiling": 7000,
-                    "length": 40,
-                    "left_width": 3000,
-                    "right_width": 2500
-                },
-                "36": {
-                    "runway_threshold": "KMYR-36",
-                    "heading": 357,
-                    "max_heading_deviation": 90,
-                    "floor": 100,
-                    "ceiling": 7000,
-                    "length": 40,
-                    "left_width": 3000,
-                    "right_width": 2500
-                }
-            },
-            "approaches": {
-                "I18": {
-                    "cifp_id": "I18"
-                },
-                "L18": {
-                    "cifp_id": "L18"
-                },
-                "R36": {
-                    "cifp_id": "R36"
-                },
-                "V18": {
-                    "runway": "18",
-                    "full_name": "Visual Approach Runway 18",
-                    "type": "ILS",
-                    "waypoints": [
-                        "PEDEE/faf/a2000"
-                    ]
-                },
-                "V36": {
-                    "runway": "36",
-                    "full_name": "Visual Approach Runway 36",
-                    "type": "ILS",
-                    "waypoints": [
-                        "CHACA/faf/a2000"
-                    ]
-                }
-            },
-            "departure_routes": {
-                "18": {
-                    "CRE,FLO,OKNEE,ZORDO,CLARB": {
-                        "cleared_altitude": 3000,
-                        "sid": "East",
-                        "waypoints": "KMYR-36/h180"
-                    },
-                    "CAE,CHS": {
-                        "cleared_altitude": 3000,
-                        "sid": "West",
-                        "waypoints": "KMYR-36/h180"
-                    }
-                },
-                "36": {
-                    "CRE,FLO,OKNEE,ZORDO,CLARB": {
-                        "cleared_altitude": 3000,
-                        "sid": "East",
-                        "waypoints": "KMYR-18/h360"
-                    },
-                    "CAE,CHS": {
-                        "cleared_altitude": 3000,
-                        "sid": "West",
-                        "waypoints": "KMYR-18/h360"
-                    }
-                }
-            },
-            "departures": [
-                {
-                    "airlines": [
-                        {
-                            "icao": "DAL",
-                            "fleet": "long"
-                        }
-                    ],
-                    "destination": "KDTW",
-                    "exit": "FLO",
-                    "route": "FLO GSO BKW SUBWY HTROD2"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "UAL",
-                            "fleet": "long"
-                        }
-                    ],
-                    "destination": "KEWR",
-                    "exit": "CRE",
-                    "route": "CRE WYLMS AARNN QUART PHLBO4"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "DAL",
-                            "fleet": "long"
-                        }
-                    ],
-                    "destination": "KEWR",
-                    "exit": "CRE",
-                    "route": "CRE ZORDO Q107 HURTS PROUD2"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "AAL",
-                            "fleet": "long"
-                        }
-                    ],
-                    "destination": "KEWR",
-                    "exit": "OKNEE",
-                    "route": "OKNEE MLLET3"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "AAL",
-                            "fleet": "long"
-                        }
-                    ],
-                    "destination": "KEWR",
-                    "exit": "OKNEE",
-                    "route": "OKNEE MLLET3"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "AAL",
-                            "fleet": "long"
-                        }
-                    ],
-                    "destination": "KEWR",
-                    "exit": "CAE",
-                    "route": "CAE SKWKR SITTH2"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N",
-                            "fleet": "fastGA"
-                        }
-                    ],
-                    "destination": "KDAB",
-                    "exit": "CHS",
-                    "route": "CHS LPERD TTHOR3"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N",
-                            "fleet": "fastGA"
-                        }
-                    ],
-                    "destination": "KMCO",
-                    "exit": "CHS",
-                    "route": "CHS LPERD SNFLD3"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KILM",
-                    "exit": "CRE",
-                    "route": "CRE ILM"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KCHS",
-                    "exit": "CHS",
-                    "route": "CHS KCHS"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KSSC",
-                    "exit": "CAE",
-                    "route": "CAE SSC"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KFAY",
-                    "exit": "CRE",
-                    "route": "CRE FAY"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KFLO",
-                    "exit": "CRE",
-                    "route": "CRE FLO"
-                }
-            ],
-            "tower_list": 1
+  "tracon": "MYR",
+  "airports": {
+    "KMYR": {
+      "atpa_volumes": {
+        "18": {
+          "runway_threshold": "KMYR-18",
+          "heading": 177,
+          "max_heading_deviation": 90,
+          "floor": 100,
+          "ceiling": 7000,
+          "length": 40,
+          "left_width": 3000,
+          "right_width": 2500
         },
-        "KCRE": {
-            "atpa_volumes": {
-                "5": {
-                    "runway_threshold": "KCRE-5",
-                    "heading": 54,
-                    "max_heading_deviation": 30,
-                    "floor": 100,
-                    "ceiling": 5000,
-                    "length": 40,
-                    "left_width": 3000,
-                    "right_width": 2500
-                },
-                "23": {
-                    "runway_threshold": "KCRE-23",
-                    "heading": 234,
-                    "max_heading_deviation": 30,
-                    "floor": 100,
-                    "ceiling": 5000,
-                    "length": 40,
-                    "left_width": 3000,
-                    "right_width": 2500
-                }
-            },
-            "approaches": {
-                "R23": {
-                    "cifp_id": "R23"
-                },
-                "I23": {
-                    "cifp_id": "I23"
-                },
-                "R5": {
-                    "cifp_id": "R5"
-                },
-                "V5": {
-                    "runway": "5",
-                    "full_name": "Visual Approach Runway 5",
-                    "type": "ILS",
-                    "waypoints": [
-                        "ZULSY/faf/a2000"
-                    ]
-                },
-                "V23": {
-                    "runway": "23",
-                    "full_name": "Visual Approach Runway 23",
-                    "type": "ILS",
-                    "waypoints": [
-                        "FIPEG/faf/a2000"
-                    ]
-                }
-            },
-            "departure_routes": {
-                "5": {
-                    "CRE,FLO,OKNEE,ZORDO,CLARB": {
-                        "cleared_altitude": 3000,
-                        "waypoints": "KCRE-23/h050"
-                    },
-                    "CAE,CHS": {
-                        "cleared_altitude": 3000,
-                        "sid": "West",
-                        "waypoints": "KCRE-23/h050"
-                    }
-                },
-                "23": {
-                    "CRE,FLO,OKNEE,ZORDO,CLARB": {
-                        "cleared_altitude": 3000,
-                        "waypoints": "KCRE-5/h230"
-                    },
-                    "CAE,CHS": {
-                        "cleared_altitude": 3000,
-                        "waypoints": "KCRE-23/h230"
-                    }
-                }
-            },
-            "departures": [
-                {
-                    "airlines": [
-                        {
-                            "icao": "N",
-                            "fleet": "fastGA"
-                        }
-                    ],
-                    "destination": "KDAB",
-                    "exit": "CHS",
-                    "route": "CHS LPERD TTHOR3"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KORL",
-                    "exit": "CHS",
-                    "route": "CHS ORL"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KILM",
-                    "exit": "CRE",
-                    "route": "CRE ILM"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KCHS",
-                    "exit": "CHS",
-                    "route": "CHS KCHS"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KSSC",
-                    "exit": "CAE",
-                    "route": "CAE SSC"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KFAY",
-                    "exit": "CRE",
-                    "route": "CRE FAY"
-                },
-                {
-                    "airlines": [
-                        {
-                            "icao": "N"
-                        }
-                    ],
-                    "destination": "KFLO",
-                    "exit": "CRE",
-                    "route": "CRE FLO"
-                }
-            ],
-            "tower_list": 2,
-            "hold_for_release": true,
-            "vfr": {
-                "random_routes": {
-                    "rate": 5
-                }
-            }
-        },
-        "KHYW": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 5
-                }
-            }
-        },
-        "KGGE": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 5
-                }
-            }
-        },
-        "KPHH": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 5
-                }
-            }
-        },
-        "KSUT": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 5
-                }
-            }
-        },
-        "KMAO": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 5
-                }
-            }
-        },
-        "KFLO": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 5
-                }
-            }
-        },
-        "KMMT": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 5
-                }
-            }
-        },
-        "KCKI": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 5
-                }
-            }
-        },
-        "KMNI": {
-            "vfr": {
-                "random_routes": {
-                    "rate": 5
-                }
-            }
+        "36": {
+          "runway_threshold": "KMYR-36",
+          "heading": 357,
+          "max_heading_deviation": 90,
+          "floor": 100,
+          "ceiling": 7000,
+          "length": 40,
+          "left_width": 3000,
+          "right_width": 2500
         }
+      },
+      "approaches": {
+        "I18": {
+          "cifp_id": "I18"
+        },
+        "L18": {
+          "cifp_id": "L18"
+        },
+        "R36": {
+          "cifp_id": "R36"
+        },
+        "V18": {
+          "runway": "18",
+          "full_name": "Visual Approach Runway 18",
+          "type": "ILS",
+          "waypoints": [
+            "PEDEE/faf/a2000"
+          ]
+        },
+        "V36": {
+          "runway": "36",
+          "full_name": "Visual Approach Runway 36",
+          "type": "ILS",
+          "waypoints": [
+            "CHACA/faf/a2000"
+          ]
+        }
+      },
+      "departure_routes": {
+        "18": {
+          "CRE,FLO,OKNEE,ZORDO,CLARB": {
+            "cleared_altitude": 3000,
+            "sid": "East",
+            "waypoints": "KMYR-36/h180"
+          },
+          "CAE,CHS": {
+            "cleared_altitude": 3000,
+            "sid": "West",
+            "waypoints": "KMYR-36/h180"
+          }
+        },
+        "36": {
+          "CRE,FLO,OKNEE,ZORDO,CLARB": {
+            "cleared_altitude": 3000,
+            "sid": "East",
+            "waypoints": "KMYR-18/h360"
+          },
+          "CAE,CHS": {
+            "cleared_altitude": 3000,
+            "sid": "West",
+            "waypoints": "KMYR-18/h360"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "long"
+            }
+          ],
+          "destination": "KDTW",
+          "exit": "FLO",
+          "route": "FLO GSO BKW SUBWY HTROD2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "UAL",
+              "fleet": "long"
+            }
+          ],
+          "destination": "KEWR",
+          "exit": "CRE",
+          "route": "CRE WYLMS AARNN QUART PHLBO4"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "DAL",
+              "fleet": "long"
+            }
+          ],
+          "destination": "KEWR",
+          "exit": "CRE",
+          "route": "CRE ZORDO Q107 HURTS PROUD2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL",
+              "fleet": "long"
+            }
+          ],
+          "destination": "KEWR",
+          "exit": "OKNEE",
+          "route": "OKNEE MLLET3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL",
+              "fleet": "long"
+            }
+          ],
+          "destination": "KEWR",
+          "exit": "OKNEE",
+          "route": "OKNEE MLLET3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "AAL",
+              "fleet": "long"
+            }
+          ],
+          "destination": "KEWR",
+          "exit": "CAE",
+          "route": "CAE SKWKR SITTH2"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KDAB",
+          "exit": "CHS",
+          "route": "CHS LPERD TTHOR3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KMCO",
+          "exit": "CHS",
+          "route": "CHS LPERD SNFLD3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KILM",
+          "exit": "CRE",
+          "route": "CRE ILM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KCHS",
+          "exit": "CHS",
+          "route": "CHS KCHS"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KSSC",
+          "exit": "CAE",
+          "route": "CAE SSC"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KFAY",
+          "exit": "CRE",
+          "route": "CRE FAY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KFLO",
+          "exit": "CRE",
+          "route": "CRE FLO"
+        }
+      ],
+      "tower_list": 1
     },
-    "inbound_flows": {
-        "CAE.fast": {
-            "arrivals": [
-                {
-                    "waypoints": "CAE/ho KMYR",
-                    "route": "CAE",
-                    "initial_controller": "ZJX 71 Florence",
-                    "initial_altitude": 22000,
-                    "assigned_altitude": 11000,
-                    "description": "jet",
-                    "initial_speed": 280,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KMYR": [
-                            {
-                                "icao": "VXP",
-                                "airport": "KCLT"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KCLT"
-                            },
-                            {
-                                "icao": "AAL",
-                                "airport": "KCLT",
-                                "fleet": "short"
-                            }
-                        ],
-                        "KCRE": [
-                            {
-                                "icao": "N",
-                                "airport": "KCLT",
-                                "fleet": "fastGA"
-                            }
-                        ]
-                    },
-                    "initial_facility": "ZJX"
-                }
+    "KCRE": {
+      "atpa_volumes": {
+        "5": {
+          "runway_threshold": "KCRE-5",
+          "heading": 54,
+          "max_heading_deviation": 30,
+          "floor": 100,
+          "ceiling": 5000,
+          "length": 40,
+          "left_width": 3000,
+          "right_width": 2500
+        },
+        "23": {
+          "runway_threshold": "KCRE-23",
+          "heading": 234,
+          "max_heading_deviation": 30,
+          "floor": 100,
+          "ceiling": 5000,
+          "length": 40,
+          "left_width": 3000,
+          "right_width": 2500
+        }
+      },
+      "approaches": {
+        "R23": {
+          "cifp_id": "R23"
+        },
+        "I23": {
+          "cifp_id": "I23"
+        },
+        "R5": {
+          "cifp_id": "R5"
+        },
+        "V5": {
+          "runway": "5",
+          "full_name": "Visual Approach Runway 5",
+          "type": "ILS",
+          "waypoints": [
+            "ZULSY/faf/a2000"
+          ]
+        },
+        "V23": {
+          "runway": "23",
+          "full_name": "Visual Approach Runway 23",
+          "type": "ILS",
+          "waypoints": [
+            "FIPEG/faf/a2000"
+          ]
+        }
+      },
+      "departure_routes": {
+        "5": {
+          "CRE,FLO,OKNEE,ZORDO,CLARB": {
+            "cleared_altitude": 3000,
+            "waypoints": "KCRE-23/h050"
+          },
+          "CAE,CHS": {
+            "cleared_altitude": 3000,
+            "sid": "West",
+            "waypoints": "KCRE-23/h050"
+          }
+        },
+        "23": {
+          "CRE,FLO,OKNEE,ZORDO,CLARB": {
+            "cleared_altitude": 3000,
+            "waypoints": "KCRE-5/h230"
+          },
+          "CAE,CHS": {
+            "cleared_altitude": 3000,
+            "waypoints": "KCRE-23/h230"
+          }
+        }
+      },
+      "departures": [
+        {
+          "airlines": [
+            {
+              "icao": "N",
+              "fleet": "fastGA"
+            }
+          ],
+          "destination": "KDAB",
+          "exit": "CHS",
+          "route": "CHS LPERD TTHOR3"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KORL",
+          "exit": "CHS",
+          "route": "CHS ORL"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KILM",
+          "exit": "CRE",
+          "route": "CRE ILM"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KCHS",
+          "exit": "CHS",
+          "route": "CHS KCHS"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KSSC",
+          "exit": "CAE",
+          "route": "CAE SSC"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KFAY",
+          "exit": "CRE",
+          "route": "CRE FAY"
+        },
+        {
+          "airlines": [
+            {
+              "icao": "N"
+            }
+          ],
+          "destination": "KFLO",
+          "exit": "CRE",
+          "route": "CRE FLO"
+        }
+      ],
+      "tower_list": 2,
+      "hold_for_release": true,
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KHYW": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KGGE": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KPHH": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KSUT": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KMAO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KFLO": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KMMT": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KCKI": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    },
+    "KMNI": {
+      "vfr": {
+        "random_routes": {
+          "rate": 5
+        }
+      }
+    }
+  },
+  "inbound_flows": {
+    "CAE.fast": {
+      "arrivals": [
+        {
+          "waypoints": "CAE/ho KMYR",
+          "route": "CAE",
+          "initial_controller": "ZJX 71 Florence",
+          "initial_altitude": 22000,
+          "assigned_altitude": 11000,
+          "description": "jet",
+          "initial_speed": 280,
+          "expect_approach": null,
+          "airlines": {
+            "KMYR": [
+              {
+                "icao": "VXP",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KCLT",
+                "fleet": "short"
+              }
+            ],
+            "KCRE": [
+              {
+                "icao": "N",
+                "airport": "KCLT",
+                "fleet": "fastGA"
+              }
             ]
+          },
+          "initial_facility": "ZJX"
+        }
+      ]
+    },
+    "CAE.slow": {
+      "arrivals": [
+        {
+          "waypoints": "CAE/ho KMYR",
+          "route": "CAE",
+          "initial_controller": "ZJX 30 Nepta",
+          "initial_facility": "ZJX",
+          "initial_altitude": 9000,
+          "initial_speed": 200,
+          "description": "prop",
+          "expect_approach": null,
+          "airlines": {
+            "KMYR": [
+              {
+                "icao": "N",
+                "airport": "KCAE"
+              }
+            ],
+            "KCRE": [
+              {
+                "icao": "N",
+                "airport": "KCAE"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "ILM.fast": {
+      "arrivals": [
+        {
+          "waypoints": "ILM/ho KMYR",
+          "route": "ILM",
+          "initial_controller": "ZDC 32 Gordonsville",
+          "initial_altitude": 22000,
+          "assigned_altitude": 11000,
+          "description": "jet",
+          "initial_speed": 280,
+          "expect_approach": null,
+          "airlines": {
+            "KMYR": [
+              {
+                "icao": "VXP",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KCLT",
+                "fleet": "short"
+              }
+            ],
+            "KCRE": [
+              {
+                "icao": "N",
+                "airport": "KDCA",
+                "fleet": "fastGA"
+              }
+            ]
+          },
+          "initial_facility": "ZDC"
+        },
+        {
+          "waypoints": "N034.35.16.571,W078.14.08.419/ho KMYR",
+          "route": "ILM",
+          "initial_controller": "ZDC 32 Gordonsville",
+          "initial_altitude": 22000,
+          "description": "jet",
+          "assigned_altitude": 11000,
+          "initial_speed": 250,
+          "expect_approach": null,
+          "airlines": {
+            "KMYR": [
+              {
+                "icao": "VXP",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KCLT",
+                "fleet": "short"
+              }
+            ],
+            "KCRE": [
+              {
+                "icao": "N",
+                "airport": "KDCA",
+                "fleet": "fastGA"
+              }
+            ]
+          },
+          "initial_facility": "ZDC"
+        },
+        {
+          "waypoints": "N034.35.16.571,W078.14.08.419/ho KMYR",
+          "route": "ILM",
+          "initial_controller": "MYR_E_APP",
+          "initial_altitude": 8000,
+          "description": "prop",
+          "initial_speed": 200,
+          "expect_approach": null,
+          "airlines": {
+            "KMYR": [
+              {
+                "icao": "N",
+                "airport": "KILM"
+              }
+            ],
+            "KCRE": [
+              {
+                "icao": "N",
+                "airport": "KILM"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "ILM.slow": {
+      "arrivals": [
+        {
+          "waypoints": "N034.35.16.571,W078.14.08.419/ho KMYR",
+          "route": "ILM",
+          "initial_controller": "MYR_E_APP",
+          "initial_altitude": 8000,
+          "description": "prop",
+          "initial_speed": 200,
+          "expect_approach": null,
+          "airlines": {
+            "KMYR": [
+              {
+                "icao": "N",
+                "airport": "KILM"
+              }
+            ],
+            "KCRE": [
+              {
+                "icao": "N",
+                "airport": "KILM"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "UNJAM": {
+      "arrivals": [
+        {
+          "waypoints": "UNJAM/ho KMYR",
+          "route": "UNJAM",
+          "initial_controller": "ZJX 71 Florence",
+          "initial_altitude": 22000,
+          "assigned_altitude": 11000,
+          "initial_speed": 280,
+          "description": "jet",
+          "expect_approach": null,
+          "airlines": {
+            "KMYR": [
+              {
+                "icao": "VXP",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KCLT",
+                "fleet": "short"
+              }
+            ]
+          },
+          "initial_facility": "ZJX"
+        }
+      ]
+    },
+    "FLO.fast": {
+      "arrivals": [
+        {
+          "waypoints": "FLO/ho KMYR",
+          "route": "FLO",
+          "initial_controller": "ZJX 71 Florence",
+          "initial_altitude": 11000,
+          "initial_speed": 250,
+          "description": "jet",
+          "expect_approach": null,
+          "airlines": {
+            "KMYR": [
+              {
+                "icao": "VXP",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KCLT",
+                "fleet": "short"
+              }
+            ],
+            "KCRE": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KCLT"
+              }
+            ]
+          },
+          "initial_facility": "ZJX"
+        }
+      ]
+    },
+    "FLO.slow": {
+      "arrivals": [
+        {
+          "waypoints": "FLO/ho KMYR",
+          "route": "FLO",
+          "initial_controller": "FLO_APP",
+          "initial_facility": "FLO",
+          "initial_altitude": 5000,
+          "initial_speed": 200,
+          "description": "prop",
+          "expect_approach": null,
+          "airlines": {
+            "KMYR": [
+              {
+                "icao": "N",
+                "airport": "KSSC"
+              }
+            ],
+            "KCRE": [
+              {
+                "icao": "N",
+                "airport": "KFLO"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "CHS.fast": {
+      "arrivals": [
+        {
+          "waypoints": "CHS/ho KMYR",
+          "route": "CHS",
+          "initial_controller": "ZJX 71 Florence",
+          "initial_altitude": 22000,
+          "assigned_altitude": 11000,
+          "initial_speed": 280,
+          "description": "jet",
+          "expect_approach": null,
+          "airlines": {
+            "KMYR": [
+              {
+                "icao": "VXP",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "DAL",
+                "airport": "KCLT"
+              },
+              {
+                "icao": "AAL",
+                "airport": "KCLT",
+                "fleet": "short"
+              }
+            ],
+            "KCRE": [
+              {
+                "icao": "N",
+                "fleet": "fastGA",
+                "airport": "KSSI"
+              }
+            ]
+          },
+          "initial_facility": "ZJX"
+        }
+      ]
+    },
+    "CHS.slow": {
+      "arrivals": [
+        {
+          "waypoints": "CHS/ho KMYR",
+          "route": "CHS",
+          "initial_controller": "CHS_E_APP",
+          "initial_altitude": 9000,
+          "initial_speed": 200,
+          "description": "prop",
+          "expect_approach": null,
+          "airlines": {
+            "KMYR": [
+              {
+                "icao": "N",
+                "airport": "KSSI"
+              }
+            ],
+            "KCRE": [
+              {
+                "icao": "N",
+                "airport": "KSSI"
+              }
+            ]
+          },
+          "initial_facility": "CHS"
+        }
+      ]
+    },
+    "FAY": {
+      "arrivals": [
+        {
+          "waypoints": "FAY/ho KMYR",
+          "route": "FAY",
+          "initial_controller": "FAY_N_APP",
+          "initial_facility": "FAY",
+          "initial_altitude": 4000,
+          "initial_speed": 200,
+          "description": "prop",
+          "expect_approach": null,
+          "airlines": {
+            "KMYR": [
+              {
+                "icao": "N",
+                "airport": "KFAY"
+              }
+            ],
+            "KCRE": [
+              {
+                "icao": "N",
+                "airport": "KFAY"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "default_scenario": "South",
+  "name": "KMYR",
+  "primary_airport": "KMYR",
+  "scenarios": {
+    "South": {
+      "arrival_runways": [
+        {
+          "airport": "KMYR",
+          "runway": "18"
+        },
+        {
+          "airport": "KCRE",
+          "runway": "23"
+        }
+      ],
+      "inbound_rates": {
+        "CAE.fast": {
+          "KMYR": 5,
+          "KCRE": 1
         },
         "CAE.slow": {
-            "arrivals": [
-                {
-                    "waypoints": "CAE/ho KMYR",
-                    "route": "CAE",
-                    "initial_controller": "SSC_APP",
-                    "initial_altitude": 9000,
-                    "initial_speed": 200,
-                    "description": "prop",
-                    "expect_approach": null,
-                    "airlines": {
-                        "KMYR": [
-                            {
-                                "icao": "N",
-                                "airport": "KCAE"
-                            }
-                        ],
-                        "KCRE": [
-                            {
-                                "icao": "N",
-                                "airport": "KCAE"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "KMYR": 5,
+          "KCRE": 1
         },
         "ILM.fast": {
-            "arrivals": [
-                {
-                    "waypoints": "ILM/ho KMYR",
-                    "route": "ILM",
-                    "initial_controller": "ZDC 32 Gordonsville",
-                    "initial_altitude": 22000,
-                    "assigned_altitude": 11000,
-                    "description": "jet",
-                    "initial_speed": 280,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KMYR": [
-                            {
-                                "icao": "VXP",
-                                "airport": "KCLT"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KCLT"
-                            },
-                            {
-                                "icao": "AAL",
-                                "airport": "KCLT",
-                                "fleet": "short"
-                            }
-                        ],
-                        "KCRE": [
-                            {
-                                "icao": "N",
-                                "airport": "KDCA",
-                                "fleet": "fastGA"
-                            }
-                        ]
-                    },
-                    "initial_facility": "ZDC"
-                },
-                {
-                    "waypoints": "N034.35.16.571,W078.14.08.419/ho KMYR",
-                    "route": "ILM",
-                    "initial_controller": "ZDC 32 Gordonsville",
-                    "initial_altitude": 22000,
-                    "description": "jet",
-                    "assigned_altitude": 11000,
-                    "initial_speed": 250,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KMYR": [
-                            {
-                                "icao": "VXP",
-                                "airport": "KCLT"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KCLT"
-                            },
-                            {
-                                "icao": "AAL",
-                                "airport": "KCLT",
-                                "fleet": "short"
-                            }
-                        ],
-                        "KCRE": [
-                            {
-                                "icao": "N",
-                                "airport": "KDCA",
-                                "fleet": "fastGA"
-                            }
-                        ]
-                    },
-                    "initial_facility": "ZDC"
-                },
-                {
-                    "waypoints": "N034.35.16.571,W078.14.08.419/ho KMYR",
-                    "route": "ILM",
-                    "initial_controller": "MYR_E_APP",
-                    "initial_altitude": 8000,
-                    "description": "prop",
-                    "initial_speed": 200,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KMYR": [
-                            {
-                                "icao": "N",
-                                "airport": "KILM"
-                            }
-                        ],
-                        "KCRE": [
-                            {
-                                "icao": "N",
-                                "airport": "KILM"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "KMYR": 6,
+          "KCRE": 1
         },
         "ILM.slow": {
-            "arrivals": [
-                {
-                    "waypoints": "N034.35.16.571,W078.14.08.419/ho KMYR",
-                    "route": "ILM",
-                    "initial_controller": "MYR_E_APP",
-                    "initial_altitude": 8000,
-                    "description": "prop",
-                    "initial_speed": 200,
-                    "expect_approach": null,
-                    "airlines": {
-                        "KMYR": [
-                            {
-                                "icao": "N",
-                                "airport": "KILM"
-                            }
-                        ],
-                        "KCRE": [
-                            {
-                                "icao": "N",
-                                "airport": "KILM"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "KMYR": 6,
+          "KCRE": 1
         },
         "UNJAM": {
-            "arrivals": [
-                {
-                    "waypoints": "UNJAM/ho KMYR",
-                    "route": "UNJAM",
-                    "initial_controller": "ZJX 71 Florence",
-                    "initial_altitude": 22000,
-                    "assigned_altitude": 11000,
-                    "initial_speed": 280,
-                    "description": "jet",
-                    "expect_approach": null,
-                    "airlines": {
-                        "KMYR": [
-                            {
-                                "icao": "VXP",
-                                "airport": "KCLT"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KCLT"
-                            },
-                            {
-                                "icao": "AAL",
-                                "airport": "KCLT",
-                                "fleet": "short"
-                            }
-                        ]
-                    },
-                    "initial_facility": "ZJX"
-                }
-            ]
+          "KMYR": 4
         },
         "FLO.fast": {
-            "arrivals": [
-                {
-                    "waypoints": "FLO/ho KMYR",
-                    "route": "FLO",
-                    "initial_controller": "ZJX 71 Florence",
-                    "initial_altitude": 11000,
-                    "initial_speed": 250,
-                    "description": "jet",
-                    "expect_approach": null,
-                    "airlines": {
-                        "KMYR": [
-                            {
-                                "icao": "VXP",
-                                "airport": "KCLT"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KCLT"
-                            },
-                            {
-                                "icao": "AAL",
-                                "airport": "KCLT",
-                                "fleet": "short"
-                            }
-                        ],
-                        "KCRE": [
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KCLT"
-                            }
-                        ]
-                    },
-                    "initial_facility": "ZJX"
-                }
-            ]
+          "KMYR": 4,
+          "KCRE": 1
         },
         "FLO.slow": {
-            "arrivals": [
-                {
-                    "waypoints": "FLO/ho KMYR",
-                    "route": "FLO",
-                    "initial_controller": "FLO_APP",
-                    "initial_altitude": 5000,
-                    "initial_speed": 200,
-                    "description": "prop",
-                    "expect_approach": null,
-                    "airlines": {
-                        "KMYR": [
-                            {
-                                "icao": "N",
-                                "airport": "KSSC"
-                            }
-                        ],
-                        "KCRE": [
-                            {
-                                "icao": "N",
-                                "airport": "KFLO"
-                            }
-                        ]
-                    }
-                }
-            ]
-        },
-        "CHS.fast": {
-            "arrivals": [
-                {
-                    "waypoints": "CHS/ho KMYR",
-                    "route": "CHS",
-                    "initial_controller": "ZJX 71 Florence",
-                    "initial_altitude": 22000,
-                    "assigned_altitude": 11000,
-                    "initial_speed": 280,
-                    "description": "jet",
-                    "expect_approach": null,
-                    "airlines": {
-                        "KMYR": [
-                            {
-                                "icao": "VXP",
-                                "airport": "KCLT"
-                            },
-                            {
-                                "icao": "DAL",
-                                "airport": "KCLT"
-                            },
-                            {
-                                "icao": "AAL",
-                                "airport": "KCLT",
-                                "fleet": "short"
-                            }
-                        ],
-                        "KCRE": [
-                            {
-                                "icao": "N",
-                                "fleet": "fastGA",
-                                "airport": "KSSI"
-                            }
-                        ]
-                    },
-                    "initial_facility": "ZJX"
-                }
-            ]
+          "KMYR": 4,
+          "KCRE": 1
         },
         "CHS.slow": {
-            "arrivals": [
-                {
-                    "waypoints": "CHS/ho KMYR",
-                    "route": "CHS",
-                    "initial_controller": "CHS_E_APP",
-                    "initial_altitude": 9000,
-                    "initial_speed": 200,
-                    "description": "prop",
-                    "expect_approach": null,
-                    "airlines": {
-                        "KMYR": [
-                            {
-                                "icao": "N",
-                                "airport": "KSSI"
-                            }
-                        ],
-                        "KCRE": [
-                            {
-                                "icao": "N",
-                                "airport": "KSSI"
-                            }
-                        ]
-                    },
-                    "initial_facility": "CHS"
-                }
-            ]
+          "KMYR": 4,
+          "KCRE": 1
+        },
+        "CHS.fast": {
+          "KMYR": 4,
+          "KCRE": 1
         },
         "FAY": {
-            "arrivals": [
-                {
-                    "waypoints": "FAY/ho KMYR",
-                    "route": "FAY",
-                    "initial_controller": "FAY_N_APP",
-                    "initial_altitude": 4000,
-                    "initial_speed": 200,
-                    "description": "prop",
-                    "expect_approach": null,
-                    "airlines": {
-                        "KMYR": [
-                            {
-                                "icao": "N",
-                                "airport": "KFAY"
-                            }
-                        ],
-                        "KCRE": [
-                            {
-                                "icao": "N",
-                                "airport": "KFAY"
-                            }
-                        ]
-                    }
-                }
-            ]
+          "KMYR": 4,
+          "KCRE": 1
         }
-    },
-    "default_scenario": "South",
-    "name": "KMYR",
-    "primary_airport": "KMYR",
-    "scenarios": {
-        "South": {
-            "arrival_runways": [
-                {
-                    "airport": "KMYR",
-                    "runway": "18"
-                },
-                {
-                    "airport": "KCRE",
-                    "runway": "23"
-                }
-            ],
-            "inbound_rates": {
-                "CAE.fast": {
-                    "KMYR": 5,
-                    "KCRE": 1
-                },
-                "CAE.slow": {
-                    "KMYR": 5,
-                    "KCRE": 1
-                },
-                "ILM.fast": {
-                    "KMYR": 6,
-                    "KCRE": 1
-                },
-                "ILM.slow": {
-                    "KMYR": 6,
-                    "KCRE": 1
-                },
-                "UNJAM": {
-                    "KMYR": 4
-                },
-                "FLO.fast": {
-                    "KMYR": 4,
-                    "KCRE": 1
-                },
-                "FLO.slow": {
-                    "KMYR": 4,
-                    "KCRE": 1
-                },
-                "CHS.slow": {
-                    "KMYR": 4,
-                    "KCRE": 1
-                },
-                "CHS.fast": {
-                    "KMYR": 4,
-                    "KCRE": 1
-                },
-                "FAY": {
-                    "KMYR": 4,
-                    "KCRE": 1
-                }
-            },
-            "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "MYR_E_APP": [
-                        "MYR_W_APP"
-                    ]
-                }
-            },
-            "default_maps": [
-                "BASE MAP"
-            ],
-            "departure_runways": [
-                {
-                    "airport": "KMYR",
-                    "rate": 20,
-                    "runway": "18"
-                },
-                {
-                    "airport": "KCRE",
-                    "rate": 5,
-                    "runway": "23"
-                }
-            ],
-            "wind": {
-                "direction": "75-135"
-            }
+      },
+      "configuration": {
+        "config_id": "STD"
+      },
+      "default_maps": [
+        "BASE MAP"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KMYR",
+          "rate": 20,
+          "runway": "18"
         },
-        "North": {
-            "arrival_runways": [
-                {
-                    "airport": "KMYR",
-                    "runway": "36"
-                },
-                {
-                    "airport": "KCRE",
-                    "runway": "5"
-                }
-            ],
-            "inbound_rates": {
-                "CAE.fast": {
-                    "KMYR": 5,
-                    "KCRE": 1
-                },
-                "CAE.slow": {
-                    "KMYR": 5,
-                    "KCRE": 1
-                },
-                "ILM.fast": {
-                    "KMYR": 6,
-                    "KCRE": 1
-                },
-                "ILM.slow": {
-                    "KMYR": 6,
-                    "KCRE": 1
-                },
-                "UNJAM": {
-                    "KMYR": 4
-                },
-                "FLO.fast": {
-                    "KMYR": 4,
-                    "KCRE": 1
-                },
-                "FLO.slow": {
-                    "KMYR": 4,
-                    "KCRE": 1
-                },
-                "CHS.slow": {
-                    "KMYR": 4,
-                    "KCRE": 1
-                },
-                "CHS.fast": {
-                    "KMYR": 4,
-                    "KCRE": 1
-                },
-                "FAY": {
-                    "KMYR": 4,
-                    "KCRE": 1
-                }
-            },
-            "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "MYR_E_APP": [
-                        "MYR_W_APP"
-                    ]
-                }
-            },
-            "default_maps": [
-                "BASE MAP"
-            ],
-            "departure_runways": [
-                {
-                    "airport": "KMYR",
-                    "rate": 20,
-                    "runway": "36"
-                },
-                {
-                    "airport": "KCRE",
-                    "rate": 5,
-                    "runway": "5"
-                }
-            ],
-            "wind": {
-                "direction": "270-50"
-            }
+        {
+          "airport": "KCRE",
+          "rate": 5,
+          "runway": "23"
         }
+      ],
+      "wind": {
+        "direction": "75-135"
+      }
+    },
+    "North": {
+      "arrival_runways": [
+        {
+          "airport": "KMYR",
+          "runway": "36"
+        },
+        {
+          "airport": "KCRE",
+          "runway": "5"
+        }
+      ],
+      "inbound_rates": {
+        "CAE.fast": {
+          "KMYR": 5,
+          "KCRE": 1
+        },
+        "CAE.slow": {
+          "KMYR": 5,
+          "KCRE": 1
+        },
+        "ILM.fast": {
+          "KMYR": 6,
+          "KCRE": 1
+        },
+        "ILM.slow": {
+          "KMYR": 6,
+          "KCRE": 1
+        },
+        "UNJAM": {
+          "KMYR": 4
+        },
+        "FLO.fast": {
+          "KMYR": 4,
+          "KCRE": 1
+        },
+        "FLO.slow": {
+          "KMYR": 4,
+          "KCRE": 1
+        },
+        "CHS.slow": {
+          "KMYR": 4,
+          "KCRE": 1
+        },
+        "CHS.fast": {
+          "KMYR": 4,
+          "KCRE": 1
+        },
+        "FAY": {
+          "KMYR": 4,
+          "KCRE": 1
+        }
+      },
+      "configuration": {
+        "config_id": "STD"
+      },
+      "default_maps": [
+        "BASE MAP"
+      ],
+      "departure_runways": [
+        {
+          "airport": "KMYR",
+          "rate": 20,
+          "runway": "36"
+        },
+        {
+          "airport": "KCRE",
+          "rate": 5,
+          "runway": "5"
+        }
+      ],
+      "wind": {
+        "direction": "270-50"
+      }
     }
+  }
 }

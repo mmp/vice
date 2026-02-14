@@ -28,6 +28,9 @@
                 "departure_assignments": {
                     "KBGR": "BGR_B_APP",
                     "KBHB": "BGR_B_APP"
+                },
+                "default_consolidation": {
+                    "BGR_B_APP": []
                 }
             }
         },
@@ -42,7 +45,7 @@
         ],
         "center": "KBGR",
         "controller_configs": {
-            "1B": {
+            "BGR_B_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -51,7 +54,7 @@
                     }
                 ]
             },
-            "1S": {
+            "BGR_S_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -69,27 +72,17 @@
             "BGR MVA",
             "BGR RVM"
         ],
-        "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "BOS": "BGR_B_APP",
-                    "ALB": "BGR_B_APP",
-                    "ENE": "BGR_B_APP",
-                    "HUL": "BGR_B_APP"
-                },
-                "departure_assignments": {
-                    "KBGR": "BGR_B_APP",
-                    "KBHB": "BGR_B_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
             {
                 "id": "PWM",
                 "prefix": "1"
+            },
+            {
+                "id": "ZBW",
+                "eram_prefix": "B"
             }
         ],
         "neighboring_facilities": [

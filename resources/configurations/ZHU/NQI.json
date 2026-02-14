@@ -1,0 +1,25 @@
+{
+    "control_positions": {
+        "NQI_APP": {
+            "frequency": 119900,
+            "radio_name": "Kingsville Approach",
+            "sector_id": "1A"
+        },
+        "NQI_TWR": {
+            "frequency": 124100,
+            "radio_name": "Kingsville Tower",
+            "sector_id": "1Z"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "CRP",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "CRP"
+        ]
+    }
+}

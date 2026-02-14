@@ -1,10 +1,26 @@
 {
-  "control_positions": {},
-  "stars_config": {},
-  "handoff_topology": {
-    "handoff_ids": [],
-    "neighboring_facilities": [
-      "ZDV"
-    ]
-  }
+    "control_positions": {
+        "CYS_APP": {
+            "frequency": 124550,
+            "radio_name": "Cheyenne Approach",
+            "sector_id": "1A"
+        },
+        "CYS_TWR": {
+            "frequency": 118700,
+            "radio_name": "Cheyenne Tower",
+            "sector_id": "1T"
+        }
+    },
+    "stars_config": {},
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZDV",
+                "eram_prefix": "D"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZDV"
+        ]
+    }
 }

@@ -1,26 +1,26 @@
 {
     "control_positions": {
-        "1A": {
+        "PVD_A_APP": {
             "frequency": 127900,
             "radio_name": "Providence Approach",
             "sector_id": "1A"
         },
-        "1D": {
+        "PVD_D_APP": {
             "frequency": 123675,
             "radio_name": "Providence Approach",
             "sector_id": "1D"
         },
-        "1H": {
+        "PVD_H_APP": {
             "frequency": 119450,
             "radio_name": "Providence Approach",
             "sector_id": "1H"
         },
-        "1J": {
+        "PVD_J_APP": {
             "frequency": 125750,
             "radio_name": "Providence Approach",
             "sector_id": "1J"
         },
-        "1N": {
+        "PVD_N_APP": {
             "frequency": 128700,
             "radio_name": "Providence Approach",
             "sector_id": "1N"
@@ -40,66 +40,92 @@
         "configurations": {
             "05X": {
                 "inbound_assignments": {
-                    "GON": "1A",
-                    "JORDN": "1A",
-                    "WIPOR": "1A"
+                    "GON": "PVD_A_APP",
+                    "JORDN": "PVD_A_APP",
+                    "WIPOR": "PVD_A_APP"
                 },
                 "departure_assignments": {
-                    "KPVD": "1A"
+                    "KPVD": "PVD_A_APP"
+                },
+                "default_consolidation": {
+                    "PVD_A_APP": []
                 }
             },
             "23X": {
                 "inbound_assignments": {
-                    "GON": "1D",
-                    "JORDN": "1D",
-                    "JUMPR": "1D",
-                    "PEAKE": "1D",
-                    "WIPOR": "1D"
+                    "GON": "PVD_D_APP",
+                    "JORDN": "PVD_D_APP",
+                    "JUMPR": "PVD_D_APP",
+                    "PEAKE": "PVD_D_APP",
+                    "WIPOR": "PVD_D_APP"
                 },
                 "departure_assignments": {
-                    "KEWB": "1A",
-                    "KOQU": "1A",
-                    "KPVD": "1A"
+                    "KEWB": "PVD_A_APP",
+                    "KOQU": "PVD_A_APP",
+                    "KPVD": "PVD_A_APP"
+                },
+                "default_consolidation": {
+                    "PVD_A_APP": [
+                        "PVD_D_APP"
+                    ]
                 }
             },
             "21X": {
                 "inbound_assignments": {
-                    "PQ_OQU_2316_COMBINED": "1D",
-                    "PQ_PVD_2316_COMBINED": "1D"
+                    "PQ_OQU_2316_COMBINED": "PVD_D_APP",
+                    "PQ_PVD_2316_COMBINED": "PVD_D_APP"
                 },
                 "departure_assignments": {
-                    "KOQU": "1D",
-                    "KPVD": "1D"
+                    "KOQU": "PVD_D_APP",
+                    "KPVD": "PVD_D_APP"
+                },
+                "default_consolidation": {
+                    "PVD_D_APP": []
                 }
             },
             "PVD": {
                 "inbound_assignments": {
-                    "PQ_OQU_2316": "1D",
-                    "PQ_PVD_2316": "1A"
+                    "PQ_OQU_2316": "PVD_D_APP",
+                    "PQ_PVD_2316": "PVD_A_APP"
                 },
                 "departure_assignments": {
-                    "KOQU": "1D",
-                    "KPVD": "1D"
+                    "KOQU": "PVD_D_APP",
+                    "KPVD": "PVD_D_APP"
+                },
+                "default_consolidation": {
+                    "PVD_A_APP": [
+                        "PVD_D_APP"
+                    ]
                 }
             },
             "51X": {
                 "inbound_assignments": {
-                    "PQ_OQU_0516": "1D",
-                    "PQ_PVD_0516": "1D"
+                    "PQ_OQU_0516": "PVD_D_APP",
+                    "PQ_PVD_0516": "PVD_D_APP"
                 },
                 "departure_assignments": {
-                    "KOQU": "1A",
-                    "KPVD": "1D"
+                    "KOQU": "PVD_A_APP",
+                    "KPVD": "PVD_D_APP"
+                },
+                "default_consolidation": {
+                    "PVD_A_APP": [
+                        "PVD_D_APP"
+                    ]
                 }
             },
             "53X": {
                 "inbound_assignments": {
-                    "PQ_OQU_0534": "1A",
-                    "PQ_PVD_0534": "1A"
+                    "PQ_OQU_0534": "PVD_A_APP",
+                    "PQ_PVD_0534": "PVD_A_APP"
                 },
                 "departure_assignments": {
-                    "KOQU": "1A",
-                    "KPVD": "1D"
+                    "KOQU": "PVD_A_APP",
+                    "KPVD": "PVD_D_APP"
+                },
+                "default_consolidation": {
+                    "PVD_A_APP": [
+                        "PVD_D_APP"
+                    ]
                 }
             }
         },
@@ -222,73 +248,7 @@
             "RVMPVD024S",
             "RVMPVD028S"
         ],
-        "video_map_file": "videomaps/PVD-videomaps.gob.zst",
-        "controller_assignments": {
-            "05X": {
-                "inbound_assignments": {
-                    "GON": "1A",
-                    "JORDN": "1A",
-                    "WIPOR": "1A"
-                },
-                "departure_assignments": {
-                    "KPVD": "1A"
-                }
-            },
-            "21X": {
-                "inbound_assignments": {
-                    "PQ_OQU_2316_COMBINED": "1D",
-                    "PQ_PVD_2316_COMBINED": "1D"
-                },
-                "departure_assignments": {
-                    "KOQU": "1D",
-                    "KPVD": "1D"
-                }
-            },
-            "23X": {
-                "inbound_assignments": {
-                    "GON": "1D",
-                    "JORDN": "1D",
-                    "JUMPR": "1D",
-                    "PEAKE": "1D",
-                    "WIPOR": "1D"
-                },
-                "departure_assignments": {
-                    "KEWB": "1A",
-                    "KOQU": "1A",
-                    "KPVD": "1A"
-                }
-            },
-            "51X": {
-                "inbound_assignments": {
-                    "PQ_OQU_0516": "1D",
-                    "PQ_PVD_0516": "1D"
-                },
-                "departure_assignments": {
-                    "KOQU": "1A",
-                    "KPVD": "1D"
-                }
-            },
-            "53X": {
-                "inbound_assignments": {
-                    "PQ_OQU_0534": "1A",
-                    "PQ_PVD_0534": "1A"
-                },
-                "departure_assignments": {
-                    "KOQU": "1A",
-                    "KPVD": "1D"
-                }
-            },
-            "PVD": {
-                "inbound_assignments": {
-                    "PQ_OQU_2316": "1D",
-                    "PQ_PVD_2316": "1A"
-                },
-                "departure_assignments": {
-                    "KOQU": "1D",
-                    "KPVD": "1D"
-                }
-            }
-        }
+        "video_map_file": "videomaps/PVD-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
@@ -297,12 +257,20 @@
                 "prefix": "2"
             },
             {
+                "id": "N90",
+                "prefix": "4"
+            },
+            {
                 "id": "Y90",
                 "prefix": "1"
             },
             {
-                "id": "N90",
-                "prefix": "4"
+                "id": "ZBW",
+                "eram_prefix": "B"
+            },
+            {
+                "id": "ZNY",
+                "eram_prefix": "N"
             }
         ],
         "neighboring_facilities": [

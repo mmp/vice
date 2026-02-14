@@ -1,0 +1,35 @@
+{
+    "control_positions": {
+        "NUW_E_APP": {
+            "frequency": 120700,
+            "radio_name": "Whidbey Approach",
+            "sector_id": "1E"
+        },
+        "NUW_F_APP": {
+            "frequency": 128025,
+            "radio_name": "Whidbey Approach",
+            "sector_id": "1F"
+        },
+        "NUW_TWR": {
+            "frequency": 127900,
+            "radio_name": "Whidbey Tower",
+            "sector_id": "1T"
+        },
+        "NUW_W_APP": {
+            "frequency": 118200,
+            "radio_name": "W",
+            "sector_id": "1W"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "S46",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "S46"
+        ]
+    }
+}

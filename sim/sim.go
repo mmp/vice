@@ -38,8 +38,12 @@ type Sim struct {
 	InboundAssignments   map[string]TCP // Inbound flow name -> TCP responsible
 	DepartureAssignments map[string]TCP // Departure specifier -> TCP responsible
 
-	STARSComputer *STARSComputer
-	ERAMComputer  *ERAMComputer
+	nasNet *NASNetwork // unexported: rebuilt in Activate(), not serialized via gob
+
+	// Stored for NASNet reconstruction after deserialization
+	HandoffTopology    *HandoffTopology
+	FixPairs           []FixPairDefinition
+	FixPairAssignments []FixPairAssignment
 
 	LocalCodePool *av.LocalSquawkCodePool
 	CIDAllocator  *CIDAllocator
@@ -112,6 +116,9 @@ type Sim struct {
 	// Only the single most recent command is tracked.
 	LastSTTCommand *LastSTTCommand
 }
+
+func (s *Sim) starsComputer() *STARSComputer { return s.nasNet.PrimarySTARS(s.State.Facility) }
+func (s *Sim) eramComputer() *ERAMComputer   { return s.nasNet.PrimaryERAM(s.State.Facility) }
 
 // LastSTTCommand stores the nav snapshot from before the most recent STT command
 // was executed, allowing rollback if the controller says "negative, that was for {other callsign}".
@@ -244,6 +251,10 @@ type NewSimConfiguration struct {
 	WXProvider wx.Provider
 
 	Emergencies []Emergency
+
+	HandoffTopology    *HandoffTopology
+	FixPairs           []FixPairDefinition
+	FixPairAssignments []FixPairAssignment
 }
 
 func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logger) *Sim {
@@ -256,8 +267,6 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		ControlPositions:     config.ControlPositions,
 		InboundAssignments:   config.ControllerConfiguration.InboundAssignments,
 		DepartureAssignments: config.ControllerConfiguration.DepartureAssignments,
-
-		STARSComputer: makeSTARSComputer(config.Facility),
 
 		CIDAllocator: NewCIDAllocator(),
 
@@ -353,7 +362,20 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		}
 	}
 
-	s.ERAMComputer = makeERAMComputer(av.DB.TRACONs[config.Facility].ARTCC, s.LocalCodePool)
+	// Store config for NASNet reconstruction after deserialization
+	s.HandoffTopology = config.HandoffTopology
+	s.FixPairs = config.FixPairs
+	s.FixPairAssignments = config.FixPairAssignments
+
+	s.nasNet = InitializeNetwork(
+		config.Facility,
+		config.Airports,
+		s.LocalCodePool,
+		s.FixPairs,
+		s.FixPairAssignments,
+		s.HandoffTopology,
+		lg.Logger,
+	)
 
 	s.State = newCommonState(config, config.StartTime.UTC(), manifest, s.wxModel, s.METAR, lg)
 	s.ScenarioDefaultConsolidation = config.ControllerConfiguration.DefaultConsolidation
@@ -465,6 +487,19 @@ func (s *Sim) Activate(lg *log.Logger, provider wx.Provider) {
 	if s.wxModel == nil {
 		s.wxModel = wx.MakeModel(provider, s.State.Facility, s.State.PrimaryAirport, s.State.SimTime, s.lg)
 	}
+
+	// Rebuild NASNet (not serialized via gob due to circular pointers and unexported fields)
+	if s.nasNet == nil {
+		s.nasNet = InitializeNetwork(
+			s.State.Facility,
+			s.State.Airports,
+			s.LocalCodePool,
+			s.FixPairs,
+			s.FixPairAssignments,
+			s.HandoffTopology,
+			lg.Logger,
+		)
+	}
 }
 
 func (s *Sim) Destroy() {
@@ -481,6 +516,15 @@ func (s *Sim) GetSerializeSim() Sim {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 	return *s
+}
+
+func (s *Sim) GetNASDebugData() NASDebugData {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+	if s.nasNet == nil {
+		return NASDebugData{}
+	}
+	return s.nasNet.GetNASDebugData(s.State.SimTime)
 }
 
 func (s *Sim) LogValue() slog.Value {
@@ -1029,12 +1073,18 @@ func (s *Sim) updateState() {
 					slog.String("from", string(fp.TrackingController)),
 					slog.String("to", string(fp.HandoffController)))
 
-				fp.TrackingController = fp.HandoffController
+				previousController := fp.TrackingController
+				newController := fp.HandoffController
+
+				fp.TrackingController = newController
 				if s.State.IsLocalController(fp.TrackingController) {
 					fp.LastLocalController = fp.TrackingController
 				}
 				fp.OwningTCW = s.tcwForPosition(fp.TrackingController)
 				fp.HandoffController = ""
+
+				// Send TN if this was a cross-facility handoff
+				s.sendTNIfCrossFacility(fp, previousController, newController)
 			}
 		}
 		delete(s.Handoffs, acid)
@@ -1117,7 +1167,7 @@ func (s *Sim) updateState() {
 					}
 					sfp := ac.NASFlightPlan
 					if sfp == nil {
-						sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+						sfp = s.starsComputer().lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 					}
 					if sfp != nil {
 						s.handoffTrack(sfp, sfp.InboundHandoffController)
@@ -1130,7 +1180,7 @@ func (s *Sim) updateState() {
 					}
 					sfp := ac.NASFlightPlan
 					if sfp == nil {
-						sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+						sfp = s.starsComputer().lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 					}
 					if sfp != nil {
 						s.handoffTrack(sfp, TCP(passedWaypoint.HandoffController))
@@ -1266,7 +1316,7 @@ func (s *Sim) updateState() {
 			if ac.IsDeparture() && ((ac.DepartureContactAltitude > 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude) || (ac.DepartureContactAltitude == 0 && ac.EmergencyState != nil)) {
 				fp := ac.NASFlightPlan
 				if fp == nil {
-					fp = s.STARSComputer.lookupFlightPlanBySquawk(ac.Squawk)
+					fp = s.starsComputer().lookupFlightPlanBySquawk(ac.Squawk)
 				}
 				if fp != nil {
 					// During prespawn uncontrolled-only phase, cull departures that would
@@ -1307,8 +1357,21 @@ func (s *Sim) updateState() {
 
 		s.spawnAircraft()
 
-		s.ERAMComputer.Update(s)
-		s.STARSComputer.Update(s)
+		// Process all facility computer inboxes
+		for _, ec := range s.nasNet.ERAMComputers {
+			ec.ProcessInbox(s.nasNet, s.State.SimTime, s.lg.Logger)
+		}
+		for _, sc := range s.nasNet.STARSComputers {
+			sc.ProcessInbox(s.nasNet, s.State.SimTime, s.lg.Logger)
+		}
+
+		// Run ERAM Update on all ERAM computers for peer-to-peer FP distribution.
+		// Child TRACON distribution uses childSTARSHasFP() to avoid duplicates.
+		for _, ec := range s.nasNet.ERAMComputers {
+			ec.Update(s)
+		}
+		// Only primary STARS runs full Update (FP acquisition, drop filtering)
+		s.starsComputer().Update(s)
 
 		// Advance METAR: drop old entries when sim time passes the next one's report time
 		for ap, metar := range s.METAR {
@@ -1630,10 +1693,8 @@ func (s *Sim) getFlightPlanForACID(acid ACID) (*NASFlightPlan, *Aircraft, bool) 
 			return ac.NASFlightPlan, ac, true
 		}
 	}
-	for i, fp := range s.STARSComputer.FlightPlans {
-		if fp.ACID == acid {
-			return s.STARSComputer.FlightPlans[i], nil, !fp.Location.IsZero()
-		}
+	if fp, ok := s.starsComputer().FlightPlans[acid]; ok {
+		return fp, nil, !fp.Location.IsZero()
 	}
 	return nil, nil, false
 }
@@ -1672,8 +1733,8 @@ func (s *Sim) CheckLeaks() {
 		}
 		seenSquawks[fp.AssignedSquawk] = nil
 
-		if s.ERAMComputer.SquawkCodePool.InInitialPool(fp.AssignedSquawk) {
-			if !s.ERAMComputer.SquawkCodePool.IsAssigned(fp.AssignedSquawk) && !warned {
+		if s.eramComputer().SquawkCodePool.InInitialPool(fp.AssignedSquawk) {
+			if !s.eramComputer().SquawkCodePool.IsAssigned(fp.AssignedSquawk) && !warned {
 				s.lg.Warnf("%s: squawking unassigned ERAM code %q", fp.ACID, fp.AssignedSquawk)
 				s.SquawkWarnedACIDs[fp.ACID] = nil
 			}
@@ -1697,15 +1758,15 @@ func (s *Sim) CheckLeaks() {
 		}
 	}
 	nUnassociatedFPs := 0
-	for _, fp := range s.STARSComputer.FlightPlans {
+	for _, fp := range s.starsComputer().FlightPlans {
 		check(fp)
 		nUnassociatedFPs++
 	}
 
-	if len(s.STARSComputer.AvailableIndices) != 99-nUsedIndices {
+	if len(s.starsComputer().AvailableIndices) != 99-nUsedIndices {
 		// Build the set of available indices for comparison
 		availableSet := make(map[int]bool)
-		for _, idx := range s.STARSComputer.AvailableIndices {
+		for _, idx := range s.starsComputer().AvailableIndices {
 			availableSet[idx] = true
 		}
 
@@ -1718,7 +1779,7 @@ func (s *Sim) CheckLeaks() {
 		}
 
 		s.lg.Errorf("%d available list indices but %d used so should be %d (aircraft FPs: %d, unassociated FPs: %d, leaked indices: %v)",
-			len(s.STARSComputer.AvailableIndices), nUsedIndices, 99-nUsedIndices,
+			len(s.starsComputer().AvailableIndices), nUsedIndices, 99-nUsedIndices,
 			nAircraftFPs, nUnassociatedFPs, leaked)
 	}
 }

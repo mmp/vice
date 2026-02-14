@@ -154,6 +154,16 @@
                     "KHOU": "I90_DEP",
                     "KIAH": "I90_DEP",
                     "KSGR": "I90_P_APP"
+                },
+                "default_consolidation": {
+                    "I90_B_APP": [
+                        "I90_DEP",
+                        "I90_D_APP",
+                        "I90_G_APP",
+                        "I90_N_APP",
+                        "I90_P_APP",
+                        "I90_X_APP"
+                    ]
                 }
             },
             "IAH": {
@@ -162,6 +172,12 @@
                     "FINALSNW": "I90_A_APP",
                     "FINALSSE": "I90_O_APP",
                     "FINALSSW": "I90_O_APP"
+                },
+                "default_consolidation": {
+                    "I90_A_APP": [
+                        "I90_I_APP",
+                        "I90_O_APP"
+                    ]
                 }
             }
         },
@@ -280,62 +296,33 @@
             "CLL-IDU WEST-15-33 HOU ALL",
             "DWH FINAL"
         ],
-        "video_map_file": "videomaps/ZHU-videomaps.gob.zst",
-        "controller_assignments": {
-            "IAH": {
-                "inbound_assignments": {
-                    "FINALSNE": "I90_I_APP",
-                    "FINALSNW": "I90_A_APP",
-                    "FINALSSE": "I90_O_APP",
-                    "FINALSSW": "I90_O_APP"
-                }
-            },
-            "STD": {
-                "inbound_assignments": {
-                    "BAYYY5": "I90_G_APP",
-                    "BELLR5": "I90_X_APP",
-                    "CESAN4": "I90_D_APP",
-                    "DOOBI2": "I90_D_APP",
-                    "DRLLR5": "I90_N_APP",
-                    "GESNR1": "I90_D_APP",
-                    "GUSHR3": "I90_N_APP",
-                    "HTOWN3": "I90_X_APP",
-                    "KIDDZ4": "I90_X_APP",
-                    "LINKK1": "I90_G_APP",
-                    "MSCOT4": "I90_N_APP",
-                    "NNCEE2": "I90_G_APP",
-                    "SKNRD4": "I90_D_APP",
-                    "TEJAS5": "I90_X_APP",
-                    "TKNIQ3": "I90_X_APP",
-                    "TTORO3": "I90_N_APP",
-                    "WAPPL6": "I90_D_APP"
-                },
-                "departure_assignments": {
-                    "KGLS": "I90_B_APP",
-                    "KHOU": "I90_DEP",
-                    "KIAH": "I90_DEP",
-                    "KSGR": "I90_P_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZHU-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
             {
-                "id": "LCH",
-                "prefix": "1"
-            },
-            {
                 "id": "ACT",
                 "prefix": "2"
+            },
+            {
+                "id": "AUS",
+                "prefix": "4"
             },
             {
                 "id": "GRK",
                 "prefix": "3"
             },
             {
-                "id": "AUS",
-                "prefix": "4"
+                "id": "LCH",
+                "prefix": "1"
+            },
+            {
+                "id": "ZFW",
+                "eram_prefix": "F"
+            },
+            {
+                "id": "ZHU",
+                "eram_prefix": "H"
             }
         ],
         "neighboring_facilities": [

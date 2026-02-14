@@ -1,0 +1,100 @@
+{
+    "control_positions": {
+        "STL_A_APP": {
+            "frequency": 124200,
+            "radio_name": "St. Louis Approach",
+            "sector_id": "1A"
+        },
+        "PIA_B_APP": {
+            "frequency": 128725,
+            "radio_name": "St. Louis Approach",
+            "sector_id": "1B"
+        },
+        "STL_D_APP": {
+            "frequency": 126500,
+            "radio_name": "St. Louis Approach",
+            "sector_id": "1D"
+        },
+        "STL_E_DEP": {
+            "frequency": 119150,
+            "radio_name": "St. Louis Departure",
+            "sector_id": "1E"
+        },
+        "STL_J_APP": {
+            "frequency": 132125,
+            "radio_name": "St. Louis Approach",
+            "sector_id": "1J"
+        },
+        "STL_K_APP": {
+            "frequency": 123700,
+            "radio_name": "St. Louis Approach",
+            "sector_id": "1K"
+        },
+        "STL_N_APP": {
+            "frequency": 124250,
+            "radio_name": "St. Louis Approach",
+            "sector_id": "1N"
+        },
+        "PIA_APP": {
+            "frequency": 125800,
+            "radio_name": "St. Louis Approach",
+            "sector_id": "1P"
+        },
+        "STL_Q_APP": {
+            "frequency": 121025,
+            "radio_name": "St. Louis Approach",
+            "sector_id": "1Q"
+        },
+        "STL_R_APP": {
+            "frequency": 126550,
+            "radio_name": "St. Louis Approach",
+            "sector_id": "1R"
+        },
+        "SPI_APP": {
+            "frequency": 126150,
+            "radio_name": "St. Louis Approach",
+            "sector_id": "1S"
+        },
+        "STL_W_DEP": {
+            "frequency": 128100,
+            "radio_name": "St. Louis Departure",
+            "sector_id": "1W"
+        },
+        "STL_Z_APP": {
+            "frequency": 125200,
+            "radio_name": "St. Louis Approach",
+            "sector_id": "1Z"
+        },
+        "STL_EM_APP": {
+            "frequency": 121500,
+            "radio_name": "St Louis Approach",
+            "sector_id": "9Z"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "CMI",
+                "prefix": "1"
+            },
+            {
+                "id": "MLI",
+                "prefix": "3"
+            },
+            {
+                "id": "SGF",
+                "prefix": "2"
+            },
+            {
+                "id": "ZAU",
+                "eram_prefix": "G"
+            }
+        ],
+        "neighboring_facilities": [
+            "CMI",
+            "MLI",
+            "SGF",
+            "ZAU"
+        ]
+    }
+}

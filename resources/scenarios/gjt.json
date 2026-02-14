@@ -612,10 +612,7 @@
                 }
             },
             "configuration": {
-                "config_id": "GJT",
-                "default_consolidation": {
-                    "GJT_APP": []
-                }
+                "config_id": "GJT"
             },
             "default_maps": [
                 "GJT BASE"
@@ -659,10 +656,7 @@
                 }
             },
             "configuration": {
-                "config_id": "GJT",
-                "default_consolidation": {
-                    "GJT_APP": []
-                }
+                "config_id": "GJT"
             },
             "default_maps": [
                 "GJT BASE"

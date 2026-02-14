@@ -526,7 +526,9 @@ type NASFlightPlan struct {
 	CID                   string
 	EntryFix              string
 	ExitFix               string
+	DepartureAirport      string
 	ArrivalAirport        string // Technically not a string, but until the NAS system is fully integrated, we'll need this.
+	ReceivedFrom          string // Facility that sent this FP (empty if locally created)
 	ExitFixIsIntermediate bool
 	Rules                 av.FlightRules
 	CoordinationTime      time.Time
@@ -812,7 +814,7 @@ func (fp *NASFlightPlan) Update(spec FlightPlanSpecifier, sim *Sim) (err error) 
 	} else if spec.SquawkAssignment.IsSet {
 		var rules av.FlightRules
 		fp.AssignedSquawk, rules, err = assignCode(spec.SquawkAssignment, fp.PlanType, fp.Rules, sim.LocalCodePool,
-			sim.ERAMComputer.SquawkCodePool)
+			sim.eramComputer().SquawkCodePool)
 		if !spec.Rules.IsSet {
 			// Only take the rules from the pool if no rules were given in spec.
 			fp.Rules = rules

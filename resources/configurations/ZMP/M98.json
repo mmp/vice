@@ -112,6 +112,16 @@
                     "KSTP": "MSP_G_APP",
                     "KMIC": "MSP_K_APP",
                     "KANE": "MSP_K_APP"
+                },
+                "default_consolidation": {
+                    "MSP_D_DEP": [
+                        "MSP_E_APP",
+                        "MSP_G_APP",
+                        "MSP_H_APP",
+                        "MSP_I_APP",
+                        "MSP_K_APP",
+                        "MSP_R_DEP"
+                    ]
                 }
             },
             "30S": {
@@ -133,6 +143,16 @@
                     "KSTP": "MSP_G_APP",
                     "KMIC": "MSP_K_APP",
                     "KANE": "MSP_K_APP"
+                },
+                "default_consolidation": {
+                    "MSP_D_DEP": [
+                        "MSP_E_APP",
+                        "MSP_G_APP",
+                        "MSP_H_APP",
+                        "MSP_I_APP",
+                        "MSP_K_APP",
+                        "MSP_R_DEP"
+                    ]
                 }
             },
             "117": {
@@ -155,6 +175,17 @@
                     "KSTP": "MSP_G_APP",
                     "KMIC": "MSP_K_APP",
                     "KANE": "MSP_K_APP"
+                },
+                "default_consolidation": {
+                    "MSP_D_DEP": [
+                        "MSP_E_APP",
+                        "MSP_G_APP",
+                        "MSP_H_APP",
+                        "MSP_I_APP",
+                        "MSP_K_APP",
+                        "MSP_L_DEP",
+                        "MSP_R_DEP"
+                    ]
                 }
             },
             "317": {
@@ -177,6 +208,16 @@
                     "KSTP": "MSP_G_APP",
                     "KMIC": "MSP_K_APP",
                     "KANE": "MSP_K_APP"
+                },
+                "default_consolidation": {
+                    "MSP_D_DEP": [
+                        "MSP_E_APP",
+                        "MSP_G_APP",
+                        "MSP_H_APP",
+                        "MSP_I_APP",
+                        "MSP_K_APP",
+                        "MSP_R_DEP"
+                    ]
                 }
             },
             "135": {
@@ -198,6 +239,17 @@
                     "KSTP": "MSP_G_APP",
                     "KMIC": "MSP_K_APP",
                     "KANE": "MSP_K_APP"
+                },
+                "default_consolidation": {
+                    "MSP_D_DEP": [
+                        "MSP_E_APP",
+                        "MSP_G_APP",
+                        "MSP_H_APP",
+                        "MSP_I_APP",
+                        "MSP_K_APP",
+                        "MSP_N_APP",
+                        "MSP_R_DEP"
+                    ]
                 }
             },
             "335": {
@@ -219,6 +271,17 @@
                     "KSTP": "MSP_G_APP",
                     "KMIC": "MSP_K_APP",
                     "KANE": "MSP_K_APP"
+                },
+                "default_consolidation": {
+                    "MSP_D_DEP": [
+                        "MSP_E_APP",
+                        "MSP_G_APP",
+                        "MSP_H_APP",
+                        "MSP_I_APP",
+                        "MSP_J_APP",
+                        "MSP_K_APP",
+                        "MSP_R_DEP"
+                    ]
                 }
             }
         },
@@ -389,143 +452,17 @@
             "KSTP",
             "KMIC"
         ],
-        "video_map_file": "videomaps/ZMP-videomaps.gob.zst",
-        "controller_assignments": {
-            "117": {
-                "inbound_assignments": {
-                    "BAINY3.12s": "MSP_I_APP",
-                    "BLUEM4.12s": "MSP_H_APP",
-                    "KKILR3.12s": "MSP_I_APP",
-                    "MUSCL3.12s": "MSP_I_APP",
-                    "NITZR3.12s": "MSP_H_APP",
-                    "TORGY3.12s": "MSP_H_APP",
-                    "GEP1.12s": "MSP_I_APP",
-                    "LSE.12s": "MSP_G_APP",
-                    "RPD": "MSP_G_APP"
-                },
-                "departure_assignments": {
-                    "KMSP/12L": "MSP_D_DEP",
-                    "KMSP/12R_17": "MSP_L_DEP",
-                    "KMSP/17_12s": "MSP_R_DEP",
-                    "KFCM": "MSP_E_APP",
-                    "KSTP": "MSP_G_APP",
-                    "KMIC": "MSP_K_APP",
-                    "KANE": "MSP_K_APP"
-                }
-            },
-            "12S": {
-                "inbound_assignments": {
-                    "BAINY3.12s": "MSP_I_APP",
-                    "BLUEM4.12s": "MSP_H_APP",
-                    "KKILR3.12s": "MSP_I_APP",
-                    "MUSCL3.12s": "MSP_I_APP",
-                    "NITZR3.12s": "MSP_H_APP",
-                    "TORGY3.12s": "MSP_H_APP",
-                    "GEP1.12s": "MSP_I_APP",
-                    "LSE.12s": "MSP_G_APP",
-                    "RPD": "MSP_G_APP"
-                },
-                "departure_assignments": {
-                    "KMSP/12L": "MSP_D_DEP",
-                    "KMSP/12R": "MSP_R_DEP",
-                    "KFCM": "MSP_E_APP",
-                    "KSTP": "MSP_G_APP",
-                    "KMIC": "MSP_K_APP",
-                    "KANE": "MSP_K_APP"
-                }
-            },
-            "135": {
-                "inbound_assignments": {
-                    "BAINY3.35": "MSP_I_APP",
-                    "BLUEM4.35": "MSP_N_APP",
-                    "KKILR3.35": "MSP_H_APP",
-                    "MUSCL3.35": "MSP_H_APP",
-                    "NITZR3.35": "MSP_N_APP",
-                    "TORGY3.35": "MSP_I_APP",
-                    "GEP1.35": "MSP_I_APP",
-                    "LSE.30s": "MSP_G_APP",
-                    "RPD": "MSP_G_APP"
-                },
-                "departure_assignments": {
-                    "KMSP/12R": "MSP_R_DEP",
-                    "KMSP/12L": "MSP_D_DEP",
-                    "KFCM": "MSP_E_APP",
-                    "KSTP": "MSP_G_APP",
-                    "KMIC": "MSP_K_APP",
-                    "KANE": "MSP_K_APP"
-                }
-            },
-            "30S": {
-                "inbound_assignments": {
-                    "BAINY3.30s": "MSP_I_APP",
-                    "BLUEM4.30s": "MSP_H_APP",
-                    "KKILR3.30s": "MSP_I_APP",
-                    "MUSCL3.30s": "MSP_I_APP",
-                    "NITZR3.30s": "MSP_H_APP",
-                    "TORGY3.30s": "MSP_H_APP",
-                    "GEP1.30s": "MSP_I_APP",
-                    "LSE.30s": "MSP_G_APP",
-                    "RPD": "MSP_G_APP"
-                },
-                "departure_assignments": {
-                    "KMSP/30L": "MSP_R_DEP",
-                    "KMSP/30R": "MSP_D_DEP",
-                    "KFCM": "MSP_E_APP",
-                    "KSTP": "MSP_G_APP",
-                    "KMIC": "MSP_K_APP",
-                    "KANE": "MSP_K_APP"
-                }
-            },
-            "317": {
-                "inbound_assignments": {
-                    "BAINY3.30s": "MSP_I_APP",
-                    "BLUEM4.30s": "MSP_H_APP",
-                    "KKILR3.30s": "MSP_I_APP",
-                    "MUSCL3.30s": "MSP_I_APP",
-                    "NITZR3.30s": "MSP_H_APP",
-                    "TORGY3.30s": "MSP_H_APP",
-                    "GEP1.30s": "MSP_I_APP",
-                    "LSE.30s": "MSP_G_APP",
-                    "RPD": "MSP_G_APP"
-                },
-                "departure_assignments": {
-                    "KMSP/30L_17": "MSP_R_DEP",
-                    "KMSP/30R": "MSP_D_DEP",
-                    "KMSP/17_30s": "MSP_R_DEP",
-                    "KFCM": "MSP_E_APP",
-                    "KSTP": "MSP_G_APP",
-                    "KMIC": "MSP_K_APP",
-                    "KANE": "MSP_K_APP"
-                }
-            },
-            "335": {
-                "inbound_assignments": {
-                    "BAINY3.30s": "MSP_I_APP",
-                    "BLUEM4.35": "MSP_J_APP",
-                    "KKILR3.30s": "MSP_I_APP",
-                    "MUSCL3.30s": "MSP_I_APP",
-                    "NITZR3.35": "MSP_J_APP",
-                    "TORGY3.35": "MSP_H_APP",
-                    "GEP1.30s": "MSP_I_APP",
-                    "LSE.30s": "MSP_G_APP",
-                    "RPD": "MSP_G_APP"
-                },
-                "departure_assignments": {
-                    "KMSP/30L": "MSP_R_DEP",
-                    "KMSP/30R": "MSP_D_DEP",
-                    "KFCM": "MSP_E_APP",
-                    "KSTP": "MSP_G_APP",
-                    "KMIC": "MSP_K_APP",
-                    "KANE": "MSP_K_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZMP-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
             {
                 "id": "RST",
                 "prefix": "1"
+            },
+            {
+                "id": "ZMP",
+                "eram_prefix": "P"
             }
         ],
         "neighboring_facilities": [

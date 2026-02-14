@@ -1472,7 +1472,8 @@
                         }
                     },
                     "star": "BLOGS3",
-                    "initial_controller": "DC_9_CTR",
+                    "initial_controller": "ZDC 09 Dixon",
+                    "initial_facility": "ZDC",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1544,7 +1545,8 @@
                         }
                     },
                     "star": "DMSTR2",
-                    "initial_controller": "DC_9_CTR",
+                    "initial_controller": "ZDC 09 Dixon",
+                    "initial_facility": "ZDC",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1719,20 +1721,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "RDU_E_APP": [
-                        "RDU_U_APP",
-                        "RDU_W_APP"
-                    ],
-                    "RDU_N_DEP": [
-                        "RDU_S_DEP"
-                    ],
-                    "RDU_W_APP": [
-                        "RDU_N_DEP",
-                        "RDU_Y_APP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "RDU NE RVM"
@@ -1781,20 +1770,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "RDU_E_APP": [
-                        "RDU_U_APP",
-                        "RDU_W_APP"
-                    ],
-                    "RDU_N_DEP": [
-                        "RDU_S_DEP"
-                    ],
-                    "RDU_W_APP": [
-                        "RDU_N_DEP",
-                        "RDU_Y_APP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "RDU SW RVM"

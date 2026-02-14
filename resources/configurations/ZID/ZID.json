@@ -1,196 +1,340 @@
 {
-  "control_positions": {
-    "ZID 00 ZID GUARD": {
-      "frequency": 121500,
-      "eram_facility": true,
-      "radio_name": "Indianapolis Center",
-      "sector_id": "00"
+    "control_positions": {
+        "ZID 00 ZID GUARD": {
+            "frequency": 121500,
+            "eram_facility": true,
+            "radio_name": "Indianapolis Center",
+            "sector_id": "00"
+        },
+        "ZID 01 ZID TMU": {
+            "frequency": 123450,
+            "eram_facility": true,
+            "radio_name": "ZID TMU",
+            "sector_id": "01"
+        },
+        "ZID 17 Evansville": {
+            "frequency": 128300,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "17"
+        },
+        "ZID 18 Nabb": {
+            "frequency": 124775,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "18"
+        },
+        "ZID 19 New Hope": {
+            "frequency": 121175,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "19"
+        },
+        "ZID 20 Lexington": {
+            "frequency": 126375,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "20"
+        },
+        "ZID 21 London": {
+            "frequency": 124625,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "21"
+        },
+        "ZID 22 Covington": {
+            "frequency": 123925,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "22"
+        },
+        "ZID 24 Parkersburg": {
+            "frequency": 125550,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "24"
+        },
+        "ZID 25 Hazard": {
+            "frequency": 126575,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "25"
+        },
+        "ZID 26 River": {
+            "frequency": 124225,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "26"
+        },
+        "ZID 30 Columbus": {
+            "frequency": 124450,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "30"
+        },
+        "ZID 31 Lytle": {
+            "frequency": 120475,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "31"
+        },
+        "ZID 32 Rosewood": {
+            "frequency": 128075,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "32"
+        },
+        "ZID 33 Muncie": {
+            "frequency": 124525,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "33"
+        },
+        "ZID 34 Shelbyville": {
+            "frequency": 119550,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "34"
+        },
+        "ZID 35 Terre Haute": {
+            "frequency": 132200,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "35"
+        },
+        "ZID 66 Madison": {
+            "frequency": 128375,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "66"
+        },
+        "ZID 69 Pike": {
+            "frequency": 135575,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "69"
+        },
+        "ZID 74 Yeager": {
+            "frequency": 135425,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "74"
+        },
+        "ZID 75 Rushville": {
+            "frequency": 125125,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "75"
+        },
+        "ZID 77 University": {
+            "frequency": 125075,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "77"
+        },
+        "ZID 80 King": {
+            "frequency": 134175,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "80"
+        },
+        "ZID 81 Pocket City": {
+            "frequency": 132525,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "81"
+        },
+        "ZID 82 Louisville": {
+            "frequency": 133050,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "82"
+        },
+        "ZID 83 Falmouth": {
+            "frequency": 128225,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "83"
+        },
+        "ZID 84 Rebel": {
+            "frequency": 134675,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "84"
+        },
+        "ZID 85 Charleston": {
+            "frequency": 119525,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "85"
+        },
+        "ZID 86 Beckley": {
+            "frequency": 124575,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "86"
+        },
+        "ZID 87 Appleton": {
+            "frequency": 132825,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "87"
+        },
+        "ZID 88 Dayton": {
+            "frequency": 120575,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "88"
+        },
+        "ZID 89 Indy": {
+            "frequency": 133425,
+            "eram_facility": true,
+            "radio_name": "Indy Center",
+            "sector_id": "89"
+        }
     },
-    "ZID 01 ZID TMU": {
-      "frequency": 123450,
-      "eram_facility": true,
-      "radio_name": "ZID TMU",
-      "sector_id": "01"
-    },
-    "ZID 17 Evansville": {
-      "frequency": 128300,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "17"
-    },
-    "ZID 18 Nabb": {
-      "frequency": 124775,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "18"
-    },
-    "ZID 19 New Hope": {
-      "frequency": 121175,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "19"
-    },
-    "ZID 20 Lexington": {
-      "frequency": 126375,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "20"
-    },
-    "ZID 21 London": {
-      "frequency": 124625,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "21"
-    },
-    "ZID 22 Covington": {
-      "frequency": 123925,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "22"
-    },
-    "ZID 24 Parkersburg": {
-      "frequency": 125550,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "24"
-    },
-    "ZID 25 Hazard": {
-      "frequency": 126575,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "25"
-    },
-    "ZID 26 River": {
-      "frequency": 124225,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "26"
-    },
-    "ZID 30 Columbus": {
-      "frequency": 124450,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "30"
-    },
-    "ZID 31 Lytle": {
-      "frequency": 120475,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "31"
-    },
-    "ZID 32 Rosewood": {
-      "frequency": 128075,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "32"
-    },
-    "ZID 33 Muncie": {
-      "frequency": 124525,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "33"
-    },
-    "ZID 34 Shelbyville": {
-      "frequency": 119550,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "34"
-    },
-    "ZID 35 Terre Haute": {
-      "frequency": 132200,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "35"
-    },
-    "ZID 66 Madison": {
-      "frequency": 128375,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "66"
-    },
-    "ZID 69 Pike": {
-      "frequency": 135575,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "69"
-    },
-    "ZID 74 Yeager": {
-      "frequency": 135425,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "74"
-    },
-    "ZID 75 Rushville": {
-      "frequency": 125125,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "75"
-    },
-    "ZID 77 University": {
-      "frequency": 125075,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "77"
-    },
-    "ZID 80 King": {
-      "frequency": 134175,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "80"
-    },
-    "ZID 81 Pocket City": {
-      "frequency": 132525,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "81"
-    },
-    "ZID 82 Louisville": {
-      "frequency": 133050,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "82"
-    },
-    "ZID 83 Falmouth": {
-      "frequency": 128225,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "83"
-    },
-    "ZID 84 Rebel": {
-      "frequency": 134675,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "84"
-    },
-    "ZID 85 Charleston": {
-      "frequency": 119525,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "85"
-    },
-    "ZID 86 Beckley": {
-      "frequency": 124575,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "86"
-    },
-    "ZID 87 Appleton": {
-      "frequency": 132825,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "87"
-    },
-    "ZID 88 Dayton": {
-      "frequency": 120575,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "88"
-    },
-    "ZID 89 Indy": {
-      "frequency": 133425,
-      "eram_facility": true,
-      "radio_name": "Indy Center",
-      "sector_id": "89"
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "CKB",
+                "single_char_stars_id": "B",
+                "stars_id": "CKB"
+            },
+            {
+                "id": "CLE",
+                "single_char_stars_id": "J",
+                "stars_id": "CLE"
+            },
+            {
+                "id": "CMH",
+                "single_char_stars_id": "O",
+                "stars_id": "CMH"
+            },
+            {
+                "id": "CMI",
+                "single_char_stars_id": "P",
+                "stars_id": "CMI"
+            },
+            {
+                "id": "CRW",
+                "single_char_stars_id": "R",
+                "stars_id": "CRW"
+            },
+            {
+                "id": "CVG",
+                "single_char_stars_id": "V",
+                "stars_id": "CVG"
+            },
+            {
+                "id": "EVV",
+                "single_char_stars_id": "E",
+                "stars_id": "EVV"
+            },
+            {
+                "id": "FWA",
+                "single_char_stars_id": "F",
+                "stars_id": "FWA"
+            },
+            {
+                "id": "GUS",
+                "single_char_stars_id": "U",
+                "stars_id": "GUS"
+            },
+            {
+                "id": "HOP",
+                "single_char_stars_id": "X",
+                "stars_id": "HOP"
+            },
+            {
+                "id": "HTS",
+                "single_char_stars_id": "A",
+                "stars_id": "HTS"
+            },
+            {
+                "id": "HUF",
+                "single_char_stars_id": "H",
+                "stars_id": "HUA"
+            },
+            {
+                "id": "IND",
+                "single_char_stars_id": "I",
+                "stars_id": "IND"
+            },
+            {
+                "id": "LEX",
+                "single_char_stars_id": "L",
+                "stars_id": "LEX"
+            },
+            {
+                "id": "ROA",
+                "single_char_stars_id": "N",
+                "stars_id": "ROA"
+            },
+            {
+                "id": "SDF",
+                "single_char_stars_id": "S",
+                "stars_id": "SDF"
+            },
+            {
+                "id": "TOL",
+                "single_char_stars_id": "Z",
+                "stars_id": "TOL"
+            },
+            {
+                "id": "TRI",
+                "single_char_stars_id": "Y",
+                "stars_id": "TRI"
+            },
+            {
+                "id": "ZAU",
+                "eram_prefix": "G"
+            },
+            {
+                "id": "ZDC",
+                "eram_prefix": "W"
+            },
+            {
+                "id": "ZKC",
+                "eram_prefix": "K"
+            },
+            {
+                "id": "ZME",
+                "eram_prefix": "M"
+            },
+            {
+                "id": "ZOB",
+                "eram_prefix": "C"
+            },
+            {
+                "id": "ZTL",
+                "eram_prefix": "T"
+            }
+        ],
+        "neighboring_facilities": [
+            "CKB",
+            "CLE",
+            "CMH",
+            "CMI",
+            "CRW",
+            "CVG",
+            "EVV",
+            "FWA",
+            "GUS",
+            "HOP",
+            "HTS",
+            "HUF",
+            "IND",
+            "LEX",
+            "ROA",
+            "SDF",
+            "TOL",
+            "TRI",
+            "ZAU",
+            "ZDC",
+            "ZKC",
+            "ZME",
+            "ZOB",
+            "ZTL"
+        ]
     }
-  }
 }

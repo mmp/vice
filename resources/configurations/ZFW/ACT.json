@@ -1,0 +1,45 @@
+{
+    "control_positions": {
+        "ACT_H_APP": {
+            "frequency": 127650,
+            "radio_name": "Waco Approach",
+            "sector_id": "1H"
+        },
+        "ACT_L_APP": {
+            "frequency": 126125,
+            "radio_name": "Waco Approach",
+            "sector_id": "1L"
+        },
+        "ACT_TWR": {
+            "frequency": 119300,
+            "radio_name": "Waco Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "D10",
+                "prefix": "2"
+            },
+            {
+                "id": "GRK",
+                "prefix": "1"
+            },
+            {
+                "id": "I90",
+                "prefix": "3"
+            },
+            {
+                "id": "ZHU",
+                "eram_prefix": "H"
+            }
+        ],
+        "neighboring_facilities": [
+            "D10",
+            "GRK",
+            "I90",
+            "ZHU"
+        ]
+    }
+}

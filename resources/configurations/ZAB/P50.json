@@ -86,6 +86,14 @@
                     "KIWA": "PHX_W_APP",
                     "KPHX": "PHX_S_DEP",
                     "KSDL": "PHX_B_APP"
+                },
+                "default_consolidation": {
+                    "PHX_A_APP": [
+                        "PHX_B_APP",
+                        "PHX_Q_APP",
+                        "PHX_S_DEP",
+                        "PHX_W_APP"
+                    ]
                 }
             },
             "P50": {
@@ -98,6 +106,11 @@
                     "KFLG": "PHX_K_APP",
                     "KPRC": "PHX_J_APP",
                     "KSEZ": "PHX_K_APP"
+                },
+                "default_consolidation": {
+                    "PHX_J_APP": [
+                        "PHX_K_APP"
+                    ]
                 }
             },
             "P51": {
@@ -113,6 +126,14 @@
                     "KIWA": "PHX_W_APP",
                     "KPHX": "PHX_S_DEP",
                     "KSDL": "PHX_B_APP"
+                },
+                "default_consolidation": {
+                    "PHX_A_APP": [
+                        "PHX_B_APP",
+                        "PHX_Q_APP",
+                        "PHX_S_DEP",
+                        "PHX_W_APP"
+                    ]
                 }
             },
             "PHX": {
@@ -121,6 +142,11 @@
                     "EAGUL6_FE": "PHX_V_APP",
                     "HYDRR1_FE": "PHX_F_APP",
                     "PINNG1_FE": "PHX_F_APP"
+                },
+                "default_consolidation": {
+                    "PHX_F_APP": [
+                        "PHX_V_APP"
+                    ]
                 }
             },
             "PH1": {
@@ -129,12 +155,17 @@
                     "EAGUL6_FW": "PHX_V_APP",
                     "HYDRR1_FW": "PHX_F_APP",
                     "PINNG1_FW": "PHX_F_APP"
+                },
+                "default_consolidation": {
+                    "PHX_F_APP": [
+                        "PHX_V_APP"
+                    ]
                 }
             }
         },
         "center": "KPHX",
         "controller_configs": {
-            "1K": {
+            "PHX_K_APP": {
                 "video_maps": [
                     "PRC414 NAZ_ASP",
                     "PHX003 PHX003",
@@ -184,7 +215,7 @@
                 "center": "KPRC",
                 "range": 60
             },
-            "1J": {
+            "PHX_J_APP": {
                 "video_maps": [
                     "PRC414 NAZ_ASP",
                     "PHX003 PHX003",
@@ -229,7 +260,7 @@
                 "center": "KPRC",
                 "range": 60
             },
-            "1R": {
+            "PHX_R_APP": {
                 "video_maps": [
                     "PRC414 NAZ_ASP",
                     "PHX003 PHX003",
@@ -279,7 +310,7 @@
                 "center": "KPRC",
                 "range": 60
             },
-            "1A": {
+            "PHX_A_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -520,73 +551,17 @@
             "PHX308 HWY_RWY",
             "PHX366 LUFOPEN"
         ],
-        "video_map_file": "videomaps/ZAB-videomaps.gob.zst",
-        "controller_assignments": {
-            "50X": {
-                "inbound_assignments": {
-                    "BRUSR1.E": "PHX_A_APP",
-                    "DSERT2": "PHX_B_APP",
-                    "EAGUL6.E": "PHX_A_APP",
-                    "HUUTY1": "PHX_W_APP",
-                    "HYDRR1.E": "PHX_Q_APP",
-                    "PINNG1.E": "PHX_Q_APP"
-                },
-                "departure_assignments": {
-                    "KIWA": "PHX_W_APP",
-                    "KPHX": "PHX_S_DEP",
-                    "KSDL": "PHX_B_APP"
-                }
-            },
-            "P50": {
-                "inbound_assignments": {
-                    "NAA EAST ARR": "PHX_K_APP",
-                    "NAA SOUTH ARR": "PHX_K_APP",
-                    "NAA WEST ARR": "PHX_J_APP"
-                },
-                "departure_assignments": {
-                    "KFLG": "PHX_K_APP",
-                    "KPRC": "PHX_J_APP",
-                    "KSEZ": "PHX_K_APP"
-                }
-            },
-            "P51": {
-                "inbound_assignments": {
-                    "BRUSR1.W": "PHX_A_APP",
-                    "DSERT2": "PHX_B_APP",
-                    "EAGUL6.W": "PHX_A_APP",
-                    "HUUTY1": "PHX_W_APP",
-                    "HYDRR1.W": "PHX_Q_APP",
-                    "PINNG1.W": "PHX_Q_APP"
-                },
-                "departure_assignments": {
-                    "KIWA": "PHX_W_APP",
-                    "KPHX": "PHX_S_DEP",
-                    "KSDL": "PHX_B_APP"
-                }
-            },
-            "PH1": {
-                "inbound_assignments": {
-                    "BRUSR1_FW": "PHX_V_APP",
-                    "EAGUL6_FW": "PHX_V_APP",
-                    "HYDRR1_FW": "PHX_F_APP",
-                    "PINNG1_FW": "PHX_F_APP"
-                }
-            },
-            "PHX": {
-                "inbound_assignments": {
-                    "BRUSR1_FE": "PHX_V_APP",
-                    "EAGUL6_FE": "PHX_V_APP",
-                    "HYDRR1_FE": "PHX_F_APP",
-                    "PINNG1_FE": "PHX_F_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZAB-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
             {
                 "id": "LUF",
                 "prefix": "8"
+            },
+            {
+                "id": "ZAB",
+                "eram_prefix": "A"
             }
         ],
         "neighboring_facilities": [

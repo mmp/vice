@@ -1,0 +1,30 @@
+{
+    "control_positions": {
+        "END_APP": {
+            "frequency": 119775,
+            "radio_name": "Vance Approach",
+            "sector_id": "1W"
+        },
+        "END_TWR": {
+            "frequency": 124050,
+            "radio_name": "Vance Tower",
+            "sector_id": "1Z"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ICT",
+                "prefix": "2"
+            },
+            {
+                "id": "OKC",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "ICT",
+            "OKC"
+        ]
+    }
+}

@@ -32,17 +32,7 @@
             "radio_name": "Boston Tower",
             "sector_id": "1T"
         },
-        "BOS_D_DEP": {
-            "frequency": 133000,
-            "radio_name": "Boston Departure",
-            "sector_id": "1D"
-        },
         "BOS_D_APP": {
-            "frequency": 133000,
-            "radio_name": "Boston Approach",
-            "sector_id": "1D"
-        },
-        "A90_D_APP": {
             "frequency": 133000,
             "radio_name": "Boston Approach",
             "sector_id": "1D"
@@ -179,8 +169,8 @@
                 "inbound_assignments": {
                     "CON": "MHT_W_APP",
                     "ENE": "MHT_E_APP",
-                    "FREDO.6K": "BOS_S_APP",
-                    "FREDO.8K": "BOS_S_APP",
+                    "FREDO.6K": "ACK_S_APP",
+                    "FREDO.8K": "ACK_S_APP",
                     "GDM": "MHT_W_APP",
                     "GDM.7K": "BOS_R_APP",
                     "GDM.9K": "BOS_R_APP",
@@ -188,14 +178,23 @@
                     "MANCH..LWRNC": "BOS_R_APP",
                     "OOSHN5": "BOS_R_APP",
                     "PSM..LWRNC": "BOS_R_APP",
-                    "ROBUC3": "BOS_S_APP",
+                    "ROBUC3": "ACK_S_APP",
                     "ROZZE2": "MHT_W_APP",
-                    "WOONS.5K": "BOS_D_DEP",
-                    "WOONS.7K": "BOS_D_DEP"
+                    "WOONS.5K": "BOS_D_APP",
+                    "WOONS.7K": "BOS_D_APP"
                 },
                 "departure_assignments": {
-                    "KBOS": "BOS_D_DEP",
+                    "KBOS": "BOS_D_APP",
                     "KMHT": "MHT_J_APP"
+                },
+                "default_consolidation": {
+                    "BOS_D_APP": [
+                        "BOS_R_APP",
+                        "ACK_S_APP",
+                        "MHT_E_APP",
+                        "MHT_J_APP",
+                        "MHT_W_APP"
+                    ]
                 }
             },
             "A90": {
@@ -206,9 +205,9 @@
                     "DREEM2.BVY": "BOS_B_APP",
                     "DREEM2.LWM": "BOS_B_APP",
                     "ENE": "MHT_E_APP",
-                    "FREDO.4K": "BOS_S_APP",
-                    "FREDO.6K": "BOS_S_APP",
-                    "FREDO.8K": "BOS_S_APP",
+                    "FREDO.4K": "ACK_S_APP",
+                    "FREDO.6K": "ACK_S_APP",
+                    "FREDO.8K": "ACK_S_APP",
                     "GDM": "MHT_W_APP",
                     "GDM.7K": "BOS_R_APP",
                     "GDM.9K": "BOS_R_APP",
@@ -219,7 +218,7 @@
                     "OOSHN5": "BOS_R_APP",
                     "PSM..LWRNC": "BOS_R_APP",
                     "PSM..LWRNC.SAT": "BOS_R_APP",
-                    "ROBUC3": "BOS_S_APP",
+                    "ROBUC3": "ACK_S_APP",
                     "ROZZE2": "MHT_W_APP",
                     "WOONS.3K": "BOS_U_APP",
                     "WOONS.5K": "BOS_U_APP",
@@ -231,18 +230,32 @@
                 "departure_assignments": {
                     "KACK": "ACK_DEP",
                     "KBED": "BOS_B_APP",
-                    "KBOS": "BOS_D_DEP",
+                    "KBOS": "BOS_D_APP",
                     "KMHT": "MHT_J_APP",
                     "KMVY": "ACK_DEP",
                     "KPSM": "MHT_P_APP"
+                },
+                "default_consolidation": {
+                    "ACK_DEP": [
+                        "ACK_N_APP",
+                        "BOS_B_APP",
+                        "BOS_D_APP",
+                        "BOS_R_APP",
+                        "ACK_S_APP",
+                        "BOS_U_APP",
+                        "MHT_E_APP",
+                        "MHT_J_APP",
+                        "MHT_P_APP",
+                        "MHT_W_APP"
+                    ]
                 }
             },
             "A91": {
                 "inbound_assignments": {
                     "CON": "MHT_W_APP",
                     "ENE": "MHT_E_APP",
-                    "FREDO.6K": "BOS_S_APP",
-                    "FREDO.8K": "BOS_S_APP",
+                    "FREDO.6K": "ACK_S_APP",
+                    "FREDO.8K": "ACK_S_APP",
                     "GDM": "MHT_W_APP",
                     "GDM.7K": "BOS_R_APP",
                     "GDM.9K": "BOS_R_APP",
@@ -250,14 +263,23 @@
                     "MANCH..LWRNC": "BOS_R_APP",
                     "OOSHN5": "BOS_R_APP",
                     "PSM..LWRNC": "BOS_R_APP",
-                    "ROBUC3": "BOS_S_APP",
+                    "ROBUC3": "ACK_S_APP",
                     "ROZZE2": "MHT_W_APP",
-                    "WOONS.5K": "BOS_D_DEP",
-                    "WOONS.7K": "BOS_D_DEP"
+                    "WOONS.5K": "BOS_D_APP",
+                    "WOONS.7K": "BOS_D_APP"
                 },
                 "departure_assignments": {
-                    "KBOS": "BOS_D_DEP",
+                    "KBOS": "BOS_D_APP",
                     "KMHT": "MHT_Z_APP"
+                },
+                "default_consolidation": {
+                    "BOS_D_APP": [
+                        "BOS_R_APP",
+                        "ACK_S_APP",
+                        "MHT_E_APP",
+                        "MHT_W_APP",
+                        "MHT_Z_APP"
+                    ]
                 }
             },
             "A92": {
@@ -268,9 +290,9 @@
                     "DREEM2.BVY": "BOS_B_APP",
                     "DREEM2.LWM": "BOS_B_APP",
                     "ENE": "MHT_E_APP",
-                    "FREDO.4K": "BOS_S_APP",
-                    "FREDO.6K": "BOS_S_APP",
-                    "FREDO.8K": "BOS_S_APP",
+                    "FREDO.4K": "ACK_S_APP",
+                    "FREDO.6K": "ACK_S_APP",
+                    "FREDO.8K": "ACK_S_APP",
                     "GDM": "MHT_W_APP",
                     "GDM.7K": "BOS_R_APP",
                     "GDM.9K": "BOS_R_APP",
@@ -281,7 +303,7 @@
                     "OOSHN5": "BOS_R_APP",
                     "PSM..LWRNC": "BOS_R_APP",
                     "PSM..LWRNC.SAT": "BOS_R_APP",
-                    "ROBUC3": "BOS_S_APP",
+                    "ROBUC3": "ACK_S_APP",
                     "ROZZE2": "MHT_W_APP",
                     "WOONS.3K": "BOS_U_APP",
                     "WOONS.5K": "BOS_U_APP",
@@ -293,10 +315,24 @@
                 "departure_assignments": {
                     "KACK": "ACK_DEP",
                     "KBED": "BOS_B_APP",
-                    "KBOS": "BOS_D_DEP",
+                    "KBOS": "BOS_D_APP",
                     "KMHT": "MHT_Z_APP",
                     "KMVY": "ACK_DEP",
                     "KPSM": "MHT_P_APP"
+                },
+                "default_consolidation": {
+                    "ACK_DEP": [
+                        "ACK_N_APP",
+                        "BOS_B_APP",
+                        "BOS_D_APP",
+                        "BOS_R_APP",
+                        "ACK_S_APP",
+                        "BOS_U_APP",
+                        "MHT_E_APP",
+                        "MHT_P_APP",
+                        "MHT_W_APP",
+                        "MHT_Z_APP"
+                    ]
                 }
             },
             "STD": {
@@ -307,12 +343,20 @@
                 "departure_assignments": {
                     "KACK": "ACK_DEP",
                     "KMVY": "ACK_DEP"
+                },
+                "default_consolidation": {
+                    "ACK_DEP": [
+                        "ACK_N_APP"
+                    ]
                 }
             },
             "33X": {
                 "inbound_assignments": {},
                 "departure_assignments": {
                     "KBOS": "BOS_D_APP"
+                },
+                "default_consolidation": {
+                    "BOS_D_APP": []
                 }
             },
             "CNE": {
@@ -349,6 +393,15 @@
                     "KBVY": "BOS_B_APP",
                     "KLWM": "BOS_B_APP",
                     "KOWD": "BOS_L_APP"
+                },
+                "default_consolidation": {
+                    "BOS_B_APP": [
+                        "BOS_D_APP",
+                        "BOS_L_APP",
+                        "BOS_M_APP",
+                        "BOS_R_APP",
+                        "BOS_U_APP"
+                    ]
                 }
             },
             "CNW": {
@@ -385,6 +438,15 @@
                     "KBVY": "BOS_B_APP",
                     "KLWM": "BOS_B_APP",
                     "KOWD": "BOS_L_APP"
+                },
+                "default_consolidation": {
+                    "BOS_B_APP": [
+                        "BOS_D_APP",
+                        "BOS_L_APP",
+                        "BOS_M_APP",
+                        "BOS_R_APP",
+                        "BOS_U_APP"
+                    ]
                 }
             },
             "CSE": {
@@ -421,6 +483,15 @@
                     "KBVY": "BOS_B_APP",
                     "KLWM": "BOS_B_APP",
                     "KOWD": "BOS_L_APP"
+                },
+                "default_consolidation": {
+                    "BOS_B_APP": [
+                        "BOS_D_APP",
+                        "BOS_L_APP",
+                        "BOS_M_APP",
+                        "BOS_R_APP",
+                        "BOS_U_APP"
+                    ]
                 }
             },
             "CSW": {
@@ -457,6 +528,15 @@
                     "KBVY": "BOS_B_APP",
                     "KLWM": "BOS_B_APP",
                     "KOWD": "BOS_L_APP"
+                },
+                "default_consolidation": {
+                    "BOS_B_APP": [
+                        "BOS_D_APP",
+                        "BOS_L_APP",
+                        "BOS_M_APP",
+                        "BOS_R_APP",
+                        "BOS_U_APP"
+                    ]
                 }
             },
             "44X": {
@@ -469,6 +549,11 @@
                 },
                 "departure_assignments": {
                     "KBOS": "BOS_F_APP"
+                },
+                "default_consolidation": {
+                    "BOS_F_APP": [
+                        "BOS_I_APP"
+                    ]
                 }
             },
             "22X": {
@@ -481,6 +566,9 @@
                 },
                 "departure_assignments": {
                     "KBOS": "BOS_F_APP"
+                },
+                "default_consolidation": {
+                    "BOS_F_APP": []
                 }
             },
             "KMH": {
@@ -493,6 +581,13 @@
                 "departure_assignments": {
                     "KMHT": "MHT_Z_APP",
                     "KPSM": "MHT_P_APP"
+                },
+                "default_consolidation": {
+                    "MHT_E_APP": [
+                        "MHT_P_APP",
+                        "MHT_W_APP",
+                        "MHT_Z_APP"
+                    ]
                 }
             },
             "KM1": {
@@ -505,6 +600,13 @@
                 "departure_assignments": {
                     "KMHT": "MHT_J_APP",
                     "KPSM": "MHT_P_APP"
+                },
+                "default_consolidation": {
+                    "MHT_E_APP": [
+                        "MHT_J_APP",
+                        "MHT_P_APP",
+                        "MHT_W_APP"
+                    ]
                 }
             }
         },
@@ -751,7 +853,7 @@
             }
         ],
         "controller_configs": {
-            "1B": {
+            "BOS_B_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -760,7 +862,7 @@
                     }
                 ]
             },
-            "1L": {
+            "BOS_L_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -768,340 +870,6 @@
                         "vertices": "N042.13.10.631,W071.44.41.735 N042.21.25.537,W071.22.30.302 N042.22.27.953,W071.12.13.035 N042.20.23.657,W071.01.12.454 N042.24.25.658,W070.28.07.280 N042.27.17.677,W070.12.42.753 N042.17.31.583,W070.04.49.462 N042.07.02.135,W070.11.33.319 N042.02.03.774,W070.20.09.924 N041.54.00.197,W070.31.56.839 N041.51.07.890,W070.51.24.521 N041.52.35.039,W071.04.24.221 N041.57.56.609,W071.15.51.470 N042.04.10.653,W071.32.40.647"
                     }
                 ]
-            }
-        },
-        "controller_assignments": {
-            "90X": {
-                "inbound_assignments": {
-                    "CON": "MHT_W_APP",
-                    "ENE": "MHT_E_APP",
-                    "FREDO.6K": "BOS_S_APP",
-                    "FREDO.8K": "BOS_S_APP",
-                    "GDM": "MHT_W_APP",
-                    "GDM.7K": "BOS_R_APP",
-                    "GDM.9K": "BOS_R_APP",
-                    "JFUND2": "BOS_R_APP",
-                    "MANCH..LWRNC": "BOS_R_APP",
-                    "OOSHN5": "BOS_R_APP",
-                    "PSM..LWRNC": "BOS_R_APP",
-                    "ROBUC3": "BOS_S_APP",
-                    "ROZZE2": "MHT_W_APP",
-                    "WOONS.5K": "BOS_D_DEP",
-                    "WOONS.7K": "BOS_D_DEP"
-                },
-                "departure_assignments": {
-                    "KBOS": "BOS_D_DEP",
-                    "KMHT": "MHT_J_APP"
-                }
-            },
-            "A90": {
-                "inbound_assignments": {
-                    "CON": "MHT_W_APP",
-                    "DEEPO2": "ACK_N_APP",
-                    "DREEM2.BED": "BOS_B_APP",
-                    "DREEM2.BVY": "BOS_B_APP",
-                    "DREEM2.LWM": "BOS_B_APP",
-                    "ENE": "MHT_E_APP",
-                    "FREDO.4K": "BOS_S_APP",
-                    "FREDO.6K": "BOS_S_APP",
-                    "FREDO.8K": "BOS_S_APP",
-                    "GDM": "MHT_W_APP",
-                    "GDM.7K": "BOS_R_APP",
-                    "GDM.9K": "BOS_R_APP",
-                    "JFUND2": "BOS_R_APP",
-                    "MANCH..LWRNC": "BOS_R_APP",
-                    "MANCH..LWRNC.SAT": "BOS_R_APP",
-                    "NEWBE3": "ACK_N_APP",
-                    "OOSHN5": "BOS_R_APP",
-                    "PSM..LWRNC": "BOS_R_APP",
-                    "PSM..LWRNC.SAT": "BOS_R_APP",
-                    "ROBUC3": "BOS_S_APP",
-                    "ROZZE2": "MHT_W_APP",
-                    "WOONS.3K": "BOS_U_APP",
-                    "WOONS.5K": "BOS_U_APP",
-                    "WOONS.7K": "BOS_U_APP",
-                    "ZELKA2.BED": "BOS_B_APP",
-                    "ZELKA2.BVY": "BOS_B_APP",
-                    "ZELKA2.LWM": "BOS_B_APP"
-                },
-                "departure_assignments": {
-                    "KACK": "ACK_DEP",
-                    "KBED": "BOS_B_APP",
-                    "KBOS": "BOS_D_DEP",
-                    "KMHT": "MHT_J_APP",
-                    "KMVY": "ACK_DEP",
-                    "KPSM": "MHT_P_APP"
-                }
-            },
-            "A91": {
-                "inbound_assignments": {
-                    "CON": "MHT_W_APP",
-                    "ENE": "MHT_E_APP",
-                    "FREDO.6K": "BOS_S_APP",
-                    "FREDO.8K": "BOS_S_APP",
-                    "GDM": "MHT_W_APP",
-                    "GDM.7K": "BOS_R_APP",
-                    "GDM.9K": "BOS_R_APP",
-                    "JFUND2": "BOS_R_APP",
-                    "MANCH..LWRNC": "BOS_R_APP",
-                    "OOSHN5": "BOS_R_APP",
-                    "PSM..LWRNC": "BOS_R_APP",
-                    "ROBUC3": "BOS_S_APP",
-                    "ROZZE2": "MHT_W_APP",
-                    "WOONS.5K": "BOS_D_DEP",
-                    "WOONS.7K": "BOS_D_DEP"
-                },
-                "departure_assignments": {
-                    "KBOS": "BOS_D_DEP",
-                    "KMHT": "MHT_Z_APP"
-                }
-            },
-            "A92": {
-                "inbound_assignments": {
-                    "CON": "MHT_W_APP",
-                    "DEEPO2": "ACK_N_APP",
-                    "DREEM2.BED": "BOS_B_APP",
-                    "DREEM2.BVY": "BOS_B_APP",
-                    "DREEM2.LWM": "BOS_B_APP",
-                    "ENE": "MHT_E_APP",
-                    "FREDO.4K": "BOS_S_APP",
-                    "FREDO.6K": "BOS_S_APP",
-                    "FREDO.8K": "BOS_S_APP",
-                    "GDM": "MHT_W_APP",
-                    "GDM.7K": "BOS_R_APP",
-                    "GDM.9K": "BOS_R_APP",
-                    "JFUND2": "BOS_R_APP",
-                    "MANCH..LWRNC": "BOS_R_APP",
-                    "MANCH..LWRNC.SAT": "BOS_R_APP",
-                    "NEWBE3": "ACK_N_APP",
-                    "OOSHN5": "BOS_R_APP",
-                    "PSM..LWRNC": "BOS_R_APP",
-                    "PSM..LWRNC.SAT": "BOS_R_APP",
-                    "ROBUC3": "BOS_S_APP",
-                    "ROZZE2": "MHT_W_APP",
-                    "WOONS.3K": "BOS_U_APP",
-                    "WOONS.5K": "BOS_U_APP",
-                    "WOONS.7K": "BOS_U_APP",
-                    "ZELKA2.BED": "BOS_B_APP",
-                    "ZELKA2.BVY": "BOS_B_APP",
-                    "ZELKA2.LWM": "BOS_B_APP"
-                },
-                "departure_assignments": {
-                    "KACK": "ACK_DEP",
-                    "KBED": "BOS_B_APP",
-                    "KBOS": "BOS_D_DEP",
-                    "KMHT": "MHT_Z_APP",
-                    "KMVY": "ACK_DEP",
-                    "KPSM": "MHT_P_APP"
-                }
-            },
-            "STD": {
-                "inbound_assignments": {
-                    "DEEPO2": "ACK_N_APP",
-                    "NEWBE3": "ACK_N_APP"
-                },
-                "departure_assignments": {
-                    "KACK": "ACK_DEP",
-                    "KMVY": "ACK_DEP"
-                }
-            },
-            "33X": {
-                "inbound_assignments": {},
-                "departure_assignments": {
-                    "KBOS": "BOS_D_APP"
-                }
-            },
-            "22X": {
-                "inbound_assignments": {
-                    "FV.JFUND.22L": "BOS_F_APP",
-                    "FV.OOSHN.22L": "BOS_F_APP",
-                    "FV.LWRNC.22L": "BOS_F_APP",
-                    "FV.ROBUC.22L": "BOS_F_APP",
-                    "FV.RD.22L": "BOS_F_APP"
-                },
-                "departure_assignments": {
-                    "KBOS": "BOS_F_APP"
-                }
-            },
-            "44X": {
-                "inbound_assignments": {
-                    "FV.JFUND.4R": "BOS_F_APP",
-                    "FV.ROBUC.4R": "BOS_F_APP",
-                    "FV.WOONS.4L": "BOS_I_APP",
-                    "FV.LD.4L": "BOS_I_APP",
-                    "FV.FREDO.4L": "BOS_I_APP"
-                },
-                "departure_assignments": {
-                    "KBOS": "BOS_F_APP"
-                }
-            },
-            "CNE": {
-                "inbound_assignments": {
-                    "DREEM2": "BOS_B_APP",
-                    "FREDO": "BOS_M_APP",
-                    "GDM": "BOS_R_APP",
-                    "GDM.15R": "BOS_R_APP",
-                    "JFUND2.15R": "BOS_R_APP",
-                    "JFUND2.22L": "BOS_R_APP",
-                    "JFUND2.27": "BOS_R_APP",
-                    "JFUND2.33L": "BOS_R_APP",
-                    "JFUND2.4R": "BOS_R_APP",
-                    "KLANE": "BOS_R_APP",
-                    "LWRNC": "BOS_R_APP",
-                    "LWRNC.SAT": "BOS_R_APP",
-                    "OOSHN5.15R": "BOS_R_APP",
-                    "OOSHN5.22L": "BOS_R_APP",
-                    "OOSHN5.27": "BOS_R_APP",
-                    "OOSHN5.33L": "BOS_R_APP",
-                    "OOSHN5.4R": "BOS_R_APP",
-                    "ROBUC3.15R": "BOS_M_APP",
-                    "ROBUC3.22L": "BOS_M_APP",
-                    "ROBUC3.27": "BOS_M_APP",
-                    "ROBUC3.33L": "BOS_M_APP",
-                    "ROBUC3.4R": "BOS_M_APP",
-                    "WOONS": "BOS_U_APP",
-                    "WOONS.LO": "BOS_L_APP",
-                    "ZELKA2": "BOS_B_APP"
-                },
-                "departure_assignments": {
-                    "KBED": "BOS_B_APP",
-                    "KBOS": "BOS_D_APP",
-                    "KBVY": "BOS_B_APP",
-                    "KLWM": "BOS_B_APP",
-                    "KOWD": "BOS_L_APP"
-                }
-            },
-            "CNW": {
-                "inbound_assignments": {
-                    "DREEM2": "BOS_B_APP",
-                    "FREDO": "BOS_M_APP",
-                    "GDM": "BOS_R_APP",
-                    "GDM.15R": "BOS_R_APP",
-                    "JFUND2.15R": "BOS_R_APP",
-                    "JFUND2.22L": "BOS_R_APP",
-                    "JFUND2.27": "BOS_R_APP",
-                    "JFUND2.33L": "BOS_R_APP",
-                    "JFUND2.4R": "BOS_R_APP",
-                    "KLANE": "BOS_R_APP",
-                    "LWRNC": "BOS_R_APP",
-                    "LWRNC.SAT": "BOS_R_APP",
-                    "OOSHN5.15R": "BOS_R_APP",
-                    "OOSHN5.22L": "BOS_R_APP",
-                    "OOSHN5.27": "BOS_R_APP",
-                    "OOSHN5.33L": "BOS_R_APP",
-                    "OOSHN5.4R": "BOS_R_APP",
-                    "ROBUC3.15R": "BOS_M_APP",
-                    "ROBUC3.22L": "BOS_M_APP",
-                    "ROBUC3.27": "BOS_M_APP",
-                    "ROBUC3.33L": "BOS_M_APP",
-                    "ROBUC3.4R": "BOS_M_APP",
-                    "WOONS": "BOS_U_APP",
-                    "WOONS.LO": "BOS_L_APP",
-                    "ZELKA2": "BOS_B_APP"
-                },
-                "departure_assignments": {
-                    "KBED": "BOS_B_APP",
-                    "KBOS": "BOS_D_APP",
-                    "KBVY": "BOS_B_APP",
-                    "KLWM": "BOS_B_APP",
-                    "KOWD": "BOS_L_APP"
-                }
-            },
-            "CSE": {
-                "inbound_assignments": {
-                    "DREEM2": "BOS_B_APP",
-                    "FREDO": "BOS_M_APP",
-                    "GDM": "BOS_R_APP",
-                    "GDM.15R": "BOS_R_APP",
-                    "JFUND2.15R": "BOS_R_APP",
-                    "JFUND2.22L": "BOS_R_APP",
-                    "JFUND2.27": "BOS_R_APP",
-                    "JFUND2.33L": "BOS_R_APP",
-                    "JFUND2.4R": "BOS_R_APP",
-                    "KLANE": "BOS_R_APP",
-                    "LWRNC": "BOS_R_APP",
-                    "LWRNC.SAT": "BOS_R_APP",
-                    "OOSHN5.15R": "BOS_R_APP",
-                    "OOSHN5.22L": "BOS_R_APP",
-                    "OOSHN5.27": "BOS_R_APP",
-                    "OOSHN5.33L": "BOS_R_APP",
-                    "OOSHN5.4R": "BOS_R_APP",
-                    "ROBUC3.15R": "BOS_M_APP",
-                    "ROBUC3.22L": "BOS_M_APP",
-                    "ROBUC3.27": "BOS_M_APP",
-                    "ROBUC3.33L": "BOS_M_APP",
-                    "ROBUC3.4R": "BOS_M_APP",
-                    "WOONS": "BOS_U_APP",
-                    "WOONS.LO": "BOS_L_APP",
-                    "ZELKA2": "BOS_B_APP"
-                },
-                "departure_assignments": {
-                    "KBED": "BOS_B_APP",
-                    "KBOS": "BOS_D_APP",
-                    "KBVY": "BOS_B_APP",
-                    "KLWM": "BOS_B_APP",
-                    "KOWD": "BOS_L_APP"
-                }
-            },
-            "CSW": {
-                "inbound_assignments": {
-                    "DREEM2": "BOS_B_APP",
-                    "FREDO": "BOS_M_APP",
-                    "GDM": "BOS_R_APP",
-                    "GDM.15R": "BOS_R_APP",
-                    "JFUND2.15R": "BOS_R_APP",
-                    "JFUND2.22L": "BOS_R_APP",
-                    "JFUND2.27": "BOS_R_APP",
-                    "JFUND2.33L": "BOS_R_APP",
-                    "JFUND2.4R": "BOS_R_APP",
-                    "KLANE": "BOS_R_APP",
-                    "LWRNC": "BOS_R_APP",
-                    "LWRNC.SAT": "BOS_R_APP",
-                    "OOSHN5.15R": "BOS_R_APP",
-                    "OOSHN5.22L": "BOS_R_APP",
-                    "OOSHN5.27": "BOS_R_APP",
-                    "OOSHN5.33L": "BOS_R_APP",
-                    "OOSHN5.4R": "BOS_R_APP",
-                    "ROBUC3.15R": "BOS_M_APP",
-                    "ROBUC3.22L": "BOS_M_APP",
-                    "ROBUC3.27": "BOS_M_APP",
-                    "ROBUC3.33L": "BOS_M_APP",
-                    "ROBUC3.4R": "BOS_M_APP",
-                    "WOONS": "BOS_U_APP",
-                    "WOONS.LO": "BOS_L_APP",
-                    "ZELKA2": "BOS_B_APP"
-                },
-                "departure_assignments": {
-                    "KBED": "BOS_B_APP",
-                    "KBOS": "BOS_D_APP",
-                    "KBVY": "BOS_B_APP",
-                    "KLWM": "BOS_B_APP",
-                    "KOWD": "BOS_L_APP"
-                }
-            },
-            "KM1": {
-                "inbound_assignments": {
-                    "CON": "MHT_W_APP",
-                    "ENE": "MHT_E_APP",
-                    "GDM": "MHT_W_APP",
-                    "ROZZE2": "MHT_W_APP"
-                },
-                "departure_assignments": {
-                    "KMHT": "MHT_J_APP",
-                    "KPSM": "MHT_P_APP"
-                }
-            },
-            "KMH": {
-                "inbound_assignments": {
-                    "CON": "MHT_W_APP",
-                    "ENE": "MHT_E_APP",
-                    "GDM": "MHT_W_APP",
-                    "ROZZE2": "MHT_W_APP"
-                },
-                "departure_assignments": {
-                    "KMHT": "MHT_Z_APP",
-                    "KPSM": "MHT_P_APP"
-                }
             }
         }
     },
@@ -1112,12 +880,16 @@
                 "prefix": "1"
             },
             {
+                "id": "PWM",
+                "prefix": "3"
+            },
+            {
                 "id": "Y90",
                 "prefix": "2"
             },
             {
-                "id": "PWM",
-                "prefix": "3"
+                "id": "ZBW",
+                "eram_prefix": "B"
             }
         ],
         "neighboring_facilities": [

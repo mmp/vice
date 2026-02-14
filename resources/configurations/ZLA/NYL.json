@@ -1,0 +1,30 @@
+{
+    "control_positions": {
+        "NYL_APP": {
+            "frequency": 124700,
+            "radio_name": "Yuma Approach",
+            "sector_id": "1A"
+        },
+        "NYL_DEP": {
+            "frequency": 125550,
+            "radio_name": "Yuma Departure",
+            "sector_id": "1D"
+        },
+        "NYL_TWR": {
+            "frequency": 119300,
+            "radio_name": "Yuma Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZAB",
+                "eram_prefix": "A"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZAB"
+        ]
+    }
+}

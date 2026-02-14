@@ -381,10 +381,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "ASE_APP": []
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "ASE BASE"

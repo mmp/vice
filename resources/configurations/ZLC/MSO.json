@@ -1,0 +1,29 @@
+{
+    "control_positions": {
+        "MSO_APP": {
+            "frequency": 124900,
+            "radio_name": "Spokane Approach",
+            "sector_id": "1M"
+        },
+        "MSO_TWR": {
+            "frequency": 118400,
+            "radio_name": "Missoula Tower",
+            "sector_id": "2L"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZSE",
+                "prefix": "1"
+            },
+            {
+                "id": "ZSE",
+                "eram_prefix": "S"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZSE"
+        ]
+    }
+}

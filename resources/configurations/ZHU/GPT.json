@@ -1,0 +1,35 @@
+{
+    "control_positions": {
+        "GPT_E_APP": {
+            "frequency": 124600,
+            "radio_name": "Gulfport Approach",
+            "sector_id": "1E"
+        },
+        "GPT_TWR": {
+            "frequency": 123700,
+            "radio_name": "Gulfport Tower",
+            "sector_id": "1L"
+        },
+        "GPT_W_APP": {
+            "frequency": 127500,
+            "radio_name": "Gulfport Approach",
+            "sector_id": "1W"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "MOB",
+                "prefix": "1"
+            },
+            {
+                "id": "MSY",
+                "prefix": "2"
+            }
+        ],
+        "neighboring_facilities": [
+            "MOB",
+            "MSY"
+        ]
+    }
+}

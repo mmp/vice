@@ -1,10 +1,21 @@
 {
-  "control_positions": {},
-  "stars_config": {},
-  "handoff_topology": {
-    "handoff_ids": [],
-    "neighboring_facilities": [
-      "ZDV"
-    ]
-  }
+    "control_positions": {
+        "PUB_TWR": {
+            "frequency": 119100,
+            "radio_name": "Pueblo Tower",
+            "sector_id": "5T"
+        }
+    },
+    "stars_config": {},
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZDV",
+                "eram_prefix": "D"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZDV"
+        ]
+    }
 }

@@ -63,6 +63,12 @@
                 },
                 "departure_assignments": {
                     "KIND": "IND_W_APP"
+                },
+                "default_consolidation": {
+                    "IND_B_APP": [
+                        "IND_D_APP",
+                        "IND_W_APP"
+                    ]
                 }
             },
             "KI1": {
@@ -75,6 +81,12 @@
                 },
                 "departure_assignments": {
                     "KIND": "IND_E_APP"
+                },
+                "default_consolidation": {
+                    "IND_B_APP": [
+                        "IND_D_APP",
+                        "IND_E_APP"
+                    ]
                 }
             }
         },
@@ -282,59 +294,41 @@
             "RNP FIXES RWY 14",
             "RNP FIXES RWY 32"
         ],
-        "video_map_file": "videomaps/ZID-videomaps.gob.zst",
-        "controller_assignments": {
-            "KI1": {
-                "inbound_assignments": {
-                    "GIIBS3": "IND_D_APP",
-                    "JAKKS2": "IND_B_APP",
-                    "KOLTS2": "IND_B_APP",
-                    "SMUKE2": "IND_B_APP",
-                    "SNKPT2": "IND_D_APP"
-                },
-                "departure_assignments": {
-                    "KIND": "IND_E_APP"
-                }
-            },
-            "KIN": {
-                "inbound_assignments": {
-                    "GIIBS3": "IND_D_APP",
-                    "JAKKS2": "IND_B_APP",
-                    "KOLTS2": "IND_B_APP",
-                    "SMUKE2": "IND_B_APP",
-                    "SNKPT2": "IND_D_APP"
-                },
-                "departure_assignments": {
-                    "KIND": "IND_W_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZID-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
-            {
-                "id": "CVG",
-                "prefix": "2"
-            },
             {
                 "id": "CMH",
                 "prefix": "1"
             },
             {
-                "id": "HUF",
-                "prefix": "3"
-            },
-            {
-                "id": "GUS",
-                "prefix": "4"
+                "id": "CVG",
+                "prefix": "2"
             },
             {
                 "id": "FWA",
                 "prefix": "5"
             },
             {
+                "id": "GUS",
+                "prefix": "4"
+            },
+            {
+                "id": "HUF",
+                "prefix": "3"
+            },
+            {
                 "id": "SDF",
                 "prefix": "6"
+            },
+            {
+                "id": "ZAU",
+                "eram_prefix": "G"
+            },
+            {
+                "id": "ZID",
+                "eram_prefix": "I"
             }
         ],
         "neighboring_facilities": [

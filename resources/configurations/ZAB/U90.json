@@ -1,0 +1,25 @@
+{
+    "control_positions": {
+        "TUS_APP": {
+            "frequency": 119400,
+            "radio_name": "Tucson Approach",
+            "sector_id": "1A"
+        },
+        "TUS_DEP": {
+            "frequency": 125100,
+            "radio_name": "Tucson Departure",
+            "sector_id": "1D"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "FHU",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "FHU"
+        ]
+    }
+}

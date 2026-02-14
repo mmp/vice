@@ -43,6 +43,13 @@
                 },
                 "departure_assignments": {
                     "KOKC": "OKC_W_APP"
+                },
+                "default_consolidation": {
+                    "OKC_D_APP": [
+                        "OKC_E_APP",
+                        "OKC_S_APP",
+                        "OKC_W_APP"
+                    ]
                 }
             },
             "KO1": {
@@ -55,6 +62,13 @@
                 },
                 "departure_assignments": {
                     "KOKC": "OKC_S_APP"
+                },
+                "default_consolidation": {
+                    "OKC_D_APP": [
+                        "OKC_E_APP",
+                        "OKC_S_APP",
+                        "OKC_W_APP"
+                    ]
                 }
             }
         },
@@ -169,43 +183,25 @@
             "OKC152S ODO",
             "OKC MTRs"
         ],
-        "video_map_file": "videomaps/ZFW-videomaps.gob.zst",
-        "controller_assignments": {
-            "KO1": {
-                "inbound_assignments": {
-                    "CAMET3": "OKC_W_APP",
-                    "GHOST3": "OKC_S_APP",
-                    "MURAH3": "OKC_E_APP",
-                    "TSDEL3": "OKC_D_APP",
-                    "YUCKS3": "OKC_S_APP"
-                },
-                "departure_assignments": {
-                    "KOKC": "OKC_S_APP"
-                }
-            },
-            "KOK": {
-                "inbound_assignments": {
-                    "CAMET3": "OKC_W_APP",
-                    "GHOST3": "OKC_S_APP",
-                    "MURAH3": "OKC_E_APP",
-                    "TSDEL3": "OKC_D_APP",
-                    "YUCKS3": "OKC_S_APP"
-                },
-                "departure_assignments": {
-                    "KOKC": "OKC_W_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZFW-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
+            {
+                "id": "END",
+                "prefix": "2"
+            },
             {
                 "id": "FSI",
                 "prefix": "1"
             },
             {
-                "id": "END",
-                "prefix": "2"
+                "id": "ZFW",
+                "eram_prefix": "F"
+            },
+            {
+                "id": "ZKC",
+                "eram_prefix": "K"
             }
         ],
         "neighboring_facilities": [

@@ -1,0 +1,40 @@
+{
+    "control_positions": {
+        "LEX_E_APP": {
+            "frequency": 120150,
+            "radio_name": "Lexington Approach",
+            "sector_id": "1E"
+        },
+        "LEX_F_APP": {
+            "frequency": 133400,
+            "radio_name": "Lexington Approach",
+            "sector_id": "1F"
+        },
+        "LEX_TWR": {
+            "frequency": 119100,
+            "radio_name": "Lexington Tower",
+            "sector_id": "1T"
+        },
+        "LEX_W_APP": {
+            "frequency": 120750,
+            "radio_name": "Lexington Approach",
+            "sector_id": "1W"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "CVG",
+                "prefix": "1"
+            },
+            {
+                "id": "SDF",
+                "prefix": "2"
+            }
+        ],
+        "neighboring_facilities": [
+            "CVG",
+            "SDF"
+        ]
+    }
+}

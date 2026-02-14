@@ -1,0 +1,23 @@
+{
+    "control_positions": {
+        "APN_APP": {
+            "frequency": 128425,
+            "radio_name": "Alpena Approach",
+            "sector_id": "1A"
+        },
+        "APN_F_APP": {
+            "frequency": 118500,
+            "radio_name": "Alpena Arrival",
+            "sector_id": "1F"
+        },
+        "APN_TWR": {
+            "frequency": 121350,
+            "radio_name": "Alpena Tower",
+            "sector_id": "1Z"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [],
+        "neighboring_facilities": []
+    }
+}

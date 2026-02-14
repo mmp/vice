@@ -216,5 +216,77 @@
             "radio_name": "ZMA TMU",
             "sector_id": "99"
         }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "F11",
+                "single_char_stars_id": "X",
+                "two_char_stars_id": "XO",
+                "stars_id": "XOO"
+            },
+            {
+                "id": "HST",
+                "two_char_stars_id": "HH",
+                "stars_id": "HHH"
+            },
+            {
+                "id": "JAX",
+                "two_char_stars_id": "WO",
+                "stars_id": "WOO"
+            },
+            {
+                "id": "MIA",
+                "single_char_stars_id": "M",
+                "two_char_stars_id": "MM",
+                "stars_id": "MMM"
+            },
+            {
+                "id": "NQX",
+                "single_char_stars_id": "E",
+                "two_char_stars_id": "EE",
+                "stars_id": "EEE"
+            },
+            {
+                "id": "PBI",
+                "single_char_stars_id": "P",
+                "two_char_stars_id": "PP",
+                "stars_id": "PPP"
+            },
+            {
+                "id": "RSW",
+                "single_char_stars_id": "F",
+                "two_char_stars_id": "FF",
+                "stars_id": "FFF"
+            },
+            {
+                "id": "TPA",
+                "single_char_stars_id": "T",
+                "two_char_stars_id": "TT",
+                "stars_id": "TTT"
+            },
+            {
+                "id": "ZHU",
+                "eram_prefix": "H"
+            },
+            {
+                "id": "ZJX",
+                "eram_prefix": "J"
+            }
+        ],
+        "neighboring_facilities": [
+            "F11",
+            "HST",
+            "JAX",
+            "MIA",
+            "NQX",
+            "PBI",
+            "RSW",
+            "TPA",
+            "ZHU",
+            "ZJX",
+            "ZSU",
+            "ZWY"
+        ]
     }
 }

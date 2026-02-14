@@ -1,0 +1,23 @@
+{
+    "control_positions": {
+        "AMA_A_APP": {
+            "frequency": 119500,
+            "radio_name": "Amarillo Approach",
+            "sector_id": "1A"
+        },
+        "AMA_F_APP": {
+            "frequency": 121150,
+            "radio_name": "Amarillo Approach",
+            "sector_id": "1F"
+        },
+        "AMA_TWR": {
+            "frequency": 118300,
+            "radio_name": "Amarillo Tower",
+            "sector_id": "2T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [],
+        "neighboring_facilities": []
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "control_positions": {
+        "BZN_APP": {
+            "frequency": 118975,
+            "radio_name": "Big Sky Approach",
+            "sector_id": "1B"
+        },
+        "BZN_TWR": {
+            "frequency": 118200,
+            "radio_name": "Bozeman Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [],
+        "neighboring_facilities": []
+    }
+}

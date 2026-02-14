@@ -1,0 +1,35 @@
+{
+    "control_positions": {
+        "FSI_APP": {
+            "frequency": 120550,
+            "radio_name": "Fort Sill Approach",
+            "sector_id": "1R"
+        },
+        "FSI_TWR": {
+            "frequency": 124950,
+            "radio_name": "Post Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "LTS",
+                "prefix": "3"
+            },
+            {
+                "id": "OKC",
+                "prefix": "1"
+            },
+            {
+                "id": "SPS",
+                "prefix": "2"
+            }
+        ],
+        "neighboring_facilities": [
+            "LTS",
+            "OKC",
+            "SPS"
+        ]
+    }
+}

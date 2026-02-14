@@ -1,0 +1,25 @@
+{
+    "control_positions": {
+        "LMT_APP": {
+            "frequency": 123675,
+            "radio_name": "Kingsley Approach",
+            "sector_id": "1L"
+        },
+        "LMT_TWR": {
+            "frequency": 133975,
+            "radio_name": "Kingsley Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "EUG",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "EUG"
+        ]
+    }
+}

@@ -11533,27 +11533,7 @@
                 }
             },
             "configuration": {
-                "config_id": "12S",
-                "default_consolidation": {
-                    "MSP_H_APP": [
-                        "MSP_R_DEP",
-                        "MSP_N_APP",
-                        "MSP_I_APP"
-                    ],
-                    "MSP_R_DEP": [
-                        "MSP_D_DEP",
-                        "MSP_E_APP",
-                        "MSP_L_DEP"
-                    ],
-                    "MSP_N_APP": [
-                        "MSP_S_APP",
-                        "MSP_J_APP"
-                    ],
-                    "MSP_E_APP": [
-                        "MSP_G_APP",
-                        "MSP_K_APP"
-                    ]
-                }
+                "config_id": "12S"
             },
             "default_maps": [
                 "M98 204 12 B"
@@ -11615,27 +11595,7 @@
                 }
             },
             "configuration": {
-                "config_id": "30S",
-                "default_consolidation": {
-                    "MSP_H_APP": [
-                        "MSP_R_DEP",
-                        "MSP_N_APP",
-                        "MSP_I_APP"
-                    ],
-                    "MSP_R_DEP": [
-                        "MSP_D_DEP",
-                        "MSP_E_APP",
-                        "MSP_L_DEP"
-                    ],
-                    "MSP_N_APP": [
-                        "MSP_S_APP",
-                        "MSP_J_APP"
-                    ],
-                    "MSP_E_APP": [
-                        "MSP_G_APP",
-                        "MSP_K_APP"
-                    ]
-                }
+                "config_id": "30S"
             },
             "default_maps": [
                 "M98 203 30 B"
@@ -11697,27 +11657,7 @@
                 }
             },
             "configuration": {
-                "config_id": "117",
-                "default_consolidation": {
-                    "MSP_H_APP": [
-                        "MSP_R_DEP",
-                        "MSP_N_APP",
-                        "MSP_I_APP"
-                    ],
-                    "MSP_R_DEP": [
-                        "MSP_D_DEP",
-                        "MSP_E_APP",
-                        "MSP_L_DEP"
-                    ],
-                    "MSP_N_APP": [
-                        "MSP_S_APP",
-                        "MSP_J_APP"
-                    ],
-                    "MSP_E_APP": [
-                        "MSP_G_APP",
-                        "MSP_K_APP"
-                    ]
-                }
+                "config_id": "117"
             },
             "default_maps": [
                 "M98 227 12-17 B"
@@ -11784,27 +11724,7 @@
                 }
             },
             "configuration": {
-                "config_id": "317",
-                "default_consolidation": {
-                    "MSP_H_APP": [
-                        "MSP_R_DEP",
-                        "MSP_N_APP",
-                        "MSP_I_APP"
-                    ],
-                    "MSP_R_DEP": [
-                        "MSP_D_DEP",
-                        "MSP_E_APP",
-                        "MSP_L_DEP"
-                    ],
-                    "MSP_N_APP": [
-                        "MSP_S_APP",
-                        "MSP_J_APP"
-                    ],
-                    "MSP_E_APP": [
-                        "MSP_G_APP",
-                        "MSP_K_APP"
-                    ]
-                }
+                "config_id": "317"
             },
             "default_maps": [
                 "M98 229 30-17 B"
@@ -11867,27 +11787,7 @@
                 }
             },
             "configuration": {
-                "config_id": "135",
-                "default_consolidation": {
-                    "MSP_H_APP": [
-                        "MSP_R_DEP",
-                        "MSP_N_APP",
-                        "MSP_I_APP"
-                    ],
-                    "MSP_R_DEP": [
-                        "MSP_D_DEP",
-                        "MSP_E_APP",
-                        "MSP_L_DEP"
-                    ],
-                    "MSP_N_APP": [
-                        "MSP_S_APP",
-                        "MSP_J_APP"
-                    ],
-                    "MSP_E_APP": [
-                        "MSP_G_APP",
-                        "MSP_K_APP"
-                    ]
-                }
+                "config_id": "135"
             },
             "default_maps": [
                 "M98 223 35-12 B"
@@ -11953,27 +11853,7 @@
                 }
             },
             "configuration": {
-                "config_id": "335",
-                "default_consolidation": {
-                    "MSP_H_APP": [
-                        "MSP_R_DEP",
-                        "MSP_N_APP",
-                        "MSP_I_APP"
-                    ],
-                    "MSP_R_DEP": [
-                        "MSP_D_DEP",
-                        "MSP_E_APP",
-                        "MSP_L_DEP"
-                    ],
-                    "MSP_N_APP": [
-                        "MSP_S_APP",
-                        "MSP_J_APP"
-                    ],
-                    "MSP_E_APP": [
-                        "MSP_G_APP",
-                        "MSP_K_APP"
-                    ]
-                }
+                "config_id": "335"
             },
             "default_maps": [
                 "M98 231 30-35 B"

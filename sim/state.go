@@ -122,11 +122,11 @@ type StateUpdate struct {
 // state updates for clients.
 func makeDerivedState(s *Sim) DerivedState {
 	ds := DerivedState{
-		UnassociatedFlightPlans: s.STARSComputer.FlightPlans,
+		UnassociatedFlightPlans: s.starsComputer().FlightPlanSlice(),
 	}
 
 	// Build ReleaseDepartures from STARSComputer.HoldForRelease
-	for _, ac := range s.STARSComputer.HoldForRelease {
+	for _, ac := range s.starsComputer().HoldForRelease {
 		fp, _, _ := s.getFlightPlanForACID(ACID(ac.ADSBCallsign))
 		if fp == nil {
 			s.lg.Warnf("%s: no flight plan for hold for release aircraft", string(ac.ADSBCallsign))
@@ -191,7 +191,7 @@ func makeDerivedState(s *Sim) DerivedState {
 	}
 
 	// Make up fake tracks for unsupported datablocks
-	for i, fp := range s.STARSComputer.FlightPlans {
+	for _, fp := range s.starsComputer().FlightPlans {
 		if fp.Location.IsZero() {
 			continue
 		}
@@ -201,7 +201,7 @@ func makeDerivedState(s *Sim) DerivedState {
 				ADSBCallsign: callsign,
 				Location:     fp.Location,
 			},
-			FlightPlan: s.STARSComputer.FlightPlans[i],
+			FlightPlan: fp,
 		}
 	}
 
@@ -374,6 +374,18 @@ func (ss *CommonState) IsExternalController(pos ControlPosition) bool {
 	resolved := ss.ResolveController(pos)
 	ctrl, ok := ss.Controllers[resolved]
 	return ok && ctrl.FacilityIdentifier != ""
+}
+
+// CenterTCW returns the TCW for any ARTCC/center controller. It picks
+// the first controller with FacilityIdentifier "C". Used when STARS
+// receives an FP from ERAM and only knows the track belongs to center.
+func (ss *CommonState) CenterTCW() TCW {
+	for tcp, ctrl := range ss.Controllers {
+		if ctrl.FacilityIdentifier == "C" {
+			return TCW(tcp)
+		}
+	}
+	return ""
 }
 
 func (ss *CommonState) IsLocalController(pos ControlPosition) bool {

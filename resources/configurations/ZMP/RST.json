@@ -1,0 +1,40 @@
+{
+    "control_positions": {
+        "RST_A_APP": {
+            "frequency": 119800,
+            "radio_name": "Rochester Approach",
+            "sector_id": "1A"
+        },
+        "RST_TWR": {
+            "frequency": 118300,
+            "radio_name": "Rochester Tower",
+            "sector_id": "1T"
+        },
+        "RST_W_APP": {
+            "frequency": 119200,
+            "radio_name": "Rochester Approach",
+            "sector_id": "1W"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ALO",
+                "prefix": "1"
+            },
+            {
+                "id": "M98",
+                "prefix": "2"
+            },
+            {
+                "id": "ZAU",
+                "eram_prefix": "G"
+            }
+        ],
+        "neighboring_facilities": [
+            "ALO",
+            "M98",
+            "ZAU"
+        ]
+    }
+}

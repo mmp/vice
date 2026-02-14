@@ -1,0 +1,45 @@
+{
+    "control_positions": {
+        "CKB_APP": {
+            "frequency": 121150,
+            "radio_name": "Clarksburg Approach",
+            "sector_id": "1E"
+        },
+        "CKB_TWR": {
+            "frequency": 126700,
+            "radio_name": "Clarksburg Tower",
+            "sector_id": "1T"
+        },
+        "CKB_T_APP": {
+            "frequency": 123450,
+            "radio_name": "Clarksburg Approach",
+            "sector_id": "1Z"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "JST",
+                "prefix": "2"
+            },
+            {
+                "id": "PIT",
+                "prefix": "1"
+            },
+            {
+                "id": "ZDC",
+                "eram_prefix": "W"
+            },
+            {
+                "id": "ZID",
+                "eram_prefix": "I"
+            }
+        ],
+        "neighboring_facilities": [
+            "JST",
+            "PIT",
+            "ZDC",
+            "ZID"
+        ]
+    }
+}

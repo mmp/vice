@@ -52,6 +52,12 @@
                 },
                 "departure_assignments": {
                     "KRDU": "RDU_N_DEP"
+                },
+                "default_consolidation": {
+                    "RDU_E_APP": [
+                        "RDU_N_DEP",
+                        "RDU_W_APP"
+                    ]
                 }
             }
         },
@@ -108,27 +114,10 @@
             "RDU SW RVM",
             "RDU MVA"
         ],
-        "video_map_file": "videomaps/ZDC-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "ALDAN4": "RDU_W_APP",
-                    "BLOGS3": "RDU_E_APP",
-                    "DMSTR2": "RDU_W_APP",
-                    "TAQLE2": "RDU_E_APP"
-                },
-                "departure_assignments": {
-                    "KRDU": "RDU_N_DEP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZDC-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
-            {
-                "id": "GSO",
-                "prefix": "3"
-            },
             {
                 "id": "FAY",
                 "prefix": "2"
@@ -136,6 +125,18 @@
             {
                 "id": "GSB",
                 "prefix": "1"
+            },
+            {
+                "id": "GSO",
+                "prefix": "3"
+            },
+            {
+                "id": "ZDC",
+                "eram_prefix": "W"
+            },
+            {
+                "id": "ZTL",
+                "eram_prefix": "T"
             }
         ],
         "neighboring_facilities": [

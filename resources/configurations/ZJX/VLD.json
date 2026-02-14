@@ -1,0 +1,20 @@
+{
+    "control_positions": {
+        "VAD_APP": {
+            "frequency": 126600,
+            "radio_name": "Valdosta Approach",
+            "sector_id": "1V"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "TLH",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "TLH"
+        ]
+    }
+}

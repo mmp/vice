@@ -1,0 +1,35 @@
+{
+    "control_positions": {
+        "MRY_F_APP": {
+            "frequency": 133000,
+            "radio_name": "Monterrey Approach",
+            "sector_id": "1F"
+        },
+        "MRY_S_APP": {
+            "frequency": 127150,
+            "radio_name": "Monterrey Approach",
+            "sector_id": "1S"
+        },
+        "SNS_TWR": {
+            "frequency": 119525,
+            "radio_name": "Salinas Tower",
+            "sector_id": "1Y"
+        },
+        "MRY_TWR": {
+            "frequency": 118400,
+            "radio_name": "Monterrey Tower",
+            "sector_id": "1Z"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "O90",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "O90"
+        ]
+    }
+}

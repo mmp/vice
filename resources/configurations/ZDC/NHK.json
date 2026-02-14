@@ -1,0 +1,45 @@
+{
+    "control_positions": {
+        "NHK_E_APP": {
+            "frequency": 127950,
+            "radio_name": "Patuxent Approach",
+            "sector_id": "5E"
+        },
+        "NHK_F_APP": {
+            "frequency": 127950,
+            "radio_name": "Patuxent Approach",
+            "sector_id": "5F"
+        },
+        "NHK_W_APP": {
+            "frequency": 120050,
+            "radio_name": "Patuxent Approach",
+            "sector_id": "5W"
+        },
+        "NHK_TWR": {
+            "frequency": 123700,
+            "radio_name": "Patuxent Tower",
+            "sector_id": "5Z"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "DOV",
+                "prefix": "2"
+            },
+            {
+                "id": "ORF",
+                "prefix": "3"
+            },
+            {
+                "id": "PCT",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "DOV",
+            "ORF",
+            "PCT"
+        ]
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "control_positions": {
+        "SPS_APP": {
+            "frequency": 118200,
+            "radio_name": "Sheppard Approach",
+            "sector_id": "1R"
+        },
+        "SPS_TWR": {
+            "frequency": 119750,
+            "radio_name": "Sheppard Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "FSI",
+                "prefix": "2"
+            },
+            {
+                "id": "LTS",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "FSI",
+            "LTS"
+        ]
+    }
+}

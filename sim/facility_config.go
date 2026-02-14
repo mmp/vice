@@ -27,15 +27,18 @@ type HandoffTopology struct {
 	NeighboringFacilities []string    `json:"neighboring_facilities"`
 }
 
-// HandoffID maps a neighboring facility identifier to a prefix string
-// used to distinguish that facility's controllers when loaded into this
-// facility's controller set. For TRACON neighbors the prefix is typically
-// a digit (e.g., "5" for PHL from PCT). For center (ARTCC) neighbors the
-// prefix is a letter (e.g., "W" for ZDC from PCT). Centers not listed in
+// HandoffID maps a neighboring facility to its STARS identifiers at
+// various lengths. These are used to resolve cross-facility sector IDs
+// in /ho route values and to prefix neighbor controllers when loaded
+// into this facility's controller set. Centers not listed in
 // handoff_ids default to prefix "C".
 type HandoffID struct {
-	ID     string `json:"id"`
-	Prefix string `json:"prefix"`
+	ID                string `json:"id"`
+	Prefix            string `json:"prefix,omitempty"`
+	ERAMPrefix        string `json:"eram_prefix,omitempty"`
+	SingleCharStarsID string `json:"single_char_stars_id,omitempty"`
+	TwoCharStarsID    string `json:"two_char_stars_id,omitempty"`
+	StarsID           string `json:"stars_id,omitempty"`
 }
 
 // FixPairDefinition defines a fixed pair (entry fix, exit fix) with

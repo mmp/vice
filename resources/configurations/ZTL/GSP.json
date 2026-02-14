@@ -32,6 +32,12 @@
                 },
                 "departure_assignments": {
                     "KGSP": "GSP_W_APP"
+                },
+                "default_consolidation": {
+                    "GSP_E_APP": [
+                        "GSP_S_APP",
+                        "GSP_W_APP"
+                    ]
                 }
             }
         },
@@ -102,31 +108,10 @@
             "GMU RNAV 10",
             "GMU RNAV 28"
         ],
-        "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "JUNNR3": "GSP_E_APP",
-                    "MCHLN2": "GSP_S_APP",
-                    "RCTOR2": "GSP_W_APP",
-                    "WORXS2": "GSP_W_APP"
-                },
-                "departure_assignments": {
-                    "KGSP": "GSP_W_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZTL-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
-            {
-                "id": "CLT",
-                "prefix": "1"
-            },
-            {
-                "id": "CAE",
-                "prefix": "2"
-            },
             {
                 "id": "AGS",
                 "prefix": "3"
@@ -134,6 +119,22 @@
             {
                 "id": "AVL",
                 "prefix": "4"
+            },
+            {
+                "id": "CAE",
+                "prefix": "2"
+            },
+            {
+                "id": "CLT",
+                "prefix": "1"
+            },
+            {
+                "id": "ZJX",
+                "eram_prefix": "J"
+            },
+            {
+                "id": "ZTL",
+                "eram_prefix": "T"
             }
         ],
         "neighboring_facilities": [

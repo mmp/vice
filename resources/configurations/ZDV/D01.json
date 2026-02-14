@@ -51,7 +51,7 @@
             "sector_id": "1T"
         },
         "DEN_L_DEP": {
-            "frequency": 126100,
+        "frequency": 126100,
             "radio_name": "Denver Departure",
             "sector_id": "1L"
         },
@@ -70,6 +70,16 @@
             "radio_name": "Denver Departure",
             "sector_id": "1S"
         },
+        "DEN_J_APP": {
+            "frequency": 125120,
+            "radio_name": "Denver Approach",
+            "sector_id": "1J"
+        },
+        "DEN_D_APP": {
+            "frequency": 134850,
+            "radio_name": "Denver Approach",
+            "sector_id": "1D"
+        },
         "DEN_A_APP": {
             "frequency": 132750,
             "radio_name": "Denver Approach",
@@ -78,8 +88,7 @@
         "DEN_E_TWR": {
             "frequency": 132350,
             "radio_name": "Denver Tower",
-            "scope_char": "1",
-            "sector_id": "1ET"
+            "sector_id": "ET"
         },
         "DEN_S_TWR": {
             "frequency": 124300,
@@ -133,12 +142,17 @@
         "GJT_APP": {
             "frequency": 119700,
             "radio_name": "Denver Approach",
-            "sector_id": "1J"
+            "sector_id": "5J"
         },
         "GJT_TWR": {
             "frequency": 118100,
             "radio_name": "Grand Junction Tower",
             "sector_id": "5T"
+        },
+        "PUB_APP": {
+            "frequency": 120100,
+            "radio_name": "Denver Approach",
+            "sector_id": "1P"
         }
     },
     "stars_config": {
@@ -152,6 +166,9 @@
                 },
                 "departure_assignments": {
                     "KCYS": "CYS_APP"
+                },
+                "default_consolidation": {
+                    "CYS_APP": []
                 }
             },
             "ALL": {
@@ -202,6 +219,20 @@
                     "KDEN/DEN3": "DEN_S_DEP",
                     "KFNL": "DEN_D_APP",
                     "KGXY": "DEN_D_APP"
+                },
+                "default_consolidation": {
+                    "DEN_A_APP": [
+                        "DEN_D_APP",
+                        "DEN_G_APP",
+                        "DEN_H_APP",
+                        "DEN_I_APP",
+                        "DEN_J_APP",
+                        "DEN_L_DEP",
+                        "DEN_N_DEP",
+                        "DEN_R_DEP",
+                        "DEN_S_DEP",
+                        "DEN_X_APP"
+                    ]
                 }
             },
             "FRE": {
@@ -212,6 +243,9 @@
                     "Final-SE-Gates-LE": "DEN_W_APP",
                     "Final-SSKII-LE": "DEN_W_APP",
                     "Final-TBARR-LE": "DEN_W_APP"
+                },
+                "default_consolidation": {
+                    "DEN_W_APP": []
                 }
             },
             "FRN": {
@@ -222,6 +256,13 @@
                     "Final-NW-Gates-LN": "DEN_W_APP",
                     "Final-SSKII-LN": "DEN_W_APP",
                     "Final-TBARR-LN": "DEN_T_APP"
+                },
+                "default_consolidation": {
+                    "DEN_E_APP": [
+                        "DEN_O_APP",
+                        "DEN_T_APP",
+                        "DEN_W_APP"
+                    ]
                 }
             },
             "FRS": {
@@ -232,6 +273,13 @@
                     "Final-LONGZ-LS": "DEN_W_APP",
                     "Final-SE-Gates-LS": "DEN_E_APP",
                     "Final-SW-Gates-LS": "DEN_W_APP"
+                },
+                "default_consolidation": {
+                    "DEN_E_APP": [
+                        "DEN_O_APP",
+                        "DEN_T_APP",
+                        "DEN_W_APP"
+                    ]
                 }
             },
             "FRW": {
@@ -242,6 +290,9 @@
                     "Final-NIIXX-LW": "DEN_W_APP",
                     "Final-NW-Gates-LW": "DEN_W_APP",
                     "Final-SW-Gates-LW": "DEN_W_APP"
+                },
+                "default_consolidation": {
+                    "DEN_W_APP": []
                 }
             },
             "SRN": {
@@ -266,6 +317,9 @@
                     "KCFO": "DEN_J_APP",
                     "KFNL": "DEN_J_APP",
                     "KGXY": "DEN_J_APP"
+                },
+                "default_consolidation": {
+                    "DEN_J_APP": []
                 }
             },
             "SRS": {
@@ -290,6 +344,9 @@
                     "KCFO": "DEN_J_APP",
                     "KFNL": "DEN_J_APP",
                     "KGXY": "DEN_J_APP"
+                },
+                "default_consolidation": {
+                    "DEN_J_APP": []
                 }
             },
             "GJT": {
@@ -303,6 +360,9 @@
                 },
                 "departure_assignments": {
                     "KGJT": "GJT_APP"
+                },
+                "default_consolidation": {
+                    "GJT_APP": []
                 }
             }
         },
@@ -1119,158 +1179,7 @@
                 ]
             }
         ],
-        "force_ql_self": true,
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "BZN": "CYS_APP",
-                    "DEN": "CYS_APP",
-                    "OMA": "CYS_APP",
-                    "SEA": "CYS_APP"
-                },
-                "departure_assignments": {
-                    "KCYS": "CYS_APP"
-                }
-            },
-            "ALL": {
-                "inbound_assignments": {
-                    "AALLE4": "DEN_G_APP",
-                    "BRNKO4": "DEN_N_DEP",
-                    "CLASH5": "DEN_X_APP",
-                    "COS Arrivals/Overflights": "DEN_S_DEP",
-                    "CYS Arrivals/Overflights": "DEN_N_DEP",
-                    "DANDD1": "DEN_X_APP",
-                    "DUNNN6": "DEN_S_DEP",
-                    "FLATI5": "DEN_H_APP",
-                    "LANDR3": "DEN_G_APP",
-                    "LARKS3": "DEN_I_APP",
-                    "LAWGR4": "DEN_G_APP",
-                    "LONGZ4": "DEN_H_APP",
-                    "NIIXX4": "DEN_X_APP",
-                    "PINNR3": "DEN_N_DEP",
-                    "POWDR1": "DEN_I_APP",
-                    "QUAIL1": "DEN_X_APP",
-                    "RAMMS8": "DEN_H_APP",
-                    "SSKII4": "DEN_I_APP",
-                    "TBARR4": "DEN_I_APP",
-                    "TOMSN9": "DEN_H_APP",
-                    "ZOMBZ6": "DEN_S_DEP"
-                },
-                "departure_assignments": {
-                    "KAPA": "DEN_A_APP",
-                    "KBJC": "DEN_J_APP",
-                    "KBKF": "DEN_S_DEP",
-                    "KCFO": "DEN_R_DEP",
-                    "KDEN/ZIMMR3": "DEN_L_DEP",
-                    "KDEN/CONNR7": "DEN_L_DEP",
-                    "KDEN/COORZ6": "DEN_L_DEP",
-                    "KDEN/BAYLR6": "DEN_L_DEP",
-                    "KDEN/CHUWY1": "DEN_N_DEP",
-                    "KDEN/DDRTH1": "DEN_N_DEP",
-                    "KDEN/HHOTH2": "DEN_N_DEP",
-                    "KDEN/XXWNG1": "DEN_N_DEP",
-                    "KDEN/EXTAN7": "DEN_R_DEP",
-                    "KDEN/EMMYS8": "DEN_R_DEP",
-                    "KDEN/EEONS8": "DEN_R_DEP",
-                    "KDEN/EPKEE7": "DEN_R_DEP",
-                    "KDEN/SABTH2": "DEN_S_DEP",
-                    "KDEN/SUDDZ1": "DEN_S_DEP",
-                    "KDEN/SMMUR2": "DEN_S_DEP",
-                    "KDEN/SLEEK2": "DEN_S_DEP",
-                    "KDEN/DEN3": "DEN_S_DEP",
-                    "KFNL": "DEN_D_APP",
-                    "KGXY": "DEN_D_APP"
-                }
-            },
-            "FRE": {
-                "inbound_assignments": {
-                    "Final-FLATI-LE": "DEN_W_APP",
-                    "Final-LONGZ-LE": "DEN_W_APP",
-                    "Final-NE-Gates-LE": "DEN_W_APP",
-                    "Final-SE-Gates-LE": "DEN_W_APP",
-                    "Final-SSKII-LE": "DEN_W_APP",
-                    "Final-TBARR-LE": "DEN_W_APP"
-                }
-            },
-            "FRN": {
-                "inbound_assignments": {
-                    "Final-CLASH-LN": "DEN_E_APP",
-                    "Final-NE-Gates-LN": "DEN_E_APP",
-                    "Final-NIIXX-LN": "DEN_O_APP",
-                    "Final-NW-Gates-LN": "DEN_W_APP",
-                    "Final-SSKII-LN": "DEN_W_APP",
-                    "Final-TBARR-LN": "DEN_T_APP"
-                }
-            },
-            "FRS": {
-                "inbound_assignments": {
-                    "Final-AALLE-LS": "DEN_O_APP",
-                    "Final-FLATI-LS": "DEN_T_APP",
-                    "Final-LAWGR-LS": "DEN_E_APP",
-                    "Final-LONGZ-LS": "DEN_W_APP",
-                    "Final-SE-Gates-LS": "DEN_E_APP",
-                    "Final-SW-Gates-LS": "DEN_W_APP"
-                }
-            },
-            "FRW": {
-                "inbound_assignments": {
-                    "Final-AALLE-LW": "DEN_W_APP",
-                    "Final-CLASH-LW": "DEN_W_APP",
-                    "Final-LAWGR-LW": "DEN_W_APP",
-                    "Final-NIIXX-LW": "DEN_W_APP",
-                    "Final-NW-Gates-LW": "DEN_W_APP",
-                    "Final-SW-Gates-LW": "DEN_W_APP"
-                }
-            },
-            "SRN": {
-                "inbound_assignments": {
-                    "BRNKO4": "DEN_J_APP",
-                    "CYS Arrivals/Overflights": "DEN_J_APP",
-                    "DANDD1": "DEN_J_APP",
-                    "DUNNN6": "DEN_J_APP",
-                    "LANDR3": "DEN_J_APP",
-                    "LARKS3": "DEN_J_APP",
-                    "PINNR3": "DEN_J_APP",
-                    "POWDR1": "DEN_J_APP",
-                    "QUAIL1": "DEN_J_APP",
-                    "RAMMS8": "DEN_J_APP",
-                    "TOMSN9": "DEN_J_APP",
-                    "ZOMBZ6": "DEN_J_APP"
-                },
-                "departure_assignments": {
-                    "KAPA": "DEN_J_APP",
-                    "KBJC": "DEN_J_APP",
-                    "KBKF": "DEN_J_APP",
-                    "KCFO": "DEN_J_APP",
-                    "KFNL": "DEN_J_APP",
-                    "KGXY": "DEN_J_APP"
-                }
-            },
-            "SRS": {
-                "inbound_assignments": {
-                    "BRNKO4": "DEN_J_APP",
-                    "CYS Arrivals/Overflights": "DEN_J_APP",
-                    "DANDD1": "DEN_J_APP",
-                    "DUNNN6": "DEN_J_APP",
-                    "LANDR3": "DEN_J_APP",
-                    "LARKS3": "DEN_J_APP",
-                    "PINNR3": "DEN_J_APP",
-                    "POWDR1": "DEN_J_APP",
-                    "QUAIL1": "DEN_J_APP",
-                    "RAMMS8": "DEN_J_APP",
-                    "TOMSN9": "DEN_J_APP",
-                    "ZOMBZ6": "DEN_J_APP"
-                },
-                "departure_assignments": {
-                    "KAPA": "DEN_J_APP",
-                    "KBJC": "DEN_J_APP",
-                    "KBKF": "DEN_J_APP",
-                    "KCFO": "DEN_J_APP",
-                    "KFNL": "DEN_J_APP",
-                    "KGXY": "DEN_J_APP"
-                }
-            }
-        }
+        "force_ql_self": true
     },
     "handoff_topology": {
         "handoff_ids": [
@@ -1281,6 +1190,10 @@
             {
                 "id": "CYS",
                 "prefix": "2"
+            },
+            {
+                "id": "ZDV",
+                "eram_prefix": "D"
             }
         ],
         "neighboring_facilities": [

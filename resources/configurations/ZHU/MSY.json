@@ -1,0 +1,60 @@
+{
+    "control_positions": {
+        "MSY_TWR": {
+            "frequency": 119500,
+            "radio_name": "New Orleans Tower",
+            "sector_id": "1B"
+        },
+        "MSY_F_APP": {
+            "frequency": 120100,
+            "radio_name": "New  Orleans Approach",
+            "sector_id": "1F"
+        },
+        "MSY_H_APP": {
+            "frequency": 124300,
+            "radio_name": "New Orleans Approach",
+            "sector_id": "1H"
+        },
+        "MSY_L_APP": {
+            "frequency": 120850,
+            "radio_name": "New Orleans Approach",
+            "sector_id": "1L"
+        },
+        "MSY_N_APP": {
+            "frequency": 133150,
+            "radio_name": "New Orleans Approach",
+            "sector_id": "1N"
+        },
+        "MSY_S_APP": {
+            "frequency": 123850,
+            "radio_name": "New Orleans Approach",
+            "sector_id": "1S"
+        },
+        "MSY_W_APP": {
+            "frequency": 125500,
+            "radio_name": "New Orleans Approach",
+            "sector_id": "1W"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "BTR",
+                "prefix": "2"
+            },
+            {
+                "id": "GPT",
+                "prefix": "3"
+            },
+            {
+                "id": "LFT",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "BTR",
+            "GPT",
+            "LFT"
+        ]
+    }
+}

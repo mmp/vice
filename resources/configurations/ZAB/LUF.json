@@ -1,0 +1,35 @@
+{
+    "control_positions": {
+        "LUF_SN_APP": {
+            "frequency": 122775,
+            "radio_name": "Snakeye",
+            "sector_id": "1K"
+        },
+        "LUF_N_APP": {
+            "frequency": 118150,
+            "radio_name": "Luke Approach",
+            "sector_id": "1N"
+        },
+        "LUF_S_APP": {
+            "frequency": 125450,
+            "radio_name": "Luke approach",
+            "sector_id": "1S"
+        },
+        "LUF_TWR": {
+            "frequency": 119100,
+            "radio_name": "Luke Tower",
+            "sector_id": "2T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "P50",
+                "prefix": "8"
+            }
+        ],
+        "neighboring_facilities": [
+            "P50"
+        ]
+    }
+}

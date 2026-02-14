@@ -77,6 +77,9 @@
                 },
                 "departure_assignments": {
                     "KSLC": "SLC_K_APP"
+                },
+                "default_consolidation": {
+                    "SLC_K_APP": []
                 }
             }
         },
@@ -112,28 +115,15 @@
             "S56 169 PVU VOR Approach",
             "S56 104 ZLC Split Map"
         ],
-        "video_map_file": "videomaps/ZLC-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "CARTR1.N": "SLC_K_APP",
-                    "CARTR1.S": "SLC_K_APP",
-                    "JAZZZ1": "SLC_K_APP",
-                    "PITTT1.E": "SLC_K_APP",
-                    "PITTT1.S": "SLC_K_APP",
-                    "QWENN6.BCE": "SLC_K_APP",
-                    "QWENN6.MLF": "SLC_K_APP",
-                    "YUTES1.N": "SLC_K_APP",
-                    "YUTES1.S": "SLC_K_APP"
-                },
-                "departure_assignments": {
-                    "KSLC": "SLC_K_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZLC-videomaps.gob.zst"
     },
     "handoff_topology": {
-        "handoff_ids": [],
+        "handoff_ids": [
+            {
+                "id": "ZLC",
+                "eram_prefix": "U"
+            }
+        ],
         "neighboring_facilities": [
             "ZLC"
         ]

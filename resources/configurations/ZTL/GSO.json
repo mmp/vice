@@ -46,6 +46,12 @@
                 "departure_assignments": {
                     "KGSO": "GSO_E_APP",
                     "KINT": "GSO_W_APP"
+                },
+                "default_consolidation": {
+                    "GSO_E_APP": [
+                        "GSO_S_APP",
+                        "GSO_W_APP"
+                    ]
                 }
             }
         },
@@ -143,23 +149,7 @@
             "TRIAD DEPARTURE",
             "TRAKS ARRIVAL"
         ],
-        "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "BLOCC2": "GSO_S_APP",
-                    "BROOK4": "GSO_W_APP",
-                    "GANTS": "GSO_S_APP",
-                    "HENBY3": "GSO_E_APP",
-                    "TRAKS3N": "GSO_W_APP",
-                    "TRAKS3S": "GSO_W_APP"
-                },
-                "departure_assignments": {
-                    "KGSO": "GSO_E_APP",
-                    "KINT": "GSO_W_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZTL-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
@@ -168,16 +158,24 @@
                 "prefix": "1"
             },
             {
-                "id": "ROA",
-                "prefix": "2"
+                "id": "FAY",
+                "prefix": "4"
             },
             {
                 "id": "RDU",
                 "prefix": "3"
             },
             {
-                "id": "FAY",
-                "prefix": "4"
+                "id": "ROA",
+                "prefix": "2"
+            },
+            {
+                "id": "ZDC",
+                "eram_prefix": "W"
+            },
+            {
+                "id": "ZTL",
+                "eram_prefix": "T"
             }
         ],
         "neighboring_facilities": [

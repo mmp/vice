@@ -796,24 +796,7 @@
                 }
             },
             "configuration": {
-                "config_id": "KI1",
-                "default_consolidation": {
-                    "IND_B_APP": [
-                        "IND_D_APP"
-                    ],
-                    "IND_E_APP": [
-                        "IND_B_APP",
-                        "IND_F_APP",
-                        "IND_S_APP",
-                        "IND_W_APP"
-                    ],
-                    "IND_F_APP": [
-                        "IND_I_APP"
-                    ],
-                    "IND_S_APP": [
-                        "IND_N_APP"
-                    ]
-                }
+                "config_id": "KI1"
             },
             "default_maps": [
                 "RWY 23s",
@@ -866,24 +849,7 @@
                 }
             },
             "configuration": {
-                "config_id": "KIN",
-                "default_consolidation": {
-                    "IND_B_APP": [
-                        "IND_D_APP"
-                    ],
-                    "IND_E_APP": [
-                        "IND_B_APP",
-                        "IND_F_APP",
-                        "IND_S_APP",
-                        "IND_W_APP"
-                    ],
-                    "IND_F_APP": [
-                        "IND_I_APP"
-                    ],
-                    "IND_S_APP": [
-                        "IND_N_APP"
-                    ]
-                }
+                "config_id": "KIN"
             },
             "default_maps": [
                 "RWY 5s",
@@ -932,24 +898,7 @@
                 }
             },
             "configuration": {
-                "config_id": "KI1",
-                "default_consolidation": {
-                    "IND_B_APP": [
-                        "IND_D_APP"
-                    ],
-                    "IND_E_APP": [
-                        "IND_B_APP",
-                        "IND_F_APP",
-                        "IND_S_APP",
-                        "IND_W_APP"
-                    ],
-                    "IND_F_APP": [
-                        "IND_I_APP"
-                    ],
-                    "IND_S_APP": [
-                        "IND_N_APP"
-                    ]
-                }
+                "config_id": "KI1"
             },
             "default_maps": [
                 "RWY 32",
@@ -993,24 +942,7 @@
                 }
             },
             "configuration": {
-                "config_id": "KI1",
-                "default_consolidation": {
-                    "IND_B_APP": [
-                        "IND_D_APP"
-                    ],
-                    "IND_E_APP": [
-                        "IND_B_APP",
-                        "IND_F_APP",
-                        "IND_S_APP",
-                        "IND_W_APP"
-                    ],
-                    "IND_F_APP": [
-                        "IND_I_APP"
-                    ],
-                    "IND_S_APP": [
-                        "IND_N_APP"
-                    ]
-                }
+                "config_id": "KI1"
             },
             "default_maps": [
                 "RWY 14",

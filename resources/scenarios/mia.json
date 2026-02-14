@@ -5208,28 +5208,7 @@
                 }
             },
             "configuration": {
-                "config_id": "KMI",
-                "default_consolidation": {
-                    "MIA_D_DEP": [
-                        "MIA_L_DEP",
-                        "MIA_V_APP",
-                        "MIA_W_DEP"
-                    ],
-                    "MIA_L_DEP": [
-                        "MIA_R_APP"
-                    ],
-                    "MIA_R_APP": [
-                        "MIA_F_APP",
-                        "MIA_J_APP"
-                    ],
-                    "MIA_S_APP": [
-                        "MIA_A_APP"
-                    ],
-                    "MIA_V_APP": [
-                        "MIA_N_APP",
-                        "MIA_S_APP"
-                    ]
-                }
+                "config_id": "KMI"
             },
             "default_maps": [
                 "MIA-001S EAST OPERATIONS ARRIVAL",
@@ -5317,28 +5296,7 @@
                 }
             },
             "configuration": {
-                "config_id": "KM2",
-                "default_consolidation": {
-                    "MIA_D_DEP": [
-                        "MIA_L_DEP",
-                        "MIA_V_APP",
-                        "MIA_W_DEP"
-                    ],
-                    "MIA_L_DEP": [
-                        "MIA_R_APP"
-                    ],
-                    "MIA_R_APP": [
-                        "MIA_F_APP",
-                        "MIA_J_APP"
-                    ],
-                    "MIA_S_APP": [
-                        "MIA_A_APP"
-                    ],
-                    "MIA_V_APP": [
-                        "MIA_N_APP",
-                        "MIA_S_APP"
-                    ]
-                }
+                "config_id": "KM2"
             },
             "default_maps": [
                 "MIA-002S WEST OPERATIONS ARRIVAL",
@@ -5455,32 +5413,7 @@
                 }
             },
             "configuration": {
-                "config_id": "KM1",
-                "default_consolidation": {
-                    "MIA_D_DEP": [
-                        "MIA_L_DEP",
-                        "MIA_Q_APP",
-                        "MIA_V_APP",
-                        "MIA_W_DEP"
-                    ],
-                    "MIA_L_DEP": [
-                        "MIA_R_APP"
-                    ],
-                    "MIA_R_APP": [
-                        "MIA_F_APP",
-                        "MIA_J_APP"
-                    ],
-                    "MIA_S_APP": [
-                        "MIA_A_APP"
-                    ],
-                    "MIA_V_APP": [
-                        "MIA_N_APP",
-                        "MIA_S_APP"
-                    ],
-                    "MIA_W_DEP": [
-                        "MIA_H_APP"
-                    ]
-                }
+                "config_id": "KM1"
             },
             "default_maps": [
                 "MIA-001S EAST OPERATIONS ARRIVAL",
@@ -5612,32 +5545,7 @@
                 }
             },
             "configuration": {
-                "config_id": "KM3",
-                "default_consolidation": {
-                    "MIA_D_DEP": [
-                        "MIA_L_DEP",
-                        "MIA_Q_APP",
-                        "MIA_V_APP",
-                        "MIA_W_DEP"
-                    ],
-                    "MIA_L_DEP": [
-                        "MIA_R_APP"
-                    ],
-                    "MIA_R_APP": [
-                        "MIA_F_APP",
-                        "MIA_J_APP"
-                    ],
-                    "MIA_S_APP": [
-                        "MIA_A_APP"
-                    ],
-                    "MIA_V_APP": [
-                        "MIA_N_APP",
-                        "MIA_S_APP"
-                    ],
-                    "MIA_W_DEP": [
-                        "MIA_H_APP"
-                    ]
-                }
+                "config_id": "KM3"
             },
             "default_maps": [
                 "MIA-002S WEST OPERATIONS ARRIVAL",

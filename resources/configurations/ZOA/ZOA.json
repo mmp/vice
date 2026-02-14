@@ -6,139 +6,139 @@
             "radio_name": "ONE",
             "sector_id": "01"
         },
-        "ZOA 10 Sector": {
+        "ZOA Sector 10": {
             "frequency": 128700,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "10"
         },
-        "ZOA 11 Sector": {
+        "ZOA Sector 11": {
             "frequency": 133700,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "11"
         },
-        "ZOA 13 Sector": {
+        "ZOA Sector 13": {
             "frequency": 127450,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "13"
         },
-        "ZOA 14 Sector": {
+        "ZOA Sector 14": {
             "frequency": 134550,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "14"
         },
-        "ZOA 15 Sector": {
+        "ZOA Sector 15": {
             "frequency": 132800,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "15"
         },
-        "ZOA 16 Sector": {
+        "ZOA Sector 16": {
             "frequency": 123800,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "16"
         },
-        "ZOA 22 Sector": {
+        "ZOA Sector 22": {
             "frequency": 121250,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "22"
         },
-        "ZOA 29 Sector": {
+        "ZOA Sector 29": {
             "frequency": 119750,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "29"
         },
-        "ZOA 30 Sector": {
+        "ZOA Sector 30": {
             "frequency": 127175,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "30"
         },
-        "ZOA 31 Sector": {
+        "ZOA Sector 31": {
             "frequency": 134975,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "31"
         },
-        "ZOA 32 Sector": {
+        "ZOA Sector 32": {
             "frequency": 132950,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "32"
         },
-        "ZOA 33 Sector": {
+        "ZOA Sector 33": {
             "frequency": 132050,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "33"
         },
-        "ZOA 34 Sector": {
+        "ZOA Sector 34": {
             "frequency": 134375,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "34"
         },
-        "ZOA 35 Sector": {
+        "ZOA Sector 35": {
             "frequency": 134150,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "35"
         },
-        "ZOA 36 Sector": {
+        "ZOA Sector 36": {
             "frequency": 119975,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "36"
         },
-        "ZOA 40 Sector": {
+        "ZOA Sector 40": {
             "frequency": 127800,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "40"
         },
-        "ZOA 41 Sector": {
+        "ZOA Sector 41": {
             "frequency": 125850,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "41"
         },
-        "ZOA 42 Sector": {
+        "ZOA Sector 42": {
             "frequency": 132200,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "42"
         },
-        "ZOA 43 Sector": {
+        "ZOA Sector 43": {
             "frequency": 134450,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "43"
         },
-        "ZOA 44 Sector": {
+        "ZOA Sector 44": {
             "frequency": 127950,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "44"
         },
-        "ZOA 45 Sector": {
+        "ZOA Sector 45": {
             "frequency": 128800,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "45"
         },
-        "ZOA 46 Sector": {
+        "ZOA Sector 46": {
             "frequency": 125750,
             "eram_facility": true,
             "radio_name": "Oakland Center",
             "sector_id": "46"
         },
-        "ZOA 62 Sector": {
+        "ZOA Sector 62": {
             "frequency": 132200,
             "eram_facility": true,
             "radio_name": "Oakland Center",
@@ -156,5 +156,95 @@
             "radio_name": "Oakland Center Flight Data",
             "sector_id": "99"
         }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "BFL",
+                "single_char_stars_id": "A",
+                "stars_id": "AAA"
+            },
+            {
+                "id": "FAT",
+                "single_char_stars_id": "F",
+                "stars_id": "FFF"
+            },
+            {
+                "id": "JCF",
+                "single_char_stars_id": "J",
+                "stars_id": "JJJ"
+            },
+            {
+                "id": "MC1",
+                "single_char_stars_id": "M",
+                "stars_id": "MMM"
+            },
+            {
+                "id": "MR1",
+                "single_char_stars_id": "R",
+                "stars_id": "RRR"
+            },
+            {
+                "id": "NCT",
+                "single_char_stars_id": "Q",
+                "stars_id": "QQQ"
+            },
+            {
+                "id": "NFL",
+                "single_char_stars_id": "N",
+                "stars_id": "NNN"
+            },
+            {
+                "id": "NLC",
+                "single_char_stars_id": "E",
+                "stars_id": "EEE"
+            },
+            {
+                "id": "O90",
+                "single_char_stars_id": "O",
+                "stars_id": "OOO"
+            },
+            {
+                "id": "SBA",
+                "single_char_stars_id": "B",
+                "stars_id": "BBB"
+            },
+            {
+                "id": "SC1",
+                "single_char_stars_id": "K",
+                "stars_id": "SSS"
+            },
+            {
+                "id": "SUU",
+                "single_char_stars_id": "T",
+                "stars_id": "TTT"
+            },
+            {
+                "id": "ZLA",
+                "eram_prefix": "L"
+            },
+            {
+                "id": "ZLC",
+                "eram_prefix": "U"
+            }
+        ],
+        "neighboring_facilities": [
+            "BFL",
+            "FAT",
+            "JCF",
+            "MC1",
+            "MR1",
+            "NCT",
+            "NFL",
+            "NLC",
+            "O90",
+            "SBA",
+            "SC1",
+            "SUU",
+            "ZAK",
+            "ZLA",
+            "ZLC",
+            "ZSE"
+        ]
     }
 }

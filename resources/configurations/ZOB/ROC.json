@@ -1,10 +1,41 @@
 {
-  "control_positions": {},
-  "stars_config": {},
-  "handoff_topology": {
-    "handoff_ids": [],
-    "neighboring_facilities": [
-      "ZOB"
-    ]
-  }
+    "control_positions": {
+        "ROC_E_APP": {
+            "frequency": 119550,
+            "radio_name": "Rochester Approach",
+            "sector_id": "1E"
+        },
+        "ROC_F_APP": {
+            "frequency": 120700,
+            "radio_name": "Rochester Approach",
+            "sector_id": "1F"
+        },
+        "ROC_TWR": {
+            "frequency": 118300,
+            "radio_name": "Rochester Tower",
+            "sector_id": "1L"
+        },
+        "ROC_W_APP": {
+            "frequency": 123700,
+            "radio_name": "Rochester Approach",
+            "sector_id": "1W"
+        },
+        "ROC_T_APP": {
+            "frequency": 123450,
+            "radio_name": "Rochester Approach",
+            "sector_id": "1Z"
+        }
+    },
+    "stars_config": {},
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZOB",
+                "eram_prefix": "C"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZOB"
+        ]
+    }
 }

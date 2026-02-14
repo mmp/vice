@@ -34,7 +34,8 @@ type Waypoint struct {
 	ProcedureTurn            *ProcedureTurn       `json:"pt,omitempty"`
 	NoPT                     bool                 `json:"nopt,omitempty"`
 	HumanHandoff             bool                 `json:"human_handoff,omitempty"` // Handoff to human controller
-	HandoffController        ControlPosition      `json:"tcp_handoff,omitempty"`   // Controller position for handoff
+	HandoffController        ControlPosition      `json:"tcp_handoff,omitempty"`          // Controller position for handoff
+	HandoffControllerFacility string              `json:"tcp_handoff_facility,omitempty"` // Facility for cross-facility handoff
 	PointOut                 ControlPosition      `json:"pointout,omitempty"`
 	ClearApproach            bool                 `json:"clear_approach,omitempty"` // used for distractor a/c, clears them for the approach passing the wp.
 	FlyOver                  bool                 `json:"flyover,omitempty"`
@@ -396,7 +397,7 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[Control
 			}
 		}
 
-		if wp.HandoffController != "" {
+		if wp.HandoffController != "" && wp.HandoffControllerFacility == "" {
 			if !util.MapContains(controllers,
 				func(_ ControlPosition, ctrl *Controller) bool {
 					return ctrl.PositionId() == ControlPosition(wp.HandoffController)

@@ -1,0 +1,23 @@
+{
+    "control_positions": {
+        "JAN_E_APP": {
+            "frequency": 123900,
+            "radio_name": "Jackson Approach",
+            "sector_id": "1E"
+        },
+        "JAN_TWR": {
+            "frequency": 120900,
+            "radio_name": "Jackson Tower",
+            "sector_id": "1T"
+        },
+        "JAN_W_APP": {
+            "frequency": 125250,
+            "radio_name": "Jackson Approach",
+            "sector_id": "1W"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [],
+        "neighboring_facilities": []
+    }
+}

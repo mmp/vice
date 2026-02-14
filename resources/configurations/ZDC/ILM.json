@@ -1,10 +1,31 @@
 {
-  "control_positions": {},
-  "stars_config": {},
-  "handoff_topology": {
-    "handoff_ids": [],
-    "neighboring_facilities": [
-      "ZDC"
-    ]
-  }
+    "control_positions": {
+        "ILM_E_APP": {
+            "frequency": 135750,
+            "radio_name": "Wilmington Approach",
+            "sector_id": "1E"
+        },
+        "ILM_TWR": {
+            "frequency": 119900,
+            "radio_name": "Wilmington Tower",
+            "sector_id": "1T"
+        },
+        "ILM_W_APP": {
+            "frequency": 118250,
+            "radio_name": "Wilmington Approach",
+            "sector_id": "1W"
+        }
+    },
+    "stars_config": {},
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZDC",
+                "eram_prefix": "W"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZDC"
+        ]
+    }
 }

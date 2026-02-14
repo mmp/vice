@@ -120,8 +120,10 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = "" // TODO
 	nasFp.ExitFix = util.Select(len(ac.FlightPlan.ArrivalAirport) == 4, ac.FlightPlan.ArrivalAirport[1:], ac.FlightPlan.ArrivalAirport)
-	nasFp.TrackingController = arr.InitialController
-	nasFp.OwningTCW = s.tcwForPosition(arr.InitialController)
+	if !s.State.IsExternalController(arr.InitialController) {
+		nasFp.TrackingController = arr.InitialController
+		nasFp.OwningTCW = s.tcwForPosition(arr.InitialController)
+	}
 	ac.ControllerFrequency = arr.InitialController
 	nasFp.InboundHandoffController = s.InboundAssignments[group]
 	nasFp.Scratchpad = arr.Scratchpad
@@ -152,7 +154,52 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 		return nil, err
 	}
 
-	_, err = s.STARSComputer.CreateFlightPlan(nasFp)
+	// Route FP to the correct originating facility based on InitialFacility.
+	if arr.InitialFacility == "" || arr.InitialFacility == s.State.Facility {
+		// Local controller arrival — store at primary ERAM + STARS.
+		// Mark STARS copy as received from ERAM (in real NAS, FPs always
+		// flow from ERAM to STARS, even for local flights).
+		s.eramComputer().StoreFlightPlan(&nasFp)
+		nasFp.ReceivedFrom = s.eramComputer().Identifier
+		_, err = s.starsComputer().CreateFlightPlan(nasFp)
+	} else if isARTCC(arr.InitialFacility) {
+		// Arrival from a peer ARTCC (e.g., ZBW).
+		// Store only at the originating ERAM. Its Update() will forward
+		// to the primary ERAM, which distributes to the primary STARS.
+		if originERAM := s.nasNet.ERAMFor(arr.InitialFacility); originERAM != nil {
+			originERAM.StoreFlightPlan(&nasFp)
+		} else {
+			// Fallback if peer ERAM not in network
+			s.eramComputer().StoreFlightPlan(&nasFp)
+			_, err = s.starsComputer().CreateFlightPlan(nasFp)
+		}
+	} else {
+		// Arrival from a neighbor TRACON (e.g., PHL).
+		// Store FP at the neighbor's parent ERAM for normal distribution.
+		if neighborERAM := s.nasNet.ERAMFor(arr.InitialFacility); neighborERAM != nil {
+			neighborERAM.StoreFlightPlan(&nasFp)
+		} else {
+			s.eramComputer().StoreFlightPlan(&nasFp)
+		}
+		// Also create track at the neighbor's STARS so it can initiate
+		// the cross-facility handoff (TI) to the primary STARS.
+		if neighborSTARS := s.nasNet.STARSFor(arr.InitialFacility); neighborSTARS != nil {
+			neighborSTARS.CreateFlightPlan(nasFp)
+			// Take the FP out of the unassociated pool and couple it to a track
+			if storedFP := neighborSTARS.takeFlightPlanByACID(nasFp.ACID); storedFP != nil {
+				neighborSTARS.Tracks[nasFp.ACID] = &FacilityTrack{
+					ACID:          nasFp.ACID,
+					CoupledFP:     storedFP,
+					Owner:         ControlPosition(arr.InitialController),
+					OwnerFacility: arr.InitialFacility,
+					HandoffState:  TrackHandoffNone,
+				}
+			}
+		} else {
+			// Fallback if neighbor STARS not in network
+			_, err = s.starsComputer().CreateFlightPlan(nasFp)
+		}
+	}
 
 	return ac, err
 }
@@ -160,7 +207,7 @@ func (s *Sim) createArrivalNoLock(group string, arrivalAirport string) (*Aircraf
 func (s *Sim) sampleAircraft(al av.AirlineSpecifier, departureAirport, arrivalAirport string, lg *log.Logger) (*Aircraft, string) {
 	// Collect all currently in-use or soon-to-be in-use callsigns.
 	callsigns := slices.Collect(maps.Keys(s.Aircraft))
-	for _, fp := range s.STARSComputer.FlightPlans {
+	for _, fp := range s.starsComputer().FlightPlans {
 		callsigns = append(callsigns, av.ADSBCallsign(fp.ACID))
 	}
 
@@ -179,7 +226,7 @@ func (s *Sim) sampleAircraft(al av.AirlineSpecifier, departureAirport, arrivalAi
 // assignSquawk allocates an enroute squawk code and assigns it to both the
 // aircraft and NAS flight plan.
 func (s *Sim) assignSquawk(ac *Aircraft, nasFp *NASFlightPlan) error {
-	sq, err := s.ERAMComputer.CreateSquawk()
+	sq, err := s.eramComputer().CreateSquawk()
 	if err != nil {
 		return err
 	}
@@ -194,6 +241,7 @@ func (s *Sim) assignSquawk(ac *Aircraft, nasFp *NASFlightPlan) error {
 func (s *Sim) initNASFlightPlan(ac *Aircraft, flightType av.TypeOfFlight) NASFlightPlan {
 	return NASFlightPlan{
 		ACID:             ACID(ac.ADSBCallsign),
+		DepartureAirport: ac.FlightPlan.DepartureAirport,
 		ArrivalAirport:   ac.FlightPlan.ArrivalAirport,
 		CoordinationTime: getAircraftTime(s.State.SimTime, s.Rand),
 		PlanType:         RemoteEnroute,
@@ -276,8 +324,10 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 	nasFp.Route = ac.FlightPlan.Route
 	nasFp.EntryFix = "" // TODO
 	nasFp.ExitFix = ""  // TODO
-	nasFp.TrackingController = of.InitialController
-	nasFp.OwningTCW = s.tcwForPosition(of.InitialController)
+	if !s.State.IsExternalController(of.InitialController) {
+		nasFp.TrackingController = of.InitialController
+		nasFp.OwningTCW = s.tcwForPosition(of.InitialController)
+	}
 	ac.ControllerFrequency = of.InitialController
 	nasFp.InboundHandoffController = s.InboundAssignments[group]
 	nasFp.Scratchpad = of.Scratchpad
@@ -289,6 +339,43 @@ func (s *Sim) createOverflightNoLock(group string) (*Aircraft, error) {
 		return nil, err
 	}
 
-	_, err := s.STARSComputer.CreateFlightPlan(nasFp)
+	// Route FP to the correct originating facility based on InitialFacility.
+	var err error
+	if of.InitialFacility == "" || of.InitialFacility == s.State.Facility {
+		// Local controller overflight — store at primary ERAM + STARS
+		s.eramComputer().StoreFlightPlan(&nasFp)
+		nasFp.ReceivedFrom = s.eramComputer().Identifier
+		_, err = s.starsComputer().CreateFlightPlan(nasFp)
+	} else if isARTCC(of.InitialFacility) {
+		// Overflight from a peer ARTCC (e.g., ZBW).
+		if originERAM := s.nasNet.ERAMFor(of.InitialFacility); originERAM != nil {
+			originERAM.StoreFlightPlan(&nasFp)
+		} else {
+			s.eramComputer().StoreFlightPlan(&nasFp)
+			_, err = s.starsComputer().CreateFlightPlan(nasFp)
+		}
+	} else {
+		// Overflight from a neighbor TRACON (e.g., PHL).
+		if neighborERAM := s.nasNet.ERAMFor(of.InitialFacility); neighborERAM != nil {
+			neighborERAM.StoreFlightPlan(&nasFp)
+		} else {
+			s.eramComputer().StoreFlightPlan(&nasFp)
+		}
+		if neighborSTARS := s.nasNet.STARSFor(of.InitialFacility); neighborSTARS != nil {
+			neighborSTARS.CreateFlightPlan(nasFp)
+			if storedFP := neighborSTARS.takeFlightPlanByACID(nasFp.ACID); storedFP != nil {
+				neighborSTARS.Tracks[nasFp.ACID] = &FacilityTrack{
+					ACID:          nasFp.ACID,
+					CoupledFP:     storedFP,
+					Owner:         ControlPosition(of.InitialController),
+					OwnerFacility: of.InitialFacility,
+					HandoffState:  TrackHandoffNone,
+				}
+			}
+		} else {
+			_, err = s.starsComputer().CreateFlightPlan(nasFp)
+		}
+	}
+
 	return ac, err
 }

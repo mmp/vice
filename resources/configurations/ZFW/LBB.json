@@ -1,0 +1,18 @@
+{
+    "control_positions": {
+        "LBB_APP": {
+            "frequency": 119200,
+            "radio_name": "Lubbock Approach",
+            "sector_id": "1E"
+        },
+        "LBB_TWR": {
+            "frequency": 120500,
+            "radio_name": "Lubbock Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [],
+        "neighboring_facilities": []
+    }
+}

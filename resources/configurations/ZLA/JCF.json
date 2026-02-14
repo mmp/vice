@@ -1,0 +1,80 @@
+{
+    "control_positions": {
+        "PMD_A_APP": {
+            "frequency": 124550,
+            "radio_name": "Joshua Approach",
+            "sector_id": "1A"
+        },
+        "EDW_F_APP": {
+            "frequency": 133150,
+            "radio_name": "Joshua Approach",
+            "sector_id": "1F"
+        },
+        "EDW_I_APP": {
+            "frequency": 134050,
+            "radio_name": "Joshua Approach",
+            "sector_id": "1I"
+        },
+        "JCF_APP": {
+            "frequency": 133650,
+            "radio_name": "Joshua Approach",
+            "sector_id": "1J"
+        },
+        "EDW_M_APP": {
+            "frequency": 120250,
+            "radio_name": "Joshua Approach",
+            "sector_id": "1M"
+        },
+        "EDW_O_APP": {
+            "frequency": 126550,
+            "radio_name": "Joshua Approach",
+            "sector_id": "1O"
+        },
+        "PMD_P_APP": {
+            "frequency": 126100,
+            "radio_name": "Joshua Approach",
+            "sector_id": "1P"
+        },
+        "EDW_S_APP": {
+            "frequency": 123950,
+            "radio_name": "Joshua Approach",
+            "sector_id": "1S"
+        },
+        "EDW_W_APP": {
+            "frequency": 127500,
+            "radio_name": "Joshua Approach",
+            "sector_id": "1W"
+        },
+        "EDW_D_APP": {
+            "frequency": 126200,
+            "radio_name": "Desert Radio",
+            "sector_id": "2D"
+        },
+        "EDW_T_APP": {
+            "frequency": 132750,
+            "radio_name": "Sport Control",
+            "sector_id": "2T"
+        },
+        "NID_APP": {
+            "frequency": 128250,
+            "radio_name": "China Control",
+            "sector_id": "3C"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "BFL",
+                "prefix": "2"
+            },
+            {
+                "id": "SCT",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "BFL",
+            "SCT"
+        ]
+    }
+}

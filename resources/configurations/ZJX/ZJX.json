@@ -144,13 +144,13 @@
             "radio_name": "Jacksonville Center",
             "sector_id": "54"
         },
-        "ZJX 57 St Johns": {
+        "ZJX 57 St. Johns": {
             "frequency": 134000,
             "eram_facility": true,
             "radio_name": "Jacksonville Center",
             "sector_id": "57"
         },
-        "ZJX 58 St Augustine": {
+        "ZJX 58 St. Augustine": {
             "frequency": 126350,
             "eram_facility": true,
             "radio_name": "Jacksonville Center",
@@ -275,8 +275,11 @@
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "Overflights": "ZJX 30 Nepata",
-                    "PRICY4": "ZJX 30 Nepata"
+                    "Overflights": "ZJX 30 Nepta",
+                    "PRICY4": "ZJX 30 Nepta"
+                },
+                "default_consolidation": {
+                    "ZJX 30 Nepta": []
                 }
             },
             "ZJX": {
@@ -289,6 +292,9 @@
                     "OHDEA2": "ZJX 50 Alma",
                     "SHRKS": "ZJX 50 Alma",
                     "TTHOR3": "ZJX 50 Alma"
+                },
+                "default_consolidation": {
+                    "ZJX 50 Alma": []
                 }
             },
             "ZJS": {
@@ -296,6 +302,9 @@
                     "Overflights": "ZJX 58 St. Augustine",
                     "SNFLD3": "ZJX 58 St. Augustine",
                     "TTHOR3": "ZJX 58 St. Augustine"
+                },
+                "default_consolidation": {
+                    "ZJX 58 St. Augustine": []
                 }
             },
             "ZST": {
@@ -305,6 +314,9 @@
                     "QUBEN2": "ZJX 75 Greencove",
                     "Southbound Overflights": "ZJX 75 Greencove",
                     "TTHOR3": "ZJX 75 Greencove"
+                },
+                "default_consolidation": {
+                    "ZJX 75 Greencove": []
                 }
             }
         },
@@ -331,27 +343,162 @@
             "CAMAN",
             "GEO"
         ],
-        "video_map_file": "videomaps/ZJX-eram-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "Overflights": "ZJX 30 Nepata",
-                    "PRICY4": "ZJX 30 Nepata"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZJX-eram-videomaps.gob.zst"
     },
     "handoff_topology": {
-        "handoff_ids": [],
+        "handoff_ids": [
+            {
+                "id": "A80",
+                "single_char_stars_id": "X",
+                "stars_id": "A80"
+            },
+            {
+                "id": "AGS",
+                "stars_id": "AGS"
+            },
+            {
+                "id": "CAE",
+                "single_char_stars_id": "A",
+                "stars_id": "CAE"
+            },
+            {
+                "id": "CHS",
+                "single_char_stars_id": "C",
+                "stars_id": "CHS"
+            },
+            {
+                "id": "CLT",
+                "single_char_stars_id": "E",
+                "stars_id": "CLT"
+            },
+            {
+                "id": "DAB",
+                "single_char_stars_id": "B",
+                "stars_id": "DAB"
+            },
+            {
+                "id": "F11",
+                "single_char_stars_id": "O",
+                "stars_id": "F11"
+            },
+            {
+                "id": "FAY",
+                "single_char_stars_id": "Y",
+                "stars_id": "FAY"
+            },
+            {
+                "id": "ILM",
+                "single_char_stars_id": "I",
+                "stars_id": "ILM"
+            },
+            {
+                "id": "JAX",
+                "single_char_stars_id": "J",
+                "stars_id": "JAX"
+            },
+            {
+                "id": "MOB",
+                "single_char_stars_id": "F",
+                "stars_id": "MOB"
+            },
+            {
+                "id": "MYR",
+                "single_char_stars_id": "M",
+                "stars_id": "MYR"
+            },
+            {
+                "id": "NBC",
+                "stars_id": "BBB"
+            },
+            {
+                "id": "OZR",
+                "single_char_stars_id": "U",
+                "stars_id": "OZR"
+            },
+            {
+                "id": "P31",
+                "single_char_stars_id": "P",
+                "stars_id": "PNS"
+            },
+            {
+                "id": "PAM",
+                "single_char_stars_id": "Q",
+                "stars_id": "PAM"
+            },
+            {
+                "id": "PBI",
+                "single_char_stars_id": "G",
+                "stars_id": "PBI"
+            },
+            {
+                "id": "SAV",
+                "single_char_stars_id": "S",
+                "stars_id": "SAV"
+            },
+            {
+                "id": "TLH",
+                "single_char_stars_id": "L",
+                "stars_id": "TLH"
+            },
+            {
+                "id": "TPA",
+                "single_char_stars_id": "D",
+                "stars_id": "TPA"
+            },
+            {
+                "id": "VLD",
+                "single_char_stars_id": "V",
+                "stars_id": "VLD"
+            },
+            {
+                "id": "VPS",
+                "single_char_stars_id": "K",
+                "stars_id": "VPS"
+            },
+            {
+                "id": "ZDC",
+                "eram_prefix": "W"
+            },
+            {
+                "id": "ZHU",
+                "eram_prefix": "H"
+            },
+            {
+                "id": "ZMA",
+                "eram_prefix": "R"
+            },
+            {
+                "id": "ZNY",
+                "eram_prefix": "N"
+            },
+            {
+                "id": "ZTL",
+                "eram_prefix": "T"
+            }
+        ],
         "neighboring_facilities": [
             "A80",
             "AGS",
+            "CAE",
+            "CHS",
             "CLT",
+            "DAB",
+            "F11",
             "FAY",
             "ILM",
+            "JAX",
             "MOB",
+            "MYR",
+            "NBC",
+            "OZR",
+            "P31",
+            "PAM",
             "PBI",
+            "SAV",
+            "TLH",
             "TPA",
+            "VLD",
+            "VPS",
             "ZDC",
             "ZHU",
             "ZMA",

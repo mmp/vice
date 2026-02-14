@@ -22,6 +22,9 @@
                 },
                 "departure_assignments": {
                     "KBOI": "BOI_APP"
+                },
+                "default_consolidation": {
+                    "BOI_APP": []
                 }
             }
         },
@@ -38,26 +41,17 @@
             "BOI_003S - BOI TOWER AIRSPACE RWY 10",
             "BOI_004S - BOI TOWER AIRSPACE RWY 28"
         ],
-        "video_map_file": "videomaps/ZLC-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "KOURT4": "BOI_APP",
-                    "KYAAN4": "BOI_APP",
-                    "SADYL4": "BOI_APP",
-                    "SPUUD4": "BOI_APP"
-                },
-                "departure_assignments": {
-                    "KBOI": "BOI_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZLC-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
             {
                 "id": "MUO",
                 "prefix": "1"
+            },
+            {
+                "id": "ZLC",
+                "eram_prefix": "U"
             }
         ],
         "neighboring_facilities": [

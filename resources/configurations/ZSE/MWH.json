@@ -1,0 +1,30 @@
+{
+    "control_positions": {
+        "MWH_APP": {
+            "frequency": 126400,
+            "radio_name": "Grant County Approach",
+            "sector_id": "1A"
+        },
+        "MWH_TWR": {
+            "frequency": 118250,
+            "radio_name": "Grant County Tower",
+            "sector_id": "1T"
+        },
+        "MWH_E_TWR": {
+            "frequency": 128000,
+            "radio_name": "Grant County Tower",
+            "sector_id": "1X"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "GEG",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "GEG"
+        ]
+    }
+}

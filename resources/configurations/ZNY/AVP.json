@@ -1,0 +1,55 @@
+{
+    "control_positions": {
+        "AVP_TWR": {
+            "frequency": 120100,
+            "radio_name": "Wilkes Barre Tower",
+            "sector_id": "1L"
+        },
+        "AVP_S_APP": {
+            "frequency": 126300,
+            "radio_name": "Wilkes-Barre Approach",
+            "sector_id": "1E"
+        },
+        "AVP_N_APP": {
+            "frequency": 120950,
+            "radio_name": "Wilkes-Barre Approach",
+            "sector_id": "1B"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ABE",
+                "prefix": "3"
+            },
+            {
+                "id": "BGM",
+                "prefix": "4"
+            },
+            {
+                "id": "MDT",
+                "prefix": "5"
+            },
+            {
+                "id": "N90",
+                "prefix": "1"
+            },
+            {
+                "id": "ZBW",
+                "eram_prefix": "B"
+            },
+            {
+                "id": "ZNY",
+                "eram_prefix": "N"
+            }
+        ],
+        "neighboring_facilities": [
+            "ABE",
+            "BGM",
+            "MDT",
+            "N90",
+            "ZBW",
+            "ZNY"
+        ]
+    }
+}

@@ -27,6 +27,11 @@
                 },
                 "departure_assignments": {
                     "PHOG": "HCF_N_APP"
+                },
+                "default_consolidation": {
+                    "HCF_N_APP": [
+                        "HCF_S_APP"
+                    ]
                 }
             },
             "OG1": {
@@ -38,12 +43,17 @@
                 },
                 "departure_assignments": {
                     "PHOG": "HCF_S_APP"
+                },
+                "default_consolidation": {
+                    "HCF_N_APP": [
+                        "HCF_S_APP"
+                    ]
                 }
             }
         },
         "center": "OGG",
         "controller_configs": {
-            "1S": {
+            "HCF_S_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -300,31 +310,7 @@
             "OGG_FIX_20",
             "OGG_FIX_23"
         ],
-        "video_map_file": "videomaps/ZHN-videomaps.gob.zst",
-        "controller_assignments": {
-            "OG1": {
-                "inbound_assignments": {
-                    "CAMPS4.LNY.S": "HCF_S_APP",
-                    "OCEANIC SOUTH FLOW": "HCF_N_APP",
-                    "V1.CAMPS4.S": "HCF_S_APP",
-                    "V2.CAMPS4.S": "HCF_S_APP"
-                },
-                "departure_assignments": {
-                    "PHOG": "HCF_S_APP"
-                }
-            },
-            "OGG": {
-                "inbound_assignments": {
-                    "CAMPS4.LNY.N": "HCF_S_APP",
-                    "LNDHY1": "HCF_N_APP",
-                    "V1.CAMPS4.N": "HCF_S_APP",
-                    "V2.CAMPS4.N": "HCF_S_APP"
-                },
-                "departure_assignments": {
-                    "PHOG": "HCF_N_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZHN-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [

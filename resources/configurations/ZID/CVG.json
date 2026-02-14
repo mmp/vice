@@ -40,17 +40,17 @@
         "center": "KCVG",
         "allow_long_scratchpad": true,
         "controller_configs": {
-            "1B": {},
-            "1F": {
+            "CVG_B_DEP": {},
+            "CVG_F_APP": {
                 "range": 33
             },
-            "1L": {},
-            "1N": {},
-            "1S": {},
-            "1V": {
+            "CVG_L_APP": {},
+            "CVG_N_APP": {},
+            "CVG_S_APP": {},
+            "CVG_V_APP": {
                 "range": 33
             },
-            "1W": {
+            "CVG_W_DEP": {
                 "flight_following_airspace": []
             }
         },
@@ -82,6 +82,16 @@
                     "SARGO4": "CVG_S_APP",
                     "SARGO ROYYZ": "CVG_S_APP",
                     "TIGRR4": "CVG_N_APP"
+                },
+                "default_consolidation": {
+                    "CVG_F_APP": [
+                        "CVG_B_DEP",
+                        "CVG_L_APP",
+                        "CVG_N_APP",
+                        "CVG_S_APP",
+                        "CVG_V_APP",
+                        "CVG_W_DEP"
+                    ]
                 }
             },
             "WDR": {
@@ -91,6 +101,9 @@
                 },
                 "inbound_assignments": {
                     "KLUK": "CVG_W_DEP"
+                },
+                "default_consolidation": {
+                    "CVG_W_DEP": []
                 }
             },
             "NAR": {
@@ -108,6 +121,9 @@
                     "SARGO4": "CVG_N_APP",
                     "SARGO ROYYZ": "CVG_N_APP",
                     "TIGRR4": "CVG_N_APP"
+                },
+                "default_consolidation": {
+                    "CVG_N_APP": []
                 }
             },
             "SAR": {
@@ -125,6 +141,9 @@
                     "SARGO4": "CVG_S_APP",
                     "SARGO ROYYZ": "CVG_S_APP",
                     "TIGRR4": "CVG_S_APP"
+                },
+                "default_consolidation": {
+                    "CVG_S_APP": []
                 }
             },
             "NF": {
@@ -134,6 +153,9 @@
                     "JAKIE6.NFINAL": "CVG_F_APP",
                     "SARGO4.NFINAL": "CVG_F_APP",
                     "TIGRR4.NFINAL": "CVG_F_APP"
+                },
+                "default_consolidation": {
+                    "CVG_F_APP": []
                 }
             },
             "SF": {
@@ -143,6 +165,9 @@
                     "JAKIE6.SFINAL": "CVG_F_APP",
                     "SARGO4.SFINAL": "CVG_F_APP",
                     "TIGRR4.SFINAL": "CVG_F_APP"
+                },
+                "default_consolidation": {
+                    "CVG_F_APP": []
                 }
             }
         },
@@ -251,105 +276,17 @@
             "East Base",
             "West Base"
         ],
-        "video_map_file": "videomaps/ZID-videomaps.gob.zst",
-        "controller_assignments": {
-            "CVG": {
-                "departure_assignments": {
-                    "KCVG/JBNCH6": "CVG_W_DEP",
-                    "KCVG/SILKS6": "CVG_W_DEP",
-                    "KCVG/CHCLL6": "CVG_W_DEP",
-                    "KCVG/LOVEY8": "CVG_W_DEP",
-                    "KCVG/HAGOL5": "CVG_B_DEP",
-                    "KCVG/BNGLE5": "CVG_B_DEP",
-                    "KCVG/ROCKT4": "CVG_B_DEP",
-                    "KCVG/GIPLE7": "CVG_B_DEP",
-                    "KCVG/KENLN6": "CVG_B_DEP",
-                    "KLUK": "CVG_L_APP"
-                },
-                "inbound_assignments": {
-                    "ARBAS RID MEEKR": "CVG_N_APP",
-                    "CEGRM7": "CVG_N_APP",
-                    "FLM": "CVG_L_APP",
-                    "GAVNN7": "CVG_S_APP",
-                    "HEDEE1": "CVG_N_APP",
-                    "JAKIE6": "CVG_S_APP",
-                    "JIMUR": "CVG_N_APP",
-                    "JIMUR DLAMP": "CVG_N_APP",
-                    "LODLL HICKS FIITZ": "CVG_S_APP",
-                    "MXQ": "CVG_N_APP",
-                    "SARGO4": "CVG_S_APP",
-                    "SARGO ROYYZ": "CVG_S_APP",
-                    "TIGRR4": "CVG_N_APP"
-                }
-            },
-            "NAR": {
-                "inbound_assignments": {
-                    "ARBAS RID MEEKR": "CVG_N_APP",
-                    "CEGRM7": "CVG_N_APP",
-                    "FLM": "CVG_N_APP",
-                    "GAVNN7": "CVG_N_APP",
-                    "HEDEE1": "CVG_N_APP",
-                    "JAKIE6": "CVG_N_APP",
-                    "JIMUR": "CVG_N_APP",
-                    "JIMUR DLAMP": "CVG_N_APP",
-                    "LODLL HICKS FIITZ": "CVG_N_APP",
-                    "MXQ": "CVG_N_APP",
-                    "SARGO4": "CVG_N_APP",
-                    "SARGO ROYYZ": "CVG_N_APP",
-                    "TIGRR4": "CVG_N_APP"
-                }
-            },
-            "NF": {
-                "inbound_assignments": {
-                    "CEGRM7.NFINAL": "CVG_F_APP",
-                    "GAVNN7.NFINAL": "CVG_F_APP",
-                    "JAKIE6.NFINAL": "CVG_F_APP",
-                    "SARGO4.NFINAL": "CVG_F_APP",
-                    "TIGRR4.NFINAL": "CVG_F_APP"
-                }
-            },
-            "SAR": {
-                "inbound_assignments": {
-                    "ARBAS RID MEEKR": "CVG_S_APP",
-                    "CEGRM7": "CVG_S_APP",
-                    "FLM": "CVG_S_APP",
-                    "GAVNN7": "CVG_S_APP",
-                    "HEDEE1": "CVG_S_APP",
-                    "JAKIE6": "CVG_S_APP",
-                    "JIMUR": "CVG_S_APP",
-                    "JIMUR DLAMP": "CVG_S_APP",
-                    "LODLL HICKS FIITZ": "CVG_S_APP",
-                    "MXQ": "CVG_S_APP",
-                    "SARGO4": "CVG_S_APP",
-                    "SARGO ROYYZ": "CVG_S_APP",
-                    "TIGRR4": "CVG_S_APP"
-                }
-            },
-            "SF": {
-                "inbound_assignments": {
-                    "CEGRM7.SFINAL": "CVG_F_APP",
-                    "GAVNN7.SFINAL": "CVG_F_APP",
-                    "JAKIE6.SFINAL": "CVG_F_APP",
-                    "SARGO4.SFINAL": "CVG_F_APP",
-                    "TIGRR4.SFINAL": "CVG_F_APP"
-                }
-            },
-            "WDR": {
-                "departure_assignments": {
-                    "KCVG": "CVG_W_DEP",
-                    "KLUK": "CVG_W_DEP"
-                },
-                "inbound_assignments": {
-                    "KLUK": "CVG_W_DEP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZID-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
             {
                 "id": "CMH",
                 "prefix": "1"
+            },
+            {
+                "id": "IND",
+                "prefix": "4"
             },
             {
                 "id": "LEX",
@@ -360,8 +297,8 @@
                 "prefix": "3"
             },
             {
-                "id": "IND",
-                "prefix": "4"
+                "id": "ZID",
+                "eram_prefix": "I"
             }
         ],
         "neighboring_facilities": [

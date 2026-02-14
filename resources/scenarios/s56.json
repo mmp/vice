@@ -1165,10 +1165,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "SLC_K_APP": []
-                }
+                "config_id": "STD"
             },
             "departure_runways": [
                 {
@@ -1220,10 +1217,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "SLC_K_APP": []
-                }
+                "config_id": "STD"
             },
             "departure_runways": [
                 {

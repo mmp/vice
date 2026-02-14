@@ -1,0 +1,30 @@
+{
+    "control_positions": {
+        "ABI_TWR": {
+            "frequency": 120100,
+            "radio_name": "Abilene Tower",
+            "sector_id": "1L"
+        },
+        "ABI_R_APP": {
+            "frequency": 125000,
+            "radio_name": "Abilene Approach",
+            "sector_id": "1R"
+        },
+        "ABI_W_APP": {
+            "frequency": 127200,
+            "radio_name": "Abilene Approach",
+            "sector_id": "1W"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "MAF",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "MAF"
+        ]
+    }
+}

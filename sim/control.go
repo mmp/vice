@@ -176,24 +176,35 @@ func (s *Sim) deleteAircraft(ac *Aircraft) {
 		if fp := ac.NASFlightPlan; fp != nil && fp.CID != "" {
 			s.CIDAllocator.Release(fp.CID)
 			fp.CID = ""
-		} else if fp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign)); fp != nil && fp.CID != "" {
+		} else if fp := s.starsComputer().lookupFlightPlanByACID(ACID(ac.ADSBCallsign)); fp != nil && fp.CID != "" {
 			s.CIDAllocator.Release(fp.CID)
 			fp.CID = ""
 		}
 	}
 	delete(s.Aircraft, ac.ADSBCallsign)
 
-	s.STARSComputer.HoldForRelease = slices.DeleteFunc(s.STARSComputer.HoldForRelease,
+	s.starsComputer().HoldForRelease = slices.DeleteFunc(s.starsComputer().HoldForRelease,
 		func(a *Aircraft) bool { return ac.ADSBCallsign == a.ADSBCallsign })
 
 	fp := ac.NASFlightPlan
 	if fp == nil {
-		fp = s.STARSComputer.takeFlightPlanByACID(ACID(ac.ADSBCallsign))
+		fp = s.starsComputer().takeFlightPlanByACID(ACID(ac.ADSBCallsign))
 	}
 	if fp != nil {
 		delete(s.Handoffs, fp.ACID)
 		delete(s.PointOuts, fp.ACID)
 		s.deleteFlightPlan(fp)
+	}
+
+	// Clean up FacilityTracks from all facility computers
+	acid := ACID(ac.ADSBCallsign)
+	if s.nasNet != nil {
+		for _, sc := range s.nasNet.STARSComputers {
+			delete(sc.Tracks, acid)
+		}
+		for _, ec := range s.nasNet.ERAMComputers {
+			delete(ec.Tracks, acid)
+		}
 	}
 
 	s.lg.Info("deleted aircraft", slog.String("adsb_callsign", string(ac.ADSBCallsign)))
@@ -294,7 +305,7 @@ func (s *Sim) CreateFlightPlan(tcw TCW, spec FlightPlanSpecifier) error {
 		return err
 	}
 
-	fp, err := spec.GetFlightPlan(s.LocalCodePool, s.ERAMComputer.SquawkCodePool)
+	fp, err := spec.GetFlightPlan(s.LocalCodePool, s.eramComputer().SquawkCodePool)
 	if err != nil {
 		return err
 	}
@@ -305,12 +316,11 @@ func (s *Sim) CreateFlightPlan(tcw TCW, spec FlightPlanSpecifier) error {
 		func(ac *Aircraft) bool { return ac.IsAssociated() && ac.NASFlightPlan.ACID == fp.ACID }) {
 		return ErrDuplicateACID
 	}
-	if slices.ContainsFunc(s.STARSComputer.FlightPlans,
-		func(fp2 *NASFlightPlan) bool { return fp.ACID == fp2.ACID }) {
+	if _, exists := s.starsComputer().FlightPlans[fp.ACID]; exists {
 		return ErrDuplicateACID
 	}
 
-	fp, err = s.STARSComputer.CreateFlightPlan(fp)
+	fp, err = s.starsComputer().CreateFlightPlan(fp)
 
 	if err == nil {
 		err = s.postCheckFlightPlanSpecifier(spec)
@@ -440,15 +450,15 @@ func (s *Sim) AssociateFlightPlan(tcw TCW, callsign av.ADSBCallsign, spec Flight
 			if ac.IsAssociated() {
 				return av.ErrOtherControllerHasTrack
 			}
-			if s.STARSComputer.lookupFlightPlanByACID(spec.ACID.Get()) != nil {
+			if s.starsComputer().lookupFlightPlanByACID(spec.ACID.Get()) != nil {
 				return ErrDuplicateACID
 			}
 
-			fp, err := spec.GetFlightPlan(s.LocalCodePool, s.ERAMComputer.SquawkCodePool)
+			fp, err := spec.GetFlightPlan(s.LocalCodePool, s.eramComputer().SquawkCodePool)
 			if err != nil {
 				return err
 			}
-			if _, err := s.STARSComputer.CreateFlightPlan(fp); err != nil {
+			if _, err := s.starsComputer().CreateFlightPlan(fp); err != nil {
 				return err
 			}
 
@@ -456,7 +466,7 @@ func (s *Sim) AssociateFlightPlan(tcw TCW, callsign av.ADSBCallsign, spec Flight
 		},
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			// Either the flight plan was passed in or fp was initialized  in the validation function.
-			fp := s.STARSComputer.takeFlightPlanByACID(spec.ACID.Get())
+			fp := s.starsComputer().takeFlightPlanByACID(spec.ACID.Get())
 
 			fp.Update(spec, s)
 
@@ -491,7 +501,7 @@ func (s *Sim) ActivateFlightPlan(tcw TCW, callsign av.ADSBCallsign, acid ACID, s
 		return ErrTrackIsActive
 	}
 
-	fp := s.STARSComputer.takeFlightPlanByACID(acid)
+	fp := s.starsComputer().takeFlightPlanByACID(acid)
 	if fp == nil {
 		return ErrNoMatchingFlightPlan
 	}
@@ -526,7 +536,7 @@ func (s *Sim) DeleteFlightPlan(tcw TCW, acid ACID) error {
 		}
 	}
 
-	if fp := s.STARSComputer.takeFlightPlanByACID(acid); fp != nil {
+	if fp := s.starsComputer().takeFlightPlanByACID(acid); fp != nil {
 		s.deleteFlightPlan(fp)
 		return nil
 	}
@@ -535,12 +545,16 @@ func (s *Sim) DeleteFlightPlan(tcw TCW, acid ACID) error {
 }
 
 func (s *Sim) deleteFlightPlan(fp *NASFlightPlan) {
-	s.STARSComputer.returnListIndex(fp.ListIndex)
+	s.starsComputer().returnListIndex(fp.ListIndex)
 	if fp.PlanType == LocalNonEnroute {
 		s.LocalCodePool.Return(fp.AssignedSquawk)
 	} else {
-		s.ERAMComputer.SquawkCodePool.Return(fp.AssignedSquawk)
+		s.eramComputer().SquawkCodePool.Return(fp.AssignedSquawk)
 	}
+	// Clean up ERAM's authoritative copy
+	delete(s.eramComputer().FlightPlans, fp.ACID)
+	// Clean up associated track at the primary STARS
+	delete(s.starsComputer().Tracks, fp.ACID)
 }
 
 func (s *Sim) RepositionTrack(tcw TCW, acid ACID, callsign av.ADSBCallsign, p math.Point2LL) error {
@@ -581,17 +595,14 @@ func (s *Sim) RepositionTrack(tcw TCW, acid ACID, callsign av.ADSBCallsign, p ma
 	}
 	if fp == nil {
 		// Try unsupported DBs if we didn't find it there.
-		for i, sfp := range s.STARSComputer.FlightPlans {
-			if !sfp.Location.IsZero() && sfp.ACID == acid {
-				if !s.TCWCanModifyTrack(tcw, sfp) {
-					return av.ErrOtherControllerHasTrack
-				} else if sfp.HandoffController != "" {
-					return ErrTrackIsBeingHandedOff
-				} else {
-					fp = sfp
-					s.STARSComputer.FlightPlans = slices.Delete(s.STARSComputer.FlightPlans, i, i+1)
-					break
-				}
+		if sfp, ok := s.starsComputer().FlightPlans[acid]; ok && !sfp.Location.IsZero() {
+			if !s.TCWCanModifyTrack(tcw, sfp) {
+				return av.ErrOtherControllerHasTrack
+			} else if sfp.HandoffController != "" {
+				return ErrTrackIsBeingHandedOff
+			} else {
+				fp = sfp
+				delete(s.starsComputer().FlightPlans, acid)
 			}
 		}
 	}
@@ -620,7 +631,7 @@ func (s *Sim) RepositionTrack(tcw TCW, acid ACID, callsign av.ADSBCallsign, p ma
 	} else { // Creating / moving an unsupported DB.
 		fp.Location = p
 		fp.OwningTCW = tcw
-		s.STARSComputer.FlightPlans = append(s.STARSComputer.FlightPlans, fp)
+		s.starsComputer().FlightPlans[fp.ACID] = fp
 	}
 	return nil
 }
@@ -664,8 +675,14 @@ func (s *Sim) handoffTrack(fp *NASFlightPlan, toTCP TCP) {
 
 	// Resolve the target TCP - it may be consolidated to another controller
 	resolvedTCP := s.State.ResolveController(toTCP)
-	if _, ok := s.State.Controllers[resolvedTCP]; !ok {
+	toCtrl, ok := s.State.Controllers[resolvedTCP]
+	if !ok {
 		s.lg.Errorf("Unable to handoff %s: to controller %q (resolved: %q) not found", fp.ACID, toTCP, resolvedTCP)
+	}
+
+	// Cross-facility handoff: send NAS messages instead of direct mutation
+	if ok && toCtrl.IsExternal() && toCtrl.Facility != "" {
+		s.initiateCrossFacilityHandoff(fp, toTCP, toCtrl)
 	}
 
 	// Add them to the auto-accept map even if the target controller is
@@ -682,6 +699,79 @@ func (s *Sim) handoffTrack(fp *NASFlightPlan, toTCP TCP) {
 			// aircraft is a departure that will likely never talk to a human, send it on course (mainly so it climbs up to cruise)
 			s.enqueueDepartOnCourse(callsign)
 		}
+	}
+}
+
+// initiateCrossFacilityHandoff sends NAS messages (FP + TI) to the target
+// facility to initiate a cross-facility handoff.
+func (s *Sim) initiateCrossFacilityHandoff(fp *NASFlightPlan, toTCP TCP, toCtrl *av.Controller) {
+	targetFacility := toCtrl.Facility
+
+	// Determine which facility computer sends the handoff.
+	// Resolve from the current tracking controller's facility.
+	type messageSender struct {
+		send     func(*NASNetwork, NASMessage)
+		tracks   map[ACID]*FacilityTrack
+		facility string
+	}
+	var sender *messageSender
+
+	if fp.TrackingController != "" {
+		resolved := s.State.ResolveController(fp.TrackingController)
+		if ctrl, ok := s.State.Controllers[resolved]; ok {
+			if ctrl.ERAMFacility {
+				// Sending from an ERAM (e.g., ZBW center sector)
+				if ec := s.nasNet.ERAMFor(ctrl.Facility); ec != nil {
+					sender = &messageSender{send: ec.SendMessage, tracks: ec.Tracks, facility: ec.Identifier}
+				}
+			} else if ctrl.Facility != "" {
+				// Sending from a neighbor TRACON (e.g., PHL)
+				if sc := s.nasNet.STARSFor(ctrl.Facility); sc != nil {
+					sender = &messageSender{send: sc.SendMessage, tracks: sc.Tracks, facility: sc.Identifier}
+				}
+			}
+		}
+	}
+
+	// Fallback to primary STARS
+	if sender == nil {
+		sc := s.starsComputer()
+		sender = &messageSender{send: sc.SendMessage, tracks: sc.Tracks, facility: sc.Identifier}
+	}
+
+	// Determine entry fix for the TI message.
+	entryFix := fp.EntryFix
+	exitFix := fp.ExitFix
+
+	// Send FP to target facility if it doesn't already have it.
+	// Only route/FP data is sent — control state is communicated via TI/DA/TN.
+	sender.send(s.nasNet, NASMessage{
+		Type:       MsgFP,
+		ToFacility: targetFacility,
+		ACID:       fp.ACID,
+		Timestamp:  s.State.SimTime,
+		FlightPlan: fpForMessage(fp),
+	})
+
+	// Send TI (Transfer Initiate) to target facility
+	sender.send(s.nasNet, NASMessage{
+		Type:       MsgTI,
+		ToFacility: targetFacility,
+		ACID:       fp.ACID,
+		Timestamp:  s.State.SimTime,
+		Controller: ControlPosition(toTCP),
+		EntryFix:   entryFix,
+		ExitFix:    exitFix,
+		Altitude:   fp.AssignedAltitude,
+	})
+
+	// Create/update a track entry at the sending facility for the handoff
+	sender.tracks[fp.ACID] = &FacilityTrack{
+		ACID:          fp.ACID,
+		CoupledFP:     fp,
+		Owner:         fp.TrackingController,
+		OwnerFacility: sender.facility,
+		HandoffState:  TrackHandoffOffered,
 	}
 }
 
@@ -806,6 +896,9 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 			fp.LastLocalController = newTrackingController
 			fp.OwningTCW = tcw // The accepting TCW owns the track
 
+			// Send TN if this was a cross-facility handoff
+			s.sendTNIfCrossFacility(fp, previousTrackingController, newTrackingController)
+
 			// Clean up if a point out was accepted as a handoff
 			delete(s.PointOuts, acid)
 
@@ -823,6 +916,84 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 			return nil
 		})
 	return err
+}
+
+// sendTNIfCrossFacility sends a TN (Transfer Notify) message when a
+// cross-facility handoff is accepted. The TN goes from the accepting
+// facility back to the sending facility. It also updates the FacilityTrack
+// at the accepting facility to reflect the new owner.
+func (s *Sim) sendTNIfCrossFacility(fp *NASFlightPlan, previousController ControlPosition, newController ControlPosition) {
+	// Determine the previous controller's facility
+	prevResolved := s.State.ResolveController(previousController)
+	prevCtrl, prevOk := s.State.Controllers[prevResolved]
+
+	// Determine the new controller's facility
+	newResolved := s.State.ResolveController(newController)
+	newCtrl, newOk := s.State.Controllers[newResolved]
+
+	if !prevOk || !newOk {
+		return
+	}
+
+	// Determine the sender (new controller's facility) and target (old controller's facility)
+	var senderSend func(*NASNetwork, NASMessage)
+	var senderTracks map[ACID]*FacilityTrack
+	var senderFacility string
+	var targetFacility string
+
+	if newCtrl.ERAMFacility {
+		if ec := s.nasNet.ERAMFor(newCtrl.Facility); ec != nil {
+			senderSend = ec.SendMessage
+			senderTracks = ec.Tracks
+			senderFacility = ec.Identifier
+		}
+	} else if newCtrl.Facility != "" {
+		if sc := s.nasNet.STARSFor(newCtrl.Facility); sc != nil {
+			senderSend = sc.SendMessage
+			senderTracks = sc.Tracks
+			senderFacility = sc.Identifier
+		}
+	}
+	// Fallback: new controller is local (primary STARS)
+	if senderSend == nil {
+		sc := s.starsComputer()
+		senderSend = sc.SendMessage
+		senderTracks = sc.Tracks
+		senderFacility = sc.Identifier
+	}
+
+	if prevCtrl.ERAMFacility {
+		if ec := s.nasNet.ERAMFor(prevCtrl.Facility); ec != nil {
+			targetFacility = ec.Identifier
+		}
+	} else if prevCtrl.Facility != "" {
+		targetFacility = prevCtrl.Facility
+	}
+	// Fallback: previous controller is local (primary STARS)
+	if targetFacility == "" {
+		targetFacility = s.starsComputer().Identifier
+	}
+
+	// Only send TN if the facilities are actually different
+	if senderFacility == targetFacility {
+		return
+	}
+
+	// Send TN from the accepting facility to the sending facility
+	senderSend(s.nasNet, NASMessage{
+		Type:       MsgTN,
+		ToFacility: targetFacility,
+		ACID:       fp.ACID,
+		Timestamp:  s.State.SimTime,
+		Controller: newController,
+	})
+
+	// Update the accepting facility's track
+	if track, ok := senderTracks[fp.ACID]; ok {
+		track.Owner = newController
+		track.OwnerFacility = senderFacility
+		track.HandoffState = TrackHandoffAccepted
+	}
 }
 
 func (s *Sim) CancelHandoff(tcw TCW, acid ACID) error {
@@ -1189,7 +1360,7 @@ func (s *Sim) ReleaseDeparture(tcw TCW, callsign av.ADSBCallsign) error {
 	if !ok {
 		return av.ErrNoAircraftForCallsign
 	}
-	fp := s.STARSComputer.lookupFlightPlanByACID(ACID(callsign))
+	fp := s.starsComputer().lookupFlightPlanByACID(ACID(callsign))
 	if fp == nil {
 		return ErrNoMatchingFlightPlan
 	}
@@ -1197,7 +1368,7 @@ func (s *Sim) ReleaseDeparture(tcw TCW, callsign av.ADSBCallsign) error {
 		return ErrInvalidDepartureController
 	}
 
-	if err := s.STARSComputer.ReleaseDeparture(callsign); err == nil {
+	if err := s.starsComputer().ReleaseDeparture(callsign); err == nil {
 		ac.Released = true
 		ac.ReleaseTime = s.State.SimTime
 		return nil

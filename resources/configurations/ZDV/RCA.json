@@ -1,0 +1,18 @@
+{
+    "control_positions": {
+        "RCA_APP": {
+            "frequency": 119500,
+            "radio_name": "Ellsworth Approach",
+            "sector_id": "1A"
+        },
+        "RCA_TWR": {
+            "frequency": 126050,
+            "radio_name": "Ellsworth Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [],
+        "neighboring_facilities": []
+    }
+}

@@ -1,0 +1,45 @@
+{
+    "control_positions": {
+        "MLI_TWR": {
+            "frequency": 119400,
+            "radio_name": "Quad Cities Tower",
+            "sector_id": "1L"
+        },
+        "MLI_N_APP": {
+            "frequency": 125950,
+            "radio_name": "Quad Cities Approach",
+            "sector_id": "1N"
+        },
+        "MLI_S_APP": {
+            "frequency": 133275,
+            "radio_name": "Quad Cities Approach",
+            "sector_id": "1S"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "CID",
+                "prefix": "3"
+            },
+            {
+                "id": "RFD",
+                "prefix": "1"
+            },
+            {
+                "id": "T75",
+                "prefix": "2"
+            },
+            {
+                "id": "ZKC",
+                "eram_prefix": "K"
+            }
+        ],
+        "neighboring_facilities": [
+            "CID",
+            "RFD",
+            "T75",
+            "ZKC"
+        ]
+    }
+}

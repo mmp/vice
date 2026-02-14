@@ -29,6 +29,11 @@
                 },
                 "departure_assignments": {
                     "KAGS": "AGS_W_APP"
+                },
+                "default_consolidation": {
+                    "AGS_E_APP": [
+                        "AGS_W_APP"
+                    ]
                 }
             }
         },
@@ -113,36 +118,29 @@
             "1A3 RNAV (GPS) RUNWAY 20 APPROACH",
             "1A3 RNAV (GPS) RUNWAY 02 APPROACH"
         ],
-        "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "East": "AGS_E_APP",
-                    "North": "AGS_W_APP",
-                    "STUGE3": "AGS_E_APP",
-                    "STWRT3": "AGS_E_APP",
-                    "South": "AGS_W_APP",
-                    "West": "AGS_W_APP"
-                },
-                "departure_assignments": {
-                    "KAGS": "AGS_W_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZTL-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
             {
-                "id": "GSP",
-                "prefix": "1"
+                "id": "A80",
+                "prefix": "3"
             },
             {
                 "id": "CAE",
                 "prefix": "2"
             },
             {
-                "id": "A80",
-                "prefix": "3"
+                "id": "GSP",
+                "prefix": "1"
+            },
+            {
+                "id": "ZJX",
+                "eram_prefix": "J"
+            },
+            {
+                "id": "ZTL",
+                "eram_prefix": "T"
             }
         ],
         "neighboring_facilities": [

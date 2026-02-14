@@ -1510,15 +1510,7 @@
                 }
             },
             "configuration": {
-                "config_id": "10X",
-                "default_consolidation": {
-                    "SAV_N_APP": [
-                        "SAV_W_APP"
-                    ],
-                    "SAV_W_APP": [
-                        "SAV_S_APP"
-                    ]
-                }
+                "config_id": "10X"
             },
             "default_maps": [
                 "RADAR MAP"
@@ -1597,15 +1589,7 @@
                 }
             },
             "configuration": {
-                "config_id": "28X",
-                "default_consolidation": {
-                    "SAV_N_APP": [
-                        "SAV_W_APP"
-                    ],
-                    "SAV_W_APP": [
-                        "SAV_S_APP"
-                    ]
-                }
+                "config_id": "28X"
             },
             "default_maps": [
                 "RADAR MAP"
@@ -1684,15 +1668,7 @@
                 }
             },
             "configuration": {
-                "config_id": "10X",
-                "default_consolidation": {
-                    "SAV_N_APP": [
-                        "SAV_W_APP"
-                    ],
-                    "SAV_W_APP": [
-                        "SAV_S_APP"
-                    ]
-                }
+                "config_id": "10X"
             },
             "default_maps": [
                 "RADAR MAP"
@@ -1771,15 +1747,7 @@
                 }
             },
             "configuration": {
-                "config_id": "10X",
-                "default_consolidation": {
-                    "SAV_N_APP": [
-                        "SAV_W_APP"
-                    ],
-                    "SAV_W_APP": [
-                        "SAV_S_APP"
-                    ]
-                }
+                "config_id": "10X"
             },
             "default_maps": [
                 "RADAR MAP"

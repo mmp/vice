@@ -1,0 +1,50 @@
+{
+    "control_positions": {
+        "BFL_TWR": {
+            "frequency": 118100,
+            "radio_name": "Bakersfield Tower",
+            "sector_id": "1L"
+        },
+        "BFL_N_APP": {
+            "frequency": 118900,
+            "radio_name": "Bakersfield Approach",
+            "sector_id": "1N"
+        },
+        "BFL_DEP": {
+            "frequency": 126450,
+            "radio_name": "Bakersfield Departure",
+            "sector_id": "1R"
+        },
+        "BFL_S_APP": {
+            "frequency": 118800,
+            "radio_name": "Bakersfield Approach",
+            "sector_id": "1S"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "FAT",
+                "prefix": "2"
+            },
+            {
+                "id": "JCF",
+                "prefix": "1"
+            },
+            {
+                "id": "NLC",
+                "prefix": "3"
+            },
+            {
+                "id": "ZOA",
+                "eram_prefix": "O"
+            }
+        ],
+        "neighboring_facilities": [
+            "FAT",
+            "JCF",
+            "NLC",
+            "ZOA"
+        ]
+    }
+}

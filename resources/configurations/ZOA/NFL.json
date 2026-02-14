@@ -1,0 +1,30 @@
+{
+    "control_positions": {
+        "NFL_APP": {
+            "frequency": 120850,
+            "radio_name": "Fallon Final",
+            "sector_id": "1G"
+        },
+        "NFL_D_APP": {
+            "frequency": 120850,
+            "radio_name": "Fallon Desert",
+            "sector_id": "1E"
+        },
+        "NFL_TWR": {
+            "frequency": 119250,
+            "radio_name": "Navy Fallon Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "NCT",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "NCT"
+        ]
+    }
+}

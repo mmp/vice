@@ -1,0 +1,35 @@
+{
+    "control_positions": {
+        "CHA_APP": {
+            "frequency": 119200,
+            "radio_name": "Chattanooga Approach",
+            "sector_id": "1W"
+        },
+        "CHA_TWR": {
+            "frequency": 118300,
+            "radio_name": "Chattanooga Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "HSV",
+                "prefix": "2"
+            },
+            {
+                "id": "TYS",
+                "prefix": "1"
+            },
+            {
+                "id": "ZME",
+                "eram_prefix": "M"
+            }
+        ],
+        "neighboring_facilities": [
+            "HSV",
+            "TYS",
+            "ZME"
+        ]
+    }
+}

@@ -53,6 +53,11 @@
                 },
                 "departure_assignments": {
                     "KBHM": "BHM_S_APP"
+                },
+                "default_consolidation": {
+                    "BHM_N_APP": [
+                        "BHM_S_APP"
+                    ]
                 }
             }
         },
@@ -164,48 +169,33 @@
             "BHM INTERSECTIONS WITH NAMES",
             "BHM SAT BOUNDARY"
         ],
-        "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "DIODE24": "BHM_N_APP",
-                    "DIODE6": "BHM_N_APP",
-                    "HERKO24": "BHM_S_APP",
-                    "HERKO6": "BHM_S_APP",
-                    "KIOSK24": "BHM_S_APP",
-                    "KIOSK6": "BHM_S_APP",
-                    "LYMPH24": "BHM_N_APP",
-                    "LYMPH6": "BHM_N_APP",
-                    "NESTS24": "BHM_N_APP",
-                    "NESTS6": "BHM_N_APP",
-                    "NULLS24": "BHM_N_APP",
-                    "NULLS6": "BHM_N_APP",
-                    "SHIMS": "BHM_N_APP",
-                    "WANDS": "BHM_S_APP"
-                },
-                "departure_assignments": {
-                    "KBHM": "BHM_S_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZTL-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
             {
-                "id": "MGM",
-                "prefix": "1"
+                "id": "CBM",
+                "prefix": "3"
             },
             {
                 "id": "HSV",
                 "prefix": "2"
             },
             {
-                "id": "CBM",
-                "prefix": "3"
+                "id": "MGM",
+                "prefix": "1"
             },
             {
                 "id": "NMM",
                 "prefix": "4"
+            },
+            {
+                "id": "ZME",
+                "eram_prefix": "M"
+            },
+            {
+                "id": "ZTL",
+                "eram_prefix": "T"
             }
         ],
         "neighboring_facilities": [

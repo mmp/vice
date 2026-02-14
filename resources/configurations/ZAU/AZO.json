@@ -1,0 +1,80 @@
+{
+    "control_positions": {
+        "AZO_E_APP": {
+            "frequency": 119200,
+            "radio_name": "Great Lakes Approach",
+            "sector_id": "1E"
+        },
+        "AZO_G_APP": {
+            "frequency": 128400,
+            "radio_name": "Great Lakes Approach",
+            "sector_id": "1G"
+        },
+        "AZO_N_APP": {
+            "frequency": 119800,
+            "radio_name": "Great Lakes Approach",
+            "sector_id": "1N"
+        },
+        "AZO_R_APP": {
+            "frequency": 121200,
+            "radio_name": "Great Lakes Approach",
+            "sector_id": "1R"
+        },
+        "AZO_S_APP": {
+            "frequency": 133825,
+            "radio_name": "Great Lakes Approach",
+            "sector_id": "1S"
+        },
+        "AZO_W_APP": {
+            "frequency": 124600,
+            "radio_name": "Great Lakes Approach",
+            "sector_id": "1W"
+        },
+        "AZO_TWR": {
+            "frequency": 118300,
+            "radio_name": "Kalamazoo Tower",
+            "sector_id": "1Z"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "FWA",
+                "prefix": "6"
+            },
+            {
+                "id": "LAN",
+                "prefix": "2"
+            },
+            {
+                "id": "MKE",
+                "prefix": "8"
+            },
+            {
+                "id": "SBN",
+                "prefix": "7"
+            },
+            {
+                "id": "TOL",
+                "prefix": "5"
+            },
+            {
+                "id": "ZMP",
+                "eram_prefix": "P"
+            },
+            {
+                "id": "ZOB",
+                "eram_prefix": "C"
+            }
+        ],
+        "neighboring_facilities": [
+            "FWA",
+            "LAN",
+            "MKE",
+            "SBN",
+            "TOL",
+            "ZMP",
+            "ZOB"
+        ]
+    }
+}

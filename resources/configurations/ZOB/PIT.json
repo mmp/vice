@@ -46,6 +46,12 @@
                 "departure_assignments": {
                     "KAGC": "PIT_S_DEP",
                     "KPIT": "PIT_S_DEP"
+                },
+                "default_consolidation": {
+                    "PIT_B_APP": [
+                        "PIT_D_APP",
+                        "PIT_S_DEP"
+                    ]
                 }
             }
         },
@@ -130,35 +136,10 @@
             "PIT-133 (HAYNZ)",
             "PIT-135 (JESEY)"
         ],
-        "video_map_file": "videomaps/ZOB-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "DEMME5": "PIT_D_APP",
-                    "FEWGA7": "PIT_D_APP",
-                    "HAYNZ7": "PIT_B_APP",
-                    "HOMEE": "PIT_B_APP",
-                    "JESEY4": "PIT_B_APP",
-                    "NESTO": "PIT_D_APP",
-                    "WISKE": "PIT_D_APP"
-                },
-                "departure_assignments": {
-                    "KAGC": "PIT_S_DEP",
-                    "KPIT": "PIT_S_DEP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZOB-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
-            {
-                "id": "YNG",
-                "prefix": "1"
-            },
-            {
-                "id": "JST",
-                "prefix": "2"
-            },
             {
                 "id": "CKB",
                 "prefix": "3"
@@ -166,6 +147,18 @@
             {
                 "id": "CLE",
                 "prefix": "4"
+            },
+            {
+                "id": "JST",
+                "prefix": "2"
+            },
+            {
+                "id": "YNG",
+                "prefix": "1"
+            },
+            {
+                "id": "ZOB",
+                "eram_prefix": "C"
             }
         ],
         "neighboring_facilities": [

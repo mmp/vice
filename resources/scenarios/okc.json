@@ -1605,17 +1605,7 @@
                 }
             },
             "configuration": {
-                "config_id": "KO1",
-                "default_consolidation": {
-                    "OKC_D_APP": [
-                        "OKC_E_APP"
-                    ],
-                    "OKC_W_APP": [
-                        "OKC_D_APP",
-                        "OKC_F_APP",
-                        "OKC_S_APP"
-                    ]
-                }
+                "config_id": "KO1"
             },
             "default_maps": [
                 "OKC012S SOUTH FLOW"
@@ -1667,17 +1657,7 @@
                 }
             },
             "configuration": {
-                "config_id": "KOK",
-                "default_consolidation": {
-                    "OKC_D_APP": [
-                        "OKC_E_APP"
-                    ],
-                    "OKC_W_APP": [
-                        "OKC_D_APP",
-                        "OKC_F_APP",
-                        "OKC_S_APP"
-                    ]
-                }
+                "config_id": "KOK"
             },
             "default_maps": [
                 "OKC013S NORTH FLOW"

@@ -37,30 +37,47 @@
                 "departure_assignments": {
                     "KALB": "ALB_W_APP",
                     "KSCH": "ALB_W_APP"
+                },
+                "default_consolidation": {
+                    "ALB_E_APP": [
+                        "ALB_W_APP"
+                    ]
                 }
             },
             "EA1": {
                 "inbound_assignments": {
                     "CANAN_FINAL_EAST": "ALB_F_APP",
                     "SYR_FINAL_EAST": "ALB_F_APP"
+                },
+                "default_consolidation": {
+                    "ALB_F_APP": []
                 }
             },
             "NOR": {
                 "inbound_assignments": {
                     "CANAN_FINAL_NORTH": "ALB_F_APP",
                     "SYR_NORTH_FINALS": "ALB_F_APP"
+                },
+                "default_consolidation": {
+                    "ALB_F_APP": []
                 }
             },
             "SOU": {
                 "inbound_assignments": {
                     "CANAN_FINAL_SOUTH": "ALB_F_APP",
                     "SYR_FINAL_SOUTH": "ALB_F_APP"
+                },
+                "default_consolidation": {
+                    "ALB_F_APP": []
                 }
             },
             "WES": {
                 "inbound_assignments": {
                     "CANAN_FINAL_WEST": "ALB_F_APP",
                     "SYR_FINAL_WEST": "ALB_F_APP"
+                },
+                "default_consolidation": {
+                    "ALB_F_APP": []
                 }
             }
         },
@@ -78,58 +95,29 @@
             "ALB GPS RWY 1",
             "ALB GPS RWY 28"
         ],
-        "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
-        "controller_assignments": {
-            "EA1": {
-                "inbound_assignments": {
-                    "CANAN_FINAL_EAST": "ALB_F_APP",
-                    "SYR_FINAL_EAST": "ALB_F_APP"
-                }
-            },
-            "EAS": {
-                "inbound_assignments": {
-                    "CANAN": "ALB_E_APP",
-                    "HANAA": "ALB_E_APP",
-                    "SYR": "ALB_W_APP"
-                },
-                "departure_assignments": {
-                    "KALB": "ALB_W_APP",
-                    "KSCH": "ALB_W_APP"
-                }
-            },
-            "NOR": {
-                "inbound_assignments": {
-                    "CANAN_FINAL_NORTH": "ALB_F_APP",
-                    "SYR_NORTH_FINALS": "ALB_F_APP"
-                }
-            },
-            "SOU": {
-                "inbound_assignments": {
-                    "CANAN_FINAL_SOUTH": "ALB_F_APP",
-                    "SYR_FINAL_SOUTH": "ALB_F_APP"
-                }
-            },
-            "WES": {
-                "inbound_assignments": {
-                    "CANAN_FINAL_WEST": "ALB_F_APP",
-                    "SYR_FINAL_WEST": "ALB_F_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
             {
-                "id": "Y90",
-                "prefix": "1"
+                "id": "N90",
+                "prefix": "3"
             },
             {
                 "id": "SYR",
                 "prefix": "2"
             },
             {
-                "id": "N90",
-                "prefix": "3"
+                "id": "Y90",
+                "prefix": "1"
+            },
+            {
+                "id": "ZBW",
+                "eram_prefix": "B"
+            },
+            {
+                "id": "ZNY",
+                "eram_prefix": "N"
             }
         ],
         "neighboring_facilities": [

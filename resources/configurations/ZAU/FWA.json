@@ -1,0 +1,65 @@
+{
+    "control_positions": {
+        "FWA_W_APP": {
+            "frequency": 127200,
+            "radio_name": "Fort Wayne Approach",
+            "sector_id": "1F"
+        },
+        "FWA_TWR": {
+            "frequency": 119100,
+            "radio_name": "Fort Wayne Tower",
+            "sector_id": "1L"
+        },
+        "FWA_E_APP": {
+            "frequency": 132150,
+            "radio_name": "Fort Wayne Approach",
+            "sector_id": "2F"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "AZO",
+                "prefix": "1"
+            },
+            {
+                "id": "CMH",
+                "prefix": "3"
+            },
+            {
+                "id": "GUS",
+                "prefix": "5"
+            },
+            {
+                "id": "IND",
+                "prefix": "4"
+            },
+            {
+                "id": "SBN",
+                "prefix": "6"
+            },
+            {
+                "id": "TOL",
+                "prefix": "2"
+            },
+            {
+                "id": "ZID",
+                "eram_prefix": "I"
+            },
+            {
+                "id": "ZOB",
+                "eram_prefix": "C"
+            }
+        ],
+        "neighboring_facilities": [
+            "AZO",
+            "CMH",
+            "GUS",
+            "IND",
+            "SBN",
+            "TOL",
+            "ZID",
+            "ZOB"
+        ]
+    }
+}

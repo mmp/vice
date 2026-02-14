@@ -1,0 +1,55 @@
+{
+    "control_positions": {
+        "POE_APP": {
+            "frequency": 123700,
+            "radio_name": "Polk Approach",
+            "sector_id": "1P"
+        },
+        "POE_TWR": {
+            "frequency": 119000,
+            "radio_name": "Polk Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "BTR",
+                "prefix": "3"
+            },
+            {
+                "id": "I90",
+                "prefix": "6"
+            },
+            {
+                "id": "LCH",
+                "prefix": "5"
+            },
+            {
+                "id": "LFT",
+                "prefix": "4"
+            },
+            {
+                "id": "MLU",
+                "prefix": "2"
+            },
+            {
+                "id": "SHV",
+                "prefix": "1"
+            },
+            {
+                "id": "ZFW",
+                "eram_prefix": "F"
+            }
+        ],
+        "neighboring_facilities": [
+            "BTR",
+            "I90",
+            "LCH",
+            "LFT",
+            "MLU",
+            "SHV",
+            "ZFW"
+        ]
+    }
+}

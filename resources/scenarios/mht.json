@@ -814,19 +814,7 @@
                 }
             },
             "configuration": {
-                "config_id": "KM1",
-                "default_consolidation": {
-                    "MHT_E_APP": [
-                        "MHT_P_APP"
-                    ],
-                    "MHT_J_APP": [
-                        "MHT_Z_APP"
-                    ],
-                    "MHT_Z_APP": [
-                        "MHT_E_APP",
-                        "MHT_W_APP"
-                    ]
-                }
+                "config_id": "KM1"
             },
             "default_maps": [
                 "MHT MAIN"
@@ -880,17 +868,7 @@
                 }
             },
             "configuration": {
-                "config_id": "KMH",
-                "default_consolidation": {
-                    "MHT_E_APP": [
-                        "MHT_P_APP"
-                    ],
-                    "MHT_Z_APP": [
-                        "MHT_E_APP",
-                        "MHT_J_APP",
-                        "MHT_W_APP"
-                    ]
-                }
+                "config_id": "KMH"
             },
             "default_maps": [
                 "MHT MAIN"

@@ -39,6 +39,11 @@
                 "departure_assignments": {
                     "KCRE": "MYR_E_APP",
                     "KMYR": "MYR_E_APP"
+                },
+                "default_consolidation": {
+                    "MYR_E_APP": [
+                        "MYR_W_APP"
+                    ]
                 }
             }
         },
@@ -94,27 +99,7 @@
             "NC78 COPTER RNAV 29",
             "NC78 HUSIN1 DEP"
         ],
-        "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "CAE.fast": "MYR_W_APP",
-                    "CAE.slow": "MYR_W_APP",
-                    "CHS.fast": "MYR_W_APP",
-                    "CHS.slow": "MYR_W_APP",
-                    "FAY": "MYR_E_APP",
-                    "FLO.fast": "MYR_W_APP",
-                    "FLO.slow": "MYR_W_APP",
-                    "ILM.fast": "MYR_E_APP",
-                    "ILM.slow": "MYR_E_APP",
-                    "UNJAM": "MYR_W_APP"
-                },
-                "departure_assignments": {
-                    "KCRE": "MYR_E_APP",
-                    "KMYR": "MYR_E_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
@@ -127,6 +112,10 @@
                 "prefix": "2"
             },
             {
+                "id": "FLO",
+                "prefix": "5"
+            },
+            {
                 "id": "ILM",
                 "prefix": "3"
             },
@@ -135,8 +124,12 @@
                 "prefix": "4"
             },
             {
-                "id": "FLO",
-                "prefix": "5"
+                "id": "ZDC",
+                "eram_prefix": "W"
+            },
+            {
+                "id": "ZJX",
+                "eram_prefix": "J"
             }
         ],
         "neighboring_facilities": [

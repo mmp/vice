@@ -2107,20 +2107,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "BNA_E_APP": [
-                        "BNA_F_APP"
-                    ],
-                    "BNA_W_APP": [
-                        "BNA_B_APP",
-                        "BNA_E_APP"
-                    ],
-                    "BNA_X_DEP": [
-                        "BNA_W_APP",
-                        "BNA_Y_DEP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "BNA_SOUTH FLOW"
@@ -2169,20 +2156,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "BNA_E_APP": [
-                        "BNA_F_APP"
-                    ],
-                    "BNA_W_APP": [
-                        "BNA_B_APP",
-                        "BNA_E_APP"
-                    ],
-                    "BNA_X_DEP": [
-                        "BNA_W_APP",
-                        "BNA_Y_DEP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "BNA_NORTH FLOW"

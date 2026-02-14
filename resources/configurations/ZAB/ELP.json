@@ -1,0 +1,30 @@
+{
+    "control_positions": {
+        "ELP_N_APP": {
+            "frequency": 124250,
+            "radio_name": "El Paso Approach",
+            "sector_id": "1N"
+        },
+        "ELP_S_APP": {
+            "frequency": 119150,
+            "radio_name": "El Paso Approach",
+            "sector_id": "1S"
+        },
+        "ELP_TWR": {
+            "frequency": 118300,
+            "radio_name": "El Paso Tower",
+            "sector_id": "2T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "HMN",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "HMN"
+        ]
+    }
+}

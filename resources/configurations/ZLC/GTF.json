@@ -19,6 +19,9 @@
                 },
                 "departure_assignments": {
                     "KGTF": "GTF_APP"
+                },
+                "default_consolidation": {
+                    "GTF_APP": []
                 }
             }
         },
@@ -28,20 +31,15 @@
             "STARS-GTF_N-RVM__North RVM",
             "STARS-GTF_MVA__MVA"
         ],
-        "video_map_file": "videomaps/ZLC-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "North": "GTF_APP"
-                },
-                "departure_assignments": {
-                    "KGTF": "GTF_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZLC-videomaps.gob.zst"
     },
     "handoff_topology": {
-        "handoff_ids": [],
+        "handoff_ids": [
+            {
+                "id": "ZLC",
+                "eram_prefix": "U"
+            }
+        ],
         "neighboring_facilities": [
             "HLN",
             "ZLC"

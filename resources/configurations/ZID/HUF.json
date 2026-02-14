@@ -1,0 +1,64 @@
+{
+    "control_positions": {
+        "HUF_G_APP": {
+            "frequency": 119800,
+            "radio_name": "Hulman Approach",
+            "sector_id": "1G"
+        },
+        "HUF_H_APP": {
+            "frequency": 125450,
+            "radio_name": "Hulman Approach",
+            "sector_id": "1H"
+        },
+        "HUF_Q_APP": {
+            "frequency": 128025,
+            "radio_name": "Hulman Approach",
+            "sector_id": "1Q"
+        },
+        "HUF_TWR": {
+            "frequency": 134725,
+            "radio_name": "Hulman Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "CMI",
+                "prefix": "4"
+            },
+            {
+                "id": "EVV",
+                "prefix": "3"
+            },
+            {
+                "id": "GUS",
+                "prefix": "1"
+            },
+            {
+                "id": "IND",
+                "prefix": "2"
+            },
+            {
+                "id": "SDF",
+                "prefix": "5"
+            },
+            {
+                "id": "ZAU",
+                "eram_prefix": "G"
+            },
+            {
+                "id": "ZKC",
+                "eram_prefix": "K"
+            }
+        ],
+        "neighboring_facilities": [
+            "CMI",
+            "EVV",
+            "GUS",
+            "IND",
+            "ZAU",
+            "ZKC"
+        ]
+    }
+}

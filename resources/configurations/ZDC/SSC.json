@@ -1,10 +1,26 @@
 {
-  "control_positions": {},
-  "stars_config": {},
-  "handoff_topology": {
-    "handoff_ids": [],
-    "neighboring_facilities": [
-      "ZDC"
-    ]
-  }
+    "control_positions": {
+        "SSC_TWR": {
+            "frequency": 126650,
+            "radio_name": "Shaw Tower",
+            "sector_id": "1T"
+        },
+        "SSC_APP": {
+            "frequency": 125400,
+            "radio_name": "Shaw Approach",
+            "sector_id": "1Z"
+        }
+    },
+    "stars_config": {},
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZDC",
+                "eram_prefix": "W"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZDC"
+        ]
+    }
 }

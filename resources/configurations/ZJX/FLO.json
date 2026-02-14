@@ -1,10 +1,26 @@
 {
-  "control_positions": {},
-  "stars_config": {},
-  "handoff_topology": {
-    "handoff_ids": [],
-    "neighboring_facilities": [
-      "ZJX"
-    ]
-  }
+    "control_positions": {
+        "FLO_APP": {
+            "frequency": 118600,
+            "radio_name": "Florence Approach",
+            "sector_id": "1F"
+        },
+        "FLO_TWR": {
+            "frequency": 125100,
+            "radio_name": "Florence Tower",
+            "sector_id": "2F"
+        }
+    },
+    "stars_config": {},
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZJX",
+                "eram_prefix": "J"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZJX"
+        ]
+    }
 }

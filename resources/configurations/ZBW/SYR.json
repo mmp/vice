@@ -78,6 +78,11 @@
                 "departure_assignments": {
                     "KRME": "SYR_R_APP",
                     "KSYR": "SYR_S_APP"
+                },
+                "default_consolidation": {
+                    "SYR_R_APP": [
+                        "SYR_S_APP"
+                    ]
                 }
             }
         },
@@ -136,48 +141,10 @@
             "0G7 GPS",
             "RME D"
         ],
-        "video_map_file": "videomaps/SYR-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "ALBHIGH": "SYR_R_APP",
-                    "ALBLOW": "SYR_R_APP",
-                    "ARTLOW": "SYR_S_APP",
-                    "BTV": "SYR_R_APP",
-                    "BUF": "SYR_S_APP",
-                    "CAMHIGH": "SYR_R_APP",
-                    "CAMLOW": "SYR_R_APP",
-                    "CFBHIGH": "SYR_S_APP",
-                    "CFBLOW": "SYR_S_APP",
-                    "CODDI": "SYR_R_APP",
-                    "CON": "SYR_R_APP",
-                    "CTR": "SYR_R_APP",
-                    "DKK": "SYR_S_APP",
-                    "DNYLOW": "SYR_S_APP",
-                    "ELZ": "SYR_S_APP",
-                    "GALWA": "SYR_R_APP",
-                    "GEELOW": "SYR_S_APP",
-                    "HNK": "SYR_R_APP",
-                    "MARIA": "SYR_R_APP",
-                    "PSB": "SYR_R_APP",
-                    "ROC": "SYR_S_APP",
-                    "SLKHIGH": "SYR_R_APP",
-                    "SLKLOW": "SYR_R_APP",
-                    "ULWLOW": "SYR_S_APP"
-                },
-                "departure_assignments": {
-                    "KRME": "SYR_R_APP",
-                    "KSYR": "SYR_S_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/SYR-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
-            {
-                "id": "GTB",
-                "prefix": "1"
-            },
             {
                 "id": "ALB",
                 "prefix": "2"
@@ -191,8 +158,24 @@
                 "prefix": "4"
             },
             {
+                "id": "GTB",
+                "prefix": "1"
+            },
+            {
                 "id": "ROC",
                 "prefix": "5"
+            },
+            {
+                "id": "ZBW",
+                "eram_prefix": "B"
+            },
+            {
+                "id": "ZNY",
+                "eram_prefix": "N"
+            },
+            {
+                "id": "ZOB",
+                "eram_prefix": "C"
             }
         ],
         "neighboring_facilities": [

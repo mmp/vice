@@ -845,15 +845,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "ABQ_N_APP": [
-                        "ABQ_S_APP"
-                    ],
-                    "ABQ_S_APP": [
-                        "ABQ_F_APP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "A001 East Flow"
@@ -894,15 +886,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "ABQ_N_APP": [
-                        "ABQ_S_APP"
-                    ],
-                    "ABQ_S_APP": [
-                        "ABQ_F_APP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "A002 West Flow"
@@ -948,15 +932,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "ABQ_N_APP": [
-                        "ABQ_S_APP"
-                    ],
-                    "ABQ_S_APP": [
-                        "ABQ_F_APP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "A001 East Flow"
@@ -997,15 +973,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "ABQ_N_APP": [
-                        "ABQ_S_APP"
-                    ],
-                    "ABQ_S_APP": [
-                        "ABQ_F_APP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "A002 West Flow"

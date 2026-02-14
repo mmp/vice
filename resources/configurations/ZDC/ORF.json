@@ -1,0 +1,59 @@
+{
+    "control_positions": {
+        "ORF_E_APP": {
+            "frequency": 126050,
+            "radio_name": "Norfolk Approach",
+            "sector_id": "1E"
+        },
+        "ORF_F_APP": {
+            "frequency": 118900,
+            "radio_name": "Norfolk Approach",
+            "sector_id": "1F"
+        },
+        "ORF_G_APP": {
+            "frequency": 125200,
+            "radio_name": "Norfolk Approach",
+            "sector_id": "1G"
+        },
+        "ORF_P_APP": {
+            "frequency": 125700,
+            "radio_name": "Norfolk Approach",
+            "sector_id": "1P"
+        },
+        "ORF_S_APP": {
+            "frequency": 127900,
+            "radio_name": "Norfolk Approach",
+            "sector_id": "1S"
+        },
+        "ORF_W_APP": {
+            "frequency": 119450,
+            "radio_name": "Norfolk Approach",
+            "sector_id": "1W"
+        },
+        "ORF_TWR": {
+            "frequency": 120800,
+            "radio_name": "Norfolk Tower",
+            "sector_id": "1Z"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "NHK",
+                "prefix": "2"
+            },
+            {
+                "id": "NTU",
+                "prefix": "3"
+            },
+            {
+                "id": "PCT",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "NTU",
+            "PCT"
+        ]
+    }
+}

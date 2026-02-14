@@ -113,6 +113,15 @@
                 "departure_assignments": {
                     "KFLL": "MIA_D_DEP",
                     "KMIA": "MIA_W_DEP"
+                },
+                "default_consolidation": {
+                    "MIA_D_DEP": [
+                        "MIA_J_APP",
+                        "MIA_N_APP",
+                        "MIA_R_APP",
+                        "MIA_S_APP",
+                        "MIA_W_DEP"
+                    ]
                 }
             },
             "KM1": {
@@ -133,6 +142,17 @@
                     "KMIA": "MIA_D_DEP",
                     "KOPF": "MIA_Q_APP",
                     "KTMB": "MIA_H_APP"
+                },
+                "default_consolidation": {
+                    "MIA_D_DEP": [
+                        "MIA_H_APP",
+                        "MIA_J_APP",
+                        "MIA_L_DEP",
+                        "MIA_N_APP",
+                        "MIA_Q_APP",
+                        "MIA_R_APP",
+                        "MIA_S_APP"
+                    ]
                 }
             },
             "KM2": {
@@ -150,6 +170,14 @@
                 "departure_assignments": {
                     "KFLL": "MIA_D_DEP",
                     "KMIA": "MIA_D_DEP"
+                },
+                "default_consolidation": {
+                    "MIA_D_DEP": [
+                        "MIA_J_APP",
+                        "MIA_N_APP",
+                        "MIA_R_APP",
+                        "MIA_S_APP"
+                    ]
                 }
             },
             "KM3": {
@@ -170,6 +198,18 @@
                     "KMIA": "MIA_W_DEP",
                     "KOPF": "MIA_Q_APP",
                     "KTMB": "MIA_H_APP"
+                },
+                "default_consolidation": {
+                    "MIA_D_DEP": [
+                        "MIA_H_APP",
+                        "MIA_J_APP",
+                        "MIA_L_DEP",
+                        "MIA_N_APP",
+                        "MIA_Q_APP",
+                        "MIA_R_APP",
+                        "MIA_S_APP",
+                        "MIA_W_DEP"
+                    ]
                 }
             }
         },
@@ -421,93 +461,21 @@
             "FLL-016S G EAST AIRSPACE",
             "FLL-021S G WEST AIRSPACE"
         ],
-        "video_map_file": "videomaps/ZMA-videomaps.gob.zst",
-        "controller_assignments": {
-            "KM1": {
-                "inbound_assignments": {
-                    "BHHIA3": "MIA_N_APP",
-                    "BNFSH3": "MIA_N_APP",
-                    "CSTAL3": "MIA_N_APP",
-                    "CUUDA3": "MIA_R_APP",
-                    "FROGZ4": "MIA_N_APP",
-                    "OLAHS3": "MIA_D_DEP",
-                    "SNDBR3": "MIA_S_APP",
-                    "TEEKY3": "MIA_J_APP",
-                    "VIICE2": "MIA_S_APP"
-                },
-                "departure_assignments": {
-                    "KFLL": "MIA_L_DEP",
-                    "KFXE": "MIA_Q_APP",
-                    "KMIA": "MIA_D_DEP",
-                    "KOPF": "MIA_Q_APP",
-                    "KTMB": "MIA_H_APP"
-                }
-            },
-            "KM2": {
-                "inbound_assignments": {
-                    "BHHIA3 NOSATS WEST": "MIA_D_DEP",
-                    "BNFSH3 NOSATS WEST": "MIA_N_APP",
-                    "CSTAL3 NOSATS WEST": "MIA_N_APP",
-                    "CUUDA3 NOSATS WEST": "MIA_R_APP",
-                    "FROGZ4 NOSATS WEST": "MIA_S_APP",
-                    "OLAHS3 NOSATS WEST": "MIA_J_APP",
-                    "SNDBR3 NOSATS WEST": "MIA_S_APP",
-                    "TEEKY3 NOSATS WEST": "MIA_R_APP",
-                    "VIICE2 NOSATS WEST": "MIA_S_APP"
-                },
-                "departure_assignments": {
-                    "KFLL": "MIA_D_DEP",
-                    "KMIA": "MIA_D_DEP"
-                }
-            },
-            "KM3": {
-                "inbound_assignments": {
-                    "BHHIA3": "MIA_D_DEP",
-                    "BNFSH3": "MIA_N_APP",
-                    "CSTAL3": "MIA_N_APP",
-                    "CUUDA3": "MIA_R_APP",
-                    "FROGZ4": "MIA_S_APP",
-                    "OLAHS3": "MIA_J_APP",
-                    "SNDBR3": "MIA_S_APP",
-                    "TEEKY3": "MIA_R_APP",
-                    "VIICE2": "MIA_S_APP"
-                },
-                "departure_assignments": {
-                    "KFLL": "MIA_L_DEP",
-                    "KFXE": "MIA_Q_APP",
-                    "KMIA": "MIA_W_DEP",
-                    "KOPF": "MIA_Q_APP",
-                    "KTMB": "MIA_H_APP"
-                }
-            },
-            "KMI": {
-                "inbound_assignments": {
-                    "BHHIA3 NOSATS EAST": "MIA_N_APP",
-                    "BNFSH3 NOSATS EAST": "MIA_N_APP",
-                    "CSTAL3 NOSATS EAST": "MIA_N_APP",
-                    "CUUDA3 NOSATS EAST": "MIA_R_APP",
-                    "FROGZ4 NOSATS EAST": "MIA_N_APP",
-                    "OLAHS3 NOSATS EAST": "MIA_D_DEP",
-                    "SNDBR3 NOSATS EAST": "MIA_S_APP",
-                    "TEEKY3 NOSATS EAST": "MIA_J_APP",
-                    "VIICE2 NOSATS EAST": "MIA_S_APP"
-                },
-                "departure_assignments": {
-                    "KFLL": "MIA_D_DEP",
-                    "KMIA": "MIA_W_DEP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZMA-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
+            {
+                "id": "HST",
+                "prefix": "1"
+            },
             {
                 "id": "PBI",
                 "prefix": "2"
             },
             {
-                "id": "HST",
-                "prefix": "1"
+                "id": "ZMA",
+                "eram_prefix": "R"
             }
         ],
         "neighboring_facilities": [

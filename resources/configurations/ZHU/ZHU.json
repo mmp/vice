@@ -1,280 +1,438 @@
 {
-  "control_positions": {
-    "ZHU 01 ZHU TMU": {
-      "frequency": 123450,
-      "eram_facility": true,
-      "radio_name": "Houston TMU",
-      "sector_id": "01"
+    "control_positions": {
+        "ZHU 01 ZHU TMU": {
+            "frequency": 123450,
+            "eram_facility": true,
+            "radio_name": "Houston TMU",
+            "sector_id": "01"
+        },
+        "ZHU 02 GUARD": {
+            "frequency": 121500,
+            "eram_facility": true,
+            "radio_name": "Houston Guard",
+            "sector_id": "02"
+        },
+        "ZHU 23 White Lake": {
+            "frequency": 132950,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "23"
+        },
+        "ZHU 24 Leeville": {
+            "frequency": 132175,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "24"
+        },
+        "ZHU 25 Brookley": {
+            "frequency": 127650,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "25"
+        },
+        "ZHU 26 Woodville": {
+            "frequency": 128175,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "26"
+        },
+        "ZHU 27 Picayune": {
+            "frequency": 126800,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "27"
+        },
+        "ZHU 28 Offshore West": {
+            "frequency": 127850,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "28"
+        },
+        "ZHU 30 Offshore East": {
+            "frequency": 134900,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "30"
+        },
+        "ZHU 34 Baton Rouge": {
+            "frequency": 126350,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "34"
+        },
+        "ZHU 36 Liberty": {
+            "frequency": 124700,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "36"
+        },
+        "ZHU 37 Hattiesburg": {
+            "frequency": 126875,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "37"
+        },
+        "ZHU 38 Daisetta": {
+            "frequency": 126950,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "38"
+        },
+        "ZHU 40 Polk": {
+            "frequency": 120975,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "40"
+        },
+        "ZHU 42 Alexandria": {
+            "frequency": 132700,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "42"
+        },
+        "ZHU 43 Trinity": {
+            "frequency": 133800,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "43"
+        },
+        "ZHU 46 Houston": {
+            "frequency": 132775,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "46"
+        },
+        "ZHU 49 Lufkin": {
+            "frequency": 125175,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "49"
+        },
+        "ZHU 50 Stonewall": {
+            "frequency": 134200,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "50"
+        },
+        "ZHU 53 Offshore Central": {
+            "frequency": 120350,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "53"
+        },
+        "ZHU 56 Shiner": {
+            "frequency": 134600,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "56"
+        },
+        "ZHU 58 Brownsville": {
+            "frequency": 128150,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "58"
+        },
+        "ZHU 59 Corpus Christi": {
+            "frequency": 133750,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "59"
+        },
+        "ZHU 63 Mobile": {
+            "frequency": 125775,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "63"
+        },
+        "ZHU 65 McComb": {
+            "frequency": 119725,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "65"
+        },
+        "ZHU 68 Galveston": {
+            "frequency": 123825,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "68"
+        },
+        "ZHU 70 Tibby": {
+            "frequency": 134925,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "70"
+        },
+        "ZHU 72 Ocean East": {
+            "frequency": 135775,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "72"
+        },
+        "ZHU 74 Alamo": {
+            "frequency": 128650,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "74"
+        },
+        "ZHU 76 Slimm": {
+            "frequency": 125625,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "76"
+        },
+        "ZHU 78 Austin": {
+            "frequency": 126425,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "78"
+        },
+        "ZHU 79 Ocean West": {
+            "frequency": 132650,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "79"
+        },
+        "ZHU 80 Industry": {
+            "frequency": 132150,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "80"
+        },
+        "ZHU 81 Esler": {
+            "frequency": 134425,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "81"
+        },
+        "ZHU 82 Bilee": {
+            "frequency": 123725,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "82"
+        },
+        "ZHU 83 Cugar": {
+            "frequency": 128075,
+            "eram_facility": true,
+            "radio_name": "128.075",
+            "sector_id": "83"
+        },
+        "ZHU 84 Sotex": {
+            "frequency": 135425,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "84"
+        },
+        "ZHU 85 Kelly": {
+            "frequency": 134950,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "85"
+        },
+        "ZHU 87 Eagle Lake": {
+            "frequency": 128600,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "87"
+        },
+        "ZHU 88 Frio": {
+            "frequency": 127025,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "88"
+        },
+        "ZHU 92 Voodo": {
+            "frequency": 132600,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "92"
+        },
+        "ZHU 93 Laredo": {
+            "frequency": 127800,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "93"
+        },
+        "ZHU 95 Palacios": {
+            "frequency": 123600,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "95"
+        },
+        "ZHU 96 Bergstrom": {
+            "frequency": 125650,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "96"
+        },
+        "ZHU 97 Junction": {
+            "frequency": 132400,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "97"
+        },
+        "ZHU 98 Rocksprings": {
+            "frequency": 125750,
+            "eram_facility": true,
+            "radio_name": "Houston Center",
+            "sector_id": "98"
+        }
     },
-    "ZHU 02 GUARD": {
-      "frequency": 121500,
-      "eram_facility": true,
-      "radio_name": "Houston Guard",
-      "sector_id": "02"
-    },
-    "ZHU 23 White Lake": {
-      "frequency": 132950,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "23"
-    },
-    "ZHU 24 Leeville": {
-      "frequency": 132175,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "24"
-    },
-    "ZHU 25 Brookley": {
-      "frequency": 127650,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "25"
-    },
-    "ZHU 26 Woodville": {
-      "frequency": 128175,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "26"
-    },
-    "ZHU 27 Picayune": {
-      "frequency": 126800,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "27"
-    },
-    "ZHU 28 Offshore West": {
-      "frequency": 127850,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "28"
-    },
-    "ZHU 30 Offshore East": {
-      "frequency": 134900,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "30"
-    },
-    "ZHU 34 Baton Rouge": {
-      "frequency": 126350,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "34"
-    },
-    "ZHU 36 Liberty": {
-      "frequency": 124700,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "36"
-    },
-    "ZHU 37 Hattiesburg": {
-      "frequency": 126875,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "37"
-    },
-    "ZHU 38 Daisetta": {
-      "frequency": 126950,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "38"
-    },
-    "ZHU 40 Polk": {
-      "frequency": 120975,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "40"
-    },
-    "ZHU 42 Alexandria": {
-      "frequency": 132700,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "42"
-    },
-    "ZHU 43 Trinity": {
-      "frequency": 133800,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "43"
-    },
-    "ZHU 46 Houston": {
-      "frequency": 132775,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "46"
-    },
-    "ZHU 49 Lufkin": {
-      "frequency": 125175,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "49"
-    },
-    "ZHU 50 Stonewall": {
-      "frequency": 134200,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "50"
-    },
-    "ZHU 53 Offshore Central": {
-      "frequency": 120350,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "53"
-    },
-    "ZHU 56 Shiner": {
-      "frequency": 134600,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "56"
-    },
-    "ZHU 58 Brownsville": {
-      "frequency": 128150,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "58"
-    },
-    "ZHU 59 Corpus Christi": {
-      "frequency": 133750,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "59"
-    },
-    "ZHU 63 Mobile": {
-      "frequency": 125775,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "63"
-    },
-    "ZHU 65 McComb": {
-      "frequency": 119725,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "65"
-    },
-    "ZHU 68 Galveston": {
-      "frequency": 123825,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "68"
-    },
-    "ZHU 70 Tibby": {
-      "frequency": 134925,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "70"
-    },
-    "ZHU 72 Ocean East": {
-      "frequency": 135775,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "72"
-    },
-    "ZHU 74 Alamo": {
-      "frequency": 128650,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "74"
-    },
-    "ZHU 76 Slimm": {
-      "frequency": 125625,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "76"
-    },
-    "ZHU 78 Austin": {
-      "frequency": 126425,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "78"
-    },
-    "ZHU 79 Ocean West": {
-      "frequency": 132650,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "79"
-    },
-    "ZHU 80 Industry": {
-      "frequency": 132150,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "80"
-    },
-    "ZHU 81 Esler": {
-      "frequency": 134425,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "81"
-    },
-    "ZHU 82 Bilee": {
-      "frequency": 123725,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "82"
-    },
-    "ZHU 83 Cugar": {
-      "frequency": 128075,
-      "eram_facility": true,
-      "radio_name": "128.075",
-      "sector_id": "83"
-    },
-    "ZHU 84 Sotex": {
-      "frequency": 135425,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "84"
-    },
-    "ZHU 85 Kelly": {
-      "frequency": 134950,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "85"
-    },
-    "ZHU 87 Eagle Lake": {
-      "frequency": 128600,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "87"
-    },
-    "ZHU 88 Frio": {
-      "frequency": 127025,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "88"
-    },
-    "ZHU 92 Voodo": {
-      "frequency": 132600,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "92"
-    },
-    "ZHU 93 Laredo": {
-      "frequency": 127800,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "93"
-    },
-    "ZHU 95 Palacios": {
-      "frequency": 123600,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "95"
-    },
-    "ZHU 96 Bergstrom": {
-      "frequency": 125650,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "96"
-    },
-    "ZHU 97 Junction": {
-      "frequency": 132400,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "97"
-    },
-    "ZHU 98 Rocksprings": {
-      "frequency": 125750,
-      "eram_facility": true,
-      "radio_name": "Houston Center",
-      "sector_id": "98"
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ACT",
+                "stars_id": "ACT"
+            },
+            {
+                "id": "AUS",
+                "single_char_stars_id": "U",
+                "two_char_stars_id": "AA",
+                "stars_id": "AAU"
+            },
+            {
+                "id": "BTR",
+                "single_char_stars_id": "Z",
+                "two_char_stars_id": "AR",
+                "stars_id": "ARY"
+            },
+            {
+                "id": "CRP",
+                "single_char_stars_id": "C",
+                "two_char_stars_id": "AC",
+                "stars_id": "ACR"
+            },
+            {
+                "id": "DLF",
+                "single_char_stars_id": "D",
+                "two_char_stars_id": "AD",
+                "stars_id": "ADL"
+            },
+            {
+                "id": "GPT",
+                "single_char_stars_id": "G",
+                "two_char_stars_id": "AG",
+                "stars_id": "AGP"
+            },
+            {
+                "id": "GRK",
+                "stars_id": "GRK"
+            },
+            {
+                "id": "I90",
+                "single_char_stars_id": "I",
+                "two_char_stars_id": "AI",
+                "stars_id": "AIA"
+            },
+            {
+                "id": "LCH",
+                "single_char_stars_id": "L",
+                "two_char_stars_id": "AL",
+                "stars_id": "ALC"
+            },
+            {
+                "id": "LFT",
+                "single_char_stars_id": "E",
+                "two_char_stars_id": "AF",
+                "stars_id": "AFT"
+            },
+            {
+                "id": "MAF",
+                "stars_id": "MAF"
+            },
+            {
+                "id": "MLU",
+                "stars_id": "MLU"
+            },
+            {
+                "id": "MOB",
+                "single_char_stars_id": "B",
+                "two_char_stars_id": "AB",
+                "stars_id": "ABA"
+            },
+            {
+                "id": "MSY",
+                "single_char_stars_id": "N",
+                "two_char_stars_id": "AM",
+                "stars_id": "AMS"
+            },
+            {
+                "id": "NQI",
+                "single_char_stars_id": "Q",
+                "two_char_stars_id": "AQ",
+                "stars_id": "AQI"
+            },
+            {
+                "id": "P31",
+                "stars_id": "PNS"
+            },
+            {
+                "id": "POE",
+                "single_char_stars_id": "P",
+                "two_char_stars_id": "AP",
+                "stars_id": "APO"
+            },
+            {
+                "id": "SAT",
+                "single_char_stars_id": "S",
+                "two_char_stars_id": "AS",
+                "stars_id": "ASA"
+            },
+            {
+                "id": "SHV",
+                "stars_id": "SHV"
+            },
+            {
+                "id": "ZAB",
+                "eram_prefix": "A"
+            },
+            {
+                "id": "ZFW",
+                "eram_prefix": "F"
+            },
+            {
+                "id": "ZJX",
+                "eram_prefix": "J"
+            },
+            {
+                "id": "ZMA",
+                "eram_prefix": "R"
+            },
+            {
+                "id": "ZME",
+                "eram_prefix": "M"
+            },
+            {
+                "id": "ZTL",
+                "eram_prefix": "T"
+            }
+        ],
+        "neighboring_facilities": [
+            "ACT",
+            "AUS",
+            "BTR",
+            "CRP",
+            "DLF",
+            "GPT",
+            "GRK",
+            "I90",
+            "LCH",
+            "LFT",
+            "MAF",
+            "MLU",
+            "MOB",
+            "MSY",
+            "NQI",
+            "P31",
+            "POE",
+            "SAT",
+            "SHV",
+            "SJT",
+            "ZAB",
+            "ZFW",
+            "ZJX",
+            "ZMA",
+            "ZME",
+            "ZTL"
+        ]
     }
-  }
 }

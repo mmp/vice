@@ -1,103 +1,103 @@
 {
     "control_positions": {
-        "Z": {
+        "CHI_Z_APP": {
             "frequency": 119000,
             "radio_name": "Chicago Approach",
             "sector_id": "1Z",
             "facility": "C90"
         },
-        "W": {
+        "CHI_W_APP": {
             "frequency": 133625,
             "radio_name": "Chicago Approach",
             "facility": "C90",
             "sector_id": "1W"
         },
-        "F": {
+        "CHI_F_APP": {
             "frequency": 124350,
             "radio_name": "Chicago Approach",
             "facility": "C90",
             "sector_id": "1F"
         },
-        "H": {
+        "CHI_H_APP": {
             "frequency": 132175,
             "radio_name": "Chicago Approach",
             "facility": "C90",
             "sector_id": "1H"
         },
-        "PLANO (X)": {
+        "CHI_X_APP": {
             "frequency": 135075,
             "radio_name": "Chicago Approach",
             "facility": "C90",
             "sector_id": "1X"
         },
-        "KUBBS (J)": {
-            "frequency": 134625,
+        "CHI_J_APP": {
+            "frequency": 125700,
             "radio_name": "Chicago Approach",
             "facility": "C90",
             "sector_id": "1J"
         },
-        "OKK (E)": {
-            "frequency": 135025,
+        "CHI_E_APP": {
+            "frequency": 118925,
             "radio_name": "Chicago Approach",
             "facility": "C90",
             "sector_id": "1E"
         },
-        "FARMM (Y)": {
+        "CHI_Y_APP": {
             "frequency": 135025,
             "radio_name": "Chicago Approach",
             "facility": "C90",
             "sector_id": "1Y"
         },
-        "SSAT Sector 1 (S)": {
+        "CHI_S_APP": {
             "frequency": 128200,
             "radio_name": "Chicago Approach",
             "sector_id": "1S",
             "facility": "C90"
         },
-        "SSAT Sector 2 (P)": {
+        "CHI_P_APP": {
             "frequency": 119350,
             "radio_name": "Chicago Approach",
             "facility": "C90",
             "sector_id": "1P"
         },
-        "SSAT Sector 3 (L)": {
+        "CHI_L_APP": {
             "frequency": 133500,
             "radio_name": "Chicago Approach",
             "facility": "C90",
             "sector_id": "1L"
         },
-        "SSAT Sector 4 (U)": {
-            "frequency": 127875,
+        "CHI_U_APP": {
+            "frequency": 133900,
             "radio_name": "Chicago Approach",
             "facility": "C90",
             "sector_id": "1U"
         },
-        "East Departure (B)": {
-            "frequency": 125000,
+        "CHI_B_DEP": {
+            "frequency": 128575,
             "radio_name": "Chicago Departure",
             "facility": "C90",
             "sector_id": "1B"
         },
-        "South Departure (M)": {
+        "CHI_M_DEP": {
             "frequency": 126625,
             "radio_name": "Chicago Departure",
             "facility": "C90",
             "sector_id": "1M"
         },
-        "West Departure (G)": {
+        "CHI_G_DEP": {
             "frequency": 135275,
             "radio_name": "Chicago Departure",
             "facility": "C90",
             "sector_id": "1G"
         },
-        "North Departure (D)": {
+        "CHI_D_DEP": {
             "frequency": 134400,
             "radio_name": "Chicago Departure",
             "facility": "C90",
             "sector_id": "1D"
         },
-        "North Satellite (A)": {
-            "frequency": 120555,
+        "CHI_A_APP": {
+            "frequency": 120550,
             "radio_name": "Chicago Approach",
             "facility": "C90",
             "sector_id": "1A"
@@ -180,484 +180,776 @@
         "configurations": {
             "13L": {
                 "inbound_assignments": {
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)"
+                    "ENDEE6": "CHI_P_APP",
+                    "FISSK6/PANGG5": "CHI_U_APP"
                 },
                 "departure_assignments": {
-                    "KMDW": "SSAT Sector 4 (U)"
+                    "KMDW": "CHI_U_APP"
+                },
+                "default_consolidation": {
+                    "CHI_P_APP": [
+                        "CHI_U_APP"
+                    ]
                 }
             },
             "22X": {
                 "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "FYTTE7": "FARMM (Y)",
-                    "MADII7": "FARMM (Y)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "Z"
+                    "BENKY6": "CHI_X_APP",
+                    "FYTTE7": "CHI_Y_APP",
+                    "MADII7": "CHI_Y_APP",
+                    "TRTLL6": "CHI_X_APP",
+                    "VEECK5": "CHI_E_APP",
+                    "WYNDE2": "CHI_Z_APP"
                 },
                 "departure_assignments": {
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)"
+                    "KORD": "CHI_Z_APP",
+                    "KORD/ORD8.E": "CHI_B_DEP",
+                    "KORD/ORD8.N": "CHI_D_DEP",
+                    "KORD/ORD8.S": "CHI_M_DEP",
+                    "KORD/ORD8.W": "CHI_G_DEP"
+                },
+                "default_consolidation": {
+                    "CHI_B_DEP": [
+                        "CHI_Y_APP",
+                        "CHI_D_DEP",
+                        "CHI_E_APP",
+                        "CHI_X_APP",
+                        "CHI_M_DEP",
+                        "CHI_G_DEP",
+                        "CHI_Z_APP"
+                    ]
                 }
             },
             "KOR": {
                 "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FYTTE7": "FARMM (Y)",
-                    "MADII7": "FARMM (Y)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "Z"
+                    "BENKY6": "CHI_X_APP",
+                    "ENDEE6": "CHI_P_APP",
+                    "FISSK6/PANGG5": "CHI_U_APP",
+                    "FYTTE7": "CHI_Y_APP",
+                    "MADII7": "CHI_Y_APP",
+                    "TRTLL6": "CHI_X_APP",
+                    "VEECK5": "CHI_E_APP",
+                    "WYNDE2": "CHI_Z_APP"
                 },
                 "departure_assignments": {
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)"
+                    "KMDW": "CHI_S_APP",
+                    "KORD": "CHI_Z_APP",
+                    "KORD/ORD8.E": "CHI_B_DEP",
+                    "KORD/ORD8.N": "CHI_D_DEP",
+                    "KORD/ORD8.S": "CHI_M_DEP",
+                    "KORD/ORD8.W": "CHI_G_DEP"
+                },
+                "default_consolidation": {
+                    "CHI_B_DEP": [
+                        "CHI_Y_APP",
+                        "CHI_D_DEP",
+                        "CHI_E_APP",
+                        "CHI_X_APP",
+                        "CHI_S_APP",
+                        "CHI_P_APP",
+                        "CHI_U_APP",
+                        "CHI_M_DEP",
+                        "CHI_G_DEP",
+                        "CHI_Z_APP"
+                    ]
                 }
             },
             "KO1": {
                 "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "GSH9": "SSAT Sector 4 (U)",
-                    "KRENA": "North Satellite (A)",
-                    "LUCIT2": "SSAT Sector 4 (U)",
-                    "MADII7": "FARMM (Y)",
-                    "MOTIF": "SSAT Sector 2 (P)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "Z"
+                    "BENKY6": "CHI_X_APP",
+                    "ENDEE6": "CHI_P_APP",
+                    "FISSK6/PANGG5": "CHI_U_APP",
+                    "FIYER": "CHI_A_APP",
+                    "FYTTE7": "CHI_Y_APP",
+                    "GSH9": "CHI_U_APP",
+                    "KRENA": "CHI_A_APP",
+                    "LUCIT2": "CHI_U_APP",
+                    "MADII7": "CHI_Y_APP",
+                    "MOTIF": "CHI_P_APP",
+                    "PLANO": "CHI_L_APP",
+                    "TRTLL6": "CHI_X_APP",
+                    "VEECK5": "CHI_E_APP",
+                    "WYNDE2": "CHI_Z_APP"
                 },
                 "departure_assignments": {
-                    "KARR": "SSAT Sector 3 (L)",
-                    "KDPA": "SSAT Sector 3 (L)",
-                    "KGYY": "SSAT Sector 4 (U)",
-                    "KLOT": "SSAT Sector 2 (P)",
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Departure (D)"
+                    "KARR": "CHI_L_APP",
+                    "KDPA": "CHI_L_APP",
+                    "KGYY": "CHI_U_APP",
+                    "KLOT": "CHI_P_APP",
+                    "KMDW": "CHI_S_APP",
+                    "KORD": "CHI_Z_APP",
+                    "KORD/ORD8.E": "CHI_B_DEP",
+                    "KORD/ORD8.N": "CHI_D_DEP",
+                    "KORD/ORD8.S": "CHI_M_DEP",
+                    "KORD/ORD8.W": "CHI_G_DEP",
+                    "KPWK": "CHI_D_DEP"
+                },
+                "default_consolidation": {
+                    "CHI_B_DEP": [
+                        "CHI_Y_APP",
+                        "CHI_D_DEP",
+                        "CHI_A_APP",
+                        "CHI_E_APP",
+                        "CHI_X_APP",
+                        "CHI_S_APP",
+                        "CHI_P_APP",
+                        "CHI_L_APP",
+                        "CHI_U_APP",
+                        "CHI_M_DEP",
+                        "CHI_G_DEP",
+                        "CHI_Z_APP"
+                    ]
                 }
             },
             "KO2": {
                 "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "KRENA": "North Satellite (A)",
-                    "MADII7": "FARMM (Y)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "Z"
+                    "BENKY6": "CHI_X_APP",
+                    "ENDEE6": "CHI_P_APP",
+                    "FISSK6/PANGG5": "CHI_U_APP",
+                    "FIYER": "CHI_A_APP",
+                    "FYTTE7": "CHI_Y_APP",
+                    "KRENA": "CHI_A_APP",
+                    "MADII7": "CHI_Y_APP",
+                    "PLANO": "CHI_L_APP",
+                    "TRTLL6": "CHI_X_APP",
+                    "VEECK5": "CHI_E_APP",
+                    "WYNDE2": "CHI_Z_APP"
                 },
                 "departure_assignments": {
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Departure (D)"
+                    "KMDW": "CHI_S_APP",
+                    "KORD": "CHI_Z_APP",
+                    "KORD/ORD8.E": "CHI_B_DEP",
+                    "KORD/ORD8.N": "CHI_D_DEP",
+                    "KORD/ORD8.S": "CHI_M_DEP",
+                    "KORD/ORD8.W": "CHI_G_DEP",
+                    "KPWK": "CHI_D_DEP"
+                },
+                "default_consolidation": {
+                    "CHI_B_DEP": [
+                        "CHI_Y_APP",
+                        "CHI_D_DEP",
+                        "CHI_A_APP",
+                        "CHI_E_APP",
+                        "CHI_X_APP",
+                        "CHI_S_APP",
+                        "CHI_P_APP",
+                        "CHI_L_APP",
+                        "CHI_U_APP",
+                        "CHI_M_DEP",
+                        "CHI_G_DEP",
+                        "CHI_Z_APP"
+                    ]
                 }
             },
             "4XX": {
                 "inbound_assignments": {
-                    "BENKY6": "Z",
-                    "FYTTE7": "FARMM (Y)",
-                    "MADII7": "FARMM (Y)",
-                    "TRTLL6": "Z",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "KUBBS (J)"
+                    "BENKY6": "CHI_Z_APP",
+                    "FYTTE7": "CHI_Y_APP",
+                    "MADII7": "CHI_Y_APP",
+                    "TRTLL6": "CHI_Z_APP",
+                    "VEECK5": "CHI_E_APP",
+                    "WYNDE2": "CHI_J_APP"
                 },
                 "departure_assignments": {
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)"
+                    "KORD": "CHI_Z_APP",
+                    "KORD/ORD8.E": "CHI_B_DEP",
+                    "KORD/ORD8.N": "CHI_D_DEP",
+                    "KORD/ORD8.S": "CHI_M_DEP",
+                    "KORD/ORD8.W": "CHI_G_DEP"
+                },
+                "default_consolidation": {
+                    "CHI_B_DEP": [
+                        "CHI_Y_APP",
+                        "CHI_J_APP",
+                        "CHI_D_DEP",
+                        "CHI_E_APP",
+                        "CHI_M_DEP",
+                        "CHI_G_DEP",
+                        "CHI_Z_APP"
+                    ]
                 }
             },
             "KO3": {
                 "inbound_assignments": {
-                    "BENKY6": "Z",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FYTTE7": "FARMM (Y)",
-                    "MADII7": "FARMM (Y)",
-                    "TRTLL6": "Z",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "KUBBS (J)"
+                    "BENKY6": "CHI_Z_APP",
+                    "ENDEE6": "CHI_P_APP",
+                    "FISSK6/PANGG5": "CHI_U_APP",
+                    "FYTTE7": "CHI_Y_APP",
+                    "MADII7": "CHI_Y_APP",
+                    "TRTLL6": "CHI_Z_APP",
+                    "VEECK5": "CHI_E_APP",
+                    "WYNDE2": "CHI_J_APP"
                 },
                 "departure_assignments": {
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)"
+                    "KMDW": "CHI_S_APP",
+                    "KORD": "CHI_Z_APP",
+                    "KORD/ORD8.E": "CHI_B_DEP",
+                    "KORD/ORD8.N": "CHI_D_DEP",
+                    "KORD/ORD8.S": "CHI_M_DEP",
+                    "KORD/ORD8.W": "CHI_G_DEP"
+                },
+                "default_consolidation": {
+                    "CHI_B_DEP": [
+                        "CHI_Y_APP",
+                        "CHI_J_APP",
+                        "CHI_D_DEP",
+                        "CHI_E_APP",
+                        "CHI_S_APP",
+                        "CHI_P_APP",
+                        "CHI_U_APP",
+                        "CHI_M_DEP",
+                        "CHI_G_DEP",
+                        "CHI_Z_APP"
+                    ]
                 }
             },
             "KO4": {
                 "inbound_assignments": {
-                    "BENKY6": "Z",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "GSH9": "SSAT Sector 4 (U)",
-                    "KRENA": "North Satellite (A)",
-                    "LUCIT2": "SSAT Sector 4 (U)",
-                    "MADII7": "FARMM (Y)",
-                    "MOTIF": "SSAT Sector 2 (P)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "TRTLL6": "Z",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "KUBBS (J)"
+                    "BENKY6": "CHI_Z_APP",
+                    "ENDEE6": "CHI_P_APP",
+                    "FISSK6/PANGG5": "CHI_U_APP",
+                    "FIYER": "CHI_A_APP",
+                    "FYTTE7": "CHI_Y_APP",
+                    "GSH9": "CHI_U_APP",
+                    "KRENA": "CHI_A_APP",
+                    "LUCIT2": "CHI_U_APP",
+                    "MADII7": "CHI_Y_APP",
+                    "MOTIF": "CHI_P_APP",
+                    "PLANO": "CHI_L_APP",
+                    "TRTLL6": "CHI_Z_APP",
+                    "VEECK5": "CHI_E_APP",
+                    "WYNDE2": "CHI_J_APP"
                 },
                 "departure_assignments": {
-                    "KARR": "SSAT Sector 3 (L)",
-                    "KDPA": "SSAT Sector 3 (L)",
-                    "KGYY": "SSAT Sector 4 (U)",
-                    "KLOT": "SSAT Sector 2 (P)",
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Satellite (A)"
+                    "KARR": "CHI_L_APP",
+                    "KDPA": "CHI_L_APP",
+                    "KGYY": "CHI_U_APP",
+                    "KLOT": "CHI_P_APP",
+                    "KMDW": "CHI_S_APP",
+                    "KORD": "CHI_Z_APP",
+                    "KORD/ORD8.E": "CHI_B_DEP",
+                    "KORD/ORD8.N": "CHI_D_DEP",
+                    "KORD/ORD8.S": "CHI_M_DEP",
+                    "KORD/ORD8.W": "CHI_G_DEP",
+                    "KPWK": "CHI_A_APP"
+                },
+                "default_consolidation": {
+                    "CHI_B_DEP": [
+                        "CHI_Y_APP",
+                        "CHI_J_APP",
+                        "CHI_D_DEP",
+                        "CHI_A_APP",
+                        "CHI_E_APP",
+                        "CHI_S_APP",
+                        "CHI_P_APP",
+                        "CHI_L_APP",
+                        "CHI_U_APP",
+                        "CHI_M_DEP",
+                        "CHI_G_DEP",
+                        "CHI_Z_APP"
+                    ]
                 }
             },
             "KO5": {
                 "inbound_assignments": {
-                    "BENKY6": "Z",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "KRENA": "North Satellite (A)",
-                    "MADII7": "FARMM (Y)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "TRTLL6": "Z",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "KUBBS (J)"
+                    "BENKY6": "CHI_Z_APP",
+                    "ENDEE6": "CHI_P_APP",
+                    "FISSK6/PANGG5": "CHI_U_APP",
+                    "FIYER": "CHI_A_APP",
+                    "FYTTE7": "CHI_Y_APP",
+                    "KRENA": "CHI_A_APP",
+                    "MADII7": "CHI_Y_APP",
+                    "PLANO": "CHI_L_APP",
+                    "TRTLL6": "CHI_Z_APP",
+                    "VEECK5": "CHI_E_APP",
+                    "WYNDE2": "CHI_J_APP"
                 },
                 "departure_assignments": {
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Satellite (A)"
+                    "KMDW": "CHI_S_APP",
+                    "KORD": "CHI_Z_APP",
+                    "KORD/ORD8.E": "CHI_B_DEP",
+                    "KORD/ORD8.N": "CHI_D_DEP",
+                    "KORD/ORD8.S": "CHI_M_DEP",
+                    "KORD/ORD8.W": "CHI_G_DEP",
+                    "KPWK": "CHI_A_APP"
+                },
+                "default_consolidation": {
+                    "CHI_B_DEP": [
+                        "CHI_Y_APP",
+                        "CHI_J_APP",
+                        "CHI_D_DEP",
+                        "CHI_A_APP",
+                        "CHI_E_APP",
+                        "CHI_S_APP",
+                        "CHI_P_APP",
+                        "CHI_L_APP",
+                        "CHI_U_APP",
+                        "CHI_M_DEP",
+                        "CHI_G_DEP",
+                        "CHI_Z_APP"
+                    ]
                 }
             },
             "KO6": {
                 "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ERNNY8": "KUBBS (J)",
-                    "FYTTE7": "FARMM (Y)",
-                    "SHAIN2": "Z",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "KUBBS (J)"
+                    "BENKY6": "CHI_X_APP",
+                    "ERNNY8": "CHI_J_APP",
+                    "FYTTE7": "CHI_Y_APP",
+                    "SHAIN2": "CHI_Z_APP",
+                    "TRTLL6": "CHI_X_APP",
+                    "VEECK5": "CHI_E_APP",
+                    "WYNDE2": "CHI_J_APP"
                 },
                 "departure_assignments": {
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)"
+                    "KORD": "CHI_Z_APP",
+                    "KORD/ORD8.E": "CHI_B_DEP",
+                    "KORD/ORD8.N": "CHI_D_DEP",
+                    "KORD/ORD8.S": "CHI_M_DEP",
+                    "KORD/ORD8.W": "CHI_G_DEP"
+                },
+                "default_consolidation": {
+                    "CHI_B_DEP": [
+                        "CHI_Y_APP",
+                        "CHI_J_APP",
+                        "CHI_D_DEP",
+                        "CHI_E_APP",
+                        "CHI_X_APP",
+                        "CHI_M_DEP",
+                        "CHI_G_DEP",
+                        "CHI_Z_APP"
+                    ]
                 }
             },
             "4RX": {
                 "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "ERNNY8": "KUBBS (J)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FYTTE7": "FARMM (Y)",
-                    "SHAIN2": "Z",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "KUBBS (J)"
+                    "BENKY6": "CHI_X_APP",
+                    "ENDEE6": "CHI_P_APP",
+                    "ERNNY8": "CHI_J_APP",
+                    "FISSK6/PANGG5": "CHI_U_APP",
+                    "FYTTE7": "CHI_Y_APP",
+                    "SHAIN2": "CHI_Z_APP",
+                    "TRTLL6": "CHI_X_APP",
+                    "VEECK5": "CHI_E_APP",
+                    "WYNDE2": "CHI_J_APP"
                 },
                 "departure_assignments": {
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)"
+                    "KMDW": "CHI_S_APP",
+                    "KORD": "CHI_Z_APP",
+                    "KORD/ORD8.E": "CHI_B_DEP",
+                    "KORD/ORD8.N": "CHI_D_DEP",
+                    "KORD/ORD8.S": "CHI_M_DEP",
+                    "KORD/ORD8.W": "CHI_G_DEP"
+                },
+                "default_consolidation": {
+                    "CHI_B_DEP": [
+                        "CHI_Y_APP",
+                        "CHI_J_APP",
+                        "CHI_D_DEP",
+                        "CHI_E_APP",
+                        "CHI_X_APP",
+                        "CHI_S_APP",
+                        "CHI_P_APP",
+                        "CHI_U_APP",
+                        "CHI_M_DEP",
+                        "CHI_G_DEP",
+                        "CHI_Z_APP"
+                    ]
                 }
             },
             "KO7": {
                 "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "ERNNY8": "KUBBS (J)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "GSH9": "SSAT Sector 4 (U)",
-                    "KRENA": "North Satellite (A)",
-                    "LUCIT2": "SSAT Sector 4 (U)",
-                    "MOTIF": "SSAT Sector 2 (P)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WATSN4": "Z",
-                    "WYNDE2": "KUBBS (J)"
+                    "BENKY6": "CHI_X_APP",
+                    "ENDEE6": "CHI_P_APP",
+                    "ERNNY8": "CHI_J_APP",
+                    "FISSK6/PANGG5": "CHI_U_APP",
+                    "FIYER": "CHI_A_APP",
+                    "FYTTE7": "CHI_Y_APP",
+                    "GSH9": "CHI_U_APP",
+                    "KRENA": "CHI_A_APP",
+                    "LUCIT2": "CHI_U_APP",
+                    "MOTIF": "CHI_P_APP",
+                    "PLANO": "CHI_L_APP",
+                    "TRTLL6": "CHI_X_APP",
+                    "VEECK5": "CHI_E_APP",
+                    "WATSN4": "CHI_Z_APP",
+                    "WYNDE2": "CHI_J_APP"
                 },
                 "departure_assignments": {
-                    "KARR": "SSAT Sector 3 (L)",
-                    "KDPA": "SSAT Sector 3 (L)",
-                    "KGYY": "SSAT Sector 4 (U)",
-                    "KLOT": "SSAT Sector 2 (P)",
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Departure (D)"
+                    "KARR": "CHI_L_APP",
+                    "KDPA": "CHI_L_APP",
+                    "KGYY": "CHI_U_APP",
+                    "KLOT": "CHI_P_APP",
+                    "KMDW": "CHI_S_APP",
+                    "KORD": "CHI_Z_APP",
+                    "KORD/ORD8.E": "CHI_B_DEP",
+                    "KORD/ORD8.N": "CHI_D_DEP",
+                    "KORD/ORD8.S": "CHI_M_DEP",
+                    "KORD/ORD8.W": "CHI_G_DEP",
+                    "KPWK": "CHI_D_DEP"
+                },
+                "default_consolidation": {
+                    "CHI_B_DEP": [
+                        "CHI_Y_APP",
+                        "CHI_J_APP",
+                        "CHI_D_DEP",
+                        "CHI_A_APP",
+                        "CHI_E_APP",
+                        "CHI_X_APP",
+                        "CHI_S_APP",
+                        "CHI_P_APP",
+                        "CHI_L_APP",
+                        "CHI_U_APP",
+                        "CHI_M_DEP",
+                        "CHI_G_DEP",
+                        "CHI_Z_APP"
+                    ]
                 }
             },
             "KO8": {
                 "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "ERNNY8": "FARMM (Y)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "GSH9": "SSAT Sector 4 (U)",
-                    "KRENA": "North Satellite (A)",
-                    "LUCIT2": "SSAT Sector 4 (U)",
-                    "MOTIF": "SSAT Sector 2 (P)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "SHAIN2": "Z",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "KUBBS (J)"
+                    "BENKY6": "CHI_X_APP",
+                    "ENDEE6": "CHI_P_APP",
+                    "ERNNY8": "CHI_Y_APP",
+                    "FISSK6/PANGG5": "CHI_U_APP",
+                    "FIYER": "CHI_A_APP",
+                    "FYTTE7": "CHI_Y_APP",
+                    "GSH9": "CHI_U_APP",
+                    "KRENA": "CHI_A_APP",
+                    "LUCIT2": "CHI_U_APP",
+                    "MOTIF": "CHI_P_APP",
+                    "PLANO": "CHI_L_APP",
+                    "SHAIN2": "CHI_Z_APP",
+                    "TRTLL6": "CHI_X_APP",
+                    "VEECK5": "CHI_E_APP",
+                    "WYNDE2": "CHI_J_APP"
                 },
                 "departure_assignments": {
-                    "KARR": "SSAT Sector 3 (L)",
-                    "KDPA": "SSAT Sector 3 (L)",
-                    "KGYY": "SSAT Sector 4 (U)",
-                    "KLOT": "SSAT Sector 2 (P)",
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Departure (D)"
+                    "KARR": "CHI_L_APP",
+                    "KDPA": "CHI_L_APP",
+                    "KGYY": "CHI_U_APP",
+                    "KLOT": "CHI_P_APP",
+                    "KMDW": "CHI_S_APP",
+                    "KORD": "CHI_Z_APP",
+                    "KORD/ORD8.E": "CHI_B_DEP",
+                    "KORD/ORD8.N": "CHI_D_DEP",
+                    "KORD/ORD8.S": "CHI_M_DEP",
+                    "KORD/ORD8.W": "CHI_G_DEP",
+                    "KPWK": "CHI_D_DEP"
+                },
+                "default_consolidation": {
+                    "CHI_B_DEP": [
+                        "CHI_Y_APP",
+                        "CHI_J_APP",
+                        "CHI_D_DEP",
+                        "CHI_A_APP",
+                        "CHI_E_APP",
+                        "CHI_X_APP",
+                        "CHI_S_APP",
+                        "CHI_P_APP",
+                        "CHI_L_APP",
+                        "CHI_U_APP",
+                        "CHI_M_DEP",
+                        "CHI_G_DEP",
+                        "CHI_Z_APP"
+                    ]
                 }
             },
             "16X": {
                 "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ERNNY8": "KUBBS (J)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "KRENA": "North Satellite (A)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "SHAIN2": "Z",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "KUBBS (J)"
+                    "BENKY6": "CHI_X_APP",
+                    "ERNNY8": "CHI_J_APP",
+                    "FIYER": "CHI_A_APP",
+                    "FYTTE7": "CHI_Y_APP",
+                    "KRENA": "CHI_A_APP",
+                    "PLANO": "CHI_L_APP",
+                    "SHAIN2": "CHI_Z_APP",
+                    "TRTLL6": "CHI_X_APP",
+                    "VEECK5": "CHI_E_APP",
+                    "WYNDE2": "CHI_J_APP"
                 },
                 "departure_assignments": {
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Departure (D)"
+                    "KORD": "CHI_Z_APP",
+                    "KORD/ORD8.E": "CHI_B_DEP",
+                    "KORD/ORD8.N": "CHI_D_DEP",
+                    "KORD/ORD8.S": "CHI_M_DEP",
+                    "KORD/ORD8.W": "CHI_G_DEP",
+                    "KPWK": "CHI_D_DEP"
+                },
+                "default_consolidation": {
+                    "CHI_B_DEP": [
+                        "CHI_Y_APP",
+                        "CHI_J_APP",
+                        "CHI_D_DEP",
+                        "CHI_A_APP",
+                        "CHI_E_APP",
+                        "CHI_X_APP",
+                        "CHI_L_APP",
+                        "CHI_M_DEP",
+                        "CHI_G_DEP",
+                        "CHI_Z_APP"
+                    ]
                 }
             },
             "KO9": {
                 "inbound_assignments": {
-                    "FYTTE7_FINALNE": "F"
+                    "FYTTE7_FINALNE": "CHI_F_APP"
+                },
+                "default_consolidation": {
+                    "CHI_F_APP": []
                 }
             },
             "KOA": {
                 "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "FYTTE7": "FARMM (Y)",
-                    "MADII7": "FARMM (Y)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WATSN4": "Z",
-                    "WYNDE2": "KUBBS (J)"
+                    "BENKY6": "CHI_X_APP",
+                    "FYTTE7": "CHI_Y_APP",
+                    "MADII7": "CHI_Y_APP",
+                    "TRTLL6": "CHI_X_APP",
+                    "VEECK5": "CHI_E_APP",
+                    "WATSN4": "CHI_Z_APP",
+                    "WYNDE2": "CHI_J_APP"
                 },
                 "departure_assignments": {
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)"
+                    "KORD": "CHI_Z_APP",
+                    "KORD/ORD8.E": "CHI_B_DEP",
+                    "KORD/ORD8.N": "CHI_D_DEP",
+                    "KORD/ORD8.S": "CHI_M_DEP",
+                    "KORD/ORD8.W": "CHI_G_DEP"
+                },
+                "default_consolidation": {
+                    "CHI_B_DEP": [
+                        "CHI_Y_APP",
+                        "CHI_J_APP",
+                        "CHI_D_DEP",
+                        "CHI_E_APP",
+                        "CHI_X_APP",
+                        "CHI_M_DEP",
+                        "CHI_G_DEP",
+                        "CHI_Z_APP"
+                    ]
                 }
             },
             "KOB": {
                 "inbound_assignments": {
-                    "FINALW_WN": "Z",
-                    "WATSN4": "Z"
+                    "FINALW_WN": "CHI_Z_APP",
+                    "WATSN4": "CHI_Z_APP"
+                },
+                "default_consolidation": {
+                    "CHI_Z_APP": []
                 }
             },
             "KOC": {
                 "inbound_assignments": {
-                    "BENKY6_FINALWW": "Z",
-                    "FINALW_WN": "Z",
-                    "FYTTE7_FINALNW": "Z",
-                    "VEECK5_FINALWW": "Z",
-                    "WATSN4": "Z"
+                    "BENKY6_FINALWW": "CHI_Z_APP",
+                    "FINALW_WN": "CHI_Z_APP",
+                    "FYTTE7_FINALNW": "CHI_Z_APP",
+                    "VEECK5_FINALWW": "CHI_Z_APP",
+                    "WATSN4": "CHI_Z_APP"
+                },
+                "default_consolidation": {
+                    "CHI_Z_APP": []
                 }
             },
             "22L": {
                 "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FYTTE7": "FARMM (Y)",
-                    "MADII7": "FARMM (Y)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WATSN4": "Z",
-                    "WYNDE2": "KUBBS (J)"
+                    "BENKY6": "CHI_X_APP",
+                    "ENDEE6": "CHI_P_APP",
+                    "FISSK6/PANGG5": "CHI_U_APP",
+                    "FYTTE7": "CHI_Y_APP",
+                    "MADII7": "CHI_Y_APP",
+                    "TRTLL6": "CHI_X_APP",
+                    "VEECK5": "CHI_E_APP",
+                    "WATSN4": "CHI_Z_APP",
+                    "WYNDE2": "CHI_J_APP"
                 },
                 "departure_assignments": {
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)"
+                    "KMDW": "CHI_S_APP",
+                    "KORD": "CHI_Z_APP",
+                    "KORD/ORD8.E": "CHI_B_DEP",
+                    "KORD/ORD8.N": "CHI_D_DEP",
+                    "KORD/ORD8.S": "CHI_M_DEP",
+                    "KORD/ORD8.W": "CHI_G_DEP"
+                },
+                "default_consolidation": {
+                    "CHI_B_DEP": [
+                        "CHI_Y_APP",
+                        "CHI_J_APP",
+                        "CHI_D_DEP",
+                        "CHI_E_APP",
+                        "CHI_X_APP",
+                        "CHI_S_APP",
+                        "CHI_P_APP",
+                        "CHI_U_APP",
+                        "CHI_M_DEP",
+                        "CHI_G_DEP",
+                        "CHI_Z_APP"
+                    ]
                 }
             },
             "31R": {
                 "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "GSH9": "SSAT Sector 4 (U)",
-                    "KRENA": "North Satellite (A)",
-                    "LUCIT2": "SSAT Sector 4 (U)",
-                    "MADII7": "FARMM (Y)",
-                    "MOTIF": "SSAT Sector 2 (P)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WATSN4": "Z",
-                    "WYNDE2": "KUBBS (J)"
+                    "BENKY6": "CHI_X_APP",
+                    "ENDEE6": "CHI_P_APP",
+                    "FISSK6/PANGG5": "CHI_U_APP",
+                    "FIYER": "CHI_A_APP",
+                    "FYTTE7": "CHI_Y_APP",
+                    "GSH9": "CHI_U_APP",
+                    "KRENA": "CHI_A_APP",
+                    "LUCIT2": "CHI_U_APP",
+                    "MADII7": "CHI_Y_APP",
+                    "MOTIF": "CHI_P_APP",
+                    "PLANO": "CHI_L_APP",
+                    "TRTLL6": "CHI_X_APP",
+                    "VEECK5": "CHI_E_APP",
+                    "WATSN4": "CHI_Z_APP",
+                    "WYNDE2": "CHI_J_APP"
                 },
                 "departure_assignments": {
-                    "KARR": "SSAT Sector 3 (L)",
-                    "KDPA": "SSAT Sector 3 (L)",
-                    "KGYY": "SSAT Sector 4 (U)",
-                    "KLOT": "SSAT Sector 2 (P)",
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Departure (D)"
+                    "KARR": "CHI_L_APP",
+                    "KDPA": "CHI_L_APP",
+                    "KGYY": "CHI_U_APP",
+                    "KLOT": "CHI_P_APP",
+                    "KMDW": "CHI_S_APP",
+                    "KORD": "CHI_Z_APP",
+                    "KORD/ORD8.E": "CHI_B_DEP",
+                    "KORD/ORD8.N": "CHI_D_DEP",
+                    "KORD/ORD8.S": "CHI_M_DEP",
+                    "KORD/ORD8.W": "CHI_G_DEP",
+                    "KPWK": "CHI_D_DEP"
+                },
+                "default_consolidation": {
+                    "CHI_B_DEP": [
+                        "CHI_Y_APP",
+                        "CHI_J_APP",
+                        "CHI_D_DEP",
+                        "CHI_A_APP",
+                        "CHI_E_APP",
+                        "CHI_X_APP",
+                        "CHI_S_APP",
+                        "CHI_P_APP",
+                        "CHI_L_APP",
+                        "CHI_U_APP",
+                        "CHI_M_DEP",
+                        "CHI_G_DEP",
+                        "CHI_Z_APP"
+                    ]
                 }
             },
             "KOD": {
                 "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "KRENA": "North Satellite (A)",
-                    "MADII7": "FARMM (Y)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WATSN4": "Z",
-                    "WYNDE2": "KUBBS (J)"
+                    "BENKY6": "CHI_X_APP",
+                    "ENDEE6": "CHI_P_APP",
+                    "FISSK6/PANGG5": "CHI_U_APP",
+                    "FIYER": "CHI_A_APP",
+                    "FYTTE7": "CHI_Y_APP",
+                    "KRENA": "CHI_A_APP",
+                    "MADII7": "CHI_Y_APP",
+                    "PLANO": "CHI_L_APP",
+                    "TRTLL6": "CHI_X_APP",
+                    "VEECK5": "CHI_E_APP",
+                    "WATSN4": "CHI_Z_APP",
+                    "WYNDE2": "CHI_J_APP"
                 },
                 "departure_assignments": {
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Departure (D)"
+                    "KMDW": "CHI_S_APP",
+                    "KORD": "CHI_Z_APP",
+                    "KORD/ORD8.E": "CHI_B_DEP",
+                    "KORD/ORD8.N": "CHI_D_DEP",
+                    "KORD/ORD8.S": "CHI_M_DEP",
+                    "KORD/ORD8.W": "CHI_G_DEP",
+                    "KPWK": "CHI_D_DEP"
+                },
+                "default_consolidation": {
+                    "CHI_B_DEP": [
+                        "CHI_Y_APP",
+                        "CHI_J_APP",
+                        "CHI_D_DEP",
+                        "CHI_A_APP",
+                        "CHI_E_APP",
+                        "CHI_X_APP",
+                        "CHI_S_APP",
+                        "CHI_P_APP",
+                        "CHI_L_APP",
+                        "CHI_U_APP",
+                        "CHI_M_DEP",
+                        "CHI_G_DEP",
+                        "CHI_Z_APP"
+                    ]
                 }
             },
             "KOE": {
                 "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "KRENA": "North Satellite (A)",
-                    "MADII7": "FARMM (Y)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WATSN4": "Z",
-                    "WYNDE2": "KUBBS (J)"
+                    "BENKY6": "CHI_X_APP",
+                    "FIYER": "CHI_A_APP",
+                    "FYTTE7": "CHI_Y_APP",
+                    "KRENA": "CHI_A_APP",
+                    "MADII7": "CHI_Y_APP",
+                    "PLANO": "CHI_L_APP",
+                    "TRTLL6": "CHI_X_APP",
+                    "VEECK5": "CHI_E_APP",
+                    "WATSN4": "CHI_Z_APP",
+                    "WYNDE2": "CHI_J_APP"
                 },
                 "departure_assignments": {
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Departure (D)"
+                    "KORD": "CHI_Z_APP",
+                    "KORD/ORD8.E": "CHI_B_DEP",
+                    "KORD/ORD8.N": "CHI_D_DEP",
+                    "KORD/ORD8.S": "CHI_M_DEP",
+                    "KORD/ORD8.W": "CHI_G_DEP",
+                    "KPWK": "CHI_D_DEP"
+                },
+                "default_consolidation": {
+                    "CHI_B_DEP": [
+                        "CHI_Y_APP",
+                        "CHI_J_APP",
+                        "CHI_D_DEP",
+                        "CHI_A_APP",
+                        "CHI_E_APP",
+                        "CHI_X_APP",
+                        "CHI_L_APP",
+                        "CHI_M_DEP",
+                        "CHI_G_DEP",
+                        "CHI_Z_APP"
+                    ]
                 }
             },
             "KOF": {
                 "inbound_assignments": {
-                    "FYTTE7_FINALNW": "F"
+                    "FYTTE7_FINALNW": "CHI_F_APP"
+                },
+                "default_consolidation": {
+                    "CHI_F_APP": []
                 }
             },
             "KOG": {
                 "inbound_assignments": {
-                    "BENKY6_FINALWW": "W",
-                    "VEECK5_FINALWW": "W"
+                    "BENKY6_FINALWW": "CHI_W_APP",
+                    "VEECK5_FINALWW": "CHI_W_APP"
+                },
+                "default_consolidation": {
+                    "CHI_W_APP": []
                 }
             },
             "SAT": {
                 "inbound_assignments": {
-                    "FIYER": "North Satellite (A)",
-                    "KRENA": "North Satellite (A)",
-                    "MOTIF": "SSAT Sector 2 (P)",
-                    "PLANO": "SSAT Sector 3 (L)"
+                    "FIYER": "CHI_A_APP",
+                    "KRENA": "CHI_A_APP",
+                    "MOTIF": "CHI_P_APP",
+                    "PLANO": "CHI_L_APP"
                 },
                 "departure_assignments": {
-                    "KARR": "SSAT Sector 3 (L)",
-                    "KDPA": "SSAT Sector 3 (L)",
-                    "KGYY": "SSAT Sector 4 (U)",
-                    "KLOT": "SSAT Sector 2 (P)",
-                    "KPWK": "North Departure (D)"
+                    "KARR": "CHI_L_APP",
+                    "KDPA": "CHI_L_APP",
+                    "KGYY": "CHI_U_APP",
+                    "KLOT": "CHI_P_APP",
+                    "KPWK": "CHI_D_DEP"
+                },
+                "default_consolidation": {
+                    "CHI_D_DEP": [
+                        "CHI_A_APP",
+                        "CHI_P_APP",
+                        "CHI_L_APP",
+                        "CHI_U_APP"
+                    ]
                 }
             }
         },
@@ -815,491 +1107,7 @@
             "ZAU C90 Arrival Fixes",
             "ZAU C90 NSAT RNAV"
         ],
-        "video_map_file": "videomaps/ZAU-videomaps.gob.zst",
-        "controller_assignments": {
-            "13L": {
-                "inbound_assignments": {
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)"
-                },
-                "departure_assignments": {
-                    "KMDW": "SSAT Sector 4 (U)"
-                }
-            },
-            "16X": {
-                "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ERNNY8": "KUBBS (J)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "KRENA": "North Satellite (A)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "SHAIN2": "Z",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "KUBBS (J)"
-                },
-                "departure_assignments": {
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Departure (D)"
-                }
-            },
-            "22L": {
-                "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FYTTE7": "FARMM (Y)",
-                    "MADII7": "FARMM (Y)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WATSN4": "Z",
-                    "WYNDE2": "KUBBS (J)"
-                },
-                "departure_assignments": {
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)"
-                }
-            },
-            "22X": {
-                "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "FYTTE7": "FARMM (Y)",
-                    "MADII7": "FARMM (Y)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "Z"
-                },
-                "departure_assignments": {
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)"
-                }
-            },
-            "31R": {
-                "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "GSH9": "SSAT Sector 4 (U)",
-                    "KRENA": "North Satellite (A)",
-                    "LUCIT2": "SSAT Sector 4 (U)",
-                    "MADII7": "FARMM (Y)",
-                    "MOTIF": "SSAT Sector 2 (P)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WATSN4": "Z",
-                    "WYNDE2": "KUBBS (J)"
-                },
-                "departure_assignments": {
-                    "KARR": "SSAT Sector 3 (L)",
-                    "KDPA": "SSAT Sector 3 (L)",
-                    "KGYY": "SSAT Sector 4 (U)",
-                    "KLOT": "SSAT Sector 2 (P)",
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Departure (D)"
-                }
-            },
-            "4RX": {
-                "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "ERNNY8": "KUBBS (J)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FYTTE7": "FARMM (Y)",
-                    "SHAIN2": "Z",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "KUBBS (J)"
-                },
-                "departure_assignments": {
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)"
-                }
-            },
-            "4XX": {
-                "inbound_assignments": {
-                    "BENKY6": "Z",
-                    "FYTTE7": "FARMM (Y)",
-                    "MADII7": "FARMM (Y)",
-                    "TRTLL6": "Z",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "KUBBS (J)"
-                },
-                "departure_assignments": {
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)"
-                }
-            },
-            "KO1": {
-                "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "GSH9": "SSAT Sector 4 (U)",
-                    "KRENA": "North Satellite (A)",
-                    "LUCIT2": "SSAT Sector 4 (U)",
-                    "MADII7": "FARMM (Y)",
-                    "MOTIF": "SSAT Sector 2 (P)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "Z"
-                },
-                "departure_assignments": {
-                    "KARR": "SSAT Sector 3 (L)",
-                    "KDPA": "SSAT Sector 3 (L)",
-                    "KGYY": "SSAT Sector 4 (U)",
-                    "KLOT": "SSAT Sector 2 (P)",
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Departure (D)"
-                }
-            },
-            "KO2": {
-                "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "KRENA": "North Satellite (A)",
-                    "MADII7": "FARMM (Y)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "Z"
-                },
-                "departure_assignments": {
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Departure (D)"
-                }
-            },
-            "KO3": {
-                "inbound_assignments": {
-                    "BENKY6": "Z",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FYTTE7": "FARMM (Y)",
-                    "MADII7": "FARMM (Y)",
-                    "TRTLL6": "Z",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "KUBBS (J)"
-                },
-                "departure_assignments": {
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)"
-                }
-            },
-            "KO4": {
-                "inbound_assignments": {
-                    "BENKY6": "Z",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "GSH9": "SSAT Sector 4 (U)",
-                    "KRENA": "North Satellite (A)",
-                    "LUCIT2": "SSAT Sector 4 (U)",
-                    "MADII7": "FARMM (Y)",
-                    "MOTIF": "SSAT Sector 2 (P)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "TRTLL6": "Z",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "KUBBS (J)"
-                },
-                "departure_assignments": {
-                    "KARR": "SSAT Sector 3 (L)",
-                    "KDPA": "SSAT Sector 3 (L)",
-                    "KGYY": "SSAT Sector 4 (U)",
-                    "KLOT": "SSAT Sector 2 (P)",
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Satellite (A)"
-                }
-            },
-            "KO5": {
-                "inbound_assignments": {
-                    "BENKY6": "Z",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "KRENA": "North Satellite (A)",
-                    "MADII7": "FARMM (Y)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "TRTLL6": "Z",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "KUBBS (J)"
-                },
-                "departure_assignments": {
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Satellite (A)"
-                }
-            },
-            "KO6": {
-                "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ERNNY8": "KUBBS (J)",
-                    "FYTTE7": "FARMM (Y)",
-                    "SHAIN2": "Z",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "KUBBS (J)"
-                },
-                "departure_assignments": {
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)"
-                }
-            },
-            "KO7": {
-                "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "ERNNY8": "KUBBS (J)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "GSH9": "SSAT Sector 4 (U)",
-                    "KRENA": "North Satellite (A)",
-                    "LUCIT2": "SSAT Sector 4 (U)",
-                    "MOTIF": "SSAT Sector 2 (P)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WATSN4": "Z",
-                    "WYNDE2": "KUBBS (J)"
-                },
-                "departure_assignments": {
-                    "KARR": "SSAT Sector 3 (L)",
-                    "KDPA": "SSAT Sector 3 (L)",
-                    "KGYY": "SSAT Sector 4 (U)",
-                    "KLOT": "SSAT Sector 2 (P)",
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Departure (D)"
-                }
-            },
-            "KO8": {
-                "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "ERNNY8": "FARMM (Y)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "GSH9": "SSAT Sector 4 (U)",
-                    "KRENA": "North Satellite (A)",
-                    "LUCIT2": "SSAT Sector 4 (U)",
-                    "MOTIF": "SSAT Sector 2 (P)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "SHAIN2": "Z",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "KUBBS (J)"
-                },
-                "departure_assignments": {
-                    "KARR": "SSAT Sector 3 (L)",
-                    "KDPA": "SSAT Sector 3 (L)",
-                    "KGYY": "SSAT Sector 4 (U)",
-                    "KLOT": "SSAT Sector 2 (P)",
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Departure (D)"
-                }
-            },
-            "KO9": {
-                "inbound_assignments": {
-                    "FYTTE7_FINALNE": "F"
-                }
-            },
-            "KOA": {
-                "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "FYTTE7": "FARMM (Y)",
-                    "MADII7": "FARMM (Y)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WATSN4": "Z",
-                    "WYNDE2": "KUBBS (J)"
-                },
-                "departure_assignments": {
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)"
-                }
-            },
-            "KOB": {
-                "inbound_assignments": {
-                    "FINALW_WN": "Z",
-                    "WATSN4": "Z"
-                }
-            },
-            "KOC": {
-                "inbound_assignments": {
-                    "BENKY6_FINALWW": "Z",
-                    "FINALW_WN": "Z",
-                    "FYTTE7_FINALNW": "Z",
-                    "VEECK5_FINALWW": "Z",
-                    "WATSN4": "Z"
-                }
-            },
-            "KOD": {
-                "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "KRENA": "North Satellite (A)",
-                    "MADII7": "FARMM (Y)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WATSN4": "Z",
-                    "WYNDE2": "KUBBS (J)"
-                },
-                "departure_assignments": {
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Departure (D)"
-                }
-            },
-            "KOE": {
-                "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "FIYER": "North Satellite (A)",
-                    "FYTTE7": "FARMM (Y)",
-                    "KRENA": "North Satellite (A)",
-                    "MADII7": "FARMM (Y)",
-                    "PLANO": "SSAT Sector 3 (L)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WATSN4": "Z",
-                    "WYNDE2": "KUBBS (J)"
-                },
-                "departure_assignments": {
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)",
-                    "KPWK": "North Departure (D)"
-                }
-            },
-            "KOF": {
-                "inbound_assignments": {
-                    "FYTTE7_FINALNW": "F"
-                }
-            },
-            "KOG": {
-                "inbound_assignments": {
-                    "BENKY6_FINALWW": "W",
-                    "VEECK5_FINALWW": "W"
-                }
-            },
-            "KOR": {
-                "inbound_assignments": {
-                    "BENKY6": "PLANO (X)",
-                    "ENDEE6": "SSAT Sector 2 (P)",
-                    "FISSK6/PANGG5": "SSAT Sector 4 (U)",
-                    "FYTTE7": "FARMM (Y)",
-                    "MADII7": "FARMM (Y)",
-                    "TRTLL6": "PLANO (X)",
-                    "VEECK5": "OKK (E)",
-                    "WYNDE2": "Z"
-                },
-                "departure_assignments": {
-                    "KMDW": "SSAT Sector 1 (S)",
-                    "KORD": "Z",
-                    "KORD/ORD8.E": "East Departure (B)",
-                    "KORD/ORD8.N": "North Departure (D)",
-                    "KORD/ORD8.S": "South Departure (M)",
-                    "KORD/ORD8.W": "West Departure (G)"
-                }
-            },
-            "SAT": {
-                "inbound_assignments": {
-                    "FIYER": "North Satellite (A)",
-                    "KRENA": "North Satellite (A)",
-                    "MOTIF": "SSAT Sector 2 (P)",
-                    "PLANO": "SSAT Sector 3 (L)"
-                },
-                "departure_assignments": {
-                    "KARR": "SSAT Sector 3 (L)",
-                    "KDPA": "SSAT Sector 3 (L)",
-                    "KGYY": "SSAT Sector 4 (U)",
-                    "KLOT": "SSAT Sector 2 (P)",
-                    "KPWK": "North Departure (D)"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZAU-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
@@ -1308,12 +1116,16 @@
                 "prefix": "1"
             },
             {
+                "id": "RFD",
+                "prefix": "3"
+            },
+            {
                 "id": "SBN",
                 "prefix": "2"
             },
             {
-                "id": "RFD",
-                "prefix": "3"
+                "id": "ZAU",
+                "eram_prefix": "G"
             }
         ],
         "neighboring_facilities": [

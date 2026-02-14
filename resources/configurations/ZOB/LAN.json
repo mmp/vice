@@ -1,0 +1,80 @@
+{
+    "control_positions": {
+        "LAN_A_APP": {
+            "frequency": 120950,
+            "radio_name": "Great Lakes Approach",
+            "sector_id": "1A"
+        },
+        "LAN_B_APP": {
+            "frequency": 118800,
+            "radio_name": "Great Lakes Approach",
+            "sector_id": "1B"
+        },
+        "LAN_H_APP": {
+            "frequency": 126450,
+            "radio_name": "Great Lakes Approach",
+            "sector_id": "1H"
+        },
+        "LAN_L_APP": {
+            "frequency": 118650,
+            "radio_name": "Great Lakes Approach",
+            "sector_id": "1L"
+        },
+        "LAN_O_APP": {
+            "frequency": 128550,
+            "radio_name": "Great Lakes Approach",
+            "sector_id": "1O"
+        },
+        "LAN_Y_APP": {
+            "frequency": 127300,
+            "radio_name": "Great Lakes Approach",
+            "sector_id": "1Y"
+        },
+        "LAN_T_APP": {
+            "frequency": 123450,
+            "radio_name": "Great Lakes Approach",
+            "sector_id": "1Z"
+        },
+        "LAN_TWR": {
+            "frequency": 119900,
+            "radio_name": "Lansing Tower",
+            "sector_id": "5T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "AZO",
+                "prefix": "1"
+            },
+            {
+                "id": "D21",
+                "prefix": "2"
+            },
+            {
+                "id": "MTC",
+                "prefix": "4"
+            },
+            {
+                "id": "TOL",
+                "prefix": "3"
+            },
+            {
+                "id": "ZAU",
+                "eram_prefix": "G"
+            },
+            {
+                "id": "ZMP",
+                "eram_prefix": "P"
+            }
+        ],
+        "neighboring_facilities": [
+            "AZO",
+            "D21",
+            "MTC",
+            "TOL",
+            "ZAU",
+            "ZMP"
+        ]
+    }
+}

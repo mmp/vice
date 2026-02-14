@@ -1,10 +1,31 @@
 {
-  "control_positions": {},
-  "stars_config": {},
-  "handoff_topology": {
-    "handoff_ids": [],
-    "neighboring_facilities": [
-      "ZNY"
-    ]
-  }
+    "control_positions": {
+        "BGM_L_APP": {
+            "frequency": 118600,
+            "radio_name": "Binghamton Approach",
+            "sector_id": "1G"
+        },
+        "BGM_H_APP": {
+            "frequency": 127550,
+            "radio_name": "Binghamton Approach",
+            "sector_id": "1H"
+        },
+        "BGM_TWR": {
+            "frequency": 119300,
+            "radio_name": "Bignhamton Tower",
+            "sector_id": "1K"
+        }
+    },
+    "stars_config": {},
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZNY",
+                "eram_prefix": "N"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZNY"
+        ]
+    }
 }

@@ -25,7 +25,7 @@
                     "cruise_altitude": 35000,
                     "star": "QWENN6",
                     "route": "QWENN6",
-                    "initial_controller": "ZLA 16 Sector",
+                    "initial_controller": "ZLA Sector 16",
                     "initial_altitude": 35000,
                     "initial_speed": 300,
                     "airlines": {
@@ -60,7 +60,7 @@
                     "cruise_altitude": 35000,
                     "star": "QWENN6",
                     "route": "QWENN6",
-                    "initial_controller": "ZLA 16 Sector",
+                    "initial_controller": "ZLA Sector 16",
                     "initial_altitude": 35000,
                     "initial_speed": 300,
                     "airlines": {
@@ -93,10 +93,7 @@
     "scenarios": {
         "ZLC C Comb 44": {
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "ZLC 44": []
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "*SEC"

@@ -1,0 +1,20 @@
+{
+    "control_positions": {
+        "SUU_S_APP": {
+            "frequency": 119900,
+            "radio_name": "Travis Approach",
+            "sector_id": "1S"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "NCT",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "NCT"
+        ]
+    }
+}

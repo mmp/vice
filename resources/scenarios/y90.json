@@ -634,15 +634,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "BDL_B_APP": [
-                        "BDL_E_APP",
-                        "BDL_F_APP",
-                        "BDL_H_APP",
-                        "BDL_W_APP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "Y90 RWY 6/33",
@@ -725,15 +717,7 @@
                 }
             },
             "configuration": {
-                "config_id": "CNW",
-                "default_consolidation": {
-                    "BDL_B_APP": [
-                        "BDL_E_APP",
-                        "BDL_F_APP",
-                        "BDL_H_APP",
-                        "BDL_W_APP"
-                    ]
-                }
+                "config_id": "CNW"
             },
             "default_maps": [
                 "Y90 RWY 24/33",

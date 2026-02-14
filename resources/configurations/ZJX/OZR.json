@@ -1,0 +1,46 @@
+{
+    "control_positions": {
+        "OZR_APP": {
+            "frequency": 121100,
+            "radio_name": "Cairns Approach",
+            "sector_id": "1Z"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "A80",
+                "prefix": "4"
+            },
+            {
+                "id": "MGM",
+                "prefix": "5"
+            },
+            {
+                "id": "PAM",
+                "prefix": "2"
+            },
+            {
+                "id": "TLH",
+                "prefix": "3"
+            },
+            {
+                "id": "VPS",
+                "prefix": "1"
+            },
+            {
+                "id": "ZTL",
+                "eram_prefix": "T"
+            }
+        ],
+        "neighboring_facilities": [
+            "A80",
+            "CSG",
+            "MGM",
+            "PAM",
+            "TLH",
+            "VPS",
+            "ZTL"
+        ]
+    }
+}

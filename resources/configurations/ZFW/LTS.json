@@ -1,0 +1,30 @@
+{
+    "control_positions": {
+        "LTS_APP": {
+            "frequency": 125100,
+            "radio_name": "Altus Approach",
+            "sector_id": "1R"
+        },
+        "LTS_TWR": {
+            "frequency": 119650,
+            "radio_name": "Altus Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "FSI",
+                "prefix": "2"
+            },
+            {
+                "id": "SPS",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "FSI",
+            "SPS"
+        ]
+    }
+}

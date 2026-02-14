@@ -54,6 +54,13 @@
                     "KSBA": "SBA_H_APP",
                     "KSBP": "SBA_I_APP",
                     "KSMX": "SBA_R_APP"
+                },
+                "default_consolidation": {
+                    "SBA_E_APP": [
+                        "SBA_H_APP",
+                        "SBA_I_APP",
+                        "SBA_R_APP"
+                    ]
                 }
             }
         },
@@ -151,33 +158,21 @@
             "107S VBG ILS APCHS SBA",
             "166S SBP RNAV M RWY 11 SBA"
         ],
-        "video_map_file": "videomaps/ZLA-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "EAST SBP ARR": "SBA_I_APP",
-                    "EAST SMX ARR": "SBA_H_APP",
-                    "NORTH SBA ARR": "SBA_E_APP",
-                    "NORTH SBP ARR": "SBA_I_APP",
-                    "NORTH SMX ARR": "SBA_I_APP",
-                    "NORTHWEST SBA ARR": "SBA_E_APP",
-                    "NORTHWEST SBP ARR": "SBA_I_APP",
-                    "PITBL2": "SBA_H_APP",
-                    "SOUTH SBP ARR": "SBA_R_APP"
-                },
-                "departure_assignments": {
-                    "KSBA": "SBA_H_APP",
-                    "KSBP": "SBA_I_APP",
-                    "KSMX": "SBA_R_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZLA-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
             {
                 "id": "NTD",
                 "prefix": "1"
+            },
+            {
+                "id": "ZLA",
+                "eram_prefix": "L"
+            },
+            {
+                "id": "ZOA",
+                "eram_prefix": "O"
             }
         ],
         "neighboring_facilities": [

@@ -2484,22 +2484,7 @@
                 }
             },
             "configuration": {
-                "config_id": "KM1",
-                "default_consolidation": {
-                    "MCI_A_APP": [
-                        "MCI_B_APP",
-                        "MCI_F_APP"
-                    ],
-                    "MCI_E_APP": [
-                        "MCI_A_APP",
-                        "MCI_N_APP",
-                        "MCI_S_APP",
-                        "MCI_W_APP"
-                    ],
-                    "MCI_F_APP": [
-                        "MCI_P_APP"
-                    ]
-                }
+                "config_id": "KM1"
             },
             "default_maps": [
                 "KC North Flow"
@@ -2582,22 +2567,7 @@
                 }
             },
             "configuration": {
-                "config_id": "KM1",
-                "default_consolidation": {
-                    "MCI_A_APP": [
-                        "MCI_B_APP",
-                        "MCI_F_APP"
-                    ],
-                    "MCI_E_APP": [
-                        "MCI_A_APP",
-                        "MCI_N_APP",
-                        "MCI_S_APP",
-                        "MCI_W_APP"
-                    ],
-                    "MCI_F_APP": [
-                        "MCI_P_APP"
-                    ]
-                }
+                "config_id": "KM1"
             },
             "default_maps": [
                 "KC South Flow"
@@ -2676,22 +2646,7 @@
                 }
             },
             "configuration": {
-                "config_id": "KMC",
-                "default_consolidation": {
-                    "MCI_A_APP": [
-                        "MCI_B_APP",
-                        "MCI_F_APP"
-                    ],
-                    "MCI_E_APP": [
-                        "MCI_A_APP",
-                        "MCI_N_APP",
-                        "MCI_S_APP",
-                        "MCI_W_APP"
-                    ],
-                    "MCI_F_APP": [
-                        "MCI_P_APP"
-                    ]
-                }
+                "config_id": "KMC"
             },
             "default_maps": [
                 "KC East Flow"
@@ -2765,22 +2720,7 @@
                 }
             },
             "configuration": {
-                "config_id": "KM1",
-                "default_consolidation": {
-                    "MCI_A_APP": [
-                        "MCI_B_APP",
-                        "MCI_F_APP"
-                    ],
-                    "MCI_E_APP": [
-                        "MCI_A_APP",
-                        "MCI_N_APP",
-                        "MCI_S_APP",
-                        "MCI_W_APP"
-                    ],
-                    "MCI_F_APP": [
-                        "MCI_P_APP"
-                    ]
-                }
+                "config_id": "KM1"
             },
             "default_maps": [
                 "KC South Flow"

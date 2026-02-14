@@ -1,10 +1,15 @@
 {
-  "control_positions": {},
-  "stars_config": {},
-  "handoff_topology": {
-    "handoff_ids": [],
-    "neighboring_facilities": [
-      "ZKC"
-    ]
-  }
+    "control_positions": {},
+    "stars_config": {},
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZKC",
+                "eram_prefix": "K"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZKC"
+        ]
+    }
 }

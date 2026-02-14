@@ -1,0 +1,45 @@
+{
+    "control_positions": {
+        "ACY_N_APP": {
+            "frequency": 134250,
+            "radio_name": "Atlantic City Approach",
+            "sector_id": "1N"
+        },
+        "ACY_S_APP": {
+            "frequency": 124600,
+            "radio_name": "Atlantic City Approach",
+            "sector_id": "1S"
+        },
+        "ACY_TWR": {
+            "frequency": 120300,
+            "radio_name": "Atlantic City Tower",
+            "sector_id": "1Z"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "DOV",
+                "prefix": "1"
+            },
+            {
+                "id": "PHL",
+                "prefix": "2"
+            },
+            {
+                "id": "WRI",
+                "prefix": "3"
+            },
+            {
+                "id": "ZNY",
+                "eram_prefix": "N"
+            }
+        ],
+        "neighboring_facilities": [
+            "DOV",
+            "PHL",
+            "WRI",
+            "ZNY"
+        ]
+    }
+}

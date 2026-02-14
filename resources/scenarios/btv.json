@@ -286,10 +286,7 @@
                 }
             },
             "configuration": {
-                "config_id": "15X",
-                "default_consolidation": {
-                    "BTV_W_APP": []
-                }
+                "config_id": "15X"
             },
             "departure_runways": [
                 {
@@ -336,13 +333,7 @@
                 }
             },
             "configuration": {
-                "config_id": "33X",
-                "default_consolidation": {
-                    "BTV_E_APP": [
-                        "BTV_F_APP",
-                        "BTV_W_APP"
-                    ]
-                }
+                "config_id": "33X"
             },
             "departure_runways": [
                 {

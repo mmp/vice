@@ -154,10 +154,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "GTF_APP": []
-                }
+                "config_id": "STD"
             },
             "departure_runways": [
                 {

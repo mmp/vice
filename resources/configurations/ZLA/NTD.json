@@ -1,0 +1,26 @@
+{
+    "control_positions": {
+        "NTD_APP": {
+            "frequency": 124700,
+            "radio_name": "Point Magu Approach",
+            "sector_id": "1A"
+        },
+        "NTD_TWR": {
+            "frequency": 124850,
+            "radio_name": "Point Magu Tower",
+            "sector_id": "1Z"
+        }
+    },
+    "stars_config": {},
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZLA",
+                "eram_prefix": "L"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZLA"
+        ]
+    }
+}

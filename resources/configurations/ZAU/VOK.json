@@ -1,0 +1,35 @@
+{
+    "control_positions": {
+        "VOK_APP": {
+            "frequency": 135250,
+            "radio_name": "Volk Approach",
+            "sector_id": "1A"
+        },
+        "VOK_TWR": {
+            "frequency": 127500,
+            "radio_name": "Volk Tower",
+            "sector_id": "1L"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "MKE",
+                "prefix": "2"
+            },
+            {
+                "id": "MSN",
+                "prefix": "1"
+            },
+            {
+                "id": "ZMP",
+                "eram_prefix": "P"
+            }
+        ],
+        "neighboring_facilities": [
+            "MKE",
+            "MSN",
+            "ZMP"
+        ]
+    }
+}

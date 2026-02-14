@@ -1,10 +1,26 @@
 {
-  "control_positions": {},
-  "stars_config": {},
-  "handoff_topology": {
-    "handoff_ids": [],
-    "neighboring_facilities": [
-      "ZAB"
-    ]
-  }
+    "control_positions": {
+        "PHX_N_TWR": {
+            "frequency": 118700,
+            "radio_name": "Phoenix Tower",
+            "sector_id": "1E"
+        },
+        "PHX_S_TWR": {
+            "frequency": 120900,
+            "radio_name": "Phoenix Tower",
+            "sector_id": "1Z"
+        }
+    },
+    "stars_config": {},
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZAB",
+                "eram_prefix": "A"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZAB"
+        ]
+    }
 }

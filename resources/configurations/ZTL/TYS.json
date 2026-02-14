@@ -1,10 +1,26 @@
 {
-  "control_positions": {},
-  "stars_config": {},
-  "handoff_topology": {
-    "handoff_ids": [],
-    "neighboring_facilities": [
-      "ZTL"
-    ]
-  }
+    "control_positions": {
+        "TYS_APP": {
+            "frequency": 123900,
+            "radio_name": "Knoxville Approach",
+            "sector_id": "1W"
+        },
+        "TYS_TWR": {
+            "frequency": 121200,
+            "radio_name": "Knoxville Tower",
+            "sector_id": "1L"
+        }
+    },
+    "stars_config": {},
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZTL",
+                "eram_prefix": "T"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZTL"
+        ]
+    }
 }

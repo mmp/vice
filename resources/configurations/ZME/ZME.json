@@ -1,262 +1,391 @@
 {
-  "control_positions": {
-    "ZME 01 Hot Springs": {
-      "frequency": 128475,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "01"
+    "control_positions": {
+        "ZME 01 Hot Springs": {
+            "frequency": 128475,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "01"
+        },
+        "ZME 02 Fayetteville": {
+            "frequency": 126100,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "02"
+        },
+        "ZME 03 Harrison": {
+            "frequency": 126850,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "03"
+        },
+        "ZME 04 Jonesboro": {
+            "frequency": 120075,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "04"
+        },
+        "ZME 05 Paducah": {
+            "frequency": 133650,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "05"
+        },
+        "ZME 07 McKeller": {
+            "frequency": 134650,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "07"
+        },
+        "ZME 12 Columbus": {
+            "frequency": 128500,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "12"
+        },
+        "ZME 13 Hamilton": {
+            "frequency": 120800,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "13"
+        },
+        "ZME 14 Holly Springs": {
+            "frequency": 124350,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "14"
+        },
+        "ZME 15 Helena": {
+            "frequency": 135300,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "15"
+        },
+        "ZME 19 Drake": {
+            "frequency": 133025,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "19"
+        },
+        "ZME 20 Little Rock": {
+            "frequency": 125475,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "20"
+        },
+        "ZME 21 Conway": {
+            "frequency": 132425,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "21"
+        },
+        "ZME 22 Razorback": {
+            "frequency": 132550,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "22"
+        },
+        "ZME 25 Tings": {
+            "frequency": 135500,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "25"
+        },
+        "ZME 26 Jacks Creek": {
+            "frequency": 126450,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "26"
+        },
+        "ZME 27 Calico": {
+            "frequency": 132375,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "27"
+        },
+        "ZME 28 Memphis": {
+            "frequency": 118625,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "28"
+        },
+        "ZME 30 Columbus": {
+            "frequency": 134775,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "30"
+        },
+        "ZME 31 Muscle Shoals": {
+            "frequency": 127375,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "31"
+        },
+        "ZME 32 Tupelo": {
+            "frequency": 135650,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "32"
+        },
+        "ZME 33 Elvis": {
+            "frequency": 127975,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "33"
+        },
+        "ZME 34 Sikeston": {
+            "frequency": 133125,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "34"
+        },
+        "ZME 35 Walnut Ridge": {
+            "frequency": 135225,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "35"
+        },
+        "ZME 40 Sparta": {
+            "frequency": 132900,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "40"
+        },
+        "ZME 41 Bowling Green": {
+            "frequency": 133850,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "41"
+        },
+        "ZME 42 Graham": {
+            "frequency": 125850,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "42"
+        },
+        "ZME 43 Greenwood": {
+            "frequency": 127425,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "43"
+        },
+        "ZME 44 Pine Bluff": {
+            "frequency": 124925,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "44"
+        },
+        "ZME 45 Vicksburg": {
+            "frequency": 133075,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "45"
+        },
+        "ZME 46 Meridian": {
+            "frequency": 128275,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "46"
+        },
+        "ZME 60 Shelbyville": {
+            "frequency": 128150,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "60"
+        },
+        "ZME 61 Clarksville": {
+            "frequency": 124125,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "61"
+        },
+        "ZME 62 Smyrna": {
+            "frequency": 118875,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "62"
+        },
+        "ZME 63 Campbell": {
+            "frequency": 124275,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "63"
+        },
+        "ZME 65 Kewanee": {
+            "frequency": 125975,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "65"
+        },
+        "ZME 66 Jackson": {
+            "frequency": 132500,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "66"
+        },
+        "ZME 67 Greenville": {
+            "frequency": 135875,
+            "eram_facility": true,
+            "radio_name": "Memphis Center",
+            "sector_id": "67"
+        },
+        "ZME 70 TMU (DFW SDF)": {
+            "frequency": 123450,
+            "eram_facility": true,
+            "radio_name": "ZME Flow 70",
+            "sector_id": "70"
+        },
+        "ZME 71 TMU (ATL)": {
+            "frequency": 123450,
+            "eram_facility": true,
+            "radio_name": "ZME Flow 71",
+            "sector_id": "71"
+        },
+        "ZME 72 TMU (CLT IAH)": {
+            "frequency": 123450,
+            "eram_facility": true,
+            "radio_name": "ZME Flow 72",
+            "sector_id": "72"
+        },
+        "ZME 77 OMIC": {
+            "frequency": 121500,
+            "eram_facility": true,
+            "radio_name": "Operations Manager",
+            "sector_id": "77"
+        },
+        "ZME 80 TMU (MEM)": {
+            "frequency": 123450,
+            "eram_facility": true,
+            "radio_name": "ZME Flow 80",
+            "sector_id": "80"
+        }
     },
-    "ZME 02 Fayetteville": {
-      "frequency": 126100,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "02"
-    },
-    "ZME 03 Harrison": {
-      "frequency": 126850,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "03"
-    },
-    "ZME 04 Jonesboro": {
-      "frequency": 120075,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "04"
-    },
-    "ZME 05 Paducah": {
-      "frequency": 133650,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "05"
-    },
-    "ZME 07 McKeller": {
-      "frequency": 134650,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "07"
-    },
-    "ZME 12 Columbus": {
-      "frequency": 128500,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "12"
-    },
-    "ZME 13 Hamilton": {
-      "frequency": 120800,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "13"
-    },
-    "ZME 14 Holly Springs": {
-      "frequency": 124350,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "14"
-    },
-    "ZME 15 Helena": {
-      "frequency": 135300,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "15"
-    },
-    "ZME 19 Drake": {
-      "frequency": 133025,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "19"
-    },
-    "ZME 20 Little Rock": {
-      "frequency": 125475,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "20"
-    },
-    "ZME 21 Conway": {
-      "frequency": 132425,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "21"
-    },
-    "ZME 22 Razorback": {
-      "frequency": 132550,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "22"
-    },
-    "ZME 25 Tings": {
-      "frequency": 135500,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "25"
-    },
-    "ZME 26 Jacks Creek": {
-      "frequency": 126450,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "26"
-    },
-    "ZME 27 Calico": {
-      "frequency": 132375,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "27"
-    },
-    "ZME 28 Memphis": {
-      "frequency": 118625,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "28"
-    },
-    "ZME 30 Columbus": {
-      "frequency": 134775,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "30"
-    },
-    "ZME 31 Muscle Shoals": {
-      "frequency": 127375,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "31"
-    },
-    "ZME 32 Tupelo": {
-      "frequency": 135650,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "32"
-    },
-    "ZME 33 Elvis": {
-      "frequency": 127975,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "33"
-    },
-    "ZME 34 Sikeston": {
-      "frequency": 133125,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "34"
-    },
-    "ZME 35 Walnut Ridge": {
-      "frequency": 135225,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "35"
-    },
-    "ZME 40 Sparta": {
-      "frequency": 132900,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "40"
-    },
-    "ZME 41 Bowling Green": {
-      "frequency": 133850,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "41"
-    },
-    "ZME 42 Graham": {
-      "frequency": 125850,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "42"
-    },
-    "ZME 43 Greenwood": {
-      "frequency": 127425,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "43"
-    },
-    "ZME 44 Pine Bluff": {
-      "frequency": 124925,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "44"
-    },
-    "ZME 45 Vicksburg": {
-      "frequency": 133075,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "45"
-    },
-    "ZME 46 Meridian": {
-      "frequency": 128275,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "46"
-    },
-    "ZME 60 Shelbyville": {
-      "frequency": 128150,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "60"
-    },
-    "ZME 61 Clarksville": {
-      "frequency": 124125,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "61"
-    },
-    "ZME 62 Smyrna": {
-      "frequency": 118875,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "62"
-    },
-    "ZME 63 Campbell": {
-      "frequency": 124275,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "63"
-    },
-    "ZME 65 Kewanee": {
-      "frequency": 125975,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "65"
-    },
-    "ZME 66 Jackson": {
-      "frequency": 132500,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "66"
-    },
-    "ZME 67 Greenville": {
-      "frequency": 135875,
-      "eram_facility": true,
-      "radio_name": "Memphis Center",
-      "sector_id": "67"
-    },
-    "ZME 70 TMU (DFW SDF)": {
-      "frequency": 123450,
-      "eram_facility": true,
-      "radio_name": "ZME Flow 70",
-      "sector_id": "70"
-    },
-    "ZME 71 TMU (ATL)": {
-      "frequency": 123450,
-      "eram_facility": true,
-      "radio_name": "ZME Flow 71",
-      "sector_id": "71"
-    },
-    "ZME 72 TMU (CLT IAH)": {
-      "frequency": 123450,
-      "eram_facility": true,
-      "radio_name": "ZME Flow 72",
-      "sector_id": "72"
-    },
-    "ZME 77 OMIC": {
-      "frequency": 121500,
-      "eram_facility": true,
-      "radio_name": "Operations Manager",
-      "sector_id": "77"
-    },
-    "ZME 80 TMU (MEM)": {
-      "frequency": 123450,
-      "eram_facility": true,
-      "radio_name": "ZME Flow 80",
-      "sector_id": "80"
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "BHM",
+                "two_char_stars_id": "BH",
+                "stars_id": "BHM"
+            },
+            {
+                "id": "BNA",
+                "single_char_stars_id": "B",
+                "two_char_stars_id": "BB",
+                "stars_id": "BBB"
+            },
+            {
+                "id": "CBM",
+                "single_char_stars_id": "C",
+                "two_char_stars_id": "CC",
+                "stars_id": "CCC"
+            },
+            {
+                "id": "CHA",
+                "two_char_stars_id": "CH",
+                "stars_id": "CHA"
+            },
+            {
+                "id": "EVV",
+                "single_char_stars_id": "E",
+                "two_char_stars_id": "EV",
+                "stars_id": "EVV"
+            },
+            {
+                "id": "FSM",
+                "single_char_stars_id": "S",
+                "two_char_stars_id": "SS",
+                "stars_id": "SSS"
+            },
+            {
+                "id": "HOP",
+                "single_char_stars_id": "P",
+                "two_char_stars_id": "PP",
+                "stars_id": "PPP"
+            },
+            {
+                "id": "HSV",
+                "single_char_stars_id": "V",
+                "two_char_stars_id": "HH",
+                "stars_id": "VVV"
+            },
+            {
+                "id": "JAN",
+                "single_char_stars_id": "J",
+                "two_char_stars_id": "JJ",
+                "stars_id": "JJJ"
+            },
+            {
+                "id": "LIT",
+                "single_char_stars_id": "L",
+                "two_char_stars_id": "LL",
+                "stars_id": "LLL"
+            },
+            {
+                "id": "M03",
+                "single_char_stars_id": "M",
+                "two_char_stars_id": "MM",
+                "stars_id": "MMM"
+            },
+            {
+                "id": "MLU",
+                "stars_id": "MLU"
+            },
+            {
+                "id": "NMM",
+                "single_char_stars_id": "N",
+                "two_char_stars_id": "NN",
+                "stars_id": "NNN"
+            },
+            {
+                "id": "SGF",
+                "two_char_stars_id": "SG",
+                "stars_id": "SGF"
+            },
+            {
+                "id": "TUL",
+                "stars_id": "TUL"
+            },
+            {
+                "id": "ZFW",
+                "eram_prefix": "F"
+            },
+            {
+                "id": "ZHU",
+                "eram_prefix": "H"
+            },
+            {
+                "id": "ZID",
+                "eram_prefix": "I"
+            },
+            {
+                "id": "ZKC",
+                "eram_prefix": "K"
+            },
+            {
+                "id": "ZTL",
+                "eram_prefix": "T"
+            }
+        ],
+        "neighboring_facilities": [
+            "BHM",
+            "BNA",
+            "CBM",
+            "CHA",
+            "EVV",
+            "FSM",
+            "HOP",
+            "HSV",
+            "JAN",
+            "LIT",
+            "M03",
+            "MLU",
+            "NMM",
+            "SGF",
+            "TUL",
+            "ZFW",
+            "ZHU",
+            "ZID",
+            "ZKC",
+            "ZTL"
+        ]
     }
-  }
 }

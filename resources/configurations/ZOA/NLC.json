@@ -1,0 +1,50 @@
+{
+    "control_positions": {
+        "NLC_APP": {
+            "frequency": 124100,
+            "radio_name": "Lemoore Final",
+            "sector_id": "1R"
+        },
+        "NLC_DEP": {
+            "frequency": 124100,
+            "radio_name": "Lemoore Departure",
+            "sector_id": "1D"
+        },
+        "NLC_M_APP": {
+            "frequency": 134225,
+            "radio_name": "Showtime",
+            "sector_id": "1M"
+        },
+        "NLC_TWR": {
+            "frequency": 128300,
+            "radio_name": "Lemoore Tower",
+            "sector_id": "1Z"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "BFL",
+                "prefix": "3"
+            },
+            {
+                "id": "FAT",
+                "prefix": "2"
+            },
+            {
+                "id": "NCT",
+                "prefix": "1"
+            },
+            {
+                "id": "ZLA",
+                "eram_prefix": "L"
+            }
+        ],
+        "neighboring_facilities": [
+            "BFL",
+            "FAT",
+            "NCT",
+            "ZLA"
+        ]
+    }
+}

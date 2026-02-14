@@ -1,0 +1,45 @@
+{
+    "control_positions": {
+        "SHV_E_APP": {
+            "frequency": 123750,
+            "radio_name": "Shreveport Approach",
+            "sector_id": "1E"
+        },
+        "SHV_TWR": {
+            "frequency": 121400,
+            "radio_name": "Shreveport Tower",
+            "sector_id": "1L"
+        },
+        "SHV_W_APP": {
+            "frequency": 119900,
+            "radio_name": "Shreveport Approach",
+            "sector_id": "1W"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "GGG",
+                "prefix": "2"
+            },
+            {
+                "id": "MLU",
+                "prefix": "1"
+            },
+            {
+                "id": "POE",
+                "prefix": "3"
+            },
+            {
+                "id": "ZHU",
+                "eram_prefix": "H"
+            }
+        ],
+        "neighboring_facilities": [
+            "GGG",
+            "MLU",
+            "POE",
+            "ZHU"
+        ]
+    }
+}

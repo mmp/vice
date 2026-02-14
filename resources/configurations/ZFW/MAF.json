@@ -1,0 +1,35 @@
+{
+    "control_positions": {
+        "SJT_APP": {
+            "frequency": 125350,
+            "radio_name": "San Angelo Approach",
+            "sector_id": "1J"
+        },
+        "MAF_N_APP": {
+            "frequency": 124600,
+            "radio_name": "Midland Approach",
+            "sector_id": "1N"
+        },
+        "MAF_TWR": {
+            "frequency": 118700,
+            "radio_name": "Midland Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ABI",
+                "prefix": "1"
+            },
+            {
+                "id": "ZHU",
+                "eram_prefix": "H"
+            }
+        ],
+        "neighboring_facilities": [
+            "ABI",
+            "ZHU"
+        ]
+    }
+}

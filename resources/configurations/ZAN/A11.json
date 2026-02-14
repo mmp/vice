@@ -37,6 +37,11 @@
                     "PANC/FFITZ4": "ANC_S_APP",
                     "PANC/NOEND4": "ANC_N_APP",
                     "PANC/POTTR3": "ANC_S_APP"
+                },
+                "default_consolidation": {
+                    "ANC_N_APP": [
+                        "ANC_S_APP"
+                    ]
                 }
             }
         },
@@ -107,25 +112,7 @@
             "A11 GEO",
             "A11 ARSP"
         ],
-        "video_map_file": "videomaps/ZAN-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "KROTO5.ROHHN": "ANC_N_APP",
-                    "KROTO5.TKA": "ANC_N_APP",
-                    "NEELL7": "ANC_S_APP",
-                    "PTERS3": "ANC_N_APP",
-                    "WITTI5": "ANC_S_APP"
-                },
-                "departure_assignments": {
-                    "PANC": "ANC_N_APP",
-                    "PANC/ANCH1": "ANC_N_APP",
-                    "PANC/FFITZ4": "ANC_S_APP",
-                    "PANC/NOEND4": "ANC_N_APP",
-                    "PANC/POTTR3": "ANC_S_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZAN-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [],

@@ -62,6 +62,9 @@
                 },
                 "departure_assignments": {
                     "KLNK": "LNK_L_APP"
+                },
+                "default_consolidation": {
+                    "LNK_L_APP": []
                 }
             },
             "OFF": {
@@ -80,6 +83,9 @@
                 },
                 "departure_assignments": {
                     "KOFF": "OMA_O_APP"
+                },
+                "default_consolidation": {
+                    "OMA_O_APP": []
                 }
             },
             "OMA": {
@@ -95,6 +101,11 @@
                 },
                 "departure_assignments": {
                     "KOMA": "OMA_X_APP"
+                },
+                "default_consolidation": {
+                    "OMA_W_APP": [
+                        "OMA_X_APP"
+                    ]
                 }
             },
             "OM1": {
@@ -110,6 +121,11 @@
                 },
                 "departure_assignments": {
                     "KOMA": "OMA_W_APP"
+                },
+                "default_consolidation": {
+                    "OMA_W_APP": [
+                        "OMA_X_APP"
+                    ]
                 }
             },
             "90X": {
@@ -144,6 +160,13 @@
                     "KLNK": "LNK_L_APP",
                     "KOFF": "OMA_O_APP",
                     "KOMA": "OMA_X_APP"
+                },
+                "default_consolidation": {
+                    "LNK_L_APP": [
+                        "OMA_O_APP",
+                        "OMA_W_APP",
+                        "OMA_X_APP"
+                    ]
                 }
             },
             "R90": {
@@ -178,6 +201,13 @@
                     "KLNK": "LNK_L_APP",
                     "KOFF": "OMA_O_APP",
                     "KOMA": "OMA_W_APP"
+                },
+                "default_consolidation": {
+                    "LNK_L_APP": [
+                        "OMA_O_APP",
+                        "OMA_W_APP",
+                        "OMA_X_APP"
+                    ]
                 }
             }
         },
@@ -281,144 +311,17 @@
             "R90 013 GEO",
             "R90 250 SHELF2"
         ],
-        "video_map_file": "videomaps/ZMP-videomaps.gob.zst",
-        "controller_assignments": {
-            "90X": {
-                "inbound_assignments": {
-                    "AANDY2": "OMA_W_APP",
-                    "HOWRY3.GRI": "OMA_W_APP",
-                    "HOWRY3.ONL": "OMA_W_APP",
-                    "LANTK2.DABOY": "OMA_X_APP",
-                    "LANTK2.DSM": "OMA_X_APP",
-                    "LNK.KAIZ": "LNK_L_APP",
-                    "LNK.KDEN": "LNK_L_APP",
-                    "LNK.KIAH": "LNK_L_APP",
-                    "LNK.KJLN": "LNK_L_APP",
-                    "LNK.KORD": "OMA_X_APP",
-                    "LNK.KSDL": "LNK_L_APP",
-                    "MARWI4.LMN": "OMA_X_APP",
-                    "MARWI4.STJ": "OMA_X_APP",
-                    "OFF.DSM": "OMA_X_APP",
-                    "OFF.FOD": "OMA_X_APP",
-                    "OFF.GRI": "OMA_W_APP",
-                    "OFF.HSI": "OMA_W_APP",
-                    "OFF.LMN": "OMA_X_APP",
-                    "OFF.OBH": "OMA_W_APP",
-                    "OFF.OFK": "OMA_W_APP",
-                    "OFF.ONL": "OMA_W_APP",
-                    "OFF.PWE": "OMA_W_APP",
-                    "OFF.SUX": "OMA_X_APP",
-                    "OFF.TKO": "OMA_W_APP",
-                    "TIMMO1": "OMA_W_APP"
-                },
-                "departure_assignments": {
-                    "KLNK": "LNK_L_APP",
-                    "KOFF": "OMA_O_APP",
-                    "KOMA": "OMA_X_APP"
-                }
-            },
-            "LNK": {
-                "inbound_assignments": {
-                    "LNK.KAIZ": "LNK_L_APP",
-                    "LNK.KDEN": "LNK_L_APP",
-                    "LNK.KIAH": "LNK_L_APP",
-                    "LNK.KJLN": "LNK_L_APP",
-                    "LNK.KORD": "LNK_L_APP",
-                    "LNK.KSDL": "LNK_L_APP"
-                },
-                "departure_assignments": {
-                    "KLNK": "LNK_L_APP"
-                }
-            },
-            "OFF": {
-                "inbound_assignments": {
-                    "OFF.DSM": "OMA_O_APP",
-                    "OFF.FOD": "OMA_O_APP",
-                    "OFF.GRI": "OMA_O_APP",
-                    "OFF.HSI": "OMA_O_APP",
-                    "OFF.LMN": "OMA_O_APP",
-                    "OFF.OBH": "OMA_O_APP",
-                    "OFF.OFK": "OMA_O_APP",
-                    "OFF.ONL": "OMA_O_APP",
-                    "OFF.PWE": "OMA_O_APP",
-                    "OFF.SUX": "OMA_O_APP",
-                    "OFF.TKO": "OMA_O_APP"
-                },
-                "departure_assignments": {
-                    "KOFF": "OMA_O_APP"
-                }
-            },
-            "OM1": {
-                "inbound_assignments": {
-                    "AANDY2": "OMA_W_APP",
-                    "HOWRY3.GRI": "OMA_W_APP",
-                    "HOWRY3.ONL": "OMA_W_APP",
-                    "LANTK2.DABOY": "OMA_X_APP",
-                    "LANTK2.DSM": "OMA_X_APP",
-                    "MARWI4.LMN": "OMA_X_APP",
-                    "MARWI4.STJ": "OMA_X_APP",
-                    "TIMMO1": "OMA_W_APP"
-                },
-                "departure_assignments": {
-                    "KOMA": "OMA_W_APP"
-                }
-            },
-            "OMA": {
-                "inbound_assignments": {
-                    "AANDY2": "OMA_W_APP",
-                    "HOWRY3.GRI": "OMA_W_APP",
-                    "HOWRY3.ONL": "OMA_W_APP",
-                    "LANTK2.DABOY": "OMA_X_APP",
-                    "LANTK2.DSM": "OMA_X_APP",
-                    "MARWI4.LMN": "OMA_X_APP",
-                    "MARWI4.STJ": "OMA_X_APP",
-                    "TIMMO1": "OMA_W_APP"
-                },
-                "departure_assignments": {
-                    "KOMA": "OMA_X_APP"
-                }
-            },
-            "R90": {
-                "inbound_assignments": {
-                    "AANDY2": "OMA_W_APP",
-                    "HOWRY3.GRI": "OMA_W_APP",
-                    "HOWRY3.ONL": "OMA_W_APP",
-                    "LANTK2.DABOY": "OMA_X_APP",
-                    "LANTK2.DSM": "OMA_X_APP",
-                    "LNK.KAIZ": "LNK_L_APP",
-                    "LNK.KDEN": "LNK_L_APP",
-                    "LNK.KIAH": "LNK_L_APP",
-                    "LNK.KJLN": "LNK_L_APP",
-                    "LNK.KORD": "OMA_X_APP",
-                    "LNK.KSDL": "LNK_L_APP",
-                    "MARWI4.LMN": "OMA_X_APP",
-                    "MARWI4.STJ": "OMA_X_APP",
-                    "OFF.DSM": "OMA_X_APP",
-                    "OFF.FOD": "OMA_X_APP",
-                    "OFF.GRI": "OMA_W_APP",
-                    "OFF.HSI": "OMA_W_APP",
-                    "OFF.LMN": "OMA_X_APP",
-                    "OFF.OBH": "OMA_W_APP",
-                    "OFF.OFK": "OMA_W_APP",
-                    "OFF.ONL": "OMA_W_APP",
-                    "OFF.PWE": "OMA_W_APP",
-                    "OFF.SUX": "OMA_X_APP",
-                    "OFF.TKO": "OMA_W_APP",
-                    "TIMMO1": "OMA_W_APP"
-                },
-                "departure_assignments": {
-                    "KLNK": "LNK_L_APP",
-                    "KOFF": "OMA_O_APP",
-                    "KOMA": "OMA_W_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZMP-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
             {
                 "id": "SUX",
                 "prefix": "1"
+            },
+            {
+                "id": "ZMP",
+                "eram_prefix": "P"
             }
         ],
         "neighboring_facilities": [

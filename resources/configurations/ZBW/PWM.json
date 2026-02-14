@@ -25,6 +25,9 @@
                 },
                 "departure_assignments": {
                     "KPWM": "PWM_S_APP"
+                },
+                "default_consolidation": {
+                    "PWM_S_APP": []
                 }
             }
         },
@@ -42,18 +45,7 @@
             "ZBW_PWM CDOGG STAR (RNAV)",
             "PWM RVM"
         ],
-        "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "East": "PWM_S_APP",
-                    "West": "PWM_S_APP"
-                },
-                "departure_assignments": {
-                    "KPWM": "PWM_S_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
@@ -64,6 +56,10 @@
             {
                 "id": "BGR",
                 "prefix": "2"
+            },
+            {
+                "id": "ZBW",
+                "eram_prefix": "B"
             }
         ],
         "neighboring_facilities": [

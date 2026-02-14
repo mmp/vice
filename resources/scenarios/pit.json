@@ -1175,16 +1175,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "PIT_D_APP": [
-                        "PIT_B_APP",
-                        "PIT_S_DEP"
-                    ],
-                    "PIT_S_DEP": [
-                        "PIT_N_DEP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "PIT-001 (WEST FLOW)"
@@ -1267,16 +1258,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "PIT_D_APP": [
-                        "PIT_B_APP",
-                        "PIT_S_DEP"
-                    ],
-                    "PIT_S_DEP": [
-                        "PIT_N_DEP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "PIT-001 (WEST FLOW)"
@@ -1346,16 +1328,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "PIT_D_APP": [
-                        "PIT_B_APP",
-                        "PIT_S_DEP"
-                    ],
-                    "PIT_S_DEP": [
-                        "PIT_N_DEP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "PIT-002 (EAST FLOW)"

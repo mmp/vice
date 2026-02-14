@@ -33,6 +33,9 @@
                 "departure_assignments": {
                     "KBTV": "BTV_W_APP",
                     "KPBG": "BTV_W_APP"
+                },
+                "default_consolidation": {
+                    "BTV_W_APP": []
                 }
             },
             "33X": {
@@ -45,6 +48,11 @@
                 "departure_assignments": {
                     "KBTV": "BTV_E_APP",
                     "KPBG": "BTV_W_APP"
+                },
+                "default_consolidation": {
+                    "BTV_E_APP": [
+                        "BTV_W_APP"
+                    ]
                 }
             }
         },
@@ -57,36 +65,15 @@
             "BTV VFR",
             "BTV SATS"
         ],
-        "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
-        "controller_assignments": {
-            "15X": {
-                "inbound_assignments": {
-                    "LBNON Arrival Land 15": "BTV_W_APP",
-                    "LBNON Arrival Land 33": "BTV_W_APP",
-                    "RUT Arrival Land 15": "BTV_W_APP",
-                    "RUT Arrival Land 33": "BTV_W_APP"
-                },
-                "departure_assignments": {
-                    "KBTV": "BTV_W_APP",
-                    "KPBG": "BTV_W_APP"
-                }
-            },
-            "33X": {
-                "inbound_assignments": {
-                    "LBNON Arrival Land 15": "BTV_E_APP",
-                    "LBNON Arrival Land 33": "BTV_E_APP",
-                    "RUT Arrival Land 15": "BTV_W_APP",
-                    "RUT Arrival Land 33": "BTV_W_APP"
-                },
-                "departure_assignments": {
-                    "KBTV": "BTV_E_APP",
-                    "KPBG": "BTV_W_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
     },
     "handoff_topology": {
-        "handoff_ids": [],
+        "handoff_ids": [
+            {
+                "id": "ZBW",
+                "eram_prefix": "B"
+            }
+        ],
         "neighboring_facilities": [
             "ZBW"
         ]

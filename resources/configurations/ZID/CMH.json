@@ -1,10 +1,61 @@
 {
-  "control_positions": {},
-  "stars_config": {},
-  "handoff_topology": {
-    "handoff_ids": [],
-    "neighboring_facilities": [
-      "ZID"
-    ]
-  }
+    "control_positions": {
+        "CMH_E_TWR": {
+            "frequency": 132700,
+            "radio_name": "Columbus Tower",
+            "sector_id": "1E"
+        },
+        "CMH_F_APP": {
+            "frequency": 118200,
+            "radio_name": "Columbus Approach",
+            "sector_id": "1F"
+        },
+        "CMH_L_APP": {
+            "frequency": 132300,
+            "radio_name": "Columbus Approach",
+            "sector_id": "1L"
+        },
+        "DAY_M_APP": {
+            "frequency": 120925,
+            "radio_name": "Columbus Approach",
+            "sector_id": "1M"
+        },
+        "CMH_N_APP": {
+            "frequency": 125950,
+            "radio_name": "Columbus Approach",
+            "sector_id": "1N"
+        },
+        "CMH_P_APP": {
+            "frequency": 120200,
+            "radio_name": "Columbus Approach",
+            "sector_id": "1P"
+        },
+        "DAY_U_APP": {
+            "frequency": 134450,
+            "radio_name": "Columbus Approach",
+            "sector_id": "1U"
+        },
+        "CMH_W_TWR": {
+            "frequency": 127525,
+            "radio_name": "Columbus Tower",
+            "sector_id": "1W"
+        },
+        "DAY_X_APP": {
+            "frequency": 118850,
+            "radio_name": "Columbus Approach",
+            "sector_id": "1X"
+        }
+    },
+    "stars_config": {},
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZID",
+                "eram_prefix": "I"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZID"
+        ]
+    }
 }

@@ -1,0 +1,13 @@
+{
+    "control_positions": {
+        "KWA_TWR": {
+            "frequency": 126200,
+            "radio_name": "Kwajalein Tower",
+            "sector_id": "1E"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [],
+        "neighboring_facilities": []
+    }
+}

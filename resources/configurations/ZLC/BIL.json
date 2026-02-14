@@ -22,6 +22,9 @@
                 },
                 "departure_assignments": {
                     "KBIL": "BIL_APP"
+                },
+                "default_consolidation": {
+                    "BIL_APP": []
                 }
             }
         },
@@ -51,23 +54,15 @@
             "STARS-BIL_MOA 1C__POWDER RIVER 1C MOA",
             "STARS-BIL_MTR__Military Training Route IR-473"
         ],
-        "video_map_file": "videomaps/ZLC-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "BGHRN3": "BIL_APP",
-                    "CRAZI4": "BIL_APP",
-                    "KUSTR3": "BIL_APP",
-                    "YLSTN3": "BIL_APP"
-                },
-                "departure_assignments": {
-                    "KBIL": "BIL_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZLC-videomaps.gob.zst"
     },
     "handoff_topology": {
-        "handoff_ids": [],
+        "handoff_ids": [
+            {
+                "id": "ZLC",
+                "eram_prefix": "U"
+            }
+        ],
         "neighboring_facilities": [
             "ZLC"
         ]

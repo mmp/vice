@@ -58,6 +58,13 @@
                     "KBNA/PARDN3": "BNA_X_DEP",
                     "KBNA/TAZMO3": "BNA_Y_DEP",
                     "KBNA/TIPPN3": "BNA_Y_DEP"
+                },
+                "default_consolidation": {
+                    "BNA_E_APP": [
+                        "BNA_W_APP",
+                        "BNA_X_DEP",
+                        "BNA_Y_DEP"
+                    ]
                 }
             }
         },
@@ -143,37 +150,17 @@
             "BNA_SID EXIT GATES",
             "BNA_SID EXIT"
         ],
-        "video_map_file": "videomaps/ZME-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "CHSNE3": "BNA_W_APP",
-                    "PASLY5": "BNA_E_APP",
-                    "RYYMN3": "BNA_W_APP",
-                    "SWFFT3": "BNA_E_APP"
-                },
-                "departure_assignments": {
-                    "KBNA": "BNA_X_DEP",
-                    "KBNA/CHADM3": "BNA_Y_DEP",
-                    "KBNA/DANLS3": "BNA_X_DEP",
-                    "KBNA/DRURY3": "BNA_X_DEP",
-                    "KBNA/EVVAN3": "BNA_Y_DEP",
-                    "KBNA/FLAME3": "BNA_X_DEP",
-                    "KBNA/GDOGG3": "BNA_X_DEP",
-                    "KBNA/HGGRD3": "BNA_X_DEP",
-                    "KBNA/KRSTA3": "BNA_Y_DEP",
-                    "KBNA/PARDN3": "BNA_X_DEP",
-                    "KBNA/TAZMO3": "BNA_Y_DEP",
-                    "KBNA/TIPPN3": "BNA_Y_DEP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZME-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
             {
                 "id": "HOP",
                 "prefix": "1"
+            },
+            {
+                "id": "ZME",
+                "eram_prefix": "M"
             }
         ],
         "neighboring_facilities": [

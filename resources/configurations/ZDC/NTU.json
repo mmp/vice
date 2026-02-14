@@ -1,0 +1,30 @@
+{
+    "control_positions": {
+        "NTU_APP": {
+            "frequency": 123900,
+            "radio_name": "Oceana Approach",
+            "sector_id": "1O"
+        },
+        "NTU_TWR": {
+            "frequency": 127075,
+            "radio_name": "Oceana Tower",
+            "sector_id": "1Z"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "NKT",
+                "prefix": "2"
+            },
+            {
+                "id": "ORF",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "NKT",
+            "ORF"
+        ]
+    }
+}

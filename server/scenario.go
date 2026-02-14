@@ -121,26 +121,35 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		}
 	}
 
+	// Auto-add airspace controllers to consolidation if they're valid
+	// control positions but missing from the consolidation tree.
+	if s.ControllerConfiguration != nil && len(s.ControllerConfiguration.DefaultConsolidation) > 0 {
+		allPos := s.ControllerConfiguration.AllPositions()
+		root, rootErr := s.ControllerConfiguration.DefaultConsolidation.RootPosition()
+		if rootErr == nil {
+			for ctrl := range s.Airspace {
+				if !slices.Contains(allPos, ctrl) {
+					if _, inFacility := sg.ControlPositions[ctrl]; inFacility {
+						s.ControllerConfiguration.DefaultConsolidation[root] = append(
+							s.ControllerConfiguration.DefaultConsolidation[root], ctrl)
+					}
+				}
+			}
+		}
+	}
+
 	s.ControllerConfiguration.Validate(sg.ControlPositions, e)
 
 	// Validate inbound flow assignments
 	if s.ControllerConfiguration != nil {
-		// Helper to check if a flow needs a human assignment:
-		// Either it has /ho waypoints, or it has an initial_controller that's a human position
-		humanPositions := s.ControllerConfiguration.AllPositions()
+		// A flow only needs an inbound_assignment if it has a generic /ho
+		// handoff (which doesn't specify a sector). Flows with no /ho at
+		// all, or only specific handoffs like /ho1F, are exempt.
 		flowNeedsHumanAssignment := func(flow *av.InboundFlow) bool {
-			if flow.HasHumanHandoff() {
-				return true
-			}
-			for _, ctrl := range flow.InitialControllers() {
-				if slices.Contains(humanPositions, sim.TCP(ctrl)) {
-					return true
-				}
-			}
-			return false
+			return flow.HasHumanHandoff()
 		}
 
-		// Check that every flow with human handoffs or human initial_controller has an assignment.
+		// Check that every flow with generic /ho handoffs has an assignment.
 		// Note: It is NOT an error if the configuration has excess assignments that the scenario doesn't use.
 		for flowName := range s.InboundFlowDefaultRates {
 			if flow, ok := sg.InboundFlows[flowName]; ok && flowNeedsHumanAssignment(flow) {
@@ -202,7 +211,9 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	}
 	addControllersFromWaypoints := func(route []av.Waypoint) {
 		for _, wp := range route {
-			addController(sim.TCP(wp.HandoffController))
+			if wp.HandoffController != "" && wp.HandoffControllerFacility == "" {
+				addController(sim.TCP(wp.HandoffController))
+			}
 		}
 	}
 	airportExits := make(map[string]map[string]any) // airport -> exit -> is it covered
@@ -284,7 +295,10 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			activeDepartureAirports[rwy.Airport] = nil
 
 			if ap.DepartureController != "" {
-				addController(sim.TCP(ap.DepartureController))
+				// Only add to VirtualControllers if the controller is local (no departure_facility).
+				if ap.DepartureFacility == "" {
+					addController(sim.TCP(ap.DepartureController))
+				}
 			} else {
 				// Only check for a human controller to be covering the track if there isn't
 				// a virtual controller assigned to it.
@@ -303,7 +317,10 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 							activeAirportRunways[rwy.Airport] = make(map[string]any)
 						}
 						if route.DepartureController != "" {
-							addController(sim.TCP(route.DepartureController))
+							// Only add to VirtualControllers if the controller is local (no departure_facility).
+							if route.DepartureFacility == "" {
+								addController(sim.TCP(route.DepartureController))
+							}
 						}
 						activeAirportSIDs[rwy.Airport][route.SID] = nil
 						activeAirportRunways[rwy.Airport][rwy.Runway] = nil
@@ -772,22 +789,79 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 
 		// Validate cross-facility initial_controller references.
 		resourcesFS := util.GetResourcesFS()
+		var handoffIDs []sim.HandoffID
+		if sg.HandoffTopology != nil {
+			handoffIDs = sg.HandoffTopology.HandoffIDs
+		}
 		for i, ar := range flow.Arrivals {
 			if ar.InitialFacility != "" && ar.InitialController != "" {
 				e.Push("Arrival " + strconv.Itoa(i))
-				validateCrossFacilityController(resourcesFS, ar.InitialFacility, ar.InitialController, e)
+				validateCrossFacilityController(resourcesFS, ar.InitialFacility, ar.InitialController, handoffIDs, e)
 				e.Pop()
 			}
 		}
 		for i, of := range flow.Overflights {
 			if of.InitialFacility != "" && of.InitialController != "" {
 				e.Push("Overflight " + strconv.Itoa(i))
-				validateCrossFacilityController(resourcesFS, of.InitialFacility, of.InitialController, e)
+				validateCrossFacilityController(resourcesFS, of.InitialFacility, of.InitialController, handoffIDs, e)
 				e.Pop()
 			}
 		}
 
+		// Validate cross-facility handoff controllers in waypoints.
+		for i, ar := range flow.Arrivals {
+			for _, wp := range ar.Waypoints {
+				if wp.HandoffControllerFacility != "" && wp.HandoffController != "" {
+					e.Push("Arrival " + strconv.Itoa(i))
+					validateCrossFacilityController(resourcesFS, wp.HandoffControllerFacility, wp.HandoffController, handoffIDs, e)
+					e.Pop()
+				}
+			}
+		}
+		for i, of := range flow.Overflights {
+			for _, wp := range of.Waypoints {
+				if wp.HandoffControllerFacility != "" && wp.HandoffController != "" {
+					e.Push("Overflight " + strconv.Itoa(i))
+					validateCrossFacilityController(resourcesFS, wp.HandoffControllerFacility, wp.HandoffController, handoffIDs, e)
+					e.Pop()
+				}
+			}
+		}
+
 		e.Pop()
+	}
+
+	// Validate cross-facility departure_controller references.
+	{
+		resourcesFS := util.GetResourcesFS()
+		var hids []sim.HandoffID
+		if sg.HandoffTopology != nil {
+			hids = sg.HandoffTopology.HandoffIDs
+		}
+		for icao, ap := range sg.Airports {
+			if ap.DepartureFacility != "" && ap.DepartureController != "" {
+				e.Push("Airport " + icao)
+				validateCrossFacilityController(resourcesFS, ap.DepartureFacility, ap.DepartureController, hids, e)
+				e.Pop()
+			}
+			for rwy, exitroutes := range ap.DepartureRoutes {
+				for exit, route := range exitroutes {
+					if route.DepartureFacility != "" && route.DepartureController != "" {
+						e.Push("Airport " + icao + " runway " + rwy + " exit " + exit)
+						validateCrossFacilityController(resourcesFS, route.DepartureFacility, route.DepartureController, hids, e)
+						e.Pop()
+					}
+					// Validate cross-facility handoff controllers in departure route waypoints.
+					for _, wp := range route.Waypoints {
+						if wp.HandoffControllerFacility != "" && wp.HandoffController != "" {
+							e.Push("Airport " + icao + " runway " + rwy + " exit " + exit)
+							validateCrossFacilityController(resourcesFS, wp.HandoffControllerFacility, wp.HandoffController, hids, e)
+							e.Pop()
+						}
+					}
+				}
+			}
+		}
 	}
 
 	for _, rp := range sg.ReportingPointStrings {
@@ -846,10 +920,175 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 			*s = sim.TCP(ctrl.PositionId())
 		}
 	}
+	// Sector ID resolution for /ho routes.
+	// Determine the local facility and host ARTCC for sector ID lookups.
+	localFacility := sg.TRACON
+	if localFacility == "" {
+		localFacility = sg.ARTCC
+	}
+	isCenter := isARTCC(localFacility)
+
+	hostARTCC := sg.ARTCC
+	if hostARTCC == "" && sg.TRACON != "" {
+		if info, ok := av.DB.TRACONs[sg.TRACON]; ok {
+			hostARTCC = info.ARTCC
+		}
+	}
+
+	// Build prefix → facility map from handoff_ids (all available lengths).
+	prefixToFacility := make(map[string]string)
+	if sg.HandoffTopology != nil {
+		for _, hid := range sg.HandoffTopology.HandoffIDs {
+			if hid.ERAMPrefix != "" {
+				prefixToFacility[hid.ERAMPrefix] = hid.ID
+			}
+			if hid.SingleCharStarsID != "" {
+				prefixToFacility[hid.SingleCharStarsID] = hid.ID
+			}
+			if hid.TwoCharStarsID != "" {
+				prefixToFacility[hid.TwoCharStarsID] = hid.ID
+			}
+			if hid.StarsID != "" {
+				prefixToFacility[hid.StarsID] = hid.ID
+			}
+			if hid.Prefix != "" {
+				prefixToFacility[hid.Prefix] = hid.ID
+			}
+		}
+	}
+	// "C" always maps to the host ARTCC for TRACONs (center handoff prefix).
+	if !isCenter && hostARTCC != "" {
+		if _, exists := prefixToFacility["C"]; !exists {
+			prefixToFacility["C"] = hostARTCC
+		}
+	}
+
+	// Cache of facility → (sector_id → key_name) maps.
+	sectorMaps := make(map[string]map[string]string)
+	getSectorMap := func(facility string) map[string]string {
+		if m, ok := sectorMaps[facility]; ok {
+			return m
+		}
+		m := make(map[string]string)
+		resourcesFS := util.GetResourcesFS()
+		path := facilityConfigPathForFacility(facility)
+		fc := loadFacilityConfig(resourcesFS, path, e)
+		if fc != nil {
+			for keyName, ctrl := range fc.ControlPositions {
+				if ctrl.SectorID != "" {
+					m[ctrl.SectorID] = string(keyName)
+				}
+			}
+		}
+		sectorMaps[facility] = m
+		return m
+	}
+
+	// resolveSectorID resolves a sector ID from an /ho route value.
+	// Returns (keyName, facility, error).
+	resolveSectorID := func(s string) (string, string, error) {
+		if len(s) == 0 {
+			return "", "", fmt.Errorf("empty sector ID")
+		}
+
+		if len(s) <= 2 {
+			// 1-2 chars: check local facility, then host ARTCC (for TRACON scenarios).
+			localMap := getSectorMap(localFacility)
+			if keyName, ok := localMap[s]; ok {
+				return keyName, localFacility, nil
+			}
+			if !isCenter && hostARTCC != "" && hostARTCC != localFacility {
+				artccMap := getSectorMap(hostARTCC)
+				if keyName, ok := artccMap[s]; ok {
+					return keyName, hostARTCC, nil
+				}
+			}
+			return "", "", fmt.Errorf("sector %q not found in %s", s, localFacility)
+		}
+
+		// 3+ chars: try longest prefix first (3, 2, 1 chars).
+		for prefixLen := min(3, len(s)-1); prefixLen >= 1; prefixLen-- {
+			prefix := s[:prefixLen]
+			sectorID := s[prefixLen:]
+
+			if targetFacility, ok := prefixToFacility[prefix]; ok {
+				facMap := getSectorMap(targetFacility)
+				if keyName, ok := facMap[sectorID]; ok {
+					return keyName, targetFacility, nil
+				}
+			}
+		}
+		return "", "", fmt.Errorf("no matching prefix/sector for %q in handoff_ids", s)
+	}
+
+	// Cache of cross-facility control positions for rewriting (moved up so rewriteWaypoints can use it).
+	crossFacilityPositions := make(map[string]map[sim.TCP]*av.Controller)
+	rewriteCrossFacilityPosition := func(s *sim.ControlPosition, facility string) {
+		if *s == "" {
+			return
+		}
+		positions, ok := crossFacilityPositions[facility]
+		if !ok {
+			resourcesFS := util.GetResourcesFS()
+			fc := loadFacilityConfig(resourcesFS, facilityConfigPathForFacility(facility), e)
+			if fc != nil {
+				positions = fc.ControlPositions
+			}
+			crossFacilityPositions[facility] = positions
+		}
+		if positions != nil {
+			if ctrl, ok := positions[*s]; ok {
+				// Apply the same prefix that loadNeighborControllers used
+				// so the rewritten position matches the key in sg.ControlPositions.
+				var handoffIDs []sim.HandoffID
+				if sg.HandoffTopology != nil {
+					handoffIDs = sg.HandoffTopology.HandoffIDs
+				}
+				prefix := neighborPrefix(facility, handoffIDs)
+				facilityId := prefix
+				if isARTCC(facility) {
+					facilityId = "C"
+				}
+				ctrlCopy := *ctrl
+				ctrlCopy.SectorID = prefix + ctrlCopy.SectorID
+				ctrlCopy.FacilityIdentifier = facilityId
+				*s = sim.TCP(ctrlCopy.PositionId())
+			}
+		}
+	}
+
 	rewriteWaypoints := func(wp av.WaypointArray) {
-		for _, w := range wp {
-			if w.HandoffController != "" {
-				rewriteControlPosition(&w.HandoffController)
+		for i := range wp {
+			if wp[i].HandoffController == "" {
+				continue
+			}
+			hc := string(wp[i].HandoffController)
+
+			// If the entire handoff value is just a facility prefix
+			// (e.g. /hoN, /hoNN) with no sector specified, treat it
+			// as a generic human handoff that needs an inbound_assignment.
+			if _, isFacility := prefixToFacility[hc]; isFacility {
+				wp[i].HandoffController = ""
+				wp[i].HumanHandoff = true
+				continue
+			}
+
+			// Resolve sector ID to full key name + facility.
+			keyName, facility, err := resolveSectorID(hc)
+			if err != nil {
+				e.ErrorString("handoff %q: %v", hc, err)
+				continue
+			}
+			wp[i].HandoffController = av.ControlPosition(keyName)
+			if facility != localFacility {
+				wp[i].HandoffControllerFacility = facility
+			}
+
+			// Rewrite to PositionId form.
+			if wp[i].HandoffControllerFacility != "" {
+				rewriteCrossFacilityPosition(&wp[i].HandoffController, wp[i].HandoffControllerFacility)
+			} else {
+				rewriteControlPosition(&wp[i].HandoffController)
 			}
 		}
 	}
@@ -906,6 +1145,7 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 		for _, exitroutes := range ap.DepartureRoutes {
 			for _, route := range exitroutes {
 				rewriteControlPosition(&route.HandoffController)
+				rewriteControlPosition(&route.DepartureController)
 				rewriteWaypoints(route.Waypoints)
 			}
 		}
@@ -957,28 +1197,6 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 		}
 	}
 
-	// Cache of cross-facility control positions for rewriting.
-	crossFacilityPositions := make(map[string]map[sim.TCP]*av.Controller)
-	rewriteCrossFacilityPosition := func(s *sim.ControlPosition, facility string) {
-		if *s == "" {
-			return
-		}
-		positions, ok := crossFacilityPositions[facility]
-		if !ok {
-			resourcesFS := util.GetResourcesFS()
-			fc := loadFacilityConfig(resourcesFS, facilityConfigPathForFacility(facility), e)
-			if fc != nil {
-				positions = fc.ControlPositions
-			}
-			crossFacilityPositions[facility] = positions
-		}
-		if positions != nil {
-			if ctrl, ok := positions[*s]; ok {
-				*s = sim.TCP(ctrl.PositionId())
-			}
-		}
-	}
-
 	for _, flow := range sg.InboundFlows {
 		for i := range flow.Arrivals {
 			if flow.Arrivals[i].InitialFacility != "" {
@@ -1000,6 +1218,20 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 				rewriteControlPosition(&flow.Overflights[i].InitialController)
 			}
 			rewriteWaypoints(flow.Overflights[i].Waypoints)
+		}
+	}
+
+	// Rewrite cross-facility departure controllers.
+	for _, ap := range sg.Airports {
+		if ap.DepartureFacility != "" {
+			rewriteCrossFacilityPosition(&ap.DepartureController, ap.DepartureFacility)
+		}
+		for _, exitroutes := range ap.DepartureRoutes {
+			for _, route := range exitroutes {
+				if route.DepartureFacility != "" {
+					rewriteCrossFacilityPosition(&route.DepartureController, route.DepartureFacility)
+				}
+			}
 		}
 	}
 
@@ -1616,7 +1848,8 @@ func facilityConfigPathForFacility(facility string) string {
 
 // validateCrossFacilityController checks that a controller referenced via
 // initial_facility exists in that facility's configuration file.
-func validateCrossFacilityController(filesystem fs.FS, facility string, controller av.ControlPosition, e *util.ErrorLogger) {
+func validateCrossFacilityController(filesystem fs.FS, facility string, controller av.ControlPosition,
+	handoffIDs []sim.HandoffID, e *util.ErrorLogger) {
 	path := facilityConfigPathForFacility(facility)
 	fc := loadFacilityConfig(filesystem, path, e)
 	if fc == nil {
@@ -1627,11 +1860,27 @@ func validateCrossFacilityController(filesystem fs.FS, facility string, controll
 	if _, ok := fc.ControlPositions[sim.TCP(controller)]; ok {
 		return
 	}
-	// Also check by PositionId (TCP), since rewriteControllers may have
-	// already converted the name to the sector_id form (e.g., "05").
+
+	// The controller may already be in prefixed form (e.g., "G81" for ZAU
+	// sector 81 with eram_prefix "G"). Check both raw and prefixed PositionId.
+	prefix := neighborPrefix(facility, handoffIDs)
+	facilityId := prefix
+	if isARTCC(facility) {
+		facilityId = "C"
+	}
 	for _, ctrl := range fc.ControlPositions {
-		if sim.TCP(ctrl.PositionId()) == sim.TCP(controller) {
+		rawId := sim.TCP(ctrl.PositionId())
+		if rawId == sim.TCP(controller) {
 			return
+		}
+		// Build the prefixed PositionId the same way loadNeighborControllers does.
+		if prefix != "" {
+			ctrlCopy := *ctrl
+			ctrlCopy.SectorID = prefix + ctrlCopy.SectorID
+			ctrlCopy.FacilityIdentifier = facilityId
+			if sim.TCP(ctrlCopy.PositionId()) == sim.TCP(controller) {
+				return
+			}
 		}
 	}
 	e.ErrorString("initial_controller %q not found in facility %q (%s)", controller, facility, path)
@@ -1695,24 +1944,40 @@ func isARTCC(facility string) bool {
 // FacilityIdentifier so that controllers from different facilities don't
 // collide. The prefix is looked up from handoffIDs; ARTCCs not listed
 // default to prefix "C". TRACONs not listed in handoffIDs are skipped.
-func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor string,
-	handoffIDs []sim.HandoffID, e *util.ErrorLogger) {
-	// Find the prefix for this neighbor from handoff_ids.
-	prefix := ""
+// neighborPrefix returns the prefix string used to disambiguate a neighbor
+// facility's controllers in the local ControlPositions map. Returns "" if
+// the facility has no prefix (TRACON not listed in handoffIDs).
+func neighborPrefix(facility string, handoffIDs []sim.HandoffID) string {
 	for _, hid := range handoffIDs {
-		if hid.ID == neighbor {
-			prefix = hid.Prefix
+		if hid.ID == facility {
+			if hid.ERAMPrefix != "" {
+				return hid.ERAMPrefix
+			} else if hid.SingleCharStarsID != "" {
+				return hid.SingleCharStarsID
+			} else if hid.TwoCharStarsID != "" {
+				return hid.TwoCharStarsID
+			} else if hid.StarsID != "" {
+				return hid.StarsID
+			} else if hid.Prefix != "" {
+				return hid.Prefix
+			}
 			break
 		}
 	}
+	if isARTCC(facility) {
+		return "C"
+	}
+	return ""
+}
+
+func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor string,
+	handoffIDs []sim.HandoffID, e *util.ErrorLogger) {
+	// Find the prefix for this neighbor from handoff_ids.
+	// Prefer eram_prefix (NAS ID for ARTCCs), then single char, two char, full stars_id, then prefix.
+	prefix := neighborPrefix(neighbor, handoffIDs)
 	if prefix == "" {
-		if isARTCC(neighbor) {
-			// Centers not listed in handoff_ids default to prefix "C".
-			prefix = "C"
-		} else {
-			// TRACON neighbors must be in handoff_ids to be loaded.
-			return
-		}
+		// TRACON neighbors must be in handoff_ids to be loaded.
+		return
 	}
 
 	// Determine the ARTCC for this neighbor.
@@ -1741,10 +2006,18 @@ func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor strin
 	// Add neighbor controllers to the scenario group's positions with
 	// prefixed SectorID and FacilityIdentifier.
 	// Don't overwrite existing positions (the primary facility takes precedence).
+	//
+	// For ARTCC neighbors, FacilityIdentifier is always "C" (universal
+	// center scope char), while SectorID uses the specific ERAM prefix
+	// for uniqueness. For TRACON neighbors, prefix is used for both.
+	facilityId := prefix
+	if isARTCC(neighbor) {
+		facilityId = "C"
+	}
 	for _, ctrl := range fc.ControlPositions {
 		ctrlCopy := deep.MustCopy(ctrl)
 		ctrlCopy.SectorID = prefix + ctrlCopy.SectorID
-		ctrlCopy.FacilityIdentifier = prefix
+		ctrlCopy.FacilityIdentifier = facilityId
 
 		prefixedTCP := sim.TCP(ctrlCopy.PositionId())
 		if _, exists := sg.ControlPositions[prefixedTCP]; !exists {
@@ -1921,6 +2194,40 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			sg.FacilityAdaptation = deep.MustCopy(fc.FacilityAdaptation)
 			sg.HandoffTopology = fc.HandoffTopology
 			sg.FixPairs = fc.FixPairs
+
+			// Add missing airports referenced by altimeters and coordination
+			// lists from sibling scenario groups. The facility config is
+			// shared across all scenario groups for a TRACON, but sub-area
+			// scenarios only define a subset of airports.
+			addFromSibling := func(airport string) {
+				if _, ok := sg.Airports[airport]; ok {
+					return
+				}
+				for _, sibling := range tracon {
+					if sibling == sg {
+						continue
+					}
+					if _, ok := sibling.Airports[airport]; ok {
+						if sg.Airports == nil {
+							sg.Airports = make(map[string]*av.Airport)
+						}
+						sg.Airports[airport] = &av.Airport{}
+						return
+					}
+				}
+			}
+			for _, ap := range sg.FacilityAdaptation.Altimeters {
+				addFromSibling(ap)
+			}
+			for _, cl := range sg.FacilityAdaptation.CoordinationLists {
+				for _, ap := range cl.Airports {
+					addFromSibling(ap)
+					// Airports in coordination lists must be hold for release.
+					if a, ok := sg.Airports[ap]; ok && !a.HoldForRelease {
+						a.HoldForRelease = true
+					}
+				}
+			}
 
 			// Load controllers from neighboring facilities.
 			if fc.HandoffTopology != nil {
@@ -2145,6 +2452,15 @@ func CreateNewSimConfiguration(catalog *ScenarioCatalog, scenarioGroup *scenario
 		Airspace:                scenarioGroup.Airspace,
 		ControllerAirspace:      scenario.Airspace,
 		VirtualControllers:      scenario.VirtualControllers,
+		HandoffTopology:         scenarioGroup.HandoffTopology,
+		FixPairs:                scenarioGroup.FixPairs,
+	}
+
+	// Resolve fix pair assignments from the selected configuration
+	if scenario.ControllerConfiguration != nil && scenario.ControllerConfiguration.ConfigId != "" {
+		if config, ok := scenarioGroup.FacilityAdaptation.Configurations[scenario.ControllerConfiguration.ConfigId]; ok {
+			newSimConfig.FixPairAssignments = config.FixPairAssignments
+		}
 	}
 
 	return newSimConfig, nil

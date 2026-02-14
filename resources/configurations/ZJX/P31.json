@@ -56,6 +56,11 @@
                 },
                 "departure_assignments": {
                     "KPNS": "PNS_E_APP"
+                },
+                "default_consolidation": {
+                    "PNS_E_APP": [
+                        "PNS_W_APP"
+                    ]
                 }
             }
         },
@@ -135,19 +140,7 @@
             "P31 CLASS C",
             "NEW NPA 07 MAP"
         ],
-        "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "CEW": "PNS_E_APP",
-                    "LOXLY": "PNS_W_APP",
-                    "SJI": "PNS_W_APP"
-                },
-                "departure_assignments": {
-                    "KPNS": "PNS_E_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
@@ -158,6 +151,14 @@
             {
                 "id": "VPS",
                 "prefix": "2"
+            },
+            {
+                "id": "ZHU",
+                "eram_prefix": "H"
+            },
+            {
+                "id": "ZJX",
+                "eram_prefix": "J"
             }
         ],
         "neighboring_facilities": [

@@ -1,0 +1,50 @@
+{
+    "control_positions": {
+        "CRW_B_APP": {
+            "frequency": 125400,
+            "radio_name": "Charleston Approach",
+            "sector_id": "1B"
+        },
+        "CRW_N_APP": {
+            "frequency": 124100,
+            "radio_name": "Charleston Approach",
+            "sector_id": "1N"
+        },
+        "CRW_S_APP": {
+            "frequency": 119200,
+            "radio_name": "Charleston Approach",
+            "sector_id": "1S"
+        },
+        "CRW_TWR": {
+            "frequency": 125700,
+            "radio_name": "Charleston Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "CKB",
+                "prefix": "2"
+            },
+            {
+                "id": "HTS",
+                "prefix": "1"
+            },
+            {
+                "id": "ZDC",
+                "eram_prefix": "W"
+            },
+            {
+                "id": "ZOB",
+                "eram_prefix": "C"
+            }
+        ],
+        "neighboring_facilities": [
+            "CKB",
+            "HTS",
+            "ZDC",
+            "ZOB"
+        ]
+    }
+}

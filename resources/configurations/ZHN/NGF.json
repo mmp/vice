@@ -1,0 +1,30 @@
+{
+    "control_positions": {
+        "NGF_APP": {
+            "frequency": 125000,
+            "radio_name": "Kaneohe Approach",
+            "sector_id": "1A"
+        },
+        "NGF_TWR": {
+            "frequency": 120700,
+            "radio_name": "Marine Kaneohe Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "HNL",
+                "prefix": "1"
+            },
+            {
+                "id": "OGG",
+                "prefix": "2"
+            }
+        ],
+        "neighboring_facilities": [
+            "HNL",
+            "OGG"
+        ]
+    }
+}

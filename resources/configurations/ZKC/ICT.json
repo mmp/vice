@@ -1,0 +1,25 @@
+{
+    "control_positions": {
+        "ICT_APP": {
+            "frequency": 126700,
+            "radio_name": "Wichita Approach",
+            "sector_id": "1W"
+        },
+        "ICT_TWR": {
+            "frequency": 118200,
+            "radio_name": "Wichita Tower",
+            "sector_id": "1L"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "END",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "END"
+        ]
+    }
+}

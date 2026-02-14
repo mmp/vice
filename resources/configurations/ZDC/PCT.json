@@ -274,6 +274,15 @@
                     "KBWI/FOXHL1": "BWI_W_APP",
                     "KBWI/LINSE2": "BWI_W_APP",
                     "KBWI/TERPZ8": "BWI_W_APP"
+                },
+                "default_consolidation": {
+                    "BWI_B_APP": [
+                        "BWI_G_APP",
+                        "BWI_H_APP",
+                        "BWI_P_APP",
+                        "BWI_S_APP",
+                        "BWI_W_APP"
+                    ]
                 }
             },
             "MTV": {
@@ -281,6 +290,9 @@
                     "FINAL_ND": "DCA_V_APP",
                     "FINAL_NNW": "DCA_V_APP",
                     "FINAL_NS": "DCA_V_APP"
+                },
+                "default_consolidation": {
+                    "DCA_V_APP": []
                 }
             },
             "MT1": {
@@ -295,6 +307,14 @@
                 },
                 "departure_assignments": {
                     "KDCA": "DCA_K_DEP"
+                },
+                "default_consolidation": {
+                    "DCA_D_APP": [
+                        "DCA_E_APP",
+                        "DCA_J_APP",
+                        "DCA_K_DEP",
+                        "DCA_L_APP"
+                    ]
                 }
             },
             "MT2": {
@@ -302,6 +322,9 @@
                     "FINAL_SE": "DCA_V_APP",
                     "FINAL_SNW": "DCA_V_APP",
                     "FINAL_SS": "DCA_V_APP"
+                },
+                "default_consolidation": {
+                    "DCA_V_APP": []
                 }
             },
             "MT3": {
@@ -315,6 +338,14 @@
                 },
                 "departure_assignments": {
                     "KDCA": "DCA_K_DEP"
+                },
+                "default_consolidation": {
+                    "DCA_D_APP": [
+                        "DCA_E_APP",
+                        "DCA_J_APP",
+                        "DCA_K_DEP",
+                        "DCA_L_APP"
+                    ]
                 }
             },
             "MT4": {
@@ -323,6 +354,9 @@
                     "FLUKY DEPARTURES.DCAN": "DCA_F_APP",
                     "FLUKY DEPARTURES.DCAS": "DCA_F_APP",
                     "FOXHL1/TERPZ8": "DCA_F_APP"
+                },
+                "default_consolidation": {
+                    "DCA_F_APP": []
                 }
             },
             "MT6": {
@@ -333,6 +367,9 @@
                 },
                 "departure_assignments": {
                     "KDCA": "DCA_K_DEP"
+                },
+                "default_consolidation": {
+                    "DCA_K_DEP": []
                 }
             },
             "MT8": {
@@ -344,6 +381,9 @@
                     "LURAY DEPARTURES.DCAS": "DCA_L_APP",
                     "TRUPS5.LN": "DCA_L_APP",
                     "TRUPS5.LS": "DCA_L_APP"
+                },
+                "default_consolidation": {
+                    "DCA_L_APP": []
                 }
             },
             "13X": {
@@ -351,6 +391,12 @@
                     "IADFC.S DUALS": "IAD_S_APP",
                     "IADFE.S DUALS": "IAD_X_APP",
                     "IADFW.S DUALS": "IAD_U_APP"
+                },
+                "default_consolidation": {
+                    "IAD_S_APP": [
+                        "IAD_U_APP",
+                        "IAD_X_APP"
+                    ]
                 }
             },
             "SHD": {
@@ -358,6 +404,12 @@
                     "IADFC.S TRIPS": "IAD_S_APP",
                     "IADFE.S TRIPS": "IAD_X_APP",
                     "IADFW.S TRIPS": "IAD_U_APP"
+                },
+                "default_consolidation": {
+                    "IAD_S_APP": [
+                        "IAD_U_APP",
+                        "IAD_X_APP"
+                    ]
                 }
             },
             "SH1": {
@@ -374,6 +426,14 @@
                 "departure_assignments": {
                     "KHEF": "IAD_O_APP",
                     "KIAD": "IAD_T_DEP"
+                },
+                "default_consolidation": {
+                    "IAD_B_APP": [
+                        "IAD_N_APP",
+                        "IAD_O_APP",
+                        "IAD_T_DEP",
+                        "IAD_V_APP"
+                    ]
                 }
             },
             "SH2": {
@@ -381,6 +441,12 @@
                     "IADFC.N DUALS": "IAD_S_APP",
                     "IADFE.N DUALS": "IAD_X_APP",
                     "IADFW.N DUALS": "IAD_U_APP"
+                },
+                "default_consolidation": {
+                    "IAD_S_APP": [
+                        "IAD_U_APP",
+                        "IAD_X_APP"
+                    ]
                 }
             },
             "SH3": {
@@ -388,6 +454,12 @@
                     "IADFC.N TRIPS": "IAD_S_APP",
                     "IADFE.N TRIPS": "IAD_X_APP",
                     "IADFW.N TRIPS": "IAD_U_APP"
+                },
+                "default_consolidation": {
+                    "IAD_S_APP": [
+                        "IAD_U_APP",
+                        "IAD_X_APP"
+                    ]
                 }
             },
             "30X": {
@@ -404,6 +476,14 @@
                 "departure_assignments": {
                     "KHEF": "IAD_O_APP",
                     "KIAD": "IAD_A_DEP"
+                },
+                "default_consolidation": {
+                    "IAD_A_DEP": [
+                        "IAD_B_APP",
+                        "IAD_N_APP",
+                        "IAD_O_APP",
+                        "IAD_V_APP"
+                    ]
                 }
             },
             "SH4": {
@@ -420,6 +500,14 @@
                 "departure_assignments": {
                     "KHEF": "IAD_O_APP",
                     "KIAD": "IAD_A_DEP"
+                },
+                "default_consolidation": {
+                    "IAD_A_DEP": [
+                        "IAD_B_APP",
+                        "IAD_N_APP",
+                        "IAD_O_APP",
+                        "IAD_V_APP"
+                    ]
                 }
             },
             "12X": {
@@ -436,6 +524,14 @@
                 "departure_assignments": {
                     "KHEF": "IAD_O_APP",
                     "KIAD": "IAD_T_DEP"
+                },
+                "default_consolidation": {
+                    "IAD_B_APP": [
+                        "IAD_N_APP",
+                        "IAD_O_APP",
+                        "IAD_T_DEP",
+                        "IAD_V_APP"
+                    ]
                 }
             },
             "JRV": {
@@ -451,6 +547,13 @@
                 "departure_assignments": {
                     "KCHO": "CHO_W_APP",
                     "KRIC": "RIC_L_APP"
+                },
+                "default_consolidation": {
+                    "CHO_E_APP": [
+                        "CHO_W_APP",
+                        "RIC_L_APP",
+                        "RIC_P_APP"
+                    ]
                 }
             },
             "JR1": {
@@ -466,6 +569,13 @@
                 "departure_assignments": {
                     "KCHO": "CHO_W_APP",
                     "KRIC": "RIC_P_APP"
+                },
+                "default_consolidation": {
+                    "CHO_E_APP": [
+                        "CHO_W_APP",
+                        "RIC_L_APP",
+                        "RIC_P_APP"
+                    ]
                 }
             },
             "PCT": {
@@ -529,12 +639,34 @@
                     "KRIC/LUCYL6": "RIC_P_APP",
                     "KRIC/RVN": "RIC_L_APP",
                     "KRIC/RVS": "RIC_P_APP"
+                },
+                "default_consolidation": {
+                    "BWI_B_APP": [
+                        "BWI_G_APP",
+                        "BWI_H_APP",
+                        "BWI_P_APP",
+                        "BWI_W_APP",
+                        "CHO_W_APP",
+                        "DCA_D_APP",
+                        "DCA_J_APP",
+                        "DCA_K_DEP",
+                        "DCA_L_APP",
+                        "DCA_Y_DEP",
+                        "IAD_A_DEP",
+                        "IAD_B_APP",
+                        "IAD_N_APP",
+                        "IAD_O_APP",
+                        "IAD_T_DEP",
+                        "IAD_V_APP",
+                        "RIC_L_APP",
+                        "RIC_P_APP"
+                    ]
                 }
             }
         },
         "center": "KBWI",
         "controller_configs": {
-            "1S": {
+            "BWI_S_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -553,7 +685,7 @@
                     }
                 ]
             },
-            "1H": {
+            "BWI_H_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -790,247 +922,10 @@
                 "silence_angle": 59.7,
                 "slope_angle": 0.3
             }
-        },
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "ANTHM5": "BWI_H_APP",
-                    "ARLFT2": "BWI_H_APP",
-                    "CLIPR3": "BWI_B_APP",
-                    "DEALE3/MIIDY3": "BWI_P_APP",
-                    "JERES2/MCRAY2": "BWI_H_APP",
-                    "RAVNN8.10": "BWI_S_APP",
-                    "RAVNN8.28": "BWI_S_APP",
-                    "RAVNN8.33L": "BWI_S_APP",
-                    "SKILS5": "BWI_B_APP",
-                    "TRISH4.DRRES": "BWI_B_APP",
-                    "TRISH4.NUGGY": "BWI_B_APP"
-                },
-                "departure_assignments": {
-                    "KBWI": "BWI_S_APP",
-                    "KBWI/CONLE5": "BWI_G_APP",
-                    "KBWI/DUKPN1": "BWI_G_APP",
-                    "KBWI/FOXHL1": "BWI_W_APP",
-                    "KBWI/LINSE2": "BWI_W_APP",
-                    "KBWI/TERPZ8": "BWI_W_APP"
-                }
-            },
-            "MT1": {
-                "inbound_assignments": {
-                    "BUNZZ3/RNLDI4": "DCA_L_APP",
-                    "CAPSS3": "DCA_J_APP",
-                    "CLIPR3/SKILS5": "DCA_E_APP",
-                    "DEALE3.N": "DCA_E_APP",
-                    "FRDMM6": "DCA_L_APP",
-                    "RAVNN8": "DCA_D_APP",
-                    "TRUPS5": "DCA_L_APP"
-                },
-                "departure_assignments": {
-                    "KDCA": "DCA_K_DEP"
-                }
-            },
-            "MT2": {
-                "inbound_assignments": {
-                    "FINAL_SE": "DCA_V_APP",
-                    "FINAL_SNW": "DCA_V_APP",
-                    "FINAL_SS": "DCA_V_APP"
-                }
-            },
-            "MT3": {
-                "inbound_assignments": {
-                    "CAPSS3": "DCA_J_APP",
-                    "CLIPR3/SKILS5": "DCA_E_APP",
-                    "DEALE3.S": "DCA_E_APP",
-                    "FRDMM6": "DCA_L_APP",
-                    "RAVNN8": "DCA_D_APP",
-                    "TRUPS5": "DCA_L_APP"
-                },
-                "departure_assignments": {
-                    "KDCA": "DCA_K_DEP"
-                }
-            },
-            "MT4": {
-                "inbound_assignments": {
-                    "CLTCH3/JDUBB4/SCRAM6.IAD": "DCA_F_APP",
-                    "FLUKY DEPARTURES.DCAN": "DCA_F_APP",
-                    "FLUKY DEPARTURES.DCAS": "DCA_F_APP",
-                    "FOXHL1/TERPZ8": "DCA_F_APP"
-                }
-            },
-            "MT6": {
-                "inbound_assignments": {
-                    "CONLE5.N": "DCA_K_DEP",
-                    "CONLE5.S": "DCA_K_DEP",
-                    "JCOBY4": "DCA_K_DEP"
-                },
-                "departure_assignments": {
-                    "KDCA": "DCA_K_DEP"
-                }
-            },
-            "MT8": {
-                "inbound_assignments": {
-                    "BUNZZ3/RNLDI4": "DCA_L_APP",
-                    "FRDMM6.LN": "DCA_L_APP",
-                    "FRDMM6.LS": "DCA_L_APP",
-                    "LURAY DEPARTURES.DCAN": "DCA_L_APP",
-                    "LURAY DEPARTURES.DCAS": "DCA_L_APP",
-                    "TRUPS5.LN": "DCA_L_APP",
-                    "TRUPS5.LS": "DCA_L_APP"
-                }
-            },
-            "MTV": {
-                "inbound_assignments": {
-                    "FINAL_ND": "DCA_V_APP",
-                    "FINAL_NNW": "DCA_V_APP",
-                    "FINAL_NS": "DCA_V_APP"
-                }
-            },
-            "12X": {
-                "inbound_assignments": {
-                    "CAVLR6": "IAD_B_APP",
-                    "GIBBZ5.BURTT": "IAD_N_APP",
-                    "GIBBZ5.MGW": "IAD_N_APP",
-                    "HYPER9": "IAD_V_APP",
-                    "PRTZL1": "IAD_V_APP",
-                    "TIKEE4": "IAD_N_APP",
-                    "TRSTN4": "IAD_O_APP",
-                    "WAYNZ1.S": "IAD_V_APP"
-                },
-                "departure_assignments": {
-                    "KHEF": "IAD_O_APP",
-                    "KIAD": "IAD_T_DEP"
-                }
-            },
-            "13X": {
-                "inbound_assignments": {
-                    "IADFC.S DUALS": "IAD_S_APP",
-                    "IADFE.S DUALS": "IAD_X_APP",
-                    "IADFW.S DUALS": "IAD_U_APP"
-                }
-            },
-            "30X": {
-                "inbound_assignments": {
-                    "CAVLR6": "IAD_B_APP",
-                    "GIBBZ5.BURTT": "IAD_N_APP",
-                    "GIBBZ5.MGW": "IAD_N_APP",
-                    "HYPER9": "IAD_V_APP",
-                    "PRTZL1": "IAD_V_APP",
-                    "TIKEE4": "IAD_N_APP",
-                    "TRSTN4": "IAD_O_APP",
-                    "WAYNZ1.N": "IAD_V_APP"
-                },
-                "departure_assignments": {
-                    "KHEF": "IAD_O_APP",
-                    "KIAD": "IAD_A_DEP"
-                }
-            },
-            "SH1": {
-                "inbound_assignments": {
-                    "CAVLR6": "IAD_B_APP",
-                    "GIBBZ5.BURTT": "IAD_N_APP",
-                    "GIBBZ5.MGW": "IAD_N_APP",
-                    "HYPER9": "IAD_V_APP",
-                    "PRTZL1": "IAD_V_APP",
-                    "TIKEE4": "IAD_N_APP",
-                    "TRSTN4": "IAD_O_APP",
-                    "WAYNZ1.N": "IAD_V_APP"
-                },
-                "departure_assignments": {
-                    "KHEF": "IAD_O_APP",
-                    "KIAD": "IAD_T_DEP"
-                }
-            },
-            "SH2": {
-                "inbound_assignments": {
-                    "IADFC.N DUALS": "IAD_S_APP",
-                    "IADFE.N DUALS": "IAD_X_APP",
-                    "IADFW.N DUALS": "IAD_U_APP"
-                }
-            },
-            "SH3": {
-                "inbound_assignments": {
-                    "IADFC.N TRIPS": "IAD_S_APP",
-                    "IADFE.N TRIPS": "IAD_X_APP",
-                    "IADFW.N TRIPS": "IAD_U_APP"
-                }
-            },
-            "SH4": {
-                "inbound_assignments": {
-                    "CAVLR6": "IAD_B_APP",
-                    "GIBBZ5.BURTT": "IAD_N_APP",
-                    "GIBBZ5.MGW": "IAD_N_APP",
-                    "HYPER9": "IAD_V_APP",
-                    "PRTZL1": "IAD_V_APP",
-                    "TIKEE4": "IAD_N_APP",
-                    "TRSTN4": "IAD_O_APP",
-                    "WAYNZ1.S": "IAD_V_APP"
-                },
-                "departure_assignments": {
-                    "KHEF": "IAD_O_APP",
-                    "KIAD": "IAD_A_DEP"
-                }
-            },
-            "SHD": {
-                "inbound_assignments": {
-                    "IADFC.S TRIPS": "IAD_S_APP",
-                    "IADFE.S TRIPS": "IAD_X_APP",
-                    "IADFW.S TRIPS": "IAD_U_APP"
-                }
-            },
-            "JR1": {
-                "inbound_assignments": {
-                    "BNTLY RIC": "RIC_L_APP",
-                    "CHO NORTH ARR S": "CHO_E_APP",
-                    "DUCXS5.KELCE": "RIC_L_APP",
-                    "DUCXS5.NEAVL": "RIC_L_APP",
-                    "JAMIE RIC": "RIC_P_APP",
-                    "POWTN5": "RIC_L_APP",
-                    "SPIDR5": "RIC_L_APP"
-                },
-                "departure_assignments": {
-                    "KCHO": "CHO_W_APP",
-                    "KRIC": "RIC_P_APP"
-                }
-            },
-            "JRV": {
-                "inbound_assignments": {
-                    "BNTLY RIC": "RIC_L_APP",
-                    "CHO NORTH ARR N": "CHO_E_APP",
-                    "DUCXS5.KELCE": "RIC_L_APP",
-                    "DUCXS5.NEAVL": "RIC_L_APP",
-                    "JAMIE RIC": "RIC_P_APP",
-                    "POWTN5": "RIC_L_APP",
-                    "SPIDR5": "RIC_L_APP"
-                },
-                "departure_assignments": {
-                    "KCHO": "CHO_W_APP",
-                    "KRIC": "RIC_L_APP"
-                }
-            }
         }
     },
     "handoff_topology": {
         "handoff_ids": [
-            {
-                "id": "PHL",
-                "prefix": "5"
-            },
-            {
-                "id": "ORF",
-                "prefix": "1"
-            },
-            {
-                "id": "NHK",
-                "prefix": "2"
-            },
-            {
-                "id": "MDT",
-                "prefix": "6"
-            },
-            {
-                "id": "ROA",
-                "prefix": "3"
-            },
             {
                 "id": "DOV",
                 "prefix": "4"
@@ -1040,8 +935,36 @@
                 "prefix": "7"
             },
             {
+                "id": "MDT",
+                "prefix": "6"
+            },
+            {
+                "id": "NHK",
+                "prefix": "2"
+            },
+            {
+                "id": "ORF",
+                "prefix": "1"
+            },
+            {
+                "id": "PHL",
+                "prefix": "5"
+            },
+            {
+                "id": "ROA",
+                "prefix": "3"
+            },
+            {
                 "id": "ZDC",
-                "prefix": "W"
+                "eram_prefix": "W"
+            },
+            {
+                "id": "ZNY",
+                "eram_prefix": "N"
+            },
+            {
+                "id": "ZOB",
+                "eram_prefix": "C"
             }
         ],
         "neighboring_facilities": [

@@ -273,6 +273,15 @@ func (sm *SimManager) makeSimConfiguration(req *NewSimRequest, lg *log.Logger) *
 		WXProvider:                  wxp,
 		Emergencies:                 req.Emergencies,
 		StartTime:                   req.StartTime,
+		HandoffTopology:             sg.HandoffTopology,
+		FixPairs:                    sg.FixPairs,
+	}
+
+	// Resolve fix pair assignments from the selected configuration
+	if sc.ControllerConfiguration != nil && sc.ControllerConfiguration.ConfigId != "" {
+		if config, ok := sg.FacilityAdaptation.Configurations[sc.ControllerConfiguration.ConfigId]; ok {
+			nsc.FixPairAssignments = config.FixPairAssignments
+		}
 	}
 
 	return &nsc
@@ -707,6 +716,21 @@ func (sm *SimManager) GetSerializeSim(token string, s *sim.Sim) error {
 	defer sm.mu.Unlock(sm.lg)
 
 	*s = c.sim.GetSerializeSim()
+	return nil
+}
+
+const GetNASDebugDataRPC = "SimManager.GetNASDebugData"
+
+func (sm *SimManager) GetNASDebugData(token string, data *sim.NASDebugData) error {
+	c := sm.LookupController(token)
+	if c == nil {
+		return ErrNoSimForControllerToken
+	}
+
+	sm.mu.Lock(sm.lg)
+	defer sm.mu.Unlock(sm.lg)
+
+	*data = c.sim.GetNASDebugData()
 	return nil
 }
 

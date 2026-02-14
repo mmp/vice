@@ -21,6 +21,9 @@
                 },
                 "departure_assignments": {
                     "KASE": "ASE_APP"
+                },
+                "default_consolidation": {
+                    "ASE_APP": []
                 }
             }
         },
@@ -85,22 +88,15 @@
             "ASE VFR",
             "ASE WRAP-D"
         ],
-        "video_map_file": "videomaps/ZDV-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "HAREI": "ASE_APP",
-                    "LAWSN": "ASE_APP",
-                    "LOYYD": "ASE_APP"
-                },
-                "departure_assignments": {
-                    "KASE": "ASE_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZDV-videomaps.gob.zst"
     },
     "handoff_topology": {
-        "handoff_ids": [],
+        "handoff_ids": [
+            {
+                "id": "ZDV",
+                "eram_prefix": "D"
+            }
+        ],
         "neighboring_facilities": [
             "ZDV"
         ]

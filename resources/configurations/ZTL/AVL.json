@@ -29,6 +29,11 @@
                 },
                 "departure_assignments": {
                     "KAVL": "AVL_W_APP"
+                },
+                "default_consolidation": {
+                    "AVL_E_APP": [
+                        "AVL_W_APP"
+                    ]
                 }
             }
         },
@@ -104,22 +109,7 @@
             "AVL EMERGENCY OBSTRUCTION VIDEO MAP",
             "AVL Cab"
         ],
-        "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "BARRD": "AVL_W_APP",
-                    "JONEB": "AVL_E_APP",
-                    "LEAVI": "AVL_E_APP",
-                    "OBURY": "AVL_E_APP",
-                    "PUPDG": "AVL_W_APP",
-                    "TUSRE": "AVL_E_APP"
-                },
-                "departure_assignments": {
-                    "KAVL": "AVL_W_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZTL-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
@@ -134,6 +124,14 @@
             {
                 "id": "TYS",
                 "prefix": "3"
+            },
+            {
+                "id": "ZID",
+                "eram_prefix": "I"
+            },
+            {
+                "id": "ZTL",
+                "eram_prefix": "T"
             }
         ],
         "neighboring_facilities": [

@@ -1,0 +1,25 @@
+{
+    "control_positions": {
+        "MTC_APP": {
+            "frequency": 132350,
+            "radio_name": "Selfridge Approach",
+            "sector_id": "1A"
+        },
+        "MTC_TWR": {
+            "frequency": 120150,
+            "radio_name": "Selfridge Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "D21",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "D21"
+        ]
+    }
+}

@@ -1,51 +1,51 @@
 {
     "control_positions": {
-        "Radar North": {
+        "JAX_N_APP": {
             "frequency": 127000,
             "radio_name": "Jacksonville approach",
             "sector_id": "1N"
         },
-        "Radar West": {
+        "JAX_W_APP": {
             "frequency": 127775,
             "radio_name": "Jacksonville approach",
             "sector_id": "1W"
         },
-        "Radar East": {
+        "JAX_E_APP": {
             "frequency": 132775,
             "radio_name": "Jacksonville approach",
             "sector_id": "1E"
         },
-        "Radar Arrival": {
+        "JAX_R_APP": {
             "frequency": 119000,
             "radio_name": "Jacksonville approach",
             "sector_id": "1R"
         },
-        "Radar Final": {
+        "JAX_J_APP": {
             "frequency": 119850,
             "radio_name": "Jacksonville approach",
             "sector_id": "1J"
         },
-        "Radar Satellite": {
+        "JAX_S_APP": {
             "frequency": 124900,
             "radio_name": "Jacksonville approach",
             "sector_id": "1S"
         },
-        "Radar Palatka": {
+        "JAX_A_APP": {
             "frequency": 121300,
             "radio_name": "Jacksonville approach",
             "sector_id": "1A"
         },
-        "Radar Gainesville": {
+        "JAX_G_APP": {
             "frequency": 118175,
             "radio_name": "Jacksonville approach",
             "sector_id": "1G"
         },
-        "Radar Dunnellon": {
+        "JAX_D_APP": {
             "frequency": 128675,
             "radio_name": "Jacksonville approach",
             "sector_id": "1D"
         },
-        "Radar Vitts": {
+        "JAX_V_APP": {
             "frequency": 118600,
             "radio_name": "Jacksonville approach",
             "sector_id": "1V"
@@ -95,216 +95,282 @@
         "configurations": {
             "KJA": {
                 "inbound_assignments": {
-                    "ALLMA": "Radar Arrival",
-                    "ESENT": "Radar North",
-                    "LUNNI2_E": "Radar North",
-                    "MARQO3": "Radar Arrival",
-                    "OHDEA2": "Radar Arrival",
-                    "OMN": "Radar East",
-                    "ORLNOV": "Radar West",
-                    "QUBEN2": "Radar East",
-                    "TEBOW2": "Radar West",
-                    "V159_S": "Radar North",
-                    "V51": "Radar East"
+                    "ALLMA": "JAX_R_APP",
+                    "ESENT": "JAX_N_APP",
+                    "LUNNI2_E": "JAX_N_APP",
+                    "MARQO3": "JAX_R_APP",
+                    "OHDEA2": "JAX_R_APP",
+                    "OMN": "JAX_E_APP",
+                    "ORLNOV": "JAX_W_APP",
+                    "QUBEN2": "JAX_E_APP",
+                    "TEBOW2": "JAX_W_APP",
+                    "V159_S": "JAX_N_APP",
+                    "V51": "JAX_E_APP"
                 },
                 "departure_assignments": {
-                    "KCRG": "Radar Satellite",
-                    "KFHB": "Radar North",
-                    "KHEG": "Radar West",
-                    "KJAX/8": "Radar North",
-                    "KJAX/14": "Radar Satellite",
-                    "KNIP": "Radar Satellite",
-                    "KNRB": "Radar Satellite",
-                    "KSGJ": "Radar Satellite",
-                    "KVQQ": "Radar West"
+                    "KCRG": "JAX_S_APP",
+                    "KFHB": "JAX_N_APP",
+                    "KHEG": "JAX_W_APP",
+                    "KJAX/8": "JAX_N_APP",
+                    "KJAX/14": "JAX_S_APP",
+                    "KNIP": "JAX_S_APP",
+                    "KNRB": "JAX_S_APP",
+                    "KSGJ": "JAX_S_APP",
+                    "KVQQ": "JAX_W_APP"
+                },
+                "default_consolidation": {
+                    "JAX_R_APP": [
+                        "JAX_E_APP",
+                        "JAX_N_APP",
+                        "JAX_S_APP",
+                        "JAX_W_APP"
+                    ]
                 }
             },
             "KJ1": {
                 "inbound_assignments": {
-                    "ALLMA": "Radar Arrival",
-                    "ESENT": "Radar North",
-                    "LUNNI2_E": "Radar North",
-                    "MARQO3": "Radar Arrival",
-                    "OHDEA2": "Radar Arrival",
-                    "OMN": "Radar East",
-                    "ORLNOV": "Radar West",
-                    "QUBEN2": "Radar East",
-                    "TEBOW2": "Radar West",
-                    "V159_S": "Radar North",
-                    "V51": "Radar East"
+                    "ALLMA": "JAX_R_APP",
+                    "ESENT": "JAX_N_APP",
+                    "LUNNI2_E": "JAX_N_APP",
+                    "MARQO3": "JAX_R_APP",
+                    "OHDEA2": "JAX_R_APP",
+                    "OMN": "JAX_E_APP",
+                    "ORLNOV": "JAX_W_APP",
+                    "QUBEN2": "JAX_E_APP",
+                    "TEBOW2": "JAX_W_APP",
+                    "V159_S": "JAX_N_APP",
+                    "V51": "JAX_E_APP"
                 },
                 "departure_assignments": {
-                    "KCRG": "Radar Satellite",
-                    "KFHB": "Radar North",
-                    "KHEG": "Radar West",
-                    "KJAX": "Radar Satellite",
-                    "KNIP": "Radar West",
-                    "KNRB": "Radar North",
-                    "KSGJ": "Radar Satellite",
-                    "KVQQ": "Radar West"
+                    "KCRG": "JAX_S_APP",
+                    "KFHB": "JAX_N_APP",
+                    "KHEG": "JAX_W_APP",
+                    "KJAX": "JAX_S_APP",
+                    "KNIP": "JAX_W_APP",
+                    "KNRB": "JAX_N_APP",
+                    "KSGJ": "JAX_S_APP",
+                    "KVQQ": "JAX_W_APP"
+                },
+                "default_consolidation": {
+                    "JAX_R_APP": [
+                        "JAX_E_APP",
+                        "JAX_N_APP",
+                        "JAX_S_APP",
+                        "JAX_W_APP"
+                    ]
                 }
             },
             "KJ2": {
                 "inbound_assignments": {
-                    "ALLMA": "Radar Arrival",
-                    "ESENT": "Radar North",
-                    "LUNNI2_E": "Radar North",
-                    "MARQO3": "Radar Arrival",
-                    "OHDEA2": "Radar Arrival",
-                    "OMN": "Radar East",
-                    "ORL": "Radar Dunnellon",
-                    "QUBEN2": "Radar East",
-                    "SHREK2": "Radar Dunnellon",
-                    "TEBOW2": "Radar West",
-                    "V159": "Radar Dunnellon",
-                    "V159_S": "Radar North",
-                    "V441 North": "Radar Dunnellon",
-                    "V441 South": "Radar Palatka",
-                    "V51": "Radar East",
-                    "V537 East": "Radar Palatka",
-                    "V537 West": "Radar Palatka"
+                    "ALLMA": "JAX_R_APP",
+                    "ESENT": "JAX_N_APP",
+                    "LUNNI2_E": "JAX_N_APP",
+                    "MARQO3": "JAX_R_APP",
+                    "OHDEA2": "JAX_R_APP",
+                    "OMN": "JAX_E_APP",
+                    "ORL": "JAX_D_APP",
+                    "QUBEN2": "JAX_E_APP",
+                    "SHREK2": "JAX_D_APP",
+                    "TEBOW2": "JAX_W_APP",
+                    "V159": "JAX_D_APP",
+                    "V159_S": "JAX_N_APP",
+                    "V441 North": "JAX_D_APP",
+                    "V441 South": "JAX_A_APP",
+                    "V51": "JAX_E_APP",
+                    "V537 East": "JAX_A_APP",
+                    "V537 West": "JAX_A_APP"
                 },
                 "departure_assignments": {
-                    "KCRG": "Radar Satellite",
-                    "KFHB": "Radar North",
-                    "KHEG": "Radar West",
-                    "KJAX/8": "Radar North",
-                    "KJAX/14": "Radar Satellite",
-                    "KNIP": "Radar Satellite",
-                    "KNRB": "Radar Satellite",
-                    "KSGJ": "Radar Satellite",
-                    "KVQQ": "Radar West",
-                    "KGNV": "Radar Gainesville",
-                    "KOCF": "Radar Vitts"
+                    "KCRG": "JAX_S_APP",
+                    "KFHB": "JAX_N_APP",
+                    "KHEG": "JAX_W_APP",
+                    "KJAX/8": "JAX_N_APP",
+                    "KJAX/14": "JAX_S_APP",
+                    "KNIP": "JAX_S_APP",
+                    "KNRB": "JAX_S_APP",
+                    "KSGJ": "JAX_S_APP",
+                    "KVQQ": "JAX_W_APP",
+                    "KGNV": "JAX_G_APP",
+                    "KOCF": "JAX_V_APP"
+                },
+                "default_consolidation": {
+                    "JAX_R_APP": [
+                        "JAX_D_APP",
+                        "JAX_E_APP",
+                        "JAX_G_APP",
+                        "JAX_N_APP",
+                        "JAX_A_APP",
+                        "JAX_S_APP",
+                        "JAX_V_APP",
+                        "JAX_W_APP"
+                    ]
                 }
             },
             "KJ3": {
                 "inbound_assignments": {
-                    "ALLMA": "Radar Arrival",
-                    "ESENT": "Radar North",
-                    "LUNNI2_W": "Radar North",
-                    "MARQO3": "Radar Arrival",
-                    "OHDEA2": "Radar Arrival",
-                    "OMN": "Radar East",
-                    "ORLNOV": "Radar West",
-                    "QUBEN2": "Radar East",
-                    "TEBOW2": "Radar West",
-                    "V159_S": "Radar Arrival",
-                    "V51": "Radar East"
+                    "ALLMA": "JAX_R_APP",
+                    "ESENT": "JAX_N_APP",
+                    "LUNNI2_W": "JAX_N_APP",
+                    "MARQO3": "JAX_R_APP",
+                    "OHDEA2": "JAX_R_APP",
+                    "OMN": "JAX_E_APP",
+                    "ORLNOV": "JAX_W_APP",
+                    "QUBEN2": "JAX_E_APP",
+                    "TEBOW2": "JAX_W_APP",
+                    "V159_S": "JAX_R_APP",
+                    "V51": "JAX_E_APP"
                 },
                 "departure_assignments": {
-                    "KCRG": "Radar Satellite",
-                    "KFHB": "Radar North",
-                    "KHEG": "Radar West",
-                    "KJAX/BRSTL1": "Radar North",
-                    "KJAX/CROSB2": "Radar North",
-                    "KJAX/EXBOX2": "Radar Satellite",
-                    "KJAX/JETIN2": "Radar North",
-                    "KJAX/SAWGY3": "Radar Satellite",
-                    "KNIP": "Radar West",
-                    "KNRB": "Radar Satellite",
-                    "KSGJ": "Radar Satellite",
-                    "KVQQ": "Radar West"
+                    "KCRG": "JAX_S_APP",
+                    "KFHB": "JAX_N_APP",
+                    "KHEG": "JAX_W_APP",
+                    "KJAX/BRSTL1": "JAX_N_APP",
+                    "KJAX/CROSB2": "JAX_N_APP",
+                    "KJAX/EXBOX2": "JAX_S_APP",
+                    "KJAX/JETIN2": "JAX_N_APP",
+                    "KJAX/SAWGY3": "JAX_S_APP",
+                    "KNIP": "JAX_W_APP",
+                    "KNRB": "JAX_S_APP",
+                    "KSGJ": "JAX_S_APP",
+                    "KVQQ": "JAX_W_APP"
+                },
+                "default_consolidation": {
+                    "JAX_R_APP": [
+                        "JAX_E_APP",
+                        "JAX_N_APP",
+                        "JAX_S_APP",
+                        "JAX_W_APP"
+                    ]
                 }
             },
             "KJ4": {
                 "inbound_assignments": {
-                    "ALLMA": "Radar Arrival",
-                    "ESENT": "Radar North",
-                    "LUNNI2_W": "Radar North",
-                    "MARQO3": "Radar Arrival",
-                    "OHDEA2": "Radar Arrival",
-                    "OMN": "Radar East",
-                    "ORLNOV": "Radar West",
-                    "QUBEN2": "Radar East",
-                    "TEBOW2": "Radar West",
-                    "V159_S": "Radar Arrival",
-                    "V51": "Radar East"
+                    "ALLMA": "JAX_R_APP",
+                    "ESENT": "JAX_N_APP",
+                    "LUNNI2_W": "JAX_N_APP",
+                    "MARQO3": "JAX_R_APP",
+                    "OHDEA2": "JAX_R_APP",
+                    "OMN": "JAX_E_APP",
+                    "ORLNOV": "JAX_W_APP",
+                    "QUBEN2": "JAX_E_APP",
+                    "TEBOW2": "JAX_W_APP",
+                    "V159_S": "JAX_R_APP",
+                    "V51": "JAX_E_APP"
                 },
                 "departure_assignments": {
-                    "KCRG": "Radar Satellite",
-                    "KFHB": "Radar North",
-                    "KHEG": "Radar West",
-                    "KJAX": "Radar North",
-                    "KNIP": "Radar West",
-                    "KNRB": "Radar North",
-                    "KSGJ": "Radar Satellite",
-                    "KVQQ": "Radar West"
+                    "KCRG": "JAX_S_APP",
+                    "KFHB": "JAX_N_APP",
+                    "KHEG": "JAX_W_APP",
+                    "KJAX": "JAX_N_APP",
+                    "KNIP": "JAX_W_APP",
+                    "KNRB": "JAX_N_APP",
+                    "KSGJ": "JAX_S_APP",
+                    "KVQQ": "JAX_W_APP"
+                },
+                "default_consolidation": {
+                    "JAX_R_APP": [
+                        "JAX_E_APP",
+                        "JAX_N_APP",
+                        "JAX_S_APP",
+                        "JAX_W_APP"
+                    ]
                 }
             },
             "KJ5": {
                 "inbound_assignments": {
-                    "ALLMA": "Radar Arrival",
-                    "ESENT": "Radar North",
-                    "LUNNI2_W": "Radar North",
-                    "MARQO3": "Radar Arrival",
-                    "OHDEA2": "Radar Arrival",
-                    "OMN": "Radar East",
-                    "ORL": "Radar Dunnellon",
-                    "QUBEN2": "Radar East",
-                    "SHREK2": "Radar Dunnellon",
-                    "TEBOW2": "Radar West",
-                    "V159": "Radar Dunnellon",
-                    "V159_S": "Radar Arrival",
-                    "V441 North": "Radar Dunnellon",
-                    "V441 South": "Radar Palatka",
-                    "V51": "Radar East",
-                    "V537 East": "Radar Palatka",
-                    "V537 West": "Radar Palatka"
+                    "ALLMA": "JAX_R_APP",
+                    "ESENT": "JAX_N_APP",
+                    "LUNNI2_W": "JAX_N_APP",
+                    "MARQO3": "JAX_R_APP",
+                    "OHDEA2": "JAX_R_APP",
+                    "OMN": "JAX_E_APP",
+                    "ORL": "JAX_D_APP",
+                    "QUBEN2": "JAX_E_APP",
+                    "SHREK2": "JAX_D_APP",
+                    "TEBOW2": "JAX_W_APP",
+                    "V159": "JAX_D_APP",
+                    "V159_S": "JAX_R_APP",
+                    "V441 North": "JAX_D_APP",
+                    "V441 South": "JAX_A_APP",
+                    "V51": "JAX_E_APP",
+                    "V537 East": "JAX_A_APP",
+                    "V537 West": "JAX_A_APP"
                 },
                 "departure_assignments": {
-                    "KCRG": "Radar Satellite",
-                    "KFHB": "Radar North",
-                    "KHEG": "Radar West",
-                    "KJAX/BRSTL1": "Radar North",
-                    "KJAX/CROSB2": "Radar North",
-                    "KJAX/EXBOX2": "Radar Satellite",
-                    "KJAX/JETIN2": "Radar North",
-                    "KJAX/SAWGY3": "Radar Satellite",
-                    "KNIP": "Radar West",
-                    "KNRB": "Radar Satellite",
-                    "KSGJ": "Radar Satellite",
-                    "KVQQ": "Radar West",
-                    "KOCF": "Radar Vitts",
-                    "KGNV": "Radar Gainesville"
+                    "KCRG": "JAX_S_APP",
+                    "KFHB": "JAX_N_APP",
+                    "KHEG": "JAX_W_APP",
+                    "KJAX/BRSTL1": "JAX_N_APP",
+                    "KJAX/CROSB2": "JAX_N_APP",
+                    "KJAX/EXBOX2": "JAX_S_APP",
+                    "KJAX/JETIN2": "JAX_N_APP",
+                    "KJAX/SAWGY3": "JAX_S_APP",
+                    "KNIP": "JAX_W_APP",
+                    "KNRB": "JAX_S_APP",
+                    "KSGJ": "JAX_S_APP",
+                    "KVQQ": "JAX_W_APP",
+                    "KOCF": "JAX_V_APP",
+                    "KGNV": "JAX_G_APP"
+                },
+                "default_consolidation": {
+                    "JAX_R_APP": [
+                        "JAX_D_APP",
+                        "JAX_E_APP",
+                        "JAX_G_APP",
+                        "JAX_N_APP",
+                        "JAX_A_APP",
+                        "JAX_S_APP",
+                        "JAX_V_APP",
+                        "JAX_W_APP"
+                    ]
                 }
             },
             "KJ6": {
                 "inbound_assignments": {
-                    "ALLMA": "Radar Arrival",
-                    "ESENT": "Radar North",
-                    "LUNNI2_W": "Radar North",
-                    "MARQO3": "Radar Arrival",
-                    "OHDEA2": "Radar Arrival",
-                    "OMN": "Radar East",
-                    "ORL": "Radar Dunnellon",
-                    "QUBEN2": "Radar East",
-                    "SHREK2": "Radar Dunnellon",
-                    "TEBOW2": "Radar West",
-                    "V159": "Radar Dunnellon",
-                    "V159_S": "Radar Arrival",
-                    "V441 North": "Radar Dunnellon",
-                    "V441 South": "Radar Palatka",
-                    "V51": "Radar East",
-                    "V537 East": "Radar Palatka",
-                    "V537 West": "Radar Palatka"
+                    "ALLMA": "JAX_R_APP",
+                    "ESENT": "JAX_N_APP",
+                    "LUNNI2_W": "JAX_N_APP",
+                    "MARQO3": "JAX_R_APP",
+                    "OHDEA2": "JAX_R_APP",
+                    "OMN": "JAX_E_APP",
+                    "ORL": "JAX_D_APP",
+                    "QUBEN2": "JAX_E_APP",
+                    "SHREK2": "JAX_D_APP",
+                    "TEBOW2": "JAX_W_APP",
+                    "V159": "JAX_D_APP",
+                    "V159_S": "JAX_R_APP",
+                    "V441 North": "JAX_D_APP",
+                    "V441 South": "JAX_A_APP",
+                    "V51": "JAX_E_APP",
+                    "V537 East": "JAX_A_APP",
+                    "V537 West": "JAX_A_APP"
                 },
                 "departure_assignments": {
-                    "KCRG": "Radar Satellite",
-                    "KFHB": "Radar North",
-                    "KHEG": "Radar West",
-                    "KJAX": "Radar West",
-                    "KNIP": "Radar West",
-                    "KNRB": "Radar North",
-                    "KSGJ": "Radar Satellite",
-                    "KVQQ": "Radar West"
+                    "KCRG": "JAX_S_APP",
+                    "KFHB": "JAX_N_APP",
+                    "KHEG": "JAX_W_APP",
+                    "KJAX": "JAX_W_APP",
+                    "KNIP": "JAX_W_APP",
+                    "KNRB": "JAX_N_APP",
+                    "KSGJ": "JAX_S_APP",
+                    "KVQQ": "JAX_W_APP"
+                },
+                "default_consolidation": {
+                    "JAX_R_APP": [
+                        "JAX_D_APP",
+                        "JAX_E_APP",
+                        "JAX_N_APP",
+                        "JAX_A_APP",
+                        "JAX_S_APP",
+                        "JAX_W_APP"
+                    ]
                 }
             }
         },
         "center": "KJAX",
         "force_ql_self": true,
         "controller_configs": {
-            "1S": {
+            "JAX_S_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -313,7 +379,7 @@
                     }
                 ]
             },
-            "1N": {
+            "JAX_N_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -322,7 +388,7 @@
                     }
                 ]
             },
-            "1J": {
+            "JAX_J_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -331,7 +397,7 @@
                     }
                 ]
             },
-            "1R": {
+            "JAX_R_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -340,7 +406,7 @@
                     }
                 ]
             },
-            "1E": {
+            "JAX_E_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -349,7 +415,7 @@
                     }
                 ]
             },
-            "1W": {
+            "JAX_W_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -358,7 +424,7 @@
                     }
                 ]
             },
-            "1V": {
+            "JAX_V_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -367,7 +433,7 @@
                     }
                 ]
             },
-            "1D": {
+            "JAX_D_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -376,7 +442,7 @@
                     }
                 ]
             },
-            "1G": {
+            "JAX_G_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -385,7 +451,7 @@
                     }
                 ]
             },
-            "1A": {
+            "JAX_A_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -522,230 +588,29 @@
             "HEG RNAV",
             "GNV RNAV APPROACHES"
         ],
-        "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
-        "controller_assignments": {
-            "KJ1": {
-                "inbound_assignments": {
-                    "ALLMA": "Radar Arrival",
-                    "ESENT": "Radar North",
-                    "LUNNI2_E": "Radar North",
-                    "MARQO3": "Radar Arrival",
-                    "OHDEA2": "Radar Arrival",
-                    "OMN": "Radar East",
-                    "ORLNOV": "Radar West",
-                    "QUBEN2": "Radar East",
-                    "TEBOW2": "Radar West",
-                    "V159_S": "Radar North",
-                    "V51": "Radar East"
-                },
-                "departure_assignments": {
-                    "KCRG": "Radar Satellite",
-                    "KFHB": "Radar North",
-                    "KHEG": "Radar West",
-                    "KJAX": "Radar Satellite",
-                    "KNIP": "Radar West",
-                    "KNRB": "Radar North",
-                    "KSGJ": "Radar Satellite",
-                    "KVQQ": "Radar West"
-                }
-            },
-            "KJ2": {
-                "inbound_assignments": {
-                    "ALLMA": "Radar Arrival",
-                    "ESENT": "Radar North",
-                    "LUNNI2_E": "Radar North",
-                    "MARQO3": "Radar Arrival",
-                    "OHDEA2": "Radar Arrival",
-                    "OMN": "Radar East",
-                    "ORL": "Radar Dunnellon",
-                    "QUBEN2": "Radar East",
-                    "SHREK2": "Radar Dunnellon",
-                    "TEBOW2": "Radar West",
-                    "V159": "Radar Dunnellon",
-                    "V159_S": "Radar North",
-                    "V441 North": "Radar Dunnellon",
-                    "V441 South": "Radar Palatka",
-                    "V51": "Radar East",
-                    "V537 East": "Radar Palatka",
-                    "V537 West": "Radar Palatka"
-                },
-                "departure_assignments": {
-                    "KCRG": "Radar Satellite",
-                    "KFHB": "Radar North",
-                    "KHEG": "Radar West",
-                    "KJAX/8": "Radar North",
-                    "KJAX/14": "Radar Satellite",
-                    "KNIP": "Radar Satellite",
-                    "KNRB": "Radar Satellite",
-                    "KSGJ": "Radar Satellite",
-                    "KVQQ": "Radar West",
-                    "KGNV": "Radar Gainesville",
-                    "KOCF": "Radar Vitts"
-                }
-            },
-            "KJ3": {
-                "inbound_assignments": {
-                    "ALLMA": "Radar Arrival",
-                    "ESENT": "Radar North",
-                    "LUNNI2_W": "Radar North",
-                    "MARQO3": "Radar Arrival",
-                    "OHDEA2": "Radar Arrival",
-                    "OMN": "Radar East",
-                    "ORLNOV": "Radar West",
-                    "QUBEN2": "Radar East",
-                    "TEBOW2": "Radar West",
-                    "V159_S": "Radar Arrival",
-                    "V51": "Radar East"
-                },
-                "departure_assignments": {
-                    "KCRG": "Radar Satellite",
-                    "KFHB": "Radar North",
-                    "KHEG": "Radar West",
-                    "KJAX/BRSTL1": "Radar North",
-                    "KJAX/CROSB2": "Radar North",
-                    "KJAX/EXBOX2": "Radar Satellite",
-                    "KJAX/JETIN2": "Radar North",
-                    "KJAX/SAWGY3": "Radar Satellite",
-                    "KNIP": "Radar West",
-                    "KNRB": "Radar Satellite",
-                    "KSGJ": "Radar Satellite",
-                    "KVQQ": "Radar West"
-                }
-            },
-            "KJ4": {
-                "inbound_assignments": {
-                    "ALLMA": "Radar Arrival",
-                    "ESENT": "Radar North",
-                    "LUNNI2_W": "Radar North",
-                    "MARQO3": "Radar Arrival",
-                    "OHDEA2": "Radar Arrival",
-                    "OMN": "Radar East",
-                    "ORLNOV": "Radar West",
-                    "QUBEN2": "Radar East",
-                    "TEBOW2": "Radar West",
-                    "V159_S": "Radar Arrival",
-                    "V51": "Radar East"
-                },
-                "departure_assignments": {
-                    "KCRG": "Radar Satellite",
-                    "KFHB": "Radar North",
-                    "KHEG": "Radar West",
-                    "KJAX": "Radar North",
-                    "KNIP": "Radar West",
-                    "KNRB": "Radar North",
-                    "KSGJ": "Radar Satellite",
-                    "KVQQ": "Radar West"
-                }
-            },
-            "KJ5": {
-                "inbound_assignments": {
-                    "ALLMA": "Radar Arrival",
-                    "ESENT": "Radar North",
-                    "LUNNI2_W": "Radar North",
-                    "MARQO3": "Radar Arrival",
-                    "OHDEA2": "Radar Arrival",
-                    "OMN": "Radar East",
-                    "ORL": "Radar Dunnellon",
-                    "QUBEN2": "Radar East",
-                    "SHREK2": "Radar Dunnellon",
-                    "TEBOW2": "Radar West",
-                    "V159": "Radar Dunnellon",
-                    "V159_S": "Radar Arrival",
-                    "V441 North": "Radar Dunnellon",
-                    "V441 South": "Radar Palatka",
-                    "V51": "Radar East",
-                    "V537 East": "Radar Palatka",
-                    "V537 West": "Radar Palatka"
-                },
-                "departure_assignments": {
-                    "KCRG": "Radar Satellite",
-                    "KFHB": "Radar North",
-                    "KHEG": "Radar West",
-                    "KJAX/BRSTL1": "Radar North",
-                    "KJAX/CROSB2": "Radar North",
-                    "KJAX/EXBOX2": "Radar Satellite",
-                    "KJAX/JETIN2": "Radar North",
-                    "KJAX/SAWGY3": "Radar Satellite",
-                    "KNIP": "Radar West",
-                    "KNRB": "Radar Satellite",
-                    "KSGJ": "Radar Satellite",
-                    "KVQQ": "Radar West",
-                    "KOCF": "Radar Vitts",
-                    "KGNV": "Radar Gainesville"
-                }
-            },
-            "KJ6": {
-                "inbound_assignments": {
-                    "ALLMA": "Radar Arrival",
-                    "ESENT": "Radar North",
-                    "LUNNI2_W": "Radar North",
-                    "MARQO3": "Radar Arrival",
-                    "OHDEA2": "Radar Arrival",
-                    "OMN": "Radar East",
-                    "ORL": "Radar Dunnellon",
-                    "QUBEN2": "Radar East",
-                    "SHREK2": "Radar Dunnellon",
-                    "TEBOW2": "Radar West",
-                    "V159": "Radar Dunnellon",
-                    "V159_S": "Radar Arrival",
-                    "V441 North": "Radar Dunnellon",
-                    "V441 South": "Radar Palatka",
-                    "V51": "Radar East",
-                    "V537 East": "Radar Palatka",
-                    "V537 West": "Radar Palatka"
-                },
-                "departure_assignments": {
-                    "KCRG": "Radar Satellite",
-                    "KFHB": "Radar North",
-                    "KHEG": "Radar West",
-                    "KJAX": "Radar West",
-                    "KNIP": "Radar West",
-                    "KNRB": "Radar North",
-                    "KSGJ": "Radar Satellite",
-                    "KVQQ": "Radar West"
-                }
-            },
-            "KJA": {
-                "inbound_assignments": {
-                    "ALLMA": "Radar Arrival",
-                    "ESENT": "Radar North",
-                    "LUNNI2_E": "Radar North",
-                    "MARQO3": "Radar Arrival",
-                    "OHDEA2": "Radar Arrival",
-                    "OMN": "Radar East",
-                    "ORLNOV": "Radar West",
-                    "QUBEN2": "Radar East",
-                    "TEBOW2": "Radar West",
-                    "V159_S": "Radar North",
-                    "V51": "Radar East"
-                },
-                "departure_assignments": {
-                    "KCRG": "Radar Satellite",
-                    "KFHB": "Radar North",
-                    "KHEG": "Radar West",
-                    "KJAX/8": "Radar North",
-                    "KJAX/14": "Radar Satellite",
-                    "KNIP": "Radar Satellite",
-                    "KNRB": "Radar Satellite",
-                    "KSGJ": "Radar Satellite",
-                    "KVQQ": "Radar West"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
             {
-                "id": "TPA",
-                "prefix": "1"
+                "id": "DAB",
+                "prefix": "3"
             },
             {
                 "id": "F11",
                 "prefix": "2"
             },
             {
-                "id": "DAB",
-                "prefix": "3"
+                "id": "TPA",
+                "prefix": "1"
+            },
+            {
+                "id": "ZJX",
+                "eram_prefix": "J"
+            },
+            {
+                "id": "ZMA",
+                "eram_prefix": "R"
             }
         ],
         "neighboring_facilities": [

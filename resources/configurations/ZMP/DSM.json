@@ -1,0 +1,45 @@
+{
+    "control_positions": {
+        "DSM_A_APP": {
+            "frequency": 135200,
+            "radio_name": "Des Moines Approach",
+            "sector_id": "1A"
+        },
+        "DSM_APP": {
+            "frequency": 123900,
+            "radio_name": "Des Moines Approach",
+            "sector_id": "1D"
+        },
+        "DSM_S_APP": {
+            "frequency": 120450,
+            "radio_name": "Des Moines Approach",
+            "sector_id": "1S"
+        },
+        "DSM_TWR": {
+            "frequency": 118300,
+            "radio_name": "Des Moines Tower",
+            "sector_id": "1T"
+        },
+        "DSM_U_APP": {
+            "frequency": 124850,
+            "radio_name": "Des Moines Approach",
+            "sector_id": "1U"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ALO",
+                "prefix": "1"
+            },
+            {
+                "id": "ZAU",
+                "eram_prefix": "G"
+            }
+        ],
+        "neighboring_facilities": [
+            "ALO",
+            "ZAU"
+        ]
+    }
+}

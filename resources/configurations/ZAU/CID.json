@@ -35,6 +35,11 @@
                 "departure_assignments": {
                     "KCID": "CID_N_APP",
                     "KIOW": "CID_S_APP"
+                },
+                "default_consolidation": {
+                    "CID_N_APP": [
+                        "CID_S_APP"
+                    ]
                 }
             },
             "9XX": {
@@ -48,6 +53,11 @@
                 "departure_assignments": {
                     "KCID": "CID_S_APP",
                     "KIOW": "CID_S_APP"
+                },
+                "default_consolidation": {
+                    "CID_N_APP": [
+                        "CID_S_APP"
+                    ]
                 }
             }
         },
@@ -105,35 +115,7 @@
             "CID MVA",
             "CID VFR"
         ],
-        "video_map_file": "videomaps/ZAU-videomaps.gob.zst",
-        "controller_assignments": {
-            "27X": {
-                "inbound_assignments": {
-                    "EAST CID ARR": "CID_N_APP",
-                    "NORTH CID ARR": "CID_N_APP",
-                    "SOUTHEAST CID ARR": "CID_S_APP",
-                    "WEST CID ARR": "CID_S_APP",
-                    "WEST IOW ARR": "CID_S_APP"
-                },
-                "departure_assignments": {
-                    "KCID": "CID_N_APP",
-                    "KIOW": "CID_S_APP"
-                }
-            },
-            "9XX": {
-                "inbound_assignments": {
-                    "EAST CID ARR": "CID_N_APP",
-                    "NORTH CID ARR": "CID_N_APP",
-                    "SOUTHEAST CID ARR": "CID_S_APP",
-                    "WEST CID ARR": "CID_S_APP",
-                    "WEST IOW ARR": "CID_S_APP"
-                },
-                "departure_assignments": {
-                    "KCID": "CID_S_APP",
-                    "KIOW": "CID_S_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZAU-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
@@ -144,6 +126,10 @@
             {
                 "id": "MLI",
                 "prefix": "2"
+            },
+            {
+                "id": "ZAU",
+                "eram_prefix": "G"
             }
         ],
         "neighboring_facilities": [

@@ -1600,12 +1600,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "CHS_W_APP": [
-                        "CHS_E_APP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "CHS SHELF"
@@ -1656,12 +1651,7 @@
                 }
             },
             "configuration": {
-                "config_id": "STD",
-                "default_consolidation": {
-                    "CHS_W_APP": [
-                        "CHS_E_APP"
-                    ]
-                }
+                "config_id": "STD"
             },
             "default_maps": [
                 "CHS SHELF"

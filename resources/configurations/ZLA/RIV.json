@@ -1,0 +1,25 @@
+{
+    "control_positions": {
+        "RIV_APP": {
+            "frequency": 133500,
+            "radio_name": "March Approach",
+            "sector_id": "1A"
+        },
+        "RIV_TWR": {
+            "frequency": 127650,
+            "radio_name": "March Tower",
+            "sector_id": "1B"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "SCT",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "SCT"
+        ]
+    }
+}

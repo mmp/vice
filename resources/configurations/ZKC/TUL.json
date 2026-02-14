@@ -1,0 +1,55 @@
+{
+    "control_positions": {
+        "TUL_A_APP": {
+            "frequency": 119850,
+            "radio_name": "Tulsa Approach",
+            "sector_id": "1A"
+        },
+        "TUL_B_APP": {
+            "frequency": 134700,
+            "radio_name": "Tulsa Approach",
+            "sector_id": "1B"
+        },
+        "TUL_E_APP": {
+            "frequency": 119100,
+            "radio_name": "Tulsa Approach",
+            "sector_id": "1E"
+        },
+        "TUL_F_APP": {
+            "frequency": 132100,
+            "radio_name": "Tulsa Approach",
+            "sector_id": "1F"
+        },
+        "TUL_TWR": {
+            "frequency": 121200,
+            "radio_name": "Tulsa Tower",
+            "sector_id": "1T"
+        },
+        "TUL_V_TWR": {
+            "frequency": 118700,
+            "radio_name": "Tulsa Tower",
+            "sector_id": "1V"
+        },
+        "TUL_APP": {
+            "frequency": 124000,
+            "radio_name": "Tulsa Approach",
+            "sector_id": "1W"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZFW",
+                "eram_prefix": "F"
+            },
+            {
+                "id": "ZME",
+                "eram_prefix": "M"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZFW",
+            "ZME"
+        ]
+    }
+}

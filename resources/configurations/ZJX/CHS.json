@@ -32,6 +32,11 @@
                 "departure_assignments": {
                     "KCHS": "CHS_W_APP",
                     "KJZI": "CHS_W_APP"
+                },
+                "default_consolidation": {
+                    "CHS_E_APP": [
+                        "CHS_W_APP"
+                    ]
                 }
             }
         },
@@ -125,27 +130,10 @@
             "CHS COPTER",
             "JZI FINALS"
         ],
-        "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "AMYLU3": "CHS_E_APP",
-                    "BAGGY3": "CHS_W_APP",
-                    "OSPRI7": "CHS_W_APP"
-                },
-                "departure_assignments": {
-                    "KCHS": "CHS_W_APP",
-                    "KJZI": "CHS_W_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
-            {
-                "id": "SAV",
-                "prefix": "1"
-            },
             {
                 "id": "CAE",
                 "prefix": "2"
@@ -159,8 +147,16 @@
                 "prefix": "4"
             },
             {
+                "id": "SAV",
+                "prefix": "1"
+            },
+            {
                 "id": "SSC",
                 "prefix": "5"
+            },
+            {
+                "id": "ZJX",
+                "eram_prefix": "J"
             }
         ],
         "neighboring_facilities": [

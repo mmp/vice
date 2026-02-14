@@ -1,0 +1,25 @@
+{
+    "control_positions": {
+        "FHU_APP": {
+            "frequency": 127050,
+            "radio_name": "Libby approach",
+            "sector_id": "1A"
+        },
+        "FHU_TWR": {
+            "frequency": 124950,
+            "radio_name": "Libby Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "U90",
+                "prefix": "1"
+            }
+        ],
+        "neighboring_facilities": [
+            "U90"
+        ]
+    }
+}

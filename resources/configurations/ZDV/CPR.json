@@ -25,6 +25,9 @@
                 },
                 "departure_assignments": {
                     "KCPR": "CPR_APP"
+                },
+                "default_consolidation": {
+                    "CPR_APP": []
                 }
             }
         },
@@ -55,25 +58,15 @@
             "CPR LCL",
             "CPR VOR 21"
         ],
-        "video_map_file": "videomaps/ZDV-videomaps.gob.zst",
-        "controller_assignments": {
-            "STD": {
-                "inbound_assignments": {
-                    "DEN": "CPR_APP",
-                    "JAC": "CPR_APP",
-                    "MEM": "CPR_APP",
-                    "NE-GA": "CPR_APP",
-                    "SE-GA": "CPR_APP",
-                    "SLC": "CPR_APP"
-                },
-                "departure_assignments": {
-                    "KCPR": "CPR_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZDV-videomaps.gob.zst"
     },
     "handoff_topology": {
-        "handoff_ids": [],
+        "handoff_ids": [
+            {
+                "id": "ZDV",
+                "eram_prefix": "D"
+            }
+        ],
         "neighboring_facilities": [
             "ZDV"
         ]

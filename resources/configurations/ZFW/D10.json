@@ -179,6 +179,21 @@
                     "KDAL": "D10_Z_DEP",
                     "KDFW": "D10_Z_DEP",
                     "KTKI": "D10_N_APP"
+                },
+                "default_consolidation": {
+                    "D10_A_APP": [
+                        "D10_B_APP",
+                        "D10_D_APP",
+                        "D10_E_APP",
+                        "D10_L_DEP",
+                        "D10_N_APP",
+                        "D10_P_APP",
+                        "D10_S_APP",
+                        "D10_U_APP",
+                        "D10_W_APP",
+                        "D10_Y_APP",
+                        "D10_Z_DEP"
+                    ]
                 }
             },
             "DNA": {
@@ -211,6 +226,23 @@
                     "KGPM": "D10_H_APP",
                     "KLNC": "D10_S_APP",
                     "KRBD": "D10_S_APP"
+                },
+                "default_consolidation": {
+                    "D10_A_APP": [
+                        "D10_B_APP",
+                        "D10_D_APP",
+                        "D10_E_APP",
+                        "D10_H_APP",
+                        "D10_L_DEP",
+                        "D10_M_APP",
+                        "D10_N_APP",
+                        "D10_P_APP",
+                        "D10_S_APP",
+                        "D10_U_APP",
+                        "D10_W_APP",
+                        "D10_Y_APP",
+                        "D10_Z_DEP"
+                    ]
                 }
             },
             "D10": {
@@ -234,6 +266,21 @@
                     "KDAL": "D10_Z_DEP",
                     "KDFW": "D10_Z_DEP",
                     "KTKI": "D10_N_APP"
+                },
+                "default_consolidation": {
+                    "D10_A_APP": [
+                        "D10_B_APP",
+                        "D10_D_APP",
+                        "D10_E_APP",
+                        "D10_L_DEP",
+                        "D10_M_APP",
+                        "D10_N_APP",
+                        "D10_P_APP",
+                        "D10_S_APP",
+                        "D10_W_APP",
+                        "D10_Y_APP",
+                        "D10_Z_DEP"
+                    ]
                 }
             },
             "DAL": {
@@ -252,6 +299,13 @@
                     "KADS": "D10_N_APP",
                     "KDAL": "D10_L_DEP",
                     "KTKI": "D10_N_APP"
+                },
+                "default_consolidation": {
+                    "D10_D_APP": [
+                        "D10_L_DEP",
+                        "D10_N_APP",
+                        "D10_S_APP"
+                    ]
                 }
             },
             "DAW": {
@@ -271,6 +325,13 @@
                     "KADS": "D10_N_APP",
                     "KDAL": "D10_L_DEP",
                     "KTKI": "D10_N_APP"
+                },
+                "default_consolidation": {
+                    "D10_D_APP": [
+                        "D10_L_DEP",
+                        "D10_N_APP",
+                        "D10_S_APP"
+                    ]
                 }
             },
             "DA2": {
@@ -288,6 +349,12 @@
                     "KDAL": "D10_L_DEP",
                     "KLNC": "D10_S_APP",
                     "KRBD": "D10_S_APP"
+                },
+                "default_consolidation": {
+                    "D10_L_DEP": [
+                        "D10_N_APP",
+                        "D10_S_APP"
+                    ]
                 }
             },
             "DEP": {
@@ -297,6 +364,11 @@
                     "KDAL": "D10_L_DEP",
                     "KDFW": "D10_L_DEP",
                     "KTKI": "D10_L_DEP"
+                },
+                "default_consolidation": {
+                    "D10_L_DEP": [
+                        "D10_Z_DEP"
+                    ]
                 }
             },
             "DFW": {
@@ -305,6 +377,12 @@
                     "JOVEM6.NORTHFINALS_36L": "D10_H_APP",
                     "SOCKK4.NORTHFINALS_36L": "D10_H_APP",
                     "WHINY4.NORTHFINALS_35C": "D10_G_APP"
+                },
+                "default_consolidation": {
+                    "D10_G_APP": [
+                        "D10_H_APP",
+                        "D10_J_APP"
+                    ]
                 }
             },
             "DF1": {
@@ -313,6 +391,12 @@
                     "BOOVE7.SOUTHFINALS_18R": "D10_G_APP",
                     "SEEVR4.SOUTHFINALS_17C": "D10_H_APP",
                     "VKTRY2.SOUTHFINALS_18R": "D10_G_APP"
+                },
+                "default_consolidation": {
+                    "D10_G_APP": [
+                        "D10_H_APP",
+                        "D10_J_APP"
+                    ]
                 }
             },
             "DF2": {
@@ -321,6 +405,11 @@
                     "JOVEM6.NORTHWEST_FINALS_31L": "D10_H_APP",
                     "SOCKK4.NORTHWEST_FINALS_31L": "D10_H_APP",
                     "WHINY4.NORTHWEST_FINALS_31R": "D10_G_APP"
+                },
+                "default_consolidation": {
+                    "D10_G_APP": [
+                        "D10_H_APP"
+                    ]
                 }
             },
             "DF3": {
@@ -329,6 +418,12 @@
                     "JOVEM6.NORTHFINALS_36L": "D10_H_APP",
                     "SOCKK4.NORTHFINALS_36L": "D10_H_APP",
                     "WHINY4.NORTHFINALS_35R": "D10_G_APP"
+                },
+                "default_consolidation": {
+                    "D10_G_APP": [
+                        "D10_H_APP",
+                        "D10_J_APP"
+                    ]
                 }
             },
             "DF4": {
@@ -337,6 +432,12 @@
                     "BOOVE7.SOUTHFINALS_18R": "D10_G_APP",
                     "SEEVR4.SOUTHFINALS_17L": "D10_H_APP",
                     "VKTRY2.SOUTHFINALS_18R": "D10_G_APP"
+                },
+                "default_consolidation": {
+                    "D10_G_APP": [
+                        "D10_H_APP",
+                        "D10_J_APP"
+                    ]
                 }
             },
             "DF5": {
@@ -345,6 +446,12 @@
                     "JOVEM6.NORTHFINALS_36L": "D10_H_APP",
                     "SOCKK4.NORTHFINALS_36L": "D10_H_APP",
                     "WHINY4.NORTHFINALS_35R": "D10_G_APP"
+                },
+                "default_consolidation": {
+                    "D10_G_APP": [
+                        "D10_H_APP",
+                        "D10_J_APP"
+                    ]
                 }
             },
             "DF6": {
@@ -353,6 +460,12 @@
                     "BOOVE7.SOUTHFINALS_18R": "D10_G_APP",
                     "SEEVR4.SOUTHFINALS_17L": "D10_H_APP",
                     "VKTRY2.SOUTHFINALS_18R": "D10_G_APP"
+                },
+                "default_consolidation": {
+                    "D10_G_APP": [
+                        "D10_H_APP",
+                        "D10_J_APP"
+                    ]
                 }
             },
             "EAS": {
@@ -376,6 +489,13 @@
                     "KLNC": "D10_S_APP",
                     "KRBD": "D10_S_APP",
                     "KTKI": "D10_N_APP"
+                },
+                "default_consolidation": {
+                    "D10_D_APP": [
+                        "D10_L_DEP",
+                        "D10_N_APP",
+                        "D10_S_APP"
+                    ]
                 }
             },
             "EA1": {
@@ -398,6 +518,12 @@
                     "KLNC": "D10_S_APP",
                     "KRBD": "D10_S_APP",
                     "KTKI": "D10_N_APP"
+                },
+                "default_consolidation": {
+                    "D10_L_DEP": [
+                        "D10_N_APP",
+                        "D10_S_APP"
+                    ]
                 }
             },
             "MEA": {
@@ -418,6 +544,11 @@
                     "KGKY": "D10_M_APP",
                     "KGPM": "D10_M_APP",
                     "KNFW": "D10_M_APP"
+                },
+                "default_consolidation": {
+                    "D10_D_APP": [
+                        "D10_M_APP"
+                    ]
                 }
             },
             "ME1": {
@@ -438,6 +569,11 @@
                     "KGKY": "D10_M_APP",
                     "KGPM": "D10_M_APP",
                     "KNFW": "D10_M_APP"
+                },
+                "default_consolidation": {
+                    "D10_D_APP": [
+                        "D10_M_APP"
+                    ]
                 }
             },
             "ME2": {
@@ -452,6 +588,11 @@
                     "KAFW": "D10_D_APP",
                     "KDTO": "D10_D_APP",
                     "KFTW": "D10_D_APP"
+                },
+                "default_consolidation": {
+                    "D10_D_APP": [
+                        "D10_M_APP"
+                    ]
                 }
             },
             "ME3": {
@@ -466,6 +607,11 @@
                     "KAFW": "D10_M_APP",
                     "KDTO": "D10_D_APP",
                     "KFTW": "D10_M_APP"
+                },
+                "default_consolidation": {
+                    "D10_D_APP": [
+                        "D10_M_APP"
+                    ]
                 }
             },
             "ME4": {
@@ -483,6 +629,11 @@
                     "KGKY": "D10_M_APP",
                     "KGPM": "D10_M_APP",
                     "KNFW": "D10_M_APP"
+                },
+                "default_consolidation": {
+                    "D10_D_APP": [
+                        "D10_M_APP"
+                    ]
                 }
             },
             "DSA": {
@@ -515,6 +666,22 @@
                     "KGPM": "D10_T_APP",
                     "KLNC": "D10_S_APP",
                     "KRBD": "D10_S_APP"
+                },
+                "default_consolidation": {
+                    "D10_A_APP": [
+                        "D10_B_APP",
+                        "D10_D_APP",
+                        "D10_E_APP",
+                        "D10_L_DEP",
+                        "D10_M_APP",
+                        "D10_N_APP",
+                        "D10_P_APP",
+                        "D10_S_APP",
+                        "D10_T_APP",
+                        "D10_W_APP",
+                        "D10_Y_APP",
+                        "D10_Z_DEP"
+                    ]
                 }
             }
         },
@@ -584,7 +751,7 @@
             ]
         },
         "controller_configs": {
-            "1D": {
+            "D10_D_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -593,7 +760,7 @@
                     }
                 ]
             },
-            "1M": {
+            "D10_M_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -602,7 +769,7 @@
                     }
                 ]
             },
-            "1S": {
+            "D10_S_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -611,7 +778,7 @@
                     }
                 ]
             },
-            "1N": {
+            "D10_N_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -620,7 +787,7 @@
                     }
                 ]
             },
-            "1E": {
+            "D10_E_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -629,7 +796,7 @@
                     }
                 ]
             },
-            "1W": {
+            "D10_W_APP": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -797,374 +964,17 @@
             "RVMD10054S"
         ],
         "force_ql_self": true,
-        "video_map_file": "videomaps/ZFW-videomaps.gob.zst",
-        "controller_assignments": {
-            "10X": {
-                "inbound_assignments": {
-                    "BRDJE5": "D10_E_APP",
-                    "CRIKT1": "D10_U_APP",
-                    "DRYYE2": "D10_D_APP",
-                    "HERBZ1": "D10_B_APP",
-                    "JOVEM6": "D10_W_APP",
-                    "LIKES3_N": "D10_D_APP",
-                    "MNNDO4": "D10_S_APP",
-                    "REEKO3": "D10_S_APP",
-                    "SOCKK4": "D10_Y_APP",
-                    "TRUUK2_NF": "D10_N_APP",
-                    "WESAT2": "D10_P_APP",
-                    "WHINY4": "D10_A_APP"
-                },
-                "departure_assignments": {
-                    "KADS": "D10_L_DEP",
-                    "KAFW": "D10_Z_DEP",
-                    "KDAL": "D10_Z_DEP",
-                    "KDFW": "D10_Z_DEP",
-                    "KTKI": "D10_N_APP"
-                }
-            },
-            "D10": {
-                "inbound_assignments": {
-                    "BACHR4": "D10_D_APP",
-                    "BEREE3": "D10_A_APP",
-                    "BOOVE7": "D10_Y_APP",
-                    "HIBIL3": "D10_N_APP",
-                    "JFRYE5": "D10_B_APP",
-                    "LIKES3_S": "D10_P_APP",
-                    "REDDN4": "D10_S_APP",
-                    "REEKO3": "D10_S_APP",
-                    "SEEVR4": "D10_E_APP",
-                    "TRUUK2_SF": "D10_N_APP",
-                    "VKTRY2": "D10_W_APP",
-                    "WESAT2": "D10_M_APP"
-                },
-                "departure_assignments": {
-                    "KADS": "D10_L_DEP",
-                    "KAFW": "D10_Z_DEP",
-                    "KDAL": "D10_Z_DEP",
-                    "KDFW": "D10_Z_DEP",
-                    "KTKI": "D10_N_APP"
-                }
-            },
-            "DA2": {
-                "inbound_assignments": {
-                    "CRIKT1.DS_NF": "D10_N_APP",
-                    "DRYYE2_DS_NF": "D10_S_APP",
-                    "EESAT4_DS_NF": "D10_S_APP",
-                    "HERBZ1.DS_NF": "D10_N_APP",
-                    "MNNDO4": "D10_S_APP",
-                    "REEKO3": "D10_S_APP",
-                    "SLANT3.DS_NF_PROP": "D10_N_APP",
-                    "SWVAY4_DS_NF_PROP": "D10_S_APP"
-                },
-                "departure_assignments": {
-                    "KDAL": "D10_L_DEP",
-                    "KLNC": "D10_S_APP",
-                    "KRBD": "D10_S_APP"
-                }
-            },
-            "DAL": {
-                "inbound_assignments": {
-                    "CRIKT1": "D10_N_APP",
-                    "EESAT4_DN_NF": "D10_S_APP",
-                    "FINGR9.PROP": "D10_N_APP",
-                    "GREGS1_DN_NF_JET": "D10_D_APP",
-                    "HERBZ1.DN_NF": "D10_D_APP",
-                    "SWVAY4_DN_NF_PROP": "D10_S_APP",
-                    "TRUUK2_NF": "D10_N_APP",
-                    "YEAGR4_DN_NF_JET": "D10_S_APP",
-                    "YEAGR4_DN_NF_PROP": "D10_S_APP"
-                },
-                "departure_assignments": {
-                    "KADS": "D10_N_APP",
-                    "KDAL": "D10_L_DEP",
-                    "KTKI": "D10_N_APP"
-                }
-            },
-            "DAW": {
-                "inbound_assignments": {
-                    "BACHR4_DN_SF": "D10_S_APP",
-                    "FINGR9.PROP": "D10_N_APP",
-                    "GREGS1_DN_SF_JET": "D10_D_APP",
-                    "HIBIL3": "D10_N_APP",
-                    "LOADS4_DN_SF": "D10_N_APP",
-                    "REDDN4_DN_SF": "D10_S_APP",
-                    "SLANT3.JET": "D10_N_APP",
-                    "SLANT3.PROP": "D10_N_APP",
-                    "SWVAY4_DN_SF_PROP": "D10_S_APP",
-                    "TRUUK2_SF": "D10_N_APP"
-                },
-                "departure_assignments": {
-                    "KADS": "D10_N_APP",
-                    "KDAL": "D10_L_DEP",
-                    "KTKI": "D10_N_APP"
-                }
-            },
-            "DEP": {
-                "departure_assignments": {
-                    "KADS": "D10_L_DEP",
-                    "KAFW": "D10_Z_DEP",
-                    "KDAL": "D10_L_DEP",
-                    "KDFW": "D10_L_DEP",
-                    "KTKI": "D10_L_DEP"
-                }
-            },
-            "DF1": {
-                "inbound_assignments": {
-                    "BEREE3.SOUTHFINAL_17C": "D10_J_APP",
-                    "BOOVE7.SOUTHFINALS_18R": "D10_G_APP",
-                    "SEEVR4.SOUTHFINALS_17C": "D10_H_APP",
-                    "VKTRY2.SOUTHFINALS_18R": "D10_G_APP"
-                }
-            },
-            "DF2": {
-                "inbound_assignments": {
-                    "BRDJE5.NORTHWEST_FINALS_31R": "D10_G_APP",
-                    "JOVEM6.NORTHWEST_FINALS_31L": "D10_H_APP",
-                    "SOCKK4.NORTHWEST_FINALS_31L": "D10_H_APP",
-                    "WHINY4.NORTHWEST_FINALS_31R": "D10_G_APP"
-                }
-            },
-            "DF3": {
-                "inbound_assignments": {
-                    "BRDJE5.NORTHFINALS_35C": "D10_J_APP",
-                    "JOVEM6.NORTHFINALS_36L": "D10_H_APP",
-                    "SOCKK4.NORTHFINALS_36L": "D10_H_APP",
-                    "WHINY4.NORTHFINALS_35R": "D10_G_APP"
-                }
-            },
-            "DF4": {
-                "inbound_assignments": {
-                    "BEREE3.SOUTHFINAL_17C": "D10_J_APP",
-                    "BOOVE7.SOUTHFINALS_18R": "D10_G_APP",
-                    "SEEVR4.SOUTHFINALS_17L": "D10_H_APP",
-                    "VKTRY2.SOUTHFINALS_18R": "D10_G_APP"
-                }
-            },
-            "DF5": {
-                "inbound_assignments": {
-                    "BRDJE5.NORTHFINALS_35R": "D10_J_APP",
-                    "JOVEM6.NORTHFINALS_36L": "D10_H_APP",
-                    "SOCKK4.NORTHFINALS_36L": "D10_H_APP",
-                    "WHINY4.NORTHFINALS_35R": "D10_G_APP"
-                }
-            },
-            "DF6": {
-                "inbound_assignments": {
-                    "BEREE3.SOUTHFINAL_17L": "D10_J_APP",
-                    "BOOVE7.SOUTHFINALS_18R": "D10_G_APP",
-                    "SEEVR4.SOUTHFINALS_17L": "D10_H_APP",
-                    "VKTRY2.SOUTHFINALS_18R": "D10_G_APP"
-                }
-            },
-            "DFW": {
-                "inbound_assignments": {
-                    "BRDJE5.NORTHFINALS_35C": "D10_J_APP",
-                    "JOVEM6.NORTHFINALS_36L": "D10_H_APP",
-                    "SOCKK4.NORTHFINALS_36L": "D10_H_APP",
-                    "WHINY4.NORTHFINALS_35C": "D10_G_APP"
-                }
-            },
-            "DNA": {
-                "inbound_assignments": {
-                    "BRDJE5": "D10_E_APP",
-                    "CRIKT1": "D10_U_APP",
-                    "DRYYE2": "D10_D_APP",
-                    "HERBZ1": "D10_B_APP",
-                    "JOVEM6": "D10_W_APP",
-                    "LIKES3_N": "D10_D_APP",
-                    "MNNDO4": "D10_S_APP",
-                    "REEKO3": "D10_S_APP",
-                    "SOCKK4": "D10_Y_APP",
-                    "TRUUK2_NF": "D10_N_APP",
-                    "WESAT2": "D10_P_APP",
-                    "WHINY4": "D10_A_APP"
-                },
-                "departure_assignments": {
-                    "KADS": "D10_N_APP",
-                    "KAFW": "D10_M_APP",
-                    "KDTO": "D10_M_APP",
-                    "KFTW": "D10_D_APP",
-                    "KDAL": "D10_Z_DEP",
-                    "KDFW/36R": "D10_Z_DEP",
-                    "KDFW/35L": "D10_L_DEP",
-                    "KTKI": "D10_N_APP",
-                    "KNFW": "D10_P_APP",
-                    "KFWS": "D10_D_APP",
-                    "KGKY": "D10_H_APP",
-                    "KGPM": "D10_H_APP",
-                    "KLNC": "D10_S_APP",
-                    "KRBD": "D10_S_APP"
-                }
-            },
-            "DSA": {
-                "inbound_assignments": {
-                    "BACHR4": "D10_D_APP",
-                    "BEREE3": "D10_A_APP",
-                    "BOOVE7": "D10_Y_APP",
-                    "HIBIL3": "D10_N_APP",
-                    "JFRYE5": "D10_B_APP",
-                    "LIKES3_S": "D10_P_APP",
-                    "REDDN4": "D10_S_APP",
-                    "REEKO3": "D10_S_APP",
-                    "SEEVR4": "D10_E_APP",
-                    "TRUUK2_SF": "D10_N_APP",
-                    "VKTRY2": "D10_W_APP",
-                    "WESAT2": "D10_M_APP"
-                },
-                "departure_assignments": {
-                    "KADS": "D10_N_APP",
-                    "KAFW": "D10_M_APP",
-                    "KDTO": "D10_M_APP",
-                    "KFTW": "D10_D_APP",
-                    "KDAL": "D10_Z_DEP",
-                    "KDFW/18L": "D10_Z_DEP",
-                    "KDFW/17R": "D10_L_DEP",
-                    "KTKI": "D10_N_APP",
-                    "KNFW": "D10_P_APP",
-                    "KFWS": "D10_D_APP",
-                    "KGKY": "D10_T_APP",
-                    "KGPM": "D10_T_APP",
-                    "KLNC": "D10_S_APP",
-                    "KRBD": "D10_S_APP"
-                }
-            },
-            "EA1": {
-                "inbound_assignments": {
-                    "BACHR4_DS_SF": "D10_S_APP",
-                    "FINGR9.PROP": "D10_N_APP",
-                    "GREGS1_DN_SF_JET": "D10_N_APP",
-                    "HIBIL3": "D10_N_APP",
-                    "LOADS4": "D10_N_APP",
-                    "REDDN4": "D10_S_APP",
-                    "REEKO3": "D10_S_APP",
-                    "SLANT3.JET": "D10_N_APP",
-                    "SLANT3.PROP": "D10_N_APP",
-                    "SWVAY4_DS_SF_PROP": "D10_S_APP",
-                    "TRUUK2_SF": "D10_N_APP"
-                },
-                "departure_assignments": {
-                    "KADS": "D10_N_APP",
-                    "KDAL": "D10_L_DEP",
-                    "KLNC": "D10_S_APP",
-                    "KRBD": "D10_S_APP",
-                    "KTKI": "D10_N_APP"
-                }
-            },
-            "EAS": {
-                "inbound_assignments": {
-                    "CRIKT1": "D10_N_APP",
-                    "DRYYE2_DS_NF": "D10_S_APP",
-                    "EESAT4_DS_NF": "D10_S_APP",
-                    "FINGR9.PROP": "D10_N_APP",
-                    "GREGS1_DN_NF_JET": "D10_D_APP",
-                    "HERBZ1.DN_NF": "D10_D_APP",
-                    "MNNDO4": "D10_S_APP",
-                    "REEKO3": "D10_S_APP",
-                    "SWVAY4_DS_NF_PROP": "D10_S_APP",
-                    "TRUUK2_NF": "D10_N_APP",
-                    "YEAGR4_NF_JET": "D10_S_APP",
-                    "YEAGR4_NF_PROP": "D10_S_APP"
-                },
-                "departure_assignments": {
-                    "KADS": "D10_N_APP",
-                    "KDAL": "D10_L_DEP",
-                    "KLNC": "D10_S_APP",
-                    "KRBD": "D10_S_APP",
-                    "KTKI": "D10_N_APP"
-                }
-            },
-            "ME1": {
-                "inbound_assignments": {
-                    "BACHR4_MS_SF": "D10_M_APP",
-                    "JFRYE5": "D10_D_APP",
-                    "LIKES3_S": "D10_M_APP",
-                    "REEKO3_MS_SF": "D10_M_APP",
-                    "SWVAY4_MS_SF_PROP": "D10_M_APP",
-                    "TRUUK2_M_NORTH_SF": "D10_D_APP",
-                    "WESAT2": "D10_D_APP"
-                },
-                "departure_assignments": {
-                    "KAFW": "D10_M_APP",
-                    "KDTO": "D10_D_APP",
-                    "KFTW": "D10_M_APP",
-                    "KFWS": "D10_M_APP",
-                    "KGKY": "D10_M_APP",
-                    "KGPM": "D10_M_APP",
-                    "KNFW": "D10_M_APP"
-                }
-            },
-            "ME2": {
-                "inbound_assignments": {
-                    "HERBZ1": "D10_D_APP",
-                    "LIKES3_M_NORTH_NF": "D10_M_APP",
-                    "REEKO3_MN_NF": "D10_M_APP",
-                    "TRUUK2_M_NORTH_NF": "D10_D_APP",
-                    "WESAT2": "D10_D_APP"
-                },
-                "departure_assignments": {
-                    "KAFW": "D10_D_APP",
-                    "KDTO": "D10_D_APP",
-                    "KFTW": "D10_D_APP"
-                }
-            },
-            "ME3": {
-                "inbound_assignments": {
-                    "JFRYE5": "D10_D_APP",
-                    "LIKES3_M_NORTH_SF": "D10_M_APP",
-                    "REEKO3_MN_SF": "D10_M_APP",
-                    "TRUUK2_M_NORTH_SF": "D10_D_APP",
-                    "WESAT2": "D10_D_APP"
-                },
-                "departure_assignments": {
-                    "KAFW": "D10_M_APP",
-                    "KDTO": "D10_D_APP",
-                    "KFTW": "D10_M_APP"
-                }
-            },
-            "ME4": {
-                "inbound_assignments": {
-                    "DRYYE2": "D10_M_APP",
-                    "LIKES3_N": "D10_M_APP",
-                    "REEKO3_MS_NF": "D10_M_APP",
-                    "SWVAY4_MS_NF_PROP": "D10_M_APP",
-                    "TRUUK2_S_NORTH_NF": "D10_D_APP",
-                    "WESAT2_MS_NF": "D10_D_APP"
-                },
-                "departure_assignments": {
-                    "KFTW": "D10_M_APP",
-                    "KFWS": "D10_M_APP",
-                    "KGKY": "D10_M_APP",
-                    "KGPM": "D10_M_APP",
-                    "KNFW": "D10_M_APP"
-                }
-            },
-            "MEA": {
-                "inbound_assignments": {
-                    "DRYYE2": "D10_M_APP",
-                    "HERBZ1": "D10_D_APP",
-                    "LIKES3_N": "D10_M_APP",
-                    "REEKO3_MS_NF": "D10_M_APP",
-                    "SWVAY4_MS_NF_PROP": "D10_M_APP",
-                    "TRUUK2_M_NORTH_NF": "D10_D_APP",
-                    "WESAT2": "D10_D_APP"
-                },
-                "departure_assignments": {
-                    "KAFW": "D10_D_APP",
-                    "KDTO": "D10_D_APP",
-                    "KFTW": "D10_D_APP",
-                    "KFWS": "D10_M_APP",
-                    "KGKY": "D10_M_APP",
-                    "KGPM": "D10_M_APP",
-                    "KNFW": "D10_M_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZFW-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
             {
                 "id": "ACT",
                 "prefix": "1"
+            },
+            {
+                "id": "ZFW",
+                "eram_prefix": "F"
             }
         ],
         "neighboring_facilities": [

@@ -1,0 +1,40 @@
+{
+    "control_positions": {
+        "HOP_N_APP": {
+            "frequency": 118100,
+            "radio_name": "Campbell Approach",
+            "sector_id": "1N"
+        },
+        "HOP_S_APP": {
+            "frequency": 134350,
+            "radio_name": "Campbell Approach",
+            "sector_id": "1S"
+        },
+        "HOP_TWR": {
+            "frequency": 120900,
+            "radio_name": "Campbell Tower",
+            "sector_id": "1T"
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "BNA",
+                "prefix": "1"
+            },
+            {
+                "id": "EVV",
+                "prefix": "2"
+            },
+            {
+                "id": "ZID",
+                "eram_prefix": "I"
+            }
+        ],
+        "neighboring_facilities": [
+            "BNA",
+            "EVV",
+            "ZID"
+        ]
+    }
+}

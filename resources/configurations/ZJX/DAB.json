@@ -65,6 +65,15 @@
                     "KFIN": "DAB_N_APP",
                     "KEVB": "DAB_S_APP",
                     "KDED": "DAB_W_APP"
+                },
+                "default_consolidation": {
+                    "DAB_H_APP": [
+                        "DAB_L_APP",
+                        "DAB_M_APP",
+                        "DAB_N_APP",
+                        "DAB_S_APP",
+                        "DAB_W_APP"
+                    ]
                 }
             },
             "DAW": {
@@ -84,6 +93,15 @@
                     "KFIN": "DAB_N_APP",
                     "KEVB": "DAB_S_APP",
                     "KDED": "DAB_W_APP"
+                },
+                "default_consolidation": {
+                    "DAB_H_APP": [
+                        "DAB_L_APP",
+                        "DAB_M_APP",
+                        "DAB_N_APP",
+                        "DAB_S_APP",
+                        "DAB_W_APP"
+                    ]
                 }
             }
         },
@@ -241,47 +259,7 @@
             "X50/7FL6 APPROACHES",
             "WARNING AREA 497"
         ],
-        "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
-        "controller_assignments": {
-            "DAE": {
-                "inbound_assignments": {
-                    "TTHOR3": "DAB_H_APP",
-                    "WALEE": "DAB_M_APP",
-                    "WORMSE": "DAB_H_APP",
-                    "V267S": "DAB_M_APP",
-                    "V267N": "DAB_L_APP",
-                    "KIZER": "DAB_W_APP",
-                    "SMYRA": "DAB_S_APP",
-                    "ASTOR": "DAB_M_APP"
-                },
-                "departure_assignments": {
-                    "KDAB": "DAB_W_APP",
-                    "KOMN": "DAB_N_APP",
-                    "KFIN": "DAB_N_APP",
-                    "KEVB": "DAB_S_APP",
-                    "KDED": "DAB_W_APP"
-                }
-            },
-            "DAW": {
-                "inbound_assignments": {
-                    "TTHOR3": "DAB_H_APP",
-                    "WALEE": "DAB_M_APP",
-                    "WORMSW": "DAB_H_APP",
-                    "V267S": "DAB_M_APP",
-                    "V267N": "DAB_L_APP",
-                    "KIZER": "DAB_W_APP",
-                    "SMYRA": "DAB_S_APP",
-                    "ASTOR": "DAB_M_APP"
-                },
-                "departure_assignments": {
-                    "KDAB": "DAB_W_APP",
-                    "KOMN": "DAB_N_APP",
-                    "KFIN": "DAB_N_APP",
-                    "KEVB": "DAB_S_APP",
-                    "KDED": "DAB_W_APP"
-                }
-            }
-        }
+        "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
     },
     "handoff_topology": {
         "handoff_ids": [
@@ -292,6 +270,10 @@
             {
                 "id": "JAX",
                 "prefix": "1"
+            },
+            {
+                "id": "ZJX",
+                "eram_prefix": "J"
             }
         ],
         "neighboring_facilities": [
