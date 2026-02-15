@@ -32,11 +32,13 @@ func CommandsEquivalent(expected, actual string, aircraft map[string]Aircraft) b
 
 	callsign := expectedParts[0]
 
-	// Find the aircraft for altitude context
+	// Find the aircraft for altitude context.
+	// Strip /T suffix for lookup since aircraft map may have either form.
+	rawCallsign := strings.TrimSuffix(callsign, "/T")
 	var ac Aircraft
 	var found bool
 	for _, a := range aircraft {
-		if a.Callsign == callsign {
+		if strings.TrimSuffix(a.Callsign, "/T") == rawCallsign {
 			ac = a
 			found = true
 			break

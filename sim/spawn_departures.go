@@ -96,7 +96,7 @@ func (s *Sim) processGateDepartures(depState *RunwayLaunchState, now time.Time) 
 		ac := s.Aircraft[dep.ADSBCallsign]
 		if ac.HoldForRelease {
 			depState.Gate[i].RequestReleaseTime = now.Add(time.Duration(60+s.Rand.Intn(60)) * time.Second)
-			s.starsComputer().AddHeldDeparture(ac)
+			s.STARSComputer.AddHeldDeparture(ac)
 			depState.Held = append(depState.Held, depState.Gate[i])
 			depState.Gate = append(depState.Gate[:i], depState.Gate[i+1:]...)
 		} else if s.State.LaunchConfig.DepartureMode == LaunchAutomatic {
@@ -613,12 +613,22 @@ func (s *Sim) createIFRDepartureNoLock(departureAirport, runway, category string
 		return nil, err
 	}
 
-	// Store FP in ERAM (authoritative source) and primary STARS.
 	// Departures aren't immediately associated, but the STARSComputer will
 	// hold on to their flight plans for now.
-	s.eramComputer().StoreFlightPlan(&nasFp)
-	nasFp.ReceivedFrom = s.eramComputer().Identifier
-	_, err = s.starsComputer().CreateFlightPlan(nasFp)
+	// Create a flight strip for departures
+	if shouldCreateFlightStrip(&nasFp) {
+		if s.isVirtualController(nasFp.TrackingController) {
+			// Virtual controller: strip goes to the handoff target
+			if !s.isVirtualController(nasFp.InboundHandoffController) {
+				s.initFlightStrip(&nasFp, nasFp.InboundHandoffController)
+			}
+		} else {
+			// Human controller: strip goes to the tracking controller
+			s.initFlightStrip(&nasFp, nasFp.TrackingController)
+		}
+	}
+
+	_, err = s.STARSComputer.CreateFlightPlan(nasFp)
 
 	return ac, err
 }

@@ -979,6 +979,15 @@ func (g *qlRegionMatchGenerator) Generate(r *rand.Rand, ctx *GeneratorContext) G
 	return GeneratorResult{Text: randomField(r, length)}
 }
 
+// fdamRegionMatchGenerator generates FDAM region IDs.
+type fdamRegionMatchGenerator struct{}
+
+func (g *fdamRegionMatchGenerator) Generate(r *rand.Rand, ctx *GeneratorContext) GeneratorResult {
+	// Generate 1-5 character region ID
+	length := 1 + r.Intn(5)
+	return GeneratorResult{Text: randomField(r, length)}
+}
+
 // qlPositionsMatchGenerator generates quicklook position lists.
 type qlPositionsMatchGenerator struct{}
 
@@ -1010,11 +1019,11 @@ func (g *altFilter6MatchGenerator) Generate(r *rand.Rand, ctx *GeneratorContext)
 	return GeneratorResult{Text: fmt.Sprintf("%03d%03d", low, high)}
 }
 
-// crdaRunwayMatchGenerator generates CRDA runway IDs.
-type crdaRunwayMatchGenerator struct{}
+// crdaRegionMatchGenerator generates CRDA region IDs.
+type crdaRegionMatchGenerator struct{}
 
-func (g *crdaRunwayMatchGenerator) Generate(r *rand.Rand, ctx *GeneratorContext) GeneratorResult {
-	// Generate runway like "13L" or "22R"
+func (g *crdaRegionMatchGenerator) Generate(r *rand.Rand, ctx *GeneratorContext) GeneratorResult {
+	// Generate runway-style names for now; region names can be arbitrary.
 	num := 1 + r.Intn(36)
 	suffixes := []string{"", "L", "R", "C"}
 	return GeneratorResult{Text: fmt.Sprintf("%02d%s", num, suffixes[r.Intn(len(suffixes))])}

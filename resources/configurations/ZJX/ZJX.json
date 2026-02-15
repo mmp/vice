@@ -291,7 +291,15 @@
                     "LUBBR3": "ZJX 50 Alma",
                     "OHDEA2": "ZJX 50 Alma",
                     "SHRKS": "ZJX 50 Alma",
-                    "TTHOR3": "ZJX 50 Alma"
+                    "TTHOR3": "ZJX 50 Alma",
+                    "50_BAGGY3": "ZJX 50 Alma",
+                    "50_CAMJO": "ZJX 50 Alma",
+                    "50_DADES2": "ZJX 50 Alma",
+                    "50_GRNCH5": "ZJX 50 Alma",
+                    "50_LUBBR3": "ZJX 50 Alma",
+                    "50_OHDEA2": "ZJX 50 Alma",
+                    "50_SHRKS": "ZJX 50 Alma",
+                    "50_TTHOR3": "ZJX 50 Alma"
                 },
                 "default_consolidation": {
                     "ZJX 50 Alma": []

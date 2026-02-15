@@ -19,7 +19,25 @@
                     "cifp_id": "I32"
                 }
             },
-            "approach_regions": {
+            "crda_regions": {
+                "32": {
+                    "heading_tolerance": 90,
+                    "near_distance": 3,
+                    "near_half_width": 1.5,
+                    "far_half_width": 10,
+                    "region_length": 30,
+                    "descent_distance": 18.4,
+                    "descent_altitude": 6000,
+                    "above_altitude_tolerance": 4000,
+                    "below_altitude_tolerance": 6000,
+                    "reference_point": "40.479914,-80.204783",
+                    "reference_heading": 325.5,
+                    "reference_length": 30,
+                    "reference_altitude": 0,
+                    "scratchpad_patterns": [
+                        "32"
+                    ]
+                },
                 "28C": {
                     "heading_tolerance": 90,
                     "near_distance": 3,
@@ -55,29 +73,11 @@
                     "scratchpad_patterns": [
                         "8R"
                     ]
-                },
-                "32": {
-                    "heading_tolerance": 90,
-                    "near_distance": 3,
-                    "near_half_width": 1.5,
-                    "far_half_width": 10,
-                    "region_length": 30,
-                    "descent_distance": 18.4,
-                    "descent_altitude": 6000,
-                    "above_altitude_tolerance": 4000,
-                    "below_altitude_tolerance": 6000,
-                    "reference_point": "40.479914,-80.204783",
-                    "reference_heading": 325.5,
-                    "reference_length": 30,
-                    "reference_altitude": 0,
-                    "scratchpad_patterns": [
-                        "32"
-                    ]
                 }
             },
-            "converging_runways": [
+            "crda_pairs": [
                 {
-                    "runways": [
+                    "crda_regions": [
                         "28L",
                         "32"
                     ],
@@ -90,7 +90,7 @@
                     "tie_offset": 2.5
                 },
                 {
-                    "runways": [
+                    "crda_regions": [
                         "28C",
                         "32"
                     ],
@@ -104,6 +104,38 @@
                 }
             ],
             "departure_routes": {
+                "14": {
+                    "AIR": {
+                        "cleared_altitude": 5000,
+                        "sid": "PIT5",
+                        "waypoints": "_PIT_32/h145"
+                    },
+                    "MGW": {
+                        "cleared_altitude": 5000,
+                        "sid": "PIT5",
+                        "waypoints": "_PIT_32/h145"
+                    },
+                    "JST": {
+                        "cleared_altitude": 5000,
+                        "sid": "PIT5",
+                        "waypoints": "_PIT_32/h145"
+                    },
+                    "CKB": {
+                        "cleared_altitude": 5000,
+                        "sid": "PIT5",
+                        "waypoints": "_PIT_32/h145"
+                    },
+                    "DILNE": {
+                        "cleared_altitude": 5000,
+                        "sid": "PIT5",
+                        "waypoints": "_PIT_32/h145"
+                    },
+                    "AHTIY": {
+                        "cleared_altitude": 5000,
+                        "sid": "PIT5",
+                        "waypoints": "_PIT_32/h145"
+                    }
+                },
                 "28C": {
                     "AIR": {
                         "cleared_altitude": 5000,
@@ -161,38 +193,6 @@
                         "cleared_altitude": 5000,
                         "sid": "PIT5",
                         "waypoints": "_PIT_10C/h281"
-                    }
-                },
-                "14": {
-                    "AIR": {
-                        "cleared_altitude": 5000,
-                        "sid": "PIT5",
-                        "waypoints": "_PIT_32/h145"
-                    },
-                    "MGW": {
-                        "cleared_altitude": 5000,
-                        "sid": "PIT5",
-                        "waypoints": "_PIT_32/h145"
-                    },
-                    "JST": {
-                        "cleared_altitude": 5000,
-                        "sid": "PIT5",
-                        "waypoints": "_PIT_32/h145"
-                    },
-                    "CKB": {
-                        "cleared_altitude": 5000,
-                        "sid": "PIT5",
-                        "waypoints": "_PIT_32/h145"
-                    },
-                    "DILNE": {
-                        "cleared_altitude": 5000,
-                        "sid": "PIT5",
-                        "waypoints": "_PIT_32/h145"
-                    },
-                    "AHTIY": {
-                        "cleared_altitude": 5000,
-                        "sid": "PIT5",
-                        "waypoints": "_PIT_32/h145"
                     }
                 },
                 "10C": {
@@ -547,63 +547,6 @@
                 }
             },
             "departure_routes": {
-                "28": {
-                    "AIR": {
-                        "cleared_altitude": 3000,
-                        "sid": "AGC9",
-                        "waypoints": "_AGC_10/h279"
-                    },
-                    "EWC": {
-                        "cleared_altitude": 3000,
-                        "sid": "AGC9",
-                        "waypoints": "_AGC_10/h279"
-                    },
-                    "BSV": {
-                        "cleared_altitude": 3000,
-                        "sid": "AGC9",
-                        "waypoints": "_AGC_10/h279"
-                    },
-                    "CKB": {
-                        "cleared_altitude": 3000,
-                        "sid": "AGC9",
-                        "waypoints": "_AGC_10/h279"
-                    },
-                    "PSB": {
-                        "cleared_altitude": 3000,
-                        "sid": "AGC9",
-                        "waypoints": "_AGC_10/h279"
-                    },
-                    "JST": {
-                        "cleared_altitude": 3000,
-                        "sid": "AGC9",
-                        "waypoints": "_AGC_10/h279"
-                    },
-                    "MGW": {
-                        "cleared_altitude": 3000,
-                        "sid": "AGC9",
-                        "waypoints": "_AGC_10/h279"
-                    },
-                    "EKN": {
-                        "cleared_altitude": 3000,
-                        "sid": "AGC9",
-                        "waypoints": "_AGC_28/h099"
-                    },
-                    "TYROO": {
-                        "cleared_altitude": 3000,
-                        "sid": "AGC9",
-                        "waypoints": "_AGC_10/h279"
-                    },
-                    "AHTIY": {
-                        "cleared_altitude": 3000,
-                        "sid": "AGC9",
-                        "waypoints": "_AGC_28/h099"
-                    },
-                    "DILNE": {
-                        "cleared_altitude": 3000,
-                        "sid": "AGC9",
-                        "waypoints": "_AGC_28/h099"
-                    }
-                },
                 "10": {
                     "AIR": {
                         "cleared_altitude": 3000,
@@ -649,6 +592,63 @@
                         "cleared_altitude": 3000,
                         "sid": "AGC9",
                         "waypoints": "_AGC_28/h099"
+                    },
+                    "AHTIY": {
+                        "cleared_altitude": 3000,
+                        "sid": "AGC9",
+                        "waypoints": "_AGC_28/h099"
+                    },
+                    "DILNE": {
+                        "cleared_altitude": 3000,
+                        "sid": "AGC9",
+                        "waypoints": "_AGC_28/h099"
+                    }
+                },
+                "28": {
+                    "AIR": {
+                        "cleared_altitude": 3000,
+                        "sid": "AGC9",
+                        "waypoints": "_AGC_10/h279"
+                    },
+                    "EWC": {
+                        "cleared_altitude": 3000,
+                        "sid": "AGC9",
+                        "waypoints": "_AGC_10/h279"
+                    },
+                    "BSV": {
+                        "cleared_altitude": 3000,
+                        "sid": "AGC9",
+                        "waypoints": "_AGC_10/h279"
+                    },
+                    "CKB": {
+                        "cleared_altitude": 3000,
+                        "sid": "AGC9",
+                        "waypoints": "_AGC_10/h279"
+                    },
+                    "PSB": {
+                        "cleared_altitude": 3000,
+                        "sid": "AGC9",
+                        "waypoints": "_AGC_10/h279"
+                    },
+                    "JST": {
+                        "cleared_altitude": 3000,
+                        "sid": "AGC9",
+                        "waypoints": "_AGC_10/h279"
+                    },
+                    "MGW": {
+                        "cleared_altitude": 3000,
+                        "sid": "AGC9",
+                        "waypoints": "_AGC_10/h279"
+                    },
+                    "EKN": {
+                        "cleared_altitude": 3000,
+                        "sid": "AGC9",
+                        "waypoints": "_AGC_28/h099"
+                    },
+                    "TYROO": {
+                        "cleared_altitude": 3000,
+                        "sid": "AGC9",
+                        "waypoints": "_AGC_10/h279"
                     },
                     "AHTIY": {
                         "cleared_altitude": 3000,
@@ -807,11 +807,11 @@
                     "waypoints": "VINSE/ho LEJOY",
                     "runway_waypoints": {
                         "KPIT": {
+                            "32": "LEJOY PLEEZ NESTO/a10000 DEMME GRUNZ/a6000+/h303",
                             "10L": "LEJOY PLEEZ NESTO/a10000 DEMME PENGN RIVRZ HEINZ/a6000+/h281",
                             "10R": "LEJOY PLEEZ NESTO/a10000 DEMME PENGN RIVRZ HEINZ/a6000+/h281",
                             "28L": "LEJOY PLEEZ NESTO/a10000 DEMME LMBRT STILR/a6000+/h71",
-                            "28R": "LEJOY PLEEZ NESTO/a10000 DEMME LMBRT STILR/a6000+/h71",
-                            "32": "LEJOY PLEEZ NESTO/a10000 DEMME GRUNZ/a6000+/h303"
+                            "28R": "LEJOY PLEEZ NESTO/a10000 DEMME LMBRT STILR/a6000+/h71"
                         }
                     },
                     "cruise_altitude": 26000,
@@ -862,11 +862,11 @@
                     "waypoints": "PYRAT AIR/ho",
                     "runway_waypoints": {
                         "KPIT": {
+                            "32": "AIR WISKE/a10000 FEWGA BBLAK GOLDH FLURY MLKIN CRSBY/h146",
                             "10L": "AIR WISKE/a10000 FEWGA LEMEW/h301",
                             "10R": "AIR WISKE/a10000 FEWGA LEMEW/h301",
                             "28L": "AIR WISKE/a10000 FEWGA BBLAK GOLDH JOEPA GUINZ CYDNY/h101",
-                            "28R": "AIR WISKE/a10000 FEWGA BBLAK GOLDH JOEPA GUINZ CYDNY/h101",
-                            "32": "AIR WISKE/a10000 FEWGA BBLAK GOLDH FLURY MLKIN CRSBY/h146"
+                            "28R": "AIR WISKE/a10000 FEWGA BBLAK GOLDH JOEPA GUINZ CYDNY/h101"
                         }
                     },
                     "cruise_altitude": 29000,
@@ -917,11 +917,11 @@
                     "waypoints": "SLT/ho EARED",
                     "runway_waypoints": {
                         "KPIT": {
+                            "32": "EARED GRACE/a10000 HAYNZ MYRON COPPE/h166",
                             "10L": "EARED GRACE/a10000 HAYNZ ROOSA TERBL TOWEL/h282",
                             "10R": "EARED GRACE/a10000 HAYNZ ROOSA TERBL TOWEL/h282",
                             "28L": "EARED GRACE/a10000 HAYNZ MYRON/h126",
-                            "28R": "EARED GRACE/a10000 HAYNZ MYRON/h126",
-                            "32": "EARED GRACE/a10000 HAYNZ MYRON COPPE/h166"
+                            "28R": "EARED GRACE/a10000 HAYNZ MYRON/h126"
                         }
                     },
                     "cruise_altitude": 38000,
@@ -996,11 +996,11 @@
                     "waypoints": "ACO/ho CUTTA/a10000",
                     "runway_waypoints": {
                         "KPIT": {
+                            "32": "CUTTA/a10000 JESEY KRIKK PROGY PRUIT/h146",
                             "10L": "CUTTA/a10000 JESEY YINZZ/h251",
                             "10R": "CUTTA/a10000 JESEY YINZZ/h251",
                             "28L": "CUTTA/a10000 JESEY KRIKK SSOXX ROOSA/h102",
-                            "28R": "CUTTA/a10000 JESEY KRIKK SSOXX ROOSA/h102",
-                            "32": "CUTTA/a10000 JESEY KRIKK PROGY PRUIT/h146"
+                            "28R": "CUTTA/a10000 JESEY KRIKK SSOXX ROOSA/h102"
                         }
                     },
                     "cruise_altitude": 19000,

@@ -16,8 +16,7 @@ import (
 	"github.com/mmp/vice/wx"
 )
 
-// Placeholder - will be filled from source
-func (nav *Nav) ApproachHeading(wxs wx.Sample) (heading float32, turn TurnMethod) {
+func (nav *Nav) ApproachHeading(callsign string, wxs wx.Sample, simTime time.Time) (heading float32, turn TurnMethod) {
 	// Baseline
 	heading, turn = *nav.Heading.Assigned, TurnClosest
 
@@ -29,12 +28,14 @@ func (nav *Nav) ApproachHeading(wxs wx.Sample) (heading float32, turn TurnMethod
 		// fly through the localizer if it's too sharp an intercept
 		hdg := ap.RunwayHeading(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 		if d := math.HeadingDifference(hdg, nav.FlightState.Heading); d > 45 {
+			NavLog(callsign, simTime, NavLogApproach, "InitialHeading: intercept angle %.1f too sharp, continuing heading %.0f", d, nav.FlightState.Heading)
 			return
 		}
 
 		loc := ap.ExtendedCenterline(nav.FlightState.NmPerLongitude, nav.FlightState.MagneticVariation)
 
 		if nav.shouldTurnToIntercept(loc[0], hdg, TurnClosest, wxs) {
+			NavLog(callsign, simTime, NavLogApproach, "InitialHeading->TurningToJoin: turning to intercept runway hdg %.0f", hdg)
 			nav.Approach.InterceptState = TurningToJoin
 			// The autopilot is doing this, so start the turn immediately;
 			// don't use EnqueueHeading. However, leave any deferred
@@ -44,14 +45,23 @@ func (nav *Nav) ApproachHeading(wxs wx.Sample) (heading float32, turn TurnMethod
 			// Just in case.. Thus we will be ready to pick up the
 			// approach waypoints once we capture.
 			nav.Waypoints = []av.Waypoint{nav.FlightState.ArrivalAirport}
+		} else {
+			NavLog(callsign, simTime, NavLogApproach, "InitialHeading: not yet time to turn, acft hdg %.0f rwy hdg %.0f", nav.FlightState.Heading, hdg)
 		}
 		return
 
 	case TurningToJoin:
 		// we've turned to intercept. have we intercepted?
 		if !nav.OnExtendedCenterline(.2) {
+			// Apply wind correction to track the localizer course, not just
+			// fly the runway heading. Without this, strong crosswind would
+			// blow the aircraft off the localizer.
+			hdgTrue := *nav.Heading.Assigned - nav.FlightState.MagneticVariation
+			heading = nav.headingForTrack(hdgTrue, wxs)
+			NavLog(callsign, simTime, NavLogApproach, "TurningToJoin: not on centerline, flying wind-corrected hdg %.0f (rwy hdg %.0f)", heading, *nav.Heading.Assigned)
 			return
 		}
+		NavLog(callsign, simTime, NavLogApproach, "TurningToJoin->OnApproachCourse: established on localizer")
 
 		// we'll call that good enough. Now we need to figure out which
 		// fixes in the approach are still ahead and then add them to
@@ -224,19 +234,18 @@ func (nav *Nav) InterceptApproach(airport string, lg *log.Logger) av.CommandInte
 
 	if intent := nav.prepareForApproach(false); intent != nil {
 		return intent
-	} else {
-		ap := nav.Approach.Assigned
-		if ap.Type == av.ILSApproach || ap.Type == av.LocalizerApproach {
-			return av.ApproachIntent{
-				Type:         av.ApproachIntercept,
-				ApproachName: ap.FullName,
-			}
-		} else {
-			return av.ApproachIntent{
-				Type:         av.ApproachJoin,
-				ApproachName: ap.FullName,
-			}
+	}
+
+	ap := nav.Approach.Assigned
+	if ap.Type == av.ILSApproach || ap.Type == av.LocalizerApproach {
+		return av.ApproachIntent{
+			Type:         av.ApproachIntercept,
+			ApproachName: ap.FullName,
 		}
+	}
+	return av.ApproachIntent{
+		Type:         av.ApproachJoin,
+		ApproachName: ap.FullName,
 	}
 }
 
@@ -441,6 +450,7 @@ func (nav *Nav) prepareForChartedVisual() av.CommandIntent {
 
 	return av.MakeUnableIntent("unable. We are not on course to intercept the approach")
 }
+
 func (nav *Nav) ClearedApproach(airport string, id string, straightIn bool) (av.CommandIntent, bool) {
 	ap := nav.Approach.Assigned
 	if ap == nil {
@@ -452,41 +462,41 @@ func (nav *Nav) ClearedApproach(airport string, id string, straightIn bool) (av.
 
 	if intent := nav.prepareForApproach(straightIn); intent != nil {
 		return intent, false
-	} else {
-		nav.Approach.Cleared = true
-		if nav.Approach.PassedApproachFix {
-			// We've already passed an approach fix, so allow it to start descending.
-			nav.Altitude = NavAltitude{}
-		} else if nav.Approach.InterceptState == OnApproachCourse || nav.Approach.PassedApproachFix {
-			// First intercepted then cleared or otherwise passed an
-			// approach fix, so allow it to start descending.
-			nav.Altitude = NavAltitude{}
-			// No procedure turn needed if we were vectored to intercept.
-			nav.Approach.NoPT = true
-		}
-		// Cleared approach also cancels speed restrictions.
-		nav.Speed = NavSpeed{}
-
-		// Follow LNAV instructions more quickly given an approach clearance;
-		// assume that at this point they are expecting them and ready to dial things in.
-		if dh := nav.DeferredNavHeading; dh != nil {
-			now := time.Now()
-			if dh.Time.Sub(now) > 6*time.Second {
-				dh.Time = now.Add(time.Duration((3 + 3*nav.Rand.Float32()) * float32(time.Second)))
-			}
-		}
-
-		nav.flyProcedureTurnIfNecessary()
-
-		cancelHold := nav.Heading.Hold != nil
-		if nav.Heading.Hold != nil {
-			nav.Heading.Hold.Cancel = true
-		}
-
-		return av.ClearedApproachIntent{
-			Approach:   ap.FullName,
-			StraightIn: straightIn,
-			CancelHold: cancelHold,
-		}, true
 	}
+
+	nav.Approach.Cleared = true
+	if nav.Approach.PassedApproachFix {
+		// We've already passed an approach fix, so allow it to start descending.
+		nav.Altitude = NavAltitude{}
+	} else if nav.Approach.InterceptState == OnApproachCourse || nav.Approach.PassedApproachFix {
+		// First intercepted then cleared or otherwise passed an
+		// approach fix, so allow it to start descending.
+		nav.Altitude = NavAltitude{}
+		// No procedure turn needed if we were vectored to intercept.
+		nav.Approach.NoPT = true
+	}
+	// Cleared approach also cancels speed restrictions.
+	nav.Speed = NavSpeed{}
+
+	// Follow LNAV instructions more quickly given an approach clearance;
+	// assume that at this point they are expecting them and ready to dial things in.
+	if dh := nav.DeferredNavHeading; dh != nil {
+		now := time.Now()
+		if dh.Time.Sub(now) > 6*time.Second {
+			dh.Time = now.Add(time.Duration((3 + 3*nav.Rand.Float32()) * float32(time.Second)))
+		}
+	}
+
+	nav.flyProcedureTurnIfNecessary()
+
+	cancelHold := nav.Heading.Hold != nil
+	if nav.Heading.Hold != nil {
+		nav.Heading.Hold.Cancel = true
+	}
+
+	return av.ClearedApproachIntent{
+		Approach:   ap.FullName,
+		StraightIn: straightIn,
+		CancelHold: cancelHold,
+	}, true
 }

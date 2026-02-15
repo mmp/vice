@@ -25,6 +25,7 @@ import (
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
+	implogl3 "github.com/AllenDang/cimgui-go/impl/opengl3"
 	"github.com/pkg/browser"
 )
 
@@ -147,7 +148,13 @@ func (m *ModalDialogBox) Draw() {
 	imgui.OpenPopupStr(title)
 
 	dpiScale := util.Select(runtime.GOOS == "windows", m.platform.DPIScale(), float32(1))
-	windowSize := m.platform.WindowSize()
+
+	// Use the main viewport for positioning and sizing so that dialogs
+	// are centered correctly when multi-viewport is enabled (imgui uses
+	// screen-space coordinates with viewports).
+	mainVP := imgui.MainViewport()
+	vpPos := mainVP.Pos()
+	vpSize := mainVP.Size()
 
 	// Check if client wants a fixed size window
 	var flags imgui.WindowFlags
@@ -159,14 +166,13 @@ func (m *ModalDialogBox) Draw() {
 	} else {
 		// Auto-resize dialog with constraints
 		flags = imgui.WindowFlagsNoResize | imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
-		maxHeight := float32(windowSize[1]) * 19 / 20
+		maxHeight := vpSize.Y * 19 / 20
 		imgui.SetNextWindowSizeConstraints(imgui.Vec2{dpiScale * 850, dpiScale * 100}, imgui.Vec2{-1, maxHeight})
 	}
 
-	// Position the window near the top of the screen to ensure it doesn't extend below the bottom
-	// Use a small margin from the top (5% of screen height)
-	topMargin := float32(windowSize[1]) * 0.05
-	imgui.SetNextWindowPosV(imgui.Vec2{float32(windowSize[0]) / 2, topMargin}, imgui.CondAlways, imgui.Vec2{0.5, 0})
+	// Center the dialog on the main viewport, near the top.
+	topMargin := vpSize.Y * 0.05
+	imgui.SetNextWindowPosV(imgui.Vec2{vpPos.X + vpSize.X/2, vpPos.Y + topMargin}, imgui.CondAlways, imgui.Vec2{0.5, 0})
 
 	if imgui.BeginPopupModalV(title, nil, flags) {
 		if !m.isOpen {
@@ -658,7 +664,7 @@ func (e *ErrorModalClient) Draw() int {
 
 		imgui.TableNextRow()
 		imgui.TableNextColumn()
-		imgui.Image(imgui.TextureID(sadTowerTextureID), imgui.Vec2{128, 128})
+		imgui.Image(*imgui.NewTextureRefTextureID(imgui.TextureID(sadTowerTextureID)), imgui.Vec2{128, 128})
 
 		imgui.TableNextColumn()
 		text, _ := util.TextWrapConfig{
@@ -688,14 +694,12 @@ func ShowFatalErrorDialog(r renderer.Renderer, p platform.Platform, lg *log.Logg
 		p.ProcessEvents()
 		p.NewFrame()
 		imgui.NewFrame()
-		imgui.PushFont(&ui.font.Ifont)
+		ui.font.ImguiPush()
 		d.Draw()
 		imgui.PopFont()
 
 		imgui.Render()
-		var cb renderer.CommandBuffer
-		renderer.GenerateImguiCommandBuffer(&cb, p.DisplaySize(), p.FramebufferSize(), lg)
-		r.RenderCommandBuffer(&cb)
+		implogl3.RenderDrawData(imgui.CurrentDrawData())
 
 		p.PostRender()
 	}
@@ -782,14 +786,12 @@ func WaitForWhisperBenchmark(r renderer.Renderer, p platform.Platform, lg *log.L
 		p.ProcessEvents()
 		p.NewFrame()
 		imgui.NewFrame()
-		imgui.PushFont(&ui.font.Ifont)
+		ui.font.ImguiPush()
 		d.Draw()
 		imgui.PopFont()
 
 		imgui.Render()
-		var cb renderer.CommandBuffer
-		renderer.GenerateImguiCommandBuffer(&cb, p.DisplaySize(), p.FramebufferSize(), lg)
-		r.RenderCommandBuffer(&cb)
+		implogl3.RenderDrawData(imgui.CurrentDrawData())
 
 		p.PostRender()
 

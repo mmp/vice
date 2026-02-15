@@ -239,13 +239,10 @@ func (e *EventStream) LogValue() slog.Value {
 type EventType int
 
 const (
-	PushedFlightStripEvent EventType = iota
-	PointOutEvent
+	PointOutEvent EventType = iota
 	OfferedHandoffEvent
 	AcceptedHandoffEvent
 	AcceptedRedirectedHandoffEvent
-	CanceledHandoffEvent
-	RejectedHandoffEvent
 	RadioTransmissionEvent
 	StatusMessageEvent
 	ErrorMessageEvent
@@ -253,7 +250,6 @@ const (
 	GlobalMessageEvent
 	AcknowledgedPointOutEvent
 	RejectedPointOutEvent
-	HandoffControlEvent
 	SetGlobalLeaderLineEvent
 	ForceQLEvent
 	TransferAcceptedEvent
@@ -263,18 +259,16 @@ const (
 	FixCoordinatesEvent
 	STTCommandEvent
 	FlightPlanDirectEvent
-	TTSPlaybackStartedEvent
-	NumEventTypes
+	FDAMLeaderLineEvent
 )
 
 func (t EventType) String() string {
-	return []string{"PushedFlightStrip", "PointOut",
-		"OfferedHandoff", "AcceptedHandoff", "AcceptedRedirectedHandoffEvent", "CanceledHandoff",
-		"RejectedHandoff", "RadioTransmission", "StatusMessage", "ErrorMessage",
+	return []string{"PointOut", "OfferedHandoff", "AcceptedHandoff", "AcceptedRedirectedHandoff",
+		"RadioTransmission", "StatusMessage", "ErrorMessage",
 		"ServerBroadcastMessage", "GlobalMessage", "AcknowledgedPointOut", "RejectedPointOut",
-		"HandoffControl", "SetGlobalLeaderLine", "ForceQL", "TransferAccepted", "TransferRejected",
+		"SetGlobalLeaderLine", "ForceQL", "TransferAccepted", "TransferRejected",
 		"RecalledPointOut", "FlightPlanAssociated", "FixCoordinates", "STTCommand", "FlightPlanDirect",
-		"TTSPlaybackStarted"}[t]
+		"FDAMLeaderLine"}[t]
 }
 
 type Event struct {
@@ -287,13 +281,12 @@ type Event struct {
 	WrittenText           string
 	SpokenText            string
 	RadioTransmissionType av.RadioTransmissionType       // For radio transmissions only
-	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent
+	LeaderLineDirection   *math.CardinalOrdinalDirection // SetGlobalLeaderLineEvent, FDAMLeaderLineEvent
 	WaypointInfo          []math.Point2LL
 	STTTranscript         string
 	STTCommand            string
 	STTTimings            string
 	Route                 av.WaypointArray // For QU
-	TTSLatencyMs          int              // For TTSPlaybackStartedEvent: latency from PTT release to playback start
 }
 
 func (e *Event) String() string {

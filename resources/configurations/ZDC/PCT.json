@@ -309,10 +309,21 @@
                     "KDCA": "DCA_K_DEP"
                 },
                 "default_consolidation": {
-                    "DCA_D_APP": [
+                    "DCA_J_APP": [
                         "DCA_E_APP",
-                        "DCA_J_APP",
                         "DCA_K_DEP",
+                        "DCA_R_APP",
+                        "DCA_V_APP"
+                    ],
+                    "DCA_K_DEP": [
+                        "DCA_A_APP",
+                        "DCA_D_APP",
+                        "DCA_Y_DEP"
+                    ],
+                    "DCA_L_APP": [
+                        "DCA_F_APP"
+                    ],
+                    "DCA_Y_DEP": [
                         "DCA_L_APP"
                     ]
                 }
@@ -340,10 +351,21 @@
                     "KDCA": "DCA_K_DEP"
                 },
                 "default_consolidation": {
-                    "DCA_D_APP": [
+                    "DCA_J_APP": [
                         "DCA_E_APP",
-                        "DCA_J_APP",
                         "DCA_K_DEP",
+                        "DCA_R_APP",
+                        "DCA_V_APP"
+                    ],
+                    "DCA_K_DEP": [
+                        "DCA_A_APP",
+                        "DCA_D_APP",
+                        "DCA_Y_DEP"
+                    ],
+                    "DCA_L_APP": [
+                        "DCA_F_APP"
+                    ],
+                    "DCA_Y_DEP": [
                         "DCA_L_APP"
                     ]
                 }
@@ -369,7 +391,9 @@
                     "KDCA": "DCA_K_DEP"
                 },
                 "default_consolidation": {
-                    "DCA_K_DEP": []
+                    "DCA_K_DEP": [
+                        "DCA_Y_DEP"
+                    ]
                 }
             },
             "MT8": {
@@ -642,24 +666,75 @@
                 },
                 "default_consolidation": {
                     "BWI_B_APP": [
+                        "BWI_W_APP"
+                    ],
+                    "BWI_G_APP": [
+                        "BWI_P_APP"
+                    ],
+                    "BWI_S_APP": [
+                        "BWI_B_APP",
                         "BWI_G_APP",
-                        "BWI_H_APP",
-                        "BWI_P_APP",
-                        "BWI_W_APP",
-                        "CHO_W_APP",
-                        "DCA_D_APP",
-                        "DCA_J_APP",
+                        "BWI_N_APP"
+                    ],
+                    "BWI_W_APP": [
+                        "BWI_H_APP"
+                    ],
+                    "CHO_E_APP": [
+                        "CHO_W_APP"
+                    ],
+                    "DCA_J_APP": [
+                        "BWI_S_APP",
+                        "DCA_E_APP",
                         "DCA_K_DEP",
-                        "DCA_L_APP",
-                        "DCA_Y_DEP",
+                        "DCA_R_APP",
+                        "DCA_V_APP",
+                        "IAD_M_APP",
+                        "RIC_L_APP"
+                    ],
+                    "DCA_K_DEP": [
+                        "DCA_A_APP",
+                        "DCA_D_APP",
+                        "DCA_Y_DEP"
+                    ],
+                    "DCA_L_APP": [
+                        "DCA_F_APP"
+                    ],
+                    "DCA_Y_DEP": [
+                        "DCA_L_APP"
+                    ],
+                    "IAD_A_DEP": [
+                        "IAD_T_DEP"
+                    ],
+                    "IAD_B_APP": [
+                        "IAD_O_APP"
+                    ],
+                    "IAD_M_APP": [
                         "IAD_A_DEP",
                         "IAD_B_APP",
+                        "IAD_E_APP",
+                        "IAD_G_APP",
                         "IAD_N_APP",
-                        "IAD_O_APP",
-                        "IAD_T_DEP",
-                        "IAD_V_APP",
-                        "RIC_L_APP",
+                        "IAD_V_APP"
+                    ],
+                    "IAD_N_APP": [
+                        "IAD_X_APP"
+                    ],
+                    "IAD_U_APP": [
+                        "IAD_S_APP"
+                    ],
+                    "IAD_X_APP": [
+                        "IAD_U_APP"
+                    ],
+                    "RIC_L_APP": [
+                        "CHO_E_APP",
+                        "RIC_F_APP",
                         "RIC_P_APP"
+                    ],
+                    "RIC_P_APP": [
+                        "RIC_W_APP"
+                    ],
+                    "RIC_W_APP": [
+                        "RIC_E_APP"
                     ]
                 }
             }

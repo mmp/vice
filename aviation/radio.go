@@ -957,8 +957,8 @@ func GetFixTelephony(fix string) string {
 	// Cut off any trailing bits like COLIN.JT
 	fix, _, _ = strings.Cut(fix, ".")
 
-	// For 3-char fixes or 4-char starting with K (VORs, airports), use the full name
-	if len(fix) == 3 || (len(fix) == 4 && fix[0] == 'K') {
+	// For 3-char fixes or 4-char ICAO codes (VORs, airports), use the full name
+	if len(fix) == 3 || len(fix) == 4 {
 		if aid, ok := DB.Navaids[fix]; ok {
 			return util.StopShouting(aid.Name)
 		} else if ap, ok := DB.Airports[fix]; ok {
@@ -1283,6 +1283,17 @@ var spokenLetters = map[string]string{
 	"J": "Juliet", "K": "Kilo", "L": "Lima", "M": "mike", "N": "November",
 	"O": "Oscar", "P": "Pahpah", "Q": "Kebeck", "R": "Romeo", "S": "Sierra",
 	"T": "tango", "U": "uniform", "V": "victor", "W": "whiskey", "X": "x-ray",
+	"Y": "yankee", "Z": "zulu",
+}
+
+// NATOPhonetic maps uppercase letters to their standard NATO phonetic alphabet words.
+var NATOPhonetic = map[string]string{
+	"A": "alpha", "B": "bravo", "C": "charlie", "D": "delta",
+	"E": "echo", "F": "foxtrot", "G": "golf", "H": "hotel",
+	"I": "india", "J": "juliet", "K": "kilo", "L": "lima",
+	"M": "mike", "N": "november", "O": "oscar", "P": "papa",
+	"Q": "quebec", "R": "romeo", "S": "sierra", "T": "tango",
+	"U": "uniform", "V": "victor", "W": "whiskey", "X": "x-ray",
 	"Y": "yankee", "Z": "zulu",
 }
 

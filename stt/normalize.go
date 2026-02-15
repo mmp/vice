@@ -313,9 +313,11 @@ func scoreSuffixMatch(wordSuffix, target string) float64 {
 
 	// Strategy 3: Metaphone prefix match - handles truncated suffixes
 	// e.g., "der" (TR) matches "direct" (TRKT) because TR is prefix of TRKT
+	// Require suffix length >= 3 to avoid false positives from very short
+	// suffixes (e.g., "al" matching "ils" via AL→ALS prefix).
 	suffixMeta, _ := DoubleMetaphone(wordSuffix)
 	targetMeta, _ := DoubleMetaphone(target)
-	if len(suffixMeta) >= 2 && strings.HasPrefix(targetMeta, suffixMeta) {
+	if len(wordSuffix) >= 3 && len(suffixMeta) >= 2 && strings.HasPrefix(targetMeta, suffixMeta) {
 		// Score based on how much of target's metaphone is covered
 		return float64(len(suffixMeta)) / float64(len(targetMeta))
 	}
@@ -343,6 +345,8 @@ var phoneticCommandBlocklist = map[string][]string{
 	"roto":      {"right"},         // "roto" is garbled airline name (Chronos), not "right"
 	"towards":   {"reduce"},        // "contact towards" is not "reduce"
 	"had":       {"heading"},       // "just had to" is not "heading"
+	// "buddy" as part of a callsign should not match "expedite"
+	"buddy": {"expedite"},
 	// Speed-related words should match "speed" not "intercept" (suffix match on SPT)
 	"rotospeed": {"intercept"}, // STT garble of "reduce speed"
 	"speedo":    {"intercept"}, // STT garble of "speed"
@@ -392,9 +396,12 @@ func tryPhoneticCommandMatch(word string) string {
 var commandKeywords = map[string]string{
 	// Altitude
 	"descend":    "descend",
+	"descending": "descend",
 	"setup":      "descend",
 	"climb":      "climb",
+	"climbing":   "climb",
 	"climin":     "climb",
+	"club":       "climb",
 	"con":        "climb",
 	"maintain":   "maintain",
 	"maintained": "maintain",
@@ -488,6 +495,7 @@ var commandKeywords = map[string]string{
 
 	// Handoff
 	"contact":   "contact",
+	"cansec":    "contact",
 	"tower":     "tower",
 	"tarot":     "tower",
 	"frequency": "frequency",
@@ -579,6 +587,7 @@ var fillerWords = map[string]bool{
 	"is":      true, // Prevents "is" from fuzzy matching fix names like "ISLAY" (Jaro-Winkler 0.84)
 	"having":  true, // Prevents "having" from fuzzy matching "heading" (Jaro-Winkler 0.86)
 	"leaving": true, // Prevents "leaving" from fuzzy matching "heading" (Jaro-Winkler 0.81)
+	"cetera":  true, // Prevents "cetera" from fuzzy matching "cleared" (Jaro-Winkler 0.80)
 	// Note: "contact" and "radar" are NOT filler words - they're command keywords
 }
 

@@ -58,6 +58,12 @@ type Font struct {
 	isBitmapFont bool
 }
 
+// Push pushes this font onto imgui's font stack at its baked pixel size.
+// Call imgui.PopFont() when done.
+func (f *Font) ImguiPush() {
+	imgui.PushFont(&f.Ifont, float32(f.Size))
+}
+
 func MakeFont(size int, id FontIdentifier, ifont *imgui.Font) *Font {
 	f := &Font{
 		glyphs:       make(map[rune]*Glyph),
@@ -111,7 +117,8 @@ func (f *Font) createGlyph(ch rune) *Glyph {
 		return &Glyph{}
 	}
 
-	ig := f.Ifont.FindGlyph(imgui.Wchar(ch))
+	baked := f.Ifont.FontBaked(float32(f.Size))
+	ig := baked.FindGlyph(imgui.Wchar(ch))
 	g := &Glyph{X0: ig.X0(), Y0: ig.Y0(), X1: ig.X1(), Y1: ig.Y1(),
 		U0: ig.U0(), V0: ig.V0(), U1: ig.U1(), V1: ig.V1(),
 		AdvanceX: ig.AdvanceX(), Visible: ig.Visible() != 0}
@@ -185,11 +192,13 @@ var (
 	FontAwesomeIconCaretDown           = faUsedIcons["CaretDown"]
 	FontAwesomeIconCaretRight          = faUsedIcons["CaretRight"]
 	FontAwesomeIconCheckSquare         = faUsedIcons["CheckSquare"]
+	FontAwesomeIconClipboardList       = faUsedIcons["ClipboardList"]
 	FontAwesomeIconCloud               = faUsedIcons["Cloud"]
 	FontAwesomeIconCloudRain           = faUsedIcons["CloudRain"]
 	FontAwesomeIconCloudShowersHeavy   = faUsedIcons["CloudShowersHeavy"]
 	FontAwesomeIconCloudSun            = faUsedIcons["CloudSun"]
 	FontAwesomeIconCog                 = faUsedIcons["Cog"]
+	FontAwesomeIconComment             = faUsedIcons["Comment"]
 	FontAwesomeIconCompressAlt         = faUsedIcons["CompressAlt"]
 	FontAwesomeIconCopyright           = faUsedIcons["Copyright"]
 	FontAwesomeIconDiscord             = faBrandsUsedIcons["Discord"]
@@ -238,10 +247,12 @@ var (
 		"CaretDown":           FontAwesomeString("CaretDown"),
 		"CaretRight":          FontAwesomeString("CaretRight"),
 		"CheckSquare":         FontAwesomeString("CheckSquare"),
+		"ClipboardList":       FontAwesomeString("ClipboardList"),
 		"Cloud":               FontAwesomeString("Cloud"),
 		"CloudRain":           FontAwesomeString("CloudRain"),
 		"CloudShowersHeavy":   FontAwesomeString("CloudShowersHeavy"),
 		"CloudSun":            FontAwesomeString("CloudSun"),
+		"Comment":             FontAwesomeString("Comment"),
 		"CompressAlt":         FontAwesomeString("CompressAlt"),
 		"Cog":                 FontAwesomeString("Cog"),
 		"Copyright":           FontAwesomeString("Copyright"),
@@ -303,7 +314,6 @@ func FontsInit(r Renderer, p platform.Platform) {
 	faGlyphRange := glyphRangeForIcons(faUsedIcons)
 	faBrandsGlyphRange := glyphRangeForIcons(faBrandsUsedIcons)
 
-	// Helper to calculate scaled pixel size for a given point size
 	calcPixelSize := func(size int) float32 {
 		sp := float32(size)
 		if runtime.GOOS == "windows" {
@@ -333,7 +343,8 @@ func FontsInit(r Renderer, p platform.Platform) {
 		var ifont *imgui.Font
 		if ttf != nil {
 			ttfPinner.Pin(&ttf[0])
-			ifont = io.Fonts().AddFontFromMemoryTTF(uintptr(unsafe.Pointer(&ttf[0])), int32(len(ttf)), sp)
+			defaultConfig := imgui.NewFontConfig()
+			ifont = io.Fonts().AddFontFromMemoryTTFV(uintptr(unsafe.Pointer(&ttf[0])), int32(len(ttf)), sp, defaultConfig, nil)
 		}
 
 		config := imgui.NewFontConfig()
@@ -370,22 +381,65 @@ func FontsInit(r Renderer, p platform.Platform) {
 	// Add a large FontAwesome-only font for weather icons
 	createFontSize(nil, 64, LargeFontAwesomeOnly)
 
-	pixels, w, h, bpp := io.Fonts().GetTextureDataAsRGBA32()
-	lg.Infof("Fonts texture used %.1f MB", float32(w*h*bpp)/(1024*1024))
-	rgb8Image := &image.RGBA{
-		Pix:    unsafe.Slice((*uint8)(pixels), bpp*w*h),
-		Stride: int(4 * w),
-		Rect:   image.Rectangle{Max: image.Point{X: int(w), Y: int(h)}}}
-	atlasId := r.CreateTextureFromImage(rgb8Image, true /* nearest */)
-	io.Fonts().SetTexID(imgui.TextureID(atlasId))
+	texData := io.Fonts().TexData()
+	w, h, bpp := texData.Width(), texData.Height(), texData.BytesPerPixel()
+	lg.Infof("Fonts texture: %dx%d, %d bpp, %.1f MB", w, h, bpp, float32(w*h*bpp)/(1024*1024))
+	// texData.Pixels() returns a C pointer as uintptr; use unsafe.Add to
+	// convert it without triggering go vet's uintptr-to-Pointer check.
+	pixelsPtr := unsafe.Add(nil, texData.Pixels())
 
-	// Patch up the texture id after the atlas was created with the
-	// TextureDataRGBA32 call above.
+	var rgbaImage *image.RGBA
+	if bpp == 4 {
+		// Already RGBA32; use the pixel data directly.
+		rgbaImage = &image.RGBA{
+			Pix:    unsafe.Slice((*uint8)(pixelsPtr), 4*w*h),
+			Stride: int(4 * w),
+			Rect:   image.Rectangle{Max: image.Point{X: int(w), Y: int(h)}}}
+	} else {
+		// Alpha8 format (default): convert to RGBA32 (white text, varying alpha).
+		alpha8 := unsafe.Slice((*uint8)(pixelsPtr), w*h)
+		rgba32 := make([]uint8, 4*w*h)
+		for i := range int(w * h) {
+			rgba32[i*4+0] = 255
+			rgba32[i*4+1] = 255
+			rgba32[i*4+2] = 255
+			rgba32[i*4+3] = alpha8[i]
+		}
+		rgbaImage = &image.RGBA{
+			Pix:    rgba32,
+			Stride: int(4 * w),
+			Rect:   image.Rectangle{Max: image.Point{X: int(w), Y: int(h)}}}
+	}
+	atlasId := r.CreateTextureFromImage(rgbaImage, true /* nearest */)
+	texData.SetTexID(imgui.TextureID(atlasId))
+	texData.SetStatus(imgui.TextureStatusOK)
+
+	// Patch up the texture id after the atlas was created.
 	for _, font := range fonts {
 		font.TexId = atlasId
 	}
 
 	lg.Info("Finished initializing fonts")
+}
+
+// SyncFontAtlasTexID updates all Font.TexId values to match the current
+// imgui font atlas texture. The OGL3 backend may recreate the atlas
+// texture (e.g., when viewports trigger a rebuild); this keeps our scope
+// text rendering (which uses Font.TexId) in sync.
+func SyncFontAtlasTexID() {
+	atlasId := uint32(imgui.CurrentIO().Fonts().TexData().TexID())
+	for _, font := range fonts {
+		if font.TexId != atlasId {
+			font.TexId = atlasId
+			// The OGL3 backend rebuilt the atlas with a new glyph
+			// layout, so cached UV coordinates are stale. Clear the
+			// glyph caches so they are re-fetched on next use.
+			if !font.isBitmapFont {
+				font.lowGlyphs = [128]*Glyph{}
+				font.glyphs = make(map[rune]*Glyph)
+			}
+		}
+	}
 }
 
 // getAllFonts returns a FontIdentifier slice that gives identifiers for

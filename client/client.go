@@ -9,7 +9,6 @@ import (
 	"errors"
 	"fmt"
 	"net"
-	"net/http"
 	"net/rpc"
 	"os"
 	"path/filepath"
@@ -33,8 +32,6 @@ import (
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
-	"github.com/gorilla/websocket"
-	"github.com/vmihailenco/msgpack/v5"
 	"golang.org/x/sys/cpu"
 )
 
@@ -45,18 +42,12 @@ type ControlClient struct {
 
 	// Speech/TTS management
 	transmissions         *TransmissionManager
-	haveTTS               bool // whether TTS is enabled for this session
 	disableTTSPtr         *bool
 	sttActive             bool
 	LastTranscription     string
 	LastCommand           string
 	LastWhisperDurationMs int64 // Last whisper transcription time in milliseconds
 	eventStream           *sim.EventStream
-
-	// WebSocket for async speech delivery
-	speechWsServerAddr string
-	speechWsConn       *websocket.Conn
-	speechWsClose      chan struct{}
 
 	// Streaming STT state
 	streamingSTT   *streamingSTT
@@ -103,11 +94,9 @@ type STTBugContext struct {
 type Server struct {
 	*RPCClient
 
-	HaveTTS             bool
 	AvailableWXByTRACON map[string][]util.TimeInterval
 
 	name        string
-	host        string // hostname for WebSocket connections
 	catalogs    map[string]map[string]*server.ScenarioCatalog
 	runningSims map[string]*server.RunningSim
 }
@@ -121,29 +110,34 @@ type SessionStats struct {
 	SignOnTime time.Time
 	Initials   string
 
+	initialized   bool
 	seenCallsigns map[av.ADSBCallsign]any
 }
 
 func (s *SessionStats) Update(ss *SimState) {
-	for i, trk := range ss.Tracks {
-		if fp := trk.FlightPlan; fp != nil {
-			// Use track ownership check (via OwningTCW).
-			if !ss.UserControlsTrack(ss.Tracks[i]) {
-				continue // not ours
-			}
-			if _, ok := s.seenCallsigns[trk.ADSBCallsign]; ok {
-				continue // seen it already
-			}
-			s.seenCallsigns[trk.ADSBCallsign] = nil
-			if trk.IsDeparture() {
-				s.Departures++
-			} else if trk.IsArrival() {
-				s.Arrivals++
-			} else if trk.IsOverflight() {
-				s.Overflights++
-			}
+	for _, trk := range ss.Tracks {
+		if trk.FlightPlan == nil || !ss.UserControlsTrack(trk) {
+			continue
+		}
+		if _, ok := s.seenCallsigns[trk.ADSBCallsign]; ok {
+			continue
+		}
+		s.seenCallsigns[trk.ADSBCallsign] = nil
+
+		// Don't count pre-existing aircraft from before sign-on.
+		if !s.initialized {
+			continue
+		}
+
+		if trk.IsDeparture() {
+			s.Departures++
+		} else if trk.IsArrival() {
+			s.Arrivals++
+		} else if trk.IsOverflight() {
+			s.Overflights++
 		}
 	}
+	s.initialized = true
 }
 
 func (c *ControlClient) RPCClient() *RPCClient {
@@ -227,8 +221,8 @@ func (p *pendingCall) InvokeCallback(es *sim.EventStream, state *SimState) {
 	}
 }
 
-func NewControlClient(ss server.SimState, controllerToken string, haveTTS bool, speechWSPort int, speechServerHost string,
-	disableTTSPtr *bool, initials string, client *RPCClient, lg *log.Logger) *ControlClient {
+func NewControlClient(ss server.SimState, controllerToken string, disableTTSPtr *bool, initials string,
+	client *RPCClient, lg *log.Logger) *ControlClient {
 	cc := &ControlClient{
 		controllerToken:   controllerToken,
 		client:            client,
@@ -236,109 +230,15 @@ func NewControlClient(ss server.SimState, controllerToken string, haveTTS bool, 
 		lastUpdateRequest: time.Now(),
 		State:             SimState{ss},
 		transmissions:     NewTransmissionManager(lg),
-		haveTTS:           haveTTS,
 		disableTTSPtr:     disableTTSPtr,
 		sttTranscriber:    stt.NewTranscriber(lg),
-		speechWsClose:     make(chan struct{}),
 	}
 
 	cc.SessionStats.SignOnTime = ss.SimTime
 	cc.SessionStats.Initials = initials
 	cc.SessionStats.seenCallsigns = make(map[av.ADSBCallsign]any)
 
-	// Connect to WebSocket for async speech delivery if available
-	if speechWSPort > 0 && haveTTS {
-		cc.speechWsServerAddr = fmt.Sprintf("ws://%s:%d/speech", speechServerHost, speechWSPort)
-		go cc.connectSpeechWebSocket()
-	}
-
 	return cc
-}
-
-func (c *ControlClient) HaveTTS() bool {
-	return c.haveTTS
-}
-
-// connectSpeechWebSocket establishes and maintains a WebSocket connection for async speech delivery.
-func (c *ControlClient) connectSpeechWebSocket() {
-	defer c.lg.CatchAndReportCrash()
-
-	for {
-		select {
-		case <-c.speechWsClose:
-			return
-		default:
-		}
-
-		c.lg.Infof("Connecting to speech WebSocket: %s", c.speechWsServerAddr)
-
-		// Set up the request with Authorization header
-		header := http.Header{}
-		header.Set("Authorization", "Bearer "+c.controllerToken)
-
-		dialer := websocket.Dialer{}
-		conn, _, err := dialer.Dial(c.speechWsServerAddr, header)
-		if err != nil {
-			c.lg.Warnf("Speech WebSocket dial error: %v", err)
-			select {
-			case <-c.speechWsClose:
-				return
-			case <-time.After(5 * time.Second):
-				continue // Retry connection
-			}
-		}
-
-		c.mu.Lock()
-		c.speechWsConn = conn
-		c.mu.Unlock()
-
-		c.lg.Infof("Speech WebSocket connected")
-
-		// Read messages until error or close
-		c.readSpeechMessages(conn)
-
-		c.mu.Lock()
-		c.speechWsConn = nil
-		c.mu.Unlock()
-
-		// Small delay before reconnecting
-		select {
-		case <-c.speechWsClose:
-			return
-		case <-time.After(1 * time.Second):
-		}
-	}
-}
-
-// readSpeechMessages reads PilotSpeech messages from the WebSocket and enqueues them.
-func (c *ControlClient) readSpeechMessages(conn *websocket.Conn) {
-	for {
-		_, message, err := conn.ReadMessage()
-		if err != nil {
-			if !websocket.IsCloseError(err, websocket.CloseNormalClosure, websocket.CloseGoingAway) {
-				c.lg.Warnf("Speech WebSocket read error: %v", err)
-			}
-			return
-		}
-
-		var ps sim.PilotSpeech
-		if err := msgpack.Unmarshal(message, &ps); err != nil {
-			c.lg.Errorf("Speech WebSocket unmarshal error: %v", err)
-			continue
-		}
-
-		// Decode MP3 to PCM here (off the main thread) to avoid frame drops
-		pcm, err := platform.DecodeSpeechMP3(ps.MP3)
-		if err != nil {
-			c.lg.Errorf("Speech WebSocket MP3 decode error for %s: %v", ps.Callsign, err)
-			continue
-		}
-
-		c.lg.Infof("Received speech via WebSocket for %s (%d bytes)", ps.Callsign, len(ps.MP3))
-
-		// Enqueue with pre-decoded PCM (high priority, front of queue)
-		c.transmissions.EnqueueReadbackPCM(ps.Callsign, ps.Type, pcm)
-	}
 }
 
 func (c *ControlClient) Status() string {
@@ -360,19 +260,6 @@ func (c *ControlClient) Status() string {
 }
 
 func (c *ControlClient) Disconnect() {
-	// Close the WebSocket connection if open (do this before acquiring mu since
-	// the WebSocket receiver also needs mu)
-	if c.speechWsClose != nil {
-		close(c.speechWsClose)
-	}
-
-	c.mu.Lock()
-	if c.speechWsConn != nil {
-		c.speechWsConn.Close()
-		c.speechWsConn = nil
-	}
-	c.mu.Unlock()
-
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -435,7 +322,7 @@ func (c *ControlClient) GetUpdates(eventStream *sim.EventStream, p platform.Plat
 	// has disabled TTS locally. This ensures pilots still join the frequency
 	// and text transmissions appear. Audio playback is controlled separately.
 	// The actual request is made after releasing the lock.
-	shouldRequestContact := c.haveTTS && c.transmissions.ShouldRequestContact()
+	shouldRequestContact := c.transmissions.ShouldRequestContact()
 
 	if callbackErr == nil {
 		completedCalls, callbackErr = c.checkPendingRPCs(eventStream)
@@ -606,13 +493,11 @@ func (c *ControlClient) StringIsSPC(s string) bool {
 }
 
 func (c *ControlClient) RadioIsActive() bool {
-	return c.HaveTTS() && c.transmissions.IsPlaying()
+	return c.transmissions.IsPlaying()
 }
 
 func (c *ControlClient) HoldRadioTransmissions() {
-	if c.HaveTTS() {
-		c.transmissions.HoldAfterTransmission()
-	}
+	c.transmissions.HoldAfterTransmission()
 }
 
 func (c *ControlClient) LastTTSCallsign() av.ADSBCallsign {
@@ -1197,7 +1082,7 @@ func makeWhisperPrompt(state SimState) string {
 	for _, trk := range state.Tracks {
 		if state.UserControlsTrack(trk) && trk.IsAssociated() {
 			callsign := string(trk.ADSBCallsign)
-			tele := av.GetCallsignSpoken(callsign, trk.FlightPlan.CWTCategory)
+			tele := av.GetCallsignSpoken(callsign, trk.CWTCategory)
 			promptParts = append(promptParts, tele)
 
 			// For GA callsigns (N-prefix), also add type+trailing3 variants
@@ -1287,6 +1172,13 @@ func makeWhisperPrompt(state SimState) string {
 	}
 	for star := range activeSTARs {
 		promptParts = append(promptParts, av.GetSTARTelephony(star))
+	}
+
+	// Add current ATIS letters so whisper recognizes "information <letter>"
+	for _, letter := range state.ATISLetter {
+		if nato, ok := av.NATOPhonetic[letter]; ok {
+			promptParts = append(promptParts, "information "+nato)
+		}
 	}
 
 	// Add fixes (lower priority, may get truncated by token limit)
@@ -1719,18 +1611,11 @@ func TryConnectRemoteServer(hostname string, lg *log.Logger) chan *serverConnect
 				ch <- &serverConnection{Err: err}
 			} else {
 				lg.Debugf("%s: server returned configuration in %s", hostname, time.Since(start))
-				// Extract just the host part (without port) for WebSocket connections
-				host, _, _ := net.SplitHostPort(hostname)
-				if host == "" {
-					host = hostname
-				}
 				ch <- &serverConnection{
 					Server: &Server{
 						RPCClient:           client,
-						HaveTTS:             cr.HaveTTS,
 						AvailableWXByTRACON: cr.AvailableWXByTRACON,
 						name:                "Network (Multi-controller)",
-						host:                host,
 						catalogs:            cr.ScenarioCatalogs,
 						runningSims:         cr.RunningSims,
 					},
@@ -1964,4 +1849,36 @@ func sttEvalWriteWAV(filename string, samples []int16) error {
 	}
 
 	return nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Local TTS synthesis helpers
+
+// synthesizeAndEnqueueReadback synthesizes text and enqueues it as a readback.
+// Called from a goroutine. On failure, Unhold() is called because RunAircraftCommands
+// calls Hold() before issuing the command to prevent contacts while waiting for the readback.
+func (c *ControlClient) synthesizeAndEnqueueReadback(callsign av.ADSBCallsign, text, voice string) {
+	if pcm, err := SynthesizeTTS(text, voice); err != nil {
+		c.lg.Errorf("TTS synthesis error for %s: %v", callsign, err)
+		c.transmissions.Unhold()
+	} else if pcm == nil {
+		// TTS not available, silently unhold
+		c.transmissions.Unhold()
+	} else {
+		c.lg.Infof("Synthesized readback for %s: %q (%d samples)", callsign, text, len(pcm))
+		c.transmissions.EnqueueReadbackPCM(callsign, av.RadioTransmissionReadback, pcm)
+	}
+}
+
+// synthesizeAndEnqueueContact synthesizes text and enqueues it as a contact transmission.
+// Called from a goroutine. Unlike readbacks, no Hold() is acquired before requesting
+// contacts, so no Unhold() is needed on failure.
+func (c *ControlClient) synthesizeAndEnqueueContact(callsign av.ADSBCallsign, ty av.RadioTransmissionType, text, voice string) {
+	if pcm, err := SynthesizeTTS(text, voice); err != nil {
+		c.lg.Errorf("TTS synthesis error for %s: %v", callsign, err)
+		return
+	} else if pcm != nil {
+		c.lg.Infof("Synthesized contact for %s: %q (%d samples)", callsign, text, len(pcm))
+		c.transmissions.EnqueueTransmissionPCM(callsign, ty, pcm)
+	}
 }

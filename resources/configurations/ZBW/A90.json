@@ -189,10 +189,21 @@
                 },
                 "default_consolidation": {
                     "BOS_D_APP": [
-                        "BOS_R_APP",
-                        "ACK_S_APP",
+                        "ACK_N_APP",
+                        "MHT_J_APP"
+                    ],
+                    "BOS_F_APP": [
+                        "BOS_I_APP"
+                    ],
+                    "ACK_N_APP": [
+                        "BOS_F_APP",
+                        "ACK_S_APP"
+                    ],
+                    "MHT_J_APP": [
+                        "MHT_Z_APP"
+                    ],
+                    "MHT_Z_APP": [
                         "MHT_E_APP",
-                        "MHT_J_APP",
                         "MHT_W_APP"
                     ]
                 }
@@ -237,15 +248,39 @@
                 },
                 "default_consolidation": {
                     "ACK_DEP": [
-                        "ACK_N_APP",
+                        "ACK_O_APP"
+                    ],
+                    "ACK_N_APP": [
+                        "ACK_DEP",
                         "BOS_B_APP",
-                        "BOS_D_APP",
-                        "BOS_R_APP",
-                        "ACK_S_APP",
+                        "BOS_F_APP"
+                    ],
+                    "ACK_O_APP": [
+                        "ACK_Y_APP"
+                    ],
+                    "ACK_S_APP": [
+                        "ACK_A_APP",
+                        "BOS_L_APP"
+                    ],
+                    "ACK_Y_APP": [
+                        "ACK_S_APP"
+                    ],
+                    "BOS_D_APP": [
+                        "ACK_N_APP",
                         "BOS_U_APP",
+                        "MHT_J_APP"
+                    ],
+                    "BOS_F_APP": [
+                        "BOS_I_APP"
+                    ],
+                    "MHT_E_APP": [
+                        "MHT_P_APP"
+                    ],
+                    "MHT_J_APP": [
+                        "MHT_Z_APP"
+                    ],
+                    "MHT_Z_APP": [
                         "MHT_E_APP",
-                        "MHT_J_APP",
-                        "MHT_P_APP",
                         "MHT_W_APP"
                     ]
                 }
@@ -274,11 +309,20 @@
                 },
                 "default_consolidation": {
                     "BOS_D_APP": [
-                        "BOS_R_APP",
-                        "ACK_S_APP",
-                        "MHT_E_APP",
-                        "MHT_W_APP",
+                        "ACK_N_APP",
                         "MHT_Z_APP"
+                    ],
+                    "BOS_F_APP": [
+                        "BOS_I_APP"
+                    ],
+                    "ACK_N_APP": [
+                        "BOS_F_APP",
+                        "ACK_S_APP"
+                    ],
+                    "MHT_Z_APP": [
+                        "MHT_E_APP",
+                        "MHT_J_APP",
+                        "MHT_W_APP"
                     ]
                 }
             },
@@ -322,16 +366,38 @@
                 },
                 "default_consolidation": {
                     "ACK_DEP": [
-                        "ACK_N_APP",
+                        "ACK_O_APP"
+                    ],
+                    "ACK_N_APP": [
+                        "ACK_DEP",
                         "BOS_B_APP",
-                        "BOS_D_APP",
-                        "BOS_R_APP",
-                        "ACK_S_APP",
+                        "BOS_F_APP"
+                    ],
+                    "ACK_O_APP": [
+                        "ACK_Y_APP"
+                    ],
+                    "ACK_S_APP": [
+                        "ACK_A_APP",
+                        "BOS_L_APP"
+                    ],
+                    "ACK_Y_APP": [
+                        "ACK_S_APP"
+                    ],
+                    "BOS_D_APP": [
+                        "ACK_N_APP",
                         "BOS_U_APP",
-                        "MHT_E_APP",
-                        "MHT_P_APP",
-                        "MHT_W_APP",
                         "MHT_Z_APP"
+                    ],
+                    "BOS_F_APP": [
+                        "BOS_I_APP"
+                    ],
+                    "MHT_E_APP": [
+                        "MHT_P_APP"
+                    ],
+                    "MHT_Z_APP": [
+                        "MHT_E_APP",
+                        "MHT_J_APP",
+                        "MHT_W_APP"
                     ]
                 }
             },
@@ -792,6 +858,12 @@
         ],
         "ssr_codes": {
             "auto_assignable_codes": {
+                "1": {
+                    "ranges": [
+                        "0206-0437"
+                    ],
+                    "flight_rules": "v"
+                },
                 "ifr": {
                     "ranges": [
                         "0101-0177"
@@ -802,12 +874,6 @@
                         "5120-5174"
                     ],
                     "backup_pool_list": "1"
-                },
-                "1": {
-                    "ranges": [
-                        "0206-0437"
-                    ],
-                    "flight_rules": "v"
                 }
             },
             "beacon_code_table": {

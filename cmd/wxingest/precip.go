@@ -31,7 +31,7 @@ func ingestPrecip(sb StorageBackend) error {
 	ch := make(chan string)
 	eg.Go(func() error {
 		defer close(ch)
-		return sb.ChanList("scrape/WX", ch)
+		return sb.ChanList(ctx, "scrape/WX", ch)
 	})
 
 	var totalBytes, totalObjects int64
@@ -227,7 +227,7 @@ func generateConsolidatedManifest(sb StorageBackend) error {
 	manifestCh := make(chan string)
 	go func() {
 		defer close(manifestCh)
-		if err := sb.ChanList(wx.MonthlyManifestPrefix("precip"), manifestCh); err != nil {
+		if err := sb.ChanList(context.Background(), wx.MonthlyManifestPrefix("precip"), manifestCh); err != nil {
 			LogError("Failed to list monthly manifests: %v", err)
 		}
 	}()

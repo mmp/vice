@@ -56,7 +56,7 @@ if not "!WHISPER_ACTUAL_SHA!"=="!WHISPER_EXPECTED_SHA!" (
     exit /b 1
 )
 
-REM Sync models from GCS if needed
+REM Sync models from R2 if needed
 call :sync_models
 if errorlevel 1 exit /b 1
 
@@ -138,6 +138,42 @@ if defined VULKAN_SDK (
     )
 ) else (
     echo VULKAN_SDK environment variable not set
+)
+
+REM Generate sherpa-onnx import libraries if needed.
+REM The sherpa-onnx-go-windows module only ships DLLs, but the MinGW
+REM linker needs import libraries (.dll.a) to link against them.
+REM We generate them directly in the module cache lib directory so
+REM the module's own #cgo LDFLAGS -L ${SRCDIR}/lib/... finds them.
+go mod download github.com/k2-fsa/sherpa-onnx-go-windows
+for /f "delims=" %%g in ('go env GOMODCACHE') do set GOMODCACHE=%%g
+for /f "tokens=2" %%v in ('findstr /c:"github.com/k2-fsa/sherpa-onnx-go " go.mod') do set SHERPA_VERSION=%%v
+set SHERPA_LIB=!GOMODCACHE!\github.com\k2-fsa\sherpa-onnx-go-windows@!SHERPA_VERSION!\lib\x86_64-pc-windows-gnu
+if exist "!SHERPA_LIB!\sherpa-onnx-c-api.dll" (
+    if not exist "!SHERPA_LIB!\libsherpa-onnx-c-api.dll.a" (
+        echo === Generating sherpa-onnx import libraries ===
+        set SHERPA_TMPDIR=%TEMP%\sherpa-import-gen
+        if not exist "!SHERPA_TMPDIR!" mkdir "!SHERPA_TMPDIR!"
+        copy "!SHERPA_LIB!\sherpa-onnx-c-api.dll" "!SHERPA_TMPDIR!\" >nul
+        copy "!SHERPA_LIB!\onnxruntime.dll" "!SHERPA_TMPDIR!\" >nul
+        pushd "!SHERPA_TMPDIR!"
+        gendef sherpa-onnx-c-api.dll
+        if errorlevel 1 exit /b 1
+        gendef onnxruntime.dll
+        if errorlevel 1 exit /b 1
+        dlltool -d sherpa-onnx-c-api.def -l libsherpa-onnx-c-api.dll.a -D sherpa-onnx-c-api.dll
+        if errorlevel 1 exit /b 1
+        dlltool -d onnxruntime.def -l libonnxruntime.dll.a -D onnxruntime.dll
+        if errorlevel 1 exit /b 1
+        popd
+        copy "!SHERPA_TMPDIR!\libsherpa-onnx-c-api.dll.a" "!SHERPA_LIB!\" >nul
+        copy "!SHERPA_TMPDIR!\libonnxruntime.dll.a" "!SHERPA_LIB!\" >nul
+    )
+    if not exist "windows\sherpa-onnx-c-api.dll" (
+        echo Copying sherpa-onnx runtime DLLs to windows/
+        copy "!SHERPA_LIB!\sherpa-onnx-c-api.dll" windows\ >nul
+        copy "!SHERPA_LIB!\onnxruntime.dll" windows\ >nul
+    )
 )
 
 REM Build whisper-cpp if needed

@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(done)",
+      "Bash(for dir in C:/Users/Michael/Documents/coding/vice/resources/configurations/*/)",
+      "Bash(do)",
+      "Bash(if grep -q \"C90\\\\|SDF\" \"$dir\"/*.json)",
+      "Bash(then)",
+      "Bash(echo:*)",
+      "Bash(fi)",
+      "Bash(node -e:*)",
+      "Bash(go build:*)",
+      "Bash(grep:*)",
+      "Bash(xargs:*)",
+      "Bash(dir:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(go list:*)",
+      "Bash(where onnxruntime.dll 2>nul:*)",
+      "Bash(powershell -command:*)",
+      "Bash(wc:*)",
+      "Bash(ls:*)"
+    ]
+  }
+}

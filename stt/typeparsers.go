@@ -45,10 +45,10 @@ func (p *altitudeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 	for i := pos; i < len(tokens) && i < pos+4; i++ {
 		t := tokens[i]
 
-		// Skip numbers followed by "mile" or "miles" - those are distances
+		// Skip numbers followed by "mile"/"miles" (distances) or "knots" (speeds)
 		if i+1 < len(tokens) {
 			nextText := strings.ToLower(tokens[i+1].Text)
-			if nextText == "mile" || nextText == "miles" {
+			if nextText == "mile" || nextText == "miles" || nextText == "knots" {
 				continue
 			}
 		}
@@ -72,6 +72,19 @@ func (p *altitudeParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, 
 			if t.Value >= 10 && t.Value <= 600 {
 				if t.Value < 100 || t.Value > 400 || p.allowFlightLevel {
 					alt := t.Value
+
+					// In climb/descend context, 3-digit values that aren't multiples
+					// of 10 likely have a garbled "thousand" merged into the digit
+					// sequence. E.g., "one one five" -> 115 where "five" is garbled
+					// "thousand"; the intended altitude is 11,000 ft = encoded 110.
+					// Standard ATC altitudes are always in thousands (multiples of
+					// 10 in encoded form); x,500 altitudes use explicit "thousand
+					// five hundred" which tokenizes correctly as TokenAltitude.
+					if p.allowFlightLevel && alt >= 100 && alt%10 != 0 {
+						corrected := (alt / 10) * 10
+						logLocalStt("  altitude correction: %d -> %d (garbled thousand in digit sequence)", alt, corrected)
+						alt = corrected
+					}
 
 					// Context-aware altitude correction: if the parsed altitude is below
 					// the aircraft's current altitude and multiplying by 10 gives a valid
@@ -149,6 +162,23 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 			continue
 		}
 
+		// Check if "to"/"too"/"tu" should be interpreted as digit "2" and combined
+		// with the following number to form a heading. E.g., "heading to nine zero"
+		// where "to" is STT mishearing of "two" → heading 290.
+		if t.Type == TokenWord && i+1 < len(tokens) && tokens[i+1].Type == TokenNumber {
+			text := strings.ToLower(t.Text)
+			if text == "to" || text == "too" || text == "tu" {
+				nextVal := tokens[i+1].Value
+				// Try prepending 2: "to 90" → 290, "to 70" → 270
+				if nextVal >= 0 && nextVal <= 160 {
+					combined := 200 + nextVal
+					if combined >= 200 && combined <= 360 {
+						return combined, i + 2 - pos, ""
+					}
+				}
+			}
+		}
+
 		// Check if this number is followed by "point" - that indicates a frequency, not a heading.
 		// E.g., "heading contact boston center 128 point 75" - the 128.75 is a frequency.
 		if t.Type == TokenNumber && i+1 < len(tokens) {
@@ -162,12 +192,36 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 		if t.Type == TokenNumber && t.Value > 360 && t.Value < 10000 {
 			hdg := t.Value / 10
 			if hdg >= 1 && hdg <= 360 {
+				// If truncating gives a non-multiple-of-5 heading, check for
+				// a duplicate digit caused by STT stutter (e.g., "0990" where
+				// "zero nine nine zero" should be "zero nine zero" = 090).
+				// Removing one duplicate digit may yield a cleaner heading.
+				if hdg%5 != 0 {
+					if better, ok := headingByRemovingDuplicateDigit(t.Text); ok {
+						hdg = better
+					}
+				}
 				return hdg, i - pos + 1, ""
 			}
 		}
 
 		if t.Type == TokenNumber && t.Value >= 1 && t.Value <= 360 {
 			hdg := t.Value
+
+			// Check for garbled word between heading digits: "3 [garbled] 40" → 340.
+			// STT sometimes inserts a garbled word between digit groups.
+			// Only try when the first token is a single digit 1-3 (valid hundreds digit).
+			if hdg >= 1 && hdg <= 3 && i+2 < len(tokens) &&
+				tokens[i+1].Type == TokenWord && !IsCommandKeyword(tokens[i+1].Text) &&
+				tokens[i+2].Type == TokenNumber && tokens[i+2].Value >= 10 {
+				remainder := tokens[i+2].Value
+				combined := hdg*100 + remainder
+				if combined >= 100 && combined <= 360 {
+					logLocalStt("  heading: skipping garbled %q between digits: %d + %d -> %d",
+						tokens[i+1].Text, hdg, remainder, combined)
+					return combined, i + 3 - pos, ""
+				}
+			}
 
 			// Handle leading zero and dropped trailing zero patterns
 			text := t.Text
@@ -192,6 +246,26 @@ func (p *headingParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, s
 	}
 
 	return nil, 0, "HEADING"
+}
+
+// headingByRemovingDuplicateDigit tries to fix STT stutter where a digit is
+// spoken twice (e.g., "zero nine nine zero" → "0990" instead of "090").
+// It removes each pair of duplicate adjacent digits and returns the first
+// result that is a valid heading (1-360) and a multiple of 5 or 10.
+func headingByRemovingDuplicateDigit(text string) (int, bool) {
+	for i := 0; i+1 < len(text); i++ {
+		if text[i] == text[i+1] {
+			candidate := text[:i] + text[i+1:]
+			val, err := strconv.Atoi(candidate)
+			if err != nil {
+				continue
+			}
+			if val >= 1 && val <= 360 && val%5 == 0 {
+				return val, true
+			}
+		}
+	}
+	return 0, false
 }
 
 // speedParser extracts speed values (100-400 knots).
@@ -228,6 +302,16 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 				return rounded, i - pos + 1, ""
 			}
 
+			// 4-digit starting with 2 and ending in 0: the leading "2"
+			// is likely "to" misheard as "two" (e.g., "speed to one seven
+			// zero" → "speed 2170" → 170).
+			if t.Value >= 2000 && t.Value < 3000 && t.Value%10 == 0 {
+				last3 := t.Value % 1000
+				if last3 >= 100 && last3 <= 400 {
+					return last3, i - pos + 1, ""
+				}
+			}
+
 			// 4-digit with extra digit (e.g., 1909 → 190)
 			if t.Value > 400 {
 				corrected := t.Value / 10
@@ -247,6 +331,7 @@ func (p *speedParser) parse(tokens []Token, pos int, ac Aircraft) (any, int, str
 					}
 				}
 			}
+
 		}
 	}
 
@@ -527,6 +612,64 @@ func (p *textParser) parse(tokens []Token, pos int, ac Aircraft) (value any, con
 	return nil, 0, ""
 }
 
+// atisLetterParser extracts a NATO phonetic letter for ATIS information.
+// It handles exact matches, fuzzy matches against NATO words, and
+// multi-word garbles (e.g., "pop up" for "papa").
+type atisLetterParser struct{}
+
+func (p *atisLetterParser) identifier() string {
+	return "atis_letter"
+}
+
+func (p *atisLetterParser) goType() reflect.Type {
+	return reflect.TypeOf("")
+}
+
+func (p *atisLetterParser) parse(tokens []Token, pos int, ac Aircraft) (value any, consumed int, sayAgain string) {
+	if pos >= len(tokens) || tokens[pos].Type != TokenWord {
+		return nil, 0, ""
+	}
+
+	word := strings.ToLower(tokens[pos].Text)
+
+	// Exact NATO match.
+	if letter, ok := ConvertNATOLetter(word); ok {
+		return strings.ToUpper(letter), 1, ""
+	}
+
+	// Try combining with the next token for garbled multi-word NATO
+	// (e.g., "pop up" → "papa").
+	if pos+1 < len(tokens) && tokens[pos+1].Type == TokenWord {
+		combined := word + tokens[pos+1].Text
+		if letter, ok := ConvertNATOLetter(combined); ok {
+			return strings.ToUpper(letter), 2, ""
+		}
+		// Fuzzy match combined form.
+		if letter, ok := fuzzyNATOLetter(combined, 0.8); ok {
+			return strings.ToUpper(letter), 2, ""
+		}
+	}
+
+	// Fuzzy match single word.
+	if letter, ok := fuzzyNATOLetter(word, 0.8); ok {
+		return strings.ToUpper(letter), 1, ""
+	}
+
+	return nil, 0, ""
+}
+
+// fuzzyNATOLetter fuzzy-matches a word against all NATO phonetic words
+// using FuzzyMatch (Jaro-Winkler + phonetic matching).
+// Returns the corresponding letter if a match is found.
+func fuzzyNATOLetter(word string, threshold float64) (string, bool) {
+	for natoWord, letter := range natoAlphabet {
+		if FuzzyMatch(word, natoWord, threshold) {
+			return letter, true
+		}
+	}
+	return "", false
+}
+
 // garbledWordParser extracts a single word token that is NOT a command keyword.
 // Used for matching garbled facility names without accidentally consuming command keywords.
 type garbledWordParser struct{}
@@ -663,6 +806,8 @@ func getTypeParser(typeID string) typeParser {
 	switch typeID {
 	case "altitude":
 		return &altitudeParser{}
+	case "altitude_fl":
+		return &altitudeParser{allowFlightLevel: true}
 	case "heading":
 		return &headingParser{}
 	case "speed":
@@ -687,6 +832,8 @@ func getTypeParser(typeID string) typeParser {
 		return &holdParser{}
 	case "text":
 		return &textParser{}
+	case "atis_letter":
+		return &atisLetterParser{}
 	case "garbled_word":
 		return &garbledWordParser{}
 	case "speed_until":

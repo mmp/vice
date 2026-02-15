@@ -38,12 +38,8 @@ type Sim struct {
 	InboundAssignments   map[string]TCP // Inbound flow name -> TCP responsible
 	DepartureAssignments map[string]TCP // Departure specifier -> TCP responsible
 
-	nasNet *NASNetwork // unexported: rebuilt in Activate(), not serialized via gob
-
-	// Stored for NASNet reconstruction after deserialization
-	HandoffTopology    *HandoffTopology
-	FixPairs           []FixPairDefinition
-	FixPairAssignments []FixPairAssignment
+	STARSComputer *STARSComputer
+	ERAMComputer  *ERAMComputer
 
 	LocalCodePool *av.LocalSquawkCodePool
 	CIDAllocator  *CIDAllocator
@@ -57,6 +53,8 @@ type Sim struct {
 	wxModel    *wx.Model
 	wxProvider wx.Provider
 	METAR      map[string][]wx.METAR
+
+	ATISChangedTime map[string]time.Time
 
 	eventStream *EventStream
 	lg          *log.Logger
@@ -74,12 +72,16 @@ type Sim struct {
 
 	ReportingPoints []av.ReportingPoint
 
+	FDAMSystemInhibited         bool
+	DisabledFDAMRegions         map[string]struct{} // keyed by region ID
 	EnforceUniqueCallsignSuffix bool
 
-	PendingContacts        map[TCP][]PendingContact
-	FutureOnCourse         []FutureOnCourse
-	FutureSquawkChanges    []FutureChangeSquawk
-	FutureEmergencyUpdates []FutureEmergencyUpdate
+	PendingContacts         map[TCP][]PendingContact
+	PendingFrequencyChanges []PendingFrequencyChange
+	DeferredContacts        map[av.ADSBCallsign]map[ControlPosition]TCP
+	FutureOnCourse          []FutureOnCourse
+	FutureSquawkChanges     []FutureChangeSquawk
+	FutureEmergencyUpdates  []FutureEmergencyUpdate
 
 	NextEmergencyTime time.Time
 
@@ -102,6 +104,8 @@ type Sim struct {
 
 	Rand *rand.Rand
 
+	VoiceAssigner *VoiceAssigner
+
 	SquawkWarnedACIDs map[ACID]any // Warn once in CheckLeaks(); don't spam the logs
 
 	// No need to serialize these; they're caches anyway.
@@ -115,10 +119,9 @@ type Sim struct {
 	// LastSTTCommand stores state needed to roll back a misheard STT command.
 	// Only the single most recent command is tracked.
 	LastSTTCommand *LastSTTCommand
-}
 
-func (s *Sim) starsComputer() *STARSComputer { return s.nasNet.PrimarySTARS(s.State.Facility) }
-func (s *Sim) eramComputer() *ERAMComputer   { return s.nasNet.PrimaryERAM(s.State.Facility) }
+	AvailableStripCIDs []int
+}
 
 // LastSTTCommand stores the nav snapshot from before the most recent STT command
 // was executed, allowing rollback if the controller says "negative, that was for {other callsign}".
@@ -126,23 +129,6 @@ type LastSTTCommand struct {
 	Callsign    av.ADSBCallsign
 	NavSnapshot nav.NavSnapshot
 }
-
-type TTSProvider interface {
-	GetAllVoices() TTSVoicesFuture
-	TextToSpeech(voice Voice, text string) TTSSpeechFuture
-}
-
-type TTSVoicesFuture struct {
-	VoicesCh <-chan []Voice
-	ErrCh    <-chan error
-}
-
-type TTSSpeechFuture struct {
-	Mp3Ch <-chan []byte
-	ErrCh <-chan error
-}
-
-type Voice string
 
 type AircraftDisplayState struct {
 	Spew        string // for debugging
@@ -176,7 +162,8 @@ type Track struct {
 	HoldForRelease            bool
 	MissingFlightPlan         bool
 	Route                     []math.Point2LL
-	IsTentative               bool // first 5 seconds after first contact
+	IsTentative               bool   // first 5 seconds after first contact
+	CWTCategory               string // True CWT from aircraft performance DB, not from NAS flight plan
 }
 
 type DepartureRunway struct {
@@ -203,12 +190,10 @@ type PointOut struct {
 }
 
 type PilotSpeech struct {
-	Callsign       av.ADSBCallsign
-	Type           av.RadioTransmissionType
-	Text           string
-	MP3            []byte
-	SimTime        time.Time // Virtual simulation time when transmission was made
-	PTTReleaseTime time.Time // Wall clock time when PTT was released (for STT latency tracking)
+	Callsign av.ADSBCallsign
+	Type     av.RadioTransmissionType
+	Text     string
+	SimTime  time.Time // Virtual simulation time when transmission was made
 }
 
 // NewSimConfiguration collects all of the information required to create a new Sim
@@ -268,6 +253,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		InboundAssignments:   config.ControllerConfiguration.InboundAssignments,
 		DepartureAssignments: config.ControllerConfiguration.DepartureAssignments,
 
+		STARSComputer: makeSTARSComputer(config.Facility),
+
 		CIDAllocator: NewCIDAllocator(),
 
 		LocalCodePool: av.MakeLocalSquawkCodePool(config.FacilityAdaptation.SSRCodes),
@@ -276,6 +263,8 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 
 		wxModel: wx.MakeModel(config.WXProvider, config.Facility, config.PrimaryAirport, config.StartTime.UTC(), lg),
 		METAR:   make(map[string][]wx.METAR),
+
+		ATISChangedTime: make(map[string]time.Time),
 
 		eventStream: NewEventStream(lg),
 		lg:          lg,
@@ -303,7 +292,18 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		SquawkWarnedACIDs: make(map[ACID]any),
 
 		wxProvider: config.WXProvider,
+
+		AvailableStripCIDs: func() []int {
+			cids := make([]int, 1000)
+			for i := range cids {
+				cids[i] = i
+			}
+			rand.ShuffleSlice(cids, rand.Make())
+			return cids
+		}(),
 	}
+
+	s.VoiceAssigner = NewVoiceAssigner(s.Rand)
 
 	// Load METAR data from local resources
 	apmetar, err := wx.GetMETAR(slices.Collect(maps.Keys(config.Airports)))
@@ -362,22 +362,9 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		}
 	}
 
-	// Store config for NASNet reconstruction after deserialization
-	s.HandoffTopology = config.HandoffTopology
-	s.FixPairs = config.FixPairs
-	s.FixPairAssignments = config.FixPairAssignments
+	s.ERAMComputer = makeERAMComputer(av.DB.TRACONs[config.Facility].ARTCC, s.LocalCodePool)
 
-	s.nasNet = InitializeNetwork(
-		config.Facility,
-		config.Airports,
-		s.LocalCodePool,
-		s.FixPairs,
-		s.FixPairAssignments,
-		s.HandoffTopology,
-		lg.Logger,
-	)
-
-	s.State = newCommonState(config, config.StartTime.UTC(), manifest, s.wxModel, s.METAR, lg)
+	s.State = newCommonState(config, config.StartTime.UTC(), manifest, s.wxModel, s.METAR, s.Rand, lg)
 	s.ScenarioDefaultConsolidation = config.ControllerConfiguration.DefaultConsolidation
 
 	return s
@@ -487,19 +474,6 @@ func (s *Sim) Activate(lg *log.Logger, provider wx.Provider) {
 	if s.wxModel == nil {
 		s.wxModel = wx.MakeModel(provider, s.State.Facility, s.State.PrimaryAirport, s.State.SimTime, s.lg)
 	}
-
-	// Rebuild NASNet (not serialized via gob due to circular pointers and unexported fields)
-	if s.nasNet == nil {
-		s.nasNet = InitializeNetwork(
-			s.State.Facility,
-			s.State.Airports,
-			s.LocalCodePool,
-			s.FixPairs,
-			s.FixPairAssignments,
-			s.HandoffTopology,
-			lg.Logger,
-		)
-	}
 }
 
 func (s *Sim) Destroy() {
@@ -516,15 +490,6 @@ func (s *Sim) GetSerializeSim() Sim {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 	return *s
-}
-
-func (s *Sim) GetNASDebugData() NASDebugData {
-	s.mu.Lock(s.lg)
-	defer s.mu.Unlock(s.lg)
-	if s.nasNet == nil {
-		return NASDebugData{}
-	}
-	return s.nasNet.GetNASDebugData(s.State.SimTime)
 }
 
 func (s *Sim) LogValue() slog.Value {
@@ -767,6 +732,106 @@ func (s *Sim) ConfigureATPA(op ATPAConfigOp, volumeId string) (string, error) {
 	return "", nil
 }
 
+type FDAMConfigOp int
+
+const (
+	FDAMToggleSystem FDAMConfigOp = iota
+	FDAMEnableSystem
+	FDAMInhibitSystem
+	FDAMToggleRegion
+	FDAMEnableRegion
+	FDAMInhibitRegion
+	FDAMQueryStatus
+)
+
+func (s *Sim) ConfigureFDAM(op FDAMConfigOp, regionId string) (string, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	if len(s.State.FacilityAdaptation.Filters.FDAM) == 0 {
+		return "", ErrFDAMNoRegions
+	}
+
+	switch op {
+	case FDAMToggleSystem:
+		s.FDAMSystemInhibited = !s.FDAMSystemInhibited
+		return util.Select(s.FDAMSystemInhibited, "FLIGHT-DATA AUTO-MOD PROC OFF", "FLIGHT-DATA AUTO-MOD PROC ON"), nil
+	case FDAMEnableSystem:
+		s.FDAMSystemInhibited = false
+		return "FLIGHT-DATA AUTO-MOD PROC ON", nil
+	case FDAMInhibitSystem:
+		s.FDAMSystemInhibited = true
+		return "FLIGHT-DATA AUTO-MOD PROC OFF", nil
+	}
+
+	if s.FDAMSystemInhibited {
+		return "", ErrFDAMProcessingOff
+	}
+
+	if op == FDAMQueryStatus {
+		return s.fdamStatusString(), nil
+	}
+
+	if !s.State.FacilityAdaptation.Filters.FDAM.HaveId(regionId) {
+		return "", ErrFDAMIllegalArea
+	}
+
+	if s.DisabledFDAMRegions == nil {
+		s.DisabledFDAMRegions = make(map[string]struct{})
+	}
+
+	switch op {
+	case FDAMToggleRegion:
+		if _, ok := s.DisabledFDAMRegions[regionId]; ok {
+			delete(s.DisabledFDAMRegions, regionId)
+			return "REGION " + regionId + " ON", nil
+		}
+		s.DisabledFDAMRegions[regionId] = struct{}{}
+		return "REGION " + regionId + " OFF", nil
+	case FDAMEnableRegion:
+		delete(s.DisabledFDAMRegions, regionId)
+		return "REGION " + regionId + " ON", nil
+	case FDAMInhibitRegion:
+		s.DisabledFDAMRegions[regionId] = struct{}{}
+		return "REGION " + regionId + " OFF", nil
+	}
+	return "", nil
+}
+
+func (s *Sim) fdamStatusString() string {
+	var enabled, disabled []string
+	for _, f := range s.State.FacilityAdaptation.Filters.FDAM {
+		if _, ok := s.DisabledFDAMRegions[f.Id]; ok {
+			disabled = append(disabled, f.Id)
+		} else {
+			enabled = append(enabled, f.Id)
+		}
+	}
+
+	var output string
+	appendRegions := func(regions []string, header string) {
+		if len(regions) == 0 {
+			return
+		}
+		if output != "" {
+			output += "\n"
+		}
+		output += header + "\n"
+		slices.Sort(regions)
+		for i, id := range regions {
+			if i > 0 && i%5 == 0 {
+				output += "\n"
+			} else if i > 0 {
+				output += " "
+			}
+			output += id
+		}
+	}
+	appendRegions(enabled, "ENAB FLIGHT-DATA AUTO-MOD FLTRS")
+	appendRegions(disabled, "DISAB FLIGHT-DATA AUTO-MOD FLTRS")
+	return output
+}
+
 func (s *Sim) PostEvent(e Event) {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
@@ -936,15 +1001,16 @@ func (s *Sim) PrepareRadioTransmissionsForTCW(tcw TCW, events []Event) []Event {
 	return s.prepareRadioTransmissions(tcw, events)
 }
 
-func (s *Sim) GetStateUpdate() StateUpdate {
+func (s *Sim) GetStateUpdate(tcw TCW) StateUpdate {
 	s.mu.Lock(s.lg)
 	defer s.mu.Unlock(s.lg)
 
 	s.State.GenerationIndex++
 
 	update := StateUpdate{
-		DynamicState: s.State.DynamicState,
-		DerivedState: makeDerivedState(s),
+		DynamicState:     s.State.DynamicState,
+		DerivedState:     makeDerivedState(s),
+		FlightStripACIDs: s.flightStripACIDsForTCW(tcw),
 	}
 
 	if util.SizeOf(update, os.Stderr, false, 1024*1024) > 256*1024*1024 {
@@ -1060,7 +1126,7 @@ func (s *Sim) updateState() {
 			continue
 		}
 
-		if fp, _, _ := s.getFlightPlanForACID(acid); fp != nil {
+		if fp, ac, _ := s.getFlightPlanForACID(acid); fp != nil {
 			if fp.HandoffController != "" && s.isVirtualController(fp.HandoffController) {
 				// Automated accept
 				s.eventStream.Post(Event{
@@ -1073,18 +1139,23 @@ func (s *Sim) updateState() {
 					slog.String("from", string(fp.TrackingController)),
 					slog.String("to", string(fp.HandoffController)))
 
-				previousController := fp.TrackingController
-				newController := fp.HandoffController
+				previousTrackingController := fp.TrackingController
+				newTrackingController := fp.HandoffController
 
-				fp.TrackingController = newController
+				fp.TrackingController = newTrackingController
 				if s.State.IsLocalController(fp.TrackingController) {
 					fp.LastLocalController = fp.TrackingController
 				}
 				fp.OwningTCW = s.tcwForPosition(fp.TrackingController)
 				fp.HandoffController = ""
 
-				// Send TN if this was a cross-facility handoff
-				s.sendTNIfCrossFacility(fp, previousController, newController)
+				if ac != nil {
+					haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
+						func(wp av.Waypoint) bool { return wp.TransferComms })
+					if !haveTransferComms && s.isVirtualController(previousTrackingController) {
+						s.virtualControllerTransferComms(ac, TCP(previousTrackingController), TCP(newTrackingController))
+					}
+				}
 			}
 		}
 		delete(s.Handoffs, acid)
@@ -1167,7 +1238,7 @@ func (s *Sim) updateState() {
 					}
 					sfp := ac.NASFlightPlan
 					if sfp == nil {
-						sfp = s.starsComputer().lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+						sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 					}
 					if sfp != nil {
 						s.handoffTrack(sfp, sfp.InboundHandoffController)
@@ -1180,7 +1251,7 @@ func (s *Sim) updateState() {
 					}
 					sfp := ac.NASFlightPlan
 					if sfp == nil {
-						sfp = s.starsComputer().lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
+						sfp = s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign))
 					}
 					if sfp != nil {
 						s.handoffTrack(sfp, TCP(passedWaypoint.HandoffController))
@@ -1210,7 +1281,7 @@ func (s *Sim) updateState() {
 							ctrl := s.State.ResolveController(sfp.InboundHandoffController)
 							// Make sure they've bought the handoff.
 							if ctrl != sfp.HandoffController {
-								s.enqueueControllerContact(ac.ADSBCallsign, ctrl, 0 /* no delay */)
+								s.enqueueControllerContact(ac.ADSBCallsign, TCP(ctrl), ac.ControllerFrequency)
 							}
 						}
 					}
@@ -1316,7 +1387,7 @@ func (s *Sim) updateState() {
 			if ac.IsDeparture() && ((ac.DepartureContactAltitude > 0 && ac.Nav.FlightState.Altitude >= ac.DepartureContactAltitude) || (ac.DepartureContactAltitude == 0 && ac.EmergencyState != nil)) {
 				fp := ac.NASFlightPlan
 				if fp == nil {
-					fp = s.starsComputer().lookupFlightPlanBySquawk(ac.Squawk)
+					fp = s.STARSComputer.lookupFlightPlanBySquawk(ac.Squawk)
 				}
 				if fp != nil {
 					// During prespawn uncontrolled-only phase, cull departures that would
@@ -1349,29 +1420,17 @@ func (s *Sim) updateState() {
 
 		s.possiblyRequestFlightFollowing()
 
-		// Handle assorted deferred radio calls.
-		s.processEnqueued()
+		s.processPendingFrequencySwitches()
+
+		s.processFutureEvents()
 
 		// Handle emergencies
 		s.updateEmergencies()
 
 		s.spawnAircraft()
 
-		// Process all facility computer inboxes
-		for _, ec := range s.nasNet.ERAMComputers {
-			ec.ProcessInbox(s.nasNet, s.State.SimTime, s.lg.Logger)
-		}
-		for _, sc := range s.nasNet.STARSComputers {
-			sc.ProcessInbox(s.nasNet, s.State.SimTime, s.lg.Logger)
-		}
-
-		// Run ERAM Update on all ERAM computers for peer-to-peer FP distribution.
-		// Child TRACON distribution uses childSTARSHasFP() to avoid duplicates.
-		for _, ec := range s.nasNet.ERAMComputers {
-			ec.Update(s)
-		}
-		// Only primary STARS runs full Update (FP acquisition, drop filtering)
-		s.starsComputer().Update(s)
+		s.ERAMComputer.Update(s)
+		s.STARSComputer.Update(s)
 
 		// Advance METAR: drop old entries when sim time passes the next one's report time
 		for ap, metar := range s.METAR {
@@ -1382,6 +1441,13 @@ func (s *Sim) updateState() {
 			if len(metar) > 0 {
 				if s.State.METAR == nil {
 					s.State.METAR = make(map[string]wx.METAR)
+				}
+				old := s.State.METAR[ap]
+				if old.Raw != "" && old.Raw != metar[0].Raw {
+					if cur, ok := s.State.ATISLetter[ap]; ok {
+						s.State.ATISLetter[ap] = string(rune((cur[0]-'A'+1)%26 + 'A'))
+						s.ATISChangedTime[ap] = s.State.SimTime
+					}
 				}
 				s.State.METAR[ap] = metar[0]
 			}
@@ -1693,8 +1759,10 @@ func (s *Sim) getFlightPlanForACID(acid ACID) (*NASFlightPlan, *Aircraft, bool) 
 			return ac.NASFlightPlan, ac, true
 		}
 	}
-	if fp, ok := s.starsComputer().FlightPlans[acid]; ok {
-		return fp, nil, !fp.Location.IsZero()
+	for i, fp := range s.STARSComputer.FlightPlans {
+		if fp.ACID == acid {
+			return s.STARSComputer.FlightPlans[i], nil, !fp.Location.IsZero()
+		}
 	}
 	return nil, nil, false
 }
@@ -1733,8 +1801,8 @@ func (s *Sim) CheckLeaks() {
 		}
 		seenSquawks[fp.AssignedSquawk] = nil
 
-		if s.eramComputer().SquawkCodePool.InInitialPool(fp.AssignedSquawk) {
-			if !s.eramComputer().SquawkCodePool.IsAssigned(fp.AssignedSquawk) && !warned {
+		if s.ERAMComputer.SquawkCodePool.InInitialPool(fp.AssignedSquawk) {
+			if !s.ERAMComputer.SquawkCodePool.IsAssigned(fp.AssignedSquawk) && !warned {
 				s.lg.Warnf("%s: squawking unassigned ERAM code %q", fp.ACID, fp.AssignedSquawk)
 				s.SquawkWarnedACIDs[fp.ACID] = nil
 			}
@@ -1758,15 +1826,15 @@ func (s *Sim) CheckLeaks() {
 		}
 	}
 	nUnassociatedFPs := 0
-	for _, fp := range s.starsComputer().FlightPlans {
+	for _, fp := range s.STARSComputer.FlightPlans {
 		check(fp)
 		nUnassociatedFPs++
 	}
 
-	if len(s.starsComputer().AvailableIndices) != 99-nUsedIndices {
+	if len(s.STARSComputer.AvailableIndices) != 99-nUsedIndices {
 		// Build the set of available indices for comparison
 		availableSet := make(map[int]bool)
-		for _, idx := range s.starsComputer().AvailableIndices {
+		for _, idx := range s.STARSComputer.AvailableIndices {
 			availableSet[idx] = true
 		}
 
@@ -1779,7 +1847,7 @@ func (s *Sim) CheckLeaks() {
 		}
 
 		s.lg.Errorf("%d available list indices but %d used so should be %d (aircraft FPs: %d, unassociated FPs: %d, leaked indices: %v)",
-			len(s.starsComputer().AvailableIndices), nUsedIndices, 99-nUsedIndices,
+			len(s.STARSComputer.AvailableIndices), nUsedIndices, 99-nUsedIndices,
 			nAircraftFPs, nUnassociatedFPs, leaked)
 	}
 }
@@ -1823,4 +1891,82 @@ func (t *Track) IsArrival() bool {
 
 func (t *Track) IsOverflight() bool {
 	return t.IsAssociated() && t.FlightPlan.TypeOfFlight == av.FlightTypeOverflight
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Flight Strips
+
+// allocateStripCID picks a random free CID in 000-999 and marks it used.
+func (s *Sim) allocateStripCID() int {
+	if len(s.AvailableStripCIDs) > 0 {
+		cid := s.AvailableStripCIDs[0]
+		s.AvailableStripCIDs = s.AvailableStripCIDs[1:]
+		return cid
+	}
+	return s.Rand.Intn(1000)
+}
+
+// freeStripCID releases a CID back to the pool.
+func (s *Sim) freeStripCID(cid int) {
+	s.AvailableStripCIDs = append(s.AvailableStripCIDs, cid)
+}
+
+// initFlightStrip assigns a strip CID and owner on the flight plan.
+// No-op if the flight plan already has a strip.
+func (s *Sim) initFlightStrip(fp *NASFlightPlan, owner ControlPosition) {
+	if fp.StripOwner != "" {
+		return
+	}
+	fp.StripCID = s.allocateStripCID()
+	fp.StripOwner = owner
+	s.lg.Debug("created flight strip", slog.String("acid", string(fp.ACID)), slog.String("owner", string(owner)))
+}
+
+func shouldCreateFlightStrip(fp *NASFlightPlan) bool {
+	return fp.Rules == av.FlightRulesIFR || (fp.PlanType != LocalNonEnroute && fp.TypeOfFlight == av.FlightTypeDeparture)
+}
+
+// flightStripACIDsForTCW returns the ACIDs of all flight plans with strips
+// owned by TCPs controlled by the given TCW. Caller must hold the mutex.
+func (s *Sim) flightStripACIDsForTCW(tcw TCW) []ACID {
+	var result []ACID
+	for _, ac := range s.Aircraft {
+		if ac.IsAssociated() && s.State.TCWControlsPosition(tcw, ac.NASFlightPlan.StripOwner) {
+			result = append(result, ac.NASFlightPlan.ACID)
+		}
+	}
+	for _, fp := range s.STARSComputer.FlightPlans {
+		if s.State.TCWControlsPosition(tcw, fp.StripOwner) {
+			result = append(result, fp.ACID)
+		}
+	}
+	return result
+}
+
+// PushFlightStrip moves a flight strip to the given TCP.
+func (s *Sim) PushFlightStrip(tcw TCW, acid ACID, toTCP TCP) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	fp, _, _ := s.getFlightPlanForACID(acid)
+	if fp == nil || !s.State.TCWControlsPosition(tcw, fp.StripOwner) {
+		return ErrNoMatchingFlight
+	}
+
+	fp.StripOwner = ControlPosition(toTCP)
+	return nil
+}
+
+// AnnotateFlightStrip updates the annotations on a flight strip.
+func (s *Sim) AnnotateFlightStrip(tcw TCW, acid ACID, annotations [9]string) error {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	fp, _, _ := s.getFlightPlanForACID(acid)
+	if fp == nil || !s.State.TCWControlsPosition(tcw, fp.StripOwner) {
+		return ErrNoMatchingFlight
+	}
+
+	fp.StripAnnotations = annotations
+	return nil
 }

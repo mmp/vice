@@ -1,316 +1,317 @@
 {
-  "artcc": "ZJX",
-  "area": "West Area",
-  "name": "ZJX 30",
-  "airports": {
-    "KMCO": {
-      "departure_controller": "MCO_B_APP",
-      "departure_facility": "F11",
-      "approaches": {
-        "I6L": {
-          "cifp_id": "R36L"
-        },
-        "I5R": {
-          "cifp_id": "I35R"
-        }
-      },
-      "departure_routes": {
-        "36R": {
-          "REMIS": {
-            "cleared_altitude": 27000,
-            "sid": "OSPRY1",
-            "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+ LEFTI/a4000+/s230 BLOSM/a7000-/ho88 OSPRY/ho16 GDUNN KNOST N027.56.32.543,W084.20.26.129/ho REMIS",
-            "handoff_controller": "ZJX 30 Nepta"
-          }
-        }
-      },
-      "departures": [
-        {
-          "exit": "REMIS",
-          "destination": "KLAX",
-          "altitude": 34000,
-          "route": "REMIS ROZZI Y280 LEV J86 ELP J50 SSO J4 WLVRN ESTWD HLYWD1",
-          "airlines": [
-            {
-              "icao": "DAL",
-              "fleet": "default"
+    "artcc": "ZJX",
+    "area": "West Area",
+    "name": "ZJX 30",
+    "airports": {
+        "KMCO": {
+            "departure_controller": "MCO_B_APP",
+            "departure_facility": "F11",
+            "approaches": {
+                "I6L": {
+                    "cifp_id": "R36L"
+                },
+                "I5R": {
+                    "cifp_id": "I35R"
+                }
             },
-            {
-              "icao": "AAL",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
-          "exit": "REMIS",
-          "destination": "KIAH",
-          "altitude": 36000,
-          "route": "REMIS ROZZI Y280 LEV LINKK1",
-          "airlines": [
-            {
-              "icao": "DAL",
-              "fleet": "default"
+            "departure_routes": {
+                "36R": {
+                    "REMIS": {
+                        "cleared_altitude": 27000,
+                        "sid": "OSPRY1",
+                        "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+ LEFTI/a4000+/s230 BLOSM/a7000-/ho88 OSPRY/ho16 GDUNN KNOST N027.56.32.543,W084.20.26.129/ho REMIS",
+                        "handoff_controller": "ZJX 30 Nepta"
+                    }
+                }
             },
-            {
-              "icao": "UAL",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
-          "exit": "REMIS",
-          "destination": "KBRO",
-          "altitude": 36000,
-          "route": "REMIS PEKON Q56 HEIGH J22 PSX ASCOT V163 BRO",
-          "airlines": [
-            {
-              "icao": "SWA",
-              "fleet": "default"
-            },
-            {
-              "icao": "JBU",
-              "fleet": "default"
-            }
-          ]
-        },
-        {
-          "exit": "REMIS",
-          "destination": "KDFW",
-          "altitude": 36000,
-          "route": "REMIS Y280 REDFN HRV AEX PNUTS WHINY4",
-          "airlines": [
-            {
-              "icao": "FDX",
-              "fleet": "default"
-            },
-            {
-              "icao": "AAL",
-              "fleet": "default"
-            }
-          ]
-        }
-      ]
-    },
-    "KTPA": {
-      "departure_controller": "JAX_S_APP",
-      "departure_facility": "JAX",
-      "approaches": {
-        "I9L": {
-          "cifp_id": "I19L"
-        }
-      }
-    },
-    "KDAB": {
-      "approaches": {
-        "I7L": {
-          "cifp_id": "I7L"
-        }
-      }
-    },
-    "KSRQ": {
-      "departure_controller": "JAX_S_APP",
-      "departure_facility": "JAX",
-      "approaches": {
-        "R14": {
-          "cifp_id": "R14"
-        }
-      }
-    },
-    "KCHS": {
-      "departure_controller": "JAX_S_APP",
-      "departure_facility": "JAX",
-      "approaches": {
-        "I15": {
-          "cifp_id": "I15"
-        }
-      }
-    }
-  },
-  "inbound_flows": {
-    "PRICY4": {
-      "arrivals": [
-        {
-          "waypoints": "N028.43.45.418,W088.36.16.982/ho NAITE ROZZI REMIS CHRGE DAAWG CHIVE/a25000 DECKS/a21000+ BULKS/s280 PRICY/a14000 BOCCE JUMBA AMADS/a9000- LORRA/a7000 KMCO-36L/delete",
-          "route": "/. PRICY4",
-          "initial_controller": "ZHU 24 Leeville",
-          "initial_altitude": 35000,
-          "initial_speed": 300,
-          "assigned_altitude": 35000,
-          "airlines": {
-            "KMCO": [
-              {
-                "icao": "DAL",
-                "types": [
-                  "B738"
-                ],
-                "airport": "KIAH"
-              },
-              {
-                "icao": "FDX",
-                "types": [
-                  "B772"
-                ],
-                "airport": "KDFW"
-              },
-              {
-                "icao": "UAL",
-                "types": [
-                  "A321"
-                ],
-                "airport": "KDFW"
-              },
-              {
-                "icao": "AAL",
-                "types": [
-                  "A321"
-                ],
-                "airport": "KLAX"
-              },
-              {
-                "icao": "FFT",
-                "types": [
-                  "A321"
-                ],
-                "airport": "KLAS"
-              }
+            "departures": [
+                {
+                    "exit": "REMIS",
+                    "destination": "KLAX",
+                    "altitude": 34000,
+                    "route": "REMIS ROZZI Y280 LEV J86 ELP J50 SSO J4 WLVRN ESTWD HLYWD1",
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "fleet": "default"
+                        },
+                        {
+                            "icao": "AAL",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "REMIS",
+                    "destination": "KIAH",
+                    "altitude": 36000,
+                    "route": "REMIS ROZZI Y280 LEV LINKK1",
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "fleet": "default"
+                        },
+                        {
+                            "icao": "UAL",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "REMIS",
+                    "destination": "KBRO",
+                    "altitude": 36000,
+                    "route": "REMIS PEKON Q56 HEIGH J22 PSX ASCOT V163 BRO",
+                    "airlines": [
+                        {
+                            "icao": "SWA",
+                            "fleet": "default"
+                        },
+                        {
+                            "icao": "JBU",
+                            "fleet": "default"
+                        }
+                    ]
+                },
+                {
+                    "exit": "REMIS",
+                    "destination": "KDFW",
+                    "altitude": 36000,
+                    "route": "REMIS Y280 REDFN HRV AEX PNUTS WHINY4",
+                    "airlines": [
+                        {
+                            "icao": "FDX",
+                            "fleet": "default"
+                        },
+                        {
+                            "icao": "AAL",
+                            "fleet": "default"
+                        }
+                    ]
+                }
             ]
-          },
-          "initial_facility": "ZHU"
+        },
+        "KTPA": {
+            "departure_controller": "JAX_S_APP",
+            "departure_facility": "JAX",
+            "approaches": {
+                "I9L": {
+                    "cifp_id": "I19L"
+                }
+            }
+        },
+        "KDAB": {
+            "approaches": {
+                "I7L": {
+                    "cifp_id": "I7L"
+                }
+            }
+        },
+        "KSRQ": {
+            "departure_controller": "JAX_S_APP",
+            "departure_facility": "JAX",
+            "approaches": {
+                "R14": {
+                    "cifp_id": "R14"
+                }
+            }
+        },
+        "KCHS": {
+            "departure_controller": "JAX_S_APP",
+            "departure_facility": "JAX",
+            "approaches": {
+                "I15": {
+                    "cifp_id": "I15"
+                }
+            }
         }
-      ]
     },
-    "Overflights": {
-      "overflights": [
-        {
-          "airlines": [
-            {
-              "departure_airport": "KMIA",
-              "arrival_airport": "KMSY",
-              "icao": "AAL"
-            },
-            {
-              "departure_airport": "KMIA",
-              "arrival_airport": "KDEN",
-              "icao": "DAL"
-            },
-            {
-              "departure_airport": "KRSW",
-              "arrival_airport": "KMEM",
-              "icao": "SWA"
-            },
-            {
-              "departure_airport": "KMIA",
-              "arrival_airport": "KMEM",
-              "icao": "UAL"
-            },
-            {
-              "departure_airport": "KMIA",
-              "arrival_airport": "KMCI",
-              "icao": "UAL"
-            }
-          ],
-          "initial_altitude": 25000,
-          "assigned_altitude": 34000,
-          "initial_controller": "ZMA 25 FORT MYERS HIGH",
-          "initial_speed": 300,
-          "waypoints": "BAGGS OCHHO/ho REMIS NUN COOUP/delete",
-          "initial_facility": "ZMA"
-        },
-        {
-          "airlines": [
-            {
-              "departure_airport": "KMEM",
-              "arrival_airport": "KMIA",
-              "icao": "FDX"
-            },
-            {
-              "departure_airport": "PANC",
-              "arrival_airport": "KMIA",
-              "icao": "GTI"
-            },
-            {
-              "departure_airport": "KSTL",
-              "arrival_airport": "KMIA",
-              "icao": "AAL"
-            },
-            {
-              "departure_airport": "KMCI",
-              "arrival_airport": "KMIA",
-              "icao": "DAL"
-            }
-          ],
-          "initial_altitude": 35000,
-          "assigned_altitude": 35000,
-          "initial_controller": "ZJX 11 Brewton",
-          "initial_speed": 300,
-          "waypoints": "KERMI MGMRY DARED/ho VPRER COVIA GAWKS/delete"
-        },
-        {
-          "airlines": [
-            {
-              "departure_airport": "KBRO",
-              "arrival_airport": "KTPA",
-              "icao": "N",
-              "fleet": "fastGA"
-            },
-            {
-              "departure_airport": "KPHX",
-              "arrival_airport": "KRSW",
-              "icao": "AAL"
-            },
-            {
-              "departure_airport": "KDFW",
-              "arrival_airport": "KRSW",
-              "icao": "SWA"
-            },
-            {
-              "departure_airport": "KMSY",
-              "arrival_airport": "KTPA",
-              "icao": "AAL"
-            }
-          ],
-          "initial_altitude": 33000,
-          "assigned_altitude": 33000,
-          "initial_controller": "ZHU 24 Leeville",
-          "initial_speed": 300,
-          "waypoints": "DUNBE BFMLB/ho DYEES PFNRE RAYZZ/delete",
-          "initial_facility": "ZHU"
-        }
-      ]
-    }
-  },
-  "default_scenario": "30 Nepta",
-  "magnetic_adjustment": -6.6,
-  "scenarios": {
-    "30 Nepta": {
-      "configuration": {
-        "config_id": "STD"
-      },
-      "default_maps": [
-        "ZJX HI"
-      ],
-      "inbound_rates": {
+    "inbound_flows": {
         "PRICY4": {
-          "KMCO": 10
+            "arrivals": [
+                {
+                    "waypoints": "N028.43.45.418,W088.36.16.982/ho NAITE ROZZI REMIS CHRGE DAAWG CHIVE/a25000 DECKS/a21000+ BULKS/s280 PRICY/a14000 BOCCE JUMBA AMADS/a9000- LORRA/a7000 KMCO-36L/delete",
+                    "route": "/. PRICY4",
+                    "initial_controller": "ZHU 24 Leeville",
+                    "initial_altitude": 35000,
+                    "initial_speed": 300,
+                    "assigned_altitude": 35000,
+                    "airlines": {
+                        "KMCO": [
+                            {
+                                "icao": "DAL",
+                                "types": [
+                                    "B738"
+                                ],
+                                "airport": "KIAH"
+                            },
+                            {
+                                "icao": "FDX",
+                                "types": [
+                                    "B772"
+                                ],
+                                "airport": "KDFW"
+                            },
+                            {
+                                "icao": "UAL",
+                                "types": [
+                                    "A321"
+                                ],
+                                "airport": "KDFW"
+                            },
+                            {
+                                "icao": "AAL",
+                                "types": [
+                                    "A321"
+                                ],
+                                "airport": "KLAX"
+                            },
+                            {
+                                "icao": "FFT",
+                                "types": [
+                                    "A321"
+                                ],
+                                "airport": "KLAS"
+                            }
+                        ]
+                    },
+                    "initial_facility": "ZHU"
+                }
+            ]
         },
         "Overflights": {
-          "overflights": 10
+            "overflights": [
+                {
+                    "airlines": [
+                        {
+                            "departure_airport": "KMIA",
+                            "arrival_airport": "KMSY",
+                            "icao": "AAL"
+                        },
+                        {
+                            "departure_airport": "KMIA",
+                            "arrival_airport": "KDEN",
+                            "icao": "DAL"
+                        },
+                        {
+                            "departure_airport": "KRSW",
+                            "arrival_airport": "KMEM",
+                            "icao": "SWA"
+                        },
+                        {
+                            "departure_airport": "KMIA",
+                            "arrival_airport": "KMEM",
+                            "icao": "UAL"
+                        },
+                        {
+                            "departure_airport": "KMIA",
+                            "arrival_airport": "KMCI",
+                            "icao": "UAL"
+                        }
+                    ],
+                    "initial_altitude": 25000,
+                    "assigned_altitude": 34000,
+                    "initial_controller": "ZMA 25 FORT MYERS HIGH",
+                    "initial_speed": 300,
+                    "waypoints": "BAGGS OCHHO/ho REMIS NUN COOUP/delete",
+                    "initial_facility": "ZMA"
+                },
+                {
+                    "airlines": [
+                        {
+                            "departure_airport": "KMEM",
+                            "arrival_airport": "KMIA",
+                            "icao": "FDX"
+                        },
+                        {
+                            "departure_airport": "PANC",
+                            "arrival_airport": "KMIA",
+                            "icao": "GTI"
+                        },
+                        {
+                            "departure_airport": "KSTL",
+                            "arrival_airport": "KMIA",
+                            "icao": "AAL"
+                        },
+                        {
+                            "departure_airport": "KMCI",
+                            "arrival_airport": "KMIA",
+                            "icao": "DAL"
+                        }
+                    ],
+                    "initial_altitude": 35000,
+                    "assigned_altitude": 35000,
+                    "initial_controller": "ZJX 11 Brewton",
+                    "initial_speed": 300,
+                    "waypoints": "KERMI MGMRY DARED/ho VPRER COVIA GAWKS/delete",
+                    "initial_facility": "ZJX"
+                },
+                {
+                    "airlines": [
+                        {
+                            "departure_airport": "KBRO",
+                            "arrival_airport": "KTPA",
+                            "icao": "N",
+                            "fleet": "fastGA"
+                        },
+                        {
+                            "departure_airport": "KPHX",
+                            "arrival_airport": "KRSW",
+                            "icao": "AAL"
+                        },
+                        {
+                            "departure_airport": "KDFW",
+                            "arrival_airport": "KRSW",
+                            "icao": "SWA"
+                        },
+                        {
+                            "departure_airport": "KMSY",
+                            "arrival_airport": "KTPA",
+                            "icao": "AAL"
+                        }
+                    ],
+                    "initial_altitude": 33000,
+                    "assigned_altitude": 33000,
+                    "initial_controller": "ZHU 24 Leeville",
+                    "initial_speed": 300,
+                    "waypoints": "DUNBE BFMLB/ho DYEES PFNRE RAYZZ/delete",
+                    "initial_facility": "ZHU"
+                }
+            ]
         }
-      },
-      "arrival_runways": [
-        {
-          "airport": "KMCO",
-          "runway": "36L"
+    },
+    "default_scenario": "30 Nepta",
+    "magnetic_adjustment": -6.6,
+    "scenarios": {
+        "30 Nepta": {
+            "configuration": {
+                "config_id": "STD"
+            },
+            "default_maps": [
+                "ZJX HI"
+            ],
+            "inbound_rates": {
+                "PRICY4": {
+                    "KMCO": 10
+                },
+                "Overflights": {
+                    "overflights": 10
+                }
+            },
+            "arrival_runways": [
+                {
+                    "airport": "KMCO",
+                    "runway": "36L"
+                }
+            ],
+            "default_map_group": "ZJX",
+            "departure_runways": [
+                {
+                    "airport": "KMCO",
+                    "rate": 5,
+                    "runway": "36R"
+                }
+            ]
         }
-      ],
-      "default_map_group": "ZJX",
-      "departure_runways": [
-        {
-          "airport": "KMCO",
-          "rate": 5,
-          "runway": "36R"
-        }
-      ]
     }
-  }
 }

@@ -23,6 +23,7 @@ import (
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
+	implogl3 "github.com/AllenDang/cimgui-go/impl/opengl3"
 	"github.com/ncruces/zenity"
 	"github.com/pkg/browser"
 )
@@ -50,14 +51,13 @@ var (
 		showSettings      bool
 		showScenarioInfo  bool
 		showLaunchControl bool
-		showNASDebug      bool
-		nasDebugData      *sim.NASDebugData
-		nasDebugLastFetch time.Time
-		nasDebugSearch    string
+		showMessages      bool
+		showFlightStrips  bool
 
 		// STT state
 		pttRecording              bool
 		pttGarbling               bool      // true if PTT pressed while audio was playing (no recording)
+		pttMicFailed              bool      // true if mic open failed this press; cleared on release
 		pttCapture                bool      // capturing new PTT key assignment
 		pttPressTime              time.Time // for latency logging
 		audioCaptureWarningLogged bool      // only log audio capture failure once
@@ -71,10 +71,17 @@ func imguiInit() *imgui.Context {
 	context := imgui.CreateContext()
 	imgui.CurrentIO().SetIniFilename("")
 
+	// Enable multi-viewport support so imgui windows can float outside the main window.
+	io := imgui.CurrentIO()
+	io.SetConfigFlags(io.ConfigFlags() | imgui.ConfigFlagsViewportsEnable)
+
 	// Disable the nav windowing popup (Ctrl+Tab/Cmd+Tab window switcher) by
 	// clearing the shortcut keys that trigger it.
 	context.SetConfigNavWindowingKeyNext(imgui.KeyChord(imgui.KeyNone))
 	context.SetConfigNavWindowingKeyPrev(imgui.KeyChord(imgui.KeyNone))
+
+	// Only allow dragging windows by their title bars, not by clicking content.
+	io.SetConfigWindowsMoveFromTitleBarOnly(true)
 
 	// General imgui styling
 	style := imgui.CurrentStyle()
@@ -121,10 +128,18 @@ func uiInit(r renderer.Renderer, p platform.Platform, config *Config, es *sim.Ev
 	if !config.NotifiedTargetGenMode {
 		uiShowTargetGenCommandModeDialog(p, config)
 	}
+
+	// Restore which child windows were open in the previous session.
+	ui.showSettings = config.ShowSettings
+	ui.showLaunchControl = config.ShowLaunchCtrl
+	ui.showScenarioInfo = config.ShowScenarioInfo
+	ui.showMessages = config.ShowMessages
+	ui.showFlightStrips = config.ShowFlightStrips
+	keyboardWindowVisible = config.ShowKeyboardRef
 }
 
 func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, r renderer.Renderer,
-	controlClient *client.ControlClient, eventStream *sim.EventStream, lg *log.Logger) renderer.RendererStats {
+	controlClient *client.ControlClient, activeRadarPane panes.Pane, eventStream *sim.EventStream, lg *log.Logger) renderer.RendererStats {
 	if ui.newReleaseDialogChan != nil {
 		select {
 		case dialog, ok := <-ui.newReleaseDialogChan:
@@ -139,7 +154,7 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		}
 	}
 
-	imgui.PushFont(&ui.font.Ifont)
+	ui.font.ImguiPush()
 	if imgui.BeginMainMenuBar() {
 		imgui.PushStyleColorVec4(imgui.ColButton, imgui.CurrentStyle().Colors()[imgui.ColMenuBarBg])
 
@@ -219,18 +234,27 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			imgui.SetTooltip("Control spawning new aircraft and grant departure releases")
 		}
 
+		if controlClient != nil && controlClient.Connected() {
+			if imgui.Button(renderer.FontAwesomeIconComment) {
+				ui.showMessages = !ui.showMessages
+			}
+			if imgui.IsItemHovered() {
+				imgui.SetTooltip("Toggle messages window")
+			}
+
+			if imgui.Button(renderer.FontAwesomeIconClipboardList) {
+				ui.showFlightStrips = !ui.showFlightStrips
+			}
+			if imgui.IsItemHovered() {
+				imgui.SetTooltip("Toggle flight strips window")
+			}
+		}
+
 		if imgui.Button(renderer.FontAwesomeIconBook) {
 			browser.OpenURL("https://pharr.org/vice/index.html")
 		}
 		if imgui.IsItemHovered() {
 			imgui.SetTooltip("Display online vice documentation")
-		}
-
-		if imgui.Button(renderer.FontAwesomeIconBug) {
-			ui.showNASDebug = !ui.showNASDebug
-		}
-		if imgui.IsItemHovered() {
-			imgui.SetTooltip("NAS Computer Debug")
 		}
 
 		// Handle PTT key for STT recording
@@ -242,7 +266,8 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 		if ui.pttRecording || ui.pttGarbling {
 			numIcons = 7
 		}
-		imgui.SetCursorPos(imgui.Vec2{p.DisplaySize()[0] - float32(numIcons*width+15), 0})
+		displaySize := imgui.CurrentIO().DisplaySize()
+		imgui.SetCursorPos(imgui.Vec2{X: displaySize.X - float32(numIcons*width+15), Y: 0})
 
 		// Show microphone icon while recording (red) or garbling (yellow)
 		if ui.pttRecording {
@@ -281,10 +306,10 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 	ui.menuBarHeight = imgui.CursorPos().Y - 1
 
 	if controlClient != nil {
-		uiDrawSettingsWindow(controlClient, config, p, lg)
+		uiDrawSettingsWindow(controlClient, config, activeRadarPane, p, lg)
 
 		if ui.showScenarioInfo {
-			ui.showScenarioInfo = drawScenarioInfoWindow(config, controlClient, p, lg)
+			ui.showScenarioInfo = drawScenarioInfoWindow(config, controlClient, activeRadarPane, p, lg)
 		}
 
 		if ui.showLaunchControl {
@@ -294,8 +319,11 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 			ui.launchControlWindow.Draw(eventStream, p)
 		}
 
-		if ui.showNASDebug {
-			uiDrawNASDebugWindow(controlClient)
+		if ui.showMessages {
+			config.MessagesPane.DrawWindow(&ui.showMessages, controlClient, p, lg)
+		}
+		if ui.showFlightStrips {
+			config.FlightStripPane.DrawWindow(&ui.showFlightStrips, controlClient, p, lg)
 		}
 	}
 
@@ -313,14 +341,27 @@ func uiDraw(mgr *client.ConnectionManager, config *Config, p platform.Platform, 
 
 	// Finalize and submit the imgui draw lists
 	imgui.Render()
-	cb := renderer.GetCommandBuffer()
-	defer renderer.ReturnCommandBuffer(cb)
-	renderer.GenerateImguiCommandBuffer(cb, p.DisplaySize(), p.FramebufferSize(), lg)
-	return r.RenderCommandBuffer(cb)
+
+	// Use the OpenGL 3 backend for all imgui rendering. Both main and
+	// secondary viewports use the same code path, eliminating DPI
+	// discrepancies between our custom OGL2 renderer and imgui's OGL3 backend.
+	implogl3.RenderDrawData(imgui.CurrentDrawData())
+	renderer.SyncFontAtlasTexID()
+
+	// Update and render secondary viewport windows (floating OS windows).
+	io := imgui.CurrentIO()
+	if io.ConfigFlags()&imgui.ConfigFlagsViewportsEnable != 0 {
+		imgui.UpdatePlatformWindows()
+		imgui.RenderPlatformWindowsDefault()
+		p.MakeContextCurrent()
+	}
+
+	return renderer.RendererStats{}
 }
 
 func uiResetControlClient(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
 	ui.launchControlWindow = nil
+	clear(acknowledgedATIS)
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -330,7 +371,7 @@ func showAboutDialog() {
 	flags := imgui.WindowFlagsAlwaysAutoResize | imgui.WindowFlagsNoSavedSettings
 	imgui.BeginV("About vice...", &ui.showAboutDialog, flags)
 
-	imgui.Image(imgui.TextureID(ui.iconTextureID), imgui.Vec2{256, 256})
+	imgui.Image(*imgui.NewTextureRefTextureID(imgui.TextureID(ui.iconTextureID)), imgui.Vec2{256, 256})
 
 	center := func(s string) {
 		// https://stackoverflow.com/a/67855985
@@ -340,7 +381,7 @@ func showAboutDialog() {
 		imgui.Text(s)
 	}
 
-	imgui.PushFont(&ui.aboutFont.Ifont)
+	ui.aboutFont.ImguiPush()
 	center("vice")
 	center(renderer.FontAwesomeIconCopyright + "2023-2025 Matt Pharr")
 	center("Licensed under the GPL, Version 3")
@@ -355,11 +396,11 @@ func showAboutDialog() {
 
 	imgui.Separator()
 
-	imgui.PushFont(&ui.aboutFontSmall.Ifont)
+	ui.aboutFontSmall.ImguiPush()
 	credits := `Additional credits:
 - Software Development: Xavier Caldwell, Artem Dorofeev, Adam E, Dennis Graiani, Ethan Malimon, Neel P, Makoto Sakaguchi, Michael Trokel, radarcontacto, Rick R, Samuel Valencia, and Yi Zhang.
 - Timely feedback: radarcontacto.
-- Facility engineering: Connor Allen, anguse, Adam Bolek, Brody Carty, Lucas Chan, Aaron Flett, Mike Fries, Ryan G, Thomas Halpin, Jason Helkenberg, Trey Hensley, Elijah J, Austin Jenkins, Ketan K, Mike K, Allison L, Josh Lambert, Kayden Lambert, Mike LeGall, Jonah Lefkoff, Jud Lopez, Jake Magee, Ethan Malimon, manaphy, Jace Martin, Michael McConnell, Merry, Yahya Nazimuddin, Justin Nguyen, Giovanni, Andrew S, Logan S, Arya T, Nelson T, Tyler Temerowski, Eli Thompson, Michael Trokel, Samuel Valencia, Gavin Velicevic, and Jackson Verdoorn.
+- Facility engineering: Connor Allen, anguse, Adam Bolek, Brody Carty, Lucas Chan, Aaron Flett, Mike Fries, Ryan G, Gecko, Thomas Halpin, Jason Helkenberg, Trey Hensley, Elijah J, Austin Jenkins, Ketan K, Mike K, Allison L, Josh Lambert, Kayden Lambert, Mike LeGall, Jonah Lefkoff, Jud Lopez, Jake Magee, Ethan Malimon, manaphy, Jace Martin, Michael McConnell, Merry, Yahya Nazimuddin, Justin Nguyen, Giovanni, Andrew S, Logan S, Arya T, Nelson T, Tyler Temerowski, Eli Thompson, Michael Trokel, Samuel Valencia, Gavin Velicevic, and Jackson Verdoorn.
 - Video maps: thanks to the ZAU, ZBW, ZDC, ZDV, ZHU, ZID, ZJX, ZLA, ZMP, ZNY, ZOB, ZSE, and ZTL VATSIM ARTCCs and to the FAA, from whence the original maps came.
 - Additionally: OpenScope for the aircraft performance and airline databases, ourairports.com for the airport database, and for the FAA for being awesome about providing the CIFP, MVA specifications, and other useful aviation data digitally.
 - One more thing: see the file CREDITS.txt in the vice source code distribution for third-party software, fonts, sounds, etc.`
@@ -440,6 +481,7 @@ var secondaryAcCommands = [][3]string{
 	[3]string{"*RON*", `"Resume own navigation" (VFR)`, "*RON*"},
 	[3]string{"*A*", `"Altitude your discretion, maintain VFR" (VFR)`, "*A*"},
 	[3]string{"*A_alt*", `"Maintain _alt_`, "*A120*"},
+	[3]string{"*ATIS/_ltr*", `"Advise you have information _ltr_." If the pilot already reported the correct ATIS, no readback.`, "*ATIS/B*"},
 	[3]string{"*RST*", `"Radar services terminated, squawk VFR, frequency change approved" (VFR)`, "*RST*"},
 	[3]string{"*GA*", `"Go ahead" (VFR) - respond to abbreviated VFR request`, "*GA*"},
 	[3]string{"*P*", `Pauses/unpauses the sim`, "*P*"},
@@ -616,14 +658,14 @@ control positions in the controller list on the upper right side of the scope (u
 // necessary to write "*D*_alt_".
 func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, italicFont *renderer.Font, str string) {
 	// regularFont is the default and starting point
-	imgui.PushFont(&regularFont.Ifont)
+	regularFont.ImguiPush()
 
 	// textWidth approximates the width of the given string in pixels; it
 	// may slightly over-estimate the width, but that's fine since we use
 	// it to decide when to wrap lines of text.
 	textWidth := func(s string) float32 {
 		s = strings.Trim(s, `_*\`) // remove markup characters
-		imgui.PushFont(&fixedFont.Ifont)
+		fixedFont.ImguiPush()
 		sz := imgui.CalcTextSize(s)
 		imgui.PopFont()
 		return sz.X
@@ -675,7 +717,7 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 						imgui.PopFont()
 					}
 					fixed, italic = true, false
-					imgui.PushFont(&fixedFont.Ifont)
+					fixedFont.ImguiPush()
 				}
 
 			case '_':
@@ -690,7 +732,7 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 						imgui.PopFont()
 					}
 					fixed, italic = false, true
-					imgui.PushFont(&italicFont.Ifont)
+					italicFont.ImguiPush()
 				}
 
 			default:
@@ -708,7 +750,7 @@ func uiDrawMarkedupText(regularFont *renderer.Font, fixedFont *renderer.Font, it
 	imgui.PopFont() // regular font
 }
 
-func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Platform, lg *log.Logger) {
+func uiDrawSettingsWindow(c *client.ControlClient, config *Config, activeRadarPane panes.Pane, p platform.Platform, lg *log.Logger) {
 	if !ui.showSettings {
 		return
 	}
@@ -723,7 +765,7 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 	imgui.Checkbox("Update Discord activity status", &update)
 	config.InhibitDiscordActivity.Store(!update)
 
-	if c != nil && c.HaveTTS() {
+	if c != nil {
 		imgui.Checkbox("Disable text-to-speech", &config.DisableTextToSpeech)
 	}
 
@@ -757,7 +799,8 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 		monitorNames := p.GetAllMonitorNames()
 		if imgui.BeginComboV("Monitor", monitorNames[config.FullScreenMonitor], imgui.ComboFlagsHeightLarge) {
 			for index, monitor := range monitorNames {
-				if imgui.SelectableBoolV(monitor, monitor == monitorNames[config.FullScreenMonitor], 0, imgui.Vec2{}) {
+				label := fmt.Sprintf("%s##monitor%d", monitor, index)
+				if imgui.SelectableBoolV(label, monitor == monitorNames[config.FullScreenMonitor], 0, imgui.Vec2{}) {
 					config.FullScreenMonitor = index
 
 					p.EnableFullScreen(p.IsFullScreen())
@@ -818,8 +861,8 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 				config.SelectedMicrophone = ""
 			}
 			mics := p.GetAudioInputDevices()
-			for _, mic := range mics {
-				micFormatted := strings.Map(cleanMic, mic)
+			for i, mic := range mics {
+				micFormatted := fmt.Sprintf("%s##mic%d", strings.Map(cleanMic, mic), i)
 				if imgui.SelectableBoolV(micFormatted, mic == config.SelectedMicrophone, 0, imgui.Vec2{}) {
 					config.SelectedMicrophone = mic
 				}
@@ -938,11 +981,15 @@ func uiDrawSettingsWindow(c *client.ControlClient, config *Config, p platform.Pl
 		imgui.EndGroup()
 	}
 
-	for pane := range config.AllPanes() {
-		if draw, ok := pane.(panes.UIDrawer); ok {
-			if imgui.CollapsingHeaderBoolPtr(draw.DisplayName(), nil) {
-				draw.DrawUI(p, &config.Config)
-			}
+	if imgui.CollapsingHeaderBoolPtr(config.MessagesPane.DisplayName(), nil) {
+		config.MessagesPane.DrawUI(p, &config.Config)
+	}
+	if imgui.CollapsingHeaderBoolPtr(config.FlightStripPane.DisplayName(), nil) {
+		config.FlightStripPane.DrawUI(p, &config.Config)
+	}
+	if draw, ok := activeRadarPane.(panes.UIDrawer); ok {
+		if imgui.CollapsingHeaderBoolPtr(draw.DisplayName(), nil) {
+			draw.DrawUI(p, &config.Config)
 		}
 	}
 
@@ -969,7 +1016,7 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 	}
 
 	// Start on initial press (ignore repeats by checking our own flags)
-	if imgui.IsKeyDown(pttKey) && !ui.pttRecording && !ui.pttGarbling {
+	if imgui.IsKeyDown(pttKey) && !ui.pttRecording && !ui.pttGarbling && !ui.pttMicFailed {
 		if p.IsPlayingSpeech() {
 			// Audio is playing - garble it instead of recording
 			p.SetSpeechGarbled(true)
@@ -993,6 +1040,7 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 					hint = "Please check your system's audio settings and ensure microphone access is permitted."
 				}
 				ShowErrorDialog(p, lg, "Unable to access microphone: %v\n\n%s", err, hint)
+				ui.pttMicFailed = true
 			} else {
 				ui.pttRecording = true
 				if controlClient != nil {
@@ -1018,6 +1066,7 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 
 	// Detect release
 	if !imgui.IsKeyDown(pttKey) {
+		ui.pttMicFailed = false
 		if ui.pttGarbling {
 			// Was garbling - stop garbling
 			p.SetSpeechGarbled(false)
@@ -1042,246 +1091,5 @@ func uiHandlePTTKey(p platform.Platform, controlClient *client.ControlClient, co
 			ui.pttRecording = false
 			lg.Infof("Push-to-talk: Stopped recording, processing streaming result...")
 		}
-	}
-}
-
-func uiDrawNASDebugWindow(controlClient *client.ControlClient) {
-	// Rate-limit data fetching to once per second
-	if ui.nasDebugData == nil || time.Since(ui.nasDebugLastFetch) > 1*time.Second {
-		if data, err := controlClient.GetNASDebugData(); err == nil {
-			ui.nasDebugData = data
-			ui.nasDebugLastFetch = time.Now()
-		}
-	}
-
-	if ui.nasDebugData == nil {
-		return
-	}
-
-	imgui.SetNextWindowSizeV(imgui.Vec2{800, 600}, imgui.CondFirstUseEver)
-	imgui.BeginV("NAS Computer Debug", &ui.showNASDebug, 0)
-
-	data := ui.nasDebugData
-
-	// Search/filter bar
-	imgui.Text("Filter:")
-	imgui.SameLine()
-	imgui.InputTextWithHint("##nas_search", "Search by callsign...", &ui.nasDebugSearch, 0, nil)
-	imgui.Separator()
-
-	filter := ui.nasDebugSearch
-
-	// Build a map of parent ERAM -> child STARS facilities for nested tabs
-	childSTARS := make(map[string][]sim.STARSDebugInfo)
-	for _, sc := range data.STARSFacilities {
-		if sc.ParentERAM != "" {
-			childSTARS[sc.ParentERAM] = append(childSTARS[sc.ParentERAM], sc)
-		}
-	}
-
-	if imgui.BeginTabBar("NASFacilities") {
-		// One tab per ARTCC, with child TRACONs nested inside
-		for _, ec := range data.ERAMFacilities {
-			if imgui.BeginTabItem(ec.Identifier) {
-				drawERAMFacilityDebug(ec, filter)
-
-				// Child TRACON tabs
-				children := childSTARS[ec.Identifier]
-				if len(children) > 0 {
-					imgui.Separator()
-					imgui.Text("Child TRACONs:")
-					if imgui.BeginTabBar("STARS_" + ec.Identifier) {
-						for _, sc := range children {
-							if imgui.BeginTabItem(sc.Identifier) {
-								drawSTARSFacilityDebug(sc, filter)
-								imgui.EndTabItem()
-							}
-						}
-						imgui.EndTabBar()
-					}
-				}
-
-				imgui.EndTabItem()
-			}
-		}
-
-		// Orphan TRACONs (no parent ERAM in the data) - shouldn't normally happen
-		for _, sc := range data.STARSFacilities {
-			if sc.ParentERAM == "" {
-				if imgui.BeginTabItem(sc.Identifier + " (STARS)") {
-					drawSTARSFacilityDebug(sc, filter)
-					imgui.EndTabItem()
-				}
-			}
-		}
-
-		imgui.EndTabBar()
-	}
-
-	imgui.End()
-}
-
-func drawERAMFacilityDebug(ec sim.ERAMDebugInfo, filter string) {
-	imgui.Text(fmt.Sprintf("FPs: %d    Tracks: %d    Recent Msgs: %d",
-		len(ec.FlightPlans), len(ec.Tracks), len(ec.RecentMessages)))
-	imgui.Text("Children: " + strings.Join(ec.Children, ", "))
-	imgui.Text("Peers: " + strings.Join(ec.Peers, ", "))
-
-	imgui.Separator()
-	drawNASFPTable("eram_fp_"+ec.Identifier, ec.FlightPlans, filter)
-	drawNASTrackTable("eram_trk_"+ec.Identifier, ec.Tracks, filter)
-	drawNASInboxTable("eram_inbox_"+ec.Identifier, ec.RecentMessages, filter)
-}
-
-func drawSTARSFacilityDebug(sc sim.STARSDebugInfo, filter string) {
-	imgui.Text(fmt.Sprintf("FPs: %d    Tracks: %d    Recent Msgs: %d",
-		len(sc.FlightPlans), len(sc.Tracks), len(sc.RecentMessages)))
-	imgui.Text("Parent ERAM: " + sc.ParentERAM)
-
-	// Only show 4-char ICAO airports
-	var airports4 []string
-	for _, a := range sc.Airports {
-		if len(a) == 4 {
-			airports4 = append(airports4, a)
-		}
-	}
-	imgui.Text(fmt.Sprintf("Airports: %s    Fix Pairs: %d",
-		strings.Join(airports4, ", "), sc.FixPairCount))
-
-	imgui.Separator()
-	drawNASFPTable("stars_fp_"+sc.Identifier, sc.FlightPlans, filter)
-	drawNASTrackTable("stars_trk_"+sc.Identifier, sc.Tracks, filter)
-	drawNASInboxTable("stars_inbox_"+sc.Identifier, sc.RecentMessages, filter)
-}
-
-func drawNASFPTable(id string, fps []sim.FPDebugInfo, filter string) {
-	imgui.Text("Flight Plans:")
-	if len(fps) == 0 {
-		imgui.Text("  (none)")
-		return
-	}
-
-	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
-		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-	if imgui.BeginTableV(id, 8, flags, imgui.Vec2{0, 0}, 0) {
-		imgui.TableSetupColumn("ACID")
-		imgui.TableSetupColumn("Sq")
-		imgui.TableSetupColumn("Type")
-		imgui.TableSetupColumn("Alt")
-		imgui.TableSetupColumn("Route")
-		imgui.TableSetupColumn("Arr")
-		imgui.TableSetupColumn("PlanType")
-		imgui.TableSetupColumn("From")
-		imgui.TableHeadersRow()
-
-		for _, fp := range fps {
-			if filter != "" && !strings.Contains(strings.ToUpper(fp.ACID), strings.ToUpper(filter)) {
-				continue
-			}
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			imgui.Text(fp.ACID)
-			imgui.TableNextColumn()
-			imgui.Text(fp.Squawk)
-			imgui.TableNextColumn()
-			imgui.Text(fp.AircraftType)
-			imgui.TableNextColumn()
-			imgui.Text(fp.Altitude)
-			imgui.TableNextColumn()
-			imgui.Text(fp.Route)
-			imgui.TableNextColumn()
-			imgui.Text(fp.ArrivalAirport)
-			imgui.TableNextColumn()
-			imgui.Text(fp.PlanType)
-			imgui.TableNextColumn()
-			imgui.Text(fp.ReceivedFrom)
-		}
-		imgui.EndTable()
-	}
-}
-
-func drawNASTrackTable(id string, tracks []sim.TrackDebugInfo, filter string) {
-	imgui.Text("Tracks:")
-	if len(tracks) == 0 {
-		imgui.Text("  (none)")
-		return
-	}
-
-	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
-		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-	if imgui.BeginTableV(id, 9, flags, imgui.Vec2{0, 0}, 0) {
-		imgui.TableSetupColumn("ACID")
-		imgui.TableSetupColumn("Sq")
-		imgui.TableSetupColumn("Type")
-		imgui.TableSetupColumn("Owner")
-		imgui.TableSetupColumn("Facility")
-		imgui.TableSetupColumn("Tracking")
-		imgui.TableSetupColumn("TCW")
-		imgui.TableSetupColumn("Handoff Ctrl")
-		imgui.TableSetupColumn("HO State")
-		imgui.TableHeadersRow()
-
-		for _, t := range tracks {
-			if filter != "" && !strings.Contains(strings.ToUpper(t.ACID), strings.ToUpper(filter)) {
-				continue
-			}
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			imgui.Text(t.ACID)
-			imgui.TableNextColumn()
-			imgui.Text(t.Squawk)
-			imgui.TableNextColumn()
-			imgui.Text(t.AircraftType)
-			imgui.TableNextColumn()
-			imgui.Text(t.Owner)
-			imgui.TableNextColumn()
-			imgui.Text(t.OwnerFacility)
-			imgui.TableNextColumn()
-			imgui.Text(t.TrackingController)
-			imgui.TableNextColumn()
-			imgui.Text(t.OwningTCW)
-			imgui.TableNextColumn()
-			imgui.Text(t.HandoffController)
-			imgui.TableNextColumn()
-			imgui.Text(t.HandoffState)
-		}
-		imgui.EndTable()
-	}
-}
-
-func drawNASInboxTable(id string, msgs []sim.InboxDebugInfo, filter string) {
-	imgui.Text("Recent Messages:")
-	if len(msgs) == 0 {
-		imgui.Text("  (none)")
-		return
-	}
-
-	flags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
-		imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
-	if imgui.BeginTableV(id, 5, flags, imgui.Vec2{0, 0}, 0) {
-		imgui.TableSetupColumn("Type")
-		imgui.TableSetupColumn("ACID")
-		imgui.TableSetupColumn("From")
-		imgui.TableSetupColumn("To")
-		imgui.TableSetupColumn("Age")
-		imgui.TableHeadersRow()
-
-		for _, m := range msgs {
-			if filter != "" && !strings.Contains(strings.ToUpper(m.ACID), strings.ToUpper(filter)) {
-				continue
-			}
-			imgui.TableNextRow()
-			imgui.TableNextColumn()
-			imgui.Text(m.Type)
-			imgui.TableNextColumn()
-			imgui.Text(m.ACID)
-			imgui.TableNextColumn()
-			imgui.Text(m.FromFacility)
-			imgui.TableNextColumn()
-			imgui.Text(m.ToFacility)
-			imgui.TableNextColumn()
-			imgui.Text(m.Age)
-		}
-		imgui.EndTable()
 	}
 }

@@ -43,8 +43,11 @@ var (
 	ErrSTARSIllegalColor               = NewSTARSError("ILL COLOR")
 	ErrSTARSIllegalFix                 = NewSTARSError("ILL FIX")
 	ErrSTARSIllegalFlight              = NewSTARSError("ILL FLIGHT")
+	ErrSTARSIllegalArea                = NewSTARSError("ILL AREA")
 	ErrSTARSIllegalFunction            = NewSTARSError("ILL FUNC")
 	ErrSTARSIllegalFunctionAlertActive = NewSTARSError("ILL FUNC - ALERT ACTIVE")
+	ErrSTARSIllegalFunctionNoRegions   = NewSTARSError("ILL FNCT -\nNO REGIONS")
+	ErrSTARSIllegalFunctionProcOff     = NewSTARSError("ILL FNCT -\nPROCESSING OFF")
 	ErrSTARSIllegalGeoId               = NewSTARSError("ILL GEO ID")
 	ErrSTARSIllegalGeoLoc              = NewSTARSError("ILL GEO LOC")
 	ErrSTARSIllegalLine                = NewSTARSError("ILL LINE")
@@ -107,6 +110,7 @@ var starsErrorRemap = map[error]*STARSError{
 	sim.ErrIllegalACType:                   ErrSTARSIllegalACType,
 	sim.ErrIllegalBeaconCode:               ErrSTARSIllegalCode,
 	sim.ErrIllegalFunction:                 ErrSTARSIllegalFunction,
+	sim.ErrIllegalPosition:                 ErrSTARSIllegalPosition,
 	sim.ErrIllegalScratchpad:               ErrSTARSIllegalScratchpad,
 	sim.ErrInvalidAbbreviatedFP:            ErrSTARSCommandFormat,
 	sim.ErrInvalidDepartureController:      ErrSTARSIllegalFunction,
@@ -128,6 +132,9 @@ var starsErrorRemap = map[error]*STARSError{
 	sim.ErrUnknownAircraftType:             ErrSTARSIllegalParam,
 	sim.ErrUnknownController:               ErrSTARSIllegalPosition,
 	sim.ErrUnknownControllerFacility:       ErrSTARSIllegalPosition,
+	sim.ErrFDAMIllegalArea:                 ErrSTARSIllegalArea,
+	sim.ErrFDAMNoRegions:                   ErrSTARSIllegalFunctionNoRegions,
+	sim.ErrFDAMProcessingOff:               ErrSTARSIllegalFunctionProcOff,
 	sim.ErrVolumeDisabled:                  ErrSTARSIllegalFunction,
 	sim.ErrVolumeNot25nm:                   ErrSTARSIllegalFunction,
 

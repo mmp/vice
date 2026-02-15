@@ -13,6 +13,7 @@ import (
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/log"
 	"github.com/mmp/vice/math"
+	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/util"
 	"github.com/mmp/vice/wx"
 
@@ -29,7 +30,8 @@ type DynamicState struct {
 
 	SimTime time.Time // this is our fake time--accounting for pauses & simRate..
 
-	METAR map[string]wx.METAR
+	METAR      map[string]wx.METAR
+	ATISLetter map[string]string // airport ICAO -> single letter "A"-"Z"
 
 	LaunchConfig LaunchConfig
 
@@ -113,6 +115,7 @@ type UserState struct {
 type StateUpdate struct {
 	DynamicState
 	DerivedState
+	FlightStripACIDs []ACID
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -122,11 +125,11 @@ type StateUpdate struct {
 // state updates for clients.
 func makeDerivedState(s *Sim) DerivedState {
 	ds := DerivedState{
-		UnassociatedFlightPlans: s.starsComputer().FlightPlanSlice(),
+		UnassociatedFlightPlans: s.STARSComputer.FlightPlans,
 	}
 
 	// Build ReleaseDepartures from STARSComputer.HoldForRelease
-	for _, ac := range s.starsComputer().HoldForRelease {
+	for _, ac := range s.STARSComputer.HoldForRelease {
 		fp, _, _ := s.getFlightPlanForACID(ACID(ac.ADSBCallsign))
 		if fp == nil {
 			s.lg.Warnf("%s: no flight plan for hold for release aircraft", string(ac.ADSBCallsign))
@@ -183,6 +186,10 @@ func makeDerivedState(s *Sim) DerivedState {
 			IsTentative:               s.State.SimTime.Sub(ac.FirstSeen) < 5*time.Second,
 		}
 
+		if perf, ok := av.DB.AircraftPerformance[ac.FlightPlan.AircraftType]; ok {
+			rt.CWTCategory = perf.Category.CWT
+		}
+
 		for _, wp := range ac.Nav.Waypoints {
 			rt.Route = append(rt.Route, wp.Location)
 		}
@@ -191,7 +198,7 @@ func makeDerivedState(s *Sim) DerivedState {
 	}
 
 	// Make up fake tracks for unsupported datablocks
-	for _, fp := range s.starsComputer().FlightPlans {
+	for i, fp := range s.STARSComputer.FlightPlans {
 		if fp.Location.IsZero() {
 			continue
 		}
@@ -201,7 +208,7 @@ func makeDerivedState(s *Sim) DerivedState {
 				ADSBCallsign: callsign,
 				Location:     fp.Location,
 			},
-			FlightPlan: fp,
+			FlightPlan: s.STARSComputer.FlightPlans[i],
 		}
 	}
 
@@ -209,7 +216,7 @@ func makeDerivedState(s *Sim) DerivedState {
 }
 
 func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *VideoMapManifest, model *wx.Model,
-	metar map[string][]wx.METAR, lg *log.Logger) *CommonState {
+	metar map[string][]wx.METAR, r *rand.Rand, lg *log.Logger) *CommonState {
 	// Roll back the start time to account for prespawn
 	startTime = startTime.Add(-initialSimSeconds * time.Second)
 
@@ -217,7 +224,8 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *V
 		DynamicState: DynamicState{
 			CurrentConsolidation: make(map[TCW]*TCPConsolidation),
 
-			METAR: make(map[string]wx.METAR),
+			METAR:      make(map[string]wx.METAR),
+			ATISLetter: make(map[string]string),
 
 			LaunchConfig: config.LaunchConfig,
 
@@ -254,11 +262,12 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *V
 		SimDescription:    config.Description,
 	}
 
-	// Grab initial METAR for each airport
+	// Grab initial METAR for each airport and assign initial ATIS letters
 	for ap, m := range metar {
 		if len(m) > 0 {
 			ss.METAR[ap] = m[0]
 		}
+		ss.ATISLetter[ap] = string(rune('A' + r.Intn(26)))
 	}
 
 	if manifest != nil {
@@ -374,18 +383,6 @@ func (ss *CommonState) IsExternalController(pos ControlPosition) bool {
 	resolved := ss.ResolveController(pos)
 	ctrl, ok := ss.Controllers[resolved]
 	return ok && ctrl.FacilityIdentifier != ""
-}
-
-// CenterTCW returns the TCW for any ARTCC/center controller. It picks
-// the first controller with FacilityIdentifier "C". Used when STARS
-// receives an FP from ERAM and only knows the track belongs to center.
-func (ss *CommonState) CenterTCW() TCW {
-	for tcp, ctrl := range ss.Controllers {
-		if ctrl.FacilityIdentifier == "C" {
-			return TCW(tcp)
-		}
-	}
-	return ""
 }
 
 func (ss *CommonState) IsLocalController(pos ControlPosition) bool {

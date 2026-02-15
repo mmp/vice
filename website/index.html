@@ -197,6 +197,7 @@
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#stars-radar-site">RADAR Sites</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#audio-alerts">Audio</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#stars-preferences">Preferences</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#stars-fdam">FDAMs</a></li>
 	    </ul>
 	  </li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#stars-display-elements">Display Elements</a>
@@ -232,6 +233,7 @@
 	    <ul class="submenu">
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-list-format">List Formatting</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-filters">Filter Regions</a></li>
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-stars-fdam">FDAM Regions</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#fe-video-maps">Video Maps</a></li>
 	    </ul>
 	  </li>
@@ -401,9 +403,11 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
               The approach codes&mdash;here, "27R" and "35"&mdash; are used in <i>vice</i>'s aircraft control commands like "expect approach"
               and "cleared approach".
             </p>
-            <p>To adjust the amount of space used for flight strips, right click the line separating the flight strips from the
-              radar window and drag left or right with your mouse.
-              You can also remove flight strips entirely by opening the settings window, <i class="fas fa-cog"></i> in the menubar, and disabling "Show flight strips" under the "Flight strips" header.
+            <p>The Messages and Flight Strips windows can be toggled
+              on and off using the <i class="fas fa-comment"></i> and
+              <i class="fas fa-clipboard-list"></i> buttons in the
+              menubar.  Both windows can be repositioned and resized
+              freely, and their layout is saved across sessions.
             </p>
             <p>
               A number of buttons are available in the menu bar at the top of the window:
@@ -420,6 +424,8 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                 of <i>vice</i>'s <a href="#atc-commands">ATC commands</a>
                 and frequently-used STARS commands.</li>
                 <li> <i class="fas fa-plane-departure"></i>: open a window with controls for launching aircraft, either automatically or manually.</li>
+                <li> <i class="fas fa-comment"></i>: toggle the Messages window, which displays system messages and alerts.</li>
+                <li> <i class="fas fa-clipboard-list"></i>: toggle the Flight Strips window.</li>
                 <li> <i class="fas fa-book"></i>: open this webpage to review <i>vice</i>'s documentation.</li>
                 <li> <i class="fas fa-info-circle"></i>: display information about the version of <i>vice</i> you have installed.</li>
                 <li> <i class="fab fa-discord"></i>: join the <i>vice</i> Discord.</li>
@@ -875,6 +881,12 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                   </tr>
                 </thead>
                 <tbody>
+                  <tr>
+                    <td><code>ATIS/</code><i>letter</i></td>
+                    <td>Tells the pilot the current ATIS information letter. (This is mostly useful if
+                      the pilot reports having an out-of-date ATIS in their initial contact.)</td>
+                    <td><code>ATIS/B</code></td>
+                  </tr>
                   <tr>
                     <td><code>FC</code></td>
                     <td>"Frequency change": change radio frequency to the controller the aircraft was handed off to
@@ -1333,6 +1345,11 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                     <i>Contact (facility) (frequency)</i>
                   </td>
                   </tr>
+                  <tr><td>ATIS</td>
+                  <td>
+                    <i>Information (letter) is current</i> /  <i>Advise you have information (letter)</i>
+                  </td>
+                  </tr>
                 </tbody>
               </table>
             <h3>Traffic Calls</h3>
@@ -1409,7 +1426,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
                 <p>Your browser may warn about the installer being from an unknown publisher and when you run the installer, Windows will put up a window informing you that it has protected your PC and prevented the installer from running. Click "More Info" and then "Run anyway" to proceed with installation.</p>
               </div><!--//callout-block-->
             </div><!--//content-->
-            <a href="https://github.com/mmp/vice/releases/download/v0.13.3/Vice-v0.13.3-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.13.3 for Windows</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.14.0/Vice-v0.14.0-installer.msi" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.14.0 for Windows</a>
           </section><!--//section-->
           
           <section class="docs-section" id="install-mac">
@@ -1418,7 +1435,7 @@ A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, 
             <p>On a Mac, download the <i>zip</i> file below; it contains a universal binary that runs
               on both Intel and Apple CPUs. Note that MacOS Big Sur or a more recent version of OSX is required.
               After opening the <i>zip</i> file, drag <i>Vice.app</i> to your <i>Applications</i> folder to install it.</p>
-            <a href="https://github.com/mmp/vice/releases/download/v0.13.3/Vice-v0.13.3-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.13.3 for Mac</a>
+            <a href="https://github.com/mmp/vice/releases/download/v0.14.0/Vice-v0.14.0-osx.zip" class="btn btn-primary"><i class="fas fa-download me-2"></i> Download Vice v0.14.0 for Mac</a>
           </section><!--//section-->
 
           <section class="docs-section" id="install-linux">
@@ -1447,11 +1464,11 @@ how it simulates aircraft or the STARS interface.
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
 
-            <h3 id="release-0.14.0">0.14.0 (TBD)</h3>
+            <h3 id="release-0.14.0">0.14.0 (6 Feb 2026)</h3>
             <ul>
               <li>Added speech-to-text support (Michael Trokel / Matt P)</li>
               <li>New Scenarios: ZLC Area C (JY_SUPn't), ZJX 30 (Jake Magee), CVG (manaphy), ZDV Area 3 (Andrew S)</li>
-              <li>Scenario updates: BOS, ACK, MHT (radarcontacto), P50 (Ketan K), COS (Andrew S), BGR (Ryan G), M98 (Logan S), F11 (Jud Lopez), DAB, F11 (Michael Knight)</li>
+              <li>Scenario updates: BOS, ACK, MHT (radarcontacto), P50 (Ketan K), COS (Andrew S), BGR (Ryan G), M98 (Logan S), F11, ZJX 50 (Jud Lopez), DAB, F11 (Michael Knight), MIA (Gecko)</li>
               <li>Added search box to filter scenarios</li>
               <li>Improved pilot readbacks to be more natural / cohesive</li>
               <li>VFRs are better about not flying into terrain (and staying out of the flight levels)</li>
@@ -5508,12 +5525,14 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             <p>The brightness of range rings can be controlled with the "RR" spinner in the "BRITE" menu of the main DCB.
               If the brightness is set to 0, range rings are not drawn. </p>
             
-              <h3 id="crda">CRDA</h3>
+            <h3 id="crda">CRDA</h3>
 
-            <p>The Converging Runways Display Aid (CRDA) helps ensure separation between aircraft approaching
-              intersecting runways. It does so by drawing
-              "ghost" aircraft on one course that correspond to aircraft on another course. The idea is perhaps
-              best understood with an example:</p>
+            <p>The Converging Runway Display Aid (CRDA) helps ensure separation between aircraft on
+              intersecting paths. It does so by drawing
+              "ghost" aircraft on one course that correspond to aircraft on another course.
+              Although originally designed for converging runways, CRDA regions can be defined for
+              any pair of converging paths, including those based on fixes or curved routes.
+              The idea is perhaps best understood with an example:</p>
             <div class="text-center">
               <img src="crda.png" srcset="crda-2x.png 2x" width="473" height="298">
             </div>
@@ -5558,9 +5577,12 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     leading "K" from ICAO airport identifiers should not be included: "BOS", not "KBOS".</td>
                   </tr>
                   <tr>
-                    <td><code>(RUNWAY)</code></td>
-                    <td><i>Runway identifier</i>: one or two digits followed optionally by "L", "C", or "R", as
-                    appropriate. Runways numbered 9 or less should not have a leading zero.</td>
+                    <td><code>(REGION)</code></td>
+                    <td><i>CRDA region identifier</i>: the name of a CRDA region from an enabled pair.
+                    This may be a runway name (e.g., "22L") or any other identifier used in the
+                    scenario's CRDA region definitions. The name must uniquely
+                    identify a region among all enabled CRDA pairs (or be preceded by an airport
+                    identifier to disambiguate).</td>
                   </tr>
                 </tbody>
               </table>
@@ -5580,38 +5602,38 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <tr>
                     <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)</code>/<br> <code>[MULTIFUNC]NP(#)</code></td>
                     <td>Toggles whether ghost tracks are enabled for the CRDA runway pair at the specified airport.
-                      The number is an index into the list of CRDA runway pairs for the airport in the CRDA system list.
+                      The number is an index into the list of CRDA pairs for the airport in the CRDA system list.
                       If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)S</code>/<br> <code>[MULTIFUNC]NP(#)S</code></td>
                     <td>Toggles stagger mode for the CRDA runway pair at the specified airport.
-                      The number is an index into the list of CRDA runway pairs for the airport in the CRDA system list.
+                      The number is an index into the list of CRDA pairs for the airport in the CRDA system list.
                       If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)T</code>/<br> <code>[MULTIFUNC]NP(#)T</code></td>
                     <td>Toggles tie mode for the given CRDA runway pair at the specified airport.
-                      The number is an index into the list of CRDA runway pairs for the airport in the CRDA system list.
+                      The number is an index into the list of CRDA pairs for the airport in the CRDA system list.
                       If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]NP(AIRPORT)&nbsp;(#)D</code>/<br> <code>[MULTIFUNC]NP(#)D</code></td>
                     <td>Disables CRDA for the given runway pair at the specified airport.
-                      The number is an index into the list of CRDA runway pairs for the airport in the CRDA system list.
+                      The number is an index into the list of CRDA pairs for the airport in the CRDA system list.
                       If no airport is specified, the controller's default airport is used.</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]NL(AIRPORT)&nbsp;(RWY)(#)</code>/<br> <code>[MULTIFUNC]NL(RWY)(#)</code></td>
-                    <td>Set the leader line direction for ghost aircraft at the specified airport and given runway
+                    <td><code>[MULTIFUNC]NL(AIRPORT)&nbsp;(REGION)(#)</code>/<br> <code>[MULTIFUNC]NL(REGION)(#)</code></td>
+                    <td>Set the leader line direction for ghost aircraft at the specified airport and given region
                       according to the given number. Clears the assigned leader line direction if '5' is given.
-                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                      The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]N*ALL</code></td>
                     <td>Force ghost tracks for all aircraft. (Aircraft still must be within the lateral boundary of
-                    their runway's approach region for a ghost to be displayed, however.)</td>
+                    their CRDA region for a ghost to be displayed, however.)</td>
                   </tr>
                   <tr>
                     <td><code>[MULTIFUNC]N[SLEW]</code></td>
@@ -5623,38 +5645,38 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     <td>If a ghost track as slewed, display the aircraft's flight plan in the preview area.
                       If a primary track was slewed, toggle whether display of its ghost is forced (i.e., always
                       displayed regardless of heading, altitude, etc., so long as it is within the lateral
-                      boundary of its runway's approach region.)</td>
+                      boundary of its CRDA region.)</td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)</code> / <code>[MULTIFUNC]N(RWY)</code></td>
-                    <td>Toggles whether ghosts are generated for the specified runway.
-                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)</code> / <code>[MULTIFUNC]N(REGION)</code></td>
+                    <td>Toggles whether ghosts are generated for the specified region.
+                      The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)E</code> / <code>[MULTIFUNC]N(RWY)E</code></td>
-                    <td>Enable ghosts for the specified runway.
-                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)E</code> / <code>[MULTIFUNC]N(REGION)E</code></td>
+                    <td>Enable ghosts for the specified region.
+                      The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)I</code> / <code>[MULTIFUNC]N(RWY)I</code></td>
-                    <td>Inhibit ghosts for the specified runway.
-                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)I</code> / <code>[MULTIFUNC]N(REGION)I</code></td>
+                    <td>Inhibit ghosts for the specified region.
+                      The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)&nbsp;B</code> / <code>[MULTIFUNC]N(RWY)&nbsp;B</code></td>
-                    <td>Toggle whether the <i>qualification region</i> for the runway is drawn;
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)&nbsp;B</code> / <code>[MULTIFUNC]N(REGION)&nbsp;B</code></td>
+                    <td>Toggle whether the <i>qualification region</i> for the CRDA region is drawn;
                       this is the lateral region of space aircraft must be inside for a ghost to be generated.
-                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                      The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
-                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(RWY)&nbsp;L</code> / <code>[MULTIFUNC]N(RWY)&nbsp;L</code></td>
-                    <td>Toggle whether the <i>course lines</i> for the runway are drawn;
-                      these show the final approach course that CRDA is defined with respect to.
-                      The airport may be omitted if the runway uniquely identifies the corresponding airport.
+                    <td><code>[MULTIFUNC]N(AIRPORT)&nbsp;(REGION)&nbsp;L</code> / <code>[MULTIFUNC]N(REGION)&nbsp;L</code></td>
+                    <td>Toggle whether the <i>course lines</i> for the CRDA region are drawn;
+                      these show the approach course that CRDA is defined with respect to.
+                      The airport may be omitted if the region uniquely identifies the corresponding airport.
                     </td>
                   </tr>
                   <tr>
@@ -6131,10 +6153,64 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 </tbody>
               </table>
 
+            <h3 id="stars-fdam">FDAMs</h3>
 
+            <p>Flight Data Auto-Modify (FDAM) regions automatically modify
+              flight data when an associated track enters an adapted
+              airspace volume. Entry actions may include changing
+              scratchpads, setting leader line directions, initiating
+              handoffs or ownership transfers, and issuing force quicklooks.
+              Some of these changes can be automatically reverted when the
+              track exits the region. FDAM regions are defined in scenario
+              configuration files; see the
+              <a href="#fe-stars-fdam">Facility Engineering</a> section for
+              details on their configuration.</p>
+
+            <p>The lateral extent of FDAM regions can be shown on the scope
+              via "SYS PROC" from the DCB "MAPS" menu.</p>
+
+            <p>The following supervisor commands control FDAM processing.</p>
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 25%;">Command</th>
+                    <th style="width: 75%;">Function</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>[MULTIFUNC]2X</code></td>
+                    <td>Toggles FDAM processing system-wide.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2XE</code></td>
+                    <td>Enables FDAM processing system-wide.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2XI</code></td>
+                    <td>Inhibits FDAM processing system-wide.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2X(REGION)</code></td>
+                    <td>Toggles FDAM processing for a single region.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2X(REGION) E</code></td>
+                    <td>Enables FDAM processing for a single region.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2X(REGION) I</code></td>
+                    <td>Inhibits FDAM processing for a single region.</td>
+                  </tr>
+                  <tr>
+                    <td><code>[MULTIFUNC]2XS</code></td>
+                    <td>Displays the status of all FDAM regions.</td>
+                  </tr>
+                </tbody>
+              </table>
 
           </section>
-          
+
 
 	  <section class="docs-section" id="stars-display-elements">
             <h2 class="section-heading">Display Elements</h2>
@@ -6268,7 +6344,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li>ALT FIL: altitude filters</li>
               <li>AIRPORT: altimeter at nearby airports</li>
               <li>QL: quick looked sectors</li>
-              <li>CRDA: active CRDA runway pairs</li>
+              <li>CRDA: active CRDA pairs</li>
               <li>WX: available and displayed weather precipitation levels</li>
               <li>ALTSTG: show altimeter at primary airport</li>
               <li>CODES: show selected beacon codes</li>
@@ -7313,34 +7389,78 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     See <a href="#fe-approaches">below for documentation about how approaches are specified</a>.</td>
               </tr>
               <tr>
-                <td>"approach_regions"</td>
+                <td>"crda_regions"</td>
                 <td>Object</td>
                 <td>
-                  <p>Each member name specifies information about the region of space associated with a runway
-                  when CRDA is used and it is one of the converging
-                  runways.  First, the following members specify the lateral extent that
-                    an aircraft must be inside for a ghost aircraft to be generated for it:
-                    </p>
+                  <p>Each member defines a CRDA region&mdash;a volume of space associated with an
+                  approach path used for CRDA ghost generation. Region names (the object keys)
+                  can be any short identifier: a runway name like "22L", procedure name like "PUCKY1",
+                  or any other descriptive name.</p>
+
+                  <p>The approach path can be defined in one of two ways (mutually exclusive):</p>
+
+                  <p><b>Straight-line reference</b> (for simple runway-aligned paths):</p>
                   <ul>
                     <li>"reference_point": position with respect to which the lateral and vertical extents are defined. (Often, the threshold
                       of the runway.)</li>
-                    <li>"reference_heading": heading that is opposite to the runway heading.</li>
+                    <li>"reference_heading": heading that is opposite to the approach heading.</li>
                     <li>"reference_length": length in nm of the reference line.</li>
-                    <li>"heading_tolerance": maximum difference between an aircraft's heading and the runway's heading for a ghost aircraft to be displayed.</li>
-                    <li>"near_distance": distance from the reference point along the reference heading where the lateral volume begins.</li>
-                    <li>"near_half_width": half of the width of the reference volume at the near distance.</li>
-                    <li>"region_length": length of the lateral volume along the reference heading, starting from the near distance point.</li>
-                    <li>"far_half_width": half of the width of the reference volume at the far distance.</li>
                   </ul>
-                  <p>These members specify the vertical extent that an aircraft must be inside to have a ghost aircraft:
-                  </p>
+
+                  <p><b>Route-based reference</b> (for curved approaches, converging fixes, etc.):</p>
                   <ul>
-                    <li>"descent_distance": distance from the reference point in nm where aircraft are expected to start its final descent.</li>
-                    <li>"reference_altitude": altitude of the reference point.</li>
-                    <li>"descent_altitude": expected aircraft altitude when it's at the descent distance.</li>
-                    <li>"above_altitude_tolerance": maximum distance in feet an aircraft may be above its expected altitude and still have a ghost be drawn for it.</li>
-                    <li>"below_altitude_tolerance": maximum distance in feet an aircraft may be below its expected altitude and still have a ghost be drawn for it.</li>
+                    <li>"reference_route": a string specifying the path as a series of fix names (or lat-long
+                      positions), optionally with <code>/arc</code> qualifiers for curved segments.
+                      Unlike approach/departure routes, only fix names and <code>/arc</code> are supported;
+                      other waypoint qualifiers (altitude restrictions, speed, handoff, etc.) are not allowed.
+                      Example: <code>"MERIT ROSLY/arc5.0JFK CATOD"</code>.
+                      When this is specified, "reference_point", "reference_heading", and "reference_length" must not be given.</li>
                   </ul>
+
+                  <p>The following members apply to both path types and specify the lateral
+                    qualification region&mdash;the volume an aircraft must be inside for a ghost to be generated:</p>
+                  <ul>
+                    <li>"heading_tolerance": maximum difference between an aircraft's heading and the local path heading for a ghost aircraft to be displayed.</li>
+                    <li>"near_distance": distance along the path from the start where the lateral volume begins.</li>
+                    <li>"near_half_width": half of the width of the region at the near distance.</li>
+                    <li>"region_length": length of the lateral volume along the path, starting from the near distance.
+                      Must not be specified with "reference_route" (the route length is used automatically).</li>
+                    <li>"far_half_width": half of the width of the region at the far distance.</li>
+                  </ul>
+                  <p>These members specify the vertical qualification region&mdash;the
+                    altitude envelope an aircraft must be inside for a ghost to be
+                    generated. There are two modes:</p>
+
+                  <p><b>Fixed altitude range</b> (no descent profile): set
+                    "descent_distance" to 0 (or omit it). The vertical
+                    qualification region is a flat band over the entire region,
+                    centered on "descent_altitude" with "above_altitude_tolerance"
+                    and "below_altitude_tolerance" defining the upper and lower
+                    bounds. For example, to qualify aircraft between 1000 and 5000
+                    feet:</p>
+                  <pre>
+    "descent_distance": 0,
+    "descent_altitude": 3000,
+    "above_altitude_tolerance": 2000,
+    "below_altitude_tolerance": 2000</pre>
+
+                  <p><b>Descent profile</b> (for approach paths with a glideslope):
+                    set "descent_distance" to a nonzero value. The expected altitude
+                    slopes linearly from "reference_altitude" at the path origin
+                    (the near end) to "descent_altitude" at "descent_distance" along
+                    the path, then remains flat at "descent_altitude" beyond that
+                    point. The tolerances define a band around this sloping
+                    profile.</p>
+
+                  <ul>
+                    <li>"descent_distance": distance along the path where the descent profile levels off. Set to 0 for a fixed altitude range.</li>
+                    <li>"descent_altitude": expected altitude at the descent distance (or the center of the fixed band when "descent_distance" is 0).</li>
+                    <li>"reference_altitude": expected altitude at the path origin. Only used when "descent_distance" is nonzero.</li>
+                    <li>"above_altitude_tolerance": maximum feet above the expected altitude at any point along the path for an aircraft to still qualify.</li>
+                    <li>"below_altitude_tolerance": maximum feet below the expected altitude at any point along the path for an aircraft to still qualify.</li>
+                  </ul>
+                  <p>Optionally, "scratchpad_patterns" may be specified as an array of strings; if present, only
+                    aircraft whose scratchpad contains one of the given patterns will generate ghosts.</p>
                 </td>
               </tr>
               <tr>
@@ -7373,18 +7493,18 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               </td>
               </tr>
               <tr>
-                <td>"converging_runways"</td>
+                <td>"crda_pairs"</td>
                 <td>Array of objects</td>
-                <td>Each object specifies a pair of converging runways that
+                <td>Each object specifies a pair of converging CRDA regions that
                   will be included in the STARS CRDA list. Each object has
                   the following members:
                   <ul>
-                    <li>"runways": array of two strings referencing two runways
-                      specified in "approach_regions".</li>
+                    <li>"crda_regions": array of two strings referencing two regions
+                      defined in "crda_regions".</li>
                     <li>"leader_directions": array of two strings
                       specifying the compass direction ("N", "NE", "E",
                       ...) that will be used for leader lines for ghost
-                      aircraft from the two respective runways.</li>
+                      aircraft from the two respective regions.</li>
                     <li>"tie_symbol": A single-character string giving the
                     symbol to use on the STARS display for ghost aircraft
                     when CRDA "tie" mode is used.</li>
@@ -7392,7 +7512,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                     symbol to use on the STARS display for ghost aircraft
                     when CRDA "stagger" mode is used.</li>
                     <li>"tie_offset": number giving an offset in nautical
-                      miles to add to ghost aircraft's distance from the airport when
+                      miles to add to ghost aircraft's distance from the convergence point when
                       "tie" mode is used.</li>
                   </ul>
                 </td>
@@ -8855,6 +8975,14 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                     <li>"surface_tracking": defines a region of airspace off the ground at airports where
                       radar tracks are not shown. By default, up to 250' AGL 1.5nm around each airport.</li>
                     <li>"vfr_inhibit": random VFR routes will not be generated through this filter's airspace.</li>
+                    <li>"fdam": Flight Data Auto-Modify regions. When an associated
+                      track enters an enabled FDAM region and matches its qualifying
+                      attributes, adapted entry actions are automatically applied
+                      (scratchpad changes, leader direction changes, handoff initiation,
+                      ownership transfer, or force quicklook). When the track exits,
+                      selected changes can be reverted. See the
+                      <a href="#fe-stars-fdam">FDAM section</a> below for the full list
+                      of fields.</li>
                   </ul>
                 </td>
               </tr>
@@ -9242,6 +9370,129 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             it's not necessary to close the polygon yourself.
             </p>
 
+            <p>Quicklook and FDAM filter regions may include optional qualifying
+              attributes that constrain which aircraft are affected (per DMS Table
+              4-109). When any of these fields are specified, an aircraft must satisfy
+              all of them (as well as being inside the volume) to match the filter.
+              If a field is omitted or empty, that constraint is not applied.
+            </p>
+            <p>The following attributes apply to both quicklook and FDAM filters:</p>
+            <ul>
+              <li>"tcps": comma-delimited list of TCP identifiers (local positions only),
+                or "ALL" for all local positions. The filter only applies if the user is
+                signed in to one of the listed positions.</li>
+              <li>"scratchpad": comma-delimited list of scratchpad values. The aircraft's
+                scratchpad must match one of them.</li>
+              <li>"secondary_scratchpad": comma-delimited list of secondary scratchpad values.
+                The aircraft's secondary scratchpad must match one of them.</li>
+              <li>"owning_tcp": comma-delimited list of TCP identifiers. The aircraft's
+                tracking controller must be one of them.</li>
+              <li>"entry_fix": comma-delimited list of fix names. The aircraft's entry fix
+                must be one of them (aircraft with no entry fix set are not excluded).</li>
+              <li>"exit_fix": comma-delimited list of fix names. The aircraft's exit fix
+                must be one of them (aircraft with no exit fix set are not excluded).</li>
+              <li>"flight_type": one of "arrival", "departure", or "overflight". If set,
+                only aircraft of that flight type match.</li>
+              <li>"cwt_category": a single letter from "A" through "I" matching the
+                aircraft's CWT category, where "A" is the heaviest (e.g. A380) and "I"
+                is the lightest (small aircraft).</li>
+            </ul>
+            <p>The following additional attributes also apply to both quicklook and FDAM filters:</p>
+            <ul>
+              <li>"flight_rules": "V" for VFR only, "I" for IFR only, or "B" (or empty)
+                for both.</li>
+              <li>"ssr_codes": comma-delimited list of SSR codes or ranges. Each element is
+                either a single four-digit octal code (e.g. "1200") or a range
+                ("1300-1377"). The aircraft's assigned squawk must fall in one of the
+                specified codes or ranges.</li>
+              <li>"requested_altitude": comma-delimited list of altitudes or ranges, in
+                hundreds of feet. Each element is either a single value (e.g. "40" for
+                4,000') or a range ("100-180" for FL100&ndash;FL180). The aircraft's requested
+                altitude must fall in one of the specified values or ranges.</li>
+            </ul>
+
+            <h3 id="fe-stars-fdam">FDAM Regions</h3>
+
+            <p>Flight Data Auto-Modify (FDAM) regions automatically modify
+              flight data and initiate flight operations when an associated
+              track enters an adapted region. FDAM regions are defined under
+              "fdam" in the "filters" object. Each FDAM region includes an
+              airspace volume, optional qualifying attributes (documented
+              above), and a set of entry/exit actions. See the
+              <a href="#stars-fdam">FDAMs</a> section under STARS
+              Configuration for the supervisor commands that control FDAM
+              processing.
+            </p>
+
+            <p>Each FDAM region object includes the standard volume fields
+              ("id", "description", "type", "floor", "ceiling", etc.) and
+              the shared qualifying attributes described above. In addition,
+              the following entry-action fields control what happens when a
+              matching track enters the region:</p>
+            <ul>
+              <li>"new_scratchpad_1": string to assign to the track's
+                primary scratchpad on entry. Use "-" to clear an existing
+                scratchpad.</li>
+              <li>"allow_scratchpad_1_override": boolean. If true, the
+                adapted scratchpad replaces any existing value. If false
+                (the default), the scratchpad is only set if the track's
+                current scratchpad is empty.</li>
+              <li>"new_scratchpad_2": string to assign to the track's
+                secondary scratchpad on entry. Use "-" to clear.</li>
+              <li>"allow_scratchpad_2_override": boolean. Same override
+                behavior as above, for the secondary scratchpad.</li>
+              <li>"new_owner_leader_direction": string giving the cardinal
+                or ordinal direction for the owning controller's leader
+                line (e.g. "N", "NE", "S", "SW"). The direction is set on
+                entry for all TCWs displaying the track.</li>
+              <li>"new_tcp_specific_leader_direction": string giving the
+                leader line direction to set for the TCPs listed in
+                "pointout_tcps" (see below).</li>
+              <li>"handoff_initiate_transfer": one of "I" (initiate
+                handoff), "T" (transfer ownership immediately), or "N"/""
+                (no action). Used together with "new_owner_tcp".</li>
+              <li>"new_owner_tcp": TCP identifier. When
+                "handoff_initiate_transfer" is "I", a handoff is initiated
+                to this TCP. When it is "T", ownership is transferred
+                directly.</li>
+              <li>"immediate_pointout": boolean. If true, a force quicklook
+                (immediate pointout) is sent to each TCP listed in
+                "pointout_tcps" when the track enters the region.</li>
+              <li>"pointout_tcps": comma-delimited list of TCP identifiers
+                that receive force quicklook events and/or TCP-specific
+                leader direction changes on entry.</li>
+            </ul>
+
+            <p>The following fields control what happens when a track exits
+              the region:</p>
+            <ul>
+              <li>"retain_owner_leader_direction": boolean. If false (the
+                default), the owning controller's leader line direction
+                reverts to its pre-entry value when the track exits. If
+                true, the direction set on entry is kept.</li>
+              <li>"retain_tcp_specific_leader_direction": boolean. Same
+                retain/revert behavior for the TCP-specific leader
+                directions set via "pointout_tcps".</li>
+            </ul>
+
+            <p>Example FDAM region:</p>
+            <pre><code>{
+  "id": "FD001",
+  "description": "Departure handoff region",
+  "type": "polygon",
+  "floor": 0,
+  "ceiling": 10000,
+  "vertices": "MERIT,HAAYS,SAAME,GREKI",
+  "flight_type": "departure",
+  "new_scratchpad_1": "DEP",
+  "allow_scratchpad_1_override": false,
+  "handoff_initiate_transfer": "I",
+  "new_owner_tcp": "D21",
+  "immediate_pointout": true,
+  "pointout_tcps": "F31,D21",
+  "new_tcp_specific_leader_direction": "NE",
+  "retain_tcp_specific_leader_direction": false
+}</code></pre>
 
             <h3 id="fe-video-maps">Video Maps</h3>
 

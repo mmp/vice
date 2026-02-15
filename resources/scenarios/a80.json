@@ -5795,11 +5795,6 @@
       },
       "atpa_volumes": {
         "26R": {
-          "runway_threshold": "KATL-26R",
-          "heading": 275,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
           "length": 20,
           "left_width": 20000,
           "right_width": 20000,
@@ -5816,11 +5811,6 @@
           "2.5nm_distance": 10
         },
         "26L": {
-          "runway_threshold": "KATL-26L",
-          "heading": 275,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
           "length": 15,
           "left_width": 20000,
           "right_width": 20000,
@@ -5837,11 +5827,6 @@
           "2.5nm_distance": 10
         },
         "27R": {
-          "runway_threshold": "KATL-27R",
-          "heading": 275,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
           "length": 26,
           "left_width": 20000,
           "right_width": 20000,
@@ -5858,11 +5843,6 @@
           "2.5nm_distance": 10
         },
         "27L": {
-          "runway_threshold": "KATL-27L",
-          "heading": 275,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
           "length": 30,
           "left_width": 20000,
           "right_width": 15000,
@@ -5879,11 +5859,6 @@
           "2.5nm_distance": 10
         },
         "28": {
-          "runway_threshold": "KATL-28",
-          "heading": 275,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
           "length": 30,
           "left_width": 20000,
           "right_width": 15000,
@@ -5900,11 +5875,6 @@
           "2.5nm_distance": 10
         },
         "8L": {
-          "runway_threshold": "KATL-8L",
-          "heading": 255,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
           "length": 30,
           "left_width": 20000,
           "right_width": 15000,
@@ -5921,11 +5891,6 @@
           "2.5nm_distance": 10
         },
         "8R": {
-          "runway_threshold": "KATL-8R",
-          "heading": 95,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
           "length": 30,
           "left_width": 20000,
           "right_width": 15000,
@@ -5942,11 +5907,6 @@
           "2.5nm_distance": 10
         },
         "9L": {
-          "runway_threshold": "KATL-9L",
-          "heading": 255,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
           "length": 30,
           "left_width": 20000,
           "right_width": 15000,
@@ -5963,11 +5923,6 @@
           "2.5nm_distance": 10
         },
         "9R": {
-          "runway_threshold": "KATL-9R",
-          "heading": 255,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
           "length": 30,
           "left_width": 20000,
           "right_width": 15000,
@@ -5984,12 +5939,6 @@
           "2.5nm_distance": 10
         },
         "10": {
-          "runway_threshold": "KATL-10",
-          "heading": 255,
-          "max_heading_deviation": 90,
-          "floor": 100,
-          "ceiling": 5000,
-          "length": 30,
           "left_width": 20000,
           "right_width": 15000,
           "excluded_scratchpads": [

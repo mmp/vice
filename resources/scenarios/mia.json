@@ -64,7 +64,7 @@
                     ]
                 }
             },
-            "approach_regions": {
+            "crda_regions": {
                 "12": {
                     "heading_tolerance": 90,
                     "near_distance": 4.5,
@@ -80,18 +80,18 @@
                     "reference_length": 30,
                     "reference_altitude": 0
                 },
-                "8R": {
+                "27": {
                     "heading_tolerance": 90,
                     "near_distance": 4.5,
                     "near_half_width": 1,
                     "far_half_width": 6,
-                    "region_length": 30,
-                    "descent_distance": 10,
-                    "descent_altitude": 3000,
+                    "region_length": 40,
+                    "descent_distance": 15,
+                    "descent_altitude": 4000,
                     "above_altitude_tolerance": 2000,
-                    "below_altitude_tolerance": 800,
-                    "reference_point": "25.8002,-80.30465",
-                    "reference_heading": 93.8,
+                    "below_altitude_tolerance": 1800,
+                    "reference_point": "25.78748,-80.27923",
+                    "reference_heading": 273.9,
                     "reference_length": 30,
                     "reference_altitude": 0
                 },
@@ -110,25 +110,25 @@
                     "reference_length": 30,
                     "reference_altitude": 0
                 },
-                "27": {
+                "8R": {
                     "heading_tolerance": 90,
                     "near_distance": 4.5,
                     "near_half_width": 1,
                     "far_half_width": 6,
-                    "region_length": 40,
-                    "descent_distance": 15,
-                    "descent_altitude": 4000,
+                    "region_length": 30,
+                    "descent_distance": 10,
+                    "descent_altitude": 3000,
                     "above_altitude_tolerance": 2000,
-                    "below_altitude_tolerance": 1800,
-                    "reference_point": "25.78748,-80.27923",
-                    "reference_heading": 273.9,
+                    "below_altitude_tolerance": 800,
+                    "reference_point": "25.8002,-80.30465",
+                    "reference_heading": 93.8,
                     "reference_length": 30,
                     "reference_altitude": 0
                 }
             },
-            "converging_runways": [
+            "crda_pairs": [
                 {
-                    "runways": [
+                    "crda_regions": [
                         "12",
                         "8R"
                     ],
@@ -141,7 +141,7 @@
                     "tie_offset": 4
                 },
                 {
-                    "runways": [
+                    "crda_regions": [
                         "30",
                         "27"
                     ],
@@ -155,53 +155,6 @@
                 }
             ],
             "departure_routes": {
-                "8R": {
-                    "ALTNN,DUCEN": {
-                        "assigned_altitude": 5000,
-                        "sid": "ALTNN2",
-                        "waypoints": "CSALT DEALZ LIIVV FARRY AGERS PERTS ALTNN"
-                    },
-                    "BNGOS,COREA,DOLIE,MERKS": {
-                        "assigned_altitude": 5000,
-                        "sid": "BNGOS4",
-                        "waypoints": "CSALT DEALZ LIIVV NIBLT MRENO BNGOS"
-                    },
-                    "FLMGO,WAPOM,STYMY": {
-                        "assigned_altitude": 5000,
-                        "sid": "FLMGO2",
-                        "waypoints": "CSALT DEALZ LIIVV GEITH ALNZO FLMGO"
-                    },
-                    "FOLZZ,PADUS,ZFP,SNAGY,SUMRS,ALYRA,GOZZR": {
-                        "assigned_altitude": 5000,
-                        "sid": "FOLZZ3",
-                        "waypoints": "N025.48.10.207,W080.15.21.890 JAMBA KBOLA MARCK FOLZZ"
-                    },
-                    "GLADZ,BAGGS,LULLS,SHAQQ": {
-                        "assigned_altitude": 5000,
-                        "sid": "GLADZ4",
-                        "waypoints": "CSALT DEALZ LIIVV BLART SELFI GAYTR RUTLG GLADZ"
-                    },
-                    "GWAVA,URSUS": {
-                        "assigned_altitude": 5000,
-                        "sid": "GWAVA2",
-                        "waypoints": "N025.48.10.640,W080.15.10.711 BALLR MYNNT RUUMM GWAVA"
-                    },
-                    "HURCN,KPASA,SMELZ": {
-                        "assigned_altitude": 5000,
-                        "sid": "HURCN4",
-                        "waypoints": "CSALT DEALZ LIIVV NIBLT JOENZ HURCN"
-                    },
-                    "KLADA,BITAC,JAGOR,RAJAY": {
-                        "assigned_altitude": 5000,
-                        "sid": "KLADA2",
-                        "waypoints": "N025.48.10.207,W080.15.21.890 JAMBA KBOLA KLADA"
-                    },
-                    "MAYNR,CANOA,FUNDI,MAXIM": {
-                        "assigned_altitude": 5000,
-                        "sid": "MAYNR3",
-                        "waypoints": "N025.48.10.640,W080.15.10.711 BALLR MYNNT RUUMM AUSTI MAYNR"
-                    }
-                },
                 "12": {
                     "ALTNN,DUCEN": {
                         "assigned_altitude": 5000,
@@ -249,53 +202,6 @@
                         "waypoints": "N025.46.39.247,W080.15.39.385 BALLR MYNNT RUUMM AUSTI MAYNR"
                     }
                 },
-                "26L": {
-                    "ALTNN,DUCEN": {
-                        "assigned_altitude": 5000,
-                        "sid": "ALTNN2",
-                        "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS RMIRO FARRY AGERS PERTS ALTNN"
-                    },
-                    "BNGOS,COREA,DOLIE,MERKS": {
-                        "assigned_altitude": 5000,
-                        "sid": "BNGOS4",
-                        "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS MRENO BNGOS"
-                    },
-                    "FLMGO,STYMY,WAPOM": {
-                        "assigned_altitude": 5000,
-                        "sid": "FLMGO2",
-                        "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS RMIRO ALNZO FLMGO"
-                    },
-                    "FOLZZ,PADUS,ZFP,SNAGY,SUMRS,ALYRA,GOZZR": {
-                        "assigned_altitude": 5000,
-                        "sid": "FOLZZ3",
-                        "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS RMIRO KELEY SHQIL MARCK FOLZZ"
-                    },
-                    "GLADZ,BAGGS,LULLS,SHAQQ": {
-                        "assigned_altitude": 5000,
-                        "sid": "GLADZ4",
-                        "waypoints": "N025.47.58.054,W080.19.47.567 KSENO GAYTR RUTLG GLADZ"
-                    },
-                    "GWAVA,URSUS": {
-                        "assigned_altitude": 5000,
-                        "sid": "GWAVA2",
-                        "waypoints": "N025.47.58.054,W080.19.47.567 KSENO COOZY HAMAK LONZO GWAVA"
-                    },
-                    "HURCN,KPASA,SMELZ": {
-                        "assigned_altitude": 5000,
-                        "sid": "HURCN4",
-                        "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS NIBLT JOENZ HURCN"
-                    },
-                    "KLADA,BITAC,JAGOR,RAJAY": {
-                        "assigned_altitude": 5000,
-                        "sid": "KLADA2",
-                        "waypoints": "N025.47.58.054,W080.19.47.567 KSENO COOZY HAMAK LONZO CWEAD KLADA"
-                    },
-                    "MAYNR,CANOA,FUNDI,MAXIM": {
-                        "assigned_altitude": 5000,
-                        "sid": "MAYNR3",
-                        "waypoints": "N025.47.58.054,W080.19.47.567 KSENO COOZY HAMAK LONZO AUSTI MAYNR"
-                    }
-                },
                 "27": {
                     "ALTNN,DUCEN": {
                         "assigned_altitude": 5000,
@@ -341,6 +247,100 @@
                         "assigned_altitude": 5000,
                         "sid": "MAYNR3",
                         "waypoints": "KSENO COOZY HAMAK LONZO AUSTI MAYNR"
+                    }
+                },
+                "8R": {
+                    "ALTNN,DUCEN": {
+                        "assigned_altitude": 5000,
+                        "sid": "ALTNN2",
+                        "waypoints": "CSALT DEALZ LIIVV FARRY AGERS PERTS ALTNN"
+                    },
+                    "BNGOS,COREA,DOLIE,MERKS": {
+                        "assigned_altitude": 5000,
+                        "sid": "BNGOS4",
+                        "waypoints": "CSALT DEALZ LIIVV NIBLT MRENO BNGOS"
+                    },
+                    "FLMGO,WAPOM,STYMY": {
+                        "assigned_altitude": 5000,
+                        "sid": "FLMGO2",
+                        "waypoints": "CSALT DEALZ LIIVV GEITH ALNZO FLMGO"
+                    },
+                    "FOLZZ,PADUS,ZFP,SNAGY,SUMRS,ALYRA,GOZZR": {
+                        "assigned_altitude": 5000,
+                        "sid": "FOLZZ3",
+                        "waypoints": "N025.48.10.207,W080.15.21.890 JAMBA KBOLA MARCK FOLZZ"
+                    },
+                    "GLADZ,BAGGS,LULLS,SHAQQ": {
+                        "assigned_altitude": 5000,
+                        "sid": "GLADZ4",
+                        "waypoints": "CSALT DEALZ LIIVV BLART SELFI GAYTR RUTLG GLADZ"
+                    },
+                    "GWAVA,URSUS": {
+                        "assigned_altitude": 5000,
+                        "sid": "GWAVA2",
+                        "waypoints": "N025.48.10.640,W080.15.10.711 BALLR MYNNT RUUMM GWAVA"
+                    },
+                    "HURCN,KPASA,SMELZ": {
+                        "assigned_altitude": 5000,
+                        "sid": "HURCN4",
+                        "waypoints": "CSALT DEALZ LIIVV NIBLT JOENZ HURCN"
+                    },
+                    "KLADA,BITAC,JAGOR,RAJAY": {
+                        "assigned_altitude": 5000,
+                        "sid": "KLADA2",
+                        "waypoints": "N025.48.10.207,W080.15.21.890 JAMBA KBOLA KLADA"
+                    },
+                    "MAYNR,CANOA,FUNDI,MAXIM": {
+                        "assigned_altitude": 5000,
+                        "sid": "MAYNR3",
+                        "waypoints": "N025.48.10.640,W080.15.10.711 BALLR MYNNT RUUMM AUSTI MAYNR"
+                    }
+                },
+                "26L": {
+                    "ALTNN,DUCEN": {
+                        "assigned_altitude": 5000,
+                        "sid": "ALTNN2",
+                        "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS RMIRO FARRY AGERS PERTS ALTNN"
+                    },
+                    "BNGOS,COREA,DOLIE,MERKS": {
+                        "assigned_altitude": 5000,
+                        "sid": "BNGOS4",
+                        "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS MRENO BNGOS"
+                    },
+                    "FLMGO,STYMY,WAPOM": {
+                        "assigned_altitude": 5000,
+                        "sid": "FLMGO2",
+                        "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS RMIRO ALNZO FLMGO"
+                    },
+                    "FOLZZ,PADUS,ZFP,SNAGY,SUMRS,ALYRA,GOZZR": {
+                        "assigned_altitude": 5000,
+                        "sid": "FOLZZ3",
+                        "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS RMIRO KELEY SHQIL MARCK FOLZZ"
+                    },
+                    "GLADZ,BAGGS,LULLS,SHAQQ": {
+                        "assigned_altitude": 5000,
+                        "sid": "GLADZ4",
+                        "waypoints": "N025.47.58.054,W080.19.47.567 KSENO GAYTR RUTLG GLADZ"
+                    },
+                    "GWAVA,URSUS": {
+                        "assigned_altitude": 5000,
+                        "sid": "GWAVA2",
+                        "waypoints": "N025.47.58.054,W080.19.47.567 KSENO COOZY HAMAK LONZO GWAVA"
+                    },
+                    "HURCN,KPASA,SMELZ": {
+                        "assigned_altitude": 5000,
+                        "sid": "HURCN4",
+                        "waypoints": "N025.47.59.701,W080.19.15.761 KROCS RUSSS NIBLT JOENZ HURCN"
+                    },
+                    "KLADA,BITAC,JAGOR,RAJAY": {
+                        "assigned_altitude": 5000,
+                        "sid": "KLADA2",
+                        "waypoints": "N025.47.58.054,W080.19.47.567 KSENO COOZY HAMAK LONZO CWEAD KLADA"
+                    },
+                    "MAYNR,CANOA,FUNDI,MAXIM": {
+                        "assigned_altitude": 5000,
+                        "sid": "MAYNR3",
+                        "waypoints": "N025.47.58.054,W080.19.47.567 KSENO COOZY HAMAK LONZO AUSTI MAYNR"
                     }
                 }
             },
@@ -1474,6 +1474,36 @@
                     "exit": "ETECK",
                     "scratchpad": "FEA",
                     "route": "ETECK PELCN Y309 FLRDA"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "JBU",
+                            "types": [
+                                "A320",
+                                "A321",
+                                "A21N",
+                                "BCS3"
+                            ]
+                        },
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "NKS",
+                            "types": [
+                                "A321"
+                            ]
+                        }
+                    ],
+                    "altitude": [
+                        32000,
+                        36000
+                    ],
+                    "destination": "MMUN",
+                    "exit": "GLADZ",
+                    "scratchpad": "GLA",
+                    "route": "GLADZ LULLS Y196 CANOA UB879 NOSAT"
                 }
             ],
             "exit_categories": {
@@ -2718,15 +2748,19 @@
                             "28R": "BHHIA/a7000 ADUBE/a7000 FIPKO BEPAC/a6000 FAMBA/a6000/h96"
                         },
                         "KFXE": {
+                            "9": "BHHIA/a7000 CEMDI/a7000/h35",
                             "13": "BHHIA/a7000 CEMDI/a7000/h35",
                             "27": "BHHIA/a7000 CEMDI/a7000/h35",
-                            "31": "BHHIA/a7000 CEMDI/a7000/h35",
-                            "9": "BHHIA/a7000 CEMDI/a7000/h35"
+                            "31": "BHHIA/a7000 CEMDI/a7000/h35"
+                        },
+                        "KOPF": {
+                            "12": "BHHIA/a7000 CEMDI/a7000/h81",
+                            "9L": "BHHIA/a7000 CEMDI/a7000/h81"
                         }
                     },
                     "cruise_altitude": 33000,
                     "star": "BHHIA3",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 05 MARATHON",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -2797,7 +2831,7 @@
                     },
                     "cruise_altitude": 33000,
                     "star": "BHHIA3",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 05 MARATHON",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -2848,7 +2882,7 @@
                     },
                     "cruise_altitude": 33000,
                     "star": "BHHIA3",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 05 MARATHON",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -2888,17 +2922,17 @@
         "BNFSH3": {
             "arrivals": [
                 {
-                    "waypoints": "CIKEN/a22000+ N026.41.18.776,W079.38.32.814/ho GELDE/a17000+/s280 ENRGY/a16000- WOOSA CASTT/a12000/s250 BNFSH/a11000",
+                    "waypoints": "CIKEN/a22000+ N026.41.18.776,W079.38.32.814/ho GELDE/a17000+/s280 ENRGY/a16000- WOOSA CASTT/a12000+/s250 BNFSH/a11000",
                     "runway_waypoints": {
                         "KMIA": {
+                            "9": "BNFSH/a11000 FENDE/a11000+ GUCCI PRCHE/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
                             "12": "BNFSH/a11000 FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ KPONE/a4000 CHUUM/a4000/h274",
-                            "26L": "BNFSH/a11000 OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
-                            "26R": "BNFSH/a11000 OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
                             "27": "BNFSH/a11000 OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
                             "30": "BNFSH/a11000 OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
+                            "26L": "BNFSH/a11000 OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
+                            "26R": "BNFSH/a11000 OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
                             "8L": "BNFSH/a11000 FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ TUPAC/a5000/h273",
-                            "8R": "BNFSH/a11000 FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ TUPAC/a5000/h273",
-                            "9": "BNFSH/a11000 FENDE/a11000+ GUCCI PRCHE/a8000+ DAHLA/a6000+ BILZZ/a5000/h272"
+                            "8R": "BNFSH/a11000 FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ TUPAC/a5000/h273"
                         },
                         "KTMB": {
                             "27L": "BNFSH/a11000 KEYZZ/a11000+ CARMA/a9000-10000 YARTO/a8000/h180",
@@ -2909,7 +2943,7 @@
                     },
                     "cruise_altitude": 38000,
                     "star": "BNFSH3",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 20 PALM BEACH LOW",
                     "initial_altitude": 23000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -3019,23 +3053,22 @@
                     "waypoints": "CIKEN/a22000+ N026.41.18.776,W079.38.32.814/ho GELDE/a17000+/s280 ENRGY/a16000- WOOSA CASTT/a12000/s250 BNFSH/a11000",
                     "runway_waypoints": {
                         "KMIA": {
+                            "9": "BNFSH/a11000 FENDE/a11000+ GUCCI PRCHE/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
                             "12": "BNFSH/a11000 FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ KPONE/a4000 CHUUM/a4000/h274",
-                            "26L": "BNFSH/a11000 OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
-                            "26R": "BNFSH/a11000 OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
                             "27": "BNFSH/a11000 OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
                             "30": "BNFSH/a11000 OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
+                            "26L": "BNFSH/a11000 OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
+                            "26R": "BNFSH/a11000 OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
                             "8L": "BNFSH/a11000 FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ TUPAC/a5000/h273",
-                            "8R": "BNFSH/a11000 FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ TUPAC/a5000/h273",
-                            "9": "BNFSH/a11000 FENDE/a11000+ GUCCI PRCHE/a8000+ DAHLA/a6000+ BILZZ/a5000/h272"
+                            "8R": "BNFSH/a11000 FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ TUPAC/a5000/h273"
                         }
                     },
                     "cruise_altitude": 38000,
                     "star": "BNFSH3",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 20 PALM BEACH LOW",
                     "initial_altitude": 23000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
-                    "assigned_altitude": 16000,
                     "expect_approach": "I12",
                     "airlines": {
                         "KMIA": [
@@ -3133,23 +3166,22 @@
                     "waypoints": "CIKEN/a22000+ N026.41.18.776,W079.38.32.814/ho GELDE/a17000+/s280 ENRGY/a16000- WOOSA CASTT/a12000/s250 BNFSH/a11000",
                     "runway_waypoints": {
                         "KMIA": {
+                            "9": "BNFSH/a11000 FENDE/a11000+ GUCCI PRCHE/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
                             "12": "BNFSH/a11000 FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ KPONE/a4000 CHUUM/a4000/h274",
-                            "26L": "BNFSH/a11000 OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
-                            "26R": "BNFSH/a11000 OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
                             "27": "BNFSH/a11000 OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
                             "30": "BNFSH/a11000 OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
+                            "26L": "BNFSH/a11000 OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
+                            "26R": "BNFSH/a11000 OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
                             "8L": "BNFSH/a11000 FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ TUPAC/a5000/h273",
-                            "8R": "BNFSH/a11000 FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ TUPAC/a5000/h273",
-                            "9": "BNFSH/a11000 FENDE/a11000+ GUCCI PRCHE/a8000+ DAHLA/a6000+ BILZZ/a5000/h272"
+                            "8R": "BNFSH/a11000 FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ TUPAC/a5000/h273"
                         }
                     },
                     "cruise_altitude": 38000,
                     "star": "BNFSH3",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 20 PALM BEACH LOW",
                     "initial_altitude": 23000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
-                    "assigned_altitude": 14000,
                     "expect_approach": "R6R",
                     "airlines": {
                         "KMIA": [
@@ -3247,14 +3279,14 @@
                     "waypoints": "YEPPA RECEK/a15000+/s280/ho BJOTA/a13000+ CSTAL/a16000- YACKO/a13000- ZYGGY/a11000/s250 BNFSH/a11000+",
                     "runway_waypoints": {
                         "KMIA": {
+                            "9": "BNFSH/a11000+ FENDE/a11000+ GUCCI PRCHE/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
                             "12": "BNFSH/a11000+ FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ KPONE/a4000 CHUUM/a4000/h274",
-                            "26L": "BNFSH/a11000+ OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
-                            "26R": "BNFSH/a11000+ OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
                             "27": "BNFSH/a11000+ OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
                             "30": "BNFSH/a11000+ OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
+                            "26L": "BNFSH/a11000+ OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
+                            "26R": "BNFSH/a11000+ OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
                             "8L": "BNFSH/a11000+ FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ TUPAC/a5000/h273",
-                            "8R": "BNFSH/a11000+ FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ TUPAC/a5000/h273",
-                            "9": "BNFSH/a11000+ FENDE/a11000+ GUCCI PRCHE/a8000+ DAHLA/a6000+ BILZZ/a5000/h272"
+                            "8R": "BNFSH/a11000+ FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ TUPAC/a5000/h273"
                         },
                         "KTMB": {
                             "27L": "BNFSH/a11000+ KEYZZ/a11000+ CARMA/a9000-10000 YARTO/a8000/h180",
@@ -3265,7 +3297,7 @@
                     },
                     "cruise_altitude": 34000,
                     "star": "CSTAL3",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 20 PALM BEACH LOW",
                     "initial_altitude": 18000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -3375,19 +3407,19 @@
                     "waypoints": "YEPPA RECEK/a15000+/s280/ho BJOTA/a13000+ CSTAL/a16000- YACKO/a13000- ZYGGY/a11000/s250 BNFSH/a11000+",
                     "runway_waypoints": {
                         "KMIA": {
+                            "9": "BNFSH/a11000+ FENDE/a11000+ GUCCI PRCHE/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
                             "12": "BNFSH/a11000+ FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ KPONE/a4000 CHUUM/a4000/h274",
-                            "26L": "BNFSH/a11000+ OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
-                            "26R": "BNFSH/a11000+ OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
                             "27": "BNFSH/a11000+ OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
                             "30": "BNFSH/a11000+ OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
+                            "26L": "BNFSH/a11000+ OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
+                            "26R": "BNFSH/a11000+ OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
                             "8L": "BNFSH/a11000+ FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ TUPAC/a5000/h273",
-                            "8R": "BNFSH/a11000+ FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ TUPAC/a5000/h273",
-                            "9": "BNFSH/a11000+ FENDE/a11000+ GUCCI PRCHE/a8000+ DAHLA/a6000+ BILZZ/a5000/h272"
+                            "8R": "BNFSH/a11000+ FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ TUPAC/a5000/h273"
                         }
                     },
                     "cruise_altitude": 34000,
                     "star": "CSTAL3",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 20 PALM BEACH LOW",
                     "initial_altitude": 18000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -3488,19 +3520,19 @@
                     "waypoints": "YEPPA RECEK/a15000+/s280/ho BJOTA/a13000+ CSTAL/a16000- YACKO/a13000- ZYGGY/a11000/s250 BNFSH/a11000+",
                     "runway_waypoints": {
                         "KMIA": {
+                            "9": "BNFSH/a11000+ FENDE/a11000+ GUCCI PRCHE/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
                             "12": "BNFSH/a11000+ FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ KPONE/a4000 CHUUM/a4000/h274",
-                            "26L": "BNFSH/a11000+ OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
-                            "26R": "BNFSH/a11000+ OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
                             "27": "BNFSH/a11000+ OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
                             "30": "BNFSH/a11000+ OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
+                            "26L": "BNFSH/a11000+ OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
+                            "26R": "BNFSH/a11000+ OTION/a11000/s230 BONHD/a9000+ GDDAY/a8000-9000 RHODZ/a6000/s210/h181",
                             "8L": "BNFSH/a11000+ FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ TUPAC/a5000/h273",
-                            "8R": "BNFSH/a11000+ FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ TUPAC/a5000/h273",
-                            "9": "BNFSH/a11000+ FENDE/a11000+ GUCCI PRCHE/a8000+ DAHLA/a6000+ BILZZ/a5000/h272"
+                            "8R": "BNFSH/a11000+ FENDE/a11000+ GUCCI BLYMY RMANI/a8000+ MDONA/a6000+ TUPAC/a5000/h273"
                         }
                     },
                     "cruise_altitude": 34000,
                     "star": "CSTAL3",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 20 PALM BEACH LOW",
                     "initial_altitude": 18000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -3608,14 +3640,14 @@
                         },
                         "KOPF": {
                             "12": "LOKKR SERIF BEPAC WANAR/h276",
-                            "27R": "LOKKR SERIF BEPAC WANAR/h276",
                             "30": "LOKKR SERIF BEPAC WANAR/h276",
+                            "27R": "LOKKR SERIF BEPAC WANAR/h276",
                             "9L": "LOKKR SERIF BEPAC WANAR/h276"
                         }
                     },
                     "cruise_altitude": 34000,
                     "star": "CUUDA3",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 20 PALM BEACH LOW",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -3727,7 +3759,7 @@
                     },
                     "cruise_altitude": 34000,
                     "star": "CUUDA3",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 20 PALM BEACH LOW",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -3829,7 +3861,7 @@
                     },
                     "cruise_altitude": 34000,
                     "star": "CUUDA3",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 20 PALM BEACH LOW",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -3924,14 +3956,14 @@
                     "runway_waypoints": {
                         "KOPF": {
                             "12": "RAZLE DGNRO/h102",
-                            "27R": "RAZLE FRRDY BOOZR/h98",
                             "30": "RAZLE FRRDY BOOZR/h98",
+                            "27R": "RAZLE FRRDY BOOZR/h98",
                             "9L": "RAZLE DGNRO/h102"
                         }
                     },
                     "cruise_altitude": 37000,
                     "star": "CUURT1",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 24 FORT MYERS LOW",
                     "initial_altitude": 23000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -3954,17 +3986,17 @@
         "FROGZ4": {
             "arrivals": [
                 {
-                    "waypoints": "KLEET/a21000/s280 BARBN/ho JAMAS/s280 N025.55.53.260,W081.04.45.205/a16000 FROGZ",
+                    "waypoints": "KLEET/a21000-28000/s280 BARBN/a15000+/ho JAMAS/a11000+/s280 FROGZ",
                     "runway_waypoints": {
                         "KMIA": {
+                            "9": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92",
                             "12": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92",
-                            "26L": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
-                            "26R": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
                             "27": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
                             "30": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
+                            "26L": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
+                            "26R": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
                             "8L": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92",
-                            "8R": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92",
-                            "9": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92"
+                            "8R": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92"
                         },
                         "KTMB": {
                             "27L": "FROGZ HATUG/a9000/h140",
@@ -3975,7 +4007,7 @@
                     },
                     "cruise_altitude": 35000,
                     "star": "FROGZ4",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 24 FORT MYERS LOW",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -4057,22 +4089,22 @@
         "FROGZ4 NOSATS EAST": {
             "arrivals": [
                 {
-                    "waypoints": "KLEET/a21000/s280 BARBN/ho JAMAS/s280 N025.55.53.260,W081.04.45.205/a16000 FROGZ",
+                    "waypoints": "KLEET/a21000-28000/s280 BARBN/a15000+/ho JAMAS/a11000+/s280 FROGZ",
                     "runway_waypoints": {
                         "KMIA": {
+                            "9": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92",
                             "12": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92",
-                            "26L": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
-                            "26R": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
                             "27": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
                             "30": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
+                            "26L": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
+                            "26R": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
                             "8L": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92",
-                            "8R": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92",
-                            "9": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92"
+                            "8R": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92"
                         }
                     },
                     "cruise_altitude": 35000,
                     "star": "FROGZ4",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 24 FORT MYERS LOW",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -4145,22 +4177,22 @@
         "FROGZ4 NOSATS WEST": {
             "arrivals": [
                 {
-                    "waypoints": "KLEET/a21000/s280 BARBN/ho JAMAS/s280 N025.55.53.260,W081.04.45.205/a16000 FROGZ",
+                    "waypoints": "KLEET/a21000-28000/s280 BARBN/a15000+/ho JAMAS/a11000+/s280 FROGZ",
                     "runway_waypoints": {
                         "KMIA": {
+                            "9": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92",
                             "12": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92",
-                            "26L": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
-                            "26R": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
                             "27": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
                             "30": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
+                            "26L": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
+                            "26R": "FROGZ ENOLE/a14000-16000 HAKUL VEYGA/a13000+/s250 SOFAS/a11000+ HOLEZ COTOL/a11000- MACYS/a8000 REELN WNNER/a5000/h124",
                             "8L": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92",
-                            "8R": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92",
-                            "9": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92"
+                            "8R": "FROGZ ARRTT/a9000-11000/s250 ASPPN/a10000- PBJAY/a8000+ SCHAR ACERE LLEGG/a4000/h92"
                         }
                     },
                     "cruise_altitude": 35000,
                     "star": "FROGZ4",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 24 FORT MYERS LOW",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -4233,7 +4265,7 @@
         "OLAHS3": {
             "arrivals": [
                 {
-                    "waypoints": "N025.44.07.190,W079.05.38.873 DOPLY/a10000+/ho N025.47.59.894,W079.27.02.653/a8000 OLAHS",
+                    "waypoints": "N025.44.07.190,W079.05.38.873 DOPLY/a10000+/ho OLAHS",
                     "runway_waypoints": {
                         "KFLL": {
                             "10L": "OLAHS LATNN/a6000/s250 WAVUN KEVEY BEPAC/a6000 WANAR/a5000/h276",
@@ -4242,19 +4274,19 @@
                             "28R": "OLAHS FISHB/a5000/s250 CRNVL/a5000/h337"
                         },
                         "KFXE": {
-                            "27": "OLAHS FISHB/a5000/s250 LORDS/a5000/h320",
-                            "9": "OLAHS FISHB/a5000/s250 LORDS/a5000/h320"
+                            "9": "OLAHS FISHB/a5000/s250 LORDS/a5000/h320",
+                            "27": "OLAHS FISHB/a5000/s250 LORDS/a5000/h320"
                         },
                         "KOPF": {
                             "12": "OLAHS FISHB/a5000/s250 JEPSI FRRDY/a5000/h276",
-                            "27R": "OLAHS FISHB/a5000/s250 JEPSI FRRDY/a5000/h276",
                             "30": "OLAHS FISHB/a5000/s250 JEPSI FRRDY/a5000/h276",
+                            "27R": "OLAHS FISHB/a5000/s250 JEPSI FRRDY/a5000/h276",
                             "9L": "OLAHS FISHB/a5000/s250 JEPSI FRRDY/a5000/h276"
                         }
                     },
                     "cruise_altitude": 36000,
                     "star": "OLAHS3",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 42 BIMINI LOW",
                     "initial_altitude": 11000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -4309,7 +4341,7 @@
         "OLAHS3 NOSATS EAST": {
             "arrivals": [
                 {
-                    "waypoints": "N025.44.07.190,W079.05.38.873 DOPLY/a10000+/ho N025.47.59.894,W079.27.02.653/a8000 OLAHS",
+                    "waypoints": "N025.44.07.190,W079.05.38.873 DOPLY/a10000+/ho OLAHS",
                     "runway_waypoints": {
                         "KFLL": {
                             "10L": "OLAHS LATNN/a6000/s250 WAVUN KEVEY BEPAC/a6000 WANAR/a5000/h276",
@@ -4318,19 +4350,19 @@
                             "28R": "OLAHS FISHB/a5000/s250 CRNVL/a5000/h337"
                         },
                         "KFXE": {
-                            "27": "OLAHS FISHB/a5000/s250 LORDS/a5000/h320",
-                            "9": "OLAHS FISHB/a5000/s250 LORDS/a5000/h320"
+                            "9": "OLAHS FISHB/a5000/s250 LORDS/a5000/h320",
+                            "27": "OLAHS FISHB/a5000/s250 LORDS/a5000/h320"
                         },
                         "KOPF": {
                             "12": "OLAHS FISHB/a5000/s250 JEPSI FRRDY/a5000/h276",
-                            "27R": "OLAHS FISHB/a5000/s250 JEPSI FRRDY/a5000/h276",
                             "30": "OLAHS FISHB/a5000/s250 JEPSI FRRDY/a5000/h276",
+                            "27R": "OLAHS FISHB/a5000/s250 JEPSI FRRDY/a5000/h276",
                             "9L": "OLAHS FISHB/a5000/s250 JEPSI FRRDY/a5000/h276"
                         }
                     },
                     "cruise_altitude": 36000,
                     "star": "OLAHS3",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 42 BIMINI LOW",
                     "initial_altitude": 11000,
                     "initial_speed": 270,
                     "speed_restriction": 250,
@@ -4366,7 +4398,7 @@
         "OLAHS3 NOSATS WEST": {
             "arrivals": [
                 {
-                    "waypoints": "N025.44.07.190,W079.05.38.873 DOPLY/a10000+/ho N025.47.59.894,W079.27.02.653/a8000 OLAHS",
+                    "waypoints": "N025.44.07.190,W079.05.38.873 DOPLY/a10000+/ho OLAHS",
                     "runway_waypoints": {
                         "KFLL": {
                             "10L": "OLAHS LATNN/a6000/s250 WAVUN KEVEY BEPAC/a6000 WANAR/a5000/h276",
@@ -4375,19 +4407,19 @@
                             "28R": "OLAHS FISHB/a5000/s250 CRNVL/a5000/h337"
                         },
                         "KFXE": {
-                            "27": "OLAHS FISHB/a5000/s250 LORDS/a5000/h320",
-                            "9": "OLAHS FISHB/a5000/s250 LORDS/a5000/h320"
+                            "9": "OLAHS FISHB/a5000/s250 LORDS/a5000/h320",
+                            "27": "OLAHS FISHB/a5000/s250 LORDS/a5000/h320"
                         },
                         "KOPF": {
                             "12": "OLAHS FISHB/a5000/s250 JEPSI FRRDY/a5000/h276",
-                            "27R": "OLAHS FISHB/a5000/s250 JEPSI FRRDY/a5000/h276",
                             "30": "OLAHS FISHB/a5000/s250 JEPSI FRRDY/a5000/h276",
+                            "27R": "OLAHS FISHB/a5000/s250 JEPSI FRRDY/a5000/h276",
                             "9L": "OLAHS FISHB/a5000/s250 JEPSI FRRDY/a5000/h276"
                         }
                     },
                     "cruise_altitude": 36000,
                     "star": "OLAHS3",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 42 BIMINI LOW",
                     "initial_altitude": 11000,
                     "initial_speed": 270,
                     "speed_restriction": 250,
@@ -4423,17 +4455,17 @@
         "SNDBR3": {
             "arrivals": [
                 {
-                    "waypoints": "PAMPR/s280 N25.09.22.045,W80.58.21.664/ho SNDBR",
+                    "waypoints": "PAMPR/a23000/s280 N25.09.22.045,W80.58.21.664/ho SNDBR",
                     "runway_waypoints": {
                         "KMIA": {
+                            "9": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58",
                             "12": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58",
-                            "26L": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
-                            "26R": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
                             "27": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
                             "30": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
+                            "26L": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
+                            "26R": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
                             "8L": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58",
-                            "8R": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58",
-                            "9": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58"
+                            "8R": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58"
                         },
                         "KTMB": {
                             "27L": "SNDBR CJAAY/a6000/h25",
@@ -4444,8 +4476,8 @@
                     },
                     "cruise_altitude": 33000,
                     "star": "SNDBR3",
-                    "initial_controller": "ZMA 46 ALUTO",
-                    "initial_altitude": 17000,
+                    "initial_controller": "ZMA 05 MARATHON",
+                    "initial_altitude": 23000,
                     "initial_speed": 280,
                     "expect_approach": null,
                     "airlines": {
@@ -4526,23 +4558,23 @@
         "SNDBR3 NOSATS EAST": {
             "arrivals": [
                 {
-                    "waypoints": "PAMPR/s280 N25.09.22.045,W80.58.21.664/ho SNDBR",
+                    "waypoints": "PAMPR/a23000/s280 N25.09.22.045,W80.58.21.664/ho SNDBR",
                     "runway_waypoints": {
                         "KMIA": {
+                            "9": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58",
                             "12": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58",
-                            "26L": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
-                            "26R": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
                             "27": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
                             "30": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
+                            "26L": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
+                            "26R": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
                             "8L": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58",
-                            "8R": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58",
-                            "9": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58"
+                            "8R": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58"
                         }
                     },
                     "cruise_altitude": 33000,
                     "star": "SNDBR3",
-                    "initial_controller": "ZMA 46 ALUTO",
-                    "initial_altitude": 17000,
+                    "initial_controller": "ZMA 05 MARATHON",
+                    "initial_altitude": 23000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
                     "expect_approach": "I9",
@@ -4614,23 +4646,23 @@
         "SNDBR3 NOSATS WEST": {
             "arrivals": [
                 {
-                    "waypoints": "PAMPR/s280 N25.09.22.045,W80.58.21.664/ho SNDBR",
+                    "waypoints": "PAMPR/a23000/s280 N25.09.22.045,W80.58.21.664/ho SNDBR",
                     "runway_waypoints": {
                         "KMIA": {
+                            "9": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58",
                             "12": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58",
-                            "26L": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
-                            "26R": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
                             "27": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
                             "30": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
+                            "26L": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
+                            "26R": "SNDBR ROYGO/a13000-16000 DUMPP/a14000-/s250 FEEFA/a12000- HILDI JJUMP/a8000 REELN WNNER/a5000/h124",
                             "8L": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58",
-                            "8R": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58",
-                            "9": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58"
+                            "8R": "SNDBR HASLM/a11000-13000/s250 MOREA LLEGG/a4000/h58"
                         }
                     },
                     "cruise_altitude": 33000,
                     "star": "SNDBR3",
-                    "initial_controller": "ZMA 46 ALUTO",
-                    "initial_altitude": 17000,
+                    "initial_controller": "ZMA 05 MARATHON",
+                    "initial_altitude": 23000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
                     "expect_approach": "I30",
@@ -4705,19 +4737,19 @@
                     "waypoints": "N026.32.15.186,W081.31.03.610 PCOCK/ho TEEKY/a12000+",
                     "runway_waypoints": {
                         "KFLL": {
-                            "10L": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 HOLID/a5000/h107",
+                            "10L": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 HOLID/a5000/h105",
                             "10R": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 BUNKR/a5000/h107",
                             "28L": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 GOYLE/a7000 BEPAC/a6000 FAMBA/a6000/h96",
                             "28R": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 GOYLE/a7000 BEPAC/a6000 FAMBA/a6000/h96"
                         },
                         "KFXE": {
-                            "27": "TEEKY/a12000+ BACIN/a8000 CANUR/a7000/h60",
-                            "9": "TEEKY/a12000+ BACIN/a8000 CANUR/a7000/h60"
+                            "9": "TEEKY/a12000+ BACIN/a8000 CANUR/a7000/h60",
+                            "27": "TEEKY/a12000+ BACIN/a8000 CANUR/a7000/h60"
                         }
                     },
                     "cruise_altitude": 33000,
                     "star": "TEEKY3",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 24 FORT MYERS LOW",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -4769,7 +4801,7 @@
                     "waypoints": "N026.32.15.186,W081.31.03.610 PCOCK/ho TEEKY/a12000+",
                     "runway_waypoints": {
                         "KFLL": {
-                            "10L": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 HOLID/a5000/h107",
+                            "10L": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 HOLID/a5000/h105",
                             "10R": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 BUNKR/a5000/h107",
                             "28L": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 GOYLE/a7000 BEPAC/a6000 FAMBA/a6000/h96",
                             "28R": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 GOYLE/a7000 BEPAC/a6000 FAMBA/a6000/h96"
@@ -4777,7 +4809,7 @@
                     },
                     "cruise_altitude": 33000,
                     "star": "TEEKY3",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 24 FORT MYERS LOW",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -4820,7 +4852,7 @@
                     "waypoints": "N026.32.15.186,W081.31.03.610 PCOCK/ho TEEKY/a12000+",
                     "runway_waypoints": {
                         "KFLL": {
-                            "10L": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 HOLID/a5000/h107",
+                            "10L": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 HOLID/a5000/h105",
                             "10R": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 BUNKR/a5000/h107",
                             "28L": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 GOYLE/a7000 BEPAC/a6000 FAMBA/a6000/h96",
                             "28R": "TEEKY/a12000+ BANTY/a10000-11000/s250 HEEZE/a7000 GOYLE/a7000 BEPAC/a6000 FAMBA/a6000/h96"
@@ -4828,7 +4860,7 @@
                     },
                     "cruise_altitude": 33000,
                     "star": "TEEKY3",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 24 FORT MYERS LOW",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -4871,19 +4903,23 @@
                     "waypoints": "CLYER/a21000+ JJETS/a15000+/s280/ho VIICE/a16000-",
                     "runway_waypoints": {
                         "KMIA": {
+                            "9": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
                             "12": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-                            "26L": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
-                            "26R": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
                             "27": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
                             "30": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
+                            "26L": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
+                            "26R": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
                             "8L": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-                            "8R": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-                            "9": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272"
+                            "8R": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272"
+                        },
+                        "KTMB": {
+                            "9R": "VIICE/a16000- FRARI/a10000/s250/h314",
+                            "27L": "VIICE/a16000- FRARI/a10000/s250/h314"
                         }
                     },
                     "cruise_altitude": 36000,
                     "star": "VIICE2",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 41 VIICE",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -4961,19 +4997,19 @@
                     "waypoints": "CLYER/a21000+ JJETS/a15000+/s280/ho VIICE/a16000-",
                     "runway_waypoints": {
                         "KMIA": {
+                            "9": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
                             "12": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-                            "26L": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
-                            "26R": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
                             "27": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
                             "30": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
+                            "26L": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
+                            "26R": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
                             "8L": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-                            "8R": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-                            "9": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272"
+                            "8R": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272"
                         }
                     },
                     "cruise_altitude": 36000,
                     "star": "VIICE2",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 41 VIICE",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -5052,19 +5088,19 @@
                     "waypoints": "CLYER/a21000+ JJETS/a15000+/s280/ho VIICE/a16000-",
                     "runway_waypoints": {
                         "KMIA": {
+                            "9": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
                             "12": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-                            "26L": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
-                            "26R": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
                             "27": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
                             "30": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
+                            "26L": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
+                            "26R": "VIICE/a16000- ELTOD/a9000-10000/s250 SUITZ/a6000 SHANN/a5000/h305",
                             "8L": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-                            "8R": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272",
-                            "9": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272"
+                            "8R": "VIICE/a16000- NEKNE/a12000-14000/s280 GAMEY/a11000-/s250 RAEBN/a9000 CSTIO/a8000+ DAHLA/a6000+ BILZZ/a5000/h272"
                         }
                     },
                     "cruise_altitude": 36000,
                     "star": "VIICE2",
-                    "initial_controller": "ZMA 46 ALUTO",
+                    "initial_controller": "ZMA 41 VIICE",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "speed_restriction": 250,

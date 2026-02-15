@@ -38,7 +38,9 @@ jobs:
     - name: Fetch LFS and generate manifest
       if: steps.cache.outputs.cache-hit != 'true' && github.event_name != 'pull_request'
       env:
-        VICE_GCS_CREDENTIALS: ${{ secrets.GCS_UPLOAD_CREDENTIALS }}
+        R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+        R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+        R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
       run: |
         git lfs install
         git lfs pull
@@ -243,6 +245,54 @@ jobs:
         cp ext/mingw/mingw64/bin/libstdc++-6.dll windows/
         cp ext/SDL2-2.24.0/x86_64-w64-mingw32/bin/SDL2.dll windows/
 
+    - name: Generate sherpa-onnx import libraries
+      run: |
+        $ErrorActionPreference = 'Stop'
+        # The sherpa-onnx-go-windows module only ships DLLs, but the MinGW
+        # linker needs import libraries (.dll.a) to link against them.
+        # We generate them directly in the module cache lib directory so
+        # the module's own #cgo LDFLAGS -L ${SRCDIR}/lib/... finds them.
+        go mod download github.com/k2-fsa/sherpa-onnx-go-windows
+        $modCache = (go env GOMODCACHE).Trim()
+        $sherpaVersion = (Select-String -Path go.mod -Pattern 'github.com/k2-fsa/sherpa-onnx-go (v[\d.]+)').Matches.Groups[1].Value
+        $sherpaLib = "$modCache/github.com/k2-fsa/sherpa-onnx-go-windows@$sherpaVersion/lib/x86_64-pc-windows-gnu"
+
+        Write-Host "Sherpa-onnx lib directory: $sherpaLib"
+
+        # Copy runtime DLLs for distribution
+        cp "$sherpaLib/sherpa-onnx-c-api.dll" windows/
+        cp "$sherpaLib/onnxruntime.dll" windows/
+
+        # Generate import libraries in a temp directory, then copy to module cache
+        $tempDir = "$env:TEMP/sherpa-import-gen"
+        New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
+        cp "$sherpaLib/sherpa-onnx-c-api.dll" $tempDir/
+        cp "$sherpaLib/onnxruntime.dll" $tempDir/
+        Push-Location $tempDir
+        gendef sherpa-onnx-c-api.dll
+        if ($LASTEXITCODE -ne 0) { throw "gendef failed for sherpa-onnx-c-api.dll" }
+        gendef onnxruntime.dll
+        if ($LASTEXITCODE -ne 0) { throw "gendef failed for onnxruntime.dll" }
+        dlltool -d sherpa-onnx-c-api.def -l libsherpa-onnx-c-api.dll.a -D sherpa-onnx-c-api.dll
+        if ($LASTEXITCODE -ne 0) { throw "dlltool failed for sherpa-onnx-c-api" }
+        dlltool -d onnxruntime.def -l libonnxruntime.dll.a -D onnxruntime.dll
+        if ($LASTEXITCODE -ne 0) { throw "dlltool failed for onnxruntime" }
+        Pop-Location
+
+        # Copy import libraries into the module cache lib directory
+        cp "$tempDir/libsherpa-onnx-c-api.dll.a" "$sherpaLib/"
+        cp "$tempDir/libonnxruntime.dll.a" "$sherpaLib/"
+
+        # Verify import libraries were created
+        if (-not (Test-Path "$sherpaLib/libsherpa-onnx-c-api.dll.a")) {
+          throw "Failed to create libsherpa-onnx-c-api.dll.a"
+        }
+        if (-not (Test-Path "$sherpaLib/libonnxruntime.dll.a")) {
+          throw "Failed to create libonnxruntime.dll.a"
+        }
+        Write-Host "Import libraries generated successfully in $sherpaLib"
+      shell: pwsh
+
     - name: Get whisper.cpp commit SHA
       id: whisper-sha
       run: echo "sha=$(git -C whisper.cpp rev-parse HEAD)" >> $env:GITHUB_OUTPUT
@@ -296,7 +346,6 @@ jobs:
 
     - name: Build for release (download resources)
       run: |
-        # Add Vulkan SDK lib path to CGO_LDFLAGS
         $env:CGO_LDFLAGS = "-L ../ext/SDL2-2.24.0/x86_64-w64-mingw32/lib -L $env:VULKAN_SDK/Lib"
         .\build.bat --release
         go build -o ./crc2vice.exe ./cmd/crc2vice

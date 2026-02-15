@@ -1,0 +1,314 @@
+{
+  "time": "2026-02-04T20:38:23.179534289Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Seattle Ten Eighty Nine cleared right ended",
+  "whisper_duration_ms": 336.763,
+  "audio_duration_ms": 2376,
+  "processor": "GPU: NVIDIA GeForce RTX 4090 (24138MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "DAL1089",
+  "command": "DENDED",
+  "stt_aircraft": {
+    "American six 17": {
+      "Callsign": "AAL617",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabe": "SABEE",
+        "gandy": "GANDY"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 1264,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Delta 10 89": {
+      "Callsign": "DAL1089",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Ended": "ENDED",
+        "Lacen": "LACEN"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "ENDED2",
+      "STAR": "",
+      "Altitude": 6883,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "ExecJet 48 21": {
+      "Callsign": "EJA4821",
+      "AircraftType": "C750",
+      "Fixes": {
+        "Capok": "CAPOK",
+        "Clearwater": "KPIE",
+        "Darbs": "DARBS",
+        "Deside": "DSIDE",
+        "Oxise": "OXISE",
+        "Piedra de Cal": "PIE",
+        "Zepum": "ZEPUM",
+        "wipso": "WIPSO"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight": "I18",
+        "r-nav runway one eight": "R18"
+      },
+      "ApproachFixes": {
+        "I18": {
+          "Capok": "CAPOK",
+          "Darbs": "DARBS",
+          "St Petersburg": "PIE",
+          "Zepum": "ZEPUM",
+          "wipso": "WIPSO"
+        },
+        "R18": {
+          "Detse": "DETSE",
+          "Donhu": "DONHU",
+          "Sound": "SAUND",
+          "St Petersburg": "PIE",
+          "Wigus": "WIGUS"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18",
+      "SID": "",
+      "STAR": "BLFRG2",
+      "Altitude": 10053,
+      "State": "arrival",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "4",
+        "22"
+      ]
+    },
+    "JetBlue 81 25": {
+      "Callsign": "JBU8125",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabe": "SABEE",
+        "gandy": "GANDY"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 3470,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Moxy one 24": {
+      "Callsign": "MXY124",
+      "AircraftType": "BCS3",
+      "Fixes": {
+        "Ecake": "ECAKE"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BAYPO2",
+      "STAR": "",
+      "Altitude": 12000,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "J30",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Silver Wings 41": {
+      "Callsign": "SIL41",
+      "AircraftType": "SF34",
+      "Fixes": {
+        "Baypo": "BAYPO",
+        "Ecake": "ECAKE",
+        "Finki": "FINKI"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BAYPO2",
+      "STAR": "",
+      "Altitude": 6829,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 82 35": {
+      "Callsign": "SWA8235",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Cosar": "COSAR",
+        "Deside": "DSIDE",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "BLFRG2",
+      "Altitude": 12630,
+      "State": "arrival",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Southwest eight 15": {
+      "Callsign": "SWA815",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Baypo": "BAYPO",
+        "Ecake": "ECAKE",
+        "Finki": "FINKI"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BAYPO2",
+      "STAR": "",
+      "Altitude": 7357,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 87 56": {
+      "Callsign": "NKS8756",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Ended": "ENDED",
+        "Lacen": "LACEN"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "ENDED2",
+      "STAR": "",
+      "Altitude": 12000,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Seattle Ten Eighty Nine cleared right ended\"",
+    "[local-stt] normalized words: [seattle 10 89 cleared right ended]",
+    "[local-stt] tokens: 6",
+    "[local-stt]   token[0]: Text=\"seattle\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"10\" Type=1 Value=10",
+    "[local-stt]   token[2]: Text=\"89\" Type=1 Value=89",
+    "[local-stt]   token[3]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"ended\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 6 tokens, 9 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 6 tokens, 9 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": no results",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 1 results",
+    "[local-stt]     result 0: \"Delta 10 89\" (airline=0.565, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Delta 10 89\" (airline=0.57, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 6 results",
+    "[local-stt]     result 0: \"Southwest eight 15\" (airline=0.629, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"ExecJet 48 21\" (airline=0.508, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Delta 10 89\" (airline=0.565, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"JetBlue 81 25\" (airline=0.714, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"Silver Wings 41\" (airline=0.586, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Delta 10 89\" (airline=0.57, flight=0.00, skip=0)",
+    "[local-stt]     pattern \"airline_only\": scoring rejected \"Delta 10 89\"",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Delta 10 89\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Delta 10 89\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_flight\" matched: \"DAL1089\" (conf=0.91, consumed=3, addressingForm=0, spokenKey=\"Delta 10 89\")",
+    "[local-stt] callsign match: Callsign=\"DAL1089\" SpokenKey=\"Delta 10 89\" Conf=0.91 Consumed=3",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=6883 Fixes=2 Approaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Lacen\" -\u003e \"LACEN\"",
+    "[local-stt]   fix: \"Ended\" -\u003e \"ENDED\"",
+    "[local-stt] command tokens after disregard: 3",
+    "[local-stt]   token[0]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"ended\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 3 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"right\" against 2 fixes",
+    "[local-stt]   extractFix: no match found for \"right\"",
+    "[local-stt]   matched command: \"SAYAGAIN/APPROACH\" (conf=0.50, consumed=1, isThen=false)",
+    "[local-stt]   no match at token[1]=\"right\", skipping",
+    "[local-stt]   no match at token[2]=\"ended\", skipping",
+    "[local-stt] ParseCommands: result=[SAYAGAIN/APPROACH] (avgConf=0.50)",
+    "[local-stt] parsed commands: [SAYAGAIN/APPROACH] (conf=0.50)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] validation errors: [departure aircraft cannot expect approach]",
+    "[local-stt] === DecodeTranscript END: \"DAL1089 AGAIN\" (conf=0.00, time=1.055ms) ==="
+  ]
+}

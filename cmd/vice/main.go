@@ -365,6 +365,7 @@ func main() {
 		// inter-dependencies in the following; the order is carefully crafted.
 
 		var controlClient *client.ControlClient
+		var activeRadarPane panes.Pane
 		var err error
 
 		plat, err = platform.New(&config.Config, lg)
@@ -379,6 +380,9 @@ func main() {
 			panic(fmt.Sprintf("Unable to initialize OpenGL: %v", err))
 		}
 		renderer.FontsInit(render, plat)
+
+		// Initialize viewport backends now that OpenGL is ready.
+		plat.InitViewportBackends()
 
 		// Capture GPU info for crash reports now that OpenGL is initialized
 		gpuVendor, gpuRenderer := plat.GetGPUInfo()
@@ -403,6 +407,10 @@ func main() {
 			config.WhisperBenchmarkIndex = benchmarkIndex
 			config.WhisperRealtimeFactor = realtimeFactor
 		})
+
+		// Start loading the TTS model in the background so it's ready
+		// when pilot readbacks or contacts are needed.
+		client.PreloadTTSModel(lg)
 
 		// Check for whisper model errors asynchronously and show dialog if CPU not supported.
 		go func() {
@@ -436,14 +444,12 @@ func main() {
 				if c != nil {
 					// Determine if this is a STARS or ERAM scenario
 					_, isSTARSSim := av.DB.TRACONs[c.State.Facility]
+					activeRadarPane = config.ActiveRadarPane(isSTARSSim)
 
-					// Rebuild the display hierarchy with the appropriate pane
-					config.RebuildDisplayRootForSim(isSTARSSim)
-
-					// Reactivate the display hierarchy
-					panes.Activate(config.DisplayRoot, render, plat, eventStream, lg)
-
-					panes.ResetSim(config.DisplayRoot, c, plat, lg)
+					// Reset each pane for the new sim
+					activeRadarPane.ResetSim(c, plat, lg)
+					config.MessagesPane.ResetSim(c, plat, lg)
+					config.FlightStripPane.ResetSim(c, plat, lg)
 
 					// Apply waypoint commands if specified via command line (only for new clients)
 					if *waypointCommands != "" {
@@ -493,13 +499,6 @@ func main() {
 			ShowErrorDialog(plat, lg, "Errors in additional scenario file (scenario will not be loaded):\n\n%s", extraScenarioErrors)
 		}
 
-		// Show warning if server is unreachable and TTS is unavailable
-		if mgr.LocalServer != nil && !mgr.LocalServer.HaveTTS {
-			ShowErrorDialog(plat, lg,
-				"Unable to connect to vice server.\n\n"+
-					"Running in local-only mode without text-to-speech support.")
-		}
-
 		// Wait for whisper benchmark to complete before loading saved sim.
 		// This shows a progress dialog if benchmarking is still in progress.
 		WaitForWhisperBenchmark(render, plat, lg)
@@ -509,7 +508,10 @@ func main() {
 			if client, err := mgr.LoadLocalSim(config.Sim, config.ControllerInitials, lg); err != nil {
 				lg.Errorf("Error loading local sim: %v", err)
 			} else {
-				panes.LoadedSim(config.DisplayRoot, client, plat, lg)
+				// Notify the active radar pane about the loaded sim
+				_, isSTARSSim := av.DB.TRACONs[client.State.Facility]
+				activeRadarPane = config.ActiveRadarPane(isSTARSSim)
+				activeRadarPane.LoadedSim(client, plat, lg)
 				uiResetControlClient(client, plat, lg)
 				controlClient = client
 				// Apply waypoint commands if specified via command line
@@ -570,6 +572,7 @@ func main() {
 		lg.Info("Starting main loop")
 
 		stats.startTime = time.Now()
+		ttsErrorShown := false
 
 		for {
 			plat.SetWindowTitle("vice: " + controlClient.Status())
@@ -593,6 +596,27 @@ func main() {
 			// Report whisper benchmark to server (only sends once, when benchmark done and server available)
 			client.ReportWhisperBenchmark(mgr.RemoteServer, lg)
 
+			// Check for TTS load error (only shows dialog once)
+			if !ttsErrorShown {
+				if err, done := client.CheckTTSLoadError(); done && err != nil {
+					ttsErrorShown = true
+					ShowErrorDialog(plat, lg, "Text-to-speech is unavailable: %v\n\n"+
+						"Pilot transmissions will still appear as text in the messages pane.", err)
+				} else if done {
+					ttsErrorShown = true // Loading succeeded, don't check again
+				}
+			}
+
+			// Snapshot which child windows are open before ProcessEvents
+			// and imgui frame processing, which may reset them during
+			// shutdown (e.g., when secondary viewports are destroyed).
+			config.ShowSettings = ui.showSettings
+			config.ShowLaunchCtrl = ui.showLaunchControl
+			config.ShowScenarioInfo = ui.showScenarioInfo
+			config.ShowMessages = ui.showMessages
+			config.ShowFlightStrips = ui.showFlightStrips
+			config.ShowKeyboardRef = keyboardWindowVisible
+
 			// Inform imgui about input events from the user.
 			plat.ProcessEvents()
 
@@ -602,7 +626,7 @@ func main() {
 			imgui.NewFrame()
 
 			// Generate and render vice draw lists
-			stats.drawPanes = panes.DrawPanes(config.DisplayRoot, plat, render, controlClient,
+			stats.drawPanes = panes.DrawPanes(activeRadarPane, plat, render, controlClient,
 				ui.menuBarHeight, lg)
 
 			// Execute fuzz commands if in fuzz testing mode
@@ -612,7 +636,7 @@ func main() {
 			}
 
 			// Draw the user interface
-			stats.drawUI = uiDraw(mgr, config, plat, render, controlClient, eventStream, lg)
+			stats.drawUI = uiDraw(mgr, config, plat, render, controlClient, activeRadarPane, eventStream, lg)
 
 			// Wait for vsync
 			plat.PostRender()

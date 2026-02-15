@@ -7,6 +7,7 @@ package sim
 import (
 	"fmt"
 	"log/slog"
+	"maps"
 	"slices"
 	"strings"
 	"time"
@@ -49,8 +50,6 @@ type Aircraft struct {
 	// volume, we set a time a bit in the future for the flight plan to
 	// actually acquire to simulate the delay in that.
 	DepartureFPAcquisitionTime time.Time
-
-	Strip av.FlightStrip
 
 	// State related to navigation.
 	Nav nav.Nav
@@ -102,6 +101,10 @@ type Aircraft struct {
 	// Used for readbacks to match the controller's style.
 	LastAddressingForm CallsignAddressingForm
 
+	// ATIS letter the aircraft reported during initial contact (e.g., "B").
+	// Empty if the pilot did not report having ATIS.
+	ReportedATIS string
+
 	// Traffic advisory state
 	TrafficInSight      bool      // True if aircraft has reported traffic in sight
 	TrafficInSightTime  time.Time // When traffic was reported in sight
@@ -134,7 +137,7 @@ func (ac *Aircraft) GetSTTFixes() []string {
 	}
 
 	for _, wp := range ac.Nav.AssignedWaypoints() {
-		if math.NMDistance2LL(p, wp.Location) > 75 {
+		if math.NMDistance2LL(p, wp.Location) > 75 && len(fixes) > 0 {
 			break
 		}
 		if isValidFix(wp.Fix) {
@@ -742,4 +745,99 @@ func (ac *Aircraft) DivertToAirport(ap string) {
 	ac.TypeOfFlight = av.FlightTypeArrival
 
 	ac.Nav.DivertToAirport(ap)
+}
+
+///////////////////////////////////////////////////////////////////////////
+// VoiceAssigner
+
+// AirlineVoices maps airline ICAO codes (or comma-separated codes) to voice names.
+// "default" is used for callsigns that don't match any specific airline.
+// Edit this map to customize which voices are used for each airline.
+var AirlineVoices = map[string][]string{
+	"default": {
+		"af_alloy", "af_aoede", "af_bella", "af_heart", "af_jessica", "af_nova", "af_kore",
+		"af_river", "af_sarah", "af_sky", "am_adam", "am_echo", "am_eric", "am_fenrir", "am_liam",
+		"am_michael", "am_onyx", "am_puck",
+	},
+	"BAW,VIR,DLH,KQA": {
+		"bf_alice", "bf_emma", "bf_isabella", "bf_lily",
+		"bm_daniel", "bm_fable", "bm_george", "bm_lewis",
+	},
+	"AMX,IBE": {
+		"ef_dora", "em_alex",
+	},
+	"AFR": {
+		"ff_siwis",
+	},
+	"ITY,LOT": {
+		"if_sara", "im_nicola",
+	},
+	"TAP,TAM,ELY": {
+		"pf_dora", "pm_alex", "pm_santa",
+	},
+	"AIC": {
+		"hf_alpha", "hf_beta", "hm_omega", "hm_psi",
+	},
+	"JAL,ANA,KAL": {
+		"jf_alpha", "jf_gongitsune", "jf_nezumi", "jf_tebukuro", "jm_kumo",
+	},
+	"CAL,CCA,CES,CSN,CXA,SIA": {
+		"zf_xiaobei", "zf_xiaoni", "zf_xiaoxiao", "zm_yunjian", "zm_yunxi", "zm_yunxia", "zm_yunyang",
+	},
+}
+
+// VoiceAssigner manages the pool of available TTS voice names and assigns them
+// to aircraft callsigns. Each aircraft gets a consistent voice throughout
+// the session.
+type VoiceAssigner struct {
+	// Same keys as AirlineVoices, shuffled and consumed FIFO.
+	VoicePools map[string][]string
+	// Callsign -> voice name mapping
+	AircraftVoices map[av.ADSBCallsign]string
+}
+
+// NewVoiceAssigner creates a new VoiceAssigner with airline-based voice pools.
+func NewVoiceAssigner(r *rand.Rand) *VoiceAssigner {
+	va := &VoiceAssigner{
+		VoicePools:     maps.Clone(AirlineVoices),
+		AircraftVoices: make(map[av.ADSBCallsign]string),
+	}
+
+	for voices := range maps.Values(va.VoicePools) {
+		rand.ShuffleSlice(voices, r)
+	}
+
+	return va
+}
+
+// GetVoice returns the voice name assigned to an aircraft, assigning one if needed.
+func (va *VoiceAssigner) GetVoice(callsign av.ADSBCallsign, r *rand.Rand) string {
+	// Check if already assigned
+	if voiceName, ok := va.AircraftVoices[callsign]; ok {
+		return voiceName
+	}
+
+	getVoice := func(callsigns string) string {
+		voices := va.VoicePools[callsigns]
+		if len(voices) == 0 {
+			voices = slices.Clone(AirlineVoices[callsigns])
+			rand.ShuffleSlice(voices, r)
+		}
+
+		voice := voices[0]
+		va.VoicePools[callsigns] = voices[1:]
+		va.AircraftVoices[callsign] = voice
+		return voice
+	}
+
+	if len(callsign) > 3 {
+		icao := string(callsign[:3])
+		for callsigns := range va.VoicePools {
+			if util.SeqContains(strings.SplitSeq(callsigns, ","), icao) {
+				return getVoice(callsigns)
+			}
+		}
+	}
+
+	return getVoice("default")
 }

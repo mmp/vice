@@ -45,27 +45,55 @@
   </branding>
 
   <releases>
+    <release version="0.14.0" date="2026-02-06">
+      <url type="details">https://pharr.org/vice/#release-0.14.0</url>
+      <description>
+        <p>Adds text to speech, scenario updates, and other minor improvements</p>
+        <ul>
+          <li>Added speech-to-text support (Michael Trokel / Matt P)</li>
+          <li>New Scenarios: ZLC Area C (JY_SUPn't), ZJX 30 (Jake Magee), CVG (manaphy), ZDV Area 3 (Andrew S)</li>
+          <li>Scenario updates: BOS, ACK, MHT (radarcontacto), P50 (Ketan K), COS (Andrew S), BGR (Ryan G), M98 (Logan S), F11, ZJX 50 (Jud Lopez), DAB, F11 (Michael Knight), MIA (Gecko)</li>
+          <li>Added search box to filter scenarios</li>
+          <li>Improved pilot readbacks to be more natural / cohesive</li>
+          <li>VFRs are better about not flying into terrain</li>
+          <li>Added "at fix, intercept the localizer" command: <code>AFIX/I</code></li>
+          <li>Fixed bug with multi-controller scenarios where controllers could be locked out of issuing aircraft commands.</li>
+        </ul>
+        <p>STARS updates:</p>
+        <ul>
+          <li>Fixed bug where interfacility handoffs would get a FORMAT error</li>
+          <li>Fixed keyboard input for DCB button values (e.g. RANGE)</li>
+        </ul>
+        <p>ERAM updates:</p>
+        <ul>
+          <li>Added QF and QU commands</li>
+          <li>Added tearoffs, cursors, and clock</li>
+          <li>Added HSF data</li>
+          <li>Switched tertiary/primary mouse clicks to primary/secondary</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.13.3" date="2025-12-29">
       <url type="details">https://pharr.org/vice/#release-0.13.3</url>
       <description>
-	<p>Adds new scenarios, updates to STARS/ERAM, and bug fixes</p>
-	<ul>
-	  <li>New scenarios: PCT consolidated (Ketan K), MYR (Jud Lopez)</li>
-	  <li>Scenario updates: A80, C90, D01, D10, DAB, F11, JAX, MKE, ZJX (Jud Lopez), SAV (manaphy), DelRey, SNA, P50, L30 (Ketan K), ISP, ZNY Area D (Ryan G), P80 (Mike Fries), BOS (radarcontacto)</li>
-	</ul>
-	<p>STARS updates:</p>
-	  <ul>
-	    <li>Added support for changing position consolidation during the sim: [multifunc]1A1B+[enter], etc.</li>
-	    <li>ATPA improvements: added enable/disable commands, improved various details.</li>
-	    <li>Added support for middle-click-drag to move lists.</li>
-	    <li>Also, middle clicking anywhere that's not inside a list or on a track shows the bounds of all visible lists.</li>
-	    <li>Fixed bug with DCB spinners not disabling after a click.</li>
-	  </ul>
-	<p>ERAM updates:</p>
-	<ul>
-	  <li>Added CRR (continuous range readout).</li>
-	  <li>Added <code>.drawroute</code></li>
-	</ul>
+        <p>Adds new scenarios, updates to STARS/ERAM, and bug fixes</p>
+        <ul>
+          <li>New scenarios: PCT consolidated (Ketan K), MYR (Jud Lopez)</li>
+          <li>Scenario updates: A80, C90, D01, D10, DAB, F11, JAX, MKE, ZJX (Jud Lopez), SAV (manaphy), DelRey, SNA, P50, L30 (Ketan K), ISP, ZNY Area D (Ryan G), P80 (Mike Fries), BOS (radarcontacto)</li>
+        </ul>
+        <p>STARS updates:</p>
+          <ul>
+            <li>Added support for changing position consolidation during the sim: [multifunc]1A1B+[enter], etc.</li>
+            <li>ATPA improvements: added enable/disable commands, improved various details.</li>
+            <li>Added support for middle-click-drag to move lists.</li>
+            <li>Also, middle clicking anywhere that's not inside a list or on a track shows the bounds of all visible lists.</li>
+            <li>Fixed bug with DCB spinners not disabling after a click.</li>
+          </ul>
+        <p>ERAM updates:</p>
+        <ul>
+          <li>Added CRR (continuous range readout).</li>
+          <li>Added <code>.drawroute</code></li>
+        </ul>
       </description>
     </release>
   </releases>

@@ -53,7 +53,7 @@ check_whisper_submodule() {
 
 check_whisper_submodule
 
-# Sync models from GCS if needed
+# Sync models from R2 if needed
 sync_models() {
     local manifest="resources/models/manifest.json"
     local models_dir="resources/models"
@@ -85,65 +85,136 @@ sync_models() {
         exit 1
     fi
 
-    # Get list of models from manifest
+    # Get list of models from manifest (one per line to handle spaces in names)
     if [ "$JSON_PARSER" = "jq" ]; then
-        models=$(jq -r 'keys[]' "$manifest")
+        model_list=$(jq -r 'keys[]' "$manifest")
     else
-        models=$($JSON_PARSER -c "import json; [print(k) for k in json.load(open('$manifest')).keys()]" 2>/dev/null)
+        model_list=$($JSON_PARSER -c "import json; [print(k) for k in json.load(open('$manifest')).keys()]" 2>/dev/null)
     fi
+
+    # Separate kokoro zip/file entries from individual download entries
+    local kokoro_zip_hash=""
+    local kokoro_files=""
+    local individual_files=""
+    while IFS= read -r model; do
+        if [ "$model" = "kokoro-multi-lang-v1_0.zip" ]; then
+            if [ "$JSON_PARSER" = "jq" ]; then
+                kokoro_zip_hash=$(jq -r '."kokoro-multi-lang-v1_0.zip".hash' "$manifest")
+            else
+                kokoro_zip_hash=$($JSON_PARSER -c "import json; print(json.load(open('$manifest'))['kokoro-multi-lang-v1_0.zip']['hash'])")
+            fi
+        elif [[ "$model" == kokoro-multi-lang-v1_0/* ]]; then
+            if [ -z "$kokoro_files" ]; then
+                kokoro_files="$model"
+            else
+                kokoro_files="$kokoro_files"$'\n'"$model"
+            fi
+        else
+            if [ -z "$individual_files" ]; then
+                individual_files="$model"
+            else
+                individual_files="$individual_files"$'\n'"$model"
+            fi
+        fi
+    done <<< "$model_list"
 
     # Compute manifest hash for stamp file comparison
     local manifest_hash=$($SHA256CMD "$manifest" | cut -d' ' -f1)
 
     # Fast path: check if already synced
     if [ -f "$stamp" ] && [ "$(cat "$stamp")" = "$manifest_hash" ]; then
-        # Verify all files exist (don't hash, just existence)
         local all_exist=true
-        for model in $models; do
+        while IFS= read -r model; do
+            [ -z "$model" ] && continue
             if [ ! -f "$models_dir/$model" ]; then
                 all_exist=false
                 break
             fi
-        done
+        done <<< "$individual_files"
+        if [ "$all_exist" = true ] && [ -n "$kokoro_files" ]; then
+            while IFS= read -r model; do
+                [ -z "$model" ] && continue
+                if [ ! -f "$models_dir/$model" ]; then
+                    all_exist=false
+                    break
+                fi
+            done <<< "$kokoro_files"
+        fi
         if [ "$all_exist" = true ]; then
             return 0  # Already synced
         fi
     fi
 
-    for model in $models; do
-        # Get expected hash
-        if [ "$JSON_PARSER" = "jq" ]; then
-            expected_hash=$(jq -r ".\"$model\"" "$manifest")
-        else
-            expected_hash=$($JSON_PARSER -c "import json; print(json.load(open('$manifest'))['$model'])")
-        fi
-
-        local model_path="$models_dir/$model"
-
-        # Check if file exists with correct hash
-        if [ -f "$model_path" ]; then
-            actual_hash=$($SHA256CMD "$model_path" | cut -d' ' -f1)
-            if [ "$actual_hash" = "$expected_hash" ]; then
-                continue  # File is up to date
+    # Check if any kokoro files are missing; download and extract zip if so
+    if [ -n "$kokoro_files" ]; then
+        local kokoro_missing=false
+        while IFS= read -r model; do
+            [ -z "$model" ] && continue
+            if [ ! -f "$models_dir/$model" ]; then
+                kokoro_missing=true
+                break
             fi
-            echo "Model $model has wrong hash, re-downloading..."
-        fi
+        done <<< "$kokoro_files"
 
-        # Download from GCS (public bucket, no auth needed)
-        echo "Downloading $model..."
-        curl -L --progress-bar -o "$model_path" \
-            "https://storage.googleapis.com/vice-resources/$expected_hash"
+        if [ "$kokoro_missing" = true ]; then
+            local zip_path="$models_dir/kokoro-multi-lang-v1_0.zip"
+            echo "Downloading kokoro-multi-lang-v1_0.zip..."
+            curl -L --progress-bar -o "$zip_path" \
+                "https://vice-resources.pharr.org/$kokoro_zip_hash"
 
-        # Verify the download
-        actual_hash=$($SHA256CMD "$model_path" | cut -d' ' -f1)
-        if [ "$actual_hash" != "$expected_hash" ]; then
-            echo "Error: Downloaded file hash mismatch for $model"
-            echo "  Expected: $expected_hash"
-            echo "  Actual:   $actual_hash"
-            rm -f "$model_path"
-            exit 1
+            local actual_hash=$($SHA256CMD "$zip_path" | cut -d' ' -f1)
+            if [ "$actual_hash" != "$kokoro_zip_hash" ]; then
+                echo "Error: Downloaded file hash mismatch for kokoro-multi-lang-v1_0.zip"
+                echo "  Expected: $kokoro_zip_hash"
+                echo "  Actual:   $actual_hash"
+                rm -f "$zip_path"
+                exit 1
+            fi
+
+            echo "Extracting kokoro-multi-lang-v1_0.zip..."
+            unzip -o -q "$zip_path" -d "$models_dir/"
+            rm -f "$zip_path"
         fi
-    done
+    fi
+
+    # Download individual files (whisper models)
+    if [ -n "$individual_files" ]; then
+        while IFS= read -r model; do
+            [ -z "$model" ] && continue
+
+            if [ "$JSON_PARSER" = "jq" ]; then
+                expected_hash=$(jq -r ".\"$model\".hash" "$manifest")
+            else
+                expected_hash=$($JSON_PARSER -c "import json; print(json.load(open('$manifest'))['$model']['hash'])")
+            fi
+
+            local model_path="$models_dir/$model"
+
+            # Check if file exists with correct hash
+            if [ -f "$model_path" ]; then
+                actual_hash=$($SHA256CMD "$model_path" | cut -d' ' -f1)
+                if [ "$actual_hash" = "$expected_hash" ]; then
+                    continue  # File is up to date
+                fi
+                echo "Model $model has wrong hash, re-downloading..."
+            fi
+
+            echo "Downloading $model..."
+            mkdir -p "$(dirname "$model_path")"
+            curl -L --progress-bar -o "$model_path" \
+                "https://vice-resources.pharr.org/$expected_hash"
+
+            # Verify the download
+            actual_hash=$($SHA256CMD "$model_path" | cut -d' ' -f1)
+            if [ "$actual_hash" != "$expected_hash" ]; then
+                echo "Error: Downloaded file hash mismatch for $model"
+                echo "  Expected: $expected_hash"
+                echo "  Actual:   $actual_hash"
+                rm -f "$model_path"
+                exit 1
+            fi
+        done <<< "$individual_files"
+    fi
 
     # Write stamp file to skip verification on next build
     echo "$manifest_hash" > "$stamp"
@@ -306,7 +377,20 @@ build_vice() {
         if [ "$DO_VULKAN" = true ]; then
             BUILD_TAGS="$BUILD_TAGS,vulkan"
         fi
+
+        # Add $ORIGIN rpath so the binary finds sherpa-onnx .so files
+        # next to itself rather than requiring the Go module cache at runtime.
+        export CGO_LDFLAGS='-Wl,-rpath,$ORIGIN'
         go build -tags "$BUILD_TAGS" -o vice ./cmd/vice
+
+        # Copy sherpa-onnx shared libraries alongside the binary.
+        GOMODCACHE=$(go env GOMODCACHE)
+        SHERPA_VERSION=$(grep 'github.com/k2-fsa/sherpa-onnx-go ' go.mod | awk '{print $2}')
+        SHERPA_LIB="$GOMODCACHE/github.com/k2-fsa/sherpa-onnx-go-linux@$SHERPA_VERSION/lib/x86_64-unknown-linux-gnu"
+        cp -f "$SHERPA_LIB/libsherpa-onnx-c-api.so" .
+        cp -f "$SHERPA_LIB/libsherpa-onnx-cxx-api.so" .
+        cp -f "$SHERPA_LIB/libonnxruntime.so" .
+        echo "Copied sherpa-onnx shared libraries to build directory."
     fi
 
     echo "Build complete: ./vice"

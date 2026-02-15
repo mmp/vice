@@ -84,11 +84,17 @@
                 },
                 "default_consolidation": {
                     "LAS_D_DEP": [
+                        "LAS_M_DEP",
+                        "LAS_Y_APP"
+                    ],
+                    "LAS_F_APP": [
+                        "LAS_D_DEP",
                         "LAS_G_APP",
                         "LAS_L_APP",
-                        "LAS_M_DEP",
-                        "LAS_T_APP",
-                        "LAS_Y_APP"
+                        "LAS_T_APP"
+                    ],
+                    "LAS_L_APP": [
+                        "LAS_K_APP"
                     ]
                 }
             },
@@ -119,10 +125,17 @@
                 },
                 "default_consolidation": {
                     "LAS_D_DEP": [
-                        "LAS_G_APP",
-                        "LAS_L_APP",
                         "LAS_M_DEP",
                         "LAS_Y_APP"
+                    ],
+                    "LAS_F_APP": [
+                        "LAS_D_DEP",
+                        "LAS_G_APP",
+                        "LAS_L_APP",
+                        "LAS_T_APP"
+                    ],
+                    "LAS_L_APP": [
+                        "LAS_K_APP"
                     ]
                 }
             },
@@ -146,9 +159,14 @@
                 },
                 "default_consolidation": {
                     "LAS_D_DEP": [
+                        "LAS_M_DEP"
+                    ],
+                    "LAS_F_APP": [
+                        "LAS_D_DEP",
                         "LAS_G_APP",
                         "LAS_K_APP",
                         "LAS_L_APP",
+                        "LAS_T_APP",
                         "LAS_Y_APP"
                     ]
                 }
@@ -173,7 +191,12 @@
                 },
                 "default_consolidation": {
                     "LAS_D_DEP": [
+                        "LAS_M_DEP"
+                    ],
+                    "LAS_F_APP": [
+                        "LAS_D_DEP",
                         "LAS_G_APP",
+                        "LAS_K_APP",
                         "LAS_L_APP",
                         "LAS_T_APP",
                         "LAS_Y_APP"

@@ -172,7 +172,7 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime time.Time)
 	// nav.Heading.Assigned may still be nil pending a deferred turn
 	if (nav.Approach.InterceptState == InitialHeading ||
 		nav.Approach.InterceptState == TurningToJoin) && nav.Heading.Assigned != nil {
-		heading, turn = nav.ApproachHeading(wxs)
+		heading, turn = nav.ApproachHeading(callsign, wxs, simTime)
 	} else if nav.Heading.RacetrackPT != nil {
 		nav.FlightState.BankAngle = 0
 		return nav.Heading.RacetrackPT.GetHeading(nav, wxs)
@@ -393,7 +393,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 
 		if wp.ClearApproach {
 			if fp != nil {
-				nav.ClearedApproach(fp.ArrivalAirport, nav.Approach.AssignedId, false)
+				_, _ = nav.ClearedApproach(fp.ArrivalAirport, nav.Approach.AssignedId, false)
 			}
 		}
 
@@ -619,10 +619,10 @@ func (nav *Nav) shouldTurnForOutbound(p math.Point2LL, hdg float32, turn TurnMet
 // Given a point and a radial, returns true when the aircraft should
 // start turning to intercept the radial.
 func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMethod, wxs wx.Sample) bool {
-	p0 = math.LL2NM(p0, nav.FlightState.NmPerLongitude)
-	p1 := math.Add2f(p0, math.SinCos(math.Radians(hdg-nav.FlightState.MagneticVariation)))
+	p0nm := math.LL2NM(p0, nav.FlightState.NmPerLongitude)
+	p1 := math.Add2f(p0nm, math.SinCos(math.Radians(hdg-nav.FlightState.MagneticVariation)))
 
-	initialDist := math.SignedPointLineDistance(math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude), p0, p1)
+	initialDist := math.SignedPointLineDistance(math.LL2NM(nav.FlightState.Position, nav.FlightState.NmPerLongitude), p0nm, p1)
 	eta := math.Abs(initialDist) / nav.FlightState.GS * 3600 // in seconds
 	if eta < 2 {
 		// Just in case, start the turn
@@ -635,6 +635,13 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMe
 		return false
 	}
 
+	// Calculate the expected crab angle needed for wind correction.
+	// The aircraft's heading will differ from the track by this amount.
+	hdgTrue := hdg - nav.FlightState.MagneticVariation
+	v := math.SinCos(math.Radians(hdgTrue))
+	v = math.Scale2f(v, nav.FlightState.GS)
+	crabAngle := math.Abs(wxs.Deflection(v))
+
 	nav2 := *nav
 	nav2.Heading = NavHeading{Assigned: &hdg, Turn: &turn}
 	nav2.DeferredNavHeading = nil
@@ -643,8 +650,12 @@ func (nav *Nav) shouldTurnToIntercept(p0 math.Point2LL, hdg float32, turn TurnMe
 	n := int(1 + turnAngle)
 	for range n {
 		nav2.UpdateWithWeather("", wxs, nil, time.Time{}, nil)
-		curDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position, nav2.FlightState.NmPerLongitude), p0, p1)
-		if (math.Abs(curDist) < 0.02 || math.Sign(initialDist) != math.Sign(curDist)) && math.Abs(curDist) < .25 && math.HeadingDifference(hdg, nav2.FlightState.Heading) < 10 {
+		curDist := math.SignedPointLineDistance(math.LL2NM(nav2.FlightState.Position, nav2.FlightState.NmPerLongitude), p0nm, p1)
+
+		// Allow heading tolerance to account for the crab angle needed in crosswind.
+		// Base tolerance of 10 degrees plus the calculated crab angle.
+		headingTolerance := 10 + crabAngle
+		if (math.Abs(curDist) < 0.02 || math.Sign(initialDist) != math.Sign(curDist)) && math.Abs(curDist) < .25 && math.HeadingDifference(hdg, nav2.FlightState.Heading) < headingTolerance {
 			return true
 		}
 	}

@@ -79,10 +79,10 @@ type ControllerConfiguration struct {
 	// facility config file. This is the only field from JSON.
 	ConfigId string `json:"config_id"`
 
-	// DefaultConsolidation defines the consolidation tree. If set in the
-	// scenario JSON, it overrides the facility config's default. If not set,
-	// it is populated from the referenced configuration during post-deserialization.
-	DefaultConsolidation PositionConsolidation `json:"default_consolidation,omitempty"`
+	// DefaultConsolidation defines the consolidation tree. It is always
+	// populated from the referenced facility configuration during
+	// post-deserialization. Scenarios cannot override this field.
+	DefaultConsolidation PositionConsolidation `json:"-"`
 
 	// InboundAssignments maps inbound flow names to the TCP that handles them.
 	// Populated from the referenced configuration during post-deserialization.
@@ -208,17 +208,17 @@ func (cc *ControllerConfiguration) Validate(controlPositions map[TCP]*av.Control
 		}
 	}
 
-	// Check inbound assignments refer to valid positions
+	// Check inbound assignments refer to valid control positions
 	for flow, tcp := range cc.InboundAssignments {
-		if !slices.Contains(cc.AllPositions(), tcp) {
-			e.ErrorString("inbound_assignments: %q assigns to %q which is not in positions", flow, tcp)
+		if _, ok := controlPositions[tcp]; !ok {
+			e.ErrorString("inbound_assignments: %q assigns to %q which is not in \"control_positions\"", flow, tcp)
 		}
 	}
 
-	// Check departure assignments refer to valid positions
+	// Check departure assignments refer to valid control positions
 	for airport, tcp := range cc.DepartureAssignments {
-		if !slices.Contains(cc.AllPositions(), tcp) {
-			e.ErrorString("departure_assignments: %q assigns to %q which is not in positions", airport, tcp)
+		if _, ok := controlPositions[tcp]; !ok {
+			e.ErrorString("departure_assignments: %q assigns to %q which is not in \"control_positions\"", airport, tcp)
 		}
 	}
 }

@@ -187,8 +187,12 @@
                     "KMDW": "CHI_U_APP"
                 },
                 "default_consolidation": {
-                    "CHI_P_APP": [
+                    "CHI_S_APP": [
+                        "CHI_P_APP",
                         "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
                     ]
                 }
             },
@@ -209,14 +213,37 @@
                     "KORD/ORD8.W": "CHI_G_DEP"
                 },
                 "default_consolidation": {
-                    "CHI_B_DEP": [
-                        "CHI_Y_APP",
-                        "CHI_D_DEP",
-                        "CHI_E_APP",
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
                         "CHI_X_APP",
-                        "CHI_M_DEP",
-                        "CHI_G_DEP",
-                        "CHI_Z_APP"
+                        "CHI_W_APP"
+                    ],
+                    "CHI_B_DEP": [
+                        "CHI_D_DEP",
+                        "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
+                        "CHI_A_APP",
+                        "CHI_P_APP",
+                        "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             },
@@ -240,17 +267,37 @@
                     "KORD/ORD8.W": "CHI_G_DEP"
                 },
                 "default_consolidation": {
-                    "CHI_B_DEP": [
-                        "CHI_Y_APP",
-                        "CHI_D_DEP",
-                        "CHI_E_APP",
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
                         "CHI_X_APP",
+                        "CHI_W_APP"
+                    ],
+                    "CHI_B_DEP": [
+                        "CHI_D_DEP",
                         "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
+                        "CHI_A_APP",
                         "CHI_P_APP",
-                        "CHI_U_APP",
-                        "CHI_M_DEP",
-                        "CHI_G_DEP",
-                        "CHI_Z_APP"
+                        "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             },
@@ -285,19 +332,37 @@
                     "KPWK": "CHI_D_DEP"
                 },
                 "default_consolidation": {
-                    "CHI_B_DEP": [
-                        "CHI_Y_APP",
-                        "CHI_D_DEP",
-                        "CHI_A_APP",
-                        "CHI_E_APP",
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
                         "CHI_X_APP",
+                        "CHI_W_APP"
+                    ],
+                    "CHI_B_DEP": [
+                        "CHI_D_DEP",
                         "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
+                        "CHI_A_APP",
                         "CHI_P_APP",
-                        "CHI_L_APP",
-                        "CHI_U_APP",
-                        "CHI_M_DEP",
-                        "CHI_G_DEP",
-                        "CHI_Z_APP"
+                        "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             },
@@ -325,19 +390,37 @@
                     "KPWK": "CHI_D_DEP"
                 },
                 "default_consolidation": {
-                    "CHI_B_DEP": [
-                        "CHI_Y_APP",
-                        "CHI_D_DEP",
-                        "CHI_A_APP",
-                        "CHI_E_APP",
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
                         "CHI_X_APP",
+                        "CHI_W_APP"
+                    ],
+                    "CHI_B_DEP": [
+                        "CHI_D_DEP",
                         "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
+                        "CHI_A_APP",
                         "CHI_P_APP",
-                        "CHI_L_APP",
-                        "CHI_U_APP",
-                        "CHI_M_DEP",
-                        "CHI_G_DEP",
-                        "CHI_Z_APP"
+                        "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             },
@@ -358,14 +441,37 @@
                     "KORD/ORD8.W": "CHI_G_DEP"
                 },
                 "default_consolidation": {
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
+                        "CHI_X_APP",
+                        "CHI_W_APP"
+                    ],
                     "CHI_B_DEP": [
-                        "CHI_Y_APP",
-                        "CHI_J_APP",
                         "CHI_D_DEP",
-                        "CHI_E_APP",
-                        "CHI_M_DEP",
-                        "CHI_G_DEP",
-                        "CHI_Z_APP"
+                        "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
+                        "CHI_A_APP",
+                        "CHI_P_APP",
+                        "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             },
@@ -389,17 +495,37 @@
                     "KORD/ORD8.W": "CHI_G_DEP"
                 },
                 "default_consolidation": {
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
+                        "CHI_X_APP",
+                        "CHI_W_APP"
+                    ],
                     "CHI_B_DEP": [
-                        "CHI_Y_APP",
-                        "CHI_J_APP",
                         "CHI_D_DEP",
-                        "CHI_E_APP",
                         "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
+                        "CHI_A_APP",
                         "CHI_P_APP",
-                        "CHI_U_APP",
-                        "CHI_M_DEP",
-                        "CHI_G_DEP",
-                        "CHI_Z_APP"
+                        "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             },
@@ -434,19 +560,37 @@
                     "KPWK": "CHI_A_APP"
                 },
                 "default_consolidation": {
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
+                        "CHI_X_APP",
+                        "CHI_W_APP"
+                    ],
                     "CHI_B_DEP": [
-                        "CHI_Y_APP",
-                        "CHI_J_APP",
                         "CHI_D_DEP",
-                        "CHI_A_APP",
-                        "CHI_E_APP",
                         "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
+                        "CHI_A_APP",
                         "CHI_P_APP",
-                        "CHI_L_APP",
-                        "CHI_U_APP",
-                        "CHI_M_DEP",
-                        "CHI_G_DEP",
-                        "CHI_Z_APP"
+                        "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             },
@@ -474,19 +618,37 @@
                     "KPWK": "CHI_A_APP"
                 },
                 "default_consolidation": {
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
+                        "CHI_X_APP",
+                        "CHI_W_APP"
+                    ],
                     "CHI_B_DEP": [
-                        "CHI_Y_APP",
-                        "CHI_J_APP",
                         "CHI_D_DEP",
-                        "CHI_A_APP",
-                        "CHI_E_APP",
                         "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
+                        "CHI_A_APP",
                         "CHI_P_APP",
-                        "CHI_L_APP",
-                        "CHI_U_APP",
-                        "CHI_M_DEP",
-                        "CHI_G_DEP",
-                        "CHI_Z_APP"
+                        "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             },
@@ -508,15 +670,37 @@
                     "KORD/ORD8.W": "CHI_G_DEP"
                 },
                 "default_consolidation": {
-                    "CHI_B_DEP": [
-                        "CHI_Y_APP",
-                        "CHI_J_APP",
-                        "CHI_D_DEP",
-                        "CHI_E_APP",
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
                         "CHI_X_APP",
-                        "CHI_M_DEP",
-                        "CHI_G_DEP",
-                        "CHI_Z_APP"
+                        "CHI_W_APP"
+                    ],
+                    "CHI_B_DEP": [
+                        "CHI_D_DEP",
+                        "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
+                        "CHI_A_APP",
+                        "CHI_P_APP",
+                        "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             },
@@ -541,18 +725,37 @@
                     "KORD/ORD8.W": "CHI_G_DEP"
                 },
                 "default_consolidation": {
-                    "CHI_B_DEP": [
-                        "CHI_Y_APP",
-                        "CHI_J_APP",
-                        "CHI_D_DEP",
-                        "CHI_E_APP",
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
                         "CHI_X_APP",
+                        "CHI_W_APP"
+                    ],
+                    "CHI_B_DEP": [
+                        "CHI_D_DEP",
                         "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
+                        "CHI_A_APP",
                         "CHI_P_APP",
-                        "CHI_U_APP",
-                        "CHI_M_DEP",
-                        "CHI_G_DEP",
-                        "CHI_Z_APP"
+                        "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             },
@@ -588,20 +791,37 @@
                     "KPWK": "CHI_D_DEP"
                 },
                 "default_consolidation": {
-                    "CHI_B_DEP": [
-                        "CHI_Y_APP",
-                        "CHI_J_APP",
-                        "CHI_D_DEP",
-                        "CHI_A_APP",
-                        "CHI_E_APP",
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
                         "CHI_X_APP",
+                        "CHI_W_APP"
+                    ],
+                    "CHI_B_DEP": [
+                        "CHI_D_DEP",
                         "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
+                        "CHI_A_APP",
                         "CHI_P_APP",
-                        "CHI_L_APP",
-                        "CHI_U_APP",
-                        "CHI_M_DEP",
-                        "CHI_G_DEP",
-                        "CHI_Z_APP"
+                        "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             },
@@ -637,20 +857,37 @@
                     "KPWK": "CHI_D_DEP"
                 },
                 "default_consolidation": {
-                    "CHI_B_DEP": [
-                        "CHI_Y_APP",
-                        "CHI_J_APP",
-                        "CHI_D_DEP",
-                        "CHI_A_APP",
-                        "CHI_E_APP",
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
                         "CHI_X_APP",
+                        "CHI_W_APP"
+                    ],
+                    "CHI_B_DEP": [
+                        "CHI_D_DEP",
                         "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
+                        "CHI_A_APP",
                         "CHI_P_APP",
-                        "CHI_L_APP",
-                        "CHI_U_APP",
-                        "CHI_M_DEP",
-                        "CHI_G_DEP",
-                        "CHI_Z_APP"
+                        "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             },
@@ -676,17 +913,37 @@
                     "KPWK": "CHI_D_DEP"
                 },
                 "default_consolidation": {
-                    "CHI_B_DEP": [
-                        "CHI_Y_APP",
-                        "CHI_J_APP",
-                        "CHI_D_DEP",
-                        "CHI_A_APP",
-                        "CHI_E_APP",
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
                         "CHI_X_APP",
-                        "CHI_L_APP",
-                        "CHI_M_DEP",
-                        "CHI_G_DEP",
-                        "CHI_Z_APP"
+                        "CHI_W_APP"
+                    ],
+                    "CHI_B_DEP": [
+                        "CHI_D_DEP",
+                        "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
+                        "CHI_A_APP",
+                        "CHI_P_APP",
+                        "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             },
@@ -716,15 +973,37 @@
                     "KORD/ORD8.W": "CHI_G_DEP"
                 },
                 "default_consolidation": {
-                    "CHI_B_DEP": [
-                        "CHI_Y_APP",
-                        "CHI_J_APP",
-                        "CHI_D_DEP",
-                        "CHI_E_APP",
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
                         "CHI_X_APP",
-                        "CHI_M_DEP",
-                        "CHI_G_DEP",
-                        "CHI_Z_APP"
+                        "CHI_W_APP"
+                    ],
+                    "CHI_B_DEP": [
+                        "CHI_D_DEP",
+                        "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
+                        "CHI_A_APP",
+                        "CHI_P_APP",
+                        "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             },
@@ -770,18 +1049,37 @@
                     "KORD/ORD8.W": "CHI_G_DEP"
                 },
                 "default_consolidation": {
-                    "CHI_B_DEP": [
-                        "CHI_Y_APP",
-                        "CHI_J_APP",
-                        "CHI_D_DEP",
-                        "CHI_E_APP",
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
                         "CHI_X_APP",
+                        "CHI_W_APP"
+                    ],
+                    "CHI_B_DEP": [
+                        "CHI_D_DEP",
                         "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
+                        "CHI_A_APP",
                         "CHI_P_APP",
-                        "CHI_U_APP",
-                        "CHI_M_DEP",
-                        "CHI_G_DEP",
-                        "CHI_Z_APP"
+                        "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             },
@@ -817,20 +1115,37 @@
                     "KPWK": "CHI_D_DEP"
                 },
                 "default_consolidation": {
-                    "CHI_B_DEP": [
-                        "CHI_Y_APP",
-                        "CHI_J_APP",
-                        "CHI_D_DEP",
-                        "CHI_A_APP",
-                        "CHI_E_APP",
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
                         "CHI_X_APP",
+                        "CHI_W_APP"
+                    ],
+                    "CHI_B_DEP": [
+                        "CHI_D_DEP",
                         "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
+                        "CHI_A_APP",
                         "CHI_P_APP",
-                        "CHI_L_APP",
-                        "CHI_U_APP",
-                        "CHI_M_DEP",
-                        "CHI_G_DEP",
-                        "CHI_Z_APP"
+                        "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             },
@@ -859,20 +1174,37 @@
                     "KPWK": "CHI_D_DEP"
                 },
                 "default_consolidation": {
-                    "CHI_B_DEP": [
-                        "CHI_Y_APP",
-                        "CHI_J_APP",
-                        "CHI_D_DEP",
-                        "CHI_A_APP",
-                        "CHI_E_APP",
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
                         "CHI_X_APP",
+                        "CHI_W_APP"
+                    ],
+                    "CHI_B_DEP": [
+                        "CHI_D_DEP",
                         "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
+                        "CHI_A_APP",
                         "CHI_P_APP",
-                        "CHI_L_APP",
-                        "CHI_U_APP",
-                        "CHI_M_DEP",
-                        "CHI_G_DEP",
-                        "CHI_Z_APP"
+                        "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             },
@@ -898,17 +1230,37 @@
                     "KPWK": "CHI_D_DEP"
                 },
                 "default_consolidation": {
-                    "CHI_B_DEP": [
-                        "CHI_Y_APP",
-                        "CHI_J_APP",
-                        "CHI_D_DEP",
-                        "CHI_A_APP",
-                        "CHI_E_APP",
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
                         "CHI_X_APP",
-                        "CHI_L_APP",
-                        "CHI_M_DEP",
-                        "CHI_G_DEP",
-                        "CHI_Z_APP"
+                        "CHI_W_APP"
+                    ],
+                    "CHI_B_DEP": [
+                        "CHI_D_DEP",
+                        "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
+                        "CHI_A_APP",
+                        "CHI_P_APP",
+                        "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             },
@@ -944,11 +1296,37 @@
                     "KPWK": "CHI_D_DEP"
                 },
                 "default_consolidation": {
-                    "CHI_D_DEP": [
+                    "CHI_Z_APP": [
+                        "CHI_B_DEP",
+                        "CHI_F_APP",
+                        "CHI_X_APP",
+                        "CHI_W_APP"
+                    ],
+                    "CHI_B_DEP": [
+                        "CHI_D_DEP",
+                        "CHI_S_APP",
+                        "CHI_M_DEP"
+                    ],
+                    "CHI_X_APP": [
+                        "CHI_Y_APP",
+                        "CHI_E_APP"
+                    ],
+                    "CHI_S_APP": [
                         "CHI_A_APP",
                         "CHI_P_APP",
-                        "CHI_L_APP",
                         "CHI_U_APP"
+                    ],
+                    "CHI_P_APP": [
+                        "CHI_L_APP"
+                    ],
+                    "CHI_M_DEP": [
+                        "CHI_G_DEP"
+                    ],
+                    "CHI_W_APP": [
+                        "CHI_H_APP"
+                    ],
+                    "CHI_Y_APP": [
+                        "CHI_J_APP"
                     ]
                 }
             }

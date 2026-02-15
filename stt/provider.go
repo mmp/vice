@@ -103,7 +103,6 @@ func (p *Transcriber) decodeInternal(
 	}
 
 	var callsign string
-	var addressingForm sim.CallsignAddressingForm
 	var ac Aircraft
 	var commandTokens []Token
 	var callsignConfidence = 1.0
@@ -150,12 +149,7 @@ func (p *Transcriber) decodeInternal(
 				// Build output: ROLLBACK + commands for correct callsign
 				var output string
 				if len(validation.ValidCommands) > 0 {
-					// Encode addressing form in callsign if needed
-					correctCallsignWithForm := correctMatch.Callsign
-					if correctMatch.AddressingForm == sim.AddressingFormTypeTrailing3 {
-						correctCallsignWithForm += "/T"
-					}
-					output = "ROLLBACK " + correctCallsignWithForm + " " + strings.Join(validation.ValidCommands, " ")
+					output = "ROLLBACK " + correctMatch.Callsign + " " + strings.Join(validation.ValidCommands, " ")
 				} else {
 					// Just ROLLBACK if no valid commands were parsed
 					output = "ROLLBACK"
@@ -199,7 +193,6 @@ func (p *Transcriber) decodeInternal(
 		}
 
 		callsign = callsignMatch.Callsign
-		addressingForm = callsignMatch.AddressingForm
 		callsignConfidence = callsignMatch.Confidence
 		commandTokens = remainingTokens
 
@@ -253,12 +246,25 @@ func (p *Transcriber) decodeInternal(
 	// Strip "radar contact" prefix if present (informational, not a command)
 	commandTokens = stripRadarContactPrefix(commandTokens)
 
+	// Strip altimeter setting suffix if present (informational, not a command)
+	commandTokens = stripAltimeterSuffix(commandTokens)
+
 	// If no tokens remain after stripping, controller just identified themselves
 	if len(commandTokens) == 0 {
 		logLocalStt("no tokens after stripping prefixes, returning empty")
 		elapsed := time.Since(start)
 		logLocalStt("=== DecodeTranscript END: \"\" (position ID only, time=%s) ===", elapsed)
 		p.logInfo("local STT: %q -> \"\" (position ID only, time=%s)", transcript, elapsed)
+		return "", nil
+	}
+
+	// Check if command tokens are just "radar contact" with noise around it
+	// e.g., "in radar contact" — the "in" prevented prefix stripping
+	if isRadarContactOnly(commandTokens) {
+		logLocalStt("detected radar contact only, returning empty")
+		elapsed := time.Since(start)
+		logLocalStt("=== DecodeTranscript END: \"\" (radar contact, time=%s) ===", elapsed)
+		p.logInfo("local STT: %q -> \"\" (radar contact, time=%s)", transcript, elapsed)
 		return "", nil
 	}
 
@@ -289,6 +295,17 @@ func (p *Transcriber) decodeInternal(
 		confidence *= cmdConf * validation.Confidence
 	}
 
+	// If no valid commands were found but the tokens contain a greeting word
+	// (hello, hi, hey), this is likely a check-in, not a garbled command.
+	// Return empty instead of AGAIN.
+	if len(validation.ValidCommands) == 0 && containsGreeting(commandTokens) {
+		logLocalStt("no commands but greeting detected, returning empty")
+		elapsed := time.Since(start)
+		logLocalStt("=== DecodeTranscript END: \"\" (greeting, time=%s) ===", elapsed)
+		p.logInfo("local STT: %q -> \"\" (greeting, time=%s)", transcript, elapsed)
+		return "", nil
+	}
+
 	// Generate output
 	var output string
 	if isFallback {
@@ -299,17 +316,11 @@ func (p *Transcriber) decodeInternal(
 			output = strings.Join(validation.ValidCommands, " ")
 		}
 	} else {
-		// Encode addressing form in callsign: append /T for type-based addressing (GA aircraft)
-		callsignWithForm := callsign
-		if addressingForm == sim.AddressingFormTypeTrailing3 {
-			callsignWithForm += "/T"
-		}
-
 		if len(validation.ValidCommands) == 0 {
 			// Callsign matched but couldn't parse commands - ask for say again
-			output = callsignWithForm + " AGAIN"
+			output = callsign + " AGAIN"
 		} else {
-			output = callsignWithForm + " " + strings.Join(validation.ValidCommands, " ")
+			output = callsign + " " + strings.Join(validation.ValidCommands, " ")
 		}
 	}
 
@@ -464,12 +475,10 @@ func (p *Transcriber) BuildAircraftContext(
 			}
 		}
 
-		// Key by telephony (spoken callsign)
-		var cwt string
-		if trk.FlightPlan != nil {
-			cwt = trk.FlightPlan.CWTCategory
-		}
-		telephony := av.GetCallsignSpoken(string(trk.ADSBCallsign), cwt)
+		// Key by telephony (spoken callsign). Use the true CWT category
+		// from the aircraft performance DB rather than the NAS flight plan,
+		// since the user may have changed the flight plan's aircraft type.
+		telephony := av.GetCallsignSpoken(string(trk.ADSBCallsign), trk.CWTCategory)
 
 		// Default addressing form is full callsign
 		sttAc.AddressingForm = sim.AddressingFormFull
@@ -482,8 +491,10 @@ func (p *Transcriber) BuildAircraftContext(
 			if len(typePronunciations) > 0 {
 				trailing3 := av.GetTrailing3Spoken(callsign)
 				if trailing3 != "" {
-					// Create a copy with TypeTrailing3 addressing form
+					// Create a copy with TypeTrailing3 addressing form.
+					// Bake /T into the callsign so downstream code gets it automatically.
 					typeAc := sttAc
+					typeAc.Callsign += "/T"
 					typeAc.AddressingForm = sim.AddressingFormTypeTrailing3
 
 					// Add entry for each pronunciation variant that doesn't contain numbers
@@ -586,7 +597,9 @@ func detectNotForYouCorrection(tokens []Token) ([]Token, bool) {
 				return tokens[i+3:], true
 			}
 		}
-		if tokens[i].Text == "correction" || JaroWinkler(tokens[i].Text, "correction") > 0.9 || PhoneticMatch(tokens[i].Text, "correction") {
+
+		// Check for bare "correction" keyword
+		if strings.ToLower(tokens[i].Text) == "correction" {
 			return tokens[i+1:], true
 		}
 	}
@@ -794,6 +807,18 @@ func isDisregardOnly(tokens []Token) bool {
 	return hasDisregard
 }
 
+// containsGreeting returns true if any token is a greeting word.
+// Used to detect check-in transmissions that have no actionable commands.
+func containsGreeting(tokens []Token) bool {
+	for _, t := range tokens {
+		text := strings.ToLower(t.Text)
+		if text == "hello" || text == "hi" || text == "hey" || text == "howdy" {
+			return true
+		}
+	}
+	return false
+}
+
 // isAcknowledgmentOnly returns true if the tokens contain only acknowledgment
 // words (roger, wilco, copy) and filler words. These are pilot readbacks that
 // need no further action from the controller.
@@ -804,6 +829,7 @@ func isAcknowledgmentOnly(tokens []Token) bool {
 
 	acknowledgmentWords := map[string]bool{
 		"roger": true, "wilco": true, "copy": true, "affirm": true, "affirmative": true,
+		"hello": true, "hey": true, "hi": true, "howdy": true,
 	}
 
 	hasAcknowledgment := false
@@ -818,6 +844,38 @@ func isAcknowledgmentOnly(tokens []Token) bool {
 	}
 
 	return hasAcknowledgment
+}
+
+// isRadarContactOnly returns true if the tokens contain "radar contact"
+// and no command keywords besides "radar" and "contact" themselves. This
+// handles cases where noise words (e.g., callsign fragments) appear
+// before "radar contact".
+func isRadarContactOnly(tokens []Token) bool {
+	hasRadarContact := false
+	for i, t := range tokens {
+		text := strings.ToLower(t.Text)
+		if text == "radar" && i+1 < len(tokens) &&
+			strings.ToLower(tokens[i+1].Text) == "contact" {
+			hasRadarContact = true
+			break
+		}
+	}
+	if !hasRadarContact {
+		return false
+	}
+
+	// Reject if any other token is a command keyword, which would
+	// indicate real commands mixed in with radar contact.
+	for _, t := range tokens {
+		text := strings.ToLower(t.Text)
+		if text == "radar" || text == "contact" {
+			continue
+		}
+		if IsCommandKeyword(text) {
+			return false
+		}
+	}
+	return true
 }
 
 // stripPositionIDPrefix removes a controller position identification prefix
@@ -842,7 +900,7 @@ func stripPositionIDPrefix(tokens []Token) []Token {
 		"direct": true, "proceed": true, "cleared": true, "expect": true,
 		"contact": true, "squawk": true, "ident": true, "cross": true,
 		"hold": true, "intercept": true, "fly": true, "reduce": true,
-		"increase": true, "expedite": true, "cancel": true, "canceled": true,
+		"increase": true, "expedite": true, "cancel": true, "canceled": true, "cancelled": true,
 		"resume": true, "vectors": true, "go": true,
 	}
 
@@ -881,6 +939,39 @@ func stripRadarContactPrefix(tokens []Token) []Token {
 		strings.ToLower(tokens[1].Text) == "contact" {
 		logLocalStt("stripped 'radar contact' prefix")
 		return tokens[2:]
+	}
+	return tokens
+}
+
+// stripAltimeterSuffix removes an altimeter setting from the end of the
+// token stream. Controllers often append "(airport) altimeter (setting)"
+// as informational; it is not an actionable command.
+func stripAltimeterSuffix(tokens []Token) []Token {
+	for i, t := range tokens {
+		if strings.ToLower(t.Text) != "altimeter" {
+			continue
+		}
+
+		// "altimeter" must be followed by a number (the setting).
+		if i+1 >= len(tokens) || tokens[i+1].Type != TokenNumber {
+			continue
+		}
+
+		// Nothing actionable should follow the setting.
+		if i+2 < len(tokens) {
+			continue
+		}
+
+		// The word before "altimeter" is typically an airport name
+		// (e.g., "kennedy"); strip it too if it's a plain word.
+		start := i
+		if start > 0 && tokens[start-1].Type == TokenWord &&
+			!IsCommandKeyword(strings.ToLower(tokens[start-1].Text)) {
+			start--
+		}
+
+		logLocalStt("stripped altimeter suffix: %d tokens", len(tokens)-start)
+		return tokens[:start]
 	}
 	return tokens
 }

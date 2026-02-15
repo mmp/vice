@@ -1,0 +1,268 @@
+{
+  "time": "2026-02-01T02:21:06.639880728Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "manager.go:978:/server.(*SimManager).ReportSTTLog",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Frontier flight fifty six zero three maintain one seven zero nasti neti contact air",
+  "whisper_duration_ms": 481.584,
+  "audio_duration_ms": 4552,
+  "processor": "GPU: NVIDIA GeForce GTX 1660 SUPER (6180MB)",
+  "whisper_model": "ggml-small.en-jlvatc-q5_0.bin",
+  "callsign": "FFT5603",
+  "command": "S170 TO",
+  "stt_aircraft": {
+    "Frontier Flight 56 zero three": {
+      "Callsign": "FFT5603",
+      "AircraftType": "A20N",
+      "Fixes": {
+        "D F W": "KDFW",
+        "Dallas Fort Worth": "KDFW",
+        "Legree": "LEGRE",
+        "Nettie": "NETEE"
+      },
+      "CandidateApproaches": {
+        "I L S runway one eight right": "I8R",
+        "I L S runway one seven center": "I7C",
+        "I L S runway one seven left": "I7L",
+        "I L S runway one three right": "I3R"
+      },
+      "ApproachFixes": {
+        "I3R": {
+          "Hodax": "HODAX",
+          "Morry": "MORRY",
+          "Poppa": "POPPA"
+        },
+        "I7C": {
+          "Bossy": "BOSSI",
+          "Jiffy": "JIFFY",
+          "Penny": "PENNY",
+          "Zing": "ZINGG"
+        },
+        "I7L": {
+          "Drake": "DRAAK",
+          "G. Bush": "GBUSH",
+          "Inwood": "INWOD",
+          "Rivet": "RIVET"
+        },
+        "I8R": {
+          "Ickle": "ICKEL",
+          "Legree": "LEGRE",
+          "Nettie": "NETEE",
+          "Yohan": "YOHAN"
+        }
+      },
+      "AssignedApproach": "ILS Runway 18R",
+      "SID": "",
+      "STAR": "VKTRY2",
+      "Altitude": 3698,
+      "State": "on approach",
+      "ControllerFrequency": "1W",
+      "TrackingController": "1W",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "13L",
+        "31R",
+        "13L",
+        "31R"
+      ]
+    },
+    "barron fifty-six turbo eight eight zero": {
+      "Callsign": "N3880",
+      "AircraftType": "BE56",
+      "Fixes": {
+        "Alliance": "KAFW",
+        "Fort Worth Alliance": "KAFW",
+        "Wigzu": "WIGZU"
+      },
+      "CandidateApproaches": {
+        "I L S runway one six left": "I6L",
+        "r-nav runway one six left": "R6L",
+        "r-nav runway one six right": "R6R"
+      },
+      "ApproachFixes": {
+        "I6L": {
+          "Argue": "ARGUE",
+          "Bowie": "UKW",
+          "Wigzu": "WIGZU"
+        },
+        "R6L": {
+          "Argue": "ARGUE",
+          "Bowie": "UKW",
+          "Lovely": "LVLEE",
+          "Millsap": "MQP",
+          "Ravya": "RAVYA",
+          "Wigzu": "WIGZU"
+        },
+        "R6R": {
+          "Bowie": "UKW",
+          "Dhobi": "DHOBI",
+          "Fungo": "FUNGO",
+          "Keen": "KEENE",
+          "Millsap": "MQP",
+          "Pulse": "PULSE",
+          "Romps": "ROMPS"
+        }
+      },
+      "AssignedApproach": "ILS Runway 16L",
+      "SID": "",
+      "STAR": "LIKES3",
+      "Altitude": 2981,
+      "State": "on approach",
+      "ControllerFrequency": "1P",
+      "TrackingController": "1P",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "november three eight eight zero": {
+      "Callsign": "N3880",
+      "AircraftType": "BE56",
+      "Fixes": {
+        "Alliance": "KAFW",
+        "Fort Worth Alliance": "KAFW",
+        "Wigzu": "WIGZU"
+      },
+      "CandidateApproaches": {
+        "I L S runway one six left": "I6L",
+        "r-nav runway one six left": "R6L",
+        "r-nav runway one six right": "R6R"
+      },
+      "ApproachFixes": {
+        "I6L": {
+          "Argue": "ARGUE",
+          "Bowie": "UKW",
+          "Wigzu": "WIGZU"
+        },
+        "R6L": {
+          "Argue": "ARGUE",
+          "Bowie": "UKW",
+          "Lovely": "LVLEE",
+          "Millsap": "MQP",
+          "Ravya": "RAVYA",
+          "Wigzu": "WIGZU"
+        },
+        "R6R": {
+          "Bowie": "UKW",
+          "Dhobi": "DHOBI",
+          "Fungo": "FUNGO",
+          "Keen": "KEENE",
+          "Millsap": "MQP",
+          "Pulse": "PULSE",
+          "Romps": "ROMPS"
+        }
+      },
+      "AssignedApproach": "ILS Runway 16L",
+      "SID": "",
+      "STAR": "LIKES3",
+      "Altitude": 2981,
+      "State": "on approach",
+      "ControllerFrequency": "1P",
+      "TrackingController": "1P",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "turbo barron eight eight zero": {
+      "Callsign": "N3880",
+      "AircraftType": "BE56",
+      "Fixes": {
+        "Alliance": "KAFW",
+        "Fort Worth Alliance": "KAFW",
+        "Wigzu": "WIGZU"
+      },
+      "CandidateApproaches": {
+        "I L S runway one six left": "I6L",
+        "r-nav runway one six left": "R6L",
+        "r-nav runway one six right": "R6R"
+      },
+      "ApproachFixes": {
+        "I6L": {
+          "Argue": "ARGUE",
+          "Bowie": "UKW",
+          "Wigzu": "WIGZU"
+        },
+        "R6L": {
+          "Argue": "ARGUE",
+          "Bowie": "UKW",
+          "Lovely": "LVLEE",
+          "Millsap": "MQP",
+          "Ravya": "RAVYA",
+          "Wigzu": "WIGZU"
+        },
+        "R6R": {
+          "Bowie": "UKW",
+          "Dhobi": "DHOBI",
+          "Fungo": "FUNGO",
+          "Keen": "KEENE",
+          "Millsap": "MQP",
+          "Pulse": "PULSE",
+          "Romps": "ROMPS"
+        }
+      },
+      "AssignedApproach": "ILS Runway 16L",
+      "SID": "",
+      "STAR": "LIKES3",
+      "Altitude": 2981,
+      "State": "on approach",
+      "ControllerFrequency": "1P",
+      "TrackingController": "1P",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Frontier flight fifty six zero three maintain one seven zero nasti neti contact air\"",
+    "[local-stt] normalized words: [frontier flight 56 0 3 maintain 1 7 0 nasti neti contact air]",
+    "[local-stt] tokens: 9",
+    "[local-stt]   token[0]: Text=\"frontier\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"flight\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"5603\" Type=1 Value=5603",
+    "[local-stt]   token[3]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"170\" Type=1 Value=170",
+    "[local-stt]   token[5]: Text=\"nasti\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"neti\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[8]: Text=\"air\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 9 tokens, 4 aircraft",
+    "[local-stt]   candidate \"Frontier Flight 56 zero three\" (ICAO=\"FFT5603\"): score=1.10 consumed=3",
+    "[local-stt]   candidate \"november three eight eight zero\" (ICAO=\"N3880\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"barron fifty-six turbo eight eight zero\" (ICAO=\"N3880\"): score=0.50 consumed=1",
+    "[local-stt]   candidate \"turbo barron eight eight zero\" (ICAO=\"N3880\"): score=0.00 consumed=0",
+    "[local-stt]   candidate \"Frontier Flight 56 zero three\" at pos 1: score=0.80 (adjusted=0.72) consumed=2",
+    "[local-stt]   candidate \"Frontier Flight 56 zero three\" at pos 2: score=0.80 (adjusted=0.64) consumed=1",
+    "[local-stt]   accepted: \"FFT5603\" (conf=1.10, consumed=3, startPos=0)",
+    "[local-stt] callsign match: Callsign=\"FFT5603\" SpokenKey=\"Frontier Flight 56 zero three\" Conf=1.10 Consumed=3",
+    "[local-stt] aircraft context: State=\"on approach\" Altitude=3698 Fixes=4 Approaches=4 AssignedApproach=\"ILS Runway 18R\" LAHSORunways=[13L 31R 13L 31R]",
+    "[local-stt]   fix: \"Legree\" -\u003e \"LEGRE\"",
+    "[local-stt]   fix: \"Nettie\" -\u003e \"NETEE\"",
+    "[local-stt]   fix: \"Dallas Fort Worth\" -\u003e \"KDFW\"",
+    "[local-stt]   fix: \"D F W\" -\u003e \"KDFW\"",
+    "[local-stt]   approach: \"I L S runway one seven center\" -\u003e \"I7C\"",
+    "[local-stt]   approach: \"I L S runway one seven left\" -\u003e \"I7L\"",
+    "[local-stt]   approach: \"I L S runway one eight right\" -\u003e \"I8R\"",
+    "[local-stt]   approach: \"I L S runway one three right\" -\u003e \"I3R\"",
+    "[local-stt] command tokens after disregard: 6",
+    "[local-stt]   token[0]: Text=\"maintain\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"170\" Type=1 Value=170",
+    "[local-stt]   token[2]: Text=\"nasti\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"neti\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"contact\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"air\" Type=0 Value=-1",
+    "[local-stt]   position ID: found command keyword \"maintain\" at position 0 - not just position ID",
+    "[local-stt] ParseCommands: 6 tokens",
+    "[local-stt]   matched command: \"S170\" (conf=1.00, consumed=2, isThen=false)",
+    "[local-stt]   no match at token[2]=\"nasti\", skipping",
+    "[local-stt]   no match at token[3]=\"neti\", skipping",
+    "[local-stt]   no match at token[4]=\"contact\", skipping",
+    "[local-stt]   no match at token[5]=\"air\", skipping",
+    "[local-stt] ParseCommands: result=[S170] (avgConf=1.00)",
+    "[local-stt] parsed commands: [S170] (conf=1.00)",
+    "[local-stt] validated commands: [S170] (conf=1.00)",
+    "[local-stt] === DecodeTranscript END: \"FFT5603 S170\" (conf=1.10, time=0s) ==="
+  ]
+}

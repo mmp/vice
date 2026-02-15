@@ -48,9 +48,12 @@
                     "KPIT": "PIT_S_DEP"
                 },
                 "default_consolidation": {
-                    "PIT_B_APP": [
-                        "PIT_D_APP",
+                    "PIT_D_APP": [
+                        "PIT_B_APP",
                         "PIT_S_DEP"
+                    ],
+                    "PIT_S_DEP": [
+                        "PIT_N_DEP"
                     ]
                 }
             }

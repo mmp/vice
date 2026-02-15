@@ -296,22 +296,7 @@
                     ]
                 }
             },
-            "approach_regions": {
-                "30L": {
-                    "heading_tolerance": 90,
-                    "near_distance": 5,
-                    "near_half_width": 1.5,
-                    "far_half_width": 5,
-                    "region_length": 20,
-                    "descent_distance": 4,
-                    "descent_altitude": 5300,
-                    "above_altitude_tolerance": 1000,
-                    "below_altitude_tolerance": 500,
-                    "reference_point": "N044.52.24.7,W093.12.04.4",
-                    "reference_heading": 301,
-                    "reference_length": 25,
-                    "reference_altitude": 0
-                },
+            "crda_regions": {
                 "35": {
                     "heading_tolerance": 90,
                     "near_distance": 5,
@@ -326,11 +311,26 @@
                     "reference_heading": 350,
                     "reference_length": 25,
                     "reference_altitude": 0
+                },
+                "30L": {
+                    "heading_tolerance": 90,
+                    "near_distance": 5,
+                    "near_half_width": 1.5,
+                    "far_half_width": 5,
+                    "region_length": 20,
+                    "descent_distance": 4,
+                    "descent_altitude": 5300,
+                    "above_altitude_tolerance": 1000,
+                    "below_altitude_tolerance": 500,
+                    "reference_point": "N044.52.24.7,W093.12.04.4",
+                    "reference_heading": 301,
+                    "reference_length": 25,
+                    "reference_altitude": 0
                 }
             },
-            "converging_runways": [
+            "crda_pairs": [
                 {
-                    "runways": [
+                    "crda_regions": [
                         "30L",
                         "35"
                     ],
@@ -3375,6 +3375,188 @@
                 "GEP": "GEP"
             },
             "atpa_volumes": {
+                "4": {
+                    "runway_threshold": "KMSP-4",
+                    "heading": 45,
+                    "max_heading_deviation": 90,
+                    "floor": 900,
+                    "ceiling": 9000,
+                    "length": 30,
+                    "left_width": 24304,
+                    "right_width": 24304,
+                    "filtered_scratchpads": [
+                        "VV4"
+                    ],
+                    "excluded_scratchpads": [
+                        "VVN",
+                        "VVS",
+                        "ZL1",
+                        "YL1",
+                        "12L",
+                        "VL1",
+                        "ZR1",
+                        "YR1",
+                        "12R",
+                        "VR1",
+                        "ZL3",
+                        "YL3",
+                        "30L",
+                        "VL3",
+                        "ZR3",
+                        "YR3",
+                        "30R",
+                        "VR3",
+                        "L17",
+                        "V17",
+                        "VV7",
+                        "Z35",
+                        "Y35",
+                        "I35",
+                        "V35",
+                        "VV5",
+                        "G22",
+                        "L22",
+                        "V22",
+                        "VV2"
+                    ]
+                },
+                "17": {
+                    "runway_threshold": "KMSP-17",
+                    "heading": 170,
+                    "max_heading_deviation": 90,
+                    "floor": 900,
+                    "ceiling": 9000,
+                    "length": 30,
+                    "left_width": 24304,
+                    "right_width": 24304,
+                    "filtered_scratchpads": [
+                        "VV7"
+                    ],
+                    "excluded_scratchpads": [
+                        "VVN",
+                        "VVS",
+                        "ZL1",
+                        "YL1",
+                        "12L",
+                        "VL1",
+                        "ZR1",
+                        "YR1",
+                        "12R",
+                        "VR1",
+                        "ZL3",
+                        "YL3",
+                        "30L",
+                        "VL3",
+                        "ZR3",
+                        "YR3",
+                        "30R",
+                        "VR3",
+                        "Z35",
+                        "Y35",
+                        "I35",
+                        "V35",
+                        "VV5",
+                        "G04",
+                        "L04",
+                        "V04",
+                        "VV4",
+                        "G22",
+                        "L22",
+                        "V22",
+                        "VV2"
+                    ]
+                },
+                "22": {
+                    "runway_threshold": "KMSP-22",
+                    "heading": 225,
+                    "max_heading_deviation": 90,
+                    "floor": 900,
+                    "ceiling": 9000,
+                    "length": 30,
+                    "left_width": 24304,
+                    "right_width": 24304,
+                    "filtered_scratchpads": [
+                        "VV2"
+                    ],
+                    "excluded_scratchpads": [
+                        "VVN",
+                        "VVS",
+                        "ZL1",
+                        "YL1",
+                        "12L",
+                        "VL1",
+                        "ZR1",
+                        "YR1",
+                        "12R",
+                        "VR1",
+                        "ZL3",
+                        "YL3",
+                        "30L",
+                        "VL3",
+                        "ZR3",
+                        "YR3",
+                        "30R",
+                        "VR3",
+                        "L17",
+                        "V17",
+                        "VV7",
+                        "Z35",
+                        "Y35",
+                        "I35",
+                        "V35",
+                        "VV5",
+                        "G04",
+                        "L04",
+                        "V04",
+                        "VV4"
+                    ]
+                },
+                "35": {
+                    "runway_threshold": "KMSP-35",
+                    "heading": 350,
+                    "max_heading_deviation": 90,
+                    "floor": 900,
+                    "ceiling": 7700,
+                    "length": 30,
+                    "left_width": 24304,
+                    "right_width": 24304,
+                    "filtered_scratchpads": [
+                        "VV5"
+                    ],
+                    "excluded_scratchpads": [
+                        "VVN",
+                        "VVS",
+                        "ZL1",
+                        "YL1",
+                        "12L",
+                        "VL1",
+                        "ZR1",
+                        "YR1",
+                        "12R",
+                        "VR1",
+                        "ZL3",
+                        "YL3",
+                        "30L",
+                        "VL3",
+                        "ZR3",
+                        "YR3",
+                        "30R",
+                        "VR3",
+                        "L17",
+                        "V17",
+                        "VV7",
+                        "G04",
+                        "L04",
+                        "V04",
+                        "VV4",
+                        "G22",
+                        "L22",
+                        "V22",
+                        "VV2"
+                    ],
+                    "enable_2.5nm": true,
+                    "2.5nm_distance": 10
+                },
                 "30R": {
                     "runway_threshold": "KMSP-30R",
                     "heading": 301,
@@ -3463,52 +3645,6 @@
                         "VV2"
                     ]
                 },
-                "35": {
-                    "runway_threshold": "KMSP-35",
-                    "heading": 350,
-                    "max_heading_deviation": 90,
-                    "floor": 900,
-                    "ceiling": 7700,
-                    "length": 30,
-                    "left_width": 24304,
-                    "right_width": 24304,
-                    "filtered_scratchpads": [
-                        "VV5"
-                    ],
-                    "excluded_scratchpads": [
-                        "VVN",
-                        "VVS",
-                        "ZL1",
-                        "YL1",
-                        "12L",
-                        "VL1",
-                        "ZR1",
-                        "YR1",
-                        "12R",
-                        "VR1",
-                        "ZL3",
-                        "YL3",
-                        "30L",
-                        "VL3",
-                        "ZR3",
-                        "YR3",
-                        "30R",
-                        "VR3",
-                        "L17",
-                        "V17",
-                        "VV7",
-                        "G04",
-                        "L04",
-                        "V04",
-                        "VV4",
-                        "G22",
-                        "L22",
-                        "V22",
-                        "VV2"
-                    ],
-                    "enable_2.5nm": true,
-                    "2.5nm_distance": 10
-                },
                 "12L": {
                     "runway_threshold": "KMSP-12L",
                     "heading": 121,
@@ -3582,142 +3718,6 @@
                         "L17",
                         "V17",
                         "VV7",
-                        "Z35",
-                        "Y35",
-                        "I35",
-                        "V35",
-                        "VV5",
-                        "G04",
-                        "L04",
-                        "V04",
-                        "VV4",
-                        "G22",
-                        "L22",
-                        "V22",
-                        "VV2"
-                    ]
-                },
-                "4": {
-                    "runway_threshold": "KMSP-4",
-                    "heading": 45,
-                    "max_heading_deviation": 90,
-                    "floor": 900,
-                    "ceiling": 9000,
-                    "length": 30,
-                    "left_width": 24304,
-                    "right_width": 24304,
-                    "filtered_scratchpads": [
-                        "VV4"
-                    ],
-                    "excluded_scratchpads": [
-                        "VVN",
-                        "VVS",
-                        "ZL1",
-                        "YL1",
-                        "12L",
-                        "VL1",
-                        "ZR1",
-                        "YR1",
-                        "12R",
-                        "VR1",
-                        "ZL3",
-                        "YL3",
-                        "30L",
-                        "VL3",
-                        "ZR3",
-                        "YR3",
-                        "30R",
-                        "VR3",
-                        "L17",
-                        "V17",
-                        "VV7",
-                        "Z35",
-                        "Y35",
-                        "I35",
-                        "V35",
-                        "VV5",
-                        "G22",
-                        "L22",
-                        "V22",
-                        "VV2"
-                    ]
-                },
-                "22": {
-                    "runway_threshold": "KMSP-22",
-                    "heading": 225,
-                    "max_heading_deviation": 90,
-                    "floor": 900,
-                    "ceiling": 9000,
-                    "length": 30,
-                    "left_width": 24304,
-                    "right_width": 24304,
-                    "filtered_scratchpads": [
-                        "VV2"
-                    ],
-                    "excluded_scratchpads": [
-                        "VVN",
-                        "VVS",
-                        "ZL1",
-                        "YL1",
-                        "12L",
-                        "VL1",
-                        "ZR1",
-                        "YR1",
-                        "12R",
-                        "VR1",
-                        "ZL3",
-                        "YL3",
-                        "30L",
-                        "VL3",
-                        "ZR3",
-                        "YR3",
-                        "30R",
-                        "VR3",
-                        "L17",
-                        "V17",
-                        "VV7",
-                        "Z35",
-                        "Y35",
-                        "I35",
-                        "V35",
-                        "VV5",
-                        "G04",
-                        "L04",
-                        "V04",
-                        "VV4"
-                    ]
-                },
-                "17": {
-                    "runway_threshold": "KMSP-17",
-                    "heading": 170,
-                    "max_heading_deviation": 90,
-                    "floor": 900,
-                    "ceiling": 9000,
-                    "length": 30,
-                    "left_width": 24304,
-                    "right_width": 24304,
-                    "filtered_scratchpads": [
-                        "VV7"
-                    ],
-                    "excluded_scratchpads": [
-                        "VVN",
-                        "VVS",
-                        "ZL1",
-                        "YL1",
-                        "12L",
-                        "VL1",
-                        "ZR1",
-                        "YR1",
-                        "12R",
-                        "VR1",
-                        "ZL3",
-                        "YL3",
-                        "30L",
-                        "VL3",
-                        "ZR3",
-                        "YR3",
-                        "30R",
-                        "VR3",
                         "Z35",
                         "Y35",
                         "I35",
@@ -6460,11 +6460,11 @@
                     "waypoints": "BAINY/a15000-19000/s280 N045.41.31.273,W093.39.58.233/ho LUCCY/a11000+/s280 SAUGR",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 GWAIT/h176",
                             "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/h181",
                             "12R": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/h181",
                             "30L": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ MAUER/a8000/s210 JJENI/h121",
-                            "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210 IRRRV/h122",
-                            "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 GWAIT/h176"
+                            "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210 IRRRV/h122"
                         }
                     },
                     "star": "BAINY3",
@@ -6713,11 +6713,11 @@
                     "waypoints": "BAINY/a15000-19000/s280 N045.41.31.273,W093.39.58.233/ho LUCCY/a11000+/s280 SAUGR",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 GWAIT/h176",
                             "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/h181",
                             "12R": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/h181",
                             "30L": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ MAUER/a8000/s210 JJENI/h121",
-                            "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210 IRRRV/h122",
-                            "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 GWAIT/h176"
+                            "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210 IRRRV/h122"
                         }
                     },
                     "star": "BAINY3",
@@ -6966,11 +6966,11 @@
                     "waypoints": "BAINY/a15000-19000/s280 N045.41.31.273,W093.39.58.233/ho LUCCY/a11000+/s280 SAUGR",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 GWAIT/h176",
                             "12L": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/h181",
                             "12R": "SAUGR OGLVE/a8000+ KAYQU/a7000/s210/h181",
                             "30L": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ MAUER/a8000/s210 JJENI/h121",
-                            "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210 IRRRV/h122",
-                            "35": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ BRNVL/a8000/s210 GWAIT/h176"
+                            "30R": "SAUGR GEP/a10000+/s250 PRRPL/a9000+ OSMOH/a8000/s210 IRRRV/h122"
                         }
                     },
                     "star": "BAINY3",
@@ -7219,11 +7219,11 @@
                     "waypoints": "N043.52.22.955,W093.15.20.297 LAZYY/a16000+/s280/ho BLUEM/a11000+/s280 HHAMR/a10000+ FARBO",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "FARBO  DNDIS/a9000/s230 JAMEZ/a7000+/h013",
                             "12L": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 CMMOE/a8000/s230 COZZZ/h301",
                             "12R": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 GREAK/a8000/s230 DOLEE/h301",
                             "30L": "FARBO NOFLD/a10000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-                            "30R": "FARBO NOFLD/a10000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-                            "35": "FARBO  DNDIS/a9000/s230 JAMEZ/a7000+/h013"
+                            "30R": "FARBO NOFLD/a10000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036"
                         }
                     },
                     "star": "BLUEM4",
@@ -7468,11 +7468,11 @@
                     "waypoints": "N043.52.22.955,W093.15.20.297 LAZYY/a16000+/s280/ho BLUEM/a11000+/s280 HHAMR/a10000+ FARBO",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "FARBO DNDIS/a9000/s230 JAMEZ/a7000+/h013",
                             "12L": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 CMMOE/a8000/s230 COZZZ/h301",
                             "12R": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 GREAK/a8000/s230 DOLEE/h301",
                             "30L": "FARBO NOFLD/a10000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-                            "30R": "FARBO NOFLD/a10000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-                            "35": "FARBO DNDIS/a9000/s230 JAMEZ/a7000+/h013"
+                            "30R": "FARBO NOFLD/a10000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036"
                         }
                     },
                     "star": "BLUEM4",
@@ -7717,11 +7717,11 @@
                     "waypoints": "N043.52.22.955,W093.15.20.297 LAZYY/a16000+/s280/ho BLUEM/a11000+/s280 HHAMR/a10000+ FARBO",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "FARBO DNDIS/a9000/s230 JAMEZ/a7000+/h013",
                             "12L": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 CMMOE/a8000/s230 COZZZ/h301",
                             "12R": "FARBO ELLKO/a10000+/s250 SAVVG/a9000 GREAK/a8000/s230 DOLEE/h301",
                             "30L": "FARBO NOFLD/a10000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-                            "30R": "FARBO NOFLD/a10000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-                            "35": "FARBO DNDIS/a9000/s230 JAMEZ/a7000+/h013"
+                            "30R": "FARBO NOFLD/a10000/s250 CANDD/a7000/s230 HAPTN/a7000/s210/h036"
                         }
                     },
                     "star": "BLUEM4",
@@ -7966,11 +7966,11 @@
                     "waypoints": "CMAAC/a14000+/s280 N044.48.19.649,W092.00.34.112/ho KKILR/a12000+/s280 HUGGI/a10000+ KRISP",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 DOLEE/h301",
                             "12L": "KRISP AFTYN/a10000+/s250 CMMOE/a8000/s230 COZZZ/h301",
                             "12R": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 DOLEE/h301",
                             "30L": "KRISP GEEQU/a7000/s210/h243",
-                            "30R": "KRISP GEEQU/a7000/s210/h243",
-                            "35": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 DOLEE/h301"
+                            "30R": "KRISP GEEQU/a7000/s210/h243"
                         }
                     },
                     "star": "KKILR3",
@@ -8223,11 +8223,11 @@
                     "waypoints": "CMAAC/a14000+/s280 N044.48.19.649,W092.00.34.112/ho KKILR/a12000+/s280 HUGGI/a10000+ KRISP",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 DOLEE/h301",
                             "12L": "KRISP AFTYN/a10000+/s250 CMMOE/a8000/s230 COZZZ/h301",
                             "12R": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 DOLEE/h301",
                             "30L": "KRISP GEEQU/a7000/s210/h243",
-                            "30R": "KRISP GEEQU/a7000/s210/h243",
-                            "35": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 DOLEE/h301"
+                            "30R": "KRISP GEEQU/a7000/s210/h243"
                         }
                     },
                     "star": "KKILR3",
@@ -8480,11 +8480,11 @@
                     "waypoints": "CMAAC/a14000+/s280 N044.48.19.649,W092.00.34.112/ho KKILR/a12000+/s280 HUGGI/a10000+ KRISP",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 DOLEE/h301",
                             "12L": "KRISP AFTYN/a10000+/s250 CMMOE/a8000/s230 COZZZ/h301",
                             "12R": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 DOLEE/h301",
                             "30L": "KRISP GEEQU/a7000/s210/h243",
-                            "30R": "KRISP GEEQU/a7000/s210/h243",
-                            "35": "KRISP AFTYN/a10000+/s250 JONZY/a9000+ GREAK/a8000/s230 DOLEE/h301"
+                            "30R": "KRISP GEEQU/a7000/s210/h243"
                         }
                     },
                     "star": "KKILR3",
@@ -8737,11 +8737,11 @@
                     "waypoints": "MUSCL/a17000+/s280 N045.02.22.973,W091.55.31.082/ho BAYKS/a12000+/s280 WOLVS",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301",
                             "12L": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 COZZZ/h301",
                             "12R": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301",
                             "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224",
-                            "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224",
-                            "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301"
+                            "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224"
                         }
                     },
                     "star": "MUSCL3",
@@ -8990,11 +8990,11 @@
                     "waypoints": "MUSCL/a17000+/s280 N045.02.22.973,W091.55.31.082/ho BAYKS/a12000+/s280 WOLVS",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301",
                             "12L": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 COZZZ/h301",
                             "12R": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301",
                             "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224",
-                            "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224",
-                            "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301"
+                            "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224"
                         }
                     },
                     "star": "MUSCL3",
@@ -9243,11 +9243,11 @@
                     "waypoints": "MUSCL/a17000+/s280 N045.02.22.973,W091.55.31.082/ho BAYKS/a12000+/s280 WOLVS",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301",
                             "12L": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ CMMOE/a8000/s230 COZZZ/h301",
                             "12R": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301",
                             "30L": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224",
-                            "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224",
-                            "35": "WOLVS LOOON/a11000+ WDBRY/a10000+/s250 ZASKY/a9000+ GREAK/a8000/s230 DOLEE/h301"
+                            "30R": "WOLVS LKLND/a8000+ KROIX/a7000/s230 TRTEL/a7000/s210/h224"
                         }
                     },
                     "star": "MUSCL3",
@@ -9496,11 +9496,11 @@
                     "waypoints": "N043.53.32.800,W093.29.51.430 DEMLL/a16000+/s280/ho NITZR/a12000+/s280 WRSAW/a11000+ DAHRL",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "DAHRL SHILD/a9000/s230 GDNEE NNEWW/a7000/h023",
                             "12L": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 CMMOE/a8000/s230 COZZZ/h301",
                             "12R": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 GREAK/a8000/s230 DOLEE/h301",
                             "30L": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-                            "30R": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-                            "35": "DAHRL SHILD/a9000/s230 GDNEE NNEWW/a7000/h023"
+                            "30R": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210/h036"
                         }
                     },
                     "star": "NITZR3",
@@ -9647,11 +9647,11 @@
                     "waypoints": "N043.53.32.800,W093.29.51.430 DEMLL/a16000+/s280/ho NITZR/a12000+/s280 WRSAW/a11000+ DAHRL",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "DAHRL SHILD/a9000/s230 GDNEE NNEWW/a7000/h023",
                             "12L": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 CMMOE/a8000/s230 COZZZ/h301",
                             "12R": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 GREAK/a8000/s230 DOLEE/h301",
                             "30L": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-                            "30R": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-                            "35": "DAHRL SHILD/a9000/s230 GDNEE NNEWW/a7000/h023"
+                            "30R": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210/h036"
                         }
                     },
                     "star": "NITZR3",
@@ -9798,11 +9798,11 @@
                     "waypoints": "N043.53.32.800,W093.29.51.430 DEMLL/a16000+/s280/ho NITZR/a12000+/s280 WRSAW/a11000+ DAHRL",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "DAHRL SHILD/a9000/s230 GDNEE NNEWW/a7000/h023",
                             "12L": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 CMMOE/a8000/s230 COZZZ/h301",
                             "12R": "DAHRL GDNEE ELLKO/a11000+/s250 SAVVG/a10000 GREAK/a8000/s230 DOLEE/h301",
                             "30L": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-                            "30R": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210/h036",
-                            "35": "DAHRL SHILD/a9000/s230 GDNEE NNEWW/a7000/h023"
+                            "30R": "DAHRL AANAH/a10000/s250 WBSTR/a9000+ CANDD/a7000/s230 HAPTN/a7000/s210/h036"
                         }
                     },
                     "star": "NITZR3",
@@ -9949,11 +9949,11 @@
                     "waypoints": "N044.36.14.510,W094.32.48.832 TORGY/a13000+/s280/ho OFSON/a11000+ HMBRG CONIA",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 GWAIT/h176",
                             "12L": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/h042",
                             "12R": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/h042",
                             "30L": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ MAUER/a8000/s210 JJENI/h121",
-                            "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ OSMOH/a8000/s210 IRRRV/h122",
-                            "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 GWAIT/h176"
+                            "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ OSMOH/a8000/s210 IRRRV/h122"
                         }
                     },
                     "star": "TORGY3",
@@ -10257,11 +10257,11 @@
                     "waypoints": "N044.36.14.510,W094.32.48.832 TORGY/a13000+/s280/ho OFSON/a11000+ HMBRG CONIA",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 GWAIT/h176",
                             "12L": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/h042",
                             "12R": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/h042",
                             "30L": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ MAUER/a8000/s210 JJENI/h121",
-                            "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ OSMOH/a8000/s210 IRRRV/h122",
-                            "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 GWAIT/h176"
+                            "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ OSMOH/a8000/s210 IRRRV/h122"
                         }
                     },
                     "star": "TORGY3",
@@ -10565,11 +10565,11 @@
                     "waypoints": "N044.36.14.510,W094.32.48.832 TORGY/a13000+/s280/ho OFSON/a11000+ HMBRG CONIA",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 GWAIT/h176",
                             "12L": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/h042",
                             "12R": "CONIA SPUKI/a7000/s230 KRUGG/a7000/s210/h042",
                             "30L": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ MAUER/a8000/s210 JJENI/h121",
-                            "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ OSMOH/a8000/s210 IRRRV/h122",
-                            "35": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ BRNVL/a8000/s210 GWAIT/h176"
+                            "30R": "CONIA JAEDN/a10000+/s250 HDEEE/a9000+ OSMOH/a8000/s210 IRRRV/h122"
                         }
                     },
                     "star": "TORGY3",
@@ -10873,11 +10873,11 @@
                     "waypoints": "GOLLF N045.38.53.921,W093.38.30.040/ho OLLEE/a9000 SAUGR GEP VYKES",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "VYKES/h185",
                             "12L": "VYKES/h160",
                             "12R": "VYKES/h160",
                             "30L": "VYKES/h120",
-                            "30R": "VYKES/h120",
-                            "35": "VYKES/h185"
+                            "30R": "VYKES/h120"
                         }
                     },
                     "star": "GEP1",
@@ -10955,11 +10955,11 @@
                     "waypoints": "GOLLF N045.38.53.921,W093.38.30.040/ho OLLEE/a9000 SAUGR GEP VYKES",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "VYKES/h185",
                             "12L": "VYKES/h160",
                             "12R": "VYKES/h160",
                             "30L": "VYKES/h120",
-                            "30R": "VYKES/h120",
-                            "35": "VYKES/h185"
+                            "30R": "VYKES/h120"
                         }
                     },
                     "star": "GEP1",
@@ -11037,11 +11037,11 @@
                     "waypoints": "GOLLF N045.38.53.921,W093.38.30.040/ho OLLEE/a9000 SAUGR GEP VYKES",
                     "runway_waypoints": {
                         "KMSP": {
+                            "35": "VYKES/h185",
                             "12L": "VYKES/h160",
                             "12R": "VYKES/h160",
                             "30L": "VYKES/h120",
-                            "30R": "VYKES/h120",
-                            "35": "VYKES/h185"
+                            "30R": "VYKES/h120"
                         }
                     },
                     "star": "GEP1",

@@ -176,35 +176,40 @@ func (s *Sim) deleteAircraft(ac *Aircraft) {
 		if fp := ac.NASFlightPlan; fp != nil && fp.CID != "" {
 			s.CIDAllocator.Release(fp.CID)
 			fp.CID = ""
-		} else if fp := s.starsComputer().lookupFlightPlanByACID(ACID(ac.ADSBCallsign)); fp != nil && fp.CID != "" {
+		} else if fp := s.STARSComputer.lookupFlightPlanByACID(ACID(ac.ADSBCallsign)); fp != nil && fp.CID != "" {
 			s.CIDAllocator.Release(fp.CID)
 			fp.CID = ""
 		}
 	}
 	delete(s.Aircraft, ac.ADSBCallsign)
 
-	s.starsComputer().HoldForRelease = slices.DeleteFunc(s.starsComputer().HoldForRelease,
+	// Remove any pending transmissions from this aircraft
+	for tcp := range s.PendingContacts {
+		s.PendingContacts[tcp] = slices.DeleteFunc(s.PendingContacts[tcp],
+			func(pc PendingContact) bool { return pc.ADSBCallsign == ac.ADSBCallsign })
+	}
+
+	delete(s.DeferredContacts, ac.ADSBCallsign)
+
+	// Remove any scheduled future events for this aircraft
+	s.FutureOnCourse = slices.DeleteFunc(s.FutureOnCourse,
+		func(foc FutureOnCourse) bool { return foc.ADSBCallsign == ac.ADSBCallsign })
+	s.FutureSquawkChanges = slices.DeleteFunc(s.FutureSquawkChanges,
+		func(fcs FutureChangeSquawk) bool { return fcs.ADSBCallsign == ac.ADSBCallsign })
+	s.FutureEmergencyUpdates = slices.DeleteFunc(s.FutureEmergencyUpdates,
+		func(feu FutureEmergencyUpdate) bool { return feu.ADSBCallsign == ac.ADSBCallsign })
+
+	s.STARSComputer.HoldForRelease = slices.DeleteFunc(s.STARSComputer.HoldForRelease,
 		func(a *Aircraft) bool { return ac.ADSBCallsign == a.ADSBCallsign })
 
 	fp := ac.NASFlightPlan
 	if fp == nil {
-		fp = s.starsComputer().takeFlightPlanByACID(ACID(ac.ADSBCallsign))
+		fp = s.STARSComputer.takeFlightPlanByACID(ACID(ac.ADSBCallsign))
 	}
 	if fp != nil {
 		delete(s.Handoffs, fp.ACID)
 		delete(s.PointOuts, fp.ACID)
 		s.deleteFlightPlan(fp)
-	}
-
-	// Clean up FacilityTracks from all facility computers
-	acid := ACID(ac.ADSBCallsign)
-	if s.nasNet != nil {
-		for _, sc := range s.nasNet.STARSComputers {
-			delete(sc.Tracks, acid)
-		}
-		for _, ec := range s.nasNet.ERAMComputers {
-			delete(ec.Tracks, acid)
-		}
 	}
 
 	s.lg.Info("deleted aircraft", slog.String("adsb_callsign", string(ac.ADSBCallsign)))
@@ -305,7 +310,7 @@ func (s *Sim) CreateFlightPlan(tcw TCW, spec FlightPlanSpecifier) error {
 		return err
 	}
 
-	fp, err := spec.GetFlightPlan(s.LocalCodePool, s.eramComputer().SquawkCodePool)
+	fp, err := spec.GetFlightPlan(s.LocalCodePool, s.ERAMComputer.SquawkCodePool)
 	if err != nil {
 		return err
 	}
@@ -316,11 +321,12 @@ func (s *Sim) CreateFlightPlan(tcw TCW, spec FlightPlanSpecifier) error {
 		func(ac *Aircraft) bool { return ac.IsAssociated() && ac.NASFlightPlan.ACID == fp.ACID }) {
 		return ErrDuplicateACID
 	}
-	if _, exists := s.starsComputer().FlightPlans[fp.ACID]; exists {
+	if slices.ContainsFunc(s.STARSComputer.FlightPlans,
+		func(fp2 *NASFlightPlan) bool { return fp.ACID == fp2.ACID }) {
 		return ErrDuplicateACID
 	}
 
-	fp, err = s.starsComputer().CreateFlightPlan(fp)
+	fp, err = s.STARSComputer.CreateFlightPlan(fp)
 
 	if err == nil {
 		err = s.postCheckFlightPlanSpecifier(spec)
@@ -450,15 +456,15 @@ func (s *Sim) AssociateFlightPlan(tcw TCW, callsign av.ADSBCallsign, spec Flight
 			if ac.IsAssociated() {
 				return av.ErrOtherControllerHasTrack
 			}
-			if s.starsComputer().lookupFlightPlanByACID(spec.ACID.Get()) != nil {
+			if s.STARSComputer.lookupFlightPlanByACID(spec.ACID.Get()) != nil {
 				return ErrDuplicateACID
 			}
 
-			fp, err := spec.GetFlightPlan(s.LocalCodePool, s.eramComputer().SquawkCodePool)
+			fp, err := spec.GetFlightPlan(s.LocalCodePool, s.ERAMComputer.SquawkCodePool)
 			if err != nil {
 				return err
 			}
-			if _, err := s.starsComputer().CreateFlightPlan(fp); err != nil {
+			if _, err := s.STARSComputer.CreateFlightPlan(fp); err != nil {
 				return err
 			}
 
@@ -466,11 +472,22 @@ func (s *Sim) AssociateFlightPlan(tcw TCW, callsign av.ADSBCallsign, spec Flight
 		},
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			// Either the flight plan was passed in or fp was initialized  in the validation function.
-			fp := s.starsComputer().takeFlightPlanByACID(spec.ACID.Get())
+			fp := s.STARSComputer.takeFlightPlanByACID(spec.ACID.Get())
 
 			fp.Update(spec, s)
 
 			ac.AssociateFlightPlan(fp)
+
+			// Create a flight strip if one doesn't already exist.
+			// Assign to TrackingController so the strip follows
+			// the position if consolidation changes.
+			if shouldCreateFlightStrip(fp) {
+				owner := fp.TrackingController
+				if owner == "" {
+					owner = s.State.PrimaryPositionForTCW(tcw)
+				}
+				s.initFlightStrip(fp, owner)
+			}
 
 			s.eventStream.Post(Event{
 				Type: FlightPlanAssociatedEvent,
@@ -501,7 +518,7 @@ func (s *Sim) ActivateFlightPlan(tcw TCW, callsign av.ADSBCallsign, acid ACID, s
 		return ErrTrackIsActive
 	}
 
-	fp := s.starsComputer().takeFlightPlanByACID(acid)
+	fp := s.STARSComputer.takeFlightPlanByACID(acid)
 	if fp == nil {
 		return ErrNoMatchingFlightPlan
 	}
@@ -530,13 +547,15 @@ func (s *Sim) DeleteFlightPlan(tcw TCW, acid ACID) error {
 	for _, ac := range s.Aircraft {
 		if ac.IsAssociated() && ac.NASFlightPlan.ACID == acid {
 			if s.TCWCanModifyTrack(tcw, ac.NASFlightPlan) {
-				s.deleteFlightPlan(ac.DisassociateFlightPlan())
+				fp := ac.DisassociateFlightPlan()
+				fp.DeleteTime = s.State.SimTime.Add(2 * time.Minute)
+				s.STARSComputer.FlightPlans = append(s.STARSComputer.FlightPlans, fp)
 				return nil
 			}
 		}
 	}
 
-	if fp := s.starsComputer().takeFlightPlanByACID(acid); fp != nil {
+	if fp := s.STARSComputer.takeFlightPlanByACID(acid); fp != nil {
 		s.deleteFlightPlan(fp)
 		return nil
 	}
@@ -545,16 +564,18 @@ func (s *Sim) DeleteFlightPlan(tcw TCW, acid ACID) error {
 }
 
 func (s *Sim) deleteFlightPlan(fp *NASFlightPlan) {
-	s.starsComputer().returnListIndex(fp.ListIndex)
+	if s.CIDAllocator != nil && fp.CID != "" {
+		s.CIDAllocator.Release(fp.CID)
+	}
+	if fp.StripOwner != "" {
+		s.freeStripCID(fp.StripCID)
+	}
+	s.STARSComputer.returnListIndex(fp.ListIndex)
 	if fp.PlanType == LocalNonEnroute {
 		s.LocalCodePool.Return(fp.AssignedSquawk)
 	} else {
-		s.eramComputer().SquawkCodePool.Return(fp.AssignedSquawk)
+		s.ERAMComputer.SquawkCodePool.Return(fp.AssignedSquawk)
 	}
-	// Clean up ERAM's authoritative copy
-	delete(s.eramComputer().FlightPlans, fp.ACID)
-	// Clean up associated track at the primary STARS
-	delete(s.starsComputer().Tracks, fp.ACID)
 }
 
 func (s *Sim) RepositionTrack(tcw TCW, acid ACID, callsign av.ADSBCallsign, p math.Point2LL) error {
@@ -595,14 +616,17 @@ func (s *Sim) RepositionTrack(tcw TCW, acid ACID, callsign av.ADSBCallsign, p ma
 	}
 	if fp == nil {
 		// Try unsupported DBs if we didn't find it there.
-		if sfp, ok := s.starsComputer().FlightPlans[acid]; ok && !sfp.Location.IsZero() {
-			if !s.TCWCanModifyTrack(tcw, sfp) {
-				return av.ErrOtherControllerHasTrack
-			} else if sfp.HandoffController != "" {
-				return ErrTrackIsBeingHandedOff
-			} else {
-				fp = sfp
-				delete(s.starsComputer().FlightPlans, acid)
+		for i, sfp := range s.STARSComputer.FlightPlans {
+			if !sfp.Location.IsZero() && sfp.ACID == acid {
+				if !s.TCWCanModifyTrack(tcw, sfp) {
+					return av.ErrOtherControllerHasTrack
+				} else if sfp.HandoffController != "" {
+					return ErrTrackIsBeingHandedOff
+				} else {
+					fp = sfp
+					s.STARSComputer.FlightPlans = slices.Delete(s.STARSComputer.FlightPlans, i, i+1)
+					break
+				}
 			}
 		}
 	}
@@ -631,7 +655,7 @@ func (s *Sim) RepositionTrack(tcw TCW, acid ACID, callsign av.ADSBCallsign, p ma
 	} else { // Creating / moving an unsupported DB.
 		fp.Location = p
 		fp.OwningTCW = tcw
-		s.starsComputer().FlightPlans[fp.ACID] = fp
+		s.STARSComputer.FlightPlans = append(s.STARSComputer.FlightPlans, fp)
 	}
 	return nil
 }
@@ -675,14 +699,8 @@ func (s *Sim) handoffTrack(fp *NASFlightPlan, toTCP TCP) {
 
 	// Resolve the target TCP - it may be consolidated to another controller
 	resolvedTCP := s.State.ResolveController(toTCP)
-	toCtrl, ok := s.State.Controllers[resolvedTCP]
-	if !ok {
+	if _, ok := s.State.Controllers[resolvedTCP]; !ok {
 		s.lg.Errorf("Unable to handoff %s: to controller %q (resolved: %q) not found", fp.ACID, toTCP, resolvedTCP)
-	}
-
-	// Cross-facility handoff: send NAS messages instead of direct mutation
-	if ok && toCtrl.IsExternal() && toCtrl.Facility != "" {
-		s.initiateCrossFacilityHandoff(fp, toTCP, toCtrl)
 	}
 
 	// Add them to the auto-accept map even if the target controller is
@@ -699,79 +717,6 @@ func (s *Sim) handoffTrack(fp *NASFlightPlan, toTCP TCP) {
 			// aircraft is a departure that will likely never talk to a human, send it on course (mainly so it climbs up to cruise)
 			s.enqueueDepartOnCourse(callsign)
 		}
-	}
-}
-
-// initiateCrossFacilityHandoff sends NAS messages (FP + TI) to the target
-// facility to initiate a cross-facility handoff.
-func (s *Sim) initiateCrossFacilityHandoff(fp *NASFlightPlan, toTCP TCP, toCtrl *av.Controller) {
-	targetFacility := toCtrl.Facility
-
-	// Determine which facility computer sends the handoff.
-	// Resolve from the current tracking controller's facility.
-	type messageSender struct {
-		send     func(*NASNetwork, NASMessage)
-		tracks   map[ACID]*FacilityTrack
-		facility string
-	}
-	var sender *messageSender
-
-	if fp.TrackingController != "" {
-		resolved := s.State.ResolveController(fp.TrackingController)
-		if ctrl, ok := s.State.Controllers[resolved]; ok {
-			if ctrl.ERAMFacility {
-				// Sending from an ERAM (e.g., ZBW center sector)
-				if ec := s.nasNet.ERAMFor(ctrl.Facility); ec != nil {
-					sender = &messageSender{send: ec.SendMessage, tracks: ec.Tracks, facility: ec.Identifier}
-				}
-			} else if ctrl.Facility != "" {
-				// Sending from a neighbor TRACON (e.g., PHL)
-				if sc := s.nasNet.STARSFor(ctrl.Facility); sc != nil {
-					sender = &messageSender{send: sc.SendMessage, tracks: sc.Tracks, facility: sc.Identifier}
-				}
-			}
-		}
-	}
-
-	// Fallback to primary STARS
-	if sender == nil {
-		sc := s.starsComputer()
-		sender = &messageSender{send: sc.SendMessage, tracks: sc.Tracks, facility: sc.Identifier}
-	}
-
-	// Determine entry fix for the TI message.
-	entryFix := fp.EntryFix
-	exitFix := fp.ExitFix
-
-	// Send FP to target facility if it doesn't already have it.
-	// Only route/FP data is sent — control state is communicated via TI/DA/TN.
-	sender.send(s.nasNet, NASMessage{
-		Type:       MsgFP,
-		ToFacility: targetFacility,
-		ACID:       fp.ACID,
-		Timestamp:  s.State.SimTime,
-		FlightPlan: fpForMessage(fp),
-	})
-
-	// Send TI (Transfer Initiate) to target facility
-	sender.send(s.nasNet, NASMessage{
-		Type:       MsgTI,
-		ToFacility: targetFacility,
-		ACID:       fp.ACID,
-		Timestamp:  s.State.SimTime,
-		Controller: ControlPosition(toTCP),
-		EntryFix:   entryFix,
-		ExitFix:    exitFix,
-		Altitude:   fp.AssignedAltitude,
-	})
-
-	// Create/update a track entry at the sending facility for the handoff
-	sender.tracks[fp.ACID] = &FacilityTrack{
-		ACID:          fp.ACID,
-		CoupledFP:     fp,
-		Owner:         fp.TrackingController,
-		OwnerFacility: sender.facility,
-		HandoffState:  TrackHandoffOffered,
 	}
 }
 
@@ -837,21 +782,19 @@ func (s *Sim) contactController(fromTCP TCP, sfp *NASFlightPlan, ac *Aircraft, t
 		}
 	}
 
-	s.eventStream.Post(Event{
-		Type:           HandoffControlEvent,
-		FromController: ac.ControllerFrequency,
-		ToController:   toTCP,
-		ACID:           sfp.ACID,
-	})
+	// Move the flight strip to the destination TCP.
+	sfp.StripOwner = toTCP
 
-	// Take away the current controller's ability to issue control
-	// commands.
+	// Cancel any in-progress frequency switch and take away the
+	// current controller's ability to issue control commands.
+	s.cancelPendingFrequencyChange(ac.ADSBCallsign)
 	ac.ControllerFrequency = ""
 
-	// In 5-10 seconds, have the aircraft contact the new controller
-	// (and give them control only then).
-	wait := time.Duration(5+s.Rand.Intn(10)) * time.Second
-	s.enqueueControllerContact(ac.ADSBCallsign, toTCP, wait)
+	// A human explicitly directing the pilot supersedes any virtual
+	// controller deferred contact chain.
+	delete(s.DeferredContacts, ac.ADSBCallsign)
+
+	s.enqueueControllerContact(ac.ADSBCallsign, toTCP, ControlPosition(fromTCP))
 
 	return intent
 }
@@ -896,9 +839,6 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 			fp.LastLocalController = newTrackingController
 			fp.OwningTCW = tcw // The accepting TCW owns the track
 
-			// Send TN if this was a cross-facility handoff
-			s.sendTNIfCrossFacility(fp, previousTrackingController, newTrackingController)
-
 			// Clean up if a point out was accepted as a handoff
 			delete(s.PointOuts, acid)
 
@@ -906,94 +846,15 @@ func (s *Sim) AcceptHandoff(tcw TCW, acid ACID) error {
 				haveTransferComms := slices.ContainsFunc(ac.Nav.Waypoints,
 					func(wp av.Waypoint) bool { return wp.TransferComms })
 				if !haveTransferComms && s.isVirtualController(previousTrackingController) {
-					// For a handoff from a virtual controller, cue up a delayed
-					// contact message unless there's a point later in the route when
-					// comms are to be transferred.
-					wait := time.Duration(5+s.Rand.Intn(10)) * time.Second
-					s.enqueueControllerContact(ac.ADSBCallsign, newTrackingController, wait)
+					// For a handoff from a virtual controller, transfer
+					// comms only if the pilot is on the virtual's
+					// frequency; otherwise defer until they arrive.
+					s.virtualControllerTransferComms(ac, TCP(previousTrackingController), TCP(newTrackingController))
 				}
 			}
 			return nil
 		})
 	return err
-}
-
-// sendTNIfCrossFacility sends a TN (Transfer Notify) message when a
-// cross-facility handoff is accepted. The TN goes from the accepting
-// facility back to the sending facility. It also updates the FacilityTrack
-// at the accepting facility to reflect the new owner.
-func (s *Sim) sendTNIfCrossFacility(fp *NASFlightPlan, previousController ControlPosition, newController ControlPosition) {
-	// Determine the previous controller's facility
-	prevResolved := s.State.ResolveController(previousController)
-	prevCtrl, prevOk := s.State.Controllers[prevResolved]
-
-	// Determine the new controller's facility
-	newResolved := s.State.ResolveController(newController)
-	newCtrl, newOk := s.State.Controllers[newResolved]
-
-	if !prevOk || !newOk {
-		return
-	}
-
-	// Determine the sender (new controller's facility) and target (old controller's facility)
-	var senderSend func(*NASNetwork, NASMessage)
-	var senderTracks map[ACID]*FacilityTrack
-	var senderFacility string
-	var targetFacility string
-
-	if newCtrl.ERAMFacility {
-		if ec := s.nasNet.ERAMFor(newCtrl.Facility); ec != nil {
-			senderSend = ec.SendMessage
-			senderTracks = ec.Tracks
-			senderFacility = ec.Identifier
-		}
-	} else if newCtrl.Facility != "" {
-		if sc := s.nasNet.STARSFor(newCtrl.Facility); sc != nil {
-			senderSend = sc.SendMessage
-			senderTracks = sc.Tracks
-			senderFacility = sc.Identifier
-		}
-	}
-	// Fallback: new controller is local (primary STARS)
-	if senderSend == nil {
-		sc := s.starsComputer()
-		senderSend = sc.SendMessage
-		senderTracks = sc.Tracks
-		senderFacility = sc.Identifier
-	}
-
-	if prevCtrl.ERAMFacility {
-		if ec := s.nasNet.ERAMFor(prevCtrl.Facility); ec != nil {
-			targetFacility = ec.Identifier
-		}
-	} else if prevCtrl.Facility != "" {
-		targetFacility = prevCtrl.Facility
-	}
-	// Fallback: previous controller is local (primary STARS)
-	if targetFacility == "" {
-		targetFacility = s.starsComputer().Identifier
-	}
-
-	// Only send TN if the facilities are actually different
-	if senderFacility == targetFacility {
-		return
-	}
-
-	// Send TN from the accepting facility to the sending facility
-	senderSend(s.nasNet, NASMessage{
-		Type:       MsgTN,
-		ToFacility: targetFacility,
-		ACID:       fp.ACID,
-		Timestamp:  s.State.SimTime,
-		Controller: newController,
-	})
-
-	// Update the accepting facility's track
-	if track, ok := senderTracks[fp.ACID]; ok {
-		track.Owner = newController
-		track.OwnerFacility = senderFacility
-		track.HandoffState = TrackHandoffAccepted
-	}
 }
 
 func (s *Sim) CancelHandoff(tcw TCW, acid ACID) error {
@@ -1096,6 +957,13 @@ func (s *Sim) ForceQL(tcw TCW, acid ACID, controller TCP) error {
 		func(tcw TCW, fp *NASFlightPlan, ac *Aircraft) error {
 			if _, ok := s.State.Controllers[controller]; !ok {
 				return av.ErrNoController
+			}
+			// Per 6.12.6: force QL to the owning TCW's display requires
+			// that the entering TCW owns the flight and ForceQLToSelf is adapted.
+			if s.State.TCWControlsPosition(fp.OwningTCW, ControlPosition(controller)) {
+				if !s.State.FacilityAdaptation.ForceQLToSelf || fp.OwningTCW != tcw {
+					return ErrIllegalPosition
+				}
 			}
 			return nil
 		},
@@ -1360,7 +1228,7 @@ func (s *Sim) ReleaseDeparture(tcw TCW, callsign av.ADSBCallsign) error {
 	if !ok {
 		return av.ErrNoAircraftForCallsign
 	}
-	fp := s.starsComputer().lookupFlightPlanByACID(ACID(callsign))
+	fp := s.STARSComputer.lookupFlightPlanByACID(ACID(callsign))
 	if fp == nil {
 		return ErrNoMatchingFlightPlan
 	}
@@ -1368,7 +1236,7 @@ func (s *Sim) ReleaseDeparture(tcw TCW, callsign av.ADSBCallsign) error {
 		return ErrInvalidDepartureController
 	}
 
-	if err := s.starsComputer().ReleaseDeparture(callsign); err == nil {
+	if err := s.STARSComputer.ReleaseDeparture(callsign); err == nil {
 		ac.Released = true
 		ac.ReleaseTime = s.State.SimTime
 		return nil
@@ -1722,6 +1590,23 @@ func (s *Sim) ContactTower(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent,
 		})
 }
 
+// ATISCommand handles the controller telling a pilot the current ATIS letter.
+// If the aircraft already reported the correct ATIS, no readback is needed.
+// Otherwise the pilot responds with "we'll pick up (letter)".
+func (s *Sim) ATISCommand(tcw TCW, callsign av.ADSBCallsign, letter string) (av.CommandIntent, error) {
+	s.mu.Lock(s.lg)
+	defer s.mu.Unlock(s.lg)
+
+	return s.dispatchControlledAircraftCommand(tcw, callsign,
+		func(tcw TCW, ac *Aircraft) av.CommandIntent {
+			if ac.ReportedATIS == letter {
+				return nil
+			}
+			ac.ReportedATIS = letter
+			return av.ATISIntent{Letter: letter}
+		})
+}
+
 // TrafficAdvisory handles controller-issued traffic advisories.
 // Command format: TRAFFIC/oclock/miles/altitude (e.g., TRAFFIC/10/4/30 for 10 o'clock, 4 miles, 3000 ft)
 func (s *Sim) TrafficAdvisory(tcw TCW, callsign av.ADSBCallsign, command string) (av.CommandIntent, error) {
@@ -1931,6 +1816,7 @@ func (s *Sim) RadarServicesTerminated(tcw TCW, callsign av.ADSBCallsign) (av.Com
 			s.enqueueTransponderChange(ac.ADSBCallsign, 0o1200, ac.Mode)
 
 			// Leave our frequency
+			s.cancelPendingFrequencyChange(ac.ADSBCallsign)
 			ac.ControllerFrequency = ""
 
 			return av.ContactIntent{
@@ -2029,10 +1915,16 @@ const (
 	PendingTransmissionEmergency                                          // Emergency stage transmission
 )
 
+// PendingFrequencyChange represents a pilot switching to a new frequency.
+// Once the Time passes, the aircraft's ControllerFrequency is set and
+// the entry is removed.
+type PendingFrequencyChange struct {
+	ADSBCallsign av.ADSBCallsign
+	TCP          TCP
+	Time         time.Time
+}
+
 // PendingContact represents a pilot-initiated transmission waiting to be played.
-// ReadyTime is when the pilot is ready to transmit (after switching frequencies, etc.)
-// The actual message is generated on-demand when the client requests it,
-// ensuring current aircraft state (altitude, etc.) is used.
 type PendingContact struct {
 	ADSBCallsign           av.ADSBCallsign
 	TCP                    TCP
@@ -2041,6 +1933,7 @@ type PendingContact struct {
 	ReportDepartureHeading bool                    // For departures: include assigned heading
 	HasQueuedEmergency     bool                    // For departures: trigger emergency after contact
 	PrebuiltTransmission   *av.RadioTransmission   // For emergency transmissions: pre-built message
+	FirstInFacility        bool                    // For arrivals: first contact in this TRACON facility
 }
 
 // addPendingContact adds an aircraft to the pending contacts queue for a controller.
@@ -2049,6 +1942,38 @@ func (s *Sim) addPendingContact(pc PendingContact) {
 		s.PendingContacts = make(map[TCP][]PendingContact)
 	}
 	s.PendingContacts[pc.TCP] = append(s.PendingContacts[pc.TCP], pc)
+}
+
+// cancelPendingFrequencyChange removes any pending frequency change for
+// the given aircraft. Called when the aircraft's frequency is being managed
+// directly (e.g., controller contact, radar services terminated) to prevent
+// a stale queued switch from overwriting the new state.
+func (s *Sim) cancelPendingFrequencyChange(callsign av.ADSBCallsign) {
+	s.PendingFrequencyChanges = slices.DeleteFunc(s.PendingFrequencyChanges,
+		func(pfc PendingFrequencyChange) bool {
+			return pfc.ADSBCallsign == callsign
+		})
+}
+
+// processPendingFrequencySwitches sets ControllerFrequency for aircraft whose
+// frequency-switch time has passed, then removes those entries.
+func (s *Sim) processPendingFrequencySwitches() {
+	now := s.State.SimTime
+	var switched []*Aircraft
+	s.PendingFrequencyChanges = util.FilterSliceInPlace(s.PendingFrequencyChanges,
+		func(pfc PendingFrequencyChange) bool {
+			if now.After(pfc.Time) {
+				if ac, ok := s.Aircraft[pfc.ADSBCallsign]; ok {
+					ac.ControllerFrequency = pfc.TCP
+					switched = append(switched, ac)
+				}
+				return false
+			}
+			return true
+		})
+	for _, ac := range switched {
+		s.processDeferredContact(ac)
+	}
 }
 
 // PopReadyContact removes and returns the first pending contact whose ReadyTime has passed
@@ -2070,7 +1995,7 @@ func (s *Sim) popReadyContact(positions []TCP) *PendingContact {
 	// Find the first contact that's ready (ReadyTime has passed) for any position
 	for _, tcp := range positions {
 		for i, pc := range s.PendingContacts[tcp] {
-			if !s.State.SimTime.Before(pc.ReadyTime) {
+			if s.State.SimTime.After(pc.ReadyTime) {
 				s.PendingContacts[tcp] = slices.Delete(s.PendingContacts[tcp], i, i+1)
 				return &pc
 			}
@@ -2082,23 +2007,118 @@ func (s *Sim) popReadyContact(positions []TCP) *PendingContact {
 
 // enqueueControllerContact adds an aircraft to the pending contacts queue.
 // Called when an aircraft should contact a controller (after handoff accepted, etc.)
-// The delay represents time for pilot to switch frequencies, etc.
-func (s *Sim) enqueueControllerContact(callsign av.ADSBCallsign, tcp TCP, delay time.Duration) {
+// fromPos is the controller position the aircraft is coming from, used to
+// determine whether this is the first contact in a TRACON facility (for ATIS reporting).
+func (s *Sim) enqueueControllerContact(callsign av.ADSBCallsign, tcp TCP, fromPos ControlPosition) {
+	// Aircraft will switch frequency (2-4 sec), then listen before transmitting (3-6 sec).
+	switchDelay := time.Duration(2+s.Rand.Intn(3)) * time.Second
+	listenDelay := time.Duration(3+s.Rand.Intn(4)) * time.Second
+	s.PendingFrequencyChanges = append(s.PendingFrequencyChanges,
+		PendingFrequencyChange{ADSBCallsign: callsign, TCP: tcp, Time: s.State.SimTime.Add(switchDelay)})
 	s.addPendingContact(PendingContact{
-		ADSBCallsign: callsign,
-		TCP:          tcp,
-		ReadyTime:    s.State.SimTime.Add(delay),
-		Type:         PendingTransmissionArrival,
+		ADSBCallsign:    callsign,
+		TCP:             tcp,
+		ReadyTime:       s.State.SimTime.Add(switchDelay + listenDelay),
+		Type:            PendingTransmissionArrival,
+		FirstInFacility: s.isFirstFacilityContact(fromPos, tcp),
 	})
+}
+
+// isFirstFacilityContact returns true if transitioning from fromPos to
+// toTCP represents the aircraft's first contact in a TRACON facility.
+// This is true when the target is a local TRACON controller and the
+// source is external (ERAM center or a different TRACON).
+func (s *Sim) isFirstFacilityContact(fromPos ControlPosition, toTCP TCP) bool {
+	toCtrl, ok := s.State.Controllers[ControlPosition(toTCP)]
+	if !ok || toCtrl.ERAMFacility {
+		return false // Target is not a TRACON controller
+	}
+
+	fromCtrl, ok := s.State.Controllers[fromPos]
+	if !ok {
+		return true // Unknown source, assume new facility
+	}
+
+	// If the source is external (ERAM or different TRACON), this is the
+	// first contact in the local TRACON facility.
+	return fromCtrl.IsExternal()
+}
+
+// virtualControllerTransferComms handles the comms transfer when a handoff
+// from a virtual controller is accepted. If the pilot is currently on the
+// virtual's frequency, the transfer happens immediately; otherwise it is
+// deferred until the pilot arrives on the virtual's frequency.
+func (s *Sim) virtualControllerTransferComms(ac *Aircraft, virtualTCP TCP, targetTCP TCP) {
+	if ac.ControllerFrequency == ControlPosition(virtualTCP) {
+		// Pilot is on the virtual's frequency right now.
+		if s.isVirtualController(targetTCP) {
+			// Virtual-to-virtual: instant frequency change, then check
+			// for further deferred contacts on the new position.
+			ac.ControllerFrequency = ControlPosition(targetTCP)
+			s.processDeferredContact(ac)
+		} else {
+			// Virtual-to-human: realistic switch/listen delay.
+			s.enqueueControllerContact(ac.ADSBCallsign, targetTCP, ControlPosition(virtualTCP))
+		}
+	} else {
+		// Pilot hasn't reached the virtual's frequency yet. Store a
+		// deferred contact so that when the pilot does arrive, we send
+		// them onward to targetTCP.
+		if s.DeferredContacts == nil {
+			s.DeferredContacts = make(map[av.ADSBCallsign]map[ControlPosition]TCP)
+		}
+		if s.DeferredContacts[ac.ADSBCallsign] == nil {
+			s.DeferredContacts[ac.ADSBCallsign] = make(map[ControlPosition]TCP)
+		}
+		s.DeferredContacts[ac.ADSBCallsign][ControlPosition(virtualTCP)] = targetTCP
+	}
+}
+
+// processDeferredContact checks whether the aircraft's current frequency
+// matches a deferred contact entry. If so, it triggers the transfer (instant
+// for virtual targets, enqueued for human targets) and removes the entry.
+func (s *Sim) processDeferredContact(ac *Aircraft) {
+	if s.DeferredContacts == nil {
+		return
+	}
+	m, ok := s.DeferredContacts[ac.ADSBCallsign]
+	if !ok {
+		return
+	}
+	targetTCP, ok := m[ac.ControllerFrequency]
+	if !ok {
+		return
+	}
+	delete(m, ac.ControllerFrequency)
+	if len(m) == 0 {
+		delete(s.DeferredContacts, ac.ADSBCallsign)
+	}
+
+	// Cancel the orphaned PendingContact for the virtual position that
+	// directed the pilot here (it was created by contactController).
+	virtualTCP := TCP(ac.ControllerFrequency)
+	if pcs, ok := s.PendingContacts[virtualTCP]; ok {
+		s.PendingContacts[virtualTCP] = slices.DeleteFunc(pcs,
+			func(pc PendingContact) bool { return pc.ADSBCallsign == ac.ADSBCallsign })
+	}
+
+	if s.isVirtualController(targetTCP) {
+		// Virtual-to-virtual: instant, then recurse.
+		ac.ControllerFrequency = ControlPosition(targetTCP)
+		s.processDeferredContact(ac)
+	} else {
+		// Virtual-to-human: realistic delay.
+		s.enqueueControllerContact(ac.ADSBCallsign, targetTCP, ac.ControllerFrequency)
+	}
 }
 
 // enqueueDepartureContact adds a departure to the pending contacts queue.
 // Departures are ready immediately (they're already on frequency).
 func (s *Sim) enqueueDepartureContact(ac *Aircraft, tcp TCP) {
+	ac.ControllerFrequency = ControlPosition(tcp)
 	s.addPendingContact(PendingContact{
 		ADSBCallsign:           ac.ADSBCallsign,
 		TCP:                    tcp,
-		ReadyTime:              s.State.SimTime, // Ready immediately
 		Type:                   PendingTransmissionDeparture,
 		ReportDepartureHeading: ac.ReportDepartureHeading,
 		HasQueuedEmergency:     ac.EmergencyState != nil && ac.EmergencyState.CurrentStage == -1,
@@ -2110,7 +2130,6 @@ func (s *Sim) enqueuePilotTransmission(callsign av.ADSBCallsign, tcp TCP, txType
 	s.addPendingContact(PendingContact{
 		ADSBCallsign: callsign,
 		TCP:          tcp,
-		ReadyTime:    s.State.SimTime, // Ready immediately
 		Type:         txType,
 	})
 }
@@ -2121,7 +2140,6 @@ func (s *Sim) enqueueEmergencyTransmission(callsign av.ADSBCallsign, tcp TCP, rt
 	s.addPendingContact(PendingContact{
 		ADSBCallsign:         callsign,
 		TCP:                  tcp,
-		ReadyTime:            s.State.SimTime, // Ready immediately
 		Type:                 PendingTransmissionEmergency,
 		PrebuiltTransmission: rt,
 	})
@@ -2164,7 +2182,6 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		if !ac.IsAssociated() {
 			return "", ""
 		}
-		ac.ControllerFrequency = ControlPosition(pc.TCP)
 		rt = ac.Nav.DepartureMessage(pc.ReportDepartureHeading)
 
 		// Handle emergency activation for departures
@@ -2182,9 +2199,27 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		if !ac.IsAssociated() {
 			return "", ""
 		}
-		ac.ControllerFrequency = ControlPosition(pc.TCP)
 		rt = ac.ContactMessage(s.ReportingPoints)
 		rt.Type = av.RadioTransmissionContact
+
+		// Append ATIS information only when this is the first contact
+		// in a TRACON facility (not when transferring between
+		// controllers in the same facility, and not for ERAM controllers).
+		if pc.FirstInFacility {
+			arrivalAirport := ac.FlightPlan.ArrivalAirport
+			if letter, ok := s.State.ATISLetter[arrivalAirport]; ok && letter != "" {
+				if s.Rand.Float32() < 0.85 {
+					reportLetter := letter
+					if ct, ok := s.ATISChangedTime[arrivalAirport]; ok && !ct.IsZero() {
+						if s.State.SimTime.Sub(ct) < 5*time.Minute && s.Rand.Float32() < 0.3 {
+							reportLetter = string(rune((letter[0]-'A'+25)%26 + 'A'))
+						}
+					}
+					ac.ReportedATIS = reportLetter
+					rt.Add("[we have information {ch}|information {ch}|we have {ch}]", reportLetter)
+				}
+			}
+		}
 
 		// Handle emergency activation for arrivals
 		humanAllocated := !s.isVirtualController(ac.ControllerFrequency)
@@ -2302,7 +2337,7 @@ func (s *Sim) enqueueTransponderChange(callsign av.ADSBCallsign, code av.Squawk,
 		FutureChangeSquawk{ADSBCallsign: callsign, Code: code, Mode: mode, Time: s.State.SimTime.Add(wait)})
 }
 
-func (s *Sim) processEnqueued() {
+func (s *Sim) processFutureEvents() {
 	s.FutureOnCourse = util.FilterSliceInPlace(s.FutureOnCourse,
 		func(oc FutureOnCourse) bool {
 			if s.State.SimTime.After(oc.Time) {
@@ -2665,6 +2700,8 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 		} else if command == "AGAIN" {
 			// AGAIN is handled specially in RunAircraftControlCommands for TTS synthesis
 			return nil, nil
+		} else if strings.HasPrefix(command, "ATIS/") {
+			return s.ATISCommand(tcw, callsign, command[5:])
 		} else {
 			components := strings.Split(command, "/")
 			if len(components) != 2 || len(components[1]) == 0 {
@@ -2688,7 +2725,7 @@ func (s *Sim) runOneControlCommand(tcw TCW, callsign av.ADSBCallsign, command st
 			return s.CancelApproachClearance(tcw, callsign)
 		} else if command == "CVS" {
 			return s.ClimbViaSID(tcw, callsign)
-		} else if len(command) > 4 && command[:3] == "CSI" && !util.IsAllNumbers(command[3:]) {
+		} else if command == "CSI" || (strings.HasPrefix(command, "CSI") && !util.IsAllNumbers(command[3:])) {
 			return s.ClearedApproach(tcw, callsign, command[3:], true)
 		} else if components := strings.Split(command, "/"); len(components) > 1 {
 			fix := components[0][1:]

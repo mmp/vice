@@ -377,8 +377,8 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 		Color: ps.Brightness.Lists.ScaleRGB(STARSTextWarningColor),
 	}
 
-	stripK := func(airport string) string {
-		if len(airport) == 4 && airport[0] == 'K' {
+	stripPrefix := func(airport string) string {
+		if len(airport) == 4 {
 			return airport[1:]
 		} else {
 			return airport
@@ -653,7 +653,7 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 		var altimeters []string
 		for _, ap := range airports {
 			if metar, ok := ctx.Client.State.METAR[ap]; ok {
-				altimeters = append(altimeters, stripK(ap)+" "+fmt.Sprintf("%4.2fA", metar.Altimeter_inHg())) // 2-79: A -> automatic
+				altimeters = append(altimeters, stripPrefix(ap)+" "+fmt.Sprintf("%4.2fA", metar.Altimeter_inHg())) // 2-79: A -> automatic
 			}
 		}
 		for len(altimeters) >= 3 {
@@ -758,8 +758,8 @@ func (sp *STARSPane) drawSSAList(ctx *panes.Context, pw [2]float32, listStyle re
 
 			text := "*"
 			text += util.Select(crda.Mode == CRDAModeStagger, "S ", "T ")
-			text += sp.ConvergingRunways[i].Airport + " "
-			text += sp.ConvergingRunways[i].getRunwaysString()
+			text += sp.CRDAPairs[i].Airport + " "
+			text += sp.CRDAPairs[i].getRegionsString()
 
 			pw = td.AddText(text, pw, listStyle)
 			newline()
@@ -1182,11 +1182,11 @@ func (sp *STARSPane) drawCRDAStatusList(ctx *panes.Context, paneExtent math.Exte
 			line.WriteString(util.Select(crda.Mode == CRDAModeStagger, "S", "T"))
 		}
 
-		pair := sp.ConvergingRunways[i]
+		pair := sp.CRDAPairs[i]
 		line.WriteString(strconv.Itoa(pair.Index))
 		line.WriteByte(' ')
 		line.WriteString(pair.Airport + " ")
-		line.WriteString(pair.getRunwaysString())
+		line.WriteString(pair.getRegionsString())
 		if crda.Enabled {
 			for line.Len() < 16 {
 				line.WriteByte(' ')
@@ -1237,8 +1237,8 @@ func (sp *STARSPane) drawMCISuppressionList(ctx *panes.Context, paneExtent math.
 
 func (sp *STARSPane) drawTowerList(ctx *panes.Context, paneExtent math.Extent2D, airport string, towerIndex int,
 	style renderer.TextStyle, td *renderer.TextDrawBuilder, ld *renderer.ColoredLinesDrawBuilder) math.Extent2D {
-	stripK := func(airport string) string {
-		if len(airport) == 4 && airport[0] == 'K' {
+	stripPrefix := func(airport string) string {
+		if len(airport) == 4 {
 			return airport[1:]
 		} else {
 			return airport
@@ -1260,8 +1260,8 @@ func (sp *STARSPane) drawTowerList(ctx *panes.Context, paneExtent math.Extent2D,
 	k := util.SortedMapKeys(m)
 
 	return sp.drawSystemList(ctx, paneExtent, &ps.TowerLists[towerIndex].Position, style, td, ld, ListFormatter{
-		Title:      stripK(airport) + " TOWER",
-		FrameTitle: stripK(airport) + " TOWER (P" + strconv.Itoa(towerIndex+1) + ")",
+		Title:      stripPrefix(airport) + " TOWER",
+		FrameTitle: stripPrefix(airport) + " TOWER (P" + strconv.Itoa(towerIndex+1) + ")",
 		Lines:      ps.TowerLists[towerIndex].Lines,
 		Entries:    len(k),
 		FormatLine: func(idx int, sb *strings.Builder) {

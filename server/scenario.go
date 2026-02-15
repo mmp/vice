@@ -53,11 +53,13 @@ type scenarioGroup struct {
 	MagneticAdjustment float32 `json:"magnetic_adjustment"`
 
 	// The following fields are populated at runtime from the facility config file,
-	// NOT from the scenario group JSON.
+	// not from the scenario group JSON.
 	ControlPositions   map[sim.TCP]*av.Controller `json:"-"`
 	FacilityAdaptation sim.FacilityAdaptation     `json:"-"`
-	HandoffTopology    *sim.HandoffTopology        `json:"-"`
-	FixPairs           []sim.FixPairDefinition     `json:"-"`
+	HandoffTopology    *sim.HandoffTopology       `json:"-"`
+	FixPairs           []sim.FixPairDefinition    `json:"-"`
+
+	SourceFile string // path of the JSON file this was loaded from
 }
 
 type scenario struct {
@@ -115,10 +117,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		// Copy assignments from the referenced configuration
 		s.ControllerConfiguration.InboundAssignments = maps.Clone(config.InboundAssignments)
 		s.ControllerConfiguration.DepartureAssignments = maps.Clone(config.DepartureAssignments)
-		// Only copy consolidation from facility config if the scenario doesn't provide its own override
-		if len(s.ControllerConfiguration.DefaultConsolidation) == 0 {
-			s.ControllerConfiguration.DefaultConsolidation = deep.MustCopy(config.DefaultConsolidation)
-		}
+		s.ControllerConfiguration.DefaultConsolidation = deep.MustCopy(config.DefaultConsolidation)
 	}
 
 	// Auto-add airspace controllers to consolidation if they're valid
@@ -134,6 +133,23 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 							s.ControllerConfiguration.DefaultConsolidation[root], ctrl)
 					}
 				}
+			}
+		}
+	}
+
+	// Filter assignments to only include entries targeting positions that
+	// exist as known controllers. The facility config's full assignments
+	// cover all positions in the TRACON, but some may reference
+	// positions that don't exist in the loaded controller set.
+	if s.ControllerConfiguration != nil {
+		for flow, tcp := range s.ControllerConfiguration.InboundAssignments {
+			if _, ok := sg.ControlPositions[tcp]; !ok {
+				delete(s.ControllerConfiguration.InboundAssignments, flow)
+			}
+		}
+		for spec, tcp := range s.ControllerConfiguration.DepartureAssignments {
+			if _, ok := sg.ControlPositions[tcp]; !ok {
+				delete(s.ControllerConfiguration.DepartureAssignments, spec)
 			}
 		}
 	}
@@ -417,11 +433,17 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		}
 	}
 
-	// Validate area config default airports for CRDA
-	for areaNum, ac := range sg.FacilityAdaptation.AreaConfigs {
-		if ac.DefaultAirport != "" {
-			if _, ok := sg.Airports[ac.DefaultAirport]; !ok {
-				e.ErrorString("area_configs[%d]: default_airport %q is not an airport in this scenario", areaNum, ac.DefaultAirport)
+	// Do any active airports have CRDA?
+	haveCRDA := util.SeqContainsFunc(maps.Keys(activeAirports),
+		func(ap *av.Airport) bool { return len(ap.CRDAPairs) > 0 })
+	if haveCRDA {
+		// Area configs may specify a default airport used by CRDA behavior.
+		for areaNum, ac := range sg.FacilityAdaptation.AreaConfigs {
+			if ac.DefaultAirport != "" {
+				if _, ok := sg.Airports[ac.DefaultAirport]; !ok {
+					e.ErrorString("area_configs[%d]: default_airport %q is not an airport in this scenario",
+						areaNum, ac.DefaultAirport)
+				}
 			}
 		}
 	}
@@ -552,7 +574,7 @@ func (sg *scenarioGroup) Locate(s string) (math.Point2LL, bool) {
 		return f.Location, ok
 	} else if p, err := math.ParseLatLong([]byte(s)); err == nil {
 		return p, true
-	} else if len(s) > 5 && s[0] == 'K' && s[4] == '-' {
+	} else if len(s) > 5 && s[4] == '-' {
 		if rwy, ok := av.LookupRunway(s[:4], s[5:]); ok {
 			return rwy.Threshold, true
 		}
@@ -594,7 +616,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 			})))
 	allAirports := slices.Collect(maps.Keys(sg.Airports))
 
-	sg.FacilityAdaptation.PostDeserialize(sg, controlledAirports, allAirports, e)
+	sg.FacilityAdaptation.PostDeserialize(sg, controlledAirports, allAirports, sg.ControlPositions, e)
 
 	sg.NmPerLatitude = 60
 	sg.NmPerLongitude = math.NMPerLongitudeAt(sg.FacilityAdaptation.Center)
@@ -722,6 +744,22 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 		e.Pop()
 	}
 
+	// Auto-set default_airport if only one airport has converging runways
+	var crdaAirport string
+	crdaCount := 0
+	for name, ap := range sg.Airports {
+		if len(ap.CRDAPairs) > 0 {
+			crdaAirport = name
+			crdaCount++
+		}
+	}
+	if crdaCount == 1 {
+		for _, areaConfig := range sg.FacilityAdaptation.AreaConfigs {
+			if areaConfig != nil && areaConfig.DefaultAirport == "" {
+				areaConfig.DefaultAirport = crdaAirport
+			}
+		}
+	}
 
 	if _, ok := sg.Scenarios[sg.DefaultScenario]; !ok {
 		e.ErrorString("default scenario %q not found in \"scenarios\"", sg.DefaultScenario)
@@ -767,7 +805,6 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 		if len(ctrl.Scope) > 1 {
 			e.ErrorString("\"scope_char\" may only be a single character")
 		}
-
 
 		e.Pop()
 	}
@@ -898,8 +935,12 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	pos := make(map[sim.TCP]*av.Controller)
 	for _, ctrl := range sg.ControlPositions {
 		id := sim.TCP(ctrl.PositionId())
-		if _, ok := pos[id]; ok {
-			e.ErrorString("%s: TCP / sector_id used for multiple \"control_positions\"", id)
+		if existing, ok := pos[id]; ok {
+			// Allow aliases: the same controller stored under multiple keys
+			// (e.g., prefixed TCP "B17" and human-readable name "ZBW 17 Nantucket")
+			if existing.SectorID != ctrl.SectorID || existing.Frequency != ctrl.Frequency {
+				e.ErrorString("%s: TCP / sector_id used for multiple \"control_positions\"", id)
+			}
 		}
 		pos[id] = ctrl
 	}
@@ -1781,6 +1822,7 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *scen
 		e.ErrorString("scenario group is missing \"tracon\" or \"artcc\"")
 		return nil
 	}
+	s.SourceFile = path
 	return &s
 }
 
@@ -2014,7 +2056,7 @@ func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor strin
 	if isARTCC(neighbor) {
 		facilityId = "C"
 	}
-	for _, ctrl := range fc.ControlPositions {
+	for position, ctrl := range fc.ControlPositions {
 		ctrlCopy := deep.MustCopy(ctrl)
 		ctrlCopy.SectorID = prefix + ctrlCopy.SectorID
 		ctrlCopy.FacilityIdentifier = facilityId
@@ -2022,6 +2064,10 @@ func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor strin
 		prefixedTCP := sim.TCP(ctrlCopy.PositionId())
 		if _, exists := sg.ControlPositions[prefixedTCP]; !exists {
 			sg.ControlPositions[prefixedTCP] = ctrlCopy
+		}
+		// Also store under the original facility config key name
+		if _, exists := sg.ControlPositions[sim.TCP(position)]; !exists {
+			sg.ControlPositions[sim.TCP(position)] = ctrlCopy
 		}
 	}
 }
@@ -2248,6 +2294,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 		scenarioNames := make(map[string]string)
 
 		for groupName, sgroup := range tracon {
+			e.Push(sgroup.SourceFile)
 			e.Push("Scenario group " + groupName)
 
 			// Make sure the same scenario name isn't used in multiple
@@ -2277,9 +2324,10 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 				}
 			}
 
-			e.Pop()
+			e.Pop() // Scenario group
+			e.Pop() // SourceFile
 		}
-		e.Pop()
+		e.Pop() // TRACON
 	}
 
 	// Validate the extra scenario separately with its own error logger
@@ -2294,6 +2342,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			scenarioGroups[extraScenarioFacility][extraScenario.Name] = extraScenario
 		} else {
 			var extraE util.ErrorLogger
+			extraE.Push(extraScenario.SourceFile)
 			extraE.Push("TRACON " + extraScenarioFacility)
 			extraE.Push("Scenario group " + extraScenario.Name)
 
@@ -2308,8 +2357,9 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 				extraScenario.PostDeserialize(&extraE, catalogs, manifest)
 			}
 
-			extraE.Pop()
-			extraE.Pop()
+			extraE.Pop() // Scenario group
+			extraE.Pop() // TRACON
+			extraE.Pop() // SourceFile
 
 			if extraE.HaveErrors() {
 				extraScenarioErrors = extraE.String()

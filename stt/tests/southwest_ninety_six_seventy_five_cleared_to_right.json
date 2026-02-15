@@ -1,0 +1,369 @@
+{
+  "time": "2026-02-04T20:45:19.243373586Z",
+  "level": "INFO",
+  "msg": "STT command",
+  "callstack": [
+    "dispatcher.go:674:/server.(*dispatcher).RunAircraftCommands",
+    "value.go:581:reflect.Value.call",
+    "value.go:365:reflect.Value.Call",
+    "server.go:383:net/rpc.(*service).call",
+    "asm_amd64.s:1693:runtime.goexit"
+  ],
+  "transcript": "Southwest Ninety Six Seventy Five cleared to right end it",
+  "whisper_duration_ms": 386.284,
+  "audio_duration_ms": 3528,
+  "processor": "GPU: NVIDIA GeForce RTX 4090 (24138MB)",
+  "whisper_model": "ggml-medium.en-jlvatc-q5_0.bin",
+  "callsign": "SWA9675",
+  "command": "DENDED",
+  "stt_aircraft": {
+    "American 69": {
+      "Callsign": "AAL69",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabe": "SABEE"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 10641,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "C46",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 70 53": {
+      "Callsign": "AAL7053",
+      "AircraftType": "A319",
+      "Fixes": {
+        "Baypo": "BAYPO",
+        "Ecake": "ECAKE",
+        "Finki": "FINKI"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BAYPO2",
+      "STAR": "",
+      "Altitude": 6109,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "American 95 27": {
+      "Callsign": "AAL9527",
+      "AircraftType": "B738",
+      "Fixes": {
+        "Murdo": "MURDO",
+        "Pairs": "PAIRS",
+        "Sabe": "SABEE",
+        "gandy": "GANDY"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "GANDY8",
+      "STAR": "",
+      "Altitude": 3893,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Moxy one 24": {
+      "Callsign": "MXY124",
+      "AircraftType": "BCS3",
+      "Fixes": {},
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BAYPO2",
+      "STAR": "",
+      "Altitude": 12000,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "J30",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest 82 35": {
+      "Callsign": "SWA8235",
+      "AircraftType": "B38M",
+      "Fixes": {
+        "Bucks": "BUCCS",
+        "Guzda": "GUZDA",
+        "Lisa F": "LISAF",
+        "Pomse": "POMSE",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "ILS Runway 19L",
+      "SID": "",
+      "STAR": "BLFRG2",
+      "Altitude": 5000,
+      "State": "arrival",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Southwest 96 75": {
+      "Callsign": "SWA9675",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Ended": "ENDED",
+        "Lacen": "LACEN"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "ENDED2",
+      "STAR": "",
+      "Altitude": 6911,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest eight 15": {
+      "Callsign": "SWA815",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Ecake": "ECAKE"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BAYPO2",
+      "STAR": "",
+      "Altitude": 12000,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "J30",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Southwest eight 65": {
+      "Callsign": "SWA865",
+      "AircraftType": "B737",
+      "Fixes": {
+        "Baypo": "BAYPO",
+        "Ecake": "ECAKE",
+        "Finki": "FINKI"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "BAYPO2",
+      "STAR": "",
+      "Altitude": 1804,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 27 92": {
+      "Callsign": "NKS2792",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Jetstream": "JSTRM",
+        "Tampa": "KTPA"
+      },
+      "CandidateApproaches": {
+        "I L S runway one niner left": "I9L",
+        "I L S runway one niner right": "I9R",
+        "r-nav runway one niner left": "R9L",
+        "r-nav runway one niner right": "R9R"
+      },
+      "ApproachFixes": {
+        "I9L": {
+          "Bucks": "BUCCS",
+          "Pomse": "POMSE"
+        },
+        "I9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE"
+        },
+        "R9L": {
+          "Darbs": "DARBS",
+          "Jetstream": "JSTRM",
+          "Lizard": "LZARD",
+          "Pomse": "POMSE",
+          "Uflix": "UFLIX",
+          "Zadsa": "ZADSA",
+          "Zaplin": "ZPLIN",
+          "cobox": "COBOX"
+        },
+        "R9R": {
+          "Fadi": "FADDI",
+          "Jambob": "JMBOB",
+          "Mera": "MERRA",
+          "St Petersburg": "PIE",
+          "Zeshy": "ZESHY"
+        }
+      },
+      "AssignedApproach": "",
+      "SID": "",
+      "STAR": "BLFRG2",
+      "Altitude": 9869,
+      "State": "arrival",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": [
+        "10",
+        "28",
+        "10",
+        "28"
+      ]
+    },
+    "Spirit Wings 56 48": {
+      "Callsign": "NKS5648",
+      "AircraftType": "A21N",
+      "Fixes": {
+        "Dormer": "DORMR",
+        "sykes": "SYKES"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "DORMR3",
+      "STAR": "",
+      "Altitude": 9998,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "C46",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    },
+    "Spirit Wings 87 56": {
+      "Callsign": "NKS8756",
+      "AircraftType": "A321",
+      "Fixes": {
+        "Ended": "ENDED",
+        "Lacen": "LACEN"
+      },
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "",
+      "SID": "ENDED2",
+      "STAR": "",
+      "Altitude": 12000,
+      "State": "departure",
+      "ControllerFrequency": "1G",
+      "TrackingController": "1G",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  },
+  "logs": [
+    "[local-stt] === DecodeTranscript START ===",
+    "[local-stt] input transcript: \"Southwest Ninety Six Seventy Five cleared to right end it\"",
+    "[local-stt] normalized words: [southwest 96 75 cleared to right end it]",
+    "[local-stt] tokens: 8",
+    "[local-stt]   token[0]: Text=\"southwest\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"96\" Type=1 Value=96",
+    "[local-stt]   token[2]: Text=\"75\" Type=1 Value=75",
+    "[local-stt]   token[3]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[5]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[6]: Text=\"end\" Type=0 Value=-1",
+    "[local-stt]   token[7]: Text=\"it\" Type=0 Value=-1",
+    "[local-stt] MatchCallsign: 8 tokens, 11 aircraft",
+    "[local-stt] matchCallsignWithPatterns: 8 tokens, 11 aircraft",
+    "[local-stt]   pattern \"exact_phrase\": 1 results",
+    "[local-stt]     result 0: \"Southwest 96 75\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"exact_phrase\": selected \"Southwest 96 75\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"ga_suffix\": no results",
+    "[local-stt]   pattern \"airline_flight\": 2 results",
+    "[local-stt]     result 0: \"Southwest 96 75\" (airline=1.000, flight=1.000, skip=0)",
+    "[local-stt]     result 1: \"Southwest eight 65\" (airline=1.000, flight=0.722, skip=0)",
+    "[local-stt]     pattern \"airline_flight\": selected \"Southwest 96 75\" (airline=1.00, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"airline_only\": 5 results",
+    "[local-stt]     result 0: \"Moxy one 24\" (airline=0.454, flight=0.000, skip=0)",
+    "[local-stt]     result 1: \"Southwest 82 35\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 2: \"Southwest 96 75\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 3: \"Southwest eight 15\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     result 4: \"Southwest eight 65\" (airline=1.000, flight=0.000, skip=0)",
+    "[local-stt]     pattern \"airline_only\": selected \"Southwest 96 75\" (airline=1.00, flight=0.00, skip=0)",
+    "[local-stt]   pattern \"ga_november\": no results",
+    "[local-stt]   pattern \"flight_only\": 1 results",
+    "[local-stt]     result 0: \"Southwest 96 75\" (airline=0.500, flight=1.000, skip=0)",
+    "[local-stt]     pattern \"flight_only\": selected \"Southwest 96 75\" (airline=0.50, flight=1.00, skip=0)",
+    "[local-stt]   pattern \"exact_phrase\" matched: \"SWA9675\" (conf=1.00, consumed=3, addressingForm=0, spokenKey=\"Southwest 96 75\")",
+    "[local-stt] callsign match: Callsign=\"SWA9675\" SpokenKey=\"Southwest 96 75\" Conf=1.00 Consumed=3",
+    "[local-stt] aircraft context: State=\"departure\" Altitude=6911 Fixes=2 Approaches=0 AssignedApproach=\"\" LAHSORunways=[]",
+    "[local-stt]   fix: \"Ended\" -\u003e \"ENDED\"",
+    "[local-stt]   fix: \"Lacen\" -\u003e \"LACEN\"",
+    "[local-stt] command tokens after disregard: 5",
+    "[local-stt]   token[0]: Text=\"cleared\" Type=0 Value=-1",
+    "[local-stt]   token[1]: Text=\"to\" Type=0 Value=-1",
+    "[local-stt]   token[2]: Text=\"right\" Type=0 Value=-1",
+    "[local-stt]   token[3]: Text=\"end\" Type=0 Value=-1",
+    "[local-stt]   token[4]: Text=\"it\" Type=0 Value=-1",
+    "[local-stt] ParseCommands: 5 tokens",
+    "[local-stt]   extractFix: trying to match tokens[0]=\"right\" against 2 fixes",
+    "[local-stt]   extractFix: no match found for \"right\"",
+    "[local-stt]   matched command: \"SAYAGAIN/APPROACH\" (conf=0.50, consumed=1, isThen=false)",
+    "[local-stt]   skipping filler word: \"to\"",
+    "[local-stt]   no match at token[2]=\"right\", skipping",
+    "[local-stt]   no match at token[3]=\"end\", skipping",
+    "[local-stt]   no match at token[4]=\"it\", skipping",
+    "[local-stt] ParseCommands: result=[SAYAGAIN/APPROACH] (avgConf=0.50)",
+    "[local-stt] parsed commands: [SAYAGAIN/APPROACH] (conf=0.50)",
+    "[local-stt] validated commands: [] (conf=0.00)",
+    "[local-stt] validation errors: [departure aircraft cannot expect approach]",
+    "[local-stt] === DecodeTranscript END: \"SWA9675 AGAIN\" (conf=0.00, time=1.5777ms) ==="
+  ]
+}

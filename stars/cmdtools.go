@@ -70,7 +70,7 @@ func init() {
 
 	// 6.5.1 Enable / inhibit CRDA for this TCW/TDW
 	registerCommand(CommandModeMultiFunc, "N", func(sp *STARSPane, ps *Preferences) error {
-		if len(sp.ConvergingRunways) == 0 {
+		if len(sp.CRDAPairs) == 0 {
 			return ErrSTARSIllegalFunction
 		}
 		ps.CRDA.Disabled = !ps.CRDA.Disabled
@@ -79,10 +79,10 @@ func init() {
 
 	// 6.5.2 Toggle display of ghost data blocks for specified runway pair
 	toggleCRDAGhostsForRunwayPair := func(sp *STARSPane, ctx *panes.Context, ps *Preferences, ap string, idx int) error {
-		if len(sp.ConvergingRunways) == 0 {
+		if len(sp.CRDAPairs) == 0 {
 			return ErrSTARSIllegalFunction
 		}
-		for i, pair := range sp.ConvergingRunways {
+		for i, pair := range sp.CRDAPairs {
 			if pair.Airport == ap && pair.Index == idx {
 				ps.CRDA.RunwayPairState[i].Enabled = !ps.CRDA.RunwayPairState[i].Enabled
 				return nil
@@ -106,7 +106,7 @@ func init() {
 		})
 
 	// 6.5.3 Enable / inhibit display of Ghost data blocks for specified runway
-	registerCommand(CommandModeMultiFunc, "N[CRDA_RUNWAY_ID]",
+	registerCommand(CommandModeMultiFunc, "N[CRDA_REGION_ID]",
 		func(sp *STARSPane, runwayState *CRDARunwayState) CommandStatus {
 			runwayState.Enabled = !runwayState.Enabled
 			s := util.Select(runwayState.Enabled, "ENABLED", "INHIBITED")
@@ -115,25 +115,25 @@ func init() {
 				runwayState.DrawCourseLines = false
 			}
 			// TODO: if this results in disabling ghosting on both runways in a pair, remove any CRDA maps from the display
-			return CommandStatus{Output: runwayState.Airport + " " + runwayState.Runway + " GHOSTING " + s}
+			return CommandStatus{Output: runwayState.Airport + " " + runwayState.Region + " GHOSTING " + s}
 		})
-	registerCommand(CommandModeMultiFunc, "N[CRDA_RUNWAY_ID]E",
+	registerCommand(CommandModeMultiFunc, "N[CRDA_REGION_ID]E",
 		func(sp *STARSPane, runwayState *CRDARunwayState) CommandStatus {
 			runwayState.Enabled = true
-			return CommandStatus{Output: runwayState.Airport + " " + runwayState.Runway + " GHOSTING ENABLED"}
+			return CommandStatus{Output: runwayState.Airport + " " + runwayState.Region + " GHOSTING ENABLED"}
 		})
-	registerCommand(CommandModeMultiFunc, "N[CRDA_RUNWAY_ID]I",
+	registerCommand(CommandModeMultiFunc, "N[CRDA_REGION_ID]I",
 		func(sp *STARSPane, runwayState *CRDARunwayState) CommandStatus {
 			runwayState.Enabled = false
 			runwayState.DrawQualificationRegion = false
 			runwayState.DrawCourseLines = false
-			return CommandStatus{Output: runwayState.Airport + " " + runwayState.Runway + " GHOSTING INHIBITED"}
+			return CommandStatus{Output: runwayState.Airport + " " + runwayState.Region + " GHOSTING INHIBITED"}
 		})
 
 	// 6.5.4 Toggle display of a single ghost data block at this TCW/TDW
 	registerCommand(CommandModeMultiFunc, "N[SLEW]", func(sp *STARSPane, ctx *panes.Context, trk *sim.Track) CommandStatus {
 		state := sp.TrackState[trk.ADSBCallsign]
-		if trk.IsUnassociated() || !trackInApproachRegion(sp, ctx, trk) || state.Ghost.State != GhostStateSuppressed {
+		if trk.IsUnassociated() || !trackInCRDARegion(sp, ctx, trk) || state.Ghost.State != GhostStateSuppressed {
 			return CommandStatus{Output: "ILL TRK"} // informational
 		}
 		state.Ghost.State = GhostStateRegular
@@ -149,7 +149,7 @@ func init() {
 	})
 
 	// 6.5.5 Change leader line direction for ghost data blocks on specified runway
-	registerCommand(CommandModeMultiFunc, "NL[CRDA_RUNWAY_ID][#]", func(sp *STARSPane, runwayState *CRDARunwayState, num int) error {
+	registerCommand(CommandModeMultiFunc, "NL[CRDA_REGION_ID][#]", func(sp *STARSPane, runwayState *CRDARunwayState, num int) error {
 		dir, ok := sp.numpadToDirection(num)
 		if !ok {
 			return ErrSTARSCommandFormat
@@ -174,7 +174,7 @@ func init() {
 
 	// 6.5.8 Force / unforce ghost qualification for all tracks
 	registerCommand(CommandModeMultiFunc, "N*ALL", func(sp *STARSPane, ps *Preferences) error {
-		if len(sp.ConvergingRunways) == 0 {
+		if len(sp.CRDAPairs) == 0 {
 			return ErrSTARSIllegalFunction
 		}
 		ps.CRDA.ForceAllGhosts = !ps.CRDA.ForceAllGhosts
@@ -182,12 +182,12 @@ func init() {
 	})
 
 	// 6.5.9 Toggle display of a runway's CRDA qualification region
-	registerCommand(CommandModeMultiFunc, "N[CRDA_RUNWAY_ID] B", func(sp *STARSPane, runwayState *CRDARunwayState) {
+	registerCommand(CommandModeMultiFunc, "N[CRDA_REGION_ID] B", func(sp *STARSPane, runwayState *CRDARunwayState) {
 		runwayState.DrawQualificationRegion = !runwayState.DrawQualificationRegion
 	})
 
 	// 6.5.10 Toggle display of a runway's CRDA course line segments
-	registerCommand(CommandModeMultiFunc, "N[CRDA_RUNWAY_ID] L", func(sp *STARSPane, runwayState *CRDARunwayState) {
+	registerCommand(CommandModeMultiFunc, "N[CRDA_REGION_ID] L", func(sp *STARSPane, runwayState *CRDARunwayState) {
 		runwayState.DrawCourseLines = !runwayState.DrawCourseLines
 	})
 
@@ -603,9 +603,11 @@ func init() {
 
 		for len(tcps) > 0 {
 			if strings.HasPrefix(tcps, "ALL") {
+				// Per 6.12.6: ALL silently skips the owning TCP's positions.
 				fac := ctx.UserController().FacilityIdentifier
 				for _, ctrl := range ctx.Client.State.Controllers {
-					if !ctrl.ERAMFacility && ctrl.FacilityIdentifier == fac {
+					if !ctrl.ERAMFacility && ctrl.FacilityIdentifier == fac &&
+						!ctx.Client.State.TCWControlsPosition(trk.FlightPlan.OwningTCW, sim.ControlPosition(ctrl.PositionId())) {
 						ctx.Client.ForceQL(trk.FlightPlan.ACID, sim.TCP(ctrl.PositionId()), func(err error) { sp.displayError(err, ctx, "") })
 					}
 				}
@@ -649,7 +651,7 @@ func init() {
 		if trk.IsUnassociated() {
 			return ErrSTARSIllegalTrack
 		}
-		if !ctx.FacilityAdaptation.ForceQLToSelf && !ctx.UserOwnsFlightPlan(trk.FlightPlan) {
+		if !ctx.FacilityAdaptation.ForceQLToSelf || !ctx.UserOwnsFlightPlan(trk.FlightPlan) {
 			return ErrSTARSIllegalPosition
 		}
 		state := sp.TrackState[trk.ADSBCallsign]
@@ -942,7 +944,7 @@ func init() {
 			sp.updateQuicklookRegionTracks(ctx)
 			return nil
 		})
-	registerCommand(CommandModeMultiFunc, "Q[QL_REGION] E",
+	registerCommand(CommandModeMultiFunc, "Q[QL_REGION] I",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, regionID string) error {
 			if !ctx.FacilityAdaptation.Filters.Quicklook.HaveId(regionID) {
 				return ErrSTARSIllegalFunction
@@ -954,7 +956,7 @@ func init() {
 			sp.updateQuicklookRegionTracks(ctx)
 			return nil
 		})
-	registerCommand(CommandModeMultiFunc, "Q[QL_REGION] I",
+	registerCommand(CommandModeMultiFunc, "Q[QL_REGION] E",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, regionID string) error {
 			if !ctx.FacilityAdaptation.Filters.Quicklook.HaveId(regionID) {
 				return ErrSTARSIllegalFunction
@@ -1285,8 +1287,8 @@ func init() {
 	// 6.29 Terminal sequencing and spacing (TSAS) commands...
 }
 
-// trackInApproachRegion checks if a track is inside any enabled CRDA approach region.
-func trackInApproachRegion(sp *STARSPane, ctx *panes.Context, trk *sim.Track) bool {
+// trackInCRDARegion checks if a track is inside any enabled CRDA region.
+func trackInCRDARegion(sp *STARSPane, ctx *panes.Context, trk *sim.Track) bool {
 	ps := sp.currentPrefs()
 	state := sp.TrackState[trk.ADSBCallsign]
 
@@ -1298,9 +1300,9 @@ func trackInApproachRegion(sp *STARSPane, ctx *panes.Context, trk *sim.Track) bo
 			if !rwyState.Enabled {
 				continue
 			}
-			region := sp.ConvergingRunways[i].ApproachRegions[j]
+			region := sp.CRDAPairs[i].CRDARegions[j]
 			if lat, _ := region.Inside(state.track.Location, trk.TrueAltitude,
-				ctx.NmPerLongitude, ctx.MagneticVariation); lat {
+				ctx.NmPerLongitude); lat {
 				return true
 			}
 		}

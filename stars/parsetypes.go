@@ -61,10 +61,11 @@ var typeParsers = []typeParser{
 	&triTCPParser{},
 	&artccParser{},
 	&airportIdParser{},
-	&crdaRunwayIdParser{},
+	&crdaRegionIdParser{},
 	&timeParser{},
 	&altFilter6Parser{},
 	&qlRegionParser{},
+	&fdamRegionParser{},
 	&raIndexParser{userOnly: false},
 	&raIndexParser{userOnly: true},
 	&fixParser{},
@@ -506,84 +507,94 @@ func (h *airportIdParser) Parse(sp *STARSPane, ctx *panes.Context, input *Comman
 func (h *airportIdParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *airportIdParser) ConsumesClick() bool  { return false }
 
-type crdaRunwayIdParser struct{}
+type crdaRegionIdParser struct{}
 
-func (h *crdaRunwayIdParser) Identifier() string { return "CRDA_RUNWAY_ID" }
+func (h *crdaRegionIdParser) Identifier() string { return "CRDA_REGION_ID" }
 
-func (h *crdaRunwayIdParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
-	if len(text) < 2 {
+func (h *crdaRegionIdParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
+	if len(text) < 1 {
 		return nil, text, false, nil
 	}
 
 	ps := sp.currentPrefs()
 	if isAlpha(text[0]) {
-		// Looking for airport and runway
-		if len(text) < 6 || text[3] != ' ' { // e.g., "HPN 16" at minimum at this point
-			return nil, text, false, nil
+		// Could be "APT REGION_NAME" — try to match airport prefix first
+		if len(text) >= 5 && text[3] == ' ' {
+			if _, ok := av.DB.LookupAirport(text[:3]); ok {
+				ap := text[:3]
+				rest := text[4:]
+
+				// Longest-match against region names from enabled pairs at this airport
+				var bestMatch *CRDARunwayState
+				bestLen := 0
+				for i, pair := range sp.CRDAPairs {
+					if pair.Airport != ap {
+						continue
+					}
+					pairState := &ps.CRDA.RunwayPairState[i]
+					if !pairState.Enabled {
+						continue
+					}
+					for j, regionName := range pair.Regions {
+						if len(regionName) > len(rest) {
+							continue
+						}
+						if rest[:len(regionName)] == regionName && len(regionName) > bestLen {
+							bestMatch = &pairState.RunwayState[j]
+							bestLen = len(regionName)
+						}
+					}
+				}
+				if bestMatch != nil {
+					return bestMatch, rest[bestLen:], true, nil
+				}
+				return nil, text, false, nil
+			}
 		}
 
-		ap := text[:3]
-		var rwy, remainder string
-		if len(text) > 6 && (text[6] == 'L' || text[6] == 'R' || text[6] == 'C') {
-			rwy = text[4:7]
-			remainder = text[7:]
-		} else {
-			rwy = text[4:6]
-			remainder = text[6:]
-		}
+		// No airport prefix: fall through to no-prefix matching below
+	}
 
-		for i, pair := range sp.ConvergingRunways {
-			if pair.Airport != ap {
+	// No airport prefix: longest-match region name against all enabled pairs.
+	var bestMatch *CRDARunwayState
+	var bestRemainder string
+	bestLen := 0
+	ambiguous := false
+	for i, pair := range sp.CRDAPairs {
+		pairState := &ps.CRDA.RunwayPairState[i]
+		if !pairState.Enabled {
+			continue
+		}
+		for j, regionName := range pair.Regions {
+			if len(regionName) > len(text) {
 				continue
 			}
-
-			pairState := &ps.CRDA.RunwayPairState[i]
-			if !pairState.Enabled {
+			if text[:len(regionName)] != regionName {
 				continue
 			}
-
-			for j, pairRunway := range pair.Runways {
-				if rwy == pairRunway {
-					return &pairState.RunwayState[j], remainder, true, nil
-				}
+			if len(regionName) > bestLen {
+				bestMatch = &pairState.RunwayState[j]
+				bestRemainder = text[len(regionName):]
+				bestLen = len(regionName)
+				ambiguous = false
+			} else if len(regionName) == bestLen && bestMatch != &pairState.RunwayState[j] {
+				ambiguous = true
 			}
 		}
-		return nil, text, false, nil
-	} else {
-		// Airport omitted; the runway should uniquely identify a runway from an active RPC.
-		runway, remainder := text[:2], text[2:]
-		if len(text) >= 3 && (text[2] == 'L' || text[2] == 'R' || text[2] == 'C') {
-			runway, remainder = text[:3], text[3:]
-		}
+	}
 
-		var match *CRDARunwayState
-		for i, pair := range sp.ConvergingRunways {
-			pairState := &ps.CRDA.RunwayPairState[i]
-			if !pairState.Enabled {
-				continue
-			}
-			for j, pairRunway := range pair.Runways {
-				if runway != pairRunway {
-					continue
-				}
-				if match != nil {
-					// ambiguous
-					return nil, text, true, ErrSTARSIllegalParam
-				}
-				match = &pairState.RunwayState[j]
-			}
-		}
-
-		if match != nil {
-			return match, remainder, true, nil
-		}
+	if ambiguous {
+		return nil, text, true, ErrSTARSIllegalParam
+	}
+	if bestMatch != nil {
+		return bestMatch, bestRemainder, true, nil
 	}
 
 	return nil, text, false, nil
 }
 
-func (h *crdaRunwayIdParser) GoType() reflect.Type { return reflect.TypeFor[*CRDARunwayState]() }
-func (h *crdaRunwayIdParser) ConsumesClick() bool  { return false }
+func (h *crdaRegionIdParser) GoType() reflect.Type { return reflect.TypeFor[*CRDARunwayState]() }
+func (h *crdaRegionIdParser) ConsumesClick() bool  { return false }
 
 // numberParser parses integer numbers.
 type numberParser struct {
@@ -790,6 +801,22 @@ func (h *qlRegionParser) Parse(sp *STARSPane, ctx *panes.Context, input *Command
 
 func (h *qlRegionParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
 func (h *qlRegionParser) ConsumesClick() bool  { return false }
+
+// fdamRegionParser validates and parses FDAM region IDs.
+type fdamRegionParser struct{}
+
+func (h *fdamRegionParser) Identifier() string { return "FDAM_REGION" }
+
+func (h *fdamRegionParser) Parse(sp *STARSPane, ctx *panes.Context, input *CommandInput, text string) (any, string, bool, error) {
+	field, remaining := util.CutAtSpace(text)
+	if field == "" || !ctx.FacilityAdaptation.Filters.FDAM.HaveId(field) {
+		return nil, text, false, nil
+	}
+	return field, remaining, true, nil
+}
+
+func (h *fdamRegionParser) GoType() reflect.Type { return reflect.TypeFor[string]() }
+func (h *fdamRegionParser) ConsumesClick() bool  { return false }
 
 // raIndexParser parses and validates restriction area indices and returns the associated RestrictionArea
 type raIndexParser struct {

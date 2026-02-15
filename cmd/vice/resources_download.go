@@ -15,6 +15,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 	"time"
@@ -26,13 +27,21 @@ import (
 	"golang.org/x/sync/errgroup"
 
 	"github.com/AllenDang/cimgui-go/imgui"
+	implogl3 "github.com/AllenDang/cimgui-go/impl/opengl3"
 )
 
-// resourcesManifest holds the filenames and SHA256 hashes of all the resource files this build
-// of vice expects to have available.
+const resourcesBaseURL = "https://vice-resources.pharr.org"
+
+// resourcesManifest holds the filenames, SHA256 hashes, and sizes of all the resource files
+// this build of vice expects to have available.
 //
 //go:embed manifest.json
 var resourcesManifest string
+
+type manifestEntry struct {
+	Hash string `json:"hash"`
+	Size int64  `json:"size"`
+}
 
 type ResourcesDownloadModalClient struct {
 	currentFile     int
@@ -126,7 +135,7 @@ func checkManifestUpToDate(manifestPath string) bool {
 // This catches cases where a crash during download left some files missing,
 // or where files were deleted after the manifest was written.
 // Note: we only check existence, not content hashes, to preserve user edits.
-func validateAllResourcesExist(resourcesDir string, manifest map[string]string) bool {
+func validateAllResourcesExist(resourcesDir string, manifest map[string]manifestEntry) bool {
 	for filename := range manifest {
 		fullPath := filepath.Join(resourcesDir, filename)
 		if _, err := os.Stat(fullPath); err != nil {
@@ -137,7 +146,7 @@ func validateAllResourcesExist(resourcesDir string, manifest map[string]string) 
 }
 
 // Removes any resource files that are present on disk but are not listed in the manifest.
-func removeStaleResourcesFiles(resourcesDir string, manifest map[string]string) {
+func removeStaleResourcesFiles(resourcesDir string, manifest map[string]manifestEntry) {
 	filepath.Walk(resourcesDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil || info.IsDir() {
 			return nil
@@ -218,9 +227,9 @@ func (pr *progressReader) Read(p []byte) (int, error) {
 
 // launchWorkers launches goroutines to check each entry in the manifest
 // and see if we have a local copy of it with the correct contents.  If
-// not, the file is downloaded from GCS. The returned workerStatus struct has
+// not, the file is downloaded from R2. The returned workerStatus struct has
 // three chans that provide information about the workers' progress.
-func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatus, int64) {
+func launchWorkers(resourcesDir string, manifest map[string]manifestEntry) (workerStatus, int64) {
 	status := workerStatus{
 		doneCh:      make(chan struct{}),
 		completedCh: make(chan fileCompleted),
@@ -228,43 +237,24 @@ func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatu
 		errorsCh:    make(chan error),
 	}
 
-	gcs, err := util.MakeGCSClient("vice-resources", util.GCSClientConfig{})
-	if err != nil {
-		status.errorsCh <- fmt.Errorf("failed to create GCS client: %w", err)
-		close(status.doneCh)
-		return status, 0
-	}
-
-	sizes, err := gcs.List("")
-	if err != nil {
-		// If for some reason we can't list the bucket contents, at least
-		// populate sizes with bogus sizes for the items in the manifest so
-		// that the dialog box drawing code behaves. (This may not be worth
-		// bothering with since presumably the downloads will fail in this
-		// case as well.)
-		for _, hash := range manifest {
-			sizes[hash] = 1
-		}
-	}
-
 	var totalSize int64
-	for _, hash := range manifest {
-		totalSize += sizes[hash]
+	for _, entry := range manifest {
+		totalSize += entry.Size
 	}
 
 	var eg errgroup.Group
 	sem := make(chan struct{}, 8)
-	for filename, hash := range manifest {
+	for filename, entry := range manifest {
 		eg.Go(func() error {
 			sem <- struct{}{}
 			defer func() {
-				status.completedCh <- fileCompleted{filename: filename, size: sizes[hash]}
+				status.completedCh <- fileCompleted{filename: filename, size: entry.Size}
 				<-sem
 			}()
 
 			fullPath := filepath.Join(resourcesDir, filename)
 
-			return maybeDownload(gcs, filename, fullPath, hash, status.progressCh)
+			return maybeDownload(filename, fullPath, entry.Hash, status.progressCh)
 		})
 	}
 
@@ -281,7 +271,7 @@ func launchWorkers(resourcesDir string, manifest map[string]string) (workerStatu
 	return status, totalSize
 }
 
-func maybeDownload(gcs *util.GCSClient, filename, fullPath, hash string, progressCh chan<- downloadProgress) error {
+func maybeDownload(filename, fullPath, hash string, progressCh chan<- downloadProgress) error {
 	// Check if file exists and has correct hash
 	if existingHash, err := calculateSHA256(fullPath); err == nil && existingHash == hash {
 		return nil
@@ -294,11 +284,15 @@ func maybeDownload(gcs *util.GCSClient, filename, fullPath, hash string, progres
 		return fmt.Errorf("%s: failed to create file's directory: %w", filename, err)
 	}
 
-	reader, err := gcs.GetReader(hash)
+	resp, err := http.Get(resourcesBaseURL + "/" + hash)
 	if err != nil {
 		return fmt.Errorf("%s: failed to download: %w", filename, err)
 	}
-	defer reader.Close()
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("%s: download returned status %d", filename, resp.StatusCode)
+	}
 
 	f, err := os.Create(fullPath)
 	if err != nil {
@@ -308,7 +302,7 @@ func maybeDownload(gcs *util.GCSClient, filename, fullPath, hash string, progres
 
 	// Wrap reader to report progress during download
 	pr := &progressReader{
-		reader:     reader,
+		reader:     resp.Body,
 		filename:   filename,
 		progressCh: progressCh,
 	}
@@ -334,7 +328,7 @@ func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) 
 	resourcesDir := filepath.Join(configDir, "vice", "resources")
 	manifestPath := filepath.Join(resourcesDir, "manifest.json")
 
-	var manifest map[string]string
+	var manifest map[string]manifestEntry
 	if err := json.Unmarshal([]byte(resourcesManifest), &manifest); err != nil {
 		return fmt.Errorf("failed to unmarshal resources manifest: %v", err)
 	}
@@ -367,14 +361,19 @@ func SyncResources(plat platform.Platform, r renderer.Renderer, lg *log.Logger) 
 			plat.ProcessEvents()
 			plat.NewFrame()
 			imgui.NewFrame()
-			imgui.PushFont(&ui.font.Ifont)
+			ui.font.ImguiPush()
 			dialog.Draw()
 			imgui.PopFont()
 
 			imgui.Render()
-			var cb renderer.CommandBuffer
-			renderer.GenerateImguiCommandBuffer(&cb, plat.DisplaySize(), plat.FramebufferSize(), lg)
-			r.RenderCommandBuffer(&cb)
+			implogl3.RenderDrawData(imgui.CurrentDrawData())
+
+			if imgui.CurrentIO().ConfigFlags()&imgui.ConfigFlagsViewportsEnable != 0 {
+				imgui.UpdatePlatformWindows()
+				imgui.RenderPlatformWindowsDefault()
+				plat.MakeContextCurrent()
+			}
+
 			plat.PostRender()
 
 			select {

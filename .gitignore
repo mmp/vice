@@ -3,6 +3,7 @@
 .DS_Store
 resources/models/*.bin
 resources/models/.synced
+resources/models/kokoro-multi-lang-v1_0/
 *.pprof
 *.prof
 /cdocs
@@ -33,3 +34,7 @@ vice-logs/
 vice.exe
 vice.slog
 vice.zip
+ext/sherpa-import-libs/
+libsherpa-onnx-c-api.so
+libsherpa-onnx-cxx-api.so
+libonnxruntime.so

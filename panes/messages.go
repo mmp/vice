@@ -5,7 +5,6 @@
 package panes
 
 import (
-	"encoding/json"
 	"fmt"
 	"log/slog"
 	"slices"
@@ -40,19 +39,11 @@ type MessagesPane struct {
 	ContactTransmissionsAlert  bool
 	ReadbackTransmissionsAlert bool
 
-	font            *renderer.Font
-	scrollbar       *ScrollBar
-	events          *sim.EventsSubscription
-	messages        []Message
-	alertAudioIndex map[string]int
-}
-
-func init() {
-	RegisterUnmarshalPane("MessagesPane", func(d []byte) (Pane, error) {
-		var p MessagesPane
-		err := json.Unmarshal(d, &p)
-		return &p, err
-	})
+	font             *renderer.Font
+	events           *sim.EventsSubscription
+	messages         []Message
+	alertAudioIndex  map[string]int
+	shouldAutoScroll bool
 }
 
 func NewMessagesPane() *MessagesPane {
@@ -61,15 +52,10 @@ func NewMessagesPane() *MessagesPane {
 	}
 }
 
-func (mp *MessagesPane) Hide() bool { return false }
-
 func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
 	if mp.font = renderer.GetFont(mp.FontIdentifier); mp.font == nil {
 		mp.font = renderer.GetDefaultFont()
 		mp.FontIdentifier = mp.font.Id
-	}
-	if mp.scrollbar == nil {
-		mp.scrollbar = NewVerticalScrollBar(4, true)
 	}
 	mp.events = eventStream.Subscribe()
 
@@ -88,16 +74,8 @@ func (mp *MessagesPane) Activate(r renderer.Renderer, p platform.Platform, event
 	}
 }
 
-func (mp *MessagesPane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
-}
-
 func (mp *MessagesPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 	mp.messages = nil
-}
-
-func (mp *MessagesPane) CanTakeKeyboardFocus() bool { return false }
-
-func (mp *MessagesPane) Upgrade(prev, current int) {
 }
 
 var _ UIDrawer = (*MessagesPane)(nil)
@@ -123,51 +101,6 @@ func (mp *MessagesPane) DrawUI(p platform.Platform, config *platform.Config) {
 	imgui.Checkbox("Play audio alert after pilot readback transmissions", &mp.ReadbackTransmissionsAlert)
 }
 
-func (mp *MessagesPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
-	mp.processEvents(ctx)
-
-	nLines := len(mp.messages) + 1 /* prompt */
-	lineHeight := float32(mp.font.Size + 1)
-	visibleLines := int(ctx.PaneExtent.Height() / lineHeight)
-	mp.scrollbar.Update(nLines, visibleLines, ctx)
-
-	drawWidth := ctx.PaneExtent.Width()
-	if mp.scrollbar.Visible() {
-		drawWidth -= float32(mp.scrollbar.PixelExtent())
-	}
-
-	td := renderer.GetTextDrawBuilder()
-	defer renderer.ReturnTextDrawBuilder(td)
-
-	indent := float32(2)
-
-	scrollOffset := mp.scrollbar.Offset()
-	y := lineHeight
-
-	for i := scrollOffset; i < min(len(mp.messages), visibleLines+scrollOffset+1); i++ {
-		// TODO? wrap text
-		msg := mp.messages[len(mp.messages)-1-i]
-
-		s := renderer.TextStyle{Font: mp.font, Color: msg.Color()}
-		td.AddText(msg.contents, [2]float32{indent, y}, s)
-		y += lineHeight
-	}
-
-	ctx.SetWindowCoordinateMatrices(cb)
-	if ctx.HaveFocus {
-		// Yellow border around the edges
-		ld := renderer.GetLinesDrawBuilder()
-		defer renderer.ReturnLinesDrawBuilder(ld)
-
-		w, h := ctx.PaneExtent.Width(), ctx.PaneExtent.Height()
-		ld.AddLineLoop([][2]float32{{0, 0}, {w, 0}, {w, h}, {0, h}})
-		cb.SetRGB(renderer.RGB{1, 1, 0}) // yellow
-		ld.GenerateCommands(cb)
-	}
-	mp.scrollbar.Draw(ctx, cb)
-	td.GenerateCommands(cb)
-}
-
 func (msg *Message) Color() renderer.RGB {
 	switch {
 	case msg.error:
@@ -179,13 +112,46 @@ func (msg *Message) Color() renderer.RGB {
 	}
 }
 
-func (mp *MessagesPane) processEvents(ctx *Context) {
+func (msg *Message) ImguiColor() imgui.Vec4 {
+	c := msg.Color()
+	return imgui.Vec4{X: c.R, Y: c.G, Z: c.B, W: 1}
+}
+
+func (mp *MessagesPane) DrawWindow(show *bool, c *client.ControlClient, p platform.Platform, lg *log.Logger) {
+	mp.processEvents(c, p, lg)
+
+	imgui.SetNextWindowSizeConstraints(imgui.Vec2{300, 100}, imgui.Vec2{4096, 4096})
+	if mp.font != nil {
+		mp.font.ImguiPush()
+	}
+	imgui.BeginV("Messages", show, 0)
+	if imgui.BeginChildStrV("##messages_scroll", imgui.Vec2{}, 0, imgui.WindowFlagsHorizontalScrollbar) {
+		for _, msg := range mp.messages {
+			color := msg.ImguiColor()
+			imgui.PushStyleColorVec4(imgui.ColText, color)
+			imgui.TextUnformatted(msg.contents)
+			imgui.PopStyleColor()
+		}
+		// Auto-scroll when new messages arrive
+		if mp.shouldAutoScroll {
+			imgui.SetScrollHereYV(1.0)
+			mp.shouldAutoScroll = false
+		}
+		imgui.EndChild()
+	}
+	imgui.End()
+	if mp.font != nil {
+		imgui.PopFont()
+	}
+}
+
+func (mp *MessagesPane) processEvents(c *client.ControlClient, p platform.Platform, lg *log.Logger) {
 	for _, event := range mp.events.Get() {
 		switch event.Type {
 		case sim.RadioTransmissionEvent:
-			toUs := ctx.UserControlsPosition(event.ToController)
+			toUs := c.State.UserControlsPosition(event.ToController)
 
-			priv := ctx.TCWIsPrivileged(ctx.UserTCW)
+			priv := c.State.TCWIsPrivileged(c.State.UserTCW)
 			if !toUs && !priv {
 				break
 			}
@@ -199,7 +165,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 			if event.RadioTransmissionType == av.RadioTransmissionContact {
 				msg = Message{contents: prefix + event.WrittenText}
 				if mp.ContactTransmissionsAlert {
-					ctx.Platform.PlayAudioOnce(mp.alertAudioIndex[mp.AudioAlertSelection])
+					p.PlayAudioOnce(mp.alertAudioIndex[mp.AudioAlertSelection])
 				}
 			} else {
 				if len(event.WrittenText) > 0 {
@@ -210,15 +176,17 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 					error:    event.RadioTransmissionType == av.RadioTransmissionUnexpected || event.RadioTransmissionType == av.RadioTransmissionMixUp,
 				}
 				if mp.ReadbackTransmissionsAlert {
-					ctx.Platform.PlayAudioOnce(mp.alertAudioIndex[mp.AudioAlertSelection])
+					p.PlayAudioOnce(mp.alertAudioIndex[mp.AudioAlertSelection])
 				}
 			}
-			ctx.Lg.Debug("radio_transmission", slog.String("adsb_callsign", string(event.ADSBCallsign)),
+			lg.Debug("radio_transmission", slog.String("adsb_callsign", string(event.ADSBCallsign)),
 				slog.Any("message", msg))
 			mp.messages = append(mp.messages, msg)
+			mp.shouldAutoScroll = true
 
 		case sim.GlobalMessageEvent:
 			mp.messages = append(mp.messages, Message{contents: event.WrittenText, global: true})
+			mp.shouldAutoScroll = true
 
 		case sim.StatusMessageEvent:
 			// Don't spam the same message repeatedly; look in the most recent 5.
@@ -231,6 +199,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 						contents: event.WrittenText,
 						system:   true,
 					})
+				mp.shouldAutoScroll = true
 			}
 
 		case sim.ErrorMessageEvent:
@@ -239,6 +208,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 					contents: event.WrittenText,
 					error:    true,
 				})
+			mp.shouldAutoScroll = true
 
 		case sim.STTCommandEvent:
 			// Display the controller's STT transcript and resulting command
@@ -249,6 +219,7 @@ func (mp *MessagesPane) processEvents(ctx *Context) {
 						contents: msg,
 						system:   true,
 					})
+				mp.shouldAutoScroll = true
 			}
 		}
 	}

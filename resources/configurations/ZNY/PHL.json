@@ -95,8 +95,9 @@
                     "KPHL": "PHL_ND_DEP"
                 },
                 "default_consolidation": {
-                    "PHL_ND_DEP": [
-                        "PHL_NA_APP",
+                    "PHL_NA_APP": [
+                        "PHL_ND_DEP",
+                        "PHL_F1_APP",
                         "PHL_SA_APP"
                     ]
                 }

@@ -53,9 +53,16 @@
                     "KSDF": "SDF_B_DEP"
                 },
                 "default_consolidation": {
-                    "SDF_A_APP": [
+                    "SDF_B_DEP": [
+                        "SDF_D_DEP"
+                    ],
+                    "SDF_I_APP": [
+                        "SDF_A_APP",
                         "SDF_B_DEP",
-                        "SDF_I_APP"
+                        "SDF_W_APP"
+                    ],
+                    "SDF_W_APP": [
+                        "SDF_E_APP"
                     ]
                 }
             }

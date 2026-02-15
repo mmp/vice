@@ -119,11 +119,26 @@
                     "KVQQ": "JAX_W_APP"
                 },
                 "default_consolidation": {
-                    "JAX_R_APP": [
-                        "JAX_E_APP",
-                        "JAX_N_APP",
-                        "JAX_S_APP",
+                    "JAX_A_APP": [
                         "JAX_W_APP"
+                    ],
+                    "JAX_G_APP": [
+                        "JAX_J_APP"
+                    ],
+                    "JAX_N_APP": [
+                        "JAX_A_APP",
+                        "JAX_R_APP"
+                    ],
+                    "JAX_S_APP": [
+                        "JAX_N_APP",
+                        "JAX_V_APP"
+                    ],
+                    "JAX_V_APP": [
+                        "JAX_D_APP",
+                        "JAX_G_APP"
+                    ],
+                    "JAX_W_APP": [
+                        "JAX_E_APP"
                     ]
                 }
             },
@@ -194,15 +209,26 @@
                     "KOCF": "JAX_V_APP"
                 },
                 "default_consolidation": {
-                    "JAX_R_APP": [
-                        "JAX_D_APP",
-                        "JAX_E_APP",
-                        "JAX_G_APP",
-                        "JAX_N_APP",
-                        "JAX_A_APP",
-                        "JAX_S_APP",
-                        "JAX_V_APP",
+                    "JAX_A_APP": [
                         "JAX_W_APP"
+                    ],
+                    "JAX_G_APP": [
+                        "JAX_J_APP"
+                    ],
+                    "JAX_N_APP": [
+                        "JAX_A_APP",
+                        "JAX_R_APP"
+                    ],
+                    "JAX_S_APP": [
+                        "JAX_N_APP",
+                        "JAX_V_APP"
+                    ],
+                    "JAX_V_APP": [
+                        "JAX_D_APP",
+                        "JAX_G_APP"
+                    ],
+                    "JAX_W_APP": [
+                        "JAX_E_APP"
                     ]
                 }
             },
@@ -235,11 +261,26 @@
                     "KVQQ": "JAX_W_APP"
                 },
                 "default_consolidation": {
-                    "JAX_R_APP": [
-                        "JAX_E_APP",
-                        "JAX_N_APP",
-                        "JAX_S_APP",
+                    "JAX_A_APP": [
                         "JAX_W_APP"
+                    ],
+                    "JAX_G_APP": [
+                        "JAX_J_APP"
+                    ],
+                    "JAX_N_APP": [
+                        "JAX_A_APP",
+                        "JAX_R_APP"
+                    ],
+                    "JAX_S_APP": [
+                        "JAX_N_APP",
+                        "JAX_V_APP"
+                    ],
+                    "JAX_V_APP": [
+                        "JAX_D_APP",
+                        "JAX_G_APP"
+                    ],
+                    "JAX_W_APP": [
+                        "JAX_E_APP"
                     ]
                 }
             },
@@ -313,15 +354,26 @@
                     "KGNV": "JAX_G_APP"
                 },
                 "default_consolidation": {
-                    "JAX_R_APP": [
-                        "JAX_D_APP",
-                        "JAX_E_APP",
-                        "JAX_G_APP",
-                        "JAX_N_APP",
-                        "JAX_A_APP",
-                        "JAX_S_APP",
-                        "JAX_V_APP",
+                    "JAX_A_APP": [
                         "JAX_W_APP"
+                    ],
+                    "JAX_G_APP": [
+                        "JAX_J_APP"
+                    ],
+                    "JAX_N_APP": [
+                        "JAX_A_APP",
+                        "JAX_R_APP"
+                    ],
+                    "JAX_S_APP": [
+                        "JAX_N_APP",
+                        "JAX_V_APP"
+                    ],
+                    "JAX_V_APP": [
+                        "JAX_D_APP",
+                        "JAX_G_APP"
+                    ],
+                    "JAX_W_APP": [
+                        "JAX_E_APP"
                     ]
                 }
             },

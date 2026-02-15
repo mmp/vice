@@ -72,10 +72,8 @@ func MakeServerManager(serverAddress, additionalScenario, additionalVideoMap str
 			} else {
 				cm.LocalServer = &Server{
 					RPCClient:           client,
-					HaveTTS:             cr.HaveTTS,
 					AvailableWXByTRACON: cr.AvailableWXByTRACON,
 					name:                "Local (Single controller)",
-					host:                "localhost",
 					catalogs:            cr.ScenarioCatalogs,
 					runningSims:         cr.RunningSims,
 				}
@@ -92,12 +90,13 @@ func (cm *ConnectionManager) LoadLocalSim(s *sim.Sim, initials string, lg *log.L
 	}
 
 	var result server.NewSimResult
-	if err := cm.LocalServer.Call(server.AddLocalRPC, s, &result); err != nil {
+	req := server.AddLocalRequest{Sim: s, Initials: initials}
+	if err := cm.LocalServer.Call(server.AddLocalRPC, &req, &result); err != nil {
 		return nil, err
 	}
 
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.LocalServer.HaveTTS,
-		result.SpeechWSPort, cm.LocalServer.host, cm.disableTTSPtr, initials, cm.LocalServer.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.disableTTSPtr, initials,
+		cm.LocalServer.RPCClient, lg)
 	cm.connectionStartTime = time.Now()
 
 	// Set remote server for STT log reporting (local sims report to remote server)
@@ -133,8 +132,8 @@ func (cm *ConnectionManager) handleSuccessfulConnection(result server.NewSimResu
 		cm.client.Disconnect()
 	}
 
-	cm.client = NewControlClient(*result.SimState, result.ControllerToken, srv.HaveTTS,
-		result.SpeechWSPort, srv.host, cm.disableTTSPtr, initials, srv.RPCClient, lg)
+	cm.client = NewControlClient(*result.SimState, result.ControllerToken, cm.disableTTSPtr, initials,
+		srv.RPCClient, lg)
 
 	cm.connectionStartTime = time.Now()
 

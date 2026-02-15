@@ -1,21 +1,19 @@
-// pkg/panes/flightstrip.go
+// panes/flightstrip.go
 // Copyright(c) 2022-2024 vice contributors, licensed under the GNU Public License, Version 3.
 // SPDX: GPL-3.0-only
 
 package panes
 
 import (
-	"encoding/json"
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
 	"github.com/mmp/vice/log"
-	"github.com/mmp/vice/math"
 	"github.com/mmp/vice/platform"
-	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/renderer"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/util"
@@ -27,61 +25,26 @@ type FlightStripPane struct {
 	FontSize int
 	font     *renderer.Font
 
-	HideFlightStrips          bool
-	AutoAddDepartures         bool
-	AutoAddArrivals           bool
-	AutoAddOverflights        bool
-	AutoAddTracked            bool
-	AutoAddAcceptedHandoffs   bool
-	AutoRemoveDropped         bool
-	AutoRemoveHandoffs        bool
-	AddPushed                 bool
-	CollectDeparturesArrivals bool
-	DarkMode                  bool
+	DarkMode bool
 
-	strips     []sim.ACID
-	addedPlans map[sim.ACID]any
+	// Display ordering, reconciled each frame with the server list.
+	ACIDDisplayOrder []sim.ACID
 
-	mouseDragging       bool
-	lastMousePos        [2]float32
-	selectedStrip       int
-	selectedAnnotation  int
-	annotationCursorPos int
-	Annotations         map[sim.ACID][9]string
+	// Drag-reorder state: draggingACID is the strip being moved.
+	draggingACID sim.ACID
 
-	events    *sim.EventsSubscription
-	scrollbar *ScrollBar
-
-	selectedACID sim.ACID
-
-	// computer id number: 000-999
-	CIDs          map[sim.ACID]int
-	AllocatedCIDs map[int]any
-}
-
-func init() {
-	RegisterUnmarshalPane("FlightStripPane", func(d []byte) (Pane, error) {
-		var p FlightStripPane
-		err := json.Unmarshal(d, &p)
-		return &p, err
-	})
+	// Annotation editing state: copied from server on click, written back via RPC on commit.
+	// editingACID == "" means no editing is active.
+	editingACID          sim.ACID
+	editingAnnotation    int // which cell (0-8) is selected
+	editingAnnotations   [9]string
+	editingNeedsFocus    bool
+	tabConsumedThisFrame bool
 }
 
 func NewFlightStripPane() *FlightStripPane {
 	return &FlightStripPane{
-		AddPushed:               true,
-		AutoAddDepartures:       true,
-		AutoAddTracked:          true,
-		AutoAddAcceptedHandoffs: true,
-		AutoRemoveDropped:       true,
-		AutoRemoveHandoffs:      true,
-
-		FontSize:           12,
-		selectedStrip:      -1,
-		selectedAnnotation: -1,
-		CIDs:               make(map[sim.ACID]int),
-		AllocatedCIDs:      make(map[int]any),
-		Annotations:        make(map[sim.ACID][9]string),
+		FontSize: 12,
 	}
 }
 
@@ -92,169 +55,54 @@ func (fsp *FlightStripPane) Activate(r renderer.Renderer, p platform.Platform, e
 	if fsp.font = renderer.GetFont(renderer.FontIdentifier{Name: renderer.FlightStripPrinter, Size: fsp.FontSize}); fsp.font == nil {
 		fsp.font = renderer.GetDefaultFont()
 	}
-	if fsp.addedPlans == nil {
-		fsp.addedPlans = make(map[sim.ACID]any)
-	}
-	if fsp.scrollbar == nil {
-		fsp.scrollbar = NewVerticalScrollBar(4, true)
-	}
-	if fsp.CIDs == nil {
-		fsp.CIDs = make(map[sim.ACID]int)
-	}
-	if fsp.AllocatedCIDs == nil {
-		fsp.AllocatedCIDs = make(map[int]any)
-	}
-	if fsp.Annotations == nil {
-		fsp.Annotations = make(map[sim.ACID][9]string)
-	}
-
-	fsp.events = eventStream.Subscribe()
-}
-
-func (fsp *FlightStripPane) getCID(acid sim.ACID) int {
-	if id, ok := fsp.CIDs[acid]; ok {
-		return id
-	}
-
-	// Find a free one. Start searching at a random offset.
-	start := rand.Make().Intn(1000)
-	for i := range 1000 {
-		idx := (start + i) % 1000
-		if _, ok := fsp.AllocatedCIDs[idx]; !ok {
-			fsp.CIDs[acid] = idx
-			fsp.AllocatedCIDs[idx] = nil
-			return idx
-		}
-	}
-	// Couldn't find one(?!)
-	fsp.CIDs[acid] = start
-	return start
-}
-
-func (fsp *FlightStripPane) possiblyAdd(fp *sim.NASFlightPlan, ctx *Context) {
-	if _, ok := fsp.addedPlans[fp.ACID]; ok {
-		// We've seen it before.
-		return
-	}
-
-	if fp.Rules == av.FlightRulesVFR && (fp.PlanType == sim.LocalNonEnroute || fp.TypeOfFlight != av.FlightTypeDeparture) {
-		// no strips for these
-		return
-	}
-
-	if ctx.UserOwnsFlightPlan(fp) {
-		fsp.strips = append(fsp.strips, fp.ACID)
-		fsp.addedPlans[fp.ACID] = nil
-		fsp.Annotations[fp.ACID] = [9]string{"", "", "", "", "", "", "", "", ""}
-	}
-}
-
-func (fsp *FlightStripPane) LoadedSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
 }
 
 func (fsp *FlightStripPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
-	fsp.strips = nil
-	fsp.addedPlans = make(map[sim.ACID]any)
-	fsp.CIDs = make(map[sim.ACID]int)
-	fsp.AllocatedCIDs = make(map[int]any)
-	fsp.Annotations = make(map[sim.ACID][9]string)
+	fsp.ACIDDisplayOrder = nil
+	fsp.editingACID = ""
+	fsp.draggingACID = ""
 }
 
-func (fsp *FlightStripPane) CanTakeKeyboardFocus() bool { return false /*true*/ }
-
-func (fsp *FlightStripPane) processEvents(ctx *Context) {
-	// First account for changes in world.Aircraft
-	// Added aircraft
-	for _, trk := range ctx.Client.State.Tracks {
-		if trk.FlightPlan != nil {
-			fsp.possiblyAdd(trk.FlightPlan, ctx)
-		}
-	}
-
-	remove := func(acid sim.ACID) {
-		fsp.strips = util.FilterSliceInPlace(fsp.strips, func(a sim.ACID) bool { return acid != a })
-		if fsp.selectedACID == acid {
-			fsp.selectedACID = ""
-		}
-		// Free up the CID
-		if cid, ok := fsp.CIDs[acid]; ok {
-			delete(fsp.CIDs, acid)
-			delete(fsp.AllocatedCIDs, cid)
-		}
-	}
-
-	for _, event := range fsp.events.Get() {
-		switch event.Type {
-		case sim.PushedFlightStripEvent:
-			// For all of these it's possible that we have an event for an
-			// aircraft that was deleted shortly afterward. So it's
-			// necessary to check that it's still in
-			// ControlClient.Aircraft.
-			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && fsp.AddPushed {
-				fsp.possiblyAdd(fp, ctx)
-			}
-
-		case sim.FlightPlanAssociatedEvent:
-			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && fsp.AutoAddTracked {
-				fsp.possiblyAdd(fp, ctx)
-			}
-
-		case sim.AcceptedHandoffEvent, sim.AcceptedRedirectedHandoffEvent:
-			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && fsp.AutoAddAcceptedHandoffs {
-				fsp.possiblyAdd(fp, ctx)
-			}
-
-		case sim.HandoffControlEvent:
-			if fp := ctx.Client.State.GetFlightPlanForACID(event.ACID); fp != nil && !ctx.UserOwnsFlightPlan(fp) {
-				remove(event.ACID)
-			}
-		}
-	}
-
-	// Danger: this is now O(n^2)
-	// Remove ones that have been deleted or have had their flight plan deleted.
-	fsp.strips = util.FilterSliceInPlace(fsp.strips, func(acid sim.ACID) bool {
-		return ctx.Client.State.GetFlightPlanForACID(acid) != nil
+// reconcileOrder syncs localOrder with the server's strip ACID list:
+// new ACIDs are appended, removed ones are pruned. There's a bunch of O(n^2)
+// over ACIDs here, but it should be fine(tm).
+func (fsp *FlightStripPane) reconcileOrder(stripACIDs []sim.ACID) {
+	// Remove ACIDs from localOrder that no longer exist.
+	fsp.ACIDDisplayOrder = util.FilterSlice(fsp.ACIDDisplayOrder, func(acid sim.ACID) bool {
+		return slices.Contains(stripACIDs, acid)
 	})
 
-	if fsp.CollectDeparturesArrivals {
-		isDeparture := func(acid sim.ACID) bool {
-			fp := ctx.Client.State.GetFlightPlanForACID(acid)
-			return fp != nil && fp.TypeOfFlight == av.FlightTypeDeparture
+	// Add new server ACIDs at the end of localOrder.
+	for acid := range slices.Values(stripACIDs) {
+		if !slices.Contains(fsp.ACIDDisplayOrder, acid) {
+			fsp.ACIDDisplayOrder = append(fsp.ACIDDisplayOrder, acid)
 		}
-		dep := util.FilterSlice(fsp.strips, isDeparture)
-		arr := util.FilterSlice(fsp.strips, func(acid sim.ACID) bool { return !isDeparture(acid) })
+	}
 
-		fsp.strips = fsp.strips[:0]
-		fsp.strips = append(fsp.strips, dep...)
-		fsp.strips = append(fsp.strips, arr...)
+	// If the edited strip is no longer present, cancel editing.
+	if fsp.editingACID != "" && !slices.Contains(fsp.ACIDDisplayOrder, fsp.editingACID) {
+		fsp.editingACID = ""
+	}
+	if fsp.draggingACID != "" && !slices.Contains(fsp.ACIDDisplayOrder, fsp.draggingACID) {
+		fsp.draggingACID = ""
 	}
 }
 
-func (fsp *FlightStripPane) Hide() bool { return fsp.HideFlightStrips }
+// commitAnnotations sends the current annotation edits to the server and
+// also writes them to the local flight plan for immediate display, avoiding
+// a flicker while waiting for the server's next state update.
+func (fsp *FlightStripPane) commitAnnotations(c *client.ControlClient) {
+	if sfp := c.State.GetFlightPlanForACID(fsp.editingACID); sfp != nil {
+		sfp.StripAnnotations = fsp.editingAnnotations
+	}
+	c.AnnotateFlightStrip(fsp.editingACID, fsp.editingAnnotations)
+}
 
 var _ UIDrawer = (*FlightStripPane)(nil)
 
 func (fsp *FlightStripPane) DisplayName() string { return "Flight Strips" }
 
 func (fsp *FlightStripPane) DrawUI(p platform.Platform, config *platform.Config) {
-	show := !fsp.HideFlightStrips
-	imgui.Checkbox("Show flight strips", &show)
-	fsp.HideFlightStrips = !show
-
-	if fsp.HideFlightStrips {
-		imgui.BeginDisabled()
-	}
-	imgui.Checkbox("Automatically add departures", &fsp.AutoAddDepartures)
-	imgui.Checkbox("Automatically add arrivals", &fsp.AutoAddArrivals)
-	imgui.Checkbox("Automatically add overflights", &fsp.AutoAddOverflights)
-	imgui.Checkbox("Add pushed flight strips", &fsp.AddPushed)
-	imgui.Checkbox("Automatically add when track is initiated", &fsp.AutoAddTracked)
-	imgui.Checkbox("Automatically add handoffs", &fsp.AutoAddAcceptedHandoffs)
-	imgui.Checkbox("Automatically remove dropped tracks", &fsp.AutoRemoveDropped)
-	imgui.Checkbox("Automatically remove accepted handoffs", &fsp.AutoRemoveHandoffs)
-
-	imgui.Checkbox("Collect departures and arrivals together", &fsp.CollectDeparturesArrivals)
 	imgui.Checkbox("Night mode", &fsp.DarkMode)
 
 	id := renderer.FontIdentifier{Name: fsp.font.Id.Name, Size: fsp.FontSize}
@@ -262,484 +110,367 @@ func (fsp *FlightStripPane) DrawUI(p platform.Platform, config *platform.Config)
 		fsp.FontSize = newFont.Size
 		fsp.font = newFont
 	}
-	if fsp.HideFlightStrips {
-		imgui.EndDisabled()
-	}
-}
-
-func (fsp *FlightStripPane) Draw(ctx *Context, cb *renderer.CommandBuffer) {
-	fsp.processEvents(ctx)
-
-	// Font width and height
-	// the 'Flight Strip Printer' font seems to have an unusually thin space,
-	// so instead use 'X' to get the expected per-character width for layout.
-	bx, _ := fsp.font.BoundText("X", 0)
-	fw, fh := float32(bx), float32(fsp.font.Size)
-
-	// 3 lines of text, 2 lines on top and below for padding, 1 pixel separator line
-	vpad := float32(2)
-	stripHeight := float32(int(1 + 2*vpad + 4*fh))
-
-	visibleStrips := int(ctx.PaneExtent.Height() / stripHeight)
-	fsp.scrollbar.Update(len(fsp.strips), visibleStrips, ctx)
-
-	indent := float32(int32(fw / 2))
-	// column widths in pixels
-	width0 := 10 * fw
-	width1 := 6 * fw
-	width2 := 6 * fw
-	widthAnn := 5 * fw
-
-	// The full width in pixels we have for drawing flight strips.
-	drawWidth := ctx.PaneExtent.Width()
-	if fsp.scrollbar.Visible() {
-		drawWidth -= float32(fsp.scrollbar.PixelExtent())
-	}
-
-	// The width of the center region (where the route, etc., go) is set to
-	// take all of the space left after the fixed-width columns have taken
-	// their part.
-	widthCenter := drawWidth - width0 - width1 - width2 - 3*widthAnn
-	if widthCenter < 0 {
-		// not sure what to do if it comes to this...
-		widthCenter = 20 * fw
-	}
-
-	// This can happen if, for example, the last aircraft is selected and
-	// then another one is removed. It might be better if selectedAircraft
-	// was a pointer to something that FlightStripPane managed, so that
-	// this sort of case would be handled more naturally... (And note that
-	// tracking the callsign won't work if we want to have strips for the
-	// same aircraft twice in a pane, for what that's worth...)
-	if fsp.selectedStrip >= len(fsp.strips) {
-		fsp.selectedStrip = len(fsp.strips) - 1
-	}
-
-	darkmode := func(rgb renderer.RGB) renderer.RGB {
-		if fsp.DarkMode {
-			return renderer.RGB{R: 1 - rgb.R, G: 1 - rgb.G, B: 1 - rgb.B}
-		}
-		return rgb
-	}
-
-	// Draw the background for all of them
-	qb := renderer.GetColoredTrianglesDrawBuilder()
-	defer renderer.ReturnColoredTrianglesDrawBuilder(qb)
-	bgColor := darkmode(renderer.RGB{.9, .9, .85})
-	y0, y1 := float32(0), float32(min(len(fsp.strips), visibleStrips))*stripHeight-1
-	qb.AddQuad([2]float32{0, y0}, [2]float32{drawWidth, y0}, [2]float32{drawWidth, y1}, [2]float32{0, y1}, bgColor)
-
-	ctx.SetWindowCoordinateMatrices(cb)
-	qb.GenerateCommands(cb)
-
-	td := renderer.GetTextDrawBuilder()
-	defer renderer.ReturnTextDrawBuilder(td)
-	ld := renderer.GetLinesDrawBuilder()
-	defer renderer.ReturnLinesDrawBuilder(ld)
-	trid := renderer.GetTrianglesDrawBuilder()
-	defer renderer.ReturnTrianglesDrawBuilder(trid)
-
-	// Draw from the bottom
-	style := renderer.TextStyle{Font: fsp.font, Color: darkmode(renderer.RGB{.1, .1, .1})}
-	scrollOffset := fsp.scrollbar.Offset()
-	y := stripHeight - 1
-	for i := scrollOffset; i < min(len(fsp.strips), visibleStrips+scrollOffset+1); i++ {
-		sfp := ctx.Client.State.GetFlightPlanForACID(fsp.strips[i])
-		if sfp == nil {
-			continue
-		}
-		acid := fsp.strips[i]
-		track := ctx.Client.State.Tracks[av.ADSBCallsign(acid)] // HAX: conflates callsign/ACID
-		if track == nil {
-			continue
-		}
-		annots := fsp.Annotations[acid]
-
-		x := float32(0)
-
-		drawColumn := func(line0, line1, line2 string, width float32, lines bool) {
-			td.AddText(line0, [2]float32{x + indent, y - vpad}, style)
-			td.AddText(line1, [2]float32{x + indent, y - vpad - stripHeight/3}, style)
-			td.AddText(line2, [2]float32{x + indent, y - vpad - stripHeight*2/3}, style)
-			// Line on the right
-			ld.AddLine([2]float32{x + width, y}, [2]float32{x + width, y - stripHeight})
-			if lines {
-				// Horizontal lines
-				ld.AddLine([2]float32{x, y - stripHeight/3}, [2]float32{x + width, y - stripHeight/3})
-				ld.AddLine([2]float32{x, y - stripHeight*2/3}, [2]float32{x + width, y - stripHeight*2/3})
-			}
-		}
-
-		formatRoute := func(route string, width float32, nlines int) []string {
-			// Lay the lines out, breaking at cols, but don't worry about
-			// having too many lines for now.
-			cols := int(width / fw)
-			var lines []string
-			var b strings.Builder
-			fixes := strings.Fields(route)
-			for _, fix := range fixes {
-				n := len(fix)
-				if n > 15 {
-					// Assume it's a latlong; skip it.
-					continue
-				}
-				if b.Len() > 0 {
-					// Space after the previous one on this line.
-					b.WriteByte(' ')
-				}
-				if b.Len()+n > cols {
-					// Would overflow the current line; start a new one.
-					lines = append(lines, b.String())
-					b.Reset()
-				}
-
-				b.WriteString(fix)
-			}
-			if b.Len() > 0 {
-				lines = append(lines, b.String())
-			}
-
-			// Make sure we return at least the number of lines requested.
-			for len(lines) < nlines {
-				lines = append(lines, "")
-			}
-
-			if len(lines) > nlines && len(fixes) > 1 {
-				// We have too many lines. Go back and patch up the last
-				// line so that it has *** and the final fix at the end.
-				last := fixes[len(fixes)-1]
-				need := len(last) + 3
-				line := lines[nlines-1]
-				// Keep chopping the last fix off until we have enough space.
-				for len(line)+need > cols {
-					idx := strings.LastIndexByte(line, ' ')
-					if idx == -1 {
-						// We're down to an empty string; give up since
-						// we're inevitably going to overflow.
-						break
-					}
-					line = line[:idx]
-				}
-				lines[nlines-1] = line + "***" + last
-			}
-			return lines[:nlines]
-		}
-
-		// First column; 3 entries: callsign, aircraft type, 3-digit id number
-		cid := fmt.Sprintf("%03d", fsp.getCID(sfp.ACID))
-		drawColumn(string(sfp.ACID), sfp.CWTCategory+"/"+sfp.AircraftType, cid, width0, false)
-
-		x += width0
-		if sfp.TypeOfFlight == av.FlightTypeDeparture {
-			// Second column; 3 entries: squawk, proposed time, requested altitude
-			proposedTime := "P" + sfp.CoordinationTime.UTC().Format("1504")
-			drawColumn(sfp.AssignedSquawk.String(), proposedTime, strconv.Itoa(sfp.RequestedAltitude/100),
-				width1, true)
-
-			// Third column: departure airport, (empty), (empty)
-			x += width1
-			// Departures
-			drawColumn(track.DepartureAirport, "", "", width2, false)
-
-			x += width2
-			// Fourth column: route and destination airport
-			route := formatRoute(track.FiledRoute+" "+track.ArrivalAirport, widthCenter, 3)
-			drawColumn(route[0], route[1], route[2], widthCenter, false)
-		} else if sfp.TypeOfFlight == av.FlightTypeArrival {
-			// Second column; 3 entries: squawk, previous fix, coordination fix
-			drawColumn(sfp.AssignedSquawk.String(), "", "", width1, true)
-
-			x += width1
-			// Third column: eta of arrival at coordination fix / destination airport, empty, empty
-			arrivalTime := "A" + sfp.CoordinationTime.UTC().Format("1504")
-			drawColumn(arrivalTime, "", "", width2, false)
-
-			// Fourth column: flight rules, destination airport
-			x += width2
-			drawColumn(util.Select(sfp.Rules == av.FlightRulesIFR, "IFR", "VFR"), "", track.ArrivalAirport, widthCenter, false)
-		} else {
-			// Overflight
-			// Second column; 3 entries: squawk, entry fix, exit fix
-			drawColumn(sfp.AssignedSquawk.String(), "", "", width1, true)
-
-			x += width1
-			// Third column: eta of arrival at entry coordination fix, empty, empty
-			arrivalTime := "E" + sfp.CoordinationTime.UTC().Format("1504")
-			drawColumn(arrivalTime, "", "", width2, false)
-
-			// Fourth column: altitude, route
-			x += width2
-			// TODO: e.g. "VFR/65" for altitude if it's VFR
-			route := formatRoute(track.DepartureAirport+" "+track.FiledRoute+" "+track.ArrivalAirport, widthCenter, 2)
-			drawColumn(strconv.Itoa(track.FiledAltitude/100), route[0], route[1], widthCenter, false)
-		}
-
-		// Annotations
-		x += widthCenter
-		var editResult int
-		for ai, ann := range annots {
-			ix, iy := ai%3, ai/3
-			xp, yp := x+float32(ix)*widthAnn+indent, y-float32(iy)*stripHeight/3
-
-			if ctx.HaveFocus && fsp.selectedStrip == i && ai == fsp.selectedAnnotation {
-				// drawTextEdit on our local array slot
-				cursorStyle := renderer.TextStyle{
-					Font:            fsp.font,
-					Color:           bgColor,
-					DrawBackground:  true,
-					BackgroundColor: style.Color,
-				}
-				editResult, _ = drawTextEdit(&annots[ai], &fsp.annotationCursorPos,
-					ctx.Keyboard, [2]float32{xp, yp}, style, cursorStyle, *ctx.KeyboardFocus, cb)
-
-				// truncate to 3 chars
-				if len(annots[ai]) > 3 {
-					annots[ai] = annots[ai][:3]
-					fsp.annotationCursorPos = min(fsp.annotationCursorPos, len(annots[ai]))
-				}
-
-				// write back into the pane’s map
-				fsp.Annotations[acid] = annots
-			} else {
-				td.AddText(ann, [2]float32{xp, yp}, style)
-			}
-		}
-
-		// Only process this after drawing all of the annotations since
-		// otherwise we can end up with cascading tabbing ahead and the
-		// like.
-		switch editResult {
-		case textEditReturnNone, textEditReturnTextChanged:
-			// nothing to do
-		case textEditReturnEnter:
-			fsp.selectedStrip = -1
-			ctx.KeyboardFocus.Release()
-		case textEditReturnNext:
-			fsp.selectedAnnotation = (fsp.selectedAnnotation + 1) % 9
-			fsp.annotationCursorPos = len(annots[fsp.selectedAnnotation])
-		case textEditReturnPrev:
-			fsp.selectedAnnotation = (fsp.selectedAnnotation + 8) % 9
-			fsp.annotationCursorPos = len(annots[fsp.selectedAnnotation])
-		}
-
-		// Horizontal lines
-		ld.AddLine([2]float32{x, y - stripHeight/3}, [2]float32{drawWidth, y - stripHeight/3})
-		ld.AddLine([2]float32{x, y - stripHeight*2/3}, [2]float32{drawWidth, y - stripHeight*2/3})
-		// Vertical lines
-		for i := range 3 {
-			xp := x + float32(i)*widthAnn
-			ld.AddLine([2]float32{xp, y}, [2]float32{xp, y - stripHeight})
-		}
-
-		// Line at the top
-		ld.AddLine([2]float32{0, y}, [2]float32{drawWidth, y})
-
-		y += stripHeight
-	}
-
-	// Handle selection, deletion, and reordering
-	if ctx.Mouse != nil {
-		// Ignore clicks if the mouse is over the scrollbar (and it's being drawn)
-		if ctx.Mouse.Clicked[platform.MouseButtonPrimary] && ctx.Mouse.Pos[0] <= drawWidth {
-			// from the bottom
-			stripIndex := int(ctx.Mouse.Pos[1] / stripHeight)
-			stripIndex += scrollOffset
-			if stripIndex < len(fsp.strips) {
-				io := imgui.CurrentIO()
-				if io.KeyShift() {
-					// delete the flight strip
-					copy(fsp.strips[stripIndex:], fsp.strips[stripIndex+1:])
-					fsp.strips = fsp.strips[:len(fsp.strips)-1]
-				} else {
-					// select the aircraft
-					fsp.selectedACID = fsp.strips[stripIndex]
-				}
-			}
-		}
-		if ctx.Mouse != nil && ctx.Mouse.Clicked[platform.MouseButtonPrimary] {
-			mx, my := ctx.Mouse.Pos[0], ctx.Mouse.Pos[1]
-			// compute left edge of the 3-column annotation area:
-			annotationStartX := drawWidth - 3*widthAnn
-			if mx >= annotationStartX && mx <= drawWidth {
-				// which strip row?
-				row := int(my/stripHeight) + scrollOffset
-				if row >= scrollOffset && row < len(fsp.strips) {
-					// take focus
-					ctx.KeyboardFocus.Take(fsp)
-					fsp.selectedStrip = row
-					// column index 0..2
-					col := int((mx - annotationStartX) / widthAnn)
-					// row within the 3 rows of that cell
-					innerRow := 2 - (int(my)%int(stripHeight))/(int(stripHeight)/3)
-					ai := innerRow*3 + col
-					fsp.selectedAnnotation = math.Clamp(ai, 0, 8)
-					fsp.annotationCursorPos = len(fsp.Annotations[fsp.strips[row]][fsp.selectedAnnotation])
-				}
-			}
-		}
-		if ctx.Mouse.Dragging[platform.MouseButtonPrimary] {
-			fsp.mouseDragging = true
-			fsp.lastMousePos = ctx.Mouse.Pos
-
-			// Offset so that the selection region is centered over the
-			// line between two strips; the index then is to the lower one.
-			splitIndex := int(ctx.Mouse.Pos[1]/stripHeight + 0.5)
-			yl := float32(splitIndex) * stripHeight
-			trid.AddQuad([2]float32{0, yl - 1}, [2]float32{drawWidth, yl - 1},
-				[2]float32{drawWidth, yl + 1}, [2]float32{0, yl + 1})
-		}
-	}
-	if fsp.mouseDragging && (ctx.Mouse == nil || !ctx.Mouse.Dragging[platform.MouseButtonPrimary]) {
-		fsp.mouseDragging = false
-
-		if fsp.selectedACID == "" {
-			ctx.Lg.Debug("No selected aircraft for flight strip drag?!")
-		} else {
-			// Figure out the index for the selected aircraft.
-			selectedIndex := func() int {
-				for i, fs := range fsp.strips {
-					if fs == fsp.selectedACID {
-						return i
-					}
-				}
-				ctx.Lg.Warnf("Couldn't find %s in flight strips?!", fsp.selectedACID)
-				return -1
-			}()
-
-			// The selected aircraft was set from the original mouse down so
-			// now we just need to move it to be in the right place given where
-			// the button was released.
-			destinationIndex := int(fsp.lastMousePos[1]/stripHeight + 0.5)
-			destinationIndex += scrollOffset
-			destinationIndex = math.Clamp(destinationIndex, 0, len(fsp.strips))
-
-			if selectedIndex != -1 && selectedIndex != destinationIndex {
-				// First remove it from the slice
-				fs := fsp.strips[selectedIndex]
-				fsp.strips = append(fsp.strips[:selectedIndex], fsp.strips[selectedIndex+1:]...)
-
-				if selectedIndex < destinationIndex {
-					destinationIndex--
-				}
-
-				// And stuff it in there
-				fin := fsp.strips[destinationIndex:]
-				fsp.strips = append([]sim.ACID{}, fsp.strips[:destinationIndex]...)
-				fsp.strips = append(fsp.strips, fs)
-				fsp.strips = append(fsp.strips, fin...)
-			}
-		}
-	}
-	// Take focus if the user clicks in the annotations
-	/*
-		if ctx.Mouse != nil && ctx.Mouse.Clicked[MouseButtonPrimary] {
-			annotationStartX := drawWidth - 3*widthAnn
-			if xp := ctx.Mouse.Pos[0]; xp >= annotationStartX && xp < drawWidth {
-				stripIndex := int(ctx.Mouse.Pos[1]/stripHeight) + scrollOffset
-				if stripIndex < len(fsp.strips) {
-					wmTakeKeyboardFocus(fsp, true)
-					fsp.selectedStrip = stripIndex
-
-					// Figure out which annotation was selected
-					xa := int(ctx.Mouse.Pos[0]-annotationStartX) / int(widthAnn)
-					ya := 2 - (int(ctx.Mouse.Pos[1])%int(stripHeight))/(int(stripHeight)/3)
-					xa, ya = clamp(xa, 0, 2), clamp(ya, 0, 2) // just in case
-					fsp.selectedAnnotation = 3*ya + xa
-
-					callsign := fsp.strips[fsp.selectedStrip]
-					strip := ctx.world.GetFlightStrip(callsign)
-					fsp.annotationCursorPos = len(strip.annotations[fsp.selectedAnnotation])
-				}
-			}
-		}
-	*/
-	fsp.scrollbar.Draw(ctx, cb)
-
-	cb.SetRGB(darkmode(UIControlColor))
-	cb.LineWidth(1, ctx.DPIScale)
-	ld.GenerateCommands(cb)
-	td.GenerateCommands(cb)
-
-	cb.SetRGB(darkmode(UITextHighlightColor))
-	trid.GenerateCommands(cb)
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// Text editing
+// Flight strip layout and drawing
 
-const (
-	textEditReturnNone = iota
-	textEditReturnTextChanged
-	textEditReturnEnter
-	textEditReturnNext
-	textEditReturnPrev
-)
-
-// drawTextEdit handles the basics of interactive text editing; it takes
-// a string and cursor position and then renders them with the specified
-// style, processes keyboard inputs and updates the string accordingly.
-func drawTextEdit(s *string, cursor *int, keyboard *platform.KeyboardState, pos [2]float32, style,
-	cursorStyle renderer.TextStyle, focus KeyboardFocus, cb *renderer.CommandBuffer) (exit int, posOut [2]float32) {
-	// Make sure we can depend on it being sensible for the following
-	*cursor = math.Clamp(*cursor, 0, len(*s))
-	originalText := *s
-
-	// Draw the text and the cursor
-	td := renderer.GetTextDrawBuilder()
-	defer renderer.ReturnTextDrawBuilder(td)
-	if *cursor == len(*s) {
-		// cursor at the end
-		posOut = td.AddTextMulti([]string{*s, " "}, pos, []renderer.TextStyle{style, cursorStyle})
-	} else {
-		// cursor in the middle
-		sb, sc, se := (*s)[:*cursor], (*s)[*cursor:*cursor+1], (*s)[*cursor+1:]
-		styles := []renderer.TextStyle{style, cursorStyle, style}
-		posOut = td.AddTextMulti([]string{sb, sc, se}, pos, styles)
+// formatRoute word-wraps a route string into nlines lines that fit within
+// the given pixel width. If the route overflows, the last line is
+// truncated with *** followed by the final fix.
+func formatRoute(route string, fw, width float32, nlines int) []string {
+	cols := int(width / fw)
+	var lines []string
+	var b strings.Builder
+	fixes := strings.Fields(route)
+	for _, fix := range fixes {
+		n := len(fix)
+		if n > 15 {
+			// Assume it's a latlong; skip it.
+			continue
+		}
+		if b.Len() > 0 {
+			b.WriteByte(' ')
+		}
+		if b.Len()+n > cols {
+			lines = append(lines, b.String())
+			b.Reset()
+		}
+		b.WriteString(fix)
 	}
-	td.GenerateCommands(cb)
+	if b.Len() > 0 {
+		lines = append(lines, b.String())
+	}
 
-	// Handle various special keys.
-	if keyboard != nil {
-		if keyboard.WasPressed(imgui.KeyBackspace) && *cursor > 0 {
-			*s = (*s)[:*cursor-1] + (*s)[*cursor:]
-			*cursor--
+	for len(lines) < nlines {
+		lines = append(lines, "")
+	}
+
+	if len(lines) > nlines && len(fixes) > 1 {
+		// Too many lines: patch the last visible line so it has ***
+		// and the final fix at the end.
+		last := fixes[len(fixes)-1]
+		need := len(last) + 3
+		line := lines[nlines-1]
+		for len(line)+need > cols {
+			idx := strings.LastIndexByte(line, ' ')
+			if idx == -1 {
+				break
+			}
+			line = line[:idx]
 		}
-		if keyboard.WasPressed(imgui.KeyDelete) && *cursor < len(*s)-1 {
-			*s = (*s)[:*cursor] + (*s)[*cursor+1:]
+		lines[nlines-1] = line + "***" + last
+	}
+	return lines[:nlines]
+}
+
+///////////////////////////////////////////////////////////////////////////
+// DrawWindow renders the flight strip pane as a floating imgui window
+// using imgui tables for layout.
+
+func (fsp *FlightStripPane) DrawWindow(show *bool, c *client.ControlClient,
+	p platform.Platform, lg *log.Logger) {
+
+	fsp.reconcileOrder(c.State.FlightStripACIDs)
+
+	imgui.SetNextWindowSizeConstraints(imgui.Vec2{X: 400, Y: 200}, imgui.Vec2{X: 4096, Y: 4096})
+	imgui.BeginV("Flight Strips", show, 0)
+	if fsp.font != nil {
+		fsp.font.ImguiPush()
+	}
+
+	// Commit annotations if the window lost focus while editing.
+	if fsp.editingACID != "" && !imgui.IsWindowFocused() {
+		fsp.commitAnnotations(c)
+		fsp.editingACID = ""
+	}
+
+	// Push colors for dark/light mode.
+	var textColor, bgColor, borderStrong, borderLight imgui.Vec4
+	if fsp.DarkMode {
+		textColor = imgui.Vec4{X: 0.82, Y: 0.85, Z: 0.88, W: 1}
+		bgColor = imgui.Vec4{X: 0.11, Y: 0.12, Z: 0.14, W: 1}
+		borderStrong = imgui.Vec4{X: 0.35, Y: 0.38, Z: 0.42, W: 1}
+		borderLight = imgui.Vec4{X: 0.25, Y: 0.28, Z: 0.32, W: 1}
+	} else {
+		textColor = imgui.Vec4{X: 0.1, Y: 0.1, Z: 0.1, W: 1}
+		bgColor = imgui.Vec4{X: 0.9, Y: 0.9, Z: 0.85, W: 1}
+		borderStrong = imgui.Vec4{X: 0.5, Y: 0.5, Z: 0.45, W: 1}
+		borderLight = imgui.Vec4{X: 0.6, Y: 0.6, Z: 0.55, W: 1}
+	}
+	imgui.PushStyleColorVec4(imgui.ColText, textColor)
+	imgui.PushStyleColorVec4(imgui.ColTableRowBg, bgColor)
+	imgui.PushStyleColorVec4(imgui.ColTableRowBgAlt, bgColor)
+	imgui.PushStyleColorVec4(imgui.ColTableBorderStrong, borderStrong)
+	imgui.PushStyleColorVec4(imgui.ColTableBorderLight, borderLight)
+	imgui.PushStyleColorVec4(imgui.ColHeaderHovered, imgui.Vec4{})
+	imgui.PushStyleColorVec4(imgui.ColHeaderActive, imgui.Vec4{})
+
+	fw := imgui.CalcTextSizeV("X", false, 0).X
+
+	type stripRect struct {
+		acid     sim.ACID
+		min, max imgui.Vec2
+	}
+	var stripRects []stripRect
+	fsp.tabConsumedThisFrame = false
+
+	for i, acid := range fsp.ACIDDisplayOrder {
+		sfp := c.State.GetFlightPlanForACID(acid)
+		if sfp == nil {
+			continue
 		}
-		if keyboard.WasPressed(imgui.KeyLeftArrow) {
-			*cursor = max(*cursor-1, 0)
-		}
-		if keyboard.WasPressed(imgui.KeyRightArrow) {
-			*cursor = min(*cursor+1, len(*s))
-		}
-		if keyboard.WasPressed(imgui.KeyEscape) {
-			// clear out the string
-			*s = ""
-			*cursor = 0
-		}
-		if keyboard.WasPressed(imgui.KeyEnter) {
-			focus.Release()
-			exit = textEditReturnEnter
-		}
-		if keyboard.WasPressed(imgui.KeyTab) {
-			if keyboard.KeyShift() {
-				exit = textEditReturnPrev
-			} else {
-				exit = textEditReturnNext
+		track := c.State.Tracks[av.ADSBCallsign(acid)]
+
+		imgui.PushIDInt(int32(i))
+		tableMin, tableMax := fsp.drawStripImgui(acid, sfp, track, c, fw)
+		imgui.PopID()
+
+		if tableMin.X != tableMax.X { // table was rendered
+			stripRects = append(stripRects, stripRect{acid: acid, min: tableMin, max: tableMax})
+
+			// Draw yellow border around the strip being dragged.
+			if fsp.draggingACID == acid {
+				yellowCol := imgui.ColorU32Vec4(imgui.Vec4{X: 1, Y: 1, Z: 0, W: 1})
+				imgui.WindowDrawList().AddRectV(tableMin, tableMax, yellowCol, 0, 0, 2)
 			}
 		}
+	}
 
-		// And finally insert any regular characters into the appropriate spot
-		// in the string.
-		if keyboard.Input != "" {
-			*s = (*s)[:*cursor] + keyboard.Input + (*s)[*cursor:]
-			*cursor += len(keyboard.Input)
+	// Dynamic reorder: while dragging, place the strip at the visual
+	// position that the mouse overlaps.
+	if fsp.draggingACID != "" {
+		mouseY := imgui.MousePos().Y
+		srcIdx := slices.Index(fsp.ACIDDisplayOrder, fsp.draggingACID)
+		if srcIdx >= 0 {
+			// Find the strip the mouse overlaps.
+			targetIdx := -1
+			for _, r := range stripRects {
+				if r.acid == fsp.draggingACID {
+					continue
+				}
+				if mouseY >= r.min.Y && mouseY <= r.max.Y {
+					targetIdx = slices.Index(fsp.ACIDDisplayOrder, r.acid)
+					break
+				}
+			}
+
+			if targetIdx >= 0 && targetIdx != srcIdx {
+				without := slices.Clone(fsp.ACIDDisplayOrder)
+				without = slices.Delete(without, srcIdx, srcIdx+1)
+				fsp.ACIDDisplayOrder = slices.Insert(without, targetIdx, fsp.draggingACID)
+			}
+		}
+		if imgui.IsMouseReleased(0) {
+			fsp.draggingACID = ""
 		}
 	}
 
-	if exit == textEditReturnNone && *s != originalText {
-		exit = textEditReturnTextChanged
+	imgui.PopStyleColorV(7)
+
+	if fsp.font != nil {
+		imgui.PopFont()
+	}
+	imgui.End()
+}
+
+// drawStripImgui renders a single flight strip as an imgui table with
+// 7 columns (callsign, squawk/time, airport, route, ann0, ann1, ann2)
+// and 3 rows. It returns the table's screen-space bounding rect for
+// drag-reorder hit testing (zero if the table was not rendered).
+func (fsp *FlightStripPane) drawStripImgui(acid sim.ACID, sfp *sim.NASFlightPlan,
+	track *sim.Track, c *client.ControlClient, fw float32) (tableMin, tableMax imgui.Vec2) {
+
+	tableFlags := imgui.TableFlagsBorders | imgui.TableFlagsSizingFixedFit |
+		imgui.TableFlagsRowBg | imgui.TableFlagsNoHostExtendX
+	if !imgui.BeginTableV("strip", 7, tableFlags, imgui.Vec2{X: -1}, 0) {
+		return
+	}
+
+	// Column widths matching the reference strip layout.
+	imgui.TableSetupColumnV("", imgui.TableColumnFlagsWidthFixed, 8*fw, 0) // callsign/type/CID
+	imgui.TableSetupColumnV("", imgui.TableColumnFlagsWidthFixed, 5*fw, 0) // squawk/time/alt
+	imgui.TableSetupColumnV("", imgui.TableColumnFlagsWidthFixed, 5*fw, 0) // airport
+	imgui.TableSetupColumnV("", imgui.TableColumnFlagsWidthStretch, 0, 0)  // route
+	imgui.TableSetupColumnV("", imgui.TableColumnFlagsWidthFixed, 3*fw, 0) // annotation col 0
+	imgui.TableSetupColumnV("", imgui.TableColumnFlagsWidthFixed, 3*fw, 0) // annotation col 1
+	imgui.TableSetupColumnV("", imgui.TableColumnFlagsWidthFixed, 3*fw, 0) // annotation col 2
+
+	// Build cell content for the 3x7 grid.
+	var cells [3][4]string // columns 0-3 only; annotations handled separately
+
+	cells[0][0] = string(sfp.ACID)
+	cells[1][0] = sfp.CWTCategory + "/" + sfp.AircraftType
+	cells[2][0] = fmt.Sprintf("%03d", sfp.StripCID)
+
+	depAirport, arrAirport := "", sfp.ArrivalAirport
+	filedRoute := sfp.Route
+	filedAlt := sfp.RequestedAltitude
+	if track != nil {
+		depAirport = track.DepartureAirport
+		arrAirport = track.ArrivalAirport
+		filedRoute = track.FiledRoute
+		filedAlt = track.FiledAltitude
+	}
+
+	// Estimate route column width for word-wrapping.
+	routeWidth := imgui.ContentRegionAvail().X - (8+5+5+3*3)*fw
+	if routeWidth < 20*fw {
+		routeWidth = 20 * fw
+	}
+
+	switch sfp.TypeOfFlight {
+	case av.FlightTypeDeparture:
+		proposedTime := "P" + sfp.CoordinationTime.UTC().Format("1504")
+		cells[0][1] = sfp.AssignedSquawk.String()
+		cells[1][1] = proposedTime
+		cells[2][1] = strconv.Itoa(sfp.RequestedAltitude / 100)
+
+		cells[0][2] = depAirport
+
+		route := formatRoute(filedRoute+" "+arrAirport, fw, routeWidth, 3)
+		cells[0][3], cells[1][3], cells[2][3] = route[0], route[1], route[2]
+
+	case av.FlightTypeArrival:
+		cells[0][1] = sfp.AssignedSquawk.String()
+
+		arrivalTime := "A" + sfp.CoordinationTime.UTC().Format("1504")
+		cells[0][2] = arrivalTime
+
+		cells[0][3] = util.Select(sfp.Rules == av.FlightRulesIFR, "IFR", "VFR")
+		cells[2][3] = arrAirport
+
+	default: // Overflight
+		cells[0][1] = sfp.AssignedSquawk.String()
+
+		arrivalTime := "E" + sfp.CoordinationTime.UTC().Format("1504")
+		cells[0][2] = arrivalTime
+
+		route := formatRoute(depAirport+" "+filedRoute+" "+arrAirport, fw, routeWidth, 2)
+		cells[0][3] = strconv.Itoa(filedAlt / 100)
+		cells[1][3], cells[2][3] = route[0], route[1]
+	}
+
+	// Callback that enforces a 3-character limit by truncating after each edit.
+	charLimit := func(data imgui.InputTextCallbackData) int {
+		if data.BufTextLen() > 3 {
+			data.DeleteChars(3, data.BufTextLen()-3)
+		}
+		return 0
+	}
+
+	// Draw 3 rows.
+	annots := util.Select(fsp.editingACID == acid, fsp.editingAnnotations, sfp.StripAnnotations)
+	for row := range 3 {
+		imgui.TableNextRow()
+
+		// Column 0: selectable used as a drag handle for reordering.
+		imgui.TableSetColumnIndex(0)
+		imgui.SelectableBoolV(fmt.Sprintf("%s##row%d", cells[row][0], row), false, imgui.SelectableFlagsSpanAllColumns|imgui.SelectableFlagsAllowOverlap, imgui.Vec2{})
+
+		// Initiate drag when column 0 is clicked and dragged. The
+		// Selectable stays "active" while the mouse button is held,
+		// so IsItemActive remains true during the drag.
+		if fsp.draggingACID == "" && imgui.IsItemActive() && imgui.IsMouseDragging(0) {
+			fsp.draggingACID = acid
+		}
+
+		// Columns 1-3: plain text.
+		for col := 1; col < 4; col++ {
+			imgui.TableSetColumnIndex(int32(col))
+			imgui.TextUnformatted(cells[row][col])
+		}
+
+		// Columns 4-6: annotation cells (editable).
+		for acol := range 3 {
+			imgui.TableSetColumnIndex(int32(4 + acol))
+			ai := row*3 + acol
+
+			imgui.PushIDInt(int32(ai))
+			if fsp.editingACID == acid && fsp.editingAnnotation == ai {
+				imgui.SetNextItemWidth(-1)
+				if fsp.editingNeedsFocus {
+					imgui.SetKeyboardFocusHere()
+					fsp.editingNeedsFocus = false
+				}
+
+				flags := imgui.InputTextFlagsEnterReturnsTrue | imgui.InputTextFlagsCallbackEdit
+				tabPressed := imgui.IsKeyPressedBool(imgui.KeyTab) && !fsp.tabConsumedThisFrame
+
+				if imgui.InputTextWithHint("##ann", "", &fsp.editingAnnotations[ai], flags, charLimit) {
+					// Enter pressed: commit annotations.
+					fsp.commitAnnotations(c)
+					fsp.editingACID = ""
+				} else if tabPressed {
+					// Tab cycles to the next annotation cell without committing.
+					// Must be checked before IsItemDeactivatedAfterEdit because
+					// imgui deactivates the input on Tab.
+					fsp.tabConsumedThisFrame = true
+					if imgui.CurrentIO().KeyShift() {
+						fsp.editingAnnotation = (fsp.editingAnnotation + 8) % 9
+					} else {
+						fsp.editingAnnotation = (fsp.editingAnnotation + 1) % 9
+					}
+					fsp.editingNeedsFocus = true
+				} else if imgui.IsItemDeactivatedAfterEdit() {
+					// Lost focus for another reason: commit annotations.
+					fsp.commitAnnotations(c)
+					fsp.editingACID = ""
+				}
+
+				// Escape clears the cell.
+				if imgui.IsKeyPressedBool(imgui.KeyEscape) {
+					fsp.editingAnnotations[ai] = ""
+				}
+			} else {
+				label := annots[ai]
+				if label == "" {
+					label = " "
+				}
+				if imgui.SelectableBool(label) && fsp.draggingACID == "" {
+					// Commit any previous editing session for a different strip.
+					if fsp.editingACID != "" && fsp.editingACID != acid {
+						fsp.commitAnnotations(c)
+					}
+					fsp.editingACID = acid
+					fsp.editingAnnotation = ai
+					if editFP := c.State.GetFlightPlanForACID(acid); editFP != nil {
+						fsp.editingAnnotations = editFP.StripAnnotations
+					}
+					fsp.editingNeedsFocus = true
+				}
+				// Allow drag initiation from annotation cells too.
+				if fsp.draggingACID == "" && imgui.IsItemActive() && imgui.IsMouseDragging(0) {
+					fsp.draggingACID = acid
+				}
+			}
+			imgui.PopID()
+		}
+	}
+
+	imgui.EndTable()
+	tableMin = imgui.ItemRectMin()
+	tableMax = imgui.ItemRectMax()
+
+	// Right-click context menu for push.
+	if imgui.BeginPopupContextItemV("push_ctx", imgui.PopupFlagsMouseButtonRight) {
+		var toTCP sim.TCP
+		if sfp.HandoffController != "" &&
+			!c.State.TCWControlsPosition(c.State.UserTCW, sfp.HandoffController) {
+			toTCP = sfp.HandoffController
+		} else if sfp.OwningTCW != c.State.UserTCW &&
+			!c.State.TCWControlsPosition(c.State.UserTCW, sfp.TrackingController) {
+			toTCP = sfp.TrackingController
+		}
+		if toTCP != "" {
+			if imgui.SelectableBoolV(
+				"PUSH TO "+string(toTCP), false, imgui.SelectableFlagsNone, imgui.Vec2{}) {
+				c.PushFlightStrip(acid, toTCP)
+			}
+		} else {
+			imgui.TextDisabled("No push target")
+		}
+		imgui.EndPopup()
 	}
 
 	return

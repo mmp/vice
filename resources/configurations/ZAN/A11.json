@@ -41,6 +41,9 @@
                 "default_consolidation": {
                     "ANC_N_APP": [
                         "ANC_S_APP"
+                    ],
+                    "ANC_S_APP": [
+                        "ANC_F_APP"
                     ]
                 }
             }

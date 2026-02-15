@@ -91,6 +91,7 @@ func filterByWeightClass(aircraft map[string]Aircraft, weightClass string) map[s
 // "AAL5936" -> "5936"
 // "N123AB" -> "123AB"
 func flightNumber(callsign string) string {
+	callsign = strings.TrimSuffix(callsign, "/T")
 	for i, c := range callsign {
 		if c >= '0' && c <= '9' {
 			return callsign[i:]

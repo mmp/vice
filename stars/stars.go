@@ -5,7 +5,6 @@
 package stars
 
 import (
-	"encoding/json"
 	"fmt"
 	"image"
 	"image/color"
@@ -145,7 +144,7 @@ type STARSPane struct {
 	MCIAircraft []CAAircraft
 
 	// For CRDA
-	ConvergingRunways []STARSConvergingRunways
+	CRDAPairs []STARSCRDAPair
 
 	// Various UI state
 	FlipNumericKeypad bool
@@ -266,14 +265,6 @@ const (
 	fontARTS
 )
 
-func init() {
-	panes.RegisterUnmarshalPane("STARSPane", func(d []byte) (panes.Pane, error) {
-		var p STARSPane
-		err := json.Unmarshal(d, &p)
-		return &p, err
-	})
-}
-
 type AudioType int
 
 // The types of events we may play audio for.
@@ -318,31 +309,31 @@ const (
 )
 
 // this is read-only, stored in STARSPane for convenience
-type STARSConvergingRunways struct {
-	av.ConvergingRunways
-	ApproachRegions [2]*av.ApproachRegion
-	Airport         string
-	Index           int
+type STARSCRDAPair struct {
+	av.CRDAPair
+	CRDARegions [2]*av.CRDARegion
+	Airport     string
+	Index       int
 }
 
 type CRDARunwayState struct {
 	Enabled                 bool
 	Airport                 string
-	Runway                  string
+	Region                  string
 	LeaderLineDirection     *math.CardinalOrdinalDirection // nil -> unset
 	DrawCourseLines         bool
 	DrawQualificationRegion bool
 }
 
-// stores the per-preference set state for each STARSConvergingRunways
+// stores the per-preference set state for each STARSCRDAPair
 type CRDARunwayPairState struct {
 	Enabled     bool
 	Mode        CRDAMode
 	RunwayState [2]CRDARunwayState
 }
 
-func (c *STARSConvergingRunways) getRunwaysString() string {
-	return c.Runways[0] + "/" + c.Runways[1]
+func (c *STARSCRDAPair) getRegionsString() string {
+	return c.Regions[0] + "/" + c.Regions[1]
 }
 
 type VideoMapsGroup int
@@ -394,8 +385,6 @@ func (d DwellMode) String() string {
 func NewSTARSPane() *STARSPane {
 	return &STARSPane{}
 }
-
-func (sp *STARSPane) Hide() bool { return false }
 
 func (sp *STARSPane) Activate(r renderer.Renderer, p platform.Platform, eventStream *sim.EventStream, lg *log.Logger) {
 	if sp.PointOuts == nil {
@@ -469,13 +458,13 @@ func (sp *STARSPane) LoadedSim(client *client.ControlClient, pl platform.Platfor
 }
 
 func (sp *STARSPane) ResetSim(client *client.ControlClient, pl platform.Platform, lg *log.Logger) {
-	sp.ConvergingRunways = nil
+	sp.CRDAPairs = nil
 	for name, ap := range util.SortedMap(client.State.Airports) {
-		for idx, pair := range ap.ConvergingRunways {
-			sp.ConvergingRunways = append(sp.ConvergingRunways, STARSConvergingRunways{
-				ConvergingRunways: pair,
-				ApproachRegions: [2]*av.ApproachRegion{ap.ApproachRegions[pair.Runways[0]],
-					ap.ApproachRegions[pair.Runways[1]]},
+		for idx, pair := range ap.CRDAPairs {
+			sp.CRDAPairs = append(sp.CRDAPairs, STARSCRDAPair{
+				CRDAPair: pair,
+				CRDARegions: [2]*av.CRDARegion{ap.CRDARegions[pair.Regions[0]],
+					ap.CRDARegions[pair.Regions[1]]},
 				Airport: name[1:], // drop the leading "K" (or "P")
 				Index:   idx + 1,  // 1-based
 			})
@@ -630,7 +619,67 @@ func (sp *STARSPane) makeMaps(client *client.ControlClient, lg *log.Logger) {
 	addAirspaceVolumes("DEP", "DEPARTURE AREA ALL", ss.FacilityAdaptation.Filters.Departure)
 	addAirspaceVolumes("SECDROP", "SECONDARY DROP AREA ALL", ss.FacilityAdaptation.Filters.SecondaryDrop)
 	addAirspaceVolumes("SURFTRK", "SURFACE TRACKING AREA ALL", ss.FacilityAdaptation.Filters.SurfaceTracking)
-	addAirspaceVolumes("QLRGNS", "QUICKLOOK REGIONS ALL", ss.FacilityAdaptation.Filters.Quicklook)
+	// Quicklook regions have a different type; extract their airspace volumes.
+	if ql := ss.FacilityAdaptation.Filters.Quicklook; len(ql) > 0 {
+		vm := radar.ClientVideoMap{
+			VideoMap: sim.VideoMap{
+				Label:    "QLRGNS",
+				Name:     "QUICKLOOK REGIONS ALL",
+				Id:       asIdx,
+				Category: VideoMapProcessingAreas,
+			},
+		}
+		asIdx++
+		for _, f := range ql {
+			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
+		}
+		addMap(vm)
+
+		for _, f := range ql {
+			vm := radar.ClientVideoMap{
+				VideoMap: sim.VideoMap{
+					Label:    strings.ToUpper(f.Id),
+					Name:     strings.ToUpper(f.Description),
+					Id:       asIdx,
+					Category: VideoMapProcessingAreas,
+				},
+			}
+			asIdx++
+			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
+			addMap(vm)
+		}
+	}
+
+	// FDAM regions
+	if fdam := ss.FacilityAdaptation.Filters.FDAM; len(fdam) > 0 {
+		vm := radar.ClientVideoMap{
+			VideoMap: sim.VideoMap{
+				Label:    "FDAMRGNS",
+				Name:     "FDAM REGIONS ALL",
+				Id:       asIdx,
+				Category: VideoMapProcessingAreas,
+			},
+		}
+		asIdx++
+		for _, f := range fdam {
+			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
+		}
+		addMap(vm)
+
+		for _, f := range fdam {
+			vm := radar.ClientVideoMap{
+				VideoMap: sim.VideoMap{
+					Label:    strings.ToUpper(f.Id),
+					Name:     strings.ToUpper(f.Description),
+					Id:       asIdx,
+					Category: VideoMapProcessingAreas,
+				},
+			}
+			asIdx++
+			drawAirspace(f.AirspaceVolume, &vm.CommandBuffer)
+			addMap(vm)
+		}
+	}
 
 	// MVAs
 	mvas := radar.ClientVideoMap{
@@ -1269,24 +1318,29 @@ func (sp *STARSPane) drawCRDARegions(ctx *panes.Context, transforms radar.ScopeT
 	for i, state := range ps.CRDA.RunwayPairState {
 		for j, rwyState := range state.RunwayState {
 			if rwyState.DrawCourseLines {
-				region := sp.ConvergingRunways[i].ApproachRegions[j]
-				line, _ := region.GetLateralGeometry(ctx.NmPerLongitude, ctx.MagneticVariation)
-
+				region := sp.CRDAPairs[i].CRDARegions[j]
+				courseLine := region.CourseLine(ctx.NmPerLongitude)
 				ld := renderer.GetLinesDrawBuilder()
 				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor))
-				ld.AddLine(line[0], line[1])
+				for k := 0; k+1 < len(courseLine); k++ {
+					ld.AddLine(courseLine[k], courseLine[k+1])
+				}
 
 				ld.GenerateCommands(cb)
 				renderer.ReturnLinesDrawBuilder(ld)
 			}
 
 			if rwyState.DrawQualificationRegion {
-				region := sp.ConvergingRunways[i].ApproachRegions[j]
-				_, quad := region.GetLateralGeometry(ctx.NmPerLongitude, ctx.MagneticVariation)
+				region := sp.CRDAPairs[i].CRDARegions[j]
+				poly := region.QualificationPolygon(ctx.NmPerLongitude)
 
 				ld := renderer.GetLinesDrawBuilder()
 				cb.SetRGB(ps.Brightness.OtherTracks.ScaleRGB(STARSGhostColor))
-				ld.AddLineLoop([][2]float32{quad[0], quad[1], quad[2], quad[3]})
+				polyF32 := make([][2]float32, len(poly))
+				for k, p := range poly {
+					polyF32[k] = p
+				}
+				ld.AddLineLoop(polyF32)
 
 				ld.GenerateCommands(cb)
 				renderer.ReturnLinesDrawBuilder(ld)
@@ -1371,7 +1425,7 @@ func (sp *STARSPane) makeSignificantPoints(ss client.SimState) {
 	center := ss.GetInitialCenter()
 	for name, ap := range av.DB.Airports {
 		if math.NMDistance2LL(ap.Location, center) < 250 {
-			if len(name) == 4 && name[0] == 'K' {
+			if len(name) == 4 {
 				name = name[1:]
 			}
 			tryAdd(name, name+" AIRPORT", ap.Location)
@@ -1590,7 +1644,7 @@ func (sp *STARSPane) updateAudio(ctx *panes.Context) {
 					return false
 				}
 				trk0, ok0 := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
-				trk1, ok1 := ctx.GetTrackByCallsign(ca.ADSBCallsigns[0])
+				trk1, ok1 := ctx.GetTrackByCallsign(ca.ADSBCallsigns[1])
 				if !ok0 || !ok1 {
 					return false
 				}

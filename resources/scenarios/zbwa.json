@@ -1,236 +1,237 @@
 {
-  "artcc": "ZBW",
-  "area": "Area A",
-  "name": "ZBW Area A",
-  "airports": {
-    "KBOS": {
-      "approaches": {
-        "I2L": {
-          "cifp_id": "I22L"
-        },
-        "I4R": {
-          "cifp_id": "I4R"
-        },
-        "R4L": {
-          "cifp_id": "R4L"
-        },
-        "I27": {
-          "cifp_id": "I27"
-        },
-        "I3L": {
-          "cifp_id": "I33L"
-        },
-        "I5R": {
-          "cifp_id": "I15R"
-        },
-        "R32": {
-          "cifp_id": "R32"
-        }
-      },
-      "departure_controller": "BOS_D_APP",
-      "departure_facility": "A90",
-      "departure_routes": {
-        "22R": {
-          "HYLND": {
-            "cleared_altitude": 5000,
-            "sid": "HYLND7",
-            "waypoints": "TJAYY/a1200+ BOATT/a4000+ HEARR/ho MARBB/flyover HYLND/flyover",
-            "handoff_controller": "ZBW 36 Gardner"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "POE"
-            }
-          ],
-          "altitude": 28000,
-          "destination": "CYTZ",
-          "exit": "HYLND",
-          "route": "HYLND7 HYLND WAYGO ALVID ILIXU ILIXU1"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "DAL"
-            }
-          ],
-          "altitude": 34000,
-          "destination": "KDTW",
-          "exit": "HYLND",
-          "route": "HYLND7 HYLND CAM Q822 GONZZ DONEO CUUGR2"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "JBU"
-            }
-          ],
-          "altitude": 28000,
-          "destination": "KBUF",
-          "exit": "HYLND",
-          "route": "HYLND7 HYLND SYR ROC EHMAN"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "ASA"
-            }
-          ],
-          "altitude": 32000,
-          "destination": "KSFO",
-          "exit": "HYLND",
-          "route": "HYLND7 HYLND HANAA Q816 HOCKE SLLAP DUTYS MCW ONTIJ KD87Y KU81S GANNE KU72M FIMUV ILA MRRLO BDEGA4"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "DAL"
-            }
-          ],
-          "altitude": 32000,
-          "destination": "KLAX",
-          "exit": "HYLND",
-          "route": "HYLND7 HYLND HANAA Q816 HOCKE GRB ODI FSD J114 DVV J60 HVE PROMT Q88 HAKMN ANJLL4"
-        }
-      ]
-    },
-    "KBED": {
-      "approaches": {
-        "I29": {
-          "cifp_id": "I29"
-        },
-        "I11": {
-          "cifp_id": "I11"
-        },
-        "R23": {
-          "cifp_id": "R23"
-        }
-      },
-      "departure_controller": "BOS_D_APP",
-      "departure_facility": "A90",
-      "departure_routes": {
-        "29": {
-          "HYLND": {
-            "cleared_altitude": 5000,
-            "sid": "HNSCM5",
-            "waypoints": "KBED HYLND/ho",
-            "handoff_controller": "ZBW 36 Gardner"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "N"
-            }
-          ],
-          "destination": "KSYR",
-          "altitude": [
-            30000
-          ],
-          "exit": "HYLND",
-          "route": "HYLND MANCH CAM LAMMS T608 SYR"
-        }
-      ]
-    }
-  },
-  "inbound_flows": {
-    "JFUND2-PONCT": {
-      "arrivals": [
-        {
-          "waypoints": "PONCT STOLI/ho SEETS DUBLE BASEZ JFUND AUTUM/a12000 WINTA HRRIS ISLAY LWLND NOLEY WYANE VOCUS/a1500 ZUMOL/delete",
-          "cruise_altitude": 35000,
-          "star": "JFUND2",
-          "route": "/. JFUND2",
-          "initial_controller": "ZBW 38 Athens",
-          "initial_altitude": 38000,
-          "initial_speed": 300,
-          "airlines": {
-            "KBOS": [
-              {
-                "icao": "JZA",
-                "types": [
-                  "E75L"
-                ],
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "ACA",
-                "types": [
-                  "A21N"
-                ],
-                "airport": "CYYZ"
-              },
-              {
-                "icao": "ASA",
-                "types": [
-                  "B39M"
-                ],
-                "airport": "KSEA"
-              },
-              {
-                "icao": "UAL",
-                "types": [
-                  "B39M"
-                ],
-                "airport": "KSFO"
-              },
-              {
-                "icao": "DAL",
-                "types": [
-                  "B738"
-                ],
-                "airport": "KDTW"
-              }
+    "artcc": "ZBW",
+    "area": "Area A",
+    "name": "ZBW Area A",
+    "airports": {
+        "KBOS": {
+            "approaches": {
+                "I2L": {
+                    "cifp_id": "I22L"
+                },
+                "I4R": {
+                    "cifp_id": "I4R"
+                },
+                "R4L": {
+                    "cifp_id": "R4L"
+                },
+                "I27": {
+                    "cifp_id": "I27"
+                },
+                "I3L": {
+                    "cifp_id": "I33L"
+                },
+                "I5R": {
+                    "cifp_id": "I15R"
+                },
+                "R32": {
+                    "cifp_id": "R32"
+                }
+            },
+            "departure_controller": "BOS_D_APP",
+            "departure_facility": "A90",
+            "departure_routes": {
+                "22R": {
+                    "HYLND": {
+                        "cleared_altitude": 5000,
+                        "sid": "HYLND7",
+                        "waypoints": "TJAYY/a1200+ BOATT/a4000+ HEARR/ho MARBB/flyover HYLND/flyover",
+                        "handoff_controller": "ZBW 36 Gardner"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "POE"
+                        }
+                    ],
+                    "altitude": 28000,
+                    "destination": "CYTZ",
+                    "exit": "HYLND",
+                    "route": "HYLND7 HYLND WAYGO ALVID ILIXU ILIXU1"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "DAL"
+                        }
+                    ],
+                    "altitude": 34000,
+                    "destination": "KDTW",
+                    "exit": "HYLND",
+                    "route": "HYLND7 HYLND CAM Q822 GONZZ DONEO CUUGR2"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "JBU"
+                        }
+                    ],
+                    "altitude": 28000,
+                    "destination": "KBUF",
+                    "exit": "HYLND",
+                    "route": "HYLND7 HYLND SYR ROC EHMAN"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "ASA"
+                        }
+                    ],
+                    "altitude": 32000,
+                    "destination": "KSFO",
+                    "exit": "HYLND",
+                    "route": "HYLND7 HYLND HANAA Q816 HOCKE SLLAP DUTYS MCW ONTIJ KD87Y KU81S GANNE KU72M FIMUV ILA MRRLO BDEGA4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "DAL"
+                        }
+                    ],
+                    "altitude": 32000,
+                    "destination": "KLAX",
+                    "exit": "HYLND",
+                    "route": "HYLND7 HYLND HANAA Q816 HOCKE GRB ODI FSD J114 DVV J60 HVE PROMT Q88 HAKMN ANJLL4"
+                }
             ]
-          }
-        }
-      ]
-    }
-  },
-  "default_scenario": "ZBW 36 Gardner",
-  "scenarios": {
-    "ZBW 36 Gardner": {
-      "configuration": {
-        "config_id": "STD"
-      },
-      "default_maps": [
-        "TRACON",
-        "HIGH SCTRS",
-        "LOW SCTRS"
-      ],
-      "default_map_group": "ZBWMAP",
-      "departure_runways": [
-        {
-          "airport": "KBOS",
-          "rate": 6,
-          "runway": "22R"
-        }
-      ],
-      "arrival_runways": [
-        {
-          "airport": "KBOS",
-          "runway": "22L"
         },
-        {
-          "airport": "KBED",
-          "runway": "29"
+        "KBED": {
+            "approaches": {
+                "I29": {
+                    "cifp_id": "I29"
+                },
+                "I11": {
+                    "cifp_id": "I11"
+                },
+                "R23": {
+                    "cifp_id": "R23"
+                }
+            },
+            "departure_controller": "BOS_D_APP",
+            "departure_facility": "A90",
+            "departure_routes": {
+                "29": {
+                    "HYLND": {
+                        "cleared_altitude": 5000,
+                        "sid": "HNSCM5",
+                        "waypoints": "KBED HYLND/ho",
+                        "handoff_controller": "ZBW 36 Gardner"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "N"
+                        }
+                    ],
+                    "destination": "KSYR",
+                    "altitude": [
+                        30000
+                    ],
+                    "exit": "HYLND",
+                    "route": "HYLND MANCH CAM LAMMS T608 SYR"
+                }
+            ]
         }
-      ],
-      "inbound_rates": {
+    },
+    "inbound_flows": {
         "JFUND2-PONCT": {
-          "KBOS": 20
+            "arrivals": [
+                {
+                    "waypoints": "PONCT STOLI/ho SEETS DUBLE BASEZ JFUND AUTUM/a12000 WINTA HRRIS ISLAY LWLND NOLEY WYANE VOCUS/a1500 ZUMOL/delete",
+                    "cruise_altitude": 35000,
+                    "star": "JFUND2",
+                    "route": "/. JFUND2",
+                    "initial_controller": "ZBW 38 Athens",
+                    "initial_altitude": 38000,
+                    "initial_speed": 300,
+                    "airlines": {
+                        "KBOS": [
+                            {
+                                "icao": "JZA",
+                                "types": [
+                                    "E75L"
+                                ],
+                                "airport": "CYYZ"
+                            },
+                            {
+                                "icao": "ACA",
+                                "types": [
+                                    "A21N"
+                                ],
+                                "airport": "CYYZ"
+                            },
+                            {
+                                "icao": "ASA",
+                                "types": [
+                                    "B39M"
+                                ],
+                                "airport": "KSEA"
+                            },
+                            {
+                                "icao": "UAL",
+                                "types": [
+                                    "B39M"
+                                ],
+                                "airport": "KSFO"
+                            },
+                            {
+                                "icao": "DAL",
+                                "types": [
+                                    "B738"
+                                ],
+                                "airport": "KDTW"
+                            }
+                        ]
+                    },
+                    "initial_facility": "ZBW"
+                }
+            ]
         }
-      },
-      "wind": {
-        "direction": "130-180",
-        "speed": "5+",
-        "flight_rules": "VMC"
-      }
+    },
+    "default_scenario": "ZBW 36 Gardner",
+    "scenarios": {
+        "ZBW 36 Gardner": {
+            "configuration": {
+                "config_id": "STD"
+            },
+            "default_maps": [
+                "TRACON",
+                "HIGH SCTRS",
+                "LOW SCTRS"
+            ],
+            "default_map_group": "ZBWMAP",
+            "departure_runways": [
+                {
+                    "airport": "KBOS",
+                    "rate": 6,
+                    "runway": "22R"
+                }
+            ],
+            "arrival_runways": [
+                {
+                    "airport": "KBOS",
+                    "runway": "22L"
+                },
+                {
+                    "airport": "KBED",
+                    "runway": "29"
+                }
+            ],
+            "inbound_rates": {
+                "JFUND2-PONCT": {
+                    "KBOS": 20
+                }
+            },
+            "wind": {
+                "direction": "130-180",
+                "speed": "5+",
+                "flight_rules": "VMC"
+            }
+        }
     }
-  }
 }

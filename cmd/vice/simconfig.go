@@ -217,9 +217,7 @@ func (c *NewSimConfiguration) SetScenario(groupName, scenarioName string) {
 	// Initialize default wind direction from runways
 	c.initDefaultWindDirection()
 
-	c.fetchMETAR()
-
-	c.updateStartTimeForRunways()
+	go c.fetchMETAR()
 }
 
 // initDefaultWindDirection computes the default wind direction range from the scenario's runways.
@@ -272,7 +270,9 @@ func (c *NewSimConfiguration) fetchMETAR() {
 
 	airports := c.ScenarioSpec.AllAirports()
 	if slices.Equal(c.metarAirports, airports) {
-		// No need to refetch
+		// No need to refetch, but the scenario may have changed
+		// (different runways / weather filter), so resample the start time.
+		c.updateStartTimeForRunways()
 		return
 	}
 
@@ -1731,13 +1731,15 @@ func controlPositionsForGroup(server *client.Server, groupName string) map[sim.T
 
 ///////////////////////////////////////////////////////////////////////////
 
-func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.Platform, lg *log.Logger) bool {
+var acknowledgedATIS = make(map[string]string)
+
+func drawScenarioInfoWindow(config *Config, c *client.ControlClient, activeRadarPane panes.Pane, p platform.Platform, lg *log.Logger) bool {
 	// Ensure that the window is wide enough to show the description
 	sz := imgui.CalcTextSize(c.State.SimDescription)
 	imgui.SetNextWindowSizeConstraints(imgui.Vec2{sz.X + 50, 0}, imgui.Vec2{100000, 100000})
 
 	show := true
-	imgui.BeginV(c.State.SimDescription, &show, imgui.WindowFlagsAlwaysAutoResize)
+	imgui.BeginV(c.State.SimDescription+"###ScenarioInfo", &show, imgui.WindowFlagsAlwaysAutoResize)
 
 	if imgui.CollapsingHeaderBoolPtr("Controllers", nil) {
 		// Make big(ish) tables somewhat more legible
@@ -1825,11 +1827,75 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, p platform.
 		}
 	}
 
-	config.DisplayRoot.VisitPanes(func(pane panes.Pane) {
-		if draw, ok := pane.(panes.InfoWindowDrawer); ok {
-			draw.DrawInfo(c, p, lg)
+	if len(c.State.METAR) > 0 {
+		// Collect IFR airports: those with IFR departures or arrivals
+		ifrAirports := make(map[string]bool)
+		for ap := range c.State.LaunchConfig.DepartureRates {
+			ifrAirports[ap] = true
 		}
-	})
+		for ap := range c.State.ArrivalAirports {
+			ifrAirports[ap] = true
+		}
+
+		atisExpanded := imgui.CollapsingHeaderBoolPtr("ATIS / METAR", nil)
+		if atisExpanded {
+			tableFlags := imgui.TableFlagsBordersV | imgui.TableFlagsBordersOuterH |
+				imgui.TableFlagsRowBg | imgui.TableFlagsSizingStretchProp
+			if imgui.BeginTableV("atis_metar", 2, tableFlags, imgui.Vec2{}, 0) {
+				imgui.TableSetupColumnV("ATIS", imgui.TableColumnFlagsWidthFixed, 0, 0)
+				imgui.TableSetupColumn("METAR")
+				imgui.TableHeadersRow()
+
+				airports := slices.Sorted(maps.Keys(c.State.METAR))
+				for _, ap := range airports {
+					if !ifrAirports[ap] {
+						continue
+					}
+					letter := c.State.ATISLetter[ap]
+					metar := c.State.METAR[ap]
+
+					imgui.TableNextRow()
+					imgui.TableNextColumn()
+
+					// Flash if ATIS letter changed since last acknowledgement
+					if _, ok := acknowledgedATIS[ap]; !ok {
+						acknowledgedATIS[ap] = letter
+					}
+					ui.fixedFont.ImguiPush()
+					flashing := acknowledgedATIS[ap] != letter
+					if flashing && int64(imgui.Time()*2)%2 == 0 {
+						imgui.PushStyleColorVec4(imgui.ColText, imgui.Vec4{1, .2, .2, 1})
+					}
+					// Center the letter in the column
+					colW := imgui.ColumnWidth()
+					textW := imgui.CalcTextSize(letter).X
+					pad := (colW - textW) / 2
+					if pad > 0 {
+						imgui.SetCursorPosX(imgui.CursorPosX() + pad)
+					}
+					if imgui.SelectableBoolV(letter+"##atis_"+ap, false, 0, imgui.Vec2{}) {
+						acknowledgedATIS[ap] = letter
+					}
+					if flashing && int64(imgui.Time()*2)%2 == 0 {
+						imgui.PopStyleColor()
+					}
+
+					imgui.TableNextColumn()
+					raw := strings.TrimPrefix(metar.Raw, "METAR ")
+					raw = strings.TrimPrefix(raw, "SPECI ")
+					imgui.Text(raw)
+					imgui.PopFont()
+				}
+
+				imgui.EndTable()
+			}
+
+		}
+	}
+
+	if draw, ok := activeRadarPane.(panes.InfoWindowDrawer); ok {
+		draw.DrawInfo(c, p, lg)
+	}
 	imgui.End()
 
 	return show
@@ -2036,7 +2102,7 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		imgui.Text("Start time:")
 		imgui.TableNextColumn()
 		metar := c.airportMETAR[metarAirports[0]]
-		TimePicker(&c.NewSimRequest.StartTime, c.availableWXIntervals, metar, &ui.fixedFont.Ifont)
+		TimePicker(&c.NewSimRequest.StartTime, c.availableWXIntervals, metar, ui.fixedFont)
 		imgui.SameLine()
 		if imgui.Button(renderer.FontAwesomeIconRedo + "##refreshTime") {
 			c.updateStartTimeForRunways()
@@ -2051,8 +2117,8 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 		imgui.Text("METAR:")
 		imgui.TableNextColumn()
 		currentMetar := wx.METARForTime(c.airportMETAR[metarAirports[0]], c.NewSimRequest.StartTime)
-		imgui.PushFont(&ui.fixedFont.Ifont)
-		imgui.Text(strings.TrimPrefix(currentMetar.Raw, "METAR "))
+		ui.fixedFont.ImguiPush()
+		imgui.Text(strings.TrimPrefix(strings.TrimPrefix(currentMetar.Raw, "METAR "), "SPECI "))
 		imgui.PopFont()
 
 		if c.showAllMETAR && len(metarAirports) > 1 {
@@ -2061,9 +2127,9 @@ func (c *NewSimConfiguration) drawWeatherFilterUI() {
 				imgui.TableNextRow()
 				imgui.TableNextColumn()
 				imgui.TableNextColumn()
-				imgui.PushFont(&ui.fixedFont.Ifont)
+				ui.fixedFont.ImguiPush()
 				m := wx.METARForTime(c.airportMETAR[ap], c.NewSimRequest.StartTime)
-				imgui.Text(strings.TrimPrefix(m.Raw, "METAR "))
+				imgui.Text(strings.TrimPrefix(strings.TrimPrefix(m.Raw, "METAR "), "SPECI "))
 				imgui.PopFont()
 			}
 		}
@@ -2111,7 +2177,16 @@ func (c *NewSimConfiguration) updateStartTimeForRunways() {
 			c.ScenarioSpec.MagneticVariation)
 
 		if sampledMETAR != nil {
-			c.StartTime = sampledMETAR.Time.UTC()
+			// Start at a random time between the sampled METAR and the next one
+			startTime := sampledMETAR.Time.UTC()
+			idx, _ := slices.BinarySearchFunc(apMETAR, sampledMETAR.Time, func(m wx.METAR, t time.Time) int {
+				return m.Time.Compare(t)
+			})
+			if idx+1 < len(apMETAR) {
+				validDuration := apMETAR[idx+1].Time.Sub(sampledMETAR.Time)
+				startTime = startTime.Add(time.Duration(float64(validDuration) * float64(rand.Make().Float32())))
+			}
+			c.StartTime = startTime
 
 			// Set VFR launch rate to zero if selected weather is IMC
 			if !sampledMETAR.IsVMC() {

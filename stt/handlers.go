@@ -12,7 +12,7 @@ func init() {
 func registerAllCommands() {
 	// === ALTITUDE COMMANDS ===
 	registerSTTCommand(
-		"descend|descended|descending [and] maintain {altitude}",
+		"descend|descended|descending [and] maintain {altitude_fl}",
 		func(alt int) string { return fmt.Sprintf("D%d", alt) },
 		WithName("descend_maintain"),
 		WithPriority(10),
@@ -21,7 +21,7 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
-		"descend|descended|descending [and] [to] {altitude}",
+		"descend|descended|descending [and] [to] {altitude_fl}",
 		func(alt int) string { return fmt.Sprintf("D%d", alt) },
 		WithName("descend"),
 		WithPriority(5),
@@ -29,7 +29,7 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
-		"climb|climbed|climbing [and] maintain {altitude}",
+		"climb|climbed|climbing [and] maintain {altitude_fl}",
 		func(alt int) string { return fmt.Sprintf("C%d", alt) },
 		WithName("climb_maintain"),
 		WithPriority(10),
@@ -38,7 +38,7 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
-		"climb|climbed|climbing [and] [to] {altitude}",
+		"climb|climbed|climbing [and] [to] {altitude_fl}",
 		func(alt int) string { return fmt.Sprintf("C%d", alt) },
 		WithName("climb"),
 		WithPriority(5),
@@ -198,6 +198,17 @@ func registerAllCommands() {
 		WithPriority(8),
 	)
 
+	// "turn 270" - bare turn + heading when direction/heading keyword is garbled.
+	// Only accepts 3-digit headings (100-360) to avoid false positives with
+	// leftover callsign numbers (e.g., "turn 934" from garbled "frontier 934").
+	// Low priority so patterns with explicit direction or "heading" keyword win.
+	registerSTTCommand(
+		"turn [to] {num:100-360}",
+		func(hdg int) string { return fmt.Sprintf("H%03d", hdg) },
+		WithName("turn_heading_bare"),
+		WithPriority(3),
+	)
+
 	registerSTTCommand(
 		"say heading",
 		func() string { return "SH" },
@@ -261,6 +272,17 @@ func registerAllCommands() {
 		WithPriority(12),
 	)
 
+	// Bare speed + knots + until: handles "180 knots until 7 mile final" without
+	// a preceding command keyword (e.g., after garbled "that is" filler).
+	registerSTTCommand(
+		"{speed} knots {speed_until}",
+		func(spd int, until speedUntilResult) string {
+			return fmt.Sprintf("S%d/U%s", spd, until.suffix)
+		},
+		WithName("bare_speed_knots_until"),
+		WithPriority(5),
+	)
+
 	registerSTTCommand(
 		"say speed|airspeed",
 		func() string { return "SS" },
@@ -294,6 +316,15 @@ func registerAllCommands() {
 		func() string { return "SPRES" },
 		WithName("maintain_present_speed"),
 		WithPriority(12),
+	)
+
+	registerSTTCommand(
+		"[maintain] {speed} [knots] or greater|better {speed_until}",
+		func(spd int, until speedUntilResult) string {
+			return fmt.Sprintf("S%d+/U%s", spd, until.suffix)
+		},
+		WithName("speed_or_greater_until"),
+		WithPriority(15),
 	)
 
 	registerSTTCommand(
@@ -554,7 +585,7 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
-		"cancel approach clearance",
+		"cancel [approach] clearance",
 		func() string { return "CAC" },
 		WithName("cancel_approach"),
 		WithPriority(15),
@@ -599,6 +630,27 @@ func registerAllCommands() {
 		func() string { return "I" },
 		WithName("intercept_localizer"),
 		WithPriority(10),
+	)
+	// Pattern: standalone "localizer" without "intercept" keyword.
+	// When "localizer" appears alone (e.g., after a heading command), it means
+	// intercept the localizer. The word "localizer" is never part of an approach
+	// clearance, so this is unambiguous.
+	registerSTTCommand(
+		"localizer",
+		func() string { return "I" },
+		WithName("standalone_localizer"),
+		WithPriority(5),
+	)
+
+	// Absorb "vectors to the localizer" phrasing so the standalone "localizer"
+	// template above doesn't fire on it. "Vectors to the localizer" is
+	// informational context (e.g., "heading 040 vectors to the localizer"),
+	// not an intercept command.
+	registerSTTCommand(
+		"vectors|vector [to] [the] [for] [through] localizer",
+		func() string { return "" },
+		WithName("vectors_localizer_absorb"),
+		WithPriority(6),
 	)
 
 	// === TRANSPONDER COMMANDS ===
@@ -666,12 +718,15 @@ func registerAllCommands() {
 		WithName("contact_tower"),
 		WithPriority(15),
 	)
-	// "tower" alone (when "contact" is garbled), typically followed by a frequency
+	// "{facility} tower" (when "contact" is garbled but facility name remains)
+	// E.g., "Konak tower", "San Francisco tower"
+	// Uses {garbled_word} to require a non-command word before "tower",
+	// preventing bare "tower" from matching as noise in transcripts.
 	registerSTTCommand(
-		"tower",
-		func() string { return "TO" },
-		WithName("tower_alone"),
-		WithPriority(5), // Lower than "contact tower" to prefer full pattern
+		"{garbled_word} tower",
+		func(_ string) string { return "TO" },
+		WithName("facility_tower"),
+		WithPriority(5),
 	)
 	// Pattern: "contact Kennedy Tower" or "contact Lindbergh Tower"
 	// The {text} parameter consumes one token (the facility name)
@@ -772,6 +827,21 @@ func registerAllCommands() {
 		"maintain visual separation [from] [the] [traffic]",
 		func() string { return "VISSEP" },
 		WithName("visual_separation"),
+		WithPriority(15),
+	)
+
+	// === ATIS INFORMATION ===
+	registerSTTCommand(
+		"information {atis_letter} [is] [current]",
+		func(letter string) string { return "ATIS/" + letter },
+		WithName("atis_information"),
+		WithPriority(15),
+	)
+
+	registerSTTCommand(
+		"advise [you] have information {atis_letter}",
+		func(letter string) string { return "ATIS/" + letter },
+		WithName("advise_have_information"),
 		WithPriority(15),
 	)
 }

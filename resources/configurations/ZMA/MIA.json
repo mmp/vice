@@ -116,11 +116,23 @@
                 },
                 "default_consolidation": {
                     "MIA_D_DEP": [
-                        "MIA_J_APP",
-                        "MIA_N_APP",
-                        "MIA_R_APP",
-                        "MIA_S_APP",
+                        "MIA_L_DEP",
+                        "MIA_V_APP",
                         "MIA_W_DEP"
+                    ],
+                    "MIA_L_DEP": [
+                        "MIA_R_APP"
+                    ],
+                    "MIA_R_APP": [
+                        "MIA_F_APP",
+                        "MIA_J_APP"
+                    ],
+                    "MIA_S_APP": [
+                        "MIA_A_APP"
+                    ],
+                    "MIA_V_APP": [
+                        "MIA_N_APP",
+                        "MIA_S_APP"
                     ]
                 }
             },
@@ -145,13 +157,27 @@
                 },
                 "default_consolidation": {
                     "MIA_D_DEP": [
-                        "MIA_H_APP",
-                        "MIA_J_APP",
                         "MIA_L_DEP",
-                        "MIA_N_APP",
                         "MIA_Q_APP",
-                        "MIA_R_APP",
+                        "MIA_V_APP",
+                        "MIA_W_DEP"
+                    ],
+                    "MIA_L_DEP": [
+                        "MIA_R_APP"
+                    ],
+                    "MIA_R_APP": [
+                        "MIA_F_APP",
+                        "MIA_J_APP"
+                    ],
+                    "MIA_S_APP": [
+                        "MIA_A_APP"
+                    ],
+                    "MIA_V_APP": [
+                        "MIA_N_APP",
                         "MIA_S_APP"
+                    ],
+                    "MIA_W_DEP": [
+                        "MIA_H_APP"
                     ]
                 }
             },
@@ -173,9 +199,22 @@
                 },
                 "default_consolidation": {
                     "MIA_D_DEP": [
-                        "MIA_J_APP",
+                        "MIA_L_DEP",
+                        "MIA_V_APP",
+                        "MIA_W_DEP"
+                    ],
+                    "MIA_L_DEP": [
+                        "MIA_R_APP"
+                    ],
+                    "MIA_R_APP": [
+                        "MIA_F_APP",
+                        "MIA_J_APP"
+                    ],
+                    "MIA_S_APP": [
+                        "MIA_A_APP"
+                    ],
+                    "MIA_V_APP": [
                         "MIA_N_APP",
-                        "MIA_R_APP",
                         "MIA_S_APP"
                     ]
                 }
@@ -201,14 +240,27 @@
                 },
                 "default_consolidation": {
                     "MIA_D_DEP": [
-                        "MIA_H_APP",
-                        "MIA_J_APP",
                         "MIA_L_DEP",
-                        "MIA_N_APP",
                         "MIA_Q_APP",
-                        "MIA_R_APP",
-                        "MIA_S_APP",
+                        "MIA_V_APP",
                         "MIA_W_DEP"
+                    ],
+                    "MIA_L_DEP": [
+                        "MIA_R_APP"
+                    ],
+                    "MIA_R_APP": [
+                        "MIA_F_APP",
+                        "MIA_J_APP"
+                    ],
+                    "MIA_S_APP": [
+                        "MIA_A_APP"
+                    ],
+                    "MIA_V_APP": [
+                        "MIA_N_APP",
+                        "MIA_S_APP"
+                    ],
+                    "MIA_W_DEP": [
+                        "MIA_H_APP"
                     ]
                 }
             }
