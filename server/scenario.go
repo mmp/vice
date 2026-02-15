@@ -436,13 +436,16 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	// Do any active airports have CRDA?
 	haveCRDA := util.SeqContainsFunc(maps.Keys(activeAirports),
 		func(ap *av.Airport) bool { return len(ap.CRDAPairs) > 0 })
-	if haveCRDA {
-		// Area configs may specify a default airport used by CRDA behavior.
-		for areaNum, ac := range sg.FacilityAdaptation.AreaConfigs {
-			if ac.DefaultAirport != "" {
-				if _, ok := sg.Airports[ac.DefaultAirport]; !ok {
-					e.ErrorString("area_configs[%d]: default_airport %q is not an airport in this scenario",
-						areaNum, ac.DefaultAirport)
+	if haveCRDA && s.ControllerConfiguration != nil {
+		// Make sure all of the controllers involved have a valid default airport
+		for _, pos := range s.ControllerConfiguration.AllPositions() {
+			if ctrl, ok := sg.ControlPositions[pos]; ok {
+				if ctrl.DefaultAirport == "" {
+					e.ErrorString("%s: controller must have \"default_airport\" specified (required for CRDA).", ctrl.Position)
+				} else {
+					if _, ok := sg.Airports[ctrl.DefaultAirport]; !ok {
+						e.ErrorString("%s: default airport %q is not included in scenario", ctrl.Position, ctrl.DefaultAirport)
+					}
 				}
 			}
 		}
