@@ -333,7 +333,7 @@ type FacilityAdaptation struct {
 	ERAMMapNames        map[string][]string                        `json:"eram_maps" scope:"eram"`
 	VideoMapLabels      map[string]string                          `json:"map_labels"`
 	ControllerConfigs   map[ControlPosition]*STARSControllerConfig `json:"controller_configs"`
-	AreaConfigs         map[int]*STARSAreaConfig                  `json:"area_configs,omitempty"`
+	AreaConfigs         map[int]*STARSAreaConfig                   `json:"area_configs,omitempty"`
 	RadarSites          map[string]*av.RadarSite                   `json:"radar_sites" scope:"stars"`
 	Center              math.Point2LL                              `json:"-"`
 	CenterString        string                                     `json:"center"`
@@ -365,10 +365,10 @@ type FacilityAdaptation struct {
 		Symbol           string         `json:"symbol"`
 	} `json:"untracked_position_symbol_overrides" scope:"stars"`
 
-	VideoMapFile      string                        `json:"video_map_file"`
-	SingleCharAIDs    map[string]string             `json:"single_char_aids" scope:"stars"` // Char to airport. TODO: Check if this is for ERAM as well.
-	KeepLDB           bool                          `json:"keep_ldb" scope:"stars"`
-	FullLDBSeconds    int                           `json:"full_ldb_seconds" scope:"stars"`
+	VideoMapFile   string            `json:"video_map_file"`
+	SingleCharAIDs map[string]string `json:"single_char_aids" scope:"stars"` // Char to airport. TODO: Check if this is for ERAM as well.
+	KeepLDB        bool              `json:"keep_ldb" scope:"stars"`
+	FullLDBSeconds int               `json:"full_ldb_seconds" scope:"stars"`
 
 	SSRCodes av.LocalSquawkCodePoolSpecifier `json:"ssr_codes" scope:"stars"`
 
@@ -868,16 +868,16 @@ type STARSControllerConfig struct {
 // within a TRACON area. Controller-specific configs in ControllerConfigs
 // override or append these defaults.
 type STARSAreaConfig struct {
-	DefaultAirport                  string              `json:"default_airport,omitempty"` // CRDA default airport for this area
-	VideoMapNames                   []string            `json:"video_maps,omitempty"`
-	DefaultMaps                     []string            `json:"default_maps,omitempty"`
-	Center                          math.Point2LL       `json:"-"`
-	CenterString                    string              `json:"center,omitempty"`
-	Range                           float32             `json:"range,omitempty"`
-	MonitoredBeaconCodeBlocksString *string             `json:"beacon_code_blocks,omitempty"`
-	MonitoredBeaconCodeBlocks       []av.Squawk         `json:"-"`
-	FlightFollowingAirspace         []av.AirspaceVolume `json:"flight_following_airspace,omitempty"`
-	CoordinationLists               []CoordinationList  `json:"coordination_lists,omitempty"`
+	DefaultAirport                  string                         `json:"default_airport,omitempty"` // CRDA default airport for this area
+	VideoMapNames                   []string                       `json:"video_maps,omitempty"`
+	DefaultMaps                     []string                       `json:"default_maps,omitempty"`
+	Center                          math.Point2LL                  `json:"-"`
+	CenterString                    string                         `json:"center,omitempty"`
+	Range                           float32                        `json:"range,omitempty"`
+	MonitoredBeaconCodeBlocksString *string                        `json:"beacon_code_blocks,omitempty"`
+	MonitoredBeaconCodeBlocks       []av.Squawk                    `json:"-"`
+	FlightFollowingAirspace         []av.AirspaceVolume            `json:"flight_following_airspace,omitempty"`
+	CoordinationLists               []CoordinationList             `json:"coordination_lists,omitempty"`
 	Airspace                        map[string][]av.AirspaceVolume `json:"airspace,omitempty"`
 }
 

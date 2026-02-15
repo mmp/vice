@@ -16,8 +16,8 @@ import (
 type FacilityConfig struct {
 	ControlPositions   map[TCP]*av.Controller `json:"control_positions"`
 	FacilityAdaptation FacilityAdaptation     `json:"stars_config"`
-	HandoffTopology    *HandoffTopology        `json:"handoff_topology"`
-	FixPairs           []FixPairDefinition     `json:"fix_pairs"`
+	HandoffTopology    *HandoffTopology       `json:"handoff_topology"`
+	FixPairs           []FixPairDefinition    `json:"fix_pairs"`
 }
 
 // HandoffTopology describes the handoff relationships between a facility
@@ -45,11 +45,11 @@ type HandoffID struct {
 // optional constraints. Fix pairs are used in TRACON facility configs
 // to provide fine-grained routing rules for aircraft assignment.
 type FixPairDefinition struct {
-	EntryFix      string `json:"entry_fix"`                   // Entry fix name, empty = wildcard
-	ExitFix       string `json:"exit_fix"`                    // Exit fix name, empty = wildcard
-	FlightType    string `json:"flight_type,omitempty"`       // "A" (arrival), "P" (departure), "E" (overflight), empty = any
-	AltitudeRange [2]int `json:"altitude_range,omitempty"`    // [floor, ceiling] in feet; [0,0] = no constraint
-	Priority      int    `json:"priority"`                    // Lower number = higher priority; must be unique per config
+	EntryFix      string `json:"entry_fix"`                // Entry fix name, empty = wildcard
+	ExitFix       string `json:"exit_fix"`                 // Exit fix name, empty = wildcard
+	FlightType    string `json:"flight_type,omitempty"`    // "A" (arrival), "P" (departure), "E" (overflight), empty = any
+	AltitudeRange [2]int `json:"altitude_range,omitempty"` // [floor, ceiling] in feet; [0,0] = no constraint
+	Priority      int    `json:"priority"`                 // Lower number = higher priority; must be unique per config
 }
 
 // FixPairAssignment maps a fix pair definition (by index) to a controller
