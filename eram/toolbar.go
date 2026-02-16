@@ -159,7 +159,9 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			ep.activeToolbarMenu = toolbarVideomap
 		}
 		ep.drawToolbarFullButton(ctx, fmt.Sprintf("ALT LIM\n%03vB%03v", ps.altitudeFilter[0], ps.altitudeFilter[1]), 0, scale, false, false)
-		ep.drawToolbarFullButton(ctx, "RADAR\nFILTER", 0, scale, false, false)
+		if ep.drawToolbarFullButton(ctx, "RADAR\nFILTER", 0, scale, false, false) {
+			ep.activeToolbarMenu = toolbarRadarFilter
+		}
 		ep.drawToolbarFullButton(ctx, "PREFSET", 0, scale, false, false)
 		if ep.drawToolbarFullButton(ctx, "DELETE\nTEAROFF", 0, scale, ep.deleteTearoffMode, false) {
 			if ep.mousePrimaryClicked(ctx.Mouse) || ep.mouseTertiaryClicked(ctx.Mouse) {
@@ -510,6 +512,63 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			oc := math.Extent2DFromPoints([][2]float32{p0, p1, p2, p3})
 			toolbarDrawState.occlusionExtent = oc
 		}
+
+	case toolbarRadarFilter:
+		if toolbarDrawState.lightToolbar != [4][2]float32{} {
+			t := toolbarDrawState.lightToolbar
+			ep.drawLightToolbar(t[0], t[1], t[2], t[3])
+		}
+		drawButtonSamePosition(ctx, "RADAR\nFILTER")
+		if ep.drawToolbarFullButton(ctx, "RADAR\nFILTER", 0, scale, true, false) {
+			ep.activeToolbarMenu = toolbarMain
+			resetButtonPosDefault(ctx, scale)
+		}
+		ep.buttonVerticalOffset(ctx)
+		toolbarDrawState.buttonCursor[1] += buttonSize(buttonFull, scale)[1] + 3
+		p0 := toolbarDrawState.buttonCursor
+		if ep.drawToolbarFullButton(ctx, "ALL\nLDBS", 0, scale, false, false) {
+			// handle drawing all LDBS
+		}
+
+		if ep.drawToolbarFullButton(ctx, "PR\nLDB", 0, scale, false, false) {
+			// handle drawing PR LDB
+		}
+		if ep.drawToolbarFullButton(ctx, "UNP\nLDB", 0, scale, false, false) {
+			// handle drawing UNP LDB
+		}
+		if ep.drawToolbarFullButton(ctx, "ALL\nPRIM", 0, scale, false, false) {
+			// handle drawing ALL PRIM
+		}
+		if ep.drawToolbarFullButton(ctx, "MODE\nMODE-C", 0, scale, false, false) {
+			// handle CONFLCT ALERT
+		}
+		rightEdge := toolbarDrawState.buttonCursor[0] - 2 // remove the +2 padding added after last button
+		p1 := [2]float32{rightEdge, p0[1]}
+		//p1 = oppositeHorizontal(p1, buttonSize(buttonTearoff, scale))
+		// p1 := toolbarDrawState.buttonCursor
+		// toolbarDrawState.offsetBottom = true
+
+		if ep.drawToolbarFullButton(ctx, "SELECT\nBEACON", 0, scale, false, true) {
+			// handle DEPT LIST
+		}
+
+		if ep.drawToolbarFullButton(ctx, "PERM\nECHO", 0, scale, false, false) {
+			// handle perm echo
+		}
+		if ep.drawToolbarFullButton(ctx, "STROBE\nLINES", 0, scale, false, false) {
+		}
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("HISTORY\n%d", ep.HistoryLength), 0, scale, false, false) {
+			handleClick(ep, &ep.HistoryLength, 0, 5, 1)
+		}
+
+		p2 := [2]float32{rightEdge, toolbarDrawState.buttonCursor[1] - buttonSize(buttonFull, scale)[1]}
+		p3 := [2]float32{p0[0], p2[1]}
+
+		toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
+		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
+
+		toolbarDrawState.customButton[fmt.Sprintf("HISTORY\n%d", ep.HistoryLength)] = toolbarButtonGreenColor
+
 	case toolbarViews:
 		if toolbarDrawState.lightToolbar != [4][2]float32{} {
 			t := toolbarDrawState.lightToolbar
@@ -2046,11 +2105,14 @@ func (ep *ERAMPane) tornOffButtonBaseColor(name string) renderer.RGB {
 	if key == "RANGE" || key == "ALT LIM" {
 		return renderer.RGB{0, 0, 0}
 	}
-	if key == "VECTOR" || key == "FDB LDR" || key == "NONADSB" {
+	if key == "VECTOR" || key == "HISTORY" || key == "FDB LDR" || key == "NONADSB" {
 		return toolbarButtonGreenColor
 	}
 	if display == "DELETE\nTEAROFF" {
 		return renderer.RGB{0, .804, .843}
+	}
+	if display == "HISTORY" {
+		return toolbarButtonGreenColor
 	}
 	if display == "BCAST\nFLID" || display == "PORTAL\nFENCE" {
 		return eramGray
@@ -2252,6 +2314,8 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarMapBright)
 	case "RADAR\nFILTER":
+		ep.clearToolbarMouseDown()
+		ep.toggleTearoffMenu(buttonName, toolbarRadarFilter)
 		// Handle RADAR FILTER
 	case "PREFSET":
 		// Handle PREFSET
