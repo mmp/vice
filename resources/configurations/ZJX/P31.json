@@ -169,30 +169,22 @@
             }
         ]
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "MOB",
-                "prefix": "1"
-            },
-            {
-                "id": "VPS",
-                "prefix": "2"
-            },
-            {
-                "id": "ZHU",
-                "eram_prefix": "H"
-            },
-            {
-                "id": "ZJX",
-                "eram_prefix": "J"
-            }
-        ],
-        "neighboring_facilities": [
-            "MOB",
-            "VPS",
-            "ZHU",
-            "ZJX"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "MOB",
+            "prefix": "1"
+        },
+        {
+            "id": "VPS",
+            "prefix": "2"
+        },
+        {
+            "id": "ZHU",
+            "eram_prefix": "H"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "J"
+        }
+    ]
 }

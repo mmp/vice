@@ -16,30 +16,22 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "D10",
-                "prefix": "2"
-            },
-            {
-                "id": "GRK",
-                "prefix": "1"
-            },
-            {
-                "id": "I90",
-                "prefix": "3"
-            },
-            {
-                "id": "ZHU",
-                "eram_prefix": "H"
-            }
-        ],
-        "neighboring_facilities": [
-            "D10",
-            "GRK",
-            "I90",
-            "ZHU"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "D10",
+            "prefix": "2"
+        },
+        {
+            "id": "GRK",
+            "prefix": "1"
+        },
+        {
+            "id": "I90",
+            "prefix": "3"
+        },
+        {
+            "id": "ZHU",
+            "eram_prefix": "H"
+        }
+    ]
 }

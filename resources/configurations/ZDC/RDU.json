@@ -177,35 +177,26 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "FAY",
-                "prefix": "2"
-            },
-            {
-                "id": "GSB",
-                "prefix": "1"
-            },
-            {
-                "id": "GSO",
-                "prefix": "3"
-            },
-            {
-                "id": "ZDC",
-                "eram_prefix": "W"
-            },
-            {
-                "id": "ZTL",
-                "eram_prefix": "T"
-            }
-        ],
-        "neighboring_facilities": [
-            "FAY",
-            "GSB",
-            "GSO",
-            "ZDC",
-            "ZTL"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "FAY",
+            "prefix": "2"
+        },
+        {
+            "id": "GSB",
+            "prefix": "1"
+        },
+        {
+            "id": "GSO",
+            "prefix": "3"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "W"
+        },
+        {
+            "id": "ZTL",
+            "eram_prefix": "T"
+        }
+    ]
 }

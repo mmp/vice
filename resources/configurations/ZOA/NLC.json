@@ -21,30 +21,22 @@
             "sector_id": "1Z"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "BFL",
-                "prefix": "3"
-            },
-            {
-                "id": "FAT",
-                "prefix": "2"
-            },
-            {
-                "id": "NCT",
-                "prefix": "1"
-            },
-            {
-                "id": "ZLA",
-                "eram_prefix": "L"
-            }
-        ],
-        "neighboring_facilities": [
-            "BFL",
-            "FAT",
-            "NCT",
-            "ZLA"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "BFL",
+            "prefix": "3"
+        },
+        {
+            "id": "FAT",
+            "prefix": "2"
+        },
+        {
+            "id": "NCT",
+            "prefix": "1"
+        },
+        {
+            "id": "ZLA",
+            "eram_prefix": "L"
+        }
+    ]
 }

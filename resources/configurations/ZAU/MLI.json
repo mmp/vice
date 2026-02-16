@@ -16,30 +16,22 @@
             "sector_id": "1S"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "CID",
-                "prefix": "3"
-            },
-            {
-                "id": "RFD",
-                "prefix": "1"
-            },
-            {
-                "id": "T75",
-                "prefix": "2"
-            },
-            {
-                "id": "ZKC",
-                "eram_prefix": "K"
-            }
-        ],
-        "neighboring_facilities": [
-            "CID",
-            "RFD",
-            "T75",
-            "ZKC"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "CID",
+            "prefix": "3"
+        },
+        {
+            "id": "RFD",
+            "prefix": "1"
+        },
+        {
+            "id": "T75",
+            "prefix": "2"
+        },
+        {
+            "id": "ZKC",
+            "eram_prefix": "K"
+        }
+    ]
 }

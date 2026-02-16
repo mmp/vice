@@ -47,25 +47,18 @@
         ],
         "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "A90",
-                "prefix": "1"
-            },
-            {
-                "id": "BGR",
-                "prefix": "2"
-            },
-            {
-                "id": "ZBW",
-                "eram_prefix": "B"
-            }
-        ],
-        "neighboring_facilities": [
-            "A90",
-            "BGR",
-            "ZBW"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "A90",
+            "prefix": "1"
+        },
+        {
+            "id": "BGR",
+            "prefix": "2"
+        },
+        {
+            "id": "ZBW",
+            "eram_prefix": "B"
+        }
+    ]
 }

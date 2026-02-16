@@ -21,44 +21,34 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "CMI",
-                "prefix": "4"
-            },
-            {
-                "id": "EVV",
-                "prefix": "3"
-            },
-            {
-                "id": "GUS",
-                "prefix": "1"
-            },
-            {
-                "id": "IND",
-                "prefix": "2"
-            },
-            {
-                "id": "SDF",
-                "prefix": "5"
-            },
-            {
-                "id": "ZAU",
-                "eram_prefix": "G"
-            },
-            {
-                "id": "ZKC",
-                "eram_prefix": "K"
-            }
-        ],
-        "neighboring_facilities": [
-            "CMI",
-            "EVV",
-            "GUS",
-            "IND",
-            "ZAU",
-            "ZKC"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "CMI",
+            "prefix": "4"
+        },
+        {
+            "id": "EVV",
+            "prefix": "3"
+        },
+        {
+            "id": "GUS",
+            "prefix": "1"
+        },
+        {
+            "id": "IND",
+            "prefix": "2"
+        },
+        {
+            "id": "SDF",
+            "prefix": "5"
+        },
+        {
+            "id": "ZAU",
+            "eram_prefix": "G"
+        },
+        {
+            "id": "ZKC",
+            "eram_prefix": "K"
+        }
+    ]
 }

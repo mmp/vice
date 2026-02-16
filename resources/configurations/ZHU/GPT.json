@@ -16,20 +16,14 @@
             "sector_id": "1W"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "MOB",
-                "prefix": "1"
-            },
-            {
-                "id": "MSY",
-                "prefix": "2"
-            }
-        ],
-        "neighboring_facilities": [
-            "MOB",
-            "MSY"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "MOB",
+            "prefix": "1"
+        },
+        {
+            "id": "MSY",
+            "prefix": "2"
+        }
+    ]
 }

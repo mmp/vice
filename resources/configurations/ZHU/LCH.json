@@ -16,25 +16,18 @@
             "sector_id": "1W"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "I90",
-                "prefix": "2"
-            },
-            {
-                "id": "LFT",
-                "prefix": "1"
-            },
-            {
-                "id": "POE",
-                "prefix": "3"
-            }
-        ],
-        "neighboring_facilities": [
-            "I90",
-            "LFT",
-            "POE"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "I90",
+            "prefix": "2"
+        },
+        {
+            "id": "LFT",
+            "prefix": "1"
+        },
+        {
+            "id": "POE",
+            "prefix": "3"
+        }
+    ]
 }

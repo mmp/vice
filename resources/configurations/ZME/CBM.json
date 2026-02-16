@@ -21,25 +21,18 @@
             "sector_id": "1Z"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "BHM",
-                "prefix": "2"
-            },
-            {
-                "id": "NMM",
-                "prefix": "1"
-            },
-            {
-                "id": "ZTL",
-                "eram_prefix": "T"
-            }
-        ],
-        "neighboring_facilities": [
-            "BHM",
-            "NMM",
-            "ZTL"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "BHM",
+            "prefix": "2"
+        },
+        {
+            "id": "NMM",
+            "prefix": "1"
+        },
+        {
+            "id": "ZTL",
+            "eram_prefix": "T"
+        }
+    ]
 }

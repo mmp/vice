@@ -36,25 +36,18 @@
             "sector_id": "1W"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "BTR",
-                "prefix": "2"
-            },
-            {
-                "id": "GPT",
-                "prefix": "3"
-            },
-            {
-                "id": "LFT",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "BTR",
-            "GPT",
-            "LFT"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "BTR",
+            "prefix": "2"
+        },
+        {
+            "id": "GPT",
+            "prefix": "3"
+        },
+        {
+            "id": "LFT",
+            "prefix": "1"
+        }
+    ]
 }

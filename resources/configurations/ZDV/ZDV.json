@@ -490,77 +490,61 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ASE",
-                "single_char_stars_id": "S",
-                "stars_id": "RAS"
-            },
-            {
-                "id": "COS",
-                "single_char_stars_id": "C",
-                "stars_id": "RCO"
-            },
-            {
-                "id": "CPR",
-                "single_char_stars_id": "N",
-                "stars_id": "RKP"
-            },
-            {
-                "id": "CYS",
-                "single_char_stars_id": "Y",
-                "stars_id": "RCY"
-            },
-            {
-                "id": "D01",
-                "single_char_stars_id": "D",
-                "stars_id": "RDC"
-            },
-            {
-                "id": "EGE",
-                "single_char_stars_id": "E",
-                "stars_id": "REG"
-            },
-            {
-                "id": "RCA",
-                "single_char_stars_id": "R",
-                "stars_id": "RRC"
-            },
-            {
-                "id": "ZAB",
-                "eram_prefix": "A"
-            },
-            {
-                "id": "ZKC",
-                "eram_prefix": "K"
-            },
-            {
-                "id": "ZLA",
-                "eram_prefix": "L"
-            },
-            {
-                "id": "ZLC",
-                "eram_prefix": "U"
-            },
-            {
-                "id": "ZMP",
-                "eram_prefix": "P"
-            }
-        ],
-        "neighboring_facilities": [
-            "ASE",
-            "COS",
-            "CPR",
-            "CYS",
-            "D01",
-            "EGE",
-            "RCA",
-            "ZAB",
-            "ZKC",
-            "ZLA",
-            "ZLC",
-            "ZMP"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ASE",
+            "single_char_stars_id": "S",
+            "stars_id": "RAS"
+        },
+        {
+            "id": "COS",
+            "single_char_stars_id": "C",
+            "stars_id": "RCO"
+        },
+        {
+            "id": "CPR",
+            "single_char_stars_id": "N",
+            "stars_id": "RKP"
+        },
+        {
+            "id": "CYS",
+            "single_char_stars_id": "Y",
+            "stars_id": "RCY"
+        },
+        {
+            "id": "D01",
+            "single_char_stars_id": "D",
+            "stars_id": "RDC"
+        },
+        {
+            "id": "EGE",
+            "single_char_stars_id": "E",
+            "stars_id": "REG"
+        },
+        {
+            "id": "RCA",
+            "single_char_stars_id": "R",
+            "stars_id": "RRC"
+        },
+        {
+            "id": "ZAB",
+            "eram_prefix": "A"
+        },
+        {
+            "id": "ZKC",
+            "eram_prefix": "K"
+        },
+        {
+            "id": "ZLA",
+            "eram_prefix": "L"
+        },
+        {
+            "id": "ZLC",
+            "eram_prefix": "U"
+        },
+        {
+            "id": "ZMP",
+            "eram_prefix": "P"
+        }
+    ]
 }

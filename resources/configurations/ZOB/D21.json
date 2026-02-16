@@ -525,35 +525,26 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "CLE",
-                "prefix": "2"
-            },
-            {
-                "id": "LAN",
-                "prefix": "1"
-            },
-            {
-                "id": "MTC",
-                "prefix": "4"
-            },
-            {
-                "id": "TOL",
-                "prefix": "3"
-            },
-            {
-                "id": "ZOB",
-                "eram_prefix": "C"
-            }
-        ],
-        "neighboring_facilities": [
-            "CLE",
-            "LAN",
-            "MTC",
-            "TOL",
-            "ZOB"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "CLE",
+            "prefix": "2"
+        },
+        {
+            "id": "LAN",
+            "prefix": "1"
+        },
+        {
+            "id": "MTC",
+            "prefix": "4"
+        },
+        {
+            "id": "TOL",
+            "prefix": "3"
+        },
+        {
+            "id": "ZOB",
+            "eram_prefix": "C"
+        }
+    ]
 }

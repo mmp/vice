@@ -214,40 +214,30 @@
             }
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "CVG",
-                "prefix": "1"
-            },
-            {
-                "id": "EVV",
-                "prefix": "3"
-            },
-            {
-                "id": "HUF",
-                "prefix": "4"
-            },
-            {
-                "id": "IND",
-                "prefix": "5"
-            },
-            {
-                "id": "LEX",
-                "prefix": "2"
-            },
-            {
-                "id": "ZID",
-                "eram_prefix": "I"
-            }
-        ],
-        "neighboring_facilities": [
-            "CVG",
-            "EVV",
-            "HUF",
-            "IND",
-            "LEX",
-            "ZID"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "CVG",
+            "prefix": "1"
+        },
+        {
+            "id": "EVV",
+            "prefix": "3"
+        },
+        {
+            "id": "HUF",
+            "prefix": "4"
+        },
+        {
+            "id": "IND",
+            "prefix": "5"
+        },
+        {
+            "id": "LEX",
+            "prefix": "2"
+        },
+        {
+            "id": "ZID",
+            "eram_prefix": "I"
+        }
+    ]
 }

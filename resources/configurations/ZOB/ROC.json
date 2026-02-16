@@ -27,15 +27,10 @@
         }
     },
     "stars_config": {},
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ZOB",
-                "eram_prefix": "C"
-            }
-        ],
-        "neighboring_facilities": [
-            "ZOB"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ZOB",
+            "eram_prefix": "C"
+        }
+    ]
 }

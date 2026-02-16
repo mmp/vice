@@ -86,15 +86,10 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ZLC",
-                "eram_prefix": "U"
-            }
-        ],
-        "neighboring_facilities": [
-            "ZLC"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ZLC",
+            "eram_prefix": "U"
+        }
+    ]
 }

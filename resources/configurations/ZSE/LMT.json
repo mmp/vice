@@ -11,15 +11,14 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "EUG",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "EUG"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "EUG",
+            "prefix": "1"
+        },
+        {
+            "id": "ZSE",
+            "eram_prefix": "S"
+        }
+    ]
 }

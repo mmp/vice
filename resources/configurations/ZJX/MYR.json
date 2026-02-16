@@ -149,45 +149,34 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "CHS",
-                "prefix": "1"
-            },
-            {
-                "id": "FAY",
-                "prefix": "2"
-            },
-            {
-                "id": "FLO",
-                "prefix": "5"
-            },
-            {
-                "id": "ILM",
-                "prefix": "3"
-            },
-            {
-                "id": "SSC",
-                "prefix": "4"
-            },
-            {
-                "id": "ZDC",
-                "eram_prefix": "W"
-            },
-            {
-                "id": "ZJX",
-                "eram_prefix": "J"
-            }
-        ],
-        "neighboring_facilities": [
-            "CHS",
-            "FAY",
-            "FLO",
-            "ILM",
-            "SSC",
-            "ZDC",
-            "ZJX"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "CHS",
+            "prefix": "1"
+        },
+        {
+            "id": "FAY",
+            "prefix": "2"
+        },
+        {
+            "id": "FLO",
+            "prefix": "5"
+        },
+        {
+            "id": "ILM",
+            "prefix": "3"
+        },
+        {
+            "id": "SSC",
+            "prefix": "4"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "W"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "J"
+        }
+    ]
 }

@@ -11,25 +11,18 @@
             "sector_id": "1L"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "MKE",
-                "prefix": "2"
-            },
-            {
-                "id": "MSN",
-                "prefix": "1"
-            },
-            {
-                "id": "ZMP",
-                "eram_prefix": "P"
-            }
-        ],
-        "neighboring_facilities": [
-            "MKE",
-            "MSN",
-            "ZMP"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "MKE",
+            "prefix": "2"
+        },
+        {
+            "id": "MSN",
+            "prefix": "1"
+        },
+        {
+            "id": "ZMP",
+            "eram_prefix": "P"
+        }
+    ]
 }

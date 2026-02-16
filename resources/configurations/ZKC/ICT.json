@@ -11,15 +11,10 @@
             "sector_id": "1L"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "END",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "END"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "END",
+            "prefix": "1"
+        }
+    ]
 }

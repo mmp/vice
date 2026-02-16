@@ -6,8 +6,5 @@
             "sector_id": "1E"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [],
-        "neighboring_facilities": []
-    }
+    "handoff_ids": []
 }

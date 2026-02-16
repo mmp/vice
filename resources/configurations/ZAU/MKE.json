@@ -316,50 +316,38 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "AZO",
-                "prefix": "6"
-            },
-            {
-                "id": "C90",
-                "prefix": "1"
-            },
-            {
-                "id": "GRB",
-                "prefix": "5"
-            },
-            {
-                "id": "MSN",
-                "prefix": "3"
-            },
-            {
-                "id": "RFD",
-                "prefix": "2"
-            },
-            {
-                "id": "VOK",
-                "prefix": "4"
-            },
-            {
-                "id": "ZAU",
-                "eram_prefix": "G"
-            },
-            {
-                "id": "ZMP",
-                "eram_prefix": "P"
-            }
-        ],
-        "neighboring_facilities": [
-            "AZO",
-            "C90",
-            "GRB",
-            "MSN",
-            "RFD",
-            "VOK",
-            "ZAU",
-            "ZMP"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "AZO",
+            "prefix": "6"
+        },
+        {
+            "id": "C90",
+            "prefix": "1"
+        },
+        {
+            "id": "GRB",
+            "prefix": "5"
+        },
+        {
+            "id": "MSN",
+            "prefix": "3"
+        },
+        {
+            "id": "RFD",
+            "prefix": "2"
+        },
+        {
+            "id": "VOK",
+            "prefix": "4"
+        },
+        {
+            "id": "ZAU",
+            "eram_prefix": "G"
+        },
+        {
+            "id": "ZMP",
+            "eram_prefix": "P"
+        }
+    ]
 }

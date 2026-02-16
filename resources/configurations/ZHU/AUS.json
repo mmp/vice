@@ -286,38 +286,26 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "GRK",
-                "prefix": "2"
-            },
-            {
-                "id": "I90",
-                "prefix": "3"
-            },
-            {
-                "id": "SAT",
-                "prefix": "1"
-            },
-            {
-                "id": "ZFW",
-                "eram_prefix": "F"
-            },
-            {
-                "id": "ZHU",
-                "eram_prefix": "H"
-            }
-        ],
-        "neighboring_facilities": [
-            "BAZ",
-            "GRK",
-            "GTU",
-            "HYI",
-            "I90",
-            "SAT",
-            "ZFW",
-            "ZHU"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "GRK",
+            "prefix": "2"
+        },
+        {
+            "id": "I90",
+            "prefix": "3"
+        },
+        {
+            "id": "SAT",
+            "prefix": "1"
+        },
+        {
+            "id": "ZFW",
+            "eram_prefix": "F"
+        },
+        {
+            "id": "ZHU",
+            "eram_prefix": "H"
+        }
+    ]
 }

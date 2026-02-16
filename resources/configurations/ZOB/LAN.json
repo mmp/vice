@@ -41,40 +41,30 @@
             "sector_id": "5T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "AZO",
-                "prefix": "1"
-            },
-            {
-                "id": "D21",
-                "prefix": "2"
-            },
-            {
-                "id": "MTC",
-                "prefix": "4"
-            },
-            {
-                "id": "TOL",
-                "prefix": "3"
-            },
-            {
-                "id": "ZAU",
-                "eram_prefix": "G"
-            },
-            {
-                "id": "ZMP",
-                "eram_prefix": "P"
-            }
-        ],
-        "neighboring_facilities": [
-            "AZO",
-            "D21",
-            "MTC",
-            "TOL",
-            "ZAU",
-            "ZMP"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "AZO",
+            "prefix": "1"
+        },
+        {
+            "id": "D21",
+            "prefix": "2"
+        },
+        {
+            "id": "MTC",
+            "prefix": "4"
+        },
+        {
+            "id": "TOL",
+            "prefix": "3"
+        },
+        {
+            "id": "ZAU",
+            "eram_prefix": "G"
+        },
+        {
+            "id": "ZMP",
+            "eram_prefix": "P"
+        }
+    ]
 }

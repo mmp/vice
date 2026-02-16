@@ -21,15 +21,14 @@
             "sector_id": "1W"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "LMT",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "LMT"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "LMT",
+            "prefix": "1"
+        },
+        {
+            "id": "ZSE",
+            "eram_prefix": "S"
+        }
+    ]
 }

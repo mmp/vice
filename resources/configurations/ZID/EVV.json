@@ -16,35 +16,26 @@
             "sector_id": "1W"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "HOP",
-                "prefix": "3"
-            },
-            {
-                "id": "HUF",
-                "prefix": "1"
-            },
-            {
-                "id": "SDF",
-                "prefix": "2"
-            },
-            {
-                "id": "ZKC",
-                "eram_prefix": "K"
-            },
-            {
-                "id": "ZME",
-                "eram_prefix": "M"
-            }
-        ],
-        "neighboring_facilities": [
-            "HOP",
-            "HUF",
-            "SDF",
-            "ZKC",
-            "ZME"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "HOP",
+            "prefix": "3"
+        },
+        {
+            "id": "HUF",
+            "prefix": "1"
+        },
+        {
+            "id": "SDF",
+            "prefix": "2"
+        },
+        {
+            "id": "ZKC",
+            "eram_prefix": "K"
+        },
+        {
+            "id": "ZME",
+            "eram_prefix": "M"
+        }
+    ]
 }

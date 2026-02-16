@@ -253,101 +253,6 @@
             "sector_id": "98"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ABQ",
-                "single_char_stars_id": "A",
-                "stars_id": "AAA"
-            },
-            {
-                "id": "AMA",
-                "single_char_stars_id": "M",
-                "stars_id": "MMM"
-            },
-            {
-                "id": "CVS",
-                "single_char_stars_id": "C",
-                "stars_id": "CCC"
-            },
-            {
-                "id": "ELP",
-                "single_char_stars_id": "E",
-                "stars_id": "EEE"
-            },
-            {
-                "id": "FHU",
-                "stars_id": "FFF"
-            },
-            {
-                "id": "HMN",
-                "single_char_stars_id": "S",
-                "stars_id": "SSS"
-            },
-            {
-                "id": "LUF",
-                "single_char_stars_id": "U",
-                "stars_id": "LLL"
-            },
-            {
-                "id": "NYL",
-                "two_char_stars_id": "YY",
-                "stars_id": "YYY"
-            },
-            {
-                "id": "P50",
-                "single_char_stars_id": "P",
-                "stars_id": "PPP"
-            },
-            {
-                "id": "ROW",
-                "single_char_stars_id": "R",
-                "stars_id": "RRR"
-            },
-            {
-                "id": "U90",
-                "stars_id": "DDD"
-            },
-            {
-                "id": "ZDV",
-                "eram_prefix": "D"
-            },
-            {
-                "id": "ZFW",
-                "eram_prefix": "F"
-            },
-            {
-                "id": "ZHU",
-                "eram_prefix": "H"
-            },
-            {
-                "id": "ZKC",
-                "eram_prefix": "K"
-            },
-            {
-                "id": "ZLA",
-                "eram_prefix": "L"
-            }
-        ],
-        "neighboring_facilities": [
-            "ABQ",
-            "AMA",
-            "CVS",
-            "ELP",
-            "FHU",
-            "HMN",
-            "LUF",
-            "NYL",
-            "P50",
-            "ROW",
-            "U90",
-            "ZDV",
-            "ZFW",
-            "ZHU",
-            "ZKC",
-            "ZLA"
-        ]
-    },
     "stars_config": {
         "coordination_fixes": {
             "BRUSR": [
@@ -379,5 +284,80 @@
                 }
             ]
         }
-    }
+    },
+    "handoff_ids": [
+        {
+            "id": "ABQ",
+            "single_char_stars_id": "A",
+            "stars_id": "AAA"
+        },
+        {
+            "id": "AMA",
+            "single_char_stars_id": "M",
+            "stars_id": "MMM"
+        },
+        {
+            "id": "CVS",
+            "single_char_stars_id": "C",
+            "stars_id": "CCC"
+        },
+        {
+            "id": "ELP",
+            "single_char_stars_id": "E",
+            "stars_id": "EEE"
+        },
+        {
+            "id": "FHU",
+            "stars_id": "FFF"
+        },
+        {
+            "id": "HMN",
+            "single_char_stars_id": "S",
+            "stars_id": "SSS"
+        },
+        {
+            "id": "LUF",
+            "single_char_stars_id": "U",
+            "stars_id": "LLL"
+        },
+        {
+            "id": "NYL",
+            "two_char_stars_id": "YY",
+            "stars_id": "YYY"
+        },
+        {
+            "id": "P50",
+            "single_char_stars_id": "P",
+            "stars_id": "PPP"
+        },
+        {
+            "id": "ROW",
+            "single_char_stars_id": "R",
+            "stars_id": "RRR"
+        },
+        {
+            "id": "U90",
+            "stars_id": "DDD"
+        },
+        {
+            "id": "ZDV",
+            "eram_prefix": "D"
+        },
+        {
+            "id": "ZFW",
+            "eram_prefix": "F"
+        },
+        {
+            "id": "ZHU",
+            "eram_prefix": "H"
+        },
+        {
+            "id": "ZKC",
+            "eram_prefix": "K"
+        },
+        {
+            "id": "ZLA",
+            "eram_prefix": "L"
+        }
+    ]
 }

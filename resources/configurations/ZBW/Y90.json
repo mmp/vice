@@ -160,40 +160,30 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "A90",
-                "prefix": "2"
-            },
-            {
-                "id": "ALB",
-                "prefix": "3"
-            },
-            {
-                "id": "N90",
-                "prefix": "4"
-            },
-            {
-                "id": "PVD",
-                "prefix": "1"
-            },
-            {
-                "id": "ZBW",
-                "eram_prefix": "B"
-            },
-            {
-                "id": "ZNY",
-                "eram_prefix": "N"
-            }
-        ],
-        "neighboring_facilities": [
-            "A90",
-            "ALB",
-            "N90",
-            "PVD",
-            "ZBW",
-            "ZNY"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "A90",
+            "prefix": "2"
+        },
+        {
+            "id": "ALB",
+            "prefix": "3"
+        },
+        {
+            "id": "N90",
+            "prefix": "4"
+        },
+        {
+            "id": "PVD",
+            "prefix": "1"
+        },
+        {
+            "id": "ZBW",
+            "eram_prefix": "B"
+        },
+        {
+            "id": "ZNY",
+            "eram_prefix": "N"
+        }
+    ]
 }

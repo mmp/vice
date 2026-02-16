@@ -229,40 +229,30 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "CBM",
-                "prefix": "3"
-            },
-            {
-                "id": "HSV",
-                "prefix": "2"
-            },
-            {
-                "id": "MGM",
-                "prefix": "1"
-            },
-            {
-                "id": "NMM",
-                "prefix": "4"
-            },
-            {
-                "id": "ZME",
-                "eram_prefix": "M"
-            },
-            {
-                "id": "ZTL",
-                "eram_prefix": "T"
-            }
-        ],
-        "neighboring_facilities": [
-            "CBM",
-            "HSV",
-            "MGM",
-            "NMM",
-            "ZME",
-            "ZTL"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "CBM",
+            "prefix": "3"
+        },
+        {
+            "id": "HSV",
+            "prefix": "2"
+        },
+        {
+            "id": "MGM",
+            "prefix": "1"
+        },
+        {
+            "id": "NMM",
+            "prefix": "4"
+        },
+        {
+            "id": "ZME",
+            "eram_prefix": "M"
+        },
+        {
+            "id": "ZTL",
+            "eram_prefix": "T"
+        }
+    ]
 }

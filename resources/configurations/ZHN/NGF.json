@@ -11,20 +11,14 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "HNL",
-                "prefix": "1"
-            },
-            {
-                "id": "OGG",
-                "prefix": "2"
-            }
-        ],
-        "neighboring_facilities": [
-            "HNL",
-            "OGG"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "HNL",
+            "prefix": "1"
+        },
+        {
+            "id": "OGG",
+            "prefix": "2"
+        }
+    ]
 }

@@ -16,30 +16,22 @@
             "sector_id": "1W"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ACT",
-                "prefix": "1"
-            },
-            {
-                "id": "AUS",
-                "prefix": "3"
-            },
-            {
-                "id": "I90",
-                "prefix": "2"
-            },
-            {
-                "id": "ZHU",
-                "eram_prefix": "H"
-            }
-        ],
-        "neighboring_facilities": [
-            "ACT",
-            "AUS",
-            "I90",
-            "ZHU"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ACT",
+            "prefix": "1"
+        },
+        {
+            "id": "AUS",
+            "prefix": "3"
+        },
+        {
+            "id": "I90",
+            "prefix": "2"
+        },
+        {
+            "id": "ZHU",
+            "eram_prefix": "H"
+        }
+    ]
 }

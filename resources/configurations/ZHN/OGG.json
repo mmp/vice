@@ -349,21 +349,14 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "HNL",
-                "prefix": "1"
-            },
-            {
-                "id": "NGF",
-                "prefix": "2"
-            }
-        ],
-        "neighboring_facilities": [
-            "HNL",
-            "NGF",
-            "ZHN"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "HNL",
+            "prefix": "1"
+        },
+        {
+            "id": "NGF",
+            "prefix": "2"
+        }
+    ]
 }

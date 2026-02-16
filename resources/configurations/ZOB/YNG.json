@@ -16,25 +16,18 @@
             "sector_id": "1Z"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "BUF",
-                "prefix": "3"
-            },
-            {
-                "id": "CLE",
-                "prefix": "1"
-            },
-            {
-                "id": "PIT",
-                "prefix": "2"
-            }
-        ],
-        "neighboring_facilities": [
-            "BUF",
-            "CLE",
-            "PIT"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "BUF",
+            "prefix": "3"
+        },
+        {
+            "id": "CLE",
+            "prefix": "1"
+        },
+        {
+            "id": "PIT",
+            "prefix": "2"
+        }
+    ]
 }

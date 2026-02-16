@@ -11,15 +11,10 @@
             "sector_id": "1Z"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "CRP",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "CRP"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "CRP",
+            "prefix": "1"
+        }
+    ]
 }

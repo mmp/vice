@@ -11,25 +11,18 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "AVL",
-                "prefix": "2"
-            },
-            {
-                "id": "TYS",
-                "prefix": "1"
-            },
-            {
-                "id": "ZID",
-                "eram_prefix": "I"
-            }
-        ],
-        "neighboring_facilities": [
-            "AVL",
-            "TYS",
-            "ZID"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "AVL",
+            "prefix": "2"
+        },
+        {
+            "id": "TYS",
+            "prefix": "1"
+        },
+        {
+            "id": "ZID",
+            "eram_prefix": "I"
+        }
+    ]
 }

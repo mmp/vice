@@ -61,20 +61,14 @@
             "sector_id": "3C"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "BFL",
-                "prefix": "2"
-            },
-            {
-                "id": "SCT",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "BFL",
-            "SCT"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "BFL",
+            "prefix": "2"
+        },
+        {
+            "id": "SCT",
+            "prefix": "1"
+        }
+    ]
 }

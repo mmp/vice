@@ -259,135 +259,6 @@
             "sector_id": "80"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "BHM",
-                "two_char_stars_id": "BH",
-                "stars_id": "BHM"
-            },
-            {
-                "id": "BNA",
-                "single_char_stars_id": "B",
-                "two_char_stars_id": "BB",
-                "stars_id": "BBB"
-            },
-            {
-                "id": "CBM",
-                "single_char_stars_id": "C",
-                "two_char_stars_id": "CC",
-                "stars_id": "CCC"
-            },
-            {
-                "id": "CHA",
-                "two_char_stars_id": "CH",
-                "stars_id": "CHA"
-            },
-            {
-                "id": "EVV",
-                "single_char_stars_id": "E",
-                "two_char_stars_id": "EV",
-                "stars_id": "EVV"
-            },
-            {
-                "id": "FSM",
-                "single_char_stars_id": "S",
-                "two_char_stars_id": "SS",
-                "stars_id": "SSS"
-            },
-            {
-                "id": "HOP",
-                "single_char_stars_id": "P",
-                "two_char_stars_id": "PP",
-                "stars_id": "PPP"
-            },
-            {
-                "id": "HSV",
-                "single_char_stars_id": "V",
-                "two_char_stars_id": "HH",
-                "stars_id": "VVV"
-            },
-            {
-                "id": "JAN",
-                "single_char_stars_id": "J",
-                "two_char_stars_id": "JJ",
-                "stars_id": "JJJ"
-            },
-            {
-                "id": "LIT",
-                "single_char_stars_id": "L",
-                "two_char_stars_id": "LL",
-                "stars_id": "LLL"
-            },
-            {
-                "id": "M03",
-                "single_char_stars_id": "M",
-                "two_char_stars_id": "MM",
-                "stars_id": "MMM"
-            },
-            {
-                "id": "MLU",
-                "stars_id": "MLU"
-            },
-            {
-                "id": "NMM",
-                "single_char_stars_id": "N",
-                "two_char_stars_id": "NN",
-                "stars_id": "NNN"
-            },
-            {
-                "id": "SGF",
-                "two_char_stars_id": "SG",
-                "stars_id": "SGF"
-            },
-            {
-                "id": "TUL",
-                "stars_id": "TUL"
-            },
-            {
-                "id": "ZFW",
-                "eram_prefix": "F"
-            },
-            {
-                "id": "ZHU",
-                "eram_prefix": "H"
-            },
-            {
-                "id": "ZID",
-                "eram_prefix": "I"
-            },
-            {
-                "id": "ZKC",
-                "eram_prefix": "K"
-            },
-            {
-                "id": "ZTL",
-                "eram_prefix": "T"
-            }
-        ],
-        "neighboring_facilities": [
-            "BHM",
-            "BNA",
-            "CBM",
-            "CHA",
-            "EVV",
-            "FSM",
-            "HOP",
-            "HSV",
-            "JAN",
-            "LIT",
-            "M03",
-            "MLU",
-            "NMM",
-            "SGF",
-            "TUL",
-            "ZFW",
-            "ZHU",
-            "ZID",
-            "ZKC",
-            "ZTL"
-        ]
-    },
     "stars_config": {
         "coordination_fixes": {
             "BAWLS": [
@@ -419,5 +290,110 @@
                 }
             ]
         }
-    }
+    },
+    "handoff_ids": [
+        {
+            "id": "BHM",
+            "two_char_stars_id": "BH",
+            "stars_id": "BHM"
+        },
+        {
+            "id": "BNA",
+            "single_char_stars_id": "B",
+            "two_char_stars_id": "BB",
+            "stars_id": "BBB"
+        },
+        {
+            "id": "CBM",
+            "single_char_stars_id": "C",
+            "two_char_stars_id": "CC",
+            "stars_id": "CCC"
+        },
+        {
+            "id": "CHA",
+            "two_char_stars_id": "CH",
+            "stars_id": "CHA"
+        },
+        {
+            "id": "EVV",
+            "single_char_stars_id": "E",
+            "two_char_stars_id": "EV",
+            "stars_id": "EVV"
+        },
+        {
+            "id": "FSM",
+            "single_char_stars_id": "S",
+            "two_char_stars_id": "SS",
+            "stars_id": "SSS"
+        },
+        {
+            "id": "HOP",
+            "single_char_stars_id": "P",
+            "two_char_stars_id": "PP",
+            "stars_id": "PPP"
+        },
+        {
+            "id": "HSV",
+            "single_char_stars_id": "V",
+            "two_char_stars_id": "HH",
+            "stars_id": "VVV"
+        },
+        {
+            "id": "JAN",
+            "single_char_stars_id": "J",
+            "two_char_stars_id": "JJ",
+            "stars_id": "JJJ"
+        },
+        {
+            "id": "LIT",
+            "single_char_stars_id": "L",
+            "two_char_stars_id": "LL",
+            "stars_id": "LLL"
+        },
+        {
+            "id": "M03",
+            "single_char_stars_id": "M",
+            "two_char_stars_id": "MM",
+            "stars_id": "MMM"
+        },
+        {
+            "id": "MLU",
+            "stars_id": "MLU"
+        },
+        {
+            "id": "NMM",
+            "single_char_stars_id": "N",
+            "two_char_stars_id": "NN",
+            "stars_id": "NNN"
+        },
+        {
+            "id": "SGF",
+            "two_char_stars_id": "SG",
+            "stars_id": "SGF"
+        },
+        {
+            "id": "TUL",
+            "stars_id": "TUL"
+        },
+        {
+            "id": "ZFW",
+            "eram_prefix": "F"
+        },
+        {
+            "id": "ZHU",
+            "eram_prefix": "H"
+        },
+        {
+            "id": "ZID",
+            "eram_prefix": "I"
+        },
+        {
+            "id": "ZKC",
+            "eram_prefix": "K"
+        },
+        {
+            "id": "ZTL",
+            "eram_prefix": "T"
+        }
+    ]
 }

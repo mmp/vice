@@ -26,15 +26,14 @@
             "sector_id": "1Y"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "MWH",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "MWH"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "MWH",
+            "prefix": "1"
+        },
+        {
+            "id": "ZSE",
+            "eram_prefix": "S"
+        }
+    ]
 }

@@ -21,20 +21,14 @@
             "sector_id": "1W"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "CVG",
-                "prefix": "1"
-            },
-            {
-                "id": "SDF",
-                "prefix": "2"
-            }
-        ],
-        "neighboring_facilities": [
-            "CVG",
-            "SDF"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "CVG",
+            "prefix": "1"
+        },
+        {
+            "id": "SDF",
+            "prefix": "2"
+        }
+    ]
 }

@@ -16,15 +16,10 @@
             "sector_id": "1W"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "RDR",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "RDR"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "RDR",
+            "prefix": "1"
+        }
+    ]
 }

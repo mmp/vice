@@ -368,45 +368,34 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "BUF",
-                "prefix": "1"
-            },
-            {
-                "id": "CMH",
-                "prefix": "4"
-            },
-            {
-                "id": "D21",
-                "prefix": "6"
-            },
-            {
-                "id": "PIT",
-                "prefix": "3"
-            },
-            {
-                "id": "TOL",
-                "prefix": "5"
-            },
-            {
-                "id": "YNG",
-                "prefix": "2"
-            },
-            {
-                "id": "ZOB",
-                "eram_prefix": "C"
-            }
-        ],
-        "neighboring_facilities": [
-            "BUF",
-            "CMH",
-            "D21",
-            "PIT",
-            "TOL",
-            "YNG",
-            "ZOB"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "BUF",
+            "prefix": "1"
+        },
+        {
+            "id": "CMH",
+            "prefix": "4"
+        },
+        {
+            "id": "D21",
+            "prefix": "6"
+        },
+        {
+            "id": "PIT",
+            "prefix": "3"
+        },
+        {
+            "id": "TOL",
+            "prefix": "5"
+        },
+        {
+            "id": "YNG",
+            "prefix": "2"
+        },
+        {
+            "id": "ZOB",
+            "eram_prefix": "C"
+        }
+    ]
 }

@@ -331,15 +331,10 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ZAE",
-                "eram_prefix": "E"
-            }
-        ],
-        "neighboring_facilities": [
-            "ZAE"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ZAE",
+            "eram_prefix": "E"
+        }
+    ]
 }

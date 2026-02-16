@@ -1681,35 +1681,26 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "AGS",
-                "prefix": "1"
-            },
-            {
-                "id": "MGM",
-                "prefix": "2"
-            },
-            {
-                "id": "OZR",
-                "prefix": "3"
-            },
-            {
-                "id": "ZJX",
-                "eram_prefix": "J"
-            },
-            {
-                "id": "ZTL",
-                "eram_prefix": "T"
-            }
-        ],
-        "neighboring_facilities": [
-            "AGS",
-            "MGM",
-            "OZR",
-            "ZJX",
-            "ZTL"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "AGS",
+            "prefix": "1"
+        },
+        {
+            "id": "MGM",
+            "prefix": "2"
+        },
+        {
+            "id": "OZR",
+            "prefix": "3"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "J"
+        },
+        {
+            "id": "ZTL",
+            "eram_prefix": "T"
+        }
+    ]
 }

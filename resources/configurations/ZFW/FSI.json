@@ -11,25 +11,18 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "LTS",
-                "prefix": "3"
-            },
-            {
-                "id": "OKC",
-                "prefix": "1"
-            },
-            {
-                "id": "SPS",
-                "prefix": "2"
-            }
-        ],
-        "neighboring_facilities": [
-            "LTS",
-            "OKC",
-            "SPS"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "LTS",
+            "prefix": "3"
+        },
+        {
+            "id": "OKC",
+            "prefix": "1"
+        },
+        {
+            "id": "SPS",
+            "prefix": "2"
+        }
+    ]
 }

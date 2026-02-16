@@ -11,19 +11,14 @@
             "sector_id": "2L"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ZSE",
-                "prefix": "1"
-            },
-            {
-                "id": "ZSE",
-                "eram_prefix": "S"
-            }
-        ],
-        "neighboring_facilities": [
-            "ZSE"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ZSE",
+            "prefix": "1"
+        },
+        {
+            "id": "ZSE",
+            "eram_prefix": "S"
+        }
+    ]
 }

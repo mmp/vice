@@ -47,15 +47,10 @@
         }
     },
     "stars_config": {},
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ZID",
-                "eram_prefix": "I"
-            }
-        ],
-        "neighboring_facilities": [
-            "ZID"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ZID",
+            "eram_prefix": "I"
+        }
+    ]
 }

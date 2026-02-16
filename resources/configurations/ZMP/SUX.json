@@ -11,20 +11,14 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "FSD",
-                "prefix": "2"
-            },
-            {
-                "id": "R90",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "FSD",
-            "R90"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "FSD",
+            "prefix": "2"
+        },
+        {
+            "id": "R90",
+            "prefix": "1"
+        }
+    ]
 }

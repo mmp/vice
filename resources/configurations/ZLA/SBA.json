@@ -169,25 +169,18 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "NTD",
-                "prefix": "1"
-            },
-            {
-                "id": "ZLA",
-                "eram_prefix": "L"
-            },
-            {
-                "id": "ZOA",
-                "eram_prefix": "O"
-            }
-        ],
-        "neighboring_facilities": [
-            "NTD",
-            "ZLA",
-            "ZOA"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "NTD",
+            "prefix": "1"
+        },
+        {
+            "id": "ZLA",
+            "eram_prefix": "L"
+        },
+        {
+            "id": "ZOA",
+            "eram_prefix": "O"
+        }
+    ]
 }

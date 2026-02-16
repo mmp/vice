@@ -16,15 +16,10 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "BOI",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "BOI"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "BOI",
+            "prefix": "1"
+        }
+    ]
 }

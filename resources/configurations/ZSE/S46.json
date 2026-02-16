@@ -257,16 +257,14 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "NUW",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "NUW",
-            "ZSE"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "NUW",
+            "prefix": "1"
+        },
+        {
+            "id": "ZSE",
+            "eram_prefix": "S"
+        }
+    ]
 }

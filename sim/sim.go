@@ -237,7 +237,7 @@ type NewSimConfiguration struct {
 
 	Emergencies []Emergency
 
-	HandoffTopology    *HandoffTopology
+	HandoffIDs         []HandoffID
 	FixPairs           []FixPairDefinition
 	FixPairAssignments []FixPairAssignment
 }

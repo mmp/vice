@@ -11,30 +11,22 @@
             "sector_id": "1W"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "CID",
-                "prefix": "1"
-            },
-            {
-                "id": "DSM",
-                "prefix": "3"
-            },
-            {
-                "id": "RST",
-                "prefix": "2"
-            },
-            {
-                "id": "ZAU",
-                "eram_prefix": "G"
-            }
-        ],
-        "neighboring_facilities": [
-            "CID",
-            "DSM",
-            "RST",
-            "ZAU"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "CID",
+            "prefix": "1"
+        },
+        {
+            "id": "DSM",
+            "prefix": "3"
+        },
+        {
+            "id": "RST",
+            "prefix": "2"
+        },
+        {
+            "id": "ZAU",
+            "eram_prefix": "G"
+        }
+    ]
 }

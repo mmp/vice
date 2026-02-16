@@ -1165,30 +1165,22 @@
             }
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "PVD",
-                "prefix": "1"
-            },
-            {
-                "id": "PWM",
-                "prefix": "3"
-            },
-            {
-                "id": "Y90",
-                "prefix": "2"
-            },
-            {
-                "id": "ZBW",
-                "eram_prefix": "B"
-            }
-        ],
-        "neighboring_facilities": [
-            "PVD",
-            "PWM",
-            "Y90",
-            "ZBW"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "PVD",
+            "prefix": "1"
+        },
+        {
+            "id": "PWM",
+            "prefix": "3"
+        },
+        {
+            "id": "Y90",
+            "prefix": "2"
+        },
+        {
+            "id": "ZBW",
+            "eram_prefix": "B"
+        }
+    ]
 }

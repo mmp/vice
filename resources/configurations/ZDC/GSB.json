@@ -16,30 +16,22 @@
             "sector_id": "1Z"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "FAY",
-                "prefix": "4"
-            },
-            {
-                "id": "ILM",
-                "prefix": "3"
-            },
-            {
-                "id": "NKT",
-                "prefix": "2"
-            },
-            {
-                "id": "RDU",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "FAY",
-            "ILM",
-            "NKT",
-            "RDU"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "FAY",
+            "prefix": "4"
+        },
+        {
+            "id": "ILM",
+            "prefix": "3"
+        },
+        {
+            "id": "NKT",
+            "prefix": "2"
+        },
+        {
+            "id": "RDU",
+            "prefix": "1"
+        }
+    ]
 }

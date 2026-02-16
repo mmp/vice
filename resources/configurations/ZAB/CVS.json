@@ -11,20 +11,14 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ROW",
-                "prefix": "1"
-            },
-            {
-                "id": "ZFW",
-                "eram_prefix": "F"
-            }
-        ],
-        "neighboring_facilities": [
-            "ROW",
-            "ZFW"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ROW",
+            "prefix": "1"
+        },
+        {
+            "id": "ZFW",
+            "eram_prefix": "F"
+        }
+    ]
 }

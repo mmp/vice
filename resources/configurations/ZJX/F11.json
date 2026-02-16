@@ -1115,40 +1115,30 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "DAB",
-                "prefix": "3"
-            },
-            {
-                "id": "JAX",
-                "prefix": "4"
-            },
-            {
-                "id": "PBI",
-                "prefix": "2"
-            },
-            {
-                "id": "TPA",
-                "prefix": "1"
-            },
-            {
-                "id": "ZJX",
-                "eram_prefix": "J"
-            },
-            {
-                "id": "ZMA",
-                "eram_prefix": "R"
-            }
-        ],
-        "neighboring_facilities": [
-            "DAB",
-            "JAX",
-            "PBI",
-            "TPA",
-            "ZJX",
-            "ZMA"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "DAB",
+            "prefix": "3"
+        },
+        {
+            "id": "JAX",
+            "prefix": "4"
+        },
+        {
+            "id": "PBI",
+            "prefix": "2"
+        },
+        {
+            "id": "TPA",
+            "prefix": "1"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "J"
+        },
+        {
+            "id": "ZMA",
+            "eram_prefix": "R"
+        }
+    ]
 }

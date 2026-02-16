@@ -16,35 +16,26 @@
             "sector_id": "1H"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ACY",
-                "prefix": "3"
-            },
-            {
-                "id": "N90",
-                "prefix": "1"
-            },
-            {
-                "id": "PHL",
-                "prefix": "2"
-            },
-            {
-                "id": "ZDC",
-                "eram_prefix": "W"
-            },
-            {
-                "id": "ZNY",
-                "eram_prefix": "N"
-            }
-        ],
-        "neighboring_facilities": [
-            "ACY",
-            "N90",
-            "PHL",
-            "ZDC",
-            "ZNY"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ACY",
+            "prefix": "3"
+        },
+        {
+            "id": "N90",
+            "prefix": "1"
+        },
+        {
+            "id": "PHL",
+            "prefix": "2"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "W"
+        },
+        {
+            "id": "ZNY",
+            "eram_prefix": "N"
+        }
+    ]
 }

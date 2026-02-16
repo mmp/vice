@@ -16,30 +16,22 @@
             "sector_id": "1W"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "GGG",
-                "prefix": "2"
-            },
-            {
-                "id": "MLU",
-                "prefix": "1"
-            },
-            {
-                "id": "POE",
-                "prefix": "3"
-            },
-            {
-                "id": "ZHU",
-                "eram_prefix": "H"
-            }
-        ],
-        "neighboring_facilities": [
-            "GGG",
-            "MLU",
-            "POE",
-            "ZHU"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "GGG",
+            "prefix": "2"
+        },
+        {
+            "id": "MLU",
+            "prefix": "1"
+        },
+        {
+            "id": "POE",
+            "prefix": "3"
+        },
+        {
+            "id": "ZHU",
+            "eram_prefix": "H"
+        }
+    ]
 }

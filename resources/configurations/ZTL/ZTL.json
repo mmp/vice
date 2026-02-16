@@ -277,158 +277,6 @@
             "sector_id": "99"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "A80",
-                "single_char_stars_id": "A",
-                "stars_id": "AAA"
-            },
-            {
-                "id": "AGS",
-                "single_char_stars_id": "Z",
-                "stars_id": "ZZZ"
-            },
-            {
-                "id": "AVL",
-                "single_char_stars_id": "V",
-                "stars_id": "VVV"
-            },
-            {
-                "id": "BHM",
-                "single_char_stars_id": "B",
-                "stars_id": "BBB"
-            },
-            {
-                "id": "CAE",
-                "stars_id": "CAE"
-            },
-            {
-                "id": "CBM",
-                "two_char_stars_id": "BB",
-                "stars_id": "CBM"
-            },
-            {
-                "id": "CHA",
-                "single_char_stars_id": "F",
-                "stars_id": "FFF"
-            },
-            {
-                "id": "CLT",
-                "single_char_stars_id": "C",
-                "stars_id": "CCC"
-            },
-            {
-                "id": "FAY",
-                "stars_id": "FAY"
-            },
-            {
-                "id": "FLO",
-                "stars_id": "FLO"
-            },
-            {
-                "id": "GSO",
-                "single_char_stars_id": "G",
-                "stars_id": "GGG"
-            },
-            {
-                "id": "GSP",
-                "single_char_stars_id": "S",
-                "stars_id": "SSS"
-            },
-            {
-                "id": "HSV",
-                "two_char_stars_id": "HH",
-                "stars_id": "HSV"
-            },
-            {
-                "id": "MGM",
-                "single_char_stars_id": "D",
-                "stars_id": "DDD"
-            },
-            {
-                "id": "NMM",
-                "single_char_stars_id": "N",
-                "stars_id": "NMM"
-            },
-            {
-                "id": "OZR",
-                "two_char_stars_id": "OO",
-                "stars_id": "OZR"
-            },
-            {
-                "id": "RDU",
-                "stars_id": "RDU"
-            },
-            {
-                "id": "ROA",
-                "two_char_stars_id": "RR",
-                "stars_id": "ROA"
-            },
-            {
-                "id": "SSC",
-                "stars_id": "SSC"
-            },
-            {
-                "id": "TRI",
-                "single_char_stars_id": "R",
-                "stars_id": "RRR"
-            },
-            {
-                "id": "TYS",
-                "single_char_stars_id": "T",
-                "stars_id": "TTT"
-            },
-            {
-                "id": "ZDC",
-                "eram_prefix": "W"
-            },
-            {
-                "id": "ZHU",
-                "eram_prefix": "H"
-            },
-            {
-                "id": "ZID",
-                "eram_prefix": "I"
-            },
-            {
-                "id": "ZJX",
-                "eram_prefix": "J"
-            },
-            {
-                "id": "ZME",
-                "eram_prefix": "M"
-            }
-        ],
-        "neighboring_facilities": [
-            "A80",
-            "AGS",
-            "AVL",
-            "BHM",
-            "CAE",
-            "CBM",
-            "CHA",
-            "CLT",
-            "FAY",
-            "FLO",
-            "GSO",
-            "GSP",
-            "HSV",
-            "MGM",
-            "NMM",
-            "OZR",
-            "RDU",
-            "ROA",
-            "SSC",
-            "TRI",
-            "TYS",
-            "ZDC",
-            "ZHU",
-            "ZID",
-            "ZJX",
-            "ZME"
-        ]
-    },
     "stars_config": {
         "coordination_fixes": {
             "CHPPR": [
@@ -712,5 +560,127 @@
                 }
             ]
         }
-    }
+    },
+    "handoff_ids": [
+        {
+            "id": "A80",
+            "single_char_stars_id": "A",
+            "stars_id": "AAA"
+        },
+        {
+            "id": "AGS",
+            "single_char_stars_id": "Z",
+            "stars_id": "ZZZ"
+        },
+        {
+            "id": "AVL",
+            "single_char_stars_id": "V",
+            "stars_id": "VVV"
+        },
+        {
+            "id": "BHM",
+            "single_char_stars_id": "B",
+            "stars_id": "BBB"
+        },
+        {
+            "id": "CAE",
+            "stars_id": "CAE"
+        },
+        {
+            "id": "CBM",
+            "two_char_stars_id": "BB",
+            "stars_id": "CBM"
+        },
+        {
+            "id": "CHA",
+            "single_char_stars_id": "F",
+            "stars_id": "FFF"
+        },
+        {
+            "id": "CLT",
+            "single_char_stars_id": "C",
+            "stars_id": "CCC"
+        },
+        {
+            "id": "FAY",
+            "stars_id": "FAY"
+        },
+        {
+            "id": "FLO",
+            "stars_id": "FLO"
+        },
+        {
+            "id": "GSO",
+            "single_char_stars_id": "G",
+            "stars_id": "GGG"
+        },
+        {
+            "id": "GSP",
+            "single_char_stars_id": "S",
+            "stars_id": "SSS"
+        },
+        {
+            "id": "HSV",
+            "two_char_stars_id": "HH",
+            "stars_id": "HSV"
+        },
+        {
+            "id": "MGM",
+            "single_char_stars_id": "D",
+            "stars_id": "DDD"
+        },
+        {
+            "id": "NMM",
+            "single_char_stars_id": "N",
+            "stars_id": "NMM"
+        },
+        {
+            "id": "OZR",
+            "two_char_stars_id": "OO",
+            "stars_id": "OZR"
+        },
+        {
+            "id": "RDU",
+            "stars_id": "RDU"
+        },
+        {
+            "id": "ROA",
+            "two_char_stars_id": "RR",
+            "stars_id": "ROA"
+        },
+        {
+            "id": "SSC",
+            "stars_id": "SSC"
+        },
+        {
+            "id": "TRI",
+            "single_char_stars_id": "R",
+            "stars_id": "RRR"
+        },
+        {
+            "id": "TYS",
+            "single_char_stars_id": "T",
+            "stars_id": "TTT"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "W"
+        },
+        {
+            "id": "ZHU",
+            "eram_prefix": "H"
+        },
+        {
+            "id": "ZID",
+            "eram_prefix": "I"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "J"
+        },
+        {
+            "id": "ZME",
+            "eram_prefix": "M"
+        }
+    ]
 }

@@ -67,15 +67,10 @@
         ],
         "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ZBW",
-                "eram_prefix": "B"
-            }
-        ],
-        "neighboring_facilities": [
-            "ZBW"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ZBW",
+            "eram_prefix": "B"
+        }
+    ]
 }

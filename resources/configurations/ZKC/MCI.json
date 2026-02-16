@@ -270,21 +270,14 @@
             }
         ]
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "SZL",
-                "prefix": "1"
-            },
-            {
-                "id": "ZKC",
-                "eram_prefix": "K"
-            }
-        ],
-        "neighboring_facilities": [
-            "STJ",
-            "SZL",
-            "ZKC"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "SZL",
+            "prefix": "1"
+        },
+        {
+            "id": "ZKC",
+            "eram_prefix": "K"
+        }
+    ]
 }

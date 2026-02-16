@@ -36,45 +36,34 @@
             "sector_id": "1Z"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "FWA",
-                "prefix": "6"
-            },
-            {
-                "id": "LAN",
-                "prefix": "2"
-            },
-            {
-                "id": "MKE",
-                "prefix": "8"
-            },
-            {
-                "id": "SBN",
-                "prefix": "7"
-            },
-            {
-                "id": "TOL",
-                "prefix": "5"
-            },
-            {
-                "id": "ZMP",
-                "eram_prefix": "P"
-            },
-            {
-                "id": "ZOB",
-                "eram_prefix": "C"
-            }
-        ],
-        "neighboring_facilities": [
-            "FWA",
-            "LAN",
-            "MKE",
-            "SBN",
-            "TOL",
-            "ZMP",
-            "ZOB"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "FWA",
+            "prefix": "6"
+        },
+        {
+            "id": "LAN",
+            "prefix": "2"
+        },
+        {
+            "id": "MKE",
+            "prefix": "8"
+        },
+        {
+            "id": "SBN",
+            "prefix": "7"
+        },
+        {
+            "id": "TOL",
+            "prefix": "5"
+        },
+        {
+            "id": "ZMP",
+            "eram_prefix": "P"
+        },
+        {
+            "id": "ZOB",
+            "eram_prefix": "C"
+        }
+    ]
 }

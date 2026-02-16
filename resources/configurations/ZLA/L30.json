@@ -493,20 +493,14 @@
             }
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "LSV",
-                "prefix": "1"
-            },
-            {
-                "id": "ZLA",
-                "eram_prefix": "L"
-            }
-        ],
-        "neighboring_facilities": [
-            "LSV",
-            "ZLA"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "LSV",
+            "prefix": "1"
+        },
+        {
+            "id": "ZLA",
+            "eram_prefix": "L"
+        }
+    ]
 }

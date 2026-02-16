@@ -1628,30 +1628,22 @@
             }
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "MKE",
-                "prefix": "1"
-            },
-            {
-                "id": "RFD",
-                "prefix": "3"
-            },
-            {
-                "id": "SBN",
-                "prefix": "2"
-            },
-            {
-                "id": "ZAU",
-                "eram_prefix": "G"
-            }
-        ],
-        "neighboring_facilities": [
-            "MKE",
-            "RFD",
-            "SBN",
-            "ZAU"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "MKE",
+            "prefix": "1"
+        },
+        {
+            "id": "RFD",
+            "prefix": "3"
+        },
+        {
+            "id": "SBN",
+            "prefix": "2"
+        },
+        {
+            "id": "ZAU",
+            "eram_prefix": "G"
+        }
+    ]
 }

@@ -781,35 +781,26 @@
             }
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "DAB",
-                "prefix": "3"
-            },
-            {
-                "id": "F11",
-                "prefix": "2"
-            },
-            {
-                "id": "TPA",
-                "prefix": "1"
-            },
-            {
-                "id": "ZJX",
-                "eram_prefix": "J"
-            },
-            {
-                "id": "ZMA",
-                "eram_prefix": "R"
-            }
-        ],
-        "neighboring_facilities": [
-            "DAB",
-            "F11",
-            "TPA",
-            "ZJX",
-            "ZMA"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "DAB",
+            "prefix": "3"
+        },
+        {
+            "id": "F11",
+            "prefix": "2"
+        },
+        {
+            "id": "TPA",
+            "prefix": "1"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "J"
+        },
+        {
+            "id": "ZMA",
+            "eram_prefix": "R"
+        }
+    ]
 }

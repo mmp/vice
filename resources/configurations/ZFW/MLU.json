@@ -16,30 +16,22 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "POE",
-                "prefix": "2"
-            },
-            {
-                "id": "SHV",
-                "prefix": "1"
-            },
-            {
-                "id": "ZHU",
-                "eram_prefix": "H"
-            },
-            {
-                "id": "ZME",
-                "eram_prefix": "M"
-            }
-        ],
-        "neighboring_facilities": [
-            "POE",
-            "SHV",
-            "ZHU",
-            "ZME"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "POE",
+            "prefix": "2"
+        },
+        {
+            "id": "SHV",
+            "prefix": "1"
+        },
+        {
+            "id": "ZHU",
+            "eram_prefix": "H"
+        },
+        {
+            "id": "ZME",
+            "eram_prefix": "M"
+        }
+    ]
 }

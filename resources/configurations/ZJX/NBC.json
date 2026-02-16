@@ -11,20 +11,14 @@
             "sector_id": "1D"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "CHS",
-                "prefix": "4"
-            },
-            {
-                "id": "SAV",
-                "prefix": "3"
-            }
-        ],
-        "neighboring_facilities": [
-            "CHS",
-            "SAV"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "CHS",
+            "prefix": "4"
+        },
+        {
+            "id": "SAV",
+            "prefix": "3"
+        }
+    ]
 }

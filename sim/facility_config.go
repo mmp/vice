@@ -11,20 +11,13 @@ import (
 )
 
 // FacilityConfig represents an external facility configuration file that
-// contains control positions, STARS configuration, handoff topology, and
+// contains control positions, STARS configuration, handoff IDs, and
 // fix pair definitions for a facility (TRACON or ARTCC).
 type FacilityConfig struct {
 	ControlPositions   map[TCP]*av.Controller `json:"control_positions"`
 	FacilityAdaptation FacilityAdaptation     `json:"stars_config"`
-	HandoffTopology    *HandoffTopology       `json:"handoff_topology"`
+	HandoffIDs         []HandoffID            `json:"handoff_ids"`
 	FixPairs           []FixPairDefinition    `json:"fix_pairs"`
-}
-
-// HandoffTopology describes the handoff relationships between a facility
-// and its neighbors. This data is sourced from handoffs_output.json.
-type HandoffTopology struct {
-	HandoffIDs            []HandoffID `json:"handoff_ids"`
-	NeighboringFacilities []string    `json:"neighboring_facilities"`
 }
 
 // HandoffID maps a neighboring facility to its STARS identifiers at

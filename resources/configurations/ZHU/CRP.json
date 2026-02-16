@@ -46,15 +46,10 @@
             "sector_id": "1Z"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "NQI",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "NQI"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "NQI",
+            "prefix": "1"
+        }
+    ]
 }

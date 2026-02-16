@@ -42,15 +42,10 @@
         }
     },
     "stars_config": {},
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ZLA",
-                "eram_prefix": "L"
-            }
-        ],
-        "neighboring_facilities": [
-            "ZLA"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ZLA",
+            "eram_prefix": "L"
+        }
+    ]
 }

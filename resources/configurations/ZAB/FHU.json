@@ -11,15 +11,10 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "U90",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "U90"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "U90",
+            "prefix": "1"
+        }
+    ]
 }

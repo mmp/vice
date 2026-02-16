@@ -11,45 +11,34 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "BTR",
-                "prefix": "3"
-            },
-            {
-                "id": "I90",
-                "prefix": "6"
-            },
-            {
-                "id": "LCH",
-                "prefix": "5"
-            },
-            {
-                "id": "LFT",
-                "prefix": "4"
-            },
-            {
-                "id": "MLU",
-                "prefix": "2"
-            },
-            {
-                "id": "SHV",
-                "prefix": "1"
-            },
-            {
-                "id": "ZFW",
-                "eram_prefix": "F"
-            }
-        ],
-        "neighboring_facilities": [
-            "BTR",
-            "I90",
-            "LCH",
-            "LFT",
-            "MLU",
-            "SHV",
-            "ZFW"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "BTR",
+            "prefix": "3"
+        },
+        {
+            "id": "I90",
+            "prefix": "6"
+        },
+        {
+            "id": "LCH",
+            "prefix": "5"
+        },
+        {
+            "id": "LFT",
+            "prefix": "4"
+        },
+        {
+            "id": "MLU",
+            "prefix": "2"
+        },
+        {
+            "id": "SHV",
+            "prefix": "1"
+        },
+        {
+            "id": "ZFW",
+            "eram_prefix": "F"
+        }
+    ]
 }

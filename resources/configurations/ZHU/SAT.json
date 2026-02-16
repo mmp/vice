@@ -341,25 +341,14 @@
             }
         ]
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "AUS",
-                "prefix": "1"
-            },
-            {
-                "id": "ZHU",
-                "eram_prefix": "H"
-            }
-        ],
-        "neighboring_facilities": [
-            "AUS",
-            "BAZ",
-            "HYI",
-            "RND",
-            "SKF",
-            "SSF",
-            "ZHU"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "AUS",
+            "prefix": "1"
+        },
+        {
+            "id": "ZHU",
+            "eram_prefix": "H"
+        }
+    ]
 }

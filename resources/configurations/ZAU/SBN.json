@@ -155,35 +155,26 @@
             }
         ]
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "AZO",
-                "prefix": "2"
-            },
-            {
-                "id": "C90",
-                "prefix": "1"
-            },
-            {
-                "id": "FWA",
-                "prefix": "3"
-            },
-            {
-                "id": "GUS",
-                "prefix": "4"
-            },
-            {
-                "id": "ZAU",
-                "eram_prefix": "G"
-            }
-        ],
-        "neighboring_facilities": [
-            "AZO",
-            "C90",
-            "FWA",
-            "GUS",
-            "ZAU"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "AZO",
+            "prefix": "2"
+        },
+        {
+            "id": "C90",
+            "prefix": "1"
+        },
+        {
+            "id": "FWA",
+            "prefix": "3"
+        },
+        {
+            "id": "GUS",
+            "prefix": "4"
+        },
+        {
+            "id": "ZAU",
+            "eram_prefix": "G"
+        }
+    ]
 }

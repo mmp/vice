@@ -639,20 +639,14 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "LUF",
-                "prefix": "8"
-            },
-            {
-                "id": "ZAB",
-                "eram_prefix": "A"
-            }
-        ],
-        "neighboring_facilities": [
-            "LUF",
-            "ZAB"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "LUF",
+            "prefix": "8"
+        },
+        {
+            "id": "ZAB",
+            "eram_prefix": "A"
+        }
+    ]
 }

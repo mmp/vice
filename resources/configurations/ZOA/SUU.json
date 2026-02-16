@@ -6,15 +6,10 @@
             "sector_id": "1S"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "NCT",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "NCT"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "NCT",
+            "prefix": "1"
+        }
+    ]
 }

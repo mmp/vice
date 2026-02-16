@@ -16,20 +16,14 @@
             "sector_id": "1W"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "CVS",
-                "prefix": "1"
-            },
-            {
-                "id": "ZFW",
-                "eram_prefix": "F"
-            }
-        ],
-        "neighboring_facilities": [
-            "CVS",
-            "ZFW"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "CVS",
+            "prefix": "1"
+        },
+        {
+            "id": "ZFW",
+            "eram_prefix": "F"
+        }
+    ]
 }

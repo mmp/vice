@@ -6,25 +6,18 @@
             "sector_id": "1P"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "OZR",
-                "prefix": "2"
-            },
-            {
-                "id": "TLH",
-                "prefix": "3"
-            },
-            {
-                "id": "VPS",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "OZR",
-            "TLH",
-            "VPS"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "OZR",
+            "prefix": "2"
+        },
+        {
+            "id": "TLH",
+            "prefix": "3"
+        },
+        {
+            "id": "VPS",
+            "prefix": "1"
+        }
+    ]
 }

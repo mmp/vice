@@ -289,162 +289,6 @@
             "sector_id": "99"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ALO",
-                "single_char_stars_id": "P",
-                "two_char_stars_id": "WW",
-                "stars_id": "ALT"
-            },
-            {
-                "id": "APN",
-                "single_char_stars_id": "Z",
-                "two_char_stars_id": "ZZ",
-                "stars_id": "ZZZ"
-            },
-            {
-                "id": "AZO",
-                "single_char_stars_id": "S",
-                "two_char_stars_id": "SS",
-                "stars_id": "SSS"
-            },
-            {
-                "id": "BIS",
-                "single_char_stars_id": "A",
-                "two_char_stars_id": "AA",
-                "stars_id": "AAA"
-            },
-            {
-                "id": "DLH",
-                "single_char_stars_id": "L",
-                "two_char_stars_id": "LL",
-                "stars_id": "LLL"
-            },
-            {
-                "id": "DSM",
-                "single_char_stars_id": "E",
-                "two_char_stars_id": "EE",
-                "stars_id": "DDD"
-            },
-            {
-                "id": "FAR",
-                "single_char_stars_id": "H",
-                "two_char_stars_id": "HH",
-                "stars_id": "HHH"
-            },
-            {
-                "id": "FSD",
-                "single_char_stars_id": "F",
-                "two_char_stars_id": "FF",
-                "stars_id": "FFF"
-            },
-            {
-                "id": "GRB",
-                "single_char_stars_id": "B",
-                "two_char_stars_id": "BB",
-                "stars_id": "GGG"
-            },
-            {
-                "id": "LAN",
-                "two_char_stars_id": "NN",
-                "stars_id": "LAN"
-            },
-            {
-                "id": "M98",
-                "single_char_stars_id": "M",
-                "two_char_stars_id": "MM",
-                "stars_id": "MMM"
-            },
-            {
-                "id": "MIB",
-                "single_char_stars_id": "I",
-                "two_char_stars_id": "II",
-                "stars_id": "III"
-            },
-            {
-                "id": "MKE",
-                "single_char_stars_id": "X",
-                "two_char_stars_id": "XX",
-                "stars_id": "MKE"
-            },
-            {
-                "id": "R90",
-                "single_char_stars_id": "O",
-                "two_char_stars_id": "OO",
-                "stars_id": "OOO"
-            },
-            {
-                "id": "RDR",
-                "single_char_stars_id": "R",
-                "two_char_stars_id": "RR",
-                "stars_id": "RRR"
-            },
-            {
-                "id": "RST",
-                "single_char_stars_id": "T",
-                "two_char_stars_id": "TT",
-                "stars_id": "TTT"
-            },
-            {
-                "id": "SUX",
-                "single_char_stars_id": "Y",
-                "two_char_stars_id": "YY",
-                "stars_id": "YYY"
-            },
-            {
-                "id": "VOK",
-                "single_char_stars_id": "J",
-                "two_char_stars_id": "JJ",
-                "stars_id": "JJJ"
-            },
-            {
-                "id": "ZAU",
-                "eram_prefix": "G"
-            },
-            {
-                "id": "ZDV",
-                "eram_prefix": "D"
-            },
-            {
-                "id": "ZKC",
-                "eram_prefix": "K"
-            },
-            {
-                "id": "ZLC",
-                "eram_prefix": "U"
-            },
-            {
-                "id": "ZOB",
-                "eram_prefix": "C"
-            }
-        ],
-        "neighboring_facilities": [
-            "ALO",
-            "APN",
-            "AZO",
-            "BIS",
-            "DLH",
-            "DSM",
-            "FAR",
-            "FSD",
-            "GRB",
-            "LAN",
-            "M98",
-            "MIB",
-            "MKE",
-            "R90",
-            "RDR",
-            "RST",
-            "SUX",
-            "VOK",
-            "ZAU",
-            "ZDV",
-            "ZKC",
-            "ZLC",
-            "ZOB"
-        ]
-    },
     "stars_config": {
         "coordination_fixes": {
             "LUCCY": [
@@ -490,5 +334,134 @@
                 }
             ]
         }
-    }
+    },
+    "handoff_ids": [
+        {
+            "id": "ALO",
+            "single_char_stars_id": "P",
+            "two_char_stars_id": "WW",
+            "stars_id": "ALT"
+        },
+        {
+            "id": "APN",
+            "single_char_stars_id": "Z",
+            "two_char_stars_id": "ZZ",
+            "stars_id": "ZZZ"
+        },
+        {
+            "id": "AZO",
+            "single_char_stars_id": "S",
+            "two_char_stars_id": "SS",
+            "stars_id": "SSS"
+        },
+        {
+            "id": "BIS",
+            "single_char_stars_id": "A",
+            "two_char_stars_id": "AA",
+            "stars_id": "AAA"
+        },
+        {
+            "id": "DLH",
+            "single_char_stars_id": "L",
+            "two_char_stars_id": "LL",
+            "stars_id": "LLL"
+        },
+        {
+            "id": "DSM",
+            "single_char_stars_id": "E",
+            "two_char_stars_id": "EE",
+            "stars_id": "DDD"
+        },
+        {
+            "id": "FAR",
+            "single_char_stars_id": "H",
+            "two_char_stars_id": "HH",
+            "stars_id": "HHH"
+        },
+        {
+            "id": "FSD",
+            "single_char_stars_id": "F",
+            "two_char_stars_id": "FF",
+            "stars_id": "FFF"
+        },
+        {
+            "id": "GRB",
+            "single_char_stars_id": "B",
+            "two_char_stars_id": "BB",
+            "stars_id": "GGG"
+        },
+        {
+            "id": "LAN",
+            "two_char_stars_id": "NN",
+            "stars_id": "LAN"
+        },
+        {
+            "id": "M98",
+            "single_char_stars_id": "M",
+            "two_char_stars_id": "MM",
+            "stars_id": "MMM"
+        },
+        {
+            "id": "MIB",
+            "single_char_stars_id": "I",
+            "two_char_stars_id": "II",
+            "stars_id": "III"
+        },
+        {
+            "id": "MKE",
+            "single_char_stars_id": "X",
+            "two_char_stars_id": "XX",
+            "stars_id": "MKE"
+        },
+        {
+            "id": "R90",
+            "single_char_stars_id": "O",
+            "two_char_stars_id": "OO",
+            "stars_id": "OOO"
+        },
+        {
+            "id": "RDR",
+            "single_char_stars_id": "R",
+            "two_char_stars_id": "RR",
+            "stars_id": "RRR"
+        },
+        {
+            "id": "RST",
+            "single_char_stars_id": "T",
+            "two_char_stars_id": "TT",
+            "stars_id": "TTT"
+        },
+        {
+            "id": "SUX",
+            "single_char_stars_id": "Y",
+            "two_char_stars_id": "YY",
+            "stars_id": "YYY"
+        },
+        {
+            "id": "VOK",
+            "single_char_stars_id": "J",
+            "two_char_stars_id": "JJ",
+            "stars_id": "JJJ"
+        },
+        {
+            "id": "ZAU",
+            "eram_prefix": "G"
+        },
+        {
+            "id": "ZDV",
+            "eram_prefix": "D"
+        },
+        {
+            "id": "ZKC",
+            "eram_prefix": "K"
+        },
+        {
+            "id": "ZLC",
+            "eram_prefix": "U"
+        },
+        {
+            "id": "ZOB",
+            "eram_prefix": "C"
+        }
+    ]
 }

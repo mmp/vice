@@ -16,15 +16,10 @@
             "sector_id": "2T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "HMN",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "HMN"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "HMN",
+            "prefix": "1"
+        }
+    ]
 }

@@ -11,15 +11,10 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "D21",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "D21"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "D21",
+            "prefix": "1"
+        }
+    ]
 }

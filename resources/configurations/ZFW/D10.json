@@ -1098,20 +1098,14 @@
             }
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ACT",
-                "prefix": "1"
-            },
-            {
-                "id": "ZFW",
-                "eram_prefix": "F"
-            }
-        ],
-        "neighboring_facilities": [
-            "ACT",
-            "ZFW"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ACT",
+            "prefix": "1"
+        },
+        {
+            "id": "ZFW",
+            "eram_prefix": "F"
+        }
+    ]
 }

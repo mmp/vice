@@ -16,15 +16,14 @@
             "sector_id": "1X"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "GEG",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "GEG"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "GEG",
+            "prefix": "1"
+        },
+        {
+            "id": "ZSE",
+            "eram_prefix": "S"
+        }
+    ]
 }

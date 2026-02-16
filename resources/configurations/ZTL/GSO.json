@@ -181,41 +181,30 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "CLT",
-                "prefix": "1"
-            },
-            {
-                "id": "FAY",
-                "prefix": "4"
-            },
-            {
-                "id": "RDU",
-                "prefix": "3"
-            },
-            {
-                "id": "ROA",
-                "prefix": "2"
-            },
-            {
-                "id": "ZDC",
-                "eram_prefix": "W"
-            },
-            {
-                "id": "ZTL",
-                "eram_prefix": "T"
-            }
-        ],
-        "neighboring_facilities": [
-            "CLT",
-            "FAY",
-            "RDU",
-            "ROA",
-            "VUJ",
-            "ZDC",
-            "ZTL"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "CLT",
+            "prefix": "1"
+        },
+        {
+            "id": "FAY",
+            "prefix": "4"
+        },
+        {
+            "id": "RDU",
+            "prefix": "3"
+        },
+        {
+            "id": "ROA",
+            "prefix": "2"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "W"
+        },
+        {
+            "id": "ZTL",
+            "eram_prefix": "T"
+        }
+    ]
 }

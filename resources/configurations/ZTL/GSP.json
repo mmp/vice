@@ -140,40 +140,30 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "AGS",
-                "prefix": "3"
-            },
-            {
-                "id": "AVL",
-                "prefix": "4"
-            },
-            {
-                "id": "CAE",
-                "prefix": "2"
-            },
-            {
-                "id": "CLT",
-                "prefix": "1"
-            },
-            {
-                "id": "ZJX",
-                "eram_prefix": "J"
-            },
-            {
-                "id": "ZTL",
-                "eram_prefix": "T"
-            }
-        ],
-        "neighboring_facilities": [
-            "AGS",
-            "AVL",
-            "CAE",
-            "CLT",
-            "ZJX",
-            "ZTL"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "AGS",
+            "prefix": "3"
+        },
+        {
+            "id": "AVL",
+            "prefix": "4"
+        },
+        {
+            "id": "CAE",
+            "prefix": "2"
+        },
+        {
+            "id": "CLT",
+            "prefix": "1"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "J"
+        },
+        {
+            "id": "ZTL",
+            "eram_prefix": "T"
+        }
+    ]
 }

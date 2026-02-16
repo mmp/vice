@@ -329,35 +329,26 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "CMH",
-                "prefix": "1"
-            },
-            {
-                "id": "IND",
-                "prefix": "4"
-            },
-            {
-                "id": "LEX",
-                "prefix": "2"
-            },
-            {
-                "id": "SDF",
-                "prefix": "3"
-            },
-            {
-                "id": "ZID",
-                "eram_prefix": "I"
-            }
-        ],
-        "neighboring_facilities": [
-            "CMH",
-            "IND",
-            "LEX",
-            "SDF",
-            "ZID"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "CMH",
+            "prefix": "1"
+        },
+        {
+            "id": "IND",
+            "prefix": "4"
+        },
+        {
+            "id": "LEX",
+            "prefix": "2"
+        },
+        {
+            "id": "SDF",
+            "prefix": "3"
+        },
+        {
+            "id": "ZID",
+            "eram_prefix": "I"
+        }
+    ]
 }

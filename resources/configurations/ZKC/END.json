@@ -11,20 +11,14 @@
             "sector_id": "1Z"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ICT",
-                "prefix": "2"
-            },
-            {
-                "id": "OKC",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "ICT",
-            "OKC"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ICT",
+            "prefix": "2"
+        },
+        {
+            "id": "OKC",
+            "prefix": "1"
+        }
+    ]
 }

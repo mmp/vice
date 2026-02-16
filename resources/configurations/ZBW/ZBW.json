@@ -423,125 +423,103 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "A90",
-                "single_char_stars_id": "B",
-                "two_char_stars_id": "BO",
-                "stars_id": "BOA"
-            },
-            {
-                "id": "ALB",
-                "single_char_stars_id": "A",
-                "two_char_stars_id": "AL",
-                "stars_id": "ALA"
-            },
-            {
-                "id": "AVP",
-                "two_char_stars_id": "WW",
-                "stars_id": "WWW"
-            },
-            {
-                "id": "BGM",
-                "two_char_stars_id": "BB",
-                "stars_id": "BBB"
-            },
-            {
-                "id": "BGR",
-                "single_char_stars_id": "G",
-                "two_char_stars_id": "BG",
-                "stars_id": "BGA"
-            },
-            {
-                "id": "BTV",
-                "single_char_stars_id": "T",
-                "two_char_stars_id": "BT",
-                "stars_id": "BTA"
-            },
-            {
-                "id": "ELM",
-                "two_char_stars_id": "EE",
-                "stars_id": "EEE"
-            },
-            {
-                "id": "GTB",
-                "single_char_stars_id": "L",
-                "two_char_stars_id": "GT",
-                "stars_id": "GTA"
-            },
-            {
-                "id": "N90",
-                "two_char_stars_id": "NN",
-                "stars_id": "NNN"
-            },
-            {
-                "id": "NVF",
-                "single_char_stars_id": "Q",
-                "two_char_stars_id": "QQ",
-                "stars_id": "NVF"
-            },
-            {
-                "id": "PVD",
-                "single_char_stars_id": "O",
-                "two_char_stars_id": "NC",
-                "stars_id": "NCA"
-            },
-            {
-                "id": "PWM",
-                "single_char_stars_id": "P",
-                "two_char_stars_id": "PW",
-                "stars_id": "PWA"
-            },
-            {
-                "id": "ROC",
-                "two_char_stars_id": "RR",
-                "stars_id": "RRR"
-            },
-            {
-                "id": "SYR",
-                "single_char_stars_id": "S",
-                "two_char_stars_id": "SY",
-                "stars_id": "SYA"
-            },
-            {
-                "id": "Y90",
-                "single_char_stars_id": "D",
-                "two_char_stars_id": "BD",
-                "stars_id": "BDA"
-            },
-            {
-                "id": "ZDC",
-                "eram_prefix": "W"
-            },
-            {
-                "id": "ZNY",
-                "eram_prefix": "N"
-            },
-            {
-                "id": "ZOB",
-                "eram_prefix": "C"
-            }
-        ],
-        "neighboring_facilities": [
-            "A90",
-            "ALB",
-            "AVP",
-            "BGM",
-            "BGR",
-            "BTV",
-            "ELM",
-            "GTB",
-            "N90",
-            "NVF",
-            "PVD",
-            "PWM",
-            "ROC",
-            "SYR",
-            "Y90",
-            "ZDC",
-            "ZNY",
-            "ZOB"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "A90",
+            "single_char_stars_id": "B",
+            "two_char_stars_id": "BO",
+            "stars_id": "BOA"
+        },
+        {
+            "id": "ALB",
+            "single_char_stars_id": "A",
+            "two_char_stars_id": "AL",
+            "stars_id": "ALA"
+        },
+        {
+            "id": "AVP",
+            "two_char_stars_id": "WW",
+            "stars_id": "WWW"
+        },
+        {
+            "id": "BGM",
+            "two_char_stars_id": "BB",
+            "stars_id": "BBB"
+        },
+        {
+            "id": "BGR",
+            "single_char_stars_id": "G",
+            "two_char_stars_id": "BG",
+            "stars_id": "BGA"
+        },
+        {
+            "id": "BTV",
+            "single_char_stars_id": "T",
+            "two_char_stars_id": "BT",
+            "stars_id": "BTA"
+        },
+        {
+            "id": "ELM",
+            "two_char_stars_id": "EE",
+            "stars_id": "EEE"
+        },
+        {
+            "id": "GTB",
+            "single_char_stars_id": "L",
+            "two_char_stars_id": "GT",
+            "stars_id": "GTA"
+        },
+        {
+            "id": "N90",
+            "two_char_stars_id": "NN",
+            "stars_id": "NNN"
+        },
+        {
+            "id": "NVF",
+            "single_char_stars_id": "Q",
+            "two_char_stars_id": "QQ",
+            "stars_id": "NVF"
+        },
+        {
+            "id": "PVD",
+            "single_char_stars_id": "O",
+            "two_char_stars_id": "NC",
+            "stars_id": "NCA"
+        },
+        {
+            "id": "PWM",
+            "single_char_stars_id": "P",
+            "two_char_stars_id": "PW",
+            "stars_id": "PWA"
+        },
+        {
+            "id": "ROC",
+            "two_char_stars_id": "RR",
+            "stars_id": "RRR"
+        },
+        {
+            "id": "SYR",
+            "single_char_stars_id": "S",
+            "two_char_stars_id": "SY",
+            "stars_id": "SYA"
+        },
+        {
+            "id": "Y90",
+            "single_char_stars_id": "D",
+            "two_char_stars_id": "BD",
+            "stars_id": "BDA"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "W"
+        },
+        {
+            "id": "ZNY",
+            "eram_prefix": "N"
+        },
+        {
+            "id": "ZOB",
+            "eram_prefix": "C"
+        }
+    ]
 }

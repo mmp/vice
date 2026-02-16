@@ -11,20 +11,14 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "FSI",
-                "prefix": "2"
-            },
-            {
-                "id": "LTS",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "FSI",
-            "LTS"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "FSI",
+            "prefix": "2"
+        },
+        {
+            "id": "LTS",
+            "prefix": "1"
+        }
+    ]
 }

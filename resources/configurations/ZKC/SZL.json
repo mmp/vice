@@ -11,20 +11,14 @@
             "sector_id": "1Z"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "MCI",
-                "prefix": "1"
-            },
-            {
-                "id": "SGF",
-                "prefix": "2"
-            }
-        ],
-        "neighboring_facilities": [
-            "MCI",
-            "SGF"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "MCI",
+            "prefix": "1"
+        },
+        {
+            "id": "SGF",
+            "prefix": "2"
+        }
+    ]
 }

@@ -16,25 +16,18 @@
             "sector_id": "1W"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "MKE",
-                "prefix": "2"
-            },
-            {
-                "id": "RFD",
-                "prefix": "3"
-            },
-            {
-                "id": "VOK",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "MKE",
-            "RFD",
-            "VOK"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "MKE",
+            "prefix": "2"
+        },
+        {
+            "id": "RFD",
+            "prefix": "3"
+        },
+        {
+            "id": "VOK",
+            "prefix": "1"
+        }
+    ]
 }

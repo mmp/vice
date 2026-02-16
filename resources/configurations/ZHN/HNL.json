@@ -340,21 +340,14 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "NGF",
-                "prefix": "1"
-            },
-            {
-                "id": "OGG",
-                "prefix": "2"
-            }
-        ],
-        "neighboring_facilities": [
-            "NGF",
-            "OGG",
-            "ZHN"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "NGF",
+            "prefix": "1"
+        },
+        {
+            "id": "OGG",
+            "prefix": "2"
+        }
+    ]
 }

@@ -21,25 +21,18 @@
             "sector_id": "5Z"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "DOV",
-                "prefix": "2"
-            },
-            {
-                "id": "ORF",
-                "prefix": "3"
-            },
-            {
-                "id": "PCT",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "DOV",
-            "ORF",
-            "PCT"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "DOV",
+            "prefix": "2"
+        },
+        {
+            "id": "ORF",
+            "prefix": "3"
+        },
+        {
+            "id": "PCT",
+            "prefix": "1"
+        }
+    ]
 }

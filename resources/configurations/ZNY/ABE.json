@@ -173,35 +173,26 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "AVP",
-                "prefix": "1"
-            },
-            {
-                "id": "MDT",
-                "prefix": "5"
-            },
-            {
-                "id": "N90",
-                "prefix": "2"
-            },
-            {
-                "id": "PHL",
-                "prefix": "3"
-            },
-            {
-                "id": "ZNY",
-                "eram_prefix": "N"
-            }
-        ],
-        "neighboring_facilities": [
-            "AVP",
-            "MDT",
-            "N90",
-            "PHL",
-            "ZNY"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "AVP",
+            "prefix": "1"
+        },
+        {
+            "id": "MDT",
+            "prefix": "5"
+        },
+        {
+            "id": "N90",
+            "prefix": "2"
+        },
+        {
+            "id": "PHL",
+            "prefix": "3"
+        },
+        {
+            "id": "ZNY",
+            "eram_prefix": "N"
+        }
+    ]
 }

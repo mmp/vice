@@ -16,25 +16,18 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "BNA",
-                "prefix": "1"
-            },
-            {
-                "id": "EVV",
-                "prefix": "2"
-            },
-            {
-                "id": "ZID",
-                "eram_prefix": "I"
-            }
-        ],
-        "neighboring_facilities": [
-            "BNA",
-            "EVV",
-            "ZID"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "BNA",
+            "prefix": "1"
+        },
+        {
+            "id": "EVV",
+            "prefix": "2"
+        },
+        {
+            "id": "ZID",
+            "eram_prefix": "I"
+        }
+    ]
 }

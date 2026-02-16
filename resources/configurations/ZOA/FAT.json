@@ -21,30 +21,22 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "BFL",
-                "prefix": "2"
-            },
-            {
-                "id": "NCT",
-                "prefix": "1"
-            },
-            {
-                "id": "NLC",
-                "prefix": "3"
-            },
-            {
-                "id": "ZLA",
-                "eram_prefix": "L"
-            }
-        ],
-        "neighboring_facilities": [
-            "BFL",
-            "NCT",
-            "NLC",
-            "ZLA"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "BFL",
+            "prefix": "2"
+        },
+        {
+            "id": "NCT",
+            "prefix": "1"
+        },
+        {
+            "id": "NLC",
+            "prefix": "3"
+        },
+        {
+            "id": "ZLA",
+            "eram_prefix": "L"
+        }
+    ]
 }

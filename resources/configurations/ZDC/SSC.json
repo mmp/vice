@@ -12,15 +12,10 @@
         }
     },
     "stars_config": {},
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ZDC",
-                "eram_prefix": "W"
-            }
-        ],
-        "neighboring_facilities": [
-            "ZDC"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ZDC",
+            "eram_prefix": "W"
+        }
+    ]
 }

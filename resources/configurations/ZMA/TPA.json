@@ -259,35 +259,26 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "F11",
-                "prefix": "1"
-            },
-            {
-                "id": "JAX",
-                "prefix": "3"
-            },
-            {
-                "id": "RSW",
-                "prefix": "2"
-            },
-            {
-                "id": "ZJX",
-                "eram_prefix": "J"
-            },
-            {
-                "id": "ZMA",
-                "eram_prefix": "R"
-            }
-        ],
-        "neighboring_facilities": [
-            "F11",
-            "JAX",
-            "RSW",
-            "ZJX",
-            "ZMA"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "F11",
+            "prefix": "1"
+        },
+        {
+            "id": "JAX",
+            "prefix": "3"
+        },
+        {
+            "id": "RSW",
+            "prefix": "2"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "J"
+        },
+        {
+            "id": "ZMA",
+            "eram_prefix": "R"
+        }
+    ]
 }

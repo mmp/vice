@@ -11,15 +11,10 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "MIA",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "MIA"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "MIA",
+            "prefix": "1"
+        }
+    ]
 }

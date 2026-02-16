@@ -471,55 +471,42 @@
             }
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ABE",
-                "prefix": "4"
-            },
-            {
-                "id": "ACY",
-                "prefix": "6"
-            },
-            {
-                "id": "DOV",
-                "prefix": "7"
-            },
-            {
-                "id": "MDT",
-                "prefix": "2"
-            },
-            {
-                "id": "N90",
-                "prefix": "1"
-            },
-            {
-                "id": "PCT",
-                "prefix": "9"
-            },
-            {
-                "id": "WRI",
-                "prefix": "3"
-            },
-            {
-                "id": "ZDC",
-                "eram_prefix": "W"
-            },
-            {
-                "id": "ZNY",
-                "eram_prefix": "N"
-            }
-        ],
-        "neighboring_facilities": [
-            "ABE",
-            "ACY",
-            "DOV",
-            "MDT",
-            "N90",
-            "PCT",
-            "WRI",
-            "ZDC",
-            "ZNY"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ABE",
+            "prefix": "4"
+        },
+        {
+            "id": "ACY",
+            "prefix": "6"
+        },
+        {
+            "id": "DOV",
+            "prefix": "7"
+        },
+        {
+            "id": "MDT",
+            "prefix": "2"
+        },
+        {
+            "id": "N90",
+            "prefix": "1"
+        },
+        {
+            "id": "PCT",
+            "prefix": "9"
+        },
+        {
+            "id": "WRI",
+            "prefix": "3"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "W"
+        },
+        {
+            "id": "ZNY",
+            "eram_prefix": "N"
+        }
+    ]
 }

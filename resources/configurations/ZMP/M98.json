@@ -587,20 +587,14 @@
             }
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "RST",
-                "prefix": "1"
-            },
-            {
-                "id": "ZMP",
-                "eram_prefix": "P"
-            }
-        ],
-        "neighboring_facilities": [
-            "RST",
-            "ZMP"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "RST",
+            "prefix": "1"
+        },
+        {
+            "id": "ZMP",
+            "eram_prefix": "P"
+        }
+    ]
 }

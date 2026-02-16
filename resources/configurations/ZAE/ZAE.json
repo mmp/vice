@@ -1,21 +1,18 @@
 {
-  "control_positions": {
-    "ZAE_TUL": {
-      "frequency": 132350,
-      "eram_facility": true,
-      "radio_name": "Academy Center",
-      "sector_id": "TU"
+    "control_positions": {
+        "ZAE_TUL": {
+            "frequency": 132350,
+            "eram_facility": true,
+            "radio_name": "Academy Center",
+            "sector_id": "TU"
+        },
+        "ZAE_OKC": {
+            "frequency": 125650,
+            "eram_facility": true,
+            "radio_name": "Academy Center",
+            "sector_id": "OK"
+        }
     },
-    "ZAE_OKC": {
-      "frequency": 125650,
-      "eram_facility": true,
-      "radio_name": "Academy Center",
-      "sector_id": "OK"
-    }
-  },
-  "stars_config": {},
-  "handoff_topology": {
-    "handoff_ids": [],
-    "neighboring_facilities": []
-  }
+    "stars_config": {},
+    "handoff_ids": []
 }

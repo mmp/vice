@@ -26,15 +26,10 @@
             "sector_id": "2T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ELP",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "ELP"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ELP",
+            "prefix": "1"
+        }
+    ]
 }

@@ -46,20 +46,14 @@
             "sector_id": "1Z"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "SC1",
-                "prefix": "2"
-            },
-            {
-                "id": "SUU",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "SC1",
-            "SUU"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "SC1",
+            "prefix": "2"
+        },
+        {
+            "id": "SUU",
+            "prefix": "1"
+        }
+    ]
 }

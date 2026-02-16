@@ -21,50 +21,38 @@
             "sector_id": "1Z"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "AZO",
-                "prefix": "4"
-            },
-            {
-                "id": "CLE",
-                "prefix": "2"
-            },
-            {
-                "id": "CMH",
-                "prefix": "6"
-            },
-            {
-                "id": "D21",
-                "prefix": "1"
-            },
-            {
-                "id": "FWA",
-                "prefix": "5"
-            },
-            {
-                "id": "LAN",
-                "prefix": "3"
-            },
-            {
-                "id": "ZAU",
-                "eram_prefix": "G"
-            },
-            {
-                "id": "ZID",
-                "eram_prefix": "I"
-            }
-        ],
-        "neighboring_facilities": [
-            "AZO",
-            "CLE",
-            "CMH",
-            "D21",
-            "FWA",
-            "LAN",
-            "ZAU",
-            "ZID"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "AZO",
+            "prefix": "4"
+        },
+        {
+            "id": "CLE",
+            "prefix": "2"
+        },
+        {
+            "id": "CMH",
+            "prefix": "6"
+        },
+        {
+            "id": "D21",
+            "prefix": "1"
+        },
+        {
+            "id": "FWA",
+            "prefix": "5"
+        },
+        {
+            "id": "LAN",
+            "prefix": "3"
+        },
+        {
+            "id": "ZAU",
+            "eram_prefix": "G"
+        },
+        {
+            "id": "ZID",
+            "eram_prefix": "I"
+        }
+    ]
 }

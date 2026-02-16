@@ -175,64 +175,6 @@
             "sector_id": "99"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "EUG",
-                "single_char_stars_id": "E",
-                "two_char_stars_id": "EE",
-                "stars_id": "EEE"
-            },
-            {
-                "id": "GEG",
-                "single_char_stars_id": "G",
-                "two_char_stars_id": "GG",
-                "stars_id": "GGG"
-            },
-            {
-                "id": "LMT",
-                "single_char_stars_id": "L",
-                "two_char_stars_id": "LL",
-                "stars_id": "LLL"
-            },
-            {
-                "id": "MWH",
-                "single_char_stars_id": "M",
-                "two_char_stars_id": "MM",
-                "stars_id": "MMM"
-            },
-            {
-                "id": "NUW",
-                "single_char_stars_id": "N",
-                "two_char_stars_id": "NN",
-                "stars_id": "NNN"
-            },
-            {
-                "id": "P80",
-                "single_char_stars_id": "P",
-                "two_char_stars_id": "PP",
-                "stars_id": "PPP"
-            },
-            {
-                "id": "S46",
-                "single_char_stars_id": "S",
-                "two_char_stars_id": "SS",
-                "stars_id": "SSS"
-            }
-        ],
-        "neighboring_facilities": [
-            "EUG",
-            "GEG",
-            "LMT",
-            "MSO",
-            "MWH",
-            "NUW",
-            "P80",
-            "S46",
-            "ZLC",
-            "ZOA"
-        ]
-    },
     "stars_config": {
         "coordination_fixes": {
             "HHOOD": [
@@ -341,5 +283,49 @@
                 }
             ]
         }
-    }
+    },
+    "handoff_ids": [
+        {
+            "id": "EUG",
+            "single_char_stars_id": "E",
+            "two_char_stars_id": "EE",
+            "stars_id": "EEE"
+        },
+        {
+            "id": "GEG",
+            "single_char_stars_id": "G",
+            "two_char_stars_id": "GG",
+            "stars_id": "GGG"
+        },
+        {
+            "id": "LMT",
+            "single_char_stars_id": "L",
+            "two_char_stars_id": "LL",
+            "stars_id": "LLL"
+        },
+        {
+            "id": "MWH",
+            "single_char_stars_id": "M",
+            "two_char_stars_id": "MM",
+            "stars_id": "MMM"
+        },
+        {
+            "id": "NUW",
+            "single_char_stars_id": "N",
+            "two_char_stars_id": "NN",
+            "stars_id": "NNN"
+        },
+        {
+            "id": "P80",
+            "single_char_stars_id": "P",
+            "two_char_stars_id": "PP",
+            "stars_id": "PPP"
+        },
+        {
+            "id": "S46",
+            "single_char_stars_id": "S",
+            "two_char_stars_id": "SS",
+            "stars_id": "SSS"
+        }
+    ]
 }

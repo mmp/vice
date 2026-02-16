@@ -16,15 +16,10 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "NCT",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "NCT"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "NCT",
+            "prefix": "1"
+        }
+    ]
 }

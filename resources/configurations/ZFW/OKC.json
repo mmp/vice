@@ -230,30 +230,22 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "END",
-                "prefix": "2"
-            },
-            {
-                "id": "FSI",
-                "prefix": "1"
-            },
-            {
-                "id": "ZFW",
-                "eram_prefix": "F"
-            },
-            {
-                "id": "ZKC",
-                "eram_prefix": "K"
-            }
-        ],
-        "neighboring_facilities": [
-            "END",
-            "FSI",
-            "ZFW",
-            "ZKC"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "END",
+            "prefix": "2"
+        },
+        {
+            "id": "FSI",
+            "prefix": "1"
+        },
+        {
+            "id": "ZFW",
+            "eram_prefix": "F"
+        },
+        {
+            "id": "ZKC",
+            "eram_prefix": "K"
+        }
+    ]
 }

@@ -11,15 +11,10 @@
             "sector_id": "1D"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "FHU",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "FHU"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "FHU",
+            "prefix": "1"
+        }
+    ]
 }

@@ -12,15 +12,10 @@
         }
     },
     "stars_config": {},
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ZNY",
-                "eram_prefix": "N"
-            }
-        ],
-        "neighboring_facilities": [
-            "ZNY"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ZNY",
+            "eram_prefix": "N"
+        }
+    ]
 }

@@ -56,7 +56,7 @@ type scenarioGroup struct {
 	// not from the scenario group JSON.
 	ControlPositions   map[sim.TCP]*av.Controller `json:"-"`
 	FacilityAdaptation sim.FacilityAdaptation     `json:"-"`
-	HandoffTopology    *sim.HandoffTopology       `json:"-"`
+	HandoffIDs         []sim.HandoffID             `json:"-"`
 	FixPairs           []sim.FixPairDefinition    `json:"-"`
 
 	SourceFile string // path of the JSON file this was loaded from
@@ -837,10 +837,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 
 		// Validate cross-facility initial_controller references.
 		resourcesFS := util.GetResourcesFS()
-		var handoffIDs []sim.HandoffID
-		if sg.HandoffTopology != nil {
-			handoffIDs = sg.HandoffTopology.HandoffIDs
-		}
+		handoffIDs := sg.HandoffIDs
 		for i, ar := range flow.Arrivals {
 			if ar.InitialFacility != "" && ar.InitialController != "" {
 				e.Push("Arrival " + strconv.Itoa(i))
@@ -882,10 +879,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 	// Validate cross-facility departure_controller references.
 	{
 		resourcesFS := util.GetResourcesFS()
-		var hids []sim.HandoffID
-		if sg.HandoffTopology != nil {
-			hids = sg.HandoffTopology.HandoffIDs
-		}
+		hids := sg.HandoffIDs
 		for icao, ap := range sg.Airports {
 			if ap.DepartureFacility != "" && ap.DepartureController != "" {
 				e.Push("Airport " + icao)
@@ -994,23 +988,21 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 
 	// Build prefix → facility map from handoff_ids (all available lengths).
 	prefixToFacility := make(map[string]string)
-	if sg.HandoffTopology != nil {
-		for _, hid := range sg.HandoffTopology.HandoffIDs {
-			if hid.ERAMPrefix != "" {
-				prefixToFacility[hid.ERAMPrefix] = hid.ID
-			}
-			if hid.SingleCharStarsID != "" {
-				prefixToFacility[hid.SingleCharStarsID] = hid.ID
-			}
-			if hid.TwoCharStarsID != "" {
-				prefixToFacility[hid.TwoCharStarsID] = hid.ID
-			}
-			if hid.StarsID != "" {
-				prefixToFacility[hid.StarsID] = hid.ID
-			}
-			if hid.Prefix != "" {
-				prefixToFacility[hid.Prefix] = hid.ID
-			}
+	for _, hid := range sg.HandoffIDs {
+		if hid.ERAMPrefix != "" {
+			prefixToFacility[hid.ERAMPrefix] = hid.ID
+		}
+		if hid.SingleCharStarsID != "" {
+			prefixToFacility[hid.SingleCharStarsID] = hid.ID
+		}
+		if hid.TwoCharStarsID != "" {
+			prefixToFacility[hid.TwoCharStarsID] = hid.ID
+		}
+		if hid.StarsID != "" {
+			prefixToFacility[hid.StarsID] = hid.ID
+		}
+		if hid.Prefix != "" {
+			prefixToFacility[hid.Prefix] = hid.ID
 		}
 	}
 	// "C" always maps to the host ARTCC for TRACONs (center handoff prefix).
@@ -1097,11 +1089,7 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 			if ctrl, ok := positions[*s]; ok {
 				// Apply the same prefix that loadNeighborControllers used
 				// so the rewritten position matches the key in sg.ControlPositions.
-				var handoffIDs []sim.HandoffID
-				if sg.HandoffTopology != nil {
-					handoffIDs = sg.HandoffTopology.HandoffIDs
-				}
-				prefix := neighborPrefix(facility, handoffIDs)
+				prefix := neighborPrefix(facility, sg.HandoffIDs)
 				facilityId := prefix
 				if isARTCC(facility) {
 					facilityId = "C"
@@ -1708,12 +1696,8 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 
 		if aa.ReceivingFacility != "" {
 			resourcesFS := util.GetResourcesFS()
-			var handoffIDs []sim.HandoffID
-			if sg.HandoffTopology != nil {
-				handoffIDs = sg.HandoffTopology.HandoffIDs
-			}
 			validateCrossFacilityController(resourcesFS, aa.ReceivingFacility,
-				av.ControlPosition(aa.ReceivingController), handoffIDs, e)
+				av.ControlPosition(aa.ReceivingController), sg.HandoffIDs, e)
 		} else if _, ok := sg.ControlPositions[sim.TCP(aa.ReceivingController)]; !ok {
 			e.ErrorString("%s: controller unknown", aa.ReceivingController)
 		}
@@ -2242,13 +2226,12 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			if fc != nil {
 				s.ControlPositions = deep.MustCopy(fc.ControlPositions)
 				s.FacilityAdaptation = deep.MustCopy(fc.FacilityAdaptation)
-				s.HandoffTopology = fc.HandoffTopology
+				s.HandoffIDs = fc.HandoffIDs
 				s.FixPairs = fc.FixPairs
 
-				if fc.HandoffTopology != nil {
-					for _, neighbor := range fc.HandoffTopology.NeighboringFacilities {
-						loadNeighborControllers(extraResourcesFS, s, neighbor, fc.HandoffTopology.HandoffIDs, &extraE)
-					}
+				for _, neighbor := range fc.HandoffIDs {
+					neighbor := string(neighbor.ID)
+					loadNeighborControllers(extraResourcesFS, s, neighbor, fc.HandoffIDs, &extraE)
 				}
 			}
 
@@ -2326,7 +2309,7 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 
 			sg.ControlPositions = deep.MustCopy(fc.ControlPositions)
 			sg.FacilityAdaptation = deep.MustCopy(fc.FacilityAdaptation)
-			sg.HandoffTopology = fc.HandoffTopology
+			sg.HandoffIDs = fc.HandoffIDs
 			sg.FixPairs = fc.FixPairs
 
 			// Add missing airports referenced by altimeters and coordination
@@ -2364,10 +2347,9 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			}
 
 			// Load controllers from neighboring facilities.
-			if fc.HandoffTopology != nil {
-				for _, neighbor := range fc.HandoffTopology.NeighboringFacilities {
-					loadNeighborControllers(resourcesFS, sg, neighbor, fc.HandoffTopology.HandoffIDs, e)
-				}
+			for _, neighbor := range fc.HandoffIDs {
+				neighbor := string(neighbor.ID)
+				loadNeighborControllers(resourcesFS, sg, neighbor, fc.HandoffIDs, e)
 			}
 		}
 	}
@@ -2590,7 +2572,7 @@ func CreateNewSimConfiguration(catalog *ScenarioCatalog, scenarioGroup *scenario
 		Airspace:                scenarioGroup.Airspace,
 		ControllerAirspace:      scenario.Airspace,
 		VirtualControllers:      scenario.VirtualControllers,
-		HandoffTopology:         scenarioGroup.HandoffTopology,
+		HandoffIDs:              scenarioGroup.HandoffIDs,
 		FixPairs:                scenarioGroup.FixPairs,
 	}
 

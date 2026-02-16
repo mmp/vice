@@ -16,40 +16,30 @@
             "sector_id": "1B"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ABE",
-                "prefix": "3"
-            },
-            {
-                "id": "BGM",
-                "prefix": "4"
-            },
-            {
-                "id": "MDT",
-                "prefix": "5"
-            },
-            {
-                "id": "N90",
-                "prefix": "1"
-            },
-            {
-                "id": "ZBW",
-                "eram_prefix": "B"
-            },
-            {
-                "id": "ZNY",
-                "eram_prefix": "N"
-            }
-        ],
-        "neighboring_facilities": [
-            "ABE",
-            "BGM",
-            "MDT",
-            "N90",
-            "ZBW",
-            "ZNY"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ABE",
+            "prefix": "3"
+        },
+        {
+            "id": "BGM",
+            "prefix": "4"
+        },
+        {
+            "id": "MDT",
+            "prefix": "5"
+        },
+        {
+            "id": "N90",
+            "prefix": "1"
+        },
+        {
+            "id": "ZBW",
+            "eram_prefix": "B"
+        },
+        {
+            "id": "ZNY",
+            "eram_prefix": "N"
+        }
+    ]
 }

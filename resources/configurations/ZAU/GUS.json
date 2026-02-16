@@ -16,40 +16,30 @@
             "sector_id": "1Z"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "CMI",
-                "prefix": "5"
-            },
-            {
-                "id": "FWA",
-                "prefix": "2"
-            },
-            {
-                "id": "HUF",
-                "prefix": "4"
-            },
-            {
-                "id": "IND",
-                "prefix": "3"
-            },
-            {
-                "id": "SBN",
-                "prefix": "1"
-            },
-            {
-                "id": "ZID",
-                "eram_prefix": "I"
-            }
-        ],
-        "neighboring_facilities": [
-            "CMI",
-            "FWA",
-            "HUF",
-            "IND",
-            "SBN",
-            "ZID"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "CMI",
+            "prefix": "5"
+        },
+        {
+            "id": "FWA",
+            "prefix": "2"
+        },
+        {
+            "id": "HUF",
+            "prefix": "4"
+        },
+        {
+            "id": "IND",
+            "prefix": "3"
+        },
+        {
+            "id": "SBN",
+            "prefix": "1"
+        },
+        {
+            "id": "ZID",
+            "eram_prefix": "I"
+        }
+    ]
 }

@@ -31,29 +31,22 @@
             "sector_id": "1Z"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "FAT",
-                "prefix": "3"
-            },
-            {
-                "id": "NLC",
-                "prefix": "4"
-            },
-            {
-                "id": "O90",
-                "prefix": "1"
-            },
-            {
-                "id": "SUU",
-                "prefix": "2"
-            }
-        ],
-        "neighboring_facilities": [
-            "NLC",
-            "O90",
-            "SUU"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "FAT",
+            "prefix": "3"
+        },
+        {
+            "id": "NLC",
+            "prefix": "4"
+        },
+        {
+            "id": "O90",
+            "prefix": "1"
+        },
+        {
+            "id": "SUU",
+            "prefix": "2"
+        }
+    ]
 }

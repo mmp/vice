@@ -70,40 +70,30 @@
         ],
         "video_map_file": "videomaps/ZKC-videomaps.gob.zst"
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "FSM",
-                "prefix": "4"
-            },
-            {
-                "id": "RZC",
-                "prefix": "3"
-            },
-            {
-                "id": "SZL",
-                "prefix": "1"
-            },
-            {
-                "id": "T75",
-                "prefix": "2"
-            },
-            {
-                "id": "ZKC",
-                "eram_prefix": "K"
-            },
-            {
-                "id": "ZME",
-                "eram_prefix": "M"
-            }
-        ],
-        "neighboring_facilities": [
-            "FSM",
-            "RZC",
-            "SZL",
-            "T75",
-            "ZKC",
-            "ZME"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "FSM",
+            "prefix": "4"
+        },
+        {
+            "id": "RZC",
+            "prefix": "3"
+        },
+        {
+            "id": "SZL",
+            "prefix": "1"
+        },
+        {
+            "id": "T75",
+            "prefix": "2"
+        },
+        {
+            "id": "ZKC",
+            "eram_prefix": "K"
+        },
+        {
+            "id": "ZME",
+            "eram_prefix": "M"
+        }
+    ]
 }

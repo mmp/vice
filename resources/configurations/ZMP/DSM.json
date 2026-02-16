@@ -26,20 +26,14 @@
             "sector_id": "1U"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ALO",
-                "prefix": "1"
-            },
-            {
-                "id": "ZAU",
-                "eram_prefix": "G"
-            }
-        ],
-        "neighboring_facilities": [
-            "ALO",
-            "ZAU"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ALO",
+            "prefix": "1"
+        },
+        {
+            "id": "ZAU",
+            "eram_prefix": "G"
+        }
+    ]
 }

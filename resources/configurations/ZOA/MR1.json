@@ -21,15 +21,10 @@
             "sector_id": "1Z"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "O90",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "O90"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "O90",
+            "prefix": "1"
+        }
+    ]
 }

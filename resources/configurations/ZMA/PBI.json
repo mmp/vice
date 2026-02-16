@@ -46,30 +46,22 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "F11",
-                "prefix": "4"
-            },
-            {
-                "id": "MIA",
-                "prefix": "2"
-            },
-            {
-                "id": "ZJX",
-                "eram_prefix": "J"
-            },
-            {
-                "id": "ZMA",
-                "eram_prefix": "R"
-            }
-        ],
-        "neighboring_facilities": [
-            "F11",
-            "MIA",
-            "ZJX",
-            "ZMA"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "F11",
+            "prefix": "4"
+        },
+        {
+            "id": "MIA",
+            "prefix": "2"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "J"
+        },
+        {
+            "id": "ZMA",
+            "eram_prefix": "R"
+        }
+    ]
 }

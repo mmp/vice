@@ -16,25 +16,18 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "OZR",
-                "prefix": "2"
-            },
-            {
-                "id": "P31",
-                "prefix": "1"
-            },
-            {
-                "id": "PAM",
-                "prefix": "3"
-            }
-        ],
-        "neighboring_facilities": [
-            "OZR",
-            "P31",
-            "PAM"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "OZR",
+            "prefix": "2"
+        },
+        {
+            "id": "P31",
+            "prefix": "1"
+        },
+        {
+            "id": "PAM",
+            "prefix": "3"
+        }
+    ]
 }

@@ -150,35 +150,26 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "A80",
-                "prefix": "3"
-            },
-            {
-                "id": "CAE",
-                "prefix": "2"
-            },
-            {
-                "id": "GSP",
-                "prefix": "1"
-            },
-            {
-                "id": "ZJX",
-                "eram_prefix": "J"
-            },
-            {
-                "id": "ZTL",
-                "eram_prefix": "T"
-            }
-        ],
-        "neighboring_facilities": [
-            "A80",
-            "CAE",
-            "GSP",
-            "ZJX",
-            "ZTL"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "A80",
+            "prefix": "3"
+        },
+        {
+            "id": "CAE",
+            "prefix": "2"
+        },
+        {
+            "id": "GSP",
+            "prefix": "1"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "J"
+        },
+        {
+            "id": "ZTL",
+            "eram_prefix": "T"
+        }
+    ]
 }

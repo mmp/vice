@@ -7273,18 +7273,12 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   See <a href="#fe-stars-videomaps">STARS and Video Maps</a> for documentation about the items stored in this object.</td>
               </tr>
               <tr>
-                <td>"handoff_topology"</td>
-                <td>Object</td>
-                <td><p>Defines the relationships between this facility and its neighbors for handoff routing.
-                  Contains the following members:</p>
-                  <ul>
-                    <li>"handoff_ids": an array of objects, each identifying a neighboring facility and mapping it
-                      to short STARS identifiers used in handoff route specifications (e.g., <code>/ho1Z</code>).
-                      Each object is defined below.</li>
-                    <li>"neighboring_facilities": an array of strings identifying neighboring facility codes
-                      whose controllers are loaded and may participate in handoffs.</li>
-                  </ul>
-                  <p>Each entry in "handoff_ids" has the following members:</p>
+                <td>"handoff_ids"</td>
+                <td>Array</td>
+                <td><p>An array of objects identifying neighboring facilities and mapping them
+                  to short STARS identifiers used in handoff route specifications (e.g., <code>/ho1Z</code>).
+                  Controllers from each listed facility are loaded and may participate in handoffs.</p>
+                  <p>Each entry has the following members:</p>
                   <table class="table">
                   <thead>
                     <tr>

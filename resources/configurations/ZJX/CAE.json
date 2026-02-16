@@ -21,40 +21,30 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "AGS",
-                "prefix": "1"
-            },
-            {
-                "id": "CHS",
-                "prefix": "5"
-            },
-            {
-                "id": "CLT",
-                "prefix": "2"
-            },
-            {
-                "id": "GSP",
-                "prefix": "4"
-            },
-            {
-                "id": "SSC",
-                "prefix": "3"
-            },
-            {
-                "id": "ZTL",
-                "eram_prefix": "T"
-            }
-        ],
-        "neighboring_facilities": [
-            "AGS",
-            "CHS",
-            "CLT",
-            "GSP",
-            "SSC",
-            "ZTL"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "AGS",
+            "prefix": "1"
+        },
+        {
+            "id": "CHS",
+            "prefix": "5"
+        },
+        {
+            "id": "CLT",
+            "prefix": "2"
+        },
+        {
+            "id": "GSP",
+            "prefix": "4"
+        },
+        {
+            "id": "SSC",
+            "prefix": "3"
+        },
+        {
+            "id": "ZTL",
+            "eram_prefix": "T"
+        }
+    ]
 }

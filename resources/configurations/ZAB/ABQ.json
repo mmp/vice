@@ -109,15 +109,10 @@
         ],
         "video_map_file": "videomaps/ZAB-videomaps.gob.zst"
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ZAB",
-                "eram_prefix": "A"
-            }
-        ],
-        "neighboring_facilities": [
-            "ZAB"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ZAB",
+            "eram_prefix": "A"
+        }
+    ]
 }

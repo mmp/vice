@@ -157,96 +157,6 @@
             "sector_id": "99"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "BFL",
-                "single_char_stars_id": "A",
-                "stars_id": "AAA"
-            },
-            {
-                "id": "FAT",
-                "single_char_stars_id": "F",
-                "stars_id": "FFF"
-            },
-            {
-                "id": "JCF",
-                "single_char_stars_id": "J",
-                "stars_id": "JJJ"
-            },
-            {
-                "id": "MC1",
-                "single_char_stars_id": "M",
-                "stars_id": "MMM"
-            },
-            {
-                "id": "MR1",
-                "single_char_stars_id": "R",
-                "stars_id": "RRR"
-            },
-            {
-                "id": "NCT",
-                "single_char_stars_id": "Q",
-                "stars_id": "QQQ"
-            },
-            {
-                "id": "NFL",
-                "single_char_stars_id": "N",
-                "stars_id": "NNN"
-            },
-            {
-                "id": "NLC",
-                "single_char_stars_id": "E",
-                "stars_id": "EEE"
-            },
-            {
-                "id": "O90",
-                "single_char_stars_id": "O",
-                "stars_id": "OOO"
-            },
-            {
-                "id": "SBA",
-                "single_char_stars_id": "B",
-                "stars_id": "BBB"
-            },
-            {
-                "id": "SC1",
-                "single_char_stars_id": "K",
-                "stars_id": "SSS"
-            },
-            {
-                "id": "SUU",
-                "single_char_stars_id": "T",
-                "stars_id": "TTT"
-            },
-            {
-                "id": "ZLA",
-                "eram_prefix": "L"
-            },
-            {
-                "id": "ZLC",
-                "eram_prefix": "U"
-            }
-        ],
-        "neighboring_facilities": [
-            "BFL",
-            "FAT",
-            "JCF",
-            "MC1",
-            "MR1",
-            "NCT",
-            "NFL",
-            "NLC",
-            "O90",
-            "SBA",
-            "SC1",
-            "SUU",
-            "ZAK",
-            "ZLA",
-            "ZLC",
-            "ZSE"
-        ]
-    },
     "stars_config": {
         "coordination_fixes": {
             "OSI": [
@@ -544,5 +454,79 @@
                 }
             ]
         }
-    }
+    },
+    "handoff_ids": [
+        {
+            "id": "BFL",
+            "single_char_stars_id": "A",
+            "stars_id": "AAA"
+        },
+        {
+            "id": "FAT",
+            "single_char_stars_id": "F",
+            "stars_id": "FFF"
+        },
+        {
+            "id": "JCF",
+            "single_char_stars_id": "J",
+            "stars_id": "JJJ"
+        },
+        {
+            "id": "MC1",
+            "single_char_stars_id": "M",
+            "stars_id": "MMM"
+        },
+        {
+            "id": "MR1",
+            "single_char_stars_id": "R",
+            "stars_id": "RRR"
+        },
+        {
+            "id": "NCT",
+            "single_char_stars_id": "Q",
+            "stars_id": "QQQ"
+        },
+        {
+            "id": "NFL",
+            "single_char_stars_id": "N",
+            "stars_id": "NNN"
+        },
+        {
+            "id": "NLC",
+            "single_char_stars_id": "E",
+            "stars_id": "EEE"
+        },
+        {
+            "id": "O90",
+            "single_char_stars_id": "O",
+            "stars_id": "OOO"
+        },
+        {
+            "id": "SBA",
+            "single_char_stars_id": "B",
+            "stars_id": "BBB"
+        },
+        {
+            "id": "SC1",
+            "single_char_stars_id": "K",
+            "stars_id": "SSS"
+        },
+        {
+            "id": "SUU",
+            "single_char_stars_id": "T",
+            "stars_id": "TTT"
+        },
+        {
+            "id": "ZLA",
+            "eram_prefix": "L"
+        },
+        {
+            "id": "ZLC",
+            "eram_prefix": "U"
+        },
+        {
+            "id": "ZSE",
+            "eram_prefix": "S"
+        }
+    ]
 }

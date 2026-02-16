@@ -16,30 +16,22 @@
             "sector_id": "1Z"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "JST",
-                "prefix": "2"
-            },
-            {
-                "id": "PIT",
-                "prefix": "1"
-            },
-            {
-                "id": "ZDC",
-                "eram_prefix": "W"
-            },
-            {
-                "id": "ZID",
-                "eram_prefix": "I"
-            }
-        ],
-        "neighboring_facilities": [
-            "JST",
-            "PIT",
-            "ZDC",
-            "ZID"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "JST",
+            "prefix": "2"
+        },
+        {
+            "id": "PIT",
+            "prefix": "1"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "W"
+        },
+        {
+            "id": "ZID",
+            "eram_prefix": "I"
+        }
+    ]
 }

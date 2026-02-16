@@ -21,15 +21,10 @@
             "sector_id": "1W"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "SHV",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "SHV"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "SHV",
+            "prefix": "1"
+        }
+    ]
 }

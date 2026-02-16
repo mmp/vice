@@ -16,35 +16,26 @@
             "sector_id": "1W"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "GUS",
-                "prefix": "3"
-            },
-            {
-                "id": "HUF",
-                "prefix": "4"
-            },
-            {
-                "id": "T75",
-                "prefix": "1"
-            },
-            {
-                "id": "ZID",
-                "eram_prefix": "I"
-            },
-            {
-                "id": "ZKC",
-                "eram_prefix": "K"
-            }
-        ],
-        "neighboring_facilities": [
-            "GUS",
-            "HUF",
-            "T75",
-            "ZID",
-            "ZKC"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "GUS",
+            "prefix": "3"
+        },
+        {
+            "id": "HUF",
+            "prefix": "4"
+        },
+        {
+            "id": "T75",
+            "prefix": "1"
+        },
+        {
+            "id": "ZID",
+            "eram_prefix": "I"
+        },
+        {
+            "id": "ZKC",
+            "eram_prefix": "K"
+        }
+    ]
 }

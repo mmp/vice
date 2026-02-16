@@ -117,25 +117,18 @@
         ],
         "video_map_file": "videomaps/ZAU-videomaps.gob.zst"
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ALO",
-                "prefix": "1"
-            },
-            {
-                "id": "MLI",
-                "prefix": "2"
-            },
-            {
-                "id": "ZAU",
-                "eram_prefix": "G"
-            }
-        ],
-        "neighboring_facilities": [
-            "ALO",
-            "MLI",
-            "ZAU"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ALO",
+            "prefix": "1"
+        },
+        {
+            "id": "MLI",
+            "prefix": "2"
+        },
+        {
+            "id": "ZAU",
+            "eram_prefix": "G"
+        }
+    ]
 }

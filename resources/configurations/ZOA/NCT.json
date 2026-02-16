@@ -1618,50 +1618,38 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "FAT",
-                "prefix": "3"
-            },
-            {
-                "id": "FFA",
-                "prefix": "2"
-            },
-            {
-                "id": "NFL",
-                "prefix": "5"
-            },
-            {
-                "id": "NLC",
-                "prefix": "4"
-            },
-            {
-                "id": "O90",
-                "prefix": "9"
-            },
-            {
-                "id": "SUU",
-                "prefix": "1"
-            },
-            {
-                "id": "ZLA",
-                "eram_prefix": "L"
-            },
-            {
-                "id": "ZOA",
-                "eram_prefix": "O"
-            }
-        ],
-        "neighboring_facilities": [
-            "FAT",
-            "FFA",
-            "NFL",
-            "NLC",
-            "O90",
-            "SUU",
-            "ZLA",
-            "ZOA"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "FAT",
+            "prefix": "3"
+        },
+        {
+            "id": "FFA",
+            "prefix": "2"
+        },
+        {
+            "id": "NFL",
+            "prefix": "5"
+        },
+        {
+            "id": "NLC",
+            "prefix": "4"
+        },
+        {
+            "id": "O90",
+            "prefix": "9"
+        },
+        {
+            "id": "SUU",
+            "prefix": "1"
+        },
+        {
+            "id": "ZLA",
+            "eram_prefix": "L"
+        },
+        {
+            "id": "ZOA",
+            "eram_prefix": "O"
+        }
+    ]
 }

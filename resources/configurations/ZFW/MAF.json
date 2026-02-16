@@ -16,20 +16,14 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ABI",
-                "prefix": "1"
-            },
-            {
-                "id": "ZHU",
-                "eram_prefix": "H"
-            }
-        ],
-        "neighboring_facilities": [
-            "ABI",
-            "ZHU"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ABI",
+            "prefix": "1"
+        },
+        {
+            "id": "ZHU",
+            "eram_prefix": "H"
+        }
+    ]
 }

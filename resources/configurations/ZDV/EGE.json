@@ -6,15 +6,10 @@
             "sector_id": "4T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ZDV",
-                "eram_prefix": "D"
-            }
-        ],
-        "neighboring_facilities": [
-            "ZDV"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ZDV",
+            "eram_prefix": "D"
+        }
+    ]
 }

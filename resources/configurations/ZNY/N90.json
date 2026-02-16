@@ -2669,65 +2669,50 @@
             "priority": 99
         }
     ],
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ABE",
-                "prefix": "4"
-            },
-            {
-                "id": "ALB",
-                "prefix": "3"
-            },
-            {
-                "id": "AVP",
-                "prefix": "7"
-            },
-            {
-                "id": "BGM",
-                "prefix": "6"
-            },
-            {
-                "id": "PHL",
-                "prefix": "2"
-            },
-            {
-                "id": "PVD",
-                "prefix": "1"
-            },
-            {
-                "id": "WRI",
-                "prefix": "5"
-            },
-            {
-                "id": "Y90",
-                "prefix": "8"
-            },
-            {
-                "id": "ZBW",
-                "eram_prefix": "B"
-            },
-            {
-                "id": "ZDC",
-                "eram_prefix": "W"
-            },
-            {
-                "id": "ZNY",
-                "eram_prefix": "N"
-            }
-        ],
-        "neighboring_facilities": [
-            "ABE",
-            "ALB",
-            "AVP",
-            "BGM",
-            "PHL",
-            "PVD",
-            "WRI",
-            "Y90",
-            "ZBW",
-            "ZDC",
-            "ZNY"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ABE",
+            "prefix": "4"
+        },
+        {
+            "id": "ALB",
+            "prefix": "3"
+        },
+        {
+            "id": "AVP",
+            "prefix": "7"
+        },
+        {
+            "id": "BGM",
+            "prefix": "6"
+        },
+        {
+            "id": "PHL",
+            "prefix": "2"
+        },
+        {
+            "id": "PVD",
+            "prefix": "1"
+        },
+        {
+            "id": "WRI",
+            "prefix": "5"
+        },
+        {
+            "id": "Y90",
+            "prefix": "8"
+        },
+        {
+            "id": "ZBW",
+            "eram_prefix": "B"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "W"
+        },
+        {
+            "id": "ZNY",
+            "eram_prefix": "N"
+        }
+    ]
 }

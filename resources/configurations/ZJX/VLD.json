@@ -6,15 +6,10 @@
             "sector_id": "1V"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "TLH",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "TLH"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "TLH",
+            "prefix": "1"
+        }
+    ]
 }

@@ -250,35 +250,26 @@
         ],
         "video_map_file": "videomaps/PVD-videomaps.gob.zst"
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "A90",
-                "prefix": "2"
-            },
-            {
-                "id": "N90",
-                "prefix": "4"
-            },
-            {
-                "id": "Y90",
-                "prefix": "1"
-            },
-            {
-                "id": "ZBW",
-                "eram_prefix": "B"
-            },
-            {
-                "id": "ZNY",
-                "eram_prefix": "N"
-            }
-        ],
-        "neighboring_facilities": [
-            "A90",
-            "N90",
-            "Y90",
-            "ZBW",
-            "ZNY"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "A90",
+            "prefix": "2"
+        },
+        {
+            "id": "N90",
+            "prefix": "4"
+        },
+        {
+            "id": "Y90",
+            "prefix": "1"
+        },
+        {
+            "id": "ZBW",
+            "eram_prefix": "B"
+        },
+        {
+            "id": "ZNY",
+            "eram_prefix": "N"
+        }
+    ]
 }

@@ -16,50 +16,38 @@
             "sector_id": "2F"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "AZO",
-                "prefix": "1"
-            },
-            {
-                "id": "CMH",
-                "prefix": "3"
-            },
-            {
-                "id": "GUS",
-                "prefix": "5"
-            },
-            {
-                "id": "IND",
-                "prefix": "4"
-            },
-            {
-                "id": "SBN",
-                "prefix": "6"
-            },
-            {
-                "id": "TOL",
-                "prefix": "2"
-            },
-            {
-                "id": "ZID",
-                "eram_prefix": "I"
-            },
-            {
-                "id": "ZOB",
-                "eram_prefix": "C"
-            }
-        ],
-        "neighboring_facilities": [
-            "AZO",
-            "CMH",
-            "GUS",
-            "IND",
-            "SBN",
-            "TOL",
-            "ZID",
-            "ZOB"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "AZO",
+            "prefix": "1"
+        },
+        {
+            "id": "CMH",
+            "prefix": "3"
+        },
+        {
+            "id": "GUS",
+            "prefix": "5"
+        },
+        {
+            "id": "IND",
+            "prefix": "4"
+        },
+        {
+            "id": "SBN",
+            "prefix": "6"
+        },
+        {
+            "id": "TOL",
+            "prefix": "2"
+        },
+        {
+            "id": "ZID",
+            "eram_prefix": "I"
+        },
+        {
+            "id": "ZOB",
+            "eram_prefix": "C"
+        }
+    ]
 }

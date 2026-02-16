@@ -150,25 +150,18 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "CHS",
-                "prefix": "2"
-            },
-            {
-                "id": "NBC",
-                "prefix": "1"
-            },
-            {
-                "id": "ZJX",
-                "eram_prefix": "J"
-            }
-        ],
-        "neighboring_facilities": [
-            "CHS",
-            "NBC",
-            "ZJX"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "CHS",
+            "prefix": "2"
+        },
+        {
+            "id": "NBC",
+            "prefix": "1"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "J"
+        }
+    ]
 }

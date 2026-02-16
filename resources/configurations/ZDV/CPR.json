@@ -60,15 +60,10 @@
         ],
         "video_map_file": "videomaps/ZDV-videomaps.gob.zst"
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ZDV",
-                "eram_prefix": "D"
-            }
-        ],
-        "neighboring_facilities": [
-            "ZDV"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ZDV",
+            "eram_prefix": "D"
+        }
+    ]
 }

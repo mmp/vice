@@ -16,8 +16,5 @@
             "sector_id": "2T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [],
-        "neighboring_facilities": []
-    }
+    "handoff_ids": []
 }

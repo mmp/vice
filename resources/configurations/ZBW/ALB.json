@@ -97,35 +97,26 @@
         ],
         "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "N90",
-                "prefix": "3"
-            },
-            {
-                "id": "SYR",
-                "prefix": "2"
-            },
-            {
-                "id": "Y90",
-                "prefix": "1"
-            },
-            {
-                "id": "ZBW",
-                "eram_prefix": "B"
-            },
-            {
-                "id": "ZNY",
-                "eram_prefix": "N"
-            }
-        ],
-        "neighboring_facilities": [
-            "N90",
-            "SYR",
-            "Y90",
-            "ZBW",
-            "ZNY"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "N90",
+            "prefix": "3"
+        },
+        {
+            "id": "SYR",
+            "prefix": "2"
+        },
+        {
+            "id": "Y90",
+            "prefix": "1"
+        },
+        {
+            "id": "ZBW",
+            "eram_prefix": "B"
+        },
+        {
+            "id": "ZNY",
+            "eram_prefix": "N"
+        }
+    ]
 }

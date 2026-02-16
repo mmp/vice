@@ -26,8 +26,5 @@
             "sector_id": "1Z"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [],
-        "neighboring_facilities": []
-    }
+    "handoff_ids": []
 }

@@ -16,25 +16,18 @@
             "sector_id": "1W"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "GPT",
-                "prefix": "1"
-            },
-            {
-                "id": "P31",
-                "prefix": "2"
-            },
-            {
-                "id": "ZJX",
-                "eram_prefix": "J"
-            }
-        ],
-        "neighboring_facilities": [
-            "GPT",
-            "P31",
-            "ZJX"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "GPT",
+            "prefix": "1"
+        },
+        {
+            "id": "P31",
+            "prefix": "2"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "J"
+        }
+    ]
 }

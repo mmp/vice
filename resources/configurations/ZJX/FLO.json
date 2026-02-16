@@ -12,15 +12,10 @@
         }
     },
     "stars_config": {},
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ZJX",
-                "eram_prefix": "J"
-            }
-        ],
-        "neighboring_facilities": [
-            "ZJX"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ZJX",
+            "eram_prefix": "J"
+        }
+    ]
 }

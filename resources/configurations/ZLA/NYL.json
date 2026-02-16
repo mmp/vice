@@ -16,15 +16,10 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ZAB",
-                "eram_prefix": "A"
-            }
-        ],
-        "neighboring_facilities": [
-            "ZAB"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ZAB",
+            "eram_prefix": "A"
+        }
+    ]
 }

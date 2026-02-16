@@ -1237,25 +1237,18 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "COS",
-                "prefix": "1"
-            },
-            {
-                "id": "CYS",
-                "prefix": "2"
-            },
-            {
-                "id": "ZDV",
-                "eram_prefix": "D"
-            }
-        ],
-        "neighboring_facilities": [
-            "COS",
-            "CYS",
-            "ZDV"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "COS",
+            "prefix": "1"
+        },
+        {
+            "id": "CYS",
+            "prefix": "2"
+        },
+        {
+            "id": "ZDV",
+            "eram_prefix": "D"
+        }
+    ]
 }

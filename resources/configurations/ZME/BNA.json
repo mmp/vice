@@ -229,20 +229,14 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "HOP",
-                "prefix": "1"
-            },
-            {
-                "id": "ZME",
-                "eram_prefix": "M"
-            }
-        ],
-        "neighboring_facilities": [
-            "HOP",
-            "ZME"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "HOP",
+            "prefix": "1"
+        },
+        {
+            "id": "ZME",
+            "eram_prefix": "M"
+        }
+    ]
 }

@@ -36,24 +36,18 @@
             "sector_id": "1Z"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "NHK",
-                "prefix": "2"
-            },
-            {
-                "id": "NTU",
-                "prefix": "3"
-            },
-            {
-                "id": "PCT",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "NTU",
-            "PCT"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "NHK",
+            "prefix": "2"
+        },
+        {
+            "id": "NTU",
+            "prefix": "3"
+        },
+        {
+            "id": "PCT",
+            "prefix": "1"
+        }
+    ]
 }

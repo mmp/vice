@@ -21,15 +21,10 @@
             "sector_id": "2T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "P50",
-                "prefix": "8"
-            }
-        ],
-        "neighboring_facilities": [
-            "P50"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "P50",
+            "prefix": "8"
+        }
+    ]
 }

@@ -356,56 +356,42 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "CAE",
-                "prefix": "4"
-            },
-            {
-                "id": "FAY",
-                "prefix": "8"
-            },
-            {
-                "id": "FLO",
-                "prefix": "6"
-            },
-            {
-                "id": "GSO",
-                "prefix": "1"
-            },
-            {
-                "id": "GSP",
-                "prefix": "2"
-            },
-            {
-                "id": "SSC",
-                "prefix": "5"
-            },
-            {
-                "id": "ZDC",
-                "eram_prefix": "W"
-            },
-            {
-                "id": "ZJX",
-                "eram_prefix": "J"
-            },
-            {
-                "id": "ZTL",
-                "eram_prefix": "T"
-            }
-        ],
-        "neighboring_facilities": [
-            "CAE",
-            "FAY",
-            "FLO",
-            "GSO",
-            "GSP",
-            "RDU",
-            "SSC",
-            "ZDC",
-            "ZJX",
-            "ZTL"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "CAE",
+            "prefix": "4"
+        },
+        {
+            "id": "FAY",
+            "prefix": "8"
+        },
+        {
+            "id": "FLO",
+            "prefix": "6"
+        },
+        {
+            "id": "GSO",
+            "prefix": "1"
+        },
+        {
+            "id": "GSP",
+            "prefix": "2"
+        },
+        {
+            "id": "SSC",
+            "prefix": "5"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "W"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "J"
+        },
+        {
+            "id": "ZTL",
+            "eram_prefix": "T"
+        }
+    ]
 }

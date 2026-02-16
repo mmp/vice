@@ -349,20 +349,14 @@
             }
         ]
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "SUX",
-                "prefix": "1"
-            },
-            {
-                "id": "ZMP",
-                "eram_prefix": "P"
-            }
-        ],
-        "neighboring_facilities": [
-            "SUX",
-            "ZMP"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "SUX",
+            "prefix": "1"
+        },
+        {
+            "id": "ZMP",
+            "eram_prefix": "P"
+        }
+    ]
 }

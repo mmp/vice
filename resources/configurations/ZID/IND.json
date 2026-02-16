@@ -333,50 +333,38 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "CMH",
-                "prefix": "1"
-            },
-            {
-                "id": "CVG",
-                "prefix": "2"
-            },
-            {
-                "id": "FWA",
-                "prefix": "5"
-            },
-            {
-                "id": "GUS",
-                "prefix": "4"
-            },
-            {
-                "id": "HUF",
-                "prefix": "3"
-            },
-            {
-                "id": "SDF",
-                "prefix": "6"
-            },
-            {
-                "id": "ZAU",
-                "eram_prefix": "G"
-            },
-            {
-                "id": "ZID",
-                "eram_prefix": "I"
-            }
-        ],
-        "neighboring_facilities": [
-            "CMH",
-            "CVG",
-            "FWA",
-            "GUS",
-            "HUF",
-            "SDF",
-            "ZAU",
-            "ZID"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "CMH",
+            "prefix": "1"
+        },
+        {
+            "id": "CVG",
+            "prefix": "2"
+        },
+        {
+            "id": "FWA",
+            "prefix": "5"
+        },
+        {
+            "id": "GUS",
+            "prefix": "4"
+        },
+        {
+            "id": "HUF",
+            "prefix": "3"
+        },
+        {
+            "id": "SDF",
+            "prefix": "6"
+        },
+        {
+            "id": "ZAU",
+            "eram_prefix": "G"
+        },
+        {
+            "id": "ZID",
+            "eram_prefix": "I"
+        }
+    ]
 }

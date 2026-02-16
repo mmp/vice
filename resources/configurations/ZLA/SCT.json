@@ -1519,53 +1519,38 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "JCF",
-                "prefix": "1"
-            },
-            {
-                "id": "NFG",
-                "prefix": "5"
-            },
-            {
-                "id": "NTD",
-                "prefix": "6"
-            },
-            {
-                "id": "NUC",
-                "prefix": "7"
-            },
-            {
-                "id": "NYL",
-                "prefix": "3"
-            },
-            {
-                "id": "NZY",
-                "prefix": "4"
-            },
-            {
-                "id": "RIV",
-                "prefix": "2"
-            },
-            {
-                "id": "ZLA",
-                "eram_prefix": "L"
-            }
-        ],
-        "neighboring_facilities": [
-            "EDW",
-            "JCF",
-            "NFG",
-            "NKX",
-            "NTD",
-            "NUC",
-            "NYL",
-            "NZY",
-            "PMD",
-            "RIV",
-            "ZLA"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "JCF",
+            "prefix": "1"
+        },
+        {
+            "id": "NFG",
+            "prefix": "5"
+        },
+        {
+            "id": "NTD",
+            "prefix": "6"
+        },
+        {
+            "id": "NUC",
+            "prefix": "7"
+        },
+        {
+            "id": "NYL",
+            "prefix": "3"
+        },
+        {
+            "id": "NZY",
+            "prefix": "4"
+        },
+        {
+            "id": "RIV",
+            "prefix": "2"
+        },
+        {
+            "id": "ZLA",
+            "eram_prefix": "L"
+        }
+    ]
 }

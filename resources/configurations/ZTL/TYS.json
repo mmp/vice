@@ -12,15 +12,10 @@
         }
     },
     "stars_config": {},
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ZTL",
-                "eram_prefix": "T"
-            }
-        ],
-        "neighboring_facilities": [
-            "ZTL"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ZTL",
+            "eram_prefix": "T"
+        }
+    ]
 }

@@ -16,30 +16,22 @@
             "sector_id": "1W"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "BTR",
-                "prefix": "3"
-            },
-            {
-                "id": "LCH",
-                "prefix": "1"
-            },
-            {
-                "id": "MSY",
-                "prefix": "4"
-            },
-            {
-                "id": "POE",
-                "prefix": "2"
-            }
-        ],
-        "neighboring_facilities": [
-            "BTR",
-            "LCH",
-            "MSY",
-            "POE"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "BTR",
+            "prefix": "3"
+        },
+        {
+            "id": "LCH",
+            "prefix": "1"
+        },
+        {
+            "id": "MSY",
+            "prefix": "4"
+        },
+        {
+            "id": "POE",
+            "prefix": "2"
+        }
+    ]
 }

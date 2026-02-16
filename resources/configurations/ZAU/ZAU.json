@@ -127,183 +127,6 @@
             "sector_id": "99"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ALO",
-                "single_char_stars_id": "A",
-                "two_char_stars_id": "AL",
-                "stars_id": "ALT"
-            },
-            {
-                "id": "AZO",
-                "single_char_stars_id": "Z",
-                "two_char_stars_id": "AZ",
-                "stars_id": "AZT"
-            },
-            {
-                "id": "C90",
-                "single_char_stars_id": "O",
-                "two_char_stars_id": "OR",
-                "stars_id": "ORT"
-            },
-            {
-                "id": "CID",
-                "single_char_stars_id": "H",
-                "two_char_stars_id": "CI",
-                "stars_id": "CIT"
-            },
-            {
-                "id": "CMH",
-                "two_char_stars_id": "CO",
-                "stars_id": "CMH"
-            },
-            {
-                "id": "CMI",
-                "single_char_stars_id": "W",
-                "two_char_stars_id": "CM",
-                "stars_id": "CMT"
-            },
-            {
-                "id": "DSM",
-                "single_char_stars_id": "E",
-                "two_char_stars_id": "DS",
-                "stars_id": "DSM"
-            },
-            {
-                "id": "FWA",
-                "single_char_stars_id": "F",
-                "two_char_stars_id": "FW",
-                "stars_id": "FWT"
-            },
-            {
-                "id": "GRB",
-                "single_char_stars_id": "Y",
-                "two_char_stars_id": "GG",
-                "stars_id": "GRB"
-            },
-            {
-                "id": "GUS",
-                "single_char_stars_id": "U",
-                "two_char_stars_id": "GU",
-                "stars_id": "GUT"
-            },
-            {
-                "id": "HUF",
-                "two_char_stars_id": "TT",
-                "stars_id": "TTH"
-            },
-            {
-                "id": "IND",
-                "single_char_stars_id": "V",
-                "two_char_stars_id": "IN",
-                "stars_id": "IND"
-            },
-            {
-                "id": "LAN",
-                "single_char_stars_id": "L",
-                "two_char_stars_id": "LA",
-                "stars_id": "LAN"
-            },
-            {
-                "id": "MKE",
-                "single_char_stars_id": "M",
-                "two_char_stars_id": "MK",
-                "stars_id": "MKT"
-            },
-            {
-                "id": "MLI",
-                "single_char_stars_id": "Q",
-                "two_char_stars_id": "ML",
-                "stars_id": "MLT"
-            },
-            {
-                "id": "MSN",
-                "single_char_stars_id": "D",
-                "two_char_stars_id": "MS",
-                "stars_id": "MST"
-            },
-            {
-                "id": "RFD",
-                "single_char_stars_id": "R",
-                "two_char_stars_id": "RF",
-                "stars_id": "RFT"
-            },
-            {
-                "id": "RST",
-                "two_char_stars_id": "RS",
-                "stars_id": "RST"
-            },
-            {
-                "id": "SBN",
-                "single_char_stars_id": "S",
-                "two_char_stars_id": "SB",
-                "stars_id": "SBT"
-            },
-            {
-                "id": "T75",
-                "single_char_stars_id": "G",
-                "two_char_stars_id": "ST",
-                "stars_id": "STL"
-            },
-            {
-                "id": "TOL",
-                "single_char_stars_id": "T",
-                "two_char_stars_id": "TO",
-                "stars_id": "TOL"
-            },
-            {
-                "id": "VOK",
-                "single_char_stars_id": "X",
-                "two_char_stars_id": "VO",
-                "stars_id": "VOT"
-            },
-            {
-                "id": "ZID",
-                "eram_prefix": "I"
-            },
-            {
-                "id": "ZKC",
-                "eram_prefix": "K"
-            },
-            {
-                "id": "ZMP",
-                "eram_prefix": "P"
-            },
-            {
-                "id": "ZOB",
-                "eram_prefix": "C"
-            }
-        ],
-        "neighboring_facilities": [
-            "ALO",
-            "AZO",
-            "C90",
-            "CID",
-            "CMH",
-            "CMI",
-            "DSM",
-            "FWA",
-            "GRB",
-            "GUS",
-            "HUF",
-            "IND",
-            "LAN",
-            "MKE",
-            "MLI",
-            "MSN",
-            "RFD",
-            "RST",
-            "SBN",
-            "T75",
-            "TOL",
-            "VOK",
-            "ZID",
-            "ZKC",
-            "ZMP",
-            "ZOB"
-        ]
-    },
     "stars_config": {
         "coordination_fixes": {
             "NEWRK": [
@@ -468,5 +291,152 @@
                 }
             ]
         }
-    }
+    },
+    "handoff_ids": [
+        {
+            "id": "ALO",
+            "single_char_stars_id": "A",
+            "two_char_stars_id": "AL",
+            "stars_id": "ALT"
+        },
+        {
+            "id": "AZO",
+            "single_char_stars_id": "Z",
+            "two_char_stars_id": "AZ",
+            "stars_id": "AZT"
+        },
+        {
+            "id": "C90",
+            "single_char_stars_id": "O",
+            "two_char_stars_id": "OR",
+            "stars_id": "ORT"
+        },
+        {
+            "id": "CID",
+            "single_char_stars_id": "H",
+            "two_char_stars_id": "CI",
+            "stars_id": "CIT"
+        },
+        {
+            "id": "CMH",
+            "two_char_stars_id": "CO",
+            "stars_id": "CMH"
+        },
+        {
+            "id": "CMI",
+            "single_char_stars_id": "W",
+            "two_char_stars_id": "CM",
+            "stars_id": "CMT"
+        },
+        {
+            "id": "DSM",
+            "single_char_stars_id": "E",
+            "two_char_stars_id": "DS",
+            "stars_id": "DSM"
+        },
+        {
+            "id": "FWA",
+            "single_char_stars_id": "F",
+            "two_char_stars_id": "FW",
+            "stars_id": "FWT"
+        },
+        {
+            "id": "GRB",
+            "single_char_stars_id": "Y",
+            "two_char_stars_id": "GG",
+            "stars_id": "GRB"
+        },
+        {
+            "id": "GUS",
+            "single_char_stars_id": "U",
+            "two_char_stars_id": "GU",
+            "stars_id": "GUT"
+        },
+        {
+            "id": "HUF",
+            "two_char_stars_id": "TT",
+            "stars_id": "TTH"
+        },
+        {
+            "id": "IND",
+            "single_char_stars_id": "V",
+            "two_char_stars_id": "IN",
+            "stars_id": "IND"
+        },
+        {
+            "id": "LAN",
+            "single_char_stars_id": "L",
+            "two_char_stars_id": "LA",
+            "stars_id": "LAN"
+        },
+        {
+            "id": "MKE",
+            "single_char_stars_id": "M",
+            "two_char_stars_id": "MK",
+            "stars_id": "MKT"
+        },
+        {
+            "id": "MLI",
+            "single_char_stars_id": "Q",
+            "two_char_stars_id": "ML",
+            "stars_id": "MLT"
+        },
+        {
+            "id": "MSN",
+            "single_char_stars_id": "D",
+            "two_char_stars_id": "MS",
+            "stars_id": "MST"
+        },
+        {
+            "id": "RFD",
+            "single_char_stars_id": "R",
+            "two_char_stars_id": "RF",
+            "stars_id": "RFT"
+        },
+        {
+            "id": "RST",
+            "two_char_stars_id": "RS",
+            "stars_id": "RST"
+        },
+        {
+            "id": "SBN",
+            "single_char_stars_id": "S",
+            "two_char_stars_id": "SB",
+            "stars_id": "SBT"
+        },
+        {
+            "id": "T75",
+            "single_char_stars_id": "G",
+            "two_char_stars_id": "ST",
+            "stars_id": "STL"
+        },
+        {
+            "id": "TOL",
+            "single_char_stars_id": "T",
+            "two_char_stars_id": "TO",
+            "stars_id": "TOL"
+        },
+        {
+            "id": "VOK",
+            "single_char_stars_id": "X",
+            "two_char_stars_id": "VO",
+            "stars_id": "VOT"
+        },
+        {
+            "id": "ZID",
+            "eram_prefix": "I"
+        },
+        {
+            "id": "ZKC",
+            "eram_prefix": "K"
+        },
+        {
+            "id": "ZMP",
+            "eram_prefix": "P"
+        },
+        {
+            "id": "ZOB",
+            "eram_prefix": "C"
+        }
+    ]
 }

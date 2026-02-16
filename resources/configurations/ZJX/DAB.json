@@ -447,25 +447,18 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "F11",
-                "prefix": "2"
-            },
-            {
-                "id": "JAX",
-                "prefix": "1"
-            },
-            {
-                "id": "ZJX",
-                "eram_prefix": "J"
-            }
-        ],
-        "neighboring_facilities": [
-            "F11",
-            "JAX",
-            "ZJX"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "F11",
+            "prefix": "2"
+        },
+        {
+            "id": "JAX",
+            "prefix": "1"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "J"
+        }
+    ]
 }

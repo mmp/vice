@@ -260,10 +260,10 @@
             }
         ]
     },
-    "handoff_topology": {
-        "handoff_ids": [],
-        "neighboring_facilities": [
-            "ZSE"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ZSE",
+            "eram_prefix": "S"
+        }
+    ]
 }

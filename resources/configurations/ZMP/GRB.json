@@ -21,20 +21,14 @@
             "sector_id": "1X"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "MKE",
-                "prefix": "1"
-            },
-            {
-                "id": "ZAU",
-                "eram_prefix": "G"
-            }
-        ],
-        "neighboring_facilities": [
-            "MKE",
-            "ZAU"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "MKE",
+            "prefix": "1"
+        },
+        {
+            "id": "ZAU",
+            "eram_prefix": "G"
+        }
+    ]
 }

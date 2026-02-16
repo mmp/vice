@@ -16,15 +16,10 @@
             "sector_id": "1W"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "MAF",
-                "prefix": "1"
-            }
-        ],
-        "neighboring_facilities": [
-            "MAF"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "MAF",
+            "prefix": "1"
+        }
+    ]
 }

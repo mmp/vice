@@ -183,35 +183,26 @@
             }
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "CKB",
-                "prefix": "3"
-            },
-            {
-                "id": "CLE",
-                "prefix": "4"
-            },
-            {
-                "id": "JST",
-                "prefix": "2"
-            },
-            {
-                "id": "YNG",
-                "prefix": "1"
-            },
-            {
-                "id": "ZOB",
-                "eram_prefix": "C"
-            }
-        ],
-        "neighboring_facilities": [
-            "CKB",
-            "CLE",
-            "JST",
-            "YNG",
-            "ZOB"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "CKB",
+            "prefix": "3"
+        },
+        {
+            "id": "CLE",
+            "prefix": "4"
+        },
+        {
+            "id": "JST",
+            "prefix": "2"
+        },
+        {
+            "id": "YNG",
+            "prefix": "1"
+        },
+        {
+            "id": "ZOB",
+            "eram_prefix": "C"
+        }
+    ]
 }

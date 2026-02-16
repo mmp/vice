@@ -585,25 +585,18 @@
             }
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "HST",
-                "prefix": "1"
-            },
-            {
-                "id": "PBI",
-                "prefix": "2"
-            },
-            {
-                "id": "ZMA",
-                "eram_prefix": "R"
-            }
-        ],
-        "neighboring_facilities": [
-            "HST",
-            "PBI",
-            "ZMA"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "HST",
+            "prefix": "1"
+        },
+        {
+            "id": "PBI",
+            "prefix": "2"
+        },
+        {
+            "id": "ZMA",
+            "eram_prefix": "R"
+        }
+    ]
 }

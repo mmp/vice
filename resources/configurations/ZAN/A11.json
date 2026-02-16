@@ -122,10 +122,5 @@
             }
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [],
-        "neighboring_facilities": [
-            "ZAN"
-        ]
-    }
+    "handoff_ids": []
 }

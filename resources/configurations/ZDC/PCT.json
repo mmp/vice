@@ -1136,60 +1136,46 @@
             }
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "DOV",
-                "prefix": "4"
-            },
-            {
-                "id": "JST",
-                "prefix": "7"
-            },
-            {
-                "id": "MDT",
-                "prefix": "6"
-            },
-            {
-                "id": "NHK",
-                "prefix": "2"
-            },
-            {
-                "id": "ORF",
-                "prefix": "1"
-            },
-            {
-                "id": "PHL",
-                "prefix": "5"
-            },
-            {
-                "id": "ROA",
-                "prefix": "3"
-            },
-            {
-                "id": "ZDC",
-                "eram_prefix": "W"
-            },
-            {
-                "id": "ZNY",
-                "eram_prefix": "N"
-            },
-            {
-                "id": "ZOB",
-                "eram_prefix": "C"
-            }
-        ],
-        "neighboring_facilities": [
-            "DOV",
-            "JST",
-            "MDT",
-            "NHK",
-            "ORF",
-            "PHL",
-            "ROA",
-            "ZDC",
-            "ZNY",
-            "ZOB"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "DOV",
+            "prefix": "4"
+        },
+        {
+            "id": "JST",
+            "prefix": "7"
+        },
+        {
+            "id": "MDT",
+            "prefix": "6"
+        },
+        {
+            "id": "NHK",
+            "prefix": "2"
+        },
+        {
+            "id": "ORF",
+            "prefix": "1"
+        },
+        {
+            "id": "PHL",
+            "prefix": "5"
+        },
+        {
+            "id": "ROA",
+            "prefix": "3"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "W"
+        },
+        {
+            "id": "ZNY",
+            "eram_prefix": "N"
+        },
+        {
+            "id": "ZOB",
+            "eram_prefix": "C"
+        }
+    ]
 }

@@ -155,35 +155,26 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "GSP",
-                "prefix": "1"
-            },
-            {
-                "id": "TRI",
-                "prefix": "2"
-            },
-            {
-                "id": "TYS",
-                "prefix": "3"
-            },
-            {
-                "id": "ZID",
-                "eram_prefix": "I"
-            },
-            {
-                "id": "ZTL",
-                "eram_prefix": "T"
-            }
-        ],
-        "neighboring_facilities": [
-            "GSP",
-            "TRI",
-            "TYS",
-            "ZID",
-            "ZTL"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "GSP",
+            "prefix": "1"
+        },
+        {
+            "id": "TRI",
+            "prefix": "2"
+        },
+        {
+            "id": "TYS",
+            "prefix": "3"
+        },
+        {
+            "id": "ZID",
+            "eram_prefix": "I"
+        },
+        {
+            "id": "ZTL",
+            "eram_prefix": "T"
+        }
+    ]
 }

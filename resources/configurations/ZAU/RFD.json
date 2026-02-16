@@ -22,15 +22,10 @@
         }
     },
     "stars_config": {},
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ZAU",
-                "eram_prefix": "G"
-            }
-        ],
-        "neighboring_facilities": [
-            "ZAU"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ZAU",
+            "eram_prefix": "G"
+        }
+    ]
 }

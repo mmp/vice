@@ -11,25 +11,18 @@
             "sector_id": "1T"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "HSV",
-                "prefix": "2"
-            },
-            {
-                "id": "TYS",
-                "prefix": "1"
-            },
-            {
-                "id": "ZME",
-                "eram_prefix": "M"
-            }
-        ],
-        "neighboring_facilities": [
-            "HSV",
-            "TYS",
-            "ZME"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "HSV",
+            "prefix": "2"
+        },
+        {
+            "id": "TYS",
+            "prefix": "1"
+        },
+        {
+            "id": "ZME",
+            "eram_prefix": "M"
+        }
+    ]
 }

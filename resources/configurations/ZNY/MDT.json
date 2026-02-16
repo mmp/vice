@@ -422,50 +422,38 @@
             ]
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "ABE",
-                "prefix": "2"
-            },
-            {
-                "id": "AVP",
-                "prefix": "1"
-            },
-            {
-                "id": "JST",
-                "prefix": "7"
-            },
-            {
-                "id": "PCT",
-                "prefix": "6"
-            },
-            {
-                "id": "PHL",
-                "prefix": "4"
-            },
-            {
-                "id": "ZDC",
-                "eram_prefix": "W"
-            },
-            {
-                "id": "ZNY",
-                "eram_prefix": "N"
-            },
-            {
-                "id": "ZOB",
-                "eram_prefix": "C"
-            }
-        ],
-        "neighboring_facilities": [
-            "ABE",
-            "AVP",
-            "JST",
-            "PCT",
-            "PHL",
-            "ZDC",
-            "ZNY",
-            "ZOB"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "ABE",
+            "prefix": "2"
+        },
+        {
+            "id": "AVP",
+            "prefix": "1"
+        },
+        {
+            "id": "JST",
+            "prefix": "7"
+        },
+        {
+            "id": "PCT",
+            "prefix": "6"
+        },
+        {
+            "id": "PHL",
+            "prefix": "4"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "W"
+        },
+        {
+            "id": "ZNY",
+            "eram_prefix": "N"
+        },
+        {
+            "id": "ZOB",
+            "eram_prefix": "C"
+        }
+    ]
 }

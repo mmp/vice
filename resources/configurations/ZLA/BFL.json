@@ -21,30 +21,22 @@
             "sector_id": "1S"
         }
     },
-    "handoff_topology": {
-        "handoff_ids": [
-            {
-                "id": "FAT",
-                "prefix": "2"
-            },
-            {
-                "id": "JCF",
-                "prefix": "1"
-            },
-            {
-                "id": "NLC",
-                "prefix": "3"
-            },
-            {
-                "id": "ZOA",
-                "eram_prefix": "O"
-            }
-        ],
-        "neighboring_facilities": [
-            "FAT",
-            "JCF",
-            "NLC",
-            "ZOA"
-        ]
-    }
+    "handoff_ids": [
+        {
+            "id": "FAT",
+            "prefix": "2"
+        },
+        {
+            "id": "JCF",
+            "prefix": "1"
+        },
+        {
+            "id": "NLC",
+            "prefix": "3"
+        },
+        {
+            "id": "ZOA",
+            "eram_prefix": "O"
+        }
+    ]
 }
