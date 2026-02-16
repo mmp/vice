@@ -18,6 +18,7 @@ const UnsetSTARSListIndex = 0
 type ERAMComputer struct {
 	SquawkCodePool *av.EnrouteSquawkCodePool
 	Identifier     string
+	Adaptation     av.ERAMAdaptation
 }
 
 type STARSComputer struct {
@@ -29,6 +30,7 @@ type STARSComputer struct {
 
 func makeERAMComputer(fac string, loc *av.LocalSquawkCodePool) *ERAMComputer {
 	ec := &ERAMComputer{
+		Adaptation:     av.DB.ERAMAdaptations[fac],
 		SquawkCodePool: av.MakeEnrouteSquawkCodePool(loc),
 		Identifier:     fac,
 	}

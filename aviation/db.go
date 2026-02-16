@@ -13,9 +13,11 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
+	"io/fs"
 	"maps"
 	"net/http"
 	"os"
+	"path"
 	"slices"
 	"strconv"
 	"strings"
@@ -49,6 +51,7 @@ type StaticDatabase struct {
 	ARTCCs              map[string]ARTCC
 	TRACONs             map[string]TRACON
 	MVAs                map[string][]MVA // TRACON -> MVAs
+	ERAMAdaptations     map[string]ERAMAdaptation
 	BravoAirspace       map[string][]AirspaceVolume
 	CharlieAirspace     map[string][]AirspaceVolume
 	DeltaAirspace       map[string][]AirspaceVolume
@@ -98,6 +101,11 @@ type Navaid struct {
 type Fix struct {
 	Id       string
 	Location math.Point2LL
+}
+
+type ERAMAdaptation struct { // add more later
+	ARTCC             string                     // not in JSON
+	CoordinationFixes map[string]AdaptationFixes `json:"coordination_fixes"`
 }
 
 const (
@@ -306,6 +314,7 @@ func InitDB() {
 	wg.Go(func() { db.MagneticGrid = parseMagneticGrid() })
 	wg.Go(func() { db.ARTCCs, db.TRACONs = parseARTCCsAndTRACONs() })
 	wg.Go(func() { db.MVAs = parseMVAs() })
+	wg.Go(func() { db.ERAMAdaptations = parseAdaptations() })
 	wg.Go(func() {
 		db.BravoAirspace = parseAirspace("bravo-airspace.json.zst")
 		db.CharlieAirspace = parseAirspace("charlie-airspace.json.zst")
@@ -975,6 +984,59 @@ func parseARTCCsAndTRACONs() (map[string]ARTCC, map[string]TRACON) {
 	}
 
 	return artccs, tracons
+}
+
+func parseAdaptations() map[string]ERAMAdaptation {
+	adaptations := make(map[string]ERAMAdaptation)
+
+	resourcesFS := util.GetResourcesFS()
+	entries, err := fs.ReadDir(resourcesFS, "configurations")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "configurations directory: %v\n", err)
+		os.Exit(1)
+	}
+
+	type artccConfig struct {
+		StarsConfig struct {
+			CoordinationFixes map[string]AdaptationFixes `json:"coordination_fixes"`
+		} `json:"stars_config"`
+	}
+
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			continue
+		}
+		artcc := entry.Name()
+		if len(artcc) != 3 || artcc[0] != 'Z' {
+			continue
+		}
+
+		configPath := path.Join("configurations", artcc, artcc+".json")
+		r := util.LoadResource(configPath)
+
+		var config artccConfig
+		if err := util.UnmarshalJSON(r, &config); err != nil {
+			r.Close()
+			fmt.Fprintf(os.Stderr, "%s: %v\n", configPath, err)
+			os.Exit(1)
+		}
+		r.Close()
+
+		adapt := ERAMAdaptation{
+			ARTCC:             artcc,
+			CoordinationFixes: config.StarsConfig.CoordinationFixes,
+		}
+
+		for fix, fixes := range adapt.CoordinationFixes {
+			for i := range fixes {
+				fixes[i].Name = fix
+			}
+		}
+
+		adaptations[artcc] = adapt
+	}
+
+	return adaptations
 }
 
 func parseAirspace(filename string) map[string][]AirspaceVolume {
