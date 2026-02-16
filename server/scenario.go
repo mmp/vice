@@ -838,35 +838,35 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 		// Validate cross-facility initial_controller references.
 		resourcesFS := util.GetResourcesFS()
 		handoffIDs := sg.HandoffIDs
-		for i, ar := range flow.Arrivals {
+		for _, ar := range flow.Arrivals {
 			if ar.InitialFacility != "" && ar.InitialController != "" {
-				e.Push("Arrival " + strconv.Itoa(i))
+				e.Push("Arrival " + name)
 				validateCrossFacilityController(resourcesFS, ar.InitialFacility, ar.InitialController, handoffIDs, e)
 				e.Pop()
 			}
 		}
-		for i, of := range flow.Overflights {
+		for _, of := range flow.Overflights {
 			if of.InitialFacility != "" && of.InitialController != "" {
-				e.Push("Overflight " + strconv.Itoa(i))
+				e.Push("Overflight " + name)
 				validateCrossFacilityController(resourcesFS, of.InitialFacility, of.InitialController, handoffIDs, e)
 				e.Pop()
 			}
 		}
 
 		// Validate cross-facility handoff controllers in waypoints.
-		for i, ar := range flow.Arrivals {
+		for _, ar := range flow.Arrivals {
 			for _, wp := range ar.Waypoints {
 				if wp.HandoffControllerFacility != "" && wp.HandoffController != "" {
-					e.Push("Arrival " + strconv.Itoa(i))
+					e.Push("Arrival " + name)
 					validateCrossFacilityController(resourcesFS, wp.HandoffControllerFacility, wp.HandoffController, handoffIDs, e)
 					e.Pop()
 				}
 			}
 		}
-		for i, of := range flow.Overflights {
+		for _, of := range flow.Overflights {
 			for _, wp := range of.Waypoints {
 				if wp.HandoffControllerFacility != "" && wp.HandoffController != "" {
-					e.Push("Overflight " + strconv.Itoa(i))
+					e.Push("Overflight " + name)
 					validateCrossFacilityController(resourcesFS, wp.HandoffControllerFacility, wp.HandoffController, handoffIDs, e)
 					e.Pop()
 				}
