@@ -18,13 +18,19 @@ const (
 	MenuClickTertiary
 )
 
-// ERAMMenuItem describes a single static row in the menu.
+// ERAMMenuItem describes a single row in the menu, or a scrollable list section if SubRows is set.
 type ERAMMenuItem struct {
 	Label    string
 	BgColor  renderer.RGB
 	Color    renderer.RGB
 	Centered bool
 	OnClick  func(clickType ERAMMenuClickType) bool // return true = close menu
+
+	// If SubRows is non-nil, this row renders as a scrollable list instead of a single text row.
+	SubRows     []ERAMScrollItem
+	VisibleRows int                                          // Number of visible sub-rows; 0 = show all
+	ScrollState *ERAMScrollState                             // Required if SubRows is non-nil
+	OnSelect    func(index int, clickType ERAMMenuClickType) // Called when a sub-row is clicked
 }
 
 // ERAMScrollState is caller-owned persistent state for a scrollable list.
@@ -39,14 +45,6 @@ type ERAMScrollItem struct {
 	Color renderer.RGB
 }
 
-// ERAMScrollConfig configures an optional scrollable list section.
-type ERAMScrollConfig struct {
-	Items       []ERAMScrollItem
-	VisibleRows int
-	BgColor     renderer.RGB
-	OnSelect    func(index int, clickType ERAMMenuClickType)
-}
-
 // ERAMMenuConfig holds the full configuration for a menu drawn by DrawERAMMenu.
 type ERAMMenuConfig struct {
 	Title       string
@@ -57,8 +55,6 @@ type ERAMMenuConfig struct {
 	Font        *renderer.Font // nil = ep.ERAMToolbarFont()
 	ItemHeight  float32        // 0 = default 18px
 	Rows        []ERAMMenuItem
-	Scroll      *ERAMScrollConfig // optional
-	ScrollState *ERAMScrollState  // required if Scroll != nil
 
 	ShowBorder  bool
 	BorderColor renderer.RGB
@@ -225,163 +221,58 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 		cursor = rp3
 	}
 
-	// Static rows
+	// Rows (static rows and scroll sections)
 	isFirstRow := true
 	result.RowExtents = make([]math.Extent2D, len(cfg.Rows))
 
 	for i, item := range cfg.Rows {
-		rp0 := cursor
-		rp1 := math.Add2f(cursor, [2]float32{width, 0})
-		rp2 := math.Add2f(rp1, [2]float32{0, -itemH})
-		rp3 := math.Add2f(rp0, [2]float32{0, -itemH})
-		trid.AddQuad(rp0, rp1, rp2, rp3, item.BgColor)
-
-		style := renderer.TextStyle{Font: font, Color: item.Color}
-		if item.Centered {
-			centerX := rp0[0] + width/2
-			centerY := rp0[1] - itemH/2
-			td.AddTextCentered(item.Label, [2]float32{centerX, centerY}, style)
+		if item.SubRows != nil {
+			// Scrollable list section
+			cursor = ep.drawScrollSection(cursor, width, itemH, font, &cfg.Rows[i], trid, ld, td, mouse, &result.RowExtents[i])
 		} else {
-			td.AddText(item.Label, math.Add2f(rp0, [2]float32{4, -itemH + 12}), style)
-		}
+			// Normal static row
+			rp0 := cursor
+			rp1 := math.Add2f(cursor, [2]float32{width, 0})
+			rp2 := math.Add2f(rp1, [2]float32{0, -itemH})
+			rp3 := math.Add2f(rp0, [2]float32{0, -itemH})
+			trid.AddQuad(rp0, rp1, rp2, rp3, item.BgColor)
 
-		cursor = rp3
-		extent := math.Extent2D{P0: rp3, P1: rp1}
-		result.RowExtents[i] = extent
-
-		// Row hover outlines (same pattern as existing CRR menu)
-		dimColor := eramGray.Scale(.25)
-		brightColor := eramGray.Scale(.8)
-		hovered := mouse != nil && extent.Inside(mouse.Pos)
-
-		if hovered {
-			ld.AddLine(rp0, rp1, brightColor)
-			ld.AddLine(rp3, rp2, brightColor)
-			ld.AddLine(rp0, rp3, brightColor)
-			ld.AddLine(rp1, rp2, brightColor)
-		} else {
-			if isFirstRow {
-				ld.AddLine(rp0, rp1, dimColor)
+			style := renderer.TextStyle{Font: font, Color: item.Color}
+			if item.Centered {
+				centerX := rp0[0] + width/2
+				centerY := rp0[1] - itemH/2
+				td.AddTextCentered(item.Label, [2]float32{centerX, centerY}, style)
+			} else {
+				td.AddText(item.Label, math.Add2f(rp0, [2]float32{4, -itemH + 12}), style)
 			}
-			ld.AddLine(rp3, rp2, dimColor)
-		}
 
+			cursor = rp3
+			extent := math.Extent2D{P0: rp3, P1: rp1}
+			result.RowExtents[i] = extent
+
+			// Row hover outlines
+			dimColor := eramGray.Scale(.25)
+			brightColor := eramGray.Scale(.8)
+			hovered := mouse != nil && extent.Inside(mouse.Pos)
+
+			if hovered {
+				ld.AddLine(rp0, rp1, brightColor)
+				ld.AddLine(rp3, rp2, brightColor)
+				ld.AddLine(rp0, rp3, brightColor)
+				ld.AddLine(rp1, rp2, brightColor)
+			} else {
+				if isFirstRow {
+					ld.AddLine(rp0, rp1, dimColor)
+				}
+				ld.AddLine(rp3, rp2, dimColor)
+			}
+		}
 		isFirstRow = false
 	}
 
 	// Custom content
 	if cfg.CustomContent != nil {
 		cursor = cfg.CustomContent(cursor, width, trid, ld, td, mouse)
-	}
-
-	// Scrollable list
-	if cfg.Scroll != nil && cfg.ScrollState != nil {
-		sc := cfg.Scroll
-		ss := cfg.ScrollState
-		visRows := sc.VisibleRows
-		if visRows <= 0 {
-			visRows = len(sc.Items)
-		}
-		scrollH := float32(visRows) * itemH
-		arrowW := float32(16)
-
-		// Background
-		bgP0 := cursor
-		bgP1 := math.Add2f(bgP0, [2]float32{width, 0})
-		bgP2 := math.Add2f(bgP1, [2]float32{0, -scrollH})
-		bgP3 := math.Add2f(bgP0, [2]float32{0, -scrollH})
-		trid.AddQuad(bgP0, bgP1, bgP2, bgP3, sc.BgColor)
-
-		scrollExtent := math.Extent2D{P0: bgP3, P1: bgP1}
-
-		// Draw visible items
-		for vi := 0; vi < visRows; vi++ {
-			idx := ss.Offset + vi
-			if idx >= len(sc.Items) {
-				break
-			}
-			item := sc.Items[idx]
-			y := cursor[1] - float32(vi)*itemH
-
-			// Highlight selected
-			if idx == ss.SelectedIdx {
-				sp0 := [2]float32{cursor[0], y}
-				sp1 := [2]float32{cursor[0] + width - arrowW, y}
-				sp2 := [2]float32{sp1[0], y - itemH}
-				sp3 := [2]float32{cursor[0], y - itemH}
-				trid.AddQuad(sp0, sp1, sp2, sp3, renderer.RGB{R: .3, G: .3, B: .6})
-			}
-
-			style := renderer.TextStyle{Font: font, Color: item.Color}
-			td.AddText(item.Label, math.Add2f([2]float32{cursor[0], y}, [2]float32{4, -itemH + 12}), style)
-		}
-
-		// Scroll arrows (right side)
-		canScrollUp := ss.Offset > 0
-		canScrollDown := ss.Offset+visRows < len(sc.Items)
-		arrowColor := renderer.RGB{R: .7, G: .7, B: .7}
-		dimArrowColor := renderer.RGB{R: .3, G: .3, B: .3}
-
-		upCenter := [2]float32{cursor[0] + width - arrowW/2, cursor[1] - scrollH/4}
-		downCenter := [2]float32{cursor[0] + width - arrowW/2, cursor[1] - 3*scrollH/4}
-
-		upColor := dimArrowColor
-		if canScrollUp {
-			upColor = arrowColor
-		}
-		downColor := dimArrowColor
-		if canScrollDown {
-			downColor = arrowColor
-		}
-
-		drawUpTriangle(trid, upCenter, 6, upColor)
-		drawDownTriangle(trid, downCenter, 6, downColor)
-
-		// Arrow click extents
-		upExtent := math.Extent2D{
-			P0: [2]float32{cursor[0] + width - arrowW, cursor[1] - scrollH/2},
-			P1: [2]float32{cursor[0] + width, cursor[1]},
-		}
-		downExtent := math.Extent2D{
-			P0: [2]float32{cursor[0] + width - arrowW, cursor[1] - scrollH},
-			P1: [2]float32{cursor[0] + width, cursor[1] - scrollH/2},
-		}
-
-		// Mouse wheel scrolling
-		if mouse != nil && scrollExtent.Inside(mouse.Pos) {
-			if mouse.Wheel[1] > 0 && canScrollUp {
-				ss.Offset--
-			} else if mouse.Wheel[1] < 0 && canScrollDown {
-				ss.Offset++
-			}
-		}
-
-		// Click handling for scroll
-		if ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
-			clickType := MenuClickPrimary
-			if ep.mouseTertiaryClicked(mouse) {
-				clickType = MenuClickTertiary
-			}
-
-			if mouse != nil && upExtent.Inside(mouse.Pos) && canScrollUp {
-				ss.Offset--
-			} else if mouse != nil && downExtent.Inside(mouse.Pos) && canScrollDown {
-				ss.Offset++
-			} else if mouse != nil && scrollExtent.Inside(mouse.Pos) {
-				// Determine which item was clicked
-				relY := cursor[1] - mouse.Pos[1]
-				clickedVi := int(relY / itemH)
-				clickedIdx := ss.Offset + clickedVi
-				if clickedIdx >= 0 && clickedIdx < len(sc.Items) {
-					ss.SelectedIdx = clickedIdx
-					if sc.OnSelect != nil {
-						sc.OnSelect(clickedIdx, clickType)
-					}
-				}
-			}
-		}
-
-		cursor = bgP3
 	}
 
 	// Border
@@ -414,13 +305,16 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 		}
 	}
 
-	// Row click handling
+	// Row click handling (skip scroll rows - they handle their own clicks)
 	if ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
 		clickType := MenuClickPrimary
 		if ep.mouseTertiaryClicked(mouse) {
 			clickType = MenuClickTertiary
 		}
 		for i, ext := range result.RowExtents {
+			if cfg.Rows[i].SubRows != nil {
+				continue // scroll rows handle clicks in drawScrollSection
+			}
 			if mouse != nil && ext.Inside(mouse.Pos) {
 				if cfg.Rows[i].OnClick != nil {
 					if cfg.Rows[i].OnClick(clickType) {
@@ -433,6 +327,121 @@ func (ep *ERAMPane) DrawERAMMenu(ctx *panes.Context, transforms radar.ScopeTrans
 	}
 
 	return result
+}
+
+// drawScrollSection renders a scrollable list section for a row with SubRows.
+// It handles drawing, scroll arrows, mouse wheel, and click selection.
+// Returns the updated cursor position.
+func (ep *ERAMPane) drawScrollSection(cursor [2]float32, width, itemH float32, font *renderer.Font,
+	item *ERAMMenuItem, trid *renderer.ColoredTrianglesDrawBuilder, ld *renderer.ColoredLinesDrawBuilder,
+	td *renderer.TextDrawBuilder, mouse *platform.MouseState, extent *math.Extent2D) [2]float32 {
+
+	ss := item.ScrollState
+	visRows := item.VisibleRows
+	if visRows <= 0 {
+		visRows = len(item.SubRows)
+	}
+	scrollH := float32(visRows) * itemH
+	arrowW := float32(16)
+
+	// Background
+	bgP0 := cursor
+	bgP1 := math.Add2f(bgP0, [2]float32{width, 0})
+	bgP2 := math.Add2f(bgP1, [2]float32{0, -scrollH})
+	bgP3 := math.Add2f(bgP0, [2]float32{0, -scrollH})
+	trid.AddQuad(bgP0, bgP1, bgP2, bgP3, item.BgColor)
+
+	scrollExtent := math.Extent2D{P0: bgP3, P1: bgP1}
+	*extent = scrollExtent
+
+	// Draw visible items
+	for vi := 0; vi < visRows; vi++ {
+		idx := ss.Offset + vi
+		if idx >= len(item.SubRows) {
+			break
+		}
+		subItem := item.SubRows[idx]
+		y := cursor[1] - float32(vi)*itemH
+
+		// Highlight selected
+		if idx == ss.SelectedIdx {
+			sp0 := [2]float32{cursor[0], y}
+			sp1 := [2]float32{cursor[0] + width - arrowW, y}
+			sp2 := [2]float32{sp1[0], y - itemH}
+			sp3 := [2]float32{cursor[0], y - itemH}
+			trid.AddQuad(sp0, sp1, sp2, sp3, renderer.RGB{R: .3, G: .3, B: .6})
+		}
+
+		style := renderer.TextStyle{Font: font, Color: subItem.Color}
+		td.AddText(subItem.Label, math.Add2f([2]float32{cursor[0], y}, [2]float32{4, -itemH + 12}), style)
+	}
+
+	// Scroll arrows (right side)
+	canScrollUp := ss.Offset > 0
+	canScrollDown := ss.Offset+visRows < len(item.SubRows)
+	arrowColor := renderer.RGB{R: .7, G: .7, B: .7}
+	dimArrowColor := renderer.RGB{R: .3, G: .3, B: .3}
+
+	upCenter := [2]float32{cursor[0] + width - arrowW/2, cursor[1] - itemH/2}
+	downCenter := [2]float32{cursor[0] + width - arrowW/2, cursor[1] - scrollH + itemH/2}
+
+	upColor := dimArrowColor
+	if canScrollUp {
+		upColor = arrowColor
+	}
+	downColor := dimArrowColor
+	if canScrollDown {
+		downColor = arrowColor
+	}
+
+	drawUpTriangle(trid, upCenter, 6, upColor)
+	drawDownTriangle(trid, downCenter, 6, downColor)
+
+	// Arrow click extents (top half / bottom half of arrow column)
+	upExtent := math.Extent2D{
+		P0: [2]float32{cursor[0] + width - arrowW, cursor[1] - scrollH/2},
+		P1: [2]float32{cursor[0] + width, cursor[1]},
+	}
+	downExtent := math.Extent2D{
+		P0: [2]float32{cursor[0] + width - arrowW, cursor[1] - scrollH},
+		P1: [2]float32{cursor[0] + width, cursor[1] - scrollH/2},
+	}
+
+	// Mouse wheel scrolling
+	if mouse != nil && scrollExtent.Inside(mouse.Pos) {
+		if mouse.Wheel[1] > 0 && canScrollUp {
+			ss.Offset--
+		} else if mouse.Wheel[1] < 0 && canScrollDown {
+			ss.Offset++
+		}
+	}
+
+	// Click handling for scroll
+	if ep.mousePrimaryClicked(mouse) || ep.mouseTertiaryClicked(mouse) {
+		clickType := MenuClickPrimary
+		if ep.mouseTertiaryClicked(mouse) {
+			clickType = MenuClickTertiary
+		}
+
+		if mouse != nil && upExtent.Inside(mouse.Pos) && canScrollUp {
+			ss.Offset--
+		} else if mouse != nil && downExtent.Inside(mouse.Pos) && canScrollDown {
+			ss.Offset++
+		} else if mouse != nil && scrollExtent.Inside(mouse.Pos) {
+			// Determine which item was clicked
+			relY := cursor[1] - mouse.Pos[1]
+			clickedVi := int(relY / itemH)
+			clickedIdx := ss.Offset + clickedVi
+			if clickedIdx >= 0 && clickedIdx < len(item.SubRows) {
+				ss.SelectedIdx = clickedIdx
+				if item.OnSelect != nil {
+					item.OnSelect(clickedIdx, clickType)
+				}
+			}
+		}
+	}
+
+	return bgP3
 }
 
 // drawUpTriangle draws a filled upward-pointing triangle.
