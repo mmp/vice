@@ -276,7 +276,58 @@
             "East Base",
             "West Base"
         ],
-        "video_map_file": "videomaps/ZID-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZID-videomaps.gob.zst",
+        "coordination_fixes": {
+            "ARIVR": [
+                {
+                    "type": "route",
+                    "to": "CVG",
+                    "from": "ZID"
+                }
+            ],
+            "ICKEY": [
+                {
+                    "type": "route",
+                    "to": "CVG",
+                    "from": "ZID"
+                }
+            ],
+            "HRMBE": [
+                {
+                    "type": "route",
+                    "to": "CVG",
+                    "from": "ZID"
+                }
+            ],
+            "THERE": [
+                {
+                    "type": "route",
+                    "to": "CVG",
+                    "from": "ZID"
+                }
+            ],
+            "JARSO": [
+                {
+                    "type": "route",
+                    "to": "CVG",
+                    "from": "ZID"
+                }
+            ],
+            "MXQ": [
+                {
+                    "type": "route",
+                    "to": "CVG",
+                    "from": "CMH"
+                }
+            ],
+            "ARBAS": [
+                {
+                    "type": "route",
+                    "to": "CVG",
+                    "from": "CMH"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

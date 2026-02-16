@@ -54,7 +54,37 @@
             "STARS-BIL_MOA 1C__POWDER RIVER 1C MOA",
             "STARS-BIL_MTR__Military Training Route IR-473"
         ],
-        "video_map_file": "videomaps/ZLC-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZLC-videomaps.gob.zst",
+        "coordination_fixes": {
+            "CRAZI": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ],
+            "BGHRN": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ],
+            "KUSTR": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ],
+            "YLSTN": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

@@ -310,7 +310,44 @@
             "OGG_FIX_20",
             "OGG_FIX_23"
         ],
-        "video_map_file": "videomaps/ZHN-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZHN-videomaps.gob.zst",
+        "coordination_fixes": {
+            "BARBY": [
+                {
+                    "type": "route",
+                    "to": "ZHN",
+                    "from": "OGG"
+                }
+            ],
+            "LAVAS": [
+                {
+                    "type": "route",
+                    "to": "OGG",
+                    "from": "ZHN"
+                }
+            ],
+            "HARPO": [
+                {
+                    "type": "route",
+                    "to": "OGG",
+                    "from": "ZHN"
+                }
+            ],
+            "LNY": [
+                {
+                    "type": "route",
+                    "to": "OGG",
+                    "from": "ZHN"
+                }
+            ],
+            "LNDHY": [
+                {
+                    "type": "route",
+                    "to": "OGG",
+                    "from": "ZHN"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

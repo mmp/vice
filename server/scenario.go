@@ -232,6 +232,13 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 			}
 		}
 	}
+	// Make sure all of the controllers used in airspace awareness will be there.
+	for _, aa := range sg.FacilityAdaptation.AirspaceAwareness {
+		if aa.ReceivingFacility == "" {
+			addController(sim.TCP(aa.ReceivingController))
+		}
+	}
+
 	airportExits := make(map[string]map[string]any) // airport -> exit -> is it covered
 	for _, rwy := range s.DepartureRunways {
 		e.Push("Departure runway " + rwy.Airport + " " + rwy.Runway)
@@ -437,14 +444,15 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	haveCRDA := util.SeqContainsFunc(maps.Keys(activeAirports),
 		func(ap *av.Airport) bool { return len(ap.CRDAPairs) > 0 })
 	if haveCRDA && s.ControllerConfiguration != nil {
-		// Make sure all of the controllers involved have a valid default airport
+		// Make sure all of the controllers involved have a valid default airport via area_configs
 		for _, pos := range s.ControllerConfiguration.AllPositions() {
 			if ctrl, ok := sg.ControlPositions[pos]; ok {
-				if ctrl.DefaultAirport == "" {
-					e.ErrorString("%s: controller must have \"default_airport\" specified (required for CRDA).", ctrl.Position)
+				da := sg.FacilityAdaptation.DefaultAirportForArea(ctrl.Area)
+				if da == "" {
+					e.ErrorString("%s: controller must have a default airport specified via area_configs (required for CRDA).", ctrl.Position)
 				} else {
-					if _, ok := sg.Airports[ctrl.DefaultAirport]; !ok {
-						e.ErrorString("%s: default airport %q is not included in scenario", ctrl.Position, ctrl.DefaultAirport)
+					if _, ok := sg.Airports[da]; !ok {
+						e.ErrorString("%s: default airport %q is not included in scenario", ctrl.Position, da)
 					}
 				}
 			}
@@ -933,6 +941,11 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	// Grab the original keys before rewriting.
 	for position, ctrl := range sg.ControlPositions {
 		ctrl.Position = string(position)
+
+		// Auto-derive area from the first digit of the sector_id.
+		if ctrl.Area == 0 && len(ctrl.SectorID) > 0 && ctrl.SectorID[0] >= '0' && ctrl.SectorID[0] <= '9' {
+			ctrl.Area = int(ctrl.SectorID[0] - '0')
+		}
 	}
 
 	pos := make(map[sim.TCP]*av.Controller)
@@ -1205,6 +1218,12 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	}
 
 	fa := &sg.FacilityAdaptation
+	for i := range fa.AirspaceAwareness {
+		if fa.AirspaceAwareness[i].ReceivingFacility != "" {
+			continue
+		}
+		rewriteString(&fa.AirspaceAwareness[i].ReceivingController)
+	}
 	for position, config := range fa.ControllerConfigs {
 		// Rewrite controller
 		delete(fa.ControllerConfigs, position)
@@ -1429,6 +1448,41 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		e.Pop()
 	}
 
+	for fix, fixes := range s.CoordinationFixes {
+		e.Push("Coordination fix " + fix)
+		// FIXME(mtrokel)
+		/*
+			if _, ok := sg.Locate(fix); !ok {
+				e.ErrorString("coordination fix \"%v\" cannot be located", fix)
+			}
+		*/
+		acceptableTypes := []string{"route", "zone"}
+		for i, fix := range fixes {
+			e.Push(fmt.Sprintf("Number %v", i))
+			if !slices.Contains(acceptableTypes, fix.Type) {
+				e.ErrorString("type \"%v\" is invalid. Valid types are \"route\" and \"zone\"", fix.Type)
+			}
+			if fix.Altitude[0] < 0 {
+				e.ErrorString("bottom altitude \"%v\" is below zero", fix.Altitude[0])
+			}
+			if fix.Altitude[0] > fix.Altitude[1] {
+				e.ErrorString("bottom altitude \"%v\" is higher than the top altitude \"%v\"", fix.Altitude[0], fix.Altitude[1])
+			}
+			if _, ok := av.DB.TRACONs[fix.ToFacility]; !ok {
+				if _, ok := av.DB.ARTCCs[fix.ToFacility]; !ok {
+					e.ErrorString("to facility \"%v\" is invalid", fix.ToFacility)
+				}
+			}
+			if _, ok := av.DB.TRACONs[fix.FromFacility]; !ok {
+				if _, ok := av.DB.ARTCCs[fix.FromFacility]; !ok {
+					e.ErrorString("from facility \"%v\" is invalid", fix.FromFacility)
+				}
+			}
+			e.Pop()
+		}
+		e.Pop()
+	}
+
 	for char, airport := range s.SingleCharAIDs {
 		e.Push("Airport ID " + char)
 		if _, ok := sg.Airports[airport]; !ok {
@@ -1637,6 +1691,37 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		s.ControllerConfigs, err = util.CommaKeyExpand(s.ControllerConfigs)
 		if err != nil {
 			e.Error(err)
+		}
+	}
+
+	for _, aa := range s.AirspaceAwareness {
+		for _, fix := range aa.Fix {
+			if _, ok := sg.Locate(fix); !ok && fix != "ALL" {
+				e.ErrorString("%s : fix unknown", fix)
+			}
+		}
+
+		if aa.AltitudeRange[0] > aa.AltitudeRange[1] {
+			e.ErrorString("lower end of \"altitude_range\" %d above upper end %d",
+				aa.AltitudeRange[0], aa.AltitudeRange[1])
+		}
+
+		if aa.ReceivingFacility != "" {
+			resourcesFS := util.GetResourcesFS()
+			var handoffIDs []sim.HandoffID
+			if sg.HandoffTopology != nil {
+				handoffIDs = sg.HandoffTopology.HandoffIDs
+			}
+			validateCrossFacilityController(resourcesFS, aa.ReceivingFacility,
+				av.ControlPosition(aa.ReceivingController), handoffIDs, e)
+		} else if _, ok := sg.ControlPositions[sim.TCP(aa.ReceivingController)]; !ok {
+			e.ErrorString("%s: controller unknown", aa.ReceivingController)
+		}
+
+		for _, t := range aa.AircraftType {
+			if t != "J" && t != "T" && t != "P" {
+				e.ErrorString("%q: invalid \"aircraft_type\". Expected \"J\", \"T\", or \"P\".", t)
+			}
 		}
 	}
 

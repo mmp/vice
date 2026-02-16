@@ -1623,6 +1623,62 @@
                     ]
                 }
             ]
+        },
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "ALL"
+                ],
+                "altitude_range": [
+                    0,
+                    0
+                ],
+                "receiving_controller": "ZTL 43 Pulaski High"
+            }
+        ],
+        "coordination_fixes": {
+            "CHPPR": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "GLAVN": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "HOBTT": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "JJEDI": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "ONDRE": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "OZZZI": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ]
         }
     },
     "handoff_topology": {

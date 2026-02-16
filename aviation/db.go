@@ -100,6 +100,21 @@ type Fix struct {
 	Location math.Point2LL
 }
 
+const (
+	RouteBasedFix = "route"
+	ZoneBasedFix  = "zone"
+)
+
+type AdaptationFix struct {
+	Name         string // not in JSON
+	Type         string `json:"type"`
+	ToFacility   string `json:"to"`   // controller to handoff to
+	FromFacility string `json:"from"` // controller to handoff from
+	Altitude     [2]int `json:"altitude"`
+}
+
+type AdaptationFixes []AdaptationFix
+
 ///////////////////////////////////////////////////////////////////////////
 
 func (ap FAAAirport) SelectBestRunway(windDir float32, magneticVariation float32) (*Runway, *Runway) {

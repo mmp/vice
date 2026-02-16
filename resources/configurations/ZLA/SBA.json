@@ -158,7 +158,16 @@
             "107S VBG ILS APCHS SBA",
             "166S SBP RNAV M RWY 11 SBA"
         ],
-        "video_map_file": "videomaps/ZLA-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZLA-videomaps.gob.zst",
+        "coordination_fixes": {
+            "KWANG": [
+                {
+                    "type": "route",
+                    "to": "SBA",
+                    "from": "ZLA"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

@@ -272,6 +272,100 @@
             "WEEVR": {},
             "YABRO": {},
             "ZZBEE": {}
+        },
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "ALL"
+                ],
+                "receiving_controller": "ZOB 66 Bellaire"
+            }
+        ],
+        "coordination_fixes": {
+            "BRWNZ": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "QUUBE": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "JIIMM": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "ROKNN": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "SEPLN": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "KINCS": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "ROLNN": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "CLAPT": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "GROHL": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "HFNER": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "BUDRW": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "CLVTO": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ]
         }
     },
     "handoff_topology": {

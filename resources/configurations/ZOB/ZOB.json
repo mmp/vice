@@ -426,5 +426,296 @@
             "ZMP",
             "ZNY"
         ]
+    },
+    "stars_config": {
+        "coordination_fixes": {
+            "BRWNZ": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "QUUBE": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "JIIMM": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "ROKNN": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "SEPLN": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "KINCS": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "ROLNN": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "CLAPT": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "GROHL": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "HFNER": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "BUDRW": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "CLVTO": [
+                {
+                    "type": "route",
+                    "to": "CLE",
+                    "from": "ZOB"
+                }
+            ],
+            "BENEE": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "BUF": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "DKK": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "EHMAN": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "JHW": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "WOZEE": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "ARICO": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "BONZZ": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "CRAKN": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "TPGUN": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "WNGNT": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "GRAYT": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "HANBL": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "HAYLL": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "SMMNS": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "HUMRR": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "SHANX": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "VCTRZ": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "NUTTZ": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "NACCA": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "RIPPY": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "PETTE": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "KILIT": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOBN"
+                }
+            ],
+            "LOPVO": [
+                {
+                    "type": "route",
+                    "to": "D21",
+                    "from": "ZOB"
+                }
+            ],
+            "LEJOY": [
+                {
+                    "type": "route",
+                    "to": "PIT",
+                    "from": "ZOB"
+                }
+            ],
+            "AIR": [
+                {
+                    "type": "route",
+                    "to": "PIT",
+                    "from": "ZOB"
+                }
+            ],
+            "EARED": [
+                {
+                    "type": "route",
+                    "to": "PIT",
+                    "from": "ZOB"
+                }
+            ],
+            "CUTTA": [
+                {
+                    "type": "route",
+                    "to": "PIT",
+                    "from": "ZOB"
+                }
+            ],
+            "HOMEE": [
+                {
+                    "type": "route",
+                    "to": "PIT",
+                    "from": "ZOB"
+                }
+            ]
+        }
     }
 }

@@ -99,7 +99,55 @@
             "NC78 COPTER RNAV 29",
             "NC78 HUSIN1 DEP"
         ],
-        "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "OKNEE"
+                ],
+                "receiving_controller": "ZJX 71 Florence"
+            },
+            {
+                "fixes": [
+                    "ILM",
+                    "FLO",
+                    "CRE",
+                    "ZORDO",
+                    "CLARB"
+                ],
+                "receiving_controller": "ZJX 74 Charleston "
+            }
+        ],
+        "coordination_fixes": {
+            "FLO": [
+                {
+                    "type": "route",
+                    "to": "MYR",
+                    "from": "ZJX"
+                }
+            ],
+            "ILM": [
+                {
+                    "type": "route",
+                    "to": "MYR",
+                    "from": "ILM"
+                }
+            ],
+            "UNJAM": [
+                {
+                    "type": "route",
+                    "to": "MYR",
+                    "from": "ZJX"
+                }
+            ],
+            "CAE": [
+                {
+                    "type": "route",
+                    "to": "MYR",
+                    "from": "ZJX"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

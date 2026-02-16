@@ -1091,7 +1091,12 @@
             "RVMD10054S"
         ],
         "force_ql_self": true,
-        "video_map_file": "videomaps/ZFW-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZFW-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "default_airport": "KDFW"
+            }
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

@@ -223,7 +223,52 @@
             "KC IXD APD",
             "KC STJ APD"
         ],
-        "video_map_file": "videomaps/ZKC-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZKC-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "STJ",
+                    "OZAKI",
+                    "CATTS",
+                    "JDOGG",
+                    "TONCE",
+                    "DIGGY",
+                    "TIFTO",
+                    "TYTUS",
+                    "KENTN"
+                ],
+                "receiving_controller": "ZKC 46 (46) ST. JOESPH LO"
+            },
+            {
+                "fixes": [
+                    "BLUZY",
+                    "TWAIN",
+                    "CAYKO",
+                    "JTHRO",
+                    "ARENZ"
+                ],
+                "receiving_controller": "ZKC 40 (40) KIRKSVILLE LO"
+            },
+            {
+                "fixes": [
+                    "ANX",
+                    "FRANC",
+                    "GRILD",
+                    "BUM",
+                    "COU"
+                ],
+                "receiving_controller": "ZKC 42 (42) NAPOLEAN LO"
+            },
+            {
+                "fixes": [
+                    "SPRNT",
+                    "DOSOA",
+                    "SPI",
+                    "SGF"
+                ],
+                "receiving_controller": "ZKC 48 (48) EMPORIA LO"
+            }
+        ]
     },
     "handoff_topology": {
         "handoff_ids": [

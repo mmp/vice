@@ -307,7 +307,39 @@
                 ]
             }
         ],
-        "video_map_file": "videomaps/SAT-videomaps.gob.zst"
+        "video_map_file": "videomaps/SAT-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "ALISS",
+                    "TATAR",
+                    "LEJON"
+                ],
+                "receiving_controller": "ZHU 85 Kelly"
+            },
+            {
+                "fixes": [
+                    "GOBBY",
+                    "AGJ",
+                    "KLNGR",
+                    "YODUH",
+                    "JUMBO"
+                ],
+                "receiving_controller": "ZHU 50 Stonewall"
+            },
+            {
+                "fixes": [
+                    "BRENI",
+                    "YENNS",
+                    "ZANNI",
+                    "CRP",
+                    "KAHAN",
+                    "LRD",
+                    "WHAEL"
+                ],
+                "receiving_controller": "ZHU 56 Shiner"
+            }
+        ]
     },
     "handoff_topology": {
         "handoff_ids": [

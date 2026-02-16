@@ -142,7 +142,23 @@
             "BDL_TWR 24/33",
             "Y90 RWY 24/33"
         ],
-        "video_map_file": "videomaps/ZBW-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZBW-videomaps.gob.zst",
+        "coordination_fixes": {
+            "MAD": [
+                {
+                    "type": "route",
+                    "to": "Y90",
+                    "from": "ZBW"
+                }
+            ],
+            "STELA": [
+                {
+                    "type": "route",
+                    "to": "Y90",
+                    "from": "ZBW"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

@@ -150,7 +150,84 @@
             "BNA_SID EXIT GATES",
             "BNA_SID EXIT"
         ],
-        "video_map_file": "videomaps/ZME-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZME-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "SWAPP",
+                    "CHADM",
+                    "KRSTA",
+                    "OLSIE"
+                ],
+                "receiving_controller": "ZME 40 Sparta"
+            },
+            {
+                "fixes": [
+                    "GDOGG",
+                    "FAPER",
+                    "TINGS",
+                    "HGGRD",
+                    "PARDN",
+                    "JJEFF",
+                    "HODJS",
+                    "NAKIY"
+                ],
+                "receiving_controller": "ZME 41 Bowling Green"
+            },
+            {
+                "fixes": [
+                    "DANLS",
+                    "SPKER",
+                    "DRURY",
+                    "HAGIE",
+                    "JALAR",
+                    "ACKEE",
+                    "FLAME",
+                    "GENDE"
+                ],
+                "receiving_controller": "ZME 42 Graham"
+            },
+            {
+                "fixes": [
+                    "EVVAN",
+                    "TAZMO",
+                    "BURME",
+                    "BRXTN",
+                    "TIPPN"
+                ],
+                "receiving_controller": "ZME 60 Shelbyville"
+            }
+        ],
+        "coordination_fixes": {
+            "BAWLS": [
+                {
+                    "type": "route",
+                    "to": "BNA",
+                    "from": "ZME"
+                }
+            ],
+            "CARAP": [
+                {
+                    "type": "route",
+                    "to": "BNA",
+                    "from": "ZME"
+                }
+            ],
+            "PEKIE": [
+                {
+                    "type": "route",
+                    "to": "BNA",
+                    "from": "ZME"
+                }
+            ],
+            "HIMAT": [
+                {
+                    "type": "route",
+                    "to": "BNA",
+                    "from": "ZME"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

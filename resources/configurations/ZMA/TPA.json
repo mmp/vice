@@ -199,7 +199,65 @@
             "TPA-128S COUNTY",
             "TPA-127S MID MAP"
         ],
-        "video_map_file": "videomaps/ZMA-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZMA-videomaps.gob.zst",
+        "coordination_fixes": {
+            "DSIDE": [
+                {
+                    "type": "route",
+                    "to": "TPA",
+                    "from": "ZMA"
+                }
+            ],
+            "RAYZZ": [
+                {
+                    "type": "route",
+                    "to": "TPA",
+                    "from": "ZMA"
+                }
+            ],
+            "OLENE": [
+                {
+                    "type": "route",
+                    "to": "TPA",
+                    "from": "ZMA"
+                }
+            ],
+            "MAATY": [
+                {
+                    "type": "route",
+                    "to": "TPA",
+                    "from": "ZMA"
+                }
+            ],
+            "BANGZ": [
+                {
+                    "type": "route",
+                    "to": "TPA",
+                    "from": "ZMA"
+                }
+            ],
+            "LUBBR": [
+                {
+                    "type": "route",
+                    "to": "TPA",
+                    "from": "ZMA"
+                }
+            ],
+            "ECAKE": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "LACEN": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

@@ -347,5 +347,37 @@
             "ZKC",
             "ZLA"
         ]
+    },
+    "stars_config": {
+        "coordination_fixes": {
+            "BRUSR": [
+                {
+                    "type": "route",
+                    "to": "P50",
+                    "from": "ZAB"
+                }
+            ],
+            "HOMRR": [
+                {
+                    "type": "route",
+                    "to": "P50",
+                    "from": "ZAB"
+                }
+            ],
+            "GEELA": [
+                {
+                    "type": "route",
+                    "to": "P50",
+                    "from": "ZAB"
+                }
+            ],
+            "BRDEY": [
+                {
+                    "type": "route",
+                    "to": "P50",
+                    "from": "ZAB"
+                }
+            ]
+        }
     }
 }

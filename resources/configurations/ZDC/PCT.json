@@ -997,6 +997,143 @@
                 "silence_angle": 59.7,
                 "slope_angle": 0.3
             }
+        },
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "RAMAY",
+                    "OTTTO"
+                ],
+                "altitude_range": [
+                    10000,
+                    17000
+                ],
+                "receiving_controller": "ZDC 01 Elkins"
+            },
+            {
+                "fixes": [
+                    "SCOOB",
+                    "COLIN"
+                ],
+                "altitude_range": [
+                    10000,
+                    19000
+                ],
+                "receiving_controller": "ZDC 12 Brooke"
+            },
+            {
+                "fixes": [
+                    "MAULS",
+                    "FLASK",
+                    "MELTN",
+                    "RRSIN",
+                    "GLANC"
+                ],
+                "altitude_range": [
+                    10000,
+                    23000
+                ],
+                "receiving_controller": "ZDC 32 Gordonsville"
+            },
+            {
+                "fixes": [
+                    "JERES",
+                    "MCRAY"
+                ],
+                "altitude_range": [
+                    11000,
+                    17000
+                ],
+                "receiving_controller": "BWI_H_APP"
+            },
+            {
+                "fixes": [
+                    "SWANN",
+                    "AGARD",
+                    "DQO"
+                ],
+                "altitude_range": [
+                    10000,
+                    19000
+                ],
+                "receiving_controller": "ZDC 17 Swann"
+            }
+        ],
+        "coordination_fixes": {
+            "CAPSS": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "CLIPR": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "DEALE": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "WEWIL": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "TRUPS": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "VCTRY": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "HOYAS": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "SMOOT": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "JAYOH": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "default_airport": "KDCA"
+            },
+            "2": {
+                "default_airport": "KRIC"
+            },
+            "3": {
+                "default_airport": "KIAD"
+            }
         }
     },
     "handoff_topology": {

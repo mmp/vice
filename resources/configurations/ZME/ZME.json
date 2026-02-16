@@ -387,5 +387,37 @@
             "ZKC",
             "ZTL"
         ]
+    },
+    "stars_config": {
+        "coordination_fixes": {
+            "BAWLS": [
+                {
+                    "type": "route",
+                    "to": "BNA",
+                    "from": "ZME"
+                }
+            ],
+            "CARAP": [
+                {
+                    "type": "route",
+                    "to": "BNA",
+                    "from": "ZME"
+                }
+            ],
+            "PEKIE": [
+                {
+                    "type": "route",
+                    "to": "BNA",
+                    "from": "ZME"
+                }
+            ],
+            "HIMAT": [
+                {
+                    "type": "route",
+                    "to": "BNA",
+                    "from": "ZME"
+                }
+            ]
+        }
     }
 }

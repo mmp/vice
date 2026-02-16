@@ -327,6 +327,7 @@ type FacilityAdaptation struct {
 	// These define which TCP handles each inbound flow and departure airport/runway/SID.
 	Configurations map[string]*ControllerAssignments `json:"configurations"`
 
+	AirspaceAwareness   []AirspaceAwareness                        `json:"airspace_awareness" scope:"stars"`
 	ForceQLToSelf       bool                                       `json:"force_ql_self" scope:"stars"`
 	AllowLongScratchpad bool                                       `json:"allow_long_scratchpad" scope:"stars"`
 	VideoMapNames       []string                                   `json:"stars_maps" scope:"stars"`
@@ -365,10 +366,11 @@ type FacilityAdaptation struct {
 		Symbol           string         `json:"symbol"`
 	} `json:"untracked_position_symbol_overrides" scope:"stars"`
 
-	VideoMapFile   string            `json:"video_map_file"`
-	SingleCharAIDs map[string]string `json:"single_char_aids" scope:"stars"` // Char to airport. TODO: Check if this is for ERAM as well.
-	KeepLDB        bool              `json:"keep_ldb" scope:"stars"`
-	FullLDBSeconds int               `json:"full_ldb_seconds" scope:"stars"`
+	VideoMapFile      string                        `json:"video_map_file"`
+	CoordinationFixes map[string]av.AdaptationFixes `json:"coordination_fixes" scope:"stars"`
+	SingleCharAIDs    map[string]string             `json:"single_char_aids" scope:"stars"` // Char to airport. TODO: Check if this is for ERAM as well.
+	KeepLDB           bool                          `json:"keep_ldb" scope:"stars"`
+	FullLDBSeconds    int                           `json:"full_ldb_seconds" scope:"stars"`
 
 	SSRCodes av.LocalSquawkCodePoolSpecifier `json:"ssr_codes" scope:"stars"`
 
@@ -881,14 +883,14 @@ type STARSAreaConfig struct {
 	Airspace                        map[string][]av.AirspaceVolume `json:"airspace,omitempty"`
 }
 
-// DefaultAirportForController returns the CRDA default airport for a
-// controller based on its area assignment. Returns empty string if no
-// area config or default airport is defined.
-func (fa *FacilityAdaptation) DefaultAirportForController(ctrl *av.Controller) string {
-	if ctrl == nil || ctrl.Area == 0 {
+// DefaultAirportForArea returns the CRDA default airport for a given
+// area number. Returns empty string if no area config or default
+// airport is defined.
+func (fa *FacilityAdaptation) DefaultAirportForArea(area int) string {
+	if area == 0 {
 		return ""
 	}
-	if ac, ok := fa.AreaConfigs[ctrl.Area]; ok {
+	if ac, ok := fa.AreaConfigs[area]; ok {
 		return ac.DefaultAirport
 	}
 	return ""
@@ -939,6 +941,14 @@ type SignificantPoint struct {
 	Abbreviation string        `json:"abbreviation"`
 	Description  string        `json:"description"`
 	Location     math.Point2LL `json:"location"`
+}
+
+type AirspaceAwareness struct {
+	Fix                 []string `json:"fixes"`
+	AltitudeRange       [2]int   `json:"altitude_range"`
+	ReceivingController string   `json:"receiving_controller"`
+	ReceivingFacility   string   `json:"receiving_facility,omitempty"`
+	AircraftType        []string `json:"aircraft_type"`
 }
 
 type NASFlightPlan struct {

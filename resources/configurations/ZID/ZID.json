@@ -336,5 +336,79 @@
             "ZOB",
             "ZTL"
         ]
+    },
+    "stars_config": {
+        "coordination_fixes": {
+            "BABNE": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "EASEL": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "OPPIE": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "CIRGO": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "SMUKE": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "CHERI": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ],
+            "NERVE": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "CVG"
+                }
+            ],
+            "FRIZN": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ],
+            "MAUDD": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ],
+            "MBELL": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ]
+        }
     }
 }

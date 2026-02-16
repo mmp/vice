@@ -169,7 +169,65 @@
             "BHM INTERSECTIONS WITH NAMES",
             "BHM SAT BOUNDARY"
         ],
-        "video_map_file": "videomaps/ZTL-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
+        "coordination_fixes": {
+            "EXIST": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "CIVMA": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "FAYEZ": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "IXUSE": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "BESOM": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "QECKE": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "KOCEY": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "BOYDD": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

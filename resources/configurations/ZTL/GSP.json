@@ -108,7 +108,37 @@
             "GMU RNAV 10",
             "GMU RNAV 28"
         ],
-        "video_map_file": "videomaps/ZTL-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
+        "coordination_fixes": {
+            "ANGRI": [
+                {
+                    "type": "route",
+                    "to": "GSP",
+                    "from": "ZTL"
+                }
+            ],
+            "MCHLN": [
+                {
+                    "type": "route",
+                    "to": "GSP",
+                    "from": "ZTL"
+                }
+            ],
+            "RCTOR": [
+                {
+                    "type": "route",
+                    "to": "GSP",
+                    "from": "ZTL"
+                }
+            ],
+            "TANCE": [
+                {
+                    "type": "route",
+                    "to": "GSP",
+                    "from": "ZTL"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

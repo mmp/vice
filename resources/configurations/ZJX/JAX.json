@@ -640,7 +640,146 @@
             "HEG RNAV",
             "GNV RNAV APPROACHES"
         ],
-        "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "OCF",
+                    "GNV"
+                ],
+                "altitude_range": [
+                    0,
+                    999000
+                ],
+                "receiving_controller": "ZJX 15 Ocala"
+            },
+            {
+                "fixes": [
+                    "ALLMA",
+                    "BAXLY",
+                    "AYS",
+                    "HABLE"
+                ],
+                "altitude_range": [
+                    0,
+                    999000
+                ],
+                "receiving_controller": "ZJX 30 Nepta"
+            },
+            {
+                "fixes": [
+                    "WISPR",
+                    "VIYAP",
+                    "SSI"
+                ],
+                "altitude_range": [
+                    0,
+                    999000
+                ],
+                "receiving_controller": "ZJX 54 Jekyl"
+            },
+            {
+                "fixes": [
+                    "EXBOX",
+                    "OMN",
+                    "SAWGY"
+                ],
+                "altitude_range": [
+                    0,
+                    999000
+                ],
+                "receiving_controller": "ZJX 57 St. Johns"
+            },
+            {
+                "fixes": [
+                    "CAPPS",
+                    "JAYJA",
+                    "TAY"
+                ],
+                "altitude_range": [
+                    0,
+                    999000
+                ],
+                "receiving_controller": "ZJX 77 Talyor"
+            }
+        ],
+        "coordination_fixes": {
+            "PENSE": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "NATII": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "MAHKA": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "BETLE": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "JERZI": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "GOTBE": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "COROE": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "OHDEA": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "BASSS": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "HILIS": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "default_airport": "KJAX"
+            }
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

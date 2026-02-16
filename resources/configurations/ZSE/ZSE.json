@@ -232,5 +232,114 @@
             "ZLC",
             "ZOA"
         ]
+    },
+    "stars_config": {
+        "coordination_fixes": {
+            "HHOOD": [
+                {
+                    "type": "route",
+                    "to": "P80",
+                    "from": "ZSE"
+                }
+            ],
+            "KRATR": [
+                {
+                    "type": "route",
+                    "to": "P80",
+                    "from": "ZSE"
+                }
+            ],
+            "VANTZ": [
+                {
+                    "type": "route",
+                    "to": "P80",
+                    "from": "ZSE"
+                }
+            ],
+            "YORKY": [
+                {
+                    "type": "route",
+                    "to": "P80",
+                    "from": "ZSE"
+                }
+            ],
+            "VOODU": [
+                {
+                    "type": "route",
+                    "to": "P80",
+                    "from": "ZSE"
+                }
+            ],
+            "SSSUN": [
+                {
+                    "type": "route",
+                    "to": "P80",
+                    "from": "ZSE"
+                }
+            ],
+            "FLOWR": [
+                {
+                    "type": "route",
+                    "to": "P80",
+                    "from": "ZSE"
+                }
+            ],
+            "MYCRO": [
+                {
+                    "type": "route",
+                    "to": "P80",
+                    "from": "ZSE"
+                }
+            ],
+            "HUMPP": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ],
+            "GLASR": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ],
+            "LIINE": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ],
+            "DIGGN": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ],
+            "MARNR": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ],
+            "LACEE": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ],
+            "HUVUS": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ]
+        }
     }
 }

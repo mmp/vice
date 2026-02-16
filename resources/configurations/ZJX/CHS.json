@@ -130,7 +130,63 @@
             "CHS COPTER",
             "JZI FINALS"
         ],
-        "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "GIPPL",
+                    "LGRHD",
+                    "STUNO",
+                    "DBN",
+                    "IRQ",
+                    "ALD"
+                ],
+                "receiving_controller": "ZJX 74 Charleston ",
+                "receiving_facility": "ZJX"
+            },
+            {
+                "fixes": [
+                    "MLTRE",
+                    "VANNC",
+                    "JYMSE",
+                    "ASHEL",
+                    "FLO"
+                ],
+                "receiving_controller": "ZJX 72 Columbia"
+            },
+            {
+                "fixes": [
+                    "CRE",
+                    "PLMTO",
+                    "FILLI",
+                    "SWPFX"
+                ],
+                "receiving_controller": "ZJX 73 Allendale"
+            }
+        ],
+        "coordination_fixes": {
+            "NINJA": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ],
+            "BAGGY": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ],
+            "WILIT": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

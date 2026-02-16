@@ -351,7 +351,422 @@
             "CAMAN",
             "GEO"
         ],
-        "video_map_file": "videomaps/ZJX-eram-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZJX-eram-videomaps.gob.zst",
+        "coordination_fixes": {
+            "PLUMR": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "FSHUN": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "KLMAN": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "BORRD": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "VALKA": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "JIPOD": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "ZALEN": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "ETECK": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "FAROV": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "LENDS": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "MLB": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "DDANY": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "OLENE": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "BANGZ": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "MAATY": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "LUBBR": [
+                {
+                    "type": "route",
+                    "to": "ZMA",
+                    "from": "ZJX"
+                }
+            ],
+            "PYRES": [
+                {
+                    "type": "route",
+                    "to": "ZTL",
+                    "from": "ZJX"
+                }
+            ],
+            "STUGE": [
+                {
+                    "type": "route",
+                    "to": "ZTL",
+                    "from": "ZJX"
+                }
+            ],
+            "MILEN": [
+                {
+                    "type": "route",
+                    "to": "ZTL",
+                    "from": "ZJX"
+                }
+            ],
+            "STWRT": [
+                {
+                    "type": "route",
+                    "to": "ZTL",
+                    "from": "ZJX"
+                }
+            ],
+            "RIDES": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "ZINGR": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "PRICY": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "ALYNA": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "WISRD": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "HAANZ": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "SURFR": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "BAIRN": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "JOKRS": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "GRNCH": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "BANYA": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "YAGGO": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "SUNDE": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "GIRAF": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZMA"
+                }
+            ],
+            "HARAM": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "SNFLD": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "GTOUT": [
+                {
+                    "type": "route",
+                    "to": "F11",
+                    "from": "ZJX"
+                }
+            ],
+            "NINJA": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ],
+            "BAGGY": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ],
+            "WILIT": [
+                {
+                    "type": "route",
+                    "to": "CHS",
+                    "from": "ZJX"
+                }
+            ],
+            "VIYAP": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ],
+            "PLZZZ": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ],
+            "LOTTS": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ],
+            "SOOOP": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ],
+            "WEEEK": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "ZJX"
+                }
+            ],
+            "FONEX": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "JAX"
+                }
+            ],
+            "FOLUT": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "JAX"
+                }
+            ],
+            "KIZER": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "F11"
+                }
+            ],
+            "ROCIT": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "F11"
+                }
+            ],
+            "PENSE": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "NATII": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "MAHKA": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "BETLE": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "JERZI": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "GOTBE": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "COROE": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "OHDEA": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "BASSS": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ],
+            "HILIS": [
+                {
+                    "type": "route",
+                    "to": "JAX",
+                    "from": "ZJX"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

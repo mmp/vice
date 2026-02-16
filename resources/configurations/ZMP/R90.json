@@ -311,7 +311,43 @@
             "R90 013 GEO",
             "R90 250 SHELF2"
         ],
-        "video_map_file": "videomaps/ZMP-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZMP-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "EMP",
+                    "LNK",
+                    "OBH",
+                    "OFK",
+                    "ONL",
+                    "PWE",
+                    "TOP",
+                    "LJAYY",
+                    "NOSCE",
+                    "SLN",
+                    "DRABS",
+                    "SUX",
+                    "TKO",
+                    "HSI"
+                ],
+                "receiving_controller": "ZMP 26 GRI LO"
+            },
+            {
+                "fixes": [
+                    "DSM",
+                    "FOD",
+                    "JALAP",
+                    "KIDER",
+                    "LMN",
+                    "MCI",
+                    "OGECA",
+                    "ROKKK",
+                    "STJ",
+                    "STL"
+                ],
+                "receiving_controller": "ZMP 27 OMA LO"
+            }
+        ]
     },
     "handoff_topology": {
         "handoff_ids": [

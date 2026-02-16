@@ -259,7 +259,193 @@
             "X50/7FL6 APPROACHES",
             "WARNING AREA 497"
         ],
-        "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "CRG"
+                ],
+                "altitude_range": [
+                    15000,
+                    999000
+                ],
+                "receiving_controller": "ZJX 57 St. Johns"
+            },
+            {
+                "fixes": [
+                    "SMYRA"
+                ],
+                "altitude_range": [
+                    6000,
+                    11000
+                ],
+                "receiving_controller": "MCO_E_DEP"
+            },
+            {
+                "fixes": [
+                    "GTOUT"
+                ],
+                "altitude_range": [
+                    6000,
+                    11000
+                ],
+                "receiving_controller": "MCO_E_DEP"
+            },
+            {
+                "fixes": [
+                    "GTOUT"
+                ],
+                "altitude_range": [
+                    0,
+                    5000
+                ],
+                "receiving_controller": "MCO_N_APP"
+            },
+            {
+                "fixes": [
+                    "ILIND"
+                ],
+                "altitude_range": [
+                    6000,
+                    11000
+                ],
+                "receiving_controller": "MCO_E_DEP"
+            },
+            {
+                "fixes": [
+                    "ILIND"
+                ],
+                "altitude_range": [
+                    0,
+                    5000
+                ],
+                "receiving_controller": "MCO_N_APP"
+            },
+            {
+                "fixes": [
+                    "KIZER"
+                ],
+                "altitude_range": [
+                    6000,
+                    11000
+                ],
+                "receiving_controller": "MCO_E_DEP"
+            },
+            {
+                "fixes": [
+                    "KIZER"
+                ],
+                "altitude_range": [
+                    0,
+                    5000
+                ],
+                "receiving_controller": "MCO_N_APP"
+            },
+            {
+                "fixes": [
+                    "MMKAY"
+                ],
+                "altitude_range": [
+                    0,
+                    10000
+                ],
+                "receiving_controller": "JAX_V_APP"
+            },
+            {
+                "fixes": [
+                    "MMKAY"
+                ],
+                "altitude_range": [
+                    15000,
+                    999000
+                ],
+                "receiving_controller": "ZJX 57 St. Johns"
+            },
+            {
+                "fixes": [
+                    "ASTOR"
+                ],
+                "altitude_range": [
+                    0,
+                    15000
+                ],
+                "receiving_controller": "JAX_V_APP"
+            },
+            {
+                "fixes": [
+                    "ASTOR"
+                ],
+                "altitude_range": [
+                    15000,
+                    999000
+                ],
+                "receiving_controller": "ZJX 57 St. Johns"
+            },
+            {
+                "fixes": [
+                    "WORMS"
+                ],
+                "altitude_range": [
+                    10000,
+                    999000
+                ],
+                "receiving_controller": "ZJX 57 St. Johns"
+            },
+            {
+                "fixes": [
+                    "GUANO"
+                ],
+                "altitude_range": [
+                    10000,
+                    999000
+                ],
+                "receiving_controller": "ZJX 57 St. Johns"
+            }
+        ],
+        "coordination_fixes": {
+            "WEEEK": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "ZJX"
+                }
+            ],
+            "FONEX": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "JAX"
+                }
+            ],
+            "MMKAY": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "JAX"
+                }
+            ],
+            "FOLUT": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "JAX"
+                }
+            ],
+            "KIZER": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "F11"
+                }
+            ],
+            "ROCIT": [
+                {
+                    "type": "route",
+                    "to": "DAB",
+                    "from": "F11"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

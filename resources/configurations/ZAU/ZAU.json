@@ -303,5 +303,170 @@
             "ZMP",
             "ZOB"
         ]
+    },
+    "stars_config": {
+        "coordination_fixes": {
+            "NEWRK": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "TRTLL": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "ENDEE": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "SWIIS": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "PAPPI": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "HALIE": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "FYTTE": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "KURKK": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "MADII": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "SHAIN": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "VEECK": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "CLUSO": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "HULLS": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "WYNDE": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "FIYER": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "KRENA": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "PLANO": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "PNT": [
+                {
+                    "type": "route",
+                    "to": "C90",
+                    "from": "ZAU"
+                }
+            ],
+            "LEEDR": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ],
+            "LYSTR": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ],
+            "BRAVE": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ],
+            "BAE": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ],
+            "BRTMN": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ]
+        }
     }
 }

@@ -140,7 +140,34 @@
             "P31 CLASS C",
             "NEW NPA 07 MAP"
         ],
-        "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "AEX",
+                    "BRATT",
+                    "ORRTH",
+                    "ROMMY",
+                    "SJI",
+                    "TCATE",
+                    "VOAXA"
+                ],
+                "receiving_controller": "ZHU 25 Brookley"
+            },
+            {
+                "fixes": [
+                    "BDOCK",
+                    "CEW",
+                    "COLIN",
+                    "IPTAY",
+                    "JAYDI",
+                    "PENCL",
+                    "PENSI",
+                    "SARGE"
+                ],
+                "receiving_controller": "ZJX 10 Crestview"
+            }
+        ]
     },
     "handoff_topology": {
         "handoff_ids": [

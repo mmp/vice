@@ -255,7 +255,240 @@
             "",
             "MIA LABELS"
         ],
-        "video_map_file": "videomaps/ZDV-eram-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZDV-eram-videomaps.gob.zst",
+        "coordination_fixes": {
+            "TESSY": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "HORST": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "BRICK": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "AGIME": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "SINSY": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "JISIG": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "AALLE": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "CLASH": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "FLATI": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "PPINT": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "FLNEL": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "HAGGR": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "BGDEE": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "MNARK": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "ELKEE": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "LARKS": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "ALLAN": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "LANDR": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "POWDR": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "DANDD": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "QUAIL": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "PICKK": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "IMAGN": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "FFEST": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "ZOMBZ": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "OZZZY": [
+                {
+                    "type": "route",
+                    "to": "COS",
+                    "from": "ZDV"
+                }
+            ],
+            "FSHER": [
+                {
+                    "type": "route",
+                    "to": "COS",
+                    "from": "ZDV"
+                }
+            ],
+            "LUFSE": [
+                {
+                    "type": "route",
+                    "to": "COS",
+                    "from": "ZDV"
+                }
+            ],
+            "PUB": [
+                {
+                    "type": "route",
+                    "to": "COS",
+                    "from": "ZDV"
+                }
+            ],
+            "ADANE": [
+                {
+                    "type": "route",
+                    "to": "COS",
+                    "from": "ZDV"
+                }
+            ],
+            "CYS": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ],
+            "WERNR": [
+                {
+                    "type": "route",
+                    "to": "ASE",
+                    "from": "ZDV"
+                }
+            ],
+            "DBL": [
+                {
+                    "type": "route",
+                    "to": "ASE",
+                    "from": "ZDV"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

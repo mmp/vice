@@ -120,7 +120,58 @@
             "",
             ""
         ],
-        "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZNY-videomaps.gob.zst",
+        "coordination_fixes": {
+            "FJC": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "N90"
+                }
+            ],
+            "BOYER": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "MDT"
+                }
+            ],
+            "ETX": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "MDT"
+                }
+            ],
+            "KRAZE": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "ZNY"
+                }
+            ],
+            "SNOWY": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "ZNY"
+                }
+            ],
+            "SLATT": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "ZNY"
+                }
+            ],
+            "DUMMR": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "ZNY"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

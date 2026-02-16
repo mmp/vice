@@ -509,7 +509,83 @@
             "KSTP",
             "KMIC"
         ],
-        "video_map_file": "videomaps/ZMP-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZMP-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "SNINE",
+                    "LSE",
+                    "STILS",
+                    "TAXEE",
+                    "JEDET",
+                    "EAU"
+                ],
+                "altitude_range": [
+                    0,
+                    7000
+                ],
+                "receiving_controller": "ZMP 05 ODI LO"
+            },
+            {
+                "fixes": [
+                    "LSE",
+                    "TAXEE",
+                    "JEDET"
+                ],
+                "altitude_range": [
+                    8000,
+                    99999
+                ],
+                "receiving_controller": "ZMP 05 ODI LO"
+            },
+            {
+                "fixes": [
+                    "SNINE",
+                    "STILS",
+                    "EAU"
+                ],
+                "altitude_range": [
+                    8000,
+                    99999
+                ],
+                "receiving_controller": "ZMP 06 TWINZ LO"
+            },
+            {
+                "fixes": [
+                    "FGT",
+                    "FOBUG"
+                ],
+                "altitude_range": [
+                    10000,
+                    99999
+                ],
+                "receiving_controller": "ZMP 07 FGT LO"
+            },
+            {
+                "fixes": [
+                    "ABR",
+                    "JURNY",
+                    "HUGIR",
+                    "TONCA",
+                    "ZOGAP"
+                ],
+                "receiving_controller": "ZMP 09 RWF LO"
+            },
+            {
+                "fixes": [
+                    "BRNRD",
+                    "DLH",
+                    "GEP",
+                    "HRBEK"
+                ],
+                "receiving_controller": "ZMP 10 GEP LO"
+            }
+        ],
+        "area_configs": {
+            "1": {
+                "default_airport": "KMSP"
+            }
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

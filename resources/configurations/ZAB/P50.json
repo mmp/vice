@@ -551,7 +551,93 @@
             "PHX308 HWY_RWY",
             "PHX366 LUFOPEN"
         ],
-        "video_map_file": "videomaps/ZAB-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZAB-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "ZEPER"
+                ],
+                "altitude_range": [
+                    21000,
+                    23000
+                ],
+                "receiving_controller": "ZAB 43 NW Drake Low"
+            },
+            {
+                "fixes": [
+                    "IZZZO",
+                    "FYRBD"
+                ],
+                "altitude_range": [
+                    21000,
+                    25000
+                ],
+                "receiving_controller": "ZAB 42 SW Gila Bend Low"
+            },
+            {
+                "fixes": [
+                    "BNYRD",
+                    "ECLPS"
+                ],
+                "altitude_range": [
+                    21000,
+                    25000
+                ],
+                "receiving_controller": "ZAB 46 SW Tucson Low"
+            },
+            {
+                "fixes": [
+                    "FORPE",
+                    "BROAK"
+                ],
+                "altitude_range": [
+                    21000,
+                    31000
+                ],
+                "receiving_controller": "ZAB 38 NW Miami Low/Hi"
+            },
+            {
+                "fixes": [
+                    "MRBIL",
+                    "QUAKY"
+                ],
+                "altitude_range": [
+                    21000,
+                    29000
+                ],
+                "receiving_controller": "ZAB 45 NW Winslow Low"
+            }
+        ],
+        "coordination_fixes": {
+            "BRUSR": [
+                {
+                    "type": "route",
+                    "to": "P50",
+                    "from": "ZAB"
+                }
+            ],
+            "HOMRR": [
+                {
+                    "type": "route",
+                    "to": "P50",
+                    "from": "ZAB"
+                }
+            ],
+            "GEELA": [
+                {
+                    "type": "route",
+                    "to": "P50",
+                    "from": "ZAB"
+                }
+            ],
+            "BRDEY": [
+                {
+                    "type": "route",
+                    "to": "P50",
+                    "from": "ZAB"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

@@ -329,7 +329,16 @@
             "HNL_FIX_4R",
             "HNL_FIX_26L"
         ],
-        "video_map_file": "videomaps/ZHN-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZHN-videomaps.gob.zst",
+        "coordination_fixes": {
+            "BAMBO": [
+                {
+                    "type": "route",
+                    "to": "ZHN",
+                    "from": "ZHN"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

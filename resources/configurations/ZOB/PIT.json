@@ -139,7 +139,49 @@
             "PIT-133 (HAYNZ)",
             "PIT-135 (JESEY)"
         ],
-        "video_map_file": "videomaps/ZOB-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZOB-videomaps.gob.zst",
+        "coordination_fixes": {
+            "LEJOY": [
+                {
+                    "type": "route",
+                    "to": "PIT",
+                    "from": "ZOB"
+                }
+            ],
+            "AIR": [
+                {
+                    "type": "route",
+                    "to": "PIT",
+                    "from": "ZOB"
+                }
+            ],
+            "EARED": [
+                {
+                    "type": "route",
+                    "to": "PIT",
+                    "from": "ZOB"
+                }
+            ],
+            "CUTTA": [
+                {
+                    "type": "route",
+                    "to": "PIT",
+                    "from": "ZOB"
+                }
+            ],
+            "HOMEE": [
+                {
+                    "type": "route",
+                    "to": "PIT",
+                    "from": "ZOB"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "default_airport": "KPIT"
+            }
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

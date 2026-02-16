@@ -265,7 +265,56 @@
             "MKE RWY 7R",
             "MKE RWY 25L"
         ],
-        "video_map_file": "videomaps/ZAU-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZAU-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "ALL"
+                ],
+                "altitude_range": [
+                    0,
+                    999000
+                ],
+                "receiving_controller": "ZAU 81 CRIBB"
+            }
+        ],
+        "coordination_fixes": {
+            "LEEDR": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ],
+            "LYSTR": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ],
+            "BRAVE": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ],
+            "BAE": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ],
+            "BRTMN": [
+                {
+                    "type": "route",
+                    "to": "MKE",
+                    "from": "ZAU"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

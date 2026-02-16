@@ -183,7 +183,52 @@
             "OKC152S ODO",
             "OKC MTRs"
         ],
-        "video_map_file": "videomaps/ZFW-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZFW-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "ALL"
+                ],
+                "receiving_controller": "ZFW 51 CHO-UH"
+            }
+        ],
+        "coordination_fixes": {
+            "CAMET": [
+                {
+                    "type": "route",
+                    "to": "OKC",
+                    "from": "ZFW"
+                }
+            ],
+            "GHOST": [
+                {
+                    "type": "route",
+                    "to": "OKC",
+                    "from": "ZFW"
+                }
+            ],
+            "MURAH": [
+                {
+                    "type": "route",
+                    "to": "OKC",
+                    "from": "ZFW"
+                }
+            ],
+            "TSDEL": [
+                {
+                    "type": "route",
+                    "to": "OKC",
+                    "from": "ZFW"
+                }
+            ],
+            "YUCKS": [
+                {
+                    "type": "route",
+                    "to": "OKC",
+                    "from": "ZFW"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

@@ -2089,7 +2089,530 @@
             "KTEB",
             "KISP",
             "KHPN"
-        ]
+        ],
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "MERIT",
+                    "BAYYS",
+                    "GREKI",
+                    "DEEZZ",
+                    "BAYYS",
+                    "BDR",
+                    "HIDAL",
+                    "STUBY",
+                    "PWL",
+                    "IGN"
+                ],
+                "altitude_range": [
+                    13000,
+                    999000
+                ],
+                "receiving_controller": "ZBW 19 Danbury"
+            },
+            {
+                "fixes": [
+                    "DIXIE"
+                ],
+                "altitude_range": [
+                    0,
+                    8000
+                ],
+                "aircraft_type": [
+                    "J"
+                ],
+                "receiving_controller": "WRI_APP"
+            },
+            {
+                "fixes": [
+                    "DIXIE"
+                ],
+                "altitude_range": [
+                    0,
+                    6000
+                ],
+                "aircraft_type": [
+                    "P",
+                    "T"
+                ],
+                "receiving_controller": "WRI_APP"
+            },
+            {
+                "fixes": [
+                    "DIXIE"
+                ],
+                "altitude_range": [
+                    11000,
+                    999999
+                ],
+                "receiving_controller": "ZNY 68 DIXIE"
+            },
+            {
+                "fixes": [
+                    "WHITE",
+                    "COL",
+                    "VALRE"
+                ],
+                "altitude_range": [
+                    9000,
+                    999999
+                ],
+                "receiving_controller": "ZNY 68 DIXIE"
+            },
+            {
+                "fixes": [
+                    "RBV"
+                ],
+                "altitude_range": [
+                    14000,
+                    999999
+                ],
+                "aircraft_type": [
+                    "J"
+                ],
+                "receiving_controller": "ZNY 34 Elmira"
+            },
+            {
+                "fixes": [
+                    "ARD"
+                ],
+                "altitude_range": [
+                    14000,
+                    999999
+                ],
+                "aircraft_type": [
+                    "P",
+                    "T"
+                ],
+                "receiving_controller": "ZNY 34 Elmira"
+            },
+            {
+                "fixes": [
+                    "COATE",
+                    "GAYEL",
+                    "NEION",
+                    "HNK",
+                    "WEARD",
+                    "HUO"
+                ],
+                "altitude_range": [
+                    16000,
+                    999999
+                ],
+                "aircraft_type": [
+                    "J"
+                ],
+                "receiving_controller": "ZNY 35 Huguenot"
+            },
+            {
+                "fixes": [
+                    "COATE",
+                    "HNK",
+                    "WEARD",
+                    "HUO"
+                ],
+                "altitude_range": [
+                    11000,
+                    14000
+                ],
+                "receiving_controller": "ZNY 51 Lake Henry"
+            },
+            {
+                "fixes": [
+                    "GAYEL",
+                    "HNK",
+                    "WEARD",
+                    "HUO"
+                ],
+                "altitude_range": [
+                    14000,
+                    14000
+                ],
+                "aircraft_type": [
+                    "P",
+                    "T"
+                ],
+                "receiving_controller": "ZNY 51 Lake Henry"
+            },
+            {
+                "fixes": [
+                    "HAAYS"
+                ],
+                "altitude_range": [
+                    12000,
+                    12000
+                ],
+                "receiving_controller": "ZNY 51 Lake Henry"
+            },
+            {
+                "fixes": [
+                    "COATE"
+                ],
+                "altitude_range": [
+                    8000,
+                    10000
+                ],
+                "receiving_controller": "AVP_N_APP"
+            },
+            {
+                "fixes": [
+                    "SAX"
+                ],
+                "altitude_range": [
+                    8000,
+                    8000
+                ],
+                "receiving_controller": "AVP_N_APP"
+            },
+            {
+                "fixes": [
+                    "HAAYS"
+                ],
+                "altitude_range": [
+                    9000,
+                    10000
+                ],
+                "receiving_controller": "AVP_N_APP"
+            },
+            {
+                "fixes": [
+                    "PARKE",
+                    "ELIOT",
+                    "SBJ"
+                ],
+                "altitude_range": [
+                    14000,
+                    99999
+                ],
+                "receiving_controller": "ZNY 39 PARKE"
+            },
+            {
+                "fixes": [
+                    "NEWEL",
+                    "ZIMMZ"
+                ],
+                "altitude_range": [
+                    17000,
+                    99999
+                ],
+                "receiving_controller": "ZNY 39 PARKE"
+            },
+            {
+                "fixes": [
+                    "BIGGY"
+                ],
+                "altitude_range": [
+                    14000,
+                    99999
+                ],
+                "receiving_controller": "ZNY 34 Elmira"
+            },
+            {
+                "fixes": [
+                    "BIGGY"
+                ],
+                "altitude_range": [
+                    17000,
+                    99999
+                ],
+                "receiving_controller": "ZNY 34 Elmira"
+            },
+            {
+                "fixes": [
+                    "SHIPP",
+                    "WAVEY",
+                    "HFD",
+                    "BRISS",
+                    "LOVES",
+                    "MOONI"
+                ],
+                "aircraft_type": [
+                    "J"
+                ],
+                "altitude_range": [
+                    12000,
+                    99999
+                ],
+                "receiving_controller": "ZNY 66 MANTA"
+            },
+            {
+                "fixes": [
+                    "SHIPP",
+                    "WAVEY",
+                    "HFD",
+                    "BRISS",
+                    "LOVES",
+                    "MOONI"
+                ],
+                "aircraft_type": [
+                    "P",
+                    "T"
+                ],
+                "altitude_range": [
+                    10000,
+                    99999
+                ],
+                "receiving_controller": "ZNY 66 MANTA"
+            },
+            {
+                "fixes": [
+                    "BETTE",
+                    "HAPIE",
+                    "HTO",
+                    "BDR",
+                    "MAD",
+                    "BEADS"
+                ],
+                "altitude_range": [
+                    11000,
+                    99999
+                ],
+                "receiving_controller": "ZBW 17 Nantucket"
+            }
+        ],
+        "coordination_fixes": {
+            "FLOSI": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "DYLIN": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "SWEET": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "RBV": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "PHL"
+                }
+            ],
+            "MUGZY": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "MAZIE": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "PHL"
+                }
+            ],
+            "HUO": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "KORRY": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "VIBES": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZDC"
+                }
+            ],
+            "VALRE": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "CRALY": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "MINKS": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "HEROS": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "DIALS": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "JERZY": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "GGREG": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "CAMRN": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "HTO": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "CCC": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "BELIT": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "JFK": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "SARDI": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "CREAM": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "CMK": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "BDR": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "DPK": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "ZIGGI": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "COL": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "LENDY": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "LOVES": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "NELIE": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "CREEL": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "default_airport": "KLGA"
+            },
+            "2": {
+                "default_airport": "KJFK"
+            },
+            "3": {
+                "default_airport": "KISP"
+            },
+            "4": {
+                "default_airport": "KEWR"
+            },
+            "5": {
+                "default_airport": "KSWF"
+            }
+        }
     },
     "fix_pairs": [
         {

@@ -294,7 +294,44 @@
             "RNP FIXES RWY 14",
             "RNP FIXES RWY 32"
         ],
-        "video_map_file": "videomaps/ZID-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZID-videomaps.gob.zst",
+        "coordination_fixes": {
+            "BABNE": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "EASEL": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "OPPIE": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "CIRGO": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ],
+            "SMUKE": [
+                {
+                    "type": "route",
+                    "to": "IND",
+                    "from": "ZID"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

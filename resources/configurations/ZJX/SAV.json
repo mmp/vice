@@ -118,7 +118,37 @@
             "RNAV-19",
             "RNAV - 01"
         ],
-        "video_map_file": "videomaps/ZJX-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZJX-videomaps.gob.zst",
+        "coordination_fixes": {
+            "VIYAP": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ],
+            "PLZZZ": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ],
+            "LOTTS": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ],
+            "SOOOP": [
+                {
+                    "type": "route",
+                    "to": "SAV",
+                    "from": "ZJX"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

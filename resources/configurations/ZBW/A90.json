@@ -937,6 +937,232 @@
                     }
                 ]
             }
+        },
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "HYLND",
+                    "CON",
+                    "MANCH"
+                ],
+                "altitude_range": [
+                    11000,
+                    999000
+                ],
+                "receiving_controller": "ZBW 37 Concord"
+            },
+            {
+                "fixes": [
+                    "HYLND",
+                    "CON",
+                    "MANCH"
+                ],
+                "altitude_range": [
+                    0,
+                    10000
+                ],
+                "receiving_controller": "MHT_Z_APP"
+            },
+            {
+                "fixes": [
+                    "BLZZR",
+                    "PATSS",
+                    "REVSS",
+                    "BOSOX",
+                    "GLYDE",
+                    "PUT"
+                ],
+                "altitude_range": [
+                    0,
+                    999000
+                ],
+                "receiving_controller": "ZBW 47 BOSOX"
+            },
+            {
+                "fixes": [
+                    "BRUWN",
+                    "CELTK",
+                    "PVC",
+                    "LFV",
+                    "DUNKK"
+                ],
+                "altitude_range": [
+                    11000,
+                    99999000
+                ],
+                "receiving_controller": "ZBW 18 Cape"
+            },
+            {
+                "fixes": [
+                    "BRUWN",
+                    "PVC",
+                    "LFV",
+                    "DUNKK"
+                ],
+                "altitude_range": [
+                    0,
+                    10000
+                ],
+                "receiving_controller": "ACK_N_APP"
+            },
+            {
+                "fixes": [
+                    "CELTK",
+                    "LBSTA",
+                    "PEASE",
+                    "ENE"
+                ],
+                "altitude_range": [
+                    0,
+                    10000
+                ],
+                "receiving_controller": "MHT_E_APP"
+            },
+            {
+                "fixes": [
+                    "CELTK",
+                    "LBSTA",
+                    "PEASE",
+                    "ENE"
+                ],
+                "altitude_range": [
+                    11000,
+                    99999000
+                ],
+                "receiving_controller": "ZBW 16 PARSO"
+            },
+            {
+                "fixes": [
+                    "SSOXS"
+                ],
+                "altitude_range": [
+                    11000,
+                    999000
+                ],
+                "receiving_controller": "ZBW 18 Cape"
+            },
+            {
+                "fixes": [
+                    "SSOXS"
+                ],
+                "altitude_range": [
+                    0,
+                    10000
+                ],
+                "receiving_controller": "PVD_D_APP"
+            }
+        ],
+        "coordination_fixes": {
+            "ROZZE": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "LFV": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "MINNK": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "NEWBE": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "ENE": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "CAMTN": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "GDM": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "JFUND": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "WOONS": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "PVD"
+                }
+            ],
+            "FREDO": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "PVD"
+                }
+            ],
+            "JAMMA": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "JOODY": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "OOSHN": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "ZELKA": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "DREEM": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "default_airport": "KBOS"
+            }
         }
     },
     "handoff_topology": {

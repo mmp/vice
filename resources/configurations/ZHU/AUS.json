@@ -189,7 +189,102 @@
             "GTU FINALS",
             "AUS VFR"
         ],
-        "video_map_file": "videomaps/ZHU-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZHU-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "ABI",
+                    "BNDIA",
+                    "MUCKY",
+                    "SJT",
+                    "AMUSE"
+                ],
+                "altitude_range": [
+                    0,
+                    0
+                ],
+                "receiving_controller": "ZHU 50 Stonewall"
+            },
+            {
+                "fixes": [
+                    "ZENZI",
+                    "CLL"
+                ],
+                "altitude_range": [
+                    0,
+                    8999
+                ],
+                "receiving_controller": "I90_U_APP"
+            },
+            {
+                "fixes": [
+                    "ZENZI",
+                    "CLL"
+                ],
+                "altitude_range": [
+                    9000,
+                    99000
+                ],
+                "receiving_controller": "ZHU 80 Industry"
+            },
+            {
+                "fixes": [
+                    "SAYBR"
+                ],
+                "altitude_range": [
+                    0,
+                    0
+                ],
+                "receiving_controller": "ZHU 96 Bergstrom"
+            },
+            {
+                "fixes": [
+                    "KSAT"
+                ],
+                "altitude_range": [
+                    0,
+                    13000
+                ],
+                "receiving_controller": "SAT_N_APP"
+            }
+        ],
+        "coordination_fixes": {
+            "DXEEE": [
+                {
+                    "type": "route",
+                    "to": "AUS",
+                    "from": "ZHU"
+                }
+            ],
+            "LAIKS": [
+                {
+                    "type": "route",
+                    "to": "AUS",
+                    "from": "ZHU"
+                }
+            ],
+            "WLEEE": [
+                {
+                    "type": "route",
+                    "to": "AUS",
+                    "from": "ZHU"
+                }
+            ],
+            "GABOO": [
+                {
+                    "type": "route",
+                    "to": "AUS",
+                    "from": "ZHU"
+                }
+            ],
+            "TOAMY": [
+                {
+                    "type": "route",
+                    "to": "AUS",
+                    "from": "I90"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

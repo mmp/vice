@@ -51,7 +51,7 @@
             "sector_id": "1T"
         },
         "DEN_L_DEP": {
-        "frequency": 126100,
+            "frequency": 126100,
             "radio_name": "Denver Departure",
             "sector_id": "1L"
         },
@@ -1179,7 +1179,63 @@
                 ]
             }
         ],
-        "force_ql_self": true
+        "force_ql_self": true,
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "TEHRU",
+                    "HBU",
+                    "WERNR",
+                    "CONNR",
+                    "VOAXA",
+                    "CHNGY"
+                ],
+                "receiving_controller": "ZDV 06 - Kremmling Low"
+            },
+            {
+                "fixes": [
+                    "CHUWY",
+                    "DDRTH",
+                    "JOBBA",
+                    "SAABR",
+                    "XXWNG"
+                ],
+                "receiving_controller": "ZDV 21 - Cheyenne Low"
+            },
+            {
+                "fixes": [
+                    "EEONS",
+                    "WYNDM",
+                    "EMMYS",
+                    "ZIRKL",
+                    "GAETR",
+                    "DUUZE",
+                    "EXTAN",
+                    "SHAYK"
+                ],
+                "receiving_controller": "ZDV 07 - Thurman Low"
+            },
+            {
+                "fixes": [
+                    "JOPLN",
+                    "VRONI",
+                    "SLEEK",
+                    "DAAYE",
+                    "RAITT",
+                    "SUDDZ"
+                ],
+                "receiving_controller": "ZDV 41 - Pueblo Low"
+            }
+        ],
+        "coordination_fixes": {
+            "CYS": [
+                {
+                    "type": "route",
+                    "to": "D01",
+                    "from": "ZDV"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

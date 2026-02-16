@@ -109,7 +109,51 @@
             "AVL EMERGENCY OBSTRUCTION VIDEO MAP",
             "AVL Cab"
         ],
-        "video_map_file": "videomaps/ZTL-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
+        "coordination_fixes": {
+            "LEAVI": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "JONEB": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "TUSRE": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "OBURY": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "PUPDG": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "BARRD": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

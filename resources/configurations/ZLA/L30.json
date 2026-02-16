@@ -355,7 +355,143 @@
             "038 HND-VOR L30",
             "059 LSV L30"
         ],
-        "video_map_file": "videomaps/ZLA-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZLA-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "FRNCK",
+                    "TUKRR",
+                    "VERKN"
+                ],
+                "altitude_range": [
+                    19000,
+                    23000
+                ],
+                "receiving_controller": "ZLA Sector 07"
+            },
+            {
+                "fixes": [
+                    "HOCEE",
+                    "SSKEE",
+                    "ZAYNE"
+                ],
+                "altitude_range": [
+                    19000,
+                    23000
+                ],
+                "receiving_controller": "ZLA Sector 08"
+            },
+            {
+                "fixes": [
+                    "KENNO"
+                ],
+                "altitude_range": [
+                    19000,
+                    23000
+                ],
+                "receiving_controller": "ZLA Sector 16"
+            },
+            {
+                "fixes": [
+                    "JAYSN"
+                ],
+                "altitude_range": [
+                    0,
+                    25000
+                ],
+                "receiving_controller": "LSV_L_APP",
+                "receiving_facility": "LSV"
+            },
+            {
+                "fixes": [
+                    "BLAQQ",
+                    "HEC",
+                    "LVELL"
+                ],
+                "altitude_range": [
+                    19000,
+                    23000
+                ],
+                "receiving_controller": "ZLA Sector 06"
+            }
+        ],
+        "coordination_fixes": {
+            "CHOWW": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "ZLLDA": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "WHIGG": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "GAMES": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "ISHEE": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "WAPID": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "LARKK": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "FABLE": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "RKSTR": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ],
+            "RNDRZ": [
+                {
+                    "type": "route",
+                    "to": "L30",
+                    "from": "ZLA"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "default_airport": "KLAS"
+            }
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

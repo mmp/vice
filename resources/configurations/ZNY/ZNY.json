@@ -272,7 +272,413 @@
             "MDT RVM",
             "WRI RVM"
         ],
-        "video_map_file": "videomaps/ZNY-eram-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZNY-eram-videomaps.gob.zst",
+        "coordination_fixes": {
+            "FLOSI": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "DYLIN": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZDC"
+                }
+            ],
+            "SWEET": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "BOJID": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZNY"
+                }
+            ],
+            "HIFAL": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZNY"
+                }
+            ],
+            "CHPMN": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZNY"
+                }
+            ],
+            "SPERY": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZNY"
+                }
+            ],
+            "JIIMS": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZDC"
+                }
+            ],
+            "PAATS": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZDC"
+                }
+            ],
+            "SPUDS": [
+                {
+                    "type": "route",
+                    "to": "PHL",
+                    "from": "ZDC"
+                }
+            ],
+            "KORRY": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "VIBES": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZDC"
+                }
+            ],
+            "VALRE": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "CRALY": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "MINKS": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "HEROS": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "DIALS": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "JERZY": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "GGREG": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "CAMRN": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "HTO": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "CCC": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "BELIT": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "JFK": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "SARDI": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "CREAM": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "CMK": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "BDR": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "DPK": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "ZIGGI": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "COL": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "LENDY": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "LOVES": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "NELIE": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "ROBER": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "CREEL": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "RBV": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "PHL",
+                    "altitude": [
+                        7000,
+                        7000
+                    ]
+                },
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "WRI",
+                    "altitude": [
+                        6000,
+                        6000
+                    ]
+                }
+            ],
+            "MUGZY": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZNY"
+                }
+            ],
+            "MAZIE": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "PHL"
+                }
+            ],
+            "HUO": [
+                {
+                    "type": "route",
+                    "to": "N90",
+                    "from": "ZBW"
+                }
+            ],
+            "MERIT": [
+                {
+                    "type": "route",
+                    "to": "ZBW",
+                    "from": "ZNY"
+                }
+            ],
+            "GREKI": [
+                {
+                    "type": "route",
+                    "to": "ZBW",
+                    "from": "ZNY"
+                }
+            ],
+            "BAYYS": [
+                {
+                    "type": "route",
+                    "to": "ZBW",
+                    "from": "ZNY"
+                }
+            ],
+            "BETTE": [
+                {
+                    "type": "route",
+                    "to": "ZBW",
+                    "from": "ZNY"
+                }
+            ],
+            "HAPIE": [
+                {
+                    "type": "route",
+                    "to": "ZBW",
+                    "from": "ZNY"
+                }
+            ],
+            "FJC": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "PHL",
+                    "altitude": [
+                        4000,
+                        4000
+                    ]
+                },
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "N90",
+                    "altitude": [
+                        4000,
+                        4000
+                    ]
+                }
+            ],
+            "BOYER": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "MDT"
+                }
+            ],
+            "ETX": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "MDT"
+                }
+            ],
+            "KRAZE": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "ZNY"
+                }
+            ],
+            "SNOWY": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "ZNY"
+                }
+            ],
+            "SLATT": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "ZNY"
+                }
+            ],
+            "DUMMR": [
+                {
+                    "type": "route",
+                    "to": "ABE",
+                    "from": "ZNY"
+                }
+            ],
+            "OOD": [
+                {
+                    "type": "route",
+                    "to": "ZDC",
+                    "from": "ZNY"
+                }
+            ],
+            "DQO": [
+                {
+                    "type": "route",
+                    "to": "ZDC",
+                    "from": "ZNY"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

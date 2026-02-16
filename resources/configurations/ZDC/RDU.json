@@ -114,7 +114,68 @@
             "RDU SW RVM",
             "RDU MVA"
         ],
-        "video_map_file": "videomaps/ZDC-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZDC-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "LWOOD",
+                    "DBRAH",
+                    "DANCO"
+                ],
+                "receiving_controller": "ZDC 32 Gordonsville"
+            },
+            {
+                "fixes": [
+                    "OXFRD",
+                    "CARML",
+                    "BEXGO",
+                    "BOUSY",
+                    "BEXGO"
+                ],
+                "receiving_controller": "ZDC 20 Blackstone"
+            },
+            {
+                "fixes": [
+                    "DAWTS",
+                    "HOOKZ",
+                    "ROZBO",
+                    "SHPRD",
+                    "FEBEL",
+                    "HURIC"
+                ],
+                "receiving_controller": "ZDC 09 Dixon"
+            }
+        ],
+        "coordination_fixes": {
+            "FAVKO": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "VEJAY": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "DMSTR": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "TAQLE": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

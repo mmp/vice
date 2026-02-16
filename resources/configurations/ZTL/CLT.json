@@ -245,7 +245,116 @@
             "TRIPS CAPTURE POINTS (SOUTH)",
             "TRIPS CAPTURE POINTS (NORTH)"
         ],
-        "video_map_file": "videomaps/ZTL-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "RDU",
+                    "TYI",
+                    "BARMY",
+                    "NUTZE",
+                    "AUDII",
+                    "KILNS",
+                    "LILLS"
+                ],
+                "altitude_range": [
+                    12001,
+                    99000
+                ],
+                "receiving_controller": "ZDC 32 Gordonsville"
+            },
+            {
+                "fixes": [
+                    "NOOKS",
+                    "ICONS",
+                    "KWEEN",
+                    "PITRW",
+                    "UNJAM",
+                    "BEAVY",
+                    "JENDO",
+                    "GANDT"
+                ],
+                "altitude_range": [
+                    16001,
+                    99000
+                ],
+                "receiving_controller": "ZJX 30 Nepta"
+            },
+            {
+                "fixes": [
+                    "BOBZY",
+                    "TNSLY",
+                    "BNA",
+                    "ESTRR",
+                    "IPTAY",
+                    "CUBIM",
+                    "DOOGE",
+                    "NOONN",
+                    "JOJJO",
+                    "FILDS",
+                    "KRITR",
+                    "SMIAM",
+                    "CLAWD",
+                    "WEAZL"
+                ],
+                "altitude_range": [
+                    16001,
+                    99000
+                ],
+                "receiving_controller": "ZTL 43 Pulaski High"
+            }
+        ],
+        "coordination_fixes": {
+            "BANKR": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "CHSLY": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "FILPZ": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "JONZE": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "STOCR": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "PARQR": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "GAIRY": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

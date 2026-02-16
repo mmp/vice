@@ -149,7 +149,37 @@
             "TRIAD DEPARTURE",
             "TRAKS ARRIVAL"
         ],
-        "video_map_file": "videomaps/ZTL-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
+        "coordination_fixes": {
+            "RENZI": [
+                {
+                    "type": "route",
+                    "to": "GSO",
+                    "from": "CLT"
+                }
+            ],
+            "TRAKS": [
+                {
+                    "type": "route",
+                    "to": "GSO",
+                    "from": "ZTL"
+                }
+            ],
+            "MMJAY": [
+                {
+                    "type": "route",
+                    "to": "GSO",
+                    "from": "ZTL"
+                }
+            ],
+            "HENBY": [
+                {
+                    "type": "route",
+                    "to": "GSO",
+                    "from": "ZTL"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

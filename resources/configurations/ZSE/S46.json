@@ -204,7 +204,58 @@
             "NORTH SHORELINE",
             "SOUTH SHORELINE"
         ],
-        "video_map_file": "videomaps/ZSE-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZSE-videomaps.gob.zst",
+        "coordination_fixes": {
+            "HUMPP": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ],
+            "GLASR": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ],
+            "LIINE": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ],
+            "DIGGN": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ],
+            "MARNR": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ],
+            "LACEE": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ],
+            "HUVUS": [
+                {
+                    "type": "route",
+                    "to": "S46",
+                    "from": "ZSE"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

@@ -210,7 +210,217 @@
             "MDT-005 (EAST FLOW)",
             "MDT-006 (WEST FLOW)"
         ],
-        "video_map_file": "videomaps/ZNY-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZNY-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "LVZ",
+                    "ETX",
+                    "FJC",
+                    "LRP",
+                    "PTW",
+                    "ARD",
+                    "DQO",
+                    "VINNY",
+                    "HWANG"
+                ],
+                "altitude_range": [
+                    9000,
+                    99999
+                ],
+                "receiving_controller": "ZNY 26 Lancaster"
+            },
+            {
+                "fixes": [
+                    "LVZ"
+                ],
+                "altitude_range": [
+                    0,
+                    8000
+                ],
+                "receiving_controller": "AVP_S_APP"
+            },
+            {
+                "fixes": [
+                    "ETX",
+                    "FJC",
+                    "HWANG"
+                ],
+                "altitude_range": [
+                    6000,
+                    8000
+                ],
+                "receiving_controller": "ABE_DEP"
+            },
+            {
+                "fixes": [
+                    "ETX",
+                    "FJC",
+                    "PTW",
+                    "ARD",
+                    "HWANG"
+                ],
+                "altitude_range": [
+                    0,
+                    5000
+                ],
+                "receiving_controller": "RDG_APP"
+            },
+            {
+                "fixes": [
+                    "DQO"
+                ],
+                "altitude_range": [
+                    0,
+                    8000
+                ],
+                "receiving_controller": "PHL_ND_DEP"
+            },
+            {
+                "fixes": [
+                    "ARD",
+                    "PTW"
+                ],
+                "altitude_range": [
+                    7000,
+                    8000
+                ],
+                "receiving_controller": "PHL_NA_APP"
+            },
+            {
+                "fixes": [
+                    "ARD",
+                    "PTW"
+                ],
+                "altitude_range": [
+                    6000,
+                    6000
+                ],
+                "receiving_controller": "PHL_PT_APP"
+            },
+            {
+                "fixes": [
+                    "HAR",
+                    "BRNAN",
+                    "JST",
+                    "VINSE",
+                    "SCAPE",
+                    "THS",
+                    "GRAMO",
+                    "MRB",
+                    "EMI",
+                    "PSB",
+                    "MCMAN",
+                    "GAAPP",
+                    "SEG",
+                    "KIACK",
+                    "WILSS"
+                ],
+                "altitude_range": [
+                    9000,
+                    99999
+                ],
+                "receiving_controller": "ZNY 27 Middletown"
+            },
+            {
+                "fixes": [
+                    "PSB",
+                    "MCMAN",
+                    "GAAPP",
+                    "SEG",
+                    "KIACK"
+                ],
+                "altitude_range": [
+                    0,
+                    8000
+                ],
+                "receiving_controller": "ZNY 91 Williamsport"
+            },
+            {
+                "fixes": [
+                    "VINNY",
+                    "EMI"
+                ],
+                "altitude_range": [
+                    0,
+                    8000
+                ],
+                "receiving_controller": "BWI_B_APP"
+            },
+            {
+                "fixes": [
+                    "MRB"
+                ],
+                "altitude_range": [
+                    0,
+                    6000
+                ],
+                "receiving_controller": "IAD_E_APP"
+            },
+            {
+                "fixes": [
+                    "MRB"
+                ],
+                "altitude_range": [
+                    7000,
+                    8000
+                ],
+                "receiving_controller": "IAD_M_APP"
+            },
+            {
+                "fixes": [
+                    "SCAPE",
+                    "THS",
+                    "VINSE",
+                    "BRNAN",
+                    "JST",
+                    "WILSS"
+                ],
+                "altitude_range": [
+                    0,
+                    8000
+                ],
+                "receiving_controller": "JST_APP",
+                "receiving_facility": "JST"
+            }
+        ],
+        "coordination_fixes": {
+            "HAR": [
+                {
+                    "type": "route",
+                    "to": "MDT",
+                    "from": "ZNY"
+                }
+            ],
+            "HWANG": [
+                {
+                    "type": "route",
+                    "to": "MDT",
+                    "from": "ZNY"
+                }
+            ],
+            "ETX": [
+                {
+                    "type": "route",
+                    "to": "MDT",
+                    "from": "ZNY"
+                }
+            ],
+            "LRP": [
+                {
+                    "type": "route",
+                    "to": "MDT",
+                    "from": "ZNY"
+                }
+            ],
+            "MXE": [
+                {
+                    "type": "route",
+                    "to": "MDT",
+                    "from": "ZNY"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

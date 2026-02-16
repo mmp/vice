@@ -204,7 +204,61 @@
             "FINAL 10",
             "FINAL 28"
         ],
-        "video_map_file": "videomaps/ZSE-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZSE-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "LAVAA",
+                    "YKM",
+                    "PDT",
+                    "SUNED"
+                ],
+                "receiving_controller": "ZSE Sector 34"
+            },
+            {
+                "fixes": [
+                    "MINNE",
+                    "FAMUK",
+                    "EASON",
+                    "HISKU",
+                    "ONP",
+                    "UBG",
+                    "EUG",
+                    "OED"
+                ],
+                "receiving_controller": "ZSE Sector 06"
+            },
+            {
+                "fixes": [
+                    "COUGA",
+                    "AST",
+                    "TOU"
+                ],
+                "receiving_controller": "ZSE Sector 32"
+            },
+            {
+                "fixes": [
+                    "ARRIE",
+                    "OLM"
+                ],
+                "receiving_controller": "ZSE Sector 02"
+            },
+            {
+                "fixes": [
+                    "HRMNS",
+                    "CHISM",
+                    "DSD",
+                    "WHAMY",
+                    "SYNKR",
+                    "PUHTS",
+                    "JUDAH",
+                    "IMB",
+                    "KOATA",
+                    "TIMEE"
+                ],
+                "receiving_controller": "ZSE Sector 05"
+            }
+        ]
     },
     "handoff_topology": {
         "handoff_ids": [],

@@ -153,6 +153,65 @@
             "WOZEE": {},
             "YNG": {},
             "YXU": {}
+        },
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "ALL"
+                ],
+                "receiving_controller": "ZOB 66 Bellaire"
+            }
+        ],
+        "coordination_fixes": {
+            "BENEE": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "BUF": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "DKK": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "EHMAN": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "JHW": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "WOZEE": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ],
+            "ARICO": [
+                {
+                    "type": "route",
+                    "to": "BUF",
+                    "from": "ZOB"
+                }
+            ]
         }
     },
     "handoff_topology": {

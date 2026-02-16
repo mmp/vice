@@ -145,7 +145,15 @@
             "C90 ZAU LOW SECTORS",
             "C90 VFR"
         ],
-        "video_map_file": "videomaps/ZAU-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZAU-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "ALL"
+                ],
+                "receiving_controller": "ZAU 35 BEARZ"
+            }
+        ]
     },
     "handoff_topology": {
         "handoff_ids": [

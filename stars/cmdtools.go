@@ -94,13 +94,14 @@ func init() {
 	registerCommand(CommandModeMultiFunc, "NP[NUM]",
 		func(sp *STARSPane, ctx *panes.Context, ps *Preferences, idx int) error {
 			// Use default airport from area config
-			defaultAirport := ctx.FacilityAdaptation.DefaultAirportForController(ctx.UserController())
-			if len(defaultAirport) == 0 {
+			ctrl := ctx.UserController()
+			da := ctx.FacilityAdaptation.DefaultAirportForArea(ctrl.Area)
+			if da == "" {
 				return ErrSTARSIllegalFunction
 			}
-			ap := defaultAirport[1:]
+			ap := da[1:] // Strip leading "K" to get FAA 3-letter code
 			if _, ok := av.DB.LookupAirport(ap); !ok {
-				panic(defaultAirport)
+				panic(da)
 			}
 			return toggleCRDAGhostsForRunwayPair(sp, ctx, ps, ap, idx)
 		})

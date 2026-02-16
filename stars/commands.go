@@ -833,6 +833,38 @@ func (sp *STARSPane) maybeAutoHomeCursor(ctx *panes.Context) {
 	}
 }
 
+// returns the controller responsible for the aircraft given its altitude
+// and route.
+func calculateAirspace(ctx *panes.Context, trk *sim.Track) (string, error) {
+	for _, rules := range ctx.FacilityAdaptation.AirspaceAwareness {
+		fp := trk.FlightPlan
+		for _, fix := range rules.Fix {
+			// Does the fix in the rules match the route?
+			if fix != "ALL" && fp.ExitFix != fix {
+				continue
+			}
+
+			// Does the final altitude satisfy the altitude range, if specified?
+			alt := rules.AltitudeRange
+			if !(alt[0] == 0 && alt[1] == 0) /* none specified */ &&
+				(fp.RequestedAltitude < alt[0] || fp.RequestedAltitude > alt[1]) {
+				continue
+			}
+
+			// Finally make sure any aircraft type specified in the rules
+			// in the matches.
+			if perf, ok := av.DB.AircraftPerformance[fp.AircraftType]; ok {
+				engineType := perf.Engine.AircraftType
+				if len(rules.AircraftType) == 0 || slices.Contains(rules.AircraftType, engineType) {
+					return rules.ReceivingController, nil
+				}
+			}
+		}
+	}
+
+	return "", ErrSTARSIllegalPosition
+}
+
 // lookupControllerByTCP resolves a TCP identifier to a controller.
 // Handles: triangle prefix (external facility), single char (same sector expansion),
 // and two char (same facility or ERAM).
@@ -890,12 +922,21 @@ func lookupControllerByTCP(controllers map[sim.ControlPosition]*av.Controller, i
 	})
 }
 
-// lookupControllerWithAirspace resolves a TCP identifier to a controller.
-// The "C" identifier (ARTCC airspace awareness) is no longer supported.
+// lookupControllerWithAirspace resolves a TCP identifier to a controller,
+// with support for ARTCC airspace awareness ("C" identifier).
+// Use this when the TCP might be "C" and you have an aircraft context.
 func lookupControllerWithAirspace(ctx *panes.Context, id string, trk *sim.Track) *av.Controller {
 	if id == "C" {
+		tcp, err := calculateAirspace(ctx, trk)
+		if err != nil {
+			return nil
+		}
+		if ctrl, ok := ctx.Client.State.Controllers[sim.ControlPosition(tcp)]; ok {
+			return ctrl
+		}
 		return nil
 	}
+
 	return lookupControllerByTCP(ctx.Client.State.Controllers, id, ctx.UserController().SectorID)
 }
 

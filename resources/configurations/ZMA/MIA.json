@@ -513,7 +513,77 @@
             "FLL-016S G EAST AIRSPACE",
             "FLL-021S G WEST AIRSPACE"
         ],
-        "video_map_file": "videomaps/ZMA-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZMA-videomaps.gob.zst",
+        "coordination_fixes": {
+            "HULKY": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "CUUDA": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "OLAHS": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "BANTY": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "WOOSA": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "YACKO": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "FROGZ": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "SNDBR": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "VIICE": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ]
+        },
+        "area_configs": {
+            "1": {
+                "default_airport": "KMIA"
+            }
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

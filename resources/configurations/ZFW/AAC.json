@@ -283,6 +283,63 @@
             "TAA",
             "SID"
         ],
-        "video_map_file": "videomaps/aac-videomaps.gob.zst"
+        "video_map_file": "videomaps/aac-videomaps.gob.zst",
+        "airspace_awareness": [
+            {
+                "fixes": [
+                    "COLIN",
+                    "MAYES"
+                ],
+                "receiving_controller": "ZAE_TUL"
+            },
+            {
+                "fixes": [
+                    "SHAWN",
+                    "NOBLE"
+                ],
+                "receiving_controller": "ZAE_OKC"
+            }
+        ],
+        "coordination_fixes": {
+            "ATO": [
+                {
+                    "type": "route",
+                    "to": "AAC",
+                    "from": "ZFW"
+                }
+            ],
+            "BAR": [
+                {
+                    "type": "route",
+                    "to": "AAC",
+                    "from": "ZFW"
+                }
+            ],
+            "KIL": [
+                {
+                    "type": "route",
+                    "to": "AAC",
+                    "from": "ZFW"
+                }
+            ],
+            "REE": [
+                {
+                    "type": "route",
+                    "to": "AAC",
+                    "from": "ZFW"
+                }
+            ]
+        }
+    },
+    "handoff_topology": {
+        "handoff_ids": [
+            {
+                "id": "ZAE",
+                "eram_prefix": "E"
+            }
+        ],
+        "neighboring_facilities": [
+            "ZAE"
+        ]
     }
 }

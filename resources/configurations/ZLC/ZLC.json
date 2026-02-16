@@ -251,7 +251,79 @@
                 "slope_angle": 0.175
             }
         },
-        "video_map_file": "videomaps/ZLC-eram-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZLC-eram-videomaps.gob.zst",
+        "coordination_fixes": {
+            "CRAZI": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ],
+            "BGHRN": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ],
+            "KUSTR": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ],
+            "YLSTN": [
+                {
+                    "type": "route",
+                    "to": "BIL",
+                    "from": "ZLC"
+                }
+            ],
+            "CARTR": [
+                {
+                    "type": "route",
+                    "to": "S56",
+                    "from": "ZLC"
+                }
+            ],
+            "SKEES": [
+                {
+                    "type": "route",
+                    "to": "S56",
+                    "from": "ZLC"
+                }
+            ],
+            "NORDK": [
+                {
+                    "type": "route",
+                    "to": "S56",
+                    "from": "ZLC"
+                }
+            ],
+            "LEEHY": [
+                {
+                    "type": "route",
+                    "to": "S56",
+                    "from": "ZLC"
+                }
+            ],
+            "QWENN": [
+                {
+                    "type": "route",
+                    "to": "S56",
+                    "from": "ZLC"
+                }
+            ],
+            "WAATS": [
+                {
+                    "type": "route",
+                    "to": "S56",
+                    "from": "ZLC"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

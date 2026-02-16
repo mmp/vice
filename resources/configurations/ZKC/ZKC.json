@@ -391,5 +391,16 @@
             "ZME",
             "ZMP"
         ]
+    },
+    "stars_config": {
+        "coordination_fixes": {
+            "MURAH": [
+                {
+                    "type": "route",
+                    "to": "ZFW",
+                    "from": "ZKC"
+                }
+            ]
+        }
     }
 }

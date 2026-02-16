@@ -472,5 +472,135 @@
             "ZOB",
             "ZTL"
         ]
+    },
+    "stars_config": {
+        "coordination_fixes": {
+            "DYLIN": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZDC"
+                }
+            ],
+            "JIIMS": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZDC"
+                }
+            ],
+            "PAATS": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZDC"
+                }
+            ],
+            "VIBES": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZDC"
+                }
+            ],
+            "HENBY": [
+                {
+                    "type": "route",
+                    "to": "ZTL",
+                    "from": "ZDC"
+                }
+            ],
+            "FAVKO": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "VEJAY": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "DMSTR": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "TAQLE": [
+                {
+                    "type": "route",
+                    "to": "RDU",
+                    "from": "ZDC"
+                }
+            ],
+            "CAPSS": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "CLIPR": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "DEALE": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "WEWIL": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "TRUPS": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "VCTRY": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "HOYAS": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "SMOOT": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ],
+            "JAYOH": [
+                {
+                    "type": "route",
+                    "to": "PCT",
+                    "from": "ZDC"
+                }
+            ]
+        }
     }
 }

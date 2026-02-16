@@ -428,5 +428,289 @@
             "ZJX",
             "ZME"
         ]
+    },
+    "stars_config": {
+        "coordination_fixes": {
+            "CHPPR": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "GLAVN": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "HOBTT": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "JJEDI": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "ONDRE": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "OZZZI": [
+                {
+                    "type": "route",
+                    "to": "A80",
+                    "from": "ZTL"
+                }
+            ],
+            "DEBBT": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "CHSLY": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "FILPZ": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "JONZE": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "STOCR": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "PARQR": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "GAIRY": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "GRD": [
+                {
+                    "type": "route",
+                    "to": "CLT",
+                    "from": "ZTL"
+                }
+            ],
+            "PYRES": [
+                {
+                    "type": "route",
+                    "to": "AGS",
+                    "from": "ZJX"
+                }
+            ],
+            "STUGE": [
+                {
+                    "type": "route",
+                    "to": "AGS",
+                    "from": "ZJX"
+                }
+            ],
+            "MILEN": [
+                {
+                    "type": "route",
+                    "to": "AGS",
+                    "from": "ZJX"
+                }
+            ],
+            "STWRT": [
+                {
+                    "type": "route",
+                    "to": "AGS",
+                    "from": "ZJX"
+                }
+            ],
+            "EXIST": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "CIVMA": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "FAYEZ": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "IXUSE": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "BESOM": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "QECKE": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "KOCEY": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "BOYDD": [
+                {
+                    "type": "route",
+                    "to": "BHM",
+                    "from": "ZTL"
+                }
+            ],
+            "RENZI": [
+                {
+                    "type": "route",
+                    "to": "GSO",
+                    "from": "CLT"
+                }
+            ],
+            "TRAKS": [
+                {
+                    "type": "route",
+                    "to": "GSO",
+                    "from": "ZTL"
+                }
+            ],
+            "MMJAY": [
+                {
+                    "type": "route",
+                    "to": "GSO",
+                    "from": "ZTL"
+                }
+            ],
+            "HENBY": [
+                {
+                    "type": "route",
+                    "to": "GSO",
+                    "from": "ZDC"
+                }
+            ],
+            "ANGRI": [
+                {
+                    "type": "route",
+                    "to": "GSP",
+                    "from": "ZTL"
+                }
+            ],
+            "MCHLN": [
+                {
+                    "type": "route",
+                    "to": "GSP",
+                    "from": "ZTL"
+                }
+            ],
+            "RCTOR": [
+                {
+                    "type": "route",
+                    "to": "GSP",
+                    "from": "ZTL"
+                }
+            ],
+            "TANCE": [
+                {
+                    "type": "route",
+                    "to": "GSP",
+                    "from": "ZTL"
+                }
+            ],
+            "LEAVI": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "JONEB": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "TUSRE": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "OBURY": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "PUPDG": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ],
+            "BARRD": [
+                {
+                    "type": "route",
+                    "to": "AVL",
+                    "from": "ZTL"
+                }
+            ]
+        }
     }
 }

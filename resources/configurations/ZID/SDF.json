@@ -170,7 +170,49 @@
             "Rivers",
             "Stadiums"
         ],
-        "video_map_file": "videomaps/ZID-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZID-videomaps.gob.zst",
+        "coordination_fixes": {
+            "CHERI": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ],
+            "NERVE": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "CVG"
+                }
+            ],
+            "FRIZN": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ],
+            "MAUDD": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ],
+            "MBELL": [
+                {
+                    "type": "route",
+                    "to": "SDF",
+                    "from": "ZID"
+                }
+            ]
+        },
+        "area_configs": {
+            "4": {
+                "default_airport": "KSDF"
+            }
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

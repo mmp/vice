@@ -118,7 +118,37 @@
             "1A3 RNAV (GPS) RUNWAY 20 APPROACH",
             "1A3 RNAV (GPS) RUNWAY 02 APPROACH"
         ],
-        "video_map_file": "videomaps/ZTL-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZTL-videomaps.gob.zst",
+        "coordination_fixes": {
+            "PYRES": [
+                {
+                    "type": "route",
+                    "to": "AGS",
+                    "from": "ZTL"
+                }
+            ],
+            "STUGE": [
+                {
+                    "type": "route",
+                    "to": "AGS",
+                    "from": "ZTL"
+                }
+            ],
+            "MILEN": [
+                {
+                    "type": "route",
+                    "to": "AGS",
+                    "from": "ZTL"
+                }
+            ],
+            "STWRT": [
+                {
+                    "type": "route",
+                    "to": "AGS",
+                    "from": "ZTL"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

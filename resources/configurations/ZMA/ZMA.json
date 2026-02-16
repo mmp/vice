@@ -288,5 +288,205 @@
             "ZSU",
             "ZWY"
         ]
+    },
+    "stars_config": {
+        "coordination_fixes": {
+            "ECAKE": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "LACEN": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "RIDES": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "ALYNA": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "HAANZ": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "WISRD": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "GIRAF": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "LORRA": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "ZINGR": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "PRICY": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "SURFR": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "BAIRN": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "JOKRS": [
+                {
+                    "type": "route",
+                    "to": "ZJX",
+                    "from": "ZMA"
+                }
+            ],
+            "DSIDE": [
+                {
+                    "type": "route",
+                    "to": "TPA",
+                    "from": "ZMA"
+                }
+            ],
+            "RAYZZ": [
+                {
+                    "type": "route",
+                    "to": "TPA",
+                    "from": "ZMA"
+                }
+            ],
+            "OLENE": [
+                {
+                    "type": "route",
+                    "to": "TPA",
+                    "from": "ZJX"
+                }
+            ],
+            "MAATY": [
+                {
+                    "type": "route",
+                    "to": "TPA",
+                    "from": "ZJX"
+                }
+            ],
+            "BANGZ": [
+                {
+                    "type": "route",
+                    "to": "TPA",
+                    "from": "ZJX"
+                }
+            ],
+            "LUBBR": [
+                {
+                    "type": "route",
+                    "to": "TPA",
+                    "from": "ZJX"
+                }
+            ],
+            "HULKY": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "CUUDA": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "OLAHS": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "BANTY": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "WOOSA": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "YACKO": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "FROGZ": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "SNDBR": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ],
+            "VIICE": [
+                {
+                    "type": "route",
+                    "to": "MIA",
+                    "from": "ZMA"
+                }
+            ]
+        }
     }
 }

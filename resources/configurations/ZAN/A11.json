@@ -115,7 +115,12 @@
             "A11 GEO",
             "A11 ARSP"
         ],
-        "video_map_file": "videomaps/ZAN-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZAN-videomaps.gob.zst",
+        "area_configs": {
+            "1": {
+                "default_airport": "PANC"
+            }
+        }
     },
     "handoff_topology": {
         "handoff_ids": [],

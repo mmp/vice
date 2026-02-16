@@ -223,7 +223,205 @@
         "stars_maps": [
             "TRACON"
         ],
-        "video_map_file": "videomaps/ZBW-eram-videomaps.gob.zst"
+        "video_map_file": "videomaps/ZBW-eram-videomaps.gob.zst",
+        "coordination_fixes": {
+            "FLOSI": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "GGABE": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "GOSHI": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "VALRE": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "HTO": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "CCC": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "BELIT": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "CREAM": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "DPK": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "NELIE": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "HUO": [
+                {
+                    "type": "route",
+                    "to": "ZNY",
+                    "from": "ZBW"
+                }
+            ],
+            "MAD": [
+                {
+                    "type": "route",
+                    "to": "Y90",
+                    "from": "ZBW"
+                }
+            ],
+            "STELA": [
+                {
+                    "type": "route",
+                    "to": "Y90",
+                    "from": "ZBW"
+                }
+            ],
+            "ROZZE": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "LFV": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "MINNK": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "NEWBE": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "ENE": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "CAMTN": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "GDM": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "JFUND": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "WOONS": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "PVD"
+                }
+            ],
+            "FREDO": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "PVD"
+                }
+            ],
+            "JAMMA": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "JOODY": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "OOSHN": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "ZELKA": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ],
+            "DREEM": [
+                {
+                    "type": "route",
+                    "to": "A90",
+                    "from": "ZBW"
+                }
+            ]
+        }
     },
     "handoff_topology": {
         "handoff_ids": [

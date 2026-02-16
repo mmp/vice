@@ -394,5 +394,156 @@
             "ZKC",
             "ZME"
         ]
+    },
+    "stars_config": {
+        "coordination_fixes": {
+            "ATOKA": [
+                {
+                    "type": "route",
+                    "to": "AAC",
+                    "from": "ZFW"
+                }
+            ],
+            "BARTS": [
+                {
+                    "type": "route",
+                    "to": "AAC",
+                    "from": "ZFW"
+                }
+            ],
+            "KILLR": [
+                {
+                    "type": "route",
+                    "to": "AAC",
+                    "from": "ZFW"
+                }
+            ],
+            "REELI": [
+                {
+                    "type": "route",
+                    "to": "AAC",
+                    "from": "ZFW"
+                }
+            ],
+            "BEREE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "BOOVE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "BRDJE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "VKTRY": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "KNEAD": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "FINGR": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "GREGS": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "ORVLL": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "SLUGG": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "DODJE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "SASIE": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "MOTZA": [
+                {
+                    "type": "route",
+                    "to": "D10",
+                    "from": "ZFW"
+                }
+            ],
+            "CAMET": [
+                {
+                    "type": "route",
+                    "to": "OKC",
+                    "from": "ZFW"
+                }
+            ],
+            "GHOST": [
+                {
+                    "type": "route",
+                    "to": "OKC",
+                    "from": "ZFW"
+                }
+            ],
+            "MURAH": [
+                {
+                    "type": "route",
+                    "to": "OKC",
+                    "from": "ZKC"
+                }
+            ],
+            "TSDEL": [
+                {
+                    "type": "route",
+                    "to": "OKC",
+                    "from": "ZFW"
+                }
+            ],
+            "YUCKS": [
+                {
+                    "type": "route",
+                    "to": "OKC",
+                    "from": "ZFW"
+                }
+            ]
+        }
     }
 }
