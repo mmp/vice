@@ -1329,20 +1329,24 @@ func handleMultiplicativeClick(ep *ERAMPane, pref *int, min, max, step int) {
 
 	value := *pref
 	if ep.mousePrimaryClicked(mouse) || ep.mousePrimaryDown(mouse) { // lower value
-		if value/step >= min {
+		if value/step > min {
 			if value == 1 {
 				*pref = 0
 			} else {
 				*pref = value / step
 			}
+		} else {
+			ep.SetTemporaryCursor("EramInvalidSelect", 0.5, "")
 		}
 	} else if ep.mouseTertiaryClicked(mouse) || ep.mouseTertiaryDown(mouse) { // raise value
-		if value*step <= max {
+		if value*step < max {
 			if value == 0 {
 				*pref = 1
 			} else {
 				*pref = value * step
 			}
+		} else {
+			ep.SetTemporaryCursor("EramInvalidEnter", 0.5, "")
 		}
 	}
 }
