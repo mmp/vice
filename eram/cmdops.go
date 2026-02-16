@@ -79,6 +79,21 @@ func init() {
 	registerCommand(CommandModeNone, "MR", handleMapRequestList)
 	registerCommand(CommandModeNone, "MR [FIELD]", handleMapRequestLoad)
 
+	// LA
+	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM]", handleLALocLoc)
+	registerCommand(CommandModeNone, "LA [FLID] [LOC_SYM]", handleLATrkLoc)
+	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM] /[NUM]", handleLALocLocSpeed)
+	registerCommand(CommandModeNone, "LA [FLID] [LOC_SYM] /[NUM]", handleLATrkLocSpeed)
+	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM] T/[NUM]", handleLALocLocTrueSpeed)
+	registerCommand(CommandModeNone, "LA [FLID] [LOC_SYM] T/[NUM]", handleLATrkLocTrueSpeed)
+	registerCommand(CommandModeNone, "LA [LOC_SYM] [LOC_SYM] T", handleLALocLocTrue)
+	registerCommand(CommandModeNone, "LA [FLID] [LOC_SYM] T", handleLATrkLocTrue)
+
+	// LB
+	registerCommand(CommandModeNone, "LB [FIX] [LOC_SYM]", handleLBFixLoc)
+	registerCommand(CommandModeNone, "LB [FIX] [FLID]", handleLBFixTrk)
+	registerCommand(CommandModeNone, "LB [FIX]/[NUM] [FLID]", handleLBFixSpeedTrk)
+
 	// LF - CRR (Continuous Range Readout)
 	// LF //FIX [LABEL]: Create new CRR group at fix location
 	// LF //FIX [LABEL] [AIRCRAFT]: Create new CRR group with aircraft
@@ -349,6 +364,113 @@ func handleMapRequestLoad(ep *ERAMPane, ctx *panes.Context, groupName string) (C
 	return CommandStatus{
 		bigOutput: fmt.Sprintf("ACCEPT\nMAP REQUEST\n%v", ps.VideoMapGroup),
 	}, nil
+}
+
+///////////////////////////////////////////////////////////////////////////
+// LA - Range/Bearing Between Two Points
+
+// formatRangeBearing computes distance/bearing and returns (detail string for secondary output).
+func formatRangeBearing(from, to math.Point2LL, nmPerLon, magVar float32, trueBrg bool, speed float32) string {
+	dist := math.NMDistance2LL(from, to)
+
+	var magCorr float32
+	brgLabel := "MAG"
+	if trueBrg {
+		brgLabel = "TRUE"
+	} else {
+		magCorr = magVar
+	}
+	brg := math.Heading2LL(from, to, nmPerLon, magCorr)
+
+	s := fmt.Sprintf("RANGE * %.1f NM\nBEARING * %03.0f DEG %s", dist, brg, brgLabel)
+	if speed > 0 {
+		time := (dist / speed) * 60
+		s += fmt.Sprintf("\nGS * %.0f  TIME * %.1f", speed, time)
+	}
+	return s
+}
+
+func handleLALocLoc(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32) CommandStatus {
+	from := math.Point2LL{pos1[0], pos1[1]}
+	to := math.Point2LL{pos2[0], pos2[1]}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, 0))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+}
+
+func handleLATrkLoc(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32) CommandStatus {
+	to := math.Point2LL{pos[0], pos[1]}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, trk.Groundspeed))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+}
+
+func handleLALocLocSpeed(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32, speed int) CommandStatus {
+	from := math.Point2LL{pos1[0], pos1[1]}
+	to := math.Point2LL{pos2[0], pos2[1]}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, float32(speed)))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+}
+
+func handleLATrkLocSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32, speed int) CommandStatus {
+	to := math.Point2LL{pos[0], pos[1]}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, float32(speed)))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+}
+
+func handleLALocLocTrueSpeed(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32, speed int) CommandStatus {
+	from := math.Point2LL{pos1[0], pos1[1]}
+	to := math.Point2LL{pos2[0], pos2[1]}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, float32(speed)))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+}
+
+func handleLATrkLocTrueSpeed(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32, speed int) CommandStatus {
+	to := math.Point2LL{pos[0], pos[1]}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, float32(speed)))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+}
+
+func handleLALocLocTrue(ep *ERAMPane, ctx *panes.Context, pos1 [2]float32, pos2 [2]float32) CommandStatus {
+	from := math.Point2LL{pos1[0], pos1[1]}
+	to := math.Point2LL{pos2[0], pos2[1]}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(from, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, 0))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+}
+
+func handleLATrkLocTrue(ep *ERAMPane, ctx *panes.Context, trk *sim.Track, pos [2]float32) CommandStatus {
+	to := math.Point2LL{pos[0], pos[1]}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(trk.Location, to, ctx.NmPerLongitude, ctx.MagneticVariation, true, 0))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// LB - Range/Bearing From Fix
+
+func handleLBFixLoc(ep *ERAMPane, ctx *panes.Context, fix string, pos [2]float32) (CommandStatus, error) {
+	fixPos, ok := ctx.Client.State.Locate(fix)
+	if !ok {
+		return CommandStatus{}, ErrERAMIllegalValue
+	}
+	to := math.Point2LL{pos[0], pos[1]}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(fixPos, to, ctx.NmPerLongitude, ctx.MagneticVariation, false, 0))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}, nil
+}
+
+func handleLBFixTrk(ep *ERAMPane, ctx *panes.Context, fix string, trk *sim.Track) (CommandStatus, error) {
+	fixPos, ok := ctx.Client.State.Locate(fix)
+	if !ok {
+		return CommandStatus{}, ErrERAMIllegalValue
+	}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(fixPos, trk.Location, ctx.NmPerLongitude, ctx.MagneticVariation, false, trk.Groundspeed))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}, nil
+}
+
+func handleLBFixSpeedTrk(ep *ERAMPane, ctx *panes.Context, fix string, speed int, trk *sim.Track) (CommandStatus, error) {
+	fixPos, ok := ctx.Client.State.Locate(fix)
+	if !ok {
+		return CommandStatus{}, ErrERAMIllegalValue
+	}
+	ep.smallOutput.Set(ep.currentPrefs(), formatRangeBearing(fixPos, trk.Location, ctx.NmPerLongitude, ctx.MagneticVariation, false, float32(speed)))
+	return CommandStatus{bigOutput: "ACCEPT\nRANGE/BEARING"}, nil
 }
 
 ///////////////////////////////////////////////////////////////////////////

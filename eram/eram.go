@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"time"
+	"unicode"
 
 	av "github.com/mmp/vice/aviation"
 	"github.com/mmp/vice/client"
@@ -497,7 +498,10 @@ func (inp *inputText) Add(str string, color renderer.RGB, location [2]float32) {
 }
 
 func (inp *inputText) AddLocation(ps *Preferences, location [2]float32) {
-	inp.Add(locationSymbol, ps.Brightness.Text.ScaleRGB(toolbarTextColor), location)
+	str := inp.String()
+	str = strings.TrimRightFunc(str, unicode.IsSpace)
+	inp.Set(ps, str)
+	inp.Add(" "+locationSymbol+"", ps.Brightness.Text.ScaleRGB(toolbarTextColor), location)
 }
 
 // No formatting needed
