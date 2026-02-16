@@ -215,6 +215,7 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-locations">Specifying Locations</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-routes">Aircraft Routes</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airlines-aircraft">Airlines and Aircraft</a></li>
+          <li class="nav-item"><a class="nav-link scrollto" href="#fe-facility-config">Facility Configuration</a></li>
           <li class="nav-item"><a class="nav-link scrollto" href="#fe-scenario-groups">Scenario Groups</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-airports">Airports</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#fe-approaches">Approaches</a></li>
@@ -327,7 +328,7 @@ index ca31f47..48159e0 100644
               </p>
               <p><i>vice</i> supports departure and arrival control
                 scenarios in numerous TRACONs and ATCT/TRACONs, currently:
-A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, BTV, BUF, C90, CHS, CID, CLE, CLT, COS, CPR, D01, D10, D21, DAB, EWR, F11, GSO, GSP, GTF, I90, IND, JAX, L30, M98, MCI, MDT, MIA, MKE, N90, NCT, OKC, P31, P50, P80, PCT, PHL, PIT, PVD, PWM, R90, RDU, S46, S56, SAV, SBA, SBN, SCT, SDF, SGF, SYR, TPA, and Y90.
+A11, A80, A90, AAC, ABE, ABQ, AGS, ALB, ASE, AUS, AVL, BGR, BHM, BIL, BNA, BOI, BTV, BUF, C90, CHS, CID, CLE, CLT, COS, CPR, CVG, D01, D10, D21, DAB, F11, GSO, GSP, GTF, HNL, I90, IND, JAX, L30, M98, MCI, MDT, MIA, MKE, MYR, N90, NCT, OGG, OKC, P31, P50, P80, PCT, PHL, PIT, PVD, PWM, R90, RDU, S46, S56, SAT, SAV, SBA, SBN, SCT, SDF, SGF, SYR, TPA, and Y90.
                 New scenarios are regularly added.
                 Adding scenarios at additional airports is a matter of writing JSON configuration files that describe them;
                 see <a href="#section-facility-engineering">below</a> for
@@ -2191,7 +2192,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <li>Facility engineering changes/improvements:
                 <ul>
                   <li>In scenario groups, "tracon" must be a valid 3-letter id from the <a href="https://www.faa.gov/about/office_org/headquarters_offices/ato/service_units/air_traffic_services/tracon">FAA list of TRACONs</a>. (This allows <i>vice</i> to present scenarios grouped by ARTCC and then TRACON.)</li>
-                  <li>In the <a href="#fe-scenario-groups">specification of controllers in "control_positions"</a>, "eram_facility" and "facility_id" may now be specified.</li>
+                  <li>In the <a href="#fe-facility-config">specification of controllers in "control_positions"</a>, "eram_facility" and "facility_id" may now be specified.</li>
                   <li><i>vice</i> now has a built-in model of magnetic declination. Therefore, the "magnetic_variation" setting is no longer used. If small adjustments are needed (e.g. due to video maps assuming a different magnetic adjustment, "magnetic_correction" can be used to add a small offset to the automatically-determined value.</li>
                   <li>There is a new "stars_config" field in scenario definitions with a number of new fields to define per-facility STARS behavior. (See the <a href="#fe-stars-videomaps">STARS and Video Maps</a> section for details.) The entries "center", "inhibit_ca_volumes", "radar_sites", "range", "scratchpads", "stars_maps", and "video_map_file" have moved from the scenario to be inside "stars_config".</li>
                   <li>In <a href="#fe-airports">airport specifications</a>, the Boolean value "omit_arrival_scratchpad" may be set to indicate that the arrival airport should not be shown in place of an empty scratchpad in datablocks.</li>
@@ -6852,8 +6853,11 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               <p>In the following, the use of terms like "element", "object", "member", "array", etc.,
                 correspond to their use in the JSON specification.  See <a href="https://www.json.org/json-en.html">this page</a> for reference.
                 </p>
-              <p>See the <a href="https://github.com/mmp/vice/tree/master/resources/scenarios"><code>resources/scenarios/</code> directory</a> in the 
-                  vice source code for the scenarios that are currently available and the
+              <p>See the <a href="https://github.com/mmp/vice/tree/master/resources/scenarios"><code>resources/scenarios/</code> directory</a> in the
+                  vice source code for the scenarios that are currently available,
+                the <a href="https://github.com/mmp/vice/tree/master/resources/configurations"><code>resources/configurations/</code> directory</a> for
+                facility configuration files (control positions, STARS config, and handoff topology),
+                and the
                 <a href="https://github.com/mmp/vice/tree/master/resources/videomaps"><code>resources/videomaps/</code> directory</a> for
                 the video map definitions.
                 Files in those directories with names ending with a "zst" suffix have been compressed using <a href="https://facebook.github.io/zstd/">zstandard</a>;
@@ -7221,6 +7225,122 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
             </p>
           </section><!--//section-->
 
+          <section class="docs-section" id="fe-facility-config">
+            <h2 class="section-heading">Facility Configuration</h2>
+
+            <p>Facility-wide settings are defined in separate JSON files, stored in
+              the <a href="https://github.com/mmp/vice/tree/master/resources/configurations"><code>resources/configurations/</code></a>
+              directory. They're organized by ARTCC and facility name (e.g., <code>resources/configurations/ZNY/N90.json</code>).
+              When a scenario is loaded, <i>vice</i> automatically loads the corresponding facility configuration
+              based on the scenario's "tracon" field.
+            </p>
+            <p>Each facility configuration file may contain the following top-level elements:</p>
+            <table class="table">
+            <thead>
+              <tr>
+                <th>Element</th>
+                <th>Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"control_positions"</td>
+                <td>Object</td>
+                <td><p>Information about all of the controllers at the facility.
+                Each member specifies a controller for the named position/sector.
+                For each position, the following members should be specified:</p>
+                  <ul>
+                    <li>"radio_name": the name of the control position, used in radio readbacks (e.g., "Philadelphia approach")</li>
+                    <li>"frequency": the controller's radio frequency, expressed as an integer (e.g., 125325 for 125.325)</li>
+                    <li>"sector_id": the controller's sector id, as used for handoffs, etc. (e.g., "N56")</li>
+                    <li>"eram_facility": (<i>Optional</i>) indicates whether the controller is using an ERAM scope (i.e., is a center controller).</li>
+                    <li>"facility_id": (<i>Optional</i>) a single character giving the controller's facility. This should only be specified for controllers outside of the TRACON.</li>
+                    <li>"scope_char":  (<i>Optional</i>) a string giving a single character for the STARS position symbol for tracks owned by this position (e.g., "C"). If unset, the position symbol is generated automatically by:
+                      <ul>
+                        <li>For local positions, the last character of the TCP id: "4P" gets "P", for example.</li>
+                        <li>For positions at external facilities, the numeric "facility_id".</li>
+                        <li>For enroute controllers (where "eram_facility" is true), the first character of their "sector_id": "N56" gets "N" by default.</li>
+                      </ul>
+                      An error is issued if the given "scope_char" is the same as <i>vice</i> would have automatically selected.</li>
+                  </ul>
+                </td>
+              </tr>
+              <tr>
+                <td>"stars_config"</td>
+                <td>Object</td>
+                <td>Defines settings and configurations related to the STARS radar scope.
+                  See <a href="#fe-stars-videomaps">STARS and Video Maps</a> for documentation about the items stored in this object.</td>
+              </tr>
+              <tr>
+                <td>"handoff_topology"</td>
+                <td>Object</td>
+                <td><p>Defines the relationships between this facility and its neighbors for handoff routing.
+                  Contains the following members:</p>
+                  <ul>
+                    <li>"handoff_ids": an array of objects, each identifying a neighboring facility and mapping it
+                      to short STARS identifiers used in handoff route specifications (e.g., <code>/ho1Z</code>).
+                      Each object is defined below.</li>
+                    <li>"neighboring_facilities": an array of strings identifying neighboring facility codes
+                      whose controllers are loaded and may participate in handoffs.</li>
+                  </ul>
+                  <p>Each entry in "handoff_ids" has the following members:</p>
+                  <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Element</th>
+                      <th>Type</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>"id"</td>
+                      <td>String</td>
+                      <td>The facility code of the neighbor (e.g., "MKE", "ZAU").</td>
+                    </tr>
+                    <tr>
+                      <td>"prefix"</td>
+                      <td>Optional string</td>
+                      <td>A generic short prefix for the facility, used when referencing its sectors in handoff routes.</td>
+                    </tr>
+                    <tr>
+                      <td>"eram_prefix"</td>
+                      <td>Optional string</td>
+                      <td>The NAS ID prefix for ARTCC (center) facilities (e.g., "G" for ZAU).</td>
+                    </tr>
+                    <tr>
+                      <td>"single_char_stars_id"</td>
+                      <td>Optional string</td>
+                      <td>A one-character STARS identifier for the facility (e.g., "A").</td>
+                    </tr>
+                    <tr>
+                      <td>"two_char_stars_id"</td>
+                      <td>Optional string</td>
+                      <td>A two-character STARS identifier.</td>
+                    </tr>
+                    <tr>
+                      <td>"stars_id"</td>
+                      <td>Optional string</td>
+                      <td>The full STARS identifier for the facility (e.g., "AAA").</td>
+                    </tr>
+                  </tbody>
+                  </table>
+                  <p>Centers not listed in "handoff_ids" default to prefix "C". For example:</p>
+<pre>
+"handoff_ids": [
+    { "id": "MKE", "prefix": "1" },
+    { "id": "ZAU", "eram_prefix": "G" },
+    { "id": "A80", "single_char_stars_id": "A", "stars_id": "AAA" }
+]
+</pre>
+                </td>
+              </tr>
+            </tbody>
+            </table>
+
+          </section><!--//section-->
+
           <section class="docs-section" id="fe-scenario-groups">
             <h2 class="section-heading">Scenario Groups</h2>
 
@@ -7230,6 +7350,8 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
               airport.
               Each scenario group is specified by its own JSON file; see the <a href="https://github.com/mmp/vice/tree/master/resources/scenarios"><code>resources/scenarios/</code></a> directory in the
               <i>vice</i> source code distribution for examples.
+              The facility-wide settings (control positions, STARS configuration) are stored separately in
+              <a href="#fe-facility-config">facility configuration files</a>.
             </p>
             <p>These are the elements of a scenario group:</p>
             <table class="table">
@@ -7256,34 +7378,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>Object</td>
                 <td>Defines the routes for arrivals and overflights;
                 see <a href="#fe-arrivals">Arrivals and Overflights</a>.</td>
-              </tr>
-              <tr>
-                <td>"control_positions"</td>
-                <td>Object</td>
-                <td><p>Information about all of the controllers that are used
-                in the scenarios in the group.  Each member specifies a
-                controller for the named position/sector.  For each
-                position, the following members should be specified:</p>
-                  <ul>
-                    <li>"eram_facility": (<i>Optional</i>) indicates whether the controller is using an ERAM scope (i.e., is a center controller).</li>
-                    <li>"facility_id": (<i>Optional</i>) a single character giving the controller's facility. This should only be specified for controllers outside of the TRACON.</li>
-                    <li>"full_name": the name of the control position, used in radio readbacks (e.g., "Philadelphia approach")</li>
-                    <li>"frequency": the controller's radio frequency, expressed as an integer (e.g., 125325 for 125.325)</li>
-                    <li>"scope_char":  (<i>Optional</i>) a string giving a single character to for the STARS position symbol for tracks owned by this position (e.g., "C"). If unset, the position symbol is generated automatically by:
-                      <ul>
-                        <li>For local positions, the last character of the TCP id: "4P" gets "P", for example.</li>
-                        <li>For positions at external facilities, the numeric "facility_id".</li>
-                        <li>For enroute controllers (where "eram_facility" is true), the first character of their "sector_id": "N56" gets "N" by default.</li>
-                      </ul>
-                      An error is issued if the given "scope_char" is the same as <i>vice</i> would have automatically selected.</li>
-                    <li>"sector_id": the controller's sector id, as used for handoffs, etc. (e.g., "N56")</li>
-                  </ul>
-                  <p>One additional member may be required.</p>
-                  <ul>
-                    <li>"default_airport": when CRDA is used, each
-                    controller must have a default airport specified for CRDA commands.</li>
-                  </ul>
-                </td>
               </tr>
               <tr>
                 <td>"default_scenario"</td>
@@ -7337,11 +7431,6 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                 <td>"scenarios"</td>
                 <td>Object</td>
                 <td>This defines all of the ATC scenarios that are available in the scenario group. See the <a href="#fe-scenarios">scenarios section</a> for details.</td>
-              </tr>
-              <tr>
-                <td>"stars_config"</td>
-                <td>Object</td>
-                <td>Defines settings and configurations related to the STARS radar scope. See <a href="#fe-stars-videomaps">STARS and Video Maps</a> for documentation about the items stored in this object.</td>
               </tr>
               <tr>
                 <td>"tracon"</td>
@@ -8512,7 +8601,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"controllers"</td>
                 <td>Array of strings</td>
-                <td>Callsigns of the other virtual controllers who are online. (These also must be in "control_positions".)</td>
+                <td>Callsigns of the other virtual controllers who are online. (These also must be in <a href="#fe-facility-config">"control_positions"</a> in the facility configuration.)</td>
               </tr>
               <tr>
                 <td>"default_maps"</td>
@@ -8774,7 +8863,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
             <h2 class="section-heading">STARS and Video Maps</h2>
 
             <p>A number of settings related to the STARS radar scope are set using the "stars_config" object
-              in the scenario group. It stores the following values:
+              in the <a href="#fe-facility-config">facility configuration file</a>. It stores the following values:
               </p>
 
             <table class="table">
@@ -8892,7 +8981,7 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                   </ul>
                   These configurations allow multiple scenarios to share the same assignment definitions,
                   reducing duplication when only the consolidation hierarchy differs between scenarios.
-                  The TCPs referenced in assignments must exist in "control_positions".
+                  The TCPs referenced in assignments must exist in <a href="#fe-facility-config">"control_positions"</a> in the facility configuration.
                   It is acceptable for a configuration to include assignments for flows or departures
                   that a particular scenario doesn't use; only the assignments needed by the scenario's
                   active arrivals and departures are required.
