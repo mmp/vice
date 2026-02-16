@@ -14,7 +14,7 @@ import (
 type ERAMMenuClickType int
 
 const (
-	MenuClickPrimary  ERAMMenuClickType = iota
+	MenuClickPrimary ERAMMenuClickType = iota
 	MenuClickTertiary
 )
 
@@ -54,8 +54,8 @@ type ERAMMenuConfig struct {
 	OnMClick    func(ERAMMenuClickType)
 	OnClose     func()
 	Width       float32
-	Font        *renderer.Font  // nil = ep.ERAMToolbarFont()
-	ItemHeight  float32         // 0 = default 18px
+	Font        *renderer.Font // nil = ep.ERAMToolbarFont()
+	ItemHeight  float32        // 0 = default 18px
 	Rows        []ERAMMenuItem
 	Scroll      *ERAMScrollConfig // optional
 	ScrollState *ERAMScrollState  // required if Scroll != nil
