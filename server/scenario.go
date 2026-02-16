@@ -1331,17 +1331,6 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 			}
 		}
 
-		// Validate fix_pair_assignments
-		for _, fpa := range config.FixPairAssignments {
-			if fpa.FixPairIndex < 0 || fpa.FixPairIndex >= len(sg.FixPairs) {
-				e.ErrorString("fix_pair_assignments: fix_pair_index %d is out of range (have %d fix pairs)",
-					fpa.FixPairIndex, len(sg.FixPairs))
-			}
-			if _, ok := sg.ControlPositions[fpa.TCP]; !ok {
-				e.ErrorString("fix_pair_assignments: tcp %q is not in \"control_positions\"", fpa.TCP)
-			}
-		}
-
 		e.Pop()
 	}
 

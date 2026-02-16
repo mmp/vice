@@ -431,47 +431,38 @@
                 },
                 "fix_pair_assignments": [
                     {
-                        "fix_pair_index": 0,
                         "tcp": "LGA_X_APP",
                         "priority": 1
                     },
                     {
-                        "fix_pair_index": 1,
                         "tcp": "JFK_G_APP",
                         "priority": 2
                     },
                     {
-                        "fix_pair_index": 2,
                         "tcp": "JFK_K_APP",
                         "priority": 3
                     },
                     {
-                        "fix_pair_index": 3,
                         "tcp": "EWR_S_APP",
                         "priority": 4
                     },
                     {
-                        "fix_pair_index": 4,
                         "tcp": "EWR_H_APP",
                         "priority": 5
                     },
                     {
-                        "fix_pair_index": 5,
                         "tcp": "JFK_A_APP",
                         "priority": 20
                     },
                     {
-                        "fix_pair_index": 6,
                         "tcp": "LGA_F_APP",
                         "priority": 21
                     },
                     {
-                        "fix_pair_index": 7,
                         "tcp": "EWR_P_APP",
                         "priority": 22
                     },
                     {
-                        "fix_pair_index": 8,
                         "tcp": "JFK_G_APP",
                         "priority": 99
                     }

@@ -49,7 +49,6 @@ type FixPairDefinition struct {
 // TCP for a specific configuration. These are stored in
 // ControllerAssignments alongside inbound/departure assignments.
 type FixPairAssignment struct {
-	FixPairIndex int `json:"fix_pair_index"` // Index into FacilityConfig.FixPairs
 	TCP          TCP `json:"tcp"`            // Controller assigned to handle this fix pair
 	Priority     int `json:"priority"`       // Priority for deterministic matching
 }
