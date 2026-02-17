@@ -191,6 +191,7 @@ type NavApproach struct {
 	AssignedId        string
 	ATPAVolume        *av.ATPAVolume
 	Cleared           bool
+	StandbyApproach   bool // suppress repeated approach clearance requests
 	InterceptState    InterceptState
 	PassedApproachFix bool // have we passed a fix on the approach yet?
 	PassedFAF         bool

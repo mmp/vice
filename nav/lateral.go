@@ -410,7 +410,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			nav.Approach.PassedApproachFix = true
 		}
 
-		if wp.OnApproach() && nav.InterceptedButNotCleared() {
+		if wp.OnApproach() && nav.InterceptedButNotCleared() && !nav.Approach.StandbyApproach {
 			// Passed an approach fix but not cleared; signal that the
 			// pilot should radio requesting approach clearance.
 			wp.SetRequestApproachClearance(true)

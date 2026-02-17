@@ -133,6 +133,7 @@ func (nav *Nav) ExpectApproach(airport *av.Airport, id string, runwayWaypoints m
 	}
 
 	if id == nav.Approach.AssignedId && nav.Approach.Assigned != nil {
+		nav.Approach.StandbyApproach = true
 		return av.ApproachIntent{
 			Type:         av.ApproachExpect,
 			ApproachName: ap.FullName,
@@ -465,6 +466,7 @@ func (nav *Nav) ClearedApproach(airport string, id string, straightIn bool, simT
 	}
 
 	nav.Approach.Cleared = true
+	nav.Approach.StandbyApproach = false
 	if nav.Approach.PassedApproachFix {
 		// We've already passed an approach fix, so allow it to start descending.
 		nav.Altitude = NavAltitude{}
