@@ -549,14 +549,14 @@ func registerAllCommands() {
 		"standby [for] [the] approach",
 		func() string { return "E" },
 		WithName("standby_approach"),
-		WithPriority(16),
+		WithPriority(14),
 	)
 
 	registerSTTCommand(
 		"expect [the] approach",
 		func() string { return "E" },
 		WithName("expect_the_approach"),
-		WithPriority(16),
+		WithPriority(14),
 	)
 
 	// "vectors {approach}" without SAYAGAIN - "vectors" alone (e.g., "vectors for sequence")
