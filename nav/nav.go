@@ -67,12 +67,6 @@ type Nav struct {
 // seconds after the controller issues it in order to model the delay
 // before pilots start to follow assignments.
 type DeferredNavHeading struct {
-	// Time is just plain old wallclock time; it should be sim time, but a
-	// lot of replumbing would be required to have that available where
-	// needed. The downsides are minor: 1. On quit and resume, any pending
-	// assignments will generally be followed immediately, and 2. if the
-	// sim rate is increased, the delay will end up being longer than
-	// intended.
 	Time    time.Time
 	Heading *float32
 	Turn    *TurnMethod
@@ -468,7 +462,7 @@ func (nav *Nav) DepartureHeading() (int, DepartureHeadingState) {
 // few seconds in the future. It should only be called for heading changes
 // due to controller instructions to the pilot and never in cases where the
 // autopilot is changing the heading assignment.
-func (nav *Nav) EnqueueHeading(hdg float32, turn TurnMethod) {
+func (nav *Nav) EnqueueHeading(hdg float32, turn TurnMethod, simTime time.Time) {
 	var delay float32
 	if nav.Heading.Assigned != nil && nav.DeferredNavHeading == nil {
 		// Already in heading mode; have less of a delay.
@@ -478,9 +472,8 @@ func (nav *Nav) EnqueueHeading(hdg float32, turn TurnMethod) {
 		delay = 5 + 4*nav.Rand.Float32()
 	}
 
-	now := time.Now()
 	nav.DeferredNavHeading = &DeferredNavHeading{
-		Time:    now.Add(time.Duration(delay * float32(time.Second))),
+		Time:    simTime.Add(time.Duration(delay * float32(time.Second))),
 		Heading: &hdg,
 		Turn:    &turn,
 	}
@@ -497,7 +490,7 @@ func (nav *Nav) AssignedWaypoints() []av.Waypoint {
 	return nav.Waypoints
 }
 
-func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint) {
+func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint, simTime time.Time) {
 	var delay float32
 	if nav.Heading.Assigned == nil && nav.DeferredNavHeading == nil {
 		// Already in LNAV mode; have less of a delay
@@ -507,18 +500,16 @@ func (nav *Nav) EnqueueDirectFix(wps []av.Waypoint) {
 		delay = 8 + 5*nav.Rand.Float32()
 	}
 
-	now := time.Now()
 	nav.DeferredNavHeading = &DeferredNavHeading{
-		Time:      now.Add(time.Duration(delay * float32(time.Second))),
+		Time:      simTime.Add(time.Duration(delay * float32(time.Second))),
 		Waypoints: wps,
 	}
 }
 
-func (nav *Nav) EnqueueOnCourse() {
+func (nav *Nav) EnqueueOnCourse(simTime time.Time) {
 	delay := 8 + 5*nav.Rand.Float32()
-	now := time.Now()
 	nav.DeferredNavHeading = &DeferredNavHeading{
-		Time: now.Add(time.Duration(delay * float32(time.Second))),
+		Time: simTime.Add(time.Duration(delay * float32(time.Second))),
 	}
 }
 
