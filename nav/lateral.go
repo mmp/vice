@@ -410,6 +410,12 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			nav.Approach.PassedApproachFix = true
 		}
 
+		if wp.OnApproach() && nav.InterceptedButNotCleared() {
+			// Passed an approach fix but not cleared; signal that the
+			// pilot should radio requesting approach clearance.
+			wp.SetRequestApproachClearance(true)
+		}
+
 		if wp.AltitudeRestriction() != nil && !nav.InterceptedButNotCleared() &&
 			(!nav.Approach.Cleared || wp.AltitudeRestriction().Range[0] < nav.FlightState.Altitude) {
 			// Don't climb if we're cleared approach and below the next
@@ -437,7 +443,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 			hdg := *nfa.Depart.Heading
 			nav.Heading = NavHeading{Assigned: &hdg}
 		} else if nfa, ok := nav.FixAssignments[wp.Fix]; ok && nfa.Depart.Fix != nil {
-			if wps, err := nav.directFixWaypoints(nfa.Depart.Fix.Fix); err == nil {
+			if wps, _, err := nav.directFixWaypoints(nfa.Depart.Fix.Fix); err == nil {
 				// Hacky: below we peel off the current waypoint, so re-add
 				// it here so everything works out.
 				nav.Waypoints = append([]av.Waypoint{*wp}, wps...)

@@ -332,10 +332,26 @@ func (nav *Nav) fixPairInRoute(fixa, fixb string) (fa *av.Waypoint, fb *av.Waypo
 	return
 }
 
-func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, error) {
-	// Check the approach (if any) first; this way if the current route
-	// ends with a fix that happens to be on the approach, we pick up the
-	// rest of the approach fixes rather than forgetting about them.
+type waypointSource int
+
+const (
+	waypointSourceRoute    waypointSource = iota // fix found on the STAR/route
+	waypointSourceApproach                       // fix found on the assigned approach
+	waypointSourceOther                          // global fix lookup
+)
+
+func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, waypointSource, error) {
+	// Check the route first; when a fix exists on both the STAR/route
+	// and the approach, we want the route waypoints so the aircraft
+	// doesn't start flying the approach without being cleared.
+	routeWps := nav.AssignedWaypoints()
+	for i, wp := range routeWps {
+		if fix == wp.Fix {
+			return routeWps[i:], waypointSourceRoute, nil
+		}
+	}
+
+	// Check the approach (if any).
 	if ap := nav.Approach.Assigned; ap != nil {
 		// This is a little hacky, but... Because of the way we currently
 		// interpret ARINC424 files, fixes with procedure turns have no
@@ -343,27 +359,19 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, error) {
 		// Therefore, if we are going direct to a fix that has a procedure
 		// turn, we can't take the first matching route but have to keep
 		// looking for it in case another route has it with a PT...
-		var wps []av.Waypoint
+		var apWps []av.Waypoint
 		for _, route := range ap.Waypoints {
 			for i, wp := range route {
 				if wp.Fix == fix {
-					wps = append(route[i:], nav.FlightState.ArrivalAirport)
+					apWps = append(route[i:], nav.FlightState.ArrivalAirport)
 					if wp.ProcedureTurn() != nil {
-						return wps, nil
+						return apWps, waypointSourceApproach, nil
 					}
 				}
 			}
 		}
-		if wps != nil {
-			return wps, nil
-		}
-	}
-
-	// Look for the fix in the waypoints in the flight plan.
-	wps := nav.AssignedWaypoints()
-	for i, wp := range wps {
-		if fix == wp.Fix {
-			return wps[i:], nil
+		if apWps != nil {
+			return apWps, waypointSourceApproach, nil
 		}
 	}
 
@@ -382,7 +390,7 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, error) {
 		// Ignore ones that are >150nm away under the assumption that it's
 		// a typo in that case.
 		if math.NMDistance2LL(p, nav.FlightState.Position) > 150 {
-			return nil, ErrFixIsTooFarAway
+			return nil, waypointSourceOther, ErrFixIsTooFarAway
 		}
 
 		return []av.Waypoint{
@@ -391,20 +399,23 @@ func (nav *Nav) directFixWaypoints(fix string) ([]av.Waypoint, error) {
 				Location: p,
 			},
 			nav.FlightState.ArrivalAirport,
-		}, nil
+		}, waypointSourceOther, nil
 	}
 
-	return nil, ErrInvalidFix
+	return nil, waypointSourceOther, ErrInvalidFix
 }
 
 func (nav *Nav) DirectFix(fix string, simTime time.Time) av.CommandIntent {
-	if wps, err := nav.directFixWaypoints(fix); err == nil {
+	if wps, source, err := nav.directFixWaypoints(fix); err == nil {
 		if hold := nav.Heading.Hold; hold != nil {
 			// We'll finish our lap and then depart the holding fix direct to the fix
 			hold.Cancel = true
 			nfa := NavFixAssignment{}
 			nfa.Depart.Fix = &wps[0]
 			nav.FixAssignments[hold.Hold.Fix] = nfa
+			if source == waypointSourceApproach && !nav.Approach.Cleared {
+				nav.Approach.InterceptState = OnApproachCourse
+			}
 			return av.NavigationIntent{
 				Type:      av.NavDirectFixFromHold,
 				Fix:       hold.Hold.Fix,
@@ -413,7 +424,14 @@ func (nav *Nav) DirectFix(fix string, simTime time.Time) av.CommandIntent {
 		} else {
 			nav.EnqueueDirectFix(wps, simTime)
 			nav.Approach.NoPT = false
-			nav.Approach.InterceptState = NotIntercepting
+			if source == waypointSourceApproach && !nav.Approach.Cleared {
+				// The waypoints came from the approach but the aircraft
+				// hasn't been cleared; track the approach course laterally
+				// but gate altitude constraints via InterceptedButNotCleared().
+				nav.Approach.InterceptState = OnApproachCourse
+			} else {
+				nav.Approach.InterceptState = NotIntercepting
+			}
 			return av.NavigationIntent{
 				Type: av.NavDirectFix,
 				Fix:  fix,

@@ -1905,13 +1905,14 @@ func (s *Sim) SayAgainCommand(tcw TCW, callsign av.ADSBCallsign, commandType str
 type PendingTransmissionType int
 
 const (
-	PendingTransmissionDeparture           PendingTransmissionType = iota // Departure checking in
-	PendingTransmissionArrival                                            // Arrival/handoff checking in
-	PendingTransmissionTrafficInSight                                     // "Traffic in sight" call
-	PendingTransmissionFlightFollowingReq                                 // Abbreviated "VFR request"
-	PendingTransmissionFlightFollowingFull                                // Full flight following request
-	PendingTransmissionGoAround                                           // Go-around announcement
-	PendingTransmissionEmergency                                          // Emergency stage transmission
+	PendingTransmissionDeparture                PendingTransmissionType = iota // Departure checking in
+	PendingTransmissionArrival                                                 // Arrival/handoff checking in
+	PendingTransmissionTrafficInSight                                          // "Traffic in sight" call
+	PendingTransmissionFlightFollowingReq                                      // Abbreviated "VFR request"
+	PendingTransmissionFlightFollowingFull                                     // Full flight following request
+	PendingTransmissionGoAround                                                // Go-around announcement
+	PendingTransmissionEmergency                                               // Emergency stage transmission
+	PendingTransmissionRequestApproachClearance                                // Pilot requesting approach clearance
 )
 
 // PendingFrequencyChange represents a pilot switching to a new frequency.
@@ -2261,6 +2262,10 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 			rt.Add(", [tower sent us around for spacing|we were sent around for spacing]")
 			ac.SentAroundForSpacing = false
 		}
+		rt.Type = av.RadioTransmissionUnexpected
+
+	case PendingTransmissionRequestApproachClearance:
+		rt = av.MakeContactTransmission("[are we cleared for the approach|looking for the approach|we're going to need the approach here shortly]")
 		rt.Type = av.RadioTransmissionUnexpected
 
 	case PendingTransmissionEmergency:

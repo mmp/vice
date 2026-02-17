@@ -1243,6 +1243,10 @@ func (s *Sim) updateState() {
 
 			passedWaypoint := ac.Update(s.wxModel, s.State.SimTime, s.bravoAirspace, nil /* s.lg*/)
 
+			if passedWaypoint != nil && passedWaypoint.RequestApproachClearance() && ac.IsAssociated() {
+				s.enqueuePilotTransmission(callsign, TCP(ac.ControllerFrequency), PendingTransmissionRequestApproachClearance)
+			}
+
 			if ac.FirstSeen.IsZero() && s.isRadarVisible(ac) {
 				ac.FirstSeen = s.State.SimTime
 			}
