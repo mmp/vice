@@ -451,7 +451,7 @@ func (nav *Nav) prepareForChartedVisual() av.CommandIntent {
 	return av.MakeUnableIntent("unable. We are not on course to intercept the approach")
 }
 
-func (nav *Nav) ClearedApproach(airport string, id string, straightIn bool) (av.CommandIntent, bool) {
+func (nav *Nav) ClearedApproach(airport string, id string, straightIn bool, simTime time.Time) (av.CommandIntent, bool) {
 	ap := nav.Approach.Assigned
 	if ap == nil {
 		return av.MakeUnableIntent("unable. We haven't been told to expect an approach"), false
@@ -481,9 +481,8 @@ func (nav *Nav) ClearedApproach(airport string, id string, straightIn bool) (av.
 	// Follow LNAV instructions more quickly given an approach clearance;
 	// assume that at this point they are expecting them and ready to dial things in.
 	if dh := nav.DeferredNavHeading; dh != nil {
-		now := time.Now()
-		if dh.Time.Sub(now) > 6*time.Second {
-			dh.Time = now.Add(time.Duration((3 + 3*nav.Rand.Float32()) * float32(time.Second)))
+		if dh.Time.Sub(simTime) > 6*time.Second {
+			dh.Time = simTime.Add(time.Duration((3 + 3*nav.Rand.Float32()) * float32(time.Second)))
 		}
 	}
 

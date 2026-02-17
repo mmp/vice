@@ -1316,13 +1316,13 @@ func (s *Sim) AssignHeading(hdg *HeadingArgs) (av.CommandIntent, error) {
 	return s.dispatchControlledAircraftCommand(hdg.TCW, hdg.ADSBCallsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
 			if hdg.Present {
-				return ac.FlyPresentHeading()
+				return ac.FlyPresentHeading(s.State.SimTime)
 			} else if hdg.LeftDegrees != 0 {
-				return ac.TurnLeft(hdg.LeftDegrees)
+				return ac.TurnLeft(hdg.LeftDegrees, s.State.SimTime)
 			} else if hdg.RightDegrees != 0 {
-				return ac.TurnRight(hdg.RightDegrees)
+				return ac.TurnRight(hdg.RightDegrees, s.State.SimTime)
 			} else {
-				return ac.AssignHeading(hdg.Heading, hdg.Turn)
+				return ac.AssignHeading(hdg.Heading, hdg.Turn, s.State.SimTime)
 			}
 		})
 }
@@ -1433,7 +1433,7 @@ func (s *Sim) DirectFix(tcw TCW, callsign av.ADSBCallsign, fix string) (av.Comma
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			return ac.DirectFix(fix)
+			return ac.DirectFix(fix, s.State.SimTime)
 		})
 }
 
@@ -1524,9 +1524,9 @@ func (s *Sim) ClearedApproach(tcw TCW, callsign av.ADSBCallsign, approach string
 			var intent av.CommandIntent
 			var ok bool
 			if straightIn {
-				intent, ok = ac.ClearedStraightInApproach(approach, s.lg)
+				intent, ok = ac.ClearedStraightInApproach(approach, s.State.SimTime, s.lg)
 			} else {
-				intent, ok = ac.ClearedApproach(approach, s.lg)
+				intent, ok = ac.ClearedApproach(approach, s.State.SimTime, s.lg)
 			}
 
 			if ok {
@@ -1562,7 +1562,7 @@ func (s *Sim) ClimbViaSID(tcw TCW, callsign av.ADSBCallsign) (av.CommandIntent, 
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			return ac.ClimbViaSID()
+			return ac.ClimbViaSID(s.State.SimTime)
 		})
 }
 
@@ -1572,7 +1572,7 @@ func (s *Sim) DescendViaSTAR(tcw TCW, callsign av.ADSBCallsign) (av.CommandInten
 
 	return s.dispatchControlledAircraftCommand(tcw, callsign,
 		func(tcw TCW, ac *Aircraft) av.CommandIntent {
-			return ac.DescendViaSTAR()
+			return ac.DescendViaSTAR(s.State.SimTime)
 		})
 }
 
@@ -2349,7 +2349,7 @@ func (s *Sim) processFutureEvents() {
 						ac.NASFlightPlan.InterimAlt = 0
 						ac.NASFlightPlan.InterimType = 0
 					}
-					ac.DepartOnCourse(s.lg)
+					ac.DepartOnCourse(s.State.SimTime, s.lg)
 				}
 				return false
 			}
