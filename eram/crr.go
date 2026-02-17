@@ -92,9 +92,9 @@ func tryExtractLocation(it inputText) (math.Point2LL, bool) {
 	return math.Point2LL{}, false
 }
 
-// parseCRRLocation parses location tokens used by LF: //FIX, //FRD,
+// parseLocation parses location tokens used by LF: //FIX, //FRD,
 // //lat/long. Returns true if a location was resolved.
-func parseCRRLocation(ctx *panes.Context, token string) (math.Point2LL, bool) {
+func parseLocation(ctx *panes.Context, token string) (math.Point2LL, bool) {
 	s := strings.TrimPrefix(strings.ToUpper(token), "//")
 	// FRD?
 	if m := reFRD.FindStringSubmatch(s); len(m) == 4 {
