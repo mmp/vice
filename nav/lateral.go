@@ -81,7 +81,7 @@ func (nav *Nav) updatePositionAndGS(wxs wx.Sample) {
 	nav.FlightState.GS = math.Length2f(math.Add2f(flightVector, windVector)) * 3600
 }
 
-func (nav *Nav) DepartOnCourse(alt float32, exit string) {
+func (nav *Nav) DepartOnCourse(alt float32, exit string, simTime time.Time) {
 	if _, ok := nav.AssignedHeading(); !ok {
 		// Don't do anything if they are not on a heading; let them fly the
 		// regular route and don't (potentially) skip waypoints and go
@@ -101,7 +101,7 @@ func (nav *Nav) DepartOnCourse(alt float32, exit string) {
 	}
 	nav.Altitude = NavAltitude{Assigned: &alt}
 	nav.Speed = NavSpeed{}
-	nav.EnqueueOnCourse()
+	nav.EnqueueOnCourse(simTime)
 }
 
 func (nav *Nav) Check(lg *log.Logger) {
@@ -159,7 +159,7 @@ func (nav *Nav) TargetHeading(callsign string, wxs wx.Sample, simTime time.Time)
 	}
 
 	// Is it time to start following a heading or direct to a fix recently issued by the controller?
-	if dh := nav.DeferredNavHeading; dh != nil && time.Now().After(dh.Time) {
+	if dh := nav.DeferredNavHeading; dh != nil && simTime.After(dh.Time) {
 		nav.Heading = NavHeading{Assigned: dh.Heading, Turn: dh.Turn, Hold: dh.Hold} // these may be nil
 		if len(dh.Waypoints) > 0 {
 			nav.Waypoints = dh.Waypoints
@@ -393,7 +393,7 @@ func (nav *Nav) updateWaypoints(callsign string, wxs wx.Sample, fp *av.FlightPla
 
 		if wp.ClearApproach {
 			if fp != nil {
-				_, _ = nav.ClearedApproach(fp.ArrivalAirport, nav.Approach.AssignedId, false)
+				_, _ = nav.ClearedApproach(fp.ArrivalAirport, nav.Approach.AssignedId, false, simTime)
 			}
 		}
 
