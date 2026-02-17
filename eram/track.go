@@ -498,40 +498,69 @@ type historyTrack struct {
 // positions of each track.
 func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 	transforms radar.ScopeTransformations, cb *renderer.CommandBuffer) {
+
 	td := renderer.GetTextDrawBuilder()
 	defer renderer.ReturnTextDrawBuilder(td)
+
 	ctd := renderer.GetColoredTrianglesDrawBuilder()
 	defer renderer.ReturnColoredTrianglesDrawBuilder(ctd)
 
 	ps := ep.currentPrefs()
-	for _, trk := range tracks {
-		state := ep.TrackState[trk.ADSBCallsign]
 
+	for _, trk := range tracks {
+
+		state := ep.TrackState[trk.ADSBCallsign]
+		if state == nil {
+			continue
+		}
+
+		// Determine brightness based on association
 		var bright radar.Brightness
-		if trk.IsAssociated() { // TODO: Eventually when coasting tracks, etc, (non associated with aircraft tracks) are added, this will need to be updated to include all tracks that are associated with an aircraft (not just a flight plan)
+		// TODO: Eventually when coasting tracks, etc, (non associated with aircraft tracks) are added, this will need to be updated to include all tracks that are associated with an aircraft (not just a flight plan)
+		if trk.IsAssociated() {
 			bright = ps.Brightness.PRHST
 		} else {
 			bright = ps.Brightness.UNPHST
 		}
+
 		color := bright.ScaleRGB(ERAMYellow)
 
-		for _, trk := range state.HistoryTracks {
-			loc := trk.Location
+		// Respect selected history length (0–5)
+		max := ep.HistoryLength
+		if max <= 0 {
+			continue
+		}
+		if max > len(state.HistoryTracks) {
+			max = len(state.HistoryTracks)
+		}
+
+		// Draw newest first (circular buffer handling)
+		for i := 0; i < max; i++ {
+
+			idx := (state.HistoryTrackIndex - 1 - i + len(state.HistoryTracks)) % len(state.HistoryTracks)
+			hist := state.HistoryTracks[idx]
+
+			loc := hist.Location
 			if loc.IsZero() {
 				continue
 			}
-			symbol := trk.PositionSymbol
-			pw := transforms.WindowFromLatLongP(loc)
-			pt := math.Add2f(pw, [2]float32{0.5, -.5})
+
 			if ep.systemFont[5] == nil {
 				fmt.Println("ERAMPane: systemFont[5] is nil, cannot draw history tracks")
 				continue
 			}
-			if td == nil {
-				fmt.Println("ERAMPane: TextDrawBuilder is nil, cannot draw history tracks")
-				continue
-			}
-			td.AddTextCentered(symbol, pt, renderer.TextStyle{Font: ep.systemFont[5], Color: color})
+
+			pw := transforms.WindowFromLatLongP(loc)
+			pt := math.Add2f(pw, [2]float32{0.5, -.5})
+
+			td.AddTextCentered(
+				hist.PositionSymbol,
+				pt,
+				renderer.TextStyle{
+					Font:  ep.systemFont[5],
+					Color: color,
+				},
+			)
 		}
 	}
 
