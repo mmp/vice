@@ -605,6 +605,31 @@ func registerAllCommands() {
 	)
 
 	registerSTTCommand(
+		"cleared [the] visual [approach] [runway] {num:1-36} left",
+		func(rwy int) string { return fmt.Sprintf("CV%dL", rwy) },
+		WithName("cleared_visual_left"),
+		WithPriority(17),
+	)
+	registerSTTCommand(
+		"cleared [the] visual [approach] [runway] {num:1-36} right",
+		func(rwy int) string { return fmt.Sprintf("CV%dR", rwy) },
+		WithName("cleared_visual_right"),
+		WithPriority(17),
+	)
+	registerSTTCommand(
+		"cleared [the] visual [approach] [runway] {num:1-36} center",
+		func(rwy int) string { return fmt.Sprintf("CV%dC", rwy) },
+		WithName("cleared_visual_center"),
+		WithPriority(17),
+	)
+	registerSTTCommand(
+		"cleared [the] visual [approach] [runway] {num:1-36}",
+		func(rwy int) string { return fmt.Sprintf("CV%d", rwy) },
+		WithName("cleared_visual"),
+		WithPriority(16),
+	)
+
+	registerSTTCommand(
 		"cleared [approach] [for] {approach}",
 		func(appr string) string { return fmt.Sprintf("C%s", appr) },
 		WithName("cleared_approach"),
@@ -893,5 +918,13 @@ func registerAllCommands() {
 		func(letter string) string { return "ATIS/" + letter },
 		WithName("advise_have_information"),
 		WithPriority(15),
+	)
+
+	// === FIELD IN SIGHT ===
+	registerSTTCommand(
+		"[do you] [have the|have] field in sight|[do you] [have the|have] airport in sight",
+		func() string { return "FS" },
+		WithName("field_in_sight"),
+		WithPriority(10),
 	)
 }

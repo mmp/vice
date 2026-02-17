@@ -119,6 +119,10 @@ type Aircraft struct {
 	TrafficInSight      bool      // True if aircraft has reported traffic in sight
 	TrafficInSightTime  time.Time // When traffic was reported in sight
 	TrafficLookingUntil time.Time // If non-zero, aircraft may report traffic in sight before this time
+
+	// RequestedVisual is set when the pilot has spontaneously requested
+	// the visual approach (field in sight). Prevents repeated requests.
+	RequestedVisual bool
 }
 
 func (ac *Aircraft) GetRadarTrack(now time.Time) av.RadarTrack {
@@ -336,6 +340,10 @@ func (ac *Aircraft) AtFixIntercept(fix string, lg *log.Logger) av.CommandIntent 
 
 func (ac *Aircraft) ClearedApproach(id string, simTime time.Time, lg *log.Logger) (av.CommandIntent, bool) {
 	return ac.Nav.ClearedApproach(ac.FlightPlan.ArrivalAirport, id, false, simTime)
+}
+
+func (ac *Aircraft) ClearedDirectVisual(runway string, simTime time.Time) (av.CommandIntent, bool) {
+	return ac.Nav.ClearedDirectVisual(runway, simTime)
 }
 
 func (ac *Aircraft) ClearedStraightInApproach(id string, simTime time.Time, lg *log.Logger) (av.CommandIntent, bool) {

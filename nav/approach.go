@@ -441,15 +441,22 @@ func (nav *Nav) prepareForChartedVisual() av.CommandIntent {
 		}
 	}
 
-	if wi != nil {
-		// Update the route and go direct to the intercept point.
-		nav.Waypoints = append(wi, nav.FlightState.ArrivalAirport)
-		nav.Heading = NavHeading{}
-		nav.DeferredNavHeading = nil
-		return nil
+	if wi == nil {
+		// No geometric intercept found. For a visual approach the pilot
+		// has the field in sight, so fly a 3nm final to the runway
+		// threshold rather than through the charted waypoints.
+		wi = nav.buildDirectVisualWaypoints(nav.Approach.Assigned.Runway)
 	}
 
-	return av.MakeUnableIntent("unable. We are not on course to intercept the approach")
+	if wi == nil {
+		return av.MakeUnableIntent("unable. We are not on course to intercept the approach")
+	}
+
+	// Update the route and go direct to the intercept/first point.
+	nav.Waypoints = wi
+	nav.Heading = NavHeading{}
+	nav.DeferredNavHeading = nil
+	return nil
 }
 
 func (nav *Nav) ClearedApproach(airport string, id string, straightIn bool, simTime time.Time) (av.CommandIntent, bool) {
@@ -498,6 +505,132 @@ func (nav *Nav) ClearedApproach(airport string, id string, straightIn bool, simT
 	return av.ClearedApproachIntent{
 		Approach:   ap.FullName,
 		StraightIn: straightIn,
+		CancelHold: cancelHold,
+	}, true
+}
+
+// buildDirectVisualWaypoints returns a route for a visual approach to
+// the given runway. When the aircraft is roughly aligned with the
+// extended centerline (within ~1.5nm cross-track), it produces a
+// 2-waypoint path: 3nm final then threshold. When offset further, it
+// inserts a base-turn waypoint at the aircraft's lateral offset so the
+// pilot flies a realistic base-to-final turn. Returns nil if the
+// runway is not found or if the first waypoint is behind the aircraft
+// (meaning it should go around instead).
+func (nav *Nav) buildDirectVisualWaypoints(runway string) []av.Waypoint {
+	rwy, ok := av.LookupRunway(nav.FlightState.ArrivalAirport.Fix, runway)
+	if !ok {
+		return nil
+	}
+
+	nmPerLong := nav.FlightState.NmPerLongitude
+	magVar := nav.FlightState.MagneticVariation
+
+	alt := rwy.Elevation + rwy.ThresholdCrossingHeight
+	threshold := math.Offset2LL(rwy.Threshold, rwy.Heading, rwy.DisplacedThresholdDistance,
+		nmPerLong, magVar)
+
+	reciprocal := math.NormalizeHeading(rwy.Heading + 180)
+	final3nm := math.Offset2LL(threshold, reciprocal, 3, nmPerLong, magVar)
+
+	// Work in nm-space to compute cross-track offset from extended centerline.
+	thresholdNM := math.LL2NM(threshold, nmPerLong)
+	outboundNM := math.LL2NM(final3nm, nmPerLong)
+	acNM := math.LL2NM(nav.FlightState.Position, nmPerLong)
+
+	// Signed distance: negative = left of outbound direction, positive = right.
+	crossTrack := math.SignedPointLineDistance(acNM, thresholdNM, outboundNM)
+
+	// Glideslope intercept altitude at 3nm (~3° slope ≈ 955ft AGL, rounded to 900).
+	final3nmAlt := float32(rwy.Elevation) + 900
+
+	var wps []av.Waypoint
+
+	if math.Abs(crossTrack) > 1.5 {
+		// Aircraft is offset from the centerline. Insert a base-turn
+		// waypoint so the pilot flies a realistic turn onto final.
+		// Place it along the centerline at 4.5nm from threshold, then
+		// offset perpendicular by the cross-track distance.
+		centerlineDir := math.Normalize2f(math.Sub2f(outboundNM, thresholdNM))
+		baseOnCenterlineNM := math.Add2f(thresholdNM, math.Scale2f(centerlineDir, 4.5))
+
+		// Perpendicular-left direction (90° CCW rotation).
+		perpLeft := [2]float32{-centerlineDir[1], centerlineDir[0]}
+		// Negate crossTrack because SignedPointLineDistance returns
+		// positive for points to the right of the outbound direction
+		// in nm-space, but perpLeft points left.
+		baseNM := math.Add2f(baseOnCenterlineNM, math.Scale2f(perpLeft, -crossTrack))
+		baseLoc := math.NM2LL(baseNM, nmPerLong)
+
+		// Go-around check: if the first waypoint is behind the aircraft,
+		// it can't set up a stable approach.
+		bearingToBase := math.Heading2LL(nav.FlightState.Position, baseLoc, nmPerLong, magVar)
+		if math.HeadingDifference(bearingToBase, nav.FlightState.Heading) > 90 {
+			return nil
+		}
+
+		wps = append(wps, av.Waypoint{
+			Fix:        "_" + runway + "_BASE",
+			Location:   baseLoc,
+			OnApproach: true,
+		})
+	} else {
+		// Roughly aligned. Go-around check on the 3nm final point.
+		bearingTo3nm := math.Heading2LL(nav.FlightState.Position, final3nm, nmPerLong, magVar)
+		if math.HeadingDifference(bearingTo3nm, nav.FlightState.Heading) > 90 {
+			return nil
+		}
+	}
+
+	wps = append(wps,
+		av.Waypoint{
+			Fix:                 "_" + runway + "_3NM_FINAL",
+			Location:            final3nm,
+			OnApproach:          true,
+			AltitudeRestriction: &av.AltitudeRestriction{Range: [2]float32{final3nmAlt, 0}},
+		},
+		av.Waypoint{
+			Fix:                 "_" + runway + "_THRESHOLD",
+			Location:            threshold,
+			AltitudeRestriction: &av.AltitudeRestriction{Range: [2]float32{float32(alt), float32(alt)}},
+			Land:                true,
+			FlyOver:             true,
+			OnApproach:          true,
+		},
+	)
+
+	return wps
+}
+
+// ClearedDirectVisual sets up the aircraft to fly a visual approach to
+// the runway threshold. The aircraft flies a 3nm final aligned with the
+// runway heading to the threshold. Returns (intent, true) on success.
+// Returns (nil, false) if the approach can't be set up (runway unknown
+// or aircraft too close for a stable approach) — the caller should
+// trigger a go-around.
+func (nav *Nav) ClearedDirectVisual(runway string, simTime time.Time) (av.CommandIntent, bool) {
+	wi := nav.buildDirectVisualWaypoints(runway)
+	if wi == nil {
+		return nil, false
+	}
+
+	// Cancel hold before clearing nav state.
+	cancelHold := nav.Heading.Hold != nil
+	if nav.Heading.Hold != nil {
+		nav.Heading.Hold.Cancel = true
+	}
+
+	nav.Waypoints = wi
+	nav.Heading = NavHeading{}
+	nav.DeferredNavHeading = nil
+
+	// Mark as cleared and allow descent.
+	nav.Approach.Cleared = true
+	nav.Altitude = NavAltitude{}
+	nav.Speed = NavSpeed{}
+
+	return av.ClearedApproachIntent{
+		Approach:   "visual runway " + runway,
 		CancelHold: cancelHold,
 	}, true
 }

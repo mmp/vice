@@ -781,7 +781,21 @@ func (m MixUpIntent) Render(rt *RadioTransmission, r *rand.Rand) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// RenderIntents
+// FieldInSight Intent
+
+// FieldInSightIntent represents a pilot's response to "do you have the field in sight?"
+type FieldInSightIntent struct {
+	HasField bool   // true if VMC and field in sight
+	Runway   string // runway for the visual approach (if HasField)
+}
+
+func (f FieldInSightIntent) Render(rt *RadioTransmission, r *rand.Rand) {
+	if f.HasField {
+		rt.Add("affirmative, [field in sight|we have the field in sight|we have the airport], runway {rwy}", f.Runway)
+	} else {
+		rt.Add("negative, [we're in the clouds|we're IMC|we don't have the field]")
+	}
+}
 
 // RenderIntents converts a slice of CommandIntents into a single coherent RadioTransmission.
 // It handles merging related intents (e.g., altitude + expedite), PTACs, etc., for more
