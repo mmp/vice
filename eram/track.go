@@ -516,6 +516,7 @@ func (ep *ERAMPane) drawHistoryTracks(ctx *panes.Context, tracks []sim.Track,
 
 		// Determine brightness based on association
 		var bright radar.Brightness
+		// TODO: Eventually when coasting tracks, etc, (non associated with aircraft tracks) are added, this will need to be updated to include all tracks that are associated with an aircraft (not just a flight plan)
 		if trk.IsAssociated() {
 			bright = ps.Brightness.PRHST
 		} else {

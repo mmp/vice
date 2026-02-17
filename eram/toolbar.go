@@ -544,30 +544,31 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 		}
 		rightEdge := toolbarDrawState.buttonCursor[0] - 2 // remove the +2 padding added after last button
 		p1 := [2]float32{rightEdge, p0[1]}
-		//p1 = oppositeHorizontal(p1, buttonSize(buttonTearoff, scale))
-		// p1 := toolbarDrawState.buttonCursor
-		// toolbarDrawState.offsetBottom = true
 
 		if ep.drawToolbarFullButton(ctx, "SELECT\nBEACON", 0, scale, false, true) {
-			// handle DEPT LIST
+			// handle SELECT BEACON
 		}
 
 		if ep.drawToolbarFullButton(ctx, "PERM\nECHO", 0, scale, false, false) {
 			// handle perm echo
 		}
 		if ep.drawToolbarFullButton(ctx, "STROBE\nLINES", 0, scale, false, false) {
+			//handle strobe lines
 		}
-		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("HISTORY\n%d", ep.HistoryLength), 0, scale, false, false) {
+		historyLabel := fmt.Sprintf("HISTORY\n%d", ep.HistoryLength)
+		toolbarDrawState.customButton[historyLabel] = toolbarButtonGreenColor
+
+		if ep.drawToolbarFullButton(ctx, historyLabel, 0, scale, false, false) {
 			handleClick(ep, &ep.HistoryLength, 0, 5, 1)
 		}
 
 		p2 := [2]float32{rightEdge, toolbarDrawState.buttonCursor[1] - buttonSize(buttonFull, scale)[1]}
 		p3 := [2]float32{p0[0], p2[1]}
 
+		toolbarDrawState.customButton[fmt.Sprintf("HISTORY\n%d", ep.HistoryLength)] = toolbarButtonGreenColor
+
 		toolbarDrawState.lightToolbar = [4][2]float32{p0, p1, p2, p3}
 		ep.drawMenuOutline(ctx, p0, p1, p2, p3)
-
-		toolbarDrawState.customButton[fmt.Sprintf("HISTORY\n%d", ep.HistoryLength)] = toolbarButtonGreenColor
 
 	case toolbarViews:
 		if toolbarDrawState.lightToolbar != [4][2]float32{} {
@@ -2110,9 +2111,6 @@ func (ep *ERAMPane) tornOffButtonBaseColor(name string) renderer.RGB {
 	}
 	if display == "DELETE\nTEAROFF" {
 		return renderer.RGB{0, .804, .843}
-	}
-	if display == "HISTORY" {
-		return toolbarButtonGreenColor
 	}
 	if display == "BCAST\nFLID" || display == "PORTAL\nFENCE" {
 		return eramGray
