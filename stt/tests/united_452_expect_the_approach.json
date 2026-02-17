@@ -1,0 +1,23 @@
+{
+  "transcript": "United 452 expect the approach",
+  "callsign": "UAL452",
+  "command": "E",
+  "stt_aircraft": {
+    "United 452": {
+      "Callsign": "UAL452",
+      "AircraftType": "A320",
+      "Fixes": {},
+      "CandidateApproaches": null,
+      "ApproachFixes": null,
+      "AssignedApproach": "V31C",
+      "SID": "",
+      "STAR": "BRAVO7",
+      "Altitude": 6000,
+      "State": "arrival",
+      "ControllerFrequency": "N56",
+      "TrackingController": "N56",
+      "AddressingForm": 0,
+      "LAHSORunways": null
+    }
+  }
+}
