@@ -115,7 +115,7 @@ func (ep *ERAMPane) processEvents(ctx *panes.Context) {
 	for _, trk := range ctx.Client.State.Tracks {
 		if _, ok := ep.TrackState[trk.ADSBCallsign]; !ok {
 			sa := &TrackState{
-				LeaderLineLength: 1, // Default to normal mode
+				LeaderLineLength: ep.currentPrefs().FDBLdrLength, // Use current preference
 			}
 			ep.TrackState[trk.ADSBCallsign] = sa
 		}
@@ -168,7 +168,7 @@ func (ep *ERAMPane) updateRadarTracks(ctx *panes.Context, tracks []sim.Track) {
 		state := ep.TrackState[trk.ADSBCallsign]
 		if state == nil {
 			state = &TrackState{
-				LeaderLineLength: 1, // Default to normal mode
+				LeaderLineLength: ep.currentPrefs().FDBLdrLength, // Use current preference
 			}
 			ep.TrackState[trk.ADSBCallsign] = state
 		}

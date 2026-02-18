@@ -132,14 +132,8 @@ func init() {
 	registerCommand(CommandModeNone, "[#] [FLID]|[#][SLEW]", handleLeaderLine)
 
 	// Leader line length commands
-	// /0 [FLID] or /0[SLEW]: No line (W/E only)
-	// /1 [FLID] or /1[SLEW]: Normal length (default)
-	// /2 [FLID] or /2[SLEW]: 2x length
-	// /3 [FLID] or /3[SLEW]: 3x length
-	registerCommand(CommandModeNone, "/0 [FLID]|/0[SLEW]", handleLeaderLineLength0)
-	registerCommand(CommandModeNone, "/1 [FLID]|/1[SLEW]", handleLeaderLineLength1)
-	registerCommand(CommandModeNone, "/2 [FLID]|/2[SLEW]", handleLeaderLineLength2)
-	registerCommand(CommandModeNone, "/3 [FLID]|/3[SLEW]", handleLeaderLineLength3)
+	// /[0-3] [FLID] or /[0-3][SLEW]: Set leader line length (0=no line, 1=normal, 2=2x, 3=3x)
+	registerCommand(CommandModeNone, "/[NUM] [FLID]|/[NUM][SLEW]", handleLeaderLineLength)
 
 	// .DRAWROUTE - Custom command for drawing routes
 	registerCommand(CommandModeNone, ".DRAWROUTE", handleDrawRouteMode)
@@ -788,29 +782,21 @@ func numberToLLDirection(cmd int) math.CardinalOrdinalDirection {
 ///////////////////////////////////////////////////////////////////////////
 // Leader Line Length Handlers
 
-func handleLeaderLineLength0(ep *ERAMPane, trk *sim.Track) CommandStatus {
-	ep.TrackState[trk.ADSBCallsign].LeaderLineLength = 0
-	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+func handleLeaderLineLength(ep *ERAMPane, ctx *panes.Context, length int, trk *sim.Track) CommandStatus {
+	// Validate length is 0-3
+	if length < 0 || length > 3 {
+		return CommandStatus{
+			err: fmt.Errorf("REJECT - INVALID\nLDR LENGTH\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+		}
 	}
-}
 
-func handleLeaderLineLength1(ep *ERAMPane, trk *sim.Track) CommandStatus {
-	ep.TrackState[trk.ADSBCallsign].LeaderLineLength = 1
-	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
-	}
-}
+	// Update track state
+	ep.TrackState[trk.ADSBCallsign].LeaderLineLength = length
 
-func handleLeaderLineLength2(ep *ERAMPane, trk *sim.Track) CommandStatus {
-	ep.TrackState[trk.ADSBCallsign].LeaderLineLength = 2
-	return CommandStatus{
-		bigOutput: fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
-	}
-}
+	// Update default preference
+	ps := ep.currentPrefs()
+	ps.FDBLdrLength = length
 
-func handleLeaderLineLength3(ep *ERAMPane, trk *sim.Track) CommandStatus {
-	ep.TrackState[trk.ADSBCallsign].LeaderLineLength = 3
 	return CommandStatus{
 		bigOutput: fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
 	}

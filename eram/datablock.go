@@ -511,23 +511,23 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 
 			offset := datablockOffset(*dir)
 			vector := ep.leaderLineVectorWithLength(*dir, lengthMode)
-			vector[0] += float32(offset[0]) * ctx.DrawPixelScale
-			vector[1] += float32(offset[1]) * ctx.DrawPixelScale
 
 			// For mode 0, adjust positioning based on direction
 			if lengthMode == 0 {
 				if *dir == math.East {
-					vector[0] += 25 // Move right
-					vector[1] -= 10 // Move down
+					offset[0] += 25 // Move right
+					offset[1] -= 10 // Move down
 				}
 			}
 			if dbType == EnhancedLimitedDatablock || dbType == LimitedDatablock {
 				*dir = math.East // TODO: change to state eventually
 				vector = ep.leaderLineVectorNoLength(*dir)
 				offset[1] = -10
-				vector[1] += float32(offset[1]) * ctx.DrawPixelScale
 			}
+			// Calculate final position: track position + leader line + offset
 			end := math.Add2f(start, math.Scale2f(vector, ctx.DrawPixelScale))
+			end[0] += float32(offset[0]) * ctx.DrawPixelScale
+			end[1] += float32(offset[1]) * ctx.DrawPixelScale
 			brightness := ep.datablockBrightness(state)
 			db.draw(td, end, font, &sb, brightness, *dir, halfSeconds)
 		}

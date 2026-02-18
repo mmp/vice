@@ -112,7 +112,8 @@ type CommonPreferences struct {
 		Outage     radar.Brightness
 	}
 
-	Line4Type int
+	Line4Type    int
+	FDBLdrLength int // Datablock leader line length: 0=no line (W/E only), 1=normal (default), 2=2x, 3=3x
 
 	TornOffButtons        map[string][2]float32 // button name -> screen position
 	MasterToolbarPosition [2]float32            // top-left position of the master toolbar button
@@ -179,6 +180,8 @@ func makeDefaultPreferences() *Preferences {
 	prefs.LDBSize = 1
 	prefs.OutageSize = 1
 	prefs.CursorSize = 1
+
+	prefs.FDBLdrLength = 1 // Default to normal mode
 
 	prefs.VideoMapVisible = make(map[string]interface{})
 	prefs.VideoMapBrightness = make(map[string]int)
