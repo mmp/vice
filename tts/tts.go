@@ -11,7 +11,7 @@ package tts
 
 #cgo darwin LDFLAGS: ${SRCDIR}/../sherpa-onnx/build_go/_deps/onnxruntime-src/lib/libonnxruntime.a -lstdc++ -framework Foundation -framework Accelerate
 #cgo linux LDFLAGS: ${SRCDIR}/../sherpa-onnx/build_go/_deps/onnxruntime-src/lib/libonnxruntime.a -lstdc++ -lpthread -ldl
-#cgo windows LDFLAGS: -L${SRCDIR}/../sherpa-onnx/build_go/lib -lsherpa-onnx-c-api -L${SRCDIR}/../sherpa-onnx/build_go/_deps/onnxruntime-src/lib -lonnxruntime -lstdc++ -static-libstdc++ -static-libgcc
+#cgo windows LDFLAGS: -L${SRCDIR}/../sherpa-onnx/build_go/lib -lsherpa-onnx-c-api -L${SRCDIR}/../sherpa-onnx/build_go/_deps/onnxruntime-src/lib -lonnxruntime -static-libstdc++ -static-libgcc
 
 #include <c-api.h>
 #include <stdlib.h>
