@@ -871,8 +871,7 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 
 	// TODO: facility-prefix /ho values (e.g. /hoP, /hoN) should resolve
 	// through that facility's inbound assignments rather than collapsing
-	// to a generic HumanHandoff. Commented out pending redesign; no
-	// scenario files currently use this pattern.
+	// to a generic HumanHandoff. This needs a redesign so keep it commented for now.
 	/*
 		prefixToFacility := make(map[string]string)
 		for _, hid := range sg.HandoffIDs {
