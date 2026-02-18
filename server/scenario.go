@@ -1549,50 +1549,6 @@ func facilityConfigPath(sg *scenarioGroup) string {
 	return "configurations/" + artcc + "/" + facility + ".json"
 }
 
-// facilityConfigPathForFacility resolves a facility name (e.g., "N90",
-// "ZNY") to its configuration file path. It checks the TRACONs database
-// first; if the facility is a known TRACON, it uses that TRACON's ARTCC.
-// Otherwise it assumes the facility is an ARTCC itself.
-// facilityConfigPathCache caches resolved facility config paths so that
-// the filesystem search only happens once per facility code.
-var facilityConfigPathCache = make(map[string]string)
-
-func facilityConfigPathForFacility(facility string) string {
-	if path, ok := facilityConfigPathCache[facility]; ok {
-		return path
-	}
-
-	var path string
-	if info, ok := av.DB.TRACONs[facility]; ok {
-		path = "configurations/" + info.ARTCC + "/" + facility + ".json"
-	} else if isARTCC(facility) {
-		path = "configurations/" + facility + "/" + facility + ".json"
-	} else {
-		// Facility not in DB and not an ARTCC — search the configurations
-		// directory for a matching file. This handles facilities like ATL,
-		// BOS, MCO, etc. that aren't in the TRACONs database.
-		resourcesFS := util.GetResourcesFS()
-		filename := facility + ".json"
-		_ = fs.WalkDir(resourcesFS, "configurations", func(p string, d fs.DirEntry, err error) error {
-			if err != nil || d.IsDir() {
-				return nil
-			}
-			if d.Name() == filename {
-				path = p
-				return fs.SkipAll
-			}
-			return nil
-		})
-		if path == "" {
-			// Fall back to the ARTCC-style path (will fail to load, producing an error).
-			path = "configurations/" + facility + "/" + facility + ".json"
-		}
-	}
-
-	facilityConfigPathCache[facility] = path
-	return path
-}
-
 // facilityConfigCache caches loaded facility configs so that multiple
 // scenario groups referencing the same facility (e.g., N90) share one load.
 var facilityConfigCache = make(map[string]*sim.FacilityConfig)
