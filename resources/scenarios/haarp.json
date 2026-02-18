@@ -508,19 +508,34 @@
       "arrival_runways": [
         {
           "airport": "KLGA",
-          "runway": "4"
+          "runway": "4",
+          "go_around": {
+            "heading": 340,
+            "altitude": 2000
+          }
         },
         {
           "airport": "KLGA",
-          "runway": "31"
+          "runway": "31",
+          "go_around": {
+            "heading": 340,
+            "altitude": 3000
+          }
         },
         {
           "airport": "KLGA",
-          "runway": "22"
+          "runway": "22",
+          "go_around": {
+            "altitude": 2000
+          }
         },
         {
           "airport": "KHPN",
-          "runway": "34"
+          "runway": "34",
+          "go_around": {
+            "heading": 340,
+            "altitude": 2000
+          }
         }
       ],
       "inbound_rates": {
@@ -575,19 +590,34 @@
       "arrival_runways": [
         {
           "airport": "KLGA",
-          "runway": "22"
+          "runway": "22",
+          "go_around": {
+            "altitude": 2000
+          }
         },
         {
           "airport": "KLGA",
-          "runway": "31"
+          "runway": "31",
+          "go_around": {
+            "heading": 340,
+            "altitude": 3000
+          }
         },
         {
           "airport": "KLGA",
-          "runway": "4"
+          "runway": "4",
+          "go_around": {
+            "heading": 340,
+            "altitude": 2000
+          }
         },
         {
           "airport": "KHPN",
-          "runway": "16"
+          "runway": "16",
+          "go_around": {
+            "heading": 90,
+            "altitude": 2000
+          }
         }
       ],
       "inbound_rates": {

@@ -189,6 +189,14 @@ func (mp *MessagesPane) processEvents(c *client.ControlClient, p platform.Platfo
 			mp.shouldAutoScroll = true
 
 		case sim.StatusMessageEvent:
+			// If ToController is set, only show to that controller (or privileged)
+			if event.ToController != "" {
+				toUs := c.State.UserControlsPosition(event.ToController)
+				if !toUs && !c.State.TCWIsPrivileged(c.State.UserTCW) {
+					break
+				}
+			}
+
 			// Don't spam the same message repeatedly; look in the most recent 5.
 			n := len(mp.messages)
 			start := max(0, n-5)

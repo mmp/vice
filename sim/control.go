@@ -548,7 +548,7 @@ func (s *Sim) DeleteFlightPlan(tcw TCW, acid ACID) error {
 		if ac.IsAssociated() && ac.NASFlightPlan.ACID == acid {
 			if s.TCWCanModifyTrack(tcw, ac.NASFlightPlan) {
 				fp := ac.DisassociateFlightPlan()
-				fp.DeleteTime = s.State.SimTime.Add(2 * time.Minute)
+				fp.DeleteTime = s.State.SimTime.Add(4 * time.Minute)
 				s.STARSComputer.FlightPlans = append(s.STARSComputer.FlightPlans, fp)
 				return nil
 			}
@@ -2241,7 +2241,23 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		rt = s.generateFlightFollowingMessage(ac)
 
 	case PendingTransmissionGoAround:
-		rt = av.MakeContactTransmission("[going around|on the go]")
+		rt = av.MakeContactTransmission("[going around|on the go], ")
+		targetAlt, _ := ac.Nav.TargetAltitude()
+		currentAlt := ac.Altitude()
+		if currentAlt < targetAlt {
+			rt.Add("[at|] {alt} [climbing|for] {alt}, ", currentAlt, targetAlt)
+		} else {
+			rt.Add("[at|] {alt}, ", currentAlt)
+		}
+		if ac.GoAroundOnRunwayHeading {
+			rt.Add("[runway heading|on a runway heading]")
+		} else if ac.Nav.Heading.Assigned != nil {
+			rt.Add("heading {hdg}", int(*ac.Nav.Heading.Assigned+0.5))
+		}
+		if ac.SentAroundForSpacing {
+			rt.Add(", [tower sent us around for spacing|we were sent around for spacing]")
+			ac.SentAroundForSpacing = false
+		}
 		rt.Type = av.RadioTransmissionUnexpected
 
 	case PendingTransmissionEmergency:

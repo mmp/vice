@@ -114,6 +114,7 @@
 	  <li class="nav-item"><a class="nav-link scrollto" href="#bugs">Reporting Bugs</a></li>
 	  <li class="nav-item"><a class="nav-link scrollto" href="#releases">Release History</a>
 	    <ul class="submenu">
+	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.1">0.14.1</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.14.0">0.14.0</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.3">0.13.3</a></li>
 	      <li class="submenu-item"><a class="submenu-link scrollto" href="#release-0.13.2">0.13.2</a></li>
@@ -1463,6 +1464,43 @@ how it simulates aircraft or the STARS interface.
 
           <section class="docs-section" id="releases">
             <h2 class="section-heading">Release History</h2>
+
+            <h3 id="release-0.14.1">0.14.1 (TBD)</h3>
+            <ul>
+              <li>Long requested: you can actually move sub-windows outside of the main window.
+                <ul>
+                  <li>The flight strip and messages windows are now sub-windows and now its just the radar scope in the main window.</li>
+                </ul>
+              </li>
+              <li>Text to speech now runs locally on your computer rather than in the cloud.</li>
+              <li>Added ATIS simulation: see the ATIS/METAR tab in the scenario info window for what's current.
+                <ul>
+              <li>Aircraft will call in with the current ATIS; if it's changed and they call in with the old one, STT supports "information X is now current," "advise you have information X", etc., or with the keyboard you can issue the command <code>ATIS/X</code> to tell them X is current.</li>
+                </ul>
+              </li>
+              <li>Lots of small improvements to speech-to-text.</li>
+              <li>Bugfixes:
+                <ul>
+                  <li>Handle Pacific "P" and Carribean "T" airports better.</li>
+                  <li>Use sim time, not wallclock time for delayed heading changes so it works better when sped up (@jords).</li>
+                  <li>"CSI" for cleared straight in approach without specifying the approach works now.</li>
+                  <li>STARS force quicklook was unintentionally being applied to all controllers.</li>
+                  <li>Handing off tracks before they call in should work better; they will still call in to your frequency first.</li>
+                  <li>Fixed long stalls after clicking a new ARTCC/TRACON in the new sim window.</li>
+                  <li>Fixed issues with crosswinds pushing aircraft off of the localizer/final approach course.</li>
+                </ul>
+              </li>
+              <li>Flight strips have been reworked; right click to get a menu to push them to the next controller.</li>
+              <li>Facility engineering updates:
+                <ul>
+                  <li>Major rework of how facility-specific data is managed; see (Michael Trokel)</li>
+                  <li>Added support for STARS FDAM (flight data auto-modify) filters: this allows setting things like scratchpad, leader line direction, for (selected) aircraft in a filter region.</li>
+                  <li>Added qualifying attributes to quicklook filter regions: it can now depend on owning TCP, scratchpad, flight type, flight rules, CWT category, and a bunch of other things.</li>
+                  <li>CRDA: no longer has to be tied to runways. Paths can include arcs and don't have to be straight lines. Convergence points can be arbitrary, don't have to be runway intersections.</li>
+                  <li>Added "go_around" object to "arrival_runways" specifiers: can specify heading, altitude, and handoff controller for each arrival runway.</li>
+                </ul>
+              </li>
+            </ul>
 
             <h3 id="release-0.14.0">0.14.0 (6 Feb 2026)</h3>
             <ul>
@@ -7267,7 +7305,7 @@ SBA, SNA, SCTLA, DCA, Del Rey, SAN, PCT SHD (Ketan K), TPA (Nelson T), AAC, BOS 
                   <ul>
                     <li>"eram_facility": (<i>Optional</i>) indicates whether the controller is using an ERAM scope (i.e., is a center controller).</li>
                     <li>"facility_id": (<i>Optional</i>) a single character giving the controller's facility. This should only be specified for controllers outside of the TRACON.</li>
-                    <li>"full_name": the name of the control position, used in radio readbacks (e.g., "Philadelphia approach")</li>
+                    <li>"radio_name": the name of the control position, used in radio readbacks (e.g., "Philadelphia approach")</li>
                     <li>"frequency": the controller's radio frequency, expressed as an integer (e.g., 125325 for 125.325)</li>
                     <li>"scope_char":  (<i>Optional</i>) a string giving a single character to for the STARS position symbol for tracks owned by this position (e.g., "C"). If unset, the position symbol is generated automatically by:
                       <ul>
@@ -8493,10 +8531,19 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
               <tr>
                 <td>"arrival_runways"</td>
                 <td>Array of objects</td>
-                <td>Each object has two values that specify an airport and one of its runways
+                <td>Each object specifies an airport, one of its runways, and an optional go-around procedure:
                   <ul>
                     <li>"airport": string that gives an airport name</li>
                     <li>"runway": string that specifies a runway at the given airport</li>
+                    <li>"go_around": (<i>Optional</i>) object defining the go-around procedure for this runway:
+                      <ul>
+                        <li>"heading": integer heading in degrees (1-360). If omitted or 0, runway heading is used.</li>
+                        <li>"altitude": integer altitude in feet (e.g., 2000, 3000).</li>
+                        <li>"handoff_controller": (<i>Optional</i>) TCP that should handle the go-around aircraft.</li>
+                        <li>"hold_departures": (<i>Optional</i>) array of runway strings on which departures
+                          should be held for one minute after a go-around.</li>
+                      </ul>
+                    </li>
                   </ul>
                   The specified airport must be present in the "airports" member of the scenario group,
                   and the specified runway must be one of its runways.
@@ -8889,6 +8936,11 @@ APPLE3.ALL  : RUUTH WNDYL BRAND/a8000 KORRY DEPDY TYKES MINKS JERZY RENUE APPLE 
                       SID ("KJFK/SKORR5"). It is not allowed to specify runway and SID departure selections
                       at an airport, however the airport name alone may be given as a catch-all
                       for any unspecified runways/SIDs if that method is used.</li>
+                    <li>"go_around_assignments": An optional object that maps airports or airport/runway
+                      combinations to the TCP that should handle go-arounds. Keys can be
+                      airport name ("KJFK") or airport/runway ("KJFK/22L") for per-runway
+                      specification. If not specified for an airport/runway, the departure
+                      controller for that airport is used.</li>
                   </ul>
                   These configurations allow multiple scenarios to share the same assignment definitions,
                   reducing duplication when only the consolidation hierarchy differs between scenarios.

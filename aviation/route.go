@@ -24,38 +24,39 @@ import (
 // Waypoint
 
 type Waypoint struct {
-	Fix                      string               `json:"fix"`
-	Location                 math.Point2LL        // not provided in scenario JSON; derived from fix
-	AltitudeRestriction      *AltitudeRestriction `json:"altitude_restriction,omitempty"`
-	Speed                    int                  `json:"speed,omitempty"`
-	Heading                  int                  `json:"heading,omitempty"` // outbound heading after waypoint
-	Turn                     int                  `json:",omitempty"`        // 1 = left, 2= right
-	PresentHeading           bool                 `json:",omitempty"`
-	ProcedureTurn            *ProcedureTurn       `json:"pt,omitempty"`
-	NoPT                     bool                 `json:"nopt,omitempty"`
-	HumanHandoff             bool                 `json:"human_handoff,omitempty"` // Handoff to human controller
-	HandoffController        ControlPosition      `json:"tcp_handoff,omitempty"`   // Controller position for handoff
-	PointOut                 ControlPosition      `json:"pointout,omitempty"`
-	ClearApproach            bool                 `json:"clear_approach,omitempty"` // used for distractor a/c, clears them for the approach passing the wp.
-	FlyOver                  bool                 `json:"flyover,omitempty"`
-	Delete                   bool                 `json:"delete,omitempty"`
-	Land                     bool                 `json:"land,omitempty"`
-	Arc                      *DMEArc              `json:"arc,omitempty"`
-	IAF, IF, FAF             bool                 `json:",omitempty"` // not provided in scenario JSON; derived from fix
-	Airway                   string               `json:",omitempty"` // when parsing waypoints, this is set if we're on an airway after the fix
-	OnSID, OnSTAR            bool                 `json:",omitempty"` // set during deserialization
-	OnApproach               bool                 `json:",omitempty"` // set during deserialization
-	AirworkRadius            int                  `json:",omitempty"` // set during deserialization
-	AirworkMinutes           int                  `json:",omitempty"` // set during deserialization
-	Radius                   float32              `json:",omitempty"`
-	Shift                    float32              `json:",omitempty"`
-	PrimaryScratchpad        string               `json:",omitempty"`
-	ClearPrimaryScratchpad   bool                 `json:",omitempty"`
-	SecondaryScratchpad      string               `json:",omitempty"`
-	ClearSecondaryScratchpad bool                 `json:",omitempty"`
-	TransferComms            bool                 `json:",omitempty"`
-	ClimbAltitude            *int                 `json:",omitempty"` // altitude in feet to climb to when passing waypoint
-	DescendAltitude          *int                 `json:",omitempty"` // altitude in feet to descend to when passing waypoint
+	Fix                       string               `json:"fix"`
+	Location                  math.Point2LL        // not provided in scenario JSON; derived from fix
+	AltitudeRestriction       *AltitudeRestriction `json:"altitude_restriction,omitempty"`
+	Speed                     int                  `json:"speed,omitempty"`
+	Heading                   int                  `json:"heading,omitempty"` // outbound heading after waypoint
+	Turn                      int                  `json:",omitempty"`        // 1 = left, 2= right
+	PresentHeading            bool                 `json:",omitempty"`
+	ProcedureTurn             *ProcedureTurn       `json:"pt,omitempty"`
+	NoPT                      bool                 `json:"nopt,omitempty"`
+	HumanHandoff              bool                 `json:"human_handoff,omitempty"` // Handoff to human controller
+	HandoffController         ControlPosition      `json:"tcp_handoff,omitempty"`   // Controller position for handoff
+	PointOut                  ControlPosition      `json:"pointout,omitempty"`
+	ClearApproach             bool                 `json:"clear_approach,omitempty"` // used for distractor a/c, clears them for the approach passing the wp.
+	FlyOver                   bool                 `json:"flyover,omitempty"`
+	Delete                    bool                 `json:"delete,omitempty"`
+	Land                      bool                 `json:"land,omitempty"`
+	Arc                       *DMEArc              `json:"arc,omitempty"`
+	IAF, IF, FAF              bool                 `json:",omitempty"` // not provided in scenario JSON; derived from fix
+	Airway                    string               `json:",omitempty"` // when parsing waypoints, this is set if we're on an airway after the fix
+	OnSID, OnSTAR             bool                 `json:",omitempty"` // set during deserialization
+	OnApproach                bool                 `json:",omitempty"` // set during deserialization
+	AirworkRadius             int                  `json:",omitempty"` // set during deserialization
+	AirworkMinutes            int                  `json:",omitempty"` // set during deserialization
+	Radius                    float32              `json:",omitempty"`
+	Shift                     float32              `json:",omitempty"`
+	PrimaryScratchpad         string               `json:",omitempty"`
+	ClearPrimaryScratchpad    bool                 `json:",omitempty"`
+	SecondaryScratchpad       string               `json:",omitempty"`
+	ClearSecondaryScratchpad  bool                 `json:",omitempty"`
+	TransferComms             bool                 `json:",omitempty"`
+	ClimbAltitude             *int                 `json:",omitempty"` // altitude in feet to climb to when passing waypoint
+	DescendAltitude           *int                 `json:",omitempty"` // altitude in feet to descend to when passing waypoint
+	GoAroundContactController ControlPosition      `json:",omitempty"` // controller to contact during go-around
 }
 
 func (wp Waypoint) LogValue() slog.Value {
