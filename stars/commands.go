@@ -918,7 +918,7 @@ func lookupControllerByTCP(controllers map[sim.ControlPosition]*av.Controller, i
 
 	// Fallback: ERAM facility
 	return findController(func(ctrl *av.Controller) bool {
-		return ctrl.ERAMFacility && ctrl.Position == id
+		return ctrl.ERAMFacility && string(ctrl.PositionId()) == id
 	})
 }
 
