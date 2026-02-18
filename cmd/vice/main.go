@@ -34,6 +34,7 @@ import (
 	"github.com/mmp/vice/server"
 	"github.com/mmp/vice/sim"
 	"github.com/mmp/vice/stars"
+	"github.com/mmp/vice/tts"
 	"github.com/mmp/vice/util"
 
 	"github.com/AllenDang/cimgui-go/imgui"
@@ -410,7 +411,7 @@ func main() {
 
 		// Start loading the TTS model in the background so it's ready
 		// when pilot readbacks or contacts are needed.
-		client.PreloadTTSModel(lg)
+		tts.PreloadTTSModel(lg, platform.AudioSampleRate)
 
 		// Check for whisper model errors asynchronously and show dialog if CPU not supported.
 		go func() {
@@ -598,7 +599,7 @@ func main() {
 
 			// Check for TTS load error (only shows dialog once)
 			if !ttsErrorShown {
-				if err, done := client.CheckTTSLoadError(); done && err != nil {
+				if err, done := tts.CheckTTSLoadError(); done && err != nil {
 					ttsErrorShown = true
 					ShowErrorDialog(plat, lg, "Text-to-speech is unavailable: %v\n\n"+
 						"Pilot transmissions will still appear as text in the messages pane.", err)
