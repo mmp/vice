@@ -131,6 +131,16 @@ func init() {
 	registerCommand(CommandModeNone, "[SECTOR_ID] [FLID]|[SECTOR_ID][SLEW]", handleInitiateHandoff)
 	registerCommand(CommandModeNone, "[#] [FLID]|[#][SLEW]", handleLeaderLine)
 
+	// Leader line length commands
+	// /0 [FLID] or /0[SLEW]: No line (W/E only)
+	// /1 [FLID] or /1[SLEW]: Normal length (default)
+	// /2 [FLID] or /2[SLEW]: 2x length
+	// /3 [FLID] or /3[SLEW]: 3x length
+	registerCommand(CommandModeNone, "/0 [FLID]|/0[SLEW]", handleLeaderLineLength0)
+	registerCommand(CommandModeNone, "/1 [FLID]|/1[SLEW]", handleLeaderLineLength1)
+	registerCommand(CommandModeNone, "/2 [FLID]|/2[SLEW]", handleLeaderLineLength2)
+	registerCommand(CommandModeNone, "/3 [FLID]|/3[SLEW]", handleLeaderLineLength3)
+
 	// .DRAWROUTE - Custom command for drawing routes
 	registerCommand(CommandModeNone, ".DRAWROUTE", handleDrawRouteMode)
 
@@ -772,6 +782,37 @@ func numberToLLDirection(cmd int) math.CardinalOrdinalDirection {
 		return math.NorthEast
 	default:
 		return math.East
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Leader Line Length Handlers
+
+func handleLeaderLineLength0(ep *ERAMPane, trk *sim.Track) CommandStatus {
+	ep.TrackState[trk.ADSBCallsign].LeaderLineLength = 0
+	return CommandStatus{
+		bigOutput: fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+	}
+}
+
+func handleLeaderLineLength1(ep *ERAMPane, trk *sim.Track) CommandStatus {
+	ep.TrackState[trk.ADSBCallsign].LeaderLineLength = 1
+	return CommandStatus{
+		bigOutput: fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+	}
+}
+
+func handleLeaderLineLength2(ep *ERAMPane, trk *sim.Track) CommandStatus {
+	ep.TrackState[trk.ADSBCallsign].LeaderLineLength = 2
+	return CommandStatus{
+		bigOutput: fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+	}
+}
+
+func handleLeaderLineLength3(ep *ERAMPane, trk *sim.Track) CommandStatus {
+	ep.TrackState[trk.ADSBCallsign].LeaderLineLength = 3
+	return CommandStatus{
+		bigOutput: fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
 	}
 }
 

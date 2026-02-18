@@ -250,8 +250,9 @@ func (ep *ERAMPane) fullDatablockAnchor(ctx *panes.Context, trk sim.Track,
 	}
 	start := transforms.WindowFromLatLongP(state.Track.Location)
 	dir := ep.leaderLineDirection(ctx, trk)
+
 	offset := datablockOffset(*dir)
-	vector := ep.leaderLineVector(*dir)
+	vector := ep.leaderLineVectorWithLength(*dir, state.LeaderLineLength)
 	vector[0] += float32(offset[0]) * ctx.DrawPixelScale
 	vector[1] += float32(offset[1]) * ctx.DrawPixelScale
 	end := math.Add2f(start, math.Scale2f(vector, ctx.DrawPixelScale))
