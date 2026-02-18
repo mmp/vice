@@ -1,44 +1,44 @@
 {
     "control_positions": {
-        "LAN_A_APP": {
+        "1A": {
+            "callsign": "LAN_A_APP",
             "frequency": 120950,
-            "radio_name": "Great Lakes Approach",
-            "sector_id": "1A"
+            "radio_name": "Great Lakes Approach"
         },
-        "LAN_B_APP": {
+        "1B": {
+            "callsign": "LAN_B_APP",
             "frequency": 118800,
-            "radio_name": "Great Lakes Approach",
-            "sector_id": "1B"
+            "radio_name": "Great Lakes Approach"
         },
-        "LAN_H_APP": {
+        "1H": {
+            "callsign": "LAN_H_APP",
             "frequency": 126450,
-            "radio_name": "Great Lakes Approach",
-            "sector_id": "1H"
+            "radio_name": "Great Lakes Approach"
         },
-        "LAN_L_APP": {
+        "1L": {
+            "callsign": "LAN_L_APP",
             "frequency": 118650,
-            "radio_name": "Great Lakes Approach",
-            "sector_id": "1L"
+            "radio_name": "Great Lakes Approach"
         },
-        "LAN_O_APP": {
+        "1O": {
+            "callsign": "LAN_O_APP",
             "frequency": 128550,
-            "radio_name": "Great Lakes Approach",
-            "sector_id": "1O"
+            "radio_name": "Great Lakes Approach"
         },
-        "LAN_Y_APP": {
+        "1Y": {
+            "callsign": "LAN_Y_APP",
             "frequency": 127300,
-            "radio_name": "Great Lakes Approach",
-            "sector_id": "1Y"
+            "radio_name": "Great Lakes Approach"
         },
-        "LAN_T_APP": {
+        "1Z": {
+            "callsign": "LAN_T_APP",
             "frequency": 123450,
-            "radio_name": "Great Lakes Approach",
-            "sector_id": "1Z"
+            "radio_name": "Great Lakes Approach"
         },
-        "LAN_TWR": {
+        "5T": {
+            "callsign": "LAN_TWR",
             "frequency": 119900,
-            "radio_name": "Lansing Tower",
-            "sector_id": "5T"
+            "radio_name": "Lansing Tower"
         }
     },
     "handoff_ids": [
@@ -65,6 +65,10 @@
         {
             "id": "ZMP",
             "eram_prefix": "P"
+        },
+        {
+            "id": "ZOB",
+            "eram_prefix": "C"
         }
     ]
 }

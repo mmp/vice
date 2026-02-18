@@ -1,19 +1,19 @@
 {
     "control_positions": {
-        "EVV_E_APP": {
+        "1E": {
+            "callsign": "EVV_E_APP",
             "frequency": 124025,
-            "radio_name": "Evansville Approach",
-            "sector_id": "1E"
+            "radio_name": "Evansville Approach"
         },
-        "EVV_TWR": {
+        "1T": {
+            "callsign": "EVV_TWR",
             "frequency": 118700,
-            "radio_name": "Evansville Tower",
-            "sector_id": "1T"
+            "radio_name": "Evansville Tower"
         },
-        "EVV_W_APP": {
+        "1W": {
+            "callsign": "EVV_W_APP",
             "frequency": 127350,
-            "radio_name": "Evansville Approach",
-            "sector_id": "1W"
+            "radio_name": "Evansville Approach"
         }
     },
     "handoff_ids": [
@@ -28,6 +28,10 @@
         {
             "id": "SDF",
             "prefix": "2"
+        },
+        {
+            "id": "ZID",
+            "eram_prefix": "C"
         },
         {
             "id": "ZKC",

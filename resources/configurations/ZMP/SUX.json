@@ -1,14 +1,14 @@
 {
     "control_positions": {
-        "SUX_APP": {
+        "1R": {
+            "callsign": "SUX_APP",
             "frequency": 124600,
-            "radio_name": "Sioux City Approach",
-            "sector_id": "1R"
+            "radio_name": "Sioux City Approach"
         },
-        "SUX_TWR": {
+        "1T": {
+            "callsign": "SUX_TWR",
             "frequency": 118700,
-            "radio_name": "Sioux City Tower",
-            "sector_id": "1T"
+            "radio_name": "Sioux City Tower"
         }
     },
     "handoff_ids": [
@@ -19,6 +19,10 @@
         {
             "id": "R90",
             "prefix": "1"
+        },
+        {
+            "id": "ZMP",
+            "eram_prefix": "C"
         }
     ]
 }

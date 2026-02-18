@@ -4202,13 +4202,13 @@
                     "BETTE,HAPIE,SHIPP,WAVEY": {
                         "cleared_altitude": 8000,
                         "sid": "LGA7",
-                        "handoff_controller": "JFK_DEP",
+                        "handoff_controller": "2J",
                         "waypoints": "N040.51.10.513,W073.48.41.484 N040.54.23.090,W073.52.06.571 N040.49.33.655,W073.53.25.673/ho JFK"
                     },
                     "DIXIE,WHITE.Props": {
                         "sid": "LGA7",
                         "cleared_altitude": 8000,
-                        "handoff_controller": "JFK_DEP",
+                        "handoff_controller": "2J",
                         "waypoints": "N040.51.10.513,W073.48.41.484 N040.54.23.090,W073.52.06.571 N040.49.33.655,W073.53.25.673/ho JFK"
                     },
                     "PARKE,BIGGY,NEWEL": {
@@ -4236,13 +4236,13 @@
                     "BETTE,HAPIE,SHIPP,WAVEY": {
                         "cleared_altitude": 8000,
                         "sid": "LGA7",
-                        "handoff_controller": "JFK_DEP",
+                        "handoff_controller": "2J",
                         "waypoints": "N040.53.57.492,W073.52.46.973 N040.53.24.711,W073.48.34.947/ho JFK"
                     },
                     "DIXIE,WHITE.Props": {
                         "cleared_altitude": 6000,
                         "sid": "LGA7",
-                        "handoff_controller": "JFK_DEP",
+                        "handoff_controller": "2J",
                         "waypoints": "N040.53.57.492,W073.52.46.973 N040.53.24.711,W073.48.34.947/ho JFK"
                     },
                     "PARKE,BIGGY,NEWEL": {
@@ -4270,7 +4270,7 @@
                     "BETTE,HAPIE,SHIPP,WAVEY": {
                         "cleared_altitude": 8000,
                         "sid": "NTHNS6",
-                        "handoff_controller": "JFK_DEP",
+                        "handoff_controller": "2J",
                         "waypoints": "KIWIE/s220/a2500+ NTHNS/s220/a3000+/ho CNRSE/s230/a5000+ ASALT/h224"
                     },
                     "DIXIE,WHITE.Props": {
@@ -4303,13 +4303,13 @@
                     "BETTE,HAPIE,SHIPP,WAVEY": {
                         "cleared_altitude": 8000,
                         "sid": "LGA7",
-                        "handoff_controller": "JFK_DEP",
+                        "handoff_controller": "2J",
                         "waypoints": "N040.45.12.043,W073.50.27.447 N040.51.57.274,W073.43.29.609 N040.53.08.287,W073.50.06.546 N040.50.18.136,W073.53.33.500/ho JFK"
                     },
                     "DIXIE,WHITE.Props": {
                         "cleared_altitude": 6000,
                         "sid": "LGA7",
-                        "handoff_controller": "JFK_DEP",
+                        "handoff_controller": "2J",
                         "waypoints": "N040.45.12.043,W073.50.27.447 N040.51.57.274,W073.43.29.609 N040.53.08.287,W073.50.06.546 N040.50.18.136,W073.53.33.500/ho JFK"
                     },
                     "WHITE.Jets": {
@@ -4567,7 +4567,7 @@
                     "route": "WHITE Q409 MRPIT CEELY Q172 YUTEE SKWWR JJEDI3"
                 }
             ],
-            "departure_controller": "LGA_L_APP",
+            "departure_controller": "1L",
             "exit_categories": {
                 "ARD": "Southwest",
                 "BETTE": "Water",
@@ -7102,7 +7102,7 @@
                     "waypoints": "N040.12.34.307,W073.43.07.417 N040.16.13.896,W073.40.17.843/ho/h40",
                     "cruise_altitude": 39000,
                     "star": "CAMRN5",
-                    "initial_controller": "JFK_G_APP",
+                    "initial_controller": "2G",
                     "initial_altitude": 8000,
                     "assigned_altitude": 4000,
                     "initial_speed": 250,
@@ -8343,7 +8343,7 @@
                     "waypoints": "CAMRN N040.15.12.510,W073.41.24.640/ho N040.19.46.880,W073.38.09.605/h40",
                     "cruise_altitude": 39000,
                     "star": "CAMRN5",
-                    "initial_controller": "JFK_K_APP",
+                    "initial_controller": "2K",
                     "initial_altitude": 8000,
                     "assigned_altitude": 4000,
                     "initial_speed": 250,
@@ -9584,7 +9584,7 @@
                     "spawn": "PANZE@0.5",
                     "cruise_altitude": 39000,
                     "star": "CAMRN5",
-                    "initial_controller": "JFK_G_APP",
+                    "initial_controller": "2G",
                     "initial_altitude": 12000,
                     "assigned_altitude": 3000,
                     "initial_speed": 300,
@@ -10207,8 +10207,7 @@
                     "spawn": "PANZE@0.5",
                     "cruise_altitude": 39000,
                     "star": "CAMRN5",
-                    "initial_controller": "ZNY 86 Atlantic",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "C86",
                     "initial_altitude": 12000,
                     "assigned_altitude": 11000,
                     "initial_speed": 300,
@@ -10831,8 +10830,7 @@
                     "spawn": "PAWLN",
                     "cruise_altitude": 29000,
                     "star": "LOVES1",
-                    "initial_controller": "ZBW 46 Boston",
-                    "initial_facility": "ZBW",
+                    "initial_controller": "B46",
                     "initial_altitude": 8000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -10856,8 +10854,7 @@
                     "waypoints": "N041.05.49.887,W071.43.59.135 N041.02.54.490,W071.50.56.808/ho HTO CCC KISP",
                     "cruise_altitude": 14000,
                     "route": "/. HTO V46 CCC ISP",
-                    "initial_controller": "ZBW 46 Boston",
-                    "initial_facility": "ZBW",
+                    "initial_controller": "B46",
                     "initial_altitude": 10000,
                     "assigned_altitude": 10000,
                     "initial_speed": 250,
@@ -10885,8 +10882,7 @@
                     "waypoints": "HFD N041.33.29.632,W072.36.20.511/ho HVN",
                     "cruise_altitude": 14000,
                     "route": "/. HVN",
-                    "initial_controller": "ZBW 46 Boston",
-                    "initial_facility": "ZBW",
+                    "initial_controller": "B46",
                     "initial_altitude": 10000,
                     "assigned_altitude": 10000,
                     "initial_speed": 250,
@@ -10914,8 +10910,7 @@
                     "waypoints": "N041.28.15.080,W072.08.52.040 SALEM/ho CCC KISP",
                     "cruise_altitude": 8000,
                     "route": "/. CCC ISP",
-                    "initial_controller": "ZBW 46 Boston",
-                    "initial_facility": "ZBW",
+                    "initial_controller": "B46",
                     "initial_altitude": 8000,
                     "assigned_altitude": 8000,
                     "initial_speed": 250,
@@ -10934,8 +10929,7 @@
                     "waypoints": "HFD N041.33.29.632,W072.36.20.511/ho MAD BELTT KISP",
                     "cruise_altitude": 10000,
                     "route": "/. MAD V1 BELTT ISP",
-                    "initial_controller": "ZBW 46 Boston",
-                    "initial_facility": "ZBW",
+                    "initial_controller": "B46",
                     "initial_altitude": 10000,
                     "assigned_altitude": 10000,
                     "initial_speed": 250,
@@ -10967,8 +10961,7 @@
                     "waypoints": "N039.58.50.484,W074.03.34.151 ZIGGI/ho JFK CCC KISP",
                     "cruise_altitude": 5000,
                     "route": "/. JFK CCC ISP",
-                    "initial_controller": "ZNY 56 Kennedy",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "C56",
                     "initial_altitude": 5000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -10995,8 +10988,7 @@
                     "waypoints": "N040.11.27.469,W073.12.53.712 N040.15.12.483,W073.08.39.131/ho SARDI RICED KEYED HVN",
                     "cruise_altitude": 27000,
                     "route": "/. SARDI V139 RICED KEYED HVN",
-                    "initial_controller": "ZNY 56 Kennedy",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "C56",
                     "initial_altitude": 7000,
                     "assigned_altitude": 7000,
                     "initial_speed": 250,
@@ -11015,8 +11007,7 @@
                     "waypoints": "GON N041.17.25.349,W072.10.01.803/ho CREAM HVN",
                     "cruise_altitude": 10000,
                     "route": "/. CREAM HVN",
-                    "initial_controller": "ZBW 46 Boston",
-                    "initial_facility": "ZBW",
+                    "initial_controller": "B46",
                     "initial_altitude": 10000,
                     "assigned_altitude": 10000,
                     "initial_speed": 250,
@@ -11036,7 +11027,7 @@
                     "waypoints": "N041.17.24.607,W073.43.06.291 CMK/ho DENNA HVN",
                     "cruise_altitude": 5000,
                     "route": "/. DENNA HVN",
-                    "initial_controller": "LGA_L_APP",
+                    "initial_controller": "1L",
                     "initial_altitude": 5000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -11056,7 +11047,7 @@
                     "waypoints": "N040.57.00.469,W073.31.33.740 N041.01.04.242,W073.23.53.468/ho BDR HVN",
                     "cruise_altitude": 5000,
                     "route": "/. BDR HVN",
-                    "initial_controller": "LGA_L_APP",
+                    "initial_controller": "1L",
                     "initial_altitude": 5000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -11080,8 +11071,7 @@
                     "waypoints": "N041.46.50.426,W073.20.24.261 N041.39.56.516,W073.19.39.025/ho DPK",
                     "cruise_altitude": 16000,
                     "route": "/. DPK",
-                    "initial_controller": "ZBW 46 Boston",
-                    "initial_facility": "ZBW",
+                    "initial_controller": "B46",
                     "initial_altitude": 10000,
                     "assigned_altitude": 9000,
                     "initial_speed": 250,
@@ -11110,8 +11100,7 @@
                     "waypoints": "N039.59.17.221,W074.02.27.134 ZIGGI/ho/h40 JFK",
                     "cruise_altitude": 5000,
                     "route": "/. ZIGGI",
-                    "initial_controller": "ZNY 56 Kennedy",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "C56",
                     "initial_altitude": 5000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -11149,7 +11138,7 @@
                     "waypoints": "N040.22.20.785,W074.20.53.347 N040.20.55.984,W074.16.57.636/ho COL JFK",
                     "cruise_altitude": 9000,
                     "route": "/. COL",
-                    "initial_controller": "EWR_P_APP",
+                    "initial_controller": "4P",
                     "initial_altitude": 4000,
                     "assigned_altitude": 4000,
                     "initial_speed": 250,
@@ -11183,8 +11172,7 @@
                     "spawn": "FUUEL",
                     "cruise_altitude": 37000,
                     "star": "PUCKY1",
-                    "initial_controller": "ZNY 34 Elmira",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "C34",
                     "initial_altitude": 20000,
                     "assigned_altitude": 19000,
                     "initial_speed": 300,
@@ -11836,8 +11824,7 @@
                     "spawn": "FUUEL",
                     "cruise_altitude": 39000,
                     "star": "PUCKY1",
-                    "initial_controller": "ZNY 34 Elmira",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "C34",
                     "initial_altitude": 19000,
                     "assigned_altitude": 19000,
                     "initial_speed": 300,
@@ -11940,7 +11927,7 @@
                     "waypoints": "LGA N040.42.02.048,W073.41.55.759 N040.30.44.604,W073.38.21.855/a8000/h180/ho",
                     "cruise_altitude": 37000,
                     "star": "PUCKY1",
-                    "initial_controller": "JFK_DEP",
+                    "initial_controller": "2J",
                     "initial_altitude": 13000,
                     "initial_speed": 250,
                     "description": "PUCKY1",
@@ -12576,8 +12563,7 @@
                     "spawn": "PWL",
                     "cruise_altitude": 15000,
                     "star": "DENNA3",
-                    "initial_controller": "ZBW 46 Boston",
-                    "initial_facility": "ZBW",
+                    "initial_controller": "B46",
                     "initial_altitude": 8000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -12601,8 +12587,7 @@
                     "spawn": "YANTC",
                     "cruise_altitude": 22000,
                     "star": "NELIE4",
-                    "initial_controller": "ZBW 46 Boston",
-                    "initial_facility": "ZBW",
+                    "initial_controller": "B46",
                     "initial_altitude": 6000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -12637,8 +12622,7 @@
                     "waypoints": "N039.54.57.463,W073.27.31.931 N039.55.59.825,W073.30.27.355/ho CAMRN/h40",
                     "cruise_altitude": 41000,
                     "route": "/. OWENZ CAMRN",
-                    "initial_controller": "ZNY 86 Atlantic",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "C86",
                     "initial_altitude": 11000,
                     "assigned_altitude": 9000,
                     "initial_speed": 300,
@@ -12687,8 +12671,7 @@
                     "spawn": "PARCH",
                     "cruise_altitude": 36000,
                     "star": "PARCH4",
-                    "initial_controller": "ZBW 46 Boston",
-                    "initial_facility": "ZBW",
+                    "initial_controller": "B46",
                     "initial_altitude": 18000,
                     "assigned_altitude": 12000,
                     "initial_speed": 275,
@@ -13312,7 +13295,7 @@
                     "waypoints": "CCC ROBER/ho/h270",
                     "cruise_altitude": 36000,
                     "star": "PARCH4",
-                    "initial_controller": "JFK_K_APP",
+                    "initial_controller": "2K",
                     "initial_altitude": 12000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -13885,7 +13868,7 @@
                     "waypoints": "CCC/a9000 ROBER/a5000/ho/h250",
                     "cruise_altitude": 36000,
                     "star": "PARCH4",
-                    "initial_controller": "JFK_K_APP",
+                    "initial_controller": "2K",
                     "initial_altitude": 12000,
                     "initial_speed": 250,
                     "description": "PARCH4",
@@ -14457,7 +14440,7 @@
                     "waypoints": "CCC/a9000 ROBER/a5000 N040.30.07.731,W073.24.25.383/a3000/ho/h250",
                     "cruise_altitude": 36000,
                     "star": "PARCH4",
-                    "initial_controller": "JFK_K_APP",
+                    "initial_controller": "2K",
                     "initial_altitude": 12000,
                     "initial_speed": 250,
                     "description": "PARCH4",
@@ -15147,22 +15130,22 @@
                 }
             ],
             "airspace": {
-                "JFK_G_APP": [
+                "2G": [
                     "CAMRN_13RL"
                 ],
-                "JFK_K_APP": [
+                "2K": [
                     "ROBER_4RL"
                 ],
-                "JFK_E_APP": [
+                "2E": [
                     "LENDY_13RL"
                 ],
-                "JFK_A_APP": [
+                "2A": [
                     "JFK_FINAL_13RL"
                 ],
-                "JFK_M_APP": [
+                "2M": [
                     "JFK_SATELITE_13RL"
                 ],
-                "JFK_DEP": [
+                "2J": [
                     "JFK_DEP_13RL"
                 ]
             },
@@ -15269,22 +15252,22 @@
                 }
             ],
             "airspace": {
-                "JFK_G_APP": [
+                "2G": [
                     "CAMRN_13RL"
                 ],
-                "JFK_K_APP": [
+                "2K": [
                     "ROBER_4RL"
                 ],
-                "JFK_E_APP": [
+                "2E": [
                     "LENDY_13RL"
                 ],
-                "JFK_A_APP": [
+                "2A": [
                     "JFK_FINAL_13RL"
                 ],
-                "JFK_M_APP": [
+                "2M": [
                     "JFK_SATELITE_13RL"
                 ],
-                "JFK_DEP": [
+                "2J": [
                     "JFK_DEP_13RL"
                 ]
             },
@@ -15386,22 +15369,22 @@
                 }
             ],
             "airspace": {
-                "JFK_G_APP": [
+                "2G": [
                     "CAMRN_22RL"
                 ],
-                "JFK_E_APP": [
+                "2E": [
                     "LENDY_22RL"
                 ],
-                "JFK_K_APP": [
+                "2K": [
                     "ROBER_22RL"
                 ],
-                "JFK_A_APP": [
+                "2A": [
                     "JFK_FINAL_22RL"
                 ],
-                "JFK_M_APP": [
+                "2M": [
                     "JFK_SATELITE_22RL"
                 ],
-                "JFK_DEP": [
+                "2J": [
                     "JFK_DEP_22RL"
                 ]
             },
@@ -15522,22 +15505,22 @@
                 }
             ],
             "airspace": {
-                "JFK_G_APP": [
+                "2G": [
                     "CAMRN_31RL"
                 ],
-                "JFK_E_APP": [
+                "2E": [
                     "LENDY_31RL"
                 ],
-                "JFK_K_APP": [
+                "2K": [
                     "ROBER_31RL"
                 ],
-                "JFK_A_APP": [
+                "2A": [
                     "JFK_FINAL_31RL"
                 ],
-                "JFK_M_APP": [
+                "2M": [
                     "JFK_SATELITE_31RL"
                 ],
-                "JFK_DEP": [
+                "2J": [
                     "JFK_DEP_31RL"
                 ]
             },
@@ -15639,22 +15622,22 @@
                 }
             ],
             "airspace": {
-                "JFK_G_APP": [
+                "2G": [
                     "CAMRN_4RL"
                 ],
-                "JFK_K_APP": [
+                "2K": [
                     "ROBER_4RL"
                 ],
-                "JFK_E_APP": [
+                "2E": [
                     "LENDY_4RL"
                 ],
-                "JFK_A_APP": [
+                "2A": [
                     "JFK_FINAL_4RL"
                 ],
-                "JFK_M_APP": [
+                "2M": [
                     "JFK_SATELITE_4RL"
                 ],
-                "JFK_DEP": [
+                "2J": [
                     "JFK_DEP_4RL"
                 ]
             },
@@ -15744,7 +15727,7 @@
                 }
             ],
             "airspace": {
-                "JFK_A_APP": [
+                "2A": [
                     "JFK_FINAL_4RL",
                     "CAMRN_4RL"
                 ]
@@ -15782,7 +15765,7 @@
                 }
             ],
             "airspace": {
-                "JFK_A_APP": [
+                "2A": [
                     "JFK_FINAL_13RL",
                     "CAMRN_13RL"
                 ]
@@ -15820,7 +15803,7 @@
                 }
             ],
             "airspace": {
-                "JFK_A_APP": [
+                "2A": [
                     "JFK_FINAL_22RL"
                 ]
             },
@@ -15854,7 +15837,7 @@
                 }
             ],
             "airspace": {
-                "JFK_A_APP": [
+                "2A": [
                     "JFK_FINAL_31RL"
                 ]
             },

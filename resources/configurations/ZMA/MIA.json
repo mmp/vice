@@ -1,266 +1,266 @@
 {
     "control_positions": {
-        "MIA_N_TWR": {
+        "1T": {
+            "callsign": "MIA_N_TWR",
             "frequency": 118300,
-            "radio_name": "Miami Tower",
-            "sector_id": "1T"
+            "radio_name": "Miami Tower"
         },
-        "MIA_S_TWR": {
+        "1M": {
+            "callsign": "MIA_S_TWR",
             "frequency": 123900,
-            "radio_name": "Miami Tower",
-            "sector_id": "1M"
+            "radio_name": "Miami Tower"
         },
-        "FLL_N_TWR": {
+        "1B": {
+            "callsign": "FLL_N_TWR",
             "frequency": 119300,
-            "radio_name": "Fort Lauderdale Tower",
-            "sector_id": "1B"
+            "radio_name": "Fort Lauderdale Tower"
         },
-        "FLL_S_TWR": {
+        "1U": {
+            "callsign": "FLL_S_TWR",
             "frequency": 120200,
-            "radio_name": "Fort Lauderdale Tower",
-            "sector_id": "1U"
+            "radio_name": "Fort Lauderdale Tower"
         },
-        "OPF_TWR": {
+        "4O": {
+            "callsign": "OPF_TWR",
             "frequency": 134675,
-            "radio_name": "Opa Locka Tower",
-            "sector_id": "4O"
+            "radio_name": "Opa Locka Tower"
         },
-        "FXE_TWR": {
+        "1X": {
+            "callsign": "FXE_TWR",
             "frequency": 120900,
-            "radio_name": "Executive Tower",
-            "sector_id": "1X"
+            "radio_name": "Executive Tower"
         },
-        "TMB_TWR": {
+        "1I": {
+            "callsign": "TMB_TWR",
             "frequency": 118900,
-            "radio_name": "Tamiami Tower",
-            "sector_id": "1I"
+            "radio_name": "Tamiami Tower"
         },
-        "MIA_V_APP": {
+        "1V": {
+            "callsign": "MIA_V_APP",
             "frequency": 124850,
-            "radio_name": "Miami Approach",
-            "sector_id": "1V"
+            "radio_name": "Miami Approach"
         },
-        "MIA_A_APP": {
+        "1A": {
+            "callsign": "MIA_A_APP",
             "frequency": 133050,
-            "radio_name": "Miami Approach",
-            "sector_id": "1A"
+            "radio_name": "Miami Approach"
         },
-        "MIA_N_APP": {
+        "1N": {
+            "callsign": "MIA_N_APP",
             "frequency": 125750,
-            "radio_name": "Miami Approach",
-            "sector_id": "1N"
+            "radio_name": "Miami Approach"
         },
-        "MIA_S_APP": {
+        "1S": {
+            "callsign": "MIA_S_APP",
             "frequency": 120500,
-            "radio_name": "Miami Approach",
-            "sector_id": "1S"
+            "radio_name": "Miami Approach"
         },
-        "MIA_Q_APP": {
+        "1Q": {
+            "callsign": "MIA_Q_APP",
             "frequency": 126850,
-            "radio_name": "Miami Approach",
-            "sector_id": "1Q"
+            "radio_name": "Miami Approach"
         },
-        "MIA_H_APP": {
+        "1H": {
+            "callsign": "MIA_H_APP",
             "frequency": 125250,
-            "radio_name": "Miami Approach",
-            "sector_id": "1H"
+            "radio_name": "Miami Approach"
         },
-        "MIA_D_DEP": {
+        "1D": {
+            "callsign": "MIA_D_DEP",
             "frequency": 119450,
-            "radio_name": "Miami Departure",
-            "sector_id": "1D"
+            "radio_name": "Miami Departure"
         },
-        "MIA_W_DEP": {
+        "1W": {
+            "callsign": "MIA_W_DEP",
             "frequency": 125500,
-            "radio_name": "Miami Departure",
-            "sector_id": "1W"
+            "radio_name": "Miami Departure"
         },
-        "MIA_L_DEP": {
+        "1L": {
+            "callsign": "MIA_L_DEP",
             "frequency": 126050,
-            "radio_name": "Miami Departure",
-            "sector_id": "1L"
+            "radio_name": "Miami Departure"
         },
-        "MIA_R_APP": {
+        "1R": {
+            "callsign": "MIA_R_APP",
             "frequency": 133770,
-            "radio_name": "Miami Approach",
-            "sector_id": "1R"
+            "radio_name": "Miami Approach"
         },
-        "MIA_J_APP": {
+        "1J": {
+            "callsign": "MIA_J_APP",
             "frequency": 118100,
-            "radio_name": "Miami Approach",
-            "sector_id": "1J"
+            "radio_name": "Miami Approach"
         },
-        "MIA_F_APP": {
+        "1F": {
+            "callsign": "MIA_F_APP",
             "frequency": 133720,
-            "radio_name": "Miami Approach",
-            "sector_id": "1F"
+            "radio_name": "Miami Approach"
         }
     },
     "stars_config": {
         "configurations": {
             "KMI": {
                 "inbound_assignments": {
-                    "BHHIA3 NOSATS EAST": "MIA_N_APP",
-                    "BNFSH3 NOSATS EAST": "MIA_N_APP",
-                    "CSTAL3 NOSATS EAST": "MIA_N_APP",
-                    "CUUDA3 NOSATS EAST": "MIA_R_APP",
-                    "FROGZ4 NOSATS EAST": "MIA_N_APP",
-                    "OLAHS3 NOSATS EAST": "MIA_D_DEP",
-                    "SNDBR3 NOSATS EAST": "MIA_S_APP",
-                    "TEEKY3 NOSATS EAST": "MIA_J_APP",
-                    "VIICE2 NOSATS EAST": "MIA_S_APP"
+                    "BHHIA3 NOSATS EAST": "1N",
+                    "BNFSH3 NOSATS EAST": "1N",
+                    "CSTAL3 NOSATS EAST": "1N",
+                    "CUUDA3 NOSATS EAST": "1R",
+                    "FROGZ4 NOSATS EAST": "1N",
+                    "OLAHS3 NOSATS EAST": "1D",
+                    "SNDBR3 NOSATS EAST": "1S",
+                    "TEEKY3 NOSATS EAST": "1J",
+                    "VIICE2 NOSATS EAST": "1S"
                 },
                 "departure_assignments": {
-                    "KFLL": "MIA_D_DEP",
-                    "KMIA": "MIA_W_DEP"
+                    "KFLL": "1D",
+                    "KMIA": "1W"
                 },
                 "default_consolidation": {
-                    "MIA_D_DEP": [
-                        "MIA_L_DEP",
-                        "MIA_V_APP",
-                        "MIA_W_DEP"
+                    "1D": [
+                        "1L",
+                        "1V",
+                        "1W"
                     ],
-                    "MIA_L_DEP": [
-                        "MIA_R_APP"
+                    "1L": [
+                        "1R"
                     ],
-                    "MIA_R_APP": [
-                        "MIA_F_APP",
-                        "MIA_J_APP"
+                    "1R": [
+                        "1F",
+                        "1J"
                     ],
-                    "MIA_S_APP": [
-                        "MIA_A_APP"
+                    "1S": [
+                        "1A"
                     ],
-                    "MIA_V_APP": [
-                        "MIA_N_APP",
-                        "MIA_S_APP"
+                    "1V": [
+                        "1N",
+                        "1S"
                     ]
                 }
             },
             "KM1": {
                 "inbound_assignments": {
-                    "BHHIA3": "MIA_N_APP",
-                    "BNFSH3": "MIA_N_APP",
-                    "CSTAL3": "MIA_N_APP",
-                    "CUUDA3": "MIA_R_APP",
-                    "FROGZ4": "MIA_N_APP",
-                    "OLAHS3": "MIA_D_DEP",
-                    "SNDBR3": "MIA_S_APP",
-                    "TEEKY3": "MIA_J_APP",
-                    "VIICE2": "MIA_S_APP"
+                    "BHHIA3": "1N",
+                    "BNFSH3": "1N",
+                    "CSTAL3": "1N",
+                    "CUUDA3": "1R",
+                    "FROGZ4": "1N",
+                    "OLAHS3": "1D",
+                    "SNDBR3": "1S",
+                    "TEEKY3": "1J",
+                    "VIICE2": "1S"
                 },
                 "departure_assignments": {
-                    "KFLL": "MIA_L_DEP",
-                    "KFXE": "MIA_Q_APP",
-                    "KMIA": "MIA_D_DEP",
-                    "KOPF": "MIA_Q_APP",
-                    "KTMB": "MIA_H_APP"
+                    "KFLL": "1L",
+                    "KFXE": "1Q",
+                    "KMIA": "1D",
+                    "KOPF": "1Q",
+                    "KTMB": "1H"
                 },
                 "default_consolidation": {
-                    "MIA_D_DEP": [
-                        "MIA_L_DEP",
-                        "MIA_Q_APP",
-                        "MIA_V_APP",
-                        "MIA_W_DEP"
+                    "1D": [
+                        "1L",
+                        "1Q",
+                        "1V",
+                        "1W"
                     ],
-                    "MIA_L_DEP": [
-                        "MIA_R_APP"
+                    "1L": [
+                        "1R"
                     ],
-                    "MIA_R_APP": [
-                        "MIA_F_APP",
-                        "MIA_J_APP"
+                    "1R": [
+                        "1F",
+                        "1J"
                     ],
-                    "MIA_S_APP": [
-                        "MIA_A_APP"
+                    "1S": [
+                        "1A"
                     ],
-                    "MIA_V_APP": [
-                        "MIA_N_APP",
-                        "MIA_S_APP"
+                    "1V": [
+                        "1N",
+                        "1S"
                     ],
-                    "MIA_W_DEP": [
-                        "MIA_H_APP"
+                    "1W": [
+                        "1H"
                     ]
                 }
             },
             "KM2": {
                 "inbound_assignments": {
-                    "BHHIA3 NOSATS WEST": "MIA_D_DEP",
-                    "BNFSH3 NOSATS WEST": "MIA_N_APP",
-                    "CSTAL3 NOSATS WEST": "MIA_N_APP",
-                    "CUUDA3 NOSATS WEST": "MIA_R_APP",
-                    "FROGZ4 NOSATS WEST": "MIA_S_APP",
-                    "OLAHS3 NOSATS WEST": "MIA_J_APP",
-                    "SNDBR3 NOSATS WEST": "MIA_S_APP",
-                    "TEEKY3 NOSATS WEST": "MIA_R_APP",
-                    "VIICE2 NOSATS WEST": "MIA_S_APP"
+                    "BHHIA3 NOSATS WEST": "1D",
+                    "BNFSH3 NOSATS WEST": "1N",
+                    "CSTAL3 NOSATS WEST": "1N",
+                    "CUUDA3 NOSATS WEST": "1R",
+                    "FROGZ4 NOSATS WEST": "1S",
+                    "OLAHS3 NOSATS WEST": "1J",
+                    "SNDBR3 NOSATS WEST": "1S",
+                    "TEEKY3 NOSATS WEST": "1R",
+                    "VIICE2 NOSATS WEST": "1S"
                 },
                 "departure_assignments": {
-                    "KFLL": "MIA_D_DEP",
-                    "KMIA": "MIA_D_DEP"
+                    "KFLL": "1D",
+                    "KMIA": "1D"
                 },
                 "default_consolidation": {
-                    "MIA_D_DEP": [
-                        "MIA_L_DEP",
-                        "MIA_V_APP",
-                        "MIA_W_DEP"
+                    "1D": [
+                        "1L",
+                        "1V",
+                        "1W"
                     ],
-                    "MIA_L_DEP": [
-                        "MIA_R_APP"
+                    "1L": [
+                        "1R"
                     ],
-                    "MIA_R_APP": [
-                        "MIA_F_APP",
-                        "MIA_J_APP"
+                    "1R": [
+                        "1F",
+                        "1J"
                     ],
-                    "MIA_S_APP": [
-                        "MIA_A_APP"
+                    "1S": [
+                        "1A"
                     ],
-                    "MIA_V_APP": [
-                        "MIA_N_APP",
-                        "MIA_S_APP"
+                    "1V": [
+                        "1N",
+                        "1S"
                     ]
                 }
             },
             "KM3": {
                 "inbound_assignments": {
-                    "BHHIA3": "MIA_D_DEP",
-                    "BNFSH3": "MIA_N_APP",
-                    "CSTAL3": "MIA_N_APP",
-                    "CUUDA3": "MIA_R_APP",
-                    "FROGZ4": "MIA_S_APP",
-                    "OLAHS3": "MIA_J_APP",
-                    "SNDBR3": "MIA_S_APP",
-                    "TEEKY3": "MIA_R_APP",
-                    "VIICE2": "MIA_S_APP"
+                    "BHHIA3": "1D",
+                    "BNFSH3": "1N",
+                    "CSTAL3": "1N",
+                    "CUUDA3": "1R",
+                    "FROGZ4": "1S",
+                    "OLAHS3": "1J",
+                    "SNDBR3": "1S",
+                    "TEEKY3": "1R",
+                    "VIICE2": "1S"
                 },
                 "departure_assignments": {
-                    "KFLL": "MIA_L_DEP",
-                    "KFXE": "MIA_Q_APP",
-                    "KMIA": "MIA_W_DEP",
-                    "KOPF": "MIA_Q_APP",
-                    "KTMB": "MIA_H_APP"
+                    "KFLL": "1L",
+                    "KFXE": "1Q",
+                    "KMIA": "1W",
+                    "KOPF": "1Q",
+                    "KTMB": "1H"
                 },
                 "default_consolidation": {
-                    "MIA_D_DEP": [
-                        "MIA_L_DEP",
-                        "MIA_Q_APP",
-                        "MIA_V_APP",
-                        "MIA_W_DEP"
+                    "1D": [
+                        "1L",
+                        "1Q",
+                        "1V",
+                        "1W"
                     ],
-                    "MIA_L_DEP": [
-                        "MIA_R_APP"
+                    "1L": [
+                        "1R"
                     ],
-                    "MIA_R_APP": [
-                        "MIA_F_APP",
-                        "MIA_J_APP"
+                    "1R": [
+                        "1F",
+                        "1J"
                     ],
-                    "MIA_S_APP": [
-                        "MIA_A_APP"
+                    "1S": [
+                        "1A"
                     ],
-                    "MIA_V_APP": [
-                        "MIA_N_APP",
-                        "MIA_S_APP"
+                    "1V": [
+                        "1N",
+                        "1S"
                     ],
-                    "MIA_W_DEP": [
-                        "MIA_H_APP"
+                    "1W": [
+                        "1H"
                     ]
                 }
             }
@@ -596,7 +596,7 @@
         },
         {
             "id": "ZMA",
-            "eram_prefix": "R"
+            "eram_prefix": "C"
         }
     ]
 }

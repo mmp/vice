@@ -1,19 +1,19 @@
 {
     "control_positions": {
-        "YNG_APP": {
+        "1A": {
+            "callsign": "YNG_APP",
             "frequency": 133950,
-            "radio_name": "Youngstown Approach",
-            "sector_id": "1A"
+            "radio_name": "Youngstown Approach"
         },
-        "YNG_TWR": {
+        "1T": {
+            "callsign": "YNG_TWR",
             "frequency": 119500,
-            "radio_name": "Youngstown Tower",
-            "sector_id": "1T"
+            "radio_name": "Youngstown Tower"
         },
-        "YNG_T_APP": {
+        "1Z": {
+            "callsign": "YNG_T_APP",
             "frequency": 123450,
-            "radio_name": "Youngstown Approach",
-            "sector_id": "1Z"
+            "radio_name": "Youngstown Approach"
         }
     },
     "handoff_ids": [
@@ -28,6 +28,10 @@
         {
             "id": "PIT",
             "prefix": "2"
+        },
+        {
+            "id": "ZOB",
+            "eram_prefix": "C"
         }
     ]
 }

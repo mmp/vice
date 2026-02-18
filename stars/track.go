@@ -647,8 +647,8 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, transforms radar.ScopeTransf
 				} else if ctrl.FacilityIdentifier != "" {
 					// For external facilities we use the facility id
 					positionSymbol = ctrl.FacilityIdentifier
-				} else if len(ctrl.SectorID) > 0 {
-					positionSymbol = ctrl.SectorID[len(ctrl.SectorID)-1:]
+				} else if len(ctrl.Position) > 0 {
+					positionSymbol = ctrl.Position[len(ctrl.Position)-1:]
 				}
 			}
 		}

@@ -1,14 +1,14 @@
 {
     "control_positions": {
-        "TRI_APP": {
+        "1W": {
+            "callsign": "TRI_APP",
             "frequency": 125500,
-            "radio_name": "Tri City Approach",
-            "sector_id": "1W"
+            "radio_name": "Tri City Approach"
         },
-        "TRI_TWR": {
+        "1T": {
+            "callsign": "TRI_TWR",
             "frequency": 119500,
-            "radio_name": "Tri-City Tower",
-            "sector_id": "1T"
+            "radio_name": "Tri-City Tower"
         }
     },
     "handoff_ids": [
@@ -23,6 +23,10 @@
         {
             "id": "ZID",
             "eram_prefix": "I"
+        },
+        {
+            "id": "ZTL",
+            "eram_prefix": "C"
         }
     ]
 }

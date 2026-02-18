@@ -1,14 +1,14 @@
 {
     "control_positions": {
-        "POE_APP": {
+        "1P": {
+            "callsign": "POE_APP",
             "frequency": 123700,
-            "radio_name": "Polk Approach",
-            "sector_id": "1P"
+            "radio_name": "Polk Approach"
         },
-        "POE_TWR": {
+        "1T": {
+            "callsign": "POE_TWR",
             "frequency": 119000,
-            "radio_name": "Polk Tower",
-            "sector_id": "1T"
+            "radio_name": "Polk Tower"
         }
     },
     "handoff_ids": [
@@ -39,6 +39,10 @@
         {
             "id": "ZFW",
             "eram_prefix": "F"
+        },
+        {
+            "id": "ZHU",
+            "eram_prefix": "C"
         }
     ]
 }

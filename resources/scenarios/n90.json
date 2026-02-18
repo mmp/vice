@@ -7086,8 +7086,7 @@
                     "waypoints": "N041.28.44.208,W072.17.15.433 SALEM/ho CCC",
                     "cruise_altitude": 10000,
                     "route": "/. CCC ISP",
-                    "initial_controller": "PVD_D_APP",
-                    "initial_facility": "PVD",
+                    "initial_controller": "11D",
                     "initial_altitude": 10000,
                     "assigned_altitude": 8000,
                     "initial_speed": 250,
@@ -7115,7 +7114,7 @@
                     "waypoints": "MANTA/airwayQ439 PLUME/airwayQ439 SHERL/ho/airwayQ439 DUNEE/airwayQ439 SARDI CCC",
                     "cruise_altitude": 35000,
                     "route": "/. Q439 SARDI CCC",
-                    "initial_controller": "ZBW 46 Boston",
+                    "initial_controller": "B46",
                     "initial_altitude": 19000,
                     "assigned_altitude": 7000,
                     "initial_speed": 300,
@@ -7136,14 +7135,13 @@
                                 "airport": "KMCO"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 },
                 {
                     "waypoints": "MANTA/airwayQ439 PLUME/airwayQ439 SHERL/ho/airwayQ439 DUNEE/airwayQ439 SARDI HTO",
                     "cruise_altitude": 35000,
                     "route": "/. Q439 SARDI HTO",
-                    "initial_controller": "ZBW 46 Boston",
+                    "initial_controller": "B46",
                     "initial_altitude": 19000,
                     "assigned_altitude": 7000,
                     "initial_speed": 300,
@@ -7156,14 +7154,13 @@
                                 "airport": "KRIC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 },
                 {
                     "waypoints": "MANTA/airwayQ439 PLUME/airwayQ439 SHERL/ho/airwayQ439 DUNEE/airwayQ439 SARDI CCC DPK",
                     "cruise_altitude": 35000,
                     "route": "/. Q439 SARDI CCC DPK",
-                    "initial_controller": "ZBW 46 Boston",
+                    "initial_controller": "B46",
                     "initial_altitude": 19000,
                     "assigned_altitude": 7000,
                     "initial_speed": 300,
@@ -7184,8 +7181,7 @@
                                 "airport": "KSUA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -7195,8 +7191,7 @@
                     "waypoints": "SEY/ho ORCHA CCC",
                     "cruise_altitude": 12000,
                     "route": "/. SEY ORCHA CCC",
-                    "initial_controller": "PVD_D_APP",
-                    "initial_facility": "PVD",
+                    "initial_controller": "11D",
                     "initial_altitude": 10000,
                     "assigned_altitude": 10000,
                     "initial_speed": 250,
@@ -7229,8 +7224,7 @@
                     "waypoints": "SEY/ho ORCHA CCC/airwayV46 PAZTA/airwayV46 DPK",
                     "cruise_altitude": 12000,
                     "route": "/. SEY ORCHA CCC V46 DPK",
-                    "initial_controller": "PVD_D_APP",
-                    "initial_facility": "PVD",
+                    "initial_controller": "11D",
                     "initial_altitude": 10000,
                     "assigned_altitude": 10000,
                     "initial_speed": 250,
@@ -7257,7 +7251,7 @@
                     "waypoints": "WHITE/ho/airwayT224 DIXIE/airwayT224 MOVFA/airwayT224 JFK",
                     "cruise_altitude": 5000,
                     "route": "/. T224 JFK",
-                    "initial_controller": "WRI_APP",
+                    "initial_controller": "51Y",
                     "initial_altitude": 5000,
                     "assigned_altitude": 5000,
                     "initial_speed": 180,
@@ -7270,14 +7264,13 @@
                                 "airport": "KACY"
                             }
                         ]
-                    },
-                    "initial_facility": "WRI"
+                    }
                 },
                 {
                     "waypoints": "WHITE/ho/airwayT224 DIXIE/airwayT224 MOVFA/airwayT224 JFK CCC",
                     "cruise_altitude": 5000,
                     "route": "/. T224 JFK CCC",
-                    "initial_controller": "WRI_APP",
+                    "initial_controller": "51Y",
                     "initial_altitude": 5000,
                     "assigned_altitude": 5000,
                     "initial_speed": 180,
@@ -7290,8 +7283,7 @@
                                 "airport": "KACY"
                             }
                         ]
-                    },
-                    "initial_facility": "WRI"
+                    }
                 }
             ]
         },
@@ -7301,8 +7293,7 @@
                     "waypoints": "HFD/airwayV1 WEGOT/ho/airwayV1 YODEL/airwayV1 MAD/airwayV1 BELTT",
                     "cruise_altitude": 10000,
                     "route": "/. T303 BELTT",
-                    "initial_controller": "PVD_D_APP",
-                    "initial_facility": "PVD",
+                    "initial_controller": "11D",
                     "initial_altitude": 10000,
                     "assigned_altitude": 8000,
                     "initial_speed": 250,
@@ -7327,8 +7318,7 @@
                     "waypoints": "HFD/airwayV1 WEGOT/ho/airwayV1 YODEL/airwayV1 MAD/airwayV1 BELTT/airwayV1 DPK",
                     "cruise_altitude": 10000,
                     "route": "/. T303 DPK",
-                    "initial_controller": "PVD_D_APP",
-                    "initial_facility": "PVD",
+                    "initial_controller": "11D",
                     "initial_altitude": 10000,
                     "assigned_altitude": 8000,
                     "initial_speed": 250,
@@ -7355,7 +7345,7 @@
                     "waypoints": "DVANY HFD/ho GUUMP",
                     "cruise_altitude": 14000,
                     "route": "/. HFD",
-                    "initial_controller": "ZBW 46 Boston",
+                    "initial_controller": "B46",
                     "initial_altitude": 7000,
                     "assigned_altitude": 4000,
                     "initial_speed": 210,
@@ -7376,8 +7366,7 @@
                                 "airport": "KMHT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -7387,8 +7376,7 @@
                     "waypoints": "SEY V34 BOROS/ho V34 CREAM",
                     "cruise_altitude": 10000,
                     "route": "/. CREAM HVN",
-                    "initial_controller": "PVD_D_APP",
-                    "initial_facility": "PVD",
+                    "initial_controller": "11D",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -7415,7 +7403,7 @@
                     "waypoints": "MANTA T320 SHERL/ho T320 RICED KEYED",
                     "cruise_altitude": 21000,
                     "route": "/. T320 RICED KEYED",
-                    "initial_controller": "ZBW 46 Boston",
+                    "initial_controller": "B46",
                     "initial_altitude": 21000,
                     "assigned_altitude": 9000,
                     "initial_speed": 250,
@@ -7451,8 +7439,7 @@
                                 "airport": "KBWI"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -7462,7 +7449,7 @@
                     "waypoints": "PANZE/airwayV184 FALON/airwayV184 ZIGGI/ho/h50",
                     "cruise_altitude": 9000,
                     "route": "/. V184 ZIGGI",
-                    "initial_controller": "WRI_APP",
+                    "initial_controller": "51Y",
                     "initial_altitude": 9000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -7494,14 +7481,13 @@
                                 "airport": "KTTN"
                             }
                         ]
-                    },
-                    "initial_facility": "WRI"
+                    }
                 },
                 {
                     "waypoints": "RBV/airwayT438 CASVI/airwayT438 DIXIE/airwayT438 ZIGGI/ho/h50",
                     "cruise_altitude": 5000,
                     "route": "/. T438 ZIGGI",
-                    "initial_controller": "WRI_APP",
+                    "initial_controller": "51Y",
                     "initial_altitude": 5000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -7525,8 +7511,7 @@
                                 "airport": "KTTN"
                             }
                         ]
-                    },
-                    "initial_facility": "WRI"
+                    }
                 }
             ]
         },
@@ -7536,7 +7521,7 @@
                     "waypoints": "DNY PETER/a17000 CYPER TRESA PWL LOVES/a6000/ho DENNA BDR",
                     "cruise_altitude": 35000,
                     "star": "BDR1",
-                    "initial_controller": "ZNY 74 Broadway",
+                    "initial_controller": "C74",
                     "initial_altitude": 19000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -7584,8 +7569,7 @@
                                 "airport": "KRDU"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 }
             ]
         },
@@ -7595,7 +7579,7 @@
                     "waypoints": "ANTMN BOUNO/a17000 DPK/a15000/s250/ho SOUND/a13000 GWENY/a11000 ZAHNN EILEN WESTO/a6000 BDR ALIXX RYMES/a4000/h289",
                     "cruise_altitude": 35000,
                     "star": "BOUNO5",
-                    "initial_controller": "ZNY 74 Broadway",
+                    "initial_controller": "C74",
                     "initial_altitude": 18000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -7628,8 +7612,7 @@
                                 "airport": "KRDU"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 }
             ]
         },
@@ -7639,7 +7622,7 @@
                     "spawn": "KARRS",
                     "cruise_altitude": 39000,
                     "star": "CAMRN5",
-                    "initial_controller": "ZNY 36 Sparta",
+                    "initial_controller": "C36",
                     "initial_altitude": 12000,
                     "assigned_altitude": 11000,
                     "initial_speed": 300,
@@ -7689,8 +7672,7 @@
                                 "airport": "MMMX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 }
             ]
         },
@@ -7700,7 +7682,7 @@
                     "waypoints": "FILPS WEARD/ho CAMMO HUO LEMOR/a6000 COATE KEWR",
                     "cruise_altitude": 39000,
                     "route": "/. ALB V489 COATE",
-                    "initial_controller": "ZBW 46 Boston",
+                    "initial_controller": "B46",
                     "initial_altitude": 12000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -7903,8 +7885,7 @@
                                 "airport": "MYNN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -7914,7 +7895,7 @@
                     "spawn": "PWL",
                     "cruise_altitude": 15000,
                     "star": "DENNA3",
-                    "initial_controller": "ZNY 36 Sparta",
+                    "initial_controller": "C36",
                     "initial_altitude": 8000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -7952,8 +7933,7 @@
                                 "airport": "KROC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 }
             ]
         },
@@ -7963,7 +7943,7 @@
                     "spawn": "PAWLN",
                     "cruise_altitude": 29000,
                     "star": "LOVES1",
-                    "initial_controller": "ZNY 36 Sparta",
+                    "initial_controller": "C36",
                     "initial_altitude": 8000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -7981,8 +7961,7 @@
                                 "airport": "KPWM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 }
             ]
         },
@@ -7992,7 +7971,7 @@
                     "waypoints": "ACOVE TALCO WEETS/ho HELON FLOSI CRANK/a7000 SHAFF SAX PHLBO HOKIR/h180",
                     "cruise_altitude": 39000,
                     "star": "FLOSI4",
-                    "initial_controller": "ZBW 46 Boston",
+                    "initial_controller": "B46",
                     "initial_altitude": 18000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -8063,8 +8042,7 @@
                                 "airport": "MYNN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -8074,7 +8052,7 @@
                     "waypoints": "HAYED/a18000 RACKI/a13000/ho PENNS SWEET/a7000 BWZ/h122",
                     "cruise_altitude": 39000,
                     "star": "FQM3",
-                    "initial_controller": "ZNY 74 Broadway",
+                    "initial_controller": "C74",
                     "initial_altitude": 18000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -8145,8 +8123,7 @@
                                 "airport": "MYNN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 }
             ]
         },
@@ -8156,7 +8133,7 @@
                     "waypoints": "N042.22.52.233,W072.25.43.249 PWL IGN/ho VALRE BASYE HAARP CRALY LGA/h224",
                     "cruise_altitude": 34000,
                     "star": "HAARP3",
-                    "initial_controller": "ZBW 46 Boston",
+                    "initial_controller": "B46",
                     "initial_altitude": 12000,
                     "assigned_altitude": 8000,
                     "initial_speed": 300,
@@ -8192,8 +8169,7 @@
                                 "airport": "CYYZ"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -8203,7 +8179,7 @@
                     "waypoints": "DPK/a19000 MAD BRISS/a6000/ho PWL TRESA",
                     "cruise_altitude": 35000,
                     "star": "HUD4",
-                    "initial_controller": "ZBW 46 Boston",
+                    "initial_controller": "B46",
                     "initial_altitude": 19000,
                     "initial_speed": 250,
                     "speed_restriction": 250,
@@ -8237,8 +8213,7 @@
                                 "airport": "KRDU"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -8248,8 +8223,7 @@
                     "waypoints": "JAIKE ILENE/a13000/ho WACKI/a11000 MAZIE REGLE/a7000 GNNZO SBJ/h59",
                     "cruise_altitude": 39000,
                     "star": "JAIKE4",
-                    "initial_controller": "PHL_NA_APP",
-                    "initial_facility": "PHL",
+                    "initial_controller": "21N",
                     "initial_altitude": 13000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -8462,7 +8436,7 @@
                     "waypoints": "BESSI/a17000+ EDJER/ho DAVYS/a13000+ HOLEY BRAND/a11000+ KORRY/a10000 RBV TYKES MINKS RENUE APPLE PROUD LGA/h45",
                     "cruise_altitude": 35000,
                     "star": "KORRY4",
-                    "initial_controller": "ZDC 32 Gordonsville",
+                    "initial_controller": "W32",
                     "initial_altitude": 17000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -8599,8 +8573,7 @@
                                 "airport": "KBNA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -8610,7 +8583,7 @@
                     "spawn": "FUUEL",
                     "cruise_altitude": 37000,
                     "star": "PUCKY1",
-                    "initial_controller": "ZNY 36 Sparta",
+                    "initial_controller": "C36",
                     "initial_altitude": 20000,
                     "assigned_altitude": 19000,
                     "initial_speed": 300,
@@ -8697,8 +8670,7 @@
                                 "airport": "KCVG"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 }
             ]
         },
@@ -8708,7 +8680,7 @@
                     "waypoints": "LVZ/a18000/ho HARTY MUGZY/a6000 STW/h125",
                     "cruise_altitude": 39000,
                     "star": "LVZ4",
-                    "initial_controller": "ZNY 36 Sparta",
+                    "initial_controller": "C36",
                     "initial_altitude": 18000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -8911,8 +8883,7 @@
                                 "airport": "MYNN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 }
             ]
         },
@@ -8922,8 +8893,7 @@
                     "waypoints": "MAZIE/a4000/ho SBJ/h59",
                     "cruise_altitude": 4000,
                     "star": "MAZIE",
-                    "initial_controller": "PHL_NA_APP",
-                    "initial_facility": "PHL",
+                    "initial_controller": "21N",
                     "initial_altitude": 4000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -9040,7 +9010,7 @@
                     "waypoints": "BILEY VIBES LIZZI/ho BEUTY HARLM DREMS APPLE PROUD LGA/h45",
                     "cruise_altitude": 35000,
                     "star": "MIP4",
-                    "initial_controller": "ZNY 74 Broadway",
+                    "initial_controller": "C74",
                     "initial_altitude": 13000,
                     "assigned_altitude": 10000,
                     "initial_speed": 300,
@@ -9125,8 +9095,7 @@
                                 "airport": "KPIT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 }
             ]
         },
@@ -9136,7 +9105,7 @@
                     "spawn": "YANTC",
                     "cruise_altitude": 22000,
                     "star": "NELIE4",
-                    "initial_controller": "ZNY 36 Sparta",
+                    "initial_controller": "C36",
                     "initial_altitude": 6000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -9179,8 +9148,7 @@
                                 "airport": "KTEB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 }
             ]
         },
@@ -9190,7 +9158,7 @@
                     "waypoints": "RKA PETER/a17000- CYPER TRESA CASSH/ho NOBBI/a6000 RYMES HAARP CRALY",
                     "cruise_altitude": 35000,
                     "star": "NOBBI5",
-                    "initial_controller": "ZNY 74 Broadway",
+                    "initial_controller": "C74",
                     "initial_altitude": 18000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -9208,14 +9176,13 @@
                                 "airport": "KORF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 },
                 {
                     "waypoints": "ALB WIGAN TRESA CASSH/ho NOBBI/a6000 RYMES HAARP CRALY",
                     "cruise_altitude": 35000,
                     "star": "NOBBI5",
-                    "initial_controller": "ZNY 74 Broadway",
+                    "initial_controller": "C74",
                     "initial_altitude": 18000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -9233,14 +9200,13 @@
                                 "airport": "KORF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 },
                 {
                     "waypoints": "CTR PWL CASSH CASSH/ho NOBBI/a6000 RYMES HAARP CRALY",
                     "cruise_altitude": 35000,
                     "star": "NOBBI5",
-                    "initial_controller": "ZNY 74 Broadway",
+                    "initial_controller": "C74",
                     "initial_altitude": 18000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -9258,8 +9224,7 @@
                                 "airport": "KLEB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 }
             ]
         },
@@ -9269,7 +9234,7 @@
                     "waypoints": "N039.54.57.463,W073.27.31.931 N039.55.59.825,W073.30.27.355/ho CAMRN/h40",
                     "cruise_altitude": 41000,
                     "route": "/. OWENZ CAMRN",
-                    "initial_controller": "ZNY 66 MANTA",
+                    "initial_controller": "C66",
                     "initial_altitude": 11000,
                     "assigned_altitude": 9000,
                     "initial_speed": 300,
@@ -9312,8 +9277,7 @@
                                 "airport": "SBGR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 }
             ]
         },
@@ -9329,7 +9293,7 @@
                     },
                     "cruise_altitude": 36000,
                     "star": "PARCH3",
-                    "initial_controller": "ZBW 46 Boston",
+                    "initial_controller": "B46",
                     "initial_altitude": 23000,
                     "assigned_altitude": 12000,
                     "initial_speed": 275,
@@ -9441,8 +9405,7 @@
                                 "airport": "EGCC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -9452,7 +9415,7 @@
                     "waypoints": "DQO/a20000+ STEFE/a13000-17000/ho SOMTO/a11000 DYLIN/a8000 MERSR METRO MARRT PHLBO/h25",
                     "cruise_altitude": 39000,
                     "star": "PHLBO4",
-                    "initial_controller": "ZDC 32 Gordonsville",
+                    "initial_controller": "W32",
                     "initial_altitude": 20000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -9523,8 +9486,7 @@
                                 "airport": "MYNN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -9534,7 +9496,7 @@
                     "waypoints": "ALB ATHOS WIGAN IGN/ho VALRE/a6000 BASYE HAARP",
                     "cruise_altitude": 35000,
                     "star": "VALRE5",
-                    "initial_controller": "ZNY 74 Broadway",
+                    "initial_controller": "C74",
                     "initial_altitude": 16000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -9564,14 +9526,13 @@
                                 "airport": "KPWM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 },
                 {
                     "waypoints": "VEERS PWL IGN/ho VALRE/a6000 BASYE HAARP",
                     "cruise_altitude": 35000,
                     "star": "VALRE5",
-                    "initial_controller": "ZNY 74 Broadway",
+                    "initial_controller": "C74",
                     "initial_altitude": 12000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -9601,14 +9562,13 @@
                                 "airport": "CYYZ"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 },
                 {
                     "waypoints": "DNY WEETS IGN/ho VALRE/a6000 BASYE HAARP",
                     "cruise_altitude": 35000,
                     "star": "VALRE5",
-                    "initial_controller": "ZNY 74 Broadway",
+                    "initial_controller": "C74",
                     "initial_altitude": 18000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -9630,8 +9590,7 @@
                                 "airport": "KDTW"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 }
             ]
         }

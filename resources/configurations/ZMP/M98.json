@@ -1,343 +1,343 @@
 {
     "control_positions": {
-        "MSP_D_DEP": {
+        "1D": {
+            "callsign": "MSP_D_DEP",
             "frequency": 125750,
-            "radio_name": "Minneapolis Departure",
-            "sector_id": "1D"
+            "radio_name": "Minneapolis Departure"
         },
-        "MSP_R_DEP": {
+        "1R": {
+            "callsign": "MSP_R_DEP",
             "frequency": 124700,
-            "radio_name": "Minneapolis Departure",
-            "sector_id": "1R"
+            "radio_name": "Minneapolis Departure"
         },
-        "MSP_L_DEP": {
+        "1L": {
+            "callsign": "MSP_L_DEP",
             "frequency": 132975,
-            "radio_name": "Minneapolis Departure",
-            "sector_id": "1L"
+            "radio_name": "Minneapolis Departure"
         },
-        "MSP_I_APP": {
+        "1I": {
+            "callsign": "MSP_I_APP",
             "frequency": 126350,
-            "radio_name": "Minneapolis Approach",
-            "sector_id": "1I"
+            "radio_name": "Minneapolis Approach"
         },
-        "MSP_H_APP": {
+        "1H": {
+            "callsign": "MSP_H_APP",
             "frequency": 135475,
-            "radio_name": "Minneapolis Approach",
-            "sector_id": "1H"
+            "radio_name": "Minneapolis Approach"
         },
-        "MSP_N_APP": {
+        "1N": {
+            "callsign": "MSP_N_APP",
             "frequency": 119300,
-            "radio_name": "Minneapolis Approach",
-            "sector_id": "1N"
+            "radio_name": "Minneapolis Approach"
         },
-        "MSP_S_APP": {
+        "1S": {
+            "callsign": "MSP_S_APP",
             "frequency": 126350,
-            "radio_name": "Minneapolis Approach",
-            "sector_id": "1S"
+            "radio_name": "Minneapolis Approach"
         },
-        "MSP_J_APP": {
+        "1J": {
+            "callsign": "MSP_J_APP",
             "frequency": 118725,
-            "radio_name": "Minneapolis Approach",
-            "sector_id": "1J"
+            "radio_name": "Minneapolis Approach"
         },
-        "MSP_E_APP": {
+        "1E": {
+            "callsign": "MSP_E_APP",
             "frequency": 126350,
-            "radio_name": "Minneapolis Approach",
-            "sector_id": "1E"
+            "radio_name": "Minneapolis Approach"
         },
-        "MSP_G_APP": {
+        "1G": {
+            "callsign": "MSP_G_APP",
             "frequency": 121200,
-            "radio_name": "Minneapolis Approach",
-            "sector_id": "1G"
+            "radio_name": "Minneapolis Approach"
         },
-        "MSP_K_APP": {
+        "1K": {
+            "callsign": "MSP_K_APP",
             "frequency": 126500,
-            "radio_name": "Minneapolis Approach",
-            "sector_id": "1K"
+            "radio_name": "Minneapolis Approach"
         },
-        "MSP_N_TWR": {
+        "1T": {
+            "callsign": "MSP_N_TWR",
             "frequency": 123950,
-            "radio_name": "Minneapolis Tower",
-            "sector_id": "1T"
+            "radio_name": "Minneapolis Tower"
         },
-        "MSP_S_TWR": {
+        "1V": {
+            "callsign": "MSP_S_TWR",
             "frequency": 126700,
-            "radio_name": "Minneapolis Tower",
-            "sector_id": "1V"
+            "radio_name": "Minneapolis Tower"
         },
-        "MSP_W_TWR": {
+        "1Y": {
+            "callsign": "MSP_W_TWR",
             "frequency": 123675,
-            "radio_name": "Minneapolis Tower",
-            "sector_id": "1Y"
+            "radio_name": "Minneapolis Tower"
         },
-        "FCM_TWR": {
+        "2F": {
+            "callsign": "FCM_TWR",
             "frequency": 119150,
-            "radio_name": "Flying Cloud Tower",
-            "sector_id": "2F"
+            "radio_name": "Flying Cloud Tower"
         },
-        "STP_TWR": {
+        "2P": {
+            "callsign": "STP_TWR",
             "frequency": 119100,
-            "radio_name": "St. Paul Tower",
-            "sector_id": "2P"
+            "radio_name": "St. Paul Tower"
         },
-        "ANE_TWR": {
+        "2O": {
+            "callsign": "ANE_TWR",
             "frequency": 132400,
-            "radio_name": "Anoka Tower",
-            "sector_id": "2O"
+            "radio_name": "Anoka Tower"
         },
-        "MIC_TWR": {
+        "2M": {
+            "callsign": "MIC_TWR",
             "frequency": 120700,
-            "radio_name": "Crystal Tower",
-            "sector_id": "2M"
+            "radio_name": "Crystal Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "117": {
                 "inbound_assignments": {
-                    "BAINY3.12s": "MSP_I_APP",
-                    "BLUEM4.12s": "MSP_H_APP",
-                    "KKILR3.12s": "MSP_I_APP",
-                    "MUSCL3.12s": "MSP_I_APP",
-                    "NITZR3.12s": "MSP_H_APP",
-                    "TORGY3.12s": "MSP_H_APP",
-                    "GEP1.12s": "MSP_I_APP",
-                    "LSE.12s": "MSP_G_APP",
-                    "RPD": "MSP_G_APP"
+                    "BAINY3.12s": "1I",
+                    "BLUEM4.12s": "1H",
+                    "KKILR3.12s": "1I",
+                    "MUSCL3.12s": "1I",
+                    "NITZR3.12s": "1H",
+                    "TORGY3.12s": "1H",
+                    "GEP1.12s": "1I",
+                    "LSE.12s": "1G",
+                    "RPD": "1G"
                 },
                 "departure_assignments": {
-                    "KMSP/12L": "MSP_D_DEP",
-                    "KMSP/12R_17": "MSP_L_DEP",
-                    "KMSP/17_12s": "MSP_R_DEP",
-                    "KFCM": "MSP_E_APP",
-                    "KSTP": "MSP_G_APP",
-                    "KMIC": "MSP_K_APP",
-                    "KANE": "MSP_K_APP"
+                    "KMSP/12L": "1D",
+                    "KMSP/12R_17": "1L",
+                    "KMSP/17_12s": "1R",
+                    "KFCM": "1E",
+                    "KSTP": "1G",
+                    "KMIC": "1K",
+                    "KANE": "1K"
                 },
                 "default_consolidation": {
-                    "MSP_H_APP": [
-                        "MSP_R_DEP",
-                        "MSP_N_APP",
-                        "MSP_I_APP"
+                    "1H": [
+                        "1R",
+                        "1N",
+                        "1I"
                     ],
-                    "MSP_R_DEP": [
-                        "MSP_D_DEP",
-                        "MSP_E_APP",
-                        "MSP_L_DEP"
+                    "1R": [
+                        "1D",
+                        "1E",
+                        "1L"
                     ],
-                    "MSP_N_APP": [
-                        "MSP_S_APP",
-                        "MSP_J_APP"
+                    "1N": [
+                        "1S",
+                        "1J"
                     ],
-                    "MSP_E_APP": [
-                        "MSP_G_APP",
-                        "MSP_K_APP"
+                    "1E": [
+                        "1G",
+                        "1K"
                     ]
                 }
             },
             "135": {
                 "inbound_assignments": {
-                    "BAINY3.35": "MSP_I_APP",
-                    "BLUEM4.35": "MSP_N_APP",
-                    "KKILR3.35": "MSP_H_APP",
-                    "MUSCL3.35": "MSP_H_APP",
-                    "NITZR3.35": "MSP_N_APP",
-                    "TORGY3.35": "MSP_I_APP",
-                    "GEP1.35": "MSP_I_APP",
-                    "LSE.30s": "MSP_G_APP",
-                    "RPD": "MSP_G_APP"
+                    "BAINY3.35": "1I",
+                    "BLUEM4.35": "1N",
+                    "KKILR3.35": "1H",
+                    "MUSCL3.35": "1H",
+                    "NITZR3.35": "1N",
+                    "TORGY3.35": "1I",
+                    "GEP1.35": "1I",
+                    "LSE.30s": "1G",
+                    "RPD": "1G"
                 },
                 "departure_assignments": {
-                    "KMSP/12R": "MSP_R_DEP",
-                    "KMSP/12L": "MSP_D_DEP",
-                    "KFCM": "MSP_E_APP",
-                    "KSTP": "MSP_G_APP",
-                    "KMIC": "MSP_K_APP",
-                    "KANE": "MSP_K_APP"
+                    "KMSP/12R": "1R",
+                    "KMSP/12L": "1D",
+                    "KFCM": "1E",
+                    "KSTP": "1G",
+                    "KMIC": "1K",
+                    "KANE": "1K"
                 },
                 "default_consolidation": {
-                    "MSP_H_APP": [
-                        "MSP_R_DEP",
-                        "MSP_N_APP",
-                        "MSP_I_APP"
+                    "1H": [
+                        "1R",
+                        "1N",
+                        "1I"
                     ],
-                    "MSP_R_DEP": [
-                        "MSP_D_DEP",
-                        "MSP_E_APP",
-                        "MSP_L_DEP"
+                    "1R": [
+                        "1D",
+                        "1E",
+                        "1L"
                     ],
-                    "MSP_N_APP": [
-                        "MSP_S_APP",
-                        "MSP_J_APP"
+                    "1N": [
+                        "1S",
+                        "1J"
                     ],
-                    "MSP_E_APP": [
-                        "MSP_G_APP",
-                        "MSP_K_APP"
+                    "1E": [
+                        "1G",
+                        "1K"
                     ]
                 }
             },
             "317": {
                 "inbound_assignments": {
-                    "BAINY3.30s": "MSP_I_APP",
-                    "BLUEM4.30s": "MSP_H_APP",
-                    "KKILR3.30s": "MSP_I_APP",
-                    "MUSCL3.30s": "MSP_I_APP",
-                    "NITZR3.30s": "MSP_H_APP",
-                    "TORGY3.30s": "MSP_H_APP",
-                    "GEP1.30s": "MSP_I_APP",
-                    "LSE.30s": "MSP_G_APP",
-                    "RPD": "MSP_G_APP"
+                    "BAINY3.30s": "1I",
+                    "BLUEM4.30s": "1H",
+                    "KKILR3.30s": "1I",
+                    "MUSCL3.30s": "1I",
+                    "NITZR3.30s": "1H",
+                    "TORGY3.30s": "1H",
+                    "GEP1.30s": "1I",
+                    "LSE.30s": "1G",
+                    "RPD": "1G"
                 },
                 "departure_assignments": {
-                    "KMSP/30L_17": "MSP_R_DEP",
-                    "KMSP/30R": "MSP_D_DEP",
-                    "KMSP/17_30s": "MSP_R_DEP",
-                    "KFCM": "MSP_E_APP",
-                    "KSTP": "MSP_G_APP",
-                    "KMIC": "MSP_K_APP",
-                    "KANE": "MSP_K_APP"
+                    "KMSP/30L_17": "1R",
+                    "KMSP/30R": "1D",
+                    "KMSP/17_30s": "1R",
+                    "KFCM": "1E",
+                    "KSTP": "1G",
+                    "KMIC": "1K",
+                    "KANE": "1K"
                 },
                 "default_consolidation": {
-                    "MSP_H_APP": [
-                        "MSP_R_DEP",
-                        "MSP_N_APP",
-                        "MSP_I_APP"
+                    "1H": [
+                        "1R",
+                        "1N",
+                        "1I"
                     ],
-                    "MSP_R_DEP": [
-                        "MSP_D_DEP",
-                        "MSP_E_APP",
-                        "MSP_L_DEP"
+                    "1R": [
+                        "1D",
+                        "1E",
+                        "1L"
                     ],
-                    "MSP_N_APP": [
-                        "MSP_S_APP",
-                        "MSP_J_APP"
+                    "1N": [
+                        "1S",
+                        "1J"
                     ],
-                    "MSP_E_APP": [
-                        "MSP_G_APP",
-                        "MSP_K_APP"
+                    "1E": [
+                        "1G",
+                        "1K"
                     ]
                 }
             },
             "335": {
                 "inbound_assignments": {
-                    "BAINY3.30s": "MSP_I_APP",
-                    "BLUEM4.35": "MSP_J_APP",
-                    "KKILR3.30s": "MSP_I_APP",
-                    "MUSCL3.30s": "MSP_I_APP",
-                    "NITZR3.35": "MSP_J_APP",
-                    "TORGY3.35": "MSP_H_APP",
-                    "GEP1.30s": "MSP_I_APP",
-                    "LSE.30s": "MSP_G_APP",
-                    "RPD": "MSP_G_APP"
+                    "BAINY3.30s": "1I",
+                    "BLUEM4.35": "1J",
+                    "KKILR3.30s": "1I",
+                    "MUSCL3.30s": "1I",
+                    "NITZR3.35": "1J",
+                    "TORGY3.35": "1H",
+                    "GEP1.30s": "1I",
+                    "LSE.30s": "1G",
+                    "RPD": "1G"
                 },
                 "departure_assignments": {
-                    "KMSP/30L": "MSP_R_DEP",
-                    "KMSP/30R": "MSP_D_DEP",
-                    "KFCM": "MSP_E_APP",
-                    "KSTP": "MSP_G_APP",
-                    "KMIC": "MSP_K_APP",
-                    "KANE": "MSP_K_APP"
+                    "KMSP/30L": "1R",
+                    "KMSP/30R": "1D",
+                    "KFCM": "1E",
+                    "KSTP": "1G",
+                    "KMIC": "1K",
+                    "KANE": "1K"
                 },
                 "default_consolidation": {
-                    "MSP_H_APP": [
-                        "MSP_R_DEP",
-                        "MSP_N_APP",
-                        "MSP_I_APP"
+                    "1H": [
+                        "1R",
+                        "1N",
+                        "1I"
                     ],
-                    "MSP_R_DEP": [
-                        "MSP_D_DEP",
-                        "MSP_E_APP",
-                        "MSP_L_DEP"
+                    "1R": [
+                        "1D",
+                        "1E",
+                        "1L"
                     ],
-                    "MSP_N_APP": [
-                        "MSP_S_APP",
-                        "MSP_J_APP"
+                    "1N": [
+                        "1S",
+                        "1J"
                     ],
-                    "MSP_E_APP": [
-                        "MSP_G_APP",
-                        "MSP_K_APP"
+                    "1E": [
+                        "1G",
+                        "1K"
                     ]
                 }
             },
             "12S": {
                 "inbound_assignments": {
-                    "BAINY3.12s": "MSP_I_APP",
-                    "BLUEM4.12s": "MSP_H_APP",
-                    "KKILR3.12s": "MSP_I_APP",
-                    "MUSCL3.12s": "MSP_I_APP",
-                    "NITZR3.12s": "MSP_H_APP",
-                    "TORGY3.12s": "MSP_H_APP",
-                    "GEP1.12s": "MSP_I_APP",
-                    "LSE.12s": "MSP_G_APP",
-                    "RPD": "MSP_G_APP"
+                    "BAINY3.12s": "1I",
+                    "BLUEM4.12s": "1H",
+                    "KKILR3.12s": "1I",
+                    "MUSCL3.12s": "1I",
+                    "NITZR3.12s": "1H",
+                    "TORGY3.12s": "1H",
+                    "GEP1.12s": "1I",
+                    "LSE.12s": "1G",
+                    "RPD": "1G"
                 },
                 "departure_assignments": {
-                    "KMSP/12L": "MSP_D_DEP",
-                    "KMSP/12R": "MSP_R_DEP",
-                    "KFCM": "MSP_E_APP",
-                    "KSTP": "MSP_G_APP",
-                    "KMIC": "MSP_K_APP",
-                    "KANE": "MSP_K_APP"
+                    "KMSP/12L": "1D",
+                    "KMSP/12R": "1R",
+                    "KFCM": "1E",
+                    "KSTP": "1G",
+                    "KMIC": "1K",
+                    "KANE": "1K"
                 },
                 "default_consolidation": {
-                    "MSP_H_APP": [
-                        "MSP_R_DEP",
-                        "MSP_N_APP",
-                        "MSP_I_APP"
+                    "1H": [
+                        "1R",
+                        "1N",
+                        "1I"
                     ],
-                    "MSP_R_DEP": [
-                        "MSP_D_DEP",
-                        "MSP_E_APP",
-                        "MSP_L_DEP"
+                    "1R": [
+                        "1D",
+                        "1E",
+                        "1L"
                     ],
-                    "MSP_N_APP": [
-                        "MSP_S_APP",
-                        "MSP_J_APP"
+                    "1N": [
+                        "1S",
+                        "1J"
                     ],
-                    "MSP_E_APP": [
-                        "MSP_G_APP",
-                        "MSP_K_APP"
+                    "1E": [
+                        "1G",
+                        "1K"
                     ]
                 }
             },
             "30S": {
                 "inbound_assignments": {
-                    "BAINY3.30s": "MSP_I_APP",
-                    "BLUEM4.30s": "MSP_H_APP",
-                    "KKILR3.30s": "MSP_I_APP",
-                    "MUSCL3.30s": "MSP_I_APP",
-                    "NITZR3.30s": "MSP_H_APP",
-                    "TORGY3.30s": "MSP_H_APP",
-                    "GEP1.30s": "MSP_I_APP",
-                    "LSE.30s": "MSP_G_APP",
-                    "RPD": "MSP_G_APP"
+                    "BAINY3.30s": "1I",
+                    "BLUEM4.30s": "1H",
+                    "KKILR3.30s": "1I",
+                    "MUSCL3.30s": "1I",
+                    "NITZR3.30s": "1H",
+                    "TORGY3.30s": "1H",
+                    "GEP1.30s": "1I",
+                    "LSE.30s": "1G",
+                    "RPD": "1G"
                 },
                 "departure_assignments": {
-                    "KMSP/30L": "MSP_R_DEP",
-                    "KMSP/30R": "MSP_D_DEP",
-                    "KFCM": "MSP_E_APP",
-                    "KSTP": "MSP_G_APP",
-                    "KMIC": "MSP_K_APP",
-                    "KANE": "MSP_K_APP"
+                    "KMSP/30L": "1R",
+                    "KMSP/30R": "1D",
+                    "KFCM": "1E",
+                    "KSTP": "1G",
+                    "KMIC": "1K",
+                    "KANE": "1K"
                 },
                 "default_consolidation": {
-                    "MSP_H_APP": [
-                        "MSP_R_DEP",
-                        "MSP_N_APP",
-                        "MSP_I_APP"
+                    "1H": [
+                        "1R",
+                        "1N",
+                        "1I"
                     ],
-                    "MSP_R_DEP": [
-                        "MSP_D_DEP",
-                        "MSP_E_APP",
-                        "MSP_L_DEP"
+                    "1R": [
+                        "1D",
+                        "1E",
+                        "1L"
                     ],
-                    "MSP_N_APP": [
-                        "MSP_S_APP",
-                        "MSP_J_APP"
+                    "1N": [
+                        "1S",
+                        "1J"
                     ],
-                    "MSP_E_APP": [
-                        "MSP_G_APP",
-                        "MSP_K_APP"
+                    "1E": [
+                        "1G",
+                        "1K"
                     ]
                 }
             }
@@ -524,7 +524,7 @@
                     0,
                     7000
                 ],
-                "receiving_controller": "ZMP 05 ODI LO"
+                "receiving_controller": "C05"
             },
             {
                 "fixes": [
@@ -536,7 +536,7 @@
                     8000,
                     99999
                 ],
-                "receiving_controller": "ZMP 05 ODI LO"
+                "receiving_controller": "C05"
             },
             {
                 "fixes": [
@@ -548,7 +548,7 @@
                     8000,
                     99999
                 ],
-                "receiving_controller": "ZMP 06 TWINZ LO"
+                "receiving_controller": "C06"
             },
             {
                 "fixes": [
@@ -559,7 +559,7 @@
                     10000,
                     99999
                 ],
-                "receiving_controller": "ZMP 07 FGT LO"
+                "receiving_controller": "C07"
             },
             {
                 "fixes": [
@@ -569,7 +569,7 @@
                     "TONCA",
                     "ZOGAP"
                 ],
-                "receiving_controller": "ZMP 09 RWF LO"
+                "receiving_controller": "C09"
             },
             {
                 "fixes": [
@@ -578,7 +578,7 @@
                     "GEP",
                     "HRBEK"
                 ],
-                "receiving_controller": "ZMP 10 GEP LO"
+                "receiving_controller": "C10"
             }
         ],
         "area_configs": {
@@ -594,7 +594,7 @@
         },
         {
             "id": "ZMP",
-            "eram_prefix": "P"
+            "eram_prefix": "C"
         }
     ]
 }

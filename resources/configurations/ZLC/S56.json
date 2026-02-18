@@ -1,85 +1,85 @@
 {
     "control_positions": {
-        "SLC_W_TWR": {
+        "1W": {
+            "callsign": "SLC_W_TWR",
             "frequency": 132650,
-            "radio_name": "Salt Lake City Tower",
-            "sector_id": "1W"
+            "radio_name": "Salt Lake City Tower"
         },
-        "SLC_C_TWR": {
+        "1L": {
+            "callsign": "SLC_C_TWR",
             "frequency": 119050,
-            "radio_name": "Salt Lake City Tower",
-            "sector_id": "1L"
+            "radio_name": "Salt Lake City Tower"
         },
-        "SLC_E_TWR": {
+        "1E": {
+            "callsign": "SLC_E_TWR",
             "frequency": 118300,
-            "radio_name": "Salt Lake City Tower",
-            "sector_id": "1E"
+            "radio_name": "Salt Lake City Tower"
         },
-        "SLC_A_APP": {
+        "1A": {
+            "callsign": "SLC_A_APP",
             "frequency": 118850,
-            "radio_name": "Salt Lake City Approach",
-            "sector_id": "1A"
+            "radio_name": "Salt Lake City Approach"
         },
-        "SLC_B_APP": {
+        "1B": {
+            "callsign": "SLC_B_APP",
             "frequency": 124900,
-            "radio_name": "Salt Lake City Approach",
-            "sector_id": "1B"
+            "radio_name": "Salt Lake City Approach"
         },
-        "SLC_F_APP": {
+        "1F": {
+            "callsign": "SLC_F_APP",
             "frequency": 125700,
-            "radio_name": "Salt Lake City Approach",
-            "sector_id": "1F"
+            "radio_name": "Salt Lake City Approach"
         },
-        "SLC_G_APP": {
+        "1G": {
+            "callsign": "SLC_G_APP",
             "frequency": 126250,
-            "radio_name": "Salt Lake City Approach",
-            "sector_id": "1G"
+            "radio_name": "Salt Lake City Approach"
         },
-        "SLC_H_APP": {
+        "1H": {
+            "callsign": "SLC_H_APP",
             "frequency": 121100,
-            "radio_name": "Salt Lake City Approach",
-            "sector_id": "1H"
+            "radio_name": "Salt Lake City Approach"
         },
-        "SLC_J_APP": {
+        "1J": {
+            "callsign": "SLC_J_APP",
             "frequency": 128600,
-            "radio_name": "Salt Lake City Approach",
-            "sector_id": "1J"
+            "radio_name": "Salt Lake City Approach"
         },
-        "SLC_K_APP": {
+        "1K": {
+            "callsign": "SLC_K_APP",
             "frequency": 135500,
-            "radio_name": "Salt Lake City Approach",
-            "sector_id": "1K"
+            "radio_name": "Salt Lake City Approach"
         },
-        "SLC_S_APP": {
+        "1S": {
+            "callsign": "SLC_S_APP",
             "frequency": 128100,
-            "radio_name": "Salt Lake City Approach",
-            "sector_id": "1S"
+            "radio_name": "Salt Lake City Approach"
         },
-        "SLC_V_APP": {
+        "1V": {
+            "callsign": "SLC_V_APP",
             "frequency": 127400,
-            "radio_name": "Salt Lake City Approach",
-            "sector_id": "1V"
+            "radio_name": "Salt Lake City Approach"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "CARTR1.N": "SLC_K_APP",
-                    "CARTR1.S": "SLC_K_APP",
-                    "JAZZZ1": "SLC_K_APP",
-                    "PITTT1.E": "SLC_K_APP",
-                    "PITTT1.S": "SLC_K_APP",
-                    "QWENN6.BCE": "SLC_K_APP",
-                    "QWENN6.MLF": "SLC_K_APP",
-                    "YUTES1.N": "SLC_K_APP",
-                    "YUTES1.S": "SLC_K_APP"
+                    "CARTR1.N": "1K",
+                    "CARTR1.S": "1K",
+                    "JAZZZ1": "1K",
+                    "PITTT1.E": "1K",
+                    "PITTT1.S": "1K",
+                    "QWENN6.BCE": "1K",
+                    "QWENN6.MLF": "1K",
+                    "YUTES1.N": "1K",
+                    "YUTES1.S": "1K"
                 },
                 "departure_assignments": {
-                    "KSLC": "SLC_K_APP"
+                    "KSLC": "1K"
                 },
                 "default_consolidation": {
-                    "SLC_K_APP": []
+                    "1K": []
                 }
             }
         },
@@ -164,7 +164,7 @@
     "handoff_ids": [
         {
             "id": "ZLC",
-            "eram_prefix": "U"
+            "eram_prefix": "C"
         }
     ]
 }

@@ -1,19 +1,19 @@
 {
     "control_positions": {
-        "VPS_N_APP": {
+        "1N": {
+            "callsign": "VPS_N_APP",
             "frequency": 125100,
-            "radio_name": "Eglin Approach",
-            "sector_id": "1N"
+            "radio_name": "Eglin Approach"
         },
-        "VPS_S_APP": {
+        "1S": {
+            "callsign": "VPS_S_APP",
             "frequency": 132100,
-            "radio_name": "Eglin Approach",
-            "sector_id": "1S"
+            "radio_name": "Eglin Approach"
         },
-        "VPS_TWR": {
+        "1T": {
+            "callsign": "VPS_TWR",
             "frequency": 118200,
-            "radio_name": "Eglin Tower",
-            "sector_id": "1T"
+            "radio_name": "Eglin Tower"
         }
     },
     "handoff_ids": [
@@ -28,6 +28,14 @@
         {
             "id": "PAM",
             "prefix": "3"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "C"
+        },
+        {
+            "id": "ZNY",
+            "eram_prefix": "N"
         }
     ]
 }

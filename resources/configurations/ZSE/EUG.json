@@ -1,24 +1,24 @@
 {
     "control_positions": {
-        "EUG_E_APP": {
+        "1E": {
+            "callsign": "EUG_E_APP",
             "frequency": 119600,
-            "radio_name": "Cascade Approach",
-            "sector_id": "1E"
+            "radio_name": "Cascade Approach"
         },
-        "MFR_APP": {
+        "1M": {
+            "callsign": "MFR_APP",
             "frequency": 124300,
-            "radio_name": "Cascade Approach",
-            "sector_id": "1M"
+            "radio_name": "Cascade Approach"
         },
-        "EUG_W_TWR": {
+        "1T": {
+            "callsign": "EUG_W_TWR",
             "frequency": 118900,
-            "radio_name": "Eugene Tower",
-            "sector_id": "1T"
+            "radio_name": "Eugene Tower"
         },
-        "EUG_W_APP": {
+        "1W": {
+            "callsign": "EUG_W_APP",
             "frequency": 123450,
-            "radio_name": "Cascade Approach",
-            "sector_id": "1W"
+            "radio_name": "Cascade Approach"
         }
     },
     "handoff_ids": [
@@ -28,7 +28,7 @@
         },
         {
             "id": "ZSE",
-            "eram_prefix": "S"
+            "eram_prefix": "C"
         }
     ]
 }

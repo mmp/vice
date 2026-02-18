@@ -4869,7 +4869,7 @@
                         }
                     },
                     "route": "KJOHN CAMTN CON",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 11000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -4918,8 +4918,7 @@
                                 "airport": "KBGR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -4929,7 +4928,7 @@
                     "spawn": "DEEPO@0.6",
                     "cruise_altitude": 15000,
                     "star": "DEEPO2",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 13000,
                     "initial_speed": 310,
                     "expect_approach": null,
@@ -4996,8 +4995,7 @@
                                 "airport": "KHYA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -5013,7 +5011,7 @@
                         }
                     },
                     "star": "DREEM2",
-                    "initial_controller": "ZBW 46 Boston",
+                    "initial_controller": "C46",
                     "initial_altitude": 11000,
                     "initial_speed": 250,
                     "scratchpad": "RBED",
@@ -5054,8 +5052,7 @@
                                 "airport": "KSAT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -5064,7 +5061,7 @@
                 {
                     "waypoints": "DVANY/a11000 GRAYM/ho GASSE/a5000 DREEM WANLA ZELKA RIKAH EXXRO/h97",
                     "star": "DREEM2",
-                    "initial_controller": "ZBW 46 Boston",
+                    "initial_controller": "C46",
                     "initial_altitude": 11000,
                     "initial_speed": 250,
                     "scratchpad": "RBVY",
@@ -5105,8 +5102,7 @@
                                 "airport": "KSAT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -5115,7 +5111,7 @@
                 {
                     "waypoints": "DVANY/a11000 GRAYM/ho GASSE/a5000 DREEM WANLA ZELKA RIKAH/h76",
                     "star": "DREEM2",
-                    "initial_controller": "ZBW 46 Boston",
+                    "initial_controller": "C46",
                     "initial_altitude": 11000,
                     "initial_speed": 250,
                     "scratchpad": "RLWM",
@@ -5156,8 +5152,7 @@
                                 "airport": "KSAT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -5178,7 +5173,7 @@
                         }
                     },
                     "route": "BTSEE SCARB ENE",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 7000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -5227,8 +5222,7 @@
                                 "airport": "KBGR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -5237,7 +5231,7 @@
                 {
                     "waypoints": "LIBBE/ho ACK FREDO/flyover",
                     "route": "LIBBE ACK FREDO KBOS",
-                    "initial_controller": "ZBW 36 Gardner",
+                    "initial_controller": "C36",
                     "initial_altitude": 4000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -5293,8 +5287,7 @@
                                 "airport": "KMSS"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -5303,7 +5296,7 @@
                 {
                     "waypoints": "LIBBE/ho ACK FREDO/flyover",
                     "route": "LIBBE ACK FREDO KBOS",
-                    "initial_controller": "ZBW 36 Gardner",
+                    "initial_controller": "C36",
                     "initial_altitude": 6000,
                     "initial_speed": 230,
                     "expect_approach": null,
@@ -5362,8 +5355,7 @@
                                 "airport": "KMSS"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -5372,7 +5364,7 @@
                 {
                     "waypoints": "LIBBE/ho ACK FREDO/h339",
                     "route": "LIBBE ACK FREDO KBOS",
-                    "initial_controller": "ZBW 36 Gardner",
+                    "initial_controller": "C36",
                     "initial_altitude": 8000,
                     "initial_speed": 210,
                     "expect_approach": null,
@@ -5431,8 +5423,7 @@
                                 "airport": "KMSS"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -5453,7 +5444,7 @@
                         }
                     },
                     "route": "BAF PUDGY GDM",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 5000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -5502,8 +5493,7 @@
                                 "airport": "KSFB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -5512,7 +5502,7 @@
                 {
                     "waypoints": "HURLY/ho GDM LOBBY/a7000 REVER/flyover",
                     "route": "HURLY GDM T608 REVER",
-                    "initial_controller": "ZBW 36 Gardner",
+                    "initial_controller": "C36",
                     "initial_altitude": 7000,
                     "initial_speed": 230,
                     "expect_approach": null,
@@ -5571,8 +5561,7 @@
                                 "airport": "KLEB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -5581,7 +5570,7 @@
                 {
                     "waypoints": "HURLY/ho GDM LOBBY/a9000 REVER/flyover",
                     "route": "HURLY GDM T608 REVER",
-                    "initial_controller": "ZBW 36 Gardner",
+                    "initial_controller": "C36",
                     "initial_altitude": 9000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -5644,8 +5633,7 @@
                                 "airport": "KMSS"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -5664,7 +5652,7 @@
                         }
                     },
                     "star": "JFUND2",
-                    "initial_controller": "ZBW 36 Gardner",
+                    "initial_controller": "C36",
                     "initial_altitude": 17000,
                     "initial_speed": 290,
                     "speed_restriction": 270,
@@ -5734,8 +5722,7 @@
                                 "airport": "KCLE"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -5744,7 +5731,7 @@
                 {
                     "waypoints": "JAMMA/ho MANCH LWRNC/h182",
                     "route": "MANCH LWRNC KBOS",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 6000,
                     "initial_speed": 230,
                     "expect_approach": null,
@@ -5759,8 +5746,7 @@
                                 "airport": "KBGR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -5769,7 +5755,7 @@
                 {
                     "waypoints": "JAMMA/ho MANCH LWRNC/flyover",
                     "route": "JAMMA MANCH LWRNC",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 3000,
                     "initial_speed": 230,
                     "expect_approach": null,
@@ -5814,8 +5800,7 @@
                                 "airport": "KBGR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -5825,7 +5810,7 @@
                     "spawn": "NEWBE@0.6",
                     "cruise_altitude": 15000,
                     "star": "NEWBE3",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 13000,
                     "initial_speed": 310,
                     "expect_approach": null,
@@ -5892,8 +5877,7 @@
                                 "airport": "KHYA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -5903,7 +5887,7 @@
                     "waypoints": "N42.23.29.343,W70.59.16.890/ho GRIFI GGABE/a6000/s220 JOBEE/a6000/s210/h213",
                     "cruise_altitude": 35000,
                     "star": "JFUND2",
-                    "initial_controller": "ACK_N_APP",
+                    "initial_controller": "1N",
                     "initial_altitude": 7000,
                     "initial_speed": 230,
                     "speed_restriction": 220,
@@ -6102,7 +6086,7 @@
                         }
                     },
                     "star": "OOSHN5",
-                    "initial_controller": "ZBW 16 PARSO",
+                    "initial_controller": "C16",
                     "initial_altitude": 17000,
                     "initial_speed": 290,
                     "speed_restriction": 250,
@@ -6219,8 +6203,7 @@
                                 "airport": "CYHZ"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -6229,7 +6212,7 @@
                 {
                     "waypoints": "ENE/ho PSM LWRNC/h182",
                     "route": "ENE PSM LWRNC KBOS",
-                    "initial_controller": "MHT_E_APP",
+                    "initial_controller": "1E",
                     "initial_altitude": 6000,
                     "initial_speed": 230,
                     "expect_approach": null,
@@ -6253,7 +6236,7 @@
                 {
                     "waypoints": "ENE/ho PSM LWRNC/flyover",
                     "route": "ENE PSM LWRNC",
-                    "initial_controller": "ZBW 46 Boston",
+                    "initial_controller": "C46",
                     "initial_altitude": 3000,
                     "initial_speed": 230,
                     "expect_approach": null,
@@ -6298,8 +6281,7 @@
                                 "airport": "KBGR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -6318,7 +6300,7 @@
                         }
                     },
                     "star": "ROBUC3",
-                    "initial_controller": "ZBW 34 Providence",
+                    "initial_controller": "C34",
                     "initial_altitude": 16000,
                     "initial_speed": 290,
                     "speed_restriction": 260,
@@ -6405,8 +6387,7 @@
                                 "airport": "KCLT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -6416,7 +6397,7 @@
                     "waypoints": "ERNEI/a7000/ho GOSHI/a6000/s210/h35",
                     "cruise_altitude": 35000,
                     "star": "ROBUC3",
-                    "initial_controller": "ACK_S_APP",
+                    "initial_controller": "1S",
                     "initial_altitude": 8000,
                     "initial_speed": 230,
                     "speed_restriction": 220,
@@ -6521,7 +6502,7 @@
                         }
                     },
                     "star": "ROZZE2",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -6596,8 +6577,7 @@
                                 "airport": "KPHL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -6606,8 +6586,7 @@
                 {
                     "waypoints": "JEWIT/ho FOSTY WOONS/flyover",
                     "route": "JEWIT FOSTY WOONS",
-                    "initial_controller": "PVD_D_APP",
-                    "initial_facility": "PVD",
+                    "initial_controller": "11D",
                     "initial_altitude": 3000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -6725,8 +6704,7 @@
                 {
                     "waypoints": "FOSTY/ho WOONS/h56",
                     "route": "FOSTY WOONS KBOS",
-                    "initial_controller": "PVD_D_APP",
-                    "initial_facility": "PVD",
+                    "initial_controller": "11D",
                     "initial_altitude": 5000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -6766,8 +6744,7 @@
                 {
                     "waypoints": "FOSTY/ho WOONS/h56",
                     "route": "FOSTY WOONS KBOS",
-                    "initial_controller": "PVD_D_APP",
-                    "initial_facility": "PVD",
+                    "initial_controller": "11D",
                     "initial_altitude": 7000,
                     "initial_speed": 210,
                     "expect_approach": null,
@@ -6807,7 +6784,7 @@
                 {
                     "waypoints": "HAUKS/a14000+/ho WORIA/a11000-13000 BCATS/a8000-9000 GOLEE/a6000 ZELKA RIKAH/a6000/s210 EXXRO/a6000/s210/h97",
                     "star": "ZELKA2",
-                    "initial_controller": "ZBW 36 Gardner",
+                    "initial_controller": "C36",
                     "initial_altitude": 14000,
                     "initial_speed": 250,
                     "scratchpad": "RBED",
@@ -6848,8 +6825,7 @@
                                 "airport": "KSAT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -6858,7 +6834,7 @@
                 {
                     "waypoints": "HAUKS/a14000+/ho WORIA/a11000-13000 BCATS/a8000-9000 GOLEE/a6000 ZELKA RIKAH/a6000/s210 EXXRO/a6000/s210/h97",
                     "star": "ZELKA2",
-                    "initial_controller": "ZBW 36 Gardner",
+                    "initial_controller": "C36",
                     "initial_altitude": 14000,
                     "initial_speed": 250,
                     "scratchpad": "RBED",
@@ -6899,8 +6875,7 @@
                                 "airport": "KSAT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -6909,7 +6884,7 @@
                 {
                     "waypoints": "HAUKS/a14000+/ho WORIA/a11000-13000 BCATS/a8000-9000 GOLEE/a6000 ZELKA RIKAH/a6000/s210 EXXRO/a6000/s210/h97",
                     "star": "ZELKA2",
-                    "initial_controller": "ZBW 36 Gardner",
+                    "initial_controller": "C36",
                     "initial_altitude": 14000,
                     "initial_speed": 250,
                     "scratchpad": "RBVY",
@@ -6950,8 +6925,7 @@
                                 "airport": "KSAT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -6960,7 +6934,7 @@
                 {
                     "waypoints": "HAUKS/a14000+/ho WORIA/a11000-13000 BCATS/a8000-9000 GOLEE/a6000 ZELKA RIKAH/a6000/s210 EXXRO/a6000/s210/h97",
                     "star": "ZELKA2",
-                    "initial_controller": "ZBW 36 Gardner",
+                    "initial_controller": "C36",
                     "initial_altitude": 14000,
                     "initial_speed": 250,
                     "scratchpad": "RLWM",
@@ -7001,8 +6975,7 @@
                                 "airport": "KSAT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         }

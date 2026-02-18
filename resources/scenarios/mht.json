@@ -487,7 +487,7 @@
                         }
                     },
                     "route": "KJOHN CAMTN CON",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 11000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -536,8 +536,7 @@
                                 "airport": "KBGR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -558,7 +557,7 @@
                         }
                     },
                     "route": "BTSEE SCARB ENE",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 7000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -607,8 +606,7 @@
                                 "airport": "KBGR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -629,7 +627,7 @@
                         }
                     },
                     "route": "BAF PUDGY GDM",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 9000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -678,8 +676,7 @@
                                 "airport": "KSFB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -696,7 +693,7 @@
                         }
                     },
                     "star": "ROZZE2",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -771,8 +768,7 @@
                                 "airport": "KPHL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         }

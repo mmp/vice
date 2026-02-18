@@ -1,33 +1,33 @@
 {
     "control_positions": {
-        "CPR_APP": {
+        "1A": {
+            "callsign": "CPR_APP",
             "frequency": 120650,
-            "radio_name": "Capser approach",
-            "sector_id": "1A"
+            "radio_name": "Capser approach"
         },
-        "CPR_TWR": {
+        "1T": {
+            "callsign": "CPR_TWR",
             "frequency": 118300,
             "radio_name": "Casper tower",
-            "scope_char": "1",
-            "sector_id": "1T"
+            "scope_char": "1"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "DEN": "CPR_APP",
-                    "JAC": "CPR_APP",
-                    "MEM": "CPR_APP",
-                    "NE-GA": "CPR_APP",
-                    "SE-GA": "CPR_APP",
-                    "SLC": "CPR_APP"
+                    "DEN": "1A",
+                    "JAC": "1A",
+                    "MEM": "1A",
+                    "NE-GA": "1A",
+                    "SE-GA": "1A",
+                    "SLC": "1A"
                 },
                 "departure_assignments": {
-                    "KCPR": "CPR_APP"
+                    "KCPR": "1A"
                 },
                 "default_consolidation": {
-                    "CPR_APP": []
+                    "1A": []
                 }
             }
         },
@@ -63,7 +63,7 @@
     "handoff_ids": [
         {
             "id": "ZDV",
-            "eram_prefix": "D"
+            "eram_prefix": "C"
         }
     ]
 }

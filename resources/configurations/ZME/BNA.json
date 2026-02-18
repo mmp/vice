@@ -1,69 +1,69 @@
 {
     "control_positions": {
-        "BNA_TWR": {
+        "1T": {
+            "callsign": "BNA_TWR",
             "frequency": 118600,
-            "radio_name": "Nashville Tower",
-            "sector_id": "1T"
+            "radio_name": "Nashville Tower"
         },
-        "BNA_X_DEP": {
+        "1X": {
+            "callsign": "BNA_X_DEP",
             "frequency": 119350,
-            "radio_name": "Nashville Departure",
-            "sector_id": "1X"
+            "radio_name": "Nashville Departure"
         },
-        "BNA_Y_DEP": {
+        "1Y": {
+            "callsign": "BNA_Y_DEP",
             "frequency": 118400,
-            "radio_name": "Nashville Departure",
-            "sector_id": "1Y"
+            "radio_name": "Nashville Departure"
         },
-        "BNA_W_APP": {
+        "1W": {
+            "callsign": "BNA_W_APP",
             "frequency": 120600,
-            "radio_name": "Nashville Approach",
-            "sector_id": "1W"
+            "radio_name": "Nashville Approach"
         },
-        "BNA_E_APP": {
+        "1E": {
+            "callsign": "BNA_E_APP",
             "frequency": 127175,
-            "radio_name": "Nashville Approach",
-            "sector_id": "1E"
+            "radio_name": "Nashville Approach"
         },
-        "BNA_F_APP": {
+        "1F": {
+            "callsign": "BNA_F_APP",
             "frequency": 124750,
-            "radio_name": "Nashville Approach",
-            "sector_id": "1F"
+            "radio_name": "Nashville Approach"
         },
-        "BNA_B_APP": {
+        "1B": {
+            "callsign": "BNA_B_APP",
             "frequency": 133000,
-            "radio_name": "Nashville Approach",
-            "sector_id": "1B"
+            "radio_name": "Nashville Approach"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "CHSNE3": "BNA_W_APP",
-                    "PASLY5": "BNA_E_APP",
-                    "RYYMN3": "BNA_W_APP",
-                    "SWFFT3": "BNA_E_APP"
+                    "CHSNE3": "1W",
+                    "PASLY5": "1E",
+                    "RYYMN3": "1W",
+                    "SWFFT3": "1E"
                 },
                 "departure_assignments": {
-                    "KBNA": "BNA_X_DEP",
-                    "KBNA/CHADM3": "BNA_Y_DEP",
-                    "KBNA/DANLS3": "BNA_X_DEP",
-                    "KBNA/DRURY3": "BNA_X_DEP",
-                    "KBNA/EVVAN3": "BNA_Y_DEP",
-                    "KBNA/FLAME3": "BNA_X_DEP",
-                    "KBNA/GDOGG3": "BNA_X_DEP",
-                    "KBNA/HGGRD3": "BNA_X_DEP",
-                    "KBNA/KRSTA3": "BNA_Y_DEP",
-                    "KBNA/PARDN3": "BNA_X_DEP",
-                    "KBNA/TAZMO3": "BNA_Y_DEP",
-                    "KBNA/TIPPN3": "BNA_Y_DEP"
+                    "KBNA": "1X",
+                    "KBNA/CHADM3": "1Y",
+                    "KBNA/DANLS3": "1X",
+                    "KBNA/DRURY3": "1X",
+                    "KBNA/EVVAN3": "1Y",
+                    "KBNA/FLAME3": "1X",
+                    "KBNA/GDOGG3": "1X",
+                    "KBNA/HGGRD3": "1X",
+                    "KBNA/KRSTA3": "1Y",
+                    "KBNA/PARDN3": "1X",
+                    "KBNA/TAZMO3": "1Y",
+                    "KBNA/TIPPN3": "1Y"
                 },
                 "default_consolidation": {
-                    "BNA_E_APP": [
-                        "BNA_W_APP",
-                        "BNA_X_DEP",
-                        "BNA_Y_DEP"
+                    "1E": [
+                        "1W",
+                        "1X",
+                        "1Y"
                     ]
                 }
             }
@@ -159,7 +159,7 @@
                     "KRSTA",
                     "OLSIE"
                 ],
-                "receiving_controller": "ZME 40 Sparta"
+                "receiving_controller": "C40"
             },
             {
                 "fixes": [
@@ -172,7 +172,7 @@
                     "HODJS",
                     "NAKIY"
                 ],
-                "receiving_controller": "ZME 41 Bowling Green"
+                "receiving_controller": "C41"
             },
             {
                 "fixes": [
@@ -185,7 +185,7 @@
                     "FLAME",
                     "GENDE"
                 ],
-                "receiving_controller": "ZME 42 Graham"
+                "receiving_controller": "C42"
             },
             {
                 "fixes": [
@@ -195,7 +195,7 @@
                     "BRXTN",
                     "TIPPN"
                 ],
-                "receiving_controller": "ZME 60 Shelbyville"
+                "receiving_controller": "C60"
             }
         ],
         "coordination_fixes": {
@@ -236,7 +236,7 @@
         },
         {
             "id": "ZME",
-            "eram_prefix": "M"
+            "eram_prefix": "C"
         }
     ]
 }

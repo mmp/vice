@@ -1,73 +1,73 @@
 {
     "control_positions": {
-        "SAV_N_APP": {
+        "6N": {
+            "callsign": "SAV_N_APP",
             "frequency": 125300,
-            "radio_name": "Savannah Approach",
-            "sector_id": "6N"
+            "radio_name": "Savannah Approach"
         },
-        "SAV_W_APP": {
+        "6W": {
+            "callsign": "SAV_W_APP",
             "frequency": 118400,
-            "radio_name": "Savannah Approach",
-            "sector_id": "6W"
+            "radio_name": "Savannah Approach"
         },
-        "SAV_S_APP": {
+        "6S": {
+            "callsign": "SAV_S_APP",
             "frequency": 120400,
-            "radio_name": "Savannah Approach",
-            "sector_id": "6S"
+            "radio_name": "Savannah Approach"
         },
-        "NBC_APP": {
+        "71B": {
+            "callsign": "NBC_APP",
             "frequency": 125125,
-            "radio_name": "Beaufort Approach",
-            "sector_id": "71B"
+            "radio_name": "Beaufort Approach"
         },
-        "SAV_TWR": {
+        "61T": {
+            "callsign": "SAV_TWR",
             "frequency": 125975,
-            "radio_name": "Savannah Tower",
-            "sector_id": "61T"
+            "radio_name": "Savannah Tower"
         },
-        "HXD_TWR": {
+        "62T": {
+            "callsign": "HXD_TWR",
             "frequency": 118975,
-            "radio_name": "Hilton Head Tower",
-            "sector_id": "62T"
+            "radio_name": "Hilton Head Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "10X": {
                 "inbound_assignments": {
-                    "LOTTS": "SAV_W_APP",
-                    "PLZZZ": "SAV_N_APP",
-                    "SOOOP": "SAV_N_APP",
-                    "VIYAP": "SAV_S_APP"
+                    "LOTTS": "6W",
+                    "PLZZZ": "6N",
+                    "SOOOP": "6N",
+                    "VIYAP": "6S"
                 },
                 "departure_assignments": {
-                    "KHXD": "SAV_N_APP",
-                    "KSAV": "SAV_N_APP",
-                    "KTBR": "SAV_W_APP"
+                    "KHXD": "6N",
+                    "KSAV": "6N",
+                    "KTBR": "6W"
                 },
                 "default_consolidation": {
-                    "SAV_N_APP": [
-                        "SAV_S_APP",
-                        "SAV_W_APP"
+                    "6N": [
+                        "6S",
+                        "6W"
                     ]
                 }
             },
             "28X": {
                 "inbound_assignments": {
-                    "LOTTS": "SAV_W_APP",
-                    "PLZZZ": "SAV_N_APP",
-                    "SOOOP": "SAV_N_APP",
-                    "VIYAP": "SAV_S_APP"
+                    "LOTTS": "6W",
+                    "PLZZZ": "6N",
+                    "SOOOP": "6N",
+                    "VIYAP": "6S"
                 },
                 "departure_assignments": {
-                    "KHXD": "SAV_N_APP",
-                    "KSAV": "SAV_W_APP",
-                    "KTBR": "SAV_W_APP"
+                    "KHXD": "6N",
+                    "KSAV": "6W",
+                    "KTBR": "6W"
                 },
                 "default_consolidation": {
-                    "SAV_N_APP": [
-                        "SAV_S_APP",
-                        "SAV_W_APP"
+                    "6N": [
+                        "6S",
+                        "6W"
                     ]
                 }
             }
@@ -161,7 +161,7 @@
         },
         {
             "id": "ZJX",
-            "eram_prefix": "J"
+            "eram_prefix": "C"
         }
     ]
 }

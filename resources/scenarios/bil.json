@@ -140,7 +140,7 @@
                 {
                     "spawn": "CUSGA@0.5",
                     "star": "BGHRN3",
-                    "initial_controller": "ZLC 17 Salt Lake",
+                    "initial_controller": "C17",
                     "initial_altitude": 15000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -163,8 +163,7 @@
                                 "airport": "KDFW"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLC"
+                    }
                 }
             ]
         },
@@ -173,7 +172,7 @@
                 {
                     "spawn": "LOKOW@0.8",
                     "star": "CRAZI4",
-                    "initial_controller": "ZLC 17 Salt Lake",
+                    "initial_controller": "C17",
                     "initial_altitude": 16000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -188,8 +187,7 @@
                                 "airport": "KPDX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLC"
+                    }
                 }
             ]
         },
@@ -198,7 +196,7 @@
                 {
                     "spawn": "CONUK@0.85",
                     "star": "KUSTR3",
-                    "initial_controller": "ZLC 17 Salt Lake",
+                    "initial_controller": "C17",
                     "initial_altitude": 17000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -209,8 +207,7 @@
                                 "airport": "CYWG"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLC"
+                    }
                 }
             ]
         },
@@ -219,7 +216,7 @@
                 {
                     "spawn": "JEKUG@0.9",
                     "star": "YLSTN3",
-                    "initial_controller": "ZLC 17 Salt Lake",
+                    "initial_controller": "C17",
                     "initial_altitude": 15000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -230,8 +227,7 @@
                                 "airport": "KSLC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLC"
+                    }
                 }
             ]
         }

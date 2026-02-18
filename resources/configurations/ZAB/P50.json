@@ -1,171 +1,171 @@
 {
     "control_positions": {
-        "PHX_A_APP": {
+        "1A": {
+            "callsign": "PHX_A_APP",
             "frequency": 128650,
-            "radio_name": "Phoenix Approach",
-            "sector_id": "1A"
+            "radio_name": "Phoenix Approach"
         },
-        "PHX_Q_APP": {
+        "1Q": {
+            "callsign": "PHX_Q_APP",
             "frequency": 124100,
-            "radio_name": "Phoenix Approach",
-            "sector_id": "1Q"
+            "radio_name": "Phoenix Approach"
         },
-        "PHX_B_APP": {
+        "1B": {
+            "callsign": "PHX_B_APP",
             "frequency": 120700,
-            "radio_name": "Phoenix Approach",
-            "sector_id": "1B"
+            "radio_name": "Phoenix Approach"
         },
-        "PHX_W_APP": {
+        "1W": {
+            "callsign": "PHX_W_APP",
             "frequency": 124900,
-            "radio_name": "Phoenix Approach",
-            "sector_id": "1W"
+            "radio_name": "Phoenix Approach"
         },
-        "PHX_P_APP": {
+        "1P": {
+            "callsign": "PHX_P_APP",
             "frequency": 123700,
-            "radio_name": "Phoenix Approach",
-            "sector_id": "1P"
+            "radio_name": "Phoenix Approach"
         },
-        "PHX_N_DEP": {
+        "1N": {
+            "callsign": "PHX_N_DEP",
             "frequency": 119200,
-            "radio_name": "Phoenix Departure",
-            "sector_id": "1N"
+            "radio_name": "Phoenix Departure"
         },
-        "PHX_S_DEP": {
+        "1S": {
+            "callsign": "PHX_S_DEP",
             "frequency": 126800,
-            "radio_name": "Phoenix Departure",
-            "sector_id": "1S"
+            "radio_name": "Phoenix Departure"
         },
-        "PHX_F_APP": {
+        "1F": {
+            "callsign": "PHX_F_APP",
             "frequency": 126600,
-            "radio_name": "Phoenix Approach",
-            "sector_id": "1F"
+            "radio_name": "Phoenix Approach"
         },
-        "PHX_V_APP": {
+        "1V": {
+            "callsign": "PHX_V_APP",
             "frequency": 120400,
-            "radio_name": "Phoenix Approach",
-            "sector_id": "1V"
+            "radio_name": "Phoenix Approach"
         },
-        "PHX_J_APP": {
+        "1J": {
+            "callsign": "PHX_J_APP",
             "frequency": 133570,
-            "radio_name": "Phoenix Approach",
-            "sector_id": "1J"
+            "radio_name": "Phoenix Approach"
         },
-        "PHX_R_APP": {
+        "1R": {
+            "callsign": "PHX_R_APP",
             "frequency": 119520,
-            "radio_name": "Phoenix Approach",
-            "sector_id": "1R"
+            "radio_name": "Phoenix Approach"
         },
-        "PHX_K_APP": {
+        "1K": {
+            "callsign": "PHX_K_APP",
             "frequency": 126370,
-            "radio_name": "Phoenix Approach",
-            "sector_id": "1K"
+            "radio_name": "Phoenix Approach"
         },
-        "PHX_T_TWR": {
+        "PT": {
+            "callsign": "PHX_T_TWR",
             "frequency": 120900,
-            "radio_name": "Phoenix Tower",
-            "sector_id": "PT"
+            "radio_name": "Phoenix Tower"
         },
-        "PHX_E_TWR": {
+        "PE": {
+            "callsign": "PHX_E_TWR",
             "frequency": 118700,
-            "radio_name": "Phoenix Tower",
-            "sector_id": "PE"
+            "radio_name": "Phoenix Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "50X": {
                 "inbound_assignments": {
-                    "BRUSR1.E": "PHX_A_APP",
-                    "DSERT2": "PHX_B_APP",
-                    "EAGUL6.E": "PHX_A_APP",
-                    "HUUTY1": "PHX_W_APP",
-                    "HYDRR1.E": "PHX_Q_APP",
-                    "PINNG1.E": "PHX_Q_APP"
+                    "BRUSR1.E": "1A",
+                    "DSERT2": "1B",
+                    "EAGUL6.E": "1A",
+                    "HUUTY1": "1W",
+                    "HYDRR1.E": "1Q",
+                    "PINNG1.E": "1Q"
                 },
                 "departure_assignments": {
-                    "KIWA": "PHX_W_APP",
-                    "KPHX": "PHX_S_DEP",
-                    "KSDL": "PHX_B_APP"
+                    "KIWA": "1W",
+                    "KPHX": "1S",
+                    "KSDL": "1B"
                 },
                 "default_consolidation": {
-                    "PHX_A_APP": [
-                        "PHX_B_APP",
-                        "PHX_Q_APP",
-                        "PHX_S_DEP",
-                        "PHX_W_APP"
+                    "1A": [
+                        "1B",
+                        "1Q",
+                        "1S",
+                        "1W"
                     ]
                 }
             },
             "P50": {
                 "inbound_assignments": {
-                    "NAA EAST ARR": "PHX_K_APP",
-                    "NAA SOUTH ARR": "PHX_K_APP",
-                    "NAA WEST ARR": "PHX_J_APP"
+                    "NAA EAST ARR": "1K",
+                    "NAA SOUTH ARR": "1K",
+                    "NAA WEST ARR": "1J"
                 },
                 "departure_assignments": {
-                    "KFLG": "PHX_K_APP",
-                    "KPRC": "PHX_J_APP",
-                    "KSEZ": "PHX_K_APP"
+                    "KFLG": "1K",
+                    "KPRC": "1J",
+                    "KSEZ": "1K"
                 },
                 "default_consolidation": {
-                    "PHX_J_APP": [
-                        "PHX_K_APP"
+                    "1J": [
+                        "1K"
                     ]
                 }
             },
             "P51": {
                 "inbound_assignments": {
-                    "BRUSR1.W": "PHX_A_APP",
-                    "DSERT2": "PHX_B_APP",
-                    "EAGUL6.W": "PHX_A_APP",
-                    "HUUTY1": "PHX_W_APP",
-                    "HYDRR1.W": "PHX_Q_APP",
-                    "PINNG1.W": "PHX_Q_APP"
+                    "BRUSR1.W": "1A",
+                    "DSERT2": "1B",
+                    "EAGUL6.W": "1A",
+                    "HUUTY1": "1W",
+                    "HYDRR1.W": "1Q",
+                    "PINNG1.W": "1Q"
                 },
                 "departure_assignments": {
-                    "KIWA": "PHX_W_APP",
-                    "KPHX": "PHX_S_DEP",
-                    "KSDL": "PHX_B_APP"
+                    "KIWA": "1W",
+                    "KPHX": "1S",
+                    "KSDL": "1B"
                 },
                 "default_consolidation": {
-                    "PHX_A_APP": [
-                        "PHX_B_APP",
-                        "PHX_Q_APP",
-                        "PHX_S_DEP",
-                        "PHX_W_APP"
+                    "1A": [
+                        "1B",
+                        "1Q",
+                        "1S",
+                        "1W"
                     ]
                 }
             },
             "PHX": {
                 "inbound_assignments": {
-                    "BRUSR1_FE": "PHX_V_APP",
-                    "EAGUL6_FE": "PHX_V_APP",
-                    "HYDRR1_FE": "PHX_F_APP",
-                    "PINNG1_FE": "PHX_F_APP"
+                    "BRUSR1_FE": "1V",
+                    "EAGUL6_FE": "1V",
+                    "HYDRR1_FE": "1F",
+                    "PINNG1_FE": "1F"
                 },
                 "default_consolidation": {
-                    "PHX_F_APP": [
-                        "PHX_V_APP"
+                    "1F": [
+                        "1V"
                     ]
                 }
             },
             "PH1": {
                 "inbound_assignments": {
-                    "BRUSR1_FW": "PHX_V_APP",
-                    "EAGUL6_FW": "PHX_V_APP",
-                    "HYDRR1_FW": "PHX_F_APP",
-                    "PINNG1_FW": "PHX_F_APP"
+                    "BRUSR1_FW": "1V",
+                    "EAGUL6_FW": "1V",
+                    "HYDRR1_FW": "1F",
+                    "PINNG1_FW": "1F"
                 },
                 "default_consolidation": {
-                    "PHX_F_APP": [
-                        "PHX_V_APP"
+                    "1F": [
+                        "1V"
                     ]
                 }
             }
         },
         "center": "KPHX",
         "controller_configs": {
-            "PHX_K_APP": {
+            "1K": {
                 "video_maps": [
                     "PRC414 NAZ_ASP",
                     "PHX003 PHX003",
@@ -215,7 +215,7 @@
                 "center": "KPRC",
                 "range": 60
             },
-            "PHX_J_APP": {
+            "1J": {
                 "video_maps": [
                     "PRC414 NAZ_ASP",
                     "PHX003 PHX003",
@@ -260,7 +260,7 @@
                 "center": "KPRC",
                 "range": 60
             },
-            "PHX_R_APP": {
+            "1R": {
                 "video_maps": [
                     "PRC414 NAZ_ASP",
                     "PHX003 PHX003",
@@ -310,7 +310,7 @@
                 "center": "KPRC",
                 "range": 60
             },
-            "PHX_A_APP": {
+            "1A": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -561,7 +561,7 @@
                     21000,
                     23000
                 ],
-                "receiving_controller": "ZAB 43 NW Drake Low"
+                "receiving_controller": "C43"
             },
             {
                 "fixes": [
@@ -572,7 +572,7 @@
                     21000,
                     25000
                 ],
-                "receiving_controller": "ZAB 42 SW Gila Bend Low"
+                "receiving_controller": "C42"
             },
             {
                 "fixes": [
@@ -583,7 +583,7 @@
                     21000,
                     25000
                 ],
-                "receiving_controller": "ZAB 46 SW Tucson Low"
+                "receiving_controller": "C46"
             },
             {
                 "fixes": [
@@ -594,7 +594,7 @@
                     21000,
                     31000
                 ],
-                "receiving_controller": "ZAB 38 NW Miami Low/Hi"
+                "receiving_controller": "C38"
             },
             {
                 "fixes": [
@@ -605,7 +605,7 @@
                     21000,
                     29000
                 ],
-                "receiving_controller": "ZAB 45 NW Winslow Low"
+                "receiving_controller": "C45"
             }
         ],
         "coordination_fixes": {
@@ -646,7 +646,7 @@
         },
         {
             "id": "ZAB",
-            "eram_prefix": "A"
+            "eram_prefix": "C"
         }
     ]
 }

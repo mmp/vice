@@ -1,65 +1,65 @@
 {
     "control_positions": {
-        "SBA_R_APP": {
+        "1R": {
+            "callsign": "SBA_R_APP",
             "frequency": 124150,
-            "radio_name": "Santa Barbara Approach",
-            "sector_id": "1R"
+            "radio_name": "Santa Barbara Approach"
         },
-        "SBA_H_APP": {
+        "1H": {
+            "callsign": "SBA_H_APP",
             "frequency": 125400,
-            "radio_name": "Santa Barbara Approach",
-            "sector_id": "1H"
+            "radio_name": "Santa Barbara Approach"
         },
-        "SBA_E_APP": {
+        "1E": {
+            "callsign": "SBA_E_APP",
             "frequency": 120550,
-            "radio_name": "Santa Barbara Approach",
-            "sector_id": "1E"
+            "radio_name": "Santa Barbara Approach"
         },
-        "SBA_I_APP": {
+        "1I": {
+            "callsign": "SBA_I_APP",
             "frequency": 127725,
-            "radio_name": "Santa Barbara Approach",
-            "sector_id": "1I"
+            "radio_name": "Santa Barbara Approach"
         },
-        "SBA_TWR": {
+        "1S": {
+            "callsign": "SBA_TWR",
             "frequency": 119700,
-            "radio_name": "Santa Barbara Tower",
-            "sector_id": "1S"
+            "radio_name": "Santa Barbara Tower"
         },
-        "SBP_TWR": {
+        "1P": {
+            "callsign": "SBP_TWR",
             "frequency": 124000,
-            "radio_name": "San Luis Tower",
-            "sector_id": "1P"
+            "radio_name": "San Luis Tower"
         },
-        "SMX_TWR": {
+        "1X": {
+            "callsign": "SMX_TWR",
             "frequency": 118300,
-            "radio_name": "Santa Maria Tower",
-            "sector_id": "1X"
+            "radio_name": "Santa Maria Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "EAST SBP ARR": "SBA_I_APP",
-                    "EAST SMX ARR": "SBA_H_APP",
-                    "NORTH SBA ARR": "SBA_E_APP",
-                    "NORTH SBP ARR": "SBA_I_APP",
-                    "NORTH SMX ARR": "SBA_I_APP",
-                    "NORTHWEST SBA ARR": "SBA_E_APP",
-                    "NORTHWEST SBP ARR": "SBA_I_APP",
-                    "PITBL2": "SBA_H_APP",
-                    "SOUTH SBP ARR": "SBA_R_APP"
+                    "EAST SBP ARR": "1I",
+                    "EAST SMX ARR": "1H",
+                    "NORTH SBA ARR": "1E",
+                    "NORTH SBP ARR": "1I",
+                    "NORTH SMX ARR": "1I",
+                    "NORTHWEST SBA ARR": "1E",
+                    "NORTHWEST SBP ARR": "1I",
+                    "PITBL2": "1H",
+                    "SOUTH SBP ARR": "1R"
                 },
                 "departure_assignments": {
-                    "KSBA": "SBA_H_APP",
-                    "KSBP": "SBA_I_APP",
-                    "KSMX": "SBA_R_APP"
+                    "KSBA": "1H",
+                    "KSBP": "1I",
+                    "KSMX": "1R"
                 },
                 "default_consolidation": {
-                    "SBA_E_APP": [
-                        "SBA_H_APP",
-                        "SBA_I_APP",
-                        "SBA_R_APP"
+                    "1E": [
+                        "1H",
+                        "1I",
+                        "1R"
                     ]
                 }
             }
@@ -176,7 +176,7 @@
         },
         {
             "id": "ZLA",
-            "eram_prefix": "L"
+            "eram_prefix": "C"
         },
         {
             "id": "ZOA",

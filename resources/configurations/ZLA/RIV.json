@@ -1,20 +1,24 @@
 {
     "control_positions": {
-        "RIV_APP": {
+        "1A": {
+            "callsign": "RIV_APP",
             "frequency": 133500,
-            "radio_name": "March Approach",
-            "sector_id": "1A"
+            "radio_name": "March Approach"
         },
-        "RIV_TWR": {
+        "1B": {
+            "callsign": "RIV_TWR",
             "frequency": 127650,
-            "radio_name": "March Tower",
-            "sector_id": "1B"
+            "radio_name": "March Tower"
         }
     },
     "handoff_ids": [
         {
             "id": "SCT",
             "prefix": "1"
+        },
+        {
+            "id": "ZLA",
+            "eram_prefix": "C"
         }
     ]
 }

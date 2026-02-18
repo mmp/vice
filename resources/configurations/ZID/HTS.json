@@ -1,25 +1,29 @@
 {
     "control_positions": {
-        "HTS_N_APP": {
+        "1N": {
+            "callsign": "HTS_N_APP",
             "frequency": 128400,
-            "radio_name": "Huntington Approach",
-            "sector_id": "1N"
+            "radio_name": "Huntington Approach"
         },
-        "HTS_S_APP": {
+        "1S": {
+            "callsign": "HTS_S_APP",
             "frequency": 119750,
-            "radio_name": "Huntington Approach",
-            "sector_id": "1S"
+            "radio_name": "Huntington Approach"
         },
-        "HTS_TWR": {
+        "1T": {
+            "callsign": "HTS_TWR",
             "frequency": 118500,
-            "radio_name": "Huntington Tower",
-            "sector_id": "1T"
+            "radio_name": "Huntington Tower"
         }
     },
     "handoff_ids": [
         {
             "id": "CRW",
             "prefix": "1"
+        },
+        {
+            "id": "ZID",
+            "eram_prefix": "C"
         }
     ]
 }

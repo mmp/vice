@@ -75,7 +75,7 @@
                 {
                     "waypoints": "N048.02.18.441,W111.44.31.655/ho gtf",
                     "route": "N048.02.18.441,W111.44.31.655 GTF",
-                    "initial_controller": "ZLC 03 Salt Lake 3",
+                    "initial_controller": "C03",
                     "initial_altitude": 13000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -98,8 +98,7 @@
                                 "airport": "KDFW"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLC"
+                    }
                 }
             ]
         },
@@ -108,7 +107,7 @@
                 {
                     "waypoints": "N046.51.34.683,W111.16.52.966/ho gtf",
                     "route": "N046.51.34.683,W111.16.52.9665 GTF",
-                    "initial_controller": "ZLC 03 Salt Lake 3",
+                    "initial_controller": "C03",
                     "initial_altitude": 13000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -131,8 +130,7 @@
                                 "airport": "KDFW"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLC"
+                    }
                 }
             ]
         }

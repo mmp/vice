@@ -1,29 +1,29 @@
 {
     "control_positions": {
-        "NKT_E_APP": {
+        "1E": {
+            "callsign": "NKT_E_APP",
             "frequency": 119750,
-            "radio_name": "Cherry Point Approach",
-            "sector_id": "1E"
+            "radio_name": "Cherry Point Approach"
         },
-        "NKT_F_APP": {
+        "1F": {
+            "callsign": "NKT_F_APP",
             "frequency": 132575,
-            "radio_name": "Cherry Point Approach",
-            "sector_id": "1F"
+            "radio_name": "Cherry Point Approach"
         },
-        "NKT_H_APP": {
+        "1N": {
+            "callsign": "NKT_H_APP",
             "frequency": 124100,
-            "radio_name": "Cherry Point High",
-            "sector_id": "1N"
+            "radio_name": "Cherry Point High"
         },
-        "NKT_W_APP": {
+        "1W": {
+            "callsign": "NKT_W_APP",
             "frequency": 119350,
-            "radio_name": "Cherry Point Approach",
-            "sector_id": "1W"
+            "radio_name": "Cherry Point Approach"
         },
-        "NKT_TWR": {
+        "1Z": {
+            "callsign": "NKT_TWR",
             "frequency": 121300,
-            "radio_name": "Cherry Point Tower",
-            "sector_id": "1Z"
+            "radio_name": "Cherry Point Tower"
         }
     },
     "handoff_ids": [
@@ -42,6 +42,10 @@
         {
             "id": "ORF",
             "prefix": "5"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "C"
         }
     ]
 }

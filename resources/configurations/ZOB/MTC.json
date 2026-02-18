@@ -1,20 +1,24 @@
 {
     "control_positions": {
-        "MTC_APP": {
+        "1A": {
+            "callsign": "MTC_APP",
             "frequency": 132350,
-            "radio_name": "Selfridge Approach",
-            "sector_id": "1A"
+            "radio_name": "Selfridge Approach"
         },
-        "MTC_TWR": {
+        "1T": {
+            "callsign": "MTC_TWR",
             "frequency": 120150,
-            "radio_name": "Selfridge Tower",
-            "sector_id": "1T"
+            "radio_name": "Selfridge Tower"
         }
     },
     "handoff_ids": [
         {
             "id": "D21",
             "prefix": "1"
+        },
+        {
+            "id": "ZOB",
+            "eram_prefix": "C"
         }
     ]
 }

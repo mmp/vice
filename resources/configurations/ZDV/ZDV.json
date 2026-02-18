@@ -1,234 +1,234 @@
 {
     "control_positions": {
-        "ZDV 00 GUARD": {
+        "00": {
+            "callsign": "ZDV 00 GUARD",
             "frequency": 121500,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "00"
+            "radio_name": "Denver Center"
         },
-        "ZDV 03 - Meeker High": {
+        "03": {
+            "callsign": "ZDV 03 - Meeker High",
             "frequency": 126725,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "03"
+            "radio_name": "Denver Center"
         },
-        "ZDV 04 - Grand Junction High": {
+        "04": {
+            "callsign": "ZDV 04 - Grand Junction High",
             "frequency": 135125,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "04"
+            "radio_name": "Denver Center"
         },
-        "ZDV 05 - Kremmling High": {
+        "05": {
+            "callsign": "ZDV 05 - Kremmling High",
             "frequency": 132850,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "05"
+            "radio_name": "Denver Center"
         },
-        "ZDV 06 - Kremmling Low": {
+        "06": {
+            "callsign": "ZDV 06 - Kremmling Low",
             "frequency": 128650,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "06"
+            "radio_name": "Denver Center"
         },
-        "ZDV 07 - Thurman Low": {
+        "07": {
+            "callsign": "ZDV 07 - Thurman Low",
             "frequency": 133950,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "07"
+            "radio_name": "Denver Center"
         },
-        "ZDV 08 - Hayes Center High": {
+        "08": {
+            "callsign": "ZDV 08 - Hayes Center High",
             "frequency": 127025,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "08"
+            "radio_name": "Denver Center"
         },
-        "ZDV 09 - North Platte High": {
+        "09": {
+            "callsign": "ZDV 09 - North Platte High",
             "frequency": 126325,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "09"
+            "radio_name": "Denver Center"
         },
-        "ZDV 11 Junction Low": {
+        "11": {
+            "callsign": "ZDV 11 Junction Low",
             "frequency": 120475,
             "eram_facility": true,
-            "radio_name": "Denver center",
-            "sector_id": "11"
+            "radio_name": "Denver center"
         },
-        "ZDV 12 - Gunnison Low": {
+        "12": {
+            "callsign": "ZDV 12 - Gunnison Low",
             "frequency": 125350,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "12"
+            "radio_name": "Denver Center"
         },
-        "ZDV 13 - TOMSN Low": {
+        "13": {
+            "callsign": "ZDV 13 - TOMSN Low",
             "frequency": 126500,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "13"
+            "radio_name": "Denver Center"
         },
-        "ZDV 14 Hayden High": {
+        "14": {
+            "callsign": "ZDV 14 Hayden High",
             "frequency": 128325,
             "eram_facility": true,
-            "radio_name": "Denver center",
-            "sector_id": "14"
+            "radio_name": "Denver center"
         },
-        "ZDV 15 - Sidney Low": {
+        "15": {
+            "callsign": "ZDV 15 - Sidney Low",
             "frequency": 118475,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "15"
+            "radio_name": "Denver Center"
         },
-        "ZDV 16 Denver High": {
+        "16": {
+            "callsign": "ZDV 16 Denver High",
             "frequency": 120575,
             "eram_facility": true,
-            "radio_name": "Denver center",
-            "sector_id": "16"
+            "radio_name": "Denver center"
         },
-        "ZDV 17 Hill City High": {
+        "17": {
+            "callsign": "ZDV 17 Hill City High",
             "frequency": 127650,
             "eram_facility": true,
-            "radio_name": "Denver center",
-            "sector_id": "17"
+            "radio_name": "Denver center"
         },
-        "ZDV 19 - North Platte Low": {
+        "19": {
+            "callsign": "ZDV 19 - North Platte Low",
             "frequency": 132700,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "19"
+            "radio_name": "Denver Center"
         },
-        "ZDV 21 - Cheyenne Low": {
+        "21": {
+            "callsign": "ZDV 21 - Cheyenne Low",
             "frequency": 125900,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "21"
+            "radio_name": "Denver Center"
         },
-        "ZDV 22 - Casper Low": {
+        "22": {
+            "callsign": "ZDV 22 - Casper Low",
             "frequency": 135600,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "22"
+            "radio_name": "Denver Center"
         },
-        "ZDV 23 - Tuba City High": {
+        "23": {
+            "callsign": "ZDV 23 - Tuba City High",
             "frequency": 118225,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "23"
+            "radio_name": "Denver Center"
         },
-        "ZDV 25 Blue Mesa High": {
+        "25": {
+            "callsign": "ZDV 25 Blue Mesa High",
             "frequency": 133525,
             "eram_facility": true,
-            "radio_name": "Denver center",
-            "sector_id": "25"
+            "radio_name": "Denver center"
         },
-        "ZDV 26 - POWDR Low": {
+        "26": {
+            "callsign": "ZDV 26 - POWDR Low",
             "frequency": 119850,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "26"
+            "radio_name": "Denver Center"
         },
-        "ZDV 27 - La Junta Low": {
+        "27": {
+            "callsign": "ZDV 27 - La Junta Low",
             "frequency": 134125,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "27"
+            "radio_name": "Denver Center"
         },
-        "ZDV 28 - Lamar High": {
+        "28": {
+            "callsign": "ZDV 28 - Lamar High",
             "frequency": 134125,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "28"
+            "radio_name": "Denver Center"
         },
-        "ZDV 29 Pueblo High": {
+        "29": {
+            "callsign": "ZDV 29 Pueblo High",
             "frequency": 132225,
             "eram_facility": true,
-            "radio_name": "Denver center",
-            "sector_id": "29"
+            "radio_name": "Denver center"
         },
-        "ZDV 31 - Rapid City Low": {
+        "31": {
+            "callsign": "ZDV 31 - Rapid City Low",
             "frequency": 127950,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "31"
+            "radio_name": "Denver Center"
         },
-        "ZDV 33 - ScottBluff High": {
+        "33": {
+            "callsign": "ZDV 33 - ScottBluff High",
             "frequency": 134575,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "33"
+            "radio_name": "Denver Center"
         },
-        "ZDV 34 - Medicine Bow High": {
+        "34": {
+            "callsign": "ZDV 34 - Medicine Bow High",
             "frequency": 133175,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "34"
+            "radio_name": "Denver Center"
         },
-        "ZDV 35 - BRUIT High": {
+        "35": {
+            "callsign": "ZDV 35 - BRUIT High",
             "frequency": 135025,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "35"
+            "radio_name": "Denver Center"
         },
-        "ZDV 36 - Farmington Low": {
+        "36": {
+            "callsign": "ZDV 36 - Farmington Low",
             "frequency": 118575,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "36"
+            "radio_name": "Denver Center"
         },
-        "ZDV 37 - Farmington High": {
+        "37": {
+            "callsign": "ZDV 37 - Farmington High",
             "frequency": 125675,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "37"
+            "radio_name": "Denver Center"
         },
-        "ZDV 41 - Pueblo Low": {
+        "41": {
+            "callsign": "ZDV 41 - Pueblo Low",
             "frequency": 128375,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "41"
+            "radio_name": "Denver Center"
         },
-        "ZDV 61 - Falcon High": {
+        "61": {
+            "callsign": "ZDV 61 - Falcon High",
             "frequency": 126875,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "61"
+            "radio_name": "Denver Center"
         },
-        "ZDV 68 - Tuba City Low": {
+        "68": {
+            "callsign": "ZDV 68 - Tuba City Low",
             "frequency": 127550,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "68"
+            "radio_name": "Denver Center"
         },
-        "ZDV 77 - Hayden Low": {
+        "77": {
+            "callsign": "ZDV 77 - Hayden Low",
             "frequency": 120475,
             "eram_facility": true,
-            "radio_name": "Denver Center",
-            "sector_id": "77"
+            "radio_name": "Denver Center"
         },
-        "ZDV 99 Denver TMU": {
+        "99": {
+            "callsign": "ZDV 99 Denver TMU",
             "frequency": 123450,
             "eram_facility": true,
-            "radio_name": "Denver TMU",
-            "sector_id": "99"
+            "radio_name": "Denver TMU"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "departure_assignments": {
-                    "KCOS": "ZDV 29 Pueblo High"
+                    "KCOS": "29"
                 },
                 "inbound_assignments": {
-                    "CLASH5.OATHE": "ZDV 29 Pueblo High",
-                    "CLASH5.KIISS": "ZDV 29 Pueblo High",
-                    "NIIXX4.HALEN": "ZDV 29 Pueblo High",
-                    "NIIXX4.ZIGEE": "ZDV 29 Pueblo High",
-                    "DBRY5.HBU": "ZDV 29 Pueblo High",
-                    "DBRY5.ALS": "ZDV 29 Pueblo High",
-                    "OZZZY5.GLD": "ZDV 29 Pueblo High",
-                    "OZZZY5.LAA": "ZDV 29 Pueblo High"
+                    "CLASH5.OATHE": "29",
+                    "CLASH5.KIISS": "29",
+                    "NIIXX4.HALEN": "29",
+                    "NIIXX4.ZIGEE": "29",
+                    "DBRY5.HBU": "29",
+                    "DBRY5.ALS": "29",
+                    "OZZZY5.GLD": "29",
+                    "OZZZY5.LAA": "29"
                 },
                 "default_consolidation": {
-                    "ZDV 29 Pueblo High": []
+                    "29": []
                 }
             }
         },

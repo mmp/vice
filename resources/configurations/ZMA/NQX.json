@@ -1,19 +1,19 @@
 {
     "control_positions": {
-        "NQX_A_APP": {
+        "1A": {
+            "callsign": "NQX_A_APP",
             "frequency": 126575,
-            "radio_name": "Key West Approach",
-            "sector_id": "1A"
+            "radio_name": "Key West Approach"
         },
-        "NQX_B_APP": {
+        "1B": {
+            "callsign": "NQX_B_APP",
             "frequency": 124025,
-            "radio_name": "Key West Approach",
-            "sector_id": "1B"
+            "radio_name": "Key West Approach"
         },
-        "NQX_TWR": {
+        "1Z": {
+            "callsign": "NQX_TWR",
             "frequency": 118575,
-            "radio_name": "Navy Key West Tower",
-            "sector_id": "1Z"
+            "radio_name": "Navy Key West Tower"
         }
     },
     "handoff_ids": [

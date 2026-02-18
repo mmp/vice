@@ -1,19 +1,19 @@
 {
     "control_positions": {
-        "WRI_APP": {
+        "1Y": {
+            "callsign": "WRI_APP",
             "frequency": 126475,
-            "radio_name": "McGuire Approach",
-            "sector_id": "1Y"
+            "radio_name": "McGuire Approach"
         },
-        "WRI_TWR": {
+        "1L": {
+            "callsign": "WRI_TWR",
             "frequency": 118650,
-            "radio_name": "McGuire Tower",
-            "sector_id": "1L"
+            "radio_name": "McGuire Tower"
         },
-        "NEL_TWR": {
+        "1H": {
+            "callsign": "NEL_TWR",
             "frequency": 127775,
-            "radio_name": "Lakehurst Tower",
-            "sector_id": "1H"
+            "radio_name": "Lakehurst Tower"
         }
     },
     "handoff_ids": [
@@ -35,7 +35,7 @@
         },
         {
             "id": "ZNY",
-            "eram_prefix": "N"
+            "eram_prefix": "C"
         }
     ]
 }

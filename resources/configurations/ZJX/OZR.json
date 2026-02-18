@@ -1,9 +1,9 @@
 {
     "control_positions": {
-        "OZR_APP": {
+        "1Z": {
+            "callsign": "OZR_APP",
             "frequency": 121100,
-            "radio_name": "Cairns Approach",
-            "sector_id": "1Z"
+            "radio_name": "Cairns Approach"
         }
     },
     "handoff_ids": [
@@ -26,6 +26,10 @@
         {
             "id": "VPS",
             "prefix": "1"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "C"
         },
         {
             "id": "ZTL",

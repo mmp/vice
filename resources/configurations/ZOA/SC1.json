@@ -1,34 +1,34 @@
 {
     "control_positions": {
-        "SCK_J_APP": {
+        "1J": {
+            "callsign": "SCK_J_APP",
             "frequency": 123850,
-            "radio_name": "Stockton Approach",
-            "sector_id": "1J"
+            "radio_name": "Stockton Approach"
         },
-        "SCK_K_APP": {
+        "1K": {
+            "callsign": "SCK_K_APP",
             "frequency": 120950,
-            "radio_name": "Stockton Approach",
-            "sector_id": "1K"
+            "radio_name": "Stockton Approach"
         },
-        "LVK_TWR": {
+        "1L": {
+            "callsign": "LVK_TWR",
             "frequency": 118100,
-            "radio_name": "Livermore Tower",
-            "sector_id": "1L"
+            "radio_name": "Livermore Tower"
         },
-        "MOD_TWR": {
+        "1P": {
+            "callsign": "MOD_TWR",
             "frequency": 125300,
-            "radio_name": "Modesto Tower",
-            "sector_id": "1P"
+            "radio_name": "Modesto Tower"
         },
-        "SCK_Y_APP": {
+        "1Y": {
+            "callsign": "SCK_Y_APP",
             "frequency": 125100,
-            "radio_name": "Stockton Approach",
-            "sector_id": "1Y"
+            "radio_name": "Stockton Approach"
         },
-        "SCK_TWR": {
+        "1Z": {
+            "callsign": "SCK_TWR",
             "frequency": 120300,
-            "radio_name": "Stockton Tower",
-            "sector_id": "1Z"
+            "radio_name": "Stockton Tower"
         }
     },
     "handoff_ids": [
@@ -47,6 +47,10 @@
         {
             "id": "SUU",
             "prefix": "2"
+        },
+        {
+            "id": "ZOA",
+            "eram_prefix": "C"
         }
     ]
 }

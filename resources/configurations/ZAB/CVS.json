@@ -1,20 +1,24 @@
 {
     "control_positions": {
-        "CVS_APP": {
+        "1A": {
+            "callsign": "CVS_APP",
             "frequency": 118425,
-            "radio_name": "Cannon Approach",
-            "sector_id": "1A"
+            "radio_name": "Cannon Approach"
         },
-        "CVS_TWR": {
+        "1T": {
+            "callsign": "CVS_TWR",
             "frequency": 120400,
-            "radio_name": "Cannon Tower",
-            "sector_id": "1T"
+            "radio_name": "Cannon Tower"
         }
     },
     "handoff_ids": [
         {
             "id": "ROW",
             "prefix": "1"
+        },
+        {
+            "id": "ZAB",
+            "eram_prefix": "C"
         },
         {
             "id": "ZFW",

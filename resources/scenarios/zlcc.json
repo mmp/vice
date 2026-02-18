@@ -25,7 +25,7 @@
                     "cruise_altitude": 35000,
                     "star": "QWENN6",
                     "route": "QWENN6",
-                    "initial_controller": "ZLA Sector 16",
+                    "initial_controller": "L16",
                     "initial_altitude": 35000,
                     "initial_speed": 300,
                     "airlines": {
@@ -48,8 +48,7 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         },
@@ -60,7 +59,7 @@
                     "cruise_altitude": 35000,
                     "star": "QWENN6",
                     "route": "QWENN6",
-                    "initial_controller": "ZLA Sector 16",
+                    "initial_controller": "L16",
                     "initial_altitude": 35000,
                     "initial_speed": 300,
                     "airlines": {
@@ -83,8 +82,7 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         }

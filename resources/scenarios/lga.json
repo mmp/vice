@@ -535,18 +535,18 @@
             }
         },
         "KJFK": {
-            "departure_controller": "JFK_DEP",
+            "departure_controller": "2J",
             "departure_routes": {
                 "13R": {
                     "SAX": {
                         "cleared_altitude": 8000,
-                        "handoff_controller": "LGA_L_APP",
+                        "handoff_controller": "1L",
                         "sid": "JFK5",
                         "waypoints": "N040.36.50.668,W073.36.45.010 N040.42.49.619,W073.32.41.334/ho N040.47.12.797,W073.37.20.744/h320"
                     },
                     "HAAYS,NEION,COATE": {
                         "cleared_altitude": 9000,
-                        "handoff_controller": "LGA_L_APP",
+                        "handoff_controller": "1L",
                         "sid": "JFK5",
                         "waypoints": "N040.36.50.668,W073.36.45.010 N040.42.49.619,W073.32.41.334/ho N040.47.12.797,W073.37.20.744/h320"
                     }
@@ -591,12 +591,12 @@
             }
         },
         "KEWR": {
-            "departure_controller": "EWR_DEP",
+            "departure_controller": "4N",
             "departure_routes": {
                 "22R": {
                     "SHIPP,WAVEY,MERIT,BAYYS,GREKI,BDR": {
                         "cleared_altitude": 6000,
-                        "handoff_controller": "LGA_L_APP",
+                        "handoff_controller": "1L",
                         "sid": "EWR5",
                         "waypoints": "N040.37.34.200,W074.10.48.000 N040.39.29.400,W074.15.37.800/ho N040.50.39.600,W074.08.24.000/h040"
                     }
@@ -604,7 +604,7 @@
                 "4L": {
                     "SHIPP,WAVEY,MERIT,BAYYS,GREKI,BDR": {
                         "cleared_altitude": 5000,
-                        "handoff_controller": "LGA_L_APP",
+                        "handoff_controller": "1L",
                         "sid": "EWR5",
                         "waypoints": "N040.44.02.400,W074.06.25.800/ho N040.49.00.600,W074.03.19.200/h130"
                     }
@@ -658,18 +658,18 @@
             }
         },
         "KHPN": {
-            "departure_controller": "LGA_Y_APP",
+            "departure_controller": "1Y",
             "departure_routes": {
                 "16": {
                     "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SHIPP,WAVEY,WHITE": {
                         "cleared_altitude": 7000,
-                        "handoff_controller": "LGA_L_APP",
+                        "handoff_controller": "1L",
                         "sid": "HPN8",
                         "waypoints": "N041.03.28.067,W073.38.12.599/ho/h270"
                     },
                     "DIXIE": {
                         "cleared_altitude": 6000,
-                        "handoff_controller": "LGA_L_APP",
+                        "handoff_controller": "1L",
                         "sid": "HPN8",
                         "waypoints": "N041.03.28.067,W073.38.12.599/ho/h270"
                     }
@@ -728,7 +728,7 @@
                     "waypoints": "N040.36.10.568,W074.06.33.502/a7000 N040.38.38.870,W074.04.39.052/ho N040.43.11.194,W074.01.06.714/a4000/h45",
                     "cruise_altitude": 34000,
                     "route": "/. KORRY4",
-                    "initial_controller": "LGA_D_APP",
+                    "initial_controller": "1D",
                     "initial_altitude": 7000,
                     "initial_speed": 250,
                     "scratchpad": "I13",
@@ -773,7 +773,7 @@
                     "waypoints": "N040.33.57.167,W074.05.39.807 N040.38.49.870,W074.01.21.573/a4000/ho N040.41.40.488,W074.00.46.417",
                     "cruise_altitude": 34000,
                     "route": "/. KORRY4",
-                    "initial_controller": "LGA_D_APP",
+                    "initial_controller": "1D",
                     "initial_altitude": 7000,
                     "initial_speed": 250,
                     "scratchpad": "I22",
@@ -818,7 +818,7 @@
                     "waypoints": "PROUD/a7000 N040.43.49.975,W073.54.57.052/a4000/ho/h70",
                     "cruise_altitude": 34000,
                     "route": "/. KORRY4",
-                    "initial_controller": "LGA_D_APP",
+                    "initial_controller": "1D",
                     "initial_altitude": 7000,
                     "initial_speed": 250,
                     "scratchpad": "I22",
@@ -863,7 +863,7 @@
                     "waypoints": "TYKES MINKS/a7000/ho APPLE PROUD",
                     "cruise_altitude": 34000,
                     "route": "/. KORRY4",
-                    "initial_controller": "LGA_D_APP",
+                    "initial_controller": "1D",
                     "initial_altitude": 7000,
                     "initial_speed": 250,
                     "scratchpad": "I4",
@@ -908,7 +908,7 @@
                     "waypoints": "PROUD/a7000 N040.43.49.975,W073.54.57.052/a4000/ho/h70",
                     "cruise_altitude": 34000,
                     "route": "/. KORRY4",
-                    "initial_controller": "LGA_D_APP",
+                    "initial_controller": "1D",
                     "initial_altitude": 7000,
                     "initial_speed": 250,
                     "scratchpad": "L31",
@@ -953,7 +953,7 @@
                     "waypoints": "MINKS JERZY/a7000/ho RENUE PACHU",
                     "cruise_altitude": 34000,
                     "route": "/. KORRY4",
-                    "initial_controller": "LGA_D_APP",
+                    "initial_controller": "1D",
                     "initial_altitude": 7000,
                     "initial_speed": 250,
                     "scratchpad": "R31",
@@ -998,7 +998,7 @@
                     "waypoints": "HAARP CRALY N040.58.01.059,W073.43.42.436/ho/h270",
                     "cruise_altitude": 34000,
                     "route": "/. HAARP4",
-                    "initial_controller": "LGA_V_APP",
+                    "initial_controller": "1V",
                     "initial_altitude": 6000,
                     "assigned_altitude": 4000,
                     "initial_speed": 250,
@@ -1039,7 +1039,7 @@
                     "waypoints": "HAARP CRALY/ho YOMAN",
                     "cruise_altitude": 34000,
                     "route": "/. HAARP4",
-                    "initial_controller": "LGA_V_APP",
+                    "initial_controller": "1V",
                     "initial_altitude": 6000,
                     "assigned_altitude": 4000,
                     "initial_speed": 250,
@@ -1080,7 +1080,7 @@
                     "waypoints": "HAARP CRALY N040.53.40.243,W073.47.00.684 N040.52.51.807,W073.51.05.652/ho/h260",
                     "cruise_altitude": 34000,
                     "route": "/. HAARP4",
-                    "initial_controller": "LGA_V_APP",
+                    "initial_controller": "1V",
                     "initial_altitude": 6000,
                     "assigned_altitude": 4000,
                     "initial_speed": 250,
@@ -1121,7 +1121,7 @@
                     "waypoints": "HAARP CRALY N040.54.29.187,W073.46.15.668/ho LGA",
                     "cruise_altitude": 34000,
                     "route": "/. HAARP4",
-                    "initial_controller": "LGA_V_APP",
+                    "initial_controller": "1V",
                     "initial_altitude": 6000,
                     "assigned_altitude": 4000,
                     "initial_speed": 250,
@@ -1162,7 +1162,7 @@
                     "waypoints": "HAARP N041.00.54.643,W073.33.29.509/ho/h180",
                     "cruise_altitude": 34000,
                     "route": "/. HAARP4",
-                    "initial_controller": "LGA_V_APP",
+                    "initial_controller": "1V",
                     "initial_altitude": 6000,
                     "assigned_altitude": 4000,
                     "initial_speed": 250,
@@ -1203,7 +1203,7 @@
                     "waypoints": "GGREG N040.45.26.106,W073.45.50.454/ho/h270",
                     "cruise_altitude": 34000,
                     "route": "/. HAARP4",
-                    "initial_controller": "LGA_V_APP",
+                    "initial_controller": "1V",
                     "initial_altitude": 6000,
                     "assigned_altitude": 4000,
                     "initial_speed": 250,
@@ -1244,8 +1244,7 @@
                     "waypoints": "PWL IGN/ho VALRE BASYE HAARP CRALY LGA/h224",
                     "cruise_altitude": 34000,
                     "route": "/. HAARP3",
-                    "initial_controller": "ZBW 46 Boston",
-                    "initial_facility": "ZBW",
+                    "initial_controller": "B46",
                     "initial_altitude": 12000,
                     "assigned_altitude": 8000,
                     "initial_speed": 300,
@@ -1291,7 +1290,7 @@
                     "waypoints": "BESSI/a17000+ EDJER/ho DAVYS/a13000+ HOLEY BRAND/a11000+ KORRY/a10000 RBV TYKES MINKS RENUE APPLE PROUD LGA/h45",
                     "cruise_altitude": 35000,
                     "star": "KORRY4",
-                    "initial_controller": "ZDC 32 Gordonsville",
+                    "initial_controller": "W32",
                     "initial_altitude": 17000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -1428,8 +1427,7 @@
                                 "airport": "KBNA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -1439,8 +1437,7 @@
                     "waypoints": "BILEY VIBES LIZZI/ho BEUTY HARLM DREMS APPLE PROUD LGA/h45",
                     "cruise_altitude": 35000,
                     "route": "/. MIP4",
-                    "initial_controller": "ZNY 56 Kennedy",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "C56",
                     "initial_altitude": 13000,
                     "assigned_altitude": 10000,
                     "initial_speed": 300,

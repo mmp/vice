@@ -1,42 +1,42 @@
 {
     "control_positions": {
-        "GSP_TWR": {
+        "1T": {
+            "callsign": "GSP_TWR",
             "frequency": 119900,
-            "radio_name": "Birmingham Tower",
-            "sector_id": "1T"
+            "radio_name": "Birmingham Tower"
         },
-        "GSP_W_APP": {
+        "1W": {
+            "callsign": "GSP_W_APP",
             "frequency": 118800,
-            "radio_name": "Radar West",
-            "sector_id": "1W"
+            "radio_name": "Radar West"
         },
-        "GSP_E_APP": {
+        "1E": {
+            "callsign": "GSP_E_APP",
             "frequency": 119400,
-            "radio_name": "Radar East",
-            "sector_id": "1E"
+            "radio_name": "Radar East"
         },
-        "GSP_S_APP": {
+        "1S": {
+            "callsign": "GSP_S_APP",
             "frequency": 120600,
-            "radio_name": "Radar South",
-            "sector_id": "1S"
+            "radio_name": "Radar South"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "JUNNR3": "GSP_E_APP",
-                    "MCHLN2": "GSP_S_APP",
-                    "RCTOR2": "GSP_W_APP",
-                    "WORXS2": "GSP_W_APP"
+                    "JUNNR3": "1E",
+                    "MCHLN2": "1S",
+                    "RCTOR2": "1W",
+                    "WORXS2": "1W"
                 },
                 "departure_assignments": {
-                    "KGSP": "GSP_W_APP"
+                    "KGSP": "1W"
                 },
                 "default_consolidation": {
-                    "GSP_E_APP": [
-                        "GSP_S_APP",
-                        "GSP_W_APP"
+                    "1E": [
+                        "1S",
+                        "1W"
                     ]
                 }
             }
@@ -163,7 +163,7 @@
         },
         {
             "id": "ZTL",
-            "eram_prefix": "T"
+            "eram_prefix": "C"
         }
     ]
 }

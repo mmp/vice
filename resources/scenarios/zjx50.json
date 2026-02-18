@@ -4,7 +4,7 @@
     "name": "Sector 50",
     "airports": {
         "KJAX": {
-            "departure_controller": "JAX_N_APP",
+            "departure_controller": "J1N",
             "approaches": {
                 "IY8": {
                     "cifp_id": "IY8"
@@ -13,13 +13,13 @@
             "departure_routes": {
                 "8": {
                     "BAXLY": {
-                        "handoff_controller": "ZJX 50 Alma",
+                        "handoff_controller": "50",
                         "cleared_altitude": 15000,
                         "sid": "BRSTL1",
                         "waypoints": "KJAX-26 TEREE/ho BRSTL"
                     },
                     "ALLMA": {
-                        "handoff_controller": "ZJX 50 Alma",
+                        "handoff_controller": "50",
                         "cleared_altitude": 15000,
                         "sid": "BRSTL1",
                         "waypoints": "KJAX-26 TEREE/ho BRSTL"
@@ -111,8 +111,7 @@
                         }
                     ]
                 }
-            ],
-            "departure_facility": "JAX"
+            ]
         },
         "KTPA": {
             "approaches": {
@@ -136,29 +135,27 @@
             }
         },
         "KSRQ": {
-            "departure_controller": "JAX_N_APP",
+            "departure_controller": "J1N",
             "approaches": {
                 "R14": {
                     "cifp_id": "R14"
                 }
-            },
-            "departure_facility": "JAX"
+            }
         },
         "KCHS": {
-            "departure_controller": "CHS_W_APP",
+            "departure_controller": "C1W",
             "approaches": {
                 "I15": {
                     "cifp_id": "I15"
                 }
-            },
-            "departure_facility": "CHS"
+            }
         },
         "KSAV": {
-            "departure_controller": "SAV_N_APP",
+            "departure_controller": "S6N",
             "departure_routes": {
                 "28": {
                     "BYYOU": {
-                        "handoff_controller": "ZJX 50 Alma",
+                        "handoff_controller": "50",
                         "cleared_altitude": 23000,
                         "waypoints": "KSAV-10 N032.00.52.789,W081.38.28.337/ho"
                     }
@@ -185,8 +182,7 @@
                         }
                     ]
                 }
-            ],
-            "departure_facility": "SAV"
+            ]
         }
     },
     "inbound_flows": {
@@ -196,7 +192,7 @@
                     "waypoints": "N032.19.07.563,W083.17.36.088/ho DUCHY/a24000/d120 ILTAC/a23000- FORMB OHDEA/a12000/d2 N030.26.23.198,W082.03.30.800 KJAX-8/d0/delete",
                     "star": "OHDEA2",
                     "route": "/. OHDEA2",
-                    "initial_controller": "ZTL 22 Macon High",
+                    "initial_controller": "T22",
                     "initial_altitude": 24000,
                     "assigned_altitude": 24000,
                     "initial_speed": 300,
@@ -245,8 +241,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZTL"
+                    }
                 }
             ]
         },
@@ -256,7 +251,7 @@
                     "waypoints": "N032.53.39.873,W082.16.29.071/ho WHYYT ADLYN ELITE MAYYR/a24000+ COAXE/a26000- GRTNG/delete",
                     "star": "GRNCH5",
                     "route": "/. GRNCH5",
-                    "initial_controller": "ZTL 22 Macon High",
+                    "initial_controller": "T22",
                     "initial_altitude": 36000,
                     "assigned_altitude": 36000,
                     "initial_speed": 300,
@@ -305,8 +300,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZTL"
+                    }
                 }
             ],
             "overflights": [
@@ -319,10 +313,9 @@
                         }
                     ],
                     "initial_altitude": 37000,
-                    "initial_controller": "ZTL 22 Macon High",
+                    "initial_controller": "T22",
                     "initial_speed": 300,
-                    "waypoints": "N032.13.19.282,W083.41.01.486 ZJAYX ISSZZ/a29000 ELITE MAYYR/a24000+ COAXE/a26000- GRTNG/delete",
-                    "initial_facility": "ZTL"
+                    "waypoints": "N032.13.19.282,W083.41.01.486 ZJAYX ISSZZ/a29000 ELITE MAYYR/a24000+ COAXE/a26000- GRTNG/delete"
                 },
                 {
                     "airlines": [
@@ -333,10 +326,9 @@
                         }
                     ],
                     "initial_altitude": 37000,
-                    "initial_controller": "ZTL 22 Macon High",
+                    "initial_controller": "T22",
                     "initial_speed": 300,
-                    "waypoints": "N031.10.33.739,W084.30.03.076 LEEVP ISSZZ/a29000 ELITE MAYYR/a24000+ COAXE/a26000- GRTNG/delete",
-                    "initial_facility": "ZTL"
+                    "waypoints": "N031.10.33.739,W084.30.03.076 LEEVP ISSZZ/a29000 ELITE MAYYR/a24000+ COAXE/a26000- GRTNG/delete"
                 },
                 {
                     "airlines": [
@@ -347,10 +339,9 @@
                         }
                     ],
                     "initial_altitude": 37000,
-                    "initial_controller": "ZTL 22 Macon High",
+                    "initial_controller": "T22",
                     "initial_speed": 300,
-                    "waypoints": "N031.37.46.664,W085.03.49.614 SEEJY ISSZZ/a29000 ELITE MAYYR/a24000+ COAXE/a26000- GRTNG/delete",
-                    "initial_facility": "ZTL"
+                    "waypoints": "N031.37.46.664,W085.03.49.614 SEEJY ISSZZ/a29000 ELITE MAYYR/a24000+ COAXE/a26000- GRTNG/delete"
                 }
             ]
         },
@@ -358,7 +349,7 @@
             "overflights": [
                 {
                     "waypoints": "CAKET Q97 WOPNR/delete",
-                    "initial_controller": "ZJX 76 Keystone",
+                    "initial_controller": "76",
                     "initial_altitude": 36000,
                     "assigned_altitude": 36000,
                     "initial_speed": 300,
@@ -383,12 +374,11 @@
                             "arrival_airport": "KMIA",
                             "icao": "FDX"
                         }
-                    ],
-                    "initial_facility": "ZJX"
+                    ]
                 },
                 {
                     "waypoints": "CAKET Q97 WOPNR/delete",
-                    "initial_controller": "ZJX 68 States",
+                    "initial_controller": "68",
                     "initial_altitude": 34000,
                     "assigned_altitude": 34000,
                     "initial_speed": 300,
@@ -413,12 +403,11 @@
                             "arrival_airport": "KMIA",
                             "icao": "FDX"
                         }
-                    ],
-                    "initial_facility": "ZJX"
+                    ]
                 },
                 {
                     "waypoints": "CAKET Q97 WOPNR/delete",
-                    "initial_controller": "ZJX 76 Keystone",
+                    "initial_controller": "76",
                     "initial_altitude": 38000,
                     "assigned_altitude": 38000,
                     "initial_speed": 300,
@@ -443,12 +432,11 @@
                             "arrival_airport": "KMIA",
                             "icao": "FDX"
                         }
-                    ],
-                    "initial_facility": "ZJX"
+                    ]
                 },
                 {
                     "waypoints": "FEMON Q87 JROSS/delete",
-                    "initial_controller": "ZJX 76 Keystone",
+                    "initial_controller": "76",
                     "initial_altitude": 37000,
                     "assigned_altitude": 37000,
                     "initial_speed": 300,
@@ -473,12 +461,11 @@
                             "arrival_airport": "KMIA",
                             "icao": "FDX"
                         }
-                    ],
-                    "initial_facility": "ZJX"
+                    ]
                 },
                 {
                     "waypoints": "FEMON Q87 JROSS/delete",
-                    "initial_controller": "ZJX 76 Keystone",
+                    "initial_controller": "76",
                     "initial_altitude": 35000,
                     "assigned_altitude": 35000,
                     "initial_speed": 300,
@@ -503,12 +490,11 @@
                             "arrival_airport": "KMIA",
                             "icao": "FDX"
                         }
-                    ],
-                    "initial_facility": "ZJX"
+                    ]
                 },
                 {
                     "waypoints": "FEMON Q87 JROSS/delete",
-                    "initial_controller": "ZJX 76 Keystone",
+                    "initial_controller": "76",
                     "initial_altitude": 39000,
                     "assigned_altitude": 39000,
                     "initial_speed": 300,
@@ -533,12 +519,11 @@
                             "arrival_airport": "KMIA",
                             "icao": "FDX"
                         }
-                    ],
-                    "initial_facility": "ZJX"
+                    ]
                 },
                 {
                     "waypoints": "N032.44.36.036,W081.09.53.371 WURFL Q83 JEVED N030.35.30.558,W080.59.23.058/delete",
-                    "initial_controller": "ZJX 76 Keystone",
+                    "initial_controller": "76",
                     "initial_altitude": 32000,
                     "assigned_altitude": 32000,
                     "initial_speed": 300,
@@ -563,8 +548,7 @@
                             "arrival_airport": "KMIA",
                             "icao": "FDX"
                         }
-                    ],
-                    "initial_facility": "ZJX"
+                    ]
                 }
             ]
         },
@@ -574,7 +558,7 @@
                     "waypoints": "N032.14.08.336,W083.13.11.262/ho KYLEG JAGGZ WEEEK/delete",
                     "star": "TTHOR3",
                     "route": "/. TTHOR3",
-                    "initial_controller": "ZTL 22 Macon High",
+                    "initial_controller": "T22",
                     "initial_altitude": 34000,
                     "assigned_altitude": 34000,
                     "initial_speed": 300,
@@ -623,8 +607,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZTL"
+                    }
                 }
             ]
         },
@@ -634,7 +617,7 @@
                     "waypoints": "FISHO/ho Q75 TEUFL BAAMF CORYY/d270 CAPOH/delete",
                     "star": "DADES2",
                     "route": "/. DADES2",
-                    "initial_controller": "ZJX 66 Aiken",
+                    "initial_controller": "66",
                     "initial_altitude": 34000,
                     "assigned_altitude": 34000,
                     "initial_speed": 300,
@@ -683,14 +666,13 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZJX"
+                    }
                 },
                 {
                     "waypoints": "N033.06.49.693,W082.25.03.094/ho BAAMF CORYY/d270 CAPOH/delete",
                     "star": "DADES2",
                     "route": "/. DADES2",
-                    "initial_controller": "ZJX 66 Aiken",
+                    "initial_controller": "66",
                     "initial_altitude": 34000,
                     "initial_speed": 300,
                     "airlines": {
@@ -738,8 +720,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZJX"
+                    }
                 }
             ]
         },
@@ -775,10 +756,9 @@
                     ],
                     "initial_altitude": 35000,
                     "assigned_altitude": 35000,
-                    "initial_controller": "ZJX 75 Greencove",
+                    "initial_controller": "75",
                     "initial_speed": 300,
-                    "waypoints": "N030.17.30.876,W081.41.44.333/ho SHRKS LAIRI LARZZ/delete",
-                    "initial_facility": "ZJX"
+                    "waypoints": "N030.17.30.876,W081.41.44.333/ho SHRKS LAIRI LARZZ/delete"
                 },
                 {
                     "airlines": [
@@ -905,10 +885,9 @@
                     ],
                     "initial_altitude": 35000,
                     "assigned_altitude": 35000,
-                    "initial_controller": "ZJX 75 Greencove",
+                    "initial_controller": "75",
                     "initial_speed": 300,
-                    "waypoints": "N030.17.30.876,W081.41.44.333/ho SHRKS Q77 WIGVO",
-                    "initial_facility": "ZJX"
+                    "waypoints": "N030.17.30.876,W081.41.44.333/ho SHRKS Q77 WIGVO"
                 }
             ]
         },
@@ -954,10 +933,9 @@
                     ],
                     "initial_altitude": 35000,
                     "assigned_altitude": 35000,
-                    "initial_controller": "ZJX 75 Greencove",
+                    "initial_controller": "75",
                     "initial_speed": 300,
-                    "waypoints": "SPRNG/ho CAMJO Q99 POLYY",
-                    "initial_facility": "ZJX"
+                    "waypoints": "SPRNG/ho CAMJO Q99 POLYY"
                 },
                 {
                     "airlines": [
@@ -999,10 +977,9 @@
                     ],
                     "initial_altitude": 33000,
                     "assigned_altitude": 33000,
-                    "initial_controller": "ZJX 75 Greencove",
+                    "initial_controller": "75",
                     "initial_speed": 300,
-                    "waypoints": "SPRNG/ho CAMJO Q99 POLYY",
-                    "initial_facility": "ZJX"
+                    "waypoints": "SPRNG/ho CAMJO Q99 POLYY"
                 },
                 {
                     "airlines": [
@@ -1044,10 +1021,9 @@
                     ],
                     "initial_altitude": 32000,
                     "assigned_altitude": 32000,
-                    "initial_controller": "ZJX 75 Greencove",
+                    "initial_controller": "75",
                     "initial_speed": 300,
-                    "waypoints": "SPRNG/ho CAMJO Q99 POLYY",
-                    "initial_facility": "ZJX"
+                    "waypoints": "SPRNG/ho CAMJO Q99 POLYY"
                 }
             ]
         },
@@ -1057,7 +1033,7 @@
                     "waypoints": "FISHO/ho Q75 TEUFL KYYUU WNWUD/d270 SSPAZ/delete",
                     "star": "LUBBR3",
                     "route": "/. LUBBR3",
-                    "initial_controller": "ZJX 66 Aiken",
+                    "initial_controller": "66",
                     "initial_altitude": 34000,
                     "initial_speed": 300,
                     "airlines": {
@@ -1105,8 +1081,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZJX"
+                    }
                 }
             ]
         },
@@ -1116,7 +1091,7 @@
                     "waypoints": "N031.03.56.940,W083.24.46.697/ho SAV DREWE/a11000 BAGGY/a7000+ DDENA/d0 KCHS-3/delete",
                     "star": "BAGGY3",
                     "route": "/. BAGGY3",
-                    "initial_controller": "ZJX 33 Geneva",
+                    "initial_controller": "33",
                     "initial_altitude": 31000,
                     "assigned_altitude": 31000,
                     "initial_speed": 300,
@@ -1144,8 +1119,7 @@
                                 "airport": "KMSP"
                             }
                         ]
-                    },
-                    "initial_facility": "ZJX"
+                    }
                 }
             ]
         }

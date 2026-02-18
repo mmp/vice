@@ -1,9 +1,9 @@
 {
     "control_positions": {
-        "PUB_TWR": {
+        "5T": {
+            "callsign": "PUB_TWR",
             "frequency": 119100,
-            "radio_name": "Pueblo Tower",
-            "sector_id": "5T"
+            "radio_name": "Pueblo Tower"
         }
     },
     "stars_config": {},

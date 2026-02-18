@@ -1,20 +1,25 @@
 {
     "control_positions": {
-        "APN_APP": {
+        "1A": {
+            "callsign": "APN_APP",
             "frequency": 128425,
-            "radio_name": "Alpena Approach",
-            "sector_id": "1A"
+            "radio_name": "Alpena Approach"
         },
-        "APN_F_APP": {
+        "1F": {
+            "callsign": "APN_F_APP",
             "frequency": 118500,
-            "radio_name": "Alpena Arrival",
-            "sector_id": "1F"
+            "radio_name": "Alpena Arrival"
         },
-        "APN_TWR": {
+        "1Z": {
+            "callsign": "APN_TWR",
             "frequency": 121350,
-            "radio_name": "Alpena Tower",
-            "sector_id": "1Z"
+            "radio_name": "Alpena Tower"
         }
     },
-    "handoff_ids": []
+    "handoff_ids": [
+        {
+            "id": "ZMP",
+            "eram_prefix": "C"
+        }
+    ]
 }

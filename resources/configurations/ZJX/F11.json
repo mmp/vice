@@ -1,414 +1,414 @@
 {
     "control_positions": {
-        "MCO_W_DEP": {
+        "1W": {
+            "callsign": "MCO_W_DEP",
             "frequency": 120150,
-            "radio_name": "Orlando departure",
-            "sector_id": "1W"
+            "radio_name": "Orlando departure"
         },
-        "MCO_N_APP": {
+        "1N": {
+            "callsign": "MCO_N_APP",
             "frequency": 135300,
-            "radio_name": "Orlando Approach",
-            "sector_id": "1N"
+            "radio_name": "Orlando Approach"
         },
-        "MCO_E_TWR": {
+        "3E": {
+            "callsign": "MCO_E_TWR",
             "frequency": 118450,
-            "radio_name": "Orlando tower",
-            "sector_id": "3E"
+            "radio_name": "Orlando tower"
         },
-        "MCO_D_APP": {
+        "1D": {
+            "callsign": "MCO_D_APP",
             "frequency": 119400,
-            "radio_name": "Orlando approach",
-            "sector_id": "1D"
+            "radio_name": "Orlando approach"
         },
-        "MCO_W_TWR": {
+        "3W": {
+            "callsign": "MCO_W_TWR",
             "frequency": 126400,
-            "radio_name": "Orlando tower",
-            "sector_id": "3W"
+            "radio_name": "Orlando tower"
         },
-        "SFB_N_TWR": {
+        "3F": {
+            "callsign": "SFB_N_TWR",
             "frequency": 120300,
-            "radio_name": "Sanford tower",
-            "sector_id": "3F"
+            "radio_name": "Sanford tower"
         },
-        "SFB_S_TWR": {
+        "3J": {
+            "callsign": "SFB_S_TWR",
             "frequency": 135250,
-            "radio_name": "Sanford tower",
-            "sector_id": "3J"
+            "radio_name": "Sanford tower"
         },
-        "LEE_TWR": {
+        "3L": {
+            "callsign": "LEE_TWR",
             "frequency": 119350,
-            "radio_name": "Leesburg tower",
-            "sector_id": "3L"
+            "radio_name": "Leesburg tower"
         },
-        "COF_TWR": {
+        "3P": {
+            "callsign": "COF_TWR",
             "frequency": 133750,
-            "radio_name": "Patrick Tower",
-            "sector_id": "3P"
+            "radio_name": "Patrick Tower"
         },
-        "MLB_TWR": {
+        "3B": {
+            "callsign": "MLB_TWR",
             "frequency": 118200,
-            "radio_name": "Melbourne Orlando tower",
-            "sector_id": "3B"
+            "radio_name": "Melbourne Orlando tower"
         },
-        "TIX_TWR": {
+        "3S": {
+            "callsign": "TIX_TWR",
             "frequency": 118900,
-            "radio_name": "Space Coast Tower",
-            "sector_id": "3S"
+            "radio_name": "Space Coast Tower"
         },
-        "ISM_TWR": {
+        "3K": {
+            "callsign": "ISM_TWR",
             "frequency": 124450,
-            "radio_name": "Kissimee Gateway tower",
-            "sector_id": "3K"
+            "radio_name": "Kissimee Gateway tower"
         },
-        "ORL_TWR": {
+        "3T": {
+            "callsign": "ORL_TWR",
             "frequency": 118700,
-            "radio_name": "Orlando Executive tower",
-            "sector_id": "3T"
+            "radio_name": "Orlando Executive tower"
         },
-        "MCO_E_DEP": {
+        "1E": {
+            "callsign": "MCO_E_DEP",
             "frequency": 124800,
-            "radio_name": "Orlando approach",
-            "sector_id": "1E"
+            "radio_name": "Orlando approach"
         },
-        "MCO_B_APP": {
+        "1B": {
+            "callsign": "MCO_B_APP",
             "frequency": 128375,
-            "radio_name": "Orlando approach",
-            "sector_id": "1B"
+            "radio_name": "Orlando approach"
         },
-        "MCO_J_APP": {
+        "1J": {
+            "callsign": "MCO_J_APP",
             "frequency": 120150,
-            "radio_name": "Orlando Approach",
-            "sector_id": "1J"
+            "radio_name": "Orlando Approach"
         },
-        "MCO_A_APP": {
+        "1A": {
+            "callsign": "MCO_A_APP",
             "frequency": 126025,
-            "radio_name": "Orlando Approach",
-            "sector_id": "1A"
+            "radio_name": "Orlando Approach"
         },
-        "MCO_M_APP": {
+        "1M": {
+            "callsign": "MCO_M_APP",
             "frequency": 127750,
-            "radio_name": "Orlando Approach",
-            "sector_id": "1M"
+            "radio_name": "Orlando Approach"
         },
-        "MCO_R_APP": {
+        "1R": {
+            "callsign": "MCO_R_APP",
             "frequency": 127325,
-            "radio_name": "Orlando Approach",
-            "sector_id": "1R"
+            "radio_name": "Orlando Approach"
         },
-        "MCO_K_APP": {
+        "1K": {
+            "callsign": "MCO_K_APP",
             "frequency": 134950,
-            "radio_name": "Orlando Approach",
-            "sector_id": "1K"
+            "radio_name": "Orlando Approach"
         },
-        "MCO_S_APP": {
+        "1S": {
+            "callsign": "MCO_S_APP",
             "frequency": 132650,
-            "radio_name": "Orlando Approach",
-            "sector_id": "1S"
+            "radio_name": "Orlando Approach"
         },
-        "MCO_V_APP": {
+        "1V": {
+            "callsign": "MCO_V_APP",
             "frequency": 119775,
-            "radio_name": "Orlando Approach",
-            "sector_id": "1V"
+            "radio_name": "Orlando Approach"
         },
-        "MCO_X_APP": {
+        "1X": {
+            "callsign": "MCO_X_APP",
             "frequency": 120225,
-            "radio_name": "Orlando Approach",
-            "sector_id": "1X"
+            "radio_name": "Orlando Approach"
         },
-        "MCO_P_APP": {
+        "1P": {
+            "callsign": "MCO_P_APP",
             "frequency": 128450,
-            "radio_name": "Orlando Approach",
-            "sector_id": "1P"
+            "radio_name": "Orlando Approach"
         },
-        "MLB_M_TWR": {
+        "3M": {
+            "callsign": "MLB_M_TWR",
             "frequency": 118200,
-            "radio_name": "Melbourne Orlando tower",
-            "sector_id": "3M"
+            "radio_name": "Melbourne Orlando tower"
         },
-        "MCO_MG_APP": {
+        "MG": {
+            "callsign": "MCO_MG_APP",
             "frequency": 124300,
-            "radio_name": "Orlando approach",
-            "sector_id": "MG"
+            "radio_name": "Orlando approach"
         },
-        "MCO_G_APP": {
+        "1G": {
+            "callsign": "MCO_G_APP",
             "frequency": 123850,
-            "radio_name": "Orlando approach",
-            "sector_id": "1G"
+            "radio_name": "Orlando approach"
         },
-        "MCO_MM_APP": {
+        "MM": {
+            "callsign": "MCO_MM_APP",
             "frequency": 118450,
-            "radio_name": "Orlando approach",
-            "sector_id": "MM"
+            "radio_name": "Orlando approach"
         },
-        "MCO_L_APP": {
+        "1L": {
+            "callsign": "MCO_L_APP",
             "frequency": 134050,
-            "radio_name": "Orlando approach",
-            "sector_id": "1L"
+            "radio_name": "Orlando approach"
         }
     },
     "stars_config": {
         "configurations": {
             "MCO": {
                 "inbound_assignments": {
-                    "ALYNA4_BNU": "MCO_L_APP",
-                    "GRNCH5_LNU": "MCO_L_APP",
-                    "PRICY4_LNU": "MCO_L_APP",
-                    "RIDES2_BNU": "MCO_L_APP",
-                    "SNFLD3_BNU": "MCO_L_APP"
+                    "ALYNA4_BNU": "1L",
+                    "GRNCH5_LNU": "1L",
+                    "PRICY4_LNU": "1L",
+                    "RIDES2_BNU": "1L",
+                    "SNFLD3_BNU": "1L"
                 },
                 "default_consolidation": {
-                    "MCO_L_APP": []
+                    "1L": []
                 }
             },
             "MC1": {
                 "inbound_assignments": {
-                    "ALYNA4_BSU": "MCO_B_APP",
-                    "GRNCH5_LSU": "MCO_B_APP",
-                    "GTOUT1_BSU": "MCO_B_APP",
-                    "PRICY4_LSU": "MCO_B_APP",
-                    "RIDES2_BSU": "MCO_B_APP"
+                    "ALYNA4_BSU": "1B",
+                    "GRNCH5_LSU": "1B",
+                    "GTOUT1_BSU": "1B",
+                    "PRICY4_LSU": "1B",
+                    "RIDES2_BSU": "1B"
                 },
                 "default_consolidation": {
-                    "MCO_B_APP": []
+                    "1B": []
                 }
             },
             "MC2": {
                 "inbound_assignments": {
-                    "ALYNA4_BNU": "MCO_B_APP",
-                    "RIDES2_BNU": "MCO_B_APP",
-                    "SNFLD3_BNU": "MCO_B_APP"
+                    "ALYNA4_BNU": "1B",
+                    "RIDES2_BNU": "1B",
+                    "SNFLD3_BNU": "1B"
                 },
                 "default_consolidation": {
-                    "MCO_B_APP": []
+                    "1B": []
                 }
             },
             "MC3": {
                 "inbound_assignments": {
-                    "ALYNA4_BSU": "MCO_B_APP",
-                    "GTOUT1_BSU": "MCO_B_APP",
-                    "RIDES2_BSU": "MCO_B_APP"
+                    "ALYNA4_BSU": "1B",
+                    "GTOUT1_BSU": "1B",
+                    "RIDES2_BSU": "1B"
                 },
                 "default_consolidation": {
-                    "MCO_B_APP": []
+                    "1B": []
                 }
             },
             "MC5": {
                 "departure_assignments": {
-                    "KISM": "MCO_W_DEP",
-                    "KMCO": "MCO_W_DEP",
-                    "KORL": "MCO_W_DEP",
-                    "KSFB": "MCO_W_DEP"
+                    "KISM": "1W",
+                    "KMCO": "1W",
+                    "KORL": "1W",
+                    "KSFB": "1W"
                 },
                 "default_consolidation": {
-                    "MCO_W_DEP": []
+                    "1W": []
                 }
             },
             "MC6": {
                 "inbound_assignments": {
-                    "GRNCH_NFINAL": "MCO_M_APP",
-                    "PRICY4_NFINAL": "MCO_M_APP",
-                    "RIDES2_NFINAL": "MCO_M_APP",
-                    "SNFLD3_NFINAL": "MCO_M_APP"
+                    "GRNCH_NFINAL": "1M",
+                    "PRICY4_NFINAL": "1M",
+                    "RIDES2_NFINAL": "1M",
+                    "SNFLD3_NFINAL": "1M"
                 },
                 "default_consolidation": {
-                    "MCO_M_APP": []
+                    "1M": []
                 }
             },
             "MCN": {
                 "inbound_assignments": {
-                    "ALYNA4": "MCO_R_APP",
-                    "BITHO7": "MCO_B_APP",
-                    "DADES1": "MCO_R_APP",
-                    "East_coast/T208 ": "MCO_A_APP",
-                    "GOOFY7": "MCO_D_APP",
-                    "GRNCH5": "MCO_L_APP",
-                    "GTOUT1": "MCO_B_APP",
-                    "JOKRS3": "MCO_D_APP",
-                    "JOKRS3.MCO": "MCO_L_APP",
-                    "MINEE6.N": "MCO_L_APP",
-                    "PRICY4": "MCO_L_APP",
-                    "RIDES2": "MCO_B_APP",
-                    "SHREK2.MCO": "MCO_L_APP",
-                    "SHREK2E": "MCO_L_APP",
-                    "SLOAO1.MCON": "MCO_B_APP",
-                    "SNFLD3": "MCO_B_APP",
-                    "T208": "MCO_E_DEP",
-                    "T336 MLB": "MCO_D_APP",
-                    "T336 OCF": "MCO_E_DEP",
-                    "TTHOR3": "MCO_V_APP",
-                    "V3": "MCO_E_DEP",
-                    "West_coast/T210N": "MCO_D_APP",
-                    "West_coast/T210S": "MCO_N_APP"
+                    "ALYNA4": "1R",
+                    "BITHO7": "1B",
+                    "DADES1": "1R",
+                    "East_coast/T208 ": "1A",
+                    "GOOFY7": "1D",
+                    "GRNCH5": "1L",
+                    "GTOUT1": "1B",
+                    "JOKRS3": "1D",
+                    "JOKRS3.MCO": "1L",
+                    "MINEE6.N": "1L",
+                    "PRICY4": "1L",
+                    "RIDES2": "1B",
+                    "SHREK2.MCO": "1L",
+                    "SHREK2E": "1L",
+                    "SLOAO1.MCON": "1B",
+                    "SNFLD3": "1B",
+                    "T208": "1E",
+                    "T336 MLB": "1D",
+                    "T336 OCF": "1E",
+                    "TTHOR3": "1V",
+                    "V3": "1E",
+                    "West_coast/T210N": "1D",
+                    "West_coast/T210S": "1N"
                 },
                 "departure_assignments": {
-                    "KCOF": "MCO_A_APP",
-                    "KCOI": "MCO_A_APP",
-                    "KISM": "MCO_D_APP",
-                    "KLEE": "MCO_N_APP",
-                    "KMCO/CITR2W": "MCO_D_APP",
-                    "KMCO/CITR2E": "MCO_A_APP",
-                    "KMCO/DDANY3": "MCO_E_DEP",
-                    "KMCO/FATHE3": "MCO_E_DEP",
-                    "KMCO/MZULO3": "MCO_E_DEP",
-                    "KMCO/FSHUN4": "MCO_W_DEP",
-                    "KMCO/JEEMY4": "MCO_E_DEP",
-                    "KMCO/RDSOX1": "MCO_W_DEP",
-                    "KMCO/OSPRY1": "MCO_W_DEP",
-                    "KMCO/ORLA6": "MCO_W_DEP",
-                    "KMLB": "MCO_A_APP",
-                    "KORL": "MCO_V_APP",
-                    "KSFB": "MCO_V_APP",
-                    "KTIX": "MCO_K_APP",
-                    "X04": "MCO_N_APP",
-                    "X23": "MCO_N_APP"
+                    "KCOF": "1A",
+                    "KCOI": "1A",
+                    "KISM": "1D",
+                    "KLEE": "1N",
+                    "KMCO/CITR2W": "1D",
+                    "KMCO/CITR2E": "1A",
+                    "KMCO/DDANY3": "1E",
+                    "KMCO/FATHE3": "1E",
+                    "KMCO/MZULO3": "1E",
+                    "KMCO/FSHUN4": "1W",
+                    "KMCO/JEEMY4": "1E",
+                    "KMCO/RDSOX1": "1W",
+                    "KMCO/OSPRY1": "1W",
+                    "KMCO/ORLA6": "1W",
+                    "KMLB": "1A",
+                    "KORL": "1V",
+                    "KSFB": "1V",
+                    "KTIX": "1K",
+                    "X04": "1N",
+                    "X23": "1N"
                 },
                 "default_consolidation": {
-                    "MCO_A_APP": [
-                        "MCO_B_APP",
-                        "MCO_D_APP",
-                        "MCO_E_DEP",
-                        "MCO_G_APP",
-                        "MCO_K_APP",
-                        "MCO_L_APP",
-                        "MCO_M_APP",
-                        "MCO_MG_APP",
-                        "MCO_MM_APP",
-                        "MCO_N_APP",
-                        "MCO_P_APP",
-                        "MCO_R_APP",
-                        "MCO_V_APP",
-                        "MCO_W_DEP",
-                        "MCO_X_APP"
+                    "1A": [
+                        "1B",
+                        "1D",
+                        "1E",
+                        "1G",
+                        "1K",
+                        "1L",
+                        "1M",
+                        "MG",
+                        "MM",
+                        "1N",
+                        "1P",
+                        "1R",
+                        "1V",
+                        "1W",
+                        "1X"
                     ]
                 }
             },
             "MCS": {
                 "inbound_assignments": {
-                    "ALYNA4": "MCO_R_APP",
-                    "BITHO7": "MCO_B_APP",
-                    "DADES1": "MCO_R_APP",
-                    "East_coast/T208 ": "MCO_A_APP",
-                    "GOOFY7": "MCO_D_APP",
-                    "GRNCH5": "MCO_L_APP",
-                    "GTOUT1": "MCO_B_APP",
-                    "JOKRS3": "MCO_D_APP",
-                    "JOKRS3.MCO": "MCO_L_APP",
-                    "MINEE6": "MCO_L_APP",
-                    "PRICY4": "MCO_L_APP",
-                    "RIDES2": "MCO_B_APP",
-                    "SHREK2.MCO": "MCO_L_APP",
-                    "SHREK2W": "MCO_L_APP",
-                    "SLOAO1.MCOS": "MCO_B_APP",
-                    "SNFLD3": "MCO_B_APP",
-                    "T208": "MCO_E_DEP",
-                    "T336 MLB": "MCO_D_APP",
-                    "T336 OCF": "MCO_E_DEP",
-                    "TTHOR3": "MCO_V_APP",
-                    "V3": "MCO_E_DEP",
-                    "West_coast/T210N": "MCO_D_APP",
-                    "West_coast/T210S": "MCO_N_APP"
+                    "ALYNA4": "1R",
+                    "BITHO7": "1B",
+                    "DADES1": "1R",
+                    "East_coast/T208 ": "1A",
+                    "GOOFY7": "1D",
+                    "GRNCH5": "1L",
+                    "GTOUT1": "1B",
+                    "JOKRS3": "1D",
+                    "JOKRS3.MCO": "1L",
+                    "MINEE6": "1L",
+                    "PRICY4": "1L",
+                    "RIDES2": "1B",
+                    "SHREK2.MCO": "1L",
+                    "SHREK2W": "1L",
+                    "SLOAO1.MCOS": "1B",
+                    "SNFLD3": "1B",
+                    "T208": "1E",
+                    "T336 MLB": "1D",
+                    "T336 OCF": "1E",
+                    "TTHOR3": "1V",
+                    "V3": "1E",
+                    "West_coast/T210N": "1D",
+                    "West_coast/T210S": "1N"
                 },
                 "departure_assignments": {
-                    "KCOF": "MCO_A_APP",
-                    "KCOI": "MCO_A_APP",
-                    "KISM": "MCO_D_APP",
-                    "KLEE": "MCO_N_APP",
-                    "KMCO/CITR2W": "MCO_D_APP",
-                    "KMCO/CITR2E": "MCO_A_APP",
-                    "KMCO/DDANY3": "MCO_E_DEP",
-                    "KMCO/FATHE3": "MCO_E_DEP",
-                    "KMCO/MZULO3": "MCO_E_DEP",
-                    "KMCO/FSHUN4": "MCO_W_DEP",
-                    "KMCO/JEEMY4": "MCO_W_DEP",
-                    "KMCO/RDSOX1": "MCO_W_DEP",
-                    "KMCO/OSPRY1": "MCO_W_DEP",
-                    "KMCO/ORLA6": "MCO_W_DEP",
-                    "KMLB": "MCO_A_APP",
-                    "KORL": "MCO_D_APP",
-                    "KSFB": "MCO_N_APP",
-                    "KTIX": "MCO_K_APP",
-                    "X04": "MCO_N_APP",
-                    "X23": "MCO_N_APP"
+                    "KCOF": "1A",
+                    "KCOI": "1A",
+                    "KISM": "1D",
+                    "KLEE": "1N",
+                    "KMCO/CITR2W": "1D",
+                    "KMCO/CITR2E": "1A",
+                    "KMCO/DDANY3": "1E",
+                    "KMCO/FATHE3": "1E",
+                    "KMCO/MZULO3": "1E",
+                    "KMCO/FSHUN4": "1W",
+                    "KMCO/JEEMY4": "1W",
+                    "KMCO/RDSOX1": "1W",
+                    "KMCO/OSPRY1": "1W",
+                    "KMCO/ORLA6": "1W",
+                    "KMLB": "1A",
+                    "KORL": "1D",
+                    "KSFB": "1N",
+                    "KTIX": "1K",
+                    "X04": "1N",
+                    "X23": "1N"
                 },
                 "default_consolidation": {
-                    "MCO_A_APP": [
-                        "MCO_B_APP",
-                        "MCO_D_APP",
-                        "MCO_E_DEP",
-                        "MCO_G_APP",
-                        "MCO_K_APP",
-                        "MCO_L_APP",
-                        "MCO_M_APP",
-                        "MCO_MG_APP",
-                        "MCO_MM_APP",
-                        "MCO_N_APP",
-                        "MCO_P_APP",
-                        "MCO_R_APP",
-                        "MCO_V_APP",
-                        "MCO_W_DEP",
-                        "MCO_X_APP"
+                    "1A": [
+                        "1B",
+                        "1D",
+                        "1E",
+                        "1G",
+                        "1K",
+                        "1L",
+                        "1M",
+                        "MG",
+                        "MM",
+                        "1N",
+                        "1P",
+                        "1R",
+                        "1V",
+                        "1W",
+                        "1X"
                     ]
                 }
             },
             "MC8": {
                 "departure_assignments": {
-                    "KMCO": "MCO_W_DEP",
-                    "KORL": "MCO_W_DEP",
-                    "KSFB": "MCO_W_DEP"
+                    "KMCO": "1W",
+                    "KORL": "1W",
+                    "KSFB": "1W"
                 },
                 "default_consolidation": {
-                    "MCO_W_DEP": []
+                    "1W": []
                 }
             },
             "MC9": {
                 "inbound_assignments": {
-                    "ALYNA4_SFINAL": "MCO_M_APP",
-                    "FINAL_S_GRNCH5": "MCO_M_APP",
-                    "GTOUT1_SFINAL": "MCO_M_APP",
-                    "PRICY4_SFINAL": "MCO_M_APP",
-                    "RIDES2_SFINAL": "MCO_M_APP"
+                    "ALYNA4_SFINAL": "1M",
+                    "FINAL_S_GRNCH5": "1M",
+                    "GTOUT1_SFINAL": "1M",
+                    "PRICY4_SFINAL": "1M",
+                    "RIDES2_SFINAL": "1M"
                 },
                 "default_consolidation": {
-                    "MCO_M_APP": []
+                    "1M": []
                 }
             },
             "MCA": {
                 "inbound_assignments": {
-                    "GRNCH5_LNU": "MCO_L_APP",
-                    "PRICY4_LNU": "MCO_L_APP"
+                    "GRNCH5_LNU": "1L",
+                    "PRICY4_LNU": "1L"
                 },
                 "default_consolidation": {
-                    "MCO_L_APP": []
+                    "1L": []
                 }
             },
             "MCB": {
                 "inbound_assignments": {
-                    "GRNCH5_LSU": "MCO_L_APP",
-                    "PRICY4_LSU": "MCO_L_APP"
+                    "GRNCH5_LSU": "1L",
+                    "PRICY4_LSU": "1L"
                 },
                 "default_consolidation": {
-                    "MCO_L_APP": []
+                    "1L": []
                 }
             },
             "STD": {
                 "inbound_assignments": {
-                    "ALYNA4.LEEE": "MCO_S_APP",
-                    "ALYNA4.SFBE": "MCO_S_APP",
-                    "GOOFY7": "MCO_S_APP",
-                    "PRICY3.SFBE": "MCO_S_APP",
-                    "RIDES2.SFBE": "MCO_S_APP",
-                    "SHREK2E.SFB": "MCO_S_APP",
-                    "TTHOR3.SFBE": "MCO_S_APP",
-                    "West_coast/T210N": "MCO_S_APP",
-                    "West_coast/T210S": "MCO_S_APP"
+                    "ALYNA4.LEEE": "1S",
+                    "ALYNA4.SFBE": "1S",
+                    "GOOFY7": "1S",
+                    "PRICY3.SFBE": "1S",
+                    "RIDES2.SFBE": "1S",
+                    "SHREK2E.SFB": "1S",
+                    "TTHOR3.SFBE": "1S",
+                    "West_coast/T210N": "1S",
+                    "West_coast/T210S": "1S"
                 },
                 "departure_assignments": {
-                    "KLEE": "MCO_S_APP",
-                    "X04": "MCO_S_APP",
-                    "X23": "MCO_S_APP"
+                    "KLEE": "1S",
+                    "X04": "1S",
+                    "X23": "1S"
                 },
                 "default_consolidation": {
-                    "MCO_S_APP": []
+                    "1S": []
                 }
             }
         },
@@ -615,7 +615,7 @@
             }
         },
         "controller_configs": {
-            "MCO_E_DEP": {
+            "1E": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -624,7 +624,7 @@
                     }
                 ]
             },
-            "MCO_W_DEP": {
+            "1W": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -633,7 +633,7 @@
                     }
                 ]
             },
-            "MCO_B_APP": {
+            "1B": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -642,7 +642,7 @@
                     }
                 ]
             },
-            "MCO_L_APP": {
+            "1L": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -651,7 +651,7 @@
                     }
                 ]
             },
-            "MCO_N_APP": {
+            "1N": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -665,7 +665,7 @@
                     }
                 ]
             },
-            "MCO_D_APP": {
+            "1D": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -674,7 +674,7 @@
                     }
                 ]
             },
-            "MCO_V_APP": {
+            "1V": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -683,7 +683,7 @@
                     }
                 ]
             },
-            "MCO_K_APP": {
+            "1K": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -692,7 +692,7 @@
                     }
                 ]
             },
-            "MCO_A_APP": {
+            "1A": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -701,7 +701,7 @@
                     }
                 ]
             },
-            "MCO_M_APP": {
+            "1M": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -710,7 +710,7 @@
                     }
                 ]
             },
-            "MCO_G_APP": {
+            "1G": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -844,7 +844,7 @@
                     0,
                     999000
                 ],
-                "receiving_controller": "ZMA 23 STOOP"
+                "receiving_controller": "R23"
             },
             {
                 "fixes": [
@@ -856,7 +856,7 @@
                     12000,
                     999000
                 ],
-                "receiving_controller": "ZJX 57 St. Johns"
+                "receiving_controller": "C57"
             },
             {
                 "fixes": [
@@ -868,7 +868,7 @@
                     0,
                     11000
                 ],
-                "receiving_controller": "DAB_N_APP"
+                "receiving_controller": "31N"
             },
             {
                 "fixes": [
@@ -879,7 +879,7 @@
                     0,
                     999000
                 ],
-                "receiving_controller": "ZMA 67 LAKELAND HIGH"
+                "receiving_controller": "R67"
             },
             {
                 "fixes": [
@@ -892,7 +892,7 @@
                     0,
                     999000
                 ],
-                "receiving_controller": "ZJX 14 Cedar Key"
+                "receiving_controller": "C14"
             }
         ],
         "coordination_fixes": {
@@ -1134,7 +1134,7 @@
         },
         {
             "id": "ZJX",
-            "eram_prefix": "J"
+            "eram_prefix": "C"
         },
         {
             "id": "ZMA",

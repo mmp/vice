@@ -1,14 +1,14 @@
 {
     "control_positions": {
-        "VOK_APP": {
+        "1A": {
+            "callsign": "VOK_APP",
             "frequency": 135250,
-            "radio_name": "Volk Approach",
-            "sector_id": "1A"
+            "radio_name": "Volk Approach"
         },
-        "VOK_TWR": {
+        "1L": {
+            "callsign": "VOK_TWR",
             "frequency": 127500,
-            "radio_name": "Volk Tower",
-            "sector_id": "1L"
+            "radio_name": "Volk Tower"
         }
     },
     "handoff_ids": [
@@ -19,6 +19,10 @@
         {
             "id": "MSN",
             "prefix": "1"
+        },
+        {
+            "id": "ZAU",
+            "eram_prefix": "C"
         },
         {
             "id": "ZMP",

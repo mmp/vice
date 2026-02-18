@@ -887,10 +887,10 @@ func lookupControllerByTCP(controllers map[sim.ControlPosition]*av.Controller, i
 	}
 
 	if haveTrianglePrefix {
-		// Triangle prefix: ∆N4P format - facility identifier + sector ID
+		// Triangle prefix: ∆N4P format - facility identifier + position
 		if len(id) == 3 {
 			return findController(func(ctrl *av.Controller) bool {
-				return ctrl.SectorID == id[1:] && ctrl.FacilityIdentifier == string(id[0])
+				return ctrl.Position == id[1:] && ctrl.FacilityIdentifier == string(id[0])
 			})
 		}
 		return nil
@@ -900,8 +900,8 @@ func lookupControllerByTCP(controllers map[sim.ControlPosition]*av.Controller, i
 	if len(id) == 1 && len(userSectorId) >= 2 {
 		if ctrl := findController(func(ctrl *av.Controller) bool {
 			return ctrl.FacilityIdentifier == "" &&
-				ctrl.SectorID[0] == userSectorId[0] &&
-				ctrl.SectorID[1] == id[0]
+				ctrl.Position[0] == userSectorId[0] &&
+				ctrl.Position[1] == id[0]
 		}); ctrl != nil {
 			return ctrl
 		}
@@ -910,7 +910,7 @@ func lookupControllerByTCP(controllers map[sim.ControlPosition]*av.Controller, i
 	// Two chars: same facility lookup
 	if len(id) == 2 {
 		if ctrl := findController(func(ctrl *av.Controller) bool {
-			return ctrl.SectorID == id && ctrl.FacilityIdentifier == ""
+			return ctrl.Position == id && ctrl.FacilityIdentifier == ""
 		}); ctrl != nil {
 			return ctrl
 		}
@@ -918,7 +918,7 @@ func lookupControllerByTCP(controllers map[sim.ControlPosition]*av.Controller, i
 
 	// Fallback: ERAM facility
 	return findController(func(ctrl *av.Controller) bool {
-		return ctrl.ERAMFacility && ctrl.SectorID == id
+		return ctrl.ERAMFacility && ctrl.Position == id
 	})
 }
 
@@ -937,7 +937,7 @@ func lookupControllerWithAirspace(ctx *panes.Context, id string, trk *sim.Track)
 		return nil
 	}
 
-	return lookupControllerByTCP(ctx.Client.State.Controllers, id, ctx.UserController().SectorID)
+	return lookupControllerByTCP(ctx.Client.State.Controllers, id, ctx.UserController().Position)
 }
 
 func (sp *STARSPane) tryGetClosestTrack(ctx *panes.Context, mousePosition [2]float32, transforms radar.ScopeTransformations) (*sim.Track, float32) {

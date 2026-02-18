@@ -1,177 +1,177 @@
 {
     "control_positions": {
-        "ORD_TWR": {
+        "OT": {
+            "callsign": "ORD_TWR",
             "frequency": 120750,
-            "radio_name": "O'Hare Tower",
-            "sector_id": "OT"
+            "radio_name": "O'Hare Tower"
         },
-        "MWC_TWR": {
+        "RT": {
+            "callsign": "MWC_TWR",
             "frequency": 119500,
-            "radio_name": "Timmerman Tower",
-            "sector_id": "RT"
+            "radio_name": "Timmerman Tower"
         },
-        "MKE_E_APP": {
+        "1E": {
+            "callsign": "MKE_E_APP",
             "frequency": 118000,
-            "radio_name": "Milwaukee Approach",
-            "sector_id": "1E"
+            "radio_name": "Milwaukee Approach"
         },
-        "MKE_W_APP": {
+        "1W": {
+            "callsign": "MKE_W_APP",
             "frequency": 126500,
-            "radio_name": "Milwaukee Approach",
-            "sector_id": "1W"
+            "radio_name": "Milwaukee Approach"
         },
-        "MKE_F_APP": {
+        "1F": {
+            "callsign": "MKE_F_APP",
             "frequency": 118475,
-            "radio_name": "Milwaukee Approach",
-            "sector_id": "1F"
+            "radio_name": "Milwaukee Approach"
         },
-        "MKE_M_DEP": {
+        "1M": {
+            "callsign": "MKE_M_DEP",
             "frequency": 135875,
-            "radio_name": "Milwaukee Departure",
-            "sector_id": "1M"
+            "radio_name": "Milwaukee Departure"
         },
-        "MKE_B_DEP": {
+        "1B": {
+            "callsign": "MKE_B_DEP",
             "frequency": 125350,
-            "radio_name": "Milwaukee Departure",
-            "sector_id": "1B"
+            "radio_name": "Milwaukee Departure"
         },
-        "MKE_H_APP": {
+        "1H": {
+            "callsign": "MKE_H_APP",
             "frequency": 127375,
-            "radio_name": "Milwaukee Approach",
-            "sector_id": "1H"
+            "radio_name": "Milwaukee Approach"
         },
-        "MKE_L_APP": {
+        "1L": {
+            "callsign": "MKE_L_APP",
             "frequency": 127000,
-            "radio_name": "Milwaukee Approach",
-            "sector_id": "1L"
+            "radio_name": "Milwaukee Approach"
         },
-        "MKE_TWR": {
+        "1T": {
+            "callsign": "MKE_TWR",
             "frequency": 124575,
-            "radio_name": "Milwaukee Tower",
-            "sector_id": "1T"
+            "radio_name": "Milwaukee Tower"
         },
-        "OSH_TWR": {
+        "1V": {
+            "callsign": "OSH_TWR",
             "frequency": 118500,
-            "radio_name": "Osh Kosh Tower",
-            "sector_id": "1V"
+            "radio_name": "Osh Kosh Tower"
         },
-        "UES_TWR": {
+        "6W": {
+            "callsign": "UES_TWR",
             "frequency": 123700,
-            "radio_name": "Wakeshua Tower",
-            "sector_id": "6W"
+            "radio_name": "Wakeshua Tower"
         },
-        "ENW_TWR": {
+        "7K": {
+            "callsign": "ENW_TWR",
             "frequency": 118600,
-            "radio_name": "Kenosha Tower",
-            "sector_id": "7K"
+            "radio_name": "Kenosha Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "19R": {
                 "inbound_assignments": {
-                    "19R_Final_East": "MKE_F_APP",
-                    "19R_Final_SouthEast": "MKE_F_APP",
-                    "19R_Final_SouthWest": "MKE_F_APP",
-                    "19R_Final_West": "MKE_F_APP"
+                    "19R_Final_East": "1F",
+                    "19R_Final_SouthEast": "1F",
+                    "19R_Final_SouthWest": "1F",
+                    "19R_Final_West": "1F"
                 },
                 "default_consolidation": {
-                    "MKE_F_APP": []
+                    "1F": []
                 }
             },
             "1LX": {
                 "inbound_assignments": {
-                    "1L_Final_East": "MKE_F_APP",
-                    "1L_Final_NorthEast": "MKE_F_APP",
-                    "1L_Final_NorthWest": "MKE_F_APP",
-                    "1L_Final_South": "MKE_F_APP",
-                    "1L_Final_West": "MKE_F_APP"
+                    "1L_Final_East": "1F",
+                    "1L_Final_NorthEast": "1F",
+                    "1L_Final_NorthWest": "1F",
+                    "1L_Final_South": "1F",
+                    "1L_Final_West": "1F"
                 },
                 "default_consolidation": {
-                    "MKE_F_APP": []
+                    "1F": []
                 }
             },
             "MIL": {
                 "inbound_assignments": {
-                    "BAE": "MKE_W_APP",
-                    "BRAVE": "MKE_E_APP",
-                    "ERNNY8": "MKE_M_DEP",
-                    "GOPAC3": "MKE_W_APP",
-                    "RAYNR": "MKE_F_APP",
-                    "SUDDS": "MKE_E_APP"
+                    "BAE": "1W",
+                    "BRAVE": "1E",
+                    "ERNNY8": "1M",
+                    "GOPAC3": "1W",
+                    "RAYNR": "1F",
+                    "SUDDS": "1E"
                 },
                 "departure_assignments": {
-                    "KENW": "MKE_M_DEP",
-                    "KMKE": "MKE_M_DEP",
-                    "KMWC": "MKE_M_DEP",
-                    "KOSH": "MKE_L_APP",
-                    "KUES": "MKE_M_DEP"
+                    "KENW": "1M",
+                    "KMKE": "1M",
+                    "KMWC": "1M",
+                    "KOSH": "1L",
+                    "KUES": "1M"
                 },
                 "default_consolidation": {
-                    "MKE_E_APP": [
-                        "MKE_F_APP",
-                        "MKE_L_APP",
-                        "MKE_M_DEP",
-                        "MKE_W_APP"
+                    "1E": [
+                        "1F",
+                        "1L",
+                        "1M",
+                        "1W"
                     ]
                 }
             },
             "MI1": {
                 "inbound_assignments": {
-                    "BAE": "MKE_W_APP",
-                    "BRAVE": "MKE_E_APP",
-                    "GOPAC3": "MKE_W_APP",
-                    "MADII7": "MKE_M_DEP",
-                    "RAYNR": "MKE_F_APP",
-                    "SUDDS": "MKE_E_APP"
+                    "BAE": "1W",
+                    "BRAVE": "1E",
+                    "GOPAC3": "1W",
+                    "MADII7": "1M",
+                    "RAYNR": "1F",
+                    "SUDDS": "1E"
                 },
                 "departure_assignments": {
-                    "KENW": "MKE_B_DEP",
-                    "KMKE": "MKE_B_DEP",
-                    "KMKE/MKE9EAST": "MKE_M_DEP",
-                    "KMKE/ACCRA5": "MKE_M_DEP",
-                    "KMKE/UECKR6": "MKE_M_DEP",
-                    "KMKE/MKE9": "MKE_B_DEP",
-                    "KMWC": "MKE_B_DEP",
-                    "KOSH": "MKE_L_APP",
-                    "KUES": "MKE_B_DEP"
+                    "KENW": "1B",
+                    "KMKE": "1B",
+                    "KMKE/MKE9EAST": "1M",
+                    "KMKE/ACCRA5": "1M",
+                    "KMKE/UECKR6": "1M",
+                    "KMKE/MKE9": "1B",
+                    "KMWC": "1B",
+                    "KOSH": "1L",
+                    "KUES": "1B"
                 },
                 "default_consolidation": {
-                    "MKE_B_DEP": [
-                        "MKE_E_APP",
-                        "MKE_F_APP",
-                        "MKE_L_APP",
-                        "MKE_M_DEP",
-                        "MKE_W_APP"
+                    "1B": [
+                        "1E",
+                        "1F",
+                        "1L",
+                        "1M",
+                        "1W"
                     ]
                 }
             },
             "MI2": {
                 "inbound_assignments": {
-                    "BAE": "MKE_W_APP",
-                    "BRAVE": "MKE_E_APP",
-                    "GOPAC3": "MKE_W_APP",
-                    "MADII7": "MKE_M_DEP",
-                    "RAYNR": "MKE_F_APP",
-                    "SUDDS": "MKE_E_APP"
+                    "BAE": "1W",
+                    "BRAVE": "1E",
+                    "GOPAC3": "1W",
+                    "MADII7": "1M",
+                    "RAYNR": "1F",
+                    "SUDDS": "1E"
                 },
                 "departure_assignments": {
-                    "KENW": "MKE_M_DEP",
-                    "KMKE/MKE9EAST": "MKE_M_DEP",
-                    "KMKE/ACCRA5": "MKE_M_DEP",
-                    "KMKE/UECKR6": "MKE_M_DEP",
-                    "KMKE/MKE9": "MKE_B_DEP",
-                    "KMWC": "MKE_M_DEP",
-                    "KOSH": "MKE_L_APP",
-                    "KUES": "MKE_M_DEP"
+                    "KENW": "1M",
+                    "KMKE/MKE9EAST": "1M",
+                    "KMKE/ACCRA5": "1M",
+                    "KMKE/UECKR6": "1M",
+                    "KMKE/MKE9": "1B",
+                    "KMWC": "1M",
+                    "KOSH": "1L",
+                    "KUES": "1M"
                 },
                 "default_consolidation": {
-                    "MKE_B_DEP": [
-                        "MKE_E_APP",
-                        "MKE_F_APP",
-                        "MKE_L_APP",
-                        "MKE_M_DEP",
-                        "MKE_W_APP"
+                    "1B": [
+                        "1E",
+                        "1F",
+                        "1L",
+                        "1M",
+                        "1W"
                     ]
                 }
             }
@@ -275,7 +275,7 @@
                     0,
                     999000
                 ],
-                "receiving_controller": "ZAU 81 CRIBB"
+                "receiving_controller": "C81"
             }
         ],
         "coordination_fixes": {
@@ -343,7 +343,7 @@
         },
         {
             "id": "ZAU",
-            "eram_prefix": "G"
+            "eram_prefix": "C"
         },
         {
             "id": "ZMP",

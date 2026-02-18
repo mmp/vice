@@ -1,62 +1,62 @@
 {
     "control_positions": {
-        "BHM_TWR": {
+        "1B": {
+            "callsign": "BHM_TWR",
             "frequency": 119900,
             "radio_name": "Birmingham Tower",
-            "scope_char": "C",
-            "sector_id": "1B"
+            "scope_char": "C"
         },
-        "BHM_N_APP": {
+        "1N": {
+            "callsign": "BHM_N_APP",
             "frequency": 127670,
-            "radio_name": "Birmingham Approach",
-            "sector_id": "1N"
+            "radio_name": "Birmingham Approach"
         },
-        "BHM_S_APP": {
+        "1S": {
+            "callsign": "BHM_S_APP",
             "frequency": 123800,
-            "radio_name": "Birmingham Approach",
-            "sector_id": "1S"
+            "radio_name": "Birmingham Approach"
         },
-        "BHM_W_APP": {
+        "1W": {
+            "callsign": "BHM_W_APP",
             "frequency": 120150,
-            "radio_name": "Birmingham Approach",
-            "sector_id": "1W"
+            "radio_name": "Birmingham Approach"
         },
-        "BHM_E_APP": {
+        "1E": {
+            "callsign": "BHM_E_APP",
             "frequency": 120050,
-            "radio_name": "Birmingham Approach",
-            "sector_id": "1E"
+            "radio_name": "Birmingham Approach"
         },
-        "BHM_F_APP": {
+        "1F": {
+            "callsign": "BHM_F_APP",
             "frequency": 126150,
-            "radio_name": "Birmingham Approach",
-            "sector_id": "1F"
+            "radio_name": "Birmingham Approach"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "DIODE24": "BHM_N_APP",
-                    "DIODE6": "BHM_N_APP",
-                    "HERKO24": "BHM_S_APP",
-                    "HERKO6": "BHM_S_APP",
-                    "KIOSK24": "BHM_S_APP",
-                    "KIOSK6": "BHM_S_APP",
-                    "LYMPH24": "BHM_N_APP",
-                    "LYMPH6": "BHM_N_APP",
-                    "NESTS24": "BHM_N_APP",
-                    "NESTS6": "BHM_N_APP",
-                    "NULLS24": "BHM_N_APP",
-                    "NULLS6": "BHM_N_APP",
-                    "SHIMS": "BHM_N_APP",
-                    "WANDS": "BHM_S_APP"
+                    "DIODE24": "1N",
+                    "DIODE6": "1N",
+                    "HERKO24": "1S",
+                    "HERKO6": "1S",
+                    "KIOSK24": "1S",
+                    "KIOSK6": "1S",
+                    "LYMPH24": "1N",
+                    "LYMPH6": "1N",
+                    "NESTS24": "1N",
+                    "NESTS6": "1N",
+                    "NULLS24": "1N",
+                    "NULLS6": "1N",
+                    "SHIMS": "1N",
+                    "WANDS": "1S"
                 },
                 "departure_assignments": {
-                    "KBHM": "BHM_S_APP"
+                    "KBHM": "1S"
                 },
                 "default_consolidation": {
-                    "BHM_N_APP": [
-                        "BHM_S_APP"
+                    "1N": [
+                        "1S"
                     ]
                 }
             }
@@ -252,7 +252,7 @@
         },
         {
             "id": "ZTL",
-            "eram_prefix": "T"
+            "eram_prefix": "C"
         }
     ]
 }

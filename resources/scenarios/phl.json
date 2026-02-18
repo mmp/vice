@@ -4884,7 +4884,7 @@
                     "assigned_altitude": 8000,
                     "cruise_altitude": 39000,
                     "initial_altitude": 9000,
-                    "initial_controller": "N26",
+                    "initial_controller": "C26",
                     "initial_speed": 250,
                     "spawn": "LRP",
                     "star": "BOJID4"
@@ -4961,7 +4961,7 @@
                     "cruise_altitude": 39000,
                     "expect_approach": "27R",
                     "initial_altitude": 6000,
-                    "initial_controller": "PHL_NA_APP",
+                    "initial_controller": "1N",
                     "initial_speed": 220,
                     "speed_restriction": 220,
                     "star": "BOJID4",
@@ -5001,7 +5001,7 @@
                     "cruise_altitude": 37000,
                     "expect_approach": "27R",
                     "initial_altitude": 6000,
-                    "initial_controller": "PHL_SA_APP",
+                    "initial_controller": "1S",
                     "initial_speed": 220,
                     "speed_restriction": 220,
                     "star": "PAATS4",
@@ -5041,7 +5041,7 @@
                     "cruise_altitude": 37000,
                     "expect_approach": "17Z",
                     "initial_altitude": 8000,
-                    "initial_controller": "PHL_NA_APP",
+                    "initial_controller": "1N",
                     "initial_speed": 220,
                     "speed_restriction": 220,
                     "star": "BOJID4",
@@ -5163,7 +5163,7 @@
                     },
                     "assigned_altitude": 10000,
                     "initial_altitude": 10000,
-                    "initial_controller": "N26",
+                    "initial_controller": "C26",
                     "initial_speed": 250,
                     "star": "SPUDS7",
                     "spawn": "ETX"
@@ -5344,8 +5344,7 @@
                     "assigned_altitude": 5000,
                     "initial_speed": 150,
                     "description": "ABE-ACY flights",
-                    "initial_controller": "ABE_APP",
-                    "initial_facility": "ABE"
+                    "initial_controller": "41A"
                 }
             ]
         },
@@ -5365,8 +5364,7 @@
                     "assigned_altitude": 3000,
                     "initial_speed": 150,
                     "description": "RDG-WRI area flights (slow)",
-                    "initial_controller": "DOV_APP",
-                    "initial_facility": "DOV"
+                    "initial_controller": "71A"
                 },
                 {
                     "airlines": [
@@ -5382,8 +5380,7 @@
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
                     "description": "RDG-WRI area flights (fast)",
-                    "initial_controller": "DOV_APP",
-                    "initial_facility": "DOV"
+                    "initial_controller": "71A"
                 }
             ]
         }
@@ -5408,7 +5405,7 @@
     "scenarios": {
         "KPHL 27R/17 Final": {
             "airspace": {
-                "PHL_F1_APP": [
+                "1F": [
                     "PHL_F1_APP27",
                     "PHL_F2_APP27"
                 ]
@@ -5448,22 +5445,22 @@
         },
         "KPHL Depart 27L Land 27R/35": {
             "airspace": {
-                "PHL_ND_DEP": [
+                "1E": [
                     "PHL_N_DEP27",
                     "PHL_S_DEP27",
                     "PHL_N_HIGH27",
                     "PHL_S_HIGH27"
                 ],
-                "PHL_F1_APP": [
+                "1F": [
                     "PHL_F1_APP27",
                     "PHL_F2_APP27"
                 ],
-                "PHL_NA_APP": [
+                "1N": [
                     "PHL_N_APP27",
                     "PHL_PT_APP27",
                     "PHL_YD_APP27"
                 ],
-                "PHL_SA_APP": [
+                "1S": [
                     "PHL_S_APP27",
                     "PHL_WD_APP27",
                     "PHL_DU_APP27"
@@ -5534,21 +5531,21 @@
         },
         "KPHL Depart 9L Land 9R/17": {
             "airspace": {
-                "PHL_F1_APP": [
+                "1F": [
                     "PHL_F1_APP9",
                     "PHL_F2_APP9"
                 ],
-                "PHL_NA_APP": [
+                "1N": [
                     "PHL_N_APP9",
                     "PHL_PT_APP9",
                     "PHL_YD_APP9"
                 ],
-                "PHL_SA_APP": [
+                "1S": [
                     "PHL_S_APP9",
                     "PHL_WD_APP9",
                     "PHL_DU_APP9"
                 ],
-                "PHL_ND_DEP": [
+                "1E": [
                     "PHL_N_DEP9",
                     "PHL_N_HIGH9",
                     "PHL_S_DEP9",

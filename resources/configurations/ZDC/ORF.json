@@ -1,39 +1,39 @@
 {
     "control_positions": {
-        "ORF_E_APP": {
+        "1E": {
+            "callsign": "ORF_E_APP",
             "frequency": 126050,
-            "radio_name": "Norfolk Approach",
-            "sector_id": "1E"
+            "radio_name": "Norfolk Approach"
         },
-        "ORF_F_APP": {
+        "1F": {
+            "callsign": "ORF_F_APP",
             "frequency": 118900,
-            "radio_name": "Norfolk Approach",
-            "sector_id": "1F"
+            "radio_name": "Norfolk Approach"
         },
-        "ORF_G_APP": {
+        "1G": {
+            "callsign": "ORF_G_APP",
             "frequency": 125200,
-            "radio_name": "Norfolk Approach",
-            "sector_id": "1G"
+            "radio_name": "Norfolk Approach"
         },
-        "ORF_P_APP": {
+        "1P": {
+            "callsign": "ORF_P_APP",
             "frequency": 125700,
-            "radio_name": "Norfolk Approach",
-            "sector_id": "1P"
+            "radio_name": "Norfolk Approach"
         },
-        "ORF_S_APP": {
+        "1S": {
+            "callsign": "ORF_S_APP",
             "frequency": 127900,
-            "radio_name": "Norfolk Approach",
-            "sector_id": "1S"
+            "radio_name": "Norfolk Approach"
         },
-        "ORF_W_APP": {
+        "1W": {
+            "callsign": "ORF_W_APP",
             "frequency": 119450,
-            "radio_name": "Norfolk Approach",
-            "sector_id": "1W"
+            "radio_name": "Norfolk Approach"
         },
-        "ORF_TWR": {
+        "1Z": {
+            "callsign": "ORF_TWR",
             "frequency": 120800,
-            "radio_name": "Norfolk Tower",
-            "sector_id": "1Z"
+            "radio_name": "Norfolk Tower"
         }
     },
     "handoff_ids": [
@@ -48,6 +48,10 @@
         {
             "id": "PCT",
             "prefix": "1"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "C"
         }
     ]
 }

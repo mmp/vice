@@ -1,20 +1,24 @@
 {
     "control_positions": {
-        "TUS_APP": {
+        "1A": {
+            "callsign": "TUS_APP",
             "frequency": 119400,
-            "radio_name": "Tucson Approach",
-            "sector_id": "1A"
+            "radio_name": "Tucson Approach"
         },
-        "TUS_DEP": {
+        "1D": {
+            "callsign": "TUS_DEP",
             "frequency": 125100,
-            "radio_name": "Tucson Departure",
-            "sector_id": "1D"
+            "radio_name": "Tucson Departure"
         }
     },
     "handoff_ids": [
         {
             "id": "FHU",
             "prefix": "1"
+        },
+        {
+            "id": "ZAB",
+            "eram_prefix": "C"
         }
     ]
 }

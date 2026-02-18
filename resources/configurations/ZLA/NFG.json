@@ -1,20 +1,24 @@
 {
     "control_positions": {
-        "NFG_APP": {
+        "1A": {
+            "callsign": "NFG_APP",
             "frequency": 123200,
-            "radio_name": "Range Control",
-            "sector_id": "1A"
+            "radio_name": "Range Control"
         },
-        "NFG_TWR": {
+        "1B": {
+            "callsign": "NFG_TWR",
             "frequency": 128775,
-            "radio_name": "Camp Pendleton Tower",
-            "sector_id": "1B"
+            "radio_name": "Camp Pendleton Tower"
         }
     },
     "handoff_ids": [
         {
             "id": "SCT",
             "prefix": "1"
+        },
+        {
+            "id": "ZLA",
+            "eram_prefix": "C"
         }
     ]
 }

@@ -247,11 +247,10 @@
                     "cruise_altitude": 24000,
                     "initial_altitude": 23000,
                     "description": "Northeast (D01)",
-                    "initial_controller": "ZDV 11 Junction Low",
+                    "initial_controller": "C11",
                     "initial_speed": 300,
                     "route": "WERNR ZAKOR DBL KASE",
-                    "waypoints": "N039.37.27.994,W106.08.45.942 N039.36.38.652,W106.14.29.403/ho WERNR ZAKOR DBL",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N039.37.27.994,W106.08.45.942 N039.36.38.652,W106.14.29.403/ho WERNR ZAKOR DBL"
                 },
                 {
                     "airlines": {
@@ -272,11 +271,10 @@
                     "cruise_altitude": 24000,
                     "initial_altitude": 23000,
                     "description": "Northeast (D01 Sats)",
-                    "initial_controller": "ZDV 11 Junction Low",
+                    "initial_controller": "C11",
                     "initial_speed": 310,
                     "route": "DBL KASE",
-                    "waypoints": "N039.35.22.311,W106.09.15.633 N039.34.38.901,W106.12.39.704/ho DBL",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N039.35.22.311,W106.09.15.633 N039.34.38.901,W106.12.39.704/ho DBL"
                 }
             ]
         },
@@ -304,11 +302,10 @@
                     "cruise_altitude": 26000,
                     "initial_altitude": 21000,
                     "description": "Southeast",
-                    "initial_controller": "ZDV 11 Junction Low",
+                    "initial_controller": "C11",
                     "initial_speed": 300,
                     "route": "DBL KASE",
-                    "waypoints": "N038.48.47.993,W106.20.40.521 N038.54.37.880,W106.25.46.847/ho DBL",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N038.48.47.993,W106.20.40.521 N038.54.37.880,W106.25.46.847/ho DBL"
                 }
             ]
         },
@@ -339,11 +336,10 @@
                     "cruise_altitude": 23000,
                     "initial_altitude": 22000,
                     "description": "Southwest",
-                    "initial_controller": "ZDV 11 Junction Low",
+                    "initial_controller": "C11",
                     "initial_speed": 340,
                     "route": "KASE",
-                    "waypoints": "N039.04.40.165,W107.42.49.949 N039.06.02.150,W107.37.57.301/ho LOYYD SKIER DBL KASE",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N039.04.40.165,W107.42.49.949 N039.06.02.150,W107.37.57.301/ho LOYYD SKIER DBL KASE"
                 }
             ]
         }
@@ -359,7 +355,7 @@
     "scenarios": {
         "VMC 15": {
             "airspace": {
-                "ASE_APP": [
+                "1A": [
                     "ASE_APP"
                 ]
             },

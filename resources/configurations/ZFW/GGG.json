@@ -1,30 +1,34 @@
 {
     "control_positions": {
-        "GGG_E_APP": {
+        "1E": {
+            "callsign": "GGG_E_APP",
             "frequency": 127325,
-            "radio_name": "Longview Approach",
-            "sector_id": "1E"
+            "radio_name": "Longview Approach"
         },
-        "GGG_L_APP": {
+        "1L": {
+            "callsign": "GGG_L_APP",
             "frequency": 124275,
-            "radio_name": "Longview Approach",
-            "sector_id": "1L"
+            "radio_name": "Longview Approach"
         },
-        "GGG_TWR": {
+        "1T": {
+            "callsign": "GGG_TWR",
             "frequency": 119200,
-            "radio_name": "Eastex Tower",
-            "sector_id": "1T"
+            "radio_name": "Eastex Tower"
         },
-        "GGG_W_APP": {
+        "1W": {
+            "callsign": "GGG_W_APP",
             "frequency": 128750,
-            "radio_name": "Longview Approach",
-            "sector_id": "1W"
+            "radio_name": "Longview Approach"
         }
     },
     "handoff_ids": [
         {
             "id": "SHV",
             "prefix": "1"
+        },
+        {
+            "id": "ZFW",
+            "eram_prefix": "C"
         }
     ]
 }

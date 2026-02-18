@@ -1,220 +1,220 @@
 {
     "control_positions": {
-        "ZBW 01 Millinocket": {
+        "01": {
+            "callsign": "ZBW 01 Millinocket",
             "frequency": 128050,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "01"
+            "radio_name": "Boston Center"
         },
-        "ZBW 02 Augusta": {
+        "02": {
+            "callsign": "ZBW 02 Augusta",
             "frequency": 134950,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "02"
+            "radio_name": "Boston Center"
         },
-        "ZBW 05 Stewart": {
+        "05": {
+            "callsign": "ZBW 05 Stewart",
             "frequency": 134300,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "05"
+            "radio_name": "Boston Center"
         },
-        "ZBW 06 Pawling": {
+        "06": {
+            "callsign": "ZBW 06 Pawling",
             "frequency": 128100,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "06"
+            "radio_name": "Boston Center"
         },
-        "ZBW 07 Chester": {
+        "07": {
+            "callsign": "ZBW 07 Chester",
             "frequency": 127650,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "07"
+            "radio_name": "Boston Center"
         },
-        "ZBW 08 Watertown": {
+        "08": {
+            "callsign": "ZBW 08 Watertown",
             "frequency": 135250,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "08"
+            "radio_name": "Boston Center"
         },
-        "ZBW 09 Utica": {
+        "09": {
+            "callsign": "ZBW 09 Utica",
             "frequency": 123875,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "09"
+            "radio_name": "Boston Center"
         },
-        "ZBW 10 Rockdale": {
+        "10": {
+            "callsign": "ZBW 10 Rockdale",
             "frequency": 124125,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "10"
+            "radio_name": "Boston Center"
         },
-        "ZBW 15 SURRY": {
+        "15": {
+            "callsign": "ZBW 15 SURRY",
             "frequency": 124250,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "15"
+            "radio_name": "Boston Center"
         },
-        "ZBW 16 PARSO": {
+        "16": {
+            "callsign": "ZBW 16 PARSO",
             "frequency": 128200,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "16"
+            "radio_name": "Boston Center"
         },
-        "ZBW 17 Nantucket": {
+        "17": {
+            "callsign": "ZBW 17 Nantucket",
             "frequency": 133450,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "17"
+            "radio_name": "Boston Center"
         },
-        "ZBW 18 Cape": {
+        "18": {
+            "callsign": "ZBW 18 Cape",
             "frequency": 128750,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "18"
+            "radio_name": "Boston Center"
         },
-        "ZBW 19 Danbury": {
+        "19": {
+            "callsign": "ZBW 19 Danbury",
             "frequency": 134000,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "19"
+            "radio_name": "Boston Center"
         },
-        "ZBW 20 Kingston": {
+        "20": {
+            "callsign": "ZBW 20 Kingston",
             "frequency": 125575,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "20"
+            "radio_name": "Boston Center"
         },
-        "ZBW 21 CANAN": {
+        "21": {
+            "callsign": "ZBW 21 CANAN",
             "frequency": 132650,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "21"
+            "radio_name": "Boston Center"
         },
-        "ZBW 22 Albany": {
+        "22": {
+            "callsign": "ZBW 22 Albany",
             "frequency": 121350,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "22"
+            "radio_name": "Boston Center"
         },
-        "ZBW 23 Hancock": {
+        "23": {
+            "callsign": "ZBW 23 Hancock",
             "frequency": 133250,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "23"
+            "radio_name": "Boston Center"
         },
-        "ZBW 24 Delancey": {
+        "24": {
+            "callsign": "ZBW 24 Delancey",
             "frequency": 127375,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "24"
+            "radio_name": "Boston Center"
         },
-        "ZBW 31 Hampton": {
+        "31": {
+            "callsign": "ZBW 31 Hampton",
             "frequency": 124525,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "31"
+            "radio_name": "Boston Center"
         },
-        "ZBW 32 Clipper": {
+        "32": {
+            "callsign": "ZBW 32 Clipper",
             "frequency": 135800,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "32"
+            "radio_name": "Boston Center"
         },
-        "ZBW 34 Providence": {
+        "34": {
+            "callsign": "ZBW 34 Providence",
             "frequency": 124850,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "34"
+            "radio_name": "Boston Center"
         },
-        "ZBW 36 Gardner": {
+        "36": {
+            "callsign": "ZBW 36 Gardner",
             "frequency": 123750,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "36"
+            "radio_name": "Boston Center"
         },
-        "ZBW 37 Concord": {
+        "37": {
+            "callsign": "ZBW 37 Concord",
             "frequency": 134700,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "37"
+            "radio_name": "Boston Center"
         },
-        "ZBW 38 Athens": {
+        "38": {
+            "callsign": "ZBW 38 Athens",
             "frequency": 135325,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "38"
+            "radio_name": "Boston Center"
         },
-        "ZBW 39 Cambridge": {
+        "39": {
+            "callsign": "ZBW 39 Cambridge",
             "frequency": 128325,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "39"
+            "radio_name": "Boston Center"
         },
-        "ZBW 46 Boston": {
+        "46": {
+            "callsign": "ZBW 46 Boston",
             "frequency": 126225,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "46"
+            "radio_name": "Boston Center"
         },
-        "ZBW 47 BOSOX": {
+        "47": {
+            "callsign": "ZBW 47 BOSOX",
             "frequency": 133425,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "47"
+            "radio_name": "Boston Center"
         },
-        "ZBW 49 Southie": {
+        "49": {
+            "callsign": "ZBW 49 Southie",
             "frequency": 132300,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "49"
+            "radio_name": "Boston Center"
         },
-        "ZBW 52 Montpelier": {
+        "52": {
+            "callsign": "ZBW 52 Montpelier",
             "frequency": 135700,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "52"
+            "radio_name": "Boston Center"
         },
-        "ZBW 53 Plattsburgh": {
+        "53": {
+            "callsign": "ZBW 53 Plattsburgh",
             "frequency": 118825,
             "eram_facility": true,
-            "radio_name": "Boston Center",
-            "sector_id": "53"
+            "radio_name": "Boston Center"
         },
-        "ZBW 97 ZBW Guard": {
+        "97": {
+            "callsign": "ZBW 97 ZBW Guard",
             "frequency": 121500,
             "eram_facility": true,
-            "radio_name": "Guard",
-            "sector_id": "97"
+            "radio_name": "Guard"
         },
-        "ZBW 98 Poker Center": {
+        "98": {
+            "callsign": "ZBW 98 Poker Center",
             "frequency": 122400,
             "eram_facility": true,
-            "radio_name": "Boston Poker Center",
-            "sector_id": "98"
+            "radio_name": "Boston Poker Center"
         },
-        "ZBW 99 TMU": {
+        "99": {
+            "callsign": "ZBW 99 TMU",
             "frequency": 127650,
             "eram_facility": true,
-            "radio_name": "Boston Center TMU",
-            "sector_id": "99"
+            "radio_name": "Boston Center TMU"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "JFUND2-PONCT": "ZBW 36 Gardner"
+                    "JFUND2-PONCT": "36"
                 },
                 "default_consolidation": {
-                    "ZBW 36 Gardner": []
+                    "36": []
                 }
             },
             "ZBW": {
                 "inbound_assignments": {
-                    "PARCH4-SEY": "ZBW 19 Danbury"
+                    "PARCH4-SEY": "19"
                 },
                 "default_consolidation": {
-                    "ZBW 19 Danbury": []
+                    "19": []
                 }
             }
         },
@@ -426,88 +426,96 @@
     "handoff_ids": [
         {
             "id": "A90",
-            "single_char_stars_id": "B",
-            "two_char_stars_id": "BO",
-            "stars_id": "BOA"
+            "stars_id": "BOA",
+            "single_char_stars_id": "B"
+        },
+        {
+            "id": "ABE",
+            "stars_id": "ABE"
+        },
+        {
+            "id": "ACY",
+            "stars_id": "ACY"
         },
         {
             "id": "ALB",
-            "single_char_stars_id": "A",
-            "two_char_stars_id": "AL",
-            "stars_id": "ALA"
+            "stars_id": "ALA",
+            "single_char_stars_id": "A"
         },
         {
             "id": "AVP",
-            "two_char_stars_id": "WW",
             "stars_id": "WWW"
         },
         {
             "id": "BGM",
-            "two_char_stars_id": "BB",
             "stars_id": "BBB"
         },
         {
             "id": "BGR",
-            "single_char_stars_id": "G",
-            "two_char_stars_id": "BG",
-            "stars_id": "BGA"
+            "stars_id": "BGA",
+            "single_char_stars_id": "G"
         },
         {
             "id": "BTV",
-            "single_char_stars_id": "T",
-            "two_char_stars_id": "BT",
-            "stars_id": "BTA"
+            "stars_id": "BTA",
+            "single_char_stars_id": "T"
+        },
+        {
+            "id": "BUF",
+            "stars_id": "BUF"
         },
         {
             "id": "ELM",
-            "two_char_stars_id": "EE",
             "stars_id": "EEE"
         },
         {
+            "id": "ERI",
+            "stars_id": "ERI"
+        },
+        {
             "id": "GTB",
-            "single_char_stars_id": "L",
-            "two_char_stars_id": "GT",
-            "stars_id": "GTA"
+            "stars_id": "GTA",
+            "single_char_stars_id": "L"
         },
         {
             "id": "N90",
-            "two_char_stars_id": "NN",
             "stars_id": "NNN"
         },
         {
-            "id": "NVF",
-            "single_char_stars_id": "Q",
-            "two_char_stars_id": "QQ",
-            "stars_id": "NVF"
+            "id": "PHL",
+            "stars_id": "PHL"
         },
         {
             "id": "PVD",
-            "single_char_stars_id": "O",
-            "two_char_stars_id": "NC",
-            "stars_id": "NCA"
+            "stars_id": "NCA",
+            "single_char_stars_id": "O"
         },
         {
             "id": "PWM",
-            "single_char_stars_id": "P",
-            "two_char_stars_id": "PW",
-            "stars_id": "PWA"
+            "stars_id": "PWA",
+            "single_char_stars_id": "P"
+        },
+        {
+            "id": "RDG",
+            "stars_id": "RDG"
         },
         {
             "id": "ROC",
-            "two_char_stars_id": "RR",
             "stars_id": "RRR"
         },
         {
             "id": "SYR",
-            "single_char_stars_id": "S",
-            "two_char_stars_id": "SY",
-            "stars_id": "SYA"
+            "stars_id": "SYA",
+            "single_char_stars_id": "S"
+        },
+        {
+            "id": "WRI",
+            "stars_id": "WRI"
         },
         {
             "id": "Y90",
-            "single_char_stars_id": "D",
-            "two_char_stars_id": "BD",
-            "stars_id": "BDA"
+            "stars_id": "BDA",
+            "single_char_stars_id": "D"
         },
         {
             "id": "ZDC",

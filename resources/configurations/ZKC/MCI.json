@@ -1,116 +1,116 @@
 {
     "control_positions": {
-        "MCI_E_APP": {
+        "1E": {
+            "callsign": "MCI_E_APP",
             "frequency": 123950,
-            "radio_name": "Kansas City Approach",
-            "sector_id": "1E"
+            "radio_name": "Kansas City Approach"
         },
-        "MCI_A_APP": {
+        "1A": {
+            "callsign": "MCI_A_APP",
             "frequency": 120950,
-            "radio_name": "Kansas City Approach",
-            "sector_id": "1A"
+            "radio_name": "Kansas City Approach"
         },
-        "MCI_B_APP": {
+        "1B": {
+            "callsign": "MCI_B_APP",
             "frequency": 135375,
-            "radio_name": "Kansas City Approach",
-            "sector_id": "1B"
+            "radio_name": "Kansas City Approach"
         },
-        "MCI_W_APP": {
+        "1W": {
+            "callsign": "MCI_W_APP",
             "frequency": 124700,
-            "radio_name": "Kansas City Approach",
-            "sector_id": "1W"
+            "radio_name": "Kansas City Approach"
         },
-        "MCI_F_APP": {
+        "1F": {
+            "callsign": "MCI_F_APP",
             "frequency": 119825,
-            "radio_name": "Kansas City Approach",
-            "sector_id": "1F"
+            "radio_name": "Kansas City Approach"
         },
-        "MCI_N_APP": {
+        "1N": {
+            "callsign": "MCI_N_APP",
             "frequency": 118400,
-            "radio_name": "Kansas City Approach",
-            "sector_id": "1N"
+            "radio_name": "Kansas City Approach"
         },
-        "MCI_S_APP": {
+        "1S": {
+            "callsign": "MCI_S_APP",
             "frequency": 118900,
-            "radio_name": "Kansas City Approach",
-            "sector_id": "1S"
+            "radio_name": "Kansas City Approach"
         },
-        "MCI_P_APP": {
+        "1P": {
+            "callsign": "MCI_P_APP",
             "frequency": 119825,
-            "radio_name": "Kansas City Approach",
-            "sector_id": "1P"
+            "radio_name": "Kansas City Approach"
         },
-        "MCI_TWR": {
+        "1T": {
+            "callsign": "MCI_TWR",
             "frequency": 128200,
-            "radio_name": "International Tower",
-            "sector_id": "1T"
+            "radio_name": "International Tower"
         },
-        "STJ_TWR": {
+        "5J": {
+            "callsign": "STJ_TWR",
             "frequency": 126900,
-            "radio_name": "St. Joseph Tower",
-            "sector_id": "5J"
+            "radio_name": "St. Joseph Tower"
         },
-        "IXD_TWR": {
+        "2C": {
+            "callsign": "IXD_TWR",
             "frequency": 133000,
-            "radio_name": "New Century Tower",
-            "sector_id": "2C"
+            "radio_name": "New Century Tower"
         },
-        "OJC_TWR": {
+        "2R": {
+            "callsign": "OJC_TWR",
             "frequency": 126000,
-            "radio_name": "Johnson County Tower",
-            "sector_id": "2R"
+            "radio_name": "Johnson County Tower"
         },
-        "MKC_TWR": {
+        "4W": {
+            "callsign": "MKC_TWR",
             "frequency": 133300,
-            "radio_name": "Wheeler Tower",
-            "sector_id": "4W"
+            "radio_name": "Wheeler Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "KMC": {
                 "inbound_assignments": {
-                    "JSONN4": "MCI_B_APP",
-                    "MHOMS3": "MCI_A_APP",
-                    "RUDDH3": "MCI_A_APP",
-                    "WUTNG3": "MCI_B_APP"
+                    "JSONN4": "1B",
+                    "MHOMS3": "1A",
+                    "RUDDH3": "1A",
+                    "WUTNG3": "1B"
                 },
                 "departure_assignments": {
-                    "KIXD": "MCI_S_APP",
-                    "KMCI": "MCI_W_APP",
-                    "KMKC": "MCI_S_APP",
-                    "KOJC": "MCI_S_APP",
-                    "KSTJ": "MCI_N_APP"
+                    "KIXD": "1S",
+                    "KMCI": "1W",
+                    "KMKC": "1S",
+                    "KOJC": "1S",
+                    "KSTJ": "1N"
                 },
                 "default_consolidation": {
-                    "MCI_A_APP": [
-                        "MCI_B_APP",
-                        "MCI_N_APP",
-                        "MCI_S_APP",
-                        "MCI_W_APP"
+                    "1A": [
+                        "1B",
+                        "1N",
+                        "1S",
+                        "1W"
                     ]
                 }
             },
             "KM1": {
                 "inbound_assignments": {
-                    "JSONN4": "MCI_B_APP",
-                    "MHOMS3": "MCI_A_APP",
-                    "RUDDH3": "MCI_A_APP",
-                    "WUTNG3": "MCI_B_APP"
+                    "JSONN4": "1B",
+                    "MHOMS3": "1A",
+                    "RUDDH3": "1A",
+                    "WUTNG3": "1B"
                 },
                 "departure_assignments": {
-                    "KIXD": "MCI_S_APP",
-                    "KMCI": "MCI_E_APP",
-                    "KMKC": "MCI_S_APP",
-                    "KOJC": "MCI_S_APP",
-                    "KSTJ": "MCI_N_APP"
+                    "KIXD": "1S",
+                    "KMCI": "1E",
+                    "KMKC": "1S",
+                    "KOJC": "1S",
+                    "KSTJ": "1N"
                 },
                 "default_consolidation": {
-                    "MCI_A_APP": [
-                        "MCI_B_APP",
-                        "MCI_E_APP",
-                        "MCI_N_APP",
-                        "MCI_S_APP"
+                    "1A": [
+                        "1B",
+                        "1E",
+                        "1N",
+                        "1S"
                     ]
                 }
             }
@@ -237,7 +237,7 @@
                     "TYTUS",
                     "KENTN"
                 ],
-                "receiving_controller": "ZKC 46 (46) ST. JOESPH LO"
+                "receiving_controller": "C46"
             },
             {
                 "fixes": [
@@ -247,7 +247,7 @@
                     "JTHRO",
                     "ARENZ"
                 ],
-                "receiving_controller": "ZKC 40 (40) KIRKSVILLE LO"
+                "receiving_controller": "C40"
             },
             {
                 "fixes": [
@@ -257,7 +257,7 @@
                     "BUM",
                     "COU"
                 ],
-                "receiving_controller": "ZKC 42 (42) NAPOLEAN LO"
+                "receiving_controller": "C42"
             },
             {
                 "fixes": [
@@ -266,7 +266,7 @@
                     "SPI",
                     "SGF"
                 ],
-                "receiving_controller": "ZKC 48 (48) EMPORIA LO"
+                "receiving_controller": "C48"
             }
         ]
     },
@@ -277,7 +277,7 @@
         },
         {
             "id": "ZKC",
-            "eram_prefix": "K"
+            "eram_prefix": "C"
         }
     ]
 }

@@ -1,521 +1,521 @@
 {
     "control_positions": {
-        "SJC_M_APP": {
+        "1M": {
+            "callsign": "SJC_M_APP",
             "frequency": 124525,
-            "radio_name": "NorCal Approach",
-            "sector_id": "1M"
+            "radio_name": "NorCal Approach"
         },
-        "SJC_F_APP": {
+        "1F": {
+            "callsign": "SJC_F_APP",
             "frequency": 133000,
-            "radio_name": "NorCal Approach",
-            "sector_id": "1F"
+            "radio_name": "NorCal Approach"
         },
-        "SJC_K_APP": {
+        "1K": {
+            "callsign": "SJC_K_APP",
             "frequency": 135200,
-            "radio_name": "NorCal Approach",
-            "sector_id": "1K"
+            "radio_name": "NorCal Approach"
         },
-        "SJC_Q_APP": {
+        "1Q": {
+            "callsign": "SJC_Q_APP",
             "frequency": 126475,
-            "radio_name": "NorCal Approach",
-            "sector_id": "1Q"
+            "radio_name": "NorCal Approach"
         },
-        "SJC_S_APP": {
+        "1S": {
+            "callsign": "SJC_S_APP",
             "frequency": 127150,
-            "radio_name": "NorCal Approach",
-            "sector_id": "1S"
+            "radio_name": "NorCal Approach"
         },
-        "SJC_L_APP": {
+        "1L": {
+            "callsign": "SJC_L_APP",
             "frequency": 120100,
-            "radio_name": "NorCal Approach",
-            "sector_id": "1L"
+            "radio_name": "NorCal Approach"
         },
-        "SJC_T_APP": {
+        "1T": {
+            "callsign": "SJC_T_APP",
             "frequency": 121300,
-            "radio_name": "NorCal Approach",
-            "sector_id": "1T"
+            "radio_name": "NorCal Approach"
         },
-        "SFO_B_APP": {
+        "2B": {
+            "callsign": "SFO_B_APP",
             "frequency": 133950,
-            "radio_name": "NorCal Approach",
-            "sector_id": "2B"
+            "radio_name": "NorCal Approach"
         },
-        "SFO_Z_APP": {
+        "2Z": {
+            "callsign": "SFO_Z_APP",
             "frequency": 128325,
-            "radio_name": "NorCal Approach",
-            "sector_id": "2Z"
+            "radio_name": "NorCal Approach"
         },
-        "SFO_F_APP": {
+        "2F": {
+            "callsign": "SFO_F_APP",
             "frequency": 120350,
-            "radio_name": "NorCal Approach",
-            "sector_id": "2F"
+            "radio_name": "NorCal Approach"
         },
-        "SFO_G_APP": {
+        "2G": {
+            "callsign": "SFO_G_APP",
             "frequency": 128575,
-            "radio_name": "NorCal Approach",
-            "sector_id": "2G"
+            "radio_name": "NorCal Approach"
         },
-        "SFO_N_APP": {
+        "2N": {
+            "callsign": "SFO_N_APP",
             "frequency": 134500,
-            "radio_name": "NorCal Approach",
-            "sector_id": "2N"
+            "radio_name": "NorCal Approach"
         },
-        "SFO_W_APP": {
+        "2W": {
+            "callsign": "SFO_W_APP",
             "frequency": 135650,
-            "radio_name": "NorCal Approach",
-            "sector_id": "2W"
+            "radio_name": "NorCal Approach"
         },
-        "OAK_Y_APP": {
+        "3Y": {
+            "callsign": "OAK_Y_APP",
             "frequency": 125100,
-            "radio_name": "NorCal Approach",
-            "sector_id": "3Y"
+            "radio_name": "NorCal Approach"
         },
-        "OAK_S_APP": {
+        "3S": {
+            "callsign": "OAK_S_APP",
             "frequency": 124800,
-            "radio_name": "NorCal Approach",
-            "sector_id": "3S"
+            "radio_name": "NorCal Approach"
         },
-        "OAK_G_APP": {
+        "3G": {
+            "callsign": "OAK_G_APP",
             "frequency": 125350,
-            "radio_name": "NorCal Approach",
-            "sector_id": "3G"
+            "radio_name": "NorCal Approach"
         },
-        "SFO_U_DEP": {
+        "4U": {
+            "callsign": "SFO_U_DEP",
             "frequency": 135100,
-            "radio_name": "NorCal Departure",
-            "sector_id": "4U"
+            "radio_name": "NorCal Departure"
         },
-        "SFO_Q_DEP": {
+        "4Q": {
+            "callsign": "SFO_Q_DEP",
             "frequency": 127975,
-            "radio_name": "NorCal Departure",
-            "sector_id": "4Q"
+            "radio_name": "NorCal Departure"
         },
-        "SFO_D_DEP": {
+        "4D": {
+            "callsign": "SFO_D_DEP",
             "frequency": 127000,
-            "radio_name": "NorCal Departure",
-            "sector_id": "4D"
+            "radio_name": "NorCal Departure"
         },
-        "SFO_F_DEP": {
+        "4F": {
+            "callsign": "SFO_F_DEP",
             "frequency": 124325,
-            "radio_name": "NorCal Departure",
-            "sector_id": "4F"
+            "radio_name": "NorCal Departure"
         },
-        "SFO_R_DEP": {
+        "4R": {
+            "callsign": "SFO_R_DEP",
             "frequency": 120900,
-            "radio_name": "NorCal Departure",
-            "sector_id": "4R"
+            "radio_name": "NorCal Departure"
         },
-        "SMF_P_APP": {
+        "5P": {
+            "callsign": "SMF_P_APP",
             "frequency": 123700,
-            "radio_name": "NorCal Approach",
-            "sector_id": "5P"
+            "radio_name": "NorCal Approach"
         },
-        "RNO_S_APP": {
+        "8S": {
+            "callsign": "RNO_S_APP",
             "frequency": 119200,
-            "radio_name": "NorCal Approach",
-            "sector_id": "8S"
+            "radio_name": "NorCal Approach"
         },
-        "SMF_E_APP": {
+        "5E": {
+            "callsign": "SMF_E_APP",
             "frequency": 125400,
-            "radio_name": "NorCal Approach",
-            "sector_id": "5E"
+            "radio_name": "NorCal Approach"
         },
-        "RNO_N_APP": {
+        "8N": {
+            "callsign": "RNO_N_APP",
             "frequency": 126300,
-            "radio_name": "NorCal Approach",
-            "sector_id": "8N"
+            "radio_name": "NorCal Approach"
         },
-        "SJC_TWR": {
+        "1J": {
+            "callsign": "SJC_TWR",
             "frequency": 124000,
-            "radio_name": "San Jose Tower",
-            "sector_id": "1J"
+            "radio_name": "San Jose Tower"
         },
-        "SFO_TWR": {
+        "2V": {
+            "callsign": "SFO_TWR",
             "frequency": 120500,
-            "radio_name": "San Francisco Tower",
-            "sector_id": "2V"
+            "radio_name": "San Francisco Tower"
         },
-        "OAK_TWR": {
+        "3O": {
+            "callsign": "OAK_TWR",
             "frequency": 118300,
-            "radio_name": "Oakland Tower",
-            "sector_id": "3O"
+            "radio_name": "Oakland Tower"
         },
-        "RNO_TWR": {
+        "8R": {
+            "callsign": "RNO_TWR",
             "frequency": 118700,
-            "radio_name": "Reno Tower",
-            "sector_id": "8R"
+            "radio_name": "Reno Tower"
         },
-        "SMF_TWR": {
+        "5V": {
+            "callsign": "SMF_TWR",
             "frequency": 125700,
-            "radio_name": "Sacramento Tower",
-            "sector_id": "5V"
+            "radio_name": "Sacramento Tower"
         },
-        "MRY_TWR": {
+        "1Z": {
+            "callsign": "MRY_TWR",
             "frequency": 118400,
-            "radio_name": "Monterey Tower",
-            "sector_id": "1Z"
+            "radio_name": "Monterey Tower"
         },
-        "MER_TWR": {
+        "5T": {
+            "callsign": "MER_TWR",
             "frequency": 118175,
-            "radio_name": "Castle Tower",
-            "sector_id": "5T"
+            "radio_name": "Castle Tower"
         },
-        "MOD_TWR": {
+        "3P": {
+            "callsign": "MOD_TWR",
             "frequency": 125300,
-            "radio_name": "Modesto Tower",
-            "sector_id": "3P"
+            "radio_name": "Modesto Tower"
         },
-        "SCK_TWR": {
+        "3Z": {
+            "callsign": "SCK_TWR",
             "frequency": 120300,
-            "radio_name": "Stockton Tower",
-            "sector_id": "3Z"
+            "radio_name": "Stockton Tower"
         },
-        "SAC_TWR": {
+        "5Z": {
+            "callsign": "SAC_TWR",
             "frequency": 119500,
-            "radio_name": "Executive Tower",
-            "sector_id": "5Z"
+            "radio_name": "Executive Tower"
         },
-        "LVK_TWR": {
+        "3L": {
+            "callsign": "LVK_TWR",
             "frequency": 118100,
-            "radio_name": "Livermore Tower",
-            "sector_id": "3L"
+            "radio_name": "Livermore Tower"
         },
-        "SNS_TWR": {
+        "1Y": {
+            "callsign": "SNS_TWR",
             "frequency": 119525,
-            "radio_name": "Salinas Tower",
-            "sector_id": "1Y"
+            "radio_name": "Salinas Tower"
         },
-        "PAO_TWR": {
+        "1P": {
+            "callsign": "PAO_TWR",
             "frequency": 118600,
-            "radio_name": "Palo Alto Tower",
-            "sector_id": "1P"
+            "radio_name": "Palo Alto Tower"
         },
-        "SQL_TWR": {
+        "2S": {
+            "callsign": "SQL_TWR",
             "frequency": 119000,
-            "radio_name": "San Carlos Tower",
-            "sector_id": "2S"
+            "radio_name": "San Carlos Tower"
         },
-        "SMF_B_APP": {
+        "5B": {
+            "callsign": "SMF_B_APP",
             "frequency": 120450,
-            "radio_name": "NorCal Approach",
-            "sector_id": "5B"
+            "radio_name": "NorCal Approach"
         },
-        "SMF_D_APP": {
+        "5D": {
+            "callsign": "SMF_D_APP",
             "frequency": 125250,
-            "radio_name": "NorCal Approach",
-            "sector_id": "5D"
+            "radio_name": "NorCal Approach"
         },
-        "SMF_X_APP": {
+        "5X": {
+            "callsign": "SMF_X_APP",
             "frequency": 127400,
-            "radio_name": "NorCal Approach",
-            "sector_id": "5X"
+            "radio_name": "NorCal Approach"
         },
-        "MHR_TWR": {
+        "5M": {
+            "callsign": "MHR_TWR",
             "frequency": 120650,
-            "radio_name": "Mather Tower",
-            "sector_id": "5M"
+            "radio_name": "Mather Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "ARE": {
                 "inbound_assignments": {
-                    "BRINY2": "SJC_M_APP",
-                    "EMZOH4.E": "SJC_M_APP",
-                    "FRLON2": "SJC_M_APP",
-                    "PYE3": "SJC_L_APP",
-                    "RAZRR5.E": "SJC_M_APP",
-                    "RISTI1.ORRCA": "SJC_M_APP",
-                    "RISTI1.TIPRE": "SJC_M_APP",
-                    "SAT.EAST": "SJC_M_APP",
-                    "SAT.SOUTH": "SJC_M_APP",
-                    "SILCN6.S": "SJC_M_APP"
+                    "BRINY2": "1M",
+                    "EMZOH4.E": "1M",
+                    "FRLON2": "1M",
+                    "PYE3": "1L",
+                    "RAZRR5.E": "1M",
+                    "RISTI1.ORRCA": "1M",
+                    "RISTI1.TIPRE": "1M",
+                    "SAT.EAST": "1M",
+                    "SAT.SOUTH": "1M",
+                    "SILCN6.S": "1M"
                 },
                 "departure_assignments": {
-                    "KMRY": "SJC_S_APP",
-                    "KPAO": "SJC_L_APP",
-                    "KSJC": "SJC_T_APP",
-                    "KSNS": "SJC_M_APP"
+                    "KMRY": "1S",
+                    "KPAO": "1L",
+                    "KSJC": "1T",
+                    "KSNS": "1M"
                 },
                 "default_consolidation": {
-                    "SJC_L_APP": [
-                        "SJC_M_APP",
-                        "SJC_S_APP",
-                        "SJC_T_APP"
+                    "1L": [
+                        "1M",
+                        "1S",
+                        "1T"
                     ]
                 }
             },
             "AR1": {
                 "inbound_assignments": {
-                    "BRINY2": "SJC_K_APP",
-                    "BRIXX4": "SJC_K_APP",
-                    "EMZOH4.W": "SJC_M_APP",
-                    "PYE3": "SJC_K_APP",
-                    "RAZRR5.W": "SJC_Q_APP",
-                    "RISTI1.ORRCA": "SJC_L_APP",
-                    "RISTI1.TIPRE": "SJC_L_APP",
-                    "SAT.EAST": "SJC_M_APP",
-                    "SAT.SOUTH": "SJC_M_APP",
-                    "SILCN6.N": "SJC_M_APP"
+                    "BRINY2": "1K",
+                    "BRIXX4": "1K",
+                    "EMZOH4.W": "1M",
+                    "PYE3": "1K",
+                    "RAZRR5.W": "1Q",
+                    "RISTI1.ORRCA": "1L",
+                    "RISTI1.TIPRE": "1L",
+                    "SAT.EAST": "1M",
+                    "SAT.SOUTH": "1M",
+                    "SILCN6.N": "1M"
                 },
                 "departure_assignments": {
-                    "KMRY": "SJC_S_APP",
-                    "KPAO": "SJC_T_APP",
-                    "KSJC": "SJC_T_APP",
-                    "KSNS": "SJC_M_APP"
+                    "KMRY": "1S",
+                    "KPAO": "1T",
+                    "KSJC": "1T",
+                    "KSNS": "1M"
                 },
                 "default_consolidation": {
-                    "SJC_K_APP": [
-                        "SJC_L_APP",
-                        "SJC_M_APP",
-                        "SJC_Q_APP",
-                        "SJC_S_APP",
-                        "SJC_T_APP"
+                    "1K": [
+                        "1L",
+                        "1M",
+                        "1Q",
+                        "1S",
+                        "1T"
                     ]
                 }
             },
             "AR2": {
                 "inbound_assignments": {
-                    "BRINY2": "SJC_M_APP",
-                    "BRIXX4": "SJC_M_APP",
-                    "EMZOH4.E": "SJC_M_APP",
-                    "PYE3": "SJC_L_APP",
-                    "RAZRR5.E": "SJC_M_APP",
-                    "RISTI1.ORRCA": "SJC_M_APP",
-                    "RISTI1.TIPRE": "SJC_M_APP",
-                    "SAT.EAST": "SJC_M_APP",
-                    "SAT.SOUTH": "SJC_M_APP",
-                    "SILCN6.N": "SJC_M_APP"
+                    "BRINY2": "1M",
+                    "BRIXX4": "1M",
+                    "EMZOH4.E": "1M",
+                    "PYE3": "1L",
+                    "RAZRR5.E": "1M",
+                    "RISTI1.ORRCA": "1M",
+                    "RISTI1.TIPRE": "1M",
+                    "SAT.EAST": "1M",
+                    "SAT.SOUTH": "1M",
+                    "SILCN6.N": "1M"
                 },
                 "departure_assignments": {
-                    "KMRY": "SJC_S_APP",
-                    "KPAO": "SJC_L_APP",
-                    "KSJC": "SJC_T_APP",
-                    "KSNS": "SJC_M_APP"
+                    "KMRY": "1S",
+                    "KPAO": "1L",
+                    "KSJC": "1T",
+                    "KSNS": "1M"
                 },
                 "default_consolidation": {
-                    "SJC_L_APP": [
-                        "SJC_M_APP",
-                        "SJC_S_APP",
-                        "SJC_T_APP"
+                    "1L": [
+                        "1M",
+                        "1S",
+                        "1T"
                     ]
                 }
             },
             "11X": {
                 "inbound_assignments": {
-                    "ALWYS3": "SFO_Z_APP",
-                    "PIRAT3": "SFO_B_APP",
-                    "REBAS1": "SFO_Z_APP",
-                    "RISTI1.ORRCA": "SFO_Z_APP",
-                    "RISTI1.TIPRE": "SFO_Z_APP",
-                    "STLER4": "SFO_B_APP",
-                    "WWAVS2": "SFO_G_APP"
+                    "ALWYS3": "2Z",
+                    "PIRAT3": "2B",
+                    "REBAS1": "2Z",
+                    "RISTI1.ORRCA": "2Z",
+                    "RISTI1.TIPRE": "2Z",
+                    "STLER4": "2B",
+                    "WWAVS2": "2G"
                 },
                 "departure_assignments": {
-                    "KSQL": "SFO_W_APP"
+                    "KSQL": "2W"
                 },
                 "default_consolidation": {
-                    "SFO_B_APP": [
-                        "SFO_G_APP",
-                        "SFO_W_APP",
-                        "SFO_Z_APP"
+                    "2B": [
+                        "2G",
+                        "2W",
+                        "2Z"
                     ]
                 }
             },
             "01X": {
                 "inbound_assignments": {
-                    "BDEGA4": "SFO_B_APP",
-                    "BRIXX4": "SFO_B_APP",
-                    "DYAMD5": "SFO_Z_APP",
-                    "PIRAT3": "SFO_B_APP",
-                    "PYE3": "SFO_B_APP",
-                    "RISTI1.ORRCA": "SFO_Z_APP",
-                    "RISTI1.TIPRE": "SFO_Z_APP",
-                    "SERFR4": "SFO_G_APP",
-                    "SJC OCEANIC": "SFO_B_APP",
-                    "VNYRD1": "SFO_Z_APP",
-                    "YOSEM3": "SFO_Z_APP"
+                    "BDEGA4": "2B",
+                    "BRIXX4": "2B",
+                    "DYAMD5": "2Z",
+                    "PIRAT3": "2B",
+                    "PYE3": "2B",
+                    "RISTI1.ORRCA": "2Z",
+                    "RISTI1.TIPRE": "2Z",
+                    "SERFR4": "2G",
+                    "SJC OCEANIC": "2B",
+                    "VNYRD1": "2Z",
+                    "YOSEM3": "2Z"
                 },
                 "departure_assignments": {
-                    "KSQL": "SFO_W_APP"
+                    "KSQL": "2W"
                 },
                 "default_consolidation": {
-                    "SFO_B_APP": [
-                        "SFO_G_APP",
-                        "SFO_W_APP",
-                        "SFO_Z_APP"
+                    "2B": [
+                        "2G",
+                        "2W",
+                        "2Z"
                     ]
                 }
             },
             "22X": {
                 "inbound_assignments": {
-                    "LOUPE1.AD": "SFO_Q_DEP",
-                    "VNYRD1.RGOOD": "SFO_Q_DEP",
-                    "VNYRD1.SNORA": "SFO_Q_DEP",
-                    "WNDSR2.AD": "SFO_R_DEP"
+                    "LOUPE1.AD": "4Q",
+                    "VNYRD1.RGOOD": "4Q",
+                    "VNYRD1.SNORA": "4Q",
+                    "WNDSR2.AD": "4R"
                 },
                 "departure_assignments": {
-                    "KOAK": "SFO_R_DEP",
-                    "KSFO": "SFO_R_DEP"
+                    "KOAK": "4R",
+                    "KSFO": "4R"
                 },
                 "default_consolidation": {
-                    "SFO_Q_DEP": [
-                        "SFO_R_DEP"
+                    "4Q": [
+                        "4R"
                     ]
                 }
             },
             "28X": {
                 "inbound_assignments": {
-                    "LOUPE1.AD": "SFO_Q_DEP",
-                    "VNYRD1.RGOOD": "SFO_Q_DEP",
-                    "VNYRD1.SNORA": "SFO_Q_DEP",
-                    "WNDSR2.AD": "SFO_R_DEP"
+                    "LOUPE1.AD": "4Q",
+                    "VNYRD1.RGOOD": "4Q",
+                    "VNYRD1.SNORA": "4Q",
+                    "WNDSR2.AD": "4R"
                 },
                 "departure_assignments": {
-                    "KOAK": "SFO_U_DEP",
-                    "KSFO": "SFO_U_DEP"
+                    "KOAK": "4U",
+                    "KSFO": "4U"
                 },
                 "default_consolidation": {
-                    "SFO_Q_DEP": [
-                        "SFO_R_DEP",
-                        "SFO_U_DEP"
+                    "4Q": [
+                        "4R",
+                        "4U"
                     ]
                 }
             },
             "AR3": {
                 "inbound_assignments": {
-                    "ANAHO2": "RNO_N_APP",
-                    "KLUBS1": "RNO_N_APP",
-                    "ORRCA1": "RNO_S_APP",
-                    "RYANN2": "RNO_S_APP",
-                    "SCOLA1": "RNO_S_APP",
-                    "WINRZ1": "RNO_N_APP"
+                    "ANAHO2": "8N",
+                    "KLUBS1": "8N",
+                    "ORRCA1": "8S",
+                    "RYANN2": "8S",
+                    "SCOLA1": "8S",
+                    "WINRZ1": "8N"
                 },
                 "departure_assignments": {
-                    "KRNO": "RNO_S_APP"
+                    "KRNO": "8S"
                 },
                 "default_consolidation": {
-                    "RNO_N_APP": [
-                        "RNO_S_APP"
+                    "8N": [
+                        "8S"
                     ]
                 }
             },
             "NCT": {
                 "inbound_assignments": {
-                    "BMRNG4.AD": "SFO_Q_DEP",
-                    "VNYRD1.RGOOD": "SFO_Q_DEP",
-                    "VNYRD1.SNORA": "SFO_Q_DEP"
+                    "BMRNG4.AD": "4Q",
+                    "VNYRD1.RGOOD": "4Q",
+                    "VNYRD1.SNORA": "4Q"
                 },
                 "departure_assignments": {
-                    "KOAK": "SFO_U_DEP",
-                    "KSFO": "SFO_R_DEP"
+                    "KOAK": "4U",
+                    "KSFO": "4R"
                 },
                 "default_consolidation": {
-                    "SFO_Q_DEP": [
-                        "SFO_R_DEP",
-                        "SFO_U_DEP"
+                    "4Q": [
+                        "4R",
+                        "4U"
                     ]
                 }
             },
             "NCA": {
                 "inbound_assignments": {
-                    "AMRVR2": "SMF_P_APP",
-                    "CCR2.S": "SMF_D_APP",
-                    "SAT.SOUTH": "SMF_P_APP",
-                    "SLMMR5": "SMF_B_APP",
-                    "SUUTR4": "SMF_P_APP",
-                    "TUDOR2": "SMF_B_APP"
+                    "AMRVR2": "5P",
+                    "CCR2.S": "5D",
+                    "SAT.SOUTH": "5P",
+                    "SLMMR5": "5B",
+                    "SUUTR4": "5P",
+                    "TUDOR2": "5B"
                 },
                 "departure_assignments": {
-                    "KMHR": "SMF_X_APP",
-                    "KSAC": "SMF_X_APP",
-                    "KSMF": "SMF_X_APP"
+                    "KMHR": "5X",
+                    "KSAC": "5X",
+                    "KSMF": "5X"
                 },
                 "default_consolidation": {
-                    "SMF_B_APP": [
-                        "SMF_D_APP",
-                        "SMF_P_APP",
-                        "SMF_X_APP"
+                    "5B": [
+                        "5D",
+                        "5P",
+                        "5X"
                     ]
                 }
             },
             "NAR": {
                 "inbound_assignments": {
-                    "EELZA4": "RNO_N_APP",
-                    "KENNO.TARVR1": "RNO_S_APP",
-                    "MVA.TARVR1": "RNO_S_APP",
-                    "ORRCA.TARVR1": "RNO_S_APP",
-                    "SLEAT.TARVR1": "RNO_S_APP",
-                    "WADOL4": "RNO_N_APP"
+                    "EELZA4": "8N",
+                    "KENNO.TARVR1": "8S",
+                    "MVA.TARVR1": "8S",
+                    "ORRCA.TARVR1": "8S",
+                    "SLEAT.TARVR1": "8S",
+                    "WADOL4": "8N"
                 },
                 "departure_assignments": {
-                    "KRNO": "RNO_N_APP"
+                    "KRNO": "8N"
                 },
                 "default_consolidation": {
-                    "RNO_N_APP": [
-                        "RNO_S_APP"
+                    "8N": [
+                        "8S"
                     ]
                 }
             },
             "AR0": {
                 "inbound_assignments": {
-                    "ALWYS3": "SFO_Z_APP",
-                    "BDEGA4": "SFO_B_APP",
-                    "PIRAT3": "SFO_B_APP",
-                    "PYE3.SFOE": "SFO_F_APP",
-                    "REBAS1": "SFO_Z_APP",
-                    "RISTI1.ORRCA": "SFO_Z_APP",
-                    "RISTI1.TIPRE": "SFO_Z_APP",
-                    "SERFR4": "SFO_G_APP"
+                    "ALWYS3": "2Z",
+                    "BDEGA4": "2B",
+                    "PIRAT3": "2B",
+                    "PYE3.SFOE": "2F",
+                    "REBAS1": "2Z",
+                    "RISTI1.ORRCA": "2Z",
+                    "RISTI1.TIPRE": "2Z",
+                    "SERFR4": "2G"
                 },
                 "departure_assignments": {
-                    "KSQL": "SFO_W_APP"
+                    "KSQL": "2W"
                 },
                 "default_consolidation": {
-                    "SFO_B_APP": [
-                        "SFO_F_APP",
-                        "SFO_G_APP",
-                        "SFO_W_APP",
-                        "SFO_Z_APP"
+                    "2B": [
+                        "2F",
+                        "2G",
+                        "2W",
+                        "2Z"
                     ]
                 }
             },
             "AR4": {
                 "inbound_assignments": {
-                    "ALMDN4/OCEANIC.AD": "SFO_R_DEP",
-                    "REBAS1.RGOOD": "SFO_R_DEP",
-                    "REBAS1.SNORA": "SFO_R_DEP"
+                    "ALMDN4/OCEANIC.AD": "4R",
+                    "REBAS1.RGOOD": "4R",
+                    "REBAS1.SNORA": "4R"
                 },
                 "departure_assignments": {
-                    "KOAK": "SFO_U_DEP",
-                    "KSFO": "SFO_U_DEP"
+                    "KOAK": "4U",
+                    "KSFO": "4U"
                 },
                 "default_consolidation": {
-                    "SFO_R_DEP": [
-                        "SFO_U_DEP"
+                    "4R": [
+                        "4U"
                     ]
                 }
             },
             "AR5": {
                 "inbound_assignments": {
-                    "AMRVR2": "SMF_P_APP",
-                    "CCR2.N": "SMF_D_APP",
-                    "SAT.SOUTH": "SMF_P_APP",
-                    "SLMMR5": "SMF_B_APP",
-                    "SUUTR4": "SMF_P_APP",
-                    "TUDOR2": "SMF_B_APP"
+                    "AMRVR2": "5P",
+                    "CCR2.N": "5D",
+                    "SAT.SOUTH": "5P",
+                    "SLMMR5": "5B",
+                    "SUUTR4": "5P",
+                    "TUDOR2": "5B"
                 },
                 "departure_assignments": {
-                    "KMHR": "SMF_X_APP",
-                    "KSAC": "SMF_X_APP",
-                    "KSMF": "SMF_E_APP"
+                    "KMHR": "5X",
+                    "KSAC": "5X",
+                    "KSMF": "5E"
                 },
                 "default_consolidation": {
-                    "SMF_B_APP": [
-                        "SMF_D_APP",
-                        "SMF_E_APP",
-                        "SMF_P_APP",
-                        "SMF_X_APP"
+                    "5B": [
+                        "5D",
+                        "5E",
+                        "5P",
+                        "5X"
                     ]
                 }
             }
@@ -528,7 +528,7 @@
             "KPAO"
         ],
         "controller_configs": {
-            "SJC_M_APP": {
+            "1M": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -1235,7 +1235,7 @@
                     19000,
                     27000
                 ],
-                "receiving_controller": "ZOA Sector 11"
+                "receiving_controller": "C11"
             },
             {
                 "fixes": [
@@ -1250,7 +1250,7 @@
                     19000,
                     999000
                 ],
-                "receiving_controller": "ZOA Sector 14"
+                "receiving_controller": "C14"
             },
             {
                 "fixes": [
@@ -1265,7 +1265,7 @@
                     0,
                     999000
                 ],
-                "receiving_controller": "ZOA Sector 35"
+                "receiving_controller": "C35"
             },
             {
                 "fixes": [
@@ -1285,7 +1285,7 @@
                     19000,
                     23000
                 ],
-                "receiving_controller": "ZOA Sector 41"
+                "receiving_controller": "C41"
             },
             {
                 "fixes": [
@@ -1299,8 +1299,7 @@
                     0,
                     10000
                 ],
-                "receiving_controller": "SUU_S_APP",
-                "receiving_facility": "SUU"
+                "receiving_controller": "11S"
             },
             {
                 "fixes": [
@@ -1318,7 +1317,7 @@
                     19000,
                     29000
                 ],
-                "receiving_controller": "ZOA Sector 29"
+                "receiving_controller": "C29"
             }
         ],
         "coordination_fixes": {
@@ -1624,10 +1623,6 @@
             "prefix": "3"
         },
         {
-            "id": "FFA",
-            "prefix": "2"
-        },
-        {
             "id": "NFL",
             "prefix": "5"
         },
@@ -1649,7 +1644,7 @@
         },
         {
             "id": "ZOA",
-            "eram_prefix": "O"
+            "eram_prefix": "C"
         }
     ]
 }

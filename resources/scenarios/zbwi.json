@@ -27,7 +27,7 @@
                     "cifp_id": "R32"
                 }
             },
-            "departure_controller": "BOS_D_APP",
+            "departure_controller": "B1D",
             "departure_routes": {
                 "22R": {
                     "HYLND": {
@@ -104,14 +104,14 @@
                     "cifp_id": "I4R"
                 }
             },
-            "departure_controller": "JFK_DEP",
+            "departure_controller": "NNN2J",
             "departure_routes": {
                 "22R": {
                     "BETTE": {
                         "cleared_altitude": 11000,
                         "sid": "JFK5",
                         "waypoints": "KJFK-4L N040.31.58.130,W073.46.58.624/ho",
-                        "handoff_controller": "ZBW 17 Nantucket"
+                        "handoff_controller": "17"
                     }
                 }
             },
@@ -137,7 +137,7 @@
                     "cruise_altitude": 35000,
                     "star": "PARCH4",
                     "route": "/. PARCH4",
-                    "initial_controller": "ZBW 17 Nantucket",
+                    "initial_controller": "17",
                     "initial_altitude": 38000,
                     "initial_speed": 300,
                     "airlines": {
@@ -178,8 +178,7 @@
                                 "airport": "KDTW"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -190,7 +189,7 @@
                     "cruise_altitude": 22000,
                     "star": "PARCH4",
                     "route": "/. PARCH4",
-                    "initial_controller": "ZBW 19 Danbury",
+                    "initial_controller": "19",
                     "initial_altitude": 22000,
                     "initial_speed": 300,
                     "airlines": {
@@ -231,15 +230,14 @@
                                 "airport": "KDTW"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         }
     },
-    "default_scenario": "ZBW 19 Danbury",
+    "default_scenario": "19",
     "scenarios": {
-        "ZBW 19 Danbury": {
+        "19": {
             "configuration": {
                 "config_id": "ZBW"
             },

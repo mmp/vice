@@ -1860,7 +1860,7 @@
                     "spawn": "KNEEY@0.5",
                     "cruise_altitude": 19000,
                     "star": "CHSNE3",
-                    "initial_controller": "ZME 42 Graham",
+                    "initial_controller": "C42",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1906,8 +1906,7 @@
                                 "airport": "MMUN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZME"
+                    }
                 }
             ]
         },
@@ -1917,7 +1916,7 @@
                     "spawn": "PASLY",
                     "cruise_altitude": 20000,
                     "star": "PASLY5",
-                    "initial_controller": "ZME 40 Sparta",
+                    "initial_controller": "C40",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1969,8 +1968,7 @@
                                 "airport": "KDFW"
                             }
                         ]
-                    },
-                    "initial_facility": "ZME"
+                    }
                 }
             ]
         },
@@ -1980,7 +1978,7 @@
                     "spawn": "RYYMN",
                     "cruise_altitude": 19000,
                     "star": "RYYMN3",
-                    "initial_controller": "ZME 41 Bowling Green",
+                    "initial_controller": "C41",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -2018,8 +2016,7 @@
                                 "airport": "KSEA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZME"
+                    }
                 }
             ]
         },
@@ -2029,7 +2026,7 @@
                     "spawn": "SWFFT",
                     "cruise_altitude": 20000,
                     "star": "SWFFT3",
-                    "initial_controller": "ZME 60 Shelbyville",
+                    "initial_controller": "C60",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -2071,8 +2068,7 @@
                                 "airport": "KFLL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZME"
+                    }
                 }
             ]
         }

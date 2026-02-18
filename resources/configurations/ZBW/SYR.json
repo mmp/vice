@@ -1,87 +1,87 @@
 {
     "control_positions": {
-        "SYR_S_APP": {
+        "1S": {
+            "callsign": "SYR_S_APP",
             "frequency": 126125,
-            "radio_name": "Syracuse Approach",
-            "sector_id": "1S"
+            "radio_name": "Syracuse Approach"
         },
-        "SYR_R_APP": {
+        "1R": {
+            "callsign": "SYR_R_APP",
             "frequency": 127425,
-            "radio_name": "Syracuse Approach",
-            "sector_id": "1R"
+            "radio_name": "Syracuse Approach"
         },
-        "GTB_APP": {
+        "1A": {
+            "callsign": "GTB_APP",
             "frequency": 124875,
-            "radio_name": "Wheeler Sack Approach",
-            "sector_id": "1A"
+            "radio_name": "Wheeler Sack Approach"
         },
-        "ALB_APP": {
+        "2A": {
+            "callsign": "ALB_APP",
             "frequency": 132825,
-            "radio_name": "Albany Approach",
-            "sector_id": "2A"
+            "radio_name": "Albany Approach"
         },
-        "BGM_APP": {
+        "3A": {
+            "callsign": "BGM_APP",
             "frequency": 118600,
-            "radio_name": "Binghamton Approach",
-            "sector_id": "3A"
+            "radio_name": "Binghamton Approach"
         },
-        "ELM_APP": {
+        "4A": {
+            "callsign": "ELM_APP",
             "frequency": 124300,
-            "radio_name": "Elmira Approach",
-            "sector_id": "4A"
+            "radio_name": "Elmira Approach"
         },
-        "ROC_APP": {
+        "5A": {
+            "callsign": "ROC_APP",
             "frequency": 119550,
-            "radio_name": "Rochester Approach",
-            "sector_id": "5A"
+            "radio_name": "Rochester Approach"
         },
-        "SYR_TWR": {
+        "1Z": {
+            "callsign": "SYR_TWR",
             "frequency": 120300,
-            "radio_name": "Syracuse Tower",
-            "sector_id": "1Z"
+            "radio_name": "Syracuse Tower"
         },
-        "RME_TWR": {
+        "1Y": {
+            "callsign": "RME_TWR",
             "frequency": 118100,
-            "radio_name": "Griffiss Tower",
-            "sector_id": "1Y"
+            "radio_name": "Griffiss Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "ALBHIGH": "SYR_R_APP",
-                    "ALBLOW": "SYR_R_APP",
-                    "ARTLOW": "SYR_S_APP",
-                    "BTV": "SYR_R_APP",
-                    "BUF": "SYR_S_APP",
-                    "CAMHIGH": "SYR_R_APP",
-                    "CAMLOW": "SYR_R_APP",
-                    "CFBHIGH": "SYR_S_APP",
-                    "CFBLOW": "SYR_S_APP",
-                    "CODDI": "SYR_R_APP",
-                    "CON": "SYR_R_APP",
-                    "CTR": "SYR_R_APP",
-                    "DKK": "SYR_S_APP",
-                    "DNYLOW": "SYR_S_APP",
-                    "ELZ": "SYR_S_APP",
-                    "GALWA": "SYR_R_APP",
-                    "GEELOW": "SYR_S_APP",
-                    "HNK": "SYR_R_APP",
-                    "MARIA": "SYR_R_APP",
-                    "PSB": "SYR_R_APP",
-                    "ROC": "SYR_S_APP",
-                    "SLKHIGH": "SYR_R_APP",
-                    "SLKLOW": "SYR_R_APP",
-                    "ULWLOW": "SYR_S_APP"
+                    "ALBHIGH": "1R",
+                    "ALBLOW": "1R",
+                    "ARTLOW": "1S",
+                    "BTV": "1R",
+                    "BUF": "1S",
+                    "CAMHIGH": "1R",
+                    "CAMLOW": "1R",
+                    "CFBHIGH": "1S",
+                    "CFBLOW": "1S",
+                    "CODDI": "1R",
+                    "CON": "1R",
+                    "CTR": "1R",
+                    "DKK": "1S",
+                    "DNYLOW": "1S",
+                    "ELZ": "1S",
+                    "GALWA": "1R",
+                    "GEELOW": "1S",
+                    "HNK": "1R",
+                    "MARIA": "1R",
+                    "PSB": "1R",
+                    "ROC": "1S",
+                    "SLKHIGH": "1R",
+                    "SLKLOW": "1R",
+                    "ULWLOW": "1S"
                 },
                 "departure_assignments": {
-                    "KRME": "SYR_R_APP",
-                    "KSYR": "SYR_S_APP"
+                    "KRME": "1R",
+                    "KSYR": "1S"
                 },
                 "default_consolidation": {
-                    "SYR_R_APP": [
-                        "SYR_S_APP"
+                    "1R": [
+                        "1S"
                     ]
                 }
             }
@@ -166,7 +166,7 @@
         },
         {
             "id": "ZBW",
-            "eram_prefix": "B"
+            "eram_prefix": "C"
         },
         {
             "id": "ZNY",

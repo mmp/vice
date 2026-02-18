@@ -1,73 +1,73 @@
 {
     "control_positions": {
-        "HCF_H_APP": {
+        "1H": {
+            "callsign": "HCF_H_APP",
             "frequency": 118300,
-            "radio_name": "Honolulu Approach",
-            "sector_id": "1H"
+            "radio_name": "Honolulu Approach"
         },
-        "HCF_L_APP": {
+        "1L": {
+            "callsign": "HCF_L_APP",
             "frequency": 124800,
-            "radio_name": "Honolulu Approach",
-            "sector_id": "1L"
+            "radio_name": "Honolulu Approach"
         },
-        "HCF_V_APP": {
+        "1V": {
+            "callsign": "HCF_V_APP",
             "frequency": 119100,
-            "radio_name": "Honolulu Approach",
-            "sector_id": "1V"
+            "radio_name": "Honolulu Approach"
         },
-        "JRF_TWR": {
+        "1O": {
+            "callsign": "JRF_TWR",
             "frequency": 132600,
-            "radio_name": "Kalaeloa Tower",
-            "sector_id": "1O"
+            "radio_name": "Kalaeloa Tower"
         },
-        "HHI_TWR": {
+        "HT": {
+            "callsign": "HHI_TWR",
             "frequency": 126300,
-            "radio_name": "Wheeler Tower",
-            "sector_id": "HT"
+            "radio_name": "Wheeler Tower"
         },
-        "HNL_N_TWR": {
+        "1N": {
+            "callsign": "HNL_N_TWR",
             "frequency": 118100,
-            "radio_name": "Honolulu Tower",
-            "sector_id": "1N"
+            "radio_name": "Honolulu Tower"
         },
-        "HNL_S_TWR": {
+        "1S": {
+            "callsign": "HNL_S_TWR",
             "frequency": 123900,
-            "radio_name": "Honolulu Tower",
-            "sector_id": "1S"
+            "radio_name": "Honolulu Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "BOOKE8.E": "HCF_H_APP",
-                    "BOOKE8.W": "HCF_H_APP",
-                    "INOYI1": "HCF_H_APP",
-                    "JULLE5": "HCF_H_APP",
-                    "KAENA3": "HCF_H_APP",
-                    "KLANI4": "HCF_H_APP",
-                    "MAGGI3.E": "HCF_H_APP",
-                    "MAGGI3.W": "HCF_H_APP",
-                    "OPACA4.E": "HCF_H_APP",
-                    "OPACA4.W": "HCF_H_APP",
-                    "SAKKI5": "HCF_H_APP",
-                    "SYMIN1": "HCF_H_APP",
-                    "V12 ARR": "HCF_H_APP",
-                    "V15 ARR": "HCF_H_APP"
+                    "BOOKE8.E": "1H",
+                    "BOOKE8.W": "1H",
+                    "INOYI1": "1H",
+                    "JULLE5": "1H",
+                    "KAENA3": "1H",
+                    "KLANI4": "1H",
+                    "MAGGI3.E": "1H",
+                    "MAGGI3.W": "1H",
+                    "OPACA4.E": "1H",
+                    "OPACA4.W": "1H",
+                    "SAKKI5": "1H",
+                    "SYMIN1": "1H",
+                    "V12 ARR": "1H",
+                    "V15 ARR": "1H"
                 },
                 "departure_assignments": {
-                    "PHNL": "HCF_L_APP"
+                    "PHNL": "1L"
                 },
                 "default_consolidation": {
-                    "HCF_H_APP": [
-                        "HCF_L_APP"
+                    "1H": [
+                        "1L"
                     ]
                 }
             }
         },
         "center": "PHNL",
         "controller_configs": {
-            "HCF_H_APP": {
+            "1H": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -348,6 +348,10 @@
         {
             "id": "OGG",
             "prefix": "2"
+        },
+        {
+            "id": "ZHN",
+            "eram_prefix": "C"
         }
     ]
 }

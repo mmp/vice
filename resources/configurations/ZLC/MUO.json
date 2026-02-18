@@ -1,25 +1,29 @@
 {
     "control_positions": {
-        "MUO_N_APP": {
+        "1N": {
+            "callsign": "MUO_N_APP",
             "frequency": 124800,
-            "radio_name": "Mountain Home Approach",
-            "sector_id": "1N"
+            "radio_name": "Mountain Home Approach"
         },
-        "MUO_S_APP": {
+        "1S": {
+            "callsign": "MUO_S_APP",
             "frequency": 134100,
-            "radio_name": "Cowboy Control",
-            "sector_id": "1S"
+            "radio_name": "Cowboy Control"
         },
-        "MUO_TWR": {
+        "1T": {
+            "callsign": "MUO_TWR",
             "frequency": 133850,
-            "radio_name": "Mountain Home Tower",
-            "sector_id": "1T"
+            "radio_name": "Mountain Home Tower"
         }
     },
     "handoff_ids": [
         {
             "id": "BOI",
             "prefix": "1"
+        },
+        {
+            "id": "ZLC",
+            "eram_prefix": "C"
         }
     ]
 }

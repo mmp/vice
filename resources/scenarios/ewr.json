@@ -198,43 +198,43 @@
                 },
                 "22R.Background": {
                     "BIGGY,LANNA,PARKE": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 17000,
                         "sid": "EWR5",
                         "waypoints": "_EWR4_22Ra N040.36.39.710,W074.10.37.124/a2500/ho5W SBJ/a11000+/hoC39"
                     },
                     "ELIOT,NEWEL,ZIMMZ": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 17000,
                         "sid": "EWR5",
                         "waypoints": "_EWR4_22Ra N040.36.39.710,W074.10.37.124/a2500/ho5W N040.41.28.842,W074.26.01.734/a10000/hoC39"
                     },
                     "COATE,GAYEL,HAAYS,NEION": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 17000,
                         "sid": "EWR5",
                         "waypoints": "_EWR4_22Ra N040.36.39.710,W074.10.37.124/a2500/ho5T N040.51.50.929,W074.24.37.386/a10000/hoC56"
                     },
                     "BAYYS,BDR,GREKI,MERIT": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 12000,
                         "sid": "EWR5",
                         "waypoints": "_EWR4_22Ra N040.36.39.710,W074.10.37.124/a2500/ho1L N040.40.45.886,W074.13.17.882/a6000 N040.46.11.122,W074.09.33.513/a6000/ho5E LGA/a10000/hoB19"
                     },
                     "DIXIE,WHITE": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 17000,
                         "sid": "EWR5",
                         "waypoints": "_EWR4_22Ra/ho5S ELVAE/a6000 N040.23.14.741,W074.11.53.836/a6000-/hoC68"
                     },
                     "SBJ": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 8000,
                         "sid": "EWR5",
                         "waypoints": "_EWR4_22Ra/ho4P N040.36.39.710,W074.10.37.124/a2500"
                     },
                     "BREZY": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 6000,
                         "sid": "EWR5",
                         "waypoints": "_EWR4_22Ra N040.36.39.710,W074.10.37.124/a2500/ho1V N040.40.45.886,W074.13.17.882/a6000"
@@ -254,37 +254,37 @@
                 },
                 "4L.Background": {
                     "BIGGY,ELIOT,LANNA,NEWEL,None,PARKE,SAX,ZIMMZ": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 17000,
                         "sid": "EWR5",
                         "waypoints": "_EWR4_4La/ho5W N040.44.12.772,W074.06.38.886/a3000+/ho5W N040.44.41.900,W074.15.20.050/a8000-"
                     },
                     "SBJ,ARD": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 7000,
                         "sid": "EWR5",
                         "waypoints": "_EWR4_4La/ho4P N040.44.12.772,W074.06.38.886/a3000+"
                     },
                     "COATE,GAYEL,HAAYS,NEION,": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 17000,
                         "sid": "EWR5",
                         "waypoints": "_EWR4_4La/ho5T N040.44.12.772,W074.06.38.886/a3000+ N040.46.40.744,W074.12.31.190/a8000-"
                     },
                     "DIXIE,WHITE": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 17000,
                         "sid": "EWR5",
                         "waypoints": "_EWR4_4La/ho5S N040.44.12.772,W074.06.38.886/a3000+ N040.44.41.900,W074.15.20.050/a8000-"
                     },
                     "BAYYS,BDR,GREKI,MERIT,SHIPP,WAVEY": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 12000,
                         "sid": "EWR5",
                         "waypoints": "_EWR4_4La/ho1L N040.44.12.772,W074.06.38.886/a3000+ N040.47.44.465,W074.03.17.204/a5000-/ho5E LGA/a10000"
                     },
                     "BREZY": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 6000,
                         "sid": "EWR5",
                         "waypoints": "_EWR4_4La/ho1V N040.44.12.772,W074.06.38.886/a3000+"
@@ -1275,38 +1275,38 @@
                 },
                 "1.Background": {
                     "BIGGY,ELIOT,LANNA,NEWEL,None,PARKE,SAX,ZIMMZ": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 17000,
                         "sid": "TEB4",
                         "waypoints": "_TEB4_1a N040.52.48.511,W074.02.30.073/a2000 N040.51.27.034,W074.15.53.503/a8000-/ho5W"
                     },
                     "SBJ,ARD": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 7000,
                         "sid": "TEB4",
-                        "handoff_controller": "EWR_P_APP",
+                        "handoff_controller": "4P",
                         "waypoints": "_TEB4_1a N040.52.48.511,W074.02.30.073/a2000/ho"
                     },
                     "COATE,GAYEL,HAAYS,NEION,": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 17000,
                         "sid": "TEB4",
                         "waypoints": "_TEB4_1a N040.52.48.511,W074.02.30.073/a2000 N040.54.38.169,W074.15.37.985/a8000-/ho5T"
                     },
                     "DIXIE,WHITE": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 17000,
                         "sid": "TEB4",
                         "waypoints": "_TEB4_1a N040.52.48.511,W074.02.30.073/a2000/ho5S N040.46.09.351,W074.13.11.317/a8000-"
                     },
                     "BAYYS,BDR,GREKI,MERIT,SHIPP,WAVEY": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 12000,
                         "sid": "TEB4",
                         "waypoints": "_TEB4_1a N040.52.48.511,W074.02.30.073/a2000/ho1V BREZY"
                     },
                     "BREZY": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 6000,
                         "sid": "TEB4",
                         "waypoints": "_TEB4_1a N040.52.48.511,W074.02.30.073/a2000/ho1V BREZY"
@@ -1314,34 +1314,34 @@
                 },
                 "24.Background": {
                     "BIGGY,ELIOT,LANNA,NEWEL,PARKE,ZIMMZ": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 17000,
                         "sid": "RUUDY6",
                         "waypoints": "DAVIM WENTZ/a1500 N040.48.49.421,W074.11.52.573/a2000/ho5W RUUDY/a10000 "
                     },
                     "COATE,GAYEL,HAAYS,NEION": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 17000,
                         "sid": "RUUDY6",
                         "waypoints": "DAVIM WENTZ/a1500 N040.48.49.421,W074.11.52.573/a2000/ho5T RUUDY/a10000 "
                     },
                     "DIXIE,WHITE": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 17000,
                         "sid": "RUUDY6",
                         "waypoints": "DAVIM WENTZ/a1500 N040.48.49.421,W074.11.52.573/a2000/ho5S N040.41.54.921,W074.16.00.507/a6000"
                     },
                     "BREZY": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 6000,
                         "sid": "RUUDY6",
                         "waypoints": "DAVIM WENTZ/a1500 N040.48.49.421,W074.11.52.573/a2000/ho1V N040.50.03.936,W074.17.53.638/a6000"
                     },
                     "SBJ, ARD": {
-                        "departure_controller": "EWR_DEP",
+                        "departure_controller": "4N",
                         "cleared_altitude": 8000,
                         "sid": "RUUDY6",
-                        "handoff_controller": "EWR_P_APP",
+                        "handoff_controller": "4P",
                         "waypoints": "DAVIM WENTZ/a1500/ho N040.48.49.421,W074.11.52.573/a2000 N040.41.06.513,W074.23.03.343/a7000"
                     }
                 }
@@ -2691,7 +2691,7 @@
                     ]
                 }
             },
-            "departure_controller": "LGA_L_APP",
+            "departure_controller": "1L",
             "departure_routes": {
                 "4": {
                     "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE": {
@@ -6126,7 +6126,7 @@
                     "waypoints": "FILPS WEARD/ho CAMMO HUO LEMOR/a6000 COATE KEWR",
                     "cruise_altitude": 39000,
                     "route": "/. ALB V489 COATE",
-                    "initial_controller": "ZBW 46 Boston",
+                    "initial_controller": "B46",
                     "initial_altitude": 12000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -6329,8 +6329,7 @@
                                 "airport": "MYNN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -6340,7 +6339,7 @@
                     "waypoints": " HUO LEMOR/a6000 COATE/a6000 N040.59.56.086,W074.33.54.613/a4000 N040.59.56.086,W074.33.54.613/a3000 N040.45.34.222,W074.16.26.874/a3000/s200 N040.44.16.645,W074.14.02.129/a2000/s180 LEESY/a1700 DANDY/a1500/s180 TORBY/a1300/s160 N040.50.50.669,W074.04.16.420/s130/a001 KTEB/delete",
                     "cruise_altitude": 39000,
                     "route": "/. ALB V489 COATE",
-                    "initial_controller": "EWR_U_APP",
+                    "initial_controller": "4U",
                     "initial_altitude": 6000,
                     "initial_speed": 300,
                     "expect_approach": "I6",
@@ -6421,7 +6420,7 @@
                     "waypoints": " HUO LEMOR/a6000 COATE/a6000 N041.03.54.915,W074.40.59.564/a4000 N041.05.28.202,W074.25.23.748/a3000 N041.06.10.788,W074.10.16.360/a3000 NIPIE/a2500/s210 UNVIL/a2000/s180  TUGGZ/a1500/s170 N040.51.30.509,W074.03.33.491/a001/s130 KTEB/delete",
                     "cruise_altitude": 39000,
                     "route": "/. ALB V489 COATE",
-                    "initial_controller": "EWR_U_APP",
+                    "initial_controller": "4U",
                     "initial_altitude": 6000,
                     "initial_speed": 300,
                     "expect_approach": "RY9",
@@ -6502,7 +6501,7 @@
                     "waypoints": "HELON FLOSI/ho CRANK/a7000 SHAFF SAX PHLBO HOKIR/h180",
                     "cruise_altitude": 39000,
                     "star": "FLOSI4",
-                    "initial_controller": "ZBW 46 Boston",
+                    "initial_controller": "B46",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "assigned_altitude": 7000,
@@ -6596,8 +6595,7 @@
                                 "airport": "MYNN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -6607,7 +6605,7 @@
                     "waypoints": "HAYED/a18000 RACKI/a13000/ho PENNS SWEET/a7000 BWZ/h122",
                     "cruise_altitude": 39000,
                     "star": "FQM3",
-                    "initial_controller": "ZNY 56 Kennedy",
+                    "initial_controller": "C56",
                     "initial_altitude": 18000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -6678,8 +6676,7 @@
                                 "airport": "MYNN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 }
             ]
         },
@@ -6689,8 +6686,7 @@
                     "waypoints": "JAIKE ILENE/a13000/ho WACKI/a11000 MAZIE REGLE/a7000 GNNZO SBJ/h59",
                     "cruise_altitude": 39000,
                     "star": "JAIKE4",
-                    "initial_controller": "PHL_ND_DEP",
-                    "initial_facility": "PHL",
+                    "initial_controller": "21E",
                     "initial_altitude": 13000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -6903,7 +6899,7 @@
                     "waypoints": "JAIKE ILENE/a13000 WACKI/a11000/s250 MAZIE REGLE/a7000/ho GNNZO/a4000 SBJ/h040",
                     "cruise_altitude": 39000,
                     "star": "JAIKE4",
-                    "initial_controller": "EWR_P_APP",
+                    "initial_controller": "4P",
                     "initial_altitude": 13000,
                     "initial_speed": 300,
                     "expect_approach": {
@@ -7120,7 +7116,7 @@
                     "waypoints": "JAIKE ILENE/a13000 WACKI/a11000/s250 MAZIE REGLE/a7000/ho GNNZO/a3000 SBJ/h040",
                     "cruise_altitude": 39000,
                     "star": "JAIKE4",
-                    "initial_controller": "EWR_P_APP",
+                    "initial_controller": "4P",
                     "initial_altitude": 13000,
                     "initial_speed": 300,
                     "expect_approach": {
@@ -7337,7 +7333,7 @@
                     "waypoints": "WACKI/a11000/s250 MAZIE REGLE/a7000 GNNZO/a4000 SBJ/a4000/ho4U N040.54.15.372,W074.31.23.963/a4000 N041.00.13.046,W074.27.16.111/a3000 N041.03.07.454,W074.10.52.313/a3000/s210 N041.02.34.797,W074.06.40.451/a3000 N041.02.31.336,W074.05.16.516/a2500 N040.59.07.650,W074.02.56.303/a2000/s180/clearapp TUGGZ/a1500/s170 N040.51.34.313,W074.03.28.905/a001/s130 TEB/delete",
                     "cruise_altitude": 39000,
                     "star": "JAIKE4",
-                    "initial_controller": "EWR_P_APP",
+                    "initial_controller": "4P",
                     "initial_altitude": 11000,
                     "initial_speed": 300,
                     "expect_approach": "RY9",
@@ -7418,7 +7414,7 @@
                     "waypoints": "WACKI/a11000/s250 MAZIE REGLE/a7000 N040.29.10.794,W074.50.35.824/a4000 N040.32.39.054,W074.41.00.662/a3000/ho4U N040.41.08.916,W074.19.43.529/a3000/s210 VINGS/a2000/s180 LEESY/a1700/s180 DANDY/a1500/s180 TORBY/a1300/s150 N040.50.50.038,W074.04.11.751/a001/delete",
                     "cruise_altitude": 39000,
                     "star": "JAIKE4",
-                    "initial_controller": "EWR_H_APP",
+                    "initial_controller": "4H",
                     "initial_altitude": 11000,
                     "initial_speed": 300,
                     "expect_approach": "I6",
@@ -7499,7 +7495,7 @@
                     "waypoints": "BILEY VIBES LIZZI BEUTY HARLM DREMS/a10000 N040.27.18.885,W074.25.26.522/a9000 N040.31.03.514,W074.12.18.885/a7000 N040.32.02.937,W074.08.54.814/a7000 APPLE/a4000/ho1F PROUD N040.44.46.198,W073.59.15.807/a4000 N040.57.58.422,W073.49.24.743/a4000/s210 N040.58.20.505,W073.46.27.451/a3000 N040.57.43.687,W073.44.47.805/a2000 N040.55.25.012,W073.45.27.246/a2000/s180 GREKO/a1900 N040.47.11.355,W073.52.10.526/a001 LGA/delete",
                     "cruise_altitude": 35000,
                     "star": "MIP4",
-                    "initial_controller": "LGA_D_APP",
+                    "initial_controller": "1D",
                     "initial_altitude": 10000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -7593,7 +7589,7 @@
                     "waypoints": "BILEY VIBES LIZZI BEUTY HARLM DREMS/a10000 N040.27.18.885,W074.25.26.522/a9000 N040.31.03.514,W074.12.18.885/a7000 N040.32.02.937,W074.08.54.814/a7000/ho1F APPLE/a4000 PROUD N040.43.35.364,W073.54.52.767/a4000 N040.45.50.331,W073.47.53.226/a4000 N040.51.04.031,W073.43.07.829/a3000/s210 N040.53.58.879,W073.40.36.987/a3000/s180 N040.55.05.470,W073.43.14.119/a2000 N040.53.53.345,W073.46.34.042/a2000 GREKO/a1900/s180 N040.47.11.355,W073.52.10.526/a001/s130 LGA/delete",
                     "cruise_altitude": 35000,
                     "star": "MIP4",
-                    "initial_controller": "LGA_D_APP",
+                    "initial_controller": "1D",
                     "initial_altitude": 10000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -7687,7 +7683,7 @@
                     "waypoints": "BILEY VIBES LIZZI BEUTY HARLM DREMS/a10000 N040.27.18.885,W074.25.26.522/a9000 N040.31.03.514,W074.12.18.885/a7000/ho1F N040.32.02.937,W074.08.54.814/a7000/ho1F APPLE/a4000 BENNG/a3000 RAHEL/s180/a1800 DNNIS/a1700 WARIN/a640/s140 N040.46.05.039,W073.53.02.739/a001/s130 LGA/delete",
                     "cruise_altitude": 35000,
                     "star": "MIP4",
-                    "initial_controller": "LGA_D_APP",
+                    "initial_controller": "1D",
                     "initial_altitude": 10000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -7781,7 +7777,7 @@
                     "waypoints": "IGN VALRE BASYE/a8000 HAARP/a5000 CRALY GGREG/a4000/s210 ZARID VADDR/ho1F JACIE NECOL/a4000/s180 VARAZ/a3000 BENNG/a3000 RAHEL/s180/a1800 DNNIS/a1700 WARIN/a640/s140 N040.46.05.039,W073.53.02.739/a001/s130 LGA/delete",
                     "cruise_altitude": 35000,
                     "star": "HAARP4",
-                    "initial_controller": "LGA_V_APP",
+                    "initial_controller": "1V",
                     "initial_altitude": 9000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -7875,7 +7871,7 @@
                     "waypoints": "IGN VALRE BASYE/a8000 HAARP/a5000 CRALY/a4000/s210 JACIE/ho1F NECOL/a4000/s180 VARAZ/a3000 BENNG/a3000 RAHEL/s180/a1800 DNNIS/a1700 WARIN/a640/s140 N040.46.05.039,W073.53.02.739/a001/s130 LGA/delete",
                     "cruise_altitude": 35000,
                     "star": "HAARP4",
-                    "initial_controller": "LGA_D_APP",
+                    "initial_controller": "1D",
                     "initial_altitude": 9000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -7969,7 +7965,7 @@
                     "waypoints": "LVZ/a18000/ho HARTY MUGZY/a6000 STW/h125",
                     "cruise_altitude": 39000,
                     "star": "LVZ4",
-                    "initial_controller": "ZNY 56 Kennedy",
+                    "initial_controller": "C56",
                     "initial_altitude": 18000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -8172,8 +8168,7 @@
                                 "airport": "MYNN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 }
             ]
         },
@@ -8183,8 +8178,7 @@
                     "waypoints": "N040.16.57.073,W075.16.42.035 MAZIE/a4000/ho SBJ/h59",
                     "cruise_altitude": 4000,
                     "star": "MAZIE",
-                    "initial_controller": "PHL_YD_APP",
-                    "initial_facility": "PHL",
+                    "initial_controller": "21Y",
                     "initial_altitude": 4000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -8253,7 +8247,7 @@
                     "waypoints": "MAZIE/a4000/ho N040.28.19.324,W074.53.52.727/a4000 N040.30.37.257,W074.50.37.747/a3000 SBJ/h040",
                     "cruise_altitude": 4000,
                     "star": "MAZIE",
-                    "initial_controller": "EWR_P_APP",
+                    "initial_controller": "4P",
                     "initial_altitude": 4000,
                     "initial_speed": 250,
                     "expect_approach": {
@@ -8326,7 +8320,7 @@
                     "waypoints": "MAZIE/a4000/ho N040.28.19.324,W074.53.52.727/a4000 N040.30.37.257,W074.50.37.747/a3000 SBJ/h040",
                     "cruise_altitude": 4000,
                     "star": "MAZIE",
-                    "initial_controller": "EWR_P_APP",
+                    "initial_controller": "4P",
                     "initial_altitude": 4000,
                     "initial_speed": 250,
                     "expect_approach": {
@@ -8399,7 +8393,7 @@
                     "waypoints": "SHAFF/ho SAX PHLBO HOKIR/h180",
                     "cruise_altitude": 39000,
                     "star": "FLOSI4",
-                    "initial_controller": "EWR_A_APP",
+                    "initial_controller": "4A",
                     "initial_altitude": 6000,
                     "assigned_altitude": 6000,
                     "initial_speed": 250,
@@ -8481,7 +8475,7 @@
                     "waypoints": "SHAFF SAX PHLBO/ho4P HOKIR/a5000 N040.28.50.552,W074.28.23.924/a4000 N040.26.32.234,W074.23.28.419/a3000 N040.27.20.560,W074.20.48.403/a3000/s210 GRITY/a3000/s180 DOOIN/a1700 N040.40.31.507,W074.10.29.571/a0002 N040.41.54.056,W074.09.37.963/delete",
                     "cruise_altitude": 39000,
                     "star": "FLOSI4",
-                    "initial_controller": "EWR_A_APP",
+                    "initial_controller": "4A",
                     "initial_altitude": 6000,
                     "initial_speed": 250,
                     "expect_approach": "I4R",
@@ -8562,7 +8556,7 @@
                     "waypoints": "SOMTO ARD DYLIN MERSR/a8000 METRO/a6000 MARRT/ho4A N040.44.25.104,W074.35.01.602/a6000 N040.48.05.449,W074.29.54.699/a5000 N040.53.59.291,W074.21.37.402/a5000 N040.55.59.962,W074.15.23.043/a4000 N040.54.22.719,W074.07.47.687/a4000/s210 N040.53.13.533,W074.05.15.582/a3000/s180 GIMEE/a2500 BUZZD/a1800/s150 N040.42.08.723,W074.09.22.252/a001 KEWR/delete",
                     "cruise_altitude": 39000,
                     "star": "FLOSI4",
-                    "initial_controller": "EWR_P_APP",
+                    "initial_controller": "4P",
                     "initial_altitude": 8000,
                     "initial_speed": 250,
                     "expect_approach": "I2L",
@@ -8643,8 +8637,7 @@
                     "waypoints": "RUUTH/ho RBV KEWR",
                     "cruise_altitude": 7000,
                     "route": "/. RUUTH V123 RBV",
-                    "initial_controller": "PHL_SD_DEP",
-                    "initial_facility": "PHL",
+                    "initial_controller": "21V",
                     "initial_altitude": 7000,
                     "assigned_altitude": 7000,
                     "initial_speed": 300,
@@ -8674,8 +8667,7 @@
                     "waypoints": "MXE/ho ARD METRO KEWR",
                     "cruise_altitude": 5000,
                     "route": "/. MXE ARD METRO",
-                    "initial_controller": "PHL_YD_APP",
-                    "initial_facility": "PHL",
+                    "initial_controller": "21Y",
                     "initial_altitude": 5000,
                     "assigned_altitude": 5000,
                     "initial_speed": 300,
@@ -8698,7 +8690,7 @@
                     "waypoints": "DQO/a20000+ STEFE/a13000-17000/ho SOMTO/a11000 DYLIN/a8000 MERSR METRO MARRT PHLBO/h25",
                     "cruise_altitude": 39000,
                     "star": "PHLBO4",
-                    "initial_controller": "ZDC 32 Gordonsville",
+                    "initial_controller": "W32",
                     "initial_altitude": 20000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -8769,8 +8761,7 @@
                                 "airport": "MYNN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -8780,7 +8771,7 @@
                     "waypoints": "DYLIN/ho MERSR METRO MARRT PHLBO/h025",
                     "cruise_altitude": 39000,
                     "star": "PHLBO4",
-                    "initial_controller": "EWR_P_APP",
+                    "initial_controller": "4P",
                     "initial_altitude": 6000,
                     "initial_speed": 250,
                     "expect_approach": "I2L",
@@ -8861,7 +8852,7 @@
                     "waypoints": "DYLIN/ho MERSR METRO MARRT PHLBO/h25",
                     "cruise_altitude": 39000,
                     "star": "PHLBO4",
-                    "initial_controller": "EWR_P_APP",
+                    "initial_controller": "4P",
                     "initial_altitude": 6000,
                     "assigned_altitude": 6000,
                     "initial_speed": 250,
@@ -8943,8 +8934,7 @@
                     "waypoints": "CYN/ho GXU RBV METRO KEWR",
                     "cruise_altitude": 6000,
                     "route": "/. CYN GXU RBV V249 METRO",
-                    "initial_controller": "WRI_APP",
-                    "initial_facility": "WRI",
+                    "initial_controller": "51Y",
                     "initial_altitude": 6000,
                     "assigned_altitude": 6000,
                     "initial_speed": 300,
@@ -9151,7 +9141,7 @@
                 "EWR ARR/DEP"
             ],
             "airspace": {
-                "EWR_DEP": [
+                "4N": [
                     "DEP_SW"
                 ]
             },
@@ -9233,7 +9223,7 @@
                 "EWR ARR/DEP"
             ],
             "airspace": {
-                "EWR_DEP": [
+                "4N": [
                     "DEP_NE"
                 ]
             },
@@ -9402,7 +9392,7 @@
                 }
             ],
             "airspace": {
-                "EWR_U_APP": [
+                "4U": [
                     "ZEEBO_NE",
                     "METRO_NE",
                     "MUGZY_NE"
@@ -9445,7 +9435,7 @@
         },
         "KEWR Sat. Arrivals landing SW": {
             "airspace": {
-                "EWR_U_APP": [
+                "4U": [
                     "METRO_SW",
                     "ZEEBO_SW",
                     "MUGZY_SW"
@@ -9534,7 +9524,7 @@
         },
         "KEWR Land 22L - ARD": {
             "airspace": {
-                "EWR_P_APP": [
+                "4P": [
                     "NOA_SW",
                     "FINAL_VECTORS_22",
                     "YARDLEY_SW"
@@ -9572,7 +9562,7 @@
         },
         "KEWR Land 22L - ARD/METRO": {
             "airspace": {
-                "EWR_P_APP": [
+                "4P": [
                     "NOA_SW",
                     "FINAL_VECTORS_22",
                     "YARDLEY_SW",
@@ -9659,7 +9649,7 @@
         },
         "KEWR Land 22L - South Side ARD/METRO/DEPARTURE": {
             "airspace": {
-                "EWR_DEP": [
+                "4N": [
                     "NOA_SW",
                     "FINAL_VECTORS_22",
                     "YARDLEY_SW",
@@ -9762,7 +9752,7 @@
         },
         "KEWR Land 22L - NOA + FINAL": {
             "airspace": {
-                "EWR_A_APP": [
+                "4A": [
                     "NOA_SW",
                     "FINAL_VECTORS_22"
                 ]
@@ -9835,7 +9825,7 @@
         },
         "KEWR Land 22L - NOA/MUGZY + FINAL": {
             "airspace": {
-                "EWR_A_APP": [
+                "4A": [
                     "NOA_SW",
                     "FINAL_VECTORS_22",
                     "MUGZY_SW"
@@ -9932,7 +9922,7 @@
         },
         "KEWR Land 29 - NOA + FINAL": {
             "airspace": {
-                "EWR_A_APP": [
+                "4A": [
                     "NOA_SW",
                     "FINAL_VECTORS_22"
                 ]
@@ -9977,7 +9967,7 @@
                 }
             ],
             "airspace": {
-                "EWR_P_APP": [
+                "4P": [
                     "NOA_NE",
                     "YARDLEY_NE",
                     "FINAL_VECTORS_4"
@@ -10078,7 +10068,7 @@
                 }
             },
             "airspace": {
-                "EWR_P_APP": [
+                "4P": [
                     "NOA_NE",
                     "YARDLEY_NE",
                     "FINAL_VECTORS_4",
@@ -10120,7 +10110,7 @@
                 }
             ],
             "airspace": {
-                "EWR_A_APP": [
+                "4A": [
                     "NOA_NE",
                     "FINAL_VECTORS_4"
                 ]
@@ -10207,7 +10197,7 @@
                 }
             },
             "airspace": {
-                "EWR_DEP": [
+                "4N": [
                     "NOA_NE",
                     "FINAL_VECTORS_4"
                 ]

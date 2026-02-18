@@ -1,29 +1,29 @@
 {
     "control_positions": {
-        "DSM_A_APP": {
+        "1A": {
+            "callsign": "DSM_A_APP",
             "frequency": 135200,
-            "radio_name": "Des Moines Approach",
-            "sector_id": "1A"
+            "radio_name": "Des Moines Approach"
         },
-        "DSM_APP": {
+        "1D": {
+            "callsign": "DSM_APP",
             "frequency": 123900,
-            "radio_name": "Des Moines Approach",
-            "sector_id": "1D"
+            "radio_name": "Des Moines Approach"
         },
-        "DSM_S_APP": {
+        "1S": {
+            "callsign": "DSM_S_APP",
             "frequency": 120450,
-            "radio_name": "Des Moines Approach",
-            "sector_id": "1S"
+            "radio_name": "Des Moines Approach"
         },
-        "DSM_TWR": {
+        "1T": {
+            "callsign": "DSM_TWR",
             "frequency": 118300,
-            "radio_name": "Des Moines Tower",
-            "sector_id": "1T"
+            "radio_name": "Des Moines Tower"
         },
-        "DSM_U_APP": {
+        "1U": {
+            "callsign": "DSM_U_APP",
             "frequency": 124850,
-            "radio_name": "Des Moines Approach",
-            "sector_id": "1U"
+            "radio_name": "Des Moines Approach"
         }
     },
     "handoff_ids": [
@@ -34,6 +34,14 @@
         {
             "id": "ZAU",
             "eram_prefix": "G"
+        },
+        {
+            "id": "ZKC",
+            "eram_prefix": "K"
+        },
+        {
+            "id": "ZMP",
+            "eram_prefix": "C"
         }
     ]
 }

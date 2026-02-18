@@ -1,74 +1,74 @@
 {
     "control_positions": {
-        "STL_A_APP": {
+        "1A": {
+            "callsign": "STL_A_APP",
             "frequency": 124200,
-            "radio_name": "St. Louis Approach",
-            "sector_id": "1A"
+            "radio_name": "St. Louis Approach"
         },
-        "PIA_B_APP": {
+        "1B": {
+            "callsign": "PIA_B_APP",
             "frequency": 128725,
-            "radio_name": "St. Louis Approach",
-            "sector_id": "1B"
+            "radio_name": "St. Louis Approach"
         },
-        "STL_D_APP": {
+        "1D": {
+            "callsign": "STL_D_APP",
             "frequency": 126500,
-            "radio_name": "St. Louis Approach",
-            "sector_id": "1D"
+            "radio_name": "St. Louis Approach"
         },
-        "STL_E_DEP": {
+        "1E": {
+            "callsign": "STL_E_DEP",
             "frequency": 119150,
-            "radio_name": "St. Louis Departure",
-            "sector_id": "1E"
+            "radio_name": "St. Louis Departure"
         },
-        "STL_J_APP": {
+        "1J": {
+            "callsign": "STL_J_APP",
             "frequency": 132125,
-            "radio_name": "St. Louis Approach",
-            "sector_id": "1J"
+            "radio_name": "St. Louis Approach"
         },
-        "STL_K_APP": {
+        "1K": {
+            "callsign": "STL_K_APP",
             "frequency": 123700,
-            "radio_name": "St. Louis Approach",
-            "sector_id": "1K"
+            "radio_name": "St. Louis Approach"
         },
-        "STL_N_APP": {
+        "1N": {
+            "callsign": "STL_N_APP",
             "frequency": 124250,
-            "radio_name": "St. Louis Approach",
-            "sector_id": "1N"
+            "radio_name": "St. Louis Approach"
         },
-        "PIA_APP": {
+        "1P": {
+            "callsign": "PIA_APP",
             "frequency": 125800,
-            "radio_name": "St. Louis Approach",
-            "sector_id": "1P"
+            "radio_name": "St. Louis Approach"
         },
-        "STL_Q_APP": {
+        "1Q": {
+            "callsign": "STL_Q_APP",
             "frequency": 121025,
-            "radio_name": "St. Louis Approach",
-            "sector_id": "1Q"
+            "radio_name": "St. Louis Approach"
         },
-        "STL_R_APP": {
+        "1R": {
+            "callsign": "STL_R_APP",
             "frequency": 126550,
-            "radio_name": "St. Louis Approach",
-            "sector_id": "1R"
+            "radio_name": "St. Louis Approach"
         },
-        "SPI_APP": {
+        "1S": {
+            "callsign": "SPI_APP",
             "frequency": 126150,
-            "radio_name": "St. Louis Approach",
-            "sector_id": "1S"
+            "radio_name": "St. Louis Approach"
         },
-        "STL_W_DEP": {
+        "1W": {
+            "callsign": "STL_W_DEP",
             "frequency": 128100,
-            "radio_name": "St. Louis Departure",
-            "sector_id": "1W"
+            "radio_name": "St. Louis Departure"
         },
-        "STL_Z_APP": {
+        "1Z": {
+            "callsign": "STL_Z_APP",
             "frequency": 125200,
-            "radio_name": "St. Louis Approach",
-            "sector_id": "1Z"
+            "radio_name": "St. Louis Approach"
         },
-        "STL_EM_APP": {
+        "9Z": {
+            "callsign": "STL_EM_APP",
             "frequency": 121500,
-            "radio_name": "St Louis Approach",
-            "sector_id": "9Z"
+            "radio_name": "St Louis Approach"
         }
     },
     "handoff_ids": [
@@ -87,6 +87,10 @@
         {
             "id": "ZAU",
             "eram_prefix": "G"
+        },
+        {
+            "id": "ZKC",
+            "eram_prefix": "C"
         }
     ]
 }

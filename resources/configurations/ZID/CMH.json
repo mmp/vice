@@ -1,56 +1,84 @@
 {
     "control_positions": {
-        "CMH_E_TWR": {
+        "1E": {
+            "callsign": "CMH_E_TWR",
             "frequency": 132700,
-            "radio_name": "Columbus Tower",
-            "sector_id": "1E"
+            "radio_name": "Columbus Tower"
         },
-        "CMH_F_APP": {
+        "1F": {
+            "callsign": "CMH_F_APP",
             "frequency": 118200,
-            "radio_name": "Columbus Approach",
-            "sector_id": "1F"
+            "radio_name": "Columbus Approach"
         },
-        "CMH_L_APP": {
+        "1L": {
+            "callsign": "CMH_L_APP",
             "frequency": 132300,
-            "radio_name": "Columbus Approach",
-            "sector_id": "1L"
+            "radio_name": "Columbus Approach"
         },
-        "DAY_M_APP": {
+        "1M": {
+            "callsign": "DAY_M_APP",
             "frequency": 120925,
-            "radio_name": "Columbus Approach",
-            "sector_id": "1M"
+            "radio_name": "Columbus Approach"
         },
-        "CMH_N_APP": {
+        "1N": {
+            "callsign": "CMH_N_APP",
             "frequency": 125950,
-            "radio_name": "Columbus Approach",
-            "sector_id": "1N"
+            "radio_name": "Columbus Approach"
         },
-        "CMH_P_APP": {
+        "1P": {
+            "callsign": "CMH_P_APP",
             "frequency": 120200,
-            "radio_name": "Columbus Approach",
-            "sector_id": "1P"
+            "radio_name": "Columbus Approach"
         },
-        "DAY_U_APP": {
+        "1U": {
+            "callsign": "DAY_U_APP",
             "frequency": 134450,
-            "radio_name": "Columbus Approach",
-            "sector_id": "1U"
+            "radio_name": "Columbus Approach"
         },
-        "CMH_W_TWR": {
+        "1W": {
+            "callsign": "CMH_W_TWR",
             "frequency": 127525,
-            "radio_name": "Columbus Tower",
-            "sector_id": "1W"
+            "radio_name": "Columbus Tower"
         },
-        "DAY_X_APP": {
+        "1X": {
+            "callsign": "DAY_X_APP",
             "frequency": 118850,
-            "radio_name": "Columbus Approach",
-            "sector_id": "1X"
+            "radio_name": "Columbus Approach"
         }
     },
     "stars_config": {},
     "handoff_ids": [
         {
+            "id": "CLE",
+            "prefix": "2"
+        },
+        {
+            "id": "CVG",
+            "prefix": "6"
+        },
+        {
+            "id": "FWA",
+            "prefix": "4"
+        },
+        {
+            "id": "IND",
+            "prefix": "5"
+        },
+        {
+            "id": "TOL",
+            "prefix": "3"
+        },
+        {
+            "id": "ZAU",
+            "eram_prefix": "G"
+        },
+        {
             "id": "ZID",
-            "eram_prefix": "I"
+            "eram_prefix": "C"
+        },
+        {
+            "id": "ZOB",
+            "eram_prefix": "C"
         }
     ]
 }

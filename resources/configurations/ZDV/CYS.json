@@ -1,21 +1,25 @@
 {
     "control_positions": {
-        "CYS_APP": {
+        "1A": {
+            "callsign": "CYS_APP",
             "frequency": 124550,
-            "radio_name": "Cheyenne Approach",
-            "sector_id": "1A"
+            "radio_name": "Cheyenne Approach"
         },
-        "CYS_TWR": {
+        "1T": {
+            "callsign": "CYS_TWR",
             "frequency": 118700,
-            "radio_name": "Cheyenne Tower",
-            "sector_id": "1T"
+            "radio_name": "Cheyenne Tower"
         }
     },
     "stars_config": {},
     "handoff_ids": [
         {
+            "id": "D01",
+            "prefix": "1"
+        },
+        {
             "id": "ZDV",
-            "eram_prefix": "D"
+            "eram_prefix": "C"
         }
     ]
 }

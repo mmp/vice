@@ -1,51 +1,55 @@
 {
     "control_positions": {
-        "LSV_B_APP": {
+        "1B": {
+            "callsign": "LSV_B_APP",
             "frequency": 123550,
-            "radio_name": "Blackjack",
-            "sector_id": "1B"
+            "radio_name": "Blackjack"
         },
-        "LSV_F_APP": {
+        "1F": {
+            "callsign": "LSV_F_APP",
             "frequency": 124950,
-            "radio_name": "Nellis Approach",
-            "sector_id": "1F"
+            "radio_name": "Nellis Approach"
         },
-        "LSV_G_APP": {
+        "1G": {
+            "callsign": "LSV_G_APP",
             "frequency": 118125,
-            "radio_name": "Nellis Approach",
-            "sector_id": "1G"
+            "radio_name": "Nellis Approach"
         },
-        "LSV_L_APP": {
+        "1L": {
+            "callsign": "LSV_L_APP",
             "frequency": 119350,
-            "radio_name": "Nellis Control",
-            "sector_id": "1L"
+            "radio_name": "Nellis Control"
         },
-        "LSV_M_APP": {
+        "1M": {
+            "callsign": "LSV_M_APP",
             "frequency": 126150,
-            "radio_name": "Dreamland Approach",
-            "sector_id": "1M"
+            "radio_name": "Dreamland Approach"
         },
-        "LSV_S_APP": {
+        "1S": {
+            "callsign": "LSV_S_APP",
             "frequency": 126650,
-            "radio_name": "Nellis Control",
-            "sector_id": "1S"
+            "radio_name": "Nellis Control"
         },
-        "LSV_TWR": {
+        "1T": {
+            "callsign": "LSV_TWR",
             "frequency": 132550,
-            "radio_name": "Nellis Tower",
-            "sector_id": "1T"
+            "radio_name": "Nellis Tower"
         },
-        "LSV_W_DEP": {
+        "1W": {
+            "callsign": "LSV_W_DEP",
             "frequency": 135100,
-            "radio_name": "Nellis Departure",
-            "sector_id": "1W"
+            "radio_name": "Nellis Departure"
         }
     },
     "stars_config": {},
     "handoff_ids": [
         {
+            "id": "L30",
+            "prefix": "1"
+        },
+        {
             "id": "ZLA",
-            "eram_prefix": "L"
+            "eram_prefix": "C"
         }
     ]
 }

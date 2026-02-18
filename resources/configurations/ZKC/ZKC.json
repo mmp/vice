@@ -1,274 +1,274 @@
 {
     "control_positions": {
-        "ZKC 01 TMU": {
+        "01": {
+            "callsign": "ZKC 01 TMU",
             "frequency": 125725,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "01"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 02 (02) WICHITA HI": {
+        "02": {
+            "callsign": "ZKC 02 (02) WICHITA HI",
             "frequency": 132250,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "02"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 03 (03) EMPORIA SH": {
+        "03": {
+            "callsign": "ZKC 03 (03) EMPORIA SH",
             "frequency": 124975,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "03"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 06 (06) ANTHONY HI": {
+        "06": {
+            "callsign": "ZKC 06 (06) ANTHONY HI",
             "frequency": 133200,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "06"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 07 (07) HUTCHINSON SH": {
+        "07": {
+            "callsign": "ZKC 07 (07) HUTCHINSON SH",
             "frequency": 132825,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "07"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 12 (12) COWES HI": {
+        "12": {
+            "callsign": "ZKC 12 (12) COWES HI",
             "frequency": 135050,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "12"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 14 (14) FARMINGTON HI": {
+        "14": {
+            "callsign": "ZKC 14 (14) FARMINGTON HI",
             "frequency": 120825,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "14"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 20 (20) HAYS HI": {
+        "20": {
+            "callsign": "ZKC 20 (20) HAYS HI",
             "frequency": 134300,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "20"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 21 (21) DODGE CITY SH": {
+        "21": {
+            "callsign": "ZKC 21 (21) DODGE CITY SH",
             "frequency": 120725,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "21"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 22 (22) GARDEN CITY HI": {
+        "22": {
+            "callsign": "ZKC 22 (22) GARDEN CITY HI",
             "frequency": 133450,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "22"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 23 (23) LIBERAL HI": {
+        "23": {
+            "callsign": "ZKC 23 (23) LIBERAL HI",
             "frequency": 134675,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "23"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 24 (24) SALINA HI": {
+        "24": {
+            "callsign": "ZKC 24 (24) SALINA HI",
             "frequency": 125175,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "24"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 26 (26) KANSAS CITY HI": {
+        "26": {
+            "callsign": "ZKC 26 (26) KANSAS CITY HI",
             "frequency": 133800,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "26"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 27 (27) TULSA HI": {
+        "27": {
+            "callsign": "ZKC 27 (27) TULSA HI",
             "frequency": 127625,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "27"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 28 (28) SPRINGFIELD HI": {
+        "28": {
+            "callsign": "ZKC 28 (28) SPRINGFIELD HI",
             "frequency": 133475,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "28"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 29 (29) VICHY HI": {
+        "29": {
+            "callsign": "ZKC 29 (29) VICHY HI",
             "frequency": 132650,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "29"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 30 (30) HALLSVILLE HI": {
+        "30": {
+            "callsign": "ZKC 30 (30) HALLSVILLE HI",
             "frequency": 119475,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "30"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 31 (31) SWISS SH": {
+        "31": {
+            "callsign": "ZKC 31 (31) SWISS SH",
             "frequency": 125675,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "31"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 32 (32) TRIX HI": {
+        "32": {
+            "callsign": "ZKC 32 (32) TRIX HI",
             "frequency": 134625,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "32"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 33 (33) MITBY SH": {
+        "33": {
+            "callsign": "ZKC 33 (33) MITBY SH",
             "frequency": 126975,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "33"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 40 (40) KIRKSVILLE LO": {
+        "40": {
+            "callsign": "ZKC 40 (40) KIRKSVILLE LO",
             "frequency": 125250,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "40"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 41 (41) CHIEF SH": {
+        "41": {
+            "callsign": "ZKC 41 (41) CHIEF SH",
             "frequency": 134725,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "41"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 42 (42) NAPOLEAN LO": {
+        "42": {
+            "callsign": "ZKC 42 (42) NAPOLEAN LO",
             "frequency": 125550,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "42"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 44 (44) TOPEKA LO": {
+        "44": {
+            "callsign": "ZKC 44 (44) TOPEKA LO",
             "frequency": 123800,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "44"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 46 (46) ST. JOESPH LO": {
+        "46": {
+            "callsign": "ZKC 46 (46) ST. JOESPH LO",
             "frequency": 127900,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "46"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 47 (47) TRAPR SH": {
+        "47": {
+            "callsign": "ZKC 47 (47) TRAPR SH",
             "frequency": 125425,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "47"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 48 (48) EMPORIA LO": {
+        "48": {
+            "callsign": "ZKC 48 (48) EMPORIA LO",
             "frequency": 127725,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "48"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 50 (50) QUINCY LO": {
+        "50": {
+            "callsign": "ZKC 50 (50) QUINCY LO",
             "frequency": 126225,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "50"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 52 (52) COLUMBIA LO": {
+        "52": {
+            "callsign": "ZKC 52 (52) COLUMBIA LO",
             "frequency": 134500,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "52"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 53 (53) VICHY LO": {
+        "53": {
+            "callsign": "ZKC 53 (53) VICHY LO",
             "frequency": 128350,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "53"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 54 (54) JAZZ LO": {
+        "54": {
+            "callsign": "ZKC 54 (54) JAZZ LO",
             "frequency": 127475,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "54"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 58 (58) VANDALIA LO": {
+        "58": {
+            "callsign": "ZKC 58 (58) VANDALIA LO",
             "frequency": 124300,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "58"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 59 (59) CAPITOL LO": {
+        "59": {
+            "callsign": "ZKC 59 (59) CAPITOL LO",
             "frequency": 127275,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "59"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 62 (62) STILLWATER LO": {
+        "62": {
+            "callsign": "ZKC 62 (62) STILLWATER LO",
             "frequency": 127800,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "62"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 66 (66) SALINA LO": {
+        "66": {
+            "callsign": "ZKC 66 (66) SALINA LO",
             "frequency": 120200,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "66"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 67 (67) RUSSELL LO": {
+        "67": {
+            "callsign": "ZKC 67 (67) RUSSELL LO",
             "frequency": 124200,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "67"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 68 (68) GARDEN CITY LO": {
+        "68": {
+            "callsign": "ZKC 68 (68) GARDEN CITY LO",
             "frequency": 125200,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "68"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 72 (72) VINTA LO": {
+        "72": {
+            "callsign": "ZKC 72 (72) VINTA LO",
             "frequency": 128600,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "72"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 84 (84) ST. LOUIS HI": {
+        "84": {
+            "callsign": "ZKC 84 (84) ST. LOUIS HI",
             "frequency": 133150,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "84"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 90 (90) BLUES SH": {
+        "90": {
+            "callsign": "ZKC 90 (90) BLUES SH",
             "frequency": 132875,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "90"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 92 (92) COLIE SH": {
+        "92": {
+            "callsign": "ZKC 92 (92) COLIE SH",
             "frequency": 133725,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "92"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 94 (94) FARGO SH": {
+        "94": {
+            "callsign": "ZKC 94 (94) FARGO SH",
             "frequency": 125725,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "94"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 97 (97) CHANNUTE SH": {
+        "97": {
+            "callsign": "ZKC 97 (97) CHANNUTE SH",
             "frequency": 118125,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "97"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 98 (98) ROCK SH": {
+        "98": {
+            "callsign": "ZKC 98 (98) ROCK SH",
             "frequency": 133225,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "98"
+            "radio_name": "Kansas City Center"
         },
-        "ZKC 99 ZKC GUARD": {
+        "99": {
+            "callsign": "ZKC 99 ZKC GUARD",
             "frequency": 121500,
             "eram_facility": true,
-            "radio_name": "Kansas City Center",
-            "sector_id": "99"
+            "radio_name": "Kansas City Center"
         }
     },
     "stars_config": {
@@ -285,69 +285,58 @@
     "handoff_ids": [
         {
             "id": "CMI",
-            "single_char_stars_id": "N",
-            "two_char_stars_id": "NN",
-            "stars_id": "NNN"
+            "stars_id": "NNN",
+            "single_char_stars_id": "N"
         },
         {
             "id": "END",
-            "single_char_stars_id": "E",
-            "two_char_stars_id": "EN",
-            "stars_id": "EEE"
+            "stars_id": "EEE",
+            "single_char_stars_id": "E"
         },
         {
             "id": "EVV",
-            "single_char_stars_id": "R",
-            "two_char_stars_id": "RR",
-            "stars_id": "RRR"
+            "stars_id": "RRR",
+            "single_char_stars_id": "R"
         },
         {
             "id": "FSM",
-            "single_char_stars_id": "V",
-            "two_char_stars_id": "VV",
-            "stars_id": "VVV"
+            "stars_id": "VVV",
+            "single_char_stars_id": "V"
         },
         {
             "id": "ICT",
-            "single_char_stars_id": "W",
-            "two_char_stars_id": "IC",
-            "stars_id": "WWW"
+            "stars_id": "WWW",
+            "single_char_stars_id": "W"
         },
         {
             "id": "MCI",
-            "single_char_stars_id": "Z",
-            "two_char_stars_id": "MC",
-            "stars_id": "ZZZ"
+            "stars_id": "ZZZ",
+            "single_char_stars_id": "Z"
         },
         {
             "id": "OKC",
-            "single_char_stars_id": "K",
-            "two_char_stars_id": "KK",
-            "stars_id": "KKK"
+            "stars_id": "KKK",
+            "single_char_stars_id": "K"
         },
         {
             "id": "SGF",
-            "single_char_stars_id": "O",
-            "two_char_stars_id": "SG",
-            "stars_id": "OOO"
+            "stars_id": "OOO",
+            "single_char_stars_id": "O"
         },
         {
             "id": "SZL",
-            "single_char_stars_id": "L",
-            "two_char_stars_id": "SZ",
-            "stars_id": "LLL"
+            "stars_id": "LLL",
+            "single_char_stars_id": "L"
         },
         {
             "id": "T75",
-            "single_char_stars_id": "S",
-            "two_char_stars_id": "ST",
-            "stars_id": "SSS"
+            "stars_id": "SSS",
+            "single_char_stars_id": "S"
         },
         {
             "id": "TUL",
-            "single_char_stars_id": "T",
-            "two_char_stars_id": "TU",
-            "stars_id": "TTT"
+            "stars_id": "TTT",
+            "single_char_stars_id": "T"
         },
         {
             "id": "ZAB",

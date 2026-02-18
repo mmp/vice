@@ -1,24 +1,24 @@
 {
     "control_positions": {
-        "CAE_F_APP": {
+        "1F": {
+            "callsign": "CAE_F_APP",
             "frequency": 128500,
-            "radio_name": "Columbia Approach",
-            "sector_id": "1F"
+            "radio_name": "Columbia Approach"
         },
-        "CAE_N_APP": {
+        "1N": {
+            "callsign": "CAE_N_APP",
             "frequency": 133400,
-            "radio_name": "Columbia Approach",
-            "sector_id": "1N"
+            "radio_name": "Columbia Approach"
         },
-        "CAE_S_APP": {
+        "1S": {
+            "callsign": "CAE_S_APP",
             "frequency": 124150,
-            "radio_name": "Columbia Approach",
-            "sector_id": "1S"
+            "radio_name": "Columbia Approach"
         },
-        "CAE_TWR": {
+        "1T": {
+            "callsign": "CAE_TWR",
             "frequency": 119500,
-            "radio_name": "Columbia Tower",
-            "sector_id": "1T"
+            "radio_name": "Columbia Tower"
         }
     },
     "handoff_ids": [
@@ -41,6 +41,14 @@
         {
             "id": "SSC",
             "prefix": "3"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "C"
+        },
+        {
+            "id": "ZNY",
+            "eram_prefix": "N"
         },
         {
             "id": "ZTL",

@@ -743,7 +743,7 @@
                     "cruise_altitude": 29000,
                     "star": "DNKIN1",
                     "initial_altitude": 24000,
-                    "initial_controller": "ZHU 85 Kelly",
+                    "initial_controller": "C85",
                     "initial_speed": 280,
                     "airlines": {
                         "KSAT": [
@@ -764,15 +764,14 @@
                                 "airport": "KSAN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHU"
+                    }
                 },
                 {
                     "spawn": "MOPPP",
                     "cruise_altitude": 29000,
                     "star": "DNKIN1",
                     "initial_altitude": 24000,
-                    "initial_controller": "ZHU 85 Kelly",
+                    "initial_controller": "C85",
                     "initial_speed": 280,
                     "airlines": {
                         "KSKF": [
@@ -819,8 +818,7 @@
                                 "airport": "KSLC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHU"
+                    }
                 }
             ]
         },
@@ -832,7 +830,7 @@
                     "star": "POPPO1",
                     "initial_altitude": 22000,
                     "initial_speed": 280,
-                    "initial_controller": "ZHU 50 Stonewall",
+                    "initial_controller": "C50",
                     "airlines": {
                         "KSAT": [
                             {
@@ -852,8 +850,7 @@
                                 "airport": "KOKC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHU"
+                    }
                 },
                 {
                     "spawn": "PPNUT",
@@ -861,7 +858,7 @@
                     "star": "POPPO1",
                     "initial_altitude": 22000,
                     "initial_speed": 280,
-                    "initial_controller": "ZHU 50 Stonewall",
+                    "initial_controller": "C50",
                     "airlines": {
                         "KSSF": [
                             {
@@ -885,8 +882,7 @@
                                 "airport": "KOKC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHU"
+                    }
                 }
             ]
         },
@@ -898,7 +894,7 @@
                     "star": "QERVO2",
                     "initial_altitude": 24000,
                     "initial_speed": 280,
-                    "initial_controller": "ZHU 96 Bergstrom",
+                    "initial_controller": "C96",
                     "airlines": {
                         "KSAT": [
                             {
@@ -918,8 +914,7 @@
                                 "airport": "KSDF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHU"
+                    }
                 },
                 {
                     "spawn": "HOSAY",
@@ -927,7 +922,7 @@
                     "star": "QERVO2",
                     "initial_altitude": 24000,
                     "initial_speed": 280,
-                    "initial_controller": "ZHU 96 Bergstrom",
+                    "initial_controller": "C96",
                     "airlines": {
                         "KSKF": [
                             {
@@ -973,8 +968,7 @@
                                 "airport": "KCHS"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHU"
+                    }
                 }
             ]
         },
@@ -986,7 +980,7 @@
                     "star": "CRVZA1",
                     "initial_altitude": 11000,
                     "initial_speed": 250,
-                    "initial_controller": "ZHU 56 Shiner",
+                    "initial_controller": "C56",
                     "airlines": {
                         "KSAT": [
                             {
@@ -1006,8 +1000,7 @@
                                 "airport": "KMIA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHU"
+                    }
                 },
                 {
                     "spawn": "CRVZA",
@@ -1015,7 +1008,7 @@
                     "star": "CRVZA1",
                     "initial_altitude": 11000,
                     "initial_speed": 250,
-                    "initial_controller": "ZHU 56 Shiner",
+                    "initial_controller": "C56",
                     "airlines": {
                         "KSSF": [
                             {
@@ -1039,8 +1032,7 @@
                                 "airport": "KHRL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHU"
+                    }
                 }
             ]
         }

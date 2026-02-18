@@ -1,38 +1,38 @@
 {
     "control_positions": {
-        "AGS_TWR": {
+        "1T": {
+            "callsign": "AGS_TWR",
             "frequency": 118700,
-            "radio_name": "Augusta Tower",
-            "sector_id": "1T"
+            "radio_name": "Augusta Tower"
         },
-        "AGS_E_APP": {
+        "1E": {
+            "callsign": "AGS_E_APP",
             "frequency": 119150,
-            "radio_name": "Augusta Approach",
-            "sector_id": "1E"
+            "radio_name": "Augusta Approach"
         },
-        "AGS_W_APP": {
+        "1W": {
+            "callsign": "AGS_W_APP",
             "frequency": 126800,
-            "radio_name": "Augusta Approach",
-            "sector_id": "1W"
+            "radio_name": "Augusta Approach"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "East": "AGS_E_APP",
-                    "North": "AGS_W_APP",
-                    "STUGE3": "AGS_E_APP",
-                    "STWRT3": "AGS_E_APP",
-                    "South": "AGS_W_APP",
-                    "West": "AGS_W_APP"
+                    "East": "1E",
+                    "North": "1W",
+                    "STUGE3": "1E",
+                    "STWRT3": "1E",
+                    "South": "1W",
+                    "West": "1W"
                 },
                 "departure_assignments": {
-                    "KAGS": "AGS_W_APP"
+                    "KAGS": "1W"
                 },
                 "default_consolidation": {
-                    "AGS_E_APP": [
-                        "AGS_W_APP"
+                    "1E": [
+                        "1W"
                     ]
                 }
             }
@@ -169,7 +169,7 @@
         },
         {
             "id": "ZTL",
-            "eram_prefix": "T"
+            "eram_prefix": "C"
         }
     ]
 }

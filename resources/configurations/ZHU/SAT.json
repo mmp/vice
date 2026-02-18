@@ -1,102 +1,102 @@
 {
     "control_positions": {
-        "SAT_N_APP": {
+        "1N": {
+            "callsign": "SAT_N_APP",
             "frequency": 127100,
-            "radio_name": "San Antonio Approach",
-            "sector_id": "1N"
+            "radio_name": "San Antonio Approach"
         },
-        "SAT_K_APP": {
+        "1K": {
+            "callsign": "SAT_K_APP",
             "frequency": 118050,
-            "radio_name": "San Antonio Approach",
-            "sector_id": "1K"
+            "radio_name": "San Antonio Approach"
         },
-        "SAT_R_APP": {
+        "1R": {
+            "callsign": "SAT_R_APP",
             "frequency": 128050,
-            "radio_name": "San Antonio Approach",
-            "sector_id": "1R"
+            "radio_name": "San Antonio Approach"
         },
-        "SAT_S_APP": {
+        "1S": {
+            "callsign": "SAT_S_APP",
             "frequency": 125700,
-            "radio_name": "San Antonio Approach",
-            "sector_id": "1S"
+            "radio_name": "San Antonio Approach"
         },
-        "SAT_W_APP": {
+        "1W": {
+            "callsign": "SAT_W_APP",
             "frequency": 125100,
-            "radio_name": "San Antonio Approach",
-            "sector_id": "1W"
+            "radio_name": "San Antonio Approach"
         },
-        "SAT_Q_APP": {
+        "1Q": {
+            "callsign": "SAT_Q_APP",
             "frequency": 124450,
-            "radio_name": "San Antonio Approach",
-            "sector_id": "1Q"
+            "radio_name": "San Antonio Approach"
         },
-        "SAT_L_APP": {
+        "1L": {
+            "callsign": "SAT_L_APP",
             "frequency": 120550,
-            "radio_name": "San Antonio Approach",
-            "sector_id": "1L"
+            "radio_name": "San Antonio Approach"
         },
-        "SAT_TWR": {
+        "1T": {
+            "callsign": "SAT_TWR",
             "frequency": 119800,
-            "radio_name": "San Antonio Tower",
-            "sector_id": "1T"
+            "radio_name": "San Antonio Tower"
         },
-        "BAZ_TWR": {
+        "2T": {
+            "callsign": "BAZ_TWR",
             "frequency": 127050,
-            "radio_name": "New Braunfels Tower",
-            "sector_id": "2T"
+            "radio_name": "New Braunfels Tower"
         },
-        "SKF_TWR": {
+        "3T": {
+            "callsign": "SKF_TWR",
             "frequency": 124300,
-            "radio_name": "Kelly Tower",
-            "sector_id": "3T"
+            "radio_name": "Kelly Tower"
         },
-        "SSF_TWR": {
+        "4T": {
+            "callsign": "SSF_TWR",
             "frequency": 118200,
-            "radio_name": "Stinson Tower",
-            "sector_id": "4T"
+            "radio_name": "Stinson Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "13R": {
                 "inbound_assignments": {
-                    "CRVZA1": "SAT_S_APP",
-                    "DNKIN1": "SAT_W_APP",
-                    "POPPO1": "SAT_W_APP",
-                    "QERVO2": "SAT_N_APP"
+                    "CRVZA1": "1S",
+                    "DNKIN1": "1W",
+                    "POPPO1": "1W",
+                    "QERVO2": "1N"
                 },
                 "departure_assignments": {
-                    "KBAZ": "SAT_Q_APP",
-                    "KSAT": "SAT_N_APP",
-                    "KSKF": "SAT_K_APP",
-                    "KSSF": "SAT_S_APP"
+                    "KBAZ": "1Q",
+                    "KSAT": "1N",
+                    "KSKF": "1K",
+                    "KSSF": "1S"
                 },
                 "default_consolidation": {
-                    "SAT_K_APP": [
-                        "SAT_N_APP",
-                        "SAT_Q_APP",
-                        "SAT_S_APP",
-                        "SAT_W_APP"
+                    "1K": [
+                        "1N",
+                        "1Q",
+                        "1S",
+                        "1W"
                     ]
                 }
             },
             "31L": {
                 "inbound_assignments": {
-                    "CRVZA1": "SAT_S_APP",
-                    "DNKIN1": "SAT_S_APP",
-                    "POPPO1": "SAT_W_APP",
-                    "QERVO2": "SAT_N_APP"
+                    "CRVZA1": "1S",
+                    "DNKIN1": "1S",
+                    "POPPO1": "1W",
+                    "QERVO2": "1N"
                 },
                 "departure_assignments": {
-                    "KBAZ": "SAT_N_APP",
-                    "KSAT": "SAT_N_APP",
-                    "KSKF": "SAT_S_APP",
-                    "KSSF": "SAT_S_APP"
+                    "KBAZ": "1N",
+                    "KSAT": "1N",
+                    "KSKF": "1S",
+                    "KSSF": "1S"
                 },
                 "default_consolidation": {
-                    "SAT_N_APP": [
-                        "SAT_S_APP",
-                        "SAT_W_APP"
+                    "1N": [
+                        "1S",
+                        "1W"
                     ]
                 }
             }
@@ -150,7 +150,7 @@
             "SAT CLASS AIRSPACES"
         ],
         "controller_configs": {
-            "SAT_N_APP": {
+            "1N": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -178,7 +178,7 @@
                     }
                 ]
             },
-            "SAT_K_APP": {
+            "1K": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -194,7 +194,7 @@
                     }
                 ]
             },
-            "SAT_R_APP": {
+            "1R": {
                 "center": "KRND",
                 "flight_following_airspace": [
                     {
@@ -211,7 +211,7 @@
                     }
                 ]
             },
-            "SAT_S_APP": {
+            "1S": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -251,7 +251,7 @@
                     }
                 ]
             },
-            "SAT_W_APP": {
+            "1W": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -273,7 +273,7 @@
                     }
                 ]
             },
-            "SAT_Q_APP": {
+            "1Q": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -315,7 +315,7 @@
                     "TATAR",
                     "LEJON"
                 ],
-                "receiving_controller": "ZHU 85 Kelly"
+                "receiving_controller": "C85"
             },
             {
                 "fixes": [
@@ -325,7 +325,7 @@
                     "YODUH",
                     "JUMBO"
                 ],
-                "receiving_controller": "ZHU 50 Stonewall"
+                "receiving_controller": "C50"
             },
             {
                 "fixes": [
@@ -337,7 +337,7 @@
                     "LRD",
                     "WHAEL"
                 ],
-                "receiving_controller": "ZHU 56 Shiner"
+                "receiving_controller": "C56"
             }
         ]
     },
@@ -348,7 +348,7 @@
         },
         {
             "id": "ZHU",
-            "eram_prefix": "H"
+            "eram_prefix": "C"
         }
     ]
 }

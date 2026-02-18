@@ -9,8 +9,7 @@
                     "cifp_id": "I24R"
                 }
             },
-            "departure_controller": "LAX_N_DEP",
-            "departure_facility": "SCT",
+            "departure_controller": "T6N",
             "departure_runways_as_one": [
                 "25L,25R",
                 "24L,24R"
@@ -21,13 +20,13 @@
                         "cleared_altitude": 3000,
                         "sid": "VTU8",
                         "waypoints": "KLAX-25R/h090 VTU/ho RZS",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "SCTRR.E,STOKD.E,MCKEY.E,DINTY.E,IKAYE.E": {
                         "cleared_altitude": 3000,
                         "sid": "TRTON2",
                         "waypoints": "KLAX-25R/h090 TRTON/a8000+/ho DARRK/a12000- FIXIT IKAYE",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     }
                 },
                 "7R": {
@@ -35,13 +34,13 @@
                         "cleared_altitude": 3000,
                         "sid": "VTU8",
                         "waypoints": "KLAX-25L/h090 VTU/ho RZS",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "SCTRR.E,STOKD.E,MCKEY.E,DINTY.E,IKAYE.E": {
                         "cleared_altitude": 3000,
                         "sid": "TRTON2",
                         "waypoints": "KLAX-25L/h090 TRTON/a8000+/ho DARRK/a12000- FIXIT IKAYE",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     }
                 },
                 "6R": {
@@ -49,19 +48,19 @@
                         "cleared_altitude": 3000,
                         "sid": "TRTON2",
                         "waypoints": "KLAX-24L/h071 TRTON/a8000+/ho DARRK/a12000- BNANO DONKS",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "RZS.E": {
                         "cleared_altitude": 3000,
                         "sid": "VTU8",
                         "waypoints": "KLAX-24L/h071 VTU/ho RZS",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "SCTRR.E,STOKD.E,MCKEY.E,DINTY.E,IKAYE.E": {
                         "cleared_altitude": 3000,
                         "sid": "TRTON2",
                         "waypoints": "KLAX-24L/h071 TRTON/a8000+/ho DARRK/a12000- FIXIT IKAYE",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     }
                 },
                 "25R": {
@@ -69,43 +68,43 @@
                         "cleared_altitude": 23000,
                         "sid": "SUMMR2",
                         "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN TESEA SCTRR",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "STOKD": {
                         "cleared_altitude": 23000,
                         "sid": "SUMMR2",
                         "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN SPLNT STOKD",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "MCKEY": {
                         "cleared_altitude": 23000,
                         "sid": "SUMMR2",
                         "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN MCKEY",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "DINTY": {
                         "cleared_altitude": 23000,
                         "sid": "SUMMR2",
                         "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN OINGO DINTY",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "RIZIN": {
                         "cleared_altitude": 23000,
                         "sid": "SUMMR2",
                         "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "FICKY": {
                         "cleared_altitude": 23000,
                         "sid": "SUMMR2",
                         "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR BNANO DONKS FICKY",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "RZS,KWANG": {
                         "cleared_altitude": 10000,
                         "sid": "MUELR4",
                         "waypoints": "DOCKR/a3000- EVOSE/a5000- MKGEE/ho MUELR FIXIT/a10000/s280 IKAYE WGGNR",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "LAS": {
                         "cleared_altitude": 15000,
@@ -153,43 +152,43 @@
                         "cleared_altitude": 23000,
                         "sid": "SUMMR2",
                         "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN TESEA SCTRR",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "STOKD": {
                         "cleared_altitude": 23000,
                         "sid": "SUMMR2",
                         "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN SPLNT STOKD",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "MCKEY": {
                         "cleared_altitude": 23000,
                         "sid": "SUMMR2",
                         "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN MCKEY",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "DINTY": {
                         "cleared_altitude": 23000,
                         "sid": "SUMMR2",
                         "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN OINGO DINTY",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "RIZIN": {
                         "cleared_altitude": 23000,
                         "sid": "SUMMR2",
                         "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR OLOFF RIZIN",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "FICKY": {
                         "cleared_altitude": 23000,
                         "sid": "SUMMR2",
                         "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/ho DARRK/a12000- SUMMR BNANO DONKS FICKY",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "RZS,KWANG": {
                         "cleared_altitude": 10000,
                         "sid": "MUELR4",
                         "waypoints": "HIIPR/a3000- EVOSE/a5000- MKGEE/ho MUELR FIXIT/a10000/s280 IKAYE WGGNR",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "CLEEE,CNERY": {
                         "cleared_altitude": 17000,
@@ -227,43 +226,43 @@
                         "cleared_altitude": 23000,
                         "sid": "SUMMR2",
                         "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/ho DARRK/a12000- SUMMR OLOFF RIZIN TESEA SCTRR",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "STOKD": {
                         "cleared_altitude": 23000,
                         "sid": "SUMMR2",
                         "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/ho DARRK/a12000- SUMMR OLOFF RIZIN SPLNT STOKD",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "MCKEY": {
                         "cleared_altitude": 23000,
                         "sid": "SUMMR2",
                         "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/ho DARRK/a12000- SUMMR OLOFF RIZIN MCKEY",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "DINTY": {
                         "cleared_altitude": 23000,
                         "sid": "SUMMR2",
                         "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/ho DARRK/a12000- SUMMR OLOFF RIZIN OINGO DINTY",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "RIZIN": {
                         "cleared_altitude": 23000,
                         "sid": "SUMMR2",
                         "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/ho DARRK/a12000- SUMMR OLOFF RIZIN",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "FICKY": {
                         "cleared_altitude": 23000,
                         "sid": "SUMMR2",
                         "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/ho DARRK/a12000- SUMMR BNANO DONKS FICKY",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "RZS,KWANG": {
                         "cleared_altitude": 10000,
                         "sid": "MUELR4",
                         "waypoints": "DLREY/a3000- ENNEY/a5000- NAANC/ho MUELR FIXIT/a10000/s280 IKAYE WGGNR",
-                        "handoff_controller": "ZLA Sector 14"
+                        "handoff_controller": "14"
                     },
                     "CLEEE,CNERY": {
                         "cleared_altitude": 17000,
@@ -1346,7 +1345,7 @@
                     "waypoints": "ZIPRR WURLL TCUPS/a26000+/s280/ho RUKKI/a21000+ SCANN BAUBB/a11000-13000 STYFF/a9000- KAYNN/a7000- LAXBB/a5000/s200 KLEVR/a5000/s200/clearapp",
                     "star": "RUKKI1",
                     "route": "/. RUKKI1",
-                    "initial_controller": "ZLA Sector 25",
+                    "initial_controller": "25",
                     "initial_altitude": 35000,
                     "initial_speed": 300,
                     "expect_approach": "Z0R",
@@ -1396,14 +1395,13 @@
                                 "airport": "KOAK"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 },
                 {
                     "waypoints": "ZIPRR WURLL TCUPS/a26000+/s280/ho RUKKI/a21000+ SCANN BAUBB/a11000-13000 STYFF/a7000-9000 KAYNN/a5000-7000 LAXBB/a5000-/s200 ALBAS/a4000 EZKEL/a4000/clearapp",
                     "star": "BAUBB3",
                     "route": "/. BAUBB3",
-                    "initial_controller": "ZLA Sector 25",
+                    "initial_controller": "25",
                     "initial_altitude": 35000,
                     "initial_speed": 300,
                     "expect_approach": "I30",
@@ -1419,8 +1417,7 @@
                                 "airport": "KOAK"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         },
@@ -1430,7 +1427,7 @@
                     "waypoints": "DOUIT CROWY/a26000-29000 MUPTT/a23000-27000/s280/ho13 MDOTS/a20000-24000 GRIPR/a19000-23000 BIKNG/a16000-20000 RUNNN/a14000-17000/hoT2Z IRNMN/a12000-16000 SYMON/a12000-13000/s250 BAYST/a9000+/s240 JUUSE/a8000-9000/hoT2U CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/delete",
                     "star": "IRNMN2",
                     "route": "/. IRNMN2",
-                    "initial_controller": "ZLA Sector 26",
+                    "initial_controller": "26",
                     "initial_altitude": 35000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -1622,8 +1619,7 @@
                                 "airport": "RCTP"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         },
@@ -1633,7 +1629,7 @@
                     "waypoints": "N033.34.24.193,W120.17.36.335 N033.41.48.439,W120.02.58.857/ho EESSA/a17000-20000/s280 GKNEE/a12000-13000 RYDRR/a11000/s250 KEVVI/a10000+ BAYST/a9000+/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/delete",
                     "star": "RYDRR2",
                     "route": "/. RYDRR2",
-                    "initial_controller": "ZLA Sector 28",
+                    "initial_controller": "28",
                     "initial_altitude": 30000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1766,8 +1762,7 @@
                                 "airport": "PHNL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         },
@@ -1777,7 +1772,7 @@
                     "waypoints": "SNAXX N034.09.48.771,W120.41.52.985/ho SERCO/a19000-21000 HUULL/a17000-20000/s280 GNZZO/a13000-14000 RYDRR/a11000/s250 KEVVI/a10000+ BAYST/a9000+/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/delete",
                     "star": "RYDRR2",
                     "route": "/. RYDRR2",
-                    "initial_controller": "ZLA Sector 28",
+                    "initial_controller": "28",
                     "initial_altitude": 31000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1910,8 +1905,7 @@
                                 "airport": "PHNL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         },
@@ -1921,7 +1915,7 @@
                     "waypoints": "TOKIO MANZZ RBOTO LLEVI/ho BRUKY HUULL/a23000-/s280 GNZZO/a13000-14000 RYDRR/a11000/s250 KEVVI/a10000+ BAYST/a9000+/s240 JUUSE/a8000-9000 CLIFY/a7000-8000/s210 DAHJR/a6000/s210 GADDO/a6000/delete",
                     "star": "HUULL2",
                     "route": "/. HUULL2",
-                    "initial_controller": "ZLA Sector 25",
+                    "initial_controller": "25",
                     "initial_altitude": 23000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1961,8 +1955,7 @@
                                 "airport": "KMRY"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         }

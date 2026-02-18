@@ -1833,8 +1833,7 @@
                     "spawn": "PWL",
                     "cruise_altitude": 15000,
                     "star": "DENNA3",
-                    "initial_controller": "ZNY 56 Kennedy",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "C56",
                     "initial_altitude": 8000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -1876,8 +1875,7 @@
                     "spawn": "PAWLN",
                     "cruise_altitude": 29000,
                     "star": "LOVES1",
-                    "initial_controller": "ZNY 56 Kennedy",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "C56",
                     "initial_altitude": 8000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -1910,8 +1908,7 @@
                     "cruise_altitude": 29000,
                     "star": "BOUNO5",
                     "route": "ANTMN BOUNO/a17000/ho DPK/a15000/tc SOUND/a13000 GWENY/a11000 ZAHNN EILEN WESTO/a6000 BDR ALIXX RYMES/a4000 KHPN/delete",
-                    "initial_controller": "ZBW 46 Boston",
-                    "initial_facility": "ZBW",
+                    "initial_controller": "B46",
                     "initial_altitude": 17000,
                     "assigned_altitude": null,
                     "initial_speed": 250,
@@ -1947,8 +1944,7 @@
                     "waypoints": "N041.05.49.887,W071.43.59.135 N041.02.54.490,W071.50.56.808/ho HTO CCC",
                     "cruise_altitude": 14000,
                     "route": "/. HTO V46 CCC",
-                    "initial_controller": "ZBW 46 Boston",
-                    "initial_facility": "ZBW",
+                    "initial_controller": "B46",
                     "initial_altitude": 10000,
                     "assigned_altitude": 10000,
                     "initial_speed": 250,
@@ -1980,8 +1976,7 @@
                     "waypoints": "HFD N041.33.29.632,W072.36.20.511/ho",
                     "cruise_altitude": 14000,
                     "route": "/. HFD",
-                    "initial_controller": "ZBW 46 Boston",
-                    "initial_facility": "ZBW",
+                    "initial_controller": "B46",
                     "initial_altitude": 8000,
                     "assigned_altitude": 8000,
                     "initial_speed": 250,
@@ -2013,8 +2008,7 @@
                     "waypoints": "N041.28.15.080,W072.08.52.040 SALEM/ho CCC",
                     "cruise_altitude": 8000,
                     "route": "/. CCC",
-                    "initial_controller": "ZBW 46 Boston",
-                    "initial_facility": "ZBW",
+                    "initial_controller": "B46",
                     "initial_altitude": 8000,
                     "assigned_altitude": 8000,
                     "initial_speed": 250,
@@ -2037,8 +2031,7 @@
                     "waypoints": "HFD N041.33.29.632,W072.36.20.511/ho MAD BELTT",
                     "cruise_altitude": 10000,
                     "route": "/. MAD V1 BELTT",
-                    "initial_controller": "ZBW 46 Boston",
-                    "initial_facility": "ZBW",
+                    "initial_controller": "B46",
                     "initial_altitude": 10000,
                     "assigned_altitude": 10000,
                     "initial_speed": 250,
@@ -2074,8 +2067,7 @@
                     "waypoints": "N039.58.50.484,W074.03.34.151 ZIGGI/ho JFK CCC",
                     "cruise_altitude": 5000,
                     "route": "/. JFK CCC",
-                    "initial_controller": "ZNY 56 Kennedy",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "C56",
                     "initial_altitude": 5000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -2106,8 +2098,7 @@
                     "waypoints": "N040.11.27.469,W073.12.53.712 N040.15.12.483,W073.08.39.131/ho SARDI RICED KEYED",
                     "cruise_altitude": 27000,
                     "route": "/. SARDI V139 RICED KEYED",
-                    "initial_controller": "ZNY 56 Kennedy",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "C56",
                     "initial_altitude": 7000,
                     "assigned_altitude": 7000,
                     "initial_speed": 250,
@@ -2130,8 +2121,7 @@
                     "waypoints": "GON N041.17.25.349,W072.10.01.803/ho CREAM",
                     "cruise_altitude": 10000,
                     "route": "/. CREAM",
-                    "initial_controller": "ZBW 46 Boston",
-                    "initial_facility": "ZBW",
+                    "initial_controller": "B46",
                     "initial_altitude": 10000,
                     "assigned_altitude": 10000,
                     "initial_speed": 250,
@@ -2155,7 +2145,7 @@
                     "waypoints": "N041.17.24.607,W073.43.06.291 CMK/ho DENNA",
                     "cruise_altitude": 5000,
                     "route": "/. DENNA",
-                    "initial_controller": "LGA_V_APP",
+                    "initial_controller": "1V",
                     "initial_altitude": 5000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -2197,7 +2187,7 @@
                     "waypoints": "N040.57.00.469,W073.31.33.740 N041.01.04.242,W073.23.53.468/ho BDR",
                     "cruise_altitude": 5000,
                     "route": "/. BDR",
-                    "initial_controller": "LGA_V_APP",
+                    "initial_controller": "1V",
                     "initial_altitude": 5000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -2245,7 +2235,7 @@
                     "waypoints": "IGN N041.36.54.747,W073.41.28.430/ho LOVES/h120",
                     "cruise_altitude": 5000,
                     "route": "/. IGN LOVES",
-                    "initial_controller": "SWF_APP",
+                    "initial_controller": "5H",
                     "initial_altitude": 5000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -2287,8 +2277,7 @@
                     "spawn": "YANTC",
                     "cruise_altitude": 22000,
                     "star": "NELIE4",
-                    "initial_controller": "ZBW 46 Boston",
-                    "initial_facility": "ZBW",
+                    "initial_controller": "B46",
                     "initial_altitude": 6000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -2401,25 +2390,25 @@
                 }
             ],
             "airspace": {
-                "ISP_H_APP": [
+                "3H": [
                     "ISP"
                 ],
-                "ISP_N_APP": [
+                "3N": [
                     "CCC"
                 ],
-                "ISP_R_APP": [
+                "3R": [
                     "SEALL"
                 ],
-                "ISP_O_APP": [
+                "3O": [
                     "VICKY"
                 ],
-                "ISP_Z_APP": [
+                "3Z": [
                     "LOVES"
                 ],
-                "ISP_I_APP": [
+                "3I": [
                     "BEADS_LOW"
                 ],
-                "ISP_B_APP": [
+                "3B": [
                     "BEADS_HIGH"
                 ]
             },
@@ -2543,25 +2532,25 @@
                 }
             ],
             "airspace": {
-                "ISP_H_APP": [
+                "3H": [
                     "ISP"
                 ],
-                "ISP_N_APP": [
+                "3N": [
                     "CCC"
                 ],
-                "ISP_R_APP": [
+                "3R": [
                     "SEALL"
                 ],
-                "ISP_O_APP": [
+                "3O": [
                     "VICKY"
                 ],
-                "ISP_Z_APP": [
+                "3Z": [
                     "LOVES"
                 ],
-                "ISP_I_APP": [
+                "3I": [
                     "BEADS_LOW"
                 ],
-                "ISP_B_APP": [
+                "3B": [
                     "BEADS_HIGH"
                 ]
             },
@@ -2682,25 +2671,25 @@
                 }
             ],
             "airspace": {
-                "ISP_H_APP": [
+                "3H": [
                     "ISP"
                 ],
-                "ISP_N_APP": [
+                "3N": [
                     "CCC"
                 ],
-                "ISP_R_APP": [
+                "3R": [
                     "SEALL"
                 ],
-                "ISP_O_APP": [
+                "3O": [
                     "VICKY"
                 ],
-                "ISP_Z_APP": [
+                "3Z": [
                     "LOVES"
                 ],
-                "ISP_I_APP": [
+                "3I": [
                     "BEADS_LOW"
                 ],
-                "ISP_B_APP": [
+                "3B": [
                     "BEADS_HIGH"
                 ]
             },
@@ -2821,25 +2810,25 @@
                 }
             ],
             "airspace": {
-                "ISP_H_APP": [
+                "3H": [
                     "ISP"
                 ],
-                "ISP_N_APP": [
+                "3N": [
                     "CCC"
                 ],
-                "ISP_R_APP": [
+                "3R": [
                     "SEALL"
                 ],
-                "ISP_O_APP": [
+                "3O": [
                     "VICKY"
                 ],
-                "ISP_Z_APP": [
+                "3Z": [
                     "LOVES"
                 ],
-                "ISP_I_APP": [
+                "3I": [
                     "BEADS_LOW"
                 ],
-                "ISP_B_APP": [
+                "3B": [
                     "BEADS_HIGH"
                 ]
             },

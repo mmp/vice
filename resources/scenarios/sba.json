@@ -513,7 +513,7 @@
                     "spawn": "HMBOY",
                     "cruise_altitude": 30000,
                     "star": "PITBL2",
-                    "initial_controller": "ZLA Sector 14",
+                    "initial_controller": "C14",
                     "initial_altitude": 24000,
                     "assigned_altitude": 8000,
                     "initial_speed": 280,
@@ -542,8 +542,7 @@
                                 "airport": "KLAS"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         },
@@ -553,7 +552,7 @@
                     "waypoints": "YYUNG N034.51.59.265,W120.25.25.506/ho GVO HABUT",
                     "cruise_altitude": 31000,
                     "star": "NORTHWEST SBA ARR",
-                    "initial_controller": "ZLA Sector 25",
+                    "initial_controller": "C25",
                     "initial_altitude": 25000,
                     "assigned_altitude": 9000,
                     "initial_speed": 300,
@@ -574,8 +573,7 @@
                                 "airport": "KSFO"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         },
@@ -585,7 +583,7 @@
                     "waypoints": "AVE N035.00.49.287,W120.02.32.682/ho GVO HABUT",
                     "cruise_altitude": 37000,
                     "star": "NORTH SBA ARR",
-                    "initial_controller": "ZLA Sector 25",
+                    "initial_controller": "C25",
                     "initial_altitude": 20000,
                     "assigned_altitude": 9000,
                     "initial_speed": 300,
@@ -609,8 +607,7 @@
                                 "airport": "KPDX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         },
@@ -620,7 +617,7 @@
                     "waypoints": "N035.49.47.855,W120.37.41.398 PRB/ho CREPE",
                     "cruise_altitude": 34000,
                     "star": "NORTH SBP ARR",
-                    "initial_controller": "ZOA Sector 10",
+                    "initial_controller": "O10",
                     "initial_altitude": 12000,
                     "assigned_altitude": 7000,
                     "initial_speed": 280,
@@ -636,8 +633,7 @@
                                 "airport": "KPDX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZOA"
+                    }
                 }
             ]
         },
@@ -647,7 +643,7 @@
                     "waypoints": "CNDOR/ho CADAB",
                     "cruise_altitude": 36000,
                     "star": "SOUTH SBP ARR",
-                    "initial_controller": "ZLA Sector 14",
+                    "initial_controller": "C14",
                     "initial_altitude": 16000,
                     "assigned_altitude": 9000,
                     "initial_speed": 250,
@@ -663,8 +659,7 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         },
@@ -674,7 +669,7 @@
                     "waypoints": "N035.45.06.111,W121.26.18.186 N035.34.38.201,W121.09.53.536/ho YYUNG MQO",
                     "cruise_altitude": 27000,
                     "star": "NORTHWEST SBP ARR",
-                    "initial_controller": "ZOA Sector 10",
+                    "initial_controller": "O10",
                     "initial_altitude": 16000,
                     "assigned_altitude": 7000,
                     "initial_speed": 300,
@@ -691,8 +686,7 @@
                                 "airport": "KSFO"
                             }
                         ]
-                    },
-                    "initial_facility": "ZOA"
+                    }
                 }
             ]
         },
@@ -702,7 +696,7 @@
                     "waypoints": "N035.51.11.955,W120.24.37.276 PRB/ho CREPE",
                     "cruise_altitude": 36000,
                     "star": "EAST SBP ARR",
-                    "initial_controller": "ZOA Sector 10",
+                    "initial_controller": "O10",
                     "initial_altitude": 13000,
                     "assigned_altitude": 7000,
                     "initial_speed": 250,
@@ -715,8 +709,7 @@
                                 "airport": "KDEN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZOA"
+                    }
                 }
             ]
         },
@@ -726,7 +719,7 @@
                     "waypoints": "N034.33.51.591,W118.59.27.425 N034.32.32.050,W119.19.13.179/ho RZS",
                     "cruise_altitude": 16000,
                     "star": "EAST SMX ARR",
-                    "initial_controller": "ZLA Sector 14",
+                    "initial_controller": "C14",
                     "initial_altitude": 16000,
                     "assigned_altitude": 8000,
                     "initial_speed": 250,
@@ -743,8 +736,7 @@
                                 "airport": "KBUR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         },
@@ -754,7 +746,7 @@
                     "waypoints": "N035.45.32.244,W121.08.04.661 N035.35.29.177,W121.00.40.457/ho MQO",
                     "cruise_altitude": 20000,
                     "star": "NORTH SMX ARR",
-                    "initial_controller": "ZOA Sector 10",
+                    "initial_controller": "O10",
                     "initial_altitude": 13000,
                     "assigned_altitude": 8000,
                     "initial_speed": 250,
@@ -772,8 +764,7 @@
                                 "airport": "KAPC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZOA"
+                    }
                 }
             ]
         }
@@ -966,16 +957,16 @@
     "scenarios": {
         "SBA 07/15": {
             "airspace": {
-                "SBA_H_APP": [
+                "1H": [
                     "SBA_H_APP (RWY 7)"
                 ],
-                "SBA_E_APP": [
+                "1E": [
                     "SBA_E_APP (RWY 7)"
                 ],
-                "SBA_R_APP": [
+                "1R": [
                     "SBA_R_APP"
                 ],
-                "SBA_I_APP": [
+                "1I": [
                     "SBA_I_APP"
                 ]
             },
@@ -1052,16 +1043,16 @@
         },
         "KSBA 25/15": {
             "airspace": {
-                "SBA_H_APP": [
+                "1H": [
                     "SBA_H_APP (RWY 25)"
                 ],
-                "SBA_E_APP": [
+                "1E": [
                     "SBA_E_APP (RWY 25)"
                 ],
-                "SBA_R_APP": [
+                "1R": [
                     "SBA_R_APP"
                 ],
-                "SBA_I_APP": [
+                "1I": [
                     "SBA_I_APP"
                 ]
             },

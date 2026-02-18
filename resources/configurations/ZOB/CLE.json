@@ -1,173 +1,173 @@
 {
     "control_positions": {
-        "CLE_A_APP": {
+        "2A": {
+            "callsign": "CLE_A_APP",
             "frequency": 124000,
-            "radio_name": "Cleveland Approach",
-            "sector_id": "2A"
+            "radio_name": "Cleveland Approach"
         },
-        "CLE_F_APP": {
+        "2F": {
+            "callsign": "CLE_F_APP",
             "frequency": 119625,
-            "radio_name": "Cleveland Approach",
-            "sector_id": "2F"
+            "radio_name": "Cleveland Approach"
         },
-        "CLE_D_DEP": {
+        "2D": {
+            "callsign": "CLE_D_DEP",
             "frequency": 128250,
-            "radio_name": "Cleveland Approach",
-            "sector_id": "2D"
+            "radio_name": "Cleveland Approach"
         },
-        "CLE_R_DEP": {
+        "2R": {
+            "callsign": "CLE_R_DEP",
             "frequency": 135875,
-            "radio_name": "Cleveland Approach",
-            "sector_id": "2R"
+            "radio_name": "Cleveland Approach"
         },
-        "CLE_N_APP": {
+        "2N": {
+            "callsign": "CLE_N_APP",
             "frequency": 125350,
-            "radio_name": "Cleveland Approach",
-            "sector_id": "2N"
+            "radio_name": "Cleveland Approach"
         },
-        "CAK_E_APP": {
+        "2E": {
+            "callsign": "CAK_E_APP",
             "frequency": 125500,
-            "radio_name": "Cleveland Approach",
-            "sector_id": "2E"
+            "radio_name": "Cleveland Approach"
         },
-        "CAK_S_APP": {
+        "2S": {
+            "callsign": "CAK_S_APP",
             "frequency": 118600,
-            "radio_name": "Cleveland Approach",
-            "sector_id": "2S"
+            "radio_name": "Cleveland Approach"
         },
-        "MFD_W_APP": {
+        "2W": {
+            "callsign": "MFD_W_APP",
             "frequency": 128350,
-            "radio_name": "Cleveland Approach",
-            "sector_id": "2W"
+            "radio_name": "Cleveland Approach"
         },
-        "CLE_TWR": {
+        "2T": {
+            "callsign": "CLE_TWR",
             "frequency": 124500,
-            "radio_name": "Cleveland Tower",
-            "sector_id": "2T"
+            "radio_name": "Cleveland Tower"
         },
-        "CAK_TWR": {
+        "4T": {
+            "callsign": "CAK_TWR",
             "frequency": 135750,
-            "radio_name": "Akron-Canton Tower",
-            "sector_id": "4T"
+            "radio_name": "Akron-Canton Tower"
         },
-        "MFD_TWR": {
+        "5T": {
+            "callsign": "MFD_TWR",
             "frequency": 119800,
-            "radio_name": "Mansfield Tower",
-            "sector_id": "5T"
+            "radio_name": "Mansfield Tower"
         },
-        "CGF_TWR": {
+        "3T": {
+            "callsign": "CGF_TWR",
             "frequency": 118500,
-            "radio_name": "County Tower",
-            "sector_id": "3T"
+            "radio_name": "County Tower"
         },
-        "BKL_TWR": {
+        "1T": {
+            "callsign": "BKL_TWR",
             "frequency": 124300,
-            "radio_name": "Lakefront Tower",
-            "sector_id": "1T"
+            "radio_name": "Lakefront Tower"
         },
-        "DTW_F_APP": {
+        "1F": {
+            "callsign": "DTW_F_APP",
             "frequency": 126225,
-            "radio_name": "Detroit Approach",
-            "sector_id": "1F"
+            "radio_name": "Detroit Approach"
         }
     },
     "stars_config": {
         "configurations": {
             "KCL": {
                 "inbound_assignments": {
-                    "BRWNZ4_FEEDERN": "CLE_A_APP",
-                    "ROKNN3_FEEDERN": "CLE_A_APP",
-                    "ROLLN2_FEEDERN": "CLE_A_APP",
-                    "TRYBE4_FEEDERN": "CLE_A_APP"
+                    "BRWNZ4_FEEDERN": "2A",
+                    "ROKNN3_FEEDERN": "2A",
+                    "ROLLN2_FEEDERN": "2A",
+                    "TRYBE4_FEEDERN": "2A"
                 },
                 "default_consolidation": {
-                    "CLE_A_APP": []
+                    "2A": []
                 }
             },
             "KC1": {
                 "inbound_assignments": {
-                    "BRWNZ4_FEEDERS": "CLE_A_APP",
-                    "ROKNN3_FEEDERS": "CLE_A_APP",
-                    "ROLLN2_FEEDERS": "CLE_A_APP",
-                    "TRYBE4_FEEDERS": "CLE_A_APP"
+                    "BRWNZ4_FEEDERS": "2A",
+                    "ROKNN3_FEEDERS": "2A",
+                    "ROLLN2_FEEDERS": "2A",
+                    "TRYBE4_FEEDERS": "2A"
                 },
                 "default_consolidation": {
-                    "CLE_A_APP": []
+                    "2A": []
                 }
             },
             "KC2": {
                 "inbound_assignments": {
-                    "BRWNZ4_FINALN": "CLE_F_APP",
-                    "ROKNN3_FINALN": "CLE_F_APP",
-                    "ROLLN2_FINALN": "CLE_F_APP",
-                    "TRYBE4_FINALN": "CLE_F_APP"
+                    "BRWNZ4_FINALN": "2F",
+                    "ROKNN3_FINALN": "2F",
+                    "ROLLN2_FINALN": "2F",
+                    "TRYBE4_FINALN": "2F"
                 },
                 "default_consolidation": {
-                    "CLE_F_APP": []
+                    "2F": []
                 }
             },
             "KC3": {
                 "inbound_assignments": {
-                    "BRWNZ4_FINALS": "CLE_F_APP",
-                    "ROKNN3_FINALS": "CLE_F_APP",
-                    "ROLLN2_FINALS": "CLE_F_APP",
-                    "TRYBE4_FINALS": "CLE_F_APP"
+                    "BRWNZ4_FINALS": "2F",
+                    "ROKNN3_FINALS": "2F",
+                    "ROLLN2_FINALS": "2F",
+                    "TRYBE4_FINALS": "2F"
                 },
                 "default_consolidation": {
-                    "CLE_F_APP": []
+                    "2F": []
                 }
             },
             "KC4": {
                 "inbound_assignments": {
-                    "BRWNZ4": "CLE_A_APP",
-                    "GOSIC-FIVUM": "MFD_W_APP",
-                    "HUUVR1": "CAK_S_APP",
-                    "ROKNN3": "CLE_A_APP",
-                    "ROLLN2": "CLE_A_APP",
-                    "TRYBE4": "CLE_A_APP",
-                    "ZZIPS1": "CAK_E_APP"
+                    "BRWNZ4": "2A",
+                    "GOSIC-FIVUM": "2W",
+                    "HUUVR1": "2S",
+                    "ROKNN3": "2A",
+                    "ROLLN2": "2A",
+                    "TRYBE4": "2A",
+                    "ZZIPS1": "2E"
                 },
                 "departure_assignments": {
-                    "KBKL": "CLE_N_APP",
-                    "KCAK": "CAK_E_APP",
-                    "KCGF": "CLE_N_APP",
-                    "KCLE": "CLE_R_DEP",
-                    "KMFD": "MFD_W_APP"
+                    "KBKL": "2N",
+                    "KCAK": "2E",
+                    "KCGF": "2N",
+                    "KCLE": "2R",
+                    "KMFD": "2W"
                 },
                 "default_consolidation": {
-                    "CAK_E_APP": [
-                        "CAK_S_APP",
-                        "CLE_A_APP",
-                        "CLE_N_APP",
-                        "CLE_R_DEP",
-                        "MFD_W_APP"
+                    "2E": [
+                        "2S",
+                        "2A",
+                        "2N",
+                        "2R",
+                        "2W"
                     ]
                 }
             },
             "KC5": {
                 "inbound_assignments": {
-                    "BRWNZ4": "CLE_A_APP",
-                    "GOSIC-FIVUM": "MFD_W_APP",
-                    "HUUVR1": "CAK_S_APP",
-                    "ROKNN3": "CLE_A_APP",
-                    "ROLLN2": "CLE_A_APP",
-                    "TRYBE4": "CLE_A_APP",
-                    "ZZIPS1": "CAK_E_APP"
+                    "BRWNZ4": "2A",
+                    "GOSIC-FIVUM": "2W",
+                    "HUUVR1": "2S",
+                    "ROKNN3": "2A",
+                    "ROLLN2": "2A",
+                    "TRYBE4": "2A",
+                    "ZZIPS1": "2E"
                 },
                 "departure_assignments": {
-                    "KBKL": "CLE_N_APP",
-                    "KCAK": "CAK_E_APP",
-                    "KCGF": "CLE_N_APP",
-                    "KCLE": "CLE_D_DEP",
-                    "KMFD": "MFD_W_APP"
+                    "KBKL": "2N",
+                    "KCAK": "2E",
+                    "KCGF": "2N",
+                    "KCLE": "2D",
+                    "KMFD": "2W"
                 },
                 "default_consolidation": {
-                    "CAK_E_APP": [
-                        "CAK_S_APP",
-                        "CLE_A_APP",
-                        "CLE_D_DEP",
-                        "CLE_N_APP",
-                        "MFD_W_APP"
+                    "2E": [
+                        "2S",
+                        "2A",
+                        "2D",
+                        "2N",
+                        "2W"
                     ]
                 }
             }
@@ -278,7 +278,7 @@
                 "fixes": [
                     "ALL"
                 ],
-                "receiving_controller": "ZOB 66 Bellaire"
+                "receiving_controller": "C66"
             }
         ],
         "coordination_fixes": {
@@ -392,6 +392,10 @@
         {
             "id": "YNG",
             "prefix": "2"
+        },
+        {
+            "id": "ZID",
+            "eram_prefix": "I"
         },
         {
             "id": "ZOB",

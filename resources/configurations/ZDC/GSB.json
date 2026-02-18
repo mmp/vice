@@ -1,19 +1,19 @@
 {
     "control_positions": {
-        "GSB_N_APP": {
+        "1N": {
+            "callsign": "GSB_N_APP",
             "frequency": 123700,
-            "radio_name": "Seymour Johnson Approach",
-            "sector_id": "1N"
+            "radio_name": "Seymour Johnson Approach"
         },
-        "GSB_S_APP": {
+        "1S": {
+            "callsign": "GSB_S_APP",
             "frequency": 119700,
-            "radio_name": "Seymour Johnson Approach",
-            "sector_id": "1S"
+            "radio_name": "Seymour Johnson Approach"
         },
-        "GSB_TWR": {
+        "1Z": {
+            "callsign": "GSB_TWR",
             "frequency": 126250,
-            "radio_name": "Seymour Johnson Tower",
-            "sector_id": "1Z"
+            "radio_name": "Seymour Johnson Tower"
         }
     },
     "handoff_ids": [
@@ -32,6 +32,10 @@
         {
             "id": "RDU",
             "prefix": "1"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "C"
         }
     ]
 }

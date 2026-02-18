@@ -1,24 +1,24 @@
 {
     "control_positions": {
-        "NHK_E_APP": {
+        "5E": {
+            "callsign": "NHK_E_APP",
             "frequency": 127950,
-            "radio_name": "Patuxent Approach",
-            "sector_id": "5E"
+            "radio_name": "Patuxent Approach"
         },
-        "NHK_F_APP": {
+        "5F": {
+            "callsign": "NHK_F_APP",
             "frequency": 127950,
-            "radio_name": "Patuxent Approach",
-            "sector_id": "5F"
+            "radio_name": "Patuxent Approach"
         },
-        "NHK_W_APP": {
+        "5W": {
+            "callsign": "NHK_W_APP",
             "frequency": 120050,
-            "radio_name": "Patuxent Approach",
-            "sector_id": "5W"
+            "radio_name": "Patuxent Approach"
         },
-        "NHK_TWR": {
+        "5Z": {
+            "callsign": "NHK_TWR",
             "frequency": 123700,
-            "radio_name": "Patuxent Tower",
-            "sector_id": "5Z"
+            "radio_name": "Patuxent Tower"
         }
     },
     "handoff_ids": [
@@ -33,6 +33,10 @@
         {
             "id": "PCT",
             "prefix": "1"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "C"
         }
     ]
 }

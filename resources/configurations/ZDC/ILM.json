@@ -1,26 +1,50 @@
 {
     "control_positions": {
-        "ILM_E_APP": {
+        "1E": {
+            "callsign": "ILM_E_APP",
             "frequency": 135750,
-            "radio_name": "Wilmington Approach",
-            "sector_id": "1E"
+            "radio_name": "Wilmington Approach"
         },
-        "ILM_TWR": {
+        "1T": {
+            "callsign": "ILM_TWR",
             "frequency": 119900,
-            "radio_name": "Wilmington Tower",
-            "sector_id": "1T"
+            "radio_name": "Wilmington Tower"
         },
-        "ILM_W_APP": {
+        "1W": {
+            "callsign": "ILM_W_APP",
             "frequency": 118250,
-            "radio_name": "Wilmington Approach",
-            "sector_id": "1W"
+            "radio_name": "Wilmington Approach"
         }
     },
     "stars_config": {},
     "handoff_ids": [
         {
+            "id": "FAY",
+            "prefix": "2"
+        },
+        {
+            "id": "FLO",
+            "prefix": "5"
+        },
+        {
+            "id": "GSB",
+            "prefix": "3"
+        },
+        {
+            "id": "MYR",
+            "prefix": "1"
+        },
+        {
+            "id": "NKT",
+            "prefix": "4"
+        },
+        {
             "id": "ZDC",
-            "eram_prefix": "W"
+            "eram_prefix": "C"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "J"
         }
     ]
 }

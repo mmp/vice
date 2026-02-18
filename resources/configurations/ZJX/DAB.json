@@ -1,106 +1,106 @@
 {
     "control_positions": {
-        "DAB_H_APP": {
+        "1H": {
+            "callsign": "DAB_H_APP",
             "frequency": 125725,
-            "radio_name": "Daytona Beach approach",
-            "sector_id": "1H"
+            "radio_name": "Daytona Beach approach"
         },
-        "DAB_M_APP": {
+        "1M": {
+            "callsign": "DAB_M_APP",
             "frequency": 118850,
-            "radio_name": "Daytona Beach approach",
-            "sector_id": "1M"
+            "radio_name": "Daytona Beach approach"
         },
-        "DAB_L_APP": {
+        "1L": {
+            "callsign": "DAB_L_APP",
             "frequency": 127075,
-            "radio_name": "Daytona Beach approach",
-            "sector_id": "1L"
+            "radio_name": "Daytona Beach approach"
         },
-        "DAB_N_APP": {
+        "1N": {
+            "callsign": "DAB_N_APP",
             "frequency": 125800,
-            "radio_name": "Daytona Beach approach",
-            "sector_id": "1N"
+            "radio_name": "Daytona Beach approach"
         },
-        "DAB_S_APP": {
+        "1S": {
+            "callsign": "DAB_S_APP",
             "frequency": 125350,
-            "radio_name": "Daytona Beach approach",
-            "sector_id": "1S"
+            "radio_name": "Daytona Beach approach"
         },
-        "DAB_E_APP": {
+        "1E": {
+            "callsign": "DAB_E_APP",
             "frequency": 123900,
-            "radio_name": "Daytona Beach approach",
-            "sector_id": "1E"
+            "radio_name": "Daytona Beach approach"
         },
-        "DAB_W_APP": {
+        "1W": {
+            "callsign": "DAB_W_APP",
             "frequency": 126550,
-            "radio_name": "Daytona Beach approach",
-            "sector_id": "1W"
+            "radio_name": "Daytona Beach approach"
         },
-        "DAB_N_TWR": {
+        "1T": {
+            "callsign": "DAB_N_TWR",
             "frequency": 120700,
-            "radio_name": "Daytona Beach tower",
-            "sector_id": "1T"
+            "radio_name": "Daytona Beach tower"
         },
-        "DAB_S_TWR": {
+        "1P": {
+            "callsign": "DAB_S_TWR",
             "frequency": 118100,
-            "radio_name": "Daytona Beach tower",
-            "sector_id": "1P"
+            "radio_name": "Daytona Beach tower"
         }
     },
     "stars_config": {
         "configurations": {
             "DAE": {
                 "inbound_assignments": {
-                    "TTHOR3": "DAB_H_APP",
-                    "WALEE": "DAB_M_APP",
-                    "WORMSE": "DAB_H_APP",
-                    "V267S": "DAB_M_APP",
-                    "V267N": "DAB_L_APP",
-                    "KIZER": "DAB_W_APP",
-                    "SMYRA": "DAB_S_APP",
-                    "ASTOR": "DAB_M_APP"
+                    "TTHOR3": "1H",
+                    "WALEE": "1M",
+                    "WORMSE": "1H",
+                    "V267S": "1M",
+                    "V267N": "1L",
+                    "KIZER": "1W",
+                    "SMYRA": "1S",
+                    "ASTOR": "1M"
                 },
                 "departure_assignments": {
-                    "KDAB": "DAB_W_APP",
-                    "KOMN": "DAB_N_APP",
-                    "KFIN": "DAB_N_APP",
-                    "KEVB": "DAB_S_APP",
-                    "KDED": "DAB_W_APP"
+                    "KDAB": "1W",
+                    "KOMN": "1N",
+                    "KFIN": "1N",
+                    "KEVB": "1S",
+                    "KDED": "1W"
                 },
                 "default_consolidation": {
-                    "DAB_H_APP": [
-                        "DAB_L_APP",
-                        "DAB_M_APP",
-                        "DAB_N_APP",
-                        "DAB_S_APP",
-                        "DAB_W_APP"
+                    "1H": [
+                        "1L",
+                        "1M",
+                        "1N",
+                        "1S",
+                        "1W"
                     ]
                 }
             },
             "DAW": {
                 "inbound_assignments": {
-                    "TTHOR3": "DAB_H_APP",
-                    "WALEE": "DAB_M_APP",
-                    "WORMSW": "DAB_H_APP",
-                    "V267S": "DAB_M_APP",
-                    "V267N": "DAB_L_APP",
-                    "KIZER": "DAB_W_APP",
-                    "SMYRA": "DAB_S_APP",
-                    "ASTOR": "DAB_M_APP"
+                    "TTHOR3": "1H",
+                    "WALEE": "1M",
+                    "WORMSW": "1H",
+                    "V267S": "1M",
+                    "V267N": "1L",
+                    "KIZER": "1W",
+                    "SMYRA": "1S",
+                    "ASTOR": "1M"
                 },
                 "departure_assignments": {
-                    "KDAB": "DAB_W_APP",
-                    "KOMN": "DAB_N_APP",
-                    "KFIN": "DAB_N_APP",
-                    "KEVB": "DAB_S_APP",
-                    "KDED": "DAB_W_APP"
+                    "KDAB": "1W",
+                    "KOMN": "1N",
+                    "KFIN": "1N",
+                    "KEVB": "1S",
+                    "KDED": "1W"
                 },
                 "default_consolidation": {
-                    "DAB_H_APP": [
-                        "DAB_L_APP",
-                        "DAB_M_APP",
-                        "DAB_N_APP",
-                        "DAB_S_APP",
-                        "DAB_W_APP"
+                    "1H": [
+                        "1L",
+                        "1M",
+                        "1N",
+                        "1S",
+                        "1W"
                     ]
                 }
             }
@@ -269,7 +269,7 @@
                     15000,
                     999000
                 ],
-                "receiving_controller": "ZJX 57 St. Johns"
+                "receiving_controller": "C57"
             },
             {
                 "fixes": [
@@ -279,7 +279,7 @@
                     6000,
                     11000
                 ],
-                "receiving_controller": "MCO_E_DEP"
+                "receiving_controller": "21E"
             },
             {
                 "fixes": [
@@ -289,7 +289,7 @@
                     6000,
                     11000
                 ],
-                "receiving_controller": "MCO_E_DEP"
+                "receiving_controller": "21E"
             },
             {
                 "fixes": [
@@ -299,7 +299,7 @@
                     0,
                     5000
                 ],
-                "receiving_controller": "MCO_N_APP"
+                "receiving_controller": "21N"
             },
             {
                 "fixes": [
@@ -309,7 +309,7 @@
                     6000,
                     11000
                 ],
-                "receiving_controller": "MCO_E_DEP"
+                "receiving_controller": "21E"
             },
             {
                 "fixes": [
@@ -319,7 +319,7 @@
                     0,
                     5000
                 ],
-                "receiving_controller": "MCO_N_APP"
+                "receiving_controller": "21N"
             },
             {
                 "fixes": [
@@ -329,7 +329,7 @@
                     6000,
                     11000
                 ],
-                "receiving_controller": "MCO_E_DEP"
+                "receiving_controller": "21E"
             },
             {
                 "fixes": [
@@ -339,7 +339,7 @@
                     0,
                     5000
                 ],
-                "receiving_controller": "MCO_N_APP"
+                "receiving_controller": "21N"
             },
             {
                 "fixes": [
@@ -349,7 +349,7 @@
                     0,
                     10000
                 ],
-                "receiving_controller": "JAX_V_APP"
+                "receiving_controller": "11V"
             },
             {
                 "fixes": [
@@ -359,7 +359,7 @@
                     15000,
                     999000
                 ],
-                "receiving_controller": "ZJX 57 St. Johns"
+                "receiving_controller": "C57"
             },
             {
                 "fixes": [
@@ -369,7 +369,7 @@
                     0,
                     15000
                 ],
-                "receiving_controller": "JAX_V_APP"
+                "receiving_controller": "11V"
             },
             {
                 "fixes": [
@@ -379,7 +379,7 @@
                     15000,
                     999000
                 ],
-                "receiving_controller": "ZJX 57 St. Johns"
+                "receiving_controller": "C57"
             },
             {
                 "fixes": [
@@ -389,7 +389,7 @@
                     10000,
                     999000
                 ],
-                "receiving_controller": "ZJX 57 St. Johns"
+                "receiving_controller": "C57"
             },
             {
                 "fixes": [
@@ -399,7 +399,7 @@
                     10000,
                     999000
                 ],
-                "receiving_controller": "ZJX 57 St. Johns"
+                "receiving_controller": "C57"
             }
         ],
         "coordination_fixes": {
@@ -458,7 +458,7 @@
         },
         {
             "id": "ZJX",
-            "eram_prefix": "J"
+            "eram_prefix": "C"
         }
     ]
 }

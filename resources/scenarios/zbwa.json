@@ -27,15 +27,14 @@
                     "cifp_id": "R32"
                 }
             },
-            "departure_controller": "BOS_D_APP",
-            "departure_facility": "A90",
+            "departure_controller": "B1D",
             "departure_routes": {
                 "22R": {
                     "HYLND": {
                         "cleared_altitude": 5000,
                         "sid": "HYLND7",
                         "waypoints": "TJAYY/a1200+ BOATT/a4000+ HEARR/ho MARBB/flyover HYLND/flyover",
-                        "handoff_controller": "ZBW 36 Gardner"
+                        "handoff_controller": "36"
                     }
                 }
             },
@@ -109,15 +108,14 @@
                     "cifp_id": "R23"
                 }
             },
-            "departure_controller": "BOS_D_APP",
-            "departure_facility": "A90",
+            "departure_controller": "B1D",
             "departure_routes": {
                 "29": {
                     "HYLND": {
                         "cleared_altitude": 5000,
                         "sid": "HNSCM5",
                         "waypoints": "KBED HYLND/ho",
-                        "handoff_controller": "ZBW 36 Gardner"
+                        "handoff_controller": "36"
                     }
                 }
             },
@@ -146,7 +144,7 @@
                     "cruise_altitude": 35000,
                     "star": "JFUND2",
                     "route": "/. JFUND2",
-                    "initial_controller": "ZBW 38 Athens",
+                    "initial_controller": "38",
                     "initial_altitude": 38000,
                     "initial_speed": 300,
                     "airlines": {
@@ -187,8 +185,7 @@
                                 "airport": "KDTW"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         }

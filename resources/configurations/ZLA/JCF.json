@@ -1,64 +1,64 @@
 {
     "control_positions": {
-        "PMD_A_APP": {
+        "1A": {
+            "callsign": "PMD_A_APP",
             "frequency": 124550,
-            "radio_name": "Joshua Approach",
-            "sector_id": "1A"
+            "radio_name": "Joshua Approach"
         },
-        "EDW_F_APP": {
+        "1F": {
+            "callsign": "EDW_F_APP",
             "frequency": 133150,
-            "radio_name": "Joshua Approach",
-            "sector_id": "1F"
+            "radio_name": "Joshua Approach"
         },
-        "EDW_I_APP": {
+        "1I": {
+            "callsign": "EDW_I_APP",
             "frequency": 134050,
-            "radio_name": "Joshua Approach",
-            "sector_id": "1I"
+            "radio_name": "Joshua Approach"
         },
-        "JCF_APP": {
+        "1J": {
+            "callsign": "JCF_APP",
             "frequency": 133650,
-            "radio_name": "Joshua Approach",
-            "sector_id": "1J"
+            "radio_name": "Joshua Approach"
         },
-        "EDW_M_APP": {
+        "1M": {
+            "callsign": "EDW_M_APP",
             "frequency": 120250,
-            "radio_name": "Joshua Approach",
-            "sector_id": "1M"
+            "radio_name": "Joshua Approach"
         },
-        "EDW_O_APP": {
+        "1O": {
+            "callsign": "EDW_O_APP",
             "frequency": 126550,
-            "radio_name": "Joshua Approach",
-            "sector_id": "1O"
+            "radio_name": "Joshua Approach"
         },
-        "PMD_P_APP": {
+        "1P": {
+            "callsign": "PMD_P_APP",
             "frequency": 126100,
-            "radio_name": "Joshua Approach",
-            "sector_id": "1P"
+            "radio_name": "Joshua Approach"
         },
-        "EDW_S_APP": {
+        "1S": {
+            "callsign": "EDW_S_APP",
             "frequency": 123950,
-            "radio_name": "Joshua Approach",
-            "sector_id": "1S"
+            "radio_name": "Joshua Approach"
         },
-        "EDW_W_APP": {
+        "1W": {
+            "callsign": "EDW_W_APP",
             "frequency": 127500,
-            "radio_name": "Joshua Approach",
-            "sector_id": "1W"
+            "radio_name": "Joshua Approach"
         },
-        "EDW_D_APP": {
+        "2D": {
+            "callsign": "EDW_D_APP",
             "frequency": 126200,
-            "radio_name": "Desert Radio",
-            "sector_id": "2D"
+            "radio_name": "Desert Radio"
         },
-        "EDW_T_APP": {
+        "2T": {
+            "callsign": "EDW_T_APP",
             "frequency": 132750,
-            "radio_name": "Sport Control",
-            "sector_id": "2T"
+            "radio_name": "Sport Control"
         },
-        "NID_APP": {
+        "3C": {
+            "callsign": "NID_APP",
             "frequency": 128250,
-            "radio_name": "China Control",
-            "sector_id": "3C"
+            "radio_name": "China Control"
         }
     },
     "handoff_ids": [
@@ -69,6 +69,14 @@
         {
             "id": "SCT",
             "prefix": "1"
+        },
+        {
+            "id": "ZLA",
+            "eram_prefix": "C"
+        },
+        {
+            "id": "ZOA",
+            "eram_prefix": "O"
         }
     ]
 }

@@ -1,91 +1,91 @@
 {
     "control_positions": {
-        "IND_E_APP": {
+        "1E": {
+            "callsign": "IND_E_APP",
             "frequency": 124950,
-            "radio_name": "Indianapolis Approach",
-            "sector_id": "1E"
+            "radio_name": "Indianapolis Approach"
         },
-        "IND_W_APP": {
+        "1W": {
+            "callsign": "IND_W_APP",
             "frequency": 119050,
-            "radio_name": "Indianapolis Approach",
-            "sector_id": "1W"
+            "radio_name": "Indianapolis Approach"
         },
-        "IND_B_APP": {
+        "1B": {
+            "callsign": "IND_B_APP",
             "frequency": 121100,
-            "radio_name": "Indianapolis Approach",
-            "sector_id": "1B"
+            "radio_name": "Indianapolis Approach"
         },
-        "IND_D_APP": {
+        "1D": {
+            "callsign": "IND_D_APP",
             "frequency": 128175,
-            "radio_name": "Indianapolis Approach",
-            "sector_id": "1D"
+            "radio_name": "Indianapolis Approach"
         },
-        "IND_F_APP": {
+        "1F": {
+            "callsign": "IND_F_APP",
             "frequency": 123950,
-            "radio_name": "Indianapolis Approach",
-            "sector_id": "1F"
+            "radio_name": "Indianapolis Approach"
         },
-        "IND_I_APP": {
+        "1I": {
+            "callsign": "IND_I_APP",
             "frequency": 120525,
-            "radio_name": "Indianapolis Approach",
-            "sector_id": "1I"
+            "radio_name": "Indianapolis Approach"
         },
-        "IND_S_APP": {
+        "1S": {
+            "callsign": "IND_S_APP",
             "frequency": 127150,
-            "radio_name": "Indianapolis Approach",
-            "sector_id": "1S"
+            "radio_name": "Indianapolis Approach"
         },
-        "IND_N_APP": {
+        "1N": {
+            "callsign": "IND_N_APP",
             "frequency": 124650,
-            "radio_name": "Indianapolis Approach",
-            "sector_id": "1N"
+            "radio_name": "Indianapolis Approach"
         },
-        "IND_E_TWR": {
+        "1Y": {
+            "callsign": "IND_E_TWR",
             "frequency": 120900,
-            "radio_name": "Indianapolis Tower",
-            "sector_id": "1Y"
+            "radio_name": "Indianapolis Tower"
         },
-        "IND_W_TWR": {
+        "1X": {
+            "callsign": "IND_W_TWR",
             "frequency": 127825,
-            "radio_name": "Indianapolis Tower",
-            "sector_id": "1X"
+            "radio_name": "Indianapolis Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "KIN": {
                 "inbound_assignments": {
-                    "GIIBS3": "IND_D_APP",
-                    "JAKKS2": "IND_B_APP",
-                    "KOLTS2": "IND_B_APP",
-                    "SMUKE2": "IND_B_APP",
-                    "SNKPT2": "IND_D_APP"
+                    "GIIBS3": "1D",
+                    "JAKKS2": "1B",
+                    "KOLTS2": "1B",
+                    "SMUKE2": "1B",
+                    "SNKPT2": "1D"
                 },
                 "departure_assignments": {
-                    "KIND": "IND_W_APP"
+                    "KIND": "1W"
                 },
                 "default_consolidation": {
-                    "IND_B_APP": [
-                        "IND_D_APP",
-                        "IND_W_APP"
+                    "1B": [
+                        "1D",
+                        "1W"
                     ]
                 }
             },
             "KI1": {
                 "inbound_assignments": {
-                    "GIIBS3": "IND_D_APP",
-                    "JAKKS2": "IND_B_APP",
-                    "KOLTS2": "IND_B_APP",
-                    "SMUKE2": "IND_B_APP",
-                    "SNKPT2": "IND_D_APP"
+                    "GIIBS3": "1D",
+                    "JAKKS2": "1B",
+                    "KOLTS2": "1B",
+                    "SMUKE2": "1B",
+                    "SNKPT2": "1D"
                 },
                 "departure_assignments": {
-                    "KIND": "IND_E_APP"
+                    "KIND": "1E"
                 },
                 "default_consolidation": {
-                    "IND_B_APP": [
-                        "IND_D_APP",
-                        "IND_E_APP"
+                    "1B": [
+                        "1D",
+                        "1E"
                     ]
                 }
             }
@@ -364,7 +364,7 @@
         },
         {
             "id": "ZID",
-            "eram_prefix": "I"
+            "eram_prefix": "C"
         }
     ]
 }

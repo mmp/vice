@@ -1,39 +1,39 @@
 {
     "control_positions": {
-        "AZO_E_APP": {
+        "1E": {
+            "callsign": "AZO_E_APP",
             "frequency": 119200,
-            "radio_name": "Great Lakes Approach",
-            "sector_id": "1E"
+            "radio_name": "Great Lakes Approach"
         },
-        "AZO_G_APP": {
+        "1G": {
+            "callsign": "AZO_G_APP",
             "frequency": 128400,
-            "radio_name": "Great Lakes Approach",
-            "sector_id": "1G"
+            "radio_name": "Great Lakes Approach"
         },
-        "AZO_N_APP": {
+        "1N": {
+            "callsign": "AZO_N_APP",
             "frequency": 119800,
-            "radio_name": "Great Lakes Approach",
-            "sector_id": "1N"
+            "radio_name": "Great Lakes Approach"
         },
-        "AZO_R_APP": {
+        "1R": {
+            "callsign": "AZO_R_APP",
             "frequency": 121200,
-            "radio_name": "Great Lakes Approach",
-            "sector_id": "1R"
+            "radio_name": "Great Lakes Approach"
         },
-        "AZO_S_APP": {
+        "1S": {
+            "callsign": "AZO_S_APP",
             "frequency": 133825,
-            "radio_name": "Great Lakes Approach",
-            "sector_id": "1S"
+            "radio_name": "Great Lakes Approach"
         },
-        "AZO_W_APP": {
+        "1W": {
+            "callsign": "AZO_W_APP",
             "frequency": 124600,
-            "radio_name": "Great Lakes Approach",
-            "sector_id": "1W"
+            "radio_name": "Great Lakes Approach"
         },
-        "AZO_TWR": {
+        "1Z": {
+            "callsign": "AZO_TWR",
             "frequency": 118300,
-            "radio_name": "Kalamazoo Tower",
-            "sector_id": "1Z"
+            "radio_name": "Kalamazoo Tower"
         }
     },
     "handoff_ids": [
@@ -56,6 +56,10 @@
         {
             "id": "TOL",
             "prefix": "5"
+        },
+        {
+            "id": "ZAU",
+            "eram_prefix": "C"
         },
         {
             "id": "ZMP",

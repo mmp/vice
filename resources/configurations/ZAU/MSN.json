@@ -1,19 +1,19 @@
 {
     "control_positions": {
-        "MSN_E_APP": {
+        "1E": {
+            "callsign": "MSN_E_APP",
             "frequency": 120100,
-            "radio_name": "Madison Approach",
-            "sector_id": "1E"
+            "radio_name": "Madison Approach"
         },
-        "MSN_TWR": {
+        "1L": {
+            "callsign": "MSN_TWR",
             "frequency": 119300,
-            "radio_name": "Madison Tower",
-            "sector_id": "1L"
+            "radio_name": "Madison Tower"
         },
-        "MSN_W_APP": {
+        "1W": {
+            "callsign": "MSN_W_APP",
             "frequency": 135450,
-            "radio_name": "Madison Approach",
-            "sector_id": "1W"
+            "radio_name": "Madison Approach"
         }
     },
     "handoff_ids": [
@@ -28,6 +28,10 @@
         {
             "id": "VOK",
             "prefix": "1"
+        },
+        {
+            "id": "ZAU",
+            "eram_prefix": "C"
         }
     ]
 }

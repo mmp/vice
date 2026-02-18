@@ -1,134 +1,134 @@
 {
     "control_positions": {
-        "CLT_W_DEP": {
+        "1W": {
+            "callsign": "CLT_W_DEP",
             "frequency": 119500,
-            "radio_name": "Charlotte Departure",
-            "sector_id": "1W"
+            "radio_name": "Charlotte Departure"
         },
-        "CLT_E_DEP": {
+        "1E": {
+            "callsign": "CLT_E_DEP",
             "frequency": 124000,
-            "radio_name": "Charlotte Departure",
-            "sector_id": "1E"
+            "radio_name": "Charlotte Departure"
         },
-        "CLT_N_APP": {
+        "1N": {
+            "callsign": "CLT_N_APP",
             "frequency": 134750,
-            "radio_name": "Charlotte Approach",
-            "sector_id": "1N"
+            "radio_name": "Charlotte Approach"
         },
-        "CLT_S_APP": {
+        "1S": {
+            "callsign": "CLT_S_APP",
             "frequency": 120050,
-            "radio_name": "Charlotte Approach",
-            "sector_id": "1S"
+            "radio_name": "Charlotte Approach"
         },
-        "CLT_Q_APP": {
+        "1Q": {
+            "callsign": "CLT_Q_APP",
             "frequency": 128320,
-            "radio_name": "Charlotte Approach",
-            "sector_id": "1Q"
+            "radio_name": "Charlotte Approach"
         },
-        "CLT_H_APP": {
+        "1H": {
+            "callsign": "CLT_H_APP",
             "frequency": 126150,
-            "radio_name": "Charlotte Approach",
-            "sector_id": "1H"
+            "radio_name": "Charlotte Approach"
         },
-        "CLT_U_APP": {
+        "1U": {
+            "callsign": "CLT_U_APP",
             "frequency": 125350,
-            "radio_name": "Charlotte Approach",
-            "sector_id": "1U"
+            "radio_name": "Charlotte Approach"
         },
-        "CLT_D_APP": {
+        "1D": {
+            "callsign": "CLT_D_APP",
             "frequency": 135600,
-            "radio_name": "Charlotte Approach",
-            "sector_id": "1D"
+            "radio_name": "Charlotte Approach"
         },
-        "CLT_A_APP": {
+        "1A": {
+            "callsign": "CLT_A_APP",
             "frequency": 127700,
-            "radio_name": "Charlotte Approach",
-            "sector_id": "1A"
+            "radio_name": "Charlotte Approach"
         },
-        "CLT_M_APP": {
+        "1M": {
+            "callsign": "CLT_M_APP",
             "frequency": 119000,
-            "radio_name": "Charlotte Approach",
-            "sector_id": "1M"
+            "radio_name": "Charlotte Approach"
         },
-        "CLT_F_APP": {
+        "1F": {
+            "callsign": "CLT_F_APP",
             "frequency": 132700,
-            "radio_name": "Charlotte Approach",
-            "sector_id": "1F"
+            "radio_name": "Charlotte Approach"
         },
-        "CLT_TWR": {
+        "CT": {
+            "callsign": "CLT_TWR",
             "frequency": 118100,
-            "radio_name": "Charlotte Tower",
-            "sector_id": "CT"
+            "radio_name": "Charlotte Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "18L": {
                 "inbound_assignments": {
-                    "CHSLY6_18LFINAL": "CLT_A_APP",
-                    "STOCR4_18LFINAL": "CLT_A_APP"
+                    "CHSLY6_18LFINAL": "1A",
+                    "STOCR4_18LFINAL": "1A"
                 },
                 "default_consolidation": {
-                    "CLT_A_APP": []
+                    "1A": []
                 }
             },
             "36R": {
                 "inbound_assignments": {
-                    "CHSLY6_NORTHEAST_36RFINAL": "CLT_A_APP",
-                    "STOCR4_NORTHEAST_36RFINAL": "CLT_A_APP"
+                    "CHSLY6_NORTHEAST_36RFINAL": "1A",
+                    "STOCR4_NORTHEAST_36RFINAL": "1A"
                 },
                 "departure_assignments": {
-                    "KCLT": "CLT_A_APP"
+                    "KCLT": "1A"
                 },
                 "default_consolidation": {
-                    "CLT_A_APP": []
+                    "1A": []
                 }
             },
             "KCL": {
                 "inbound_assignments": {
-                    "BANKR5": "CLT_D_APP",
-                    "CHSLY6": "CLT_H_APP",
-                    "FLIPZ4": "CLT_U_APP",
-                    "JONZE5": "CLT_D_APP",
-                    "PARQR4": "CLT_U_APP",
-                    "STOCR4": "CLT_H_APP"
+                    "BANKR5": "1D",
+                    "CHSLY6": "1H",
+                    "FLIPZ4": "1U",
+                    "JONZE5": "1D",
+                    "PARQR4": "1U",
+                    "STOCR4": "1H"
                 },
                 "departure_assignments": {
-                    "KCLT": "CLT_W_DEP"
+                    "KCLT": "1W"
                 },
                 "default_consolidation": {
-                    "CLT_D_APP": [
-                        "CLT_H_APP",
-                        "CLT_U_APP",
-                        "CLT_W_DEP"
+                    "1D": [
+                        "1H",
+                        "1U",
+                        "1W"
                     ]
                 }
             },
             "KC1": {
                 "inbound_assignments": {
-                    "BANKR5_NORTHWEST_36LFINAL": "CLT_F_APP",
-                    "CHSLY6_NORTHEAST_36RFINAL": "CLT_F_APP",
-                    "JONZE5_NORTHWEST_36LFINAL": "CLT_F_APP",
-                    "NORTHWEST_36LFINAL": "CLT_F_APP",
-                    "STOCR4_NORTHEAST_36RFINAL": "CLT_F_APP"
+                    "BANKR5_NORTHWEST_36LFINAL": "1F",
+                    "CHSLY6_NORTHEAST_36RFINAL": "1F",
+                    "JONZE5_NORTHWEST_36LFINAL": "1F",
+                    "NORTHWEST_36LFINAL": "1F",
+                    "STOCR4_NORTHEAST_36RFINAL": "1F"
                 },
                 "departure_assignments": {
-                    "KCLT": "CLT_F_APP"
+                    "KCLT": "1F"
                 },
                 "default_consolidation": {
-                    "CLT_F_APP": []
+                    "1F": []
                 }
             },
             "KC2": {
                 "inbound_assignments": {
-                    "CHSLY6_18LFINAL": "CLT_F_APP",
-                    "FLIPZ4_18RFINAL": "CLT_F_APP",
-                    "PARQR4_18RFINAL": "CLT_F_APP",
-                    "SOUTHWEST_18RFINAL": "CLT_F_APP",
-                    "STOCR4_18LFINAL": "CLT_F_APP"
+                    "CHSLY6_18LFINAL": "1F",
+                    "FLIPZ4_18RFINAL": "1F",
+                    "PARQR4_18RFINAL": "1F",
+                    "SOUTHWEST_18RFINAL": "1F",
+                    "STOCR4_18LFINAL": "1F"
                 },
                 "default_consolidation": {
-                    "CLT_F_APP": []
+                    "1F": []
                 }
             }
         },
@@ -261,7 +261,7 @@
                     12001,
                     99000
                 ],
-                "receiving_controller": "ZDC 32 Gordonsville"
+                "receiving_controller": "W32"
             },
             {
                 "fixes": [
@@ -278,7 +278,7 @@
                     16001,
                     99000
                 ],
-                "receiving_controller": "ZJX 30 Nepta"
+                "receiving_controller": "J30"
             },
             {
                 "fixes": [
@@ -301,7 +301,7 @@
                     16001,
                     99000
                 ],
-                "receiving_controller": "ZTL 43 Pulaski High"
+                "receiving_controller": "C43"
             }
         ],
         "coordination_fixes": {
@@ -391,7 +391,7 @@
         },
         {
             "id": "ZTL",
-            "eram_prefix": "T"
+            "eram_prefix": "C"
         }
     ]
 }

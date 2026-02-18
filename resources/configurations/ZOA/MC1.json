@@ -1,49 +1,49 @@
 {
     "control_positions": {
-        "SAC_B_APP": {
+        "1B": {
+            "callsign": "SAC_B_APP",
             "frequency": 120450,
-            "radio_name": "Sacramento Approach",
-            "sector_id": "1B"
+            "radio_name": "Sacramento Approach"
         },
-        "SAC_D_APP": {
+        "1D": {
+            "callsign": "SAC_D_APP",
             "frequency": 125250,
-            "radio_name": "Sacramento Approach",
-            "sector_id": "1D"
+            "radio_name": "Sacramento Approach"
         },
-        "SAC_E_APP": {
+        "1E": {
+            "callsign": "SAC_E_APP",
             "frequency": 125400,
-            "radio_name": "Sacramento Approach",
-            "sector_id": "1E"
+            "radio_name": "Sacramento Approach"
         },
-        "MHR_TWR": {
+        "1M": {
+            "callsign": "MHR_TWR",
             "frequency": 120650,
-            "radio_name": "Mather Tower",
-            "sector_id": "1M"
+            "radio_name": "Mather Tower"
         },
-        "SAC_P_APP": {
+        "1P": {
+            "callsign": "SAC_P_APP",
             "frequency": 123700,
-            "radio_name": "Sacramento Approach",
-            "sector_id": "1P"
+            "radio_name": "Sacramento Approach"
         },
-        "BAB_TWR": {
+        "1U": {
+            "callsign": "BAB_TWR",
             "frequency": 119400,
-            "radio_name": "Beale Tower",
-            "sector_id": "1U"
+            "radio_name": "Beale Tower"
         },
-        "SMF_TWR": {
+        "1V": {
+            "callsign": "SMF_TWR",
             "frequency": 125700,
-            "radio_name": "Capitol Tower",
-            "sector_id": "1V"
+            "radio_name": "Capitol Tower"
         },
-        "SAC_X_APP": {
+        "1X": {
+            "callsign": "SAC_X_APP",
             "frequency": 127400,
-            "radio_name": "Sacramento Approach",
-            "sector_id": "1X"
+            "radio_name": "Sacramento Approach"
         },
-        "SAC_TWR": {
+        "1Z": {
+            "callsign": "SAC_TWR",
             "frequency": 119500,
-            "radio_name": "Executive Tower",
-            "sector_id": "1Z"
+            "radio_name": "Executive Tower"
         }
     },
     "handoff_ids": [
@@ -54,6 +54,10 @@
         {
             "id": "SUU",
             "prefix": "1"
+        },
+        {
+            "id": "ZOA",
+            "eram_prefix": "C"
         }
     ]
 }

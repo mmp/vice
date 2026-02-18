@@ -1144,7 +1144,7 @@
                     },
                     "cruise_altitude": 30000,
                     "star": "INOYI1",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 20000,
                     "initial_speed": 270,
                     "description": "BITTA",
@@ -1387,8 +1387,7 @@
                                 "airport": "KIAD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "JOELE/a17000+/s270 N021.30.30.706,W157.23.27.073/ho BAMBO/a10000-15000/s250 IHNET/a8000+ INOYI/a8000+/s230",
@@ -1401,7 +1400,7 @@
                     },
                     "cruise_altitude": 30000,
                     "star": "INOYI1",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 20000,
                     "initial_speed": 270,
                     "description": "DENNS",
@@ -1541,8 +1540,7 @@
                                 "airport": "KATL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "ZORTA/a17000+/s270 N021.32.47.953,W157.23.28.831/ho BAMBO/a10000-15000/s250 IHNET/a8000+ INOYI/a8000+/s230",
@@ -1555,7 +1553,7 @@
                     },
                     "cruise_altitude": 30000,
                     "star": "INOYI1",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 20000,
                     "initial_speed": 270,
                     "description": "ZIGIE/APACK",
@@ -1628,8 +1626,7 @@
                                 "airport": "CYYC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -1638,7 +1635,7 @@
                 {
                     "waypoints": "HISPO/a13000+ SYMIN/a9000+/s250/ho CUDEK/a6000/s210/h210",
                     "star": "SYMIN1",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 18000,
                     "initial_speed": 270,
                     "description": "BITTA",
@@ -1881,13 +1878,12 @@
                                 "airport": "KIAD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "JOELE/a17000+ SYMIN/a9000+/s250/ho CUDEK/a6000/s210/h210",
                     "star": "SYMIN1",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 18000,
                     "initial_speed": 270,
                     "description": "DENNS",
@@ -2027,13 +2023,12 @@
                                 "airport": "KATL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "ZORTA/a17000+ SYMIN/a9000+/s250/ho CUDEK/a6000/s210/h210",
                     "star": "SYMIN1",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 18000,
                     "initial_speed": 270,
                     "description": "ZIGIE/APACK",
@@ -2106,8 +2101,7 @@
                                 "airport": "CYYC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -2116,7 +2110,7 @@
                 {
                     "waypoints": "MAGGI N021.30.04.621,W157.24.03.823/ho BAMBO/a12000 GRITL CKH",
                     "star": "MAGGI3",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 25000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -2423,8 +2417,7 @@
                                 "airport": "CYYC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -2433,7 +2426,7 @@
                 {
                     "waypoints": "MAGGI N021.30.04.621,W157.24.03.823/ho BAMBO/a8000 GRITL CKH",
                     "star": "MAGGI3",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -2740,18 +2733,17 @@
                                 "airport": "CYYC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
         "KAENA3": {
             "arrivals": [
                 {
-                    "waypoints": "HAWYN/a17000-19000/ho02 OPAHH/a8000+/ho KAENA/a6000-8000 SELIC/a4000/s220",
+                    "waypoints": "HAWYN/a17000-19000/hoC02 OPAHH/a8000+/ho KAENA/a6000-8000 SELIC/a4000/s220",
                     "cruise_altitude": 30000,
                     "star": "KAENA3",
-                    "initial_controller": "ZHN 02 Kauai",
+                    "initial_controller": "C02",
                     "initial_altitude": 18000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -2782,8 +2774,7 @@
                                 "airport": "KSMF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -2801,7 +2792,7 @@
                         }
                     },
                     "star": "KLANI4",
-                    "initial_controller": "ZHN 02 Kauai",
+                    "initial_controller": "C02",
                     "initial_altitude": 12000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -2934,8 +2925,7 @@
                                 "airport": "PGUM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -2944,7 +2934,7 @@
                 {
                     "waypoints": "N021.44.53.023,W158.57.13.612 N021.35.51.308,W158.41.15.164/ho BOOKE/a6000 SHIGI HNL",
                     "star": "BOOKE8",
-                    "initial_controller": "ZHN 02 Kauai",
+                    "initial_controller": "C02",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "description": "LIH",
@@ -3047,13 +3037,12 @@
                                 "airport": "RJAA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "N021.41.13.544,W159.00.08.734 N021.34.44.916,W158.44.08.583/ho BOOKE/a6000 SHIGI HNL",
                     "star": "BOOKE8",
-                    "initial_controller": "ZHN 02 Kauai",
+                    "initial_controller": "C02",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "description": "SOK",
@@ -3092,8 +3081,7 @@
                                 "airport": "PGUM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -3102,7 +3090,7 @@
                 {
                     "waypoints": "N021.44.53.023,W158.57.13.612 N021.35.51.308,W158.41.15.164/ho BOOKE/a10000 SHIGI HNL",
                     "star": "BOOKE8",
-                    "initial_controller": "ZHN 02 Kauai",
+                    "initial_controller": "C02",
                     "initial_altitude": 19000,
                     "initial_speed": 280,
                     "description": "LIH",
@@ -3205,13 +3193,12 @@
                                 "airport": "RJAA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "N021.41.13.544,W159.00.08.734 N021.33.19.010,W158.40.37.866/ho BOOKE/a10000 SHIGI HNL",
                     "star": "BOOKE8",
-                    "initial_controller": "ZHN 02 Kauai",
+                    "initial_controller": "C02",
                     "initial_altitude": 19000,
                     "initial_speed": 280,
                     "description": "SOK",
@@ -3250,8 +3237,7 @@
                                 "airport": "PGUM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -3261,7 +3247,7 @@
                     "waypoints": "N021.09.30.320,W157.05.05.584 N021.12.59.411,W157.05.42.828 N021.17.56.667,W157.15.58.227/ho BAMBO V12 HNL",
                     "cruise_altitude": 8000,
                     "route": "HAPAI3 BAMBO V12 HNL",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 1000,
                     "assigned_altitude": 8000,
                     "initial_speed": 130,
@@ -3287,14 +3273,13 @@
                                 "airport": "PHMK"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "N021.17.16.230,W156.56.14.285 N021.21.26.656,W157.14.40.499/ho BAMBO V12 HNL",
                     "cruise_altitude": 8000,
                     "route": "OGG V6 BLUSH V8 MKK BAMBO V12 HNL",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 8000,
                     "initial_speed": 180,
                     "description": "OGG",
@@ -3319,8 +3304,7 @@
                                 "airport": "PHOG"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -3330,7 +3314,7 @@
                     "waypoints": "ZIKAB N021.35.59.630,W158.41.26.700/ho BOOKE/a8000/ho SHIGI HNL",
                     "cruise_altitude": 8000,
                     "route": "LIH V15 HNL",
-                    "initial_controller": "ZHN 02 Kauai",
+                    "initial_controller": "C02",
                     "initial_altitude": 13000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -3357,8 +3341,7 @@
                                 "airport": "PHLI"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -3367,7 +3350,7 @@
                 {
                     "waypoints": "GRAMY SOBOW SERAH N020.52.36.735,W157.19.02.138/d060/ho SAKKI JULLE ALANA",
                     "star": "JULLE5",
-                    "initial_controller": "ZHN 04 Lanai",
+                    "initial_controller": "C04",
                     "initial_altitude": 8000,
                     "initial_speed": 200,
                     "description": "Props",
@@ -3387,13 +3370,12 @@
                                 "airport": "PHNY"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "GRAMY SOBOW SERAH/ho SAKKI JULLE/a10000 ALANA",
                     "star": "JULLE5",
-                    "initial_controller": "ZHN 04 Lanai",
+                    "initial_controller": "C04",
                     "initial_altitude": 14000,
                     "initial_speed": 270,
                     "description": "Jets",
@@ -3431,13 +3413,12 @@
                                 "airport": "PHOG"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "JORDA N020.48.31.775,W157.25.13.366/ho JULLE/a10000 ALANA",
                     "star": "JULLE5",
-                    "initial_controller": "ZHN 04 Lanai",
+                    "initial_controller": "C04",
                     "initial_altitude": 19000,
                     "initial_speed": 270,
                     "description": "Jets",
@@ -3473,8 +3454,7 @@
                                 "airport": "NCRG"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -3483,7 +3463,7 @@
                 {
                     "waypoints": "GRAMY SOBOW SERAH/ho SAKKI/a4000 SECIL",
                     "star": "SAKKI5",
-                    "initial_controller": "ZHN 04 Lanai",
+                    "initial_controller": "C04",
                     "initial_altitude": 8000,
                     "initial_speed": 200,
                     "description": "Props",
@@ -3503,13 +3483,12 @@
                                 "airport": "PHNY"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "GRAMY SOBOW SERAH/ho SAKKI/a6000 SECIL",
                     "star": "SAKKI5",
-                    "initial_controller": "ZHN 04 Lanai",
+                    "initial_controller": "C04",
                     "initial_altitude": 13000,
                     "initial_speed": 270,
                     "description": "Jets",
@@ -3547,13 +3526,12 @@
                                 "airport": "PHOG"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "JORDA SUCTU/ho SAKKI/a6000 SECIL",
                     "star": "SAKKI5",
-                    "initial_controller": "ZHN 04 Lanai",
+                    "initial_controller": "C04",
                     "initial_altitude": 13000,
                     "initial_speed": 270,
                     "description": "Jets",
@@ -3589,8 +3567,7 @@
                                 "airport": "NCRG"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -3599,7 +3576,7 @@
                 {
                     "waypoints": "N020.50.35.062,W158.41.52.463 N020.53.11.857,W158.29.18.856/ho OPACA/a6000 HNL",
                     "star": "OPACA4",
-                    "initial_controller": "ZHN 02 Kauai",
+                    "initial_controller": "C02",
                     "initial_altitude": 15000,
                     "initial_speed": 270,
                     "description": "CHOKO",
@@ -3639,13 +3616,12 @@
                                 "airport": "YSSY"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "N020.40.47.856,W158.25.26.220 N020.47.48.104,W158.20.22.448/ho OPACA/a6000 HNL",
                     "star": "OPACA4",
-                    "initial_controller": "ZHN 02 Kauai",
+                    "initial_controller": "C02",
                     "initial_altitude": 12000,
                     "initial_speed": 270,
                     "description": "CARRP",
@@ -3671,8 +3647,7 @@
                                 "airport": "NFFN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -3681,7 +3656,7 @@
                 {
                     "waypoints": "N020.50.35.062,W158.41.52.463 N020.53.11.857,W158.29.18.856/ho OPACA/a10000 HNL",
                     "star": "OPACA4",
-                    "initial_controller": "ZHN 02 Kauai",
+                    "initial_controller": "C02",
                     "initial_altitude": 24000,
                     "initial_speed": 270,
                     "description": "CHOKO",
@@ -3712,13 +3687,12 @@
                                 "airport": "YSSY"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "N020.40.47.856,W158.25.26.220 N020.47.48.104,W158.20.22.448/ho OPACA/a10000 HNL",
                     "star": "OPACA4",
-                    "initial_controller": "ZHN 02 Kauai",
+                    "initial_controller": "C02",
                     "initial_altitude": 24000,
                     "initial_speed": 270,
                     "description": "CARRP",
@@ -3744,8 +3718,7 @@
                                 "airport": "NFFN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         }

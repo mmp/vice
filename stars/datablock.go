@@ -471,7 +471,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 		if ctx.UserControlsPosition(toTCP) { // inbound
 			// Show the resolved controller's id (handles consolidated positions)
 			if toCtrl := ctx.GetResolvedController(toTCP); toCtrl != nil {
-				handoffId = toCtrl.SectorID[len(toCtrl.SectorID)-1:]
+				handoffId = toCtrl.Position[len(toCtrl.Position)-1:]
 			} else {
 				handoffId = string(toTCP[len(toTCP)-1:])
 			}
@@ -483,7 +483,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 					handoffTCP = string(fromCtrl.PositionId())
 				} else if fromCtrl.FacilityIdentifier != "" {
 					// Different facility; show full id of originator
-					handoffTCP = fromCtrl.FacilityIdentifier + fromCtrl.SectorID
+					handoffTCP = fromCtrl.FacilityIdentifier + fromCtrl.Position
 				}
 			}
 		} else { // outbound
@@ -499,7 +499,7 @@ func (sp *STARSPane) getDatablock(ctx *panes.Context, trk sim.Track, sfp *sim.NA
 				} else {
 					// Intrafacility handoff - show the resolved controller's id
 					// (e.g., handoff to "2M" consolidated to "2K" shows "K")
-					handoffId = toCtrl.SectorID[len(toCtrl.SectorID)-1:]
+					handoffId = toCtrl.Position[len(toCtrl.Position)-1:]
 				}
 			} else if toTCP != "" {
 				// Fallback: show the handoff indicator even if we can't resolve the controller

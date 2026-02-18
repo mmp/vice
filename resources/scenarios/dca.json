@@ -961,7 +961,7 @@
                     },
                     "cruise_altitude": 33000,
                     "star": "CAPSS3",
-                    "initial_controller": "ZDC 20 Blackstone",
+                    "initial_controller": "C20",
                     "initial_altitude": 18000,
                     "initial_speed": 290,
                     "expect_approach": null,
@@ -1062,8 +1062,7 @@
                                 "airport": "KCAE"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -1082,7 +1081,7 @@
                         }
                     },
                     "star": "CLIPR3/SKILS5",
-                    "initial_controller": "BWI_W_APP",
+                    "initial_controller": "1W",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -1159,7 +1158,7 @@
                         }
                     },
                     "star": "SKILS5",
-                    "initial_controller": "BWI_W_APP",
+                    "initial_controller": "1W",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -1208,7 +1207,7 @@
                 {
                     "waypoints": "BILIT/a11000 DEALE/a10000/s280/ho YUCKK/a10000 TIRZA/a8000- HITEK/a7000 MITEY/h187",
                     "star": "DEALE3",
-                    "initial_controller": "BWI_P_APP",
+                    "initial_controller": "1P",
                     "initial_altitude": 12000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1247,7 +1246,7 @@
                 {
                     "waypoints": "BILIT/a11000 DEALE/a10000/s280/ho EDDGY THANE MEGGS/h327",
                     "star": "DEALE3",
-                    "initial_controller": "BWI_P_APP",
+                    "initial_controller": "1P",
                     "initial_altitude": 12000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1287,7 +1286,7 @@
                     "waypoints": "DEALE/a10000/s280 YUCKK/a10000/ho TIRZA/a8000- HITEK/a7000 MITEY/h187",
                     "cruise_altitude": 24000,
                     "star": "DEALE3",
-                    "initial_controller": "DCA_E_APP",
+                    "initial_controller": "1E",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "speed_restriction": 250,
@@ -1367,7 +1366,7 @@
                     "waypoints": "LETZZ/a8000 RLLLL/a6000/s250/ho VCTRY HEROO/h189",
                     "cruise_altitude": 33000,
                     "star": "FRDMM6",
-                    "initial_controller": "DCA_J_APP",
+                    "initial_controller": "1J",
                     "initial_altitude": 8000,
                     "initial_speed": 250,
                     "speed_restriction": 250,
@@ -1461,7 +1460,7 @@
                     "waypoints": "CAPSS/a10000 HOYAS/a7000/ho HALLL KATRN/h8",
                     "cruise_altitude": 33000,
                     "star": "CAPSS3",
-                    "initial_controller": "DCA_J_APP",
+                    "initial_controller": "1J",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "speed_restriction": 250,
@@ -1529,7 +1528,7 @@
                     "waypoints": "N038.48.13.469,W076.43.26.396 EDDGY THANE N038.55.30.258,W076.57.24.845/ho MEGGS/h327",
                     "assigned_altitude": 6000,
                     "star": "DEALE3",
-                    "initial_controller": "DCA_E_APP",
+                    "initial_controller": "1E",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "speed_restriction": 240,
@@ -1605,7 +1604,7 @@
                     "waypoints": "N039.02.25.733,W076.48.52.855 EYESS EDDWD/ho MEGGS NAYES/h327",
                     "assigned_altitude": 6000,
                     "star": "CLIPR3/SKILS5",
-                    "initial_controller": "DCA_E_APP",
+                    "initial_controller": "1E",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "speed_restriction": 230,
@@ -1710,7 +1709,7 @@
                     "waypoints": "N038.56.56.253,W077.32.13.099 FRDMM/a8000/s240/ho STAND TGTHR FERGI/h148",
                     "assigned_altitude": 6000,
                     "star": "FRDMM6",
-                    "initial_controller": "DCA_J_APP",
+                    "initial_controller": "1J",
                     "initial_altitude": 8000,
                     "initial_speed": 240,
                     "scratchpad": "RIV",
@@ -1803,7 +1802,7 @@
                     "waypoints": "JILES SMOOT/a7000+/ho BAAAM/a6000 PACKE/h327",
                     "cruise_altitude": 33000,
                     "star": "CAPSS3",
-                    "initial_controller": "DCA_J_APP",
+                    "initial_controller": "1J",
                     "initial_altitude": 7000,
                     "initial_speed": 250,
                     "speed_restriction": 250,
@@ -1880,7 +1879,7 @@
                         }
                     },
                     "star": "FRDMM6",
-                    "initial_controller": "ZDC 05 Linden",
+                    "initial_controller": "C05",
                     "initial_altitude": 18000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1934,8 +1933,7 @@
                                 "airport": "KCLE"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -1944,7 +1942,7 @@
                 {
                     "waypoints": "PLDGE/a15000-17000/s280/ho WEWIL/a14000+ NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250 ALWYZ/a10000-/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/delete",
                     "star": "FRDMM6",
-                    "initial_controller": "ZDC 05 Linden",
+                    "initial_controller": "C05",
                     "initial_altitude": 18000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1998,8 +1996,7 @@
                                 "airport": "KCLE"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -2008,7 +2005,7 @@
                 {
                     "waypoints": "PLDGE/a15000-17000/s280/ho WEWIL/a14000+ NEVVR/a12000+ FORGT/a11000+/s250 SEPII/a10000+/s250 ALWYZ/a10000-/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/a3000/clearapp",
                     "star": "FRDMM6",
-                    "initial_controller": "ZDC 05 Linden",
+                    "initial_controller": "C05",
                     "initial_altitude": 18000,
                     "initial_speed": 280,
                     "expect_approach": "RIV",
@@ -2062,8 +2059,7 @@
                                 "airport": "KCLE"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -2072,7 +2068,7 @@
                 {
                     "waypoints": "USAAY/a17000-21000/s280 WEEDU/a16000-19000/ho SUPRT/a14000-17000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250 LETZZ/a8000 RLLLL/a6000/s250 VCTRY HEROO/delete",
                     "star": "TRUPS5",
-                    "initial_controller": "ZDC 05 Linden",
+                    "initial_controller": "C05",
                     "initial_altitude": 18000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -2109,8 +2105,7 @@
                                 "airport": "KMEM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -2119,7 +2114,7 @@
                 {
                     "waypoints": "USAAY/a17000-21000/s280 WEEDU/a16000-19000/ho SUPRT/a14000-17000/s280 OOURR/a13000-/s250 TRUPS/a11000/s250 FRDMM/a8000/s240 STAND TGTHR FERGI/a3000/clearapp",
                     "star": "TRUPS5",
-                    "initial_controller": "ZDC 05 Linden",
+                    "initial_controller": "C05",
                     "initial_altitude": 18000,
                     "initial_speed": 280,
                     "expect_approach": "RIV",
@@ -2156,8 +2151,7 @@
                                 "airport": "KMEM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -2245,7 +2239,7 @@
                     "assigned_altitude": 10000,
                     "initial_altitude": 5000,
                     "scratchpad": "RAM",
-                    "initial_controller": "IAD_T_DEP",
+                    "initial_controller": "3T",
                     "initial_speed": 230,
                     "waypoints": "N038.55.15.357,W077.36.18.945 LOULU/ho BUNZZ RAMAY BENSH GEQUE HACKS/delete"
                 },
@@ -2326,7 +2320,7 @@
                     "assigned_altitude": 10000,
                     "initial_altitude": 5000,
                     "scratchpad": "OTO",
-                    "initial_controller": "IAD_T_DEP",
+                    "initial_controller": "3T",
                     "initial_speed": 230,
                     "waypoints": "N038.55.15.357,W077.36.18.945 LOULU/ho RNLDI OTTTO COLNS STEVY HNN/delete"
                 }
@@ -2396,7 +2390,7 @@
                     "assigned_altitude": 10000,
                     "initial_altitude": 4000,
                     "scratchpad": "AME",
-                    "initial_controller": "BWI_G_APP",
+                    "initial_controller": "1G",
                     "initial_speed": 230,
                     "waypoints": "SUGGS/a7000- STABL/a13000-/ho OHSSS/a11000+ CONLE/a14000- AMEEE COLIN"
                 }
@@ -2466,7 +2460,7 @@
                     "assigned_altitude": 14000,
                     "initial_altitude": 10000,
                     "scratchpad": "AME",
-                    "initial_controller": "BWI_G_APP",
+                    "initial_controller": "1G",
                     "initial_speed": 230,
                     "waypoints": "KEMMP BEWEE N038.51.52.948,W076.30.02.252/ho OHSSS/a11000+ CONLE/a14000- AMEEE COLIN"
                 }
@@ -2523,7 +2517,7 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 9000,
                     "scratchpad": "FXR",
-                    "initial_controller": "BWI_W_APP",
+                    "initial_controller": "1W",
                     "initial_speed": 250,
                     "waypoints": "WONCE TERPZ/a11000+/ho FOXHL/a17000+ RAMAY/delete"
                 },
@@ -2595,7 +2589,7 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 9000,
                     "scratchpad": "FXO",
-                    "initial_controller": "BWI_W_APP",
+                    "initial_controller": "1W",
                     "initial_speed": 250,
                     "waypoints": "WONCE TERPZ/a11000+/ho FOXHL/a17000+ OTTTO/delete"
                 },
@@ -2626,7 +2620,7 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 9000,
                     "scratchpad": "TCL",
-                    "initial_controller": "BWI_W_APP",
+                    "initial_controller": "1W",
                     "initial_speed": 250,
                     "waypoints": "WONCE TERPZ/a11000+/ho LITME/a14000+ HIRCK BUTRZ CLTCH KERRK/delete"
                 },
@@ -2667,7 +2661,7 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 9000,
                     "scratchpad": "TSC",
-                    "initial_controller": "BWI_W_APP",
+                    "initial_controller": "1W",
                     "initial_speed": 250,
                     "waypoints": "WONCE TERPZ/a11000+/ho LITME/a14000+ HIRCK SCRAM DANOO WALCE GLANC/delete"
                 },
@@ -2682,7 +2676,7 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 9000,
                     "scratchpad": "TJD",
-                    "initial_controller": "BWI_W_APP",
+                    "initial_controller": "1W",
                     "initial_speed": 250,
                     "waypoints": "WONCE TERPZ/a11000+/ho LITME/a14000+ HIRCK JDUBB CASLY MELTN/delete"
                 },
@@ -2743,7 +2737,7 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 9000,
                     "scratchpad": "TJD",
-                    "initial_controller": "BWI_W_APP",
+                    "initial_controller": "1W",
                     "initial_speed": 250,
                     "waypoints": "WONCE TERPZ/a11000+/ho LITME/a14000+ HIRCK JDUBB TYPNZ SCORN RRSIN/delete"
                 }
@@ -2825,7 +2819,7 @@
                     "assigned_altitude": 10000,
                     "initial_altitude": 8000,
                     "scratchpad": "DCR",
-                    "initial_controller": "IAD_A_DEP",
+                    "initial_controller": "3A",
                     "initial_speed": 230,
                     "waypoints": "N039.06.46.095,W077.26.15.961/ho RIGNZ JCOBY GRIIM RIISE DOCTR AGARD"
                 },
@@ -2894,7 +2888,7 @@
                     "assigned_altitude": 10000,
                     "initial_altitude": 8000,
                     "scratchpad": "AME",
-                    "initial_controller": "IAD_A_DEP",
+                    "initial_controller": "3A",
                     "initial_speed": 230,
                     "waypoints": "N039.06.46.095,W077.26.15.961/ho RIGNZ JCOBY BAUGH AMEEE COLIN/delete"
                 },
@@ -2952,7 +2946,7 @@
                     "assigned_altitude": 10000,
                     "initial_altitude": 8000,
                     "scratchpad": "SOK",
-                    "initial_controller": "IAD_A_DEP",
+                    "initial_controller": "3A",
                     "initial_speed": 250,
                     "waypoints": "N039.06.46.095,W077.26.15.961/ho RIGNZ JCOBY GRIIM SOOKI SWANN/delete"
                 }
@@ -3027,7 +3021,7 @@
                     "assigned_altitude": 10000,
                     "initial_altitude": 5000,
                     "scratchpad": "CLH",
-                    "initial_controller": "IAD_T_DEP",
+                    "initial_controller": "3T",
                     "initial_speed": 230,
                     "waypoints": "N038.50.45.492,W077.38.48.414 N038.46.17.027,W077.40.54.400/ho BUTRZ/a3000+ CLTCH KERRK/delete"
                 },
@@ -3069,7 +3063,7 @@
                     "assigned_altitude": 10000,
                     "initial_altitude": 5000,
                     "scratchpad": "SCR",
-                    "initial_controller": "IAD_T_DEP",
+                    "initial_controller": "3T",
                     "initial_speed": 230,
                     "waypoints": "N038.50.45.492,W077.38.48.414 N038.47.44.080,W077.38.53.880/ho POOCH/a3000+ SCRAM DANOO WALCE GLANC/delete"
                 },
@@ -3090,7 +3084,7 @@
                     "assigned_altitude": 10000,
                     "initial_altitude": 5000,
                     "scratchpad": "JDB",
-                    "initial_controller": "IAD_T_DEP",
+                    "initial_controller": "3T",
                     "initial_speed": 250,
                     "waypoints": "N038.49.11.943,W077.34.09.746 N038.46.45.798,W077.34.04.281/ho HAFNR/a3000+ JDUBB CASLY MELTN/delete"
                 },
@@ -3145,7 +3139,7 @@
                     "assigned_altitude": 10000,
                     "initial_altitude": 5000,
                     "scratchpad": "JDB",
-                    "initial_controller": "IAD_T_DEP",
+                    "initial_controller": "3T",
                     "initial_speed": 250,
                     "waypoints": "N038.49.11.943,W077.34.09.746 N038.46.45.798,W077.34.04.281/ho HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN/delete"
                 }
@@ -3229,7 +3223,7 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 200,
                     "scratchpad": "RAM",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 250,
                     "waypoints": "KDCA-1 CAPVC GAITE LBOLT/ho GINYA WYNGS/a5000+ RAMAY BENSH GEQUE HACKS/delete"
                 },
@@ -3292,7 +3286,7 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 200,
                     "scratchpad": "OTO",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 250,
                     "waypoints": "KDCA-1 CAPVC GAITE LBOLT/ho TEZER REBLL/a5000+ OTTTO COLNS STEVY HNN/delete"
                 },
@@ -3329,9 +3323,9 @@
                     "assigned_altitude": 11000,
                     "initial_altitude": 200,
                     "scratchpad": "CLH",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 230,
-                    "waypoints": "KDCA-1 CAPVC GAITE DMKRT/ho1F BUTRZ/a3000+ CLTCH/hoW32 KERRK"
+                    "waypoints": "KDCA-1 CAPVC GAITE DMKRT/ho1F BUTRZ/a3000+ CLTCH/hoC32 KERRK"
                 },
                 {
                     "airlines": [
@@ -3366,9 +3360,9 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 200,
                     "scratchpad": "JDB",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 230,
-                    "waypoints": "KDCA-1 CAPVC GAITE DMKRT/ho1F HAFNR/a3000+ JDUBB/hoW32 TYPNZ SCORN RRSIN/delete"
+                    "waypoints": "KDCA-1 CAPVC GAITE DMKRT/ho1F HAFNR/a3000+ JDUBB/hoC32 TYPNZ SCORN RRSIN/delete"
                 },
                 {
                     "airlines": [
@@ -3396,9 +3390,9 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 200,
                     "scratchpad": "JDB",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 230,
-                    "waypoints": "KDCA-1 CAPVC GAITE DMKRT/ho1F HAFNR/a3000+ JDUBB/hoW32 CASLY MELTN/delete"
+                    "waypoints": "KDCA-1 CAPVC GAITE DMKRT/ho1F HAFNR/a3000+ JDUBB/hoC32 CASLY MELTN/delete"
                 },
                 {
                     "airlines": [
@@ -3428,9 +3422,9 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 200,
                     "scratchpad": "SCR",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 230,
-                    "waypoints": "KDCA-1 CAPVC GAITE DMKRT/ho1F POOCH/a3000+ SCRAM/hoW32 DANOO WALCE GLANC/delete"
+                    "waypoints": "KDCA-1 CAPVC GAITE DMKRT/ho1F POOCH/a3000+ SCRAM/hoC32 DANOO WALCE GLANC/delete"
                 }
             ]
         },
@@ -3512,7 +3506,7 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 500,
                     "scratchpad": "RAM",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 250,
                     "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII MELOE/ho WYNGS/a5000+ RAMAY BENSH GEQUE HACKS/delete"
                 },
@@ -3575,7 +3569,7 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 500,
                     "scratchpad": "OTO",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 250,
                     "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI N038.58.09.436,W077.19.46.935/ho DUDDD REBLL/a5000+ OTTTO COLNS STEVY HNN/delete"
                 },
@@ -3612,9 +3606,9 @@
                     "assigned_altitude": 11000,
                     "initial_altitude": 500,
                     "scratchpad": "CLH",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 230,
-                    "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI/ho1F BRUTL BUTRZ/a3000+ CLTCH/hoW32 KERRK"
+                    "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI/ho1F BRUTL BUTRZ/a3000+ CLTCH/hoC32 KERRK"
                 },
                 {
                     "airlines": [
@@ -3649,9 +3643,9 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 500,
                     "scratchpad": "JDB",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 230,
-                    "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI/ho1F HAFNR/a3000+ JDUBB/hoW32 TYPNZ SCORN RRSIN/delete"
+                    "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI/ho1F HAFNR/a3000+ JDUBB/hoC32 TYPNZ SCORN RRSIN/delete"
                 },
                 {
                     "airlines": [
@@ -3679,9 +3673,9 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 500,
                     "scratchpad": "JDB",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 230,
-                    "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI/ho1F HAFNR/a3000+ JDUBB/hoW32 CASLY MELTN/delete"
+                    "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI/ho1F HAFNR/a3000+ JDUBB/hoC32 CASLY MELTN/delete"
                 },
                 {
                     "airlines": [
@@ -3711,9 +3705,9 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 500,
                     "scratchpad": "SCR",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 230,
-                    "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI/ho1F POOCH/a3000+ SCRAM/hoW32 DANOO WALCE GLANC/delete"
+                    "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI/ho1F POOCH/a3000+ SCRAM/hoC32 DANOO WALCE GLANC/delete"
                 }
             ]
         },
@@ -3752,7 +3746,7 @@
                     "assigned_altitude": 11000,
                     "initial_altitude": 200,
                     "scratchpad": "CLH",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 230,
                     "waypoints": "KDCA-1 CAPVC GAITE DMKRT/ho BUTRZ/a3000+ CLTCH KERRK"
                 },
@@ -3789,7 +3783,7 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 200,
                     "scratchpad": "JDB",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 230,
                     "waypoints": "KDCA-1 CAPVC GAITE DMKRT/ho HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN/delete"
                 },
@@ -3819,7 +3813,7 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 200,
                     "scratchpad": "JDB",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 230,
                     "waypoints": "KDCA-1 CAPVC GAITE DMKRT/ho HAFNR/a3000+ JDUBB CASLY MELTN/delete"
                 },
@@ -3851,7 +3845,7 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 200,
                     "scratchpad": "SCR",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 230,
                     "waypoints": "KDCA-1 CAPVC GAITE DMKRT/ho POOCH/a3000+ SCRAM DANOO WALCE GLANC/delete"
                 },
@@ -3931,7 +3925,7 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 200,
                     "scratchpad": "RAM",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 250,
                     "waypoints": "KDCA-1 CAPVC GAITE LBOLT/ho1L GINYA WYNGS/a5000+ RAMAY BENSH GEQUE HACKS/delete"
                 },
@@ -3994,7 +3988,7 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 200,
                     "scratchpad": "OTO",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 250,
                     "waypoints": "KDCA-1 CAPVC GAITE LBOLT/ho1L TEZER REBLL/a5000+ OTTTO COLNS STEVY HNN/delete"
                 }
@@ -4035,7 +4029,7 @@
                     "assigned_altitude": 11000,
                     "initial_altitude": 500,
                     "scratchpad": "CLH",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 230,
                     "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI/ho BRUTL BUTRZ/a3000+ CLTCH KERRK"
                 },
@@ -4072,7 +4066,7 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 500,
                     "scratchpad": "JDB",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 230,
                     "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI/ho HAFNR/a3000+ JDUBB TYPNZ SCORN RRSIN/delete"
                 },
@@ -4102,7 +4096,7 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 500,
                     "scratchpad": "JDB",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 230,
                     "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI/ho HAFNR/a3000+ JDUBB CASLY MELTN/delete"
                 },
@@ -4134,7 +4128,7 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 500,
                     "scratchpad": "SCR",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 230,
                     "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI/ho POOCH/a3000+ SCRAM DANOO WALCE GLANC/delete"
                 },
@@ -4214,9 +4208,9 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 500,
                     "scratchpad": "RAM",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 250,
-                    "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII MELOE/ho1L WYNGS/a5000+ RAMAY/hoW05 BENSH GEQUE HACKS/delete"
+                    "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII MELOE/ho1L WYNGS/a5000+ RAMAY/hoC05 BENSH GEQUE HACKS/delete"
                 },
                 {
                     "airlines": [
@@ -4277,9 +4271,9 @@
                     "assigned_altitude": 17000,
                     "initial_altitude": 500,
                     "scratchpad": "OTO",
-                    "initial_controller": "DCA_Y_DEP",
+                    "initial_controller": "1Y",
                     "initial_speed": 250,
-                    "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI N038.58.09.436,W077.19.46.935/ho1L DUDDD REBLL/a5000+ OTTTO/hoW05 COLNS STEVY HNN/delete"
+                    "waypoints": "N038.52.22.282,W077.02.24.250 REVGE/a1500+/s220 BEBLE RGIII CUKLI N038.58.09.436,W077.19.46.935/ho1L DUDDD REBLL/a5000+ OTTTO/hoC05 COLNS STEVY HNN/delete"
                 }
             ]
         },
@@ -4288,7 +4282,7 @@
                 {
                     "waypoints": "DFORT/a18000+ WALKN/a16000/s280/ho JAYOH/a12000 CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 KOOLZ/a5000/s210/clearapp",
                     "star": "RAVNN8",
-                    "initial_controller": "ZDC 05 Linden",
+                    "initial_controller": "C05",
                     "initial_altitude": 18000,
                     "initial_speed": 280,
                     "expect_approach": "I3L",
@@ -4321,13 +4315,12 @@
                                 "airport": "KMCO"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 },
                 {
                     "waypoints": "ECHOZ/a20000+ DNKEY/a19000/ho FIMBO/a16000 UDUDE/a13000+ REXEE/a12000+ ELDEE/a11000- CAPKO/a9000/s250 RAVNN/a6000-7000 SEEED/a5000-6000 KOOLZ/a5000/s210/clearapp",
                     "star": "RAVNN8",
-                    "initial_controller": "ZDC 05 Linden",
+                    "initial_controller": "C05",
                     "initial_altitude": 20000,
                     "initial_speed": 280,
                     "expect_approach": "I3L",
@@ -4347,8 +4340,7 @@
                                 "airport": "KBNA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -4367,7 +4359,7 @@
                         }
                     },
                     "star": "TRUPS5",
-                    "initial_controller": "ZDC 05 Linden",
+                    "initial_controller": "C05",
                     "initial_altitude": 18000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -4404,8 +4396,7 @@
                                 "airport": "KMEM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         }

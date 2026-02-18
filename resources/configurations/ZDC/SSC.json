@@ -1,21 +1,45 @@
 {
     "control_positions": {
-        "SSC_TWR": {
+        "1T": {
+            "callsign": "SSC_TWR",
             "frequency": 126650,
-            "radio_name": "Shaw Tower",
-            "sector_id": "1T"
+            "radio_name": "Shaw Tower"
         },
-        "SSC_APP": {
+        "1Z": {
+            "callsign": "SSC_APP",
             "frequency": 125400,
-            "radio_name": "Shaw Approach",
-            "sector_id": "1Z"
+            "radio_name": "Shaw Approach"
         }
     },
     "stars_config": {},
     "handoff_ids": [
         {
-            "id": "ZDC",
-            "eram_prefix": "W"
+            "id": "CAE",
+            "prefix": "3"
+        },
+        {
+            "id": "CHS",
+            "prefix": "4"
+        },
+        {
+            "id": "CLT",
+            "prefix": "2"
+        },
+        {
+            "id": "FLO",
+            "prefix": "1"
+        },
+        {
+            "id": "MYR",
+            "prefix": "5"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "C"
+        },
+        {
+            "id": "ZTL",
+            "eram_prefix": "T"
         }
     ]
 }

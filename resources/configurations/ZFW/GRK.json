@@ -1,19 +1,19 @@
 {
     "control_positions": {
-        "GRK_E_APP": {
+        "1E": {
+            "callsign": "GRK_E_APP",
             "frequency": 134350,
-            "radio_name": "Gray Approach",
-            "sector_id": "1E"
+            "radio_name": "Gray Approach"
         },
-        "GRK_TWR": {
+        "1T": {
+            "callsign": "GRK_TWR",
             "frequency": 120750,
-            "radio_name": "Gray Tower",
-            "sector_id": "1T"
+            "radio_name": "Gray Tower"
         },
-        "GRK_W_APP": {
+        "1W": {
+            "callsign": "GRK_W_APP",
             "frequency": 120075,
-            "radio_name": "Gray Approach",
-            "sector_id": "1W"
+            "radio_name": "Gray Approach"
         }
     },
     "handoff_ids": [
@@ -28,6 +28,10 @@
         {
             "id": "I90",
             "prefix": "2"
+        },
+        {
+            "id": "ZFW",
+            "eram_prefix": "C"
         },
         {
             "id": "ZHU",

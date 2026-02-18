@@ -7501,7 +7501,7 @@
                         ]
                     },
                     "initial_altitude": 30000,
-                    "initial_controller": "ZDV 15 - Sidney Low",
+                    "initial_controller": "C15",
                     "initial_speed": 280,
                     "star": "AALLE4",
                     "runway_waypoints": {
@@ -7521,8 +7521,7 @@
                         }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "SDOUT/a30000-32000/s280 MALTE BBOTL/ho AALLE/a19000 HEDDD/a16000-19000/s250",
-                    "initial_facility": "ZDV"
+                    "waypoints": "SDOUT/a30000-32000/s280 MALTE BBOTL/ho AALLE/a19000 HEDDD/a16000-19000/s250"
                 },
                 {
                     "airlines": {
@@ -7695,7 +7694,7 @@
                         ]
                     },
                     "initial_altitude": 30000,
-                    "initial_controller": "ZDV 15 - Sidney Low",
+                    "initial_controller": "C15",
                     "initial_speed": 280,
                     "star": "AALLE4",
                     "runway_waypoints": {
@@ -7715,8 +7714,7 @@
                         }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "BIDDR/a30000-32000/s280 CAASK FOAMM/ho AALLE/a19000 HEDDD/a16000-19000/s250",
-                    "initial_facility": "ZDV"
+                    "waypoints": "BIDDR/a30000-32000/s280 CAASK FOAMM/ho AALLE/a19000 HEDDD/a16000-19000/s250"
                 }
             ]
         },
@@ -8176,7 +8174,7 @@
                         ]
                     },
                     "initial_altitude": 28000,
-                    "initial_controller": "ZDV 27 - La Junta Low",
+                    "initial_controller": "C27",
                     "initial_speed": 280,
                     "star": "CLASH5",
                     "runway_waypoints": {
@@ -8196,8 +8194,7 @@
                         }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "LYNKN RRUSL/ho CLASH/a19000-22000/s280 EVRLY/a15000-19000/s250",
-                    "initial_facility": "ZDV"
+                    "waypoints": "LYNKN RRUSL/ho CLASH/a19000-22000/s280 EVRLY/a15000-19000/s250"
                 }
             ]
         },
@@ -8483,7 +8480,7 @@
                         ]
                     },
                     "initial_altitude": 26000,
-                    "initial_controller": "ZDV 13 - TOMSN Low",
+                    "initial_controller": "C13",
                     "initial_speed": 280,
                     "star": "FLATI5",
                     "runway_waypoints": {
@@ -8503,8 +8500,7 @@
                         }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "FOLSM/a23000-27000 BBOCO/a21000-25000/ho FLATI/a19000-22000/s270 ELLDO/a16000-19000/s250",
-                    "initial_facility": "ZDV"
+                    "waypoints": "FOLSM/a23000-27000 BBOCO/a21000-25000/ho FLATI/a19000-22000/s270 ELLDO/a16000-19000/s250"
                 }
             ]
         },
@@ -8854,7 +8850,7 @@
                         ]
                     },
                     "initial_altitude": 31000,
-                    "initial_controller": "ZDV 15 - Sidney Low",
+                    "initial_controller": "C15",
                     "initial_speed": 280,
                     "star": "LAWGR4",
                     "runway_waypoints": {
@@ -8874,8 +8870,7 @@
                         }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "PLZNR/a30000-32000/s280 SOOUR MARZN/ho LAWGR/a19000-22000/s280 PPINT/a15000-19000/s250",
-                    "initial_facility": "ZDV"
+                    "waypoints": "PLZNR/a30000-32000/s280 SOOUR MARZN/ho LAWGR/a19000-22000/s280 PPINT/a15000-19000/s250"
                 }
             ]
         },
@@ -9022,7 +9017,7 @@
                         ]
                     },
                     "initial_altitude": 25000,
-                    "initial_controller": "ZDV 13 - TOMSN Low",
+                    "initial_controller": "C13",
                     "initial_speed": 280,
                     "star": "LONGZ4",
                     "runway_waypoints": {
@@ -9042,8 +9037,7 @@
                         }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "BIVVY/a23000-27000/s280 VESTL/a21000-25000/ho LONGZ/a19000-22000/s270 FLNEL/a16000-19000/s250",
-                    "initial_facility": "ZDV"
+                    "waypoints": "BIVVY/a23000-27000/s280 VESTL/a21000-25000/ho LONGZ/a19000-22000/s270 FLNEL/a16000-19000/s250"
                 },
                 {
                     "airlines": {
@@ -9069,7 +9063,7 @@
                         ]
                     },
                     "initial_altitude": 23000,
-                    "initial_controller": "ZDV 13 - TOMSN Low",
+                    "initial_controller": "C13",
                     "initial_speed": 290,
                     "star": "LONGZ4",
                     "runway_waypoints": {
@@ -9089,8 +9083,7 @@
                         }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "BELGN N040.12.10.824,W106.03.39.396/ho LONGZ/a19000-22000/s270 FLNEL/a16000-19000/s250",
-                    "initial_facility": "ZDV"
+                    "waypoints": "BELGN N040.12.10.824,W106.03.39.396/ho LONGZ/a19000-22000/s270 FLNEL/a16000-19000/s250"
                 },
                 {
                     "airlines": {
@@ -9110,7 +9103,7 @@
                         ]
                     },
                     "initial_altitude": 23000,
-                    "initial_controller": "ZDV 13 - TOMSN Low",
+                    "initial_controller": "C13",
                     "initial_speed": 300,
                     "star": "LONGZ4",
                     "runway_waypoints": {
@@ -9130,8 +9123,7 @@
                         }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "N040.26.29.117,W106.32.38.972 N040.24.35.862,W106.00.55.288/ho LONGZ/a19000-22000/s270 FLNEL/a16000-19000/s250",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N040.26.29.117,W106.32.38.972 N040.24.35.862,W106.00.55.288/ho LONGZ/a19000-22000/s270 FLNEL/a16000-19000/s250"
                 }
             ]
         },
@@ -9327,7 +9319,7 @@
                         ]
                     },
                     "initial_altitude": 26000,
-                    "initial_controller": "ZDV 27 - La Junta Low",
+                    "initial_controller": "C27",
                     "initial_speed": 280,
                     "star": "NIIXX4",
                     "runway_waypoints": {
@@ -9347,8 +9339,7 @@
                         }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "IDOLL YOUTU/ho NIIXX/a19000-22000/s280 HAGGR/a15000-19000/s250",
-                    "initial_facility": "ZDV"
+                    "waypoints": "IDOLL YOUTU/ho NIIXX/a19000-22000/s280 HAGGR/a15000-19000/s250"
                 }
             ]
         },
@@ -9571,7 +9562,7 @@
                         ]
                     },
                     "initial_altitude": 25000,
-                    "initial_controller": "ZDV 26 - POWDR Low",
+                    "initial_controller": "C26",
                     "initial_speed": 280,
                     "star": "SSKII4",
                     "runway_waypoints": {
@@ -9591,8 +9582,7 @@
                         }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "KTOOO/a23000-29000 KLOWN/a21000-25000/ho SSKII/a19000-22000/s270 BGDEE/a17000-19000/s250",
-                    "initial_facility": "ZDV"
+                    "waypoints": "KTOOO/a23000-29000 KLOWN/a21000-25000/ho SSKII/a19000-22000/s270 BGDEE/a17000-19000/s250"
                 },
                 {
                     "airlines": {
@@ -9612,7 +9602,7 @@
                         ]
                     },
                     "initial_altitude": 23000,
-                    "initial_controller": "ZDV 26 - POWDR Low",
+                    "initial_controller": "C26",
                     "initial_speed": 300,
                     "star": "SSKII4",
                     "runway_waypoints": {
@@ -9632,8 +9622,7 @@
                         }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "JNETT/a29000- HAMIC/a21000-25000/s280/ho SSKII/a19000-22000/s270 BGDEE/a17000-19000/s250",
-                    "initial_facility": "ZDV"
+                    "waypoints": "JNETT/a29000- HAMIC/a21000-25000/s280/ho SSKII/a19000-22000/s270 BGDEE/a17000-19000/s250"
                 }
             ]
         },
@@ -9857,7 +9846,7 @@
                         ]
                     },
                     "initial_altitude": 25000,
-                    "initial_controller": "ZDV 26 - POWDR Low",
+                    "initial_controller": "C26",
                     "initial_speed": 280,
                     "star": "TBARR4",
                     "runway_waypoints": {
@@ -9877,8 +9866,7 @@
                         }
                     },
                     "speed_restriction": 250,
-                    "waypoints": "LIFTE/a23000-29000/s280 OLSNN/a21000-25000/ho TBARR/a19000-22000/s270 MNARK/a17000-19000/s250",
-                    "initial_facility": "ZDV"
+                    "waypoints": "LIFTE/a23000-29000/s280 OLSNN/a21000-25000/ho TBARR/a19000-22000/s270 MNARK/a17000-19000/s250"
                 }
             ]
         },
@@ -9918,12 +9906,11 @@
                     "cruise_altitude": 27000,
                     "description": "NW Non-RNAV Turbojets",
                     "initial_altitude": 25000,
-                    "initial_controller": "ZDV 13 - TOMSN Low",
+                    "initial_controller": "C13",
                     "initial_speed": 290,
                     "star": "RAMMS8",
                     "speed_restriction": 250,
-                    "waypoints": "ALPOE AUTIM/ho ELKEE RAMMS/a17000/s250 NIWOT PRONG DVV",
-                    "initial_facility": "ZDV"
+                    "waypoints": "ALPOE AUTIM/ho ELKEE RAMMS/a17000/s250 NIWOT PRONG DVV"
                 }
             ]
         },
@@ -9963,12 +9950,11 @@
                     "cruise_altitude": 35000,
                     "description": "SW Non-RNAV Turbojets",
                     "initial_altitude": 23000,
-                    "initial_controller": "ZDV 26 - POWDR Low",
+                    "initial_controller": "C26",
                     "initial_speed": 290,
                     "star": "LARKS3",
                     "speed_restriction": 250,
-                    "waypoints": "TERRO N039.01.00.383,W105.40.43.524/ho MURFE LARKS/a17000/s250 PAYDD HUUGE FQF",
-                    "initial_facility": "ZDV"
+                    "waypoints": "TERRO N039.01.00.383,W105.40.43.524/ho MURFE LARKS/a17000/s250 PAYDD HUUGE FQF"
                 }
             ]
         },
@@ -10008,12 +9994,11 @@
                     "cruise_altitude": 35000,
                     "description": "NW Non-RNAV Turbojets",
                     "initial_altitude": 24000,
-                    "initial_controller": "ZDV 13 - TOMSN Low",
+                    "initial_controller": "C13",
                     "initial_speed": 290,
                     "star": "TOMSN9",
                     "speed_restriction": 250,
-                    "waypoints": "FROGS/ho RIDJE ALLAN TOMSN/a17000/s250 HYGEN SHAFT FQF",
-                    "initial_facility": "ZDV"
+                    "waypoints": "FROGS/ho RIDJE ALLAN TOMSN/a17000/s250 HYGEN SHAFT FQF"
                 }
             ]
         },
@@ -10053,12 +10038,11 @@
                     "cruise_altitude": 35000,
                     "description": "NE Non-RNAV Turbojets",
                     "initial_altitude": 21000,
-                    "initial_controller": "ZDV 15 - Sidney Low",
+                    "initial_controller": "C15",
                     "initial_speed": 290,
                     "star": "LANDR3",
                     "speed_restriction": 250,
-                    "waypoints": "FONTO LIBIE/ho LANDR/a17000/s250 YONDR PHLAT DVV",
-                    "initial_facility": "ZDV"
+                    "waypoints": "FONTO LIBIE/ho LANDR/a17000/s250 YONDR PHLAT DVV"
                 },
                 {
                     "airlines": {
@@ -10104,11 +10088,10 @@
                     "cruise_altitude": 10000,
                     "description": "NE Non-RNAV Props",
                     "initial_altitude": 10000,
-                    "initial_controller": "ZDV 15 - Sidney Low",
+                    "initial_controller": "C15",
                     "initial_speed": 130,
                     "star": "LANDR3",
-                    "waypoints": "LIBIE/ho LANDR YONDR PHLAT DVV",
-                    "initial_facility": "ZDV"
+                    "waypoints": "LIBIE/ho LANDR YONDR PHLAT DVV"
                 }
             ]
         },
@@ -10148,12 +10131,11 @@
                     "cruise_altitude": 35000,
                     "description": "SW Non-RNAV Turbojet",
                     "initial_altitude": 21000,
-                    "initial_controller": "ZDV 26 - POWDR Low",
+                    "initial_controller": "C26",
                     "initial_speed": 290,
                     "star": "POWDR1",
                     "speed_restriction": 250,
-                    "waypoints": "BASEE/ho SKEED COLAS POWDR/a19000/s250 HLLIE SLOPE DVV",
-                    "initial_facility": "ZDV"
+                    "waypoints": "BASEE/ho SKEED COLAS POWDR/a19000/s250 HLLIE SLOPE DVV"
                 }
             ]
         },
@@ -10197,12 +10179,11 @@
                     "cruise_altitude": 35000,
                     "description": "SE Non-RNAV Turbojets",
                     "initial_altitude": 21000,
-                    "initial_controller": "ZDV 27 - La Junta Low",
+                    "initial_controller": "C27",
                     "initial_speed": 290,
                     "star": "DANDD1",
                     "speed_restriction": 250,
-                    "waypoints": "KIPPY N039.06.47.139,W103.33.19.923/ho CLEVE DANDD/a19000/s250 PEEDE GOAVS DVV",
-                    "initial_facility": "ZDV"
+                    "waypoints": "KIPPY N039.06.47.139,W103.33.19.923/ho CLEVE DANDD/a19000/s250 PEEDE GOAVS DVV"
                 },
                 {
                     "airlines": {
@@ -10248,11 +10229,10 @@
                     "cruise_altitude": 10000,
                     "description": "SE Non-RNAV Props",
                     "initial_altitude": 10000,
-                    "initial_controller": "ZDV 27 - La Junta Low",
+                    "initial_controller": "C27",
                     "initial_speed": 125,
                     "star": "DANDD1",
-                    "waypoints": "KIPPY N039.06.47.139,W103.33.19.923/ho CLEVE DANDD PEEDE GOAVS DVV",
-                    "initial_facility": "ZDV"
+                    "waypoints": "KIPPY N039.06.47.139,W103.33.19.923/ho CLEVE DANDD PEEDE GOAVS DVV"
                 }
             ]
         },
@@ -10308,12 +10288,11 @@
                     "cruise_altitude": 35000,
                     "description": "SE Non-RNAV Turbojets",
                     "initial_altitude": 21000,
-                    "initial_controller": "ZDV 27 - La Junta Low",
+                    "initial_controller": "C27",
                     "initial_speed": 290,
                     "star": "QUAIL1",
                     "speed_restriction": 250,
-                    "waypoints": "HGO N038.52.36.948,W103.41.19.449/ho CONAL QUAIL/a17000/s250 JEFEL CELMI FQF",
-                    "initial_facility": "ZDV"
+                    "waypoints": "HGO N038.52.36.948,W103.41.19.449/ho CONAL QUAIL/a17000/s250 JEFEL CELMI FQF"
                 },
                 {
                     "airlines": {
@@ -10359,11 +10338,10 @@
                     "cruise_altitude": 10000,
                     "description": "SE Non-RNAV Props",
                     "initial_altitude": 10000,
-                    "initial_controller": "ZDV 27 - La Junta Low",
+                    "initial_controller": "C27",
                     "initial_speed": 125,
                     "star": "QUAIL1",
-                    "waypoints": "HGO N039.00.00.466,W103.49.42.952/ho CONAL QUAIL JEFEL CELMI FQF",
-                    "initial_facility": "ZDV"
+                    "waypoints": "HGO N039.00.00.466,W103.49.42.952/ho CONAL QUAIL JEFEL CELMI FQF"
                 }
             ]
         },
@@ -10386,12 +10364,11 @@
                     "cruise_altitude": 40000,
                     "description": "NE RNAV Turbojet",
                     "initial_altitude": 22000,
-                    "initial_controller": "ZDV 21 - Cheyenne Low",
+                    "initial_controller": "C21",
                     "initial_speed": 290,
                     "star": "BRNKO4",
                     "speed_restriction": 250,
-                    "waypoints": "ELWAY N040.44.10.451,W103.41.24.530/ho BRNKO/a14000-16000 PICKK/a14000- BLTZZ/a12000/s250 BWLIN/a10000 REDZN/a10000 PYDRT/a9000 AAYES/a9000/h150",
-                    "initial_facility": "ZDV"
+                    "waypoints": "ELWAY N040.44.10.451,W103.41.24.530/ho BRNKO/a14000-16000 PICKK/a14000- BLTZZ/a12000/s250 BWLIN/a10000 REDZN/a10000 PYDRT/a9000 AAYES/a9000/h150"
                 },
                 {
                     "airlines": {
@@ -10406,12 +10383,11 @@
                     "cruise_altitude": 38000,
                     "description": "NE RNAV Turbojet",
                     "initial_altitude": 22000,
-                    "initial_controller": "ZDV 21 - Cheyenne Low",
+                    "initial_controller": "C21",
                     "initial_speed": 290,
                     "star": "BRNKO4",
                     "speed_restriction": 250,
-                    "waypoints": "ELWAY N040.44.10.451,W103.41.24.530/ho BRNKO/a14000-16000 PICKK/a14000- BLTZZ/a12000/s250 BWLIN/a10000 REDZN/a10000 PYDRT/a9000",
-                    "initial_facility": "ZDV"
+                    "waypoints": "ELWAY N040.44.10.451,W103.41.24.530/ho BRNKO/a14000-16000 PICKK/a14000- BLTZZ/a12000/s250 BWLIN/a10000 REDZN/a10000 PYDRT/a9000"
                 }
             ]
         },
@@ -10448,7 +10424,7 @@
                     "cruise_altitude": 36000,
                     "description": "SE RNAV Turbojet",
                     "initial_altitude": 25000,
-                    "initial_controller": "ZDV 27 - La Junta Low",
+                    "initial_controller": "C27",
                     "initial_speed": 290,
                     "star": "DUNNN6",
                     "speed_restriction": 250,
@@ -10458,8 +10434,7 @@
                             "35R": "XPATH/a10500 XBEEE/a9000",
                             "17L": "XPATH/a10500 XWILL/a10000 XHOME/a10000 NSYNC/a10000/s210/h350"
                         }
-                    },
-                    "initial_facility": "ZDV"
+                    }
                 },
                 {
                     "airlines": {
@@ -10478,12 +10453,11 @@
                     "cruise_altitude": 36000,
                     "description": "SE RNAV Turbojet",
                     "initial_altitude": 25000,
-                    "initial_controller": "ZDV 27 - La Junta Low",
+                    "initial_controller": "C27",
                     "initial_speed": 290,
                     "star": "DUNNN6",
                     "speed_restriction": 250,
-                    "waypoints": "XPAIN DUNNN/a19000-22000 IMAGN/a16000 N039.01.42.159,W104.06.50.833/ho BYEBI/a14000/s250 XBGIN/a13000-14000 GATME/a12000 OLLVR/a12000 HERLY/a11000 CROWZ/a10000/h327",
-                    "initial_facility": "ZDV"
+                    "waypoints": "XPAIN DUNNN/a19000-22000 IMAGN/a16000 N039.01.42.159,W104.06.50.833/ho BYEBI/a14000/s250 XBGIN/a13000-14000 GATME/a12000 OLLVR/a12000 HERLY/a11000 CROWZ/a10000/h327"
                 },
                 {
                     "airlines": {
@@ -10502,7 +10476,7 @@
                     "cruise_altitude": 14000,
                     "description": "From COS",
                     "initial_altitude": 14000,
-                    "initial_controller": "COS_APP",
+                    "initial_controller": "11A",
                     "initial_speed": 250,
                     "star": "DUNNN6",
                     "speed_restriction": 250,
@@ -10512,8 +10486,7 @@
                             "35R": "XPATH/a10500 XBEEE/a9000",
                             "17L": "XPATH/a10500 XWILL/a10000 XHOME/a10000 NSYNC/a10000/s210/h350"
                         }
-                    },
-                    "initial_facility": "COS"
+                    }
                 }
             ]
         },
@@ -10546,12 +10519,11 @@
                     "cruise_altitude": 45000,
                     "description": "NW RNAV Turbojet",
                     "initial_altitude": 30000,
-                    "initial_controller": "ZDV 13 - TOMSN Low",
+                    "initial_controller": "C13",
                     "initial_speed": 290,
                     "star": "PINNR3",
                     "speed_restriction": 250,
-                    "waypoints": "BANNA CHOTS/a17000/ho FFEST/a14000/s250 PINNR/a12000 TINGE/a10000 WHOAA/a10000 REDZN/a10000 PYDRT/a9000 AAYES/a9000/h150",
-                    "initial_facility": "ZDV"
+                    "waypoints": "BANNA CHOTS/a17000/ho FFEST/a14000/s250 PINNR/a12000 TINGE/a10000 WHOAA/a10000 REDZN/a10000 PYDRT/a9000 AAYES/a9000/h150"
                 },
                 {
                     "airlines": {
@@ -10566,12 +10538,11 @@
                     "cruise_altitude": 45000,
                     "description": "NW RNAV Turbojet",
                     "initial_altitude": 29000,
-                    "initial_controller": "ZDV 13 - TOMSN Low",
+                    "initial_controller": "C13",
                     "initial_speed": 290,
                     "star": "PINNR3",
                     "speed_restriction": 250,
-                    "waypoints": "BANNA CHOTS/a17000/ho FFEST/a14000/s250 PINNR/a12000 TINGE/a10000 WHOAA/a10000 REDZN/a10000 PYDRT/a9000",
-                    "initial_facility": "ZDV"
+                    "waypoints": "BANNA CHOTS/a17000/ho FFEST/a14000/s250 PINNR/a12000 TINGE/a10000 WHOAA/a10000 REDZN/a10000 PYDRT/a9000"
                 }
             ]
         },
@@ -10590,7 +10561,7 @@
                     "cruise_altitude": 23000,
                     "description": "SW RNAV Turbojet",
                     "initial_altitude": 23000,
-                    "initial_controller": "ZDV 26 - POWDR Low",
+                    "initial_controller": "C26",
                     "initial_speed": 290,
                     "star": "ZOMBZ6",
                     "speed_restriction": 250,
@@ -10600,8 +10571,7 @@
                             "35R": "XBOXX/a13000-14000 XJOIN/a12000/s240 XPATH/a10500 XBEEE/a9000/s220",
                             "17L": "XBOXX/a13000-14000 GOULD/a12000+ XNICE/a11000 XHOME/a11000 NSYNC/a10000/s210"
                         }
-                    },
-                    "initial_facility": "ZDV"
+                    }
                 }
             ]
         },
@@ -10672,7 +10642,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "I4R",
                     "initial_altitude": 15000,
-                    "initial_controller": "DEN_H_APP",
+                    "initial_controller": "1H",
                     "initial_speed": 250,
                     "route": "FLATI5",
                     "scratchpad": "34R",
@@ -10729,7 +10699,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "I4R",
                     "initial_altitude": 15000,
-                    "initial_controller": "DEN_H_APP",
+                    "initial_controller": "1H",
                     "initial_speed": 250,
                     "route": "LONGZ4",
                     "scratchpad": "34R",
@@ -10798,7 +10768,7 @@
                     "cruise_altitude": 36000,
                     "expect_approach": "I5R",
                     "initial_altitude": 16000,
-                    "initial_controller": "DEN_G_APP",
+                    "initial_controller": "1G",
                     "initial_speed": 250,
                     "route": "AALLE4",
                     "scratchpad": "35R",
@@ -10901,7 +10871,7 @@
                     "cruise_altitude": 36000,
                     "expect_approach": "I5R",
                     "initial_altitude": 16000,
-                    "initial_controller": "DEN_G_APP",
+                    "initial_controller": "1G",
                     "initial_speed": 250,
                     "route": "LAWGR4",
                     "scratchpad": "35R",
@@ -11000,7 +10970,7 @@
                     "cruise_altitude": 36000,
                     "expect_approach": "I5R",
                     "initial_altitude": 20600,
-                    "initial_controller": "DEN_X_APP",
+                    "initial_controller": "1X",
                     "initial_speed": 280,
                     "route": "CLASH5",
                     "scratchpad": "35R",
@@ -11073,7 +11043,7 @@
                     "cruise_altitude": 36000,
                     "expect_approach": "I5L",
                     "initial_altitude": 20000,
-                    "initial_controller": "DEN_X_APP",
+                    "initial_controller": "1X",
                     "initial_speed": 280,
                     "route": "NIIXX4",
                     "scratchpad": "35L",
@@ -11152,7 +11122,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "I4R",
                     "initial_altitude": 21000,
-                    "initial_controller": "DEN_I_APP",
+                    "initial_controller": "1I",
                     "initial_speed": 280,
                     "route": "SSKII4",
                     "scratchpad": "34R",
@@ -11231,7 +11201,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "I5L",
                     "initial_altitude": 21000,
-                    "initial_controller": "DEN_I_APP",
+                    "initial_controller": "1I",
                     "initial_speed": 280,
                     "route": "TBARR4",
                     "scratchpad": "35L",
@@ -11309,7 +11279,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "RY6R",
                     "initial_altitude": 16000,
-                    "initial_controller": "DEN_I_APP",
+                    "initial_controller": "1I",
                     "initial_speed": 250,
                     "route": "SSKII4",
                     "scratchpad": "16R",
@@ -11384,7 +11354,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "RY6R",
                     "initial_altitude": 16000,
-                    "initial_controller": "DEN_I_APP",
+                    "initial_controller": "1I",
                     "initial_speed": 250,
                     "route": "TBARR4",
                     "scratchpad": "16R",
@@ -11483,7 +11453,7 @@
                     "cruise_altitude": 36000,
                     "expect_approach": "I7R",
                     "initial_altitude": 16000,
-                    "initial_controller": "DEN_X_APP",
+                    "initial_controller": "1X",
                     "initial_speed": 250,
                     "route": "CLASH5",
                     "scratchpad": "17R",
@@ -11552,7 +11522,7 @@
                     "cruise_altitude": 36000,
                     "expect_approach": "I7R",
                     "initial_altitude": 16000,
-                    "initial_controller": "DEN_X_APP",
+                    "initial_controller": "1X",
                     "initial_speed": 250,
                     "route": "NIIXX4",
                     "scratchpad": "17R",
@@ -11621,7 +11591,7 @@
                     "cruise_altitude": 36000,
                     "expect_approach": "I6L",
                     "initial_altitude": 20000,
-                    "initial_controller": "DEN_G_APP",
+                    "initial_controller": "1G",
                     "initial_speed": 280,
                     "route": "AALLE4",
                     "scratchpad": "16L",
@@ -11728,7 +11698,7 @@
                     "cruise_altitude": 36000,
                     "expect_approach": "I7R",
                     "initial_altitude": 20000,
-                    "initial_controller": "DEN_G_APP",
+                    "initial_controller": "1G",
                     "initial_speed": 280,
                     "route": "LAWGR4",
                     "scratchpad": "17R",
@@ -11806,7 +11776,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "I6L",
                     "initial_altitude": 22000,
-                    "initial_controller": "DEN_H_APP",
+                    "initial_controller": "1H",
                     "initial_speed": 270,
                     "route": "FLATI5",
                     "scratchpad": "16L",
@@ -11873,7 +11843,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "RY6R",
                     "initial_altitude": 20000,
-                    "initial_controller": "DEN_H_APP",
+                    "initial_controller": "1H",
                     "initial_speed": 270,
                     "route": "LONGZ4",
                     "scratchpad": "16R",
@@ -11951,7 +11921,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "I26",
                     "initial_altitude": 21000,
-                    "initial_controller": "DEN_H_APP",
+                    "initial_controller": "1H",
                     "initial_speed": 270,
                     "route": "FLATI5",
                     "scratchpad": "26",
@@ -12031,7 +12001,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "I26",
                     "initial_altitude": 21000,
-                    "initial_controller": "DEN_I_APP",
+                    "initial_controller": "1I",
                     "initial_speed": 263,
                     "route": "SSKII4",
                     "scratchpad": "26",
@@ -12101,7 +12071,7 @@
                     "cruise_altitude": 36000,
                     "expect_approach": "I26",
                     "initial_altitude": 19000,
-                    "initial_controller": "DEN_G_APP",
+                    "initial_controller": "1G",
                     "initial_speed": 250,
                     "route": "AALLE4",
                     "scratchpad": "26",
@@ -12201,7 +12171,7 @@
                     "cruise_altitude": 36000,
                     "expect_approach": "I26",
                     "initial_altitude": 19000,
-                    "initial_controller": "DEN_X_APP",
+                    "initial_controller": "1X",
                     "initial_speed": 263,
                     "route": "CLASH5",
                     "scratchpad": "26",
@@ -12309,7 +12279,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "I26",
                     "initial_altitude": 21000,
-                    "initial_controller": "DEN_G_APP",
+                    "initial_controller": "1G",
                     "initial_speed": 263,
                     "route": "LAWGR4",
                     "scratchpad": "26",
@@ -12383,7 +12353,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "I26",
                     "initial_altitude": 21000,
-                    "initial_controller": "DEN_X_APP",
+                    "initial_controller": "1X",
                     "initial_speed": 280,
                     "route": "NIIXX4",
                     "scratchpad": "26",
@@ -12483,7 +12453,7 @@
                     "cruise_altitude": 36000,
                     "expect_approach": "I7",
                     "initial_altitude": 19000,
-                    "initial_controller": "DEN_X_APP",
+                    "initial_controller": "1X",
                     "initial_speed": 263,
                     "route": "CLASH5",
                     "scratchpad": "R07",
@@ -12553,7 +12523,7 @@
                     "cruise_altitude": 36000,
                     "expect_approach": "I7",
                     "initial_altitude": 19000,
-                    "initial_controller": "DEN_G_APP",
+                    "initial_controller": "1G",
                     "initial_speed": 250,
                     "route": "AALLE4",
                     "scratchpad": "I07",
@@ -12631,7 +12601,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "I7",
                     "initial_altitude": 23000,
-                    "initial_controller": "DEN_H_APP",
+                    "initial_controller": "1H",
                     "initial_speed": 250,
                     "route": "FLATI5",
                     "scratchpad": "I07",
@@ -12698,7 +12668,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "I7",
                     "initial_altitude": 18000,
-                    "initial_controller": "DEN_H_APP",
+                    "initial_controller": "1H",
                     "initial_speed": 250,
                     "route": "LONGZ4",
                     "scratchpad": "I07",
@@ -12778,7 +12748,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "I7",
                     "initial_altitude": 19000,
-                    "initial_controller": "DEN_I_APP",
+                    "initial_controller": "1I",
                     "initial_speed": 250,
                     "route": "SSKII4",
                     "scratchpad": "I07",
@@ -12857,7 +12827,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "I7",
                     "initial_altitude": 19000,
-                    "initial_controller": "DEN_I_APP",
+                    "initial_controller": "1I",
                     "initial_speed": 250,
                     "route": "TBARR4",
                     "scratchpad": "I07",
@@ -12897,11 +12867,10 @@
                     "assigned_altitude": 13000,
                     "cruise_altitude": 13000,
                     "initial_altitude": 13000,
-                    "initial_controller": "COS_APP",
+                    "initial_controller": "11A",
                     "initial_speed": 245,
                     "route": "V389 LUFSE JEFEL",
-                    "waypoints": "ADANE N039.01.43.656,W104.23.31.441/ho LUFSE JEFEL",
-                    "initial_facility": "COS"
+                    "waypoints": "ADANE N039.01.43.656,W104.23.31.441/ho LUFSE JEFEL"
                 }
             ],
             "overflights": [
@@ -12923,11 +12892,10 @@
                     "cruise_altitude": 22000,
                     "description": "Westbound COS departures",
                     "initial_altitude": 15000,
-                    "initial_controller": "COS_APP",
+                    "initial_controller": "11A",
                     "initial_speed": 225,
                     "scratchpad": "RLG",
-                    "waypoints": "BRK N039.01.12.015,W104.37.55.241/ho FQF RLG",
-                    "initial_facility": "COS"
+                    "waypoints": "BRK N039.01.12.015,W104.37.55.241/ho FQF RLG"
                 },
                 {
                     "airlines": [
@@ -12947,11 +12915,10 @@
                     "cruise_altitude": 22000,
                     "description": "Westbound COS departures",
                     "initial_altitude": 15000,
-                    "initial_controller": "COS_APP",
+                    "initial_controller": "11A",
                     "initial_speed": 225,
                     "scratchpad": "DBL",
-                    "waypoints": "BRK N039.01.12.015,W104.37.55.241/ho FQF J80 DBL",
-                    "initial_facility": "COS"
+                    "waypoints": "BRK N039.01.12.015,W104.37.55.241/ho FQF J80 DBL"
                 }
             ]
         },
@@ -12972,11 +12939,10 @@
                     "assigned_altitude": 11000,
                     "cruise_altitude": 11000,
                     "initial_altitude": 11000,
-                    "initial_controller": "CYS_APP",
+                    "initial_controller": "6A",
                     "initial_speed": 245,
                     "route": "CYS DEN",
-                    "waypoints": "CYS N041.09.27.059,W104.50.57.055 N041.00.39.331,W104.46.19.376/ho DEN",
-                    "initial_facility": "CYS"
+                    "waypoints": "CYS N041.09.27.059,W104.50.57.055 N041.00.39.331,W104.46.19.376/ho DEN"
                 },
                 {
                     "airlines": {
@@ -13012,11 +12978,10 @@
                     "assigned_altitude": 11000,
                     "cruise_altitude": 11000,
                     "initial_altitude": 11000,
-                    "initial_controller": "CYS_APP",
+                    "initial_controller": "6A",
                     "initial_speed": 245,
                     "route": "CYS",
-                    "waypoints": "CYS N041.09.27.059,W104.50.57.055 N041.00.39.331,W104.46.19.376/ho BJC",
-                    "initial_facility": "CYS"
+                    "waypoints": "CYS N041.09.27.059,W104.50.57.055 N041.00.39.331,W104.46.19.376/ho BJC"
                 },
                 {
                     "airlines": {
@@ -13080,11 +13045,10 @@
                     "assigned_altitude": 11000,
                     "cruise_altitude": 11000,
                     "initial_altitude": 11000,
-                    "initial_controller": "CYS_APP",
+                    "initial_controller": "6A",
                     "initial_speed": 245,
                     "route": "CYS",
-                    "waypoints": "CYS N041.09.27.059,W104.50.57.055 N041.00.39.331,W104.46.19.376/ho BJC",
-                    "initial_facility": "CYS"
+                    "waypoints": "CYS N041.09.27.059,W104.50.57.055 N041.00.39.331,W104.46.19.376/ho BJC"
                 }
             ]
         }

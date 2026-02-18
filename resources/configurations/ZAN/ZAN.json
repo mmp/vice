@@ -1,106 +1,118 @@
 {
-  "control_positions": {
-    "ZAN 03 ": {
-      "frequency": 133300,
-      "eram_facility": true,
-      "radio_name": "Anchorage Center",
-      "sector_id": "03"
+    "control_positions": {
+        "03": {
+            "callsign": "ZAN 03 ",
+            "frequency": 133300,
+            "eram_facility": true,
+            "radio_name": "Anchorage Center"
+        },
+        "04": {
+            "callsign": "ZAN 04 ",
+            "frequency": 135300,
+            "eram_facility": true,
+            "radio_name": "Anchorage Center"
+        },
+        "05": {
+            "callsign": "ZAN 05 ",
+            "frequency": 125700,
+            "eram_facility": true,
+            "radio_name": "Anchorage Center"
+        },
+        "06": {
+            "callsign": "ZAN 06 ",
+            "frequency": 132300,
+            "eram_facility": true,
+            "radio_name": "Anchorage Center"
+        },
+        "07": {
+            "callsign": "ZAN 07 ",
+            "frequency": 119500,
+            "eram_facility": true,
+            "radio_name": "Anchorage Center"
+        },
+        "08": {
+            "callsign": "ZAN 08 ",
+            "frequency": 126100,
+            "eram_facility": true,
+            "radio_name": "Anchorage Center"
+        },
+        "09": {
+            "callsign": "ZAN 09 ",
+            "frequency": 124800,
+            "eram_facility": true,
+            "radio_name": "Anchorage Center"
+        },
+        "13": {
+            "callsign": "ZAN 13 ",
+            "frequency": 125200,
+            "eram_facility": true,
+            "radio_name": "Anchorage Center"
+        },
+        "14": {
+            "callsign": "ZAN 14 ",
+            "frequency": 119300,
+            "eram_facility": true,
+            "radio_name": "Anchorage Center"
+        },
+        "15": {
+            "callsign": "ZAN 15 ",
+            "frequency": 120900,
+            "eram_facility": true,
+            "radio_name": "Anchorage Center"
+        },
+        "16": {
+            "callsign": "ZAN 16 ",
+            "frequency": 132700,
+            "eram_facility": true,
+            "radio_name": "Anchorage Center"
+        },
+        "63": {
+            "callsign": "ZAN 63 ",
+            "frequency": 126950,
+            "eram_facility": true,
+            "radio_name": "Anchorage Center"
+        },
+        "68": {
+            "callsign": "ZAN 68 ",
+            "frequency": 127300,
+            "eram_facility": true,
+            "radio_name": "Anchorage Center"
+        },
+        "69": {
+            "callsign": "ZAN 69 ",
+            "frequency": 133800,
+            "eram_facility": true,
+            "radio_name": "Anchorage Center"
+        },
+        "90": {
+            "callsign": "ZAN 90 - Kenai AFSS",
+            "frequency": 122650,
+            "eram_facility": true,
+            "radio_name": "Kenai Radio"
+        },
+        "91": {
+            "callsign": "ZAN 91 - Fairbanks AFSS",
+            "frequency": 122300,
+            "eram_facility": true,
+            "radio_name": "Fairbanks Radio"
+        },
+        "92": {
+            "callsign": "ZAN 92 - Juneau AFSS",
+            "frequency": 122250,
+            "eram_facility": true,
+            "radio_name": "Juneau Radio"
+        }
     },
-    "ZAN 04 ": {
-      "frequency": 135300,
-      "eram_facility": true,
-      "radio_name": "Anchorage Center",
-      "sector_id": "04"
-    },
-    "ZAN 05 ": {
-      "frequency": 125700,
-      "eram_facility": true,
-      "radio_name": "Anchorage Center",
-      "sector_id": "05"
-    },
-    "ZAN 06 ": {
-      "frequency": 132300,
-      "eram_facility": true,
-      "radio_name": "Anchorage Center",
-      "sector_id": "06"
-    },
-    "ZAN 07 ": {
-      "frequency": 119500,
-      "eram_facility": true,
-      "radio_name": "Anchorage Center",
-      "sector_id": "07"
-    },
-    "ZAN 08 ": {
-      "frequency": 126100,
-      "eram_facility": true,
-      "radio_name": "Anchorage Center",
-      "sector_id": "08"
-    },
-    "ZAN 09 ": {
-      "frequency": 124800,
-      "eram_facility": true,
-      "radio_name": "Anchorage Center",
-      "sector_id": "09"
-    },
-    "ZAN 13 ": {
-      "frequency": 125200,
-      "eram_facility": true,
-      "radio_name": "Anchorage Center",
-      "sector_id": "13"
-    },
-    "ZAN 14 ": {
-      "frequency": 119300,
-      "eram_facility": true,
-      "radio_name": "Anchorage Center",
-      "sector_id": "14"
-    },
-    "ZAN 15 ": {
-      "frequency": 120900,
-      "eram_facility": true,
-      "radio_name": "Anchorage Center",
-      "sector_id": "15"
-    },
-    "ZAN 16 ": {
-      "frequency": 132700,
-      "eram_facility": true,
-      "radio_name": "Anchorage Center",
-      "sector_id": "16"
-    },
-    "ZAN 63 ": {
-      "frequency": 126950,
-      "eram_facility": true,
-      "radio_name": "Anchorage Center",
-      "sector_id": "63"
-    },
-    "ZAN 68 ": {
-      "frequency": 127300,
-      "eram_facility": true,
-      "radio_name": "Anchorage Center",
-      "sector_id": "68"
-    },
-    "ZAN 69 ": {
-      "frequency": 133800,
-      "eram_facility": true,
-      "radio_name": "Anchorage Center",
-      "sector_id": "69"
-    },
-    "ZAN 90 - Kenai AFSS": {
-      "frequency": 122650,
-      "eram_facility": true,
-      "radio_name": "Kenai Radio",
-      "sector_id": "90"
-    },
-    "ZAN 91 - Fairbanks AFSS": {
-      "frequency": 122300,
-      "eram_facility": true,
-      "radio_name": "Fairbanks Radio",
-      "sector_id": "91"
-    },
-    "ZAN 92 - Juneau AFSS": {
-      "frequency": 122250,
-      "eram_facility": true,
-      "radio_name": "Juneau Radio",
-      "sector_id": "92"
-    }
-  }
+    "handoff_ids": [
+        {
+            "id": "A11",
+            "stars_id": "AAA",
+            "single_char_stars_id": "A"
+        },
+        {
+            "id": "FAI",
+            "stars_id": "FFF",
+            "single_char_stars_id": "F"
+        }
+    ]
 }

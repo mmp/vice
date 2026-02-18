@@ -1506,7 +1506,7 @@
                         }
                     },
                     "star": "AANDY2",
-                    "initial_controller": "ZMP 26 GRI LO",
+                    "initial_controller": "C26",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "32L",
@@ -1521,8 +1521,7 @@
                                 "airport": "KFAR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -1541,7 +1540,7 @@
                         }
                     },
                     "star": "HOWRY3.GRI",
-                    "initial_controller": "ZMP 26 GRI LO",
+                    "initial_controller": "C26",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "32L",
@@ -1600,8 +1599,7 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -1620,7 +1618,7 @@
                         }
                     },
                     "star": "HOWRY3.ONL",
-                    "initial_controller": "ZMP 26 GRI LO",
+                    "initial_controller": "C26",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "32L",
@@ -1631,8 +1629,7 @@
                                 "airport": "KSEA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -1641,7 +1638,7 @@
                 {
                     "waypoints": "DABOY N041.37.50.173,W094.55.20.947/ho LANTK/h250",
                     "star": "LANTK2.DABOY",
-                    "initial_controller": "ZMP 27 OMA LO",
+                    "initial_controller": "C27",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "32L",
@@ -1656,8 +1653,7 @@
                                 "airport": "KMSP"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -1666,7 +1662,7 @@
                 {
                     "waypoints": "DSM N041.29.32.218,W094.44.43.493/ho LANTK/h250",
                     "star": "LANTK2.DSM",
-                    "initial_controller": "ZMP 27 OMA LO",
+                    "initial_controller": "C27",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "32L",
@@ -1713,8 +1709,7 @@
                                 "airport": "KMDW"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -1723,7 +1718,7 @@
                 {
                     "waypoints": "N039.50.32.720,W095.24.53.041 N040.16.59.091,W095.57.26.136/ho KLNK",
                     "star": "LNK.KAIZ",
-                    "initial_controller": "ZMP 26 GRI LO",
+                    "initial_controller": "C26",
                     "initial_altitude": 11000,
                     "initial_speed": 280,
                     "expect_approach": "I36",
@@ -1734,8 +1729,7 @@
                                 "airport": "KAIZ"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -1744,7 +1738,7 @@
                 {
                     "waypoints": "DRABS N040.49.07.329,W097.46.32.065/ho KLNK",
                     "star": "LNK.KDEN",
-                    "initial_controller": "ZMP 26 GRI LO",
+                    "initial_controller": "C26",
                     "initial_altitude": 11000,
                     "initial_speed": 280,
                     "expect_approach": "I36",
@@ -1759,8 +1753,7 @@
                                 "airport": "KDEN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -1769,7 +1762,7 @@
                 {
                     "waypoints": "N039.36.07.478,W096.14.55.852 LEFAM/ho KLNK",
                     "star": "LNK.KIAH",
-                    "initial_controller": "ZMP 26 GRI LO",
+                    "initial_controller": "C26",
                     "initial_altitude": 11000,
                     "initial_speed": 280,
                     "expect_approach": "I36",
@@ -1780,8 +1773,7 @@
                                 "airport": "KIAH"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -1790,7 +1782,7 @@
                 {
                     "waypoints": "N039.37.55.598,W095.59.03.392 N040.11.16.771,W096.18.40.632/ho KLNK",
                     "star": "LNK.KJLN",
-                    "initial_controller": "ZMP 26 GRI LO",
+                    "initial_controller": "C26",
                     "initial_altitude": 11000,
                     "initial_speed": 280,
                     "expect_approach": "I36",
@@ -1801,8 +1793,7 @@
                                 "airport": "KJLN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -1811,7 +1802,7 @@
                 {
                     "waypoints": "N041.14.48.011,W094.32.02.991 N041.11.47.876,W094.52.37.196/ho KLNK",
                     "star": "LNK.KORD",
-                    "initial_controller": "ZMP 27 OMA LO",
+                    "initial_controller": "C27",
                     "initial_altitude": 11000,
                     "initial_speed": 280,
                     "expect_approach": "I36",
@@ -1822,8 +1813,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -1832,7 +1822,7 @@
                 {
                     "waypoints": "N040.15.32.464,W098.07.53.043 N040.31.21.614,W097.34.50.780/ho KLNK",
                     "star": "LNK.KSDL",
-                    "initial_controller": "ZMP 26 GRI LO",
+                    "initial_controller": "C26",
                     "initial_altitude": 11000,
                     "initial_speed": 280,
                     "expect_approach": "I36",
@@ -1847,8 +1837,7 @@
                                 "airport": "KSDL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -1867,7 +1856,7 @@
                         }
                     },
                     "star": "MARWI4.LMN",
-                    "initial_controller": "ZMP 27 OMA LO",
+                    "initial_controller": "C27",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "32L",
@@ -1918,8 +1907,7 @@
                                 "airport": "KDCA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -1938,7 +1926,7 @@
                         }
                     },
                     "star": "MARWI4.STJ",
-                    "initial_controller": "ZMP 27 OMA LO",
+                    "initial_controller": "C27",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "32L",
@@ -1969,8 +1957,7 @@
                                 "airport": "KMEM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -1979,7 +1966,7 @@
                 {
                     "waypoints": "N041.19.28.821,W094.26.43.729 N041.16.21.477,W094.48.29.317/a16000/ho KOFF/a16000",
                     "star": "OFF.DSM",
-                    "initial_controller": "ZMP 27 OMA LO",
+                    "initial_controller": "C27",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "I31",
@@ -2018,8 +2005,7 @@
                                 "airport": "KOFF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -2028,7 +2014,7 @@
                 {
                     "waypoints": "N042.01.02.127,W094.56.14.285 N041.47.35.758,W095.10.52.972/a16000/ho KOFF/a16000",
                     "star": "OFF.FOD",
-                    "initial_controller": "ZMP 27 OMA LO",
+                    "initial_controller": "C27",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "I31",
@@ -2067,8 +2053,7 @@
                                 "airport": "KOFF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -2077,7 +2062,7 @@
                 {
                     "waypoints": "N041.01.22.795,W097.36.43.747 N041.03.03.444,W097.05.45.986/a16000/ho KOFF/a16000",
                     "star": "OFF.GRI",
-                    "initial_controller": "ZMP 26 GRI LO",
+                    "initial_controller": "C26",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "I31",
@@ -2116,8 +2101,7 @@
                                 "airport": "KOFF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -2126,7 +2110,7 @@
                 {
                     "waypoints": "N040.40.19.999,W098.05.38.708 N040.51.14.359,W097.11.59.796/a16000/ho KOFF/a16000",
                     "star": "OFF.HSI",
-                    "initial_controller": "ZMP 26 GRI LO",
+                    "initial_controller": "C26",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "I31",
@@ -2165,8 +2149,7 @@
                                 "airport": "KOFF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -2175,7 +2158,7 @@
                 {
                     "waypoints": "N040.44.48.230,W094.31.28.604 N040.49.13.262,W094.48.19.291/a16000/ho KOFF/a16000",
                     "star": "OFF.LMN",
-                    "initial_controller": "ZMP 27 OMA LO",
+                    "initial_controller": "C27",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "I31",
@@ -2214,8 +2197,7 @@
                                 "airport": "KOFF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -2224,7 +2206,7 @@
                 {
                     "waypoints": "N041.18.29.220,W097.42.05.949 N041.14.56.333,W097.08.32.374/a16000/ho KOFF/a16000",
                     "star": "OFF.OBH",
-                    "initial_controller": "ZMP 26 GRI LO",
+                    "initial_controller": "C26",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "I31",
@@ -2263,8 +2245,7 @@
                                 "airport": "KOFF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -2273,7 +2254,7 @@
                 {
                     "waypoints": "N041.49.32.817,W097.09.03.411 N041.41.06.430,W096.54.08.657/a16000/ho KOFF/a16000",
                     "star": "OFF.OFK",
-                    "initial_controller": "ZMP 26 GRI LO",
+                    "initial_controller": "C26",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "I31",
@@ -2312,8 +2293,7 @@
                                 "airport": "KOFF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -2322,7 +2302,7 @@
                 {
                     "waypoints": "N041.49.14.965,W097.21.09.635 N041.38.24.725,W096.58.44.853/a16000/ho KOFF/a16000",
                     "star": "OFF.ONL",
-                    "initial_controller": "ZMP 26 GRI LO",
+                    "initial_controller": "C26",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "I31",
@@ -2361,8 +2341,7 @@
                                 "airport": "KOFF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -2371,7 +2350,7 @@
                 {
                     "waypoints": "N039.45.52.088,W096.22.05.637 PWE/a16000/ho KOFF/a16000",
                     "star": "OFF.PWE",
-                    "initial_controller": "ZMP 26 GRI LO",
+                    "initial_controller": "C26",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "I31",
@@ -2410,8 +2389,7 @@
                                 "airport": "KOFF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -2420,7 +2398,7 @@
                 {
                     "waypoints": "SUX N041.59.23.690,W096.12.12.870/a16000/ho KOFF/a16000",
                     "star": "OFF.SUX",
-                    "initial_controller": "ZMP 26 GRI LO",
+                    "initial_controller": "C26",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "I31",
@@ -2459,8 +2437,7 @@
                                 "airport": "KOFF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -2469,7 +2446,7 @@
                 {
                     "waypoints": "N040.08.35.780,W097.39.16.814 N040.32.19.375,W096.56.54.028/a16000/ho KOFF/a16000",
                     "star": "OFF.TKO",
-                    "initial_controller": "ZMP 26 GRI LO",
+                    "initial_controller": "C26",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "I31",
@@ -2508,8 +2485,7 @@
                                 "airport": "KOFF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -2528,7 +2504,7 @@
                         }
                     },
                     "star": "TIMMO1",
-                    "initial_controller": "ZMP 26 GRI LO",
+                    "initial_controller": "C26",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "32L",
@@ -2563,8 +2539,7 @@
                                 "airport": "KIAH"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         }

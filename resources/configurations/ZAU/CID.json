@@ -1,62 +1,62 @@
 {
     "control_positions": {
-        "CID_S_APP": {
+        "1A": {
+            "callsign": "CID_S_APP",
             "frequency": 119700,
-            "radio_name": "Cedar Rapids approach",
-            "sector_id": "1A"
+            "radio_name": "Cedar Rapids approach"
         },
-        "CID_N_APP": {
+        "1D": {
+            "callsign": "CID_N_APP",
             "frequency": 134050,
-            "radio_name": "Cedar Rapids approach",
-            "sector_id": "1D"
+            "radio_name": "Cedar Rapids approach"
         },
-        "CID_TWR": {
+        "1T": {
+            "callsign": "CID_TWR",
             "frequency": 118700,
             "radio_name": "Eastern Iowa tower",
-            "scope_char": "1",
-            "sector_id": "1T"
+            "scope_char": "1"
         },
-        "IOW_TWR": {
+        "2T": {
+            "callsign": "IOW_TWR",
             "frequency": 122800,
-            "radio_name": "Iowa city traffic",
-            "sector_id": "2T"
+            "radio_name": "Iowa city traffic"
         }
     },
     "stars_config": {
         "configurations": {
             "27X": {
                 "inbound_assignments": {
-                    "EAST CID ARR": "CID_N_APP",
-                    "NORTH CID ARR": "CID_N_APP",
-                    "SOUTHEAST CID ARR": "CID_S_APP",
-                    "WEST CID ARR": "CID_S_APP",
-                    "WEST IOW ARR": "CID_S_APP"
+                    "EAST CID ARR": "1D",
+                    "NORTH CID ARR": "1D",
+                    "SOUTHEAST CID ARR": "1A",
+                    "WEST CID ARR": "1A",
+                    "WEST IOW ARR": "1A"
                 },
                 "departure_assignments": {
-                    "KCID": "CID_N_APP",
-                    "KIOW": "CID_S_APP"
+                    "KCID": "1D",
+                    "KIOW": "1A"
                 },
                 "default_consolidation": {
-                    "CID_N_APP": [
-                        "CID_S_APP"
+                    "1D": [
+                        "1A"
                     ]
                 }
             },
             "9XX": {
                 "inbound_assignments": {
-                    "EAST CID ARR": "CID_N_APP",
-                    "NORTH CID ARR": "CID_N_APP",
-                    "SOUTHEAST CID ARR": "CID_S_APP",
-                    "WEST CID ARR": "CID_S_APP",
-                    "WEST IOW ARR": "CID_S_APP"
+                    "EAST CID ARR": "1D",
+                    "NORTH CID ARR": "1D",
+                    "SOUTHEAST CID ARR": "1A",
+                    "WEST CID ARR": "1A",
+                    "WEST IOW ARR": "1A"
                 },
                 "departure_assignments": {
-                    "KCID": "CID_S_APP",
-                    "KIOW": "CID_S_APP"
+                    "KCID": "1A",
+                    "KIOW": "1A"
                 },
                 "default_consolidation": {
-                    "CID_N_APP": [
-                        "CID_S_APP"
+                    "1D": [
+                        "1A"
                     ]
                 }
             }
@@ -128,7 +128,7 @@
         },
         {
             "id": "ZAU",
-            "eram_prefix": "G"
+            "eram_prefix": "C"
         }
     ]
 }

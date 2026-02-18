@@ -1,521 +1,521 @@
 {
     "control_positions": {
-        "ATL_H_APP": {
+        "1H": {
+            "callsign": "ATL_H_APP",
             "frequency": 127900,
-            "radio_name": "Atlanta Approach",
-            "sector_id": "1H"
+            "radio_name": "Atlanta Approach"
         },
-        "ATL_D_APP": {
+        "1D": {
+            "callsign": "ATL_D_APP",
             "frequency": 128000,
-            "radio_name": "Atlanta Approach",
-            "sector_id": "1D"
+            "radio_name": "Atlanta Approach"
         },
-        "ATL_L_APP": {
+        "1L": {
+            "callsign": "ATL_L_APP",
             "frequency": 128525,
-            "radio_name": "Atlanta Approach",
-            "sector_id": "1L"
+            "radio_name": "Atlanta Approach"
         },
-        "ATL_Y_APP": {
+        "1Y": {
+            "callsign": "ATL_Y_APP",
             "frequency": 124725,
-            "radio_name": "Atlanta Approach",
-            "sector_id": "1Y"
+            "radio_name": "Atlanta Approach"
         },
-        "ATL_O_APP": {
+        "1O": {
+            "callsign": "ATL_O_APP",
             "frequency": 124600,
-            "radio_name": "Atlanta Approach",
-            "sector_id": "1O"
+            "radio_name": "Atlanta Approach"
         },
-        "ATL_V_APP": {
+        "1V": {
+            "callsign": "ATL_V_APP",
             "frequency": 127250,
-            "radio_name": "Atlanta Approach",
-            "sector_id": "1V"
+            "radio_name": "Atlanta Approach"
         },
-        "ATL_A_APP": {
+        "1A": {
+            "callsign": "ATL_A_APP",
             "frequency": 135375,
-            "radio_name": "Atlanta Approach",
-            "sector_id": "1A"
+            "radio_name": "Atlanta Approach"
         },
-        "ATL_N_DEP": {
+        "1N": {
+            "callsign": "ATL_N_DEP",
             "frequency": 125200,
-            "radio_name": "Atlanta Departure",
-            "sector_id": "1N"
+            "radio_name": "Atlanta Departure"
         },
-        "ATL_S_DEP": {
+        "1S": {
+            "callsign": "ATL_S_DEP",
             "frequency": 125200,
-            "radio_name": "Atlanta Departure",
-            "sector_id": "1S"
+            "radio_name": "Atlanta Departure"
         },
-        "ATL_I_DEP": {
+        "1I": {
+            "callsign": "ATL_I_DEP",
             "frequency": 125200,
-            "radio_name": "Atlanta Departure",
-            "sector_id": "1I"
+            "radio_name": "Atlanta Departure"
         },
-        "ATL_P_APP": {
+        "1P": {
+            "callsign": "ATL_P_APP",
             "frequency": 126975,
-            "radio_name": "Atlanta Approach",
-            "sector_id": "1P"
+            "radio_name": "Atlanta Approach"
         },
-        "ATL_F_APP": {
+        "1F": {
+            "callsign": "ATL_F_APP",
             "frequency": 121000,
-            "radio_name": "Atlanta Approach",
-            "sector_id": "1F"
+            "radio_name": "Atlanta Approach"
         },
-        "ATL_X_APP": {
+        "1X": {
+            "callsign": "ATL_X_APP",
             "frequency": 119800,
-            "radio_name": "Atlanta Approach",
-            "sector_id": "1X"
+            "radio_name": "Atlanta Approach"
         },
-        "ATL_G_APP": {
+        "1G": {
+            "callsign": "ATL_G_APP",
             "frequency": 128575,
-            "radio_name": "Atlanta Approach",
-            "sector_id": "1G"
+            "radio_name": "Atlanta Approach"
         },
-        "ATL_Q_APP": {
+        "1Q": {
+            "callsign": "ATL_Q_APP",
             "frequency": 124300,
-            "radio_name": "Atlanta Approach",
-            "sector_id": "1Q"
+            "radio_name": "Atlanta Approach"
         },
-        "ATL_1_TWR": {
+        "21": {
+            "callsign": "ATL_1_TWR",
             "frequency": 119100,
             "radio_name": "Atlanta Tower",
-            "scope_char": "T",
-            "sector_id": "21"
+            "scope_char": "T"
         },
-        "ATL_2_TWR": {
+        "22": {
+            "callsign": "ATL_2_TWR",
             "frequency": 125320,
             "radio_name": "Atlanta Tower",
-            "scope_char": "T",
-            "sector_id": "22"
+            "scope_char": "T"
         },
-        "ATL_3_TWR": {
+        "23": {
+            "callsign": "ATL_3_TWR",
             "frequency": 123850,
             "radio_name": "Atlanta Tower",
-            "scope_char": "T",
-            "sector_id": "23"
+            "scope_char": "T"
         },
-        "ATL_4_TWR": {
+        "24": {
+            "callsign": "ATL_4_TWR",
             "frequency": 119300,
             "radio_name": "Atlanta Tower",
-            "scope_char": "T",
-            "sector_id": "24"
+            "scope_char": "T"
         },
-        "ATL_5_TWR": {
+        "25": {
+            "callsign": "ATL_5_TWR",
             "frequency": 119500,
             "radio_name": "Atlanta Tower",
-            "scope_char": "T",
-            "sector_id": "25"
+            "scope_char": "T"
         },
-        "ATL_Z_APP": {
+        "1Z": {
+            "callsign": "ATL_Z_APP",
             "frequency": 124300,
-            "radio_name": "Atlanta Approach",
-            "sector_id": "1Z"
+            "radio_name": "Atlanta Approach"
         },
-        "ATL_R_APP": {
+        "1R": {
+            "callsign": "ATL_R_APP",
             "frequency": 126550,
-            "radio_name": "Atlanta Approach",
-            "sector_id": "1R"
+            "radio_name": "Atlanta Approach"
         },
-        "ATL_M_APP": {
+        "1M": {
+            "callsign": "ATL_M_APP",
             "frequency": 124200,
-            "radio_name": "Atlanta Approach",
-            "sector_id": "1M"
+            "radio_name": "Atlanta Approach"
         },
-        "ATL_W_APP": {
+        "1W": {
+            "callsign": "ATL_W_APP",
             "frequency": 119600,
-            "radio_name": "Atlanta Approach",
-            "sector_id": "1W"
+            "radio_name": "Atlanta Approach"
         },
-        "ATL_E_APP": {
+        "1E": {
+            "callsign": "ATL_E_APP",
             "frequency": 132475,
-            "radio_name": "Atlanta Approach",
-            "sector_id": "1E"
+            "radio_name": "Atlanta Approach"
         },
-        "ATL_3E_APP": {
+        "3E": {
+            "callsign": "ATL_3E_APP",
             "frequency": 119875,
-            "radio_name": "Atlanta Approach",
-            "sector_id": "3E"
+            "radio_name": "Atlanta Approach"
         },
-        "FTY_TWR": {
+        "FT": {
+            "callsign": "FTY_TWR",
             "frequency": 118450,
-            "radio_name": "Fulton County Tower",
-            "sector_id": "FT"
+            "radio_name": "Fulton County Tower"
         },
-        "PDK_TWR": {
+        "PT": {
+            "callsign": "PDK_TWR",
             "frequency": 120900,
-            "radio_name": "Peachtree Tower",
-            "sector_id": "PT"
+            "radio_name": "Peachtree Tower"
         },
-        "MGE_TWR": {
+        "DT": {
+            "callsign": "MGE_TWR",
             "frequency": 120750,
-            "radio_name": "Dobbins Tower",
-            "sector_id": "DT"
+            "radio_name": "Dobbins Tower"
         },
-        "RYY_TWR": {
+        "MT": {
+            "callsign": "RYY_TWR",
             "frequency": 125900,
-            "radio_name": "McCollum Tower",
-            "sector_id": "MT"
+            "radio_name": "McCollum Tower"
         },
-        "LZU_TWR": {
+        "GT": {
+            "callsign": "LZU_TWR",
             "frequency": 124100,
-            "radio_name": "Gwinnett Tower",
-            "sector_id": "GT"
+            "radio_name": "Gwinnett Tower"
         },
-        "WRB_TWR": {
+        "RT": {
+            "callsign": "WRB_TWR",
             "frequency": 133225,
-            "radio_name": "Robins AFB Tower",
-            "sector_id": "RT"
+            "radio_name": "Robins AFB Tower"
         },
-        "MCN_TWR": {
+        "8T": {
+            "callsign": "MCN_TWR",
             "frequency": 128200,
-            "radio_name": "Macon Tower",
-            "sector_id": "8T"
+            "radio_name": "Macon Tower"
         },
-        "CSG_TWR": {
+        "CT": {
+            "callsign": "CSG_TWR",
             "frequency": 120100,
-            "radio_name": "Columbus Tower",
-            "sector_id": "CT"
+            "radio_name": "Columbus Tower"
         },
-        "LSF_TWR": {
+        "LT": {
+            "callsign": "LSF_TWR",
             "frequency": 119050,
-            "radio_name": "Lawson Tower",
-            "sector_id": "LT"
+            "radio_name": "Lawson Tower"
         },
-        "AUO_TWR": {
+        "AT": {
+            "callsign": "AUO_TWR",
             "frequency": 123875,
-            "radio_name": "Auburn Tower",
-            "sector_id": "AT"
+            "radio_name": "Auburn Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "80X": {
                 "inbound_assignments": {
-                    "AHN Inbounds": "ATL_E_APP",
-                    "AHN Overflights": "ATL_3E_APP",
-                    "BOKRT3": "ATL_X_APP",
-                    "BUKHD3": "ATL_F_APP",
-                    "CHPPR1": "ATL_D_APP",
-                    "CSG Inbounds": "ATL_R_APP",
-                    "CSG Overflights": "ATL_R_APP",
-                    "DEHAN3": "ATL_P_APP",
-                    "GLAVN1": "ATL_D_APP",
-                    "HOBTT2": "ATL_Y_APP",
-                    "JJEDI3": "ATL_H_APP",
-                    "MCN Inbounds": "ATL_W_APP",
-                    "MCN Overflights": "ATL_W_APP",
-                    "ONDRE1": "ATL_L_APP",
-                    "OZZZI1": "ATL_L_APP",
-                    "SWTEE2": "ATL_F_APP",
-                    "WRGNZ3": "ATL_G_APP"
+                    "AHN Inbounds": "1E",
+                    "AHN Overflights": "3E",
+                    "BOKRT3": "1X",
+                    "BUKHD3": "1F",
+                    "CHPPR1": "1D",
+                    "CSG Inbounds": "1R",
+                    "CSG Overflights": "1R",
+                    "DEHAN3": "1P",
+                    "GLAVN1": "1D",
+                    "HOBTT2": "1Y",
+                    "JJEDI3": "1H",
+                    "MCN Inbounds": "1W",
+                    "MCN Overflights": "1W",
+                    "ONDRE1": "1L",
+                    "OZZZI1": "1L",
+                    "SWTEE2": "1F",
+                    "WRGNZ3": "1G"
                 },
                 "departure_assignments": {
-                    "06A": "ATL_Z_APP",
-                    "53A": "ATL_M_APP",
-                    "6A1": "ATL_M_APP",
-                    "6A2": "ATL_G_APP",
-                    "D73": "ATL_P_APP",
-                    "KACJ": "ATL_M_APP",
-                    "KAHN": "ATL_E_APP",
-                    "KATL": "ATL_H_APP",
-                    "KATL/BANNG3": "ATL_I_DEP",
-                    "KATL/CUTTN2": "ATL_N_DEP",
-                    "KATL/GAIRY2": "ATL_S_DEP",
-                    "KATL/HAALO3": "ATL_I_DEP",
-                    "KATL/JACCC2": "ATL_S_DEP",
-                    "KATL/KAJIN2": "ATL_S_DEP",
-                    "KATL/NASSA2": "ATL_N_DEP",
-                    "KATL/PADGT2": "ATL_N_DEP",
-                    "KATL/PENCL2": "ATL_N_DEP",
-                    "KATL/PHIIL3": "ATL_S_DEP",
-                    "KATL/PLMMR3": "ATL_N_DEP",
-                    "KATL/POUNC2": "ATL_I_DEP",
-                    "KATL/SMKEY2": "ATL_N_DEP",
-                    "KATL/SMLTZ3": "ATL_I_DEP",
-                    "KATL/VARNM2": "ATL_N_DEP",
-                    "KATL/VRSTY3": "ATL_I_DEP",
-                    "KAUO": "ATL_Z_APP",
-                    "KCCO": "ATL_X_APP",
-                    "KCPP": "ATL_E_APP",
-                    "KCSG": "ATL_Z_APP",
-                    "KCTJ": "ATL_F_APP",
-                    "KCVC": "ATL_G_APP",
-                    "KDBN": "ATL_M_APP",
-                    "KEUF": "ATL_Z_APP",
-                    "KFFC": "ATL_X_APP",
-                    "KFTY": "ATL_F_APP",
-                    "KGVL": "ATL_E_APP",
-                    "KHMP": "ATL_G_APP",
-                    "KJCA": "ATL_E_APP",
-                    "KLGC": "ATL_Z_APP",
-                    "KLSF": "ATL_Z_APP",
-                    "KLZU": "ATL_P_APP",
-                    "KMAC": "ATL_M_APP",
-                    "KMCN": "ATL_M_APP",
-                    "KMGE": "ATL_F_APP",
-                    "KMLJ": "ATL_M_APP",
-                    "KOPN": "ATL_M_APP",
-                    "KPDK": "ATL_P_APP",
-                    "KPIM": "ATL_Z_APP",
-                    "KPUJ": "ATL_F_APP",
-                    "KPXE": "ATL_M_APP",
-                    "KRYY": "ATL_F_APP",
-                    "KVPC": "ATL_F_APP",
-                    "KWDR": "ATL_E_APP",
-                    "KWRB": "ATL_M_APP"
+                    "06A": "1Z",
+                    "53A": "1M",
+                    "6A1": "1M",
+                    "6A2": "1G",
+                    "D73": "1P",
+                    "KACJ": "1M",
+                    "KAHN": "1E",
+                    "KATL": "1H",
+                    "KATL/BANNG3": "1I",
+                    "KATL/CUTTN2": "1N",
+                    "KATL/GAIRY2": "1S",
+                    "KATL/HAALO3": "1I",
+                    "KATL/JACCC2": "1S",
+                    "KATL/KAJIN2": "1S",
+                    "KATL/NASSA2": "1N",
+                    "KATL/PADGT2": "1N",
+                    "KATL/PENCL2": "1N",
+                    "KATL/PHIIL3": "1S",
+                    "KATL/PLMMR3": "1N",
+                    "KATL/POUNC2": "1I",
+                    "KATL/SMKEY2": "1N",
+                    "KATL/SMLTZ3": "1I",
+                    "KATL/VARNM2": "1N",
+                    "KATL/VRSTY3": "1I",
+                    "KAUO": "1Z",
+                    "KCCO": "1X",
+                    "KCPP": "1E",
+                    "KCSG": "1Z",
+                    "KCTJ": "1F",
+                    "KCVC": "1G",
+                    "KDBN": "1M",
+                    "KEUF": "1Z",
+                    "KFFC": "1X",
+                    "KFTY": "1F",
+                    "KGVL": "1E",
+                    "KHMP": "1G",
+                    "KJCA": "1E",
+                    "KLGC": "1Z",
+                    "KLSF": "1Z",
+                    "KLZU": "1P",
+                    "KMAC": "1M",
+                    "KMCN": "1M",
+                    "KMGE": "1F",
+                    "KMLJ": "1M",
+                    "KOPN": "1M",
+                    "KPDK": "1P",
+                    "KPIM": "1Z",
+                    "KPUJ": "1F",
+                    "KPXE": "1M",
+                    "KRYY": "1F",
+                    "KVPC": "1F",
+                    "KWDR": "1E",
+                    "KWRB": "1M"
                 },
                 "default_consolidation": {
-                    "ATL_3E_APP": [
-                        "ATL_A_APP",
-                        "ATL_D_APP",
-                        "ATL_E_APP",
-                        "ATL_F_APP",
-                        "ATL_G_APP",
-                        "ATL_H_APP",
-                        "ATL_I_DEP",
-                        "ATL_L_APP",
-                        "ATL_M_APP",
-                        "ATL_N_DEP",
-                        "ATL_O_APP",
-                        "ATL_P_APP",
-                        "ATL_Q_APP",
-                        "ATL_R_APP",
-                        "ATL_S_DEP",
-                        "ATL_V_APP",
-                        "ATL_W_APP",
-                        "ATL_X_APP",
-                        "ATL_Y_APP",
-                        "ATL_Z_APP"
+                    "3E": [
+                        "1A",
+                        "1D",
+                        "1E",
+                        "1F",
+                        "1G",
+                        "1H",
+                        "1I",
+                        "1L",
+                        "1M",
+                        "1N",
+                        "1O",
+                        "1P",
+                        "1Q",
+                        "1R",
+                        "1S",
+                        "1V",
+                        "1W",
+                        "1X",
+                        "1Y",
+                        "1Z"
                     ]
                 }
             },
             "A80": {
                 "inbound_assignments": {
-                    "AHN Inbounds": "ATL_E_APP",
-                    "AHN Overflights": "ATL_3E_APP",
-                    "BOKRT3": "ATL_X_APP",
-                    "BUKHD3": "ATL_F_APP",
-                    "CHPPR1": "ATL_D_APP",
-                    "CSG Inbounds": "ATL_R_APP",
-                    "CSG Overflights": "ATL_R_APP",
-                    "DEHAN3": "ATL_P_APP",
-                    "GLAVN1": "ATL_D_APP",
-                    "HOBTT2": "ATL_Y_APP",
-                    "JJEDI3": "ATL_H_APP",
-                    "MCN Inbounds": "ATL_W_APP",
-                    "MCN Overflights": "ATL_W_APP",
-                    "ONDRE1": "ATL_L_APP",
-                    "OZZZI1": "ATL_L_APP",
-                    "SWTEE2": "ATL_F_APP",
-                    "WRGNZ3": "ATL_G_APP"
+                    "AHN Inbounds": "1E",
+                    "AHN Overflights": "3E",
+                    "BOKRT3": "1X",
+                    "BUKHD3": "1F",
+                    "CHPPR1": "1D",
+                    "CSG Inbounds": "1R",
+                    "CSG Overflights": "1R",
+                    "DEHAN3": "1P",
+                    "GLAVN1": "1D",
+                    "HOBTT2": "1Y",
+                    "JJEDI3": "1H",
+                    "MCN Inbounds": "1W",
+                    "MCN Overflights": "1W",
+                    "ONDRE1": "1L",
+                    "OZZZI1": "1L",
+                    "SWTEE2": "1F",
+                    "WRGNZ3": "1G"
                 },
                 "departure_assignments": {
-                    "06A": "ATL_Z_APP",
-                    "53A": "ATL_M_APP",
-                    "6A1": "ATL_M_APP",
-                    "6A2": "ATL_G_APP",
-                    "D73": "ATL_P_APP",
-                    "KACJ": "ATL_M_APP",
-                    "KAHN": "ATL_E_APP",
-                    "KATL": "ATL_H_APP",
-                    "KATL/BANNG3": "ATL_S_DEP",
-                    "KATL/CUTTN2": "ATL_N_DEP",
-                    "KATL/GAIRY2": "ATL_I_DEP",
-                    "KATL/HAALO3": "ATL_S_DEP",
-                    "KATL/JACCC2": "ATL_I_DEP",
-                    "KATL/KAJIN2": "ATL_I_DEP",
-                    "KATL/NASSA2": "ATL_N_DEP",
-                    "KATL/PADGT2": "ATL_N_DEP",
-                    "KATL/PENCL2": "ATL_N_DEP",
-                    "KATL/PHIIL3": "ATL_I_DEP",
-                    "KATL/PLMMR3": "ATL_N_DEP",
-                    "KATL/POUNC2": "ATL_S_DEP",
-                    "KATL/SMKEY2": "ATL_N_DEP",
-                    "KATL/SMLTZ3": "ATL_S_DEP",
-                    "KATL/VARNM2": "ATL_N_DEP",
-                    "KATL/VRSTY3": "ATL_S_DEP",
-                    "KAUO": "ATL_Z_APP",
-                    "KCCO": "ATL_X_APP",
-                    "KCPP": "ATL_E_APP",
-                    "KCSG": "ATL_Z_APP",
-                    "KCTJ": "ATL_F_APP",
-                    "KCVC": "ATL_G_APP",
-                    "KDBN": "ATL_M_APP",
-                    "KEUF": "ATL_Z_APP",
-                    "KFFC": "ATL_X_APP",
-                    "KFTY": "ATL_F_APP",
-                    "KGVL": "ATL_E_APP",
-                    "KHMP": "ATL_G_APP",
-                    "KJCA": "ATL_E_APP",
-                    "KLGC": "ATL_Z_APP",
-                    "KLSF": "ATL_Z_APP",
-                    "KLZU": "ATL_P_APP",
-                    "KMAC": "ATL_M_APP",
-                    "KMCN": "ATL_M_APP",
-                    "KMGE": "ATL_F_APP",
-                    "KMLJ": "ATL_M_APP",
-                    "KOPN": "ATL_M_APP",
-                    "KPDK": "ATL_P_APP",
-                    "KPIM": "ATL_Z_APP",
-                    "KPUJ": "ATL_F_APP",
-                    "KPXE": "ATL_M_APP",
-                    "KRYY": "ATL_F_APP",
-                    "KVPC": "ATL_F_APP",
-                    "KWDR": "ATL_E_APP",
-                    "KWRB": "ATL_M_APP"
+                    "06A": "1Z",
+                    "53A": "1M",
+                    "6A1": "1M",
+                    "6A2": "1G",
+                    "D73": "1P",
+                    "KACJ": "1M",
+                    "KAHN": "1E",
+                    "KATL": "1H",
+                    "KATL/BANNG3": "1S",
+                    "KATL/CUTTN2": "1N",
+                    "KATL/GAIRY2": "1I",
+                    "KATL/HAALO3": "1S",
+                    "KATL/JACCC2": "1I",
+                    "KATL/KAJIN2": "1I",
+                    "KATL/NASSA2": "1N",
+                    "KATL/PADGT2": "1N",
+                    "KATL/PENCL2": "1N",
+                    "KATL/PHIIL3": "1I",
+                    "KATL/PLMMR3": "1N",
+                    "KATL/POUNC2": "1S",
+                    "KATL/SMKEY2": "1N",
+                    "KATL/SMLTZ3": "1S",
+                    "KATL/VARNM2": "1N",
+                    "KATL/VRSTY3": "1S",
+                    "KAUO": "1Z",
+                    "KCCO": "1X",
+                    "KCPP": "1E",
+                    "KCSG": "1Z",
+                    "KCTJ": "1F",
+                    "KCVC": "1G",
+                    "KDBN": "1M",
+                    "KEUF": "1Z",
+                    "KFFC": "1X",
+                    "KFTY": "1F",
+                    "KGVL": "1E",
+                    "KHMP": "1G",
+                    "KJCA": "1E",
+                    "KLGC": "1Z",
+                    "KLSF": "1Z",
+                    "KLZU": "1P",
+                    "KMAC": "1M",
+                    "KMCN": "1M",
+                    "KMGE": "1F",
+                    "KMLJ": "1M",
+                    "KOPN": "1M",
+                    "KPDK": "1P",
+                    "KPIM": "1Z",
+                    "KPUJ": "1F",
+                    "KPXE": "1M",
+                    "KRYY": "1F",
+                    "KVPC": "1F",
+                    "KWDR": "1E",
+                    "KWRB": "1M"
                 },
                 "default_consolidation": {
-                    "ATL_3E_APP": [
-                        "ATL_A_APP",
-                        "ATL_D_APP",
-                        "ATL_E_APP",
-                        "ATL_F_APP",
-                        "ATL_G_APP",
-                        "ATL_H_APP",
-                        "ATL_I_DEP",
-                        "ATL_L_APP",
-                        "ATL_M_APP",
-                        "ATL_N_DEP",
-                        "ATL_O_APP",
-                        "ATL_P_APP",
-                        "ATL_Q_APP",
-                        "ATL_R_APP",
-                        "ATL_S_DEP",
-                        "ATL_V_APP",
-                        "ATL_W_APP",
-                        "ATL_X_APP",
-                        "ATL_Y_APP",
-                        "ATL_Z_APP"
+                    "3E": [
+                        "1A",
+                        "1D",
+                        "1E",
+                        "1F",
+                        "1G",
+                        "1H",
+                        "1I",
+                        "1L",
+                        "1M",
+                        "1N",
+                        "1O",
+                        "1P",
+                        "1Q",
+                        "1R",
+                        "1S",
+                        "1V",
+                        "1W",
+                        "1X",
+                        "1Y",
+                        "1Z"
                     ]
                 }
             },
             "KAT": {
                 "inbound_assignments": {
-                    "BOKRT3": "ATL_X_APP",
-                    "BUKHD3": "ATL_F_APP",
-                    "CHPPR1 EAST": "ATL_D_APP",
-                    "DEHAN3": "ATL_P_APP",
-                    "GLAVN1 EAST": "ATL_D_APP",
-                    "GNDLF2": "ATL_Y_APP",
-                    "ONDRE1 EAST": "ATL_L_APP",
-                    "OZZZI1 EAST": "ATL_L_APP",
-                    "SITTH2": "ATL_H_APP",
-                    "SWTEE2": "ATL_F_APP",
-                    "WRGNZ3": "ATL_G_APP"
+                    "BOKRT3": "1X",
+                    "BUKHD3": "1F",
+                    "CHPPR1 EAST": "1D",
+                    "DEHAN3": "1P",
+                    "GLAVN1 EAST": "1D",
+                    "GNDLF2": "1Y",
+                    "ONDRE1 EAST": "1L",
+                    "OZZZI1 EAST": "1L",
+                    "SITTH2": "1H",
+                    "SWTEE2": "1F",
+                    "WRGNZ3": "1G"
                 },
                 "departure_assignments": {
-                    "KATL": "ATL_N_DEP",
-                    "KCTJ": "ATL_F_APP",
-                    "KCVC": "ATL_G_APP",
-                    "KFFC": "ATL_X_APP",
-                    "KFTY": "ATL_F_APP",
-                    "KHMP": "ATL_G_APP",
-                    "KLZU": "ATL_P_APP",
-                    "KMGE": "ATL_F_APP",
-                    "KPDK": "ATL_P_APP",
-                    "KPUJ": "ATL_F_APP",
-                    "KRYY": "ATL_F_APP",
-                    "KVPC": "ATL_F_APP"
+                    "KATL": "1N",
+                    "KCTJ": "1F",
+                    "KCVC": "1G",
+                    "KFFC": "1X",
+                    "KFTY": "1F",
+                    "KHMP": "1G",
+                    "KLZU": "1P",
+                    "KMGE": "1F",
+                    "KPDK": "1P",
+                    "KPUJ": "1F",
+                    "KRYY": "1F",
+                    "KVPC": "1F"
                 },
                 "default_consolidation": {
-                    "ATL_D_APP": [
-                        "ATL_F_APP",
-                        "ATL_G_APP",
-                        "ATL_H_APP",
-                        "ATL_L_APP",
-                        "ATL_N_DEP",
-                        "ATL_P_APP",
-                        "ATL_X_APP",
-                        "ATL_Y_APP"
+                    "1D": [
+                        "1F",
+                        "1G",
+                        "1H",
+                        "1L",
+                        "1N",
+                        "1P",
+                        "1X",
+                        "1Y"
                     ]
                 }
             },
             "KA1": {
                 "inbound_assignments": {
-                    "CHPPR1_EFINALD": "ATL_O_APP",
-                    "GLAVN1_EFINALD": "ATL_O_APP",
-                    "GNDLF2_EFINALD": "ATL_O_APP",
-                    "NE_FINALTRIPS": "ATL_O_APP",
-                    "SITTH2_EFINALD": "ATL_O_APP"
+                    "CHPPR1_EFINALD": "1O",
+                    "GLAVN1_EFINALD": "1O",
+                    "GNDLF2_EFINALD": "1O",
+                    "NE_FINALTRIPS": "1O",
+                    "SITTH2_EFINALD": "1O"
                 },
                 "default_consolidation": {
-                    "ATL_O_APP": []
+                    "1O": []
                 }
             },
             "KA2": {
                 "inbound_assignments": {
-                    "CHPPR1_EFINALT": "ATL_O_APP",
-                    "GLAVN1_EFINALD": "ATL_O_APP",
-                    "GNDLF2_EFINALT": "ATL_O_APP",
-                    "NE_FINALTRIPS": "ATL_O_APP",
-                    "SITTH2_EFINALT": "ATL_O_APP"
+                    "CHPPR1_EFINALT": "1O",
+                    "GLAVN1_EFINALD": "1O",
+                    "GNDLF2_EFINALT": "1O",
+                    "NE_FINALTRIPS": "1O",
+                    "SITTH2_EFINALT": "1O"
                 },
                 "default_consolidation": {
-                    "ATL_O_APP": []
+                    "1O": []
                 }
             },
             "KA3": {
                 "inbound_assignments": {
-                    "BOKRT3": "ATL_X_APP",
-                    "BUKHD3": "ATL_F_APP",
-                    "CHPPR1": "ATL_D_APP",
-                    "DEHAN3": "ATL_P_APP",
-                    "GLAVN1": "ATL_D_APP",
-                    "HOBTT2": "ATL_Y_APP",
-                    "JJEDI3": "ATL_H_APP",
-                    "ONDRE1": "ATL_L_APP",
-                    "OZZZI1": "ATL_L_APP",
-                    "SWTEE2": "ATL_F_APP",
-                    "WRGNZ3": "ATL_G_APP"
+                    "BOKRT3": "1X",
+                    "BUKHD3": "1F",
+                    "CHPPR1": "1D",
+                    "DEHAN3": "1P",
+                    "GLAVN1": "1D",
+                    "HOBTT2": "1Y",
+                    "JJEDI3": "1H",
+                    "ONDRE1": "1L",
+                    "OZZZI1": "1L",
+                    "SWTEE2": "1F",
+                    "WRGNZ3": "1G"
                 },
                 "departure_assignments": {
-                    "KATL": "ATL_N_DEP",
-                    "KCTJ": "ATL_F_APP",
-                    "KCVC": "ATL_G_APP",
-                    "KFFC": "ATL_X_APP",
-                    "KFTY": "ATL_F_APP",
-                    "KHMP": "ATL_G_APP",
-                    "KLZU": "ATL_P_APP",
-                    "KMGE": "ATL_F_APP",
-                    "KPDK": "ATL_P_APP",
-                    "KPUJ": "ATL_F_APP",
-                    "KRYY": "ATL_F_APP",
-                    "KVPC": "ATL_F_APP"
+                    "KATL": "1N",
+                    "KCTJ": "1F",
+                    "KCVC": "1G",
+                    "KFFC": "1X",
+                    "KFTY": "1F",
+                    "KHMP": "1G",
+                    "KLZU": "1P",
+                    "KMGE": "1F",
+                    "KPDK": "1P",
+                    "KPUJ": "1F",
+                    "KRYY": "1F",
+                    "KVPC": "1F"
                 },
                 "default_consolidation": {
-                    "ATL_D_APP": [
-                        "ATL_F_APP",
-                        "ATL_G_APP",
-                        "ATL_H_APP",
-                        "ATL_L_APP",
-                        "ATL_N_DEP",
-                        "ATL_P_APP",
-                        "ATL_X_APP",
-                        "ATL_Y_APP"
+                    "1D": [
+                        "1F",
+                        "1G",
+                        "1H",
+                        "1L",
+                        "1N",
+                        "1P",
+                        "1X",
+                        "1Y"
                     ]
                 }
             },
             "KA4": {
                 "inbound_assignments": {
-                    "HOBTT2_AFINALD": "ATL_O_APP",
-                    "JJEDI3_FINALD": "ATL_O_APP",
-                    "NW_FINALTRIPS": "ATL_O_APP",
-                    "ONDRE1_FINALWT": "ATL_O_APP",
-                    "OZZZI1_FINALWT": "ATL_O_APP"
+                    "HOBTT2_AFINALD": "1O",
+                    "JJEDI3_FINALD": "1O",
+                    "NW_FINALTRIPS": "1O",
+                    "ONDRE1_FINALWT": "1O",
+                    "OZZZI1_FINALWT": "1O"
                 },
                 "default_consolidation": {
-                    "ATL_O_APP": []
+                    "1O": []
                 }
             },
             "KA5": {
                 "inbound_assignments": {
-                    "HOBTT2_AFINALT": "ATL_O_APP",
-                    "JJEDI3_FINALT": "ATL_O_APP",
-                    "NW_FINALTRIPS": "ATL_O_APP",
-                    "ONDRE1_FINALWT": "ATL_O_APP",
-                    "OZZZI1_FINALWT": "ATL_O_APP"
+                    "HOBTT2_AFINALT": "1O",
+                    "JJEDI3_FINALT": "1O",
+                    "NW_FINALTRIPS": "1O",
+                    "ONDRE1_FINALWT": "1O",
+                    "OZZZI1_FINALWT": "1O"
                 },
                 "default_consolidation": {
-                    "ATL_O_APP": []
+                    "1O": []
                 }
             }
         },
@@ -567,7 +567,7 @@
             }
         ],
         "controller_configs": {
-            "ATL_H_APP": {
+            "1H": {
                 "default_maps": [
                     "RVMA80001S"
                 ],
@@ -613,7 +613,7 @@
                 "center": "N33.37.43.000,W084.25.48.000",
                 "range": 60
             },
-            "ATL_Y_APP": {
+            "1Y": {
                 "default_maps": [
                     "RVMA80001S"
                 ],
@@ -659,7 +659,7 @@
                 "center": "N33.37.43.000,W084.25.48.000",
                 "range": 60
             },
-            "ATL_L_APP": {
+            "1L": {
                 "default_maps": [
                     "RVMA80001S"
                 ],
@@ -705,7 +705,7 @@
                 "center": "N33.37.43.000,W084.25.48.000",
                 "range": 60
             },
-            "ATL_D_APP": {
+            "1D": {
                 "default_maps": [
                     "RVMA80001S"
                 ],
@@ -751,7 +751,7 @@
                 "center": "N33.37.43.000,W084.25.48.000",
                 "range": 60
             },
-            "ATL_O_APP": {
+            "1O": {
                 "default_maps": [
                     "FINAL_W BLANK"
                 ],
@@ -797,7 +797,7 @@
                 "center": "N33.37.43.000,W084.25.48.000",
                 "range": 60
             },
-            "ATL_A_APP": {
+            "1A": {
                 "default_maps": [
                     "FINAL_W BLANK"
                 ],
@@ -843,7 +843,7 @@
                 "center": "N33.37.43.000,W084.25.48.000",
                 "range": 60
             },
-            "ATL_V_APP": {
+            "1V": {
                 "default_maps": [
                     "FINAL_W BLANK"
                 ],
@@ -889,7 +889,7 @@
                 "center": "N33.37.43.000,W084.25.48.000",
                 "range": 60
             },
-            "ATL_N_DEP": {
+            "1N": {
                 "default_maps": [
                     "RVMA80031S"
                 ],
@@ -934,7 +934,7 @@
                 "center": "N33.37.43.000,W084.25.48.000",
                 "range": 60
             },
-            "ATL_I_DEP": {
+            "1I": {
                 "default_maps": [
                     "RVMA80031S"
                 ],
@@ -979,7 +979,7 @@
                 "center": "N33.37.43.000,W084.25.48.000",
                 "range": 60
             },
-            "ATL_S_DEP": {
+            "1S": {
                 "default_maps": [
                     "RVMA80031S"
                 ],
@@ -1024,7 +1024,7 @@
                 "center": "N33.37.43.000,W084.25.48.000",
                 "range": 60
             },
-            "ATL_P_APP": {
+            "1P": {
                 "default_maps": [
                     "RVMA80028S"
                 ],
@@ -1069,7 +1069,7 @@
                 "center": "N33.37.43.000,W084.25.48.000",
                 "range": 60
             },
-            "ATL_G_APP": {
+            "1G": {
                 "default_maps": [
                     "RVMA80028S"
                 ],
@@ -1114,7 +1114,7 @@
                 "center": "N33.37.43.000,W084.25.48.000",
                 "range": 60
             },
-            "ATL_F_APP": {
+            "1F": {
                 "default_maps": [
                     "RVMA80028S"
                 ],
@@ -1159,7 +1159,7 @@
                 "center": "N33.37.43.000,W084.25.48.000",
                 "range": 60
             },
-            "ATL_X_APP": {
+            "1X": {
                 "default_maps": [
                     "RVMA80028S"
                 ],
@@ -1204,7 +1204,7 @@
                 "center": "N33.37.43.000,W084.25.48.000",
                 "range": 60
             },
-            "ATL_Q_APP": {
+            "1Q": {
                 "video_maps": [
                     "RVMA80091S",
                     "RVMA80109S",
@@ -1246,7 +1246,7 @@
                 "center": "N33.37.43.000,W084.25.48.000",
                 "range": 60
             },
-            "ATL_M_APP": {
+            "1M": {
                 "video_maps": [
                     "RVMA80091S",
                     "RVMA80060S",
@@ -1290,7 +1290,7 @@
                 "center": "N32.41.34.000,W083.38.57.000",
                 "range": 60
             },
-            "ATL_W_APP": {
+            "1W": {
                 "video_maps": [
                     "RVMA80091S",
                     "RVMA80060S",
@@ -1334,7 +1334,7 @@
                 "center": "N32.41.34.000,W083.38.57.000",
                 "range": 60
             },
-            "ATL_Z_APP": {
+            "1Z": {
                 "video_maps": [
                     "RVMA80091S",
                     "RVMA80060S",
@@ -1377,7 +1377,7 @@
                 "center": "N32.30.58.000,W084.56.19.000",
                 "range": 60
             },
-            "ATL_R_APP": {
+            "1R": {
                 "video_maps": [
                     "RVMA80091S",
                     "RVMA80060S",
@@ -1420,7 +1420,7 @@
                 "center": "N32.30.58.000,W084.56.19.000",
                 "range": 60
             },
-            "ATL_E_APP": {
+            "1E": {
                 "video_maps": [
                     "RVMA80091S",
                     "RVMA80060S",
@@ -1460,7 +1460,7 @@
                 "center": "N33.56.55.000,W083.19.33.000",
                 "range": 60
             },
-            "ATL_3E_APP": {
+            "3E": {
                 "video_maps": [
                     "RVMA80091S",
                     "RVMA80060S",
@@ -1633,7 +1633,7 @@
                     0,
                     0
                 ],
-                "receiving_controller": "ZTL 43 Pulaski High"
+                "receiving_controller": "C43"
             }
         ],
         "coordination_fixes": {
@@ -1700,7 +1700,7 @@
         },
         {
             "id": "ZTL",
-            "eram_prefix": "T"
+            "eram_prefix": "C"
         }
     ]
 }

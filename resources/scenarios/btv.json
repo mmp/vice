@@ -152,7 +152,7 @@
                 {
                     "waypoints": "LBNON CEVIB/ho BTV",
                     "route": "LBNON CEVIB/ho BTV",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 9000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -171,8 +171,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -181,7 +180,7 @@
                 {
                     "waypoints": "LBNON CEVIB/ho BTV",
                     "route": "LBNON CEVIB/ho BTV",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 9000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -200,8 +199,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -210,7 +208,7 @@
                 {
                     "waypoints": "RUT ENSON/ho WEIGH WINLA BTV",
                     "route": "RUT ENSON/ho WEIGH WINLA BTV",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 9000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -229,8 +227,7 @@
                                 "airport": "KDEN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -239,7 +236,7 @@
                 {
                     "waypoints": "RUT ENSON/ho WEIGH WINLA BTV",
                     "route": "RUT ENSON/ho WEIGH WINLA BTV",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 9000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -254,8 +251,7 @@
                                 "airport": "KMKE"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         }

@@ -541,7 +541,7 @@ func checkScratchpad(ctx *panes.Context, contents string, isSecondary, isImplied
 		// match one of the TCPs
 		if lc == 2 {
 			for _, ctrl := range ctx.Client.State.Controllers {
-				if ctrl.FacilityIdentifier == "" && ctrl.SectorID == contents {
+				if ctrl.FacilityIdentifier == "" && ctrl.Position == contents {
 					return ErrCommandFormat
 				}
 			}

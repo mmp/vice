@@ -1,36 +1,36 @@
 {
     "control_positions": {
-        "BGR_TWR": {
+        "1T": {
+            "callsign": "BGR_TWR",
             "frequency": 120700,
-            "radio_name": "Bangor Tower",
-            "sector_id": "1T"
+            "radio_name": "Bangor Tower"
         },
-        "BGR_B_APP": {
+        "1B": {
+            "callsign": "BGR_B_APP",
             "frequency": 118925,
-            "radio_name": "Bangor Approach",
-            "sector_id": "1B"
+            "radio_name": "Bangor Approach"
         },
-        "BGR_S_APP": {
+        "1S": {
+            "callsign": "BGR_S_APP",
             "frequency": 124500,
-            "radio_name": "Bangor Approach",
-            "sector_id": "1S"
+            "radio_name": "Bangor Approach"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "BOS": "BGR_B_APP",
-                    "ALB": "BGR_B_APP",
-                    "ENE": "BGR_B_APP",
-                    "HUL": "BGR_B_APP"
+                    "BOS": "1B",
+                    "ALB": "1B",
+                    "ENE": "1B",
+                    "HUL": "1B"
                 },
                 "departure_assignments": {
-                    "KBGR": "BGR_B_APP",
-                    "KBHB": "BGR_B_APP"
+                    "KBGR": "1B",
+                    "KBHB": "1B"
                 },
                 "default_consolidation": {
-                    "BGR_B_APP": []
+                    "1B": []
                 }
             }
         },
@@ -45,7 +45,7 @@
         ],
         "center": "KBGR",
         "controller_configs": {
-            "BGR_B_APP": {
+            "1B": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -54,7 +54,7 @@
                     }
                 ]
             },
-            "BGR_S_APP": {
+            "1S": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -81,7 +81,7 @@
         },
         {
             "id": "ZBW",
-            "eram_prefix": "B"
+            "eram_prefix": "C"
         }
     ]
 }

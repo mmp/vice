@@ -1,19 +1,19 @@
 {
     "control_positions": {
-        "HOP_N_APP": {
+        "1N": {
+            "callsign": "HOP_N_APP",
             "frequency": 118100,
-            "radio_name": "Campbell Approach",
-            "sector_id": "1N"
+            "radio_name": "Campbell Approach"
         },
-        "HOP_S_APP": {
+        "1S": {
+            "callsign": "HOP_S_APP",
             "frequency": 134350,
-            "radio_name": "Campbell Approach",
-            "sector_id": "1S"
+            "radio_name": "Campbell Approach"
         },
-        "HOP_TWR": {
+        "1T": {
+            "callsign": "HOP_TWR",
             "frequency": 120900,
-            "radio_name": "Campbell Tower",
-            "sector_id": "1T"
+            "radio_name": "Campbell Tower"
         }
     },
     "handoff_ids": [
@@ -28,6 +28,10 @@
         {
             "id": "ZID",
             "eram_prefix": "I"
+        },
+        {
+            "id": "ZME",
+            "eram_prefix": "C"
         }
     ]
 }

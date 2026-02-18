@@ -1,14 +1,14 @@
 {
     "control_positions": {
-        "ALO_TWR": {
+        "1L": {
+            "callsign": "ALO_TWR",
             "frequency": 125075,
-            "radio_name": "Waterloo Tower",
-            "sector_id": "1L"
+            "radio_name": "Waterloo Tower"
         },
-        "ALO_APP": {
+        "1W": {
+            "callsign": "ALO_APP",
             "frequency": 118900,
-            "radio_name": "Waterloo Approach",
-            "sector_id": "1W"
+            "radio_name": "Waterloo Approach"
         }
     },
     "handoff_ids": [
@@ -27,6 +27,10 @@
         {
             "id": "ZAU",
             "eram_prefix": "G"
+        },
+        {
+            "id": "ZMP",
+            "eram_prefix": "P"
         }
     ]
 }

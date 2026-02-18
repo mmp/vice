@@ -210,7 +210,7 @@
                 {
                     "waypoints": "43.908167,-69.644500 N044.08.25.851,W069.26.42.658/ho BGR",
                     "route": "N044.08.25.851,W069.26.42.658/ho 43.908167,-69.644500 BGR",
-                    "initial_controller": "ZBW 17 Nantucket",
+                    "initial_controller": "C17",
                     "initial_altitude": 11000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -233,8 +233,7 @@
                                 "airport": "KSFB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -243,7 +242,7 @@
                 {
                     "waypoints": "43.941500,-71.048000/ho BGR",
                     "route": "43.941500,-71.048000/ho BGR",
-                    "initial_controller": "ZBW 02 Augusta",
+                    "initial_controller": "C02",
                     "initial_altitude": 11000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -258,8 +257,7 @@
                                 "airport": "KPHL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -268,7 +266,7 @@
                 {
                     "waypoints": "ENE T295 BRNNS/ho",
                     "route": "ENE T295 BRNNS/ho ",
-                    "initial_controller": "ZBW 17 Nantucket",
+                    "initial_controller": "C17",
                     "initial_altitude": 9000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -289,8 +287,7 @@
                                 "airport": "KBOS"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -299,7 +296,7 @@
                 {
                     "waypoints": "HUL/ho BGR",
                     "route": "HUL/ho BGR",
-                    "initial_controller": "ZBW 01 Millinocket",
+                    "initial_controller": "C01",
                     "initial_altitude": 11000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -318,8 +315,7 @@
                                 "airport": "EINN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         }

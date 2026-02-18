@@ -1064,7 +1064,7 @@
                     "waypoints": "EHEJO JAMEB/ho LOTTS/h115",
                     "cruise_altitude": 33000,
                     "route": "/. LOTTS",
-                    "initial_controller": "ZJX 73 Allendale",
+                    "initial_controller": "C73",
                     "initial_altitude": 10000,
                     "assigned_altitude": 10000,
                     "initial_speed": 250,
@@ -1130,8 +1130,7 @@
                                 "airport": "KCNI"
                             }
                         ]
-                    },
-                    "initial_facility": "ZJX"
+                    }
                 }
             ]
         },
@@ -1141,7 +1140,7 @@
                     "waypoints": "LUCNE PLZZZ/ho/h184",
                     "cruise_altitude": 36000,
                     "route": "/. PLZZZ",
-                    "initial_controller": "ZJX 73 Allendale",
+                    "initial_controller": "C73",
                     "initial_altitude": 10000,
                     "assigned_altitude": 10000,
                     "initial_speed": 250,
@@ -1243,8 +1242,7 @@
                                 "airport": "KSHD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZJX"
+                    }
                 }
             ]
         },
@@ -1254,7 +1252,7 @@
                     "waypoints": "MEECH/ho SOOOP/h252",
                     "cruise_altitude": 38000,
                     "route": "/. SOOOP",
-                    "initial_controller": "ZJX 73 Allendale",
+                    "initial_controller": "C73",
                     "initial_altitude": 12000,
                     "assigned_altitude": 10000,
                     "initial_speed": 250,
@@ -1364,8 +1362,7 @@
                                 "airport": "KCHS"
                             }
                         ]
-                    },
-                    "initial_facility": "ZJX"
+                    }
                 }
             ]
         },
@@ -1375,7 +1372,7 @@
                     "waypoints": "HUDES VIYAP/ho/h18",
                     "cruise_altitude": 31000,
                     "route": "/. VIYAP",
-                    "initial_controller": "ZJX 54 Jekyl",
+                    "initial_controller": "C54",
                     "initial_altitude": 11000,
                     "assigned_altitude": 10000,
                     "initial_speed": 250,
@@ -1427,8 +1424,7 @@
                                 "airport": "KVLD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZJX"
+                    }
                 }
             ]
         }
@@ -1459,13 +1455,13 @@
     "scenarios": {
         "SAV Dep 10 Ldg 10/1 Sats North": {
             "airspace": {
-                "SAV_N_APP": [
+                "6N": [
                     "SAV_N_APP"
                 ],
-                "SAV_W_APP": [
+                "6W": [
                     "SAV_W_APP"
                 ],
-                "SAV_S_APP": [
+                "6S": [
                     "SAV_S_APP"
                 ]
             },
@@ -1538,13 +1534,13 @@
         },
         "SAV Dep 28 Ldg 28/19 Sats South": {
             "airspace": {
-                "SAV_N_APP": [
+                "6N": [
                     "SAV_N_APP"
                 ],
-                "SAV_W_APP": [
+                "6W": [
                     "SAV_W_APP"
                 ],
-                "SAV_S_APP": [
+                "6S": [
                     "SAV_S_APP"
                 ]
             },
@@ -1617,13 +1613,13 @@
         },
         "SAV Dep 10 Ldg 10/1 Sats North NBC Offline": {
             "airspace": {
-                "SAV_N_APP": [
+                "6N": [
                     "SAV_N_APP2"
                 ],
-                "SAV_W_APP": [
+                "6W": [
                     "SAV_W_APP"
                 ],
-                "SAV_S_APP": [
+                "6S": [
                     "SAV_S_APP"
                 ]
             },
@@ -1696,13 +1692,13 @@
         },
         "SAV Dep 28 Ldg 28/19 Sats South NBC Offline": {
             "airspace": {
-                "SAV_N_APP": [
+                "6N": [
                     "SAV_N_APP2"
                 ],
-                "SAV_W_APP": [
+                "6W": [
                     "SAV_W_APP"
                 ],
-                "SAV_S_APP": [
+                "6S": [
                     "SAV_S_APP"
                 ]
             },

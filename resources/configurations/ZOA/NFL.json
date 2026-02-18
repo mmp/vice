@@ -1,25 +1,29 @@
 {
     "control_positions": {
-        "NFL_APP": {
+        "1G": {
+            "callsign": "NFL_APP",
             "frequency": 120850,
-            "radio_name": "Fallon Final",
-            "sector_id": "1G"
+            "radio_name": "Fallon Final"
         },
-        "NFL_D_APP": {
+        "1E": {
+            "callsign": "NFL_D_APP",
             "frequency": 120850,
-            "radio_name": "Fallon Desert",
-            "sector_id": "1E"
+            "radio_name": "Fallon Desert"
         },
-        "NFL_TWR": {
+        "1T": {
+            "callsign": "NFL_TWR",
             "frequency": 119250,
-            "radio_name": "Navy Fallon Tower",
-            "sector_id": "1T"
+            "radio_name": "Navy Fallon Tower"
         }
     },
     "handoff_ids": [
         {
             "id": "NCT",
             "prefix": "1"
+        },
+        {
+            "id": "ZOA",
+            "eram_prefix": "C"
         }
     ]
 }

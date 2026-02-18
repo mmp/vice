@@ -1,41 +1,41 @@
 {
     "control_positions": {
-        "CHS_TWR": {
+        "1T": {
+            "callsign": "CHS_TWR",
             "frequency": 126000,
-            "radio_name": "Charleston Tower",
-            "sector_id": "1T"
+            "radio_name": "Charleston Tower"
         },
-        "JZI_TWR": {
+        "1J": {
+            "callsign": "JZI_TWR",
             "frequency": 122800,
-            "radio_name": "Executive Tower",
-            "sector_id": "1J"
+            "radio_name": "Executive Tower"
         },
-        "CHS_W_APP": {
+        "1W": {
+            "callsign": "CHS_W_APP",
             "frequency": 120700,
-            "radio_name": "Charleston Approach",
-            "sector_id": "1W"
+            "radio_name": "Charleston Approach"
         },
-        "CHS_E_APP": {
+        "1E": {
+            "callsign": "CHS_E_APP",
             "frequency": 121275,
-            "radio_name": "Charleston Approach",
-            "sector_id": "1E"
+            "radio_name": "Charleston Approach"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "AMYLU3": "CHS_E_APP",
-                    "BAGGY3": "CHS_W_APP",
-                    "OSPRI7": "CHS_W_APP"
+                    "AMYLU3": "1E",
+                    "BAGGY3": "1W",
+                    "OSPRI7": "1W"
                 },
                 "departure_assignments": {
-                    "KCHS": "CHS_W_APP",
-                    "KJZI": "CHS_W_APP"
+                    "KCHS": "1W",
+                    "KJZI": "1W"
                 },
                 "default_consolidation": {
-                    "CHS_E_APP": [
-                        "CHS_W_APP"
+                    "1E": [
+                        "1W"
                     ]
                 }
             }
@@ -141,8 +141,7 @@
                     "IRQ",
                     "ALD"
                 ],
-                "receiving_controller": "ZJX 74 Charleston ",
-                "receiving_facility": "ZJX"
+                "receiving_controller": "C74"
             },
             {
                 "fixes": [
@@ -152,7 +151,7 @@
                     "ASHEL",
                     "FLO"
                 ],
-                "receiving_controller": "ZJX 72 Columbia"
+                "receiving_controller": "C72"
             },
             {
                 "fixes": [
@@ -161,7 +160,7 @@
                     "FILLI",
                     "SWPFX"
                 ],
-                "receiving_controller": "ZJX 73 Allendale"
+                "receiving_controller": "C73"
             }
         ],
         "coordination_fixes": {
@@ -211,7 +210,7 @@
         },
         {
             "id": "ZJX",
-            "eram_prefix": "J"
+            "eram_prefix": "C"
         }
     ]
 }

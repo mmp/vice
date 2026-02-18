@@ -4910,7 +4910,7 @@
                     },
                     "cruise_altitude": 33000,
                     "star": "CAPSS3",
-                    "initial_controller": "ZDC 20 Blackstone",
+                    "initial_controller": "C20",
                     "initial_altitude": 18000,
                     "initial_speed": 290,
                     "expect_approach": null,
@@ -5011,8 +5011,7 @@
                                 "airport": "KCAE"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -5027,8 +5026,7 @@
                         }
                     },
                     "star": "CLIPR3",
-                    "initial_controller": "ZNY 26 Lancaster",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "N26",
                     "initial_altitude": 17000,
                     "assigned_altitude": 12000,
                     "initial_speed": 280,
@@ -5081,8 +5079,7 @@
                         }
                     },
                     "star": "SKILS5",
-                    "initial_controller": "ZNY 26 Lancaster",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "N26",
                     "initial_altitude": 19000,
                     "assigned_altitude": 12000,
                     "initial_speed": 280,
@@ -5128,8 +5125,7 @@
                 {
                     "spawn": "NUGGY",
                     "star": "TRISH4",
-                    "initial_controller": "ZNY 26 Lancaster",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "N26",
                     "initial_altitude": 14000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -5179,8 +5175,7 @@
                 {
                     "spawn": "DRRES",
                     "star": "TRISH4",
-                    "initial_controller": "ZNY 26 Lancaster",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "N26",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -5209,7 +5204,7 @@
                 {
                     "star": "ANTHM5",
                     "spawn": "KEESH",
-                    "initial_controller": "ZDC 05 Linden",
+                    "initial_controller": "C05",
                     "initial_altitude": 22000,
                     "initial_speed": 280,
                     "scratchpad": "ATM",
@@ -5324,8 +5319,7 @@
                                 "airport": "KIND"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -5356,11 +5350,10 @@
                         }
                     ],
                     "initial_altitude": 23000,
-                    "initial_controller": "ZDC 05 Linden",
+                    "initial_controller": "C05",
                     "initial_speed": 280,
                     "scratchpad": "DOV",
-                    "waypoints": "CURBY/a21000-24000 KEESH/ho BUBBI/a15000-18000 MRB/a13000 WOOLY SWANN BROSS ENO ARLFT/delete",
-                    "initial_facility": "ZDC"
+                    "waypoints": "CURBY/a21000-24000 KEESH/ho BUBBI/a15000-18000 MRB/a13000 WOOLY SWANN BROSS ENO ARLFT/delete"
                 }
             ]
         },
@@ -5369,7 +5362,7 @@
                 {
                     "spawn": "LAFLN",
                     "star": "MIIDY3",
-                    "initial_controller": "ZDC 51 Casino",
+                    "initial_controller": "C51",
                     "initial_altitude": 18000,
                     "assigned_altitude": 11000,
                     "initial_speed": 280,
@@ -5418,8 +5411,7 @@
                                 "airport": "KHYA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 },
                 {
                     "waypoints": "LAFLN N038.47.02.277,W075.37.03.056/ho BILIT/a11000 DEALE/a10000/s280",
@@ -5430,7 +5422,7 @@
                         }
                     },
                     "star": "DEALE3",
-                    "initial_controller": "ZDC 51 Casino",
+                    "initial_controller": "C51",
                     "initial_altitude": 19000,
                     "assigned_altitude": 11000,
                     "initial_speed": 280,
@@ -5472,8 +5464,7 @@
                                 "airport": "KBOS"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -5492,7 +5483,7 @@
                         }
                     },
                     "star": "FRDMM6",
-                    "initial_controller": "ZDC 05 Linden",
+                    "initial_controller": "C05",
                     "initial_altitude": 18000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -5546,8 +5537,7 @@
                                 "airport": "KCLE"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -5556,7 +5546,7 @@
                 {
                     "spawn": "ACROW",
                     "star": "RAVNN8",
-                    "initial_controller": "ZDC 05 Linden",
+                    "initial_controller": "C05",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -5618,13 +5608,12 @@
                                 "airport": "KIAH"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 },
                 {
                     "spawn": "ECHOZ",
                     "star": "RAVNN8",
-                    "initial_controller": "ZDC 05 Linden",
+                    "initial_controller": "C05",
                     "initial_altitude": 20000,
                     "initial_speed": 280,
                     "expect_approach": "I3L",
@@ -5685,8 +5674,7 @@
                                 "airport": "KFLL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -5705,7 +5693,7 @@
                         }
                     },
                     "star": "TRUPS5",
-                    "initial_controller": "ZDC 05 Linden",
+                    "initial_controller": "C05",
                     "initial_altitude": 18000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -5742,8 +5730,7 @@
                                 "airport": "KMEM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -5769,8 +5756,7 @@
                         }
                     },
                     "star": "HYPER9",
-                    "initial_controller": "ZNY 26 Lancaster",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "N26",
                     "initial_altitude": 17000,
                     "assigned_altitude": 14000,
                     "initial_speed": 280,
@@ -5987,8 +5973,7 @@
                         }
                     },
                     "star": "PRTZL1",
-                    "initial_controller": "ZNY 26 Lancaster",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "N26",
                     "initial_altitude": 14000,
                     "assigned_altitude": 9000,
                     "initial_speed": 250,
@@ -6034,7 +6019,7 @@
                         }
                     },
                     "star": "CAVLR6",
-                    "initial_controller": "ZDC 20 Blackstone",
+                    "initial_controller": "C20",
                     "initial_altitude": 17000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -6068,8 +6053,7 @@
                                 "airport": "KORF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 },
                 {
                     "waypoints": "PERKN/a22000+ KHOOD/a14000-22000/ho BNTLY/a13000+ MEEGO/a11000+ CAVLR/a10000/s250",
@@ -6085,7 +6069,7 @@
                         }
                     },
                     "star": "CAVLR6",
-                    "initial_controller": "ZDC 20 Blackstone",
+                    "initial_controller": "C20",
                     "initial_altitude": 23000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -6235,8 +6219,7 @@
                                 "airport": "KVRB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -6245,7 +6228,7 @@
                 {
                     "waypoints": "N038.33.58.581,W078.31.53.708 LLBEE/a9000/ho TIKEE JETIS/flyover/h90",
                     "star": "TIKEE4",
-                    "initial_controller": "ZDC 05 Linden",
+                    "initial_controller": "C05",
                     "initial_altitude": 10500,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -6277,8 +6260,7 @@
                                 "airport": "KASE"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -6295,7 +6277,7 @@
                         }
                     },
                     "star": "TRSTN4",
-                    "initial_controller": "RIC_L_APP",
+                    "initial_controller": "2L",
                     "initial_altitude": 16000,
                     "assigned_altitude": 10000,
                     "initial_speed": 280,
@@ -6345,8 +6327,7 @@
                         }
                     },
                     "star": "WAYNZ1",
-                    "initial_controller": "ZNY 26 Lancaster",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "N26",
                     "initial_altitude": 15000,
                     "assigned_altitude": 12000,
                     "initial_speed": 280,
@@ -6444,8 +6425,7 @@
                         }
                     },
                     "star": "WAYNZ1",
-                    "initial_controller": "ZNY 26 Lancaster",
-                    "initial_facility": "ZNY",
+                    "initial_controller": "N26",
                     "initial_altitude": 15000,
                     "assigned_altitude": 12000,
                     "initial_speed": 280,
@@ -6548,7 +6528,7 @@
                         }
                     },
                     "star": "GIBBZ5",
-                    "initial_controller": "ZDC 05 Linden",
+                    "initial_controller": "C05",
                     "initial_altitude": 22000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -6737,8 +6717,7 @@
                                 "airport": "KPWK"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -6764,7 +6743,7 @@
                         }
                     },
                     "star": "GIBBZ5",
-                    "initial_controller": "ZDC 37 Marlington",
+                    "initial_controller": "C37",
                     "initial_altitude": 18000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -6881,8 +6860,7 @@
                                 "airport": "KIAH"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -6891,7 +6869,7 @@
                 {
                     "waypoints": "JAXSN N037.01.00.301,W078.13.40.816/ho KELCE/a11000/s250 THINA DUCXS/a4000/flyover/h041",
                     "star": "DUCXS5",
-                    "initial_controller": "ZDC 20 Blackstone",
+                    "initial_controller": "C20",
                     "initial_altitude": 11000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -6903,8 +6881,7 @@
                                 "airport": "KATL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -6913,7 +6890,7 @@
                 {
                     "waypoints": "N036.23.53.317,W078.17.45.838 N036.44.46.280,W077.58.31.285/ho NEAVL/a11000/s250 PULDY THINA DUCXS/a4000/flyover/h041",
                     "star": "DUCXS5",
-                    "initial_controller": "ZDC 20 Blackstone",
+                    "initial_controller": "C20",
                     "initial_altitude": 11000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -6925,8 +6902,7 @@
                                 "airport": "KATL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -6943,7 +6919,7 @@
                         }
                     },
                     "star": "POWTN5",
-                    "initial_controller": "ZDC 32 Gordonsville",
+                    "initial_controller": "C32",
                     "initial_altitude": 21000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -6964,8 +6940,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -6982,7 +6957,7 @@
                         }
                     },
                     "star": "SPIDR5",
-                    "initial_controller": "ZDC 32 Gordonsville",
+                    "initial_controller": "C32",
                     "initial_altitude": 21000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -7014,8 +6989,7 @@
                                 "airport": "KASE"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -7024,7 +6998,7 @@
                 {
                     "waypoints": "CAANO PAJET ZJAAY ARICE JAMIE/a12000 N037.35.18.411,W076.13.00.468/ho RIC",
                     "route": "EMJAY Q167 ZJAAY ARICE JAMIE",
-                    "initial_controller": "ZDC 54 Salisbury",
+                    "initial_controller": "C54",
                     "initial_altitude": 24000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -7069,13 +7043,12 @@
                                 "airport": "KPVD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 },
                 {
                     "waypoints": "N038.51.17.517,W075.08.07.573 TRPOD JAMIE/a12000 N037.35.18.411,W076.13.00.468/ho RIC",
                     "route": "EMJAY Q167 ZJAAY ARICE JAMIE",
-                    "initial_controller": "ZDC 54 Salisbury",
+                    "initial_controller": "C54",
                     "initial_altitude": 22000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -7110,8 +7083,7 @@
                                 "airport": "KEWR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -7120,7 +7092,7 @@
                 {
                     "waypoints": "N039.18.51.056,W076.34.46.633 TOOBN/ho HAMMZ GVE",
                     "route": "BIGGY Q75 GVE",
-                    "initial_controller": "ZDC 17 Swann",
+                    "initial_controller": "C17",
                     "initial_altitude": 22000,
                     "assigned_altitude": 22000,
                     "initial_speed": 280,
@@ -7148,8 +7120,7 @@
                                 "airport": "KLGA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -7158,7 +7129,7 @@
                 {
                     "waypoints": "N039.18.51.056,W076.34.46.633 TOOBN/ho HAMMZ KCHO",
                     "route": "BIGGY Q75 GVE",
-                    "initial_controller": "ZDC 17 Swann",
+                    "initial_controller": "C17",
                     "initial_altitude": 22000,
                     "assigned_altitude": 22000,
                     "initial_speed": 280,
@@ -7186,8 +7157,7 @@
                                 "airport": "KLGA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         }

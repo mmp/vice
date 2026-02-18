@@ -1,38 +1,38 @@
 {
     "control_positions": {
-        "AVL_W_APP": {
+        "1W": {
+            "callsign": "AVL_W_APP",
             "frequency": 124650,
-            "radio_name": "Asheville Approach",
-            "sector_id": "1W"
+            "radio_name": "Asheville Approach"
         },
-        "AVL_E_APP": {
+        "1E": {
+            "callsign": "AVL_E_APP",
             "frequency": 125800,
-            "radio_name": "Asheville Approach",
-            "sector_id": "1E"
+            "radio_name": "Asheville Approach"
         },
-        "AVL_TWR": {
+        "1T": {
+            "callsign": "AVL_TWR",
             "frequency": 121100,
-            "radio_name": "Asheville Tower",
-            "sector_id": "1T"
+            "radio_name": "Asheville Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "BARRD": "AVL_W_APP",
-                    "JONEB": "AVL_E_APP",
-                    "LEAVI": "AVL_E_APP",
-                    "OBURY": "AVL_E_APP",
-                    "PUPDG": "AVL_W_APP",
-                    "TUSRE": "AVL_E_APP"
+                    "BARRD": "1W",
+                    "JONEB": "1E",
+                    "LEAVI": "1E",
+                    "OBURY": "1E",
+                    "PUPDG": "1W",
+                    "TUSRE": "1E"
                 },
                 "departure_assignments": {
-                    "KAVL": "AVL_W_APP"
+                    "KAVL": "1W"
                 },
                 "default_consolidation": {
-                    "AVL_E_APP": [
-                        "AVL_W_APP"
+                    "1E": [
+                        "1W"
                     ]
                 }
             }
@@ -174,7 +174,7 @@
         },
         {
             "id": "ZTL",
-            "eram_prefix": "T"
+            "eram_prefix": "C"
         }
     ]
 }

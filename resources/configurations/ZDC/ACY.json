@@ -1,19 +1,19 @@
 {
     "control_positions": {
-        "ACY_N_APP": {
+        "1N": {
+            "callsign": "ACY_N_APP",
             "frequency": 134250,
-            "radio_name": "Atlantic City Approach",
-            "sector_id": "1N"
+            "radio_name": "Atlantic City Approach"
         },
-        "ACY_S_APP": {
+        "1S": {
+            "callsign": "ACY_S_APP",
             "frequency": 124600,
-            "radio_name": "Atlantic City Approach",
-            "sector_id": "1S"
+            "radio_name": "Atlantic City Approach"
         },
-        "ACY_TWR": {
+        "1Z": {
+            "callsign": "ACY_TWR",
             "frequency": 120300,
-            "radio_name": "Atlantic City Tower",
-            "sector_id": "1Z"
+            "radio_name": "Atlantic City Tower"
         }
     },
     "handoff_ids": [
@@ -28,6 +28,10 @@
         {
             "id": "WRI",
             "prefix": "3"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "C"
         },
         {
             "id": "ZNY",

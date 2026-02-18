@@ -1,20 +1,24 @@
 {
     "control_positions": {
-        "ICT_APP": {
+        "1W": {
+            "callsign": "ICT_APP",
             "frequency": 126700,
-            "radio_name": "Wichita Approach",
-            "sector_id": "1W"
+            "radio_name": "Wichita Approach"
         },
-        "ICT_TWR": {
+        "1L": {
+            "callsign": "ICT_TWR",
             "frequency": 118200,
-            "radio_name": "Wichita Tower",
-            "sector_id": "1L"
+            "radio_name": "Wichita Tower"
         }
     },
     "handoff_ids": [
         {
             "id": "END",
             "prefix": "1"
+        },
+        {
+            "id": "ZKC",
+            "eram_prefix": "C"
         }
     ]
 }

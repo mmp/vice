@@ -1,33 +1,33 @@
 {
     "control_positions": {
-        "PWM_TWR": {
+        "1T": {
+            "callsign": "PWM_TWR",
             "frequency": 120900,
-            "radio_name": "Portland Tower",
-            "sector_id": "1T"
+            "radio_name": "Portland Tower"
         },
-        "PWM_S_APP": {
+        "1S": {
+            "callsign": "PWM_S_APP",
             "frequency": 119750,
-            "radio_name": "Portland Approach",
-            "sector_id": "1S"
+            "radio_name": "Portland Approach"
         },
-        "PWM_L_APP": {
+        "1L": {
+            "callsign": "PWM_L_APP",
             "frequency": 125500,
-            "radio_name": "Portland Approach",
-            "sector_id": "1L"
+            "radio_name": "Portland Approach"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "East": "PWM_S_APP",
-                    "West": "PWM_S_APP"
+                    "East": "1S",
+                    "West": "1S"
                 },
                 "departure_assignments": {
-                    "KPWM": "PWM_S_APP"
+                    "KPWM": "1S"
                 },
                 "default_consolidation": {
-                    "PWM_S_APP": []
+                    "1S": []
                 }
             }
         },
@@ -58,7 +58,7 @@
         },
         {
             "id": "ZBW",
-            "eram_prefix": "B"
+            "eram_prefix": "C"
         }
     ]
 }

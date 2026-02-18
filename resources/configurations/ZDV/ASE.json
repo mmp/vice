@@ -1,29 +1,29 @@
 {
     "control_positions": {
-        "ASE_APP": {
+        "1A": {
+            "callsign": "ASE_APP",
             "frequency": 123800,
-            "radio_name": "Aspen approach",
-            "sector_id": "1A"
+            "radio_name": "Aspen approach"
         },
-        "ASE_TWR": {
+        "1T": {
+            "callsign": "ASE_TWR",
             "frequency": 118850,
-            "radio_name": "Aspen tower",
-            "sector_id": "1T"
+            "radio_name": "Aspen tower"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "HAREI": "ASE_APP",
-                    "LAWSN": "ASE_APP",
-                    "LOYYD": "ASE_APP"
+                    "HAREI": "1A",
+                    "LAWSN": "1A",
+                    "LOYYD": "1A"
                 },
                 "departure_assignments": {
-                    "KASE": "ASE_APP"
+                    "KASE": "1A"
                 },
                 "default_consolidation": {
-                    "ASE_APP": []
+                    "1A": []
                 }
             }
         },
@@ -93,7 +93,7 @@
     "handoff_ids": [
         {
             "id": "ZDV",
-            "eram_prefix": "D"
+            "eram_prefix": "C"
         }
     ]
 }

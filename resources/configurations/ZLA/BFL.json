@@ -1,24 +1,24 @@
 {
     "control_positions": {
-        "BFL_TWR": {
+        "1L": {
+            "callsign": "BFL_TWR",
             "frequency": 118100,
-            "radio_name": "Bakersfield Tower",
-            "sector_id": "1L"
+            "radio_name": "Bakersfield Tower"
         },
-        "BFL_N_APP": {
+        "1N": {
+            "callsign": "BFL_N_APP",
             "frequency": 118900,
-            "radio_name": "Bakersfield Approach",
-            "sector_id": "1N"
+            "radio_name": "Bakersfield Approach"
         },
-        "BFL_DEP": {
+        "1R": {
+            "callsign": "BFL_DEP",
             "frequency": 126450,
-            "radio_name": "Bakersfield Departure",
-            "sector_id": "1R"
+            "radio_name": "Bakersfield Departure"
         },
-        "BFL_S_APP": {
+        "1S": {
+            "callsign": "BFL_S_APP",
             "frequency": 118800,
-            "radio_name": "Bakersfield Approach",
-            "sector_id": "1S"
+            "radio_name": "Bakersfield Approach"
         }
     },
     "handoff_ids": [
@@ -33,6 +33,10 @@
         {
             "id": "NLC",
             "prefix": "3"
+        },
+        {
+            "id": "ZLA",
+            "eram_prefix": "C"
         },
         {
             "id": "ZOA",

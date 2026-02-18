@@ -1,208 +1,208 @@
 {
     "control_positions": {
-        "ZNY 08 BRNAN": {
+        "08": {
+            "callsign": "ZNY 08 BRNAN",
             "frequency": 124775,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "08"
+            "radio_name": "New York center"
         },
-        "ZNY 09 Westminster": {
+        "09": {
+            "callsign": "ZNY 09 Westminster",
             "frequency": 134325,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "09"
+            "radio_name": "New York center"
         },
-        "ZNY 10 Harrisburg": {
+        "10": {
+            "callsign": "ZNY 10 Harrisburg",
             "frequency": 133475,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "10"
+            "radio_name": "New York center"
         },
-        "ZNY 25 Modena": {
+        "25": {
+            "callsign": "ZNY 25 Modena",
             "frequency": 135450,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "25"
+            "radio_name": "New York center"
         },
-        "ZNY 26 Lancaster": {
+        "26": {
+            "callsign": "ZNY 26 Lancaster",
             "frequency": 120025,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "26"
+            "radio_name": "New York center"
         },
-        "ZNY 27 Middletown": {
+        "27": {
+            "callsign": "ZNY 27 Middletown",
             "frequency": 120025,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "27"
+            "radio_name": "New York center"
         },
-        "ZNY 34 Elmira": {
+        "34": {
+            "callsign": "ZNY 34 Elmira",
             "frequency": 132175,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "34"
+            "radio_name": "New York center"
         },
-        "ZNY 35 Huguenot": {
+        "35": {
+            "callsign": "ZNY 35 Huguenot",
             "frequency": 132600,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "35"
+            "radio_name": "New York center"
         },
-        "ZNY 36 Sparta": {
+        "36": {
+            "callsign": "ZNY 36 Sparta",
             "frequency": 133150,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "36"
+            "radio_name": "New York center"
         },
-        "ZNY 39 PARKE": {
+        "39": {
+            "callsign": "ZNY 39 PARKE",
             "frequency": 132100,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "39"
+            "radio_name": "New York center"
         },
-        "ZNY 42 East Texas": {
+        "42": {
+            "callsign": "ZNY 42 East Texas",
             "frequency": 127175,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "42"
+            "radio_name": "New York center"
         },
-        "ZNY 49 Stony Fork": {
+        "49": {
+            "callsign": "ZNY 49 Stony Fork",
             "frequency": 121320,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "49"
+            "radio_name": "New York center"
         },
-        "ZNY 50 Binghamton": {
+        "50": {
+            "callsign": "ZNY 50 Binghamton",
             "frequency": 133350,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "50"
+            "radio_name": "New York center"
         },
-        "ZNY 51 Lake Henry": {
+        "51": {
+            "callsign": "ZNY 51 Lake Henry",
             "frequency": 134450,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "51"
+            "radio_name": "New York center"
         },
-        "ZNY 55 Yardley": {
+        "55": {
+            "callsign": "ZNY 55 Yardley",
             "frequency": 134600,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "55"
+            "radio_name": "New York center"
         },
-        "ZNY 56 Kennedy": {
+        "56": {
+            "callsign": "ZNY 56 Kennedy",
             "frequency": 125325,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "56"
+            "radio_name": "New York center"
         },
-        "ZNY 57 TMU": {
+        "57": {
+            "callsign": "ZNY 57 TMU",
             "frequency": 136500,
             "eram_facility": true,
-            "radio_name": "ZNY TMU",
-            "sector_id": "57"
+            "radio_name": "ZNY TMU"
         },
-        "ZNY 65 JOBOC": {
+        "65": {
+            "callsign": "ZNY 65 JOBOC",
             "frequency": 125925,
             "eram_facility": true,
-            "radio_name": "New York Center",
-            "sector_id": "65"
+            "radio_name": "New York Center"
         },
-        "ZNY 66 MANTA": {
+        "66": {
+            "callsign": "ZNY 66 MANTA",
             "frequency": 128300,
             "eram_facility": true,
-            "radio_name": "New York Center",
-            "sector_id": "66"
+            "radio_name": "New York Center"
         },
-        "ZNY 68 DIXIE": {
+        "68": {
+            "callsign": "ZNY 68 DIXIE",
             "frequency": 132100,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "68"
+            "radio_name": "New York center"
         },
-        "ZNY 72 Selinsgrove": {
+        "72": {
+            "callsign": "ZNY 72 Selinsgrove",
             "frequency": 127725,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "72"
+            "radio_name": "New York center"
         },
-        "ZNY 73 Philpsburg": {
+        "73": {
+            "callsign": "ZNY 73 Philpsburg",
             "frequency": 132875,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "73"
+            "radio_name": "New York center"
         },
-        "ZNY 74 Broadway": {
+        "74": {
+            "callsign": "ZNY 74 Broadway",
             "frequency": 132150,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "74"
+            "radio_name": "New York center"
         },
-        "ZNY 75 Milton": {
+        "75": {
+            "callsign": "ZNY 75 Milton",
             "frequency": 128570,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "75"
+            "radio_name": "New York center"
         },
-        "ZNY 80 COCOA": {
+        "80": {
+            "callsign": "ZNY 80 COCOA",
             "frequency": 119100,
             "eram_facility": true,
-            "radio_name": "New York Center",
-            "sector_id": "80"
+            "radio_name": "New York Center"
         },
-        "ZNY 81 HILDY": {
+        "81": {
+            "callsign": "ZNY 81 HILDY",
             "frequency": 128500,
             "eram_facility": true,
-            "radio_name": "New York Center",
-            "sector_id": "81"
+            "radio_name": "New York Center"
         },
-        "ZNY 82 PAEPR": {
+        "82": {
+            "callsign": "ZNY 82 PAEPR",
             "frequency": 126025,
             "eram_facility": true,
-            "radio_name": "New York Center",
-            "sector_id": "82"
+            "radio_name": "New York Center"
         },
-        "ZNY 83 HANRI": {
+        "83": {
+            "callsign": "ZNY 83 HANRI",
             "frequency": 133525,
             "eram_facility": true,
-            "radio_name": "New York Center",
-            "sector_id": "83"
+            "radio_name": "New York Center"
         },
-        "ZNY 85 OHRYN": {
+        "85": {
+            "callsign": "ZNY 85 OHRYN",
             "frequency": 121125,
             "eram_facility": true,
-            "radio_name": "New York Center",
-            "sector_id": "85"
+            "radio_name": "New York Center"
         },
-        "ZNY 86 Atlantic": {
+        "86": {
+            "callsign": "ZNY 86 Atlantic",
             "frequency": 133500,
             "eram_facility": true,
-            "radio_name": "New York Center",
-            "sector_id": "86"
+            "radio_name": "New York Center"
         },
-        "ZNY 91 Williamsport": {
+        "91": {
+            "callsign": "ZNY 91 Williamsport",
             "frequency": 134800,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "91"
+            "radio_name": "New York center"
         },
-        "ZNY 92 Pottstown": {
+        "92": {
+            "callsign": "ZNY 92 Pottstown",
             "frequency": 124625,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "92"
+            "radio_name": "New York center"
         },
-        "ZNY 93 Swissdale": {
+        "93": {
+            "callsign": "ZNY 93 Swissdale",
             "frequency": 123625,
             "eram_facility": true,
-            "radio_name": "New York center",
-            "sector_id": "93"
+            "radio_name": "New York center"
         },
-        "ZNY 99 Guard": {
+        "99": {
+            "callsign": "ZNY 99 Guard",
             "frequency": 121500,
             "eram_facility": true,
-            "radio_name": "ZNY Guard",
-            "sector_id": "99"
+            "radio_name": "ZNY Guard"
         }
     },
     "stars_config": {
@@ -211,30 +211,30 @@
                 "inbound_assignments": {},
                 "departure_assignments": {},
                 "default_consolidation": {
-                    "ZNY 25 Modena": []
+                    "25": []
                 }
             },
             "ZNY": {
                 "inbound_assignments": {
-                    "PUCKY1-JENNO": "ZNY 36 Sparta",
-                    "PUCKY1-YODAA": "ZNY 36 Sparta"
+                    "PUCKY1-JENNO": "36",
+                    "PUCKY1-YODAA": "36"
                 },
                 "default_consolidation": {
-                    "ZNY 36 Sparta": []
+                    "36": []
                 }
             },
             "ZNS": {
                 "inbound_assignments": {
-                    "FQM3": "ZNY 72 Selinsgrove",
-                    "MIP4-ETG": "ZNY 72 Selinsgrove",
-                    "MIP4-PSB": "ZNY 72 Selinsgrove",
-                    "MIP4-SFK": "ZNY 72 Selinsgrove",
-                    "NABOR": "ZNY 72 Selinsgrove",
-                    "TRISH4": "ZNY 72 Selinsgrove",
-                    "WLKES": "ZNY 72 Selinsgrove"
+                    "FQM3": "72",
+                    "MIP4-ETG": "72",
+                    "MIP4-PSB": "72",
+                    "MIP4-SFK": "72",
+                    "NABOR": "72",
+                    "TRISH4": "72",
+                    "WLKES": "72"
                 },
                 "default_consolidation": {
-                    "ZNY 72 Selinsgrove": []
+                    "72": []
                 }
             }
         },

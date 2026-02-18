@@ -1,248 +1,248 @@
 {
     "control_positions": {
-        "ZLA 00 Maintenance": {
+        "00": {
+            "callsign": "ZLA 00 Maintenance",
             "frequency": 118000,
             "eram_facility": true,
-            "radio_name": "Maintenance",
-            "sector_id": "00"
+            "radio_name": "Maintenance"
         },
-        "ZLA Sector 03": {
+        "03": {
+            "callsign": "ZLA Sector 03",
             "frequency": 127100,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "03"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 04": {
+        "04": {
+            "callsign": "ZLA Sector 04",
             "frequency": 125800,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "04"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 06": {
+        "06": {
+            "callsign": "ZLA Sector 06",
             "frequency": 134650,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "06"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 07": {
+        "07": {
+            "callsign": "ZLA Sector 07",
             "frequency": 124200,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "07"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 08": {
+        "08": {
+            "callsign": "ZLA Sector 08",
             "frequency": 124850,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "08"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 09": {
+        "09": {
+            "callsign": "ZLA Sector 09",
             "frequency": 128600,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "09"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 10": {
+        "10": {
+            "callsign": "ZLA Sector 10",
             "frequency": 128150,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "10"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 12": {
+        "12": {
+            "callsign": "ZLA Sector 12",
             "frequency": 125650,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "12"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 13": {
+        "13": {
+            "callsign": "ZLA Sector 13",
             "frequency": 132600,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "13"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 14": {
+        "14": {
+            "callsign": "ZLA Sector 14",
             "frequency": 135500,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "14"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 15": {
+        "15": {
+            "callsign": "ZLA Sector 15",
             "frequency": 119050,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "15"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 16": {
+        "16": {
+            "callsign": "ZLA Sector 16",
             "frequency": 124625,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "16"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 17": {
+        "17": {
+            "callsign": "ZLA Sector 17",
             "frequency": 132500,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "17"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 18": {
+        "18": {
+            "callsign": "ZLA Sector 18",
             "frequency": 125275,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "18"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 19": {
+        "19": {
+            "callsign": "ZLA Sector 19",
             "frequency": 126350,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "19"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 20": {
+        "20": {
+            "callsign": "ZLA Sector 20",
             "frequency": 133750,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "20"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 21": {
+        "21": {
+            "callsign": "ZLA Sector 21",
             "frequency": 132850,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "21"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 22": {
+        "22": {
+            "callsign": "ZLA Sector 22",
             "frequency": 134575,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "22"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 25": {
+        "25": {
+            "callsign": "ZLA Sector 25",
             "frequency": 126525,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "25"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 26": {
+        "26": {
+            "callsign": "ZLA Sector 26",
             "frequency": 135300,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "26"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 27": {
+        "27": {
+            "callsign": "ZLA Sector 27",
             "frequency": 128375,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "27"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 28": {
+        "28": {
+            "callsign": "ZLA Sector 28",
             "frequency": 132150,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "28"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 30": {
+        "30": {
+            "callsign": "ZLA Sector 30",
             "frequency": 119950,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "30"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 31": {
+        "31": {
+            "callsign": "ZLA Sector 31",
             "frequency": 126775,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "31"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 34": {
+        "34": {
+            "callsign": "ZLA Sector 34",
             "frequency": 132625,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "34"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 35": {
+        "35": {
+            "callsign": "ZLA Sector 35",
             "frequency": 128075,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "35"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 36": {
+        "36": {
+            "callsign": "ZLA Sector 36",
             "frequency": 127350,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "36"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 37": {
+        "37": {
+            "callsign": "ZLA Sector 37",
             "frequency": 133550,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "37"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 38": {
+        "38": {
+            "callsign": "ZLA Sector 38",
             "frequency": 125725,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "38"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 39": {
+        "39": {
+            "callsign": "ZLA Sector 39",
             "frequency": 133200,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "39"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 40": {
+        "40": {
+            "callsign": "ZLA Sector 40",
             "frequency": 127525,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "40"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 53": {
+        "53": {
+            "callsign": "ZLA Sector 53",
             "frequency": 118025,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "53"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 54": {
+        "54": {
+            "callsign": "ZLA Sector 54",
             "frequency": 135250,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "54"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 55": {
+        "55": {
+            "callsign": "ZLA Sector 55",
             "frequency": 135550,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "55"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA Sector 60": {
+        "60": {
+            "callsign": "ZLA Sector 60",
             "frequency": 134475,
             "eram_facility": true,
-            "radio_name": "Los Angeles Center",
-            "sector_id": "60"
+            "radio_name": "Los Angeles Center"
         },
-        "ZLA 99 TMU": {
+        "99": {
+            "callsign": "ZLA 99 TMU",
             "frequency": 123450,
             "eram_facility": true,
-            "radio_name": "Traffic Management",
-            "sector_id": "99"
+            "radio_name": "Traffic Management"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "HUULL2": "ZLA Sector 14",
-                    "RUKKI1/BAUBB3": "ZLA Sector 14",
-                    "RYDRR2.ELKEY": "ZLA Sector 14",
-                    "RYDRR2.SNAXX": "ZLA Sector 14"
+                    "HUULL2": "14",
+                    "RUKKI1/BAUBB3": "14",
+                    "RYDRR2.ELKEY": "14",
+                    "RYDRR2.SNAXX": "14"
                 },
                 "default_consolidation": {
-                    "ZLA Sector 14": []
+                    "14": []
                 }
             },
             "ZLA": {
                 "inbound_assignments": {
-                    "SIZLR4": "ZLA Sector 18",
-                    "ZIGGY8": "ZLA Sector 18"
+                    "SIZLR4": "18",
+                    "ZIGGY8": "18"
                 },
                 "default_consolidation": {
-                    "ZLA Sector 18": []
+                    "18": []
                 }
             }
         },
@@ -543,73 +543,74 @@
     "handoff_ids": [
         {
             "id": "BFL",
-            "single_char_stars_id": "M",
-            "two_char_stars_id": "MM",
-            "stars_id": "MMM"
+            "stars_id": "MMM",
+            "single_char_stars_id": "M"
         },
         {
             "id": "FAT",
-            "two_char_stars_id": "FA",
             "stars_id": "FAT"
         },
         {
             "id": "JCF",
-            "single_char_stars_id": "J",
-            "two_char_stars_id": "JJ",
-            "stars_id": "JJJ"
+            "stars_id": "JJJ",
+            "single_char_stars_id": "J"
         },
         {
             "id": "L30",
-            "single_char_stars_id": "Z",
-            "two_char_stars_id": "ZZ",
-            "stars_id": "ZZZ"
+            "stars_id": "ZZZ",
+            "single_char_stars_id": "Z"
         },
         {
             "id": "LSV",
-            "single_char_stars_id": "E",
-            "two_char_stars_id": "EE",
-            "stars_id": "EEE"
+            "stars_id": "EEE",
+            "single_char_stars_id": "E"
+        },
+        {
+            "id": "NCT",
+            "stars_id": "NCT"
         },
         {
             "id": "NFG",
-            "single_char_stars_id": "Q",
-            "two_char_stars_id": "QQ",
-            "stars_id": "QQQ"
+            "stars_id": "QQQ",
+            "single_char_stars_id": "Q"
         },
         {
             "id": "NLC",
-            "two_char_stars_id": "NL",
             "stars_id": "NLC"
         },
         {
+            "id": "NSI",
+            "stars_id": "PPP"
+        },
+        {
             "id": "NTD",
-            "single_char_stars_id": "N",
-            "two_char_stars_id": "NN",
-            "stars_id": "NNN"
+            "stars_id": "NNN",
+            "single_char_stars_id": "N"
+        },
+        {
+            "id": "NUC",
+            "stars_id": "FFF",
+            "single_char_stars_id": "F"
         },
         {
             "id": "NYL",
-            "single_char_stars_id": "Y",
-            "two_char_stars_id": "YY",
-            "stars_id": "YYY"
+            "stars_id": "YYY",
+            "single_char_stars_id": "Y"
         },
         {
             "id": "RIV",
-            "single_char_stars_id": "R",
-            "two_char_stars_id": "RR",
-            "stars_id": "RRR"
+            "stars_id": "RRR",
+            "single_char_stars_id": "R"
         },
         {
             "id": "SBA",
-            "single_char_stars_id": "G",
-            "two_char_stars_id": "AA",
-            "stars_id": "AAA"
+            "stars_id": "AAA",
+            "single_char_stars_id": "G"
         },
         {
             "id": "SCT",
-            "single_char_stars_id": "T",
-            "two_char_stars_id": "TT",
-            "stars_id": "TTT"
+            "stars_id": "TTT",
+            "single_char_stars_id": "T"
         },
         {
             "id": "ZAB",

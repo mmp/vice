@@ -1,24 +1,24 @@
 {
     "control_positions": {
-        "TLH_E_APP": {
+        "1E": {
+            "callsign": "TLH_E_APP",
             "frequency": 135800,
-            "radio_name": "Tallahassee Approach",
-            "sector_id": "1E"
+            "radio_name": "Tallahassee Approach"
         },
-        "TLH_F_APP": {
+        "1F": {
+            "callsign": "TLH_F_APP",
             "frequency": 133850,
-            "radio_name": "Tallahassee Approach",
-            "sector_id": "1F"
+            "radio_name": "Tallahassee Approach"
         },
-        "TLH_TWR": {
+        "1T": {
+            "callsign": "TLH_TWR",
             "frequency": 118700,
-            "radio_name": "Tallahassee Tower",
-            "sector_id": "1T"
+            "radio_name": "Tallahassee Tower"
         },
-        "TLH_W_APP": {
+        "1W": {
+            "callsign": "TLH_W_APP",
             "frequency": 128700,
-            "radio_name": "Tallahassee Approach",
-            "sector_id": "1W"
+            "radio_name": "Tallahassee Approach"
         }
     },
     "handoff_ids": [
@@ -33,6 +33,10 @@
         {
             "id": "VLD",
             "prefix": "3"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "C"
         }
     ]
 }

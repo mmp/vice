@@ -1,27 +1,27 @@
 {
     "control_positions": {
-        "GTF_TWR": {
+        "1T": {
+            "callsign": "GTF_TWR",
             "frequency": 118700,
-            "radio_name": "Great Falls Tower",
-            "sector_id": "1T"
+            "radio_name": "Great Falls Tower"
         },
-        "GTF_APP": {
+        "1A": {
+            "callsign": "GTF_APP",
             "frequency": 126800,
-            "radio_name": "Great Falls Approach",
-            "sector_id": "1A"
+            "radio_name": "Great Falls Approach"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "North": "GTF_APP"
+                    "North": "1A"
                 },
                 "departure_assignments": {
-                    "KGTF": "GTF_APP"
+                    "KGTF": "1A"
                 },
                 "default_consolidation": {
-                    "GTF_APP": []
+                    "1A": []
                 }
             }
         },
@@ -36,7 +36,7 @@
     "handoff_ids": [
         {
             "id": "ZLC",
-            "eram_prefix": "U"
+            "eram_prefix": "C"
         }
     ]
 }

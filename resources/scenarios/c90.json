@@ -3844,7 +3844,7 @@
                         ]
                     },
                     "initial_altitude": 20000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 280,
                     "star": "BENKY6",
                     "runway_waypoints": {
@@ -3922,7 +3922,7 @@
                         ]
                     },
                     "initial_altitude": 27000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 280,
                     "star": "TRTLL6",
                     "runway_waypoints": {
@@ -4003,7 +4003,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "I8C",
                     "initial_altitude": 8000,
-                    "initial_controller": "CHI_X_APP",
+                    "initial_controller": "1X",
                     "initial_speed": 250,
                     "speed_restriction": 210,
                     "star": "BENKY6",
@@ -4060,7 +4060,7 @@
                         ]
                     },
                     "initial_altitude": 10000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 250,
                     "star": "ENDEE6.OHHMY",
                     "runway_waypoints": {
@@ -4119,7 +4119,7 @@
                         ]
                     },
                     "initial_altitude": 10000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 250,
                     "star": "ENDEE6.JALAP",
                     "runway_waypoints": {
@@ -4178,7 +4178,7 @@
                         ]
                     },
                     "initial_altitude": 10000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 250,
                     "star": "ENDEE6.IRK",
                     "runway_waypoints": {
@@ -4237,7 +4237,7 @@
                         ]
                     },
                     "initial_altitude": 10000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 250,
                     "star": "ENDEE6.MAGOO",
                     "runway_waypoints": {
@@ -4296,7 +4296,7 @@
                         ]
                     },
                     "initial_altitude": 23000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 250,
                     "star": "ENDEE6.PHEEB",
                     "runway_waypoints": {
@@ -4331,7 +4331,7 @@
                         ]
                     },
                     "initial_altitude": 14000,
-                    "initial_controller": "MKE_E_APP",
+                    "initial_controller": "11E",
                     "initial_speed": 280,
                     "star": "ERNNY8",
                     "runway_waypoints": {
@@ -4493,7 +4493,7 @@
                     "cruise_altitude": 32000,
                     "expect_approach": "I7C",
                     "initial_altitude": 8000,
-                    "initial_controller": "CHI_J_APP",
+                    "initial_controller": "1J",
                     "initial_speed": 250,
                     "speed_restriction": 250,
                     "star": "ERNNY8",
@@ -4550,7 +4550,7 @@
                         ]
                     },
                     "initial_altitude": 18000,
-                    "initial_controller": "SBN_N_APP",
+                    "initial_controller": "21N",
                     "initial_speed": 250,
                     "star": "FISSK6",
                     "runway_waypoints": {
@@ -4602,7 +4602,7 @@
                         ]
                     },
                     "initial_altitude": 13000,
-                    "initial_controller": "SBN_N_APP",
+                    "initial_controller": "21N",
                     "initial_speed": 250,
                     "star": "PANGG5",
                     "runway_waypoints": {
@@ -4676,7 +4676,7 @@
                         ]
                     },
                     "initial_altitude": 21000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 280,
                     "star": "FYTTE7",
                     "runway_waypoints": {
@@ -4761,7 +4761,7 @@
                     "cruise_altitude": 36000,
                     "expect_approach": "I7R",
                     "initial_altitude": 8000,
-                    "initial_controller": "CHI_Y_APP",
+                    "initial_controller": "1Y",
                     "initial_speed": 250,
                     "speed_restriction": 220,
                     "star": "FYTTE7",
@@ -4831,7 +4831,7 @@
                     "cruise_altitude": 36000,
                     "expect_approach": "I9L",
                     "initial_altitude": 8000,
-                    "initial_controller": "CHI_Y_APP",
+                    "initial_controller": "1Y",
                     "initial_speed": 250,
                     "speed_restriction": 220,
                     "star": "FYTTE7",
@@ -4860,7 +4860,7 @@
                         ]
                     },
                     "initial_altitude": 14000,
-                    "initial_controller": "MKE_E_APP",
+                    "initial_controller": "11E",
                     "initial_speed": 280,
                     "star": "MADII7",
                     "runway_waypoints": {
@@ -4934,7 +4934,7 @@
                         ]
                     },
                     "initial_altitude": 27000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 280,
                     "star": "SHAIN2",
                     "speed_restriction": 250,
@@ -4998,7 +4998,7 @@
                         ]
                     },
                     "initial_altitude": 13000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 280,
                     "star": "VEECK5",
                     "runway_waypoints": {
@@ -5081,7 +5081,7 @@
                     "cruise_altitude": 35000,
                     "expect_approach": "I8C",
                     "initial_altitude": 8000,
-                    "initial_controller": "CHI_E_APP",
+                    "initial_controller": "1E",
                     "initial_speed": 250,
                     "speed_restriction": 210,
                     "star": "VEECK5",
@@ -5158,7 +5158,7 @@
                         ]
                     },
                     "initial_altitude": 16000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 280,
                     "star": "WATSN4",
                     "speed_restriction": 250,
@@ -5289,7 +5289,7 @@
                         ]
                     },
                     "initial_altitude": 20000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 280,
                     "star": "WYNDE2",
                     "runway_waypoints": {
@@ -5509,7 +5509,7 @@
                         ]
                     },
                     "initial_altitude": 4000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 250,
                     "star": "FIYER",
                     "runway_waypoints": {
@@ -5718,7 +5718,7 @@
                         ]
                     },
                     "initial_altitude": 5000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 250,
                     "star": "KRENA",
                     "runway_waypoints": {
@@ -5927,7 +5927,7 @@
                         ]
                     },
                     "initial_altitude": 6000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 250,
                     "star": "KRENA",
                     "runway_waypoints": {
@@ -6149,7 +6149,7 @@
                         ]
                     },
                     "initial_altitude": 5000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 250,
                     "star": "MOTIF",
                     "runway_waypoints": {
@@ -6205,7 +6205,7 @@
                         ]
                     },
                     "initial_altitude": 5000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 250,
                     "star": "MOTIF",
                     "runway_waypoints": {
@@ -6265,7 +6265,7 @@
                         ]
                     },
                     "initial_altitude": 11000,
-                    "initial_controller": "SBN_N_APP",
+                    "initial_controller": "21N",
                     "initial_speed": 250,
                     "star": "GSH9",
                     "speed_restriction": 250,
@@ -6317,7 +6317,7 @@
                         ]
                     },
                     "initial_altitude": 11000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 250,
                     "star": "LUCIT2",
                     "speed_restriction": 250,
@@ -6365,7 +6365,7 @@
                         ]
                     },
                     "initial_altitude": 24000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 250,
                     "star": "LUCIT2",
                     "speed_restriction": 250,
@@ -6413,7 +6413,7 @@
                         ]
                     },
                     "initial_altitude": 24000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 250,
                     "star": "LUCIT2",
                     "speed_restriction": 250,
@@ -6461,7 +6461,7 @@
                         ]
                     },
                     "initial_altitude": 24000,
-                    "initial_controller": "ZAU 81 CRIBB",
+                    "initial_controller": "C81",
                     "initial_speed": 250,
                     "star": "LUCIT2",
                     "speed_restriction": 250,
@@ -6507,55 +6507,55 @@
     "scenarios": {
         "KORD West": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },
@@ -6646,55 +6646,55 @@
         },
         "KORD West KMDW 31R": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },
@@ -6800,55 +6800,55 @@
         },
         "KORD West KMDW 31R KPWK 16": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },
@@ -6991,55 +6991,55 @@
         },
         "KORD West KMDW 31R + Satellites": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },
@@ -7263,55 +7263,55 @@
         },
         "KORD West KMDW 22L + Satellites": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },
@@ -7555,55 +7555,55 @@
         },
         "KORD West KPWK 16": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },
@@ -7731,55 +7731,55 @@
         },
         "KORD West KMDW 22L": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },
@@ -7885,55 +7885,55 @@
         },
         "KORD 4's A Pair": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },
@@ -8001,55 +8001,55 @@
         },
         "KORD 4's A Pair KMDW 4R": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },
@@ -8132,55 +8132,55 @@
         },
         "KORD 4's A Pair KMDW 4R PWK 16": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },
@@ -8281,55 +8281,55 @@
         },
         "KORD 4's A Pair KMDW 4R + Satellites": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },
@@ -8511,55 +8511,55 @@
         },
         "KORD 22's A Pair": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },
@@ -8631,55 +8631,55 @@
         },
         "KORD 22's A Pair KMDW 22L": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },
@@ -8766,55 +8766,55 @@
         },
         "KORD 22's A Pair KMDW 22L KPWK 16": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },
@@ -8938,55 +8938,55 @@
         },
         "KORD 22's A Pair KMDW 22L + Satellites": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },
@@ -9211,55 +9211,55 @@
         },
         "KORD East": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPE"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPE"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPE"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPE"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPE"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPE"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPE"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPE"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPE"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPE"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPE"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPE"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPE"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPE"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPE"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPE"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPE"
                 ]
             },
@@ -9350,55 +9350,55 @@
         },
         "KORD East KMDW 4R": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPE"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPE"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPE"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPE"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPE"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPE"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPE"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPE"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPE"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPE"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPE"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPE"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPE"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPE"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPE"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPE"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPE"
                 ]
             },
@@ -9504,55 +9504,55 @@
         },
         "KORD East KMDW 13L": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPE"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPE"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPE"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPE"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPE"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPE"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPE"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPE"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPE"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPE"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPE"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPE"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPE"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPE"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPE"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPE"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPE"
                 ]
             },
@@ -9658,55 +9658,55 @@
         },
         "KORD East KMDW 4R + Satellites": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },
@@ -9930,55 +9930,55 @@
         },
         "KORD East KMDW 13L + Satellites": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },
@@ -10202,55 +10202,55 @@
         },
         "KORD East KPWK 16": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },
@@ -10378,17 +10378,17 @@
         },
         "KMDW 31R": {
             "airspace": {
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_S_APP_31R_22L_4R"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_S_APP_31R_22L_4R",
                     "CHI_S_DEP_31R_22L_4R"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_S_APP_31R_22L_4R"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_S_APP_31R_22L_4R"
                 ]
             },
@@ -10425,17 +10425,17 @@
         },
         "KMDW 4R": {
             "airspace": {
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_S_APP_31R_22L_4R"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_S_APP_31R_22L_4R",
                     "CHI_S_DEP_31R_22L_4R"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_S_APP_31R_22L_4R"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_S_APP_31R_22L_4R"
                 ]
             },
@@ -10472,17 +10472,17 @@
         },
         "KMDW 13L": {
             "airspace": {
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_S_APP_13L"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_S_APP_13L",
                     "CHI_S_DEP_13L"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_S_APP_13L"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_S_APP_13L"
                 ]
             },
@@ -10519,17 +10519,17 @@
         },
         "KMDW 22L": {
             "airspace": {
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_S_APP_31R_22L_4R"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_S_APP_31R_22L_4R",
                     "CHI_S_DEP_31R_22L_4R"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_S_APP_31R_22L_4R"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_S_APP_31R_22L_4R"
                 ]
             },
@@ -10566,7 +10566,7 @@
         },
         "KORD West North Final (F)": {
             "airspace": {
-                "CHI_F_APP": [
+                "1F": [
                     "FW"
                 ]
             },
@@ -10593,7 +10593,7 @@
         },
         "KORD East North Final (F)": {
             "airspace": {
-                "CHI_F_APP": [
+                "1F": [
                     "FE"
                 ]
             },
@@ -10620,7 +10620,7 @@
         },
         "KORD West Center Final (Z)": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "ZW"
                 ]
             },
@@ -10650,7 +10650,7 @@
         },
         "KORD West Final Combined": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "ZW",
                     "WW",
                     "FW"
@@ -10699,7 +10699,7 @@
         },
         "KORD West South Final (W)": {
             "airspace": {
-                "CHI_W_APP": [
+                "1W": [
                     "WW"
                 ]
             },
@@ -10729,55 +10729,55 @@
         },
         "Satellites Only": {
             "airspace": {
-                "CHI_Z_APP": [
+                "1Z": [
                     "CHI_APPW"
                 ],
-                "CHI_B_DEP": [
+                "1B": [
                     "CHI_APPW"
                 ],
-                "CHI_F_APP": [
+                "1F": [
                     "CHI_APPW"
                 ],
-                "CHI_W_APP": [
+                "1W": [
                     "CHI_APPW"
                 ],
-                "CHI_H_APP": [
+                "1H": [
                     "CHI_APPW"
                 ],
-                "CHI_D_DEP": [
+                "1D": [
                     "CHI_APPW"
                 ],
-                "CHI_A_APP": [
+                "1A": [
                     "CHI_APPW"
                 ],
-                "CHI_M_DEP": [
+                "1M": [
                     "CHI_APPW"
                 ],
-                "CHI_G_DEP": [
+                "1G": [
                     "CHI_APPW"
                 ],
-                "CHI_X_APP": [
+                "1X": [
                     "CHI_APPW"
                 ],
-                "CHI_E_APP": [
+                "1E": [
                     "CHI_APPW"
                 ],
-                "CHI_J_APP": [
+                "1J": [
                     "CHI_APPW"
                 ],
-                "CHI_Y_APP": [
+                "1Y": [
                     "CHI_APPW"
                 ],
-                "CHI_S_APP": [
+                "1S": [
                     "CHI_APPW"
                 ],
-                "CHI_U_APP": [
+                "1U": [
                     "CHI_APPW"
                 ],
-                "CHI_P_APP": [
+                "1P": [
                     "CHI_APPW"
                 ],
-                "CHI_L_APP": [
+                "1L": [
                     "CHI_APPW"
                 ]
             },

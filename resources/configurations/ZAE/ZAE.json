@@ -1,16 +1,16 @@
 {
     "control_positions": {
-        "ZAE_TUL": {
+        "TU": {
+            "callsign": "ZAE_TUL",
             "frequency": 132350,
             "eram_facility": true,
-            "radio_name": "Academy Center",
-            "sector_id": "TU"
+            "radio_name": "Academy Center"
         },
-        "ZAE_OKC": {
+        "OK": {
+            "callsign": "ZAE_OKC",
             "frequency": 125650,
             "eram_facility": true,
-            "radio_name": "Academy Center",
-            "sector_id": "OK"
+            "radio_name": "Academy Center"
         }
     },
     "stars_config": {},

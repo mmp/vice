@@ -1,14 +1,14 @@
 {
     "control_positions": {
-        "LMT_APP": {
+        "1L": {
+            "callsign": "LMT_APP",
             "frequency": 123675,
-            "radio_name": "Kingsley Approach",
-            "sector_id": "1L"
+            "radio_name": "Kingsley Approach"
         },
-        "LMT_TWR": {
+        "1T": {
+            "callsign": "LMT_TWR",
             "frequency": 133975,
-            "radio_name": "Kingsley Tower",
-            "sector_id": "1T"
+            "radio_name": "Kingsley Tower"
         }
     },
     "handoff_ids": [
@@ -18,7 +18,7 @@
         },
         {
             "id": "ZSE",
-            "eram_prefix": "S"
+            "eram_prefix": "C"
         }
     ]
 }

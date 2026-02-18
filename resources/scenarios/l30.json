@@ -1943,7 +1943,7 @@
                     "waypoints": "BOEGY/a15000/s250/ho PUTTT/a7000 KGRDN/a6000/h260",
                     "cruise_altitude": 35000,
                     "star": "BOEGY2",
-                    "initial_controller": "ZLA Sector 07",
+                    "initial_controller": "C07",
                     "initial_altitude": 15000,
                     "initial_speed": 250,
                     "scratchpad": "BOG",
@@ -1964,8 +1964,7 @@
                                 "airport": "KPWK"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         },
@@ -1985,7 +1984,7 @@
                     },
                     "cruise_altitude": 35000,
                     "star": "CHOWW4",
-                    "initial_controller": "ZLA Sector 07",
+                    "initial_controller": "C07",
                     "initial_altitude": 22000,
                     "initial_speed": 250,
                     "scratchpad": "CHO",
@@ -2136,8 +2135,7 @@
                                 "airport": "EDDF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         },
@@ -2159,7 +2157,7 @@
                     },
                     "cruise_altitude": 35000,
                     "star": "COKTL4",
-                    "initial_controller": "ZLA Sector 16",
+                    "initial_controller": "C16",
                     "initial_altitude": 25000,
                     "initial_speed": 280,
                     "scratchpad": "CTL",
@@ -2271,8 +2269,7 @@
                                 "airport": "CYVR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         },
@@ -2282,7 +2279,7 @@
                     "waypoints": "GEOOF/ho KEEKE/a10500+/s250 ECAKO/a9000/s230/h117",
                     "cruise_altitude": 35000,
                     "star": "FLCHR1",
-                    "initial_controller": "ZLA Sector 16",
+                    "initial_controller": "C16",
                     "initial_altitude": 14000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -2302,8 +2299,7 @@
                                 "airport": "KBFI"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         },
@@ -2313,7 +2309,7 @@
                     "waypoints": "SOTOO QWIST/a14000+/ho GAMES TOROO RATHH PIGOW/a8300/h75",
                     "cruise_altitude": 35000,
                     "star": "GAMES2",
-                    "initial_controller": "ZLA Sector 16",
+                    "initial_controller": "C16",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "scratchpad": "GAM",
@@ -2326,14 +2322,13 @@
                                 "airport": "KAPC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 },
                 {
                     "waypoints": "SOTOO QWIST/a14000+/ho GAMES TOROO RATHH PIGOW/a8300/h75",
                     "cruise_altitude": 35000,
                     "star": "GAMES2",
-                    "initial_controller": "ZLA Sector 16",
+                    "initial_controller": "C16",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -2353,8 +2348,7 @@
                                 "airport": "KBFI"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         },
@@ -2364,7 +2358,7 @@
                     "waypoints": "N036.52.50.242,W115.48.34.453 WAPID/ho PESHY/a15000+/s250 NEEMA/a14200+ ENNVY/a11000+ REDQN/a9000+/s210 BERBN/a8000/s210/h83",
                     "cruise_altitude": 15000,
                     "star": "JAYSN3",
-                    "initial_controller": "LSV_L_APP",
+                    "initial_controller": "11L",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "scratchpad": "JSN",
@@ -2376,14 +2370,13 @@
                                 "airport": "KXTA"
                             }
                         ]
-                    },
-                    "initial_facility": "LSV"
+                    }
                 },
                 {
                     "waypoints": "BYRDY JAYSN/a19000- WAPID/ho PESHY/a15000+/s250 NEEMA/a14200+ ENNVY/a11000+ REDQN/a9000+/s210 BERBN/a8000/s210/h83",
                     "cruise_altitude": 19000,
                     "star": "JAYSN3",
-                    "initial_controller": "LSV_L_APP",
+                    "initial_controller": "11L",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -2394,8 +2387,7 @@
                                 "airport": "KTNX"
                             }
                         ]
-                    },
-                    "initial_facility": "LSV"
+                    }
                 }
             ]
         },
@@ -2405,7 +2397,7 @@
                     "waypoints": "N036.52.50.242,W115.48.34.453 WAPID/ho PESHY/a15000+/s250 PAIRR/a14200+ MEZKL/a10000-12000 LOOMI ZINPI/a9000+/s210 SLOTS/a8000 ROAMN/a8000/s210",
                     "cruise_altitude": 15000,
                     "star": "JAYSN3",
-                    "initial_controller": "LSV_L_APP",
+                    "initial_controller": "11L",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "scratchpad": "JSN",
@@ -2417,14 +2409,13 @@
                                 "airport": "KXTA"
                             }
                         ]
-                    },
-                    "initial_facility": "LSV"
+                    }
                 },
                 {
                     "waypoints": "BYRDY JAYSN/a19000- WAPID/ho PESHY/a15000+/s250 PAIRR/a14200+ MEZKL/a10000-12000 LOOMI ZINPI/a9000+/s210 SLOTS/a8000 ROAMN/a8000/s210",
                     "cruise_altitude": 19000,
                     "star": "JAYSN3",
-                    "initial_controller": "LSV_L_APP",
+                    "initial_controller": "11L",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -2435,8 +2426,7 @@
                                 "airport": "KTNX"
                             }
                         ]
-                    },
-                    "initial_facility": "LSV"
+                    }
                 }
             ]
         },
@@ -2446,7 +2436,7 @@
                     "waypoints": "N036.52.50.242,W115.48.34.453 WAPID KEEKE/a13000+ ECAKO DRXLR/a10000+ MYSHL/a8700+/ho CUEVS/a6200+ KORYN/a4800/h118",
                     "cruise_altitude": 15000,
                     "star": "JAYSN3",
-                    "initial_controller": "LSV_L_APP",
+                    "initial_controller": "11L",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "scratchpad": "JSN",
@@ -2458,14 +2448,13 @@
                                 "airport": "KXTA"
                             }
                         ]
-                    },
-                    "initial_facility": "LSV"
+                    }
                 },
                 {
                     "waypoints": "BYRDY JAYSN/a19000- WAPID KEEKE/a13000+ ECAKO DRXLR/a10000+ MYSHL/a8700+/ho CUEVS/a6200+ KORYN/a4800/h118",
                     "cruise_altitude": 19000,
                     "star": "JAYSN3",
-                    "initial_controller": "LSV_L_APP",
+                    "initial_controller": "11L",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": "RY9R",
@@ -2476,8 +2465,7 @@
                                 "airport": "KTNX"
                             }
                         ]
-                    },
-                    "initial_facility": "LSV"
+                    }
                 }
             ]
         },
@@ -2487,7 +2475,7 @@
                     "waypoints": "N036.52.50.242,W115.48.34.453 WAPID/ho PESHY/a15000+/s250 PAIRR/a14200+ MEZKL/a10000-12000 LOOMI ZINPI/a9000+/s210 SLOTS/a8000 YAGGR/a8000/s210/h5",
                     "cruise_altitude": 15000,
                     "star": "JAYSN3",
-                    "initial_controller": "LSV_L_APP",
+                    "initial_controller": "11L",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "scratchpad": "JSN",
@@ -2499,14 +2487,13 @@
                                 "airport": "KXTA"
                             }
                         ]
-                    },
-                    "initial_facility": "LSV"
+                    }
                 },
                 {
                     "waypoints": "BYRDY JAYSN/a19000- WAPID/ho PESHY/a15000+/s250 PAIRR/a14200+ MEZKL/a10000-12000 LOOMI ZINPI/a9000+/s210 SLOTS/a8000 YAGGR/a8000/s210/h5",
                     "cruise_altitude": 19000,
                     "star": "JAYSN3",
-                    "initial_controller": "LSV_L_APP",
+                    "initial_controller": "11L",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -2517,8 +2504,7 @@
                                 "airport": "KTNX"
                             }
                         ]
-                    },
-                    "initial_facility": "LSV"
+                    }
                 }
             ]
         },
@@ -2528,7 +2514,7 @@
                     "waypoints": "TETRS/a13000+ N035.24.47.576,W114.58.39.799/ho KONNG/a10000+/s250 KEEKO/a7200+ NTNDO/a7000/h304",
                     "cruise_altitude": 35000,
                     "star": "NTNDO1",
-                    "initial_controller": "ZLA Sector 08",
+                    "initial_controller": "C08",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "scratchpad": "NTN",
@@ -2549,14 +2535,13 @@
                                 "airport": "KTUS"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 },
                 {
                     "waypoints": "TETRS/a13000+ N035.24.47.576,W114.58.39.799/ho KONNG/a10000+/s250 KEEKO/a7200+ NTNDO/a7000/h304",
                     "cruise_altitude": 35000,
                     "star": "NTNDO1",
-                    "initial_controller": "ZLA Sector 08",
+                    "initial_controller": "C08",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -2576,8 +2561,7 @@
                                 "airport": "KHHR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         },
@@ -2587,7 +2571,7 @@
                     "star": "RKSTR4",
                     "spawn": "STYYX",
                     "cruise_altitude": 35000,
-                    "initial_controller": "ZLA Sector 08",
+                    "initial_controller": "C08",
                     "initial_altitude": 23000,
                     "initial_speed": 280,
                     "scratchpad": "RKS",
@@ -2668,14 +2652,13 @@
                                 "airport": "KDAL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 },
                 {
                     "star": "RKSTR4",
                     "spawn": "JJEAN",
                     "cruise_altitude": 35000,
-                    "initial_controller": "ZLA Sector 08",
+                    "initial_controller": "C08",
                     "initial_altitude": 25000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -2729,8 +2712,7 @@
                                 "airport": "MMGL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         },
@@ -2740,7 +2722,7 @@
                     "star": "RNDRZ4",
                     "spawn": "WATEV",
                     "cruise_altitude": 35000,
-                    "initial_controller": "ZLA Sector 06",
+                    "initial_controller": "C06",
                     "initial_altitude": 24000,
                     "initial_speed": 280,
                     "scratchpad": "RDZ",
@@ -2785,14 +2767,13 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 },
                 {
                     "spawn": "SLOPP",
                     "cruise_altitude": 35000,
                     "star": "RNDRZ4",
-                    "initial_controller": "ZLA Sector 06",
+                    "initial_controller": "C06",
                     "initial_altitude": 22000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -2811,8 +2792,7 @@
                                 "airport": "KTRM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         },
@@ -2822,7 +2802,7 @@
                     "waypoints": "BOEGY/a15000/s250/ho WYLND LNDIN/a9000/h270",
                     "cruise_altitude": 35000,
                     "star": "WYLND1",
-                    "initial_controller": "ZLA Sector 07",
+                    "initial_controller": "C07",
                     "initial_altitude": 15000,
                     "initial_speed": 250,
                     "scratchpad": "WYL",
@@ -2843,8 +2823,7 @@
                                 "airport": "KPWK"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLA"
+                    }
                 }
             ]
         }
@@ -5591,28 +5570,28 @@
     "scenarios": {
         "CFG1 (Depart 19L/R/26R Land 19R/26L)": {
             "airspace": {
-                "LAS_D_DEP": [
+                "1D": [
                     "DAGGET CFG1"
                 ],
-                "LAS_M_DEP": [
+                "1M": [
                     "MEAD CFG1"
                 ],
-                "LAS_G_APP": [
+                "1G": [
                     "GRANITE CFG1"
                 ],
-                "LAS_F_APP": [
+                "1F": [
                     "FINAL CFG1"
                 ],
-                "LAS_L_APP": [
+                "1L": [
                     "LAKE CFG1"
                 ],
-                "LAS_T_APP": [
+                "1T": [
                     "SATELITE CFG1"
                 ],
-                "LAS_Y_APP": [
+                "1Y": [
                     "CANYON CFG1"
                 ],
-                "LAS_K_APP": [
+                "1K": [
                     "KENO CFG1"
                 ]
             },
@@ -5722,28 +5701,28 @@
         },
         "CFG2 (Depart 8L Land 1L/1R)": {
             "airspace": {
-                "LAS_D_DEP": [
+                "1D": [
                     "DAGGET CFG2"
                 ],
-                "LAS_M_DEP": [
+                "1M": [
                     "MEAD CFG2"
                 ],
-                "LAS_G_APP": [
+                "1G": [
                     "GRANITE CFG2"
                 ],
-                "LAS_L_APP": [
+                "1L": [
                     "LAKE CFG2"
                 ],
-                "LAS_F_APP": [
+                "1F": [
                     "FINAL CFG2"
                 ],
-                "LAS_T_APP": [
+                "1T": [
                     "SATELITE CFG2"
                 ],
-                "LAS_Y_APP": [
+                "1Y": [
                     "CANYON CFG2"
                 ],
-                "LAS_K_APP": [
+                "1K": [
                     "KENO CFG2"
                 ]
             },
@@ -5838,28 +5817,28 @@
         },
         "CFG3 (Depart 1L/1R Land 1L/26L)": {
             "airspace": {
-                "LAS_D_DEP": [
+                "1D": [
                     "DAGGET CFG3"
                 ],
-                "LAS_M_DEP": [
+                "1M": [
                     "MEAD CFG3"
                 ],
-                "LAS_G_APP": [
+                "1G": [
                     "GRANITE CFG3"
                 ],
-                "LAS_L_APP": [
+                "1L": [
                     "LAKE CFG3"
                 ],
-                "LAS_F_APP": [
+                "1F": [
                     "FINAL CFG3"
                 ],
-                "LAS_T_APP": [
+                "1T": [
                     "SATELITE CFG3"
                 ],
-                "LAS_Y_APP": [
+                "1Y": [
                     "CANYON CFG3"
                 ],
-                "LAS_K_APP": [
+                "1K": [
                     "KENO CFG3"
                 ]
             },
@@ -5959,28 +5938,28 @@
         },
         "CFG4 (Depart 8L Land 19L/19R/8R)": {
             "airspace": {
-                "LAS_D_DEP": [
+                "1D": [
                     "DAGGET CFG4"
                 ],
-                "LAS_M_DEP": [
+                "1M": [
                     "MEAD CFG4"
                 ],
-                "LAS_G_APP": [
+                "1G": [
                     "GRANITE CFG4"
                 ],
-                "LAS_F_APP": [
+                "1F": [
                     "FINAL CFG4"
                 ],
-                "LAS_L_APP": [
+                "1L": [
                     "LAKE CFG4"
                 ],
-                "LAS_T_APP": [
+                "1T": [
                     "SATELITE CFG4"
                 ],
-                "LAS_Y_APP": [
+                "1Y": [
                     "CANYON CFG4"
                 ],
-                "LAS_K_APP": [
+                "1K": [
                     "KENO CFG4"
                 ]
             },

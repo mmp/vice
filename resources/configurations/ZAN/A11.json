@@ -1,49 +1,49 @@
 {
     "control_positions": {
-        "ANC_N_APP": {
+        "1N": {
+            "callsign": "ANC_N_APP",
             "frequency": 118600,
-            "radio_name": "Anchorage Approach",
-            "sector_id": "1N"
+            "radio_name": "Anchorage Approach"
         },
-        "ANC_S_APP": {
+        "1S": {
+            "callsign": "ANC_S_APP",
             "frequency": 126400,
-            "radio_name": "Anchorage Approach",
-            "sector_id": "1S"
+            "radio_name": "Anchorage Approach"
         },
-        "ANC_F_APP": {
+        "1F": {
+            "callsign": "ANC_F_APP",
             "frequency": 135150,
-            "radio_name": "Anchorage Approach",
-            "sector_id": "1F"
+            "radio_name": "Anchorage Approach"
         },
-        "ANC_TWR": {
+        "1T": {
+            "callsign": "ANC_TWR",
             "frequency": 118300,
-            "radio_name": "Anchorage Tower",
-            "sector_id": "1T"
+            "radio_name": "Anchorage Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "KROTO5.ROHHN": "ANC_N_APP",
-                    "KROTO5.TKA": "ANC_N_APP",
-                    "NEELL7": "ANC_S_APP",
-                    "PTERS3": "ANC_N_APP",
-                    "WITTI5": "ANC_S_APP"
+                    "KROTO5.ROHHN": "1N",
+                    "KROTO5.TKA": "1N",
+                    "NEELL7": "1S",
+                    "PTERS3": "1N",
+                    "WITTI5": "1S"
                 },
                 "departure_assignments": {
-                    "PANC": "ANC_N_APP",
-                    "PANC/ANCH1": "ANC_N_APP",
-                    "PANC/FFITZ4": "ANC_S_APP",
-                    "PANC/NOEND4": "ANC_N_APP",
-                    "PANC/POTTR3": "ANC_S_APP"
+                    "PANC": "1N",
+                    "PANC/ANCH1": "1N",
+                    "PANC/FFITZ4": "1S",
+                    "PANC/NOEND4": "1N",
+                    "PANC/POTTR3": "1S"
                 },
                 "default_consolidation": {
-                    "ANC_N_APP": [
-                        "ANC_S_APP"
+                    "1N": [
+                        "1S"
                     ],
-                    "ANC_S_APP": [
-                        "ANC_F_APP"
+                    "1S": [
+                        "1F"
                     ]
                 }
             }
@@ -122,5 +122,10 @@
             }
         }
     },
-    "handoff_ids": []
+    "handoff_ids": [
+        {
+            "id": "ZAN",
+            "eram_prefix": "C"
+        }
+    ]
 }

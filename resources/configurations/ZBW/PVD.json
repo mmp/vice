@@ -1,130 +1,130 @@
 {
     "control_positions": {
-        "PVD_A_APP": {
+        "1A": {
+            "callsign": "PVD_A_APP",
             "frequency": 127900,
-            "radio_name": "Providence Approach",
-            "sector_id": "1A"
+            "radio_name": "Providence Approach"
         },
-        "PVD_D_APP": {
+        "1D": {
+            "callsign": "PVD_D_APP",
             "frequency": 123675,
-            "radio_name": "Providence Approach",
-            "sector_id": "1D"
+            "radio_name": "Providence Approach"
         },
-        "PVD_H_APP": {
+        "1H": {
+            "callsign": "PVD_H_APP",
             "frequency": 119450,
-            "radio_name": "Providence Approach",
-            "sector_id": "1H"
+            "radio_name": "Providence Approach"
         },
-        "PVD_J_APP": {
+        "1J": {
+            "callsign": "PVD_J_APP",
             "frequency": 125750,
-            "radio_name": "Providence Approach",
-            "sector_id": "1J"
+            "radio_name": "Providence Approach"
         },
-        "PVD_N_APP": {
+        "1N": {
+            "callsign": "PVD_N_APP",
             "frequency": 128700,
-            "radio_name": "Providence Approach",
-            "sector_id": "1N"
+            "radio_name": "Providence Approach"
         },
-        "PVD_TWR": {
+        "1T": {
+            "callsign": "PVD_TWR",
             "frequency": 120700,
-            "radio_name": "Providence Tower",
-            "sector_id": "1T"
+            "radio_name": "Providence Tower"
         },
-        "OQU_TWR": {
+        "1Q": {
+            "callsign": "OQU_TWR",
             "frequency": 125650,
-            "radio_name": "Quonset Tower",
-            "sector_id": "1Q"
+            "radio_name": "Quonset Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "05X": {
                 "inbound_assignments": {
-                    "GON": "PVD_A_APP",
-                    "JORDN": "PVD_A_APP",
-                    "WIPOR": "PVD_A_APP"
+                    "GON": "1A",
+                    "JORDN": "1A",
+                    "WIPOR": "1A"
                 },
                 "departure_assignments": {
-                    "KPVD": "PVD_A_APP"
+                    "KPVD": "1A"
                 },
                 "default_consolidation": {
-                    "PVD_A_APP": []
+                    "1A": []
                 }
             },
             "23X": {
                 "inbound_assignments": {
-                    "GON": "PVD_D_APP",
-                    "JORDN": "PVD_D_APP",
-                    "JUMPR": "PVD_D_APP",
-                    "PEAKE": "PVD_D_APP",
-                    "WIPOR": "PVD_D_APP"
+                    "GON": "1D",
+                    "JORDN": "1D",
+                    "JUMPR": "1D",
+                    "PEAKE": "1D",
+                    "WIPOR": "1D"
                 },
                 "departure_assignments": {
-                    "KEWB": "PVD_A_APP",
-                    "KOQU": "PVD_A_APP",
-                    "KPVD": "PVD_A_APP"
+                    "KEWB": "1A",
+                    "KOQU": "1A",
+                    "KPVD": "1A"
                 },
                 "default_consolidation": {
-                    "PVD_A_APP": [
-                        "PVD_D_APP"
+                    "1A": [
+                        "1D"
                     ]
                 }
             },
             "21X": {
                 "inbound_assignments": {
-                    "PQ_OQU_2316_COMBINED": "PVD_D_APP",
-                    "PQ_PVD_2316_COMBINED": "PVD_D_APP"
+                    "PQ_OQU_2316_COMBINED": "1D",
+                    "PQ_PVD_2316_COMBINED": "1D"
                 },
                 "departure_assignments": {
-                    "KOQU": "PVD_D_APP",
-                    "KPVD": "PVD_D_APP"
+                    "KOQU": "1D",
+                    "KPVD": "1D"
                 },
                 "default_consolidation": {
-                    "PVD_D_APP": []
+                    "1D": []
                 }
             },
             "PVD": {
                 "inbound_assignments": {
-                    "PQ_OQU_2316": "PVD_D_APP",
-                    "PQ_PVD_2316": "PVD_A_APP"
+                    "PQ_OQU_2316": "1D",
+                    "PQ_PVD_2316": "1A"
                 },
                 "departure_assignments": {
-                    "KOQU": "PVD_D_APP",
-                    "KPVD": "PVD_D_APP"
+                    "KOQU": "1D",
+                    "KPVD": "1D"
                 },
                 "default_consolidation": {
-                    "PVD_A_APP": [
-                        "PVD_D_APP"
+                    "1A": [
+                        "1D"
                     ]
                 }
             },
             "51X": {
                 "inbound_assignments": {
-                    "PQ_OQU_0516": "PVD_D_APP",
-                    "PQ_PVD_0516": "PVD_D_APP"
+                    "PQ_OQU_0516": "1D",
+                    "PQ_PVD_0516": "1D"
                 },
                 "departure_assignments": {
-                    "KOQU": "PVD_A_APP",
-                    "KPVD": "PVD_D_APP"
+                    "KOQU": "1A",
+                    "KPVD": "1D"
                 },
                 "default_consolidation": {
-                    "PVD_A_APP": [
-                        "PVD_D_APP"
+                    "1A": [
+                        "1D"
                     ]
                 }
             },
             "53X": {
                 "inbound_assignments": {
-                    "PQ_OQU_0534": "PVD_A_APP",
-                    "PQ_PVD_0534": "PVD_A_APP"
+                    "PQ_OQU_0534": "1A",
+                    "PQ_PVD_0534": "1A"
                 },
                 "departure_assignments": {
-                    "KOQU": "PVD_A_APP",
-                    "KPVD": "PVD_D_APP"
+                    "KOQU": "1A",
+                    "KPVD": "1D"
                 },
                 "default_consolidation": {
-                    "PVD_A_APP": [
-                        "PVD_D_APP"
+                    "1A": [
+                        "1D"
                     ]
                 }
             }
@@ -265,7 +265,7 @@
         },
         {
             "id": "ZBW",
-            "eram_prefix": "B"
+            "eram_prefix": "C"
         },
         {
             "id": "ZNY",

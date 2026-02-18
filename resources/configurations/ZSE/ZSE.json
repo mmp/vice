@@ -1,178 +1,178 @@
 {
     "control_positions": {
-        "ZSE Sector 01": {
+        "01": {
+            "callsign": "ZSE Sector 01",
             "frequency": 120300,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "01"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 02": {
+        "02": {
+            "callsign": "ZSE Sector 02",
             "frequency": 128300,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "02"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 03": {
+        "03": {
+            "callsign": "ZSE Sector 03",
             "frequency": 125100,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "03"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 04": {
+        "04": {
+            "callsign": "ZSE Sector 04",
             "frequency": 124200,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "04"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 05": {
+        "05": {
+            "callsign": "ZSE Sector 05",
             "frequency": 128150,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "05"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 06": {
+        "06": {
+            "callsign": "ZSE Sector 06",
             "frequency": 125800,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "06"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 07": {
+        "07": {
+            "callsign": "ZSE Sector 07",
             "frequency": 128450,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "07"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 08": {
+        "08": {
+            "callsign": "ZSE Sector 08",
             "frequency": 123950,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "08"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 09": {
+        "09": {
+            "callsign": "ZSE Sector 09",
             "frequency": 132600,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "09"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 10": {
+        "10": {
+            "callsign": "ZSE Sector 10",
             "frequency": 127600,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "10"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 11": {
+        "11": {
+            "callsign": "ZSE Sector 11",
             "frequency": 119225,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "11"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 12": {
+        "12": {
+            "callsign": "ZSE Sector 12",
             "frequency": 134950,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "12"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 13": {
+        "13": {
+            "callsign": "ZSE Sector 13",
             "frequency": 135350,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "13"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 14": {
+        "14": {
+            "callsign": "ZSE Sector 14",
             "frequency": 134900,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "14"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 15": {
+        "15": {
+            "callsign": "ZSE Sector 15",
             "frequency": 135150,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "15"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 16": {
+        "16": {
+            "callsign": "ZSE Sector 16",
             "frequency": 135450,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "16"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 18": {
+        "18": {
+            "callsign": "ZSE Sector 18",
             "frequency": 126100,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "18"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 30": {
+        "30": {
+            "callsign": "ZSE Sector 30",
             "frequency": 124850,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "30"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 31": {
+        "31": {
+            "callsign": "ZSE Sector 31",
             "frequency": 127050,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "31"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 32": {
+        "32": {
+            "callsign": "ZSE Sector 32",
             "frequency": 126600,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "32"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 34": {
+        "34": {
+            "callsign": "ZSE Sector 34",
             "frequency": 119650,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "34"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 35": {
+        "35": {
+            "callsign": "ZSE Sector 35",
             "frequency": 126150,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "35"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 36": {
+        "36": {
+            "callsign": "ZSE Sector 36",
             "frequency": 127550,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "36"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 42": {
+        "42": {
+            "callsign": "ZSE Sector 42",
             "frequency": 132075,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "42"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 46": {
+        "46": {
+            "callsign": "ZSE Sector 46",
             "frequency": 121350,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "46"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 47": {
+        "47": {
+            "callsign": "ZSE Sector 47",
             "frequency": 118550,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "47"
+            "radio_name": "Seattle Center"
         },
-        "ZSE Sector 48": {
+        "48": {
+            "callsign": "ZSE Sector 48",
             "frequency": 118625,
             "eram_facility": true,
-            "radio_name": "Seattle Center",
-            "sector_id": "48"
+            "radio_name": "Seattle Center"
         },
-        "ZSE 69 TMU": {
+        "69": {
+            "callsign": "ZSE 69 TMU",
             "frequency": 123450,
             "eram_facility": true,
-            "radio_name": "Don't Talk to Me",
-            "sector_id": "69"
+            "radio_name": "Don't Talk to Me"
         },
-        "ZSE 99 ZSE_ZOA": {
+        "99": {
+            "callsign": "ZSE 99 ZSE_ZOA",
             "frequency": 118025,
             "eram_facility": true,
-            "radio_name": "ZSE_ZOA Hotline",
-            "sector_id": "99"
+            "radio_name": "ZSE_ZOA Hotline"
         }
     },
     "stars_config": {
@@ -287,45 +287,51 @@
     "handoff_ids": [
         {
             "id": "EUG",
-            "single_char_stars_id": "E",
-            "two_char_stars_id": "EE",
-            "stars_id": "EEE"
+            "stars_id": "EEE",
+            "single_char_stars_id": "E"
         },
         {
             "id": "GEG",
-            "single_char_stars_id": "G",
-            "two_char_stars_id": "GG",
-            "stars_id": "GGG"
+            "stars_id": "GGG",
+            "single_char_stars_id": "G"
         },
         {
             "id": "LMT",
-            "single_char_stars_id": "L",
-            "two_char_stars_id": "LL",
-            "stars_id": "LLL"
+            "stars_id": "LLL",
+            "single_char_stars_id": "L"
+        },
+        {
+            "id": "MSO",
+            "stars_id": "AAA",
+            "single_char_stars_id": "A"
         },
         {
             "id": "MWH",
-            "single_char_stars_id": "M",
-            "two_char_stars_id": "MM",
-            "stars_id": "MMM"
+            "stars_id": "MMM",
+            "single_char_stars_id": "M"
         },
         {
             "id": "NUW",
-            "single_char_stars_id": "N",
-            "two_char_stars_id": "NN",
-            "stars_id": "NNN"
+            "stars_id": "NNN",
+            "single_char_stars_id": "N"
         },
         {
             "id": "P80",
-            "single_char_stars_id": "P",
-            "two_char_stars_id": "PP",
-            "stars_id": "PPP"
+            "stars_id": "PPP",
+            "single_char_stars_id": "P"
         },
         {
             "id": "S46",
-            "single_char_stars_id": "S",
-            "two_char_stars_id": "SS",
-            "stars_id": "SSS"
+            "stars_id": "SSS",
+            "single_char_stars_id": "S"
+        },
+        {
+            "id": "ZLC",
+            "eram_prefix": "U"
+        },
+        {
+            "id": "ZOA",
+            "eram_prefix": "O"
         }
     ]
 }

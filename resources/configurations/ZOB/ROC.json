@@ -1,33 +1,53 @@
 {
     "control_positions": {
-        "ROC_E_APP": {
+        "1E": {
+            "callsign": "ROC_E_APP",
             "frequency": 119550,
-            "radio_name": "Rochester Approach",
-            "sector_id": "1E"
+            "radio_name": "Rochester Approach"
         },
-        "ROC_F_APP": {
+        "1F": {
+            "callsign": "ROC_F_APP",
             "frequency": 120700,
-            "radio_name": "Rochester Approach",
-            "sector_id": "1F"
+            "radio_name": "Rochester Approach"
         },
-        "ROC_TWR": {
+        "1L": {
+            "callsign": "ROC_TWR",
             "frequency": 118300,
-            "radio_name": "Rochester Tower",
-            "sector_id": "1L"
+            "radio_name": "Rochester Tower"
         },
-        "ROC_W_APP": {
+        "1W": {
+            "callsign": "ROC_W_APP",
             "frequency": 123700,
-            "radio_name": "Rochester Approach",
-            "sector_id": "1W"
+            "radio_name": "Rochester Approach"
         },
-        "ROC_T_APP": {
+        "1Z": {
+            "callsign": "ROC_T_APP",
             "frequency": 123450,
-            "radio_name": "Rochester Approach",
-            "sector_id": "1Z"
+            "radio_name": "Rochester Approach"
         }
     },
     "stars_config": {},
     "handoff_ids": [
+        {
+            "id": "BUF",
+            "prefix": "1"
+        },
+        {
+            "id": "ELM",
+            "prefix": "3"
+        },
+        {
+            "id": "SYR",
+            "prefix": "2"
+        },
+        {
+            "id": "ZBW",
+            "eram_prefix": "B"
+        },
+        {
+            "id": "ZNY",
+            "eram_prefix": "N"
+        },
         {
             "id": "ZOB",
             "eram_prefix": "C"

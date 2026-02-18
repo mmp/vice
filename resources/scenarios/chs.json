@@ -1321,7 +1321,7 @@
                         }
                     },
                     "star": "AMYLU3",
-                    "initial_controller": "ZJX 74 Charleston ",
+                    "initial_controller": "C74",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1394,8 +1394,7 @@
                                 "airport": "KHPN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZJX"
+                    }
                 }
             ]
         },
@@ -1416,7 +1415,7 @@
                         }
                     },
                     "star": "BAGGY3",
-                    "initial_controller": "ZJX 72 Columbia",
+                    "initial_controller": "C72",
                     "initial_altitude": 13000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1473,8 +1472,7 @@
                                 "airport": "KHPN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZJX"
+                    }
                 }
             ]
         },
@@ -1495,7 +1493,7 @@
                         }
                     },
                     "star": "OSPRI7",
-                    "initial_controller": "ZJX 73 Allendale",
+                    "initial_controller": "C73",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1560,8 +1558,7 @@
                                 "airport": "KHPN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZJX"
+                    }
                 }
             ]
         }

@@ -1,196 +1,196 @@
 {
     "control_positions": {
-        "ZID 00 ZID GUARD": {
+        "00": {
+            "callsign": "ZID 00 ZID GUARD",
             "frequency": 121500,
             "eram_facility": true,
-            "radio_name": "Indianapolis Center",
-            "sector_id": "00"
+            "radio_name": "Indianapolis Center"
         },
-        "ZID 01 ZID TMU": {
+        "01": {
+            "callsign": "ZID 01 ZID TMU",
             "frequency": 123450,
             "eram_facility": true,
-            "radio_name": "ZID TMU",
-            "sector_id": "01"
+            "radio_name": "ZID TMU"
         },
-        "ZID 17 Evansville": {
+        "17": {
+            "callsign": "ZID 17 Evansville",
             "frequency": 128300,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "17"
+            "radio_name": "Indy Center"
         },
-        "ZID 18 Nabb": {
+        "18": {
+            "callsign": "ZID 18 Nabb",
             "frequency": 124775,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "18"
+            "radio_name": "Indy Center"
         },
-        "ZID 19 New Hope": {
+        "19": {
+            "callsign": "ZID 19 New Hope",
             "frequency": 121175,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "19"
+            "radio_name": "Indy Center"
         },
-        "ZID 20 Lexington": {
+        "20": {
+            "callsign": "ZID 20 Lexington",
             "frequency": 126375,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "20"
+            "radio_name": "Indy Center"
         },
-        "ZID 21 London": {
+        "21": {
+            "callsign": "ZID 21 London",
             "frequency": 124625,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "21"
+            "radio_name": "Indy Center"
         },
-        "ZID 22 Covington": {
+        "22": {
+            "callsign": "ZID 22 Covington",
             "frequency": 123925,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "22"
+            "radio_name": "Indy Center"
         },
-        "ZID 24 Parkersburg": {
+        "24": {
+            "callsign": "ZID 24 Parkersburg",
             "frequency": 125550,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "24"
+            "radio_name": "Indy Center"
         },
-        "ZID 25 Hazard": {
+        "25": {
+            "callsign": "ZID 25 Hazard",
             "frequency": 126575,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "25"
+            "radio_name": "Indy Center"
         },
-        "ZID 26 River": {
+        "26": {
+            "callsign": "ZID 26 River",
             "frequency": 124225,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "26"
+            "radio_name": "Indy Center"
         },
-        "ZID 30 Columbus": {
+        "30": {
+            "callsign": "ZID 30 Columbus",
             "frequency": 124450,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "30"
+            "radio_name": "Indy Center"
         },
-        "ZID 31 Lytle": {
+        "31": {
+            "callsign": "ZID 31 Lytle",
             "frequency": 120475,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "31"
+            "radio_name": "Indy Center"
         },
-        "ZID 32 Rosewood": {
+        "32": {
+            "callsign": "ZID 32 Rosewood",
             "frequency": 128075,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "32"
+            "radio_name": "Indy Center"
         },
-        "ZID 33 Muncie": {
+        "33": {
+            "callsign": "ZID 33 Muncie",
             "frequency": 124525,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "33"
+            "radio_name": "Indy Center"
         },
-        "ZID 34 Shelbyville": {
+        "34": {
+            "callsign": "ZID 34 Shelbyville",
             "frequency": 119550,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "34"
+            "radio_name": "Indy Center"
         },
-        "ZID 35 Terre Haute": {
+        "35": {
+            "callsign": "ZID 35 Terre Haute",
             "frequency": 132200,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "35"
+            "radio_name": "Indy Center"
         },
-        "ZID 66 Madison": {
+        "66": {
+            "callsign": "ZID 66 Madison",
             "frequency": 128375,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "66"
+            "radio_name": "Indy Center"
         },
-        "ZID 69 Pike": {
+        "69": {
+            "callsign": "ZID 69 Pike",
             "frequency": 135575,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "69"
+            "radio_name": "Indy Center"
         },
-        "ZID 74 Yeager": {
+        "74": {
+            "callsign": "ZID 74 Yeager",
             "frequency": 135425,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "74"
+            "radio_name": "Indy Center"
         },
-        "ZID 75 Rushville": {
+        "75": {
+            "callsign": "ZID 75 Rushville",
             "frequency": 125125,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "75"
+            "radio_name": "Indy Center"
         },
-        "ZID 77 University": {
+        "77": {
+            "callsign": "ZID 77 University",
             "frequency": 125075,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "77"
+            "radio_name": "Indy Center"
         },
-        "ZID 80 King": {
+        "80": {
+            "callsign": "ZID 80 King",
             "frequency": 134175,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "80"
+            "radio_name": "Indy Center"
         },
-        "ZID 81 Pocket City": {
+        "81": {
+            "callsign": "ZID 81 Pocket City",
             "frequency": 132525,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "81"
+            "radio_name": "Indy Center"
         },
-        "ZID 82 Louisville": {
+        "82": {
+            "callsign": "ZID 82 Louisville",
             "frequency": 133050,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "82"
+            "radio_name": "Indy Center"
         },
-        "ZID 83 Falmouth": {
+        "83": {
+            "callsign": "ZID 83 Falmouth",
             "frequency": 128225,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "83"
+            "radio_name": "Indy Center"
         },
-        "ZID 84 Rebel": {
+        "84": {
+            "callsign": "ZID 84 Rebel",
             "frequency": 134675,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "84"
+            "radio_name": "Indy Center"
         },
-        "ZID 85 Charleston": {
+        "85": {
+            "callsign": "ZID 85 Charleston",
             "frequency": 119525,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "85"
+            "radio_name": "Indy Center"
         },
-        "ZID 86 Beckley": {
+        "86": {
+            "callsign": "ZID 86 Beckley",
             "frequency": 124575,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "86"
+            "radio_name": "Indy Center"
         },
-        "ZID 87 Appleton": {
+        "87": {
+            "callsign": "ZID 87 Appleton",
             "frequency": 132825,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "87"
+            "radio_name": "Indy Center"
         },
-        "ZID 88 Dayton": {
+        "88": {
+            "callsign": "ZID 88 Dayton",
             "frequency": 120575,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "88"
+            "radio_name": "Indy Center"
         },
-        "ZID 89 Indy": {
+        "89": {
+            "callsign": "ZID 89 Indy",
             "frequency": 133425,
             "eram_facility": true,
-            "radio_name": "Indy Center",
-            "sector_id": "89"
+            "radio_name": "Indy Center"
         }
     },
     "stars_config": {

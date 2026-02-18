@@ -1,59 +1,59 @@
 {
     "control_positions": {
-        "PIT_TWR": {
+        "1W": {
+            "callsign": "PIT_TWR",
             "frequency": 120500,
-            "radio_name": "Pittsburgh Tower",
-            "sector_id": "1W"
+            "radio_name": "Pittsburgh Tower"
         },
-        "PIT_D_APP": {
+        "1D": {
+            "callsign": "PIT_D_APP",
             "frequency": 123950,
-            "radio_name": "Pittsburgh Approach",
-            "sector_id": "1D"
+            "radio_name": "Pittsburgh Approach"
         },
-        "PIT_B_APP": {
+        "1B": {
+            "callsign": "PIT_B_APP",
             "frequency": 124150,
-            "radio_name": "Pittsburgh Approach",
-            "sector_id": "1B"
+            "radio_name": "Pittsburgh Approach"
         },
-        "PIT_S_DEP": {
+        "1S": {
+            "callsign": "PIT_S_DEP",
             "frequency": 119350,
-            "radio_name": "Pittsburgh Departure",
-            "sector_id": "1S"
+            "radio_name": "Pittsburgh Departure"
         },
-        "PIT_N_DEP": {
+        "1N": {
+            "callsign": "PIT_N_DEP",
             "frequency": 124750,
-            "radio_name": "Pittsburgh Approach",
-            "sector_id": "1N"
+            "radio_name": "Pittsburgh Approach"
         },
-        "AGC_TWR": {
+        "1T": {
+            "callsign": "AGC_TWR",
             "frequency": 121100,
-            "radio_name": "Allegheny Tower",
-            "sector_id": "1T"
+            "radio_name": "Allegheny Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "DEMME5": "PIT_D_APP",
-                    "FEWGA7": "PIT_D_APP",
-                    "HAYNZ7": "PIT_B_APP",
-                    "HOMEE": "PIT_B_APP",
-                    "JESEY4": "PIT_B_APP",
-                    "NESTO": "PIT_D_APP",
-                    "WISKE": "PIT_D_APP"
+                    "DEMME5": "1D",
+                    "FEWGA7": "1D",
+                    "HAYNZ7": "1B",
+                    "HOMEE": "1B",
+                    "JESEY4": "1B",
+                    "NESTO": "1D",
+                    "WISKE": "1D"
                 },
                 "departure_assignments": {
-                    "KAGC": "PIT_S_DEP",
-                    "KPIT": "PIT_S_DEP"
+                    "KAGC": "1S",
+                    "KPIT": "1S"
                 },
                 "default_consolidation": {
-                    "PIT_D_APP": [
-                        "PIT_B_APP",
-                        "PIT_S_DEP"
+                    "1D": [
+                        "1B",
+                        "1S"
                     ],
-                    "PIT_S_DEP": [
-                        "PIT_N_DEP"
+                    "1S": [
+                        "1N"
                     ]
                 }
             }

@@ -1,220 +1,220 @@
 {
     "control_positions": {
-        "ZMA 01 PERMT": {
+        "01": {
+            "callsign": "ZMA 01 PERMT",
             "frequency": 125325,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "01"
+            "radio_name": "Miami Center"
         },
-        "ZMA 02 HOBEE": {
+        "02": {
+            "callsign": "ZMA 02 HOBEE",
             "frequency": 119825,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "02"
+            "radio_name": "Miami Center"
         },
-        "ZMA 04 MELBOURNE LOW": {
+        "04": {
+            "callsign": "ZMA 04 MELBOURNE LOW",
             "frequency": 132250,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "04"
+            "radio_name": "Miami Center"
         },
-        "ZMA 05 MARATHON": {
+        "05": {
+            "callsign": "ZMA 05 MARATHON",
             "frequency": 132500,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "05"
+            "radio_name": "Miami Center"
         },
-        "ZMA 06 KEY WEST": {
+        "06": {
+            "callsign": "ZMA 06 KEY WEST",
             "frequency": 132200,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "06"
+            "radio_name": "Miami Center"
         },
-        "ZMA 07 SARASOTA": {
+        "07": {
+            "callsign": "ZMA 07 SARASOTA",
             "frequency": 132350,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "07"
+            "radio_name": "Miami Center"
         },
-        "ZMA 08 CIGAR": {
+        "08": {
+            "callsign": "ZMA 08 CIGAR",
             "frequency": 133900,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "08"
+            "radio_name": "Miami Center"
         },
-        "ZMA 17 APOLO": {
+        "17": {
+            "callsign": "ZMA 17 APOLO",
             "frequency": 128650,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "17"
+            "radio_name": "Miami Center"
         },
-        "ZMA 18 ADOOR": {
+        "18": {
+            "callsign": "ZMA 18 ADOOR",
             "frequency": 134350,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "18"
+            "radio_name": "Miami Center"
         },
-        "ZMA 19 NUCAR": {
+        "19": {
+            "callsign": "ZMA 19 NUCAR",
             "frequency": 123675,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "19"
+            "radio_name": "Miami Center"
         },
-        "ZMA 20 PALM BEACH LOW": {
+        "20": {
+            "callsign": "ZMA 20 PALM BEACH LOW",
             "frequency": 132150,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "20"
+            "radio_name": "Miami Center"
         },
-        "ZMA 21 FREEPORT LOW": {
+        "21": {
+            "callsign": "ZMA 21 FREEPORT LOW",
             "frequency": 133400,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "21"
+            "radio_name": "Miami Center"
         },
-        "ZMA 22 BAIRN": {
+        "22": {
+            "callsign": "ZMA 22 BAIRN",
             "frequency": 133475,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "22"
+            "radio_name": "Miami Center"
         },
-        "ZMA 23 STOOP": {
+        "23": {
+            "callsign": "ZMA 23 STOOP",
             "frequency": 126950,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "23"
+            "radio_name": "Miami Center"
         },
-        "ZMA 24 FORT MYERS LOW": {
+        "24": {
+            "callsign": "ZMA 24 FORT MYERS LOW",
             "frequency": 132400,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "24"
+            "radio_name": "Miami Center"
         },
-        "ZMA 25 FORT MYERS HIGH": {
+        "25": {
+            "callsign": "ZMA 25 FORT MYERS HIGH",
             "frequency": 128225,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "25"
+            "radio_name": "Miami Center"
         },
-        "ZMA 40 BIMINI HIGH": {
+        "40": {
+            "callsign": "ZMA 40 BIMINI HIGH",
             "frequency": 126325,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "40"
+            "radio_name": "Miami Center"
         },
-        "ZMA 41 VIICE": {
+        "41": {
+            "callsign": "ZMA 41 VIICE",
             "frequency": 133850,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "41"
+            "radio_name": "Miami Center"
         },
-        "ZMA 42 BIMINI LOW": {
+        "42": {
+            "callsign": "ZMA 42 BIMINI LOW",
             "frequency": 135600,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "42"
+            "radio_name": "Miami Center"
         },
-        "ZMA 43 GREAT INAGUA": {
+        "43": {
+            "callsign": "ZMA 43 GREAT INAGUA",
             "frequency": 123775,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "43"
+            "radio_name": "Miami Center"
         },
-        "ZMA 44 ABACO LOW": {
+        "44": {
+            "callsign": "ZMA 44 ABACO LOW",
             "frequency": 134200,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "44"
+            "radio_name": "Miami Center"
         },
-        "ZMA 46 ALUTO": {
+        "46": {
+            "callsign": "ZMA 46 ALUTO",
             "frequency": 135175,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "46"
+            "radio_name": "Miami Center"
         },
-        "ZMA 47 LABELLE": {
+        "47": {
+            "callsign": "ZMA 47 LABELLE",
             "frequency": 132450,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "47"
+            "radio_name": "Miami Center"
         },
-        "ZMA 58 MILLE": {
+        "58": {
+            "callsign": "ZMA 58 MILLE",
             "frequency": 126275,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "58"
+            "radio_name": "Miami Center"
         },
-        "ZMA 59 ABACO": {
+        "59": {
+            "callsign": "ZMA 59 ABACO",
             "frequency": 134800,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "59"
+            "radio_name": "Miami Center"
         },
-        "ZMA 60 GEORGE TOWN": {
+        "60": {
+            "callsign": "ZMA 60 GEORGE TOWN",
             "frequency": 127225,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "60"
+            "radio_name": "Miami Center"
         },
-        "ZMA 61 NASSAU LOW": {
+        "61": {
+            "callsign": "ZMA 61 NASSAU LOW",
             "frequency": 125700,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "61"
+            "radio_name": "Miami Center"
         },
-        "ZMA 62 GRAND TURK": {
+        "62": {
+            "callsign": "ZMA 62 GRAND TURK",
             "frequency": 126450,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "62"
+            "radio_name": "Miami Center"
         },
-        "ZMA 63 CERDA": {
+        "63": {
+            "callsign": "ZMA 63 CERDA",
             "frequency": 135200,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "63"
+            "radio_name": "Miami Center"
         },
-        "ZMA 64 AVON": {
+        "64": {
+            "callsign": "ZMA 64 AVON",
             "frequency": 126525,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "64"
+            "radio_name": "Miami Center"
         },
-        "ZMA 65 BOYLE": {
+        "65": {
+            "callsign": "ZMA 65 BOYLE",
             "frequency": 125075,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "65"
+            "radio_name": "Miami Center"
         },
-        "ZMA 66 LAKELAND LOW": {
+        "66": {
+            "callsign": "ZMA 66 LAKELAND LOW",
             "frequency": 134550,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "66"
+            "radio_name": "Miami Center"
         },
-        "ZMA 67 LAKELAND HIGH": {
+        "67": {
+            "callsign": "ZMA 67 LAKELAND HIGH",
             "frequency": 127200,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "67"
+            "radio_name": "Miami Center"
         },
-        "ZMA 68 SEBRING ULTRA HIGH": {
+        "68": {
+            "callsign": "ZMA 68 SEBRING ULTRA HIGH",
             "frequency": 133550,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "68"
+            "radio_name": "Miami Center"
         },
-        "ZMA 89 FROSTY": {
+        "89": {
+            "callsign": "ZMA 89 FROSTY",
             "frequency": 124825,
             "eram_facility": true,
-            "radio_name": "Miami Center",
-            "sector_id": "89"
+            "radio_name": "Miami Center"
         },
-        "ZMA 99 ZMA TMU": {
+        "99": {
+            "callsign": "ZMA 99 ZMA TMU",
             "frequency": 121500,
             "eram_facility": true,
-            "radio_name": "ZMA TMU",
-            "sector_id": "99"
+            "radio_name": "ZMA TMU"
         }
     },
     "stars_config": {
@@ -419,50 +419,46 @@
     },
     "handoff_ids": [
         {
+            "id": "DAB",
+            "stars_id": "YOO"
+        },
+        {
             "id": "F11",
-            "single_char_stars_id": "X",
-            "two_char_stars_id": "XO",
-            "stars_id": "XOO"
+            "stars_id": "XOO",
+            "single_char_stars_id": "X"
         },
         {
             "id": "HST",
-            "two_char_stars_id": "HH",
             "stars_id": "HHH"
         },
         {
             "id": "JAX",
-            "two_char_stars_id": "WO",
             "stars_id": "WOO"
         },
         {
             "id": "MIA",
-            "single_char_stars_id": "M",
-            "two_char_stars_id": "MM",
-            "stars_id": "MMM"
+            "stars_id": "MMM",
+            "single_char_stars_id": "M"
         },
         {
             "id": "NQX",
-            "single_char_stars_id": "E",
-            "two_char_stars_id": "EE",
-            "stars_id": "EEE"
+            "stars_id": "EEE",
+            "single_char_stars_id": "E"
         },
         {
             "id": "PBI",
-            "single_char_stars_id": "P",
-            "two_char_stars_id": "PP",
-            "stars_id": "PPP"
+            "stars_id": "PPP",
+            "single_char_stars_id": "P"
         },
         {
             "id": "RSW",
-            "single_char_stars_id": "F",
-            "two_char_stars_id": "FF",
-            "stars_id": "FFF"
+            "stars_id": "FFF",
+            "single_char_stars_id": "F"
         },
         {
             "id": "TPA",
-            "single_char_stars_id": "T",
-            "two_char_stars_id": "TT",
-            "stars_id": "TTT"
+            "stars_id": "TTT",
+            "single_char_stars_id": "T"
         },
         {
             "id": "ZHU",

@@ -1,29 +1,29 @@
 {
     "control_positions": {
-        "GEG_E_APP": {
+        "1E": {
+            "callsign": "GEG_E_APP",
             "frequency": 133350,
-            "radio_name": "Spokane Approach",
-            "sector_id": "1E"
+            "radio_name": "Spokane Approach"
         },
-        "GEG_TWR": {
+        "1G": {
+            "callsign": "GEG_TWR",
             "frequency": 118300,
-            "radio_name": "Spokane Tower",
-            "sector_id": "1G"
+            "radio_name": "Spokane Tower"
         },
-        "PSC_APP": {
+        "1P": {
+            "callsign": "PSC_APP",
             "frequency": 128750,
-            "radio_name": "Spokane Approach",
-            "sector_id": "1P"
+            "radio_name": "Spokane Approach"
         },
-        "GEG_W_APP": {
+        "1W": {
+            "callsign": "GEG_W_APP",
             "frequency": 123750,
-            "radio_name": "Spokane Approach",
-            "sector_id": "1W"
+            "radio_name": "Spokane Approach"
         },
-        "YKM_APP": {
+        "1Y": {
+            "callsign": "YKM_APP",
             "frequency": 123800,
-            "radio_name": "Spokane Approach",
-            "sector_id": "1Y"
+            "radio_name": "Spokane Approach"
         }
     },
     "handoff_ids": [
@@ -33,7 +33,7 @@
         },
         {
             "id": "ZSE",
-            "eram_prefix": "S"
+            "eram_prefix": "C"
         }
     ]
 }

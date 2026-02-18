@@ -2760,7 +2760,7 @@
                     },
                     "cruise_altitude": 33000,
                     "star": "BHHIA3",
-                    "initial_controller": "ZMA 05 MARATHON",
+                    "initial_controller": "C05",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -2812,8 +2812,7 @@
                                 "airport": "MUHA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -2831,7 +2830,7 @@
                     },
                     "cruise_altitude": 33000,
                     "star": "BHHIA3",
-                    "initial_controller": "ZMA 05 MARATHON",
+                    "initial_controller": "C05",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -2863,8 +2862,7 @@
                                 "airport": "SKBO"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -2882,7 +2880,7 @@
                     },
                     "cruise_altitude": 33000,
                     "star": "BHHIA3",
-                    "initial_controller": "ZMA 05 MARATHON",
+                    "initial_controller": "C05",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -2914,8 +2912,7 @@
                                 "airport": "SKBO"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -2943,7 +2940,7 @@
                     },
                     "cruise_altitude": 38000,
                     "star": "BNFSH3",
-                    "initial_controller": "ZMA 20 PALM BEACH LOW",
+                    "initial_controller": "C20",
                     "initial_altitude": 23000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -3042,8 +3039,7 @@
                                 "airport": "KTEB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -3065,7 +3061,7 @@
                     },
                     "cruise_altitude": 38000,
                     "star": "BNFSH3",
-                    "initial_controller": "ZMA 20 PALM BEACH LOW",
+                    "initial_controller": "C20",
                     "initial_altitude": 23000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -3155,8 +3151,7 @@
                                 "airport": "EHAM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -3178,7 +3173,7 @@
                     },
                     "cruise_altitude": 38000,
                     "star": "BNFSH3",
-                    "initial_controller": "ZMA 20 PALM BEACH LOW",
+                    "initial_controller": "C20",
                     "initial_altitude": 23000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -3268,8 +3263,7 @@
                                 "airport": "EHAM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -3297,7 +3291,7 @@
                     },
                     "cruise_altitude": 34000,
                     "star": "CSTAL3",
-                    "initial_controller": "ZMA 20 PALM BEACH LOW",
+                    "initial_controller": "C20",
                     "initial_altitude": 18000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -3396,8 +3390,7 @@
                                 "airport": "KTEB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -3419,7 +3412,7 @@
                     },
                     "cruise_altitude": 34000,
                     "star": "CSTAL3",
-                    "initial_controller": "ZMA 20 PALM BEACH LOW",
+                    "initial_controller": "C20",
                     "initial_altitude": 18000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -3509,8 +3502,7 @@
                                 "airport": "EHAM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -3532,7 +3524,7 @@
                     },
                     "cruise_altitude": 34000,
                     "star": "CSTAL3",
-                    "initial_controller": "ZMA 20 PALM BEACH LOW",
+                    "initial_controller": "C20",
                     "initial_altitude": 18000,
                     "initial_speed": 300,
                     "speed_restriction": 250,
@@ -3622,8 +3614,7 @@
                                 "airport": "EHAM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -3647,7 +3638,7 @@
                     },
                     "cruise_altitude": 34000,
                     "star": "CUUDA3",
-                    "initial_controller": "ZMA 20 PALM BEACH LOW",
+                    "initial_controller": "C20",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -3740,8 +3731,7 @@
                                 "airport": "KCLE"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -3759,7 +3749,7 @@
                     },
                     "cruise_altitude": 34000,
                     "star": "CUUDA3",
-                    "initial_controller": "ZMA 20 PALM BEACH LOW",
+                    "initial_controller": "C20",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -3842,8 +3832,7 @@
                                 "airport": "KCAK"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -3861,7 +3850,7 @@
                     },
                     "cruise_altitude": 34000,
                     "star": "CUUDA3",
-                    "initial_controller": "ZMA 20 PALM BEACH LOW",
+                    "initial_controller": "C20",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -3944,8 +3933,7 @@
                                 "airport": "KCAK"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -3963,7 +3951,7 @@
                     },
                     "cruise_altitude": 37000,
                     "star": "CUURT1",
-                    "initial_controller": "ZMA 24 FORT MYERS LOW",
+                    "initial_controller": "C24",
                     "initial_altitude": 23000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -3978,8 +3966,7 @@
                                 "airport": "KSNA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -4007,7 +3994,7 @@
                     },
                     "cruise_altitude": 35000,
                     "star": "FROGZ4",
-                    "initial_controller": "ZMA 24 FORT MYERS LOW",
+                    "initial_controller": "C24",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -4081,8 +4068,7 @@
                                 "airport": "KSNA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -4104,7 +4090,7 @@
                     },
                     "cruise_altitude": 35000,
                     "star": "FROGZ4",
-                    "initial_controller": "ZMA 24 FORT MYERS LOW",
+                    "initial_controller": "C24",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -4169,8 +4155,7 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -4192,7 +4177,7 @@
                     },
                     "cruise_altitude": 35000,
                     "star": "FROGZ4",
-                    "initial_controller": "ZMA 24 FORT MYERS LOW",
+                    "initial_controller": "C24",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -4257,8 +4242,7 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -4286,7 +4270,7 @@
                     },
                     "cruise_altitude": 36000,
                     "star": "OLAHS3",
-                    "initial_controller": "ZMA 42 BIMINI LOW",
+                    "initial_controller": "C42",
                     "initial_altitude": 11000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -4333,8 +4317,7 @@
                                 "airport": "MUHA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -4362,7 +4345,7 @@
                     },
                     "cruise_altitude": 36000,
                     "star": "OLAHS3",
-                    "initial_controller": "ZMA 42 BIMINI LOW",
+                    "initial_controller": "C42",
                     "initial_altitude": 11000,
                     "initial_speed": 270,
                     "speed_restriction": 250,
@@ -4390,8 +4373,7 @@
                                 "airport": "MBPV"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -4419,7 +4401,7 @@
                     },
                     "cruise_altitude": 36000,
                     "star": "OLAHS3",
-                    "initial_controller": "ZMA 42 BIMINI LOW",
+                    "initial_controller": "C42",
                     "initial_altitude": 11000,
                     "initial_speed": 270,
                     "speed_restriction": 250,
@@ -4447,8 +4429,7 @@
                                 "airport": "MBPV"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -4476,7 +4457,7 @@
                     },
                     "cruise_altitude": 33000,
                     "star": "SNDBR3",
-                    "initial_controller": "ZMA 05 MARATHON",
+                    "initial_controller": "C05",
                     "initial_altitude": 23000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -4550,8 +4531,7 @@
                                 "airport": "MUHA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -4573,7 +4553,7 @@
                     },
                     "cruise_altitude": 33000,
                     "star": "SNDBR3",
-                    "initial_controller": "ZMA 05 MARATHON",
+                    "initial_controller": "C05",
                     "initial_altitude": 23000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -4638,8 +4618,7 @@
                                 "airport": "MMUN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -4661,7 +4640,7 @@
                     },
                     "cruise_altitude": 33000,
                     "star": "SNDBR3",
-                    "initial_controller": "ZMA 05 MARATHON",
+                    "initial_controller": "C05",
                     "initial_altitude": 23000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -4726,8 +4705,7 @@
                                 "airport": "MMUN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -4749,7 +4727,7 @@
                     },
                     "cruise_altitude": 33000,
                     "star": "TEEKY3",
-                    "initial_controller": "ZMA 24 FORT MYERS LOW",
+                    "initial_controller": "C24",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -4790,8 +4768,7 @@
                                 "airport": "MUHA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -4809,7 +4786,7 @@
                     },
                     "cruise_altitude": 33000,
                     "star": "TEEKY3",
-                    "initial_controller": "ZMA 24 FORT MYERS LOW",
+                    "initial_controller": "C24",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -4841,8 +4818,7 @@
                                 "airport": "SKBO"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -4860,7 +4836,7 @@
                     },
                     "cruise_altitude": 33000,
                     "star": "TEEKY3",
-                    "initial_controller": "ZMA 24 FORT MYERS LOW",
+                    "initial_controller": "C24",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -4892,8 +4868,7 @@
                                 "airport": "SKBO"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -4919,7 +4894,7 @@
                     },
                     "cruise_altitude": 36000,
                     "star": "VIICE2",
-                    "initial_controller": "ZMA 41 VIICE",
+                    "initial_controller": "C41",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -4986,8 +4961,7 @@
                                 "airport": "SBGL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -5009,7 +4983,7 @@
                     },
                     "cruise_altitude": 36000,
                     "star": "VIICE2",
-                    "initial_controller": "ZMA 41 VIICE",
+                    "initial_controller": "C41",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -5077,8 +5051,7 @@
                                 "airport": "SBGL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -5100,7 +5073,7 @@
                     },
                     "cruise_altitude": 36000,
                     "star": "VIICE2",
-                    "initial_controller": "ZMA 41 VIICE",
+                    "initial_controller": "C41",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "speed_restriction": 250,
@@ -5168,8 +5141,7 @@
                                 "airport": "SBGL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         }

@@ -1,24 +1,24 @@
 {
     "control_positions": {
-        "CBM_A_APP": {
+        "1A": {
+            "callsign": "CBM_A_APP",
             "frequency": 126075,
-            "radio_name": "Columbus Approach",
-            "sector_id": "1A"
+            "radio_name": "Columbus Approach"
         },
-        "CBM_E_APP": {
+        "1E": {
+            "callsign": "CBM_E_APP",
             "frequency": 132025,
-            "radio_name": "Columbus Approach",
-            "sector_id": "1E"
+            "radio_name": "Columbus Approach"
         },
-        "CBM_W_APP": {
+        "1W": {
+            "callsign": "CBM_W_APP",
             "frequency": 135600,
-            "radio_name": "Columbus Approach",
-            "sector_id": "1W"
+            "radio_name": "Columbus Approach"
         },
-        "CBM_TWR": {
+        "1Z": {
+            "callsign": "CBM_TWR",
             "frequency": 126650,
-            "radio_name": "Columbus Tower",
-            "sector_id": "1Z"
+            "radio_name": "Columbus Tower"
         }
     },
     "handoff_ids": [
@@ -29,6 +29,10 @@
         {
             "id": "NMM",
             "prefix": "1"
+        },
+        {
+            "id": "ZME",
+            "eram_prefix": "C"
         },
         {
             "id": "ZTL",

@@ -673,7 +673,7 @@
                 {
                     "waypoints": "KOBRA CEW/ho PENSI",
                     "route": "CEW PENSI",
-                    "initial_controller": "ZJX 10 Crestview",
+                    "initial_controller": "C10",
                     "initial_altitude": 14000,
                     "assigned_altitude": 11000,
                     "initial_speed": 250,
@@ -725,8 +725,7 @@
                                 "airport": "KTPA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZJX"
+                    }
                 }
             ]
         },
@@ -735,7 +734,7 @@
                 {
                     "waypoints": "ZUGTI LOXLY/ho PENSI",
                     "route": "LOXLY PENSI",
-                    "initial_controller": "ZHU 25 Brookley",
+                    "initial_controller": "H25",
                     "initial_altitude": 13000,
                     "assigned_altitude": 11000,
                     "initial_speed": 250,
@@ -779,8 +778,7 @@
                                 "airport": "KDEN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHU"
+                    }
                 }
             ]
         },
@@ -789,7 +787,7 @@
                 {
                     "waypoints": "APCHE SJI/ho PENSI",
                     "route": "SJI PENSI",
-                    "initial_controller": "ZHU 25 Brookley",
+                    "initial_controller": "H25",
                     "initial_altitude": 13000,
                     "assigned_altitude": 11000,
                     "initial_speed": 250,
@@ -809,8 +807,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHU"
+                    }
                 }
             ]
         }

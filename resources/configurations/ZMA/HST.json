@@ -1,20 +1,24 @@
 {
     "control_positions": {
-        "HST_APP": {
+        "1H": {
+            "callsign": "HST_APP",
             "frequency": 123800,
-            "radio_name": "Homestead Approach",
-            "sector_id": "1H"
+            "radio_name": "Homestead Approach"
         },
-        "HST_TWR": {
+        "1T": {
+            "callsign": "HST_TWR",
             "frequency": 133450,
-            "radio_name": "Homestead Tower",
-            "sector_id": "1T"
+            "radio_name": "Homestead Tower"
         }
     },
     "handoff_ids": [
         {
             "id": "MIA",
             "prefix": "1"
+        },
+        {
+            "id": "ZMA",
+            "eram_prefix": "R"
         }
     ]
 }

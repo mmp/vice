@@ -1,928 +1,924 @@
 {
-  "tracon": "COS",
-  "airports": {
-    "KCOS": {
-      "approaches": {
-        "I7L": {
-          "cifp_id": "I17L"
-        },
-        "RY7L": {
-          "cifp_id": "RY17L"
-        },
-        "RZ7L": {
-          "cifp_id": "RZ17L"
-        },
-        "RY7R": {
-          "cifp_id": "RY17R"
-        },
-        "I5L": {
-          "cifp_id": "I35L"
-        },
-        "RY5L": {
-          "cifp_id": "RY35L"
-        },
-        "RZ5L": {
-          "cifp_id": "RZ35L"
-        },
-        "I5R": {
-          "cifp_id": "I35R"
-        },
-        "RY5R": {
-          "cifp_id": "RY35R"
-        },
-        "RZ5R": {
-          "cifp_id": "RZ35R"
-        }
-      },
-      "departure_routes": {
-        "35L": {
-          "LUFSE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "BYEBI": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "DRAKE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "JEWLS": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "PUB": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "BRK": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "HBU": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "LAA": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "BRESH": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "ALS": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "DVV": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          },
-          "FQF": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17R/h352"
-          }
-        },
-        "35R": {
-          "LUFSE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "BYEBI": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "DRAKE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "JEWLS": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "PUB": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "BRK": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "HBU": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "LAA": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "BRESH": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "ALS": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "DVV": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          },
-          "FQF": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS17L/h010"
-          }
-        },
-        "17L": {
-          "LUFSE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "BYEBI": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "DRAKE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "JEWLS": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "PUB": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "BRK": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "HBU": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "LAA": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "BRESH": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "ALS": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "DVV": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          },
-          "FQF": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35R/h150"
-          }
-        },
-        "17R": {
-          "LUFSE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "BYEBI": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "DRAKE": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "JEWLS": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "PUB": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "BRK": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "HBU": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "LAA": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "BRESH": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "ALS": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "DVV": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          },
-          "FQF": {
-            "cleared_altitude": 10000,
-            "waypoints": "_COS35L/h172"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "fleet": "GAjet",
-              "icao": "N"
+    "tracon": "COS",
+    "airports": {
+        "KCOS": {
+            "approaches": {
+                "I7L": {
+                    "cifp_id": "I17L"
+                },
+                "RY7L": {
+                    "cifp_id": "RY17L"
+                },
+                "RZ7L": {
+                    "cifp_id": "RZ17L"
+                },
+                "RY7R": {
+                    "cifp_id": "RY17R"
+                },
+                "I5L": {
+                    "cifp_id": "I35L"
+                },
+                "RY5L": {
+                    "cifp_id": "RY35L"
+                },
+                "RZ5L": {
+                    "cifp_id": "RZ35L"
+                },
+                "I5R": {
+                    "cifp_id": "I35R"
+                },
+                "RY5R": {
+                    "cifp_id": "RY35R"
+                },
+                "RZ5R": {
+                    "cifp_id": "RZ35R"
+                }
             },
-            {
-              "icao": "EDV"
+            "departure_routes": {
+                "35L": {
+                    "LUFSE": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17R/h352"
+                    },
+                    "BYEBI": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17R/h352"
+                    },
+                    "DRAKE": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17R/h352"
+                    },
+                    "JEWLS": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17R/h352"
+                    },
+                    "PUB": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17R/h352"
+                    },
+                    "BRK": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17R/h352"
+                    },
+                    "HBU": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17R/h352"
+                    },
+                    "LAA": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17R/h352"
+                    },
+                    "BRESH": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17R/h352"
+                    },
+                    "ALS": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17R/h352"
+                    },
+                    "DVV": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17R/h352"
+                    },
+                    "FQF": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17R/h352"
+                    }
+                },
+                "35R": {
+                    "LUFSE": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17L/h010"
+                    },
+                    "BYEBI": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17L/h010"
+                    },
+                    "DRAKE": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17L/h010"
+                    },
+                    "JEWLS": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17L/h010"
+                    },
+                    "PUB": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17L/h010"
+                    },
+                    "BRK": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17L/h010"
+                    },
+                    "HBU": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17L/h010"
+                    },
+                    "LAA": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17L/h010"
+                    },
+                    "BRESH": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17L/h010"
+                    },
+                    "ALS": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17L/h010"
+                    },
+                    "DVV": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17L/h010"
+                    },
+                    "FQF": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS17L/h010"
+                    }
+                },
+                "17L": {
+                    "LUFSE": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35R/h150"
+                    },
+                    "BYEBI": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35R/h150"
+                    },
+                    "DRAKE": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35R/h150"
+                    },
+                    "JEWLS": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35R/h150"
+                    },
+                    "PUB": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35R/h150"
+                    },
+                    "BRK": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35R/h150"
+                    },
+                    "HBU": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35R/h150"
+                    },
+                    "LAA": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35R/h150"
+                    },
+                    "BRESH": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35R/h150"
+                    },
+                    "ALS": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35R/h150"
+                    },
+                    "DVV": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35R/h150"
+                    },
+                    "FQF": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35R/h150"
+                    }
+                },
+                "17R": {
+                    "LUFSE": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35L/h172"
+                    },
+                    "BYEBI": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35L/h172"
+                    },
+                    "DRAKE": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35L/h172"
+                    },
+                    "JEWLS": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35L/h172"
+                    },
+                    "PUB": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35L/h172"
+                    },
+                    "BRK": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35L/h172"
+                    },
+                    "HBU": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35L/h172"
+                    },
+                    "LAA": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35L/h172"
+                    },
+                    "BRESH": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35L/h172"
+                    },
+                    "ALS": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35L/h172"
+                    },
+                    "DVV": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35L/h172"
+                    },
+                    "FQF": {
+                        "cleared_altitude": 10000,
+                        "waypoints": "_COS35L/h172"
+                    }
+                }
             },
-            {
-              "icao": "JIA"
-            },
-            {
-              "icao": "DPJ"
-            }
-          ],
-          "altitude": 39000,
-          "destination": "KSAT",
-          "route": "BRK BRESH TBE",
-          "exit": "BRESH"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "tncmShort",
-              "icao": "AAL"
-            },
-            {
-              "icao": "SKW"
-            },
-            {
-              "icao": "ENY"
-            }
-          ],
-          "altitude": 39000,
-          "destination": "KDFW",
-          "route": "BRK BRESH EZEEE",
-          "exit": "BRESH"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "GAjet",
-              "icao": "N"
-            }
-          ],
-          "altitude": 12000,
-          "destination": "KAPA",
-          "route": "ADANE BYEBI DUNNN5",
-          "exit": "BYEBI"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "GAjet",
-              "icao": "N"
-            }
-          ],
-          "altitude": 28000,
-          "destination": "KBZN",
-          "route": "BRK FQF DEN YAMMI",
-          "exit": "FQF"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "SWA"
-            },
-            {
-              "icao": "SKW"
-            }
-          ],
-          "altitude": 13000,
-          "destination": "KDEN",
-          "route": "ADANE LUFSE JEFEL FQF",
-          "exit": "LUFSE"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "GAjet",
-              "icao": "N"
-            },
-            {
-              "icao": "EDV"
-            },
-            {
-              "icao": "JIA"
-            },
-            {
-              "icao": "DPJ"
-            }
-          ],
-          "altitude": 32000,
-          "destination": "KLAX",
-          "route": "DRAKE V83 PUB",
-          "exit": "DRAKE",
-          "secondary_scratchpad": "PUB"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "GAjet",
-              "icao": "N"
-            },
-            {
-              "icao": "EDV"
-            },
-            {
-              "icao": "JIA"
-            },
-            {
-              "icao": "DPJ"
-            }
-          ],
-          "altitude": 33000,
-          "destination": "KOMA",
-          "route": "BRK JEWLS GLD",
-          "exit": "JEWLS"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "SWA"
-            },
-            {
-              "icao": "SKW"
-            }
-          ],
-          "altitude": 32000,
-          "destination": "KPHX",
-          "route": "DRAKE V83 PUB GUP EAGUL6",
-          "exit": "DRAKE",
-          "secondary_scratchpad": "PUB"
-        }
-      ],
-      "exit_categories": {
-        "LUFSE": "North",
-        "BEYBI": "North",
-        "DRAKE": "North",
-        "JEWLS": "North",
-        "PUB": "North",
-        "BRK": "North",
-        "HBU": "North",
-        "LAA": "North",
-        "BRESH": "North",
-        "ALS": "North",
-        "DVV": "North",
-        "FQF": "North"
-      },
-      "tower_list": 2
-    },
-    "KFLY": {
-      "approaches": {
-        "R15": {
-          "cifp_id": "R15"
-        },
-        "R33": {
-          "cifp_id": "R33"
-        }
-      },
-      "departure_routes": {
-        "15": {
-          "LUFSE": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-33/h153 DRAKE"
-          },
-          "BYEBI": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-33/h153 DRAKE"
-          },
-          "PUB": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-33/h153 DRAKE"
-          },
-          "BRK": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-33/h153 DRAKE"
-          },
-          "LAA": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-33/h153 DRAKE"
-          },
-          "ALS": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-33/h153 DRAKE"
-          },
-          "DVV": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-33/h153 DRAKE"
-          },
-          "FQF": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-33/h153 DRAKE"
-          }
-        },
-        "33": {
-          "LUFSE": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-15/h333 DRAKE"
-          },
-          "BYEBI": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-15/h333 DRAKE"
-          },
-          "PUB": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-15/h333 DRAKE"
-          },
-          "BRK": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-15/h333 DRAKE"
-          },
-          "LAA": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-15/h333 DRAKE"
-          },
-          "ALS": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-15/h333 DRAKE"
-          },
-          "DVV": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-15/h333 DRAKE"
-          },
-          "FQF": {
-            "cleared_altitude": 9000,
-            "waypoints": "KFLY-15/h333 DRAKE"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "fleet": "GAsinglepiston",
-              "icao": "N"
-            }
-          ],
-          "altitude": 10000,
-          "destination": "KAPA",
-          "route": "BRK FQF",
-          "exit": "FQF"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "GAjet",
-              "icao": "N"
-            }
-          ],
-          "altitude": 12000,
-          "destination": "KAPA",
-          "route": "ADANE BYEBI XBGIN XLENT XPATH XWILL XHOME XMAAK/h353",
-          "exit": "BYEBI"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "GAsinglepiston",
-              "icao": "N"
-            }
-          ],
-          "altitude": 10000,
-          "destination": "KBJC",
-          "route": "BRK FQF",
-          "exit": "FQF"
-        }
-      ],
-      "exit_categories": {
-        "LUFSE": "North",
-        "BEYBI": "North",
-        "PUB": "North",
-        "BRK": "North",
-        "LAA": "North",
-        "ALS": "North",
-        "DVV": "North",
-        "FQF": "North"
-      },
-      "hold_for_release": true,
-      "tower_list": 3
-    }
-  },
-  "airspace": {
-    "boundaries": {
-      "COS_ARSPC": [
-        "N038.26.11.374,W105.00.19.171",
-        "N038.26.12.761,W104.47.57.346",
-        "N038.29.59.368,W104.02.39.906",
-        "N038.51.10.101,W104.05.07.177",
-        "N039.11.47.794,W104.15.09.750",
-        "N039.10.10.235,W104.19.35.234",
-        "N039.10.03.135,W104.42.08.723",
-        "N039.06.24.947,W104.46.38.464",
-        "N039.07.44.790,W105.05.10.501",
-        "N038.58.43.397,W105.03.24.043",
-        "N038.42.03.669,W104.57.03.532",
-        "N038.32.15.763,W104.59.04.738",
-        "N038.26.09.863,W105.00.13.293"
-      ],
-      "COS_OUTER": [
-        "N038.26.34.226,W104.45.05.685",
-        "N038.21.59.856,W104.44.59.588",
-        "N038.23.03.192,W104.32.54.325",
-        "N038.29.29.348,W104.09.01.186"
-      ]
-    },
-    "volumes": {
-      "COS_APP": [
-        {
-          "boundaries": [
-            "COS_ARSPC"
-          ],
-          "lower": 0,
-          "upper": 17000
-        },
-        {
-          "boundaries": [
-            "COS_OUTER"
-          ],
-          "lower": 11000,
-          "upper": 12000
-        }
-      ]
-    }
-  },
-  "inbound_flows": {
-    "OZZZY5": {
-      "arrivals": [
-        {
-          "airlines": {
-            "KCOS": [
-              {
-                "airport": "KORD",
-                "types": [
-                  "E75L",
-                  "CRJ7"
-                ],
-                "icao": "SKW"
-              },
-              {
-                "airport": "KMCI",
-                "icao": "SWA"
-              },
-              {
-                "airport": "KOMA",
-                "fleet": "GAjet",
-                "icao": "N"
-              },
-              {
-                "airport": "KATL",
-                "types": [
-                  "A320"
-                ],
-                "icao": "DAL"
-              },
-              {
-                "airport": "KPIE",
-                "types": [
-                  "A320"
-                ],
-                "icao": "AAY"
-              },
-              {
-                "airport": "KDFW",
-                "types": [
-                  "B738"
-                ],
-                "icao": "AAL"
-              },
-              {
-                "airport": "KDFW",
-                "types": [
-                  "CRJ7"
-                ],
-                "icao": "SKW"
-              },
-              {
-                "airport": "KDFW",
-                "types": [
-                  "E170"
-                ],
-                "icao": "ENY"
-              },
-              {
-                "airport": "KIAH",
-                "types": [
-                  "E75L"
-                ],
-                "icao": "ASH"
-              },
-              {
-                "airport": "KIAH",
-                "types": [
-                  "E75L"
-                ],
-                "icao": "SKW"
-              }
-            ]
-          },
-          "cruise_altitude": 34000,
-          "initial_altitude": 18000,
-          "description": "",
-          "initial_controller": "ZDV 29 Pueblo High",
-          "initial_speed": 270,
-          "route": "HGO OZZZY5",
-          "waypoints": "HGO/a17000 N038.51.21.568,W103.55.28.472/ho OZZZY/a14000/s250 ADANE",
-          "initial_facility": "ZDV"
-        }
-      ]
-    },
-    "DEBERRY5": {
-      "arrivals": [
-        {
-          "airlines": {
-            "KCOS": [
-              {
-                "airport": "KSAT",
-                "icao": "JIA"
-              },
-              {
-                "airport": "KPHX",
-                "icao": "EDV"
-              },
-              {
-                "airport": "KPHX",
-                "icao": "SWA"
-              },
-              {
-                "airport": "KABQ",
-                "fleet": "GAjet",
-                "icao": "N"
-              },
-              {
-                "airport": "KLAS",
-                "types": [
-                  "B738",
-                  "B38M"
-                ],
-                "icao": "SWA"
-              },
-              {
-                "airport": "KSLC",
-                "types": [
-                  "E75L"
-                ],
-                "icao": "SKW"
-              },
-              {
-                "airport": "KSAN",
-                "types": [
-                  "B738",
-                  "B38M"
-                ],
-                "icao": "SWA"
-              },
-              {
-                "airport": "KSNA",
-                "types": [
-                  "A320"
-                ],
-                "icao": "AAY"
-              }
-            ]
-          },
-          "cruise_altitude": 23000,
-          "initial_altitude": 16000,
-          "assigned_altitude": 14000,
-          "description": "",
-          "initial_controller": "PUB_APP",
-          "initial_facility": "D01",
-          "initial_speed": 210,
-          "route": "OPSHN FSHER BRK",
-          "waypoints": "OPSHN/s250 FSHER/s250/ho BRK"
-        }
-      ]
-    },
-    "DEN": {
-      "arrivals": [
-        {
-          "airlines": {
-            "KCOS": [
-              {
-                "airport": "KAPA",
-                "icao": "N"
-              },
-              {
-                "airport": "KGXY",
-                "icao": "N"
-              },
-              {
-                "airport": "KBJC",
-                "icao": "N"
-              },
-              {
-                "airport": "KFNL",
-                "icao": "N"
-              }
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "fleet": "GAjet",
+                            "icao": "N"
+                        },
+                        {
+                            "icao": "EDV"
+                        },
+                        {
+                            "icao": "JIA"
+                        },
+                        {
+                            "icao": "DPJ"
+                        }
+                    ],
+                    "altitude": 39000,
+                    "destination": "KSAT",
+                    "route": "BRK BRESH TBE",
+                    "exit": "BRESH"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "tncmShort",
+                            "icao": "AAL"
+                        },
+                        {
+                            "icao": "SKW"
+                        },
+                        {
+                            "icao": "ENY"
+                        }
+                    ],
+                    "altitude": 39000,
+                    "destination": "KDFW",
+                    "route": "BRK BRESH EZEEE",
+                    "exit": "BRESH"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "GAjet",
+                            "icao": "N"
+                        }
+                    ],
+                    "altitude": 12000,
+                    "destination": "KAPA",
+                    "route": "ADANE BYEBI DUNNN5",
+                    "exit": "BYEBI"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "GAjet",
+                            "icao": "N"
+                        }
+                    ],
+                    "altitude": 28000,
+                    "destination": "KBZN",
+                    "route": "BRK FQF DEN YAMMI",
+                    "exit": "FQF"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "SKW"
+                        }
+                    ],
+                    "altitude": 13000,
+                    "destination": "KDEN",
+                    "route": "ADANE LUFSE JEFEL FQF",
+                    "exit": "LUFSE"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "GAjet",
+                            "icao": "N"
+                        },
+                        {
+                            "icao": "EDV"
+                        },
+                        {
+                            "icao": "JIA"
+                        },
+                        {
+                            "icao": "DPJ"
+                        }
+                    ],
+                    "altitude": 32000,
+                    "destination": "KLAX",
+                    "route": "DRAKE V83 PUB",
+                    "exit": "DRAKE",
+                    "secondary_scratchpad": "PUB"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "GAjet",
+                            "icao": "N"
+                        },
+                        {
+                            "icao": "EDV"
+                        },
+                        {
+                            "icao": "JIA"
+                        },
+                        {
+                            "icao": "DPJ"
+                        }
+                    ],
+                    "altitude": 33000,
+                    "destination": "KOMA",
+                    "route": "BRK JEWLS GLD",
+                    "exit": "JEWLS"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "SWA"
+                        },
+                        {
+                            "icao": "SKW"
+                        }
+                    ],
+                    "altitude": 32000,
+                    "destination": "KPHX",
+                    "route": "DRAKE V83 PUB GUP EAGUL6",
+                    "exit": "DRAKE",
+                    "secondary_scratchpad": "PUB"
+                }
             ],
-            "KFLY": [
-              {
-                "airport": "KAPA",
-                "icao": "N"
-              },
-              {
-                "airport": "KGXY",
-                "icao": "N"
-              },
-              {
-                "airport": "KBJC",
-                "icao": "N"
-              },
-              {
-                "airport": "KFNL",
-                "icao": "N"
-              }
-            ]
-          },
-          "cruise_altitude": 11000,
-          "initial_altitude": 11000,
-          "description": "",
-          "initial_controller": "DEN_A_APP",
-          "initial_speed": 160,
-          "route": "LUFSE V389 ADANE BRK",
-          "waypoints": "N039.19.52.813,W104.24.24.065 LUFSE/ho ADANE BRK",
-          "initial_facility": "D01"
+            "exit_categories": {
+                "LUFSE": "North",
+                "BEYBI": "North",
+                "DRAKE": "North",
+                "JEWLS": "North",
+                "PUB": "North",
+                "BRK": "North",
+                "HBU": "North",
+                "LAA": "North",
+                "BRESH": "North",
+                "ALS": "North",
+                "DVV": "North",
+                "FQF": "North"
+            },
+            "tower_list": 2
+        },
+        "KFLY": {
+            "approaches": {
+                "R15": {
+                    "cifp_id": "R15"
+                },
+                "R33": {
+                    "cifp_id": "R33"
+                }
+            },
+            "departure_routes": {
+                "15": {
+                    "LUFSE": {
+                        "cleared_altitude": 9000,
+                        "waypoints": "KFLY-33/h153 DRAKE"
+                    },
+                    "BYEBI": {
+                        "cleared_altitude": 9000,
+                        "waypoints": "KFLY-33/h153 DRAKE"
+                    },
+                    "PUB": {
+                        "cleared_altitude": 9000,
+                        "waypoints": "KFLY-33/h153 DRAKE"
+                    },
+                    "BRK": {
+                        "cleared_altitude": 9000,
+                        "waypoints": "KFLY-33/h153 DRAKE"
+                    },
+                    "LAA": {
+                        "cleared_altitude": 9000,
+                        "waypoints": "KFLY-33/h153 DRAKE"
+                    },
+                    "ALS": {
+                        "cleared_altitude": 9000,
+                        "waypoints": "KFLY-33/h153 DRAKE"
+                    },
+                    "DVV": {
+                        "cleared_altitude": 9000,
+                        "waypoints": "KFLY-33/h153 DRAKE"
+                    },
+                    "FQF": {
+                        "cleared_altitude": 9000,
+                        "waypoints": "KFLY-33/h153 DRAKE"
+                    }
+                },
+                "33": {
+                    "LUFSE": {
+                        "cleared_altitude": 9000,
+                        "waypoints": "KFLY-15/h333 DRAKE"
+                    },
+                    "BYEBI": {
+                        "cleared_altitude": 9000,
+                        "waypoints": "KFLY-15/h333 DRAKE"
+                    },
+                    "PUB": {
+                        "cleared_altitude": 9000,
+                        "waypoints": "KFLY-15/h333 DRAKE"
+                    },
+                    "BRK": {
+                        "cleared_altitude": 9000,
+                        "waypoints": "KFLY-15/h333 DRAKE"
+                    },
+                    "LAA": {
+                        "cleared_altitude": 9000,
+                        "waypoints": "KFLY-15/h333 DRAKE"
+                    },
+                    "ALS": {
+                        "cleared_altitude": 9000,
+                        "waypoints": "KFLY-15/h333 DRAKE"
+                    },
+                    "DVV": {
+                        "cleared_altitude": 9000,
+                        "waypoints": "KFLY-15/h333 DRAKE"
+                    },
+                    "FQF": {
+                        "cleared_altitude": 9000,
+                        "waypoints": "KFLY-15/h333 DRAKE"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "fleet": "GAsinglepiston",
+                            "icao": "N"
+                        }
+                    ],
+                    "altitude": 10000,
+                    "destination": "KAPA",
+                    "route": "BRK FQF",
+                    "exit": "FQF"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "GAjet",
+                            "icao": "N"
+                        }
+                    ],
+                    "altitude": 12000,
+                    "destination": "KAPA",
+                    "route": "ADANE BYEBI XBGIN XLENT XPATH XWILL XHOME XMAAK/h353",
+                    "exit": "BYEBI"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "GAsinglepiston",
+                            "icao": "N"
+                        }
+                    ],
+                    "altitude": 10000,
+                    "destination": "KBJC",
+                    "route": "BRK FQF",
+                    "exit": "FQF"
+                }
+            ],
+            "exit_categories": {
+                "LUFSE": "North",
+                "BEYBI": "North",
+                "PUB": "North",
+                "BRK": "North",
+                "LAA": "North",
+                "ALS": "North",
+                "DVV": "North",
+                "FQF": "North"
+            },
+            "hold_for_release": true,
+            "tower_list": 3
         }
-      ]
     },
-    "DEN.NW": {
-      "arrivals": [
-        {
-          "airlines": {
-            "KCOS": [
-              {
-                "airport": "KBJC",
-                "icao": "N"
-              },
-              {
-                "airport": "KFNL",
-                "icao": "N"
-              },
-              {
-                "airport": "KGXY",
-                "icao": "N"
-              }
+    "airspace": {
+        "boundaries": {
+            "COS_ARSPC": [
+                "N038.26.11.374,W105.00.19.171",
+                "N038.26.12.761,W104.47.57.346",
+                "N038.29.59.368,W104.02.39.906",
+                "N038.51.10.101,W104.05.07.177",
+                "N039.11.47.794,W104.15.09.750",
+                "N039.10.10.235,W104.19.35.234",
+                "N039.10.03.135,W104.42.08.723",
+                "N039.06.24.947,W104.46.38.464",
+                "N039.07.44.790,W105.05.10.501",
+                "N038.58.43.397,W105.03.24.043",
+                "N038.42.03.669,W104.57.03.532",
+                "N038.32.15.763,W104.59.04.738",
+                "N038.26.09.863,W105.00.13.293"
+            ],
+            "COS_OUTER": [
+                "N038.26.34.226,W104.45.05.685",
+                "N038.21.59.856,W104.44.59.588",
+                "N038.23.03.192,W104.32.54.325",
+                "N038.29.29.348,W104.09.01.186"
             ]
-          },
-          "cruise_altitude": 11000,
-          "initial_altitude": 11000,
-          "description": "",
-          "initial_controller": "DEN_A_APP",
-          "initial_speed": 160,
-          "route": "ADANE BRK",
-          "waypoints": "N039.17.29.606,W104.42.09.739 N039.13.10.370,W104.35.00.860/ho ADANE BRK",
-          "initial_facility": "D01"
+        },
+        "volumes": {
+            "COS_APP": [
+                {
+                    "boundaries": [
+                        "COS_ARSPC"
+                    ],
+                    "lower": 0,
+                    "upper": 17000
+                },
+                {
+                    "boundaries": [
+                        "COS_OUTER"
+                    ],
+                    "lower": 11000,
+                    "upper": 12000
+                }
+            ]
         }
-      ]
-    }
-  },
-  "default_scenario": "North VMC",
-  "fixes": {
-    "_COS": "38.805801,-104.700996",
-    "_COS35R": "N038.46.41.554,W104.41.09.122",
-    "_COS35L": "N038.47.36.280,W104.42.58.381",
-    "_COS17L": "N038.49.00.367,W104.41.08.408",
-    "_COS17R": "N038.49.27.489,W104.42.59.589",
-    "KFLY-33": "N038.56.27.030,W104.34.05.819",
-    "KFLY-15": "N038.56.56.912,W104.34.18.728"
-  },
-  "name": "KCOS",
-  "primary_airport": "KCOS",
-  "scenarios": {
-    "North VMC": {
-      "arrival_runways": [
-        {
-          "airport": "KCOS",
-          "runway": "35L"
-        },
-        {
-          "airport": "KCOS",
-          "runway": "35R"
-        },
-        {
-          "airport": "KFLY",
-          "runway": "33"
-        }
-      ],
-      "inbound_rates": {
-        "DEBERRY5": {
-          "KCOS": 6
-        },
+    },
+    "inbound_flows": {
         "OZZZY5": {
-          "KCOS": 8
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KCOS": [
+                            {
+                                "airport": "KORD",
+                                "types": [
+                                    "E75L",
+                                    "CRJ7"
+                                ],
+                                "icao": "SKW"
+                            },
+                            {
+                                "airport": "KMCI",
+                                "icao": "SWA"
+                            },
+                            {
+                                "airport": "KOMA",
+                                "fleet": "GAjet",
+                                "icao": "N"
+                            },
+                            {
+                                "airport": "KATL",
+                                "types": [
+                                    "A320"
+                                ],
+                                "icao": "DAL"
+                            },
+                            {
+                                "airport": "KPIE",
+                                "types": [
+                                    "A320"
+                                ],
+                                "icao": "AAY"
+                            },
+                            {
+                                "airport": "KDFW",
+                                "types": [
+                                    "B738"
+                                ],
+                                "icao": "AAL"
+                            },
+                            {
+                                "airport": "KDFW",
+                                "types": [
+                                    "CRJ7"
+                                ],
+                                "icao": "SKW"
+                            },
+                            {
+                                "airport": "KDFW",
+                                "types": [
+                                    "E170"
+                                ],
+                                "icao": "ENY"
+                            },
+                            {
+                                "airport": "KIAH",
+                                "types": [
+                                    "E75L"
+                                ],
+                                "icao": "ASH"
+                            },
+                            {
+                                "airport": "KIAH",
+                                "types": [
+                                    "E75L"
+                                ],
+                                "icao": "SKW"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 34000,
+                    "initial_altitude": 18000,
+                    "description": "",
+                    "initial_controller": "C29",
+                    "initial_speed": 270,
+                    "route": "HGO OZZZY5",
+                    "waypoints": "HGO/a17000 N038.51.21.568,W103.55.28.472/ho OZZZY/a14000/s250 ADANE"
+                }
+            ]
+        },
+        "DEBERRY5": {
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KCOS": [
+                            {
+                                "airport": "KSAT",
+                                "icao": "JIA"
+                            },
+                            {
+                                "airport": "KPHX",
+                                "icao": "EDV"
+                            },
+                            {
+                                "airport": "KPHX",
+                                "icao": "SWA"
+                            },
+                            {
+                                "airport": "KABQ",
+                                "fleet": "GAjet",
+                                "icao": "N"
+                            },
+                            {
+                                "airport": "KLAS",
+                                "types": [
+                                    "B738",
+                                    "B38M"
+                                ],
+                                "icao": "SWA"
+                            },
+                            {
+                                "airport": "KSLC",
+                                "types": [
+                                    "E75L"
+                                ],
+                                "icao": "SKW"
+                            },
+                            {
+                                "airport": "KSAN",
+                                "types": [
+                                    "B738",
+                                    "B38M"
+                                ],
+                                "icao": "SWA"
+                            },
+                            {
+                                "airport": "KSNA",
+                                "types": [
+                                    "A320"
+                                ],
+                                "icao": "AAY"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 23000,
+                    "initial_altitude": 16000,
+                    "assigned_altitude": 14000,
+                    "description": "",
+                    "initial_controller": "11P",
+                    "initial_speed": 210,
+                    "route": "OPSHN FSHER BRK",
+                    "waypoints": "OPSHN/s250 FSHER/s250/ho BRK"
+                }
+            ]
         },
         "DEN": {
-          "KCOS": 2,
-          "KFLY": 1
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KCOS": [
+                            {
+                                "airport": "KAPA",
+                                "icao": "N"
+                            },
+                            {
+                                "airport": "KGXY",
+                                "icao": "N"
+                            },
+                            {
+                                "airport": "KBJC",
+                                "icao": "N"
+                            },
+                            {
+                                "airport": "KFNL",
+                                "icao": "N"
+                            }
+                        ],
+                        "KFLY": [
+                            {
+                                "airport": "KAPA",
+                                "icao": "N"
+                            },
+                            {
+                                "airport": "KGXY",
+                                "icao": "N"
+                            },
+                            {
+                                "airport": "KBJC",
+                                "icao": "N"
+                            },
+                            {
+                                "airport": "KFNL",
+                                "icao": "N"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 11000,
+                    "initial_altitude": 11000,
+                    "description": "",
+                    "initial_controller": "11A",
+                    "initial_speed": 160,
+                    "route": "LUFSE V389 ADANE BRK",
+                    "waypoints": "N039.19.52.813,W104.24.24.065 LUFSE/ho ADANE BRK"
+                }
+            ]
         },
         "DEN.NW": {
-          "KCOS": 2
+            "arrivals": [
+                {
+                    "airlines": {
+                        "KCOS": [
+                            {
+                                "airport": "KBJC",
+                                "icao": "N"
+                            },
+                            {
+                                "airport": "KFNL",
+                                "icao": "N"
+                            },
+                            {
+                                "airport": "KGXY",
+                                "icao": "N"
+                            }
+                        ]
+                    },
+                    "cruise_altitude": 11000,
+                    "initial_altitude": 11000,
+                    "description": "",
+                    "initial_controller": "11A",
+                    "initial_speed": 160,
+                    "route": "ADANE BRK",
+                    "waypoints": "N039.17.29.606,W104.42.09.739 N039.13.10.370,W104.35.00.860/ho ADANE BRK"
+                }
+            ]
         }
-      },
-      "configuration": {
-        "config_id": "STD"
-      },
-      "default_maps": [
-        "COS NORTH"
-      ],
-      "departure_runways": [
-        {
-          "airport": "KCOS",
-          "rate": 10,
-          "runway": "35R"
-        },
-        {
-          "airport": "KCOS",
-          "rate": 10,
-          "runway": "35L"
-        },
-        {
-          "airport": "KFLY",
-          "rate": 1,
-          "runway": "33"
-        }
-      ],
-      "wind": {
-        "direction": "320-20"
-      }
     },
-    "South VMC": {
-      "arrival_runways": [
-        {
-          "airport": "KCOS",
-          "runway": "17L"
+    "default_scenario": "North VMC",
+    "fixes": {
+        "_COS": "38.805801,-104.700996",
+        "_COS35R": "N038.46.41.554,W104.41.09.122",
+        "_COS35L": "N038.47.36.280,W104.42.58.381",
+        "_COS17L": "N038.49.00.367,W104.41.08.408",
+        "_COS17R": "N038.49.27.489,W104.42.59.589",
+        "KFLY-33": "N038.56.27.030,W104.34.05.819",
+        "KFLY-15": "N038.56.56.912,W104.34.18.728"
+    },
+    "name": "KCOS",
+    "primary_airport": "KCOS",
+    "scenarios": {
+        "North VMC": {
+            "arrival_runways": [
+                {
+                    "airport": "KCOS",
+                    "runway": "35L"
+                },
+                {
+                    "airport": "KCOS",
+                    "runway": "35R"
+                },
+                {
+                    "airport": "KFLY",
+                    "runway": "33"
+                }
+            ],
+            "inbound_rates": {
+                "DEBERRY5": {
+                    "KCOS": 6
+                },
+                "OZZZY5": {
+                    "KCOS": 8
+                },
+                "DEN": {
+                    "KCOS": 2,
+                    "KFLY": 1
+                },
+                "DEN.NW": {
+                    "KCOS": 2
+                }
+            },
+            "configuration": {
+                "config_id": "STD"
+            },
+            "default_maps": [
+                "COS NORTH"
+            ],
+            "departure_runways": [
+                {
+                    "airport": "KCOS",
+                    "rate": 10,
+                    "runway": "35R"
+                },
+                {
+                    "airport": "KCOS",
+                    "rate": 10,
+                    "runway": "35L"
+                },
+                {
+                    "airport": "KFLY",
+                    "rate": 1,
+                    "runway": "33"
+                }
+            ],
+            "wind": {
+                "direction": "320-20"
+            }
         },
-        {
-          "airport": "KCOS",
-          "runway": "17R"
-        },
-        {
-          "airport": "KFLY",
-          "runway": "15"
+        "South VMC": {
+            "arrival_runways": [
+                {
+                    "airport": "KCOS",
+                    "runway": "17L"
+                },
+                {
+                    "airport": "KCOS",
+                    "runway": "17R"
+                },
+                {
+                    "airport": "KFLY",
+                    "runway": "15"
+                }
+            ],
+            "inbound_rates": {
+                "DEBERRY5": {
+                    "KCOS": 6
+                },
+                "OZZZY5": {
+                    "KCOS": 8
+                },
+                "DEN": {
+                    "KCOS": 2,
+                    "KFLY": 1
+                },
+                "DEN.NW": {
+                    "KCOS": 2
+                }
+            },
+            "configuration": {
+                "config_id": "STD"
+            },
+            "default_maps": [
+                "COS SOUTH"
+            ],
+            "departure_runways": [
+                {
+                    "airport": "KCOS",
+                    "rate": 10,
+                    "runway": "17R"
+                },
+                {
+                    "airport": "KCOS",
+                    "rate": 10,
+                    "runway": "17L"
+                },
+                {
+                    "airport": "KFLY",
+                    "rate": 1,
+                    "runway": "15"
+                }
+            ],
+            "wind": {
+                "direction": "140-200"
+            }
         }
-      ],
-      "inbound_rates": {
-        "DEBERRY5": {
-          "KCOS": 6
-        },
-        "OZZZY5": {
-          "KCOS": 8
-        },
-        "DEN": {
-          "KCOS": 2,
-          "KFLY": 1
-        },
-        "DEN.NW": {
-          "KCOS": 2
-        }
-      },
-      "configuration": {
-        "config_id": "STD"
-      },
-      "default_maps": [
-        "COS SOUTH"
-      ],
-      "departure_runways": [
-        {
-          "airport": "KCOS",
-          "rate": 10,
-          "runway": "17R"
-        },
-        {
-          "airport": "KCOS",
-          "rate": 10,
-          "runway": "17L"
-        },
-        {
-          "airport": "KFLY",
-          "rate": 1,
-          "runway": "15"
-        }
-      ],
-      "wind": {
-        "direction": "140-200"
-      }
     }
-  }
 }

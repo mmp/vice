@@ -4,8 +4,7 @@
     "name": "ZJX 75",
     "airports": {
         "KMCO": {
-            "departure_controller": "MCO_E_DEP",
-            "departure_facility": "F11",
+            "departure_controller": "O1E",
             "approaches": {
                 "R6L": {
                     "cifp_id": "R36L"
@@ -14,13 +13,13 @@
             "departure_routes": {
                 "35L": {
                     "VIYAP": {
-                        "handoff_controller": "ZJX 75 Greencove",
+                        "handoff_controller": "75",
                         "cleared_altitude": 16000,
                         "sid": "FATHE4",
                         "waypoints": "KMCO-17R JWOLF/a2600- JIRAN/a3000+ BIGSE/ho GOTHA/a7000- BUFFI FATHE/a14000+ MDBOG BKENI/a16000+ FEMON"
                     },
                     "PAINN": {
-                        "handoff_controller": "ZJX 75 Greencove",
+                        "handoff_controller": "75",
                         "cleared_altitude": 16000,
                         "sid": "JEEMY4",
                         "waypoints": "KMCO-17R JWOLF/a2600+ JIRAN/a3000+ BIGSE/ho ALOHH/a7000- SNOBE MDUSA JEEMY/a16000+ ACCHE"
@@ -28,13 +27,13 @@
                 },
                 "36R": {
                     "VIYAP": {
-                        "handoff_controller": "ZJX 75 Greencove",
+                        "handoff_controller": "75",
                         "cleared_altitude": 16000,
                         "sid": "FATHE4",
                         "waypoints": "KMCO-18L FACTS/a2300+ HANDD/a3000+  TRYNA/a7000-/ho BUFFI FATHE/a14000+ MDBOG BKENI/a16000+ FEMON"
                     },
                     "PAINN": {
-                        "handoff_controller": "ZJX 75 Greencove",
+                        "handoff_controller": "75",
                         "cleared_altitude": 16000,
                         "sid": "JEEMY4",
                         "waypoints": "KMCO-18L FACTS/a2300+ HANDD/a3000+ CHUKG/a7000-/ho SNOBE MDUSA JEEMY/a16000+ ACCHE"
@@ -277,12 +276,11 @@
             }
         },
         "KSFB": {
-            "departure_controller": "MCO_E_DEP",
-            "departure_facility": "F11",
+            "departure_controller": "O1E",
             "departure_routes": {
                 "9L": {
                     "WORMS": {
-                        "handoff_controller": "ZJX 75 Greencove",
+                        "handoff_controller": "75",
                         "cleared_altitude": 11000,
                         "sid": "SFB1",
                         "waypoints": "KSFB-27R N028.51.47.606,W081.18.12.453/ho"
@@ -365,12 +363,11 @@
             ]
         },
         "KDAB": {
-            "departure_controller": "MCO_E_DEP",
-            "departure_facility": "F11",
+            "departure_controller": "O1E",
             "departure_routes": {
                 "7L": {
                     "CRG": {
-                        "handoff_controller": "ZJX 75 Greencove",
+                        "handoff_controller": "75",
                         "cleared_altitude": 16000,
                         "sid": "FATHE4",
                         "waypoints": "KDAB-25R N029.10.51.523,W080.58.59.163/ho ROYES"
@@ -422,8 +419,7 @@
             }
         },
         "KJAX": {
-            "departure_controller": "MCO_E_DEP",
-            "departure_facility": "F11",
+            "departure_controller": "O1E",
             "approaches": {
                 "IY8": {
                     "cifp_id": "IY8"
@@ -438,7 +434,7 @@
                     "waypoints": "N031.03.23.398,W081.56.23.486/ho KYLEG JAGGZ/a24000+ WEEEK/d160 TTHOR/d120 BIKEZ N029.12.14.504,W081.22.16.184/d20 KDAB/d0/delete",
                     "star": "TTHOR3",
                     "route": "/. TTHOR3",
-                    "initial_controller": "ZJX 50 Alma",
+                    "initial_controller": "50",
                     "initial_altitude": 24000,
                     "initial_speed": 280,
                     "assigned_altitude": 24000,
@@ -459,8 +455,7 @@
                                 "airport": "KTYS"
                             }
                         ]
-                    },
-                    "initial_facility": "ZJX"
+                    }
                 }
             ]
         },
@@ -471,7 +466,7 @@
                     "star": "GRNCH5",
                     "expect_approach": "R6L",
                     "route": "/. GRNCH",
-                    "initial_controller": "ZJX 50 Alma",
+                    "initial_controller": "50",
                     "initial_altitude": 33000,
                     "initial_speed": 300,
                     "airlines": {
@@ -491,8 +486,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZJX"
+                    }
                 }
             ]
         },
@@ -502,7 +496,7 @@
                     "waypoints": "CHEFS/a19000-21000/hoO1E MOOTS/a15000+ RIDES/a8000+ HAHNA/a6000/s210  SERAY/a4000 FESHA/a3000 HEWES/a1600 KMCO-35R/a50/delete",
                     "star": "RIDES2",
                     "route": "/. RIDES2",
-                    "initial_controller": "ZMA 02 HOBEE",
+                    "initial_controller": "R02",
                     "initial_altitude": 21000,
                     "initial_speed": 300,
                     "airlines": {
@@ -522,8 +516,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -533,7 +526,7 @@
                     "waypoints": "GIPPL LPERD/a30000-34000 NOOMN/a23000+ FORYU/a13000+ NICCK/a12000+ SNFLD GTOUT/a12000-16000/hoO1E TUGLE HIGGZ/a10000-12000/s250 VOSSS/a230/a8000+ SUNDE/a6000+ CUBAL/a5000/s210 N028.18.51.042,W081.12.31.794/a3000 HEWES KMCO-35R/a50/delete",
                     "star": "SNFLD3",
                     "route": "/. SNFLD3",
-                    "initial_controller": "ZJX 58 St. Augustine",
+                    "initial_controller": "58",
                     "initial_altitude": 34000,
                     "initial_speed": 300,
                     "airlines": {
@@ -553,8 +546,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZJX"
+                    }
                 }
             ]
         },
@@ -564,7 +556,7 @@
                     "waypoints": "STYMY/ho HAINY/a24000+ MISCL MEAAT BASSS POGIE/a13000 QUBEN/d20 N030.25.54.936,W082.00.39.523/d0 KJAX-8/delete",
                     "star": "QUBEN2",
                     "route": "/. QUBEN2",
-                    "initial_controller": "ZMA 02 HOBEE",
+                    "initial_controller": "R02",
                     "initial_altitude": 31000,
                     "assigned_altitude": 31000,
                     "initial_speed": 290,
@@ -585,8 +577,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMA"
+                    }
                 }
             ]
         },
@@ -602,10 +593,9 @@
                     ],
                     "initial_altitude": 34000,
                     "assigned_altitude": 34000,
-                    "initial_controller": "ZJX 50 Alma",
+                    "initial_controller": "50",
                     "initial_speed": 300,
-                    "waypoints": "N030.59.08.103,W082.12.22.648/ho SHRKS Q89 MANLE/delete",
-                    "initial_facility": "ZJX"
+                    "waypoints": "N030.59.08.103,W082.12.22.648/ho SHRKS Q89 MANLE/delete"
                 }
             ]
         },
@@ -641,10 +631,9 @@
                     ],
                     "initial_altitude": 37000,
                     "assigned_altitude": 37000,
-                    "initial_controller": "ZMA 02 HOBEE",
+                    "initial_controller": "R02",
                     "initial_speed": 300,
-                    "waypoints": "STYMY/ho Q77 SHRKS LAIRI LARZZ",
-                    "initial_facility": "ZMA"
+                    "waypoints": "STYMY/ho Q77 SHRKS LAIRI LARZZ"
                 },
                 {
                     "airlines": [
@@ -661,10 +650,9 @@
                     ],
                     "initial_altitude": 37000,
                     "assigned_altitude": 37000,
-                    "initial_controller": "ZMA 02 HOBEE",
+                    "initial_controller": "R02",
                     "initial_speed": 300,
-                    "waypoints": "STYMY/ho Q77 SHRKS LAIRI LARZZ",
-                    "initial_facility": "ZMA"
+                    "waypoints": "STYMY/ho Q77 SHRKS LAIRI LARZZ"
                 },
                 {
                     "airlines": [
@@ -726,10 +714,9 @@
                     ],
                     "initial_altitude": 35000,
                     "assigned_altitude": 35000,
-                    "initial_controller": "ZMA 02 HOBEE",
+                    "initial_controller": "R02",
                     "initial_speed": 300,
-                    "waypoints": "STYMY/ho Q77 TEUFL",
-                    "initial_facility": "ZMA"
+                    "waypoints": "STYMY/ho Q77 TEUFL"
                 },
                 {
                     "airlines": [
@@ -746,10 +733,9 @@
                     ],
                     "initial_altitude": 33000,
                     "assigned_altitude": 33000,
-                    "initial_controller": "ZMA 02 HOBEE",
+                    "initial_controller": "R02",
                     "initial_speed": 300,
-                    "waypoints": "MATLK/ho Q87 VIYAP CHECR",
-                    "initial_facility": "ZMA"
+                    "waypoints": "MATLK/ho Q87 VIYAP CHECR"
                 },
                 {
                     "airlines": [
@@ -771,10 +757,9 @@
                     ],
                     "initial_altitude": 33000,
                     "assigned_altitude": 33000,
-                    "initial_controller": "ZMA 02 HOBEE",
+                    "initial_controller": "R02",
                     "initial_speed": 300,
-                    "waypoints": "MATLK/ho Q87 VIYAP Q69 GURGE",
-                    "initial_facility": "ZMA"
+                    "waypoints": "MATLK/ho Q87 VIYAP Q69 GURGE"
                 }
             ]
         },
@@ -810,10 +795,9 @@
                     ],
                     "initial_altitude": 37000,
                     "assigned_altitude": 37000,
-                    "initial_controller": "ZMA 02 HOBEE",
+                    "initial_controller": "R02",
                     "initial_speed": 300,
-                    "waypoints": "STYMY/ho76 Q77 SHRKS LAIRI LARZZ",
-                    "initial_facility": "ZMA"
+                    "waypoints": "STYMY/ho76 Q77 SHRKS LAIRI LARZZ"
                 },
                 {
                     "airlines": [
@@ -830,10 +814,9 @@
                     ],
                     "initial_altitude": 37000,
                     "assigned_altitude": 37000,
-                    "initial_controller": "ZMA 02 HOBEE",
+                    "initial_controller": "R02",
                     "initial_speed": 300,
-                    "waypoints": "STYMY/ho76 Q77 SHRKS LAIRI LARZZ",
-                    "initial_facility": "ZMA"
+                    "waypoints": "STYMY/ho76 Q77 SHRKS LAIRI LARZZ"
                 },
                 {
                     "airlines": [
@@ -895,10 +878,9 @@
                     ],
                     "initial_altitude": 35000,
                     "assigned_altitude": 35000,
-                    "initial_controller": "ZMA 02 HOBEE",
+                    "initial_controller": "R02",
                     "initial_speed": 300,
-                    "waypoints": "STYMY/ho76 Q77 TEUFL",
-                    "initial_facility": "ZMA"
+                    "waypoints": "STYMY/ho76 Q77 TEUFL"
                 },
                 {
                     "airlines": [
@@ -915,10 +897,9 @@
                     ],
                     "initial_altitude": 33000,
                     "assigned_altitude": 33000,
-                    "initial_controller": "ZMA 02 HOBEE",
+                    "initial_controller": "R02",
                     "initial_speed": 300,
-                    "waypoints": "MATLK/ho Q87 VIYAP CHECR",
-                    "initial_facility": "ZMA"
+                    "waypoints": "MATLK/ho Q87 VIYAP CHECR"
                 },
                 {
                     "airlines": [
@@ -940,10 +921,9 @@
                     ],
                     "initial_altitude": 33000,
                     "assigned_altitude": 33000,
-                    "initial_controller": "ZMA 02 HOBEE",
+                    "initial_controller": "R02",
                     "initial_speed": 300,
-                    "waypoints": "MATLK/ho Q87 VIYAP Q69 GURGE",
-                    "initial_facility": "ZMA"
+                    "waypoints": "MATLK/ho Q87 VIYAP Q69 GURGE"
                 }
             ]
         }

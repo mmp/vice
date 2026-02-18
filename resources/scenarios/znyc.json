@@ -4,15 +4,14 @@
     "name": "ZNYC",
     "airports": {
         "KEWR": {
-            "departure_controller": "NY_LN_APP",
-            "departure_facility": "N90",
+            "departure_controller": "N5T",
             "departure_routes": {
                 "22R": {
                     "NEION,HAAYS,GAYEL,COATE": {
                         "cleared_altitude": 16000,
                         "sid": "EWR5",
                         "waypoints": "_EWR4_22Ra N040.36.39.710,W074.10.37.124/a2500/ho N040.58.37.300,W074.26.36.725/a10000",
-                        "handoff_controller": "ZNY 36 Sparta"
+                        "handoff_controller": "36"
                     }
                 }
             },
@@ -199,15 +198,14 @@
                     "cifp_id": "I31R"
                 }
             },
-            "departure_controller": "NY_LE_APP",
-            "departure_facility": "N90",
+            "departure_controller": "N5E",
             "departure_routes": {
                 "22R": {
                     "DEEZZ": {
                         "cleared_altitude": 19000,
                         "sid": "JFK5",
                         "waypoints": "KJFK-4L N040.31.23.949,W073.41.52.216/ho N040.54.51.723,W073.28.44.194/a17000",
-                        "handoff_controller": "ZNY 36 Sparta"
+                        "handoff_controller": "36"
                     }
                 }
             },
@@ -368,7 +366,7 @@
                     "cruise_altitude": 35000,
                     "star": "PUCKY1",
                     "route": "/. PUCKY1",
-                    "initial_controller": "ZNY 49 Stony Fork",
+                    "initial_controller": "49",
                     "initial_altitude": 23000,
                     "initial_speed": 300,
                     "airlines": {
@@ -992,8 +990,7 @@
                                 "airport": "ZSFZ"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 }
             ]
         },
@@ -1004,7 +1001,7 @@
                     "cruise_altitude": 35000,
                     "star": "PUCKY1",
                     "route": "/. PUCKY1",
-                    "initial_controller": "ZBW 20 Kingston",
+                    "initial_controller": "B20",
                     "initial_altitude": 23000,
                     "initial_speed": 300,
                     "airlines": {
@@ -1059,8 +1056,7 @@
                                 "airport": "CYUL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         }

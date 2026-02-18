@@ -1,19 +1,19 @@
 {
     "control_positions": {
-        "MLU_H_APP": {
+        "1H": {
+            "callsign": "MLU_H_APP",
             "frequency": 126900,
-            "radio_name": "Monroe Approach",
-            "sector_id": "1H"
+            "radio_name": "Monroe Approach"
         },
-        "MLU_L_APP": {
+        "1L": {
+            "callsign": "MLU_L_APP",
             "frequency": 118150,
-            "radio_name": "Monroe Approach",
-            "sector_id": "1L"
+            "radio_name": "Monroe Approach"
         },
-        "MLU_TWR": {
+        "1T": {
+            "callsign": "MLU_TWR",
             "frequency": 118900,
-            "radio_name": "Monroe Tower",
-            "sector_id": "1T"
+            "radio_name": "Monroe Tower"
         }
     },
     "handoff_ids": [
@@ -24,6 +24,10 @@
         {
             "id": "SHV",
             "prefix": "1"
+        },
+        {
+            "id": "ZFW",
+            "eram_prefix": "C"
         },
         {
             "id": "ZHU",

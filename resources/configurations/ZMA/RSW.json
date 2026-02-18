@@ -1,50 +1,54 @@
 {
     "control_positions": {
-        "RSW_E_APP": {
+        "1E": {
+            "callsign": "RSW_E_APP",
             "frequency": 126800,
-            "radio_name": "Fort Myers Approach",
-            "sector_id": "1E"
+            "radio_name": "Fort Myers Approach"
         },
-        "RSW_F_APP": {
+        "1F": {
+            "callsign": "RSW_F_APP",
             "frequency": 125150,
-            "radio_name": "Fort Myers Approach",
-            "sector_id": "1F"
+            "radio_name": "Fort Myers Approach"
         },
-        "RSW_G_APP": {
+        "1G": {
+            "callsign": "RSW_G_APP",
             "frequency": 119750,
-            "radio_name": "Fort Myers Approach",
-            "sector_id": "1G"
+            "radio_name": "Fort Myers Approach"
         },
-        "RSW_TWR": {
+        "1J": {
+            "callsign": "RSW_TWR",
             "frequency": 128750,
-            "radio_name": "Fort Myers Tower",
-            "sector_id": "1J"
+            "radio_name": "Fort Myers Tower"
         },
-        "RSW_2_TWR": {
+        "1K": {
+            "callsign": "RSW_2_TWR",
             "frequency": 128750,
-            "radio_name": "Fort Myers Tower",
-            "sector_id": "1K"
+            "radio_name": "Fort Myers Tower"
         },
-        "RSW_L_APP": {
+        "1L": {
+            "callsign": "RSW_L_APP",
             "frequency": 127050,
-            "radio_name": "Fort Myers Approach",
-            "sector_id": "1L"
+            "radio_name": "Fort Myers Approach"
         },
-        "RSW_S_APP": {
+        "1S": {
+            "callsign": "RSW_S_APP",
             "frequency": 124125,
-            "radio_name": "Fort Myers Approach",
-            "sector_id": "1S"
+            "radio_name": "Fort Myers Approach"
         },
-        "RSW_W_APP": {
+        "1W": {
+            "callsign": "RSW_W_APP",
             "frequency": 134425,
-            "radio_name": "Fort Myers Approach",
-            "sector_id": "1W"
+            "radio_name": "Fort Myers Approach"
         }
     },
     "handoff_ids": [
         {
             "id": "TPA",
             "prefix": "1"
+        },
+        {
+            "id": "ZMA",
+            "eram_prefix": "C"
         }
     ]
 }

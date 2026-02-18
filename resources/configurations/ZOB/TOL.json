@@ -1,24 +1,24 @@
 {
     "control_positions": {
-        "TOL_E_APP": {
+        "1E": {
+            "callsign": "TOL_E_APP",
             "frequency": 126100,
-            "radio_name": "Toledo Approach",
-            "sector_id": "1E"
+            "radio_name": "Toledo Approach"
         },
-        "TOL_TWR": {
+        "1T": {
+            "callsign": "TOL_TWR",
             "frequency": 118100,
-            "radio_name": "Toledo Tower",
-            "sector_id": "1T"
+            "radio_name": "Toledo Tower"
         },
-        "TOL_W_APP": {
+        "1W": {
+            "callsign": "TOL_W_APP",
             "frequency": 134350,
-            "radio_name": "Toledo Approach",
-            "sector_id": "1W"
+            "radio_name": "Toledo Approach"
         },
-        "TOL_T_APP": {
+        "1Z": {
+            "callsign": "TOL_T_APP",
             "frequency": 123450,
-            "radio_name": "Toledo Approach",
-            "sector_id": "1Z"
+            "radio_name": "Toledo Approach"
         }
     },
     "handoff_ids": [
@@ -53,6 +53,10 @@
         {
             "id": "ZID",
             "eram_prefix": "I"
+        },
+        {
+            "id": "ZOB",
+            "eram_prefix": "C"
         }
     ]
 }

@@ -1,544 +1,540 @@
 {
-  "tracon": "GSP",
-  "airports": {
-    "KGSP": {
-      "approaches": {
-        "I4": {
-          "runway": "4",
-          "type": "ILS",
-          "waypoints": [
-            "OXABY/iaf/a3000 MULDE/faf/a2300 JOKVA"
-          ]
-        },
-        "R4": {
-          "runway": "4",
-          "type": "RNAV",
-          "waypoints": [
-            "OXABY/iaf/a3000 MULDE/faf/a2300 JOKVA"
-          ]
-        },
-        "I22": {
-          "runway": "22",
-          "type": "ILS",
-          "waypoints": [
-            "RAYCE/iaf/a3000 LYMEN/faf/a2300 WIVET"
-          ]
-        },
-        "R22": {
-          "runway": "22",
-          "type": "RNAV",
-          "waypoints": [
-            "RAYCE/iaf/a3000 LYMEN/faf/a2300 WIVET",
-            "IROPY/iaf/a3000 RAYCE/if/a3000 LYMEN/faf/a2300 WIVET",
-            "NAGRY/iaf/a3000 RAYCE/if/a3000 LYMEN/faf/a2300 WIVET"
-          ]
-        }
-      },
-      "departure_routes": {
-        "4": {
-          "DRIVN,ACERB": {
-            "cleared_altitude": 5000,
-            "sid": "BIMMR3",
-            "waypoints": "_GSP_22/h038"
-          },
-          "JLENA": {
-            "cleared_altitude": 5000,
-            "sid": "BWALL2",
-            "waypoints": "_GSP_22/h038"
-          },
-          "HRS": {
-            "cleared_altitude": 5000,
-            "waypoints": "_GSP_22/h038"
-          },
-          "DGESS": {
-            "cleared_altitude": 5000,
-            "waypoints": "_GSP_22/h038"
-          },
-          "SPA": {
-            "cleared_altitude": 5000,
-            "waypoints": "_GSP_22/h038"
-          },
-          "SOTHH": {
-            "cleared_altitude": 5000,
-            "waypoints": "_GSP_22/h038"
-          }
-        },
-        "22": {
-          "DRIVN,ACERB": {
-            "cleared_altitude": 5000,
-            "sid": "BIMMR3",
-            "waypoints": "_GSP_4/h219"
-          },
-          "JLENA": {
-            "cleared_altitude": 5000,
-            "sid": "BWALL2",
-            "waypoints": "_GSP_4/h219"
-          },
-          "HRS": {
-            "cleared_altitude": 5000,
-            "waypoints": "_GSP_4/h219"
-          },
-          "DGESS": {
-            "cleared_altitude": 5000,
-            "waypoints": "_GSP_4/h219"
-          },
-          "SPA": {
-            "cleared_altitude": 5000,
-            "waypoints": "_GSP_4/h219"
-          },
-          "SOTHH": {
-            "cleared_altitude": 5000,
-            "waypoints": "_GSP_4/h219"
-          }
-        }
-      },
-      "departures": [
-        {
-          "airlines": [
-            {
-              "icao": "JIA"
-            }
-          ],
-          "destination": "KCLT",
-          "exit": "SOTHH",
-          "route": "SOTHH BANKR BANKR4"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "short",
-              "icao": "AAL"
-            }
-          ],
-          "destination": "KDFW",
-          "exit": "HRS",
-          "route": "HRS GQO MEM J66 LIT FEWWW BRDJE4"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "short",
-              "icao": "DAL"
+    "tracon": "GSP",
+    "airports": {
+        "KGSP": {
+            "approaches": {
+                "I4": {
+                    "runway": "4",
+                    "type": "ILS",
+                    "waypoints": [
+                        "OXABY/iaf/a3000 MULDE/faf/a2300 JOKVA"
+                    ]
+                },
+                "R4": {
+                    "runway": "4",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "OXABY/iaf/a3000 MULDE/faf/a2300 JOKVA"
+                    ]
+                },
+                "I22": {
+                    "runway": "22",
+                    "type": "ILS",
+                    "waypoints": [
+                        "RAYCE/iaf/a3000 LYMEN/faf/a2300 WIVET"
+                    ]
+                },
+                "R22": {
+                    "runway": "22",
+                    "type": "RNAV",
+                    "waypoints": [
+                        "RAYCE/iaf/a3000 LYMEN/faf/a2300 WIVET",
+                        "IROPY/iaf/a3000 RAYCE/if/a3000 LYMEN/faf/a2300 WIVET",
+                        "NAGRY/iaf/a3000 RAYCE/if/a3000 LYMEN/faf/a2300 WIVET"
+                    ]
+                }
             },
-            {
-              "fleet": "short",
-              "icao": "SWA"
-            }
-          ],
-          "destination": "KATL",
-          "exit": "DGESS",
-          "route": "DGESS OZZZI1"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "UPS"
-            }
-          ],
-          "destination": "KSDF",
-          "exit": "JLENA",
-          "route": "JLENA LAFOX MAUDD6"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "b744",
-              "icao": "TAY"
-            }
-          ],
-          "destination": "EDFH",
-          "exit": "DRIVN",
-          "route": "DRIVN GULFY BARMY BATTA RDU LVL RIC SIE DRIFT HTO BRADD N197A NICSO NATZ ELSOX LESLU OXLOW M142 ROKKE M140 DVR UL9 KONAN UL607 REMBA SOPOK Y863 ROPUV ROPUV4R"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "MTN"
-            }
-          ],
-          "destination": "KGSO",
-          "exit": "SPA",
-          "route": "SPA V605 GENOD BROOK BROOK4"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "long",
-              "icao": "FDX"
-            }
-          ],
-          "destination": "KMEM",
-          "exit": "HRS",
-          "route": "HRS GQO TALLO VANZE3"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "JIA"
-            }
-          ],
-          "destination": "KDCA",
-          "exit": "DRIVN",
-          "route": "DRIVN JOOLI Q56 KIWII WAVES CAPSS3"
-        },
-        {
-          "airlines": [
-            {
-              "icao": "RPA"
+            "departure_routes": {
+                "4": {
+                    "DRIVN,ACERB": {
+                        "cleared_altitude": 5000,
+                        "sid": "BIMMR3",
+                        "waypoints": "_GSP_22/h038"
+                    },
+                    "JLENA": {
+                        "cleared_altitude": 5000,
+                        "sid": "BWALL2",
+                        "waypoints": "_GSP_22/h038"
+                    },
+                    "HRS": {
+                        "cleared_altitude": 5000,
+                        "waypoints": "_GSP_22/h038"
+                    },
+                    "DGESS": {
+                        "cleared_altitude": 5000,
+                        "waypoints": "_GSP_22/h038"
+                    },
+                    "SPA": {
+                        "cleared_altitude": 5000,
+                        "waypoints": "_GSP_22/h038"
+                    },
+                    "SOTHH": {
+                        "cleared_altitude": 5000,
+                        "waypoints": "_GSP_22/h038"
+                    }
+                },
+                "22": {
+                    "DRIVN,ACERB": {
+                        "cleared_altitude": 5000,
+                        "sid": "BIMMR3",
+                        "waypoints": "_GSP_4/h219"
+                    },
+                    "JLENA": {
+                        "cleared_altitude": 5000,
+                        "sid": "BWALL2",
+                        "waypoints": "_GSP_4/h219"
+                    },
+                    "HRS": {
+                        "cleared_altitude": 5000,
+                        "waypoints": "_GSP_4/h219"
+                    },
+                    "DGESS": {
+                        "cleared_altitude": 5000,
+                        "waypoints": "_GSP_4/h219"
+                    },
+                    "SPA": {
+                        "cleared_altitude": 5000,
+                        "waypoints": "_GSP_4/h219"
+                    },
+                    "SOTHH": {
+                        "cleared_altitude": 5000,
+                        "waypoints": "_GSP_4/h219"
+                    }
+                }
             },
-            {
-              "icao": "EDV"
-            }
-          ],
-          "destination": "KLGA",
-          "exit": "DRIVN",
-          "route": "DRIVN EVING Q60 HURTS HUBBS PXT KORRY4"
+            "departures": [
+                {
+                    "airlines": [
+                        {
+                            "icao": "JIA"
+                        }
+                    ],
+                    "destination": "KCLT",
+                    "exit": "SOTHH",
+                    "route": "SOTHH BANKR BANKR4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "short",
+                            "icao": "AAL"
+                        }
+                    ],
+                    "destination": "KDFW",
+                    "exit": "HRS",
+                    "route": "HRS GQO MEM J66 LIT FEWWW BRDJE4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "short",
+                            "icao": "DAL"
+                        },
+                        {
+                            "fleet": "short",
+                            "icao": "SWA"
+                        }
+                    ],
+                    "destination": "KATL",
+                    "exit": "DGESS",
+                    "route": "DGESS OZZZI1"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "UPS"
+                        }
+                    ],
+                    "destination": "KSDF",
+                    "exit": "JLENA",
+                    "route": "JLENA LAFOX MAUDD6"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "b744",
+                            "icao": "TAY"
+                        }
+                    ],
+                    "destination": "EDFH",
+                    "exit": "DRIVN",
+                    "route": "DRIVN GULFY BARMY BATTA RDU LVL RIC SIE DRIFT HTO BRADD N197A NICSO NATZ ELSOX LESLU OXLOW M142 ROKKE M140 DVR UL9 KONAN UL607 REMBA SOPOK Y863 ROPUV ROPUV4R"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "MTN"
+                        }
+                    ],
+                    "destination": "KGSO",
+                    "exit": "SPA",
+                    "route": "SPA V605 GENOD BROOK BROOK4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "long",
+                            "icao": "FDX"
+                        }
+                    ],
+                    "destination": "KMEM",
+                    "exit": "HRS",
+                    "route": "HRS GQO TALLO VANZE3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "JIA"
+                        }
+                    ],
+                    "destination": "KDCA",
+                    "exit": "DRIVN",
+                    "route": "DRIVN JOOLI Q56 KIWII WAVES CAPSS3"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "RPA"
+                        },
+                        {
+                            "icao": "EDV"
+                        }
+                    ],
+                    "destination": "KLGA",
+                    "exit": "DRIVN",
+                    "route": "DRIVN EVING Q60 HURTS HUBBS PXT KORRY4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "icao": "RPA"
+                        }
+                    ],
+                    "destination": "KEWR",
+                    "exit": "DRIVN",
+                    "route": "DRIVN KIDDO Q22 UMBRE QUART PHLBO4"
+                },
+                {
+                    "airlines": [
+                        {
+                            "fleet": "fastGA",
+                            "icao": "N"
+                        }
+                    ],
+                    "destination": "KTTA",
+                    "exit": "DRIVN",
+                    "route": "DRIVN"
+                }
+            ],
+            "exit_categories": {
+                "DRIVN": "BIMMR3",
+                "ACERB": "BIMMR3",
+                "JLENA": "BWALL2"
+            },
+            "tower_list": 1
+        }
+    },
+    "airspace": {
+        "boundaries": {
+            "GSPAPP0100": [
+                "N34.28.26.253,W81.22.05.022",
+                "N34.17.44.021,W81.49.54.186",
+                "N34.04.43.618,W81.53.22.042",
+                "N34.03.56.177,W82.15.50.142",
+                "N34.03.10.252,W82.20.53.413",
+                "N34.21.09.998,W82.51.25.526",
+                "N34.32.16.244,W82.59.15.252",
+                "N34.40.02.192,W82.59.25.195",
+                "N34.50.36.663,W82.56.29.893",
+                "N35.04.15.650,W82.37.07.032",
+                "N35.04.44.608,W82.18.44.846",
+                "N35.04.50.768,W82.13.57.570",
+                "N35.08.40.567,W82.09.45.989",
+                "N35.13.22.326,W82.09.52.703",
+                "N35.17.25.918,W82.05.46.512",
+                "N35.32.56.900,W82.05.48.452",
+                "N35.32.57.191,W81.49.35.060",
+                "N35.25.49.644,W81.40.44.011",
+                "N35.14.13.224,W81.43.12.953",
+                "N34.28.21.766,W81.21.54.836"
+            ],
+            "GSPAPP050": [
+                "N35.13.23.993,W82.09.57.240",
+                "N35.08.46.845,W82.09.55.109",
+                "N35.04.55.195,W82.13.51.818",
+                "N35.04.51.184,W82.18.47.238",
+                "N35.13.23.993,W82.09.57.240",
+                "N35.21.47.451,W82.02.16.242",
+                "N35.21.38.255,W82.05.47.162",
+                "N35.32.52.677,W82.05.51.760",
+                "N35.32.56.529,W81.49.42.759",
+                "N35.25.50.217,W81.40.38.184",
+                "N35.24.48.947,W82.02.35.186",
+                "N35.21.50.746,W82.02.12.805"
+            ]
         },
-        {
-          "airlines": [
-            {
-              "icao": "RPA"
-            }
-          ],
-          "destination": "KEWR",
-          "exit": "DRIVN",
-          "route": "DRIVN KIDDO Q22 UMBRE QUART PHLBO4"
-        },
-        {
-          "airlines": [
-            {
-              "fleet": "fastGA",
-              "icao": "N"
-            }
-          ],
-          "destination": "KTTA",
-          "exit": "DRIVN",
-          "route": "DRIVN"
-        }
-      ],
-      "exit_categories": {
-        "DRIVN": "BIMMR3",
-        "ACERB": "BIMMR3",
-        "JLENA": "BWALL2"
-      },
-      "tower_list": 1
-    }
-  },
-  "airspace": {
-    "boundaries": {
-      "GSPAPP0100": [
-        "N34.28.26.253,W81.22.05.022",
-        "N34.17.44.021,W81.49.54.186",
-        "N34.04.43.618,W81.53.22.042",
-        "N34.03.56.177,W82.15.50.142",
-        "N34.03.10.252,W82.20.53.413",
-        "N34.21.09.998,W82.51.25.526",
-        "N34.32.16.244,W82.59.15.252",
-        "N34.40.02.192,W82.59.25.195",
-        "N34.50.36.663,W82.56.29.893",
-        "N35.04.15.650,W82.37.07.032",
-        "N35.04.44.608,W82.18.44.846",
-        "N35.04.50.768,W82.13.57.570",
-        "N35.08.40.567,W82.09.45.989",
-        "N35.13.22.326,W82.09.52.703",
-        "N35.17.25.918,W82.05.46.512",
-        "N35.32.56.900,W82.05.48.452",
-        "N35.32.57.191,W81.49.35.060",
-        "N35.25.49.644,W81.40.44.011",
-        "N35.14.13.224,W81.43.12.953",
-        "N34.28.21.766,W81.21.54.836"
-      ],
-      "GSPAPP050": [
-        "N35.13.23.993,W82.09.57.240",
-        "N35.08.46.845,W82.09.55.109",
-        "N35.04.55.195,W82.13.51.818",
-        "N35.04.51.184,W82.18.47.238",
-        "N35.13.23.993,W82.09.57.240",
-        "N35.21.47.451,W82.02.16.242",
-        "N35.21.38.255,W82.05.47.162",
-        "N35.32.52.677,W82.05.51.760",
-        "N35.32.56.529,W81.49.42.759",
-        "N35.25.50.217,W81.40.38.184",
-        "N35.24.48.947,W82.02.35.186",
-        "N35.21.50.746,W82.02.12.805"
-      ]
-    },
-    "volumes": {
-      "GSPAPP": [
-        {
-          "boundaries": [
-            "GSPAPP0100"
-          ],
-          "lower": 0,
-          "upper": 10000
-        },
-        {
-          "boundaries": [
-            "GSPAPP050"
-          ],
-          "lower": 0,
-          "upper": 5000
-        }
-      ]
-    }
-  },
-  "inbound_flows": {
-    "JUNNR3": {
-      "arrivals": [
-        {
-          "waypoints": "KWOOD/ho TANCE/a10000 SPA/h264",
-          "cruise_altitude": 34000,
-          "route": "/. SPA",
-          "initial_controller": "ZTL 43 Pulaski High",
-          "initial_facility": "ZTL",
-          "initial_altitude": 11000,
-          "initial_speed": 280,
-          "expect_approach": null,
-          "airlines": {
-            "KGSP": [
-              {
-                "icao": "RPA",
-                "airport": "KDCA"
-              },
-              {
-                "icao": "RPA",
-                "airport": "KEWR"
-              },
-              {
-                "icao": "JIA",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "EDV",
-                "airport": "KLGA"
-              }
+        "volumes": {
+            "GSPAPP": [
+                {
+                    "boundaries": [
+                        "GSPAPP0100"
+                    ],
+                    "lower": 0,
+                    "upper": 10000
+                },
+                {
+                    "boundaries": [
+                        "GSPAPP050"
+                    ],
+                    "lower": 0,
+                    "upper": 5000
+                }
             ]
-          }
         }
-      ]
     },
-    "MCHLN2": {
-      "arrivals": [
-        {
-          "waypoints": "PROVN/ho MCHLN/a11000 TYRES/h4",
-          "cruise_altitude": 34000,
-          "route": "/. TYRES",
-          "initial_controller": "ZTL 43 Pulaski High",
-          "initial_facility": "ZTL",
-          "initial_altitude": 11000,
-          "initial_speed": 280,
-          "expect_approach": null,
-          "airlines": {
-            "KGSP": [
-              {
-                "icao": "ENY",
-                "airport": "KMIA"
-              },
-              {
-                "icao": "ENY",
-                "airport": "KORD"
-              },
-              {
-                "icao": "SKW",
-                "airport": "KORD"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "RCTOR2": {
-      "arrivals": [
-        {
-          "waypoints": "LUVTT/a11000/s250/ho RCTOR/a7000 UNMAN/h181",
-          "cruise_altitude": 34000,
-          "route": "/. UNMAN",
-          "initial_controller": "ZTL 43 Pulaski High",
-          "initial_facility": "ZTL",
-          "initial_altitude": 11000,
-          "initial_speed": 250,
-          "expect_approach": null,
-          "airlines": {
-            "KGSP": [
-              {
-                "icao": "FDX",
-                "fleet": "long",
-                "airport": "KIND"
-              },
-              {
-                "icao": "UPS",
-                "airport": "KSDF"
-              },
-              {
-                "icao": "FDX",
-                "fleet": "long",
-                "airport": "KMEM"
-              },
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KDTW"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "WORXS2": {
-      "arrivals": [
-        {
-          "waypoints": "WORXS TUSDE/ho ANGRI/a11000 TDAAY/h43",
-          "cruise_altitude": 34000,
-          "route": "/. TDAAY",
-          "initial_controller": "ZTL 43 Pulaski High",
-          "initial_facility": "ZTL",
-          "initial_altitude": 14000,
-          "initial_speed": 280,
-          "expect_approach": null,
-          "airlines": {
-            "KGSP": [
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KCLT"
-              },
-              {
-                "icao": "DAL",
-                "fleet": "short",
-                "airport": "KATL"
-              },
-              {
-                "icao": "SWA",
-                "fleet": "short",
-                "airport": "KATL"
-              },
-              {
-                "icao": "AAL",
-                "fleet": "short",
-                "airport": "KDFW"
-              },
-              {
-                "icao": "UAL",
-                "fleet": "short",
-                "airport": "KIAH"
-              }
-            ]
-          }
-        }
-      ]
-    }
-  },
-  "default_scenario": "KGSP Runway 22",
-  "fixes": {
-    "_GSP_4": "N34.52.58.430,W82.13.42.760",
-    "_GSP_22": "N34.54.30.210,W82.12.32.492",
-    "KGSP": "N33.33.49.992,W86.45.08.294"
-  },
-  "name": "KGSP",
-  "primary_airport": "KGSP",
-  "reporting_points": [
-    "TDAAY",
-    "TYRES",
-    "SPA"
-  ],
-  "scenarios": {
-    "KGSP Runway 22": {
-      "airspace": {
-        "GSP_W_APP": [
-          "GSPAPP"
-        ],
-        "GSP_E_APP": [
-          "GSPAPP"
-        ],
-        "GSP_S_APP": [
-          "GSPAPP"
-        ]
-      },
-      "arrival_runways": [
-        {
-          "airport": "KGSP",
-          "runway": "22"
-        }
-      ],
-      "inbound_rates": {
+    "inbound_flows": {
         "JUNNR3": {
-          "KGSP": 6
-        },
-        "RCTOR2": {
-          "KGSP": 8
+            "arrivals": [
+                {
+                    "waypoints": "KWOOD/ho TANCE/a10000 SPA/h264",
+                    "cruise_altitude": 34000,
+                    "route": "/. SPA",
+                    "initial_controller": "C43",
+                    "initial_altitude": 11000,
+                    "initial_speed": 280,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KGSP": [
+                            {
+                                "icao": "RPA",
+                                "airport": "KDCA"
+                            },
+                            {
+                                "icao": "RPA",
+                                "airport": "KEWR"
+                            },
+                            {
+                                "icao": "JIA",
+                                "airport": "KCLT"
+                            },
+                            {
+                                "icao": "EDV",
+                                "airport": "KLGA"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "MCHLN2": {
-          "KGSP": 4
-        },
-        "WORXS2": {
-          "KGSP": 10
-        }
-      },
-      "configuration": {
-        "config_id": "STD"
-      },
-      "default_maps": [
-        "SOUTH FLOW"
-      ],
-      "departure_runways": [
-        {
-          "airport": "KGSP",
-          "rate": 20,
-          "runway": "22"
-        }
-      ],
-      "wind": {
-        "direction": "190-250"
-      }
-    },
-    "KGSP Runway 4": {
-      "airspace": {
-        "GSP_W_APP": [
-          "GSPAPP"
-        ],
-        "GSP_E_APP": [
-          "GSPAPP"
-        ],
-        "GSP_S_APP": [
-          "GSPAPP"
-        ]
-      },
-      "arrival_runways": [
-        {
-          "airport": "KGSP",
-          "runway": "4"
-        }
-      ],
-      "inbound_rates": {
-        "JUNNR3": {
-          "KGSP": 6
+            "arrivals": [
+                {
+                    "waypoints": "PROVN/ho MCHLN/a11000 TYRES/h4",
+                    "cruise_altitude": 34000,
+                    "route": "/. TYRES",
+                    "initial_controller": "C43",
+                    "initial_altitude": 11000,
+                    "initial_speed": 280,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KGSP": [
+                            {
+                                "icao": "ENY",
+                                "airport": "KMIA"
+                            },
+                            {
+                                "icao": "ENY",
+                                "airport": "KORD"
+                            },
+                            {
+                                "icao": "SKW",
+                                "airport": "KORD"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "RCTOR2": {
-          "KGSP": 8
-        },
-        "MCHLN2": {
-          "KGSP": 4
+            "arrivals": [
+                {
+                    "waypoints": "LUVTT/a11000/s250/ho RCTOR/a7000 UNMAN/h181",
+                    "cruise_altitude": 34000,
+                    "route": "/. UNMAN",
+                    "initial_controller": "C43",
+                    "initial_altitude": 11000,
+                    "initial_speed": 250,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KGSP": [
+                            {
+                                "icao": "FDX",
+                                "fleet": "long",
+                                "airport": "KIND"
+                            },
+                            {
+                                "icao": "UPS",
+                                "airport": "KSDF"
+                            },
+                            {
+                                "icao": "FDX",
+                                "fleet": "long",
+                                "airport": "KMEM"
+                            },
+                            {
+                                "icao": "DAL",
+                                "fleet": "short",
+                                "airport": "KDTW"
+                            }
+                        ]
+                    }
+                }
+            ]
         },
         "WORXS2": {
-          "KGSP": 10
+            "arrivals": [
+                {
+                    "waypoints": "WORXS TUSDE/ho ANGRI/a11000 TDAAY/h43",
+                    "cruise_altitude": 34000,
+                    "route": "/. TDAAY",
+                    "initial_controller": "C43",
+                    "initial_altitude": 14000,
+                    "initial_speed": 280,
+                    "expect_approach": null,
+                    "airlines": {
+                        "KGSP": [
+                            {
+                                "icao": "AAL",
+                                "fleet": "short",
+                                "airport": "KCLT"
+                            },
+                            {
+                                "icao": "DAL",
+                                "fleet": "short",
+                                "airport": "KATL"
+                            },
+                            {
+                                "icao": "SWA",
+                                "fleet": "short",
+                                "airport": "KATL"
+                            },
+                            {
+                                "icao": "AAL",
+                                "fleet": "short",
+                                "airport": "KDFW"
+                            },
+                            {
+                                "icao": "UAL",
+                                "fleet": "short",
+                                "airport": "KIAH"
+                            }
+                        ]
+                    }
+                }
+            ]
         }
-      },
-      "configuration": {
-        "config_id": "STD"
-      },
-      "default_maps": [
-        "NORTH FLOW"
-      ],
-      "departure_runways": [
-        {
-          "airport": "KGSP",
-          "rate": 20,
-          "runway": "4"
+    },
+    "default_scenario": "KGSP Runway 22",
+    "fixes": {
+        "_GSP_4": "N34.52.58.430,W82.13.42.760",
+        "_GSP_22": "N34.54.30.210,W82.12.32.492",
+        "KGSP": "N33.33.49.992,W86.45.08.294"
+    },
+    "name": "KGSP",
+    "primary_airport": "KGSP",
+    "reporting_points": [
+        "TDAAY",
+        "TYRES",
+        "SPA"
+    ],
+    "scenarios": {
+        "KGSP Runway 22": {
+            "airspace": {
+                "1W": [
+                    "GSPAPP"
+                ],
+                "1E": [
+                    "GSPAPP"
+                ],
+                "1S": [
+                    "GSPAPP"
+                ]
+            },
+            "arrival_runways": [
+                {
+                    "airport": "KGSP",
+                    "runway": "22"
+                }
+            ],
+            "inbound_rates": {
+                "JUNNR3": {
+                    "KGSP": 6
+                },
+                "RCTOR2": {
+                    "KGSP": 8
+                },
+                "MCHLN2": {
+                    "KGSP": 4
+                },
+                "WORXS2": {
+                    "KGSP": 10
+                }
+            },
+            "configuration": {
+                "config_id": "STD"
+            },
+            "default_maps": [
+                "SOUTH FLOW"
+            ],
+            "departure_runways": [
+                {
+                    "airport": "KGSP",
+                    "rate": 20,
+                    "runway": "22"
+                }
+            ],
+            "wind": {
+                "direction": "190-250"
+            }
+        },
+        "KGSP Runway 4": {
+            "airspace": {
+                "1W": [
+                    "GSPAPP"
+                ],
+                "1E": [
+                    "GSPAPP"
+                ],
+                "1S": [
+                    "GSPAPP"
+                ]
+            },
+            "arrival_runways": [
+                {
+                    "airport": "KGSP",
+                    "runway": "4"
+                }
+            ],
+            "inbound_rates": {
+                "JUNNR3": {
+                    "KGSP": 6
+                },
+                "RCTOR2": {
+                    "KGSP": 8
+                },
+                "MCHLN2": {
+                    "KGSP": 4
+                },
+                "WORXS2": {
+                    "KGSP": 10
+                }
+            },
+            "configuration": {
+                "config_id": "STD"
+            },
+            "default_maps": [
+                "NORTH FLOW"
+            ],
+            "departure_runways": [
+                {
+                    "airport": "KGSP",
+                    "rate": 20,
+                    "runway": "4"
+                }
+            ],
+            "wind": {
+                "direction": "10-70"
+            }
         }
-      ],
-      "wind": {
-        "direction": "10-70"
-      }
     }
-  }
 }

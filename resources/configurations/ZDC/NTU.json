@@ -1,14 +1,14 @@
 {
     "control_positions": {
-        "NTU_APP": {
+        "1O": {
+            "callsign": "NTU_APP",
             "frequency": 123900,
-            "radio_name": "Oceana Approach",
-            "sector_id": "1O"
+            "radio_name": "Oceana Approach"
         },
-        "NTU_TWR": {
+        "1Z": {
+            "callsign": "NTU_TWR",
             "frequency": 127075,
-            "radio_name": "Oceana Tower",
-            "sector_id": "1Z"
+            "radio_name": "Oceana Tower"
         }
     },
     "handoff_ids": [
@@ -19,6 +19,10 @@
         {
             "id": "ORF",
             "prefix": "1"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "C"
         }
     ]
 }

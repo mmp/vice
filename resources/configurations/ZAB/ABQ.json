@@ -1,49 +1,49 @@
 {
     "control_positions": {
-        "ABQ_TWR": {
+        "1T": {
+            "callsign": "ABQ_TWR",
             "frequency": 120300,
-            "radio_name": "Albuqueque Tower",
-            "sector_id": "1T"
+            "radio_name": "Albuqueque Tower"
         },
-        "ABQ_N_APP": {
+        "1N": {
+            "callsign": "ABQ_N_APP",
             "frequency": 127400,
-            "radio_name": "Albuquerque Approach",
-            "sector_id": "1N"
+            "radio_name": "Albuquerque Approach"
         },
-        "ABQ_S_APP": {
+        "1S": {
+            "callsign": "ABQ_S_APP",
             "frequency": 123900,
-            "radio_name": "Albuqueque Approach",
-            "sector_id": "1S"
+            "radio_name": "Albuqueque Approach"
         },
-        "ABQ_F_APP": {
+        "1F": {
+            "callsign": "ABQ_F_APP",
             "frequency": 126300,
-            "radio_name": "Albuqueque Approach",
-            "sector_id": "1F"
+            "radio_name": "Albuqueque Approach"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "BRRTO1": "ABQ_S_APP",
-                    "COLTR4": "ABQ_S_APP",
-                    "LOWBO3": "ABQ_N_APP",
-                    "LZZRD4": "ABQ_S_APP",
-                    "SNDIA4": "ABQ_N_APP"
+                    "BRRTO1": "1S",
+                    "COLTR4": "1S",
+                    "LOWBO3": "1N",
+                    "LZZRD4": "1S",
+                    "SNDIA4": "1N"
                 },
                 "departure_assignments": {
-                    "KABQ": "ABQ_N_APP"
+                    "KABQ": "1N"
                 },
                 "default_consolidation": {
-                    "ABQ_N_APP": [
-                        "ABQ_S_APP"
+                    "1N": [
+                        "1S"
                     ]
                 }
             }
         },
         "center": "KABQ",
         "controller_configs": {
-            "ABQ_N_APP": {
+            "1N": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -52,7 +52,7 @@
                     }
                 ]
             },
-            "ABQ_S_APP": {
+            "1S": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -112,7 +112,7 @@
     "handoff_ids": [
         {
             "id": "ZAB",
-            "eram_prefix": "A"
+            "eram_prefix": "C"
         }
     ]
 }

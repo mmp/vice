@@ -1,100 +1,100 @@
 {
     "control_positions": {
-        "BDL_B_APP": {
+        "1B": {
+            "callsign": "BDL_B_APP",
             "frequency": 123950,
-            "radio_name": "Bradley Approach",
-            "sector_id": "1B"
+            "radio_name": "Bradley Approach"
         },
-        "BDL_F_APP": {
+        "1F": {
+            "callsign": "BDL_F_APP",
             "frequency": 127225,
-            "radio_name": "Bradley Approach",
-            "sector_id": "1F"
+            "radio_name": "Bradley Approach"
         },
-        "BDL_H_APP": {
+        "1H": {
+            "callsign": "BDL_H_APP",
             "frequency": 127800,
-            "radio_name": "Bradley Approach",
-            "sector_id": "1H"
+            "radio_name": "Bradley Approach"
         },
-        "BDL_W_APP": {
+        "1W": {
+            "callsign": "BDL_W_APP",
             "frequency": 125350,
-            "radio_name": "Bradley Approach",
-            "sector_id": "1W"
+            "radio_name": "Bradley Approach"
         },
-        "BDL_E_APP": {
+        "1E": {
+            "callsign": "BDL_E_APP",
             "frequency": 119000,
-            "radio_name": "Bradley Approach",
-            "sector_id": "1E"
+            "radio_name": "Bradley Approach"
         },
-        "BDL_TWR": {
+        "1T": {
+            "callsign": "BDL_TWR",
             "frequency": 120300,
-            "radio_name": "Bradley Tower",
-            "sector_id": "1T"
+            "radio_name": "Bradley Tower"
         },
-        "HFD_TWR": {
+        "1S": {
+            "callsign": "HFD_TWR",
             "frequency": 119600,
             "radio_name": "Brainard Tower",
-            "scope_char": "H",
-            "sector_id": "1S"
+            "scope_char": "H"
         },
-        "ORH_TWR": {
+        "1U": {
+            "callsign": "ORH_TWR",
             "frequency": 120500,
             "radio_name": "Worcester Tower",
-            "scope_char": "W",
-            "sector_id": "1U"
+            "scope_char": "W"
         },
-        "CEF_TWR": {
+        "1C": {
+            "callsign": "CEF_TWR",
             "frequency": 118900,
-            "radio_name": "Westover Tower",
-            "sector_id": "1C"
+            "radio_name": "Westover Tower"
         },
-        "BAF_TWR": {
+        "1X": {
+            "callsign": "BAF_TWR",
             "frequency": 134850,
             "radio_name": "Westfield Tower",
-            "scope_char": "F",
-            "sector_id": "1X"
+            "scope_char": "F"
         }
     },
     "stars_config": {
         "configurations": {
             "CNW": {
                 "inbound_assignments": {
-                    "DPK3": "BDL_H_APP",
-                    "STELA1.Ga": "BDL_W_APP",
-                    "STELA1.Jets": "BDL_W_APP"
+                    "DPK3": "1H",
+                    "STELA1.Ga": "1W",
+                    "STELA1.Jets": "1W"
                 },
                 "departure_assignments": {
-                    "KBAF": "BDL_W_APP",
-                    "KBDL": "BDL_B_APP",
-                    "KCEF": "BDL_W_APP",
-                    "KHFD": "BDL_H_APP",
-                    "KORH": "BDL_E_APP"
+                    "KBAF": "1W",
+                    "KBDL": "1B",
+                    "KCEF": "1W",
+                    "KHFD": "1H",
+                    "KORH": "1E"
                 },
                 "default_consolidation": {
-                    "BDL_B_APP": [
-                        "BDL_E_APP",
-                        "BDL_H_APP",
-                        "BDL_W_APP"
+                    "1B": [
+                        "1E",
+                        "1H",
+                        "1W"
                     ]
                 }
             },
             "STD": {
                 "inbound_assignments": {
-                    "DPK3": "BDL_B_APP",
-                    "STELA1.Ga": "BDL_W_APP",
-                    "STELA1.Jets": "BDL_W_APP"
+                    "DPK3": "1B",
+                    "STELA1.Ga": "1W",
+                    "STELA1.Jets": "1W"
                 },
                 "departure_assignments": {
-                    "KBAF": "BDL_W_APP",
-                    "KBDL": "BDL_B_APP",
-                    "KCEF": "BDL_W_APP",
-                    "KHFD": "BDL_H_APP",
-                    "KORH": "BDL_E_APP"
+                    "KBAF": "1W",
+                    "KBDL": "1B",
+                    "KCEF": "1W",
+                    "KHFD": "1H",
+                    "KORH": "1E"
                 },
                 "default_consolidation": {
-                    "BDL_B_APP": [
-                        "BDL_E_APP",
-                        "BDL_H_APP",
-                        "BDL_W_APP"
+                    "1B": [
+                        "1E",
+                        "1H",
+                        "1W"
                     ]
                 }
             }
@@ -179,7 +179,7 @@
         },
         {
             "id": "ZBW",
-            "eram_prefix": "B"
+            "eram_prefix": "C"
         },
         {
             "id": "ZNY",

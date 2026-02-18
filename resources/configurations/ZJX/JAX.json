@@ -1,420 +1,420 @@
 {
     "control_positions": {
-        "JAX_N_APP": {
+        "1N": {
+            "callsign": "JAX_N_APP",
             "frequency": 127000,
-            "radio_name": "Jacksonville approach",
-            "sector_id": "1N"
+            "radio_name": "Jacksonville approach"
         },
-        "JAX_W_APP": {
+        "1W": {
+            "callsign": "JAX_W_APP",
             "frequency": 127775,
-            "radio_name": "Jacksonville approach",
-            "sector_id": "1W"
+            "radio_name": "Jacksonville approach"
         },
-        "JAX_E_APP": {
+        "1E": {
+            "callsign": "JAX_E_APP",
             "frequency": 132775,
-            "radio_name": "Jacksonville approach",
-            "sector_id": "1E"
+            "radio_name": "Jacksonville approach"
         },
-        "JAX_R_APP": {
+        "1R": {
+            "callsign": "JAX_R_APP",
             "frequency": 119000,
-            "radio_name": "Jacksonville approach",
-            "sector_id": "1R"
+            "radio_name": "Jacksonville approach"
         },
-        "JAX_J_APP": {
+        "1J": {
+            "callsign": "JAX_J_APP",
             "frequency": 119850,
-            "radio_name": "Jacksonville approach",
-            "sector_id": "1J"
+            "radio_name": "Jacksonville approach"
         },
-        "JAX_S_APP": {
+        "1S": {
+            "callsign": "JAX_S_APP",
             "frequency": 124900,
-            "radio_name": "Jacksonville approach",
-            "sector_id": "1S"
+            "radio_name": "Jacksonville approach"
         },
-        "JAX_A_APP": {
+        "1A": {
+            "callsign": "JAX_A_APP",
             "frequency": 121300,
-            "radio_name": "Jacksonville approach",
-            "sector_id": "1A"
+            "radio_name": "Jacksonville approach"
         },
-        "JAX_G_APP": {
+        "1G": {
+            "callsign": "JAX_G_APP",
             "frequency": 118175,
-            "radio_name": "Jacksonville approach",
-            "sector_id": "1G"
+            "radio_name": "Jacksonville approach"
         },
-        "JAX_D_APP": {
+        "1D": {
+            "callsign": "JAX_D_APP",
             "frequency": 128675,
-            "radio_name": "Jacksonville approach",
-            "sector_id": "1D"
+            "radio_name": "Jacksonville approach"
         },
-        "JAX_V_APP": {
+        "1V": {
+            "callsign": "JAX_V_APP",
             "frequency": 118600,
-            "radio_name": "Jacksonville approach",
-            "sector_id": "1V"
+            "radio_name": "Jacksonville approach"
         },
-        "Jacksonville Tower": {
+        "1T": {
+            "callsign": "Jacksonville Tower",
             "frequency": 118300,
-            "radio_name": "Jacksonville Tower",
-            "sector_id": "1T"
+            "radio_name": "Jacksonville Tower"
         },
-        "Craig Tower": {
+        "3CT": {
+            "callsign": "Craig Tower",
             "frequency": 132100,
-            "radio_name": "Jacksonville Tower",
-            "sector_id": "3CT"
+            "radio_name": "Jacksonville Tower"
         },
-        "St. Augustine Tower": {
+        "3ST": {
+            "callsign": "St. Augustine Tower",
             "frequency": 127625,
-            "radio_name": "St. Augustine Tower",
-            "sector_id": "3ST"
+            "radio_name": "St. Augustine Tower"
         },
-        "Ocala Tower": {
+        "3OT": {
+            "callsign": "Ocala Tower",
             "frequency": 119250,
-            "radio_name": "Ocala Tower",
-            "sector_id": "3OT"
+            "radio_name": "Ocala Tower"
         },
-        "Gainesville Tower": {
+        "3GT": {
+            "callsign": "Gainesville Tower",
             "frequency": 119550,
-            "radio_name": "Gainesville Tower",
-            "sector_id": "3GT"
+            "radio_name": "Gainesville Tower"
         },
-        "Cecil Tower": {
+        "3FT": {
+            "callsign": "Cecil Tower",
             "frequency": 126100,
-            "radio_name": "Cecil Tower",
-            "sector_id": "3FT"
+            "radio_name": "Cecil Tower"
         },
-        "Navy Tower": {
+        "3NT": {
+            "callsign": "Navy Tower",
             "frequency": 125150,
-            "radio_name": "Navy Tower",
-            "sector_id": "3NT"
+            "radio_name": "Navy Tower"
         },
-        "Mayport Tower": {
+        "3MT": {
+            "callsign": "Mayport Tower",
             "frequency": 118750,
-            "radio_name": "Navy Maypoint Tower",
-            "sector_id": "3MT"
+            "radio_name": "Navy Maypoint Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "KJA": {
                 "inbound_assignments": {
-                    "ALLMA": "JAX_R_APP",
-                    "ESENT": "JAX_N_APP",
-                    "LUNNI2_E": "JAX_N_APP",
-                    "MARQO3": "JAX_R_APP",
-                    "OHDEA2": "JAX_R_APP",
-                    "OMN": "JAX_E_APP",
-                    "ORLNOV": "JAX_W_APP",
-                    "QUBEN2": "JAX_E_APP",
-                    "TEBOW2": "JAX_W_APP",
-                    "V159_S": "JAX_N_APP",
-                    "V51": "JAX_E_APP"
+                    "ALLMA": "1R",
+                    "ESENT": "1N",
+                    "LUNNI2_E": "1N",
+                    "MARQO3": "1R",
+                    "OHDEA2": "1R",
+                    "OMN": "1E",
+                    "ORLNOV": "1W",
+                    "QUBEN2": "1E",
+                    "TEBOW2": "1W",
+                    "V159_S": "1N",
+                    "V51": "1E"
                 },
                 "departure_assignments": {
-                    "KCRG": "JAX_S_APP",
-                    "KFHB": "JAX_N_APP",
-                    "KHEG": "JAX_W_APP",
-                    "KJAX/8": "JAX_N_APP",
-                    "KJAX/14": "JAX_S_APP",
-                    "KNIP": "JAX_S_APP",
-                    "KNRB": "JAX_S_APP",
-                    "KSGJ": "JAX_S_APP",
-                    "KVQQ": "JAX_W_APP"
+                    "KCRG": "1S",
+                    "KFHB": "1N",
+                    "KHEG": "1W",
+                    "KJAX/8": "1N",
+                    "KJAX/14": "1S",
+                    "KNIP": "1S",
+                    "KNRB": "1S",
+                    "KSGJ": "1S",
+                    "KVQQ": "1W"
                 },
                 "default_consolidation": {
-                    "JAX_A_APP": [
-                        "JAX_W_APP"
+                    "1A": [
+                        "1W"
                     ],
-                    "JAX_G_APP": [
-                        "JAX_J_APP"
+                    "1G": [
+                        "1J"
                     ],
-                    "JAX_N_APP": [
-                        "JAX_A_APP",
-                        "JAX_R_APP"
+                    "1N": [
+                        "1A",
+                        "1R"
                     ],
-                    "JAX_S_APP": [
-                        "JAX_N_APP",
-                        "JAX_V_APP"
+                    "1S": [
+                        "1N",
+                        "1V"
                     ],
-                    "JAX_V_APP": [
-                        "JAX_D_APP",
-                        "JAX_G_APP"
+                    "1V": [
+                        "1D",
+                        "1G"
                     ],
-                    "JAX_W_APP": [
-                        "JAX_E_APP"
+                    "1W": [
+                        "1E"
                     ]
                 }
             },
             "KJ1": {
                 "inbound_assignments": {
-                    "ALLMA": "JAX_R_APP",
-                    "ESENT": "JAX_N_APP",
-                    "LUNNI2_E": "JAX_N_APP",
-                    "MARQO3": "JAX_R_APP",
-                    "OHDEA2": "JAX_R_APP",
-                    "OMN": "JAX_E_APP",
-                    "ORLNOV": "JAX_W_APP",
-                    "QUBEN2": "JAX_E_APP",
-                    "TEBOW2": "JAX_W_APP",
-                    "V159_S": "JAX_N_APP",
-                    "V51": "JAX_E_APP"
+                    "ALLMA": "1R",
+                    "ESENT": "1N",
+                    "LUNNI2_E": "1N",
+                    "MARQO3": "1R",
+                    "OHDEA2": "1R",
+                    "OMN": "1E",
+                    "ORLNOV": "1W",
+                    "QUBEN2": "1E",
+                    "TEBOW2": "1W",
+                    "V159_S": "1N",
+                    "V51": "1E"
                 },
                 "departure_assignments": {
-                    "KCRG": "JAX_S_APP",
-                    "KFHB": "JAX_N_APP",
-                    "KHEG": "JAX_W_APP",
-                    "KJAX": "JAX_S_APP",
-                    "KNIP": "JAX_W_APP",
-                    "KNRB": "JAX_N_APP",
-                    "KSGJ": "JAX_S_APP",
-                    "KVQQ": "JAX_W_APP"
+                    "KCRG": "1S",
+                    "KFHB": "1N",
+                    "KHEG": "1W",
+                    "KJAX": "1S",
+                    "KNIP": "1W",
+                    "KNRB": "1N",
+                    "KSGJ": "1S",
+                    "KVQQ": "1W"
                 },
                 "default_consolidation": {
-                    "JAX_R_APP": [
-                        "JAX_E_APP",
-                        "JAX_N_APP",
-                        "JAX_S_APP",
-                        "JAX_W_APP"
+                    "1R": [
+                        "1E",
+                        "1N",
+                        "1S",
+                        "1W"
                     ]
                 }
             },
             "KJ2": {
                 "inbound_assignments": {
-                    "ALLMA": "JAX_R_APP",
-                    "ESENT": "JAX_N_APP",
-                    "LUNNI2_E": "JAX_N_APP",
-                    "MARQO3": "JAX_R_APP",
-                    "OHDEA2": "JAX_R_APP",
-                    "OMN": "JAX_E_APP",
-                    "ORL": "JAX_D_APP",
-                    "QUBEN2": "JAX_E_APP",
-                    "SHREK2": "JAX_D_APP",
-                    "TEBOW2": "JAX_W_APP",
-                    "V159": "JAX_D_APP",
-                    "V159_S": "JAX_N_APP",
-                    "V441 North": "JAX_D_APP",
-                    "V441 South": "JAX_A_APP",
-                    "V51": "JAX_E_APP",
-                    "V537 East": "JAX_A_APP",
-                    "V537 West": "JAX_A_APP"
+                    "ALLMA": "1R",
+                    "ESENT": "1N",
+                    "LUNNI2_E": "1N",
+                    "MARQO3": "1R",
+                    "OHDEA2": "1R",
+                    "OMN": "1E",
+                    "ORL": "1D",
+                    "QUBEN2": "1E",
+                    "SHREK2": "1D",
+                    "TEBOW2": "1W",
+                    "V159": "1D",
+                    "V159_S": "1N",
+                    "V441 North": "1D",
+                    "V441 South": "1A",
+                    "V51": "1E",
+                    "V537 East": "1A",
+                    "V537 West": "1A"
                 },
                 "departure_assignments": {
-                    "KCRG": "JAX_S_APP",
-                    "KFHB": "JAX_N_APP",
-                    "KHEG": "JAX_W_APP",
-                    "KJAX/8": "JAX_N_APP",
-                    "KJAX/14": "JAX_S_APP",
-                    "KNIP": "JAX_S_APP",
-                    "KNRB": "JAX_S_APP",
-                    "KSGJ": "JAX_S_APP",
-                    "KVQQ": "JAX_W_APP",
-                    "KGNV": "JAX_G_APP",
-                    "KOCF": "JAX_V_APP"
+                    "KCRG": "1S",
+                    "KFHB": "1N",
+                    "KHEG": "1W",
+                    "KJAX/8": "1N",
+                    "KJAX/14": "1S",
+                    "KNIP": "1S",
+                    "KNRB": "1S",
+                    "KSGJ": "1S",
+                    "KVQQ": "1W",
+                    "KGNV": "1G",
+                    "KOCF": "1V"
                 },
                 "default_consolidation": {
-                    "JAX_A_APP": [
-                        "JAX_W_APP"
+                    "1A": [
+                        "1W"
                     ],
-                    "JAX_G_APP": [
-                        "JAX_J_APP"
+                    "1G": [
+                        "1J"
                     ],
-                    "JAX_N_APP": [
-                        "JAX_A_APP",
-                        "JAX_R_APP"
+                    "1N": [
+                        "1A",
+                        "1R"
                     ],
-                    "JAX_S_APP": [
-                        "JAX_N_APP",
-                        "JAX_V_APP"
+                    "1S": [
+                        "1N",
+                        "1V"
                     ],
-                    "JAX_V_APP": [
-                        "JAX_D_APP",
-                        "JAX_G_APP"
+                    "1V": [
+                        "1D",
+                        "1G"
                     ],
-                    "JAX_W_APP": [
-                        "JAX_E_APP"
+                    "1W": [
+                        "1E"
                     ]
                 }
             },
             "KJ3": {
                 "inbound_assignments": {
-                    "ALLMA": "JAX_R_APP",
-                    "ESENT": "JAX_N_APP",
-                    "LUNNI2_W": "JAX_N_APP",
-                    "MARQO3": "JAX_R_APP",
-                    "OHDEA2": "JAX_R_APP",
-                    "OMN": "JAX_E_APP",
-                    "ORLNOV": "JAX_W_APP",
-                    "QUBEN2": "JAX_E_APP",
-                    "TEBOW2": "JAX_W_APP",
-                    "V159_S": "JAX_R_APP",
-                    "V51": "JAX_E_APP"
+                    "ALLMA": "1R",
+                    "ESENT": "1N",
+                    "LUNNI2_W": "1N",
+                    "MARQO3": "1R",
+                    "OHDEA2": "1R",
+                    "OMN": "1E",
+                    "ORLNOV": "1W",
+                    "QUBEN2": "1E",
+                    "TEBOW2": "1W",
+                    "V159_S": "1R",
+                    "V51": "1E"
                 },
                 "departure_assignments": {
-                    "KCRG": "JAX_S_APP",
-                    "KFHB": "JAX_N_APP",
-                    "KHEG": "JAX_W_APP",
-                    "KJAX/BRSTL1": "JAX_N_APP",
-                    "KJAX/CROSB2": "JAX_N_APP",
-                    "KJAX/EXBOX2": "JAX_S_APP",
-                    "KJAX/JETIN2": "JAX_N_APP",
-                    "KJAX/SAWGY3": "JAX_S_APP",
-                    "KNIP": "JAX_W_APP",
-                    "KNRB": "JAX_S_APP",
-                    "KSGJ": "JAX_S_APP",
-                    "KVQQ": "JAX_W_APP"
+                    "KCRG": "1S",
+                    "KFHB": "1N",
+                    "KHEG": "1W",
+                    "KJAX/BRSTL1": "1N",
+                    "KJAX/CROSB2": "1N",
+                    "KJAX/EXBOX2": "1S",
+                    "KJAX/JETIN2": "1N",
+                    "KJAX/SAWGY3": "1S",
+                    "KNIP": "1W",
+                    "KNRB": "1S",
+                    "KSGJ": "1S",
+                    "KVQQ": "1W"
                 },
                 "default_consolidation": {
-                    "JAX_A_APP": [
-                        "JAX_W_APP"
+                    "1A": [
+                        "1W"
                     ],
-                    "JAX_G_APP": [
-                        "JAX_J_APP"
+                    "1G": [
+                        "1J"
                     ],
-                    "JAX_N_APP": [
-                        "JAX_A_APP",
-                        "JAX_R_APP"
+                    "1N": [
+                        "1A",
+                        "1R"
                     ],
-                    "JAX_S_APP": [
-                        "JAX_N_APP",
-                        "JAX_V_APP"
+                    "1S": [
+                        "1N",
+                        "1V"
                     ],
-                    "JAX_V_APP": [
-                        "JAX_D_APP",
-                        "JAX_G_APP"
+                    "1V": [
+                        "1D",
+                        "1G"
                     ],
-                    "JAX_W_APP": [
-                        "JAX_E_APP"
+                    "1W": [
+                        "1E"
                     ]
                 }
             },
             "KJ4": {
                 "inbound_assignments": {
-                    "ALLMA": "JAX_R_APP",
-                    "ESENT": "JAX_N_APP",
-                    "LUNNI2_W": "JAX_N_APP",
-                    "MARQO3": "JAX_R_APP",
-                    "OHDEA2": "JAX_R_APP",
-                    "OMN": "JAX_E_APP",
-                    "ORLNOV": "JAX_W_APP",
-                    "QUBEN2": "JAX_E_APP",
-                    "TEBOW2": "JAX_W_APP",
-                    "V159_S": "JAX_R_APP",
-                    "V51": "JAX_E_APP"
+                    "ALLMA": "1R",
+                    "ESENT": "1N",
+                    "LUNNI2_W": "1N",
+                    "MARQO3": "1R",
+                    "OHDEA2": "1R",
+                    "OMN": "1E",
+                    "ORLNOV": "1W",
+                    "QUBEN2": "1E",
+                    "TEBOW2": "1W",
+                    "V159_S": "1R",
+                    "V51": "1E"
                 },
                 "departure_assignments": {
-                    "KCRG": "JAX_S_APP",
-                    "KFHB": "JAX_N_APP",
-                    "KHEG": "JAX_W_APP",
-                    "KJAX": "JAX_N_APP",
-                    "KNIP": "JAX_W_APP",
-                    "KNRB": "JAX_N_APP",
-                    "KSGJ": "JAX_S_APP",
-                    "KVQQ": "JAX_W_APP"
+                    "KCRG": "1S",
+                    "KFHB": "1N",
+                    "KHEG": "1W",
+                    "KJAX": "1N",
+                    "KNIP": "1W",
+                    "KNRB": "1N",
+                    "KSGJ": "1S",
+                    "KVQQ": "1W"
                 },
                 "default_consolidation": {
-                    "JAX_R_APP": [
-                        "JAX_E_APP",
-                        "JAX_N_APP",
-                        "JAX_S_APP",
-                        "JAX_W_APP"
+                    "1R": [
+                        "1E",
+                        "1N",
+                        "1S",
+                        "1W"
                     ]
                 }
             },
             "KJ5": {
                 "inbound_assignments": {
-                    "ALLMA": "JAX_R_APP",
-                    "ESENT": "JAX_N_APP",
-                    "LUNNI2_W": "JAX_N_APP",
-                    "MARQO3": "JAX_R_APP",
-                    "OHDEA2": "JAX_R_APP",
-                    "OMN": "JAX_E_APP",
-                    "ORL": "JAX_D_APP",
-                    "QUBEN2": "JAX_E_APP",
-                    "SHREK2": "JAX_D_APP",
-                    "TEBOW2": "JAX_W_APP",
-                    "V159": "JAX_D_APP",
-                    "V159_S": "JAX_R_APP",
-                    "V441 North": "JAX_D_APP",
-                    "V441 South": "JAX_A_APP",
-                    "V51": "JAX_E_APP",
-                    "V537 East": "JAX_A_APP",
-                    "V537 West": "JAX_A_APP"
+                    "ALLMA": "1R",
+                    "ESENT": "1N",
+                    "LUNNI2_W": "1N",
+                    "MARQO3": "1R",
+                    "OHDEA2": "1R",
+                    "OMN": "1E",
+                    "ORL": "1D",
+                    "QUBEN2": "1E",
+                    "SHREK2": "1D",
+                    "TEBOW2": "1W",
+                    "V159": "1D",
+                    "V159_S": "1R",
+                    "V441 North": "1D",
+                    "V441 South": "1A",
+                    "V51": "1E",
+                    "V537 East": "1A",
+                    "V537 West": "1A"
                 },
                 "departure_assignments": {
-                    "KCRG": "JAX_S_APP",
-                    "KFHB": "JAX_N_APP",
-                    "KHEG": "JAX_W_APP",
-                    "KJAX/BRSTL1": "JAX_N_APP",
-                    "KJAX/CROSB2": "JAX_N_APP",
-                    "KJAX/EXBOX2": "JAX_S_APP",
-                    "KJAX/JETIN2": "JAX_N_APP",
-                    "KJAX/SAWGY3": "JAX_S_APP",
-                    "KNIP": "JAX_W_APP",
-                    "KNRB": "JAX_S_APP",
-                    "KSGJ": "JAX_S_APP",
-                    "KVQQ": "JAX_W_APP",
-                    "KOCF": "JAX_V_APP",
-                    "KGNV": "JAX_G_APP"
+                    "KCRG": "1S",
+                    "KFHB": "1N",
+                    "KHEG": "1W",
+                    "KJAX/BRSTL1": "1N",
+                    "KJAX/CROSB2": "1N",
+                    "KJAX/EXBOX2": "1S",
+                    "KJAX/JETIN2": "1N",
+                    "KJAX/SAWGY3": "1S",
+                    "KNIP": "1W",
+                    "KNRB": "1S",
+                    "KSGJ": "1S",
+                    "KVQQ": "1W",
+                    "KOCF": "1V",
+                    "KGNV": "1G"
                 },
                 "default_consolidation": {
-                    "JAX_A_APP": [
-                        "JAX_W_APP"
+                    "1A": [
+                        "1W"
                     ],
-                    "JAX_G_APP": [
-                        "JAX_J_APP"
+                    "1G": [
+                        "1J"
                     ],
-                    "JAX_N_APP": [
-                        "JAX_A_APP",
-                        "JAX_R_APP"
+                    "1N": [
+                        "1A",
+                        "1R"
                     ],
-                    "JAX_S_APP": [
-                        "JAX_N_APP",
-                        "JAX_V_APP"
+                    "1S": [
+                        "1N",
+                        "1V"
                     ],
-                    "JAX_V_APP": [
-                        "JAX_D_APP",
-                        "JAX_G_APP"
+                    "1V": [
+                        "1D",
+                        "1G"
                     ],
-                    "JAX_W_APP": [
-                        "JAX_E_APP"
+                    "1W": [
+                        "1E"
                     ]
                 }
             },
             "KJ6": {
                 "inbound_assignments": {
-                    "ALLMA": "JAX_R_APP",
-                    "ESENT": "JAX_N_APP",
-                    "LUNNI2_W": "JAX_N_APP",
-                    "MARQO3": "JAX_R_APP",
-                    "OHDEA2": "JAX_R_APP",
-                    "OMN": "JAX_E_APP",
-                    "ORL": "JAX_D_APP",
-                    "QUBEN2": "JAX_E_APP",
-                    "SHREK2": "JAX_D_APP",
-                    "TEBOW2": "JAX_W_APP",
-                    "V159": "JAX_D_APP",
-                    "V159_S": "JAX_R_APP",
-                    "V441 North": "JAX_D_APP",
-                    "V441 South": "JAX_A_APP",
-                    "V51": "JAX_E_APP",
-                    "V537 East": "JAX_A_APP",
-                    "V537 West": "JAX_A_APP"
+                    "ALLMA": "1R",
+                    "ESENT": "1N",
+                    "LUNNI2_W": "1N",
+                    "MARQO3": "1R",
+                    "OHDEA2": "1R",
+                    "OMN": "1E",
+                    "ORL": "1D",
+                    "QUBEN2": "1E",
+                    "SHREK2": "1D",
+                    "TEBOW2": "1W",
+                    "V159": "1D",
+                    "V159_S": "1R",
+                    "V441 North": "1D",
+                    "V441 South": "1A",
+                    "V51": "1E",
+                    "V537 East": "1A",
+                    "V537 West": "1A"
                 },
                 "departure_assignments": {
-                    "KCRG": "JAX_S_APP",
-                    "KFHB": "JAX_N_APP",
-                    "KHEG": "JAX_W_APP",
-                    "KJAX": "JAX_W_APP",
-                    "KNIP": "JAX_W_APP",
-                    "KNRB": "JAX_N_APP",
-                    "KSGJ": "JAX_S_APP",
-                    "KVQQ": "JAX_W_APP"
+                    "KCRG": "1S",
+                    "KFHB": "1N",
+                    "KHEG": "1W",
+                    "KJAX": "1W",
+                    "KNIP": "1W",
+                    "KNRB": "1N",
+                    "KSGJ": "1S",
+                    "KVQQ": "1W"
                 },
                 "default_consolidation": {
-                    "JAX_R_APP": [
-                        "JAX_D_APP",
-                        "JAX_E_APP",
-                        "JAX_N_APP",
-                        "JAX_A_APP",
-                        "JAX_S_APP",
-                        "JAX_W_APP"
+                    "1R": [
+                        "1D",
+                        "1E",
+                        "1N",
+                        "1A",
+                        "1S",
+                        "1W"
                     ]
                 }
             }
@@ -422,7 +422,7 @@
         "center": "KJAX",
         "force_ql_self": true,
         "controller_configs": {
-            "JAX_S_APP": {
+            "1S": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -431,7 +431,7 @@
                     }
                 ]
             },
-            "JAX_N_APP": {
+            "1N": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -440,7 +440,7 @@
                     }
                 ]
             },
-            "JAX_J_APP": {
+            "1J": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -449,7 +449,7 @@
                     }
                 ]
             },
-            "JAX_R_APP": {
+            "1R": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -458,7 +458,7 @@
                     }
                 ]
             },
-            "JAX_E_APP": {
+            "1E": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -467,7 +467,7 @@
                     }
                 ]
             },
-            "JAX_W_APP": {
+            "1W": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -476,7 +476,7 @@
                     }
                 ]
             },
-            "JAX_V_APP": {
+            "1V": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -485,7 +485,7 @@
                     }
                 ]
             },
-            "JAX_D_APP": {
+            "1D": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -494,7 +494,7 @@
                     }
                 ]
             },
-            "JAX_G_APP": {
+            "1G": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -503,7 +503,7 @@
                     }
                 ]
             },
-            "JAX_A_APP": {
+            "1A": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -651,7 +651,7 @@
                     0,
                     999000
                 ],
-                "receiving_controller": "ZJX 15 Ocala"
+                "receiving_controller": "C15"
             },
             {
                 "fixes": [
@@ -664,7 +664,7 @@
                     0,
                     999000
                 ],
-                "receiving_controller": "ZJX 30 Nepta"
+                "receiving_controller": "C30"
             },
             {
                 "fixes": [
@@ -676,7 +676,7 @@
                     0,
                     999000
                 ],
-                "receiving_controller": "ZJX 54 Jekyl"
+                "receiving_controller": "C54"
             },
             {
                 "fixes": [
@@ -688,7 +688,7 @@
                     0,
                     999000
                 ],
-                "receiving_controller": "ZJX 57 St. Johns"
+                "receiving_controller": "C57"
             },
             {
                 "fixes": [
@@ -700,7 +700,7 @@
                     0,
                     999000
                 ],
-                "receiving_controller": "ZJX 77 Talyor"
+                "receiving_controller": "C77"
             }
         ],
         "coordination_fixes": {
@@ -796,7 +796,7 @@
         },
         {
             "id": "ZJX",
-            "eram_prefix": "J"
+            "eram_prefix": "C"
         },
         {
             "id": "ZMA",

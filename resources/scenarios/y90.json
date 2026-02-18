@@ -419,7 +419,7 @@
                     "waypoints": "DPK/a19000 BELTT/ho MAD/a11000 BRISS",
                     "cruise_altitude": 36000,
                     "star": "DPK3",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 24000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -450,8 +450,7 @@
                                 "airport": "KMSP"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -461,7 +460,7 @@
                     "waypoints": "SYR WILET RKA SWEDE/a14000 CANAN/ho STELA/a9000 MOLDS TOMES",
                     "cruise_altitude": 18000,
                     "star": "STELA1",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 16000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -532,8 +531,7 @@
                                 "airport": "KBUF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -543,7 +541,7 @@
                     "waypoints": "SYR WILET RKA SWEDE/a23000 CANAN/ho STELA/a11000 MOLDS TOMES",
                     "cruise_altitude": 36000,
                     "star": "STELA1",
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "C37",
                     "initial_altitude": 24000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -574,8 +572,7 @@
                                 "airport": "KMSP"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         }

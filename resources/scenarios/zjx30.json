@@ -4,8 +4,7 @@
     "name": "ZJX 30",
     "airports": {
         "KMCO": {
-            "departure_controller": "MCO_B_APP",
-            "departure_facility": "F11",
+            "departure_controller": "O1B",
             "approaches": {
                 "I6L": {
                     "cifp_id": "R36L"
@@ -20,7 +19,7 @@
                         "cleared_altitude": 27000,
                         "sid": "OSPRY1",
                         "waypoints": "KMCO-18L FACTS/a2300+ EARRS/a3000+ LEFTI/a4000+/s230 BLOSM/a7000-/ho88 OSPRY/ho16 GDUNN KNOST N027.56.32.543,W084.20.26.129/ho REMIS",
-                        "handoff_controller": "ZJX 30 Nepta"
+                        "handoff_controller": "30"
                     }
                 }
             },
@@ -92,8 +91,7 @@
             ]
         },
         "KTPA": {
-            "departure_controller": "JAX_S_APP",
-            "departure_facility": "JAX",
+            "departure_controller": "J1S",
             "approaches": {
                 "I9L": {
                     "cifp_id": "I19L"
@@ -108,8 +106,7 @@
             }
         },
         "KSRQ": {
-            "departure_controller": "JAX_S_APP",
-            "departure_facility": "JAX",
+            "departure_controller": "J1S",
             "approaches": {
                 "R14": {
                     "cifp_id": "R14"
@@ -117,8 +114,7 @@
             }
         },
         "KCHS": {
-            "departure_controller": "JAX_S_APP",
-            "departure_facility": "JAX",
+            "departure_controller": "J1S",
             "approaches": {
                 "I15": {
                     "cifp_id": "I15"
@@ -132,7 +128,7 @@
                 {
                     "waypoints": "N028.43.45.418,W088.36.16.982/ho NAITE ROZZI REMIS CHRGE DAAWG CHIVE/a25000 DECKS/a21000+ BULKS/s280 PRICY/a14000 BOCCE JUMBA AMADS/a9000- LORRA/a7000 KMCO-36L/delete",
                     "route": "/. PRICY4",
-                    "initial_controller": "ZHU 24 Leeville",
+                    "initial_controller": "H24",
                     "initial_altitude": 35000,
                     "initial_speed": 300,
                     "assigned_altitude": 35000,
@@ -174,8 +170,7 @@
                                 "airport": "KLAS"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHU"
+                    }
                 }
             ]
         },
@@ -211,10 +206,9 @@
                     ],
                     "initial_altitude": 25000,
                     "assigned_altitude": 34000,
-                    "initial_controller": "ZMA 25 FORT MYERS HIGH",
+                    "initial_controller": "R25",
                     "initial_speed": 300,
-                    "waypoints": "BAGGS OCHHO/ho REMIS NUN COOUP/delete",
-                    "initial_facility": "ZMA"
+                    "waypoints": "BAGGS OCHHO/ho REMIS NUN COOUP/delete"
                 },
                 {
                     "airlines": [
@@ -241,10 +235,9 @@
                     ],
                     "initial_altitude": 35000,
                     "assigned_altitude": 35000,
-                    "initial_controller": "ZJX 11 Brewton",
+                    "initial_controller": "11",
                     "initial_speed": 300,
-                    "waypoints": "KERMI MGMRY DARED/ho VPRER COVIA GAWKS/delete",
-                    "initial_facility": "ZJX"
+                    "waypoints": "KERMI MGMRY DARED/ho VPRER COVIA GAWKS/delete"
                 },
                 {
                     "airlines": [
@@ -272,10 +265,9 @@
                     ],
                     "initial_altitude": 33000,
                     "assigned_altitude": 33000,
-                    "initial_controller": "ZHU 24 Leeville",
+                    "initial_controller": "H24",
                     "initial_speed": 300,
-                    "waypoints": "DUNBE BFMLB/ho DYEES PFNRE RAYZZ/delete",
-                    "initial_facility": "ZHU"
+                    "waypoints": "DUNBE BFMLB/ho DYEES PFNRE RAYZZ/delete"
                 }
             ]
         }

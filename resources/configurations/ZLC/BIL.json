@@ -1,30 +1,30 @@
 {
     "control_positions": {
-        "BIL_TWR": {
+        "1T": {
+            "callsign": "BIL_TWR",
             "frequency": 127200,
-            "radio_name": "Billings Tower",
-            "sector_id": "1T"
+            "radio_name": "Billings Tower"
         },
-        "BIL_APP": {
+        "1W": {
+            "callsign": "BIL_APP",
             "frequency": 119200,
-            "radio_name": "Billings Approach",
-            "sector_id": "1W"
+            "radio_name": "Billings Approach"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "BGHRN3": "BIL_APP",
-                    "CRAZI4": "BIL_APP",
-                    "KUSTR3": "BIL_APP",
-                    "YLSTN3": "BIL_APP"
+                    "BGHRN3": "1W",
+                    "CRAZI4": "1W",
+                    "KUSTR3": "1W",
+                    "YLSTN3": "1W"
                 },
                 "departure_assignments": {
-                    "KBIL": "BIL_APP"
+                    "KBIL": "1W"
                 },
                 "default_consolidation": {
-                    "BIL_APP": []
+                    "1W": []
                 }
             }
         },
@@ -89,7 +89,7 @@
     "handoff_ids": [
         {
             "id": "ZLC",
-            "eram_prefix": "U"
+            "eram_prefix": "C"
         }
     ]
 }

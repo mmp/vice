@@ -1,25 +1,29 @@
 {
     "control_positions": {
-        "NYL_APP": {
+        "1A": {
+            "callsign": "NYL_APP",
             "frequency": 124700,
-            "radio_name": "Yuma Approach",
-            "sector_id": "1A"
+            "radio_name": "Yuma Approach"
         },
-        "NYL_DEP": {
+        "1D": {
+            "callsign": "NYL_DEP",
             "frequency": 125550,
-            "radio_name": "Yuma Departure",
-            "sector_id": "1D"
+            "radio_name": "Yuma Departure"
         },
-        "NYL_TWR": {
+        "1T": {
+            "callsign": "NYL_TWR",
             "frequency": 119300,
-            "radio_name": "Yuma Tower",
-            "sector_id": "1T"
+            "radio_name": "Yuma Tower"
         }
     },
     "handoff_ids": [
         {
             "id": "ZAB",
             "eram_prefix": "A"
+        },
+        {
+            "id": "ZLA",
+            "eram_prefix": "C"
         }
     ]
 }

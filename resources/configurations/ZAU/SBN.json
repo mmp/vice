@@ -1,41 +1,41 @@
 {
     "control_positions": {
-        "SBN_TWR": {
+        "1T": {
+            "callsign": "SBN_TWR",
             "frequency": 135675,
-            "radio_name": "South Bend Tower",
-            "sector_id": "1T"
+            "radio_name": "South Bend Tower"
         },
-        "SBN_S_APP": {
+        "1S": {
+            "callsign": "SBN_S_APP",
             "frequency": 132050,
-            "radio_name": "South Bend Approach",
-            "sector_id": "1S"
+            "radio_name": "South Bend Approach"
         },
-        "SBN_N_APP": {
+        "1N": {
+            "callsign": "SBN_N_APP",
             "frequency": 118550,
-            "radio_name": "South Bend Approach",
-            "sector_id": "1N"
+            "radio_name": "South Bend Approach"
         },
-        "AZO_E_APP": {
+        "1E": {
+            "callsign": "AZO_E_APP",
             "frequency": 119200,
-            "radio_name": "Great Lakes Approach",
-            "sector_id": "1E"
+            "radio_name": "Great Lakes Approach"
         },
-        "FWA_W_APP": {
+        "1W": {
+            "callsign": "FWA_W_APP",
             "frequency": 127200,
             "radio_name": "Fort Wayne Approach",
-            "sector_id": "1W",
             "scope_char": "3"
         },
-        "GUS_E_APP": {
+        "1G": {
+            "callsign": "GUS_E_APP",
             "frequency": 121050,
             "radio_name": "Grissom Approach",
-            "sector_id": "1G",
             "scope_char": "4"
         },
-        "CHI_Z_APP": {
+        "1Z": {
+            "callsign": "CHI_Z_APP",
             "frequency": 119000,
             "radio_name": "Chicago Approach",
-            "sector_id": "1Z",
             "scope_char": "1"
         }
     },
@@ -43,33 +43,33 @@
         "configurations": {
             "SBN": {
                 "inbound_assignments": {
-                    "EAST": "SBN_S_APP",
-                    "SOUTH": "SBN_S_APP",
-                    "WEST": "SBN_N_APP",
-                    "WEST.ord": "SBN_N_APP"
+                    "EAST": "1S",
+                    "SOUTH": "1S",
+                    "WEST": "1N",
+                    "WEST.ord": "1N"
                 },
                 "departure_assignments": {
-                    "KSBN": "SBN_N_APP"
+                    "KSBN": "1N"
                 },
                 "default_consolidation": {
-                    "SBN_N_APP": [
-                        "SBN_S_APP"
+                    "1N": [
+                        "1S"
                     ]
                 }
             },
             "SB1": {
                 "inbound_assignments": {
-                    "EAST": "SBN_S_APP",
-                    "SOUTH": "SBN_S_APP",
-                    "WEST": "SBN_N_APP",
-                    "WEST.ord": "SBN_N_APP"
+                    "EAST": "1S",
+                    "SOUTH": "1S",
+                    "WEST": "1N",
+                    "WEST.ord": "1N"
                 },
                 "departure_assignments": {
-                    "KSBN": "SBN_S_APP"
+                    "KSBN": "1S"
                 },
                 "default_consolidation": {
-                    "SBN_N_APP": [
-                        "SBN_S_APP"
+                    "1N": [
+                        "1S"
                     ]
                 }
             }
@@ -151,7 +151,7 @@
                 "fixes": [
                     "ALL"
                 ],
-                "receiving_controller": "ZAU 35 BEARZ"
+                "receiving_controller": "C35"
             }
         ]
     },
@@ -174,7 +174,7 @@
         },
         {
             "id": "ZAU",
-            "eram_prefix": "G"
+            "eram_prefix": "C"
         }
     ]
 }

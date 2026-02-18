@@ -1,68 +1,68 @@
 {
     "control_positions": {
-        "SDF_E_TWR": {
+        "4T": {
+            "callsign": "SDF_E_TWR",
             "frequency": 124200,
-            "radio_name": "Louisville Tower",
-            "sector_id": "4T"
+            "radio_name": "Louisville Tower"
         },
-        "SDF_W_TWR": {
+        "4L": {
+            "callsign": "SDF_W_TWR",
             "frequency": 135200,
-            "radio_name": "Louisville Tower",
-            "sector_id": "4L"
+            "radio_name": "Louisville Tower"
         },
-        "SDF_A_APP": {
+        "4A": {
+            "callsign": "SDF_A_APP",
             "frequency": 134150,
-            "radio_name": "Louisville Approach",
-            "sector_id": "4A"
+            "radio_name": "Louisville Approach"
         },
-        "SDF_I_APP": {
+        "4I": {
+            "callsign": "SDF_I_APP",
             "frequency": 132325,
-            "radio_name": "Louisville Approach",
-            "sector_id": "4I"
+            "radio_name": "Louisville Approach"
         },
-        "SDF_E_APP": {
+        "4E": {
+            "callsign": "SDF_E_APP",
             "frequency": 135775,
-            "radio_name": "Louisville Approach",
-            "sector_id": "4E"
+            "radio_name": "Louisville Approach"
         },
-        "SDF_W_APP": {
+        "4W": {
+            "callsign": "SDF_W_APP",
             "frequency": 120300,
-            "radio_name": "Louisville Approach",
-            "sector_id": "4W"
+            "radio_name": "Louisville Approach"
         },
-        "SDF_D_DEP": {
+        "4D": {
+            "callsign": "SDF_D_DEP",
             "frequency": 132075,
-            "radio_name": "Louisville Departure",
-            "sector_id": "4D"
+            "radio_name": "Louisville Departure"
         },
-        "SDF_B_DEP": {
+        "4B": {
+            "callsign": "SDF_B_DEP",
             "frequency": 123675,
-            "radio_name": "Louisville Departure",
-            "sector_id": "4B"
+            "radio_name": "Louisville Departure"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "DLAMP8": "SDF_A_APP",
-                    "LEDDL1": "SDF_A_APP",
-                    "MBELL5": "SDF_I_APP"
+                    "DLAMP8": "4A",
+                    "LEDDL1": "4A",
+                    "MBELL5": "4I"
                 },
                 "departure_assignments": {
-                    "KSDF": "SDF_B_DEP"
+                    "KSDF": "4B"
                 },
                 "default_consolidation": {
-                    "SDF_B_DEP": [
-                        "SDF_D_DEP"
+                    "4B": [
+                        "4D"
                     ],
-                    "SDF_I_APP": [
-                        "SDF_A_APP",
-                        "SDF_B_DEP",
-                        "SDF_W_APP"
+                    "4I": [
+                        "4A",
+                        "4B",
+                        "4W"
                     ],
-                    "SDF_W_APP": [
-                        "SDF_E_APP"
+                    "4W": [
+                        "4E"
                     ]
                 }
             }
@@ -237,7 +237,7 @@
         },
         {
             "id": "ZID",
-            "eram_prefix": "I"
+            "eram_prefix": "C"
         }
     ]
 }

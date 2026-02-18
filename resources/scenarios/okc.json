@@ -1284,7 +1284,7 @@
                         }
                     },
                     "star": "CAMET3",
-                    "initial_controller": "ZFW 51 CHO-UH",
+                    "initial_controller": "C51",
                     "initial_altitude": 12000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -1322,8 +1322,7 @@
                                 "airport": "KSEA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -1340,7 +1339,7 @@
                         }
                     },
                     "star": "GHOST3",
-                    "initial_controller": "ZFW 51 CHO-UH",
+                    "initial_controller": "C51",
                     "initial_altitude": 14000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1374,8 +1373,7 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -1392,7 +1390,7 @@
                         }
                     },
                     "star": "MURAH3",
-                    "initial_controller": "ZKC 54 (54) JAZZ LO",
+                    "initial_controller": "K54",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1438,8 +1436,7 @@
                                 "airport": "KDAL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZKC"
+                    }
                 }
             ]
         },
@@ -1456,7 +1453,7 @@
                         }
                     },
                     "star": "MURAH3",
-                    "initial_controller": "ZFW 51 CHO-UH",
+                    "initial_controller": "C51",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1502,8 +1499,7 @@
                                 "airport": "KDAL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -1520,7 +1516,7 @@
                         }
                     },
                     "star": "MURAH3",
-                    "initial_controller": "ZFW 51 CHO-UH",
+                    "initial_controller": "C51",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1566,8 +1562,7 @@
                                 "airport": "KDAL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         }

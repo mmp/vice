@@ -6468,7 +6468,7 @@
                         }
                     },
                     "star": "BAINY3",
-                    "initial_controller": "ZMP 10 GEP LO",
+                    "initial_controller": "C10",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": "I30R",
@@ -6702,8 +6702,7 @@
                                 "airport": "KINL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -6721,7 +6720,7 @@
                         }
                     },
                     "star": "BAINY3",
-                    "initial_controller": "ZMP 10 GEP LO",
+                    "initial_controller": "C10",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": "I12L",
@@ -6955,8 +6954,7 @@
                                 "airport": "KINL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -6974,7 +6972,7 @@
                         }
                     },
                     "star": "BAINY3",
-                    "initial_controller": "ZMP 10 GEP LO",
+                    "initial_controller": "C10",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": "I35",
@@ -7208,8 +7206,7 @@
                                 "airport": "KINL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -7227,7 +7224,7 @@
                         }
                     },
                     "star": "BLUEM4",
-                    "initial_controller": "ZMP 07 FGT LO",
+                    "initial_controller": "C07",
                     "initial_altitude": 20000,
                     "initial_speed": 280,
                     "expect_approach": "I30L",
@@ -7457,8 +7454,7 @@
                                 "airport": "KRST"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -7476,7 +7472,7 @@
                         }
                     },
                     "star": "BLUEM4",
-                    "initial_controller": "ZMP 07 FGT LO",
+                    "initial_controller": "C07",
                     "initial_altitude": 20000,
                     "initial_speed": 280,
                     "expect_approach": "I12R",
@@ -7706,8 +7702,7 @@
                                 "airport": "KRST"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -7725,7 +7720,7 @@
                         }
                     },
                     "star": "BLUEM4",
-                    "initial_controller": "ZMP 07 FGT LO",
+                    "initial_controller": "C07",
                     "initial_altitude": 20000,
                     "initial_speed": 280,
                     "expect_approach": "I35",
@@ -7955,8 +7950,7 @@
                                 "airport": "KRST"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -7974,7 +7968,7 @@
                         }
                     },
                     "star": "KKILR3",
-                    "initial_controller": "ZMP 06 TWINZ LO",
+                    "initial_controller": "C06",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "expect_approach": "I30L",
@@ -8212,8 +8206,7 @@
                                 "airport": "KMSN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -8231,7 +8224,7 @@
                         }
                     },
                     "star": "KKILR3",
-                    "initial_controller": "ZMP 06 TWINZ LO",
+                    "initial_controller": "C06",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "expect_approach": "I12R",
@@ -8469,8 +8462,7 @@
                                 "airport": "KMSN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -8488,7 +8480,7 @@
                         }
                     },
                     "star": "KKILR3",
-                    "initial_controller": "ZMP 06 TWINZ LO",
+                    "initial_controller": "C06",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "expect_approach": "I35",
@@ -8726,8 +8718,7 @@
                                 "airport": "KMSN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -8745,7 +8736,7 @@
                         }
                     },
                     "star": "MUSCL3",
-                    "initial_controller": "ZMP 06 TWINZ LO",
+                    "initial_controller": "C06",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "expect_approach": "I30R",
@@ -8979,8 +8970,7 @@
                                 "airport": "KCIU"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -8998,7 +8988,7 @@
                         }
                     },
                     "star": "MUSCL3",
-                    "initial_controller": "ZMP 06 TWINZ LO",
+                    "initial_controller": "C06",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "expect_approach": "I12L",
@@ -9232,8 +9222,7 @@
                                 "airport": "KCIU"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -9251,7 +9240,7 @@
                         }
                     },
                     "star": "MUSCL3",
-                    "initial_controller": "ZMP 06 TWINZ LO",
+                    "initial_controller": "C06",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "expect_approach": "I35",
@@ -9485,8 +9474,7 @@
                                 "airport": "KCIU"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -9504,7 +9492,7 @@
                         }
                     },
                     "star": "NITZR3",
-                    "initial_controller": "ZMP 07 FGT LO",
+                    "initial_controller": "C07",
                     "initial_altitude": 20000,
                     "initial_speed": 280,
                     "expect_approach": "I30L",
@@ -9636,8 +9624,7 @@
                                 "airport": "KABQ"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -9655,7 +9642,7 @@
                         }
                     },
                     "star": "NITZR3",
-                    "initial_controller": "ZMP 07 FGT LO",
+                    "initial_controller": "C07",
                     "initial_altitude": 20000,
                     "initial_speed": 280,
                     "expect_approach": "I12R",
@@ -9787,8 +9774,7 @@
                                 "airport": "KABQ"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -9806,7 +9792,7 @@
                         }
                     },
                     "star": "NITZR3",
-                    "initial_controller": "ZMP 07 FGT LO",
+                    "initial_controller": "C07",
                     "initial_altitude": 20000,
                     "initial_speed": 280,
                     "expect_approach": "I35",
@@ -9938,8 +9924,7 @@
                                 "airport": "KABQ"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -9957,7 +9942,7 @@
                         }
                     },
                     "star": "TORGY3",
-                    "initial_controller": "ZMP 09 RWF LO",
+                    "initial_controller": "C09",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "I30L",
@@ -10246,8 +10231,7 @@
                                 "airport": "CYVR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -10265,7 +10249,7 @@
                         }
                     },
                     "star": "TORGY3",
-                    "initial_controller": "ZMP 09 RWF LO",
+                    "initial_controller": "C09",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "I12R",
@@ -10554,8 +10538,7 @@
                                 "airport": "CYVR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -10573,7 +10556,7 @@
                         }
                     },
                     "star": "TORGY3",
-                    "initial_controller": "ZMP 09 RWF LO",
+                    "initial_controller": "C09",
                     "initial_altitude": 16000,
                     "initial_speed": 280,
                     "expect_approach": "I35",
@@ -10862,8 +10845,7 @@
                                 "airport": "CYVR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -10881,7 +10863,7 @@
                         }
                     },
                     "star": "GEP1",
-                    "initial_controller": "ZMP 10 GEP LO",
+                    "initial_controller": "C10",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "expect_approach": "I30R",
@@ -10944,8 +10926,7 @@
                                 "airport": "KBJI"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -10963,7 +10944,7 @@
                         }
                     },
                     "star": "GEP1",
-                    "initial_controller": "ZMP 10 GEP LO",
+                    "initial_controller": "C10",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "expect_approach": "I12L",
@@ -11026,8 +11007,7 @@
                                 "airport": "KBJI"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -11045,7 +11025,7 @@
                         }
                     },
                     "star": "GEP1",
-                    "initial_controller": "ZMP 10 GEP LO",
+                    "initial_controller": "C10",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "expect_approach": "I35",
@@ -11108,8 +11088,7 @@
                                 "airport": "KBJI"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -11118,7 +11097,7 @@
                 {
                     "waypoints": "N044.16.44.122,W092.04.47.484/ho KMSP",
                     "route": "DCT KMSP",
-                    "initial_controller": "ZMP 05 ODI LO",
+                    "initial_controller": "C05",
                     "initial_altitude": 5000,
                     "initial_speed": 250,
                     "airlines": {
@@ -11131,8 +11110,7 @@
                                 "airport": "KLSE"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -11141,7 +11119,7 @@
                 {
                     "waypoints": "N044.16.44.122,W092.04.47.484/ho KMSP",
                     "route": "DCT KMSP",
-                    "initial_controller": "ZMP 05 ODI LO",
+                    "initial_controller": "C05",
                     "initial_altitude": 4000,
                     "initial_speed": 250,
                     "airlines": {
@@ -11154,8 +11132,7 @@
                                 "airport": "KLSE"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         },
@@ -11164,7 +11141,7 @@
                 {
                     "waypoints": "N045.22.18.684,W091.55.26.605 N045.16.47.899,W092.10.12.844/ho KMSP",
                     "route": "DCT KMSP",
-                    "initial_controller": "ZMP 05 ODI LO",
+                    "initial_controller": "C05",
                     "initial_altitude": 4000,
                     "initial_speed": 195,
                     "airlines": {
@@ -11177,8 +11154,7 @@
                                 "airport": "KRPD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZMP"
+                    }
                 }
             ]
         }
@@ -11473,33 +11449,33 @@
                 }
             ],
             "airspace": {
-                "MSP_I_APP": [
+                "1I": [
                     "NFEEDER_12S"
                 ],
-                "MSP_H_APP": [
+                "1H": [
                     "SFEEDER_12S"
                 ],
-                "MSP_N_APP": [
+                "1N": [
                     "NFINAL_12S"
                 ],
-                "MSP_S_APP": [
+                "1S": [
                     "SFINAL_12S"
                 ],
-                "MSP_D_DEP": [
+                "1D": [
                     "NDEPARTURE_12S",
                     "NCLOSEDEP_12S"
                 ],
-                "MSP_R_DEP": [
+                "1R": [
                     "SDEPARTURE_12S",
                     "SCLOSEDEP_12S"
                 ],
-                "MSP_E_APP": [
+                "1E": [
                     "ESAT_12S"
                 ],
-                "MSP_G_APP": [
+                "1G": [
                     "GSAT_12S"
                 ],
-                "MSP_K_APP": [
+                "1K": [
                     "KSAT_12S"
                 ]
             },

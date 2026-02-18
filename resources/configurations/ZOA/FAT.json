@@ -1,24 +1,24 @@
 {
     "control_positions": {
-        "FAT_F_APP": {
+        "1F": {
+            "callsign": "FAT_F_APP",
             "frequency": 119600,
-            "radio_name": "Fresno Approach",
-            "sector_id": "1F"
+            "radio_name": "Fresno Approach"
         },
-        "FAT_H_APP": {
+        "1H": {
+            "callsign": "FAT_H_APP",
             "frequency": 132350,
-            "radio_name": "Fresno Approach",
-            "sector_id": "1H"
+            "radio_name": "Fresno Approach"
         },
-        "FAT_S_APP": {
+        "1S": {
+            "callsign": "FAT_S_APP",
             "frequency": 118500,
-            "radio_name": "Fresno Approach",
-            "sector_id": "1S"
+            "radio_name": "Fresno Approach"
         },
-        "FAT_TWR": {
+        "1T": {
+            "callsign": "FAT_TWR",
             "frequency": 118200,
-            "radio_name": "Fresno Tower",
-            "sector_id": "1T"
+            "radio_name": "Fresno Tower"
         }
     },
     "handoff_ids": [
@@ -37,6 +37,10 @@
         {
             "id": "ZLA",
             "eram_prefix": "L"
+        },
+        {
+            "id": "ZOA",
+            "eram_prefix": "C"
         }
     ]
 }

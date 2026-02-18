@@ -1409,7 +1409,7 @@
                         }
                     },
                     "star": "ALDAN4",
-                    "initial_controller": "ZDC 32 Gordonsville",
+                    "initial_controller": "C32",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1454,8 +1454,7 @@
                                 "airport": "CYYZ"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         },
@@ -1472,8 +1471,7 @@
                         }
                     },
                     "star": "BLOGS3",
-                    "initial_controller": "ZDC 09 Dixon",
-                    "initial_facility": "ZDC",
+                    "initial_controller": "C09",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1545,8 +1543,7 @@
                         }
                     },
                     "star": "DMSTR2",
-                    "initial_controller": "ZDC 09 Dixon",
-                    "initial_facility": "ZDC",
+                    "initial_controller": "C09",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1609,7 +1606,7 @@
                         }
                     },
                     "star": "TAQLE2",
-                    "initial_controller": "ZDC 20 Blackstone",
+                    "initial_controller": "C20",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1685,8 +1682,7 @@
                                 "airport": "EHAM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZDC"
+                    }
                 }
             ]
         }

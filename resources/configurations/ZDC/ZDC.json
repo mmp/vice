@@ -1,310 +1,310 @@
 {
     "control_positions": {
-        "ZDC 01 Elkins": {
+        "01": {
+            "callsign": "ZDC 01 Elkins",
             "frequency": 128600,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "01"
+            "radio_name": "Washington Center"
         },
-        "ZDC 02 Casanova": {
+        "02": {
+            "callsign": "ZDC 02 Casanova",
             "frequency": 133200,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "02"
+            "radio_name": "Washington Center"
         },
-        "ZDC 03 Moorefield": {
+        "03": {
+            "callsign": "ZDC 03 Moorefield",
             "frequency": 133275,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "03"
+            "radio_name": "Washington Center"
         },
-        "ZDC 04 Pinion": {
+        "04": {
+            "callsign": "ZDC 04 Pinion",
             "frequency": 133975,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "04"
+            "radio_name": "Washington Center"
         },
-        "ZDC 05 Linden": {
+        "05": {
+            "callsign": "ZDC 05 Linden",
             "frequency": 133550,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "05"
+            "radio_name": "Washington Center"
         },
-        "ZDC 06 Hagerstown": {
+        "06": {
+            "callsign": "ZDC 06 Hagerstown",
             "frequency": 134150,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "06"
+            "radio_name": "Washington Center"
         },
-        "ZDC 07 Wahoo": {
+        "07": {
+            "callsign": "ZDC 07 Wahoo",
             "frequency": 121925,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "07"
+            "radio_name": "Washington Center"
         },
-        "ZDC 09 Dixon": {
+        "09": {
+            "callsign": "ZDC 09 Dixon",
             "frequency": 118825,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "09"
+            "radio_name": "Washington Center"
         },
-        "ZDC 10 Bay": {
+        "10": {
+            "callsign": "ZDC 10 Bay",
             "frequency": 132275,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "10"
+            "radio_name": "Washington Center"
         },
-        "ZDC 11 Calvert": {
+        "11": {
+            "callsign": "ZDC 11 Calvert",
             "frequency": 133900,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "11"
+            "radio_name": "Washington Center"
         },
-        "ZDC 12 Brooke": {
+        "12": {
+            "callsign": "ZDC 12 Brooke",
             "frequency": 126875,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "12"
+            "radio_name": "Washington Center"
         },
-        "ZDC 14 Irons": {
+        "14": {
+            "callsign": "ZDC 14 Irons",
             "frequency": 132950,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "14"
+            "radio_name": "Washington Center"
         },
-        "ZDC 15 Blue Ridge": {
+        "15": {
+            "callsign": "ZDC 15 Blue Ridge",
             "frequency": 133650,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "15"
+            "radio_name": "Washington Center"
         },
-        "ZDC 16 Hopewell": {
+        "16": {
+            "callsign": "ZDC 16 Hopewell",
             "frequency": 121875,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "16"
+            "radio_name": "Washington Center"
         },
-        "ZDC 17 Swann": {
+        "17": {
+            "callsign": "ZDC 17 Swann",
             "frequency": 134500,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "17"
+            "radio_name": "Washington Center"
         },
-        "ZDC 18 DuPont": {
+        "18": {
+            "callsign": "ZDC 18 DuPont",
             "frequency": 132525,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "18"
+            "radio_name": "Washington Center"
         },
-        "ZDC 19 Woodstown": {
+        "19": {
+            "callsign": "ZDC 19 Woodstown",
             "frequency": 125450,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "19"
+            "radio_name": "Washington Center"
         },
-        "ZDC 20 Blackstone": {
+        "20": {
+            "callsign": "ZDC 20 Blackstone",
             "frequency": 127750,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "20"
+            "radio_name": "Washington Center"
         },
-        "ZDC 21 Dominion": {
+        "21": {
+            "callsign": "ZDC 21 Dominion",
             "frequency": 118750,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "21"
+            "radio_name": "Washington Center"
         },
-        "ZDC 22 South Boston": {
+        "22": {
+            "callsign": "ZDC 22 South Boston",
             "frequency": 124050,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "22"
+            "radio_name": "Washington Center"
         },
-        "ZDC 23 Cape Charles": {
+        "23": {
+            "callsign": "ZDC 23 Cape Charles",
             "frequency": 132550,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "23"
+            "radio_name": "Washington Center"
         },
-        "ZDC 24 Cofield": {
+        "24": {
+            "callsign": "ZDC 24 Cofield",
             "frequency": 123850,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "24"
+            "radio_name": "Washington Center"
         },
-        "ZDC 25 New Bern": {
+        "25": {
+            "callsign": "ZDC 25 New Bern",
             "frequency": 135500,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "25"
+            "radio_name": "Washington Center"
         },
-        "ZDC 26 Sampson": {
+        "26": {
+            "callsign": "ZDC 26 Sampson",
             "frequency": 135300,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "26"
+            "radio_name": "Washington Center"
         },
-        "ZDC 27 Liberty": {
+        "27": {
+            "callsign": "ZDC 27 Liberty",
             "frequency": 135200,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "27"
+            "radio_name": "Washington Center"
         },
-        "ZDC 28 Rocky Mount": {
+        "28": {
+            "callsign": "ZDC 28 Rocky Mount",
             "frequency": 118475,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "28"
+            "radio_name": "Washington Center"
         },
-        "ZDC 29 Valley": {
+        "29": {
+            "callsign": "ZDC 29 Valley",
             "frequency": 134400,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "29"
+            "radio_name": "Washington Center"
         },
-        "ZDC 31 Azalea": {
+        "31": {
+            "callsign": "ZDC 31 Azalea",
             "frequency": 135400,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "31"
+            "radio_name": "Washington Center"
         },
-        "ZDC 32 Gordonsville": {
+        "32": {
+            "callsign": "ZDC 32 Gordonsville",
             "frequency": 133725,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "32"
+            "radio_name": "Washington Center"
         },
-        "ZDC 33 Franklin": {
+        "33": {
+            "callsign": "ZDC 33 Franklin",
             "frequency": 132025,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "33"
+            "radio_name": "Washington Center"
         },
-        "ZDC 34 Norfolk": {
+        "34": {
+            "callsign": "ZDC 34 Norfolk",
             "frequency": 133825,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "34"
+            "radio_name": "Washington Center"
         },
-        "ZDC 35 Wilmington": {
+        "35": {
+            "callsign": "ZDC 35 Wilmington",
             "frequency": 124025,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "35"
+            "radio_name": "Washington Center"
         },
-        "ZDC 36 Raleigh": {
+        "36": {
+            "callsign": "ZDC 36 Raleigh",
             "frequency": 118925,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "36"
+            "radio_name": "Washington Center"
         },
-        "ZDC 37 Marlington": {
+        "37": {
+            "callsign": "ZDC 37 Marlington",
             "frequency": 133025,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "37"
+            "radio_name": "Washington Center"
         },
-        "ZDC 38 Tar River": {
+        "38": {
+            "callsign": "ZDC 38 Tar River",
             "frequency": 132225,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "38"
+            "radio_name": "Washington Center"
         },
-        "ZDC 39 Snow Hill": {
+        "39": {
+            "callsign": "ZDC 39 Snow Hill",
             "frequency": 121375,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "39"
+            "radio_name": "Washington Center"
         },
-        "ZDC 42 Bryce": {
+        "42": {
+            "callsign": "ZDC 42 Bryce",
             "frequency": 118025,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "42"
+            "radio_name": "Washington Center"
         },
-        "ZDC 50 Yorktown": {
+        "50": {
+            "callsign": "ZDC 50 Yorktown",
             "frequency": 120750,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "50"
+            "radio_name": "Washington Center"
         },
-        "ZDC 51 Casino": {
+        "51": {
+            "callsign": "ZDC 51 Casino",
             "frequency": 127700,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "51"
+            "radio_name": "Washington Center"
         },
-        "ZDC 52 Tech": {
+        "52": {
+            "callsign": "ZDC 52 Tech",
             "frequency": 133575,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "52"
+            "radio_name": "Washington Center"
         },
-        "ZDC 53 Kenton": {
+        "53": {
+            "callsign": "ZDC 53 Kenton",
             "frequency": 132050,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "53"
+            "radio_name": "Washington Center"
         },
-        "ZDC 54 Salisbury": {
+        "54": {
+            "callsign": "ZDC 54 Salisbury",
             "frequency": 120975,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "54"
+            "radio_name": "Washington Center"
         },
-        "ZDC 58 Coyle": {
+        "58": {
+            "callsign": "ZDC 58 Coyle",
             "frequency": 121025,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "58"
+            "radio_name": "Washington Center"
         },
-        "ZDC 59 Sea Isle": {
+        "59": {
+            "callsign": "ZDC 59 Sea Isle",
             "frequency": 133125,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "59"
+            "radio_name": "Washington Center"
         },
-        "ZDC 60 Montebello": {
+        "60": {
+            "callsign": "ZDC 60 Montebello",
             "frequency": 121675,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "60"
+            "radio_name": "Washington Center"
         },
-        "ZDC 72 Shenandoah": {
+        "72": {
+            "callsign": "ZDC 72 Shenandoah",
             "frequency": 127925,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "72"
+            "radio_name": "Washington Center"
         },
-        "ZDC 90 Warn 107": {
+        "90": {
+            "callsign": "ZDC 90 Warn 107",
             "frequency": 135725,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "90"
+            "radio_name": "Washington Center"
         },
-        "ZDC 92 Warn 122": {
+        "92": {
+            "callsign": "ZDC 92 Warn 122",
             "frequency": 135875,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "92"
+            "radio_name": "Washington Center"
         },
-        "ZDC 97 Warn 72": {
+        "97": {
+            "callsign": "ZDC 97 Warn 72",
             "frequency": 118125,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "97"
+            "radio_name": "Washington Center"
         },
-        "ZDC 98 Warn 386": {
+        "98": {
+            "callsign": "ZDC 98 Warn 386",
             "frequency": 132150,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "98"
+            "radio_name": "Washington Center"
         },
-        "ZDC 99 TMU": {
+        "99": {
+            "callsign": "ZDC 99 TMU",
             "frequency": 132050,
             "eram_facility": true,
-            "radio_name": "Washington Center",
-            "sector_id": "99"
+            "radio_name": "Washington Center"
         }
     },
     "stars_config": {
@@ -440,8 +440,8 @@
     "handoff_ids": [
         {
             "id": "ACY",
-            "single_char_stars_id": "A",
-            "stars_id": "ACY"
+            "stars_id": "ACY",
+            "single_char_stars_id": "A"
         },
         {
             "id": "CKB",
@@ -449,58 +449,62 @@
         },
         {
             "id": "CLT",
-            "single_char_stars_id": "L",
-            "stars_id": "CLT"
+            "stars_id": "CLT",
+            "single_char_stars_id": "L"
         },
         {
             "id": "CRW",
-            "single_char_stars_id": "W",
-            "stars_id": "CRW"
+            "stars_id": "CRW",
+            "single_char_stars_id": "W"
         },
         {
             "id": "DOV",
-            "single_char_stars_id": "V",
-            "stars_id": "DOV"
+            "stars_id": "DOV",
+            "single_char_stars_id": "V"
         },
         {
             "id": "FAY",
-            "single_char_stars_id": "F",
-            "stars_id": "FAY"
+            "stars_id": "FAY",
+            "single_char_stars_id": "F"
         },
         {
             "id": "FLO",
-            "single_char_stars_id": "Q",
-            "stars_id": "FLO"
+            "stars_id": "FLO",
+            "single_char_stars_id": "Q"
         },
         {
             "id": "GSB",
-            "single_char_stars_id": "X",
-            "stars_id": "GSB"
+            "stars_id": "GSB",
+            "single_char_stars_id": "X"
         },
         {
             "id": "GSO",
-            "single_char_stars_id": "G",
-            "stars_id": "GSO"
+            "stars_id": "GSO",
+            "single_char_stars_id": "G"
         },
         {
             "id": "ILM",
-            "single_char_stars_id": "M",
-            "stars_id": "ILM"
+            "stars_id": "ILM",
+            "single_char_stars_id": "M"
+        },
+        {
+            "id": "JST",
+            "stars_id": "JJJ"
         },
         {
             "id": "MDT",
-            "single_char_stars_id": "D",
-            "stars_id": "MDT"
+            "stars_id": "MDT",
+            "single_char_stars_id": "D"
         },
         {
             "id": "MYR",
-            "single_char_stars_id": "H",
-            "stars_id": "MYR"
+            "stars_id": "MYR",
+            "single_char_stars_id": "H"
         },
         {
             "id": "N90",
-            "single_char_stars_id": "Y",
-            "stars_id": "N90"
+            "stars_id": "N90",
+            "single_char_stars_id": "Y"
         },
         {
             "id": "NHK",
@@ -508,43 +512,43 @@
         },
         {
             "id": "NKT",
-            "single_char_stars_id": "S",
-            "stars_id": "NKT"
+            "stars_id": "NKT",
+            "single_char_stars_id": "S"
         },
         {
             "id": "NTU",
-            "single_char_stars_id": "U",
-            "stars_id": "NTU"
+            "stars_id": "NTU",
+            "single_char_stars_id": "U"
         },
         {
             "id": "ORF",
-            "single_char_stars_id": "O",
-            "stars_id": "ORF"
+            "stars_id": "ORF",
+            "single_char_stars_id": "O"
         },
         {
             "id": "PCT",
-            "single_char_stars_id": "E",
-            "stars_id": "PCT"
+            "stars_id": "PCT",
+            "single_char_stars_id": "E"
         },
         {
             "id": "PHL",
-            "single_char_stars_id": "P",
-            "stars_id": "PHL"
+            "stars_id": "PHL",
+            "single_char_stars_id": "P"
         },
         {
             "id": "RDU",
-            "single_char_stars_id": "R",
-            "stars_id": "RDU"
+            "stars_id": "RDU",
+            "single_char_stars_id": "R"
         },
         {
             "id": "ROA",
-            "single_char_stars_id": "K",
-            "stars_id": "ROA"
+            "stars_id": "ROA",
+            "single_char_stars_id": "K"
         },
         {
             "id": "WRI",
-            "single_char_stars_id": "Z",
-            "stars_id": "WRI"
+            "stars_id": "WRI",
+            "single_char_stars_id": "Z"
         },
         {
             "id": "ZBW",

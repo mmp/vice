@@ -1,48 +1,48 @@
 {
     "control_positions": {
-        "MYR_TWR": {
+        "1T": {
+            "callsign": "MYR_TWR",
             "frequency": 128450,
-            "radio_name": "Augusta Tower",
-            "sector_id": "1T"
+            "radio_name": "Augusta Tower"
         },
-        "MYR_E_APP": {
+        "1E": {
+            "callsign": "MYR_E_APP",
             "frequency": 119200,
-            "radio_name": "Myrtle Approach",
-            "sector_id": "1E"
+            "radio_name": "Myrtle Approach"
         },
-        "MYR_W_APP": {
+        "1W": {
+            "callsign": "MYR_W_APP",
             "frequency": 127400,
-            "radio_name": "Myrtle Approach",
-            "sector_id": "1W"
+            "radio_name": "Myrtle Approach"
         },
-        "CRE_TWR": {
+        "CE": {
+            "callsign": "CRE_TWR",
             "frequency": 124600,
-            "radio_name": "Strand Tower",
-            "sector_id": "CE"
+            "radio_name": "Strand Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "CAE.fast": "MYR_W_APP",
-                    "CAE.slow": "MYR_W_APP",
-                    "CHS.fast": "MYR_W_APP",
-                    "CHS.slow": "MYR_W_APP",
-                    "FAY": "MYR_E_APP",
-                    "FLO.fast": "MYR_W_APP",
-                    "FLO.slow": "MYR_W_APP",
-                    "ILM.fast": "MYR_E_APP",
-                    "ILM.slow": "MYR_E_APP",
-                    "UNJAM": "MYR_W_APP"
+                    "CAE.fast": "1W",
+                    "CAE.slow": "1W",
+                    "CHS.fast": "1W",
+                    "CHS.slow": "1W",
+                    "FAY": "1E",
+                    "FLO.fast": "1W",
+                    "FLO.slow": "1W",
+                    "ILM.fast": "1E",
+                    "ILM.slow": "1E",
+                    "UNJAM": "1W"
                 },
                 "departure_assignments": {
-                    "KCRE": "MYR_E_APP",
-                    "KMYR": "MYR_E_APP"
+                    "KCRE": "1E",
+                    "KMYR": "1E"
                 },
                 "default_consolidation": {
-                    "MYR_E_APP": [
-                        "MYR_W_APP"
+                    "1E": [
+                        "1W"
                     ]
                 }
             }
@@ -105,7 +105,7 @@
                 "fixes": [
                     "OKNEE"
                 ],
-                "receiving_controller": "ZJX 71 Florence"
+                "receiving_controller": "C71"
             },
             {
                 "fixes": [
@@ -115,7 +115,7 @@
                     "ZORDO",
                     "CLARB"
                 ],
-                "receiving_controller": "ZJX 74 Charleston "
+                "receiving_controller": "C74"
             }
         ],
         "coordination_fixes": {
@@ -176,7 +176,7 @@
         },
         {
             "id": "ZJX",
-            "eram_prefix": "J"
+            "eram_prefix": "C"
         }
     ]
 }

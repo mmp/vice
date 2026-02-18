@@ -1,56 +1,56 @@
 {
     "control_positions": {
-        "GSO_TWR": {
+        "1T": {
+            "callsign": "GSO_TWR",
             "frequency": 119100,
-            "radio_name": "Greensboro Tower",
-            "sector_id": "1T"
+            "radio_name": "Greensboro Tower"
         },
-        "GSO_W_APP": {
+        "1W": {
+            "callsign": "GSO_W_APP",
             "frequency": 124350,
-            "radio_name": "Greensboro Approach",
-            "sector_id": "1W"
+            "radio_name": "Greensboro Approach"
         },
-        "GSO_E_APP": {
+        "1H": {
+            "callsign": "GSO_E_APP",
             "frequency": 120900,
             "radio_name": "Greensboro Approach",
-            "scope_char": "E",
-            "sector_id": "1H"
+            "scope_char": "E"
         },
-        "GSO_F_APP": {
+        "1F": {
+            "callsign": "GSO_F_APP",
             "frequency": 125600,
-            "radio_name": "Greensboro Approach",
-            "sector_id": "1F"
+            "radio_name": "Greensboro Approach"
         },
-        "GSO_S_APP": {
+        "1S": {
+            "callsign": "GSO_S_APP",
             "frequency": 126000,
-            "radio_name": "Greensboro Approach",
-            "sector_id": "1S"
+            "radio_name": "Greensboro Approach"
         },
-        "INT_TWR": {
+        "1L": {
+            "callsign": "INT_TWR",
             "frequency": 123750,
-            "radio_name": "Winston-Salem Tower",
-            "sector_id": "1L"
+            "radio_name": "Winston-Salem Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "BLOCC2": "GSO_S_APP",
-                    "BROOK4": "GSO_W_APP",
-                    "GANTS": "GSO_S_APP",
-                    "HENBY3": "GSO_E_APP",
-                    "TRAKS3N": "GSO_W_APP",
-                    "TRAKS3S": "GSO_W_APP"
+                    "BLOCC2": "1S",
+                    "BROOK4": "1W",
+                    "GANTS": "1S",
+                    "HENBY3": "1H",
+                    "TRAKS3N": "1W",
+                    "TRAKS3S": "1W"
                 },
                 "departure_assignments": {
-                    "KGSO": "GSO_E_APP",
-                    "KINT": "GSO_W_APP"
+                    "KGSO": "1H",
+                    "KINT": "1W"
                 },
                 "default_consolidation": {
-                    "GSO_E_APP": [
-                        "GSO_S_APP",
-                        "GSO_W_APP"
+                    "1H": [
+                        "1S",
+                        "1W"
                     ]
                 }
             }
@@ -204,7 +204,7 @@
         },
         {
             "id": "ZTL",
-            "eram_prefix": "T"
+            "eram_prefix": "C"
         }
     ]
 }

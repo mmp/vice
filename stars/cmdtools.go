@@ -619,7 +619,7 @@ func init() {
 					return ErrSTARSCommandFormat
 				}
 
-				ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcps[:2], ctx.UserController().SectorID)
+				ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcps[:2], ctx.UserController().Position)
 				if ctrl == nil {
 					return ErrSTARSIllegalPosition
 				}
@@ -627,7 +627,7 @@ func init() {
 				tcps = tcps[2:]
 			} else {
 				// TCP without controller subset
-				ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcps[:1], ctx.UserController().SectorID)
+				ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcps[:1], ctx.UserController().Position)
 				if ctrl == nil {
 					return ErrSTARSIllegalPosition
 				}
@@ -725,7 +725,7 @@ func init() {
 		plus := strings.HasSuffix(tcp, "+")
 		tcp = strings.TrimSuffix(tcp, "+")
 
-		ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcp, ctx.UserController().SectorID)
+		ctrl := lookupControllerByTCP(ctx.Client.State.Controllers, tcp, ctx.UserController().Position)
 		if ctrl == nil {
 			return ErrSTARSIllegalPosition
 		}

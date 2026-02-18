@@ -1,15 +1,20 @@
 {
     "control_positions": {
-        "MIB_APP": {
+        "1B": {
+            "callsign": "MIB_APP",
             "frequency": 119600,
-            "radio_name": "Minot Approach",
-            "sector_id": "1B"
+            "radio_name": "Minot Approach"
         },
-        "MIB_TWR": {
+        "1M": {
+            "callsign": "MIB_TWR",
             "frequency": 120650,
-            "radio_name": "Minot",
-            "sector_id": "1M"
+            "radio_name": "Minot"
         }
     },
-    "handoff_ids": []
+    "handoff_ids": [
+        {
+            "id": "ZMP",
+            "eram_prefix": "C"
+        }
+    ]
 }

@@ -1,21 +1,29 @@
 {
     "control_positions": {
-        "NTD_APP": {
+        "1A": {
+            "callsign": "NTD_APP",
             "frequency": 124700,
-            "radio_name": "Point Magu Approach",
-            "sector_id": "1A"
+            "radio_name": "Point Magu Approach"
         },
-        "NTD_TWR": {
+        "1Z": {
+            "callsign": "NTD_TWR",
             "frequency": 124850,
-            "radio_name": "Point Magu Tower",
-            "sector_id": "1Z"
+            "radio_name": "Point Magu Tower"
         }
     },
     "stars_config": {},
     "handoff_ids": [
         {
+            "id": "SBA",
+            "prefix": "2"
+        },
+        {
+            "id": "SCT",
+            "prefix": "1"
+        },
+        {
             "id": "ZLA",
-            "eram_prefix": "L"
+            "eram_prefix": "C"
         }
     ]
 }

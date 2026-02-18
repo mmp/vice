@@ -206,11 +206,10 @@
                         ]
                     },
                     "initial_altitude": 15000,
-                    "initial_controller": "ZDV 11 Junction Low",
+                    "initial_controller": "C11",
                     "initial_speed": 140,
                     "route": "KGJT",
-                    "waypoints": "N039.38.13.890,W108.50.35.797 N039.34.05.462,W108.50.25.469/ho",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N039.38.13.890,W108.50.35.797 N039.34.05.462,W108.50.25.469/ho"
                 },
                 {
                     "airlines": {
@@ -233,11 +232,10 @@
                         ]
                     },
                     "initial_altitude": 15000,
-                    "initial_controller": "ZDV 11 Junction Low",
+                    "initial_controller": "C11",
                     "initial_speed": 250,
                     "route": "KGJT",
-                    "waypoints": "N039.38.13.890,W108.50.35.797 N039.34.05.462,W108.50.25.469/ho",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N039.38.13.890,W108.50.35.797 N039.34.05.462,W108.50.25.469/ho"
                 }
             ]
         },
@@ -261,11 +259,10 @@
                         ]
                     },
                     "initial_altitude": 15000,
-                    "initial_controller": "ZDV 11 Junction Low",
+                    "initial_controller": "C11",
                     "initial_speed": 140,
                     "route": "KGJT",
-                    "waypoints": "N039.26.32.591,W107.53.42.125 N039.21.50.476,W108.05.20.581/ho",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N039.26.32.591,W107.53.42.125 N039.21.50.476,W108.05.20.581/ho"
                 },
                 {
                     "airlines": {
@@ -288,11 +285,10 @@
                         ]
                     },
                     "initial_altitude": 15000,
-                    "initial_controller": "ZDV 11 Junction Low",
+                    "initial_controller": "C11",
                     "initial_speed": 250,
                     "route": "KGJT",
-                    "waypoints": "N039.26.32.591,W107.53.42.125 N039.21.50.476,W108.05.20.581/ho",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N039.26.32.591,W107.53.42.125 N039.21.50.476,W108.05.20.581/ho"
                 }
             ]
         },
@@ -316,11 +312,10 @@
                         ]
                     },
                     "initial_altitude": 15000,
-                    "initial_controller": "ZDV 12 - Gunnison Low",
+                    "initial_controller": "C12",
                     "initial_speed": 140,
                     "route": "KGJT",
-                    "waypoints": "N038.39.37.070,W108.08.42.784 N038.42.50.031,W108.14.13.994/ho",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N038.39.37.070,W108.08.42.784 N038.42.50.031,W108.14.13.994/ho"
                 },
                 {
                     "airlines": {
@@ -343,11 +338,10 @@
                         ]
                     },
                     "initial_altitude": 15000,
-                    "initial_controller": "ZDV 12 - Gunnison Low",
+                    "initial_controller": "C12",
                     "initial_speed": 250,
                     "route": "KGJT",
-                    "waypoints": "N038.39.37.070,W108.08.42.784 N038.42.50.031,W108.14.13.994/ho",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N038.39.37.070,W108.08.42.784 N038.42.50.031,W108.14.13.994/ho"
                 }
             ]
         },
@@ -371,11 +365,10 @@
                         ]
                     },
                     "initial_altitude": 15000,
-                    "initial_controller": "ZDV 11 Junction Low",
+                    "initial_controller": "C11",
                     "initial_speed": 140,
                     "route": "KGJT",
-                    "waypoints": "N038.29.18.128,W108.37.02.341 N038.33.58.787,W108.38.23.668/ho",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N038.29.18.128,W108.37.02.341 N038.33.58.787,W108.38.23.668/ho"
                 },
                 {
                     "airlines": {
@@ -398,11 +391,10 @@
                         ]
                     },
                     "initial_altitude": 15000,
-                    "initial_controller": "ZDV 11 Junction Low",
+                    "initial_controller": "C11",
                     "initial_speed": 250,
                     "route": "KGJT",
-                    "waypoints": "N038.29.18.128,W108.37.02.341 N038.33.58.787,W108.38.23.668/ho",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N038.29.18.128,W108.37.02.341 N038.33.58.787,W108.38.23.668/ho"
                 }
             ]
         },
@@ -426,11 +418,10 @@
                         ]
                     },
                     "initial_altitude": 15000,
-                    "initial_controller": "ZDV 11 Junction Low",
+                    "initial_controller": "C11",
                     "initial_speed": 140,
                     "route": "KGJT",
-                    "waypoints": "N038.37.59.539,W109.09.23.763 N038.40.30.834,W109.01.44.837/ho",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N038.37.59.539,W109.09.23.763 N038.40.30.834,W109.01.44.837/ho"
                 },
                 {
                     "airlines": {
@@ -453,11 +444,10 @@
                         ]
                     },
                     "initial_altitude": 15000,
-                    "initial_controller": "ZDV 11 Junction Low",
+                    "initial_controller": "C11",
                     "initial_speed": 250,
                     "route": "KGJT",
-                    "waypoints": "N038.37.59.539,W109.09.23.763 N038.40.30.834,W109.01.44.837/ho",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N038.37.59.539,W109.09.23.763 N038.40.30.834,W109.01.44.837/ho"
                 }
             ]
         },
@@ -481,11 +471,10 @@
                         ]
                     },
                     "initial_altitude": 15000,
-                    "initial_controller": "ZDV 11 Junction Low",
+                    "initial_controller": "C11",
                     "initial_speed": 140,
                     "route": "KGJT",
-                    "waypoints": "N039.04.09.870,W109.36.12.821 N039.06.23.683,W109.26.20.493/ho",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N039.04.09.870,W109.36.12.821 N039.06.23.683,W109.26.20.493/ho"
                 },
                 {
                     "airlines": {
@@ -508,11 +497,10 @@
                         ]
                     },
                     "initial_altitude": 15000,
-                    "initial_controller": "ZDV 11 Junction Low",
+                    "initial_controller": "C11",
                     "initial_speed": 250,
                     "route": "KGJT",
-                    "waypoints": "N039.04.09.870,W109.36.12.821 N039.06.23.683,W109.26.20.493/ho",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N039.04.09.870,W109.36.12.821 N039.06.23.683,W109.26.20.493/ho"
                 }
             ]
         },
@@ -536,11 +524,10 @@
                         ]
                     },
                     "initial_altitude": 15000,
-                    "initial_controller": "ZDV 11 Junction Low",
+                    "initial_controller": "C11",
                     "initial_speed": 140,
                     "route": "KGJT",
-                    "waypoints": "N039.28.03.283,W109.30.21.505 N039.22.05.637,W109.22.53.483/ho",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N039.28.03.283,W109.30.21.505 N039.22.05.637,W109.22.53.483/ho"
                 },
                 {
                     "airlines": {
@@ -563,11 +550,10 @@
                         ]
                     },
                     "initial_altitude": 15000,
-                    "initial_controller": "ZDV 11 Junction Low",
+                    "initial_controller": "C11",
                     "initial_speed": 250,
                     "route": "KGJT",
-                    "waypoints": "N039.28.03.283,W109.30.21.505 N039.22.05.637,W109.22.53.483/ho",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N039.28.03.283,W109.30.21.505 N039.22.05.637,W109.22.53.483/ho"
                 }
             ]
         }

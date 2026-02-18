@@ -1,21 +1,45 @@
 {
     "control_positions": {
-        "FLO_APP": {
+        "1F": {
+            "callsign": "FLO_APP",
             "frequency": 118600,
-            "radio_name": "Florence Approach",
-            "sector_id": "1F"
+            "radio_name": "Florence Approach"
         },
-        "FLO_TWR": {
+        "2F": {
+            "callsign": "FLO_TWR",
             "frequency": 125100,
-            "radio_name": "Florence Tower",
-            "sector_id": "2F"
+            "radio_name": "Florence Tower"
         }
     },
     "stars_config": {},
     "handoff_ids": [
         {
+            "id": "CLT",
+            "prefix": "1"
+        },
+        {
+            "id": "FAY",
+            "prefix": "4"
+        },
+        {
+            "id": "MYR",
+            "prefix": "3"
+        },
+        {
+            "id": "SSC",
+            "prefix": "2"
+        },
+        {
+            "id": "ZDC",
+            "eram_prefix": "W"
+        },
+        {
             "id": "ZJX",
-            "eram_prefix": "J"
+            "eram_prefix": "C"
+        },
+        {
+            "id": "ZTL",
+            "eram_prefix": "T"
         }
     ]
 }

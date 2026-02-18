@@ -488,8 +488,7 @@
                     "spawn": "ANCHR@0.5",
                     "cruise_altitude": 32000,
                     "star": "DLAMP8",
-                    "initial_controller": "CVG_L_APP",
-                    "initial_facility": "CVG",
+                    "initial_controller": "11L",
                     "initial_altitude": 17000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -528,7 +527,7 @@
                     "spawn": "COBBZ",
                     "cruise_altitude": 36000,
                     "star": "LEDDL1",
-                    "initial_controller": "ZID 83 Falmouth",
+                    "initial_controller": "C83",
                     "initial_altitude": 16000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -556,8 +555,7 @@
                                 "airport": "KATL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZID"
+                    }
                 }
             ]
         },
@@ -567,7 +565,7 @@
                     "spawn": "XXTRA@0.5",
                     "cruise_altitude": 37000,
                     "star": "MBELL5",
-                    "initial_controller": "ZID 83 Falmouth",
+                    "initial_controller": "C83",
                     "initial_altitude": 14000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -591,8 +589,7 @@
                                 "airport": "KBHM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZID"
+                    }
                 }
             ]
         }
@@ -633,22 +630,22 @@
     "scenarios": {
         "KSDF South": {
             "airspace": {
-                "SDF_I_APP": [
+                "4I": [
                     "sdfapp"
                 ],
-                "SDF_B_DEP": [
+                "4B": [
                     "sdfapp"
                 ],
-                "SDF_W_APP": [
+                "4W": [
                     "sdfapp"
                 ],
-                "SDF_A_APP": [
+                "4A": [
                     "sdfapp"
                 ],
-                "SDF_E_APP": [
+                "4E": [
                     "sdfapp"
                 ],
-                "SDF_D_DEP": [
+                "4D": [
                     "sdfapp"
                 ]
             },
@@ -692,22 +689,22 @@
         },
         "KSDF North": {
             "airspace": {
-                "SDF_I_APP": [
+                "4I": [
                     "sdfapp"
                 ],
-                "SDF_B_DEP": [
+                "4B": [
                     "sdfapp"
                 ],
-                "SDF_W_APP": [
+                "4W": [
                     "sdfapp"
                 ],
-                "SDF_A_APP": [
+                "4A": [
                     "sdfapp"
                 ],
-                "SDF_E_APP": [
+                "4E": [
                     "sdfapp"
                 ],
-                "SDF_D_DEP": [
+                "4D": [
                     "sdfapp"
                 ]
             },

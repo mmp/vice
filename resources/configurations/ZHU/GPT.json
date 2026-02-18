@@ -1,19 +1,19 @@
 {
     "control_positions": {
-        "GPT_E_APP": {
+        "1E": {
+            "callsign": "GPT_E_APP",
             "frequency": 124600,
-            "radio_name": "Gulfport Approach",
-            "sector_id": "1E"
+            "radio_name": "Gulfport Approach"
         },
-        "GPT_TWR": {
+        "1L": {
+            "callsign": "GPT_TWR",
             "frequency": 123700,
-            "radio_name": "Gulfport Tower",
-            "sector_id": "1L"
+            "radio_name": "Gulfport Tower"
         },
-        "GPT_W_APP": {
+        "1W": {
+            "callsign": "GPT_W_APP",
             "frequency": 127500,
-            "radio_name": "Gulfport Approach",
-            "sector_id": "1W"
+            "radio_name": "Gulfport Approach"
         }
     },
     "handoff_ids": [
@@ -24,6 +24,10 @@
         {
             "id": "MSY",
             "prefix": "2"
+        },
+        {
+            "id": "ZHU",
+            "eram_prefix": "C"
         }
     ]
 }

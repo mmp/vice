@@ -109,7 +109,6 @@ type Arrival struct {
 	STAR            string                              `json:"star"`
 
 	InitialController   ControlPosition `json:"initial_controller"`
-	InitialFacility     string          `json:"initial_facility,omitempty"`
 	InitialAltitude     float32         `json:"initial_altitude"`
 	AssignedAltitude    float32         `json:"assigned_altitude"`
 	InitialSpeed        float32         `json:"initial_speed"`
@@ -1050,12 +1049,8 @@ func (ar *Arrival) PostDeserialize(loc Locator, nmPerLongitude float32, magnetic
 
 	if ar.InitialController == "" {
 		e.ErrorString("\"initial_controller\" missing")
-	} else if ar.InitialFacility == "" {
-		// Only validate against local control positions if no initial_facility is specified.
-		// Cross-facility validation is done in server/scenario.go where facility configs are available.
-		if _, ok := controlPositions[ar.InitialController]; !ok {
-			e.ErrorString("controller %q not found for \"initial_controller\"", ar.InitialController)
-		}
+	} else if _, ok := controlPositions[ar.InitialController]; !ok {
+		e.ErrorString("controller %q not found for \"initial_controller\"", ar.InitialController)
 	}
 
 	if !checkScratchpad(ar.Scratchpad) {

@@ -1,76 +1,76 @@
 {
     "control_positions": {
-        "AUS_W_APP": {
+        "1W": {
+            "callsign": "AUS_W_APP",
             "frequency": 119000,
-            "radio_name": "Austin Approach",
-            "sector_id": "1W"
+            "radio_name": "Austin Approach"
         },
-        "AUS_E_APP": {
+        "1E": {
+            "callsign": "AUS_E_APP",
             "frequency": 127225,
-            "radio_name": "Austin Approach",
-            "sector_id": "1E"
+            "radio_name": "Austin Approach"
         },
-        "AUS_F_APP": {
+        "1F": {
+            "callsign": "AUS_F_APP",
             "frequency": 125325,
-            "radio_name": "Austin Approach",
-            "sector_id": "1F"
+            "radio_name": "Austin Approach"
         },
-        "AUS_E_TWR": {
+        "1T": {
+            "callsign": "AUS_E_TWR",
             "frequency": 121000,
-            "radio_name": "Austin Tower",
-            "sector_id": "1T"
+            "radio_name": "Austin Tower"
         },
-        "AUS_W_TWR": {
+        "1X": {
+            "callsign": "AUS_W_TWR",
             "frequency": 118225,
-            "radio_name": "Austin Tower",
-            "sector_id": "1X"
+            "radio_name": "Austin Tower"
         },
-        "HYI_TWR": {
+        "1H": {
+            "callsign": "HYI_TWR",
             "frequency": 126825,
             "radio_name": "San Marcos Tower",
-            "scope_char": "T",
-            "sector_id": "1H"
+            "scope_char": "T"
         },
-        "GTU_TWR": {
+        "1G": {
+            "callsign": "GTU_TWR",
             "frequency": 120225,
             "radio_name": "Georgetown Tower",
-            "scope_char": "T",
-            "sector_id": "1G"
+            "scope_char": "T"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "DXEEE3N": "AUS_W_APP",
-                    "DXEEE3S": "AUS_W_APP",
-                    "GABOO1": "AUS_E_APP",
-                    "LAIKS3N": "AUS_W_APP",
-                    "LAIKS3S": "AUS_W_APP",
-                    "OVERFLIGHTSE": "AUS_E_APP",
-                    "OVERFLIGHTSW": "AUS_W_APP",
-                    "SEWZY6N": "AUS_E_APP",
-                    "SEWZY6S": "AUS_E_APP",
-                    "TOAMY": "AUS_E_APP",
-                    "WLEEE7N": "AUS_E_APP",
-                    "WLEEE7S": "AUS_E_APP"
+                    "DXEEE3N": "1W",
+                    "DXEEE3S": "1W",
+                    "GABOO1": "1E",
+                    "LAIKS3N": "1W",
+                    "LAIKS3S": "1W",
+                    "OVERFLIGHTSE": "1E",
+                    "OVERFLIGHTSW": "1W",
+                    "SEWZY6N": "1E",
+                    "SEWZY6S": "1E",
+                    "TOAMY": "1E",
+                    "WLEEE7N": "1E",
+                    "WLEEE7S": "1E"
                 },
                 "departure_assignments": {
-                    "KAUS": "AUS_W_APP",
-                    "KAUS/18L": "AUS_E_APP",
-                    "KAUS/18R": "AUS_W_APP",
-                    "KAUS/36L": "AUS_W_APP",
-                    "KAUS/36R": "AUS_E_APP",
-                    "KGTU": "AUS_W_APP",
-                    "KGTU/11": "AUS_E_APP",
-                    "KGTU/29": "AUS_W_APP",
-                    "KHYI": "AUS_W_APP",
-                    "KHYI/13": "AUS_W_APP",
-                    "KHYI/31": "AUS_W_APP"
+                    "KAUS": "1W",
+                    "KAUS/18L": "1E",
+                    "KAUS/18R": "1W",
+                    "KAUS/36L": "1W",
+                    "KAUS/36R": "1E",
+                    "KGTU": "1W",
+                    "KGTU/11": "1E",
+                    "KGTU/29": "1W",
+                    "KHYI": "1W",
+                    "KHYI/13": "1W",
+                    "KHYI/31": "1W"
                 },
                 "default_consolidation": {
-                    "AUS_E_APP": [
-                        "AUS_W_APP"
+                    "1E": [
+                        "1W"
                     ]
                 }
             }
@@ -95,7 +95,7 @@
             ]
         },
         "controller_configs": {
-            "AUS_W_APP": {
+            "1W": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -105,7 +105,7 @@
                     }
                 ]
             },
-            "AUS_E_APP": {
+            "1E": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -203,7 +203,7 @@
                     0,
                     0
                 ],
-                "receiving_controller": "ZHU 50 Stonewall"
+                "receiving_controller": "C50"
             },
             {
                 "fixes": [
@@ -214,7 +214,7 @@
                     0,
                     8999
                 ],
-                "receiving_controller": "I90_U_APP"
+                "receiving_controller": "31U"
             },
             {
                 "fixes": [
@@ -225,7 +225,7 @@
                     9000,
                     99000
                 ],
-                "receiving_controller": "ZHU 80 Industry"
+                "receiving_controller": "C80"
             },
             {
                 "fixes": [
@@ -235,7 +235,7 @@
                     0,
                     0
                 ],
-                "receiving_controller": "ZHU 96 Bergstrom"
+                "receiving_controller": "C96"
             },
             {
                 "fixes": [
@@ -245,7 +245,7 @@
                     0,
                     13000
                 ],
-                "receiving_controller": "SAT_N_APP"
+                "receiving_controller": "11N"
             }
         ],
         "coordination_fixes": {
@@ -305,7 +305,7 @@
         },
         {
             "id": "ZHU",
-            "eram_prefix": "H"
+            "eram_prefix": "C"
         }
     ]
 }

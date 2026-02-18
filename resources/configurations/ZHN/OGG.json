@@ -1,59 +1,59 @@
 {
     "control_positions": {
-        "HCF_S_APP": {
+        "1S": {
+            "callsign": "HCF_S_APP",
             "frequency": 119500,
-            "radio_name": "Honolulu Approach",
-            "sector_id": "1S"
+            "radio_name": "Honolulu Approach"
         },
-        "HCF_N_APP": {
+        "1N": {
+            "callsign": "HCF_N_APP",
             "frequency": 120200,
-            "radio_name": "Honolulu Approach",
-            "sector_id": "1N"
+            "radio_name": "Honolulu Approach"
         },
-        "OGG_TWR": {
+        "1T": {
+            "callsign": "OGG_TWR",
             "frequency": 118700,
-            "radio_name": "Maui Tower",
-            "sector_id": "1T"
+            "radio_name": "Maui Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "OGG": {
                 "inbound_assignments": {
-                    "CAMPS4.LNY.N": "HCF_S_APP",
-                    "LNDHY1": "HCF_N_APP",
-                    "V1.CAMPS4.N": "HCF_S_APP",
-                    "V2.CAMPS4.N": "HCF_S_APP"
+                    "CAMPS4.LNY.N": "1S",
+                    "LNDHY1": "1N",
+                    "V1.CAMPS4.N": "1S",
+                    "V2.CAMPS4.N": "1S"
                 },
                 "departure_assignments": {
-                    "PHOG": "HCF_N_APP"
+                    "PHOG": "1N"
                 },
                 "default_consolidation": {
-                    "HCF_N_APP": [
-                        "HCF_S_APP"
+                    "1N": [
+                        "1S"
                     ]
                 }
             },
             "OG1": {
                 "inbound_assignments": {
-                    "CAMPS4.LNY.S": "HCF_S_APP",
-                    "OCEANIC SOUTH FLOW": "HCF_N_APP",
-                    "V1.CAMPS4.S": "HCF_S_APP",
-                    "V2.CAMPS4.S": "HCF_S_APP"
+                    "CAMPS4.LNY.S": "1S",
+                    "OCEANIC SOUTH FLOW": "1N",
+                    "V1.CAMPS4.S": "1S",
+                    "V2.CAMPS4.S": "1S"
                 },
                 "departure_assignments": {
-                    "PHOG": "HCF_S_APP"
+                    "PHOG": "1S"
                 },
                 "default_consolidation": {
-                    "HCF_N_APP": [
-                        "HCF_S_APP"
+                    "1N": [
+                        "1S"
                     ]
                 }
             }
         },
         "center": "OGG",
         "controller_configs": {
-            "HCF_S_APP": {
+            "1S": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -357,6 +357,10 @@
         {
             "id": "NGF",
             "prefix": "2"
+        },
+        {
+            "id": "ZHN",
+            "eram_prefix": "C"
         }
     ]
 }

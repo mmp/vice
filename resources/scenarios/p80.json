@@ -2146,9 +2146,8 @@
                     "UBG.J": {
                         "assigned_altitude": 6000,
                         "sid": "SALEM 4",
-                        "handoff_controller": "Hood (1D)",
-                        "departure_controller": "ZSE Sector 06",
-                        "departure_facility": "ZSE",
+                        "handoff_controller": "1D",
+                        "departure_controller": "C06",
                         "waypoints": "BREAF/ho UBG"
                     }
                 }
@@ -2680,7 +2679,7 @@
                     "waypoints": "HEMLO ONP/ho LARSN UBG",
                     "cruise_altitude": 35000,
                     "route": "/. UBG",
-                    "initial_controller": "ZSE Sector 06",
+                    "initial_controller": "C06",
                     "initial_altitude": 18000,
                     "assigned_altitude": 11000,
                     "initial_speed": 300,
@@ -2708,8 +2707,7 @@
                                 "airport": "PHKO"
                             }
                         ]
-                    },
-                    "initial_facility": "ZSE"
+                    }
                 }
             ]
         },
@@ -2718,7 +2716,7 @@
                 {
                     "cruise_altitude": 21000,
                     "route": "/. BTG",
-                    "initial_controller": "ZSE Sector 32",
+                    "initial_controller": "C32",
                     "initial_altitude": 18000,
                     "assigned_altitude": 12000,
                     "star": "HELNS6",
@@ -2749,8 +2747,7 @@
                                 "airport": "KBFI"
                             }
                         ]
-                    },
-                    "initial_facility": "ZSE"
+                    }
                 }
             ]
         },
@@ -2759,7 +2756,7 @@
                 {
                     "waypoints": "WINLO N046.09.17.336,W123.04.25.264/ho LOATH V165 UBG",
                     "cruise_altitude": 7000,
-                    "initial_controller": "ZSE Sector 02",
+                    "initial_controller": "C02",
                     "initial_altitude": [
                         7000,
                         5000
@@ -2773,8 +2770,7 @@
                             "departure_airport": "KTIW",
                             "arrival_airport": "KEUG"
                         }
-                    ],
-                    "initial_facility": "ZSE"
+                    ]
                 }
             ],
             "arrivals": [
@@ -2782,7 +2778,7 @@
                     "waypoints": "WINLO N046.09.17.336,W123.04.25.264/ho LOATH V165 UBG",
                     "cruise_altitude": 7000,
                     "route": "/. UBG",
-                    "initial_controller": "ZSE Sector 04",
+                    "initial_controller": "C04",
                     "initial_altitude": 7000,
                     "initial_speed": 170,
                     "assigned_altitude": 7000,
@@ -2810,8 +2806,7 @@
                                 "airport": "KOLM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZSE"
+                    }
                 }
             ]
         },
@@ -2821,7 +2816,7 @@
                     "waypoints": "VECCU LTJ/ho V112 BTG",
                     "cruise_altitude": 10000,
                     "route": "/. UBG",
-                    "initial_controller": "ZSE Sector 34",
+                    "initial_controller": "C34",
                     "initial_altitude": 10000,
                     "initial_speed": 170,
                     "assigned_altitude": 8000,
@@ -2849,8 +2844,7 @@
                                 "airport": "KMSO"
                             }
                         ]
-                    },
-                    "initial_facility": "ZSE"
+                    }
                 }
             ]
         },
@@ -2860,7 +2854,7 @@
                     "waypoints": "N046.27.05.028,W123.30.14.282 N046.09.13.422,W123.19.24.495/ho KEIKO/a11000 BTG",
                     "cruise_altitude": 35000,
                     "route": "/. BTG",
-                    "initial_controller": "ZSE Sector 02",
+                    "initial_controller": "C02",
                     "initial_altitude": 15000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -2882,8 +2876,7 @@
                                 "airport": "PAFA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZSE"
+                    }
                 }
             ]
         },
@@ -2894,7 +2887,7 @@
                     "cruise_altitude": 34000,
                     "route": "/. HHOOD",
                     "star": "HHOOD5",
-                    "initial_controller": "ZSE Sector 34",
+                    "initial_controller": "C34",
                     "initial_altitude": 18000,
                     "initial_speed": 280,
                     "scratchpad": "RHO",
@@ -2972,8 +2965,7 @@
                                 "airport": "KDEN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZSE"
+                    }
                 }
             ]
         },
@@ -2983,7 +2975,7 @@
                     "waypoints": "EMZEY/a7000+/s230 CIZZL/a6000+/s210/h281/ho",
                     "cruise_altitude": 34000,
                     "star": "HHOOD5",
-                    "initial_controller": "North (1N)",
+                    "initial_controller": "1N",
                     "initial_altitude": 7000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -3300,7 +3292,7 @@
                     "route": "/. HHOOD",
                     "star": "HHOOD5",
                     "scratchpad": "RHO",
-                    "initial_controller": "ZSE Sector 34",
+                    "initial_controller": "C34",
                     "initial_altitude": 17200,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -3357,8 +3349,7 @@
                                 "airport": "KBOI"
                             }
                         ]
-                    },
-                    "initial_facility": "ZSE"
+                    }
                 }
             ]
         },
@@ -3368,7 +3359,7 @@
                     "waypoints": "HHOOD/a9000-15000/s250 N045.32.15.516,W121.54.26.180/ho SHAFR/a6700/s210/h259",
                     "cruise_altitude": 34000,
                     "star": "HHOOD5",
-                    "initial_controller": "North (1N)",
+                    "initial_controller": "1N",
                     "initial_altitude": 9000,
                     "assigned_altitude": 6700,
                     "initial_speed": 250,
@@ -3683,7 +3674,7 @@
                     "waypoints": "BUWZO HELNS/a11000+/ho KRATR/a10000-13000 HYKER/a7000-9000 VOODU/a5000/s210 DOUHH NNUTT/h278",
                     "cruise_altitude": 34000,
                     "route": "/. BUWZO",
-                    "initial_controller": "ZSE Sector 32",
+                    "initial_controller": "C32",
                     "scratchpad": "RKR",
                     "initial_altitude": 21000,
                     "initial_speed": 300,
@@ -3723,8 +3714,7 @@
                                 "airport": "EGLL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZSE"
+                    }
                 }
             ]
         },
@@ -3734,7 +3724,7 @@
                     "waypoints": "VOODU/a5000/s210/ho DOUHH NNUTT/h278",
                     "cruise_altitude": 34000,
                     "star": "KRATR2",
-                    "initial_controller": "North (1N)",
+                    "initial_controller": "1N",
                     "initial_altitude": 5000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -3825,7 +3815,7 @@
                     "cruise_altitude": 34000,
                     "route": "/. BUWZO",
                     "scratchpad": "RKR",
-                    "initial_controller": "ZSE Sector 32",
+                    "initial_controller": "C32",
                     "initial_altitude": 21000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -3864,8 +3854,7 @@
                                 "airport": "EHAM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZSE"
+                    }
                 }
             ]
         },
@@ -3875,7 +3864,7 @@
                     "waypoints": "LIQWD/a6000 N045.43.30.282,W122.25.23.831/ho SSSUN/s210 SHYNE/h108",
                     "cruise_altitude": 34000,
                     "star": "KRATR2",
-                    "initial_controller": "North (1N)",
+                    "initial_controller": "1N",
                     "initial_altitude": 6000,
                     "assigned_altitude": 6000,
                     "initial_speed": 250,
@@ -3965,7 +3954,7 @@
                     "waypoints": "MOXEE PORTL N044.48.40.289,W122.41.15.494/ho VANTZ/a12000/s250 OCITY/a7000+/h280",
                     "cruise_altitude": 34000,
                     "route": "/. MOXEE",
-                    "initial_controller": "ZSE Sector 06",
+                    "initial_controller": "C06",
                     "initial_altitude": 18000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -4252,8 +4241,7 @@
                                 "airport": "KONT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZSE"
+                    }
                 }
             ]
         },
@@ -4263,7 +4251,7 @@
                     "waypoints": "MOXEE PORTL N044.48.40.289,W122.41.15.494/ho VANTZ/a12000/s250 OCITY/a7000+/h100",
                     "cruise_altitude": 34000,
                     "route": "/. MOXEE",
-                    "initial_controller": "ZSE Sector 06",
+                    "initial_controller": "C06",
                     "initial_altitude": 18000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -4550,8 +4538,7 @@
                                 "airport": "KONT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZSE"
+                    }
                 }
             ]
         },
@@ -4561,7 +4548,7 @@
                     "waypoints": "TMBRS/a12000+/s270/ho VANTZ/a11000-15000/s250 FLOWR/a7000-9000 FFULL/a7000-9000 SSAIL/a6000-8000 BBREW PUBBB/a5000/s210/h281",
                     "cruise_altitude": 34000,
                     "route": "/. TMBRS",
-                    "initial_controller": "ZSE Sector 06",
+                    "initial_controller": "C06",
                     "scratchpad": "RTM",
                     "initial_altitude": 17000,
                     "initial_speed": 270,
@@ -4940,8 +4927,7 @@
                                 "airport": "PHKO"
                             }
                         ]
-                    },
-                    "initial_facility": "ZSE"
+                    }
                 }
             ]
         },
@@ -4951,7 +4937,7 @@
                     "waypoints": "SSAIL/a6000-8000 N045.28.18.266,W122.45.55.178/ho MYCRO/a5000/s210 BBREW PUBBB/h305",
                     "cruise_altitude": 34000,
                     "star": "TMBERS3",
-                    "initial_controller": "Hood (1D)",
+                    "initial_controller": "1D",
                     "initial_altitude": 6000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -5266,7 +5252,7 @@
                     "waypoints": "TMBRS/a12000+/s270/ho VANTZ/a11000-15000/s250 FLOWR/a7000-9000 ROAGE/a4000+/s210/h103",
                     "cruise_altitude": 34000,
                     "route": "/. TMBRS",
-                    "initial_controller": "ZSE Sector 06",
+                    "initial_controller": "C06",
                     "initial_altitude": 17000,
                     "scratchpad": "RTM",
                     "initial_speed": 270,
@@ -5576,8 +5562,7 @@
                                 "airport": "KONT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZSE"
+                    }
                 }
             ]
         },
@@ -5587,7 +5572,7 @@
                     "waypoints": "FLOWR/a7000-9000 N045.20.24.165,W122.33.37.227/ho ROAGE/a4000+/s210/h103",
                     "cruise_altitude": 34000,
                     "star": "TMBERS3",
-                    "initial_controller": "Hood (1D)",
+                    "initial_controller": "1D",
                     "initial_altitude": 9000,
                     "assigned_altitude": 5000,
                     "initial_speed": 250,
@@ -5924,16 +5909,16 @@
                 }
             ],
             "airspace": {
-                "North (1N)": [
+                "1N": [
                     "North (West)"
                 ],
-                "Hood (1D)": [
+                "1D": [
                     "Hood (West)"
                 ],
-                "Newburg (1V)": [
+                "1V": [
                     "Newburg (West)"
                 ],
-                "Final (1F)": [
+                "1F": [
                     "Final (West)"
                 ]
             },
@@ -6003,16 +5988,16 @@
         },
         "KPDX East": {
             "airspace": {
-                "North (1N)": [
+                "1N": [
                     "North (East)"
                 ],
-                "Hood (1D)": [
+                "1D": [
                     "Hood (East)"
                 ],
-                "Newburg (1V)": [
+                "1V": [
                     "Newburg (East)"
                 ],
-                "Final (1F)": [
+                "1F": [
                     "Final (East)"
                 ]
             },
@@ -6096,7 +6081,7 @@
         },
         "KPDX Final West": {
             "airspace": {
-                "Final (1F)": [
+                "1F": [
                     "Final (West)"
                 ]
             },
@@ -6134,7 +6119,7 @@
         },
         "KPDX Final East": {
             "airspace": {
-                "Final (1F)": [
+                "1F": [
                     "Final (East)"
                 ]
             },

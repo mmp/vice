@@ -1,14 +1,14 @@
 {
     "control_positions": {
-        "NBC_N_APP": {
+        "1B": {
+            "callsign": "NBC_N_APP",
             "frequency": 123700,
-            "radio_name": "Beaufort Arrival",
-            "sector_id": "1B"
+            "radio_name": "Beaufort Arrival"
         },
-        "NBC_APP": {
+        "1D": {
+            "callsign": "NBC_APP",
             "frequency": 125125,
-            "radio_name": "Beaufort Approach",
-            "sector_id": "1D"
+            "radio_name": "Beaufort Approach"
         }
     },
     "handoff_ids": [
@@ -19,6 +19,10 @@
         {
             "id": "SAV",
             "prefix": "3"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "C"
         }
     ]
 }

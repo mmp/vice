@@ -2143,8 +2143,7 @@
                 {
                     "waypoints": "ALLMA/a23000- ALCRN/a12000-14000 SNKEM/a4000+",
                     "star": "ALCRN1",
-                    "initial_controller": "ZJX 30 Nepta",
-                    "initial_facility": "ZJX",
+                    "initial_controller": "C30",
                     "initial_altitude": 15000,
                     "initial_speed": 250,
                     "airlines": {
@@ -2193,8 +2192,7 @@
                 {
                     "waypoints": "N031.16.42.172,W082.24.32.799 N031.06.25.908,W082.20.41.894/a10000/ho/h165 CRG",
                     "route": "ALLMA",
-                    "initial_controller": "ZJX 30 Nepta",
-                    "initial_facility": "ZJX",
+                    "initial_controller": "C30",
                     "initial_altitude": 12200,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -2268,8 +2266,7 @@
                 {
                     "waypoints": "N031.16.42.172,W082.24.32.799 N031.06.25.908,W082.20.41.894/a8000/ho/h165 CRG",
                     "route": "ALLMA",
-                    "initial_controller": "ZJX 30 Nepta",
-                    "initial_facility": "ZJX",
+                    "initial_controller": "C30",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -2338,7 +2335,7 @@
                 {
                     "waypoints": "LGC AYS/ho CRG SGJ",
                     "route": "LGC AYS CRG",
-                    "initial_controller": "ZJX 57 St. Johns",
+                    "initial_controller": "C57",
                     "initial_altitude": 9000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -2412,7 +2409,7 @@
                 {
                     "waypoints": "LGC AYS/ho CRG SGJ",
                     "route": "LGC AYS CRG",
-                    "initial_controller": "ZJX 57 St. Johns",
+                    "initial_controller": "C57",
                     "initial_altitude": 8000,
                     "initial_speed": 250,
                     "description": "prop",
@@ -2481,7 +2478,7 @@
                 {
                     "waypoints": "N031.12.34.108,W081.11.12.692 N031.02.30.924,W081.14.51.842/a11000/ho CRG",
                     "route": "WURFL ESENT",
-                    "initial_controller": "ZJX 54 Jekyl",
+                    "initial_controller": "C54",
                     "initial_altitude": 11000,
                     "initial_speed": 250,
                     "description": "jet",
@@ -2555,7 +2552,7 @@
                 {
                     "waypoints": "N031.12.34.108,W081.11.12.692 N031.02.30.924,W081.14.51.842/a9000/ho CRG",
                     "route": "WURFL ESENT",
-                    "initial_controller": "ZJX 54 Jekyl",
+                    "initial_controller": "C54",
                     "initial_altitude": 9000,
                     "initial_speed": 250,
                     "description": "prop",
@@ -2624,7 +2621,7 @@
                 {
                     "waypoints": "BASLE WYTOK JABOR HOTAR HEBIN HABIK/h203",
                     "star": "BASLE.HOTAR1",
-                    "initial_controller": "ZJX 54 Jekyl",
+                    "initial_controller": "C54",
                     "initial_altitude": 40000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -2644,7 +2641,7 @@
                 {
                     "waypoints": "N031.18.26.213,W081.11.25.327 CATSU/ho GOTBE/a10000 LUNNI/h240",
                     "star": "LUNNI2",
-                    "initial_controller": "ZJX 54 Jekyl",
+                    "initial_controller": "C54",
                     "initial_altitude": 20400,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -2691,7 +2688,7 @@
                 {
                     "waypoints": "N031.18.26.213,W081.11.25.327 CATSU/ho GOTBE/a10000 LUNNI/h240",
                     "star": "LUNNI2",
-                    "initial_controller": "ZJX 54 Jekyl",
+                    "initial_controller": "C54",
                     "initial_altitude": 20400,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -2738,7 +2735,7 @@
                 {
                     "waypoints": "CAMJO MARQO/ho COROE/a11000- GWIIZ EGAGE/a4000/s210/h77",
                     "star": "MARQO3",
-                    "initial_controller": "ZJX 77 Talyor",
+                    "initial_controller": "C77",
                     "initial_altitude": 16000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -2794,7 +2791,7 @@
                 {
                     "waypoints": "KTPA N028.28.34.958,W082.27.07.597/ho OCF",
                     "route": "KTPA OCF",
-                    "initial_controller": "TPA_E_APP",
+                    "initial_controller": "11E",
                     "initial_altitude": 5000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -2868,7 +2865,7 @@
                 {
                     "waypoints": "KTPA N028.28.34.958,W082.27.07.597/ho OCF",
                     "route": "KTPA OCF",
-                    "initial_controller": "TPA_E_APP",
+                    "initial_controller": "11E",
                     "initial_altitude": 6000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -2937,8 +2934,7 @@
                 {
                     "waypoints": "ILTAC/a23000- N031.19.01.561,W082.30.40.649/ho FORMB OHDEA/a12000/h150",
                     "star": "OHDEA2",
-                    "initial_controller": "ZJX 30 Nepta",
-                    "initial_facility": "ZJX",
+                    "initial_controller": "C30",
                     "initial_altitude": 23000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -2994,7 +2990,7 @@
                 {
                     "waypoints": "BARBS ROYES/ho CRG SGJ",
                     "route": "KDAB BARBS ROYES CRG",
-                    "initial_controller": "DAB_N_APP",
+                    "initial_controller": "31N",
                     "initial_altitude": 8000,
                     "description": "jets",
                     "initial_speed": 250,
@@ -3046,7 +3042,7 @@
                 {
                     "waypoints": "BARBS ROYES/ho CRG SGJ",
                     "route": "KDAB BARBS ROYES CRG",
-                    "initial_controller": "DAB_N_APP",
+                    "initial_controller": "31N",
                     "initial_altitude": 6000,
                     "description": "prop",
                     "initial_speed": 250,
@@ -3099,7 +3095,7 @@
                 {
                     "waypoints": "BARBS ROYES/ho SGJ",
                     "route": "KDAB BARBS ROYES SGJ",
-                    "initial_controller": "DAB_N_APP",
+                    "initial_controller": "31N",
                     "initial_altitude": 8000,
                     "description": "SGJ jets",
                     "initial_speed": 250,
@@ -3117,7 +3113,7 @@
                 {
                     "waypoints": "BARBS ROYES/ho SGJ",
                     "route": "KDAB BARBS ROYES SGJ",
-                    "initial_controller": "DAB_N_APP",
+                    "initial_controller": "31N",
                     "initial_altitude": 6000,
                     "description": "SGJ props",
                     "initial_speed": 250,
@@ -3135,7 +3131,7 @@
                 {
                     "waypoints": "KEVB KDAB/ho OMN",
                     "route": "OMN",
-                    "initial_controller": "DAB_N_APP",
+                    "initial_controller": "31N",
                     "initial_altitude": 8000,
                     "description": "jets Vitts",
                     "initial_speed": 250,
@@ -3160,7 +3156,7 @@
                 {
                     "waypoints": "KEVB KDAB/ho OMN",
                     "route": "OMN",
-                    "initial_controller": "DAB_N_APP",
+                    "initial_controller": "31N",
                     "initial_altitude": 6000,
                     "description": "prop Vitts",
                     "initial_speed": 250,
@@ -3189,8 +3185,7 @@
                 {
                     "waypoints": "ORL N028.39.30.794,W081.43.37.135/ho VIZTA/a4000 CUSAB OCF GNV",
                     "route": "KORL VIZTA CUSAB V159 OCF GNV",
-                    "initial_controller": "MCO_E_DEP",
-                    "initial_facility": "F11",
+                    "initial_controller": "21E",
                     "initial_altitude": 10000,
                     "description": "jet",
                     "initial_speed": 250,
@@ -3263,8 +3258,7 @@
                 {
                     "waypoints": "ORL N028.39.30.794,W081.43.37.135/ho VIZTA/a4000 CUSAB OCF GNV",
                     "route": "KORL VIZTA CUSAB V159 OCF GNV",
-                    "initial_controller": "MCO_E_DEP",
-                    "initial_facility": "F11",
+                    "initial_controller": "21E",
                     "initial_altitude": 8000,
                     "initial_speed": 250,
                     "description": "prop",
@@ -3342,7 +3336,7 @@
                 {
                     "waypoints": "VIZTA/a12000 CUSAB OCF GNV/ho CRG",
                     "route": "KORL VIZTA CUSAB V159 OCF GNV",
-                    "initial_controller": "JAX_V_APP",
+                    "initial_controller": "1V",
                     "initial_altitude": 12000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -3410,7 +3404,7 @@
                 {
                     "waypoints": "HAINY/a24000+ MISCL MEAAT/ho BASSS POGIE/a13000 QUBEN/h360",
                     "star": "QUBEN2",
-                    "initial_controller": "ZJX 57 St. Johns",
+                    "initial_controller": "C57",
                     "initial_altitude": 24000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -3438,8 +3432,7 @@
                 {
                     "waypoints": "HILIS/ho FABES MCFIE/a12000 TEBOW/h46",
                     "star": "TEBOW2",
-                    "initial_controller": "ZJX 15 Ocala",
-                    "initial_facility": "ZJX",
+                    "initial_controller": "C15",
                     "initial_altitude": 22000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -3471,8 +3464,7 @@
                 {
                     "waypoints": "N029.43.22.702,W082.17.48.255 N029.50.06.958,W082.09.14.617/a11000/ho KCRG",
                     "route": "WILON",
-                    "initial_controller": "ZJX 15 Ocala",
-                    "initial_facility": "ZJX",
+                    "initial_controller": "C15",
                     "initial_altitude": 11000,
                     "initial_speed": 250,
                     "description": "prop",
@@ -3546,8 +3538,7 @@
                 {
                     "waypoints": "N029.43.22.702,W082.17.48.255 N029.50.06.958,W082.09.14.617/a11000/ho KCRG",
                     "route": "WILON",
-                    "initial_controller": "ZJX 15 Ocala",
-                    "initial_facility": "ZJX",
+                    "initial_controller": "C15",
                     "initial_altitude": 11000,
                     "initial_speed": 250,
                     "description": "jet",
@@ -3620,7 +3611,7 @@
                 {
                     "waypoints": "KTPA/ho WILON SGJ",
                     "route": "WILON",
-                    "initial_controller": "TPA_E_APP",
+                    "initial_controller": "11E",
                     "initial_altitude": 9000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -3693,7 +3684,7 @@
                 {
                     "waypoints": "KTPA/ho WILON SGJ",
                     "route": "WILON",
-                    "initial_controller": "TPA_E_APP",
+                    "initial_controller": "11E",
                     "initial_altitude": 9000,
                     "initial_speed": 250,
                     "description": "prop",
@@ -3778,7 +3769,7 @@
                         }
                     ],
                     "initial_altitude": 11000,
-                    "initial_controller": "DAB_N_APP",
+                    "initial_controller": "31N",
                     "initial_speed": 150,
                     "description": "V3 Northwest",
                     "waypoints": "MALET BULLI/ho V51 CRG V243 VNA"
@@ -3793,7 +3784,7 @@
                         }
                     ],
                     "initial_altitude": 11000,
-                    "initial_controller": "DAB_N_APP",
+                    "initial_controller": "31N",
                     "initial_speed": 150,
                     "description": "V51 overflight",
                     "waypoints": "MALET BULLI/ho V51 CRG V37 SSI KELER/delete"
@@ -3812,8 +3803,7 @@
                         }
                     ],
                     "initial_altitude": 8000,
-                    "initial_controller": "MCO_E_DEP",
-                    "initial_facility": "F11",
+                    "initial_controller": "21E",
                     "initial_speed": 150,
                     "description": "V159 Northwest",
                     "waypoints": "ORL MAMBO/ho V159 OCF V441 GNV V537 GEF"
@@ -3828,7 +3818,7 @@
                         }
                     ],
                     "initial_altitude": 11000,
-                    "initial_controller": "DAB_N_APP",
+                    "initial_controller": "31N",
                     "initial_speed": 150,
                     "description": "V159 Northeast",
                     "waypoints": "ORL MAMBO/ho V159 OCF V441 GNV V441 MONIA V441 SSI V441 KELER"
@@ -3847,7 +3837,7 @@
                         }
                     ],
                     "initial_altitude": 11000,
-                    "initial_controller": "ZJX 57 St. Johns",
+                    "initial_controller": "C57",
                     "initial_speed": 150,
                     "description": "",
                     "waypoints": "KELER CATHY STARY/ho SSI V441 MONIA V441 GNV V441 OCF V159 MAMBO/delete"
@@ -3866,7 +3856,7 @@
                         }
                     ],
                     "initial_altitude": 8000,
-                    "initial_controller": "TPA_E_APP",
+                    "initial_controller": "11E",
                     "initial_speed": 150,
                     "description": "V441 North",
                     "waypoints": "PIE BAYPO/ho V441 OCF V157 TAALR KVLD/delete"
@@ -3885,7 +3875,7 @@
                         }
                     ],
                     "initial_altitude": 9000,
-                    "initial_controller": "ZJX 54 Jekyl",
+                    "initial_controller": "C54",
                     "initial_speed": 150,
                     "description": "V441 South",
                     "waypoints": "KVLD TAALR/ho V157 OCF V441 BAYPO/delete"
@@ -3903,8 +3893,7 @@
                         }
                     ],
                     "initial_altitude": 22000,
-                    "initial_controller": "ZJX 30 Nepta",
-                    "initial_facility": "ZJX",
+                    "initial_controller": "C30",
                     "initial_speed": 150,
                     "description": "SHREK2 Overflight",
                     "waypoints": "BITTE/ho WAKOS WANDD/a11000 SHREK STNKY KSFB/delete"
@@ -3923,8 +3912,7 @@
                         }
                     ],
                     "initial_altitude": 9000,
-                    "initial_controller": "ZJX 30 Nepta",
-                    "initial_facility": "ZJX",
+                    "initial_controller": "C30",
                     "initial_speed": 150,
                     "description": "V537 into DAB",
                     "waypoints": "ALVIN/ho V537 GNV WALEE T207 MMKAY FOXAM"
@@ -3943,7 +3931,7 @@
                         }
                     ],
                     "initial_altitude": 8000,
-                    "initial_controller": "DAB_N_APP",
+                    "initial_controller": "31N",
                     "initial_speed": 150,
                     "description": "V537 Out of DAB",
                     "waypoints": "FOXAM/ho MMKAY T207 WALEE GNV V537 ALVIN/delete"

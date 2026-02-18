@@ -806,7 +806,7 @@
                     "waypoints": "N021.41.53.541,W156.19.07.631 N021.27.09.691,W156.13.40.019/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
                     "cruise_altitude": 30000,
                     "star": "LNDHY1",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 20000,
                     "initial_speed": 270,
                     "description": "ZIGIE",
@@ -868,14 +868,13 @@
                                 "airport": "CYYC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "N021.43.23.313,W156.09.42.440 N021.27.35.660,W156.08.38.005/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
                     "cruise_altitude": 30000,
                     "star": "LNDHY1",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 20000,
                     "initial_speed": 270,
                     "description": "APACK",
@@ -937,14 +936,13 @@
                                 "airport": "CYYC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "N021.42.46.365,W155.58.40.404 N021.27.18.940,W156.02.52.045/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
                     "cruise_altitude": 30000,
                     "star": "LNDHY1",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 20000,
                     "initial_speed": 270,
                     "description": "BITTA",
@@ -1167,14 +1165,13 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "N021.26.17.815,W155.36.20.895 N021.18.22.697,W155.51.53.470/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
                     "cruise_altitude": 30000,
                     "star": "LNDHY1",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 20000,
                     "initial_speed": 270,
                     "description": "DENNS",
@@ -1392,14 +1389,13 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "N021.06.15.169,W155.31.56.839 N021.07.56.071,W155.46.13.773/ho LNDHY/a9000/s250 MUNJU/a7000+/s220 HOMAI/a5000/s210/h204",
                     "cruise_altitude": 30000,
                     "star": "LNDHY1",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 20000,
                     "initial_speed": 270,
                     "description": "FITES",
@@ -1490,8 +1486,7 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -1501,7 +1496,7 @@
                     "waypoints": "N021.42.11.263,W156.21.10.458 N021.29.32.595,W156.20.53.540/ho WEPTU",
                     "cruise_altitude": 30000,
                     "route": "ZOULU WEPTU OGG",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 20000,
                     "assigned_altitude": 4000,
                     "initial_speed": 270,
@@ -1564,13 +1559,12 @@
                                 "airport": "CYYC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "N021.40.45.227,W156.08.51.079 N021.29.27.700,W156.12.09.052/ho WEPTU",
                     "route": "AUNTI WEPTU OGG",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 20000,
                     "assigned_altitude": 4000,
                     "initial_speed": 270,
@@ -1633,13 +1627,12 @@
                                 "airport": "CYYC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "N021.39.09.755,W155.56.06.979 N021.24.50.487,W156.05.13.934/ho WEPTU",
                     "route": "BOARD WEPTU OGG",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 20000,
                     "assigned_altitude": 4000,
                     "initial_speed": 270,
@@ -1863,14 +1856,13 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "N021.24.02.855,W155.37.22.419 N021.15.07.944,W155.54.07.229/ho WEPTU",
                     "cruise_altitude": 30000,
                     "route": "DRAYK WEPTU OGG",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 20000,
                     "assigned_altitude": 4000,
                     "initial_speed": 270,
@@ -2089,13 +2081,12 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "N021.03.44.375,W155.18.39.781 N021.01.15.627,W155.38.24.492/ho SWEEP POCGI",
                     "route": "FAPIS WEPTU OGG",
-                    "initial_controller": "ZHN 03 Molokai",
+                    "initial_controller": "C03",
                     "initial_altitude": 28000,
                     "assigned_altitude": 9000,
                     "initial_speed": 270,
@@ -2187,8 +2178,7 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -2198,7 +2188,7 @@
                     "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a5000 CAMPS/a3000+ OGG",
                     "cruise_altitude": 13000,
                     "star": "CAMPS4",
-                    "initial_controller": "ZHN 04 Lanai",
+                    "initial_controller": "C04",
                     "initial_altitude": 13000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -2231,14 +2221,13 @@
                                 "airport": "PHNL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a5000 CAMPS/a3000+ OGG",
                     "cruise_altitude": 25000,
                     "star": "CAMPS4",
-                    "initial_controller": "ZHN 04 Lanai",
+                    "initial_controller": "C04",
                     "initial_altitude": 25000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -2268,8 +2257,7 @@
                                 "airport": "PHLI"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -2279,7 +2267,7 @@
                     "waypoints": "JESSI N020.25.34.343,W156.25.09.301/ho LAVAS V1 HARPO CAMPS/a3000 OGG",
                     "cruise_altitude": 12000,
                     "star": "CAMPS4",
-                    "initial_controller": "ZHN 05 Big Island",
+                    "initial_controller": "C05",
                     "initial_altitude": 12000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -2300,8 +2288,7 @@
                                 "airport": "PHKO"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -2311,7 +2298,7 @@
                     "waypoints": "UPP N020.27.44.655,W156.14.30.996/ho MAKEN V2 HARPO CAMPS/a3000 OGG",
                     "cruise_altitude": 16000,
                     "star": "CAMPS4",
-                    "initial_controller": "ZHN 05 Big Island",
+                    "initial_controller": "C05",
                     "initial_altitude": 16000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -2328,8 +2315,7 @@
                                 "airport": "PHLI"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -2339,7 +2325,7 @@
                     "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a7000 CAMPS/a3000+ OGG",
                     "cruise_altitude": 13000,
                     "star": "CAMPS4",
-                    "initial_controller": "ZHN 04 Lanai",
+                    "initial_controller": "C04",
                     "initial_altitude": 13000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -2372,14 +2358,13 @@
                                 "airport": "PHNL"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 },
                 {
                     "waypoints": "N021.03.07.852,W157.28.32.054 ROSHE LNY/ho KEIKI/a7000 CAMPS/a3000+ OGG",
                     "cruise_altitude": 25000,
                     "star": "CAMPS4",
-                    "initial_controller": "ZHN 04 Lanai",
+                    "initial_controller": "C04",
                     "initial_altitude": 25000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -2409,8 +2394,7 @@
                                 "airport": "PHLI"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -2420,7 +2404,7 @@
                     "waypoints": "JESSI N020.25.34.343,W156.25.09.301/ho LAVAS V1 HARPO CAMPS/a6000 OGG",
                     "cruise_altitude": 12000,
                     "star": "CAMPS4",
-                    "initial_controller": "ZHN 05 Big Island",
+                    "initial_controller": "C05",
                     "initial_altitude": 12000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -2441,8 +2425,7 @@
                                 "airport": "PHKO"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         },
@@ -2452,7 +2435,7 @@
                     "waypoints": "UPP N020.27.44.655,W156.14.30.996/ho MAKEN V2 HARPO CAMPS/a6000 OGG",
                     "cruise_altitude": 16000,
                     "star": "CAMPS4",
-                    "initial_controller": "ZHN 05 Big Island",
+                    "initial_controller": "C05",
                     "initial_altitude": 16000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -2469,8 +2452,7 @@
                                 "airport": "PHLI"
                             }
                         ]
-                    },
-                    "initial_facility": "ZHN"
+                    }
                 }
             ]
         }
@@ -2641,10 +2623,10 @@
     "scenarios": {
         "OGG - North Flow": {
             "airspace": {
-                "HCF_N_APP": [
+                "1N": [
                     "HCF_N_APP"
                 ],
-                "HCF_S_APP": [
+                "1S": [
                     "HCF_S_APP"
                 ]
             },

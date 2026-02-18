@@ -1,24 +1,24 @@
 {
     "control_positions": {
-        "GRB_G_APP": {
+        "1G": {
+            "callsign": "GRB_G_APP",
             "frequency": 119400,
-            "radio_name": "Green Bay Approach",
-            "sector_id": "1G"
+            "radio_name": "Green Bay Approach"
         },
-        "GRB_S_APP": {
+        "1S": {
+            "callsign": "GRB_S_APP",
             "frequency": 126300,
-            "radio_name": "Green Bay Approach",
-            "sector_id": "1S"
+            "radio_name": "Green Bay Approach"
         },
-        "GRB_TWR": {
+        "1T": {
+            "callsign": "GRB_TWR",
             "frequency": 118700,
-            "radio_name": "Green Bay Tower",
-            "sector_id": "1T"
+            "radio_name": "Green Bay Tower"
         },
-        "GRB_X_APP": {
+        "1X": {
+            "callsign": "GRB_X_APP",
             "frequency": 120200,
-            "radio_name": "GRB_X_APP",
-            "sector_id": "1X"
+            "radio_name": "GRB_X_APP"
         }
     },
     "handoff_ids": [
@@ -29,6 +29,10 @@
         {
             "id": "ZAU",
             "eram_prefix": "G"
+        },
+        {
+            "id": "ZMP",
+            "eram_prefix": "C"
         }
     ]
 }

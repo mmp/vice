@@ -536,7 +536,7 @@
                         }
                     },
                     "route": "/. HAGAL.GIIBS3",
-                    "initial_controller": "ZID 34 Shelbyville",
+                    "initial_controller": "C34",
                     "initial_altitude": 26000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -555,8 +555,7 @@
                                 "airport": "KMCO"
                             }
                         ]
-                    },
-                    "initial_facility": "ZID"
+                    }
                 }
             ]
         },
@@ -575,7 +574,7 @@
                         }
                     },
                     "route": "/. ELANR.JAKKS2",
-                    "initial_controller": "ZAU 35 BEARZ",
+                    "initial_controller": "G35",
                     "initial_altitude": 26000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -590,8 +589,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZAU"
+                    }
                 }
             ]
         },
@@ -609,7 +607,7 @@
                         }
                     },
                     "route": "/. KOLTS.KOLTS2",
-                    "initial_controller": "ZID 34 Shelbyville",
+                    "initial_controller": "C34",
                     "initial_altitude": 18000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -624,8 +622,7 @@
                                 "airport": "KPHX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZID"
+                    }
                 }
             ]
         },
@@ -644,7 +641,7 @@
                         }
                     },
                     "route": "/. RACYR.SMUKE2",
-                    "initial_controller": "ZID 34 Shelbyville",
+                    "initial_controller": "C34",
                     "initial_altitude": 15500,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -663,8 +660,7 @@
                                 "airport": "KAUS"
                             }
                         ]
-                    },
-                    "initial_facility": "ZID"
+                    }
                 }
             ]
         },
@@ -683,7 +679,7 @@
                         }
                     },
                     "route": "/. RINTE.SNKPT2",
-                    "initial_controller": "ZID 34 Shelbyville",
+                    "initial_controller": "C34",
                     "initial_altitude": 24000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -722,8 +718,7 @@
                                 "airport": "KEWR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZID"
+                    }
                 },
                 {
                     "waypoints": "SJAAY ARCAB/a20000- SNKPT/a14000-19000/ho BABNE/a11500-15000 CCUUK",
@@ -738,7 +733,7 @@
                         }
                     },
                     "route": "/. SJAYY.SNKPT2",
-                    "initial_controller": "ZID 34 Shelbyville",
+                    "initial_controller": "C34",
                     "initial_altitude": 20000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -749,8 +744,7 @@
                                 "airport": "KDTW"
                             }
                         ]
-                    },
-                    "initial_facility": "ZID"
+                    }
                 }
             ]
         }

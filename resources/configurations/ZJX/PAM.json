@@ -1,9 +1,9 @@
 {
     "control_positions": {
-        "PAM_APP": {
+        "1P": {
+            "callsign": "PAM_APP",
             "frequency": 124150,
-            "radio_name": "Tyndall Approach",
-            "sector_id": "1P"
+            "radio_name": "Tyndall Approach"
         }
     },
     "handoff_ids": [
@@ -18,6 +18,14 @@
         {
             "id": "VPS",
             "prefix": "1"
+        },
+        {
+            "id": "ZJX",
+            "eram_prefix": "C"
+        },
+        {
+            "id": "ZNY",
+            "eram_prefix": "N"
         }
     ]
 }

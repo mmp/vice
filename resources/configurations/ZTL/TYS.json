@@ -1,21 +1,33 @@
 {
     "control_positions": {
-        "TYS_APP": {
+        "1W": {
+            "callsign": "TYS_APP",
             "frequency": 123900,
-            "radio_name": "Knoxville Approach",
-            "sector_id": "1W"
+            "radio_name": "Knoxville Approach"
         },
-        "TYS_TWR": {
+        "1L": {
+            "callsign": "TYS_TWR",
             "frequency": 121200,
-            "radio_name": "Knoxville Tower",
-            "sector_id": "1L"
+            "radio_name": "Knoxville Tower"
         }
     },
     "stars_config": {},
     "handoff_ids": [
         {
+            "id": "AVL",
+            "prefix": "3"
+        },
+        {
+            "id": "CHA",
+            "prefix": "1"
+        },
+        {
+            "id": "TRI",
+            "prefix": "2"
+        },
+        {
             "id": "ZTL",
-            "eram_prefix": "T"
+            "eram_prefix": "C"
         }
     ]
 }

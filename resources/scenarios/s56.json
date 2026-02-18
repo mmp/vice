@@ -276,7 +276,7 @@
                 {
                     "waypoints": "LHO/a14000+/ho CARTR SETTT/a14000+ DYANN/a11000+ ANNTY/a11000 SURYP/a11000/h164",
                     "star": "CARTR1",
-                    "initial_controller": "ZLC 07 Salt Lake 7",
+                    "initial_controller": "C07",
                     "initial_altitude": 16000,
                     "initial_speed": 300,
                     "description": "CARTR1",
@@ -348,8 +348,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLC"
+                    }
                 }
             ]
         },
@@ -358,7 +357,7 @@
                 {
                     "waypoints": "LHO/a14000+/ho CARTR WEBER/a12000+/h165",
                     "star": "CARTR1",
-                    "initial_controller": "ZLC 07 Salt Lake 7",
+                    "initial_controller": "C07",
                     "initial_altitude": 16000,
                     "initial_speed": 300,
                     "description": "CARTR1",
@@ -430,8 +429,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLC"
+                    }
                 }
             ]
         },
@@ -440,7 +438,7 @@
                 {
                     "waypoints": "SPANE/a15000/s250/ho RUSHN/a13000+ JAZZZ/a12000+/s250/h325",
                     "star": "JAZZZ1",
-                    "initial_controller": "ZLC 32 Salt Lake",
+                    "initial_controller": "C32",
                     "initial_altitude": 15000,
                     "initial_speed": 300,
                     "description": "JAZZZ1",
@@ -523,8 +521,7 @@
                                 "airport": "KIAH"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLC"
+                    }
                 }
             ]
         },
@@ -533,7 +530,7 @@
                 {
                     "waypoints": "SPANE/a19000/s280/ho LEEHY  FFU/a17000+ DRYVE/a15000+ PITTT/a12000 MAGNE QUIPA LAWVA/a11000/h344",
                     "star": "PITTT1",
-                    "initial_controller": "ZLC 32 Salt Lake",
+                    "initial_controller": "C32",
                     "initial_altitude": 19000,
                     "initial_speed": 280,
                     "description": "PITTT1",
@@ -616,8 +613,7 @@
                                 "airport": "KIAH"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLC"
+                    }
                 }
             ]
         },
@@ -626,7 +622,7 @@
                 {
                     "waypoints": "JAMMN/a17000/s250/ho DRAPR/a14000-15000 SPIEK/a13000-14000 HEIRY PITTT/a12000 MAGNE QUIPA LAWVA/a11000/h344",
                     "star": "PITTT1",
-                    "initial_controller": "ZLC 11",
+                    "initial_controller": "C11",
                     "initial_altitude": 17000,
                     "initial_speed": 300,
                     "description": "PITTT1",
@@ -704,8 +700,7 @@
                                 "airport": "KPHX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLC"
+                    }
                 }
             ]
         },
@@ -714,7 +709,7 @@
                 {
                     "waypoints": "NEEBO/a14000/s250/ho QWENN/a11000/s250/h344",
                     "star": "QWENN6",
-                    "initial_controller": "ZLC 11",
+                    "initial_controller": "C11",
                     "initial_altitude": 14000,
                     "initial_speed": 300,
                     "description": "QWENN6",
@@ -755,8 +750,7 @@
                                 "airport": "KPHX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLC"
+                    }
                 }
             ]
         },
@@ -765,7 +759,7 @@
                 {
                     "waypoints": "FRNZY/a14000/s250/ho QWENN/a11000/s250/h344",
                     "star": "QWENN6",
-                    "initial_controller": "ZLC 11",
+                    "initial_controller": "C11",
                     "initial_altitude": 14000,
                     "initial_speed": 300,
                     "description": "QWENN6",
@@ -810,8 +804,7 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLC"
+                    }
                 }
             ]
         },
@@ -820,7 +813,7 @@
                 {
                     "waypoints": "BEARR/ho SKEES HUUPR/a13000- DYANN/a11000+ ANNTY/a11000 SURYP/a11000/h164",
                     "star": "SKEES6",
-                    "initial_controller": "ZLC 14 Salt Lake",
+                    "initial_controller": "C14",
                     "initial_altitude": 16000,
                     "initial_speed": 300,
                     "description": "SKEES6",
@@ -876,8 +869,7 @@
                                 "airport": "KPDX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLC"
+                    }
                 }
             ]
         },
@@ -886,7 +878,7 @@
                 {
                     "waypoints": "BEARR/ho SKEES EKKHO/a11000/s250/h139",
                     "star": "SKEES6",
-                    "initial_controller": "ZLC 14 Salt Lake",
+                    "initial_controller": "C14",
                     "initial_altitude": 16000,
                     "initial_speed": 300,
                     "description": "SKEES6",
@@ -942,8 +934,7 @@
                                 "airport": "KPDX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLC"
+                    }
                 }
             ]
         },
@@ -952,7 +943,7 @@
                 {
                     "waypoints": "BVL KNOLE/a17000/s250/ho SKWAH/a14000+ YUTES GOGGL BUSHH/a12000+ SURYP/a11000/h164",
                     "star": "YUTES1",
-                    "initial_controller": "ZLC 40",
+                    "initial_controller": "C40",
                     "initial_altitude": 24000,
                     "initial_speed": 300,
                     "description": "YUTES1",
@@ -1032,8 +1023,7 @@
                                 "airport": "KSFO"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLC"
+                    }
                 }
             ]
         },
@@ -1042,7 +1032,7 @@
                 {
                     "waypoints": "BVL KNOLE/a17000/s250/ho SKWAH/a14000+ YUTES DUGGY JAXXX/a12000+ RIBSS LAWVA/a11000/h347",
                     "star": "YUTES1",
-                    "initial_controller": "ZLC 40",
+                    "initial_controller": "C40",
                     "initial_altitude": 24000,
                     "initial_speed": 300,
                     "description": "YUTES1",
@@ -1122,8 +1112,7 @@
                                 "airport": "KSFO"
                             }
                         ]
-                    },
-                    "initial_facility": "ZLC"
+                    }
                 }
             ]
         }

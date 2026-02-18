@@ -620,7 +620,7 @@
                 {
                     "waypoints": "PTERS/a16000+/ho SKENS/a13000-15000 MMMAT/a10000+ BBELL/a8000+ DDOUG/a8000 LMPEE/flyover/h329",
                     "star": "PTERS3",
-                    "initial_controller": "ZAN 07 ",
+                    "initial_controller": "C07",
                     "initial_altitude": 20000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -764,8 +764,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZAN"
+                    }
                 }
             ]
         },
@@ -781,7 +780,7 @@
                         }
                     },
                     "star": "KROTO5",
-                    "initial_controller": "ZAN 06 ",
+                    "initial_controller": "C06",
                     "initial_altitude": 16000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -805,8 +804,7 @@
                                 "airport": "PAOM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZAN"
+                    }
                 }
             ]
         },
@@ -822,7 +820,7 @@
                         }
                     },
                     "star": "KROTO5",
-                    "initial_controller": "ZAN 06 ",
+                    "initial_controller": "C06",
                     "initial_altitude": 22000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -842,8 +840,7 @@
                                 "airport": "PABR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZAN"
+                    }
                 }
             ]
         },
@@ -859,7 +856,7 @@
                         }
                     },
                     "star": "NEELL7",
-                    "initial_controller": "ZAN 05 ",
+                    "initial_controller": "C05",
                     "initial_altitude": 12000,
                     "assigned_altitude": 9000,
                     "initial_speed": 300,
@@ -942,8 +939,7 @@
                                 "airport": "RJAA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZAN"
+                    }
                 }
             ]
         },
@@ -952,7 +948,7 @@
                 {
                     "waypoints": "WITTI/a16000+/ho GAYLL/a12000-15000 HOPER/a8000+ SILTY/a5700+ ANDDI/a5000/s210",
                     "star": "WITTI5",
-                    "initial_controller": "ZAN 07 ",
+                    "initial_controller": "C07",
                     "initial_altitude": 22000,
                     "initial_speed": 300,
                     "expect_approach": null,
@@ -1096,8 +1092,7 @@
                                 "airport": "KORD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZAN"
+                    }
                 }
             ]
         }

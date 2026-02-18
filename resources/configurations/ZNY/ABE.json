@@ -1,36 +1,36 @@
 {
     "control_positions": {
-        "ABE_APP": {
+        "1A": {
+            "callsign": "ABE_APP",
             "frequency": 119650,
-            "radio_name": "Allentown approach",
-            "sector_id": "1A"
+            "radio_name": "Allentown approach"
         },
-        "ABE_DEP": {
+        "1D": {
+            "callsign": "ABE_DEP",
             "frequency": 124450,
-            "radio_name": "Allentown departure",
-            "sector_id": "1D"
+            "radio_name": "Allentown departure"
         },
-        "ABE_TWR": {
+        "1L": {
+            "callsign": "ABE_TWR",
             "frequency": 120500,
-            "radio_name": "Lehigh Valley tower",
-            "sector_id": "1L"
+            "radio_name": "Lehigh Valley tower"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "EWR": "ABE_DEP",
-                    "MDT/RDG": "ABE_DEP",
-                    "PHL": "ABE_DEP",
-                    "ZNY Northwest": "ABE_DEP",
-                    "ZNY Southwest": "ABE_DEP"
+                    "EWR": "1D",
+                    "MDT/RDG": "1D",
+                    "PHL": "1D",
+                    "ZNY Northwest": "1D",
+                    "ZNY Southwest": "1D"
                 },
                 "departure_assignments": {
-                    "KABE": "ABE_DEP"
+                    "KABE": "1D"
                 },
                 "default_consolidation": {
-                    "ABE_DEP": []
+                    "1D": []
                 }
             }
         },
@@ -192,7 +192,7 @@
         },
         {
             "id": "ZNY",
-            "eram_prefix": "N"
+            "eram_prefix": "C"
         }
     ]
 }

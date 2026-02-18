@@ -10047,7 +10047,7 @@
                 {
                     "waypoints": "TTT KDFW",
                     "star": "INSTRUCTOR",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 500,
                     "initial_speed": 100,
                     "expect_approach": null,
@@ -10058,8 +10058,7 @@
                                 "airport": "KLGB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -10068,7 +10067,7 @@
                 {
                     "waypoints": "TTT KDFW",
                     "star": "RPO",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 500,
                     "initial_speed": 100,
                     "expect_approach": null,
@@ -10079,8 +10078,7 @@
                                 "airport": "KLGB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -10089,7 +10087,7 @@
                 {
                     "waypoints": "ANGST/a24000-27000/s280/ho PUNKY/a15000-18000/s280 KNEAD/a10000-11000/s250 BREES/a9000/s240 TUFIT/a9000 RVLEY/a7000- BGTEX/a5000/s240 QUYNN REDDN BACHR/h315",
                     "star": "BACHR4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 27000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -10113,8 +10111,7 @@
                                 "airport": "KSAN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -10123,7 +10120,7 @@
                 {
                     "waypoints": "ANGST/a24000-27000/s280/ho PUNKY/a15000-18000/s280 KNEAD/a10000-11000/s250 BREES/a9000/s240 TUFIT/a9000 RVLEY/a7000- BGTEX/a5000/s240 QUYNN REDDN/a4000 BACHR NOKME/clearapp",
                     "star": "BACHR4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 27000,
                     "initial_speed": 280,
                     "expect_approach": "W3L",
@@ -10147,8 +10144,7 @@
                                 "airport": "KSAN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -10157,7 +10153,7 @@
                 {
                     "waypoints": "ANGST/a24000-27000/s280/ho1S PUNKY/a15000-18000/s280 KNEAD/a10000-11000/s250 BREES/a9000/s240 TUFIT/a9000 RVLEY/a7000- BGTEX/a5000/s240/ho1N QUYNN REDDN BACHR NOKME/clearapp CEGEP/delete",
                     "star": "BACHR4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 27000,
                     "initial_speed": 280,
                     "expect_approach": "W3L",
@@ -10182,8 +10178,7 @@
                                 "airport": "KSAN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -10192,7 +10187,7 @@
                 {
                     "waypoints": "KNEAD/a10000-11000/s250/ho1S BREES/a9000/s240 TUFIT/a9000 RVLEY/a7000-8000/ho BGTEX/a5000/s240 QUYNN REDDN/tc BACHR/h315 ",
                     "star": "BACHR4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 11000,
                     "initial_speed": 280,
                     "airlines": {
@@ -10215,8 +10210,7 @@
                                 "airport": "KSAN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -10225,7 +10219,7 @@
                 {
                     "waypoints": "ANGST/a24000-27000/s280/ho PUNKY/a15000-18000/s280 KNEAD/a10000-11000/s250 BREES/a9000/s240 TUFIT/a9000 RVLEY/a7000- BGTEX/a5000/s240 QUYNN REDDN BACHR/h315",
                     "star": "BACHR4",
-                    "initial_controller": "D10_M_APP",
+                    "initial_controller": "1M",
                     "initial_altitude": 27000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -10258,7 +10252,7 @@
                 {
                     "waypoints": "MUZZY/a24000-30000/s290 BEREE/a20000-23000/s290/ho BELLS/a15000-17000/s270 TACKE/a13000-15000/s270 WARDZ/a12000-13000/s240 DIETZ/a12000/s210 WHOOT HEDMN/h356",
                     "star": "BEREE3",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 27000,
                     "initial_speed": 290,
                     "expect_approach": null,
@@ -10310,8 +10304,7 @@
                                 "airport": "KMOB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -10320,7 +10313,7 @@
                 {
                     "waypoints": "MUZZY/a24000-30000/s290/ho1E BEREE/a20000-23000/s290 BELLS/a15000-17000/s270 TACKE/a13000-15000/s270 WARDZ/a12000-13000/s240 DIETZ/a12000/s210 WHOOT/a8000 HEDMN/a7000-8000/s190 BOSSI PENNY/a5000/clearapp JIFFY/delete",
                     "star": "BEREE3",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 27000,
                     "initial_speed": 290,
                     "expect_approach": "I7C",
@@ -10373,8 +10366,7 @@
                                 "airport": "KMOB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -10383,7 +10375,7 @@
                 {
                     "waypoints": "BEREE/a20000-23000/s290/ho BELLS/a15000-17000/s270 TACKE/a13000-15000/s270 WARDZ/a12000-13000/s240 DIETZ/a12000/s210/tc WHOOT/a8000 HEDMN/h356",
                     "star": "BEREE3",
-                    "initial_controller": "D10_E_APP",
+                    "initial_controller": "1E",
                     "initial_altitude": 21000,
                     "initial_speed": 290,
                     "expect_approach": "I7C",
@@ -10445,7 +10437,7 @@
                 {
                     "waypoints": "BEREE/a20000-23000/s290/ho BELLS/a15000-17000/s270 TACKE/a13000-15000/s270 WARDZ/a12000-13000/s240 DIETZ/a12000/s210/tc WHOOT/a8000 HEDMN/h356",
                     "star": "BEREE3",
-                    "initial_controller": "D10_E_APP",
+                    "initial_controller": "1E",
                     "initial_altitude": 21000,
                     "initial_speed": 290,
                     "expect_approach": "I7L",
@@ -10507,7 +10499,7 @@
                 {
                     "waypoints": "GIBLT/a24000-30000/s290/ho DARRB/a20000-23000/s290 BOOVE/a17000-19000/s280 SHMPP/a15000-17000/s280 CURLE/a13000-15000/s270 MOWWW/a12000-13000/s240 DELMO/a12000/s210 LREEE BEONE/h357",
                     "star": "BOOVE7",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 27000,
                     "initial_speed": 290,
                     "expect_approach": null,
@@ -10545,8 +10537,7 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -10555,7 +10546,7 @@
                 {
                     "waypoints": "GIBLT/a24000-30000/s290/ho1W DARRB/a20000-23000/s290 BOOVE/a17000-19000/s280 SHMPP/a15000-17000/s280 CURLE/a13000-15000/s270 MOWWW/a12000-13000/s240 DELMO/a12000/s210 LREEE/a4000-5000 BEONE/a4000 ICKEL/a4000/s190 YOHAN/a3000/clearapp NETEE/delete",
                     "star": "BOOVE7",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 27000,
                     "initial_speed": 290,
                     "expect_approach": "I8R",
@@ -10594,8 +10585,7 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -10604,7 +10594,7 @@
                 {
                     "waypoints": "BOOVE/a17000-19000/s280/ho SHMPP/a15000-17000/s280 CURLE/a13000-15000/s270 MOWWW/a12000-13000/s240 DELMO/a12000/s210/tc LREEE/a6000/s210 BEONE/h357",
                     "star": "BOOVE7",
-                    "initial_controller": "D10_W_APP",
+                    "initial_controller": "1W",
                     "initial_altitude": 19000,
                     "initial_speed": 290,
                     "expect_approach": "I8R",
@@ -10652,7 +10642,7 @@
                 {
                     "waypoints": "PROWD LETHR ARMYY/a24000-30000/s290/ho SEEVR/a20000-23000/s290 BRDJE/a17000-19000/s280 COVIE/a17000- LEMYN/a13000-15000/s270 PITHY/a12000-13000/s240 STONZ/a12000/s210 ROCKZ JEKIL/h176",
                     "star": "BRDJE5",
-                    "initial_controller": "ZFW 37 SEA-L",
+                    "initial_controller": "C37",
                     "initial_altitude": 27000,
                     "initial_speed": 290,
                     "expect_approach": null,
@@ -10692,8 +10682,7 @@
                                 "airport": "OMDB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -10702,7 +10691,7 @@
                 {
                     "waypoints": "PROWD LETHR/ho1E ARMYY/a24000-30000/s290 SEEVR/a20000-23000/s290 BRDJE/a17000-19000/s280 COVIE/a17000- LEMYN/a13000-15000/s270 PITHY/a12000-13000/s240 STONZ/a12000/s210 ROCKZ/a9000 JEKIL/a7000/s190 RAYMA/a6000-7000 TUFFO/a6000/clearapp JOBBS/delete",
                     "star": "BRDJE5",
-                    "initial_controller": "ZFW 37 SEA-L",
+                    "initial_controller": "C37",
                     "initial_altitude": 27000,
                     "initial_speed": 290,
                     "expect_approach": "I5C",
@@ -10742,8 +10731,7 @@
                                 "airport": "OMDB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -10752,7 +10740,7 @@
                 {
                     "waypoints": "BRDJE/a17000-19000/s280/ho COVIE/a17000- LEMYN/a13000-15000/s270 PITHY/a12000-13000/s240 STONZ/a12000/s210/tc ROCKZ/a8000/s210 JEKIL/h176",
                     "star": "BRDJE5",
-                    "initial_controller": "D10_E_APP",
+                    "initial_controller": "1E",
                     "initial_altitude": 18000,
                     "initial_speed": 280,
                     "expect_approach": "I5C",
@@ -11049,7 +11037,7 @@
                 {
                     "waypoints": "BRDJE/a17000-19000/s280/ho COVIE/a17000- LEMYN/a13000-15000/s270 PITHY/a12000-13000/s240 STONZ/a12000/h125/s210/tc N032.45.02.925,W096.39.25.466/a7000/h125",
                     "star": "BRDJE5",
-                    "initial_controller": "D10_E_APP",
+                    "initial_controller": "1E",
                     "initial_altitude": 18000,
                     "initial_speed": 280,
                     "expect_approach": "I1R",
@@ -11346,7 +11334,7 @@
                 {
                     "waypoints": "BRDJE/a17000-19000/s280/ho COVIE/a17000- LEMYN/a13000-15000/s270 PITHY/a12000-13000/s240 STONZ/a12000/s210/tc ROCKZ/a8000/s210 JEKIL/h176",
                     "star": "BRDJE5",
-                    "initial_controller": "D10_E_APP",
+                    "initial_controller": "1E",
                     "initial_altitude": 18000,
                     "initial_speed": 280,
                     "expect_approach": "I5R",
@@ -11643,7 +11631,7 @@
                 {
                     "waypoints": "KIDDD/ho CUBAN FINGR/a9000/s250 SLANT CRIKT/h193",
                     "star": "CRIKT1",
-                    "initial_controller": "ZFW 37 SEA-L",
+                    "initial_controller": "C37",
                     "initial_altitude": 18000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -11684,8 +11672,7 @@
                                 "airport": "KMCI"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -11694,7 +11681,7 @@
                 {
                     "waypoints": "KIDDD/a12000+/ho1N CUBAN FINGR/a9000/s250 SLANT/ho CRIKT/a4000/h193/tc",
                     "star": "CRIKT1",
-                    "initial_controller": "ZFW 37 SEA-L",
+                    "initial_controller": "C37",
                     "initial_altitude": 18000,
                     "initial_speed": 280,
                     "expect_approach": "I1R",
@@ -11730,8 +11717,7 @@
                                 "airport": "KMCI"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -11740,7 +11726,7 @@
                 {
                     "waypoints": "PUNKY/a15000-18000/s280/ho KNEAD/a12000/s250 DRYYE SCOPS SWVAY/h86",
                     "star": "DRYYE2",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -11764,8 +11750,7 @@
                                 "airport": "KSAN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -11774,7 +11759,7 @@
                 {
                     "waypoints": "PUNKY/a15000-18000/s280/ho1M KNEAD/a12000/s250/ho DRYYE SCOPS/a5000/tc SWVAY/h86",
                     "star": "DRYYE2",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "expect_approach": "I1L",
@@ -11798,8 +11783,7 @@
                                 "airport": "KSAN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -11808,7 +11792,7 @@
                 {
                     "waypoints": "INOXE/ho1S PUNKY/a15000-18000/s280 KNEAD/a12000/s250 DRYYE SCOPS SWVAY/a5000/s190 TACKE MYLES/clearapp",
                     "star": "DRYYE2",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "expect_approach": "I1L",
@@ -11833,8 +11817,7 @@
                                 "airport": "KSAN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -11843,7 +11826,7 @@
                 {
                     "waypoints": "OXAKY/ho1S UDELY MUZZY/a10000 KLLEY/a8000 YEAGR/ho EESAT KEFDE/h312",
                     "star": "EESAT4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "expect_approach": "I34",
@@ -11858,8 +11841,7 @@
                                 "airport": "KLCH"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -11868,7 +11850,7 @@
                 {
                     "waypoints": "KOBIE/ho KLLEY YEAGR EESAT KEFDE/h312",
                     "star": "EESAT4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "expect_approach": "I34",
@@ -11883,8 +11865,7 @@
                                 "airport": "KLCH"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -11893,7 +11874,7 @@
                 {
                     "waypoints": "KOBIE/ho KLLEY YEAGR EESAT KEFDE/h312",
                     "star": "EESAT4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "airlines": {
@@ -11927,8 +11908,7 @@
                                 "airport": "KLCH"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -11937,7 +11917,7 @@
                 {
                     "waypoints": "HAKIN MONTE/a7000/ho ANDYA FINGR/s250/h230",
                     "star": "FINGR9",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 7000,
                     "initial_speed": 190,
                     "expect_approach": "I7L",
@@ -11949,8 +11929,7 @@
                                 "airport": "KMEM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -11959,7 +11938,7 @@
                 {
                     "waypoints": "PLEBS/a12000/ho1D UKW GREGS/a10000/s250/ho WAWLS/a5000/h086/tc",
                     "star": "GREGS1",
-                    "initial_controller": "ZFW 75 UKW-L",
+                    "initial_controller": "C75",
                     "initial_altitude": 12000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -11999,8 +11978,7 @@
                                 "airport": "KDEN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -12009,7 +11987,7 @@
                 {
                     "waypoints": "PLEBS/a12000/ho1D UKW GREGS/a11000/s250/ho WAWLS/a5000/h086",
                     "star": "GREGS1",
-                    "initial_controller": "ZFW 75 UKW-L",
+                    "initial_controller": "C75",
                     "initial_altitude": 12000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -12049,8 +12027,7 @@
                                 "airport": "KDEN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -12059,7 +12036,7 @@
                 {
                     "waypoints": "MASTY/a16000+/ho GREGS/a10000-11100/s250 GUUCH/a6000-8000 HERBZ/a6000/s240 CROEW/a5000/s240/h113",
                     "star": "HERBZ1",
-                    "initial_controller": "ZFW 75 UKW-L",
+                    "initial_controller": "C75",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -12115,8 +12092,7 @@
                                 "airport": "KCOS"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -12125,7 +12101,7 @@
                 {
                     "waypoints": "MASTY/a16000+/ho1S GREGS/a10000-11100/s250 GUUCH/a6000-8000 HERBZ/a6000/s240 CROEW/a5000/s240 FUNKY WEGUL/a4000 QUYNN/a3000/s190 FACIA/clearapp BOKLE/delete",
                     "star": "HERBZ1",
-                    "initial_controller": "ZFW 75 UKW-L",
+                    "initial_controller": "C75",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "expect_approach": "I1R",
@@ -12165,8 +12141,7 @@
                                 "airport": "KDEN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -12175,7 +12150,7 @@
                 {
                     "waypoints": "JABEV/ho1D MASTY/a16000 GREGS/a10000-11000/s250 GUUCH/a6000-8000/ho HERBZ/a6000/s240/tc CROEW/a5000/s240/h113",
                     "star": "HERBZ1",
-                    "initial_controller": "ZFW 75 UKW-L",
+                    "initial_controller": "C75",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -12232,8 +12207,7 @@
                                 "fleet": "GAjet"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -12242,7 +12216,7 @@
                 {
                     "waypoints": "JTROE/a16000+/ho1N MASTY/a16000+ GREGS/a10000-11100/s250 GUUCH/a6000-8000 HERBZ/a6000/s240 CROEW/a5000/s240/ho HIBIL/a4000 HUDIL/h190/tc",
                     "star": "HERBZ1",
-                    "initial_controller": "ZFW 75 UKW-L",
+                    "initial_controller": "C75",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "expect_approach": "I1R",
@@ -12282,13 +12256,12 @@
                                 "airport": "KDEN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "JTROE/a16000+/ho1N MASTY/a16000+ GREGS/a10000-11100/s250 GUUCH/a6000-8000 HERBZ/a6000/s240 CROEW/a5000/s240/ho HIBIL/a3000 HUDIL/h175/tc",
                     "star": "HERBZ1",
-                    "initial_controller": "ZFW 75 UKW-L",
+                    "initial_controller": "C75",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -12307,8 +12280,7 @@
                                 "airport": "KCOS"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -12317,7 +12289,7 @@
                 {
                     "waypoints": "RRONY/ho KIDDD CUBAN FINGR/a9000/s250 SLANT HIBIL/h232",
                     "star": "HIBIL3",
-                    "initial_controller": "ZFW 37 SEA-L",
+                    "initial_controller": "C37",
                     "initial_altitude": 18000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -12358,8 +12330,7 @@
                                 "airport": "KMCI"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -12368,7 +12339,7 @@
                 {
                     "waypoints": "MASTY/a16000+/ho GREGS/a11000/s250 MNKEE JFRYE/h143",
                     "star": "HERBZ1",
-                    "initial_controller": "ZFW 75 UKW-L",
+                    "initial_controller": "C75",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -12469,8 +12440,7 @@
                                 "airport": "KSMF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -12479,7 +12449,7 @@
                 {
                     "waypoints": "JTROE/a16000+/ho1D MASTY/a16000+ GREGS/a11000/s250/ho BLECO/a5000 MNKEE JFRYE/h143",
                     "star": "HERBZ1",
-                    "initial_controller": "ZFW 75 UKW-L",
+                    "initial_controller": "C75",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -12519,13 +12489,12 @@
                                 "airport": "KDEN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "JTROE/a16000+ MASTY/a16000+/ho1D GREGS/a11000/s250/ho1N BLECO/a3000 MNKEE JFRYE/h143",
                     "star": "HERBZ1",
-                    "initial_controller": "ZFW 75 UKW-L",
+                    "initial_controller": "C75",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -12547,8 +12516,7 @@
                                 "fleet": "GAjet"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -12557,7 +12525,7 @@
                 {
                     "waypoints": "COWNE/a24000-30000/s290/ho JEYAR/a20000-23000 VKTRY/a15000-18000/s280 JOVEM/a13000-15000/s270 MSSLE/a12000/s240 SILER/a12000/s210 KBOOM FUEWL/h176",
                     "star": "JOVEM6",
-                    "initial_controller": "ZFW 75 UKW-L",
+                    "initial_controller": "C75",
                     "initial_altitude": 27000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -12606,8 +12574,7 @@
                                 "airport": "CYVR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -12616,7 +12583,7 @@
                 {
                     "waypoints": "COWNE/a24000-30000/s290 JEYAR/a20000-23000/ho1W VKTRY/a15000-18000/s280 JOVEM/a13000-15000/s270 MSSLE/a12000/s240 SILER/a12000/s210 KBOOM/a6000 FUEWL/a5000/s190 ALLIN/a4000 HUTEN/a3000/clearapp BOBIN/delete",
                     "star": "JOVEM6",
-                    "initial_controller": "ZFW 75 UKW-L",
+                    "initial_controller": "C75",
                     "initial_altitude": 27000,
                     "initial_speed": 280,
                     "expect_approach": "I6L",
@@ -12665,8 +12632,7 @@
                                 "airport": "CYVR"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -12675,7 +12641,7 @@
                 {
                     "waypoints": "VKTRY/a15000-18000/s280/ho JOVEM/a13000-15000/s270 MSSLE/a12000/s240 SILER/a12000/s210/tc KBOOM/a8000/s210 FUEWL/h176",
                     "star": "JOVEM6",
-                    "initial_controller": "D10_W_APP",
+                    "initial_controller": "1W",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "expect_approach": "I6L",
@@ -12731,7 +12697,7 @@
                 {
                     "waypoints": "VKTRY/a15000-18000/s280/ho JOVEM/a13000-15000/s270 MSSLE/a12000/s240 SILER/a12000/s210 KBOOM/a9000/s210/h135/tc",
                     "star": "JOVEM6",
-                    "initial_controller": "D10_W_APP",
+                    "initial_controller": "1W",
                     "initial_altitude": 17000,
                     "initial_speed": 280,
                     "expect_approach": "R1L",
@@ -12787,7 +12753,7 @@
                 {
                     "waypoints": "BRRUS/ho SLUGG/a6000 LIKES/h44",
                     "star": "LIKES3",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 12000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -12819,13 +12785,12 @@
                                 "fleet": "GAjet"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "BRRUS/ho SLUGG/a5000 LIKES/h44",
                     "star": "LIKES3",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 7000,
                     "initial_speed": 180,
                     "expect_approach": null,
@@ -12844,8 +12809,7 @@
                                 "airport": "KAUS"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -12854,7 +12818,7 @@
                 {
                     "waypoints": "ORBEE/ho1M BRRUS SLUGG/a6000/ho LIKES/h044",
                     "star": "LIKES3",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 12000,
                     "initial_speed": 270,
                     "expect_approach": "I4R",
@@ -12866,13 +12830,12 @@
                                 "fleet": "long"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "ORBEE/ho1M BRRUS SLUGG/a5000 LIKES CURLE/a3000/clearapp",
                     "star": "LIKES3",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 12000,
                     "initial_speed": 270,
                     "expect_approach": "R34",
@@ -12889,13 +12852,12 @@
                                 "airport": "KACT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "ORBEE/ho1M BRRUS SLUGG/a7000/ho LIKES/h44",
                     "star": "LIKES3",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 12000,
                     "initial_speed": 270,
                     "expect_approach": "R36R",
@@ -12912,8 +12874,7 @@
                                 "airport": "KACT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -12922,7 +12883,7 @@
                 {
                     "waypoints": "ORBEE/ho1M BRRUS SLUGG/a7000/ho LIKES/h005/tc",
                     "star": "LIKES3",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 12000,
                     "initial_speed": 270,
                     "expect_approach": "I6L",
@@ -12934,13 +12895,12 @@
                                 "fleet": "long"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "ORBEE/ho1M BRRUS SLUGG/a5000/ho LIKES/h360/tc",
                     "star": "LIKES3",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 7000,
                     "initial_speed": 270,
                     "expect_approach": "I16",
@@ -12957,13 +12917,12 @@
                                 "airport": "KACT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "ORBEE/ho1M BRRUS SLUGG/a5000/ho LIKES/h020/tc",
                     "star": "LIKES3",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 12000,
                     "initial_speed": 270,
                     "expect_approach": "I8L",
@@ -12980,8 +12939,7 @@
                                 "airport": "KACT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -12990,7 +12948,7 @@
                 {
                     "waypoints": "BRRUS/ho SLUGG/a8000 LIKES/h44",
                     "star": "LIKES3",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 12000,
                     "assigned_altitude": 8000,
                     "initial_speed": 270,
@@ -13024,13 +12982,12 @@
                                 "fleet": "GAmultipiston"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "BRRUS/ho SLUGG/a5000 LIKES/h44",
                     "star": "LIKES3",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 7000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -13063,8 +13020,7 @@
                                 "fleet": "GAmultipiston"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -13073,7 +13029,7 @@
                 {
                     "waypoints": "WUUKY/a16000/ho1S JAKCY KLLEY/a8000/s250 YEAGR/a6000/ho LOADS/h331",
                     "star": "LOADS4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 16000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -13095,8 +13051,7 @@
                                 "fleet": "GAjet"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -13105,7 +13060,7 @@
                 {
                     "waypoints": "KOBIE/ho KLLEY/a8000/s250 YEAGR LOADS/h331",
                     "star": "LOADS4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 16000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -13127,8 +13082,7 @@
                                 "fleet": "GAjet"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -13137,7 +13091,7 @@
                 {
                     "waypoints": "HEERE JAKCY/ho ORVLL/a9000/s250 MNNDO GAREE/h313",
                     "star": "MNNDO4",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 18000,
                     "initial_speed": 290,
                     "expect_approach": null,
@@ -13181,8 +13135,7 @@
                                 "airport": "KCLT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -13191,7 +13144,7 @@
                 {
                     "waypoints": "HEERE/ho1S JAKCY ORVLL/a9000/s250 MNNDO/a6000/s210 GAREE FACIA/clearapp",
                     "star": "MNNDO4",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 18000,
                     "initial_speed": 290,
                     "expect_approach": "I1R",
@@ -13235,8 +13188,7 @@
                                 "airport": "KCLT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -13245,7 +13197,7 @@
                 {
                     "waypoints": "HEERE/ho JAKCY ORVLL/a9000/s250 GBEAR REDDN BACHR/h315",
                     "star": "MNNDO4",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 18000,
                     "initial_speed": 290,
                     "expect_approach": null,
@@ -13289,8 +13241,7 @@
                                 "airport": "KCLT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -13299,7 +13250,7 @@
                 {
                     "waypoints": "HAPNS/a24000-30000/s280/ho1S HEERE JAKCY ORVLL/a9000/s250/ho GBEAR/a6000 REDDN BACHR/h315",
                     "star": "MNNDO4",
-                    "initial_controller": "D10_S_APP",
+                    "initial_controller": "1S",
                     "initial_altitude": 26000,
                     "initial_speed": 290,
                     "expect_approach": null,
@@ -13352,7 +13303,7 @@
                 {
                     "waypoints": "GEEMC/ho PURRS DODJE REEKO SWVAY SCOPS/h265",
                     "star": "REEKO3",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 12000,
                     "assigned_altitude": 12000,
                     "initial_speed": 270,
@@ -13420,8 +13371,7 @@
                                 "airport": "KSMF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -13430,7 +13380,7 @@
                 {
                     "waypoints": "GEEMC/ho1M PURRS/a6000 DODJE REEKO SWVAY SCOPS/a6000/ho UCCOL",
                     "star": "REEKO3",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 7000,
                     "assigned_altitude": 6000,
                     "initial_speed": 240,
@@ -13447,13 +13397,12 @@
                                 "airport": "KIAH"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "GEEMC/ho1M PURRS/a8000 DODJE REEKO/ho SWVAY SCOPS STURN/a6000 IMIDE/tc WOBOS",
                     "star": "REEKO3",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 8000,
                     "assigned_altitude": 6000,
                     "initial_speed": 240,
@@ -13466,8 +13415,7 @@
                                 "airport": "KSAT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -13476,7 +13424,7 @@
                 {
                     "waypoints": "GEEMC/ho1S PURRS/a8000 DODJE REEKO/ho SWVAY/a6000/h265/ho",
                     "star": "REEKO3",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 8000,
                     "initial_speed": 240,
                     "expect_approach": "I4R",
@@ -13492,13 +13440,12 @@
                                 "airport": "KIAH"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "GEEMC/ho1S PURRS/a8000 DODJE REEKO/ho SWVAY/a6000/h265/ho",
                     "star": "REEKO3",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 8000,
                     "initial_speed": 240,
                     "expect_approach": "I34",
@@ -13515,13 +13462,12 @@
                                 "airport": "KSAT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "GEEMC/ho1S PURRS/a8000 DODJE REEKO/ho SWVAY/a6000/h265/ho",
                     "star": "REEKO3",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 8000,
                     "initial_speed": 240,
                     "expect_approach": "R36R",
@@ -13533,8 +13479,7 @@
                                 "airport": "KSAT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -13543,7 +13488,7 @@
                 {
                     "waypoints": "GEEMC/ho1M PURRS/a6000 DODJE REEKO SWVAY SCOPS/a6000/ho UCCOL",
                     "star": "REEKO3",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 12000,
                     "initial_speed": 240,
                     "expect_approach": "I6L",
@@ -13559,13 +13504,12 @@
                                 "airport": "KIAH"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "GEEMC/ho1M PURRS/a6000 DODJE REEKO SWVAY SCOPS/a6000/ho UCCOL",
                     "star": "REEKO3",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 12000,
                     "initial_speed": 240,
                     "expect_approach": "I16",
@@ -13577,13 +13521,12 @@
                                 "airport": "KSAT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "GEEMC/ho1M PURRS/a8000 DODJE REEKO/ho SWVAY SCOPS/a6000 N032.27.44.401,W097.10.41.052 N032.38.55.295,W097.16.45.413 N032.48.38.339,W097.16.46.045/h360/tc",
                     "star": "REEKO3",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 12000,
                     "initial_speed": 240,
                     "expect_approach": "I8L",
@@ -13595,8 +13538,7 @@
                                 "airport": "KSAT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -13605,7 +13547,7 @@
                 {
                     "waypoints": "GEEMC/ho1S PURRS/a6000 DODJE REEKO/ho SWVAY SCOPS/h265",
                     "star": "REEKO3",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 12000,
                     "initial_speed": 240,
                     "expect_approach": "I6L",
@@ -13621,13 +13563,12 @@
                                 "airport": "KIAH"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "GEEMC/ho1S PURRS/a6000 DODJE REEKO/ho SWVAY SCOPS/h265",
                     "star": "REEKO3",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 12000,
                     "initial_speed": 240,
                     "expect_approach": "I18",
@@ -13638,13 +13579,12 @@
                                 "airport": "KOKC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "GEEMC/ho1S PURRS/a6000 DODJE REEKO/ho SWVAY SCOPS/h265",
                     "star": "REEKO3",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 12000,
                     "initial_speed": 240,
                     "expect_approach": "I16",
@@ -13656,13 +13596,12 @@
                                 "airport": "KSAT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "GEEMC/ho1S PURRS/a6000 DODJE REEKO/ho SWVAY SCOPS/h265",
                     "star": "REEKO3",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 12000,
                     "initial_speed": 240,
                     "expect_approach": "R8R",
@@ -13674,13 +13613,12 @@
                                 "airport": "KSAT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "GEEMC/ho1S PURRS/a6000 DODJE REEKO/ho SWVAY SCOPS/h265",
                     "star": "REEKO3",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 12000,
                     "initial_speed": 240,
                     "expect_approach": "I8L",
@@ -13692,8 +13630,7 @@
                                 "airport": "KSAT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -13702,7 +13639,7 @@
                 {
                     "waypoints": "THEMM/a21000+/s290/ho SEEVR/a13000-16000/s270 BRDJE/a11000-12000/s250 NUSSS/a8000-10000/s240 YAHBT/a6000/s230/h263",
                     "star": "SEEVR4",
-                    "initial_controller": "ZFW 37 SEA-L",
+                    "initial_controller": "C37",
                     "initial_altitude": 23000,
                     "initial_speed": 290,
                     "expect_approach": null,
@@ -14016,8 +13953,7 @@
                                 "airport": "OMDB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -14026,7 +13962,7 @@
                 {
                     "waypoints": "THEMM/a21000+/s290/ho1E SEEVR/a13000-16000/s270 BRDJE/a11000-12000/s250 NUSSS/a8000-10000/s240 YAHBT/a5000/s230 RIVET/a4000-5000/s190/clearapp GBUSH/delete",
                     "star": "SEEVR4",
-                    "initial_controller": "ZFW 37 SEA-L",
+                    "initial_controller": "C37",
                     "initial_altitude": 23000,
                     "initial_speed": 290,
                     "expect_approach": "I7L",
@@ -14340,8 +14276,7 @@
                                 "airport": "OMDB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -14350,7 +14285,7 @@
                 {
                     "waypoints": "SEEVR/a13000-16000/s270/ho BRDJE/a11000-12000/s250 NUSSS/a8000-10000/s240 YAHBT/a6000/s230/h263",
                     "star": "SEEVR4",
-                    "initial_controller": "D10_E_APP",
+                    "initial_controller": "1E",
                     "initial_altitude": 14000,
                     "initial_speed": 290,
                     "expect_approach": "I7L",
@@ -14615,7 +14550,7 @@
                 {
                     "waypoints": "SEEVR/a13000-16000/s270/ho BRDJE/a11000-12000/s250 NUSSS/a8000-10000/s240 YAHBT/a6000/s230/h263",
                     "star": "SEEVR4",
-                    "initial_controller": "D10_E_APP",
+                    "initial_controller": "1E",
                     "initial_altitude": 14000,
                     "initial_speed": 290,
                     "expect_approach": "I7C",
@@ -14880,7 +14815,7 @@
                 {
                     "waypoints": "REPAY/ho CUBAN/a8000 FINGR SLANT/h230",
                     "star": "SLANT3",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 8000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -14906,8 +14841,7 @@
                                 "fleet": "GAjet"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -14916,7 +14850,7 @@
                 {
                     "waypoints": "KIDDD/ho CUBAN FINGR SLANT/h230",
                     "star": "SLANT3",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 6000,
                     "initial_speed": 180,
                     "expect_approach": null,
@@ -14945,8 +14879,7 @@
                                 "airport": "KMEM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -14955,7 +14888,7 @@
                 {
                     "waypoints": "KIDDD/ho1N CUBAN FINGR SLANT/a3000/h180/ho",
                     "star": "SLANT3",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 6000,
                     "initial_speed": 180,
                     "expect_approach": null,
@@ -14974,8 +14907,7 @@
                                 "airport": "KLIT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -14984,7 +14916,7 @@
                 {
                     "waypoints": "DRYYE/ho1S SCOPS FIKTI TACKE/h030/ho",
                     "star": "SWVAY4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 3000,
                     "initial_speed": 150,
                     "expect_approach": "R36",
@@ -14996,13 +14928,12 @@
                                 "airport": "KABQ"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "DRYYE/ho1S SCOPS FIKTI TACKE/h030/ho",
                     "star": "SWVAY4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 3000,
                     "initial_speed": 150,
                     "expect_approach": "I34",
@@ -15014,8 +14945,7 @@
                                 "airport": "KACT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -15024,7 +14954,7 @@
                 {
                     "waypoints": "PUNKY/ho1M KNEAD DRYYE/ho SCOPS/a3000 SWVAY/h084",
                     "star": "SWVAY4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 5000,
                     "initial_speed": 180,
                     "expect_approach": null,
@@ -15036,13 +14966,12 @@
                                 "airport": "KACT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "FRSTI/ho1M KNEAD DRYYE/ho SCOPS/a3000 SWVAY/h084",
                     "star": "SWVAY4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 5000,
                     "initial_speed": 150,
                     "expect_approach": null,
@@ -15054,13 +14983,12 @@
                                 "airport": "KABQ"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "FRSTI/ho1M KNEAD DRYYE/ho SCOPS/a3000 SWVAY/h084",
                     "star": "SWVAY4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 5000,
                     "initial_speed": 150,
                     "expect_approach": null,
@@ -15072,8 +15000,7 @@
                                 "airport": "KACT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -15082,7 +15009,7 @@
                 {
                     "waypoints": "PUNKY KNEAD/ho DRYYE SCOPS/a3000 SWVAY/h084",
                     "star": "SWVAY4",
-                    "initial_controller": "D10_M_APP",
+                    "initial_controller": "1M",
                     "initial_altitude": 5000,
                     "initial_speed": 180,
                     "expect_approach": "I16",
@@ -15099,7 +15026,7 @@
                 {
                     "waypoints": "FRSTI KNEAD/ho DRYYE/ho SCOPS/a3000 SWVAY/h084",
                     "star": "SWVAY4",
-                    "initial_controller": "D10_M_APP",
+                    "initial_controller": "1M",
                     "initial_altitude": 5000,
                     "initial_speed": 150,
                     "expect_approach": "I18",
@@ -15116,7 +15043,7 @@
                 {
                     "waypoints": "FRSTI KNEAD/ho DRYYE/ho SCOPS/a3000 SWVAY/h084",
                     "star": "SWVAY4",
-                    "initial_controller": "D10_M_APP",
+                    "initial_controller": "1M",
                     "initial_altitude": 5000,
                     "initial_speed": 150,
                     "expect_approach": "RZ13",
@@ -15137,7 +15064,7 @@
                 {
                     "waypoints": "SCOPS/ho1S FIKTI/a3000/ho TACKE/h010",
                     "star": "SWVAY4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 3000,
                     "initial_speed": 150,
                     "expect_approach": null,
@@ -15149,13 +15076,12 @@
                                 "airport": "KSAT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "SCOPS/ho1S FIKTI/ho TACKE/h020",
                     "star": "SWVAY4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 3000,
                     "initial_speed": 150,
                     "expect_approach": null,
@@ -15167,8 +15093,7 @@
                                 "airport": "KACT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -15177,7 +15102,7 @@
                 {
                     "waypoints": "FRSTI/ho KNEAD DRYYE SCOPS SWVAY/h084",
                     "star": "SWVAY4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 12000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -15189,13 +15114,12 @@
                                 "airport": "KABQ"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "FRSTI/ho KNEAD DRYYE SCOPS SWVAY/h084",
                     "star": "SWVAY4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -15214,8 +15138,7 @@
                                 "airport": "KACT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -15224,7 +15147,7 @@
                 {
                     "waypoints": "FRSTI/ho KNEAD DRYYE SCOPS SWVAY/h084",
                     "star": "SWVAY4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -15236,13 +15159,12 @@
                                 "airport": "KABQ"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "FRSTI/ho KNEAD DRYYE SCOPS SWVAY/h084",
                     "star": "SWVAY4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 9000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -15261,8 +15183,7 @@
                                 "airport": "KACT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -15271,7 +15192,7 @@
                 {
                     "waypoints": "NNJUH/a20000-23000/s290/ho DARRB/a12000-14000/s270 GRCIA/a11000+/s270 BOOVE/a9000-11000/s250 ISABL/a7000-9000/s250 SOCKK/a5000/s230/h77",
                     "star": "SOCKK4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 21000,
                     "initial_speed": 290,
                     "expect_approach": null,
@@ -15324,8 +15245,7 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -15334,7 +15254,7 @@
                 {
                     "waypoints": "NNJUH/a20000-23000/s290 DARRB/a12000-14000/s270/ho1W GRCIA/a11000+/s270 BOOVE/a9000-11000/s250 ISABL/a7000-9000/s250 SOCKK/a5000/s230 WETUR/s190 ALLIN/a4000/clearapp CIRIS/delete",
                     "star": "SOCKK4",
-                    "initial_controller": "ZFW 62 EDN-L",
+                    "initial_controller": "C62",
                     "initial_altitude": 21000,
                     "initial_speed": 290,
                     "expect_approach": "I6L",
@@ -15387,8 +15307,7 @@
                                 "airport": "KLAX"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -15397,7 +15316,7 @@
                 {
                     "waypoints": "BOOVE/a9000-11000/s250/ho ISABL/a7000-9000/s250 SOCKK/a5000/s230/h77",
                     "star": "SOCKK4",
-                    "initial_controller": "D10_W_APP",
+                    "initial_controller": "1W",
                     "initial_altitude": 9000,
                     "initial_speed": 250,
                     "expect_approach": "I6L",
@@ -15458,7 +15377,7 @@
                 {
                     "waypoints": "BOOVE/a9000-11000/s250/ho ESIKE/a5000/s210/h075",
                     "star": "SOCKK4",
-                    "initial_controller": "D10_W_APP",
+                    "initial_controller": "1W",
                     "initial_altitude": 9000,
                     "initial_speed": 250,
                     "expect_approach": "R1L",
@@ -15519,7 +15438,7 @@
                 {
                     "waypoints": "PRIZZ/ho CAINE SASIE/a10000 BLECO TRUUK/h190",
                     "star": "TRUUK2",
-                    "initial_controller": "ZFW 37 SEA-L",
+                    "initial_controller": "C37",
                     "initial_altitude": 12000,
                     "assigned_altitude": 10000,
                     "initial_speed": 270,
@@ -15585,8 +15504,7 @@
                                 "airport": "KSMF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -15595,7 +15513,7 @@
                 {
                     "waypoints": "PRIZZ/ho1N CAINE SASIE/a10000/ho GRABE/a6000 BLECO TRUUK/h190",
                     "star": "TRUUK2",
-                    "initial_controller": "ZFW 37 SEA-L",
+                    "initial_controller": "C37",
                     "initial_altitude": 10000,
                     "assigned_altitude": 6000,
                     "initial_speed": 250,
@@ -15628,13 +15546,12 @@
                                 "airport": "KMEM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "PRIZZ/ho1N CAINE SASIE/a10000/ho GRABE/a4000 BLECO TRUUK/h190",
                     "star": "TRUUK2",
-                    "initial_controller": "ZFW 37 SEA-L",
+                    "initial_controller": "C37",
                     "initial_altitude": 10000,
                     "assigned_altitude": 4000,
                     "initial_speed": 270,
@@ -15646,8 +15563,7 @@
                                 "airport": "KLIT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -15656,7 +15572,7 @@
                 {
                     "waypoints": "PRIZZ/ho1N CAINE SASIE/a11000/ho GRABE/a4000 BLECO TRUUK/h190",
                     "star": "TRUUK2",
-                    "initial_controller": "ZFW 37 SEA-L",
+                    "initial_controller": "C37",
                     "initial_altitude": 11000,
                     "initial_speed": 250,
                     "expect_approach": "I6L",
@@ -15677,13 +15593,12 @@
                                 "airport": "KMSP"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "PRIZZ/ho1N CAINE SASIE/a11000/ho GRABE/a4000 BLECO TRUUK/h190",
                     "star": "TRUUK2",
-                    "initial_controller": "ZFW 37 SEA-L",
+                    "initial_controller": "C37",
                     "initial_altitude": 11000,
                     "initial_speed": 250,
                     "expect_approach": "I16",
@@ -15699,13 +15614,12 @@
                                 "airport": "KMEM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "PRIZZ/ho1N CAINE SASIE/a11000/ho GRABE/a3000 BLECO TRUUK/h190",
                     "star": "TRUUK2",
-                    "initial_controller": "ZFW 37 SEA-L",
+                    "initial_controller": "C37",
                     "initial_altitude": 11000,
                     "initial_speed": 270,
                     "expect_approach": "I8L",
@@ -15716,8 +15630,7 @@
                                 "airport": "KLIT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -15726,7 +15639,7 @@
                 {
                     "waypoints": "PRIZZ/ho1D CAINE SASIE/a10000 GRABE/a6000 BLECO TRUUK N033.14.17.482,W097.20.45.327 N033.05.56.986,W097.25.03.616/a4000/s210 N032.42.24.873,W097.20.54.666 N032.42.56.582,W097.17.21.860/s190 UCCOL/clearapp",
                     "star": "TRUUK2",
-                    "initial_controller": "ZFW 37 SEA-L",
+                    "initial_controller": "C37",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "expect_approach": "I4R",
@@ -15740,13 +15653,12 @@
                                 ]
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "PRIZZ/ho1D CAINE SASIE/a10000 GRABE/a6000 BLECO TRUUK N033.16.49.190,W097.20.42.471 N033.04.57.550,W097.27.37.781/s210/h185/ho N032.55.14.382,W097.29.12.127 ",
                     "star": "TRUUK2",
-                    "initial_controller": "ZFW 37 SEA-L",
+                    "initial_controller": "C37",
                     "initial_altitude": 10000,
                     "initial_speed": 250,
                     "expect_approach": "I34",
@@ -15762,8 +15674,7 @@
                                 "airport": "KMEM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -15772,7 +15683,7 @@
                 {
                     "waypoints": "PRIZZ/ho CAINE SASIE/a11000 BLECO TRUUK/h190",
                     "star": "TRUUK2",
-                    "initial_controller": "ZFW 37 SEA-L",
+                    "initial_controller": "C37",
                     "initial_altitude": 12000,
                     "assigned_altitude": 11000,
                     "initial_speed": 270,
@@ -15838,8 +15749,7 @@
                                 "airport": "KSMF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -15858,7 +15768,7 @@
                         }
                     },
                     "star": "VKTRY2",
-                    "initial_controller": "ZFW 75 UKW-L",
+                    "initial_controller": "C75",
                     "initial_altitude": 18000,
                     "initial_speed": 290,
                     "expect_approach": null,
@@ -15963,8 +15873,7 @@
                                 "airport": "CYYC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -15983,7 +15892,7 @@
                         }
                     },
                     "star": "VKTRY2",
-                    "initial_controller": "ZFW 75 UKW-L",
+                    "initial_controller": "C75",
                     "initial_altitude": 18000,
                     "initial_speed": 290,
                     "expect_approach": "I7C",
@@ -16081,8 +15990,7 @@
                                 "airport": "CYYC"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -16091,7 +15999,7 @@
                 {
                     "waypoints": "JEYAR/a13000-16000/s270/ho VKTRY/a10000-11000/s250 VKTRY/a10000-11000/s250 ZMMAN/a7000-9000/s250 PHAUP/a5000/s230/h90",
                     "star": "VKTRY2",
-                    "initial_controller": "D10_W_APP",
+                    "initial_controller": "1W",
                     "initial_altitude": 13000,
                     "initial_speed": 290,
                     "expect_approach": "I8R",
@@ -16202,7 +16110,7 @@
                 {
                     "waypoints": "WURDZ/ho GREKE MOTZA/a8000 WESAT/h130",
                     "star": "WESAT2",
-                    "initial_controller": "ZFW 75 UKW-L",
+                    "initial_controller": "C75",
                     "initial_altitude": 15000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -16269,13 +16177,12 @@
                                 "airport": "KICT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 },
                 {
                     "waypoints": "GREKE/ho MOTZA WESAT/h130",
                     "star": "WESAT2",
-                    "initial_controller": "ZFW 75 UKW-L",
+                    "initial_controller": "C75",
                     "initial_altitude": 7000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -16335,8 +16242,7 @@
                                 "airport": "KICT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -16345,7 +16251,7 @@
                 {
                     "waypoints": "WURDZ/ho1D GREKE MOTZA/a8000 WESAT N033.06.32.692,W097.33.21.791 N032.59.02.225,W097.31.17.453/a5000/h170/s210/ho",
                     "star": "WESAT2",
-                    "initial_controller": "ZFW 75 UKW-L",
+                    "initial_controller": "C75",
                     "initial_altitude": 15000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -16388,8 +16294,7 @@
                                 "airport": "KLAS"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -16398,7 +16303,7 @@
                 {
                     "waypoints": "POWND/a20000-23000/s290/ho BEREE/a13000-16000/s270 WHINY/a12000+/s260 HOWDY/a11000-12000/s250 BERMS/a8000/s240 HLLZZ/a6000/s230/h270",
                     "star": "WHINY4",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 20000,
                     "initial_speed": 290,
                     "expect_approach": null,
@@ -16450,8 +16355,7 @@
                                 "airport": "KMOB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -16460,7 +16364,7 @@
                 {
                     "waypoints": "POWND/a20000-23000/s290/ho1E BEREE/a13000-16000/s270 WHINY/a12000+/s260 HOWDY/a11000-12000/s250 BERMS/a8000/s240 HLLZZ/a6000/s230 NEAPS/a4000/s190 GALOP/clearapp POLKE/delete",
                     "star": "WHINY4",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 20000,
                     "initial_speed": 290,
                     "expect_approach": "I5R",
@@ -16513,8 +16417,7 @@
                                 "airport": "KMOB"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -16523,7 +16426,7 @@
                 {
                     "waypoints": "HOWDY/a11000-12000/s250/ho BERMS/a8000/s240 HLLZZ/a6000/s230/h270",
                     "star": "WHINY4",
-                    "initial_controller": "D10_E_APP",
+                    "initial_controller": "1E",
                     "initial_altitude": 11000,
                     "initial_speed": 250,
                     "expect_approach": "I5R",
@@ -16585,7 +16488,7 @@
                 {
                     "waypoints": "HOWDY/a11000-12000/s250/ho TULOY/a5000",
                     "star": "WHINY4",
-                    "initial_controller": "D10_E_APP",
+                    "initial_controller": "1E",
                     "initial_altitude": 11000,
                     "initial_speed": 250,
                     "expect_approach": "I1R",
@@ -16647,7 +16550,7 @@
                 {
                     "waypoints": "HOWDY/a11000-12000/s250/ho BERMS/a8000/s240 HLLZZ/a6000/s230/h270",
                     "star": "WHINY4",
-                    "initial_controller": "D10_E_APP",
+                    "initial_controller": "1E",
                     "initial_altitude": 11000,
                     "initial_speed": 250,
                     "expect_approach": "I5C",
@@ -16709,7 +16612,7 @@
                 {
                     "waypoints": "SNOWE/ho AWOLF YEAGR/h315",
                     "star": "YEAGR4",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 8000,
                     "initial_speed": 250,
                     "expect_approach": null,
@@ -16728,8 +16631,7 @@
                                 "fleet": "GAjet"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -16738,7 +16640,7 @@
                 {
                     "waypoints": "CQY/ho YEAGR/h315",
                     "star": "YEAGR4",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 6000,
                     "initial_speed": 180,
                     "expect_approach": null,
@@ -16763,8 +16665,7 @@
                                 "airport": "KIAH"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         },
@@ -16773,7 +16674,7 @@
                 {
                     "waypoints": "GIFFA/ho1S WEIRS CQY/ho YEAGR/s230 EESAT/h315/tc",
                     "star": "YEAGR4",
-                    "initial_controller": "D10_S_APP",
+                    "initial_controller": "1S",
                     "initial_altitude": 8000,
                     "initial_speed": 250,
                     "expect_approach": "R36",
@@ -16794,7 +16695,7 @@
                 {
                     "waypoints": "FZT/ho1S HORKO SNOWE AWOLF/ho YEAGR/s230 EESAT/h340/tc",
                     "star": "YEAGR4",
-                    "initial_controller": "ZFW 29 DON-L",
+                    "initial_controller": "C29",
                     "initial_altitude": 6000,
                     "initial_speed": 200,
                     "expect_approach": null,
@@ -16812,8 +16713,7 @@
                                 "airport": "KIAH"
                             }
                         ]
-                    },
-                    "initial_facility": "ZFW"
+                    }
                 }
             ]
         }

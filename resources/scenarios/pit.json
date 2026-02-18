@@ -816,7 +816,7 @@
                     },
                     "cruise_altitude": 26000,
                     "star": "DEMME5",
-                    "initial_controller": "ZOB 55 Morgantown",
+                    "initial_controller": "C55",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -851,8 +851,7 @@
                                 "airport": "KLGA"
                             }
                         ]
-                    },
-                    "initial_facility": "ZOB"
+                    }
                 }
             ]
         },
@@ -871,7 +870,7 @@
                     },
                     "cruise_altitude": 29000,
                     "star": "FEWGA7",
-                    "initial_controller": "ZOB 55 Morgantown",
+                    "initial_controller": "C55",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -906,8 +905,7 @@
                                 "airport": "KSDF"
                             }
                         ]
-                    },
-                    "initial_facility": "ZOB"
+                    }
                 }
             ]
         },
@@ -926,7 +924,7 @@
                     },
                     "cruise_altitude": 38000,
                     "star": "HAYNZ7",
-                    "initial_controller": "ZOB 55 Morgantown",
+                    "initial_controller": "C55",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -958,8 +956,7 @@
                                 "airport": "KBVY"
                             }
                         ]
-                    },
-                    "initial_facility": "ZOB"
+                    }
                 }
             ]
         },
@@ -969,7 +966,7 @@
                     "waypoints": "ETG/ho HOMEE",
                     "cruise_altitude": 18000,
                     "route": "ETG HOMEE",
-                    "initial_controller": "ZOB 55 Morgantown",
+                    "initial_controller": "C55",
                     "initial_altitude": 18000,
                     "assigned_altitude": 15000,
                     "initial_speed": 280,
@@ -985,8 +982,7 @@
                                 "airport": "KPWM"
                             }
                         ]
-                    },
-                    "initial_facility": "ZOB"
+                    }
                 }
             ]
         },
@@ -1005,7 +1001,7 @@
                     },
                     "cruise_altitude": 19000,
                     "star": "JESEY4",
-                    "initial_controller": "ZOB 55 Morgantown",
+                    "initial_controller": "C55",
                     "initial_altitude": 15000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1032,8 +1028,7 @@
                                 "airport": "KDEN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZOB"
+                    }
                 }
             ]
         },
@@ -1043,7 +1038,7 @@
                     "waypoints": "LEJOY/ho NESTO",
                     "cruise_altitude": 18000,
                     "route": "LEJOY NESTO",
-                    "initial_controller": "ZOB 55 Morgantown",
+                    "initial_controller": "C55",
                     "initial_altitude": 18000,
                     "assigned_altitude": 15000,
                     "initial_speed": 280,
@@ -1063,8 +1058,7 @@
                                 "airport": "KTTN"
                             }
                         ]
-                    },
-                    "initial_facility": "ZOB"
+                    }
                 }
             ]
         },
@@ -1074,7 +1068,7 @@
                     "waypoints": "AIR/ho WISKE",
                     "cruise_altitude": 27000,
                     "route": "IR/ho WISKE",
-                    "initial_controller": "ZOB 55 Morgantown",
+                    "initial_controller": "C55",
                     "initial_altitude": 17000,
                     "assigned_altitude": 15000,
                     "initial_speed": 280,
@@ -1090,8 +1084,7 @@
                                 "airport": "KLAS"
                             }
                         ]
-                    },
-                    "initial_facility": "ZOB"
+                    }
                 }
             ]
         }
@@ -1124,16 +1117,16 @@
     "scenarios": {
         "PIT West (ARR 28L/R)": {
             "airspace": {
-                "PIT_D_APP": [
+                "1D": [
                     "PITAPP"
                 ],
-                "PIT_B_APP": [
+                "1B": [
                     "PITAPP"
                 ],
-                "PIT_S_DEP": [
+                "1S": [
                     "PITAPP"
                 ],
-                "PIT_N_DEP": [
+                "1N": [
                     "PITAPP"
                 ]
             },
@@ -1203,16 +1196,16 @@
         },
         "PIT West (ARR 28L/R + 32)": {
             "airspace": {
-                "PIT_D_APP": [
+                "1D": [
                     "PITAPP"
                 ],
-                "PIT_B_APP": [
+                "1B": [
                     "PITAPP"
                 ],
-                "PIT_S_DEP": [
+                "1S": [
                     "PITAPP"
                 ],
-                "PIT_N_DEP": [
+                "1N": [
                     "PITAPP"
                 ]
             },
@@ -1286,16 +1279,16 @@
         },
         "PIT East": {
             "airspace": {
-                "PIT_D_APP": [
+                "1D": [
                     "PITAPP"
                 ],
-                "PIT_B_APP": [
+                "1B": [
                     "PITAPP"
                 ],
-                "PIT_S_DEP": [
+                "1S": [
                     "PITAPP"
                 ],
-                "PIT_N_DEP": [
+                "1N": [
                     "PITAPP"
                 ]
             },

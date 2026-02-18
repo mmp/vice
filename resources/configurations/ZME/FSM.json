@@ -1,34 +1,34 @@
 {
     "control_positions": {
-        "FSM_A_APP": {
+        "1A": {
+            "callsign": "FSM_A_APP",
             "frequency": 128150,
-            "radio_name": "Razorback Approach",
-            "sector_id": "1A"
+            "radio_name": "Razorback Approach"
         },
-        "FYV_B_APP": {
+        "1B": {
+            "callsign": "FYV_B_APP",
             "frequency": 134525,
-            "radio_name": "Razorback Approach",
-            "sector_id": "1B"
+            "radio_name": "Razorback Approach"
         },
-        "FYV_E_APP": {
+        "1E": {
+            "callsign": "FYV_E_APP",
             "frequency": 126600,
-            "radio_name": "Razorback Approach",
-            "sector_id": "1E"
+            "radio_name": "Razorback Approach"
         },
-        "FSM_S_APP": {
+        "1S": {
+            "callsign": "FSM_S_APP",
             "frequency": 120900,
-            "radio_name": "Razorback Approach",
-            "sector_id": "1S"
+            "radio_name": "Razorback Approach"
         },
-        "FSM_TWR": {
+        "1T": {
+            "callsign": "FSM_TWR",
             "frequency": 118300,
-            "radio_name": "Forth Smith Tower",
-            "sector_id": "1T"
+            "radio_name": "Forth Smith Tower"
         },
-        "FYV_W_APP": {
+        "1W": {
+            "callsign": "FYV_W_APP",
             "frequency": 121000,
-            "radio_name": "Razorback Approach",
-            "sector_id": "1W"
+            "radio_name": "Razorback Approach"
         }
     },
     "handoff_ids": [
@@ -43,6 +43,10 @@
         {
             "id": "ZKC",
             "eram_prefix": "K"
+        },
+        {
+            "id": "ZME",
+            "eram_prefix": "C"
         }
     ]
 }

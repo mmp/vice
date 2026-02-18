@@ -37,8 +37,7 @@
                     "cifp_id": "I22"
                 }
             },
-            "departure_controller": "NY_LW_APP",
-            "departure_facility": "N90",
+            "departure_controller": "N5W",
             "departure_routes": {
                 "31": {
                     "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE": {
@@ -73,8 +72,7 @@
                     "cifp_id": "I28"
                 }
             },
-            "departure_controller": "SYR_S_APP",
-            "departure_facility": "SYR",
+            "departure_controller": "S1S",
             "departure_routes": {
                 "28": {
                     "SYR": {
@@ -104,8 +102,7 @@
                     "cifp_id": "I22L"
                 }
             },
-            "departure_controller": "EWR_DEP",
-            "departure_facility": "N90",
+            "departure_controller": "N4N",
             "departure_routes": {
                 "22R": {
                     "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE": {
@@ -187,15 +184,14 @@
                     "cifp_id": "I4R"
                 }
             },
-            "departure_controller": "NY_LE_APP",
-            "departure_facility": "N90",
+            "departure_controller": "N5E",
             "departure_routes": {
                 "22R": {
                     "COATE,CANDR": {
                         "cleared_altitude": 17000,
                         "sid": "JFK5",
                         "waypoints": "JFK BOUNO SARDI HOBAM/ho",
-                        "handoff_controller": "ZNY 72 Selinsgrove"
+                        "handoff_controller": "72"
                     }
                 }
             },
@@ -230,8 +226,7 @@
                     "cifp_id": "I19"
                 }
             },
-            "departure_controller": "NY_LW_APP",
-            "departure_facility": "N90",
+            "departure_controller": "N5W",
             "departure_routes": {
                 "19": {
                     "NEWEL,ELIOT,ZIMMZ,PARKE,LANNA,BIGGY,SBJ,WHITE": {
@@ -266,8 +261,7 @@
                     "cifp_id": "I1"
                 }
             },
-            "departure_controller": "DCA_K_DEP",
-            "departure_facility": "PCT",
+            "departure_controller": "U1K",
             "departure_routes": {
                 "1": {
                     "SWANN": {
@@ -297,8 +291,7 @@
                     "cifp_id": "I33L"
                 }
             },
-            "departure_controller": "DCA_F_APP",
-            "departure_facility": "PCT",
+            "departure_controller": "U1F",
             "departure_routes": {
                 "33L": {
                     "SWANN": {
@@ -331,7 +324,7 @@
                     "cruise_altitude": 35000,
                     "star": "MIP4",
                     "route": "/. MIP4",
-                    "initial_controller": "ZOB 48 Ravenna",
+                    "initial_controller": "C48",
                     "initial_altitude": 33000,
                     "initial_speed": 300,
                     "airlines": {
@@ -372,8 +365,7 @@
                                 "airport": "KDTW"
                             }
                         ]
-                    },
-                    "initial_facility": "ZOB"
+                    }
                 }
             ]
         },
@@ -384,7 +376,7 @@
                     "cruise_altitude": 35000,
                     "star": "MIP4",
                     "route": "/. MIP4",
-                    "initial_controller": "ZOB 48 Ravenna",
+                    "initial_controller": "C48",
                     "initial_altitude": 33000,
                     "initial_speed": 300,
                     "airlines": {
@@ -425,8 +417,7 @@
                                 "airport": "KDTW"
                             }
                         ]
-                    },
-                    "initial_facility": "ZOB"
+                    }
                 }
             ]
         },
@@ -437,7 +428,7 @@
                     "cruise_altitude": 35000,
                     "star": "MIP4",
                     "route": "/. MIP4",
-                    "initial_controller": "ZOB 48 Ravenna",
+                    "initial_controller": "C48",
                     "initial_altitude": 33000,
                     "initial_speed": 300,
                     "airlines": {
@@ -478,8 +469,7 @@
                                 "airport": "KDTW"
                             }
                         ]
-                    },
-                    "initial_facility": "ZOB"
+                    }
                 }
             ]
         },
@@ -490,7 +480,7 @@
                     "cruise_altitude": 35000,
                     "star": "FQM3",
                     "route": "/. FQM3",
-                    "initial_controller": "ZOB 48 Ravenna",
+                    "initial_controller": "C48",
                     "initial_altitude": 33000,
                     "initial_speed": 300,
                     "airlines": {
@@ -531,8 +521,7 @@
                                 "airport": "KDTW"
                             }
                         ]
-                    },
-                    "initial_facility": "ZOB"
+                    }
                 }
             ]
         },
@@ -543,7 +532,7 @@
                     "cruise_altitude": 35000,
                     "star": "LVZ5",
                     "route": "/. LVZ5",
-                    "initial_controller": "ZOB 48 Ravenna",
+                    "initial_controller": "C48",
                     "initial_altitude": 33000,
                     "initial_speed": 300,
                     "airlines": {
@@ -577,8 +566,7 @@
                                 "airport": "KPWK"
                             }
                         ]
-                    },
-                    "initial_facility": "ZOB"
+                    }
                 }
             ]
         },
@@ -589,7 +577,7 @@
                     "cruise_altitude": 37000,
                     "star": "TRISH4",
                     "route": "/. TRISH4",
-                    "initial_controller": "ZOB 48 Ravenna",
+                    "initial_controller": "C48",
                     "initial_altitude": 25000,
                     "initial_speed": 300,
                     "airlines": {
@@ -620,8 +608,7 @@
                                 "airport": "KPWK"
                             }
                         ]
-                    },
-                    "initial_facility": "ZOB"
+                    }
                 }
             ]
         },
@@ -647,10 +634,9 @@
                     ],
                     "initial_altitude": 34000,
                     "assigned_altitude": 34000,
-                    "initial_controller": "ZNY 36 Sparta",
+                    "initial_controller": "36",
                     "initial_speed": 300,
-                    "waypoints": "LAAYK/ho WLKES LVZ T212 RASHE TOMAC/delete",
-                    "initial_facility": "ZNY"
+                    "waypoints": "LAAYK/ho WLKES LVZ T212 RASHE TOMAC/delete"
                 },
                 {
                     "airlines": [
@@ -662,10 +648,9 @@
                     ],
                     "initial_altitude": 35000,
                     "assigned_altitude": 35000,
-                    "initial_controller": "ZNY 26 Lancaster",
+                    "initial_controller": "26",
                     "initial_speed": 300,
-                    "waypoints": "PTW/ho BEERS LVZ WLKES LAAYK T291 DANZI/delete",
-                    "initial_facility": "ZNY"
+                    "waypoints": "PTW/ho BEERS LVZ WLKES LAAYK T291 DANZI/delete"
                 },
                 {
                     "airlines": [
@@ -702,10 +687,9 @@
                     ],
                     "initial_altitude": 36000,
                     "assigned_altitude": 36000,
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "B37",
                     "initial_speed": 300,
-                    "waypoints": "KSWF MUGZY/ho WLKES HONLU/delete",
-                    "initial_facility": "ZBW"
+                    "waypoints": "KSWF MUGZY/ho WLKES HONLU/delete"
                 }
             ]
         },
@@ -731,10 +715,9 @@
                     ],
                     "initial_altitude": 34000,
                     "assigned_altitude": 34000,
-                    "initial_controller": "ZNY 36 Sparta",
+                    "initial_controller": "36",
                     "initial_speed": 300,
-                    "waypoints": "LAAYK/ho WLKES LVZ T212 RASHE TOMAC/delete",
-                    "initial_facility": "ZNY"
+                    "waypoints": "LAAYK/ho WLKES LVZ T212 RASHE TOMAC/delete"
                 },
                 {
                     "airlines": [
@@ -746,10 +729,9 @@
                     ],
                     "initial_altitude": 35000,
                     "assigned_altitude": 35000,
-                    "initial_controller": "ZNY 26 Lancaster",
+                    "initial_controller": "26",
                     "initial_speed": 300,
-                    "waypoints": "PTW/ho BEERS LVZ WLKES LAAYK T291 DANZI/delete",
-                    "initial_facility": "ZNY"
+                    "waypoints": "PTW/ho BEERS LVZ WLKES LAAYK T291 DANZI/delete"
                 },
                 {
                     "airlines": [
@@ -786,10 +768,9 @@
                     ],
                     "initial_altitude": 36000,
                     "assigned_altitude": 36000,
-                    "initial_controller": "ZBW 37 Concord",
+                    "initial_controller": "B37",
                     "initial_speed": 300,
-                    "waypoints": "KSWF MUGZY/ho WLKES HONLU/delete",
-                    "initial_facility": "ZBW"
+                    "waypoints": "KSWF MUGZY/ho WLKES HONLU/delete"
                 }
             ]
         },
@@ -800,7 +781,7 @@
                     "cruise_altitude": 37000,
                     "star": null,
                     "route": "/. NABOR",
-                    "initial_controller": "ZNY 26 Lancaster",
+                    "initial_controller": "26",
                     "initial_altitude": 37000,
                     "initial_speed": 300,
                     "airlines": {
@@ -822,8 +803,7 @@
                                 "airport": "KCLT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZNY"
+                    }
                 }
             ]
         }

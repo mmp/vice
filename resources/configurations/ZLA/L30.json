@@ -1,212 +1,212 @@
 {
     "control_positions": {
-        "LAS_D_DEP": {
+        "1D": {
+            "callsign": "LAS_D_DEP",
             "frequency": 125900,
-            "radio_name": "Las Vegas Departure",
-            "sector_id": "1D"
+            "radio_name": "Las Vegas Departure"
         },
-        "LAS_M_DEP": {
+        "1M": {
+            "callsign": "LAS_M_DEP",
             "frequency": 133950,
-            "radio_name": "Las Vegas Departure",
-            "sector_id": "1M"
+            "radio_name": "Las Vegas Departure"
         },
-        "LAS_Y_APP": {
+        "1Y": {
+            "callsign": "LAS_Y_APP",
             "frequency": 125475,
-            "radio_name": "Las Vegas Approach",
-            "sector_id": "1Y"
+            "radio_name": "Las Vegas Approach"
         },
-        "LAS_G_APP": {
+        "1G": {
+            "callsign": "LAS_G_APP",
             "frequency": 125025,
-            "radio_name": "Las Vegas Approach",
-            "sector_id": "1G"
+            "radio_name": "Las Vegas Approach"
         },
-        "LAS_L_APP": {
+        "1L": {
+            "callsign": "LAS_L_APP",
             "frequency": 119775,
-            "radio_name": "Las Vegas Approach",
-            "sector_id": "1L"
+            "radio_name": "Las Vegas Approach"
         },
-        "LAS_F_APP": {
+        "1F": {
+            "callsign": "LAS_F_APP",
             "frequency": 135000,
-            "radio_name": "Las Vegas Approach",
-            "sector_id": "1F"
+            "radio_name": "Las Vegas Approach"
         },
-        "LAS_T_APP": {
+        "1T": {
+            "callsign": "LAS_T_APP",
             "frequency": 119400,
-            "radio_name": "Las Vegas Approach",
-            "sector_id": "1T"
+            "radio_name": "Las Vegas Approach"
         },
-        "LAS_K_APP": {
+        "1K": {
+            "callsign": "LAS_K_APP",
             "frequency": 120450,
-            "radio_name": "Las Vegas Approach",
-            "sector_id": "1K"
+            "radio_name": "Las Vegas Approach"
         },
-        "LAS_TWR": {
+        "1Q": {
+            "callsign": "LAS_TWR",
             "frequency": 119900,
-            "radio_name": "Las Vegas Tower",
-            "sector_id": "1Q"
+            "radio_name": "Las Vegas Tower"
         },
-        "HND_TWR": {
+        "1H": {
+            "callsign": "HND_TWR",
             "frequency": 125100,
-            "radio_name": "Henderson Tower",
-            "sector_id": "1H"
+            "radio_name": "Henderson Tower"
         },
-        "VGT_TWR": {
+        "1V": {
+            "callsign": "VGT_TWR",
             "frequency": 125700,
-            "radio_name": "North Las Vegas Tower",
-            "sector_id": "1V"
+            "radio_name": "North Las Vegas Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "1XX": {
                 "inbound_assignments": {
-                    "BOEGY2": "LAS_L_APP",
-                    "CHOWW4": "LAS_L_APP",
-                    "COKTL4": "LAS_G_APP",
-                    "FLCHR1": "LAS_G_APP",
-                    "GAMES2": "LAS_G_APP",
-                    "JAYSN3.19": "LAS_T_APP",
-                    "NTNDO1": "LAS_Y_APP",
-                    "RKSTR4": "LAS_L_APP",
-                    "RNDRZ4": "LAS_G_APP",
-                    "WYLND1": "LAS_L_APP"
+                    "BOEGY2": "1L",
+                    "CHOWW4": "1L",
+                    "COKTL4": "1G",
+                    "FLCHR1": "1G",
+                    "GAMES2": "1G",
+                    "JAYSN3.19": "1T",
+                    "NTNDO1": "1Y",
+                    "RKSTR4": "1L",
+                    "RNDRZ4": "1G",
+                    "WYLND1": "1L"
                 },
                 "departure_assignments": {
-                    "KHND": "LAS_Y_APP",
-                    "KLAS/GIDGT3": "LAS_M_DEP",
-                    "KLAS/JOHKR5": "LAS_D_DEP",
-                    "KLAS/LOHLA3": "LAS_M_DEP",
-                    "KLAS/NIITZ4": "LAS_D_DEP",
-                    "KLAS/RADYR2": "LAS_D_DEP",
-                    "KLAS/RASLR3": "LAS_D_DEP",
-                    "KLAS/RATPK3": "LAS_M_DEP",
-                    "KVGT": "LAS_M_DEP"
+                    "KHND": "1Y",
+                    "KLAS/GIDGT3": "1M",
+                    "KLAS/JOHKR5": "1D",
+                    "KLAS/LOHLA3": "1M",
+                    "KLAS/NIITZ4": "1D",
+                    "KLAS/RADYR2": "1D",
+                    "KLAS/RASLR3": "1D",
+                    "KLAS/RATPK3": "1M",
+                    "KVGT": "1M"
                 },
                 "default_consolidation": {
-                    "LAS_D_DEP": [
-                        "LAS_M_DEP",
-                        "LAS_Y_APP"
+                    "1D": [
+                        "1M",
+                        "1Y"
                     ],
-                    "LAS_F_APP": [
-                        "LAS_D_DEP",
-                        "LAS_G_APP",
-                        "LAS_L_APP",
-                        "LAS_T_APP"
+                    "1F": [
+                        "1D",
+                        "1G",
+                        "1L",
+                        "1T"
                     ],
-                    "LAS_L_APP": [
-                        "LAS_K_APP"
+                    "1L": [
+                        "1K"
                     ]
                 }
             },
             "2XX": {
                 "inbound_assignments": {
-                    "BOEGY2": "LAS_M_DEP",
-                    "CHOWW4": "LAS_L_APP",
-                    "COKTL4": "LAS_G_APP",
-                    "FLCHR1": "LAS_G_APP",
-                    "GAMES2": "LAS_G_APP",
-                    "JAYSN3.1": "LAS_G_APP",
-                    "NTNDO1": "LAS_Y_APP",
-                    "RKSTR4": "LAS_L_APP",
-                    "RNDRZ4": "LAS_G_APP",
-                    "WYLND1": "LAS_M_DEP"
+                    "BOEGY2": "1M",
+                    "CHOWW4": "1L",
+                    "COKTL4": "1G",
+                    "FLCHR1": "1G",
+                    "GAMES2": "1G",
+                    "JAYSN3.1": "1G",
+                    "NTNDO1": "1Y",
+                    "RKSTR4": "1L",
+                    "RNDRZ4": "1G",
+                    "WYLND1": "1M"
                 },
                 "departure_assignments": {
-                    "KHND": "LAS_Y_APP",
-                    "KLAS/FRNCK1": "LAS_M_DEP",
-                    "KLAS/GIDGT3": "LAS_M_DEP",
-                    "KLAS/JOHKR5": "LAS_D_DEP",
-                    "KLAS/LOHLA3": "LAS_D_DEP",
-                    "KLAS/NIITZ4": "LAS_M_DEP",
-                    "KLAS/RADYR2": "LAS_D_DEP",
-                    "KLAS/RASLR3": "LAS_M_DEP",
-                    "KLAS/RATPK3": "LAS_M_DEP",
-                    "KVGT": "LAS_M_DEP"
+                    "KHND": "1Y",
+                    "KLAS/FRNCK1": "1M",
+                    "KLAS/GIDGT3": "1M",
+                    "KLAS/JOHKR5": "1D",
+                    "KLAS/LOHLA3": "1D",
+                    "KLAS/NIITZ4": "1M",
+                    "KLAS/RADYR2": "1D",
+                    "KLAS/RASLR3": "1M",
+                    "KLAS/RATPK3": "1M",
+                    "KVGT": "1M"
                 },
                 "default_consolidation": {
-                    "LAS_D_DEP": [
-                        "LAS_M_DEP",
-                        "LAS_Y_APP"
+                    "1D": [
+                        "1M",
+                        "1Y"
                     ],
-                    "LAS_F_APP": [
-                        "LAS_D_DEP",
-                        "LAS_G_APP",
-                        "LAS_L_APP",
-                        "LAS_T_APP"
+                    "1F": [
+                        "1D",
+                        "1G",
+                        "1L",
+                        "1T"
                     ],
-                    "LAS_L_APP": [
-                        "LAS_K_APP"
+                    "1L": [
+                        "1K"
                     ]
                 }
             },
             "3XX": {
                 "inbound_assignments": {
-                    "BOEGY2": "LAS_L_APP",
-                    "CHOWW4": "LAS_K_APP",
-                    "COKTL4": "LAS_G_APP",
-                    "FLCHR1": "LAS_G_APP",
-                    "GAMES2": "LAS_G_APP",
-                    "JAYSN3.1": "LAS_G_APP",
-                    "NTNDO1": "LAS_Y_APP",
-                    "RKSTR4": "LAS_L_APP",
-                    "RNDRZ4": "LAS_G_APP",
-                    "WYLND1": "LAS_L_APP"
+                    "BOEGY2": "1L",
+                    "CHOWW4": "1K",
+                    "COKTL4": "1G",
+                    "FLCHR1": "1G",
+                    "GAMES2": "1G",
+                    "JAYSN3.1": "1G",
+                    "NTNDO1": "1Y",
+                    "RKSTR4": "1L",
+                    "RNDRZ4": "1G",
+                    "WYLND1": "1L"
                 },
                 "departure_assignments": {
-                    "KHND": "LAS_Y_APP",
-                    "KLAS": "LAS_D_DEP",
-                    "KVGT": "LAS_D_DEP"
+                    "KHND": "1Y",
+                    "KLAS": "1D",
+                    "KVGT": "1D"
                 },
                 "default_consolidation": {
-                    "LAS_D_DEP": [
-                        "LAS_M_DEP"
+                    "1D": [
+                        "1M"
                     ],
-                    "LAS_F_APP": [
-                        "LAS_D_DEP",
-                        "LAS_G_APP",
-                        "LAS_K_APP",
-                        "LAS_L_APP",
-                        "LAS_T_APP",
-                        "LAS_Y_APP"
+                    "1F": [
+                        "1D",
+                        "1G",
+                        "1K",
+                        "1L",
+                        "1T",
+                        "1Y"
                     ]
                 }
             },
             "4XX": {
                 "inbound_assignments": {
-                    "BOEGY2": "LAS_L_APP",
-                    "CHOWW4": "LAS_L_APP",
-                    "COKTL4": "LAS_G_APP",
-                    "FLCHR1": "LAS_G_APP",
-                    "GAMES2": "LAS_G_APP",
-                    "JAYSN3.19": "LAS_T_APP",
-                    "NTNDO1": "LAS_Y_APP",
-                    "RKSTR4": "LAS_L_APP",
-                    "RNDRZ4": "LAS_G_APP",
-                    "WYLND1": "LAS_L_APP"
+                    "BOEGY2": "1L",
+                    "CHOWW4": "1L",
+                    "COKTL4": "1G",
+                    "FLCHR1": "1G",
+                    "GAMES2": "1G",
+                    "JAYSN3.19": "1T",
+                    "NTNDO1": "1Y",
+                    "RKSTR4": "1L",
+                    "RNDRZ4": "1G",
+                    "WYLND1": "1L"
                 },
                 "departure_assignments": {
-                    "KHND": "LAS_Y_APP",
-                    "KLAS": "LAS_D_DEP",
-                    "KVGT": "LAS_D_DEP"
+                    "KHND": "1Y",
+                    "KLAS": "1D",
+                    "KVGT": "1D"
                 },
                 "default_consolidation": {
-                    "LAS_D_DEP": [
-                        "LAS_M_DEP"
+                    "1D": [
+                        "1M"
                     ],
-                    "LAS_F_APP": [
-                        "LAS_D_DEP",
-                        "LAS_G_APP",
-                        "LAS_K_APP",
-                        "LAS_L_APP",
-                        "LAS_T_APP",
-                        "LAS_Y_APP"
+                    "1F": [
+                        "1D",
+                        "1G",
+                        "1K",
+                        "1L",
+                        "1T",
+                        "1Y"
                     ]
                 }
             }
         },
         "center": "N36.4.59.17,W115.8.53.52",
         "controller_configs": {
-            "LAS_F_APP": {
+            "1F": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -367,7 +367,7 @@
                     19000,
                     23000
                 ],
-                "receiving_controller": "ZLA Sector 07"
+                "receiving_controller": "C07"
             },
             {
                 "fixes": [
@@ -379,7 +379,7 @@
                     19000,
                     23000
                 ],
-                "receiving_controller": "ZLA Sector 08"
+                "receiving_controller": "C08"
             },
             {
                 "fixes": [
@@ -389,7 +389,7 @@
                     19000,
                     23000
                 ],
-                "receiving_controller": "ZLA Sector 16"
+                "receiving_controller": "C16"
             },
             {
                 "fixes": [
@@ -399,8 +399,7 @@
                     0,
                     25000
                 ],
-                "receiving_controller": "LSV_L_APP",
-                "receiving_facility": "LSV"
+                "receiving_controller": "11L"
             },
             {
                 "fixes": [
@@ -412,7 +411,7 @@
                     19000,
                     23000
                 ],
-                "receiving_controller": "ZLA Sector 06"
+                "receiving_controller": "C06"
             }
         ],
         "coordination_fixes": {
@@ -500,7 +499,7 @@
         },
         {
             "id": "ZLA",
-            "eram_prefix": "L"
+            "eram_prefix": "C"
         }
     ]
 }

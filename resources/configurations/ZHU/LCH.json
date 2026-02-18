@@ -1,19 +1,19 @@
 {
     "control_positions": {
-        "LCH_E_APP": {
+        "1E": {
+            "callsign": "LCH_E_APP",
             "frequency": 119800,
-            "radio_name": "Lake Charles Approach",
-            "sector_id": "1E"
+            "radio_name": "Lake Charles Approach"
         },
-        "LCH_TWR": {
+        "1T": {
+            "callsign": "LCH_TWR",
             "frequency": 120700,
-            "radio_name": "Lake Charles Tower",
-            "sector_id": "1T"
+            "radio_name": "Lake Charles Tower"
         },
-        "LCH_W_APP": {
+        "1W": {
+            "callsign": "LCH_W_APP",
             "frequency": 119350,
-            "radio_name": "Lake Charles Approach",
-            "sector_id": "1W"
+            "radio_name": "Lake Charles Approach"
         }
     },
     "handoff_ids": [
@@ -28,6 +28,10 @@
         {
             "id": "POE",
             "prefix": "3"
+        },
+        {
+            "id": "ZHU",
+            "eram_prefix": "C"
         }
     ]
 }

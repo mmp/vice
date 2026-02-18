@@ -1,20 +1,25 @@
 {
     "control_positions": {
-        "JAN_E_APP": {
+        "1E": {
+            "callsign": "JAN_E_APP",
             "frequency": 123900,
-            "radio_name": "Jackson Approach",
-            "sector_id": "1E"
+            "radio_name": "Jackson Approach"
         },
-        "JAN_TWR": {
+        "1T": {
+            "callsign": "JAN_TWR",
             "frequency": 120900,
-            "radio_name": "Jackson Tower",
-            "sector_id": "1T"
+            "radio_name": "Jackson Tower"
         },
-        "JAN_W_APP": {
+        "1W": {
+            "callsign": "JAN_W_APP",
             "frequency": 125250,
-            "radio_name": "Jackson Approach",
-            "sector_id": "1W"
+            "radio_name": "Jackson Approach"
         }
     },
-    "handoff_ids": []
+    "handoff_ids": [
+        {
+            "id": "ZME",
+            "eram_prefix": "C"
+        }
+    ]
 }

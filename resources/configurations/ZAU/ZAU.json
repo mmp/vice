@@ -1,130 +1,130 @@
 {
     "control_positions": {
-        "ZAU 25 PMM": {
+        "25": {
+            "callsign": "ZAU 25 PMM",
             "frequency": 126125,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "25"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 26 KUBBS": {
+        "26": {
+            "callsign": "ZAU 26 KUBBS",
             "frequency": 133200,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "26"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 35 BEARZ": {
+        "35": {
+            "callsign": "ZAU 35 BEARZ",
             "frequency": 134875,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "35"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 36 FWA": {
+        "36": {
+            "callsign": "ZAU 36 FWA",
             "frequency": 126325,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "36"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 44 EON": {
+        "44": {
+            "callsign": "ZAU 44 EON",
             "frequency": 120125,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "44"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 46 BVT": {
+        "46": {
+            "callsign": "ZAU 46 BVT",
             "frequency": 121275,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "46"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 51 PLANO": {
+        "51": {
+            "callsign": "ZAU 51 PLANO",
             "frequency": 135150,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "51"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 52 BDF": {
+        "52": {
+            "callsign": "ZAU 52 BDF",
             "frequency": 132225,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "52"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 55 BRL": {
+        "55": {
+            "callsign": "ZAU 55 BRL",
             "frequency": 118750,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "55"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 60 BAE": {
+        "60": {
+            "callsign": "ZAU 60 BAE",
             "frequency": 126875,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "60"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 62 HARLY": {
+        "62": {
+            "callsign": "ZAU 62 HARLY",
             "frequency": 123825,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "62"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 63 DBQ": {
+        "63": {
+            "callsign": "ZAU 63 DBQ",
             "frequency": 133950,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "63"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 64 LNR": {
+        "64": {
+            "callsign": "ZAU 64 LNR",
             "frequency": 133300,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "64"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 74 FARMM": {
+        "74": {
+            "callsign": "ZAU 74 FARMM",
             "frequency": 133350,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "74"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 75 COTON": {
+        "75": {
+            "callsign": "ZAU 75 COTON",
             "frequency": 127775,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "75"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 77 MALTA": {
+        "77": {
+            "callsign": "ZAU 77 MALTA",
             "frequency": 134825,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "77"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 81 CRIBB": {
+        "81": {
+            "callsign": "ZAU 81 CRIBB",
             "frequency": 120350,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "81"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 89 GIJ": {
+        "89": {
+            "callsign": "ZAU 89 GIJ",
             "frequency": 126475,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "89"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 94 IOW": {
+        "94": {
+            "callsign": "ZAU 94 IOW",
             "frequency": 125575,
             "eram_facility": true,
-            "radio_name": "Chicago Center",
-            "sector_id": "94"
+            "radio_name": "Chicago Center"
         },
-        "ZAU 98 Guard": {
+        "98": {
+            "callsign": "ZAU 98 Guard",
             "frequency": 121500,
             "eram_facility": true,
-            "radio_name": "Guard",
-            "sector_id": "98"
+            "radio_name": "Guard"
         },
-        "ZAU 99 TMU": {
+        "99": {
+            "callsign": "ZAU 99 TMU",
             "frequency": 123450,
             "eram_facility": true,
-            "radio_name": "Chicago TMU",
-            "sector_id": "99"
+            "radio_name": "Chicago TMU"
         }
     },
     "stars_config": {
@@ -295,132 +295,110 @@
     "handoff_ids": [
         {
             "id": "ALO",
-            "single_char_stars_id": "A",
-            "two_char_stars_id": "AL",
-            "stars_id": "ALT"
+            "stars_id": "ALT",
+            "single_char_stars_id": "A"
         },
         {
             "id": "AZO",
-            "single_char_stars_id": "Z",
-            "two_char_stars_id": "AZ",
-            "stars_id": "AZT"
+            "stars_id": "AZT",
+            "single_char_stars_id": "Z"
         },
         {
             "id": "C90",
-            "single_char_stars_id": "O",
-            "two_char_stars_id": "OR",
-            "stars_id": "ORT"
+            "stars_id": "ORT",
+            "single_char_stars_id": "O"
         },
         {
             "id": "CID",
-            "single_char_stars_id": "H",
-            "two_char_stars_id": "CI",
-            "stars_id": "CIT"
+            "stars_id": "CIT",
+            "single_char_stars_id": "H"
         },
         {
             "id": "CMH",
-            "two_char_stars_id": "CO",
             "stars_id": "CMH"
         },
         {
             "id": "CMI",
-            "single_char_stars_id": "W",
-            "two_char_stars_id": "CM",
-            "stars_id": "CMT"
+            "stars_id": "CMT",
+            "single_char_stars_id": "W"
         },
         {
             "id": "DSM",
-            "single_char_stars_id": "E",
-            "two_char_stars_id": "DS",
-            "stars_id": "DSM"
+            "stars_id": "DSM",
+            "single_char_stars_id": "E"
         },
         {
             "id": "FWA",
-            "single_char_stars_id": "F",
-            "two_char_stars_id": "FW",
-            "stars_id": "FWT"
+            "stars_id": "FWT",
+            "single_char_stars_id": "F"
         },
         {
             "id": "GRB",
-            "single_char_stars_id": "Y",
-            "two_char_stars_id": "GG",
-            "stars_id": "GRB"
+            "stars_id": "GRB",
+            "single_char_stars_id": "Y"
         },
         {
             "id": "GUS",
-            "single_char_stars_id": "U",
-            "two_char_stars_id": "GU",
-            "stars_id": "GUT"
+            "stars_id": "GUT",
+            "single_char_stars_id": "U"
         },
         {
             "id": "HUF",
-            "two_char_stars_id": "TT",
             "stars_id": "TTH"
         },
         {
             "id": "IND",
-            "single_char_stars_id": "V",
-            "two_char_stars_id": "IN",
-            "stars_id": "IND"
+            "stars_id": "IND",
+            "single_char_stars_id": "V"
         },
         {
             "id": "LAN",
-            "single_char_stars_id": "L",
-            "two_char_stars_id": "LA",
-            "stars_id": "LAN"
+            "stars_id": "LAN",
+            "single_char_stars_id": "L"
         },
         {
             "id": "MKE",
-            "single_char_stars_id": "M",
-            "two_char_stars_id": "MK",
-            "stars_id": "MKT"
+            "stars_id": "MKT",
+            "single_char_stars_id": "M"
         },
         {
             "id": "MLI",
-            "single_char_stars_id": "Q",
-            "two_char_stars_id": "ML",
-            "stars_id": "MLT"
+            "stars_id": "MLT",
+            "single_char_stars_id": "Q"
         },
         {
             "id": "MSN",
-            "single_char_stars_id": "D",
-            "two_char_stars_id": "MS",
-            "stars_id": "MST"
+            "stars_id": "MST",
+            "single_char_stars_id": "D"
         },
         {
             "id": "RFD",
-            "single_char_stars_id": "R",
-            "two_char_stars_id": "RF",
-            "stars_id": "RFT"
+            "stars_id": "RFT",
+            "single_char_stars_id": "R"
         },
         {
             "id": "RST",
-            "two_char_stars_id": "RS",
             "stars_id": "RST"
         },
         {
             "id": "SBN",
-            "single_char_stars_id": "S",
-            "two_char_stars_id": "SB",
-            "stars_id": "SBT"
+            "stars_id": "SBT",
+            "single_char_stars_id": "S"
         },
         {
             "id": "T75",
-            "single_char_stars_id": "G",
-            "two_char_stars_id": "ST",
-            "stars_id": "STL"
+            "stars_id": "STL",
+            "single_char_stars_id": "G"
         },
         {
             "id": "TOL",
-            "single_char_stars_id": "T",
-            "two_char_stars_id": "TO",
-            "stars_id": "TOL"
+            "stars_id": "TOL",
+            "single_char_stars_id": "T"
         },
         {
             "id": "VOK",
-            "single_char_stars_id": "X",
-            "two_char_stars_id": "VO",
-            "stars_id": "VOT"
+            "stars_id": "VOT",
+            "single_char_stars_id": "X"
         },
         {
             "id": "ZID",

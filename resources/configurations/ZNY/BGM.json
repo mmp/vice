@@ -1,26 +1,46 @@
 {
     "control_positions": {
-        "BGM_L_APP": {
+        "1G": {
+            "callsign": "BGM_L_APP",
             "frequency": 118600,
-            "radio_name": "Binghamton Approach",
-            "sector_id": "1G"
+            "radio_name": "Binghamton Approach"
         },
-        "BGM_H_APP": {
+        "1H": {
+            "callsign": "BGM_H_APP",
             "frequency": 127550,
-            "radio_name": "Binghamton Approach",
-            "sector_id": "1H"
+            "radio_name": "Binghamton Approach"
         },
-        "BGM_TWR": {
+        "1K": {
+            "callsign": "BGM_TWR",
             "frequency": 119300,
-            "radio_name": "Bignhamton Tower",
-            "sector_id": "1K"
+            "radio_name": "Bignhamton Tower"
         }
     },
     "stars_config": {},
     "handoff_ids": [
         {
+            "id": "AVP",
+            "prefix": "2"
+        },
+        {
+            "id": "ELM",
+            "prefix": "1"
+        },
+        {
+            "id": "N90",
+            "prefix": "3"
+        },
+        {
+            "id": "SYR",
+            "prefix": "4"
+        },
+        {
+            "id": "ZBW",
+            "eram_prefix": "B"
+        },
+        {
             "id": "ZNY",
-            "eram_prefix": "N"
+            "eram_prefix": "C"
         }
     ]
 }

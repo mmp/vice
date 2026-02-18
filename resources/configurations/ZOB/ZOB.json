@@ -1,286 +1,286 @@
 {
     "control_positions": {
-        "ZOB 00 ZOB GUARD": {
+        "00": {
+            "callsign": "ZOB 00 ZOB GUARD",
             "frequency": 121500,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "00"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 02 Pandora": {
+        "02": {
+            "callsign": "ZOB 02 Pandora",
             "frequency": 128625,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "02"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 03 Marion": {
+        "03": {
+            "callsign": "ZOB 03 Marion",
             "frequency": 135100,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "03"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 04 Mansfield": {
+        "04": {
+            "callsign": "ZOB 04 Mansfield",
             "frequency": 134900,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "04"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 06 Briggs": {
+        "06": {
+            "callsign": "ZOB 06 Briggs",
             "frequency": 120600,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "06"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 07 Sandusky": {
+        "07": {
+            "callsign": "ZOB 07 Sandusky",
             "frequency": 127675,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "07"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 08 Carleton": {
+        "08": {
+            "callsign": "ZOB 08 Carleton",
             "frequency": 127900,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "08"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 12 Lansing": {
+        "12": {
+            "callsign": "ZOB 12 Lansing",
             "frequency": 126750,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "12"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 14 Jackson": {
+        "14": {
+            "callsign": "ZOB 14 Jackson",
             "frequency": 120450,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "14"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 15 Litchfield": {
+        "15": {
+            "callsign": "ZOB 15 Litchfield",
             "frequency": 134650,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "15"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 16 Flint": {
+        "16": {
+            "callsign": "ZOB 16 Flint",
             "frequency": 127700,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "16"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 18 Peck": {
+        "18": {
+            "callsign": "ZOB 18 Peck",
             "frequency": 133875,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "18"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 19 Gamble": {
+        "19": {
+            "callsign": "ZOB 19 Gamble",
             "frequency": 126525,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "19"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 20 Dresden": {
+        "20": {
+            "callsign": "ZOB 20 Dresden",
             "frequency": 132250,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "20"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 21 Windsor": {
+        "21": {
+            "callsign": "ZOB 21 Windsor",
             "frequency": 132450,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "21"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 26 Lake": {
+        "26": {
+            "callsign": "ZOB 26 Lake",
             "frequency": 120075,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "26"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 27 Hudson": {
+        "27": {
+            "callsign": "ZOB 27 Hudson",
             "frequency": 134775,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "27"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 28 Detroit": {
+        "28": {
+            "callsign": "ZOB 28 Detroit",
             "frequency": 135725,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "28"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 29 Wayne": {
+        "29": {
+            "callsign": "ZOB 29 Wayne",
             "frequency": 133525,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "29"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 31 Rochester": {
+        "31": {
+            "callsign": "ZOB 31 Rochester",
             "frequency": 127475,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "31"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 33 Buffalo": {
+        "33": {
+            "callsign": "ZOB 33 Buffalo",
             "frequency": 125200,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "33"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 36 Dansville": {
+        "36": {
+            "callsign": "ZOB 36 Dansville",
             "frequency": 118625,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "36"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 37 Geneseo": {
+        "37": {
+            "callsign": "ZOB 37 Geneseo",
             "frequency": 128025,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "37"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 38 Niagara": {
+        "38": {
+            "callsign": "ZOB 38 Niagara",
             "frequency": 120625,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "38"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 39 Steuben": {
+        "39": {
+            "callsign": "ZOB 39 Steuben",
             "frequency": 119375,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "39"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 45 Geauga": {
+        "45": {
+            "callsign": "ZOB 45 Geauga",
             "frequency": 120325,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "45"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 46 Marblehead": {
+        "46": {
+            "callsign": "ZOB 46 Marblehead",
             "frequency": 135375,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "46"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 47 Bluffton": {
+        "47": {
+            "callsign": "ZOB 47 Bluffton",
             "frequency": 119325,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "47"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 48 Ravenna": {
+        "48": {
+            "callsign": "ZOB 48 Ravenna",
             "frequency": 119875,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "48"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 49 Lorain": {
+        "49": {
+            "callsign": "ZOB 49 Lorain",
             "frequency": 133375,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "49"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 50 Clarion": {
+        "50": {
+            "callsign": "ZOB 50 Clarion",
             "frequency": 126725,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "50"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 53 Indian Head": {
+        "53": {
+            "callsign": "ZOB 53 Indian Head",
             "frequency": 124400,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "53"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 55 Morgantown": {
+        "55": {
+            "callsign": "ZOB 55 Morgantown",
             "frequency": 126950,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "55"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 57 Brecksville": {
+        "57": {
+            "callsign": "ZOB 57 Brecksville",
             "frequency": 125875,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "57"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 58 Palmer": {
+        "58": {
+            "callsign": "ZOB 58 Palmer",
             "frequency": 121075,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "58"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 59 Franklin": {
+        "59": {
+            "callsign": "ZOB 59 Franklin",
             "frequency": 119725,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "59"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 64 Keystone": {
+        "64": {
+            "callsign": "ZOB 64 Keystone",
             "frequency": 134475,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "64"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 66 Bellaire": {
+        "66": {
+            "callsign": "ZOB 66 Bellaire",
             "frequency": 125425,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "66"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 67 Imperial": {
+        "67": {
+            "callsign": "ZOB 67 Imperial",
             "frequency": 132125,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "67"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 68 Allegheny": {
+        "68": {
+            "callsign": "ZOB 68 Allegheny",
             "frequency": 133075,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "68"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 69 Clarksburg": {
+        "69": {
+            "callsign": "ZOB 69 Clarksburg",
             "frequency": 135175,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "69"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 70 Dunkirk": {
+        "70": {
+            "callsign": "ZOB 70 Dunkirk",
             "frequency": 127075,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "70"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 73 Bradford": {
+        "73": {
+            "callsign": "ZOB 73 Bradford",
             "frequency": 124325,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "73"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 75 Youngstown": {
+        "75": {
+            "callsign": "ZOB 75 Youngstown",
             "frequency": 120775,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "75"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 77 Warren": {
+        "77": {
+            "callsign": "ZOB 77 Warren",
             "frequency": 134125,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "77"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 79 Jamestown": {
+        "79": {
+            "callsign": "ZOB 79 Jamestown",
             "frequency": 132925,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "79"
+            "radio_name": "Cleveland Center"
         },
-        "ZOB 99 TMU": {
+        "99": {
+            "callsign": "ZOB 99 TMU",
             "frequency": 123450,
             "eram_facility": true,
-            "radio_name": "Cleveland Center",
-            "sector_id": "99"
+            "radio_name": "Cleveland Center"
         }
     },
     "stars_config": {
@@ -577,93 +577,97 @@
     "handoff_ids": [
         {
             "id": "AZO",
-            "single_char_stars_id": "A",
-            "stars_id": "AZO"
+            "stars_id": "AZO",
+            "single_char_stars_id": "A"
         },
         {
             "id": "BUF",
-            "single_char_stars_id": "U",
-            "stars_id": "BBB"
+            "stars_id": "BBB",
+            "single_char_stars_id": "U"
         },
         {
             "id": "CKB",
-            "single_char_stars_id": "V",
-            "stars_id": "VVV"
+            "stars_id": "VVV",
+            "single_char_stars_id": "V"
         },
         {
             "id": "CLE",
-            "single_char_stars_id": "C",
-            "stars_id": "CCC"
+            "stars_id": "CCC",
+            "single_char_stars_id": "C"
         },
         {
             "id": "CMH",
-            "single_char_stars_id": "H",
-            "stars_id": "CMH"
+            "stars_id": "CMH",
+            "single_char_stars_id": "H"
         },
         {
             "id": "CRW",
-            "single_char_stars_id": "Z",
-            "stars_id": "CRA"
+            "stars_id": "CRA",
+            "single_char_stars_id": "Z"
         },
         {
             "id": "D21",
-            "single_char_stars_id": "D",
-            "stars_id": "DDD"
+            "stars_id": "DDD",
+            "single_char_stars_id": "D"
         },
         {
             "id": "ELM",
-            "single_char_stars_id": "E",
-            "stars_id": "ELM"
+            "stars_id": "ELM",
+            "single_char_stars_id": "E"
         },
         {
             "id": "FWA",
-            "single_char_stars_id": "F",
-            "stars_id": "FWA"
+            "stars_id": "FWA",
+            "single_char_stars_id": "F"
+        },
+        {
+            "id": "JST",
+            "stars_id": "JJJ",
+            "single_char_stars_id": "J"
         },
         {
             "id": "LAN",
-            "single_char_stars_id": "L",
-            "stars_id": "LLL"
+            "stars_id": "LLL",
+            "single_char_stars_id": "L"
         },
         {
             "id": "MDT",
-            "single_char_stars_id": "M",
-            "stars_id": "MDT"
+            "stars_id": "MDT",
+            "single_char_stars_id": "M"
         },
         {
             "id": "MTC",
-            "single_char_stars_id": "S",
-            "stars_id": "SSS"
+            "stars_id": "SSS",
+            "single_char_stars_id": "S"
         },
         {
             "id": "PCT",
-            "single_char_stars_id": "X",
-            "stars_id": "PCT"
+            "stars_id": "PCT",
+            "single_char_stars_id": "X"
         },
         {
             "id": "PIT",
-            "single_char_stars_id": "T",
-            "stars_id": "PPP"
+            "stars_id": "PPP",
+            "single_char_stars_id": "T"
         },
         {
             "id": "ROC",
-            "single_char_stars_id": "R",
-            "stars_id": "RRR"
+            "stars_id": "RRR",
+            "single_char_stars_id": "R"
         },
         {
             "id": "SYR",
-            "two_char_stars_id": "SY",
             "stars_id": "SYR"
         },
         {
             "id": "TOL",
-            "single_char_stars_id": "K",
-            "stars_id": "TTT"
+            "stars_id": "TTT",
+            "single_char_stars_id": "K"
         },
         {
             "id": "YNG",
-            "single_char_stars_id": "Y",
-            "stars_id": "YYY"
+            "stars_id": "YYY",
+            "single_char_stars_id": "Y"
         },
         {
             "id": "ZAU",

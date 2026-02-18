@@ -1,41 +1,41 @@
 {
     "control_positions": {
-        "COS_APP": {
+        "1A": {
+            "callsign": "COS_APP",
             "frequency": 124000,
-            "radio_name": "Springs approach",
-            "sector_id": "1A"
+            "radio_name": "Springs approach"
         },
-        "COS_V_APP": {
+        "1V": {
+            "callsign": "COS_V_APP",
             "frequency": 120600,
-            "radio_name": "Springs approach",
-            "sector_id": "1V"
+            "radio_name": "Springs approach"
         },
-        "COS_W_TWR": {
+        "1W": {
+            "callsign": "COS_W_TWR",
             "frequency": 119900,
-            "radio_name": "Springs tower",
-            "sector_id": "1W"
+            "radio_name": "Springs tower"
         },
-        "COS_E_TWR": {
+        "E": {
+            "callsign": "COS_E_TWR",
             "frequency": 135150,
-            "radio_name": "Springs tower",
-            "sector_id": "E"
+            "radio_name": "Springs tower"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "DEBERRY5": "COS_APP",
-                    "DEN": "COS_APP",
-                    "DEN.NW": "COS_APP",
-                    "OZZZY5": "COS_APP"
+                    "DEBERRY5": "1A",
+                    "DEN": "1A",
+                    "DEN.NW": "1A",
+                    "OZZZY5": "1A"
                 },
                 "departure_assignments": {
-                    "KCOS": "COS_APP",
-                    "KFLY": "COS_APP"
+                    "KCOS": "1A",
+                    "KFLY": "1A"
                 },
                 "default_consolidation": {
-                    "COS_APP": []
+                    "1A": []
                 }
             }
         },
@@ -121,7 +121,7 @@
         },
         {
             "id": "ZDV",
-            "eram_prefix": "D"
+            "eram_prefix": "C"
         }
     ]
 }

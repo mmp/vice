@@ -1,9 +1,9 @@
 {
     "control_positions": {
-        "EGE_TWR": {
+        "4T": {
+            "callsign": "EGE_TWR",
             "frequency": 119800,
-            "radio_name": "Eagle Tower",
-            "sector_id": "4T"
+            "radio_name": "Eagle Tower"
         }
     },
     "handoff_ids": [

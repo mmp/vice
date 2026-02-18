@@ -1,24 +1,24 @@
 {
     "control_positions": {
-        "NLC_APP": {
+        "1R": {
+            "callsign": "NLC_APP",
             "frequency": 124100,
-            "radio_name": "Lemoore Final",
-            "sector_id": "1R"
+            "radio_name": "Lemoore Final"
         },
-        "NLC_DEP": {
+        "1D": {
+            "callsign": "NLC_DEP",
             "frequency": 124100,
-            "radio_name": "Lemoore Departure",
-            "sector_id": "1D"
+            "radio_name": "Lemoore Departure"
         },
-        "NLC_M_APP": {
+        "1M": {
+            "callsign": "NLC_M_APP",
             "frequency": 134225,
-            "radio_name": "Showtime",
-            "sector_id": "1M"
+            "radio_name": "Showtime"
         },
-        "NLC_TWR": {
+        "1Z": {
+            "callsign": "NLC_TWR",
             "frequency": 128300,
-            "radio_name": "Lemoore Tower",
-            "sector_id": "1Z"
+            "radio_name": "Lemoore Tower"
         }
     },
     "handoff_ids": [
@@ -37,6 +37,10 @@
         {
             "id": "ZLA",
             "eram_prefix": "L"
+        },
+        {
+            "id": "ZOA",
+            "eram_prefix": "C"
         }
     ]
 }

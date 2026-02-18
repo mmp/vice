@@ -1,24 +1,24 @@
 {
     "control_positions": {
-        "CRW_B_APP": {
+        "1B": {
+            "callsign": "CRW_B_APP",
             "frequency": 125400,
-            "radio_name": "Charleston Approach",
-            "sector_id": "1B"
+            "radio_name": "Charleston Approach"
         },
-        "CRW_N_APP": {
+        "1N": {
+            "callsign": "CRW_N_APP",
             "frequency": 124100,
-            "radio_name": "Charleston Approach",
-            "sector_id": "1N"
+            "radio_name": "Charleston Approach"
         },
-        "CRW_S_APP": {
+        "1S": {
+            "callsign": "CRW_S_APP",
             "frequency": 119200,
-            "radio_name": "Charleston Approach",
-            "sector_id": "1S"
+            "radio_name": "Charleston Approach"
         },
-        "CRW_TWR": {
+        "1T": {
+            "callsign": "CRW_TWR",
             "frequency": 125700,
-            "radio_name": "Charleston Tower",
-            "sector_id": "1T"
+            "radio_name": "Charleston Tower"
         }
     },
     "handoff_ids": [
@@ -33,6 +33,10 @@
         {
             "id": "ZDC",
             "eram_prefix": "W"
+        },
+        {
+            "id": "ZID",
+            "eram_prefix": "C"
         },
         {
             "id": "ZOB",

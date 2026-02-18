@@ -124,7 +124,7 @@
                 {
                     "waypoints": "CCC FOSTY BILJE BUOYY/ho SHAUN CEKAY SCOGS SAACO MESHL YAAKK SAPPE",
                     "route": "SCOGS3",
-                    "initial_controller": "ZBW 17 Nantucket",
+                    "initial_controller": "C17",
                     "initial_altitude": 9000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -155,13 +155,12 @@
                                 "airport": "KIAD"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 },
                 {
                     "waypoints": "CAM CDOGG/ho KAYCC ARARR BUXTO",
                     "route": "CDOGG4",
-                    "initial_controller": "ZBW 17 Nantucket",
+                    "initial_controller": "C17",
                     "initial_altitude": 9000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -184,8 +183,7 @@
                                 "airport": "KASE"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         },
@@ -194,7 +192,7 @@
                 {
                     "waypoints": "BUOYY SHAUN/ho CEKAY SCOGS SAACO MESHL YAAKK SAPPE",
                     "route": "SCOGS3",
-                    "initial_controller": "ZBW 17 Nantucket",
+                    "initial_controller": "C17",
                     "initial_altitude": 9000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -217,13 +215,12 @@
                                 "airport": "KDTW"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 },
                 {
                     "waypoints": "CAM CDOGG/ho KAYCC YOMON YAAKK SAPPE/a3000",
                     "route": "CDOGG4",
-                    "initial_controller": "ZBW 17 Nantucket",
+                    "initial_controller": "C17",
                     "initial_altitude": 9000,
                     "initial_speed": 270,
                     "expect_approach": null,
@@ -246,8 +243,7 @@
                                 "airport": "KASE"
                             }
                         ]
-                    },
-                    "initial_facility": "ZBW"
+                    }
                 }
             ]
         }

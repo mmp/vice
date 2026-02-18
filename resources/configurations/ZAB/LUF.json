@@ -1,30 +1,34 @@
 {
     "control_positions": {
-        "LUF_SN_APP": {
+        "1K": {
+            "callsign": "LUF_SN_APP",
             "frequency": 122775,
-            "radio_name": "Snakeye",
-            "sector_id": "1K"
+            "radio_name": "Snakeye"
         },
-        "LUF_N_APP": {
+        "1N": {
+            "callsign": "LUF_N_APP",
             "frequency": 118150,
-            "radio_name": "Luke Approach",
-            "sector_id": "1N"
+            "radio_name": "Luke Approach"
         },
-        "LUF_S_APP": {
+        "1S": {
+            "callsign": "LUF_S_APP",
             "frequency": 125450,
-            "radio_name": "Luke approach",
-            "sector_id": "1S"
+            "radio_name": "Luke approach"
         },
-        "LUF_TWR": {
+        "2T": {
+            "callsign": "LUF_TWR",
             "frequency": 119100,
-            "radio_name": "Luke Tower",
-            "sector_id": "2T"
+            "radio_name": "Luke Tower"
         }
     },
     "handoff_ids": [
         {
             "id": "P50",
             "prefix": "8"
+        },
+        {
+            "id": "ZAB",
+            "eram_prefix": "C"
         }
     ]
 }

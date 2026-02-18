@@ -1,20 +1,25 @@
 {
     "control_positions": {
-        "AMA_A_APP": {
+        "1A": {
+            "callsign": "AMA_A_APP",
             "frequency": 119500,
-            "radio_name": "Amarillo Approach",
-            "sector_id": "1A"
+            "radio_name": "Amarillo Approach"
         },
-        "AMA_F_APP": {
+        "1F": {
+            "callsign": "AMA_F_APP",
             "frequency": 121150,
-            "radio_name": "Amarillo Approach",
-            "sector_id": "1F"
+            "radio_name": "Amarillo Approach"
         },
-        "AMA_TWR": {
+        "2T": {
+            "callsign": "AMA_TWR",
             "frequency": 118300,
-            "radio_name": "Amarillo Tower",
-            "sector_id": "2T"
+            "radio_name": "Amarillo Tower"
         }
     },
-    "handoff_ids": []
+    "handoff_ids": [
+        {
+            "id": "ZAB",
+            "eram_prefix": "C"
+        }
+    ]
 }

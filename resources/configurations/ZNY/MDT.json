@@ -1,63 +1,63 @@
 {
     "control_positions": {
-        "MDT_W_APP": {
+        "1H": {
+            "callsign": "MDT_W_APP",
             "frequency": 124100,
-            "radio_name": "Harrisburg Approach",
-            "sector_id": "1H"
+            "radio_name": "Harrisburg Approach"
         },
-        "MDT_TWR": {
+        "HL": {
+            "callsign": "MDT_TWR",
             "frequency": 124800,
-            "radio_name": "Harrisburg Tower",
-            "sector_id": "HL"
+            "radio_name": "Harrisburg Tower"
         },
-        "CXY_TWR": {
+        "HH": {
+            "callsign": "CXY_TWR",
             "frequency": 119500,
-            "radio_name": "Capital City Tower",
-            "sector_id": "HH"
+            "radio_name": "Capital City Tower"
         },
-        "LNS_TWR": {
+        "HM": {
+            "callsign": "LNS_TWR",
             "frequency": 120900,
-            "radio_name": "Lancaster Tower",
-            "sector_id": "HM"
+            "radio_name": "Lancaster Tower"
         },
-        "MDT_E_APP": {
+        "1L": {
+            "callsign": "MDT_E_APP",
             "frequency": 126450,
-            "radio_name": "Harrisburg Approach",
-            "sector_id": "1L"
+            "radio_name": "Harrisburg Approach"
         },
-        "MDT_N_APP": {
+        "1R": {
+            "callsign": "MDT_N_APP",
             "frequency": 118250,
-            "radio_name": "Harrisburg Approach",
-            "sector_id": "1R"
+            "radio_name": "Harrisburg Approach"
         },
-        "RDG_APP": {
+        "1X": {
+            "callsign": "RDG_APP",
             "frequency": 125150,
-            "radio_name": "Reading Approach",
-            "sector_id": "1X"
+            "radio_name": "Reading Approach"
         },
-        "RDG_TWR": {
+        "RR": {
+            "callsign": "RDG_TWR",
             "frequency": 119900,
-            "radio_name": "Reading Tower",
-            "sector_id": "RR"
+            "radio_name": "Reading Tower"
         }
     },
     "stars_config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "East": "MDT_E_APP",
-                    "North/NE": "MDT_N_APP",
-                    "West/South": "MDT_W_APP"
+                    "East": "1L",
+                    "North/NE": "1R",
+                    "West/South": "1H"
                 },
                 "departure_assignments": {
-                    "KCXY": "MDT_W_APP",
-                    "KLNS": "MDT_E_APP",
-                    "KMDT": "MDT_W_APP"
+                    "KCXY": "1H",
+                    "KLNS": "1L",
+                    "KMDT": "1H"
                 },
                 "default_consolidation": {
-                    "MDT_E_APP": [
-                        "MDT_N_APP",
-                        "MDT_W_APP"
+                    "1L": [
+                        "1R",
+                        "1H"
                     ]
                 }
             }
@@ -228,7 +228,7 @@
                     9000,
                     99999
                 ],
-                "receiving_controller": "ZNY 26 Lancaster"
+                "receiving_controller": "N26"
             },
             {
                 "fixes": [
@@ -238,7 +238,7 @@
                     0,
                     8000
                 ],
-                "receiving_controller": "AVP_S_APP"
+                "receiving_controller": "11E"
             },
             {
                 "fixes": [
@@ -250,7 +250,7 @@
                     6000,
                     8000
                 ],
-                "receiving_controller": "ABE_DEP"
+                "receiving_controller": "21D"
             },
             {
                 "fixes": [
@@ -264,7 +264,7 @@
                     0,
                     5000
                 ],
-                "receiving_controller": "RDG_APP"
+                "receiving_controller": "1X"
             },
             {
                 "fixes": [
@@ -274,7 +274,7 @@
                     0,
                     8000
                 ],
-                "receiving_controller": "PHL_ND_DEP"
+                "receiving_controller": "41E"
             },
             {
                 "fixes": [
@@ -285,7 +285,7 @@
                     7000,
                     8000
                 ],
-                "receiving_controller": "PHL_NA_APP"
+                "receiving_controller": "41N"
             },
             {
                 "fixes": [
@@ -296,7 +296,7 @@
                     6000,
                     6000
                 ],
-                "receiving_controller": "PHL_PT_APP"
+                "receiving_controller": "41P"
             },
             {
                 "fixes": [
@@ -320,7 +320,7 @@
                     9000,
                     99999
                 ],
-                "receiving_controller": "ZNY 27 Middletown"
+                "receiving_controller": "N27"
             },
             {
                 "fixes": [
@@ -334,7 +334,7 @@
                     0,
                     8000
                 ],
-                "receiving_controller": "ZNY 91 Williamsport"
+                "receiving_controller": "N91"
             },
             {
                 "fixes": [
@@ -345,7 +345,7 @@
                     0,
                     8000
                 ],
-                "receiving_controller": "BWI_B_APP"
+                "receiving_controller": "61B"
             },
             {
                 "fixes": [
@@ -355,7 +355,7 @@
                     0,
                     6000
                 ],
-                "receiving_controller": "IAD_E_APP"
+                "receiving_controller": "63E"
             },
             {
                 "fixes": [
@@ -365,7 +365,7 @@
                     7000,
                     8000
                 ],
-                "receiving_controller": "IAD_M_APP"
+                "receiving_controller": "63M"
             },
             {
                 "fixes": [
@@ -380,8 +380,7 @@
                     0,
                     8000
                 ],
-                "receiving_controller": "JST_APP",
-                "receiving_facility": "JST"
+                "receiving_controller": "71A"
             }
         ],
         "coordination_fixes": {

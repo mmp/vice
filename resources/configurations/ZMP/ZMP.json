@@ -1,292 +1,292 @@
 {
     "control_positions": {
-        "ZMP 01 PLN LO": {
+        "01": {
+            "callsign": "ZMP 01 PLN LO",
             "frequency": 134600,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "01"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 02 TVC LO": {
+        "02": {
+            "callsign": "ZMP 02 TVC LO",
             "frequency": 132900,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "02"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 03 SAW LO": {
+        "03": {
+            "callsign": "ZMP 03 SAW LO",
             "frequency": 133550,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "03"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 04 AUW LO": {
+        "04": {
+            "callsign": "ZMP 04 AUW LO",
             "frequency": 124400,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "04"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 05 ODI LO": {
+        "05": {
+            "callsign": "ZMP 05 ODI LO",
             "frequency": 125300,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "05"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 06 TWINZ LO": {
+        "06": {
+            "callsign": "ZMP 06 TWINZ LO",
             "frequency": 134300,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "06"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 07 FGT LO": {
+        "07": {
+            "callsign": "ZMP 07 FGT LO",
             "frequency": 132350,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "07"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 08 MKT LO": {
+        "08": {
+            "callsign": "ZMP 08 MKT LO",
             "frequency": 135000,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "08"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 09 RWF LO": {
+        "09": {
+            "callsign": "ZMP 09 RWF LO",
             "frequency": 125500,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "09"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 10 GEP LO": {
+        "10": {
+            "callsign": "ZMP 10 GEP LO",
             "frequency": 121050,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "10"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 11 AXN HI": {
+        "11": {
+            "callsign": "ZMP 11 AXN HI",
             "frequency": 133400,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "11"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 12 TVC HI": {
+        "12": {
+            "callsign": "ZMP 12 TVC HI",
             "frequency": 132425,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "12"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 13 TKV HI": {
+        "13": {
+            "callsign": "ZMP 13 TKV HI",
             "frequency": 133175,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "13"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 14 APN HI": {
+        "14": {
+            "callsign": "ZMP 14 APN HI",
             "frequency": 127125,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "14"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 15 ODI HI": {
+        "15": {
+            "callsign": "ZMP 15 ODI HI",
             "frequency": 135700,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "15"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 16 EAU HI": {
+        "16": {
+            "callsign": "ZMP 16 EAU HI",
             "frequency": 133750,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "16"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 17 MCW HI": {
+        "17": {
+            "callsign": "ZMP 17 MCW HI",
             "frequency": 134250,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "17"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 18 OTG HI": {
+        "18": {
+            "callsign": "ZMP 18 OTG HI",
             "frequency": 128675,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "18"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 19 FSD HI": {
+        "19": {
+            "callsign": "ZMP 19 FSD HI",
             "frequency": 119875,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "19"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 20 PIR HI": {
+        "20": {
+            "callsign": "ZMP 20 PIR HI",
             "frequency": 128425,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "20"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 21 RGK LO": {
+        "21": {
+            "callsign": "ZMP 21 RGK LO",
             "frequency": 134850,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "21"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 22 FAR HI": {
+        "22": {
+            "callsign": "ZMP 22 FAR HI",
             "frequency": 134750,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "22"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 23 DIK HI/LO": {
+        "23": {
+            "callsign": "ZMP 23 DIK HI/LO",
             "frequency": 127600,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "23"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 24 FAR HI/LO": {
+        "24": {
+            "callsign": "ZMP 24 FAR HI/LO",
             "frequency": 132150,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "24"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 25 DLH HI/LO": {
+        "25": {
+            "callsign": "ZMP 25 DLH HI/LO",
             "frequency": 134550,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "25"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 26 GRI LO": {
+        "26": {
+            "callsign": "ZMP 26 GRI LO",
             "frequency": 119400,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "26"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 27 OMA LO": {
+        "27": {
+            "callsign": "ZMP 27 OMA LO",
             "frequency": 119600,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "27"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 28 POLAR SUPER HI": {
+        "28": {
+            "callsign": "ZMP 28 POLAR SUPER HI",
             "frequency": 119725,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "28"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 29 ONL HI": {
+        "29": {
+            "callsign": "ZMP 29 ONL HI",
             "frequency": 124875,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "29"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 30 FOD HI": {
+        "30": {
+            "callsign": "ZMP 30 FOD HI",
             "frequency": 135775,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "30"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 32 VIKING SUPER HI": {
+        "32": {
+            "callsign": "ZMP 32 VIKING SUPER HI",
             "frequency": 133075,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "32"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 33 PIR LO": {
+        "33": {
+            "callsign": "ZMP 33 PIR LO",
             "frequency": 125100,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "33"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 34 SAW HI": {
+        "34": {
+            "callsign": "ZMP 34 SAW HI",
             "frequency": 132725,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "34"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 36 FOD LO": {
+        "36": {
+            "callsign": "ZMP 36 FOD LO",
             "frequency": 134000,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "36"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 37 ONL LO": {
+        "37": {
+            "callsign": "ZMP 37 ONL LO",
             "frequency": 128000,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "37"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 38 DSM HI": {
+        "38": {
+            "callsign": "ZMP 38 DSM HI",
             "frequency": 123975,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "38"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 39 LNK HI": {
+        "39": {
+            "callsign": "ZMP 39 LNK HI",
             "frequency": 135100,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "39"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 40 ARCTIC SUPER HI": {
+        "40": {
+            "callsign": "ZMP 40 ARCTIC SUPER HI",
             "frequency": 134225,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "40"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 42 WILD HI": {
+        "42": {
+            "callsign": "ZMP 42 WILD HI",
             "frequency": 119525,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "42"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 43 HAWKEYE HI": {
+        "43": {
+            "callsign": "ZMP 43 HAWKEYE HI",
             "frequency": 118825,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "43"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 44 MILLER SUPER HI": {
+        "44": {
+            "callsign": "ZMP 44 MILLER SUPER HI",
             "frequency": 120050,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "44"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 46 MCD SUPER HI": {
+        "46": {
+            "callsign": "ZMP 46 MCD SUPER HI",
             "frequency": 125825,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "46"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 61 ZMP TMU MSP": {
+        "61": {
+            "callsign": "ZMP 61 ZMP TMU MSP",
             "frequency": 123450,
             "eram_facility": true,
-            "radio_name": "Minneapolis TMU",
-            "sector_id": "61"
+            "radio_name": "Minneapolis TMU"
         },
-        "ZMP 62 ZMP TMU NY": {
+        "62": {
+            "callsign": "ZMP 62 ZMP TMU NY",
             "frequency": 123450,
             "eram_facility": true,
-            "radio_name": "Minneapolis TMU",
-            "sector_id": "62"
+            "radio_name": "Minneapolis TMU"
         },
-        "ZMP 63 ZMP TMU DEN/MDW": {
+        "63": {
+            "callsign": "ZMP 63 ZMP TMU DEN/MDW",
             "frequency": 123450,
             "eram_facility": true,
-            "radio_name": "Minneapolis TMU",
-            "sector_id": "63"
+            "radio_name": "Minneapolis TMU"
         },
-        "ZMP 64 ZMP TMU ORD": {
+        "64": {
+            "callsign": "ZMP 64 ZMP TMU ORD",
             "frequency": 123450,
             "eram_facility": true,
-            "radio_name": "Minneapolis TMU",
-            "sector_id": "64"
+            "radio_name": "Minneapolis TMU"
         },
-        "ZMP 83 TVC LO W": {
+        "83": {
+            "callsign": "ZMP 83 TVC LO W",
             "frequency": 125550,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "83"
+            "radio_name": "Minneapolis Center"
         },
-        "ZMP 99 ZMP GUARD": {
+        "99": {
+            "callsign": "ZMP 99 ZMP GUARD",
             "frequency": 121500,
             "eram_facility": true,
-            "radio_name": "Minneapolis Center",
-            "sector_id": "99"
+            "radio_name": "Minneapolis Center"
         }
     },
     "stars_config": {
@@ -338,110 +338,140 @@
     "handoff_ids": [
         {
             "id": "ALO",
-            "single_char_stars_id": "P",
-            "two_char_stars_id": "WW",
-            "stars_id": "ALT"
+            "stars_id": "ALT",
+            "single_char_stars_id": "P"
         },
         {
             "id": "APN",
-            "single_char_stars_id": "Z",
-            "two_char_stars_id": "ZZ",
-            "stars_id": "ZZZ"
+            "stars_id": "ZZZ",
+            "single_char_stars_id": "Z"
         },
         {
             "id": "AZO",
-            "single_char_stars_id": "S",
-            "two_char_stars_id": "SS",
-            "stars_id": "SSS"
+            "stars_id": "SSS",
+            "single_char_stars_id": "S"
+        },
+        {
+            "id": "BIL",
+            "stars_id": "BIL"
         },
         {
             "id": "BIS",
-            "single_char_stars_id": "A",
-            "two_char_stars_id": "AA",
-            "stars_id": "AAA"
+            "stars_id": "AAA",
+            "single_char_stars_id": "A"
+        },
+        {
+            "id": "CID",
+            "stars_id": "CID"
+        },
+        {
+            "id": "D21",
+            "stars_id": "DTW"
         },
         {
             "id": "DLH",
-            "single_char_stars_id": "L",
-            "two_char_stars_id": "LL",
-            "stars_id": "LLL"
+            "stars_id": "LLL",
+            "single_char_stars_id": "L"
         },
         {
             "id": "DSM",
-            "single_char_stars_id": "E",
-            "two_char_stars_id": "EE",
-            "stars_id": "DDD"
+            "stars_id": "DDD",
+            "single_char_stars_id": "E"
         },
         {
             "id": "FAR",
-            "single_char_stars_id": "H",
-            "two_char_stars_id": "HH",
-            "stars_id": "HHH"
+            "stars_id": "HHH",
+            "single_char_stars_id": "H"
         },
         {
             "id": "FSD",
-            "single_char_stars_id": "F",
-            "two_char_stars_id": "FF",
-            "stars_id": "FFF"
+            "stars_id": "FFF",
+            "single_char_stars_id": "F"
         },
         {
             "id": "GRB",
-            "single_char_stars_id": "B",
-            "two_char_stars_id": "BB",
-            "stars_id": "GGG"
+            "stars_id": "GGG",
+            "single_char_stars_id": "B"
+        },
+        {
+            "id": "GTF",
+            "stars_id": "GTF"
         },
         {
             "id": "LAN",
-            "two_char_stars_id": "NN",
             "stars_id": "LAN"
         },
         {
             "id": "M98",
-            "single_char_stars_id": "M",
-            "two_char_stars_id": "MM",
-            "stars_id": "MMM"
+            "stars_id": "MMM",
+            "single_char_stars_id": "M"
+        },
+        {
+            "id": "MCI",
+            "stars_id": "MCI"
         },
         {
             "id": "MIB",
-            "single_char_stars_id": "I",
-            "two_char_stars_id": "II",
-            "stars_id": "III"
+            "stars_id": "III",
+            "single_char_stars_id": "I"
         },
         {
             "id": "MKE",
-            "single_char_stars_id": "X",
-            "two_char_stars_id": "XX",
-            "stars_id": "MKE"
+            "stars_id": "MKE",
+            "single_char_stars_id": "X"
+        },
+        {
+            "id": "MLI",
+            "stars_id": "MLI"
+        },
+        {
+            "id": "MSN",
+            "stars_id": "MSN"
+        },
+        {
+            "id": "MTC",
+            "stars_id": "MTC"
         },
         {
             "id": "R90",
-            "single_char_stars_id": "O",
-            "two_char_stars_id": "OO",
-            "stars_id": "OOO"
+            "stars_id": "OOO",
+            "single_char_stars_id": "O"
+        },
+        {
+            "id": "RCA",
+            "stars_id": "RCA"
         },
         {
             "id": "RDR",
-            "single_char_stars_id": "R",
-            "two_char_stars_id": "RR",
-            "stars_id": "RRR"
+            "stars_id": "RRR",
+            "single_char_stars_id": "R"
+        },
+        {
+            "id": "ROC",
+            "stars_id": "ROC"
         },
         {
             "id": "RST",
-            "single_char_stars_id": "T",
-            "two_char_stars_id": "TT",
-            "stars_id": "TTT"
+            "stars_id": "TTT",
+            "single_char_stars_id": "T"
         },
         {
             "id": "SUX",
-            "single_char_stars_id": "Y",
-            "two_char_stars_id": "YY",
-            "stars_id": "YYY"
+            "stars_id": "YYY",
+            "single_char_stars_id": "Y"
+        },
+        {
+            "id": "TOL",
+            "stars_id": "TOL"
         },
         {
             "id": "VOK",
-            "single_char_stars_id": "J",
-            "two_char_stars_id": "JJ",
-            "stars_id": "JJJ"
+            "stars_id": "JJJ",
+            "single_char_stars_id": "J"
+        },
+        {
+            "id": "YNG",
+            "stars_id": "YNG"
         },
         {
             "id": "ZAU",

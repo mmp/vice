@@ -150,11 +150,10 @@
                     "assigned_altitude": 15000,
                     "cruise_altitude": 33000,
                     "initial_altitude": 16000,
-                    "initial_controller": "ZDV 17 Hill City High",
+                    "initial_controller": "C17",
                     "initial_speed": 270,
                     "route": "OCS CHOMP",
-                    "waypoints": "N042.25.26.275,W107.09.51.421 N042.29.21.822,W107.01.04.352/ho CHOMP/h050",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N042.25.26.275,W107.09.51.421 N042.29.21.822,W107.01.04.352/ho CHOMP/h050"
                 }
             ]
         },
@@ -182,11 +181,10 @@
                     "cruise_altitude": 16000,
                     "initial_altitude": 16000,
                     "assigned_altitude": 15000,
-                    "initial_controller": "ZDV 17 Hill City High",
+                    "initial_controller": "C17",
                     "initial_speed": 260,
                     "route": "MBW DDY",
-                    "waypoints": "N042.12.38.537,W106.05.11.297 N042.21.15.979,W106.06.53.415/ho DDY",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N042.12.38.537,W106.05.11.297 N042.21.15.979,W106.06.53.415/ho DDY"
                 }
             ]
         },
@@ -205,11 +203,10 @@
                     "assigned_altitude": 15000,
                     "cruise_altitude": 27000,
                     "initial_altitude": 16000,
-                    "initial_controller": "ZDV 17 Hill City High",
+                    "initial_controller": "C17",
                     "initial_speed": 160,
                     "route": "DDY",
-                    "waypoints": "N043.11.17.980,W107.27.09.821 N043.10.01.693,W107.12.00.812/ho DDY/h090",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N043.11.17.980,W107.27.09.821 N043.10.01.693,W107.12.00.812/ho DDY/h090"
                 }
             ]
         },
@@ -228,11 +225,10 @@
                     "assigned_altitude": 15000,
                     "cruise_altitude": 11000,
                     "initial_altitude": 16000,
-                    "initial_controller": "ZDV 17 Hill City High",
+                    "initial_controller": "C17",
                     "initial_speed": 260,
                     "route": "DDY",
-                    "waypoints": "N042.40.59.619,W105.27.28.333 N042.44.46.363,W105.34.37.377/ho DDY/h300",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N042.40.59.619,W105.27.28.333 N042.44.46.363,W105.34.37.377/ho DDY/h300"
                 }
             ]
         },
@@ -250,11 +246,10 @@
                     },
                     "cruise_altitude": 8000,
                     "initial_altitude": 8000,
-                    "initial_controller": "ZDV 17 Hill City High",
+                    "initial_controller": "C17",
                     "initial_speed": 110,
                     "route": "DDY",
-                    "waypoints": "N043.19.58.704,W105.32.13.895 N043.16.01.784,W105.44.02.651/ho DDY/h237",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N043.19.58.704,W105.32.13.895 N043.16.01.784,W105.44.02.651/ho DDY/h237"
                 }
             ]
         },
@@ -272,11 +267,10 @@
                     },
                     "cruise_altitude": 10000,
                     "initial_altitude": 10000,
-                    "initial_controller": "ZDV 17 Hill City High",
+                    "initial_controller": "C17",
                     "initial_speed": 110,
                     "route": "DDY",
-                    "waypoints": "N042.45.31.887,W105.39.20.165 N042.47.30.828,W105.43.14.641/ho DDY/h297",
-                    "initial_facility": "ZDV"
+                    "waypoints": "N042.45.31.887,W105.39.20.165 N042.47.30.828,W105.43.14.641/ho DDY/h297"
                 }
             ]
         }

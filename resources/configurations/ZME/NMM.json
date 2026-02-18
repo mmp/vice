@@ -1,14 +1,14 @@
 {
     "control_positions": {
-        "NMM_APP": {
+        "1A": {
+            "callsign": "NMM_APP",
             "frequency": 120500,
-            "radio_name": "Meridian Approach",
-            "sector_id": "1A"
+            "radio_name": "Meridian Approach"
         },
-        "NMM_TWR": {
+        "1Z": {
+            "callsign": "NMM_TWR",
             "frequency": 126200,
-            "radio_name": "Navy Mc Cain Tower",
-            "sector_id": "1Z"
+            "radio_name": "Navy Mc Cain Tower"
         }
     },
     "handoff_ids": [
@@ -19,6 +19,10 @@
         {
             "id": "CBM",
             "prefix": "1"
+        },
+        {
+            "id": "ZME",
+            "eram_prefix": "C"
         },
         {
             "id": "ZTL",

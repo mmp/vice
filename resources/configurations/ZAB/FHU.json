@@ -1,20 +1,24 @@
 {
     "control_positions": {
-        "FHU_APP": {
+        "1A": {
+            "callsign": "FHU_APP",
             "frequency": 127050,
-            "radio_name": "Libby approach",
-            "sector_id": "1A"
+            "radio_name": "Libby approach"
         },
-        "FHU_TWR": {
+        "1T": {
+            "callsign": "FHU_TWR",
             "frequency": 124950,
-            "radio_name": "Libby Tower",
-            "sector_id": "1T"
+            "radio_name": "Libby Tower"
         }
     },
     "handoff_ids": [
         {
             "id": "U90",
             "prefix": "1"
+        },
+        {
+            "id": "ZAB",
+            "eram_prefix": "C"
         }
     ]
 }

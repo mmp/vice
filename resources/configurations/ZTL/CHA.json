@@ -1,14 +1,14 @@
 {
     "control_positions": {
-        "CHA_APP": {
+        "1W": {
+            "callsign": "CHA_APP",
             "frequency": 119200,
-            "radio_name": "Chattanooga Approach",
-            "sector_id": "1W"
+            "radio_name": "Chattanooga Approach"
         },
-        "CHA_TWR": {
+        "1T": {
+            "callsign": "CHA_TWR",
             "frequency": 118300,
-            "radio_name": "Chattanooga Tower",
-            "sector_id": "1T"
+            "radio_name": "Chattanooga Tower"
         }
     },
     "handoff_ids": [
@@ -23,6 +23,10 @@
         {
             "id": "ZME",
             "eram_prefix": "M"
+        },
+        {
+            "id": "ZTL",
+            "eram_prefix": "C"
         }
     ]
 }

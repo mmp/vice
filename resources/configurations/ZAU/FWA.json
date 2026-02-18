@@ -1,19 +1,19 @@
 {
     "control_positions": {
-        "FWA_W_APP": {
+        "1F": {
+            "callsign": "FWA_W_APP",
             "frequency": 127200,
-            "radio_name": "Fort Wayne Approach",
-            "sector_id": "1F"
+            "radio_name": "Fort Wayne Approach"
         },
-        "FWA_TWR": {
+        "1L": {
+            "callsign": "FWA_TWR",
             "frequency": 119100,
-            "radio_name": "Fort Wayne Tower",
-            "sector_id": "1L"
+            "radio_name": "Fort Wayne Tower"
         },
-        "FWA_E_APP": {
+        "2F": {
+            "callsign": "FWA_E_APP",
             "frequency": 132150,
-            "radio_name": "Fort Wayne Approach",
-            "sector_id": "2F"
+            "radio_name": "Fort Wayne Approach"
         }
     },
     "handoff_ids": [
@@ -40,6 +40,10 @@
         {
             "id": "TOL",
             "prefix": "2"
+        },
+        {
+            "id": "ZAU",
+            "eram_prefix": "C"
         },
         {
             "id": "ZID",

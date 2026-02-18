@@ -1,43 +1,43 @@
 {
     "control_positions": {
-        "RDU_W_TWR": {
+        "1Z": {
+            "callsign": "RDU_W_TWR",
             "frequency": 119300,
-            "sector_id": "1Z",
             "radio_name": "Raleigh Tower"
         },
-        "RDU_E_TWR": {
+        "1T": {
+            "callsign": "RDU_E_TWR",
             "frequency": 127450,
-            "sector_id": "1T",
             "radio_name": "Raleigh Tower"
         },
-        "RDU_N_DEP": {
+        "1N": {
+            "callsign": "RDU_N_DEP",
             "frequency": 132350,
-            "sector_id": "1N",
             "radio_name": "Raleigh Departure"
         },
-        "RDU_S_DEP": {
+        "1S": {
+            "callsign": "RDU_S_DEP",
             "frequency": 125300,
-            "sector_id": "1S",
             "radio_name": "Raleigh Departure"
         },
-        "RDU_E_APP": {
+        "1E": {
+            "callsign": "RDU_E_APP",
             "frequency": 124950,
-            "sector_id": "1E",
             "radio_name": "Raleigh Approach"
         },
-        "RDU_W_APP": {
+        "1W": {
+            "callsign": "RDU_W_APP",
             "frequency": 128300,
-            "sector_id": "1W",
             "radio_name": "Raleigh Approach"
         },
-        "RDU_U_APP": {
+        "1U": {
+            "callsign": "RDU_U_APP",
             "frequency": 124800,
-            "sector_id": "1U",
             "radio_name": "Raleigh Approach"
         },
-        "RDU_Y_APP": {
+        "1Y": {
+            "callsign": "RDU_Y_APP",
             "frequency": 135150,
-            "sector_id": "1Y",
             "radio_name": "Raleigh Approach"
         }
     },
@@ -45,18 +45,18 @@
         "configurations": {
             "STD": {
                 "inbound_assignments": {
-                    "ALDAN4": "RDU_W_APP",
-                    "BLOGS3": "RDU_E_APP",
-                    "DMSTR2": "RDU_W_APP",
-                    "TAQLE2": "RDU_E_APP"
+                    "ALDAN4": "1W",
+                    "BLOGS3": "1E",
+                    "DMSTR2": "1W",
+                    "TAQLE2": "1E"
                 },
                 "departure_assignments": {
-                    "KRDU": "RDU_N_DEP"
+                    "KRDU": "1N"
                 },
                 "default_consolidation": {
-                    "RDU_E_APP": [
-                        "RDU_N_DEP",
-                        "RDU_W_APP"
+                    "1E": [
+                        "1N",
+                        "1W"
                     ]
                 }
             }
@@ -122,7 +122,7 @@
                     "DBRAH",
                     "DANCO"
                 ],
-                "receiving_controller": "ZDC 32 Gordonsville"
+                "receiving_controller": "C32"
             },
             {
                 "fixes": [
@@ -132,7 +132,7 @@
                     "BOUSY",
                     "BEXGO"
                 ],
-                "receiving_controller": "ZDC 20 Blackstone"
+                "receiving_controller": "C20"
             },
             {
                 "fixes": [
@@ -143,7 +143,7 @@
                     "FEBEL",
                     "HURIC"
                 ],
-                "receiving_controller": "ZDC 09 Dixon"
+                "receiving_controller": "C09"
             }
         ],
         "coordination_fixes": {
@@ -192,7 +192,7 @@
         },
         {
             "id": "ZDC",
-            "eram_prefix": "W"
+            "eram_prefix": "C"
         },
         {
             "id": "ZTL",

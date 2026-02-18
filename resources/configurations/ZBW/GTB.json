@@ -1,26 +1,30 @@
 {
     "control_positions": {
-        "GTB_APP": {
+        "1A": {
+            "callsign": "GTB_APP",
             "frequency": 124875,
-            "radio_name": "Wheeler-Sack Approach",
-            "sector_id": "1A"
+            "radio_name": "Wheeler-Sack Approach"
         },
-        "GTB_F_APP": {
+        "1F": {
+            "callsign": "GTB_F_APP",
             "frequency": 128250,
-            "radio_name": "Wheeler-Sack Approach",
-            "sector_id": "1F"
+            "radio_name": "Wheeler-Sack Approach"
         },
-        "GTB_TWR": {
+        "1L": {
+            "callsign": "GTB_TWR",
             "frequency": 118750,
-            "radio_name": "Wheeler-Sack Tower",
-            "sector_id": "1L"
+            "radio_name": "Wheeler-Sack Tower"
         }
     },
     "stars_config": {},
     "handoff_ids": [
         {
+            "id": "SYR",
+            "prefix": "1"
+        },
+        {
             "id": "ZBW",
-            "eram_prefix": "B"
+            "eram_prefix": "C"
         }
     ]
 }

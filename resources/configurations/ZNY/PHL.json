@@ -1,111 +1,111 @@
 {
     "control_positions": {
-        "PHL_NA_APP": {
+        "1N": {
+            "callsign": "PHL_NA_APP",
             "frequency": 128400,
-            "radio_name": "Philly approach",
-            "sector_id": "1N"
+            "radio_name": "Philly approach"
         },
-        "PHL_ND_DEP": {
+        "1E": {
+            "callsign": "PHL_ND_DEP",
             "frequency": 124350,
-            "radio_name": "Philly departure",
-            "sector_id": "1E"
+            "radio_name": "Philly departure"
         },
-        "PHL_TWR": {
+        "1Q": {
+            "callsign": "PHL_TWR",
             "frequency": 118500,
-            "radio_name": "Philly tower",
-            "sector_id": "1Q"
+            "radio_name": "Philly tower"
         },
-        "PHL_DU_APP": {
+        "1D": {
+            "callsign": "PHL_DU_APP",
             "frequency": 118350,
-            "radio_name": "Philly approach",
-            "sector_id": "1D"
+            "radio_name": "Philly approach"
         },
-        "PHL_F1_APP": {
+        "1F": {
+            "callsign": "PHL_F1_APP",
             "frequency": 125400,
-            "radio_name": "Philly approach",
-            "sector_id": "1F"
+            "radio_name": "Philly approach"
         },
-        "PHL_F2_APP": {
+        "1L": {
+            "callsign": "PHL_F2_APP",
             "frequency": 132675,
-            "radio_name": "Philly approach",
-            "sector_id": "1L"
+            "radio_name": "Philly approach"
         },
-        "PHL_PT_APP": {
+        "1P": {
+            "callsign": "PHL_PT_APP",
             "frequency": 126850,
-            "radio_name": "Philly approach",
-            "sector_id": "1P"
+            "radio_name": "Philly approach"
         },
-        "PHL_SA_APP": {
+        "1S": {
+            "callsign": "PHL_SA_APP",
             "frequency": 133875,
-            "radio_name": "Philly approach",
-            "sector_id": "1S"
+            "radio_name": "Philly approach"
         },
-        "PHL_WD_APP": {
+        "1W": {
+            "callsign": "PHL_WD_APP",
             "frequency": 127350,
-            "radio_name": "Philly approach",
-            "sector_id": "1W"
+            "radio_name": "Philly approach"
         },
-        "PHL_YD_APP": {
+        "1Y": {
+            "callsign": "PHL_YD_APP",
             "frequency": 123800,
-            "radio_name": "Philly approach",
-            "sector_id": "1Y"
+            "radio_name": "Philly approach"
         },
-        "PHL_NH_DEP": {
+        "1H": {
+            "callsign": "PHL_NH_DEP",
             "frequency": 126075,
-            "radio_name": "Philly departure",
-            "sector_id": "1H"
+            "radio_name": "Philly departure"
         },
-        "PHL_SD_DEP": {
+        "1V": {
+            "callsign": "PHL_SD_DEP",
             "frequency": 119750,
-            "radio_name": "Philly departure",
-            "sector_id": "1V"
+            "radio_name": "Philly departure"
         },
-        "PHL_SH_DEP": {
+        "1J": {
+            "callsign": "PHL_SH_DEP",
             "frequency": 126600,
-            "radio_name": "Philly departure",
-            "sector_id": "1J"
+            "radio_name": "Philly departure"
         }
     },
     "stars_config": {
         "configurations": {
             "21X": {
                 "inbound_assignments": {
-                    "FINAL17_NORTH": "PHL_F1_APP",
-                    "FINAL27_NORTH": "PHL_F1_APP",
-                    "FINAL27_SOUTH": "PHL_F1_APP"
+                    "FINAL17_NORTH": "1F",
+                    "FINAL27_NORTH": "1F",
+                    "FINAL27_SOUTH": "1F"
                 },
                 "default_consolidation": {
-                    "PHL_F1_APP": []
+                    "1F": []
                 }
             },
             "27L": {
                 "inbound_assignments": {
-                    "ABE-ACY": "PHL_NA_APP",
-                    "BOJID4/HAR5": "PHL_NA_APP",
-                    "BRAND1": "PHL_ND_DEP",
-                    "JIIMS4": "PHL_SA_APP",
-                    "PAATS4": "PHL_SA_APP",
-                    "PHLBO4/JAKIE4": "PHL_ND_DEP",
-                    "RDG-WRI": "PHL_NA_APP",
-                    "SPUDS7": "PHL_NA_APP",
-                    "V29.High": "PHL_ND_DEP",
-                    "V29.Low": "PHL_SA_APP"
+                    "ABE-ACY": "1N",
+                    "BOJID4/HAR5": "1N",
+                    "BRAND1": "1E",
+                    "JIIMS4": "1S",
+                    "PAATS4": "1S",
+                    "PHLBO4/JAKIE4": "1E",
+                    "RDG-WRI": "1N",
+                    "SPUDS7": "1N",
+                    "V29.High": "1E",
+                    "V29.Low": "1S"
                 },
                 "departure_assignments": {
-                    "KPHL": "PHL_ND_DEP"
+                    "KPHL": "1E"
                 },
                 "default_consolidation": {
-                    "PHL_NA_APP": [
-                        "PHL_ND_DEP",
-                        "PHL_F1_APP",
-                        "PHL_SA_APP"
+                    "1N": [
+                        "1E",
+                        "1F",
+                        "1S"
                     ]
                 }
             }
         },
         "center": "KPHL",
         "controller_configs": {
-            "PHL_NA_APP": {
+            "1N": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -115,7 +115,7 @@
                     }
                 ]
             },
-            "PHL_ND_DEP": {
+            "1E": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -124,7 +124,7 @@
                     }
                 ]
             },
-            "PHL_DU_APP": {
+            "1D": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -133,7 +133,7 @@
                     }
                 ]
             },
-            "PHL_F1_APP": {
+            "1F": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -142,7 +142,7 @@
                     }
                 ]
             },
-            "PHL_PT_APP": {
+            "1P": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -151,7 +151,7 @@
                     }
                 ]
             },
-            "PHL_SA_APP": {
+            "1S": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -161,7 +161,7 @@
                     }
                 ]
             },
-            "PHL_WD_APP": {
+            "1W": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -170,7 +170,7 @@
                     }
                 ]
             },
-            "PHL_YD_APP": {
+            "1Y": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -179,7 +179,7 @@
                     }
                 ]
             },
-            "PHL_SD_DEP": {
+            "1V": {
                 "flight_following_airspace": [
                     {
                         "type": "polygon",
@@ -506,7 +506,7 @@
         },
         {
             "id": "ZNY",
-            "eram_prefix": "N"
+            "eram_prefix": "C"
         }
     ]
 }

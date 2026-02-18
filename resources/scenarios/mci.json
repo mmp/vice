@@ -1608,7 +1608,7 @@
                         }
                     },
                     "star": "JSONN4",
-                    "initial_controller": "ZKC 46 (46) ST. JOESPH LO",
+                    "initial_controller": "C46",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -1795,8 +1795,7 @@
                                 "airport": "KGJT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZKC"
+                    }
                 }
             ]
         },
@@ -1815,7 +1814,7 @@
                         }
                     },
                     "star": "MHOMS3",
-                    "initial_controller": "ZKC 42 (42) NAPOLEAN LO",
+                    "initial_controller": "C42",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -2002,8 +2001,7 @@
                                 "airport": "KGJT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZKC"
+                    }
                 }
             ]
         },
@@ -2022,7 +2020,7 @@
                         }
                     },
                     "star": "RUDDH3",
-                    "initial_controller": "ZKC 40 (40) KIRKSVILLE LO",
+                    "initial_controller": "C40",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -2209,8 +2207,7 @@
                                 "airport": "KGJT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZKC"
+                    }
                 }
             ]
         },
@@ -2229,7 +2226,7 @@
                         }
                     },
                     "star": "WUTNG3",
-                    "initial_controller": "ZKC 48 (48) EMPORIA LO",
+                    "initial_controller": "C48",
                     "initial_altitude": 21000,
                     "initial_speed": 280,
                     "expect_approach": null,
@@ -2416,8 +2413,7 @@
                                 "airport": "KGJT"
                             }
                         ]
-                    },
-                    "initial_facility": "ZKC"
+                    }
                 }
             ]
         }

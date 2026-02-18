@@ -1,15 +1,20 @@
 {
     "control_positions": {
-        "LBB_APP": {
+        "1E": {
+            "callsign": "LBB_APP",
             "frequency": 119200,
-            "radio_name": "Lubbock Approach",
-            "sector_id": "1E"
+            "radio_name": "Lubbock Approach"
         },
-        "LBB_TWR": {
+        "1T": {
+            "callsign": "LBB_TWR",
             "frequency": 120500,
-            "radio_name": "Lubbock Tower",
-            "sector_id": "1T"
+            "radio_name": "Lubbock Tower"
         }
     },
-    "handoff_ids": []
+    "handoff_ids": [
+        {
+            "id": "ZFW",
+            "eram_prefix": "C"
+        }
+    ]
 }

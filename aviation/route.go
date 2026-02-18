@@ -35,7 +35,6 @@ type Waypoint struct {
 	NoPT                      bool                 `json:"nopt,omitempty"`
 	HumanHandoff              bool                 `json:"human_handoff,omitempty"`        // Handoff to human controller
 	HandoffController         ControlPosition      `json:"tcp_handoff,omitempty"`          // Controller position for handoff
-	HandoffControllerFacility string               `json:"tcp_handoff_facility,omitempty"` // Facility for cross-facility handoff
 	PointOut                  ControlPosition      `json:"pointout,omitempty"`
 	ClearApproach             bool                 `json:"clear_approach,omitempty"` // used for distractor a/c, clears them for the approach passing the wp.
 	FlyOver                   bool                 `json:"flyover,omitempty"`
@@ -397,7 +396,7 @@ func (wa WaypointArray) checkBasics(e *util.ErrorLogger, controllers map[Control
 			}
 		}
 
-		if wp.HandoffController != "" && wp.HandoffControllerFacility == "" {
+		if wp.HandoffController != "" {
 			if !util.MapContains(controllers,
 				func(_ ControlPosition, ctrl *Controller) bool {
 					return ctrl.PositionId() == ControlPosition(wp.HandoffController)
@@ -1694,7 +1693,6 @@ type Overflight struct {
 	AssignedSpeed       float32                 `json:"assigned_speed"`
 	SpeedRestriction    float32                 `json:"speed_restriction"`
 	InitialController   ControlPosition         `json:"initial_controller"`
-	InitialFacility     string                  `json:"initial_facility,omitempty"`
 	Scratchpad          string                  `json:"scratchpad"`
 	SecondaryScratchpad string                  `json:"secondary_scratchpad"`
 	Description         string                  `json:"description"`
@@ -1756,12 +1754,8 @@ func (of *Overflight) PostDeserialize(loc Locator, nmPerLongitude float32, magne
 
 	if of.InitialController == "" {
 		e.ErrorString("Must specify \"initial_controller\".")
-	} else if of.InitialFacility == "" {
-		// Only validate against local control positions if no initial_facility is specified.
-		// Cross-facility validation is done in server/scenario.go where facility configs are available.
-		if _, ok := controlPositions[of.InitialController]; !ok {
-			e.ErrorString("controller %q not found for \"initial_controller\"", of.InitialController)
-		}
+	} else if _, ok := controlPositions[of.InitialController]; !ok {
+		e.ErrorString("controller %q not found for \"initial_controller\"", of.InitialController)
 	}
 
 	if !checkScratchpad(of.Scratchpad) {

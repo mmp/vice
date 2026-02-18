@@ -947,7 +947,6 @@ type AirspaceAwareness struct {
 	Fix                 []string `json:"fixes"`
 	AltitudeRange       [2]int   `json:"altitude_range"`
 	ReceivingController string   `json:"receiving_controller"`
-	ReceivingFacility   string   `json:"receiving_facility,omitempty"`
 	AircraftType        []string `json:"aircraft_type"`
 }
 
