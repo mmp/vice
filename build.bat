@@ -16,6 +16,7 @@ REM
 REM Prerequisites:
 REM   - Go installed and in PATH
 REM   - MinGW-w64 installed and in PATH (for gcc, cmake)
+REM   - Visual Studio Build Tools with C++ workload (for sherpa-onnx MSVC build)
 REM
 REM whisper-cpp is built automatically if needed.
 
@@ -173,18 +174,39 @@ if defined VULKAN_SDK (
 )
 
 REM Build sherpa-onnx if needed.
-REM On Windows, BUILD_SHARED_LIBS=ON is required because the pre-built
-REM onnxruntime static libraries are MSVC-only (.lib) and can't be linked
-REM with MinGW. Shared builds produce DLLs that work across compilers.
-REM CMAKE_VS_PLATFORM_NAME=x64 is passed so sherpa-onnx's cmake selects
-REM the correct onnxruntime download (the check normally only works with
-REM Visual Studio generators).
-if not exist "sherpa-onnx\build_go\lib\libsherpa-onnx-c-api.dll.a" (
-    echo === Building sherpa-onnx ===
+REM sherpa-onnx's fetched dependencies (kaldifst, simple-sentencepiece) add
+REM MSVC-specific compiler flags (/wd*, /std:c++14) that break MinGW/GCC.
+REM We build sherpa-onnx with MSVC (NMake) which produces DLLs and import
+REM libraries (.lib) that MinGW-compiled Go code can link against.
+REM BUILD_SHARED_LIBS=ON is required so the output is a DLL + import lib.
+
+REM Locate MSVC (vcvarsall.bat) via vswhere
+set VCVARSALL=
+for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath 2^>nul`) do (
+    set "VCVARSALL=%%i\VC\Auxiliary\Build\vcvarsall.bat"
+)
+if not defined VCVARSALL (
+    echo Error: Could not find MSVC vcvarsall.bat via vswhere.
+    echo Please install Visual Studio Build Tools with the C++ workload.
+    exit /b 1
+)
+if not exist "!VCVARSALL!" (
+    echo Error: vcvarsall.bat not found at !VCVARSALL!
+    exit /b 1
+)
+
+if not exist "sherpa-onnx\build_go\lib\sherpa-onnx-c-api.lib" (
+    echo === Building sherpa-onnx with MSVC ===
+    setlocal
+    call "!VCVARSALL!" x64
+    if errorlevel 1 (
+        echo Error: Failed to set up MSVC environment.
+        endlocal
+        exit /b 1
+    )
     cmake -S sherpa-onnx -B sherpa-onnx\build_go ^
-        -G "MinGW Makefiles" ^
+        -G "NMake Makefiles" ^
         -DBUILD_SHARED_LIBS=ON ^
-        -DCMAKE_VS_PLATFORM_NAME=x64 ^
         -DSHERPA_ONNX_ENABLE_TTS=ON ^
         -DSHERPA_ONNX_ENABLE_CHECK=OFF ^
         -DSHERPA_ONNX_ENABLE_BINARY=OFF ^
@@ -193,19 +215,24 @@ if not exist "sherpa-onnx\build_go\lib\libsherpa-onnx-c-api.dll.a" (
         -DSHERPA_ONNX_ENABLE_TESTS=OFF ^
         -DSHERPA_ONNX_ENABLE_SPEAKER_DIARIZATION=OFF ^
         -DSHERPA_ONNX_BUILD_C_API_EXAMPLES=OFF ^
-        -DCMAKE_BUILD_TYPE=Release ^
-        -DCMAKE_C_FLAGS="-D_WIN32_WINNT=0x0601 -DWINVER=0x0601" ^
-        -DCMAKE_CXX_FLAGS="-D_WIN32_WINNT=0x0601 -DWINVER=0x0601"
-    if errorlevel 1 exit /b 1
-    cmake --build sherpa-onnx\build_go --parallel 4
-    if errorlevel 1 exit /b 1
+        -DCMAKE_BUILD_TYPE=Release
+    if errorlevel 1 (
+        endlocal
+        exit /b 1
+    )
+    cmake --build sherpa-onnx\build_go
+    if errorlevel 1 (
+        endlocal
+        exit /b 1
+    )
+    endlocal
     echo sherpa-onnx built successfully.
 )
 
 REM Copy sherpa-onnx runtime DLLs to windows/ if not already there
 if not exist "windows\sherpa-onnx-c-api.dll" (
     echo Copying sherpa-onnx runtime DLLs to windows/
-    for /r sherpa-onnx\build_go\lib %%f in (sherpa-onnx-c-api.dll libsherpa-onnx-c-api.dll) do (
+    for /r sherpa-onnx\build_go %%f in (sherpa-onnx-c-api.dll) do (
         if exist "%%f" copy /y "%%f" "windows\sherpa-onnx-c-api.dll" >nul
     )
 )

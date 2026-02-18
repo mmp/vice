@@ -275,7 +275,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: sherpa-onnx/build_go
-        key: sherpa-onnx-win-${{ steps.sherpa-sha.outputs.sha }}
+        key: sherpa-onnx-win-msvc-${{ steps.sherpa-sha.outputs.sha }}
 
     - name: Get whisper.cpp commit SHA
       id: whisper-sha
@@ -303,6 +303,7 @@ jobs:
         # Add Vulkan SDK lib path to CGO_LDFLAGS
         $env:CGO_LDFLAGS = "-L ../ext/SDL2-2.24.0/x86_64-w64-mingw32/lib -L $env:VULKAN_SDK/Lib"
         .\build.bat --icons
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       shell: pwsh
       env:
         CGO_CFLAGS: "-I ../ext/SDL2-2.24.0/x86_64-w64-mingw32/include"
