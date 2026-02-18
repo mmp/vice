@@ -5,6 +5,7 @@
 package sim
 
 import (
+	"cmp"
 	"fmt"
 	"log/slog"
 	"maps"
@@ -37,6 +38,7 @@ type Sim struct {
 	VirtualControllers   []TCP
 	InboundAssignments   map[string]TCP // Inbound flow name -> TCP responsible
 	DepartureAssignments map[string]TCP // Departure specifier -> TCP responsible
+	GoAroundAssignments  map[string]TCP // Airport or airport/runway -> go-around controller
 
 	STARSComputer *STARSComputer
 	ERAMComputer  *ERAMComputer
@@ -173,9 +175,19 @@ type DepartureRunway struct {
 	DefaultRate int    `json:"rate"`
 }
 
+// GoAroundProcedure defines go-around parameters for a specific arrival runway.
+type GoAroundProcedure struct {
+	Heading           int      `json:"heading"` // degrees 1-360; 0 (or unset) means runway heading
+	IsRunwayHeading   bool     // true when heading was 0 (runway heading) before resolution
+	Altitude          int      `json:"altitude"`           // feet, e.g., 2000, 3000
+	HandoffController TCP      `json:"handoff_controller"` // TCP (e.g., "1D")
+	HoldDepartures    []string `json:"hold_departures"`    // runways to hold, empty = no holds
+}
+
 type ArrivalRunway struct {
-	Airport string `json:"airport"`
-	Runway  string `json:"runway"`
+	Airport  string             `json:"airport"`
+	Runway   string             `json:"runway"`
+	GoAround *GoAroundProcedure `json:"go_around,omitempty"`
 }
 
 type Handoff struct {
@@ -248,6 +260,7 @@ func NewSim(config NewSimConfiguration, manifest *VideoMapManifest, lg *log.Logg
 		ControlPositions:     config.ControlPositions,
 		InboundAssignments:   config.ControllerConfiguration.InboundAssignments,
 		DepartureAssignments: config.ControllerConfiguration.DepartureAssignments,
+		GoAroundAssignments:  config.ControllerConfiguration.GoAroundAssignments,
 
 		STARSComputer: makeSTARSComputer(config.Facility),
 
@@ -1258,6 +1271,41 @@ func (s *Sim) updateState() {
 					ac.ApproachTCP = TCP(ac.ControllerFrequency)
 				}
 
+				if passedWaypoint.GoAroundContactController != "" {
+					tcp := passedWaypoint.GoAroundContactController
+					ac.ControllerFrequency = ControlPosition(tcp)
+
+					// Clear stale pending contacts and frequency changes from before
+					// the go-around so the go-around transmission takes priority.
+					s.cancelPendingFrequencyChange(ac.ADSBCallsign)
+					for t := range s.PendingContacts {
+						s.PendingContacts[t] = slices.DeleteFunc(s.PendingContacts[t], func(pc PendingContact) bool {
+							return pc.ADSBCallsign == ac.ADSBCallsign &&
+								(pc.Type == PendingTransmissionDeparture || pc.Type == PendingTransmissionArrival)
+						})
+					}
+
+					s.enqueuePilotTransmission(ac.ADSBCallsign, tcp, PendingTransmissionGoAround)
+
+					// Reassociate flight plan if controller dropped it
+					sfp := ac.NASFlightPlan
+					if sfp == nil {
+						if sfp = s.STARSComputer.takeFlightPlanByACID(ACID(ac.ADSBCallsign)); sfp != nil {
+							sfp.DeleteTime = time.Time{}
+							sfp.OwningTCW = s.tcwForPosition(sfp.TrackingController)
+							ac.AssociateFlightPlan(sfp)
+							s.eventStream.Post(Event{
+								Type: FlightPlanAssociatedEvent,
+								ACID: sfp.ACID,
+							})
+						}
+					}
+					// Set up handoff from current tracker to go-around controller
+					if sfp != nil && sfp.TrackingController != "" && sfp.TrackingController != tcp {
+						s.handoffTrack(sfp, tcp)
+					}
+				}
+
 				if ac.IsAssociated() {
 					// Things that only apply to associated aircraft
 					sfp := ac.NASFlightPlan
@@ -1422,6 +1470,9 @@ func (s *Sim) updateState() {
 
 		// Handle emergencies
 		s.updateEmergencies()
+
+		// Check for spacing violations on final approach
+		s.checkFinalApproachSpacing()
 
 		s.spawnAircraft()
 
@@ -1654,38 +1705,184 @@ func (s *Sim) isRadarVisible(ac *Aircraft) bool {
 }
 
 func (s *Sim) goAround(ac *Aircraft) {
-	if ac.IsUnassociated() { // this shouldn't happen...
+	// Capture approach info before anything clears it.
+	approach := ac.Nav.Approach.Assigned
+	if approach == nil {
+		s.lg.Warn("goAround called without assigned approach",
+			slog.String("callsign", string(ac.ADSBCallsign)))
 		return
 	}
-	sfp := ac.NASFlightPlan
+	airport := ac.FlightPlan.ArrivalAirport
+	runway := approach.Runway
 
-	// Update controller before calling GoAround so the
-	// transmission goes to the right controller.
-	// FIXME: we going to the approach controller is often the wrong thing;
-	// we need some more functionality for specifying go around procedures
-	// in general.
-
-	towerHadTrack := sfp.TrackingController != "" && sfp.TrackingController != ac.ApproachTCP
-
-	ac.ControllerFrequency = ControlPosition(ac.ApproachTCP)
-
-	// Initiate go-around immediately (changes aircraft state)
-	ac.GoAround()
-
-	// Queue the transmission for playback (timing controlled by client)
-	s.enqueuePilotTransmission(ac.ADSBCallsign, ac.ApproachTCP, PendingTransmissionGoAround)
-
-	// If it was handed off to tower, hand it back to us
-	if towerHadTrack {
-		sfp.HandoffController = ac.ControllerFrequency
-
-		s.eventStream.Post(Event{
-			Type:           OfferedHandoffEvent,
-			ADSBCallsign:   ac.ADSBCallsign,
-			FromController: sfp.TrackingController,
-			ToController:   ac.ApproachTCP,
-		})
+	proc := s.getGoAroundProcedureForAircraft(ac)
+	if proc.HandoffController == "" {
+		proc.HandoffController = s.getGoAroundController(ac)
 	}
+
+	ac.WentAround = true
+	ac.GotContactTower = false
+	ac.SpacingGoAroundDeclined = false
+	ac.GoAroundOnRunwayHeading = proc.IsRunwayHeading
+
+	altitude := float32(proc.Altitude)
+
+	// Waypoint at the opposite threshold recording who to contact when it's reached.
+	wp := av.Waypoint{
+		Location:                  approach.OppositeThreshold,
+		FlyOver:                   true,
+		Heading:                   proc.Heading,
+		AltitudeRestriction:       &av.AltitudeRestriction{Range: [2]float32{altitude, altitude}},
+		GoAroundContactController: proc.HandoffController,
+	}
+
+	ac.Nav.GoAroundWithProcedure(altitude, wp)
+
+	holdRunways := append([]string{runway}, proc.HoldDepartures...)
+	s.holdDeparturesForGoAround(airport, holdRunways, proc.HandoffController)
+}
+
+// getGoAroundController returns the TCP that should handle a go-around for the given aircraft.
+// Lookup priority: go_around_assignments for airport/runway, airport, then departure_assignments for airport.
+func (s *Sim) getGoAroundController(ac *Aircraft) TCP {
+	airport := ac.FlightPlan.ArrivalAirport
+	runway := ""
+	if ac.Nav.Approach.Assigned != nil {
+		runway = ac.Nav.Approach.Assigned.Runway
+	}
+
+	// Check go_around_assignments for specific runway
+	if runway != "" {
+		if tcp, ok := s.GoAroundAssignments[airport+"/"+runway]; ok {
+			return tcp
+		}
+	}
+
+	// Check go_around_assignments for airport
+	if tcp, ok := s.GoAroundAssignments[airport]; ok {
+		return tcp
+	}
+
+	// Fall back to departure_assignments for airport
+	if tcp, ok := s.DepartureAssignments[airport]; ok {
+		return tcp
+	}
+
+	// We shouldn't get here but just in case--current controller
+	return TCP(ac.ControllerFrequency)
+}
+
+// holdDeparturesForGoAround sets GoAroundHoldUntil on the specified runways and
+// posts a status message to the go-around controller.
+func (s *Sim) holdDeparturesForGoAround(airport string, holdRunways []string, goAroundTCP TCP) {
+	if len(holdRunways) == 0 {
+		return
+	}
+
+	depState, ok := s.DepartureState[airport]
+	if !ok {
+		return
+	}
+
+	holdUntil := s.State.SimTime.Add(time.Minute)
+
+	// Set the hold state on matching runways
+	for rwy, state := range depState {
+		rwy = av.TidyRunway(rwy)
+		for _, holdRwy := range holdRunways {
+			if rwy == av.TidyRunway(holdRwy) {
+				state.GoAroundHoldUntil = holdUntil
+				s.lg.Info("holding departures on runway due to go-around",
+					slog.String("airport", airport), slog.String("runway", rwy))
+			}
+		}
+	}
+
+	s.eventStream.Post(Event{
+		Type:         StatusMessageEvent,
+		ToController: ControlPosition(goAroundTCP),
+		WrittenText:  fmt.Sprintf("%s DEPARTURES HELD FOR 1 MINUTE", airport),
+	})
+}
+
+// getGoAroundProcedureForAircraft returns the go-around procedure defined for the
+// aircraft's arrival airport/runway, if one exists in the scenario's arrival_runways.
+func (s *Sim) getGoAroundProcedureForAircraft(ac *Aircraft) *GoAroundProcedure {
+	airport := ac.FlightPlan.ArrivalAirport
+	runway := av.TidyRunway(ac.Nav.Approach.Assigned.Runway)
+
+	// Find matching arrival runway with a go-around procedure
+	for _, ar := range s.State.ArrivalRunways {
+		if ar.Airport == airport && av.TidyRunway(ar.Runway) == runway && ar.GoAround != nil {
+			return ar.GoAround
+		}
+	}
+
+	approach := ac.Nav.Approach.Assigned
+	return &GoAroundProcedure{
+		Heading:           int(approach.RunwayHeading(s.State.NmPerLongitude, s.State.MagneticVariation) + 0.5),
+		IsRunwayHeading:   true,
+		Altitude:          1000 * int((ac.Nav.FlightState.ArrivalAirportElevation+2500)/1000),
+		HandoffController: s.getGoAroundController(ac),
+	}
+}
+
+// checkFinalApproachSpacing checks for spacing violations between IFR aircraft
+// on the same final approach and triggers go-arounds when separation is insufficient.
+func (s *Sim) checkFinalApproachSpacing() {
+	type runwayKey struct{ airport, runway string }
+	aircraftByRunway := make(map[runwayKey][]*Aircraft)
+
+	// Group IFR aircraft with assigned approaches by airport+runway
+	for _, ac := range s.Aircraft {
+		// Only tower sends aircraft around; don't include ones that have already been sent around
+		// since presumably we'll have vertical separation soon if not already.
+		if ac.Nav.Approach.Assigned != nil && ac.GotContactTower && !ac.SentAroundForSpacing {
+			key := runwayKey{ac.FlightPlan.ArrivalAirport, ac.Nav.Approach.Assigned.Runway}
+			aircraftByRunway[key] = append(aircraftByRunway[key], ac)
+		}
+	}
+
+	for _, aircraft := range aircraftByRunway {
+		// Sort by distance to threshold (closest first)
+		threshold := aircraft[0].Nav.Approach.Assigned.Threshold
+		slices.SortFunc(aircraft, func(a, b *Aircraft) int {
+			return cmp.Compare(math.NMDistance2LL(a.Position(), threshold),
+				math.NMDistance2LL(b.Position(), threshold))
+		})
+
+		// Check each adjacent pair
+		for i := 1; i < len(aircraft); i++ {
+			front, trailing := aircraft[i-1], aircraft[i]
+
+			// Get required separation
+			vol := trailing.ATPAVolume()
+			eligible25nm := vol != nil && vol.Enable25nmApproach &&
+				s.State.IsATPAVolume25nmEnabled(vol.Id) &&
+				trailing.OnExtendedCenterline(0.2) && front.OnExtendedCenterline(0.2)
+			reqSep := av.CWTRequiredApproachSeparation(front.CWT(), trailing.CWT(), eligible25nm)
+
+			actualSep := math.NMDistance2LL(front.Position(), trailing.Position())
+
+			majorBust := actualSep < reqSep*0.8
+			minorBust := actualSep < reqSep*0.9
+
+			// >20% violation: always go around
+			// >10% but <=20% violation: 50% chance (one-time roll); skip check if already declined
+			issueGoAround := majorBust || (minorBust && !trailing.SpacingGoAroundDeclined && s.Rand.Float32() < 0.5)
+			if issueGoAround {
+				s.goAroundForSpacing(trailing)
+			} else if minorBust {
+				trailing.SpacingGoAroundDeclined = true
+			}
+		}
+	}
+}
+
+// goAroundForSpacing initiates a tower-commanded go-around for spacing violations.
+func (s *Sim) goAroundForSpacing(ac *Aircraft) {
+	ac.SentAroundForSpacing = true
+	s.goAround(ac)
 }
 
 // postReadbackTransmission posts a radio event for a pilot responding to a command.

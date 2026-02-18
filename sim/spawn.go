@@ -50,6 +50,10 @@ type RunwayLaunchState struct {
 	LastArrivalLandingTime time.Time      // when the last arrival landed on this runway
 	LastArrivalFlightRules av.FlightRules // flight rules of the last arrival that landed
 
+	// GoAroundHoldUntil is the time until which departures should be held
+	// after a go-around. Departures auto-resume after this time.
+	GoAroundHoldUntil time.Time
+
 	VFRAttempts  int
 	VFRSuccesses int
 }

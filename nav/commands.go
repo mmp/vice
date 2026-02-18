@@ -14,19 +14,15 @@ import (
 	"github.com/mmp/vice/util"
 )
 
-func (nav *Nav) GoAround() {
-	hdg := nav.FlightState.Heading
-	nav.Heading = NavHeading{Assigned: &hdg}
+// GoAroundWithProcedure initiates a go-around with a defined procedure.
+// The runwayEndWP waypoint should have Location (opposite threshold), FlyOver,
+// Heading (outbound), AltitudeRestriction, and GoAroundContactController set.
+func (nav *Nav) GoAroundWithProcedure(altitude float32, runwayEndWP av.Waypoint) {
 	nav.DeferredNavHeading = nil
-
 	nav.Speed = NavSpeed{}
-
-	alt := float32(1000 * int((nav.FlightState.ArrivalAirportElevation+2500)/1000))
-	nav.Altitude = NavAltitude{Assigned: &alt}
-
 	nav.Approach = NavApproach{}
-	// Keep the destination airport at the end of the route.
-	nav.Waypoints = []av.Waypoint{nav.FlightState.ArrivalAirport}
+	nav.Altitude = NavAltitude{Assigned: &altitude}
+	nav.Waypoints = av.WaypointArray{runwayEndWP, nav.FlightState.ArrivalAirport}
 }
 
 func (nav *Nav) AssignAltitude(alt float32, afterSpeed bool) av.CommandIntent {

@@ -84,13 +84,17 @@ type ControllerConfiguration struct {
 
 	// InboundAssignments maps inbound flow names to the TCP that handles them.
 	// This is populated from the referenced configuration during post-deserialization.
-	InboundAssignments map[string]TCP `json:"-"`
+	InboundAssignments map[string]TCP
 
 	// DepartureAssignments maps departure specifiers to the TCP that handles them.  Keys can be:
 	// airport only ("KJFK"), airport/runway ("KJFK/22R"), or airport/SID ("KJFK/SKORR5"). It is not
 	// allowed to mix different specifier types for the same airport within a configuration.
 	// This is populated from the referenced configuration during post-deserialization.
-	DepartureAssignments map[string]TCP `json:"-"`
+	DepartureAssignments map[string]TCP
+
+	// GoAroundAssignments maps airport or airport/runway to the TCP that handles go-arounds.
+	// This is populated from the referenced configuration during post-deserialization.
+	GoAroundAssignments map[string]TCP
 }
 
 type PositionConsolidation map[TCP][]TCP

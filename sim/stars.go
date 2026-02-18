@@ -318,6 +318,9 @@ func PrintVideoMaps(path string, e *util.ErrorLogger) {
 type ControllerAssignments struct {
 	InboundAssignments   map[string]TCP `json:"inbound_assignments"`
 	DepartureAssignments map[string]TCP `json:"departure_assignments"`
+	// GoAroundAssignments maps airport or airport/runway to the controller
+	// who should handle go-arounds. If not specified, departure controller is used.
+	GoAroundAssignments map[string]TCP `json:"go_around_assignments"`
 }
 
 type FacilityAdaptation struct {

@@ -257,6 +257,11 @@ func (s *Sim) sameGroupRunways(airport, depRwy string) iter.Seq2[string, *Runway
 
 // canLaunch checks whether we can go ahead and launch dep.
 func (s *Sim) canLaunch(depState *RunwayLaunchState, dep DepartureAircraft, considerExit bool, runway string) bool {
+	// Check if departures are held due to a go-around
+	if s.State.SimTime.Before(depState.GoAroundHoldUntil) {
+		return false
+	}
+
 	// Check if enough time has passed since the last departure
 	if depState.LastDeparture != nil {
 		elapsed := s.State.SimTime.Sub(depState.LastDeparture.LaunchTime)

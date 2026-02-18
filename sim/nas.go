@@ -112,7 +112,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 		filters := s.State.FacilityAdaptation.Filters
 
 		drop := func() bool {
-			if ac.TypeOfFlight == av.FlightTypeArrival && inVolumes(filters.ArrivalDrop) {
+			if ac.TypeOfFlight == av.FlightTypeArrival && !ac.WentAround && inVolumes(filters.ArrivalDrop) {
 				return true
 			} else if fp := ac.NASFlightPlan; fp != nil {
 				if fp.LastLocalController != "" && s.State.IsExternalController(fp.TrackingController) &&
@@ -124,7 +124,7 @@ func (sc *STARSComputer) Update(s *Sim) {
 		}()
 		if ac.IsAssociated() && drop {
 			fp := ac.DisassociateFlightPlan()
-			fp.DeleteTime = s.State.SimTime.Add(2 * time.Minute) // hold it for a bit before deleting
+			fp.DeleteTime = s.State.SimTime.Add(4 * time.Minute) // hold it for a bit before deleting
 			sc.FlightPlans = append(sc.FlightPlans, fp)
 		} else if ac.IsUnassociated() && !drop { // unassociated--associate?
 			fp := sc.lookupFlightPlanBySquawk(ac.Squawk)

@@ -5077,11 +5077,19 @@
       "arrival_runways": [
         {
           "airport": "KPHL",
-          "runway": "27R"
+          "runway": "27R",
+          "go_around": {
+            "heading": 300,
+            "altitude": 3000
+          }
         },
         {
           "airport": "KPHL",
-          "runway": "17"
+          "runway": "17",
+          "go_around": {
+            "heading": 170,
+            "altitude": 3000
+          }
         }
       ],
       "inbound_rates": {
@@ -5119,11 +5127,19 @@
       "arrival_runways": [
         {
           "airport": "KPHL",
-          "runway": "27R"
+          "runway": "27R",
+          "go_around": {
+            "heading": 300,
+            "altitude": 3000
+          }
         },
         {
           "airport": "KPHL",
-          "runway": "35"
+          "runway": "35",
+          "go_around": {
+            "heading": 350,
+            "altitude": 3000
+          }
         }
       ],
       "inbound_rates": {
@@ -5191,11 +5207,19 @@
       "arrival_runways": [
         {
           "airport": "KPHL",
-          "runway": "9R"
+          "runway": "9R",
+          "go_around": {
+            "heading": 180,
+            "altitude": 3000
+          }
         },
         {
           "airport": "KPHL",
-          "runway": "17"
+          "runway": "17",
+          "go_around": {
+            "heading": 100,
+            "altitude": 2000
+          }
         }
       ],
       "inbound_rates": {

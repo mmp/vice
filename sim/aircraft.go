@@ -78,6 +78,16 @@ type Aircraft struct {
 
 	GoAroundDistance *float32
 
+	// Set when tower sends aircraft around for spacing; affects the contact message.
+	SentAroundForSpacing bool
+	// Set when a spacing check rolled "no go-around"; prevents re-rolling every tick.
+	SpacingGoAroundDeclined bool
+	// Set when going around on runway heading (vs a specific assigned heading).
+	GoAroundOnRunwayHeading bool
+	// Set when the aircraft has gone around; prevents the arrival drop
+	// filter from dropping its flight plan.
+	WentAround bool
+
 	// Departure related state
 	DepartureContactAltitude float32 // 0 = waiting for /tc point, -1 = already contacted departure
 	ReportDepartureHeading   bool    // true if runway has multiple exit heading
@@ -200,11 +210,6 @@ func (ac *Aircraft) PilotMixUp() av.CommandIntent {
 		Callsign:    ac.ADSBCallsign,
 		IsEmergency: ac.EmergencyState != nil,
 	}
-}
-
-func (ac *Aircraft) GoAround() {
-	ac.GotContactTower = false
-	ac.Nav.GoAround()
 }
 
 func (ac *Aircraft) Ident(now time.Time) av.CommandIntent {
