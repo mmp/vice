@@ -232,10 +232,11 @@ jobs:
 
     - name: Install windows prebuilts
       working-directory: ./ext
+      shell: bash
       run: |
         unzip -q SDL2-devel-2.24.0-mingw.zip
         7z x x86_64-12.2.0-release-win32-seh-rt_v10-rev0.7z -omingw
-        echo ${{ github.workspace }}/ext/mingw/mingw64 >> $GITHUB_PATH
+        echo "${{ github.workspace }}/ext/mingw/mingw64/bin" >> $GITHUB_PATH
         ls
 
     - name: Install Vulkan SDK
