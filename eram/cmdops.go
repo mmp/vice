@@ -131,6 +131,10 @@ func init() {
 	registerCommand(CommandModeNone, "[SECTOR_ID] [FLID]|[SECTOR_ID][SLEW]", handleInitiateHandoff)
 	registerCommand(CommandModeNone, "[#] [FLID]|[#][SLEW]", handleLeaderLine)
 
+	// Leader line length commands
+	// /[0-3] [FLID] or /[0-3][SLEW]: Set leader line length (0=no line, 1=normal, 2=2x, 3=3x)
+	registerCommand(CommandModeNone, "/[NUM] [FLID]|/[NUM][SLEW]", handleLeaderLineLength)
+
 	// .DRAWROUTE - Custom command for drawing routes
 	registerCommand(CommandModeNone, ".DRAWROUTE", handleDrawRouteMode)
 
@@ -772,6 +776,29 @@ func numberToLLDirection(cmd int) math.CardinalOrdinalDirection {
 		return math.NorthEast
 	default:
 		return math.East
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////
+// Leader Line Length Handlers
+
+func handleLeaderLineLength(ep *ERAMPane, ctx *panes.Context, length int, trk *sim.Track) CommandStatus {
+	// Validate length is 0-3
+	if length < 0 || length > 3 {
+		return CommandStatus{
+			err: fmt.Errorf("REJECT - INVALID\nLDR LENGTH\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
+		}
+	}
+
+	// Update track state
+	ep.TrackState[trk.ADSBCallsign].LeaderLineLength = length
+
+	// Update default preference
+	ps := ep.currentPrefs()
+	ps.FDBLdrLength = length
+
+	return CommandStatus{
+		bigOutput: fmt.Sprintf("ACCEPT\nOFFSET DATA BLK\n%s/%s", trk.ADSBCallsign, trk.FlightPlan.CID),
 	}
 }
 

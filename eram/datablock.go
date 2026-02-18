@@ -500,17 +500,34 @@ func (ep *ERAMPane) drawDatablocks(tracks []sim.Track, dbs map[av.ADSBCallsign]d
 			font := ep.ERAMFont(sz)
 			start := transforms.WindowFromLatLongP(state.Track.Location)
 			dir := ep.leaderLineDirection(ctx, trk)
+			lengthMode := state.LeaderLineLength
+
+			// For mode 0, restrict to W/E only
+			if lengthMode == 0 {
+				if *dir != math.East && *dir != math.West {
+					*dir = math.East // Default to East if in mode 0
+				}
+			}
+
 			offset := datablockOffset(*dir)
-			vector := ep.leaderLineVector(*dir)
-			vector[0] += float32(offset[0]) * ctx.DrawPixelScale
-			vector[1] += float32(offset[1]) * ctx.DrawPixelScale
+			vector := ep.leaderLineVectorWithLength(*dir, lengthMode)
+
+			// For mode 0, adjust positioning based on direction
+			if lengthMode == 0 {
+				if *dir == math.East {
+					offset[0] += 25 // Move right
+					offset[1] -= 10 // Move down
+				}
+			}
 			if dbType == EnhancedLimitedDatablock || dbType == LimitedDatablock {
 				*dir = math.East // TODO: change to state eventually
 				vector = ep.leaderLineVectorNoLength(*dir)
 				offset[1] = -10
-				vector[1] += float32(offset[1]) * ctx.DrawPixelScale
 			}
+			// Calculate final position: track position + leader line + offset
 			end := math.Add2f(start, math.Scale2f(vector, ctx.DrawPixelScale))
+			end[0] += float32(offset[0]) * ctx.DrawPixelScale
+			end[1] += float32(offset[1]) * ctx.DrawPixelScale
 			brightness := ep.datablockBrightness(state)
 			db.draw(td, end, font, &sb, brightness, *dir, halfSeconds)
 		}

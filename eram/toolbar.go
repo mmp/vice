@@ -731,8 +731,8 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 				ps.Line4Type = Line4Type
 			}
 		}
-		if ep.drawToolbarFullButton(ctx, "FDB LDR\n1", 0, scale, false, false) {
-			// handle FDB LDR
+		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("FDB LDR\n%d", ps.FDBLdrLength), 0, scale, false, false) {
+			handleClick(ep, &ps.FDBLdrLength, 0, 3, 1)
 		}
 		if ep.drawToolbarFullButton(ctx, "BCAST\nFLID", 0, scale, false, false) {
 			// handle BCAST FLD
@@ -1375,6 +1375,29 @@ func handleClick[T ~int](ep *ERAMPane, pref *T, min, max, step int) {
 			v += step
 		} else {
 			ep.SetTemporaryCursor("EramInvalidEnter", 0.5, "")
+		}
+	}
+	*pref = T(v)
+}
+
+// handleClickWrapping handles additive clicks with wrapping behavior at min/max boundaries
+func handleClickWrapping[T ~int](ep *ERAMPane, pref *T, min, max int) {
+	v := int(*pref)
+
+	mouse := toolbarDrawState.mouse
+	if mouse == nil {
+		return
+	}
+
+	if ep.mousePrimaryClicked(mouse) || ep.mousePrimaryDown(mouse) { // lower value
+		v--
+		if v < min {
+			v = max
+		}
+	} else if ep.mouseTertiaryClicked(mouse) || ep.mouseTertiaryDown(mouse) { // raise value
+		v++
+		if v > max {
+			v = min
 		}
 	}
 	*pref = T(v)
@@ -2152,6 +2175,9 @@ func (ep *ERAMPane) getTornOffButtonText(name string) string {
 		return fmt.Sprintf("RANGE\n%.2f", val)
 	case "VECTOR":
 		return fmt.Sprintf("VECTOR\n%d", ep.VelocityTime)
+	case "FDB LDR":
+		ps := ep.currentPrefs()
+		return fmt.Sprintf("FDB LDR\n%d", ps.FDBLdrLength)
 	case "ALT LIM":
 		ps := ep.currentPrefs()
 		return fmt.Sprintf("ALT LIM\n%03vB%03v", ps.altitudeFilter[0], ps.altitudeFilter[1])
@@ -2297,6 +2323,9 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 		ep.toggleTearoffMenu(buttonName, toolbarDBFields)
 	case "VECTOR":
 		handleMultiplicativeClick(ep, &ep.VelocityTime, 0, 8, 2)
+	case "FDB LDR":
+		ps := ep.currentPrefs()
+		handleClick(ep, &ps.FDBLdrLength, 0, 3, 1)
 	case "VIEWS":
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarViews)
