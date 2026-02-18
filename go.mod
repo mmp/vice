@@ -18,7 +18,6 @@ require (
 	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/hugolgst/rich-go v0.0.0-20230917173849-4a4fb1d3c362
 	github.com/iancoleman/orderedmap v0.3.0
-	github.com/k2-fsa/sherpa-onnx-go v1.12.22
 	github.com/klauspost/compress v1.15.9
 	github.com/mmp/IconFontCppHeaders v0.0.0-20220907145128-86cc7607b455
 	github.com/mmp/earcut-go v0.0.0-20251026231138-15f3234fdcd1
@@ -82,9 +81,6 @@ require (
 	github.com/googleapis/enterprise-certificate-proxy v0.3.6 // indirect
 	github.com/googleapis/gax-go/v2 v2.14.2 // indirect
 	github.com/josephspurrier/goversioninfo v1.4.1 // indirect
-	github.com/k2-fsa/sherpa-onnx-go-linux v1.12.22 // indirect
-	github.com/k2-fsa/sherpa-onnx-go-macos v1.12.22 // indirect
-	github.com/k2-fsa/sherpa-onnx-go-windows v1.12.22 // indirect
 	github.com/lucasb-eyer/go-colorful v1.3.0 // indirect
 	github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0 // indirect
 	github.com/planetscale/vtprotobuf v0.6.1-0.20240319094008-0393e58bdf10 // indirect

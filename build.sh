@@ -13,12 +13,15 @@
 #   --universal     Build universal binary on macOS (arm64 + amd64)
 #   --help          Show this help message
 #
-# whisper-cpp is built automatically if needed.
+# whisper-cpp and sherpa-onnx are built automatically if needed.
 
 set -e
 
 # Expected whisper.cpp submodule SHA (update this when bumping the submodule)
 WHISPER_EXPECTED_SHA="050f4ef8286ca6d49b1b0e131462b9d71959f5ff"
+
+# Expected sherpa-onnx submodule SHA (update this when bumping the submodule)
+SHERPA_EXPECTED_SHA="8dcca037bb73880c4fcb231a9c41740189e95e7c"
 
 # Check that whisper.cpp submodule is at the expected commit
 check_whisper_submodule() {
@@ -51,7 +54,39 @@ check_whisper_submodule() {
     fi
 }
 
+# Check that sherpa-onnx submodule is at the expected commit
+check_sherpa_submodule() {
+    if [ ! -d "sherpa-onnx/.git" ] && [ ! -f "sherpa-onnx/.git" ]; then
+        echo "Error: sherpa-onnx submodule is not initialized."
+        echo ""
+        echo "Please run:"
+        echo "  git submodule update --init --recursive"
+        exit 1
+    fi
+
+    SHERPA_ACTUAL_SHA=$(git -C sherpa-onnx rev-parse HEAD 2>/dev/null || echo "")
+    if [ -z "$SHERPA_ACTUAL_SHA" ]; then
+        echo "Error: Could not determine sherpa-onnx submodule version."
+        echo ""
+        echo "Please run:"
+        echo "  git submodule update --init --recursive"
+        exit 1
+    fi
+
+    if [ "$SHERPA_ACTUAL_SHA" != "$SHERPA_EXPECTED_SHA" ]; then
+        echo "Error: sherpa-onnx submodule is at wrong commit."
+        echo ""
+        echo "  Expected: $SHERPA_EXPECTED_SHA"
+        echo "  Actual:   $SHERPA_ACTUAL_SHA"
+        echo ""
+        echo "Please run:"
+        echo "  git submodule update --init --recursive"
+        exit 1
+    fi
+}
+
 check_whisper_submodule
+check_sherpa_submodule
 
 # Sync models from R2 if needed
 sync_models() {
@@ -250,7 +285,7 @@ for arg in "$@"; do
             DO_TEST=true
             ;;
         --help)
-            head -15 "$0" | tail -13
+            head -16 "$0" | tail -14
             exit 0
             ;;
         *)
@@ -313,6 +348,43 @@ build_whisper() {
     cmake --build whisper.cpp/build_go --parallel "$(nproc 2>/dev/null || sysctl -n hw.ncpu)"
 
     echo "whisper-cpp built successfully."
+}
+
+# Build sherpa-onnx
+build_sherpa() {
+    echo "=== Building sherpa-onnx ==="
+
+    if [ "$OS_TYPE" = "macos" ]; then
+        cmake -S sherpa-onnx -B sherpa-onnx/build_go \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DSHERPA_ONNX_ENABLE_TTS=ON \
+            -DSHERPA_ONNX_ENABLE_CHECK=OFF \
+            -DSHERPA_ONNX_ENABLE_BINARY=OFF \
+            -DSHERPA_ONNX_ENABLE_WEBSOCKET=OFF \
+            -DSHERPA_ONNX_ENABLE_PORTAUDIO=OFF \
+            -DSHERPA_ONNX_ENABLE_TESTS=OFF \
+            -DSHERPA_ONNX_ENABLE_SPEAKER_DIARIZATION=OFF \
+            -DSHERPA_ONNX_BUILD_C_API_EXAMPLES=OFF \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_OSX_ARCHITECTURES="x86_64;arm64" \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0
+    elif [ "$OS_TYPE" = "linux" ]; then
+        cmake -S sherpa-onnx -B sherpa-onnx/build_go \
+            -DBUILD_SHARED_LIBS=OFF \
+            -DSHERPA_ONNX_ENABLE_TTS=ON \
+            -DSHERPA_ONNX_ENABLE_CHECK=OFF \
+            -DSHERPA_ONNX_ENABLE_BINARY=OFF \
+            -DSHERPA_ONNX_ENABLE_WEBSOCKET=OFF \
+            -DSHERPA_ONNX_ENABLE_PORTAUDIO=OFF \
+            -DSHERPA_ONNX_ENABLE_TESTS=OFF \
+            -DSHERPA_ONNX_ENABLE_SPEAKER_DIARIZATION=OFF \
+            -DSHERPA_ONNX_BUILD_C_API_EXAMPLES=OFF \
+            -DCMAKE_BUILD_TYPE=Release
+    fi
+
+    cmake --build sherpa-onnx/build_go --parallel "$(nproc 2>/dev/null || sysctl -n hw.ncpu)"
+
+    echo "sherpa-onnx built successfully."
 }
 
 # Run checks (gofmt, staticcheck)
@@ -378,19 +450,7 @@ build_vice() {
             BUILD_TAGS="$BUILD_TAGS,vulkan"
         fi
 
-        # Add $ORIGIN rpath so the binary finds sherpa-onnx .so files
-        # next to itself rather than requiring the Go module cache at runtime.
-        export CGO_LDFLAGS='-Wl,-rpath,$ORIGIN'
         go build -tags "$BUILD_TAGS" -o vice ./cmd/vice
-
-        # Copy sherpa-onnx shared libraries alongside the binary.
-        GOMODCACHE=$(go env GOMODCACHE)
-        SHERPA_VERSION=$(grep 'github.com/k2-fsa/sherpa-onnx-go ' go.mod | awk '{print $2}')
-        SHERPA_LIB="$GOMODCACHE/github.com/k2-fsa/sherpa-onnx-go-linux@$SHERPA_VERSION/lib/x86_64-unknown-linux-gnu"
-        cp -f "$SHERPA_LIB/libsherpa-onnx-c-api.so" .
-        cp -f "$SHERPA_LIB/libsherpa-onnx-cxx-api.so" .
-        cp -f "$SHERPA_LIB/libonnxruntime.so" .
-        echo "Copied sherpa-onnx shared libraries to build directory."
     fi
 
     echo "Build complete: ./vice"
@@ -416,9 +476,21 @@ needs_whisper_build() {
     return 1
 }
 
+# Check if sherpa-onnx needs to be built
+needs_sherpa_build() {
+    if [ ! -f "sherpa-onnx/build_go/lib/libsherpa-onnx-c-api.a" ]; then
+        return 0
+    fi
+    return 1
+}
+
 # Main execution
 if needs_whisper_build; then
     build_whisper
+fi
+
+if needs_sherpa_build; then
+    build_sherpa
 fi
 
 if [ "$DO_CHECK" = true ]; then

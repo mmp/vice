@@ -19,9 +19,8 @@ import (
 	"github.com/mmp/vice/platform"
 	"github.com/mmp/vice/rand"
 	"github.com/mmp/vice/sim"
+	"github.com/mmp/vice/tts"
 	"github.com/mmp/vice/util"
-
-	sherpa "github.com/k2-fsa/sherpa-onnx-go/sherpa_onnx"
 )
 
 // kokoroVoiceNames maps voice IDs to their names.
@@ -37,13 +36,18 @@ var kokoroVoiceNames = []string{
 	"zf_xiaoyi", "zm_yunjian", "zm_yunxi", "zm_yunxia", "zm_yunyang",
 }
 
-// LocalTTS wraps sherpa-onnx Kokoro TTS for local synthesis.
+// LocalTTS wraps two Kokoro TTS instances for local synthesis.
+// The readback instance runs at normal priority; the contact instance runs
+// at lower OS thread priority so readbacks aren't blocked by contacts.
 type LocalTTS struct {
-	tts     *sherpa.OfflineTts
-	mu      sync.Mutex
-	lg      *log.Logger
-	loadErr error
-	done    chan struct{}
+	sharedWeights *tts.SharedWeights
+	readbackTTS   *tts.OfflineTts
+	contactTTS    *tts.OfflineTts
+	readbackMu    sync.Mutex
+	contactMu     sync.Mutex
+	lg            *log.Logger
+	loadErr       error
+	done          chan struct{} // closed when loading completes
 }
 
 // Global TTS instance
@@ -87,35 +91,48 @@ func (t *LocalTTS) load() {
 	// sherpa-onnx needs actual file paths, not embedded data
 	modelDir := util.GetResourcePath(modelPath)
 
-	config := &sherpa.OfflineTtsConfig{
-		Model: sherpa.OfflineTtsModelConfig{
-			Kokoro: sherpa.OfflineTtsKokoroModelConfig{
-				Model:   modelDir + "/model.onnx",
-				Voices:  modelDir + "/voices.bin",
-				Tokens:  modelDir + "/tokens.txt",
-				DataDir: modelDir + "/espeak-ng-data",
-				DictDir: modelDir + "/dict",
-				Lexicon: modelDir + "/lexicon-us-en.txt",
-				Lang:    "en-us",
-			},
-			NumThreads: runtime.NumCPU(),
-			Debug:      0,
-		},
-		MaxNumSentences: 1,
-	}
-
-	tts := sherpa.NewOfflineTts(config)
-	if tts == nil {
-		t.loadErr = errors.New("failed to create TTS engine")
+	// Load model weights once for sharing between instances
+	shared := tts.NewSharedWeights(modelDir+"/model.onnx", modelDir+"/voices.bin")
+	if shared == nil {
+		t.loadErr = errors.New("failed to load TTS model weights")
 		t.lg.Errorf("TTS unavailable: %v", t.loadErr)
 		return
 	}
 
-	t.mu.Lock()
-	t.tts = tts
-	t.mu.Unlock()
+	makeConfig := func(lowPriority bool) tts.Config {
+		return tts.Config{
+			ModelPath:    modelDir + "/model.onnx",
+			VoicesPath:   modelDir + "/voices.bin",
+			TokensPath:   modelDir + "/tokens.txt",
+			DataDir:      modelDir + "/espeak-ng-data",
+			DictDir:      modelDir + "/dict",
+			LexiconPath:  modelDir + "/lexicon-us-en.txt",
+			Lang:         "en-us",
+			NumThreads:   runtime.NumCPU(),
+			LowPriority:  lowPriority,
+			MaxSentences: 1,
+		}
+	}
 
-	t.lg.Info("Kokoro TTS model loaded successfully")
+	readback := tts.NewOfflineTts(makeConfig(false), shared)
+	contact := tts.NewOfflineTts(makeConfig(true), shared)
+	if readback == nil || contact == nil {
+		t.loadErr = errors.New("failed to create TTS engine(s)")
+		t.lg.Errorf("TTS unavailable: %v", t.loadErr)
+		if readback != nil {
+			readback.Delete()
+		}
+		if contact != nil {
+			contact.Delete()
+		}
+		shared.Delete()
+		return
+	}
+
+	t.sharedWeights = shared
+	t.readbackTTS = readback
+	t.contactTTS = contact
+	t.lg.Info("Kokoro TTS models loaded successfully")
 }
 
 // CheckTTSLoadError returns any TTS loading error if loading has completed.
@@ -134,27 +151,11 @@ func CheckTTSLoadError() (error, bool) {
 	}
 }
 
-// SynthesizeTTS generates PCM audio from text using the specified voice.
-// voiceName should be one of the Kokoro voice names (e.g., "af_alloy", "bf_alice").
-// Returns PCM samples in int16 format at the audio output sample rate.
-// Returns nil without error if the text is empty or if TTS could not be initialized.
-func SynthesizeTTS(text string, voice string) ([]int16, error) {
-	start := time.Now()
-	defer func() {
-		fmt.Printf("%s: %q in %s\n", voice, text, time.Since(start))
-	}()
-	return globalTTS.Synthesize(text, voice)
-}
-
-func (t *LocalTTS) Synthesize(text string, voice string) ([]int16, error) {
-	// Wait for loading to complete
+func (t *LocalTTS) synthesize(mu *sync.Mutex, ttsEngine *tts.OfflineTts,
+	text, voice string) ([]int16, error) {
 	<-t.done
 
-	t.mu.Lock()
-	tts := t.tts
-	t.mu.Unlock()
-
-	if tts == nil || text == "" { // TTS load error or empty text; just return
+	if ttsEngine == nil || text == "" {
 		return nil, nil
 	}
 
@@ -163,20 +164,47 @@ func (t *LocalTTS) Synthesize(text string, voice string) ([]int16, error) {
 		return nil, fmt.Errorf("%s: invalid voice", voice)
 	}
 
-	t.mu.Lock()
-	audio := tts.Generate(text, voiceID, t.voiceSpeed(voice))
-	t.mu.Unlock()
+	mu.Lock()
+	defer mu.Unlock()
 
+	audio := ttsEngine.Generate(text, voiceID, t.voiceSpeed(voice))
 	if audio == nil || len(audio.Samples) == 0 {
 		return nil, fmt.Errorf("TTS generation failed for text: %q", text)
 	}
 
-	// Convert float32 samples to int16 and resample to output rate
 	pcm := t.convertAndResample(audio.Samples, audio.SampleRate)
-
 	addNoise(pcm)
-
 	return pcm, nil
+}
+
+// SynthesizeReadback generates speech using the high-priority TTS instance.
+func (t *LocalTTS) SynthesizeReadback(text, voice string) ([]int16, error) {
+	return t.synthesize(&t.readbackMu, t.readbackTTS, text, voice)
+}
+
+// SynthesizeContact generates speech using the low-priority TTS instance.
+func (t *LocalTTS) SynthesizeContact(text, voice string) ([]int16, error) {
+	return t.synthesize(&t.contactMu, t.contactTTS, text, voice)
+}
+
+// SynthesizeReadbackTTS generates PCM audio for a readback using the
+// high-priority TTS instance.
+func SynthesizeReadbackTTS(text, voice string) ([]int16, error) {
+	start := time.Now()
+	defer func() {
+		fmt.Printf("readback %s: %q in %s\n", voice, text, time.Since(start))
+	}()
+	return globalTTS.SynthesizeReadback(text, voice)
+}
+
+// SynthesizeContactTTS generates PCM audio for a contact using the
+// low-priority TTS instance.
+func SynthesizeContactTTS(text, voice string) ([]int16, error) {
+	start := time.Now()
+	defer func() {
+		fmt.Printf("contact %s: %q in %s\n", voice, text, time.Since(start))
+	}()
+	return globalTTS.SynthesizeContact(text, voice)
 }
 
 // voiceSpeed returns the TTS speed multiplier for the given voice name.

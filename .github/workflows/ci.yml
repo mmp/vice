@@ -83,6 +83,16 @@ jobs:
         sudo apt update
         sudo apt install xorg-dev libsdl2-dev libsystemd-dev
 
+    - name: Get sherpa-onnx commit SHA
+      id: sherpa-sha
+      run: echo "sha=$(git -C sherpa-onnx rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+    - name: Cache sherpa-onnx build
+      uses: actions/cache@v4
+      with:
+        path: sherpa-onnx/build_go
+        key: sherpa-onnx-linux-${{ steps.sherpa-sha.outputs.sha }}
+
     - name: Build vice
       run: ./build.sh
 
@@ -135,6 +145,16 @@ jobs:
 
     - name: Install Mac dependencies
       run: brew install sdl2 pkg-config glfw
+
+    - name: Get sherpa-onnx commit SHA
+      id: sherpa-sha
+      run: echo "sha=$(git -C sherpa-onnx rev-parse HEAD)" >> $GITHUB_OUTPUT
+
+    - name: Cache sherpa-onnx build
+      uses: actions/cache@v4
+      with:
+        path: sherpa-onnx/build_go
+        key: sherpa-onnx-mac-${{ steps.sherpa-sha.outputs.sha }}
 
     - name: Build vice
       run: ./build.sh
@@ -245,53 +265,17 @@ jobs:
         cp ext/mingw/mingw64/bin/libstdc++-6.dll windows/
         cp ext/SDL2-2.24.0/x86_64-w64-mingw32/bin/SDL2.dll windows/
 
-    - name: Generate sherpa-onnx import libraries
-      run: |
-        $ErrorActionPreference = 'Stop'
-        # The sherpa-onnx-go-windows module only ships DLLs, but the MinGW
-        # linker needs import libraries (.dll.a) to link against them.
-        # We generate them directly in the module cache lib directory so
-        # the module's own #cgo LDFLAGS -L ${SRCDIR}/lib/... finds them.
-        go mod download github.com/k2-fsa/sherpa-onnx-go-windows
-        $modCache = (go env GOMODCACHE).Trim()
-        $sherpaVersion = (Select-String -Path go.mod -Pattern 'github.com/k2-fsa/sherpa-onnx-go (v[\d.]+)').Matches.Groups[1].Value
-        $sherpaLib = "$modCache/github.com/k2-fsa/sherpa-onnx-go-windows@$sherpaVersion/lib/x86_64-pc-windows-gnu"
-
-        Write-Host "Sherpa-onnx lib directory: $sherpaLib"
-
-        # Copy runtime DLLs for distribution
-        cp "$sherpaLib/sherpa-onnx-c-api.dll" windows/
-        cp "$sherpaLib/onnxruntime.dll" windows/
-
-        # Generate import libraries in a temp directory, then copy to module cache
-        $tempDir = "$env:TEMP/sherpa-import-gen"
-        New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
-        cp "$sherpaLib/sherpa-onnx-c-api.dll" $tempDir/
-        cp "$sherpaLib/onnxruntime.dll" $tempDir/
-        Push-Location $tempDir
-        gendef sherpa-onnx-c-api.dll
-        if ($LASTEXITCODE -ne 0) { throw "gendef failed for sherpa-onnx-c-api.dll" }
-        gendef onnxruntime.dll
-        if ($LASTEXITCODE -ne 0) { throw "gendef failed for onnxruntime.dll" }
-        dlltool -d sherpa-onnx-c-api.def -l libsherpa-onnx-c-api.dll.a -D sherpa-onnx-c-api.dll
-        if ($LASTEXITCODE -ne 0) { throw "dlltool failed for sherpa-onnx-c-api" }
-        dlltool -d onnxruntime.def -l libonnxruntime.dll.a -D onnxruntime.dll
-        if ($LASTEXITCODE -ne 0) { throw "dlltool failed for onnxruntime" }
-        Pop-Location
-
-        # Copy import libraries into the module cache lib directory
-        cp "$tempDir/libsherpa-onnx-c-api.dll.a" "$sherpaLib/"
-        cp "$tempDir/libonnxruntime.dll.a" "$sherpaLib/"
-
-        # Verify import libraries were created
-        if (-not (Test-Path "$sherpaLib/libsherpa-onnx-c-api.dll.a")) {
-          throw "Failed to create libsherpa-onnx-c-api.dll.a"
-        }
-        if (-not (Test-Path "$sherpaLib/libonnxruntime.dll.a")) {
-          throw "Failed to create libonnxruntime.dll.a"
-        }
-        Write-Host "Import libraries generated successfully in $sherpaLib"
+    - name: Get sherpa-onnx commit SHA
+      id: sherpa-sha
+      run: echo "sha=$(git -C sherpa-onnx rev-parse HEAD)" >> $env:GITHUB_OUTPUT
       shell: pwsh
+
+    - name: Cache sherpa-onnx build
+      id: cache-sherpa
+      uses: actions/cache@v4
+      with:
+        path: sherpa-onnx/build_go
+        key: sherpa-onnx-win-${{ steps.sherpa-sha.outputs.sha }}
 
     - name: Get whisper.cpp commit SHA
       id: whisper-sha
