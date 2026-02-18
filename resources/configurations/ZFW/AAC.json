@@ -290,14 +290,14 @@
                     "COLIN",
                     "MAYES"
                 ],
-                "receiving_controller": "ETU"
+                "receiving_controller": "E01"
             },
             {
                 "fixes": [
                     "SHAWN",
                     "NOBLE"
                 ],
-                "receiving_controller": "EOK"
+                "receiving_controller": "E02"
             }
         ],
         "coordination_fixes": {

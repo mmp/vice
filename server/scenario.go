@@ -778,7 +778,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 			if ctrl.FacilityIdentifier == "" {
 				e.ErrorString("must specify \"facility_id\" if \"eram_facility\" is set")
 			}
-			if len(ctrl.PositionId()) != 2 {
+			if len(ctrl.PositionId()) != 3 {
 				e.ErrorString("must specify both facility and 2-digit numeric sector for center controller")
 			}
 			if _, err := strconv.Atoi(ctrl.Position); err != nil {
