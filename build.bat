@@ -206,6 +206,7 @@ if not exist "sherpa-onnx\build_go\lib\sherpa-onnx-c-api.lib" (
     )
     cmake -S sherpa-onnx -B sherpa-onnx\build_go ^
         -G "NMake Makefiles" ^
+        -DCMAKE_VS_PLATFORM_NAME=x64 ^
         -DBUILD_SHARED_LIBS=ON ^
         -DSHERPA_ONNX_ENABLE_TTS=ON ^
         -DSHERPA_ONNX_ENABLE_CHECK=OFF ^
