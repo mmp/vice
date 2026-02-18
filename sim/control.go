@@ -2208,12 +2208,16 @@ func (s *Sim) GenerateContactTransmission(pc *PendingContact) (spokenText, writt
 		if pc.FirstInFacility {
 			arrivalAirport := ac.FlightPlan.ArrivalAirport
 			if letter, ok := s.State.ATISLetter[arrivalAirport]; ok && letter != "" {
-				if s.Rand.Float32() < 0.85 {
+				if s.Rand.Float32() < 0.85 { // 85% of aircraft give the ATIS
 					reportLetter := letter
-					if ct, ok := s.ATISChangedTime[arrivalAirport]; ok && !ct.IsZero() {
-						if s.State.SimTime.Sub(ct) < 5*time.Minute && s.Rand.Float32() < 0.3 {
-							reportLetter = string(rune((letter[0]-'A'+25)%26 + 'A'))
-						}
+					age := s.State.SimTime.Sub(s.ATISChangedTime[arrivalAirport])
+
+					// Possible report having the previous ATIS if it has changed recently: always
+					// report the last one in the first 20 seconds after a change, then linearly
+					// ramp down the probability to zero 3 minutes after a change.
+					p := 1 - max(0, (age.Seconds()-20)/(300-20))
+					if s.Rand.Float32() < float32(p) {
+						reportLetter = string(rune((letter[0]-'A'+25)%26 + 'A'))
 					}
 					ac.ReportedATIS = reportLetter
 					rt.Add("[we have information {ch}|information {ch}|we have {ch}]", reportLetter)
