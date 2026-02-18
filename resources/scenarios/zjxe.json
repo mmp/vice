@@ -1,0 +1,271 @@
+{
+    "artcc": "ZJX",
+    "area": "East",
+    "name": "JAX",
+    "airports": {
+        "KJAX": {
+            "departure_controller": "Jacksonville Approach",
+            "approaches": {
+                "IY8": {
+                    "cifp_id": "IY8"
+                }
+            },
+            "departure_routes": {
+                "8": {
+                      "BAXLY": {
+                           "handoff_controller": "ZJX 50 Alma",
+                           "cleared_altitude": 23000,
+                           "sid": "BRSTL1",
+                           "waypoints": "KJAX-26 TEREE/ho29 BRSTL/ho"
+                         },
+                         "ALLMA": {
+                           "handoff_controller": "ZJX 50 Alma",
+                           "cleared_altitude": 23000,
+                           "sid": "BRSTL1",
+                           "waypoints": "KJAX-26 TEREE/ho29 BRSTL/ho"
+                         }
+                }
+            },
+               "departures": [
+                  {
+                    "exit": "ALLMA",
+                    "destination": "KBNA",
+                    "altitude": 40000,
+                    "route": "ALLMA THRSR SWFFT3",
+                    "airlines": [
+                      {
+                        "icao": "SWA",
+                        "fleet": "default"
+                      },
+                      {
+                        "icao": "EJA",
+                        "fleet": "default"
+                      }
+                    ]
+                  },
+                  {
+                    "exit": "BAXLY",
+                    "destination": "KIND",
+                    "altitude": 36000,
+                    "route": "BAXLY AHN SWAPP HAGAL GIIBS4",
+                    "airlines": [
+                      {
+                        "icao": "FDX",
+                        "fleet": "default"
+                      }
+                    ]
+                  },
+                  {
+                    "exit": "ALLMA",
+                    "destination": "KORD",
+                    "altitude": 36000,
+                    "route": "ALLMA THRSR Q118 HEVAN Q118 BONNT VEECK5",
+                    "airlines": [
+                      {
+                        "icao": "FDX",
+                        "fleet": "default"
+                      }
+                    ]
+                  },
+                  {
+                    "exit": "ALLMA",
+                    "destination": "KDEN",
+                    "altitude": 36000,
+                    "route": "ALLMA LGC FASON NTWOO ARG ICT KK51A OATHE CLASH5",
+                    "airlines": [
+                      {
+                        "icao": "UAL",
+                        "fleet": "default"
+                      },
+                      {
+                        "icao": "SWA",
+                        "fleet": "default"
+                      }
+                    ]
+                  },
+                  {
+                    "exit": "ALLMA",
+                    "destination": "KDEN",
+                    "altitude": 36000,
+                    "route": "ALLMA YANTI HANKO GENDE VISQA BOOSH3",
+                    "airlines": [
+                      {
+                        "icao": "SWA",
+                        "fleet": "default"
+                      }
+                    ]
+                  },
+                  {
+                    "exit": "BAXLY",
+                    "destination": "KMSP",
+                    "altitude": 34000,
+                    "route": "BAXLY AHN VXV RYANS IIU VHP DELHI OBK KAMMA KKILR3",
+                    "airlines": [
+                      {
+                        "icao": "DAL",
+                        "fleet": "default"
+                      },
+                      {
+                        "icao": "EJA",
+                        "fleet": "default"
+                      }
+                    ]
+                  }
+                ]
+        },
+        "KAYS": {
+            "departure_controller": "ZJX 29 Baxly",
+            "departure_routes": {
+                "7": {
+                    "KERLY": {
+                        "handoff_controller": "ZTL 20 Dublin",
+                        "cleared_altitude": 23000,
+                        "waypoints": "KAYS-26 AYS/hot20 KERLY"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "exit": "KERLY",
+                    "destination": "K1A5",
+                    "altitude": 23000,
+                    "route": "AYS KERLY Q65 DAREE",
+                    "airlines": [
+                        {
+                            "icao": "N",
+                            "fleet": "fastGA"
+                        }
+                    ]
+                }
+            ]
+        },
+        "KOCF": {
+          "departure_controller": "Jacksonville Approach",
+          "departure_routes": {
+              "36": {
+                "TAY": {
+                  "handoff_controller": "ZJX 50 Alma",
+                  "cleared_altitude": 23000,
+                  "waypoints": "KOCF-18 OCF/h077 N030.13.48.671,W082.30.13.375/ho TAY"
+                }
+              }
+          },
+          "departures": [
+            {
+              "exit": "TAY",
+              "destination": "KCEU",
+              "altitude": 31000,
+              "route": "OCF TAY IRQ",
+              "airlines": [
+                {
+                  "icao": "N",
+                  "fleet": "fastGA" 
+                }
+              ]
+            }
+          ]
+        },
+        "KSAV": {
+            "departure_controller": "Savannah Approach",
+            "departure_routes": {
+                "10": {
+                    "SMALZ": {
+                        "handoff_controller": "ZJX 50 Alma",
+                        "cleared_altitude": 23000,
+                        "waypoints": "SAV-28 N032.09.51.641,W081.07.42.359/ho29 N032.05.41.249,W081.29.49.535/ho SMALZ"
+                    },
+                    "BYYOU": {
+                      "handoff_controller": "ZJX 50 Alma",
+                      "cleared_altitude": 23000,
+                      "waypoints": "SAV-28 N031.55.47.705,W081.08.49.815/ho20 N031.51.23.450,W081.21.11.530/ho BYYOU"
+                    }
+                }
+            },
+            "departures": [
+                {
+                    "exit": "SMALZ",
+                    "destination": "KATL",
+                    "altitude": 27000,
+                    "route": "SMALZ TYFTR JJEDI4",
+                    "airlines": [
+                        {
+                            "icao": "DAL",
+                            "types": ["B738", "B752"]
+                        }
+                    ]
+                },
+                {
+                  "exit": "BYYOU",
+                  "destination": "KIAH",
+                  "alttiude": 32000,
+                  "route": "BYYOU AMG CEW JW2 SJI SHREQ",
+                  "airlines": [
+                    {
+                      "icao": "ASH"
+                    }
+                  ]
+                },
+                {
+                    "exit": "SAMLZ",
+                    "destination": "KATL",
+                    "altitude": 36000,
+                    "route": "SMALZ WIGVO DBN MGM",
+                    "airlines": [
+                        {
+                            "icao": "SWA",
+                            "types": ["B738", "B737"]
+                        }
+                    ]
+                },
+                  {
+                    "exit": "SAMLZ",
+                    "destination": "KDEN",
+                    "altitude": 34000,
+                    "route": "SMALZ WIGVO DBN THRSR",
+                    "airlines": [
+                        {
+                            "icao": "UAL",
+                            "types": ["A319", "A320"]
+                        }
+                    ]
+                },
+                 {
+                    "exit": "SAMLZ",
+                    "destination": "KDFW",
+                    "altitude": 32000,
+                    "route": "SMALZ WIGVO DBN MGM MLU",
+                    "airlines": [
+                        {
+                            "icao": "AAL",
+                            "types": ["A319", "A320"]
+                        }
+                    ]
+                },
+                {
+                  "exit": "SMALZ",
+                  "destination": "KMEM",
+                  "altitude": 36000,
+                  "route": "SMALZ WIGVO DBN MCN",
+                  "airlines": [
+                    {
+                      "icao": "FDX",
+                      "type": ["B752"]
+                    }
+                  ]
+                },
+                {
+                  "exit": "SMALZ",
+                  "destination": "KMGM",
+                  "altitude": 26000,
+                  "route": "SMALZ WIGVO VNA MGM",
+                  "airlines": [
+                    {
+                      "icao": "N",
+                      "fleet": "fastGA"
+                    }
+                  ]
+                }
+            ]
+        }
+    }
+}
