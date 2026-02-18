@@ -732,23 +732,7 @@ func (ep *ERAMPane) drawToolbarMenu(ctx *panes.Context, scale float32) {
 			}
 		}
 		if ep.drawToolbarFullButton(ctx, fmt.Sprintf("FDB LDR\n%d", ps.FDBLdrLength), 0, scale, false, false) {
-			// handle FDB LDR - left click decreases, middle click increases
-			mouse := toolbarDrawState.mouse
-			if mouse != nil {
-				if ep.mousePrimaryClicked(mouse) || ep.mousePrimaryDown(mouse) {
-					// Left click: decrease (1->0->3->2)
-					ps.FDBLdrLength--
-					if ps.FDBLdrLength < 0 {
-						ps.FDBLdrLength = 3
-					}
-				} else if ep.mouseTertiaryClicked(mouse) || ep.mouseTertiaryDown(mouse) {
-					// Middle click: increase (0->1->2->3)
-					ps.FDBLdrLength++
-					if ps.FDBLdrLength > 3 {
-						ps.FDBLdrLength = 0
-					}
-				}
-			}
+			handleClick(ep, &ps.FDBLdrLength, 0, 3, 1)
 		}
 		if ep.drawToolbarFullButton(ctx, "BCAST\nFLID", 0, scale, false, false) {
 			// handle BCAST FLD
@@ -1391,6 +1375,29 @@ func handleClick[T ~int](ep *ERAMPane, pref *T, min, max, step int) {
 			v += step
 		} else {
 			ep.SetTemporaryCursor("EramInvalidEnter", 0.5, "")
+		}
+	}
+	*pref = T(v)
+}
+
+// handleClickWrapping handles additive clicks with wrapping behavior at min/max boundaries
+func handleClickWrapping[T ~int](ep *ERAMPane, pref *T, min, max int) {
+	v := int(*pref)
+
+	mouse := toolbarDrawState.mouse
+	if mouse == nil {
+		return
+	}
+
+	if ep.mousePrimaryClicked(mouse) || ep.mousePrimaryDown(mouse) { // lower value
+		v--
+		if v < min {
+			v = max
+		}
+	} else if ep.mouseTertiaryClicked(mouse) || ep.mouseTertiaryDown(mouse) { // raise value
+		v++
+		if v > max {
+			v = min
 		}
 	}
 	*pref = T(v)
@@ -2318,22 +2325,7 @@ func (ep *ERAMPane) handleTornOffButtonClick(ctx *panes.Context, buttonName stri
 		handleMultiplicativeClick(ep, &ep.VelocityTime, 0, 8, 2)
 	case "FDB LDR":
 		ps := ep.currentPrefs()
-		mouse := toolbarDrawState.mouse
-		if mouse != nil {
-			if ep.mousePrimaryClicked(mouse) || ep.mousePrimaryDown(mouse) {
-				// Left click: decrease (1->0->3->2)
-				ps.FDBLdrLength--
-				if ps.FDBLdrLength < 0 {
-					ps.FDBLdrLength = 3
-				}
-			} else if ep.mouseTertiaryClicked(mouse) || ep.mouseTertiaryDown(mouse) {
-				// Middle click: increase (0->1->2->3)
-				ps.FDBLdrLength++
-				if ps.FDBLdrLength > 3 {
-					ps.FDBLdrLength = 0
-				}
-			}
-		}
+		handleClick(ep, &ps.FDBLdrLength, 0, 3, 1)
 	case "VIEWS":
 		ep.clearToolbarMouseDown()
 		ep.toggleTearoffMenu(buttonName, toolbarViews)
