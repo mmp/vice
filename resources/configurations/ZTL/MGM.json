@@ -11,7 +11,9 @@
             "radio_name": "Montgomery Tower"
         }
     },
-    "stars_config": {},
+    "config": {
+        "configurations": {}
+    },
     "handoff_ids": [
         {
             "id": "A80",
@@ -27,7 +29,7 @@
         },
         {
             "id": "ZTL",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

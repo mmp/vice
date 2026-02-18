@@ -3,37 +3,31 @@
         "02": {
             "callsign": "ZHN 02 Kauai",
             "frequency": 126500,
-            "eram_facility": true,
             "radio_name": "HCF Center"
         },
         "03": {
             "callsign": "ZHN 03 Molokai",
             "frequency": 124100,
-            "eram_facility": true,
             "radio_name": "HCF Center"
         },
         "04": {
             "callsign": "ZHN 04 Lanai",
             "frequency": 119300,
-            "eram_facility": true,
             "radio_name": "HCF Center"
         },
         "05": {
             "callsign": "ZHN 05 Big Island",
             "frequency": 118450,
-            "eram_facility": true,
             "radio_name": "HCF Center"
         },
         "06": {
             "callsign": "ZHN 06 West Sector",
             "frequency": 119900,
-            "eram_facility": true,
             "radio_name": "HCF Center"
         },
         "07": {
             "callsign": "ZHN 07 East",
             "frequency": 126600,
-            "eram_facility": true,
             "radio_name": "HCF Center"
         }
     },
@@ -58,5 +52,8 @@
             "stars_id": "GGG",
             "single_char_stars_id": "G"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

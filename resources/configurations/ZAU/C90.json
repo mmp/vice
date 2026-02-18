@@ -3,180 +3,125 @@
         "1Z": {
             "callsign": "CHI_Z_APP",
             "frequency": 119000,
-            "radio_name": "Chicago Approach",
-            "facility": "C90"
+            "radio_name": "Chicago Approach"
         },
         "1W": {
             "callsign": "CHI_W_APP",
             "frequency": 133625,
-            "radio_name": "Chicago Approach",
-            "facility": "C90"
+            "radio_name": "Chicago Approach"
         },
         "1F": {
             "callsign": "CHI_F_APP",
             "frequency": 124350,
-            "radio_name": "Chicago Approach",
-            "facility": "C90"
+            "radio_name": "Chicago Approach"
         },
         "1H": {
             "callsign": "CHI_H_APP",
             "frequency": 132175,
-            "radio_name": "Chicago Approach",
-            "facility": "C90"
+            "radio_name": "Chicago Approach"
         },
         "1X": {
             "callsign": "CHI_X_APP",
             "frequency": 135075,
-            "radio_name": "Chicago Approach",
-            "facility": "C90"
+            "radio_name": "Chicago Approach"
         },
         "1J": {
             "callsign": "CHI_J_APP",
             "frequency": 125700,
-            "radio_name": "Chicago Approach",
-            "facility": "C90"
+            "radio_name": "Chicago Approach"
         },
         "1E": {
             "callsign": "CHI_E_APP",
             "frequency": 118925,
-            "radio_name": "Chicago Approach",
-            "facility": "C90"
+            "radio_name": "Chicago Approach"
         },
         "1Y": {
             "callsign": "CHI_Y_APP",
             "frequency": 135025,
-            "radio_name": "Chicago Approach",
-            "facility": "C90"
+            "radio_name": "Chicago Approach"
         },
         "1S": {
             "callsign": "CHI_S_APP",
             "frequency": 128200,
-            "radio_name": "Chicago Approach",
-            "facility": "C90"
+            "radio_name": "Chicago Approach"
         },
         "1P": {
             "callsign": "CHI_P_APP",
             "frequency": 119350,
-            "radio_name": "Chicago Approach",
-            "facility": "C90"
+            "radio_name": "Chicago Approach"
         },
         "1L": {
             "callsign": "CHI_L_APP",
             "frequency": 133500,
-            "radio_name": "Chicago Approach",
-            "facility": "C90"
+            "radio_name": "Chicago Approach"
         },
         "1U": {
             "callsign": "CHI_U_APP",
             "frequency": 133900,
-            "radio_name": "Chicago Approach",
-            "facility": "C90"
+            "radio_name": "Chicago Approach"
         },
         "1B": {
             "callsign": "CHI_B_DEP",
             "frequency": 128575,
-            "radio_name": "Chicago Departure",
-            "facility": "C90"
+            "radio_name": "Chicago Departure"
         },
         "1M": {
             "callsign": "CHI_M_DEP",
             "frequency": 126625,
-            "radio_name": "Chicago Departure",
-            "facility": "C90"
+            "radio_name": "Chicago Departure"
         },
         "1G": {
             "callsign": "CHI_G_DEP",
             "frequency": 135275,
-            "radio_name": "Chicago Departure",
-            "facility": "C90"
+            "radio_name": "Chicago Departure"
         },
         "1D": {
             "callsign": "CHI_D_DEP",
             "frequency": 134400,
-            "radio_name": "Chicago Departure",
-            "facility": "C90"
+            "radio_name": "Chicago Departure"
         },
         "1A": {
             "callsign": "CHI_A_APP",
             "frequency": 120550,
-            "radio_name": "Chicago Approach",
-            "facility": "C90"
+            "radio_name": "Chicago Approach"
         },
-        "SLC": {
+        "1T": {
             "callsign": "O'Hare South Tower",
             "frequency": 120750,
-            "radio_name": "O'Hare Tower",
-            "scope_char": "T",
-            "facility": "C90"
+            "radio_name": "O'Hare Tower"
         },
-        "NLC": {
-            "callsign": "O'Hare North Tower",
-            "frequency": 126900,
-            "radio_name": "O'Hare Tower",
-            "scope_char": "T",
-            "facility": "C90"
-        },
-        "3LC": {
-            "callsign": "O'Hare Center Tower",
-            "frequency": 132700,
-            "radio_name": "O'Hare Tower",
-            "scope_char": "T",
-            "facility": "C90"
-        },
-        "LCN": {
-            "callsign": "O'Hare North North Tower",
-            "frequency": 128150,
-            "radio_name": "O'Hare Tower",
-            "scope_char": "T",
-            "facility": "C90"
-        },
-        "LCS": {
-            "callsign": "O'Hare South South Tower",
-            "frequency": 133000,
-            "radio_name": "O'Hare Tower",
-            "scope_char": "T",
-            "facility": "C90"
-        },
-        "MLC": {
-            "callsign": "Midway Tower",
+        "1R": {
+            "callsign": "MDW_TWR",
             "frequency": 135200,
-            "radio_name": "Midway Tower",
-            "scope_char": "R",
-            "facility": "C90"
+            "radio_name": "Midway Tower"
         },
         "16": {
             "callsign": "Executive Tower",
             "frequency": 119900,
-            "radio_name": "Executive Tower",
-            "facility": "C90"
+            "radio_name": "Executive Tower"
         },
         "17": {
             "callsign": "DuPage Tower",
             "frequency": 120900,
-            "radio_name": "Dupage Tower",
-            "facility": "C90"
+            "radio_name": "Dupage Tower"
         },
         "18": {
             "callsign": "Aurora Tower",
             "frequency": 120600,
-            "radio_name": "Aurora Tower",
-            "facility": "C90"
+            "radio_name": "Aurora Tower"
         },
         "15": {
             "callsign": "Lewis Tower",
             "frequency": 134800,
-            "radio_name": "Lewis Tower",
-            "facility": "C90"
+            "radio_name": "Lewis Tower"
         },
-        "GT": {
+        "19": {
             "callsign": "Gary Tower",
             "frequency": 125600,
-            "radio_name": "Gary Tower",
-            "scope_char": "G",
-            "facility": "C90"
+            "radio_name": "Gary Tower"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "13L": {
                 "inbound_assignments": {
@@ -1643,7 +1588,7 @@
         },
         {
             "id": "ZAU",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

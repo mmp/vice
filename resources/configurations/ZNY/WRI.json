@@ -31,11 +31,14 @@
         },
         {
             "id": "ZDC",
-            "eram_prefix": "W"
+            "prefix": "W"
         },
         {
             "id": "ZNY",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

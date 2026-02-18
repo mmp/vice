@@ -125,7 +125,10 @@
         },
         {
             "id": "ZOA",
-            "eram_prefix": "O"
+            "prefix": "O"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

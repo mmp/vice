@@ -264,10 +264,14 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 
 		fieldEText := ""
 		gsText := fmt.Sprintf(" %v", int(state.Track.Groundspeed))
+		shortERAMID := func(ctrl *av.Controller) string {
+			fid := sim.ShortestPrefix(ctrl.FacilityIdentifier, ctx.Client.State.HandoffIDs)
+			return fid + ctrl.Position
+		}
 		if trk.FlightPlan.HandoffController != "" {
 			var controller string
 			if ctrl := ctx.GetResolvedController(trk.FlightPlan.HandoffController); ctrl != nil {
-				controller = ctrl.ERAMID()
+				controller = shortERAMID(ctrl)
 				if len(controller) == 2 {
 					controller = "-" + controller
 				}
@@ -282,7 +286,7 @@ func (ep *ERAMPane) getDatablock(ctx *panes.Context, trk sim.Track, dbType Datab
 		} else if ctx.Client.State.SimTime.Before(state.OSectorEndTime) {
 			var controller string
 			if ctrl := ctx.GetResolvedController(trk.FlightPlan.TrackingController); ctrl != nil {
-				controller = ctrl.ERAMID()
+				controller = shortERAMID(ctrl)
 				if len(controller) == 2 {
 					controller = "-" + controller
 				}

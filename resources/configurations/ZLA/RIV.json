@@ -18,7 +18,10 @@
         },
         {
             "id": "ZLA",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

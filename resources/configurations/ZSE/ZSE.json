@@ -3,179 +3,150 @@
         "01": {
             "callsign": "ZSE Sector 01",
             "frequency": 120300,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "02": {
             "callsign": "ZSE Sector 02",
             "frequency": 128300,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "03": {
             "callsign": "ZSE Sector 03",
             "frequency": 125100,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "04": {
             "callsign": "ZSE Sector 04",
             "frequency": 124200,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "05": {
             "callsign": "ZSE Sector 05",
             "frequency": 128150,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "06": {
             "callsign": "ZSE Sector 06",
             "frequency": 125800,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "07": {
             "callsign": "ZSE Sector 07",
             "frequency": 128450,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "08": {
             "callsign": "ZSE Sector 08",
             "frequency": 123950,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "09": {
             "callsign": "ZSE Sector 09",
             "frequency": 132600,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "10": {
             "callsign": "ZSE Sector 10",
             "frequency": 127600,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "11": {
             "callsign": "ZSE Sector 11",
             "frequency": 119225,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "12": {
             "callsign": "ZSE Sector 12",
             "frequency": 134950,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "13": {
             "callsign": "ZSE Sector 13",
             "frequency": 135350,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "14": {
             "callsign": "ZSE Sector 14",
             "frequency": 134900,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "15": {
             "callsign": "ZSE Sector 15",
             "frequency": 135150,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "16": {
             "callsign": "ZSE Sector 16",
             "frequency": 135450,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "18": {
             "callsign": "ZSE Sector 18",
             "frequency": 126100,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "30": {
             "callsign": "ZSE Sector 30",
             "frequency": 124850,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "31": {
             "callsign": "ZSE Sector 31",
             "frequency": 127050,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "32": {
             "callsign": "ZSE Sector 32",
             "frequency": 126600,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "34": {
             "callsign": "ZSE Sector 34",
             "frequency": 119650,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "35": {
             "callsign": "ZSE Sector 35",
             "frequency": 126150,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "36": {
             "callsign": "ZSE Sector 36",
             "frequency": 127550,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "42": {
             "callsign": "ZSE Sector 42",
             "frequency": 132075,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "46": {
             "callsign": "ZSE Sector 46",
             "frequency": 121350,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "47": {
             "callsign": "ZSE Sector 47",
             "frequency": 118550,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "48": {
             "callsign": "ZSE Sector 48",
             "frequency": 118625,
-            "eram_facility": true,
             "radio_name": "Seattle Center"
         },
         "69": {
             "callsign": "ZSE 69 TMU",
             "frequency": 123450,
-            "eram_facility": true,
             "radio_name": "Don't Talk to Me"
         },
         "99": {
             "callsign": "ZSE 99 ZSE_ZOA",
             "frequency": 118025,
-            "eram_facility": true,
             "radio_name": "ZSE_ZOA Hotline"
         }
     },
-    "stars_config": {
+    "config": {
         "coordination_fixes": {
             "HHOOD": [
                 {
@@ -282,7 +253,8 @@
                     "from": "ZSE"
                 }
             ]
-        }
+        },
+        "configurations": {}
     },
     "handoff_ids": [
         {
@@ -335,11 +307,11 @@
         },
         {
             "id": "ZLC",
-            "eram_prefix": "U"
+            "prefix": "U"
         },
         {
             "id": "ZOA",
-            "eram_prefix": "O"
+            "prefix": "O"
         }
     ]
 }

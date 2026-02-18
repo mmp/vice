@@ -27,15 +27,18 @@
         },
         {
             "id": "ZDC",
-            "eram_prefix": "W"
+            "prefix": "W"
         },
         {
             "id": "ZID",
-            "eram_prefix": "I"
+            "prefix": "I"
         },
         {
             "id": "ZOB",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

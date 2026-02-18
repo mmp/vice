@@ -56,7 +56,7 @@
             "radio_name": "North Las Vegas Tower"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "1XX": {
                 "inbound_assignments": {
@@ -499,7 +499,7 @@
         },
         {
             "id": "ZLA",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

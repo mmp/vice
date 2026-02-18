@@ -34,7 +34,10 @@
     "handoff_ids": [
         {
             "id": "ZME",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

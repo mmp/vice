@@ -39,7 +39,7 @@
             "scope_char": "1"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "SBN": {
                 "inbound_assignments": {
@@ -174,7 +174,7 @@
         },
         {
             "id": "ZAU",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

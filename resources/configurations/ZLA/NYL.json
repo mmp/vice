@@ -19,11 +19,14 @@
     "handoff_ids": [
         {
             "id": "ZAB",
-            "eram_prefix": "A"
+            "prefix": "A"
         },
         {
             "id": "ZLA",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

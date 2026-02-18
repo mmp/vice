@@ -21,7 +21,9 @@
             "radio_name": "Rockford Approach"
         }
     },
-    "stars_config": {},
+    "config": {
+        "configurations": {}
+    },
     "handoff_ids": [
         {
             "id": "C90",
@@ -41,7 +43,7 @@
         },
         {
             "id": "ZAU",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

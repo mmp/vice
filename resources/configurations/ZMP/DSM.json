@@ -33,15 +33,18 @@
         },
         {
             "id": "ZAU",
-            "eram_prefix": "G"
+            "prefix": "G"
         },
         {
             "id": "ZKC",
-            "eram_prefix": "K"
+            "prefix": "K"
         },
         {
             "id": "ZMP",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

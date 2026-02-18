@@ -61,7 +61,7 @@
             "radio_name": "Salt Lake City Approach"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -164,7 +164,7 @@
     "handoff_ids": [
         {
             "id": "ZLC",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

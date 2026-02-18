@@ -3,275 +3,230 @@
         "01": {
             "callsign": "ZKC 01 TMU",
             "frequency": 125725,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "02": {
             "callsign": "ZKC 02 (02) WICHITA HI",
             "frequency": 132250,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "03": {
             "callsign": "ZKC 03 (03) EMPORIA SH",
             "frequency": 124975,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "06": {
             "callsign": "ZKC 06 (06) ANTHONY HI",
             "frequency": 133200,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "07": {
             "callsign": "ZKC 07 (07) HUTCHINSON SH",
             "frequency": 132825,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "12": {
             "callsign": "ZKC 12 (12) COWES HI",
             "frequency": 135050,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "14": {
             "callsign": "ZKC 14 (14) FARMINGTON HI",
             "frequency": 120825,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "20": {
             "callsign": "ZKC 20 (20) HAYS HI",
             "frequency": 134300,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "21": {
             "callsign": "ZKC 21 (21) DODGE CITY SH",
             "frequency": 120725,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "22": {
             "callsign": "ZKC 22 (22) GARDEN CITY HI",
             "frequency": 133450,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "23": {
             "callsign": "ZKC 23 (23) LIBERAL HI",
             "frequency": 134675,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "24": {
             "callsign": "ZKC 24 (24) SALINA HI",
             "frequency": 125175,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "26": {
             "callsign": "ZKC 26 (26) KANSAS CITY HI",
             "frequency": 133800,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "27": {
             "callsign": "ZKC 27 (27) TULSA HI",
             "frequency": 127625,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "28": {
             "callsign": "ZKC 28 (28) SPRINGFIELD HI",
             "frequency": 133475,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "29": {
             "callsign": "ZKC 29 (29) VICHY HI",
             "frequency": 132650,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "30": {
             "callsign": "ZKC 30 (30) HALLSVILLE HI",
             "frequency": 119475,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "31": {
             "callsign": "ZKC 31 (31) SWISS SH",
             "frequency": 125675,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "32": {
             "callsign": "ZKC 32 (32) TRIX HI",
             "frequency": 134625,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "33": {
             "callsign": "ZKC 33 (33) MITBY SH",
             "frequency": 126975,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "40": {
             "callsign": "ZKC 40 (40) KIRKSVILLE LO",
             "frequency": 125250,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "41": {
             "callsign": "ZKC 41 (41) CHIEF SH",
             "frequency": 134725,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "42": {
             "callsign": "ZKC 42 (42) NAPOLEAN LO",
             "frequency": 125550,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "44": {
             "callsign": "ZKC 44 (44) TOPEKA LO",
             "frequency": 123800,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "46": {
             "callsign": "ZKC 46 (46) ST. JOESPH LO",
             "frequency": 127900,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "47": {
             "callsign": "ZKC 47 (47) TRAPR SH",
             "frequency": 125425,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "48": {
             "callsign": "ZKC 48 (48) EMPORIA LO",
             "frequency": 127725,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "50": {
             "callsign": "ZKC 50 (50) QUINCY LO",
             "frequency": 126225,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "52": {
             "callsign": "ZKC 52 (52) COLUMBIA LO",
             "frequency": 134500,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "53": {
             "callsign": "ZKC 53 (53) VICHY LO",
             "frequency": 128350,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "54": {
             "callsign": "ZKC 54 (54) JAZZ LO",
             "frequency": 127475,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "58": {
             "callsign": "ZKC 58 (58) VANDALIA LO",
             "frequency": 124300,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "59": {
             "callsign": "ZKC 59 (59) CAPITOL LO",
             "frequency": 127275,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "62": {
             "callsign": "ZKC 62 (62) STILLWATER LO",
             "frequency": 127800,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "66": {
             "callsign": "ZKC 66 (66) SALINA LO",
             "frequency": 120200,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "67": {
             "callsign": "ZKC 67 (67) RUSSELL LO",
             "frequency": 124200,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "68": {
             "callsign": "ZKC 68 (68) GARDEN CITY LO",
             "frequency": 125200,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "72": {
             "callsign": "ZKC 72 (72) VINTA LO",
             "frequency": 128600,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "84": {
             "callsign": "ZKC 84 (84) ST. LOUIS HI",
             "frequency": 133150,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "90": {
             "callsign": "ZKC 90 (90) BLUES SH",
             "frequency": 132875,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "92": {
             "callsign": "ZKC 92 (92) COLIE SH",
             "frequency": 133725,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "94": {
             "callsign": "ZKC 94 (94) FARGO SH",
             "frequency": 125725,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "97": {
             "callsign": "ZKC 97 (97) CHANNUTE SH",
             "frequency": 118125,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "98": {
             "callsign": "ZKC 98 (98) ROCK SH",
             "frequency": 133225,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         },
         "99": {
             "callsign": "ZKC 99 ZKC GUARD",
             "frequency": 121500,
-            "eram_facility": true,
             "radio_name": "Kansas City Center"
         }
     },
-    "stars_config": {
+    "config": {
         "coordination_fixes": {
             "MURAH": [
                 {
@@ -280,7 +235,8 @@
                     "from": "ZKC"
                 }
             ]
-        }
+        },
+        "configurations": {}
     },
     "handoff_ids": [
         {
@@ -351,31 +307,31 @@
         },
         {
             "id": "ZAB",
-            "eram_prefix": "A"
+            "prefix": "A"
         },
         {
             "id": "ZAU",
-            "eram_prefix": "G"
+            "prefix": "G"
         },
         {
             "id": "ZDV",
-            "eram_prefix": "D"
+            "prefix": "D"
         },
         {
             "id": "ZFW",
-            "eram_prefix": "F"
+            "prefix": "F"
         },
         {
             "id": "ZID",
-            "eram_prefix": "I"
+            "prefix": "I"
         },
         {
             "id": "ZME",
-            "eram_prefix": "M"
+            "prefix": "M"
         },
         {
             "id": "ZMP",
-            "eram_prefix": "P"
+            "prefix": "P"
         }
     ]
 }

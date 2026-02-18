@@ -31,15 +31,18 @@
         },
         {
             "id": "ZID",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZKC",
-            "eram_prefix": "K"
+            "prefix": "K"
         },
         {
             "id": "ZME",
-            "eram_prefix": "M"
+            "prefix": "M"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

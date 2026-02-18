@@ -16,7 +16,9 @@
             "radio_name": "Bignhamton Tower"
         }
     },
-    "stars_config": {},
+    "config": {
+        "configurations": {}
+    },
     "handoff_ids": [
         {
             "id": "AVP",
@@ -36,11 +38,11 @@
         },
         {
             "id": "ZBW",
-            "eram_prefix": "B"
+            "prefix": "B"
         },
         {
             "id": "ZNY",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

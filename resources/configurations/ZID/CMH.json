@@ -46,7 +46,9 @@
             "radio_name": "Columbus Approach"
         }
     },
-    "stars_config": {},
+    "config": {
+        "configurations": {}
+    },
     "handoff_ids": [
         {
             "id": "CLE",
@@ -70,15 +72,15 @@
         },
         {
             "id": "ZAU",
-            "eram_prefix": "G"
+            "prefix": "G"
         },
         {
             "id": "ZID",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZOB",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

@@ -255,10 +255,9 @@ func (h *sectorIDParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 	}
 
 	// Sector ID formats:
-	// - Single digit + letter: "1A", "2B" (most common)
-	// - Two digits: "15", "20" (for centers)
-	// - Facility + sector: "B20", "N2K"
-	// - Single letter (rare, for single-character shortcuts)
+	// - Two digits: "15", "20" (for same facility center sectors)
+	// - Facility + sector: "B20", "N2K", "NNN2K", "NN2G"
+	// - Single letter (rare, for single-character shortcuts; used more when fix pairs are a thing)
 
 	if len(field) == 2 && isNum(field[0]) && isAlpha(field[1]) {
 		// Standard format: digit + letter
@@ -268,10 +267,23 @@ func (h *sectorIDParser) Parse(ep *ERAMPane, ctx *panes.Context, input *CommandI
 		// Two-digit sector
 		return field, remaining, true, nil
 	}
-	if len(field) == 3 && isAlpha(field[0]) && isAlphaNum(field[1]) && isAlphaNum(field[2]) &&
-		(isNum(field[1]) || isNum(field[2])) {
-		// Facility + sector (e.g., B20, N2K)
-		return field, remaining, true, nil
+	if len(field) >= 3 && len(field) <= 5 {
+		// Facility (1-3 alpha chars) + sector (2 alphanumeric chars with at least one digit)
+		// e.g., "N2K" (1+2), "NN2G" (2+2), "NNN2K" (3+2)
+		pfx := len(field) - 2
+		sector := field[pfx:]
+		facility := field[:pfx]
+		allAlpha := true
+		for i := range facility {
+			if !isAlpha(facility[i]) {
+				allAlpha = false
+				break
+			}
+		}
+		if allAlpha && isAlphaNum(sector[0]) && isAlphaNum(sector[1]) &&
+			(isNum(sector[0]) || isNum(sector[1])) {
+			return field, remaining, true, nil
+		}
 	}
 	if len(field) == 1 && isAlpha(field[0]) {
 		// Single letter shortcut

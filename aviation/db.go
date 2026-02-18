@@ -999,7 +999,7 @@ func parseAdaptations() map[string]ERAMAdaptation {
 	type artccConfig struct {
 		StarsConfig struct {
 			CoordinationFixes map[string]AdaptationFixes `json:"coordination_fixes"`
-		} `json:"stars_config"`
+		} `json:"config"`
 	}
 
 	for _, entry := range entries {

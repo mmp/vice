@@ -22,7 +22,10 @@
         },
         {
             "id": "ZJX",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

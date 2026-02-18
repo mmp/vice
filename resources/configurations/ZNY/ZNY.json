@@ -3,209 +3,175 @@
         "08": {
             "callsign": "ZNY 08 BRNAN",
             "frequency": 124775,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "09": {
             "callsign": "ZNY 09 Westminster",
             "frequency": 134325,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "10": {
             "callsign": "ZNY 10 Harrisburg",
             "frequency": 133475,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "25": {
             "callsign": "ZNY 25 Modena",
             "frequency": 135450,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "26": {
             "callsign": "ZNY 26 Lancaster",
             "frequency": 120025,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "27": {
             "callsign": "ZNY 27 Middletown",
             "frequency": 120025,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "34": {
             "callsign": "ZNY 34 Elmira",
             "frequency": 132175,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "35": {
             "callsign": "ZNY 35 Huguenot",
             "frequency": 132600,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "36": {
             "callsign": "ZNY 36 Sparta",
             "frequency": 133150,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "39": {
             "callsign": "ZNY 39 PARKE",
             "frequency": 132100,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "42": {
             "callsign": "ZNY 42 East Texas",
             "frequency": 127175,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "49": {
             "callsign": "ZNY 49 Stony Fork",
             "frequency": 121320,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "50": {
             "callsign": "ZNY 50 Binghamton",
             "frequency": 133350,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "51": {
             "callsign": "ZNY 51 Lake Henry",
             "frequency": 134450,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "55": {
             "callsign": "ZNY 55 Yardley",
             "frequency": 134600,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "56": {
             "callsign": "ZNY 56 Kennedy",
             "frequency": 125325,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "57": {
             "callsign": "ZNY 57 TMU",
             "frequency": 136500,
-            "eram_facility": true,
             "radio_name": "ZNY TMU"
         },
         "65": {
             "callsign": "ZNY 65 JOBOC",
             "frequency": 125925,
-            "eram_facility": true,
             "radio_name": "New York Center"
         },
         "66": {
             "callsign": "ZNY 66 MANTA",
             "frequency": 128300,
-            "eram_facility": true,
             "radio_name": "New York Center"
         },
         "68": {
             "callsign": "ZNY 68 DIXIE",
             "frequency": 132100,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "72": {
             "callsign": "ZNY 72 Selinsgrove",
             "frequency": 127725,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "73": {
             "callsign": "ZNY 73 Philpsburg",
             "frequency": 132875,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "74": {
             "callsign": "ZNY 74 Broadway",
             "frequency": 132150,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "75": {
             "callsign": "ZNY 75 Milton",
             "frequency": 128570,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "80": {
             "callsign": "ZNY 80 COCOA",
             "frequency": 119100,
-            "eram_facility": true,
             "radio_name": "New York Center"
         },
         "81": {
             "callsign": "ZNY 81 HILDY",
             "frequency": 128500,
-            "eram_facility": true,
             "radio_name": "New York Center"
         },
         "82": {
             "callsign": "ZNY 82 PAEPR",
             "frequency": 126025,
-            "eram_facility": true,
             "radio_name": "New York Center"
         },
         "83": {
             "callsign": "ZNY 83 HANRI",
             "frequency": 133525,
-            "eram_facility": true,
             "radio_name": "New York Center"
         },
         "85": {
             "callsign": "ZNY 85 OHRYN",
             "frequency": 121125,
-            "eram_facility": true,
             "radio_name": "New York Center"
         },
         "86": {
             "callsign": "ZNY 86 Atlantic",
             "frequency": 133500,
-            "eram_facility": true,
             "radio_name": "New York Center"
         },
         "91": {
             "callsign": "ZNY 91 Williamsport",
             "frequency": 134800,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "92": {
             "callsign": "ZNY 92 Pottstown",
             "frequency": 124625,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "93": {
             "callsign": "ZNY 93 Swissdale",
             "frequency": 123625,
-            "eram_facility": true,
             "radio_name": "New York center"
         },
         "99": {
             "callsign": "ZNY 99 Guard",
             "frequency": 121500,
-            "eram_facility": true,
             "radio_name": "ZNY Guard"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {},
@@ -772,19 +738,19 @@
         },
         {
             "id": "ZBW",
-            "eram_prefix": "B"
+            "prefix": "B"
         },
         {
             "id": "ZDC",
-            "eram_prefix": "W"
+            "prefix": "W"
         },
         {
             "id": "ZJX",
-            "eram_prefix": "J"
+            "prefix": "J"
         },
         {
             "id": "ZOB",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

@@ -645,8 +645,8 @@ func (sp *STARSPane) drawTracks(ctx *panes.Context, transforms radar.ScopeTransf
 					// Explicitly specified scope_char overrides everything.
 					positionSymbol = ctrl.Scope
 				} else if ctrl.FacilityIdentifier != "" {
-					// For external facilities we use the facility id
-					positionSymbol = ctrl.FacilityIdentifier
+					// For external facilities we use the shortest facility id
+					positionSymbol = sim.ShortestPrefix(ctrl.FacilityIdentifier, ctx.Client.State.HandoffIDs)
 				} else if len(ctrl.Position) > 0 {
 					positionSymbol = ctrl.Position[len(ctrl.Position)-1:]
 				}

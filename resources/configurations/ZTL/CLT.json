@@ -61,7 +61,7 @@
             "radio_name": "Charlotte Tower"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "18L": {
                 "inbound_assignments": {
@@ -383,15 +383,15 @@
         },
         {
             "id": "ZDC",
-            "eram_prefix": "W"
+            "prefix": "W"
         },
         {
             "id": "ZJX",
-            "eram_prefix": "J"
+            "prefix": "J"
         },
         {
             "id": "ZTL",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

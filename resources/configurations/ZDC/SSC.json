@@ -11,7 +11,9 @@
             "radio_name": "Shaw Approach"
         }
     },
-    "stars_config": {},
+    "config": {
+        "configurations": {}
+    },
     "handoff_ids": [
         {
             "id": "CAE",
@@ -35,11 +37,11 @@
         },
         {
             "id": "ZJX",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZTL",
-            "eram_prefix": "T"
+            "prefix": "T"
         }
     ]
 }

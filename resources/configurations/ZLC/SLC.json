@@ -21,11 +21,13 @@
             "radio_name": "Salt Lake City Tower"
         }
     },
-    "stars_config": {},
+    "config": {
+        "configurations": {}
+    },
     "handoff_ids": [
         {
             "id": "ZLC",
-            "eram_prefix": "U"
+            "prefix": "U"
         }
     ]
 }

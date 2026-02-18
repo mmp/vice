@@ -45,7 +45,10 @@
         },
         {
             "id": "ZDC",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

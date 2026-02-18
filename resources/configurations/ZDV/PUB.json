@@ -6,11 +6,13 @@
             "radio_name": "Pueblo Tower"
         }
     },
-    "stars_config": {},
+    "config": {
+        "configurations": {}
+    },
     "handoff_ids": [
         {
             "id": "ZDV",
-            "eram_prefix": "D"
+            "prefix": "D"
         }
     ]
 }

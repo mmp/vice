@@ -135,7 +135,7 @@
             "frequency": 120600,
             "radio_name": "Ontario Tower"
         },
-        "3T1": {
+        "31": {
             "callsign": "SBD_TWR",
             "frequency": 119450,
             "radio_name": "San Bernadino Tower"
@@ -145,7 +145,7 @@
             "frequency": 119700,
             "radio_name": "Palm Springs Tower"
         },
-        "4TJ": {
+        "4J": {
             "callsign": "SNA_TWR",
             "frequency": 126800,
             "radio_name": "John Wayne Tower",
@@ -257,7 +257,7 @@
             "radio_name": "Fullerton Tower"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "01X": {
                 "inbound_assignments": {
@@ -1550,7 +1550,7 @@
         },
         {
             "id": "ZLA",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

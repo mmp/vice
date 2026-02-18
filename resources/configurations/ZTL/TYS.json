@@ -11,7 +11,9 @@
             "radio_name": "Knoxville Tower"
         }
     },
-    "stars_config": {},
+    "config": {
+        "configurations": {}
+    },
     "handoff_ids": [
         {
             "id": "AVL",
@@ -27,7 +29,7 @@
         },
         {
             "id": "ZTL",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

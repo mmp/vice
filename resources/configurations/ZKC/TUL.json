@@ -39,15 +39,18 @@
     "handoff_ids": [
         {
             "id": "ZFW",
-            "eram_prefix": "F"
+            "prefix": "F"
         },
         {
             "id": "ZKC",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZME",
-            "eram_prefix": "M"
+            "prefix": "M"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

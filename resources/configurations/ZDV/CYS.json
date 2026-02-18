@@ -11,7 +11,9 @@
             "radio_name": "Cheyenne Tower"
         }
     },
-    "stars_config": {},
+    "config": {
+        "configurations": {}
+    },
     "handoff_ids": [
         {
             "id": "D01",
@@ -19,7 +21,7 @@
         },
         {
             "id": "ZDV",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

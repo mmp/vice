@@ -48,15 +48,18 @@
         },
         {
             "id": "ZAU",
-            "eram_prefix": "G"
+            "prefix": "G"
         },
         {
             "id": "ZID",
-            "eram_prefix": "I"
+            "prefix": "I"
         },
         {
             "id": "ZOB",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

@@ -27,11 +27,14 @@
         },
         {
             "id": "ZHU",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZJX",
-            "eram_prefix": "J"
+            "prefix": "J"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

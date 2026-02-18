@@ -16,11 +16,13 @@
             "radio_name": "Memphis Tower"
         }
     },
-    "stars_config": {},
+    "config": {
+        "configurations": {}
+    },
     "handoff_ids": [
         {
             "id": "ZME",
-            "eram_prefix": "M"
+            "prefix": "M"
         }
     ]
 }

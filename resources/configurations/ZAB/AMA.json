@@ -19,7 +19,10 @@
     "handoff_ids": [
         {
             "id": "ZAB",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

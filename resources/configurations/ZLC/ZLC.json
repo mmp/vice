@@ -3,209 +3,175 @@
         "01": {
             "callsign": "ZLC 01 Salt Lake TMAC",
             "frequency": 123450,
-            "eram_facility": true,
             "radio_name": "Salt Lake Center"
         },
         "02": {
             "callsign": "ZLC 02 Salt Lake TMEC",
             "frequency": 123450,
-            "eram_facility": true,
             "radio_name": "Salt Lake Center"
         },
         "03": {
             "callsign": "ZLC 03 Salt Lake 3",
             "frequency": 119950,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "04": {
             "callsign": "ZLC 04",
             "frequency": 135775,
-            "eram_facility": true,
             "radio_name": "Salt Lake Center"
         },
         "05": {
             "callsign": "ZLC 05 Salt Lake 5",
             "frequency": 124350,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "06": {
             "callsign": "ZLC 06 Salt Lake 6",
             "frequency": 132400,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "07": {
             "callsign": "ZLC 07 Salt Lake 7",
             "frequency": 127700,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "08": {
             "callsign": "ZLC 08 Salt Lake 8",
             "frequency": 128350,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "11": {
             "callsign": "ZLC 11",
             "frequency": 127825,
-            "eram_facility": true,
             "radio_name": "Salt Lake Center"
         },
         "12": {
             "callsign": "ZLC 12 Salt Lake",
             "frequency": 127075,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "14": {
             "callsign": "ZLC 14 Salt Lake",
             "frequency": 127675,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "15": {
             "callsign": "ZLC 15 Salt Lake",
             "frequency": 127750,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "16": {
             "callsign": "ZLC 16 Salt Lake",
             "frequency": 133250,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "17": {
             "callsign": "ZLC 17 Salt Lake",
             "frequency": 126850,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "18": {
             "callsign": "ZLC 18 Salt Lake",
             "frequency": 125925,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "19": {
             "callsign": "ZLC 19 Salt Lake",
             "frequency": 133400,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "20": {
             "callsign": "ZLC 20 Salt Lake",
             "frequency": 119750,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "26": {
             "callsign": "ZLC 26 Salt Lake",
             "frequency": 120975,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "30": {
             "callsign": "ZLC 30 Salt Lake",
             "frequency": 128050,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "31": {
             "callsign": "ZLC 31 Salt Lake",
             "frequency": 118050,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "32": {
             "callsign": "ZLC 32 Salt Lake",
             "frequency": 133900,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "33": {
             "callsign": "ZLC 33",
             "frequency": 120275,
-            "eram_facility": true,
             "radio_name": "Salt Lake Center"
         },
         "34": {
             "callsign": "ZLC 34",
             "frequency": 127925,
-            "eram_facility": true,
             "radio_name": "Salt Lake Center"
         },
         "39": {
             "callsign": "ZLC 39 Salt Lake",
             "frequency": 132425,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "40": {
             "callsign": "ZLC 40",
             "frequency": 128550,
-            "eram_facility": true,
             "radio_name": "Salt Lake Center"
         },
         "41": {
             "callsign": "ZLC 41 Salt Lake",
             "frequency": 121150,
-            "eram_facility": true,
             "radio_name": "Salt Lake City Center"
         },
         "42": {
             "callsign": "ZLC 42",
             "frequency": 120725,
-            "eram_facility": true,
             "radio_name": "Salt Lake Center"
         },
         "43": {
             "callsign": "ZLC 43",
             "frequency": 132250,
-            "eram_facility": true,
             "radio_name": "Salt Lake Center"
         },
         "44": {
             "callsign": "ZLC 44",
             "frequency": 125575,
-            "eram_facility": true,
             "radio_name": "Salt Lake Center"
         },
         "45": {
             "callsign": "ZLC 45",
             "frequency": 134525,
-            "eram_facility": true,
             "radio_name": "Salt Lake Center"
         },
         "46": {
             "callsign": "ZLC 46",
             "frequency": 133600,
-            "eram_facility": true,
             "radio_name": "Salt Lake Center"
         },
         "47": {
             "callsign": "ZLC 47",
             "frequency": 133450,
-            "eram_facility": true,
             "radio_name": "Salt Lake Center"
         },
         "48": {
             "callsign": "ZLC 48 Salt Lake OMIC",
             "frequency": 121500,
-            "eram_facility": true,
             "radio_name": "Salt Lake Center"
         },
         "71": {
             "callsign": "ZLC 71 Salt Lake TMWC",
             "frequency": 123450,
-            "eram_facility": true,
             "radio_name": "Salt Lake Center"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -363,23 +329,23 @@
         },
         {
             "id": "ZDV",
-            "eram_prefix": "D"
+            "prefix": "D"
         },
         {
             "id": "ZLA",
-            "eram_prefix": "L"
+            "prefix": "L"
         },
         {
             "id": "ZMP",
-            "eram_prefix": "P"
+            "prefix": "P"
         },
         {
             "id": "ZOA",
-            "eram_prefix": "O"
+            "prefix": "O"
         },
         {
             "id": "ZSE",
-            "eram_prefix": "S"
+            "prefix": "S"
         }
     ]
 }

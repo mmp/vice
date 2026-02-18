@@ -1,73 +1,68 @@
 {
     "control_positions": {
-        "6N": {
+        "1N": {
             "callsign": "SAV_N_APP",
             "frequency": 125300,
             "radio_name": "Savannah Approach"
         },
-        "6W": {
+        "1W": {
             "callsign": "SAV_W_APP",
             "frequency": 118400,
             "radio_name": "Savannah Approach"
         },
-        "6S": {
+        "1S": {
             "callsign": "SAV_S_APP",
             "frequency": 120400,
             "radio_name": "Savannah Approach"
         },
-        "71B": {
-            "callsign": "NBC_APP",
-            "frequency": 125125,
-            "radio_name": "Beaufort Approach"
-        },
-        "61T": {
+        "1T": {
             "callsign": "SAV_TWR",
             "frequency": 125975,
             "radio_name": "Savannah Tower"
         },
-        "62T": {
+        "2T": {
             "callsign": "HXD_TWR",
             "frequency": 118975,
             "radio_name": "Hilton Head Tower"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "10X": {
                 "inbound_assignments": {
-                    "LOTTS": "6W",
-                    "PLZZZ": "6N",
-                    "SOOOP": "6N",
-                    "VIYAP": "6S"
+                    "LOTTS": "1W",
+                    "PLZZZ": "1N",
+                    "SOOOP": "1N",
+                    "VIYAP": "1S"
                 },
                 "departure_assignments": {
-                    "KHXD": "6N",
-                    "KSAV": "6N",
-                    "KTBR": "6W"
+                    "KHXD": "1N",
+                    "KSAV": "1N",
+                    "KTBR": "1W"
                 },
                 "default_consolidation": {
-                    "6N": [
-                        "6S",
-                        "6W"
+                    "1N": [
+                        "1S",
+                        "1W"
                     ]
                 }
             },
             "28X": {
                 "inbound_assignments": {
-                    "LOTTS": "6W",
-                    "PLZZZ": "6N",
-                    "SOOOP": "6N",
-                    "VIYAP": "6S"
+                    "LOTTS": "1W",
+                    "PLZZZ": "1N",
+                    "SOOOP": "1N",
+                    "VIYAP": "1S"
                 },
                 "departure_assignments": {
-                    "KHXD": "6N",
-                    "KSAV": "6W",
-                    "KTBR": "6W"
+                    "KHXD": "1N",
+                    "KSAV": "1W",
+                    "KTBR": "1W"
                 },
                 "default_consolidation": {
-                    "6N": [
-                        "6S",
-                        "6W"
+                    "1N": [
+                        "1S",
+                        "1W"
                     ]
                 }
             }
@@ -161,7 +156,7 @@
         },
         {
             "id": "ZJX",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

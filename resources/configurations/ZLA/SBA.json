@@ -36,7 +36,7 @@
             "radio_name": "Santa Maria Tower"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -176,11 +176,11 @@
         },
         {
             "id": "ZLA",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZOA",
-            "eram_prefix": "O"
+            "prefix": "O"
         }
     ]
 }

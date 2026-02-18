@@ -1821,6 +1821,7 @@ func drawScenarioInfoWindow(config *Config, c *client.ControlClient, activeRadar
 				imgui.TableNextColumn()
 				imgui.Text(ctrl.Callsign)
 				imgui.TableNextColumn()
+				imgui.TableNextColumn()
 				imgui.Text(fmt.Sprintf("%s (%s, %s)",
 					controllerDisplayLabel(c.State.Controllers, ctrl.PositionId()),
 					ctrl.Position,

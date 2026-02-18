@@ -42,15 +42,18 @@
         },
         {
             "id": "ZDC",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZID",
-            "eram_prefix": "I"
+            "prefix": "I"
         },
         {
             "id": "ZTL",
-            "eram_prefix": "T"
+            "prefix": "T"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

@@ -3,311 +3,260 @@
         "01": {
             "callsign": "ZDC 01 Elkins",
             "frequency": 128600,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "02": {
             "callsign": "ZDC 02 Casanova",
             "frequency": 133200,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "03": {
             "callsign": "ZDC 03 Moorefield",
             "frequency": 133275,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "04": {
             "callsign": "ZDC 04 Pinion",
             "frequency": 133975,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "05": {
             "callsign": "ZDC 05 Linden",
             "frequency": 133550,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "06": {
             "callsign": "ZDC 06 Hagerstown",
             "frequency": 134150,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "07": {
             "callsign": "ZDC 07 Wahoo",
             "frequency": 121925,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "09": {
             "callsign": "ZDC 09 Dixon",
             "frequency": 118825,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "10": {
             "callsign": "ZDC 10 Bay",
             "frequency": 132275,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "11": {
             "callsign": "ZDC 11 Calvert",
             "frequency": 133900,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "12": {
             "callsign": "ZDC 12 Brooke",
             "frequency": 126875,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "14": {
             "callsign": "ZDC 14 Irons",
             "frequency": 132950,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "15": {
             "callsign": "ZDC 15 Blue Ridge",
             "frequency": 133650,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "16": {
             "callsign": "ZDC 16 Hopewell",
             "frequency": 121875,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "17": {
             "callsign": "ZDC 17 Swann",
             "frequency": 134500,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "18": {
             "callsign": "ZDC 18 DuPont",
             "frequency": 132525,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "19": {
             "callsign": "ZDC 19 Woodstown",
             "frequency": 125450,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "20": {
             "callsign": "ZDC 20 Blackstone",
             "frequency": 127750,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "21": {
             "callsign": "ZDC 21 Dominion",
             "frequency": 118750,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "22": {
             "callsign": "ZDC 22 South Boston",
             "frequency": 124050,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "23": {
             "callsign": "ZDC 23 Cape Charles",
             "frequency": 132550,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "24": {
             "callsign": "ZDC 24 Cofield",
             "frequency": 123850,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "25": {
             "callsign": "ZDC 25 New Bern",
             "frequency": 135500,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "26": {
             "callsign": "ZDC 26 Sampson",
             "frequency": 135300,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "27": {
             "callsign": "ZDC 27 Liberty",
             "frequency": 135200,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "28": {
             "callsign": "ZDC 28 Rocky Mount",
             "frequency": 118475,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "29": {
             "callsign": "ZDC 29 Valley",
             "frequency": 134400,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "31": {
             "callsign": "ZDC 31 Azalea",
             "frequency": 135400,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "32": {
             "callsign": "ZDC 32 Gordonsville",
             "frequency": 133725,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "33": {
             "callsign": "ZDC 33 Franklin",
             "frequency": 132025,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "34": {
             "callsign": "ZDC 34 Norfolk",
             "frequency": 133825,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "35": {
             "callsign": "ZDC 35 Wilmington",
             "frequency": 124025,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "36": {
             "callsign": "ZDC 36 Raleigh",
             "frequency": 118925,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "37": {
             "callsign": "ZDC 37 Marlington",
             "frequency": 133025,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "38": {
             "callsign": "ZDC 38 Tar River",
             "frequency": 132225,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "39": {
             "callsign": "ZDC 39 Snow Hill",
             "frequency": 121375,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "42": {
             "callsign": "ZDC 42 Bryce",
             "frequency": 118025,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "50": {
             "callsign": "ZDC 50 Yorktown",
             "frequency": 120750,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "51": {
             "callsign": "ZDC 51 Casino",
             "frequency": 127700,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "52": {
             "callsign": "ZDC 52 Tech",
             "frequency": 133575,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "53": {
             "callsign": "ZDC 53 Kenton",
             "frequency": 132050,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "54": {
             "callsign": "ZDC 54 Salisbury",
             "frequency": 120975,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "58": {
             "callsign": "ZDC 58 Coyle",
             "frequency": 121025,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "59": {
             "callsign": "ZDC 59 Sea Isle",
             "frequency": 133125,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "60": {
             "callsign": "ZDC 60 Montebello",
             "frequency": 121675,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "72": {
             "callsign": "ZDC 72 Shenandoah",
             "frequency": 127925,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "90": {
             "callsign": "ZDC 90 Warn 107",
             "frequency": 135725,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "92": {
             "callsign": "ZDC 92 Warn 122",
             "frequency": 135875,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "97": {
             "callsign": "ZDC 97 Warn 72",
             "frequency": 118125,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "98": {
             "callsign": "ZDC 98 Warn 386",
             "frequency": 132150,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         },
         "99": {
             "callsign": "ZDC 99 TMU",
             "frequency": 132050,
-            "eram_facility": true,
             "radio_name": "Washington Center"
         }
     },
-    "stars_config": {
+    "config": {
         "coordination_fixes": {
             "DYLIN": [
                 {
@@ -435,7 +384,8 @@
                     "from": "ZDC"
                 }
             ]
-        }
+        },
+        "configurations": {}
     },
     "handoff_ids": [
         {
@@ -552,27 +502,27 @@
         },
         {
             "id": "ZBW",
-            "eram_prefix": "B"
+            "prefix": "B"
         },
         {
             "id": "ZID",
-            "eram_prefix": "I"
+            "prefix": "I"
         },
         {
             "id": "ZJX",
-            "eram_prefix": "J"
+            "prefix": "J"
         },
         {
             "id": "ZNY",
-            "eram_prefix": "N"
+            "prefix": "N"
         },
         {
             "id": "ZOB",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZTL",
-            "eram_prefix": "T"
+            "prefix": "T"
         }
     ]
 }

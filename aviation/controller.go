@@ -17,7 +17,7 @@ type Controller struct {
 	Frequency          Frequency `json:"frequency"`
 	Scope              string    `json:"scope_char"`    // Optional. If unset, facility id is used for external, last char of position for local.
 	FacilityIdentifier string    `json:"-"`             // Set programmatically by loadNeighborControllers (e.g. "N" in "N4P")
-	ERAMFacility       bool      `json:"eram_facility"` // To weed out N56 and N4P being the same fac
+	ERAMFacility       bool      `json:"-"` // Set at runtime from facility type; true for ARTCC controllers
 	Facility           string    `json:"facility"`      // So we can get the STARS facility from a controller
 	Area               int       `json:"-"`             // Auto-derived from first digit of Position (e.g., "1A" -> area 1)
 }

@@ -15,13 +15,13 @@
             "frequency": 119900,
             "radio_name": "Springs tower"
         },
-        "E": {
+        "1E": {
             "callsign": "COS_E_TWR",
             "frequency": 135150,
             "radio_name": "Springs tower"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -121,7 +121,7 @@
         },
         {
             "id": "ZDV",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

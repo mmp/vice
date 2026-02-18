@@ -1455,13 +1455,13 @@
     "scenarios": {
         "SAV Dep 10 Ldg 10/1 Sats North": {
             "airspace": {
-                "6N": [
+                "1N": [
                     "SAV_N_APP"
                 ],
-                "6W": [
+                "1W": [
                     "SAV_W_APP"
                 ],
-                "6S": [
+                "1S": [
                     "SAV_S_APP"
                 ]
             },
@@ -1534,13 +1534,13 @@
         },
         "SAV Dep 28 Ldg 28/19 Sats South": {
             "airspace": {
-                "6N": [
+                "1N": [
                     "SAV_N_APP"
                 ],
-                "6W": [
+                "1W": [
                     "SAV_W_APP"
                 ],
-                "6S": [
+                "1S": [
                     "SAV_S_APP"
                 ]
             },
@@ -1613,13 +1613,13 @@
         },
         "SAV Dep 10 Ldg 10/1 Sats North NBC Offline": {
             "airspace": {
-                "6N": [
+                "1N": [
                     "SAV_N_APP2"
                 ],
-                "6W": [
+                "1W": [
                     "SAV_W_APP"
                 ],
-                "6S": [
+                "1S": [
                     "SAV_S_APP"
                 ]
             },
@@ -1692,13 +1692,13 @@
         },
         "SAV Dep 28 Ldg 28/19 Sats South NBC Offline": {
             "airspace": {
-                "6N": [
+                "1N": [
                     "SAV_N_APP2"
                 ],
-                "6W": [
+                "1W": [
                     "SAV_W_APP"
                 ],
-                "6S": [
+                "1S": [
                     "SAV_S_APP"
                 ]
             },

@@ -12,7 +12,7 @@
             "scope_char": "1"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -63,7 +63,7 @@
     "handoff_ids": [
         {
             "id": "ZDV",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

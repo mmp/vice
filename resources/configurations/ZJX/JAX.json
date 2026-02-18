@@ -55,43 +55,43 @@
             "frequency": 118300,
             "radio_name": "Jacksonville Tower"
         },
-        "3CT": {
+        "3C": {
             "callsign": "Craig Tower",
             "frequency": 132100,
             "radio_name": "Jacksonville Tower"
         },
-        "3ST": {
+        "3S": {
             "callsign": "St. Augustine Tower",
             "frequency": 127625,
             "radio_name": "St. Augustine Tower"
         },
-        "3OT": {
+        "3O": {
             "callsign": "Ocala Tower",
             "frequency": 119250,
             "radio_name": "Ocala Tower"
         },
-        "3GT": {
+        "3G": {
             "callsign": "Gainesville Tower",
             "frequency": 119550,
             "radio_name": "Gainesville Tower"
         },
-        "3FT": {
+        "3F": {
             "callsign": "Cecil Tower",
             "frequency": 126100,
             "radio_name": "Cecil Tower"
         },
-        "3NT": {
+        "3N": {
             "callsign": "Navy Tower",
             "frequency": 125150,
             "radio_name": "Navy Tower"
         },
-        "3MT": {
+        "3M": {
             "callsign": "Mayport Tower",
             "frequency": 118750,
             "radio_name": "Navy Maypoint Tower"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "KJA": {
                 "inbound_assignments": {
@@ -796,11 +796,11 @@
         },
         {
             "id": "ZJX",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZMA",
-            "eram_prefix": "R"
+            "prefix": "R"
         }
     ]
 }

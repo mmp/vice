@@ -30,26 +30,23 @@
             "frequency": 128150,
             "radio_name": "Omaha Approach"
         },
-        "1": {
+        "1A": {
             "callsign": "OMA_TWR",
             "frequency": 132100,
-            "radio_name": "Omaha Tower",
-            "scope_char": "T"
+            "radio_name": "Omaha Tower"
         },
-        "2": {
+        "2T": {
             "callsign": "OFF_TWR",
             "frequency": 123700,
-            "radio_name": "Offutt Tower",
-            "scope_char": "T"
+            "radio_name": "Offutt Tower"
         },
-        "3": {
+        "3T": {
             "callsign": "LNK_TWR",
             "frequency": 118500,
-            "radio_name": "Lincoln Tower",
-            "scope_char": "T"
+            "radio_name": "Lincoln Tower"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "LNK": {
                 "inbound_assignments": {
@@ -356,7 +353,7 @@
         },
         {
             "id": "ZMP",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

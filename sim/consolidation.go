@@ -75,7 +75,7 @@ func (tc *TCPConsolidation) OwnedPositions() []ControlPosition {
 // The scenario JSON only contains config_id; all other fields are populated at runtime
 // from the referenced configuration in the facility config file.
 type ControllerConfiguration struct {
-	// ConfigId references a configuration in stars_config.configurations in the
+	// ConfigId references a configuration in config.configurations in the
 	// facility config file. This is the only field from JSON.
 	ConfigId string `json:"config_id"`
 

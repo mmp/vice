@@ -3,281 +3,235 @@
         "01": {
             "callsign": "ZTL 01 Rome Ultra Low",
             "frequency": 124500,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "02": {
             "callsign": "ZTL 02 Gunter Ultra High",
             "frequency": 126825,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "03": {
             "callsign": "ZTL 03 Gadsden High",
             "frequency": 128725,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "04": {
             "callsign": "ZTL 04 West Departure Low",
             "frequency": 134950,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "05": {
             "callsign": "ZTL 05 Dalas Low",
             "frequency": 132050,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "06": {
             "callsign": "ZTL 06 Rocket High",
             "frequency": 133175,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "08": {
             "callsign": "ZTL 08 Martin Lake Ultra High",
             "frequency": 125875,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "09": {
             "callsign": "ZTL 09 Tiroe Low",
             "frequency": 120450,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "10": {
             "callsign": "ZTL 10 LaGrange High",
             "frequency": 125575,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "11": {
             "callsign": "ZTL 11 Monroeville High",
             "frequency": 128025,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "12": {
             "callsign": "ZTL 12 Birmingham Low",
             "frequency": 127300,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "13": {
             "callsign": "ZTL 13 Montgomery Low",
             "frequency": 120550,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "14": {
             "callsign": "ZTL 14 Maxwell Low",
             "frequency": 132250,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "15": {
             "callsign": "ZTL 15 Baden Ultra-High",
             "frequency": 126775,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "16": {
             "callsign": "ZTL 16 East Departure Low",
             "frequency": 134200,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "18": {
             "callsign": "ZTL 18 Commerce Ultra Low",
             "frequency": 134800,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "19": {
             "callsign": "ZTL 19 Sinca Low",
             "frequency": 123950,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "20": {
             "callsign": "ZTL 20 Dublin High",
             "frequency": 126425,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "21": {
             "callsign": "ZTL 21 South Departure Low",
             "frequency": 134500,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "22": {
             "callsign": "ZTL 22 Macon High",
             "frequency": 119375,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "23": {
             "callsign": "ZTL 23 Clark Hill Ultra High",
             "frequency": 124325,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "24": {
             "callsign": "ZTL 24 Augusta Low",
             "frequency": 128100,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "27": {
             "callsign": "ZTL 27 Hampton Ultra High",
             "frequency": 125825,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "28": {
             "callsign": "ZTL 28 High Rock Ultra High",
             "frequency": 125025,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "29": {
             "callsign": "ZTL 29 Leeon Low",
             "frequency": 128800,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "30": {
             "callsign": "ZTL 30 Locas Low",
             "frequency": 133150,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "31": {
             "callsign": "ZTL 31 Unarm Low",
             "frequency": 135350,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "32": {
             "callsign": "ZTL 32 Spartanburg High",
             "frequency": 125625,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "33": {
             "callsign": "ZTL 33 Charlotte High",
             "frequency": 124425,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "34": {
             "callsign": "ZTL 34 Georgia High",
             "frequency": 120425,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "36": {
             "callsign": "ZTL 36 Allatoona Ultra High",
             "frequency": 124875,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "37": {
             "callsign": "ZTL 37 Crossville High",
             "frequency": 126675,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "38": {
             "callsign": "ZTL 38 North Departure Low",
             "frequency": 133100,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "39": {
             "callsign": "ZTL 39 Burne High",
             "frequency": 125925,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "40": {
             "callsign": "ZTL 40 Blue Ridge Ultra-High",
             "frequency": 134075,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "41": {
             "callsign": "ZTL 41 Hinch Mountain Low",
             "frequency": 133600,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "42": {
             "callsign": "ZTL 42 Salem High",
             "frequency": 120725,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "43": {
             "callsign": "ZTL 43 Pulaski High",
             "frequency": 132975,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "44": {
             "callsign": "ZTL 44 Shine Low",
             "frequency": 132625,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "45": {
             "callsign": "ZTL 45 Bristol Low",
             "frequency": 127850,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "47": {
             "callsign": "ZTL 47 Moped Low",
             "frequency": 134550,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "48": {
             "callsign": "ZTL 48 Wilkes Ultra Low",
             "frequency": 125150,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "49": {
             "callsign": "ZTL 49 Logen Low",
             "frequency": 121350,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "50": {
             "callsign": "ZTL 50 Lanier High",
             "frequency": 124375,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         },
         "98": {
             "callsign": "ZTL 98 TMEC",
             "frequency": 125550,
-            "eram_facility": true,
             "radio_name": "Atlanta Center "
         },
         "99": {
             "callsign": "ZTL 99 TMAC",
             "frequency": 125550,
-            "eram_facility": true,
             "radio_name": "Atlanta Center"
         }
     },
-    "stars_config": {
+    "config": {
         "coordination_fixes": {
             "CHPPR": [
                 {
@@ -559,7 +513,8 @@
                     "from": "ZTL"
                 }
             ]
-        }
+        },
+        "configurations": {}
     },
     "handoff_ids": [
         {
@@ -664,23 +619,23 @@
         },
         {
             "id": "ZDC",
-            "eram_prefix": "W"
+            "prefix": "W"
         },
         {
             "id": "ZHU",
-            "eram_prefix": "H"
+            "prefix": "H"
         },
         {
             "id": "ZID",
-            "eram_prefix": "I"
+            "prefix": "I"
         },
         {
             "id": "ZJX",
-            "eram_prefix": "J"
+            "prefix": "J"
         },
         {
             "id": "ZME",
-            "eram_prefix": "M"
+            "prefix": "M"
         }
     ]
 }

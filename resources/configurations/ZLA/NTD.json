@@ -11,7 +11,9 @@
             "radio_name": "Point Magu Tower"
         }
     },
-    "stars_config": {},
+    "config": {
+        "configurations": {}
+    },
     "handoff_ids": [
         {
             "id": "SBA",
@@ -23,7 +25,7 @@
         },
         {
             "id": "ZLA",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

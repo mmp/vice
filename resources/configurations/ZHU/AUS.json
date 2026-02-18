@@ -38,7 +38,7 @@
             "scope_char": "T"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -301,11 +301,11 @@
         },
         {
             "id": "ZFW",
-            "eram_prefix": "F"
+            "prefix": "F"
         },
         {
             "id": "ZHU",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

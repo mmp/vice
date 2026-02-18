@@ -48,7 +48,10 @@
         },
         {
             "id": "ZMA",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

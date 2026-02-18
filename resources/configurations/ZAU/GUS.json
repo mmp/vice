@@ -39,11 +39,14 @@
         },
         {
             "id": "ZAU",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZID",
-            "eram_prefix": "I"
+            "prefix": "I"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

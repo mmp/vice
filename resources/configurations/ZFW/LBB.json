@@ -14,7 +14,10 @@
     "handoff_ids": [
         {
             "id": "ZFW",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

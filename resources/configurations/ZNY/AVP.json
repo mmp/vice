@@ -16,6 +16,9 @@
             "radio_name": "Wilkes-Barre Approach"
         }
     },
+    "config": {
+        "configurations": {}
+    },
     "handoff_ids": [
         {
             "id": "ABE",
@@ -35,11 +38,11 @@
         },
         {
             "id": "ZBW",
-            "eram_prefix": "B"
+            "prefix": "B"
         },
         {
             "id": "ZNY",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

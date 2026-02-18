@@ -38,15 +38,18 @@
         },
         {
             "id": "ZFW",
-            "eram_prefix": "F"
+            "prefix": "F"
         },
         {
             "id": "ZKC",
-            "eram_prefix": "K"
+            "prefix": "K"
         },
         {
             "id": "ZME",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

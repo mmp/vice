@@ -130,5 +130,8 @@
     "Longitude": -84.4792,
     "Name": "Atlanta Center",
     "Radius": 279
+  },
+  "ZAE": {
+    "Name": "Academy Center"
   }
 }

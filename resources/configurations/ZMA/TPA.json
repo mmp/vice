@@ -65,7 +65,7 @@
             "scope_char": "T"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "FIN": {
                 "inbound_assignments": {
@@ -274,11 +274,11 @@
         },
         {
             "id": "ZJX",
-            "eram_prefix": "J"
+            "prefix": "J"
         },
         {
             "id": "ZMA",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

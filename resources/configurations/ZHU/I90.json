@@ -90,44 +90,38 @@
             "frequency": 118700,
             "radio_name": "Hobby Tower"
         },
-        "1": {
+        "4S": {
             "callsign": "SGR_TWR",
             "frequency": 118650,
-            "radio_name": "Sugar Land Tower",
-            "scope_char": "T"
+            "radio_name": "Sugar Land Tower"
         },
-        "2": {
+        "4Q": {
             "callsign": "DWH_TWR",
             "frequency": 118400,
-            "radio_name": "Hooks Tower",
-            "scope_char": "T"
+            "radio_name": "Hooks Tower"
         },
-        "3": {
+        "4V": {
             "callsign": "CXO_TWR",
             "frequency": 124125,
-            "radio_name": "Conroe Tower",
-            "scope_char": "R"
+            "radio_name": "Conroe Tower"
         },
-        "4": {
+        "4L": {
             "callsign": "CLL_TWR",
             "frequency": 118500,
-            "radio_name": "Easterwood Tower",
-            "scope_char": "T"
+            "radio_name": "Easterwood Tower"
         },
-        "5": {
+        "3T": {
             "callsign": "BPT_TWR",
             "frequency": 119500,
-            "radio_name": "Beaumont Tower",
-            "scope_char": "T"
+            "radio_name": "Beaumont Tower"
         },
-        "6": {
+        "4G": {
             "callsign": "GLS_TWR",
             "frequency": 120575,
-            "radio_name": "Galveston Tower",
-            "scope_char": "T"
+            "radio_name": "Galveston Tower"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -438,11 +432,11 @@
         },
         {
             "id": "ZFW",
-            "eram_prefix": "F"
+            "prefix": "F"
         },
         {
             "id": "ZHU",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

@@ -5,11 +5,6 @@
             "frequency": 123456,
             "radio_name": "INSTRUCTOR"
         },
-        "RPO": {
-            "callsign": "RPO",
-            "frequency": 123457,
-            "radio_name": "RPO"
-        },
         "1L": {
             "callsign": "D10_L_DEP",
             "frequency": 118550,
@@ -156,7 +151,7 @@
             "scope_char": "T"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "10X": {
                 "inbound_assignments": {
@@ -1105,7 +1100,7 @@
         },
         {
             "id": "ZFW",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

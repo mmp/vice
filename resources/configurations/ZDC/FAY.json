@@ -21,7 +21,9 @@
             "radio_name": "Fayetteville Tower"
         }
     },
-    "stars_config": {},
+    "config": {
+        "configurations": {}
+    },
     "handoff_ids": [
         {
             "id": "CLT",
@@ -53,15 +55,15 @@
         },
         {
             "id": "ZDC",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZJX",
-            "eram_prefix": "J"
+            "prefix": "J"
         },
         {
             "id": "ZTL",
-            "eram_prefix": "T"
+            "prefix": "T"
         }
     ]
 }

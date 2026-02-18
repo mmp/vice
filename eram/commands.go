@@ -391,10 +391,29 @@ func (ep *ERAMPane) lookupControllerForID(ctx *panes.Context, controller string,
 		return nil, ErrERAMSectorNotActive
 	}
 
+	// Try exact match first.
 	for _, control := range ctx.Client.State.Controllers {
 		if control.ERAMID() == controller {
 			return control, nil
 		}
 	}
+
+	// Try resolving a short prefix to a longer one. For example, "N5W"
+	// should match a controller with ERAMID "NNN5W" if "N" is a short
+	// prefix for the same facility as "NNN".
+	for _, control := range ctx.Client.State.Controllers {
+		fid := control.FacilityIdentifier
+		pos := control.Position
+		if fid == "" || len(pos) == 0 || len(controller) <= len(pos) {
+			continue
+		}
+		// Check if the input ends with this controller's position
+		// and the input prefix is itself a prefix of the facility identifier.
+		inputPrefix := controller[:len(controller)-len(pos)]
+		if controller[len(inputPrefix):] == pos && strings.HasPrefix(fid, inputPrefix) {
+			return control, nil
+		}
+	}
+
 	return nil, ErrERAMSectorNotActive
 }

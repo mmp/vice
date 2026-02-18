@@ -3,197 +3,165 @@
         "00": {
             "callsign": "ZID 00 ZID GUARD",
             "frequency": 121500,
-            "eram_facility": true,
             "radio_name": "Indianapolis Center"
         },
         "01": {
             "callsign": "ZID 01 ZID TMU",
             "frequency": 123450,
-            "eram_facility": true,
             "radio_name": "ZID TMU"
         },
         "17": {
             "callsign": "ZID 17 Evansville",
             "frequency": 128300,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "18": {
             "callsign": "ZID 18 Nabb",
             "frequency": 124775,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "19": {
             "callsign": "ZID 19 New Hope",
             "frequency": 121175,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "20": {
             "callsign": "ZID 20 Lexington",
             "frequency": 126375,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "21": {
             "callsign": "ZID 21 London",
             "frequency": 124625,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "22": {
             "callsign": "ZID 22 Covington",
             "frequency": 123925,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "24": {
             "callsign": "ZID 24 Parkersburg",
             "frequency": 125550,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "25": {
             "callsign": "ZID 25 Hazard",
             "frequency": 126575,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "26": {
             "callsign": "ZID 26 River",
             "frequency": 124225,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "30": {
             "callsign": "ZID 30 Columbus",
             "frequency": 124450,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "31": {
             "callsign": "ZID 31 Lytle",
             "frequency": 120475,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "32": {
             "callsign": "ZID 32 Rosewood",
             "frequency": 128075,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "33": {
             "callsign": "ZID 33 Muncie",
             "frequency": 124525,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "34": {
             "callsign": "ZID 34 Shelbyville",
             "frequency": 119550,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "35": {
             "callsign": "ZID 35 Terre Haute",
             "frequency": 132200,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "66": {
             "callsign": "ZID 66 Madison",
             "frequency": 128375,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "69": {
             "callsign": "ZID 69 Pike",
             "frequency": 135575,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "74": {
             "callsign": "ZID 74 Yeager",
             "frequency": 135425,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "75": {
             "callsign": "ZID 75 Rushville",
             "frequency": 125125,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "77": {
             "callsign": "ZID 77 University",
             "frequency": 125075,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "80": {
             "callsign": "ZID 80 King",
             "frequency": 134175,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "81": {
             "callsign": "ZID 81 Pocket City",
             "frequency": 132525,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "82": {
             "callsign": "ZID 82 Louisville",
             "frequency": 133050,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "83": {
             "callsign": "ZID 83 Falmouth",
             "frequency": 128225,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "84": {
             "callsign": "ZID 84 Rebel",
             "frequency": 134675,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "85": {
             "callsign": "ZID 85 Charleston",
             "frequency": 119525,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "86": {
             "callsign": "ZID 86 Beckley",
             "frequency": 124575,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "87": {
             "callsign": "ZID 87 Appleton",
             "frequency": 132825,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "88": {
             "callsign": "ZID 88 Dayton",
             "frequency": 120575,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         },
         "89": {
             "callsign": "ZID 89 Indy",
             "frequency": 133425,
-            "eram_facility": true,
             "radio_name": "Indy Center"
         }
     },
-    "stars_config": {
+    "config": {
         "coordination_fixes": {
             "BABNE": [
                 {
@@ -265,7 +233,8 @@
                     "from": "ZID"
                 }
             ]
-        }
+        },
+        "configurations": {}
     },
     "handoff_ids": [
         {
@@ -360,27 +329,27 @@
         },
         {
             "id": "ZAU",
-            "eram_prefix": "G"
+            "prefix": "G"
         },
         {
             "id": "ZDC",
-            "eram_prefix": "W"
+            "prefix": "W"
         },
         {
             "id": "ZKC",
-            "eram_prefix": "K"
+            "prefix": "K"
         },
         {
             "id": "ZME",
-            "eram_prefix": "M"
+            "prefix": "M"
         },
         {
             "id": "ZOB",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZTL",
-            "eram_prefix": "T"
+            "prefix": "T"
         }
     ]
 }

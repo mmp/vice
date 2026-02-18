@@ -18,7 +18,10 @@
         },
         {
             "id": "ZMA",
-            "eram_prefix": "R"
+            "prefix": "R"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

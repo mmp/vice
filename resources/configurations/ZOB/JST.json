@@ -11,7 +11,9 @@
             "radio_name": "Johnstown Tower"
         }
     },
-    "stars_config": {},
+    "config": {
+        "configurations": {}
+    },
     "handoff_ids": [
         {
             "id": "PCT",
@@ -19,15 +21,15 @@
         },
         {
             "id": "ZDC",
-            "eram_prefix": "W"
+            "prefix": "W"
         },
         {
             "id": "ZNY",
-            "eram_prefix": "N"
+            "prefix": "N"
         },
         {
             "id": "ZOB",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

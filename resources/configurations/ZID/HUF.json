@@ -44,15 +44,18 @@
         },
         {
             "id": "ZAU",
-            "eram_prefix": "G"
+            "prefix": "G"
         },
         {
             "id": "ZID",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZKC",
-            "eram_prefix": "K"
+            "prefix": "K"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

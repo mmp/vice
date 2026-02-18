@@ -27,7 +27,7 @@
             "scope_char": "L"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -84,11 +84,11 @@
         },
         {
             "id": "ZKC",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZME",
-            "eram_prefix": "M"
+            "prefix": "M"
         }
     ]
 }

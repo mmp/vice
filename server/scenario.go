@@ -108,11 +108,11 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		return
 	}
 
-	// Resolve config_id to get assignments and consolidation from stars_config.configurations
+	// Resolve config_id to get assignments and consolidation from config.configurations
 	if s.ControllerConfiguration.ConfigId == "" {
 		e.ErrorString("\"config_id\" must be specified in \"configuration\"")
 	} else if config, ok := sg.FacilityAdaptation.Configurations[s.ControllerConfiguration.ConfigId]; !ok {
-		e.ErrorString("\"config_id\" %q not found in \"stars_config\" \"configurations\"", s.ControllerConfiguration.ConfigId)
+		e.ErrorString("\"config_id\" %q not found in \"config\" \"configurations\"", s.ControllerConfiguration.ConfigId)
 	} else {
 		// Copy assignments from the referenced configuration
 		s.ControllerConfiguration.InboundAssignments = maps.Clone(config.InboundAssignments)
@@ -128,7 +128,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		if rootErr == nil {
 			for ctrl := range s.Airspace {
 				if !slices.Contains(allPos, ctrl) {
-					if _, inFacility := sg.ControlPositions[ctrl]; inFacility {
+					if _, inFacility := sg.ControlPositions[sg.resolveController(ctrl)]; inFacility {
 						s.ControllerConfiguration.DefaultConsolidation[root] = append(
 							s.ControllerConfiguration.DefaultConsolidation[root], ctrl)
 					}
@@ -143,12 +143,16 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 	// positions that don't exist in the loaded controller set.
 	if s.ControllerConfiguration != nil {
 		for flow, tcp := range s.ControllerConfiguration.InboundAssignments {
-			if _, ok := sg.ControlPositions[tcp]; !ok {
+			if resolved := sg.resolveController(tcp); resolved != tcp {
+				s.ControllerConfiguration.InboundAssignments[flow] = resolved
+			} else if _, ok := sg.ControlPositions[tcp]; !ok {
 				delete(s.ControllerConfiguration.InboundAssignments, flow)
 			}
 		}
 		for spec, tcp := range s.ControllerConfiguration.DepartureAssignments {
-			if _, ok := sg.ControlPositions[tcp]; !ok {
+			if resolved := sg.resolveController(tcp); resolved != tcp {
+				s.ControllerConfiguration.DepartureAssignments[spec] = resolved
+			} else if _, ok := sg.ControlPositions[tcp]; !ok {
 				delete(s.ControllerConfiguration.DepartureAssignments, spec)
 			}
 		}
@@ -216,6 +220,7 @@ func (s *scenario) PostDeserialize(sg *scenarioGroup, e *util.ErrorLogger, manif
 		if tcp == "" {
 			return
 		}
+		tcp = sg.resolveController(tcp)
 		if _, ok := sg.ControlPositions[tcp]; !ok {
 			e.ErrorString("controller %q referenced in route/flow but not defined in facility configuration", tcp)
 			return
@@ -579,6 +584,101 @@ func (sg *scenarioGroup) Locate(s string) (math.Point2LL, bool) {
 	return math.Point2LL{}, false
 }
 
+// resolveController normalizes a TCP that may use a short prefix (e.g.
+// "N2K") to the canonical long-prefix form (e.g. "NNN2K") stored in
+// ControlPositions.  If tcp is already present or no expansion matches,
+// it is returned unchanged.
+func (sg *scenarioGroup) resolveController(tcp sim.TCP) sim.TCP {
+	if _, ok := sg.ControlPositions[tcp]; ok {
+		return tcp
+	}
+	s := string(tcp)
+	for _, hid := range sg.HandoffIDs {
+		// Find the canonical (longest) prefix and collect shorter ones.
+		canonical, shorter := "", []string(nil)
+		for _, id := range []string{hid.StarsID, hid.TwoCharStarsID, hid.SingleCharStarsID, hid.Prefix} {
+			if id == "" {
+				continue
+			}
+			if canonical == "" {
+				canonical = id
+			} else {
+				shorter = append(shorter, id)
+			}
+		}
+		for _, short := range shorter {
+			if strings.HasPrefix(s, short) {
+				if resolved := sim.TCP(canonical + s[len(short):]); sg.ControlPositions[resolved] != nil {
+					return resolved
+				}
+			}
+		}
+	}
+	return tcp
+}
+
+// resolveControllerRefs walks all airports and inbound flows, resolving
+// short-prefix controller references to their canonical (longest-prefix)
+// form in place. This must be called before airport/flow PostDeserialize
+// so that validation in the aviation package finds the controllers.
+func (sg *scenarioGroup) resolveControllerRefs() {
+	resolve := func(cp av.ControlPosition) av.ControlPosition {
+		return av.ControlPosition(sg.resolveController(sim.TCP(cp)))
+	}
+	resolveWaypoints := func(wps av.WaypointArray) {
+		for i := range wps {
+			if wps[i].HandoffController != "" {
+				wps[i].HandoffController = resolve(wps[i].HandoffController)
+			}
+			if wps[i].PointOut != "" {
+				wps[i].PointOut = resolve(wps[i].PointOut)
+			}
+		}
+	}
+
+	for _, ap := range sg.Airports {
+		if ap.DepartureController != "" {
+			ap.DepartureController = resolve(ap.DepartureController)
+		}
+		for _, exitRoutes := range ap.DepartureRoutes {
+			for _, route := range exitRoutes {
+				if route.HandoffController != "" {
+					route.HandoffController = resolve(route.HandoffController)
+				}
+				if route.DepartureController != "" {
+					route.DepartureController = resolve(route.DepartureController)
+				}
+				resolveWaypoints(route.Waypoints)
+			}
+		}
+		for _, appr := range ap.Approaches {
+			for _, wps := range appr.Waypoints {
+				resolveWaypoints(wps)
+			}
+		}
+	}
+
+	for _, flow := range sg.InboundFlows {
+		for i := range flow.Arrivals {
+			if flow.Arrivals[i].InitialController != "" {
+				flow.Arrivals[i].InitialController = resolve(flow.Arrivals[i].InitialController)
+			}
+			resolveWaypoints(flow.Arrivals[i].Waypoints)
+			for _, rwyWps := range flow.Arrivals[i].RunwayWaypoints {
+				for _, wps := range rwyWps {
+					resolveWaypoints(wps)
+				}
+			}
+		}
+		for i := range flow.Overflights {
+			if flow.Overflights[i].InitialController != "" {
+				flow.Overflights[i].InitialController = resolve(flow.Overflights[i].InitialController)
+			}
+			resolveWaypoints(flow.Overflights[i].Waypoints)
+		}
+	}
+}
+
 func (sg *scenarioGroup) Similar(fix string) []string {
 	d1, d2 := util.SelectInTwoEdits(fix, maps.Keys(sg.Fixes), nil, nil)
 	d1, d2 = util.SelectInTwoEdits(fix, maps.Keys(av.DB.Navaids), d1, d2)
@@ -599,7 +699,7 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 	// Rewrite legacy files to be TCP-based.
 	sg.rewriteControllers(e)
 
-	// stars_config items. This goes first because we need to initialize
+	// config items. This goes first because we need to initialize
 	// Center (and thence NmPerLongitude) ASAP.
 
 	// Airports that (may) have controlled controlled departures or
@@ -729,6 +829,10 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 		sg.MagneticVariation = mvar + sg.MagneticAdjustment
 	}
 
+	// Resolve short-prefix controller references (e.g. "N5W" -> "NNN5W")
+	// before airport/flow validation so they find the canonical entries.
+	sg.resolveControllerRefs()
+
 	if len(sg.Airports) == 0 {
 		e.ErrorString("No \"airports\" specified in scenario group")
 	}
@@ -761,46 +865,16 @@ func (sg *scenarioGroup) PostDeserialize(e *util.ErrorLogger, catalogs map[strin
 		e.ErrorString("default scenario %q not found in \"scenarios\"", sg.DefaultScenario)
 	}
 
+	// Check that neighbor controllers loaded at runtime have facility_id set.
+	// (Core controller validation happens in FacilityConfig.PostDeserialize.)
 	for position, ctrl := range sg.ControlPositions {
-		e.Push("Controller " + string(position))
-
-		if ctrl.Frequency < 118000 || ctrl.Frequency > 138000 {
-			e.ErrorString("invalid frequency: %6.3f", float32(ctrl.Frequency)/1000)
-		}
-		if ctrl.RadioName == "" {
-			e.ErrorString("no \"radio_name\" specified")
-		}
-
-		if !ctrl.ERAMFacility && strings.HasSuffix(strings.ToLower(ctrl.RadioName), "center") {
-			e.ErrorString("missing \"eram_facility\" for center controller")
-		}
 		if ctrl.ERAMFacility && sg.ARTCC == "" {
 			if ctrl.FacilityIdentifier == "" {
-				e.ErrorString("must specify \"facility_id\" if \"eram_facility\" is set")
-			}
-			if len(ctrl.PositionId()) != 3 {
-				e.ErrorString("must specify both facility and 2-digit numeric sector for center controller")
-			}
-			if _, err := strconv.Atoi(ctrl.Position); err != nil {
-				e.ErrorString("center controller position must be a 2-digit number")
+				e.Push("Controller " + string(position))
+				e.ErrorString("must specify \"facility_id\" for center controller in TRACON scenario group")
+				e.Pop()
 			}
 		}
-
-		// Is an explicitly-given scope_char unnecessary?
-		if ctrl.Scope != "" {
-			if ctrl.FacilityIdentifier == ctrl.Scope {
-				e.ErrorString("\"scope_char\" is redundant since it matches \"facility_id\"")
-			}
-			if !ctrl.ERAMFacility && ctrl.FacilityIdentifier == "" && len(ctrl.Position) > 0 &&
-				ctrl.Scope == string(ctrl.Position[len(ctrl.Position)-1]) {
-				e.ErrorString("\"scope_char\" is redundant since it matches the last character of position")
-			}
-		}
-		if len(ctrl.Scope) > 1 {
-			e.ErrorString("\"scope_char\" may only be a single character")
-		}
-
-		e.Pop()
 	}
 
 	for name, flow := range sg.InboundFlows {
@@ -878,9 +952,6 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	/*
 		prefixToFacility := make(map[string]string)
 		for _, hid := range sg.HandoffIDs {
-			if hid.ERAMPrefix != "" {
-				prefixToFacility[hid.ERAMPrefix] = hid.ID
-			}
 			if hid.SingleCharStarsID != "" {
 				prefixToFacility[hid.SingleCharStarsID] = hid.ID
 			}
@@ -940,57 +1011,16 @@ func (sg *scenarioGroup) rewriteControllers(e *util.ErrorLogger) {
 	*/
 }
 
+// PostDeserializeFacilityAdaptation validates FacilityAdaptation fields that
+// require the scenario group's Locator, manifest, or airport data. Self-contained
+// validation is done earlier in FacilityAdaptation.ValidateConfig.
 func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorLogger, sg *scenarioGroup,
 	manifest *sim.VideoMapManifest) {
 	defer e.CheckDepth(e.CurrentDepth())
 
-	e.Push("stars_config")
+	e.Push("config")
 
-	// Validate configurations (controller assignments)
-	if s.Configurations == nil {
-		e.ErrorString("must provide \"configurations\"")
-	}
-	for configId, config := range s.Configurations {
-		e.Push("configurations: " + configId)
-
-		// Config IDs must be max 3 characters
-		if len(configId) > 3 {
-			e.ErrorString("configuration id %q must be at most 3 characters", configId)
-		}
-
-		// Validate that all TCPs in assignments exist in control_positions
-		for flow, tcp := range config.InboundAssignments {
-			if _, ok := sg.ControlPositions[tcp]; !ok {
-				e.ErrorString("inbound_assignments: flow %q assigns to %q which is not in \"control_positions\"", flow, tcp)
-			}
-		}
-		for spec, tcp := range config.DepartureAssignments {
-			if _, ok := sg.ControlPositions[tcp]; !ok {
-				e.ErrorString("departure_assignments: %q assigns to %q which is not in \"control_positions\"", spec, tcp)
-			}
-		}
-
-		// Validate DefaultConsolidation TCPs
-		for parent, children := range config.DefaultConsolidation {
-			if _, ok := sg.ControlPositions[parent]; !ok {
-				e.ErrorString("default_consolidation: parent %q is not in \"control_positions\"", parent)
-			}
-			for _, child := range children {
-				if _, ok := sg.ControlPositions[child]; !ok {
-					e.ErrorString("default_consolidation: child %q (under %q) is not in \"control_positions\"", child, parent)
-				}
-			}
-		}
-
-		e.Pop()
-	}
-
-	// Video maps
-	for m := range s.VideoMapLabels {
-		if !slices.Contains(s.VideoMapNames, m) {
-			e.ErrorString("video map %q in \"map_labels\" is not in \"stars_maps\"", m)
-		}
-	}
+	// Video maps vs manifest.
 	if manifest != nil {
 		for _, m := range s.VideoMapNames {
 			if m != "" && !manifest.HasMap(m) {
@@ -999,6 +1029,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		}
 	}
 
+	// Controller config centers and video maps (require Locator + manifest).
 	if len(s.ControllerConfigs) > 0 {
 		for ctrl, config := range s.ControllerConfigs {
 			if config.CenterString != "" {
@@ -1026,40 +1057,10 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 					}
 				}
 			}
-
-			if ctrl, ok := sg.ControlPositions[sim.TCP(tcp)]; !ok {
-				e.ErrorString("Control position %q in \"controller_configs\" not defined in \"control_positions\"", tcp)
-			} else if ctrl.IsExternal() {
-				e.ErrorString("Control position %q in \"controller_configs\" is external and not in this TRACON.", tcp)
-			}
-		}
-	} else if len(s.VideoMapNames) == 0 {
-		e.ErrorString("Must specify either \"controller_configs\" or \"stars_maps\"")
-	}
-
-	// Validate area configs if present.
-	if len(s.AreaConfigs) > 0 {
-		// Collect all area numbers that controllers belong to.
-		usedAreas := make(map[int]bool)
-		for _, ctrl := range sg.ControlPositions {
-			if ctrl.Area != 0 {
-				usedAreas[ctrl.Area] = true
-			}
-		}
-		for areaNum := range s.AreaConfigs {
-			if !usedAreas[areaNum] {
-				e.ErrorString("area_configs: area %d has no controllers assigned to it", areaNum)
-			}
 		}
 	}
 
-	if s.Range == 0 {
-		s.Range = 50
-	}
-	if s.HandoffAcceptFlashDuration == 0 {
-		s.HandoffAcceptFlashDuration = 5
-	}
-
+	// Radar sites (require Locator).
 	for name, rs := range s.RadarSites {
 		e.Push("Radar site " + name)
 		if p, ok := sg.Locate(rs.PositionString); rs.PositionString == "" || !ok {
@@ -1076,6 +1077,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		e.Pop()
 	}
 
+	// Coordination fixes (require Locator + DB).
 	for fix, fixes := range s.CoordinationFixes {
 		e.Push("Coordination fix " + fix)
 		// FIXME(mtrokel)
@@ -1111,6 +1113,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		e.Pop()
 	}
 
+	// Single char AIDs (require sg.Airports).
 	for char, airport := range s.SingleCharAIDs {
 		e.Push("Airport ID " + char)
 		if _, ok := sg.Airports[airport]; !ok {
@@ -1118,49 +1121,8 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		}
 		e.Pop()
 	}
-	// if s.BeaconBank > 7 || s.BeaconBank < 1 {
-	// 	e.ErrorString("beacon bank \"%v\" is invalid. Must be between 1 and 7", s.BeaconBank)
-	// }
 
-	if s.PDB.SplitGSAndCWT && s.PDB.ShowAircraftType {
-		e.ErrorString("Both \"split_gs_and_cwt\" and \"show_aircraft_type\" cannot be specified for \"pdb\" adaption.")
-	}
-	if s.PDB.SplitGSAndCWT && s.PDB.HideGroundspeed {
-		e.ErrorString("Both \"split_gs_and_cwt\" and \"hide_gs\" cannot be specified for \"pdb\" adaption.")
-	}
-	if s.PDB.DisplayCustomSPCs && len(s.CustomSPCs) == 0 {
-		e.ErrorString("\"display_custom_spcs\" was set but none were defined in \"custom_spcs\".")
-	}
-
-	disp := make(map[string]any)
-	if s.Scratchpad1.DisplayExitFix {
-		disp["display_exit_fix"] = nil
-	}
-	if s.Scratchpad1.DisplayExitFix1 {
-		disp["display_exit_fix_1"] = nil
-	}
-	if s.Scratchpad1.DisplayExitGate {
-		disp["display_exit_gate"] = nil
-	}
-	if s.Scratchpad1.DisplayAltExitGate {
-		disp["display_alternate_exit_gate"] = nil
-	}
-	if len(disp) > 1 {
-		d := util.SortedMapKeys(disp)
-		d = util.MapSlice(d, func(s string) string { return `"` + s + `"` })
-		e.ErrorString("Cannot specify %s for \"scratchpad1\"", strings.Join(d, " and "))
-	}
-
-	for _, spc := range s.CustomSPCs {
-		if len(spc) != 2 || spc[0] < 'A' || spc[0] > 'Z' || spc[1] < 'A' || spc[1] > 'Z' {
-			e.ErrorString("Invalid \"custom_spcs\" code %q: must be two characters between A-Z", spc)
-		}
-		if av.StringIsSPC(spc) {
-			e.ErrorString("%q is a standard SPC already", spc)
-		}
-	}
-
-	// Significant points
+	// Significant points (require Locator).
 	e.Push("\"significant_points\"")
 	if s.SignificantPoints == nil {
 		s.SignificantPoints = make(map[string]sim.SignificantPoint)
@@ -1195,7 +1157,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 	}
 	e.Pop()
 
-	// Altimeters
+	// Altimeters (require sg.Airports).
 	if len(s.Altimeters) > 6 {
 		e.ErrorString("Only 6 airports may be specified for \"altimeters\"; %d were given", len(s.Altimeters))
 	}
@@ -1205,7 +1167,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		}
 	}
 
-	// Hold for release validation
+	// Hold for release validation (require sg.Airports).
 	for airport, ap := range sg.Airports {
 		var matches []string
 		for _, list := range s.CoordinationLists {
@@ -1235,93 +1197,18 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		}
 	}
 
-	if s.MonitoredBeaconCodeBlocksString == nil {
-		s.MonitoredBeaconCodeBlocks = []av.Squawk{0o12} // 12xx block by default
-	} else {
-		for bl := range strings.SplitSeq(*s.MonitoredBeaconCodeBlocksString, ",") {
-			bl = strings.TrimSpace(bl)
-			if code, err := av.ParseSquawkOrBlock(bl); err != nil {
-				e.ErrorString("invalid beacon code %q in \"beacon_code_blocks\": %v", bl, err)
-			} else {
-				s.MonitoredBeaconCodeBlocks = append(s.MonitoredBeaconCodeBlocks, code)
-			}
-		}
-	}
-
-	if s.UntrackedPositionSymbolOverrides.CodeRangesString != "" {
-		e.Push("untracked_position_symbol_overrides")
-		for c := range strings.SplitSeq(s.UntrackedPositionSymbolOverrides.CodeRangesString, ",") {
-			low, high, ok := strings.Cut(c, "-")
-
-			var err error
-			var r [2]av.Squawk
-			r[0], err = av.ParseSquawk(low)
-			if err != nil {
-				e.ErrorString("invalid beacon code %q in \"beacon_codes\": %v", low, err)
-			} else if ok {
-				r[1], err = av.ParseSquawk(high)
-				if err != nil {
-					e.ErrorString("invalid beacon code %q in \"beacon_codes\": %v", high, err)
-				} else if r[0] > r[1] {
-					e.ErrorString("first code %q in range must be less than or equal to second %q", low, high)
-				}
-			} else {
-				r[1] = r[0]
-			}
-			s.UntrackedPositionSymbolOverrides.CodeRanges = append(s.UntrackedPositionSymbolOverrides.CodeRanges, r)
-		}
-
-		if len(s.UntrackedPositionSymbolOverrides.Symbol) == 0 {
-			e.ErrorString("\"symbol\" must be provided if \"untracked_position_symbol_overrides\" is specified")
-		} else if len(s.UntrackedPositionSymbolOverrides.Symbol) > 1 {
-			e.ErrorString("only one character may be provided for \"symbol\"")
-		}
-		e.Pop()
-	}
-
-	seenIds := make(map[string][]string)
+	// Coordination list airports (require sg.Airports).
 	for _, list := range s.CoordinationLists {
 		e.Push("\"coordination_lists\" " + list.Name)
-
-		if list.Name == "" {
-			e.ErrorString("\"name\" must be specified for coordination list.")
-		}
-		if list.Id == "" {
-			e.ErrorString("\"id\" must be specified for coordination list.")
-		}
-		if len(list.Airports) == 0 {
-			e.ErrorString("At least one airport must be specified in \"airports\" for coordination list.")
-		}
-
-		seenIds[list.Id] = append(seenIds[list.Id], list.Name)
-
-		// Make sure all airport names in coordination lists are part of the scenario.
 		for _, ap := range list.Airports {
 			if _, ok := sg.Airports[ap]; !ok {
 				e.ErrorString("Airport %q not defined in scenario group.", ap)
 			}
 		}
-
 		e.Pop()
 	}
-	// Make sure that no two coordination lists have the same id.
-	for id, groups := range seenIds {
-		if len(groups) > 1 {
-			e.ErrorString("Multiple \"coordination_lists\" are using id %q: %s", id, strings.Join(groups, ", "))
-		}
-	}
 
-	if len(s.VideoMapNames) == 0 {
-		if len(s.ControllerConfigs) == 0 {
-			e.ErrorString("must provide one of \"stars_maps\" or \"controller_configs\" with \"video_maps\" in \"stars_config\"")
-		}
-		var err error
-		s.ControllerConfigs, err = util.CommaKeyExpand(s.ControllerConfigs)
-		if err != nil {
-			e.Error(err)
-		}
-	}
-
+	// Airspace awareness (require Locator + ControlPositions).
 	for _, aa := range s.AirspaceAwareness {
 		for _, fix := range aa.Fix {
 			if _, ok := sg.Locate(fix); !ok && fix != "ALL" {
@@ -1334,7 +1221,7 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 				aa.AltitudeRange[0], aa.AltitudeRange[1])
 		}
 
-		if _, ok := sg.ControlPositions[sim.TCP(aa.ReceivingController)]; !ok {
+		if _, ok := sg.ControlPositions[sg.resolveController(sim.TCP(aa.ReceivingController))]; !ok {
 			e.ErrorString("%s: controller unknown", aa.ReceivingController)
 		}
 
@@ -1345,33 +1232,16 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 		}
 	}
 
+	// Restriction areas: vertex resolution and spatial checks (require Locator).
 	e.Push("\"restriction_areas\"")
-	if len(s.RestrictionAreas) > av.MaxRestrictionAreas {
-		e.ErrorString("No more than %d restriction areas may be specified; %d were given.",
-			av.MaxRestrictionAreas, len(s.RestrictionAreas))
-	}
 	for idx := range s.RestrictionAreas {
 		ra := &s.RestrictionAreas[idx]
 
-		// General checks
-		if ra.Title == "" {
-			e.ErrorString("Must define \"title\" for restriction area.")
-		}
-		for i := range 2 {
-			if len(ra.Text[i]) > 32 {
-				e.ErrorString("Maximum of 32 characters per line in \"text\": line %d: %q (%d)",
-					i, ra.Text, len(ra.Text[i]))
-			}
-		}
 		if ra.Closed && len(ra.Vertices) == 0 || len(ra.Vertices[0]) < 3 {
 			e.ErrorString("At least 3 \"vertices\" must be given for a closed restriction area.")
 		}
 		if !ra.Closed && len(ra.Vertices) == 0 || len(ra.Vertices[0]) < 2 {
 			e.ErrorString("At least 2 \"vertices\" must be given for an open restriction area.")
-		}
-		if ra.Color < 0 || ra.Color > 8 {
-			// (We allow 0 for unset and treat it as 1 when we draw.)
-			e.ErrorString("\"color\" must be between 1 and 8 (inclusive).")
 		}
 
 		if len(ra.VerticesUser) > 0 {
@@ -1410,14 +1280,10 @@ func PostDeserializeFacilityAdaptation(s *sim.FacilityAdaptation, e *util.ErrorL
 				e.ErrorString("Must specify \"text_position\" with restriction area")
 			}
 		}
-
-		if ra.Shaded && ra.CircleRadius == 0 && len(ra.Vertices) == 0 {
-			e.ErrorString("\"shaded\" cannot be specified without \"circle_radius\" or \"vertices\".")
-		}
 	}
 	e.Pop()
 
-	e.Pop() // stars_config
+	e.Pop() // config
 }
 
 func initializeSimConfigurations(sg *scenarioGroup, catalogs map[string]map[string]*ScenarioCatalog, e *util.ErrorLogger) {
@@ -1505,7 +1371,7 @@ func loadScenarioGroup(filesystem fs.FS, path string, e *util.ErrorLogger) *scen
 	// Reject forbidden top-level keys that should now be in the facility config.
 	var rawKeys map[string]json.RawMessage
 	if err := json.Unmarshal(contents, &rawKeys); err == nil {
-		for _, forbidden := range []string{"stars_config", "control_positions"} {
+		for _, forbidden := range []string{"config", "control_positions"} {
 			if _, ok := rawKeys[forbidden]; ok {
 				e.ErrorString("%q must not appear in scenario group files; it belongs in the facility configuration file", forbidden)
 			}
@@ -1556,10 +1422,10 @@ func facilityConfigPath(sg *scenarioGroup) string {
 // scenario groups referencing the same facility (e.g., N90) share one load.
 var facilityConfigCache = make(map[string]*sim.FacilityConfig)
 
-// loadFacilityConfig loads a facility configuration file from the given
-// filesystem at the specified path. Results are cached so that shared
-// facilities (like N90, referenced by jfk.json, lga.json, etc.) are only
-// loaded once.
+// loadFacilityConfig loads and unmarshals a facility configuration file.
+// Results are cached so that shared facilities (like N90, referenced by
+// jfk.json, lga.json, etc.) are only loaded once. Validation is NOT
+// performed here; call PostDeserialize separately.
 func loadFacilityConfig(filesystem fs.FS, path string, e *util.ErrorLogger) *sim.FacilityConfig {
 	if fc, ok := facilityConfigCache[path]; ok {
 		return fc
@@ -1606,28 +1472,27 @@ func isARTCC(facility string) bool {
 // If the neighbor's config file doesn't exist, it's silently skipped since
 // not all facilities in the real NAS have configs in this system.
 //
-// Each neighbor controller gets a prefix applied to its position and
-// FacilityIdentifier so that controllers from different facilities don't
-// collide. The prefix is looked up from handoffIDs; ARTCCs not listed
-// default to prefix "C". TRACONs not listed in handoffIDs are skipped.
-// neighborPrefix returns the prefix string used to disambiguate a neighbor
-// facility's controllers in the local ControlPositions map. Returns "" if
-// the facility has no prefix (TRACON not listed in handoffIDs).
+// Each neighbor controller gets the canonical (longest) prefix applied to
+// its position and FacilityIdentifier so that controllers from different
+// facilities don't collide. Shorter prefix references are resolved at
+// lookup time via resolveController.
+// neighborPrefix returns the longest available prefix string for a
+// neighbor facility (stars_id > two_char > single_char > prefix).
+// Controllers are stored under only this canonical prefix; shorter
+// references are resolved at lookup time via resolveController.
 func neighborPrefix(facility string, handoffIDs []sim.HandoffID) string {
 	for _, hid := range handoffIDs {
 		if hid.ID == facility {
-			if hid.ERAMPrefix != "" {
-				return hid.ERAMPrefix
-			} else if hid.SingleCharStarsID != "" {
-				return hid.SingleCharStarsID
-			} else if hid.TwoCharStarsID != "" {
-				return hid.TwoCharStarsID
-			} else if hid.StarsID != "" {
+			switch {
+			case hid.StarsID != "":
 				return hid.StarsID
-			} else if hid.Prefix != "" {
+			case hid.TwoCharStarsID != "":
+				return hid.TwoCharStarsID
+			case hid.SingleCharStarsID != "":
+				return hid.SingleCharStarsID
+			case hid.Prefix != "":
 				return hid.Prefix
 			}
-			break
 		}
 	}
 	return ""
@@ -1635,8 +1500,6 @@ func neighborPrefix(facility string, handoffIDs []sim.HandoffID) string {
 
 func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor string,
 	handoffIDs []sim.HandoffID, e *util.ErrorLogger) {
-	// Find the prefix for this neighbor from handoff_ids.
-	// Prefer eram_prefix (NAS ID for ARTCCs), then single char, two char, full stars_id, then prefix.
 	prefix := neighborPrefix(neighbor, handoffIDs)
 	if prefix == "" {
 		e.ErrorString("TRACON neighbor %s not found in handoff_ids", neighbor)
@@ -1668,14 +1531,17 @@ func loadNeighborControllers(filesystem fs.FS, sg *scenarioGroup, neighbor strin
 		return
 	}
 
-	// Add neighbor controllers to the scenario group's positions with
-	// prefixed Position and FacilityIdentifier. Store under PositionId
-	// (prefix + position) to avoid collisions with local controllers.
+	// Add neighbor controllers under the full prefix only.
+	// Shorter references are resolved at lookup time via resolveController.
 	// Don't overwrite existing positions (the primary facility takes precedence).
+	neighborIsARTCC := isARTCC(neighbor)
 	for position, ctrl := range fc.ControlPositions {
 		ctrlCopy := deep.MustCopy(ctrl)
 		ctrlCopy.FacilityIdentifier = prefix
 		ctrlCopy.Position = string(position)
+		if neighborIsARTCC {
+			ctrlCopy.ERAMFacility = true
+		}
 		pid := sim.TCP(ctrlCopy.PositionId())
 
 		if _, exists := sg.ControlPositions[pid]; !exists {
@@ -1760,10 +1626,14 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 		if s != nil {
 			facility := util.Select(s.TRACON == "", s.ARTCC, s.TRACON)
 
-			// Load facility config for the extra scenario.
+			// Load and validate facility config for the extra scenario.
 			extraResourcesFS := util.GetResourcesFS()
 			fc := loadFacilityConfig(extraResourcesFS, facilityConfigPath(s), &extraE)
 			if fc != nil {
+				facilityName := strings.TrimSuffix(filepath.Base(facilityConfigPath(s)), ".json")
+				fc.PostDeserialize(facilityName, &extraE)
+			}
+			if fc != nil && !extraE.HaveErrors() {
 				s.ControlPositions = deep.MustCopy(fc.ControlPositions)
 				s.FacilityAdaptation = deep.MustCopy(fc.FacilityAdaptation)
 				s.HandoffIDs = fc.HandoffIDs
@@ -1836,10 +1706,27 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 
 	lg.Infof("scenario/video map manifest load time: %s\n", time.Since(start))
 
-	// Load facility configs and attach to scenario groups. This must happen
-	// before PostDeserialize since it populates ControlPositions and
-	// FacilityAdaptation which are needed for validation.
+	// Phase 1: Load and validate all facility configs. Each config is
+	// loaded once (cached) and validated via PostDeserialize. This must
+	// complete before neighbor loading or scenario group PostDeserialize
+	// so that all configs are known-good.
 	resourcesFS := util.GetResourcesFS()
+	for _, tracon := range scenarioGroups {
+		for _, sg := range tracon {
+			fc := loadFacilityConfig(resourcesFS, facilityConfigPath(sg), e)
+			if fc == nil {
+				continue
+			}
+			facilityName := strings.TrimSuffix(filepath.Base(facilityConfigPath(sg)), ".json")
+			fc.PostDeserialize(facilityName, e)
+		}
+	}
+	if e.HaveErrors() {
+		return nil, nil, nil, ""
+	}
+
+	// Phase 2: Attach validated configs to scenario groups and load
+	// neighbor controllers. No further config validation is done here.
 	for _, tracon := range scenarioGroups {
 		for _, sg := range tracon {
 			fc := loadFacilityConfig(resourcesFS, facilityConfigPath(sg), e)
@@ -1868,8 +1755,8 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 						if sg.Airports == nil {
 							sg.Airports = make(map[string]*av.Airport)
 						}
-						sg.Airports[airport] = &av.Airport{} // This is an uninitialized, empty airport that is soley used for altimiter and coordination lists so that they're consistent across areas of a TRACON. 
-						// For example, for the N90 ISP files, the EWR and LGA airports aren't defined, so when their altimeter and coorindation lists were called from the N90 configuration file, there was no defined airport. 
+						sg.Airports[airport] = &av.Airport{} // This is an uninitialized, empty airport that is soley used for altimiter and coordination lists so that they're consistent across areas of a TRACON.
+						// For example, for the N90 ISP files, the EWR and LGA airports aren't defined, so when their altimeter and coorindation lists were called from the N90 configuration file, there was no defined airport.
 						return
 					}
 				}
@@ -1888,8 +1775,6 @@ func LoadScenarioGroups(extraScenarioFilename string, extraVideoMapFilename stri
 			}
 
 			// Load controllers from neighboring facilities.
-			// 1. Load all facility config files.
-			// 2. Interate through the handoff IDs and then add the appropriate controllers to the scenario group.
 			for _, neighbor := range fc.HandoffIDs {
 				neighbor := string(neighbor.ID)
 				loadNeighborControllers(resourcesFS, sg, neighbor, fc.HandoffIDs, e)

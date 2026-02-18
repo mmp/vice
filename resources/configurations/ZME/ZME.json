@@ -3,263 +3,220 @@
         "01": {
             "callsign": "ZME 01 Hot Springs",
             "frequency": 128475,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "02": {
             "callsign": "ZME 02 Fayetteville",
             "frequency": 126100,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "03": {
             "callsign": "ZME 03 Harrison",
             "frequency": 126850,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "04": {
             "callsign": "ZME 04 Jonesboro",
             "frequency": 120075,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "05": {
             "callsign": "ZME 05 Paducah",
             "frequency": 133650,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "07": {
             "callsign": "ZME 07 McKeller",
             "frequency": 134650,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "12": {
             "callsign": "ZME 12 Columbus",
             "frequency": 128500,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "13": {
             "callsign": "ZME 13 Hamilton",
             "frequency": 120800,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "14": {
             "callsign": "ZME 14 Holly Springs",
             "frequency": 124350,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "15": {
             "callsign": "ZME 15 Helena",
             "frequency": 135300,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "19": {
             "callsign": "ZME 19 Drake",
             "frequency": 133025,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "20": {
             "callsign": "ZME 20 Little Rock",
             "frequency": 125475,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "21": {
             "callsign": "ZME 21 Conway",
             "frequency": 132425,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "22": {
             "callsign": "ZME 22 Razorback",
             "frequency": 132550,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "25": {
             "callsign": "ZME 25 Tings",
             "frequency": 135500,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "26": {
             "callsign": "ZME 26 Jacks Creek",
             "frequency": 126450,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "27": {
             "callsign": "ZME 27 Calico",
             "frequency": 132375,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "28": {
             "callsign": "ZME 28 Memphis",
             "frequency": 118625,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "30": {
             "callsign": "ZME 30 Columbus",
             "frequency": 134775,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "31": {
             "callsign": "ZME 31 Muscle Shoals",
             "frequency": 127375,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "32": {
             "callsign": "ZME 32 Tupelo",
             "frequency": 135650,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "33": {
             "callsign": "ZME 33 Elvis",
             "frequency": 127975,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "34": {
             "callsign": "ZME 34 Sikeston",
             "frequency": 133125,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "35": {
             "callsign": "ZME 35 Walnut Ridge",
             "frequency": 135225,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "40": {
             "callsign": "ZME 40 Sparta",
             "frequency": 132900,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "41": {
             "callsign": "ZME 41 Bowling Green",
             "frequency": 133850,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "42": {
             "callsign": "ZME 42 Graham",
             "frequency": 125850,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "43": {
             "callsign": "ZME 43 Greenwood",
             "frequency": 127425,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "44": {
             "callsign": "ZME 44 Pine Bluff",
             "frequency": 124925,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "45": {
             "callsign": "ZME 45 Vicksburg",
             "frequency": 133075,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "46": {
             "callsign": "ZME 46 Meridian",
             "frequency": 128275,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "60": {
             "callsign": "ZME 60 Shelbyville",
             "frequency": 128150,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "61": {
             "callsign": "ZME 61 Clarksville",
             "frequency": 124125,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "62": {
             "callsign": "ZME 62 Smyrna",
             "frequency": 118875,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "63": {
             "callsign": "ZME 63 Campbell",
             "frequency": 124275,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "65": {
             "callsign": "ZME 65 Kewanee",
             "frequency": 125975,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "66": {
             "callsign": "ZME 66 Jackson",
             "frequency": 132500,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "67": {
             "callsign": "ZME 67 Greenville",
             "frequency": 135875,
-            "eram_facility": true,
             "radio_name": "Memphis Center"
         },
         "70": {
             "callsign": "ZME 70 TMU (DFW SDF)",
             "frequency": 123450,
-            "eram_facility": true,
             "radio_name": "ZME Flow 70"
         },
         "71": {
             "callsign": "ZME 71 TMU (ATL)",
             "frequency": 123450,
-            "eram_facility": true,
             "radio_name": "ZME Flow 71"
         },
         "72": {
             "callsign": "ZME 72 TMU (CLT IAH)",
             "frequency": 123450,
-            "eram_facility": true,
             "radio_name": "ZME Flow 72"
         },
         "77": {
             "callsign": "ZME 77 OMIC",
             "frequency": 121500,
-            "eram_facility": true,
             "radio_name": "Operations Manager"
         },
         "80": {
             "callsign": "ZME 80 TMU (MEM)",
             "frequency": 123450,
-            "eram_facility": true,
             "radio_name": "ZME Flow 80"
         }
     },
-    "stars_config": {
+    "config": {
         "coordination_fixes": {
             "BAWLS": [
                 {
@@ -289,7 +246,8 @@
                     "from": "ZME"
                 }
             ]
-        }
+        },
+        "configurations": {}
     },
     "handoff_ids": [
         {
@@ -429,23 +387,23 @@
         },
         {
             "id": "ZFW",
-            "eram_prefix": "F"
+            "prefix": "F"
         },
         {
             "id": "ZHU",
-            "eram_prefix": "H"
+            "prefix": "H"
         },
         {
             "id": "ZID",
-            "eram_prefix": "I"
+            "prefix": "I"
         },
         {
             "id": "ZKC",
-            "eram_prefix": "K"
+            "prefix": "K"
         },
         {
             "id": "ZTL",
-            "eram_prefix": "T"
+            "prefix": "T"
         }
     ]
 }

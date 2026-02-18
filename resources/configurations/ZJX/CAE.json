@@ -44,15 +44,18 @@
         },
         {
             "id": "ZJX",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZNY",
-            "eram_prefix": "N"
+            "prefix": "N"
         },
         {
             "id": "ZTL",
-            "eram_prefix": "T"
+            "prefix": "T"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

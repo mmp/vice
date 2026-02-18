@@ -57,7 +57,10 @@
         },
         {
             "id": "ZOA",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

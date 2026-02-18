@@ -9,7 +9,10 @@
     "handoff_ids": [
         {
             "id": "ZOA",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

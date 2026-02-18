@@ -21,11 +21,14 @@
         },
         {
             "id": "ZJX",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZNY",
-            "eram_prefix": "N"
+            "prefix": "N"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

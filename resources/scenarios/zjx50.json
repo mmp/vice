@@ -151,7 +151,7 @@
             }
         },
         "KSAV": {
-            "departure_controller": "S6N",
+            "departure_controller": "S1N",
             "departure_routes": {
                 "28": {
                     "BYYOU": {

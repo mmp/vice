@@ -3,227 +3,190 @@
         "00": {
             "callsign": "ZLA 00 Maintenance",
             "frequency": 118000,
-            "eram_facility": true,
             "radio_name": "Maintenance"
         },
         "03": {
             "callsign": "ZLA Sector 03",
             "frequency": 127100,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "04": {
             "callsign": "ZLA Sector 04",
             "frequency": 125800,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "06": {
             "callsign": "ZLA Sector 06",
             "frequency": 134650,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "07": {
             "callsign": "ZLA Sector 07",
             "frequency": 124200,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "08": {
             "callsign": "ZLA Sector 08",
             "frequency": 124850,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "09": {
             "callsign": "ZLA Sector 09",
             "frequency": 128600,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "10": {
             "callsign": "ZLA Sector 10",
             "frequency": 128150,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "12": {
             "callsign": "ZLA Sector 12",
             "frequency": 125650,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "13": {
             "callsign": "ZLA Sector 13",
             "frequency": 132600,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "14": {
             "callsign": "ZLA Sector 14",
             "frequency": 135500,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "15": {
             "callsign": "ZLA Sector 15",
             "frequency": 119050,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "16": {
             "callsign": "ZLA Sector 16",
             "frequency": 124625,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "17": {
             "callsign": "ZLA Sector 17",
             "frequency": 132500,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "18": {
             "callsign": "ZLA Sector 18",
             "frequency": 125275,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "19": {
             "callsign": "ZLA Sector 19",
             "frequency": 126350,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "20": {
             "callsign": "ZLA Sector 20",
             "frequency": 133750,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "21": {
             "callsign": "ZLA Sector 21",
             "frequency": 132850,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "22": {
             "callsign": "ZLA Sector 22",
             "frequency": 134575,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "25": {
             "callsign": "ZLA Sector 25",
             "frequency": 126525,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "26": {
             "callsign": "ZLA Sector 26",
             "frequency": 135300,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "27": {
             "callsign": "ZLA Sector 27",
             "frequency": 128375,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "28": {
             "callsign": "ZLA Sector 28",
             "frequency": 132150,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "30": {
             "callsign": "ZLA Sector 30",
             "frequency": 119950,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "31": {
             "callsign": "ZLA Sector 31",
             "frequency": 126775,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "34": {
             "callsign": "ZLA Sector 34",
             "frequency": 132625,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "35": {
             "callsign": "ZLA Sector 35",
             "frequency": 128075,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "36": {
             "callsign": "ZLA Sector 36",
             "frequency": 127350,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "37": {
             "callsign": "ZLA Sector 37",
             "frequency": 133550,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "38": {
             "callsign": "ZLA Sector 38",
             "frequency": 125725,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "39": {
             "callsign": "ZLA Sector 39",
             "frequency": 133200,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "40": {
             "callsign": "ZLA Sector 40",
             "frequency": 127525,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "53": {
             "callsign": "ZLA Sector 53",
             "frequency": 118025,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "54": {
             "callsign": "ZLA Sector 54",
             "frequency": 135250,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "55": {
             "callsign": "ZLA Sector 55",
             "frequency": 135550,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "60": {
             "callsign": "ZLA Sector 60",
             "frequency": 134475,
-            "eram_facility": true,
             "radio_name": "Los Angeles Center"
         },
         "99": {
             "callsign": "ZLA 99 TMU",
             "frequency": 123450,
-            "eram_facility": true,
             "radio_name": "Traffic Management"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -628,19 +591,19 @@
         },
         {
             "id": "ZAB",
-            "eram_prefix": "A"
+            "prefix": "A"
         },
         {
             "id": "ZDV",
-            "eram_prefix": "D"
+            "prefix": "D"
         },
         {
             "id": "ZLC",
-            "eram_prefix": "U"
+            "prefix": "U"
         },
         {
             "id": "ZOA",
-            "eram_prefix": "O"
+            "prefix": "O"
         }
     ]
 }

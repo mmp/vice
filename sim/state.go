@@ -83,6 +83,8 @@ type CommonState struct {
 
 	SimDescription string
 
+	HandoffIDs []HandoffID
+
 	VideoMapLibraryHash []byte
 }
 
@@ -260,6 +262,8 @@ func newCommonState(config NewSimConfiguration, startTime time.Time, manifest *V
 		NmPerLongitude:    config.NmPerLongitude,
 		PrimaryAirport:    config.PrimaryAirport,
 		SimDescription:    config.Description,
+
+		HandoffIDs: config.HandoffIDs,
 	}
 
 	// Grab initial METAR for each airport and assign initial ATIS letters

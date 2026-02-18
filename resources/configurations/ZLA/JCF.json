@@ -72,11 +72,14 @@
         },
         {
             "id": "ZLA",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZOA",
-            "eram_prefix": "O"
+            "prefix": "O"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

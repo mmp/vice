@@ -22,11 +22,14 @@
         },
         {
             "id": "ZAU",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZMP",
-            "eram_prefix": "P"
+            "prefix": "P"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

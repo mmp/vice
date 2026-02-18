@@ -3,203 +3,170 @@
         "01": {
             "callsign": "ZBW 01 Millinocket",
             "frequency": 128050,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "02": {
             "callsign": "ZBW 02 Augusta",
             "frequency": 134950,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "05": {
             "callsign": "ZBW 05 Stewart",
             "frequency": 134300,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "06": {
             "callsign": "ZBW 06 Pawling",
             "frequency": 128100,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "07": {
             "callsign": "ZBW 07 Chester",
             "frequency": 127650,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "08": {
             "callsign": "ZBW 08 Watertown",
             "frequency": 135250,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "09": {
             "callsign": "ZBW 09 Utica",
             "frequency": 123875,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "10": {
             "callsign": "ZBW 10 Rockdale",
             "frequency": 124125,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "15": {
             "callsign": "ZBW 15 SURRY",
             "frequency": 124250,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "16": {
             "callsign": "ZBW 16 PARSO",
             "frequency": 128200,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "17": {
             "callsign": "ZBW 17 Nantucket",
             "frequency": 133450,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "18": {
             "callsign": "ZBW 18 Cape",
             "frequency": 128750,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "19": {
             "callsign": "ZBW 19 Danbury",
             "frequency": 134000,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "20": {
             "callsign": "ZBW 20 Kingston",
             "frequency": 125575,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "21": {
             "callsign": "ZBW 21 CANAN",
             "frequency": 132650,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "22": {
             "callsign": "ZBW 22 Albany",
             "frequency": 121350,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "23": {
             "callsign": "ZBW 23 Hancock",
             "frequency": 133250,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "24": {
             "callsign": "ZBW 24 Delancey",
             "frequency": 127375,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "31": {
             "callsign": "ZBW 31 Hampton",
             "frequency": 124525,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "32": {
             "callsign": "ZBW 32 Clipper",
             "frequency": 135800,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "34": {
             "callsign": "ZBW 34 Providence",
             "frequency": 124850,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "36": {
             "callsign": "ZBW 36 Gardner",
             "frequency": 123750,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "37": {
             "callsign": "ZBW 37 Concord",
             "frequency": 134700,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "38": {
             "callsign": "ZBW 38 Athens",
             "frequency": 135325,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "39": {
             "callsign": "ZBW 39 Cambridge",
             "frequency": 128325,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "46": {
             "callsign": "ZBW 46 Boston",
             "frequency": 126225,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "47": {
             "callsign": "ZBW 47 BOSOX",
             "frequency": 133425,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "49": {
             "callsign": "ZBW 49 Southie",
             "frequency": 132300,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "52": {
             "callsign": "ZBW 52 Montpelier",
             "frequency": 135700,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "53": {
             "callsign": "ZBW 53 Plattsburgh",
             "frequency": 118825,
-            "eram_facility": true,
             "radio_name": "Boston Center"
         },
         "97": {
             "callsign": "ZBW 97 ZBW Guard",
             "frequency": 121500,
-            "eram_facility": true,
             "radio_name": "Guard"
         },
         "98": {
             "callsign": "ZBW 98 Poker Center",
             "frequency": 122400,
-            "eram_facility": true,
             "radio_name": "Boston Poker Center"
         },
         "99": {
             "callsign": "ZBW 99 TMU",
             "frequency": 127650,
-            "eram_facility": true,
             "radio_name": "Boston Center TMU"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -533,15 +500,15 @@
         },
         {
             "id": "ZDC",
-            "eram_prefix": "W"
+            "prefix": "W"
         },
         {
             "id": "ZNY",
-            "eram_prefix": "N"
+            "prefix": "N"
         },
         {
             "id": "ZOB",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

@@ -54,7 +54,7 @@
             "scope_char": "F"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "CNW": {
                 "inbound_assignments": {
@@ -179,11 +179,11 @@
         },
         {
             "id": "ZBW",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZNY",
-            "eram_prefix": "N"
+            "prefix": "N"
         }
     ]
 }

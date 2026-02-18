@@ -26,7 +26,9 @@
             "radio_name": "Rochester Approach"
         }
     },
-    "stars_config": {},
+    "config": {
+        "configurations": {}
+    },
     "handoff_ids": [
         {
             "id": "BUF",
@@ -42,15 +44,15 @@
         },
         {
             "id": "ZBW",
-            "eram_prefix": "B"
+            "prefix": "B"
         },
         {
             "id": "ZNY",
-            "eram_prefix": "N"
+            "prefix": "N"
         },
         {
             "id": "ZOB",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

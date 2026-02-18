@@ -22,11 +22,14 @@
         },
         {
             "id": "ZME",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZTL",
-            "eram_prefix": "T"
+            "prefix": "T"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }

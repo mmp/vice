@@ -3,257 +3,215 @@
         "00": {
             "callsign": "ZFW 00 Guard",
             "frequency": 121500,
-            "eram_facility": true,
             "radio_name": "ZFW Guard"
         },
         "20": {
             "callsign": "ZFW 20 MJR-UH",
             "frequency": 133550,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "23": {
             "callsign": "ZFW 23 ARC-UH",
             "frequency": 135275,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "24": {
             "callsign": "ZFW 24 ODS-UH",
             "frequency": 128525,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "25": {
             "callsign": "ZFW 25 UNN-UH",
             "frequency": 133375,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "26": {
             "callsign": "ZFW 26 KLB-UH",
             "frequency": 128125,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "27": {
             "callsign": "ZFW 27 TXK-L",
             "frequency": 123925,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "28": {
             "callsign": "ZFW 28 ELD-H",
             "frequency": 133550,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "29": {
             "callsign": "ZFW 29 DON-L",
             "frequency": 135250,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "30": {
             "callsign": "ZFW 30 MLU-L",
             "frequency": 126325,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "32": {
             "callsign": "ZFW 32 POS-L",
             "frequency": 127000,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "34": {
             "callsign": "ZFW 34 SPS-L",
             "frequency": 133500,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "35": {
             "callsign": "ZFW 35 OKC-L",
             "frequency": 128400,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "37": {
             "callsign": "ZFW 37 SEA-L",
             "frequency": 124875,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "38": {
             "callsign": "ZFW 38 MLC-L",
             "frequency": 132200,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "40": {
             "callsign": "ZFW 40 MAF-L",
             "frequency": 133100,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "41": {
             "callsign": "ZFW 41 HGO-UH",
             "frequency": 128125,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "42": {
             "callsign": "ZFW 42 DEC-H",
             "frequency": 134475,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "43": {
             "callsign": "ZFW 43 CZR-UH",
             "frequency": 135275,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "46": {
             "callsign": "ZFW 46 DAL-H",
             "frequency": 135750,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "47": {
             "callsign": "ZFW 47 SPS-H",
             "frequency": 124525,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "48": {
             "callsign": "ZFW 48 ADM-H",
             "frequency": 132975,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "49": {
             "callsign": "ZFW 49 OKC-H",
             "frequency": 132450,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "50": {
             "callsign": "ZFW 50 MLC-H",
             "frequency": 135450,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "51": {
             "callsign": "ZFW 51 CHO-UH",
             "frequency": 135175,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "53": {
             "callsign": "ZFW 53 FRI-L",
             "frequency": 124750,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "55": {
             "callsign": "ZFW 55 RDR-UH",
             "frequency": 125225,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "61": {
             "callsign": "ZFW 61 LEE-H",
             "frequency": 120275,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "62": {
             "callsign": "ZFW 62 EDN-L",
             "frequency": 127150,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "64": {
             "callsign": "ZFW 64 LBB-L",
             "frequency": 126450,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "65": {
             "callsign": "ZFW 65 HIC-H",
             "frequency": 128325,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "75": {
             "callsign": "ZFW 75 UKW-L",
             "frequency": 127950,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "82": {
             "callsign": "ZFW 82 INK-H",
             "frequency": 132075,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "83": {
             "callsign": "ZFW 83 UIM-L",
             "frequency": 132025,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "86": {
             "callsign": "ZFW 86 PAX-H",
             "frequency": 132275,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "89": {
             "callsign": "ZFW 89 FZT-H",
             "frequency": 134025,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "90": {
             "callsign": "ZFW 90 TXK-H",
             "frequency": 126575,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "93": {
             "callsign": "ZFW 93 TUR-H",
             "frequency": 120775,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "94": {
             "callsign": "ZFW 94 WOV-H",
             "frequency": 132925,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "96": {
             "callsign": "ZFW 96 ACT-L",
             "frequency": 133300,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "97": {
             "callsign": "ZFW 97 BRZ-UH",
             "frequency": 132300,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         },
         "99": {
             "callsign": "ZFW 99 ZFW TMU",
             "frequency": 118000,
-            "eram_facility": true,
             "radio_name": "Fort Worth Center"
         }
     },
-    "stars_config": {
+    "config": {
         "coordination_fixes": {
             "ATOKA": [
                 {
@@ -402,7 +360,8 @@
                     "from": "ZFW"
                 }
             ]
-        }
+        },
+        "configurations": {}
     },
     "handoff_ids": [
         {
@@ -503,19 +462,19 @@
         },
         {
             "id": "ZAB",
-            "eram_prefix": "A"
+            "prefix": "A"
         },
         {
             "id": "ZHU",
-            "eram_prefix": "H"
+            "prefix": "H"
         },
         {
             "id": "ZKC",
-            "eram_prefix": "K"
+            "prefix": "K"
         },
         {
             "id": "ZME",
-            "eram_prefix": "M"
+            "prefix": "M"
         }
     ]
 }

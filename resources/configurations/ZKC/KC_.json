@@ -1,10 +1,12 @@
 {
     "control_positions": {},
-    "stars_config": {},
+    "config": {
+        "configurations": {}
+    },
     "handoff_ids": [
         {
             "id": "ZKC",
-            "eram_prefix": "K"
+            "prefix": "K"
         }
     ]
 }

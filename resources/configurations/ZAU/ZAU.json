@@ -3,131 +3,110 @@
         "25": {
             "callsign": "ZAU 25 PMM",
             "frequency": 126125,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "26": {
             "callsign": "ZAU 26 KUBBS",
             "frequency": 133200,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "35": {
             "callsign": "ZAU 35 BEARZ",
             "frequency": 134875,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "36": {
             "callsign": "ZAU 36 FWA",
             "frequency": 126325,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "44": {
             "callsign": "ZAU 44 EON",
             "frequency": 120125,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "46": {
             "callsign": "ZAU 46 BVT",
             "frequency": 121275,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "51": {
             "callsign": "ZAU 51 PLANO",
             "frequency": 135150,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "52": {
             "callsign": "ZAU 52 BDF",
             "frequency": 132225,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "55": {
             "callsign": "ZAU 55 BRL",
             "frequency": 118750,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "60": {
             "callsign": "ZAU 60 BAE",
             "frequency": 126875,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "62": {
             "callsign": "ZAU 62 HARLY",
             "frequency": 123825,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "63": {
             "callsign": "ZAU 63 DBQ",
             "frequency": 133950,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "64": {
             "callsign": "ZAU 64 LNR",
             "frequency": 133300,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "74": {
             "callsign": "ZAU 74 FARMM",
             "frequency": 133350,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "75": {
             "callsign": "ZAU 75 COTON",
             "frequency": 127775,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "77": {
             "callsign": "ZAU 77 MALTA",
             "frequency": 134825,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "81": {
             "callsign": "ZAU 81 CRIBB",
             "frequency": 120350,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "89": {
             "callsign": "ZAU 89 GIJ",
             "frequency": 126475,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "94": {
             "callsign": "ZAU 94 IOW",
             "frequency": 125575,
-            "eram_facility": true,
             "radio_name": "Chicago Center"
         },
         "98": {
             "callsign": "ZAU 98 Guard",
             "frequency": 121500,
-            "eram_facility": true,
             "radio_name": "Guard"
         },
         "99": {
             "callsign": "ZAU 99 TMU",
             "frequency": 123450,
-            "eram_facility": true,
             "radio_name": "Chicago TMU"
         }
     },
-    "stars_config": {
+    "config": {
         "coordination_fixes": {
             "NEWRK": [
                 {
@@ -290,7 +269,8 @@
                     "from": "ZAU"
                 }
             ]
-        }
+        },
+        "configurations": {}
     },
     "handoff_ids": [
         {
@@ -424,19 +404,19 @@
         },
         {
             "id": "ZID",
-            "eram_prefix": "I"
+            "prefix": "I"
         },
         {
             "id": "ZKC",
-            "eram_prefix": "K"
+            "prefix": "K"
         },
         {
             "id": "ZMP",
-            "eram_prefix": "P"
+            "prefix": "P"
         },
         {
             "id": "ZOB",
-            "eram_prefix": "C"
+            "prefix": "C"
         }
     ]
 }

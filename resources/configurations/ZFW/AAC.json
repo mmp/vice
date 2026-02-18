@@ -66,7 +66,7 @@
             "radio_name": "Academy Tower"
         }
     },
-    "stars_config": {
+    "config": {
         "configurations": {
             "STD": {
                 "inbound_assignments": {
@@ -334,11 +334,11 @@
     "handoff_ids": [
         {
             "id": "ZAE",
-            "eram_prefix": "E"
+            "prefix": "E"
         },
         {
             "id": "ZFW",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "SGF",

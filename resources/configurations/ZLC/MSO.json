@@ -14,11 +14,14 @@
     "handoff_ids": [
         {
             "id": "ZLC",
-            "eram_prefix": "C"
+            "prefix": "C"
         },
         {
             "id": "ZSE",
-            "eram_prefix": "S"
+            "prefix": "S"
         }
-    ]
+    ],
+    "config": {
+        "configurations": {}
+    }
 }
